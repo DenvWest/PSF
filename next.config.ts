@@ -168,6 +168,24 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async headers() {
+    return [
+      {
+        // De prebuild-fonts dragen hun inhouds-hash in de bestandsnaam
+        // (scripts/build-prebuild-embeds.mjs), dus een wijziging levert een
+        // nieuwe URL op en hoeft deze nooit gehervalideerd te worden. Zonder
+        // dit haalde de browser bij elke domeinwissel opnieuw dezelfde fonts
+        // op — public/ staat standaard op max-age=0.
+        source: "/prebuilds/fonts/:file*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 const sentryDsn = process.env.SENTRY_DSN?.trim();

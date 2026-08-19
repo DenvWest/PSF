@@ -44,7 +44,7 @@ function getSupabaseOrigin(): string | null {
   }
 }
 
-function buildContentSecurityPolicy() {
+function buildContentSecurityPolicy(allowSelfFraming: boolean) {
   const isProduction = process.env.NODE_ENV === "production";
   const connectSrc = [
     "'self'",
@@ -67,7 +67,7 @@ function buildContentSecurityPolicy() {
     "default-src 'self'",
     "base-uri 'self'",
     "form-action 'self'",
-    "frame-ancestors 'none'",
+    allowSelfFraming ? "frame-ancestors 'self'" : "frame-ancestors 'none'",
     "object-src 'none'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
@@ -75,7 +75,7 @@ function buildContentSecurityPolicy() {
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clarity.ms https://challenges.cloudflare.com https://www.googletagmanager.com",
     "style-src 'self' 'unsafe-inline'",
     `connect-src 'self' ${connectSrc.join(" ")} https://*.clarity.ms`,
-    "frame-src https://challenges.cloudflare.com",
+    "frame-src 'self' https://challenges.cloudflare.com",
     "manifest-src 'self'",
   ];
 
@@ -127,10 +127,17 @@ export async function proxy(request: NextRequest) {
     request.nextUrl.protocol === "https:" ||
     request.headers.get("x-forwarded-proto") === "https";
 
-  response.headers.set("Content-Security-Policy", buildContentSecurityPolicy());
+  // De v3.6-prebuild draait als same-origin iframe binnen Kompas · Beweging
+  // (BewegingPrebuildFrame) — expliciet verzoek om het ontwerp letterlijk te
+  // tonen. Alleen dit ene pad krijgt een minder strikte frame-policy.
+  const isPrebuildRoute = pathname.startsWith("/prebuilds/");
+  response.headers.set(
+    "Content-Security-Policy",
+    buildContentSecurityPolicy(isPrebuildRoute),
+  );
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Frame-Options", isPrebuildRoute ? "SAMEORIGIN" : "DENY");
   response.headers.set(
     "Permissions-Policy",
     "camera=(), geolocation=(), microphone=()",

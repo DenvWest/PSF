@@ -6,7 +6,10 @@ import { getAccountFromCookie } from "@/lib/account-server";
 import { hasFeature } from "@/lib/db/entitlements";
 import { buildDevDashboardData } from "@/lib/dashboard-dev-data";
 import { parseSleepFocus, SLEEP_FOCUS_COOKIE_NAME } from "@/lib/sleep-focus";
-import { syncSupplementVerdicts } from "@/lib/supplement-verdict-producer";
+import {
+  loadSupplementVerdicts,
+  syncSupplementVerdicts,
+} from "@/lib/supplement-verdict-producer";
 import {
   isAgendaViewId,
   parseVoortgangScreenFromUrl,
@@ -121,17 +124,25 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     );
   }
 
-  const [data, hasTrendsFeature] = await Promise.all([
+  // De oordelen hangen alleen aan het account, niet aan `data` — dus lezen we
+  // ze hier mee in plaats van erna. `syncSupplementVerdicts` doet daarna geen
+  // enkele query zolang er niets omslaat, en dat is het normale geval.
+  const [data, hasTrendsFeature, storedVerdicts, cookieStore] = await Promise.all([
     loadAccountDashboardData(account.id),
     hasFeature(account.id, "trends"),
+    loadSupplementVerdicts(account.id),
+    cookies(),
   ]);
 
-  const cookieStore = await cookies();
   const sleepFocus = data.empty
     ? parseSleepFocus(cookieStore.get(SLEEP_FOCUS_COOKIE_NAME)?.value)
     : null;
 
-  const supplementVerdicts = await syncSupplementVerdicts(account.id, data);
+  const supplementVerdicts = await syncSupplementVerdicts(
+    account.id,
+    data,
+    storedVerdicts,
+  );
 
   return (
     <div className="ps-dark">

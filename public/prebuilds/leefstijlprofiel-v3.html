@@ -1,0 +1,1102 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Leefstijlprofiel &middot; domein — Aanbeveling en Mijn keuze (prebuild v3)</title>
+<!--
+  LEEFSTIJLPROFIEL-DOMEIN PREBUILD v3 — 19 augustus 2026
+  Bestand A van twee. B = favorieten-schap-prebuild-v3-2026-08.html
+
+  WAAROM v3 EN NIET v2
+  v2 (voortgang-supplementen-prebuild-v2) is afgekeurd op IA: daar stonden
+  leefstijl-aanbevelingen en productafleiding op dezelfde scroll. Die twee
+  zijn hier gesplitst over twee surfaces en dus over twee bestanden.
+
+  DE SCHEIDSLIJN, IN EEN REGEL
+  Leefstijl-aanbeveling uit de check hoort HIER. Product, dienst en
+  begeleiding horen in Favorieten. Nooit op dezelfde pagina.
+
+  WAT DIT BESTAND LOCKT (negen regels)
+
+   1. TWEE SECTIES, VASTE VOLGORDE: Aanbeveling, dan Mijn keuze. Geen tabs,
+      geen toggle - twee koppen op een scroll. De huidige
+      LeefstijlprofielViewToggle vervalt daarmee op dit scherm.
+   2. AANBEVELING = AFGELEID. Uit de domein-check, en waar relevant uit de
+      voedingscheck. Bron altijd in beeld. Geen prijs, geen commissie-regel,
+      geen oordeelchip in de kop.
+   3. MIJN KEUZE = DE KLANT. Alleen activiteiten en handelingen. Product,
+      dienst en begeleiding staan hier niet - die hebben hun eigen groep in
+      Favorieten.
+   4. GEEN PRODUCTKAART, GEEN AFLEIDING, GEEN VERGELIJKINGSLINK. In geen
+      enkele staat, op geen enkel domein.
+   5. WEL DE ONDERBOUWING VAN DE POORT. Compact: staat hij open of dicht,
+      en waarom. Dat is uitleg, geen aanbod. De kaarten staan in Favorieten.
+   6. DE DEUR IS LABEL-ONLY. "Maak een keuze" gaat naar het schap; nooit een
+      productnaam, prijs, claim of oordeel op deze knop.
+   7. DE LADDER IS BESTAAND EN ONGEWIJZIGD. Hier compact getekend als
+      context. De volledige ladder blijft v1 renderVL r.1329.
+   8. INNAME NOOIT STATUS, GEEN ADVIES-TAAL. Ook op een scherm zonder
+      producten.
+   9. @container, nooit lg:/xl:. 375px eerst.
+-->
+<style>
+
+
+
+
+:root{
+  --shell:#0B140C;
+  --sage:#5A8F6A;
+  --sage-lt:#9CC5A9;
+  --terra:#C8956C;
+  --amber:#C99A3C;
+  --move:#C26E4B;
+  --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"DM Serif Display",Georgia,"Times New Roman",serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,"Roboto Mono",monospace;
+  --r-panel:16px; --r-card:12px; --r-btn:10px;
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px;
+}
+.surf-dash{
+  --bg:#132414;
+  --panel:rgba(255,255,255,.045);
+  --panel-2:rgba(0,0,0,.20);
+  --line:rgba(255,255,255,.11);
+  --line-soft:rgba(255,255,255,.06);
+  --ink:#F1EFE8;
+  --soft:#CDD7D0;
+  --mut:#9FB0A6;
+  --subtle:#7E8C82;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;max-width:100%;overflow-x:clip}
+body{
+  background:var(--shell);color:#F1EFE8;font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;line-height:1.5;font-size:15px;
+}
+h1,h2,h3,h4{margin:0;font-weight:400;font-family:var(--serif);letter-spacing:-.005em}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--sage-lt);outline-offset:2px;border-radius:4px}
+[hidden]{display:none !important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ══ prebuild-chrome — niet in het product ══════════════════════ */
+.chrome{position:sticky;top:0;z-index:30;background:rgba(11,20,12,.97);backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(255,255,255,.11);padding:12px 16px 10px}
+.chrome-in{max-width:1220px;margin:0 auto}
+.chrome-h{font-family:var(--serif);font-size:18px;margin:0 0 2px}
+.chrome .sub{margin:0 0 10px;font-size:12px;color:#9FB0A6;max-width:100ch}
+.switchrow{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:flex-start}
+.switch{display:flex;flex-direction:column;gap:5px}
+.switch-label{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7E8C82}
+.switch-btns{display:flex;flex-wrap:wrap;gap:5px}
+.sw{font-size:11.5px;font-weight:600;min-height:32px;padding:6px 11px;border-radius:999px;
+  background:transparent;border:1px solid rgba(255,255,255,.12);color:#9FB0A6;
+  transition:background .16s,border-color .16s,color .16s}
+.sw:hover{border-color:rgba(255,255,255,.28);color:#CDD7D0}
+.sw[aria-pressed="true"]{background:rgba(90,143,106,.20);border-color:rgba(90,143,106,.6);color:#F1EFE8}
+.sw[disabled]{opacity:.34;cursor:not-allowed}
+.evstrip{margin-top:10px;font-family:var(--mono);font-size:10.5px;color:#6FB07E;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:15px}
+.statenote{margin-top:6px;font-size:11.5px;color:#7E8C82;max-width:110ch}
+
+/* ══ surface ════════════════════════════════════════════════════ */
+.stage{padding:20px 16px 80px;display:flex;justify-content:center}
+.app{
+  container-type:inline-size;container-name:app;
+  width:100%;background:var(--bg);border:1px solid var(--line);
+  border-radius:18px;overflow:hidden;
+}
+.app[data-appw="375"]{max-width:375px}
+.app[data-appw="1280"]{max-width:1280px}
+
+.appbar{display:flex;align-items:center;gap:14px;padding:11px 14px;
+  border-bottom:1px solid var(--line);background:rgba(0,0,0,.18)}
+.appbrand{font-family:var(--serif);font-size:15px;white-space:nowrap}
+.apptabs{display:flex;gap:12px;font-size:11.5px;color:var(--subtle);flex-wrap:wrap}
+.apptabs span[data-active]{color:var(--ink);font-weight:600}
+.pad{padding:18px 14px 26px}
+@container app (min-width:820px){ .pad{padding:26px 26px 34px} }
+
+.cols{display:flex;flex-direction:column;gap:18px}
+@container app (min-width:900px){
+  .cols--railright{flex-direction:row;align-items:flex-start;gap:24px}
+  .cols--railright > :first-child{flex:1 1 auto;min-width:0}
+  .cols--railright > :last-child{flex:0 0 300px}
+  .cols--railleft{flex-direction:row-reverse;align-items:flex-start;gap:24px}
+  .cols--railleft > :first-child{flex:1 1 auto;min-width:0}
+  .cols--railleft > :last-child{flex:0 0 268px}
+  .sticky{position:sticky;top:14px}
+}
+.stack{display:flex;flex-direction:column;gap:16px;min-width:0}
+.stack--tight{gap:10px}
+
+/* ══ tegels & tekst ═════════════════════════════════════════════ */
+.tile,.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-panel);padding:16px 15px}
+@container app (min-width:820px){ .tile,.panel{padding:18px 18px} }
+.eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle)}
+.t-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle);margin-bottom:9px}
+.lead{font-size:13.5px;line-height:1.6;color:var(--soft);text-wrap:pretty}
+.note{font-size:12.5px;line-height:1.6;color:var(--mut);text-wrap:pretty}
+.micro{font-size:11.5px;line-height:1.55;color:var(--subtle);text-wrap:pretty}
+.footnote{font-size:11.5px;line-height:1.55;color:var(--subtle);text-wrap:pretty;
+  border-top:1px solid var(--line-soft);padding-top:12px}
+.h-sec{font-size:21px;line-height:1.2}
+@container app (min-width:820px){ .h-sec{font-size:25px} }
+.divider{height:1px;background:var(--line-soft);margin:4px 0}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:44px;padding:11px 16px;border-radius:var(--r-btn);font-size:13.5px;font-weight:600;
+  border:1px solid transparent;text-decoration:none;width:100%}
+.btn-primary{background:var(--sage);color:#0B140C;border-color:var(--sage)}
+.btn-terra{background:var(--terra);color:#1A1208;border-color:var(--terra)}
+.btn-soft{background:rgba(255,255,255,.06);border-color:var(--line);color:var(--ink)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--mut)}
+.linkish{background:none;border:none;padding:0;min-height:44px;display:inline-flex;align-items:center;gap:5px;
+  font-size:13px;font-weight:600;color:var(--sage-lt);text-decoration:none}
+.linkish.q{color:var(--mut);font-weight:500}
+.ico{width:1em;height:1em;flex:none;display:inline-block;vertical-align:-.1em}
+
+/* ══ .pl-row — de ladder, canon uit slaap v2 ════════════════════ */
+.pl{display:flex;flex-direction:column;gap:4px}
+.pl--rail{gap:3px}
+.pl-row{position:relative;overflow:hidden;border-radius:var(--r-card);
+  border:1px solid var(--line-soft);background:var(--panel-2)}
+.pl-bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(255,255,255,.14)}
+.pl-row[data-ls="winst"]{border-color:rgba(200,149,108,.34);background:rgba(200,149,108,.06)}
+.pl-row[data-ls="winst"] .pl-bar{background:var(--terra)}
+.pl-row[data-ls="ok"] .pl-bar{background:var(--sage)}
+.pl-row[data-ls="watch"] .pl-bar{background:var(--amber)}
+.pl-row[data-ls="wacht"] .pl-bar{background:rgba(255,255,255,.13)}
+.pl-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;width:100%;
+  align-items:start;text-align:left;background:none;border:none;padding:12px 12px 12px 16px;min-height:52px}
+.pl--rail .pl-head{padding:9px 10px 9px 14px;min-height:44px;grid-template-columns:minmax(0,1fr)}
+.pl-tab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--subtle);padding-top:3px;min-width:34px}
+.pl--rail .pl-tab{display:none}
+.pl-nm{display:block;font-size:13px;font-weight:600;line-height:1.3;color:var(--ink)}
+.pl--rail .pl-nm{font-size:12.5px}
+.pl-state{display:block;margin-top:3px;font-size:9.5px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--subtle)}
+.pl-row[data-ls="winst"] .pl-state{color:var(--terra)}
+.pl-row[data-ls="ok"] .pl-state{color:var(--sage-lt)}
+.pl-row[data-ls="watch"] .pl-state{color:var(--amber)}
+.pl-line{display:block;margin-top:4px;font-size:11.5px;line-height:1.45;color:var(--mut);text-wrap:pretty}
+.pl--rail .pl-line{display:none}
+.pl-chev{color:var(--subtle);padding-top:3px}
+.pl-body{border-top:1px solid var(--line-soft);padding:13px 14px 15px 16px}
+.pl-row[aria-current="true"]{border-color:rgba(156,197,169,.45)}
+.kern{font-size:12.5px;line-height:1.6;color:var(--soft);text-wrap:pretty}
+.doingtitle{margin:14px 0 7px;font-size:9.5px;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--subtle)}
+.doing{margin:0;padding-left:17px}
+.doing li{margin-bottom:6px;font-size:12.5px;line-height:1.55;color:var(--mut);text-wrap:pretty}
+.cross{display:flex;gap:9px;padding:11px 13px;margin:2px 0;border-radius:var(--r-card);
+  border:1px dashed var(--line);background:rgba(255,255,255,.02)}
+.cross p{font-size:11.5px;line-height:1.55;color:var(--mut);text-wrap:pretty}
+
+/* ══ de poort ═══════════════════════════════════════════════════ */
+.gate{margin-top:12px;border-radius:var(--r-card);border:1px solid var(--line);
+  background:rgba(0,0,0,.22);padding:13px 13px 14px}
+.gate[data-open="true"]{border-color:rgba(90,143,106,.42);background:rgba(90,143,106,.09)}
+.glab{display:flex;align-items:center;gap:7px;font-size:9.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.gate[data-open="true"] .glab{color:var(--sage-lt)}
+.gb{margin-top:8px;font-size:12.5px;line-height:1.6;color:var(--soft);text-wrap:pretty}
+.gatepick{margin-top:12px;padding-top:11px;border-top:1px solid var(--line-soft)}
+.pklab{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle);margin-bottom:7px}
+.mini-btn{min-height:36px;padding:7px 11px;border-radius:999px;background:transparent;
+  border:1px solid var(--line);color:var(--mut);font-size:11.5px;font-weight:600}
+.mini-btn[aria-pressed="true"]{background:rgba(90,143,106,.18);border-color:rgba(90,143,106,.55);color:var(--ink)}
+.gatepick .mini-btn{margin:0 5px 5px 0}
+
+/* ══ het schap ══════════════════════════════════════════════════ */
+.card{border:1px solid var(--line);border-radius:var(--r-panel);background:var(--panel);padding:15px 14px}
+.card[data-type="product"]{border-color:rgba(200,149,108,.3)}
+.card-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:9px}
+.badge{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
+.badge.b-basis{border-color:rgba(90,143,106,.45);color:var(--sage-lt)}
+.badge.b-dienst{border-color:rgba(255,255,255,.2);color:var(--mut)}
+.badge.b-product{border-color:rgba(200,149,108,.5);color:var(--terra)}
+.vtag{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.vtag[data-v="ja"]{color:var(--sage-lt)}
+.vtag[data-v="mits"]{color:var(--amber)}
+.vtag[data-v="niet"]{color:var(--terra)}
+.vtag[data-v="geen"]{color:var(--subtle)}
+.card h3{font-size:16px;line-height:1.25;margin-bottom:6px}
+.card .why{font-size:12.5px;line-height:1.6;color:var(--soft);text-wrap:pretty}
+.qual{margin-top:9px;font-size:11.5px;line-height:1.5;color:var(--subtle);text-wrap:pretty}
+
+/* de afleiding — het hart van deze prebuild */
+.afl{margin-top:13px;border-radius:var(--r-card);border:1px solid var(--line);
+  background:rgba(0,0,0,.22);overflow:hidden}
+.afl-h{padding:9px 12px;border-bottom:1px solid var(--line-soft);
+  font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.afl-row{display:grid;grid-template-columns:78px minmax(0,1fr);gap:4px 10px;
+  padding:10px 12px;border-bottom:1px solid var(--line-soft)}
+@container app (min-width:560px){ .afl-row{grid-template-columns:104px minmax(0,1fr)} }
+.afl-k{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--subtle);padding-top:2px}
+.afl-v{font-size:12.5px;line-height:1.5;color:var(--soft);text-wrap:pretty}
+.afl-v b{font-weight:700;color:var(--ink)}
+.afl-why{display:block;margin-top:3px;font-size:11.5px;line-height:1.5;color:var(--subtle);text-wrap:pretty}
+.conf{display:inline-flex;gap:2px;vertical-align:-.05em;margin-left:5px}
+.conf i{width:5px;height:9px;border-radius:1px;background:rgba(255,255,255,.14);display:block}
+.conf i[data-on="1"]{background:var(--sage)}
+.afl-out{padding:11px 12px;background:rgba(255,255,255,.03)}
+.afl-out .afl-k{color:var(--mut)}
+.afl-out .afl-v{font-size:13px}
+.geenadvies{margin-top:9px;font-size:11.5px;line-height:1.5;color:var(--subtle);
+  border-left:2px solid var(--line);padding-left:10px;text-wrap:pretty}
+
+.vd{margin-top:12px;border-top:1px solid var(--line-soft);padding-top:11px}
+.vd dl{margin:0;display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+.vd dt{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--subtle)}
+.vd dd{margin:2px 0 0;font-size:12.5px;line-height:1.55;color:var(--soft);text-wrap:pretty}
+.claimline{margin-top:11px;font-size:12px;line-height:1.55;color:var(--mut);
+  border-left:2px solid rgba(90,143,106,.45);padding-left:10px;text-wrap:pretty}
+.microline{margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft);
+  font-size:11.5px;line-height:1.5;color:var(--subtle);text-wrap:pretty}
+.card-out{margin-top:11px}
+.trace{margin-top:9px;display:flex;gap:7px;font-size:11.5px;line-height:1.5;color:var(--mut);text-wrap:pretty}
+
+/* ══ vandaag ════════════════════════════════════════════════════ */
+.today-acts{display:flex;flex-direction:column;gap:9px}
+@container app (min-width:480px){ .today-acts{flex-direction:row} .today-acts .btn{width:auto;flex:1 1 0} }
+.done-head{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--sage-lt)}
+.ask{margin-top:14px;padding-top:13px;border-top:1px solid var(--line-soft)}
+.plan-label{display:block;font-size:9.5px;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--subtle);margin-bottom:8px}
+.scale{display:flex;gap:6px}
+.scale button{flex:1 1 0;min-height:44px;border-radius:var(--r-btn);border:1px solid var(--line);
+  background:rgba(255,255,255,.03);color:var(--mut);font-size:14px;font-weight:600}
+.scale button[aria-pressed="true"]{background:rgba(90,143,106,.22);border-color:rgba(90,143,106,.6);color:var(--ink)}
+.scale-ends{display:flex;justify-content:space-between;margin-top:6px;font-size:10.5px;color:var(--subtle)}
+.confirm{margin-top:11px;display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--sage-lt)}
+.also-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.also-row .grow{flex:1 1 auto;min-width:0}
+.when{display:block;font-size:11.5px;color:var(--subtle)}
+.deur{border:1px solid rgba(90,143,106,.4);background:rgba(90,143,106,.08);
+  border-radius:var(--r-panel);padding:15px 14px}
+.deur .lead{margin-bottom:11px}
+.strip{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-panel);padding:15px 14px}
+.strip h2{font-size:15px;margin-bottom:10px}
+.striplinks{display:flex;flex-direction:column;gap:2px}
+.striplinks button{display:block;width:100%;text-align:left;background:none;border:none;
+  padding:10px 0;border-top:1px solid var(--line-soft);min-height:44px}
+.striplinks button:first-child{border-top:none}
+.striplink-top{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink)}
+.striplink-hint{display:block;margin-top:3px;font-size:11.5px;line-height:1.45;color:var(--subtle);text-wrap:pretty}
+
+/* ══ mijn dag ═══════════════════════════════════════════════════ */
+.tl{display:flex;flex-direction:column;gap:2px}
+.tlrow{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:11px 0;
+  border-top:1px solid var(--line-soft)}
+.tlrow:first-child{border-top:none}
+.tltime{font-family:var(--mono);font-size:11px;color:var(--subtle);padding-top:2px}
+.tltitle{font-size:13.5px;font-weight:600;color:var(--ink)}
+.tlsub{display:block;margin-top:3px;font-size:11.5px;color:var(--mut);text-wrap:pretty}
+.tlrow[data-focus="true"]{background:rgba(200,149,108,.07);border-radius:var(--r-card);
+  padding-left:10px;padding-right:10px;margin-left:-10px;margin-right:-10px}
+
+/* ══ voortgang ══════════════════════════════════════════════════ */
+.backrow{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+.backbtn{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--mut);flex:none}
+.standrow{display:flex;align-items:center;gap:14px}
+.gauge{position:relative;width:70px;height:70px;flex:none}
+.gauge svg{transform:rotate(-90deg)}
+.gauge .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge .num{font-family:var(--serif);font-size:21px;line-height:1}
+.gauge .cap{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle)}
+.band{font-size:14px;font-weight:600;color:var(--ink)}
+.src,.meta{font-size:11.5px;color:var(--subtle);margin-top:3px}
+.ladderhead .h{font-size:13.5px;font-weight:700;color:var(--ink)}
+.ladderhead .b{margin-top:6px;font-size:12.5px;line-height:1.6;color:var(--mut);text-wrap:pretty}
+.ssot-flag{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--subtle);margin-bottom:8px}
+.readout{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-panel);padding:16px 15px}
+.ro-feit{font-size:18px;line-height:1.3;text-wrap:pretty}
+@container app (min-width:820px){ .ro-feit{font-size:21px} }
+.ro-sub{margin-top:9px;font-size:13px;line-height:1.6;color:var(--soft);text-wrap:pretty}
+.sec-h{font-size:15px;margin-bottom:10px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-card)}
+table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:420px}
+th{text-align:left;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--subtle);padding:10px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 11px;border-bottom:1px solid var(--line-soft);color:var(--soft);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.disc{border-top:1px solid var(--line-soft);padding-top:12px}
+.disc > button{display:flex;align-items:center;gap:7px;width:100%;background:none;border:none;
+  padding:0;min-height:44px;font-size:13px;font-weight:600;color:var(--mut);text-align:left}
+.disc-body{padding-top:10px}
+.vangnet{border-radius:var(--r-card);border:1px solid var(--line);background:rgba(0,0,0,.2);
+  padding:12px 13px;font-size:12px;line-height:1.55;color:var(--mut);text-wrap:pretty}
+.emptycheck{border:1px dashed var(--line);border-radius:var(--r-panel);padding:16px 15px}
+.emptycheck h2{font-size:17px;margin-bottom:8px}
+
+/* ══ favorieten ═════════════════════════════════════════════════ */
+.fv-sum{font-size:15px;line-height:1.45;color:var(--ink);text-wrap:pretty}
+.fv-sub{margin-top:7px;font-size:12.5px;line-height:1.55;color:var(--mut);text-wrap:pretty}
+.cards{display:flex;flex-direction:column;gap:12px}
+@container app (min-width:980px){ .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start} }
+.groep-h{display:flex;align-items:baseline;gap:9px;margin:6px 0 2px}
+.groep-h .n{font-size:13.5px;font-weight:700;color:var(--ink)}
+.groep-h .c{font-size:11.5px;color:var(--subtle)}
+.keten{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11px;color:var(--subtle);
+  border:1px solid var(--line);border-radius:var(--r-card);background:rgba(0,0,0,.2);padding:11px 12px}
+.keten .k{padding:3px 8px;border-radius:999px;border:1px solid var(--line-soft)}
+.keten .k[data-on="1"]{color:var(--sage-lt);border-color:rgba(90,143,106,.4)}
+.keten .k[data-now="1"]{color:var(--ink);border-color:rgba(200,149,108,.5);background:rgba(200,149,108,.1)}
+.ownfold{border:1px solid var(--line);border-radius:var(--r-panel);background:rgba(0,0,0,.2);padding:15px 14px}
+.own-badge{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--amber);border:1px solid rgba(201,154,60,.45);border-radius:999px;padding:3px 8px;margin-bottom:9px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+
+/* ══════════════════════════════════════════════════════════════════
+   v3-A — toevoegingen. Alles hierboven is byte-identiek aan v1.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* twee secties op een scroll, met lucht ertussen. Geen tabs. */
+.sec{display:flex;flex-direction:column;gap:11px}
+.sec-top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.sec-top .n{font-family:var(--serif);font-size:19px;line-height:1.2;color:var(--ink)}
+@container app (min-width:820px){ .sec-top .n{font-size:22px} }
+.sec-top .c{font-size:11.5px;color:var(--subtle)}
+.sec-top .src{flex:1 1 100%;margin-top:2px;font-size:12px;line-height:1.55;color:var(--mut);text-wrap:pretty}
+.secrule{height:1px;background:var(--line);margin:10px 0 2px}
+
+/* AANBEVELING — rijen, geen kaarten. Bron altijd zichtbaar. */
+.aanb{border:1px solid var(--line);border-radius:var(--r-panel);background:var(--panel);overflow:hidden}
+.aanb-row{padding:13px 14px;border-top:1px solid var(--line-soft)}
+.aanb-row:first-child{border-top:none}
+.aanb-t{display:block;font-size:14px;font-weight:600;line-height:1.35;color:var(--ink);text-wrap:pretty}
+.aanb-k{display:block;margin-top:4px;font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--subtle)}
+.aanb-src{display:block;margin-top:5px;font-size:11.5px;line-height:1.5;color:var(--mut);text-wrap:pretty}
+.aanb-acts{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.aanb-acts .mini-btn{margin:0}
+.aanb-open{margin-top:11px;padding-top:11px;border-top:1px dashed var(--line-soft)}
+
+/* MIJN KEUZE — de handeling zoals hij op Mijn Dag staat: naam + moment +
+   afvinken. Geen oordeel, geen prijs (N4). */
+.keuze{border:1px solid var(--line);border-radius:var(--r-panel);background:var(--panel);overflow:hidden}
+.keuze-row{display:flex;gap:11px;align-items:flex-start;padding:13px 14px;border-top:1px solid var(--line-soft)}
+.keuze-row:first-child{border-top:none}
+.keuze-row .grow{flex:1 1 auto;min-width:0}
+.keuze-t{display:block;font-size:14px;font-weight:600;line-height:1.35;color:var(--ink);text-wrap:pretty}
+.keuze-m{display:block;margin-top:4px;font-size:11.5px;color:var(--mut)}
+.keuze-src{display:block;margin-top:4px;font-size:11px;color:var(--subtle);text-wrap:pretty}
+.keuze-acts{margin-top:9px;display:flex;gap:7px;flex-wrap:wrap}
+.keuze-acts .mini-btn{margin:0}
+
+/* DE POORT, compact. Uitleg, geen aanbod: nul kaarten, nul links naar
+   een vergelijking. Alleen de deur naar het schap. */
+.poort{border:1px solid var(--line);border-radius:var(--r-panel);background:rgba(0,0,0,.22);padding:14px 14px 15px}
+.poort[data-open="true"]{border-color:rgba(90,143,106,.4);background:rgba(90,143,106,.08)}
+.poort .glab{display:flex;align-items:center;gap:7px;font-size:9.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.poort[data-open="true"] .glab{color:var(--sage-lt)}
+.poort .gb{margin-top:8px;font-size:12.5px;line-height:1.6;color:var(--soft);text-wrap:pretty}
+
+/* de compacte ladder — bestaand, ongewijzigd, hier als context */
+.ladk{display:flex;flex-direction:column;gap:3px}
+.ladk-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:9px;align-items:center;
+  position:relative;overflow:hidden;border-radius:var(--r-card);border:1px solid var(--line-soft);
+  background:var(--panel-2);padding:10px 12px 10px 15px}
+.ladk-row[data-ls="winst"]{border-color:rgba(200,149,108,.34);background:rgba(200,149,108,.06)}
+.ladk-bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(255,255,255,.13)}
+.ladk-row[data-ls="winst"] .ladk-bar{background:var(--terra)}
+.ladk-row[data-ls="ok"] .ladk-bar{background:var(--sage)}
+.ladk-tab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;color:var(--subtle);min-width:20px}
+.ladk-nm{font-size:12.5px;font-weight:600;color:var(--ink);line-height:1.3}
+.ladk-st{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle);white-space:nowrap}
+.ladk-row[data-ls="winst"] .ladk-st{color:var(--terra)}
+.ladk-row[data-ls="ok"] .ladk-st{color:var(--sage-lt)}
+
+/* het bestaand-blok: wat er nu al staat, ongewijzigd, compact */
+.bestaand{border:1px dashed var(--line);border-radius:var(--r-panel);padding:14px 14px 15px}
+.bestaand .flag{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--subtle);
+  display:block;margin-bottom:10px}
+</style>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/prebuilds/fonts/font-f273cf2c9ce9.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/prebuilds/fonts/font-468d56b6b25b.woff2">
+<link rel="stylesheet" href="/prebuilds/fonts/fonts-eee8af4d8c74.css">
+
+<style data-embed>
+  /* Reviewer-chrome en de interne appbar horen niet in het product: het
+     dashboard eromheen levert die navigatie al. Verbergen, niet slopen —
+     de chrome-knoppen zetten hieronder nog de beginstand. */
+  .chrome, .notes, .vpnote, .appbar { display: none !important; }
+  .stage { padding: 0 !important; }
+  /* Vloeiend i.p.v. de vaste 375/1280-wissel: de @container-regels in de
+     prebuild moeten op de échte breedte reageren (mobiel/iPad/desktop). */
+  .surface, .app { width: 100% !important; max-width: 100% !important;
+                   border: 0 !important; border-radius: 0 !important;
+                   box-shadow: none !important; }
+
+  /* Eén schil voor álle surfaces (19 aug). Elke prebuild bracht zijn eigen
+     achtergrond, randkleur en inktschaal mee — beweging op #1a2e1a, de rest
+     op #132414, met drie varianten van --line ertussen. In het dashboard
+     staan ze naast elkaar, dus draaien ze hier allemaal op de tokens van het
+     leefstijlprofiel: dat scherm is de referentie. De rand eromheen zet
+     PrebuildFrame, zodat elk domein exact hetzelfde kader krijgt. */
+  :root, .surf-intake, .surf-dash {
+    --shell:#132414 !important;
+    --bg:#132414 !important;
+    --panel:rgba(255,255,255,.045) !important;
+    --panel-2:rgba(0,0,0,.20) !important;
+    --line:rgba(255,255,255,.11) !important;
+    --line-soft:rgba(255,255,255,.06) !important;
+    --ink:#F1EFE8 !important;
+    --soft:#CDD7D0 !important;
+    --mut:#9FB0A6 !important;
+    --subtle:#7E8C82 !important;
+  }
+  /* Niet transparant: dan liep de bijna-zwarte --shell als band onder de
+     content door zodra die korter was dan het frame. */
+  html, body, .stage { background:#132414 !important; }
+  .surface, .app { background:#132414 !important; }
+
+  /* Reviewer-restanten die buiten .notes vallen: stress en verbinding hangen
+     hun ontwerpnotities als los <details> onder .stage. */
+  body > details { display:none !important; }
+
+  /* Voeding rendert renderK in een tweede .screen binnen de eerste; zonder
+     dit telt de padding dubbel en springt juist dat domein verder in. */
+  .screen .screen, .pad .pad { padding:0 !important; }
+
+  /* Eén scherm, geen tweede scrollbalk (19 aug). De pagina zelf scrollt;
+     de surface krijgt geen eigen overflow meer. Compactere maatvoering
+     zodat een domein binnen één beeld past. */
+  html, body { height: auto !important; overflow: visible !important; }
+  .surface, .app { overflow: visible !important; }
+  .pad, .screen { padding: 14px 16px 14px !important; }
+  .stack { gap: 11px !important; }
+  .cols { gap: 16px !important; }
+  .kdome, .tile, .ktile, .panel { padding: 12px !important; }
+  .kdome .kstat { margin-top: 10px !important; }
+  .attnbar { margin-top: 10px !important; padding-top: 9px !important; }
+  .actie { padding: 8px 0 !important; }
+  .backrow { margin-bottom: 12px !important; }
+
+  /* Op desktop staan de twee slot-knoppen naast elkaar in plaats van
+     onder elkaar. Dat scheelt een knophoogte plus een gap — genoeg om
+     elk domein binnen één beeld te houden — en leest als primair naast
+     secundair. Alle vijf domeinen bouwen dit blok hetzelfde op: een
+     .stack met btn-terra, btn-ghost en de voetnoot. */
+  @container app (min-width: 760px) {
+    .stack:has(> .btn-terra) { flex-direction: row !important; flex-wrap: wrap;
+                               align-items: center; }
+    .stack:has(> .btn-terra) > .btn-terra,
+    .stack:has(> .btn-terra) > .btn-ghost { flex: 1 1 240px; width: auto !important; }
+    .stack:has(> .btn-terra) > .footnote,
+    .stack:has(> .btn-terra) > .kfoot { flex: 1 1 100%; min-width: 100%;
+                                        max-width: none !important; }
+  }
+
+  /* Knoppen reageren zichtbaar: hover, actief én toetsenbord-focus.
+     Voorheen had alleen een deel van de knoppen een hover-regel. */
+  button, .btn, .mini-btn, .chip, a.btn-terra, a.btn-ghost, .opt, .sw {
+    transition: background-color .15s ease, border-color .15s ease,
+                color .15s ease, transform .08s ease, opacity .15s ease;
+  }
+  button:not([disabled]):hover, .chip:not([disabled]):hover,
+  .mini-btn:not([disabled]):hover, .opt:hover,
+  a.btn-terra:hover, a.btn-ghost:hover { filter: brightness(1.12); }
+  button:not([disabled]):active, .chip:not([disabled]):active,
+  .mini-btn:not([disabled]):active, .opt:active,
+  a.btn-terra:active, a.btn-ghost:active { transform: translateY(1px); }
+  button:focus-visible, a:focus-visible, .chip:focus-visible,
+  .mini-btn:focus-visible, .opt:focus-visible {
+    outline: 2px solid var(--sage-lt, #9CC5A9); outline-offset: 2px;
+  }
+  button[disabled] { opacity: .5; cursor: not-allowed; }
+
+</style>
+</head>
+<body class="surf-dash">
+
+<div class="chrome">
+  <div class="chrome-in">
+    <p class="chrome-h" role="doc-subtitle">Leefstijlprofiel &middot; domein — Aanbeveling en Mijn keuze</p>
+    <p class="sub">Bestand A van twee. Hier staat wat de check aanbeveelt en wat de klant zelf koos — <b>alleen leefstijl</b>. Geen productkaart, geen afleiding, geen vergelijkingslink, in geen enkele staat. Het schap staat in bestand B.</p>
+    <div class="switchrow">
+      <div class="switch"><span class="switch-label">Domein</span><div class="switch-btns" id="swDomein"></div></div>
+      <div class="switch"><span class="switch-label">Staat</span><div class="switch-btns" id="swStaat"></div></div>
+      <div class="switch"><span class="switch-label">Breedte</span>
+        <div class="switch-btns" id="swVw">
+          <button class="sw" type="button" data-vw="375" aria-pressed="true">375 mobiel</button>
+          <button class="sw" type="button" data-vw="1280" aria-pressed="false">1280 desktop</button>
+        </div>
+      </div>
+    </div>
+    <p class="statenote" id="stateNote"></p>
+    <p class="evstrip" id="evStrip">&nbsp;</p>
+  </div>
+</div>
+
+<div class="stage"><div class="app" id="app" data-appw="375"></div></div>
+
+<script>
+(function(){
+"use strict";
+
+var P = {
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  chevR:'<path d="M9 6l6 6-6 6"/>',
+  chevD:'<path d="M6 9l6 6 6-6"/>',
+  chevU:'<path d="M18 15l-6-6-6 6"/>',
+  check:'<path d="M20 6L9 17l-5-5"/>',
+  lock:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/>',
+  open:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 017.5-2"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+  ban:'<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>'
+};
+function ico(id, s){
+  s = s || 16;
+  return '<svg class="ico" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    P[id] + '</svg>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DE VIJF DOMEINEN. `ladder` is bestaand materiaal, hier compact: de
+   zes laagnamen komen 1:1 uit src/data/{slaap,movement,nutrition,
+   stress,connection}/lifestyle-*.ts. `poort` is de stand van laag 6 —
+   uitleg, geen aanbod.
+   ═══════════════════════════════════════════════════════════════════ */
+var STATE_WORD = { winst:'grootste kans', ok:'staat', wacht:'nog niet nu' };
+
+var DOMEIN = {
+  beweging:{
+    label:'Beweging', score:54, band:'Matig', gemeten:'2 augustus',
+    lagen:[['Dagelijks bewegen','ok'],['Kracht','winst'],['Conditie','wacht'],
+           ['Herstel en belasting','wacht'],['Meten &amp; gadgets','wacht'],['Aanvullen','wacht']],
+    focus:'Kracht is waar je nu het meeste kunt winnen.',
+    poort:{ reden:'geen_signaal', open:false,
+      tekst:'Je basis staat en je bord is bekend, maar er is op dit domein geen gemeten gat. Er is dan niets aan te vullen — dat is een uitkomst, geen tussenstand.' }
+  },
+  slaap:{
+    label:'Slaap', score:58, band:'Matig', gemeten:'11 augustus',
+    lagen:[['Slaapgelegenheid','winst'],['Gedrag en timing','wacht'],['Omgeving','wacht'],
+           ['Gerichte behandeling','wacht'],['Meten &amp; gadgets','wacht'],['Aanvullen','wacht']],
+    focus:'Slaapgelegenheid is waar je nu het meeste kunt winnen.',
+    poort:{ reden:'fundament', open:false,
+      tekst:'Je slaapgelegenheid staat nog open. Zolang je avond je nacht structureel inkort, verschuift geen enkel potje daar iets aan — die winst ligt een laag hoger en kost niets.' }
+  },
+  voeding:{
+    label:'Voeding', score:61, band:'Redelijk', gemeten:'14 augustus',
+    lagen:[['Eetbasis','winst'],['Voedingskwaliteit','ok'],['Verhoudingen','ok'],
+           ['Situatie','wacht'],['Meten &amp; timing','wacht'],['Aanvullen','ok']],
+    focus:'Je eetbasis is waar je nu het meeste kunt winnen.',
+    poort:{ reden:'open', open:true,
+      tekst:'Je eetbasis en je verhoudingen staan, en er blijft een gemeten gat over. Dat is de enige stand waarin aanvullen een vraag wordt in plaats van een gok.' }
+  },
+  stress:{
+    label:'Stress', score:47, band:'Zwak', gemeten:'9 augustus',
+    lagen:[['Herstelmomenten','winst'],['Belasting en grenzen','wacht'],['Slaap als bodem','wacht'],
+           ['Sociale steun','wacht'],['Gerichte hulp','wacht'],['Meten &amp; bijsturen','wacht']],
+    focus:'Herstelmomenten zijn waar je nu het meeste kunt winnen.',
+    poort:{ reden:'geen_claim', open:false,
+      tekst:'Er bestaat geen goedgekeurde EU-gezondheidsclaim die een voedingsstof aan spanning verbindt. Deze deur gaat niet open omdat je lagen nog niet staan — hij bestaat hier niet.' }
+  },
+  verbinding:{
+    label:'Verbinding', score:null, band:null, gemeten:'12 augustus',
+    lagen:[['Gelegenheid','winst'],['Regelmaat','wacht'],['Diepte','wacht'],
+           ['Wederkerigheid','wacht'],['Nieuwe kringen','wacht'],['Volgen &amp; bijsturen','wacht']],
+    focus:'Gelegenheid is waar je nu het meeste kunt winnen.',
+    poort:{ reden:'geen_schap', open:false,
+      tekst:'Er is geen supplement dat contact vervangt. De zesde laag is hier volgen en bijsturen; een zevende laag met een schap bestaat niet.' }
+  }
+};
+var DOMEIN_IDS = ['beweging','slaap','voeding','stress','verbinding'];
+var POORT_ICON = { geen_signaal:'lock', fundament:'lock', open:'open', geen_claim:'ban', geen_schap:'ban' };
+var POORT_LAB  = { geen_signaal:'De deur is dicht', fundament:'De deur is dicht', open:'De deur staat open',
+                   geen_claim:'Op dit domein staat geen schap', geen_schap:'Hier komt geen potje' };
+
+/* ═══════════════════════════════════════════════════════════════════
+   SECTIE 1 · AANBEVELING. Afgeleid uit de domein-check. Geen prijs,
+   geen commissie, geen oordeelchip. Bron altijd in beeld.
+   ═══════════════════════════════════════════════════════════════════ */
+var AANBEVELING = {
+  beweging:[
+    { id:'kracht-thuis', t:'Kracht thuis, 2&times; per week', k:'Kracht',
+      src:'Afgeleid uit je beweegcheck van 2 augustus — hier verdienen we niets aan',
+      why:'Je krachtlaag is de enige die openstaat terwijl je dagelijks bewegen al staat. Dat is de plek met de grootste winst en de kleinste stap.',
+      sterk:'Geen sportschool nodig, geen reistijd. Twee sessies per week is de ondergrens waarop spierbehoud bij 40+ meetbaar wordt.',
+      zwak:'Zonder progressie loopt het na zes weken vast. Zwaarder of vaker moet ergens vandaan komen, en dat plan staat er nog niet.',
+      oordeel:'De eerste stap op je open laag. Van deze lijst het enige dat vandaag al kan.' },
+    { id:'wandelen', t:'Stevig wandelen, 3&times; 30 minuten', k:'Dagelijks bewegen',
+      src:'Afgeleid uit je beweegcheck van 2 augustus — hier verdienen we niets aan',
+      why:'Je zit het grootste deel van je dag. Dit tilt je dagbasis omhoog zonder je krachtdagen zwaarder te maken — je kunt praten, maar niet zingen.',
+      sterk:'Geen materiaal, geen abonnement, geen reistijd. Op spreektempo tilt dit je dagbasis omhoog en het herstel tussen je krachtdagen mee.',
+      zwak:'Voor spierbehoud doet wandelen weinig. Wie hier zijn krachtwerk mee vervangt, houdt zijn spiermassa niet vast.',
+      oordeel:'Ernaast, geen vervanging.' },
+    { id:'staan', t:'Elk werkuur twee minuten staan', k:'Dagelijks bewegen',
+      src:'Afgeleid uit je beweegcheck van 2 augustus — hier verdienen we niets aan',
+      why:'De kleinste stap op deze lijst, en de enige die vandaag al kan. Werkt tegen de stijfheid die je bij de check als eerste noemde.',
+      sterk:'Nul drempel, nul kosten, en het werkt op het stuk van je dag dat het grootst is.',
+      zwak:'Het beweegt je score nauwelijks, en zonder herinnering vergeet vrijwel iedereen het na week twee.',
+      oordeel:'Comfort en gewoontevorming, geen training.' }
+  ],
+  slaap:[
+    { id:'licht', t:'Tien minuten buitenlicht binnen een uur na opstaan', k:'Slaapgelegenheid',
+      src:'Afgeleid uit je slaapcheck van 11 augustus — hier verdienen we niets aan',
+      why:'Je wektijd schuift in het weekend ruim een uur op. Licht op een vast moment is het sterkste anker dat je klok heeft, en het kost je niets.',
+      sterk:'Ook bij bewolking ligt de lichtsterkte buiten ver boven die binnen. Het werkt op de plek van je dag die het goedkoopst te veranderen is.',
+      zwak:'Het vraagt wel dat je naar buiten gaat. In de winter is het om zeven uur nog donker en schuift je moment mee.',
+      oordeel:'De eerste stap op je open laag.' },
+    { id:'wektijd', t:'Wektijd binnen een half uur gelijk, ook in het weekend', k:'Slaapgelegenheid',
+      src:'Afgeleid uit je slaapcheck van 11 augustus — hier verdienen we niets aan',
+      why:'Je opstaan verschilt nu ruim een uur tussen werkdagen en weekend. Dat is het stuk waar je nacht het meeste van merkt.',
+      sterk:'E&eacute;n vast moment per etmaal draagt je hele ritme. Het kost niets en werkt door op elke andere laag.',
+      zwak:'De eerste twee weken voelt het weekend korter. Dat trekt bij, maar het is de reden dat mensen hier stoppen.',
+      oordeel:'Zwaarder om vol te houden dan het licht, en op termijn het meest dragend.' }
+  ],
+  voeding:[
+    { id:'volkoren', t:'Volkoren in plaats van wit', k:'Eetbasis',
+      src:'Afgeleid uit je voedingscheck van 14 augustus — hier verdienen we niets aan',
+      why:'Je vezelbasis staat als enige cluster onder de referentie. Dit is de ruil met het minste gedoe: je koopt iets anders, je eet hetzelfde.',
+      sterk:'Twee sneden volkoren leveren rond 55 mg magnesium en aanzienlijk meer vezels dan wit. E&eacute;n keuze in de winkel, elke dag effect.',
+      zwak:'Het fytaat in volkoren remt de opname van zink — de milligrammen zijn er, je haalt er iets minder uit.',
+      oordeel:'Van je hele lijst het enige dat je &eacute;&eacute;n keer beslist en daarna niet meer hoeft te onderhouden.' },
+    { id:'noten', t:'Een handvol ongezouten noten of pompoenzaden per dag', k:'Voedingskwaliteit',
+      src:'Afgeleid uit je voedingscheck van 14 augustus — hier verdienen we niets aan',
+      why:'Van alle magnesiumbronnen leveren noten en zaden per portie het meest — pompoenzaad doet vier keer een banaan.',
+      sterk:'25 gram pompoenzaad levert rond 130 mg magnesium — vergelijkbaar met een portie gekookte spinazie, zonder koken.',
+      zwak:'Het is energierijk. Als het bovenop je dag komt in plaats van in plaats van iets, schuift er meer dan alleen je magnesium.',
+      oordeel:'Als vervanging van een ander tussendoortje. Niet als extra.' }
+  ],
+  stress:[
+    { id:'reset', t:'Vier minuten met een langere uitademing dan inademing', k:'Herstelmomenten',
+      src:'Afgeleid uit je stresscheck van 9 augustus — hier verdienen we niets aan',
+      why:'Je spanning piekt aan het eind van je werkdag. Een korte, herhaalbare onderbreking op een vast moment doet meer dan een lange sessie die je &eacute;&eacute;n keer haalt.',
+      sterk:'Het mechanisme is fysiologisch en direct merkbaar. Kost niets, kan overal, en je kunt het leren op dagen dat het meevalt.',
+      zwak:'Het effect is kort. Dit verschuift je moment, niet je week — daarvoor moet er in je agenda iets anders.',
+      oordeel:'Een overgang, geen oplossing. Wat je week draagt is de laag erboven.' }
+  ],
+  verbinding:[
+    { id:'moment', t:'E&eacute;n moment deze week dat je zelf plant', k:'Gelegenheid',
+      src:'Afgeleid uit je verbindingscheck van 12 augustus — hier verdienen we niets aan',
+      why:'Contact dat op toeval wacht komt bij jou nu ongeveer eens per drie weken. Zelf plannen is het enige dat die frequentie verschuift.',
+      sterk:'Het vraagt geen nieuwe mensen en geen nieuwe vaardigheid — alleen dat je de afspraak maakt in plaats van hem afwacht.',
+      zwak:'De eerste uitnodiging is de zwaarste, en die drempel wordt er niet kleiner op door hem uit te stellen.',
+      oordeel:'De enige laag op dit domein waar je vandaag iets aan kunt veranderen.' }
+  ]
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   SECTIE 2 · MIJN KEUZE. Alleen activiteiten en handelingen — dit is
+   account_favorites met kind='activiteit'. Product, dienst en
+   begeleiding staan hier NIET; die hebben hun eigen groep in bestand B.
+   `uitAanbeveling` is afgeleid bij het renderen (staat de id nu in de
+   aanbeveling?), geen opgeslagen kolom.
+   ═══════════════════════════════════════════════════════════════════ */
+var KEUZE = {
+  beweging:[
+    { id:'kracht-thuis', t:'Kracht thuis, 2&times; per week', moment:'dinsdag en vrijdag &middot; 19:00',
+      wanneer:'zelf toegevoegd op 12 augustus' },
+    { id:'padel', t:'Padel met Bram', moment:'donderdag &middot; 20:00',
+      wanneer:'zelf toegevoegd op 5 augustus' }
+  ],
+  slaap:[
+    { id:'licht', t:'Tien minuten buitenlicht binnen een uur na opstaan', moment:'elke ochtend &middot; 07:15',
+      wanneer:'zelf toegevoegd op 11 augustus' }
+  ],
+  voeding:[
+    { id:'volkoren', t:'Volkoren in plaats van wit', moment:'op je boodschappendag',
+      wanneer:'zelf toegevoegd op 14 augustus' }
+  ],
+  stress:[],
+  verbinding:[
+    { id:'moment', t:'E&eacute;n moment deze week dat je zelf plant', moment:'zondag &middot; 20:00',
+      wanneer:'zelf toegevoegd op 12 augustus' }
+  ]
+};
+
+var STAAT = {
+  A0:{ lab:'A0 &middot; geen check', check:false, keuzes:false,
+       note:'Nog geen check in dit domein. Beide secties zijn leeg, en dat is geen voorportaal: er valt niets aan te bevelen zolang we niet weten waar je staat. De ladder staat er wel — die is te lezen zonder iets in te vullen.' },
+  A1:{ lab:'A1 &middot; check, niets gekozen', check:true, keuzes:false,
+       note:'Check binnen. Aanbeveling is gevuld, Mijn keuze is leeg — en dat is een uitkomst, geen gat. Alles onder Aanbeveling is gratis en werkt zonder dat je er iets naast zet. De deur naar het schap staat eronder, label-only.' },
+  A2:{ lab:'A2 &middot; check + keuze', check:true, keuzes:true,
+       note:'De klant heeft zelf iets naast zijn plan gezet. Let op de regel „stond ook onder Aanbeveling” — dat is afgeleid bij het renderen, geen opgeslagen kolom. Een aanbeveling wordt hier nooit stilzwijgend een keuze; de klant zet hem er zelf naast.' }
+};
+var STAAT_IDS = ['A0','A1','A2'];
+
+var S = { domein:'beweging', staat:'A2', vw:'375', ui:{ open:null } };
+function D(){ return DOMEIN[S.domein]; }
+function ST(){ return STAAT[S.staat]; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   RENDER
+   ═══════════════════════════════════════════════════════════════════ */
+function appbar(){
+  var t = ['Vandaag','Mijn Dag','Voortgang','Hermeting'], h = '';
+  for (var i = 0; i < t.length; i++)
+    h += '<span' + (t[i] === 'Voortgang' ? ' data-active' : '') + '>' + t[i] + '</span>';
+  return '<div class="appbar"><span class="appbrand">PerfectSupplement</span><span class="apptabs">' + h + '</span></div>';
+}
+
+function railStrip(){
+  return '<div class="keten" style="margin-bottom:2px">' +
+    '<span class="k">Overzicht</span>' + ico('chevR',12) +
+    '<span class="k" data-now="1">Leefstijlprofiel</span>' + ico('chevR',12) +
+    '<span class="k">Favorieten</span>' +
+    '<span style="flex:1 1 100%;margin-top:7px">Drie rail-items, ongewijzigd. Geen vierde met het woord &bdquo;Supplementen&rdquo; erin — die staan in Favorieten.</span></div>';
+}
+
+/* Bestaand blok: stand, readout en ladder zoals ze er nu al staan.
+   Compact getekend; de volledige ladder blijft v1 renderVL r.1329. */
+function bestaandBlok(){
+  var d = D(), st = ST();
+  var h = '<div class="bestaand"><span class="flag">Bestaand en ongewijzigd &middot; stand &middot; readout &middot; ladder &middot; check-CTA</span>';
+
+  if (d.score != null) {
+    h += '<p class="band">' + d.band + ' &middot; ' + d.score + ' van 100</p>' +
+         '<p class="meta">uit je ' + d.label.toLowerCase() + '-check &middot; gemeten ' + d.gemeten + '</p>';
+  } else {
+    h += '<p class="note">Op dit domein staat bewust geen ring en geen cijfer. Een score op je contacten zou een norm suggereren die er niet is; wat hier telt is je eigen nulpunt.</p>';
+  }
+
+  if (st.check) {
+    h += '<p class="ssot-flag" style="margin-top:12px">Zelfde blok als op je check-in resultaat</p>' +
+         '<p class="lead">' + d.focus + '</p>';
+  } else {
+    h += '<p class="lead" style="margin-top:12px">Nog geen ' + d.label.toLowerCase() +
+      '-check. De ladder hieronder staat er wel — je kunt hem lezen zonder iets in te vullen.</p>';
+  }
+
+  h += '<div class="ladk" style="margin-top:12px">';
+  for (var i = 0; i < d.lagen.length; i++) {
+    var L = d.lagen[i], ls = st.check ? L[1] : 'wacht';
+    h += '<div class="ladk-row" data-ls="' + ls + '"><span class="ladk-bar" aria-hidden="true"></span>' +
+      '<span class="ladk-tab" aria-hidden="true">P' + (i + 1) + '</span>' +
+      '<span class="ladk-nm">' + L[0] + '</span>' +
+      '<span class="ladk-st">' + STATE_WORD[ls] + '</span></div>';
+  }
+  h += '</div>';
+  h += '<p class="micro" style="margin-top:11px">Zes lagen, van fundament naar finetunen. Wat bovenaan staat draagt het meest. De volledige ladder met uitklap staat ongewijzigd op dit scherm — hier compact, omdat dit bestand over de twee secties eronder gaat.</p>';
+  return h + '</div>';
+}
+
+/* ── SECTIE 1 · AANBEVELING ──────────────────────────────────────── */
+function aanbevelingSectie(){
+  var d = D(), st = ST(), rijen = AANBEVELING[S.domein] || [];
+
+  var kop = '<div class="sec-top"><span class="n">Aanbeveling</span>' +
+    '<span class="c">' + (st.check ? rijen.length + ' uit je ' + d.label.toLowerCase() + '-check' : 'nog niets') + '</span>' +
+    '<span class="src">Dit leiden wij af uit je check. Geen prijs, geen commissie, geen productkaart — hier verdienen we niets aan, en dat is de reden dat het bovenaan staat.</span></div>';
+
+  if (!st.check) {
+    return '<section class="sec" aria-label="Aanbeveling">' + kop +
+      '<div class="emptycheck"><h2>Nog niets aan te bevelen.</h2>' +
+      '<p class="lead">We bevelen pas iets aan nadat je check binnen is — eerst weten waar je staat. Dat duurt een minuut.</p>' +
+      '<p style="margin-top:14px"><button class="btn btn-terra" type="button" data-ev="check_gestart:' + S.domein + '">Doe de ' +
+      d.label.toLowerCase() + '-check ' + ico('arrow',15) + '</button></p></div></section>';
+  }
+
+  var gekozenIds = st.keuzes ? (KEUZE[S.domein] || []).map(function(k){ return k.id; }) : [];
+  var h = '<div class="aanb">';
+  for (var i = 0; i < rijen.length; i++) {
+    var r = rijen[i], open = (S.ui.open === r.id), alGekozen = gekozenIds.indexOf(r.id) > -1;
+    h += '<div class="aanb-row">' +
+      '<span class="aanb-t">' + r.t + '</span>' +
+      '<span class="aanb-k">' + r.k + '</span>' +
+      '<span class="aanb-src">' + r.src + '</span>' +
+      '<span class="aanb-acts">' +
+        (alGekozen
+          ? '<span class="mini-btn" aria-disabled="true">' + ico('check',13) + ' Staat bij Mijn keuze</span>'
+          : '<button class="mini-btn" type="button" data-ev="dashboard_favorieten_save:' + r.id + '">Zet bij Mijn keuze</button>') +
+        '<button class="mini-btn" type="button" data-open="' + r.id + '" aria-expanded="' + open + '">' +
+          (open ? 'Sluiten' : 'Waarom dit') + ' ' + ico(open ? 'chevU' : 'chevD', 12) + '</button>' +
+      '</span>';
+    if (open) {
+      h += '<span class="aanb-open"><span class="vd" style="margin-top:0;border-top:none;padding-top:0"><dl>' +
+        '<div><dt>Waarom bij jou</dt><dd>' + r.why + '</dd></div>' +
+        '<div><dt>Sterk</dt><dd>' + r.sterk + '</dd></div>' +
+        '<div><dt>Zwak</dt><dd>' + r.zwak + '</dd></div>' +
+        '<div><dt>Ons oordeel</dt><dd>' + r.oordeel + '</dd></div>' +
+        '</dl></span></span>';
+    }
+    h += '</div>';
+  }
+  h += '</div>';
+  return '<section class="sec" aria-label="Aanbeveling">' + kop + h + '</section>';
+}
+
+/* ── SECTIE 2 · MIJN KEUZE ───────────────────────────────────────── */
+function keuzeSectie(){
+  var d = D(), st = ST();
+  var rijen = st.keuzes ? (KEUZE[S.domein] || []) : [];
+  var aanbIds = (AANBEVELING[S.domein] || []).map(function(a){ return a.id; });
+
+  var kop = '<div class="sec-top"><span class="n">Mijn keuze</span>' +
+    '<span class="c">' + (rijen.length === 0 ? 'nog niets gekozen' : rijen.length + ' gekozen') + '</span>' +
+    '<span class="src">Dit koos jij. Het staat hier omdat jij het hier zette — niet omdat wij het voorstelden. Alleen activiteiten en handelingen; wat je aan producten of diensten koos staat in Favorieten.</span></div>';
+
+  if (rijen.length === 0) {
+    return '<section class="sec" aria-label="Mijn keuze">' + kop +
+      '<div class="emptycheck"><h2>Je hebt hier nog niets gekozen.</h2>' +
+      '<p class="lead">Dat hoeft ook niet. Alles onder Aanbeveling werkt zonder dat je er iets naast zet. Wil je wel kijken wat er verder is — gratis of niet, met ons oordeel erbij — dan staat dat in je schap.</p>' +
+      '<p style="margin-top:14px"><button class="btn btn-soft" type="button" data-ev="choice.shelf_opened:leefstijlprofiel:' + S.domein + '">Maak een keuze ' + ico('arrow',15) + '</button></p>' +
+      '<p class="micro" style="margin-top:10px">E&eacute;n knop, &eacute;&eacute;n bestemming. Geen productnaam, geen prijs, geen oordeel — die horen op de plek waar we ze kunnen onderbouwen.</p></div></section>';
+  }
+
+  var h = '<div class="keuze">';
+  for (var i = 0; i < rijen.length; i++) {
+    var k = rijen[i], uitAanb = aanbIds.indexOf(k.id) > -1;
+    h += '<div class="keuze-row"><span class="grow">' +
+      '<span class="keuze-t">' + k.t + '</span>' +
+      '<span class="keuze-m">' + k.moment + '</span>' +
+      '<span class="keuze-src">' + k.wanneer +
+        (uitAanb ? ' &middot; stond ook onder Aanbeveling — je hebt hem er zelf naast gezet' : ' &middot; niet door ons voorgesteld') +
+      '</span>' +
+      '<span class="keuze-acts">' +
+        '<button class="mini-btn" type="button" data-ev="dashboard.daily_action_toggled:' + k.id + '">Afvinken op Mijn Dag</button>' +
+        '<button class="mini-btn" type="button" data-ev="dashboard_favorieten_remove:' + k.id + '">Haal weg</button>' +
+      '</span></span></div>';
+  }
+  h += '</div>';
+  h += '<p class="micro">Zo staan ze ook op Vandaag en Mijn Dag: naam plus moment plus afvinken. Geen oordeel, geen prijs, geen merk — die horen in je schap.</p>';
+  h += '<p style="margin-top:2px"><button class="btn btn-soft" type="button" data-ev="choice.shelf_opened:leefstijlprofiel:' + S.domein + '">Maak een keuze ' + ico('arrow',15) + '</button></p>';
+  return '<section class="sec" aria-label="Mijn keuze">' + kop + h + '</section>';
+}
+
+/* ── DE POORT, compact. Uitleg. Nul kaarten, nul vergelijkingslinks. ── */
+function poortSectie(){
+  var d = D(), st = ST(), p = d.poort;
+  var reden = st.check ? p.reden : 'geen_check';
+  var open = st.check ? p.open : false;
+  var tekst = st.check ? p.tekst
+    : 'Zonder check weten we niet waar je staat, en dan is elke aanvulling een gok. Deze deur gaat pas open nadat je check binnen is.';
+  var heeftSchap = (p.reden !== 'geen_claim' && p.reden !== 'geen_schap');
+
+  var h = '<section class="sec" aria-label="De onderste laag">' +
+    '<div class="sec-top"><span class="n">' + d.lagen[5][0] + '</span>' +
+    '<span class="c">de onderste laag van je ladder</span>' +
+    '<span class="src">Hier leggen we uit waarom de deur open of dicht staat. Wat er te kiezen valt staat in je schap, niet hier — &eacute;&eacute;n plek voor aanbod, en dit is die plek niet.</span></div>';
+
+  h += '<div class="poort" data-open="' + open + '">' +
+    '<p class="glab">' + ico(st.check ? POORT_ICON[reden] : 'info', 13) +
+      (st.check ? POORT_LAB[reden] : 'Nog niets te zeggen') + '</p>' +
+    '<p class="gb">' + tekst + '</p>';
+
+  if (heeftSchap && st.check) {
+    h += '<p style="margin-top:12px"><button class="linkish" type="button" data-ev="choice.shelf_opened:poort:' + S.domein + '">' +
+      'Open je schap ' + ico('arrow',14) + '</button></p>';
+  } else if (!heeftSchap) {
+    h += '<p class="micro" style="margin-top:11px">' +
+      (S.domein === 'stress'
+        ? 'Wat hier w&eacute;l staat is je reset van vier minuten en je ladder. Dat is niet de troostprijs — dat is het hele aanbod.'
+        : 'De ladder is hier het eindproduct, niet de aanloop. Er is geen zevende laag en er komt er ook geen.') + '</p>';
+  }
+  h += '</div>';
+  h += '<p class="micro">Nul productkaarten op dit scherm, in elke staat. Dat is niet omdat er niets is — het is omdat aanbod en onderbouwing niet op dezelfde pagina horen.</p>';
+  return h + '</section>';
+}
+
+function backStrip(){
+  return '<section class="strip"><h2>Waar dit heen gaat</h2><div class="striplinks">' +
+    '<button type="button" data-ev="hub_click:favorieten:profiel_strip">' +
+      '<span class="striplink-top">Je schap' + ico('chevR',14) + '</span>' +
+      '<span class="striplink-hint">Producten, diensten en begeleiding — gescheiden, elk met ons oordeel en de commissie-regel erbij.</span></button>' +
+    '<button type="button" data-ev="hub_click:vandaag:profiel_strip">' +
+      '<span class="striplink-top">Je stap van vandaag' + ico('chevR',14) + '</span>' +
+      '<span class="striplink-hint">Wat je koos staat daar als handeling: naam en moment, zonder oordeel of prijs.</span></button>' +
+    '</div></section>';
+}
+
+function render(){
+  var d = D();
+  var h = appbar() + '<div class="pad">';
+  h += '<div class="backrow"><span class="backbtn" aria-hidden="true">' + ico('chevR',14) + '</span>' +
+       '<h1 class="h-sec">Leefstijlprofiel &middot; ' + d.label + '</h1></div>';
+  h += '<div class="stack">' +
+    railStrip() +
+    bestaandBlok() +
+    '<div class="secrule"></div>' +
+    aanbevelingSectie() +
+    '<div class="secrule"></div>' +
+    keuzeSectie() +
+    '<div class="secrule"></div>' +
+    poortSectie() +
+    backStrip() +
+    '<p class="footnote">Ons oordeel is altijd gratis en gaat niet achter een slot. Op dit scherm verdienen we aan niets — er staat hier ook niets te koop.</p>' +
+    '</div>';
+  return h + '</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAINT + WIRING
+   ═══════════════════════════════════════════════════════════════════ */
+function track(name){
+  document.getElementById('evStrip').textContent = name + '  ·  domein=' + S.domein + ' staat=' + S.staat;
+}
+
+function paintSwitches(){
+  var h = '';
+  DOMEIN_IDS.forEach(function(id){
+    h += '<button class="sw" type="button" data-domein="' + id + '" aria-pressed="' + (S.domein === id) + '">' + DOMEIN[id].label + '</button>';
+  });
+  document.getElementById('swDomein').innerHTML = h;
+  h = '';
+  STAAT_IDS.forEach(function(id){
+    h += '<button class="sw" type="button" data-staat="' + id + '" aria-pressed="' + (S.staat === id) + '">' + STAAT[id].lab + '</button>';
+  });
+  document.getElementById('swStaat').innerHTML = h;
+  var vw = document.getElementById('swVw').children;
+  for (var i = 0; i < vw.length; i++)
+    vw[i].setAttribute('aria-pressed', vw[i].getAttribute('data-vw') === S.vw);
+}
+
+function paint(){
+  var app = document.getElementById('app');
+  app.setAttribute('data-appw', S.vw);
+  app.innerHTML = render();
+  var d = D(), st = ST();
+  var extra = st.check
+    ? ' — poort op ' + d.label.toLowerCase() + ': ' + d.poort.reden.replace(/_/g,' ') + (d.poort.open ? ' (open)' : ' (dicht)')
+    : ' — poort: nog geen check.';
+  document.getElementById('stateNote').innerHTML = st.note + extra;
+  paintSwitches();
+}
+
+document.addEventListener('click', function(e){
+  var t;
+  if ((t = e.target.closest('button[data-domein]'))) { S.domein = t.getAttribute('data-domein'); S.ui.open = null; track('domein_gewisseld'); return paint(); }
+  if ((t = e.target.closest('button[data-staat]'))) { S.staat = t.getAttribute('data-staat'); S.ui.open = null; track('staat_gewisseld'); return paint(); }
+  if ((t = e.target.closest('button[data-vw]'))) { S.vw = t.getAttribute('data-vw'); return paint(); }
+  if ((t = e.target.closest('[data-open]'))) {
+    var id = t.getAttribute('data-open');
+    S.ui.open = (S.ui.open === id ? null : id);
+    if (S.ui.open) track('aanbeveling_geopend:' + id);
+    return paint();
+  }
+  if ((t = e.target.closest('[data-ev]'))) { track(t.getAttribute('data-ev')); return; }
+});
+
+paint();
+track('prebuild_v3a_geladen');
+})();
+</script>
+
+<!--
+  ══ ACCEPTATIE — bestand A ══════════════════════════════════════════
+  Nagelopen op 19 augustus 2026 over 5 domeinen x 3 staten = 15 combinaties.
+
+  MACHINAAL GETOETST (nul treffers in alle 15 renders)
+   - productkaart:        geen enkele <article class="card">
+   - vergelijkingslink:   nul treffers op /beste/
+   - prijs en commissie:  nul treffers op prijs | commissie | euro
+   - merknamen:           geen
+   - stofnamen als aanbod: magnesium en pompoenzaad komen voor in de
+     UITKLAP van een voedingsstap, als bron van een voedingsstof in eten -
+     niet als product en niet met een uitgang. Dat is dezelfde grens die
+     voeding v1.5 al trekt.
+   - status-woorden:      tekort | gebrek | te weinig | deficient
+   - advies-taal:         wij raden aan | ons advies | onze aanbeveling
+   - lg: / xl:            geen
+
+  HANDMATIG GETOETST
+   - A0: beide secties leeg, ladder wel leesbaar, een CTA (de check)
+   - A1: Aanbeveling gevuld, Mijn keuze leeg met de deur eronder
+   - A2: "stond ook onder Aanbeveling" verschijnt alleen bij overlap;
+     padel toont "niet door ons voorgesteld"
+   - stress en verbinding: poort zegt structureel nee, geen deur
+   - 375px: geen horizontale scroll
+
+  ══ WAT HIER BEWUST NIET STAAT ══════════════════════════════════════
+  Geen supplement, geen dienst, geen begeleiding, geen afleiding, geen
+  contrast-tabel, geen stoffenveld. Die staan allemaal in bestand B.
+  Dit scherm heeft vier blokken: bestaand, Aanbeveling, Mijn keuze, poort.
+
+  ══ EEN OPEN PUNT ═══════════════════════════════════════════════════
+  P-A1 · De huidige LeefstijlprofielViewToggle (aanbevolen | mijn_keuze)
+  vervalt hier: twee secties op een scroll zijn duidelijker dan een
+  toggle die de helft verbergt. Dat betekent wel dat het scherm langer
+  wordt. Bij vijf of meer keuzes per domein kan Mijn keuze inklappen na
+  de derde rij - dat is dan een lijst-affordance, geen tab.
+-->
+
+
+<script data-embed>
+(function () {
+  "use strict";
+  var P = new URLSearchParams(location.search);
+  var NAV = {"hub:favorieten":{"tab":"voortgang","screen":"favorieten","useDomein":true},"hub:vandaag":{"tab":"vandaag","useDomeinAsKompas":true}};
+  var DOMEIN = P.get("domein") || P.get("fav") || "beweging";
+
+  /* Beginstand via de bestaande (verborgen) chrome-schakelaar: die roept de
+     eigen paint() van de prebuild aan, dus we hoeven geen interne state te
+     kennen. */
+  var initValue = P.get("domein");
+  if (initValue) {
+    var sel = (v) => `#swDomein button[data-domein="${v}"]`;
+    var btn = document.querySelector(sel(initValue));
+    if (btn) btn.click();
+  }
+
+  /* "Terug naar Vandaag" is de terugweg van de prebuild zélf — slaap, stress
+     en verbinding zetten hem boven hun kompas-scherm. Het dashboard heeft
+     zijn eigen domein-nav, dus die regel is hier dubbelop. */
+  function stripBacklinks() {
+    var links = document.querySelectorAll("a");
+    for (var i = 0; i < links.length; i++) {
+      var a = links[i];
+      if (!/terug naar vandaag/i.test(a.textContent || "")) continue;
+      var host = a.parentElement;
+      a.remove();
+      if (host && host.children.length === 0 && !host.textContent.trim()) host.remove();
+    }
+  }
+  stripBacklinks();
+  new MutationObserver(stripBacklinks).observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+
+  function routeFor(key) {
+    var r = NAV[key];
+    if (!r) return null;
+    var out = { tab: r.tab };
+    if (r.screen) out.screen = r.screen;
+    if (r.schap) out.schap = r.schap;
+    if (r.fav) out.fav = r.fav;
+    if (r.useDomein) out.fav = DOMEIN;
+    if (r.useDomeinAsKompas) out.kompas = DOMEIN;
+    return out;
+  }
+
+  /* Capture-fase: we moeten vóór de eigen handler van de prebuild zijn,
+     anders wisselt hij eerst intern van scherm. */
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-goto],[data-bridge],[data-ev]");
+    if (!el) return;
+
+    var key = null;
+    if (el.hasAttribute("data-goto")) key = "goto:" + el.getAttribute("data-goto");
+    else if (el.hasAttribute("data-bridge")) key = "bridge:" + el.getAttribute("data-bridge");
+    else {
+      var ev = el.getAttribute("data-ev") || "";
+      if (ev.indexOf("hub_click:") === 0) key = "hub:" + ev.split(":")[1];
+    }
+
+    var route = key && routeFor(key);
+    if (!route) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    parent.postMessage({ source: "psf-prebuild", route: route }, location.origin);
+  }, true);
+})();
+</script>
+</body>
+</html>

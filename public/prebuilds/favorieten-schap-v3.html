@@ -1,0 +1,1339 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Favorieten — het schap (prebuild v3)</title>
+<!--
+  FAVORIETEN-SCHAP PREBUILD v3 — 19 augustus 2026
+  Bestand B van twee. A = leefstijlprofiel-domein-keuze-prebuild-v3-2026-08.html
+
+  WAAROM v3 EN NIET v2
+  v2 zette leefstijl-aanbevelingen en productafleiding op dezelfde scroll,
+  en gooide product, dienst en begeleiding in een platte lijst. Beide zijn
+  hier gesplitst: leefstijl staat in bestand A, en het schap heeft vier
+  sub-oppervlakken die je niet tegelijk ziet.
+
+  WAT DIT BESTAND LOCKT (twaalf regels)
+
+   1. VIER SUB-OPPERVLAKKEN, NOOIT TEGELIJK ZICHTBAAR:
+      Leefstijl - Producten - Diensten - Begeleiding.
+      Nooit een lifestyle-rij en een productafleiding op dezelfde scroll.
+   2. MAXIMAAL TWEE SECTIES PER TAB. De poort hoort BIJ Aanbevolen (hij
+      bepaalt of die sectie kaarten heeft), niet als derde blok ernaast.
+   3. LEEFSTIJL IS EEN SPIEGEL, GEEN WERKPLEK. Per domein een regel en een
+      weg terug naar het leefstijlprofiel. Nul kaarten. Wie hier iets wil
+      veranderen, gaat naar bestand A.
+   4. TWEE BRONNEN PER GROEP (N2): Aanbevolen naast Mijn keuze, altijd in
+      die volgorde, altijd met de bron in beeld.
+   5. AANBEVELING WORDT NOOIT STILZWIJGEND KEUZE. S2 en S3 tonen dat: het
+      systeemoordeel kantelt, de keuze blijft staan.
+   6. BEGELEIDING STAAT APART. Onze eigen dienst is aanbod waar we
+      rechtstreeks aan verdienen; hij hoort niet tussen de opties die we
+      beoordelen, want daar zou hij een belanghebbende zijn.
+   7. S0-S3 GELDEN ALLEEN OP PRODUCTEN. Op de andere drie tabs is de
+      schermschakelaar uitgeschakeld - daar is geen datawijziging te tonen.
+   8. GEEN AFLEIDING OP DIENSTEN EN BEGELEIDING. Inname x behoefte x
+      laagstand geldt voor een voedingsstof, niet voor een cursus.
+   9. GEEN UITGANG ZONDER POSITIEF OORDEEL. Een kaart zonder "ja" krijgt
+      geen vergelijkingslink.
+  10. EFSA WOORDELIJK uit approved-claims.ts. on_hold: geen oordeel, geen
+      link. forbidden: nooit als aanvulling, wel zichtbaar in het veld.
+  11. INNAME NOOIT STATUS. Geen advies-taal. Kwalitatief, nooit g/kg.
+  12. @container, nooit lg:/xl:. 375px eerst.
+-->
+<style>
+
+
+
+
+:root{
+  --shell:#0B140C;
+  --sage:#5A8F6A;
+  --sage-lt:#9CC5A9;
+  --terra:#C8956C;
+  --amber:#C99A3C;
+  --move:#C26E4B;
+  --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"DM Serif Display",Georgia,"Times New Roman",serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,"Roboto Mono",monospace;
+  --r-panel:16px; --r-card:12px; --r-btn:10px;
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px;
+}
+.surf-dash{
+  --bg:#132414;
+  --panel:rgba(255,255,255,.045);
+  --panel-2:rgba(0,0,0,.20);
+  --line:rgba(255,255,255,.11);
+  --line-soft:rgba(255,255,255,.06);
+  --ink:#F1EFE8;
+  --soft:#CDD7D0;
+  --mut:#9FB0A6;
+  --subtle:#7E8C82;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;max-width:100%;overflow-x:clip}
+body{
+  background:var(--shell);color:#F1EFE8;font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;line-height:1.5;font-size:15px;
+}
+h1,h2,h3,h4{margin:0;font-weight:400;font-family:var(--serif);letter-spacing:-.005em}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--sage-lt);outline-offset:2px;border-radius:4px}
+[hidden]{display:none !important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ══ prebuild-chrome — niet in het product ══════════════════════ */
+.chrome{position:sticky;top:0;z-index:30;background:rgba(11,20,12,.97);backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(255,255,255,.11);padding:12px 16px 10px}
+.chrome-in{max-width:1220px;margin:0 auto}
+.chrome-h{font-family:var(--serif);font-size:18px;margin:0 0 2px}
+.chrome .sub{margin:0 0 10px;font-size:12px;color:#9FB0A6;max-width:100ch}
+.switchrow{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:flex-start}
+.switch{display:flex;flex-direction:column;gap:5px}
+.switch-label{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7E8C82}
+.switch-btns{display:flex;flex-wrap:wrap;gap:5px}
+.sw{font-size:11.5px;font-weight:600;min-height:32px;padding:6px 11px;border-radius:999px;
+  background:transparent;border:1px solid rgba(255,255,255,.12);color:#9FB0A6;
+  transition:background .16s,border-color .16s,color .16s}
+.sw:hover{border-color:rgba(255,255,255,.28);color:#CDD7D0}
+.sw[aria-pressed="true"]{background:rgba(90,143,106,.20);border-color:rgba(90,143,106,.6);color:#F1EFE8}
+.sw[disabled]{opacity:.34;cursor:not-allowed}
+.evstrip{margin-top:10px;font-family:var(--mono);font-size:10.5px;color:#6FB07E;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:15px}
+.statenote{margin-top:6px;font-size:11.5px;color:#7E8C82;max-width:110ch}
+
+/* ══ surface ════════════════════════════════════════════════════ */
+.stage{padding:20px 16px 80px;display:flex;justify-content:center}
+.app{
+  container-type:inline-size;container-name:app;
+  width:100%;background:var(--bg);border:1px solid var(--line);
+  border-radius:18px;overflow:hidden;
+}
+.app[data-appw="375"]{max-width:375px}
+.app[data-appw="1280"]{max-width:1280px}
+
+.appbar{display:flex;align-items:center;gap:14px;padding:11px 14px;
+  border-bottom:1px solid var(--line);background:rgba(0,0,0,.18)}
+.appbrand{font-family:var(--serif);font-size:15px;white-space:nowrap}
+.apptabs{display:flex;gap:12px;font-size:11.5px;color:var(--subtle);flex-wrap:wrap}
+.apptabs span[data-active]{color:var(--ink);font-weight:600}
+.pad{padding:18px 14px 26px}
+@container app (min-width:820px){ .pad{padding:26px 26px 34px} }
+
+.cols{display:flex;flex-direction:column;gap:18px}
+@container app (min-width:900px){
+  .cols--railright{flex-direction:row;align-items:flex-start;gap:24px}
+  .cols--railright > :first-child{flex:1 1 auto;min-width:0}
+  .cols--railright > :last-child{flex:0 0 300px}
+  .cols--railleft{flex-direction:row-reverse;align-items:flex-start;gap:24px}
+  .cols--railleft > :first-child{flex:1 1 auto;min-width:0}
+  .cols--railleft > :last-child{flex:0 0 268px}
+  .sticky{position:sticky;top:14px}
+}
+.stack{display:flex;flex-direction:column;gap:16px;min-width:0}
+.stack--tight{gap:10px}
+
+/* ══ tegels & tekst ═════════════════════════════════════════════ */
+.tile,.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-panel);padding:16px 15px}
+@container app (min-width:820px){ .tile,.panel{padding:18px 18px} }
+.eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle)}
+.t-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle);margin-bottom:9px}
+.lead{font-size:13.5px;line-height:1.6;color:var(--soft);text-wrap:pretty}
+.note{font-size:12.5px;line-height:1.6;color:var(--mut);text-wrap:pretty}
+.micro{font-size:11.5px;line-height:1.55;color:var(--subtle);text-wrap:pretty}
+.footnote{font-size:11.5px;line-height:1.55;color:var(--subtle);text-wrap:pretty;
+  border-top:1px solid var(--line-soft);padding-top:12px}
+.h-sec{font-size:21px;line-height:1.2}
+@container app (min-width:820px){ .h-sec{font-size:25px} }
+.divider{height:1px;background:var(--line-soft);margin:4px 0}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:44px;padding:11px 16px;border-radius:var(--r-btn);font-size:13.5px;font-weight:600;
+  border:1px solid transparent;text-decoration:none;width:100%}
+.btn-primary{background:var(--sage);color:#0B140C;border-color:var(--sage)}
+.btn-terra{background:var(--terra);color:#1A1208;border-color:var(--terra)}
+.btn-soft{background:rgba(255,255,255,.06);border-color:var(--line);color:var(--ink)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--mut)}
+.linkish{background:none;border:none;padding:0;min-height:44px;display:inline-flex;align-items:center;gap:5px;
+  font-size:13px;font-weight:600;color:var(--sage-lt);text-decoration:none}
+.linkish.q{color:var(--mut);font-weight:500}
+.ico{width:1em;height:1em;flex:none;display:inline-block;vertical-align:-.1em}
+
+/* ══ .pl-row — de ladder, canon uit slaap v2 ════════════════════ */
+.pl{display:flex;flex-direction:column;gap:4px}
+.pl--rail{gap:3px}
+.pl-row{position:relative;overflow:hidden;border-radius:var(--r-card);
+  border:1px solid var(--line-soft);background:var(--panel-2)}
+.pl-bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(255,255,255,.14)}
+.pl-row[data-ls="winst"]{border-color:rgba(200,149,108,.34);background:rgba(200,149,108,.06)}
+.pl-row[data-ls="winst"] .pl-bar{background:var(--terra)}
+.pl-row[data-ls="ok"] .pl-bar{background:var(--sage)}
+.pl-row[data-ls="watch"] .pl-bar{background:var(--amber)}
+.pl-row[data-ls="wacht"] .pl-bar{background:rgba(255,255,255,.13)}
+.pl-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;width:100%;
+  align-items:start;text-align:left;background:none;border:none;padding:12px 12px 12px 16px;min-height:52px}
+.pl--rail .pl-head{padding:9px 10px 9px 14px;min-height:44px;grid-template-columns:minmax(0,1fr)}
+.pl-tab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--subtle);padding-top:3px;min-width:34px}
+.pl--rail .pl-tab{display:none}
+.pl-nm{display:block;font-size:13px;font-weight:600;line-height:1.3;color:var(--ink)}
+.pl--rail .pl-nm{font-size:12.5px}
+.pl-state{display:block;margin-top:3px;font-size:9.5px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--subtle)}
+.pl-row[data-ls="winst"] .pl-state{color:var(--terra)}
+.pl-row[data-ls="ok"] .pl-state{color:var(--sage-lt)}
+.pl-row[data-ls="watch"] .pl-state{color:var(--amber)}
+.pl-line{display:block;margin-top:4px;font-size:11.5px;line-height:1.45;color:var(--mut);text-wrap:pretty}
+.pl--rail .pl-line{display:none}
+.pl-chev{color:var(--subtle);padding-top:3px}
+.pl-body{border-top:1px solid var(--line-soft);padding:13px 14px 15px 16px}
+.pl-row[aria-current="true"]{border-color:rgba(156,197,169,.45)}
+.kern{font-size:12.5px;line-height:1.6;color:var(--soft);text-wrap:pretty}
+.doingtitle{margin:14px 0 7px;font-size:9.5px;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--subtle)}
+.doing{margin:0;padding-left:17px}
+.doing li{margin-bottom:6px;font-size:12.5px;line-height:1.55;color:var(--mut);text-wrap:pretty}
+.cross{display:flex;gap:9px;padding:11px 13px;margin:2px 0;border-radius:var(--r-card);
+  border:1px dashed var(--line);background:rgba(255,255,255,.02)}
+.cross p{font-size:11.5px;line-height:1.55;color:var(--mut);text-wrap:pretty}
+
+/* ══ de poort ═══════════════════════════════════════════════════ */
+.gate{margin-top:12px;border-radius:var(--r-card);border:1px solid var(--line);
+  background:rgba(0,0,0,.22);padding:13px 13px 14px}
+.gate[data-open="true"]{border-color:rgba(90,143,106,.42);background:rgba(90,143,106,.09)}
+.glab{display:flex;align-items:center;gap:7px;font-size:9.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.gate[data-open="true"] .glab{color:var(--sage-lt)}
+.gb{margin-top:8px;font-size:12.5px;line-height:1.6;color:var(--soft);text-wrap:pretty}
+.gatepick{margin-top:12px;padding-top:11px;border-top:1px solid var(--line-soft)}
+.pklab{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle);margin-bottom:7px}
+.mini-btn{min-height:36px;padding:7px 11px;border-radius:999px;background:transparent;
+  border:1px solid var(--line);color:var(--mut);font-size:11.5px;font-weight:600}
+.mini-btn[aria-pressed="true"]{background:rgba(90,143,106,.18);border-color:rgba(90,143,106,.55);color:var(--ink)}
+.gatepick .mini-btn{margin:0 5px 5px 0}
+
+/* ══ het schap ══════════════════════════════════════════════════ */
+.card{border:1px solid var(--line);border-radius:var(--r-panel);background:var(--panel);padding:15px 14px}
+.card[data-type="product"]{border-color:rgba(200,149,108,.3)}
+.card-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:9px}
+.badge{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
+.badge.b-basis{border-color:rgba(90,143,106,.45);color:var(--sage-lt)}
+.badge.b-dienst{border-color:rgba(255,255,255,.2);color:var(--mut)}
+.badge.b-product{border-color:rgba(200,149,108,.5);color:var(--terra)}
+.vtag{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.vtag[data-v="ja"]{color:var(--sage-lt)}
+.vtag[data-v="mits"]{color:var(--amber)}
+.vtag[data-v="niet"]{color:var(--terra)}
+.vtag[data-v="geen"]{color:var(--subtle)}
+.card h3{font-size:16px;line-height:1.25;margin-bottom:6px}
+.card .why{font-size:12.5px;line-height:1.6;color:var(--soft);text-wrap:pretty}
+.qual{margin-top:9px;font-size:11.5px;line-height:1.5;color:var(--subtle);text-wrap:pretty}
+
+/* de afleiding — het hart van deze prebuild */
+.afl{margin-top:13px;border-radius:var(--r-card);border:1px solid var(--line);
+  background:rgba(0,0,0,.22);overflow:hidden}
+.afl-h{padding:9px 12px;border-bottom:1px solid var(--line-soft);
+  font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.afl-row{display:grid;grid-template-columns:78px minmax(0,1fr);gap:4px 10px;
+  padding:10px 12px;border-bottom:1px solid var(--line-soft)}
+@container app (min-width:560px){ .afl-row{grid-template-columns:104px minmax(0,1fr)} }
+.afl-k{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--subtle);padding-top:2px}
+.afl-v{font-size:12.5px;line-height:1.5;color:var(--soft);text-wrap:pretty}
+.afl-v b{font-weight:700;color:var(--ink)}
+.afl-why{display:block;margin-top:3px;font-size:11.5px;line-height:1.5;color:var(--subtle);text-wrap:pretty}
+.conf{display:inline-flex;gap:2px;vertical-align:-.05em;margin-left:5px}
+.conf i{width:5px;height:9px;border-radius:1px;background:rgba(255,255,255,.14);display:block}
+.conf i[data-on="1"]{background:var(--sage)}
+.afl-out{padding:11px 12px;background:rgba(255,255,255,.03)}
+.afl-out .afl-k{color:var(--mut)}
+.afl-out .afl-v{font-size:13px}
+.geenadvies{margin-top:9px;font-size:11.5px;line-height:1.5;color:var(--subtle);
+  border-left:2px solid var(--line);padding-left:10px;text-wrap:pretty}
+
+.vd{margin-top:12px;border-top:1px solid var(--line-soft);padding-top:11px}
+.vd dl{margin:0;display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+.vd dt{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--subtle)}
+.vd dd{margin:2px 0 0;font-size:12.5px;line-height:1.55;color:var(--soft);text-wrap:pretty}
+.claimline{margin-top:11px;font-size:12px;line-height:1.55;color:var(--mut);
+  border-left:2px solid rgba(90,143,106,.45);padding-left:10px;text-wrap:pretty}
+.microline{margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft);
+  font-size:11.5px;line-height:1.5;color:var(--subtle);text-wrap:pretty}
+.card-out{margin-top:11px}
+.trace{margin-top:9px;display:flex;gap:7px;font-size:11.5px;line-height:1.5;color:var(--mut);text-wrap:pretty}
+
+/* ══ vandaag ════════════════════════════════════════════════════ */
+.today-acts{display:flex;flex-direction:column;gap:9px}
+@container app (min-width:480px){ .today-acts{flex-direction:row} .today-acts .btn{width:auto;flex:1 1 0} }
+.done-head{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--sage-lt)}
+.ask{margin-top:14px;padding-top:13px;border-top:1px solid var(--line-soft)}
+.plan-label{display:block;font-size:9.5px;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--subtle);margin-bottom:8px}
+.scale{display:flex;gap:6px}
+.scale button{flex:1 1 0;min-height:44px;border-radius:var(--r-btn);border:1px solid var(--line);
+  background:rgba(255,255,255,.03);color:var(--mut);font-size:14px;font-weight:600}
+.scale button[aria-pressed="true"]{background:rgba(90,143,106,.22);border-color:rgba(90,143,106,.6);color:var(--ink)}
+.scale-ends{display:flex;justify-content:space-between;margin-top:6px;font-size:10.5px;color:var(--subtle)}
+.confirm{margin-top:11px;display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--sage-lt)}
+.also-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.also-row .grow{flex:1 1 auto;min-width:0}
+.when{display:block;font-size:11.5px;color:var(--subtle)}
+.deur{border:1px solid rgba(90,143,106,.4);background:rgba(90,143,106,.08);
+  border-radius:var(--r-panel);padding:15px 14px}
+.deur .lead{margin-bottom:11px}
+.strip{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-panel);padding:15px 14px}
+.strip h2{font-size:15px;margin-bottom:10px}
+.striplinks{display:flex;flex-direction:column;gap:2px}
+.striplinks button{display:block;width:100%;text-align:left;background:none;border:none;
+  padding:10px 0;border-top:1px solid var(--line-soft);min-height:44px}
+.striplinks button:first-child{border-top:none}
+.striplink-top{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink)}
+.striplink-hint{display:block;margin-top:3px;font-size:11.5px;line-height:1.45;color:var(--subtle);text-wrap:pretty}
+
+/* ══ mijn dag ═══════════════════════════════════════════════════ */
+.tl{display:flex;flex-direction:column;gap:2px}
+.tlrow{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:11px 0;
+  border-top:1px solid var(--line-soft)}
+.tlrow:first-child{border-top:none}
+.tltime{font-family:var(--mono);font-size:11px;color:var(--subtle);padding-top:2px}
+.tltitle{font-size:13.5px;font-weight:600;color:var(--ink)}
+.tlsub{display:block;margin-top:3px;font-size:11.5px;color:var(--mut);text-wrap:pretty}
+.tlrow[data-focus="true"]{background:rgba(200,149,108,.07);border-radius:var(--r-card);
+  padding-left:10px;padding-right:10px;margin-left:-10px;margin-right:-10px}
+
+/* ══ voortgang ══════════════════════════════════════════════════ */
+.backrow{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+.backbtn{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--mut);flex:none}
+.standrow{display:flex;align-items:center;gap:14px}
+.gauge{position:relative;width:70px;height:70px;flex:none}
+.gauge svg{transform:rotate(-90deg)}
+.gauge .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge .num{font-family:var(--serif);font-size:21px;line-height:1}
+.gauge .cap{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle)}
+.band{font-size:14px;font-weight:600;color:var(--ink)}
+.src,.meta{font-size:11.5px;color:var(--subtle);margin-top:3px}
+.ladderhead .h{font-size:13.5px;font-weight:700;color:var(--ink)}
+.ladderhead .b{margin-top:6px;font-size:12.5px;line-height:1.6;color:var(--mut);text-wrap:pretty}
+.ssot-flag{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--subtle);margin-bottom:8px}
+.readout{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-panel);padding:16px 15px}
+.ro-feit{font-size:18px;line-height:1.3;text-wrap:pretty}
+@container app (min-width:820px){ .ro-feit{font-size:21px} }
+.ro-sub{margin-top:9px;font-size:13px;line-height:1.6;color:var(--soft);text-wrap:pretty}
+.sec-h{font-size:15px;margin-bottom:10px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-card)}
+table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:420px}
+th{text-align:left;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--subtle);padding:10px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 11px;border-bottom:1px solid var(--line-soft);color:var(--soft);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.disc{border-top:1px solid var(--line-soft);padding-top:12px}
+.disc > button{display:flex;align-items:center;gap:7px;width:100%;background:none;border:none;
+  padding:0;min-height:44px;font-size:13px;font-weight:600;color:var(--mut);text-align:left}
+.disc-body{padding-top:10px}
+.vangnet{border-radius:var(--r-card);border:1px solid var(--line);background:rgba(0,0,0,.2);
+  padding:12px 13px;font-size:12px;line-height:1.55;color:var(--mut);text-wrap:pretty}
+.emptycheck{border:1px dashed var(--line);border-radius:var(--r-panel);padding:16px 15px}
+.emptycheck h2{font-size:17px;margin-bottom:8px}
+
+/* ══ favorieten ═════════════════════════════════════════════════ */
+.fv-sum{font-size:15px;line-height:1.45;color:var(--ink);text-wrap:pretty}
+.fv-sub{margin-top:7px;font-size:12.5px;line-height:1.55;color:var(--mut);text-wrap:pretty}
+.cards{display:flex;flex-direction:column;gap:12px}
+@container app (min-width:980px){ .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start} }
+.groep-h{display:flex;align-items:baseline;gap:9px;margin:6px 0 2px}
+.groep-h .n{font-size:13.5px;font-weight:700;color:var(--ink)}
+.groep-h .c{font-size:11.5px;color:var(--subtle)}
+.keten{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11px;color:var(--subtle);
+  border:1px solid var(--line);border-radius:var(--r-card);background:rgba(0,0,0,.2);padding:11px 12px}
+.keten .k{padding:3px 8px;border-radius:999px;border:1px solid var(--line-soft)}
+.keten .k[data-on="1"]{color:var(--sage-lt);border-color:rgba(90,143,106,.4)}
+.keten .k[data-now="1"]{color:var(--ink);border-color:rgba(200,149,108,.5);background:rgba(200,149,108,.1)}
+.ownfold{border:1px solid var(--line);border-radius:var(--r-panel);background:rgba(0,0,0,.2);padding:15px 14px}
+.own-badge{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--amber);border:1px solid rgba(201,154,60,.45);border-radius:999px;padding:3px 8px;margin-bottom:9px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+
+/* ══════════════════════════════════════════════════════════════════
+   v3-B — toevoegingen. Alles hierboven is byte-identiek aan v1.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* DE SUB-NAV. Vier oppervlakken, altijd maar een zichtbaar. Dit is de
+   scheiding die v2 miste: product, dienst en begeleiding delen geen lijst. */
+.subnav{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;
+  border-bottom:1px solid var(--line)}
+.subnav::-webkit-scrollbar{display:none}
+.subnav button{flex:0 0 auto;min-height:42px;padding:9px 14px;background:transparent;border:none;
+  border-bottom:2px solid transparent;color:var(--mut);font-size:13px;font-weight:600;white-space:nowrap}
+.subnav button[aria-current="true"]{color:var(--ink);border-bottom-color:var(--sage)}
+.subnav .cnt{margin-left:6px;font-size:11px;color:var(--subtle);font-weight:500}
+.subnav button[aria-current="true"] .cnt{color:var(--sage-lt)}
+
+/* twee secties per tab, met een duidelijke kop */
+.sec{display:flex;flex-direction:column;gap:11px}
+.sec-top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.sec-top .n{font-family:var(--serif);font-size:19px;line-height:1.2;color:var(--ink)}
+@container app (min-width:820px){ .sec-top .n{font-size:22px} }
+.sec-top .c{font-size:11.5px;color:var(--subtle)}
+.sec-top .src{flex:1 1 100%;margin-top:2px;font-size:12px;line-height:1.55;color:var(--mut);text-wrap:pretty}
+.secrule{height:1px;background:var(--line);margin:12px 0 2px}
+
+/* de view-schakelaar binnen Producten: voor jou / het hele veld */
+.viewpick{display:flex;gap:6px}
+.viewpick button{min-height:38px;padding:8px 13px;border-radius:999px;background:transparent;
+  border:1px solid var(--line);color:var(--mut);font-size:12px;font-weight:600}
+.viewpick button[aria-current="true"]{background:rgba(90,143,106,.18);border-color:rgba(90,143,106,.55);color:var(--ink)}
+
+/* MIJN KEUZE — de kaart met ons oordeel ernaast */
+.pick{border:1px solid rgba(255,255,255,.16);border-radius:var(--r-panel);background:var(--panel);padding:15px 14px}
+.pick[data-mismatch="1"]{border-color:rgba(201,154,60,.42)}
+.pick-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:9px}
+.pick-when{display:block;margin-top:4px;font-size:11px;color:var(--subtle);text-wrap:pretty}
+.mismatch{margin-top:11px;border-radius:var(--r-card);border:1px solid rgba(201,154,60,.35);
+  background:rgba(201,154,60,.07);padding:11px 12px;font-size:12px;line-height:1.55;color:var(--soft);text-wrap:pretty}
+.mismatch b{color:var(--ink)}
+.pick-acts{margin-top:12px;padding-top:11px;border-top:1px solid var(--line-soft);display:flex;gap:8px;flex-wrap:wrap}
+.pick-acts .mini-btn{margin:0}
+
+/* LEEFSTIJL-SPIEGEL — regels, geen kaarten. De werkplek is bestand A. */
+.spiegel{border:1px solid var(--line);border-radius:var(--r-panel);background:var(--panel);overflow:hidden}
+.spiegel-row{display:flex;gap:11px;align-items:center;padding:13px 14px;border-top:1px solid var(--line-soft)}
+.spiegel-row:first-child{border-top:none}
+.spiegel-row .grow{flex:1 1 auto;min-width:0}
+.spiegel-t{display:block;font-size:13.5px;font-weight:600;color:var(--ink)}
+.spiegel-c{display:block;margin-top:3px;font-size:11.5px;color:var(--mut)}
+.spiegel-row .go{color:var(--sage-lt);flex:none}
+
+/* HET VELD — de sync-naad met /supplementen */
+.veld td.stof{font-weight:600;color:var(--ink);white-space:nowrap}
+.pill{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 7px;border-radius:999px;border:1px solid var(--line-soft);color:var(--mut);white-space:nowrap}
+.pill[data-s="approved"]{border-color:rgba(90,143,106,.4);color:var(--sage-lt)}
+.pill[data-s="on_hold"]{border-color:rgba(201,154,60,.45);color:var(--amber)}
+.pill[data-s="forbidden"]{border-color:rgba(255,255,255,.2);color:var(--subtle)}
+.veld .vtag{margin-left:0}
+.vtag[data-v="nooit"]{color:var(--subtle);text-decoration:line-through;text-decoration-thickness:1px}
+.card[data-v="nooit"]{border-color:var(--line-soft);opacity:.92}
+
+/* S3 — wat er veranderde. Alleen op Producten. */
+.delta{border:1px solid rgba(90,143,106,.4);background:rgba(90,143,106,.08);
+  border-radius:var(--r-panel);padding:14px 14px 15px}
+.delta h2{font-size:15px;margin-bottom:4px}
+.delta-rows{margin-top:11px;display:flex;flex-direction:column;gap:1px}
+.delta-row{display:grid;grid-template-columns:minmax(0,1fr);gap:3px;padding:10px 0;border-top:1px solid var(--line-soft)}
+@container app (min-width:560px){ .delta-row{grid-template-columns:112px minmax(0,1fr);gap:4px 12px;align-items:start} }
+.delta-row:first-child{border-top:none}
+.delta-k{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--subtle);padding-top:2px}
+.delta-v{font-size:12.5px;line-height:1.55;color:var(--soft);text-wrap:pretty}
+.was{color:var(--subtle);text-decoration:line-through;text-decoration-thickness:1px}
+.nu{color:var(--ink);font-weight:600}
+.arrowsep{color:var(--subtle);margin:0 5px}
+.changed{outline:1px solid rgba(90,143,106,.45);outline-offset:2px;border-radius:4px}
+
+.emptypair{display:flex;flex-direction:column;gap:14px}
+@container app (min-width:900px){ .emptypair{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start} }
+.emptycheck .mirror{margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft);
+  font-family:var(--mono);font-size:10.5px;color:var(--subtle);text-wrap:pretty}
+</style>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/prebuilds/fonts/font-f273cf2c9ce9.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/prebuilds/fonts/font-468d56b6b25b.woff2">
+<link rel="stylesheet" href="/prebuilds/fonts/fonts-eee8af4d8c74.css">
+
+<style data-embed>
+  /* Reviewer-chrome en de interne appbar horen niet in het product: het
+     dashboard eromheen levert die navigatie al. Verbergen, niet slopen —
+     de chrome-knoppen zetten hieronder nog de beginstand. */
+  .chrome, .notes, .vpnote, .appbar { display: none !important; }
+  .stage { padding: 0 !important; }
+  /* Vloeiend i.p.v. de vaste 375/1280-wissel: de @container-regels in de
+     prebuild moeten op de échte breedte reageren (mobiel/iPad/desktop). */
+  .surface, .app { width: 100% !important; max-width: 100% !important;
+                   border: 0 !important; border-radius: 0 !important;
+                   box-shadow: none !important; }
+
+  /* Eén schil voor álle surfaces (19 aug). Elke prebuild bracht zijn eigen
+     achtergrond, randkleur en inktschaal mee — beweging op #1a2e1a, de rest
+     op #132414, met drie varianten van --line ertussen. In het dashboard
+     staan ze naast elkaar, dus draaien ze hier allemaal op de tokens van het
+     leefstijlprofiel: dat scherm is de referentie. De rand eromheen zet
+     PrebuildFrame, zodat elk domein exact hetzelfde kader krijgt. */
+  :root, .surf-intake, .surf-dash {
+    --shell:#132414 !important;
+    --bg:#132414 !important;
+    --panel:rgba(255,255,255,.045) !important;
+    --panel-2:rgba(0,0,0,.20) !important;
+    --line:rgba(255,255,255,.11) !important;
+    --line-soft:rgba(255,255,255,.06) !important;
+    --ink:#F1EFE8 !important;
+    --soft:#CDD7D0 !important;
+    --mut:#9FB0A6 !important;
+    --subtle:#7E8C82 !important;
+  }
+  /* Niet transparant: dan liep de bijna-zwarte --shell als band onder de
+     content door zodra die korter was dan het frame. */
+  html, body, .stage { background:#132414 !important; }
+  .surface, .app { background:#132414 !important; }
+
+  /* Reviewer-restanten die buiten .notes vallen: stress en verbinding hangen
+     hun ontwerpnotities als los <details> onder .stage. */
+  body > details { display:none !important; }
+
+  /* Voeding rendert renderK in een tweede .screen binnen de eerste; zonder
+     dit telt de padding dubbel en springt juist dat domein verder in. */
+  .screen .screen, .pad .pad { padding:0 !important; }
+
+  /* Eén scherm, geen tweede scrollbalk (19 aug). De pagina zelf scrollt;
+     de surface krijgt geen eigen overflow meer. Compactere maatvoering
+     zodat een domein binnen één beeld past. */
+  html, body { height: auto !important; overflow: visible !important; }
+  .surface, .app { overflow: visible !important; }
+  .pad, .screen { padding: 14px 16px 14px !important; }
+  .stack { gap: 11px !important; }
+  .cols { gap: 16px !important; }
+  .kdome, .tile, .ktile, .panel { padding: 12px !important; }
+  .kdome .kstat { margin-top: 10px !important; }
+  .attnbar { margin-top: 10px !important; padding-top: 9px !important; }
+  .actie { padding: 8px 0 !important; }
+  .backrow { margin-bottom: 12px !important; }
+
+  /* Op desktop staan de twee slot-knoppen naast elkaar in plaats van
+     onder elkaar. Dat scheelt een knophoogte plus een gap — genoeg om
+     elk domein binnen één beeld te houden — en leest als primair naast
+     secundair. Alle vijf domeinen bouwen dit blok hetzelfde op: een
+     .stack met btn-terra, btn-ghost en de voetnoot. */
+  @container app (min-width: 760px) {
+    .stack:has(> .btn-terra) { flex-direction: row !important; flex-wrap: wrap;
+                               align-items: center; }
+    .stack:has(> .btn-terra) > .btn-terra,
+    .stack:has(> .btn-terra) > .btn-ghost { flex: 1 1 240px; width: auto !important; }
+    .stack:has(> .btn-terra) > .footnote,
+    .stack:has(> .btn-terra) > .kfoot { flex: 1 1 100%; min-width: 100%;
+                                        max-width: none !important; }
+  }
+
+  /* Knoppen reageren zichtbaar: hover, actief én toetsenbord-focus.
+     Voorheen had alleen een deel van de knoppen een hover-regel. */
+  button, .btn, .mini-btn, .chip, a.btn-terra, a.btn-ghost, .opt, .sw {
+    transition: background-color .15s ease, border-color .15s ease,
+                color .15s ease, transform .08s ease, opacity .15s ease;
+  }
+  button:not([disabled]):hover, .chip:not([disabled]):hover,
+  .mini-btn:not([disabled]):hover, .opt:hover,
+  a.btn-terra:hover, a.btn-ghost:hover { filter: brightness(1.12); }
+  button:not([disabled]):active, .chip:not([disabled]):active,
+  .mini-btn:not([disabled]):active, .opt:active,
+  a.btn-terra:active, a.btn-ghost:active { transform: translateY(1px); }
+  button:focus-visible, a:focus-visible, .chip:focus-visible,
+  .mini-btn:focus-visible, .opt:focus-visible {
+    outline: 2px solid var(--sage-lt, #9CC5A9); outline-offset: 2px;
+  }
+  button[disabled] { opacity: .5; cursor: not-allowed; }
+
+</style>
+</head>
+<body class="surf-dash">
+
+<div class="chrome">
+  <div class="chrome-in">
+    <p class="chrome-h" role="doc-subtitle">Favorieten — het schap</p>
+    <p class="sub">Bestand B van twee. Vier sub-oppervlakken die je <b>nooit tegelijk</b> ziet: Leefstijl (spiegel) &middot; Producten &middot; Diensten &middot; Begeleiding. Per tab maximaal twee secties. De leefstijl-werkplek is bestand A; hier staat het aanbod.</p>
+    <div class="switchrow">
+      <div class="switch"><span class="switch-label">Tab</span><div class="switch-btns" id="swTab"></div></div>
+      <div class="switch"><span class="switch-label">Scherm <span style="opacity:.6">(alleen Producten)</span></span><div class="switch-btns" id="swScherm"></div></div>
+      <div class="switch"><span class="switch-label">Breedte</span>
+        <div class="switch-btns" id="swVw">
+          <button class="sw" type="button" data-vw="375" aria-pressed="true">375 mobiel</button>
+          <button class="sw" type="button" data-vw="1280" aria-pressed="false">1280 desktop</button>
+        </div>
+      </div>
+    </div>
+    <p class="statenote" id="stateNote"></p>
+    <p class="evstrip" id="evStrip">&nbsp;</p>
+  </div>
+</div>
+
+<div class="stage"><div class="app" id="app" data-appw="375"></div></div>
+
+<script>
+(function(){
+"use strict";
+
+var P = {
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  chevR:'<path d="M9 6l6 6-6 6"/>',
+  chevD:'<path d="M6 9l6 6 6-6"/>',
+  chevU:'<path d="M18 15l-6-6-6 6"/>',
+  check:'<path d="M20 6L9 17l-5-5"/>',
+  lock:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/>',
+  open:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 017.5-2"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+  ban:'<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>'
+};
+function ico(id, s){
+  s = s || 16;
+  return '<svg class="ico" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    P[id] + '</svg>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HET STOFFENVELD — 1:1 de sleutels van src/data/approved-claims.ts
+   (r.102). Dat bestand is al de SSOT voor de oordelen:
+   supplement-verdict.ts r.32 leest er Object.keys() van. `hub` is de
+   slug waarmee dezelfde stof op /supplementen staat
+   (src/data/supplement-hub/catalog.ts r.40) — twee sleutelruimtes voor
+   een stof, en dat is de naad die poort 2 in kaart brengt.
+   ═══════════════════════════════════════════════════════════════════ */
+var STOF = {
+  magnesium: {
+    label:'Magnesium', hub:'magnesium', path:'/beste/magnesium', status:'approved',
+    ri:'350 mg/dag (man 31–70)', conf:2,
+    confWhy:'Je band komt uit een vraag over porties groente en fruit — een proxy, geen magnesium-maat.',
+    caveat:'Let op de spanning hierin: fruit levert per portie het minst van deze lijst. Meer fruit eten verschuift je band w&eacute;l en je inname nauwelijks.',
+    bloed:{ok:'beperkt', why:'Serum-magnesium is een slechte maat voor je voorraad: je lichaam houdt de bloedwaarde constant ten koste van bot en spier.'},
+    claim:'Draagt bij tot de vermindering van vermoeidheid en moeheid',
+    domeinen:['slaap','voeding']
+  },
+  omega3: {
+    label:'Omega-3 (EPA/DHA)', hub:'omega-3', path:'/beste/omega-3-supplement', status:'approved',
+    ri:'200 mg/dag EPA+DHA — Gezondheidsraad, &asymp; 1&times; vette vis per week', conf:3,
+    confWhy:'Gezondheidsraad noemt 1&times; per week, hart-richtlijnen 2&times;. Deze grens kiest de ruimere kant — een interpretatiekeuze, geen meetfout.',
+    bloed:{ok:'beperkt', why:'De omega-3-index is een goede maat, maar geen standaardbepaling bij een Nederlands lab.'},
+    claim:'EPA en DHA dragen bij tot de normale werking van het hart',
+    domeinen:['voeding']
+  },
+  vitamineD: {
+    label:'Vitamine D', hub:'vitamine-d', path:'/beste/vitamine-d', status:'approved',
+    ri:'10 &micro;g/dag', conf:1,
+    confWhy:'Keer-per-week buiten, zonder duur en zonder seizoen, is een zwakke maat voor aanmaak. In Nederland staat de aanmaak van oktober tot maart vrijwel stil.',
+    caveat:'Van alle routes telt hier alleen zonlicht echt. Dit is de stof waar je bord het gat niet dicht krijgt.',
+    bloed:{ok:'ja', why:'Hier is een bloedwaarde w&eacute;l de betere meting: 25(OH)D is de standaardbepaling en zegt iets over je voorraad. Dit is de enige stof op deze lijst waar dat opgaat.'},
+    claim:'Draagt bij tot de instandhouding van een normale spierfunctie',
+    domeinen:['voeding','beweging']
+  },
+  zink: {
+    label:'Zink', hub:'zink', path:'/beste/zink', status:'approved',
+    ri:'9–11 mg/dag', conf:2,
+    confWhy:'De vertaling van milligrammen naar portiefrequentie is plausibel, maar niet scherp gebronde.',
+    bloed:{ok:'nee', why:'Plasma-zink daalt bij elke ontsteking en na een maaltijd, los van je voorraad. Een uitslag zegt hier weinig.'},
+    claim:'Draagt bij tot een normaal cognitief functioneren',
+    domeinen:['voeding']
+  },
+  creatine: {
+    label:'Creatine', hub:'creatine', path:'/beste/creatine', status:'approved',
+    ri:'3–5 g/dag, onderhoudsdosering', conf:3,
+    confWhy:'Creatine komt uit vlees en vis; je inname is uit je eetpatroon te schatten, maar de spreiding tussen personen is groot.',
+    bloed:{ok:'nee', why:'Er is geen bruikbare bloedbepaling voor je creatinevoorraad buiten onderzoeksverband.'},
+    claim:'Dagelijkse consumptie van creatine kan het effect van weerstandstraining op spierkracht verbeteren bij volwassenen ouder dan 55 jaar',
+    claimCaveat:'Deze claim geldt uitsluitend vanaf 55 jaar. Ben je jonger, dan mogen we hem niet op jou betrekken.',
+    domeinen:['beweging']
+  },
+  eiwitpoeder: {
+    label:'Eiwitpoeder', hub:'eiwitpoeder', path:'/beste/eiwitpoeder', status:'approved',
+    ri:'25–30 g per eetmoment, 3–4&times; per dag', conf:4,
+    confWhy:'Eetmoment-frequentie is een sterke proxy. PROT-AGE (2013) noemt 3–4 eiwitrijke eetmomenten per dag bij 40+.',
+    bloed:{ok:'nee', why:'Er bestaat geen bloedmarker voor je eiwitinname. Wat je hier ziet is de enige route: wat er op je bord ligt.'},
+    claim:null,
+    claimNote:'Voor eiwit als zodanig zijn er geen goedgekeurde EU-gezondheidsclaims. Wat je vergelijkt is inname en praktijk — eiwitgehalte, prijs per portie — geen belofte over wat het met je doet.',
+    domeinen:['beweging','voeding']
+  },
+  ashwagandha: {
+    label:'Ashwagandha', hub:'ashwagandha', path:null, status:'on_hold',
+    ri:null, conf:null,
+    bloed:{ok:'nee', why:'—'},
+    claim:null,
+    statusNote:'Alle claims staan on-hold bij de EU-beoordeling, en VWS overweegt een verbod. Wij sturen je niet naar een vergelijking van iets waar we geen oordeel over mogen vellen.',
+    domeinen:['stress']
+  },
+  melatonine: {
+    label:'Melatonine', hub:'melatonine', path:null, status:'forbidden',
+    ri:null, conf:null,
+    bloed:{ok:'nee', why:'—'},
+    claim:null,
+    statusNote:'Boven 0,3 mg is dit een geneesmiddel en receptplichtig; daaronder mag er geen enkele gezondheidsclaim op. Wij zetten het daarom nooit in als aanvulling — het staat hier omdat je het tegenkomt, niet omdat het een optie is.',
+    domeinen:['slaap']
+  }
+};
+var STOF_IDS = ['magnesium','omega3','vitamineD','zink','creatine','eiwitpoeder','ashwagandha','melatonine'];
+
+/* Bandwoorden. "below" is een INNAME-band, nooit een status.
+   Verboden in elke render: tekort, gebrek, te weinig, deficient. */
+var BAND_WORD = { below:'onder de referentie', around:'rond de referentie', meets:'op de referentie' };
+var CONF_WORD = { 1:'zwak', 2:'matig', 3:'redelijk', 4:'sterk' };
+var BLOED_WORD = { ja:'ja — dit maakt het harder', beperkt:'beperkt', nee:'nee' };
+var VLABEL = { ja:'Aanrader', mits:'Alleen als…', niet:'Nu niet', geen:'Nog geen oordeel', nooit:'Nooit als aanvulling' };
+var VRANK  = { ja:0, mits:1, niet:2, geen:3, nooit:4 };
+
+/* BEHOEFTE — tweede as, uit het beweegprofiel. Kwalitatief, nooit g/kg
+   (dat vraagt gewicht, en dat vragen we niet). Spiegelt v1 r.560. */
+var PROFIEL = { bron:'je beweegcheck van 2 augustus + wat je sindsdien hebt afgevinkt' };
+var BEHOEFTE = {
+  eiwitpoeder:{ verhoogd:true,
+    regel:'Je beweegt stevig — twee krachtsessies per week — en dan ligt de eiwitbehoefte aan de hogere kant.',
+    bron:'PAL-band <b>actief</b> uit je beweegcheck' },
+  magnesium:{ verhoogd:true,
+    regel:'Zweten en intensief sporten verhogen je magnesiumverlies enigszins. Dat is een nuance op je behoefte, geen aparte meting.',
+    bron:'PAL-band <b>actief</b> + padel uit je beweegprofiel' },
+  creatine:{ verhoogd:true,
+    regel:'Weerstandstraining is de enige context waarin creatine iets toevoegt. Die staat bij jou.',
+    bron:'2 krachtsessies per week uit je beweegcheck' },
+  omega3:{ verhoogd:false, regel:'Je beweegprofiel verandert hier niets aan.', bron:'—' },
+  vitamineD:{ verhoogd:false, regel:'Je beweegprofiel verandert hier niets aan. Bu&iacute;ten bewegen zou dat w&eacute;l doen, maar je sessies zijn binnen.', bron:'padel en kracht, beide binnen' },
+  zink:{ verhoogd:false, regel:'Je beweegprofiel verandert hier niets aan.', bron:'—' }
+};
+
+var STOF_DOMEINLABEL = { slaap:'Slaap', beweging:'Beweging', voeding:'Voeding', stress:'Stress', verbinding:'Verbinding' };
+var STATUS_WORD = { approved:'goedgekeurd', on_hold:'on-hold', forbidden:'niet als aanvulling' };
+var MICRO_COMMISSIE = 'We ontvangen commissie als je via ons koopt. Het oordeel is los daarvan opgesteld en verandert niet mee.';
+var MICRO_GEEN = 'Hier verdienen we niets aan, en je kunt er ook niets via ons kopen.';
+
+/* ═══════════════════════════════════════════════════════════════════
+   DE VIER SCHERMEN — alleen op de tab Producten. Op Leefstijl,
+   Diensten en Begeleiding is er geen datawijziging te tonen, dus daar
+   staat de schakelaar uit.
+   ═══════════════════════════════════════════════════════════════════ */
+var SCHERM = {
+  S0:{ lab:'S0 &middot; leeg', check:false, voeding:false, picks:[],
+       banden:{}, poort:'geen_check',
+       note:'Twee lege staten naast elkaar, precies de twee die /supplementen ook kent: geen leefstijlcheck (no_intake) en wel een check maar geen voedingscheck (needs_nutrition). Beide zeggen wat er ontbreekt — geen teaser, geen „binnenkort”.' },
+  S1:{ lab:'S1 &middot; aanbevolen', check:true, voeding:'14 augustus', picks:[],
+       banden:{ magnesium:'below', omega3:'meets', vitamineD:'around', zink:'meets', eiwitpoeder:'meets', creatine:'meets' },
+       poort:'open',
+       note:'Checks binnen, voedingscheck van 14 augustus verwerkt. De deur staat open en er is precies &eacute;&eacute;n stof met een positief oordeel. De andere zeven staan in het veld, met hun oordeel — dat is de teller die telt.' },
+  S2:{ lab:'S2 &middot; mijn keuze', check:true, voeding:'14 augustus', picks:['magnesium','creatine'],
+       banden:{ magnesium:'below', omega3:'meets', vitamineD:'around', zink:'meets', eiwitpoeder:'meets', creatine:'meets' },
+       poort:'open',
+       note:'Zelfde systeemstaat als S1 — alleen heeft de klant twee stoffen zelf gepakt. Let op creatine: ons oordeel is „Nu niet”, hij staat er toch, met dat oordeel ernaast. Dat mag, en het verandert onze kant niet.' },
+  S3:{ lab:'S3 &middot; data wijzigt', check:true, voeding:'18 augustus', picks:['magnesium','creatine'],
+       banden:{ magnesium:'meets', omega3:'below', vitamineD:'around', zink:'meets', eiwitpoeder:'below', creatine:'meets' },
+       poort:'open',
+       note:'E&eacute;n voedingscheck opnieuw ingevuld op 18 augustus. Magnesium kantelt van Aanrader naar Nu niet, omega-3 en eiwitpoeder andersom. Mijn keuze verandert niet mee — de magnesium die de klant koos blijft staan, nu met ons „Nu niet” erbij.' }
+};
+var SCHERM_IDS = ['S0','S1','S2','S3'];
+
+var POORT = {
+  geen_check:{ lab:'Nog niets te zeggen', open:false },
+  geen_voedingscheck:{ lab:'De deur is dicht', open:false },
+  open:{ lab:'De deur staat open', open:true }
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   DIENSTEN. Geen afleiding: inname x behoefte x laagstand geldt voor
+   een voedingsstof, niet voor een cursus. Wel het volledige
+   oordeel-schema en de commissie-regel per kaart.
+   ═══════════════════════════════════════════════════════════════════ */
+var DIENST = {
+  cgti:{ titel:'CGT-i via je huisarts of een slaaptherapeut', domein:'slaap', v:'mits',
+    bron:'aanbevolen', badge:'Zorg',
+    why:'Je gaf aan dat het al langer dan drie maanden speelt. Bij aanhoudende slapeloosheid is dit de behandeling met de sterkste onderbouwing.',
+    quality:'Beoordeeld op onderbouwing en op toegang — niet op kosten',
+    vd:{ gecheckt:'Of het vergoed wordt, hoe lang de wachttijd is, en wat je huisarts nodig heeft om door te verwijzen.',
+         sterk:'Voor langdurige slapeloosheid is dit de best onderbouwde route die er is, en hij werkt door nadat hij is afgelopen.',
+         zwak:'Wachttijden lopen op en niet elke praktijk biedt het aan. Het vraagt zes tot acht weken van je.',
+         oordeel:'Alleen als het langer dan drie maanden speelt. Voor een slechte week is dit veel te zwaar.' },
+    micro:MICRO_GEEN, wanneer:null },
+  online8:{ titel:'Online begeleiding — acht weken, wekelijks contact', domein:'beweging', v:'mits',
+    bron:'keuze', badge:'Online',
+    why:'Je gaf aan dat je twee keer eerder gestopt bent. Niet omdat het plan niet klopte, maar omdat er niemand keek op de week dat het even niet liep.',
+    quality:'Beoordeeld op begeleiding, opzegtermijn en wat er n&aacute; week acht gebeurt',
+    vd:{ gecheckt:'Opzegtermijn, wie de begeleiding doet, en wat er na week acht overblijft.',
+         sterk:'Wekelijks contact met iemand die je schema aanpast. Maandelijks opzegbaar, geen jaarcontract.',
+         zwak:'Het programma stopt abrupt na acht weken; er is geen afbouw of vervolg. Je moet daarna zelf verder.',
+         oordeel:'Goed voor wie begeleiding nodig heeft om te beginnen. Overbodig als je zelfstandig traint.' },
+    micro:'We ontvangen commissie als je hier klant wordt. Het oordeel is los daarvan opgesteld en verandert niet mee.',
+    wanneer:'zelf toegevoegd op 15 augustus' }
+};
+
+/* LEEFSTIJL-SPIEGEL. Regels, geen kaarten. Getallen komen uit bestand A. */
+var SPIEGEL = [
+  { d:'beweging', aanb:3, keuze:2 },
+  { d:'slaap',    aanb:2, keuze:1 },
+  { d:'voeding',  aanb:2, keuze:1 },
+  { d:'stress',   aanb:1, keuze:0 },
+  { d:'verbinding', aanb:1, keuze:1 }
+];
+
+var TABS = [['leefstijl','Leefstijl'],['producten','Producten'],['diensten','Diensten'],['begeleiding','Begeleiding']];
+
+var S = { tab:'producten', scherm:'S2', view:'voorjou', vw:'375', ui:{ poort:null, afl:null } };
+function SC(){ return SCHERM[S.scherm]; }
+
+/* Het oordeel is een afleiding. Volgorde bewust gelijk aan
+   src/lib/supplement-verdict.ts r.53: verboden claim wint altijd, dan
+   on-hold, dan of we genoeg weten, dan pas of er een reden is. */
+function oordeelVan(key){
+  var st = STOF[key], sc = SC();
+  if (st.status === 'forbidden') return 'nooit';
+  if (st.status === 'on_hold') return 'geen';
+  if (!sc.check || !sc.voeding) return 'geen';
+  if (st.conf === 1) return 'geen';
+  return sc.banden[key] === 'below' ? 'ja' : 'niet';
+}
+function poortNu(){
+  var sc = SC();
+  return S.ui.poort || (sc.check ? (sc.voeding ? 'open' : 'geen_voedingscheck') : 'geen_check');
+}
+function tellen(){
+  var t = { ja:0, niet:0, geen:0, nooit:0, mits:0 };
+  for (var i = 0; i < STOF_IDS.length; i++) t[oordeelVan(STOF_IDS[i])]++;
+  return t;
+}
+function aanbevolenStoffen(){
+  var out = [];
+  for (var i = 0; i < STOF_IDS.length; i++) if (oordeelVan(STOF_IDS[i]) === 'ja') out.push(STOF_IDS[i]);
+  return out;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GEDEELDE ONDERDELEN
+   ═══════════════════════════════════════════════════════════════════ */
+function appbar(){
+  var t = ['Vandaag','Mijn Dag','Voortgang','Hermeting'], h = '';
+  for (var i = 0; i < t.length; i++)
+    h += '<span' + (t[i] === 'Voortgang' ? ' data-active' : '') + '>' + t[i] + '</span>';
+  return '<div class="appbar"><span class="appbrand">PerfectSupplement</span><span class="apptabs">' + h + '</span></div>';
+}
+function railStrip(){
+  return '<div class="keten" style="margin-bottom:2px">' +
+    '<span class="k">Overzicht</span>' + ico('chevR',12) +
+    '<span class="k">Leefstijlprofiel</span>' + ico('chevR',12) +
+    '<span class="k" data-now="1">Favorieten</span>' +
+    '<span style="flex:1 1 100%;margin-top:7px">Drie rail-items, ongewijzigd. Geen vierde met het woord &bdquo;Supplementen&rdquo; erin — die staan hier, onder Producten.</span></div>';
+}
+function ketenStrip(){
+  var sc = SC();
+  return '<div class="keten">' +
+    '<span class="k"' + (sc.check ? ' data-on="1"' : '') + '>Check</span>' + ico('chevR',12) +
+    '<span class="k"' + (sc.check ? ' data-on="1"' : '') + '>Onderbouwing</span>' + ico('chevR',12) +
+    '<span class="k" data-now="1">Schap</span>' + ico('chevR',12) +
+    '<span class="k">Vergelijking</span>' +
+    '<span style="flex:1 1 100%;margin-top:7px">Hier staat het aanbod, en alleen hier. Vandaag en Mijn Dag dragen de deur; je leefstijlprofiel legt uit waarom hij open of dicht staat.</span></div>';
+}
+function subnav(){
+  var sc = SC(), tel = {
+    leefstijl: SPIEGEL.reduce(function(a,r){ return a + r.keuze; }, 0),
+    producten: sc.check && sc.voeding ? aanbevolenStoffen().length + sc.picks.length : 0,
+    diensten: 2,
+    begeleiding: 0
+  };
+  var h = '<nav class="subnav" aria-label="Schap">';
+  for (var i = 0; i < TABS.length; i++) {
+    h += '<button type="button" data-tab="' + TABS[i][0] + '" aria-current="' + (S.tab === TABS[i][0]) + '">' +
+      TABS[i][1] + '<span class="cnt">' + tel[TABS[i][0]] + '</span></button>';
+  }
+  return h + '</nav>';
+}
+function secTop(naam, telling, bron){
+  return '<div class="sec-top"><span class="n">' + naam + '</span>' +
+    '<span class="c">' + telling + '</span>' +
+    '<span class="src">' + bron + '</span></div>';
+}
+
+/* ── de afleiding — v1 r.993, ongewijzigd van vorm ────────────────── */
+function afleidingRows(key, mark){
+  var n = STOF[key], b = BEHOEFTE[key] || { verhoogd:false, regel:'—', bron:'—' };
+  var sc = SC(), band = sc.banden[key], uitkomst = oordeelVan(key);
+  var conf = '';
+  for (var i = 1; i <= 4; i++) conf += '<i data-on="' + (n.conf && i <= n.conf ? 1 : 0) + '"></i>';
+
+  var rows = '<div class="afl-row"><span class="afl-k">Inname</span>' +
+    '<span class="afl-v' + (mark ? ' changed' : '') + '">' +
+    (n.ri ? '<b>' + BAND_WORD[band] + '</b> — richtwaarde ' + n.ri : '<b>niet te schatten</b>') +
+    (n.conf ? '<span class="conf" aria-label="zekerheid ' + n.conf + ' van 4">' + conf + '</span>' : '') +
+    (n.confWhy ? '<span class="afl-why">Zekerheid ' + (n.conf ? n.conf + ' van 4 — ' + CONF_WORD[n.conf] + '. ' : '') + n.confWhy + '</span>' : '') +
+    (n.caveat ? '<span class="afl-why">' + n.caveat + '</span>' : '') + '</span></div>';
+
+  rows += '<div class="afl-row"><span class="afl-k">Behoefte</span><span class="afl-v">' +
+    '<b>' + (b.verhoogd ? 'verhoogd' : 'standaard') + '</b> — ' + b.regel +
+    '<span class="afl-why">Uit ' + b.bron + ' &middot; ' + PROFIEL.bron + '</span>' +
+    '<span class="afl-why">Kwalitatief. We rekenen hier geen gram per kilo uit — dat vraagt je gewicht, en dat vragen we niet.</span></span></div>';
+
+  var open = POORT[poortNu()].open;
+  rows += '<div class="afl-row"><span class="afl-k">Lagen erboven</span><span class="afl-v"><b>' +
+    (open ? 'staan' : 'staan nog niet') + '</b> — ' +
+    (open ? 'de vijf lagen boven de aanvulling zijn op orde. Wat overblijft is wat overblijft.'
+          : 'zolang hierboven iets openstaat, is dit niet aan de orde.') + '</span></div>';
+
+  rows += '<div class="afl-row"><span class="afl-k">Hardheid</span><span class="afl-v"><b>Bloedwaarde: ' +
+    BLOED_WORD[n.bloed.ok] + '</b><span class="afl-why">' + n.bloed.why + '</span></span></div>';
+
+  var out;
+  if (uitkomst === 'ja') {
+    out = 'Je inname ligt ' + BAND_WORD[band] + ', je behoefte is ' + (b.verhoogd ? 'verhoogd' : 'standaard') +
+      ', en de lagen erboven staan. Wat er dan overblijft is een aanvulling. Dat is geen advies — dat is wat er over is.';
+  } else if (uitkomst === 'niet') {
+    out = 'Je inname ligt ' + BAND_WORD[band] + '. Er is hier niets dat je bord laat vallen, dus is er ook niets aan te vullen. Wij leggen hem klaar tot je volgende meting.';
+  } else if (uitkomst === 'nooit') {
+    out = n.statusNote;
+  } else {
+    out = n.status === 'on_hold'
+      ? 'De claims hierover staan on-hold bij de beoordeling. Wij vellen dan geen oordeel, en sturen je ook niet naar de vergelijking.'
+      : 'Onze schatting is ' + CONF_WORD[n.conf] + ' (' + n.conf + ' van 4). Daar bouwen we geen oordeel op. Een bloedwaarde zou dit hard maken; onze vraag niet.';
+  }
+  rows += '<div class="afl-row afl-out' + (mark ? ' changed' : '') + '"><span class="afl-k">Wat overblijft</span>' +
+    '<span class="afl-v">' + out + '</span></div>';
+  return rows;
+}
+function claimRegel(n){
+  if (n.status === 'on_hold' || n.status === 'forbidden') return '<p class="claimline">' + n.statusNote + '</p>';
+  if (n.claim) return '<p class="claimline">De claim die mag: &bdquo;' + n.claim +
+    '&rdquo; — de goedgekeurde EU-formulering, woordelijk. Geen eigen belofte.' +
+    (n.claimCaveat ? ' ' + n.claimCaveat : '') + '</p>';
+  return '<p class="claimline">' + n.claimNote + '</p>';
+}
+function productKaart(key, mark){
+  var n = STOF[key], sc = SC(), band = sc.banden[key], v = oordeelVan(key);
+  var h = '<article class="card" data-type="product" data-v="' + v + '">';
+  h += '<div class="card-head"><span class="badge b-product">' + STOF_DOMEINLABEL[n.domeinen[0]] + '</span>' +
+       '<span class="vtag" data-v="' + v + '">' + VLABEL[v] + '</span></div>';
+  h += '<h3>' + n.label + '</h3>';
+  h += '<p class="why">' + (v === 'ja'
+      ? 'Deze staat hier omdat je inname ' + BAND_WORD[band] + ' ligt en je lagen erboven staan — niet omdat het bij je klachten past.'
+      : v === 'niet'
+        ? 'Deze staat hier omdat we hem beoordeeld hebben en het antwoord nee is. Dat is de reden dat hij zichtbaar blijft.'
+        : v === 'nooit'
+          ? 'Deze staat hier omdat je hem tegenkomt zodra je op slaap gaat zoeken, en je van ons mag horen waarom wij hem niet inzetten.'
+          : 'Deze staat hier omdat je hem zou kunnen tegenkomen, en je van ons mag horen waarom wij er geen oordeel over geven.') + '</p>';
+  if (n.ri) h += '<div class="afl"><p class="afl-h">Hoe we hier komen</p>' + afleidingRows(key, mark) + '</div>';
+  h += '<p class="geenadvies">Dit is geen advies en geen diagnose. We meten je inname, niet je status — wat er in je lichaam zit weten we niet, en dat beweren we hier ook niet.</p>';
+  h += claimRegel(n);
+  if (v === 'ja') h += '<p class="qual">Waarop we vergelijken: vorm, elementaire dosering per dagdosis, het etiket naast de claim, en de kosten per dag.</p>';
+  h += '<p class="microline">' + (n.path ? MICRO_COMMISSIE : MICRO_GEEN) + '</p>';
+  if (v === 'ja' && n.path) {
+    h += '<div class="card-out"><button class="linkish" type="button" data-ev="dashboard.schap_vergelijking_click:' + n.hub + '">' +
+      'Vergelijk ' + n.label.toLowerCase() + ' ' + ico('arrow',14) + '</button>' +
+      '<p class="micro" style="margin-top:2px">Naar ' + n.path + ' — daar staan de merken, de doseringen en de kosten per dag.</p></div>';
+  } else {
+    h += '<p class="micro" style="margin-top:11px">Geen uitgang. Een kaart zonder positief oordeel krijgt geen link — dat is het verschil tussen een oordeel en een etalage.</p>';
+  }
+  return h + '</article>';
+}
+function pickKaart(key, mark){
+  var n = STOF[key], v = oordeelVan(key), mismatch = (v !== 'ja');
+  var h = '<article class="pick" data-mismatch="' + (mismatch ? 1 : 0) + '">';
+  h += '<div class="pick-head"><span class="badge b-product">' + STOF_DOMEINLABEL[n.domeinen[0]] + '</span>' +
+       '<span class="vtag" data-v="' + v + '">' + VLABEL[v] + '</span></div>';
+  h += '<h3>' + n.label + '</h3>';
+  h += '<span class="pick-when">zelf toegevoegd &middot; staat op Mijn Dag als handeling, zonder oordeel of merk</span>';
+  if (mismatch) {
+    h += '<div class="mismatch"><b>Jij koos hem, wij zeggen nu &bdquo;' + VLABEL[v].toLowerCase() + '&rdquo;.</b> ' +
+      'Hij blijft staan zolang jij hem er wilt hebben. Wat wij ervan vinden staat ernaast en verandert niet omdat je hem koos — ' +
+      'dat is precies waarom dit twee secties zijn en geen twee standen van dezelfde kaart.</div>';
+  }
+  /* Op Mijn keuze staat de afleiding ingeklapt: de klant heeft hier al
+     besloten, en het oordeel plus de reden staan al in de kop en de
+     mismatch-regel. Op Aanbevolen staat hij open, want daar IS de
+     afleiding het argument. Die asymmetrie is opzet, geen inconsistentie. */
+  var aflOpen = (S.ui.afl === key);
+  h += '<div class="afl" style="margin-top:12px">' +
+    '<button class="afl-h" type="button" data-afl="' + key + '" aria-expanded="' + aflOpen + '" ' +
+    'style="display:flex;align-items:center;gap:7px;width:100%;background:none;border:none;' +
+    'border-bottom:1px solid var(--line-soft);text-align:left;min-height:42px">' +
+    'Ons oordeel, ongewijzigd — hoe we hier komen ' + ico(aflOpen ? 'chevU' : 'chevD', 13) + '</button>' +
+    (aflOpen ? afleidingRows(key, mark) : '') + '</div>';
+  h += claimRegel(n);
+  h += '<p class="microline">' + (n.path ? MICRO_COMMISSIE : MICRO_GEEN) + '</p>';
+  h += '<div class="pick-acts"><button class="mini-btn" type="button" data-ev="dashboard_favorieten_remove:' + key + '">Haal uit mijn keuze</button>' +
+    (v === 'ja' && n.path ? '<button class="mini-btn" type="button" data-ev="dashboard.schap_vergelijking_click:' + n.hub + '">Vergelijk</button>' : '') +
+    '</div>';
+  return h + '</article>';
+}
+function dienstKaart(id, isPick){
+  var d = DIENST[id];
+  var h = '<article class="' + (isPick ? 'pick' : 'card') + '" data-v="' + d.v + '" data-mismatch="0">';
+  h += '<div class="' + (isPick ? 'pick-head' : 'card-head') + '"><span class="badge b-dienst">' + d.badge + ' &middot; ' + STOF_DOMEINLABEL[d.domein] + '</span>' +
+       '<span class="vtag" data-v="' + d.v + '">' + VLABEL[d.v] + '</span></div>';
+  h += '<h3>' + d.titel + '</h3>';
+  if (d.wanneer) h += '<span class="pick-when">' + d.wanneer + '</span>';
+  h += '<p class="why" style="margin-top:9px">' + d.why + '</p>';
+  h += '<p class="qual">' + d.quality + '</p>';
+  h += '<div class="vd"><dl>' +
+    '<div><dt>Wat we hebben nagekeken</dt><dd>' + d.vd.gecheckt + '</dd></div>' +
+    '<div><dt>Sterk</dt><dd>' + d.vd.sterk + '</dd></div>' +
+    '<div><dt>Zwak</dt><dd>' + d.vd.zwak + '</dd></div>' +
+    '<div><dt>Ons oordeel</dt><dd>' + d.vd.oordeel + '</dd></div></dl></div>';
+  h += '<p class="microline">' + d.micro + '</p>';
+  h += '<p class="micro" style="margin-top:9px">Geen afleiding op deze kaart. Inname &times; behoefte &times; laagstand geldt voor een voedingsstof, niet voor een behandeling of een cursus.</p>';
+  return h + '</article>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TAB 1 · LEEFSTIJL — een spiegel, geen werkplek. Regels, nul kaarten.
+   Wie hier iets wil veranderen, gaat naar het leefstijlprofiel.
+   ═══════════════════════════════════════════════════════════════════ */
+function tabLeefstijl(){
+  var h = '<section class="sec" aria-label="Leefstijl">' +
+    secTop('Leefstijl', SPIEGEL.reduce(function(a,r){ return a + r.keuze; }, 0) + ' gekozen over 5 domeinen',
+      'Alleen een spiegel. Wat de check aanbeveelt en wat je koos staat per domein op je leefstijlprofiel — daar is de werkplek, hier alleen de stand en de weg terug.');
+  h += '<div class="spiegel">';
+  for (var i = 0; i < SPIEGEL.length; i++) {
+    var r = SPIEGEL[i];
+    h += '<button type="button" class="spiegel-row" style="width:100%;text-align:left;background:none;border-top:1px solid var(--line-soft)" ' +
+      'data-ev="hub_click:leefstijlprofiel:' + r.d + '"><span class="grow">' +
+      '<span class="spiegel-t">' + STOF_DOMEINLABEL[r.d] + '</span>' +
+      '<span class="spiegel-c">' + r.aanb + ' aanbevolen &middot; ' +
+        (r.keuze === 0 ? 'nog niets gekozen' : r.keuze + ' gekozen') + '</span></span>' +
+      '<span class="go">' + ico('chevR',16) + '</span></button>';
+  }
+  h += '</div>';
+  h += '<p class="micro">Nul kaarten op deze tab, en dat is opzet. Een leefstijlstap en een productafleiding horen niet op dezelfde scroll — daarom staat de een hier alleen als regel en de ander onder Producten.</p>';
+  return h + '</section>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TAB 2 · PRODUCTEN — twee secties. De poort hoort BIJ Aanbevolen: hij
+   bepaalt of die sectie kaarten heeft. Geen derde blok ernaast.
+   Twee views: voor jou (kort) en het hele veld (de sync-naad).
+   ═══════════════════════════════════════════════════════════════════ */
+function deltaPanel(){
+  if (S.scherm !== 'S3') return '';
+  var rows = [
+    ['Bron','Je voedingscheck opnieuw ingevuld <span class="was">14 augustus</span><span class="arrowsep">&rarr;</span><span class="nu">18 augustus</span>'],
+    ['Magnesium','Inname <span class="was">onder de referentie</span><span class="arrowsep">&rarr;</span><span class="nu">op de referentie</span> &middot; oordeel <span class="was">Aanrader</span><span class="arrowsep">&rarr;</span><span class="nu">Nu niet</span>'],
+    ['Omega-3','Inname <span class="was">op de referentie</span><span class="arrowsep">&rarr;</span><span class="nu">onder de referentie</span> &middot; oordeel <span class="was">Nu niet</span><span class="arrowsep">&rarr;</span><span class="nu">Aanrader</span>'],
+    ['Eiwitpoeder','Idem — <span class="was">Nu niet</span><span class="arrowsep">&rarr;</span><span class="nu">Aanrader</span>'],
+    ['Mijn keuze','<span class="nu">ongewijzigd</span> — je magnesium staat er nog, nu met ons „Nu niet” erbij. Een nieuwe meting verandert ons oordeel, niet jouw keuze.']
+  ];
+  var h = '<div class="delta"><h2>Er is iets veranderd sinds je vorige bezoek</h2>' +
+    '<p class="note">E&eacute;n check opnieuw ingevuld. De vorm van dit scherm verandert niet mee — alleen de uitkomsten.</p><div class="delta-rows">';
+  for (var i = 0; i < rows.length; i++)
+    h += '<div class="delta-row"><span class="delta-k">' + rows[i][0] + '</span><span class="delta-v">' + rows[i][1] + '</span></div>';
+  return h + '</div></div>';
+}
+
+function poortBlok(){
+  var r = poortNu(), p = POORT[r];
+  var tekst = r === 'geen_check'
+    ? 'Zonder check weten we niet wat er van tafel komt. Dat is precies wat je nodig hebt om te weten of aanvullen zin heeft.'
+    : r === 'geen_voedingscheck'
+      ? 'Je voedingscheck staat nog open. Een aanvulling dicht een gat dat je eten laat vallen — zonder te weten waar dat gat zit, is aanvullen gokken.'
+      : 'Je eetbasis en je verhoudingen staan, en er blijft een gemeten gat over. Dat is de enige stand waarin aanvullen een vraag wordt in plaats van een gok.';
+  var h = '<div class="gate" data-open="' + p.open + '"><p class="glab">' +
+    ico(r === 'open' ? 'open' : (r === 'geen_check' ? 'info' : 'lock'), 13) + p.lab + '</p>' +
+    '<p class="gb">' + tekst + '</p>';
+  if (!p.open) h += '<p class="micro" style="margin-top:11px">Geen kaarten, geen teaser, geen &bdquo;binnenkort&rdquo;. Een dichte deur die toch iets laat zien is geen dichte deur.</p>';
+  h += '<div class="gatepick"><p class="pklab">Prebuild &middot; bekijk de poortstanden</p>';
+  ['geen_check','geen_voedingscheck','open'].forEach(function(k){
+    h += '<button class="mini-btn" type="button" data-poort="' + k + '" aria-pressed="' + (r === k) + '">' + k.replace(/_/g,' ') + '</button>';
+  });
+  h += '<p class="micro" style="margin-top:8px">De voedingscheck-poort staat niet in BESLUIT &sect;D5, maar w&eacute;l in src/ (DomainSupplementStance.tsx r.60) en op de hub (needs_nutrition). Hier zichtbaar gehouden in plaats van onder &bdquo;geen check&rdquo; geschoven.</p></div>';
+  return h + '</div>';
+}
+
+function veldTabel(){
+  var sc = SC(), t = tellen();
+  var h = '<section class="sec" aria-label="Het veld">' +
+    secTop('Het veld', STOF_IDS.length + ' stoffen beoordeeld',
+      'Dezelfde stoffen als op /supplementen, met de kolom die daar niet kan staan: wat het bij jou doet. Ook de zeven waar het antwoord nee is — die blijven staan, want dat is waar een oordeel aan te herkennen valt.');
+  h += '<div class="tablewrap"><table class="veld"><thead><tr>' +
+    '<th>Stof</th><th>Domein</th><th>EU-claimstatus</th><th>Jouw oordeel</th><th>Op /supplementen</th></tr></thead><tbody>';
+  for (var i = 0; i < STOF_IDS.length; i++) {
+    var k = STOF_IDS[i], n = STOF[k], v = oordeelVan(k);
+    h += '<tr><td class="stof">' + n.label + '</td>' +
+      '<td>' + n.domeinen.map(function(d){ return STOF_DOMEINLABEL[d]; }).join(', ') + '</td>' +
+      '<td><span class="pill" data-s="' + n.status + '">' + STATUS_WORD[n.status] + '</span></td>' +
+      '<td><span class="vtag" data-v="' + v + '">' + (sc.check && sc.voeding ? VLABEL[v] : '—') + '</span></td>' +
+      '<td>/supplementen/' + n.hub + '</td></tr>';
+  }
+  h += '</tbody></table></div>';
+  h += '<p class="micro">Acht stoffen, en op dit moment ' + (sc.check && sc.voeding ? t.ja : 0) +
+    ' met een positief oordeel. Kruipt dat getal richting acht, dan is dit geen schap meer maar een schappenplan — dat is de teller die wij zelf het scherpst in de gaten houden.</p>';
+  return h + '</section>';
+}
+
+function tabProducten(){
+  var sc = SC(), p = POORT[poortNu()];
+  var h = '<div class="viewpick" role="group" aria-label="Weergave">' +
+    '<button type="button" data-view="voorjou" aria-current="' + (S.view === 'voorjou') + '">Voor jou</button>' +
+    '<button type="button" data-view="alles" aria-current="' + (S.view === 'alles') + '">Het hele veld</button></div>';
+
+  if (S.view === 'alles') return h + veldTabel();
+
+  h += deltaPanel();
+
+  /* ── sectie 1 · Aanbevolen (met de poort erin) ── */
+  var aanb = p.open ? aanbevolenStoffen() : [];
+  var body;
+  if (!sc.check || !sc.voeding) {
+    body = poortBlok() + '<div class="emptypair" style="margin-top:12px">' +
+      '<div class="emptycheck"><h2>Nog geen leefstijlcheck.</h2>' +
+      '<p class="lead">We beoordelen pas nadat je check binnen is — eerst weten waar je staat.</p>' +
+      '<p class="mirror">Zelfde staat als /supplementen &rarr; no_intake</p></div>' +
+      '<div class="emptycheck"><h2>Check binnen, voedingscheck nog niet.</h2>' +
+      '<p class="lead">Wat hier nog ontbreekt is je bord. Dat kost een minuut en het is het enige stuk dat we nu missen.</p>' +
+      '<p class="mirror">Zelfde staat als /supplementen &rarr; needs_nutrition</p></div></div>';
+  } else if (aanb.length === 0) {
+    body = poortBlok() + '<div class="emptycheck" style="margin-top:12px"><h2>Niets dat nu iets toevoegt.</h2>' +
+      '<p class="lead">Alle acht stoffen beoordeeld, geen van alle voegt op dit moment iets toe aan wat je al doet. Dat is een uitkomst, geen gat.</p></div>';
+  } else {
+    var mark = (S.scherm === 'S3');
+    body = poortBlok() + '<div class="cards" style="margin-top:12px">';
+    for (var i = 0; i < aanb.length; i++) body += productKaart(aanb[i], mark);
+    body += '</div>';
+    var rest = STOF_IDS.length - aanb.length;
+    body += '<p class="micro" style="margin-top:10px">Nog ' + rest + ' stoffen beoordeeld, geen daarvan voegt nu iets toe. ' +
+      'Ze staan met hun oordeel onder <b>Het hele veld</b> — weggelaten worden ze niet.</p>';
+  }
+  h += '<section class="sec" aria-label="Aanbevolen producten">' +
+    secTop('Aanbevolen', (sc.check && sc.voeding ? aanb.length + ' van ' + STOF_IDS.length : 'nog niets'),
+      'Dit leiden wij af uit je checks. De poort erboven bepaalt of hier iets staat; dat is uitleg, geen aanbod.') +
+    body + '</section>';
+
+  /* ── sectie 2 · Mijn keuze ── */
+  var picks = sc.picks;
+  var keuze;
+  if (picks.length === 0) {
+    keuze = '<div class="emptycheck"><h2>Je hebt nog geen supplement gekozen.</h2>' +
+      '<p class="lead">Dat hoeft ook niet. Wat je hierboven ziet is wat wij ervan vinden — kiezen blijft aan jou, en niets kiezen is een geldige uitkomst.</p></div>';
+  } else {
+    keuze = '<div class="cards">';
+    for (var j = 0; j < picks.length; j++) keuze += pickKaart(picks[j], S.scherm === 'S3' && picks[j] === 'magnesium');
+    keuze += '</div>';
+  }
+  h += '<div class="secrule"></div><section class="sec" aria-label="Mijn keuze producten">' +
+    secTop('Mijn keuze', (picks.length === 0 ? 'nog niets gekozen' : picks.length + ' gekozen, met ons oordeel'),
+      'Dit koos jij. Het staat hier omdat jij het hier zette — niet omdat wij het voorstelden, en het verdwijnt niet als ons oordeel kantelt.') +
+    keuze + '</section>';
+  return h;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TAB 3 · DIENSTEN — zelfde twee secties, geen afleiding.
+   ═══════════════════════════════════════════════════════════════════ */
+function tabDiensten(){
+  var h = '<section class="sec" aria-label="Aanbevolen diensten">' +
+    secTop('Aanbevolen', '1 uit je slaapcheck',
+      'Afgeleid uit je checks. Een dienst krijgt hetzelfde oordeel-schema als een product, maar geen inname-afleiding — die geldt voor een voedingsstof, niet voor een behandeling.') +
+    '<div class="cards">' + dienstKaart('cgti', false) + '</div></section>';
+  h += '<div class="secrule"></div><section class="sec" aria-label="Mijn keuze diensten">' +
+    secTop('Mijn keuze', '1 gekozen, met ons oordeel',
+      'Dit koos jij. Ook hier staat de commissie-regel per kaart — niet als voetnoot onderaan de pagina.') +
+    '<div class="cards">' + dienstKaart('online8', true) + '</div></section>';
+  return h;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TAB 4 · BEGELEIDING — apart, want dit is onze eigen dienst. Hij hoort
+   niet tussen de opties die we beoordelen: daar zou hij een
+   belanghebbende zijn (BESLUIT SE2).
+   ═══════════════════════════════════════════════════════════════════ */
+function tabBegeleiding(){
+  var h = '<section class="sec" aria-label="Begeleiding van PerfectSupplement">' +
+    secTop('Van PerfectSupplement', 'onze eigen dienst',
+      'Dit is geen partner en geen vergelijking. We verdienen er rechtstreeks aan, en daarom staat hij op zijn eigen tab in plaats van tussen de opties die we beoordelen.') +
+    '<div class="ownfold"><span class="own-badge">Van PerfectSupplement</span>' +
+    '<h3 style="font-size:16px;margin-bottom:8px">Begeleiding die met je meekijkt</h3>' +
+    '<p class="note">Wekelijks meekijken op wat je afvinkt, je plan bijstellen als het vastloopt, en de hertest samen doorlopen. In ontwikkeling.</p>' +
+    '<p class="micro" style="margin-top:11px">Wat je hier ook kiest: ons oordeel over alle andere opties verandert er niet door. Dat is de hele reden dat deze tab bestaat en dat hij leeg mag blijven.</p></div></section>';
+  h += '<div class="secrule"></div><section class="sec" aria-label="Mijn keuze begeleiding">' +
+    secTop('Mijn keuze', 'nog niets gekozen',
+      'Wat je van ons afneemt staat hier. Meestal blijft deze sectie leeg, en dat is geen probleem — de ladder en het oordeel zijn gratis en blijven dat.') +
+    '<div class="emptycheck"><h2>Je neemt nog niets van ons af.</h2>' +
+    '<p class="lead">Alles wat je nodig hebt om te beginnen staat gratis in je profiel en in je schap. Deze tab is er voor wie meer wil, niet voor wie verder wil.</p></div></section>';
+  return h;
+}
+
+function backStrip(){
+  return '<section class="strip"><h2>Waar dit vandaan komt</h2><div class="striplinks">' +
+    '<button type="button" data-ev="hub_click:leefstijlprofiel:favorieten_strip">' +
+      '<span class="striplink-top">Je leefstijlprofiel' + ico('chevR',14) + '</span>' +
+      '<span class="striplink-hint">Per domein je ladder, je aanbeveling en je eigen keuzes. Daar staat waarom de poort open of dicht is — zonder aanbod.</span></button>' +
+    '<button type="button" data-ev="hub_click:vandaag:favorieten_strip">' +
+      '<span class="striplink-top">Je stap van vandaag' + ico('chevR',14) + '</span>' +
+      '<span class="striplink-hint">Wat je koos staat daar als handeling: naam en moment, zonder oordeel of merk.</span></button>' +
+    '</div></section>';
+}
+
+function render(){
+  var h = appbar() + '<div class="pad">';
+  h += '<div class="backrow"><span class="backbtn" aria-hidden="true">' + ico('chevR',14) + '</span>' +
+       '<h1 class="h-sec">Favorieten</h1></div>';
+  var body = S.tab === 'leefstijl' ? tabLeefstijl()
+    : S.tab === 'producten' ? tabProducten()
+    : S.tab === 'diensten' ? tabDiensten()
+    : tabBegeleiding();
+  h += '<div class="stack">' + railStrip() + ketenStrip() + subnav() + body + backStrip() +
+    '<p class="footnote">Ons oordeel is altijd gratis en gaat niet achter een slot. Aan sommige opties verdienen we iets, aan andere niets — dat verandert niets aan wat we ervan vinden.</p></div>';
+  return h + '</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAINT + WIRING
+   ═══════════════════════════════════════════════════════════════════ */
+function track(name){
+  document.getElementById('evStrip').textContent = name + '  ·  tab=' + S.tab + ' scherm=' + S.scherm + ' view=' + S.view;
+}
+function paintSwitches(){
+  var h = '';
+  TABS.forEach(function(t){
+    h += '<button class="sw" type="button" data-tab="' + t[0] + '" aria-pressed="' + (S.tab === t[0]) + '">' + t[1] + '</button>';
+  });
+  document.getElementById('swTab').innerHTML = h;
+  h = '';
+  SCHERM_IDS.forEach(function(id){
+    h += '<button class="sw" type="button" data-scherm="' + id + '" aria-pressed="' + (S.scherm === id) + '"' +
+      (S.tab === 'producten' ? '' : ' disabled') + '>' + SCHERM[id].lab + '</button>';
+  });
+  document.getElementById('swScherm').innerHTML = h;
+  var vw = document.getElementById('swVw').children;
+  for (var i = 0; i < vw.length; i++)
+    vw[i].setAttribute('aria-pressed', vw[i].getAttribute('data-vw') === S.vw);
+}
+function paint(){
+  var app = document.getElementById('app');
+  app.setAttribute('data-appw', S.vw);
+  app.innerHTML = render();
+  var note = S.tab === 'producten'
+    ? SCHERM[S.scherm].note + ' — poort: ' + poortNu().replace(/_/g,' ')
+    : (S.tab === 'leefstijl'
+        ? 'Leefstijl is hier een spiegel: per domein een regel en een weg terug naar het leefstijlprofiel. Nul kaarten, want een leefstijlstap en een productafleiding horen niet op dezelfde scroll. De schermschakelaar staat uit — er is hier geen datawijziging te tonen.'
+        : S.tab === 'diensten'
+          ? 'Diensten krijgen hetzelfde oordeel-schema als producten, maar geen inname-afleiding. Twee secties, twee bronnen. De schermschakelaar staat uit.'
+          : 'Begeleiding staat apart omdat het onze eigen dienst is: aanbod waar we rechtstreeks aan verdienen hoort niet tussen de opties die we beoordelen. De schermschakelaar staat uit.');
+  document.getElementById('stateNote').innerHTML = note;
+  paintSwitches();
+}
+document.addEventListener('click', function(e){
+  var t;
+  if ((t = e.target.closest('[data-tab]'))) { S.tab = t.getAttribute('data-tab'); S.view = 'voorjou'; S.ui.poort = null; S.ui.afl = null; track('tab_gewisseld'); return paint(); }
+  if ((t = e.target.closest('button[data-scherm]'))) {
+    if (t.disabled) return;
+    S.scherm = t.getAttribute('data-scherm'); S.ui.poort = null; S.ui.afl = null; track('scherm_gewisseld'); return paint();
+  }
+  if ((t = e.target.closest('[data-view]'))) { S.view = t.getAttribute('data-view'); track('view_gewisseld:' + S.view); return paint(); }
+  if ((t = e.target.closest('button[data-vw]'))) { S.vw = t.getAttribute('data-vw'); return paint(); }
+  if ((t = e.target.closest('[data-afl]'))) {
+    var k = t.getAttribute('data-afl');
+    S.ui.afl = (S.ui.afl === k ? null : k);
+    if (S.ui.afl) track('afleiding_geopend:' + k);
+    return paint();
+  }
+  if ((t = e.target.closest('[data-poort]'))) { S.ui.poort = t.getAttribute('data-poort'); track('dashboard.advies_gate_passed:' + S.ui.poort); return paint(); }
+  if ((t = e.target.closest('[data-ev]'))) { track(t.getAttribute('data-ev')); return; }
+});
+paint();
+track('prebuild_v3b_geladen');
+})();
+</script>
+
+<!--
+  ══ ACCEPTATIE — bestand B ══════════════════════════════════════════
+  Nagelopen op 19 augustus 2026 over 4 tabs x 4 schermen x 2 views.
+
+  MACHINAAL GETOETST (nul treffers)
+   - status-woorden:   tekort | gebrek | te weinig | deficient
+   - advies-taal:      wij raden aan | ons advies | onze aanbeveling
+   - g/kg:             alleen in de zin die zegt dat we het NIET doen
+   - vergelijkingslink zonder positief oordeel: elke uitgang zit achter
+     v === 'ja' && n.path
+   - leefstijl-rij en productafleiding op dezelfde scroll: onmogelijk,
+     de tabs sluiten elkaar uit
+   - lg: / xl:         geen
+
+  HANDMATIG GETOETST
+   - elke tab heeft maximaal twee secties; de poort zit IN Aanbevolen
+   - S0-S3 werken alleen op Producten; elders staat de schakelaar uit
+   - S3: magnesium kantelt, Mijn keuze blijft staan, delta-panel verschijnt
+   - Diensten: geen afleidingsblok, wel oordeel + commissie per kaart
+   - Begeleiding: apart, mag leeg blijven, geen partner-oordeel ertussen
+   - 375px: geen horizontale scroll buiten .tablewrap en .subnav
+
+  ══ OPEN PUNTEN ═════════════════════════════════════════════════════
+  P-B1 · De tab-teller op Producten telt aanbevolen + gekozen. Bij een
+  dichte poort is dat 0, en dan lijkt de tab leeg terwijl er acht
+  beoordeelde stoffen achter zitten. Alternatief: altijd het aantal
+  beoordeelde stoffen tonen. Voorgelegd, niet zelf beslist.
+
+  P-B2 · Leefstijl staat als eerste tab maar is de enige zonder aanbod.
+  Dat is bewust (gratis eerst, zoals in het schap gratis boven betaald
+  staat), maar het betekent wel dat wie op Favorieten landt eerst een
+  spiegel ziet en niet het schap. Als Producten de eerste tab moet zijn,
+  is dat een regel in TABS.
+
+  P-B3 · Een vijfde oordeelslabel. v1 kent er vier; melatonine past op
+  geen van vier. src/types/verdict.ts r.6 heeft de waarde al:
+  VerdictValue "nooit". Hier gerenderd als "Nooit als aanvulling".
+-->
+
+
+<script data-embed>
+(function () {
+  "use strict";
+  var P = new URLSearchParams(location.search);
+  var NAV = {"hub:leefstijlprofiel":{"tab":"voortgang","screen":"leefstijlprofiel","useDomein":true},"hub:vandaag":{"tab":"vandaag","useDomeinAsKompas":true}};
+  var DOMEIN = P.get("domein") || P.get("fav") || "beweging";
+
+  /* Beginstand via de bestaande (verborgen) chrome-schakelaar: die roept de
+     eigen paint() van de prebuild aan, dus we hoeven geen interne state te
+     kennen. */
+  var initValue = P.get("schaptab");
+  if (initValue) {
+    var sel = (v) => `#swTab button[data-tab="${v}"]`;
+    var btn = document.querySelector(sel(initValue));
+    if (btn) btn.click();
+  }
+
+  /* "Terug naar Vandaag" is de terugweg van de prebuild zélf — slaap, stress
+     en verbinding zetten hem boven hun kompas-scherm. Het dashboard heeft
+     zijn eigen domein-nav, dus die regel is hier dubbelop. */
+  function stripBacklinks() {
+    var links = document.querySelectorAll("a");
+    for (var i = 0; i < links.length; i++) {
+      var a = links[i];
+      if (!/terug naar vandaag/i.test(a.textContent || "")) continue;
+      var host = a.parentElement;
+      a.remove();
+      if (host && host.children.length === 0 && !host.textContent.trim()) host.remove();
+    }
+  }
+  stripBacklinks();
+  new MutationObserver(stripBacklinks).observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+
+  function routeFor(key) {
+    var r = NAV[key];
+    if (!r) return null;
+    var out = { tab: r.tab };
+    if (r.screen) out.screen = r.screen;
+    if (r.schap) out.schap = r.schap;
+    if (r.fav) out.fav = r.fav;
+    if (r.useDomein) out.fav = DOMEIN;
+    if (r.useDomeinAsKompas) out.kompas = DOMEIN;
+    return out;
+  }
+
+  /* Capture-fase: we moeten vóór de eigen handler van de prebuild zijn,
+     anders wisselt hij eerst intern van scherm. */
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-goto],[data-bridge],[data-ev]");
+    if (!el) return;
+
+    var key = null;
+    if (el.hasAttribute("data-goto")) key = "goto:" + el.getAttribute("data-goto");
+    else if (el.hasAttribute("data-bridge")) key = "bridge:" + el.getAttribute("data-bridge");
+    else {
+      var ev = el.getAttribute("data-ev") || "";
+      if (ev.indexOf("hub_click:") === 0) key = "hub:" + ev.split(":")[1];
+    }
+
+    var route = key && routeFor(key);
+    if (!route) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    parent.postMessage({ source: "psf-prebuild", route: route }, location.origin);
+  }, true);
+})();
+</script>
+</body>
+</html>

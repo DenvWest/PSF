@@ -2,10 +2,10 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
-import type { DashboardData, DashboardModel } from "@/types/dashboard";
+import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
-function model(): DashboardModel {
-  return {} as unknown as DashboardModel;
+function model(priority: PillarId = "beweging"): DashboardModel {
+  return { priority: { id: priority } } as unknown as DashboardModel;
 }
 
 function data(overrides: Partial<DashboardData> = {}): DashboardData {
@@ -36,11 +36,6 @@ describe("KompasOndersteuningTile — geen product op de dagelijkse surface", ()
     expect(screen.queryByText("Bekijk de vergelijking")).toBeNull();
   });
 
-  it("draagt één label-only deur naar Voortgang", () => {
-    render(<KompasOndersteuningTile model={model()} data={data()} onGoVoortgang={() => {}} />);
-    expect(screen.getByText("Bekijk je oordeel op Voortgang")).toBeTruthy();
-  });
-
   it("wijst zonder voedingscheck naar de check, niet naar een oordeel", () => {
     render(
       <KompasOndersteuningTile
@@ -50,6 +45,24 @@ describe("KompasOndersteuningTile — geen product op de dagelijkse surface", ()
       />,
     );
     expect(screen.getByText("Doe je voedingscheck →")).toBeTruthy();
+    expect(screen.queryByText("Maak een keuze")).toBeNull();
+  });
+});
+
+describe("KompasOndersteuningTile — de deur op de home (N1)", () => {
+  it("draagt één deur, label-only, naar het schap van je prioriteitsdomein", () => {
+    render(<KompasOndersteuningTile model={model("beweging")} data={data()} onGoVoortgang={() => {}} />);
+    const deur = screen.getByRole("link", { name: /Maak een keuze/ });
+    expect(deur.getAttribute("href")).toBe(
+      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging&schap=producten",
+    );
+    // Eén deur: de tweede route naar het oordeel verdwijnt zodra het schap er is.
     expect(screen.queryByText("Bekijk je oordeel op Voortgang")).toBeNull();
+  });
+
+  it("houdt domeinen zonder eigen schap op de route naar Voortgang", () => {
+    render(<KompasOndersteuningTile model={model("slaap")} data={data()} onGoVoortgang={() => {}} />);
+    expect(screen.queryByText("Maak een keuze")).toBeNull();
+    expect(screen.getByText("Bekijk je oordeel op Voortgang")).toBeTruthy();
   });
 });

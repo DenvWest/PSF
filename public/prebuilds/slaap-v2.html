@@ -4,9 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Slaap v2 — ge&iuml;ntegreerde prebuild (zone S · B · V)</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════════════
    SLAAP v2 — drie zones, twee breedtes, zes staten.
@@ -456,6 +453,101 @@ a.link-quiet:hover{text-decoration:underline}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
+</style>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/prebuilds/fonts/font-f273cf2c9ce9.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/prebuilds/fonts/font-468d56b6b25b.woff2">
+<link rel="stylesheet" href="/prebuilds/fonts/fonts-eee8af4d8c74.css">
+
+<style data-embed>
+  /* Reviewer-chrome en de interne appbar horen niet in het product: het
+     dashboard eromheen levert die navigatie al. Verbergen, niet slopen —
+     de chrome-knoppen zetten hieronder nog de beginstand. */
+  .chrome, .notes, .vpnote, .appbar { display: none !important; }
+  .stage { padding: 0 !important; }
+  /* Vloeiend i.p.v. de vaste 375/1280-wissel: de @container-regels in de
+     prebuild moeten op de échte breedte reageren (mobiel/iPad/desktop). */
+  .surface, .app { width: 100% !important; max-width: 100% !important;
+                   border: 0 !important; border-radius: 0 !important;
+                   box-shadow: none !important; }
+
+  /* Eén schil voor álle surfaces (19 aug). Elke prebuild bracht zijn eigen
+     achtergrond, randkleur en inktschaal mee — beweging op #1a2e1a, de rest
+     op #132414, met drie varianten van --line ertussen. In het dashboard
+     staan ze naast elkaar, dus draaien ze hier allemaal op de tokens van het
+     leefstijlprofiel: dat scherm is de referentie. De rand eromheen zet
+     PrebuildFrame, zodat elk domein exact hetzelfde kader krijgt. */
+  :root, .surf-intake, .surf-dash {
+    --shell:#132414 !important;
+    --bg:#132414 !important;
+    --panel:rgba(255,255,255,.045) !important;
+    --panel-2:rgba(0,0,0,.20) !important;
+    --line:rgba(255,255,255,.11) !important;
+    --line-soft:rgba(255,255,255,.06) !important;
+    --ink:#F1EFE8 !important;
+    --soft:#CDD7D0 !important;
+    --mut:#9FB0A6 !important;
+    --subtle:#7E8C82 !important;
+  }
+  /* Niet transparant: dan liep de bijna-zwarte --shell als band onder de
+     content door zodra die korter was dan het frame. */
+  html, body, .stage { background:#132414 !important; }
+  .surface, .app { background:#132414 !important; }
+
+  /* Reviewer-restanten die buiten .notes vallen: stress en verbinding hangen
+     hun ontwerpnotities als los <details> onder .stage. */
+  body > details { display:none !important; }
+
+  /* Voeding rendert renderK in een tweede .screen binnen de eerste; zonder
+     dit telt de padding dubbel en springt juist dat domein verder in. */
+  .screen .screen, .pad .pad { padding:0 !important; }
+
+  /* Eén scherm, geen tweede scrollbalk (19 aug). De pagina zelf scrollt;
+     de surface krijgt geen eigen overflow meer. Compactere maatvoering
+     zodat een domein binnen één beeld past. */
+  html, body { height: auto !important; overflow: visible !important; }
+  .surface, .app { overflow: visible !important; }
+  .pad, .screen { padding: 14px 16px 14px !important; }
+  .stack { gap: 11px !important; }
+  .cols { gap: 16px !important; }
+  .kdome, .tile, .ktile, .panel { padding: 12px !important; }
+  .kdome .kstat { margin-top: 10px !important; }
+  .attnbar { margin-top: 10px !important; padding-top: 9px !important; }
+  .actie { padding: 8px 0 !important; }
+  .backrow { margin-bottom: 12px !important; }
+
+  /* Op desktop staan de twee slot-knoppen naast elkaar in plaats van
+     onder elkaar. Dat scheelt een knophoogte plus een gap — genoeg om
+     elk domein binnen één beeld te houden — en leest als primair naast
+     secundair. Alle vijf domeinen bouwen dit blok hetzelfde op: een
+     .stack met btn-terra, btn-ghost en de voetnoot. */
+  @container app (min-width: 760px) {
+    .stack:has(> .btn-terra) { flex-direction: row !important; flex-wrap: wrap;
+                               align-items: center; }
+    .stack:has(> .btn-terra) > .btn-terra,
+    .stack:has(> .btn-terra) > .btn-ghost { flex: 1 1 240px; width: auto !important; }
+    .stack:has(> .btn-terra) > .footnote,
+    .stack:has(> .btn-terra) > .kfoot { flex: 1 1 100%; min-width: 100%;
+                                        max-width: none !important; }
+  }
+
+  /* Knoppen reageren zichtbaar: hover, actief én toetsenbord-focus.
+     Voorheen had alleen een deel van de knoppen een hover-regel. */
+  button, .btn, .mini-btn, .chip, a.btn-terra, a.btn-ghost, .opt, .sw {
+    transition: background-color .15s ease, border-color .15s ease,
+                color .15s ease, transform .08s ease, opacity .15s ease;
+  }
+  button:not([disabled]):hover, .chip:not([disabled]):hover,
+  .mini-btn:not([disabled]):hover, .opt:hover,
+  a.btn-terra:hover, a.btn-ghost:hover { filter: brightness(1.12); }
+  button:not([disabled]):active, .chip:not([disabled]):active,
+  .mini-btn:not([disabled]):active, .opt:active,
+  a.btn-terra:active, a.btn-ghost:active { transform: translateY(1px); }
+  button:focus-visible, a:focus-visible, .chip:focus-visible,
+  .mini-btn:focus-visible, .opt:focus-visible {
+    outline: 2px solid var(--sage-lt, #9CC5A9); outline-offset: 2px;
+  }
+  button[disabled] { opacity: .5; cursor: not-allowed; }
+
 </style>
 </head>
 <body>
@@ -2019,6 +2111,78 @@ document.getElementById('vwSwitch').addEventListener('click', function(e){
 
 paintFrameSwitch();
 paint();
+</script>
+
+<script data-embed>
+(function () {
+  "use strict";
+  var P = new URLSearchParams(location.search);
+  var NAV = {"goto:MD":{"tab":"agenda"},"goto:VL":{"tab":"voortgang","screen":"leefstijlprofiel","fav":"slaap"},"goto:V1":{"tab":"voortgang"}};
+  var DOMEIN = P.get("domein") || P.get("fav") || "beweging";
+
+  /* Beginstand via de bestaande (verborgen) chrome-schakelaar: die roept de
+     eigen paint() van de prebuild aan, dus we hoeven geen interne state te
+     kennen. */
+  var initValue = P.get("frame");
+  if (initValue) {
+    var sel = (v) => `#frameSwitch button[data-frame="${v}"]`;
+    var btn = document.querySelector(sel(initValue));
+    if (btn) btn.click();
+  }
+
+  /* "Terug naar Vandaag" is de terugweg van de prebuild zélf — slaap, stress
+     en verbinding zetten hem boven hun kompas-scherm. Het dashboard heeft
+     zijn eigen domein-nav, dus die regel is hier dubbelop. */
+  function stripBacklinks() {
+    var links = document.querySelectorAll("a");
+    for (var i = 0; i < links.length; i++) {
+      var a = links[i];
+      if (!/terug naar vandaag/i.test(a.textContent || "")) continue;
+      var host = a.parentElement;
+      a.remove();
+      if (host && host.children.length === 0 && !host.textContent.trim()) host.remove();
+    }
+  }
+  stripBacklinks();
+  new MutationObserver(stripBacklinks).observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+
+  function routeFor(key) {
+    var r = NAV[key];
+    if (!r) return null;
+    var out = { tab: r.tab };
+    if (r.screen) out.screen = r.screen;
+    if (r.schap) out.schap = r.schap;
+    if (r.fav) out.fav = r.fav;
+    if (r.useDomein) out.fav = DOMEIN;
+    if (r.useDomeinAsKompas) out.kompas = DOMEIN;
+    return out;
+  }
+
+  /* Capture-fase: we moeten vóór de eigen handler van de prebuild zijn,
+     anders wisselt hij eerst intern van scherm. */
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-goto],[data-bridge],[data-ev]");
+    if (!el) return;
+
+    var key = null;
+    if (el.hasAttribute("data-goto")) key = "goto:" + el.getAttribute("data-goto");
+    else if (el.hasAttribute("data-bridge")) key = "bridge:" + el.getAttribute("data-bridge");
+    else {
+      var ev = el.getAttribute("data-ev") || "";
+      if (ev.indexOf("hub_click:") === 0) key = "hub:" + ev.split(":")[1];
+    }
+
+    var route = key && routeFor(key);
+    if (!route) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    parent.postMessage({ source: "psf-prebuild", route: route }, location.origin);
+  }, true);
+})();
 </script>
 </body>
 </html>

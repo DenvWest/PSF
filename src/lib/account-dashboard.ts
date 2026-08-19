@@ -741,24 +741,6 @@ export async function loadAccountDashboardData(
   const daysUntil = Math.ceil((due.getTime() - Date.now()) / 86_400_000);
   const cycleStartDate = new Date(firstSessionTs).toISOString().slice(0, 10);
   const cycleEndDate = due.toISOString().slice(0, 10);
-  let cycleEvidence: DashboardData["cycleEvidence"] = null;
-  try {
-    const evidence = await getDailyActionCycleEvidence(
-      admin,
-      accountId,
-      cycleStartDate,
-      cycleEndDate,
-    );
-    if (evidence) {
-      cycleEvidence = {
-        ...evidence,
-        cycleStartDate,
-        cycleEndDate,
-      };
-    }
-  } catch {
-    cycleEvidence = null;
-  }
   const remeasure = {
     dueDate: formatDashboardDate(due.toISOString()),
     daysUntil,
@@ -780,18 +762,53 @@ export async function loadAccountDashboardData(
           latestAnswers,
         )
       : null;
-  let planProgress = null;
-  if (planDomain && latestSnapshot.id) {
-    try {
-      planProgress = await loadPlanProgress(
-        admin,
-        latestSnapshot.id,
-        planDomain,
-      );
-    } catch {
-      planProgress = null;
-    }
-  }
+
+  // Eén batch (19 aug). Deze vijf lezingen stonden achter elkaar, terwijl ze
+  // alleen `accountId`, `latestSnapshot.id` en in-memory afgeleiden nodig
+  // hebben — vijf seriële round-trips naar Supabase op elke dashboard-render.
+  // Elke lezing houdt zijn eigen fallback: een kapotte deelvraag mag de rest
+  // van het dashboard niet meenemen, dus `settle` vangt per tak af in plaats
+  // van via één try rond het geheel.
+  const settle = <T,>(promise: Promise<T>, fallback: T): Promise<T> =>
+    promise.then(
+      (value) => value,
+      () => fallback,
+    );
+
+  const [
+    cycleEvidenceRow,
+    planProgress,
+    movementPlanBase,
+    movementDailyLog,
+    priorityPrefRow,
+  ] = await Promise.all([
+    settle(
+      getDailyActionCycleEvidence(admin, accountId, cycleStartDate, cycleEndDate),
+      null,
+    ),
+    planDomain && latestSnapshot.id
+      ? settle(loadPlanProgress(admin, latestSnapshot.id, planDomain), null)
+      : Promise.resolve(null),
+    latestSnapshot.id
+      ? settle(loadPlanProgress(admin, latestSnapshot.id, "movement"), null)
+      : Promise.resolve(null),
+    latestSnapshot.id && latestAnswers != null
+      ? settle(
+          Promise.all([
+            getDailyActionState(admin, accountId, "beweging"),
+            getDailyActionWeekStepKeys(admin, accountId, "beweging"),
+          ]).then(([todayState, weekStepKeys]) => [
+            ...new Set([...todayState.keys, ...weekStepKeys]),
+          ]),
+          [] as string[],
+        )
+      : Promise.resolve([] as string[]),
+    settle(getAccountPriorityPref(admin, accountId), null),
+  ]);
+
+  const cycleEvidence: DashboardData["cycleEvidence"] = cycleEvidenceRow
+    ? { ...cycleEvidenceRow, cycleStartDate, cycleEndDate }
+    : null;
 
   // Lock 5 (§5.1): de fase op de route is afgeleid uit de daily-log (executie-SSOT),
   // niet uit de opgeslagen plan_progress. Zo tonen de Overzicht-hero en de
@@ -799,30 +816,12 @@ export async function loadAccountDashboardData(
   // De opgeslagen voortgang levert alleen nog de metadata-velden.
   let movementPlanProgress: PlanProgress | null = null;
   if (latestSnapshot.id) {
-    let movementPlanBase: PlanProgress | null = null;
-    try {
-      movementPlanBase = await loadPlanProgress(admin, latestSnapshot.id, "movement");
-    } catch {
-      movementPlanBase = null;
-    }
-
     if (latestAnswers != null) {
-      let movementLoggedStepIds: string[] = [];
-      try {
-        const [todayState, weekStepKeys] = await Promise.all([
-          getDailyActionState(admin, accountId, "beweging"),
-          getDailyActionWeekStepKeys(admin, accountId, "beweging"),
-        ]);
-        movementLoggedStepIds = [...new Set([...todayState.keys, ...weekStepKeys])];
-      } catch {
-        movementLoggedStepIds = [];
-      }
-
-      if (movementPlanBase != null || movementLoggedStepIds.length > 0) {
+      if (movementPlanBase != null || movementDailyLog.length > 0) {
         movementPlanProgress = deriveMovementRouteProgress({
           domainScores: latestDomainScores,
           answers: latestAnswers,
-          loggedStepIds: movementLoggedStepIds,
+          loggedStepIds: movementDailyLog,
           base: movementPlanBase,
           sessionId: latestSnapshot.id,
         });
@@ -860,7 +859,6 @@ export async function loadAccountDashboardData(
     ? { gramsLow: proteinTargetFull.gramsLow, gramsHigh: proteinTargetFull.gramsHigh }
     : null;
 
-  const priorityPrefRow = await getAccountPriorityPref(admin, accountId);
   const priorityPref = priorityPrefRow
     ? {
         pillarId: priorityPrefRow.pillarId,

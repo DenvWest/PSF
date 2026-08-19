@@ -68,7 +68,33 @@ function mapRow(row: VerdictRow): StoredSupplementVerdict | null {
 export type RecordVerdictsOptions = {
   sessionId?: string | null;
   now?: Date;
+  /**
+   * De al gelezen geldige oordelen. De dashboard-render leest die toch al —
+   * meegeven scheelt een round-trip op elke paginaweergave.
+   */
+  previous?: StoredSupplementVerdict[];
 };
+
+/**
+ * Welke afgeleide oordelen echt afwijken van wat er staat. Puur, zodat een
+ * aanroeper kan bepalen of er überhaupt geschreven moet worden zonder de DB
+ * aan te raken.
+ */
+export function selectChangedVerdicts(
+  previous: StoredSupplementVerdict[],
+  verdicts: SupplementVerdict[],
+): SupplementVerdict[] {
+  const previousByKey = new Map(previous.map((row) => [row.ingredientKey, row]));
+  return verdicts.filter((verdict) => {
+    const current = previousByKey.get(verdict.ingredientKey);
+    return !(
+      current &&
+      current.verdict === verdict.verdict &&
+      current.reasonKey === verdict.reasonKey &&
+      current.rulesVersion === verdict.rulesVersion
+    );
+  });
+}
 
 export type RecordVerdictsResult = {
   /** Ingrediënten waarvan het oordeel daadwerkelijk omsloeg. */
@@ -88,21 +114,12 @@ export async function recordSupplementVerdicts(
   verdicts: SupplementVerdict[],
   options: RecordVerdictsOptions = {},
 ): Promise<RecordVerdictsResult> {
-  const previous = await getCurrentSupplementVerdicts(admin, accountId);
+  const previous =
+    options.previous ?? (await getCurrentSupplementVerdicts(admin, accountId));
   const previousByKey = new Map(previous.map((row) => [row.ingredientKey, row]));
   const changed: string[] = [];
 
-  for (const verdict of verdicts) {
-    const current = previousByKey.get(verdict.ingredientKey);
-    if (
-      current &&
-      current.verdict === verdict.verdict &&
-      current.reasonKey === verdict.reasonKey &&
-      current.rulesVersion === verdict.rulesVersion
-    ) {
-      continue;
-    }
-
+  for (const verdict of selectChangedVerdicts(previous, verdicts)) {
     const { data, error } = await admin.rpc("record_supplement_verdict", {
       p_account_id: accountId,
       p_ingredient_key: verdict.ingredientKey,

@@ -3,8 +3,11 @@
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
+import { buildDashboardFavorietenSchapHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
+import { resolveSchapDomain } from "@/lib/schap-availability";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import { buildVerdictSummary } from "@/lib/supplement-verdict-copy";
 import type { DashboardData, DashboardModel } from "@/types/dashboard";
@@ -18,7 +21,7 @@ type KompasOndersteuningTileProps = {
 };
 
 export default function KompasOndersteuningTile({
-  model: _model,
+  model,
   data,
   surface = "kompas_home",
   onGoVoortgang,
@@ -55,10 +58,12 @@ export default function KompasOndersteuningTile({
 
   const verdicts = data?.supplementVerdicts ?? [];
   const summary = buildVerdictSummary(verdicts);
+  const priority = model.priority.id;
+  const schapDomain = resolveSchapDomain(priority);
 
   // Label-only: geen productnaam, geen oordeel-label, geen vergelijkingslink
   // op de dagelijkse surface (lock L2). De kaarten met naam + oordeel +
-  // vergelijk-link staan op Voortgang, niet hier — deze tegel is de deur.
+  // vergelijk-link staan achter de deur, niet hier — deze tegel ís de deur.
   return (
     <CockpitTile eyebrow="Ondersteuning">
       <h2
@@ -71,7 +76,35 @@ export default function KompasOndersteuningTile({
         {summary ?? "Op basis van je scores — objectieve oriëntatie, geen verkoop."}
       </p>
 
-      {onGoVoortgang ? (
+      {/* De deur (N1, lock 1 + lock 2): één label, één bestemming — het schap
+          van je prioriteitsdomein. Eén predikaat (`schapDomain`) stuurt zowel
+          of de deur er staat als waar hij heen gaat; ze kunnen niet uit elkaar
+          lopen omdat ze niet twee dingen zijn. Domeinen zonder eigen schap
+          houden de route naar het oordeel op Voortgang. */}
+      {schapDomain ? (
+        <>
+          <Link
+            href={buildDashboardFavorietenSchapHref(schapDomain, "producten")}
+            onClick={() => {
+              emitAccountClientEvent("choice.shelf_opened", {
+                domain: schapDomain,
+                from_state: "vandaag",
+                surface: "kompas_home",
+                target_screen: "favorieten",
+                target_tab: "producten",
+              });
+              clarityTag("dashboard_kompas_home", "maak_een_keuze");
+            }}
+            className="mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-[13px] font-semibold text-[#F1EFE8] no-underline"
+          >
+            Maak een keuze <Icons.ChevronRight s={13} />
+          </Link>
+          <p className="mt-2.5 text-[11px] leading-relaxed text-[#7E8C82]">
+            Eén knop, één bestemming. Geen productnaam, geen prijs, geen oordeel — die horen op de
+            plek waar we ze kunnen onderbouwen.
+          </p>
+        </>
+      ) : onGoVoortgang ? (
         <button
           type="button"
           onClick={() => {

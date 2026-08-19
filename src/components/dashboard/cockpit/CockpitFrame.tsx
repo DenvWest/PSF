@@ -51,6 +51,10 @@ type CockpitFrameProps = {
   inspectorExtra?: ReactNode;
   /** Verberg de linker rail (bijv. Mijn Dag: profiel zit al in de header). */
   hideRail?: boolean;
+  /** Startstand van de contextrail — alleen de eerste render, de gebruiker
+      kan hem daarna zelf weer openklappen. Voor surfaces die de volle
+      breedte nodig hebben (bijv. de Beweging-prebuild). */
+  defaultContextCollapsed?: boolean;
   children: ReactNode;
 };
 
@@ -120,10 +124,11 @@ export default function CockpitFrame({
   inspectorDoelFooter,
   inspectorExtra,
   hideRail = false,
+  defaultContextCollapsed = false,
   children,
 }: CockpitFrameProps) {
   const [contextOpen, setContextOpen] = useState(false);
-  const [contextCollapsed, setContextCollapsed] = useState(false);
+  const [contextCollapsed, setContextCollapsed] = useState(defaultContextCollapsed);
   const [contextHighlighted, setContextHighlighted] = useState(false);
   const contextTitleId = useId();
   const panelRef = useRef<HTMLElement>(null);

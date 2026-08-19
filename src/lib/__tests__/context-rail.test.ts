@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  buildBewegingRailTools,
+  buildDomainRailTools,
   buildKompasRailDomains,
   resolveVoortgangRailActiveItem,
   KOMPAS_RAIL_PILLAR_IDS,
@@ -32,21 +32,41 @@ describe("buildKompasRailDomains", () => {
   });
 });
 
-describe("buildBewegingRailTools", () => {
+describe("buildDomainRailTools", () => {
   it("houdt de beweegcheck een echte link naar de intake", () => {
-    const tools = buildBewegingRailTools();
+    const tools = buildDomainRailTools("beweging");
 
     expect(tools.find((tool) => tool.id === "checkin")?.href).toBe(
       "/intake/beweging?from=dashboard&kompas=beweging",
     );
   });
 
-  it("bevat alleen checkin en gids — supplementen en inzichten zijn verhuisd (S5)", () => {
-    const tools = buildBewegingRailTools();
+  it("geeft beweging check en gids — in die volgorde", () => {
+    const tools = buildDomainRailTools("beweging");
 
-    expect(tools).toHaveLength(2);
     expect(tools.map((tool) => tool.id)).toEqual(["checkin", "gids"]);
     expect(tools.find((tool) => tool.id === "gids")?.href).toBe("/gids/beweging");
+  });
+
+  it("geeft elk domein een check, ook waar geen gids bestaat", () => {
+    for (const domain of ["slaap", "stress", "voeding", "verbinding"] as const) {
+      const tools = buildDomainRailTools(domain);
+      expect(tools[0]?.id).toBe("checkin");
+    }
+  });
+
+  it("draagt geen reset-ingang — die wordt pas ingesteld als het scherm bestaat", () => {
+    for (const domain of ["beweging", "slaap", "stress", "voeding", "verbinding"] as const) {
+      expect(buildDomainRailTools(domain).map((tool) => tool.id)).not.toContain("reset");
+    }
+  });
+
+  it("zet verbinding-check op disabled — die meet mee in de hermeting", () => {
+    const check = buildDomainRailTools("verbinding")[0];
+
+    expect(check?.disabled).toBe(true);
+    expect(check?.href).toBeUndefined();
+    expect(check?.disabledHint).toContain("hermeting");
   });
 });
 

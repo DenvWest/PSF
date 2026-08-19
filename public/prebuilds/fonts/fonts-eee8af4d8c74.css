@@ -1,0 +1,11 @@
+@font-face{
+  font-family:"DM Serif Display";
+  font-style:normal;font-weight:400;font-display:block;
+  src:url("/prebuilds/fonts/font-f273cf2c9ce9.woff2") format("woff2");
+}
+
+@font-face{
+  font-family:"DM Sans";
+  font-style:normal;font-weight:300 700;font-display:block;
+  src:url("/prebuilds/fonts/font-468d56b6b25b.woff2") format("woff2");
+}
