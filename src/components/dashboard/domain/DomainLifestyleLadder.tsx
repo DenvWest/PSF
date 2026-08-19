@@ -120,7 +120,6 @@ export default function DomainLifestyleLadder({
               >
                 <LayerHead
                   layer={layer}
-                  state={state}
                   stateLabel={stateLabels[state]}
                   styles={styles}
                   variant={variant}
@@ -137,7 +136,6 @@ export default function DomainLifestyleLadder({
               >
                 <LayerHead
                   layer={layer}
-                  state={state}
                   stateLabel={stateLabels[state]}
                   styles={styles}
                   variant={variant}
@@ -186,7 +184,6 @@ export default function DomainLifestyleLadder({
 
 function LayerHead({
   layer,
-  state,
   stateLabel,
   styles,
   variant,
@@ -195,7 +192,6 @@ function LayerHead({
   chevronOpen,
 }: {
   layer: LifestylePriorityLayer;
-  state: LifestyleLayerState;
   stateLabel: string;
   styles: (typeof STATE_STYLE)[LifestyleLayerState];
   variant: "mini" | "rail" | "full";
