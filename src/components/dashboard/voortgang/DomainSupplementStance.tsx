@@ -27,13 +27,16 @@ type DomainSupplementStanceProps = {
   verdicts: StoredSupplementVerdict[];
   nutritionLogCompleted: boolean;
   surface: VerdictPanelSurface;
-  /** Voor het schap (Leefstijlprofiel · domein): daar ís deze sectie al het
+  /** Voor het schap (Favorieten · Producten-tab): daar ís deze sectie al het
    * aanbod, dus geen toggle-teaser nodig. Standaard false — ongewijzigd
    * gedrag op slaap/stress/voeding. */
   openByDefault?: boolean;
-  /** Op domein-schermen: alleen poortstand tonen, geen uitklapbaar panel. */
+  /** Op domein-schermen (Leefstijlprofiel): alleen poortstand tonen, geen uitklapbaar panel. */
   poortOnly?: boolean;
   onOpenFavorieten?: () => void;
+  /** Alleen op het schap: laat elke kandidaat een bewaarknop dragen — N2 vereist dat een aanbeveling nooit stilzwijgend een keuze wordt, dus dit zet 'm alleen naast Mijn keuze, niet erin. */
+  showFavoriteSave?: boolean;
+  favoriteSource?: "aanbevolen" | "mijn_keuze";
 };
 
 /** Eén reden per render — de teller die laat zien hoe vaak de deur dicht
@@ -48,6 +51,8 @@ export default function DomainSupplementStance({
   openByDefault = false,
   poortOnly = false,
   onOpenFavorieten,
+  showFavoriteSave = false,
+  favoriteSource = "aanbevolen",
 }: DomainSupplementStanceProps) {
   const [open, setOpen] = useState(openByDefault);
   const stance = getDomainProductStance(domain);
@@ -235,6 +240,8 @@ export default function DomainSupplementStance({
             variant="full"
             surface={surface}
             hideHeader
+            showFavoriteSave={showFavoriteSave}
+            favoriteSource={favoriteSource}
           />
         </div>
       ) : null}

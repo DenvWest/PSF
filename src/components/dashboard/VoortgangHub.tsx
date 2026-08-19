@@ -7,6 +7,7 @@ import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScr
 import LeefstijlprofielDomeinView from "@/components/dashboard/voortgang/LeefstijlprofielDomeinView";
 import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
 import FavorietenView from "@/components/dashboard/voortgang/FavorietenView";
+import FavorietenSchapView from "@/components/dashboard/voortgang/FavorietenSchapView";
 import VoortgangMobileNav from "@/components/dashboard/voortgang/VoortgangMobileNav";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import { clarityTag } from "@/lib/clarity";
@@ -18,6 +19,7 @@ import type {
   DashboardModel,
   DashboardTabId,
   PillarId,
+  SchapTabId,
   VoortgangScreen,
 } from "@/types/dashboard";
 
@@ -30,6 +32,8 @@ type VoortgangHubProps = {
   screen: VoortgangScreen;
   leefstijlprofielDomein: PillarId | null;
   favorietenDomein: PillarId | null;
+  /** Actieve sub-tab op het schap — alleen betekenisvol op screen=favorieten met domain="beweging". */
+  favorietenSchapTab: SchapTabId | null;
   leefstijlprofielAdviesExtra: ReactNode;
   overTijdExtra: ReactNode;
   onScreenChange: (screen: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => void;
@@ -44,12 +48,14 @@ function VoortgangHubInner({
   tab,
   screen,
   leefstijlprofielDomein,
+  favorietenDomein,
+  favorietenSchapTab,
   leefstijlprofielAdviesExtra,
   overTijdExtra,
   onScreenChange,
   onGoAgenda,
   onGoHermeting,
-}: Omit<VoortgangHubProps, "onPrefUpdated" | "favorietenDomein">) {
+}: Omit<VoortgangHubProps, "onPrefUpdated">) {
   const router = useRouter();
   const { items: favorietenItems } = useVoortgangFavorites();
 
@@ -117,6 +123,17 @@ function VoortgangHubInner({
         model={model!}
         onBack={goBack}
         onOpenDomain={openLeefstijlprofielDomein}
+      />
+    );
+  } else if (screen === "favorieten" && favorietenDomein === "beweging") {
+    content = (
+      <FavorietenSchapView
+        domain={favorietenDomein}
+        activeTab={favorietenSchapTab}
+        hasCheck={data?.movementCheckinSnapshot != null}
+        data={data}
+        onBack={goBack}
+        onOpenLeefstijlprofiel={openLeefstijlprofielDomein}
       />
     );
   } else if (screen === "favorieten") {

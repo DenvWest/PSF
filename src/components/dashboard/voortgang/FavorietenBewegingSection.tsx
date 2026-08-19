@@ -273,7 +273,8 @@ export default function FavorietenBewegingSection({
   );
 }
 
-function resolveRecommendedLayers(focusLayer: MovementPriorityId | null) {
+/** Ook gebruikt door LeefstijlprofielDomeinView (Aanbeveling-sectie op Leefstijlprofiel). */
+export function resolveRecommendedLayers(focusLayer: MovementPriorityId | null) {
   if (focusLayer == null) {
     return MOVEMENT_PRIORITY_LAYERS.filter((layer) => layer.id <= 2 && layer.actions.length > 0);
   }

@@ -4,7 +4,6 @@ import { useEffect, useId, useRef } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
 import { clarityTag } from "@/lib/clarity";
-import { trackEvent } from "@/lib/ga4";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import type { BewegingHelpBridge, HelpBridgeStatus } from "@/lib/beweging-help-bridge";
 
@@ -26,12 +25,12 @@ export default function MeerHulpBridgeSheet({
   open,
   bridge,
   onClose,
-  onOpenVoortgang,
+  onOpenSchap,
 }: {
   open: boolean;
   bridge: BewegingHelpBridge;
   onClose: () => void;
-  onOpenVoortgang: () => void;
+  onOpenSchap: () => void;
 }) {
   const titleId = useId();
   const shownRef = useRef(false);
@@ -41,10 +40,8 @@ export default function MeerHulpBridgeSheet({
       return;
     }
     shownRef.current = true;
-    emitAccountClientEvent("choice.shelf_opened", {
-      domain: "beweging",
-      from_state: "agenda_meer_hulp",
-    });
+    // choice.shelf_opened vuurt pas bij de klik door naar het schap
+    // (handleOpenSchap) — dit is de brug zelf tonen, nog geen "schap open".
     clarityTag("dashboard_agenda", "meer_hulp_brug_shown");
   }, [open]);
 
@@ -52,20 +49,23 @@ export default function MeerHulpBridgeSheet({
     return null;
   }
 
-  const handleOpenVoortgang = () => {
-    trackEvent("dashboard_beweging_voortgang_click", {
+  const handleOpenSchap = () => {
+    emitAccountClientEvent("choice.shelf_opened", {
+      domain: "beweging",
+      from_state: "agenda_meer_hulp",
       surface: "meer_hulp_brug",
-      state: "open",
+      target_screen: "favorieten",
+      target_tab: "producten",
     });
-    clarityTag("dashboard_agenda", "meer_hulp_open_voortgang");
-    onOpenVoortgang();
+    clarityTag("dashboard_agenda", "meer_hulp_open_schap");
+    onOpenSchap();
   };
 
   return (
-    <AgendaSheetFrame titleId={titleId} title="Zet er iets naast" onClose={onClose}>
+    <AgendaSheetFrame titleId={titleId} title="Maak een keuze" onClose={onClose}>
       <p className="mb-5 text-[13px] leading-normal text-[#CDD7D0] text-pretty">
-        Iets ernaast zetten kies je in Voortgang, waar je oordeel en je hertest
-        samenkomen — niet hier los.
+        Een keuze maak je in je schap, waar oordeel en commissie per kaart staan — niet hier
+        los.
       </p>
 
       <div className="mb-5 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-3">
@@ -101,11 +101,11 @@ export default function MeerHulpBridgeSheet({
 
       <button
         type="button"
-        onClick={handleOpenVoortgang}
+        onClick={handleOpenSchap}
         className="flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none text-[15px] font-semibold"
         style={{ background: "var(--sage)", color: "#0f1c10", fontFamily: "var(--f-sans)" }}
       >
-        Open Voortgang <Icons.ChevronRight s={16} />
+        Maak een keuze <Icons.ChevronRight s={16} />
       </button>
     </AgendaSheetFrame>
   );

@@ -113,6 +113,9 @@ export type VoortgangScreen =
   /** @deprecated Legacy — redirect naar leefstijlprofiel&fav= */
   | "domein";
 
+/** Vier sub-oppervlakken van het schap (Favorieten), nooit tegelijk zichtbaar. */
+export type SchapTabId = "leefstijl" | "producten" | "diensten" | "begeleiding";
+
 export type LeefstijlprofielView = "aanbevolen" | "mijn_keuze";
 
 /** @deprecated Statistieken-screen is verwijderd; alleen nog voor legacy tests. */

@@ -77,7 +77,6 @@ type AgendaScreenProps = {
   onViewChange: (view: AgendaViewId) => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   onGoVoortgang: () => void;
-  onGoVoortgangDomein: (domain: PillarId) => void;
 };
 
 type WeekFetchState = {
@@ -128,7 +127,6 @@ export default function AgendaScreen({
   onViewChange,
   onPrefUpdated,
   onGoVoortgang,
-  onGoVoortgangDomein,
 }: AgendaScreenProps) {
   const shownRef = useRef(false);
   const today = todayInAgendaTimezone();
@@ -829,7 +827,6 @@ export default function AgendaScreen({
           prefBusy={prefBusy}
           blockBusy={blockBusy}
           nutritionLogCompleted={nutritionLogCompleted}
-          onGoVoortgangDomein={onGoVoortgangDomein}
           onCompletionChange={refreshWeekState}
           onScheduledTimeChange={(scheduledTime, surface) =>
             void handleScheduledTime(scheduledTime, surface)

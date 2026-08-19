@@ -2,16 +2,19 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   buildDashboardAgendaHref,
+  buildDashboardFavorietenSchapHref,
   buildDashboardPlanHref,
   buildDashboardVandaagHref,
   buildDashboardVoortgangHref,
   isAgendaViewId,
   isPillarId,
+  isSchapTabId,
   isValidAgendaDate,
   parseAgendaViewFromUrl,
   parseDagFromUrl,
   parseKompasFromUrl,
   parseLeefstijlprofielDomeinFromUrl,
+  parseSchapTabFromUrl,
   parseVoortgangScreenFromUrl,
   canonicalizeVoortgangScreenParam,
   getLegacyVoortgangScreenAlias,
@@ -89,12 +92,22 @@ describe("parseVoortgangScreenFromUrl", () => {
     expect(getLegacyVoortgangScreenAlias("hub")).toBeNull();
     expect(canonicalizeVoortgangScreenParam(new URL("http://localhost/dashboard?tab=voortgang"))).toBeNull();
 
+    // v3 IA (19 aug 2026): favorieten is het schap, geen legacy redirect meer.
     const favorietenSchapUrl = new URL(
-      "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+      "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging&schap=producten",
     );
     canonicalizeVoortgangScreenParam(favorietenSchapUrl);
-    expect(favorietenSchapUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
+    expect(favorietenSchapUrl.searchParams.get("screen")).toBe("favorieten");
     expect(favorietenSchapUrl.searchParams.get("fav")).toBe("beweging");
+    expect(favorietenSchapUrl.searchParams.get("schap")).toBe("producten");
+
+    // Legacy: screen=leefstijlprofiel&fav=beweging blijft leefstijlprofiel (lifestyle).
+    const leefstijlprofielUrl = new URL(
+      "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging",
+    );
+    canonicalizeVoortgangScreenParam(leefstijlprofielUrl);
+    expect(leefstijlprofielUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
+    expect(leefstijlprofielUrl.searchParams.get("fav")).toBe("beweging");
   });
 });
 
@@ -116,10 +129,66 @@ describe("buildDashboardVoortgangHref", () => {
     );
   });
 
-  it("favorieten screen has no fav param (saved list only)", () => {
+  it("favorieten screen has no fav param when none is given", () => {
     expect(buildDashboardVoortgangHref("favorieten")).toBe(
       "/dashboard?tab=voortgang&screen=favorieten",
     );
+  });
+
+  it("includes fav for favorieten deep links (v3 IA: favorieten is het schap)", () => {
+    expect(buildDashboardVoortgangHref("favorieten", null, null, "beweging")).toBe(
+      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+    );
+  });
+});
+
+describe("buildDashboardFavorietenSchapHref", () => {
+  it("builds a schap deeplink without a tab", () => {
+    expect(buildDashboardFavorietenSchapHref("beweging")).toBe(
+      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+    );
+  });
+
+  it("includes the schap tab when given", () => {
+    expect(buildDashboardFavorietenSchapHref("beweging", "producten")).toBe(
+      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging&schap=producten",
+    );
+  });
+});
+
+describe("isSchapTabId", () => {
+  it("accepts the four schap tabs", () => {
+    expect(isSchapTabId("leefstijl")).toBe(true);
+    expect(isSchapTabId("producten")).toBe(true);
+    expect(isSchapTabId("diensten")).toBe(true);
+    expect(isSchapTabId("begeleiding")).toBe(true);
+  });
+
+  it("rejects unknown values", () => {
+    expect(isSchapTabId("supplementen")).toBe(false);
+    expect(isSchapTabId(null)).toBe(false);
+    expect(isSchapTabId(undefined)).toBe(false);
+  });
+});
+
+describe("parseSchapTabFromUrl", () => {
+  it("parses a valid schap tab", () => {
+    expect(
+      parseSchapTabFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging&schap=diensten",
+      ),
+    ).toBe("diensten");
+  });
+
+  it("returns null when missing or invalid", () => {
+    expect(
+      parseSchapTabFromUrl("http://localhost/dashboard?tab=voortgang&screen=favorieten"),
+    ).toBeNull();
+    expect(
+      parseSchapTabFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=favorieten&schap=onbekend",
+      ),
+    ).toBeNull();
   });
 });
 

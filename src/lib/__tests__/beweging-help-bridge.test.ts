@@ -31,24 +31,24 @@ describe("buildBewegingHelpBridge — statusstrip", () => {
     expect(bridge.points.find((point) => point.id === "check")?.status).toBe("done");
   });
 
-  it("zet Advies op wacht zonder complete voedingslog, op done ermee", () => {
+  it("zet Onderbouwing op wacht zonder complete voedingslog, op done ermee", () => {
     expect(
       buildBewegingHelpBridge(model(), slot(), false).points.find(
-        (point) => point.id === "advies",
+        (point) => point.id === "onderbouwing",
       )?.status,
     ).toBe("wacht");
     expect(
       buildBewegingHelpBridge(model(), slot(), true).points.find(
-        (point) => point.id === "advies",
+        (point) => point.id === "onderbouwing",
       )?.status,
     ).toBe("done");
   });
 
-  it("labelt Favorieten expliciet op now", () => {
+  it("labelt Schap expliciet op now — zelfde keten als FavorietenSchapView", () => {
     const bridge = buildBewegingHelpBridge(model(), slot(), true);
-    expect(bridge.points.find((point) => point.id === "favorieten")?.label).toBe("Opgeslagen");
-    expect(bridge.points.find((point) => point.id === "favorieten")?.status).toBe("now");
-    expect(bridge.points.find((point) => point.id === "beste")?.status).toBe("toekomstig");
+    expect(bridge.points.find((point) => point.id === "schap")?.label).toBe("Schap");
+    expect(bridge.points.find((point) => point.id === "schap")?.status).toBe("now");
+    expect(bridge.points.find((point) => point.id === "vergelijking")?.status).toBe("toekomstig");
   });
 });
 

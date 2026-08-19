@@ -41,7 +41,7 @@ export type VerdictPanelSurface =
   | "voortgang_stress"
   | "voortgang_voeding"
   | "voortgang_beweging"
-  | "favorieten_beweging"
+  | "favorieten_schap_producten"
   | "leefstijlprofiel_beweging";
 
 type SupplementVerdictPanelProps = {
@@ -280,6 +280,20 @@ export default function SupplementVerdictPanel({
                 ) : null}
               </>
             ) : null}
+
+            <p
+              style={{
+                fontSize: 11,
+                color: "var(--text-subtle)",
+                lineHeight: 1.5,
+                margin: "9px 0 0",
+                textWrap: "pretty",
+              }}
+            >
+              {card.comparisonPath
+                ? "We ontvangen commissie als je via ons koopt. Het oordeel is los daarvan opgesteld en verandert niet mee."
+                : "Hier verdienen we niets aan, en je kunt er ook niets via ons kopen."}
+            </p>
 
             {card.comparisonPath ? (
               <Link

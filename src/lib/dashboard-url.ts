@@ -1,5 +1,5 @@
 import { MOVEMENT_FOCUS_ORDER, type MovementFocusKey } from "@/data/movement-checkin";
-import type { DashboardTabId, PillarId, VoortgangScreen } from "@/types/dashboard";
+import type { DashboardTabId, PillarId, SchapTabId, VoortgangScreen } from "@/types/dashboard";
 
 const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
   "hub",
@@ -25,21 +25,8 @@ export function getLegacyVoortgangScreenAlias(raw: string | null): LegacyVoortga
   return raw as LegacyVoortgangScreen;
 }
 
-/** Vervangt legacy `screen=favorieten&fav=*` door leefstijlprofiel-domein deep link. */
-export function canonicalizeFavorietenSchapParam(url: URL): boolean {
-  const screen = url.searchParams.get("screen");
-  const fav = url.searchParams.get("fav");
-  if (screen !== "favorieten" || !fav || !KOMPAS_DOMAIN_IDS.has(fav as PillarId)) {
-    return false;
-  }
-  url.searchParams.set("screen", "leefstijlprofiel");
-  return true;
-}
-
 /** Vervangt legacy `screen`-waarden in-place; retourneert de canonieke screen of null. */
 export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | null {
-  canonicalizeFavorietenSchapParam(url);
-
   const rawScreen = url.searchParams.get("screen");
   const legacy = getLegacyVoortgangScreenAlias(rawScreen);
   if (!legacy) {
@@ -165,6 +152,37 @@ export function parseLeefstijlprofielDomeinFromUrl(url: string | URL): PillarId 
 
 /** @deprecated Gebruik parseLeefstijlprofielDomeinFromUrl */
 export const parseFavorietenDomeinFromUrl = parseLeefstijlprofielDomeinFromUrl;
+
+const VALID_SCHAP_TABS = new Set<SchapTabId>([
+  "leefstijl",
+  "producten",
+  "diensten",
+  "begeleiding",
+]);
+
+export function isSchapTabId(value: unknown): value is SchapTabId {
+  return typeof value === "string" && VALID_SCHAP_TABS.has(value as SchapTabId);
+}
+
+/** Favorieten-schap sub-tab — alleen betekenisvol op `screen=favorieten`. */
+export function parseSchapTabFromUrl(url: string | URL): SchapTabId | null {
+  const parsed =
+    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
+  const schap = parsed.searchParams.get("schap");
+  return isSchapTabId(schap) ? schap : null;
+}
+
+/** Deeplink naar het schap (Favorieten), optioneel direct op een sub-tab. */
+export function buildDashboardFavorietenSchapHref(
+  domain: PillarId,
+  tab?: SchapTabId | null,
+): string {
+  const params = new URLSearchParams({ tab: "voortgang", screen: "favorieten", fav: domain });
+  if (isSchapTabId(tab)) {
+    params.set("schap", tab);
+  }
+  return `/dashboard?${params.toString()}`;
+}
 
 export function buildDashboardVandaagHref(
   kompas?: PillarId | null,

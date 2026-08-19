@@ -1,13 +1,18 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import * as Icons from "@/components/app/icons";
 import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
+import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
 import PrioriteitenLadder, {
   type PrioriteitLayer,
 } from "@/components/dashboard/voortgang/PrioriteitenLadder";
+import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
+import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
+import { resolveRecommendedLayers } from "@/components/dashboard/voortgang/FavorietenBewegingSection";
 import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import MovementCheckinReadout from "@/components/intake/MovementCheckinReadout";
 import MovementFactReadout from "@/components/intake/MovementFactReadout";
@@ -21,14 +26,19 @@ import {
   CONNECTION_SAFETY_NET_LINE,
 } from "@/data/connection/lifestyle-priorities";
 import { NUTRITION_PRIORITY_LAYERS } from "@/data/nutrition/lifestyle-pyramid";
-import { MOVEMENT_PRIORITY_LAYERS } from "@/data/movement/lifestyle-priorities";
+import {
+  MOVEMENT_PRIORITY_LAYERS,
+  type MovementPriorityId,
+} from "@/data/movement/lifestyle-priorities";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
-import { buildMovementRoutingHref } from "@/lib/dashboard-url";
+import { buildDashboardFavorietenSchapHref, buildMovementRoutingHref } from "@/lib/dashboard-url";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { trackEvent } from "@/lib/ga4";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
+import { MOVEMENT_LAYER_STATE_LABEL, movementLayerWhyWait } from "@/lib/movement-ladder";
 import { resolveMovementRoutingHint } from "@/lib/movement-assessment";
 import {
   buildMovementProgramPreview,
@@ -36,7 +46,8 @@ import {
 } from "@/lib/movement-plan-profile";
 import { buildMovementPositionLine } from "@/lib/movement-plan-roadmap";
 import { getScoreBandShortLabel } from "@/lib/score-bands";
-import FavorietenBewegingSection from "@/components/dashboard/voortgang/FavorietenBewegingSection";
+import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
+import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import LeefstijlprofielSupplementSection from "@/components/dashboard/voortgang/LeefstijlprofielSupplementSection";
 import { LeefstijlprofielViewToggle } from "@/components/dashboard/voortgang/LeefstijlprofielViewToggle";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
@@ -103,15 +114,6 @@ function domainLadderProps(domain: PillarId): {
       surface: "leefstijlprofiel_voeding",
     };
   }
-  if (domain === "beweging") {
-    return {
-      layers: MOVEMENT_PRIORITY_LAYERS,
-      intro:
-        "Zes prioriteiten, van fundament naar finetunen. Wat bovenaan staat draagt het meest; wat eronder staat werkt pas mee als de prioriteiten erboven staan. Tik aan wat bij jou vastloopt.",
-      eyebrow: "Fundament naar finetunen",
-      surface: "leefstijlprofiel_beweging",
-    };
-  }
   if (domain === "slaap") {
     return {
       layers: SLEEP_PRIORITY_LAYERS,
@@ -122,6 +124,127 @@ function domainLadderProps(domain: PillarId): {
     };
   }
   return null;
+}
+
+function movementActionFavoriteId(layerId: MovementPriorityId, action: string): string {
+  return `actie-${layerId}-${action.slice(0, 48)}`;
+}
+
+/**
+ * Leefstijlprofiel-domein prebuild v3 §1: Aanbeveling = afgeleid uit de check,
+ * alleen activiteiten, bron altijd in beeld, nul prijs/commissie/oordeelchip.
+ */
+function BewegingAanbevelingSectie({
+  focusLayer,
+  hasCheck,
+  domain,
+  onCheckin,
+}: {
+  focusLayer: MovementPriorityId | null;
+  hasCheck: boolean;
+  domain: PillarId;
+  onCheckin: () => void;
+}) {
+  const layers = resolveRecommendedLayers(focusLayer);
+
+  return (
+    <section aria-label="Aanbeveling beweging">
+      <VoortgangSectionHeader eyebrow="Aanbeveling" title="Wat past bij je check" />
+      <p className="m-0 mb-3 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+        Afgeleid uit je check — hier verdienen we niets aan.
+      </p>
+      {!hasCheck ? (
+        <CockpitTile>
+          <p className="m-0 text-[14px] leading-relaxed text-[#9FB0A6] text-pretty">
+            Doe je beweegcheck om te zien welke prioriteiten en acties bij jou passen.
+          </p>
+          <a
+            href="/intake/beweging?from=dashboard&kompas=beweging"
+            onClick={onCheckin}
+            className="mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
+          >
+            Start beweegcheck <Icons.ChevronRight s={15} />
+          </a>
+        </CockpitTile>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {layers.map((layer) => (
+            <CockpitTile key={layer.id}>
+              <div className="mb-1 font-serif text-[16px] leading-tight text-[#F1EFE8]">
+                {layer.name}
+              </div>
+              <p className="m-0 mb-2.5 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+                {layer.summary}
+              </p>
+              {layer.actions.length > 0 ? (
+                <ul className="m-0 flex list-none flex-col gap-2 p-0">
+                  {layer.actions.map((action) => (
+                    <li
+                      key={action}
+                      className="flex items-start justify-between gap-2 text-[13px] leading-relaxed text-[#CDD7D0]"
+                    >
+                      <span className="min-w-0 flex-1 text-pretty">{action}</span>
+                      <FavoriteSaveButton
+                        compact
+                        surface="leefstijlprofiel_beweging"
+                        item={{
+                          id: movementActionFavoriteId(layer.id, action),
+                          title: action,
+                          kind: "activiteit",
+                          domain,
+                          source: "aanbevolen",
+                        }}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </CockpitTile>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+/**
+ * Leefstijlprofiel-domein prebuild v3 §3: Mijn keuze = alleen wat de klant
+ * zelf koos, gefilterd tot kind="activiteit" — product/dienst/begeleiding
+ * hebben hun eigen groep op het schap (Favorieten).
+ */
+function BewegingMijnKeuzeSectie({ domain }: { domain: PillarId }) {
+  const { items } = useVoortgangFavorites();
+  const gekozen = items.filter((item) => item.domain === domain && item.kind === "activiteit");
+
+  return (
+    <section aria-label="Mijn keuze beweging">
+      <VoortgangSectionHeader eyebrow="Mijn keuze" title="Wat jij koos" />
+      <p className="m-0 mb-3 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+        Dit koos jij. Alleen activiteiten — supplementen en diensten staan in je schap.
+      </p>
+      {gekozen.length === 0 ? (
+        <CockpitTile>
+          <p className="m-0 text-[14px] leading-relaxed text-[#9FB0A6] text-pretty">
+            Je hebt hier nog niets gekozen. Alles onder Aanbeveling werkt zonder dat je er iets
+            naast zet.
+          </p>
+        </CockpitTile>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {gekozen.map((item) => (
+            <CockpitTile key={item.id}>
+              <div className="flex items-center justify-between gap-3">
+                <span className="min-w-0 flex-1 text-[14px] text-[#F1EFE8] text-pretty">
+                  {item.title}
+                </span>
+                <FavoriteSaveButton compact surface="leefstijlprofiel_beweging" item={item} />
+              </div>
+            </CockpitTile>
+          ))}
+        </div>
+      )}
+    </section>
+  );
 }
 
 export default function LeefstijlprofielDomeinView({
@@ -139,6 +262,7 @@ export default function LeefstijlprofielDomeinView({
   onBack: () => void;
   onGoVandaag: () => void;
 }) {
+  const router = useRouter();
   const [view, setView] = useState<LeefstijlprofielView>("aanbevolen");
   const pillar = PILLAR[domain];
   const readout = isReadoutDomain(domain) ? getReadoutPresentation(domain) : null;
@@ -174,6 +298,11 @@ export default function LeefstijlprofielDomeinView({
     : null;
 
   const ladderProps = domainLadderProps(domain);
+  const movementFocusLayer = movementReadout?.ladder.focus ?? null;
+  const movementEligibility = isMovement
+    ? buildRecommendationsEligibility(data?.nutritionIntake)
+    : null;
+  const movementNutritionLogCompleted = movementEligibility?.nutritionLogCompleted === true;
 
   useEffect(() => {
     trackEvent("domain_tool.snapshot_viewed", {
@@ -198,6 +327,16 @@ export default function LeefstijlprofielDomeinView({
       surface: "leefstijlprofiel_domein",
     });
     onGoVandaag();
+  };
+
+  const handleOpenSchap = () => {
+    emitAccountClientEvent("choice.shelf_opened", {
+      domain,
+      from_state: "leefstijlprofiel",
+      surface: "leefstijlprofiel_domein",
+    });
+    clarityTag("dashboard_leefstijlprofiel_schap", domain);
+    router.push(buildDashboardFavorietenSchapHref("beweging", "producten"));
   };
 
   return (
@@ -281,6 +420,22 @@ export default function LeefstijlprofielDomeinView({
               )}
             </div>
           </div>
+          {isMovement && movementReadout ? (
+            <div className="mt-3">
+              <DomainLifestyleLadder
+                layers={MOVEMENT_PRIORITY_LAYERS}
+                layerStates={movementReadout.ladder.states}
+                focusLayer={movementFocusLayer ?? 0}
+                stateLabels={MOVEMENT_LAYER_STATE_LABEL}
+                variant="rail"
+                whyWait={(layerId) =>
+                  movementLayerWhyWait(layerId as MovementPriorityId, movementFocusLayer)
+                }
+                domain="beweging"
+                surface="leefstijlprofiel_beweging"
+              />
+            </div>
+          ) : null}
         </CockpitTile>
 
         {positionLine ? (
@@ -356,7 +511,25 @@ export default function LeefstijlprofielDomeinView({
           </CockpitTile>
         ) : null}
 
-        {ladderProps ? (
+        {isMovement ? (
+          movementReadout ? (
+            <section aria-label="Volledige ladder">
+              <VoortgangSectionHeader eyebrow="Fundament naar finetunen" title="Je volledige ladder" />
+              <DomainLifestyleLadder
+                layers={MOVEMENT_PRIORITY_LAYERS}
+                layerStates={movementReadout.ladder.states}
+                focusLayer={movementFocusLayer ?? 0}
+                stateLabels={MOVEMENT_LAYER_STATE_LABEL}
+                variant="full"
+                whyWait={(layerId) =>
+                  movementLayerWhyWait(layerId as MovementPriorityId, movementFocusLayer)
+                }
+                domain="beweging"
+                surface="leefstijlprofiel_beweging"
+              />
+            </section>
+          ) : null
+        ) : ladderProps ? (
           <PrioriteitenLadder
             layers={ladderProps.layers}
             intro={ladderProps.intro}
@@ -385,37 +558,67 @@ export default function LeefstijlprofielDomeinView({
           </a>
         ) : null}
 
-        <section aria-label="Leefstijlkeuze" style={{ display: "flex", flexDirection: "column", gap: 28 }}>
-          <VoortgangSectionHeader eyebrow="Leefstijlkeuze" title="Wat past bij je check" />
-          {domain === "beweging" ? (
-            <FavorietenBewegingSection model={model} data={data} view={view} domain={domain} />
-          ) : (
+        {isMovement ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+            <BewegingAanbevelingSectie
+              focusLayer={movementFocusLayer}
+              hasCheck={movementReadout !== null}
+              domain={domain}
+              onCheckin={handleCheckin}
+            />
+            <BewegingMijnKeuzeSectie domain={domain} />
+            <section aria-label="Aanvullen beweging">
+              <VoortgangSectionHeader eyebrow="Aanvullen" title="Supplementen en wearables" />
+              <DomainSupplementStance
+                domain="movement"
+                verdicts={data?.supplementVerdicts ?? []}
+                nutritionLogCompleted={movementNutritionLogCompleted}
+                surface="leefstijlprofiel_beweging"
+                poortOnly
+                onOpenFavorieten={handleOpenSchap}
+              />
+            </section>
+          </div>
+        ) : (
+          <section aria-label="Leefstijlkeuze" style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+            <VoortgangSectionHeader eyebrow="Leefstijlkeuze" title="Wat past bij je check" />
             <p className="m-0 text-[14px] leading-relaxed text-[#9FB0A6] text-pretty">
               Leefstijlkeuzes voor {pillar.label.toLowerCase()} volgen in een volgende update —
               beweging is nu de blauwdruk.
             </p>
-          )}
 
-          {data ? (
-            <LeefstijlprofielSupplementSection
-              model={model}
-              data={data}
-              view={view}
-              adviesExtra={adviesExtra}
-              domain={domain}
-            />
+            {data ? (
+              <LeefstijlprofielSupplementSection
+                model={model}
+                data={data}
+                view={view}
+                adviesExtra={adviesExtra}
+                domain={domain}
+              />
+            ) : null}
+          </section>
+        )}
+
+        {!isMovement ? <LeefstijlprofielViewToggle view={view} onChange={setView} /> : null}
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {isMovement ? (
+            <button
+              type="button"
+              onClick={handleOpenSchap}
+              className="cursor-pointer border-none bg-transparent p-0 text-left text-[13px] font-semibold text-[#9CC5A9]"
+            >
+              Open je schap ›
+            </button>
           ) : null}
-        </section>
-
-        <LeefstijlprofielViewToggle view={view} onChange={setView} />
-
-        <button
-          type="button"
-          onClick={handleGoVandaag}
-          className="cursor-pointer border-none bg-transparent p-0 text-left text-[13px] font-medium text-[#9FB0A6]"
-        >
-          Terug naar je stap van vandaag ›
-        </button>
+          <button
+            type="button"
+            onClick={handleGoVandaag}
+            className="cursor-pointer border-none bg-transparent p-0 text-left text-[13px] font-medium text-[#9FB0A6]"
+          >
+            Terug naar je stap van vandaag ›
+          </button>
+        </div>
       </div>
     </section>
   );

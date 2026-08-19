@@ -163,11 +163,13 @@ import { resolveMovementDayChoiceForToday } from "@/lib/account-priority-pref";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import {
   isPillarId,
+  isSchapTabId,
   isValidAgendaDate,
   parseAgendaViewFromUrl,
   parseDagFromUrl,
   parseKompasFromUrl,
   parseLeefstijlprofielDomeinFromUrl,
+  parseSchapTabFromUrl,
   parseVoortgangScreenFromUrl,
   canonicalizeVoortgangScreenParam,
   getLegacyVoortgangScreenAlias,
@@ -190,6 +192,7 @@ import type {
   DashboardTabId,
   NutritionIntakeBand,
   PillarId,
+  SchapTabId,
   Signal,
   VoortgangScreen,
 } from "@/types/dashboard";
@@ -233,6 +236,8 @@ type SharedSectionProps = {
   onOpenInzichten: () => void;
   leefstijlprofielDomein: PillarId | null;
   favorietenDomein: PillarId | null;
+  /** Actieve sub-tab op het schap (Favorieten) — alleen betekenisvol op screen=favorieten. */
+  favorietenSchapTab: SchapTabId | null;
   /** Navigeert naar Voortgang › <domein> — het leesscherm, geen doe-surface (S4). */
   onGoVoortgangDomein: (domain: PillarId) => void;
   initialKompasView?: PillarId;
@@ -3208,7 +3213,6 @@ const SECTION_RENDERERS: Record<
         onViewChange={props.onAgendaViewChange}
         onPrefUpdated={props.onPrefUpdated}
         onGoVoortgang={props.onGoVoortgang}
-        onGoVoortgangDomein={props.onGoVoortgangDomein}
       />
     ),
   kompasHome: (props) =>
@@ -3232,6 +3236,7 @@ const SECTION_RENDERERS: Record<
         screen={props.voortgangScreen}
         leefstijlprofielDomein={props.leefstijlprofielDomein}
         favorietenDomein={props.favorietenDomein}
+        favorietenSchapTab={props.favorietenSchapTab}
         leefstijlprofielAdviesExtra={
           props.empty ? null : <NutritionIntakeSection {...props} />
         }
@@ -3479,6 +3484,23 @@ function DashboardContent({
   const activeFavorietenDomein =
     voortgangScreen === "favorieten" ? activeVoortgangFavDomein : null;
 
+  const activeFavorietenSchapTab = useMemo((): SchapTabId | null => {
+    if (voortgangScreen !== "favorieten") {
+      return null;
+    }
+    const paramSchap = searchParams.get("schap");
+    if (isSchapTabId(paramSchap)) {
+      return paramSchap;
+    }
+    if (typeof window !== "undefined") {
+      const urlSchap = parseSchapTabFromUrl(window.location.href);
+      if (urlSchap) {
+        return urlSchap;
+      }
+    }
+    return null;
+  }, [voortgangScreen, searchParams]);
+
   const tabMeta = DASHBOARD_TABS.find((t) => t.id === tab) ?? DASHBOARD_TABS[0];
   const allowedTypes = TAB_SECTIONS[tab];
   const sectionTypes = empty
@@ -3533,20 +3555,10 @@ function DashboardContent({
         syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: nextDomein });
         return;
       }
-      if (screen === "favorieten" && options?.fav) {
-        setVoortgangScreen("leefstijlprofiel");
-        setLeefstijlprofielDomein(options.fav);
-        syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: options.fav });
-        return;
-      }
       setVoortgangScreen(screen);
       if (screen === "leefstijlprofiel" || screen === "favorieten") {
         const nextFav =
-          screen === "favorieten"
-            ? null
-            : options && "fav" in options
-              ? (options.fav ?? null)
-              : leefstijlprofielDomein;
+          options && "fav" in options ? (options.fav ?? null) : leefstijlprofielDomein;
         setLeefstijlprofielDomein(nextFav);
         syncDashboardVoortgangScreenParam(screen, { fav: nextFav });
         return;
@@ -3776,6 +3788,7 @@ function DashboardContent({
     onOpenInzichten: () => handleVoortgangScreenChange("leefstijlprofiel", { fav: null }),
     leefstijlprofielDomein: activeLeefstijlprofielDomein,
     favorietenDomein: activeFavorietenDomein,
+    favorietenSchapTab: activeFavorietenSchapTab,
     onGoVoortgangDomein: goToVoortgangDomein,
     initialKompasView,
     prefUpdatedAt: priorityPref?.updatedAt ?? null,

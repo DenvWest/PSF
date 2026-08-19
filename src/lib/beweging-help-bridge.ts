@@ -6,13 +6,15 @@ import type { DashboardModel } from "@/types/dashboard";
 
 /**
  * De dunne #b-ingang (Pad A, slice 3): geen catalogus, alleen een statusstrip
- * die leest wat al bestaat. "Leefstijlprofiel" staat vast op `now` — er is nog geen
- * opslag (slice 4) — en "Beste" vast op `toekomstig`: er is geen signaal dat
- * iemand daar al is aangekomen.
+ * die dezelfde keten toont als het schap zelf (FavorietenSchapView
+ * ketenStrip: Check → Onderbouwing → Schap → Vergelijking). "Schap" staat
+ * vast op `now` — dat is de stap waar deze brug naartoe leidt — en
+ * "Vergelijking" vast op `toekomstig`: er is geen signaal dat iemand daar al
+ * is aangekomen.
  */
 export type HelpBridgeStatus = "done" | "wacht" | "now" | "toekomstig";
 
-export type HelpBridgePointId = "check" | "advies" | "favorieten" | "beste";
+export type HelpBridgePointId = "check" | "onderbouwing" | "schap" | "vergelijking";
 
 export type HelpBridgePoint = {
   id: HelpBridgePointId;
@@ -41,12 +43,12 @@ export function buildBewegingHelpBridge(
       // De sheet is alleen bereikbaar via de dagstap-poort — de check staat dus al.
       { id: "check", label: "Check", status: "done" },
       {
-        id: "advies",
-        label: "Advies",
+        id: "onderbouwing",
+        label: "Onderbouwing",
         status: nutritionLogCompleted ? "done" : "wacht",
       },
-      { id: "favorieten", label: "Opgeslagen", status: "now" },
-      { id: "beste", label: "Beste", status: "toekomstig" },
+      { id: "schap", label: "Schap", status: "now" },
+      { id: "vergelijking", label: "Vergelijking", status: "toekomstig" },
     ],
   };
 }

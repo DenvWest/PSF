@@ -71,6 +71,7 @@ export const DOMAIN_EVENT_TYPES = [
   "verdict.changed",
   "dashboard.schap_vergelijking_click",
   "dashboard.schap_getoond",
+  "dashboard.schap_tab_selected",
   "dashboard.advies_gate_passed",
   "dashboard.afleiding_opened",
   "affiliate.click",

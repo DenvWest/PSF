@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import type { CSSProperties, MouseEvent, ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import * as Icons from "@/components/app/icons";
 import AgendaTimelineHourAxis from "@/components/dashboard/agenda/AgendaTimelineHourAxis";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
@@ -10,6 +11,7 @@ import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDet
 import MeerHulpBridgeSheet from "@/components/dashboard/agenda/MeerHulpBridgeSheet";
 import { clarityTag } from "@/lib/clarity";
 import { buildBewegingHelpBridge } from "@/lib/beweging-help-bridge";
+import { buildDashboardFavorietenSchapHref } from "@/lib/dashboard-url";
 import { getCachedDailyLog, subscribeDailyLogCache } from "@/lib/daily-log-client";
 import AgendaPlanStepStrip from "@/components/dashboard/agenda/AgendaPlanStepStrip";
 import {
@@ -76,7 +78,6 @@ type AgendaDayTimelineProps = {
   blockBusy?: boolean;
   /** Poort 2 van de bestaande advies-deur (§G.1 BESLUIT) — voedt de brug-statusstrip. */
   nutritionLogCompleted: boolean;
-  onGoVoortgangDomein: (domain: PillarId) => void;
   onCompletionChange?: () => void;
   onScheduledTimeChange: (
     scheduledTime: string,
@@ -112,7 +113,6 @@ export default function AgendaDayTimeline({
   prefBusy,
   blockBusy = false,
   nutritionLogCompleted,
-  onGoVoortgangDomein,
   onCompletionChange,
   onScheduledTimeChange,
   onCreateBlock,
@@ -128,6 +128,7 @@ export default function AgendaDayTimeline({
   weekStrip,
   onRegisterFooterActions,
 }: AgendaDayTimelineProps) {
+  const router = useRouter();
   const [addOpen, setAddOpen] = useState(false);
   const [draftSlot, setDraftSlot] = useState<DraftSlot | null>(null);
   const [helpPreset, setHelpPreset] = useState<HelpPreset | null>(null);
@@ -539,9 +540,9 @@ export default function AgendaDayTimeline({
           open={addOpen}
           bridge={buildBewegingHelpBridge(model, slot, nutritionLogCompleted)}
           onClose={closeSheet}
-          onOpenVoortgang={() => {
+          onOpenSchap={() => {
             closeSheet();
-            onGoVoortgangDomein(helpPreset.domain);
+            router.push(buildDashboardFavorietenSchapHref(helpPreset.domain, "producten"));
           }}
         />
       ) : null}

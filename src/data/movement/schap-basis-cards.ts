@@ -13,7 +13,8 @@
  * laag komt zodra dat besluit er is — niet eerder.
  */
 export type SchapBasisCard = {
-  id: "wandelen" | "ritme";
+  /** Vrij string-veld — ook gebruikt door schap-diensten.ts (zelfde kaartvorm, andere ids). */
+  id: string;
   badge: string;
   title: string;
   why: string;
