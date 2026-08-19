@@ -7,12 +7,19 @@ type FavoriteSaveButtonProps = {
   item: VoortgangFavoriteItem;
   surface: string;
   compact?: boolean;
+  /**
+   * Eigen opschrift, voor surfaces waar "favorieten" niet het woord is dat de
+   * gebruiker ziet — op de ladder heet dezelfde lijst "Mijn keuze". Alleen de
+   * tekst wijkt af; het is dezelfde knop naar dezelfde bron.
+   */
+  labels?: { save: string; saved: string };
 };
 
 export default function FavoriteSaveButton({
   item,
   surface,
   compact = false,
+  labels,
 }: FavoriteSaveButtonProps) {
   const { isSaved, save, remove } = useVoortgangFavorites();
   const saved = isSaved(item.id);
@@ -25,7 +32,9 @@ export default function FavoriteSaveButton({
     save(item);
   };
 
-  const label = saved ? "Verwijder uit favorieten" : "Bewaar in favorieten";
+  const savedLabel = labels?.saved ?? "Staat in favorieten";
+  const saveLabel = labels?.save ?? "Bewaar in favorieten";
+  const label = saved ? `${savedLabel} — klik om weg te halen` : saveLabel;
 
   if (compact) {
     return (
@@ -61,7 +70,7 @@ export default function FavoriteSaveButton({
         s={14}
         style={{ color: saved ? "var(--sage)" : "currentColor", fill: saved ? "var(--sage)" : "none" }}
       />
-      {saved ? "Staat in favorieten" : "Bewaar in favorieten"}
+      {saved ? savedLabel : saveLabel}
     </button>
   );
 }

@@ -1,7 +1,23 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import PrioriteitenLadder from "@/components/dashboard/voortgang/PrioriteitenLadder";
+
+type FakeFavorite = { id: string; title: string; kind: string; domain?: string };
+
+let favoriteItems: FakeFavorite[] = [];
+const save = vi.fn();
+const remove = vi.fn();
+
+vi.mock("@/lib/voortgang-favorites-context", () => ({
+  useVoortgangFavorites: () => ({
+    items: favoriteItems,
+    hydrated: true,
+    isSaved: (id: string) => favoriteItems.some((item) => item.id === id),
+    save,
+    remove,
+  }),
+}));
 
 const LAYERS = [
   {
@@ -19,6 +35,12 @@ const LAYERS = [
     actions: ["Actie 2a"],
   },
 ];
+
+beforeEach(() => {
+  favoriteItems = [];
+  save.mockClear();
+  remove.mockClear();
+});
 
 describe("PrioriteitenLadder", () => {
   it("toont alle lagen dicht, zonder statuslabel — geen afgeleide score", () => {
@@ -78,7 +100,7 @@ describe("PrioriteitenLadder", () => {
     expect(screen.getByText("Je eetbasis")).toBeTruthy();
   });
 
-  it("toont geen 'Wat je kunt doen' bij een laag zonder acties", () => {
+  it("toont geen actieblok bij een laag zonder acties, wel het lege Mijn keuze", () => {
     const layersLeeg = [
       { id: 1, name: "Meten & timing", summary: "Gereedschap, geen fundament.", actions: [] },
     ];
@@ -87,7 +109,8 @@ describe("PrioriteitenLadder", () => {
     );
     fireEvent.click(screen.getByText("Meten & timing"));
     expect(screen.getByText("Gereedschap, geen fundament.")).toBeTruthy();
-    expect(screen.queryByText("Wat je kunt doen")).toBeNull();
+    expect(screen.queryByText("Wat je hier kunt doen")).toBeNull();
+    expect(screen.getByText("Mijn keuze op deze laag")).toBeTruthy();
   });
 
   it("gebruikt de meegegeven eyebrow in plaats van de standaard", () => {
@@ -102,5 +125,109 @@ describe("PrioriteitenLadder", () => {
     );
     expect(screen.getByText("Van onder naar boven")).toBeTruthy();
     expect(screen.queryByText("Kies wat herkenbaar is")).toBeNull();
+  });
+
+  it("schrijft een gekozen actie weg met een id dat domein én laag onthoudt", () => {
+    render(
+      <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="stress" surface="test" />,
+    );
+    fireEvent.click(screen.getByText("Tweede prioriteit"));
+    fireEvent.click(screen.getAllByRole("button", { name: "Zet bij Mijn keuze" })[0]);
+
+    expect(save).toHaveBeenCalledWith({
+      id: "laag-stress-p2-actie-2a",
+      title: "Actie 2a",
+      kind: "activiteit",
+      domain: "stress",
+      source: "mijn_keuze",
+    });
+  });
+
+  it("toont per laag wat je daar koos, en telt het op de dichte rij", () => {
+    favoriteItems = [
+      { id: "laag-stress-p1-actie-1a", title: "Actie 1a", kind: "activiteit", domain: "stress" },
+      { id: "laag-stress-p1-iets-eigens", title: "Iets eigens", kind: "activiteit", domain: "stress" },
+      { id: "laag-stress-p2-actie-2a", title: "Actie 2a", kind: "activiteit", domain: "stress" },
+    ];
+    render(
+      <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="stress" surface="test" />,
+    );
+
+    // Dicht: alleen de teller, geen inhoud.
+    expect(screen.getByText("2 gekozen")).toBeTruthy();
+    expect(screen.getByText("1 gekozen")).toBeTruthy();
+    expect(screen.queryByText("Iets eigens")).toBeNull();
+
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    expect(screen.getByText("Iets eigens")).toBeTruthy();
+    // De keuze van laag 2 blijft achter zijn eigen rij.
+    expect(screen.queryByText(/^Actie 2a$/)).toBeNull();
+  });
+
+  it("telt keuzes van een ander domein niet mee", () => {
+    favoriteItems = [
+      { id: "laag-slaap-p1-actie-1a", title: "Actie 1a", kind: "activiteit", domain: "slaap" },
+    ];
+    render(
+      <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="stress" surface="test" />,
+    );
+    expect(screen.queryByText(/gekozen$/)).toBeNull();
+  });
+
+  it("noemt een laag alleen 'Aanbevolen' als de check hem aanwijst", () => {
+    const { rerender } = render(
+      <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="beweging" surface="test" />,
+    );
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    expect(screen.getByText("Wat je hier kunt doen")).toBeTruthy();
+
+    rerender(
+      <PrioriteitenLadder
+        layers={LAYERS}
+        intro="Intro-tekst."
+        domain="beweging"
+        surface="test"
+        recommendedLayerIds={[1]}
+      />,
+    );
+    expect(screen.getByText("Aanbevolen na je check")).toBeTruthy();
+  });
+
+  it("toont de staat per laag zodra de check hem levert, en opent de winst-laag", () => {
+    render(
+      <PrioriteitenLadder
+        layers={LAYERS}
+        intro="Intro-tekst."
+        domain="beweging"
+        surface="test"
+        layerStates={{ 1: "ok", 2: "winst" }}
+        stateLabels={{
+          winst: "Grootste winst",
+          ok: "Op orde",
+          watch: "Houd in de gaten",
+          wacht: "Nog niet nu",
+        }}
+        focusLayer={2}
+      />,
+    );
+    expect(screen.getByText("Op orde")).toBeTruthy();
+    expect(screen.getByText("Grootste winst")).toBeTruthy();
+    // De winst-laag staat meteen open.
+    expect(screen.getByText("Samenvatting twee.")).toBeTruthy();
+  });
+
+  it("wijst naar Vandaag zodra die terugweg bestaat", () => {
+    const onGoVandaag = vi.fn();
+    render(
+      <PrioriteitenLadder
+        layers={LAYERS}
+        intro="Intro-tekst."
+        domain="stress"
+        surface="test"
+        onGoVandaag={onGoVandaag}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: /Bekijk ze op Vandaag/ }));
+    expect(onGoVandaag).toHaveBeenCalled();
   });
 });

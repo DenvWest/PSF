@@ -4,13 +4,14 @@ import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScroll";
-import LeefstijlprofielDomeinView from "@/components/dashboard/voortgang/LeefstijlprofielDomeinView";
+import PrebuildFrame from "@/components/dashboard/PrebuildFrame";
+import LeefstijlprofielDomeinScherm from "@/components/dashboard/voortgang/LeefstijlprofielDomeinScherm";
 import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
 import FavorietenView from "@/components/dashboard/voortgang/FavorietenView";
-import FavorietenSchapView from "@/components/dashboard/voortgang/FavorietenSchapView";
 import VoortgangMobileNav from "@/components/dashboard/voortgang/VoortgangMobileNav";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import { clarityTag } from "@/lib/clarity";
+import { hasSchap, resolveSchapDomain } from "@/lib/schap-availability";
 import { trackEvent } from "@/lib/ga4";
 import { buildDashboardVandaagHref, type SyncDashboardVoortgangOptions } from "@/lib/dashboard-url";
 import type {
@@ -96,25 +97,45 @@ function VoortgangHubInner({
     navigate("leefstijlprofiel", { fav: domain });
   };
 
+  // Eén Favorieten (19 aug). De rail landde hier op `fav: null` en dus op
+  // FavorietenView, terwijl de deur op Vandaag (KompasOndersteuningTile) naar
+  // het schap ging — twee schermen onder dezelfde naam. Beide draaien nu op
+  // `resolveSchapDomain`. Sta je al op een schap, dan blijf je daar; anders
+  // opent het schap van je prioriteitsdomein. Heeft dat domein geen schap, dan
+  // is FavorietenView de eerlijke uitkomst en niet een tweede versie.
   const openFavorieten = () => {
-    trackEvent("dashboard_voortgang_hub_click", { destination: "favorieten" });
-    clarityTag("dashboard_voortgang", "favorieten");
-    navigate("favorieten", { fav: null });
+    const target =
+      resolveSchapDomain(favorietenDomein) ?? resolveSchapDomain(model?.priority.id);
+    trackEvent("dashboard_voortgang_hub_click", {
+      destination: "favorieten",
+      ...(target ? { domain: target } : {}),
+    });
+    clarityTag("dashboard_voortgang", target ? `favorieten_${target}` : "favorieten");
+    navigate("favorieten", { fav: target });
   };
 
-  const mobileActiveDomein = screen === "leefstijlprofiel" ? leefstijlprofielDomein : null;
+  const mobileActiveDomein =
+    screen === "leefstijlprofiel" || screen === "domein" ? leefstijlprofielDomein : null;
 
   let content: ReactNode;
 
-  if (screen === "leefstijlprofiel" && leefstijlprofielDomein) {
+  if ((screen === "leefstijlprofiel" || screen === "domein") && leefstijlprofielDomein) {
+    // Het echte scherm, niet de prebuild (19 aug). Aanbeveling en Mijn keuze
+    // zitten sinds deze slice ín de ladder, per laag, en die draait op
+    // `account_favorites` — dat kan een same-origin iframe niet leveren.
+    // Bestand A (leefstijlprofiel-domein-keuze-prebuild-v3) blijft de bron
+    // voor de vorm; docs/design is waar je hem leest.
     content = (
-      <LeefstijlprofielDomeinView
+      <LeefstijlprofielDomeinScherm
         model={model!}
         data={data}
         domain={leefstijlprofielDomein}
         adviesExtra={leefstijlprofielAdviesExtra}
         onBack={goBack}
         onGoVandaag={() => router.push(buildDashboardVandaagHref(leefstijlprofielDomein))}
+        onOpenSchap={(target) => {
+          navigate("favorieten", { fav: resolveSchapDomain(target) });
+        }}
       />
     );
   } else if (screen === "leefstijlprofiel" || screen === "inzichten") {
@@ -125,30 +146,17 @@ function VoortgangHubInner({
         onOpenDomain={openLeefstijlprofielDomein}
       />
     );
-  } else if (screen === "favorieten" && favorietenDomein === "beweging") {
+  } else if (screen === "favorieten" && favorietenDomein && hasSchap(favorietenDomein)) {
+    // Bestand B letterlijk (favorieten-schap-prebuild-v3): vier
+    // sub-oppervlakken, nooit tegelijk zichtbaar.
     content = (
-      <FavorietenSchapView
-        domain={favorietenDomein}
-        activeTab={favorietenSchapTab}
-        hasCheck={data?.movementCheckinSnapshot != null}
-        data={data}
-        onBack={goBack}
-        onOpenLeefstijlprofiel={openLeefstijlprofielDomein}
+      <PrebuildFrame
+        src={`favorieten-schap-v3.html?schaptab=${favorietenSchapTab ?? "producten"}&domein=${favorietenDomein}`}
+        title="Favorieten — het schap"
       />
     );
   } else if (screen === "favorieten") {
     content = <FavorietenView onBack={goBack} />;
-  } else if (screen === "domein" && leefstijlprofielDomein) {
-    content = (
-      <LeefstijlprofielDomeinView
-        model={model!}
-        data={data}
-        domain={leefstijlprofielDomein}
-        adviesExtra={leefstijlprofielAdviesExtra}
-        onBack={goBack}
-        onGoVandaag={() => router.push(buildDashboardVandaagHref(leefstijlprofielDomein))}
-      />
-    );
   } else {
     content = (
       <section aria-label="Voortgang navigatie">
@@ -174,25 +182,14 @@ function VoortgangHubInner({
 
   return (
     <div className="flex min-h-full flex-col">
-      {screen !== "hub" ? (
-        <VoortgangMobileNav
-          screen={screen}
-          activeDomein={mobileActiveDomein}
-          favorietenCount={favorietenItems.length}
-          onOpenLeefstijlprofiel={openLeefstijlprofielRoot}
-          onOpenFavorieten={openFavorieten}
-          onOpenDomein={openLeefstijlprofielDomein}
-        />
-      ) : (
-        <VoortgangMobileNav
-          screen={screen}
-          activeDomein={null}
-          favorietenCount={favorietenItems.length}
-          onOpenLeefstijlprofiel={openLeefstijlprofielRoot}
-          onOpenFavorieten={openFavorieten}
-          onOpenDomein={openLeefstijlprofielDomein}
-        />
-      )}
+      <VoortgangMobileNav
+        screen={screen}
+        activeDomein={mobileActiveDomein}
+        favorietenCount={favorietenItems.length}
+        onOpenLeefstijlprofiel={openLeefstijlprofielRoot}
+        onOpenFavorieten={openFavorieten}
+        onOpenDomein={openLeefstijlprofielDomein}
+      />
       <div className="flex-1">{content}</div>
     </div>
   );

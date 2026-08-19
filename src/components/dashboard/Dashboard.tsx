@@ -18,15 +18,8 @@ import {
   Sparkline,
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
-import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
-import DomainCheckinLink from "@/components/dashboard/domain/DomainCheckinLink";
-import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell";
-import DomainHeaderCard from "@/components/dashboard/domain/DomainHeaderCard";
-import DomainMeetModule from "@/components/dashboard/domain/DomainMeetModule";
-import DomainSectionHeader from "@/components/dashboard/domain/DomainSectionHeader";
 import DomainTopNav, { type DomainNavApi } from "@/components/dashboard/DomainTopNav";
 import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
-import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import MovementRecoveryTrendsCard from "@/components/dashboard/MovementRecoveryTrendsCard";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
@@ -77,23 +70,8 @@ const DomainScreenSkeleton = () => (
   </div>
 );
 
-const BewegingScreen = dynamic(
-  () => import("@/components/dashboard/BewegingScreen"),
-  { ssr: false, loading: () => <DomainScreenSkeleton /> },
-);
-
-const StressScreen = dynamic(
-  () => import("@/components/dashboard/StressScreen"),
-  { ssr: false, loading: () => <DomainScreenSkeleton /> },
-);
-
-const SleepScreen = dynamic(
-  () => import("@/components/dashboard/SleepScreen"),
-  { ssr: false, loading: () => <DomainScreenSkeleton /> },
-);
-
-const VerbindingScreen = dynamic(
-  () => import("@/components/dashboard/VerbindingScreen"),
+const PrebuildFrame = dynamic(
+  () => import("@/components/dashboard/PrebuildFrame"),
   { ssr: false, loading: () => <DomainScreenSkeleton /> },
 );
 
@@ -112,16 +90,14 @@ import {
   SIGNALS,
   TAB_SECTIONS,
 } from "@/data/dashboard";
-import { NUTRITION_CURATED_CHOICES } from "@/data/dashboard/nutrition-curated";
 import { perfectSupplementMeasurementConfig } from "@/data/measurement-config";
-import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
+import MijnKeuzeTile from "@/components/dashboard/MijnKeuzeTile";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
 import VoorJouTile from "@/components/dashboard/kompas/VoorJouTile";
-import NutritionRelogNudge from "@/components/dashboard/NutritionRelogNudge";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import {
@@ -142,7 +118,7 @@ import { trackEvent, trackDashboardTabSelected, trackOnderbouwingLinkClick } fro
 import { type SleepFocusKey } from "@/lib/sleep-focus";
 import { buildRecommendations } from "@/lib/build-recommendations";
 import {
-  buildBewegingRailTools,
+  buildDomainRailTools,
   buildKompasRailDomains,
   resolveVoortgangRailActiveItem,
   type ContextRailApi,
@@ -173,8 +149,6 @@ import {
   parseVoortgangScreenFromUrl,
   canonicalizeVoortgangScreenParam,
   getLegacyVoortgangScreenAlias,
-  buildDashboardAgendaHref,
-  buildDashboardVoortgangHref,
   syncDashboardAgendaViewParam,
   syncDashboardDagParam,
   syncDashboardKompasParam,
@@ -190,7 +164,6 @@ import type {
   DashboardSectionType,
   DashboardTab,
   DashboardTabId,
-  NutritionIntakeBand,
   PillarId,
   SchapTabId,
   Signal,
@@ -2433,6 +2406,24 @@ const IdentitySection = () => {
 
 /** Domeinen op de donkere cockpit-shell (@container-breedteladder) — de rest
  * (energie/herstel: DomainSoonScreen) blijft op de smallere vaste breedte. */
+/** Het home-frame per domein — de prebuild die dat Vandaag-scherm draagt. */
+const DOMAIN_PREBUILD: Partial<Record<PillarId, { src: string; title: string }>> = {
+  beweging: { src: "beweging-v3.6.html?screen=e", title: "Beweging — prebuild v3.6" },
+  slaap: { src: "slaap-v2.html?frame=K", title: "Slaap — prebuild v2" },
+  stress: { src: "stress-v1.html?frame=K", title: "Stress — prebuild v1" },
+  voeding: { src: "voeding-v1.5.html?frame=K", title: "Voeding — prebuild v1.5" },
+  verbinding: { src: "verbinding-v1.html?frame=K", title: "Verbinding — prebuild v1" },
+};
+
+/** Domeinen waarvan het Vandaag-scherm een letterlijke prebuild is. */
+const PREBUILD_DOMAINS = new Set<PillarId>([
+  "beweging",
+  "slaap",
+  "stress",
+  "voeding",
+  "verbinding",
+]);
+
 const COCKPIT_WIDTH_DOMAINS = new Set<PillarId>([
   "beweging",
   "stress",
@@ -2512,343 +2503,12 @@ const DomainSoonScreen = ({
   );
 };
 
-const SNAPSHOT_BAND_COLOR: Record<NutritionIntakeBand, string> = {
-  below: "#D99A4E",
-  around: "#CDD7D0",
-  meets: "#5A8F6A",
-};
-
-function buildNutritionIntakeLines(
-  answers: Record<string, number>,
-): string[] {
-  const lines: string[] = [];
-  const omega3 = answers.NUT_O3;
-  if (omega3 === 1) {
-    lines.push(
-      "Je eet zelden vette vis — je omega-3-inname blijft daarmee waarschijnlijk onder de vuistregel van 2× per week.",
-    );
-  } else if (omega3 === 2) {
-    lines.push(
-      "Je eet ongeveer 1× per week vette vis — net onder de vuistregel van 2× per week.",
-    );
-  } else if (typeof omega3 === "number" && omega3 >= 3) {
-    lines.push("Je eet 2× per week of vaker vette vis — je omega-3-basis staat.");
-  }
-
-  const protein = answers.NUT_PROT;
-  if (typeof protein === "number" && protein >= 4) {
-    lines.push("Elke maaltijd bevat een eiwitbron — een sterke basis voor spierbehoud na je 40e.");
-  } else if (protein === 3) {
-    lines.push("Niet elke maaltijd bevat bewust eiwit — begin je bord met een eiwitbron.");
-  } else if (typeof protein === "number" && protein >= 1) {
-    lines.push(
-      "Je let nog weinig op eiwit — begin elke maaltijd met een eiwitbron: ei, kwark, vis of peulvruchten.",
-    );
-  }
-
-  return lines;
-}
-
-const VoedingScreen = ({
-  model,
-  nutritionIntake,
-  nutritionRelogDue = false,
-  daysSinceNutritionLog = null,
-}: {
-  model: DashboardModel;
-  nutritionIntake: DashboardData["nutritionIntake"];
-  nutritionRelogDue?: boolean;
-  daysSinceNutritionLog?: number | null;
-}) => {
-  const eligibility = useMemo(
-    () => buildRecommendationsEligibility(nutritionIntake),
-    [nutritionIntake],
-  );
-  const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
-  const pillar = PILLAR.voeding;
-  const intakeLines = useMemo(
-    () => buildNutritionIntakeLines(model.answers ?? {}),
-    [model.answers],
-  );
-
-  const trackCheckinClick = (placement: string) => {
-    trackEvent("dashboard_voeding_checkin_click", {
-      surface: "kompas_voeding",
-      placement,
-    });
-    clarityTag("dashboard_voeding_checkin", "click");
-  };
-
-  const trackResultReopen = () => {
-    trackEvent("nutrition_result_reopen_click", {
-      surface: "dashboard_voeding",
-    });
-    clarityTag("nutrition_result_reopen", "dashboard");
-  };
-
-  return (
-    <DomainCockpitShell accent={pillar.color} ariaLabel="Voeding-cockpit">
-      <DomainHeaderCard
-        pillar={pillar}
-        score={model.scores.voeding ?? 0}
-        eyebrow="Mediterraan"
-        tagline="Stapsgewijs voeding optimaliseren."
-        checkinDate={nutritionIntake?.date ?? model.date ?? null}
-      />
-
-      <DomainCheckinLink
-        href="/intake/voeding?from=dashboard&kompas=voeding"
-        icon={<Icons.Leaf s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
-        label="Doe voedingscheck"
-        onClick={() => trackCheckinClick("header")}
-      />
-      {nutritionLogCompleted ? (
-        <DomainCheckinLink
-          href="/intake/voeding?resultaten=true&from=dashboard"
-          icon={<Icons.BarChart s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
-          label="Bekijk je resultaat"
-          onClick={trackResultReopen}
-        />
-      ) : null}
-
-      {nutritionRelogDue && daysSinceNutritionLog != null ? (
-        <NutritionRelogNudge
-          surface="kompas_voeding"
-          daysSinceLog={daysSinceNutritionLog}
-          tone="dark"
-        />
-      ) : null}
-
-      {nutritionLogCompleted ? (
-        <Link
-          href={buildDashboardAgendaHref()}
-          onClick={() => {
-            trackEvent("dashboard_voeding_agenda_cta_click", { surface: "kompas_voeding" });
-            clarityTag("dashboard_voeding", "agenda_cta");
-          }}
-          className="flex w-full items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-left no-underline"
-        >
-          <Icons.Calendar s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
-          <span className="flex-1">
-            <span className="block text-[14.5px] font-medium text-[#F1EFE8]">
-              Zet je weekpatroon op Mijn Dag
-            </span>
-            <span className="mt-0.5 block text-[12.5px] leading-snug text-[#9FB0A6]">
-              Eén stap per dag — geen dagboek. Voortgang meet het patroon over 14 dagen.
-            </span>
-          </span>
-          <Icons.ChevronRight s={16} style={{ color: "#7E8C82", flexShrink: 0 }} />
-        </Link>
-      ) : null}
-
-      <section aria-label="Inname-snapshot">
-        <DomainSectionHeader
-          eyebrow="Laatste check-in"
-          title="Wat je binnenkrijgt"
-          action={
-            nutritionIntake ? (
-              <span className="text-[12px] text-[#9FB0A6]">{nutritionIntake.date}</span>
-            ) : undefined
-          }
-        />
-        <CockpitTile>
-          {nutritionIntake ? (
-            <>
-              <div className="flex flex-col">
-                {nutritionIntake.items.map((item, index) => (
-                  <div
-                    key={`${item.label}-${index}`}
-                    className={`flex items-center justify-between gap-2.5 px-0.5 py-2.5 ${
-                      index ? "border-t border-white/10" : ""
-                    }`}
-                  >
-                    <span className="text-[14px] text-[#F1EFE8]">{item.label}</span>
-                    <div className="flex items-center gap-2">
-                      {item.previousBand ? (
-                        <span className="text-[11px] text-[#9FB0A6]">
-                          was: {NUTRITION_BAND[item.previousBand].label.toLowerCase()}
-                        </span>
-                      ) : null}
-                      <span
-                        className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
-                        style={{
-                          border: `1px solid ${SNAPSHOT_BAND_COLOR[item.band]}44`,
-                          background: `${SNAPSHOT_BAND_COLOR[item.band]}14`,
-                          color: SNAPSHOT_BAND_COLOR[item.band],
-                        }}
-                      >
-                        {NUTRITION_BAND[item.band].label}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-3 mb-0 text-[12px] leading-relaxed text-[#9FB0A6]">
-                Weekpatroon op basis van hoe vaak je eet — een vuistregel, geen dagelijkse
-                meting, status of diagnose.
-              </p>
-            </>
-          ) : intakeLines.length > 0 ? (
-            <div className="flex flex-col gap-2.5">
-              {intakeLines.map((line) => (
-                <p key={line} className="m-0 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
-                  {line}
-                </p>
-              ))}
-              <p className="m-0 text-[12.5px] leading-relaxed text-[#9FB0A6]">
-                Uit je intake — doe de voedingscheck voor je volledige inname-beeld.
-              </p>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              <p className="m-0 text-[14px] leading-relaxed text-[#CDD7D0]">
-                Nog geen check-in — doe de voedingscheck om je inname-snapshot te zien.
-              </p>
-              <Link
-                href="/intake/voeding?from=dashboard&kompas=voeding"
-                onClick={() => trackCheckinClick("snapshot_empty")}
-                className="inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
-              >
-                Doe de voedingscheck (1 min) <Icons.ChevronRight s={15} />
-              </Link>
-            </div>
-          )}
-        </CockpitTile>
-      </section>
-
-      <section aria-label="Leefstijl eerst">
-        <DomainSectionHeader eyebrow="Leefstijl eerst" title="Voedingsbasis" />
-        <CockpitTile>
-          <div className="flex flex-col gap-2.5">
-            <div className="rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3">
-              <div className="mb-1 text-[13.5px] font-semibold text-[#F1EFE8]">
-                Eiwitanker per maaltijd
-              </div>
-              <p className="m-0 text-[13px] leading-relaxed text-[#9FB0A6]">
-                Start met 1 eiwitbron per maaltijd zodat je verzadiging en herstel stabieler
-                worden.
-              </p>
-            </div>
-            <div className="rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3">
-              <div className="mb-1 text-[13.5px] font-semibold text-[#F1EFE8]">
-                Vezelritme over de dag
-              </div>
-              <p className="m-0 text-[13px] leading-relaxed text-[#9FB0A6]">
-                Bouw per eetmoment groente, peulvruchten of volkoren op. Dit dempt pieken en houdt
-                energie rustiger.
-              </p>
-            </div>
-            <div className="rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3">
-              <div className="mb-1 text-[13.5px] font-semibold text-[#F1EFE8]">
-                Vast maaltijdvenster
-              </div>
-              <p className="m-0 text-[13px] leading-relaxed text-[#9FB0A6]">
-                Eet op voorspelbare tijden. Zo stuur je rust in eetdrang en maak je je basis
-                meetbaar.
-              </p>
-            </div>
-            <Link
-              href="/inzichten"
-              onClick={() => {
-                trackEvent("dashboard_voeding_leefstijl_click", { surface: "kompas_voeding" });
-                clarityTag("dashboard_voeding_leefstijl", "click");
-              }}
-              className="mt-0.5 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
-            >
-              Lees leefstijl &amp; inzichten <Icons.ChevronRight s={15} />
-            </Link>
-          </div>
-        </CockpitTile>
-      </section>
-
-      <section aria-label="Slimme keuzes">
-        <DomainSectionHeader eyebrow="PS-beoordeling" title="Slimme keuzes" />
-        <CockpitTile>
-          <div className="flex flex-col gap-2.5">
-            {NUTRITION_CURATED_CHOICES.map((choice) => (
-              <div
-                key={choice.id}
-                className="flex items-start gap-3 rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3"
-              >
-                <span className="text-[22px]" aria-hidden>
-                  {choice.icon}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <span className="text-[14.5px] font-semibold text-[#F1EFE8]">
-                      {choice.name}
-                    </span>
-                    <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#5A8F6A]">
-                      {choice.verdict}
-                    </span>
-                  </div>
-                  <div className="mt-0.5 text-[12px] text-[#9FB0A6]">
-                    Beoordeeld op: {choice.dimension.toLowerCase()}
-                  </div>
-                  <p className="mt-1 mb-0 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
-                    {choice.note}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-3.5 flex items-center gap-2">
-            <Icons.Shield s={13} style={{ color: "#5A8F6A" }} />
-            <span className="text-[12.5px] leading-relaxed text-[#9FB0A6]">
-              Onafhankelijk beoordeeld op productgroep-niveau — geen merken, geen verkoop.
-            </span>
-          </div>
-        </CockpitTile>
-      </section>
-
-      <section aria-label="Aanvullen">
-        <DomainSectionHeader eyebrow="Daarna gericht" title="Wat kun je hiernaast zetten?" />
-        <Link
-          href={buildDashboardVoortgangHref("domein", null, "voeding")}
-          onClick={() => {
-            trackEvent("dashboard_voeding_deur_click", { surface: "kompas_voeding" });
-            clarityTag("dashboard_voeding_deur", "click");
-          }}
-          className="flex items-center gap-3 rounded-2xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/10 px-4 py-3.5 no-underline text-inherit"
-        >
-          <Icons.ArrowRight s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
-          <span className="flex-1">
-            <span className="block text-[14.5px] font-semibold text-[#F1EFE8]">
-              Bekijk je oordeel op Voortgang
-            </span>
-            <span className="mt-0.5 block text-[12.5px] leading-snug text-[#9FB0A6]">
-              Eerst je bord, dan pas — als er een gemeten gat is — een aanvulling.
-            </span>
-          </span>
-          <Icons.ChevronRight s={16} style={{ color: "#9FB0A6", flexShrink: 0 }} />
-        </Link>
-      </section>
-
-      <DomainMeetModule
-        domain="voeding"
-        title="Later: kcal, macro's & je eiwitdoel"
-        description="Optionele verdieping bovenop je gratis check — persoonlijke streefwaarden en weektrend als je dat wilt."
-        bullets={[
-          "Inname-inschatting van calorieën en macro's naast je check",
-          "Persoonlijk eiwitdoel — streefwaarde op basis van je gewicht en doel",
-          "Weektrend: zie of je basis richting je vuistregels beweegt",
-        ]}
-        note="Je lengte en gewicht deel je pas als je start — eerder vragen we er niet om."
-        teaser="Jouw eiwitdoel: ●● g — wordt berekend zodra verdieping live is"
-      />
-
-      <KompasBegeleidingLink surface="kompas_voeding" />
-    </DomainCockpitShell>
-  );
-};
-
 const KompasHome = ({
   model,
   data,
   onRemeasure,
   onGoAgenda,
   onGoVoortgang,
-  onGoVoortgangDomein,
   agendaDate: _agendaDate,
   onAgendaDateChange: _onAgendaDateChange,
   onPrefUpdated,
@@ -2867,7 +2527,6 @@ const KompasHome = ({
     }
     return initialKompasView ?? null;
   });
-  const [makePriorityBusy, setMakePriorityBusy] = useState(false);
   const showRemeasureReminder =
     Boolean(data?.remeasure) && (data?.remeasure?.daysUntil ?? 1) <= 0;
   const cycleContext = data?.cycleEvidence
@@ -2883,19 +2542,14 @@ const KompasHome = ({
       true,
     [data?.nutritionIntake],
   );
-  const todaySlot = useMemo(
-    () =>
-      currentModel
-        ? (buildWeekSchedulePreview(currentModel).find((slot) => slot.isToday) ?? null)
-        : null,
-    [currentModel],
-  );
-
   const railDomains = useMemo(
     () => buildKompasRailDomains(currentModel?.scores ?? {}),
     [currentModel],
   );
-  const railTools = useMemo(() => buildBewegingRailTools(), []);
+  const railTools = useMemo(
+    () => (domainView ? buildDomainRailTools(domainView) : []),
+    [domainView],
+  );
 
   useEffect(() => {
     onDomainViewChange?.(domainView);
@@ -3020,7 +2674,7 @@ const KompasHome = ({
     onContextRailApi({
       mode: railMode,
       domains: railDomains,
-      tools: domainView === "beweging" ? railTools : [],
+      tools: railTools,
       onOpenDomain: (domain) => contextRailHandlersRef.current.onOpenDomain(domain),
       onBackToKompas: () => contextRailHandlersRef.current.onBackToKompas(),
       onToolClick: (tool) => contextRailHandlersRef.current.onToolClick(tool),
@@ -3051,69 +2705,16 @@ const KompasHome = ({
     return null;
   }
 
-  const makeBewegingPriority = async () => {
-    if (makePriorityBusy) {
-      return;
-    }
-    setMakePriorityBusy(true);
-    try {
-      await saveDashboardPrioritySelection({
-        pillarId: "beweging",
-        source: "user_selected",
-        surface: "kompas_beweging",
-        timeBucket: currentModel.timeBucket ?? null,
-        scheduledTime: currentModel.scheduledTime ?? null,
-        onPrefUpdated,
-      });
-    } finally {
-      setMakePriorityBusy(false);
-    }
-  };
-
   const withDomainTopNav = (content: ReactElement) => content;
 
-  if (domainView === "beweging") {
+  // Elk domein toont zijn prebuild letterlijk, op zijn home-frame. De interne
+  // appbar is verborgen, dus navigatie binnen de prebuild verzet de échte tab
+  // (PrebuildFrame → resolvePrebuildHref).
+  const domainPrebuild = domainView ? DOMAIN_PREBUILD[domainView] : null;
+  if (domainPrebuild) {
     return withDomainTopNav(
-      <BewegingScreen
-        model={currentModel}
-        data={data}
-        slot={todaySlot}
-        nutritionLogCompleted={nutritionLogCompleted}
-        onGoAgenda={onGoAgenda}
-        onMakePriority={() => void makeBewegingPriority()}
-        makePriorityBusy={makePriorityBusy}
-        onGoVoortgangDomein={() => onGoVoortgangDomein("beweging")}
-        onPrefUpdated={onPrefUpdated}
-      />,
+      <PrebuildFrame src={domainPrebuild.src} title={domainPrebuild.title} />,
     );
-  }
-  if (domainView === "stress") {
-    return withDomainTopNav(
-      <StressScreen model={currentModel} />,
-    );
-  }
-  if (domainView === "slaap") {
-    return withDomainTopNav(
-      <SleepScreen
-        model={currentModel}
-        sleepSnapshot={data?.sleepCheckinSnapshot ?? null}
-        nutritionLogCompleted={nutritionLogCompleted}
-        onGoVoortgangDomein={() => onGoVoortgangDomein("slaap")}
-      />,
-    );
-  }
-  if (domainView === "voeding") {
-    return withDomainTopNav(
-      <VoedingScreen
-        model={currentModel}
-        nutritionIntake={data?.nutritionIntake ?? null}
-        nutritionRelogDue={data?.nutritionRelogDue ?? false}
-        daysSinceNutritionLog={data?.daysSinceNutritionLog ?? null}
-      />,
-    );
-  }
-  if (domainView === "verbinding") {
-    return withDomainTopNav(<VerbindingScreen model={currentModel} />);
   }
   if (domainView) {
     return withDomainTopNav(
@@ -3142,6 +2743,10 @@ const KompasHome = ({
           onPrefUpdated={onPrefUpdated}
         />
       </CockpitShell>
+      {/* N4: wat je zelf koos, als handeling op je dag — domein-overstijgend,
+          want Vandaag gaat over je dag en niet over één domein. Naam +
+          herkomst + afvinken; merk, prijs en oordeel blijven achter de deur. */}
+      <MijnKeuzeTile surface="kompas_home" />
       <KompasOndersteuningTile
         model={currentModel}
         data={data}
@@ -3971,6 +3576,10 @@ function DashboardContent({
         inspectorDoelFooter={inspectorDoelFooter}
         inspectorExtra={inspectorExtra}
         hideRail={tab === "agenda"}
+        // De prebuild-surfaces hebben de volle breedte nodig om hun eigen
+        // @container-lagen (mobiel/iPad/desktop) te bereiken — de context-
+        // rail mag daar dus dicht starten. Eén klik brengt hem terug.
+        defaultContextCollapsed={viewedDomain != null && PREBUILD_DOMAINS.has(viewedDomain)}
       >
         <div
           className={`w-full ${
