@@ -9,8 +9,9 @@ type DomainCockpitShellProps = {
 
 /**
  * Donkere cockpit-schaal voor een Kompas-domeinscherm (Stress/Slaap/Voeding/
- * Verbinding/Beweging): zelfde breedte-ladder als MovementCockpit, zodat de
- * midden-zone bij een open contextkolom niet breekt (@container i.p.v. lg:/xl:).
+ * Verbinding/Beweging): volledige breedte van de midden-kolom, met @container
+ * zodat de interne @[560px]/@[1080px]-lagen (ladder, knoppenrij) blijven
+ * werken ongeacht hoe breed de contextkolom ernaast openstaat.
  */
 export default function DomainCockpitShell({
   accent,
@@ -19,7 +20,7 @@ export default function DomainCockpitShell({
 }: DomainCockpitShellProps) {
   return (
     <CockpitShell accent={accent} ariaLabel={ariaLabel} embedded>
-      <div className="@container mx-auto w-full max-w-[1040px] @[1080px]:max-w-[1340px]">
+      <div className="@container mx-auto w-full">
         <div className="flex flex-col gap-3 pb-16 md:pb-0">{children}</div>
       </div>
     </CockpitShell>
