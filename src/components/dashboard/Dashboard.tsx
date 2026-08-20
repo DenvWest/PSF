@@ -96,8 +96,6 @@ import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import MijnKeuzeTile from "@/components/dashboard/MijnKeuzeTile";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
-import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
-import VoorJouTile from "@/components/dashboard/kompas/VoorJouTile";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import {
@@ -2506,9 +2504,7 @@ const DomainSoonScreen = ({
 const KompasHome = ({
   model,
   data,
-  onRemeasure,
   onGoAgenda,
-  onGoVoortgang,
   agendaDate: _agendaDate,
   onAgendaDateChange: _onAgendaDateChange,
   onPrefUpdated,
@@ -2527,8 +2523,6 @@ const KompasHome = ({
     }
     return initialKompasView ?? null;
   });
-  const showRemeasureReminder =
-    Boolean(data?.remeasure) && (data?.remeasure?.daysUntil ?? 1) <= 0;
   const cycleContext = data?.cycleEvidence
     ? {
         cycleDay: data.cycleEvidence.cycleDay,
@@ -2729,7 +2723,6 @@ const KompasHome = ({
           model={currentModel}
           firstName={data?.firstName}
           profileLabel={data?.profileLabel}
-          remeasureDue={showRemeasureReminder}
           cycleContext={cycleContext}
           nutritionLogCompleted={nutritionLogCompleted}
           hasNutritionIntake={data?.nutritionIntake != null}
@@ -2737,7 +2730,6 @@ const KompasHome = ({
           domainCheckDaysAgo={data?.domainCheckDaysAgo}
           remeasureDaysUntil={data?.remeasure?.daysUntil ?? null}
           onGoAgenda={(date) => onGoAgenda(date)}
-          onRemeasure={onRemeasure}
           onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
           onOpenPriority={(domain) => openDomain(domain, "leefstijlkompas")}
           onPrefUpdated={onPrefUpdated}
@@ -2747,13 +2739,6 @@ const KompasHome = ({
           want Vandaag gaat over je dag en niet over één domein. Naam +
           herkomst + afvinken; merk, prijs en oordeel blijven achter de deur. */}
       <MijnKeuzeTile surface="kompas_home" />
-      <KompasOndersteuningTile
-        model={currentModel}
-        data={data}
-        surface="kompas_home"
-        onGoVoortgang={onGoVoortgang}
-      />
-      <VoorJouTile />
     </section>
   );
 };
