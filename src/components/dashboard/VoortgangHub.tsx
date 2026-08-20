@@ -1,13 +1,13 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScroll";
-import PrebuildFrame from "@/components/dashboard/PrebuildFrame";
 import LeefstijlprofielDomeinScherm from "@/components/dashboard/voortgang/LeefstijlprofielDomeinScherm";
 import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
 import FavorietenView from "@/components/dashboard/voortgang/FavorietenView";
+import SchapView from "@/components/dashboard/voortgang/SchapView";
 import VoortgangMobileNav from "@/components/dashboard/voortgang/VoortgangMobileNav";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import { clarityTag } from "@/lib/clarity";
@@ -33,7 +33,7 @@ type VoortgangHubProps = {
   screen: VoortgangScreen;
   leefstijlprofielDomein: PillarId | null;
   favorietenDomein: PillarId | null;
-  /** Actieve sub-tab op het schap — alleen betekenisvol op screen=favorieten met domain="beweging". */
+  /** Actieve sub-tab op het schap — alleen betekenisvol op screen=favorieten, op elk domein mét schap. */
   favorietenSchapTab: SchapTabId | null;
   leefstijlprofielAdviesExtra: ReactNode;
   overTijdExtra: ReactNode;
@@ -59,6 +59,9 @@ function VoortgangHubInner({
 }: Omit<VoortgangHubProps, "onPrefUpdated">) {
   const router = useRouter();
   const { items: favorietenItems } = useVoortgangFavorites();
+  const [schapTabOverride, setSchapTabOverride] = useState<
+    { domain: PillarId | null; tab: SchapTabId } | null
+  >(null);
 
   useEffect(() => {
     if (tab !== "voortgang") {
@@ -68,6 +71,20 @@ function VoortgangHubInner({
 
   const navigate = (next: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => {
     onScreenChange(next, options);
+  };
+
+  // De URL is de bron bij binnenkomst; daarna wint de klik. `pushState` uit
+  // het sync-pad werkt `useSearchParams` niet bij, dus de gekozen tab leeft
+  // hier — met zijn domein erbij, zodat hij bij een domeinwissel vanzelf
+  // vervalt in plaats van mee te reizen.
+  const activeSchapTab =
+    schapTabOverride && schapTabOverride.domain === favorietenDomein
+      ? schapTabOverride.tab
+      : favorietenSchapTab;
+
+  const handleSchapTabChange = (next: SchapTabId) => {
+    setSchapTabOverride({ domain: favorietenDomein, tab: next });
+    navigate("favorieten", { fav: favorietenDomein, schap: next });
   };
 
   const goBack = () => {
@@ -143,12 +160,19 @@ function VoortgangHubInner({
       />
     );
   } else if (screen === "favorieten" && favorietenDomein && hasSchap(favorietenDomein)) {
-    // Bestand B letterlijk (favorieten-schap-prebuild-v3): vier
-    // sub-oppervlakken, nooit tegelijk zichtbaar.
+    // Het schap in React (P3). De prebuild droeg beweeg-inhoud onder elke
+    // domeinkop; `SchapView` volgt het domein en leest `account_favorites` —
+    // dat kan een iframe niet. Bestand B (favorieten-schap-prebuild-v3)
+    // blijft de bron voor de vorm.
     content = (
-      <PrebuildFrame
-        src={`favorieten-schap-v3.html?schaptab=${favorietenSchapTab ?? "producten"}&domein=${favorietenDomein}`}
-        title="Favorieten — het schap"
+      <SchapView
+        model={model!}
+        data={data}
+        domain={favorietenDomein}
+        activeTab={activeSchapTab}
+        onTabChange={handleSchapTabChange}
+        onBack={goBack}
+        onOpenLeefstijlprofiel={openLeefstijlprofielDomein}
       />
     );
   } else if (screen === "favorieten") {

@@ -97,7 +97,8 @@ import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import MijnKeuzeTile from "@/components/dashboard/MijnKeuzeTile";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
-import { buildInspectorCards } from "@/lib/cockpit-inspector";
+import BewegingKompasScreen from "@/components/dashboard/domain/BewegingKompasScreen";
+import { buildInspectorCards, buildLadderInspectorCards } from "@/lib/cockpit-inspector";
 import {
   EMPTY_MOVEMENT_PREFS,
   getMovementAnchorOption,
@@ -125,6 +126,17 @@ import {
   type VoortgangRailItemId,
 } from "@/lib/context-rail";
 import { VoortgangFavoritesProvider, useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
+import {
+  DomainLadderFocusProvider,
+  useDomainLadderFocus,
+} from "@/lib/domain-ladder-focus-context";
+import { LadderMomentsProvider } from "@/lib/ladder-moments-context";
+import { parseLadderFavoriteLayer } from "@/lib/leefstijl-ladder";
+import { MOVEMENT_PRIORITY_LAYERS } from "@/data/movement/lifestyle-priorities";
+import {
+  MOVEMENT_LAYER_STATE_LABEL,
+  movementLayerWhyWait,
+} from "@/lib/movement-ladder";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { useTodayActionDone } from "@/lib/use-today-action-done";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
@@ -2406,7 +2418,6 @@ const IdentitySection = () => {
  * (energie/herstel: DomainSoonScreen) blijft op de smallere vaste breedte. */
 /** Het home-frame per domein — de prebuild die dat Vandaag-scherm draagt. */
 const DOMAIN_PREBUILD: Partial<Record<PillarId, { src: string; title: string }>> = {
-  beweging: { src: "beweging-v3.6.html?screen=e", title: "Beweging — prebuild v3.6" },
   slaap: { src: "slaap-v2.html?frame=K", title: "Slaap — prebuild v2" },
   stress: { src: "stress-v1.html?frame=K", title: "Stress — prebuild v1" },
   voeding: { src: "voeding-v1.5.html?frame=K", title: "Voeding — prebuild v1.5" },
@@ -2415,7 +2426,6 @@ const DOMAIN_PREBUILD: Partial<Record<PillarId, { src: string; title: string }>>
 
 /** Domeinen waarvan het Vandaag-scherm een letterlijke prebuild is. */
 const PREBUILD_DOMAINS = new Set<PillarId>([
-  "beweging",
   "slaap",
   "stress",
   "voeding",
@@ -2505,6 +2515,7 @@ const KompasHome = ({
   model,
   data,
   onGoAgenda,
+  onGoVoortgangDomein,
   agendaDate: _agendaDate,
   onAgendaDateChange: _onAgendaDateChange,
   onPrefUpdated,
@@ -2708,6 +2719,20 @@ const KompasHome = ({
   if (domainPrebuild) {
     return withDomainTopNav(
       <PrebuildFrame src={domainPrebuild.src} title={domainPrebuild.title} />,
+    );
+  }
+  // Beweging niet: dat scherm schrijft. Een keuze landt in `account_favorites`,
+  // een moment in `agenda_blocks`, en de contextkolom ernaast volgt de laag die
+  // je aanklikt — alle drie gaan de iframe-grens over.
+  if (domainView === "beweging" && currentModel) {
+    return withDomainTopNav(
+      <BewegingKompasScreen
+        model={currentModel}
+        data={data}
+        onGoAgenda={() => onGoAgenda()}
+        onGoVoortgangDomein={() => onGoVoortgangDomein("beweging")}
+        onPrefUpdated={onPrefUpdated}
+      />,
     );
   }
   if (domainView) {
@@ -2946,7 +2971,11 @@ const EmptyTabState = ({
 export default function Dashboard(props: DashboardProps) {
   return (
     <VoortgangFavoritesProvider>
-      <DashboardContent {...props} />
+      <DomainLadderFocusProvider>
+        <LadderMomentsProvider>
+          <DashboardContent {...props} />
+        </LadderMomentsProvider>
+      </DomainLadderFocusProvider>
     </VoortgangFavoritesProvider>
   );
 }
@@ -3150,7 +3179,10 @@ function DashboardContent({
         const nextFav =
           options && "fav" in options ? (options.fav ?? null) : leefstijlprofielDomein;
         setLeefstijlprofielDomein(nextFav);
-        syncDashboardVoortgangScreenParam(screen, { fav: nextFav });
+        syncDashboardVoortgangScreenParam(screen, {
+          fav: nextFav,
+          ...(screen === "favorieten" ? { schap: options?.schap ?? null } : {}),
+        });
         return;
       }
       syncDashboardVoortgangScreenParam(screen);
@@ -3460,6 +3492,7 @@ function DashboardContent({
   // cockpitDomain wordt live gemeld door KompasHome (onDomainViewChange),
   // dus dit volgt echte navigatie i.p.v. te bevriezen op de load-URL.
   const viewedDomain = tab === "vandaag" ? cockpitDomain : null;
+  const { focus: ladderFocus } = useDomainLadderFocus();
   // Het anker-systeem bestaat vooralsnog alleen voor beweging (zie
   // BLAUWDRUK_DOMEIN_STAPPENPLANNEN.md §7) — toon 'm dus alleen wanneer dat
   // domein daadwerkelijk open staat, niet op elk ander tabblad/domein.
@@ -3470,17 +3503,49 @@ function DashboardContent({
   const activeHabit = model?.activeHabit ?? null;
   // De "meet"-kaart is universeel (elk domein) en krijgt hieronder een echte
   // actieknop via remeasureAction — geen domein-uitzondering meer nodig.
-  const inspectorCards = buildInspectorCards({
-    activeHabit: activeHabit
-      ? {
-          title: activeHabit.title,
-          detail: activeHabit.detail,
-          done: todayActionDone,
-        }
-      : null,
-    remeasure: data?.remeasure ? { daysUntil: data.remeasure.daysUntil } : null,
-    anchorWhy: anchorOption?.whySuffix ?? null,
-  });
+  // Staat er een domeinscherm open met een aangeklikte ladderlaag, dan draagt
+  // de contextkolom díé laag en wat je erop koos — geen tweede ladder (lock
+  // N6), maar het waarom naast het wat. Alleen beweging levert staten af.
+  const ladderInspectorCards = useMemo(() => {
+    if (!ladderFocus || ladderFocus.domain !== "beweging") {
+      return null;
+    }
+    const layer = MOVEMENT_PRIORITY_LAYERS.find((row) => row.id === ladderFocus.layerId);
+    if (!layer) {
+      return null;
+    }
+    const snapshot = data?.movementCheckinSnapshot ?? null;
+    const focusLayerId = snapshot?.ladder.focus ?? null;
+    const state = snapshot?.ladder.states[layer.id] ?? null;
+    return buildLadderInspectorCards({
+      layerId: layer.id,
+      layerName: layer.name,
+      layerSummary: layer.summary,
+      stateLabel: state ? MOVEMENT_LAYER_STATE_LABEL[state] : null,
+      whyWait: movementLayerWhyWait(layer.id, focusLayerId),
+      chosen: favorietenItems
+        .filter(
+          (item) =>
+            item.domain === "beweging" && parseLadderFavoriteLayer(item.id) === layer.id,
+        )
+        .map((item) => ({ title: item.title })),
+      isFocus: layer.id === focusLayerId,
+    });
+  }, [ladderFocus, data?.movementCheckinSnapshot, favorietenItems]);
+
+  const inspectorCards =
+    ladderInspectorCards ??
+    buildInspectorCards({
+      activeHabit: activeHabit
+        ? {
+            title: activeHabit.title,
+            detail: activeHabit.detail,
+            done: todayActionDone,
+          }
+        : null,
+      remeasure: data?.remeasure ? { daysUntil: data.remeasure.daysUntil } : null,
+      anchorWhy: anchorOption?.whySuffix ?? null,
+    });
   const remeasureAction = data?.remeasure
     ? { due: data.remeasure.daysUntil <= 0, onClick: onRemeasure }
     : undefined;

@@ -60,9 +60,24 @@ describe("KompasOndersteuningTile — de deur op de home (N1)", () => {
     expect(screen.queryByText("Bekijk je oordeel op Voortgang")).toBeNull();
   });
 
-  it("houdt domeinen zonder eigen schap op de route naar Voortgang", () => {
+  it("draagt diezelfde deur op slaap, sinds het schap daar bestaat (P3)", () => {
     render(<KompasOndersteuningTile model={model("slaap")} data={data()} onGoVoortgang={() => {}} />);
+    const deur = screen.getByRole("link", { name: /Maak een keuze/ });
+    expect(deur.getAttribute("href")).toBe(
+      "/dashboard?tab=voortgang&screen=favorieten&fav=slaap&schap=producten",
+    );
+  });
+
+  it("houdt domeinen zonder eigen schap op de route naar Voortgang", () => {
+    // Stress (`lifestyle_first`) en verbinding (structureel) krijgen geen deur:
+    // geen schap, dus geen aanbod — ook niet als label.
+    render(<KompasOndersteuningTile model={model("stress")} data={data()} onGoVoortgang={() => {}} />);
     expect(screen.queryByText("Maak een keuze")).toBeNull();
     expect(screen.getByText("Bekijk je oordeel op Voortgang")).toBeTruthy();
+
+    render(
+      <KompasOndersteuningTile model={model("verbinding")} data={data()} onGoVoortgang={() => {}} />,
+    );
+    expect(screen.queryByText("Maak een keuze")).toBeNull();
   });
 });

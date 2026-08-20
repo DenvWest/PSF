@@ -291,6 +291,8 @@ export function buildDashboardVoortgangHref(
 export type SyncDashboardVoortgangOptions = {
   domein?: PillarId | null;
   fav?: PillarId | null;
+  /** Sub-tab van het schap — alleen betekenisvol op `screen=favorieten`. */
+  schap?: SchapTabId | null;
 };
 
 export function syncDashboardVoortgangScreenParam(
@@ -312,6 +314,7 @@ export function syncDashboardVoortgangScreenParam(
     url.searchParams.delete("screen");
     url.searchParams.delete("domein");
     url.searchParams.delete("fav");
+    url.searchParams.delete("schap");
   } else {
     url.searchParams.set("screen", screen);
     url.searchParams.delete("domein");
@@ -322,6 +325,11 @@ export function syncDashboardVoortgangScreenParam(
       url.searchParams.set("fav", options.fav);
     } else {
       url.searchParams.delete("fav");
+    }
+    if (screen === "favorieten" && isSchapTabId(options?.schap)) {
+      url.searchParams.set("schap", options.schap);
+    } else {
+      url.searchParams.delete("schap");
     }
   }
 

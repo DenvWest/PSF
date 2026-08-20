@@ -42,6 +42,9 @@ export type VerdictPanelSurface =
   | "voortgang_voeding"
   | "voortgang_beweging"
   | "favorieten_schap_producten"
+  | "schap_beweging"
+  | "schap_slaap"
+  | "schap_voeding"
   | "leefstijlprofiel_beweging";
 
 type SupplementVerdictPanelProps = {
