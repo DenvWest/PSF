@@ -9,6 +9,7 @@ import {
   MOVEMENT_LAYER_STATE_LABEL,
   movementLayerWhyWait,
   resolveMovementFocusPriority,
+  resolveMovementLadderCoverage,
   resolveMovementLayerStates,
 } from "@/lib/movement-ladder";
 
@@ -138,5 +139,47 @@ describe("de ladder-data", () => {
     for (const state of Object.values(states)) {
       expect(MOVEMENT_LAYER_STATE_LABEL[state]).toBeTruthy();
     }
+  });
+});
+
+describe("resolveMovementLadderCoverage — percentage over wat de check meet", () => {
+  it("telt alleen lagen met een checkveld als noemer", () => {
+    const coverage = resolveMovementLadderCoverage({
+      MOV2_SIT: 5,
+      MOV2_MOB: 5,
+      MOV2_STR: 5,
+      MOV2_CARD: 4,
+      MOV2_VIG: 4,
+      MOV2_CONSIST: 2,
+    });
+    expect(coverage.measured).toEqual([1, 2, 3]);
+    expect(coverage.onOrder).toEqual([1, 2]);
+    expect(coverage.percentage).toBe(67);
+  });
+
+  it("laat een laag zonder antwoord buiten de noemer", () => {
+    const coverage = resolveMovementLadderCoverage({ MOV2_SIT: 5, MOV2_MOB: 4 });
+    expect(coverage.measured).toEqual([1]);
+    expect(coverage.percentage).toBe(100);
+  });
+
+  it("rekent 'redelijk' niet als voldaan — dat is de laag die je in de gaten houdt", () => {
+    const coverage = resolveMovementLadderCoverage({ MOV2_CONSIST: 3 });
+    expect(coverage.measured).toEqual([3]);
+    expect(coverage.onOrder).toEqual([]);
+    expect(coverage.percentage).toBe(0);
+  });
+
+  it("geeft null zonder enige meting, in plaats van 0%", () => {
+    expect(resolveMovementLadderCoverage({}).percentage).toBeNull();
+  });
+
+  it("laat de zwakste deelvraag de laag bepalen", () => {
+    const coverage = resolveMovementLadderCoverage({
+      MOV2_STR: 5,
+      MOV2_CARD: 5,
+      MOV2_VIG: 2,
+    });
+    expect(coverage.onOrder).toEqual([]);
   });
 });

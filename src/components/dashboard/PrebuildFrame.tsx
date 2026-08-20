@@ -9,6 +9,7 @@ import {
   buildDashboardVoortgangHref,
   isSchapTabId,
 } from "@/lib/dashboard-url";
+import { trackEvent } from "@/lib/ga4";
 import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
 type PrebuildRoute = {
@@ -73,6 +74,21 @@ export function resolvePrebuildHref(route: PrebuildRoute): string | null {
 }
 
 /**
+ * Meetpunten uit een prebuild. Alleen wat hier met naam genoemd staat gaat
+ * door: een iframe mag geen willekeurige eventnamen de meetlaag in schrijven,
+ * ook al is hij same-origin. De ladder hergebruikt het bestaande
+ * `<domein>_ladder_layer_open` van de ladder op Voortgang — zelfde event, eigen
+ * surface, zodat beide plekken in één rapport naast elkaar te lezen zijn.
+ */
+function trackPrebuildEvent(name: string, payload: Record<string, unknown> | undefined) {
+  if (name !== "dashboard.ladder_layer_opened") return;
+  const domain = asPillar(typeof payload?.domain === "string" ? payload.domain : undefined);
+  const layer = payload?.layer;
+  if (!domain || typeof layer !== "number") return;
+  trackEvent(`${domain}_ladder_layer_open`, { layer, surface: `kompas_${domain}` });
+}
+
+/**
  * De prebuild letterlijk, als same-origin iframe. Zie
  * scripts/build-prebuild-embeds.mjs voor wat de embed-build aanpast
  * (chrome + appbar verbergen, beginstand uit de URL, navigatie naar buiten).
@@ -84,8 +100,18 @@ export default function PrebuildFrame({ src, title }: PrebuildFrameProps) {
   useEffect(() => {
     function onMessage(event: MessageEvent) {
       if (event.origin !== window.location.origin) return;
-      const data = event.data as { source?: string; route?: PrebuildRoute } | null;
-      if (!data || data.source !== "psf-prebuild" || !data.route) return;
+      const data = event.data as {
+        source?: string;
+        route?: PrebuildRoute;
+        event?: string;
+        payload?: Record<string, unknown>;
+      } | null;
+      if (!data || data.source !== "psf-prebuild") return;
+      if (data.event) {
+        trackPrebuildEvent(data.event, data.payload);
+        return;
+      }
+      if (!data.route) return;
       const href = resolvePrebuildHref(data.route);
       if (!href) return;
 

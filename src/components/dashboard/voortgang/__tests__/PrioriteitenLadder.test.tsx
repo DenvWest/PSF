@@ -67,6 +67,50 @@ describe("PrioriteitenLadder", () => {
     expect(screen.queryByText("Samenvatting een.")).toBeNull();
   });
 
+  it("laat een buitenstaander bepalen welke laag open staat", () => {
+    const onOpenLayerChange = vi.fn();
+    const { rerender } = render(
+      <PrioriteitenLadder
+        layers={LAYERS}
+        intro="Intro-tekst."
+        domain="beweging"
+        surface="test"
+        openLayer={2}
+        onOpenLayerChange={onOpenLayerChange}
+      />,
+    );
+    expect(screen.getByText("Samenvatting twee.")).toBeTruthy();
+
+    // Gestuurd: de klik meldt zich, maar opent niets uit zichzelf.
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    expect(onOpenLayerChange).toHaveBeenCalledWith(1);
+    expect(screen.queryByText("Samenvatting een.")).toBeNull();
+
+    rerender(
+      <PrioriteitenLadder
+        layers={LAYERS}
+        intro="Intro-tekst."
+        domain="beweging"
+        surface="test"
+        openLayer={1}
+        onOpenLayerChange={onOpenLayerChange}
+      />,
+    );
+    expect(screen.getByText("Samenvatting een.")).toBeTruthy();
+
+    // Nog een klik op dezelfde laag is "dicht", niet opnieuw open.
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    expect(onOpenLayerChange).toHaveBeenLastCalledWith(null);
+  });
+
+  it("geeft elke laag een anker-id, zodat de ladder in de kop ernaartoe kan scrollen", () => {
+    const { container } = render(
+      <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="beweging" surface="test" />,
+    );
+    expect(container.querySelector("#ladder-laag-beweging-p1")).toBeTruthy();
+    expect(container.querySelector("#ladder-laag-beweging-p2")).toBeTruthy();
+  });
+
   it("toont de vangnetregel alleen als hij expliciet is meegegeven", () => {
     const { rerender } = render(
       <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="stress" surface="test" />,

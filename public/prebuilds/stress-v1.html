@@ -2313,6 +2313,21 @@ paint();
     return out;
   }
 
+  /* Meetpunten naar buiten. De prebuilds roepen hun eigen track() aan en
+     vragen daarin naar deze haak; los in de browser bestaat hij niet, dus
+     daar blijft het een mock-regel in de reviewer-chrome. Wat er met de
+     naam gebeurt beslist PrebuildFrame — dat houdt de allowlist. */
+  window.__psfTrack = function (name, payload) {
+    try {
+      parent.postMessage(
+        { source: "psf-prebuild", event: name, payload: payload || {} },
+        location.origin
+      );
+    } catch (err) {
+      /* niet-blokkerend: een meetpunt mag de surface nooit breken */
+    }
+  };
+
   /* Capture-fase: we moeten vóór de eigen handler van de prebuild zijn,
      anders wisselt hij eerst intern van scherm. */
   document.addEventListener("click", function (e) {

@@ -45,6 +45,14 @@ type MovementCockpitProps = {
   /** Doorgeef-naad naar het dashboard-model: de dagkeuze moet zonder herladen
    * op Mijn Dag aankomen. */
   onPrefUpdated?: (pref: AccountPriorityPrefData | null) => void;
+  /**
+   * Het beweegprogramma tonen: de programmaregel onder de dagkaart, de sheet
+   * erachter en de "stel je programma in"-nudge. Uit op Kompas · Beweging
+   * (20 aug, op verzoek): de inspanning gaat naar de supplementroute, en een
+   * programma dat we niet doorontwikkelen hoort niet als tweede spoor op het
+   * scherm te staan. De dagstap zelf blijft.
+   */
+  showProgram?: boolean;
 };
 
 export default function MovementCockpit({
@@ -55,6 +63,7 @@ export default function MovementCockpit({
   makePriorityBusy,
   onDoneChange,
   onPrefUpdated,
+  showProgram = true,
 }: MovementCockpitProps) {
   // Prefs-override zodat de hero direct de nieuwe keuze gebruikt zonder
   // model-herbouw; sessie-skip blokkeert de dagstap niet permanent.
@@ -112,7 +121,7 @@ export default function MovementCockpit({
     movementCurrent,
   );
   const dose = resolveMovementProgramDose(effectiveTarget);
-  const programSummary = sessionEntry
+  const programSummary = sessionEntry && showProgram
     ? {
         label: `Je programma · ${sessionEntry.label}${dose ? ` · ${buildProgramDoseLine(dose)}` : `, ${sessionEntry.frequency}`}`,
         onOpen: () => setSheetOpen(true),
@@ -126,7 +135,7 @@ export default function MovementCockpit({
       !isPlanStepHidden(model, slot),
   );
   const showProgramSetup =
-    activeOwnStep && movementPrefs.startPattern == null && !skippedSession;
+    showProgram && activeOwnStep && movementPrefs.startPattern == null && !skippedSession;
 
   const positionLine = model.movementPlanProgress
     ? buildMovementPositionLine({
@@ -207,7 +216,7 @@ export default function MovementCockpit({
         </div>
       </div>
 
-      {sessionEntry ? (
+      {sessionEntry && showProgram ? (
         <MovementProgramSheet
           open={sheetOpen}
           onClose={() => setSheetOpen(false)}

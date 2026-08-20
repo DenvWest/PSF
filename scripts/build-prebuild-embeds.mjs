@@ -15,7 +15,9 @@
  *     Zo blijft de prebuild de baas over zijn eigen staat.
  *  3. Uitgaande navigatie doorgeven aan de parent via postMessage, i.p.v.
  *     intern van scherm wisselen. Zo volgt de echte tab mee.
- *  4. De base64-fonts eruit. Elke prebuild droeg dezelfde twee woff2-bestanden
+ *  4. Meetpunten doorgeven: `window.__psfTrack` vullen, zodat een klik
+ *     binnen de prebuild in de echte meetlaag terechtkomt.
+ *  5. De base64-fonts eruit. Elke prebuild droeg dezelfde twee woff2-bestanden
  *     als data-URI mee: ~73 KB per bestand, in zes van de zeven identiek, en
  *     base64 blaast de al gecomprimeerde fontdata ook nog eens met een derde
  *     op. Ze worden hier één keer weggeschreven onder een inhouds-hash en
@@ -263,6 +265,21 @@ function embedRuntime(config) {
     if (r.useDomeinAsKompas) out.kompas = DOMEIN;
     return out;
   }
+
+  /* Meetpunten naar buiten. De prebuilds roepen hun eigen track() aan en
+     vragen daarin naar deze haak; los in de browser bestaat hij niet, dus
+     daar blijft het een mock-regel in de reviewer-chrome. Wat er met de
+     naam gebeurt beslist PrebuildFrame — dat houdt de allowlist. */
+  window.__psfTrack = function (name, payload) {
+    try {
+      parent.postMessage(
+        { source: "psf-prebuild", event: name, payload: payload || {} },
+        location.origin
+      );
+    } catch (err) {
+      /* niet-blokkerend: een meetpunt mag de surface nooit breken */
+    }
+  };
 
   /* Capture-fase: we moeten vóór de eigen handler van de prebuild zijn,
      anders wisselt hij eerst intern van scherm. */

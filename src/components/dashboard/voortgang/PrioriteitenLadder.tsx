@@ -3,6 +3,7 @@
 import { useState } from "react";
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import LadderMomentButton from "@/components/dashboard/domain/LadderMomentButton";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
@@ -16,6 +17,11 @@ import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { PillarId } from "@/types/dashboard";
 
 export type PrioriteitLayer = LeefstijlLadderLayer;
+
+/** Anker per laag: de ladder bovenaan het scherm scrollt hierheen. */
+export function ladderLayerDomId(domain: PillarId, layerId: number): string {
+  return `ladder-laag-${domain}-p${layerId}`;
+}
 
 /** Canon uit `dashboard-supplementroute-prebuild-v1` (`.pl-row`, r.1100). */
 const STATE_STYLE: Record<LeefstijlLayerState, { bar: string; text: string; row: string }> = {
@@ -56,6 +62,13 @@ type PrioriteitenLadderProps = {
   recommendedLayerIds?: readonly number[];
   /** Toont de voetregel naar Vandaag — daar staat wat je koos als handeling. */
   onGoVandaag?: () => void;
+  /**
+   * Welke laag open staat. Alleen meegeven waar een ander blok op hetzelfde
+   * scherm de ladder stuurt (de ladder in de kop van het domeinscherm);
+   * zonder deze twee props houdt de ladder zijn eigen staat bij.
+   */
+  openLayer?: number | null;
+  onOpenLayerChange?: (layerId: number | null) => void;
 };
 
 /**
@@ -86,10 +99,14 @@ export default function PrioriteitenLadder({
   whyWait,
   recommendedLayerIds,
   onGoVandaag,
+  openLayer: controlledOpenLayer,
+  onOpenLayerChange,
 }: PrioriteitenLadderProps) {
-  const [openLayer, setOpenLayer] = useState<number | null>(
+  const [internalOpenLayer, setInternalOpenLayer] = useState<number | null>(
     layerStates ? focusLayer : null,
   );
+  const isControlled = onOpenLayerChange != null;
+  const openLayer = isControlled ? (controlledOpenLayer ?? null) : internalOpenLayer;
   const { items } = useVoortgangFavorites();
 
   const gekozenPerLaag = new Map<number, typeof items>();
@@ -102,14 +119,16 @@ export default function PrioriteitenLadder({
   const gekozenTotaal = [...gekozenPerLaag.values()].reduce((sum, rows) => sum + rows.length, 0);
 
   function handleToggle(id: number) {
-    setOpenLayer((current) => {
-      const next = current === id ? null : id;
-      if (next != null) {
-        trackEvent(`${domain}_ladder_layer_open`, { layer: id, surface });
-        clarityTag(`${domain}_ladder_layer`, `p${id}`);
-      }
-      return next;
-    });
+    const next = openLayer === id ? null : id;
+    if (next != null) {
+      trackEvent(`${domain}_ladder_layer_open`, { layer: id, surface });
+      clarityTag(`${domain}_ladder_layer`, `p${id}`);
+    }
+    if (isControlled) {
+      onOpenLayerChange(next);
+      return;
+    }
+    setInternalOpenLayer(next);
   }
 
   return (
@@ -130,6 +149,7 @@ export default function PrioriteitenLadder({
           return (
             <article
               key={layer.id}
+              id={ladderLayerDomId(domain, layer.id)}
               data-layer={layer.id}
               data-ls={state ?? undefined}
               data-open={isOpen ? "true" : undefined}
@@ -245,12 +265,25 @@ export default function PrioriteitenLadder({
                       {gekozen.map((item) => (
                         <li
                           key={item.id}
-                          className="flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-[10px] border border-[#5A8F6A]/30 bg-[#5A8F6A]/[0.07] px-2.5 py-2"
+                          className="rounded-[10px] border border-[#5A8F6A]/30 bg-[#5A8F6A]/[0.07] px-2.5 py-2"
                         >
-                          <span className="min-w-[16ch] flex-1 text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
-                            {item.title}
-                          </span>
-                          <FavoriteSaveButton compact surface={surface} item={item} />
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                            <span className="min-w-[16ch] flex-1 text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
+                              {item.title}
+                            </span>
+                            <FavoriteSaveButton compact surface={surface} item={item} />
+                          </div>
+                          {/* Plannen komt ná kiezen, niet ernaast: Voortgang is
+                              de plek waar je onderbouwt wat je kiest, en mag
+                              geen tweede agenda worden. */}
+                          <div className="mt-2">
+                            <LadderMomentButton
+                              domain={domain}
+                              title={item.title}
+                              surface={surface}
+                              layer={layer.id}
+                            />
+                          </div>
                         </li>
                       ))}
                     </ul>

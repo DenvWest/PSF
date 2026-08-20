@@ -1,14 +1,17 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
+import LadderCoverageMeter from "@/components/dashboard/domain/LadderCoverageMeter";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
-import PrioriteitenLadder from "@/components/dashboard/voortgang/PrioriteitenLadder";
+import PrioriteitenLadder, {
+  ladderLayerDomId,
+} from "@/components/dashboard/voortgang/PrioriteitenLadder";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 import { resolveRecommendedLayers } from "@/components/dashboard/voortgang/FavorietenBewegingSection";
 import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
@@ -205,6 +208,35 @@ export default function LeefstijlprofielDomeinScherm({
 
   const ladder = getLeefstijlLadder(domain);
   const movementFocusLayer = movementReadout?.ladder.focus ?? null;
+
+  /**
+   * Twee ladders op één scherm — die in de kop en de uitklapbare eronder —
+   * delen sinds 20 augustus één open laag. Zolang je niets aanklikt volgt hij
+   * de aanbeveling uit je check; vanaf je eerste klik is jouw keuze leidend,
+   * ook als die "dicht" is. Vandaar een gekozen-object en niet alleen een
+   * nummer: `null` betekent "nog niet aangeraakt", niet "dicht".
+   */
+  const [pickedLayer, setPickedLayer] = useState<{ layer: number | null } | null>(null);
+  const openLadderLayer = pickedLayer ? pickedLayer.layer : movementFocusLayer;
+  const scrollToLadder = useRef(false);
+
+  useEffect(() => {
+    if (!scrollToLadder.current) {
+      return;
+    }
+    scrollToLadder.current = false;
+    if (openLadderLayer == null) {
+      return;
+    }
+    document
+      .getElementById(ladderLayerDomId(domain, openLadderLayer))
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [domain, openLadderLayer]);
+
+  function handleSelectLayerFromTop(layerId: number) {
+    scrollToLadder.current = true;
+    setPickedLayer({ layer: layerId });
+  }
   const movementEligibility = isMovement
     ? buildRecommendationsEligibility(data?.nutritionIntake)
     : null;
@@ -300,18 +332,40 @@ export default function LeefstijlprofielDomeinScherm({
           </div>
           {isMovement && movementReadout ? (
             <div className="mt-3">
+              <LadderCoverageMeter
+                coverage={movementReadout.ladder.coverage}
+                totalLayers={MOVEMENT_PRIORITY_LAYERS.length}
+              />
+              <p className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+                Waar je winst nu zit · tik een prioriteit aan
+              </p>
               <DomainLifestyleLadder
                 layers={MOVEMENT_PRIORITY_LAYERS}
                 layerStates={movementReadout.ladder.states}
-                focusLayer={movementFocusLayer ?? 0}
                 stateLabels={MOVEMENT_LAYER_STATE_LABEL}
-                variant="rail"
+                selectedLayer={openLadderLayer}
+                onSelectLayer={handleSelectLayerFromTop}
                 whyWait={(layerId) =>
                   movementLayerWhyWait(layerId as MovementPriorityId, movementFocusLayer)
                 }
                 domain="beweging"
                 surface="leefstijlprofiel_beweging"
               />
+              {openLadderLayer != null && openLadderLayer !== movementFocusLayer ? (
+                <p className="mt-2.5 text-[11.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+                  Je kijkt naar prioriteit {openLadderLayer}. Jouw grootste winst zit op prioriteit{" "}
+                  {movementFocusLayer}.{" "}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      movementFocusLayer != null && handleSelectLayerFromTop(movementFocusLayer)
+                    }
+                    className="cursor-pointer border-none bg-transparent p-0 text-left font-semibold text-[#9CC5A9] underline"
+                  >
+                    Terug daarheen
+                  </button>
+                </p>
+              ) : null}
             </div>
           ) : null}
         </CockpitTile>
@@ -410,6 +464,10 @@ export default function LeefstijlprofielDomeinScherm({
                 : undefined
             }
             onGoVandaag={handleGoVandaag}
+            openLayer={movementReadout ? openLadderLayer : undefined}
+            onOpenLayerChange={
+              movementReadout ? (next) => setPickedLayer({ layer: next }) : undefined
+            }
           />
         ) : null}
 

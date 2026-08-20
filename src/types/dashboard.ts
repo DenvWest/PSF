@@ -11,7 +11,7 @@ import type { MovementPrefs } from "@/lib/movement-prefs";
 import type { StoredMovementCheckinSnapshot } from "@/lib/movement-checkin-parse";
 import type { MovementFactRow } from "@/lib/movement-assessment";
 import type { MovementPriorityId } from "@/data/movement/lifestyle-priorities";
-import type { MovementLayerState } from "@/lib/movement-ladder";
+import type { MovementLadderCoverage, MovementLayerState } from "@/lib/movement-ladder";
 import type { StoredSleepCheckinSnapshot } from "@/lib/sleep-checkin-parse";
 import type { SleepFactRow } from "@/lib/sleep-checkin-readout";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
@@ -233,6 +233,11 @@ export type MovementCheckinReadoutData = StoredMovementCheckinSnapshot & {
   ladder: {
     states: Record<MovementPriorityId, MovementLayerState>;
     focus: MovementPriorityId | null;
+    /**
+     * Hoeveel van de lagen die de check kán beoordelen er staan. Noemer is
+     * dus niet zes — zie `resolveMovementLadderCoverage`.
+     */
+    coverage: MovementLadderCoverage;
   };
 };
 

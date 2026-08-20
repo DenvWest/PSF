@@ -131,6 +131,57 @@ export function resolveMovementLayerStates(
   return states;
 }
 
+export type MovementLadderCoverage = {
+  /** De lagen waarover de beweegcheck een uitspraak kán doen. */
+  measured: MovementPriorityId[];
+  /** Daarvan de lagen die staan (band "sterk"). */
+  onOrder: MovementPriorityId[];
+  /** Afgerond percentage over `measured`. Null als er niets gemeten is. */
+  percentage: number | null;
+};
+
+/**
+ * Hoeveel van je ladder staat er, volgens de check?
+ *
+ * De noemer is bewust niet zes. P4 tot en met P6 hebben geen checkveld — voor
+ * specifiek sporten bestaat geen gemeten gat, P5 is marginale winst en P6 is
+ * gegate. Die als "niet voldaan" meetellen zou van ongemeten een tekort maken
+ * en het getal structureel omlaag drukken op iets waar je niets aan kunt doen.
+ * De noemer is dus wat de check kan beoordelen; komt er ooit een tweede bron
+ * bij (een wearable die zitten, stappen of hartslag levert), dan vult die
+ * dezelfde `layerBand` en groeit de noemer vanzelf mee.
+ *
+ * "Staat" is band "sterk" — hetzelfde als het label "Op orde" in de ladder.
+ * "Redelijk" telt niet mee: dat is precies de laag die je in de gaten houdt.
+ *
+ * Dit is een uitlezing van je check, nooit van je kliks. Wat je op de ladder
+ * kiest of afvinkt verandert dit getal niet — dat doet je hermeting.
+ */
+export function resolveMovementLadderCoverage(
+  report: MovementSelfReport,
+): MovementLadderCoverage {
+  const measured: MovementPriorityId[] = [];
+  const onOrder: MovementPriorityId[] = [];
+
+  for (let id = 1 as MovementPriorityId; id <= 6; id = (id + 1) as MovementPriorityId) {
+    const band = layerBand(id, report);
+    if (band === null) {
+      continue;
+    }
+    measured.push(id);
+    if (band === "sterk") {
+      onOrder.push(id);
+    }
+  }
+
+  return {
+    measured,
+    onOrder,
+    percentage:
+      measured.length === 0 ? null : Math.round((onOrder.length / measured.length) * 100),
+  };
+}
+
 /**
  * Eén regel per gesloten prioriteit: waarom die kan wachten. Woordelijk uit
  * `beweging-keuze-consumentenbond-prebuild-v3.6` WHY_WAIT, voor de lagen waar

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { trackEvent } from "@/lib/ga4";
 
 export type LifestyleLayerState = "winst" | "ok" | "watch" | "wacht";
@@ -22,216 +21,148 @@ const STATE_STYLE: Record<LifestyleLayerState, { bar: string; text: string; row:
   ok: {
     bar: "bg-[#5A8F6A]",
     text: "text-[#9CC5A9]",
-    row: "",
+    row: "border-white/[0.06]",
   },
   watch: {
     bar: "bg-[#C99A3C]",
     text: "text-[#C99A3C]",
-    row: "",
+    row: "border-white/[0.06]",
   },
   wacht: {
     bar: "bg-white/15",
     text: "text-[#7E8C82]",
-    row: "",
+    row: "border-white/[0.06]",
   },
 };
 
 export type DomainLifestyleLadderProps = {
   layers: readonly LifestylePriorityLayer[];
-  layerStates: Record<number, LifestyleLayerState>;
-  focusLayer: number;
-  stateLabels: Record<LifestyleLayerState, string>;
-  variant: "mini" | "rail" | "full";
+  /**
+   * Alleen meegeven waar de check ze écht oplevert. Zonder staten toont de
+   * ladder geen enkel badge — hetzelfde tweestandenmodel als
+   * PrioriteitenLadder op Voortgang. Een score zónder eigen domeincheck is
+   * precies dat geval: de zes lagen kloppen, het oordeel per laag niet.
+   */
+  layerStates?: Record<number, LifestyleLayerState>;
+  stateLabels?: Record<LifestyleLayerState, string>;
+  /** Welke laag het scherm nu uitlegt. Stuurt de ladder verderop de pagina. */
+  selectedLayer: number | null;
+  onSelectLayer: (layerId: number) => void;
   whyWait?: (layerId: number) => string | null;
   domain: "slaap" | "stress" | "beweging";
+  /**
+   * Twee kolommen zodra de container het toelevert. Zes lagen onder elkaar
+   * kosten een halve schermhoogte; op een Kompas-scherm dat in één beeld moet
+   * passen is dat het duurste blok. De leesvolgorde blijft P1→P6 — links naar
+   * rechts, dan naar beneden — dus fundament staat nog steeds vóór finetunen.
+   */
+  columns?: 1 | 2;
   surface: string;
 };
 
+/**
+ * De ladder bovenaan een domeinscherm: zes lagen, vaste volgorde, één regel
+ * per laag met de staat in tekst ernaast.
+ *
+ * Tot 20 augustus was dit een leesding — drie varianten (mini/rail/full),
+ * waarvan er maar één ooit gerenderd werd, en die was niet klikbaar. Je las
+ * zes lagen bovenin, scrolde langs de readouts, en kwam pas onderaan bij de
+ * ladder waar je iets kón. Nu stuurt een klik hierboven de ladder daaronder:
+ * dezelfde laag gaat open en het scherm springt ernaartoe.
+ *
+ * Wat níét meebeweegt is de aanbeveling. De winst-laag draagt zijn staat
+ * ("Grootste winst") ongeacht waar je kijkt, en de volgorde blijft P1→P6 —
+ * fundament naar finetunen, geen ranglijst. Kiezen verandert wat je leest,
+ * niet wat we aanraden.
+ *
+ * Kleur is nooit het enige signaal: het statuswoord staat er in tekst naast.
+ */
 export default function DomainLifestyleLadder({
   layers,
   layerStates,
-  focusLayer,
   stateLabels,
-  variant,
+  selectedLayer,
+  onSelectLayer,
   whyWait,
   domain,
+  columns = 1,
   surface,
 }: DomainLifestyleLadderProps) {
-  const [openLayer, setOpenLayer] = useState<number | null>(
-    variant === "full" ? focusLayer : null,
-  );
-
-  const visibleLayers =
-    variant === "mini"
-      ? layers.filter((layer) => {
-          const state = layerStates[layer.id];
-          return state === "winst" || state === "watch" || layer.id === focusLayer;
-        }).slice(0, 3)
-      : layers;
-
-  function handleToggle(layerId: number) {
-    if (variant !== "full") return;
-    setOpenLayer((current) => {
-      const next = current === layerId ? null : layerId;
-      if (next != null) {
-        trackEvent(`${domain}_ladder_layer_open`, {
-          layer: layerId,
-          surface,
-        });
-      }
-      return next;
-    });
+  function handleSelect(layerId: number) {
+    trackEvent(`${domain}_ladder_layer_open`, { layer: layerId, surface });
+    onSelectLayer(layerId);
   }
 
-  const gapClass = variant === "rail" ? "gap-[3px]" : "gap-1.5";
-  const isMini = variant === "mini";
-
   return (
-    <div className={`flex flex-col ${gapClass}`} data-variant={variant}>
-      {visibleLayers.map((layer) => {
-        const state = layerStates[layer.id] ?? "wacht";
-        const styles = STATE_STYLE[state];
-        const isFocus = layer.id === focusLayer;
-        const isOpen = openLayer === layer.id;
-        const waitLine = whyWait?.(layer.id) ?? null;
-        const canExpand = variant === "full";
+    <div
+      className={`grid gap-1 ${columns === 2 ? "@[560px]:grid-cols-2" : ""}`}
+      role="group"
+      aria-label="Je prioriteiten"
+    >
+      {layers.map((layer) => {
+        const state = layerStates?.[layer.id] ?? null;
+        const styles = state ? STATE_STYLE[state] : null;
+        const isSelected = layer.id === selectedLayer;
+        const waitLine = state === "wacht" ? (whyWait?.(layer.id) ?? null) : null;
 
         return (
           <article
             key={layer.id}
-            data-state={state}
+            data-state={state ?? undefined}
             data-layer={layer.id}
-            data-focus={isFocus ? "true" : undefined}
-            data-open={isOpen ? "true" : undefined}
-            className={`relative overflow-hidden rounded-xl border border-white/[0.06] bg-black/20 ${styles.row} ${
-              isMini && isFocus ? "bg-[#C8956C]/7" : ""
+            data-sel={isSelected ? "true" : undefined}
+            className={`relative overflow-hidden rounded-xl border bg-black/20 transition-colors ${
+              isSelected
+                ? state === "winst"
+                  ? "border-[#C8956C]/50 bg-[#C8956C]/[0.09]"
+                  : "border-white/25 bg-white/[0.05]"
+                : (styles?.row ?? "border-white/[0.06]")
             }`}
           >
             <span
               aria-hidden="true"
-              className={`absolute bottom-0 left-0 top-0 w-1 ${styles.bar}`}
+              className={`absolute bottom-0 left-0 top-0 w-1 ${styles?.bar ?? "bg-white/15"}`}
             />
-            {canExpand ? (
-              <button
-                type="button"
-                onClick={() => handleToggle(layer.id)}
-                aria-expanded={isOpen}
-                className="grid w-full min-h-[56px] cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 border-none bg-transparent px-3.5 py-3.5 pl-5 text-left font-[inherit] text-inherit"
+            <button
+              type="button"
+              onClick={() => handleSelect(layer.id)}
+              aria-pressed={isSelected}
+              className="grid min-h-[40px] w-full cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2.5 border-none bg-transparent px-3 py-2 pl-[18px] text-left font-[inherit] text-inherit"
+            >
+              <span
+                aria-hidden="true"
+                className="min-w-[26px] font-mono text-[9.5px] font-semibold uppercase tracking-[0.06em] text-[#7E8C82]"
               >
-                <LayerHead
-                  layer={layer}
-                  stateLabel={stateLabels[state]}
-                  styles={styles}
-                  variant={variant}
-                  waitLine={state === "wacht" && !isFocus ? waitLine : null}
-                  showChevron
-                  chevronOpen={isOpen}
-                />
-              </button>
-            ) : (
-              <div
-                className={`grid w-full items-start gap-3 border-none bg-transparent text-left ${
-                  isMini ? "min-h-[48px] grid-cols-[auto_minmax(0,1fr)] px-3 py-2.5 pl-[18px]" : "min-h-[44px] grid-cols-[auto_minmax(0,1fr)] px-2.5 py-2 pl-[18px]"
-                }`}
-              >
-                <LayerHead
-                  layer={layer}
-                  stateLabel={stateLabels[state]}
-                  styles={styles}
-                  variant={variant}
-                  waitLine={state === "wacht" && !isFocus ? waitLine : null}
-                  showChevron={false}
-                  chevronOpen={false}
-                />
-              </div>
-            )}
-
-            {canExpand && isOpen ? (
-              <div className="border-t border-white/[0.06] px-3.5 pb-4 pl-5">
-                <p className="mt-3 max-w-[60ch] text-[12.5px] leading-relaxed text-[#CDD7D0]">
-                  {layer.summary}
-                </p>
-                {waitLine && state === "wacht" ? (
-                  <p className="mt-3 max-w-[58ch] border-l border-white/10 pl-2.5 text-[11.5px] leading-relaxed text-[#7E8C82]">
+                P{layer.id}
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[12.5px] font-semibold leading-snug text-[#F1EFE8]">
+                  {layer.name}
+                </span>
+                {isSelected && layer.subtitle ? (
+                  <span className="mt-1 block text-[11.5px] leading-snug text-[#9FB0A6]">
+                    {layer.subtitle}
+                  </span>
+                ) : null}
+                {isSelected && waitLine ? (
+                  <span className="mt-1 block text-[11px] leading-snug text-[#7E8C82]">
                     {waitLine}
-                  </p>
+                  </span>
                 ) : null}
-                {layer.actions.length > 0 ? (
-                  <>
-                    <p className="mb-2 mt-4 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
-                      Wat je kunt doen
-                    </p>
-                    <ol className="m-0 list-decimal pl-4">
-                      {layer.actions.slice(0, 3).map((action) => (
-                        <li
-                          key={action}
-                          className="mb-1.5 max-w-[58ch] text-[12.5px] leading-relaxed text-[#9FB0A6]"
-                        >
-                          {action}
-                        </li>
-                      ))}
-                    </ol>
-                  </>
-                ) : null}
-              </div>
-            ) : null}
+              </span>
+              {state && styles && stateLabels ? (
+                <span
+                  className={`shrink-0 text-right text-[9px] font-bold uppercase tracking-[0.12em] ${styles.text}`}
+                >
+                  {stateLabels[state]}
+                </span>
+              ) : (
+                <span aria-hidden="true" />
+              )}
+            </button>
           </article>
         );
       })}
     </div>
-  );
-}
-
-function LayerHead({
-  layer,
-  stateLabel,
-  styles,
-  variant,
-  waitLine,
-  showChevron,
-  chevronOpen,
-}: {
-  layer: LifestylePriorityLayer;
-  stateLabel: string;
-  styles: (typeof STATE_STYLE)[LifestyleLayerState];
-  variant: "mini" | "rail" | "full";
-  waitLine: string | null;
-  showChevron: boolean;
-  chevronOpen: boolean;
-}) {
-  return (
-    <>
-      <span className="min-w-[44px] pt-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-[#7E8C82]">
-        P{layer.id}
-      </span>
-      <span className="min-w-0">
-        <span
-          className={`block leading-snug text-[#F1EFE8] ${
-            variant === "rail" ? "text-[12.5px] font-semibold" : "text-[13px] font-semibold"
-          }`}
-        >
-          {layer.name}
-        </span>
-        <span className={`mt-1 block text-[9.5px] font-bold uppercase tracking-[0.14em] ${styles.text}`}>
-          {stateLabel}
-        </span>
-        {variant !== "rail" && layer.subtitle ? (
-          <span className="mt-1 block text-[11.5px] leading-snug text-[#9FB0A6]">{layer.subtitle}</span>
-        ) : null}
-        {waitLine ? (
-          <span className="mt-1 block text-[11px] leading-snug text-[#7E8C82]">{waitLine}</span>
-        ) : null}
-      </span>
-      {showChevron ? (
-        <span
-          aria-hidden="true"
-          className={`pt-1 text-[13px] text-[#7E8C82] transition-transform ${
-            chevronOpen ? "rotate-90" : ""
-          }`}
-        >
-          ›
-        </span>
-      ) : null}
-    </>
   );
 }

@@ -232,6 +232,20 @@ ul{margin:0;padding:0;list-style:none}
 .pl--rail .pl-state{margin-top:3px;font-size:9px}
 .pl--rail .pl-line{display:none}
 
+/* De hero-ladder op Vandaag: fullwidth, één regel per laag, de staat rechts
+   in tekst (kleur is nooit het enige signaal). De geselecteerde laag toont
+   zijn subregel; de rest blijft één regel hoog, zodat zes lagen op 375px
+   binnen het eerste beeld passen. */
+.kdome .t-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin:0}
+.pl--hero{gap:4px;margin:var(--s2) 0 0;border-top:1px solid var(--line-soft);padding-top:12px}
+.pl--hero .pl-head{min-height:44px;padding:9px 12px 9px 18px;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.pl--hero .pl-tab{min-width:60px;padding-top:0;flex-direction:row;align-items:center;gap:6px}
+.pl--hero .pl-nm{font-size:12.5px}
+.pl--hero .pl-line{margin-top:4px;font-size:11.5px}
+.pl--hero .pl-state{margin-top:0;font-size:9px;text-align:right;white-space:nowrap}
+.pl-row[data-sel="true"]{border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.05)}
+.pl-row[data-state="winst"][data-sel="true"]{border-color:rgba(200,149,108,.5);background:rgba(200,149,108,.09)}
+
 /* disclosures binnen een prioriteit */
 .pl-more{margin-top:4px;padding-top:13px;border-top:1px solid var(--line-soft)}
 .pl-more > div{margin-top:11px;border-left:1px solid var(--line);padding-left:12px}
@@ -567,18 +581,6 @@ ul{margin:0;padding:0;list-style:none}
 .kdome .kmeta{margin:5px 0 0;font-size:11px;color:var(--subtle)}
 .kdome .kstat{margin:var(--s2) 0 0;font-size:13px;line-height:1.6;color:var(--soft);max-width:56ch}
 .kdome .condline{margin:9px 0 0;font-size:12.5px;line-height:1.55;color:var(--mut);max-width:56ch}
-.attnbar{display:flex;gap:0;margin:var(--s2) 0 0;border-top:1px solid var(--line-soft);padding-top:12px}
-.attn{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;padding-right:10px}
-.attn .adot{width:7px;height:7px;border-radius:999px;background:rgba(255,255,255,.16)}
-.attn[data-state="winst"] .adot{background:var(--terra)}
-.attn[data-state="ok"] .adot{background:var(--sage)}
-.attn[data-state="watch"] .adot{background:var(--amber)}
-.attn .alab{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--subtle)}
-.attn .aname{font-size:11px;line-height:1.35;color:var(--mut)}
-.attn .astate{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle)}
-.attn[data-state="winst"] .astate{color:var(--terra-lt)}
-.attn[data-state="ok"] .astate{color:var(--sage-lt)}
-.attn[data-state="watch"] .astate{color:var(--amber)}
 .acties{display:flex;flex-direction:column;gap:0}
 .actie{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--line-soft)}
 .actie:first-child{border-top:none;padding-top:0}
@@ -1483,7 +1485,8 @@ ul{margin:0;padding:0;list-style:none}
       lens: "profiel", typeFilter: "alles", pc: "", helpOn: false,
       cardVerdict: {}, cardReplace: null,
       aPlanned: false, aNow: false, ownWait: false,
-      planned: [],        // welke gratis acties op Vandaag klaarstaan
+      heroPrio: null,     // welke laag je in de hero-ladder aanklikte
+      planned: {},        // welke gratis acties per prioriteit klaarstaan
       review: null, l4SportOpen: false, nutriAsked: false, do3Reminded: false,
       selfCal: { requested: null, layer: null, experience: null, confirmed: false },
       lastTrack: null
@@ -1497,6 +1500,9 @@ ul{margin:0;padding:0;list-style:none}
     S.ui.lastTrack = name + " " + JSON.stringify(payload);
     var el = document.getElementById("trackNote");
     if (el) el.textContent = "laatste event · " + S.ui.lastTrack;
+    /* Ingebed in het dashboard vult de embed-build deze haak en gaat het
+       event naar de echte meetlaag. Los in de browser bestaat hij niet. */
+    if (typeof window.__psfTrack === "function") window.__psfTrack(name, payload);
   }
 
   /* ═════════════════════════════════════════════════════════════════
@@ -1798,6 +1804,23 @@ ul{margin:0;padding:0;list-style:none}
 
     var aria = P.idx + " · " + P.name + " · " + STATE_WORD[st];
 
+    /* De hero-ladder op Vandaag. Klikken kiest welke laag het gratis-blok
+       eronder vult — de volgorde blijft P1→P6, want dit is een ladder en
+       geen ranglijst. Alleen de gekozen laag toont zijn subregel. */
+    if (variant === "hero") {
+      var sel = heroPrio() === P.id;
+      return '<div class="pl-row" data-state="' + st + '" data-prio="' + P.id +
+        '" data-sel="' + sel + '"' + (P.id === 6 ? ' data-gate="dicht"' : "") + ">" +
+        '<button class="pl-head" type="button" data-hero-btn="' + P.id + '" aria-pressed="' + sel +
+        '" aria-label="' + esc(aria) + '">' +
+        '<span class="pl-bar" aria-hidden="true"></span>' +
+        '<span class="pl-tab">' + P.idx +
+          (P.id === 6 ? '<span class="doorico">' + svg("i-lock") + "</span>" : "") + "</span>" +
+        '<span class="pl-txt"><span class="pl-nm">' + P.name + "</span>" +
+        (sel ? '<span class="pl-line">' + P.sub + "</span>" : "") + "</span>" +
+        '<span class="pl-state">' + STATE_WORD[st] + "</span></button></div>";
+    }
+
     if (variant === "rail") {
       out += '<button class="pl-head" type="button" data-rail-btn="' + P.id + '" aria-label="' + esc(aria) +
         '" aria-current="' + (S.ui.open === P.id) + '">' + inner + "</button></div>";
@@ -2084,40 +2107,66 @@ ul{margin:0;padding:0;list-style:none}
     }).slice(0, 3);
   }
 
-  /* De stip is nooit het enige signaal: het statuswoord staat er in tekst
-     onder. Terra en amber zijn op 7px niet betrouwbaar te onderscheiden,
-     en kleurenblindheid maakt dat erger. */
-  function renderAttnbar() {
-    var out = '<div class="attnbar">';
-    attentionOrder().forEach(function (id) {
-      var P = PRIO_BY_ID[id], st = PRIO_STATE[id];
-      out += '<div class="attn" data-state="' + st + '">' +
-        '<span class="adot" aria-hidden="true"></span>' +
-        '<span class="alab">' + P.idx + "</span>" +
-        '<span class="aname">' + P.name + "</span>" +
-        '<span class="astate">' + STATE_WORD[st] + "</span></div>";
-    });
-    return out + "</div>";
+  /* Welke laag het scherm nu uitlegt. Beginstand is de aanbeveling: kiezen
+     verandert wat je léést, niet wat we aanraden. */
+  function heroPrio() {
+    var n = S.ui.heroPrio;
+    return n && PRIO_BY_ID[n] ? n : focusPriority();
+  }
+
+  /* DE LADDER IN DE HERO (20 aug). Tot dan stonden dezelfde zes lagen twee
+     keer op dit scherm: hier als aandachtsstrip op staat-volgorde (top drie)
+     en rechts in een rail-tegel op prioriteitsvolgorde (alle zes). Twee
+     volgordes van hetzelfde ding, en op mobiel viel de rail onder de vouw.
+     Nu één plek, één volgorde, volle breedte — en klikbaar: de gekozen laag
+     vult het gratis-blok eronder. De aanbeveling blijft staan als anker;
+     wijk je ervan af, dan staat de weg terug eronder. */
+  function renderHeroLadder() {
+    var sel = heroPrio(), winst = focusPriority();
+    var out = '<div class="pl pl--hero" role="group" aria-label="Je prioriteiten">';
+    PRIORITIES.forEach(function (P) { out += priorityRow(P, "hero"); });
+    out += "</div>";
+    out += '<p class="note" style="margin-top:12px">' + PRIO_BY_ID[sel].kern + "</p>";
+    if (sel !== winst) {
+      out += '<p class="meta" style="margin-top:10px">Je kijkt naar ' +
+        PRIO_BY_ID[sel].idx.toLowerCase() + ". Jouw grootste winst zit op " +
+        PRIO_BY_ID[winst].idx.toLowerCase() + " &middot; " + PRIO_BY_ID[winst].name.toLowerCase() +
+        '. <button class="linkish q" type="button" data-hero-btn="' + winst + '">Terug daarheen</button></p>';
+    }
+    return out;
   }
 
   /* Dezelfde bron als de ladder op Voortgang: PRIO_DOING hangt aan het
-     prioriteit-id, PRIO_STATE bepaalt welk id hier staat. Ze kunnen dus
-     niet uiteenlopen (lock 4). Geen ladder op Vandaag, ook geen mini. */
+     prioriteit-id, dus Vandaag en Voortgang kunnen niet uiteenlopen (lock 4).
+     Sinds 20 aug volgt dit blok de laag die je in de hero-ladder aanklikt —
+     de aanbevolen laag is de beginstand. Op prioriteit 5 en 6 staat niets
+     gratis klaar; dan legt het blok uit waarom, in plaats van te verdwijnen
+     onder je vinger. Wat je hier kunt kopen of uitbesteden staat op het
+     schap, niet hier: gratis blijft gratis en ongegate. */
   function renderKActies() {
-    var P = PRIO_BY_ID[focusPriority()], acts = PRIO_DOING[P.id] || [];
-    if (!acts.length) return "";
+    var id = heroPrio(), P = PRIO_BY_ID[id], acts = PRIO_DOING[id] || [];
+    var planned = S.ui.planned[id] || [];
     var out = '<section class="tile"><p class="t-eyebrow">Gratis, op ' +
       P.idx.toLowerCase() + " &middot; " + P.name.toLowerCase() + "</p>";
-    if (P.id === focusPriority() && S.hasCheck) {
+
+    if (!acts.length) {
+      return out + '<p class="note" style="margin-top:12px">' + (WHY_WAIT[id] || P.kern) + "</p>" +
+        '<p class="micro">' + (id === 6
+          ? "Of aanvullen aan de orde is, lees je in je beweegbeeld. Kiezen doe je daarna op je schap, niet hier."
+          : "Hier staat nog niets klaar wat je vandaag kunt doen.") + "</p></section>";
+    }
+
+    if (id === focusPriority() && S.hasCheck) {
       out += '<p class="note" style="margin-bottom:14px">De eerste is de richtlijn; je plan hierboven is jouw invulling ervan. De andere twee staan er los van.</p>';
     }
     out += '<div class="acties">';
     acts.slice(0, 2).forEach(function (d, i) {
-      var done = S.ui.planned.indexOf(i) > -1;
+      var done = planned.indexOf(i) > -1;
       out += '<div class="actie"><p>' + d + "</p>" +
         (done
           ? '<span class="done">' + svg("i-check") + "Staat op Mijn Dag</span>"
-          : '<button class="btn btn-soft" type="button" data-plan-act="' + i + '">Zet op Mijn Dag ' +
+          : '<button class="btn btn-soft" type="button" data-plan-act="' + i +
+            '" data-plan-prio="' + id + '">Zet op Mijn Dag ' +
             svg("i-chev-right") + "</button>") +
         "</div>";
     });
@@ -2240,8 +2289,9 @@ ul{margin:0;padding:0;list-style:none}
       if (S.profile.src === "bc") {
         head += '<p class="condline"><b>Conditie:</b> je basis staat, je duur blijft achter — dat leest mee in je ladder.</p>';
       }
-      head += renderAttnbar() +
-        '<p class="note" style="margin-top:16px">Het getal is een samenvatting, geen oordeel. De prioriteiten erboven leggen uit waar het vandaan komt.</p>';
+      head += '<p class="note" style="margin-top:14px">Het getal is een samenvatting, geen oordeel. Je prioriteiten hieronder leggen uit waar het vandaan komt.</p>' +
+        '<p class="t-eyebrow" style="margin-top:16px">Waar je winst nu zit &middot; tik een prioriteit aan</p>' +
+        renderHeroLadder();
     } else {
       head += '<p class="kstat">Zonder check weten we niet waar jouw winst zit. Je prioriteiten staan er wel — je kunt ze lezen zonder iets in te vullen.</p>';
     }
@@ -2295,19 +2345,13 @@ ul{margin:0;padding:0;list-style:none}
       '<button class="btn btn-ghost" data-goto="d">Mijn Dag &rsaquo; vanavond</button>' +
       '<p class="footnote">Zelfrapportage, geen diagnose. Je korte hertest kan vanaf 16 augustus.</p></div>';
 
-    /* De rail draagt de winst-tegel, zoals slaap v2 renderKBridge (r.1449)
-       en stress v1 — niet meer de deur. Beweging wijkt hier niet langer af
-       van de andere vier domeinen (19 aug, op verzoek). */
-    var winst = '<section class="tile kbridge"><p class="t-eyebrow">Waar je winst nu zit</p>' +
-      renderLadder("rail") +
-      '<p class="bl">' + PRIO_BY_ID[focusPriority()].kern + "</p>" +
-      '<button class="linkish" data-goto="c">Open je beweegbeeld ' + svg("i-arrow") + "</button></section>";
-
-    out += '<div class="cols cols--railright">';
+    /* Eén kolom sinds 20 aug: de winst-tegel in de rail droeg dezelfde zes
+       lagen als de strip in de hero, plus een tweede knop naar het
+       beweegbeeld die ook al in de CTA-stapel stond. De ladder staat nu in
+       de hero, de kern-zin staat eronder, en de knop stond er al — er is
+       niets om nog in een rail te zetten. */
     out += '<div class="stack">' + head +
       (S.hasCheck ? renderKActies() : "") + cta + "</div>";
-    out += '<div class="stack sticky">' + winst + "</div>";
-    out += "</div>";
     return out + "</div>";
   }
 
@@ -2915,6 +2959,19 @@ ul{margin:0;padding:0;list-style:none}
       if (back) back.focus();
       return;
     }
+    /* De hero-ladder: de laag kiezen die het gratis-blok eronder vult.
+       Focus terug op de knop, want paint() vervangt de hele DOM. */
+    if ((t = e.target.closest("[data-hero-btn]"))) {
+      var hn = Number(t.getAttribute("data-hero-btn"));
+      S.ui.heroPrio = hn;
+      track("dashboard.ladder_layer_opened", {
+        domain: "beweging", layer: hn, surface: "kompas_beweging"
+      });
+      paint();
+      var hb = document.querySelector('[data-hero-btn="' + hn + '"]');
+      if (hb) hb.focus();
+      return;
+    }
     if ((t = e.target.closest("[data-rail-btn]"))) {
       S.ui.open = Number(t.getAttribute("data-rail-btn"));
       paint();
@@ -3027,9 +3084,11 @@ ul{margin:0;padding:0;list-style:none}
     /* ── drie gratis acties op Vandaag ── */
     if ((t = e.target.closest("[data-plan-act]"))) {
       var ai = Number(t.getAttribute("data-plan-act"));
-      if (S.ui.planned.indexOf(ai) < 0) S.ui.planned.push(ai);
+      var pid = Number(t.getAttribute("data-plan-prio")) || heroPrio();
+      var plist = S.ui.planned[pid] || (S.ui.planned[pid] = []);
+      if (plist.indexOf(ai) < 0) plist.push(ai);
       track("dashboard.daily_action_toggled", {
-        domain: "beweging", priority: focusPriority(), slot: ai, planned: true
+        domain: "beweging", priority: pid, slot: ai, planned: true
       });
       paint();
       return;
@@ -3244,6 +3303,21 @@ ul{margin:0;padding:0;list-style:none}
     if (r.useDomeinAsKompas) out.kompas = DOMEIN;
     return out;
   }
+
+  /* Meetpunten naar buiten. De prebuilds roepen hun eigen track() aan en
+     vragen daarin naar deze haak; los in de browser bestaat hij niet, dus
+     daar blijft het een mock-regel in de reviewer-chrome. Wat er met de
+     naam gebeurt beslist PrebuildFrame — dat houdt de allowlist. */
+  window.__psfTrack = function (name, payload) {
+    try {
+      parent.postMessage(
+        { source: "psf-prebuild", event: name, payload: payload || {} },
+        location.origin
+      );
+    } catch (err) {
+      /* niet-blokkerend: een meetpunt mag de surface nooit breken */
+    }
+  };
 
   /* Capture-fase: we moeten vóór de eigen handler van de prebuild zijn,
      anders wisselt hij eerst intern van scherm. */

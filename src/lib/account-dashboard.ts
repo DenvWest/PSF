@@ -42,6 +42,7 @@ import {
 import { buildMovementFactRows } from "@/lib/movement-assessment";
 import {
   resolveMovementFocusPriority,
+  resolveMovementLadderCoverage,
   resolveMovementLayerStates,
 } from "@/lib/movement-ladder";
 import {
@@ -654,6 +655,7 @@ export async function loadAccountDashboardData(
         ladder: {
           states: resolveMovementLayerStates(movementReport, focusDimension),
           focus: resolveMovementFocusPriority(focusDimension),
+          coverage: resolveMovementLadderCoverage(movementReport),
         },
         date: formatDashboardDate(latestMovementCheckin.created_at),
       };
