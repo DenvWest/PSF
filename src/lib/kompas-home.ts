@@ -88,17 +88,8 @@ export function prioritySegmentIndex(rows: KompasDomainRow[]): number {
 export function buildKompasMilestone(
   model: DashboardModel,
   completedWeekDays: number,
-  remeasureDue: boolean,
   cycleContext?: KompasCycleContext | null,
 ): KompasMilestone {
-  if (remeasureDue) {
-    return {
-      kind: "hermeting",
-      line: "Tijd voor je hermeting — meet of je stappen werken.",
-      ctaLabel: "Doe je hermeting",
-    };
-  }
-
   if (cycleContext && cycleContext.daysUntilRemeasure > 0) {
     const { cycleDay, daysUntilRemeasure, activeDaysInCycle } = cycleContext;
     if (daysUntilRemeasure <= 7) {

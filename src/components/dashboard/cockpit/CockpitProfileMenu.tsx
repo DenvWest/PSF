@@ -26,7 +26,7 @@ export default function CockpitProfileMenu({
 }: CockpitProfileMenuProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const name = firstName?.trim() || "Je profiel";
+  const name = firstName?.trim() || "Account";
 
   useEffect(() => {
     if (!open) {
@@ -78,20 +78,6 @@ export default function CockpitProfileMenu({
           <div className="truncate px-2.5 pb-2 pt-1.5 font-serif text-[14px] text-[#F1EFE8]">
             {name}
           </div>
-          {/* Boven Instellingen: dit gaat over wat je te zien krijgt, niet over
-              accountbeheer. Naam vast per BESLUIT_CONNECTION_PROFILE_V1 §10 —
-              niet "Mijn Verbinding", niet "Mijn Profiel". */}
-          <Link
-            role="menuitem"
-            href="/account/wat-bij-jou-past"
-            onClick={() => {
-              setOpen(false);
-              clarityTag("dashboard_profile_menu", "wat_bij_jou_past");
-            }}
-            className={MENU_ITEM}
-          >
-            <Icons.Spark s={16} /> Wat bij jou past
-          </Link>
           <button
             type="button"
             role="menuitem"

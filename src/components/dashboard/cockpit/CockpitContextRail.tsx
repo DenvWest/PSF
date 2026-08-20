@@ -123,7 +123,7 @@ export default function CockpitContextRail({
   onOpenLeefstijlprofielDomein,
   onOpenVoortgangAanbouw,
 }: CockpitContextRailProps) {
-  const name = firstName?.trim() || "Je profiel";
+  const name = firstName?.trim() || "Account";
 
   const renderTool = (tool: ContextRailTool) => {
     const Icon = iconOf(tool.icon);

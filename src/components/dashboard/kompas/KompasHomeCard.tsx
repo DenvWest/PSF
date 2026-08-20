@@ -42,7 +42,6 @@ type KompasHomeCardProps = {
   model: DashboardModel;
   firstName?: string | null;
   profileLabel?: string | null;
-  remeasureDue?: boolean;
   cycleContext?: KompasCycleContext | null;
   nutritionLogCompleted?: boolean;
   hasNutritionIntake?: boolean;
@@ -52,7 +51,6 @@ type KompasHomeCardProps = {
   onOpenDomain: (domain: PillarId) => void;
   onOpenPriority?: (domain: PillarId) => void;
   onGoAgenda: (date: string) => void;
-  onRemeasure?: () => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
 };
 
@@ -645,20 +643,15 @@ function LeefstijlHeader({
 
 function VoortgangSection({
   model,
-  remeasureDue,
   cycleContext,
-  onRemeasure,
   onOpenPriority,
   onPrefUpdated,
 }: {
   model: DashboardModel;
-  remeasureDue: boolean;
   cycleContext?: KompasCycleContext | null;
-  onRemeasure?: () => void;
   onOpenPriority: (domain: PillarId) => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
 }) {
-  const reminderShownRef = useRef(false);
   const [weekState, setWeekState] = useState<WeekPayload | null>(null);
   const slots = useMemo(() => buildWeekSchedulePreview(model), [model]);
 
@@ -685,14 +678,6 @@ function VoortgangSection({
     };
   }, [model]);
 
-  useEffect(() => {
-    if (!remeasureDue || reminderShownRef.current) {
-      return;
-    }
-    reminderShownRef.current = true;
-    trackEvent("dashboard_hermeting_reminder_shown", { surface: "kompas_home" });
-  }, [remeasureDue]);
-
   const completedSet = useMemo(
     () => new Set(weekState?.completedKeys ?? []),
     [weekState?.completedKeys],
@@ -702,13 +687,7 @@ function VoortgangSection({
     isWeekSlotCompleted(slot, completedSet),
   ).length;
 
-  const milestone = buildKompasMilestone(model, completedCount, remeasureDue, cycleContext);
-
-  const handleRemeasureClick = () => {
-    trackEvent("dashboard_hermeting_reminder_click", { surface: "kompas_home" });
-    clarityTag("dashboard_hermeting", "kompas_voortgang");
-    onRemeasure?.();
-  };
+  const milestone = buildKompasMilestone(model, completedCount, cycleContext);
 
   return (
     <div>
@@ -723,17 +702,6 @@ function VoortgangSection({
         <p className="m-0 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
           {milestone.line}
         </p>
-        {milestone.kind === "hermeting" && milestone.ctaLabel && onRemeasure ? (
-          <button
-            type="button"
-            onClick={handleRemeasureClick}
-            className="mt-2.5 inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-xl border-none bg-[#5A8F6A] px-3.5 py-2 text-[13px] font-semibold text-[#0f1c10]"
-            style={{ fontFamily: "var(--f-sans)" }}
-          >
-            {milestone.ctaLabel}
-            <Icons.ArrowRight s={14} />
-          </button>
-        ) : null}
       </div>
     </div>
   );
@@ -743,7 +711,6 @@ export default function KompasHomeCard({
   model,
   firstName,
   profileLabel = null,
-  remeasureDue = false,
   cycleContext = null,
   nutritionLogCompleted = false,
   hasNutritionIntake = false,
@@ -753,7 +720,6 @@ export default function KompasHomeCard({
   onOpenDomain,
   onOpenPriority,
   onGoAgenda,
-  onRemeasure,
   onPrefUpdated,
 }: KompasHomeCardProps) {
   const rows = useMemo(() => buildKompasDomainRows(model), [model]);
@@ -875,9 +841,7 @@ export default function KompasHomeCard({
           >
             <VoortgangSection
               model={model}
-              remeasureDue={remeasureDue}
               cycleContext={cycleContext}
-              onRemeasure={onRemeasure}
               onOpenPriority={handleOpenPriority}
               onPrefUpdated={onPrefUpdated}
             />

@@ -152,14 +152,14 @@ describe("buildKompasMilestone", () => {
     "beweging",
   );
 
-  it("prioritises hermeting when due", () => {
-    const milestone = buildKompasMilestone(baseModel, 3, true);
-    expect(milestone.kind).toBe("hermeting");
-    expect(milestone.ctaLabel).toBe("Doe je hermeting");
+  it("skips hermeting due-state on kompas home and falls through to week nudge", () => {
+    const milestone = buildKompasMilestone(baseModel, 6);
+    expect(milestone.kind).toBe("week");
+    expect(milestone.line).toContain("Nog één gewoonte");
   });
 
   it("shows 30-day cycle progress before hermeting due", () => {
-    const milestone = buildKompasMilestone(baseModel, 7, false, {
+    const milestone = buildKompasMilestone(baseModel, 7, {
       cycleDay: 12,
       daysUntilRemeasure: 18,
       activeDaysInCycle: 8,
@@ -170,7 +170,7 @@ describe("buildKompasMilestone", () => {
   });
 
   it("nudges hermeting countdown in final week", () => {
-    const milestone = buildKompasMilestone(baseModel, 7, false, {
+    const milestone = buildKompasMilestone(baseModel, 7, {
       cycleDay: 27,
       daysUntilRemeasure: 3,
       activeDaysInCycle: 14,
@@ -180,7 +180,7 @@ describe("buildKompasMilestone", () => {
   });
 
   it("nudges when one day remains in the week", () => {
-    const milestone = buildKompasMilestone(baseModel, 6, false);
+    const milestone = buildKompasMilestone(baseModel, 6);
     expect(milestone.kind).toBe("week");
     expect(milestone.line).toContain("Nog één gewoonte");
   });
@@ -196,7 +196,7 @@ describe("buildKompasMilestone", () => {
       null,
       "beweging",
     );
-    const milestone = buildKompasMilestone(model, 7, false);
+    const milestone = buildKompasMilestone(model, 7);
     expect(milestone.kind).toBe("neutral");
     expect(milestone.line).toContain("beweging verbeterde");
   });
@@ -221,7 +221,7 @@ describe("buildKompasMilestone", () => {
       null,
       "stress",
     );
-    const milestone = buildKompasMilestone(model, 7, false);
+    const milestone = buildKompasMilestone(model, 7);
     expect(milestone.line).toBe("Elke stap telt — ook de kleine.");
   });
 });

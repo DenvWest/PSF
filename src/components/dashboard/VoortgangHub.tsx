@@ -98,11 +98,7 @@ function VoortgangHubInner({
   };
 
   // Eén Favorieten (19 aug). De rail landde hier op `fav: null` en dus op
-  // FavorietenView, terwijl de deur op Vandaag (KompasOndersteuningTile) naar
-  // het schap ging — twee schermen onder dezelfde naam. Beide draaien nu op
-  // `resolveSchapDomain`. Sta je al op een schap, dan blijf je daar; anders
-  // opent het schap van je prioriteitsdomein. Heeft dat domein geen schap, dan
-  // is FavorietenView de eerlijke uitkomst en niet een tweede versie.
+  // FavorietenView; beide entry points draaien nu op `resolveSchapDomain`.
   const openFavorieten = () => {
     const target =
       resolveSchapDomain(favorietenDomein) ?? resolveSchapDomain(model?.priority.id);
