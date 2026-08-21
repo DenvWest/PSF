@@ -18,8 +18,8 @@ export function resolveSchapTabs(domain: PillarId): SchapTabDescriptor[] {
   }
 
   const tabs: SchapTabDescriptor[] = [
-    // Altijd, op elk domein mét schap. De spiegel: wat je op de ladder koos,
-    // geteld per laag. Draagt zelf geen aanbod, dus hij kan nooit leeg zijn.
+    // Altijd, op elk domein mét schap. Werkplek: ladder met aanbevolen en
+    // keuze per laag, direct hier.
     { id: "leefstijl", label: "Leefstijl" },
   ];
 
@@ -37,6 +37,9 @@ export function resolveSchapTabs(domain: PillarId): SchapTabDescriptor[] {
     tabs.push({ id: "diensten", label: "Diensten" });
   }
 
+  // Favorieten van dit domein — snelle beheer.
+  tabs.push({ id: "favorieten", label: "Favorieten" });
+
   // "begeleiding" rendert nooit vandaag: er is geen product om op te wachten
   // (docs/design/voortgang-plan-later.md §8). De tab komt terug samen met dat
   // product — een deur naar een leeg magazijn is geen deur.
@@ -46,4 +49,23 @@ export function resolveSchapTabs(domain: PillarId): SchapTabDescriptor[] {
 
 export function resolveDefaultSchapTab(domain: PillarId): SchapTabId {
   return toProductStanceDomain(domain) !== null ? "producten" : "leefstijl";
+}
+
+/**
+ * Welke tab je krijgt als je vanaf het ene schap naar het andere springt.
+ *
+ * Sta je op Leefstijl van slaap en klik je door naar voeding, dan wil je daar
+ * ook Leefstijl zien — je vergelijkt hetzelfde onderdeel over domeinen heen,
+ * dat is de hele reden dat de domeinschakelaar bestaat. Alleen: Diensten
+ * bestaat alleen op beweging, dus een tab die het doeldomein niet draagt valt
+ * terug op zijn default in plaats van op een leeg paneel.
+ */
+export function resolveSchapTabForDomain(
+  domain: PillarId,
+  wanted: SchapTabId | null,
+): SchapTabId {
+  const tabs = resolveSchapTabs(domain);
+  return wanted && tabs.some((tab) => tab.id === wanted)
+    ? wanted
+    : resolveDefaultSchapTab(domain);
 }

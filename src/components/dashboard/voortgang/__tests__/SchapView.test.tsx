@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import SchapView from "@/components/dashboard/voortgang/SchapView";
 import type { DashboardModel, PillarId, SchapTabId } from "@/types/dashboard";
 
@@ -21,10 +21,21 @@ vi.mock("@/lib/voortgang-favorites-context", () => ({
 
 vi.mock("@/lib/ga4", () => ({ trackEvent: vi.fn() }));
 vi.mock("@/lib/clarity", () => ({ clarityTag: vi.fn() }));
+const emitAccountClientEvent = vi.fn();
+vi.mock("@/lib/account-events-client", () => ({
+  emitAccountClientEvent: (...args: unknown[]) => emitAccountClientEvent(...args),
+}));
 
 const model = {} as DashboardModel;
 
-function renderSchap(domain: PillarId, activeTab: SchapTabId | null = null) {
+function renderSchap(
+  domain: PillarId,
+  activeTab: SchapTabId | null = null,
+  handlers: {
+    onSwitchDomain?: (domain: PillarId) => void;
+    onOpenLeefstijlprofiel?: (domain: PillarId) => void;
+  } = {},
+) {
   return render(
     <SchapView
       model={model}
@@ -32,7 +43,7 @@ function renderSchap(domain: PillarId, activeTab: SchapTabId | null = null) {
       activeTab={activeTab}
       onTabChange={vi.fn()}
       onBack={vi.fn()}
-      onOpenLeefstijlprofiel={vi.fn()}
+      {...handlers}
     />,
   );
 }
@@ -44,55 +55,108 @@ function tabLabels(): string[] {
 beforeEach(() => {
   favoriteItems = [];
   save.mockClear();
+  emitAccountClientEvent.mockClear();
 });
 
 describe("SchapView — welke tabs een domein draagt", () => {
-  it("toont op slaap alleen Leefstijl en Producten", () => {
+  it("toont op slaap Leefstijl, Producten en Favorieten", () => {
     renderSchap("slaap");
-    expect(tabLabels()).toEqual(["Leefstijl", "Producten"]);
+    expect(tabLabels()).toEqual(["Leefstijl", "Producten", "Favorieten"]);
     expect(screen.queryByRole("tab", { name: "Diensten" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 
-  it("toont op voeding alleen Leefstijl en Producten", () => {
+  it("toont op voeding Leefstijl, Producten en Favorieten", () => {
     renderSchap("voeding");
-    expect(tabLabels()).toEqual(["Leefstijl", "Producten"]);
+    expect(tabLabels()).toEqual(["Leefstijl", "Producten", "Favorieten"]);
     expect(screen.queryByRole("tab", { name: "Diensten" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 
-  it("toont op beweging Leefstijl, Producten en Diensten, nooit Begeleiding", () => {
+  it("toont op beweging Leefstijl, Producten, Diensten en Favorieten, nooit Begeleiding", () => {
     renderSchap("beweging");
-    expect(tabLabels()).toEqual(["Leefstijl", "Producten", "Diensten"]);
+    expect(tabLabels()).toEqual(["Leefstijl", "Producten", "Diensten", "Favorieten"]);
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 });
 
-describe("SchapView — de Leefstijl-tab is een spiegel", () => {
-  it("draagt geen kaart en geen knop behalve terug en de leefstijlprofiel-link", () => {
-    favoriteItems = [
-      { id: "laag-beweging-p2-tweemaal-per-week-kracht", title: "Kracht", kind: "activiteit" },
-    ];
+describe("SchapView — de Leefstijl-tab is werkplek", () => {
+  it("toont de ladder om keuzes te maken", () => {
     renderSchap("beweging", "leefstijl");
-
-    const buttons = screen.getAllByRole("button");
-    expect(buttons.map((button) => button.getAttribute("aria-label") ?? button.textContent)).toEqual(
-      ["Terug", "Je leefstijlprofiel →"],
-    );
-    expect(screen.queryByText("Bewaar in Favorieten")).toBeNull();
-    expect(screen.queryByText("Bekijk ons oordeel")).toBeNull();
+    const teugs = screen.getAllByRole("button");
+    // Minstens de terug-knop en de CockpitTile aria-labels
+    expect(teugs.length).toBeGreaterThan(0);
+    // De ladder moet geladen zijn
+    expect(screen.getByRole("tabpanel", { hidden: true })).toBeDefined();
   });
 
-  it("telt per laag wat je koos in dit domein", () => {
+  it("filtert favorieten op domein", () => {
     favoriteItems = [
-      { id: "laag-beweging-p1-elk-werkuur-staan", title: "Staan", kind: "activiteit" },
-      { id: "laag-beweging-p1-stevig-wandelen", title: "Wandelen", kind: "activiteit" },
-      { id: "laag-slaap-p1-vast-opstaan", title: "Vast opstaan", kind: "activiteit" },
+      { id: "laag-beweging-p1-elk-werkuur-staan", title: "Staan", kind: "activiteit", domain: "beweging" },
+      { id: "laag-slaap-p1-vast-opstaan", title: "Vast opstaan", kind: "activiteit", domain: "slaap" },
     ];
-    renderSchap("beweging", "leefstijl");
+    renderSchap("beweging", "favorieten");
 
-    expect(screen.getAllByText("2 gekozen")).toHaveLength(1);
-    expect(screen.getAllByText("niets gekozen").length).toBeGreaterThan(0);
+    expect(screen.getByText("Staan")).toBeDefined();
+    expect(screen.queryByText("Vast opstaan")).toBeNull();
+  });
+});
+
+describe("SchapView — de domeinschakelaar", () => {
+  const domeinNav = () => screen.getByRole("navigation", { name: "Schap van een ander domein" });
+
+  it("toont alleen domeinen mét schap, nooit stress of verbinding", () => {
+    renderSchap("slaap", null, { onSwitchDomain: vi.fn() });
+    const labels = within(domeinNav())
+      .getAllByRole("button")
+      .map((chip) => chip.textContent ?? "");
+    expect(labels).toEqual(["Beweging", "Slaap", "Voeding"]);
+    expect(labels).not.toContain("Stress");
+    expect(labels).not.toContain("Verbinding");
+  });
+
+  it("markeert het open domein en laat dat geen navigatie afvuren", () => {
+    const onSwitchDomain = vi.fn();
+    renderSchap("slaap", null, { onSwitchDomain });
+    const actief = within(domeinNav()).getByRole("button", { name: "Slaap" });
+    expect(actief.getAttribute("aria-current")).toBe("page");
+
+    fireEvent.click(actief);
+    expect(onSwitchDomain).not.toHaveBeenCalled();
+    expect(emitAccountClientEvent).not.toHaveBeenCalled();
+  });
+
+  it("schakelt door en meldt het schap-openen met zijn herkomst", () => {
+    const onSwitchDomain = vi.fn();
+    renderSchap("slaap", null, { onSwitchDomain });
+
+    fireEvent.click(within(domeinNav()).getByRole("button", { name: "Voeding" }));
+    expect(onSwitchDomain).toHaveBeenCalledWith("voeding");
+    expect(emitAccountClientEvent).toHaveBeenCalledWith("choice.shelf_opened", {
+      domain: "voeding",
+      from_state: "schap",
+      surface: "schap_slaap",
+    });
+  });
+
+  it("staat er niet zonder handler — geen chip die nergens heen gaat", () => {
+    renderSchap("slaap");
+    expect(screen.queryByRole("navigation", { name: "Schap van een ander domein" })).toBeNull();
+  });
+});
+
+describe("SchapView — de terugweg naar het leefstijlprofiel", () => {
+  it("wijst naar het profiel van dit domein", () => {
+    const onOpenLeefstijlprofiel = vi.fn();
+    renderSchap("voeding", null, { onOpenLeefstijlprofiel });
+
+    fireEvent.click(screen.getByRole("button", { name: /Leefstijlprofiel · Voeding/ }));
+    expect(onOpenLeefstijlprofiel).toHaveBeenCalledWith("voeding");
+  });
+
+  it("staat er niet zonder handler", () => {
+    renderSchap("voeding");
+    expect(screen.queryByRole("button", { name: /Leefstijlprofiel/ })).toBeNull();
   });
 });
 

@@ -12,6 +12,7 @@ import VoortgangMobileNav from "@/components/dashboard/voortgang/VoortgangMobile
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import { clarityTag } from "@/lib/clarity";
 import { hasSchap, resolveSchapDomain } from "@/lib/schap-availability";
+import { resolveSchapTabForDomain } from "@/lib/schap-tabs";
 import { trackEvent } from "@/lib/ga4";
 import { buildDashboardVandaagHref, type SyncDashboardVoortgangOptions } from "@/lib/dashboard-url";
 import type {
@@ -140,6 +141,25 @@ function VoortgangHubInner({
     navigate("schap", { fav: target });
   };
 
+  /**
+   * Van schap naar schap, met je onderdeel mee. Anders wisselt de
+   * domeinschakelaar stilletjes ook je tab, en dat leest als een fout: je
+   * klikte op een domein, niet op Producten.
+   */
+  const switchSchapDomain = (target: PillarId) => {
+    if (!hasSchap(target)) {
+      return;
+    }
+    trackEvent("dashboard_voortgang_hub_click", {
+      destination: "schap",
+      domain: target,
+      from: "schap",
+    });
+    const tab = resolveSchapTabForDomain(target, activeSchapTab);
+    setSchapTabOverride({ domain: target, tab });
+    navigate("schap", { fav: target, schap: tab });
+  };
+
   const mobileActiveDomein =
     screen === "leefstijlprofiel" || screen === "domein" ? leefstijlprofielDomein : null;
 
@@ -193,6 +213,8 @@ function VoortgangHubInner({
         activeTab={activeSchapTab}
         onTabChange={handleSchapTabChange}
         onBack={goBack}
+        onGoAgenda={onGoAgenda}
+        onSwitchDomain={switchSchapDomain}
         onOpenLeefstijlprofiel={openLeefstijlprofielDomein}
       />
     );
