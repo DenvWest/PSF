@@ -260,18 +260,18 @@ describe("PrioriteitenLadder", () => {
     expect(screen.getByText("Samenvatting twee.")).toBeTruthy();
   });
 
-  it("wijst naar Vandaag zodra die terugweg bestaat", () => {
-    const onGoVandaag = vi.fn();
+  it("wijst naar Mijn Dag zodra die terugweg bestaat", () => {
+    const onGoAgenda = vi.fn();
     render(
       <PrioriteitenLadder
         layers={LAYERS}
         intro="Intro-tekst."
         domain="stress"
         surface="test"
-        onGoVandaag={onGoVandaag}
+        onGoAgenda={onGoAgenda}
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: /Bekijk ze op Vandaag/ }));
-    expect(onGoVandaag).toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: /Open Mijn Dag/ }));
+    expect(onGoAgenda).toHaveBeenCalled();
   });
 });

@@ -167,10 +167,9 @@ export default function DomainKompasScreen({
         />
       ) : null}
 
-      {/* N4: wat je koos, als handeling — naam + afvinken, nooit merk of prijs.
-          Verdwijnt zolang je nog niets koos, dus hij kost het scherm pas
-          hoogte als er iets te lezen valt. */}
-      <MijnKeuzeTile domain={domain} surface={copy.surface} />
+      {/* N4: wat je koos, als snapshot — naam + herkomst, nooit merk of prijs.
+          Afvinken op Mijn Dag. Verdwijnt zolang je nog niets koos. */}
+      <MijnKeuzeTile domain={domain} surface={copy.surface} onGoAgenda={onGoAgenda} />
 
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 @[560px]:flex-row">

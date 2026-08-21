@@ -116,16 +116,16 @@ export type ContextRailVoortgangItem = {
 };
 
 /**
- * Schap en Favorieten zijn twee items, geen twee namen voor één (20 augustus).
- * Het schap is het aanbod van je prioriteitsdomein en verdwijnt uit de rail
- * zodra dat domein er geen heeft; Favorieten is je bewaarde lijst en staat er
- * altijd, want die kan hooguit leeg zijn.
+ * Favorieten staat sinds 21 augustus niet meer als los item in deze rail: het
+ * schap draagt zelf een Favorieten-tab (per domein gefilterd), dus een
+ * tweede, domein-overstijgende ingang hier was dubbel. Het scherm zelf
+ * (`screen=favorieten`) bestaat nog — bereikbaar via de mobiele chip-nav en
+ * eventuele directe links — alleen deze desktop-rail wijst er niet meer naar.
  */
 export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
   { id: "hub", label: "Overzicht", icon: "Home" },
   { id: "leefstijlprofiel", label: "Leefstijlprofiel", icon: "User" },
   { id: "schap", label: "Schap", icon: "Pill" },
-  { id: "favorieten", label: "Favorieten", icon: "Heart" },
 ];
 
 export function resolveVoortgangRailActiveItem(screen: VoortgangScreen): VoortgangRailItemId {

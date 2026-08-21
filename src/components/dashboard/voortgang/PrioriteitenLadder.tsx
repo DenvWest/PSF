@@ -60,8 +60,8 @@ type PrioriteitenLadderProps = {
    * dan heet het blok "Wat je hier kunt doen" en claimt het geen aanbeveling.
    */
   recommendedLayerIds?: readonly number[];
-  /** Toont de voetregel naar Vandaag — daar staat wat je koos als handeling. */
-  onGoVandaag?: () => void;
+  /** Toont de voetregel naar Mijn Dag — daar plan je en vink je af. */
+  onGoAgenda?: () => void;
   /** Waar "Kies dit op Kompas" naartoe wijst — meestal `buildDashboardVandaagHref(domain)`. */
   kompasHref?: string;
   /**
@@ -85,8 +85,8 @@ type PrioriteitenLadderProps = {
  * Elke laag draagt binnenin twee blokken: Aanbevolen (wat wij hier voorstellen)
  * en Mijn keuze (wat jij hier koos). Kiezen schrijft naar `account_favorites`
  * met een id dat zijn laag onthoudt (`ladderActionFavoriteId`), zodat dezelfde
- * keuze terugkomt op het schap en als handeling op Vandaag — één bron, drie
- * plekken.
+ * keuze terugkomt op het schap en als rij op Kompas — één bron, meerdere
+ * plekken. Afvinken gebeurt op Mijn Dag, niet op deze ladder.
  */
 export default function PrioriteitenLadder({
   layers,
@@ -100,7 +100,7 @@ export default function PrioriteitenLadder({
   focusLayer = null,
   whyWait,
   recommendedLayerIds,
-  onGoVandaag,
+  onGoAgenda,
   kompasHref,
   openLayer: controlledOpenLayer,
   onOpenLayerChange,
@@ -313,19 +313,19 @@ export default function PrioriteitenLadder({
         })}
       </div>
 
-      {onGoVandaag ? (
+      {onGoAgenda ? (
         <div className="mt-4 border-t border-white/[0.06] pt-3">
           <p className="max-w-[62ch] text-[11.5px] leading-relaxed text-[#7E8C82] text-pretty">
             {gekozenTotaal === 0
-              ? "Wat je hier kiest, komt als handeling op Vandaag te staan — naam en afvinken, geen merk en geen prijs."
-              : `Je koos ${gekozenTotaal} ${gekozenTotaal === 1 ? "handeling" : "handelingen"} op deze ladder. Ze staan als rij op Vandaag.`}
+              ? "Wat je hier kiest, landt bij Mijn keuze op Kompas — naam en herkomst, geen merk en geen prijs. Afvinken doe je op Mijn Dag."
+              : `Je koos ${gekozenTotaal} ${gekozenTotaal === 1 ? "handeling" : "handelingen"} op deze ladder. Plan ze op Mijn Dag om af te vinken.`}
           </p>
           <button
             type="button"
-            onClick={onGoVandaag}
+            onClick={onGoAgenda}
             className="mt-1.5 cursor-pointer border-none bg-transparent p-0 text-left text-[13px] font-semibold text-[#9CC5A9]"
           >
-            Bekijk ze op Vandaag ›
+            Open Mijn Dag ›
           </button>
         </div>
       ) : null}

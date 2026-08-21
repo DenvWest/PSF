@@ -71,18 +71,16 @@ describe("buildDomainRailTools", () => {
 });
 
 describe("VOORTGANG_RAIL_ITEMS", () => {
-  it("toont Overzicht, Leefstijlprofiel (User), Schap (Pill) en Favorieten (Heart)", () => {
+  it("toont Overzicht, Leefstijlprofiel (User) en Schap (Pill) — geen los Favorieten-item meer", () => {
     expect(VOORTGANG_RAIL_ITEMS.map((item) => item.id)).toEqual([
       "hub",
       "leefstijlprofiel",
       "schap",
-      "favorieten",
     ]);
     expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "leefstijlprofiel")?.icon).toBe(
       "User",
     );
     expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "schap")?.icon).toBe("Pill");
-    expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "favorieten")?.icon).toBe("Heart");
   });
 });
 

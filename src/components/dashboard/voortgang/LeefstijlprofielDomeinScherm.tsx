@@ -94,17 +94,17 @@ function useMovementWeekTotals(enabled: boolean): MovementWeekTotals | null {
 /**
  * Alles wat je op dit domein koos, op één hoop — inclusief wat je buiten de
  * ladder om oppikte. De ladder toont per laag alleen wat daar hoort; deze
- * sectie is de spiegel van wat er op Vandaag staat. Alleen activiteiten:
- * product, dienst en begeleiding hebben hun eigen groep op het schap (lock 3).
+ * sectie is het archief. Alleen activiteiten: product, dienst en begeleiding
+ * hebben hun eigen groep op het schap (lock 3). Afvinken hoort op Mijn Dag.
  */
 function MijnKeuzeSectie({
   domain,
   surface,
-  onGoVandaag,
+  onGoAgenda,
 }: {
   domain: PillarId;
   surface: string;
-  onGoVandaag: () => void;
+  onGoAgenda: () => void;
 }) {
   const { items } = useVoortgangFavorites();
   const gekozen = items.filter((item) => item.domain === domain && item.kind === "activiteit");
@@ -113,8 +113,8 @@ function MijnKeuzeSectie({
     <section aria-label="Mijn keuze">
       <VoortgangSectionHeader eyebrow="Mijn keuze" title="Wat jij koos" />
       <p className="m-0 mb-3 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-        Alles wat je op dit domein koos, bij elkaar. Zo staat het ook op Vandaag: naam plus
-        afvinken — supplementen en diensten staan in je schap.
+        Alles wat je op dit domein koos, bij elkaar — naam en herkomst. Supplementen en
+        diensten staan in je schap. Afvinken doe je op Mijn Dag.
       </p>
       {gekozen.length === 0 ? (
         <CockpitTile>
@@ -148,10 +148,10 @@ function MijnKeuzeSectie({
           })}
           <button
             type="button"
-            onClick={onGoVandaag}
+            onClick={onGoAgenda}
             className="cursor-pointer border-none bg-transparent p-0 text-left text-[13px] font-semibold text-[#9CC5A9]"
           >
-            Afvinken doe je op Vandaag ›
+            Afvinken doe je op Mijn Dag ›
           </button>
         </div>
       )}
@@ -500,7 +500,7 @@ export default function LeefstijlprofielDomeinScherm({
                 ? resolveRecommendedLayers(movementFocusLayer).map((layer) => layer.id)
                 : undefined
             }
-            onGoVandaag={handleGoVandaag}
+            onGoAgenda={handleGoMijnDag}
             openLayer={movementReadout ? openLadderLayer : undefined}
             onOpenLayerChange={
               movementReadout ? (next) => setPickedLayer({ layer: next }) : undefined
@@ -514,7 +514,7 @@ export default function LeefstijlprofielDomeinScherm({
         <MijnKeuzeSectie
           domain={domain}
           surface={`leefstijlprofiel_${domain}`}
-          onGoVandaag={handleGoVandaag}
+          onGoAgenda={handleGoMijnDag}
         />
 
         {isMovement ? (
