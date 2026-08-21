@@ -97,7 +97,7 @@ import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import MijnKeuzeTile from "@/components/dashboard/MijnKeuzeTile";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
-import BewegingKompasScreen from "@/components/dashboard/domain/BewegingKompasScreen";
+import DomainKompasScreen from "@/components/dashboard/domain/DomainKompasScreen";
 import { buildInspectorCards, buildLadderInspectorCards } from "@/lib/cockpit-inspector";
 import {
   EMPTY_MOVEMENT_PREFS,
@@ -131,14 +131,12 @@ import {
   useDomainLadderFocus,
 } from "@/lib/domain-ladder-focus-context";
 import { LadderMomentsProvider } from "@/lib/ladder-moments-context";
-import { parseLadderFavoriteLayer } from "@/lib/leefstijl-ladder";
-import { MOVEMENT_PRIORITY_LAYERS } from "@/data/movement/lifestyle-priorities";
-import {
-  MOVEMENT_LAYER_STATE_LABEL,
-  movementLayerWhyWait,
-} from "@/lib/movement-ladder";
+import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
+import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
+import { getLeefstijlLadder, parseLadderFavoriteLayer } from "@/lib/leefstijl-ladder";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { useTodayActionDone } from "@/lib/use-today-action-done";
+import { resolveSchapDomain } from "@/lib/schap-availability";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
@@ -218,9 +216,10 @@ type SharedSectionProps = {
   ) => void;
   onOpenInzichten: () => void;
   leefstijlprofielDomein: PillarId | null;
-  favorietenDomein: PillarId | null;
-  /** Actieve sub-tab op het schap (Favorieten) — alleen betekenisvol op screen=favorieten. */
-  favorietenSchapTab: SchapTabId | null;
+  /** Het domein waarvan het schap open staat — alleen betekenisvol op screen=schap. */
+  schapDomein: PillarId | null;
+  /** Actieve sub-tab op het schap — alleen betekenisvol op screen=schap. */
+  schapTab: SchapTabId | null;
   /** Navigeert naar Voortgang › <domein> — het leesscherm, geen doe-surface (S4). */
   onGoVoortgangDomein: (domain: PillarId) => void;
   initialKompasView?: PillarId;
@@ -1492,6 +1491,63 @@ const RemeasureStrip = ({
   );
 };
 
+/** Bewijs uit de lopende cyclus: hoeveel dagen je in Mijn Dag afvinkte.
+ *  Zichtbaar tijdens het aftellen en in het hermeting-verslag — zelfde kaart,
+ *  andere zin, zodat het bewijs niet pas op dag 30 opduikt. */
+const CycleEvidenceCard = ({
+  evidence,
+  daysBetween,
+}: {
+  evidence: NonNullable<DashboardData["cycleEvidence"]>;
+  daysBetween: number | null;
+}) => (
+  <Card pad={20}>
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 7,
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: "0.14em",
+        textTransform: "uppercase",
+        color: "var(--terra)",
+        marginBottom: 12,
+      }}
+    >
+      <Icons.RouteMap s={14} /> Wat je deed
+    </div>
+    <p
+      style={{
+        fontSize: 14,
+        color: "var(--text-muted)",
+        lineHeight: 1.55,
+        margin: 0,
+        textWrap: "pretty",
+      }}
+    >
+      {daysBetween != null ? (
+        <>
+          In {daysBetween} dagen was je{" "}
+          <span style={{ color: "var(--text)", fontWeight: 600 }}>
+            {evidence.activeDays} dagen actief
+          </span>{" "}
+          in Mijn Dag — elke afgevinkte stap telt mee in je hermeting-beeld.
+        </>
+      ) : (
+        <>
+          Dag {evidence.cycleDay} van deze ronde: je was{" "}
+          <span style={{ color: "var(--text)", fontWeight: 600 }}>
+            {evidence.activeDays} dagen actief
+          </span>{" "}
+          in Mijn Dag. Elke afgevinkte stap telt straks mee in je
+          hermeting-beeld.
+        </>
+      )}
+    </p>
+  </Card>
+);
+
 const RetestSection = ({
   model,
   data,
@@ -1506,8 +1562,33 @@ const RetestSection = ({
     <RemeasureStrip remeasure={data.remeasure} onRemeasure={onRemeasure} />
   ) : null;
 
+  const cycleEvidence =
+    data?.cycleEvidence && data.cycleEvidence.activeDays > 0
+      ? data.cycleEvidence
+      : null;
+
+  const waitingCycleCard = cycleEvidence ? (
+    <CycleEvidenceCard evidence={cycleEvidence} daysBetween={null} />
+  ) : null;
+
+  // Aftellen naar de hermeting: de teller links, het bewijs dat straks
+  // meetelt ernaast. Zonder bewijs blijft de teller op volle breedte staan.
+  const waitingScreen =
+    remeasureStrip || waitingCycleCard ? (
+      <section className="@container">
+        <div
+          className={`grid grid-cols-1 items-start gap-4 ${
+            remeasureStrip && waitingCycleCard ? "@[900px]:grid-cols-2" : ""
+          }`}
+        >
+          {remeasureStrip}
+          {waitingCycleCard}
+        </div>
+      </section>
+    ) : null;
+
   if (!model.retest) {
-    return remeasureStrip ? <section>{remeasureStrip}</section> : null;
+    return waitingScreen;
   }
 
   const deltaReport = data?.deltaReport ?? null;
@@ -1537,8 +1618,300 @@ const RetestSection = ({
     });
 
     return (
-      <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <section
+        className="@container"
+        style={{ display: "flex", flexDirection: "column", gap: 16 }}
+      >
         {remeasureStrip}
+        <div className="grid grid-cols-1 items-start gap-4 @[900px]:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+          <Card
+            pad={22}
+            glow="#C8956C"
+            style={{ borderColor: "rgba(200,149,108,0.26)" }}
+          >
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 7,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "var(--terra)",
+                marginBottom: 12,
+              }}
+            >
+              <Icons.TrendUp s={14} /> Je hermeting · {model.date}
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--f-serif)",
+                fontSize: 21,
+                color: "var(--text)",
+                lineHeight: 1.25,
+                marginBottom: 8,
+              }}
+            >
+              Zo veranderde je beeld in {method.daysBetween} dagen.
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "12px 2px",
+                borderBottom: "1px solid var(--divider)",
+                marginBottom: 4,
+              }}
+            >
+              <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>
+                Jouw vitaliteit
+              </span>
+              <span
+                style={{
+                  fontSize: 13,
+                  color: "var(--text-subtle)",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                van {vitality.was} naar {vitality.now}
+              </span>
+              <span style={{ width: 34, textAlign: "right" }}>
+                <DeltaBadge delta={vitality.delta} />
+              </span>
+            </div>
+            {method.sameInstrument &&
+              method.selfReported &&
+              method.directional &&
+              method.notDiagnosis && (
+                <p
+                  style={{
+                    fontSize: 12.5,
+                    color: "var(--text-subtle)",
+                    lineHeight: 1.55,
+                    margin: "14px 0 16px",
+                    textWrap: "pretty",
+                  }}
+                >
+                  Zelfde vragen, zelfde schaal als je startmeting. Dit is je
+                  ervaren verandering — richting, geen schijnprecisie. Geen
+                  diagnose.
+                </p>
+              )}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {perDomain.map((row, i) => {
+                const domain = domainConfigById.get(row.domainId);
+                return (
+                  <div
+                    key={row.domainId}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: "11px 2px",
+                      borderTop: i ? "1px solid var(--divider)" : "none",
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: domain?.color ?? "var(--text-subtle)",
+                        flexShrink: 0,
+                      }}
+                    />
+                    <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>
+                      {domain?.label ?? row.domainId}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 13,
+                        color: "var(--text-subtle)",
+                        fontVariantNumeric: "tabular-nums",
+                        textAlign: "right",
+                      }}
+                    >
+                      {row.was} → {row.now}
+                    </span>
+                    <span style={{ width: 34, textAlign: "right" }}>
+                      <DeltaBadge delta={row.delta} />
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {coupling.length > 0 && (
+              <Card pad={20}>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 7,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "var(--sage)",
+                    marginBottom: 12,
+                  }}
+                >
+                  <Icons.Check s={14} /> Wat je volhield
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {coupling.map((entry) => {
+                    const domainLabel =
+                      domainConfigById.get(entry.domainId)?.label ?? entry.domainId;
+                    return (
+                      <p
+                        key={`${entry.domainId}-${entry.action}`}
+                        style={{
+                          fontSize: 13.5,
+                          color: "var(--text-muted)",
+                          lineHeight: 1.55,
+                          margin: 0,
+                          textWrap: "pretty",
+                        }}
+                      >
+                        Je hield{" "}
+                        <span style={{ color: "var(--text)", fontWeight: 500 }}>
+                          {entry.action}
+                        </span>{" "}
+                        vast — en je{" "}
+                        <span style={{ color: "var(--text)", fontWeight: 500 }}>
+                          {domainLabel.toLowerCase()}
+                        </span>{" "}
+                        bewoog{" "}
+                        <span style={{ color: "var(--sage)", fontWeight: 600 }}>
+                          +{entry.delta}
+                        </span>
+                        .
+                      </p>
+                    );
+                  })}
+                </div>
+              </Card>
+            )}
+
+            {cycleEvidence ? (
+              <CycleEvidenceCard
+                evidence={cycleEvidence}
+                daysBetween={method.daysBetween}
+              />
+            ) : null}
+
+            <Card
+              pad={20}
+              glow="#5A8F6A"
+              style={{ borderColor: "rgba(90,143,106,0.26)" }}
+            >
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 7,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "var(--sage)",
+                  marginBottom: 10,
+                }}
+              >
+                <Icons.Target s={14} /> Waar je nu verder bouwt
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--f-serif)",
+                  fontSize: 20,
+                  color: "var(--text)",
+                  lineHeight: 1.25,
+                  marginBottom: 8,
+                }}
+              >
+                {movedPriority
+                  ? `Je prioriteit is verschoven van ${baselinePriorityLabel?.toLowerCase()} naar ${currentPriorityLabel.toLowerCase()}.`
+                  : `Je vertrekpunt blijft ${forwardPillar.label.toLowerCase()}.`}
+              </div>
+              <div
+                style={{
+                  fontSize: 15,
+                  color: "var(--text)",
+                  fontWeight: 600,
+                  marginBottom: 6,
+                }}
+              >
+                {model.activeHabit?.title ?? forwardPillar.quickWin.title}
+              </div>
+              <p
+                style={{
+                  fontSize: 13.5,
+                  color: "var(--text-muted)",
+                  lineHeight: 1.55,
+                  margin: "0 0 8px",
+                  textWrap: "pretty",
+                }}
+              >
+                {model.activeHabit?.detail ?? forwardPillar.quickWin.detail}
+              </p>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: "var(--text-subtle)",
+                  lineHeight: 1.55,
+                  margin: "0 0 16px",
+                  textWrap: "pretty",
+                }}
+              >
+                {forwardHabitKernel.driverLinkLine}
+              </p>
+              <Button
+                variant="secondary"
+                onClick={onGoVandaag}
+                iconRight={<Icons.ArrowRight s={18} />}
+              >
+                Ga naar Kompas
+              </Button>
+            </Card>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!model.prevScores) {
+    return waitingScreen;
+  }
+
+  const prevScores = model.prevScores;
+  const prevPriority = derivePriority(prevScores)[0];
+  const rows = [...PILLARS]
+    .map((pillar) => ({
+      pillar,
+      now: model.scores[pillar.id],
+      was: prevScores[pillar.id],
+      d: model.scores[pillar.id] - prevScores[pillar.id],
+    }))
+    .sort((a, b) => Math.abs(b.d) - Math.abs(a.d));
+  const movedPriority = prevPriority.id !== model.priority.id;
+
+  return (
+    <section
+      className="@container"
+      style={{ display: "flex", flexDirection: "column", gap: 16 }}
+    >
+      {remeasureStrip}
+      <div
+        className={`grid grid-cols-1 items-start gap-4 ${
+          waitingCycleCard
+            ? "@[900px]:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]"
+            : ""
+        }`}
+      >
         <Card
           pad={22}
           glow="#C8956C"
@@ -1557,7 +1930,7 @@ const RetestSection = ({
               marginBottom: 12,
             }}
           >
-            <Icons.TrendUp s={14} /> Je hermeting · {model.date}
+            <Icons.TrendUp s={14} /> Je hertest · {model.date}
           </div>
           <div
             style={{
@@ -1568,365 +1941,65 @@ const RetestSection = ({
               marginBottom: 8,
             }}
           >
-            Zo veranderde je beeld in {method.daysBetween} dagen.
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "12px 2px",
-              borderBottom: "1px solid var(--divider)",
-              marginBottom: 4,
-            }}
-          >
-            <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>
-              Jouw vitaliteit
-            </span>
-            <span
-              style={{
-                fontSize: 13,
-                color: "var(--text-subtle)",
-                fontVariantNumeric: "tabular-nums",
-              }}
-            >
-              van {vitality.was} naar {vitality.now}
-            </span>
-            <span style={{ width: 34, textAlign: "right" }}>
-              <DeltaBadge delta={vitality.delta} />
-            </span>
-          </div>
-          {method.sameInstrument &&
-            method.selfReported &&
-            method.directional &&
-            method.notDiagnosis && (
-              <p
-                style={{
-                  fontSize: 12.5,
-                  color: "var(--text-subtle)",
-                  lineHeight: 1.55,
-                  margin: "14px 0 16px",
-                  textWrap: "pretty",
-                }}
-              >
-                Zelfde vragen, zelfde schaal als je startmeting. Dit is je
-                ervaren verandering — richting, geen schijnprecisie. Geen
-                diagnose.
-              </p>
-            )}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {perDomain.map((row, i) => {
-              const domain = domainConfigById.get(row.domainId);
-              return (
-                <div
-                  key={row.domainId}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    padding: "11px 2px",
-                    borderTop: i ? "1px solid var(--divider)" : "none",
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      background: domain?.color ?? "var(--text-subtle)",
-                      flexShrink: 0,
-                    }}
-                  />
-                  <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>
-                    {domain?.label ?? row.domainId}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 13,
-                      color: "var(--text-subtle)",
-                      fontVariantNumeric: "tabular-nums",
-                      textAlign: "right",
-                    }}
-                  >
-                    {row.was} → {row.now}
-                  </span>
-                  <span style={{ width: 34, textAlign: "right" }}>
-                    <DeltaBadge delta={row.delta} />
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
-
-        {coupling.length > 0 && (
-          <Card pad={20}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 7,
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: "var(--sage)",
-                marginBottom: 12,
-              }}
-            >
-              <Icons.Check s={14} /> Wat je volhield
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {coupling.map((entry) => {
-                const domainLabel =
-                  domainConfigById.get(entry.domainId)?.label ?? entry.domainId;
-                return (
-                  <p
-                    key={`${entry.domainId}-${entry.action}`}
-                    style={{
-                      fontSize: 13.5,
-                      color: "var(--text-muted)",
-                      lineHeight: 1.55,
-                      margin: 0,
-                      textWrap: "pretty",
-                    }}
-                  >
-                    Je hield{" "}
-                    <span style={{ color: "var(--text)", fontWeight: 500 }}>
-                      {entry.action}
-                    </span>{" "}
-                    vast — en je{" "}
-                    <span style={{ color: "var(--text)", fontWeight: 500 }}>
-                      {domainLabel.toLowerCase()}
-                    </span>{" "}
-                    bewoog{" "}
-                    <span style={{ color: "var(--sage)", fontWeight: 600 }}>
-                      +{entry.delta}
-                    </span>
-                    .
-                  </p>
-                );
-              })}
-            </div>
-          </Card>
-        )}
-
-        {data?.cycleEvidence && data.cycleEvidence.activeDays > 0 ? (
-          <Card pad={20}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 7,
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: "var(--terra)",
-                marginBottom: 12,
-              }}
-            >
-              <Icons.RouteMap s={14} /> Wat je deed
-            </div>
-            <p
-              style={{
-                fontSize: 14,
-                color: "var(--text-muted)",
-                lineHeight: 1.55,
-                margin: 0,
-                textWrap: "pretty",
-              }}
-            >
-              In {method.daysBetween} dagen was je{" "}
-              <span style={{ color: "var(--text)", fontWeight: 600 }}>
-                {data.cycleEvidence.activeDays} dagen actief
-              </span>{" "}
-              in Mijn Dag — elke afgevinkte stap telt mee in je hermeting-beeld.
-            </p>
-          </Card>
-        ) : null}
-
-        <Card
-          pad={20}
-          glow="#5A8F6A"
-          style={{ borderColor: "rgba(90,143,106,0.26)" }}
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 7,
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "var(--sage)",
-              marginBottom: 10,
-            }}
-          >
-            <Icons.Target s={14} /> Waar je nu verder bouwt
-          </div>
-          <div
-            style={{
-              fontFamily: "var(--f-serif)",
-              fontSize: 20,
-              color: "var(--text)",
-              lineHeight: 1.25,
-              marginBottom: 8,
-            }}
-          >
             {movedPriority
-              ? `Je prioriteit is verschoven van ${baselinePriorityLabel?.toLowerCase()} naar ${currentPriorityLabel.toLowerCase()}.`
-              : `Je vertrekpunt blijft ${forwardPillar.label.toLowerCase()}.`}
-          </div>
-          <div
-            style={{
-              fontSize: 15,
-              color: "var(--text)",
-              fontWeight: 600,
-              marginBottom: 6,
-            }}
-          >
-            {model.activeHabit?.title ?? forwardPillar.quickWin.title}
+              ? `Je prioriteit is verschoven van ${prevPriority.label.toLowerCase()} naar ${model.priority.label.toLowerCase()}.`
+              : `Je vertrekpunt blijft ${model.priority.label.toLowerCase()}.`}
           </div>
           <p
             style={{
               fontSize: 13.5,
               color: "var(--text-muted)",
               lineHeight: 1.55,
-              margin: "0 0 8px",
-              textWrap: "pretty",
-            }}
-          >
-            {model.activeHabit?.detail ?? forwardPillar.quickWin.detail}
-          </p>
-          <p
-            style={{
-              fontSize: 13,
-              color: "var(--text-subtle)",
-              lineHeight: 1.55,
               margin: "0 0 16px",
               textWrap: "pretty",
             }}
           >
-            {forwardHabitKernel.driverLinkLine}
+            Bekijk welke pijlers het meest zijn verschoven sinds je vorige check.
           </p>
-          <Button
-            variant="secondary"
-            onClick={onGoVandaag}
-            iconRight={<Icons.ArrowRight s={18} />}
-          >
-            Ga naar Kompas
-          </Button>
-        </Card>
-      </section>
-    );
-  }
-
-  if (!model.prevScores) {
-    return remeasureStrip ? <section>{remeasureStrip}</section> : null;
-  }
-
-  const prevScores = model.prevScores;
-  const prevPriority = derivePriority(prevScores)[0];
-  const rows = [...PILLARS]
-    .map((pillar) => ({
-      pillar,
-      now: model.scores[pillar.id],
-      was: prevScores[pillar.id],
-      d: model.scores[pillar.id] - prevScores[pillar.id],
-    }))
-    .sort((a, b) => Math.abs(b.d) - Math.abs(a.d));
-  const movedPriority = prevPriority.id !== model.priority.id;
-
-  return (
-    <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {remeasureStrip}
-      <Card
-        pad={22}
-        glow="#C8956C"
-        style={{ borderColor: "rgba(200,149,108,0.26)" }}
-      >
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 7,
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: "var(--terra)",
-            marginBottom: 12,
-          }}
-        >
-          <Icons.TrendUp s={14} /> Je hertest · {model.date}
-        </div>
-        <div
-          style={{
-            fontFamily: "var(--f-serif)",
-            fontSize: 21,
-            color: "var(--text)",
-            lineHeight: 1.25,
-            marginBottom: 8,
-          }}
-        >
-          {movedPriority
-            ? `Je prioriteit is verschoven van ${prevPriority.label.toLowerCase()} naar ${model.priority.label.toLowerCase()}.`
-            : `Je vertrekpunt blijft ${model.priority.label.toLowerCase()}.`}
-        </div>
-        <p
-          style={{
-            fontSize: 13.5,
-            color: "var(--text-muted)",
-            lineHeight: 1.55,
-            margin: "0 0 16px",
-            textWrap: "pretty",
-          }}
-        >
-          Bekijk welke pijlers het meest zijn verschoven sinds je vorige check.
-        </p>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {rows.map((row, i) => (
-            <div
-              key={row.pillar.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "11px 2px",
-                borderTop: i ? "1px solid var(--divider)" : "none",
-              }}
-            >
-              <span
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {rows.map((row, i) => (
+              <div
+                key={row.pillar.id}
                 style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: row.pillar.color,
-                  flexShrink: 0,
-                }}
-              />
-              <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>
-                {row.pillar.label}
-              </span>
-              <span
-                style={{
-                  fontSize: 13,
-                  color: "var(--text-subtle)",
-                  fontVariantNumeric: "tabular-nums",
-                  textAlign: "right",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "11px 2px",
+                  borderTop: i ? "1px solid var(--divider)" : "none",
                 }}
               >
-                {row.was} → {row.now}
-              </span>
-              <span style={{ width: 34, textAlign: "right" }}>
-                <DeltaBadge delta={row.d} />
-              </span>
-            </div>
-          ))}
-        </div>
-      </Card>
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: row.pillar.color,
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>
+                  {row.pillar.label}
+                </span>
+                <span
+                  style={{
+                    fontSize: 13,
+                    color: "var(--text-subtle)",
+                    fontVariantNumeric: "tabular-nums",
+                    textAlign: "right",
+                  }}
+                >
+                  {row.was} → {row.now}
+                </span>
+                <span style={{ width: 34, textAlign: "right" }}>
+                  <DeltaBadge delta={row.d} />
+                </span>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {waitingCycleCard}
+      </div>
     </section>
   );
 };
@@ -2418,17 +2491,11 @@ const IdentitySection = () => {
  * (energie/herstel: DomainSoonScreen) blijft op de smallere vaste breedte. */
 /** Het home-frame per domein — de prebuild die dat Vandaag-scherm draagt. */
 const DOMAIN_PREBUILD: Partial<Record<PillarId, { src: string; title: string }>> = {
-  slaap: { src: "slaap-v2.html?frame=K", title: "Slaap — prebuild v2" },
-  stress: { src: "stress-v1.html?frame=K", title: "Stress — prebuild v1" },
-  voeding: { src: "voeding-v1.5.html?frame=K", title: "Voeding — prebuild v1.5" },
   verbinding: { src: "verbinding-v1.html?frame=K", title: "Verbinding — prebuild v1" },
 };
 
 /** Domeinen waarvan het Vandaag-scherm een letterlijke prebuild is. */
 const PREBUILD_DOMAINS = new Set<PillarId>([
-  "slaap",
-  "stress",
-  "voeding",
   "verbinding",
 ]);
 
@@ -2721,17 +2788,18 @@ const KompasHome = ({
       <PrebuildFrame src={domainPrebuild.src} title={domainPrebuild.title} />,
     );
   }
-  // Beweging niet: dat scherm schrijft. Een keuze landt in `account_favorites`,
-  // een moment in `agenda_blocks`, en de contextkolom ernaast volgt de laag die
-  // je aanklikt — alle drie gaan de iframe-grens over.
-  if (domainView === "beweging" && currentModel) {
+  // Beweging, slaap en voeding niet: die schermen schrijven. Een keuze landt
+  // in `account_favorites`, een moment in `agenda_blocks`, en de
+  // contextkolom ernaast volgt de laag die je aanklikt — alle drie gaan de
+  // iframe-grens over. Alle drie draaien op hetzelfde `DomainKompasScreen`.
+  if (domainView && isDomainKompasDomain(domainView) && currentModel) {
     return withDomainTopNav(
-      <BewegingKompasScreen
+      <DomainKompasScreen
+        domain={domainView}
         model={currentModel}
         data={data}
         onGoAgenda={() => onGoAgenda()}
-        onGoVoortgangDomein={() => onGoVoortgangDomein("beweging")}
-        onPrefUpdated={onPrefUpdated}
+        onGoVoortgangDomein={() => onGoVoortgangDomein(domainView)}
       />,
     );
   }
@@ -2850,8 +2918,8 @@ const SECTION_RENDERERS: Record<
         tab={props.tab}
         screen={props.voortgangScreen}
         leefstijlprofielDomein={props.leefstijlprofielDomein}
-        favorietenDomein={props.favorietenDomein}
-        favorietenSchapTab={props.favorietenSchapTab}
+        schapDomein={props.schapDomein}
+        schapTab={props.schapTab}
         leefstijlprofielAdviesExtra={
           props.empty ? null : <NutritionIntakeSection {...props} />
         }
@@ -3077,7 +3145,7 @@ function DashboardContent({
   const activeVoortgangFavDomein = useMemo((): PillarId | null => {
     if (
       voortgangScreen !== "leefstijlprofiel" &&
-      voortgangScreen !== "favorieten" &&
+      voortgangScreen !== "schap" &&
       voortgangScreen !== "domein"
     ) {
       return null;
@@ -3100,11 +3168,21 @@ function DashboardContent({
       ? activeVoortgangFavDomein
       : null;
 
-  const activeFavorietenDomein =
-    voortgangScreen === "favorieten" ? activeVoortgangFavDomein : null;
+  const activeSchapDomein = voortgangScreen === "schap" ? activeVoortgangFavDomein : null;
 
-  const activeFavorietenSchapTab = useMemo((): SchapTabId | null => {
-    if (voortgangScreen !== "favorieten") {
+  /**
+   * Welk schap de rail aanbiedt: dat wat al open staat, anders het domein dat
+   * je op Leefstijlprofiel bekijkt, anders je prioriteit. `null` = dit domein
+   * heeft geen schap, en dan valt het rail-item weg in plaats van dat het op
+   * een ander scherm uitkomt (zie ook `KompasOndersteuningTile`).
+   */
+  const railSchapDomein =
+    resolveSchapDomain(activeSchapDomein) ??
+    resolveSchapDomain(activeLeefstijlprofielDomein) ??
+    resolveSchapDomain(model?.priority.id);
+
+  const activeSchapTab = useMemo((): SchapTabId | null => {
+    if (voortgangScreen !== "schap") {
       return null;
     }
     const paramSchap = searchParams.get("schap");
@@ -3175,14 +3253,22 @@ function DashboardContent({
         return;
       }
       setVoortgangScreen(screen);
-      if (screen === "leefstijlprofiel" || screen === "favorieten") {
+      if (screen === "leefstijlprofiel" || screen === "schap") {
         const nextFav =
           options && "fav" in options ? (options.fav ?? null) : leefstijlprofielDomein;
         setLeefstijlprofielDomein(nextFav);
         syncDashboardVoortgangScreenParam(screen, {
           fav: nextFav,
-          ...(screen === "favorieten" ? { schap: options?.schap ?? null } : {}),
+          ...(screen === "schap" ? { schap: options?.schap ?? null } : {}),
         });
+        return;
+      }
+      // Favorieten draagt geen domein: het is één scherm met alles wat je
+      // bewaarde. Een achtergebleven `fav` uit een vorig scherm zou het weer
+      // op het schap laten landen — precies de verwarring die de split opheft.
+      if (screen === "favorieten") {
+        setLeefstijlprofielDomein(null);
+        syncDashboardVoortgangScreenParam(screen, { fav: null });
         return;
       }
       syncDashboardVoortgangScreenParam(screen);
@@ -3198,11 +3284,15 @@ function DashboardContent({
         handleVoortgangScreenChange("hub");
       } else if (item === "leefstijlprofiel") {
         handleVoortgangScreenChange("leefstijlprofiel", { fav: null });
+      } else if (item === "schap") {
+        if (railSchapDomein) {
+          handleVoortgangScreenChange("schap", { fav: railSchapDomein });
+        }
       } else if (item === "favorieten") {
         handleVoortgangScreenChange("favorieten", { fav: null });
       }
     },
-    [handleVoortgangScreenChange],
+    [handleVoortgangScreenChange, railSchapDomein],
   );
 
   const handleRailLeefstijlprofielDomeinOpen = useCallback(
@@ -3250,7 +3340,7 @@ function DashboardContent({
         setVoortgangScreen(parsedScreen);
         if (
           parsedScreen === "leefstijlprofiel" ||
-          parsedScreen === "favorieten" ||
+          parsedScreen === "schap" ||
           parsedScreen === "domein"
         ) {
           const urlFav = parseLeefstijlprofielDomeinFromUrl(url);
@@ -3409,8 +3499,8 @@ function DashboardContent({
     onVoortgangScreenChange: handleVoortgangScreenChange,
     onOpenInzichten: () => handleVoortgangScreenChange("leefstijlprofiel", { fav: null }),
     leefstijlprofielDomein: activeLeefstijlprofielDomein,
-    favorietenDomein: activeFavorietenDomein,
-    favorietenSchapTab: activeFavorietenSchapTab,
+    schapDomein: activeSchapDomein,
+    schapTab: activeSchapTab,
     onGoVoortgangDomein: goToVoortgangDomein,
     initialKompasView,
     prefUpdatedAt: priorityPref?.updatedAt ?? null,
@@ -3505,33 +3595,35 @@ function DashboardContent({
   // actieknop via remeasureAction — geen domein-uitzondering meer nodig.
   // Staat er een domeinscherm open met een aangeklikte ladderlaag, dan draagt
   // de contextkolom díé laag en wat je erop koos — geen tweede ladder (lock
-  // N6), maar het waarom naast het wat. Alleen beweging levert staten af.
+  // N6), maar het waarom naast het wat. Elk domein met een ladder komt hier
+  // binnen; de staten komen alleen mee waar de eigen check ze oplevert.
   const ladderInspectorCards = useMemo(() => {
-    if (!ladderFocus || ladderFocus.domain !== "beweging") {
+    if (!ladderFocus) {
       return null;
     }
-    const layer = MOVEMENT_PRIORITY_LAYERS.find((row) => row.id === ladderFocus.layerId);
+    const ladder = getLeefstijlLadder(ladderFocus.domain);
+    const layer = ladder?.layers.find((row) => row.id === ladderFocus.layerId);
     if (!layer) {
       return null;
     }
-    const snapshot = data?.movementCheckinSnapshot ?? null;
-    const focusLayerId = snapshot?.ladder.focus ?? null;
-    const state = snapshot?.ladder.states[layer.id] ?? null;
+    const readout = resolveDomainLadderReadout(ladderFocus.domain, data);
+    const state = readout?.layerStates[layer.id] ?? null;
     return buildLadderInspectorCards({
       layerId: layer.id,
       layerName: layer.name,
       layerSummary: layer.summary,
-      stateLabel: state ? MOVEMENT_LAYER_STATE_LABEL[state] : null,
-      whyWait: movementLayerWhyWait(layer.id, focusLayerId),
+      stateLabel: state && readout ? readout.stateLabels[state] : null,
+      whyWait: readout?.whyWait(layer.id) ?? null,
       chosen: favorietenItems
         .filter(
           (item) =>
-            item.domain === "beweging" && parseLadderFavoriteLayer(item.id) === layer.id,
+            item.domain === ladderFocus.domain &&
+            parseLadderFavoriteLayer(item.id) === layer.id,
         )
         .map((item) => ({ title: item.title })),
-      isFocus: layer.id === focusLayerId,
+      isFocus: layer.id === readout?.focusLayer,
     });
-  }, [ladderFocus, data?.movementCheckinSnapshot, favorietenItems]);
+  }, [ladderFocus, data, favorietenItems]);
 
   const inspectorCards =
     ladderInspectorCards ??
@@ -3617,6 +3709,7 @@ function DashboardContent({
         railVoortgangActiveItem={resolveVoortgangRailActiveItem(voortgangScreen)}
         railVoortgangLeefstijlprofielDomein={activeLeefstijlprofielDomein}
         railVoortgangDomains={voortgangRailDomains}
+        railVoortgangSchapDomein={railSchapDomein}
         railFavorietenCount={favorietenItems.length}
         onOpenVoortgangItem={handleRailVoortgangOpen}
         onOpenLeefstijlprofielDomein={handleRailLeefstijlprofielDomeinOpen}
@@ -3637,7 +3730,8 @@ function DashboardContent({
               ? "min-w-0"
               : (viewedDomain != null && COCKPIT_WIDTH_DOMAINS.has(viewedDomain)) ||
                   (tab === "vandaag" && !viewedDomain) ||
-                  tab === "voortgang"
+                  tab === "voortgang" ||
+                  tab === "hermeting"
                 ? "min-w-0"
                 : "max-w-[720px]"
           }`}

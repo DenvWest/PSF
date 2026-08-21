@@ -14,6 +14,7 @@ import type { MovementPriorityId } from "@/data/movement/lifestyle-priorities";
 import type { MovementLadderCoverage, MovementLayerState } from "@/lib/movement-ladder";
 import type { StoredSleepCheckinSnapshot } from "@/lib/sleep-checkin-parse";
 import type { SleepFactRow } from "@/lib/sleep-checkin-readout";
+import type { StressCheckReport } from "@/lib/stress-ladder";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { PlanProgress } from "@/types/lifestyle-plan";
 import type { StoredSupplementVerdict } from "@/types/verdict";
@@ -107,13 +108,22 @@ export type DashboardTabId = "vandaag" | "agenda" | "voortgang" | "hermeting";
 export type VoortgangScreen =
   | "hub"
   | "leefstijlprofiel"
+  /**
+   * Wat jij bewaarde — de lijst uit `account_favorites`, domein-overstijgend.
+   * Draagt nooit een `fav`-domein: dit scherm is er precies één.
+   */
   | "favorieten"
+  /**
+   * Het aanbod van één domein. Draagt altijd `fav=<domein mét schap>`; zonder
+   * dat domein bestaat het scherm niet en valt de route terug op de hub.
+   */
+  | "schap"
   /** @deprecated Legacy — redirect naar leefstijlprofiel */
   | "inzichten"
   /** @deprecated Legacy — redirect naar leefstijlprofiel&fav= */
   | "domein";
 
-/** Vier sub-oppervlakken van het schap (Favorieten), nooit tegelijk zichtbaar. */
+/** Vier sub-oppervlakken van het schap, nooit tegelijk zichtbaar. */
 export type SchapTabId = "leefstijl" | "producten" | "diensten" | "begeleiding";
 
 export type LeefstijlprofielView = "aanbevolen" | "mijn_keuze";
@@ -283,6 +293,8 @@ export type DashboardData = {
   sleepCheckinSnapshot: SleepCheckinReadoutData | null;
   movementCheckinSnapshot: MovementCheckinReadoutData | null;
   hasStressCheckin: boolean;
+  /** Ruwe antwoorden van de laatste stress-check — herberekend tot ladderstaten, niet bevroren. */
+  stressCheckinReport: StressCheckReport | null;
   /** Dagen sinds de laatste eigen domeincheck; ontbreekt = nog nooit gedaan. */
   domainCheckDaysAgo: Partial<Record<PillarId, number>>;
   movementPrefs: MovementPrefs;

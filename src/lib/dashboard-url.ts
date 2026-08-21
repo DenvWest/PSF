@@ -1,4 +1,5 @@
 import { MOVEMENT_FOCUS_ORDER, type MovementFocusKey } from "@/data/movement-checkin";
+import { hasSchap } from "@/lib/schap-availability";
 import type { DashboardTabId, PillarId, SchapTabId, VoortgangScreen } from "@/types/dashboard";
 
 const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
@@ -6,6 +7,7 @@ const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
   "inzichten",
   "leefstijlprofiel",
   "favorieten",
+  "schap",
   "domein",
 ]);
 
@@ -28,6 +30,22 @@ export function getLegacyVoortgangScreenAlias(raw: string | null): LegacyVoortga
 /** Vervangt legacy `screen`-waarden in-place; retourneert de canonieke screen of null. */
 export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | null {
   const rawScreen = url.searchParams.get("screen");
+
+  // Tot 20 augustus droeg `screen=favorieten` twee schermen: mét `fav` was het
+  // het schap van dat domein, zonder `fav` je bewaarde lijst. Die twee zijn nu
+  // gesplitst. Oude links en bookmarks dragen de eerste vorm nog, dus die
+  // vertalen we hier — het domein is precies wat ze uit elkaar houdt.
+  if (rawScreen === "favorieten") {
+    const fav = url.searchParams.get("fav");
+    if (fav && KOMPAS_DOMAIN_IDS.has(fav as PillarId) && hasSchap(fav as PillarId)) {
+      url.searchParams.set("screen", "schap");
+      return "schap";
+    }
+    url.searchParams.delete("fav");
+    url.searchParams.delete("schap");
+    return null;
+  }
+
   const legacy = getLegacyVoortgangScreenAlias(rawScreen);
   if (!legacy) {
     return null;
@@ -164,7 +182,7 @@ export function isSchapTabId(value: unknown): value is SchapTabId {
   return typeof value === "string" && VALID_SCHAP_TABS.has(value as SchapTabId);
 }
 
-/** Favorieten-schap sub-tab — alleen betekenisvol op `screen=favorieten`. */
+/** Sub-tab van het schap — alleen betekenisvol op `screen=schap`. */
 export function parseSchapTabFromUrl(url: string | URL): SchapTabId | null {
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
@@ -172,12 +190,16 @@ export function parseSchapTabFromUrl(url: string | URL): SchapTabId | null {
   return isSchapTabId(schap) ? schap : null;
 }
 
-/** Deeplink naar het schap (Favorieten), optioneel direct op een sub-tab. */
-export function buildDashboardFavorietenSchapHref(
-  domain: PillarId,
-  tab?: SchapTabId | null,
-): string {
-  const params = new URLSearchParams({ tab: "voortgang", screen: "favorieten", fav: domain });
+/**
+ * Deeplink naar het schap van één domein, optioneel direct op een sub-tab.
+ *
+ * Het schap is niet Favorieten (20 augustus). Favorieten is wat jij bewaarde;
+ * dit is het aanbod van dit domein. Ze deelden tot vandaag één `screen`-waarde
+ * en dus één naam in de rail, met twee verschillende schermen erachter — welk
+ * scherm je kreeg hing af van of je toevallig via een domein binnenkwam.
+ */
+export function buildDashboardSchapHref(domain: PillarId, tab?: SchapTabId | null): string {
+  const params = new URLSearchParams({ tab: "voortgang", screen: "schap", fav: domain });
   if (isSchapTabId(tab)) {
     params.set("schap", tab);
   }
@@ -255,6 +277,17 @@ export function parseVoortgangScreenFromUrl(url: string | URL): VoortgangScreen 
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
   const screen = parsed.searchParams.get("screen");
+  // `favorieten` mét een domein dát een schap heeft is de oude naam van het
+  // schap. Legacy screens worden hier gelezen, niet herschreven — de URL
+  // opschonen doet `canonicalizeVoortgangScreenParam`, en dat draait alleen op
+  // popstate. Wie een oude bookmark opent moet ook zónder die opschoning op
+  // het juiste scherm landen.
+  if (screen === "favorieten") {
+    const fav = parsed.searchParams.get("fav");
+    if (fav && KOMPAS_DOMAIN_IDS.has(fav as PillarId) && hasSchap(fav as PillarId)) {
+      return "schap";
+    }
+  }
   return normalizeVoortgangScreen(screen);
 }
 
@@ -279,10 +312,7 @@ export function buildDashboardVoortgangHref(
   if (resolvedScreen) {
     params.set("screen", resolvedScreen);
   }
-  if (
-    (resolvedScreen === "leefstijlprofiel" || resolvedScreen === "favorieten") &&
-    resolvedFav
-  ) {
+  if ((resolvedScreen === "leefstijlprofiel" || resolvedScreen === "schap") && resolvedFav) {
     params.set("fav", resolvedFav);
   }
   return `/dashboard?${params.toString()}`;
@@ -291,7 +321,7 @@ export function buildDashboardVoortgangHref(
 export type SyncDashboardVoortgangOptions = {
   domein?: PillarId | null;
   fav?: PillarId | null;
-  /** Sub-tab van het schap — alleen betekenisvol op `screen=favorieten`. */
+  /** Sub-tab van het schap — alleen betekenisvol op `screen=schap`. */
   schap?: SchapTabId | null;
 };
 
@@ -318,15 +348,12 @@ export function syncDashboardVoortgangScreenParam(
   } else {
     url.searchParams.set("screen", screen);
     url.searchParams.delete("domein");
-    if (
-      (screen === "leefstijlprofiel" || screen === "favorieten") &&
-      options?.fav
-    ) {
+    if ((screen === "leefstijlprofiel" || screen === "schap") && options?.fav) {
       url.searchParams.set("fav", options.fav);
     } else {
       url.searchParams.delete("fav");
     }
-    if (screen === "favorieten" && isSchapTabId(options?.schap)) {
+    if (screen === "schap" && isSchapTabId(options?.schap)) {
       url.searchParams.set("schap", options.schap);
     } else {
       url.searchParams.delete("schap");

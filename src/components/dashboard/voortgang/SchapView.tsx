@@ -32,7 +32,11 @@ const SCHAP_SURFACE: Partial<Record<PillarId, VerdictPanelSurface>> = {
 };
 
 /**
- * Het schap — Favorieten, generiek over beweging, slaap en voeding.
+ * Het schap — het aanbod van één domein, generiek over beweging, slaap en
+ * voeding. Niet Favorieten: dat is wat jij bewaarde, domein-overstijgend, op
+ * `screen=favorieten`. Ze deelden tot 20 augustus één naam en één
+ * `screen`-waarde, met als gevolg dat dezelfde knop je nu eens hier en dan
+ * eens op je bewaarde lijst zette.
  *
  * De enige plek met aanbod (BESLUIT_DASHBOARD_SUPPLEMENTROUTE_V1 §A). Vandaag
  * en Mijn Dag dragen alleen de deur; de ladder op Voortgang draagt de
@@ -69,7 +73,7 @@ export default function SchapView({
   }
 
   return (
-    <section aria-label={`Favorieten — ${pillar.label}`} className="pt-4">
+    <section aria-label={`Schap — ${pillar.label}`} className="pt-4">
       <div className="mb-4 flex items-center gap-3">
         <button
           type="button"
@@ -80,7 +84,7 @@ export default function SchapView({
           <Icons.ArrowRight s={18} style={{ transform: "rotate(180deg)" }} />
         </button>
         <div className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[var(--text)]">
-          Favorieten · {pillar.label}
+          Schap · {pillar.label}
         </div>
       </div>
 

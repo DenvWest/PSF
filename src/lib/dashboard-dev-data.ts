@@ -165,6 +165,7 @@ export function buildDevDashboardData(
     sleepCheckinSnapshot: null,
     movementCheckinSnapshot: null,
     hasStressCheckin: false,
+    stressCheckinReport: null,
     // Dev-staten: één verlopen check (slaap), één die aftelt (stress), één vers
     // (voeding) en één die nog nooit gedaan is (beweging).
     domainCheckDaysAgo:

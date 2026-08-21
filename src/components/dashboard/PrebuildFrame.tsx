@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   buildDashboardAgendaHref,
-  buildDashboardFavorietenSchapHref,
+  buildDashboardSchapHref,
   buildDashboardVandaagHref,
   buildDashboardVoortgangHref,
   isSchapTabId,
@@ -54,13 +54,12 @@ export function resolvePrebuildHref(route: PrebuildRoute): string | null {
     return buildDashboardVandaagHref(asPillar(route.kompas));
   }
   if (route.tab === "voortgang") {
-    if (route.screen === "favorieten") {
+    // `favorieten` mét domein is de oude naam van het schap — prebuilds die
+    // nog niet opnieuw gebouwd zijn dragen hem, dus hij vertaalt hier mee.
+    if (route.screen === "schap" || route.screen === "favorieten") {
       const fav = asPillar(route.fav);
       if (fav) {
-        return buildDashboardFavorietenSchapHref(
-          fav,
-          isSchapTabId(route.schap) ? route.schap : null,
-        );
+        return buildDashboardSchapHref(fav, isSchapTabId(route.schap) ? route.schap : null);
       }
     }
     return buildDashboardVoortgangHref(

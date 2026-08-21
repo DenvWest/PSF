@@ -54,7 +54,7 @@ describe("KompasOndersteuningTile — de deur op de home (N1)", () => {
     render(<KompasOndersteuningTile model={model("beweging")} data={data()} onGoVoortgang={() => {}} />);
     const deur = screen.getByRole("link", { name: /Maak een keuze/ });
     expect(deur.getAttribute("href")).toBe(
-      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging&schap=producten",
+      "/dashboard?tab=voortgang&screen=schap&fav=beweging&schap=producten",
     );
     // Eén deur: de tweede route naar het oordeel verdwijnt zodra het schap er is.
     expect(screen.queryByText("Bekijk je oordeel op Voortgang")).toBeNull();
@@ -64,7 +64,7 @@ describe("KompasOndersteuningTile — de deur op de home (N1)", () => {
     render(<KompasOndersteuningTile model={model("slaap")} data={data()} onGoVoortgang={() => {}} />);
     const deur = screen.getByRole("link", { name: /Maak een keuze/ });
     expect(deur.getAttribute("href")).toBe(
-      "/dashboard?tab=voortgang&screen=favorieten&fav=slaap&schap=producten",
+      "/dashboard?tab=voortgang&screen=schap&fav=slaap&schap=producten",
     );
   });
 

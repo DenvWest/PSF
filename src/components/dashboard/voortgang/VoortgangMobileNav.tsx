@@ -7,8 +7,11 @@ import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 type VoortgangMobileNavProps = {
   screen: VoortgangScreen;
   activeDomein: PillarId | null;
+  /** Het domein waarvan het schap bereikbaar is, of `null` — dan valt de chip weg. */
+  schapDomein: PillarId | null;
   favorietenCount: number;
   onOpenLeefstijlprofiel: () => void;
+  onOpenSchap: () => void;
   onOpenFavorieten: () => void;
   onOpenDomein: (domain: PillarId) => void;
 };
@@ -16,13 +19,16 @@ type VoortgangMobileNavProps = {
 export default function VoortgangMobileNav({
   screen,
   activeDomein,
+  schapDomein,
   favorietenCount,
   onOpenLeefstijlprofiel,
+  onOpenSchap,
   onOpenFavorieten,
   onOpenDomein,
 }: VoortgangMobileNavProps) {
   const leefstijlActive =
     screen === "leefstijlprofiel" || screen === "inzichten" || screen === "domein";
+  const schapActive = screen === "schap";
   const favorietenActive = screen === "favorieten";
 
   const chipClass = (active: boolean) =>
@@ -54,6 +60,15 @@ export default function VoortgangMobileNav({
           {PILLAR[domain].label}
         </button>
       ))}
+      {/* Twee chips, twee schermen (20 aug). Het schap is het aanbod van één
+          domein en verdwijnt waar dat aanbod niet bestaat; Favorieten is wat
+          jij bewaarde en telt daarom altijd hetzelfde. */}
+      {schapDomein ? (
+        <button type="button" onClick={onOpenSchap} className={chipClass(schapActive)}>
+          <Icons.Pill s={14} />
+          Schap · {PILLAR[schapDomein].label}
+        </button>
+      ) : null}
       <button type="button" onClick={onOpenFavorieten} className={chipClass(favorietenActive)}>
         <Icons.Heart s={14} />
         Favorieten

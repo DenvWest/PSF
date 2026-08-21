@@ -8,6 +8,9 @@ import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
 import LadderCoverageMeter from "@/components/dashboard/domain/LadderCoverageMeter";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
+import DomainRouteStrip, {
+  type DomainRouteStripNode,
+} from "@/components/dashboard/voortgang/DomainRouteStrip";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
 import PrioriteitenLadder, {
   ladderLayerDomId,
@@ -23,7 +26,7 @@ import { MOVEMENT_PRIORITY_LAYERS, type MovementPriorityId } from "@/data/moveme
 import { PILLAR, PILLAR_CHECKIN_ROUTES } from "@/data/dashboard";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
-import { buildMovementRoutingHref } from "@/lib/dashboard-url";
+import { buildDashboardAgendaHref, buildDashboardVandaagHref, buildMovementRoutingHref } from "@/lib/dashboard-url";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
@@ -266,6 +269,40 @@ export default function LeefstijlprofielDomeinScherm({
     onGoVandaag();
   };
 
+  const handleGoMijnDag = () => {
+    trackEvent("dashboard_voortgang_hub_click", {
+      destination: "agenda",
+      surface: "leefstijlprofiel_domein",
+    });
+    const href = buildDashboardAgendaHref();
+    if (typeof window !== "undefined" && window.location.pathname === "/dashboard") {
+      window.history.pushState(null, "", href);
+      window.dispatchEvent(new PopStateEvent("popstate"));
+      return;
+    }
+    if (typeof window !== "undefined") {
+      window.location.assign(href);
+    }
+  };
+
+  const checkinSublabel = isMovement ? "Opnieuw · 3 min" : isSleep ? "Opnieuw · 1 min" : "Opnieuw doen";
+  const routeNodes: DomainRouteStripNode[] = [
+    ...(checkinRoute
+      ? [
+          {
+            key: "leefstijlcheck",
+            label: "Leefstijlcheck",
+            sublabel: checkinSublabel,
+            href: `${checkinRoute}?from=dashboard&kompas=${domain}`,
+            onClick: handleCheckin,
+          },
+        ]
+      : []),
+    { key: "voortgang", label: "Voortgang", sublabel: "Hier — legt uit", current: true },
+    { key: "kompas", label: "Kompas", sublabel: "Kiest je aanpak", onClick: handleGoVandaag },
+    { key: "mijn_dag", label: "Mijn Dag", sublabel: "Vinkt af", onClick: handleGoMijnDag },
+  ];
+
   const handleOpenSchap = () => {
     emitAccountClientEvent("choice.shelf_opened", {
       domain,
@@ -468,26 +505,11 @@ export default function LeefstijlprofielDomeinScherm({
             onOpenLayerChange={
               movementReadout ? (next) => setPickedLayer({ layer: next }) : undefined
             }
+            kompasHref={buildDashboardVandaagHref(domain)}
           />
         ) : null}
 
-        {checkinRoute ? (
-          <a
-            href={`${checkinRoute}?from=dashboard&kompas=${domain}`}
-            onClick={handleCheckin}
-            className="flex items-center gap-3 rounded-2xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/10 px-4 py-3.5 text-inherit no-underline"
-          >
-            <Icons.Activity s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
-            <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">
-              {isMovement
-                ? "Doe de uitgebreide beweegcheck (3 min)"
-                : isSleep
-                  ? "Doe de slaap-check opnieuw (1 min)"
-                  : `Doe de ${pillar.label.toLowerCase()}-check opnieuw`}
-            </span>
-            <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
-          </a>
-        ) : null}
+        <DomainRouteStrip domain={domain} surface={`leefstijlprofiel_${domain}`} nodes={routeNodes} />
 
         <MijnKeuzeSectie
           domain={domain}
@@ -511,24 +533,15 @@ export default function LeefstijlprofielDomeinScherm({
 
         {adviesExtra}
 
-        <div className="flex flex-col gap-1.5">
-          {hasSchap(domain) ? (
-            <button
-              type="button"
-              onClick={handleOpenSchap}
-              className="cursor-pointer border-none bg-transparent p-0 text-left text-[13px] font-semibold text-[#9CC5A9]"
-            >
-              Open je schap ›
-            </button>
-          ) : null}
+        {hasSchap(domain) ? (
           <button
             type="button"
-            onClick={handleGoVandaag}
-            className="cursor-pointer border-none bg-transparent p-0 text-left text-[13px] font-medium text-[#9FB0A6]"
+            onClick={handleOpenSchap}
+            className="cursor-pointer border-none bg-transparent p-0 text-left text-[13px] font-semibold text-[#9CC5A9]"
           >
-            Terug naar je stap van vandaag ›
+            Open je schap ›
           </button>
-        </div>
+        ) : null}
       </div>
     </section>
   );

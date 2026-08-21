@@ -1,16 +1,12 @@
 "use client";
 
 import { trackEvent } from "@/lib/ga4";
+import type { LeefstijlLadderLayer, LeefstijlLayerState } from "@/lib/leefstijl-ladder";
+import type { PillarId } from "@/types/dashboard";
 
-export type LifestyleLayerState = "winst" | "ok" | "watch" | "wacht";
-
-export type LifestylePriorityLayer = {
-  id: number;
-  name: string;
-  subtitle: string;
-  summary: string;
-  actions: string[];
-};
+/** Dezelfde vier standen en dezelfde laagvorm als de ladder op Voortgang. */
+export type LifestyleLayerState = LeefstijlLayerState;
+export type LifestylePriorityLayer = LeefstijlLadderLayer;
 
 const STATE_STYLE: Record<LifestyleLayerState, { bar: string; text: string; row: string }> = {
   winst: {
@@ -49,7 +45,7 @@ export type DomainLifestyleLadderProps = {
   selectedLayer: number | null;
   onSelectLayer: (layerId: number) => void;
   whyWait?: (layerId: number) => string | null;
-  domain: "slaap" | "stress" | "beweging";
+  domain: PillarId;
   /**
    * Twee kolommen zodra de container het toelevert. Zes lagen onder elkaar
    * kosten een halve schermhoogte; op een Kompas-scherm dat in één beeld moet

@@ -32,9 +32,10 @@ type VoortgangHubProps = {
   tab: DashboardTabId;
   screen: VoortgangScreen;
   leefstijlprofielDomein: PillarId | null;
-  favorietenDomein: PillarId | null;
-  /** Actieve sub-tab op het schap — alleen betekenisvol op screen=favorieten, op elk domein mét schap. */
-  favorietenSchapTab: SchapTabId | null;
+  /** Het domein waarvan het schap open staat — alleen betekenisvol op screen=schap. */
+  schapDomein: PillarId | null;
+  /** Actieve sub-tab op het schap — alleen betekenisvol op screen=schap. */
+  schapTab: SchapTabId | null;
   leefstijlprofielAdviesExtra: ReactNode;
   overTijdExtra: ReactNode;
   onScreenChange: (screen: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => void;
@@ -49,8 +50,8 @@ function VoortgangHubInner({
   tab,
   screen,
   leefstijlprofielDomein,
-  favorietenDomein,
-  favorietenSchapTab,
+  schapDomein,
+  schapTab,
   leefstijlprofielAdviesExtra,
   overTijdExtra,
   onScreenChange,
@@ -78,13 +79,13 @@ function VoortgangHubInner({
   // hier — met zijn domein erbij, zodat hij bij een domeinwissel vanzelf
   // vervalt in plaats van mee te reizen.
   const activeSchapTab =
-    schapTabOverride && schapTabOverride.domain === favorietenDomein
+    schapTabOverride && schapTabOverride.domain === schapDomein
       ? schapTabOverride.tab
-      : favorietenSchapTab;
+      : schapTab;
 
   const handleSchapTabChange = (next: SchapTabId) => {
-    setSchapTabOverride({ domain: favorietenDomein, tab: next });
-    navigate("favorieten", { fav: favorietenDomein, schap: next });
+    setSchapTabOverride({ domain: schapDomein, tab: next });
+    navigate("schap", { fav: schapDomein, schap: next });
   };
 
   const goBack = () => {
@@ -92,6 +93,7 @@ function VoortgangHubInner({
     if (
       screen === "leefstijlprofiel" ||
       screen === "favorieten" ||
+      screen === "schap" ||
       screen === "inzichten" ||
       screen === "domein"
     ) {
@@ -114,21 +116,42 @@ function VoortgangHubInner({
     navigate("leefstijlprofiel", { fav: domain });
   };
 
-  // Eén Favorieten (19 aug). De rail landde hier op `fav: null` en dus op
-  // FavorietenView; beide entry points draaien nu op `resolveSchapDomain`.
+  /**
+   * Favorieten is wat jij bewaarde — één scherm, domein-overstijgend, altijd
+   * hetzelfde. Tot 20 augustus leidde deze knop naar het schap zodra er
+   * toevallig een domein in de URL stond, waardoor het telbadge ernaast een
+   * lijst beloofde die je nooit te zien kreeg. Het domein hoort hier niet:
+   * daarvoor is `openSchap`.
+   */
   const openFavorieten = () => {
-    const target =
-      resolveSchapDomain(favorietenDomein) ?? resolveSchapDomain(model?.priority.id);
-    trackEvent("dashboard_voortgang_hub_click", {
-      destination: "favorieten",
-      ...(target ? { domain: target } : {}),
-    });
-    clarityTag("dashboard_voortgang", target ? `favorieten_${target}` : "favorieten");
-    navigate("favorieten", { fav: target });
+    trackEvent("dashboard_voortgang_hub_click", { destination: "favorieten" });
+    clarityTag("dashboard_voortgang", "favorieten");
+    navigate("favorieten", { fav: null });
+  };
+
+  /** Het aanbod van één domein. Bestaat niet zonder domein mét schap. */
+  const openSchap = (domain: PillarId | null) => {
+    const target = resolveSchapDomain(domain) ?? resolveSchapDomain(model?.priority.id);
+    if (!target) {
+      return;
+    }
+    trackEvent("dashboard_voortgang_hub_click", { destination: "schap", domain: target });
+    clarityTag("dashboard_voortgang", `schap_${target}`);
+    navigate("schap", { fav: target });
   };
 
   const mobileActiveDomein =
     screen === "leefstijlprofiel" || screen === "domein" ? leefstijlprofielDomein : null;
+
+  /**
+   * Welk schap de navigatie aanbiedt: het domein dat al open staat, anders dat
+   * van je prioriteit. `null` betekent dat dit domein geen schap heeft — dan
+   * staat het item er niet, in plaats van dat het ergens anders op uitkomt.
+   */
+  const railSchapDomein =
+    resolveSchapDomain(schapDomein) ??
+    resolveSchapDomain(leefstijlprofielDomein) ??
+    resolveSchapDomain(model?.priority.id);
 
   let content: ReactNode;
 
@@ -146,9 +169,7 @@ function VoortgangHubInner({
         adviesExtra={leefstijlprofielAdviesExtra}
         onBack={goBack}
         onGoVandaag={() => router.push(buildDashboardVandaagHref(leefstijlprofielDomein))}
-        onOpenSchap={(target) => {
-          navigate("favorieten", { fav: resolveSchapDomain(target) });
-        }}
+        onOpenSchap={openSchap}
       />
     );
   } else if (screen === "leefstijlprofiel" || screen === "inzichten") {
@@ -159,7 +180,7 @@ function VoortgangHubInner({
         onOpenDomain={openLeefstijlprofielDomein}
       />
     );
-  } else if (screen === "favorieten" && favorietenDomein && hasSchap(favorietenDomein)) {
+  } else if (screen === "schap" && schapDomein && hasSchap(schapDomein)) {
     // Het schap in React (P3). De prebuild droeg beweeg-inhoud onder elke
     // domeinkop; `SchapView` volgt het domein en leest `account_favorites` —
     // dat kan een iframe niet. Bestand B (favorieten-schap-prebuild-v3)
@@ -168,7 +189,7 @@ function VoortgangHubInner({
       <SchapView
         model={model!}
         data={data}
-        domain={favorietenDomein}
+        domain={schapDomein}
         activeTab={activeSchapTab}
         onTabChange={handleSchapTabChange}
         onBack={goBack}
@@ -205,8 +226,10 @@ function VoortgangHubInner({
       <VoortgangMobileNav
         screen={screen}
         activeDomein={mobileActiveDomein}
+        schapDomein={railSchapDomein}
         favorietenCount={favorietenItems.length}
         onOpenLeefstijlprofiel={openLeefstijlprofielRoot}
+        onOpenSchap={() => openSchap(railSchapDomein)}
         onOpenFavorieten={openFavorieten}
         onOpenDomein={openLeefstijlprofielDomein}
       />

@@ -54,7 +54,7 @@ export default function MeerHulpBridgeSheet({
       domain: "beweging",
       from_state: "agenda_meer_hulp",
       surface: "meer_hulp_brug",
-      target_screen: "favorieten",
+      target_screen: "schap",
       target_tab: "producten",
     });
     clarityTag("dashboard_agenda", "meer_hulp_open_schap");

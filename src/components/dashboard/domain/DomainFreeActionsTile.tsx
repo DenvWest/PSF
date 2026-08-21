@@ -16,7 +16,7 @@ export type DomainFreeActionsTileProps = {
    * het blok uit waarom, in plaats van te verdwijnen onder je vinger.
    */
   emptyLine?: string | null;
-  /** Hoeveel opties er maximaal in beeld komen. Slaap toont er twee, wij drie. */
+  /** Hoeveel opties er maximaal in beeld komen. De domeinschermen tonen er twee. */
   maxActions?: number;
   surface: string;
 };

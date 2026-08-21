@@ -5,7 +5,7 @@ import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
-import { buildDashboardFavorietenSchapHref } from "@/lib/dashboard-url";
+import { buildDashboardSchapHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import { resolveSchapDomain } from "@/lib/schap-availability";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
@@ -84,13 +84,13 @@ export default function KompasOndersteuningTile({
       {schapDomain ? (
         <>
           <Link
-            href={buildDashboardFavorietenSchapHref(schapDomain, "producten")}
+            href={buildDashboardSchapHref(schapDomain, "producten")}
             onClick={() => {
               emitAccountClientEvent("choice.shelf_opened", {
                 domain: schapDomain,
                 from_state: "vandaag",
                 surface: "kompas_home",
-                target_screen: "favorieten",
+                target_screen: "schap",
                 target_tab: "producten",
               });
               clarityTag("dashboard_kompas_home", "maak_een_keuze");

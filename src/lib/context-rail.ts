@@ -1,7 +1,7 @@
 import { PILLAR } from "@/data/dashboard";
 import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
-export type VoortgangRailItemId = "hub" | "leefstijlprofiel" | "favorieten";
+export type VoortgangRailItemId = "hub" | "leefstijlprofiel" | "schap" | "favorieten";
 
 /**
  * Contextuele linker rail (slice 1): pure bouwers voor wat de rail toont.
@@ -115,15 +115,25 @@ export type ContextRailVoortgangItem = {
   icon: string;
 };
 
+/**
+ * Schap en Favorieten zijn twee items, geen twee namen voor één (20 augustus).
+ * Het schap is het aanbod van je prioriteitsdomein en verdwijnt uit de rail
+ * zodra dat domein er geen heeft; Favorieten is je bewaarde lijst en staat er
+ * altijd, want die kan hooguit leeg zijn.
+ */
 export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
   { id: "hub", label: "Overzicht", icon: "Home" },
   { id: "leefstijlprofiel", label: "Leefstijlprofiel", icon: "User" },
+  { id: "schap", label: "Schap", icon: "Pill" },
   { id: "favorieten", label: "Favorieten", icon: "Heart" },
 ];
 
 export function resolveVoortgangRailActiveItem(screen: VoortgangScreen): VoortgangRailItemId {
   if (screen === "favorieten") {
     return "favorieten";
+  }
+  if (screen === "schap") {
+    return "schap";
   }
   if (
     screen === "leefstijlprofiel" ||

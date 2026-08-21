@@ -2,7 +2,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   buildDashboardAgendaHref,
-  buildDashboardFavorietenSchapHref,
+  buildDashboardSchapHref,
   buildDashboardPlanHref,
   buildDashboardVandaagHref,
   buildDashboardVoortgangHref,
@@ -43,6 +43,19 @@ describe("parseVoortgangScreenFromUrl", () => {
     ).toBe("leefstijlprofiel");
     expect(
       parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=favorieten"),
+    ).toBe("favorieten");
+    // Oude bookmark: `favorieten` mét een schap-domein wás het schap. Dit is
+    // de lees-kant, want `canonicalize` draait alleen op popstate.
+    expect(
+      parseVoortgangScreenFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+      ),
+    ).toBe("schap");
+    // Een domein zonder schap houdt Favorieten wél Favorieten.
+    expect(
+      parseVoortgangScreenFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=stress",
+      ),
     ).toBe("favorieten");
     expect(
       parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=inzichten"),
@@ -92,14 +105,25 @@ describe("parseVoortgangScreenFromUrl", () => {
     expect(getLegacyVoortgangScreenAlias("hub")).toBeNull();
     expect(canonicalizeVoortgangScreenParam(new URL("http://localhost/dashboard?tab=voortgang"))).toBeNull();
 
-    // v3 IA (19 aug 2026): favorieten is het schap, geen legacy redirect meer.
+    // Split (20 aug 2026): `favorieten` mét een schap-domein wás het schap en
+    // heet nu zo. Oude links dragen de eerste vorm nog, dus die schuiven door.
     const favorietenSchapUrl = new URL(
       "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging&schap=producten",
     );
-    canonicalizeVoortgangScreenParam(favorietenSchapUrl);
-    expect(favorietenSchapUrl.searchParams.get("screen")).toBe("favorieten");
+    expect(canonicalizeVoortgangScreenParam(favorietenSchapUrl)).toBe("schap");
+    expect(favorietenSchapUrl.searchParams.get("screen")).toBe("schap");
     expect(favorietenSchapUrl.searchParams.get("fav")).toBe("beweging");
     expect(favorietenSchapUrl.searchParams.get("schap")).toBe("producten");
+
+    // Zonder domein blijft het Favorieten — en dan hoort er geen `fav` meer
+    // bij te blijven hangen, want dat scherm kent er geen.
+    const favorietenUrl = new URL(
+      "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=stress&schap=producten",
+    );
+    expect(canonicalizeVoortgangScreenParam(favorietenUrl)).toBeNull();
+    expect(favorietenUrl.searchParams.get("screen")).toBe("favorieten");
+    expect(favorietenUrl.searchParams.has("fav")).toBe(false);
+    expect(favorietenUrl.searchParams.has("schap")).toBe(false);
 
     // Legacy: screen=leefstijlprofiel&fav=beweging blijft leefstijlprofiel (lifestyle).
     const leefstijlprofielUrl = new URL(
@@ -135,23 +159,29 @@ describe("buildDashboardVoortgangHref", () => {
     );
   });
 
-  it("includes fav for favorieten deep links (v3 IA: favorieten is het schap)", () => {
+  it("drops fav on favorieten — dat scherm is domein-overstijgend", () => {
     expect(buildDashboardVoortgangHref("favorieten", null, null, "beweging")).toBe(
-      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+      "/dashboard?tab=voortgang&screen=favorieten",
+    );
+  });
+
+  it("includes fav for schap deep links", () => {
+    expect(buildDashboardVoortgangHref("schap", null, null, "beweging")).toBe(
+      "/dashboard?tab=voortgang&screen=schap&fav=beweging",
     );
   });
 });
 
-describe("buildDashboardFavorietenSchapHref", () => {
+describe("buildDashboardSchapHref", () => {
   it("builds a schap deeplink without a tab", () => {
-    expect(buildDashboardFavorietenSchapHref("beweging")).toBe(
-      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+    expect(buildDashboardSchapHref("beweging")).toBe(
+      "/dashboard?tab=voortgang&screen=schap&fav=beweging",
     );
   });
 
   it("includes the schap tab when given", () => {
-    expect(buildDashboardFavorietenSchapHref("beweging", "producten")).toBe(
-      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging&schap=producten",
+    expect(buildDashboardSchapHref("beweging", "producten")).toBe(
+      "/dashboard?tab=voortgang&screen=schap&fav=beweging&schap=producten",
     );
   });
 });
@@ -175,18 +205,18 @@ describe("parseSchapTabFromUrl", () => {
   it("parses a valid schap tab", () => {
     expect(
       parseSchapTabFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging&schap=diensten",
+        "http://localhost/dashboard?tab=voortgang&screen=schap&fav=beweging&schap=diensten",
       ),
     ).toBe("diensten");
   });
 
   it("returns null when missing or invalid", () => {
     expect(
-      parseSchapTabFromUrl("http://localhost/dashboard?tab=voortgang&screen=favorieten"),
+      parseSchapTabFromUrl("http://localhost/dashboard?tab=voortgang&screen=schap"),
     ).toBeNull();
     expect(
       parseSchapTabFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=favorieten&schap=onbekend",
+        "http://localhost/dashboard?tab=voortgang&screen=schap&schap=onbekend",
       ),
     ).toBeNull();
   });

@@ -27,7 +27,7 @@ type DomainSupplementStanceProps = {
   verdicts: StoredSupplementVerdict[];
   nutritionLogCompleted: boolean;
   surface: VerdictPanelSurface;
-  /** Voor het schap (Favorieten · Producten-tab): daar ís deze sectie al het
+  /** Voor het schap (Schap · Producten-tab): daar ís deze sectie al het
    * aanbod, dus geen toggle-teaser nodig. Standaard false — ongewijzigd
    * gedrag op slaap/stress/voeding. */
   openByDefault?: boolean;

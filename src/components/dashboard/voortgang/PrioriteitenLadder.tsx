@@ -62,6 +62,8 @@ type PrioriteitenLadderProps = {
   recommendedLayerIds?: readonly number[];
   /** Toont de voetregel naar Vandaag — daar staat wat je koos als handeling. */
   onGoVandaag?: () => void;
+  /** Waar "Kies dit op Kompas" naartoe wijst — meestal `buildDashboardVandaagHref(domain)`. */
+  kompasHref?: string;
   /**
    * Welke laag open staat. Alleen meegeven waar een ander blok op hetzelfde
    * scherm de ladder stuurt (de ladder in de kop van het domeinscherm);
@@ -99,6 +101,7 @@ export default function PrioriteitenLadder({
   whyWait,
   recommendedLayerIds,
   onGoVandaag,
+  kompasHref,
   openLayer: controlledOpenLayer,
   onOpenLayerChange,
 }: PrioriteitenLadderProps) {
@@ -129,6 +132,11 @@ export default function PrioriteitenLadder({
       return;
     }
     setInternalOpenLayer(next);
+  }
+
+  function handleKompasClick(layerId: number) {
+    trackEvent("voortgang_ladder_kompas_click", { domain, layer: layerId, surface });
+    clarityTag("voortgang_ladder_kompas_click", `${domain}:p${layerId}`);
   }
 
   return (
@@ -288,6 +296,16 @@ export default function PrioriteitenLadder({
                       ))}
                     </ul>
                   )}
+
+                  {kompasHref ? (
+                    <a
+                      href={kompasHref}
+                      onClick={() => handleKompasClick(layer.id)}
+                      className="mt-3 inline-flex cursor-pointer items-center gap-1 text-[13px] font-semibold text-[#9CC5A9] no-underline"
+                    >
+                      Kies dit op Kompas <Icons.ChevronRight s={13} />
+                    </a>
+                  ) : null}
                 </div>
               ) : null}
             </article>

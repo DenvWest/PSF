@@ -50,6 +50,7 @@ import {
   parseStoredSleepCheckinForFacts,
 } from "@/lib/sleep-checkin-parse";
 import { buildSleepFactRows } from "@/lib/sleep-checkin-readout";
+import { parseStoredStressCheckin } from "@/lib/stress-checkin-parse";
 import { isMovementFocusKey } from "@/lib/dashboard-url";
 import type {
   CheckLogEntry,
@@ -94,6 +95,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   sleepCheckinSnapshot: null,
   movementCheckinSnapshot: null,
   hasStressCheckin: false,
+  stressCheckinReport: null,
   domainCheckDaysAgo: {},
   movementPrefs: EMPTY_MOVEMENT_PREFS,
   supplementVerdicts: [],
@@ -670,6 +672,26 @@ export async function loadAccountDashboardData(
       row.domain_key === "stress_score" && row.session_id === latestSnapshot.id,
   );
 
+  // De ladderstaten wél: `stress-ladder.ts` (T1c) berekent ze uit dezelfde
+  // ruwe antwoorden, niet bevroren — zelfde principe als bij beweging
+  // hierboven, zodat een regel-fix ook oude rijen op Voortgang/Kompas bereikt.
+  let stressCheckinReport: DashboardData["stressCheckinReport"] = null;
+  const stressFullCheckins = ((checkinData ?? []) as CheckinRow[])
+    .filter(
+      (row) =>
+        row.domain_key === "stress_score" &&
+        row.session_id === latestSnapshot.id &&
+        typeof row.created_at === "string",
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    );
+  const latestStressCheckin = stressFullCheckins[stressFullCheckins.length - 1];
+  if (latestStressCheckin) {
+    stressCheckinReport = parseStoredStressCheckin(latestStressCheckin.raw_inputs);
+  }
+
   // Ritme-aftellen op de leefstijlbalken: hoe lang geleden ververste de
   // gebruiker dit domein met een eigen check? Slaap/stress/beweging staan in
   // intake_domain_checkin, voeding in de intake-log. Verbinding heeft geen
@@ -910,6 +932,7 @@ export async function loadAccountDashboardData(
     sleepCheckinSnapshot,
     movementCheckinSnapshot,
     hasStressCheckin,
+    stressCheckinReport,
     domainCheckDaysAgo,
     supplementVerdicts: [],
     proteinTarget,

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
+import { PILLAR } from "@/data/dashboard";
 import {
   VOORTGANG_RAIL_ITEMS,
   type ContextRailDomainItem,
@@ -32,6 +33,12 @@ type CockpitContextRailProps = {
   voortgangActiveItem?: VoortgangRailItemId | null;
   voortgangLeefstijlprofielDomein?: PillarId | null;
   voortgangDomains?: ContextRailDomainItem[];
+  /**
+   * Het domein waarvan het schap in de rail staat, of `null` als er geen is.
+   * Eén predikaat stuurt zowel of het item er staat als waar het heen gaat —
+   * net als de deur op Vandaag (KompasOndersteuningTile).
+   */
+  voortgangSchapDomein?: PillarId | null;
   favorietenCount?: number;
   onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
   onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
@@ -118,6 +125,7 @@ export default function CockpitContextRail({
   voortgangActiveItem = null,
   voortgangLeefstijlprofielDomein = null,
   voortgangDomains = [],
+  voortgangSchapDomein = null,
   favorietenCount = 0,
   onOpenVoortgangItem,
   onOpenLeefstijlprofielDomein,
@@ -319,6 +327,11 @@ export default function CockpitContextRail({
             {favorietenCount}
           </span>
         ) : null}
+        {item.id === "schap" && voortgangSchapDomein ? (
+          <span className="shrink-0 text-[11.5px] text-[#7E8C82]">
+            {PILLAR[voortgangSchapDomein].label}
+          </span>
+        ) : null}
       </button>
     );
   };
@@ -427,7 +440,9 @@ export default function CockpitContextRail({
           <>
             <span className={ZONEFLAG}>Bekijken</span>
             <nav aria-label="Bekijken" className="flex flex-col gap-1">
-              {VOORTGANG_RAIL_ITEMS.map(renderVoortgangItem)}
+              {VOORTGANG_RAIL_ITEMS.filter(
+                (item) => item.id !== "schap" || voortgangSchapDomein !== null,
+              ).map(renderVoortgangItem)}
             </nav>
             <button
               type="button"
