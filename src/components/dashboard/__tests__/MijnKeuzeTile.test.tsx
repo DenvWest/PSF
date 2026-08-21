@@ -19,7 +19,12 @@ vi.mock("@/lib/voortgang-favorites-context", () => ({
   }),
 }));
 
-describe("MijnKeuzeTile — N4: wat je koos, naam + afvinken, nooit aanbod", () => {
+const trackEvent = vi.fn();
+vi.mock("@/lib/ga4", () => ({
+  trackEvent: (...args: unknown[]) => trackEvent(...args),
+}));
+
+describe("MijnKeuzeTile — N4: wat je koos, naam + herkomst, nooit aanbod", () => {
   it("rendert niets zonder gekozen items voor dit domein", () => {
     favoriteItems = [{ id: "magnesium", title: "Magnesium", kind: "supplement", domain: "slaap" }];
     const { container } = render(<MijnKeuzeTile domain="beweging" surface="kompas_beweging" />);
@@ -38,16 +43,31 @@ describe("MijnKeuzeTile — N4: wat je koos, naam + afvinken, nooit aanbod", () 
     expect(screen.queryByText("Magnesium")).toBeNull();
   });
 
-  it("vinkt af op klik, onafhankelijk per rij", () => {
+  it("heeft geen afvink-knoppen of aria-pressed — afvinken is Mijn Dag", () => {
     favoriteItems = [
       { id: "kracht-thuis", title: "Kracht thuis", kind: "activiteit", domain: "beweging" },
       { id: "padel", title: "Padel met Bram", kind: "activiteit", domain: "beweging" },
     ];
     render(<MijnKeuzeTile domain="beweging" surface="kompas_beweging" />);
-    const rows = screen.getAllByRole("button");
-    fireEvent.click(rows[0]);
-    expect(rows[0].getAttribute("aria-pressed")).toBe("true");
-    expect(rows[1].getAttribute("aria-pressed")).toBe("false");
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    expect(document.querySelector("[aria-pressed]")).toBeNull();
+  });
+
+  it("opent Mijn Dag via de CTA en meet dat", () => {
+    favoriteItems = [
+      { id: "kracht-thuis", title: "Kracht thuis", kind: "activiteit", domain: "beweging" },
+    ];
+    const onGoAgenda = vi.fn();
+    trackEvent.mockClear();
+    render(
+      <MijnKeuzeTile domain="beweging" surface="kompas_beweging" onGoAgenda={onGoAgenda} />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: /Open Mijn Dag/ }));
+    expect(onGoAgenda).toHaveBeenCalled();
+    expect(trackEvent).toHaveBeenCalledWith(
+      "dashboard_mijn_keuze_open_agenda",
+      expect.objectContaining({ surface: "kompas_beweging", domain: "beweging" }),
+    );
   });
 
   it("noemt geen merk, prijs of oordeel — alleen de naam", () => {
@@ -89,5 +109,27 @@ describe("MijnKeuzeTile — de home-variant is domein-overstijgend", () => {
     render(<MijnKeuzeTile surface="kompas_home" />);
     const text = document.body.textContent ?? "";
     expect(text).not.toMatch(/€|Aanrader|Alleen als|Nu niet|commissie|vergelijk/i);
+  });
+
+  it("embedded toont panel-eyebrow zonder CockpitTile-chrome", () => {
+    favoriteItems = [
+      { id: "kracht-thuis", title: "Kracht thuis", kind: "activiteit", domain: "beweging" },
+    ];
+    render(<MijnKeuzeTile surface="kompas_home" embedded onGoAgenda={vi.fn()} />);
+    expect(screen.getByText("Mijn keuze")).toBeTruthy();
+    expect(screen.getByText("Kracht thuis")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Open Mijn Dag/ })).toBeTruthy();
+  });
+
+  it("embedded empty-state nodigt uit om een domein te openen", () => {
+    favoriteItems = [];
+    const onOpenDomain = vi.fn();
+    const { container } = render(
+      <MijnKeuzeTile surface="kompas_home" embedded onOpenDomain={onOpenDomain} />,
+    );
+    expect(container.firstChild).not.toBeNull();
+    expect(screen.getByText(/Nog niets gekozen/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /Open prioriteitsdomein/ }));
+    expect(onOpenDomain).toHaveBeenCalled();
   });
 });

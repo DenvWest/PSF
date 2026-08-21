@@ -5,8 +5,8 @@ import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { DeltaBadge } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import MijnKeuzeTile from "@/components/dashboard/MijnKeuzeTile";
 import KompasVoortgangFocusBlock from "@/components/dashboard/kompas/KompasVoortgangFocusBlock";
-import KompasVandaagPanel from "@/components/dashboard/kompas/KompasVandaagPanel";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { buildWeekSchedulePreview, isWeekSlotCompleted } from "@/lib/agenda-week-preview";
 import { clarityTag } from "@/lib/clarity";
@@ -41,16 +41,12 @@ type WeekPayload = {
 type KompasHomeCardProps = {
   model: DashboardModel;
   firstName?: string | null;
-  profileLabel?: string | null;
   cycleContext?: KompasCycleContext | null;
-  nutritionLogCompleted?: boolean;
-  hasNutritionIntake?: boolean;
-  hasStressCheckin?: boolean;
   domainCheckDaysAgo?: DomainCheckTimings;
   remeasureDaysUntil?: number | null;
   onOpenDomain: (domain: PillarId) => void;
   onOpenPriority?: (domain: PillarId) => void;
-  onGoAgenda: (date: string) => void;
+  onGoAgenda: () => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
 };
 
@@ -710,11 +706,7 @@ function VoortgangSection({
 export default function KompasHomeCard({
   model,
   firstName,
-  profileLabel = null,
   cycleContext = null,
-  nutritionLogCompleted = false,
-  hasNutritionIntake = false,
-  hasStressCheckin = false,
   domainCheckDaysAgo,
   remeasureDaysUntil = null,
   onOpenDomain,
@@ -786,9 +778,9 @@ export default function KompasHomeCard({
         <div className="flex flex-col gap-5 @[720px]/tile:grid @[720px]/tile:grid-cols-[minmax(0,1fr)_minmax(0,320px)] @[720px]/tile:gap-x-6 @[720px]/tile:gap-y-0 @[1200px]/tile:grid-cols-[minmax(0,1fr)_minmax(0,380px)]">
           {/*
             Twee tegel-standen. Tot @920px staat Je leefstijl over de volle
-            breedte met Vandaag en Voortgang eronder; daarboven blijft er naast
-            de ring en de balken genoeg over voor een echte kolom, en loopt
-            Vandaag over de hele rechterhoogte mee.
+            breedte met Mijn keuze en Voortgang eronder; daarboven blijft er
+            naast de ring en de balken genoeg over voor een echte kolom, en
+            loopt Mijn keuze over de hele rechterhoogte mee.
           */}
           <section
             aria-label="Je leefstijl"
@@ -821,17 +813,14 @@ export default function KompasHomeCard({
           </section>
 
           <section
-            aria-label="Vandaag"
+            aria-label="Mijn keuze"
             className="order-2 min-w-0 border-t border-white/10 pt-5 @[720px]/tile:col-start-2 @[720px]/tile:row-start-2 @[720px]/tile:mt-5 @[720px]/tile:border-l @[720px]/tile:pl-6 @[920px]/tile:row-span-2 @[920px]/tile:row-start-1 @[920px]/tile:mt-0 @[920px]/tile:border-t-0 @[920px]/tile:pt-0"
           >
-            <KompasVandaagPanel
-              model={model}
-              profileLabel={profileLabel}
-              nutritionLogCompleted={nutritionLogCompleted}
-              hasNutritionIntake={hasNutritionIntake}
-              hasStressCheckin={hasStressCheckin}
-              onOpenDomain={handleOpenDomain}
+            <MijnKeuzeTile
+              surface="kompas_home"
+              embedded
               onGoAgenda={onGoAgenda}
+              onOpenDomain={() => handleOpenDomain(model.priority.id)}
             />
           </section>
 

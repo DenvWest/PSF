@@ -94,7 +94,6 @@ import { perfectSupplementMeasurementConfig } from "@/data/measurement-config";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
-import MijnKeuzeTile from "@/components/dashboard/MijnKeuzeTile";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
 import DomainKompasScreen from "@/components/dashboard/domain/DomainKompasScreen";
@@ -2608,12 +2607,6 @@ const KompasHome = ({
         activeDaysInCycle: data.cycleEvidence.activeDays,
       }
     : null;
-  const nutritionLogCompleted = useMemo(
-    () =>
-      buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted ===
-      true,
-    [data?.nutritionIntake],
-  );
   const railDomains = useMemo(
     () => buildKompasRailDomains(currentModel?.scores ?? {}),
     [currentModel],
@@ -2815,23 +2808,15 @@ const KompasHome = ({
         <KompasHomeCard
           model={currentModel}
           firstName={data?.firstName}
-          profileLabel={data?.profileLabel}
           cycleContext={cycleContext}
-          nutritionLogCompleted={nutritionLogCompleted}
-          hasNutritionIntake={data?.nutritionIntake != null}
-          hasStressCheckin={data?.hasStressCheckin ?? false}
           domainCheckDaysAgo={data?.domainCheckDaysAgo}
           remeasureDaysUntil={data?.remeasure?.daysUntil ?? null}
-          onGoAgenda={(date) => onGoAgenda(date)}
+          onGoAgenda={() => onGoAgenda()}
           onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
           onOpenPriority={(domain) => openDomain(domain, "leefstijlkompas")}
           onPrefUpdated={onPrefUpdated}
         />
       </CockpitShell>
-      {/* N4: wat je zelf koos, als handeling op je dag — domein-overstijgend,
-          want Vandaag gaat over je dag en niet over één domein. Naam +
-          herkomst + afvinken; merk, prijs en oordeel blijven achter de deur. */}
-      <MijnKeuzeTile surface="kompas_home" />
     </section>
   );
 };
