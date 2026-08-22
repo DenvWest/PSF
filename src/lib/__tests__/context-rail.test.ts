@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildDomainRailTools,
   buildKompasRailDomains,
+  getDomainCheck,
   resolveVoortgangRailActiveItem,
   KOMPAS_RAIL_PILLAR_IDS,
   VOORTGANG_RAIL_ITEMS,
@@ -39,6 +40,13 @@ describe("buildDomainRailTools", () => {
     expect(tools.find((tool) => tool.id === "checkin")?.href).toBe(
       "/intake/beweging?from=dashboard&kompas=beweging",
     );
+  });
+
+  it("levert getDomainCheck dezelfde href als de rail-tool", () => {
+    expect(getDomainCheck("beweging")?.href).toBe(
+      "/intake/beweging?from=dashboard&kompas=beweging",
+    );
+    expect(getDomainCheck("verbinding")).toBeNull();
   });
 
   it("geeft beweging check en gids — in die volgorde", () => {

@@ -49,6 +49,7 @@ type CockpitFrameProps = {
   inspectorCards: InspectorCard[];
   remeasureAction?: { due: boolean; onClick: () => void };
   inspectorDoelFooter?: ReactNode;
+  inspectorIjkpuntAction?: { label: string; onClick: () => void };
   inspectorExtra?: ReactNode;
   /** Verberg de linker rail (bijv. Mijn Dag: profiel zit al in de header). */
   hideRail?: boolean;
@@ -124,6 +125,7 @@ export default function CockpitFrame({
   inspectorCards,
   remeasureAction,
   inspectorDoelFooter,
+  inspectorIjkpuntAction,
   inspectorExtra,
   hideRail = false,
   defaultContextCollapsed = false,
@@ -351,6 +353,7 @@ export default function CockpitFrame({
             cards={inspectorCards}
             remeasureAction={inspectorRemeasureAction}
             doelFooter={inspectorDoelFooter}
+            ijkpuntAction={inspectorIjkpuntAction}
             extra={inspectorExtra}
             titleId={contextTitleId}
             onClose={isDrawerMode ? closeContext : undefined}

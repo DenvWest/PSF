@@ -16,6 +16,7 @@ type ClientEmitType = Extract<
   | "dashboard.schap_tab_selected"
   | "cprofile.step_completed"
   | "cprofile.highlight_clicked"
+  | "dashboard.ladder_evidence_viewed"
 >;
 
 export function emitAccountClientEvent(

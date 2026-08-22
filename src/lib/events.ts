@@ -91,6 +91,7 @@ export const DOMAIN_EVENT_TYPES = [
   "cprofile.step_completed",
   "cprofile.completed",
   "cprofile.highlight_clicked",
+  "dashboard.ladder_evidence_viewed",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

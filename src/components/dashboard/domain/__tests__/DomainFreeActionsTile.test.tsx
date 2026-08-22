@@ -76,4 +76,35 @@ describe("DomainFreeActionsTile — N4: geen aanbod op een doe-surface", () => {
     renderTile({ domain: "slaap", layerId: 2, layerName: "Ritme & slaapgewoonten" });
     expect(screen.queryByText(/Gratis, op prioriteit 2 · ritme & slaapgewoonten/)).not.toBeNull();
   });
+
+  it("opent met gekozen voortgang als er al iets op deze laag staat", async () => {
+    const { ladderActionFavoriteId } = await import("@/lib/leefstijl-ladder");
+    const saved = ACTIONS[0];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        new Response(
+          JSON.stringify({
+            items: [
+              {
+                id: ladderActionFavoriteId("beweging", 1, saved),
+                title: saved,
+                kind: "activiteit",
+                domain: "beweging",
+                source: "aanbevolen",
+              },
+            ],
+          }),
+          { status: 200 },
+        ),
+      ),
+    );
+
+    renderTile();
+
+    expect(await screen.findByText(/Op prioriteit 1 · jouw keuze/)).not.toBeNull();
+    expect(screen.queryByText(/Dit staat in je keuze/)).not.toBeNull();
+    expect(screen.queryByText(/Andere opties op deze laag/)).not.toBeNull();
+    expect(screen.queryByText(ACTIONS[1])).not.toBeNull();
+  });
 });

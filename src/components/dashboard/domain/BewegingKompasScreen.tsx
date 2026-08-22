@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import * as Icons from "@/components/app/icons";
 import DomainFreeActionsTile from "@/components/dashboard/domain/DomainFreeActionsTile";
 import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell";
@@ -13,7 +13,7 @@ import {
   type MovementPriorityId,
 } from "@/data/movement/lifestyle-priorities";
 import { clarityTag } from "@/lib/clarity";
-import { useDomainLadderFocus } from "@/lib/domain-ladder-focus-context";
+import { useLadderLayerSelection } from "@/lib/domain-ladder-focus-context";
 import { trackEvent } from "@/lib/ga4";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
 import { MOVEMENT_LAYER_STATE_LABEL, movementLayerWhyWait } from "@/lib/movement-ladder";
@@ -59,8 +59,7 @@ export default function BewegingKompasScreen({
 }: BewegingKompasScreenProps) {
   const movementReadout = data?.movementCheckinSnapshot ?? null;
   const focusLayerId = movementReadout?.ladder.focus ?? null;
-  const [selectedLayerId, setSelectedLayerId] = useState<MovementPriorityId | null>(null);
-  const { setFocus } = useDomainLadderFocus();
+  const { activeLayerId, selectLayer } = useLadderLayerSelection("beweging", focusLayerId);
 
   const score = model.scores.beweging ?? 0;
   const daysAgo = data?.domainCheckDaysAgo?.beweging;
@@ -68,20 +67,8 @@ export default function BewegingKompasScreen({
     () => buildLeefstijllijnRows(model).find((row) => row.pillarId === "beweging") ?? null,
     [model],
   );
-
-  // Beginstand is de aanbeveling; kiezen wijkt daar tijdelijk van af. Zonder
-  // beweegcheck is er geen winst-laag om op te beginnen — dan opent de ladder
-  // op prioriteit 1. Dat claimt niets, maar het scherm is wel meteen bruikbaar.
-  const activeLayerId = selectedLayerId ?? focusLayerId ?? 1;
   const activeLayer =
     MOVEMENT_PRIORITY_LAYERS.find((layer) => layer.id === activeLayerId) ?? null;
-
-  // De contextkolom leest dezelfde laag. Opruimen bij verlaten, anders blijft
-  // er context van beweging staan op een scherm dat er niet meer over gaat.
-  useEffect(() => {
-    setFocus({ domain: "beweging", layerId: activeLayerId });
-    return () => setFocus(null);
-  }, [activeLayerId, setFocus]);
 
   const measuredLine =
     daysAgo == null
@@ -121,7 +108,7 @@ export default function BewegingKompasScreen({
                 }
               : {})}
             selectedLayer={activeLayerId}
-            onSelectLayer={(layerId) => setSelectedLayerId(layerId as MovementPriorityId)}
+            onSelectLayer={selectLayer}
             whyWait={(layerId) => movementLayerWhyWait(layerId as MovementPriorityId, focusLayerId)}
             domain="beweging"
             columns={2}
@@ -138,7 +125,7 @@ export default function BewegingKompasScreen({
               {focusLayerId}.{" "}
               <button
                 type="button"
-                onClick={() => setSelectedLayerId(focusLayerId)}
+                onClick={() => selectLayer(focusLayerId)}
                 className="cursor-pointer border-none bg-transparent p-0 text-left font-semibold text-[#9CC5A9] underline"
               >
                 Terug daarheen

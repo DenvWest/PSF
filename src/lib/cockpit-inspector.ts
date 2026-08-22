@@ -7,7 +7,32 @@ import { buildMeaningSentence } from "@/lib/betekenis-motor";
  * Volgorde = prioriteit: de meest relevante context nu bovenaan.
  */
 
-export type InspectorCardKind = "why" | "tip" | "meet" | "doel" | "laag" | "keuze";
+export type InspectorCardKind =
+  | "why"
+  | "tip"
+  | "meet"
+  | "doel"
+  | "laag"
+  | "keuze"
+  | "evidence"
+  | "ijkpunt";
+
+export type InspectorEvidenceStatus = "below" | "near" | "meets" | "own";
+
+export type InspectorEvidenceRow = {
+  key: string;
+  label: string;
+  answerLabel: string;
+  benchmarkLabel?: string | null;
+  status?: InspectorEvidenceStatus;
+};
+
+export const INSPECTOR_EVIDENCE_STATUS_LABEL: Record<InspectorEvidenceStatus, string> = {
+  below: "Onder de richtlijn",
+  near: "Bijna op de richtlijn",
+  meets: "Haalt de richtlijn",
+  own: "Jouw ijkpunt",
+};
 
 export type InspectorCard = {
   kind: InspectorCardKind;
@@ -15,6 +40,10 @@ export type InspectorCard = {
   kicker: string;
   title: string;
   body: string;
+  evidence?: readonly InspectorEvidenceRow[];
+  href?: string;
+  hrefLabel?: string;
+  hasGoal?: boolean;
 };
 
 export type InspectorInput = {
@@ -83,11 +112,9 @@ export function buildInspectorCards(input: InspectorInput): InspectorCard[] {
   return cards;
 }
 
-
 export type LadderInspectorInput = {
   layerId: number;
   layerName: string;
-  layerSummary: string;
   /** "Grootste winst", "Op orde", … — alleen waar de check een staat oplevert. */
   stateLabel?: string | null;
   /** De regel die uitlegt waarom deze laag kan wachten. */
@@ -96,20 +123,31 @@ export type LadderInspectorInput = {
   chosen: readonly { title: string; moment?: string | null }[];
   /** Of dit de laag is die de check aanwijst. Stuurt alleen het accent. */
   isFocus?: boolean;
+  /** Feitenrijen uit de eigen check, al gefilterd op deze laag. */
+  evidence?: readonly InspectorEvidenceRow[];
+  /** Of er überhaupt een eigen check is — zonder vullen we niets in. */
+  hasCheck: boolean;
+  /** "beweegcheck", "slaapcheck", … — voor de lege staat. */
+  checkNoun: string;
+  checkHref?: string | null;
+  /** Ijkpunt-titel (eigen woorden of situatielabel), of null zonder doel. */
+  goalTitle?: string | null;
+  /** Alleen interventiedomeinen hebben een ijkpunt. */
+  canSetGoal?: boolean;
 };
 
 /**
  * De contextkolom op een domeinscherm beweegt mee met de ladder.
  *
  * Tot 20 augustus stond hier de "Waarom deze stap"-kaart uit het oude
- * stappenplan-systeem ("2× per week full-body kracht") plus Future You. Die
- * kwamen uit een generatie vóór de ladder en spraken hem soms tegen: de kaart
- * noemde een stap die op geen enkele laag stond. Nu draagt de kolom de laag
- * die je aanklikt en wat jij daar koos — geen tweede ladder (lock N6), maar
- * het waarom naast het wat.
+ * stappenplan-systeem. Daarna droeg de kolom de laag-summary — dezelfde zin
+ * als onder de midden-ladder. Nu is de kolom check-context: wat je antwoorden
+ * over díé laag zeggen, welk ijkpunt er staat, en wat je koos. De P-chips
+ * wisselen alleen de laag; de samenvatting blijft in het midden.
  */
 export function buildLadderInspectorCards(input: LadderInspectorInput): InspectorCard[] {
   const cards: InspectorCard[] = [];
+  const evidence = input.evidence ?? [];
 
   cards.push({
     kind: "laag",
@@ -118,8 +156,55 @@ export function buildLadderInspectorCards(input: LadderInspectorInput): Inspecto
       ? `Prioriteit ${input.layerId} · ${input.stateLabel}`
       : `Prioriteit ${input.layerId}`,
     title: input.layerName,
-    body: input.whyWait ? `${input.layerSummary} ${input.whyWait}` : input.layerSummary,
+    body: "",
   });
+
+  if (input.hasCheck && evidence.length > 0) {
+    cards.push({
+      kind: "evidence",
+      accent: "sage",
+      kicker: "Jouw stand op deze laag",
+      title: evidence.length === 1 ? evidence[0].label : `${evidence.length} metingen uit je check`,
+      body: "",
+      evidence,
+    });
+  } else if (input.hasCheck) {
+    cards.push({
+      kind: "evidence",
+      accent: "neutral",
+      kicker: "Jouw stand op deze laag",
+      title: "Niet gemeten op deze laag",
+      body:
+        input.whyWait ??
+        "Je check zegt hier niets over — dat is geen tekort, en we vullen het niet in.",
+    });
+  } else {
+    const href = input.checkHref ?? null;
+    cards.push({
+      kind: "evidence",
+      accent: "neutral",
+      kicker: "Jouw stand op deze laag",
+      title: `Nog geen ${input.checkNoun}`,
+      body: "Zonder check vullen we dit niet in met aannames.",
+      ...(href
+        ? { href, hrefLabel: `Doe de ${input.checkNoun}` }
+        : {}),
+    });
+  }
+
+  if (input.canSetGoal) {
+    const hasGoal = Boolean(input.goalTitle);
+    cards.push({
+      kind: "ijkpunt",
+      accent: "sage",
+      kicker: "Jouw doel",
+      title: input.goalTitle ?? "Nog geen doel",
+      body: hasGoal
+        ? "Dit ijkpunt geldt voor het hele domein, niet alleen deze laag."
+        : "Wat wil je zelf kunnen? Dat volgt mee in Voortgang.",
+      hasGoal,
+    });
+  }
 
   cards.push({
     kind: "keuze",

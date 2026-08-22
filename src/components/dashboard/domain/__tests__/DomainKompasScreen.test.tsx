@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import DomainKompasScreen from "@/components/dashboard/domain/DomainKompasScreen";
-import { DomainLadderFocusProvider } from "@/lib/domain-ladder-focus-context";
+import { DomainLadderFocusProvider, useDomainLadderFocus } from "@/lib/domain-ladder-focus-context";
 import { LadderMomentsProvider } from "@/lib/ladder-moments-context";
 import { VoortgangFavoritesProvider } from "@/lib/voortgang-favorites-context";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
@@ -121,6 +121,40 @@ describe("DomainKompasScreen — slaap draagt hetzelfde scherm als beweging", ()
     expect(within(ladder).queryByText("Grootste winst")).toBeNull();
     expect(
       within(ladder).getByRole("button", { name: /Slaapgelegenheid/ }).getAttribute("aria-pressed"),
+    ).toBe("true");
+  });
+
+  it("volgt een laagwissel uit de context — dezelfde bron als de inspector-chips", () => {
+    function ChipDriver() {
+      const { setFocus } = useDomainLadderFocus();
+      return (
+        <button type="button" onClick={() => setFocus({ domain: "slaap", layerId: 6 })}>
+          Open P6
+        </button>
+      );
+    }
+
+    render(
+      <DomainLadderFocusProvider>
+        <LadderMomentsProvider>
+          <VoortgangFavoritesProvider>
+            <ChipDriver />
+            <DomainKompasScreen
+              domain="slaap"
+              model={model()}
+              data={data()}
+              onGoAgenda={() => {}}
+              onGoVoortgangDomein={() => {}}
+            />
+          </VoortgangFavoritesProvider>
+        </LadderMomentsProvider>
+      </DomainLadderFocusProvider>,
+    );
+
+    const ladder = screen.getByRole("group", { name: "Je prioriteiten" });
+    fireEvent.click(screen.getByRole("button", { name: "Open P6" }));
+    expect(
+      within(ladder).getByRole("button", { name: /Meten, gadgets/ }).getAttribute("aria-pressed"),
     ).toBe("true");
   });
 
