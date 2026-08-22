@@ -3605,9 +3605,10 @@ function DashboardContent({
   // De "meet"-kaart is universeel (elk domein) en krijgt hieronder een echte
   // actieknop via remeasureAction — geen domein-uitzondering meer nodig.
   // Staat er een domeinscherm open met een aangeklikte ladderlaag, dan draagt
-  // de contextkolom díé laag en wat je erop koos — geen tweede ladder (lock
-  // N6), maar het waarom naast het wat. Elk domein met een ladder komt hier
-  // binnen; de staten komen alleen mee waar de eigen check ze oplevert.
+  // de contextkolom díé laag: check-feiten, ijkpunt, keuze. Compacte P-chips
+  // wisselen de laag; de volle ladder blijft in het midden. Elk domein met
+  // een ladder komt hier binnen; de staten komen alleen mee waar de eigen
+  // check ze oplevert.
   const ladderInspectorCards = useMemo(() => {
     if (!ladderFocus) {
       return null;

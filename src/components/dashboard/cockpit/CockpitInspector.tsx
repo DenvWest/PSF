@@ -36,8 +36,6 @@ type CockpitInspectorProps = {
   onCollapse?: () => void;
   /** Compactere typografie/spacing in bottom sheet (mobiel). */
   compact?: boolean;
-  /** P1–P6-chips: alleen sheet/drawer, waar de midden-ladder weg is. */
-  showLayerChips?: boolean;
 };
 
 const ACCENT: Record<
@@ -81,7 +79,6 @@ export default function CockpitInspector({
   onClose,
   onCollapse,
   compact = false,
-  showLayerChips = false,
 }: CockpitInspectorProps) {
   const { focus } = useDomainLadderFocus();
 
@@ -137,7 +134,7 @@ export default function CockpitInspector({
         ) : null}
       </div>
 
-      {showLayerChips ? <InspectorLayerChips compact={compact} /> : null}
+      <InspectorLayerChips compact={compact} />
 
       {cards.map((card, index) => {
         const accent = ACCENT[card.accent];

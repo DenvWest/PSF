@@ -359,7 +359,6 @@ export default function CockpitFrame({
             onClose={isDrawerMode ? closeContext : undefined}
             onCollapse={isDrawerMode ? undefined : collapseContext}
             compact={isSheet}
-            showLayerChips={isDrawerMode}
           />
         </aside>
       </div>

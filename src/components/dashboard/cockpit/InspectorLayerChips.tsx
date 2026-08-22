@@ -13,9 +13,10 @@ type InspectorLayerChipsProps = {
 };
 
 /**
- * Compacte P1–P6-wisselaar voor sheet/drawer. Op desktop staat de ladder in
- * het midden; hier zou een tweede ladder lock N6 breken. Op mobiel is de
- * midden-ladder weg zodra dit sheet open is.
+ * Compacte P1–P6-wisselaar bovenaan de contextkolom. Geen tweede ladder:
+ * alleen de letters, zodat je op desktop niet naar de midden-ladder hoeft
+ * te scrollen en op mobiel nog kunt wisselen als het sheet open is.
+ * Zonder ladder-focus (Kompas-home) rendert dit niets.
  */
 export default function InspectorLayerChips({ compact = false }: InspectorLayerChipsProps) {
   const { focus, setFocus } = useDomainLadderFocus();

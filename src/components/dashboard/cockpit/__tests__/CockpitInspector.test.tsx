@@ -16,12 +16,12 @@ const CARDS = buildLadderInspectorCards({
   canSetGoal: true,
 });
 
-function Harness({ showLayerChips }: { showLayerChips: boolean }) {
+function Harness() {
   const { setFocus } = useDomainLadderFocus();
   useEffect(() => {
     setFocus({ domain: "beweging", layerId: 1 });
   }, [setFocus]);
-  return <CockpitInspector cards={CARDS} showLayerChips={showLayerChips} />;
+  return <CockpitInspector cards={CARDS} />;
 }
 
 beforeEach(() => {
@@ -32,27 +32,29 @@ beforeEach(() => {
 });
 
 describe("CockpitInspector — check-context", () => {
-  it("toont P-chips alleen als showLayerChips aan staat", async () => {
-    const { rerender } = render(
+  it("toont P-chips zodra er een ladderlaag in focus is", async () => {
+    render(
       <DomainLadderFocusProvider>
-        <Harness showLayerChips={false} />
-      </DomainLadderFocusProvider>,
-    );
-    expect(screen.queryByRole("group", { name: "Andere prioriteit lezen" })).toBeNull();
-
-    rerender(
-      <DomainLadderFocusProvider>
-        <Harness showLayerChips />
+        <Harness />
       </DomainLadderFocusProvider>,
     );
     expect(await screen.findByRole("group", { name: "Andere prioriteit lezen" })).not.toBeNull();
     expect(screen.getByRole("button", { name: "Prioriteit 1: Dagelijks bewegen" })).not.toBeNull();
   });
 
+  it("toont geen P-chips zonder ladder-focus (Kompas-home)", () => {
+    render(
+      <DomainLadderFocusProvider>
+        <CockpitInspector cards={CARDS} />
+      </DomainLadderFocusProvider>,
+    );
+    expect(screen.queryByRole("group", { name: "Andere prioriteit lezen" })).toBeNull();
+  });
+
   it("wisselt de laag via een chip, zonder een tweede ladder te worden", async () => {
     render(
       <DomainLadderFocusProvider>
-        <Harness showLayerChips />
+        <Harness />
       </DomainLadderFocusProvider>,
     );
     const p2 = await screen.findByRole("button", { name: "Prioriteit 2: Kracht + basisconditie" });
@@ -66,7 +68,7 @@ describe("CockpitInspector — check-context", () => {
   it("toont de check-deur zonder aannames als er geen check is", () => {
     render(
       <DomainLadderFocusProvider>
-        <Harness showLayerChips={false} />
+        <CockpitInspector cards={CARDS} />
       </DomainLadderFocusProvider>,
     );
     expect(screen.queryByText("Nog geen beweegcheck")).not.toBeNull();

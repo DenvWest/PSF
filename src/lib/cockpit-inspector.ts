@@ -142,8 +142,8 @@ export type LadderInspectorInput = {
  * Tot 20 augustus stond hier de "Waarom deze stap"-kaart uit het oude
  * stappenplan-systeem. Daarna droeg de kolom de laag-summary — dezelfde zin
  * als onder de midden-ladder. Nu is de kolom check-context: wat je antwoorden
- * over díé laag zeggen, welk ijkpunt er staat, en wat je koos. Geen tweede
- * ladder (lock N6), en geen herhaling van de samenvatting.
+ * over díé laag zeggen, welk ijkpunt er staat, en wat je koos. De P-chips
+ * wisselen alleen de laag; de samenvatting blijft in het midden.
  */
 export function buildLadderInspectorCards(input: LadderInspectorInput): InspectorCard[] {
   const cards: InspectorCard[] = [];
