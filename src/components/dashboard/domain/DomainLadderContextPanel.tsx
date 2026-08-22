@@ -3,7 +3,10 @@
 import * as Icons from "@/components/app/icons";
 import LadderActionRow from "@/components/dashboard/domain/LadderActionRow";
 import LadderLayerStrip from "@/components/dashboard/domain/LadderLayerStrip";
+import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
 import { useDomainLadderFocus } from "@/lib/domain-ladder-focus-context";
+import { parseLadderFavoriteLayer } from "@/lib/leefstijl-ladder";
+import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import {
   resolveDomainLadderReadout,
   resolveLadderLayerReason,
@@ -32,6 +35,10 @@ type DomainLadderContextPanelProps = {
  *    hetzelfde component: zo kunnen de favoriet-sleutel en de `source`
  *    ("aanbevolen" vs "mijn keuze") niet uiteenlopen tussen de twee plekken,
  *    en is de spiegel geen tweede bron maar letterlijk dezelfde knop.
+ * 4. **Gekozen op deze laag** — wat jij hier koos, met het hart om het weer
+ *    weg te halen. Dit is de laag-gescopete opvolger van `MijnKeuzeTile`, die
+ *    sinds 22 augustus van héél Kompas af is: de keuze staat op één plek per
+ *    vraag. Domeinbreed en over domeinen heen woont je archief op Favorieten.
  *
  * Wat hier níét staat: afvinken (dat woont op Mijn Dag), een deur naar het
  * schap, en een tweede "Open Mijn Dag"-CTA — die blijft onderaan het
@@ -44,12 +51,17 @@ export default function DomainLadderContextPanel({
   compact = false,
 }: DomainLadderContextPanelProps) {
   const { selectLayer } = useDomainLadderFocus();
+  const { items } = useVoortgangFavorites();
   const ladder = getLeefstijlLadder(domain);
   const layer = ladder?.layers.find((row) => row.id === layerId) ?? null;
 
   if (!ladder || !layer) {
     return null;
   }
+
+  const gekozen = items.filter(
+    (item) => item.domain === domain && parseLadderFavoriteLayer(item.id) === layer.id,
+  );
 
   const readout = resolveDomainLadderReadout(domain, data);
   const state = readout?.layerStates[layer.id] ?? null;
@@ -161,6 +173,32 @@ export default function DomainLadderContextPanel({
             Op deze laag staat niets klaar om te kiezen — lezen kost je niets en verplicht je
             tot niets.
           </p>
+        )}
+      </section>
+
+      <section aria-label="Mijn keuze op deze laag" className={`${cardClass} border-white/10`}>
+        <span className={`${kickerClass} text-[#9FB0A6]`}>
+          <Icons.Heart s={13} style={{ color: "#9FB0A6" }} /> Mijn keuze op deze laag
+        </span>
+        {gekozen.length === 0 ? (
+          <p className="text-[11.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+            Hier koos je nog niets. Dat hoeft ook niet — de laag lezen kost je niets en
+            verplicht je tot niets.
+          </p>
+        ) : (
+          <ul className="m-0 flex list-none flex-col gap-0 p-0">
+            {gekozen.map((item) => (
+              <li
+                key={item.id}
+                className="flex items-start gap-2.5 border-0 border-t border-white/[0.06] py-2.5 first:border-t-0 first:pt-0"
+              >
+                <span className="min-w-0 flex-1 text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
+                  {item.title}
+                </span>
+                <FavoriteSaveButton compact surface={surface} item={item} />
+              </li>
+            ))}
+          </ul>
         )}
       </section>
     </>

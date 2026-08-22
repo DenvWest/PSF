@@ -6,7 +6,6 @@ import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell
 import DomainFreeActionsTile from "@/components/dashboard/domain/DomainFreeActionsTile";
 import DomainKompasHead from "@/components/dashboard/domain/DomainKompasHead";
 import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
-import MijnKeuzeTile from "@/components/dashboard/MijnKeuzeTile";
 import { PILLAR } from "@/data/dashboard";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_KOMPAS_COPY, isDomainKompasDomain } from "@/lib/domain-kompas-copy";
@@ -180,9 +179,9 @@ export default function DomainKompasScreen({
         />
       ) : null}
 
-      {/* N4: wat je koos, als snapshot — naam + herkomst, nooit merk of prijs.
-          Afvinken op Mijn Dag. Verdwijnt zolang je nog niets koos. */}
-      <MijnKeuzeTile domain={domain} surface={copy.surface} onGoAgenda={onGoAgenda} />
+      {/* Wat je koos staat niet meer op dit scherm: de contextkolom draagt het
+          voor de laag die je leest, en Favorieten draagt het archief over alle
+          lagen en domeinen (roadmap §7, R1). Eén plek per vraag. */}
 
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 @[560px]:flex-row">

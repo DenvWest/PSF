@@ -219,12 +219,39 @@ describe("DomainLadderContextPanel — zone 3: kiezen, niet afvinken", () => {
     }
   });
 
+  it("laat wat je koos meteen onder Mijn keuze op deze laag verschijnen", () => {
+    renderBoth();
+    const keuzeZone = screen.getByRole("region", { name: "Mijn keuze op deze laag" });
+    expect(keuzeZone.textContent).toContain("Hier koos je nog niets");
+
+    const actieZone = screen.getByRole("region", { name: "Wat je hier kunt kiezen" });
+    fireEvent.click(within(actieZone).getByRole("button", { name: /Zet bij Mijn keuze/ }));
+
+    const layer = LADDER.layers.find((row) => row.id === FOCUS_LAYER)!;
+    expect(keuzeZone.textContent).toContain(layer.actions[0]);
+    // Weghalen kan hier ook — één regel, één hart, dezelfde bron.
+    expect(
+      within(keuzeZone).getByRole("button", { name: /klik om weg te halen/ }),
+    ).toBeTruthy();
+  });
+
+  it("toont alleen de keuzes van de laag die je leest", () => {
+    renderBoth();
+    const actieZone = screen.getByRole("region", { name: "Wat je hier kunt kiezen" });
+    fireEvent.click(within(actieZone).getByRole("button", { name: /Zet bij Mijn keuze/ }));
+
+    fireEvent.click(within(sidebarStrip()).getByRole("button", { name: /Prioriteit 4/ }));
+    const keuzeZone = screen.getByRole("region", { name: "Mijn keuze op deze laag" });
+    expect(keuzeZone.textContent).toContain("Hier koos je nog niets");
+  });
+
   it("heeft geen afvink-affordance en geen tweede deur naar Mijn Dag", () => {
     renderBoth();
     const panelRegions = [
       "De laag die je leest",
       "Andere prioriteit lezen",
       "Wat je hier kunt kiezen",
+      "Mijn keuze op deze laag",
     ].map((name) => screen.getByRole("region", { name }));
 
     for (const region of panelRegions) {

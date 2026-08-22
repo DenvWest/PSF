@@ -4,6 +4,7 @@ import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { PILLAR } from "@/data/dashboard";
 import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
+import { parseLadderFavoriteLayer, resolveLadderLayerName } from "@/lib/leefstijl-ladder";
 import { useVoortgangFavorites, type VoortgangFavoriteItem } from "@/lib/voortgang-favorites-context";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 
@@ -19,6 +20,22 @@ function kindLabel(kind: VoortgangFavoriteItem["kind"]): string {
     return "Dienst";
   }
   return "Supplement";
+}
+
+/**
+ * De laag waar deze keuze vandaan komt — "Laag 2 · Kracht + basisconditie".
+ *
+ * Dit is de terugweg naar de plek waar je hem koos. Tot 22 augustus droeg
+ * `MijnKeuzeTile` op Kompas die herkomst; nu die tegel weg is, is dit de enige
+ * plek waar hij nog te lezen valt (roadmap §7, R1).
+ */
+function layerLabel(item: VoortgangFavoriteItem): string | null {
+  const laag = item.domain ? parseLadderFavoriteLayer(item.id) : null;
+  if (!item.domain || laag == null) {
+    return null;
+  }
+  const naam = resolveLadderLayerName(item.domain, laag);
+  return naam ? `Laag ${laag} · ${naam}` : `Laag ${laag}`;
 }
 
 function sourceLabel(source: VoortgangFavoriteItem["source"]): string | null {
@@ -134,6 +151,7 @@ export default function FavorietenView({ onBack }: FavorietenViewProps) {
                           <span className="block text-[11px] text-[var(--text-subtle)]">
                             {kindLabel(item.kind)}
                             {sourceLabel(item.source) ? ` · ${sourceLabel(item.source)}` : ""}
+                            {layerLabel(item) ? ` · ${layerLabel(item)}` : ""}
                           </span>
                         </div>
                         <button

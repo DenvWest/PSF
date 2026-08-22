@@ -5,10 +5,10 @@ import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { DeltaBadge } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
-import MijnKeuzeTile from "@/components/dashboard/MijnKeuzeTile";
 import KompasVoortgangFocusBlock from "@/components/dashboard/kompas/KompasVoortgangFocusBlock";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { buildWeekSchedulePreview, isWeekSlotCompleted } from "@/lib/agenda-week-preview";
+import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { isUsableFirstName } from "@/lib/intake-greetings";
@@ -25,6 +25,7 @@ import {
   type KompasDomainRow,
 } from "@/lib/kompas-home";
 import { getVitalityBand } from "@/lib/vitality-gauge";
+import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
 
 const RING_SIZE = 240;
@@ -46,7 +47,6 @@ type KompasHomeCardProps = {
   remeasureDaysUntil?: number | null;
   onOpenDomain: (domain: PillarId) => void;
   onOpenPriority?: (domain: PillarId) => void;
-  onGoAgenda: () => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
 };
 
@@ -711,7 +711,6 @@ export default function KompasHomeCard({
   remeasureDaysUntil = null,
   onOpenDomain,
   onOpenPriority,
-  onGoAgenda,
   onPrefUpdated,
 }: KompasHomeCardProps) {
   const rows = useMemo(() => buildKompasDomainRows(model), [model]);
@@ -778,9 +777,11 @@ export default function KompasHomeCard({
         <div className="flex flex-col gap-5 @[720px]/tile:grid @[720px]/tile:grid-cols-[minmax(0,1fr)_minmax(0,320px)] @[720px]/tile:gap-x-6 @[720px]/tile:gap-y-0 @[1200px]/tile:grid-cols-[minmax(0,1fr)_minmax(0,380px)]">
           {/*
             Twee tegel-standen. Tot @920px staat Je leefstijl over de volle
-            breedte met Mijn keuze en Voortgang eronder; daarboven blijft er
-            naast de ring en de balken genoeg over voor een echte kolom, en
-            loopt Mijn keuze over de hele rechterhoogte mee.
+            breedte met Voortgang eronder; daarboven blijft er naast de ring en
+            de balken genoeg over voor een echte kolom, en loopt Voortgang over
+            de hele rechterhoogte mee. Mijn keuze stond hier tot 22 augustus
+            als derde sectie; die is van héél Kompas af (roadmap §7, R1) en
+            leeft nu op Favorieten — met één regel hieronder als terugweg.
           */}
           <section
             aria-label="Je leefstijl"
@@ -813,20 +814,8 @@ export default function KompasHomeCard({
           </section>
 
           <section
-            aria-label="Mijn keuze"
-            className="order-2 min-w-0 border-t border-white/10 pt-5 @[720px]/tile:col-start-2 @[720px]/tile:row-start-2 @[720px]/tile:mt-5 @[720px]/tile:border-l @[720px]/tile:pl-6 @[920px]/tile:row-span-2 @[920px]/tile:row-start-1 @[920px]/tile:mt-0 @[920px]/tile:border-t-0 @[920px]/tile:pt-0"
-          >
-            <MijnKeuzeTile
-              surface="kompas_home"
-              embedded
-              onGoAgenda={onGoAgenda}
-              onOpenDomain={() => handleOpenDomain(model.priority.id)}
-            />
-          </section>
-
-          <section
             aria-label="Voortgang"
-            className="order-3 min-w-0 border-t border-white/10 pt-5 @[720px]/tile:col-start-1 @[720px]/tile:row-start-2 @[720px]/tile:mt-5"
+            className="order-2 min-w-0 border-t border-white/10 pt-5 @[720px]/tile:col-span-2 @[720px]/tile:col-start-1 @[720px]/tile:row-start-2 @[720px]/tile:mt-5 @[920px]/tile:col-span-1 @[920px]/tile:col-start-2 @[920px]/tile:row-span-2 @[920px]/tile:row-start-1 @[920px]/tile:mt-0 @[920px]/tile:border-l @[920px]/tile:border-t-0 @[920px]/tile:pl-6 @[920px]/tile:pt-0"
           >
             <VoortgangSection
               model={model}
@@ -836,7 +825,69 @@ export default function KompasHomeCard({
             />
           </section>
         </div>
+
+        <KeuzeArchiefRegel
+          onOpenPriorityDomain={() => handleOpenDomain(model.priority.id)}
+        />
       </div>
     </CockpitTile>
+  );
+}
+
+/**
+ * Wat je koos, als één regel — niet als tegel.
+ *
+ * `MijnKeuzeTile` stond hier tot 22 augustus met de volledige lijst erin. Die
+ * lijst leeft nu op Favorieten (over alle domeinen) en in de contextkolom (voor
+ * de laag die je leest); op de home hoort alleen nog de terugweg, in dezelfde
+ * vorm die het ecosysteem-verdict §H voor de Voortgang-hub voorschrijft.
+ */
+function KeuzeArchiefRegel({
+  onOpenPriorityDomain,
+}: {
+  onOpenPriorityDomain: () => void;
+}) {
+  const { items } = useVoortgangFavorites();
+  const domeinen = new Set(items.map((item) => item.domain).filter(Boolean)).size;
+
+  if (items.length === 0) {
+    return (
+      <p className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-white/10 pt-4 text-[12.5px] leading-relaxed text-[#7E8C82]">
+        Nog niets gekozen — open een domein en zet iets op je lijst.
+        <button
+          type="button"
+          onClick={() => {
+            clarityTag("dashboard_kompas_home", "keuzes_leeg_open_domein");
+            onOpenPriorityDomain();
+          }}
+          className="inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-left text-[12.5px] font-semibold text-[#9CC5A9]"
+        >
+          Open je prioriteitsdomein <Icons.ChevronRight s={12} />
+        </button>
+      </p>
+    );
+  }
+
+  return (
+    <p className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-white/10 pt-4 text-[12.5px] leading-relaxed text-[#7E8C82]">
+      <span>
+        Je koos {items.length} {items.length === 1 ? "handeling" : "handelingen"}
+        {domeinen > 1 ? `, over ${domeinen} domeinen` : ""}.
+      </span>
+      <Link
+        href={buildDashboardVoortgangHref("favorieten")}
+        onClick={() => {
+          trackEvent("dashboard_kompas_keuzes_click", {
+            surface: "kompas_home",
+            count: items.length,
+            domains: domeinen,
+          });
+          clarityTag("dashboard_kompas_home", "keuzes_naar_favorieten");
+        }}
+        className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#9CC5A9] no-underline"
+      >
+        Bekijk je keuzes <Icons.ChevronRight s={12} />
+      </Link>
+    </p>
   );
 }

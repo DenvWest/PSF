@@ -317,7 +317,7 @@ export default function PrioriteitenLadder({
         <div className="mt-4 border-t border-white/[0.06] pt-3">
           <p className="max-w-[62ch] text-[11.5px] leading-relaxed text-[#7E8C82] text-pretty">
             {gekozenTotaal === 0
-              ? "Wat je hier kiest, landt bij Mijn keuze op Kompas — naam en herkomst, geen merk en geen prijs. Afvinken doe je op Mijn Dag."
+              ? "Wat je hier kiest, komt terug bij je favorieten en in de contextkolom van de laag waar je het koos — naam en herkomst, geen merk en geen prijs. Afvinken doe je op Mijn Dag."
               : `Je koos ${gekozenTotaal} ${gekozenTotaal === 1 ? "handeling" : "handelingen"} op deze ladder. Plan ze op Mijn Dag om af te vinken.`}
           </p>
           <button

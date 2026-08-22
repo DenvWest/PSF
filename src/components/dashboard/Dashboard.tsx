@@ -2813,7 +2813,6 @@ const KompasHome = ({
           cycleContext={cycleContext}
           domainCheckDaysAgo={data?.domainCheckDaysAgo}
           remeasureDaysUntil={data?.remeasure?.daysUntil ?? null}
-          onGoAgenda={() => onGoAgenda()}
           onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
           onOpenPriority={(domain) => openDomain(domain, "leefstijlkompas")}
           onPrefUpdated={onPrefUpdated}
@@ -3588,6 +3587,13 @@ function DashboardContent({
     if (!ladderFocus) {
       return null;
     }
+    // Draagt dit domein het keuzehart, dan bouwt het paneel alle zones zelf —
+    // inclusief de laag en wat je erop koos, want die dragen knoppen en kunnen
+    // dus geen kaart zijn. Lege lijst, geen `null`: anders vallen de
+    // gewoonte-kaarten terug op een scherm dat over een laag gaat.
+    if (hasLadderKeuzehart(ladderFocus.domain)) {
+      return [];
+    }
     const ladder = getLeefstijlLadder(ladderFocus.domain);
     const layer = ladder?.layers.find((row) => row.id === ladderFocus.layerId);
     if (!layer) {
@@ -3596,9 +3602,6 @@ function DashboardContent({
     const readout = resolveDomainLadderReadout(ladderFocus.domain, data);
     const state = readout?.layerStates[layer.id] ?? null;
     return buildLadderInspectorCards({
-      // Waar het keuzehart draait, draagt het paneel de laag-zone al — mét de
-      // reden en de laag-navigator, die geen kaart kunnen zijn.
-      omitLayerCard: hasLadderKeuzehart(ladderFocus.domain),
       layerId: layer.id,
       layerName: layer.name,
       layerSummary: layer.summary,
