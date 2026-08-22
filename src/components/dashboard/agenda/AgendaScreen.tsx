@@ -17,6 +17,7 @@ import AgendaWeekTimeGrid, {
 } from "@/components/dashboard/agenda/AgendaWeekTimeGrid";
 import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
 import AgendaPriorityTestPanel from "@/components/dashboard/agenda/AgendaPriorityTestPanel";
+import AgendaRhythmPanel from "@/components/dashboard/agenda/AgendaRhythmPanel";
 import type { AgendaStripDay } from "@/components/dashboard/agenda/AgendaWeekStrip";
 import type { AgendaWeekDayEntry } from "@/components/dashboard/agenda/AgendaWeekOverview";
 import type { RetimeBlockInput } from "@/components/dashboard/agenda/AgendaDayTimeline";
@@ -811,6 +812,8 @@ export default function AgendaScreen({
           />
         </div>
       ) : null}
+
+      {view === "dag" && selectedDate === today ? <AgendaRhythmPanel /> : null}
 
       {view === "dag" && dayContext.kind === "orphan" ? (
         <p className="mb-3 text-[12.5px] leading-normal text-[#9FB0A6]">

@@ -85,9 +85,8 @@ describe("VOORTGANG_RAIL_ITEMS", () => {
 });
 
 describe("resolveVoortgangRailActiveItem", () => {
-  it("houdt schap en favorieten uit elkaar", () => {
+  it("licht hub en schap op", () => {
     expect(resolveVoortgangRailActiveItem("hub")).toBe("hub");
-    expect(resolveVoortgangRailActiveItem("favorieten")).toBe("favorieten");
     expect(resolveVoortgangRailActiveItem("schap")).toBe("schap");
   });
 

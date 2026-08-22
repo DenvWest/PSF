@@ -109,13 +109,11 @@ export type VoortgangScreen =
   | "hub"
   | "leefstijlprofiel"
   /**
-   * Wat jij bewaarde — de lijst uit `account_favorites`, domein-overstijgend.
-   * Draagt nooit een `fav`-domein: dit scherm is er precies één.
-   */
-  | "favorieten"
-  /**
    * Het aanbod van één domein. Draagt altijd `fav=<domein mét schap>`; zonder
-   * dat domein bestaat het scherm niet en valt de route terug op de hub.
+   * dat domein bestaat het scherm niet en valt de route terug op de hub. Draagt
+   * ook je archief — de Favorieten-tab, per domein — sinds het losse
+   * domein-overstijgende scherm (22 aug) is opgeheven: elke deur naar
+   * "wat je koos" wijst nu hierheen.
    */
   | "schap"
   /** @deprecated Legacy — redirect naar leefstijlprofiel */

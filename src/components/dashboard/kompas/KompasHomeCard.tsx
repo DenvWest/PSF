@@ -5,10 +5,10 @@ import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { DeltaBadge } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import KompasKeuzeSectie from "@/components/dashboard/kompas/KompasKeuzeSectie";
 import KompasVoortgangFocusBlock from "@/components/dashboard/kompas/KompasVoortgangFocusBlock";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { buildWeekSchedulePreview, isWeekSlotCompleted } from "@/lib/agenda-week-preview";
-import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { isUsableFirstName } from "@/lib/intake-greetings";
@@ -25,7 +25,6 @@ import {
   type KompasDomainRow,
 } from "@/lib/kompas-home";
 import { getVitalityBand } from "@/lib/vitality-gauge";
-import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
 
 const RING_SIZE = 240;
@@ -779,9 +778,9 @@ export default function KompasHomeCard({
             Twee tegel-standen. Tot @920px staat Je leefstijl over de volle
             breedte met Voortgang eronder; daarboven blijft er naast de ring en
             de balken genoeg over voor een echte kolom, en loopt Voortgang over
-            de hele rechterhoogte mee. Mijn keuze stond hier tot 22 augustus
-            als derde sectie; die is van héél Kompas af (roadmap §7, R1) en
-            leeft nu op Favorieten — met één regel hieronder als terugweg.
+            de hele rechterhoogte mee. Wat je koos hangt hieronder over de volle
+            breedte (`KompasKeuzeSectie`): beheren doe je op Favorieten, hier
+            zie je alleen wat er staat.
           */}
           <section
             aria-label="Je leefstijl"
@@ -826,68 +825,11 @@ export default function KompasHomeCard({
           </section>
         </div>
 
-        <KeuzeArchiefRegel
-          onOpenPriorityDomain={() => handleOpenDomain(model.priority.id)}
+        <KompasKeuzeSectie
+          priorityDomain={model.priority.id}
+          onOpenDomain={handleOpenDomain}
         />
       </div>
     </CockpitTile>
-  );
-}
-
-/**
- * Wat je koos, als één regel — niet als tegel.
- *
- * `MijnKeuzeTile` stond hier tot 22 augustus met de volledige lijst erin. Die
- * lijst leeft nu op Favorieten (over alle domeinen) en in de contextkolom (voor
- * de laag die je leest); op de home hoort alleen nog de terugweg, in dezelfde
- * vorm die het ecosysteem-verdict §H voor de Voortgang-hub voorschrijft.
- */
-function KeuzeArchiefRegel({
-  onOpenPriorityDomain,
-}: {
-  onOpenPriorityDomain: () => void;
-}) {
-  const { items } = useVoortgangFavorites();
-  const domeinen = new Set(items.map((item) => item.domain).filter(Boolean)).size;
-
-  if (items.length === 0) {
-    return (
-      <p className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-white/10 pt-4 text-[12.5px] leading-relaxed text-[#7E8C82]">
-        Nog niets gekozen — open een domein en zet iets op je lijst.
-        <button
-          type="button"
-          onClick={() => {
-            clarityTag("dashboard_kompas_home", "keuzes_leeg_open_domein");
-            onOpenPriorityDomain();
-          }}
-          className="inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-left text-[12.5px] font-semibold text-[#9CC5A9]"
-        >
-          Open je prioriteitsdomein <Icons.ChevronRight s={12} />
-        </button>
-      </p>
-    );
-  }
-
-  return (
-    <p className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-white/10 pt-4 text-[12.5px] leading-relaxed text-[#7E8C82]">
-      <span>
-        Je koos {items.length} {items.length === 1 ? "handeling" : "handelingen"}
-        {domeinen > 1 ? `, over ${domeinen} domeinen` : ""}.
-      </span>
-      <Link
-        href={buildDashboardVoortgangHref("favorieten")}
-        onClick={() => {
-          trackEvent("dashboard_kompas_keuzes_click", {
-            surface: "kompas_home",
-            count: items.length,
-            domains: domeinen,
-          });
-          clarityTag("dashboard_kompas_home", "keuzes_naar_favorieten");
-        }}
-        className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#9CC5A9] no-underline"
-      >
-        Bekijk je keuzes <Icons.ChevronRight s={12} />
-      </Link>
-    </p>
   );
 }

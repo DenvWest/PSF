@@ -42,7 +42,6 @@ type CockpitFrameProps = {
   railVoortgangLeefstijlprofielDomein?: PillarId | null;
   railVoortgangDomains?: ContextRailDomainItem[];
   railVoortgangSchapDomein?: PillarId | null;
-  railFavorietenCount?: number;
   onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
   onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
   onOpenVoortgangAanbouw?: () => void;
@@ -123,7 +122,6 @@ export default function CockpitFrame({
   railVoortgangLeefstijlprofielDomein = null,
   railVoortgangDomains,
   railVoortgangSchapDomein = null,
-  railFavorietenCount = 0,
   onOpenVoortgangItem,
   onOpenLeefstijlprofielDomein,
   onOpenVoortgangAanbouw,
@@ -312,7 +310,6 @@ export default function CockpitFrame({
             voortgangLeefstijlprofielDomein={railVoortgangLeefstijlprofielDomein}
             voortgangDomains={railVoortgangDomains}
             voortgangSchapDomein={railVoortgangSchapDomein}
-            favorietenCount={railFavorietenCount}
             onOpenVoortgangItem={onOpenVoortgangItem}
             onOpenLeefstijlprofielDomein={onOpenLeefstijlprofielDomein}
             onOpenVoortgangAanbouw={onOpenVoortgangAanbouw}

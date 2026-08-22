@@ -39,7 +39,6 @@ type CockpitContextRailProps = {
    * net als de deur op Vandaag (KompasOndersteuningTile).
    */
   voortgangSchapDomein?: PillarId | null;
-  favorietenCount?: number;
   onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
   onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
   onOpenVoortgangAanbouw?: () => void;
@@ -126,7 +125,6 @@ export default function CockpitContextRail({
   voortgangLeefstijlprofielDomein = null,
   voortgangDomains = [],
   voortgangSchapDomein = null,
-  favorietenCount = 0,
   onOpenVoortgangItem,
   onOpenLeefstijlprofielDomein,
   onOpenVoortgangAanbouw,
@@ -294,16 +292,14 @@ export default function CockpitContextRail({
       );
     }
 
-    const favorietenActive = item.id === "favorieten" && voortgangActiveItem === "favorieten";
-
     return (
       <button
         key={item.id}
         type="button"
-        aria-current={favorietenActive || (item.id !== "favorieten" && active) ? "page" : undefined}
+        aria-current={active ? "page" : undefined}
         onClick={() => onOpenVoortgangItem?.(item.id)}
         className={`${RAIL_ITEM} ${
-          favorietenActive || (item.id !== "favorieten" && active)
+          active
             ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/12 text-[#F1EFE8]"
             : "border-transparent text-[#9FB0A6] hover:border-white/10 hover:bg-white/[0.05] hover:text-[#F1EFE8]"
         }`}
@@ -312,21 +308,11 @@ export default function CockpitContextRail({
           {Icon ? (
             <Icon
               s={16}
-              style={{
-                color:
-                  favorietenActive || (item.id !== "favorieten" && active)
-                    ? "#5A8F6A"
-                    : "rgba(159,176,166,0.85)",
-              }}
+              style={{ color: active ? "#5A8F6A" : "rgba(159,176,166,0.85)" }}
             />
           ) : null}
         </span>
         <span className="min-w-0 flex-1 truncate">{item.label}</span>
-        {item.id === "favorieten" && favorietenCount > 0 ? (
-          <span className="shrink-0 text-[12px] font-semibold tabular-nums text-[#7E8C82]">
-            {favorietenCount}
-          </span>
-        ) : null}
         {item.id === "schap" && voortgangSchapDomein ? (
           <span className="shrink-0 text-[11.5px] text-[#7E8C82]">
             {PILLAR[voortgangSchapDomein].label}

@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  hasVoortgangReturnParam,
-  VOORTGANG_FAVORIETEN_HREF,
-  withVoortgangReturn,
-} from "@/lib/voortgang-return-link";
+import { hasVoortgangReturnParam, withVoortgangReturn } from "@/lib/voortgang-return-link";
 
 describe("withVoortgangReturn", () => {
   it("appends from=voortgang to internal paths", () => {
@@ -31,12 +27,5 @@ describe("hasVoortgangReturnParam", () => {
     expect(hasVoortgangReturnParam({ from: ["voortgang", "other"] })).toBe(true);
     expect(hasVoortgangReturnParam({ from: "dashboard" })).toBe(false);
     expect(hasVoortgangReturnParam({})).toBe(false);
-  });
-});
-
-describe("VOORTGANG_FAVORIETEN_HREF", () => {
-  it("points to favorieten screen on voortgang tab", () => {
-    expect(VOORTGANG_FAVORIETEN_HREF).toContain("tab=voortgang");
-    expect(VOORTGANG_FAVORIETEN_HREF).toContain("screen=favorieten");
   });
 });

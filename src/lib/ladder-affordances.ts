@@ -1,3 +1,4 @@
+import { isCadenceLadderAction } from "@/lib/leefstijl-ladder";
 import { isLadderMomentDomain } from "@/lib/ladder-moments";
 import type { PillarId } from "@/types/dashboard";
 
@@ -45,13 +46,20 @@ export type LadderAffordanceContext = {
 /**
  * Welke handelingen deze optie krijgt, in de volgorde waarin ze staan.
  *
- * Vandaag hangt dat alleen aan het domein: energie en herstel zijn readouts
- * zonder agenda-categorie, dus daar valt niets in te plannen. Zodra een optie
- * een eigen afhandeling verdient — een timer op een ademoefening, een
- * wearable-uitlezing op stappen — beslist deze functie dat per actie.
+ * Dat hangt eerst aan het domein: energie en herstel zijn readouts zonder
+ * agenda-categorie, dus daar valt niets in te plannen. Binnen een domein dat
+ * wél kan plannen valt een cadans-actie ({@link isCadenceLadderAction}) alsnog
+ * af: "elk werkuur even staan" heeft geen tijdstip om op te plannen, dus die
+ * houdt alleen `keuze` en verschijnt in plaats daarvan als doorlopend item op
+ * Mijn Dag (`AgendaRhythmPanel`). Zodra een optie een eigen afhandeling
+ * verdient — een timer op een ademoefening, een wearable-uitlezing op
+ * stappen — beslist deze functie dat per actie.
  */
 export function resolveLadderAffordances(
   context: LadderAffordanceContext,
 ): readonly LadderAffordanceId[] {
-  return isLadderMomentDomain(context.domain) ? BUILT_LADDER_AFFORDANCES : ["keuze"];
+  if (!isLadderMomentDomain(context.domain)) {
+    return ["keuze"];
+  }
+  return isCadenceLadderAction(context.action) ? ["keuze"] : BUILT_LADDER_AFFORDANCES;
 }

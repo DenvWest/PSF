@@ -6,7 +6,6 @@ const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
   "hub",
   "inzichten",
   "leefstijlprofiel",
-  "favorieten",
   "schap",
   "domein",
 ]);
@@ -31,19 +30,20 @@ export function getLegacyVoortgangScreenAlias(raw: string | null): LegacyVoortga
 export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | null {
   const rawScreen = url.searchParams.get("screen");
 
-  // Tot 20 augustus droeg `screen=favorieten` twee schermen: mét `fav` was het
-  // het schap van dat domein, zonder `fav` je bewaarde lijst. Die twee zijn nu
-  // gesplitst. Oude links en bookmarks dragen de eerste vorm nog, dus die
-  // vertalen we hier — het domein is precies wat ze uit elkaar houdt.
+  // `screen=favorieten` is legacy (22 aug): het losse domein-overstijgende
+  // scherm is opgeheven, favorieten leven nu op de Favorieten-tab van het
+  // schap. Oude links/bookmarks dragen de naam nog — mét een domein mét schap
+  // vertalen we door naar dat schap, anders valt de route terug op de hub.
   if (rawScreen === "favorieten") {
     const fav = url.searchParams.get("fav");
     if (fav && KOMPAS_DOMAIN_IDS.has(fav as PillarId) && hasSchap(fav as PillarId)) {
       url.searchParams.set("screen", "schap");
       return "schap";
     }
+    url.searchParams.delete("screen");
     url.searchParams.delete("fav");
     url.searchParams.delete("schap");
-    return null;
+    return "hub";
   }
 
   const legacy = getLegacyVoortgangScreenAlias(rawScreen);
@@ -176,6 +176,7 @@ const VALID_SCHAP_TABS = new Set<SchapTabId>([
   "producten",
   "diensten",
   "begeleiding",
+  "favorieten",
 ]);
 
 export function isSchapTabId(value: unknown): value is SchapTabId {
@@ -193,10 +194,9 @@ export function parseSchapTabFromUrl(url: string | URL): SchapTabId | null {
 /**
  * Deeplink naar het schap van één domein, optioneel direct op een sub-tab.
  *
- * Het schap is niet Favorieten (20 augustus). Favorieten is wat jij bewaarde;
- * dit is het aanbod van dit domein. Ze deelden tot vandaag één `screen`-waarde
- * en dus één naam in de rail, met twee verschillende schermen erachter — welk
- * scherm je kreeg hing af van of je toevallig via een domein binnenkwam.
+ * `tab: "favorieten"` opent het archief van dít domein — sinds 22 augustus de
+ * enige plek waar "wat jij bewaarde" nog leeft; het losse, domein-overstijgende
+ * Favorieten-scherm is opgeheven.
  */
 export function buildDashboardSchapHref(domain: PillarId, tab?: SchapTabId | null): string {
   const params = new URLSearchParams({ tab: "voortgang", screen: "schap", fav: domain });

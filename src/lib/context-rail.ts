@@ -1,7 +1,7 @@
 import { PILLAR } from "@/data/dashboard";
 import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
-export type VoortgangRailItemId = "hub" | "leefstijlprofiel" | "schap" | "favorieten";
+export type VoortgangRailItemId = "hub" | "leefstijlprofiel" | "schap";
 
 /**
  * Contextuele linker rail (slice 1): pure bouwers voor wat de rail toont.
@@ -118,9 +118,9 @@ export type ContextRailVoortgangItem = {
 /**
  * Favorieten staat sinds 21 augustus niet meer als los item in deze rail: het
  * schap draagt zelf een Favorieten-tab (per domein gefilterd), dus een
- * tweede, domein-overstijgende ingang hier was dubbel. Het scherm zelf
- * (`screen=favorieten`) bestaat nog — bereikbaar via de mobiele chip-nav en
- * eventuele directe links — alleen deze desktop-rail wijst er niet meer naar.
+ * tweede, domein-overstijgende ingang hier was dubbel. Sinds 22 augustus is
+ * het losse scherm (`screen=favorieten`) helemaal opgeheven — elke ingang
+ * wijst nu naar het schap.
  */
 export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
   { id: "hub", label: "Overzicht", icon: "Home" },
@@ -129,9 +129,6 @@ export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
 ];
 
 export function resolveVoortgangRailActiveItem(screen: VoortgangScreen): VoortgangRailItemId {
-  if (screen === "favorieten") {
-    return "favorieten";
-  }
   if (screen === "schap") {
     return "schap";
   }

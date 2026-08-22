@@ -19,7 +19,6 @@ import {
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import DomainTopNav, { type DomainNavApi } from "@/components/dashboard/DomainTopNav";
-import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import MovementRecoveryTrendsCard from "@/components/dashboard/MovementRecoveryTrendsCard";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
@@ -107,7 +106,6 @@ import {
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isReadoutDomain } from "@/lib/domain-role";
-import { saveDashboardPrioritySelection } from "@/lib/dashboard-priority-selection";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
@@ -2822,44 +2820,6 @@ const KompasHome = ({
   );
 };
 
-const StatistiekenPriorityOverTime = ({
-  model,
-  prefUpdatedAt,
-  onPrefUpdated,
-}: Pick<SharedSectionProps, "model" | "prefUpdatedAt" | "onPrefUpdated">) => {
-  const [busy, setBusy] = useState(false);
-  const currentModel = model;
-
-  if (!currentModel) {
-    return null;
-  }
-
-  const acceptEngine = async () => {
-    setBusy(true);
-    try {
-      await saveDashboardPrioritySelection({
-        pillarId: currentModel.enginePriority.id,
-        source: "accept_engine",
-        surface: "voortgang_hub",
-        timeBucket: currentModel.timeBucket ?? null,
-        scheduledTime: currentModel.scheduledTime ?? null,
-        onPrefUpdated,
-      });
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <PriorityOverTimePanel
-      model={currentModel}
-      prefUpdatedAt={prefUpdatedAt}
-      busy={busy}
-      onAcceptEngine={() => void acceptEngine()}
-    />
-  );
-};
-
 const EMPTY_SECTIONS: DashboardSectionType[] = ["vitalityScore"];
 
 const SECTION_RENDERERS: Record<
@@ -2908,16 +2868,6 @@ const SECTION_RENDERERS: Record<
         schapTab={props.schapTab}
         leefstijlprofielAdviesExtra={
           props.empty ? null : <NutritionIntakeSection {...props} />
-        }
-        overTijdExtra={
-          <>
-            <StatistiekenPriorityOverTime
-              model={props.model}
-              prefUpdatedAt={props.prefUpdatedAt}
-              onPrefUpdated={props.onPrefUpdated}
-            />
-            <HistorySection {...props} />
-          </>
         }
         onScreenChange={props.onVoortgangScreenChange}
         onPrefUpdated={props.onPrefUpdated}
@@ -3249,14 +3199,6 @@ function DashboardContent({
         });
         return;
       }
-      // Favorieten draagt geen domein: het is één scherm met alles wat je
-      // bewaarde. Een achtergebleven `fav` uit een vorig scherm zou het weer
-      // op het schap laten landen — precies de verwarring die de split opheft.
-      if (screen === "favorieten") {
-        setLeefstijlprofielDomein(null);
-        syncDashboardVoortgangScreenParam(screen, { fav: null });
-        return;
-      }
       syncDashboardVoortgangScreenParam(screen);
     },
     [leefstijlprofielDomein],
@@ -3274,8 +3216,6 @@ function DashboardContent({
         if (railSchapDomein) {
           handleVoortgangScreenChange("schap", { fav: railSchapDomein });
         }
-      } else if (item === "favorieten") {
-        handleVoortgangScreenChange("favorieten", { fav: null });
       }
     },
     [handleVoortgangScreenChange, railSchapDomein],
@@ -3717,7 +3657,6 @@ function DashboardContent({
         railVoortgangLeefstijlprofielDomein={activeLeefstijlprofielDomein}
         railVoortgangDomains={voortgangRailDomains}
         railVoortgangSchapDomein={railSchapDomein}
-        railFavorietenCount={favorietenItems.length}
         onOpenVoortgangItem={handleRailVoortgangOpen}
         onOpenLeefstijlprofielDomein={handleRailLeefstijlprofielDomeinOpen}
         onOpenVoortgangAanbouw={handleRailVoortgangAanbouw}

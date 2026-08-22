@@ -8,6 +8,7 @@ import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveBut
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import {
+  isCadenceLadderAction,
   ladderActionFavoriteId,
   parseLadderFavoriteLayer,
   type LeefstijlLadderLayer,
@@ -283,15 +284,20 @@ export default function PrioriteitenLadder({
                           </div>
                           {/* Plannen komt ná kiezen, niet ernaast: Voortgang is
                               de plek waar je onderbouwt wat je kiest, en mag
-                              geen tweede agenda worden. */}
-                          <div className="mt-2">
-                            <LadderMomentButton
-                              domain={domain}
-                              title={item.title}
-                              surface={surface}
-                              layer={layer.id}
-                            />
-                          </div>
+                              geen tweede agenda worden. Een cadans-actie
+                              ("elk werkuur even staan") slaat dit over — die
+                              heeft geen tijdstip om te plannen en staat in
+                              plaats daarvan doorlopend op Mijn Dag. */}
+                          {!isCadenceLadderAction(item.title) ? (
+                            <div className="mt-2">
+                              <LadderMomentButton
+                                domain={domain}
+                                title={item.title}
+                                surface={surface}
+                                layer={layer.id}
+                              />
+                            </div>
+                          ) : null}
                         </li>
                       ))}
                     </ul>

@@ -6,18 +6,15 @@ import type { DashboardModel, PillarId, VoortgangScreen } from "@/types/dashboar
 
 /**
  * Favorieten en het schap waren tot 20 augustus één `screen`-waarde met twee
- * schermen erachter. Welk scherm je kreeg hing af van of er toevallig een
- * domein in de URL stond: via de rail zag je je bewaarde lijst, via beweging
- * het aanbod — zelfde knop, zelfde naam, ander scherm. Deze test legt vast dat
- * het nu twee schermen met twee namen zijn.
+ * schermen erachter, en zijn toen gesplitst in `screen=schap` (aanbod van één
+ * domein) en `screen=favorieten` (bewaarde lijst, domein-overstijgend). Sinds
+ * 22 augustus is die tweede vorm opgeheven: elke ingang naar "wat je koos"
+ * wijst nu naar de Favorieten-tab van het schap. Deze test legt vast dat er
+ * nog maar één scherm en één mobiele chip voor is.
  */
 
 vi.mock("@/components/dashboard/voortgang/SchapView", () => ({
   default: ({ domain }: { domain: PillarId }) => <div data-testid="schap">schap:{domain}</div>,
-}));
-
-vi.mock("@/components/dashboard/voortgang/FavorietenView", () => ({
-  default: () => <div data-testid="favorieten">favorieten</div>,
 }));
 
 vi.mock("@/components/dashboard/voortgang/VoortgangHubScroll", () => ({
@@ -64,7 +61,6 @@ function renderHub(
       schapDomein={opts.schapDomein ?? null}
       schapTab={null}
       leefstijlprofielAdviesExtra={null}
-      overTijdExtra={null}
       onScreenChange={onScreenChange}
       onPrefUpdated={vi.fn()}
       onGoAgenda={vi.fn()}
@@ -77,17 +73,10 @@ beforeEach(() => {
   onScreenChange.mockClear();
 });
 
-describe("Voortgang — schap en favorieten zijn twee schermen", () => {
-  it("toont op screen=favorieten je bewaarde lijst, ook met een domein in beeld", () => {
-    renderHub("favorieten", { leefstijlprofielDomein: "beweging" });
-    expect(screen.getByTestId("favorieten")).toBeTruthy();
-    expect(screen.queryByTestId("schap")).toBeNull();
-  });
-
+describe("Voortgang — het schap draagt het archief, geen los Favorieten-scherm meer", () => {
   it("toont op screen=schap het aanbod van dat domein", () => {
     renderHub("schap", { schapDomein: "beweging" });
     expect(screen.getByTestId("schap").textContent).toBe("schap:beweging");
-    expect(screen.queryByTestId("favorieten")).toBeNull();
   });
 
   it("valt terug op de hub als screen=schap geen domein mét schap draagt", () => {
@@ -96,14 +85,13 @@ describe("Voortgang — schap en favorieten zijn twee schermen", () => {
     expect(screen.getByTestId("hub")).toBeTruthy();
   });
 
-  it("stuurt de Favorieten-chip naar favorieten zonder domein", () => {
+  it("draagt geen Favorieten-chip meer in de mobiele nav", () => {
     renderHub("schap", { schapDomein: "beweging" });
-    fireEvent.click(screen.getByRole("button", { name: /Favorieten/ }));
-    expect(onScreenChange).toHaveBeenCalledWith("favorieten", { fav: null });
+    expect(screen.queryByRole("button", { name: /Favorieten/ })).toBeNull();
   });
 
   it("stuurt de Schap-chip naar het schap van het domein dat in beeld is", () => {
-    renderHub("favorieten", { leefstijlprofielDomein: "slaap" });
+    renderHub("hub", { leefstijlprofielDomein: "slaap" });
     fireEvent.click(screen.getByRole("button", { name: /Schap/ }));
     expect(onScreenChange).toHaveBeenCalledWith("schap", { fav: "slaap" });
   });
@@ -114,12 +102,11 @@ describe("Voortgang — schap en favorieten zijn twee schermen", () => {
       <VoortgangHub
         model={stressModel}
         tab="voortgang"
-        screen="favorieten"
+        screen="hub"
         leefstijlprofielDomein={null}
         schapDomein={null}
         schapTab={null}
         leefstijlprofielAdviesExtra={null}
-        overTijdExtra={null}
         onScreenChange={onScreenChange}
         onPrefUpdated={vi.fn()}
         onGoAgenda={vi.fn()}
@@ -127,6 +114,5 @@ describe("Voortgang — schap en favorieten zijn twee schermen", () => {
       />,
     );
     expect(screen.queryByRole("button", { name: /Schap/ })).toBeNull();
-    expect(screen.getByRole("button", { name: /Favorieten/ })).toBeTruthy();
   });
 });

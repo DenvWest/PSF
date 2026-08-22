@@ -27,9 +27,3 @@ export function hasVoortgangReturnParam(
 }
 
 export const VOORTGANG_LEEFSTIJLPROFIEL_HREF = buildDashboardVoortgangHref("leefstijlprofiel");
-
-/**
- * Wat jij bewaarde, domein-overstijgend. Het aanbod van één domein is een
- * ander scherm met een eigen deeplink: `buildDashboardSchapHref`.
- */
-export const VOORTGANG_FAVORIETEN_HREF = buildDashboardVoortgangHref("favorieten");

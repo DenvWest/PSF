@@ -7,9 +7,6 @@ import DomeinDoelZetten, {
   type DomeinDoelZettenExistingGoal,
 } from "@/components/dashboard/voortgang/DomeinDoelZetten";
 import VoortgangHero from "@/components/dashboard/voortgang/VoortgangHero";
-import VoortgangRichtingBeat from "@/components/dashboard/voortgang/VoortgangRichtingBeat";
-import VoortgangOverTijdSection from "@/components/dashboard/voortgang/VoortgangOverTijdSection";
-import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
 import { PILLAR } from "@/data/dashboard";
 import { deriveGoalMode, type DomainGoalDomain } from "@/lib/domain-goal";
 import {
@@ -19,26 +16,21 @@ import {
 } from "@/lib/domain-goal-client";
 import type { MovementAnchor } from "@/lib/movement-prefs";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
-import type { ReactNode } from "react";
 
 type VoortgangHubScrollProps = {
   model: DashboardModel;
   data?: DashboardData;
-  overTijdExtra?: ReactNode;
   onGoAgenda: () => void;
   onGoHermeting: () => void;
   onOpenDomain: (domain: PillarId) => void;
-  onScrollToOverTijd: () => void;
 };
 
 export default function VoortgangHubScroll({
   model,
   data,
-  overTijdExtra,
   onGoAgenda,
   onGoHermeting,
   onOpenDomain,
-  onScrollToOverTijd,
 }: VoortgangHubScrollProps) {
   const [goals, setGoals] = useState<DomainGoalMap | null>(null);
   const [anchor, setAnchor] = useState<MovementAnchor | null>(null);
@@ -108,24 +100,6 @@ export default function VoortgangHubScroll({
           onOpenGoal={setOpenGoalDomain}
         />
       </div>
-
-      <div className="mt-4">
-        <LeefstijllijnSection
-          model={model}
-          surface="voortgang"
-          compact
-          focusPillarId={model.priority.id}
-        />
-      </div>
-
-      <VoortgangRichtingBeat
-        model={model}
-        data={data}
-        goals={goals}
-        onScrollToOverTijd={onScrollToOverTijd}
-      />
-
-      <VoortgangOverTijdSection model={model}>{overTijdExtra}</VoortgangOverTijdSection>
 
       {openGoalDomain ? (
         <DomeinDoelZetten

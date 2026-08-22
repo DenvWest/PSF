@@ -2,7 +2,6 @@
 
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
-import MetingenCard from "@/components/dashboard/MetingenCard";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 import { PILLAR } from "@/data/dashboard";
 import { KOMPAS_RAIL_PILLAR_IDS } from "@/lib/context-rail";
@@ -127,8 +126,6 @@ export default function LeefstijlprofielKeuzeHub({
             })}
           </ul>
         </div>
-
-        <MetingenCard scores={model.scores} history={model.history} />
       </div>
     </section>
   );

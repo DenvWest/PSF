@@ -9,10 +9,8 @@ type VoortgangMobileNavProps = {
   activeDomein: PillarId | null;
   /** Het domein waarvan het schap bereikbaar is, of `null` — dan valt de chip weg. */
   schapDomein: PillarId | null;
-  favorietenCount: number;
   onOpenLeefstijlprofiel: () => void;
   onOpenSchap: () => void;
-  onOpenFavorieten: () => void;
   onOpenDomein: (domain: PillarId) => void;
 };
 
@@ -20,16 +18,13 @@ export default function VoortgangMobileNav({
   screen,
   activeDomein,
   schapDomein,
-  favorietenCount,
   onOpenLeefstijlprofiel,
   onOpenSchap,
-  onOpenFavorieten,
   onOpenDomein,
 }: VoortgangMobileNavProps) {
   const leefstijlActive =
     screen === "leefstijlprofiel" || screen === "inzichten" || screen === "domein";
   const schapActive = screen === "schap";
-  const favorietenActive = screen === "favorieten";
 
   const chipClass = (active: boolean) =>
     `inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12.5px] font-semibold transition ${
@@ -60,22 +55,16 @@ export default function VoortgangMobileNav({
           {PILLAR[domain].label}
         </button>
       ))}
-      {/* Twee chips, twee schermen (20 aug). Het schap is het aanbod van één
-          domein en verdwijnt waar dat aanbod niet bestaat; Favorieten is wat
-          jij bewaarde en telt daarom altijd hetzelfde. */}
+      {/* Het schap draagt sinds 22 augustus ook het archief — de
+          Favorieten-tab, per domein. Een los, domein-overstijgend
+          Favorieten-scherm bestaat niet meer; verdwijnt met het aanbod waar
+          dat domein geen schap heeft. */}
       {schapDomein ? (
         <button type="button" onClick={onOpenSchap} className={chipClass(schapActive)}>
           <Icons.Pill s={14} />
           Schap · {PILLAR[schapDomein].label}
         </button>
       ) : null}
-      <button type="button" onClick={onOpenFavorieten} className={chipClass(favorietenActive)}>
-        <Icons.Heart s={14} />
-        Favorieten
-        {favorietenCount > 0 ? (
-          <span className="tabular-nums text-[11px] opacity-80">{favorietenCount}</span>
-        ) : null}
-      </button>
     </nav>
   );
 }

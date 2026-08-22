@@ -87,6 +87,20 @@ export function resolveLadderLayerName(domain: PillarId, layerId: number): strin
   return ladder?.layers.find((layer) => layer.id === layerId)?.name ?? null;
 }
 
+/**
+ * "Elk werkuur even staan" — een actie die zich vele keren per dag herhaalt,
+ * niet één keer. `agenda_blocks` kent geen herhaling (zie {@link
+ * ladderActionFavoriteId}'s buur `ladder-moments.ts`), dus zo'n actie in een
+ * los blok van 09:00-09:30 zetten verzint een tijdstip dat er niet is. Deze
+ * herkent de twee Nederlandse sjablonen die dat ritme dragen — "elk(e) ...
+ * uur" en "om de N minuten" — zodat `resolveLadderAffordances` de agenda-knop
+ * eraf kan laten en de actie in plaats daarvan in de doorlopende lijst op
+ * Mijn Dag terechtkomt.
+ */
+export function isCadenceLadderAction(action: string): boolean {
+  return /\belke?\s+\S*uur\b|\bom de \d+/i.test(action);
+}
+
 function slugifyAction(action: string): string {
   return action
     .toLowerCase()

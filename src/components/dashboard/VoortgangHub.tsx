@@ -6,10 +6,8 @@ import { useRouter } from "next/navigation";
 import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScroll";
 import LeefstijlprofielDomeinScherm from "@/components/dashboard/voortgang/LeefstijlprofielDomeinScherm";
 import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
-import FavorietenView from "@/components/dashboard/voortgang/FavorietenView";
 import SchapView from "@/components/dashboard/voortgang/SchapView";
 import VoortgangMobileNav from "@/components/dashboard/voortgang/VoortgangMobileNav";
-import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import { clarityTag } from "@/lib/clarity";
 import { hasSchap, resolveSchapDomain } from "@/lib/schap-availability";
 import { resolveSchapTabForDomain } from "@/lib/schap-tabs";
@@ -38,7 +36,6 @@ type VoortgangHubProps = {
   /** Actieve sub-tab op het schap — alleen betekenisvol op screen=schap. */
   schapTab: SchapTabId | null;
   leefstijlprofielAdviesExtra: ReactNode;
-  overTijdExtra: ReactNode;
   onScreenChange: (screen: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   onGoAgenda: () => void;
@@ -54,13 +51,11 @@ function VoortgangHubInner({
   schapDomein,
   schapTab,
   leefstijlprofielAdviesExtra,
-  overTijdExtra,
   onScreenChange,
   onGoAgenda,
   onGoHermeting,
 }: Omit<VoortgangHubProps, "onPrefUpdated">) {
   const router = useRouter();
-  const { items: favorietenItems } = useVoortgangFavorites();
   const [schapTabOverride, setSchapTabOverride] = useState<
     { domain: PillarId | null; tab: SchapTabId } | null
   >(null);
@@ -93,7 +88,6 @@ function VoortgangHubInner({
     trackEvent("dashboard_voortgang_terug", { from: screen });
     if (
       screen === "leefstijlprofiel" ||
-      screen === "favorieten" ||
       screen === "schap" ||
       screen === "inzichten" ||
       screen === "domein"
@@ -115,19 +109,6 @@ function VoortgangHubInner({
     });
     clarityTag("dashboard_voortgang", `leefstijlprofiel_${domain}`);
     navigate("leefstijlprofiel", { fav: domain });
-  };
-
-  /**
-   * Favorieten is wat jij bewaarde — één scherm, domein-overstijgend, altijd
-   * hetzelfde. Tot 20 augustus leidde deze knop naar het schap zodra er
-   * toevallig een domein in de URL stond, waardoor het telbadge ernaast een
-   * lijst beloofde die je nooit te zien kreeg. Het domein hoort hier niet:
-   * daarvoor is `openSchap`.
-   */
-  const openFavorieten = () => {
-    trackEvent("dashboard_voortgang_hub_click", { destination: "favorieten" });
-    clarityTag("dashboard_voortgang", "favorieten");
-    navigate("favorieten", { fav: null });
   };
 
   /** Het aanbod van één domein. Bestaat niet zonder domein mét schap. */
@@ -218,25 +199,16 @@ function VoortgangHubInner({
         onOpenLeefstijlprofiel={openLeefstijlprofielDomein}
       />
     );
-  } else if (screen === "favorieten") {
-    content = <FavorietenView onBack={goBack} />;
   } else {
     content = (
       <section aria-label="Voortgang navigatie">
         <VoortgangHubScroll
           model={model!}
           data={data}
-          overTijdExtra={overTijdExtra}
           onGoAgenda={onGoAgenda}
           onGoHermeting={onGoHermeting}
           onOpenDomain={(domain: PillarId) => {
             openLeefstijlprofielDomein(domain);
-          }}
-          onScrollToOverTijd={() => {
-            document.getElementById("voortgang-over-tijd")?.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
           }}
         />
       </section>
@@ -249,10 +221,8 @@ function VoortgangHubInner({
         screen={screen}
         activeDomein={mobileActiveDomein}
         schapDomein={railSchapDomein}
-        favorietenCount={favorietenItems.length}
         onOpenLeefstijlprofiel={openLeefstijlprofielRoot}
         onOpenSchap={() => openSchap(railSchapDomein)}
-        onOpenFavorieten={openFavorieten}
         onOpenDomein={openLeefstijlprofielDomein}
       />
       <div className="flex-1">{content}</div>

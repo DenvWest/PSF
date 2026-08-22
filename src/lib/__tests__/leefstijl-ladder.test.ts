@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   getLeefstijlLadder,
+  isCadenceLadderAction,
   ladderActionFavoriteId,
   parseLadderFavoriteLayer,
   resolveLadderLayerName,
@@ -74,6 +75,31 @@ describe("parseLadderFavoriteLayer", () => {
   it("geeft null voor wat niet van de ladder komt", () => {
     expect(parseLadderFavoriteLayer("magnesium")).toBeNull();
     expect(parseLadderFavoriteLayer("schap-basis-wandelen")).toBeNull();
+  });
+});
+
+describe("isCadenceLadderAction", () => {
+  it("herkent de twee echte cadans-acties in de ladders", () => {
+    expect(isCadenceLadderAction("Onderbreek elk werkuur twee minuten — staan is genoeg.")).toBe(
+      true,
+    );
+    expect(
+      isCadenceLadderAction("Sta na elk uur achter elkaar werken even op en loop 2 minuten."),
+    ).toBe(true);
+  });
+
+  it("herkent het 'om de N minuten'-sjabloon", () => {
+    expect(isCadenceLadderAction("Sta om de 20-30 minuten even op.")).toBe(true);
+  });
+
+  it("laat eenmalige acties met een eigen tijdstip met rust", () => {
+    expect(isCadenceLadderAction("Doe 4 minuten box-breathing na werk.")).toBe(false);
+    expect(isCadenceLadderAction("Plan een vast eindtijd voor werk.")).toBe(false);
+  });
+
+  it("verwart 'elke week/dag/vierde week' niet met een uur-cadans", () => {
+    expect(isCadenceLadderAction("Neem elke vierde week bewust iets rustiger.")).toBe(false);
+    expect(isCadenceLadderAction("Ga elke dag naar buiten.")).toBe(false);
   });
 });
 
