@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import DomainKompasScreen from "@/components/dashboard/domain/DomainKompasScreen";
-import { DomainLadderFocusProvider } from "@/lib/domain-ladder-focus-context";
+import { DomainLadderFocusProvider, useDomainLadderFocus } from "@/lib/domain-ladder-focus-context";
 import { LadderMomentsProvider } from "@/lib/ladder-moments-context";
 import { VoortgangFavoritesProvider } from "@/lib/voortgang-favorites-context";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
@@ -38,11 +38,22 @@ function data(overrides: Record<string, unknown> = {}): DashboardData {
   } as unknown as DashboardData;
 }
 
+function OpenNonceProbe() {
+  const { openNonce, focus } = useDomainLadderFocus();
+  return (
+    <div>
+      <span data-testid="open-nonce">{openNonce}</span>
+      <span data-testid="focus-layer">{focus?.layerId ?? "none"}</span>
+    </div>
+  );
+}
+
 function renderScreen(domain: PillarId, dashboardData?: DashboardData) {
   return render(
     <DomainLadderFocusProvider>
       <LadderMomentsProvider>
         <VoortgangFavoritesProvider>
+          <OpenNonceProbe />
           <DomainKompasScreen
             domain={domain}
             model={model()}
@@ -100,10 +111,26 @@ describe("DomainKompasScreen — slaap draagt hetzelfde scherm als beweging", ()
     expect(screen.queryByText(/Jouw grootste winst zit op prioriteit/)).toBeNull();
   });
 
-  it("koppelt elke gratis optie aan Mijn keuze én aan Mijn Dag", () => {
+  it("houdt de gratis opties uit het midden — die horen in de context", () => {
     renderScreen("slaap", data());
-    expect(screen.getAllByRole("button", { name: /Zet bij Mijn keuze/ }).length).toBeGreaterThan(0);
-    expect(screen.getAllByRole("button", { name: /Zet op Mijn Dag/ }).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/Gratis, op prioriteit/)).toBeNull();
+    expect(screen.queryByRole("button", { name: /Zet bij Mijn keuze/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: /Zet op Mijn Dag/ })).toBeNull();
+    expect(screen.queryByText(/de opties komen ernaast/)).not.toBeNull();
+  });
+
+  it("zet bij mount de focuslaag zonder de context-sheet te vragen", () => {
+    renderScreen("slaap", data());
+    expect(screen.getByTestId("open-nonce").textContent).toBe("0");
+    expect(screen.getByTestId("focus-layer").textContent).toBe("1");
+  });
+
+  it("vraagt de context-sheet pas bij een tik op een prioriteit", () => {
+    renderScreen("slaap", data());
+    const ladder = screen.getByRole("group", { name: "Je prioriteiten" });
+    fireEvent.click(within(ladder).getByRole("button", { name: /Slaapomgeving/ }));
+    expect(screen.getByTestId("open-nonce").textContent).toBe("1");
+    expect(screen.getByTestId("focus-layer").textContent).toBe("4");
   });
 
   it("sluit af met de eigen CTA-copy van slaap, niet die van beweging", () => {

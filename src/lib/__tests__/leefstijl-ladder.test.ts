@@ -4,6 +4,7 @@ import {
   ladderActionFavoriteId,
   parseLadderFavoriteLayer,
   resolveLadderLayerName,
+  resolveLayerOptions,
 } from "@/lib/leefstijl-ladder";
 
 describe("getLeefstijlLadder", () => {
@@ -86,5 +87,19 @@ describe("resolveLadderLayerName", () => {
   it("verzint geen naam voor een laag die niet bestaat", () => {
     expect(resolveLadderLayerName("slaap", 9)).toBeNull();
     expect(resolveLadderLayerName("energie", 1)).toBeNull();
+  });
+});
+
+describe("resolveLayerOptions", () => {
+  it("levert nu de statische acties van de laag — de vragenlijst vult dit slot later", () => {
+    const layer = getLeefstijlLadder("beweging")!.layers[0];
+    expect(resolveLayerOptions(layer)).toEqual(layer.actions);
+    expect(resolveLayerOptions(layer).length).toBeGreaterThan(0);
+  });
+
+  it("blijft leeg op lagen zonder acties, in plaats van een tweede bron te verzinnen", () => {
+    const layer = getLeefstijlLadder("beweging")!.layers.find((row) => row.id === 6);
+    expect(layer).toBeDefined();
+    expect(resolveLayerOptions(layer!)).toEqual([]);
   });
 });

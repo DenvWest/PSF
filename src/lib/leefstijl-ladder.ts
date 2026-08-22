@@ -87,6 +87,17 @@ export function resolveLadderLayerName(domain: PillarId, layerId: number): strin
   return ladder?.layers.find((layer) => layer.id === layerId)?.name ?? null;
 }
 
+/**
+ * De opties die de contextkolom op een aangeklikte ladderlaag toont.
+ *
+ * Vandaag is dat de statische `actions`-lijst van de laag (prebuild-copy).
+ * Dit is het slot waar de vragenlijst-test later per laag inschuift — dezelfde
+ * plek, een andere bron. Niet mergen: één lijst, één herkomst.
+ */
+export function resolveLayerOptions(layer: LeefstijlLadderLayer): readonly string[] {
+  return layer.actions;
+}
+
 function slugifyAction(action: string): string {
   return action
     .toLowerCase()

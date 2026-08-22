@@ -158,7 +158,6 @@ export default function BewegingKompasScreen({
           layerName={activeLayer.name}
           actions={activeLayer.actions}
           isRecommended={activeLayer.id === focusLayerId}
-          maxActions={2}
           emptyLine={
             activeLayer.id === 6
               ? "Of aanvullen aan de orde is, lees je in je beweegbeeld. Kiezen doe je daarna op je schap, niet hier."

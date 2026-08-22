@@ -12,6 +12,16 @@ type CockpitInspectorProps = {
   remeasureAction?: { due: boolean; onClick: () => void };
   /** Actie onder de Future You-kaart (bv. stille anker-herkeuze). */
   doelFooter?: ReactNode;
+  /**
+   * Kop van het paneel. Op een domeinscherm de aangeklikte prioriteit, anders
+   * de generieke "Context bij vandaag".
+   */
+  title?: string;
+  /**
+   * Optielaag boven de kaarten — de gratis acties van de aangeklikte
+   * prioriteit. Geen InspectorCard: de rijen hebben knoppen.
+   */
+  lead?: ReactNode;
   /** Domein-specifieke compacte widget (bv. week-ritme) — zelfde kaart-look
    * als hierboven, zodat het écht als inspector-inhoud leest i.p.v. een los
    * blok. Eén stuk, telt mee voor de rustige, beperkte totaalindruk. */
@@ -44,14 +54,14 @@ const ICON_BY_KIND: Record<InspectorCard["kind"], keyof typeof Icons> = {
   tip: "Check",
   meet: "Refresh",
   doel: "Spark",
-  laag: "RouteMap",
-  keuze: "Heart",
 };
 
 export default function CockpitInspector({
   cards,
   remeasureAction,
   doelFooter,
+  title = "Context bij vandaag",
+  lead,
   extra,
   titleId,
   onClose,
@@ -65,7 +75,7 @@ export default function CockpitInspector({
           id={titleId}
           className="text-[9.5px] font-bold uppercase tracking-[0.14em] text-[#7E8C82]"
         >
-          Context bij vandaag
+          {title}
         </span>
         {onClose ? (
           <button
@@ -89,6 +99,8 @@ export default function CockpitInspector({
           </button>
         ) : null}
       </div>
+
+      {lead}
 
       {cards.map((card, index) => {
         const accent = ACCENT[card.accent];
@@ -140,7 +152,13 @@ export default function CockpitInspector({
       })}
 
       {extra ? (
-        <div className="flex flex-col gap-3 border-t border-white/10 pt-3">{extra}</div>
+        <div
+          className={`flex flex-col gap-3 ${
+            cards.length > 0 || lead ? "border-t border-white/10 pt-3" : ""
+          }`}
+        >
+          {extra}
+        </div>
       ) : null}
     </div>
   );
