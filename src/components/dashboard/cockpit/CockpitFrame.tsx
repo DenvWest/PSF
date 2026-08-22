@@ -50,6 +50,12 @@ type CockpitFrameProps = {
   remeasureAction?: { due: boolean; onClick: () => void };
   inspectorDoelFooter?: ReactNode;
   inspectorExtra?: ReactNode;
+  /**
+   * De interactieve zones bovenaan de contextkolom (keuzehart). Als functie,
+   * omdat alleen dit frame weet of de kolom een sidebar, een drawer of een
+   * bottom sheet is — en de sheet compactere maten gebruikt.
+   */
+  inspectorPanel?: (compact: boolean) => ReactNode;
   /** Verberg de linker rail (bijv. Mijn Dag: profiel zit al in de header). */
   hideRail?: boolean;
   /** Startstand van de contextrail — alleen de eerste render, de gebruiker
@@ -125,6 +131,7 @@ export default function CockpitFrame({
   remeasureAction,
   inspectorDoelFooter,
   inspectorExtra,
+  inspectorPanel,
   hideRail = false,
   defaultContextCollapsed = false,
   children,
@@ -135,7 +142,10 @@ export default function CockpitFrame({
   const contextTitleId = useId();
   const panelRef = useRef<HTMLElement>(null);
   const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const contextCount = inspectorCards.length + (inspectorExtra ? 1 : 0);
+  // Het keuzehart vervangt de `laag`-kaart door drie zones; als één stuk
+  // context geteld, zodat de badge niet opeens verspringt bij een laagwissel.
+  const contextCount =
+    inspectorCards.length + (inspectorExtra ? 1 : 0) + (inspectorPanel ? 1 : 0);
   const presentation = useCockpitContextLayout();
   const isDrawerMode = presentation !== "sidebar";
   const isSheet = presentation === "sheet";
@@ -317,7 +327,12 @@ export default function CockpitFrame({
           <div
             onClick={closeContext}
             aria-hidden
-            className="fixed inset-0 z-30 bg-black/45 opacity-100 max-xl:hidden"
+            // `xl:hidden`, niet `max-xl:hidden`: dit vlak bestaat alleen ín
+            // drawer-modus (< xl), dus `max-xl:hidden` verborg het precies daar
+            // waar het moest verschijnen — de drawer opende zonder scrim. De
+            // xl-guard blijft nodig voor de eerste render, waarin `useMediaQuery`
+            // nog `false` teruggeeft en het frame even denkt dat het een drawer is.
+            className="fixed inset-0 z-30 bg-black/45 opacity-100 xl:hidden"
           />
         ) : null}
         <aside
@@ -344,7 +359,9 @@ export default function CockpitFrame({
           {isSheet && isDrawerMode ? (
             <div
               aria-hidden
-              className="mx-auto mb-3 h-1 w-10 shrink-0 rounded-full bg-white/20 max-xl:hidden"
+              // Zelfde omkering als bij de scrim hierboven: de greep hoort in de
+              // bottom sheet (< sm) en was met `max-xl:hidden` altijd onzichtbaar.
+              className="mx-auto mb-3 h-1 w-10 shrink-0 rounded-full bg-white/20 xl:hidden"
             />
           ) : null}
           <CockpitInspector
@@ -352,6 +369,7 @@ export default function CockpitFrame({
             remeasureAction={inspectorRemeasureAction}
             doelFooter={inspectorDoelFooter}
             extra={inspectorExtra}
+            panel={inspectorPanel ? inspectorPanel(isSheet) : undefined}
             titleId={contextTitleId}
             onClose={isDrawerMode ? closeContext : undefined}
             onCollapse={isDrawerMode ? undefined : collapseContext}

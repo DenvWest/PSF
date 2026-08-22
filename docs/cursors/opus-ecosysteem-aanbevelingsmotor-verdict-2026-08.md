@@ -71,11 +71,13 @@ Dit is het goedkoopste item in dit document. `LadderActionRow.tsx` is de kaart a
 
 **Wat kapotgaat.** `BESLUIT_BEWEGING` §A.4 NIET-#3 (*"geen permanent gestapeld advies … dat is een schap"*) staat onder spanning. Mitigatie: de kaarten hangen aan de laag die je aanklikte — de klik ís de trigger — en laag 5/6 toont de reden-waarom-niet in plaats van kaarten, zoals nu al (`BewegingKompasScreen.tsx:176-180`).
 
-### C4 · `MijnKeuzeTile` op Kompas — **KEEP nu, REFINE later**
+### C4 · `MijnKeuzeTile` op Kompas — **KEEP tile, afvink eraf (21 aug 2026)**
 
-Vandaag correct en ongewijzigd laten. `MijnKeuzeTile.tsx:22-38` doet precies één ding: wat je koos, als handeling, zonder merk/prijs/oordeel — op Kompas-home domeinoverstijgend (`Dashboard.tsx:2769`) en op het domeinscherm gescoped (`BewegingKompasScreen.tsx:188`). Dat is de N4-lock en die blijft.
+De tile blijft: wat je koos, zonder merk/prijs/oordeel — op Kompas-home domeinoverstijgend en op het domeinscherm gescoped. Dat is de N4-lock voor *wat* je ziet.
 
-**Toekomst (W2+):** zodra de laag kaarten draagt, dreigt dubbeling — dezelfde keuze staat dan als kaart-in-gekozen-staat én als rij in Mijn keuze. **Besluit: op het domeinscherm wint de kaart.** `MijnKeuzeTile` verdwijnt daar en blijft alleen op Kompas-home (cross-domein, waar geen ladder staat). Sessie-lokale afvinkstaat (`:42`) blijft sessie-lokaal — geen koppeling met `daily_action_log`, KILL #8 uit het Mijn Dag-verdict blijft staan.
+**Precisering (21 aug):** sessie-lokale afvinkcirkels zijn verwijderd. `MijnKeuzeTile` is een **read-only snapshot** met CTA “Open Mijn Dag →” (`dashboard_mijn_keuze_open_agenda`). Afvinken leeft alleen op Agenda (`daily_action_log` + `agenda_blocks`) — geen tweede ledger, KILL #8 blijft. Event `dashboard_mijn_keuze_afgevinkt` is retired.
+
+**Toekomst (W2+):** zodra de laag kaarten draagt, dreigt dubbeling — dezelfde keuze staat dan als kaart-in-gekozen-staat én als rij in Mijn keuze. **Besluit: op het domeinscherm wint de kaart.** `MijnKeuzeTile` verdwijnt daar en blijft alleen op Kompas-home (cross-domein, waar geen ladder staat).
 
 ### C5 · Favorieten/schap als surface — **PIVOT naar archief + kaartdetail**
 
@@ -166,7 +168,7 @@ Geen productwijziging vandaag. Het doc gaat vóór W1 om; de code volgt in W2.
 
 | Surface | De vraag | Primair | Secundair | Expliciet NIET |
 |---|---|---|---|---|
-| **Kompas home** | Waar sta ik vandaag, over alle domeinen? | Je prioriteitsdomein + wat je koos, cross-domein (`MijnKeuzeTile surface="kompas_home"`) | Eén regel per ander domein; deur naar het prioriteitsdomein | Geen kaarten (geen ladder = geen laag = geen plaatsingssleutel); geen prijs; geen oordeel-label |
+| **Kompas home** | Waar sta ik vandaag, over alle domeinen? | Je prioriteitsdomein + wat je koos, cross-domein (`MijnKeuzeTile` read-only + CTA Mijn Dag) | Eén regel per ander domein; deur naar het prioriteitsdomein | Geen afvinken (Mijn Dag); geen kaarten; geen prijs; geen oordeel-label |
 | **Kompas domein** | Wat past bij mijn stand op déze laag? | Ladder (6 lagen, klikbaar) + **max 3 aanbevelingskaarten op de gekozen laag**, gratis op rang 1 | Stand + delta in de kop; fit als lens/chip; sluitregel naar Voortgang | Geen afvinken (Mijn Dag); geen fit-*paneel*; geen koopknop; geen kaart op P1/P5; geen commissie op P1–P3; geen postcode-invoer tot W5 |
 | **Mijn Dag** | Wat doe ik nu, en is het gelukt? | De dag + afvinken (`daily_action_log`) | Verplaatsen, "niet vandaag" | Geen oordeel, geen merk, geen prijs, geen vergelijkingslink (N4); geen tweede afvinkbron (KILL #7/#8) |
 | **Voortgang hub** | Beweegt het? | Leefstijllijn over vijf domeinen + tijdlijn van checks | Keuze-archief in één regel; doel/ijkpunt | Geen kaarten; geen aanbod; geen afvinken (`voortgang-plan-later.md:7-9`) |
@@ -265,7 +267,7 @@ Drie nieuwe events voor ná W2. Elk vereist registratie op **drie plekken**; let
 | C1 | L3-gate verhuist van Kompas naar Mijn Dag | **PIVOT — ja** |
 | C2 | Fit sorteert op Kompas; paneel blijft verboden; L1/L2 hard | **REFINE — ja** |
 | C3 | `DomainFreeActionsTile` → `DomainLayerRecommendations`, cap 3, gratis op rang 1 | **REFINE — ja** |
-| C4 | `MijnKeuzeTile` blijft nu; verdwijnt in W2 van het domeinscherm | **KEEP nu — ja** |
+| C4 | `MijnKeuzeTile` blijft (read-only); afvink alleen Mijn Dag; verdwijnt in W2 van domeinscherm | **KEEP tile + afvink eraf — gedaan 21 aug** |
 | C5 | Favorieten wordt archief + kaartdetail | **PIVOT — ja** |
 | C6 | Normatief = E-vorm × B-inhoud, begrensd per laag volgens `AANBIEDERS §C1` | **PIVOT — ja** |
 | J1 | Commissie blijft op P4 (of: apart besluit om dat te openen) | **§C1 wint — bevestig** |

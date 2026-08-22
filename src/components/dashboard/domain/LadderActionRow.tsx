@@ -18,6 +18,13 @@ export type LadderActionRowProps = {
   /** Of deze laag de winst-laag uit de check is — stuurt alleen de herkomst. */
   isRecommended: boolean;
   surface: string;
+  /**
+   * Smalle kolom: tekst bóven de handelingen, en de knoppen mogen breken.
+   * De contextkolom is ~288px bij `xl` en ~320px in de bottom sheet; twee
+   * knoppen naast elkaar zijn daar samen breder dan de kaart, en `shrink-0`
+   * laat ze dan buiten de rand lopen in plaats van af te breken.
+   */
+  dense?: boolean;
 };
 
 /**
@@ -59,15 +66,21 @@ const AFFORDANCE_RENDERERS: Record<
 };
 
 export default function LadderActionRow(props: LadderActionRowProps) {
-  const { domain, layerId, action } = props;
+  const { domain, layerId, action, dense = false } = props;
   const affordances = resolveLadderAffordances({ domain, layerId, action });
 
   return (
-    <li className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t border-white/[0.06] py-2.5 first:border-t-0 first:pt-0">
+    <li
+      className={`flex flex-wrap gap-x-3 gap-y-2 border-t border-white/[0.06] py-2.5 first:border-t-0 first:pt-0 ${
+        dense ? "flex-col items-start" : "items-center justify-between"
+      }`}
+    >
       <p className="m-0 min-w-[18ch] flex-1 text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
         {action}
       </p>
-      <div className="flex shrink-0 flex-wrap items-center gap-2">
+      <div
+        className={`flex flex-wrap items-center gap-2 ${dense ? "w-full" : "shrink-0"}`}
+      >
         {affordances.map((id) => (
           <div key={id}>{AFFORDANCE_RENDERERS[id](props)}</div>
         ))}

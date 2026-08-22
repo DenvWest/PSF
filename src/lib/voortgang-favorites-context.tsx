@@ -21,7 +21,8 @@ type VoortgangFavoritesContextValue = {
   items: VoortgangFavoriteItem[];
   hydrated: boolean;
   isSaved: (id: string) => boolean;
-  save: (item: VoortgangFavoriteItem) => void;
+  /** `surface` gaat alleen naar de meting, niet naar `account_favorites`. */
+  save: (item: VoortgangFavoriteItem, surface?: string) => void;
   remove: (id: string) => void;
 };
 
@@ -102,16 +103,23 @@ export function VoortgangFavoritesProvider({ children }: { children: ReactNode }
     [items],
   );
 
-  const save = useCallback((item: VoortgangFavoriteItem) => {
+  const save = useCallback((item: VoortgangFavoriteItem, surface?: string) => {
     setItems((current) => {
       if (current.some((row) => row.id === item.id)) {
         return current;
       }
+      // `surface` is een extra dimensie, geen nieuwe betekenis op een bestaande
+      // parameter: dezelfde gebeurtenis (er is iets bewaard), nu ook af te lezen
+      // per plek — midden vs. contextkolom. Nooit als waarde in `source`: dat
+      // betekent wie het voorstelde (aanbevolen/mijn_keuze) en het is een kolom
+      // in `account_favorites`. Rijen van vóór 22 augustus 2026 dragen geen
+      // surface; lees "ontbreekt" als vóór de zijbalk, niet als midden.
       trackEvent("dashboard_favorieten_save", {
         item_id: item.id,
         kind: item.kind,
         ...(item.source ? { source: item.source } : {}),
         ...(item.domain ? { domain: item.domain } : {}),
+        ...(surface ? { surface } : {}),
       });
       clarityTag("dashboard_favorieten", item.id);
       return [...current, item];

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import * as Icons from "@/components/app/icons";
 import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell";
 import DomainFreeActionsTile from "@/components/dashboard/domain/DomainFreeActionsTile";
@@ -56,8 +56,10 @@ export default function DomainKompasScreen({
   onGoAgenda,
   onGoVoortgangDomein,
 }: DomainKompasScreenProps) {
-  const [selectedLayerId, setSelectedLayerId] = useState<number | null>(null);
-  const { setFocus } = useDomainLadderFocus();
+  // De laagkeuze woont in de context, niet in dit scherm: de contextkolom kiest
+  // met dezelfde `selectLayer` (roadmap §7.2). Wat hier nog wél lokaal is, is de
+  // afleiding — keuze als die er is, anders de winst-laag uit de check.
+  const { setFocus, selected, selectLayer } = useDomainLadderFocus();
 
   const ladder = getLeefstijlLadder(domain);
   const readout = resolveDomainLadderReadout(domain, data);
@@ -68,6 +70,7 @@ export default function DomainKompasScreen({
   // eigen domeincheck is er geen winst-laag om op te beginnen — dan opent de
   // ladder op prioriteit 1. Dat claimt niets, maar het scherm is wel meteen
   // bruikbaar.
+  const selectedLayerId = selected && selected.domain === domain ? selected.layerId : null;
   const activeLayerId = selectedLayerId ?? focusLayerId ?? 1;
 
   const score = model.scores[domain] ?? 0;
@@ -77,12 +80,22 @@ export default function DomainKompasScreen({
     [model, domain],
   );
 
-  // De contextkolom leest dezelfde laag. Opruimen bij verlaten, anders blijft
-  // er context van dit domein staan op een scherm dat er niet meer over gaat.
+  // De contextkolom leest dezelfde laag; dit scherm publiceert hem.
   useEffect(() => {
     setFocus({ domain, layerId: activeLayerId });
-    return () => setFocus(null);
   }, [domain, activeLayerId, setFocus]);
+
+  // Opruimen alleen bij verlaten, anders blijft er context van dit domein staan
+  // op een scherm dat er niet meer over gaat. Bewust een eigen effect met
+  // stabiele deps: in het effect hierboven zou de cleanup bij elke laagwissel
+  // de zojuist gemaakte keuze weer wissen.
+  useEffect(
+    () => () => {
+      setFocus(null);
+      selectLayer(null);
+    },
+    [setFocus, selectLayer],
+  );
 
   if (!ladder || !copy) {
     return null;
@@ -121,7 +134,7 @@ export default function DomainKompasScreen({
               ? { layerStates: readout.layerStates, stateLabels: readout.stateLabels }
               : {})}
             selectedLayer={activeLayerId}
-            onSelectLayer={setSelectedLayerId}
+            onSelectLayer={(layerId) => selectLayer({ domain, layerId })}
             whyWait={readout?.whyWait}
             domain={domain}
             columns={2}
@@ -138,7 +151,7 @@ export default function DomainKompasScreen({
               {focusLayerId}.{" "}
               <button
                 type="button"
-                onClick={() => setSelectedLayerId(focusLayerId)}
+                onClick={() => selectLayer({ domain, layerId: focusLayerId })}
                 className="cursor-pointer border-none bg-transparent p-0 text-left font-semibold text-[#9CC5A9] underline"
               >
                 Terug daarheen

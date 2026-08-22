@@ -75,6 +75,7 @@ describe("PrioriteitenLadder op echte domeindata", () => {
         kind: "activiteit",
         domain: "slaap",
       }),
+      "leefstijlprofiel_slaap",
     );
   });
 

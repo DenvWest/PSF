@@ -97,6 +97,7 @@ import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
 import DomainKompasScreen from "@/components/dashboard/domain/DomainKompasScreen";
+import DomainLadderContextPanel from "@/components/dashboard/domain/DomainLadderContextPanel";
 import { buildInspectorCards, buildLadderInspectorCards } from "@/lib/cockpit-inspector";
 import {
   EMPTY_MOVEMENT_PREFS,
@@ -132,6 +133,7 @@ import {
 import { LadderMomentsProvider } from "@/lib/ladder-moments-context";
 import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
+import { hasLadderKeuzehart } from "@/lib/ladder-keuzehart";
 import { getLeefstijlLadder, parseLadderFavoriteLayer } from "@/lib/leefstijl-ladder";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { useTodayActionDone } from "@/lib/use-today-action-done";
@@ -3594,6 +3596,9 @@ function DashboardContent({
     const readout = resolveDomainLadderReadout(ladderFocus.domain, data);
     const state = readout?.layerStates[layer.id] ?? null;
     return buildLadderInspectorCards({
+      // Waar het keuzehart draait, draagt het paneel de laag-zone al — mét de
+      // reden en de laag-navigator, die geen kaart kunnen zijn.
+      omitLayerCard: hasLadderKeuzehart(ladderFocus.domain),
       layerId: layer.id,
       layerName: layer.name,
       layerSummary: layer.summary,
@@ -3627,6 +3632,20 @@ function DashboardContent({
     ? { due: data.remeasure.daysUntil <= 0, onClick: onRemeasure }
     : undefined;
   const inspectorExtra = <>{dashboardInfoCard}</>;
+  // Zone 1-3 van de contextkolom: aanbevolen laag mét reden, laag-navigator,
+  // en de actie met zijn save-knop. Alleen op de domeinen die het keuzehart
+  // dragen (plak 1: beweging); de rest houdt zijn bestaande kaarten.
+  const inspectorPanel =
+    ladderFocus && hasLadderKeuzehart(ladderFocus.domain)
+      ? (compact: boolean) => (
+          <DomainLadderContextPanel
+            domain={ladderFocus.domain}
+            layerId={ladderFocus.layerId}
+            data={data}
+            compact={compact}
+          />
+        )
+      : undefined;
   const inspectorDoelFooter =
     viewedDomain === "beweging" && effectiveMovementPrefs.anchor ? (
       <MovementAnchorRechoose
@@ -3703,6 +3722,7 @@ function DashboardContent({
         remeasureAction={remeasureAction}
         inspectorDoelFooter={inspectorDoelFooter}
         inspectorExtra={inspectorExtra}
+        inspectorPanel={inspectorPanel}
         hideRail={tab === "agenda"}
         // De prebuild-surfaces hebben de volle breedte nodig om hun eigen
         // @container-lagen (mobiel/iPad/desktop) te bereiken — de context-

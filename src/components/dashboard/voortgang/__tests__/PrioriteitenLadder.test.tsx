@@ -178,13 +178,16 @@ describe("PrioriteitenLadder", () => {
     fireEvent.click(screen.getByText("Tweede prioriteit"));
     fireEvent.click(screen.getAllByRole("button", { name: "Zet bij Mijn keuze" })[0]);
 
-    expect(save).toHaveBeenCalledWith({
-      id: "laag-stress-p2-actie-2a",
-      title: "Actie 2a",
-      kind: "activiteit",
-      domain: "stress",
-      source: "mijn_keuze",
-    });
+    expect(save).toHaveBeenCalledWith(
+      {
+        id: "laag-stress-p2-actie-2a",
+        title: "Actie 2a",
+        kind: "activiteit",
+        domain: "stress",
+        source: "mijn_keuze",
+      },
+      "test",
+    );
   });
 
   it("toont per laag wat je daar koos, en telt het op de dichte rij", () => {

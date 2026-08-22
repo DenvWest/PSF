@@ -16,6 +16,13 @@ type CockpitInspectorProps = {
    * als hierboven, zodat het écht als inspector-inhoud leest i.p.v. een los
    * blok. Eén stuk, telt mee voor de rustige, beperkte totaalindruk. */
   extra?: ReactNode;
+  /**
+   * Interactieve zones bovenaan de kolom, vóór de kaarten. Kaarten zijn data
+   * ({@link InspectorCard}: kicker/titel/tekst) en kunnen geen knop dragen; het
+   * keuzehart op een domeinscherm wél. Wie dit meegeeft, levert de
+   * `laag`-kaart niet óók aan — anders staat dezelfde laag er twee keer.
+   */
+  panel?: ReactNode;
   /** Koppelt aria-labelledby op de context-drawer. */
   titleId?: string;
   /** Sluitknop in drawer-modus; niet getoond in vaste sidebar. */
@@ -53,6 +60,7 @@ export default function CockpitInspector({
   remeasureAction,
   doelFooter,
   extra,
+  panel,
   titleId,
   onClose,
   onCollapse,
@@ -89,6 +97,8 @@ export default function CockpitInspector({
           </button>
         ) : null}
       </div>
+
+      {panel}
 
       {cards.map((card, index) => {
         const accent = ACCENT[card.accent];

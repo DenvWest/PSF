@@ -32,12 +32,17 @@ describe("FavoriteSaveButton", () => {
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: "Bewaar in favorieten" }));
-    expect(mockSave).toHaveBeenCalledWith({
-      id: "card-1",
-      title: "Kracht",
-      kind: "activiteit",
-      domain: "beweging",
-      source: "aanbevolen",
-    });
+    // De surface reist mee naar de meting (en alleen daarheen) — zo is af te
+    // lezen of iemand in het midden of in de contextkolom koos.
+    expect(mockSave).toHaveBeenCalledWith(
+      {
+        id: "card-1",
+        title: "Kracht",
+        kind: "activiteit",
+        domain: "beweging",
+        source: "aanbevolen",
+      },
+      "test",
+    );
   });
 });

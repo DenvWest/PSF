@@ -96,6 +96,12 @@ export type LadderInspectorInput = {
   chosen: readonly { title: string; moment?: string | null }[];
   /** Of dit de laag is die de check aanwijst. Stuurt alleen het accent. */
   isFocus?: boolean;
+  /**
+   * Laat de `laag`-kaart weg omdat het keuzehart-paneel die zone al draagt
+   * (mét de reden en de laag-navigator). De `keuze`-kaart blijft — die is
+   * dezelfde op beide paden.
+   */
+  omitLayerCard?: boolean;
 };
 
 /**
@@ -111,15 +117,17 @@ export type LadderInspectorInput = {
 export function buildLadderInspectorCards(input: LadderInspectorInput): InspectorCard[] {
   const cards: InspectorCard[] = [];
 
-  cards.push({
-    kind: "laag",
-    accent: input.isFocus ? "terra" : "neutral",
-    kicker: input.stateLabel
-      ? `Prioriteit ${input.layerId} · ${input.stateLabel}`
-      : `Prioriteit ${input.layerId}`,
-    title: input.layerName,
-    body: input.whyWait ? `${input.layerSummary} ${input.whyWait}` : input.layerSummary,
-  });
+  if (!input.omitLayerCard) {
+    cards.push({
+      kind: "laag",
+      accent: input.isFocus ? "terra" : "neutral",
+      kicker: input.stateLabel
+        ? `Prioriteit ${input.layerId} · ${input.stateLabel}`
+        : `Prioriteit ${input.layerId}`,
+      title: input.layerName,
+      body: input.whyWait ? `${input.layerSummary} ${input.whyWait}` : input.layerSummary,
+    });
+  }
 
   cards.push({
     kind: "keuze",

@@ -29,7 +29,7 @@ export default function FavoriteSaveButton({
       remove(item.id);
       return;
     }
-    save(item);
+    save(item, surface);
   };
 
   const savedLabel = labels?.saved ?? "Staat in favorieten";

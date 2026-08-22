@@ -66,6 +66,65 @@ export type DomainLadderReadout = {
   recommendedLayerIds: readonly number[];
 };
 
+/**
+ * Waarom déze laag — één zin, en alleen waar de check er een levert.
+ *
+ * De precedentie is vastgelegd in het zijbalk-verdict §D:
+ *
+ * | Situatie | Bron |
+ * |---|---|
+ * | laag == winst-laag | de feitenrij van die laag (`bewijs`) |
+ * | laag > winst-laag  | `whyWait` (`wacht`) |
+ * | laag < winst-laag, of geen check | niets |
+ *
+ * `null` betekent: we hebben hier geen reden, dus we doen ook niet alsof. Dat
+ * is de machinaal toetsbare kant van tegenspraak J3 — geen redenblok waar
+ * `evidenceByLayer` leeg is én `whyWait` niets teruggeeft. Stress levert
+ * vandaag op elke laag `null` (zijn feitenrijen komen met T1d), voeding en
+ * verbinding hebben helemaal geen readout. Dat is de eerlijke stand, geen bug.
+ *
+ * De conclusiezin (`headline`) is met opzet géén val: die staat al bovenaan
+ * het domeinscherm en is niet per laag geschreven.
+ */
+export type LadderLayerReason =
+  | {
+      kind: "bewijs";
+      label: string;
+      answerLabel: string;
+      benchmarkLabel: string | null;
+      whyLine: string;
+    }
+  | { kind: "wacht"; line: string };
+
+export function resolveLadderLayerReason(
+  readout: DomainLadderReadout | null,
+  layerId: number,
+): LadderLayerReason | null {
+  if (!readout) {
+    return null;
+  }
+
+  if (layerId === readout.focusLayer) {
+    const rows = readout.evidenceByLayer[layerId] ?? [];
+    if (rows.length === 0) {
+      return null;
+    }
+    // De rij die onder de richtlijn zit is de reden dat deze laag de winst-laag
+    // is; staat er geen, dan draagt de eerste rij het beeld.
+    const row = rows.find((candidate) => candidate.status === "below") ?? rows[0];
+    return {
+      kind: "bewijs",
+      label: row.label,
+      answerLabel: row.answerLabel,
+      benchmarkLabel: row.benchmarkLabel ?? null,
+      whyLine: row.whyLine,
+    };
+  }
+
+  const wait = readout.whyWait(layerId);
+  return wait ? { kind: "wacht", line: wait } : null;
+}
+
 const MOVEMENT_LAYER_FACT_KEYS: Partial<Record<MovementPriorityId, readonly MovementFactRowKey[]>> = {
   1: ["zitten", "mobiliteit"],
   2: ["kracht", "aeroob"],

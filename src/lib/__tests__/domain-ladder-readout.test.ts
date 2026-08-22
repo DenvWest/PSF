@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
+import {
+  resolveDomainLadderReadout,
+  resolveLadderLayerReason,
+} from "@/lib/domain-ladder-readout";
 import type { DashboardData } from "@/types/dashboard";
 
 function dataWithSleep(
@@ -110,5 +113,84 @@ describe("resolveDomainLadderReadout — zonder check, en zonder ladder-domein",
     expect(resolveDomainLadderReadout("stress", dataWithSleep())).toBeNull();
     expect(resolveDomainLadderReadout("voeding", dataWithSleep())).toBeNull();
     expect(resolveDomainLadderReadout("verbinding", dataWithSleep())).toBeNull();
+  });
+});
+
+describe("resolveLadderLayerReason — de vanwege, en alleen waar hij bestaat", () => {
+  it("draagt op de winst-laag de feitenrij die hem verklaart", () => {
+    const readout = resolveDomainLadderReadout("slaap", dataWithSleep());
+    const reason = resolveLadderLayerReason(readout, 1);
+    expect(reason).toEqual({
+      kind: "bewijs",
+      label: "Slaapduur",
+      answerLabel: "6 uur",
+      benchmarkLabel: "Populatierichtlijn: 7+ uur",
+      whyLine: "Onder de gangbare ondergrens voor volwassenen.",
+    });
+  });
+
+  it("kiest binnen een laag de rij die onder de richtlijn zit, niet de eerste", () => {
+    const readout = resolveDomainLadderReadout(
+      "slaap",
+      dataWithSleep({
+        focusLayer: 3,
+        layerStates: { 1: "ok", 2: "ok", 3: "winst", 4: "wacht", 5: "wacht", 6: "wacht" },
+        factRows: [
+          {
+            key: "morninglight",
+            label: "Ochtendlicht",
+            answerLabel: "Soms",
+            benchmarkLabel: null,
+            status: "near",
+            layer: 3,
+            whyLine: "Licht in het eerste uur zet je klok gelijk.",
+          },
+          {
+            key: "winddown",
+            label: "Avondafbouw",
+            answerLabel: "Zelden",
+            benchmarkLabel: null,
+            status: "below",
+            layer: 3,
+            whyLine: "Zonder afbouwtijd loopt de dag door tot in je bed.",
+          },
+        ],
+      } as never),
+    );
+    const reason = resolveLadderLayerReason(readout, 3);
+    expect(reason?.kind).toBe("bewijs");
+    expect(reason).toMatchObject({ label: "Avondafbouw" });
+  });
+
+  it("geeft boven de winst-laag de wacht-regel", () => {
+    const readout = resolveDomainLadderReadout("slaap", dataWithSleep());
+    expect(resolveLadderLayerReason(readout, 6)).toEqual({
+      kind: "wacht",
+      line: "Eerst gelegenheid, dan een potje.",
+    });
+  });
+
+  it("claimt niets onder de winst-laag", () => {
+    const readout = resolveDomainLadderReadout(
+      "slaap",
+      dataWithSleep({
+        focusLayer: 3,
+        layerStates: { 1: "ok", 2: "ok", 3: "winst", 4: "wacht", 5: "wacht", 6: "wacht" },
+      } as never),
+    );
+    expect(resolveLadderLayerReason(readout, 1)).toBeNull();
+  });
+
+  it("geeft null als de winst-laag geen bewijsrij heeft — geen verzonnen reden (J3)", () => {
+    const readout = resolveDomainLadderReadout(
+      "slaap",
+      dataWithSleep({ focusLayer: 4 } as never),
+    );
+    expect(readout?.evidenceByLayer[4]).toBeUndefined();
+    expect(resolveLadderLayerReason(readout, 4)).toBeNull();
+  });
+
+  it("geeft null zonder readout — voeding en verbinding hebben er geen", () => {
+    expect(resolveLadderLayerReason(null, 1)).toBeNull();
   });
 });
