@@ -65,7 +65,7 @@ describe("DomainFreeActionsTile — N4: geen aanbod op een doe-surface", () => {
     expect(screen.queryByRole("button", { name: /Zet op Mijn Dag/ })).toBeNull();
   });
 
-  it("noemt geen merk, prijs of oordeel — alleen de check als bron", () => {
+  it("noemt geen merk, prijs of oordeel", () => {
     renderTile();
     const text = document.body.textContent ?? "";
     expect(text).not.toMatch(/€|Aanrader|Alleen als|Nu niet/);
@@ -74,6 +74,12 @@ describe("DomainFreeActionsTile — N4: geen aanbod op een doe-surface", () => {
 
   it("werkt op elk domein met een ladder, niet alleen beweging", () => {
     renderTile({ domain: "slaap", layerId: 2, layerName: "Ritme & slaapgewoonten" });
-    expect(screen.queryByText(/Gratis, op prioriteit 2 · ritme & slaapgewoonten/)).not.toBeNull();
+    expect(screen.queryByText(/Prioriteit 2 · Ritme & slaapgewoonten/)).not.toBeNull();
+  });
+
+  it("toont de staatlabel naast de kop wanneer de check die heeft", () => {
+    renderTile({ isRecommended: true, stateLabel: "Grootste winst" });
+    expect(screen.queryByText("Grootste winst")).not.toBeNull();
+    expect(screen.queryByText(/Dit is de laag waar je winst nu zit/)).not.toBeNull();
   });
 });

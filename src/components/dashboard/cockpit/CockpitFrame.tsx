@@ -10,6 +10,7 @@ import { clarityTag } from "@/lib/clarity";
 import type { InspectorCard } from "@/lib/cockpit-inspector";
 import { trackEvent } from "@/lib/ga4";
 import { resolveCockpitContextTriggerAction } from "@/lib/cockpit-context-layout";
+import { useLadderContextOpenRequest } from "@/lib/domain-ladder-focus-context";
 import { useCockpitContextLayout } from "@/lib/use-cockpit-context-layout";
 import type {
   ContextRailDomainItem,
@@ -47,6 +48,10 @@ type CockpitFrameProps = {
   onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
   onOpenVoortgangAanbouw?: () => void;
   inspectorCards: InspectorCard[];
+  /** Kop van het contextpaneel; default in CockpitInspector. */
+  inspectorTitle?: string;
+  /** Optielaag van de aangeklikte prioriteit — boven de kaarten. */
+  inspectorLead?: ReactNode;
   remeasureAction?: { due: boolean; onClick: () => void };
   inspectorDoelFooter?: ReactNode;
   inspectorExtra?: ReactNode;
@@ -122,6 +127,8 @@ export default function CockpitFrame({
   onOpenLeefstijlprofielDomein,
   onOpenVoortgangAanbouw,
   inspectorCards,
+  inspectorTitle,
+  inspectorLead,
   remeasureAction,
   inspectorDoelFooter,
   inspectorExtra,
@@ -135,7 +142,8 @@ export default function CockpitFrame({
   const contextTitleId = useId();
   const panelRef = useRef<HTMLElement>(null);
   const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const contextCount = inspectorCards.length + (inspectorExtra ? 1 : 0);
+  const contextCount =
+    inspectorCards.length + (inspectorExtra ? 1 : 0) + (inspectorLead ? 1 : 0);
   const presentation = useCockpitContextLayout();
   const isDrawerMode = presentation !== "sidebar";
   const isSheet = presentation === "sheet";
@@ -162,14 +170,18 @@ export default function CockpitFrame({
       }
     : undefined;
 
-  const openContext = useCallback(() => {
-    setContextOpen(true);
-    trackEvent("dashboard_context_opened", {
-      card_count: contextCount,
-      presentation,
-    });
-    clarityTag("dashboard_context", `open_${presentation}`);
-  }, [contextCount, presentation]);
+  const openContext = useCallback(
+    (source: "bell" | "ladder" = "bell") => {
+      setContextOpen(true);
+      trackEvent("dashboard_context_opened", {
+        card_count: contextCount,
+        presentation,
+        source,
+      });
+      clarityTag("dashboard_context", `open_${presentation}`);
+    },
+    [contextCount, presentation],
+  );
 
   const closeContext = useCallback(() => {
     setContextOpen(false);
@@ -227,6 +239,43 @@ export default function CockpitFrame({
     contextCount,
     highlightContext,
   ]);
+
+  const handleLadderOpenRequest = useCallback(() => {
+    const action = resolveCockpitContextTriggerAction(
+      presentation,
+      contextCollapsed,
+    );
+
+    if (action === "open") {
+      openContext("ladder");
+      return;
+    }
+
+    if (action === "expand") {
+      setContextCollapsed(false);
+      trackEvent("dashboard_context_expanded", {
+        card_count: contextCount,
+        source: "ladder",
+      });
+      clarityTag("dashboard_context", "expand_sidebar");
+    } else {
+      trackEvent("dashboard_context_focused", {
+        card_count: contextCount,
+        source: "ladder",
+      });
+      clarityTag("dashboard_context", "focus_sidebar");
+    }
+
+    highlightContext();
+  }, [
+    presentation,
+    contextCollapsed,
+    openContext,
+    contextCount,
+    highlightContext,
+  ]);
+
+  useLadderContextOpenRequest(handleLadderOpenRequest);
 
   useEffect(() => {
     if (!isDialogOpen) {
@@ -349,6 +398,8 @@ export default function CockpitFrame({
           ) : null}
           <CockpitInspector
             cards={inspectorCards}
+            title={inspectorTitle}
+            lead={inspectorLead}
             remeasureAction={inspectorRemeasureAction}
             doelFooter={inspectorDoelFooter}
             extra={inspectorExtra}

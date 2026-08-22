@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell";
-import DomainFreeActionsTile from "@/components/dashboard/domain/DomainFreeActionsTile";
 import DomainKompasHead from "@/components/dashboard/domain/DomainKompasHead";
 import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
 import MijnKeuzeTile from "@/components/dashboard/MijnKeuzeTile";
@@ -27,12 +26,14 @@ type DomainKompasScreenProps = {
 };
 
 /**
- * Kompas › domein: je stand, je prioriteiten, en wat je op de laag die je
- * aanklikt gratis kunt doen — in één beeld.
+ * Kompas › domein: je stand en je prioriteiten. Wat je op een laag gratis
+ * kunt doen staat in de contextkolom — op mobiel een sheet die omhoog komt
+ * als je een prioriteit aantikte, niet nog een tegel onder de ladder.
  *
  * De vorm is `renderE` uit de beweging-prebuild v3.6, die op zijn beurt de
  * vorm van slaap v2 `renderK` overneemt: één domeinkaart met ring en kop, de
- * ladder erin, één blok gratis opties eronder, en een CTA-stapel.
+ * ladder erin, en een CTA-stapel. De gratis opties horen bij de laag die je
+ * aanklikt, dus bij de context, niet als tweede kopie in het midden.
  *
  * Dit bestand heette tot 20 augustus `BewegingKompasScreen` en kende maar één
  * domein. Slaap kreeg daardoor een prebuild-iframe terwijl het al alles had om
@@ -57,7 +58,7 @@ export default function DomainKompasScreen({
   onGoVoortgangDomein,
 }: DomainKompasScreenProps) {
   const [selectedLayerId, setSelectedLayerId] = useState<number | null>(null);
-  const { setFocus } = useDomainLadderFocus();
+  const { setFocus, requestOpen } = useDomainLadderFocus();
 
   const ladder = getLeefstijlLadder(domain);
   const readout = resolveDomainLadderReadout(domain, data);
@@ -89,6 +90,12 @@ export default function DomainKompasScreen({
   }
 
   const activeLayer = ladder.layers.find((layer) => layer.id === activeLayerId) ?? null;
+
+  function handleSelectLayer(layerId: number) {
+    setSelectedLayerId(layerId);
+    requestOpen();
+  }
+
   const measuredLine =
     daysAgo == null
       ? `nog geen ${copy.checkNoun}`
@@ -112,8 +119,8 @@ export default function DomainKompasScreen({
         <div className="mt-3 border-t border-white/[0.06] pt-3">
           <p className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
             {readout
-              ? "Waar je winst nu zit · tik een prioriteit aan"
-              : `${copy.ladderEyebrowWithoutCheck} · tik een prioriteit aan`}
+              ? "Waar je winst nu zit · tik een prioriteit — de opties komen ernaast"
+              : `${copy.ladderEyebrowWithoutCheck} · tik een prioriteit — de opties komen ernaast`}
           </p>
           <DomainLifestyleLadder
             layers={ladder.layers}
@@ -121,7 +128,7 @@ export default function DomainKompasScreen({
               ? { layerStates: readout.layerStates, stateLabels: readout.stateLabels }
               : {})}
             selectedLayer={activeLayerId}
-            onSelectLayer={setSelectedLayerId}
+            onSelectLayer={handleSelectLayer}
             whyWait={readout?.whyWait}
             domain={domain}
             columns={2}
@@ -138,7 +145,7 @@ export default function DomainKompasScreen({
               {focusLayerId}.{" "}
               <button
                 type="button"
-                onClick={() => setSelectedLayerId(focusLayerId)}
+                onClick={() => handleSelectLayer(focusLayerId)}
                 className="cursor-pointer border-none bg-transparent p-0 text-left font-semibold text-[#9CC5A9] underline"
               >
                 Terug daarheen
@@ -147,25 +154,6 @@ export default function DomainKompasScreen({
           ) : null}
         </div>
       </DomainKompasHead>
-
-      {/* De opties op de laag die je aanklikte. Staat er niets klaar, dan legt
-          het blok uit waarom, in plaats van te verdwijnen onder je vinger. */}
-      {activeLayer ? (
-        <DomainFreeActionsTile
-          domain={domain}
-          layerId={activeLayer.id}
-          layerName={activeLayer.name}
-          actions={activeLayer.actions}
-          isRecommended={activeLayer.id === focusLayerId}
-          maxActions={2}
-          emptyLine={
-            copy.emptyLine?.(activeLayer.id) ??
-            readout?.whyWait(activeLayer.id) ??
-            activeLayer.summary
-          }
-          surface={copy.surface}
-        />
-      ) : null}
 
       {/* N4: wat je koos, als snapshot — naam + herkomst, nooit merk of prijs.
           Afvinken op Mijn Dag. Verdwijnt zolang je nog niets koos. */}

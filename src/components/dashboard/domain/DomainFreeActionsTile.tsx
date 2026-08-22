@@ -11,13 +11,13 @@ export type DomainFreeActionsTileProps = {
   actions: readonly string[];
   /** Of deze laag de winst-laag uit de check is — stuurt alleen de kop-copy. */
   isRecommended?: boolean;
+  /** "Grootste winst", "Op orde", … — alleen waar de check een staat oplevert. */
+  stateLabel?: string | null;
   /**
    * Waarom hier niets klaarstaat. Alleen op de lagen zonder acties: dan legt
    * het blok uit waarom, in plaats van te verdwijnen onder je vinger.
    */
   emptyLine?: string | null;
-  /** Hoeveel opties er maximaal in beeld komen. De domeinschermen tonen er twee. */
-  maxActions?: number;
   surface: string;
 };
 
@@ -25,8 +25,8 @@ export type DomainFreeActionsTileProps = {
  * De gratis opties op de laag die je in de ladder aanklikte — voor elk domein
  * met een leefstijlladder, niet alleen beweging.
  *
- * Bron is altijd `LeefstijlLadderLayer.actions`, dezelfde als de ladder op
- * Voortgang, dus Vandaag en Voortgang kunnen niet uiteenlopen (lock 4). Wat je
+ * Bron is `resolveLayerOptions` (vandaag `layer.actions`). Dezelfde lijst als
+ * Voortgang, dus Kompas en Voortgang kunnen niet uiteenlopen (lock 4). Wat je
  * hier kunt kopen of uitbesteden staat op het schap, niet hier: gratis blijft
  * gratis en ongegate (lock 1 / N4).
  *
@@ -41,18 +41,23 @@ export default function DomainFreeActionsTile({
   layerName,
   actions,
   isRecommended = false,
+  stateLabel = null,
   emptyLine = null,
-  maxActions = 3,
   surface,
 }: DomainFreeActionsTileProps) {
-  const eyebrow = `Gratis, op prioriteit ${layerId} · ${layerName.toLowerCase()}`;
+  const eyebrow = `Prioriteit ${layerId} · ${layerName}`;
+  const stateAside = stateLabel ? (
+    <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.12em] text-[#C8956C]">
+      {stateLabel}
+    </span>
+  ) : null;
 
   if (actions.length === 0) {
     if (!emptyLine) {
       return null;
     }
     return (
-      <CockpitTile eyebrow={eyebrow}>
+      <CockpitTile eyebrow={eyebrow} aside={stateAside}>
         <p className="mt-2.5 max-w-[58ch] text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
           {emptyLine}
         </p>
@@ -61,14 +66,14 @@ export default function DomainFreeActionsTile({
   }
 
   return (
-    <CockpitTile eyebrow={eyebrow}>
+    <CockpitTile eyebrow={eyebrow} aside={stateAside}>
       {isRecommended ? (
         <p className="mb-2.5 mt-2 max-w-[58ch] text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
-          Dit is de laag waar je winst nu zit. Wat hier staat kost niets en komt uit je check.
+          Dit is de laag waar je winst nu zit. Wat hier staat kost niets.
         </p>
       ) : null}
       <ul className="m-0 flex list-none flex-col gap-0 p-0">
-        {actions.slice(0, maxActions).map((action) => (
+        {actions.map((action) => (
           <LadderActionRow
             key={action}
             domain={domain}
@@ -80,7 +85,7 @@ export default function DomainFreeActionsTile({
         ))}
       </ul>
       <p className="mt-2.5 text-[11px] leading-relaxed text-[#7E8C82]">
-        Hier verdienen we niets aan. Ze komen uit je check, niet uit een schap.
+        Hier verdienen we niets aan.
       </p>
     </CockpitTile>
   );
