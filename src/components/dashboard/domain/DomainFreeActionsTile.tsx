@@ -2,6 +2,8 @@
 
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import LadderActionRow from "@/components/dashboard/domain/LadderActionRow";
+import { ladderActionFavoriteId, parseLadderFavoriteLayer } from "@/lib/leefstijl-ladder";
+import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { PillarId } from "@/types/dashboard";
 
 export type DomainFreeActionsTileProps = {
@@ -34,6 +36,9 @@ export type DomainFreeActionsTileProps = {
  * `resolveLadderAffordances` — zo is een nieuwe handeling (een timer, een
  * wearable-uitlezing) een regel daar plus een renderer in `LadderActionRow`,
  * en niet een verbouwing van dit blok of van het domeinscherm eromheen.
+ *
+ * Als je al iets koos op deze laag, opent het blok met die voortgang — niet
+ * opnieuw dezelfde catalogus als de contextkolom.
  */
 export default function DomainFreeActionsTile({
   domain,
@@ -45,7 +50,21 @@ export default function DomainFreeActionsTile({
   maxActions = 3,
   surface,
 }: DomainFreeActionsTileProps) {
-  const eyebrow = `Gratis, op prioriteit ${layerId} · ${layerName.toLowerCase()}`;
+  const { items, hydrated } = useVoortgangFavorites();
+  const chosenOnLayer = items.filter(
+    (item) => item.domain === domain && parseLadderFavoriteLayer(item.id) === layerId,
+  );
+  const chosenFromCatalog = actions.filter((action) =>
+    chosenOnLayer.some(
+      (item) =>
+        item.id === ladderActionFavoriteId(domain, layerId, action) || item.title === action,
+    ),
+  );
+  const unchosenFromCatalog = actions.filter((action) => !chosenFromCatalog.includes(action));
+  const hasChosen = hydrated && chosenFromCatalog.length > 0;
+  const eyebrow = hasChosen
+    ? `Op prioriteit ${layerId} · jouw keuze`
+    : `Gratis, op prioriteit ${layerId} · ${layerName.toLowerCase()}`;
 
   if (actions.length === 0) {
     if (!emptyLine) {
@@ -60,25 +79,58 @@ export default function DomainFreeActionsTile({
     );
   }
 
+  const chosenVisible = hasChosen ? chosenFromCatalog.slice(0, maxActions) : [];
+  const remainingSlots = Math.max(0, maxActions - chosenVisible.length);
+  const otherVisible = hasChosen
+    ? unchosenFromCatalog.slice(0, remainingSlots)
+    : actions.slice(0, maxActions);
+
   return (
     <CockpitTile eyebrow={eyebrow}>
-      {isRecommended ? (
+      {hasChosen ? (
+        <p className="mb-2.5 mt-2 max-w-[58ch] text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
+          Dit staat in je keuze. Afvinken doe je op Mijn Dag.
+        </p>
+      ) : isRecommended ? (
         <p className="mb-2.5 mt-2 max-w-[58ch] text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
           Dit is de laag waar je winst nu zit. Wat hier staat kost niets en komt uit je check.
         </p>
       ) : null}
-      <ul className="m-0 flex list-none flex-col gap-0 p-0">
-        {actions.slice(0, maxActions).map((action) => (
-          <LadderActionRow
-            key={action}
-            domain={domain}
-            layerId={layerId}
-            action={action}
-            isRecommended={isRecommended}
-            surface={surface}
-          />
-        ))}
-      </ul>
+      {chosenVisible.length > 0 ? (
+        <ul className="m-0 flex list-none flex-col gap-0 p-0">
+          {chosenVisible.map((action) => (
+            <LadderActionRow
+              key={action}
+              domain={domain}
+              layerId={layerId}
+              action={action}
+              isRecommended={isRecommended}
+              surface={surface}
+            />
+          ))}
+        </ul>
+      ) : null}
+      {otherVisible.length > 0 ? (
+        <>
+          {hasChosen ? (
+            <p className="mb-1 mt-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
+              Andere opties op deze laag
+            </p>
+          ) : null}
+          <ul className="m-0 flex list-none flex-col gap-0 p-0">
+            {otherVisible.map((action) => (
+              <LadderActionRow
+                key={action}
+                domain={domain}
+                layerId={layerId}
+                action={action}
+                isRecommended={isRecommended}
+                surface={surface}
+              />
+            ))}
+          </ul>
+        </>
+      ) : null}
       <p className="mt-2.5 text-[11px] leading-relaxed text-[#7E8C82]">
         Hier verdienen we niets aan. Ze komen uit je check, niet uit een schap.
       </p>

@@ -78,3 +78,7 @@ export const DOMAIN_KOMPAS_COPY: Record<DomainKompasDomain, DomainKompasCopy> = 
 export function isDomainKompasDomain(domain: PillarId): domain is DomainKompasDomain {
   return domain === "beweging" || domain === "slaap" || domain === "voeding" || domain === "stress";
 }
+
+export function getDomainCheckNoun(domain: PillarId): string {
+  return isDomainKompasDomain(domain) ? DOMAIN_KOMPAS_COPY[domain].checkNoun : "check";
+}

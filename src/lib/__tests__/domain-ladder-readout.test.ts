@@ -112,3 +112,82 @@ describe("resolveDomainLadderReadout — zonder check, en zonder ladder-domein",
     expect(resolveDomainLadderReadout("verbinding", dataWithSleep())).toBeNull();
   });
 });
+
+function dataWithMovement(): DashboardData {
+  return {
+    movementCheckinSnapshot: {
+      headline: "Op basis van jouw antwoorden ligt jouw grootste beweegwinst bij zitten.",
+      focusLabel: "Zitten",
+      focusDimension: "zitten",
+      ladder: {
+        focus: 1,
+        states: { 1: "winst", 2: "ok", 3: "watch", 4: "wacht", 5: "wacht", 6: "wacht" },
+        coverage: { measured: [1, 2, 3], onOrder: [2], percentage: 33 },
+      },
+      factRows: [
+        {
+          key: "zitten",
+          label: "Zitten",
+          answerLabel: "8-10 uur per dag",
+          benchmarkLabel: null,
+          benchmarkSource: null,
+          status: "own",
+          whyLine: "Lang zitten weegt mee los van wat je verder traint.",
+          footnote: null,
+        },
+        {
+          key: "mobiliteit",
+          label: "Mobiliteit",
+          answerLabel: "Redelijk soepel",
+          benchmarkLabel: null,
+          benchmarkSource: null,
+          status: "own",
+          whyLine: "Soepel blijven woont op prioriteit 1.",
+          footnote: null,
+        },
+        {
+          key: "kracht",
+          label: "Kracht",
+          answerLabel: "2x per week",
+          benchmarkLabel: "WHO 2020: 2× per week spierversterkend",
+          benchmarkSource: "WHO 2020",
+          status: "meets",
+          whyLine: "De richtlijn is gehaald.",
+          footnote: null,
+        },
+        {
+          key: "aeroob",
+          label: "Conditie",
+          answerLabel: "150-299 minuten matig",
+          benchmarkLabel: "150 minuten matig per week",
+          benchmarkSource: "WHO 2020",
+          status: "meets",
+          whyLine: "De aerobe norm is gehaald.",
+          footnote: null,
+        },
+        {
+          key: "consistentie",
+          label: "Consistentie",
+          answerLabel: "3 van de 4 weken",
+          benchmarkLabel: null,
+          benchmarkSource: null,
+          status: "own",
+          whyLine: "Herhaling voorspelt resultaat.",
+          footnote: null,
+        },
+      ],
+    },
+  } as unknown as DashboardData;
+}
+
+describe("resolveDomainLadderReadout — beweging groepeert feiten per laag", () => {
+  it("legt zitten en mobiliteit onder prioriteit 1", () => {
+    const readout = resolveDomainLadderReadout("beweging", dataWithMovement());
+    expect(readout?.focusLayer).toBe(1);
+    expect(readout?.evidenceByLayer[1]?.map((row) => row.key)).toEqual(["zitten", "mobiliteit"]);
+    expect(readout?.evidenceByLayer[1]?.[0]?.answerLabel).toBe("8-10 uur per dag");
+    expect(readout?.evidenceByLayer[2]?.map((row) => row.key)).toEqual(["kracht", "aeroob"]);
+    expect(readout?.evidenceByLayer[3]?.map((row) => row.key)).toEqual(["consistentie"]);
+    expect(readout?.evidenceByLayer[6]).toBeUndefined();
+  });
+});

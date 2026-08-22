@@ -21,6 +21,7 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "dashboard.schap_tab_selected",
   "cprofile.step_completed",
   "cprofile.highlight_clicked",
+  "dashboard.ladder_evidence_viewed",
 ]);
 
 function normalizePayload(raw: unknown): Record<string, unknown> {

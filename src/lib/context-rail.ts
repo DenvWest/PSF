@@ -83,6 +83,12 @@ const DOMAIN_GIDS: Partial<Record<PillarId, { label: string; href: string }>> = 
   slaap: { label: "Slaapgids", href: "/gids/slaap" },
 };
 
+export function getDomainCheck(
+  domain: PillarId,
+): { label: string; href: string } | null {
+  return DOMAIN_CHECK[domain] ?? null;
+}
+
 export function buildDomainRailTools(domain: PillarId): ContextRailTool[] {
   const tools: ContextRailTool[] = [];
 

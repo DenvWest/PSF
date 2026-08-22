@@ -97,6 +97,7 @@ import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
 import DomainKompasScreen from "@/components/dashboard/domain/DomainKompasScreen";
+import DomeinDoelZetten from "@/components/dashboard/voortgang/DomeinDoelZetten";
 import { buildInspectorCards, buildLadderInspectorCards } from "@/lib/cockpit-inspector";
 import {
   EMPTY_MOVEMENT_PREFS,
@@ -118,6 +119,7 @@ import { buildRecommendations } from "@/lib/build-recommendations";
 import {
   buildDomainRailTools,
   buildKompasRailDomains,
+  getDomainCheck,
   resolveVoortgangRailActiveItem,
   type ContextRailApi,
   type ContextRailMode,
@@ -130,9 +132,14 @@ import {
   useDomainLadderFocus,
 } from "@/lib/domain-ladder-focus-context";
 import { LadderMomentsProvider } from "@/lib/ladder-moments-context";
-import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
+import { isDomainKompasDomain, getDomainCheckNoun } from "@/lib/domain-kompas-copy";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
 import { getLeefstijlLadder, parseLadderFavoriteLayer } from "@/lib/leefstijl-ladder";
+import { deriveGoalMode, getSituationLabel, isDomainGoalDomain } from "@/lib/domain-goal";
+import {
+  fetchDomainGoals,
+  type DomainGoalMap,
+} from "@/lib/domain-goal-client";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { useTodayActionDone } from "@/lib/use-today-action-done";
 import { resolveSchapDomain } from "@/lib/schap-availability";
@@ -3070,6 +3077,9 @@ function DashboardContent({
   const [movementPrefsOverride, setMovementPrefsOverride] = useState<MovementPrefs | null>(
     null,
   );
+  const [domainGoals, setDomainGoals] = useState<DomainGoalMap>({});
+  const [domainGoalsLoaded, setDomainGoalsLoaded] = useState(false);
+  const [ijkpuntOpen, setIjkpuntOpen] = useState(false);
   const [agendaDateOverride, setAgendaDateOverride] = useState<string | null>(() => {
     if (typeof window !== "undefined") {
       return parseDagFromUrl(window.location.href);
@@ -3126,6 +3136,22 @@ function DashboardContent({
   );
 
   const todayActionDone = useTodayActionDone(model);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchDomainGoals().then((result) => {
+      if (cancelled) {
+        return;
+      }
+      if (result) {
+        setDomainGoals(result);
+      }
+      setDomainGoalsLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const activeVoortgangFavDomein = useMemo((): PillarId | null => {
     if (
@@ -3593,10 +3619,19 @@ function DashboardContent({
     }
     const readout = resolveDomainLadderReadout(ladderFocus.domain, data);
     const state = readout?.layerStates[layer.id] ?? null;
+    const evidence = (readout?.evidenceByLayer[layer.id] ?? []).map((row) => ({
+      key: row.key,
+      label: row.label,
+      answerLabel: row.answerLabel,
+      ...(row.benchmarkLabel ? { benchmarkLabel: row.benchmarkLabel } : {}),
+      ...(row.status ? { status: row.status } : {}),
+    }));
+    const goalDomain = isDomainGoalDomain(ladderFocus.domain) ? ladderFocus.domain : null;
+    const canSetGoal = domainGoalsLoaded && goalDomain != null;
+    const goal = goalDomain ? (domainGoals[goalDomain] ?? null) : null;
     return buildLadderInspectorCards({
       layerId: layer.id,
       layerName: layer.name,
-      layerSummary: layer.summary,
       stateLabel: state && readout ? readout.stateLabels[state] : null,
       whyWait: readout?.whyWait(layer.id) ?? null,
       chosen: favorietenItems
@@ -3607,8 +3642,17 @@ function DashboardContent({
         )
         .map((item) => ({ title: item.title })),
       isFocus: layer.id === readout?.focusLayer,
+      evidence,
+      hasCheck: readout != null,
+      checkNoun: getDomainCheckNoun(ladderFocus.domain),
+      checkHref: getDomainCheck(ladderFocus.domain)?.href ?? null,
+      canSetGoal,
+      goalTitle:
+        goal && goalDomain
+          ? goal.ownWords || getSituationLabel(goalDomain, goal.situationId)
+          : null,
     });
-  }, [ladderFocus, data, favorietenItems]);
+  }, [ladderFocus, data, favorietenItems, domainGoals, domainGoalsLoaded]);
 
   const inspectorCards =
     ladderInspectorCards ??
@@ -3634,6 +3678,16 @@ function DashboardContent({
         onSaved={setMovementPrefsOverride}
       />
     ) : null;
+  const ijkpuntDomain =
+    ladderFocus && isDomainGoalDomain(ladderFocus.domain) ? ladderFocus.domain : null;
+  const openIjkpuntGoal = ijkpuntDomain ? (domainGoals[ijkpuntDomain] ?? null) : null;
+  const inspectorIjkpuntAction =
+    ijkpuntDomain && domainGoalsLoaded
+      ? {
+          label: openIjkpuntGoal ? "Open je doel" : "Stel een doel",
+          onClick: () => setIjkpuntOpen(true),
+        }
+      : undefined;
 
   // De linker rail volgt dezelfde context als de header: domeinlijst op de
   // Kompas-home, Kompas-knop + evt. eigen tools bij een open domein, de
@@ -3702,6 +3756,7 @@ function DashboardContent({
         inspectorCards={inspectorCards}
         remeasureAction={remeasureAction}
         inspectorDoelFooter={inspectorDoelFooter}
+        inspectorIjkpuntAction={inspectorIjkpuntAction}
         inspectorExtra={inspectorExtra}
         hideRail={tab === "agenda"}
         // De prebuild-surfaces hebben de volle breedte nodig om hun eigen
@@ -3725,6 +3780,42 @@ function DashboardContent({
           {sectionsNode}
         </div>
       </CockpitFrame>
+      {ijkpuntOpen && ijkpuntDomain ? (
+        <DomeinDoelZetten
+          key={ijkpuntDomain}
+          open
+          domain={ijkpuntDomain}
+          domainLabel={PILLAR[ijkpuntDomain].label}
+          anchor={effectiveMovementPrefs.anchor}
+          existingGoal={
+            openIjkpuntGoal
+              ? {
+                  situationId: openIjkpuntGoal.situationId,
+                  ownWords: openIjkpuntGoal.ownWords,
+                }
+              : null
+          }
+          entryPoint="domeinrij"
+          onClose={() => setIjkpuntOpen(false)}
+          onSaved={(result) => {
+            setDomainGoals((current) => {
+              const previousScores = result.reformulated
+                ? []
+                : (current[ijkpuntDomain]?.scores ?? []);
+              const previousScore = previousScores[previousScores.length - 1]?.score ?? null;
+              return {
+                ...current,
+                [ijkpuntDomain]: {
+                  situationId: result.situationId,
+                  ownWords: result.ownWords,
+                  scores: [...previousScores, { score: result.score }],
+                  mode: deriveGoalMode(result.score, previousScore),
+                },
+              };
+            });
+          }}
+        />
+      ) : null}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -65,4 +66,32 @@ export function useDomainLadderFocus(): DomainLadderFocusContextValue {
       setFocus: () => {},
     }
   );
+}
+
+/**
+ * Gedeelde laag-selectie voor midden-ladder en inspector-chips. De context is
+ * de bron: een chip rechts wijzigt dezelfde laag als een klik in het midden.
+ * `recommendedLayerId` is alleen de beginstand (winst-laag, of 1 zonder check).
+ */
+export function useLadderLayerSelection(
+  domain: PillarId,
+  recommendedLayerId: number | null,
+): { activeLayerId: number; selectLayer: (layerId: number) => void } {
+  const { focus, setFocus } = useDomainLadderFocus();
+  const fallback = recommendedLayerId ?? 1;
+  const activeLayerId = focus?.domain === domain ? focus.layerId : fallback;
+
+  useEffect(() => {
+    setFocus({ domain, layerId: fallback });
+    return () => setFocus(null);
+  }, [domain, fallback, setFocus]);
+
+  const selectLayer = useCallback(
+    (layerId: number) => {
+      setFocus({ domain, layerId });
+    },
+    [domain, setFocus],
+  );
+
+  return { activeLayerId, selectLayer };
 }

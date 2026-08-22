@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import * as Icons from "@/components/app/icons";
 import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell";
 import DomainFreeActionsTile from "@/components/dashboard/domain/DomainFreeActionsTile";
@@ -11,7 +11,7 @@ import { PILLAR } from "@/data/dashboard";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_KOMPAS_COPY, isDomainKompasDomain } from "@/lib/domain-kompas-copy";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
-import { useDomainLadderFocus } from "@/lib/domain-ladder-focus-context";
+import { useLadderLayerSelection } from "@/lib/domain-ladder-focus-context";
 import { trackEvent } from "@/lib/ga4";
 import { getLeefstijlLadder } from "@/lib/leefstijl-ladder";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
@@ -56,9 +56,6 @@ export default function DomainKompasScreen({
   onGoAgenda,
   onGoVoortgangDomein,
 }: DomainKompasScreenProps) {
-  const [selectedLayerId, setSelectedLayerId] = useState<number | null>(null);
-  const { setFocus } = useDomainLadderFocus();
-
   const ladder = getLeefstijlLadder(domain);
   const readout = resolveDomainLadderReadout(domain, data);
   const copy = isDomainKompasDomain(domain) ? DOMAIN_KOMPAS_COPY[domain] : null;
@@ -67,8 +64,8 @@ export default function DomainKompasScreen({
   // Beginstand is de aanbeveling; kiezen wijkt daar tijdelijk van af. Zonder
   // eigen domeincheck is er geen winst-laag om op te beginnen — dan opent de
   // ladder op prioriteit 1. Dat claimt niets, maar het scherm is wel meteen
-  // bruikbaar.
-  const activeLayerId = selectedLayerId ?? focusLayerId ?? 1;
+  // bruikbaar. Inspector-chips schrijven dezelfde context.
+  const { activeLayerId, selectLayer } = useLadderLayerSelection(domain, focusLayerId);
 
   const score = model.scores[domain] ?? 0;
   const daysAgo = data?.domainCheckDaysAgo?.[domain];
@@ -76,13 +73,6 @@ export default function DomainKompasScreen({
     () => buildLeefstijllijnRows(model).find((row) => row.pillarId === domain) ?? null,
     [model, domain],
   );
-
-  // De contextkolom leest dezelfde laag. Opruimen bij verlaten, anders blijft
-  // er context van dit domein staan op een scherm dat er niet meer over gaat.
-  useEffect(() => {
-    setFocus({ domain, layerId: activeLayerId });
-    return () => setFocus(null);
-  }, [domain, activeLayerId, setFocus]);
 
   if (!ladder || !copy) {
     return null;
@@ -121,7 +111,7 @@ export default function DomainKompasScreen({
               ? { layerStates: readout.layerStates, stateLabels: readout.stateLabels }
               : {})}
             selectedLayer={activeLayerId}
-            onSelectLayer={setSelectedLayerId}
+            onSelectLayer={selectLayer}
             whyWait={readout?.whyWait}
             domain={domain}
             columns={2}
@@ -138,7 +128,7 @@ export default function DomainKompasScreen({
               {focusLayerId}.{" "}
               <button
                 type="button"
-                onClick={() => setSelectedLayerId(focusLayerId)}
+                onClick={() => selectLayer(focusLayerId)}
                 className="cursor-pointer border-none bg-transparent p-0 text-left font-semibold text-[#9CC5A9] underline"
               >
                 Terug daarheen

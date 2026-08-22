@@ -20,4 +20,8 @@ describe("isDomainEventType", () => {
   it("accepts remeasure.completed", () => {
     expect(isDomainEventType("remeasure.completed")).toBe(true);
   });
+
+  it("accepts dashboard.ladder_evidence_viewed", () => {
+    expect(isDomainEventType("dashboard.ladder_evidence_viewed")).toBe(true);
+  });
 });

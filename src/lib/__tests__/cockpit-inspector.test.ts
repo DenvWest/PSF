@@ -48,45 +48,99 @@ describe("buildInspectorCards", () => {
   });
 });
 
-describe("buildLadderInspectorCards — de kolom volgt de laag", () => {
-  it("draagt de laag zelf en wat je daar koos, in die volgorde", () => {
+const BASE_LADDER = {
+  layerId: 1,
+  layerName: "Dagelijks bewegen",
+  chosen: [] as { title: string; moment?: string | null }[],
+  hasCheck: false,
+  checkNoun: "beweegcheck",
+};
+
+describe("buildLadderInspectorCards — de kolom is check-context", () => {
+  it("draagt de laag, het bewijs, het ijkpunt en de keuze, in die volgorde", () => {
     const cards = buildLadderInspectorCards({
+      ...BASE_LADDER,
       layerId: 2,
       layerName: "Kracht + basisconditie",
-      layerSummary: "Twee keer per week kracht plus regelmatig matig intensief bewegen.",
       stateLabel: "Grootste winst",
       chosen: [{ title: "Twee krachtsessies per week.", moment: "morgen · 09:00" }],
       isFocus: true,
+      hasCheck: true,
+      evidence: [
+        {
+          key: "kracht",
+          label: "Kracht",
+          answerLabel: "2x per week",
+          status: "meets",
+        },
+      ],
+      canSetGoal: true,
+      goalTitle: "Twee trappen op zonder buiten adem te zijn",
     });
 
-    expect(cards.map((card) => card.kind)).toEqual(["laag", "keuze"]);
-    expect(cards[0].kicker).toBe("Prioriteit 2 · Grootste winst");
-    expect(cards[0].accent).toBe("terra");
-    expect(cards[1].body).toContain("morgen · 09:00");
+    expect(cards.map((card) => card.kind)).toEqual(["laag", "evidence", "ijkpunt", "keuze"]);
+    expect(cards[0]?.kicker).toBe("Prioriteit 2 · Grootste winst");
+    expect(cards[0]?.accent).toBe("terra");
+    expect(cards[0]?.body).toBe("");
+    expect(cards[1]?.evidence?.[0]?.answerLabel).toBe("2x per week");
+    expect(cards[2]?.title).toBe("Twee trappen op zonder buiten adem te zijn");
+    expect(cards[2]?.hasGoal).toBe(true);
+    expect(cards[3]?.body).toContain("morgen · 09:00");
+  });
+
+  it("herhaalt de laag-summary niet — die staat al onder de midden-ladder", () => {
+    const cards = buildLadderInspectorCards({
+      ...BASE_LADDER,
+      hasCheck: true,
+      whyWait: "Eerst je voedingscheck en je hertest, dan pas aanvullen.",
+    });
+    expect(cards[0]?.body).toBe("");
+    expect(cards.find((card) => card.kind === "evidence")?.body).toContain("Eerst je voedingscheck");
   });
 
   it("zegt eerlijk dat je nog niets koos, zonder aan te dringen", () => {
     const cards = buildLadderInspectorCards({
+      ...BASE_LADDER,
       layerId: 4,
       layerName: "Je sport",
-      layerSummary: "Een sport kiezen mag altijd.",
-      chosen: [],
+      hasCheck: true,
     });
-
-    expect(cards[1].title).toBe("Hier koos je nog niets");
-    expect(cards[1].body).toContain("verplicht je tot niets");
+    const keuze = cards.find((card) => card.kind === "keuze");
+    expect(keuze?.title).toBe("Hier koos je nog niets");
+    expect(keuze?.body).toContain("verplicht je tot niets");
   });
 
-  it("plakt de wacht-reden achter de uitleg in plaats van een tweede kaart", () => {
+  it("vult zonder check geen aannames in, en wijst naar de check", () => {
     const cards = buildLadderInspectorCards({
+      ...BASE_LADDER,
+      checkHref: "/intake/beweging?from=dashboard&kompas=beweging",
+    });
+    const evidence = cards.find((card) => card.kind === "evidence");
+    expect(evidence?.title).toBe("Nog geen beweegcheck");
+    expect(evidence?.body).toContain("niet in met aannames");
+    expect(evidence?.href).toContain("/intake/beweging");
+    expect(evidence?.evidence).toBeUndefined();
+  });
+
+  it("toont een lege gemeten laag zonder die als tekort te framen", () => {
+    const cards = buildLadderInspectorCards({
+      ...BASE_LADDER,
       layerId: 6,
       layerName: "Aanvullen",
-      layerSummary: "Aanvullen komt als laatste.",
-      whyWait: "Eerst je voedingscheck en je hertest, dan pas aanvullen.",
-      chosen: [],
+      hasCheck: true,
+      evidence: [],
     });
+    const evidence = cards.find((card) => card.kind === "evidence");
+    expect(evidence?.title).toBe("Niet gemeten op deze laag");
+    expect(evidence?.body).toContain("geen tekort");
+  });
 
-    expect(cards).toHaveLength(2);
-    expect(cards[0].body).toContain("Eerst je voedingscheck");
+  it("laat het ijkpunt weg tot we weten of er een doel is", () => {
+    const cards = buildLadderInspectorCards({
+      ...BASE_LADDER,
+      hasCheck: true,
+      canSetGoal: false,
+    });
+    expect(cards.map((card) => card.kind)).toEqual(["laag", "evidence", "keuze"]);
   });
 });
