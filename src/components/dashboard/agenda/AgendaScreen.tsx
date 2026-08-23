@@ -162,10 +162,13 @@ export default function AgendaScreen({
   const monthAnchor = monthOverride ?? selectedDate;
   const [monthSheetOpen, setMonthSheetOpen] = useState(false);
   const [focusExpanded, setFocusExpanded] = useState(false);
-  // Standaard open: het paneel toonde zich al alleen met inhoud, dus dit mag
-  // het gedrag van vandaag niet stilzwijgend veranderen — alleen een
-  // handmatige inklap toevoegen.
-  const [rhythmExpanded, setRhythmExpanded] = useState(true);
+  // Standaard ingeklapt: elk binnenkomen op het "dag"-scherm is een nieuwe
+  // mount van AgendaScreen (tab-wissel unmount't de vorige sectie), dus een
+  // vaste `true` hier opent het paneel bij ELK bezoek vanuit een ander
+  // gebied. De chip in de header (`AgendaToolbar`) toont het aantal en laat
+  // je het handmatig uitklappen; die keuze blijft staan zolang je binnen
+  // Mijn Dag blijft (view/dag wisselen remount't dit component niet).
+  const [rhythmExpanded, setRhythmExpanded] = useState(false);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [weekAddOpen, setWeekAddOpen] = useState(false);
   const [weekDraftSlot, setWeekDraftSlot] = useState<WeekGridEmptySlot | null>(null);
