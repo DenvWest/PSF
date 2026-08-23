@@ -19,7 +19,7 @@ export const DOMAIN_CHECK_PILLAR_IDS: PillarId[] = [
   "stress",
 ];
 
-const CHECK_NAME: Partial<Record<PillarId, string>> = {
+export const CHECK_NAME: Partial<Record<PillarId, string>> = {
   slaap: "slaapcheck",
   beweging: "beweegcheck",
   voeding: "voedingscheck",

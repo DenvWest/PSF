@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
-import VitalityScoreCard from "@/components/app/VitalityScoreCard";
 import * as Icons from "@/components/app/icons";
 import {
   Button,
@@ -19,7 +18,6 @@ import {
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import DomainTopNav, { type DomainNavApi } from "@/components/dashboard/DomainTopNav";
-import MetingenCard from "@/components/dashboard/MetingenCard";
 import MovementRecoveryTrendsCard from "@/components/dashboard/MovementRecoveryTrendsCard";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { resolveTrendsAccess } from "@/lib/entitlement-access";
@@ -108,7 +106,6 @@ import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
-import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent, trackDashboardTabSelected, trackOnderbouwingLinkClick } from "@/lib/ga4";
@@ -498,106 +495,6 @@ const ActiveHabitCard = ({
           ) : null}
         </div>
       </div>
-    </div>
-  );
-};
-
-const VitalityScoreSection = ({
-  empty,
-  model,
-  data,
-  onCheck,
-  voortgangScreen,
-  onOpenInzichten,
-  sleepFocus,
-}: SharedSectionProps) => {
-  const currentModel = model as DashboardModel | null;
-  const emittedKeyRef = useRef<string | null>(null);
-  const habitKernel = useMemo(
-    () =>
-      currentModel
-        ? buildHabitScoreKernel({
-            vitality: currentModel.vitality,
-            priorityId: currentModel.priority.id,
-            priorityScore: currentModel.scores[currentModel.priority.id],
-            answers: currentModel.answers,
-            domainScores: currentModel.domainScores,
-          })
-        : null,
-    [currentModel],
-  );
-
-  useEffect(() => {
-    if (!currentModel || !habitKernel) {
-      return;
-    }
-    const eventKey = `${currentModel.date}:${currentModel.vitality}:${habitKernel.driverHabitId}`;
-    if (emittedKeyRef.current === eventKey) {
-      return;
-    }
-    emittedKeyRef.current = eventKey;
-    emitIntakeClientEvent("dashboard.vitality_scored", {
-      source: "dashboard_today",
-      vitality_score: currentModel.vitality,
-      vitality_band: habitKernel.vitalityBand,
-      confidence: habitKernel.confidence,
-      driver_pillar: habitKernel.driverPillarId,
-      driver_pillar_score: habitKernel.driverPillarScore,
-      driver_habit_id: habitKernel.driverHabitId,
-    });
-  }, [currentModel, habitKernel]);
-
-  if (empty) {
-    return (
-      <VitalityScoreCard
-        locked
-        tone="light"
-        onCta={() => {
-          clarityTag("dashboard_vitaalscore_cta", "empty");
-          trackEvent("dashboard_first_check_cta", {
-            surface: "vitaalscore_card",
-            sleep_focus: sleepFocus ?? "none",
-          });
-          onCheck();
-        }}
-      />
-    );
-  }
-
-  if (!currentModel) {
-    return null;
-  }
-
-  if (voortgangScreen !== "hub") {
-    return null;
-  }
-
-  const cardCopy = getVitalityScoreCardCopy({
-    firstName: data?.firstName ?? null,
-    vitality: currentModel.vitality,
-    priorityId: currentModel.priority.id,
-    priorityScore: currentModel.scores[currentModel.priority.id],
-    answers: currentModel.answers,
-    domainScores: currentModel.domainScores,
-  });
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <VitalityScoreCard
-        tone="light"
-        value={currentModel.vitality}
-        delta={currentModel.vitalityDelta}
-        firstName={data?.firstName ?? null}
-        headingLine={cardCopy.heading}
-        bodyLine={cardCopy.body}
-        showRhythm={false}
-        onInsightsClick={() => {
-          trackEvent("dashboard_inzichten_cta_click", { surface: "voortgang" });
-          clarityTag("dashboard_voortgang", "leefstijlprofiel_cta");
-          onOpenInzichten();
-        }}
-      />
-      <MetingenCard scores={currentModel.scores} history={currentModel.history} />
     </div>
   );
 };
@@ -2817,14 +2714,13 @@ const KompasHome = ({
   );
 };
 
-const EMPTY_SECTIONS: DashboardSectionType[] = ["vitalityScore"];
+const EMPTY_SECTIONS: DashboardSectionType[] = [];
 
 const SECTION_RENDERERS: Record<
   DashboardSectionType,
   (props: SharedSectionProps) => ReactElement | null
 > = {
   now: (props) => <NowSection {...props} />,
-  vitalityScore: (props) => <VitalityScoreSection {...props} />,
   priority: (props) => (props.empty ? null : <PrioritySection {...props} />),
   plan: (props) => (props.empty ? null : <PlanSection {...props} />),
   agendaTeaser: () => null,

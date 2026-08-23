@@ -1,0 +1,143 @@
+// @vitest-environment jsdom
+import { describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
+import type { DashboardData } from "@/types/dashboard";
+
+vi.mock("@/lib/voortgang-favorites-context", () => ({
+  useVoortgangFavorites: () => ({
+    items: [],
+    hydrated: true,
+    isSaved: () => false,
+    save: vi.fn(),
+    remove: vi.fn(),
+  }),
+}));
+
+function buildData(overrides: Partial<DashboardData>): DashboardData {
+  return {
+    empty: false,
+    current: null,
+    prev: null,
+    history: [],
+    retest: false,
+    nutritionIntake: null,
+    nutritionLastLoggedAt: null,
+    nutritionRelogDue: false,
+    daysSinceNutritionLog: null,
+    movementRecoveryTrend: [],
+    movementRcvFeel: null,
+    movementRcvFeelAt: null,
+    remeasure: null,
+    cycleEvidence: null,
+    deltaReport: null,
+    profileLabel: null,
+    firstName: null,
+    answers: null,
+    sessionId: null,
+    planProgress: null,
+    movementPlanProgress: null,
+    planDomain: null,
+    priorityPref: null,
+    sleepCheckinFocus: null,
+    sleepCheckinSnapshot: null,
+    movementCheckinSnapshot: null,
+    hasStressCheckin: false,
+    stressCheckinReport: null,
+    domainCheckDaysAgo: {},
+    movementPrefs: {},
+    supplementVerdicts: [],
+    proteinTarget: null,
+    ...overrides,
+  } as DashboardData;
+}
+
+describe("LeefstijlprofielKeuzeHub", () => {
+  it("shows the honest verbinding line, never a check CTA for it", () => {
+    render(
+      <LeefstijlprofielKeuzeHub data={buildData({})} onBack={vi.fn()} onOpenDomain={vi.fn()} />,
+    );
+    expect(
+      screen.getByText(/Verbinding meet mee in je leefstijlcheck, niet apart\./),
+    ).toBeTruthy();
+  });
+
+  it("offers the check as the only action for an unmeasured domain", () => {
+    render(
+      <LeefstijlprofielKeuzeHub data={buildData({})} onBack={vi.fn()} onOpenDomain={vi.fn()} />,
+    );
+    expect(screen.getByText(/Je hebt je slaapcheck nog niet gedaan\./)).toBeTruthy();
+    expect(screen.getByText("Doe de slaapcheck →")).toBeTruthy();
+  });
+
+  it("renders the sleep kengetal-blok from factRows once slaap is measured", () => {
+    render(
+      <LeefstijlprofielKeuzeHub
+        data={buildData({
+          domainCheckDaysAgo: { slaap: 6 },
+          sleepCheckinSnapshot: {
+            headline: "",
+            focusLabel: null,
+            focusDimension: null,
+            answerLabel: null,
+            focusStatement: "",
+            implicationLine: "",
+            focusLayer: 1,
+            layerStates: {} as never,
+            kompasStatus: "",
+            primaryAction: null,
+            delta: null,
+            date: "2026-08-17",
+            factRows: [
+              {
+                key: "duur",
+                label: "Slaapduur",
+                answerLabel: "6 tot 7 uur",
+                benchmarkLabel: "Populatierichtlijn: 7+ uur",
+                status: "near",
+                layer: 1,
+                whyLine: "",
+              },
+              {
+                key: "SLP_CONS",
+                label: "Regelmaat",
+                answerLabel: "Meestal wel, soms niet",
+                benchmarkLabel: null,
+                status: "near",
+                layer: 2,
+                whyLine: "",
+              },
+            ],
+          },
+        })}
+        onBack={vi.fn()}
+        onOpenDomain={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Slaapduur")).toBeTruthy();
+    expect(screen.getByText("6 tot 7 uur")).toBeTruthy();
+    expect(screen.getByText("Populatierichtlijn: 7+ uur")).toBeTruthy();
+    expect(screen.getByText("Gemeten 6 dagen geleden")).toBeTruthy();
+  });
+
+  it("falls back to a plain checked row for a measured domain without its own blok yet", () => {
+    render(
+      <LeefstijlprofielKeuzeHub
+        data={buildData({ domainCheckDaysAgo: { beweging: 0 } })}
+        onBack={vi.fn()}
+        onOpenDomain={vi.fn()}
+      />,
+    );
+    expect(screen.getByText("Gemeten vandaag")).toBeTruthy();
+  });
+
+  it("groups energie and herstel under 'Volgt uit de rest' with their drivers as links", () => {
+    render(
+      <LeefstijlprofielKeuzeHub data={buildData({})} onBack={vi.fn()} onOpenDomain={vi.fn()} />,
+    );
+    expect(screen.getByText("Volgt uit de rest")).toBeTruthy();
+    expect(screen.getByText("Energie volgt uit je slaap, voeding en beweging.")).toBeTruthy();
+    expect(screen.getByText("Herstel volgt uit je slaap, beweging en stress.")).toBeTruthy();
+  });
+});

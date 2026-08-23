@@ -3,10 +3,7 @@
 import { useEffect, useRef } from "react";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
-import {
-  buildVoortgangBewijsRegel,
-  type VoortgangBewijsState,
-} from "@/lib/voortgang-bewijs-copy";
+import { buildVoortgangHorizonRegel } from "@/lib/voortgang-horizon-copy";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 import VoortgangBewijsband from "@/components/dashboard/voortgang/VoortgangBewijsband";
 
@@ -18,20 +15,6 @@ type VoortgangHeroProps = {
   onOpenDomain: (domain: PillarId) => void;
 };
 
-const H1_BY_STATE: Record<VoortgangBewijsState, string> = {
-  beantwoord: "Er zit beweging in.",
-  opbouwend: "Er stapelt zich iets op. Lezen doe je straks.",
-  dun: "Er ligt nog te weinig om iets te lezen.",
-  wachtend: "Je bewijs begint bij je eerste dag.",
-};
-
-const REASSURANCE_BY_STATE: Record<VoortgangBewijsState, string> = {
-  beantwoord: "Eén beweging in één domein. Je hermeting maakt er een reeks van.",
-  opbouwend: "Losse dagen zeggen weinig. Een reeks zegt iets.",
-  dun: "Twaalf dagen is kort. Er is nog ruimte genoeg tot je hermeting.",
-  wachtend: "Eén moment per dag is genoeg om iets te kunnen aflezen.",
-};
-
 export default function VoortgangHero({
   model,
   data,
@@ -41,15 +24,16 @@ export default function VoortgangHero({
 }: VoortgangHeroProps) {
   const trackedStateRef = useRef<string | null>(null);
 
-  const activeDays = data?.cycleEvidence?.activeDays ?? null;
   const cycleDay = data?.cycleEvidence?.cycleDay ?? null;
   const daysUntilRemeasure =
     data?.cycleEvidence?.daysUntilRemeasure ?? data?.remeasure?.daysUntil ?? null;
 
-  const regel = buildVoortgangBewijsRegel({
-    activeDays,
+  const regel = buildVoortgangHorizonRegel({
+    hasCycleEvidence: data?.cycleEvidence != null,
     cycleDay,
     daysUntilRemeasure,
+    remeasureDueDate: data?.remeasure?.dueDate ?? null,
+    trendLength: model.trend[model.priority.id].length,
     focusLabel: model.priority.label,
     focusDelta: model.deltaOf(model.priority.id),
   });
@@ -59,13 +43,13 @@ export default function VoortgangHero({
       return;
     }
     trackedStateRef.current = regel.state;
-    trackEvent("dashboard_voortgang_bewijs_state", {
+    trackEvent("dashboard_voortgang_horizon_state", {
       state: regel.state,
       ...(cycleDay != null ? { cycle_day: cycleDay } : {}),
-      ...(activeDays != null ? { active_days: activeDays } : {}),
+      ...(daysUntilRemeasure != null ? { days_until_remeasure: daysUntilRemeasure } : {}),
     });
-    clarityTag("dashboard_voortgang", `bewijs_${regel.state}`);
-  }, [regel.state, cycleDay, activeDays]);
+    clarityTag("dashboard_voortgang", `horizon_${regel.state}`);
+  }, [regel.state, cycleDay, daysUntilRemeasure]);
 
   const hermetingSoon =
     data?.remeasure?.daysUntil != null && data.remeasure.daysUntil <= 14;
@@ -95,8 +79,6 @@ export default function VoortgangHero({
     onOpenDomain(domain);
   };
 
-  const eyebrow = cycleDay != null ? `BEWIJS · DAG ${cycleDay}` : "BEWIJS";
-
   return (
     <section
       aria-labelledby="voortgang-hero-title"
@@ -124,17 +106,17 @@ export default function VoortgangHero({
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-start lg:gap-14">
           <div>
             <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
-              {eyebrow}
+              {regel.eyebrow}
             </p>
             <h1
               id="voortgang-hero-title"
               className="mt-3 font-serif text-[clamp(27px,7.4vw,34px)] leading-[1.1] tracking-[-0.005em] text-balance lg:mt-3.5 lg:text-[clamp(34px,3.6vw,50px)] lg:leading-[1.04]"
               style={{ fontFamily: "var(--f-serif)" }}
             >
-              {H1_BY_STATE[regel.state]}
+              {regel.h1}
             </h1>
             <p className="mt-3 max-w-[42ch] text-[15.5px] leading-[1.55] text-[#CDD7D0] text-pretty lg:max-w-[38ch] lg:text-[18px]">
-              {regel.line}
+              {regel.body}
             </p>
 
             <div className="mt-[18px] flex flex-wrap items-center gap-2.5">
@@ -162,7 +144,7 @@ export default function VoortgangHero({
                     onClick={handleGoAgenda}
                     className="inline-flex min-h-[46px] cursor-pointer items-center justify-center rounded-full border border-[var(--sage)] bg-[var(--sage)] px-5 text-[14.5px] font-semibold text-[#0E1C10]"
                   >
-                    {regel.ctaLabel ?? "Wat staat er voor vandaag"}
+                    Wat staat er voor vandaag
                   </button>
                   <button
                     type="button"
@@ -174,10 +156,6 @@ export default function VoortgangHero({
                 </>
               )}
             </div>
-
-            <p className="mt-3 text-[12.5px] text-[rgba(255,255,255,0.40)] text-pretty">
-              {REASSURANCE_BY_STATE[regel.state]}
-            </p>
           </div>
 
           <VoortgangBewijsband

@@ -176,7 +176,7 @@ function VoortgangHubInner({
   } else if (screen === "leefstijlprofiel" || screen === "inzichten") {
     content = (
       <LeefstijlprofielKeuzeHub
-        model={model!}
+        data={data}
         onBack={goBack}
         onOpenDomain={openLeefstijlprofielDomein}
       />

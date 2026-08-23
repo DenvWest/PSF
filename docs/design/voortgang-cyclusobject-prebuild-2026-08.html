@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prebuild — Voortgang-hero met het cyclus-object (23 aug 2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+/* ---------------------------------------------------------------------------
+   Tokens — zelfde namen als globals.css (.ps-dash / .ps-dark).
+   --terra staat er wel, wordt op deze hero NERGENS gebruikt (bewuste eis).
+   Domeinkleuren zijn PILLAR[].color uit src/data/dashboard/index.ts: dat is
+   data, geen pagina-accent.
+--------------------------------------------------------------------------- */
+:root{
+  --bg:#132414;
+  --panel:rgba(255,255,255,.05);
+  --panel-border:rgba(255,255,255,.12);
+  --text:rgba(255,255,255,.95);
+  --text-muted:rgba(255,255,255,.60);
+  --text-subtle:rgba(255,255,255,.40);
+  --divider:rgba(255,255,255,.08);
+  --divider-strong:rgba(255,255,255,.16);
+  --sage:#5A8F6A;
+  --sage-soft:#A9C6B2;
+  --terra:#C8956C;               /* niet gebruikt op deze hero */
+  --f-serif:"DM Serif Display",Georgia,serif;
+  --f-sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --ink:#0E1C10;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;overflow-x:hidden}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--f-sans);
+  background-image:radial-gradient(120% 80% at 50% -5%,#21381f 0%,transparent 55%);
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit}
+
+/* --- reviewer-balk (niet het product) --- */
+.rev{position:sticky;top:0;z-index:40;background:#0b150c;border-bottom:1px solid var(--divider-strong);padding:8px 12px}
+.rev-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.rev-lbl{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-subtle);font-weight:700;margin-right:2px}
+.rev button{
+  min-height:34px;padding:0 10px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--panel-border);background:transparent;color:var(--text-muted);
+  font-size:12px;font-weight:600;
+}
+.rev button[aria-pressed="true"]{background:var(--sage);border-color:var(--sage);color:var(--ink)}
+.rev .golf[aria-pressed="true"]{background:transparent;border-color:var(--sage-soft);color:var(--sage-soft)}
+.rev-note{font-size:11px;color:var(--text-subtle);margin:6px 0 0;line-height:1.4}
+
+/* --- hero --- */
+.hero{position:relative;overflow:hidden;padding:26px 12px 30px;border-bottom-left-radius:24px;border-bottom-right-radius:24px}
+.hero::before{
+  content:"";position:absolute;inset:0;opacity:.14;pointer-events:none;
+  background-image:linear-gradient(to right,rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.5) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(120% 80% at 50% 0%,#000 0%,transparent 62%);
+  mask-image:radial-gradient(120% 80% at 50% 0%,#000 0%,transparent 62%);
+}
+.hero::after{
+  content:"";position:absolute;right:-150px;top:-190px;width:400px;height:400px;border-radius:50%;
+  background:var(--sage);opacity:.18;filter:blur(120px);pointer-events:none;
+}
+.hero-in{position:relative;z-index:1;max-width:1180px;margin:0 auto}
+.eyebrow{margin:0;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#9FB0A6}
+h1{margin:10px 0 0;font-family:var(--f-serif);font-weight:400;font-size:clamp(27px,7.4vw,34px);line-height:1.1;letter-spacing:-.005em;text-wrap:balance}
+.job{margin:9px 0 0;font-size:13.5px;line-height:1.5;color:var(--text-muted);max-width:40ch}
+.job b{color:var(--sage-soft);font-weight:600}
+
+/* --- instrument --- */
+.instr{margin-top:16px}
+.instr-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 0 6px}
+.instr-h h2{margin:0;font-family:var(--f-serif);font-weight:400;font-size:17px;line-height:1.3}
+.instr-h span{font-size:11px;color:var(--text-subtle)}
+.band{position:relative;width:100%;aspect-ratio:340/120}
+.band svg{display:block;width:100%;height:auto;overflow:visible}
+.marks{position:absolute;inset:0}
+.mark{
+  position:absolute;width:44px;height:44px;transform:translate(-50%,-50%);
+  padding:0;margin:0;border:0;background:transparent;cursor:pointer;border-radius:50%;
+}
+.mark:focus-visible{outline:2px solid var(--sage-soft);outline-offset:-6px}
+.mark[aria-pressed="true"]{background:rgba(255,255,255,.07)}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* --- legenda --- */
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:6px 0 0;padding:0;list-style:none}
+.legend li{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-muted);line-height:1.2}
+.legend svg{flex:0 0 auto}
+.legend .golf-only{display:none}
+body[data-golf1="on"] .legend .golf-only{display:flex}
+
+/* --- readout --- */
+.readout{margin-top:14px;min-height:78px}
+.readout .t{margin:0;font-size:15px;font-weight:600;color:var(--text)}
+.readout .b{margin:3px 0 0;font-size:14px;line-height:1.45;color:#CDD7D0;text-wrap:pretty}
+.readout .f{margin:8px 0 0;font-family:var(--f-serif);font-style:italic;font-size:15.5px;line-height:1.35;color:var(--sage-soft);text-wrap:pretty}
+.readout .back{
+  margin-top:8px;min-height:44px;display:inline-flex;align-items:center;gap:6px;
+  background:transparent;border:0;padding:0 2px;color:#9FB0A6;font-size:13px;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(159,176,166,.45);
+}
+.readout .back[hidden]{display:none}
+
+/* --- scrub (gedegradeerd: secundair, dicht by default) --- */
+.scrub-toggle{
+  margin-top:2px;min-height:44px;display:inline-flex;align-items:center;gap:6px;
+  background:transparent;border:0;padding:0 2px;color:var(--text-subtle);font-size:12.5px;cursor:pointer;
+}
+.scrub-wrap[hidden]{display:none}
+.scrub-wrap{padding-top:2px}
+input[type=range]{
+  width:100%;height:44px;appearance:none;background:transparent;cursor:pointer;margin:0;
+}
+input[type=range]:disabled{opacity:.3;cursor:default}
+input[type=range]::-webkit-slider-runnable-track{height:2px;border-radius:999px;background:rgba(255,255,255,.15)}
+input[type=range]::-webkit-slider-thumb{appearance:none;margin-top:-21px;width:44px;height:44px;border-radius:50%;border:3px solid var(--bg);background:var(--sage)}
+input[type=range]::-moz-range-track{height:2px;border-radius:999px;background:rgba(255,255,255,.15)}
+input[type=range]::-moz-range-thumb{width:44px;height:44px;border-radius:50%;border:3px solid var(--bg);background:var(--sage)}
+
+/* --- cta --- */
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.cta{
+  min-height:46px;padding:0 20px;border-radius:999px;cursor:pointer;font-size:14.5px;font-weight:600;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.cta-1{background:var(--sage);border:1px solid var(--sage);color:var(--ink)}
+.cta-2{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--text)}
+.cta-3{background:transparent;border:0;color:#9FB0A6;font-weight:400;font-size:14px;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(159,176,166,.45);padding:0 4px;min-height:44px}
+.toast{
+  margin-top:10px;min-height:20px;font-size:11.5px;color:var(--sage-soft);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-word;
+}
+
+/* --- onder de hero: één rustige regel, geen nep-DomeinRing --- */
+.below{max-width:1180px;margin:0 auto;padding:14px 12px 60px}
+.below p{margin:0;font-size:13px;color:var(--text-muted)}
+.below a{color:var(--sage);font-weight:600;text-decoration:none}
+.below .ghost{margin-top:14px;border:1px dashed var(--divider-strong);border-radius:16px;padding:14px;color:var(--text-subtle);font-size:12.5px}
+
+@media (min-width:1024px){
+  .hero{padding:52px 24px 56px}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:56px;align-items:start}
+  h1{font-size:clamp(34px,3.6vw,50px);line-height:1.04}
+  .job{font-size:15px;max-width:38ch}
+  .instr{margin-top:0;border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.22);border-radius:20px;padding:22px}
+  .ctas{margin-top:20px}
+  .below{padding:18px 24px 80px}
+}
+</style>
+</head>
+<body data-golf1="off">
+
+<div class="rev">
+  <div class="rev-row">
+    <span class="rev-lbl">Staat</span>
+    <button type="button" data-state="wachtend" aria-pressed="false">wachtend</button>
+    <button type="button" data-state="onderweg" aria-pressed="true">onderweg</button>
+    <button type="button" data-state="tweede_beeld" aria-pressed="false">tweede beeld</button>
+    <button type="button" data-state="hermeting_klaar" aria-pressed="false">hermeting klaar</button>
+    <button type="button" class="golf" id="golf1" aria-pressed="false">Golf 1 preview (uit)</button>
+  </div>
+  <p class="rev-note">Prebuild, geen product. Staten komen uit <code>buildVoortgangHorizonRegel()</code>. Golf 1 tekent <code>activeDayNumbers</code> — dat veld bestaat vandaag niet in de loader-output en staat daarom UIT.</p>
+</div>
+
+<section class="hero" aria-labelledby="hero-t">
+  <div class="hero-in">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow" id="eyebrow">JE CYCLUS · DAG 12 VAN 30</p>
+        <h1 id="hero-t">Dag 12 van je cyclus.</h1>
+        <p class="job" id="job"></p>
+      </div>
+
+      <div>
+        <div class="instr">
+          <div class="instr-h">
+            <h2>Je cyclus</h2>
+            <span id="instr-sub"></span>
+          </div>
+
+          <div class="band">
+            <svg id="band-svg" viewBox="0 0 340 120" aria-hidden="true"></svg>
+            <div class="marks" id="marks"></div>
+          </div>
+
+          <ul class="legend" id="legend">
+            <li data-leg="start"><svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="4.6" fill="#E7EDE8"/></svg> Startcheck</li>
+            <li data-leg="domein"><svg width="13" height="13" viewBox="0 0 13 13"><rect x="2.3" y="2.3" width="8.4" height="8.4" fill="#5B6EAE" transform="rotate(45 6.5 6.5)"/></svg> Domeincheck</li>
+            <li data-leg="vandaag"><svg width="13" height="13" viewBox="0 0 13 13"><path d="M6.5 2 L10 8.5 L3 8.5 Z" fill="#5A8F6A"/></svg> Vandaag</li>
+            <li data-leg="hermeting"><svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="4.4" fill="none" stroke="#5A8F6A" stroke-width="1.6"/></svg> Hermeting</li>
+            <li class="golf-only" data-leg="golf"><svg width="13" height="13" viewBox="0 0 13 13"><rect x="5.6" y="2.5" width="1.8" height="8" rx=".9" fill="rgba(255,255,255,.45)"/></svg> Dag waarop je iets pakte <em>(Golf&nbsp;1)</em></li>
+          </ul>
+
+          <div class="readout" id="readout" aria-live="polite">
+            <p class="t" id="ro-t"></p>
+            <p class="b" id="ro-b"></p>
+            <p class="f" id="ro-f" hidden></p>
+            <button type="button" class="back" id="ro-back" hidden>↩ Terug naar vandaag</button>
+          </div>
+
+          <button type="button" class="scrub-toggle" id="scrub-toggle" aria-expanded="false" aria-controls="scrub-wrap">＋ Loop dag voor dag door je cyclus</button>
+          <div class="scrub-wrap" id="scrub-wrap" hidden>
+            <input type="range" id="scrub" min="1" max="30" step="1" value="12" aria-label="Dag in je cyclus">
+          </div>
+        </div>
+
+        <div class="ctas" id="ctas"></div>
+        <p class="toast" id="toast" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="below">
+  <p>Je werkt aan <a href="#">slaap</a>. <a href="#" style="color:var(--text-subtle);font-weight:400">Naar Vandaag →</a></p>
+  <div class="ghost">Hieronder blijven je metingen staan — domeinrij, dekking en je eigen ijkpunt. Niet in deze prebuild.</div>
+</div>
+
+<script>
+/* ===========================================================================
+   Mockdata — echte veldnamen uit DashboardData / DashboardModel.
+   Man op dag 12, één leefstijlcheck, twee domeinchecks. Geen showcase.
+   =========================================================================== */
+var PILLAR = {
+  slaap:      { label:"Slaap",      color:"#5B6EAE" },
+  energie:    { label:"Energie",    color:"#C4873B" },
+  stress:     { label:"Stress",     color:"#8B6E99" },
+  voeding:    { label:"Voeding",    color:"#5A8F6A" },
+  beweging:   { label:"Beweging",   color:"#C26E4B" },
+  herstel:    { label:"Herstel",    color:"#4A8A99" },
+  verbinding: { label:"Verbinding", color:"#7A8A6B" }
+};
+
+var STATES = {
+  wachtend: {
+    model:{ priority:{ id:"slaap", label:"Slaap" }, trendLength:1, focusDelta:0 },
+    remeasure:{ dueDate:"2026-09-10", daysUntil:18 },
+    cycleEvidence:null,
+    domainCheckDaysAgo:{},
+    golf1:{ activeDayNumbers:[] }
+  },
+  onderweg: {
+    model:{ priority:{ id:"slaap", label:"Slaap" }, trendLength:1, focusDelta:0 },
+    remeasure:{ dueDate:"2026-09-10", daysUntil:18 },
+    cycleEvidence:{ activeDays:8, cycleDay:12, daysUntilRemeasure:18, cycleStartDate:"2026-08-12", cycleEndDate:"2026-09-10" },
+    domainCheckDaysAgo:{ slaap:4, voeding:9 },
+    golf1:{ activeDayNumbers:[1,2,4,5,8,9,11,12] }
+  },
+  tweede_beeld: {
+    model:{ priority:{ id:"slaap", label:"Slaap" }, trendLength:2, focusDelta:2 },
+    remeasure:{ dueDate:"2026-09-10", daysUntil:4 },
+    cycleEvidence:{ activeDays:17, cycleDay:26, daysUntilRemeasure:4, cycleStartDate:"2026-08-12", cycleEndDate:"2026-09-10" },
+    domainCheckDaysAgo:{ slaap:4, voeding:23, beweging:7 },
+    golf1:{ activeDayNumbers:[1,2,4,5,8,9,11,12,14,15,16,18,19,21,22,24,26] }
+  },
+  hermeting_klaar: {
+    model:{ priority:{ id:"slaap", label:"Slaap" }, trendLength:2, focusDelta:2 },
+    remeasure:{ dueDate:"2026-09-10", daysUntil:0 },
+    cycleEvidence:{ activeDays:19, cycleDay:30, daysUntilRemeasure:0, cycleStartDate:"2026-08-12", cycleEndDate:"2026-09-10" },
+    domainCheckDaysAgo:{ slaap:8, voeding:27, beweging:11 },
+    golf1:{ activeDayNumbers:[1,2,4,5,8,9,11,12,14,15,16,18,19,21,22,24,26,28,30] }
+  }
+};
+
+/* --- helpers, 1:1 met src/lib/voortgang-bewijsband.ts --- */
+var CYCLE_LENGTH = 30;
+var MONTHS = ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
+var VB = { w:340, h:120, l:16, r:324, axis:64, lane:34 };
+
+function parseIso(iso){ var p = iso.split("-").map(Number); return new Date(p[0], p[1]-1, p[2]); }
+function dayToDate(start, day){ var d = parseIso(start); d.setDate(d.getDate() + (day-1)); return d; }
+function fmt(d){ return d.getDate() + " " + MONTHS[d.getMonth()]; }
+function xOf(day){ return VB.l + (VB.r - VB.l) * ((day-1)/(CYCLE_LENGTH-1)); }
+
+/** measurementsOf() + één veld erbij: kind. Dat veld is de hele voorstel. */
+function measurementsOf(cycleDay, daysAgo){
+  var out = [{ day:1, pillarId:null, kind:"start", label:"Je leefstijlcheck" }];
+  Object.keys(daysAgo).forEach(function(id){
+    var day = cycleDay - daysAgo[id];
+    if (day >= 1 && day <= CYCLE_LENGTH) {
+      out.push({ day:day, pillarId:id, kind:"domein", label:PILLAR[id].label });
+    }
+  });
+  return out.sort(function(a,b){ return a.day - b.day; });
+}
+
+/** Botsingsregel: merken die dichter dan MIN_GAP staan worden visueel uit
+    elkaar geduwd; het steeltje wijst nog naar de echte dag op de as. */
+var MIN_GAP = 34;
+function layout(ms){
+  var prev = -999;
+  return ms.map(function(m){
+    var trueX = xOf(m.day);
+    var drawX = Math.max(trueX, prev + MIN_GAP);
+    prev = drawX;
+    return { m:m, trueX:trueX, drawX:Math.min(drawX, VB.r - 12) };
+  });
+}
+
+/* --- copy, 1:1 met buildBandCaption() waar hij bestaat --- */
+function captionFor(st, sel){
+  var ce = st.cycleEvidence, prio = st.model.priority.label;
+  if (!ce) {
+    return { t:"Nog geen cyclus in beeld", b:"Je hermeting staat op " + fmt(parseIso(st.remeasure.dueDate)) + "." };
+  }
+  if (sel && sel.kind === "hermeting") {
+    return { t:"Dag 30 · " + fmt(parseIso(st.remeasure.dueDate)), b:"Je hermeting.",
+             f:"Hier lees je terug of er beweging in je " + prio.toLowerCase() + " zit." };
+  }
+  if (sel && sel.kind === "vandaag") {
+    return { t:"Dag " + ce.cycleDay + " · vandaag", b:ce.activeDays + " dagen waarop je iets pakte deze cyclus." };
+  }
+  if (sel && sel.kind === "start") {
+    return { t:"Dag 1 · " + fmt(dayToDate(ce.cycleStartDate,1)), b:"Je leefstijlcheck. Hier begint de vergelijking." };
+  }
+  if (sel && sel.kind === "domein") {
+    return { t:"Dag " + sel.day + " · " + fmt(dayToDate(ce.cycleStartDate, sel.day)),
+             b:"Je mat je " + sel.label.toLowerCase() + "." };
+  }
+  if (sel && sel.kind === "leeg") {
+    return { t:"Dag " + sel.day + " · " + fmt(dayToDate(ce.cycleStartDate, sel.day)),
+             b: sel.day > ce.cycleDay ? "Nog te gaan." : "Geen meting op deze dag." };
+  }
+  return null;
+}
+
+/** default-readout = de horizon-regel, niet een tweede tekst */
+function horizonBody(st){
+  var ce = st.cycleEvidence, m = st.model;
+  if (st.remeasure.daysUntil <= 0) return { t:"Je hermeting staat klaar.", b:"Dertig dagen sinds je start. Dit is het moment waarop de vergelijking iets betekent." };
+  if (!ce) return { t:"Je eerste beeld staat.", b:"Je hermeting staat op " + fmt(parseIso(st.remeasure.dueDate)) + ". Wat je tot dan neerzet, lees je op die dag terug — niet vandaag, en dat is bewust." };
+  if (m.trendLength < 2) return { t:"Dag " + ce.cycleDay + " · vandaag", b:"Over " + ce.daysUntilRemeasure + " dagen doe je je hermeting. Dan staat er naast je eerste beeld een tweede — pas dan is er een verschil om te lezen." };
+  var dir = m.focusDelta > 0 ? "hoger" : (m.focusDelta < 0 ? "lager" : null);
+  var lbl = m.priority.label.toLowerCase();
+  return { t:"Dag " + ce.cycleDay + " · vandaag",
+           b: dir ? ("Je " + lbl + " is sinds je start " + Math.abs(m.focusDelta) + " punten " + dir + ". Eén verschil is nog geen lijn — je volgende meting zegt of het richting is.")
+                  : ("Je " + lbl + " staat sinds je start op hetzelfde punt. Eén verschil is nog geen lijn — je volgende meting zegt of het richting is.") };
+}
+
+function heroCopy(st){
+  var ce = st.cycleEvidence, m = st.model;
+  if (st.remeasure.daysUntil <= 0) return { eyebrow:"JE CYCLUS · KLAAR", h1:"Je hermeting staat klaar." };
+  if (!ce) return { eyebrow:"JE CYCLUS", h1:"Je eerste beeld staat. Het tweede is waar het leesbaar wordt." };
+  if (m.trendLength < 2) return { eyebrow:"JE CYCLUS · DAG " + ce.cycleDay + " VAN 30", h1:"Dag " + ce.cycleDay + " van je cyclus." };
+  return { eyebrow:"JE CYCLUS · DAG " + ce.cycleDay + " VAN 30", h1:"Er staat nu meer dan één meting." };
+}
+
+/* =========================== render ==================================== */
+var current = "onderweg";
+var selected = null;
+var golf1 = false;
+
+function svgEl(tag, attrs){
+  var e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  Object.keys(attrs).forEach(function(k){ e.setAttribute(k, attrs[k]); });
+  return e;
+}
+
+function render(){
+  var st = STATES[current];
+  var ce = st.cycleEvidence;
+  var svg = document.getElementById("band-svg");
+  var marks = document.getElementById("marks");
+  svg.innerHTML = ""; marks.innerHTML = "";
+
+  /* kop */
+  var hc = heroCopy(st);
+  document.getElementById("eyebrow").textContent = hc.eyebrow;
+  document.getElementById("hero-t").textContent = hc.h1;
+  document.getElementById("job").innerHTML = ce
+    ? "Dit vlak telt af van je leefstijlcheck naar je hermeting: <b>dertig dagen</b>. Wat je daartussen meet, staat hier als merk op de lijn."
+    : "Dit vlak telt af van je leefstijlcheck naar je hermeting: <b>dertig dagen</b>. Je lijn begint zodra je eerste dag is gelogd.";
+  document.getElementById("instr-sub").textContent = ce
+    ? fmt(dayToDate(ce.cycleStartDate,1)) + " → " + fmt(parseIso(st.remeasure.dueDate))
+    : "start → " + fmt(parseIso(st.remeasure.dueDate));
+
+  var ms = ce ? measurementsOf(ce.cycleDay, st.domainCheckDaysAgo) : [];
+  var laid = layout(ms);
+  var today = ce ? ce.cycleDay : null;
+  var xToday = today ? xOf(today) : null;
+  var isDone = st.remeasure.daysUntil <= 0;
+
+  /* halo achter hermeting */
+  svg.appendChild(svgEl("circle", { cx:VB.r, cy:VB.axis, r:15, fill:"#5A8F6A", opacity:isDone?0.22:0.10 }));
+
+  /* as: gelopen deel massief, rest gestippeld */
+  if (ce) {
+    svg.appendChild(svgEl("line", { x1:VB.l, y1:VB.axis, x2:xToday, y2:VB.axis, stroke:"rgba(255,255,255,0.30)", "stroke-width":1.5, "stroke-linecap":"round" }));
+    if (!isDone) {
+      svg.appendChild(svgEl("line", { x1:xToday, y1:VB.axis, x2:VB.r, y2:VB.axis, stroke:"rgba(255,255,255,0.16)", "stroke-width":1, "stroke-dasharray":"1 5", "stroke-linecap":"round" }));
+    }
+  } else {
+    svg.appendChild(svgEl("line", { x1:VB.l, y1:VB.axis, x2:VB.r, y2:VB.axis, stroke:"rgba(255,255,255,0.16)", "stroke-width":1, "stroke-dasharray":"1 5", "stroke-linecap":"round" }));
+  }
+
+  /* Golf 1: dagmerken ONDER de as, alleen als preview aan staat */
+  if (golf1 && ce) {
+    st.golf1.activeDayNumbers.forEach(function(d){
+      svg.appendChild(svgEl("rect", { x:xOf(d)-0.9, y:VB.axis+6, width:1.8, height:7, rx:0.9, fill:"rgba(255,255,255,0.45)" }));
+    });
+  }
+
+  /* meetmerken in de laan boven de as, met steel naar de echte dag */
+  laid.forEach(function(p){
+    var m = p.m, dx = p.drawX, tx = p.trueX;
+    svg.appendChild(svgEl("path", { d:"M"+dx+" "+(VB.lane+7)+" L"+tx+" "+(VB.axis-5), stroke:"rgba(255,255,255,0.14)", "stroke-width":1, fill:"none" }));
+    if (m.kind === "start") {
+      svg.appendChild(svgEl("circle", { cx:dx, cy:VB.lane, r:5, fill:"#E7EDE8", stroke:"#132414", "stroke-width":1.5 }));
+    } else {
+      svg.appendChild(svgEl("rect", { x:dx-4.2, y:VB.lane-4.2, width:8.4, height:8.4, fill:PILLAR[m.pillarId].color, stroke:"#132414", "stroke-width":1.5, transform:"rotate(45 "+dx+" "+VB.lane+")" }));
+    }
+    addBtn(dx, VB.lane, m.kind, m.kind === "start" ? "Je leefstijlcheck, dag 1" : ("Je " + m.label.toLowerCase() + " gemeten op dag " + m.day), { kind:m.kind, day:m.day, label:m.label, pillarId:m.pillarId });
+  });
+
+  /* startpunt + hermeting op de as */
+  svg.appendChild(svgEl("circle", { cx:VB.l, cy:VB.axis, r:3.5, fill:"#5A8F6A", opacity:.6 }));
+  addText(svg, VB.l, VB.axis+34, "START", "start");
+  if (ce) { addText(svg, VB.l, VB.axis+46, fmt(dayToDate(ce.cycleStartDate,1)), "date"); }
+
+  svg.appendChild(svgEl("circle", { cx:VB.r, cy:VB.axis, r:5.5, fill:isDone?"#5A8F6A":"none", stroke:"#5A8F6A", "stroke-width":1.5 }));
+  addText(svg, VB.r, VB.axis+34, "HERMETING", "start", "end");
+  addText(svg, VB.r, VB.axis+46, fmt(parseIso(st.remeasure.dueDate)), "date-sage", "end");
+  addBtn(VB.r, VB.axis, "hermeting", "Je hermeting op " + fmt(parseIso(st.remeasure.dueDate)), { kind:"hermeting", day:30 });
+
+  /* vandaag: driehoek + lijn, alleen als hij niet samenvalt met de hermeting */
+  if (ce && !isDone) {
+    svg.appendChild(svgEl("line", { x1:xToday, y1:VB.axis-9, x2:xToday, y2:VB.axis+22, stroke:"#5A8F6A", "stroke-width":1, opacity:.45 }));
+    svg.appendChild(svgEl("path", { d:"M"+xToday+" "+(VB.axis-13)+" L"+(xToday+4.6)+" "+(VB.axis-5)+" L"+(xToday-4.6)+" "+(VB.axis-5)+" Z", fill:"#5A8F6A" }));
+    addBtn(xToday, VB.axis, "vandaag", "Vandaag, dag " + today, { kind:"vandaag", day:today });
+  }
+
+  /* legenda toont alleen vormen die nu op de lijn staan */
+  var present = { start: ms.length > 0, domein: ms.some(function(m){ return m.kind === "domein"; }),
+                  vandaag: !!(ce && !isDone), hermeting: true, golf: !!(golf1 && ce && st.golf1.activeDayNumbers.length) };
+  document.querySelectorAll("#legend li[data-leg]").forEach(function(li){
+    li.style.display = present[li.getAttribute("data-leg")] ? "flex" : "none";
+  });
+
+  document.getElementById("scrub").disabled = !ce;
+  document.getElementById("scrub").max = CYCLE_LENGTH;
+  document.getElementById("scrub").value = today || 1;
+
+  paintReadout();
+  paintCtas();
+}
+
+function addText(svg, x, y, str, cls, anchor){
+  var attrs = { x:x, y:y, "font-size":cls==="start"?9:10.5, fill:cls==="start"?"rgba(255,255,255,0.40)":(cls==="date-sage"?"#A9C6B2":"rgba(255,255,255,0.60)") };
+  if (cls === "start") { attrs["font-weight"] = 600; attrs["letter-spacing"] = "0.10em"; }
+  if (anchor) attrs["text-anchor"] = anchor;
+  var t = svgEl("text", attrs);
+  t.textContent = str;
+  svg.appendChild(t);
+}
+
+function addBtn(x, y, kind, label, payload){
+  var b = document.createElement("button");
+  b.type = "button";
+  b.className = "mark";
+  b.style.left = (x / VB.w * 100) + "%";
+  b.style.top  = (y / VB.h * 100) + "%";
+  b.setAttribute("aria-label", label);
+  b.setAttribute("aria-pressed", selected && selected.kind === kind && selected.day === payload.day ? "true" : "false");
+  b.addEventListener("click", function(){
+    selected = payload;
+    toast("dashboard_voortgang_band_mark { kind: \"" + kind + "\"" + (payload.pillarId ? ", domain: \"" + payload.pillarId + "\"" : "") + ", day: " + payload.day + " }");
+    render();
+  });
+  document.getElementById("marks").appendChild(b);
+}
+
+function paintReadout(){
+  var st = STATES[current];
+  var c = selected ? captionFor(st, selected) : null;
+  if (!c) { var h = horizonBody(st); c = { t:h.t, b:h.b }; }
+  document.getElementById("ro-t").textContent = c.t;
+  document.getElementById("ro-b").textContent = c.b;
+  var f = document.getElementById("ro-f");
+  if (c.f) { f.textContent = c.f; f.hidden = false; } else { f.hidden = true; }
+  document.getElementById("ro-back").hidden = !selected;
+}
+
+function paintCtas(){
+  var st = STATES[current];
+  var box = document.getElementById("ctas");
+  box.innerHTML = "";
+  var soon = st.remeasure.daysUntil <= 14;
+  var list = soon
+    ? [["Naar je hermeting","cta-1",'dashboard_voortgang_hub_click { destination: "hermeting", surface: "cyclus_hero" }'],
+       ["Wat staat er voor vandaag","cta-2",'dashboard_voortgang_hub_click { destination: "agenda", surface: "cyclus_hero" }'],
+       ["Bekijk je slaap","cta-3",'dashboard_voortgang_domein_click { domain: "slaap" }']]
+    : [["Wat staat er voor vandaag","cta-1",'dashboard_voortgang_hub_click { destination: "agenda", surface: "cyclus_hero" }'],
+       ["Bekijk je slaap","cta-3",'dashboard_voortgang_domein_click { domain: "slaap" }']];
+  list.forEach(function(row){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "cta " + row[1]; b.textContent = row[0];
+    b.addEventListener("click", function(){ toast(row[2]); });
+    box.appendChild(b);
+  });
+}
+
+function toast(msg){ document.getElementById("toast").textContent = msg ? ("→ " + msg) : ""; }
+
+/* --- reviewer-bediening --- */
+document.querySelectorAll("[data-state]").forEach(function(b){
+  b.addEventListener("click", function(){
+    document.querySelectorAll("[data-state]").forEach(function(o){ o.setAttribute("aria-pressed","false"); });
+    b.setAttribute("aria-pressed","true");
+    current = b.getAttribute("data-state");
+    selected = null;
+    toast("");
+    render();
+  });
+});
+document.getElementById("golf1").addEventListener("click", function(){
+  golf1 = !golf1;
+  this.setAttribute("aria-pressed", golf1 ? "true" : "false");
+  this.textContent = "Golf 1 preview (" + (golf1 ? "aan" : "uit") + ")";
+  document.body.setAttribute("data-golf1", golf1 ? "on" : "off");
+  render();
+});
+document.getElementById("ro-back").addEventListener("click", function(){
+  selected = null; toast(""); render();
+});
+document.getElementById("scrub-toggle").addEventListener("click", function(){
+  var w = document.getElementById("scrub-wrap");
+  var open = w.hidden;
+  w.hidden = !open;
+  this.setAttribute("aria-expanded", open ? "true" : "false");
+  this.textContent = (open ? "－" : "＋") + " Loop dag voor dag door je cyclus";
+});
+document.getElementById("scrub").addEventListener("input", function(){
+  var st = STATES[current];
+  if (!st.cycleEvidence) return;
+  var day = Number(this.value);
+  var ms = measurementsOf(st.cycleEvidence.cycleDay, st.domainCheckDaysAgo);
+  var hit = ms.filter(function(m){ return m.day === day; })[0];
+  if (day === st.cycleEvidence.cycleDay) selected = { kind:"vandaag", day:day };
+  else if (day === 30) selected = { kind:"hermeting", day:30 };
+  else if (hit) selected = { kind:hit.kind, day:hit.day, label:hit.label, pillarId:hit.pillarId };
+  else selected = { kind:"leeg", day:day };
+  paintReadout();
+});
+document.getElementById("scrub").addEventListener("change", function(){
+  toast('dashboard_voortgang_band_scrub { zone: "' + (Number(this.value) < STATES[current].cycleEvidence.cycleDay ? "verleden" : (Number(this.value) === STATES[current].cycleEvidence.cycleDay ? "vandaag" : "toekomst")) + '" }');
+});
+
+render();
+</script>
+</body>
+</html>

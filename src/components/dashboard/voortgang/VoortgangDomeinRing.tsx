@@ -3,13 +3,12 @@
 import { type MouseEvent } from "react";
 import { PILLAR, PILLARS } from "@/data/dashboard";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
-import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import { clarityTag } from "@/lib/clarity";
 import { getSituationLabel, isDomainGoalDomain, type DomainGoalDomain } from "@/lib/domain-goal";
 import type { DomainGoalMap } from "@/lib/domain-goal-client";
 import { isInterventionDomain, isReadoutDomain } from "@/lib/domain-role";
 import { trackEvent } from "@/lib/ga4";
-import { getScoreBandShortLabel } from "@/lib/score-bands";
+import { DOMAIN_CHECK_PILLAR_IDS } from "@/lib/kompas-domain-check";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
 type VoortgangDomeinRingProps = {
@@ -20,23 +19,28 @@ type VoortgangDomeinRingProps = {
   onOpenGoal: (domain: DomainGoalDomain) => void;
 };
 
-function buildCoverageLine(
+const DOMAIN_CHECK_PILLARS = DOMAIN_CHECK_PILLAR_IDS.map((id) => PILLAR[id]);
+
+export function buildCoverageLine(
   domainCheckDaysAgo: DashboardData["domainCheckDaysAgo"] | undefined,
 ): string | null {
   if (domainCheckDaysAgo == null) {
     return null;
   }
 
-  const measured = PILLARS.filter((pillar) => domainCheckDaysAgo[pillar.id] != null);
+  const total = DOMAIN_CHECK_PILLARS.length;
+  const measured = DOMAIN_CHECK_PILLARS.filter(
+    (pillar) => domainCheckDaysAgo[pillar.id] != null,
+  );
   const n = measured.length;
 
-  if (n === 7) {
-    return "Je hebt 7 van de 7 domeinen apart gemeten.";
+  if (n === total) {
+    return `Je hebt ${total} van de ${total} domeinen apart gemeten.`;
   }
 
-  const missing = PILLARS.filter((pillar) => domainCheckDaysAgo[pillar.id] == null).map(
-    (pillar) => pillar.label.toLowerCase(),
-  );
+  const missing = DOMAIN_CHECK_PILLARS.filter(
+    (pillar) => domainCheckDaysAgo[pillar.id] == null,
+  ).map((pillar) => pillar.label.toLowerCase());
 
   let namesSuffix = "";
   if (missing.length > 0) {
@@ -48,7 +52,7 @@ function buildCoverageLine(
         : ` ${shown.join(", ")} nog niet.`;
   }
 
-  return `Je hebt ${n} van de 7 domeinen apart gemeten.${namesSuffix}`;
+  return `Je hebt ${n} van de ${total} domeinen apart gemeten.${namesSuffix}`;
 }
 
 function DomainRow({
@@ -69,7 +73,6 @@ function DomainRow({
 }) {
   const pillar = PILLAR[pillarId];
   const trend = model.trend[pillarId];
-  const score = model.scores[pillarId];
   const daysAgo = domainCheckDaysAgo?.[pillarId];
 
   const metaLine =
@@ -108,66 +111,32 @@ function DomainRow({
       >
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "minmax(0, 1fr) 72px minmax(0, auto)",
+            display: "flex",
             alignItems: "center",
-            gap: 10,
+            gap: 8,
             minWidth: 0,
           }}
         >
           <span
+            aria-hidden
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              minWidth: 0,
-            }}
-          >
-            <span
-              aria-hidden
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: 999,
-                background: pillar.color,
-                flexShrink: 0,
-              }}
-            />
-            <span
-              style={{
-                fontSize: 14,
-                color: "var(--text)",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {pillar.label}
-            </span>
-          </span>
-          <div style={{ width: 72, flexShrink: 0 }}>
-            <Sparkline data={trend} color={pillar.color} w={72} h={24} />
-          </div>
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              gap: 6,
-              minWidth: 0,
+              width: 8,
+              height: 8,
+              borderRadius: 999,
+              background: pillar.color,
               flexShrink: 0,
             }}
+          />
+          <span
+            style={{
+              fontSize: 14,
+              color: "var(--text)",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
           >
-            <span
-              style={{
-                fontSize: 12,
-                color: "var(--text-muted)",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {getScoreBandShortLabel(score)}
-            </span>
-            <DeltaBadge delta={model.deltaOf(pillarId)} />
+            {pillar.label}
           </span>
         </div>
         <p

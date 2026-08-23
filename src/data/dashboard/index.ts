@@ -297,7 +297,6 @@ export const PILLAR_CHECKIN_ROUTES: Partial<Record<PillarId, string>> = {
 };
 
 export const DASHBOARD_SECTIONS: DashboardSection[] = [
-  { id: "vitaalscore", type: "vitalityScore" },
   { id: "nu", type: "now" },
   { id: "prioriteit", type: "priority" },
   { id: "plan", type: "plan" },

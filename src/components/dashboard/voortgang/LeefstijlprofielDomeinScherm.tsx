@@ -14,7 +14,6 @@ import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveBut
 import PrioriteitenLadder from "@/components/dashboard/voortgang/PrioriteitenLadder";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 import { resolveRecommendedLayers } from "@/components/dashboard/voortgang/FavorietenBewegingSection";
-import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import MovementCheckinReadout from "@/components/intake/MovementCheckinReadout";
 import MovementFactReadout from "@/components/intake/MovementFactReadout";
 import SleepCheckinReadout from "@/components/intake/SleepCheckinReadout";
@@ -425,9 +424,6 @@ export default function LeefstijlprofielDomeinScherm({
           </>
         ) : null}
 
-        {isSleep ? <DomeinIjkpuntCheckPrompt domain="slaap" domainLabel="Slaap" /> : null}
-        {isMovement ? <DomeinIjkpuntCheckPrompt domain="beweging" domainLabel="Beweging" /> : null}
-
         {isMovement && movementLogEnabled ? (
           <CockpitTile eyebrow="Wat je deed">
             <p className="mt-2 text-[13.5px] leading-relaxed text-[#CDD7D0]">
@@ -468,6 +464,23 @@ export default function LeefstijlprofielDomeinScherm({
               ? { variant: "explain" as const, kompasHref: buildDashboardVandaagHref(domain) }
               : { onGoAgenda: handleGoMijnDag })}
           />
+        ) : null}
+
+        {movementReadout &&
+        movementFocusLayer != null &&
+        openLadderLayer != null &&
+        openLadderLayer !== movementFocusLayer ? (
+          <p className="mt-2 max-w-[58ch] text-[11.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+            Je kijkt naar prioriteit {openLadderLayer}. Jouw grootste winst zit op prioriteit{" "}
+            {movementFocusLayer}.{" "}
+            <button
+              type="button"
+              onClick={() => setPickedLayer({ layer: movementFocusLayer })}
+              className="cursor-pointer border-none bg-transparent p-0 text-left font-semibold text-[#9CC5A9] underline"
+            >
+              Terug daarheen
+            </button>
+          </p>
         ) : null}
 
         <DomainRouteStrip domain={domain} surface={`leefstijlprofiel_${domain}`} nodes={routeNodes} />
