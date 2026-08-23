@@ -114,6 +114,39 @@ describe("AgendaToolbar", () => {
     expect(hiddenToday?.textContent).toContain("Vandaag");
   });
 
+  it("ritme-chip verschijnt pas met rhythmCount > 0 en toont het aantal", () => {
+    const { rerender } = render(<AgendaToolbar {...baseProps()} rhythmCount={0} />);
+    expect(screen.queryByLabelText(/Doorlopend vandaag/)).toBeNull();
+
+    rerender(
+      <AgendaToolbar
+        {...baseProps()}
+        rhythmCount={3}
+        rhythmExpanded
+        onToggleRhythm={vi.fn()}
+      />,
+    );
+    const chip = screen.getByLabelText(/Doorlopend vandaag inklappen/);
+    expect(chip.textContent).toContain("3");
+  });
+
+  it("ritme-chip roept onToggleRhythm aan en toont in/uitklap-status via aria-expanded", () => {
+    const onToggleRhythm = vi.fn();
+    render(
+      <AgendaToolbar
+        {...baseProps()}
+        rhythmCount={2}
+        rhythmExpanded={false}
+        onToggleRhythm={onToggleRhythm}
+      />,
+    );
+
+    const chip = screen.getByLabelText(/Doorlopend vandaag uitklappen/);
+    expect(chip.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(chip);
+    expect(onToggleRhythm).toHaveBeenCalledOnce();
+  });
+
   it("overflow-menu: Focus-item sluit het menu en roept onToggleFocus aan", () => {
     const onToggleFocus = vi.fn();
     render(

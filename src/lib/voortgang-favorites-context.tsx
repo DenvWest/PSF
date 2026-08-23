@@ -24,6 +24,12 @@ type VoortgangFavoritesContextValue = {
   /** `surface` gaat alleen naar de meting, niet naar `account_favorites`. */
   save: (item: VoortgangFavoriteItem, surface?: string) => void;
   remove: (id: string) => void;
+  /**
+   * Schrijft tijd/alert-velden op een favoriet die al bestaat. In
+   * tegenstelling tot `save()` heeft dit geen "sla over als al bewaard"-guard
+   * — het moet juist altijd persisten, ook als de rij al bestaat.
+   */
+  updateReminder: (item: VoortgangFavoriteItem, surface?: string) => void;
 };
 
 const VoortgangFavoritesContext = createContext<VoortgangFavoritesContextValue | null>(null);
@@ -56,6 +62,10 @@ async function persistFavorite(item: VoortgangFavoriteItem): Promise<boolean> {
         kind: item.kind,
         domain: item.domain,
         source: item.source,
+        reminder_start_time: item.reminderStartTime,
+        reminder_end_time: item.reminderEndTime,
+        reminder_interval_minutes: item.reminderIntervalMinutes,
+        alert_enabled: item.alertEnabled,
       }),
     });
     return response.ok || response.status === 401;
@@ -138,9 +148,32 @@ export function VoortgangFavoritesProvider({ children }: { children: ReactNode }
     }
   }, []);
 
+  const updateReminder = useCallback((item: VoortgangFavoriteItem, surface?: string) => {
+    setItems((current) => {
+      const exists = current.some((row) => row.id === item.id);
+      return exists
+        ? current.map((row) => (row.id === item.id ? item : row))
+        : [...current, item];
+    });
+    trackEvent("dashboard_favorieten_herinnering_ingesteld", {
+      item_id: item.id,
+      kind: item.kind,
+      alert_enabled: item.alertEnabled ?? false,
+      heeft_herhaling: Boolean(item.reminderEndTime && item.reminderIntervalMinutes),
+      ...(item.domain ? { domain: item.domain } : {}),
+      ...(surface ? { surface } : {}),
+    });
+    clarityTag("dashboard_favorieten_herinnering", item.id);
+    void persistFavorite(item).then((ok) => {
+      if (ok) {
+        accountBackedRef.current = true;
+      }
+    });
+  }, []);
+
   const value = useMemo(
-    () => ({ items, hydrated, isSaved, save, remove }),
-    [items, hydrated, isSaved, save, remove],
+    () => ({ items, hydrated, isSaved, save, remove, updateReminder }),
+    [items, hydrated, isSaved, save, remove, updateReminder],
   );
 
   return (

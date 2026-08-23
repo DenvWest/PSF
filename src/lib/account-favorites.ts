@@ -12,6 +12,10 @@ export type AccountFavoriteRow = {
   kind: AccountFavoriteKind;
   domain: string | null;
   source: AccountFavoriteSource | null;
+  reminder_start_time: string | null;
+  reminder_end_time: string | null;
+  reminder_interval_minutes: number | null;
+  alert_enabled: boolean;
   created_at: string;
 };
 
@@ -21,6 +25,10 @@ export type AccountFavoriteItem = {
   kind: AccountFavoriteKind;
   domain?: PillarId;
   source?: AccountFavoriteSource;
+  reminderStartTime?: string;
+  reminderEndTime?: string;
+  reminderIntervalMinutes?: number;
+  alertEnabled?: boolean;
 };
 
 const VALID_KINDS = new Set<AccountFavoriteKind>(["activiteit", "supplement", "dienst"]);
@@ -52,6 +60,12 @@ export function rowToFavoriteItem(row: AccountFavoriteRow): AccountFavoriteItem 
     kind: row.kind,
     ...(row.domain && isAccountFavoriteDomain(row.domain) ? { domain: row.domain } : {}),
     ...(row.source ? { source: row.source } : {}),
+    ...(row.reminder_start_time ? { reminderStartTime: row.reminder_start_time } : {}),
+    ...(row.reminder_end_time ? { reminderEndTime: row.reminder_end_time } : {}),
+    ...(row.reminder_interval_minutes != null
+      ? { reminderIntervalMinutes: row.reminder_interval_minutes }
+      : {}),
+    ...(row.alert_enabled ? { alertEnabled: row.alert_enabled } : {}),
   };
 }
 
@@ -61,7 +75,9 @@ export async function listAccountFavorites(
 ): Promise<AccountFavoriteItem[]> {
   const { data, error } = await admin
     .from("account_favorites")
-    .select("id,account_id,item_id,title,kind,domain,source,created_at")
+    .select(
+      "id,account_id,item_id,title,kind,domain,source,reminder_start_time,reminder_end_time,reminder_interval_minutes,alert_enabled,created_at",
+    )
     .eq("account_id", accountId)
     .order("created_at", { ascending: true });
 
@@ -85,6 +101,10 @@ export async function upsertAccountFavorite(
       kind: item.kind,
       domain: item.domain ?? null,
       source: item.source ?? null,
+      reminder_start_time: item.reminderStartTime ?? null,
+      reminder_end_time: item.reminderEndTime ?? null,
+      reminder_interval_minutes: item.reminderIntervalMinutes ?? null,
+      alert_enabled: item.alertEnabled ?? false,
     },
     { onConflict: "account_id,item_id" },
   );

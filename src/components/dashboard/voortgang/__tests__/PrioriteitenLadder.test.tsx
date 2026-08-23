@@ -278,3 +278,81 @@ describe("PrioriteitenLadder", () => {
     expect(onGoAgenda).toHaveBeenCalled();
   });
 });
+
+/**
+ * De `explain`-stand is wat Voortgang sinds 23 augustus gebruikt: de ladder
+ * verklaart, Kompas kiest. Zonder deze tests kruipt de keuze-affordance er
+ * ongemerkt weer in — en dan staat "wat koos ik op deze laag" opnieuw op drie
+ * plekken.
+ */
+describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () => {
+  function renderExplain() {
+    return render(
+      <PrioriteitenLadder
+        layers={LAYERS}
+        intro="Intro-tekst."
+        domain="beweging"
+        surface="test"
+        variant="explain"
+        kompasHref="/dashboard?tab=vandaag&kompas=beweging"
+      />,
+    );
+  }
+
+  it("draagt de verklaring van de laag onverkort", () => {
+    renderExplain();
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    expect(screen.getByText("Samenvatting een.")).toBeTruthy();
+    expect(screen.getByText("Actie 1a")).toBeTruthy();
+  });
+
+  it("draagt geen save-knop — kiezen gebeurt op Kompas", () => {
+    renderExplain();
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    expect(screen.queryByRole("button", { name: /Zet bij Mijn keuze/ })).toBeNull();
+    expect(screen.getByRole("link", { name: /Kies dit op Kompas/ })).toBeTruthy();
+  });
+
+  it("draagt geen tweede 'Mijn keuze op deze laag' en geen plan-knop", () => {
+    favoriteItems = [
+      {
+        id: "laag-beweging-p1-actie-1a",
+        title: "Actie 1a",
+        kind: "activiteit",
+        domain: "beweging",
+      },
+    ];
+    renderExplain();
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    expect(screen.queryByText("Mijn keuze op deze laag")).toBeNull();
+    expect(screen.queryByRole("button", { name: /Zet op Mijn Dag/ })).toBeNull();
+  });
+
+  it("blijft wél tonen dat je op deze laag iets koos", () => {
+    favoriteItems = [
+      {
+        id: "laag-beweging-p1-actie-1a",
+        title: "Actie 1a",
+        kind: "activiteit",
+        domain: "beweging",
+      },
+    ];
+    renderExplain();
+    // De dichte rij houdt zijn teller: feedback zonder tweede archief.
+    expect(screen.getByText("1 gekozen")).toBeTruthy();
+  });
+
+  it("houdt de keuze-affordance in de standaardstand — verbinding heeft geen Kompas-scherm", () => {
+    render(
+      <PrioriteitenLadder
+        layers={LAYERS}
+        intro="Intro-tekst."
+        domain="verbinding"
+        surface="test"
+      />,
+    );
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    expect(screen.getAllByRole("button", { name: /Zet bij Mijn keuze/ }).length).toBeGreaterThan(0);
+    expect(screen.getByText("Mijn keuze op deze laag")).toBeTruthy();
+  });
+});

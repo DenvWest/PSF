@@ -76,6 +76,86 @@ describe("/api/account/favorites", () => {
     expect(mockUpsert).toHaveBeenCalled();
   });
 
+  it("POST geeft reminder_start_time en alert_enabled door aan upsert", async () => {
+    const request = new NextRequest("http://localhost/api/account/favorites", {
+      method: "POST",
+      body: JSON.stringify({
+        item_id: "card-1",
+        title: "Kracht",
+        kind: "activiteit",
+        reminder_start_time: "09:00",
+        alert_enabled: true,
+      }),
+    });
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    expect(mockUpsert).toHaveBeenCalledWith(
+      {},
+      "acc-1",
+      expect.objectContaining({ reminderStartTime: "09:00", alertEnabled: true }),
+    );
+  });
+
+  it("POST neemt eindtijd+interval alleen samen over, na de starttijd", async () => {
+    const request = new NextRequest("http://localhost/api/account/favorites", {
+      method: "POST",
+      body: JSON.stringify({
+        item_id: "card-1",
+        title: "Kracht",
+        kind: "activiteit",
+        reminder_start_time: "09:00",
+        reminder_end_time: "17:00",
+        reminder_interval_minutes: 60,
+      }),
+    });
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    expect(mockUpsert).toHaveBeenCalledWith(
+      {},
+      "acc-1",
+      expect.objectContaining({
+        reminderStartTime: "09:00",
+        reminderEndTime: "17:00",
+        reminderIntervalMinutes: 60,
+      }),
+    );
+  });
+
+  it("POST laat een ongeldige reminder_start_time stilzwijgend vallen", async () => {
+    const request = new NextRequest("http://localhost/api/account/favorites", {
+      method: "POST",
+      body: JSON.stringify({
+        item_id: "card-1",
+        title: "Kracht",
+        kind: "activiteit",
+        reminder_start_time: "25:99",
+      }),
+    });
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    const [, , upsertedItem] = mockUpsert.mock.calls[0] as [unknown, unknown, Record<string, unknown>];
+    expect(upsertedItem).not.toHaveProperty("reminderStartTime");
+  });
+
+  it("POST laat een eindtijd zonder interval weg, starttijd blijft staan", async () => {
+    const request = new NextRequest("http://localhost/api/account/favorites", {
+      method: "POST",
+      body: JSON.stringify({
+        item_id: "card-1",
+        title: "Kracht",
+        kind: "activiteit",
+        reminder_start_time: "09:00",
+        reminder_end_time: "17:00",
+      }),
+    });
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    const [, , upsertedItem] = mockUpsert.mock.calls[0] as [unknown, unknown, Record<string, unknown>];
+    expect(upsertedItem).toEqual(expect.objectContaining({ reminderStartTime: "09:00" }));
+    expect(upsertedItem).not.toHaveProperty("reminderEndTime");
+    expect(upsertedItem).not.toHaveProperty("reminderIntervalMinutes");
+  });
+
   it("DELETE removes a favorite by item_id", async () => {
     const request = new NextRequest(
       "http://localhost/api/account/favorites?item_id=card-1",

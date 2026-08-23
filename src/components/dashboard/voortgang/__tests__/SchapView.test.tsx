@@ -9,6 +9,8 @@ type FakeFavorite = { id: string; title: string; kind: string; domain?: string }
 let favoriteItems: FakeFavorite[] = [];
 const save = vi.fn();
 
+const updateReminder = vi.fn();
+
 vi.mock("@/lib/voortgang-favorites-context", () => ({
   useVoortgangFavorites: () => ({
     items: favoriteItems,
@@ -16,6 +18,7 @@ vi.mock("@/lib/voortgang-favorites-context", () => ({
     isSaved: (id: string) => favoriteItems.some((item) => item.id === id),
     save,
     remove: vi.fn(),
+    updateReminder,
   }),
 }));
 
@@ -55,41 +58,42 @@ function tabLabels(): string[] {
 beforeEach(() => {
   favoriteItems = [];
   save.mockClear();
+  updateReminder.mockClear();
   emitAccountClientEvent.mockClear();
 });
 
 describe("SchapView — welke tabs een domein draagt", () => {
   it("toont op slaap Leefstijl, Producten en Favorieten", () => {
     renderSchap("slaap");
-    expect(tabLabels()).toEqual(["Leefstijl", "Producten", "Favorieten"]);
+    expect(tabLabels()).toEqual(["Producten", "Favorieten"]);
     expect(screen.queryByRole("tab", { name: "Diensten" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 
   it("toont op voeding Leefstijl, Producten en Favorieten", () => {
     renderSchap("voeding");
-    expect(tabLabels()).toEqual(["Leefstijl", "Producten", "Favorieten"]);
+    expect(tabLabels()).toEqual(["Producten", "Favorieten"]);
     expect(screen.queryByRole("tab", { name: "Diensten" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 
-  it("toont op beweging Leefstijl, Producten, Diensten en Favorieten, nooit Begeleiding", () => {
+  it("toont op beweging Producten, Diensten en Favorieten, nooit Begeleiding", () => {
     renderSchap("beweging");
-    expect(tabLabels()).toEqual(["Leefstijl", "Producten", "Diensten", "Favorieten"]);
+    expect(tabLabels()).toEqual(["Producten", "Diensten", "Favorieten"]);
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
+  });
+
+  // W4a — het schap draagt aanbod en favorieten, geen leefstijl-werkplek.
+  it("draagt op geen enkel domein nog een Leefstijl-tab", () => {
+    for (const domain of ["beweging", "slaap", "voeding"] as const) {
+      const { unmount } = renderSchap(domain);
+      expect(screen.queryByRole("tab", { name: "Leefstijl" })).toBeNull();
+      unmount();
+    }
   });
 });
 
-describe("SchapView — de Leefstijl-tab is werkplek", () => {
-  it("toont de ladder om keuzes te maken", () => {
-    renderSchap("beweging", "leefstijl");
-    const teugs = screen.getAllByRole("button");
-    // Minstens de terug-knop en de CockpitTile aria-labels
-    expect(teugs.length).toBeGreaterThan(0);
-    // De ladder moet geladen zijn
-    expect(screen.getByRole("tabpanel", { hidden: true })).toBeDefined();
-  });
-
+describe("SchapView — de Favorieten-tab", () => {
   it("filtert favorieten op domein", () => {
     favoriteItems = [
       { id: "laag-beweging-p1-elk-werkuur-staan", title: "Staan", kind: "activiteit", domain: "beweging" },
@@ -99,6 +103,16 @@ describe("SchapView — de Leefstijl-tab is werkplek", () => {
 
     expect(screen.getByText("Staan")).toBeDefined();
     expect(screen.queryByText("Vast opstaan")).toBeNull();
+  });
+
+  it("toont de tijd/alert-editor alleen bij een ladder-favoriet, niet bij een dienst", () => {
+    favoriteItems = [
+      { id: "laag-beweging-p1-elk-werkuur-staan", title: "Staan", kind: "activiteit", domain: "beweging" },
+      { id: "dienst-personal-trainer-1", title: "Personal trainer intake", kind: "dienst", domain: "beweging" },
+    ];
+    renderSchap("beweging", "favorieten");
+
+    expect(screen.getAllByRole("button", { name: "Tijdstip" })).toHaveLength(1);
   });
 });
 

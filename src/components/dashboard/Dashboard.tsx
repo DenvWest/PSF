@@ -97,7 +97,7 @@ import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
 import DomainKompasScreen from "@/components/dashboard/domain/DomainKompasScreen";
 import DomainLadderContextPanel from "@/components/dashboard/domain/DomainLadderContextPanel";
-import { buildInspectorCards, buildLadderInspectorCards } from "@/lib/cockpit-inspector";
+import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import {
   EMPTY_MOVEMENT_PREFS,
   getMovementAnchorOption,
@@ -123,16 +123,13 @@ import {
   type ContextRailToolId,
   type VoortgangRailItemId,
 } from "@/lib/context-rail";
-import { VoortgangFavoritesProvider, useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
+import { VoortgangFavoritesProvider } from "@/lib/voortgang-favorites-context";
 import {
   DomainLadderFocusProvider,
   useDomainLadderFocus,
 } from "@/lib/domain-ladder-focus-context";
 import { LadderMomentsProvider } from "@/lib/ladder-moments-context";
 import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
-import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
-import { hasLadderKeuzehart } from "@/lib/ladder-keuzehart";
-import { getLeefstijlLadder, parseLadderFavoriteLayer } from "@/lib/leefstijl-ladder";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { useTodayActionDone } from "@/lib/use-today-action-done";
 import { resolveSchapDomain } from "@/lib/schap-availability";
@@ -2995,7 +2992,6 @@ function DashboardContent({
   initialAgendaView,
   sleepFocus = null,
 }: DashboardProps) {
-  const { items: favorietenItems } = useVoortgangFavorites();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [tab, setTab] = useState<DashboardTabId>(
@@ -3520,75 +3516,41 @@ function DashboardContent({
   // De "meet"-kaart is universeel (elk domein) en krijgt hieronder een echte
   // actieknop via remeasureAction — geen domein-uitzondering meer nodig.
   // Staat er een domeinscherm open met een aangeklikte ladderlaag, dan draagt
-  // de contextkolom díé laag en wat je erop koos — geen tweede ladder (lock
-  // N6), maar het waarom naast het wat. Elk domein met een ladder komt hier
-  // binnen; de staten komen alleen mee waar de eigen check ze oplevert.
-  const ladderInspectorCards = useMemo(() => {
-    if (!ladderFocus) {
-      return null;
-    }
-    // Draagt dit domein het keuzehart, dan bouwt het paneel alle zones zelf —
-    // inclusief de laag en wat je erop koos, want die dragen knoppen en kunnen
-    // dus geen kaart zijn. Lege lijst, geen `null`: anders vallen de
-    // gewoonte-kaarten terug op een scherm dat over een laag gaat.
-    if (hasLadderKeuzehart(ladderFocus.domain)) {
-      return [];
-    }
-    const ladder = getLeefstijlLadder(ladderFocus.domain);
-    const layer = ladder?.layers.find((row) => row.id === ladderFocus.layerId);
-    if (!layer) {
-      return null;
-    }
-    const readout = resolveDomainLadderReadout(ladderFocus.domain, data);
-    const state = readout?.layerStates[layer.id] ?? null;
-    return buildLadderInspectorCards({
-      layerId: layer.id,
-      layerName: layer.name,
-      layerSummary: layer.summary,
-      stateLabel: state && readout ? readout.stateLabels[state] : null,
-      whyWait: readout?.whyWait(layer.id) ?? null,
-      chosen: favorietenItems
-        .filter(
-          (item) =>
-            item.domain === ladderFocus.domain &&
-            parseLadderFavoriteLayer(item.id) === layer.id,
-        )
-        .map((item) => ({ title: item.title })),
-      isFocus: layer.id === readout?.focusLayer,
-    });
-  }, [ladderFocus, data, favorietenItems]);
-
-  const inspectorCards =
-    ladderInspectorCards ??
-    buildInspectorCards({
-      activeHabit: activeHabit
-        ? {
-            title: activeHabit.title,
-            detail: activeHabit.detail,
-            done: todayActionDone,
-          }
-        : null,
-      remeasure: data?.remeasure ? { daysUntil: data.remeasure.daysUntil } : null,
-      anchorWhy: anchorOption?.whySuffix ?? null,
-    });
+  // `DomainLadderContextPanel` de hele kolom: waarom die laag, en wat je erop
+  // koos. Lege lijst, geen `null`: anders vallen de gewoonte-kaarten terug op
+  // een scherm dat over een laag gaat.
+  const inspectorCards = ladderFocus
+    ? []
+    : buildInspectorCards({
+        activeHabit: activeHabit
+          ? {
+              title: activeHabit.title,
+              detail: activeHabit.detail,
+              done: todayActionDone,
+            }
+          : null,
+        remeasure: data?.remeasure ? { daysUntil: data.remeasure.daysUntil } : null,
+        anchorWhy: anchorOption?.whySuffix ?? null,
+      });
   const remeasureAction = data?.remeasure
     ? { due: data.remeasure.daysUntil <= 0, onClick: onRemeasure }
     : undefined;
   const inspectorExtra = <>{dashboardInfoCard}</>;
-  // Zone 1-3 van de contextkolom: aanbevolen laag mét reden, laag-navigator,
-  // en de actie met zijn save-knop. Alleen op de domeinen die het keuzehart
-  // dragen (plak 1: beweging); de rest houdt zijn bestaande kaarten.
-  const inspectorPanel =
-    ladderFocus && hasLadderKeuzehart(ladderFocus.domain)
-      ? (compact: boolean) => (
-          <DomainLadderContextPanel
-            domain={ladderFocus.domain}
-            layerId={ladderFocus.layerId}
-            data={data}
-            compact={compact}
-          />
-        )
-      : undefined;
+  // De contextkolom van een domeinscherm: waarom deze laag, en wat je erop
+  // koos. Op elk domein dat een ladderlaag publiceert — dat is elk domein met
+  // een React-Kompas-scherm. Tot 23 augustus draaide hier een tweede,
+  // kaart-gebaseerde variant voor de domeinen die het "keuzehart" nog niet
+  // hadden; die zei hetzelfde met minder, dus hij is weg.
+  const inspectorPanel = ladderFocus
+    ? (compact: boolean) => (
+        <DomainLadderContextPanel
+          domain={ladderFocus.domain}
+          layerId={ladderFocus.layerId}
+          data={data}
+          compact={compact}
+        />
+      )
+    : undefined;
   const inspectorDoelFooter =
     viewedDomain === "beweging" && effectiveMovementPrefs.anchor ? (
       <MovementAnchorRechoose

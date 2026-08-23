@@ -1,20 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
-import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
 import LadderCoverageMeter from "@/components/dashboard/domain/LadderCoverageMeter";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
 import DomainRouteStrip, {
   type DomainRouteStripNode,
 } from "@/components/dashboard/voortgang/DomainRouteStrip";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
-import PrioriteitenLadder, {
-  ladderLayerDomId,
-} from "@/components/dashboard/voortgang/PrioriteitenLadder";
+import PrioriteitenLadder from "@/components/dashboard/voortgang/PrioriteitenLadder";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 import { resolveRecommendedLayers } from "@/components/dashboard/voortgang/FavorietenBewegingSection";
 import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
@@ -28,6 +25,7 @@ import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import { buildDashboardAgendaHref, buildDashboardVandaagHref, buildMovementRoutingHref } from "@/lib/dashboard-url";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
+import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
 import { trackEvent } from "@/lib/ga4";
@@ -47,16 +45,21 @@ import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
 /**
- * Leefstijlprofiel · domein — de ladder is het scherm.
+ * Leefstijlprofiel · domein — **waar sta ik op dit domein?**
  *
- * Tot 19 augustus stonden Aanbeveling en Mijn keuze hier als twee losse
- * secties onder de ladder (prebuild v3 lock 1). Dat werkte als leesvorm maar
- * niet als keuzevorm: je las zes lagen, scrolde eronder, en koos daar uit een
- * lijst waarvan de laag niet meer in beeld was. De twee zijn nu ín de laag
- * getrokken — elke laag draagt zijn eigen Aanbevolen en zijn eigen Mijn keuze.
- * Wat je kiest schrijft naar `account_favorites` met een id dat zijn laag
- * onthoudt, dus dezelfde keuze komt terug op het schap en als handeling op
- * Vandaag. Eén bron, drie plekken.
+ * Readout, ladder als verklaring, dekking. Dat is de rol uit de surface-tabel
+ * van de zijbalk-roadmap §1, en sinds 23 augustus draagt dit scherm hem ook
+ * echt. Daarvóór was het een derde werkplek: een compacte ladder in "Je stand"
+ * bóven de volledige ladder verderop (twee navigators, één vraag), en in elke
+ * laag een save-knop plus "Mijn keuze op deze laag" — dezelfde knop en
+ * dezelfde favoriet-sleutel als de contextkolom op Kompas.
+ *
+ * Nu: één ladder, in `explain`-stand, met "Kies dit op Kompas" als deur naar de
+ * werkplek. Wat je koos staat één keer op dit scherm, in `MijnKeuzeSectie` —
+ * het domeinbrede archief, inclusief wat je buiten de ladder om oppikte.
+ * Verbinding is de uitzondering: dat domein heeft op Kompas nog een
+ * prebuild-iframe dat niets kan opslaan, dus daar blijft de ladder de
+ * werkplek.
  *
  * Wat onveranderd blijft: geen productkaart, geen prijs, geen
  * vergelijkingslink op dit scherm (lock 4). De poort op laag 6 legt alleen uit
@@ -221,25 +224,6 @@ export default function LeefstijlprofielDomeinScherm({
    */
   const [pickedLayer, setPickedLayer] = useState<{ layer: number | null } | null>(null);
   const openLadderLayer = pickedLayer ? pickedLayer.layer : movementFocusLayer;
-  const scrollToLadder = useRef(false);
-
-  useEffect(() => {
-    if (!scrollToLadder.current) {
-      return;
-    }
-    scrollToLadder.current = false;
-    if (openLadderLayer == null) {
-      return;
-    }
-    document
-      .getElementById(ladderLayerDomId(domain, openLadderLayer))
-      ?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [domain, openLadderLayer]);
-
-  function handleSelectLayerFromTop(layerId: number) {
-    scrollToLadder.current = true;
-    setPickedLayer({ layer: layerId });
-  }
   const movementEligibility = isMovement
     ? buildRecommendationsEligibility(data?.nutritionIntake)
     : null;
@@ -367,42 +351,18 @@ export default function LeefstijlprofielDomeinScherm({
               )}
             </div>
           </div>
+          {/* Dekking hoort bij je stand: hoeveel van je ladder de check
+              eigenlijk gemeten heeft. De ladder zelf stond hier tot 23 augustus
+              óók — een tweede, compacte kopie boven de volledige ladder verderop
+              op ditzelfde scherm, met een eigen "terug naar je winst-laag"-regel
+              die daar ook al stond. Eén ladder per scherm; die verderop draagt de
+              verklaring. */}
           {isMovement && movementReadout ? (
             <div className="mt-3">
               <LadderCoverageMeter
                 coverage={movementReadout.ladder.coverage}
                 totalLayers={MOVEMENT_PRIORITY_LAYERS.length}
               />
-              <p className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
-                Waar je winst nu zit · tik een prioriteit aan
-              </p>
-              <DomainLifestyleLadder
-                layers={MOVEMENT_PRIORITY_LAYERS}
-                layerStates={movementReadout.ladder.states}
-                stateLabels={MOVEMENT_LAYER_STATE_LABEL}
-                selectedLayer={openLadderLayer}
-                onSelectLayer={handleSelectLayerFromTop}
-                whyWait={(layerId) =>
-                  movementLayerWhyWait(layerId as MovementPriorityId, movementFocusLayer)
-                }
-                domain="beweging"
-                surface="leefstijlprofiel_beweging"
-              />
-              {openLadderLayer != null && openLadderLayer !== movementFocusLayer ? (
-                <p className="mt-2.5 text-[11.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-                  Je kijkt naar prioriteit {openLadderLayer}. Jouw grootste winst zit op prioriteit{" "}
-                  {movementFocusLayer}.{" "}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      movementFocusLayer != null && handleSelectLayerFromTop(movementFocusLayer)
-                    }
-                    className="cursor-pointer border-none bg-transparent p-0 text-left font-semibold text-[#9CC5A9] underline"
-                  >
-                    Terug daarheen
-                  </button>
-                </p>
-              ) : null}
             </div>
           ) : null}
         </CockpitTile>
@@ -500,12 +460,13 @@ export default function LeefstijlprofielDomeinScherm({
                 ? resolveRecommendedLayers(movementFocusLayer).map((layer) => layer.id)
                 : undefined
             }
-            onGoAgenda={handleGoMijnDag}
             openLayer={movementReadout ? openLadderLayer : undefined}
             onOpenLayerChange={
               movementReadout ? (next) => setPickedLayer({ layer: next }) : undefined
             }
-            kompasHref={buildDashboardVandaagHref(domain)}
+            {...(isDomainKompasDomain(domain)
+              ? { variant: "explain" as const, kompasHref: buildDashboardVandaagHref(domain) }
+              : { onGoAgenda: handleGoMijnDag })}
           />
         ) : null}
 

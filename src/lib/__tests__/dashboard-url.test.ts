@@ -183,12 +183,17 @@ describe("buildDashboardSchapHref", () => {
 });
 
 describe("isSchapTabId", () => {
-  it("accepts the five schap tabs", () => {
-    expect(isSchapTabId("leefstijl")).toBe(true);
+  it("accepts the four schap tabs", () => {
     expect(isSchapTabId("producten")).toBe(true);
     expect(isSchapTabId("diensten")).toBe(true);
     expect(isSchapTabId("begeleiding")).toBe(true);
     expect(isSchapTabId("favorieten")).toBe(true);
+  });
+
+  // W4a: een oude bookmark met `schap=leefstijl` valt door naar de default-tab
+  // in plaats van op een leeg paneel te landen.
+  it("wijst de opgeheven leefstijl-tab af", () => {
+    expect(isSchapTabId("leefstijl")).toBe(false);
   });
 
   it("rejects unknown values", () => {

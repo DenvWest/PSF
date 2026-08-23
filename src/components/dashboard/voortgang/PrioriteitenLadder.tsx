@@ -66,6 +66,20 @@ type PrioriteitenLadderProps = {
   /** Waar "Kies dit op Kompas" naartoe wijst — meestal `buildDashboardVandaagHref(domain)`. */
   kompasHref?: string;
   /**
+   * Welke vraag deze ladder beantwoordt.
+   *
+   * - `"choose"` — de ladder ís de werkplek: elke laag draagt een save-knop,
+   *   wat je koos, en de knop om er een moment voor te zetten. Dit is de stand
+   *   voor domeinen zonder eigen Kompas-domeinscherm (vandaag alleen
+   *   verbinding, dat op Kompas nog een prebuild-iframe is en dus niets kan
+   *   opslaan).
+   * - `"explain"` — de ladder verklaart alleen: lagen, staten, samenvatting en
+   *   waarom een laag kan wachten. Kiezen gebeurt op Kompas, waar de laag
+   *   náást zijn reden staat; deze ladder wijst daarheen. Zo staat "wat koos ik
+   *   op deze laag" op één plek in plaats van drie.
+   */
+  variant?: "choose" | "explain";
+  /**
    * Welke laag open staat. Alleen meegeven waar een ander blok op hetzelfde
    * scherm de ladder stuurt (de ladder in de kop van het domeinscherm);
    * zonder deze twee props houdt de ladder zijn eigen staat bij.
@@ -103,9 +117,11 @@ export default function PrioriteitenLadder({
   recommendedLayerIds,
   onGoAgenda,
   kompasHref,
+  variant = "choose",
   openLayer: controlledOpenLayer,
   onOpenLayerChange,
 }: PrioriteitenLadderProps) {
+  const isWerkplek = variant === "choose";
   const [internalOpenLayer, setInternalOpenLayer] = useState<number | null>(
     layerStates ? focusLayer : null,
   );
@@ -244,64 +260,72 @@ export default function PrioriteitenLadder({
                             <span className="min-w-[16ch] flex-1 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
                               {action}
                             </span>
-                            <FavoriteSaveButton
-                              surface={surface}
-                              labels={{ save: "Zet bij Mijn keuze", saved: "Staat bij Mijn keuze" }}
-                              item={{
-                                id: ladderActionFavoriteId(domain, layer.id, action),
-                                title: action,
-                                kind: "activiteit",
-                                domain,
-                                source: isAanbevolen ? "aanbevolen" : "mijn_keuze",
-                              }}
-                            />
+                            {isWerkplek ? (
+                              <FavoriteSaveButton
+                                surface={surface}
+                                labels={{ save: "Zet bij Mijn keuze", saved: "Staat bij Mijn keuze" }}
+                                item={{
+                                  id: ladderActionFavoriteId(domain, layer.id, action),
+                                  title: action,
+                                  kind: "activiteit",
+                                  domain,
+                                  source: isAanbevolen ? "aanbevolen" : "mijn_keuze",
+                                }}
+                              />
+                            ) : null}
                           </li>
                         ))}
                       </ul>
                     </>
                   ) : null}
 
-                  <p className="mb-2 mt-4 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
-                    Mijn keuze op deze laag
-                  </p>
-                  {gekozen.length === 0 ? (
-                    <p className="max-w-[58ch] text-[12px] leading-relaxed text-[#7E8C82] text-pretty">
-                      Hier koos je nog niets. Dat hoeft ook niet — de laag lezen kost je niets en
-                      verplicht je tot niets.
-                    </p>
-                  ) : (
-                    <ul className="m-0 flex list-none flex-col gap-2 p-0">
-                      {gekozen.map((item) => (
-                        <li
-                          key={item.id}
-                          className="rounded-[10px] border border-[#5A8F6A]/30 bg-[#5A8F6A]/[0.07] px-2.5 py-2"
-                        >
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                            <span className="min-w-[16ch] flex-1 text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
-                              {item.title}
-                            </span>
-                            <FavoriteSaveButton compact surface={surface} item={item} />
-                          </div>
-                          {/* Plannen komt ná kiezen, niet ernaast: Voortgang is
-                              de plek waar je onderbouwt wat je kiest, en mag
-                              geen tweede agenda worden. Een cadans-actie
-                              ("elk werkuur even staan") slaat dit over — die
-                              heeft geen tijdstip om te plannen en staat in
-                              plaats daarvan doorlopend op Mijn Dag. */}
-                          {!isCadenceLadderAction(item.title) ? (
-                            <div className="mt-2">
-                              <LadderMomentButton
-                                domain={domain}
-                                title={item.title}
-                                surface={surface}
-                                layer={layer.id}
-                              />
-                            </div>
-                          ) : null}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  {/* Alleen waar deze ladder de werkplek is. Op Voortgang
+                      staat hij in `explain`-stand: daar draagt de laag zijn
+                      verklaring en wijst hij naar Kompas, waar je kiest en waar
+                      de contextkolom "wat koos ik hier" al draagt. */}
+                  {isWerkplek ? (
+                    <>
+                      <p className="mb-2 mt-4 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+                        Mijn keuze op deze laag
+                      </p>
+                      {gekozen.length === 0 ? (
+                        <p className="max-w-[58ch] text-[12px] leading-relaxed text-[#7E8C82] text-pretty">
+                          Hier koos je nog niets. Dat hoeft ook niet — de laag lezen kost je niets
+                          en verplicht je tot niets.
+                        </p>
+                      ) : (
+                        <ul className="m-0 flex list-none flex-col gap-2 p-0">
+                          {gekozen.map((item) => (
+                            <li
+                              key={item.id}
+                              className="rounded-[10px] border border-[#5A8F6A]/30 bg-[#5A8F6A]/[0.07] px-2.5 py-2"
+                            >
+                              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                                <span className="min-w-[16ch] flex-1 text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
+                                  {item.title}
+                                </span>
+                                <FavoriteSaveButton compact surface={surface} item={item} />
+                              </div>
+                              {/* Een cadans-actie ("elk werkuur even staan")
+                                  slaat dit over — die heeft geen tijdstip om te
+                                  plannen en staat in plaats daarvan doorlopend
+                                  op Mijn Dag. */}
+                              {!isCadenceLadderAction(item.title) ? (
+                                <div className="mt-2">
+                                  <LadderMomentButton
+                                    domain={domain}
+                                    title={item.title}
+                                    surface={surface}
+                                    layer={layer.id}
+                                  />
+                                </div>
+                              ) : null}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </>
+                  ) : null}
 
                   {kompasHref ? (
                     <a

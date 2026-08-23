@@ -194,7 +194,6 @@ function VoortgangHubInner({
         activeTab={activeSchapTab}
         onTabChange={handleSchapTabChange}
         onBack={goBack}
-        onGoAgenda={onGoAgenda}
         onSwitchDomain={switchSchapDomain}
         onOpenLeefstijlprofiel={openLeefstijlprofielDomein}
       />

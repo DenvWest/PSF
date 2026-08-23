@@ -9,6 +9,7 @@ import {
   upsertAccountFavorite,
   type AccountFavoriteItem,
 } from "@/lib/account-favorites";
+import { isValidLocalTime, normalizeLocalTime } from "@/lib/account-priority-pref";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
@@ -45,6 +46,36 @@ function parseFavoriteBody(body: unknown): AccountFavoriteItem | null {
   const sourceRaw = typeof record.source === "string" ? record.source.trim() : "";
   if (sourceRaw && isAccountFavoriteSource(sourceRaw)) {
     item.source = sourceRaw;
+  }
+
+  const startTimeRaw =
+    typeof record.reminder_start_time === "string" ? record.reminder_start_time.trim() : "";
+  const startTime =
+    startTimeRaw && isValidLocalTime(startTimeRaw) ? normalizeLocalTime(startTimeRaw) : null;
+  if (startTime) {
+    item.reminderStartTime = startTime;
+  }
+
+  const endTimeRaw =
+    typeof record.reminder_end_time === "string" ? record.reminder_end_time.trim() : "";
+  const endTime =
+    endTimeRaw && isValidLocalTime(endTimeRaw) ? normalizeLocalTime(endTimeRaw) : null;
+  const intervalRaw = record.reminder_interval_minutes;
+  const interval =
+    typeof intervalRaw === "number" && Number.isInteger(intervalRaw) && intervalRaw > 0
+      ? intervalRaw
+      : null;
+
+  // Een cadans is beide velden of geen van beide — en de eindtijd moet na de
+  // starttijd liggen. Een onvolledige of ongeldige combinatie laat allebei
+  // weg in plaats van de request af te wijzen; de starttijd zelf blijft geldig.
+  if (endTime && interval && startTime && endTime > startTime) {
+    item.reminderEndTime = endTime;
+    item.reminderIntervalMinutes = interval;
+  }
+
+  if (typeof record.alert_enabled === "boolean") {
+    item.alertEnabled = record.alert_enabled;
   }
 
   return item;

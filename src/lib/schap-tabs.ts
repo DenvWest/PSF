@@ -17,11 +17,7 @@ export function resolveSchapTabs(domain: PillarId): SchapTabDescriptor[] {
     return [];
   }
 
-  const tabs: SchapTabDescriptor[] = [
-    // Altijd, op elk domein mét schap. Werkplek: ladder met aanbevolen en
-    // keuze per laag, direct hier.
-    { id: "leefstijl", label: "Leefstijl" },
-  ];
+  const tabs: SchapTabDescriptor[] = [];
 
   // Alleen waar domain-product-stance kandidaten kent. Stress staat daar op
   // `lifestyle_first` en heeft daarom sowieso geen schap; verbinding komt er
@@ -47,15 +43,21 @@ export function resolveSchapTabs(domain: PillarId): SchapTabDescriptor[] {
   return tabs;
 }
 
-export function resolveDefaultSchapTab(domain: PillarId): SchapTabId {
-  return toProductStanceDomain(domain) !== null ? "producten" : "leefstijl";
+/**
+ * Een schap bestaat exact waar `domain-product-stance` kandidaten kent
+ * (`SCHAP_DOMAINS` === de domeinen met een stance), dus Producten is er altijd
+ * en is altijd de opening. Sinds W4a is er geen Leefstijl-tab meer om op terug
+ * te vallen — het schap gaat over aanbod, en dat is wat je als eerste ziet.
+ */
+export function resolveDefaultSchapTab(_domain: PillarId): SchapTabId {
+  return "producten";
 }
 
 /**
  * Welke tab je krijgt als je vanaf het ene schap naar het andere springt.
  *
- * Sta je op Leefstijl van slaap en klik je door naar voeding, dan wil je daar
- * ook Leefstijl zien — je vergelijkt hetzelfde onderdeel over domeinen heen,
+ * Sta je op Favorieten van slaap en klik je door naar voeding, dan wil je daar
+ * ook Favorieten zien — je vergelijkt hetzelfde onderdeel over domeinen heen,
  * dat is de hele reden dat de domeinschakelaar bestaat. Alleen: Diensten
  * bestaat alleen op beweging, dus een tab die het doeldomein niet draagt valt
  * terug op zijn default in plaats van op een leeg paneel.

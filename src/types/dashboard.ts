@@ -122,7 +122,7 @@ export type VoortgangScreen =
   | "domein";
 
 /** Vijf sub-oppervlakken van het schap, nooit tegelijk zichtbaar. */
-export type SchapTabId = "leefstijl" | "producten" | "diensten" | "begeleiding" | "favorieten";
+export type SchapTabId = "producten" | "diensten" | "begeleiding" | "favorieten";
 
 export type LeefstijlprofielView = "aanbevolen" | "mijn_keuze";
 

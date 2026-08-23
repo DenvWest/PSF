@@ -17,7 +17,9 @@ import AgendaWeekTimeGrid, {
 } from "@/components/dashboard/agenda/AgendaWeekTimeGrid";
 import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
 import AgendaPriorityTestPanel from "@/components/dashboard/agenda/AgendaPriorityTestPanel";
-import AgendaRhythmPanel from "@/components/dashboard/agenda/AgendaRhythmPanel";
+import AgendaRhythmPanel, {
+  selectRhythmItems,
+} from "@/components/dashboard/agenda/AgendaRhythmPanel";
 import type { AgendaStripDay } from "@/components/dashboard/agenda/AgendaWeekStrip";
 import type { AgendaWeekDayEntry } from "@/components/dashboard/agenda/AgendaWeekOverview";
 import type { RetimeBlockInput } from "@/components/dashboard/agenda/AgendaDayTimeline";
@@ -48,6 +50,7 @@ import { formatFocusLabel } from "@/lib/focus-label";
 import { isPlanStepHidden, resolveScheduledTime } from "@/lib/day-model";
 import { trackAgendaDaySelected, trackAgendaViewSet, trackEvent } from "@/lib/ga4";
 import { useStickyHeaderOffset } from "@/lib/use-sticky-header-offset";
+import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import {
   resetDashboardPriorityFocus,
   saveDashboardPrioritySelection,
@@ -159,6 +162,10 @@ export default function AgendaScreen({
   const monthAnchor = monthOverride ?? selectedDate;
   const [monthSheetOpen, setMonthSheetOpen] = useState(false);
   const [focusExpanded, setFocusExpanded] = useState(false);
+  // Standaard open: het paneel toonde zich al alleen met inhoud, dus dit mag
+  // het gedrag van vandaag niet stilzwijgend veranderen — alleen een
+  // handmatige inklap toevoegen.
+  const [rhythmExpanded, setRhythmExpanded] = useState(true);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [weekAddOpen, setWeekAddOpen] = useState(false);
   const [weekDraftSlot, setWeekDraftSlot] = useState<WeekGridEmptySlot | null>(null);
@@ -167,6 +174,8 @@ export default function AgendaScreen({
     blockBusy: boolean;
   } | null>(null);
   const stickyOffset = useStickyHeaderOffset();
+  const { items: favoriteItems } = useVoortgangFavorites();
+  const rhythmCount = selectRhythmItems(favoriteItems).length;
 
   const reportAgendaError = useCallback((error: unknown, fallback: string) => {
     setAgendaError(error instanceof Error ? error.message : fallback);
@@ -645,6 +654,14 @@ export default function AgendaScreen({
     setFocusExpanded(true);
   }, [closeFocus, focusExpanded]);
 
+  const handleToggleRhythm = useCallback(() => {
+    setRhythmExpanded((prev) => {
+      const next = !prev;
+      trackEvent("dashboard_agenda_ritme_paneel_toggle", { expanded: next, surface: "agenda_header" });
+      return next;
+    });
+  }, []);
+
   const planHref = model.activeHabit?.planHref ?? null;
   const focusLabel = focusExpanded ? "Sluit" : formatFocusLabel(model.priority.label);
 
@@ -765,6 +782,9 @@ export default function AgendaScreen({
         onGoToday={() => handleGoToday("agenda_header")}
         onOpenCalendar={() => setMonthSheetOpen(true)}
         stickyTop={stickyOffset}
+        rhythmCount={view === "dag" && selectedDate === today ? rhythmCount : 0}
+        rhythmExpanded={rhythmExpanded}
+        onToggleRhythm={handleToggleRhythm}
         actions={
           view === "dag"
             ? {
@@ -813,7 +833,7 @@ export default function AgendaScreen({
         </div>
       ) : null}
 
-      {view === "dag" && selectedDate === today ? <AgendaRhythmPanel /> : null}
+      {view === "dag" && selectedDate === today && rhythmExpanded ? <AgendaRhythmPanel /> : null}
 
       {view === "dag" && dayContext.kind === "orphan" ? (
         <p className="mb-3 text-[12.5px] leading-normal text-[#9FB0A6]">

@@ -1,10 +1,7 @@
 "use client";
 
 import * as Icons from "@/components/app/icons";
-import LadderActionRow from "@/components/dashboard/domain/LadderActionRow";
-import LadderLayerStrip from "@/components/dashboard/domain/LadderLayerStrip";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
-import { useDomainLadderFocus } from "@/lib/domain-ladder-focus-context";
 import { parseLadderFavoriteLayer } from "@/lib/leefstijl-ladder";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import {
@@ -24,21 +21,36 @@ type DomainLadderContextPanelProps = {
 };
 
 /**
- * Het keuzehart in de contextkolom: zone 1 t/m 3 uit het zijbalk-verdict §B.
+ * De contextkolom op een domeinscherm: **onderbouwing, geen tweede werkplek.**
  *
- * 1. **Aanbevolen laag + vanwege** — welke laag, welke staat, en de zin uit je
- *    check die verklaart waaróm. Die zin komt uit `resolveLadderLayerReason`;
- *    is er geen, dan staat er geen redenblok. Nooit een reden verzinnen.
- * 2. **Laag-navigator** — {@link LadderLayerStrip}, alleen id + staat (lock N6).
- * 3. **De actie + save** — de rang-1-optie van deze laag, gerenderd met
- *    dezelfde {@link LadderActionRow} als het midden. Dat is met opzet
- *    hetzelfde component: zo kunnen de favoriet-sleutel en de `source`
- *    ("aanbevolen" vs "mijn keuze") niet uiteenlopen tussen de twee plekken,
- *    en is de spiegel geen tweede bron maar letterlijk dezelfde knop.
- * 4. **Gekozen op deze laag** — wat jij hier koos, met het hart om het weer
- *    weg te halen. Dit is de laag-gescopete opvolger van `MijnKeuzeTile`, die
- *    sinds 22 augustus van héél Kompas af is: de keuze staat op één plek per
- *    vraag. Domeinbreed en over domeinen heen woont je archief op Favorieten.
+ * Twee zones, en allebei beantwoorden ze een vraag die het midden níét kan
+ * beantwoorden:
+ *
+ * 1. **Waarom déze laag** — welke laag je leest, welke staat hij heeft, en de
+ *    zin uit je check die dat verklaart (`resolveLadderLayerReason`). Is er
+ *    geen reden, dan staat er geen redenblok. Nooit een reden verzinnen.
+ * 2. **Wat jij hier koos** — de keuzes op déze laag, met het hart om ze weer
+ *    weg te halen. Domeinbreed en over domeinen heen woont je archief op
+ *    Favorieten.
+ *
+ * Tot 23 augustus stonden hier vier zones. Twee ervan waren een spiegel van de
+ * middenkolom: een laag-navigator naast de ladder die daar al staat, en de
+ * rang-1-actie mét save-knop naast `DomainFreeActionsTile` die dezelfde actie
+ * met dezelfde sleutel toont. Ook `layer.summary` en de "terug naar de
+ * winst-laag"-knop stonden twee keer in beeld
+ * ([`DomainKompasScreen.tsx`](./DomainKompasScreen.tsx) r.144 en r.149).
+ *
+ * Lock N6 bewaakte de vórm van die navigator — alleen `id` + staat, geen namen
+ * — maar niet de vraag. Twee dingen die allebei "wissel van laag" beantwoorden
+ * zijn er één te veel, ook als de tweede kaler is. En de spiegel was bedoeld
+ * als vervanging voor smalle schermen (roadmap C-b: onder 1280px is deze kolom
+ * dicht), niet als toevoeging op brede — precies wat hij wél werd.
+ *
+ * Daarmee vervalt R2 ("save primair in de zijbalk") als ontwerprichting: het
+ * midden is de werkplek op elke breedte, deze kolom legt uit waaróm. Het
+ * blijft één bewaar-bron — `account_favorites`, sleutel
+ * `laag-<domein>-p<n>-<slug>` — dus wat je in het midden bewaart verschijnt
+ * hier meteen onder Mijn keuze.
  *
  * Wat hier níét staat: afvinken (dat woont op Mijn Dag), een deur naar het
  * schap, en een tweede "Open Mijn Dag"-CTA — die blijft onderaan het
@@ -50,7 +62,6 @@ export default function DomainLadderContextPanel({
   data,
   compact = false,
 }: DomainLadderContextPanelProps) {
-  const { selectLayer } = useDomainLadderFocus();
   const { items } = useVoortgangFavorites();
   const ladder = getLeefstijlLadder(domain);
   const layer = ladder?.layers.find((row) => row.id === layerId) ?? null;
@@ -69,7 +80,6 @@ export default function DomainLadderContextPanel({
   const isFocus = readout != null && layer.id === readout.focusLayer;
   const reason = resolveLadderLayerReason(readout, layer.id);
   const surface = ladderKeuzehartSurface(domain);
-  const action = layer.actions[0] ?? null;
 
   const cardClass = `rounded-[14px] border bg-black/20 ${compact ? "p-3" : "p-4"}`;
   const kickerClass =
@@ -78,7 +88,7 @@ export default function DomainLadderContextPanel({
   return (
     <>
       <section
-        aria-label="De laag die je leest"
+        aria-label="Waarom deze laag"
         className={`${cardClass} ${isFocus ? "border-[rgba(200,149,108,0.4)]" : "border-white/10"}`}
       >
         <span className={`${kickerClass} ${isFocus ? "text-[#C8956C]" : "text-[#9FB0A6]"}`}>
@@ -86,19 +96,12 @@ export default function DomainLadderContextPanel({
           {stateLabel ? `Prioriteit ${layer.id} · ${stateLabel}` : `Prioriteit ${layer.id}`}
         </span>
         <h3
-          className={`mb-2 font-serif leading-tight text-[#F1EFE8] ${
+          className={`font-serif leading-tight text-[#F1EFE8] ${
             compact ? "text-[15px]" : "text-[16px]"
           }`}
         >
           {layer.name}
         </h3>
-        <p
-          className={`leading-relaxed text-[#9FB0A6] text-pretty ${
-            compact ? "text-[12px]" : "text-[12.5px]"
-          }`}
-        >
-          {layer.summary}
-        </p>
 
         {reason ? (
           <div className="mt-2.5 border-l border-white/10 pl-2.5">
@@ -120,58 +123,12 @@ export default function DomainLadderContextPanel({
               </p>
             )}
           </div>
-        ) : null}
-
-        {readout && !isFocus ? (
-          <button
-            type="button"
-            onClick={() => selectLayer({ domain, layerId: readout.focusLayer })}
-            className="mt-2.5 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-left text-[12px] font-semibold text-[#9CC5A9]"
-          >
-            Terug naar prioriteit {readout.focusLayer} <Icons.ChevronRight s={12} />
-          </button>
-        ) : null}
-      </section>
-
-      <section aria-label="Andere prioriteit lezen" className={`${cardClass} border-white/10`}>
-        <span className={`${kickerClass} text-[#9FB0A6]`}>
-          <Icons.Target s={13} style={{ color: "#9FB0A6" }} /> Andere prioriteit lezen
-        </span>
-        <LadderLayerStrip
-          domain={domain}
-          layers={ladder.layers}
-          activeLayerId={layer.id}
-          onSelectLayer={(next) => selectLayer({ domain, layerId: next })}
-          {...(readout ? { layerStates: readout.layerStates, stateLabels: readout.stateLabels } : {})}
-          surface={surface}
-        />
-      </section>
-
-      <section aria-label="Wat je hier kunt kiezen" className={`${cardClass} border-white/10`}>
-        <span className={`${kickerClass} text-[#9FB0A6]`}>
-          <Icons.Heart s={13} style={{ color: "#9FB0A6" }} />
-          {isFocus ? "Aanbevolen op deze laag" : "Op deze laag"}
-        </span>
-        {action ? (
-          <>
-            <ul className="m-0 flex list-none flex-col gap-0 p-0">
-              <LadderActionRow
-                domain={domain}
-                layerId={layer.id}
-                action={action}
-                isRecommended={isFocus}
-                surface={surface}
-                dense
-              />
-            </ul>
-            <p className="mt-2 text-[11px] leading-relaxed text-[#7E8C82]">
-              Hier verdienen we niets aan. Afvinken doe je op Mijn Dag.
-            </p>
-          </>
         ) : (
-          <p className="text-[11.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-            Op deze laag staat niets klaar om te kiezen — lezen kost je niets en verplicht je
-            tot niets.
+          /* Geen reden uit de check betekent: geen reden tonen. De laag zelf
+             staat in het midden — daar lees je wat hij inhoudt en kies je. */
+          <p className="mt-2.5 text-[11.5px] leading-relaxed text-[#7E8C82] text-pretty">
+            Je check zegt hier niets aparts over. Wat deze prioriteit inhoudt lees je in de
+            ladder.
           </p>
         )}
       </section>

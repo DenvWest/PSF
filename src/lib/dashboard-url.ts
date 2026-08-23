@@ -172,7 +172,6 @@ export function parseLeefstijlprofielDomeinFromUrl(url: string | URL): PillarId 
 export const parseFavorietenDomeinFromUrl = parseLeefstijlprofielDomeinFromUrl;
 
 const VALID_SCHAP_TABS = new Set<SchapTabId>([
-  "leefstijl",
   "producten",
   "diensten",
   "begeleiding",

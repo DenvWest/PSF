@@ -1,18 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
 import MovementSchapBasisCard from "@/components/dashboard/beweging/MovementSchapBasisCard";
-import PrioriteitenLadder from "@/components/dashboard/voortgang/PrioriteitenLadder";
+import FavoriteReminderControl from "@/components/dashboard/voortgang/FavoriteReminderControl";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
 import type { VerdictPanelSurface } from "@/components/dashboard/SupplementVerdictPanel";
 import { PILLAR } from "@/data/dashboard";
 import { SCHAP_DIENST_CARDS } from "@/data/movement/schap-diensten";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
-import { getLeefstijlLadder, parseLadderFavoriteLayer, resolveLadderLayerName } from "@/lib/leefstijl-ladder";
+import { parseLadderFavoriteLayer, resolveLadderLayerName } from "@/lib/leefstijl-ladder";
 import { resolveDefaultSchapTab, resolveSchapTabs } from "@/lib/schap-tabs";
 import { SCHAP_DOMAINS, toProductStanceDomain } from "@/lib/schap-availability";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
@@ -27,8 +26,6 @@ type SchapViewProps = {
   activeTab: SchapTabId | null;
   onTabChange: (tab: SchapTabId) => void;
   onBack: () => void;
-  /** Afvinken hoort op Mijn Dag — ladder-voetregel wijst daarheen. */
-  onGoAgenda?: () => void;
   /**
    * Naar het schap van een ander domein. Zonder deze prop staat de
    * domeinschakelaar er niet — een chip die nergens heen gaat is erger dan
@@ -47,12 +44,17 @@ const SCHAP_SURFACE: Partial<Record<PillarId, VerdictPanelSurface>> = {
 
 /**
  * Het schap — het aanbod van één domein, generiek over beweging, slaap en
- * voeding. Vijf tabs: Leefstijl (ladder + keuze), Producten (supplementen),
- * Diensten (activiteiten), Favorieten (snelle beheer van bewaarde items).
+ * voeding. Producten (supplementen), Diensten (activiteiten), Favorieten
+ * (snelle beheer van bewaarde items).
  *
- * Leefstijl-tab is nu werkplek (niet spiegel): je kiest hier via de ladder,
- * met Aanbevolen + Mijn keuze per laag, en "Zet op Mijn Dag" knop.
- * Favorieten-tab toont je bewaarde items op dit domein, met snelle CTA's.
+ * **Aanbod en favorieten, geen leefstijl-werkplek.** Tot 23 augustus stond hier
+ * een vierde tab met de volledige `PrioriteitenLadder` — dezelfde lagen,
+ * dezelfde knop en dezelfde favoriet-sleutel als het Kompas-domeinscherm en
+ * het leefstijlprofiel. Dat was gate W4a uit de zijbalk-roadmap §7.1: de enige
+ * echte doublure van het schap. De ladder woont nu op twee plekken die er
+ * allebei een eigen vraag mee beantwoorden — Kompas kiest, Voortgang verklaart
+ * — en het schap beantwoordt de zijne: wat is er te koop of uit te besteden,
+ * en wat koos ik daarvan.
  *
  * Eén tab tegelijk zichtbaar. Tabs zonder inhoud renderen niet — die regel
  * woont in `resolveSchapTabs`.
@@ -70,11 +72,9 @@ export default function SchapView({
   activeTab,
   onTabChange,
   onBack,
-  onGoAgenda,
   onSwitchDomain,
   onOpenLeefstijlprofiel,
 }: SchapViewProps) {
-  const [openLadderLayer, setOpenLadderLayer] = useState<number | null>(null);
   const { items, isSaved, save } = useVoortgangFavorites();
   const pillar = PILLAR[domain];
   const tabs = resolveSchapTabs(domain);
@@ -83,7 +83,6 @@ export default function SchapView({
     activeTab && tabs.some((tab) => tab.id === activeTab) ? activeTab : fallbackTab;
 
   const stanceDomain = toProductStanceDomain(domain);
-  const ladder = getLeefstijlLadder(domain);
 
   const domainFavorites = items.filter((item) => item.domain === domain);
 
@@ -203,20 +202,6 @@ export default function SchapView({
         id={`schap-paneel-${currentTab}`}
         aria-labelledby={`schap-tab-${currentTab}`}
       >
-        {currentTab === "leefstijl" && ladder ? (
-          <div className="flex flex-col gap-4">
-            <PrioriteitenLadder
-              layers={ladder.layers}
-              intro={ladder.intro}
-              domain={domain}
-              surface={`schap_${domain}`}
-              openLayer={openLadderLayer}
-              onOpenLayerChange={setOpenLadderLayer}
-              onGoAgenda={onGoAgenda}
-            />
-          </div>
-        ) : null}
-
         {currentTab === "producten" && stanceDomain ? (
           <DomainSupplementStance
             domain={stanceDomain}
@@ -295,6 +280,15 @@ export default function SchapView({
                             labels={{ save: "Bewaar", saved: "Bewaard" }}
                           />
                         </div>
+                        {laag != null ? (
+                          <div className="mt-2.5 border-t border-white/[0.06] pt-2.5">
+                            <FavoriteReminderControl
+                              item={item}
+                              surface={`schap_favorieten_${domain}`}
+                              compact
+                            />
+                          </div>
+                        ) : null}
                       </CockpitTile>
                     );
                   })}

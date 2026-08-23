@@ -38,6 +38,10 @@ type AgendaToolbarProps = {
   onOpenCalendar: () => void;
   stickyTop: number;
   actions?: AgendaToolbarActions;
+  /** 0 (of niet meegegeven) toont de chip niet — zelfde regel als het paneel. */
+  rhythmCount?: number;
+  rhythmExpanded?: boolean;
+  onToggleRhythm?: () => void;
 };
 
 /**
@@ -74,6 +78,44 @@ function TodayButton({
           breedte om de datum en de volgende-chevron zichtbaar te houden. */}
       <span className="sm:hidden">Nu</span>
       <span className="hidden sm:inline">Vandaag</span>
+    </button>
+  );
+}
+
+/**
+ * Uitklap-chip voor "Doorlopend vandaag" (`AgendaRhythmPanel`). Staat los van
+ * `AgendaOverflowMenu`: Focus is een instelling die je bewust opent, dit is
+ * een lijst waar je de hele dag naar terugkijkt — standaard open houden (het
+ * paneel toont zich al pas met inhoud) en alleen een handmatige inklap bieden
+ * weegt zwaarder dan verstoppen achter "···".
+ */
+function RhythmToggle({
+  count,
+  expanded,
+  onToggle,
+}: {
+  count: number;
+  expanded: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={expanded}
+      aria-label={
+        expanded
+          ? `Doorlopend vandaag inklappen — ${count} item${count === 1 ? "" : "s"}`
+          : `Doorlopend vandaag uitklappen — ${count} item${count === 1 ? "" : "s"}`
+      }
+      className={`inline-flex min-h-9 shrink-0 items-center gap-1 rounded-lg border px-2 text-[12px] font-semibold tabular-nums transition-colors sm:min-h-10 sm:px-2.5 ${
+        expanded
+          ? "border-[rgba(90,143,106,0.55)] bg-[rgba(90,143,106,0.2)] text-[#F1EFE8]"
+          : "border-white/10 bg-white/[0.04] text-[#9FB0A6] hover:border-white/25 hover:text-[#F1EFE8]"
+      }`}
+    >
+      <Icons.Refresh s={13} />
+      {count}
     </button>
   );
 }
@@ -238,6 +280,9 @@ export default function AgendaToolbar({
   onOpenCalendar,
   stickyTop,
   actions,
+  rhythmCount,
+  rhythmExpanded,
+  onToggleRhythm,
 }: AgendaToolbarProps) {
   return (
     <header
@@ -254,6 +299,13 @@ export default function AgendaToolbar({
           onOpenCalendar={onOpenCalendar}
         />
         <AgendaViewSwitcher value={view} onChange={onViewChange} embedded />
+        {rhythmCount && rhythmCount > 0 && onToggleRhythm ? (
+          <RhythmToggle
+            count={rhythmCount}
+            expanded={Boolean(rhythmExpanded)}
+            onToggle={onToggleRhythm}
+          />
+        ) : null}
         {actions ? <AgendaOverflowMenu actions={actions} /> : null}
       </div>
     </header>

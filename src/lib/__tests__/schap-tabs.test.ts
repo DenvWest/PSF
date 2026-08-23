@@ -6,26 +6,30 @@ import {
 } from "@/lib/schap-tabs";
 
 describe("resolveSchapTabs", () => {
-  it("geeft beweging leefstijl, producten, diensten en favorieten — nooit begeleiding", () => {
+  it("geeft beweging producten, diensten en favorieten — nooit begeleiding", () => {
     expect(resolveSchapTabs("beweging").map((tab) => tab.id)).toEqual([
-      "leefstijl",
       "producten",
       "diensten",
       "favorieten",
     ]);
   });
 
-  it("geeft slaap en voeding leefstijl, producten en favorieten, zonder diensten", () => {
-    expect(resolveSchapTabs("slaap").map((tab) => tab.id)).toEqual([
-      "leefstijl",
-      "producten",
-      "favorieten",
-    ]);
+  it("geeft slaap en voeding producten en favorieten, zonder diensten", () => {
+    expect(resolveSchapTabs("slaap").map((tab) => tab.id)).toEqual(["producten", "favorieten"]);
     expect(resolveSchapTabs("voeding").map((tab) => tab.id)).toEqual([
-      "leefstijl",
       "producten",
       "favorieten",
     ]);
+  });
+
+  // W4a: de Leefstijl-tab was de enige echte doublure van het schap —
+  // dezelfde ladder, dezelfde knop en dezelfde favoriet-sleutel als
+  // Kompas-domein en leefstijlprofiel. Het schap gaat over aanbod.
+  it("draagt nergens nog een leefstijl-werkplek", () => {
+    const allTabs = (["beweging", "slaap", "voeding", "stress", "verbinding"] as const).flatMap(
+      (domain) => resolveSchapTabs(domain).map((tab) => tab.id as string),
+    );
+    expect(allTabs).not.toContain("leefstijl");
   });
 
   it("geeft stress en verbinding niets — die domeinen hebben geen schap", () => {
@@ -42,7 +46,6 @@ describe("resolveSchapTabs", () => {
 
   it("draagt Nederlandse labels", () => {
     expect(resolveSchapTabs("beweging").map((tab) => tab.label)).toEqual([
-      "Leefstijl",
       "Producten",
       "Diensten",
       "Favorieten",
@@ -51,21 +54,16 @@ describe("resolveSchapTabs", () => {
 });
 
 describe("resolveDefaultSchapTab", () => {
-  it("valt op producten waar die bestaat", () => {
+  it("opent altijd op producten — een schap bestaat exact waar aanbod bestaat", () => {
     expect(resolveDefaultSchapTab("beweging")).toBe("producten");
     expect(resolveDefaultSchapTab("slaap")).toBe("producten");
     expect(resolveDefaultSchapTab("voeding")).toBe("producten");
-  });
-
-  it("valt op leefstijl waar geen productenlijst bestaat", () => {
-    expect(resolveDefaultSchapTab("stress")).toBe("leefstijl");
-    expect(resolveDefaultSchapTab("verbinding")).toBe("leefstijl");
   });
 });
 
 describe("resolveSchapTabForDomain — je onderdeel reist mee bij een domeinwissel", () => {
   it("houdt de tab vast waar het doeldomein hem draagt", () => {
-    expect(resolveSchapTabForDomain("voeding", "leefstijl")).toBe("leefstijl");
+    expect(resolveSchapTabForDomain("voeding", "favorieten")).toBe("favorieten");
     expect(resolveSchapTabForDomain("slaap", "favorieten")).toBe("favorieten");
     expect(resolveSchapTabForDomain("beweging", "diensten")).toBe("diensten");
   });
@@ -82,7 +80,7 @@ describe("resolveSchapTabForDomain — je onderdeel reist mee bij een domeinwiss
 
   it("draagt nooit een tab die het domein niet rendert", () => {
     for (const domain of ["beweging", "slaap", "voeding"] as const) {
-      for (const wanted of ["leefstijl", "producten", "diensten", "favorieten", "begeleiding"] as const) {
+      for (const wanted of ["producten", "diensten", "favorieten", "begeleiding"] as const) {
         const resolved = resolveSchapTabForDomain(domain, wanted);
         expect(resolveSchapTabs(domain).map((tab) => tab.id)).toContain(resolved);
       }

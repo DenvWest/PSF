@@ -284,14 +284,14 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 
 | | |
 |---|---|
-| **Doel** | Door de gebruiker bewaarde aanbevelingen en keuzes uit leefstijlprofiel (activiteit, supplement, dienst) persistent tonen op het Favorieten-scherm |
+| **Doel** | Door de gebruiker bewaarde aanbevelingen en keuzes uit leefstijlprofiel (activiteit, supplement, dienst) persistent tonen op het Favorieten-scherm. Vanaf 23 augustus 2026 ook een optioneel tijdstip/tijdvenster en een aan/uit-voorkeur per favoriet vastleggen als voorbereiding op een herinnering — deze wijziging verstuurt zelf nog geen melding (geen Web Push, geen wearable-uitlezing); dat volgt met een eigen wijziging van dit register zodra een verzendkanaal actief wordt |
 | **Betrokkenen** | Ingelogde dashboard-gebruikers die vrijwillig een item bewaren |
-| **Soort gegevens** | Account-id, item_id (referentie), titel (weergavenaam), kind (enum: activiteit/supplement/dienst), optioneel domain (enum), optioneel source (aanbevolen/mijn_keuze) |
+| **Soort gegevens** | Account-id, item_id (referentie), titel (weergavenaam), kind (enum: activiteit/supplement/dienst), optioneel domain (enum), optioneel source (aanbevolen/mijn_keuze), optioneel reminder_start_time (kloktijd HH:MM, lokaal Europe/Amsterdam), optioneel reminder_end_time + reminder_interval_minutes (samen een herhalend tijdvenster, bv. "elk uur tussen 09:00-17:00"), alert_enabled (boolean, standaard false) |
 | **Bijzondere gegevens** | Ja — gezondheidsgerelateerde leefstijlkeuze, gekoppeld aan account met art. 9-intake |
 | **Ontvangers** | Supabase (`account_favorites`, EU Frankfurt) — geen nieuwe verwerker |
 | **Grondslag** | Art. 9 lid 2 sub a (expliciete toestemming via account-storage-consent) + art. 6 lid 1 sub a |
 | **Bewaartermijn** | Volgt account-/intake-retentie (24 maanden); verwijderd bij account-verwijdering (cascade) |
-| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; GA4 `dashboard_favorieten_save` alleen categorisch (item_id, kind, domain, source — geen titel als PII in analytics) |
+| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; GA4 `dashboard_favorieten_save` en `dashboard_favorieten_herinnering_ingesteld` alleen categorisch (item_id, kind, domain, source, alert_enabled, heeft_herhaling — geen titel als PII in analytics) |
 | **Doorgifte buiten EU** | Nee |
 
 ---
@@ -334,6 +334,7 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 
 | Datum | Wijziging |
 |---|---|
+| 2026-08-23 | Verwerking 19 uitgebreid: `reminder_start_time`, `reminder_end_time`, `reminder_interval_minutes` (HH:MM/HH:MM/minuten) en `alert_enabled` (boolean, standaard false) toegevoegd aan de gegevensomschrijving — voorbereidend veld op leefstijlladder-favorieten (tijdstip of -venster + aan/uit-voorkeur voor een toekomstige herinnering); deze wijziging verstuurt zelf nog geen melding (geen Web Push, geen wearable-uitlezing, volgt later via een eigen verzendkanaal); geen nieuwe tabel, geen nieuwe verwerker, geen nieuwe grondslag |
 | 2026-08-18 | Verwerking 19 toegevoegd: opgeslagen favorieten (`account_favorites`) — leefstijlkeuze-items bewaard door gebruiker, RLS deny-all, art. 9 (account-storage-consent); GA4 `dashboard_favorieten_save` categorisch |
 | 2026-08-09 | Verwerking 18 uitgebreid (vooraf, ter voorbereiding — nog niet live): ervaringsvraag (1–5, "merk je er iets van") bij een gekozen beweging-interventie toegevoegd aan de gegevensomschrijving — zelfde `intake_domain_checkin`, consent en grondslag als bestaand; geen nieuwe tabel, geen nieuwe verwerker; max 1×/week, alleen klaar-staat, stopt bij hermeting dag 14, geen vrije tekst, score ongewijzigd. Blokkeert de eerste opslag totdat deze wijziging gemerged is (zie `PROEF_BEWEGING_SCHAP_INHOUD_2026-08.md` en `docs/cursors/claude-opus-kompas-domein-keuzehart-wederprompt.md`) |
 | 2026-08-05 | Verwerking 16 uitgebreid en hernoemd (focus-voorkeur → *prioriteit, dagritme en weergave*): `plan_steps_hidden`, `plan_step_dismissed_date`, `movement_day_choice` + `movement_day_choice_date` toegevoegd aan de gegevensomschrijving; geen nieuwe tabel, geen nieuwe verwerker, geen nieuwe grondslag. Privacy-pagina bijgewerkt (§Account en dashboard) |

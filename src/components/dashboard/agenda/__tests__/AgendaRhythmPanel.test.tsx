@@ -90,4 +90,35 @@ describe("AgendaRhythmPanel", () => {
     const knop = await screen.findByRole("button", { name: /klik om weg te halen/ });
     expect(knop).toBeTruthy();
   });
+
+  it("toont ook een niet-cadans favoriet met een actief ingestelde herinnering, met domeinlabel", async () => {
+    stubFavorites([
+      {
+        id: "laag-slaap-p2-magnesium",
+        title: "Magnesium glycinaat",
+        kind: "supplement",
+        domain: "slaap",
+        reminderStartTime: "21:30",
+        alertEnabled: true,
+      },
+    ]);
+    renderPanel();
+
+    expect(await screen.findByText("Magnesium glycinaat")).toBeTruthy();
+    expect(screen.getByText("Slaap")).toBeTruthy();
+  });
+
+  it("laat een favoriet zonder cadans-titel én zonder ingestelde herinnering weg", async () => {
+    stubFavorites([
+      {
+        id: "laag-slaap-p2-magnesium",
+        title: "Magnesium glycinaat",
+        kind: "supplement",
+        domain: "slaap",
+      },
+    ]);
+    const { container } = renderPanel();
+
+    await waitFor(() => expect(container.firstChild).toBeNull());
+  });
 });

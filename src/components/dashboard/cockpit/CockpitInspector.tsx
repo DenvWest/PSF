@@ -51,8 +51,6 @@ const ICON_BY_KIND: Record<InspectorCard["kind"], keyof typeof Icons> = {
   tip: "Check",
   meet: "Refresh",
   doel: "Spark",
-  laag: "RouteMap",
-  keuze: "Heart",
 };
 
 export default function CockpitInspector({
