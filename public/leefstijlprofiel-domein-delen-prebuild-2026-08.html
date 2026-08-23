@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prebuild — Leefstijlprofiel · domein als zes delen (23 aug 2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+/* ---------------------------------------------------------------------------
+   Tokens — zelfde namen als globals.css (.ps-dash / .ps-dark).
+
+   --terra (#C8956C) is hier GEEN pagina-accent. Het is de datakleur van één
+   staat ("winst"), precies zoals hij dat in STATE_STYLE van beide live-ladders
+   al is (PrioriteitenLadder.tsx:29-34, DomainLifestyleLadder.tsx:11-16).
+   Pagina-accent, knoppen, koppen en randen zijn sage. Zie sectie K, afwijking 3.
+--------------------------------------------------------------------------- */
+:root{
+  --bg:#132414;
+  --panel:rgba(255,255,255,.05);
+  --panel-border:rgba(255,255,255,.12);
+  --text:rgba(255,255,255,.95);
+  --text-muted:rgba(255,255,255,.60);
+  --text-subtle:rgba(255,255,255,.40);
+  --divider:rgba(255,255,255,.08);
+  --divider-strong:rgba(255,255,255,.16);
+  --sage:#5A8F6A;
+  --sage-soft:#9CC5A9;
+  --sage-dim:#7E8C82;
+  --ink:#0E1810;
+  --terra:#C8956C;      /* alleen als staatkleur "winst" */
+  --amber:#C99A3C;      /* alleen als staatkleur "watch" */
+  --f-serif:"DM Serif Display",Georgia,serif;
+  --f-sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;overflow-x:hidden}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--f-sans);
+  background-image:radial-gradient(120% 70% at 50% -8%,#20351f 0%,transparent 55%);
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;color:inherit}
+h1,h2,h3{margin:0}
+
+/* ============ reviewer-balk (niet het product) ============ */
+.rev{position:sticky;top:0;z-index:40;background:#0b150c;border-bottom:1px solid var(--divider-strong);padding:8px 12px}
+.rev-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.rev-lbl{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-subtle);font-weight:700;margin-right:2px}
+.rev button{
+  min-height:34px;padding:0 10px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--panel-border);background:transparent;color:var(--text-muted);
+  font-size:12px;font-weight:600;
+}
+.rev button[aria-pressed="true"]{background:var(--sage);border-color:var(--sage);color:var(--ink)}
+.rev button.ghost[aria-pressed="true"]{background:transparent;border-color:var(--sage-soft);color:var(--sage-soft)}
+.rev-note{font-size:11px;color:var(--text-subtle);margin:6px 0 0;line-height:1.45}
+
+/* ============ scherm ============ */
+main{max-width:1180px;margin:0 auto;padding:16px 12px 56px}
+.crumb{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.crumb .back{
+  width:38px;height:38px;min-width:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.04);border:1px solid var(--panel-border);color:var(--text-muted);cursor:pointer;
+}
+.crumb .eyebrow{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text)}
+
+h1{font-family:var(--f-serif);font-weight:400;font-size:clamp(25px,7vw,32px);line-height:1.12;letter-spacing:-.005em;text-wrap:balance}
+
+/* --- cyclus-anker: ÉÉN regel + datum. Geen band, geen scrubber, geen tweede score. --- */
+.anchor{
+  margin:10px 0 0;display:flex;gap:9px;align-items:flex-start;
+  font-size:13px;line-height:1.5;color:var(--text-muted);max-width:56ch;
+}
+.anchor .tick{
+  margin-top:6px;width:7px;height:7px;min-width:7px;border-radius:999px;background:var(--sage);
+  box-shadow:0 0 0 4px rgba(90,143,106,.18);
+}
+.anchor b{color:var(--sage-soft);font-weight:600}
+
+/* ============ het raster ============ */
+.grid-h{
+  display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 0 8px;
+}
+.grid-h h2{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--sage-dim)}
+.grid-h .cnt{font-size:11px;color:var(--text-subtle)}
+
+.rows{display:flex;flex-direction:column;gap:8px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+.cell{
+  position:relative;overflow:hidden;border-radius:14px;border:1px solid var(--divider);
+  background:rgba(0,0,0,.20);padding:0;text-align:left;cursor:pointer;
+  display:flex;flex-direction:column;gap:0;min-height:96px;width:100%;
+  transition:border-color .15s ease,background .15s ease;
+}
+.cell:focus-visible{outline:2px solid var(--sage-soft);outline-offset:2px}
+.cell .pad{padding:11px 11px 11px 15px;display:flex;flex-direction:column;gap:6px;flex:1}
+.cell .rail{position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(255,255,255,.14)}
+.cell[data-ls="winst"]{border-color:rgba(200,149,108,.34);background:rgba(200,149,108,.06)}
+.cell[data-ls="winst"] .rail{background:var(--terra)}
+.cell[data-ls="ok"] .rail{background:var(--sage)}
+.cell[data-ls="watch"] .rail{background:var(--amber)}
+.cell[data-ls="wacht"] .rail{background:rgba(255,255,255,.13)}
+.cell[aria-expanded="true"]{border-color:rgba(90,143,106,.55);background:rgba(90,143,106,.09)}
+
+.cell .naam{font-size:13px;font-weight:600;line-height:1.25;color:#F1EFE8;text-wrap:balance}
+
+/* staat = vorm + woord + kleur. Nooit kleur alleen. */
+.staat{display:flex;align-items:center;gap:6px}
+.staat .glyph{width:11px;height:11px;min-width:11px;display:block}
+.staat .w{font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;line-height:1.1}
+.staat[data-ls="winst"] .w{color:var(--terra)}
+.staat[data-ls="ok"] .w{color:var(--sage-soft)}
+.staat[data-ls="watch"] .w{color:var(--amber)}
+.staat[data-ls="wacht"] .w{color:var(--sage-dim)}
+
+/* meetfeit: het antwoord dat hij gaf, met zijn eigen label. Geen benchmark hier
+   — die staat in de lade, anders leest de cel als een oordeel. */
+.feit{font-size:11.5px;line-height:1.35;color:#CDD7D0}
+.feit .lbl{color:var(--text-subtle)}
+
+/* gekozen: mini-tegels, geen teller. Eén past er; de rest wordt "+N". */
+.keuzes{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:2px}
+.chip{
+  display:inline-flex;align-items:center;gap:4px;max-width:100%;
+  border:1px solid rgba(90,143,106,.45);background:rgba(90,143,106,.14);color:var(--sage-soft);
+  border-radius:999px;padding:2px 7px;font-size:10.5px;font-weight:600;line-height:1.5;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.chip.more{border-style:dashed;background:transparent}
+
+/* ============ de lade ============ */
+.drawer{
+  grid-column:1 / -1;border-radius:14px;border:1px solid rgba(90,143,106,.35);
+  background:rgba(90,143,106,.06);padding:14px 14px 15px;margin-top:0;
+}
+.drawer h3{font-family:var(--f-serif);font-weight:400;font-size:18px;line-height:1.2}
+.drawer .sub{font-size:11.5px;color:var(--sage-dim);margin:3px 0 0}
+.drawer .sum{font-size:12.5px;line-height:1.6;color:#CDD7D0;margin:11px 0 0;max-width:60ch}
+.drawer .wait{
+  font-size:11.5px;line-height:1.55;color:var(--sage-dim);margin:11px 0 0;max-width:58ch;
+  border-left:1px solid var(--divider-strong);padding-left:10px;
+}
+.d-lbl{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--sage-dim);margin:15px 0 7px}
+.fact{border-left:1px solid rgba(90,143,106,.4);padding:0 0 0 10px;margin:0 0 9px}
+.fact .row1{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
+.fact .fl{font-size:12px;color:var(--text-subtle)}
+.fact .fa{font-size:13px;font-weight:600;color:#F1EFE8}
+.fact .bench{font-size:11px;color:var(--text-subtle);margin:2px 0 0}
+.fact .why{font-size:11.5px;line-height:1.5;color:#9FB0A6;margin:4px 0 0;max-width:58ch}
+.badge{
+  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  border-radius:999px;padding:1px 6px;border:1px solid currentColor;
+}
+.badge.below{color:var(--terra)}
+.badge.own{color:var(--sage-dim)}
+.badge.meets{color:var(--sage-soft)}
+
+.mine{display:flex;flex-direction:column;gap:6px;margin:0}
+.mine li{
+  list-style:none;border-radius:10px;border:1px solid rgba(90,143,106,.3);
+  background:rgba(90,143,106,.07);padding:8px 10px;font-size:12.5px;line-height:1.45;color:#CDD7D0;
+}
+.mine.empty{font-size:12px;color:var(--sage-dim);line-height:1.55;max-width:58ch}
+.bron{font-size:11px;color:var(--text-subtle);margin:13px 0 0}
+.kompas{
+  display:inline-flex;align-items:center;gap:5px;margin-top:12px;min-height:44px;
+  background:transparent;border:none;padding:0;cursor:pointer;
+  font-size:13px;font-weight:600;color:var(--sage-soft);
+}
+
+/* ============ voet ============ */
+.loose{margin:14px 0 0;font-size:12px;line-height:1.55;color:var(--sage-dim);max-width:60ch}
+.loose .lk{background:none;border:none;padding:0;cursor:pointer;font-weight:600;color:var(--sage-soft);font-size:12px;min-height:44px}
+
+.route{margin-top:22px;border-radius:14px;border:1px solid var(--panel-border);background:var(--panel);padding:13px}
+.route .eb{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--sage-dim)}
+.route .nodes{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:8px}
+.route .node{
+  display:inline-flex;flex-direction:column;border-radius:10px;border:1px solid var(--divider);
+  background:rgba(0,0,0,.2);padding:6px 11px;min-height:44px;justify-content:center;cursor:pointer;text-align:left;
+}
+.route .node[aria-current="page"]{border-color:rgba(90,143,106,.5);background:rgba(90,143,106,.14)}
+.route .node .nl{font-size:12.5px;font-weight:600;color:#F1EFE8}
+.route .node[aria-current="page"] .nl{color:var(--sage-soft)}
+.route .node .ns{font-size:10px;color:var(--sage-dim);line-height:1.2}
+.route .sep{color:#4A544D;font-size:12px}
+
+.schap{
+  margin-top:16px;background:none;border:none;padding:0;min-height:44px;cursor:pointer;
+  font-size:13px;font-weight:600;color:var(--sage-soft);text-align:left;
+}
+.foot{margin:18px 0 0;font-size:11px;line-height:1.6;color:var(--text-subtle);max-width:62ch}
+
+/* ============ Kompas-referentie (STILSTAAND, niet dit scherm) ============ */
+.ref{
+  margin-top:26px;border-radius:16px;border:1px dashed var(--divider-strong);
+  background:rgba(0,0,0,.25);padding:14px;opacity:.72;
+}
+.ref[hidden]{display:none}
+.ref .rl{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-subtle)}
+.ref .rn{font-size:11.5px;color:var(--sage-dim);margin:4px 0 10px;line-height:1.5}
+.ref .rgrid{display:grid;grid-template-columns:1fr;gap:4px;pointer-events:none;user-select:none}
+.ref .rrow{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:9px;align-items:center;
+  border-radius:12px;border:1px solid var(--divider);background:rgba(0,0,0,.2);
+  padding:7px 11px 7px 16px;position:relative;overflow:hidden;min-height:40px;
+}
+.ref .rrow i{position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(255,255,255,.15);font-style:normal}
+.ref .rrow[data-ls="winst"]{border-color:rgba(200,149,108,.5);background:rgba(200,149,108,.09)}
+.ref .rrow[data-ls="winst"] i{background:var(--terra)}
+.ref .rrow[data-ls="watch"] i{background:var(--amber)}
+.ref .rrow[data-ls="ok"] i{background:var(--sage)}
+.ref .rp{font-size:9.5px;font-weight:600;letter-spacing:.06em;color:var(--sage-dim);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.ref .rnm{font-size:12.5px;font-weight:600;color:#F1EFE8}
+.ref .rs{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:right}
+
+/* ============ event-toast ============ */
+.toast{
+  position:fixed;left:12px;right:12px;bottom:12px;z-index:60;
+  background:#0b150c;border:1px solid var(--sage);border-radius:12px;padding:9px 12px;
+  font-size:11.5px;line-height:1.45;color:var(--sage-soft);
+  opacity:0;transform:translateY(8px);transition:opacity .18s ease,transform .18s ease;pointer-events:none;
+}
+.toast.on{opacity:1;transform:none}
+.toast b{color:#F1EFE8;font-weight:600}
+
+/* ============ ≥1024px ============ */
+@media (min-width:1024px){
+  main{padding:24px 24px 72px}
+  .pair{grid-template-columns:repeat(3,1fr)}
+  .cell{min-height:112px}
+  .cell .naam{font-size:14px}
+  .anchor{font-size:13.5px}
+  .ref .rgrid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="rev">
+  <div class="rev-row">
+    <span class="rev-lbl">Staat</span>
+    <button type="button" data-state="alpha" aria-pressed="true">&#945; beweging</button>
+    <button type="button" data-state="beta" aria-pressed="false">&#946; slaap</button>
+    <button type="button" data-state="gamma" aria-pressed="false">&#947; voeding</button>
+    <span class="rev-lbl" style="margin-left:8px">Referentie</span>
+    <button type="button" class="ghost" id="refToggle" aria-pressed="false">Kompas-domein</button>
+  </div>
+  <p class="rev-note" id="revNote"></p>
+</div>
+
+<main>
+  <div class="crumb">
+    <button type="button" class="back" aria-label="Terug">&#8592;</button>
+    <span class="eyebrow" id="crumbLabel"></span>
+  </div>
+
+  <h1 id="kop"></h1>
+  <p class="anchor"><span class="tick" aria-hidden="true"></span><span id="anker"></span></p>
+
+  <div class="grid-h">
+    <h2 id="gridEyebrow"></h2>
+    <span class="cnt" id="gridCount"></span>
+  </div>
+  <div class="rows" id="rows"></div>
+
+  <p class="loose" id="loose" hidden></p>
+
+  <nav class="route" aria-label="Jouw route door dit domein">
+    <span class="eb">Jouw route</span>
+    <div class="nodes" id="routeNodes"></div>
+  </nav>
+
+  <button type="button" class="schap" id="schapBtn" hidden>Open je schap &#8250;</button>
+
+  <p class="foot">Zelfrapportage, geen diagnose. Kiezen doe je op Kompas, afvinken op Mijn Dag.</p>
+
+  <aside class="ref" id="ref" hidden aria-label="Referentiebeeld Kompas-domein">
+    <div class="rl">Referentie &middot; niet dit scherm</div>
+    <p class="rn">Zo staat hetzelfde domein er op <b>Kompas</b> (<code>DomainLifestyleLadder</code>, <code>columns=2</code>). Stilstaand beeld, bewust niet klikbaar. Zes lagen, naam + staatwoord, en niets meer — de cel is daar een <em>keuzeknop</em>. Hierboven is dezelfde laag een <em>dossierregel</em>: wat er gemeten is, wanneer, en wat jij koos.</p>
+    <div class="rgrid" id="refGrid"></div>
+  </aside>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ===========================================================================
+   MOCKDATA — echte veldnamen uit src/. Man op dag 12 van zijn cyclus, één
+   intake, twee eigen domeinchecks. Geen showcase-account.
+
+   Bronnen van de veldnamen:
+     data.domainCheckDaysAgo                 types/dashboard.ts:296
+     data.remeasure.{dueDate,daysUntil}      types/dashboard.ts:272
+     data.movementCheckinSnapshot.ladder.*   types/dashboard.ts:240-248
+     data.sleepCheckinSnapshot.factRows      types/dashboard.ts:251-254
+     evidenceByLayer                         lib/domain-ladder-readout.ts:64
+     account_favorites[].id                  lib/leefstijl-ladder.ts ladderActionFavoriteId()
+=========================================================================== */
+const DATA = {
+  cycleDay: 12,
+  remeasure: { dueDate: "12 september", daysUntil: 18 },
+  domainCheckDaysAgo: { beweging: 4, slaap: 6, voeding: 9, stress: 11 },
+
+  /* Vier rijen. Drie dragen hun laag in het id (laag-<domein>-p<n>-<slug>),
+     de vierde niet — die is buiten de ladder om opgepikt en landt in de voet. */
+  account_favorites: [
+    { id: "laag-beweging-p1-onderbreek-elk-werkuur-twee-minuten-staan-is-genoeg",
+      title: "Onderbreek elk werkuur twee minuten — staan is genoeg.", domain: "beweging", kind: "activiteit" },
+    { id: "laag-beweging-p2-twee-krachtsessies-per-week-vijf-oefeningen-hele-lichaam",
+      title: "Twee krachtsessies per week, vijf oefeningen, hele lichaam.", domain: "beweging", kind: "activiteit" },
+    { id: "fav-wandelmaatje", title: "Wandelmaatje zoeken", domain: "beweging", kind: "activiteit" },
+    { id: "laag-voeding-p1-zet-een-portie-groente-bij-je-avondeten",
+      title: "Zet één portie groente bij je avondeten.", domain: "voeding", kind: "activiteit" }
+  ]
+};
+
+/* Laagnamen woordelijk uit src/data/<domein>/lifestyle-*.ts */
+const LAYERS = {
+  beweging: [
+    { id:1, name:"Dagelijks bewegen", subtitle:"Zitten onderbreken · wandelen · fietsen",
+      summary:"Minder lang zitten en meer bewegen door je dag heen leveren voor de meeste mensen meer gezondheidswinst op dan een extra trainingssessie per week." },
+    { id:2, name:"Kracht + basisconditie", subtitle:"Spierbehoud · matig intensief bewegen",
+      summary:"Twee keer per week kracht plus regelmatig matig intensief bewegen is de standaard voor volwassenen — sterker dan alleen cardio." },
+    { id:3, name:"Progressief opbouwen", subtitle:"Geleidelijk meer volume of intensiteit",
+      summary:"Kracht en conditie bouw je op via geleidelijke toename van volume of intensiteit — niet via één perfect schema vanaf week 1." },
+    { id:4, name:"Specifiek sporten", subtitle:"Hardlopen · zwemmen · teamsport",
+      summary:"Doelgericht trainen voor één sport loont pas als de basis van prioriteit 1 en 2 er ligt." },
+    { id:5, name:"Geavanceerde training", subtitle:"Periodisering · zone 2 · intervallen",
+      summary:"Periodisering, zone 2 versus intervallen en herstelplanning leveren marginale winst bovenop een solide basis." },
+    { id:6, name:"Supplementen · wearables", subtitle:"Optimalisatie ná leefstijl",
+      summary:"Creatine, eiwit en wearables zijn optimalisatie ná leefstijl — geen vervanging van prioriteit 1 en 2." }
+  ],
+  slaap: [
+    { id:1, name:"Slaapgelegenheid", subtitle:"Tijd, prioriteit, hoeveel je jezelf gunt",
+      summary:"Geef je jezelf daadwerkelijk genoeg tijd en gelegenheid om te slapen? Niet hoeveel uur je zou moeten — wel hoeveel kans je structureel krijgt." },
+    { id:2, name:"Ritme & slaapgewoonten", subtitle:"Vaste tijden, avondroutine, afbouwtijd",
+      summary:"Consistentie werkt beter dan precisie. Een redelijk vaste opsta-tijd is voor je klok een sterker anker dan een exacte bedtijd." },
+    { id:3, name:"Gedrag & timing", subtitle:"Daglicht, cafeïne, alcohol, beweging, avond",
+      summary:"Veel licht overdag, minder stimulerend licht richting de nacht. Cafeïne kan tot ongeveer acht uur nawerken — gevoeligheid verschilt per persoon." },
+    { id:4, name:"Slaapomgeving", subtitle:"Licht, geluid, temperatuur, bed, prikkels",
+      summary:"Donker, stil en koel genoeg. Dit is de laag die het snelst te repareren is en het minst vaak je knelpunt." },
+    { id:5, name:"Gerichte interventies", subtitle:"Aanhoudende klachten, professionele hulp",
+      summary:"Blijft het aanhouden terwijl de lagen erboven staan, dan is dit het moment voor gerichte hulp." },
+    { id:6, name:"Meten, gadgets & aanvullen", subtitle:"Trackers, supplementen, experimenten",
+      summary:"Meten en aanvullen komen als laatste — ze verklaren zelden wat de lagen erboven niet al verklaren." }
+  ],
+  voeding: [
+    { id:1, name:"Je eetbasis",
+      summary:"Passende energie, een regelmatig patroon, een volwaardige basis met planten en eiwit, en water als standaard." },
+    { id:2, name:"Voedingskwaliteit",
+      summary:"Meer groente, peulvruchten, volkoren, noten en vis. Minder suikerhoudende dranken, zout en sterk bewerkte producten." },
+    { id:3, name:"Verhoudingen",
+      summary:"Hoe je eiwit, vet en koolhydraten over je dag verdeelt — pas relevant als je basis en je kwaliteit staan." },
+    { id:4, name:"Op jouw situatie",
+      summary:"Aanpassingen die bij jóüw week, werk en voorkeuren passen, niet bij een gemiddelde." },
+    { id:5, name:"Meten & timing",
+      summary:"Wegen, loggen en timing van maaltijden — nuttig als instrument, zelden als startpunt." },
+    { id:6, name:"Aanvullen & vergelijken",
+      summary:"Supplementen sluiten een gat dat je eerst gemeten moet hebben. Vergelijken doe je op je schap." }
+  ]
+};
+
+const STATE_LABEL = { winst:"Grootste winst", ok:"Op orde", watch:"Houd in de gaten", wacht:"Nog niet nu" };
+
+/* WHY_WAIT woordelijk uit lib/movement-ladder.ts:194-199 en lib/sleep-ladder.ts:139-145 */
+const WHY_WAIT = {
+  beweging: { 3:"Opbouwen begint pas als je krachtdagen vier weken staan.",
+              4:"Een sport kiezen mag altijd. Hij duidt je plan, hij verandert het niet.",
+              5:"Marginale winst — pas bovenop een basis die acht weken staat.",
+              6:"Eerst je voedingscheck en je hertest, dan pas aanvullen." },
+  slaap:    { 2:"Je tijden liggen redelijk vast. Dit weegt pas mee als je slaapduur staat.",
+              3:"Avondafbouw en ochtendlicht staan open, maar ze hangen aan tijd die er nog niet is.",
+              4:"Je omgeving is niet je knelpunt zolang de tijd in bed ontbreekt.",
+              5:"Geen aanhoudende klachten gemeld naast het slaaptekort.",
+              6:"Eerst gelegenheid, dan een potje." }
+};
+
+/* ---------------------------------------------------------------------------
+   De drie reviewer-staten. `readout` is exact de vorm die
+   resolveDomainLadderReadout(domain, data) teruggeeft — of null.
+--------------------------------------------------------------------------- */
+const STATES = {
+  alpha: {
+    domain: "beweging", label: "Beweging", checkNaam: "beweegcheck", heeftSchap: true,
+    note: "α · beweging, beweegcheck 4 dagen oud, winst op P2, keuzes op P1 en P2, bewijs op P1–P3, P6-poort dicht. Volle cel: staat + meetfeit + keuze.",
+    readout: {
+      focusLayer: 2,
+      layerStates: { 1:"watch", 2:"winst", 3:"wacht", 4:"wacht", 5:"wacht", 6:"wacht" },
+      evidenceByLayer: {
+        1: [
+          { key:"zitten", label:"Zitten", answerLabel:"8 tot 10 uur per dag",
+            benchmarkLabel:"Richtlijn: voorkom veel stilzitten — geen getalsnorm", status:"own",
+            whyLine:"Lang zitten weegt apart mee, los van je training.",
+            footnote:"De grens van ongeveer 8 uur per dag komt uit cohortonderzoek naar zitgedrag, niet uit een richtlijn." },
+          { key:"mobiliteit", label:"Mobiliteit", answerLabel:"Soms stijf",
+            benchmarkLabel:null, status:"own",
+            whyLine:"Soepelheid bepaalt hoeveel je van de rest kunt doen." }
+        ],
+        2: [
+          { key:"kracht", label:"Kracht", answerLabel:"1× per week",
+            benchmarkLabel:"Richtlijn: 2× per week krachttraining", status:"below",
+            whyLine:"Richtlijn is 2× per week; jij zit daar nu onder. Één vast moment brengt dit binnen bereik." },
+          { key:"aeroob", label:"Cardio en intensief samen", answerLabel:"90 tot 150 minuten matig · geen intensief",
+            benchmarkLabel:"Richtlijn: 150–300 minuten matig per week, of 75–150 minuten intensief", status:"below",
+            whyLine:"Onder de richtlijn — hier levert hetzelfde kwartier meer op dan bij de andere delen.",
+            footnote:"In de richtlijn telt één minuut intensief als twee minuten matig — daarom staan ze hier samen." }
+        ],
+        3: [
+          { key:"consistentie", label:"Consistentie", answerLabel:"2 van de 4 weken van de afgelopen maand",
+            benchmarkLabel:null, status:"own",
+            whyLine:"Herhaling voorspelt resultaat sterker dan de zwaarte van één sessie." }
+        ]
+      }
+    }
+  },
+
+  beta: {
+    domain: "slaap", label: "Slaap", checkNaam: "slaapcheck", heeftSchap: true,
+    note: "β · slaap, slaapcheck 6 dagen oud, winst op P1, andere evidenceByLayer (P1/P2/P3/P5 gevuld, P4 en P6 leeg), nul keuzes. Test de lege keuze-sleuf.",
+    readout: {
+      focusLayer: 1,
+      layerStates: { 1:"winst", 2:"watch", 3:"watch", 4:"ok", 5:"wacht", 6:"wacht" },
+      evidenceByLayer: {
+        1: [
+          { key:"duur", label:"Slaapduur", answerLabel:"6 tot 7 uur",
+            benchmarkLabel:"Populatierichtlijn: 7+ uur", status:"below",
+            whyLine:"Onder de populatierichtlijn. Dit is de laag waar de rest aan hangt." }
+        ],
+        2: [
+          { key:"SLP_CONS", label:"Regelmaat", answerLabel:"Wisselt per dag",
+            benchmarkLabel:null, status:"own",
+            whyLine:"Een vaste opsta-tijd is voor je klok een sterker anker dan een vaste bedtijd." }
+        ],
+        3: [
+          { key:"winddown", label:"Avondafbouw", answerLabel:"Zelden", benchmarkLabel:null, status:"own",
+            whyLine:"Zonder afbouwtijd loopt de dag door tot in je bed." },
+          { key:"morninglight", label:"Ochtendlicht", answerLabel:"Bijna nooit", benchmarkLabel:null, status:"own",
+            whyLine:"Ochtendlicht zet je klok; bewolkt telt mee." },
+          { key:"nightload", label:"Piekeren voor bed", answerLabel:"Regelmatig", benchmarkLabel:null, status:"own",
+            whyLine:"Piekeren verlengt de tijd tot inslapen, ook bij genoeg gelegenheid." }
+        ],
+        5: [
+          { key:"SLP_ONSET", label:"Inslapen", answerLabel:"Binnen 20 minuten", benchmarkLabel:null, status:"own",
+            whyLine:"Inslapen gaat vlot — het knelpunt zit niet hier." },
+          { key:"SLP_WAKE", label:"Doorslapen", answerLabel:"Word één keer wakker", benchmarkLabel:null, status:"own",
+            whyLine:"Eén keer wakker worden is gewoon; het patroon telt, niet de nacht." },
+          { key:"SLP_QUAL", label:"Uitgerust wakker", answerLabel:"Zelden", benchmarkLabel:null, status:"own",
+            whyLine:"Dit volgt meestal de laag erboven, niet je slaapkamer." }
+        ]
+      }
+    }
+  },
+
+  gamma: {
+    domain: "voeding", label: "Voeding", checkNaam: "voedingscheck", heeftSchap: true,
+    note: "γ · voeding, check 9 dagen oud maar GEEN laag-staten (resolveDomainLadderReadout geeft null). Zes namen, één keuze, geen oordeel. De cel laat de staat-sleuf wég in plaats van zesmaal “nog niet beoordeeld” te herhalen — die zin staat één keer, in het anker.",
+    readout: null
+  }
+};
+
+/* =========================== helpers =========================== */
+const $ = (s) => document.querySelector(s);
+let current = "alpha";
+let openLayer = null;
+
+function esc(s){ return String(s).replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+/** parseLadderFavoriteLayer — lib/leefstijl-ladder.ts */
+function favLayer(id){ const m = /^laag-[a-z]+-p(\d+)-/.exec(id); return m ? Number(m[1]) : null; }
+
+function favoritesFor(domain){ return DATA.account_favorites.filter((f) => f.domain === domain); }
+
+function toast(evt, detail){
+  const el = $("#toast");
+  el.innerHTML = "Zou vuren: <b>" + esc(evt) + "</b>" + (detail ? " · " + esc(detail) : "");
+  el.classList.add("on");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove("on"), 2600);
+}
+
+/** Vorm per staat — nooit kleur alleen (WCAG 1.4.1). */
+function glyph(ls){
+  const c = { winst:"var(--terra)", ok:"var(--sage)", watch:"var(--amber)", wacht:"var(--sage-dim)" }[ls];
+  if (ls === "winst") return '<svg class="glyph" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1l5 9H1z" fill="'+c+'"/></svg>';
+  if (ls === "ok")    return '<svg class="glyph" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="'+c+'"/></svg>';
+  if (ls === "watch") return '<svg class="glyph" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="none" stroke="'+c+'" stroke-width="1.6"/><path d="M6 1.5A4.5 4.5 0 016 10.5z" fill="'+c+'"/></svg>';
+  return '<svg class="glyph" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.2" fill="none" stroke="'+c+'" stroke-width="1.4" stroke-dasharray="2.2 2"/></svg>';
+}
+
+/**
+ * Het meetfeit dat de cel draagt. Zelfde precedentie als
+ * resolveLadderLayerReason (lib/domain-ladder-readout.ts:99-122): de rij die
+ * onder de richtlijn zit draagt het beeld, anders de eerste rij.
+ */
+function leadRow(rows){
+  if (!rows || rows.length === 0) return null;
+  return rows.find((r) => r.status === "below") || rows[0];
+}
+
+/* =========================== render =========================== */
+function render(){
+  const S = STATES[current];
+  const layers = LAYERS[S.domain];
+  const ro = S.readout;
+  const daysAgo = DATA.domainCheckDaysAgo[S.domain];
+  const favs = favoritesFor(S.domain);
+
+  $("#revNote").textContent = S.note;
+  $("#crumbLabel").textContent = S.label;
+  $("#kop").textContent = "Wat er onder je " + S.label.toLowerCase() + " staat";
+
+  /* --- cyclus-anker: één regel + datum. Geen band, geen scrubber. --- */
+  const bron = "Zes delen, zoals je " + S.checkNaam + " van " + daysAgo + " dagen geleden ze achterliet.";
+  const heen = " Je hermeting staat op <b>" + DATA.remeasure.dueDate + "</b> — dan verandert dit.";
+  const geenOordeel = ro ? "" : " Je " + S.checkNaam + " beoordeelt deze delen nog niet apart; wat hier staat is je keuze en de datum.";
+  $("#anker").innerHTML = esc(bron) + heen + esc(geenOordeel);
+
+  const beoordeeld = ro ? Object.keys(ro.layerStates).length : 0;
+  const metFeit = ro ? Object.keys(ro.evidenceByLayer).filter((k) => (ro.evidenceByLayer[k] || []).length > 0).length : 0;
+  $("#gridEyebrow").textContent = ro ? "Je zes delen" : "Je zes delen · nog zonder oordeel";
+  $("#gridCount").textContent = ro
+    ? beoordeeld + " van 6 beoordeeld · " + metFeit + " met een meetfeit"
+    : "6 namen · geen laag-oordeel";
+
+  /* --- het raster: drie paar-rijen, lade onder de rij van de open cel --- */
+  const rows = $("#rows");
+  rows.innerHTML = "";
+  for (let r = 0; r < 3; r++){
+    const pair = document.createElement("div");
+    pair.className = "pair";
+    const inRow = [layers[r*2], layers[r*2+1]];
+
+    inRow.forEach((layer) => {
+      const ls = ro ? ro.layerStates[layer.id] : null;
+      const rowsFor = ro ? (ro.evidenceByLayer[layer.id] || []) : [];
+      const lead = leadRow(rowsFor);
+      const gek = favs.filter((f) => favLayer(f.id) === layer.id);
+
+      const aria = [
+        "Prioriteit " + layer.id,
+        layer.name,
+        ls ? STATE_LABEL[ls] : "nog niet beoordeeld",
+        lead ? lead.label + ": " + lead.answerLabel : null,
+        gek.length ? gek.length + " gekozen" : null
+      ].filter(Boolean).join(". ");
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "cell";
+      btn.setAttribute("data-layer", String(layer.id));
+      if (ls) btn.setAttribute("data-ls", ls);
+      btn.setAttribute("aria-expanded", openLayer === layer.id ? "true" : "false");
+      btn.setAttribute("aria-label", aria);
+
+      let html = '<span class="rail" aria-hidden="true"></span><span class="pad">';
+      html += '<span class="naam">' + esc(layer.name) + "</span>";
+      if (ls){
+        html += '<span class="staat" data-ls="' + ls + '">' + glyph(ls) +
+                '<span class="w">' + esc(STATE_LABEL[ls]) + "</span></span>";
+      }
+      if (lead){
+        html += '<span class="feit"><span class="lbl">' + esc(lead.label) + "</span> · " +
+                esc(lead.answerLabel) + "</span>";
+      }
+      if (gek.length){
+        html += '<span class="keuzes"><span class="chip">' + esc(gek[0].title) + "</span>";
+        if (gek.length > 1) html += '<span class="chip more">+' + (gek.length - 1) + "</span>";
+        html += "</span>";
+      }
+      html += "</span>";
+      btn.innerHTML = html;
+
+      btn.addEventListener("click", () => {
+        openLayer = openLayer === layer.id ? null : layer.id;
+        if (openLayer != null) toast(S.domain + "_ladder_layer_open", "layer=" + layer.id + " · view=grid");
+        render();
+        if (openLayer != null){
+          const d = document.querySelector(".drawer");
+          if (d) d.scrollIntoView({ behavior:"smooth", block:"nearest" });
+        }
+      });
+      pair.appendChild(btn);
+    });
+
+    rows.appendChild(pair);
+
+    if (openLayer != null && (openLayer === inRow[0].id || openLayer === inRow[1].id)){
+      pair.appendChild(buildDrawer(S, ro, inRow.find((l) => l.id === openLayer), favs, daysAgo));
+    }
+  }
+
+  /* --- keuzes zonder laag: één voetregel, geen derde dump --- */
+  const los = favs.filter((f) => favLayer(f.id) == null);
+  const looseEl = $("#loose");
+  if (los.length){
+    looseEl.hidden = false;
+    looseEl.innerHTML = "Je koos hier ook " + los.length + " ding" + (los.length === 1 ? "" : "en") +
+      " zonder laag — " + los.map((f) => "<em>" + esc(f.title) + "</em>").join(", ") + ". " +
+      (S.heeftSchap ? '<button type="button" class="lk" id="looseLink">Die staan op je schap ›</button>' : "");
+    const lk = document.getElementById("looseLink");
+    if (lk) lk.addEventListener("click", () => toast("choice.shelf_opened", "from_state=leefstijlprofiel"));
+  } else {
+    looseEl.hidden = true;
+    looseEl.innerHTML = "";
+  }
+
+  renderRoute(S);
+
+  const sb = $("#schapBtn");
+  sb.hidden = !S.heeftSchap;
+  sb.onclick = () => toast("choice.shelf_opened", "domain=" + S.domain);
+
+  renderRef(S, ro);
+}
+
+function buildDrawer(S, ro, layer, favs, daysAgo){
+  const d = document.createElement("div");
+  d.className = "drawer";
+  const ls = ro ? ro.layerStates[layer.id] : null;
+  const rowsFor = ro ? (ro.evidenceByLayer[layer.id] || []) : [];
+  const gek = favs.filter((f) => favLayer(f.id) === layer.id);
+  const wait = (ls === "wacht" && WHY_WAIT[S.domain]) ? WHY_WAIT[S.domain][layer.id] : null;
+
+  let h = "<h3>" + esc(layer.name) + "</h3>";
+  if (layer.subtitle) h += '<p class="sub">' + esc(layer.subtitle) + "</p>";
+  h += '<p class="sum">' + esc(layer.summary) + "</p>";
+  if (wait) h += '<p class="wait">' + esc(wait) + "</p>";
+
+  if (rowsFor.length){
+    h += '<p class="d-lbl">Wat je hierover opgaf</p>';
+    rowsFor.forEach((r) => {
+      const bl = { below:"Onder de richtlijn", near:"Bijna op de richtlijn", meets:"Haalt de richtlijn", own:"Jouw ijkpunt" }[r.status] || null;
+      h += '<div class="fact"><div class="row1"><span class="fl">' + esc(r.label) + '</span><span class="fa">' + esc(r.answerLabel) + "</span>";
+      if (bl) h += '<span class="badge ' + r.status + '">' + esc(bl) + "</span>";
+      h += "</div>";
+      if (r.benchmarkLabel) h += '<p class="bench">' + esc(r.benchmarkLabel) + "</p>";
+      h += '<p class="why">' + esc(r.whyLine) + "</p>";
+      if (r.footnote) h += '<p class="bench">' + esc(r.footnote) + "</p>";
+      h += "</div>";
+    });
+    h += '<p class="bron">Uit je ' + esc(S.checkNaam) + " van " + daysAgo + " dagen geleden.</p>";
+  } else if (ro){
+    h += '<p class="d-lbl">Wat je hierover opgaf</p>' +
+         '<p class="mine empty">Je ' + esc(S.checkNaam) + " beoordeelt dit deel niet apart. Dat is geen tekort — " +
+         "het betekent dat dit deel niet meeweegt in wat we van je stand kunnen zeggen.</p>";
+  }
+
+  h += '<p class="d-lbl">Wat jij hier koos</p>';
+  if (gek.length){
+    h += '<ul class="mine">' + gek.map((f) => "<li>" + esc(f.title) + "</li>").join("") + "</ul>";
+  } else {
+    h += '<p class="mine empty">Hier koos je nog niets. Dat hoeft ook niet — dit deel lezen kost je niets en verplicht je tot niets.</p>';
+  }
+
+  h += '<button type="button" class="kompas">Kies dit op Kompas ›</button>';
+  d.innerHTML = h;
+  d.querySelector(".kompas").addEventListener("click", () =>
+    toast("voortgang_ladder_kompas_click", "domain=" + S.domain + " · layer=" + layer.id));
+  return d;
+}
+
+function renderRoute(S){
+  const nodes = [
+    { k:"leefstijlcheck", l:"Leefstijlcheck", s:"Opnieuw · 3 min" },
+    { k:"voortgang", l:"Voortgang", s:"Hier — legt uit", current:true },
+    { k:"kompas", l:"Kompas", s:"Kiest je aanpak" },
+    { k:"mijn_dag", l:"Mijn Dag", s:"Vinkt af" }
+  ];
+  const wrap = $("#routeNodes");
+  wrap.innerHTML = "";
+  nodes.forEach((n, i) => {
+    if (i > 0){
+      const sep = document.createElement("span");
+      sep.className = "sep"; sep.textContent = "›"; sep.setAttribute("aria-hidden","true");
+      wrap.appendChild(sep);
+    }
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "node";
+    if (n.current) b.setAttribute("aria-current","page");
+    b.innerHTML = '<span class="nl">' + esc(n.l) + '</span><span class="ns">' + esc(n.s) + "</span>";
+    if (!n.current) b.addEventListener("click", () => toast("voortgang_route_click", "target=" + n.k));
+    wrap.appendChild(b);
+  });
+}
+
+/** STILSTAAND referentiebeeld van Kompas › domein. Niet klikbaar, met opzet. */
+function renderRef(S, ro){
+  const g = $("#refGrid");
+  g.innerHTML = LAYERS[S.domain].map((l) => {
+    const ls = ro ? ro.layerStates[l.id] : null;
+    const col = { winst:"var(--terra)", ok:"var(--sage-soft)", watch:"var(--amber)", wacht:"var(--sage-dim)" }[ls] || "transparent";
+    return '<div class="rrow"' + (ls ? ' data-ls="' + ls + '"' : "") + '><i></i>' +
+      '<span class="rp">P' + l.id + "</span>" +
+      '<span class="rnm">' + esc(l.name) + "</span>" +
+      '<span class="rs" style="color:' + col + '">' + (ls ? esc(STATE_LABEL[ls]) : "") + "</span></div>";
+  }).join("");
+}
+
+/* =========================== reviewer-bediening =========================== */
+document.querySelectorAll(".rev [data-state]").forEach((b) => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll(".rev [data-state]").forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+    current = b.getAttribute("data-state");
+    openLayer = null;
+    render();
+    window.scrollTo({ top:0, behavior:"smooth" });
+  });
+});
+$("#refToggle").addEventListener("click", () => {
+  const on = $("#refToggle").getAttribute("aria-pressed") === "true";
+  $("#refToggle").setAttribute("aria-pressed", String(!on));
+  $("#ref").hidden = on;
+  if (!on) $("#ref").scrollIntoView({ behavior:"smooth", block:"nearest" });
+});
+
+render();
+</script>
+</body>
+</html>
