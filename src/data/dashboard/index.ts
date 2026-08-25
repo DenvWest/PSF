@@ -327,7 +327,6 @@ export const DASHBOARD_TABS: DashboardTab[] = [
     label: "Mijn Dag",
     icon: "RouteMap",
     title: "Mijn Dag",
-    subtitle: "Je dag, van kompas tot leefstijlmoment.",
     emptyHint: "Doe je eerste check — dan staat hier je dagoverzicht.",
   },
   {

@@ -4,6 +4,7 @@ import {
   buildWachtendCaption,
   CYCLE_LENGTH,
   dayToDate,
+  formatIsoShortDate,
   formatShortDate,
   measurementsOf,
   scrubZone,
@@ -24,7 +25,7 @@ describe("dayToDate / formatShortDate", () => {
 
 describe("measurementsOf", () => {
   it("always starts with leefstijlcheck on day 1", () => {
-    const result = measurementsOf({ cycleDay: 12, domainCheckDaysAgo: {} });
+    const result = measurementsOf({ cycleDayRaw: 12, domainCheckDaysAgo: {} });
     expect(result).toEqual([
       { day: 1, pillarId: null, label: "Je leefstijlcheck" },
     ]);
@@ -32,7 +33,7 @@ describe("measurementsOf", () => {
 
   it("adds one domain check within cycle", () => {
     const result = measurementsOf({
-      cycleDay: 12,
+      cycleDayRaw: 12,
       domainCheckDaysAgo: { slaap: 4 },
     });
     expect(result).toEqual([
@@ -43,7 +44,7 @@ describe("measurementsOf", () => {
 
   it("adds multiple domain checks sorted by day", () => {
     const result = measurementsOf({
-      cycleDay: 12,
+      cycleDayRaw: 12,
       domainCheckDaysAgo: { slaap: 4, voeding: 9 },
     });
     expect(result).toEqual([
@@ -55,8 +56,20 @@ describe("measurementsOf", () => {
 
   it("drops domain checks outside [1, 30]", () => {
     const result = measurementsOf({
-      cycleDay: 12,
+      cycleDayRaw: 12,
       domainCheckDaysAgo: { slaap: 20 },
+    });
+    expect(result).toEqual([
+      { day: 1, pillarId: null, label: "Je leefstijlcheck" },
+    ]);
+  });
+
+  it("drops a recent check when the cycle already expired", () => {
+    // Cyclus 51 dagen oud, slaap-check van gisteren: die hoort niet in deze
+    // band. Met de geklemde cycleDay (30) landde hij op dag 29 — weken terug.
+    const result = measurementsOf({
+      cycleDayRaw: 51,
+      domainCheckDaysAgo: { slaap: 1 },
     });
     expect(result).toEqual([
       { day: 1, pillarId: null, label: "Je leefstijlcheck" },
@@ -66,7 +79,7 @@ describe("measurementsOf", () => {
 
 describe("buildBandCaption", () => {
   const baseMeasurements = measurementsOf({
-    cycleDay: 12,
+    cycleDayRaw: 12,
     domainCheckDaysAgo: { slaap: 4, voeding: 9 },
   });
 
@@ -74,7 +87,7 @@ describe("buildBandCaption", () => {
     const caption = buildBandCaption({
       cycleStartDate: CYCLE_START,
       cycleDay: 12,
-      remeasureDueDate: REMEASURE_DUE,
+      remeasureDueDateIso: REMEASURE_DUE,
       measurements: baseMeasurements,
       headDay: 8,
       activeDays: 8,
@@ -90,7 +103,7 @@ describe("buildBandCaption", () => {
     const caption = buildBandCaption({
       cycleStartDate: CYCLE_START,
       cycleDay: 12,
-      remeasureDueDate: REMEASURE_DUE,
+      remeasureDueDateIso: REMEASURE_DUE,
       measurements: baseMeasurements,
       headDay: 9,
       activeDays: 8,
@@ -106,7 +119,7 @@ describe("buildBandCaption", () => {
     const caption = buildBandCaption({
       cycleStartDate: CYCLE_START,
       cycleDay: 12,
-      remeasureDueDate: REMEASURE_DUE,
+      remeasureDueDateIso: REMEASURE_DUE,
       measurements: baseMeasurements,
       headDay: 12,
       activeDays: 8,
@@ -122,7 +135,7 @@ describe("buildBandCaption", () => {
     const caption = buildBandCaption({
       cycleStartDate: CYCLE_START,
       cycleDay: 12,
-      remeasureDueDate: REMEASURE_DUE,
+      remeasureDueDateIso: REMEASURE_DUE,
       measurements: baseMeasurements,
       headDay: CYCLE_LENGTH,
       activeDays: 8,
@@ -139,7 +152,7 @@ describe("buildBandCaption", () => {
     const caption = buildBandCaption({
       cycleStartDate: CYCLE_START,
       cycleDay: 12,
-      remeasureDueDate: REMEASURE_DUE,
+      remeasureDueDateIso: REMEASURE_DUE,
       measurements: baseMeasurements,
       headDay: 20,
       activeDays: 8,
@@ -174,5 +187,55 @@ describe("scrubZone", () => {
 
   it("returns toekomst when headDay > cycleDay", () => {
     expect(scrubZone(12, 20)).toBe("toekomst");
+  });
+});
+
+describe("formatIsoShortDate", () => {
+  it("formats an ISO day", () => {
+    expect(formatIsoShortDate("2026-08-14")).toBe("14 aug");
+  });
+
+  it("returns null for a display string instead of NaN undefined", () => {
+    expect(formatIsoShortDate("14 aug 2026")).toBeNull();
+  });
+
+  it("returns null for an empty string", () => {
+    expect(formatIsoShortDate("")).toBeNull();
+  });
+});
+
+describe("caption fallbacks on a non-ISO due date", () => {
+  it("buildWachtendCaption drops the date instead of printing NaN", () => {
+    const caption = buildWachtendCaption("14 aug 2026");
+    expect(caption.body).not.toContain("NaN");
+    expect(caption.body).not.toContain("undefined");
+  });
+
+  it("buildBandCaption drops the date on the hermeting day", () => {
+    const caption = buildBandCaption({
+      cycleStartDate: CYCLE_START,
+      cycleDay: 12,
+      remeasureDueDateIso: "14 aug 2026",
+      measurements: [],
+      headDay: CYCLE_LENGTH,
+      activeDays: 8,
+      priorityLabel: "Slaap",
+    });
+    expect(caption.title).toBe("Dag 30");
+  });
+
+  it("buildBandCaption drops the date in the toekomst line", () => {
+    const caption = buildBandCaption({
+      cycleStartDate: CYCLE_START,
+      cycleDay: 12,
+      remeasureDueDateIso: "14 aug 2026",
+      measurements: [],
+      headDay: 20,
+      activeDays: 8,
+      priorityLabel: "Slaap",
+    });
+    expect(caption.future).toBe(
+      "Wat je tussen nu en dan neerzet, lees je bij je hermeting terug.",
+    );
   });
 });

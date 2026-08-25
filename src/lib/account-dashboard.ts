@@ -24,6 +24,11 @@ import {
   getDailyActionState,
   getDailyActionWeekStepKeys,
 } from "@/lib/daily-action-log";
+import {
+  addAgendaDays,
+  isoDateInAgendaTimezone,
+  todayInAgendaTimezone,
+} from "@/lib/agenda-week-preview";
 import { deriveMovementRouteProgress } from "@/lib/movement-route-progress";
 import { loadMovementRecoveryTrend, pickLatestMovementRcvFeel } from "@/lib/movement-recovery-context";
 import {
@@ -51,6 +56,10 @@ import {
 } from "@/lib/sleep-checkin-parse";
 import { buildSleepFactRows } from "@/lib/sleep-checkin-readout";
 import { parseStoredStressCheckin } from "@/lib/stress-checkin-parse";
+import {
+  buildCheckinMeasurementValues,
+  buildNutritionMeasurementValues,
+} from "@/lib/domain-measurements";
 import { isMovementFocusKey } from "@/lib/dashboard-url";
 import type {
   CheckLogEntry,
@@ -59,6 +68,8 @@ import type {
   CheckTrend,
   CheckTrendBaselines,
   DashboardData,
+  DomainMeasurement,
+  DomainMeasurementValue,
   NutritionIntakeBand,
   PillarId,
   SleepCheckinFocus,
@@ -97,6 +108,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   hasStressCheckin: false,
   stressCheckinReport: null,
   domainCheckDaysAgo: {},
+  domainMeasurements: {},
   movementPrefs: EMPTY_MOVEMENT_PREFS,
   supplementVerdicts: [],
   proteinTarget: null,
@@ -145,6 +157,8 @@ const MEASURED_DOMAIN_TO_PILLAR: Record<MeasuredPillarId, PillarId> = {
 };
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
+/** Lengte van één meetcyclus: van leefstijlcheck tot hermeting. */
+const REMEASURE_CYCLE_DAYS = 30;
 
 type SessionRow = {
   id: string | null;
@@ -727,6 +741,58 @@ export async function loadAccountDashboardData(
     domainCheckDaysAgo[pillar] = Math.max(0, Math.floor((now - ts) / MS_PER_DAY));
   }
 
+  // Wat er onder elk meetmoment ligt: de waarden die hij bij die check opgaf.
+  // `series` draagt de scores over tijd al; deze map hangt er per (domein,
+  // tijdstip) de opgegeven waarden aan, zodat Voortgang per domein een reeks
+  // kan tonen in plaats van alleen het laatste beeld.
+  const measurementValues = new Map<string, DomainMeasurementValue[]>();
+  const noteValues = (pillar: PillarId, ts: number, values: DomainMeasurementValue[]) => {
+    if (values.length > 0) {
+      measurementValues.set(`${pillar}|${ts}`, values);
+    }
+  };
+
+  for (const row of (checkinData ?? []) as CheckinRow[]) {
+    const pillar = CHECKIN_DOMAIN_TO_PILLAR[row.domain_key];
+    if (!pillar) {
+      continue;
+    }
+    const ts = new Date(row.created_at).getTime();
+    if (!Number.isFinite(ts)) {
+      continue;
+    }
+    noteValues(pillar, ts, buildCheckinMeasurementValues(pillar, row.raw_inputs));
+  }
+
+  for (const row of (logRows ?? []) as { logged_at?: unknown; estimate?: unknown }[]) {
+    if (typeof row.logged_at !== "string") {
+      continue;
+    }
+    const ts = new Date(row.logged_at).getTime();
+    if (!Number.isFinite(ts)) {
+      continue;
+    }
+    noteValues("voeding", ts, buildNutritionMeasurementValues(row.estimate));
+  }
+
+  const domainMeasurements: DashboardData["domainMeasurements"] = {};
+  for (const pillar of PILLAR_IDS) {
+    const points = series[pillar];
+    if (points.length === 0) {
+      continue;
+    }
+    // Hoogstens acht: Voortgang leest een reeks, geen archief.
+    domainMeasurements[pillar] = points.slice(-8).map<DomainMeasurement>((point) => ({
+      id: `${pillar}-${point.ts}`,
+      dateIso: isoDateInAgendaTimezone(point.ts),
+      dateLabel: formatDashboardDate(new Date(point.ts).toISOString()),
+      daysAgo: Math.max(0, Math.floor((now - point.ts) / MS_PER_DAY)),
+      score: point.value,
+      source: point.source,
+      values: measurementValues.get(`${pillar}|${point.ts}`) ?? [],
+    }));
+  }
+
   const trendBaselines = Object.fromEntries(
     PILLAR_IDS.flatMap((pillar) => {
       const firstPoint = series[pillar][0];
@@ -760,13 +826,25 @@ export async function loadAccountDashboardData(
   }));
 
   const firstSessionTs = snapshots[0].ts;
-  const due = new Date(firstSessionTs);
-  due.setUTCDate(due.getUTCDate() + 30);
-  const daysUntil = Math.ceil((due.getTime() - Date.now()) / 86_400_000);
-  const cycleStartDate = new Date(firstSessionTs).toISOString().slice(0, 10);
-  const cycleEndDate = due.toISOString().slice(0, 10);
+
+  // Het cyclusvenster hangt aan de LAATSTE volledige leefstijlcheck, niet aan
+  // de eerste ooit. Verankerd op snapshots[0] staat het venster na dertig dagen
+  // permanent stil: cycleDay klemt op 30, daysUntil wordt negatief, en elke
+  // meting daarna valt buiten de band. De baseline blijft wél snapshots[0] —
+  // dat is de vergelijking van het deltarapport, een andere vraag dan het venster.
+  const cycleStartDate = isoDateInAgendaTimezone(latestSnapshot.ts);
+  const cycleEndDate = addAgendaDays(cycleStartDate, REMEASURE_CYCLE_DAYS);
+  const daysUntil = Math.round(
+    (Date.parse(`${cycleEndDate}T12:00:00.000Z`) -
+      Date.parse(`${todayInAgendaTimezone()}T12:00:00.000Z`)) /
+      MS_PER_DAY,
+  );
   const remeasure = {
-    dueDate: formatDashboardDate(due.toISOString()),
+    // Eén kalenderdag in twee vormen: `dueDate` is weergave, `dueDateIso` is
+    // rekenwerk. Beide uit `cycleEndDate` — los geformatteerd lopen ze bij een
+    // tijdzonegrens een dag uiteen.
+    dueDate: formatDashboardDate(`${cycleEndDate}T12:00:00.000Z`),
+    dueDateIso: cycleEndDate,
     daysUntil,
   };
 
@@ -934,6 +1012,7 @@ export async function loadAccountDashboardData(
     hasStressCheckin,
     stressCheckinReport,
     domainCheckDaysAgo,
+    domainMeasurements,
     supplementVerdicts: [],
     proteinTarget,
   };

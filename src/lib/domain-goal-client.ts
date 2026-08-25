@@ -2,10 +2,11 @@ import type { DomainGoalDomain, GoalMode, SituationId } from "@/lib/domain-goal"
 import type { MovementAnchor } from "@/lib/movement-prefs";
 
 /**
- * Slice B/C (PLAN_EIGEN_IJKPUNT_DOEL_PER_DOMEIN.md): gedeelde client-shape
- * voor `VoortgangHubScroll`, dat als enige de doelen + het beweeganker fetcht
- * en doorgeeft aan `VoortgangDomeinRing` (zetmoment) en `VoortgangRichtingBeat`
- * (doelblok) — één fetch, geen state-drift tussen de twee.
+ * Slice B/C (PLAN_EIGEN_IJKPUNT_DOEL_PER_DOMEIN.md): gedeelde client-shape voor
+ * de twee surfaces die het ijkpunt dragen — de meetreeks op Voortgang
+ * (`VoortgangMetingenPerDomein`) en het doelblok in Kompas
+ * (`KompasDoelIjkpunt`). Elk fetcht zijn eigen doelen; de shape is gedeeld
+ * zodat ze niet uiteenlopen.
  */
 
 export type DomainGoalSummary = {

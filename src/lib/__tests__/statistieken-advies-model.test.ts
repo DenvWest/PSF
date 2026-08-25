@@ -114,6 +114,7 @@ function baseData(overrides: Partial<DashboardData> = {}): DashboardData {
     hasStressCheckin: false,
     stressCheckinReport: null,
     domainCheckDaysAgo: {},
+    domainMeasurements: {},
     movementPrefs: EMPTY_MOVEMENT_PREFS,
     supplementVerdicts: [],
     proteinTarget: null,

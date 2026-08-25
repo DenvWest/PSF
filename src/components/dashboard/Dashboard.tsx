@@ -2701,6 +2701,7 @@ const KompasHome = ({
       <CockpitShell accent="#5A8F6A" ariaLabel="Kompas home" embedded>
         <KompasHomeCard
           model={currentModel}
+          data={data}
           firstName={data?.firstName}
           cycleContext={cycleContext}
           domainCheckDaysAgo={data?.domainCheckDaysAgo}
@@ -2794,17 +2795,19 @@ const DashTabHeader = ({ tab }: { tab: DashboardTab }) => (
     >
       {tab.title}
     </div>
-    <div
-      style={{
-        fontSize: 14,
-        color: "var(--text-muted)",
-        marginTop: 6,
-        lineHeight: 1.5,
-        textWrap: "pretty",
-      }}
-    >
-      {tab.subtitle}
-    </div>
+    {tab.subtitle ? (
+      <div
+        style={{
+          fontSize: 14,
+          color: "var(--text-muted)",
+          marginTop: 6,
+          lineHeight: 1.5,
+          textWrap: "pretty",
+        }}
+      >
+        {tab.subtitle}
+      </div>
+    ) : null}
   </div>
 );
 
@@ -3334,10 +3337,14 @@ function DashboardContent({
       ? "ps-dash-surface-kompas"
       : "";
 
+  // Kompas en Voortgang dragen hun titel al in hun eigen hero (VoortgangHero
+  // heeft een `<h1>`); Mijn Dag heeft dat niet, maar de tab-nav zegt al waar
+  // je bent — een tweede "Mijn Dag" er vlak onder is dubbelop. Alleen
+  // Hermeting leunt nog op deze generieke kop.
   const tabHeaderNode =
-    tab === "vandaag" ? null : tab !== "voortgang" ? (
+    tab === "vandaag" || tab === "voortgang" || tab === "agenda" ? null : (
       <DashTabHeader tab={tabMeta} />
-    ) : null;
+    );
 
   const sectionsNode = (
     <div

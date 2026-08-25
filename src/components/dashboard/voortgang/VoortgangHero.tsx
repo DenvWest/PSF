@@ -13,6 +13,10 @@ type VoortgangHeroProps = {
   onGoAgenda: () => void;
   onGoHermeting: () => void;
   onOpenDomain: (domain: PillarId) => void;
+  /** Het domein dat de reeks onder de hero toont — de band markeert die meting. */
+  selectedDomain?: PillarId | null;
+  /** Een meting in de band aanklikken opent datzelfde domein in de reeks eronder. */
+  onSelectDomain?: (domain: PillarId) => void;
 };
 
 export default function VoortgangHero({
@@ -21,6 +25,8 @@ export default function VoortgangHero({
   onGoAgenda,
   onGoHermeting,
   onOpenDomain,
+  selectedDomain = null,
+  onSelectDomain,
 }: VoortgangHeroProps) {
   const trackedStateRef = useRef<string | null>(null);
 
@@ -163,6 +169,8 @@ export default function VoortgangHero({
             remeasure={data?.remeasure ?? null}
             domainCheckDaysAgo={data?.domainCheckDaysAgo}
             priorityLabel={model.priority.label}
+            selectedDomain={selectedDomain}
+            onSelectDomain={onSelectDomain}
           />
         </div>
       </div>

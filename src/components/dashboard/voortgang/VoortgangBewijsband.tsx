@@ -7,7 +7,10 @@ import {
   useRef,
   useState,
   type ChangeEvent,
+  type ComponentType,
+  type CSSProperties,
 } from "react";
+import * as Icons from "@/components/app/icons";
 import { PILLAR } from "@/data/dashboard";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
@@ -16,19 +19,26 @@ import {
   buildWachtendCaption,
   CYCLE_LENGTH,
   dayToDate,
+  formatIsoShortDate,
   formatShortDate,
   measurementsOf,
   scrubZone,
   type BandMeasurement,
 } from "@/lib/voortgang-bewijsband";
-import type { DashboardData } from "@/types/dashboard";
+import type { DashboardData, PillarId } from "@/types/dashboard";
 
 type VoortgangBewijsbandProps = {
   cycleEvidence: DashboardData["cycleEvidence"];
   remeasure: DashboardData["remeasure"];
   domainCheckDaysAgo: DashboardData["domainCheckDaysAgo"] | undefined;
   priorityLabel: string;
+  /** Welk domein onder de band open staat — de band markeert dat meetmoment. */
+  selectedDomain?: PillarId | null;
+  /** Een meting aanklikken opent datzelfde domein in de reeks eronder. */
+  onSelectDomain?: (domain: PillarId) => void;
 };
+
+type IconComp = ComponentType<{ s?: number; sw?: number; style?: CSSProperties }>;
 
 const VB = { w: 340, h: 112, l: 16, r: 324, axis: 58, lane: 36 } as const;
 
@@ -36,13 +46,59 @@ function xOf(day: number): number {
   return VB.l + (VB.r - VB.l) * ((day - 1) / (CYCLE_LENGTH - 1));
 }
 
-function parseIsoDate(iso: string): Date {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d);
+/** Positie binnen de HTML-laag die exact over de SVG-viewBox ligt. */
+function pctX(day: number): string {
+  return `${(xOf(day) / VB.w) * 100}%`;
 }
 
-function formatRemeasureDueDate(dueDate: string): string {
-  return formatShortDate(parseIsoDate(dueDate));
+const LANE_PCT = `${(VB.lane / VB.h) * 100}%`;
+
+function iconOf(name: string): IconComp | null {
+  return (Icons[name as keyof typeof Icons] as IconComp | undefined) ?? null;
+}
+
+/**
+ * Het meetmoment zelf: het domein-icoon uit de zijbalk, in zijn eigen kleur.
+ * Een render-functie, geen component — het icoon wordt per meting opgezocht,
+ * en dat mag niet in een componentlichaam gebeuren (react-hooks/static-components).
+ */
+function renderMeasurementMarker({
+  measurement,
+  active,
+  onSelect,
+}: {
+  measurement: BandMeasurement;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  const pillar = measurement.pillarId ? PILLAR[measurement.pillarId] : null;
+  const color = pillar?.color ?? "#E7EDE8";
+  const Icon = iconOf(pillar?.icon ?? "Compass");
+
+  return (
+    <button
+      key={`${measurement.day}-${measurement.pillarId ?? "check"}`}
+      type="button"
+      onClick={onSelect}
+      aria-pressed={active}
+      aria-label={`${measurement.label} — dag ${measurement.day}`}
+      title={measurement.label}
+      className="pointer-events-auto absolute flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center border-none bg-transparent p-0"
+      style={{ left: pctX(measurement.day), top: LANE_PCT }}
+    >
+      <span
+        className="flex h-[26px] w-[26px] items-center justify-center rounded-full transition"
+        style={{
+          background: active ? color : "#132414",
+          border: `1.5px solid ${color}`,
+          boxShadow: active ? `0 0 0 3px ${color}33` : "none",
+          color: active ? "#0E1C10" : color,
+        }}
+      >
+        {Icon ? <Icon s={14} /> : null}
+      </span>
+    </button>
+  );
 }
 
 type BandSvgProps = {
@@ -60,13 +116,13 @@ function FullBandSvg({
 }: BandSvgProps) {
   const today = cycleEvidence.cycleDay;
   const xToday = xOf(today);
-  const lastMeasureDay =
-    measurements.length > 0 ? measurements[measurements.length - 1].day : null;
   const startDate = formatShortDate(dayToDate(cycleEvidence.cycleStartDate, 1));
-  const endDate = formatRemeasureDueDate(remeasure.dueDate);
+  const endDate = formatIsoShortDate(remeasure.dueDateIso);
   const xh = xOf(headDay);
 
-  const ariaLabel = `Tijdband van je cyclus van ${startDate} tot je hermeting op ${endDate}. Dag ${today} van nu. ${measurements.length} meetmomenten.`;
+  const ariaLabel = `Tijdband van je cyclus van ${startDate}${
+    endDate != null ? ` tot je hermeting op ${endDate}` : " tot je hermeting"
+  }. Dag ${today} van nu. ${measurements.length} meetmomenten.`;
 
   return (
     <svg
@@ -97,40 +153,19 @@ function FullBandSvg({
         strokeLinecap="round"
       />
 
+      {/* Alleen de ophanging staat in de SVG; het meetmoment zelf is een knop. */}
       {measurements.map((m) => {
         const x = xOf(m.day);
-        const color = m.pillarId ? PILLAR[m.pillarId].color : "#E7EDE8";
         return (
-          <g key={`${m.day}-${m.pillarId ?? "check"}`}>
-            <line
-              x1={x}
-              y1={VB.lane + 6}
-              x2={x}
-              y2={VB.axis - 4}
-              stroke="rgba(255,255,255,0.14)"
-              strokeWidth={1}
-            />
-            {m.day === lastMeasureDay ? (
-              <circle
-                cx={x}
-                cy={VB.lane}
-                r={9}
-                fill="none"
-                stroke="rgba(255,255,255,0.26)"
-                strokeWidth={1}
-              />
-            ) : null}
-            <rect
-              x={x - 4.2}
-              y={VB.lane - 4.2}
-              width={8.4}
-              height={8.4}
-              fill={color}
-              stroke="#132414"
-              strokeWidth={1.5}
-              transform={`rotate(45 ${x} ${VB.lane})`}
-            />
-          </g>
+          <line
+            key={`${m.day}-${m.pillarId ?? "check"}`}
+            x1={x}
+            y1={VB.lane + 14}
+            x2={x}
+            y2={VB.axis - 4}
+            stroke="rgba(255,255,255,0.14)"
+            strokeWidth={1}
+          />
         );
       })}
 
@@ -217,8 +252,11 @@ type WachtendBandSvgProps = {
 };
 
 function WachtendBandSvg({ remeasure }: WachtendBandSvgProps) {
-  const endDate = formatRemeasureDueDate(remeasure.dueDate);
-  const ariaLabel = `Cyclusband in afwachting. Je hermeting staat op ${endDate}.`;
+  const endDate = formatIsoShortDate(remeasure.dueDateIso);
+  const ariaLabel =
+    endDate != null
+      ? `Cyclusband in afwachting. Je hermeting staat op ${endDate}.`
+      : "Cyclusband in afwachting. Je hermeting volgt.";
 
   return (
     <svg
@@ -289,6 +327,8 @@ export default function VoortgangBewijsband({
   remeasure,
   domainCheckDaysAgo,
   priorityLabel,
+  selectedDomain = null,
+  onSelectDomain,
 }: VoortgangBewijsbandProps) {
   if (!remeasure) {
     return null;
@@ -306,6 +346,8 @@ export default function VoortgangBewijsband({
       priorityLabel={priorityLabel}
       isWachtend={isWachtend}
       defaultHeadDay={defaultHeadDay}
+      selectedDomain={selectedDomain}
+      onSelectDomain={onSelectDomain}
     />
   );
 }
@@ -317,6 +359,8 @@ function VoortgangBewijsbandInner({
   priorityLabel,
   isWachtend,
   defaultHeadDay,
+  selectedDomain,
+  onSelectDomain,
 }: {
   cycleEvidence: DashboardData["cycleEvidence"];
   remeasure: NonNullable<DashboardData["remeasure"]>;
@@ -324,6 +368,8 @@ function VoortgangBewijsbandInner({
   priorityLabel: string;
   isWachtend: boolean;
   defaultHeadDay: number;
+  selectedDomain: PillarId | null;
+  onSelectDomain?: (domain: PillarId) => void;
 }) {
   const [headDay, setHeadDay] = useState(defaultHeadDay);
   const scrubDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -334,14 +380,14 @@ function VoortgangBewijsbandInner({
       return [];
     }
     return measurementsOf({
-      cycleDay: cycleEvidence.cycleDay,
+      cycleDayRaw: cycleEvidence.cycleDayRaw,
       domainCheckDaysAgo: domainCheckDaysAgo ?? {},
     });
   }, [cycleEvidence, domainCheckDaysAgo]);
 
   const caption = useMemo(() => {
     if (isWachtend) {
-      return buildWachtendCaption(remeasure.dueDate);
+      return buildWachtendCaption(remeasure.dueDateIso);
     }
     if (!cycleEvidence) {
       return { title: "", body: "" };
@@ -349,7 +395,7 @@ function VoortgangBewijsbandInner({
     return buildBandCaption({
       cycleStartDate: cycleEvidence.cycleStartDate,
       cycleDay: cycleEvidence.cycleDay,
-      remeasureDueDate: remeasure.dueDate,
+      remeasureDueDateIso: remeasure.dueDateIso,
       measurements,
       headDay,
       activeDays: cycleEvidence.activeDays,
@@ -358,7 +404,7 @@ function VoortgangBewijsbandInner({
   }, [
     isWachtend,
     cycleEvidence,
-    remeasure.dueDate,
+    remeasure.dueDateIso,
     measurements,
     headDay,
     priorityLabel,
@@ -394,6 +440,21 @@ function VoortgangBewijsbandInner({
     fireScrubEvent(day);
   };
 
+  const handleSelectMeasurement = (measurement: BandMeasurement) => {
+    setHeadDay(measurement.day);
+    trackEvent("dashboard_voortgang_band_meting_click", {
+      ...(measurement.pillarId ? { domain: measurement.pillarId } : { domain: "leefstijlcheck" }),
+      day: measurement.day,
+    });
+    clarityTag(
+      "dashboard_voortgang",
+      `band_meting_${measurement.pillarId ?? "leefstijlcheck"}`,
+    );
+    if (measurement.pillarId) {
+      onSelectDomain?.(measurement.pillarId);
+    }
+  };
+
   return (
     <div className="mt-[26px] lg:mt-0 lg:rounded-[20px] lg:border lg:border-white/10 lg:bg-black/22 lg:p-[22px]">
       <h2
@@ -403,16 +464,31 @@ function VoortgangBewijsbandInner({
         Je cyclus
       </h2>
 
-      {isWachtend ? (
-        <WachtendBandSvg remeasure={remeasure} />
-      ) : cycleEvidence ? (
-        <FullBandSvg
-          cycleEvidence={cycleEvidence}
-          remeasure={remeasure}
-          measurements={measurements}
-          headDay={headDay}
-        />
-      ) : null}
+      <div className="relative">
+        {isWachtend ? (
+          <WachtendBandSvg remeasure={remeasure} />
+        ) : cycleEvidence ? (
+          <FullBandSvg
+            cycleEvidence={cycleEvidence}
+            remeasure={remeasure}
+            measurements={measurements}
+            headDay={headDay}
+          />
+        ) : null}
+
+        {measurements.length > 0 ? (
+          <div className="pointer-events-none absolute inset-0">
+            {measurements.map((m) =>
+              renderMeasurementMarker({
+                measurement: m,
+                active:
+                  m.day === headDay || (m.pillarId != null && m.pillarId === selectedDomain),
+                onSelect: () => handleSelectMeasurement(m),
+              }),
+            )}
+          </div>
+        ) : null}
+      </div>
 
       <input
         type="range"

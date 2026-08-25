@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import VoortgangDomeinRing from "@/components/dashboard/voortgang/VoortgangDomeinRing";
 import DomeinDoelZetten, {
   type DomeinDoelZettenExistingGoal,
 } from "@/components/dashboard/voortgang/DomeinDoelZetten";
 import VoortgangHero from "@/components/dashboard/voortgang/VoortgangHero";
+import VoortgangMetingenPerDomein from "@/components/dashboard/voortgang/VoortgangMetingenPerDomein";
 import { PILLAR } from "@/data/dashboard";
 import { deriveGoalMode, type DomainGoalDomain } from "@/lib/domain-goal";
 import {
@@ -14,6 +14,7 @@ import {
   fetchMovementAnchor,
   type DomainGoalMap,
 } from "@/lib/domain-goal-client";
+import { DOMAIN_CHECK_PILLAR_IDS } from "@/lib/kompas-domain-check";
 import type { MovementAnchor } from "@/lib/movement-prefs";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
@@ -25,6 +26,17 @@ type VoortgangHubScrollProps = {
   onOpenDomain: (domain: PillarId) => void;
 };
 
+/**
+ * Welk domein de reeks onder de cyclus opent. Je prioriteit als die een eigen
+ * check kent, anders het eerste domein dat er wel een heeft — nooit een domein
+ * dat hier per definitie leeg zou blijven.
+ */
+function resolveStartDomain(priority: PillarId): PillarId {
+  return DOMAIN_CHECK_PILLAR_IDS.includes(priority)
+    ? priority
+    : DOMAIN_CHECK_PILLAR_IDS[0];
+}
+
 export default function VoortgangHubScroll({
   model,
   data,
@@ -35,6 +47,9 @@ export default function VoortgangHubScroll({
   const [goals, setGoals] = useState<DomainGoalMap | null>(null);
   const [anchor, setAnchor] = useState<MovementAnchor | null>(null);
   const [openGoalDomain, setOpenGoalDomain] = useState<DomainGoalDomain | null>(null);
+  const [selectedDomain, setSelectedDomain] = useState<PillarId>(() =>
+    resolveStartDomain(model.priority.id),
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -75,6 +90,8 @@ export default function VoortgangHubScroll({
         onGoAgenda={onGoAgenda}
         onGoHermeting={onGoHermeting}
         onOpenDomain={onOpenDomain}
+        selectedDomain={selectedDomain}
+        onSelectDomain={setSelectedDomain}
       />
 
       <p className="mt-2 text-[13px] text-[var(--text-muted)]">
@@ -92,12 +109,13 @@ export default function VoortgangHubScroll({
       </p>
 
       <div className="mt-3.5">
-        <VoortgangDomeinRing
-          model={model}
+        <VoortgangMetingenPerDomein
           data={data}
+          selectedDomain={selectedDomain}
+          onSelectDomain={setSelectedDomain}
           goals={goals}
-          onOpenDomain={onOpenDomain}
           onOpenGoal={setOpenGoalDomain}
+          onOpenDomain={onOpenDomain}
         />
       </div>
 

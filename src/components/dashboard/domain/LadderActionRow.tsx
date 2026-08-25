@@ -83,7 +83,7 @@ export default function LadderActionRow(props: LadderActionRowProps) {
       <p className="m-0 min-w-[18ch] flex-1 text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
         {action}
       </p>
-      <div className="flex shrink-0 flex-wrap items-center gap-2">
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
         {affordances.map((id) => (
           <div key={id}>{AFFORDANCE_RENDERERS[id](props)}</div>
         ))}

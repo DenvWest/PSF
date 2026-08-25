@@ -124,7 +124,14 @@ export async function getDailyActionWeekState(
 
 export type DailyActionCycleEvidence = {
   activeDays: number;
+  /** Dag op de band: geklemd op [1, 30], want de band heeft dertig posities. */
   cycleDay: number;
+  /**
+   * Hoeveelste dag sinds de start, ongeklemd — bij een verlopen cyclus groter
+   * dan 30. Nodig om metingen op hun échte dag te plaatsen: rekenen met de
+   * geklemde `cycleDay` schuift alles wat ná de cyclus gebeurde de band in.
+   */
+  cycleDayRaw: number;
   daysUntilRemeasure: number;
 };
 
@@ -155,16 +162,17 @@ export async function getDailyActionCycleEvidence(
   const endMs = new Date(`${endDate}T12:00:00.000Z`).getTime();
   const today = todayInAppTimezone();
   const todayMs = new Date(`${today}T12:00:00.000Z`).getTime();
-  const cycleDay = Math.min(
-    30,
-    Math.max(1, Math.round((Math.min(todayMs, endMs) - startMs) / (24 * 60 * 60 * 1000)) + 1),
+  const cycleDayRaw = Math.max(
+    1,
+    Math.round((todayMs - startMs) / (24 * 60 * 60 * 1000)) + 1,
   );
+  const cycleDay = Math.min(30, cycleDayRaw);
   const daysUntilRemeasure = Math.max(
     0,
     Math.ceil((endMs - todayMs) / (24 * 60 * 60 * 1000)),
   );
 
-  return { activeDays, cycleDay, daysUntilRemeasure };
+  return { activeDays, cycleDay, cycleDayRaw, daysUntilRemeasure };
 }
 
 function isValidAgendaDateRange(startDate: string, endDate: string): boolean {

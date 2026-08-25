@@ -13,6 +13,7 @@ import type {
   CheckScores,
   CheckSnapshot,
   DashboardData,
+  DomainMeasurement,
 } from "@/types/dashboard";
 import type { DomainScores } from "@/lib/intake-engine";
 
@@ -71,6 +72,71 @@ function toSnapshot(check: Check): CheckSnapshot {
 function filterHistory(checkId: CheckId): CheckLogEntry[] {
   const check = CHECKS[checkId];
   return CHECK_LOG.filter((entry) => entry.seq <= check.seq);
+}
+
+/**
+ * Dev-meetreeks per domein: dezelfde vorm die `account-dashboard` uit
+ * `intake_domain_checkin` haalt, zodat Voortgang lokaal een echte reeks toont.
+ */
+function devMeasurement(
+  domain: string,
+  dateIso: string,
+  dateLabel: string,
+  daysAgo: number,
+  score: number,
+  source: DomainMeasurement["source"],
+  values: DomainMeasurement["values"],
+): DomainMeasurement {
+  return { id: `${domain}-${dateIso}-${source}`, dateIso, dateLabel, daysAgo, score, source, values };
+}
+
+function devDomainMeasurements(
+  mode: "scored" | "retest",
+): DashboardData["domainMeasurements"] {
+  const shift = mode === "retest" ? 18 : 0;
+  return {
+    slaap: [
+      devMeasurement("slaap", "2026-06-10", "10 jun 2026", 24 + shift, 52, "intake", []),
+      devMeasurement("slaap", "2026-06-24", "24 jun 2026", 10 + shift, 58, "checkin", [
+        { key: "bedtijd", label: "Bedtijd", answerLabel: "Rond 23:30", benchmarkLabel: "Vast tijdstip helpt je ritme", level: 2, levelMax: 3, scale: "richtlijn" },
+        { key: "inslapen", label: "Inslaaptijd", answerLabel: "20-30 minuten", benchmarkLabel: "Onder 20 min is gangbaar", level: 1, levelMax: 3, scale: "richtlijn" },
+        { key: "wakker", label: "Nachtelijk wakker", answerLabel: "1x per nacht", benchmarkLabel: null, level: 2, levelMax: 3, scale: "zelfrapportage" },
+      ]),
+      devMeasurement("slaap", "2026-07-01", "1 jul 2026", 3 + shift, 63, "checkin", [
+        { key: "bedtijd", label: "Bedtijd", answerLabel: "Rond 23:00", benchmarkLabel: "Vast tijdstip helpt je ritme", level: 3, levelMax: 3, scale: "richtlijn" },
+        { key: "inslapen", label: "Inslaaptijd", answerLabel: "10-20 minuten", benchmarkLabel: "Onder 20 min is gangbaar", level: 2, levelMax: 3, scale: "richtlijn" },
+        { key: "wakker", label: "Nachtelijk wakker", answerLabel: "Zelden", benchmarkLabel: null, level: 3, levelMax: 3, scale: "zelfrapportage" },
+      ]),
+    ],
+    stress: [
+      devMeasurement("stress", "2026-06-10", "10 jun 2026", 24 + shift, 44, "intake", []),
+      devMeasurement("stress", "2026-06-25", "25 jun 2026", 9 + shift, 49, "checkin", [
+        { key: "STR_FREQ", label: "Spanning", answerLabel: "Regelmatig", benchmarkLabel: null, level: 2, levelMax: 4, scale: "zelfrapportage" },
+        { key: "STR_RCV", label: "Tot rust komen", answerLabel: "Stress stapelt op of herstel blijft achterwege", benchmarkLabel: null, level: 2, levelMax: 4, scale: "zelfrapportage" },
+        { key: "STR_CHARGE", label: "Laatst opgeladen", answerLabel: "Afgelopen week", benchmarkLabel: null, level: 3, levelMax: 4, scale: "zelfrapportage" },
+      ]),
+    ],
+    voeding: [
+      devMeasurement("voeding", "2026-06-10", "10 jun 2026", 24 + shift, 55, "intake", []),
+      devMeasurement("voeding", "2026-07-04", "4 jul 2026", 0 + shift, 61, "nutrition_log", [
+        { key: "eiwit", label: "Eiwit", answerLabel: "Aan de lage kant", benchmarkLabel: null, level: 1, levelMax: 2, scale: "vuistregel" },
+        { key: "omega3", label: "Omega-3", answerLabel: "Aan de lage kant", benchmarkLabel: null, level: 1, levelMax: 2, scale: "vuistregel" },
+        { key: "vezels", label: "Vezels", answerLabel: "Geen aandachtspunt", benchmarkLabel: null, level: 2, levelMax: 2, scale: "vuistregel" },
+      ]),
+    ],
+    beweging: [
+      devMeasurement("beweging", "2026-06-10", "10 jun 2026", 24 + shift, 68, "intake", []),
+    ],
+    energie: [
+      devMeasurement("energie", "2026-06-10", "10 jun 2026", 24 + shift, 47, "intake", []),
+    ],
+    herstel: [
+      devMeasurement("herstel", "2026-06-10", "10 jun 2026", 24 + shift, 51, "intake", []),
+    ],
+    verbinding: [
+      devMeasurement("verbinding", "2026-06-10", "10 jun 2026", 24 + shift, 58, "intake", []),
+    ],
+  };
 }
 
 export function buildDevDashboardData(
@@ -134,13 +200,14 @@ export function buildDevDashboardData(
     movementRcvFeelAt: "2026-07-18T10:00:00.000Z",
     remeasure:
       mode === "retest"
-        ? { dueDate: "10 jul 2026", daysUntil: -8 }
-        : { dueDate: "10 jul 2026", daysUntil: 22 },
+        ? { dueDate: "10 jul 2026", dueDateIso: "2026-07-10", daysUntil: -8 }
+        : { dueDate: "10 jul 2026", dueDateIso: "2026-07-10", daysUntil: 22 },
     cycleEvidence:
       mode === "retest"
         ? {
             activeDays: 18,
             cycleDay: 30,
+            cycleDayRaw: 30,
             daysUntilRemeasure: 0,
             cycleStartDate: "2026-06-10",
             cycleEndDate: "2026-07-10",
@@ -148,6 +215,7 @@ export function buildDevDashboardData(
         : {
             activeDays: 8,
             cycleDay: 8,
+            cycleDayRaw: 8,
             daysUntilRemeasure: 22,
             cycleStartDate: "2026-06-10",
             cycleEndDate: "2026-07-10",
@@ -172,6 +240,7 @@ export function buildDevDashboardData(
       mode === "retest"
         ? { slaap: 21, stress: 5, voeding: 0 }
         : { slaap: 3, stress: 9 },
+    domainMeasurements: devDomainMeasurements(mode),
     movementPrefs: EMPTY_MOVEMENT_PREFS,
     supplementVerdicts: [],
     proteinTarget: { gramsLow: 95, gramsHigh: 110 },

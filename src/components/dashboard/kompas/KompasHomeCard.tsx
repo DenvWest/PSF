@@ -5,6 +5,8 @@ import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { DeltaBadge } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import KompasAanbevelingSectie from "@/components/dashboard/kompas/KompasAanbevelingSectie";
+import KompasDoelIjkpunt from "@/components/dashboard/kompas/KompasDoelIjkpunt";
 import KompasKeuzeSectie from "@/components/dashboard/kompas/KompasKeuzeSectie";
 import KompasVoortgangFocusBlock from "@/components/dashboard/kompas/KompasVoortgangFocusBlock";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
@@ -25,7 +27,12 @@ import {
   type KompasDomainRow,
 } from "@/lib/kompas-home";
 import { getVitalityBand } from "@/lib/vitality-gauge";
-import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
+import type {
+  AccountPriorityPrefData,
+  DashboardData,
+  DashboardModel,
+  PillarId,
+} from "@/types/dashboard";
 
 const RING_SIZE = 240;
 const RING_CENTER = RING_SIZE / 2;
@@ -40,6 +47,8 @@ type WeekPayload = {
 
 type KompasHomeCardProps = {
   model: DashboardModel;
+  /** Alleen voor de aanbeveling: die leest de domeincheck uit, niet het model. */
+  data?: DashboardData;
   firstName?: string | null;
   cycleContext?: KompasCycleContext | null;
   domainCheckDaysAgo?: DomainCheckTimings;
@@ -693,6 +702,11 @@ function VoortgangSection({
         surface="kompas_voortgang"
       />
 
+      <KompasDoelIjkpunt
+        domain={model.priority.id}
+        domainLabel={model.priority.label}
+      />
+
       <div className="mt-3 rounded-xl border border-white/8 bg-black/15 px-3.5 py-3">
         <p className="m-0 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
           {milestone.line}
@@ -704,6 +718,7 @@ function VoortgangSection({
 
 export default function KompasHomeCard({
   model,
+  data,
   firstName,
   cycleContext = null,
   domainCheckDaysAgo,
@@ -824,6 +839,12 @@ export default function KompasHomeCard({
             />
           </section>
         </div>
+
+        <KompasAanbevelingSectie
+          domain={model.priority.id}
+          data={data}
+          onOpenDomain={handleOpenDomain}
+        />
 
         <KompasKeuzeSectie
           priorityDomain={model.priority.id}

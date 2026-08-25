@@ -357,10 +357,12 @@ export default function AgendaDayTimeline({
     clarityTag("agenda_block", "tap_create");
   };
 
-  // De tray blijft staan zolang er geen tijd gezet is (fullbleed-regel 7); de
-  // sectiekop maakt van "hangt erboven" een eigen belofte in plaats van een
-  // restpost.
-  const freeHeading = isToday ? "Vandaag nog vrij" : "Nog vrij op deze dag";
+  // De tray blijft staan zolang er geen tijd gezet is (fullbleed-regel 7). De
+  // kop noemt wát er staat, niet dat er nog niets omheen gepland is: "Vandaag
+  // nog vrij" las als een restpost van je agenda, terwijl dit een voorstel uit
+  // je plan is. Zelfde woord als de aanbeveling op Kompas-home, zodat
+  // "aanbevolen" op elke surface hetzelfde betekent.
+  const freeHeading = isToday ? "Aanbevolen vandaag" : "Aanbevolen op deze dag";
   const quietHeading = trayVisible
     ? isToday
       ? "Nog geen moment in je dag gezet"
@@ -384,8 +386,11 @@ export default function AgendaDayTimeline({
             dragHandleProps={planStepDragHandle}
             onOpenDetail={() => openDetail(planStep.id)}
           />
+          {/* De strip zegt zelf al hoe je hem verzet ("Sleep naar je dag of tik
+              voor tijd" + "Kies een moment"). Wat hij níét zegt is waar hij
+              vandaan komt en dat hij blijft staan — alleen dát hoort hier. */}
           <p className="mt-2 text-[12px] leading-normal text-[#7E8C82]">
-            Sleep naar je dag of tik om een moment te kiezen — hij verdwijnt niet vanzelf.
+            Een voorstel uit je plan — hij blijft staan tot je hem een moment geeft.
           </p>
         </section>
       ) : null}

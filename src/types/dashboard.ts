@@ -133,7 +133,8 @@ export type DashboardTab = {
   label: string;
   icon: DashboardIconName;
   title: string;
-  subtitle: string;
+  /** Optioneel: alleen waar een ondertitel iets toevoegt dat de pagina zelf niet toont. */
+  subtitle?: string;
   emptyHint: string;
 };
 
@@ -185,6 +186,51 @@ export type TrendBaseline = {
   crossesRulesVersion: boolean;
 };
 export type CheckTrendBaselines = Partial<Record<PillarId, TrendBaseline>>;
+
+/** Eén opgegeven waarde uit een domeincheck — letterlijk wat hij aanklikte. */
+export type DomainMeasurementValue = {
+  key: string;
+  label: string;
+  answerLabel: string;
+  benchmarkLabel: string | null;
+  /**
+   * Waar dit antwoord staat op zijn eigen schaal, hoger is beter. Null wanneer
+   * er niets is om tegen af te zetten ("je eigen antwoord is de meetlat") — dan
+   * mag er geen lijn door, dat zou schijnprecisie zijn.
+   */
+  level: number | null;
+  /** Lengte van die schaal — verschilt per bron, zie `scale`. */
+  levelMax: number;
+  /**
+   * Waar de positie op rust. Bepaalt wat de UI mag zeggen: alleen `richtlijn`
+   * mag norm-taal voeren, want alleen daar staat een gebronde grens onder de
+   * indeling. `vuistregel` is een indicatieve drempel (voeding — zie de kop van
+   * `intake-reference.ts`), `zelfrapportage` is puur zijn eigen antwoord.
+   */
+  scale: "richtlijn" | "vuistregel" | "zelfrapportage";
+};
+
+/**
+ * Eén meetmoment van één domein. De reeks hiervan is wat Voortgang per domein
+ * over tijd toont: de score én de waarden die eronder liggen.
+ */
+export type DomainMeasurement = {
+  /**
+   * Uniek per meetmoment, afgeleid van het tijdstip. Twee checks op één dag
+   * delen wél een `dateIso` maar nooit een `id` — die deelt de dag niet op.
+   */
+  id: string;
+  /** ISO-dag (YYYY-MM-DD) — de vorm om mee te rekenen. */
+  dateIso: string;
+  /** Weergavevorm, bijv. "12 aug 2026" — nooit parsen. */
+  dateLabel: string;
+  daysAgo: number;
+  /** Domeinscore op dat moment, 0-100. */
+  score: number;
+  source: TrendSource;
+  /** Leeg bij een leefstijlcheck-punt: die draagt alleen de score. */
+  values: DomainMeasurementValue[];
+};
 export type CheckSnapshot = {
   scores: CheckScores;
   vitality: number;
@@ -269,10 +315,19 @@ export type DashboardData = {
   movementRecoveryTrend: { date: string; value: number }[];
   movementRcvFeel: number | null;
   movementRcvFeelAt: string | null;
-  remeasure: { dueDate: string; daysUntil: number } | null;
+  remeasure: {
+    /** Weergavevorm, bijv. "4 aug 2026" — nooit parsen. */
+    dueDate: string;
+    /** Dezelfde dag als ISO (YYYY-MM-DD) — dit is de vorm om mee te rekenen. */
+    dueDateIso: string;
+    daysUntil: number;
+  } | null;
   cycleEvidence: {
     activeDays: number;
+    /** Dag op de band: geklemd op [1, 30]. */
     cycleDay: number;
+    /** Dagen sinds de start, ongeklemd — >30 zodra de cyclus verlopen is. */
+    cycleDayRaw: number;
     daysUntilRemeasure: number;
     cycleStartDate: string;
     cycleEndDate: string;
@@ -294,6 +349,11 @@ export type DashboardData = {
   stressCheckinReport: StressCheckReport | null;
   /** Dagen sinds de laatste eigen domeincheck; ontbreekt = nog nooit gedaan. */
   domainCheckDaysAgo: Partial<Record<PillarId, number>>;
+  /**
+   * Per domein de meetmomenten over tijd, oudste eerst. Hoogstens de laatste
+   * acht — Voortgang leest een reeks, geen archief.
+   */
+  domainMeasurements: Partial<Record<PillarId, DomainMeasurement[]>>;
   movementPrefs: MovementPrefs;
   /** Geldige supplementoordelen — ook de ingrediënten die op "nee" uitkomen. */
   supplementVerdicts: StoredSupplementVerdict[];

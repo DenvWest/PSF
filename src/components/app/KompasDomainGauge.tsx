@@ -10,8 +10,6 @@ type KompasDomainGaugeProps = {
 };
 
 export default function KompasDomainGauge({ value, label, size = 120 }: KompasDomainGaugeProps) {
-  const darkTone = value >= 70;
-
   return (
     <VitalityGauge
       value={value}
@@ -21,8 +19,8 @@ export default function KompasDomainGauge({ value, label, size = 120 }: KompasDo
       compact
       showBandLabel
       showDomainLabel={false}
-      theme={darkTone ? "dark" : "light"}
-      tone={darkTone ? "dark" : "light"}
+      theme="dark"
+      tone="dark"
     />
   );
 }

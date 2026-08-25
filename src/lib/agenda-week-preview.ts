@@ -30,13 +30,20 @@ export type WeekDaySlot = {
   planLink: PlanStepLink | null;
 };
 
+const APP_DATE_FORMAT = new Intl.DateTimeFormat("en-CA", {
+  timeZone: APP_TIMEZONE,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+/** Kalenderdatum van een tijdstip in de app-tijdzone — niet in UTC. */
+export function isoDateInAgendaTimezone(value: Date | number): string {
+  return APP_DATE_FORMAT.format(value);
+}
+
 export function todayInAgendaTimezone(): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: APP_TIMEZONE,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
+  return isoDateInAgendaTimezone(new Date());
 }
 
 export function addAgendaDays(isoDate: string, offset: number): string {
