@@ -8,6 +8,7 @@ import {
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import { buildDeltaReport } from "@/lib/delta-report";
 import { compareNutritionEstimates } from "@/lib/nutrition-delta";
+import { nutritionAnswerLabelForNutrient } from "@/lib/nutrition-answer-labels";
 import {
   daysSinceIsoDate,
   isNutritionRelogDue,
@@ -424,7 +425,7 @@ export async function loadAccountDashboardData(
       .order("created_at", { ascending: true }),
     admin
       .from("intake_intake_log")
-      .select("estimate, logged_at, nutrition_score")
+      .select("estimate, logged_at, nutrition_score, raw_inputs")
       .in("session_id", sessionIds)
       .order("logged_at", { ascending: true }),
     admin
@@ -464,15 +465,22 @@ export async function loadAccountDashboardData(
           (entry.band === "below" || entry.band === "around" || entry.band === "meets") &&
           typeof entry.nutrient === "string",
       )
-      .map((entry) => ({
-        label:
-          nutrientReferences[entry.nutrient]?.label ?? String(entry.nutrient),
-        band: entry.band,
-        nutrient: entry.nutrient,
-        ...(changedBandByNutrient?.has(entry.nutrient)
-          ? { previousBand: changedBandByNutrient.get(entry.nutrient)! }
-          : {}),
-      }));
+      .map((entry) => {
+        const answerLabel = nutritionAnswerLabelForNutrient(
+          entry.nutrient,
+          latestLog.raw_inputs,
+        );
+        return {
+          label:
+            nutrientReferences[entry.nutrient]?.label ?? String(entry.nutrient),
+          band: entry.band,
+          nutrient: entry.nutrient,
+          ...(answerLabel ? { answerLabel } : {}),
+          ...(changedBandByNutrient?.has(entry.nutrient)
+            ? { previousBand: changedBandByNutrient.get(entry.nutrient)! }
+            : {}),
+        };
+      });
     if (items.length > 0 && typeof latestLog.logged_at === "string") {
       nutritionIntake = { date: formatDashboardDate(latestLog.logged_at), items };
     }
@@ -764,7 +772,11 @@ export async function loadAccountDashboardData(
     noteValues(pillar, ts, buildCheckinMeasurementValues(pillar, row.raw_inputs));
   }
 
-  for (const row of (logRows ?? []) as { logged_at?: unknown; estimate?: unknown }[]) {
+  for (const row of (logRows ?? []) as {
+    logged_at?: unknown;
+    estimate?: unknown;
+    raw_inputs?: unknown;
+  }[]) {
     if (typeof row.logged_at !== "string") {
       continue;
     }
@@ -772,7 +784,11 @@ export async function loadAccountDashboardData(
     if (!Number.isFinite(ts)) {
       continue;
     }
-    noteValues("voeding", ts, buildNutritionMeasurementValues(row.estimate));
+    noteValues(
+      "voeding",
+      ts,
+      buildNutritionMeasurementValues(row.estimate, row.raw_inputs),
+    );
   }
 
   const domainMeasurements: DashboardData["domainMeasurements"] = {};

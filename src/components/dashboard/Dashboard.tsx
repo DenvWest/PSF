@@ -135,7 +135,6 @@ import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
-import { NUTRITION_BAND } from "@/lib/nutrition-band-labels";
 import { resolveMovementDayChoiceForToday } from "@/lib/account-priority-pref";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import {
@@ -1199,38 +1198,34 @@ const NutritionIntakeSection = ({ data }: SharedSectionProps) => {
         {intake ? (
           <>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              {intake.items.map((item, index) => {
-                const bandMeta = NUTRITION_BAND[item.band];
-                return (
-                  <div
-                    key={`${item.label}-${index}`}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 10,
-                      padding: "10px 2px",
-                      borderTop: index ? "1px solid var(--divider)" : "none",
-                    }}
-                  >
-                    <span style={{ fontSize: 14, color: "var(--text)" }}>
-                      {item.label}
-                    </span>
+              {intake.items.map((item, index) => (
+                <div
+                  key={`${item.label}-${index}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 10,
+                    padding: "10px 2px",
+                    borderTop: index ? "1px solid var(--divider)" : "none",
+                  }}
+                >
+                  <span style={{ fontSize: 14, color: "var(--text)" }}>
+                    {item.label}
+                  </span>
+                  {item.answerLabel ? (
                     <span
                       style={{
-                        border: `1px solid ${bandMeta.color}44`,
-                        background: `${bandMeta.color}1a`,
-                        color: bandMeta.color,
-                        borderRadius: 999,
-                        padding: "2px 8px",
-                        fontSize: 11,
+                        fontSize: 13,
+                        color: "var(--text-muted)",
+                        textAlign: "right",
                       }}
                     >
-                      {bandMeta.label}
+                      {item.answerLabel}
                     </span>
-                  </div>
-                );
-              })}
+                  ) : null}
+                </div>
+              ))}
             </div>
             <div
               style={{
@@ -1240,8 +1235,8 @@ const NutritionIntakeSection = ({ data }: SharedSectionProps) => {
                 lineHeight: 1.5,
               }}
             >
-              Grove inschatting op basis van hoe vaak je eet — een vuistregel,
-              geen meting, status of diagnose.
+              Antwoorden uit je voedingscheck — een frequentie-inschatting, geen
+              meting, status of diagnose.
             </div>
           </>
         ) : (

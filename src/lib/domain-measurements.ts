@@ -7,6 +7,7 @@ import {
   parseStoredMovementCheckin,
   parseStoredMovementCheckinSnapshot,
 } from "@/lib/movement-checkin-parse";
+import { nutritionAnswerLabelForNutrient } from "@/lib/nutrition-answer-labels";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import {
   parseStoredSleepCheckinForFacts,
@@ -169,6 +170,7 @@ export function buildCheckinMeasurementValues(
 /** Voeding meet niet via `intake_domain_checkin` maar via de innamelog. */
 export function buildNutritionMeasurementValues(
   estimate: unknown,
+  rawInputs?: unknown,
 ): DomainMeasurementValue[] {
   if (!Array.isArray(estimate)) {
     return [];
@@ -182,12 +184,13 @@ export function buildNutritionMeasurementValues(
     if (!band) {
       continue;
     }
+    const fromCheck = nutritionAnswerLabelForNutrient(entry.nutrient, rawInputs);
     rows.push({
       key: entry.nutrient,
       label: nutrientReferences[entry.nutrient]?.label ?? entry.nutrient,
-      // Eén bron voor de bandtekst, dezelfde als de voedingscheck zelf toont.
-      // Nooit een eigen norm-formulering hier: de drempels zijn indicatief.
-      answerLabel: band.label,
+      // Voorkeur: wat hij koos in de check. Bandlabel alleen als fallback
+      // (oude logs zonder bruikbare sliders) — tot evidence-pass.
+      answerLabel: fromCheck ?? band.label,
       benchmarkLabel: null,
       level: entry.band === "below" ? 1 : NUTRITION_LEVEL_MAX,
       levelMax: NUTRITION_LEVEL_MAX,

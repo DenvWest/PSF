@@ -260,6 +260,11 @@ export type NutritionIntakeItem = {
   label: string;
   band: NutritionIntakeBand;
   nutrient: NutrientId;
+  /**
+   * Neutraal antwoord uit de voedingscheck (slider-stop), als raw_inputs
+   * beschikbaar is. Geen band-oordeel.
+   */
+  answerLabel?: string;
   /** Alleen gezet als er een vorige log is én de band veranderde. */
   previousBand?: NutritionIntakeBand;
 };

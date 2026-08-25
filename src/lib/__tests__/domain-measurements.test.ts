@@ -103,6 +103,20 @@ describe("buildNutritionMeasurementValues", () => {
     ]);
   });
 
+  it("prefers the voedingscheck answer over the band label", () => {
+    const values = buildNutritionMeasurementValues(
+      [
+        { nutrient: "protein", band: "below" },
+        { nutrient: "omega3", band: "meets" },
+      ],
+      { sliders: { proteinMeals: 1, oilyFish: 2 } },
+    );
+    expect(values.map((value) => value.answerLabel)).toEqual([
+      "1× per dag",
+      "2× per week",
+    ]);
+  });
+
   it("skips an entry without a usable band", () => {
     const values = buildNutritionMeasurementValues([
       { nutrient: "eiwit", band: "onbekend" },

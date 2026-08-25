@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScroll";
 import LeefstijlprofielDomeinScherm from "@/components/dashboard/voortgang/LeefstijlprofielDomeinScherm";
 import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
@@ -12,7 +11,7 @@ import { clarityTag } from "@/lib/clarity";
 import { hasSchap, resolveSchapDomain } from "@/lib/schap-availability";
 import { resolveSchapTabForDomain } from "@/lib/schap-tabs";
 import { trackEvent } from "@/lib/ga4";
-import { buildDashboardVandaagHref, type SyncDashboardVoortgangOptions } from "@/lib/dashboard-url";
+import type { SyncDashboardVoortgangOptions } from "@/lib/dashboard-url";
 import type {
   AccountPriorityPrefData,
   DashboardData,
@@ -55,7 +54,6 @@ function VoortgangHubInner({
   onGoAgenda,
   onGoHermeting,
 }: Omit<VoortgangHubProps, "onPrefUpdated">) {
-  const router = useRouter();
   const [schapTabOverride, setSchapTabOverride] = useState<
     { domain: PillarId | null; tab: SchapTabId } | null
   >(null);
@@ -167,9 +165,10 @@ function VoortgangHubInner({
         model={model!}
         data={data}
         domain={leefstijlprofielDomein}
-        adviesExtra={leefstijlprofielAdviesExtra}
+        adviesExtra={
+          leefstijlprofielDomein === "voeding" ? leefstijlprofielAdviesExtra : null
+        }
         onBack={goBack}
-        onGoVandaag={() => router.push(buildDashboardVandaagHref(leefstijlprofielDomein))}
         onOpenSchap={openSchap}
       />
     );
