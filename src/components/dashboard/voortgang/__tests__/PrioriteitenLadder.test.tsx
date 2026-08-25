@@ -2,6 +2,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import PrioriteitenLadder from "@/components/dashboard/voortgang/PrioriteitenLadder";
+import { buildMeetreeks } from "@/lib/voortgang-meetreeks";
 
 type FakeFavorite = { id: string; title: string; kind: string; domain?: string };
 
@@ -328,6 +329,22 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
     expect(screen.queryByRole("button", { name: /Zet op Mijn Dag/ })).toBeNull();
   });
 
+  it("toont de gekozen titel read-only in de open laag", () => {
+    favoriteItems = [
+      {
+        id: "laag-beweging-p1-iets-eigens",
+        title: "Iets eigens",
+        kind: "activiteit",
+        domain: "beweging",
+      },
+    ];
+    renderExplain();
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    expect(screen.getByText("Jij koos")).toBeTruthy();
+    expect(screen.getByText("Iets eigens")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Zet bij Mijn keuze/ })).toBeNull();
+  });
+
   it("blijft wél tonen dat je op deze laag iets koos", () => {
     favoriteItems = [
       {
@@ -354,5 +371,157 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
     fireEvent.click(screen.getByText("Eerste prioriteit"));
     expect(screen.getAllByRole("button", { name: /Zet bij Mijn keuze/ }).length).toBeGreaterThan(0);
     expect(screen.getByText("Mijn keuze op deze laag")).toBeTruthy();
+  });
+
+  it("zet een meetfeit in de open laag, met de lat ernaast", () => {
+    render(
+      <PrioriteitenLadder
+        layers={LAYERS}
+        intro="Intro-tekst."
+        domain="beweging"
+        surface="test"
+        variant="explain"
+        kompasHref="/dashboard?tab=vandaag&kompas=beweging"
+        evidenceByLayer={{
+          1: [
+            {
+              key: "kracht",
+              label: "Kracht",
+              answerLabel: "1× per week",
+              benchmarkLabel: "Richtlijn: 2× per week krachttraining",
+              benchmarkSource: "WHO 2020",
+              whyLine: "Spierbehoud na 40 hangt aan frequentie.",
+            },
+          ],
+        }}
+      />,
+    );
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    expect(screen.getByText(/Kracht · 1× per week/)).toBeTruthy();
+    expect(screen.getByText(/De lat/)).toBeTruthy();
+    expect(screen.getByText(/Richtlijn: 2× per week krachttraining/)).toBeTruthy();
+    expect(screen.queryByText("Over tijd")).toBeNull();
+  });
+
+  it("noemt de lat niet bij zelfrapportage, ook niet als er een label hangt", () => {
+    const meetreeks = buildMeetreeks([
+      {
+        id: "stress-1",
+        dateIso: "2026-08-20",
+        dateLabel: "20 aug 2026",
+        daysAgo: 5,
+        score: 49,
+        source: "checkin",
+        values: [
+          {
+            key: "STR_FREQ",
+            label: "Spanning",
+            answerLabel: "Regelmatig",
+            benchmarkLabel: null,
+            level: 2,
+            levelMax: 4,
+            scale: "zelfrapportage",
+          },
+        ],
+      },
+    ]);
+
+    render(
+      <PrioriteitenLadder
+        layers={LAYERS}
+        intro="Intro-tekst."
+        domain="stress"
+        surface="test"
+        variant="explain"
+        kompasHref="/dashboard?tab=vandaag&kompas=stress"
+        meetreeks={meetreeks}
+        evidenceByLayer={{
+          1: [
+            {
+              key: "STR_FREQ",
+              label: "Spanning",
+              answerLabel: "Regelmatig",
+              whyLine: "Dit is hoe vaak jij spanning voelt.",
+            },
+          ],
+        }}
+      />,
+    );
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    expect(screen.getByText(/Spanning · Regelmatig/)).toBeTruthy();
+    expect(screen.getByText(/Geen richtlijn — dit is jouw eigen antwoord/)).toBeTruthy();
+    expect(screen.queryByText(/De lat/)).toBeNull();
+  });
+
+  it("opent de micro-reeks alleen bij een plotbaar feit", () => {
+    const meetreeks = buildMeetreeks([
+      {
+        id: "oud",
+        dateIso: "2026-07-01",
+        dateLabel: "1 jul 2026",
+        daysAgo: 40,
+        score: 50,
+        source: "checkin",
+        values: [
+          {
+            key: "kracht",
+            label: "Kracht",
+            answerLabel: "Minder dan 1× per week",
+            benchmarkLabel: "Richtlijn: 2× per week krachttraining",
+            level: 1,
+            levelMax: 3,
+            scale: "richtlijn",
+          },
+        ],
+      },
+      {
+        id: "nieuw",
+        dateIso: "2026-08-20",
+        dateLabel: "20 aug 2026",
+        daysAgo: 5,
+        score: 58,
+        source: "checkin",
+        values: [
+          {
+            key: "kracht",
+            label: "Kracht",
+            answerLabel: "1× per week",
+            benchmarkLabel: "Richtlijn: 2× per week krachttraining",
+            level: 2,
+            levelMax: 3,
+            scale: "richtlijn",
+          },
+        ],
+      },
+    ]);
+
+    render(
+      <PrioriteitenLadder
+        layers={LAYERS}
+        intro="Intro-tekst."
+        domain="beweging"
+        surface="test"
+        variant="explain"
+        kompasHref="/dashboard?tab=vandaag&kompas=beweging"
+        meetreeks={meetreeks}
+        evidenceByLayer={{
+          1: [
+            {
+              key: "kracht",
+              label: "Kracht",
+              answerLabel: "1× per week",
+              benchmarkLabel: "Richtlijn: 2× per week krachttraining",
+              benchmarkSource: "WHO 2020",
+              whyLine: "Richtlijn is 2× per week.",
+            },
+          ],
+        }}
+      />,
+    );
+    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(screen.getByRole("button", { name: /Over tijd/ }));
+    expect(
+      screen.getByRole("img", { name: /Kracht over 2 meetmomenten, links je laatste meting/ }),
+    ).toBeTruthy();
   });
 });

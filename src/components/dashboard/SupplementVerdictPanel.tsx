@@ -45,7 +45,10 @@ export type VerdictPanelSurface =
   | "schap_beweging"
   | "schap_slaap"
   | "schap_voeding"
-  | "leefstijlprofiel_beweging";
+  | "leefstijlprofiel_beweging"
+  | "leefstijlprofiel_slaap"
+  | "leefstijlprofiel_voeding"
+  | "leefstijlprofiel_stress";
 
 type SupplementVerdictPanelProps = {
   verdicts: StoredSupplementVerdict[];

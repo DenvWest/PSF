@@ -15,6 +15,18 @@ import {
   DOMAIN_CHECK_PILLAR_IDS,
 } from "@/lib/kompas-domain-check";
 import {
+  MeetreeksAxisGutter,
+  MeetreeksGrafiek,
+  MeetreeksMomentAxis,
+} from "@/components/dashboard/voortgang/MeetreeksChart";
+import {
+  MEETREEKS_COL,
+  meetreeksDaysAgoLabel,
+  meetreeksScaleHint,
+  meetreeksSourceLabel,
+  shortMeetreeksDate,
+} from "@/lib/voortgang-meetreeks-format";
+import {
   buildMeetreeks,
   resolvePlotRow,
   SCORE_ROW_KEY,
@@ -36,11 +48,7 @@ type MeetreeksView = "tabel" | "grafiek";
 
 type IconComp = ComponentType<{ s?: number; sw?: number; style?: CSSProperties }>;
 
-/** Eén kolombreedte voor tabel én grafiek — zo staat de datumstrip in beide gelijk. */
-const COL = 104;
 const LABEL_COL = 132;
-const CHART_H = 148;
-const AXIS_GUTTER = 46;
 
 /**
  * De meelopende labelkolom moet ondoorzichtig zijn, anders schuiven de cellen
@@ -51,145 +59,6 @@ const STICKY_BG = "#152515";
 
 function iconOf(name: string): IconComp | null {
   return (Icons[name as keyof typeof Icons] as IconComp | undefined) ?? null;
-}
-
-function shortDate(dateLabel: string): string {
-  // "9 aug 2026" → "9 aug"; het jaar staat in de uitleesregel eronder.
-  return dateLabel.replace(/\s+\d{4}$/, "");
-}
-
-function sourceLabel(source: DomainMeasurement["source"]): string {
-  switch (source) {
-    case "intake":
-      return "Leefstijlcheck";
-    case "nutrition_log":
-      return "Voedingslog";
-    default:
-      return "Domeincheck";
-  }
-}
-
-function daysAgoLabel(daysAgo: number): string {
-  if (daysAgo === 0) {
-    return "vandaag";
-  }
-  if (daysAgo === 1) {
-    return "gisteren";
-  }
-  return `${daysAgo} dagen geleden`;
-}
-
-/**
- * Wat de as betekent. Alleen `richtlijn` mag norm-taal voeren — daar staat een
- * gebronde grens onder de indeling. Voeding is een frequentie-inschatting met
- * indicatieve drempels (zie de kop van `intake-reference.ts`) en stress is puur
- * zelfrapportage; die mogen zich geen richtlijn noemen.
- */
-function scaleHint(row: MeetreeksRow): string {
-  switch (row.scale) {
-    case "score":
-      return "Schaal 0-100, hoger is beter.";
-    case "richtlijn":
-      return "Schaal: onder de richtlijn → bijna → haalt 'm. De richtlijn staat per meting erbij.";
-    case "vuistregel":
-      return "Twee standen: aan de lage kant, of geen aandachtspunt. Een vuistregel uit je eetfrequentie — geen norm en geen bloedwaarde.";
-    default:
-      return `Schaal 1-${row.levelMax}: je eigen antwoord, van zwakst naar sterkst. Geen richtlijn.`;
-  }
-}
-
-function gridLevels(row: MeetreeksRow): number[] {
-  if (row.scale === "score") {
-    return [0, 25, 50, 75, 100];
-  }
-  return Array.from({ length: row.levelMax }, (_, index) => index + 1);
-}
-
-function tickLabel(row: MeetreeksRow, level: number): string {
-  if (row.scale === "score") {
-    return String(level);
-  }
-  if (row.scale === "vuistregel") {
-    return level === 1 ? "Laag" : "OK";
-  }
-  if (row.scale === "richtlijn") {
-    return ["onder", "bijna", "haalt"][level - 1] ?? String(level);
-  }
-  return String(level);
-}
-
-function levelToY(row: MeetreeksRow, level: number): number {
-  const padY = 16;
-  const floor = row.scale === "score" ? 0 : 1;
-  const span = Math.max(1, row.levelMax - floor);
-  const ratio = (level - floor) / span;
-  return CHART_H - padY - ratio * (CHART_H - padY * 2);
-}
-
-/** De waarde-as, buiten de scroll gehouden zodat hij blijft staan. */
-function AxisGutter({ row }: { row: MeetreeksRow }) {
-  return (
-    <svg
-      width={AXIS_GUTTER}
-      height={CHART_H}
-      viewBox={`0 0 ${AXIS_GUTTER} ${CHART_H}`}
-      aria-hidden
-      className="block shrink-0"
-    >
-      {gridLevels(row).map((level) => (
-        <text
-          key={level}
-          x={AXIS_GUTTER - 6}
-          y={levelToY(row, level) + 3}
-          textAnchor="end"
-          fontSize={9.5}
-          fill="var(--text-subtle)"
-        >
-          {tickLabel(row, level)}
-        </text>
-      ))}
-    </svg>
-  );
-}
-
-/** De datumstrip. Staat onder de tabel én onder de grafiek, met dezelfde kolommaat. */
-function MomentAxis({
-  moments,
-  activeIndex,
-  onSelect,
-}: {
-  moments: DomainMeasurement[];
-  activeIndex: number;
-  onSelect: (index: number) => void;
-}) {
-  return (
-    <div className="flex" style={{ width: moments.length * COL }}>
-      {moments.map((moment, index) => (
-        <button
-          key={moment.id}
-          type="button"
-          onClick={() => onSelect(index)}
-          aria-pressed={index === activeIndex}
-          className="min-h-11 shrink-0 cursor-pointer border-none bg-transparent px-1 py-2 text-center"
-          style={{ width: COL }}
-        >
-          <span
-            className="block text-[12px] font-medium"
-            style={{ color: index === activeIndex ? "var(--text)" : "var(--text-muted)" }}
-          >
-            {shortDate(moment.dateLabel)}
-          </span>
-          <span
-            className="mx-auto mt-1 block h-[2px] rounded-full"
-            style={{
-              width: index === activeIndex ? 28 : 14,
-              background: index === activeIndex ? "var(--sage)" : "var(--panel-border)",
-            }}
-          />
-        </button>
-      ))}
-    </div>
-  );
 }
 
 function LevelBar({ level, levelMax }: { level: number | null; levelMax: number }) {
@@ -228,7 +97,7 @@ function MeetreeksTabel({
   return (
     <table
       className="border-collapse text-left"
-      style={{ width: LABEL_COL + moments.length * COL }}
+      style={{ width: LABEL_COL + moments.length * MEETREEKS_COL }}
     >
       <caption className="sr-only">
         Je meetwaarden verticaal, je meetmomenten horizontaal — links je laatste meting.
@@ -260,7 +129,7 @@ function MeetreeksTabel({
                 key={moments[index].id}
                 className="py-2 pr-2 align-top"
                 style={{
-                  width: COL,
+                  width: MEETREEKS_COL,
                   background: index === activeIndex ? "rgba(255,255,255,0.04)" : undefined,
                 }}
               >
@@ -292,13 +161,13 @@ function MeetreeksTabel({
                 onClick={() => onSelectMoment(index)}
                 aria-pressed={index === activeIndex}
                 className="min-h-11 w-full cursor-pointer border-none bg-transparent px-1 py-2 text-center"
-                style={{ width: COL }}
+                style={{ width: MEETREEKS_COL }}
               >
                 <span
                   className="block text-[12px] font-medium"
                   style={{ color: index === activeIndex ? "var(--text)" : "var(--text-muted)" }}
                 >
-                  {shortDate(moment.dateLabel)}
+                  {shortMeetreeksDate(moment.dateLabel)}
                 </span>
                 <span
                   className="mx-auto mt-1 block h-[2px] rounded-full"
@@ -313,100 +182,6 @@ function MeetreeksTabel({
         </tr>
       </tfoot>
     </table>
-  );
-}
-
-function MeetreeksGrafiek({
-  row,
-  moments,
-  activeIndex,
-  color,
-}: {
-  row: MeetreeksRow;
-  moments: DomainMeasurement[];
-  activeIndex: number;
-  color: string;
-}) {
-  const width = moments.length * COL;
-  const x = (index: number) => index * COL + COL / 2;
-  const y = (level: number) => levelToY(row, level);
-
-  // Gaten breken de lijn: een moment dat deze waarde niet mat, krijgt geen
-  // doorgetrokken verbinding — dat zou een meting suggereren die er niet is.
-  const segments: { index: number; level: number }[][] = [];
-  let current: { index: number; level: number }[] = [];
-  row.cells.forEach((cell, index) => {
-    if (cell?.level == null) {
-      if (current.length > 0) {
-        segments.push(current);
-        current = [];
-      }
-      return;
-    }
-    current.push({ index, level: cell.level });
-  });
-  if (current.length > 0) {
-    segments.push(current);
-  }
-
-  return (
-    <svg
-      width={width}
-      height={CHART_H}
-      viewBox={`0 0 ${width} ${CHART_H}`}
-      role="img"
-      aria-label={`${row.label} over ${moments.length} meetmomenten, links je laatste meting. ${scaleHint(row)}`}
-      className="block"
-    >
-      {gridLevels(row).map((level) => (
-        <line
-          key={level}
-          x1={0}
-          y1={y(level)}
-          x2={width}
-          y2={y(level)}
-          stroke="rgba(255,255,255,0.09)"
-          strokeWidth={1}
-        />
-      ))}
-
-      {/* Peillijn op het gekozen moment, zodat je het punt tegen de as kunt leggen. */}
-      <line
-        x1={x(activeIndex)}
-        y1={6}
-        x2={x(activeIndex)}
-        y2={CHART_H - 6}
-        stroke="rgba(255,255,255,0.22)"
-        strokeWidth={1}
-        strokeDasharray="2 4"
-      />
-
-      {segments.map((segment) => (
-        <polyline
-          key={`seg-${segment[0].index}`}
-          points={segment.map((point) => `${x(point.index)},${y(point.level)}`).join(" ")}
-          fill="none"
-          stroke={color}
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      ))}
-
-      {row.cells.map((cell, index) =>
-        cell?.level == null ? null : (
-          <circle
-            key={moments[index].id}
-            cx={x(index)}
-            cy={y(cell.level)}
-            r={index === activeIndex ? 6 : 4}
-            fill={index === activeIndex ? color : "var(--panel)"}
-            stroke={color}
-            strokeWidth={2}
-          />
-        ),
-      )}
-    </svg>
   );
 }
 
@@ -636,7 +411,7 @@ export default function VoortgangMetingenPerDomein({
               </ul>
               {plotRow ? (
                 <p className="m-0 mt-2 text-[11.5px] text-[var(--text-subtle)] text-pretty">
-                  {scaleHint(plotRow)}
+                  {meetreeksScaleHint(plotRow)}
                 </p>
               ) : null}
             </>
@@ -655,16 +430,16 @@ export default function VoortgangMetingenPerDomein({
             </div>
           ) : plotRow ? (
             <div className="mt-2 flex items-start">
-              <AxisGutter row={plotRow} />
+              <MeetreeksAxisGutter row={plotRow} />
               <div className="-mr-1 min-w-0 flex-1 overflow-x-auto pr-1">
-                <div style={{ width: reeks.moments.length * COL }}>
+                <div style={{ width: reeks.moments.length * MEETREEKS_COL }}>
                   <MeetreeksGrafiek
                     row={plotRow}
                     moments={reeks.moments}
                     activeIndex={activeIndex}
                     color={pillar.color}
                   />
-                  <MomentAxis
+                  <MeetreeksMomentAxis
                     moments={reeks.moments}
                     activeIndex={activeIndex}
                     onSelect={handleSelectMoment}
@@ -687,7 +462,8 @@ export default function VoortgangMetingenPerDomein({
               <span className="font-semibold text-[var(--text)]">
                 {activeMoment.dateLabel}
               </span>{" "}
-              · {sourceLabel(activeMoment.source)} · {daysAgoLabel(activeMoment.daysAgo)}
+              · {meetreeksSourceLabel(activeMoment.source)} ·{" "}
+              {meetreeksDaysAgoLabel(activeMoment.daysAgo)}
               {view === "grafiek" && plotRow ? (
                 <>
                   {" — "}

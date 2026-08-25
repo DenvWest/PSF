@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import LadderMomentButton from "@/components/dashboard/domain/LadderMomentButton";
+import { FactMicroReeks } from "@/components/dashboard/voortgang/MeetreeksChart";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
 import { clarityTag } from "@/lib/clarity";
+import type { LadderEvidenceRow } from "@/lib/domain-ladder-readout";
 import { trackEvent } from "@/lib/ga4";
 import {
   isCadenceLadderAction,
@@ -15,6 +17,7 @@ import {
   type LeefstijlLayerState,
 } from "@/lib/leefstijl-ladder";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
+import type { Meetreeks } from "@/lib/voortgang-meetreeks";
 import type { PillarId } from "@/types/dashboard";
 
 export type PrioriteitLayer = LeefstijlLadderLayer;
@@ -47,9 +50,8 @@ type PrioriteitenLadderProps = {
   domain: PillarId;
   surface: string;
   /**
-   * Alleen meegeven waar de check ze écht oplevert (beweging, via
-   * `resolveMovementLayerStates`). Zonder staten toont de ladder geen enkel
-   * badge — zie de kop van dit bestand.
+   * Alleen meegeven waar de check ze écht oplevert. Zonder staten toont de
+   * ladder geen enkel badge — zie de kop van dit bestand.
    */
   layerStates?: Partial<Record<number, LeefstijlLayerState>>;
   stateLabels?: Record<LeefstijlLayerState, string>;
@@ -73,35 +75,138 @@ type PrioriteitenLadderProps = {
    *   voor domeinen zonder eigen Kompas-domeinscherm (vandaag alleen
    *   verbinding, dat op Kompas nog een prebuild-iframe is en dus niets kan
    *   opslaan).
-   * - `"explain"` — de ladder verklaart alleen: lagen, staten, samenvatting en
-   *   waarom een laag kan wachten. Kiezen gebeurt op Kompas, waar de laag
-   *   náást zijn reden staat; deze ladder wijst daarheen. Zo staat "wat koos ik
-   *   op deze laag" op één plek in plaats van drie.
+   * - `"explain"` — de ladder is het dossier: jij mat, de lat, jij koos.
+   *   Kiezen gebeurt op Kompas. Geen save, geen plan-knop.
    */
   variant?: "choose" | "explain";
   /**
    * Welke laag open staat. Alleen meegeven waar een ander blok op hetzelfde
-   * scherm de ladder stuurt (de ladder in de kop van het domeinscherm);
-   * zonder deze twee props houdt de ladder zijn eigen staat bij.
+   * scherm de ladder stuurt; zonder deze twee props houdt de ladder zijn
+   * eigen staat bij.
    */
   openLayer?: number | null;
   onOpenLayerChange?: (layerId: number | null) => void;
+  /** Feiten uit de check, gegroepeerd per laag. Lege sleuven weglaten. */
+  evidenceByLayer?: Partial<Record<number, readonly LadderEvidenceRow[]>>;
+  /** De cyclusreeks van dit domein — voedt de micro-reeks van één feit. */
+  meetreeks?: Meetreeks | null;
+  /** Kleur van de micro-reeks; default de sage van het dashboard. */
+  chartColor?: string;
+  /** Extra in een open laag — P6: supplementpoort + wearable-sleuf. */
+  layerExtra?: (layerId: number) => ReactNode;
 };
+
+function layerPadClass(layerId: number): string {
+  if (layerId <= 2) {
+    return "px-3.5 py-3 pl-5 xl:py-4";
+  }
+  if (layerId >= 5) {
+    return "px-3.5 py-2.5 pl-5 xl:py-2";
+  }
+  return "px-3.5 py-3 pl-5";
+}
+
+function LayerEvidence({
+  facts,
+  meetreeks,
+  chartColor,
+  openFactKey,
+  onToggleFact,
+}: {
+  facts: readonly LadderEvidenceRow[];
+  meetreeks: Meetreeks | null;
+  chartColor: string;
+  openFactKey: string | null;
+  onToggleFact: (key: string) => void;
+}) {
+  if (facts.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="mt-4">
+      <p className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+        Jij mat
+      </p>
+      <ul className="m-0 flex list-none flex-col gap-3 p-0">
+        {facts.map((fact) => {
+          const reeksRow = meetreeks?.valueRows.find((row) => row.key === fact.key) ?? null;
+          const canPlot = reeksRow?.plottable === true;
+          const isOpen = openFactKey === fact.key;
+          const showLat =
+            Boolean(fact.benchmarkLabel) &&
+            (reeksRow == null || reeksRow.scale === "richtlijn");
+
+          return (
+            <li key={fact.key}>
+              {canPlot ? (
+                <button
+                  type="button"
+                  onClick={() => onToggleFact(fact.key)}
+                  aria-expanded={isOpen}
+                  className="w-full cursor-pointer border-none bg-transparent p-0 text-left font-[inherit]"
+                >
+                  <span className="block text-[13px] leading-snug text-[#F1EFE8]">
+                    {fact.label}
+                    {" · "}
+                    {fact.answerLabel}
+                  </span>
+                  <span className="mt-0.5 block text-[11.5px] text-[#9CC5A9]">
+                    {isOpen ? "Verberg de reeks" : "Over tijd"}
+                  </span>
+                </button>
+              ) : (
+                <p className="m-0 text-[13px] leading-snug text-[#F1EFE8]">
+                  {fact.label}
+                  {" · "}
+                  {fact.answerLabel}
+                </p>
+              )}
+
+              {showLat ? (
+                <p className="mt-1 text-[12px] leading-relaxed text-[#9FB0A6] text-pretty">
+                  <span className="font-semibold uppercase tracking-[0.08em] text-[#7E8C82]">
+                    De lat
+                  </span>
+                  {" · "}
+                  {fact.benchmarkLabel}
+                  {fact.benchmarkSource ? ` (${fact.benchmarkSource})` : ""}
+                </p>
+              ) : (
+                <p className="mt-1 text-[12px] leading-relaxed text-[#7E8C82] text-pretty">
+                  Geen richtlijn — dit is jouw eigen antwoord.
+                </p>
+              )}
+
+              {fact.whyLine ? (
+                <p className="mt-1 text-[11.5px] leading-relaxed text-[#7E8C82] text-pretty">
+                  {fact.whyLine}
+                </p>
+              ) : null}
+
+              {isOpen && reeksRow && meetreeks ? (
+                <FactMicroReeks
+                  row={reeksRow}
+                  moments={meetreeks.moments}
+                  color={chartColor}
+                />
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
 
 /**
  * Zelfselectie in plaats van inferentie, gegeneraliseerd uit
- * ConnectionPriorityOverview (BESLUIT_VERBINDING_SOCIAAL_PRODUCT_V1_2026-08.md
- * §S8): zes prioriteiten, geen afgeleide status. Voor domeinen zonder eigen
- * scoring-engine (stress, verbinding, voeding) is dit de eerlijke vorm —
- * winst/ok/watch/wacht-badges zouden een oordeel suggereren dat we niet kunnen
- * onderbouwen. Beweging levert die staten wél af en geeft ze mee via
- * `layerStates`; de ladder is dus één component met twee eerlijke standen.
+ * ConnectionPriorityOverview: zes prioriteiten, geen afgeleide status. Voor
+ * domeinen zonder eigen scoring-engine is dit de eerlijke vorm. Beweging,
+ * slaap en stress leveren staten via `layerStates`.
  *
- * Elke laag draagt binnenin twee blokken: Aanbevolen (wat wij hier voorstellen)
- * en Mijn keuze (wat jij hier koos). Kiezen schrijft naar `account_favorites`
- * met een id dat zijn laag onthoudt (`ladderActionFavoriteId`), zodat dezelfde
- * keuze terugkomt op het schap en als rij op Kompas — één bron, meerdere
- * plekken. Afvinken gebeurt op Mijn Dag, niet op deze ladder.
+ * In `explain` is de open laag het dossier (jij mat · de lat · jij koos) en
+ * de deur naar Kompas. Afvinken gebeurt op Mijn Dag, niet op deze ladder.
  */
 export default function PrioriteitenLadder({
   layers,
@@ -120,11 +225,16 @@ export default function PrioriteitenLadder({
   variant = "choose",
   openLayer: controlledOpenLayer,
   onOpenLayerChange,
+  evidenceByLayer,
+  meetreeks = null,
+  chartColor = "#5A8F6A",
+  layerExtra,
 }: PrioriteitenLadderProps) {
   const isWerkplek = variant === "choose";
   const [internalOpenLayer, setInternalOpenLayer] = useState<number | null>(
     layerStates ? focusLayer : null,
   );
+  const [openFactKey, setOpenFactKey] = useState<string | null>(null);
   const isControlled = onOpenLayerChange != null;
   const openLayer = isControlled ? (controlledOpenLayer ?? null) : internalOpenLayer;
   const { items } = useVoortgangFavorites();
@@ -140,6 +250,7 @@ export default function PrioriteitenLadder({
 
   function handleToggle(id: number) {
     const next = openLayer === id ? null : id;
+    setOpenFactKey(null);
     if (next != null) {
       trackEvent(`${domain}_ladder_layer_open`, { layer: id, surface });
       clarityTag(`${domain}_ladder_layer`, `p${id}`);
@@ -149,6 +260,15 @@ export default function PrioriteitenLadder({
       return;
     }
     setInternalOpenLayer(next);
+  }
+
+  function handleToggleFact(key: string) {
+    const next = openFactKey === key ? null : key;
+    setOpenFactKey(next);
+    if (next != null) {
+      trackEvent("dashboard_voortgang_feit_reeks_open", { domain, fact_key: key });
+      clarityTag("dashboard_voortgang", `feit_reeks_${domain}_${key}`);
+    }
   }
 
   function handleKompasClick(layerId: number) {
@@ -170,6 +290,8 @@ export default function PrioriteitenLadder({
           const gekozen = gekozenPerLaag.get(layer.id) ?? [];
           const isAanbevolen = recommendedLayerIds?.includes(layer.id) ?? false;
           const waitLine = state === "wacht" ? (whyWait?.(layer.id) ?? null) : null;
+          const facts = evidenceByLayer?.[layer.id] ?? [];
+          const extra = layerExtra?.(layer.id) ?? null;
 
           return (
             <article
@@ -194,7 +316,7 @@ export default function PrioriteitenLadder({
                 type="button"
                 onClick={() => handleToggle(layer.id)}
                 aria-expanded={isOpen}
-                className="flex w-full cursor-pointer items-start gap-3 border-none bg-transparent px-3.5 py-3 pl-5 text-left font-[inherit]"
+                className={`flex w-full cursor-pointer items-start gap-3 border-none bg-transparent text-left font-[inherit] ${layerPadClass(layer.id)}`}
               >
                 <span
                   aria-hidden="true"
@@ -203,7 +325,11 @@ export default function PrioriteitenLadder({
                   P{layer.id}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-serif text-[16px] leading-tight text-[#F1EFE8]">
+                  <span
+                    className={`block font-serif leading-tight text-[#F1EFE8] ${
+                      layer.id <= 2 ? "text-[16px] xl:text-[18px]" : "text-[16px]"
+                    }`}
+                  >
                     {layer.name}
                   </span>
                   {state && styles && stateLabels ? (
@@ -246,6 +372,32 @@ export default function PrioriteitenLadder({
                     </p>
                   ) : null}
 
+                  <LayerEvidence
+                    facts={facts}
+                    meetreeks={meetreeks}
+                    chartColor={chartColor}
+                    openFactKey={openFactKey}
+                    onToggleFact={handleToggleFact}
+                  />
+
+                  {!isWerkplek && gekozen.length > 0 ? (
+                    <div className="mt-4">
+                      <p className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+                        Jij koos
+                      </p>
+                      <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
+                        {gekozen.map((item) => (
+                          <li
+                            key={item.id}
+                            className="text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty"
+                          >
+                            {item.title}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
                   {layer.actions.length > 0 ? (
                     <>
                       <p className="mb-2 mt-4 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
@@ -279,10 +431,6 @@ export default function PrioriteitenLadder({
                     </>
                   ) : null}
 
-                  {/* Alleen waar deze ladder de werkplek is. Op Voortgang
-                      staat hij in `explain`-stand: daar draagt de laag zijn
-                      verklaring en wijst hij naar Kompas, waar je kiest en waar
-                      de contextkolom "wat koos ik hier" al draagt. */}
                   {isWerkplek ? (
                     <>
                       <p className="mb-2 mt-4 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
@@ -306,10 +454,6 @@ export default function PrioriteitenLadder({
                                 </span>
                                 <FavoriteSaveButton compact surface={surface} item={item} />
                               </div>
-                              {/* Een cadans-actie ("elk werkuur even staan")
-                                  slaat dit over — die heeft geen tijdstip om te
-                                  plannen en staat in plaats daarvan doorlopend
-                                  op Mijn Dag. */}
                               {!isCadenceLadderAction(item.title) ? (
                                 <div className="mt-2">
                                   <LadderMomentButton
@@ -326,6 +470,8 @@ export default function PrioriteitenLadder({
                       )}
                     </>
                   ) : null}
+
+                  {extra}
 
                   {kompasHref ? (
                     <a
