@@ -191,7 +191,7 @@ export default function CockpitContextRail({
           {Icon ? <Icon s={16} style={{ color: domain.color }} /> : null}
         </span>
         <span className="min-w-0 flex-1 truncate">{domain.label}</span>
-        <span className="shrink-0 text-[12px] font-semibold tabular-nums text-[#7E8C82]">
+        <span className="shrink-0 text-[12px] font-semibold tabular-nums">
           {domain.score}
         </span>
       </button>
@@ -220,7 +220,7 @@ export default function CockpitContextRail({
           {Icon ? <Icon s={14} style={{ color: domain.color }} /> : null}
         </span>
         <span className="min-w-0 flex-1 truncate">{domain.label}</span>
-        <span className="shrink-0 text-[11px] font-semibold tabular-nums text-[#7E8C82]">
+        <span className="shrink-0 text-[11px] font-semibold tabular-nums">
           {domain.score}
         </span>
       </button>
