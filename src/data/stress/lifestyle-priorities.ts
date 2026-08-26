@@ -61,9 +61,9 @@ export const STRESS_PRIORITY_LAYERS: readonly StressPriorityLayer[] = [
   {
     id: 5,
     name: "Voeding-koppeling",
-    subtitle: "Magnesium uit voeding, cortisol-risico",
+    subtitle: "Magnesium uit voeding, basis vóór aanvulling",
     summary:
-      "Wat je eet ondersteunt herstel — het vervangt geen grenzen. Bij cortisol-risico helpt voeding vooral als basis.",
+      "Wat je eet ondersteunt herstel — het vervangt geen grenzen. Voeding is de basis; die komt eerst, een supplement pas daarna.",
     actions: [
       "Doe de voedingscheck als je stress en voeding nog niet gekoppeld hebt.",
       "Eet op vaste tijden op drukke dagen — geen extra willpower 's avonds.",

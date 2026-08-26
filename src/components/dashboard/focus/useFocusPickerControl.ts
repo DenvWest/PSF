@@ -8,6 +8,17 @@ import {
 } from "@/lib/dashboard-priority-selection";
 import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
 
+/** Wat één focus-control-eigenaar doorgeeft aan de plekken die hem bedienen. */
+export type FocusPickerControl = {
+  focusExpanded: boolean;
+  busy: boolean;
+  toggleFocus: () => void;
+  closeFocus: () => void;
+  selectPillar: (pillarId: PillarId) => Promise<void>;
+  acceptEngine: () => Promise<void>;
+  resetFocus: () => Promise<void>;
+};
+
 type UseFocusPickerControlOptions = {
   model: DashboardModel;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
@@ -20,7 +31,7 @@ export function useFocusPickerControl({
   onPrefUpdated,
   surface,
   onPickerOpen,
-}: UseFocusPickerControlOptions) {
+}: UseFocusPickerControlOptions): FocusPickerControl {
   const [focusExpanded, setFocusExpanded] = useState(false);
   const [busy, setBusy] = useState(false);
 

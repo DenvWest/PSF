@@ -6,8 +6,6 @@ import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { PILLAR } from "@/data/dashboard";
 import { clarityTag } from "@/lib/clarity";
-import { getSituationLabel, isDomainGoalDomain, type DomainGoalDomain } from "@/lib/domain-goal";
-import type { DomainGoalMap } from "@/lib/domain-goal-client";
 import { trackEvent } from "@/lib/ga4";
 import {
   buildDomainCheckHref,
@@ -18,13 +16,14 @@ import {
   MeetreeksAxisGutter,
   MeetreeksGrafiek,
   MeetreeksMomentAxis,
+  MeetreeksMomentTick,
 } from "@/components/dashboard/voortgang/MeetreeksChart";
 import {
   MEETREEKS_COL,
   meetreeksDaysAgoLabel,
+  meetreeksLabelAnchors,
   meetreeksScaleHint,
   meetreeksSourceLabel,
-  shortMeetreeksDate,
 } from "@/lib/voortgang-meetreeks-format";
 import {
   buildMeetreeks,
@@ -38,10 +37,6 @@ type VoortgangMetingenPerDomeinProps = {
   data?: DashboardData;
   selectedDomain: PillarId;
   onSelectDomain: (domain: PillarId) => void;
-  /** undefined = doelen nog niet geladen, null-waarde = geladen zonder doel. */
-  goals: DomainGoalMap | null;
-  onOpenGoal: (domain: DomainGoalDomain) => void;
-  onOpenDomain: (domain: PillarId) => void;
 };
 
 type MeetreeksView = "tabel" | "grafiek";
@@ -49,6 +44,16 @@ type MeetreeksView = "tabel" | "grafiek";
 type IconComp = ComponentType<{ s?: number; sw?: number; style?: CSSProperties }>;
 
 const LABEL_COL = 132;
+
+/**
+ * Zonder `touch-action` twijfelt Safari op iPad tussen verticaal pagina-scrollen
+ * en horizontaal deze balk verslepen, en dat voelt hortend aan. `pan-x` maakt de
+ * keuze vooraf; `-webkit-overflow-scrolling` geeft het momentum dat bij vegen hoort.
+ */
+const TOUCH_SCROLL_STYLE: CSSProperties = {
+  touchAction: "pan-x",
+  WebkitOverflowScrolling: "touch",
+};
 
 /**
  * De meelopende labelkolom moet ondoorzichtig zijn, anders schuiven de cellen
@@ -79,6 +84,19 @@ function LevelBar({ level, levelMax }: { level: number | null; levelMax: number 
   );
 }
 
+/**
+ * Waarom deze rij geen lijn krijgt. Twee verschillende redenen, en het verschil
+ * telt: te weinig momenten is tijdelijk, geen positie is een grens.
+ */
+function rowDisabledHint(row: MeetreeksRow): string | undefined {
+  if (row.plottable) {
+    return undefined;
+  }
+  return row.cells.some((cell) => cell?.level != null)
+    ? "Te weinig meetmomenten met een positie op de schaal."
+    : "Deze meting draagt geen positie op een schaal — alleen je antwoord.";
+}
+
 function MeetreeksTabel({
   moments,
   rows,
@@ -94,6 +112,7 @@ function MeetreeksTabel({
   onSelectRow: (key: string) => void;
   activeRowKey: string;
 }) {
+  const anchors = meetreeksLabelAnchors(moments.length, activeIndex);
   return (
     <table
       className="border-collapse text-left"
@@ -108,7 +127,13 @@ function MeetreeksTabel({
             <th
               scope="row"
               className="sticky left-0 z-[1] py-2 pr-3 align-top font-normal"
-              style={{ width: LABEL_COL, minWidth: LABEL_COL, background: STICKY_BG }}
+              style={{
+                width: LABEL_COL,
+                minWidth: LABEL_COL,
+                background: STICKY_BG,
+                transform: "translateZ(0)",
+                willChange: "transform",
+              }}
             >
               <button
                 type="button"
@@ -152,31 +177,23 @@ function MeetreeksTabel({
         <tr>
           <td
             className="sticky left-0 z-[1]"
-            style={{ width: LABEL_COL, minWidth: LABEL_COL, background: STICKY_BG }}
+            style={{
+              width: LABEL_COL,
+              minWidth: LABEL_COL,
+              background: STICKY_BG,
+              transform: "translateZ(0)",
+              willChange: "transform",
+            }}
           />
           {moments.map((moment, index) => (
             <th key={moment.id} scope="col" className="p-0 align-top font-normal">
-              <button
-                type="button"
-                onClick={() => onSelectMoment(index)}
-                aria-pressed={index === activeIndex}
-                className="min-h-11 w-full cursor-pointer border-none bg-transparent px-1 py-2 text-center"
-                style={{ width: MEETREEKS_COL }}
-              >
-                <span
-                  className="block text-[12px] font-medium"
-                  style={{ color: index === activeIndex ? "var(--text)" : "var(--text-muted)" }}
-                >
-                  {shortMeetreeksDate(moment.dateLabel)}
-                </span>
-                <span
-                  className="mx-auto mt-1 block h-[2px] rounded-full"
-                  style={{
-                    width: index === activeIndex ? 28 : 14,
-                    background: index === activeIndex ? "var(--sage)" : "var(--panel-border)",
-                  }}
-                />
-              </button>
+              <MeetreeksMomentTick
+                moment={moment}
+                index={index}
+                activeIndex={activeIndex}
+                showLabel={anchors.has(index)}
+                onSelect={onSelectMoment}
+              />
             </th>
           ))}
         </tr>
@@ -185,59 +202,10 @@ function MeetreeksTabel({
   );
 }
 
-function GoalRow({
-  domain,
-  goals,
-  onOpenGoal,
-}: {
-  domain: PillarId;
-  goals: DomainGoalMap | null;
-  onOpenGoal: (domain: DomainGoalDomain) => void;
-}) {
-  if (!isDomainGoalDomain(domain) || goals == null) {
-    return null;
-  }
-  const goal = goals[domain] ?? null;
-  const latestScore = goal ? (goal.scores[goal.scores.length - 1]?.score ?? null) : null;
-
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        trackEvent("dashboard_voortgang_doel_click", {
-          domain,
-          entry: goal ? "rescore" : "set",
-        });
-        onOpenGoal(domain);
-      }}
-      className="mt-3 flex w-full cursor-pointer items-center justify-between gap-2 rounded-xl border border-[var(--panel-border)] bg-transparent px-3 py-2.5 text-left"
-    >
-      <span className="min-w-0 flex-1">
-        <span className="block text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-subtle)]">
-          Je ijkpunt
-        </span>
-        <span className="mt-0.5 block truncate text-[13px] text-[var(--text)]">
-          {goal
-            ? `${goal.ownWords || getSituationLabel(domain, goal.situationId)}${
-                latestScore != null ? ` · nu ${latestScore}` : ""
-              }`
-            : "Nog geen eigen doel gezet"}
-        </span>
-      </span>
-      <span className="shrink-0 text-[11.5px] font-semibold text-[var(--sage)]">
-        {goal ? "Bijwerken" : "Zetten"} →
-      </span>
-    </button>
-  );
-}
-
 export default function VoortgangMetingenPerDomein({
   data,
   selectedDomain,
   onSelectDomain,
-  goals,
-  onOpenGoal,
-  onOpenDomain,
 }: VoortgangMetingenPerDomeinProps) {
   const [view, setView] = useState<MeetreeksView>("tabel");
   const [rowKey, setRowKey] = useState<string>(SCORE_ROW_KEY);
@@ -252,7 +220,10 @@ export default function VoortgangMetingenPerDomein({
   const checkNaam = CHECK_NAME[selectedDomain] ?? "check";
   const rows = [reeks.scoreRow, ...reeks.valueRows];
   const plotRow = resolvePlotRow(reeks, rowKey);
-  const heeftVuistregel = rows.some((row) => row.scale === "vuistregel");
+  // Voeding meet antwoorden, geen standen: die rijen dragen geen positie en
+  // krijgen dus geen lijn. Dat moet er staan, anders leest een lege
+  // grafiek-keuze als een fout in plaats van als een grens.
+  const isVoeding = selectedDomain === "voeding";
 
   // De reeks staat nieuwste-eerst, dus index 0 is je laatste meting — en dat is
   // wat er zonder keuze voor staat.
@@ -347,147 +318,153 @@ export default function VoortgangMetingenPerDomein({
         </p>
       ) : (
         <>
-          <div
-            role="group"
-            aria-label="Weergave"
-            className="mt-3.5 inline-flex rounded-full border border-[var(--panel-border)] p-0.5"
-          >
-            {(["tabel", "grafiek"] as const).map((option) => (
-              <button
-                key={option}
-                type="button"
-                onClick={() => handleView(option)}
-                aria-pressed={view === option}
-                className="min-h-9 cursor-pointer rounded-full border-none px-3.5 text-[12.5px] font-semibold capitalize"
-                style={{
-                  background: view === option ? "var(--sage)" : "transparent",
-                  color: view === option ? "#0E1C10" : "var(--text-muted)",
-                }}
+          <div className="mt-3.5 rounded-2xl border border-white/10 bg-black/20 p-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <div
+                role="group"
+                aria-label="Weergave"
+                className="inline-flex shrink-0 rounded-full border border-[var(--panel-border)] p-0.5"
               >
-                {option}
-              </button>
-            ))}
-          </div>
-
-          {/*
-            De tijdas loopt hier tegen de gewoonte in van nieuw naar oud. Dat
-            moet er letterlijk staan, anders leest een stijgende lijn averechts.
-          */}
-          <p className="m-0 mt-2 text-[11.5px] text-[var(--text-subtle)]">
-            Links je laatste meting, naar rechts terug in de tijd.
-            {view === "tabel"
-              ? " Klik een meetwaarde links voor de lijn erdoorheen, of een datum voor dat meetmoment."
-              : null}
-          </p>
-
-          {view === "grafiek" ? (
-            <>
-              <ul className="m-0 mt-3 flex list-none flex-wrap gap-1.5 p-0">
-                {rows.map((row) => (
-                  <li key={row.key}>
-                    <button
-                      type="button"
-                      onClick={() => setRowKey(row.key)}
-                      aria-pressed={plotRow?.key === row.key}
-                      disabled={!row.plottable}
-                      title={
-                        row.plottable
-                          ? undefined
-                          : "Te weinig meetmomenten met een positie op de schaal."
-                      }
-                      className="min-h-9 cursor-pointer rounded-full border px-2.5 text-[11.5px] font-medium disabled:cursor-default disabled:opacity-40"
-                      style={{
-                        borderColor:
-                          plotRow?.key === row.key ? pillar.color : "var(--panel-border)",
-                        background:
-                          plotRow?.key === row.key ? `${pillar.color}1F` : "transparent",
-                        color: plotRow?.key === row.key ? "var(--text)" : "var(--text-muted)",
-                      }}
-                    >
-                      {row.label}
-                    </button>
-                  </li>
+                {(["tabel", "grafiek"] as const).map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => handleView(option)}
+                    aria-pressed={view === option}
+                    className="min-h-9 cursor-pointer rounded-full border-none px-3.5 text-[12.5px] font-semibold capitalize"
+                    style={{
+                      background: view === option ? "var(--sage)" : "transparent",
+                      color: view === option ? "#0E1C10" : "var(--text-muted)",
+                    }}
+                  >
+                    {option}
+                  </button>
                 ))}
-              </ul>
-              {plotRow ? (
-                <p className="m-0 mt-2 text-[11.5px] text-[var(--text-subtle)] text-pretty">
-                  {meetreeksScaleHint(plotRow)}
-                </p>
-              ) : null}
-            </>
-          ) : null}
+              </div>
 
-          {view === "tabel" ? (
-            <div className="-mx-1 mt-2 overflow-x-auto px-1">
-              <MeetreeksTabel
-                moments={reeks.moments}
-                rows={rows}
-                activeIndex={activeIndex}
-                activeRowKey={plotRow?.key ?? SCORE_ROW_KEY}
-                onSelectMoment={handleSelectMoment}
-                onSelectRow={handleSelectRow}
-              />
+              {view === "grafiek" ? (
+                <ul
+                  className="m-0 flex min-w-0 flex-1 list-none gap-1.5 overflow-x-auto p-0 scrollbar-hide"
+                  style={TOUCH_SCROLL_STYLE}
+                >
+                  {rows.map((row) => (
+                    <li key={row.key} className="shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setRowKey(row.key)}
+                        aria-pressed={plotRow?.key === row.key}
+                        disabled={!row.plottable}
+                        title={rowDisabledHint(row)}
+                        className="min-h-9 cursor-pointer rounded-full border px-2.5 text-[11.5px] font-medium disabled:cursor-default disabled:opacity-40"
+                        style={{
+                          borderColor:
+                            plotRow?.key === row.key ? pillar.color : "var(--panel-border)",
+                          background:
+                            plotRow?.key === row.key ? `${pillar.color}1F` : "transparent",
+                          color: plotRow?.key === row.key ? "var(--text)" : "var(--text-muted)",
+                        }}
+                      >
+                        {row.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </div>
-          ) : plotRow ? (
-            <div className="mt-2 flex items-start">
-              <MeetreeksAxisGutter row={plotRow} />
-              <div className="-mr-1 min-w-0 flex-1 overflow-x-auto pr-1">
-                <div style={{ width: reeks.moments.length * MEETREEKS_COL }}>
-                  <MeetreeksGrafiek
-                    row={plotRow}
-                    moments={reeks.moments}
-                    activeIndex={activeIndex}
-                    color={pillar.color}
-                  />
-                  <MeetreeksMomentAxis
-                    moments={reeks.moments}
-                    activeIndex={activeIndex}
-                    onSelect={handleSelectMoment}
-                  />
+
+            {/*
+              De tijdas loopt hier tegen de gewoonte in van nieuw naar oud. Dat
+              moet er letterlijk staan, anders leest een stijgende lijn averechts.
+            */}
+            <p className="m-0 mt-2 text-[11.5px] text-[var(--text-subtle)]">
+              Links je laatste meting, naar rechts terug in de tijd.
+              {view === "tabel"
+                ? " Klik een meetwaarde links voor de lijn erdoorheen, of een datum voor dat meetmoment."
+                : null}
+            </p>
+            {view === "grafiek" && plotRow ? (
+              <p className="m-0 mt-1 text-[11.5px] text-[var(--text-subtle)] text-pretty">
+                {meetreeksScaleHint(plotRow)}
+              </p>
+            ) : null}
+
+            {view === "tabel" ? (
+              <div
+                className="-mx-1 mt-3 overflow-x-auto px-1 pb-1.5 scrollbar-brand"
+                style={TOUCH_SCROLL_STYLE}
+              >
+                <MeetreeksTabel
+                  moments={reeks.moments}
+                  rows={rows}
+                  activeIndex={activeIndex}
+                  activeRowKey={plotRow?.key ?? SCORE_ROW_KEY}
+                  onSelectMoment={handleSelectMoment}
+                  onSelectRow={handleSelectRow}
+                />
+              </div>
+            ) : plotRow ? (
+              <div className="mt-3 flex items-start">
+                <MeetreeksAxisGutter row={plotRow} />
+                <div
+                  className="-mr-1 min-w-0 flex-1 overflow-x-auto pr-1 pb-1.5 scrollbar-brand"
+                  style={TOUCH_SCROLL_STYLE}
+                >
+                  <div style={{ width: reeks.moments.length * MEETREEKS_COL }}>
+                    <MeetreeksGrafiek
+                      row={plotRow}
+                      moments={reeks.moments}
+                      activeIndex={activeIndex}
+                      color={pillar.color}
+                    />
+                    <MeetreeksMomentAxis
+                      moments={reeks.moments}
+                      activeIndex={activeIndex}
+                      onSelect={handleSelectMoment}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <p className="m-0 mt-2 text-[13px] leading-relaxed text-[var(--text-muted)]">
-              Nog niets om een lijn door te trekken — daarvoor moeten minstens twee
-              meetmomenten dezelfde waarde dragen.
-            </p>
-          )}
+            ) : (
+              <p className="m-0 mt-3 text-[13px] leading-relaxed text-[var(--text-muted)]">
+                Nog niets om een lijn door te trekken — daarvoor moeten minstens twee
+                meetmomenten dezelfde waarde dragen.
+              </p>
+            )}
 
-          {activeMoment ? (
-            <p
-              className="m-0 mt-2 text-[12.5px] leading-relaxed text-[var(--text-muted)] text-pretty"
-              aria-live="polite"
-            >
-              <span className="font-semibold text-[var(--text)]">
-                {activeMoment.dateLabel}
-              </span>{" "}
-              · {meetreeksSourceLabel(activeMoment.source)} ·{" "}
-              {meetreeksDaysAgoLabel(activeMoment.daysAgo)}
-              {view === "grafiek" && plotRow ? (
-                <>
-                  {" — "}
-                  {plotRow.label.toLowerCase()}
-                  {": "}
-                  <span className="text-[var(--text)]">
-                    {activeCell?.answerLabel ?? "niet gemeten"}
-                  </span>
-                  {activeCell?.benchmarkLabel ? ` (${activeCell.benchmarkLabel})` : ""}
-                </>
-              ) : null}
-            </p>
-          ) : null}
+            {activeMoment ? (
+              <p
+                className="m-0 mt-3 text-[12.5px] leading-relaxed text-[var(--text-muted)] text-pretty"
+                aria-live="polite"
+              >
+                <span className="font-semibold text-[var(--text)]">
+                  {activeMoment.dateLabel}
+                </span>{" "}
+                · {meetreeksSourceLabel(activeMoment.source)} ·{" "}
+                {meetreeksDaysAgoLabel(activeMoment.daysAgo)}
+                {view === "grafiek" && plotRow ? (
+                  <>
+                    {" — "}
+                    {plotRow.label.toLowerCase()}
+                    {": "}
+                    <span className="text-[var(--text)]">
+                      {activeCell?.answerLabel ?? "niet gemeten"}
+                    </span>
+                    {activeCell?.benchmarkLabel ? ` (${activeCell.benchmarkLabel})` : ""}
+                  </>
+                ) : null}
+              </p>
+            ) : null}
+          </div>
 
-          {heeftVuistregel ? (
+          {isVoeding ? (
             <p className="m-0 mt-2 text-[11.5px] leading-relaxed text-[var(--text-subtle)] text-pretty">
-              Voeding is een grove inschatting op basis van hoe vaak je iets eet — een
-              vuistregel, geen norm en geen bloedwaarde.
+              Voeding staat hier als antwoordlog: wat je koos, wanneer. Geen positie op
+              een schaal — de drempels onder de nutriëntbanden zijn nog voorstellen, geen
+              gebronde grenzen.
             </p>
           ) : null}
         </>
       )}
-
-      <GoalRow domain={selectedDomain} goals={goals} onOpenGoal={onOpenGoal} />
 
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <Link
@@ -502,16 +479,6 @@ export default function VoortgangMetingenPerDomein({
         >
           Meet je {checkNaam} opnieuw →
         </Link>
-        <button
-          type="button"
-          onClick={() => {
-            trackEvent("dashboard_voortgang_domein_click", { domain: selectedDomain });
-            onOpenDomain(selectedDomain);
-          }}
-          className="cursor-pointer border-none bg-transparent p-0 text-[12.5px] text-[var(--text-subtle)]"
-        >
-          Open je {pillar.label.toLowerCase()} →
-        </button>
       </div>
     </CockpitTile>
   );

@@ -10,6 +10,26 @@ export function shortMeetreeksDate(dateLabel: string): string {
   return dateLabel.replace(/\s+\d{4}$/, "");
 }
 
+/**
+ * Boven de acht momenten wordt een datum-onder-elke-kolom een tekstmuur.
+ * Daarboven tonen we alleen begin, eind, een paar tussenpunten en de actieve
+ * kolom als label — de rest blijft een stille tik, aanklikbaar maar stil.
+ */
+export function meetreeksLabelAnchors(count: number, activeIndex: number): Set<number> {
+  if (count <= 8) {
+    return new Set(Array.from({ length: count }, (_, index) => index));
+  }
+  const targetLabels = 6;
+  const step = Math.max(1, Math.round((count - 1) / (targetLabels - 1)));
+  const anchors = new Set<number>();
+  for (let index = 0; index < count; index += step) {
+    anchors.add(index);
+  }
+  anchors.add(count - 1);
+  anchors.add(activeIndex);
+  return anchors;
+}
+
 export function meetreeksSourceLabel(source: DomainMeasurement["source"]): string {
   switch (source) {
     case "intake":
@@ -33,9 +53,9 @@ export function meetreeksDaysAgoLabel(daysAgo: number): string {
 
 /**
  * Wat de as betekent. Alleen `richtlijn` mag norm-taal voeren — daar staat een
- * gebronde grens onder de indeling. Voeding is een frequentie-inschatting met
- * indicatieve drempels en stress is puur zelfrapportage; die mogen zich geen
- * richtlijn noemen.
+ * gebronde grens onder de indeling. Stress is puur zelfrapportage en mag zich
+ * dus geen richtlijn noemen; voeding komt hier niet langs, want die rijen
+ * dragen geen positie en krijgen dus geen as.
  */
 export function meetreeksScaleHint(row: MeetreeksRow): string {
   switch (row.scale) {
@@ -43,8 +63,6 @@ export function meetreeksScaleHint(row: MeetreeksRow): string {
       return "Schaal 0-100, hoger is beter.";
     case "richtlijn":
       return "Schaal: onder de richtlijn → bijna → haalt 'm. De richtlijn staat per meting erbij.";
-    case "vuistregel":
-      return "Twee standen: aan de lage kant, of geen aandachtspunt. Een vuistregel uit je eetfrequentie — geen norm en geen bloedwaarde.";
     default:
       return `Schaal 1-${row.levelMax}: je eigen antwoord, van zwakst naar sterkst. Geen richtlijn.`;
   }
@@ -60,9 +78,6 @@ export function meetreeksGridLevels(row: MeetreeksRow): number[] {
 export function meetreeksTickLabel(row: MeetreeksRow, level: number): string {
   if (row.scale === "score") {
     return String(level);
-  }
-  if (row.scale === "vuistregel") {
-    return level === 1 ? "Laag" : "OK";
   }
   if (row.scale === "richtlijn") {
     return ["onder", "bijna", "haalt"][level - 1] ?? String(level);

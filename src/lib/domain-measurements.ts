@@ -1,5 +1,3 @@
-import { nutrientReferences } from "@/data/nutrition/intake-reference";
-import { NUTRITION_BAND } from "@/lib/nutrition-band-labels";
 import { STRESS_DEEP_QUESTIONS, STRESS_QUESTIONS } from "@/data/stress-checkin";
 import { isMovementFocusKey } from "@/lib/dashboard-url";
 import { buildMovementFactRows } from "@/lib/movement-assessment";
@@ -7,8 +5,7 @@ import {
   parseStoredMovementCheckin,
   parseStoredMovementCheckinSnapshot,
 } from "@/lib/movement-checkin-parse";
-import { nutritionAnswerLabelForNutrient } from "@/lib/nutrition-answer-labels";
-import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
+import { buildNutritionAnswerRows } from "@/lib/nutrition-answer-labels";
 import {
   parseStoredSleepCheckinForFacts,
   parseStoredSleepCheckinSnapshot,
@@ -16,11 +13,7 @@ import {
 import { buildSleepFactRows } from "@/lib/sleep-checkin-readout";
 import { parseStoredStressCheckin } from "@/lib/stress-checkin-parse";
 import type { StressCheckReport } from "@/lib/stress-ladder";
-import type {
-  DomainMeasurementValue,
-  NutritionIntakeBand,
-  PillarId,
-} from "@/types/dashboard";
+import type { DomainMeasurementValue, PillarId } from "@/types/dashboard";
 
 /**
  * Wat er per domein onder een meetmoment ligt. De feitenrijen worden
@@ -71,14 +64,6 @@ const BAND_LEVEL: Record<string, number> = {
 
 /** De stress-items zijn zelfrapportage op een vierpuntsschaal, 4 = sterkst. */
 const STRESS_LEVEL_MAX = 4;
-
-/**
- * Voeding kent maar één grens die de schatting echt kan trekken: laag of niet.
- * `NUTRITION_BAND` voegt `around` en `meets` daarom al samen tot hetzelfde
- * label — een derde stand zou een onderscheid claimen dat een frequentie-
- * schatting niet draagt. De schaal is hier dus twee standen, geen drie.
- */
-const NUTRITION_LEVEL_MAX = 2;
 
 function sleepValues(raw: unknown): DomainMeasurementValue[] {
   const report = parseStoredSleepCheckinForFacts(raw);
@@ -167,35 +152,32 @@ export function buildCheckinMeasurementValues(
   }
 }
 
-/** Voeding meet niet via `intake_domain_checkin` maar via de innamelog. */
+/**
+ * Voeding meet niet via `intake_domain_checkin` maar via de innamelog — en het
+ * meet antwoorden, geen nutriëntstanden. De rijnaam is daarom de vraag die hij
+ * beantwoordde en de cel zijn antwoord; een positie op een schaal staat er
+ * niet onder.
+ *
+ * De nutriëntbanden uit `estimate` blijven hier bewust buiten. Die rusten op
+ * drempels die in `intake-reference.ts` per stuk als "VOORSTEL (niet
+ * bevestigd)" staan — magnesium en vitamine D met vertrouwen LAAG — en zo'n
+ * drempel mag geen balk vullen en geen lijn trekken. Bovendien draagt elke
+ * band de naam van een stof terwijl de meting een eetfrequentie is: magnesium
+ * leunt op de plantporties-vraag, vitamine D op de daglicht-vraag. Zodra er
+ * gebronde grenzen liggen (evidence-pass / `buildNutritionFactRows`) mag de
+ * positie terug op de rijen die er één hebben.
+ */
 export function buildNutritionMeasurementValues(
-  estimate: unknown,
-  rawInputs?: unknown,
+  rawInputs: unknown,
 ): DomainMeasurementValue[] {
-  if (!Array.isArray(estimate)) {
-    return [];
-  }
-  const rows: DomainMeasurementValue[] = [];
-  for (const entry of estimate as IntakeEstimate[]) {
-    if (!entry || typeof entry.nutrient !== "string") {
-      continue;
-    }
-    const band = NUTRITION_BAND[entry.band as NutritionIntakeBand];
-    if (!band) {
-      continue;
-    }
-    const fromCheck = nutritionAnswerLabelForNutrient(entry.nutrient, rawInputs);
-    rows.push({
-      key: entry.nutrient,
-      label: nutrientReferences[entry.nutrient]?.label ?? entry.nutrient,
-      // Voorkeur: wat hij koos in de check. Bandlabel alleen als fallback
-      // (oude logs zonder bruikbare sliders) — tot evidence-pass.
-      answerLabel: fromCheck ?? band.label,
-      benchmarkLabel: null,
-      level: entry.band === "below" ? 1 : NUTRITION_LEVEL_MAX,
-      levelMax: NUTRITION_LEVEL_MAX,
-      scale: "vuistregel",
-    });
-  }
-  return rows;
+  return buildNutritionAnswerRows(rawInputs).map((row) => ({
+    key: row.key,
+    label: row.label,
+    answerLabel: row.answerLabel,
+    benchmarkLabel: null,
+    // Geen positie: dit is wat hij koos, niet waar dat staat.
+    level: null,
+    levelMax: 1,
+    scale: "zelfrapportage",
+  }));
 }

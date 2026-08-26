@@ -100,12 +100,14 @@ describe("buildMeetreeks", () => {
     const reeks = buildMeetreeks([
       moment("a", 50, [
         value("duur", "Slaapduur", "7 uur", 2, 3, "richtlijn"),
-        value("eiwit", "Eiwit", "Aan de lage kant", 1, 2, "vuistregel"),
+        value("wakker", "Nachtelijk wakker", "Zelden", 3, 3, "zelfrapportage"),
       ]),
     ]);
     expect(reeks.scoreRow.scale).toBe("score");
     expect(reeks.valueRows.find((row) => row.key === "duur")?.scale).toBe("richtlijn");
-    expect(reeks.valueRows.find((row) => row.key === "eiwit")?.scale).toBe("vuistregel");
+    expect(reeks.valueRows.find((row) => row.key === "wakker")?.scale).toBe(
+      "zelfrapportage",
+    );
   });
 
   it("lets a renewed source govern the whole row, not just its own column", () => {

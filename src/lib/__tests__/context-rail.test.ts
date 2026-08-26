@@ -41,10 +41,13 @@ describe("buildDomainRailTools", () => {
     );
   });
 
-  it("geeft beweging check en gids — in die volgorde", () => {
+  it("geeft beweging check, schap en gids — in die volgorde", () => {
     const tools = buildDomainRailTools("beweging");
 
-    expect(tools.map((tool) => tool.id)).toEqual(["checkin", "gids"]);
+    expect(tools.map((tool) => tool.id)).toEqual(["checkin", "schap", "gids"]);
+    expect(tools.find((tool) => tool.id === "schap")?.href).toBe(
+      "/dashboard?tab=voortgang&screen=schap&fav=beweging&schap=producten",
+    );
     expect(tools.find((tool) => tool.id === "gids")?.href).toBe("/gids/beweging");
   });
 
@@ -52,6 +55,15 @@ describe("buildDomainRailTools", () => {
     for (const domain of ["slaap", "stress", "voeding", "verbinding"] as const) {
       const tools = buildDomainRailTools(domain);
       expect(tools[0]?.id).toBe("checkin");
+    }
+  });
+
+  it("draagt schap alleen op de domeinen die er een hebben", () => {
+    for (const domain of ["beweging", "slaap", "voeding"] as const) {
+      expect(buildDomainRailTools(domain).map((tool) => tool.id)).toContain("schap");
+    }
+    for (const domain of ["stress", "verbinding"] as const) {
+      expect(buildDomainRailTools(domain).map((tool) => tool.id)).not.toContain("schap");
     }
   });
 

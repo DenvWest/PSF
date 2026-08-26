@@ -13,6 +13,7 @@ import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import { parseLadderFavoriteLayer, resolveLadderLayerName } from "@/lib/leefstijl-ladder";
 import { resolveDefaultSchapTab, resolveSchapTabs } from "@/lib/schap-tabs";
+import VoortgangTerugLink from "@/components/dashboard/voortgang/VoortgangTerugLink";
 import { SCHAP_DOMAINS, toProductStanceDomain } from "@/lib/schap-availability";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
@@ -109,16 +110,11 @@ export default function SchapView({
 
   return (
     <section aria-label={`Schap — ${pillar.label}`} className="pt-4">
-      <div className="mb-4 flex items-center gap-3">
-        <button
-          type="button"
-          onClick={onBack}
-          aria-label="Terug"
-          className="flex h-[38px] w-[38px] shrink-0 cursor-pointer items-center justify-center rounded-[11px] border border-[var(--panel-border)] bg-white/[0.04] text-[var(--text-muted)]"
-        >
-          <Icons.ArrowRight s={18} style={{ transform: "rotate(180deg)" }} />
-        </button>
-        <div className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[var(--text)]">
+      <div className="mb-4">
+        <VoortgangTerugLink onBack={onBack} />
+        {/* De balk in de header draagt dezelfde regel; op mobiel stond hij
+            hier dubbel. */}
+        <div className="hidden text-[12px] font-semibold uppercase tracking-[0.14em] text-[var(--text)] md:block">
           Schap · {pillar.label}
         </div>
       </div>

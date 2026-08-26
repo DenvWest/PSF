@@ -7,6 +7,27 @@
   }
 }
 
+/**
+ * Een OS-overlay-scrollbar is te dun om precies te pakken op een tablet met
+ * muis/trackpad (Magic Keyboard, DevTools-emulatie). Deze utility maakt 'm
+ * dik genoeg om te grijpen en geeft 'm de merkkleur, zodat ook meteen
+ * zichtbaar is dat een balk verder doorloopt dan het kaartje.
+ */
+@utility scrollbar-brand {
+  scrollbar-width: auto;
+  scrollbar-color: var(--sage) transparent;
+  &::-webkit-scrollbar {
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--sage);
+    border-radius: 9999px;
+  }
+}
+
 /* ── Typography tokens (single stack site-wide) ───────────────── */
 
 :root {

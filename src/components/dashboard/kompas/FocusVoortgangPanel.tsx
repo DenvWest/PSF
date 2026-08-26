@@ -3,6 +3,7 @@
 import * as Icons from "@/components/app/icons";
 import FocusPickerCore from "@/components/dashboard/focus/FocusPickerCore";
 import FocusPill from "@/components/dashboard/focus/FocusPill";
+import KompasDoelIjkpunt from "@/components/dashboard/kompas/KompasDoelIjkpunt";
 import { clarityTag } from "@/lib/clarity";
 import { buildKompasDomainRows } from "@/lib/kompas-home";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
@@ -95,9 +96,13 @@ export default function FocusVoortgangPanel({
         Rolt horizontaal uit zodra het paneel breed genoeg is: stand · route ·
         duiding naast elkaar in plaats van vier blokken onder elkaar. Scheelt op
         het Kompas ruim honderd pixels hoogte zonder dat er iets wegvalt.
+
+        Vanaf 860px komt het ijkpunt erbij als vierde kolom; daaronder loopt het
+        over de volle breedte onder de drie andere. `KompasDoelIjkpunt` draagt
+        zijn eigen cel-classes, want uitgeklapt spant hij alle vier de kolommen.
       */}
       <div
-        className={`grid gap-3.5 @[520px]/focus:grid-cols-[minmax(0,auto)_minmax(0,1fr)_minmax(0,1.1fr)] @[520px]/focus:gap-x-5${
+        className={`grid gap-3.5 @[520px]/focus:grid-cols-[minmax(0,auto)_minmax(0,1fr)_minmax(0,1.1fr)] @[520px]/focus:gap-x-5 @[860px]/focus:grid-cols-[minmax(0,auto)_minmax(0,1fr)_minmax(0,1.1fr)_minmax(0,1.15fr)]${
           focusControl ? " mt-3.5" : ""
         }`}
       >
@@ -189,6 +194,8 @@ export default function FocusVoortgangPanel({
             <Icons.ArrowRight s={14} />
           </button>
         </div>
+
+        <KompasDoelIjkpunt domain={priorityRow.id} domainLabel={priorityRow.label} />
       </div>
     </div>
   );

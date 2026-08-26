@@ -24,6 +24,7 @@ type CockpitFrameProps = {
   activeTab: DashboardTabId;
   onSelectTab: (tab: DashboardTabId) => void;
   domainNav?: ReactNode;
+  domainNavClassName?: string;
   onOpenSettings: () => void;
   onLogout: () => void | Promise<void>;
   firstName?: string | null;
@@ -44,7 +45,6 @@ type CockpitFrameProps = {
   railVoortgangSchapDomein?: PillarId | null;
   onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
   onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
-  onOpenVoortgangAanbouw?: () => void;
   inspectorCards: InspectorCard[];
   remeasureAction?: { due: boolean; onClick: () => void };
   inspectorDoelFooter?: ReactNode;
@@ -60,7 +60,6 @@ type CockpitFrameProps = {
   /** Startstand van de contextrail — alleen de eerste render, de gebruiker
       kan hem daarna zelf weer openklappen. Voor surfaces die de volle
       breedte nodig hebben (bijv. de Beweging-prebuild). */
-  defaultContextCollapsed?: boolean;
   children: ReactNode;
 };
 
@@ -104,6 +103,7 @@ export default function CockpitFrame({
   activeTab,
   onSelectTab,
   domainNav,
+  domainNavClassName,
   onOpenSettings,
   onLogout,
   firstName,
@@ -124,18 +124,16 @@ export default function CockpitFrame({
   railVoortgangSchapDomein = null,
   onOpenVoortgangItem,
   onOpenLeefstijlprofielDomein,
-  onOpenVoortgangAanbouw,
   inspectorCards,
   remeasureAction,
   inspectorDoelFooter,
   inspectorExtra,
   inspectorPanel,
   hideRail = false,
-  defaultContextCollapsed = false,
   children,
 }: CockpitFrameProps) {
   const [contextOpen, setContextOpen] = useState(false);
-  const [contextCollapsed, setContextCollapsed] = useState(defaultContextCollapsed);
+  const [contextCollapsed, setContextCollapsed] = useState(false);
   const [contextHighlighted, setContextHighlighted] = useState(false);
   const contextTitleId = useId();
   const panelRef = useRef<HTMLElement>(null);
@@ -273,6 +271,7 @@ export default function CockpitFrame({
         activeTab={activeTab}
         onSelectTab={onSelectTab}
         domainNav={domainNav}
+        domainNavClassName={domainNavClassName}
         onOpenSettings={onOpenSettings}
         onLogout={onLogout}
         onOpenContext={handleContextBellClick}
@@ -312,7 +311,6 @@ export default function CockpitFrame({
             voortgangSchapDomein={railVoortgangSchapDomein}
             onOpenVoortgangItem={onOpenVoortgangItem}
             onOpenLeefstijlprofielDomein={onOpenLeefstijlprofielDomein}
-            onOpenVoortgangAanbouw={onOpenVoortgangAanbouw}
           />
         )}
 

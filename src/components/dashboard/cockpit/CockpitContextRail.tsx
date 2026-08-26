@@ -41,7 +41,6 @@ type CockpitContextRailProps = {
   voortgangSchapDomein?: PillarId | null;
   onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
   onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
-  onOpenVoortgangAanbouw?: () => void;
 };
 
 const ZONEFLAG =
@@ -72,41 +71,16 @@ function StatusDot({ statusDone }: { statusDone: boolean }) {
   );
 }
 
-function ProfileFooter({
-  name,
-  anchorLabel,
-  statusDone,
-}: {
-  name: string;
-  anchorLabel?: string | null;
-  statusDone: boolean;
-}) {
-  return (
-    <div className="mt-auto flex items-center gap-2.5 border-t border-white/10 pt-3.5">
-      <span
-        aria-hidden
-        className="h-8 w-8 shrink-0 rounded-full bg-gradient-to-br from-[#C8956C] to-[#9c6a44]"
-      />
-      <div className="min-w-0 flex-1">
-        <div className="truncate font-serif text-[15px] leading-tight text-[#F1EFE8]">
-          {name}
-        </div>
-        {anchorLabel ? (
-          <div className="truncate text-[11.5px] text-[#9FB0A6]">
-            voor: {anchorLabel}
-          </div>
-        ) : null}
-      </div>
-      <StatusDot statusDone={statusDone} />
-    </div>
-  );
-}
-
 /**
  * Contextuele linker rail: dezelfde kolom toont profiel, je domeinen of
  * Kompas + domeinen + tools van het open domein — afhankelijk van waar je
- * staat. Alleen desktop; onder md blijft de compacte profielstrip staan en
- * navigeer je via de DomainTopNav in de header.
+ * staat. Alleen vanaf md; daaronder navigeer je via de inklapbare balk in de
+ * header (`CockpitTopNav`).
+ *
+ * Geen profielvoet meer onderaan (26 aug): naam en uitloggen zitten al in het
+ * profielmenu rechtsboven, op elke breedte. Alleen de `profile`-modus — de
+ * rail zonder Kompas-context — draagt het profiel nog, want dan is dat de
+ * hele kolom.
  */
 export default function CockpitContextRail({
   mode,
@@ -127,7 +101,6 @@ export default function CockpitContextRail({
   voortgangSchapDomein = null,
   onOpenVoortgangItem,
   onOpenLeefstijlprofielDomein,
-  onOpenVoortgangAanbouw,
 }: CockpitContextRailProps) {
   const name = firstName?.trim() || "Account";
 
@@ -325,36 +298,6 @@ export default function CockpitContextRail({
   return (
     <>
       <aside
-        aria-label="Profiel"
-        className="flex items-center gap-2.5 border-b border-white/10 px-4 py-2.5 md:hidden"
-      >
-        <span
-          aria-hidden
-          className="h-8 w-8 shrink-0 rounded-full bg-gradient-to-br from-[#C8956C] to-[#9c6a44]"
-        />
-        <div className="min-w-0 flex-1">
-          <div className="truncate font-serif text-[15px] leading-tight text-[#F1EFE8]">
-            {name}
-          </div>
-          {anchorLabel ? (
-            <div className="truncate text-[11px] text-[#9FB0A6]">
-              voor: {anchorLabel}
-            </div>
-          ) : null}
-        </div>
-        <StatusDot statusDone={statusDone} />
-        {onCheckin ? (
-          <button
-            type="button"
-            onClick={onCheckin}
-            className="shrink-0 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-[#9FB0A6] transition hover:border-white/20 hover:text-[#F1EFE8]"
-          >
-            Check-in
-          </button>
-        ) : null}
-      </aside>
-
-      <aside
         aria-label={
           mode === "kompasHome"
             ? "Je domeinen"
@@ -372,11 +315,6 @@ export default function CockpitContextRail({
             <nav aria-label="Je domeinen" className="flex flex-col gap-1">
               {domains.map(renderDomain)}
             </nav>
-            <ProfileFooter
-              name={name}
-              anchorLabel={anchorLabel}
-              statusDone={statusDone}
-            />
           </>
         ) : mode === "domainTools" ? (
           <>
@@ -407,7 +345,7 @@ export default function CockpitContextRail({
                 >
                   {tools.map((tool) => (
                     <div key={tool.id}>
-                      {tool.id === "gids" ? (
+                      {tool.id === "schap" || (tool.id === "gids" && !tools.some((t) => t.id === "schap")) ? (
                         <div className="my-1.5 border-t border-white/10" aria-hidden />
                       ) : null}
                       {renderTool(tool)}
@@ -416,11 +354,6 @@ export default function CockpitContextRail({
                 </nav>
               </>
             ) : null}
-            <ProfileFooter
-              name={name}
-              anchorLabel={anchorLabel}
-              statusDone={statusDone}
-            />
           </>
         ) : mode === "voortgang" ? (
           <>
@@ -430,18 +363,6 @@ export default function CockpitContextRail({
                 (item) => item.id !== "schap" || voortgangSchapDomein !== null,
               ).map(renderVoortgangItem)}
             </nav>
-            <button
-              type="button"
-              onClick={() => onOpenVoortgangAanbouw?.()}
-              className="self-start text-[11px] leading-relaxed text-[#7E8C82] transition hover:text-[#9FB0A6]"
-            >
-              Wat er nog niet is →
-            </button>
-            <ProfileFooter
-              name={name}
-              anchorLabel={anchorLabel}
-              statusDone={statusDone}
-            />
           </>
         ) : (
           <>

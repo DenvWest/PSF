@@ -784,11 +784,7 @@ export async function loadAccountDashboardData(
     if (!Number.isFinite(ts)) {
       continue;
     }
-    noteValues(
-      "voeding",
-      ts,
-      buildNutritionMeasurementValues(row.estimate, row.raw_inputs),
-    );
+    noteValues("voeding", ts, buildNutritionMeasurementValues(row.raw_inputs));
   }
 
   const domainMeasurements: DashboardData["domainMeasurements"] = {};

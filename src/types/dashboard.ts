@@ -204,10 +204,12 @@ export type DomainMeasurementValue = {
   /**
    * Waar de positie op rust. Bepaalt wat de UI mag zeggen: alleen `richtlijn`
    * mag norm-taal voeren, want alleen daar staat een gebronde grens onder de
-   * indeling. `vuistregel` is een indicatieve drempel (voeding — zie de kop van
-   * `intake-reference.ts`), `zelfrapportage` is puur zijn eigen antwoord.
+   * indeling. `zelfrapportage` is puur zijn eigen antwoord. Voeding draagt
+   * geen eigen stand meer: de drempels onder de nutriëntbanden zijn voorstellen
+   * (zie de kop van `intake-reference.ts`), dus die rijen komen zonder `level`
+   * binnen en krijgen daarom geen lijn.
    */
-  scale: "richtlijn" | "vuistregel" | "zelfrapportage";
+  scale: "richtlijn" | "zelfrapportage";
 };
 
 /**

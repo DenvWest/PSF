@@ -12,8 +12,10 @@ import type {
   CheckLogEntry,
   CheckScores,
   CheckSnapshot,
+  CheckTrend,
   DashboardData,
   DomainMeasurement,
+  PillarId,
 } from "@/types/dashboard";
 import type { DomainScores } from "@/lib/intake-engine";
 
@@ -119,9 +121,10 @@ function devDomainMeasurements(
     voeding: [
       devMeasurement("voeding", "2026-06-10", "10 jun 2026", 24 + shift, 55, "intake", []),
       devMeasurement("voeding", "2026-07-04", "4 jul 2026", 0 + shift, 61, "nutrition_log", [
-        { key: "eiwit", label: "Eiwit", answerLabel: "Aan de lage kant", benchmarkLabel: null, level: 1, levelMax: 2, scale: "vuistregel" },
-        { key: "omega3", label: "Omega-3", answerLabel: "Aan de lage kant", benchmarkLabel: null, level: 1, levelMax: 2, scale: "vuistregel" },
-        { key: "vezels", label: "Vezels", answerLabel: "Geen aandachtspunt", benchmarkLabel: null, level: 2, levelMax: 2, scale: "vuistregel" },
+        { key: "vegetables", label: "Magnesiumrijke voeding", answerLabel: "2\u00d7 per dag", benchmarkLabel: null, level: null, levelMax: 1, scale: "zelfrapportage" },
+        { key: "oilyFish", label: "Vette vis", answerLabel: "1\u00d7 per week", benchmarkLabel: null, level: null, levelMax: 1, scale: "zelfrapportage" },
+        { key: "proteinMeals", label: "Eiwitrijke eetmomenten", answerLabel: "1\u00d7 per dag", benchmarkLabel: null, level: null, levelMax: 1, scale: "zelfrapportage" },
+        { key: "daylight", label: "Buiten in daglicht", answerLabel: "3\u00d7 per week", benchmarkLabel: null, level: null, levelMax: 1, scale: "zelfrapportage" },
       ]),
     ],
     beweging: [
@@ -139,11 +142,64 @@ function devDomainMeasurements(
   };
 }
 
+const DEV_PILLAR_IDS: PillarId[] = [
+  "slaap",
+  "energie",
+  "stress",
+  "voeding",
+  "beweging",
+  "herstel",
+  "verbinding",
+];
+
+/**
+ * Scores en trend uit de meetreeks halen, net als in productie.
+ *
+ * In `account-dashboard.ts` is `currentScores[pijler]` per definitie het
+ * laatste punt van `series[pijler]`, en `domainMeasurements` komt uit diezelfde
+ * reeks. De dev-fixture schreef beide los van elkaar op, waardoor de ringen
+ * andere getallen toonden dan de meetreeks eronder (voeding 38 tegen 61) en
+ * `enginePriority` een ander domein aanwees dan de reeks rechtvaardigde. Dat is
+ * geen productiegedrag maar een fixture-artefact — en precies het soort
+ * afwijking dat je lokaal op het verkeerde been zet.
+ *
+ * Een domein zonder meetpunten valt terug op de score van de check zelf, zodat
+ * de fixture blijft werken als er ooit een reeks wegvalt.
+ */
+function devCurrentFromMeasurements(
+  mode: "scored" | "retest",
+  fallback: CheckScores,
+): { scores: CheckScores; trend: CheckTrend } {
+  const measurements = devDomainMeasurements(mode);
+  const scores = {} as CheckScores;
+  const trend = {} as CheckTrend;
+
+  for (const pillar of DEV_PILLAR_IDS) {
+    const points = [...(measurements[pillar] ?? [])].sort((a, b) =>
+      a.dateIso.localeCompare(b.dateIso),
+    );
+    if (points.length === 0) {
+      scores[pillar] = fallback[pillar];
+      trend[pillar] = [fallback[pillar]];
+      continue;
+    }
+    scores[pillar] = points[points.length - 1].score;
+    trend[pillar] = points.slice(-6).map((point) => point.score);
+  }
+
+  return { scores, trend };
+}
+
 export function buildDevDashboardData(
   mode: "scored" | "retest",
 ): DashboardData {
   const currentCheck = mode === "retest" ? CHECKS.check2 : CHECKS.check1;
-  const currentSnapshot = toSnapshot(currentCheck);
+  const measured = devCurrentFromMeasurements(mode, currentCheck.scores);
+  const currentSnapshot: CheckSnapshot = {
+    scores: measured.scores,
+    vitality: computeVitaliteit(resolveVitaliteitFacets(toDomainScores(measured.scores))),
+    date: currentCheck.date,
+  };
   const history = filterHistory(mode === "retest" ? "check2" : "check1");
   const prev =
     mode === "retest"
@@ -182,7 +238,7 @@ export function buildDevDashboardData(
     empty: false,
     current: {
       ...currentSnapshot,
-      trend: currentCheck.trend,
+      trend: measured.trend,
     },
     prev,
     history,

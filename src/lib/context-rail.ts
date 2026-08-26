@@ -1,4 +1,6 @@
 import { PILLAR } from "@/data/dashboard";
+import { buildDashboardSchapHref } from "@/lib/dashboard-url";
+import { hasSchap } from "@/lib/schap-availability";
 import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
 export type VoortgangRailItemId = "hub" | "leefstijlprofiel" | "schap";
@@ -22,7 +24,7 @@ export type ContextRailDomainItem = {
   score: number;
 };
 
-export type ContextRailToolId = "checkin" | "gids";
+export type ContextRailToolId = "checkin" | "schap" | "gids";
 
 export type ContextRailTool = {
   id: ContextRailToolId;
@@ -100,6 +102,15 @@ export function buildDomainRailTools(domain: PillarId): ContextRailTool[] {
           disabledHint: "Verbinding meet mee in je hermeting — geen aparte check.",
         },
   );
+
+  if (hasSchap(domain)) {
+    tools.push({
+      id: "schap",
+      label: "Schap",
+      icon: "Pill",
+      href: buildDashboardSchapHref(domain, "producten"),
+    });
+  }
 
   const gids = DOMAIN_GIDS[domain];
   if (gids) {

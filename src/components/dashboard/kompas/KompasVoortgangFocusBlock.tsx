@@ -1,45 +1,32 @@
 "use client";
 
-import { useFocusPickerControl } from "@/components/dashboard/focus/useFocusPickerControl";
+import type { FocusPickerControl } from "@/components/dashboard/focus/useFocusPickerControl";
 import FocusVoortgangPanel from "@/components/dashboard/kompas/FocusVoortgangPanel";
-import { clarityTag } from "@/lib/clarity";
 import type { PrioritySelectionSurface } from "@/lib/dashboard-priority-selection";
-import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
+import type { DashboardModel, PillarId } from "@/types/dashboard";
 
 type KompasVoortgangFocusBlockProps = {
   model: DashboardModel;
-  onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   onOpenPriority: (domain: PillarId) => void;
   surface: Extract<PrioritySelectionSurface, "kompas_voortgang" | "kompas_voortgang_tab">;
+  /**
+   * De focus-control hoort bij de héle Kompas-home, niet bij dit blok: de
+   * nudge in de Aanbevolen-tab schrijft naar dezelfde voorkeur als de picker
+   * hier. Eén eigenaar (`KompasHomeCard`) voorkomt twee busy-standen die van
+   * elkaar niet weten.
+   */
+  control: FocusPickerControl;
   showHeader?: boolean;
 };
 
 export default function KompasVoortgangFocusBlock({
   model,
-  onPrefUpdated,
   onOpenPriority,
   surface,
+  control,
   showHeader = true,
 }: KompasVoortgangFocusBlockProps) {
-  const {
-    focusExpanded,
-    busy,
-    toggleFocus,
-    selectPillar,
-    acceptEngine,
-    resetFocus,
-  } = useFocusPickerControl({
-    model,
-    onPrefUpdated,
-    surface,
-    onPickerOpen: () => {
-      if (surface === "kompas_voortgang") {
-        clarityTag("dashboard_kompas_home", "focus_picker_open");
-        return;
-      }
-      clarityTag("dashboard_voortgang", "focus_picker_open");
-    },
-  });
+  const { focusExpanded, busy, toggleFocus, selectPillar, acceptEngine, resetFocus } = control;
 
   const claritySurface = surface === "kompas_voortgang_tab" ? "voortgang_tab" : "kompas_home";
 

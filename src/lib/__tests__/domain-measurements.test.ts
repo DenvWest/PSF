@@ -71,63 +71,59 @@ describe("buildCheckinMeasurementValues — domains without own values", () => {
 });
 
 describe("buildNutritionMeasurementValues", () => {
-  it("never claims a guideline — the thresholds are indicative", () => {
-    const values = buildNutritionMeasurementValues([
-      { nutrient: "eiwit", band: "below" },
-      { nutrient: "omega3", band: "around" },
-      { nutrient: "vezels", band: "meets" },
+  const raw = {
+    sliders: { vegetables: 2, oilyFish: 1, proteinMeals: 1, daylight: 3 },
+  };
+
+  it("names the question he answered, never the nutrient", () => {
+    const values = buildNutritionMeasurementValues(raw);
+    expect(values.map((value) => value.label)).toEqual([
+      "Magnesiumrijke voeding",
+      "Vette vis",
+      "Eiwitrijke eetmomenten",
+      "Buiten in daglicht",
     ]);
-    expect(values.every((value) => value.scale === "vuistregel")).toBe(true);
-    expect(values.some((value) => /richtlijn|norm/i.test(value.answerLabel))).toBe(false);
+    expect(
+      values.some((value) => /magnesium$|omega-3|vitamine d|zink|^eiwit$/i.test(value.label)),
+    ).toBe(false);
   });
 
-  it("collapses around and meets, because the estimate cannot tell them apart", () => {
-    const values = buildNutritionMeasurementValues([
-      { nutrient: "eiwit", band: "below" },
-      { nutrient: "omega3", band: "around" },
-      { nutrient: "vezels", band: "meets" },
-    ]);
-    expect(values.map((value) => value.level)).toEqual([1, 2, 2]);
-    expect(values.every((value) => value.levelMax === 2)).toBe(true);
-    expect(values[1].answerLabel).toBe(values[2].answerLabel);
-  });
-
-  it("reads the band of every logged nutrient", () => {
-    const values = buildNutritionMeasurementValues([
-      { nutrient: "eiwit", band: "below" },
-      { nutrient: "omega3", band: "meets" },
-    ]);
+  it("carries his own answer as the cell", () => {
+    const values = buildNutritionMeasurementValues(raw);
     expect(values.map((value) => value.answerLabel)).toEqual([
-      "Aan de lage kant",
-      "Geen aandachtspunt",
-    ]);
-  });
-
-  it("prefers the voedingscheck answer over the band label", () => {
-    const values = buildNutritionMeasurementValues(
-      [
-        { nutrient: "protein", band: "below" },
-        { nutrient: "omega3", band: "meets" },
-      ],
-      { sliders: { proteinMeals: 1, oilyFish: 2 } },
-    );
-    expect(values.map((value) => value.answerLabel)).toEqual([
+      "2× per dag",
+      "1× per week",
       "1× per dag",
-      "2× per week",
+      "4–5× per week",
     ]);
   });
 
-  it("skips an entry without a usable band", () => {
-    const values = buildNutritionMeasurementValues([
-      { nutrient: "eiwit", band: "onbekend" },
-      { nutrient: "omega3", band: "around" },
-    ]);
+  it("gives no position, because the thresholds underneath are proposals", () => {
+    const values = buildNutritionMeasurementValues(raw);
+    expect(values.every((value) => value.level === null)).toBe(true);
+    expect(values.every((value) => value.scale === "zelfrapportage")).toBe(true);
+    expect(values.some((value) => /richtlijn|norm|laag|aandachtspunt/i.test(value.answerLabel))).toBe(
+      false,
+    );
+  });
+
+  it("keeps the order of the check, not of the stored JSON", () => {
+    const values = buildNutritionMeasurementValues({
+      sliders: { daylight: 1, vegetables: 0 },
+    });
+    expect(values.map((value) => value.key)).toEqual(["vegetables", "daylight"]);
+  });
+
+  it("leaves a gap for a question this log never asked", () => {
+    const values = buildNutritionMeasurementValues({ sliders: { vegetables: 1 } });
     expect(values).toHaveLength(1);
-    expect(values[0].answerLabel).toBe("Geen aandachtspunt");
+    expect(values[0].key).toBe("vegetables");
   });
 
-  it("returns nothing when the log carries no estimate", () => {
+  it("returns nothing when the log carries no answers", () => {
     expect(buildNutritionMeasurementValues(null)).toEqual([]);
     expect(buildNutritionMeasurementValues(undefined)).toEqual([]);
+    expect(buildNutritionMeasurementValues({ sliders: {} })).toEqual([]);
+    expect(buildNutritionMeasurementValues({ estimate: [{ nutrient: "magnesium", band: "below" }] })).toEqual([]);
   });
 });

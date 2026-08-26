@@ -7,6 +7,7 @@ import {
   MEETREEKS_COL,
   meetreeksDaysAgoLabel,
   meetreeksGridLevels,
+  meetreeksLabelAnchors,
   meetreeksLevelToY,
   meetreeksScaleHint,
   meetreeksSourceLabel,
@@ -41,6 +42,55 @@ export function MeetreeksAxisGutter({ row }: { row: MeetreeksRow }) {
   );
 }
 
+/**
+ * Eén meetmoment op de datumas — label bij een ankerpunt, anders een stille
+ * tik. Gedeeld door de tabel-voet en de grafiek-as zodat beide surfaces
+ * dezelfde uitdunning krijgen.
+ */
+export function MeetreeksMomentTick({
+  moment,
+  index,
+  activeIndex,
+  showLabel,
+  onSelect,
+}: {
+  moment: DomainMeasurement;
+  index: number;
+  activeIndex: number;
+  showLabel: boolean;
+  onSelect: (index: number) => void;
+}) {
+  const active = index === activeIndex;
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(index)}
+      aria-pressed={active}
+      aria-label={showLabel ? undefined : moment.dateLabel}
+      className="min-h-11 shrink-0 cursor-pointer border-none bg-transparent px-1 py-2 text-center"
+      style={{ width: MEETREEKS_COL }}
+    >
+      <span
+        className="block text-[12px] font-medium"
+        style={{ color: active ? "var(--text)" : "var(--text-muted)" }}
+      >
+        {showLabel ? shortMeetreeksDate(moment.dateLabel) : " "}
+      </span>
+      <span
+        aria-hidden
+        className="mx-auto mt-1.5 block rounded-full"
+        style={{
+          width: active ? 8 : showLabel ? 5 : 4,
+          height: active ? 8 : showLabel ? 5 : 4,
+          background: active ? "var(--sage)" : "var(--panel-border)",
+          boxShadow: active ? "0 0 0 4px rgba(154,196,164,0.18)" : undefined,
+          opacity: active || showLabel ? 1 : 0.55,
+        }}
+      />
+    </button>
+  );
+}
+
 export function MeetreeksMomentAxis({
   moments,
   activeIndex,
@@ -50,31 +100,18 @@ export function MeetreeksMomentAxis({
   activeIndex: number;
   onSelect: (index: number) => void;
 }) {
+  const anchors = meetreeksLabelAnchors(moments.length, activeIndex);
   return (
     <div className="flex" style={{ width: moments.length * MEETREEKS_COL }}>
       {moments.map((moment, index) => (
-        <button
+        <MeetreeksMomentTick
           key={moment.id}
-          type="button"
-          onClick={() => onSelect(index)}
-          aria-pressed={index === activeIndex}
-          className="min-h-11 shrink-0 cursor-pointer border-none bg-transparent px-1 py-2 text-center"
-          style={{ width: MEETREEKS_COL }}
-        >
-          <span
-            className="block text-[12px] font-medium"
-            style={{ color: index === activeIndex ? "var(--text)" : "var(--text-muted)" }}
-          >
-            {shortMeetreeksDate(moment.dateLabel)}
-          </span>
-          <span
-            className="mx-auto mt-1 block h-[2px] rounded-full"
-            style={{
-              width: index === activeIndex ? 28 : 14,
-              background: index === activeIndex ? "var(--sage)" : "var(--panel-border)",
-            }}
-          />
-        </button>
+          moment={moment}
+          index={index}
+          activeIndex={activeIndex}
+          showLabel={anchors.has(index)}
+          onSelect={onSelect}
+        />
       ))}
     </div>
   );

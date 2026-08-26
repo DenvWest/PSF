@@ -64,3 +64,14 @@ export async function fetchMovementAnchor(): Promise<MovementAnchor | null> {
     return null;
   }
 }
+
+/**
+ * Eén regel per modus, gedeeld door de surfaces die het ijkpunt tonen: het
+ * zetmoment in de middenkolom en de richting-regel in de contextkolom. Geen
+ * oordeel, alleen de stand tussen twee scores.
+ */
+export const GOAL_MODE_LINE: Record<GoalMode, string> = {
+  verwerven: "Je bent dit aan het verwerven.",
+  behouden: "Je houdt dit vast.",
+  herpakken: "Lager dan je vorige meting.",
+};

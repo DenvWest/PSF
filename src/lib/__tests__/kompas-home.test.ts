@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildKompasDomainRows,
-  buildKompasMilestone,
+  buildCycleLine,
   prioritySegmentIndex,
 } from "@/lib/kompas-home";
 import { buildModel } from "@/lib/dashboard-model";
@@ -140,88 +140,38 @@ describe("prioritySegmentIndex", () => {
   });
 });
 
-describe("buildKompasMilestone", () => {
-  const baseModel = buildModel(
-    { scores, vitality: 46, date: "10 jul 2026", trend },
-    null,
-    [],
-    false,
-    answers,
-    null,
-    null,
-    "beweging",
-  );
-
-  it("skips hermeting due-state on kompas home and falls through to week nudge", () => {
-    const milestone = buildKompasMilestone(baseModel, 6);
-    expect(milestone.kind).toBe("week");
-    expect(milestone.line).toContain("Nog één gewoonte");
+describe("buildCycleLine", () => {
+  it("toont dag en actieve dagen tijdens de cyclus", () => {
+    expect(
+      buildCycleLine({ cycleDay: 12, daysUntilRemeasure: 18, activeDaysInCycle: 8 }),
+    ).toBe("Dag 12 van 30 — 8 dagen actief.");
   });
 
-  it("shows 30-day cycle progress before hermeting due", () => {
-    const milestone = buildKompasMilestone(baseModel, 7, {
-      cycleDay: 12,
-      daysUntilRemeasure: 18,
-      activeDaysInCycle: 8,
-    });
-    expect(milestone.kind).toBe("cycle");
-    expect(milestone.line).toContain("Dag 12 van 30");
-    expect(milestone.line).toContain("8 dagen actief");
+  it("telt af in de laatste week", () => {
+    expect(
+      buildCycleLine({ cycleDay: 27, daysUntilRemeasure: 3, activeDaysInCycle: 14 }),
+    ).toBe("Nog 3 dagen tot je hermeting — 14 dagen actief.");
   });
 
-  it("nudges hermeting countdown in final week", () => {
-    const milestone = buildKompasMilestone(baseModel, 7, {
-      cycleDay: 27,
-      daysUntilRemeasure: 3,
-      activeDaysInCycle: 14,
-    });
-    expect(milestone.kind).toBe("cycle");
-    expect(milestone.line).toContain("Nog 3 dagen tot je hermeting");
+  it("noemt morgen apart", () => {
+    expect(
+      buildCycleLine({ cycleDay: 29, daysUntilRemeasure: 1, activeDaysInCycle: 15 }),
+    ).toBe("Dag 29 van 30 — morgen is je hermeting (15 dagen actief).");
   });
 
-  it("nudges when one day remains in the week", () => {
-    const milestone = buildKompasMilestone(baseModel, 6);
-    expect(milestone.kind).toBe("week");
-    expect(milestone.line).toContain("Nog één gewoonte");
+  it("zwijgt zodra de hermeting klaarstaat", () => {
+    expect(
+      buildCycleLine({ cycleDay: 30, daysUntilRemeasure: 0, activeDaysInCycle: 16 }),
+    ).toBeNull();
+    expect(buildCycleLine(null)).toBeNull();
   });
 
-  it("uses priority improvement when trend shows progress", () => {
-    const model = buildModel(
-      { scores, vitality: 46, date: "10 jul 2026", trend },
-      null,
-      [],
-      false,
-      answers,
-      null,
-      null,
-      "beweging",
-    );
-    const milestone = buildKompasMilestone(model, 7);
-    expect(milestone.kind).toBe("neutral");
-    expect(milestone.line).toContain("beweging verbeterde");
-  });
-
-  it("falls back to neutral encouragement", () => {
-    const flatTrend: CheckTrend = {
-      slaap: [55],
-      energie: [60],
-      stress: [50],
-      voeding: [45],
-      beweging: [38],
-      herstel: [67],
-      verbinding: [50],
-    };
-    const model = buildModel(
-      { scores, vitality: 46, date: "10 jul 2026", trend: flatTrend },
-      null,
-      [],
-      false,
-      answers,
-      null,
-      null,
-      "stress",
-    );
-    const milestone = buildKompasMilestone(model, 7);
-    expect(milestone.line).toBe("Elke stap telt — ook de kleine.");
+  it("zwijgt zodra de cyclus verlopen is", () => {
+    expect(
+      buildCycleLine({ cycleDay: 34, daysUntilRemeasure: 2, activeDaysInCycle: 16 }),
+    ).toBe("Nog 2 dagen tot je hermeting — 16 dagen actief.");
+    expect(
+      buildCycleLine({ cycleDay: 34, daysUntilRemeasure: 9, activeDaysInCycle: 16 }),
+    ).toBeNull();
   });
 });

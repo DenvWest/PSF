@@ -71,25 +71,55 @@ const SLAAP_REEKS: DomainMeasurement[] = [
   }),
 ];
 
+/**
+ * Voeding meet antwoorden, geen standen: elke waarde komt zonder `level`
+ * binnen, ook als twee momenten dezelfde vraag dragen.
+ */
+const VOEDING_REEKS: DomainMeasurement[] = [
+  measurement({
+    id: "voeding-1",
+    dateIso: "2026-07-15",
+    dateLabel: "15 jul 2026",
+    daysAgo: 26,
+    score: 55,
+    source: "nutrition_log",
+    values: [value("oilyFish", "Vette vis", "Nooit", null)],
+  }),
+  measurement({
+    id: "voeding-2",
+    dateIso: "2026-08-20",
+    dateLabel: "20 aug 2026",
+    daysAgo: 5,
+    score: 61,
+    source: "nutrition_log",
+    values: [value("oilyFish", "Vette vis", "2× per week", null)],
+  }),
+];
+
 function renderPanel(props: Partial<Parameters<typeof VoortgangMetingenPerDomein>[0]> = {}) {
   const onSelectDomain = vi.fn();
-  const onOpenGoal = vi.fn();
-  const onOpenDomain = vi.fn();
   const result = render(
     <VoortgangMetingenPerDomein
       data={buildData({ slaap: SLAAP_REEKS })}
       selectedDomain="slaap"
       onSelectDomain={onSelectDomain}
-      goals={null}
-      onOpenGoal={onOpenGoal}
-      onOpenDomain={onOpenDomain}
       {...props}
     />,
   );
-  return { ...result, onSelectDomain, onOpenGoal, onOpenDomain };
+  return { ...result, onSelectDomain };
 }
 
 describe("VoortgangMetingenPerDomein — tabel", () => {
+  it("shows every moment as a column, for volledigheid", () => {
+    renderPanel();
+    expect(screen.getAllByRole("columnheader").map((node) => node.textContent)).toEqual([
+      "20 aug",
+      "1 aug",
+      "10 jul",
+    ]);
+    expect(screen.queryByRole("button", { name: /Toon alle/ })).toBeNull();
+  });
+
   it("puts the measured values vertical and the moments horizontal", () => {
     renderPanel();
     const rowHeaders = screen.getAllByRole("rowheader").map((node) => node.textContent);
@@ -243,30 +273,16 @@ describe("VoortgangMetingenPerDomein — as en herkomst", () => {
     expect(screen.getByText(/Links je laatste meting, naar rechts terug in de tijd/)).toBeTruthy();
   });
 
-  it("carries the vuistregel caveat wherever voeding is shown", () => {
-    const voeding: DomainMeasurement[] = [
-      measurement({
-        id: "voeding-1",
-        dateIso: "2026-08-20",
-        dateLabel: "20 aug 2026",
-        source: "nutrition_log",
-        score: 61,
-        values: [
-          {
-            key: "eiwit",
-            label: "Eiwit",
-            answerLabel: "Aan de lage kant",
-            benchmarkLabel: null,
-            level: 1,
-            levelMax: 2,
-            scale: "vuistregel",
-          },
-        ],
-      }),
-    ];
-    renderPanel({ selectedDomain: "voeding", data: buildData({ voeding }) });
-    expect(screen.getByText(/vuistregel, geen norm en geen bloedwaarde/)).toBeTruthy();
+  it("says that voeding is an answer log, not a position on a scale", () => {
+    renderPanel({ selectedDomain: "voeding", data: buildData({ voeding: VOEDING_REEKS }) });
+    expect(screen.getByText(/Voeding staat hier als antwoordlog/)).toBeTruthy();
     expect(screen.queryByText(/richtlijn/i)).toBeNull();
+  });
+
+  it("refuses to plot a voeding answer, however many moments carry it", () => {
+    renderPanel({ selectedDomain: "voeding", data: buildData({ voeding: VOEDING_REEKS }) });
+    const rij = screen.getByRole("button", { name: "Vette vis" });
+    expect(rij.hasAttribute("disabled")).toBe(true);
   });
 });
 
@@ -281,16 +297,5 @@ describe("VoortgangMetingenPerDomein — rest", () => {
     renderPanel({ selectedDomain: "beweging" });
     expect(screen.getByText(/Nog geen meetmomenten voor beweging\./)).toBeTruthy();
     expect(screen.queryByRole("table")).toBeNull();
-  });
-
-  it("hides the goal row until the goals are loaded", () => {
-    renderPanel();
-    expect(screen.queryByText("Je ijkpunt")).toBeNull();
-  });
-
-  it("offers the goal as a zetmoment once loaded", () => {
-    const { onOpenGoal } = renderPanel({ goals: {} });
-    fireEvent.click(screen.getByText("Nog geen eigen doel gezet"));
-    expect(onOpenGoal).toHaveBeenCalledWith("slaap");
   });
 });

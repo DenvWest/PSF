@@ -17,6 +17,5 @@ describe("meetreeksScaleHint", () => {
   it("reserves norm-taal for richtlijn", () => {
     expect(meetreeksScaleHint(row("richtlijn"))).toContain("onder de richtlijn");
     expect(meetreeksScaleHint(row("zelfrapportage"))).toContain("Geen richtlijn");
-    expect(meetreeksScaleHint(row("vuistregel"))).toContain("geen norm");
   });
 });

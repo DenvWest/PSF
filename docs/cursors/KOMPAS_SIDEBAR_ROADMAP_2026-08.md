@@ -6,6 +6,9 @@
 > **Leest voort op:** [`opus-ecosysteem-aanbevelingsmotor-verdict-2026-08.md`](opus-ecosysteem-aanbevelingsmotor-verdict-2026-08.md) §C/§D/§F/§I ·
 > [`claude-opus-beweging-mijn-dag-verdict-2026-08.md`](claude-opus-beweging-mijn-dag-verdict-2026-08.md) (afvink-KILL's)
 > **Voor de Opus-prompt geldt dit doc als VAST.** Heropenen mag alleen onder een kop `PIVOT` mét schade-analyse.
+>
+> **26 augustus 2026 — lees §8 en §9 vóór §7.** Die PIVOT overschrijft W4b/W4c, nuanceert lock N1,
+> en vervangt de slice-volgorde door een domein-volgorde (D1–D5). §7.3 blijft gelden.
 
 ---
 
@@ -154,3 +157,114 @@ Een getekend besluit sluit een argument niet uit — het verplaatst het naar zij
 
 **Meetpunt van dit document:** geen product-events — besluitstuk. Af te lezen aan het aantal OPEN items in §6 (nu: nul)
 en aan de tijd tot plak 1 start.
+
+---
+
+## 8. PIVOT — 26 augustus 2026: de kolom is per domein, en het schap blijft
+
+> **Dit is de kop die §7 vereist.** §8 overschrijft §7.1 (W4b/W4c) en nuanceert lock N1.
+> W4a, R1, R4 en lock N6 blijven onaangetast. Getekend door Dennis, 26 augustus 2026.
+
+### 8.1 · Wat er veranderde in de vraag
+
+§1 gaf de rechter zijbalk één vraag: *"Waarom deze laag, wat koos ik, wat raden we aan?"* — een
+vraag die alleen bestaat wanneer er een laag open staat, dus alleen op een domeinscherm. Op de
+Kompas-home stond daar iets anders: drie losse kaarten uit `cockpit-inspector.ts` (gewoonte,
+hermeting, Future You), geschreven vóórdat de ladder er was.
+
+De kolom draagt nu één vraag op beide surfaces: **waar zit mijn winst, waar koers ik op, wat is
+hier het aanbod, en houd ik het vol?** Dat is een bredere rol dan §1 toekende. Vier zones, vaste
+volgorde, één domein — `kompas-context-spine.ts`.
+
+Daarmee vervalt de aanname onder W4b dat het schap een *overgangs*bestemming was die de laag zou
+overnemen. Aanbod en laag beantwoorden niet dezelfde vraag: de laag draagt wat je **gratis** kunt
+doen, het schap draagt **aanbod met een oordeel**. Twee vragen, twee plekken.
+
+### 8.2 · Schade-analyse
+
+| Wat vervalt | Wat het bewaakte | Waar dat nu geborgd is |
+|---|---|---|
+| **W4b** — "het schap houdt op een bestemming te zijn, per domein" | Eén plek per vraag: voorkomen dat schap én laag-kaarten allebei aanbod dragen | Rolverdeling i.p.v. verwijdering: **laag = gratis acties** (`DomainFreeActionsTile`), **schap = aanbod met oordeel**. Zodra W2 kaarten mét oordeel op de laag zet, is dát de doublure die moet wijken — niet het schap |
+| **W4c** — `choice.shelf_opened` retiret per emitter | Het meetspoor netjes afbouwen | Het spoor groeit i.p.v. krimpt. `surface` blijft de scheider; `kompas_context` is de vierde waarde naast `kompas_home`, `agenda`, `voortgang` |
+| **N1 als "één deur op het hele Kompas"** | Twee knoppen naast elkaar naar dezelfde bestemming | **Eén deur per surface**, bestemming volgt het domein van die surface. Home → `KompasOndersteuningTile` → schap van je *prioriteitsdomein*. Domeinscherm → contextkolom → schap van *dat* domein. Ze staan nooit tegelijk in beeld: `domainScreenOpen` gatet de zone |
+
+Restrisico dat blijft staan: **twee ingangen met verschillende bestemmingen kunnen verwarren** als
+iemand snel wisselt tussen home en domeinscherm. Drempel: als `choice.shelf_opened` met
+`surface: kompas_context` na twee weken naar een schap-domein leidt dat afwijkt van
+`model.priority.id` in minder dan 1 op de 5 gevallen, dan voegde de domein-deur niets toe en gaat
+hij eruit.
+
+### 8.3 · Wat §7 zei en de code al deed
+
+Drie regels in §7 waren op 26 augustus al achterhaald. Ze staan hier zodat een verse sessie het
+doc niet als as-built leest.
+
+- **W4a is uitgevoerd**, niet ná plak 1–3 maar ervoor. `resolveSchapTabs` kent geen Leefstijl-tab
+  meer ([`schap-tabs.ts:49-53`](../../src/lib/schap-tabs.ts)). De volgorde-lock is dus geschonden,
+  zonder schade: de tab was een echte doublure (dezelfde ladder, dezelfde knop, dezelfde sleutel).
+- **R2 is vervallen op 23 augustus.** "Save primair in de zijbalk" is geen ontwerprichting meer —
+  het midden is de werkplek op elke breedte, de kolom legt uit waaróm. Reden: de spiegel was
+  bedoeld als vervanging onder 1280px (C-b) en werd een toevoeging erbovenop. `account_favorites`
+  met sleutel `laag-<domein>-p<n>-<slug>` blijft de enige bron, dus wat je in het midden bewaart
+  verschijnt meteen in de kolom.
+- **Beweging is niet meer het enige pilot-domein.** Vier van de vijf domeinen draaien op
+  `DomainKompasScreen` (§9).
+
+### 8.4 · Eén logica-correctie die hierbij hoort
+
+De contextkolom startte dicht op prebuild-domeinen (`defaultContextCollapsed`), omdat de iframe de
+volle breedte nodig heeft. Dat is omgedraaid en de prop is weg. Verbinding is juist het domein
+waar de kolom het meeste draagt: de iframe weet niets van je ijkpunt, je ritme, of waaróm
+verbinding geen schap heeft. Een dichtgeklapte kolom verborg precies de uitleg die dat scherm mist.
+
+---
+
+## 9. De vijf domeinen — as-built, en de volgorde die eruit volgt
+
+De roadmap sprak over "de zijbalk" in het enkelvoud en over beweging als pilot. Dat klopt niet meer
+met de code: de kolom is één vorm met vijf verschillende invullingen, en wat een domein kan hangt
+af van wat zijn check oplevert. Bron: `domain-context-bar.ts`.
+
+### 9.1 · Wat elk domein draagt
+
+| Domein | Kompas-scherm | Ladder-readout | Eigen check | Schap | Ijkpunt |
+|---|---|---|---|---|---|
+| **slaap** | React | staten **+ feitrijen** | slaapcheck | magnesium | ✅ |
+| **beweging** | React | staten **+ feitrijen** | beweegcheck | creatine · eiwit · diensten | ✅ |
+| **stress** | React | staten, **geen** feitrijen | stress-check | **geen** — `lifestyle_first` | ✅ |
+| **voeding** | React | **geen** | voedingscheck | vijf nutriënten | ✅ |
+| **verbinding** | prebuild-iframe | **geen** | **geen** — meet mee in de hermeting | **geen** — `geen_schap` | ✅ |
+
+Twee kolommen daarin zijn geen gaten maar besluiten, en de kolom zegt ze met dezelfde woorden als
+het besluit: stress valt af op `STRESS_LIFESTYLE_FIRST_REASON`
+([`domain-product-stance.ts:17`](../../src/data/domain-product-stance.ts)), verbinding structureel
+(BESLUIT_DASHBOARD_SUPPLEMENTROUTE_V1 §E2). Een leeg vak zou als "nog niet af" lezen.
+
+### 9.2 · Wat daaruit volgt voor de volgorde
+
+De oude slice-volgorde ("beweging eerst, dan de rest") is vervangen door een volgorde die de
+**dunste plek** eerst dicht. Elke stap is af te lezen aan één ding.
+
+| # | Stap | Waarom deze eerst | Af als |
+|---|---|---|---|
+| **D1** | **Stress-feitrijen** (`stressReadout.evidenceByLayer`, T1d) | Stress heeft staten maar geen enkele feitzin: de urgentie-zone toont er een laag zonder reden. Dat is de grootste afstand tussen "wat de kolom belooft" en "wat hij levert" | `evidenceByLayer` gevuld voor de lagen die STR_FREQ/STR_RCV beoordelen |
+| **D2** | **Voeding-readout** — innamebanden → staat per laag | Voeding is het enige domein met een schap maar zonder winst-laag: de kolom stuurt je naar aanbod zonder te kunnen zeggen waaróm | `resolveDomainLadderReadout("voeding")` geeft niet-null |
+| **D3** | **Verbinding van iframe naar `DomainKompasScreen`** | Het laatste domein waar midden en kolom uit twee werelden komen; de iframe kan geen laag publiceren, dus de kolom valt daar altijd terug op de geen-winst-laag-stand | `isDomainKompasDomain("verbinding")` is waar, `DOMAIN_PREBUILD` is leeg |
+| **D4** | **W2** — aanbodkaarten mét oordeel op de laag | Pas zinvol als D1/D2 een laag kunnen aanwijzen. Hier valt het W4b-oordeel opnieuw: draagt de laag aanbod, dan wijkt de *laag-kaart* of het *schap* — niet allebei blijven | Per domein één plek met oordeel |
+| **D5** | **W1** — `LayerRecommendation` / `bond_verdict` / `is_monetised` | Nooit begonnen, en de kolom hangt er niet aan. Blijft achteraan tot D4 vraagt om een oordeel-model | De drie velden bestaan in `src/` |
+
+W4b en W4c zijn hiermee geen gates meer maar een besluit binnen **D4**. W4a is gedaan.
+
+### 9.3 · Drempels die meelopen
+
+Naast de twee uit §7.3, die blijven staan:
+
+- **De domein-schapdeur keert terug** onder de drempel in §8.2 (bestemming wijkt af van het
+  prioriteitsdomein in minder dan 1 op 5).
+- **De geen-winst-laag-zone keert terug** als hij op voeding en verbinding na twee weken geen
+  enkele `dashboard_kompas_context_click` met `zone: "check"` oplevert. Dan legt hij iets uit dat
+  niemand wil oplossen, en volstaat een stille lege kolom.
+
+**Meetpunt van §8–§9:** `dashboard_kompas_context_click` (`zone` = `check` · `schap` · `ritme`,
+plus `domain`) en `choice.shelf_opened` met `surface: kompas_context` — hieraan lees je af of de
+kolom per domein iets doet, of alleen iets zegt.

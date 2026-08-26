@@ -14,6 +14,8 @@ type CockpitHeaderProps = {
   activeTab: DashboardTabId;
   onSelectTab: (tab: DashboardTabId) => void;
   domainNav?: ReactNode;
+  /** Wrapper-klassen om de domainNav-rij; standaard zichtbaar op elke breedte. */
+  domainNavClassName?: string;
   onOpenSettings: () => void;
   onLogout: () => void | Promise<void>;
   onOpenContext?: () => void;
@@ -93,6 +95,7 @@ export default function CockpitHeader({
   activeTab,
   onSelectTab,
   domainNav,
+  domainNavClassName = "px-4 pb-3 sm:px-6",
   onOpenSettings,
   onLogout,
   onOpenContext,
@@ -191,7 +194,7 @@ export default function CockpitHeader({
         </div>
       </div>
 
-      {domainNav ? <div className="px-4 pb-3 sm:px-6">{domainNav}</div> : null}
+      {domainNav ? <div className={domainNavClassName}>{domainNav}</div> : null}
 
       {/* Compliance-regel: altijd zichtbaar (sticky header), geen Context-tap
           nodig — ook niet op mobiel. Volledige toelichting blijft in Context. */}

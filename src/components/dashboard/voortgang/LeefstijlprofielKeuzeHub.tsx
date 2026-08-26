@@ -4,6 +4,7 @@ import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
+import VoortgangTerugLink from "@/components/dashboard/voortgang/VoortgangTerugLink";
 import { PILLAR, PILLAR_CHECKIN_ROUTES } from "@/data/dashboard";
 import { KOMPAS_RAIL_PILLAR_IDS } from "@/lib/context-rail";
 import { getReadoutDrivers, type ReadoutPillarId } from "@/lib/domain-role";
@@ -30,43 +31,10 @@ function VoortgangSubHeader({
   onBack: () => void;
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        marginBottom: 24,
-      }}
-    >
-      <button
-        type="button"
-        onClick={onBack}
-        aria-label="Terug"
-        style={{
-          width: 38,
-          height: 38,
-          borderRadius: 11,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid var(--panel-border)",
-          color: "var(--text-muted)",
-          cursor: "pointer",
-          flexShrink: 0,
-        }}
-      >
-        <Icons.ArrowRight s={18} style={{ transform: "rotate(180deg)" }} />
-      </button>
-      <div
-        style={{
-          fontSize: 12,
-          fontWeight: 600,
-          letterSpacing: "0.14em",
-          textTransform: "uppercase",
-          color: "var(--text)",
-        }}
-      >
+    <div style={{ marginBottom: 24 }}>
+      <VoortgangTerugLink onBack={onBack} />
+      {/* De balk in de header noemt dit scherm al; op mobiel stond het dubbel. */}
+      <div className="hidden text-[12px] font-semibold uppercase tracking-[0.14em] text-[var(--text)] md:block">
         {title}
       </div>
     </div>

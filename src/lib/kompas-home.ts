@@ -23,27 +23,13 @@ export type KompasDomainRow = {
 export const KOMPAS_PILLAR_DESCRIPTORS: Record<KompasRailPillarId, string> = {
   slaap: "diepte & regelmaat",
   beweging: "kracht & conditie",
-  voeding: "eiwit & regelmaat",
+  voeding: "diversiteit & regelmaat",
   stress: "herstel & rust",
   verbinding: "contact & steun",
 };
 
 export const KOMPAS_LINES_EXPLAINER =
   "Elke ring staat voor één domein: slaap, beweging, voeding, stress en verbinding. Hoe verder de ring gevuld is, hoe sterker dat domein scoort. In het midden zie je je leefstijlscore — het totaalbeeld van die vijf domeinen. Rechts per rij: score, trend en richting. Tik op een rij voor meer detail.";
-
-export type KompasMilestoneKind = "hermeting" | "week" | "cycle" | "neutral";
-
-export type KompasMilestone = {
-  kind: KompasMilestoneKind;
-  line: string;
-  ctaLabel?: string;
-};
-
-export type KompasCycleContext = {
-  cycleDay: number;
-  daysUntilRemeasure: number;
-  activeDaysInCycle: number;
-};
 
 function domainRotateIndices(model: DashboardModel): Map<PillarId, number> {
   const slots = buildWeekSchedulePreview(model);
@@ -85,61 +71,38 @@ export function prioritySegmentIndex(rows: KompasDomainRow[]): number {
   return index >= 0 ? index : 0;
 }
 
-export function buildKompasMilestone(
-  model: DashboardModel,
-  completedWeekDays: number,
-  cycleContext?: KompasCycleContext | null,
-): KompasMilestone {
-  if (cycleContext && cycleContext.daysUntilRemeasure > 0) {
-    const { cycleDay, daysUntilRemeasure, activeDaysInCycle } = cycleContext;
-    if (daysUntilRemeasure <= 7) {
-      return {
-        kind: "cycle",
-        line:
-          daysUntilRemeasure === 1
-            ? `Dag ${cycleDay} van 30 — morgen is je hermeting (${activeDaysInCycle} dagen actief).`
-            : `Nog ${daysUntilRemeasure} dagen tot je hermeting — ${activeDaysInCycle} dagen actief.`,
-      };
-    }
-    if (cycleDay <= 30) {
-      return {
-        kind: "cycle",
-        line: `Dag ${cycleDay} van 30 — ${activeDaysInCycle} dagen actief.`,
-      };
-    }
+export type KompasCycleContext = {
+  cycleDay: number;
+  daysUntilRemeasure: number;
+  activeDaysInCycle: number;
+};
+
+/**
+ * Waar je in de 30-daagse cyclus staat, in één feitelijke regel — dag, actieve
+ * dagen, en het aftellen naar de hermeting. Geen aanmoediging, geen oordeel:
+ * de contextkolom leest hem als ritme-regel, en `voortgang-horizon-copy.ts`
+ * legt dezelfde lat aan.
+ *
+ * `null` zodra de hermeting klaarstaat (`daysUntilRemeasure <= 0`) of de cyclus
+ * verlopen is: dan zegt de kolom zelf dat de hermeting wacht, en zou een
+ * dag-teller daar tegenin praten.
+ */
+export function buildCycleLine(cycleContext: KompasCycleContext | null): string | null {
+  if (!cycleContext || cycleContext.daysUntilRemeasure <= 0) {
+    return null;
   }
 
-  const remaining = 7 - completedWeekDays;
-  if (remaining > 0 && remaining <= 3) {
-    if (remaining === 1) {
-      return {
-        kind: "week",
-        line: "Nog één gewoonte en je week is compleet.",
-      };
-    }
-    return {
-      kind: "week",
-      line: `Nog ${remaining} dagen en je week is compleet.`,
-    };
+  const { cycleDay, daysUntilRemeasure, activeDaysInCycle } = cycleContext;
+
+  if (daysUntilRemeasure <= 7) {
+    return daysUntilRemeasure === 1
+      ? `Dag ${cycleDay} van 30 — morgen is je hermeting (${activeDaysInCycle} dagen actief).`
+      : `Nog ${daysUntilRemeasure} dagen tot je hermeting — ${activeDaysInCycle} dagen actief.`;
   }
 
-  const priorityRow = buildKompasDomainRows(model).find((row) => row.isPriority);
-  if (priorityRow?.delta != null && priorityRow.delta > 0) {
-    return {
-      kind: "neutral",
-      line: `Je ${priorityRow.label.toLowerCase()} verbeterde sinds vorige week.`,
-    };
+  if (cycleDay <= 30) {
+    return `Dag ${cycleDay} van 30 — ${activeDaysInCycle} dagen actief.`;
   }
 
-  if (model.vitalityDelta != null && model.vitalityDelta > 0) {
-    return {
-      kind: "neutral",
-      line: `Je bent ${model.vitalityDelta} punten dichter bij je doel.`,
-    };
-  }
-
-  return {
-    kind: "neutral",
-    line: "Elke stap telt — ook de kleine.",
-  };
+  return null;
 }

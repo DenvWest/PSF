@@ -2,13 +2,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import DomainKompasScreen from "@/components/dashboard/domain/DomainKompasScreen";
-import DomainLadderContextPanel from "@/components/dashboard/domain/DomainLadderContextPanel";
+import KompasContextSpine from "@/components/dashboard/kompas/KompasContextSpine";
 import {
   DomainLadderFocusProvider,
   useDomainLadderFocus,
 } from "@/lib/domain-ladder-focus-context";
 import { LadderMomentsProvider } from "@/lib/ladder-moments-context";
 import { getLeefstijlLadder } from "@/lib/leefstijl-ladder";
+import { patchDomainGoal, resetDomainGoalsCache } from "@/lib/use-domain-goals";
 import { VoortgangFavoritesProvider } from "@/lib/voortgang-favorites-context";
 import type { DashboardData, DashboardModel } from "@/types/dashboard";
 
@@ -81,10 +82,13 @@ function Harness({ dashboardData }: { dashboardData: DashboardData }) {
         onGoVoortgangDomein={() => {}}
       />
       {focus ? (
-        <DomainLadderContextPanel
+        <KompasContextSpine
           domain={focus.domain}
-          layerId={focus.layerId}
+          openLayerId={focus.layerId}
           data={dashboardData}
+          model={model()}
+          todayActionDone={false}
+          domainScreenOpen
         />
       ) : null}
     </>
@@ -123,6 +127,7 @@ function saveRank1InMiddle() {
 }
 
 beforeEach(() => {
+  resetDomainGoalsCache();
   vi.stubGlobal(
     "matchMedia",
     vi.fn(() => ({
@@ -137,11 +142,11 @@ beforeEach(() => {
   );
 });
 
-describe("DomainLadderContextPanel — zone 1: waarom deze laag", () => {
+describe("Contextkolom — zone 1: waar je winst nu zit", () => {
   it("opent op de winst-laag en draagt de feitenrij die hem verklaart", () => {
     renderBoth();
-    const zone = screen.getByRole("region", { name: "Waarom deze laag" });
-    expect(within(zone).getByText(`Prioriteit ${FOCUS_LAYER} · Grootste winst`)).toBeTruthy();
+    const zone = screen.getByRole("region", { name: "Waar je winst nu zit" });
+    expect(within(zone).getByText("Grootste winst")).toBeTruthy();
     expect(
       within(zone).getByText(
         /Richtlijn is 2× per week; jij zit daar nu onder\. Eén vast moment brengt dit binnen bereik\./,
@@ -155,12 +160,12 @@ describe("DomainLadderContextPanel — zone 1: waarom deze laag", () => {
     renderBoth();
     const layer4 = selectLayerInMiddle(4);
     expect(
-      screen.getByRole("region", { name: "Waarom deze laag" }).textContent,
+      screen.getByRole("region", { name: "Waar je winst nu zit" }).textContent,
     ).toContain(layer4.name);
   });
 });
 
-describe("DomainLadderContextPanel — geen spiegel van het midden", () => {
+describe("Contextkolom — geen spiegel van het midden", () => {
   it("draagt geen tweede laag-navigator", () => {
     renderBoth();
     // Eén ladder op het scherm, en die staat in het midden.
@@ -191,7 +196,57 @@ describe("DomainLadderContextPanel — geen spiegel van het midden", () => {
   });
 });
 
-describe("DomainLadderContextPanel — zone 2: wat jij hier koos", () => {
+describe("Contextkolom — zone: waar je naartoe werkt (doel)", () => {
+  it("opent het volledige zetmoment als er nog geen ijkpunt is", async () => {
+    renderBoth();
+    // Goals komen async binnen (gedeelde `useDomainGoals`-bron); de zone
+    // verschijnt pas zodra die fetch — hier zonder resultaat — is afgerond.
+    const zone = await screen.findByRole("region", { name: "Waar je naartoe werkt" });
+    expect(zone.textContent).toContain("Nog geen ijkpunt");
+
+    fireEvent.click(within(zone).getByRole("button", { name: /Zetten/ }));
+
+    expect(screen.getByRole("dialog", { name: /Je doel/ })).toBeTruthy();
+  });
+
+  it("laat je hier herscoren, zonder naar het midden te hoeven", async () => {
+    patchDomainGoal("beweging", {
+      situationId: "trap_lopen",
+      ownWords: null,
+      scores: [{ score: 4 }],
+      mode: "verwerven",
+    });
+    renderBoth();
+    const zone = screen.getByRole("region", { name: "Waar je naartoe werkt" });
+    expect(zone.textContent).toContain("Nu 4 van 10");
+
+    fireEvent.click(within(zone).getByRole("button", { name: /Bijwerken/ }));
+    // Geen tweede dialoog — herscoren gaat inline, in dezelfde kolom.
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    fireEvent.click(within(zone).getByRole("button", { name: "8" }));
+    fireEvent.click(within(zone).getByRole("button", { name: "Opslaan" }));
+
+    expect(await within(zone).findByText(/Nu 8 van 10/)).toBeTruthy();
+  });
+
+  it("kiest 'Ander doel kiezen' voor het volledige zetmoment, niet voor inline herscoren", () => {
+    patchDomainGoal("beweging", {
+      situationId: "trap_lopen",
+      ownWords: null,
+      scores: [{ score: 4 }],
+      mode: "verwerven",
+    });
+    renderBoth();
+    const zone = screen.getByRole("region", { name: "Waar je naartoe werkt" });
+    fireEvent.click(within(zone).getByRole("button", { name: /Bijwerken/ }));
+    fireEvent.click(within(zone).getByRole("button", { name: /Ander doel kiezen/ }));
+
+    expect(screen.getByRole("dialog", { name: /Je doel/ })).toBeTruthy();
+  });
+});
+
+describe("Contextkolom — zone 2: wat jij hier koos", () => {
   it("laat wat je in het midden bewaart meteen hier verschijnen", () => {
     renderBoth();
     const keuzeZone = screen.getByRole("region", { name: "Mijn keuze op deze laag" });
@@ -218,7 +273,7 @@ describe("DomainLadderContextPanel — zone 2: wat jij hier koos", () => {
 
   it("heeft geen afvink-affordance en geen tweede deur naar Mijn Dag", () => {
     renderBoth();
-    const panelRegions = ["Waarom deze laag", "Mijn keuze op deze laag"].map((name) =>
+    const panelRegions = ["Waar je winst nu zit", "Mijn keuze op deze laag"].map((name) =>
       screen.getByRole("region", { name }),
     );
 
@@ -227,5 +282,58 @@ describe("DomainLadderContextPanel — zone 2: wat jij hier koos", () => {
       expect(within(region).queryByRole("button", { name: /Open Mijn Dag/ })).toBeNull();
       expect(within(region).queryByText(/afgevinkt|Gedaan vandaag/i)).toBeNull();
     }
+  });
+});
+
+describe("Contextkolom — zone 3: het schap van dit domein", () => {
+  it("draagt op een domeinscherm de deur naar het schap van dát domein", () => {
+    renderBoth();
+    const zone = screen.getByRole("region", { name: "Je schap" });
+    const link = within(zone).getByRole("link", { name: /Open je schap/ });
+    expect(link.getAttribute("href")).toContain("fav=beweging");
+    // Lock L2: geen productnaam, geen prijs, geen oordeel op deze surface.
+    expect(within(zone).queryByText(/€|Beste koop|Aanrader/)).toBeNull();
+  });
+
+  it("staat niet op de Kompas-home — daar is KompasOndersteuningTile de enige deur", () => {
+    render(
+      <DomainLadderFocusProvider>
+        <LadderMomentsProvider>
+          <VoortgangFavoritesProvider>
+            <KompasContextSpine
+              domain="beweging"
+              openLayerId={null}
+              data={data()}
+              model={model()}
+              todayActionDone={false}
+              domainScreenOpen={false}
+            />
+          </VoortgangFavoritesProvider>
+        </LadderMomentsProvider>
+      </DomainLadderFocusProvider>,
+    );
+    expect(screen.queryByRole("region", { name: "Je schap" })).toBeNull();
+  });
+
+  it("zegt op stress waaróm er geen schap is, in plaats van niets te tonen", () => {
+    render(
+      <DomainLadderFocusProvider>
+        <LadderMomentsProvider>
+          <VoortgangFavoritesProvider>
+            <KompasContextSpine
+              domain="stress"
+              openLayerId={null}
+              data={data()}
+              model={model()}
+              todayActionDone={false}
+              domainScreenOpen
+            />
+          </VoortgangFavoritesProvider>
+        </LadderMomentsProvider>
+      </DomainLadderFocusProvider>,
+    );
+    const zone = screen.getByRole("region", { name: "Geen schap op dit domein" });
+    expect(zone.textContent).toContain("Bij stress is ons antwoord leefstijl");
+    expect(within(zone).queryByRole("link")).toBeNull();
   });
 });

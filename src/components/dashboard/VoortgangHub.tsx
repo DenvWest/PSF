@@ -6,7 +6,6 @@ import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScr
 import LeefstijlprofielDomeinScherm from "@/components/dashboard/voortgang/LeefstijlprofielDomeinScherm";
 import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
 import SchapView from "@/components/dashboard/voortgang/SchapView";
-import VoortgangMobileNav from "@/components/dashboard/voortgang/VoortgangMobileNav";
 import { clarityTag } from "@/lib/clarity";
 import { hasSchap, resolveSchapDomain } from "@/lib/schap-availability";
 import { resolveSchapTabForDomain } from "@/lib/schap-tabs";
@@ -94,12 +93,6 @@ function VoortgangHubInner({
     }
   };
 
-  const openLeefstijlprofielRoot = () => {
-    trackEvent("dashboard_voortgang_hub_click", { destination: "leefstijlprofiel" });
-    clarityTag("dashboard_voortgang", "leefstijlprofiel");
-    navigate("leefstijlprofiel", { fav: null });
-  };
-
   const openLeefstijlprofielDomein = (domain: PillarId) => {
     trackEvent("dashboard_voortgang_hub_click", {
       destination: "leefstijlprofiel",
@@ -138,19 +131,6 @@ function VoortgangHubInner({
     setSchapTabOverride({ domain: target, tab });
     navigate("schap", { fav: target, schap: tab });
   };
-
-  const mobileActiveDomein =
-    screen === "leefstijlprofiel" || screen === "domein" ? leefstijlprofielDomein : null;
-
-  /**
-   * Welk schap de navigatie aanbiedt: het domein dat al open staat, anders dat
-   * van je prioriteit. `null` betekent dat dit domein geen schap heeft — dan
-   * staat het item er niet, in plaats van dat het ergens anders op uitkomt.
-   */
-  const railSchapDomein =
-    resolveSchapDomain(schapDomein) ??
-    resolveSchapDomain(leefstijlprofielDomein) ??
-    resolveSchapDomain(model?.priority.id);
 
   let content: ReactNode;
 
@@ -213,19 +193,9 @@ function VoortgangHubInner({
     );
   }
 
-  return (
-    <div className="flex min-h-full flex-col">
-      <VoortgangMobileNav
-        screen={screen}
-        activeDomein={mobileActiveDomein}
-        schapDomein={railSchapDomein}
-        onOpenLeefstijlprofiel={openLeefstijlprofielRoot}
-        onOpenSchap={() => openSchap(railSchapDomein)}
-        onOpenDomein={openLeefstijlprofielDomein}
-      />
-      <div className="flex-1">{content}</div>
-    </div>
-  );
+  // De navigatie zelf woont buiten dit scherm: op md+ in de linker rail, en
+  // onder md als inklapbare balk in de sticky header (VoortgangTopNav).
+  return <div className="flex min-h-full flex-col">{content}</div>;
 }
 
 export default function VoortgangHub(props: VoortgangHubProps) {

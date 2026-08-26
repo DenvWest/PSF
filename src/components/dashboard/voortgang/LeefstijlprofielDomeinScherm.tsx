@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import * as Icons from "@/components/app/icons";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
+import VoortgangTerugLink from "@/components/dashboard/voortgang/VoortgangTerugLink";
 import PrioriteitenLadder from "@/components/dashboard/voortgang/PrioriteitenLadder";
 import type { VerdictPanelSurface } from "@/components/dashboard/SupplementVerdictPanel";
 import { PILLAR } from "@/data/dashboard";
@@ -158,21 +158,16 @@ export default function LeefstijlprofielDomeinScherm({
 
   return (
     <section aria-label={`Leefstijlprofiel — ${pillar.label}`} className="pt-4">
-      <div className="mb-5 flex items-start gap-3">
-        <button
-          type="button"
-          onClick={onBack}
-          aria-label="Terug"
-          className="mt-0.5 flex h-[38px] w-[38px] shrink-0 cursor-pointer items-center justify-center rounded-[11px] border border-[var(--panel-border)] bg-white/[0.04] text-[var(--text-muted)]"
-        >
-          <Icons.ArrowRight s={18} style={{ transform: "rotate(180deg)" }} />
-        </button>
+      <div className="mb-5">
+        <VoortgangTerugLink onBack={onBack} />
         <div className="min-w-0">
-          <p className="m-0 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--text-subtle)]">
+          {/* De balk in de header noemt het domein al; op mobiel zou deze
+              bovenkop dat woordelijk herhalen. */}
+          <p className="m-0 hidden text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--text-subtle)] md:block">
             {pillar.label}
           </p>
           <h1
-            className="mt-1.5 font-serif text-[clamp(22px,5.4vw,28px)] font-normal leading-[1.15] text-[#F1EFE8] text-balance"
+            className="font-serif text-[clamp(22px,5.4vw,28px)] font-normal leading-[1.15] text-[#F1EFE8] text-balance md:mt-1.5"
             style={{ fontFamily: "var(--f-serif)" }}
           >
             Wat er onder je {pillar.label.toLowerCase()} staat

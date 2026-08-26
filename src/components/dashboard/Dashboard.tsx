@@ -18,6 +18,7 @@ import {
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import DomainTopNav, { type DomainNavApi } from "@/components/dashboard/DomainTopNav";
+import VoortgangTopNav from "@/components/dashboard/voortgang/VoortgangTopNav";
 import MovementRecoveryTrendsCard from "@/components/dashboard/MovementRecoveryTrendsCard";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { resolveTrendsAccess } from "@/lib/entitlement-access";
@@ -91,10 +92,10 @@ import { perfectSupplementMeasurementConfig } from "@/data/measurement-config";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
+import KompasContextSpine from "@/components/dashboard/kompas/KompasContextSpine";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
 import DomainKompasScreen from "@/components/dashboard/domain/DomainKompasScreen";
-import DomainLadderContextPanel from "@/components/dashboard/domain/DomainLadderContextPanel";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import {
   EMPTY_MOVEMENT_PREFS,
@@ -2382,10 +2383,14 @@ const DOMAIN_PREBUILD: Partial<Record<PillarId, { src: string; title: string }>>
   verbinding: { src: "verbinding-v1.html?frame=K", title: "Verbinding — prebuild v1" },
 };
 
-/** Domeinen waarvan het Vandaag-scherm een letterlijke prebuild is. */
-const PREBUILD_DOMAINS = new Set<PillarId>([
-  "verbinding",
-]);
+/*
+ * Tot 26 augustus startte de contextkolom dicht op de prebuild-domeinen: die
+ * iframes hebben de volle breedte nodig voor hun eigen @container-lagen. Dat
+ * is omgedraaid. Verbinding is nu juist het domein waar die kolom het meeste
+ * draagt — de iframe weet niets van je ijkpunt, je ritme, of waaróm verbinding
+ * geen schap heeft, en de kolom is daar de enige plek waar de app dat zelf
+ * zegt. Een dichtgeklapte kolom verbergt precies de uitleg die dat scherm mist.
+ */
 
 const COCKPIT_WIDTH_DOMAINS = new Set<PillarId>([
   "beweging",
@@ -2489,13 +2494,6 @@ const KompasHome = ({
     }
     return initialKompasView ?? null;
   });
-  const cycleContext = data?.cycleEvidence
-    ? {
-        cycleDay: data.cycleEvidence.cycleDay,
-        daysUntilRemeasure: data.cycleEvidence.daysUntilRemeasure,
-        activeDaysInCycle: data.cycleEvidence.activeDays,
-      }
-    : null;
   const railDomains = useMemo(
     () => buildKompasRailDomains(currentModel?.scores ?? {}),
     [currentModel],
@@ -2698,11 +2696,11 @@ const KompasHome = ({
           model={currentModel}
           data={data}
           firstName={data?.firstName}
-          cycleContext={cycleContext}
           domainCheckDaysAgo={data?.domainCheckDaysAgo}
           remeasureDaysUntil={data?.remeasure?.daysUntil ?? null}
           onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
           onOpenPriority={(domain) => openDomain(domain, "leefstijlkompas")}
+          onOpenAgenda={onGoAgenda}
           onPrefUpdated={onPrefUpdated}
         />
       </CockpitShell>
@@ -3094,9 +3092,14 @@ function DashboardContent({
     [leefstijlprofielDomein],
   );
 
-  const handleRailVoortgangOpen = useCallback(
-    (item: VoortgangRailItemId) => {
-      trackEvent("dashboard_voortgang_hub_click", { destination: item, surface: "rail" });
+  /**
+   * Eén navigatiepad voor beide dragers van de Voortgang-navigatie: de linker
+   * rail (md+) en de inklapbare balk in de header (onder md). `surface` houdt
+   * ze in de meting uit elkaar.
+   */
+  const handleVoortgangItemOpen = useCallback(
+    (item: VoortgangRailItemId, surface: "rail" | "topnav") => {
+      trackEvent("dashboard_voortgang_hub_click", { destination: item, surface });
       clarityTag("dashboard_voortgang", item);
       if (item === "hub") {
         handleVoortgangScreenChange("hub");
@@ -3111,12 +3114,12 @@ function DashboardContent({
     [handleVoortgangScreenChange, railSchapDomein],
   );
 
-  const handleRailLeefstijlprofielDomeinOpen = useCallback(
-    (domain: PillarId) => {
+  const handleVoortgangDomeinOpen = useCallback(
+    (domain: PillarId, surface: "rail" | "topnav") => {
       trackEvent("dashboard_voortgang_hub_click", {
         destination: "leefstijlprofiel",
         domain,
-        surface: "rail",
+        surface,
       });
       clarityTag("dashboard_voortgang", `leefstijlprofiel_${domain}`);
       handleVoortgangScreenChange("leefstijlprofiel", { fav: domain });
@@ -3124,11 +3127,25 @@ function DashboardContent({
     [handleVoortgangScreenChange],
   );
 
-  const handleRailVoortgangAanbouw = useCallback(() => {
-    trackEvent("dashboard_voortgang_hub_click", { destination: "hub", surface: "rail_aanbouw" });
-    clarityTag("dashboard_voortgang", "rail_aanbouw");
-    handleVoortgangScreenChange("hub");
-  }, [handleVoortgangScreenChange]);
+  const handleRailVoortgangOpen = useCallback(
+    (item: VoortgangRailItemId) => handleVoortgangItemOpen(item, "rail"),
+    [handleVoortgangItemOpen],
+  );
+
+  const handleRailLeefstijlprofielDomeinOpen = useCallback(
+    (domain: PillarId) => handleVoortgangDomeinOpen(domain, "rail"),
+    [handleVoortgangDomeinOpen],
+  );
+
+  const handleTopNavVoortgangOpen = useCallback(
+    (item: VoortgangRailItemId) => handleVoortgangItemOpen(item, "topnav"),
+    [handleVoortgangItemOpen],
+  );
+
+  const handleTopNavLeefstijlprofielDomeinOpen = useCallback(
+    (domain: PillarId) => handleVoortgangDomeinOpen(domain, "topnav"),
+    [handleVoortgangDomeinOpen],
+  );
 
   const syncTabFromLocation = useCallback(() => {
     const url = new URL(window.location.href);
@@ -3411,13 +3428,21 @@ function DashboardContent({
       ? getMovementAnchorOption(effectiveMovementPrefs.anchor)
       : undefined;
   const activeHabit = model?.activeHabit ?? null;
-  // De "meet"-kaart is universeel (elk domein) en krijgt hieronder een echte
-  // actieknop via remeasureAction — geen domein-uitzondering meer nodig.
-  // Staat er een domeinscherm open met een aangeklikte ladderlaag, dan draagt
-  // `DomainLadderContextPanel` de hele kolom: waarom die laag, en wat je erop
-  // koos. Lege lijst, geen `null`: anders vallen de gewoonte-kaarten terug op
-  // een scherm dat over een laag gaat.
-  const inspectorCards = ladderFocus
+  // Op het Kompas draagt `KompasContextSpine` de hele kolom: urgentie uit de
+  // ladder, je ijkpunt en je ritme, allemaal over hetzelfde domein. De losse
+  // gewoonte-/meet-kaarten zeggen daar hetzelfde met minder verband, dus daar
+  // is de lijst leeg (lege lijst, geen `null` — anders vallen ze terug).
+  // Op Mijn Dag, Voortgang en Hermeting is er geen focusdomein en blijven ze
+  // staan, inclusief de "meet"-kaart met `remeasureAction`.
+  const spineDomain: PillarId | null =
+    tab === "vandaag"
+      ? (ladderFocus?.domain ?? viewedDomain ?? model?.priority.id ?? null)
+      : null;
+  // De laag die het scherm ernaast uitlegt. Op de home staat er geen ladder
+  // open — dan valt de kolom terug op de winst-laag uit de check.
+  const spineLayerId =
+    ladderFocus && ladderFocus.domain === spineDomain ? ladderFocus.layerId : null;
+  const inspectorCards = spineDomain
     ? []
     : buildInspectorCards({
         activeHabit: activeHabit
@@ -3433,18 +3458,23 @@ function DashboardContent({
   const remeasureAction = data?.remeasure
     ? { due: data.remeasure.daysUntil <= 0, onClick: onRemeasure }
     : undefined;
-  const inspectorExtra = <>{dashboardInfoCard}</>;
-  // De contextkolom van een domeinscherm: waarom deze laag, en wat je erop
-  // koos. Op elk domein dat een ladderlaag publiceert — dat is elk domein met
-  // een React-Kompas-scherm. Tot 23 augustus draaide hier een tweede,
-  // kaart-gebaseerde variant voor de domeinen die het "keuzehart" nog niet
-  // hadden; die zei hetzelfde met minder, dus hij is weg.
-  const inspectorPanel = ladderFocus
+  const inspectorExtra = dashboardInfoCard;
+  // De contextkolom op het Kompas — home én domeinscherm, want de vraag
+  // ("waar zit mijn winst, waar koers ik op, wat is hier het aanbod, houd ik
+  // het vol") verandert daar niet, alleen het domein. `spineLayerId` is null
+  // zolang er geen ladder open staat; dan leest de kolom de winst-laag uit de
+  // check. `domainScreenOpen` gatet de schap-deur: op de home draagt
+  // `KompasOndersteuningTile` de enige deur, naar je prioriteitsdomein.
+  const inspectorPanel = spineDomain
     ? (compact: boolean) => (
-        <DomainLadderContextPanel
-          domain={ladderFocus.domain}
-          layerId={ladderFocus.layerId}
+        <KompasContextSpine
+          domain={spineDomain}
+          openLayerId={spineLayerId}
           data={data}
+          model={model}
+          todayActionDone={todayActionDone}
+          domainScreenOpen={viewedDomain != null}
+          onRemeasure={data?.remeasure ? onRemeasure : undefined}
           compact={compact}
         />
       )
@@ -3470,7 +3500,7 @@ function DashboardContent({
         : !viewedDomain
           ? "kompasHome"
           : "domainTools";
-  const voortgangRailDomains = useMemo(
+  const railDomainItems = useMemo(
     () => buildKompasRailDomains(model?.scores ?? {}),
     [model?.scores],
   );
@@ -3485,19 +3515,42 @@ function DashboardContent({
   // DomainTopNav in de header de enige manier om van domein te wisselen.
   const hideDomainTopNav = isDesktopRail && contextRailMode === "domainTools";
 
+  const kompasDomainNav =
+    viewedDomain && domainNavApi && !hideDomainTopNav ? (
+      <DomainTopNav
+        activeDomain={viewedDomain}
+        domains={railDomainItems}
+        onBack={domainNavApi.onBack}
+        onSwitch={domainNavApi.onSwitch}
+      />
+    ) : null;
+
+  /**
+   * Onder md draagt de header de Voortgang-navigatie: dezelfde bestemmingen
+   * als de rail, ingeklapt tot één regel die met de header mee blijft staan.
+   * `md:hidden` op de wrapper i.p.v. een media-query-hook — geen flits bij
+   * hydration, en de rail blijft de enige drager op desktop.
+   */
+  const voortgangTopNav =
+    tab === "voortgang" ? (
+      <VoortgangTopNav
+        activeItem={resolveVoortgangRailActiveItem(voortgangScreen)}
+        leefstijlprofielDomein={activeLeefstijlprofielDomein}
+        domains={railDomainItems}
+        schapDomein={railSchapDomein}
+        onOpenItem={handleTopNavVoortgangOpen}
+        onOpenDomein={handleTopNavLeefstijlprofielDomeinOpen}
+      />
+    ) : null;
+
   return (
     <div className={`min-h-dvh ${surfaceClass}`}>
       <CockpitFrame
         activeTab={tab}
         onSelectTab={selectTab}
-        domainNav={
-          viewedDomain && domainNavApi && !hideDomainTopNav ? (
-            <DomainTopNav
-              activeDomain={viewedDomain}
-              onBack={domainNavApi.onBack}
-              onSwitch={domainNavApi.onSwitch}
-            />
-          ) : null
+        domainNav={voortgangTopNav ?? kompasDomainNav}
+        domainNavClassName={
+          voortgangTopNav ? "px-4 pb-2.5 sm:px-6 md:hidden" : undefined
         }
         onOpenSettings={() => router.push("/account")}
         onLogout={onLogout}
@@ -3515,21 +3568,16 @@ function DashboardContent({
         onBackToKompas={contextRailApi?.onBackToKompas}
         railVoortgangActiveItem={resolveVoortgangRailActiveItem(voortgangScreen)}
         railVoortgangLeefstijlprofielDomein={activeLeefstijlprofielDomein}
-        railVoortgangDomains={voortgangRailDomains}
+        railVoortgangDomains={railDomainItems}
         railVoortgangSchapDomein={railSchapDomein}
         onOpenVoortgangItem={handleRailVoortgangOpen}
         onOpenLeefstijlprofielDomein={handleRailLeefstijlprofielDomeinOpen}
-        onOpenVoortgangAanbouw={handleRailVoortgangAanbouw}
         inspectorCards={inspectorCards}
         remeasureAction={remeasureAction}
         inspectorDoelFooter={inspectorDoelFooter}
         inspectorExtra={inspectorExtra}
         inspectorPanel={inspectorPanel}
         hideRail={tab === "agenda"}
-        // De prebuild-surfaces hebben de volle breedte nodig om hun eigen
-        // @container-lagen (mobiel/iPad/desktop) te bereiken — de context-
-        // rail mag daar dus dicht starten. Eén klik brengt hem terug.
-        defaultContextCollapsed={viewedDomain != null && PREBUILD_DOMAINS.has(viewedDomain)}
       >
         <div
           className={`w-full ${

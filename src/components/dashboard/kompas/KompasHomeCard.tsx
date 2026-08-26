@@ -5,12 +5,10 @@ import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { DeltaBadge } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
-import KompasAanbevelingSectie from "@/components/dashboard/kompas/KompasAanbevelingSectie";
-import KompasDoelIjkpunt from "@/components/dashboard/kompas/KompasDoelIjkpunt";
+import { useFocusPickerControl } from "@/components/dashboard/focus/useFocusPickerControl";
 import KompasKeuzeSectie from "@/components/dashboard/kompas/KompasKeuzeSectie";
 import KompasVoortgangFocusBlock from "@/components/dashboard/kompas/KompasVoortgangFocusBlock";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
-import { buildWeekSchedulePreview, isWeekSlotCompleted } from "@/lib/agenda-week-preview";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { isUsableFirstName } from "@/lib/intake-greetings";
@@ -21,12 +19,12 @@ import {
 } from "@/lib/kompas-domain-check";
 import {
   buildKompasDomainRows,
-  buildKompasMilestone,
   KOMPAS_LINES_EXPLAINER,
-  type KompasCycleContext,
   type KompasDomainRow,
 } from "@/lib/kompas-home";
+import { shouldShowEngineShiftNudge } from "@/lib/priority-over-time";
 import { getVitalityBand } from "@/lib/vitality-gauge";
+import { shortMeetreeksDate } from "@/lib/voortgang-meetreeks-format";
 import type {
   AccountPriorityPrefData,
   DashboardData,
@@ -39,22 +37,16 @@ const RING_CENTER = RING_SIZE / 2;
 const RING_STROKE = 9;
 const RING_RADII = [104, 87, 70, 53, 36];
 
-type WeekPayload = {
-  today: string;
-  dates: string[];
-  completedKeys: string[];
-};
-
 type KompasHomeCardProps = {
   model: DashboardModel;
-  /** Alleen voor de aanbeveling: die leest de domeincheck uit, niet het model. */
+  /** Voor de Aanbevolen-tab (leest de domeincheck) en de meetdatum onder elke balk. */
   data?: DashboardData;
   firstName?: string | null;
-  cycleContext?: KompasCycleContext | null;
   domainCheckDaysAgo?: DomainCheckTimings;
   remeasureDaysUntil?: number | null;
   onOpenDomain: (domain: PillarId) => void;
   onOpenPriority?: (domain: PillarId) => void;
+  onOpenAgenda?: (date?: string) => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
 };
 
@@ -97,6 +89,13 @@ function formatTrendLabel(delta: number | null, note: string | null): string {
   const arrow = delta > 0 ? "↑" : "↓";
   const signed = delta > 0 ? `+${delta}` : `${delta}`;
   return `${arrow} ${signed} sinds je laatste meting.`;
+}
+
+/** Datum van de laatste meting onder de balk — nieuwste `domainMeasurements`-punt, of niets. */
+function lastMeasuredLabel(data: DashboardData | undefined, domain: PillarId): string | null {
+  const measurements = data?.domainMeasurements?.[domain];
+  const latest = measurements?.[measurements.length - 1];
+  return latest ? shortMeetreeksDate(latest.dateLabel) : null;
 }
 
 function buildDomainTags(model: DashboardModel): Map<PillarId, string> {
@@ -428,6 +427,7 @@ function DomainMeterBar({
   tag,
   isFocus,
   check,
+  lastMeasured,
   onOpenDomain,
   onCheckClick,
 }: {
@@ -435,6 +435,7 @@ function DomainMeterBar({
   tag?: string;
   isFocus: boolean;
   check?: DomainCheckState;
+  lastMeasured?: string | null;
   onOpenDomain: (domain: PillarId) => void;
   onCheckClick: (check: DomainCheckState) => void;
 }) {
@@ -514,6 +515,11 @@ function DomainMeterBar({
               />
             ) : null}
           </span>
+          {lastMeasured ? (
+            <span className="mt-1 block text-[10.5px] text-[#7E8C82]">
+              Gemeten op {lastMeasured}
+            </span>
+          ) : null}
         </button>
 
         {check && !check.highlighted ? (
@@ -645,86 +651,15 @@ function LeefstijlHeader({
   );
 }
 
-function VoortgangSection({
-  model,
-  cycleContext,
-  onOpenPriority,
-  onPrefUpdated,
-}: {
-  model: DashboardModel;
-  cycleContext?: KompasCycleContext | null;
-  onOpenPriority: (domain: PillarId) => void;
-  onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
-}) {
-  const [weekState, setWeekState] = useState<WeekPayload | null>(null);
-  const slots = useMemo(() => buildWeekSchedulePreview(model), [model]);
-
-  useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      try {
-        const response = await fetch("/api/account/daily-log?range=7", {
-          credentials: "include",
-        });
-        if (cancelled) {
-          return;
-        }
-        if (response.ok) {
-          const payload = (await response.json()) as WeekPayload;
-          setWeekState(payload);
-        }
-      } catch {
-        /* non-blocking read */
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [model]);
-
-  const completedSet = useMemo(
-    () => new Set(weekState?.completedKeys ?? []),
-    [weekState?.completedKeys],
-  );
-
-  const completedCount = slots.filter((slot) =>
-    isWeekSlotCompleted(slot, completedSet),
-  ).length;
-
-  const milestone = buildKompasMilestone(model, completedCount, cycleContext);
-
-  return (
-    <div>
-      <KompasVoortgangFocusBlock
-        model={model}
-        onPrefUpdated={onPrefUpdated}
-        onOpenPriority={onOpenPriority}
-        surface="kompas_voortgang"
-      />
-
-      <KompasDoelIjkpunt
-        domain={model.priority.id}
-        domainLabel={model.priority.label}
-      />
-
-      <div className="mt-3 rounded-xl border border-white/8 bg-black/15 px-3.5 py-3">
-        <p className="m-0 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
-          {milestone.line}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 export default function KompasHomeCard({
   model,
   data,
   firstName,
-  cycleContext = null,
   domainCheckDaysAgo,
   remeasureDaysUntil = null,
   onOpenDomain,
   onOpenPriority,
+  onOpenAgenda,
   onPrefUpdated,
 }: KompasHomeCardProps) {
   const rows = useMemo(() => buildKompasDomainRows(model), [model]);
@@ -755,6 +690,15 @@ export default function KompasHomeCard({
       check_status: highlightedCheck.status,
     });
   }, [highlightedCheck]);
+
+  // Eén focus-control voor de hele home: de picker in de Voortgang-kolom en de
+  // nudge in de Aanbevolen-tab schrijven naar dezelfde voorkeur.
+  const focusControl = useFocusPickerControl({
+    model,
+    onPrefUpdated,
+    surface: "kompas_voortgang",
+    onPickerOpen: () => clarityTag("dashboard_kompas_home", "focus_picker_open"),
+  });
 
   const handleOpenDomain = (domain: PillarId) => {
     clarityTag("dashboard_kompas_home", `ring_row_${domain}`);
@@ -819,6 +763,7 @@ export default function KompasHomeCard({
                     tag={domainTags.get(row.id)}
                     isFocus={row.isPriority}
                     check={checkStates.get(row.id)}
+                    lastMeasured={lastMeasuredLabel(data, row.id)}
                     onOpenDomain={handleOpenDomain}
                     onCheckClick={handleCheckClick}
                   />
@@ -831,24 +776,24 @@ export default function KompasHomeCard({
             aria-label="Voortgang"
             className="order-2 min-w-0 border-t border-white/10 pt-5 @[720px]/tile:col-span-2 @[720px]/tile:col-start-1 @[720px]/tile:row-start-2 @[720px]/tile:mt-5 @[920px]/tile:col-span-1 @[920px]/tile:col-start-2 @[920px]/tile:row-span-2 @[920px]/tile:row-start-1 @[920px]/tile:mt-0 @[920px]/tile:border-l @[920px]/tile:border-t-0 @[920px]/tile:pl-6 @[920px]/tile:pt-0"
           >
-            <VoortgangSection
+            <KompasVoortgangFocusBlock
               model={model}
-              cycleContext={cycleContext}
               onOpenPriority={handleOpenPriority}
-              onPrefUpdated={onPrefUpdated}
+              surface="kompas_voortgang"
+              control={focusControl}
             />
           </section>
         </div>
 
-        <KompasAanbevelingSectie
-          domain={model.priority.id}
-          data={data}
-          onOpenDomain={handleOpenDomain}
-        />
-
         <KompasKeuzeSectie
           priorityDomain={model.priority.id}
+          enginePriorityDomain={model.enginePriority.id}
+          showEngineShiftNudge={shouldShowEngineShiftNudge(model)}
+          onAcceptEngine={() => void focusControl.acceptEngine()}
+          acceptEngineBusy={focusControl.busy}
+          data={data}
           onOpenDomain={handleOpenDomain}
+          onOpenAgenda={onOpenAgenda}
         />
       </div>
     </CockpitTile>

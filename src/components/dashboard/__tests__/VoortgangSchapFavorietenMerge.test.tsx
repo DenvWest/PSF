@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import VoortgangHub from "@/components/dashboard/VoortgangHub";
 import type { DashboardModel, PillarId, VoortgangScreen } from "@/types/dashboard";
 
@@ -10,7 +10,8 @@ import type { DashboardModel, PillarId, VoortgangScreen } from "@/types/dashboar
  * domein) en `screen=favorieten` (bewaarde lijst, domein-overstijgend). Sinds
  * 22 augustus is die tweede vorm opgeheven: elke ingang naar "wat je koos"
  * wijst nu naar de Favorieten-tab van het schap. Deze test legt vast dat er
- * nog maar één scherm en één mobiele chip voor is.
+ * nog maar één scherm voor is; de navigatie ernaartoe woont sinds 26 augustus
+ * buiten dit scherm (rail op md+, VoortgangTopNav eronder).
  */
 
 vi.mock("@/components/dashboard/voortgang/SchapView", () => ({
@@ -85,34 +86,9 @@ describe("Voortgang — het schap draagt het archief, geen los Favorieten-scherm
     expect(screen.getByTestId("hub")).toBeTruthy();
   });
 
-  it("draagt geen Favorieten-chip meer in de mobiele nav", () => {
+  it("draagt zelf geen navigatie meer — die zit in de rail en de topnav", () => {
     renderHub("schap", { schapDomein: "beweging" });
     expect(screen.queryByRole("button", { name: /Favorieten/ })).toBeNull();
-  });
-
-  it("stuurt de Schap-chip naar het schap van het domein dat in beeld is", () => {
-    renderHub("hub", { leefstijlprofielDomein: "slaap" });
-    fireEvent.click(screen.getByRole("button", { name: /Schap/ }));
-    expect(onScreenChange).toHaveBeenCalledWith("schap", { fav: "slaap" });
-  });
-
-  it("laat de Schap-chip weg als geen enkel domein in beeld een schap heeft", () => {
-    const stressModel = { priority: { id: "stress", label: "Stress" } } as DashboardModel;
-    render(
-      <VoortgangHub
-        model={stressModel}
-        tab="voortgang"
-        screen="hub"
-        leefstijlprofielDomein={null}
-        schapDomein={null}
-        schapTab={null}
-        leefstijlprofielAdviesExtra={null}
-        onScreenChange={onScreenChange}
-        onPrefUpdated={vi.fn()}
-        onGoAgenda={vi.fn()}
-        onGoHermeting={vi.fn()}
-      />,
-    );
-    expect(screen.queryByRole("button", { name: /Schap/ })).toBeNull();
+    expect(screen.queryByRole("navigation", { name: /Voortgang/ })).toBeNull();
   });
 });
