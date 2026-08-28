@@ -35,23 +35,41 @@ type DashboardPageProps = {
   }>;
 };
 
-const VALID_TABS = new Set<DashboardTabId>(["vandaag", "agenda", "voortgang", "hermeting"]);
+const VALID_TABS = new Set<DashboardTabId>(["vandaag", "agenda", "voortgang", "keuze"]);
 
-function parseInitialTab(tab?: string): DashboardTabId | undefined {
+/**
+ * Routes van vóór 27 augustus: `tab=hermeting` was een eigen tabblad en het
+ * schap een Voortgang-scherm. Beide landen nu op hun huidige plek — de client
+ * schrijft de URL daarna zelf schoon (`canonicalizeDashboardTabParam`), dus
+ * hier alleen de eerste render goed zetten.
+ */
+function parseInitialTab(tab?: string, screen?: string): DashboardTabId | undefined {
+  if (tab === "hermeting") {
+    return "voortgang";
+  }
+  if (tab === "voortgang" && (screen === "schap" || screen === "favorieten")) {
+    return "keuze";
+  }
   if (tab && VALID_TABS.has(tab as DashboardTabId)) {
     return tab as DashboardTabId;
   }
   return undefined;
 }
 
-function parseInitialVoortgangScreen(screen?: string) {
+function parseInitialVoortgangScreen(tab?: string, screen?: string) {
+  if (tab === "hermeting") {
+    return "hermeting" as const;
+  }
   if (!screen) {
     return undefined;
   }
   const parsed = parseVoortgangScreenFromUrl(
     `http://localhost/dashboard?tab=voortgang&screen=${encodeURIComponent(screen)}`,
   );
-  return parsed === "hub" ? undefined : parsed;
+  if (parsed === "hub" || parsed === "schap") {
+    return undefined;
+  }
+  return parsed;
 }
 
 const VALID_KOMPAS_VIEWS = new Set<PillarId>([
@@ -88,8 +106,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     }
     redirect("/account/login");
   }
-  const initialTab = parseInitialTab(tab);
-  const initialVoortgangScreen = parseInitialVoortgangScreen(screen);
+  const initialTab = parseInitialTab(tab, screen);
+  const initialVoortgangScreen = parseInitialVoortgangScreen(tab, screen);
   const initialKompasView = parseInitialKompasView(kompas);
   const initialAgendaView = parseInitialAgendaView(tab, view);
 

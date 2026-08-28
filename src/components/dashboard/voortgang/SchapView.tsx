@@ -14,7 +14,8 @@ import { clarityTag } from "@/lib/clarity";
 import { parseLadderFavoriteLayer, resolveLadderLayerName } from "@/lib/leefstijl-ladder";
 import { resolveDefaultSchapTab, resolveSchapTabs } from "@/lib/schap-tabs";
 import VoortgangTerugLink from "@/components/dashboard/voortgang/VoortgangTerugLink";
-import { SCHAP_DOMAINS, toProductStanceDomain } from "@/lib/schap-availability";
+import { toProductStanceDomain } from "@/lib/schap-availability";
+import { buildKeuzeRailDomains } from "@/lib/context-rail";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { DashboardData, DashboardModel, PillarId, SchapTabId } from "@/types/dashboard";
@@ -26,7 +27,13 @@ type SchapViewProps = {
   domain: PillarId;
   activeTab: SchapTabId | null;
   onTabChange: (tab: SchapTabId) => void;
-  onBack: () => void;
+  /**
+   * De terugweg naar Voortgang › Overzicht. Ontbreekt op de Keuze-tab: dat is
+   * een eigen bestemming in de hoofdnavigatie, geen scherm ónder iets anders,
+   * en een "Overzicht ‹"-link die je naar een ander tabblad schiet leest als
+   * een fout.
+   */
+  onBack?: () => void;
   /**
    * Naar het schap van een ander domein. Zonder deze prop staat de
    * domeinschakelaar er niet — een chip die nergens heen gaat is erger dan
@@ -48,6 +55,12 @@ const SCHAP_SURFACE: Partial<Record<PillarId, VerdictPanelSurface>> = {
  * voeding. Producten (supplementen), Diensten (activiteiten), Favorieten
  * (snelle beheer van bewaarde items).
  *
+ * **Heet naar buiten "Keuze" (27 aug).** Sinds het schap een eigen tab in de
+ * hoofdnavigatie is, draagt het die naam in alle copy. In code houdt het zijn
+ * eigen naam: durable events (`choice.shelf_opened`) en surface-strings
+ * (`schap_slaap`) dragen meetreeksen die niet mogen breken omdat een label
+ * verandert.
+ *
  * **Aanbod en favorieten, geen leefstijl-werkplek.** Tot 23 augustus stond hier
  * een vierde tab met de volledige `PrioriteitenLadder` — dezelfde lagen,
  * dezelfde knop en dezelfde favoriet-sleutel als het Kompas-domeinscherm en
@@ -67,6 +80,9 @@ const SCHAP_SURFACE: Partial<Record<PillarId, VerdictPanelSurface>> = {
  * schap ›" op het profiel), waardoor het aanbod losraakte van zijn
  * verantwoording zodra je er eenmaal stond.
  */
+/** Dezelfde vijf domeinen als de linker rail — één bron, twee dragers. */
+const KEUZE_CHIP_DOMAINS = buildKeuzeRailDomains();
+
 export default function SchapView({
   data,
   domain,
@@ -109,21 +125,46 @@ export default function SchapView({
   }
 
   return (
-    <section aria-label={`Schap — ${pillar.label}`} className="pt-4">
+    <section aria-label={`Keuze — ${pillar.label}`} className="pt-4">
       <div className="mb-4">
-        <VoortgangTerugLink onBack={onBack} />
-        {/* De balk in de header draagt dezelfde regel; op mobiel stond hij
-            hier dubbel. */}
-        <div className="hidden text-[12px] font-semibold uppercase tracking-[0.14em] text-[var(--text)] md:block">
-          Schap · {pillar.label}
+        {onBack ? <VoortgangTerugLink onBack={onBack} /> : null}
+        <div className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[var(--text)]">
+          Keuze · {pillar.label}
         </div>
       </div>
 
-      {onSwitchDomain && SCHAP_DOMAINS.length > 1 ? (
-        <nav aria-label="Schap van een ander domein" className="mb-3 flex flex-wrap gap-2">
-          {SCHAP_DOMAINS.map((id) => {
+      {/* Onder md is dit de domeinschakelaar; vanaf md neemt de linker rail hem
+          over en zou een chiprij dezelfde keuze twee keer aanbieden.
+          Alle vijf domeinen staan erin, óók de twee zonder aanbod — die dicht,
+          met de reden. Weglaten maakt de poort onzichtbaar, en dan leest een
+          ontbrekend domein als een gat in plaats van als een oordeel. */}
+      {onSwitchDomain ? (
+        <nav
+          aria-label="Kiezen op een ander domein"
+          className="mb-3 flex flex-wrap gap-2 md:hidden"
+        >
+          {KEUZE_CHIP_DOMAINS.map(({ id, label, color, disabledHint }) => {
             const active = id === domain;
-            const chipPillar = PILLAR[id];
+
+            if (disabledHint) {
+              return (
+                <span
+                  key={id}
+                  aria-disabled
+                  title={disabledHint}
+                  className="inline-flex min-h-[36px] shrink-0 cursor-not-allowed items-center gap-1.5 rounded-full border border-[var(--divider)] bg-transparent px-3 text-[12.5px] font-semibold text-[var(--text-subtle)]"
+                >
+                  <span
+                    aria-hidden
+                    className="h-1.5 w-1.5 shrink-0 rounded-full opacity-50"
+                    style={{ background: color }}
+                  />
+                  {label}
+                  <Icons.Lock s={11} style={{ color: "var(--text-subtle)" }} />
+                </span>
+              );
+            }
+
             return (
               <button
                 key={id}
@@ -139,9 +180,9 @@ export default function SchapView({
                 <span
                   aria-hidden
                   className="h-1.5 w-1.5 shrink-0 rounded-full"
-                  style={{ background: chipPillar.color }}
+                  style={{ background: color }}
                 />
-                {chipPillar.label}
+                {label}
               </button>
             );
           })}
@@ -167,7 +208,7 @@ export default function SchapView({
 
       <nav
         role="tablist"
-        aria-label="Onderdelen van het schap"
+        aria-label="Onderdelen van je keuze"
         className="mb-4 flex flex-wrap gap-2"
       >
         {tabs.map((tab) => {

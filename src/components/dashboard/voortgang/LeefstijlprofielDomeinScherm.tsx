@@ -245,7 +245,7 @@ export default function LeefstijlprofielDomeinScherm({
             onClick={handleOpenSchap}
             className="cursor-pointer border-none bg-transparent p-0 text-left text-[13px] font-semibold text-[#9CC5A9]"
           >
-            Open je schap ›
+            Open je keuze ›
           </button>
         ) : null}
       </div>

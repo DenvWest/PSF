@@ -64,7 +64,7 @@ export default function MeerHulpBridgeSheet({
   return (
     <AgendaSheetFrame titleId={titleId} title="Maak een keuze" onClose={onClose}>
       <p className="mb-5 text-[13px] leading-normal text-[#CDD7D0] text-pretty">
-        Een keuze maak je in je schap, waar oordeel en commissie per kaart staan — niet hier
+        Een keuze maak je op de Keuze-tab, waar oordeel en commissie per kaart staan — niet hier
         los.
       </p>
 

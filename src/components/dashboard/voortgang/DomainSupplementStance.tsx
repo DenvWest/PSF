@@ -136,7 +136,7 @@ export default function DomainSupplementStance({
         >
           {!nutritionLogCompleted
             ? "Vul eerst je voeding in — zonder dat kunnen we niet zeggen of aanvullen iets toevoegt."
-            : "Het oordeel en het schap staan in Favorieten — hier leggen we alleen uit waarom de volgorde zo is."}
+            : "Het oordeel en het aanbod staan op Keuze — hier leggen we alleen uit waarom de volgorde zo is."}
         </p>
         {onOpenFavorieten ? (
           <button

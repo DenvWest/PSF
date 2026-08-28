@@ -41,7 +41,7 @@ export const DOMAIN_KOMPAS_COPY: Record<DomainKompasDomain, DomainKompasCopy> = 
     surface: "kompas_beweging",
     emptyLine: (layerId) =>
       layerId === 6
-        ? "Of aanvullen aan de orde is, lees je in je beweegbeeld. Kiezen doe je daarna op je schap, niet hier."
+        ? "Of aanvullen aan de orde is, lees je in je beweegbeeld. Kiezen doe je daarna op Keuze, niet hier."
         : null,
   },
   slaap: {

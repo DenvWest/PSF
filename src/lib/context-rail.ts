@@ -1,20 +1,26 @@
 import { PILLAR } from "@/data/dashboard";
-import { buildDashboardSchapHref } from "@/lib/dashboard-url";
-import { hasSchap } from "@/lib/schap-availability";
+import { buildDashboardKeuzeHref } from "@/lib/dashboard-url";
+import { hasSchap, schapGateReason } from "@/lib/schap-availability";
 import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
-export type VoortgangRailItemId = "hub" | "leefstijlprofiel" | "schap";
+export type VoortgangRailItemId = "hub" | "leefstijlprofiel" | "hermeting";
 
 /**
  * Contextuele linker rail (slice 1): pure bouwers voor wat de rail toont.
- * De rail heeft vier modi — profiel (geen Kompas-context), Kompas-home
+ * De rail heeft vijf modi — profiel (geen Kompas-context), Kompas-home
  * (domeinlijst), domein-tools (open domein: Kompas-knop + domeinlijst +
- * eigen tools indien aanwezig — nu alleen beweging heeft die) en voortgang
- * (Bekijken-navigatie op Voortgang). Alle navigatie-logica blijft in de
- * caller (KompasHome resp. Dashboard.tsx); hier zit alleen de vorm.
+ * eigen tools indien aanwezig — nu alleen beweging heeft die), voortgang
+ * (Bekijken-navigatie op Voortgang) en keuze (welk schap je opent). Alle
+ * navigatie-logica blijft in de caller (KompasHome resp. Dashboard.tsx); hier
+ * zit alleen de vorm.
  */
 
-export type ContextRailMode = "profile" | "kompasHome" | "domainTools" | "voortgang";
+export type ContextRailMode =
+  | "profile"
+  | "kompasHome"
+  | "domainTools"
+  | "voortgang"
+  | "keuze";
 
 export type ContextRailDomainItem = {
   id: PillarId;
@@ -106,9 +112,9 @@ export function buildDomainRailTools(domain: PillarId): ContextRailTool[] {
   if (hasSchap(domain)) {
     tools.push({
       id: "schap",
-      label: "Schap",
+      label: "Keuze",
       icon: "Pill",
-      href: buildDashboardSchapHref(domain, "producten"),
+      href: buildDashboardKeuzeHref(domain, "producten"),
     });
   }
 
@@ -129,19 +135,22 @@ export type ContextRailVoortgangItem = {
 /**
  * Favorieten staat sinds 21 augustus niet meer als los item in deze rail: het
  * schap draagt zelf een Favorieten-tab (per domein gefilterd), dus een
- * tweede, domein-overstijgende ingang hier was dubbel. Sinds 22 augustus is
- * het losse scherm (`screen=favorieten`) helemaal opgeheven — elke ingang
- * wijst nu naar het schap.
+ * tweede, domein-overstijgende ingang hier was dubbel.
+ *
+ * Sinds 27 augustus staat het schap hier helemaal niet meer: het is de
+ * Keuze-tab in de hoofdnavigatie geworden. Op de vrijgekomen plek staat
+ * Hermeting — die was een eigen tab, terwijl hij hoort bij de meetreeksen
+ * die hij voedt.
  */
 export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
   { id: "hub", label: "Overzicht", icon: "Home" },
   { id: "leefstijlprofiel", label: "Leefstijlprofiel", icon: "User" },
-  { id: "schap", label: "Schap", icon: "Pill" },
+  { id: "hermeting", label: "Hermeting", icon: "Calendar" },
 ];
 
 export function resolveVoortgangRailActiveItem(screen: VoortgangScreen): VoortgangRailItemId {
-  if (screen === "schap") {
-    return "schap";
+  if (screen === "hermeting") {
+    return "hermeting";
   }
   if (
     screen === "leefstijlprofiel" ||
@@ -150,5 +159,40 @@ export function resolveVoortgangRailActiveItem(screen: VoortgangScreen): Voortga
   ) {
     return "leefstijlprofiel";
   }
+  // `schap` is legacy en wordt bij binnenkomst naar de Keuze-tab herschreven;
+  // komt hij hier toch langs, dan is Overzicht de eerlijkste plek.
   return "hub";
+}
+
+export type ContextRailKeuzeItem = {
+  id: PillarId;
+  label: string;
+  icon: string;
+  color: string;
+  /** Waar geen schap is, staat het domein er wél maar dicht — mét de reden. */
+  disabledHint?: string;
+};
+
+/**
+ * De domeinschakelaar van de Keuze-tab, gedeeld door de linker rail (md+) en de
+ * chiprij in `SchapView` (daaronder). Volgt `SCHAP_DOMAINS` en
+ * `schapGateReason`, dus een domein dat er later een schap bij krijgt gaat hier
+ * vanzelf open — één bron, geen tweede lijst die uit de pas kan lopen.
+ *
+ * De twee gesloten domeinen staan er wél in. Dat geen schap hebben is een
+ * oordeel, geen ontbrekende lijst (BESLUIT_DASHBOARD_SUPPLEMENTROUTE_V1 §D5,
+ * §E1, §E2), en een onzichtbare poort leest als een gat in het product.
+ */
+export function buildKeuzeRailDomains(): ContextRailKeuzeItem[] {
+  return KOMPAS_RAIL_PILLAR_IDS.map((id) => {
+    const pillar = PILLAR[id];
+    const gate = schapGateReason(id);
+    return {
+      id,
+      label: pillar.label,
+      icon: pillar.icon,
+      color: pillar.color,
+      ...(gate ? { disabledHint: gate } : {}),
+    };
+  });
 }

@@ -1,14 +1,13 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScroll";
+import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
+import VoortgangTerugLink from "@/components/dashboard/voortgang/VoortgangTerugLink";
 import LeefstijlprofielDomeinScherm from "@/components/dashboard/voortgang/LeefstijlprofielDomeinScherm";
 import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
-import SchapView from "@/components/dashboard/voortgang/SchapView";
 import { clarityTag } from "@/lib/clarity";
-import { hasSchap, resolveSchapDomain } from "@/lib/schap-availability";
-import { resolveSchapTabForDomain } from "@/lib/schap-tabs";
 import { trackEvent } from "@/lib/ga4";
 import type { SyncDashboardVoortgangOptions } from "@/lib/dashboard-url";
 import type {
@@ -17,7 +16,6 @@ import type {
   DashboardModel,
   DashboardTabId,
   PillarId,
-  SchapTabId,
   VoortgangScreen,
 } from "@/types/dashboard";
 
@@ -29,15 +27,18 @@ type VoortgangHubProps = {
   tab: DashboardTabId;
   screen: VoortgangScreen;
   leefstijlprofielDomein: PillarId | null;
-  /** Het domein waarvan het schap open staat — alleen betekenisvol op screen=schap. */
-  schapDomein: PillarId | null;
-  /** Actieve sub-tab op het schap — alleen betekenisvol op screen=schap. */
-  schapTab: SchapTabId | null;
   leefstijlprofielAdviesExtra: ReactNode;
+  /**
+   * Het hermeting-scherm. Komt als slot binnen omdat de secties (`retest`,
+   * `future`) in `Dashboard.tsx` wonen en daar hun data al krijgen — tot 27
+   * augustus als eigen tabblad, sindsdien als scherm binnen Voortgang.
+   */
+  hermetingSlot: ReactNode;
   onScreenChange: (screen: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   onGoAgenda: () => void;
-  onGoHermeting: () => void;
+  /** Naar de Keuze-tab: het aanbod van dít domein. */
+  onGoKeuze: (domain: PillarId) => void;
 };
 
 function VoortgangHubInner({
@@ -46,17 +47,12 @@ function VoortgangHubInner({
   tab,
   screen,
   leefstijlprofielDomein,
-  schapDomein,
-  schapTab,
   leefstijlprofielAdviesExtra,
+  hermetingSlot,
   onScreenChange,
   onGoAgenda,
-  onGoHermeting,
+  onGoKeuze,
 }: Omit<VoortgangHubProps, "onPrefUpdated">) {
-  const [schapTabOverride, setSchapTabOverride] = useState<
-    { domain: PillarId | null; tab: SchapTabId } | null
-  >(null);
-
   useEffect(() => {
     if (tab !== "voortgang") {
       onScreenChange("hub");
@@ -67,30 +63,9 @@ function VoortgangHubInner({
     onScreenChange(next, options);
   };
 
-  // De URL is de bron bij binnenkomst; daarna wint de klik. `pushState` uit
-  // het sync-pad werkt `useSearchParams` niet bij, dus de gekozen tab leeft
-  // hier — met zijn domein erbij, zodat hij bij een domeinwissel vanzelf
-  // vervalt in plaats van mee te reizen.
-  const activeSchapTab =
-    schapTabOverride && schapTabOverride.domain === schapDomein
-      ? schapTabOverride.tab
-      : schapTab;
-
-  const handleSchapTabChange = (next: SchapTabId) => {
-    setSchapTabOverride({ domain: schapDomein, tab: next });
-    navigate("schap", { fav: schapDomein, schap: next });
-  };
-
   const goBack = () => {
     trackEvent("dashboard_voortgang_terug", { from: screen });
-    if (
-      screen === "leefstijlprofiel" ||
-      screen === "schap" ||
-      screen === "inzichten" ||
-      screen === "domein"
-    ) {
-      navigate("hub");
-    }
+    navigate("hub");
   };
 
   const openLeefstijlprofielDomein = (domain: PillarId) => {
@@ -100,36 +75,6 @@ function VoortgangHubInner({
     });
     clarityTag("dashboard_voortgang", `leefstijlprofiel_${domain}`);
     navigate("leefstijlprofiel", { fav: domain });
-  };
-
-  /** Het aanbod van één domein. Bestaat niet zonder domein mét schap. */
-  const openSchap = (domain: PillarId | null) => {
-    const target = resolveSchapDomain(domain) ?? resolveSchapDomain(model?.priority.id);
-    if (!target) {
-      return;
-    }
-    trackEvent("dashboard_voortgang_hub_click", { destination: "schap", domain: target });
-    clarityTag("dashboard_voortgang", `schap_${target}`);
-    navigate("schap", { fav: target });
-  };
-
-  /**
-   * Van schap naar schap, met je onderdeel mee. Anders wisselt de
-   * domeinschakelaar stilletjes ook je tab, en dat leest als een fout: je
-   * klikte op een domein, niet op Producten.
-   */
-  const switchSchapDomain = (target: PillarId) => {
-    if (!hasSchap(target)) {
-      return;
-    }
-    trackEvent("dashboard_voortgang_hub_click", {
-      destination: "schap",
-      domain: target,
-      from: "schap",
-    });
-    const tab = resolveSchapTabForDomain(target, activeSchapTab);
-    setSchapTabOverride({ domain: target, tab });
-    navigate("schap", { fav: target, schap: tab });
   };
 
   let content: ReactNode;
@@ -149,7 +94,7 @@ function VoortgangHubInner({
           leefstijlprofielDomein === "voeding" ? leefstijlprofielAdviesExtra : null
         }
         onBack={goBack}
-        onOpenSchap={openSchap}
+        onOpenSchap={onGoKeuze}
       />
     );
   } else if (screen === "leefstijlprofiel" || screen === "inzichten") {
@@ -160,22 +105,13 @@ function VoortgangHubInner({
         onOpenDomain={openLeefstijlprofielDomein}
       />
     );
-  } else if (screen === "schap" && schapDomein && hasSchap(schapDomein)) {
-    // Het schap in React (P3). De prebuild droeg beweeg-inhoud onder elke
-    // domeinkop; `SchapView` volgt het domein en leest `account_favorites` —
-    // dat kan een iframe niet. Bestand B (favorieten-schap-prebuild-v3)
-    // blijft de bron voor de vorm.
+  } else if (screen === "hermeting") {
     content = (
-      <SchapView
-        model={model!}
-        data={data}
-        domain={schapDomein}
-        activeTab={activeSchapTab}
-        onTabChange={handleSchapTabChange}
-        onBack={goBack}
-        onSwitchDomain={switchSchapDomain}
-        onOpenLeefstijlprofiel={openLeefstijlprofielDomein}
-      />
+      <section aria-label="Hermeting" className="pt-4">
+        <VoortgangTerugLink onBack={goBack} />
+        <VoortgangSectionHeader eyebrow="Hermeting" title="Meet of het werkt." />
+        {hermetingSlot}
+      </section>
     );
   } else {
     content = (
@@ -184,7 +120,7 @@ function VoortgangHubInner({
           model={model!}
           data={data}
           onGoAgenda={onGoAgenda}
-          onGoHermeting={onGoHermeting}
+          onGoHermeting={() => navigate("hermeting")}
           onOpenDomain={(domain: PillarId) => {
             openLeefstijlprofielDomein(domain);
           }}

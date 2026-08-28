@@ -6,6 +6,7 @@ const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
   "hub",
   "inzichten",
   "leefstijlprofiel",
+  "hermeting",
   "schap",
   "domein",
 ]);
@@ -182,27 +183,147 @@ export function isSchapTabId(value: unknown): value is SchapTabId {
   return typeof value === "string" && VALID_SCHAP_TABS.has(value as SchapTabId);
 }
 
-/** Sub-tab van het schap — alleen betekenisvol op `screen=schap`. */
-export function parseSchapTabFromUrl(url: string | URL): SchapTabId | null {
+/**
+ * Sub-tab van de Keuze-tab: `deel=` op `tab=keuze`.
+ *
+ * Leest ook nog de oude naam (`schap=` op `screen=schap`), zodat bookmarks van
+ * vóór 27 augustus op hetzelfde onderdeel landen in plaats van op Producten.
+ */
+export function parseKeuzeDeelFromUrl(url: string | URL): SchapTabId | null {
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
-  const schap = parsed.searchParams.get("schap");
-  return isSchapTabId(schap) ? schap : null;
+  const deel = parsed.searchParams.get("deel");
+  if (isSchapTabId(deel)) {
+    return deel;
+  }
+  const legacy = parsed.searchParams.get("schap");
+  return isSchapTabId(legacy) ? legacy : null;
 }
 
 /**
- * Deeplink naar het schap van één domein, optioneel direct op een sub-tab.
+ * Het domein waarvan de Keuze-tab het aanbod toont: `domein=` op `tab=keuze`.
  *
- * `tab: "favorieten"` opent het archief van dít domein — sinds 22 augustus de
+ * Valt terug op de oude `fav=`-param, want die droeg het schap tot 27 augustus.
+ * `null` betekent niet "geen domein" maar "kies zelf" — de caller vult dan aan
+ * met je prioriteitsdomein (zie `resolveSchapDomain`).
+ */
+export function parseKeuzeDomeinFromUrl(url: string | URL): PillarId | null {
+  const parsed =
+    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
+  const domein = parsed.searchParams.get("domein");
+  if (domein && KOMPAS_DOMAIN_IDS.has(domein as PillarId)) {
+    return domein as PillarId;
+  }
+  const fav = parsed.searchParams.get("fav");
+  if (fav && KOMPAS_DOMAIN_IDS.has(fav as PillarId)) {
+    return fav as PillarId;
+  }
+  return null;
+}
+
+/**
+ * Deeplink naar de Keuze-tab van één domein, optioneel direct op een onderdeel.
+ *
+ * `deel: "favorieten"` opent het archief van dít domein — sinds 22 augustus de
  * enige plek waar "wat jij bewaarde" nog leeft; het losse, domein-overstijgende
  * Favorieten-scherm is opgeheven.
+ *
+ * Sinds 27 augustus is dit een eigen tab (`tab=keuze`) in plaats van een scherm
+ * binnen Voortgang. Elke deur naar het aanbod loopt via déze bouwer — dat was
+ * al zo, en daardoor kostte de verhuizing één functie in plaats van tien
+ * losse hrefs.
  */
-export function buildDashboardSchapHref(domain: PillarId, tab?: SchapTabId | null): string {
-  const params = new URLSearchParams({ tab: "voortgang", screen: "schap", fav: domain });
-  if (isSchapTabId(tab)) {
-    params.set("schap", tab);
+export function buildDashboardKeuzeHref(domain: PillarId, deel?: SchapTabId | null): string {
+  const params = new URLSearchParams({ tab: "keuze", domein: domain });
+  if (isSchapTabId(deel)) {
+    params.set("deel", deel);
   }
   return `/dashboard?${params.toString()}`;
+}
+
+export function syncDashboardKeuzeParams(
+  domain: PillarId | null,
+  deel: SchapTabId | null,
+): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  const url = new URL(window.location.href);
+  url.searchParams.set("tab", "keuze");
+  url.searchParams.delete("kompas");
+  url.searchParams.delete("view");
+  url.searchParams.delete("dag");
+  url.searchParams.delete("blik");
+  url.searchParams.delete("screen");
+  url.searchParams.delete("fav");
+  url.searchParams.delete("schap");
+
+  if (domain) {
+    url.searchParams.set("domein", domain);
+  } else {
+    url.searchParams.delete("domein");
+  }
+  if (isSchapTabId(deel)) {
+    url.searchParams.set("deel", deel);
+  } else {
+    url.searchParams.delete("deel");
+  }
+
+  const nextHref = url.toString();
+  if (nextHref === window.location.href) {
+    return;
+  }
+  window.history.pushState(null, "", nextHref);
+}
+
+/**
+ * Routes van vóór 27 augustus, toen Hermeting een tab was en het schap een
+ * Voortgang-scherm. Herschrijft de URL in-place en geeft de tab terug waar hij
+ * nu op uitkomt; `null` als er niets legacy aan is.
+ *
+ * Twee verhuizingen, één functie — ze zitten in dezelfde ruil en een halve
+ * migratie (wel de tab, niet het scherm) laat je op een leeg tabblad landen.
+ */
+export function canonicalizeDashboardTabParam(url: URL): DashboardTabId | null {
+  const tab = url.searchParams.get("tab");
+
+  if (tab === "hermeting") {
+    url.searchParams.set("tab", "voortgang");
+    url.searchParams.set("screen", "hermeting");
+    url.searchParams.delete("domein");
+    url.searchParams.delete("fav");
+    url.searchParams.delete("deel");
+    url.searchParams.delete("schap");
+    return "voortgang";
+  }
+
+  if (tab !== "voortgang") {
+    return null;
+  }
+
+  const screen = url.searchParams.get("screen");
+  if (screen !== "schap" && screen !== "favorieten") {
+    return null;
+  }
+
+  const domein = parseKeuzeDomeinFromUrl(url);
+  if (!domein || !hasSchap(domein)) {
+    return null;
+  }
+
+  const deel = parseKeuzeDeelFromUrl(url);
+  url.searchParams.set("tab", "keuze");
+  url.searchParams.set("domein", domein);
+  url.searchParams.delete("screen");
+  url.searchParams.delete("fav");
+  url.searchParams.delete("schap");
+  url.searchParams.delete("blik");
+  if (deel) {
+    url.searchParams.set("deel", deel);
+  } else {
+    url.searchParams.delete("deel");
+  }
+  return "keuze";
 }
 
 export function buildDashboardVandaagHref(
@@ -311,7 +432,7 @@ export function buildDashboardVoortgangHref(
   if (resolvedScreen) {
     params.set("screen", resolvedScreen);
   }
-  if ((resolvedScreen === "leefstijlprofiel" || resolvedScreen === "schap") && resolvedFav) {
+  if (resolvedScreen === "leefstijlprofiel" && resolvedFav) {
     params.set("fav", resolvedFav);
   }
   return `/dashboard?${params.toString()}`;
@@ -320,8 +441,6 @@ export function buildDashboardVoortgangHref(
 export type SyncDashboardVoortgangOptions = {
   domein?: PillarId | null;
   fav?: PillarId | null;
-  /** Sub-tab van het schap — alleen betekenisvol op `screen=schap`. */
-  schap?: SchapTabId | null;
 };
 
 export function syncDashboardVoortgangScreenParam(
@@ -343,19 +462,17 @@ export function syncDashboardVoortgangScreenParam(
     url.searchParams.delete("screen");
     url.searchParams.delete("domein");
     url.searchParams.delete("fav");
+    url.searchParams.delete("deel");
     url.searchParams.delete("schap");
   } else {
     url.searchParams.set("screen", screen);
     url.searchParams.delete("domein");
-    if ((screen === "leefstijlprofiel" || screen === "schap") && options?.fav) {
+    url.searchParams.delete("deel");
+    url.searchParams.delete("schap");
+    if (screen === "leefstijlprofiel" && options?.fav) {
       url.searchParams.set("fav", options.fav);
     } else {
       url.searchParams.delete("fav");
-    }
-    if (screen === "schap" && isSchapTabId(options?.schap)) {
-      url.searchParams.set("schap", options.schap);
-    } else {
-      url.searchParams.delete("schap");
     }
   }
 
@@ -523,17 +640,15 @@ export function syncDashboardTabParam(
   } else {
     url.searchParams.delete("view");
   }
-  if (tab !== "voortgang") {
-    url.searchParams.delete("screen");
-    url.searchParams.delete("blik");
-    url.searchParams.delete("domein");
-    url.searchParams.delete("fav");
-  } else {
-    url.searchParams.delete("screen");
-    url.searchParams.delete("blik");
-    url.searchParams.delete("domein");
-    url.searchParams.delete("fav");
-  }
+  // Elke tabwissel start op het eerste scherm van die tab: geen screen, geen
+  // domein-scoping die uit een ander tabblad meereist. De Keuze-tab vult
+  // `domein`/`deel` zelf aan zodra hij weet welk schap hij opent.
+  url.searchParams.delete("screen");
+  url.searchParams.delete("blik");
+  url.searchParams.delete("domein");
+  url.searchParams.delete("fav");
+  url.searchParams.delete("deel");
+  url.searchParams.delete("schap");
   if (tab === "agenda" || tab === "vandaag") {
     if (nextDag && isValidAgendaDate(nextDag)) {
       url.searchParams.set("dag", nextDag);

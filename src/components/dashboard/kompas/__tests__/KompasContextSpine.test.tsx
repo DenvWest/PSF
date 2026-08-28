@@ -288,9 +288,9 @@ describe("Contextkolom — zone 2: wat jij hier koos", () => {
 describe("Contextkolom — zone 3: het schap van dit domein", () => {
   it("draagt op een domeinscherm de deur naar het schap van dát domein", () => {
     renderBoth();
-    const zone = screen.getByRole("region", { name: "Je schap" });
-    const link = within(zone).getByRole("link", { name: /Open je schap/ });
-    expect(link.getAttribute("href")).toContain("fav=beweging");
+    const zone = screen.getByRole("region", { name: "Je keuze" });
+    const link = within(zone).getByRole("link", { name: /Open je keuze/ });
+    expect(link.getAttribute("href")).toContain("domein=beweging");
     // Lock L2: geen productnaam, geen prijs, geen oordeel op deze surface.
     expect(within(zone).queryByText(/€|Beste koop|Aanrader/)).toBeNull();
   });
@@ -332,7 +332,7 @@ describe("Contextkolom — zone 3: het schap van dit domein", () => {
         </LadderMomentsProvider>
       </DomainLadderFocusProvider>,
     );
-    const zone = screen.getByRole("region", { name: "Geen schap op dit domein" });
+    const zone = screen.getByRole("region", { name: "Geen aanbod op dit domein" });
     expect(zone.textContent).toContain("Bij stress is ons antwoord leefstijl");
     expect(within(zone).queryByRole("link")).toBeNull();
   });

@@ -164,8 +164,8 @@ describe("buildContextSpine — per domein een eigen balk", () => {
       const { schap } = spineFor(domain);
       expect(schap.kind).toBe("open");
       if (schap.kind !== "open") continue;
-      expect(schap.href).toContain(`fav=${domain}`);
-      expect(schap.href).toContain("schap=producten");
+      expect(schap.href).toContain(`domein=${domain}`);
+      expect(schap.href).toContain("deel=producten");
       expect(schap.line.length).toBeGreaterThan(0);
     }
   });

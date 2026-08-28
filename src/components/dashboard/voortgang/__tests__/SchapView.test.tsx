@@ -117,16 +117,27 @@ describe("SchapView — de Favorieten-tab", () => {
 });
 
 describe("SchapView — de domeinschakelaar", () => {
-  const domeinNav = () => screen.getByRole("navigation", { name: "Schap van een ander domein" });
+  const domeinNav = () => screen.getByRole("navigation", { name: "Kiezen op een ander domein" });
 
-  it("toont alleen domeinen mét schap, nooit stress of verbinding", () => {
+  it("laat alleen domeinen mét aanbod klikken, in Kompas-volgorde", () => {
     renderSchap("slaap", null, { onSwitchDomain: vi.fn() });
     const labels = within(domeinNav())
       .getAllByRole("button")
       .map((chip) => chip.textContent ?? "");
-    expect(labels).toEqual(["Beweging", "Slaap", "Voeding"]);
-    expect(labels).not.toContain("Stress");
-    expect(labels).not.toContain("Verbinding");
+    expect(labels).toEqual(["Slaap", "Beweging", "Voeding"]);
+  });
+
+  // De poort zichtbaar houden: stress en verbinding hébben geen schap, en dat
+  // is een oordeel. Ze weglaten zou dat oordeel als een gat laten lezen.
+  it("toont stress en verbinding wél, dicht, mét de reden", () => {
+    renderSchap("slaap", null, { onSwitchDomain: vi.fn() });
+    for (const label of ["Stress", "Verbinding"]) {
+      const chip = within(domeinNav()).getByText(label);
+      expect(chip.closest("[aria-disabled]")).toBeTruthy();
+      expect(chip.closest("[aria-disabled]")?.getAttribute("title")).toContain(
+        "Geen aanbod",
+      );
+    }
   });
 
   it("markeert het open domein en laat dat geen navigatie afvuren", () => {

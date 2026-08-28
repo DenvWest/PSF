@@ -11,7 +11,7 @@ import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDet
 import MeerHulpBridgeSheet from "@/components/dashboard/agenda/MeerHulpBridgeSheet";
 import { clarityTag } from "@/lib/clarity";
 import { buildBewegingHelpBridge } from "@/lib/beweging-help-bridge";
-import { buildDashboardSchapHref } from "@/lib/dashboard-url";
+import { buildDashboardKeuzeHref } from "@/lib/dashboard-url";
 import { getCachedDailyLog, subscribeDailyLogCache } from "@/lib/daily-log-client";
 import AgendaPlanStepStrip from "@/components/dashboard/agenda/AgendaPlanStepStrip";
 import {
@@ -547,7 +547,7 @@ export default function AgendaDayTimeline({
           onClose={closeSheet}
           onOpenSchap={() => {
             closeSheet();
-            router.push(buildDashboardSchapHref(helpPreset.domain, "producten"));
+            router.push(buildDashboardKeuzeHref(helpPreset.domain, "producten"));
           }}
         />
       ) : null}

@@ -13,6 +13,7 @@ import { resolveCockpitContextTriggerAction } from "@/lib/cockpit-context-layout
 import { useCockpitContextLayout } from "@/lib/use-cockpit-context-layout";
 import type {
   ContextRailDomainItem,
+  ContextRailKeuzeItem,
   ContextRailMode,
   ContextRailTool,
   ContextRailToolId,
@@ -42,9 +43,11 @@ type CockpitFrameProps = {
   railVoortgangActiveItem?: VoortgangRailItemId | null;
   railVoortgangLeefstijlprofielDomein?: PillarId | null;
   railVoortgangDomains?: ContextRailDomainItem[];
-  railVoortgangSchapDomein?: PillarId | null;
   onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
   onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
+  railKeuzeDomains?: ContextRailKeuzeItem[];
+  railKeuzeActiveDomein?: PillarId | null;
+  onOpenKeuzeDomein?: (id: PillarId) => void;
   inspectorCards: InspectorCard[];
   remeasureAction?: { due: boolean; onClick: () => void };
   inspectorDoelFooter?: ReactNode;
@@ -121,9 +124,11 @@ export default function CockpitFrame({
   railVoortgangActiveItem = null,
   railVoortgangLeefstijlprofielDomein = null,
   railVoortgangDomains,
-  railVoortgangSchapDomein = null,
   onOpenVoortgangItem,
   onOpenLeefstijlprofielDomein,
+  railKeuzeDomains,
+  railKeuzeActiveDomein = null,
+  onOpenKeuzeDomein,
   inspectorCards,
   remeasureAction,
   inspectorDoelFooter,
@@ -308,9 +313,11 @@ export default function CockpitFrame({
             voortgangActiveItem={railVoortgangActiveItem}
             voortgangLeefstijlprofielDomein={railVoortgangLeefstijlprofielDomein}
             voortgangDomains={railVoortgangDomains}
-            voortgangSchapDomein={railVoortgangSchapDomein}
             onOpenVoortgangItem={onOpenVoortgangItem}
             onOpenLeefstijlprofielDomein={onOpenLeefstijlprofielDomein}
+            keuzeDomains={railKeuzeDomains}
+            keuzeActiveDomein={railKeuzeActiveDomein}
+            onOpenKeuzeDomein={onOpenKeuzeDomein}
           />
         )}
 

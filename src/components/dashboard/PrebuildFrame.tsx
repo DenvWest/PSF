@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   buildDashboardAgendaHref,
-  buildDashboardSchapHref,
+  buildDashboardKeuzeHref,
   buildDashboardVandaagHref,
   buildDashboardVoortgangHref,
   isSchapTabId,
@@ -59,7 +59,7 @@ export function resolvePrebuildHref(route: PrebuildRoute): string | null {
     if (route.screen === "schap" || route.screen === "favorieten") {
       const fav = asPillar(route.fav);
       if (fav) {
-        return buildDashboardSchapHref(fav, isSchapTabId(route.schap) ? route.schap : null);
+        return buildDashboardKeuzeHref(fav, isSchapTabId(route.schap) ? route.schap : null);
       }
     }
     return buildDashboardVoortgangHref(

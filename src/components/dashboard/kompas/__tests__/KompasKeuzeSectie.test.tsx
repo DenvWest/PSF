@@ -134,15 +134,15 @@ describe("KompasKeuzeSectie — Mijn keuze (default tab)", () => {
     expect(headings[0]?.textContent).toBe("Voeding");
   });
 
-  it("een supplement-rij linkt naar het schap van zijn eigen domein", () => {
+  it("een supplement-rij linkt naar de Keuze-tab van zijn eigen domein", () => {
     favoriteItems = [
       { id: "supp-magnesium", title: "Magnesium", kind: "supplement", domain: "slaap" },
     ];
     renderSectie("beweging");
 
-    const rij = screen.getByRole("link", { name: "Bekijk Magnesium op je schap" });
+    const rij = screen.getByRole("link", { name: "Bekijk Magnesium op Keuze" });
     expect(rij.getAttribute("href")).toBe(
-      "/dashboard?tab=voortgang&screen=schap&fav=slaap&schap=favorieten",
+      "/dashboard?tab=keuze&domein=slaap&deel=favorieten",
     );
 
     fireEvent.click(rij);
@@ -215,7 +215,7 @@ describe("KompasKeuzeSectie — Mijn keuze (default tab)", () => {
 
     expect(screen.getByText("Slaapactie 0")).toBeTruthy();
     expect(screen.queryByText("Slaapactie 5")).toBeNull();
-    expect(screen.getByText("+5 meer op je schap")).toBeTruthy();
+    expect(screen.getByText("+5 meer op Keuze")).toBeTruthy();
   });
 
   it("laat één domein verder doorlopen, want die kaart is volle breedte", () => {
@@ -229,7 +229,7 @@ describe("KompasKeuzeSectie — Mijn keuze (default tab)", () => {
 
     expect(screen.getByText("Slaapactie 7")).toBeTruthy();
     expect(screen.queryByText("Slaapactie 8")).toBeNull();
-    expect(screen.getByText("+2 meer op je schap")).toBeTruthy();
+    expect(screen.getByText("+2 meer op Keuze")).toBeTruthy();
   });
 
   it("toont een lege staat met knop naar het prioriteitsdomein", () => {
@@ -246,9 +246,9 @@ describe("KompasKeuzeSectie — Mijn keuze (default tab)", () => {
     ];
     renderSectie("slaap");
 
-    const knop = screen.getByRole("link", { name: "Bekijk je keuzes op je schap" });
+    const knop = screen.getByRole("link", { name: "Bekijk je keuzes op Keuze" });
     expect(knop.getAttribute("href")).toBe(
-      "/dashboard?tab=voortgang&screen=schap&fav=slaap&schap=favorieten",
+      "/dashboard?tab=keuze&domein=slaap&deel=favorieten",
     );
   });
 });

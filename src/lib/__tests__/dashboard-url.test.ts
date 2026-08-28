@@ -2,7 +2,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   buildDashboardAgendaHref,
-  buildDashboardSchapHref,
+  buildDashboardKeuzeHref,
   buildDashboardPlanHref,
   buildDashboardVandaagHref,
   buildDashboardVoortgangHref,
@@ -14,8 +14,10 @@ import {
   parseDagFromUrl,
   parseKompasFromUrl,
   parseLeefstijlprofielDomeinFromUrl,
-  parseSchapTabFromUrl,
+  parseKeuzeDeelFromUrl,
+  parseKeuzeDomeinFromUrl,
   parseVoortgangScreenFromUrl,
+  canonicalizeDashboardTabParam,
   canonicalizeVoortgangScreenParam,
   getLegacyVoortgangScreenAlias,
   syncDashboardAgendaViewParam,
@@ -155,30 +157,85 @@ describe("buildDashboardVoortgangHref", () => {
     );
   });
 
-  it("includes fav for schap deep links", () => {
+  it("draagt geen fav meer voor het legacy schap-scherm — dat is de Keuze-tab", () => {
     expect(buildDashboardVoortgangHref("schap", null, null, "beweging")).toBe(
-      "/dashboard?tab=voortgang&screen=schap&fav=beweging",
+      "/dashboard?tab=voortgang&screen=schap",
     );
   });
 });
 
-describe("buildDashboardSchapHref", () => {
-  it("builds a schap deeplink without a tab", () => {
-    expect(buildDashboardSchapHref("beweging")).toBe(
-      "/dashboard?tab=voortgang&screen=schap&fav=beweging",
+describe("buildDashboardKeuzeHref", () => {
+  it("bouwt een Keuze-deeplink zonder onderdeel", () => {
+    expect(buildDashboardKeuzeHref("beweging")).toBe(
+      "/dashboard?tab=keuze&domein=beweging",
     );
   });
 
-  it("includes the schap tab when given", () => {
-    expect(buildDashboardSchapHref("beweging", "producten")).toBe(
-      "/dashboard?tab=voortgang&screen=schap&fav=beweging&schap=producten",
+  it("neemt het onderdeel mee als het gegeven is", () => {
+    expect(buildDashboardKeuzeHref("beweging", "producten")).toBe(
+      "/dashboard?tab=keuze&domein=beweging&deel=producten",
     );
   });
 
-  it("deeplinks to the favorieten tab — het archief van dit domein", () => {
-    expect(buildDashboardSchapHref("beweging", "favorieten")).toBe(
-      "/dashboard?tab=voortgang&screen=schap&fav=beweging&schap=favorieten",
+  it("deeplinkt naar favorieten — het archief van dit domein", () => {
+    expect(buildDashboardKeuzeHref("beweging", "favorieten")).toBe(
+      "/dashboard?tab=keuze&domein=beweging&deel=favorieten",
     );
+  });
+});
+
+describe("canonicalizeDashboardTabParam", () => {
+  it("stuurt het oude hermeting-tabblad naar Voortgang › Hermeting", () => {
+    const url = new URL("http://localhost/dashboard?tab=hermeting");
+    expect(canonicalizeDashboardTabParam(url)).toBe("voortgang");
+    expect(url.search).toBe("?tab=voortgang&screen=hermeting");
+  });
+
+  it("stuurt het oude schap-scherm naar de Keuze-tab, mét onderdeel", () => {
+    const url = new URL(
+      "http://localhost/dashboard?tab=voortgang&screen=schap&fav=slaap&schap=favorieten",
+    );
+    expect(canonicalizeDashboardTabParam(url)).toBe("keuze");
+    expect(url.searchParams.get("tab")).toBe("keuze");
+    expect(url.searchParams.get("domein")).toBe("slaap");
+    expect(url.searchParams.get("deel")).toBe("favorieten");
+    expect(url.searchParams.get("screen")).toBeNull();
+    expect(url.searchParams.get("fav")).toBeNull();
+  });
+
+  it("stuurt ook de nog oudere favorieten-naam door naar de Keuze-tab", () => {
+    const url = new URL("http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=voeding");
+    expect(canonicalizeDashboardTabParam(url)).toBe("keuze");
+    expect(url.searchParams.get("domein")).toBe("voeding");
+  });
+
+  it("laat een domein zonder schap op Voortgang staan i.p.v. op een lege Keuze-tab", () => {
+    const url = new URL("http://localhost/dashboard?tab=voortgang&screen=schap&fav=stress");
+    expect(canonicalizeDashboardTabParam(url)).toBeNull();
+  });
+
+  it("laat huidige routes met rust", () => {
+    const url = new URL("http://localhost/dashboard?tab=keuze&domein=slaap");
+    expect(canonicalizeDashboardTabParam(url)).toBeNull();
+    expect(url.search).toBe("?tab=keuze&domein=slaap");
+  });
+});
+
+describe("parseKeuzeDomeinFromUrl", () => {
+  it("leest domein op de Keuze-tab", () => {
+    expect(parseKeuzeDomeinFromUrl("http://localhost/dashboard?tab=keuze&domein=slaap")).toBe(
+      "slaap",
+    );
+  });
+
+  it("valt terug op de oude fav-param", () => {
+    expect(
+      parseKeuzeDomeinFromUrl("http://localhost/dashboard?tab=voortgang&screen=schap&fav=voeding"),
+    ).toBe("voeding");
+  });
+
+  it("geeft null zonder domein", () => {
+    expect(parseKeuzeDomeinFromUrl("http://localhost/dashboard?tab=keuze")).toBeNull();
   });
 });
 
@@ -203,10 +260,10 @@ describe("isSchapTabId", () => {
   });
 });
 
-describe("parseSchapTabFromUrl", () => {
+describe("parseKeuzeDeelFromUrl", () => {
   it("parses a valid schap tab", () => {
     expect(
-      parseSchapTabFromUrl(
+      parseKeuzeDeelFromUrl(
         "http://localhost/dashboard?tab=voortgang&screen=schap&fav=beweging&schap=diensten",
       ),
     ).toBe("diensten");
@@ -214,10 +271,10 @@ describe("parseSchapTabFromUrl", () => {
 
   it("returns null when missing or invalid", () => {
     expect(
-      parseSchapTabFromUrl("http://localhost/dashboard?tab=voortgang&screen=schap"),
+      parseKeuzeDeelFromUrl("http://localhost/dashboard?tab=voortgang&screen=schap"),
     ).toBeNull();
     expect(
-      parseSchapTabFromUrl(
+      parseKeuzeDeelFromUrl(
         "http://localhost/dashboard?tab=voortgang&screen=schap&schap=onbekend",
       ),
     ).toBeNull();
@@ -426,7 +483,7 @@ describe("syncDashboardTabParam — agenda view", () => {
       value: new URL("http://localhost/dashboard?tab=agenda&view=maand"),
     });
 
-    syncDashboardTabParam("hermeting");
+    syncDashboardTabParam("keuze");
     const nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).not.toContain("view=");
 
@@ -618,10 +675,10 @@ describe("syncDashboardTabParam", () => {
       value: new URL("http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel"),
     });
 
-    syncDashboardTabParam("hermeting");
+    syncDashboardTabParam("keuze");
     expect(pushState).toHaveBeenCalledOnce();
     const nextUrl = pushState.mock.calls[0]?.[2] as string;
-    expect(nextUrl).toContain("tab=hermeting");
+    expect(nextUrl).toContain("tab=keuze");
     expect(nextUrl).not.toContain("screen=");
 
     window.history.pushState = originalPush;

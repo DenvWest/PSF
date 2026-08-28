@@ -3,10 +3,10 @@
 import Link from "next/link";
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
-import { PILLAR } from "@/data/dashboard";
 import {
   VOORTGANG_RAIL_ITEMS,
   type ContextRailDomainItem,
+  type ContextRailKeuzeItem,
   type ContextRailMode,
   type ContextRailTool,
   type ContextRailToolId,
@@ -33,14 +33,12 @@ type CockpitContextRailProps = {
   voortgangActiveItem?: VoortgangRailItemId | null;
   voortgangLeefstijlprofielDomein?: PillarId | null;
   voortgangDomains?: ContextRailDomainItem[];
-  /**
-   * Het domein waarvan het schap in de rail staat, of `null` als er geen is.
-   * Eén predikaat stuurt zowel of het item er staat als waar het heen gaat —
-   * net als de deur op Vandaag (KompasOndersteuningTile).
-   */
-  voortgangSchapDomein?: PillarId | null;
   onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
   onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
+  /** Keuze-modus: welk schap open staat en welke domeinen er een hebben. */
+  keuzeDomains?: ContextRailKeuzeItem[];
+  keuzeActiveDomein?: PillarId | null;
+  onOpenKeuzeDomein?: (id: PillarId) => void;
 };
 
 const ZONEFLAG =
@@ -98,9 +96,11 @@ export default function CockpitContextRail({
   voortgangActiveItem = null,
   voortgangLeefstijlprofielDomein = null,
   voortgangDomains = [],
-  voortgangSchapDomein = null,
   onOpenVoortgangItem,
   onOpenLeefstijlprofielDomein,
+  keuzeDomains = [],
+  keuzeActiveDomein = null,
+  onOpenKeuzeDomein,
 }: CockpitContextRailProps) {
   const name = firstName?.trim() || "Account";
 
@@ -286,11 +286,47 @@ export default function CockpitContextRail({
           ) : null}
         </span>
         <span className="min-w-0 flex-1 truncate">{item.label}</span>
-        {item.id === "schap" && voortgangSchapDomein ? (
-          <span className="shrink-0 text-[11.5px] text-[#7E8C82]">
-            {PILLAR[voortgangSchapDomein].label}
+      </button>
+    );
+  };
+
+  const renderKeuzeDomain = (item: ContextRailKeuzeItem) => {
+    const Icon = iconOf(item.icon);
+    const active = item.id === keuzeActiveDomein;
+
+    if (item.disabledHint != null) {
+      return (
+        <span
+          key={item.id}
+          title={item.disabledHint}
+          aria-disabled
+          className={`${RAIL_ITEM} cursor-not-allowed border-transparent text-[#7E8C82]`}
+        >
+          <span className="flex h-4 w-4 shrink-0 items-center justify-center opacity-60">
+            {Icon ? <Icon s={16} style={{ color: item.color }} /> : null}
           </span>
-        ) : null}
+          <span className="min-w-0 flex-1 truncate">{item.label}</span>
+          <Icons.Lock s={13} style={{ color: "#7E8C82", flexShrink: 0 }} />
+        </span>
+      );
+    }
+
+    return (
+      <button
+        key={item.id}
+        type="button"
+        aria-current={active ? "page" : undefined}
+        onClick={() => onOpenKeuzeDomein?.(item.id)}
+        className={`${RAIL_ITEM} ${
+          active
+            ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/12 text-[#F1EFE8]"
+            : "border-transparent text-[#9FB0A6] hover:border-white/10 hover:bg-white/[0.05] hover:text-[#F1EFE8]"
+        }`}
+      >
+        <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+          {Icon ? <Icon s={16} style={{ color: item.color }} /> : null}
+        </span>
+        <span className="min-w-0 flex-1 truncate">{item.label}</span>
       </button>
     );
   };
@@ -305,7 +341,9 @@ export default function CockpitContextRail({
               ? `${domainLabel ?? "Domein"}-navigatie`
               : mode === "voortgang"
                 ? "Voortgang-navigatie"
-                : "Profiel"
+                : mode === "keuze"
+                  ? "Keuze-navigatie"
+                  : "Profiel"
         }
         className="hidden flex-col gap-4 border-b border-white/10 p-4 md:flex md:border-b-0 md:border-r md:px-6"
       >
@@ -359,10 +397,19 @@ export default function CockpitContextRail({
           <>
             <span className={ZONEFLAG}>Bekijken</span>
             <nav aria-label="Bekijken" className="flex flex-col gap-1">
-              {VOORTGANG_RAIL_ITEMS.filter(
-                (item) => item.id !== "schap" || voortgangSchapDomein !== null,
-              ).map(renderVoortgangItem)}
+              {VOORTGANG_RAIL_ITEMS.map(renderVoortgangItem)}
             </nav>
+          </>
+        ) : mode === "keuze" ? (
+          <>
+            <span className={ZONEFLAG}>Kiezen op</span>
+            <nav aria-label="Kiezen op" className="flex flex-col gap-1">
+              {keuzeDomains.map(renderKeuzeDomain)}
+            </nav>
+            <p className="text-[11.5px] leading-relaxed text-[#7E8C82] text-pretty">
+              Twee domeinen staan dicht. Niet omdat er nog niets is, maar omdat
+              er niets is dat we kunnen onderbouwen.
+            </p>
           </>
         ) : (
           <>

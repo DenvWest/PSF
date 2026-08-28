@@ -44,9 +44,9 @@ describe("buildBewegingHelpBridge — statusstrip", () => {
     ).toBe("done");
   });
 
-  it("labelt Schap expliciet op now — zelfde keten als FavorietenSchapView", () => {
+  it("labelt Keuze expliciet op now — zelfde keten als de Keuze-tab", () => {
     const bridge = buildBewegingHelpBridge(model(), slot(), true);
-    expect(bridge.points.find((point) => point.id === "schap")?.label).toBe("Schap");
+    expect(bridge.points.find((point) => point.id === "schap")?.label).toBe("Keuze");
     expect(bridge.points.find((point) => point.id === "schap")?.status).toBe("now");
     expect(bridge.points.find((point) => point.id === "vergelijking")?.status).toBe("toekomstig");
   });

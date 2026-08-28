@@ -22,7 +22,7 @@ export const INTAKE_CTA = {
   discoverOverviewShort: "Ontdek jouw leefstijloverzicht — gratis",
   blogHeadline: "Zie waar jij de meeste winst pakt",
   blogSubline:
-    "15 vragen · 3 min · gratis en anoniem — inzicht op 6 leefstijl-domeinen. Geen medische test.",
+    "15 vragen · 3 min · gratis en anoniem — inzicht op 7 leefstijl-domeinen. Geen medische test.",
   kennisbankHeadline: "Wil je weten waar jij staat?",
   calculating: "We stellen je leefstijloverzicht samen...",
   supplementFeature:

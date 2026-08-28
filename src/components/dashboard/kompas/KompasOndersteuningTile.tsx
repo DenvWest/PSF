@@ -5,7 +5,7 @@ import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
-import { buildDashboardSchapHref } from "@/lib/dashboard-url";
+import { buildDashboardKeuzeHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import { resolveSchapDomain } from "@/lib/schap-availability";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
@@ -84,7 +84,7 @@ export default function KompasOndersteuningTile({
       {schapDomain ? (
         <>
           <Link
-            href={buildDashboardSchapHref(schapDomain, "producten")}
+            href={buildDashboardKeuzeHref(schapDomain, "producten")}
             onClick={() => {
               emitAccountClientEvent("choice.shelf_opened", {
                 domain: schapDomain,

@@ -7,7 +7,7 @@ import { PILLAR } from "@/data/dashboard";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { clarityTag } from "@/lib/clarity";
 import { KOMPAS_RAIL_PILLAR_IDS } from "@/lib/context-rail";
-import { buildDashboardSchapHref } from "@/lib/dashboard-url";
+import { buildDashboardKeuzeHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import {
   aanbevelingOriginLine,
@@ -307,8 +307,8 @@ function KeuzeRow({
     }
     return (
       <Link
-        href={buildDashboardSchapHref(schapDomain, "favorieten")}
-        aria-label={`Bekijk ${item.title} op je schap`}
+        href={buildDashboardKeuzeHref(schapDomain, "favorieten")}
+        aria-label={`Bekijk ${item.title} op Keuze`}
         onClick={() => onNavigate(destination)}
         className={ROW_INTERACTIVE_CLASS}
       >
@@ -422,7 +422,7 @@ function KeuzeGroupCard({
 
         {rest > 0 ? (
           <span className="block border-t border-white/[0.05] px-3.5 py-2 text-[11.5px] text-[#7E8C82]">
-            +{rest} meer op je schap
+            +{rest} meer op Keuze
           </span>
         ) : null}
 
@@ -669,7 +669,7 @@ export default function KompasKeuzeSectie({
         ? "Nog niets gekozen — je lijst vult zich vanuit je domeinen."
         : `${items.length} ${items.length === 1 ? "handeling" : "handelingen"}${
             domeinen > 1 ? `, over ${domeinen} domeinen` : ""
-          } — bewaard op je schap.`
+          } — bewaard op Keuze.`
       : "Eén stap per domein. Je laag komt uit je laatste meting, de stap wisselt per week.";
 
   return (
@@ -692,8 +692,8 @@ export default function KompasKeuzeSectie({
           {view === "mijn_keuze" && items.length > 0 ? (
             schapDomain ? (
               <PrimaireKnop
-                href={buildDashboardSchapHref(schapDomain, "favorieten")}
-                ariaLabel="Bekijk je keuzes op je schap"
+                href={buildDashboardKeuzeHref(schapDomain, "favorieten")}
+                ariaLabel="Bekijk je keuzes op Keuze"
                 onClick={() => {
                   trackEvent("dashboard_kompas_keuzes_click", {
                     surface: "kompas_home",

@@ -19,6 +19,7 @@ import {
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import DomainTopNav, { type DomainNavApi } from "@/components/dashboard/DomainTopNav";
 import VoortgangTopNav from "@/components/dashboard/voortgang/VoortgangTopNav";
+import KeuzeScherm from "@/components/dashboard/keuze/KeuzeScherm";
 import MovementRecoveryTrendsCard from "@/components/dashboard/MovementRecoveryTrendsCard";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { resolveTrendsAccess } from "@/lib/entitlement-access";
@@ -114,6 +115,7 @@ import { type SleepFocusKey } from "@/lib/sleep-focus";
 import { buildRecommendations } from "@/lib/build-recommendations";
 import {
   buildDomainRailTools,
+  buildKeuzeRailDomains,
   buildKompasRailDomains,
   resolveVoortgangRailActiveItem,
   type ContextRailApi,
@@ -130,7 +132,7 @@ import { LadderMomentsProvider } from "@/lib/ladder-moments-context";
 import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { useTodayActionDone } from "@/lib/use-today-action-done";
-import { resolveSchapDomain } from "@/lib/schap-availability";
+import { resolveKeuzeFallbackDomain, resolveSchapDomain } from "@/lib/schap-availability";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
@@ -146,12 +148,14 @@ import {
   parseDagFromUrl,
   parseKompasFromUrl,
   parseLeefstijlprofielDomeinFromUrl,
-  parseSchapTabFromUrl,
+  parseKeuzeDomeinFromUrl,
   parseVoortgangScreenFromUrl,
+  canonicalizeDashboardTabParam,
   canonicalizeVoortgangScreenParam,
   getLegacyVoortgangScreenAlias,
   syncDashboardAgendaViewParam,
   syncDashboardDagParam,
+  syncDashboardKeuzeParams,
   syncDashboardKompasParam,
   syncDashboardTabParam,
   syncDashboardVoortgangScreenParam,
@@ -209,10 +213,12 @@ type SharedSectionProps = {
   ) => void;
   onOpenInzichten: () => void;
   leefstijlprofielDomein: PillarId | null;
-  /** Het domein waarvan het schap open staat — alleen betekenisvol op screen=schap. */
-  schapDomein: PillarId | null;
-  /** Actieve sub-tab op het schap — alleen betekenisvol op screen=schap. */
-  schapTab: SchapTabId | null;
+  /** Het domein waarvan de Keuze-tab het aanbod toont. */
+  keuzeDomein: PillarId | null;
+  /** Actief onderdeel op de Keuze-tab. */
+  keuzeDeel: SchapTabId | null;
+  /** Naar de Keuze-tab, op het schap van dit domein. */
+  onGoKeuze: (domain: PillarId, deel?: SchapTabId | null) => void;
   /** Navigeert naar Voortgang › <domein> — het leesscherm, geen doe-surface (S4). */
   onGoVoortgangDomein: (domain: PillarId) => void;
   initialKompasView?: PillarId;
@@ -2751,15 +2757,33 @@ const SECTION_RENDERERS: Record<
         tab={props.tab}
         screen={props.voortgangScreen}
         leefstijlprofielDomein={props.leefstijlprofielDomein}
-        schapDomein={props.schapDomein}
-        schapTab={props.schapTab}
         leefstijlprofielAdviesExtra={
           props.empty ? null : <NutritionIntakeSection {...props} />
+        }
+        hermetingSlot={
+          props.empty ? null : (
+            <div className="flex flex-col gap-4">
+              <RetestSection {...props} />
+              <FutureSection />
+            </div>
+          )
         }
         onScreenChange={props.onVoortgangScreenChange}
         onPrefUpdated={props.onPrefUpdated}
         onGoAgenda={() => props.onGoAgenda()}
-        onGoHermeting={() => props.onGoHermeting()}
+        onGoKeuze={(domain) => props.onGoKeuze(domain)}
+      />
+    ),
+  keuze: (props) =>
+    props.empty || !props.model || !props.keuzeDomein ? null : (
+      <KeuzeScherm
+        model={props.model}
+        data={props.data}
+        domain={props.keuzeDomein}
+        deel={props.keuzeDeel}
+        onDeelChange={(domain, deel) => props.onGoKeuze(domain, deel)}
+        onSwitchDomain={(domain, deel) => props.onGoKeuze(domain, deel)}
+        onOpenLeefstijlprofiel={props.onGoVoortgangDomein}
       />
     ),
   future: () => <FutureSection />,
@@ -2775,34 +2799,6 @@ function renderDashboardSection(
   }
   return null;
 }
-
-const DashTabHeader = ({ tab }: { tab: DashboardTab }) => (
-  <div style={{ marginBottom: 20 }}>
-    <div
-      style={{
-        fontFamily: "var(--f-serif)",
-        fontSize: 26,
-        color: "var(--text)",
-        lineHeight: 1.15,
-      }}
-    >
-      {tab.title}
-    </div>
-    {tab.subtitle ? (
-      <div
-        style={{
-          fontSize: 14,
-          color: "var(--text-muted)",
-          marginTop: 6,
-          lineHeight: 1.5,
-          textWrap: "pretty",
-        }}
-      >
-        {tab.subtitle}
-      </div>
-    ) : null}
-  </div>
-);
 
 const EmptyTabState = ({
   tab,
@@ -2894,6 +2890,10 @@ function DashboardContent({
     initialVoortgangScreen ?? "hub",
   );
   const [leefstijlprofielDomein, setLeefstijlprofielDomein] = useState<PillarId | null>(null);
+  // Het domein van de Keuze-tab zodra de gebruiker hem hier wisselt: `pushState`
+  // werkt `useSearchParams` niet bij, dus de URL is de bron bij binnenkomst en
+  // deze staat wint daarna.
+  const [keuzeDomeinOverride, setKeuzeDomeinOverride] = useState<PillarId | null>(null);
   // Live-geopende Kompas-domein, gemeld door KompasHome — zodat de
   // cockpit-shell (header/breadcrumb/context) meebeweegt met navigatie i.p.v.
   // vast te staan op de domein uit de URL bij het eerste laden.
@@ -2967,11 +2967,7 @@ function DashboardContent({
   const todayActionDone = useTodayActionDone(model);
 
   const activeVoortgangFavDomein = useMemo((): PillarId | null => {
-    if (
-      voortgangScreen !== "leefstijlprofiel" &&
-      voortgangScreen !== "schap" &&
-      voortgangScreen !== "domein"
-    ) {
+    if (voortgangScreen !== "leefstijlprofiel" && voortgangScreen !== "domein") {
       return null;
     }
     const paramFav = searchParams.get("fav");
@@ -2992,35 +2988,44 @@ function DashboardContent({
       ? activeVoortgangFavDomein
       : null;
 
-  const activeSchapDomein = voortgangScreen === "schap" ? activeVoortgangFavDomein : null;
-
   /**
-   * Welk schap de rail aanbiedt: dat wat al open staat, anders het domein dat
-   * je op Leefstijlprofiel bekijkt, anders je prioriteit. `null` = dit domein
-   * heeft geen schap, en dan valt het rail-item weg in plaats van dat het op
-   * een ander scherm uitkomt (zie ook `KompasOndersteuningTile`).
+   * Welk schap de Keuze-tab opent: het domein uit de URL, anders het domein dat
+   * je op Leefstijlprofiel bekijkt, anders je prioriteit. `null` betekent dat
+   * geen van die drie een schap heeft — dan blijft de tab leeg in plaats van
+   * dat hij een domein toont dat er geen aanbod op heeft (zie ook
+   * `KompasOndersteuningTile`: één predikaat, `resolveSchapDomain`).
    */
-  const railSchapDomein =
-    resolveSchapDomain(activeSchapDomein) ??
-    resolveSchapDomain(activeLeefstijlprofielDomein) ??
-    resolveSchapDomain(model?.priority.id);
+  const activeKeuzeDomein = useMemo((): PillarId | null => {
+    // Alleen uit `searchParams`, nooit uit `window.location`: die tweede bron
+    // bestaat op de server niet, en op een legacy-URL (`fav=slaap`) leest de
+    // server dan een ander domein dan de client — dat is precies een
+    // hydration-mismatch. `fav` staat er als tweede sleutel bij, want dat is
+    // de naam die het schap tot 27 augustus droeg. Navigatie ná hydration
+    // wordt gedekt door `keuzeDomeinOverride`.
+    const paramDomein = searchParams.get("domein") ?? searchParams.get("fav");
+    const fromParams = isPillarId(paramDomein) ? resolveSchapDomain(paramDomein) : null;
+    if (fromParams) {
+      return fromParams;
+    }
+    return (
+      resolveSchapDomain(keuzeDomeinOverride) ??
+      resolveSchapDomain(activeLeefstijlprofielDomein) ??
+      resolveSchapDomain(model?.priority.id) ??
+      resolveKeuzeFallbackDomain(model?.scores)
+    );
+  }, [
+    searchParams,
+    keuzeDomeinOverride,
+    activeLeefstijlprofielDomein,
+    model?.priority,
+    model?.scores,
+  ]);
 
-  const activeSchapTab = useMemo((): SchapTabId | null => {
-    if (voortgangScreen !== "schap") {
-      return null;
-    }
-    const paramSchap = searchParams.get("schap");
-    if (isSchapTabId(paramSchap)) {
-      return paramSchap;
-    }
-    if (typeof window !== "undefined") {
-      const urlSchap = parseSchapTabFromUrl(window.location.href);
-      if (urlSchap) {
-        return urlSchap;
-      }
-    }
-    return null;
-  }, [voortgangScreen, searchParams]);
+  /** Idem: `schap=` is de oude naam van `deel=`. Klikken daarna leven in `KeuzeScherm`. */
+  const activeKeuzeDeel = useMemo((): SchapTabId | null => {
+    const paramDeel = searchParams.get("deel") ?? searchParams.get("schap");
+    return isSchapTabId(paramDeel) ? paramDeel : null;
+  }, [searchParams]);
 
   const tabMeta = DASHBOARD_TABS.find((t) => t.id === tab) ?? DASHBOARD_TABS[0];
   const allowedTypes = TAB_SECTIONS[tab];
@@ -3077,19 +3082,40 @@ function DashboardContent({
         return;
       }
       setVoortgangScreen(screen);
-      if (screen === "leefstijlprofiel" || screen === "schap") {
+      if (screen === "leefstijlprofiel") {
         const nextFav =
           options && "fav" in options ? (options.fav ?? null) : leefstijlprofielDomein;
         setLeefstijlprofielDomein(nextFav);
-        syncDashboardVoortgangScreenParam(screen, {
-          fav: nextFav,
-          ...(screen === "schap" ? { schap: options?.schap ?? null } : {}),
-        });
+        syncDashboardVoortgangScreenParam(screen, { fav: nextFav });
         return;
       }
       syncDashboardVoortgangScreenParam(screen);
     },
     [leefstijlprofielDomein],
+  );
+
+  /**
+   * Naar de Keuze-tab, op het schap van één domein. De enige schrijver van de
+   * `tab=keuze&domein=&deel=`-route: elke deur (Vandaag, Mijn Dag,
+   * Leefstijlprofiel, de rail, de balk in de header) loopt hierlangs, zodat ze
+   * niet uit elkaar kunnen lopen.
+   */
+  const handleGoKeuze = useCallback(
+    (domain: PillarId, deel?: SchapTabId | null) => {
+      const target = resolveSchapDomain(domain);
+      if (!target) {
+        return;
+      }
+      if (tab !== "keuze") {
+        trackDashboardTabSelected("keuze");
+        clarityTag("dashboard_tab", "keuze");
+      }
+      setKeuzeDomeinOverride(target);
+      setTab("keuze");
+      setVoortgangScreen("hub");
+      syncDashboardKeuzeParams(target, deel ?? null);
+    },
+    [tab],
   );
 
   /**
@@ -3105,13 +3131,11 @@ function DashboardContent({
         handleVoortgangScreenChange("hub");
       } else if (item === "leefstijlprofiel") {
         handleVoortgangScreenChange("leefstijlprofiel", { fav: null });
-      } else if (item === "schap") {
-        if (railSchapDomein) {
-          handleVoortgangScreenChange("schap", { fav: railSchapDomein });
-        }
+      } else if (item === "hermeting") {
+        handleVoortgangScreenChange("hermeting");
       }
     },
-    [handleVoortgangScreenChange, railSchapDomein],
+    [handleVoortgangScreenChange],
   );
 
   const handleVoortgangDomeinOpen = useCallback(
@@ -3147,8 +3171,27 @@ function DashboardContent({
     [handleVoortgangDomeinOpen],
   );
 
+  /** Domeinschakelaar van de Keuze-tab in de linker rail (md+). */
+  const handleRailKeuzeDomeinOpen = useCallback(
+    (domain: PillarId) => {
+      trackEvent("dashboard_keuze_domein_open", { domain, surface: "rail" });
+      clarityTag("dashboard_keuze", `domein_${domain}`);
+      handleGoKeuze(domain, activeKeuzeDeel);
+    },
+    [handleGoKeuze, activeKeuzeDeel],
+  );
+
   const syncTabFromLocation = useCallback(() => {
     const url = new URL(window.location.href);
+    // Routes van vóór 27 augustus (`tab=hermeting`, `screen=schap`) eerst naar
+    // hun huidige plek herschrijven — anders leest de rest van deze functie een
+    // tab die niet meer bestaat.
+    const legacyTab = canonicalizeDashboardTabParam(url);
+    if (legacyTab) {
+      trackEvent("dashboard_tab_legacy_redirect", { to: legacyTab });
+      clarityTag("dashboard_tab_legacy", legacyTab);
+      window.history.replaceState(null, "", url.toString());
+    }
     const tabParam = url.searchParams.get("tab");
     if (tabParam && VALID_TAB_IDS.has(tabParam as DashboardTabId)) {
       const parsedTab = tabParam as DashboardTabId;
@@ -3171,16 +3214,15 @@ function DashboardContent({
         }
         const parsedScreen = parseVoortgangScreenFromUrl(url);
         setVoortgangScreen(parsedScreen);
-        if (
-          parsedScreen === "leefstijlprofiel" ||
-          parsedScreen === "schap" ||
-          parsedScreen === "domein"
-        ) {
+        if (parsedScreen === "leefstijlprofiel" || parsedScreen === "domein") {
           const urlFav = parseLeefstijlprofielDomeinFromUrl(url);
           setLeefstijlprofielDomein(urlFav);
         }
       } else {
         setVoortgangScreen("hub");
+        if (parsedTab === "keuze") {
+          setKeuzeDomeinOverride(resolveSchapDomain(parseKeuzeDomeinFromUrl(url)));
+        }
       }
     }
     const dag = parseDagFromUrl(url);
@@ -3196,10 +3238,34 @@ function DashboardContent({
     return () => window.removeEventListener("popstate", onPopState);
   }, [syncTabFromLocation]);
 
+  // Eén keer bij binnenkomst: een oude link (`tab=hermeting`,
+  // `screen=schap`) landt server-side al op het juiste scherm, maar de URL in
+  // de adresbalk draagt dan nog de oude naam. `replaceState`, geen
+  // `pushState` — dit is opschonen, geen navigatiestap, dus de terug-knop mag
+  // er niet op blijven hangen.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const canonical = canonicalizeDashboardTabParam(url);
+    if (!canonical) {
+      return;
+    }
+    trackEvent("dashboard_tab_legacy_redirect", { to: canonical });
+    clarityTag("dashboard_tab_legacy", canonical);
+    window.history.replaceState(null, "", url.toString());
+  }, []);
+
   useEffect(() => {
     // Tab-bar-klikken lopen via history.pushState → popstate-listener hierboven.
     // Dit effect blijft voor echte Next-navigaties (bv. KompasBegeleidingLink).
-    const tabParam = searchParams.get("tab");
+    //
+    // Lezen uit `window.location` en niet uit `searchParams`: bij een legacy
+    // route schrijft het effect hierboven de URL al schoon, en dan draagt
+    // `searchParams` nog de oude naam — die zou de tab hier terugzetten op het
+    // tabblad waar je net vandaan gestuurd bent. De canonicalisatie draait ook
+    // hier, op een kopie, zodat de volgorde van de effecten niet uitmaakt.
+    const url = new URL(window.location.href);
+    canonicalizeDashboardTabParam(url);
+    const tabParam = url.searchParams.get("tab");
     if (!tabParam || !VALID_TAB_IDS.has(tabParam as DashboardTabId)) {
       return;
     }
@@ -3212,7 +3278,10 @@ function DashboardContent({
         }
       }
       if (parsedTab === "voortgang") {
-        setVoortgangScreen(parseVoortgangScreenFromUrl(window.location.href));
+        setVoortgangScreen(parseVoortgangScreenFromUrl(url));
+      }
+      if (parsedTab === "keuze") {
+        setKeuzeDomeinOverride(resolveSchapDomain(parseKeuzeDomeinFromUrl(url)));
       }
     });
   }, [searchParams, VALID_TAB_IDS]);
@@ -3247,6 +3316,15 @@ function DashboardContent({
     } else if (nextTab !== tab) {
       setVoortgangScreen("hub");
     }
+    // De tab-balk is het "opnieuw beginnen"-gebaar: hij laat de Keuze-tab
+    // terugvallen op je prioriteitsdomein, net zoals Kompas terugvalt op de
+    // home en Voortgang op Overzicht. Deeplinks (`handleGoKeuze`) lopen hier
+    // niet langs en houden hun domein dus wél vast.
+    if (nextTab === "keuze" && tab === "keuze" && keuzeDomeinOverride) {
+      trackEvent("dashboard_keuze_tab_reset", { source: "tabbar" });
+      clarityTag("dashboard_keuze", "domein_reset");
+    }
+    setKeuzeDomeinOverride(null);
     setTab(nextTab);
   };
 
@@ -3306,7 +3384,10 @@ function DashboardContent({
     onDashboardCheckin,
     onRemeasure,
     onGoVandaag: () => selectTab("vandaag"),
-    onGoHermeting: () => selectTab("hermeting"),
+    onGoHermeting: () => {
+      handleVoortgangScreenChange("hermeting");
+      selectTab("voortgang");
+    },
     onGoAgenda: (date?: string) => {
       const dag = date && isValidAgendaDate(date) ? date : agendaDate;
       if (dag !== agendaDate) {
@@ -3332,8 +3413,9 @@ function DashboardContent({
     onVoortgangScreenChange: handleVoortgangScreenChange,
     onOpenInzichten: () => handleVoortgangScreenChange("leefstijlprofiel", { fav: null }),
     leefstijlprofielDomein: activeLeefstijlprofielDomein,
-    schapDomein: activeSchapDomein,
-    schapTab: activeSchapTab,
+    keuzeDomein: activeKeuzeDomein,
+    keuzeDeel: activeKeuzeDeel,
+    onGoKeuze: handleGoKeuze,
     onGoVoortgangDomein: goToVoortgangDomein,
     initialKompasView,
     prefUpdatedAt: priorityPref?.updatedAt ?? null,
@@ -3348,15 +3430,6 @@ function DashboardContent({
     tab === "vandaag" || tab === "agenda" || tab === "voortgang"
       ? "ps-dash-surface-kompas"
       : "";
-
-  // Kompas en Voortgang dragen hun titel al in hun eigen hero (VoortgangHero
-  // heeft een `<h1>`); Mijn Dag heeft dat niet, maar de tab-nav zegt al waar
-  // je bent — een tweede "Mijn Dag" er vlak onder is dubbelop. Alleen
-  // Hermeting leunt nog op deze generieke kop.
-  const tabHeaderNode =
-    tab === "vandaag" || tab === "voortgang" || tab === "agenda" ? null : (
-      <DashTabHeader tab={tabMeta} />
-    );
 
   const sectionsNode = (
     <div
@@ -3495,19 +3568,22 @@ function DashboardContent({
     ? "profile"
     : tab === "voortgang"
       ? "voortgang"
-      : tab !== "vandaag"
-        ? "profile"
-        : !viewedDomain
-          ? "kompasHome"
-          : "domainTools";
+      : tab === "keuze"
+        ? "keuze"
+        : tab !== "vandaag"
+          ? "profile"
+          : !viewedDomain
+            ? "kompasHome"
+            : "domainTools";
   const railDomainItems = useMemo(
     () => buildKompasRailDomains(model?.scores ?? {}),
     [model?.scores],
   );
+  const keuzeRailDomains = useMemo(() => buildKeuzeRailDomains(), []);
 
   const contextRailMode: ContextRailMode =
-    desiredRailMode === "voortgang"
-      ? "voortgang"
+    desiredRailMode === "voortgang" || desiredRailMode === "keuze"
+      ? desiredRailMode
       : contextRailApi && contextRailApi.mode === desiredRailMode
         ? desiredRailMode
         : "profile";
@@ -3537,20 +3613,27 @@ function DashboardContent({
         activeItem={resolveVoortgangRailActiveItem(voortgangScreen)}
         leefstijlprofielDomein={activeLeefstijlprofielDomein}
         domains={railDomainItems}
-        schapDomein={railSchapDomein}
         onOpenItem={handleTopNavVoortgangOpen}
         onOpenDomein={handleTopNavLeefstijlprofielDomeinOpen}
       />
     ) : null;
+
+  /**
+   * De Keuze-tab draagt hier géén ingeklapte balk. Zijn navigatie is één
+   * driekeuze (welk schap), en die past als chiprij bovenaan het scherm zelf —
+   * één tik in plaats van twee. De balk bestaat voor Voortgang omdat daar acht
+   * ongelijksoortige bestemmingen onder moeten; dat is een ander probleem.
+   */
+  const collapsibleTopNav = voortgangTopNav;
 
   return (
     <div className={`min-h-dvh ${surfaceClass}`}>
       <CockpitFrame
         activeTab={tab}
         onSelectTab={selectTab}
-        domainNav={voortgangTopNav ?? kompasDomainNav}
+        domainNav={collapsibleTopNav ?? kompasDomainNav}
         domainNavClassName={
-          voortgangTopNav ? "px-4 pb-2.5 sm:px-6 md:hidden" : undefined
+          collapsibleTopNav ? "px-4 pb-2.5 sm:px-6 md:hidden" : undefined
         }
         onOpenSettings={() => router.push("/account")}
         onLogout={onLogout}
@@ -3569,9 +3652,11 @@ function DashboardContent({
         railVoortgangActiveItem={resolveVoortgangRailActiveItem(voortgangScreen)}
         railVoortgangLeefstijlprofielDomein={activeLeefstijlprofielDomein}
         railVoortgangDomains={railDomainItems}
-        railVoortgangSchapDomein={railSchapDomein}
         onOpenVoortgangItem={handleRailVoortgangOpen}
         onOpenLeefstijlprofielDomein={handleRailLeefstijlprofielDomeinOpen}
+        railKeuzeDomains={keuzeRailDomains}
+        railKeuzeActiveDomein={activeKeuzeDomein}
+        onOpenKeuzeDomein={handleRailKeuzeDomeinOpen}
         inspectorCards={inspectorCards}
         remeasureAction={remeasureAction}
         inspectorDoelFooter={inspectorDoelFooter}
@@ -3586,12 +3671,11 @@ function DashboardContent({
               : (viewedDomain != null && COCKPIT_WIDTH_DOMAINS.has(viewedDomain)) ||
                   (tab === "vandaag" && !viewedDomain) ||
                   tab === "voortgang" ||
-                  tab === "hermeting"
+                  tab === "keuze"
                 ? "min-w-0"
                 : "max-w-[720px]"
           }`}
         >
-          {tabHeaderNode}
           {sectionsNode}
         </div>
       </CockpitFrame>

@@ -65,7 +65,7 @@ export default function FavorietenBewegingSection({
               textWrap: "pretty",
             }}
           >
-            Wat je uit het schap koos. Afvinken doe je op Mijn Dag.
+            Wat je op Keuze koos. Afvinken doe je op Mijn Dag.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {SCHAP_BASIS_CARDS.map((card) => (

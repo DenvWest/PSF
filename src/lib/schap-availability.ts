@@ -26,6 +26,21 @@ export function hasSchap(domain: PillarId): boolean {
 }
 
 /**
+ * Waaróm een domein geen schap heeft, in gebruikerstaal. Hoort hier en nergens
+ * anders: elke plek die de poort toont (de rail op Keuze, de chiprij in
+ * `SchapView`) leest dezelfde zin, zodat de reden niet per surface kan
+ * verschillen.
+ */
+export const SCHAP_GATE_REASON: Partial<Record<PillarId, string>> = {
+  stress: "Geen aanbod op stress — de check meet belasting en herstelgedrag, geen inname.",
+  verbinding: "Geen aanbod op verbinding — hier valt niets te kopen dat werkt.",
+};
+
+export function schapGateReason(domain: PillarId): string | null {
+  return hasSchap(domain) ? null : (SCHAP_GATE_REASON[domain] ?? "Geen aanbod op dit domein.");
+}
+
+/**
  * Het schap-domein waar een deur op uitkomt, of `null` als dit domein er geen
  * heeft. Elke ingang naar Favorieten draait op deze ene functie — de deur op
  * Vandaag (KompasOndersteuningTile) en de rail op Voortgang (VoortgangHub).
@@ -34,6 +49,27 @@ export function hasSchap(domain: PillarId): boolean {
  */
 export function resolveSchapDomain(domain: PillarId | null | undefined): PillarId | null {
   return domain && hasSchap(domain) ? domain : null;
+}
+
+/**
+ * Waar de Keuze-tab op landt als niets anders een schap oplevert: het domein
+ * mét schap waar je op dit moment het laagst staat.
+ *
+ * Nodig omdat Keuze sinds 27 augustus een vaste bestemming in de
+ * hoofdnavigatie is. Je prioriteitsdomein kán stress of verbinding zijn, en
+ * die hebben geen schap — dan zou de tab leeg opengaan, en een leeg tabblad in
+ * de hoofdnavigatie leest als een kapot product in plaats van als een oordeel.
+ * De laagste score is de eerlijkste gok: daar valt het meeste te winnen.
+ */
+export function resolveKeuzeFallbackDomain(
+  scores: Record<string, number> | null | undefined,
+): PillarId {
+  const [first, ...rest] = SCHAP_DOMAINS;
+  return rest.reduce(
+    (lowest, domain) =>
+      (scores?.[domain] ?? 100) < (scores?.[lowest] ?? 100) ? domain : lowest,
+    first,
+  );
 }
 
 /** PillarId → de sleutel die domain-product-stance gebruikt. Alleen de domeinen mét schap. */

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildDomainRailTools,
+  buildKeuzeRailDomains,
   buildKompasRailDomains,
   resolveVoortgangRailActiveItem,
   KOMPAS_RAIL_PILLAR_IDS,
@@ -41,12 +42,13 @@ describe("buildDomainRailTools", () => {
     );
   });
 
-  it("geeft beweging check, schap en gids — in die volgorde", () => {
+  it("geeft beweging check, keuze en gids — in die volgorde", () => {
     const tools = buildDomainRailTools("beweging");
 
     expect(tools.map((tool) => tool.id)).toEqual(["checkin", "schap", "gids"]);
+    expect(tools.find((tool) => tool.id === "schap")?.label).toBe("Keuze");
     expect(tools.find((tool) => tool.id === "schap")?.href).toBe(
-      "/dashboard?tab=voortgang&screen=schap&fav=beweging&schap=producten",
+      "/dashboard?tab=keuze&domein=beweging&deel=producten",
     );
     expect(tools.find((tool) => tool.id === "gids")?.href).toBe("/gids/beweging");
   });
@@ -83,28 +85,53 @@ describe("buildDomainRailTools", () => {
 });
 
 describe("VOORTGANG_RAIL_ITEMS", () => {
-  it("toont Overzicht, Leefstijlprofiel (User) en Schap (Pill) — geen los Favorieten-item meer", () => {
+  it("toont Overzicht, Leefstijlprofiel (User) en Hermeting (Calendar) — het schap is de Keuze-tab", () => {
     expect(VOORTGANG_RAIL_ITEMS.map((item) => item.id)).toEqual([
       "hub",
       "leefstijlprofiel",
-      "schap",
+      "hermeting",
     ]);
     expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "leefstijlprofiel")?.icon).toBe(
       "User",
     );
-    expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "schap")?.icon).toBe("Pill");
+    expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "hermeting")?.icon).toBe(
+      "Calendar",
+    );
   });
 });
 
 describe("resolveVoortgangRailActiveItem", () => {
-  it("licht hub en schap op", () => {
+  it("licht hub en hermeting op", () => {
     expect(resolveVoortgangRailActiveItem("hub")).toBe("hub");
-    expect(resolveVoortgangRailActiveItem("schap")).toBe("schap");
+    expect(resolveVoortgangRailActiveItem("hermeting")).toBe("hermeting");
   });
 
   it("licht Leefstijlprofiel op voor inzichten, domein en leefstijlprofiel", () => {
     expect(resolveVoortgangRailActiveItem("leefstijlprofiel")).toBe("leefstijlprofiel");
     expect(resolveVoortgangRailActiveItem("inzichten")).toBe("leefstijlprofiel");
     expect(resolveVoortgangRailActiveItem("domein")).toBe("leefstijlprofiel");
+  });
+
+  it("valt terug op Overzicht voor het legacy schap-scherm", () => {
+    expect(resolveVoortgangRailActiveItem("schap")).toBe("hub");
+  });
+});
+
+describe("buildKeuzeRailDomains", () => {
+  it("zet alle vijf domeinen in de schakelaar", () => {
+    expect(buildKeuzeRailDomains().map((item) => item.id)).toEqual(KOMPAS_RAIL_PILLAR_IDS);
+  });
+
+  it("laat beweging, slaap en voeding open", () => {
+    const open = buildKeuzeRailDomains().filter((item) => item.disabledHint == null);
+    expect(open.map((item) => item.id).sort()).toEqual(["beweging", "slaap", "voeding"]);
+  });
+
+  it("houdt stress en verbinding dicht mét reden — geen onzichtbare poort", () => {
+    const gated = buildKeuzeRailDomains().filter((item) => item.disabledHint != null);
+    expect(gated.map((item) => item.id).sort()).toEqual(["stress", "verbinding"]);
+    for (const item of gated) {
+      expect(item.disabledHint).not.toBe("");
+    }
   });
 });

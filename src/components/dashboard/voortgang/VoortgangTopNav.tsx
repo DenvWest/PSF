@@ -17,8 +17,6 @@ type VoortgangTopNavProps = {
   /** Het domein binnen het leefstijlprofiel, of `null` op de keuzehub. */
   leefstijlprofielDomein: PillarId | null;
   domains: ContextRailDomainItem[];
-  /** Het domein waarvan het schap bereikbaar is, of `null` — dan valt het item weg. */
-  schapDomein: PillarId | null;
   onOpenItem: (item: VoortgangRailItemId) => void;
   onOpenDomein: (domain: PillarId) => void;
 };
@@ -26,17 +24,13 @@ type VoortgangTopNavProps = {
 function resolveTitle({
   activeItem,
   leefstijlprofielDomein,
-  schapDomein,
-}: Pick<
-  VoortgangTopNavProps,
-  "activeItem" | "leefstijlprofielDomein" | "schapDomein"
->): { title: string; icon: string; color?: string } {
-  if (activeItem === "schap" && schapDomein) {
-    return {
-      title: `Schap · ${PILLAR[schapDomein].label}`,
-      icon: "Pill",
-      color: PILLAR[schapDomein].color,
-    };
+}: Pick<VoortgangTopNavProps, "activeItem" | "leefstijlprofielDomein">): {
+  title: string;
+  icon: string;
+  color?: string;
+} {
+  if (activeItem === "hermeting") {
+    return { title: "Hermeting", icon: "Calendar" };
   }
   if (activeItem === "leefstijlprofiel") {
     return leefstijlprofielDomein
@@ -54,15 +48,10 @@ export default function VoortgangTopNav({
   activeItem,
   leefstijlprofielDomein,
   domains,
-  schapDomein,
   onOpenItem,
   onOpenDomein,
 }: VoortgangTopNavProps) {
-  const { title, icon, color } = resolveTitle({
-    activeItem,
-    leefstijlprofielDomein,
-    schapDomein,
-  });
+  const { title, icon, color } = resolveTitle({ activeItem, leefstijlprofielDomein });
 
   const items: CockpitTopNavItem[] = [
     {
@@ -88,18 +77,14 @@ export default function VoortgangTopNav({
       active: activeItem === "leefstijlprofiel" && leefstijlprofielDomein === domain.id,
       onSelect: () => onOpenDomein(domain.id),
     })),
+    {
+      id: "hermeting",
+      label: "Hermeting",
+      icon: "Calendar",
+      active: activeItem === "hermeting",
+      onSelect: () => onOpenItem("hermeting"),
+    },
   ];
-
-  if (schapDomein) {
-    items.push({
-      id: "schap",
-      label: "Schap",
-      icon: "Pill",
-      trailing: PILLAR[schapDomein].label,
-      active: activeItem === "schap",
-      onSelect: () => onOpenItem("schap"),
-    });
-  }
 
   return (
     <CockpitTopNav

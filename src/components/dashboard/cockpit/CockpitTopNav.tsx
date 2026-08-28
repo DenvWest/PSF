@@ -30,6 +30,14 @@ export type CockpitTopNavItem = {
   active?: boolean;
   /** Hangt onder het item erboven (bijv. domeinen onder Leefstijlprofiel). */
   indent?: boolean;
+  /**
+   * Zichtbaar maar niet aanklikbaar — met de reden als `title`. Voor
+   * bestemmingen die bewust dicht staan (bijv. een domein zonder aanbod op de
+   * Keuze-tab): weglaten leest als een gat, en een klik die het paneel sluit
+   * zonder iets te doen leest als een fout.
+   */
+  disabled?: boolean;
+  disabledHint?: string;
   onSelect: () => void;
 };
 
@@ -105,6 +113,9 @@ export default function CockpitTopNav({
   // De bestemmings-meting hoort bij de caller, die de rail met dezelfde
   // handlers bedient — daar staat `surface` al in het event.
   const pick = (item: CockpitTopNavItem) => {
+    if (item.disabled) {
+      return;
+    }
     setOpen(false);
     item.onSelect();
   };
@@ -151,8 +162,14 @@ export default function CockpitTopNav({
                 type="button"
                 role="menuitem"
                 onClick={() => pick(item)}
+                aria-disabled={item.disabled || undefined}
+                title={item.disabled ? item.disabledHint : undefined}
                 className={`${item.indent ? PANEL_SUB_ITEM : PANEL_ITEM} ${
-                  item.active ? ACTIVE_ITEM : IDLE_ITEM
+                  item.disabled
+                    ? "cursor-not-allowed border-transparent text-[#7E8C82]"
+                    : item.active
+                      ? ACTIVE_ITEM
+                      : IDLE_ITEM
                 }`}
               >
                 {item.dotColor ? (

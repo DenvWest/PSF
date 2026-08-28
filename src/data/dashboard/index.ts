@@ -338,18 +338,25 @@ export const DASHBOARD_TABS: DashboardTab[] = [
     emptyHint: "Doe je eerste check — daarna verzamelt zich hier je bewijs.",
   },
   {
-    id: "hermeting",
-    label: "Hermeting",
-    icon: "Calendar",
-    title: "Hermeting",
-    subtitle: "Meet of het werkt.",
-    emptyHint: "Doe eerst je check — daarna meten we na 30 dagen opnieuw of je leefstijl-stappen werken.",
+    id: "keuze",
+    label: "Keuze",
+    icon: "Pill",
+    title: "Keuze",
+    subtitle: "Wat er te kiezen valt — en wat jij koos.",
+    emptyHint:
+      "Doe eerst je check — daarna weten we welk aanbod bij je past en welk niet.",
   },
 ];
 
+/**
+ * Hermeting staat hier niet meer als eigen tab: die sectie-lijst leeft binnen
+ * Voortgang (`screen=hermeting`), zie `VoortgangHub`. De sectietypes `retest`
+ * en `future` bestaan dus nog wél — ze worden alleen niet meer door een tab
+ * aangestuurd maar door dat scherm.
+ */
 export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
   vandaag: ["kompasHome"],
   agenda: ["agendaHome"],
   voortgang: ["voortgangHub"],
-  hermeting: ["retest", "future"],
+  keuze: ["keuze"],
 };

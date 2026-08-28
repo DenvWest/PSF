@@ -60,6 +60,7 @@ export type DashboardSectionType =
   | "statistics"
   | "recommendations"
   | "voortgangHub"
+  | "keuze"
   | "future";
 
 export type DashboardIconName =
@@ -100,27 +101,48 @@ export type DashboardIconName =
   | "RouteMap"
   | "BarChart"
   | "Calendar"
+  | "Pill"
   | "BookOpen";
 
-export type DashboardTabId = "vandaag" | "agenda" | "voortgang" | "hermeting";
+/**
+ * De vier bestemmingen in de hoofdnavigatie (header op sm+, footer daaronder).
+ *
+ * **27 augustus: Hermeting eruit, Keuze erin.** Hermeting is een moment — één
+ * keer per ~30 dagen — en stond permanent een kwart van de hoofdnavigatie te
+ * bezetten; hij woont nu waar hij thuishoort, als scherm binnen Voortgang
+ * (`screen=hermeting`), naast de meetreeksen die hij voedt. Keuze — het schap,
+ * het aanbod per domein plus wat je daaruit koos — is wél een dagelijkse
+ * bestemming en kwam alleen via Voortgang binnen. Die ruil is de reden dat
+ * `keuze` een eigen tab-id heeft in plaats van een deeplink naar Voortgang:
+ * een hoofdnavigatie-item moet een eigen URL-ruimte hebben, anders licht de
+ * verkeerde tab op en kan de bestemming later geen tweede scherm dragen.
+ */
+export type DashboardTabId = "vandaag" | "agenda" | "voortgang" | "keuze";
 
 export type VoortgangScreen =
   | "hub"
   | "leefstijlprofiel"
   /**
-   * Het aanbod van één domein. Draagt altijd `fav=<domein mét schap>`; zonder
-   * dat domein bestaat het scherm niet en valt de route terug op de hub. Draagt
-   * ook je archief — de Favorieten-tab, per domein — sinds het losse
-   * domein-overstijgende scherm (22 aug) is opgeheven: elke deur naar
-   * "wat je koos" wijst nu hierheen.
+   * Meet of het werkt: het aftellen naar je hermeting én het verslag erna.
+   * Stond tot 27 augustus als vierde tab in de hoofdnavigatie.
    */
+  | "hermeting"
+  /** @deprecated Legacy — het schap is de Keuze-tab geworden (`tab=keuze`). */
   | "schap"
   /** @deprecated Legacy — redirect naar leefstijlprofiel */
   | "inzichten"
   /** @deprecated Legacy — redirect naar leefstijlprofiel&fav= */
   | "domein";
 
-/** Vijf sub-oppervlakken van het schap, nooit tegelijk zichtbaar. */
+/**
+ * Vier sub-oppervlakken van de Keuze-tab, nooit tegelijk zichtbaar.
+ *
+ * In de URL heet dit `deel`; in code houdt het schap zijn eigen naam. De
+ * route-taal (Keuze) en de inhoudstaal (schap = het aanbod van één domein)
+ * zijn bewust gescheiden: durable events (`choice.shelf_opened`) en
+ * surface-strings (`schap_slaap`) dragen meetreeksen die niet mogen breken
+ * omdat een label verandert.
+ */
 export type SchapTabId = "producten" | "diensten" | "begeleiding" | "favorieten";
 
 export type LeefstijlprofielView = "aanbevolen" | "mijn_keuze";

@@ -350,7 +350,7 @@ export default function KompasContextSpine({
   const schapZone = domainScreenOpen ? (
     <section
       key="schap"
-      aria-label={schap.kind === "open" ? "Je schap" : "Geen schap op dit domein"}
+      aria-label={schap.kind === "open" ? "Je keuze" : "Geen aanbod op dit domein"}
       className={`${cardClass} border-white/10`}
     >
       <span className={`${kickerClass} text-[#9FB0A6]`}>

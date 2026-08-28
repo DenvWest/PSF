@@ -60,7 +60,7 @@ export default function LeefstijlprofielSupplementSection({
   if (view === "mijn_keuze") {
     return (
       <section aria-label="Mijn keuze supplementen">
-        <VoortgangSectionHeader eyebrow="Mijn keuze" title="Uit het schap" />
+        <VoortgangSectionHeader eyebrow="Mijn keuze" title="Uit je keuze" />
         {verdicts.length > 0 ? (
           <SupplementVerdictPanel
             verdicts={verdicts}
@@ -81,7 +81,7 @@ export default function LeefstijlprofielSupplementSection({
                 textWrap: "pretty",
               }}
             >
-              Je hebt nog niets uit het schap gekozen.
+              Je hebt nog niets op Keuze gekozen.
             </p>
           </CockpitTile>
         )}

@@ -47,7 +47,7 @@ export function buildBewegingHelpBridge(
         label: "Onderbouwing",
         status: nutritionLogCompleted ? "done" : "wacht",
       },
-      { id: "schap", label: "Schap", status: "now" },
+      { id: "schap", label: "Keuze", status: "now" },
       { id: "vergelijking", label: "Vergelijking", status: "toekomstig" },
     ],
   };

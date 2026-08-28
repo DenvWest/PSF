@@ -31,7 +31,6 @@ function renderNav(props: Partial<React.ComponentProps<typeof VoortgangTopNav>> 
       activeItem="hub"
       leefstijlprofielDomein={null}
       domains={domains}
-      schapDomein={null}
       onOpenItem={onOpenItem}
       onOpenDomein={onOpenDomein}
       {...props}
@@ -84,17 +83,22 @@ describe("VoortgangTopNav", () => {
     expect(screen.queryByRole("menu")).toBeNull();
   });
 
-  it("laat het schap-item weg als geen domein in beeld een schap heeft", () => {
-    renderNav({ schapDomein: null });
+  it("draagt Hermeting — sinds 27 augustus een scherm hier, geen eigen tabblad", () => {
+    renderNav();
     openPanel();
-    expect(screen.queryByRole("menuitem", { name: /Schap/ })).toBeNull();
+    fireEvent.click(screen.getByRole("menuitem", { name: "Hermeting" }));
+    expect(onOpenItem).toHaveBeenCalledWith("hermeting");
   });
 
-  it("wijst het schap-item naar het domein dat in beeld is", () => {
-    renderNav({ schapDomein: "slaap" });
+  it("draagt het schap niet meer — dat is de Keuze-tab geworden", () => {
+    renderNav();
     openPanel();
-    fireEvent.click(screen.getByRole("menuitem", { name: /Schap/ }));
-    expect(onOpenItem).toHaveBeenCalledWith("schap");
+    expect(screen.queryByRole("menuitem", { name: /Schap|Keuze/ })).toBeNull();
+  });
+
+  it("noemt ingeklapt Hermeting als je daar staat", () => {
+    renderNav({ activeItem: "hermeting" });
+    expect(screen.getByRole("button", { name: /Hermeting/ })).toBeTruthy();
   });
 
   it("sluit op Escape", () => {

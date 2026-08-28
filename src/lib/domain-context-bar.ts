@@ -1,6 +1,6 @@
 import { STRESS_LIFESTYLE_FIRST_REASON } from "@/data/domain-product-stance";
 import { PILLAR } from "@/data/dashboard";
-import { buildDashboardSchapHref } from "@/lib/dashboard-url";
+import { buildDashboardKeuzeHref } from "@/lib/dashboard-url";
 import {
   buildDomainCheckHref,
   CHECK_NAME,
@@ -97,7 +97,7 @@ const DOMAIN_CONTEXT_COPY: Record<PillarId, DomainContextCopy> = {
       "Verbinding meet mee in je hermeting — er is geen aparte check die hier een winst-laag aanwijst. Je prioriteiten staan er zonder oordeel.",
     schapLine: "",
     schapGateReason:
-      "Op verbinding verkopen we niets, ook niet ons eigen aanbod. Er is geen supplement waarvan wij kunnen onderbouwen dat het contact vervangt — dus staat er ook geen schap.",
+      "Op verbinding verkopen we niets, ook niet ons eigen aanbod. Er is geen supplement waarvan wij kunnen onderbouwen dat het contact vervangt — dus valt er hier ook niets te kiezen.",
   },
   energie: {
     noReadoutLine:
@@ -129,16 +129,16 @@ function buildSchapZone(domain: PillarId, copy: DomainContextCopy): DomainSchapZ
   if (hasSchap(domain)) {
     return {
       kind: "open",
-      label: `Je schap · ${label.toLowerCase()}`,
+      label: `Je keuze · ${label.toLowerCase()}`,
       line: copy.schapLine,
-      href: buildDashboardSchapHref(domain, "producten"),
-      ctaLabel: "Open je schap",
+      href: buildDashboardKeuzeHref(domain, "producten"),
+      ctaLabel: "Open je keuze",
     };
   }
 
   return {
     kind: "gate",
-    label: `Geen schap op ${label.toLowerCase()}`,
+    label: `Geen aanbod op ${label.toLowerCase()}`,
     reason: copy.schapGateReason ?? "",
   };
 }
