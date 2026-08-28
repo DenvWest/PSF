@@ -26,7 +26,7 @@ const COMPONENT_TOELICHTING: Record<ScoreComponentId, string> = {
   transparantie:
     "Vier feiten die je zelf op de verpakking nakijkt: staat het werkzame gehalte in een getal, staat er een dagdosering, is de samenstelling per vorm uitgesplitst, en gaat er niets schuil in een proprietary blend.",
   toetsing:
-    "Is het eindproduct getoetst door een partij buiten de fabrikant, en dekt een grondstofkeurmerk de zuiverheid. Ontbreekt beide, dan vaar je op wat de fabrikant zelf zegt.",
+    "Is het eindproduct getoetst door een partij buiten de fabrikant, en dekt een grondstofkeurmerk de zuiverheid. Dit onderdeel meet of een merk zich extern laat controleren en dat ook publiceert — het is geen eigen meting van ons. Ontbreekt beide, dan vaar je op wat de fabrikant zelf zegt.",
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -445,6 +445,28 @@ export default function PsScoreUitleg() {
           Een score die zijn eigen gaten niet noemt, is een verkooppraatje.
         </p>
         <ul className="mt-6 space-y-4">
+          <li className="rounded-2xl bg-[#F7F5F0] px-6 py-5">
+            <h3 className="text-sm font-semibold text-stone-900">
+              Wij laten zelf geen potjes analyseren
+            </h3>
+            <p className="mt-1.5 text-sm leading-relaxed text-stone-600">
+              Elk cijfer hierboven komt uit gegevens die al bestaan en die jij
+              kunt nalopen: het etiket, de Europese lijst van goedgekeurde
+              claims, en labrapporten die fabrikanten zelf publiceren. We kopen
+              geen producten om ze op eigen kosten door een laboratorium te
+              laten narekenen. Dat heeft één concrete consequentie: het
+              onderdeel <em>onafhankelijke toetsing</em> meet of een merk zich
+              extern laat controleren én dat laat zien — niet of de inhoud van
+              dat potje klopt. Een fabrikant die wél test maar niets
+              publiceert, scoort hier dus lager dan hij verdient.
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-stone-600">
+              Eigen labanalyses zijn de logische volgende stap voor dit model.
+              Komen ze er, dan worden ze een apart onderdeel met een eigen
+              versienummer, met het meetrapport erbij — geen stille bijstelling
+              van bestaande cijfers.
+            </p>
+          </li>
           <li className="rounded-2xl bg-[#F7F5F0] px-6 py-5">
             <h3 className="text-sm font-semibold text-stone-900">
               Versheid van visolie in een getal

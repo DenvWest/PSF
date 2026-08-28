@@ -24,8 +24,8 @@ describe("ProductCatalog personalisatie", () => {
     const chip = screen.getByRole("button", { name: /Past bij jou · \d+/ });
     expect(chip.getAttribute("aria-pressed")).toBe("true");
 
-    const gemarkeerd = screen.getAllByText(/Past bij jou/);
-    expect(gemarkeerd.length).toBeGreaterThan(2);
+    const gemarkeerd = screen.getAllByText(/past bij jouw check/);
+    expect(gemarkeerd.length).toBeGreaterThan(1);
 
     const aantal = products.filter((p) =>
       ["magnesium", "omega-3"].includes(p.category),

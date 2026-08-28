@@ -4,21 +4,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { trackEvent } from "@/lib/ga4";
 import { buildAccountLoginHref } from "@/lib/account-login-href";
 import { getLastSession } from "@/lib/intake-storage";
 import { resolvePrimaryMobileCta } from "@/lib/mobile-cta-state";
 
 const mainLinks = [
   { href: "/supplementen", label: "Supplementen" },
-  { href: "/inzichten", label: "Inzichten" },
-  { href: "/gidsen", label: "Gidsen" },
+  { href: "/gidsen", label: "Gezondheidsgidsen" },
 ];
 
 const mobileMenuLinks = [
   { href: "/supplementen", label: "Supplementen" },
-  { href: "/inzichten", label: "Inzichten" },
-  { href: "/gidsen", label: "Gidsen" },
+  { href: "/gidsen", label: "Gezondheidsgidsen" },
 ];
 
 type HeaderClientProps = {
@@ -94,20 +91,10 @@ export default function HeaderClient({
             </Link>
 
             <nav className="hidden items-center gap-7 md:flex">
-              {mainLinks
-                .filter((link) => link.href !== "/inzichten" || isLoggedIn)
-                .map((link) => (
+              {mainLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={
-                    link.href === "/inzichten"
-                      ? () =>
-                          trackEvent("inzichten_hub_nav_click", {
-                            source: "header",
-                          })
-                      : undefined
-                  }
                   className="text-sm font-medium text-stone-500 transition hover:text-stone-900"
                 >
                   {link.label}
@@ -214,20 +201,11 @@ export default function HeaderClient({
               >
                 {primaryMobileAction.label} →
               </Link>
-              {mobileMenuLinks
-                .filter((link) => link.href !== "/inzichten" || isLoggedIn)
-                .map((link) => (
+              {mobileMenuLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => {
-                    if (link.href === "/inzichten") {
-                      trackEvent("inzichten_hub_nav_click", {
-                        source: "header",
-                      });
-                    }
-                    setMenuOpen(false);
-                  }}
+                  onClick={() => setMenuOpen(false)}
                   className="block rounded-2xl px-4 py-3 text-base font-medium text-stone-800 transition hover:bg-stone-50 hover:text-stone-900"
                 >
                   {link.label}

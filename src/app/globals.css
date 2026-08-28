@@ -28,6 +28,26 @@
   }
 }
 
+/**
+ * Dunne, ingetogen scrollbar voor een sticky zijkolom die langer is dan het
+ * scherm. Blijft zichtbaar (in tegenstelling tot scrollbar-hide) zodat te zien
+ * is dat er onder de vouw nog iets staat.
+ */
+@utility scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-stone-300, #d6d3d1) transparent;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-stone-300, #d6d3d1);
+    border-radius: 9999px;
+  }
+}
+
 /* ── Typography tokens (single stack site-wide) ───────────────── */
 
 :root {
@@ -107,7 +127,11 @@
 
 html {
   scroll-behavior: smooth;
+  /* clip in plaats van hidden: hidden maakt van <html> een scroll-container en
+     breekt daarmee position: sticky (o.a. de keuzekolom op /supplementen).
+     De hidden-regel blijft staan als terugval voor Safari < 16. */
   overflow-x: hidden;
+  overflow-x: clip;
   font-size: 100%;
   text-rendering: optimizeLegibility;
 }

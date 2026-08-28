@@ -11,9 +11,9 @@ import { canonicalMetadata } from "@/lib/seo/canonical";
 
 export const metadata: Metadata = {
   title:
-    "Gratis gidsen: slaap, stress, energie, beweging en herstel | PerfectSupplement",
+    "Gratis gezondheidsgidsen: slaap, stress, energie, beweging en herstel | PerfectSupplement",
   description:
-    "Compacte, onderbouwde gidsen voor mannen 40+. Kies slaap, stress, energie, beweging, herstel of testosteron — gratis via e-mail of webgids.",
+    "Compacte, onderbouwde gezondheidsgidsen voor mannen 40+. Kies slaap, stress, energie, beweging, herstel of testosteron — gratis via e-mail of webgids.",
   ...canonicalMetadata("/gidsen"),
 };
 
@@ -51,13 +51,13 @@ export default async function GidsenPage({ searchParams }: GidsenPageProps) {
               aria-hidden
               className="h-1.5 w-1.5 rounded-full bg-[#5A8F6A]"
             />
-            Gratis gidsen
+            Gratis gezondheidsgidsen
           </div>
           <h1 className="mt-6 font-serif text-[clamp(34px,5vw,56px)] font-normal leading-[1.04] tracking-[-0.015em]">
             Begin bij rust, ritme en herstel.
           </h1>
           <p className="mt-5 max-w-[620px] text-[clamp(16px,1.6vw,19px)] leading-relaxed text-[#5A6560]">
-            Compacte, onderbouwde gidsen voor mannen 40+. Geen wondermiddelen
+            Compacte, onderbouwde gezondheidsgidsen voor mannen 40+. Geen wondermiddelen
             — wel houdbare gewoontes die je energie, slaap en veerkracht
             ondersteunen. Elke gids is een instap, geen eindpunt.
           </p>

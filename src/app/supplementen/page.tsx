@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
-import HubHero from "@/components/supplement-hub/HubHero";
+import HubPageHead from "@/components/supplement-hub/HubPageHead";
+import HubSluitCta from "@/components/supplement-hub/HubSluitCta";
 import ProductCatalog from "@/components/supplement-hub/ProductCatalog";
-import HubVerderLezen from "@/components/supplement-hub/HubVerderLezen";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { CATALOG } from "@/data/supplement-hub/catalog";
 import { getHubProducts } from "@/lib/supplement-hub/product-catalog";
 import { buildHubPersonalization } from "@/lib/supplement-hub/hub-personalization";
 import { getIntakeSessionFromCookie } from "@/lib/intake-session-server";
 import { hasNutritionLogForSession } from "@/lib/nutrition-log-server";
-import type { SupplementHubState } from "@/components/supplement-hub/HubHero";
 import {
   buildBreadcrumbSchema,
   buildNamedItemListSchema,
@@ -56,12 +55,6 @@ export default async function SupplementenPage() {
       ? await hasNutritionLogForSession(verifiedSessionId)
       : false;
 
-  const hubState: SupplementHubState = !hasIntakeCookie
-    ? "no_intake"
-    : nutritionLogCompleted
-      ? "ready"
-      : "needs_nutrition";
-
   const personalization = buildHubPersonalization({
     session,
     hasIntakeCookie,
@@ -76,14 +69,18 @@ export default async function SupplementenPage() {
       />
 
       <div>
-        {/* 1. Hero */}
-        <HubHero hubState={hubState} />
+        {/* 1. Slanke paginakop — geen hero, de catalogus begint hoog */}
+        <HubPageHead
+          productCount={products.length}
+          categoryCount={new Set(products.map((p) => p.category)).size}
+        />
 
-        {/* 2. Productcatalogus — PS-Score, persoonlijke markering, kostenrang */}
+        {/* 2. Keuzekolom + productcatalogus — zijbalk draagt de knoppen,
+            de rijen dragen alleen het product. */}
         <section
           id="producten"
           aria-label="Alle supplementproducten"
-          className="mt-16 md:mt-20"
+          className="scroll-mt-24 pt-7 md:pt-8"
         >
           <Container>
             <ProductCatalog
@@ -93,19 +90,16 @@ export default async function SupplementenPage() {
           </Container>
         </section>
 
-        {/* 3. Verder lezen — gidsen per supplement en per thema */}
-        <section
-          id="verder-lezen"
-          aria-label="Verder lezen"
-          className="mt-16 md:mt-20"
-        >
-          <Container>
-            <HubVerderLezen />
-          </Container>
-        </section>
+        {/* 3. Afsluiter: de check (of de methode) na de lijst */}
+        <Container className="mt-14 md:mt-16">
+          <HubSluitCta
+            state={personalization.state}
+            productCount={products.length}
+          />
+        </Container>
 
         {/* 4. Medische disclaimer */}
-        <Container className="mt-16">
+        <Container className="mt-12">
           <MedicalDisclaimer />
         </Container>
       </div>

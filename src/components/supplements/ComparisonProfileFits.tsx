@@ -1,19 +1,31 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import Container from "@/components/layout/Container";
 import type { SupplementProfileFit } from "@/data/supplement-profile-fits";
 
 interface ComparisonProfileFitsProps {
   fits: SupplementProfileFit[];
+  /** Zonder eigen Container en marge, voor gebruik binnen een bestaande kolom. */
+  bare?: boolean;
 }
 
-export function ComparisonProfileFits({ fits }: ComparisonProfileFitsProps) {
+export function ComparisonProfileFits({
+  fits,
+  bare = false,
+}: ComparisonProfileFitsProps) {
   if (fits.length === 0) {
     return null;
   }
 
+  const Wrapper = bare ? Fragment : Container;
+
   return (
-    <section className="mt-16 border-t border-stone-100 pt-12" aria-labelledby="past-bij-profiel">
-      <Container>
+    <section
+      id="past-bij-profiel-sectie"
+      className={bare ? "" : "mt-16 border-t border-stone-100 pt-12"}
+      aria-labelledby="past-bij-profiel"
+    >
+      <Wrapper>
         <h2
           id="past-bij-profiel"
           className="font-display text-2xl font-bold text-stone-900"
@@ -21,8 +33,8 @@ export function ComparisonProfileFits({ fits }: ComparisonProfileFitsProps) {
           Past bij dit profiel
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">
-          Herken je jezelf? Deze profielen combineren leefstijl en supplementen — start bij
-          herkenning, niet bij een potje.
+          Herken je jezelf? Deze profielen combineren leefstijl en supplementen
+          — start bij herkenning, niet bij een potje.
         </p>
         <ul className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
           {fits.map((fit) => (
@@ -47,7 +59,7 @@ export function ComparisonProfileFits({ fits }: ComparisonProfileFitsProps) {
             </li>
           ))}
         </ul>
-      </Container>
+      </Wrapper>
     </section>
   );
 }

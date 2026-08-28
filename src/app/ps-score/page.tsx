@@ -61,6 +61,18 @@ export default function PsScorePage() {
                 gezondheidsclaims. Hieronder staat de hele rekensom, zodat je hem
                 kunt nalopen en oneens kunt zijn.
               </p>
+              <p className="mt-4 text-base leading-relaxed text-stone-600">
+                Waar die feiten vandaan komen: het etiket, het Europese
+                claimregister en labrapporten die fabrikanten zelf publiceren.
+                Eigen labanalyses doen we (nog) niet —{" "}
+                <Link
+                  href="#grenzen"
+                  className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] hover:decoration-ps-green"
+                >
+                  wat dat wel en niet zegt, staat onderaan
+                </Link>
+                .
+              </p>
 
               <div className="mt-8">
                 <Link
