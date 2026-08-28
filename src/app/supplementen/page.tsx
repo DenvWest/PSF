@@ -79,10 +79,15 @@ export default async function SupplementenPage() {
         >
           <Container>
             <VoortgangReturnBanner surface="supplementen" />
-            <ProductCatalog
-              products={products}
-              personalization={personalization}
-            />
+            <h1 className="font-display text-2xl font-bold tracking-tight text-stone-900 md:text-3xl">
+              Supplementen
+            </h1>
+            <div className="mt-5 md:mt-6">
+              <ProductCatalog
+                products={products}
+                personalization={personalization}
+              />
+            </div>
           </Container>
         </section>
 

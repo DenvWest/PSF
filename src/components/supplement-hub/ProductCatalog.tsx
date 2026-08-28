@@ -254,19 +254,19 @@ export default function ProductCatalog({
       />
 
       <section aria-label="Producten" className="mt-10 min-w-0 lg:mt-0">
-        <div className="flex flex-col gap-3 border-b border-stone-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="min-w-0">
-            <h1 className="font-display text-xl font-bold text-stone-900 md:text-2xl">
+        <div className="flex flex-col gap-2.5 border-b border-stone-200 pb-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <h2 className="min-w-0 text-sm text-stone-500">
+            <span className="font-display text-base font-semibold text-stone-900">
               {kop}
-            </h1>
-            <p aria-live="polite" className="mt-1 text-sm text-stone-500">
+            </span>
+            <span aria-live="polite" className="ml-2">
               {zichtbaar.length} van {products.length} producten
-            </p>
-          </div>
+            </span>
+          </h2>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <label className="flex min-w-0 items-center gap-2 text-sm text-stone-600">
-              <span className="flex-shrink-0">Sorteer op</span>
+              <span className="hidden flex-shrink-0 sm:inline">Sorteer op</span>
               <select
                 value={sort}
                 onChange={(event) => {

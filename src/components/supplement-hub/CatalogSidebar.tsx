@@ -74,9 +74,9 @@ export default function CatalogSidebar({
   return (
     <aside
       aria-label="Verfijn de catalogus"
-      className="flex flex-col gap-6 lg:sticky lg:top-24 lg:block lg:h-[calc(100dvh-7rem)] lg:space-y-6 lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:pb-10 lg:pr-2 lg:scrollbar-slim"
+      className="flex flex-col gap-7 lg:sticky lg:top-24 lg:block lg:h-[calc(100dvh-7rem)] lg:space-y-6 lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:pb-10 lg:pr-2 lg:scrollbar-slim"
     >
-      <div className="order-last lg:order-none">
+      <div className="hidden lg:block">
         <p className="hidden font-display text-sm font-semibold text-stone-900 lg:block">
           Stel je vergelijking samen
         </p>
@@ -86,7 +86,7 @@ export default function CatalogSidebar({
         </p>
         <Link
           href="/ps-score"
-          className="inline-block text-xs font-medium text-ps-green transition-colors hover:text-ps-green-hover lg:mt-2"
+          className="hidden text-xs font-medium text-ps-green transition-colors hover:text-ps-green-hover lg:mt-2 lg:inline-block"
         >
           Model {PS_SCORE_MODEL_VERSION} — lees de methode →
         </Link>
@@ -171,9 +171,9 @@ export default function CatalogSidebar({
       </div>
 
       <div>
-        <p className={`${KOPJE} mb-2`}>Verfijn</p>
+        <p className={`${KOPJE} mb-2 hidden lg:block`}>Verfijn</p>
         <div
-          className="flex flex-wrap gap-2 lg:flex-col lg:gap-0.5"
+          className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-hide lg:mx-0 lg:flex-col lg:gap-0.5 lg:overflow-visible lg:px-0 lg:pb-0"
           role="group"
           aria-label="Verfijn"
         >
@@ -181,7 +181,7 @@ export default function CatalogSidebar({
             type="button"
             onClick={onAlleenClaim}
             aria-pressed={alleenClaim}
-            className={`rounded-full px-4 py-2 text-left text-sm transition-all lg:w-full lg:rounded-lg lg:px-3 lg:py-2 ${knopClass(alleenClaim)}`}
+            className={`flex-shrink-0 rounded-full px-4 py-2 text-left text-sm transition-all lg:w-full lg:flex-shrink lg:rounded-lg lg:px-3 lg:py-2 ${knopClass(alleenClaim)}`}
           >
             Voldoet aan EU-claim
           </button>
@@ -189,7 +189,7 @@ export default function CatalogSidebar({
             type="button"
             onClick={onAlleenGetest}
             aria-pressed={alleenGetest}
-            className={`rounded-full px-4 py-2 text-left text-sm transition-all lg:w-full lg:rounded-lg lg:px-3 lg:py-2 ${knopClass(alleenGetest)}`}
+            className={`flex-shrink-0 rounded-full px-4 py-2 text-left text-sm transition-all lg:w-full lg:flex-shrink lg:rounded-lg lg:px-3 lg:py-2 ${knopClass(alleenGetest)}`}
           >
             Onafhankelijk getest
           </button>

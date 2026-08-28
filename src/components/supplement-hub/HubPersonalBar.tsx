@@ -54,9 +54,6 @@ export default function HubPersonalBar({
         <p className="mt-1.5 font-display text-lg font-bold leading-snug text-stone-900 sm:text-base sm:font-semibold">
           Welke van deze {productCount} passen bij jou?
         </p>
-        <p className="mt-1.5 text-sm leading-relaxed text-stone-600 sm:hidden">
-          Doe de gratis check (±3 min) en zie wat bij jou past.
-        </p>
         <p className="mt-1.5 hidden text-sm leading-relaxed text-stone-600 sm:block">
           Doe de gratis Leefstijlcheck (±3 min). Daarna markeren we hier de
           producten die bij jouw antwoorden passen — en kun je er direct op
@@ -87,9 +84,6 @@ export default function HubPersonalBar({
         <p className={EYEBROW}>Voedingscheck · 3 min</p>
         <p className="mt-1.5 font-display text-lg font-bold leading-snug text-stone-900 sm:text-base sm:font-semibold">
           Nog één stap: de voedingscheck
-        </p>
-        <p className="mt-1.5 text-sm leading-relaxed text-stone-600 sm:hidden">
-          Nog de voedingscheck (±3 min), dan markeren we hier wat bij jou past.
         </p>
         <p className="mt-1.5 hidden text-sm leading-relaxed text-stone-600 sm:block">
           Je Leefstijlcheck staat genoteerd. We markeren pas producten als we
