@@ -277,7 +277,7 @@ export default function ProductCatalog({
             <div
               role="group"
               aria-label="Weergave"
-              className="hidden flex-shrink-0 items-center gap-0.5 rounded-lg border border-stone-200 bg-white p-0.5 sm:flex"
+              className="flex flex-shrink-0 items-center gap-0.5 rounded-lg border border-stone-200 bg-white p-0.5"
             >
               {WEERGAVEN.map((optie) => (
                 <button
@@ -311,7 +311,7 @@ export default function ProductCatalog({
           <ul
             className={
               weergave === "raster"
-                ? "mt-5 grid gap-3 sm:grid-cols-2"
+                ? "mt-5 grid grid-cols-2 gap-3"
                 : "mt-5 space-y-3"
             }
             role="list"

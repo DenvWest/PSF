@@ -61,19 +61,19 @@ export default function ProductCatalogCard({
           : "border-stone-200 hover:border-ps-green/40"
       }`}
     >
-      <div className="flex gap-4 p-4 @[26rem]:p-5">
-        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-stone-50 @[26rem]:h-20 @[26rem]:w-20">
+      <div className="flex flex-col gap-3 p-3 @[16rem]:flex-row @[16rem]:gap-4 @[16rem]:p-4 @[26rem]:p-5">
+        <div className="flex h-36 w-full flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-stone-50 @[16rem]:h-24 @[16rem]:w-24 @[26rem]:h-28 @[26rem]:w-28">
           {product.imageSrc ? (
             <Image
               src={product.imageSrc}
               alt={product.imageAlt}
-              width={80}
-              height={80}
-              className="h-full w-full object-contain p-1"
+              width={224}
+              height={224}
+              className="h-full w-full object-contain p-2"
               loading="lazy"
             />
           ) : (
-            <span aria-hidden="true" className="text-2xl">
+            <span aria-hidden="true" className="text-4xl @[16rem]:text-3xl">
               {product.categoryIcon}
             </span>
           )}
@@ -85,7 +85,7 @@ export default function ProductCatalogCard({
               <p className="text-[11px] font-medium uppercase tracking-wide text-stone-400">
                 {product.brand}
               </p>
-              <h3 className="mt-0.5 text-sm font-semibold leading-snug text-stone-900 @[26rem]:text-base">
+              <h3 className="mt-0.5 text-[0.95rem] font-semibold leading-snug text-stone-900 @[26rem]:text-base">
                 <Link
                   href={product.href}
                   className="transition-colors hover:text-ps-green"
@@ -104,7 +104,7 @@ export default function ProductCatalogCard({
               className={`inline-flex flex-shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-xs font-bold leading-none ${band.badge}`}
             >
               {formatScore(product.score.total)}
-              <span className="text-[10px] font-semibold uppercase tracking-wide opacity-90">
+              <span className="hidden text-[10px] font-semibold uppercase tracking-wide opacity-90 @[16rem]:inline">
                 {band.label}
               </span>
             </span>
@@ -145,7 +145,7 @@ export default function ProductCatalogCard({
         </div>
       </div>
 
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-stone-100 bg-stone-50/70 px-4 py-3 @[26rem]:px-5 @[30rem]:grid-cols-4">
+      <dl className="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-stone-100 bg-stone-50/70 px-3 py-3 @[16rem]:grid-cols-2 @[16rem]:px-4 @[26rem]:px-5 @[30rem]:grid-cols-4">
         <Stat label="Per dag" value={product.doseringLabel ?? "Niet vermeld"} />
         <Stat
           label={opgeschaald ? "Claimdag" : "Prijs/dag"}
@@ -166,7 +166,7 @@ export default function ProductCatalogCard({
           }
         }}
       >
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-xs font-semibold text-stone-700 marker:hidden hover:text-ps-green @[26rem]:px-5 [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 @[16rem]:px-4 text-xs font-semibold text-stone-700 marker:hidden hover:text-ps-green @[26rem]:px-5 [&::-webkit-details-marker]:hidden">
           Onderbouwing PS-Score
           <span
             className="text-stone-400 transition-transform group-open:rotate-90"
@@ -176,7 +176,7 @@ export default function ProductCatalogCard({
           </span>
         </summary>
 
-        <div className="border-t border-stone-100 px-4 pb-4 pt-1 @[26rem]:px-5">
+        <div className="border-t border-stone-100 px-3 pb-4 pt-1 @[16rem]:px-4 @[26rem]:px-5">
           <ul className="divide-y divide-stone-100" role="list">
             {product.score.components.map((component) => {
               const status = getComponentStatus(component.points);
@@ -238,7 +238,7 @@ export default function ProductCatalogCard({
         </div>
       </details>
 
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-stone-100 px-4 py-3 @[26rem]:px-5">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-stone-100 px-3 py-3 @[16rem]:px-4 @[26rem]:px-5">
         <Link
           href={product.href}
           className="text-xs font-semibold text-ps-green transition-colors hover:text-ps-green-hover"

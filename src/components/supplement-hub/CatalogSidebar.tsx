@@ -66,7 +66,7 @@ export default function CatalogSidebar({
       aria-label="Verfijn de catalogus"
       className="space-y-6 lg:sticky lg:top-24 lg:h-[calc(100dvh-7rem)] lg:space-y-6 lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:pb-10 lg:pr-2 lg:scrollbar-slim"
     >
-      <div className="hidden lg:block">
+      <div>
         <p className="font-display text-sm font-semibold text-stone-900">
           Stel je vergelijking samen
         </p>
@@ -92,7 +92,7 @@ export default function CatalogSidebar({
       />
 
       <div>
-        <div className="mb-2 hidden items-baseline justify-between gap-2 lg:flex">
+        <div className="mb-2 flex items-baseline justify-between gap-2">
           <p className={KOPJE}>Categorie</p>
           {filtersActief ? (
             <button
@@ -132,7 +132,7 @@ export default function CatalogSidebar({
       </div>
 
       <div>
-        <p className={`${KOPJE} mb-2 hidden lg:block`}>Verfijn</p>
+        <p className={`${KOPJE} mb-2`}>Verfijn</p>
         <div
           className="flex flex-wrap gap-2 lg:flex-col lg:gap-0.5"
           role="group"
