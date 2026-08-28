@@ -48,9 +48,9 @@ export default function HubPersonalBar({
         className={`${GROEN_KADER} ${className}`}
         aria-label="Persoonlijke selectie"
       >
-        <h2 className="font-display text-base font-semibold leading-snug text-stone-900">
+        <p className="font-display text-base font-semibold leading-snug text-stone-900">
           Welke van deze {productCount} passen bij jou?
-        </h2>
+        </p>
         <p className="mt-1.5 text-sm leading-relaxed text-stone-600">
           Doe de gratis Leefstijlcheck (±3 min). Daarna markeren we hier de
           producten die bij jouw antwoorden passen — en kun je er direct op
@@ -78,9 +78,9 @@ export default function HubPersonalBar({
         className={`${GROEN_KADER} ${className}`}
         aria-label="Persoonlijke selectie"
       >
-        <h2 className="font-display text-base font-semibold leading-snug text-stone-900">
+        <p className="font-display text-base font-semibold leading-snug text-stone-900">
           Nog één stap: de voedingscheck
-        </h2>
+        </p>
         <p className="mt-1.5 text-sm leading-relaxed text-stone-600">
           Je Leefstijlcheck staat genoteerd. We markeren pas producten als we
           weten wat er op je bord tekortschiet — eerst voeding, dan gericht
@@ -110,9 +110,9 @@ export default function HubPersonalBar({
         className={`rounded-2xl border border-stone-200 bg-stone-50 px-5 py-5 ${className}`}
         aria-label="Persoonlijke selectie"
       >
-        <h2 className="font-display text-base font-semibold leading-snug text-stone-900">
+        <p className="font-display text-base font-semibold leading-snug text-stone-900">
           Je basis zit goed
-        </h2>
+        </p>
         <p className="mt-1.5 text-sm leading-relaxed text-stone-600">
           Uit je voedingscheck volgt geen supplement-prioriteit. Vergelijk
           gerust verder, maar geen van deze producten is voor jou urgent —

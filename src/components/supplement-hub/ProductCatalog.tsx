@@ -243,9 +243,9 @@ export default function ProductCatalog({
       <section aria-label="Producten" className="mt-10 min-w-0 lg:mt-0">
         <div className="flex flex-col gap-3 border-b border-stone-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
-            <h2 className="font-display text-xl font-bold text-stone-900 md:text-2xl">
+            <h1 className="font-display text-xl font-bold text-stone-900 md:text-2xl">
               {kop}
-            </h2>
+            </h1>
             <p aria-live="polite" className="mt-1 text-sm text-stone-500">
               {zichtbaar.length} van {products.length} producten
             </p>

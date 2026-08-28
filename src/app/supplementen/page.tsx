@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
-import HubPageHead from "@/components/supplement-hub/HubPageHead";
 import HubSluitCta from "@/components/supplement-hub/HubSluitCta";
 import ProductCatalog from "@/components/supplement-hub/ProductCatalog";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
@@ -9,6 +8,7 @@ import { CATALOG } from "@/data/supplement-hub/catalog";
 import { getHubProducts } from "@/lib/supplement-hub/product-catalog";
 import { buildHubPersonalization } from "@/lib/supplement-hub/hub-personalization";
 import { getIntakeSessionFromCookie } from "@/lib/intake-session-server";
+import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBanner";
 import { hasNutritionLogForSession } from "@/lib/nutrition-log-server";
 import {
   buildBreadcrumbSchema,
@@ -69,20 +69,16 @@ export default async function SupplementenPage() {
       />
 
       <div>
-        {/* 1. Slanke paginakop — geen hero, de catalogus begint hoog */}
-        <HubPageHead
-          productCount={products.length}
-          categoryCount={new Set(products.map((p) => p.category)).size}
-        />
-
-        {/* 2. Keuzekolom + productcatalogus — zijbalk draagt de knoppen,
-            de rijen dragen alleen het product. */}
+        {/* 1. Keuzekolom + productcatalogus. Geen kop erboven: de zijbalk zegt
+            wat de meetlat is en de lijstkop draagt de h1, zodat de producten
+            meteen in beeld staan. */}
         <section
           id="producten"
           aria-label="Alle supplementproducten"
-          className="scroll-mt-24 pt-7 md:pt-8"
+          className="scroll-mt-24 pt-8 md:pt-10"
         >
           <Container>
+            <VoortgangReturnBanner surface="supplementen" />
             <ProductCatalog
               products={products}
               personalization={personalization}
@@ -90,7 +86,7 @@ export default async function SupplementenPage() {
           </Container>
         </section>
 
-        {/* 3. Afsluiter: de check (of de methode) na de lijst */}
+        {/* 2. Afsluiter: de check (of de methode) na de lijst */}
         <Container className="mt-14 md:mt-16">
           <HubSluitCta
             state={personalization.state}
@@ -98,7 +94,7 @@ export default async function SupplementenPage() {
           />
         </Container>
 
-        {/* 4. Medische disclaimer */}
+        {/* 3. Medische disclaimer */}
         <Container className="mt-12">
           <MedicalDisclaimer />
         </Container>

@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { PS_SCORE_MODEL_VERSION } from "@/data/supplement-hub/score-model";
 import HubPersonalBar from "@/components/supplement-hub/HubPersonalBar";
 import OnderbouwingPanel from "@/components/supplement-hub/OnderbouwingPanel";
 import type { HubPersonalization } from "@/lib/supplement-hub/hub-personalization";
@@ -64,17 +66,21 @@ export default function CatalogSidebar({
       aria-label="Verfijn de catalogus"
       className="space-y-6 lg:sticky lg:top-24 lg:h-[calc(100dvh-7rem)] lg:space-y-6 lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:pb-10 lg:pr-2 lg:scrollbar-slim"
     >
-      <header className="hidden lg:block">
-        <h2 className="font-display text-sm font-semibold text-stone-900">
+      <div className="hidden lg:block">
+        <p className="font-display text-sm font-semibold text-stone-900">
           Stel je vergelijking samen
-        </h2>
-        <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
-          Alle {productCount} producten liggen langs dezelfde meetlat —
-          dosering, vorm, etiket en EU-claim. Kies hier waarop je wilt
-          vergelijken; de PS-Score en de prijs per dag blijven bij elk product
-          staan.
         </p>
-      </header>
+        <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
+          Alle {productCount} producten langs dezelfde meetlat: dosering, vorm,
+          etiket en EU-claim. Prijs telt niet mee in de score.
+        </p>
+        <Link
+          href="/ps-score"
+          className="mt-2 inline-block text-xs font-medium text-ps-green transition-colors hover:text-ps-green-hover"
+        >
+          Model {PS_SCORE_MODEL_VERSION} — lees de methode →
+        </Link>
+      </div>
 
       <HubPersonalBar
         personalization={personalization}

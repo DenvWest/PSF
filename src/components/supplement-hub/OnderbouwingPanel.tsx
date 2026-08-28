@@ -105,12 +105,12 @@ export default function OnderbouwingPanel({
       >
         <div className="flex items-start justify-between gap-4 border-b border-stone-100 px-6 py-5">
           <div>
-            <h2
+            <p
               id="onderbouwing-titel"
               className="font-display text-lg font-bold text-stone-900"
             >
               Onderbouwing
-            </h2>
+            </p>
             <p className="mt-1 text-sm leading-relaxed text-stone-500">
               Waarom een product hier staat — en wat er vóór het potje komt.
             </p>
