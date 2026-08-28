@@ -23,9 +23,9 @@ export default function HomeComparisonsSection() {
           Welk supplement is het kopen waard?
         </h2>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-stone-600 sm:text-base">
-          Per categorie vergelijken we de vormen, de werkzame dosering en de prijs per
-          dag — en we zeggen het als een product de Europese claimdrempel niet haalt.
-          Geen ranglijst op commissie.
+          Elke categorie heeft een eigen vergelijking: welke vorm je lichaam
+          daadwerkelijk opneemt, welke dosering meetelt en wat het je per dag kost.
+          Boven aan elke pagina staat wanneer we hem voor het laatst hebben nagelopen.
         </p>
 
         <ul className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { HOMEPAGE_HERO } from "@/data/homepage";
+import { HOMEPAGE_HERO, HOMEPAGE_LIFESTYLE } from "@/data/homepage";
 import { CATEGORIES } from "@/data/intake-questions";
 import { getAccountStatus, getLastSession } from "@/lib/intake-storage";
 import { resolvePrimaryMobileCta, type MobileCtaAction } from "@/lib/mobile-cta-state";
@@ -11,10 +11,12 @@ import { useInBodyLeefstijlcheckCtaVisible } from "@/lib/use-in-body-leefstijlch
 function LeefstijlcheckPromoCard({
   widget,
   domainPreview,
+  remainingDomainCount,
   onDismiss,
 }: {
   widget: (typeof HOMEPAGE_HERO)["widget"];
   domainPreview: typeof CATEGORIES;
+  remainingDomainCount: number;
   onDismiss: () => void;
 }) {
   return (
@@ -52,11 +54,13 @@ function LeefstijlcheckPromoCard({
             </span>
           </li>
         ))}
-        <li className="list-none">
-          <span className="inline-flex rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white">
-            +2 meer
-          </span>
-        </li>
+        {remainingDomainCount > 0 ? (
+          <li className="list-none">
+            <span className="inline-flex rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white">
+              +{remainingDomainCount} meer
+            </span>
+          </li>
+        ) : null}
       </ul>
 
       <Link
@@ -117,7 +121,11 @@ export default function FloatingLeefstijlcheckCta({
   showOnAllScreens = false,
 }: FloatingLeefstijlcheckCtaProps = {}) {
   const { widget } = HOMEPAGE_HERO;
-  const domainPreview = CATEGORIES.slice(0, 4);
+  const scoredDomains = CATEGORIES.filter((category) =>
+    (HOMEPAGE_LIFESTYLE.scoredCategoryIds as readonly string[]).includes(category.id),
+  );
+  const domainPreview = scoredDomains.slice(0, 4);
+  const remainingDomainCount = scoredDomains.length - domainPreview.length;
   const [dismissed, setDismissed] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -244,6 +252,7 @@ export default function FloatingLeefstijlcheckCta({
         <LeefstijlcheckPromoCard
           widget={widget}
           domainPreview={domainPreview}
+          remainingDomainCount={remainingDomainCount}
           onDismiss={() => setDismissed(true)}
         />
       )}

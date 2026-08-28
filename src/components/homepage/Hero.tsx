@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Container from "@/components/layout/Container";
-import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
+import HomeHeroCtas from "@/components/homepage/HomeHeroCtas";
 import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
-import { HOMEPAGE_HERO, HOMEPAGE_LIFESTYLE } from "@/data/homepage";
+import { HOMEPAGE_HERO } from "@/data/homepage";
 
 function CheckIcon() {
   return (
@@ -45,10 +45,12 @@ function CheckBullet({
 export default function Hero() {
   const {
     bullets,
-    primaryCta,
     headline,
     subheadline,
     eyebrow,
+    affiliateMicro,
+    affiliateMicroLinkLabel,
+    affiliateMicroLinkHref,
   } = HOMEPAGE_HERO;
 
   return (
@@ -78,23 +80,19 @@ export default function Hero() {
             ))}
           </ul>
 
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-            <Link
-              href="/intake"
-              className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-ps-green px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ps-green/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F7F5F0]"
-            >
-              {primaryCta}
-              <span aria-hidden="true">→</span>
-            </Link>
-            <Link
-              href={`#${HOMEPAGE_LIFESTYLE.sectionId}`}
-              className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-stone-300 bg-white px-6 py-3.5 text-sm font-medium text-stone-700 shadow-sm transition hover:border-stone-400 hover:bg-stone-50 focus-visible:outline focus-visible:ring-2 focus-visible:ring-stone-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F7F5F0]"
-            >
-              Bekijk hoe het werkt
-            </Link>
+          <div className="mt-9">
+            <HomeHeroCtas />
           </div>
 
-          <IntakeCtaMicro className="mt-3 max-w-xl text-xs text-stone-500" />
+          <p className="mt-4 max-w-xl text-xs leading-relaxed text-stone-500">
+            {affiliateMicro}{" "}
+            <Link
+              href={affiliateMicroLinkHref}
+              className="underline underline-offset-2 transition hover:text-stone-700"
+            >
+              {affiliateMicroLinkLabel}
+            </Link>
+          </p>
 
           <IntakeLastSessionLink theme="light" className="mt-3 block" />
         </div>

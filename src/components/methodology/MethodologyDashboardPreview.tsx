@@ -5,9 +5,9 @@ import { DASHBOARD_UNLOCK_LOCKED_FEATURES } from "@/data/dashboard-unlock";
 import { DASHBOARD_TABS } from "@/data/dashboard";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 
-type PreviewTabId = "vandaag" | "agenda" | "voortgang" | "hermeting";
+type PreviewTabId = "vandaag" | "agenda" | "voortgang" | "keuze";
 
-const PREVIEW_TAB_IDS: PreviewTabId[] = ["vandaag", "agenda", "voortgang", "hermeting"];
+const PREVIEW_TAB_IDS: PreviewTabId[] = ["vandaag", "agenda", "voortgang", "keuze"];
 
 const PREVIEW_TABS = DASHBOARD_TABS.filter((tab) =>
   PREVIEW_TAB_IDS.includes(tab.id as PreviewTabId),
@@ -17,6 +17,10 @@ const VOORTGANG_DETAIL = DASHBOARD_UNLOCK_LOCKED_FEATURES.find(
   (feature) => feature.tab === "Voortgang",
 )?.detail;
 
+/**
+ * Hermeting is sinds 27 augustus geen eigen tabblad meer maar een scherm
+ * binnen Voortgang; de belofte hoort daarom bij het Voortgang-paneel.
+ */
 const HERMETING_DETAIL = DASHBOARD_UNLOCK_LOCKED_FEATURES.find(
   (feature) => feature.tab === "Hermeting",
 )?.detail;
@@ -52,28 +56,33 @@ function VoortgangPanel() {
       <p className="mt-3 text-xs leading-relaxed text-stone-400">
         Volg trends over tijd en scores per pijler — zodra je check-ins binnenkomen.
       </p>
+      <p className="mt-3 text-xs leading-relaxed text-stone-400">
+        Na ~30 dagen meet je opnieuw en zie je wat er echt verschoof — niet
+        alleen hoe je je vandaag voelt.
+      </p>
       {VOORTGANG_DETAIL ? (
         <p className="mt-3 text-xs font-medium text-ps-green">{VOORTGANG_DETAIL}</p>
+      ) : null}
+      {HERMETING_DETAIL ? (
+        <p className="mt-1 text-xs font-medium text-ps-green">{HERMETING_DETAIL}</p>
       ) : null}
     </div>
   );
 }
 
-function HermetingPanel() {
-  const tab = PREVIEW_TABS.find((item) => item.id === "hermeting");
+function KeuzePanel() {
+  const tab = PREVIEW_TABS.find((item) => item.id === "keuze");
 
   return (
     <div className="rounded-xl border border-white/10 bg-[#0f1c10] p-4">
       <p className="text-xs font-medium uppercase tracking-wider text-stone-500">
-        Hermeting
+        Keuze
       </p>
       <p className="mt-1 text-sm font-semibold text-white">{tab?.subtitle}</p>
       <p className="mt-3 text-xs leading-relaxed text-stone-400">
-        Meet of patronen echt verschuiven — niet alleen hoe je je vandaag voelt.
+        Per domein wat er te kiezen valt — mét ons oordeel, en met de reden als
+        er niets te kiezen is.
       </p>
-      {HERMETING_DETAIL ? (
-        <p className="mt-3 text-xs font-medium text-ps-green">{HERMETING_DETAIL}</p>
-      ) : null}
     </div>
   );
 }
@@ -98,7 +107,7 @@ const PANELS: Record<PreviewTabId, () => ReactNode> = {
   vandaag: VandaagPanel,
   agenda: AgendaPanel,
   voortgang: VoortgangPanel,
-  hermeting: HermetingPanel,
+  keuze: KeuzePanel,
 };
 
 export default function MethodologyDashboardPreview() {

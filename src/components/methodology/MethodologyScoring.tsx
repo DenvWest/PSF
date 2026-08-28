@@ -74,6 +74,20 @@ export default function MethodologyScoring() {
       </ul>
 
       <p className="text-sm leading-relaxed text-stone-500">
+        Deze wegingen gelden voor de redactionele beoordeling op de
+        vergelijkingspagina&rsquo;s. De productcatalogus op{" "}
+        <Link href="/supplementen#producten" className={linkClass}>
+          /supplementen
+        </Link>{" "}
+        gebruikt daarnaast een berekende PS-Score van 0 tot 100 — die methode
+        staat volledig uitgeschreven op{" "}
+        <Link href="/ps-score" className={linkClass}>
+          de PS-Score-pagina
+        </Link>
+        .
+      </p>
+
+      <p className="text-sm leading-relaxed text-stone-500">
         Zie een{" "}
         <Link href={METHODOLOGY_SUPPLEMENTEN.exampleLink.href} className={linkClass}>
           {METHODOLOGY_SUPPLEMENTEN.exampleLink.label}

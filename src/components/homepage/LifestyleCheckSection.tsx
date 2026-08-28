@@ -1,5 +1,6 @@
 import Container from "@/components/layout/Container";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
+import HomeLifestyleCta from "@/components/homepage/HomeLifestyleCta";
 import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
 import { HOMEPAGE_LIFESTYLE } from "@/data/homepage";
 import {
@@ -81,7 +82,10 @@ function QuestionPreviewStack() {
 }
 
 export default function LifestyleCheckSection() {
-  const { sectionId, title, subtitle } = HOMEPAGE_LIFESTYLE;
+  const { sectionId, title, subtitle, scoredCategoryIds } = HOMEPAGE_LIFESTYLE;
+  const scoredCategories = CATEGORIES.filter((category) =>
+    (scoredCategoryIds as readonly string[]).includes(category.id),
+  );
 
   return (
     <section
@@ -101,7 +105,7 @@ export default function LifestyleCheckSection() {
             </p>
 
             <ul className="mt-6 flex flex-wrap gap-2">
-              {CATEGORIES.map((category) => (
+              {scoredCategories.map((category) => (
                 <li key={category.id} className="list-none">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700">
                     <span aria-hidden>{category.icon}</span>
@@ -112,7 +116,8 @@ export default function LifestyleCheckSection() {
             </ul>
 
             <div className="mt-8 hidden lg:block">
-              <IntakeCtaMicro className="text-xs text-stone-500" />
+              <HomeLifestyleCta />
+              <IntakeCtaMicro className="mt-3 text-xs text-stone-500" />
               <IntakeLastSessionLink theme="light" className="mt-3 block" />
             </div>
           </div>
@@ -120,7 +125,8 @@ export default function LifestyleCheckSection() {
           <QuestionPreviewStack />
 
           <div className="lg:hidden">
-            <IntakeCtaMicro className="text-center text-xs text-stone-500" />
+            <HomeLifestyleCta className="w-full" />
+            <IntakeCtaMicro className="mt-3 text-center text-xs text-stone-500" />
             <IntakeLastSessionLink theme="light" className="mt-3 block text-center" />
           </div>
         </div>

@@ -1,61 +1,72 @@
 import type { QuestionId } from "@/data/intake-questions";
-import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
-import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
-
-export const INTAKE_PROMO = {
-  questionCount: 15,
-  durationLabel: "3 minuten",
-  subline: INTAKE_DELIVERABLE.subline,
-  sublineShort: "Check in 3 minuten hoe jouw leefstijl invloed heeft.",
-  sublineWithResult: "15 vragen, 3 minuten, persoonlijk resultaat.",
-  sublineWithAdvice: INTAKE_DELIVERABLE.sublineShort,
-  heroCta: "Start de Leefstijlcheck (3 min)",
-} as const;
+import type { HomepageProofCounts } from "@/lib/homepage-proof";
 
 export const HOMEPAGE_HERO = {
   eyebrow: "VOOR MANNEN 40+",
-  headline: "Zullen wij je helpen aan een sterk, energiek en vitaal lichaam?",
+  headline: "Welke supplementen zijn voor jou zinvol — en welke niet",
   subheadline:
-    "Wij maken van jouw leefstijl een helder overzicht — en geven je concrete vervolgstappen. Onafhankelijk platform voor mannen 40+, gratis in 3 minuten.",
+    "Per categorie vergelijken we de vorm, de werkzame dagdosering en de prijs per dag. We zeggen het hardop als een product de Europese claimdrempel niet haalt — en als je er beter aan doet eerst je leefstijl aan te pakken.",
   bullets: [
-    "Ontvang een duidelijk leefstijloverzicht op 6 domeinen",
-    "Één concrete beginstap — gerangschikt op impact",
-    "Geen hype: eerst leefstijl, supplementen alleen waar het zinvol is",
+    "Vorm, elementaire dosering en prijs per dag naast elkaar",
+    "Alleen effecten waarvoor een Europees goedgekeurde claim bestaat",
+    "Geen ranglijst op commissie — een plek is niet te koop",
   ],
-  primaryCta: "Start de Leefstijlcheck (3 min)",
-  secondaryCta: "Bekijk de gidsen",
-  secondaryCtaHref: "/gidsen",
+  primaryCta: "Bekijk de vergelijkingen",
+  primaryCtaHref: "/supplementen",
+  secondaryCta: "Doe de check (3 min)",
+  secondaryCtaHref: "/intake",
+  affiliateMicro:
+    "Sommige links zijn affiliate links. Dat verandert de volgorde niet.",
+  affiliateMicroLinkLabel: "Hoe wij verdienen",
+  affiliateMicroLinkHref: "/affiliate-disclosure",
   widget: {
     eyebrow: "Gratis",
     title: "Leefstijlcheck voor mannen 40+",
-    body: "15 vragen · 3 minuten · leefstijl-inzicht op 6 domeinen.",
+    body: "15 vragen · 3 minuten · leefstijl-inzicht op 7 domeinen.",
     cta: "Start direct",
   },
-  microCopy: DISCLAIMER_TEXTS.ctaMicro,
 } as const;
 
-export const HOMEPAGE_TRUST = {
-  stats: [
-    { value: "15 vragen", label: "Persoonlijk inzicht" },
-    { value: "3 minuten", label: "Gratis Leefstijlcheck" },
-    { value: "6 domeinen", label: "Slaap, energie, stress & meer" },
+export const HOMEPAGE_PROOF = {
+  ariaLabel: "Wat we tot nu toe hebben nagelopen",
+  /** `key` verwijst naar een veld van `HomepageProofCounts`; het getal komt uit de data. */
+  items: [
+    { key: "comparisons", label: "vergelijkingen" },
+    { key: "products", label: "producten beoordeeld" },
+    { key: "approvedClaims", label: "goedgekeurde EU-claims" },
+    { key: "peerReviewedSources", label: "peer-reviewed bronnen" },
   ],
+} as const satisfies {
+  ariaLabel: string;
+  items: readonly { key: keyof HomepageProofCounts; label: string }[];
+};
+
+export const HOMEPAGE_METHOD = {
+  title: "Hoe wij tot een oordeel komen",
+  intro:
+    "Wij verkopen zelf niets. Wat een vergelijking op deze site bepaalt, staat vast voordat we naar een merk kijken.",
+  cta: "Lees de methodologie",
+  ctaHref: "/methodologie",
   cards: [
     {
-      label: "Onafhankelijk",
-      description: "Geen sponsors of betaalde plaatsingen",
+      label: "Europese claimdrempel",
+      description:
+        "We noemen alleen effecten waarvoor een goedgekeurde EU-gezondheidsclaim bestaat. Haalt een ingrediënt die drempel niet, dan zeggen we dat.",
     },
     {
-      label: "Onderbouwd",
-      description: "Gebaseerd op medische en leefstijlinzichten",
+      label: "Prijs per werkzame dagdosis",
+      description:
+        "Elk product rekenen we om naar de elementaire dosering per dag. Zo worden potten van verschillende grootte vergelijkbaar.",
     },
     {
-      label: "3 minuten",
-      description: `15 vragen, persoonlijk ${INTAKE_DELIVERABLE.label}`,
+      label: "Geen betaalde plaatsingen",
+      description:
+        "Sponsors kunnen geen positie kopen. We ontvangen commissie op sommige links; de volgorde verandert daar niet door.",
     },
     {
-      label: "Gratis",
-      description: "Geen account, anoniem verwerkt",
+      label: "Datum van herziening",
+      description:
+        "Elke vergelijking draagt de datum waarop hij voor het laatst is nagelopen, boven aan de pagina.",
     },
   ],
 } as const;
@@ -65,7 +76,7 @@ export const HOMEPAGE_GUIDES_PROMO = {
   body:
     "Slaap die minder diep is, energie die eerder opraakt, herstel dat langer duurt — na je 40e verandert er van alles, vaak geleidelijk. Deze vijf compacte gidsen over slaap, stress, energie, herstel en testosteron geven je grip op wat er speelt. Onderbouwd en praktisch, zonder hype en zonder diagnoses.",
   secondaryLine:
-    "Nog niet zeker welk thema bij jou past? Doe eerst de Leefstijlcheck hierboven. In 3 minuten weet je waar je het beste kunt beginnen.",
+    "Nog niet zeker welk thema bij jou past? Doe eerst de Leefstijlcheck. In 3 minuten weet je waar je het beste kunt beginnen.",
   cta: "Bekijk de gidsen",
   ctaHref: "/gidsen",
   imageSrc: "/images/home/Gidsen-Compacte-Gidsen.webp",
@@ -75,13 +86,28 @@ export const HOMEPAGE_GUIDES_PROMO = {
 
 export const HOMEPAGE_LIFESTYLE = {
   sectionId: "leefstijlcheck",
-  title:
-    "Ontdek in 3 minuten hoe jouw leefstijl invloed heeft op je energie en vitaliteit",
-  subtitle: "15 korte vragen, direct persoonlijk inzicht",
+  title: "Twijfel je of je het überhaupt nodig hebt?",
+  subtitle:
+    "De Leefstijlcheck geeft per supplement een persoonlijk oordeel: kopen, eerst je leefstijl aanpakken, of niet nodig. 15 vragen, 3 minuten, gratis.",
   cta: "Start de Leefstijlcheck (3 min)",
-  footnote: DISCLAIMER_TEXTS.ctaMicro,
+  ctaHref: "/intake",
   progressLabel: "Vraag 3 van 15",
   progressPercent: 20,
+  /**
+   * De chips tonen de domeinen waarop de check scoort — niet alle
+   * vraag-categorieën. `leefstijl` is een vragenbak zonder eigen score, dus die
+   * hoort hier niet: anders belooft de pagina een domein dat je in je resultaat
+   * nooit terugziet.
+   */
+  scoredCategoryIds: [
+    "slaap",
+    "energie",
+    "stress",
+    "verbinding",
+    "voeding",
+    "beweging",
+    "herstel",
+  ] as const,
   previewQuestionIds: [
     "SLP_QUAL",
     "NRG_PATN",

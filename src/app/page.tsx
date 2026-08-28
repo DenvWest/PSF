@@ -2,16 +2,17 @@ import type { Metadata } from "next";
 import Hero from "@/components/homepage/Hero";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import { absoluteUrl } from "@/lib/public-site-url";
-import HomeTrustSection from "@/components/homepage/HomeTrustSection";
-import LifestyleCheckSection from "@/components/homepage/LifestyleCheckSection";
+import HomeProofBar from "@/components/homepage/HomeProofBar";
 import HomeComparisonsSection from "@/components/homepage/HomeComparisonsSection";
+import HomeMethodSection from "@/components/homepage/HomeMethodSection";
+import LifestyleCheckSection from "@/components/homepage/LifestyleCheckSection";
 import HomeGuidesPromoSection from "@/components/homepage/HomeGuidesPromoSection";
 import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
 import "./homepage.css";
 
-const HOME_TITLE = "Minder energie na 40? Zo vind je de oorzaak";
+const HOME_TITLE = "Welke supplementen zijn zinvol na je 40e — en welke niet";
 const HOME_DESCRIPTION =
-  "Minder energie na 40 is vaak geen ‘gewoon ouder worden’. Ontdek in 3 minuten wat je leefstijl doet met slaap, stress en herstel. Gratis check.";
+  "Onafhankelijke supplementvergelijkingen voor mannen 40+: vorm, werkzame dagdosering en prijs per dag. Alleen effecten met een goedgekeurde EU-claim, geen ranglijst op commissie.";
 
 export const metadata: Metadata = {
   title: { absolute: HOME_TITLE },
@@ -55,9 +56,10 @@ export default function HomePage() {
       />
       <div className="home">
         <Hero />
-        <HomeTrustSection />
-        <LifestyleCheckSection />
+        <HomeProofBar />
         <HomeComparisonsSection />
+        <HomeMethodSection />
+        <LifestyleCheckSection />
         <HomeGuidesPromoSection />
         <FloatingLeefstijlcheckCta />
       </div>
