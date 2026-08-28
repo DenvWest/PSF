@@ -22,6 +22,11 @@ export const GA4_EVENTS = {
   NUTRITION_SLIDER_OPT_OUT: 'nutrition_slider_opt_out',
   NUTRITION_ONDERBOUWING_RETURN_CLICK: 'nutrition_onderbouwing_return_click',
   NUTRITION_RESULT_REOPEN_CLICK: 'nutrition_result_reopen_click',
+  SUPPLEMENTEN_CATALOGUS_FILTER: 'supplementen_catalogus_filter',
+  SUPPLEMENTEN_CATALOGUS_SORTERING: 'supplementen_catalogus_sortering',
+  SUPPLEMENTEN_PRODUCT_ONDERBOUWING: 'supplementen_product_onderbouwing',
+  SUPPLEMENTEN_PRODUCT_UITGAAND: 'supplementen_product_uitgaand',
+  SUPPLEMENTEN_METHODIEK_GEOPEND: 'supplementen_methodiek_geopend',
 } as const;
 
 export function trackEvent(

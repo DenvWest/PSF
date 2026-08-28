@@ -6,6 +6,7 @@ import { alleArtikelen } from "@/data/blog";
 import { GELDIGE_CATEGORIE_IDS } from "@/data/blog/categorieen";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import { SUPPLEMENT_SLUGS } from "@/data/supplements";
+import { getHubProductSlugs } from "@/lib/supplement-hub/product-catalog";
 
 const BASE = "https://perfectsupplement.nl";
 const LAST_MOD = new Date("2026-05-01");
@@ -32,6 +33,7 @@ const STATISCHE_PADEN = [
   "/over-ons",
   "/contact",
   "/methodologie",
+  "/ps-score",
 ];
 
 type Entry = MetadataRoute.Sitemap[number];
@@ -94,6 +96,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "weekly",
   );
 
+  const producten = entries(
+    getHubProductSlugs().map((slug) => `/product/${slug}`),
+    0.8,
+    "weekly",
+  );
+
   const statisch = entries(STATISCHE_PADEN, 0.5, "yearly");
 
   return [
@@ -101,6 +109,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...pillars,
     ...profielen,
     ...gids,
+    ...producten,
     ...inzichten,
     ...kennisbank,
     ...blog,

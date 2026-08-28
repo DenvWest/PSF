@@ -46,12 +46,12 @@ export default function HubHero({ hubState }: HubHeroProps) {
               </Link>
             ) : (
               <a
-                href="#aanbevolen"
+                href="#producten"
                 className="inline-flex items-center gap-2 rounded-xl bg-ps-green px-8 py-4 text-base font-semibold text-white shadow-sm transition-all hover:bg-ps-green-hover hover:shadow-md scroll-smooth"
               >
                 {hubState === "needs_nutrition"
                   ? "Doe je voedingscheck ↓"
-                  : "Bekijk je aanbevelingen ↓"}
+                  : "Bekijk wat bij jou past ↓"}
               </a>
             )}
             {hubState === "no_intake" ? (

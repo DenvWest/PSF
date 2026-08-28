@@ -164,7 +164,7 @@ export const omega3Data: ComparisonPageData = {
         { criterium: "Gebruiksgemak", score: 8 },
         { criterium: "Prijs/kwaliteit", score: 9 },
       ],
-      imageSrc: "/Arctic-Blue-Vis-Olie.png",
+      imageSrc: "/images/producten/Arctic-Blue-Visolie.png",
       imageAlt: "Arctic Blue Visolie verpakking",
       werkzameStof: "omega3",
       vorm: "triglyceride (vloeibaar)",

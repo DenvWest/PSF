@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import HubHero from "@/components/supplement-hub/HubHero";
-import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
-import RecommendedForYou from "@/components/supplement-hub/RecommendedForYou";
-import ProfileUpdateLink from "@/components/supplement-hub/ProfileUpdateLink";
-import ThemaGrid from "@/components/supplement-hub/ThemaGrid";
-import SupplementCatalog from "@/components/supplement-hub/SupplementCatalog";
+import ProductCatalog from "@/components/supplement-hub/ProductCatalog";
+import HubVerderLezen from "@/components/supplement-hub/HubVerderLezen";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { CATALOG } from "@/data/supplement-hub/catalog";
+import { getHubProducts } from "@/lib/supplement-hub/product-catalog";
+import { buildHubPersonalization } from "@/lib/supplement-hub/hub-personalization";
 import { getIntakeSessionFromCookie } from "@/lib/intake-session-server";
 import { hasNutritionLogForSession } from "@/lib/nutrition-log-server";
 import type { SupplementHubState } from "@/components/supplement-hub/HubHero";
@@ -24,11 +22,11 @@ export const metadata: Metadata = {
   title:
     "Supplementengids | Onafhankelijk advies voor mannen 40+ | PerfectSupplement",
   description:
-    "Ontdek welk supplement bij jou past. Objectieve gidsen en vergelijkingen op basis van wetenschap — niet op basis van marketing.",
+    "Alle supplementen met een berekende PS-Score, kwaliteitsrang en kostenrang per claim-conforme dag. Onafhankelijk, na te rekenen, zonder prijs in de score.",
   openGraph: {
     title: "Supplementengids — PerfectSupplement",
     description:
-      "Onafhankelijke supplementgidsen en vergelijkingen voor mannen 40+.",
+      "Supplementen vergeleken op een berekende PS-Score, EU-claimvoorwaarde en prijs per claim-conforme dag.",
   },
   ...canonicalMetadata("/supplementen"),
 };
@@ -49,6 +47,7 @@ const itemListSchema = buildNamedItemListSchema(
 const jsonLd = [breadcrumbSchema, itemListSchema];
 
 export default async function SupplementenPage() {
+  const products = getHubProducts();
   const { verifiedSessionId, session } = await getIntakeSessionFromCookie();
   const hasIntakeCookie = verifiedSessionId !== null;
   const hasSession = hasIntakeCookie && session !== null;
@@ -63,6 +62,12 @@ export default async function SupplementenPage() {
       ? "ready"
       : "needs_nutrition";
 
+  const personalization = buildHubPersonalization({
+    session,
+    hasIntakeCookie,
+    nutritionLogCompleted,
+  });
+
   return (
     <>
       <script
@@ -74,101 +79,32 @@ export default async function SupplementenPage() {
         {/* 1. Hero */}
         <HubHero hubState={hubState} />
 
-        {/* 2. Alle supplementgidsen */}
-        <section id="supplementgidsen" aria-label="Alle supplementgidsen" className="mt-16 md:mt-20">
+        {/* 2. Productcatalogus — PS-Score, persoonlijke markering, kostenrang */}
+        <section
+          id="producten"
+          aria-label="Alle supplementproducten"
+          className="mt-16 md:mt-20"
+        >
           <Container>
-            <SupplementCatalog />
+            <ProductCatalog
+              products={products}
+              personalization={personalization}
+            />
           </Container>
         </section>
 
-        {/* 3. Persoonlijke aanbeveling */}
-        <section id="aanbevolen" aria-label="Persoonlijke aanbeveling" className="mt-16 md:mt-20">
+        {/* 3. Verder lezen — gidsen per supplement en per thema */}
+        <section
+          id="verder-lezen"
+          aria-label="Verder lezen"
+          className="mt-16 md:mt-20"
+        >
           <Container>
-            {hasSession ? (
-              <>
-                <RecommendedForYou
-                  session={session!}
-                  nutritionLogCompleted={nutritionLogCompleted}
-                />
-                <ProfileUpdateLink />
-              </>
-            ) : (
-              <div className="bg-amber-50 rounded-2xl border border-amber-100 px-8 py-10 md:px-12 md:py-12">
-                <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900">
-                  Welke supplementen passen bij jou?
-                </h2>
-                <p className="text-base text-stone-600 mt-3 max-w-lg leading-relaxed">
-                  Doe de gratis Leefstijlcheck en ontdek in 3 minuten welke
-                  supplementen bij jouw situatie passen.
-                </p>
-                <div className="mt-6">
-                  <Link
-                    href="/intake"
-                    className="inline-flex items-center gap-2 bg-ps-green text-white rounded-xl px-8 py-4 text-base font-semibold hover:bg-ps-green-hover transition-all shadow-sm hover:shadow-md"
-                  >
-                    Doe de Leefstijlcheck →
-                  </Link>
-                </div>
-                <IntakeCtaMicro className="mt-4 max-w-lg text-sm text-stone-500" />
-              </div>
-            )}
+            <HubVerderLezen />
           </Container>
         </section>
 
-        {/* 4. Blader per thema */}
-        <section id="themas" aria-label="Supplementthema's" className="mt-16 md:mt-20">
-          <Container>
-            <ThemaGrid />
-          </Container>
-        </section>
-
-        {/* 5. Waarom PerfectSupplement? */}
-        <section id="waarom" aria-label="Waarom PerfectSupplement?" className="mt-16 md:mt-20 border-t border-stone-100 py-16">
-          <Container>
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 text-center mb-12">
-              Waarom PerfectSupplement?
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="flex flex-col items-center text-center p-6">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-ps-green/10 flex items-center justify-center mb-4 text-xl">
-                  🔬
-                </div>
-                <h3 className="font-semibold text-stone-900 text-base">
-                  Wetenschappelijk onderbouwd
-                </h3>
-                <p className="text-sm text-stone-500 mt-2 leading-relaxed">
-                  Elke aanbeveling is gebaseerd op onafhankelijk onderzoek en
-                  gepubliceerde studies.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center p-6">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-ps-green/10 flex items-center justify-center mb-4 text-xl">
-                  ⚖️
-                </div>
-                <h3 className="font-semibold text-stone-900 text-base">
-                  Objectief vergeleken
-                </h3>
-                <p className="text-sm text-stone-500 mt-2 leading-relaxed">
-                  Geen gesponsorde rankings. We vergelijken op dosering,
-                  biobeschikbaarheid en prijs-kwaliteit.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center p-6">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-ps-green/10 flex items-center justify-center mb-4 text-xl">
-                  🎯
-                </div>
-                <h3 className="font-semibold text-stone-900 text-base">
-                  Persoonlijk advies
-                </h3>
-                <p className="text-sm text-stone-500 mt-2 leading-relaxed">
-                  Ontvang advies afgestemd op jouw leefstijl, doelen en eventuele supplementbehoeften.
-                </p>
-              </div>
-            </div>
-          </Container>
-        </section>
-
-        {/* 6. Medische disclaimer */}
+        {/* 4. Medische disclaimer */}
         <Container className="mt-16">
           <MedicalDisclaimer />
         </Container>

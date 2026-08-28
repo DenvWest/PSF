@@ -209,7 +209,7 @@ export const ashwagandhaData: ComparisonPageData = {
         { criterium: "Prijs/kwaliteit", score: 6 },
         { criterium: "Transparantie", score: 8 },
       ],
-      imageSrc: "/images/producten/Solgar-Vitamins-Ashwagandha Root.jpg",
+      imageSrc: "/images/producten/Solgar-Vitamins-Ashwagandha-Root.jpg",
       imageAlt: "Solgar Ashwagandha Root Extract vegicaps verpakking",
       werkzameStof: "ashwagandha",
       vorm: "wortelextract + heel kruid",
