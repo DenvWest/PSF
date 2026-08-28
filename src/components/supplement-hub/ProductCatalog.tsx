@@ -111,21 +111,34 @@ export default function ProductCatalog({
   const [weergave, setWeergave] = useState<Weergave>("lijst");
 
   const categorieen = useMemo<CategorieOptie[]>(() => {
-    const seen = new Map<string, CategorieOptie>();
+    const seen = new Map<string, CategorieOptie & { beeldScore: number }>();
     for (const product of products) {
       const bestaand = seen.get(product.category);
       if (bestaand) {
         bestaand.count += 1;
+        if (product.imageSrc && product.score.total > bestaand.beeldScore) {
+          bestaand.imageSrc = product.imageSrc;
+          bestaand.beeldScore = product.score.total;
+        }
         continue;
       }
       seen.set(product.category, {
         slug: product.category,
         label: product.categoryLabel,
         count: 1,
+        icon: product.categoryIcon,
+        imageSrc: product.imageSrc,
+        beeldScore: product.imageSrc ? product.score.total : -1,
       });
     }
     return [
-      { slug: "alles", label: "Alles", count: products.length },
+      {
+        slug: "alles",
+        label: "Alles",
+        count: products.length,
+        icon: "",
+        imageSrc: null,
+      },
       ...seen.values(),
     ];
   }, [products]);

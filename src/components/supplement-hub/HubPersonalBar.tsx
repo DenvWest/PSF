@@ -24,7 +24,9 @@ function namenReeks(namen: string[]): string {
 }
 
 const GROEN_KADER =
-  "rounded-2xl border border-[#5A8F6A]/25 bg-[#F0FAF3] px-5 py-5";
+  "rounded-2xl border border-[#5A8F6A]/25 bg-gradient-to-br from-[#EAF6EE] to-[#F8FBF9] px-5 py-5";
+const EYEBROW =
+  "font-display text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-[#5A8F6A]";
 const CTA_KNOP =
   "mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ps-green px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-ps-green-hover hover:shadow-md";
 
@@ -48,7 +50,8 @@ export default function HubPersonalBar({
         className={`${GROEN_KADER} ${className}`}
         aria-label="Persoonlijke selectie"
       >
-        <p className="font-display text-base font-semibold leading-snug text-stone-900">
+        <p className={EYEBROW}>Gratis Leefstijlcheck · 3 min</p>
+        <p className="mt-1.5 font-display text-lg font-bold leading-snug text-stone-900 sm:text-base sm:font-semibold">
           Welke van deze {productCount} passen bij jou?
         </p>
         <p className="mt-1.5 text-sm leading-relaxed text-stone-600 sm:hidden">
@@ -81,7 +84,8 @@ export default function HubPersonalBar({
         className={`${GROEN_KADER} ${className}`}
         aria-label="Persoonlijke selectie"
       >
-        <p className="font-display text-base font-semibold leading-snug text-stone-900">
+        <p className={EYEBROW}>Voedingscheck · 3 min</p>
+        <p className="mt-1.5 font-display text-lg font-bold leading-snug text-stone-900 sm:text-base sm:font-semibold">
           Nog één stap: de voedingscheck
         </p>
         <p className="mt-1.5 text-sm leading-relaxed text-stone-600 sm:hidden">

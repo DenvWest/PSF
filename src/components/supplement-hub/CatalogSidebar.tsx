@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { PS_SCORE_MODEL_VERSION } from "@/data/supplement-hub/score-model";
 import HubPersonalBar from "@/components/supplement-hub/HubPersonalBar";
@@ -10,6 +11,10 @@ export type CategorieOptie = {
   slug: string;
   label: string;
   count: number;
+  /** Emoji als er geen productfoto is. */
+  icon: string;
+  /** Foto van het best scorende product uit de categorie; draagt de tegel op mobiel. */
+  imageSrc: string | null;
 };
 
 type CatalogSidebarProps = {
@@ -56,6 +61,11 @@ export default function CatalogSidebar({
   filtersActief,
   onWisFilters,
 }: CatalogSidebarProps) {
+  const tegelTekst = (actief: boolean) =>
+    actief
+      ? "font-semibold text-ps-green lg:bg-ps-green lg:text-white lg:shadow-sm"
+      : "text-stone-600 hover:text-ps-green lg:hover:bg-stone-100/70";
+
   const knopClass = (actief: boolean) =>
     actief
       ? "bg-ps-green text-white font-semibold shadow-sm"
@@ -64,21 +74,19 @@ export default function CatalogSidebar({
   return (
     <aside
       aria-label="Verfijn de catalogus"
-      className="space-y-6 lg:sticky lg:top-24 lg:h-[calc(100dvh-7rem)] lg:space-y-6 lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:pb-10 lg:pr-2 lg:scrollbar-slim"
+      className="flex flex-col gap-6 lg:sticky lg:top-24 lg:block lg:h-[calc(100dvh-7rem)] lg:space-y-6 lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:pb-10 lg:pr-2 lg:scrollbar-slim"
     >
-      <div>
-        <p className="font-display text-sm font-semibold text-stone-900">
+      <div className="order-last lg:order-none">
+        <p className="hidden font-display text-sm font-semibold text-stone-900 lg:block">
           Stel je vergelijking samen
         </p>
-        <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
-          Alle {productCount} producten langs dezelfde meetlat.{" "}
-          <span className="hidden sm:inline">
-            Dosering, vorm, etiket en EU-claim; prijs telt niet mee in de score.
-          </span>
+        <p className="hidden text-xs leading-relaxed text-stone-500 lg:mt-1.5 lg:block">
+          Alle {productCount} producten langs dezelfde meetlat: dosering, vorm,
+          etiket en EU-claim; prijs telt niet mee in de score.
         </p>
         <Link
           href="/ps-score"
-          className="mt-2 inline-block text-xs font-medium text-ps-green transition-colors hover:text-ps-green-hover"
+          className="inline-block text-xs font-medium text-ps-green transition-colors hover:text-ps-green-hover lg:mt-2"
         >
           Model {PS_SCORE_MODEL_VERSION} — lees de methode →
         </Link>
@@ -95,7 +103,8 @@ export default function CatalogSidebar({
 
       <div>
         <div className="mb-2 flex items-baseline justify-between gap-2">
-          <p className={KOPJE}>Categorie</p>
+          <p className={`${KOPJE} hidden lg:block`}>Categorie</p>
+          <span className="lg:hidden" aria-hidden />
           {filtersActief ? (
             <button
               type="button"
@@ -107,29 +116,57 @@ export default function CatalogSidebar({
           ) : null}
         </div>
         <div
-          className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 scrollbar-hide lg:mx-0 lg:flex-col lg:gap-0.5 lg:overflow-visible lg:px-0 lg:pb-0"
+          className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-hide lg:mx-0 lg:flex-col lg:gap-0.5 lg:overflow-visible lg:px-0 lg:pb-0"
           role="group"
           aria-label="Filter op categorie"
         >
-          {categorieen.map((optie) => (
-            <button
-              key={optie.slug}
-              type="button"
-              onClick={() => onCategorie(optie.slug)}
-              aria-pressed={categorie === optie.slug}
-              className={`flex flex-shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm transition-all lg:w-full lg:flex-shrink lg:justify-between lg:rounded-lg lg:px-3 lg:py-2 ${knopClass(categorie === optie.slug)}`}
-            >
-              <span className="truncate">{optie.label}</span>
-              <span
-                aria-hidden
-                className={`hidden text-xs tabular-nums lg:inline ${
-                  categorie === optie.slug ? "text-white/70" : "text-stone-400"
-                }`}
+          {categorieen.map((optie) => {
+            const actief = categorie === optie.slug;
+            return (
+              <button
+                key={optie.slug}
+                type="button"
+                onClick={() => onCategorie(optie.slug)}
+                aria-pressed={actief}
+                className={`flex w-[5.5rem] flex-shrink-0 flex-col items-center gap-1.5 rounded-lg py-1 text-center text-[0.72rem] leading-tight transition-all lg:w-full lg:flex-shrink lg:flex-row lg:justify-between lg:gap-2 lg:px-3 lg:py-2 lg:text-left lg:text-sm ${tegelTekst(actief)}`}
               >
-                {optie.count}
-              </span>
-            </button>
-          ))}
+                <span
+                  aria-hidden
+                  className={`flex h-[5.25rem] w-[5.25rem] items-center justify-center overflow-hidden rounded-full bg-stone-50 transition-all lg:hidden ${
+                    actief
+                      ? "ring-2 ring-ps-green"
+                      : "ring-1 ring-stone-200/80"
+                  }`}
+                >
+                  {optie.imageSrc ? (
+                    <Image
+                      src={optie.imageSrc}
+                      alt=""
+                      width={168}
+                      height={168}
+                      className="h-full w-full object-contain p-1.5"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="font-display text-xl font-bold text-stone-500">
+                      {optie.count}
+                    </span>
+                  )}
+                </span>
+                <span className="w-full px-0.5 lg:truncate lg:px-0">
+                  {optie.label}
+                </span>
+                <span
+                  aria-hidden
+                  className={`hidden text-xs tabular-nums lg:inline ${
+                    actief ? "text-white/70" : "text-stone-400"
+                  }`}
+                >
+                  {optie.count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
