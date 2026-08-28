@@ -19,7 +19,7 @@ describe("ProductCatalog personalisatie", () => {
   it("start op de persoonlijke selectie en markeert de kaarten", () => {
     render(<ProductCatalog products={products} personalization={ready} />);
 
-    expect(screen.getByText(/Magnesium en Omega-3\./)).toBeTruthy();
+    expect(screen.getByText(/Past bij jou: Magnesium en Omega-3/)).toBeTruthy();
 
     const chip = screen.getByRole("button", { name: /Past bij jou · \d+/ });
     expect(chip.getAttribute("aria-pressed")).toBe("true");

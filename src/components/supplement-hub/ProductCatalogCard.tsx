@@ -104,7 +104,7 @@ export default function ProductCatalogCard({
               className={`inline-flex flex-shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-xs font-bold leading-none ${band.badge}`}
             >
               {formatScore(product.score.total)}
-              <span className="hidden text-[10px] font-semibold uppercase tracking-wide opacity-90 @[16rem]:inline">
+              <span className="hidden text-[10px] font-semibold uppercase tracking-wide opacity-90 @[26rem]:inline">
                 {band.label}
               </span>
             </span>
