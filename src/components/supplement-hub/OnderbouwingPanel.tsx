@@ -82,9 +82,9 @@ export default function OnderbouwingPanel({
       <button
         type="button"
         onClick={open}
-        className={`flex w-full items-center justify-between gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 text-left transition-colors hover:border-ps-green/40 hover:text-ps-green ${className}`}
+        className={`flex w-full items-center justify-between gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-left transition-colors hover:border-ps-green/40 hover:text-ps-green sm:px-4 sm:py-3 ${className}`}
       >
-        <span className="font-display text-sm font-semibold text-stone-900">
+        <span className="font-display text-[0.8rem] font-semibold leading-snug text-stone-900 sm:text-sm">
           Onderbouwing &amp; gidsen
         </span>
         <span

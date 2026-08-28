@@ -208,7 +208,7 @@ export default function ProductCatalog({
           "Alle supplementen");
 
   return (
-    <div className="lg:grid lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[18rem_minmax(0,1fr)] xl:gap-12">
+    <div className="grid grid-cols-[8.5rem_minmax(0,1fr)] gap-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[18rem_minmax(0,1fr)] xl:gap-12">
       <CatalogSidebar
         personalization={personalization}
         productCount={products.length}
@@ -240,7 +240,7 @@ export default function ProductCatalog({
         }}
       />
 
-      <section aria-label="Producten" className="mt-10 min-w-0 lg:mt-0">
+      <section aria-label="Producten" className="min-w-0">
         <div className="flex flex-col gap-3 border-b border-stone-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <h1 className="font-display text-xl font-bold text-stone-900 md:text-2xl">
@@ -277,7 +277,7 @@ export default function ProductCatalog({
             <div
               role="group"
               aria-label="Weergave"
-              className="flex flex-shrink-0 items-center gap-0.5 rounded-lg border border-stone-200 bg-white p-0.5"
+              className="hidden flex-shrink-0 items-center gap-0.5 rounded-lg border border-stone-200 bg-white p-0.5 sm:flex"
             >
               {WEERGAVEN.map((optie) => (
                 <button
