@@ -2,6 +2,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import KompasKeuzeSectie from "@/components/dashboard/kompas/KompasKeuzeSectie";
+import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
+import { rotateLadderAction, weekIndexFromDate } from "@/lib/kompas-aanbeveling";
 import { getLeefstijlLadder } from "@/lib/leefstijl-ladder";
 import type { AgendaBlockRecord } from "@/types/agenda";
 import type { DashboardData, PillarId } from "@/types/dashboard";
@@ -39,6 +41,14 @@ vi.mock("@/lib/clarity", () => ({ clarityTag: vi.fn() }));
 
 const MOVEMENT_LADDER = getLeefstijlLadder("beweging")!;
 const WINST_LAYER = MOVEMENT_LADDER.layers.find((row) => row.id === 2)!;
+/**
+ * De component roteert de getoonde actie per kalenderweek (zelfde functie als
+ * hier); een vastgepind `actions[0]` liep na 7 dagen vanzelf stuk.
+ */
+const WINST_LAYER_ACTION = rotateLadderAction(
+  WINST_LAYER.actions,
+  weekIndexFromDate(todayInAgendaTimezone()),
+)!;
 
 const KRACHT_ROW = {
   key: "kracht",
@@ -272,11 +282,11 @@ describe("KompasKeuzeSectie — toggle en Aanbevolen", () => {
     const { onOpenDomain } = renderSectie("beweging", movementReadoutData(2));
     fireEvent.click(screen.getByRole("tab", { name: "Aanbevolen" }));
 
-    expect(screen.getByText(WINST_LAYER.actions[0])).toBeTruthy();
+    expect(screen.getByText(WINST_LAYER_ACTION)).toBeTruthy();
     expect(screen.getByText(`Laag 2 · ${WINST_LAYER.name}`)).toBeTruthy();
 
     fireEvent.click(
-      screen.getByRole("button", { name: `Open ${WINST_LAYER.actions[0]} op je ladder` }),
+      screen.getByRole("button", { name: `Open ${WINST_LAYER_ACTION} op je ladder` }),
     );
     expect(onOpenDomain).toHaveBeenCalledWith("beweging");
     expect(trackEvent).toHaveBeenCalledWith(
@@ -295,7 +305,7 @@ describe("KompasKeuzeSectie — toggle en Aanbevolen", () => {
     expect(screen.getByText("Voeding")).toBeTruthy();
     expect(screen.getByText(`Laag 1 · ${voedingLaag1.name}`)).toBeTruthy();
     // Beweging houdt zijn eigen, gemeten laag.
-    expect(screen.getByText(WINST_LAYER.actions[0])).toBeTruthy();
+    expect(screen.getByText(WINST_LAYER_ACTION)).toBeTruthy();
   });
 
   it("zegt er eerlijk bij dat een terugval-laag niet uit een meting komt", () => {
