@@ -29,10 +29,16 @@ set -e
 cd /root/perfectsupplement
 
 echo "📥 Pulling latest changes from Git..."
+OLD_LOCK_HASH=$(git rev-parse HEAD:package-lock.json 2>/dev/null || echo "none")
 git pull origin main
+NEW_LOCK_HASH=$(git rev-parse HEAD:package-lock.json 2>/dev/null || echo "none")
 
-echo "📦 Installing dependencies..."
-npm ci
+if [[ "$OLD_LOCK_HASH" != "$NEW_LOCK_HASH" || ! -d node_modules ]]; then
+    echo "📦 package-lock.json gewijzigd — installing dependencies..."
+    npm ci
+else
+    echo "📦 package-lock.json ongewijzigd — dependencies overslaan"
+fi
 
 echo "🏗️  Building production version..."
 npm run build
