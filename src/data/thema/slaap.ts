@@ -195,10 +195,10 @@ export const slaapThema: ThemaPageData = {
     sectionLabel: "PERSOONLIJK ADVIES",
     title: "Wil je weten wat er bij jou speelt?",
     subtitle:
-      `De Leefstijlcheck analyseert je slaap, stress, energie, voeding, beweging en herstel in 15 vragen. ${INTAKE_DELIVERABLE.premiumSubtitleSuffix}`,
+      `De Leefstijlcheck analyseert je slaap, stress, energie, voeding, beweging en herstel in 16 vragen. ${INTAKE_DELIVERABLE.premiumSubtitleSuffix}`,
     features: [
-      "15 vragen, 3 minuten",
-      "Scores op 6 leefstijldomeinen",
+      "16 vragen, 3 minuten",
+      "Scores op 5 leefstijldomeinen",
       INTAKE_DELIVERABLE.premiumFeatureBullet,
       INTAKE_CTA.supplementFeature,
     ],
@@ -260,7 +260,7 @@ export const slaapThema: ThemaPageData = {
 
   seo: {
     title:
-      "Slaap verbeteren als man 40+ — Oorzaken, tips en supplementen | PerfectSupplement",
+      "Slaap verbeteren als man 40+ — Oorzaken, tips en supplementen",
     description:
       "Waarom je slaap verandert na je 40e en wat je eraan kunt doen. Concrete leefstijltips, supplementadvies en een gratis slaapgids.",
     canonical: "/gids/slaap",

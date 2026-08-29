@@ -3,11 +3,9 @@ import Hero from "@/components/homepage/Hero";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import { absoluteUrl } from "@/lib/public-site-url";
 import HomeProofBar from "@/components/homepage/HomeProofBar";
-import HomeComparisonsSection from "@/components/homepage/HomeComparisonsSection";
-import HomeMethodSection from "@/components/homepage/HomeMethodSection";
-import LifestyleCheckSection from "@/components/homepage/LifestyleCheckSection";
+import HomeTrustSection from "@/components/homepage/HomeTrustSection";
 import HomeGuidesPromoSection from "@/components/homepage/HomeGuidesPromoSection";
-import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
+import HomeClosingCta from "@/components/homepage/HomeClosingCta";
 import "./homepage.css";
 
 const HOME_TITLE = "Welke supplementen zijn zinvol na je 40e — en welke niet";
@@ -57,11 +55,9 @@ export default function HomePage() {
       <div className="home">
         <Hero />
         <HomeProofBar />
-        <HomeComparisonsSection />
-        <HomeMethodSection />
-        <LifestyleCheckSection />
+        <HomeTrustSection />
         <HomeGuidesPromoSection />
-        <FloatingLeefstijlcheckCta />
+        <HomeClosingCta />
       </div>
     </>
   );

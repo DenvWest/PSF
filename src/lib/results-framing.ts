@@ -3,10 +3,15 @@ import type { DomainScores } from "@/lib/intake-engine";
 import { getDisplayStatus } from "@/lib/score-display";
 import { resolveVitaliteitFacets, type FacetKey } from "@/lib/vitaliteit";
 
+/**
+ * De keuze uit fase 1, teruggegeven in gewone taal. Bewust geen beeldspraak
+ * ("een lege batterij") en geen persona: het overzicht eromheen is een meting,
+ * en een metafoor leest daarnaast als een oordeel dat we niet gemeten hebben.
+ */
 const SYMPTOM_FRAGMENT: Record<SymptomId, string> = {
   stress: "minder rust en meer prikkelbaarheid",
   slaap: "moeite met slapen",
-  energie: "een lege batterij",
+  energie: "weinig energie overdag",
 };
 
 /**

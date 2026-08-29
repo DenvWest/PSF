@@ -35,6 +35,8 @@ export const DOMAIN_EVENT_TYPES = [
   "intake.cta_to_pillar",
   "intake.cta_to_nutrition_log",
   "intake.cta_to_primary_checkin",
+  "intake.cta_to_comparison",
+  "intake.track_chosen",
   "focus.viewed",
   "plan.viewed",
   "plan.action_clicked",

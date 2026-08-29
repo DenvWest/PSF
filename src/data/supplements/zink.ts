@@ -16,7 +16,7 @@ export const zinkData: ComparisonPageData = {
   intro:
     "Vaak verkouden, langzaam herstel of twijfel over je voedingsstatus? Zinkvorm en dosering bepalen of een supplement zinvol is. Drie producten vergeleken op biobeschikbaarheid, elementaire mg per dag en prijs — zink draagt bij tot het immuunsysteem, eiwitsynthese en (officieel geformuleerd) tot de instandhouding van een normaal testosterongehalte in het bloed.",
   seoTitle:
-    "Beste Zink Supplement 2026 — Methionine & Picolinaat Vergelijking | PerfectSupplement",
+    "Beste Zink Supplement 2026 — Methionine & Picolinaat Vergelijking",
   seoDescription:
     "Vergelijk de beste zink supplementen op biobeschikbaarheid, dosering en prijs. Zinkmethionine vs picolinaat — eerlijk gescoord voor mannen 40+.",
   lastUpdated: "2026-04-21",

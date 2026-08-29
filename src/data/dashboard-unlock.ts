@@ -2,7 +2,7 @@ import { DASHBOARD_ROUTE_FAQ, DASHBOARD_ROUTE_STEPS } from "@/data/dashboard-rou
 import type { PillarId } from "@/types/dashboard";
 
 export const DASHBOARD_UNLOCK_METADATA = {
-  title: "Hoe Werkt Jouw Dashboard? | PerfectSupplement",
+  title: "Hoe Werkt Jouw Dashboard?",
   description:
     "Zo werkt je dashboard na de Leefstijlcheck: van check naar meetbaar overzicht met prioriteit, check-ins en hermeting. Gratis, geen wachtwoord — voor mannen 40+, zonder diagnose.",
 } as const;

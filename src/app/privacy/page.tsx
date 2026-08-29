@@ -4,7 +4,7 @@ import ContentPageLayout from "@/components/layout/ContentPageLayout";
 import PrivacyRevokeConsent from "@/components/privacy/PrivacyRevokeConsent";
 
 export const metadata: Metadata = {
-  title: "Privacyverklaring | PerfectSupplement",
+  title: "Privacyverklaring",
   description:
     "Privacyverklaring van PerfectSupplement. Lees hoe wij omgaan met jouw persoonsgegevens.",
   alternates: {

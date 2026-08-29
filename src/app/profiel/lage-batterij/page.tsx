@@ -4,10 +4,10 @@ import { intakeCtaMatchProfile } from "@/lib/intake-product-copy";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
-import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
+import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
 
 export const metadata: Metadata = {
-  title: "Altijd Moe Na 40? Dit Is Waarom | PerfectSupplement",
+  title: "Altijd Moe Na 40? Dit Is Waarom",
   description:
     "Je energie is op. Niet even, maar structureel. Herken je dit? Ontdek wat er aan de hand is en wat je eraan kunt doen.",
   alternates: {
@@ -127,7 +127,7 @@ export default function LageBatterijPage() {
       <main>
         <Container>
           <article>
-            <IntakeResultsReturnBanner />
+            <CheckLensBanner target={{ kind: "profile", slug: "lage-batterij", label: "Lage Batterij" }} />
             {/* Breadcrumbs */}
             <nav aria-label="Breadcrumb" className="pt-6 pb-2">
               <ol className="flex flex-wrap items-center gap-1 text-sm text-slate-400">

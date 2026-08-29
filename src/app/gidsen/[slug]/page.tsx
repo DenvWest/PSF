@@ -29,12 +29,12 @@ export async function generateMetadata({
 
   if (!guide) {
     return {
-      title: "Gids niet gevonden | PerfectSupplement",
+      title: "Gids niet gevonden",
     };
   }
 
   return {
-    title: `Gratis ${guide.title}gids | PerfectSupplement`,
+    title: guide.seoTitle ?? `Gratis ${guide.title}gids`,
     description: guide.heroSub,
     ...canonicalMetadata(`/gidsen/${guide.key}`),
   };
@@ -131,6 +131,8 @@ export default async function GuideLandingPage({ params }: GuideLandingPageProps
                   variant="hero"
                   comingSoon={guide.comingSoon}
                   comingSoonHref={guide.contentHref}
+                  comingSoonNote={guide.comingSoonNote}
+                  comingSoonCta={guide.comingSoonCta}
                 />
               </div>
 
@@ -307,8 +309,7 @@ export default async function GuideLandingPage({ params }: GuideLandingPageProps
                 <>
                   De PDF-gids{" "}
                   <strong className="text-[#E7EDE8]">{guide.title}</strong> is
-                  binnenkort beschikbaar. Intussen lees je alles op onze
-                  webgids.
+                  binnenkort beschikbaar.
                 </>
               ) : (
                 <>
@@ -322,6 +323,8 @@ export default async function GuideLandingPage({ params }: GuideLandingPageProps
               variant="dark"
               comingSoon={guide.comingSoon}
               comingSoonHref={guide.contentHref}
+              comingSoonNote={guide.comingSoonNote}
+              comingSoonCta={guide.comingSoonCta}
             />
           </Container>
         </section>

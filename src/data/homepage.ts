@@ -1,28 +1,43 @@
 import type { QuestionId } from "@/data/intake-questions";
 import type { HomepageProofCounts } from "@/lib/homepage-proof";
+import {
+  INTAKE_DOMAINS_LABEL,
+  INTAKE_QUESTION_COUNT,
+  INTAKE_QUESTIONS_LABEL,
+} from "@/lib/intake-facts";
+import { GUIDES } from "@/data/guides";
 
 export const HOMEPAGE_HERO = {
-  eyebrow: "VOOR MANNEN 40+",
-  headline: "Welke supplementen zijn voor jou zinvol — en welke niet",
+  eyebrow: "VOOR 30-PLUSSERS",
+  headline: "Zullen wij je helpen uitzoeken wat jouw lichaam écht nodig heeft?",
   subheadline:
-    "Per categorie vergelijken we de vorm, de werkzame dagdosering en de prijs per dag. We zeggen het hardop als een product de Europese claimdrempel niet haalt — en als je er beter aan doet eerst je leefstijl aan te pakken.",
+    "Wij verkopen geen supplementen. We vergelijken ze — en we zeggen het hardop wanneer je er beter geen kunt kopen.",
+  /** De drie regels die de subkop ontlasten: wat we doen, wat de check oplevert, waar het op rust. */
   bullets: [
-    "Vorm, elementaire dosering en prijs per dag naast elkaar",
-    "Alleen effecten waarvoor een Europees goedgekeurde claim bestaat",
-    "Geen ranglijst op commissie — een plek is niet te koop",
+    "Eerst je leefstijl, dan pas een supplement — en alleen als het daar nog iets aan toevoegt",
+    `${INTAKE_QUESTION_COUNT} vragen geven je een score op ${INTAKE_DOMAINS_LABEL} en per supplement een oordeel: kopen, eerst leefstijl, of niet nodig`,
+    "Onderbouwd met peer-reviewed onderzoek en Europees goedgekeurde claims, niet met marketing",
   ],
-  primaryCta: "Bekijk de vergelijkingen",
-  primaryCtaHref: "/supplementen",
-  secondaryCta: "Doe de check (3 min)",
-  secondaryCtaHref: "/intake",
-  affiliateMicro:
-    "Sommige links zijn affiliate links. Dat verandert de volgorde niet.",
-  affiliateMicroLinkLabel: "Hoe wij verdienen",
-  affiliateMicroLinkHref: "/affiliate-disclosure",
+  primaryCta: "Doe de gratis Leefstijlcheck",
+  primaryCtaHref: "/intake",
+  primaryCtaMicro: "3 minuten · geen account · direct je uitslag",
+  /**
+   * De hero toont het product zelf: drie vragen uit de check. Bewust drie en
+   * niet vier — de vierde kaart duwde de knop op mobiel onder de vouw.
+   */
+  preview: {
+    progressLabel: `Vraag 3 van ${INTAKE_QUESTION_COUNT}`,
+    progressPercent: Math.round((3 / INTAKE_QUESTION_COUNT) * 100),
+    questionIds: [
+      "SLP_QUAL",
+      "MOV_CARD",
+      "NUT_O3",
+    ] as const satisfies readonly QuestionId[],
+  },
   widget: {
     eyebrow: "Gratis",
-    title: "Leefstijlcheck voor mannen 40+",
-    body: "15 vragen · 3 minuten · leefstijl-inzicht op 7 domeinen.",
+    title: "Leefstijlcheck voor 30-plussers",
+    body: `${INTAKE_QUESTIONS_LABEL} · 3 minuten · inzicht op ${INTAKE_DOMAINS_LABEL}.`,
     cta: "Start direct",
   },
 } as const;
@@ -41,64 +56,53 @@ export const HOMEPAGE_PROOF = {
   items: readonly { key: keyof HomepageProofCounts; label: string }[];
 };
 
-export const HOMEPAGE_METHOD = {
-  title: "Hoe wij tot een oordeel komen",
+/**
+ * Het vertrouwensblok. Stond tot 29 augustus als vier icoonkaarten op de
+ * pagina; nu drie regels proza onder één belofte, zodat de homepage rustiger
+ * leest. De volledige uitleg staat op /methodologie.
+ */
+export const HOMEPAGE_TRUST = {
+  title: "Soms is het antwoord: koop niets.",
   intro:
-    "Wij verkopen zelf niets. Wat een vergelijking op deze site bepaalt, staat vast voordat we naar een merk kijken.",
-  cta: "Lees de methodologie",
-  ctaHref: "/methodologie",
-  cards: [
-    {
-      label: "Europese claimdrempel",
-      description:
-        "We noemen alleen effecten waarvoor een goedgekeurde EU-gezondheidsclaim bestaat. Haalt een ingrediënt die drempel niet, dan zeggen we dat.",
-    },
-    {
-      label: "Prijs per werkzame dagdosis",
-      description:
-        "Elk product rekenen we om naar de elementaire dosering per dag. Zo worden potten van verschillende grootte vergelijkbaar.",
-    },
-    {
-      label: "Geen betaalde plaatsingen",
-      description:
-        "Sponsors kunnen geen positie kopen. We ontvangen commissie op sommige links; de volgorde verandert daar niet door.",
-    },
-    {
-      label: "Datum van herziening",
-      description:
-        "Elke vergelijking draagt de datum waarop hij voor het laatst is nagelopen, boven aan de pagina.",
-    },
+    "Wij verkopen geen supplementen en we hebben geen eigen merk. Daardoor kunnen we iets zeggen wat een webshop nooit zegt: dat je in jouw geval beter kunt beginnen bij je slaap, je eten of je herstel — en dat potje kunt laten staan.",
+  points: [
+    "We noemen alleen effecten waarvoor een Europees goedgekeurde gezondheidsclaim bestaat. Haalt een ingrediënt die drempel niet, dan schrijven we dat op.",
+    "Elk product rekenen we om naar de werkzame dosering per dag, zodat potten van verschillende grootte eerlijk naast elkaar liggen.",
+    "Een plek in een vergelijking is niet te koop. We ontvangen commissie op sommige links; aan de volgorde verandert dat niets.",
   ],
+  cta: "Lees hoe we tot een oordeel komen",
+  ctaHref: "/methodologie",
+  comparisonsLabel: "Bekijk de vergelijkingen",
+  comparisonsHref: "/supplementen",
+  affiliateMicro:
+    "Sommige links zijn affiliate links. Dat verandert de volgorde niet.",
+  affiliateMicroLinkLabel: "Hoe wij verdienen",
+  affiliateMicroLinkHref: "/affiliate-disclosure",
 } as const;
 
 export const HOMEPAGE_GUIDES_PROMO = {
-  title: "Gratis gidsen voor mannen 40+",
-  body:
-    "Slaap die minder diep is, energie die eerder opraakt, herstel dat langer duurt — na je 40e verandert er van alles, vaak geleidelijk. Deze vijf compacte gidsen over slaap, stress, energie, herstel en testosteron geven je grip op wat er speelt. Onderbouwd en praktisch, zonder hype en zonder diagnoses.",
-  secondaryLine:
-    "Nog niet zeker welk thema bij jou past? Doe eerst de Leefstijlcheck. In 3 minuten weet je waar je het beste kunt beginnen.",
+  title: "Gratis gidsen voor 30-plussers",
+  body: `Slaap die minder diep is, energie die eerder opraakt, herstel dat langer duurt — vanaf je dertigste verandert er van alles, vaak geleidelijk. Deze ${GUIDES.length} compacte gidsen geven je grip op wat er speelt. Onderbouwd en praktisch, zonder hype en zonder diagnoses.`,
   cta: "Bekijk de gidsen",
   ctaHref: "/gidsen",
   imageSrc: "/images/home/Gidsen-Compacte-Gidsen.webp",
   imageAlt:
-    "Gratis compacte gidsen voor mannen 40+: slaap, stress, energie, herstel en testosteron",
+    "Gratis compacte gidsen voor 30-plussers over slaap, stress, energie, herstel, beweging, overgang en testosteron",
 } as const;
 
+export const HOMEPAGE_CLOSING = {
+  title: "Benieuwd wat voor jou zinvol is?",
+  body:
+    `${INTAKE_QUESTION_COUNT} vragen over je slaap, stress, voeding, beweging en verbinding. Daarna weet je waar je staat — en of aanvullen in jouw geval het overwegen waard is.`,
+} as const;
+
+/**
+ * Wat er over is van het oude Leefstijlcheck-blok op de homepage: de sectie is
+ * opgegaan in de hero, maar `FloatingLeefstijlcheckCta` (blog, pijlerpagina's)
+ * leest deze domeinlijst nog. `leefstijl` is een vragenbak zonder eigen score
+ * en hoort er daarom niet in.
+ */
 export const HOMEPAGE_LIFESTYLE = {
-  sectionId: "leefstijlcheck",
-  title: "Twijfel je of je het überhaupt nodig hebt?",
-  subtitle:
-    "De Leefstijlcheck geeft per supplement een persoonlijk oordeel: kopen, eerst je leefstijl aanpakken, of niet nodig. 15 vragen, 3 minuten, gratis.",
-  cta: "Start de Leefstijlcheck (3 min)",
-  ctaHref: "/intake",
-  progressLabel: "Vraag 3 van 15",
-  progressPercent: 20,
-  /**
-   * De chips tonen de domeinen waarop de check scoort — niet alle
-   * vraag-categorieën. `leefstijl` is een vragenbak zonder eigen score, dus die
-   * hoort hier niet: anders belooft de pagina een domein dat je in je resultaat
-   * nooit terugziet.
-   */
   scoredCategoryIds: [
     "slaap",
     "energie",
@@ -108,10 +112,4 @@ export const HOMEPAGE_LIFESTYLE = {
     "beweging",
     "herstel",
   ] as const,
-  previewQuestionIds: [
-    "SLP_QUAL",
-    "NRG_PATN",
-    "STR_FREQ",
-    "MOV_STR",
-  ] as const satisfies readonly QuestionId[],
 } as const;

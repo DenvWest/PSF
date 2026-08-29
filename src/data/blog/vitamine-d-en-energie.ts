@@ -62,7 +62,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
     "krachttraining-na-40",
   ],
   metaTitle:
-    "Vitamine D en energie na 40: verwachtingen en vergelijken | PerfectSupplement",
+    "Vitamine D en energie na 40: verwachtingen en vergelijken",
   metaDescription:
     "Vitamine D in Nederland: wat claims wél zeggen, wanneer meten zinvol is, en hoe je vitamine D vergelijkt — gekoppeld aan energie na 40 zonder wonderbeloftes.",
   keywords: [

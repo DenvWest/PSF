@@ -59,7 +59,7 @@ export const energieVerhogenData: BlogArtikel = {
     "slaap-verbeteren-40-plus",
   ],
   metaTitle:
-    "Energie verhogen na je 40e: fysiologie en praktische aanpak | PerfectSupplement",
+    "Energie verhogen na je 40e: fysiologie en praktische aanpak",
   metaDescription:
     "Aanhoudende vermoeidheid na je 40e? Ontdek fysiologische factoren en vijf leefstijlpunten die in onderzoek met energie en herstel in verband worden gebracht.",
   keywords: [

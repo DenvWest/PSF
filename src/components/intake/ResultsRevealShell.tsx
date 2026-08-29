@@ -2,7 +2,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 
-export type ResultsRevealShellVariant = "fullscreen" | "embedded-card";
+export type ResultsRevealShellVariant = "fullscreen" | "embedded-card" | "dark-report";
 
 type ResultsRevealShellProps = {
   children: ReactNode;
@@ -16,6 +16,16 @@ export default function ResultsRevealShell({
   brandStyle,
 }: ResultsRevealShellProps) {
   const embedded = variant === "embedded-card";
+
+  if (variant === "dark-report") {
+    return (
+      <div className="reveal-report-surface w-full" style={brandStyle}>
+        <main className="mx-auto box-border w-full max-w-[1120px] px-4 pb-14 pt-3 sm:px-6 lg:px-8">
+          {children}
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div

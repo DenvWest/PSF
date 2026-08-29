@@ -51,7 +51,7 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
     "ademhaling-tegen-stress",
   ],
   metaTitle:
-    "Slaaphygiëne voor mannen 40+: wat wél werkt | PerfectSupplement",
+    "Slaaphygiëne voor mannen 40+: wat wél werkt",
   metaDescription:
     "Slaaphygiëne na je 40e: de vier pijlers met het meeste effect — ritme, licht, temperatuur en prikkels — zonder slaap-hype.",
   keywords: [

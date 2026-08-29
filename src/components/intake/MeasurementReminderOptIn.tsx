@@ -8,6 +8,7 @@ import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 
 type MeasurementReminderOptInProps = {
   sessionId: string;
+  tone?: "light" | "dark";
 };
 
 function emailLooseOk(value: string): boolean {
@@ -17,7 +18,9 @@ function emailLooseOk(value: string): boolean {
 
 export function MeasurementReminderOptIn({
   sessionId,
+  tone = "light",
 }: MeasurementReminderOptInProps) {
+  const dark = tone === "dark";
   const shownRef = useRef(false);
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
@@ -81,18 +84,26 @@ export function MeasurementReminderOptIn({
   if (status === "success") {
     return (
       <div className="rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-5">
-        <p className="text-sm font-semibold text-[#1c1917]">{REVEAL_COPY.reminderSuccess}</p>
+        <p className={`text-sm font-semibold ${dark ? "text-[#F1EFE8]" : "text-[#1c1917]"}`}>
+          {REVEAL_COPY.reminderSuccess}
+        </p>
       </div>
     );
   }
 
   return (
     <section
-      className="rounded-2xl border border-[#e4e0da] bg-white px-5 py-5"
+      className={`rounded-2xl border px-5 py-5 ${
+        dark ? "border-white/12 bg-white/[0.04]" : "border-[#e4e0da] bg-white"
+      }`}
       aria-label="30-dagen hermeting opt-in"
     >
-      <h2 className="mb-2 text-sm font-semibold text-[#1c1917]">{REVEAL_COPY.reminderTitle}</h2>
-      <p className="mb-4 text-xs leading-relaxed text-[#57534e]">{REVEAL_COPY.reminderBody}</p>
+      <h2 className={`mb-2 text-sm font-semibold ${dark ? "text-[#F1EFE8]" : "text-[#1c1917]"}`}>
+        {REVEAL_COPY.reminderTitle}
+      </h2>
+      <p className={`mb-4 text-xs leading-relaxed ${dark ? "text-[#9FAFA4]" : "text-[#57534e]"}`}>
+        {REVEAL_COPY.reminderBody}
+      </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col gap-3">
@@ -104,7 +115,11 @@ export function MeasurementReminderOptIn({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={REVEAL_COPY.reminderEmailPlaceholder}
-            className="w-full rounded-[10px] border border-[#e4e0da] bg-[#faf9f7] px-4 py-3 text-sm text-[#1c1917] placeholder:text-[#a8a29e] focus:border-intake-terra focus:outline-none focus:ring-1 focus:ring-intake-terra"
+            className={`w-full rounded-[10px] border px-4 py-3 text-sm focus:border-intake-terra focus:outline-none focus:ring-1 focus:ring-intake-terra ${
+              dark
+                ? "border-white/12 bg-black/25 text-[#F1EFE8] placeholder:text-[#7E8C82]"
+                : "border-[#e4e0da] bg-[#faf9f7] text-[#1c1917] placeholder:text-[#a8a29e]"
+            }`}
           />
           <button
             type="submit"
@@ -115,12 +130,18 @@ export function MeasurementReminderOptIn({
           </button>
         </div>
 
-        <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-[#57534e]">
+        <label
+          className={`flex cursor-pointer items-start gap-3 text-xs leading-relaxed ${
+            dark ? "text-[#9FAFA4]" : "text-[#57534e]"
+          }`}
+        >
           <input
             type="checkbox"
             checked={consent}
             onChange={(e) => setConsent(e.target.checked)}
-            className="mt-0.5 h-4 w-4 rounded border-[#e4e0da] text-intake-sage focus:ring-intake-sage"
+            className={`mt-0.5 h-4 w-4 rounded text-intake-sage focus:ring-intake-sage ${
+              dark ? "border-white/20 bg-black/25" : "border-[#e4e0da]"
+            }`}
           />
           <span>{MEASUREMENT_REMINDER_CONSENT_TEXT.measurement_reminder}</span>
         </label>
@@ -135,7 +156,7 @@ export function MeasurementReminderOptIn({
         />
 
         {errorMessage ? (
-          <p className="text-xs text-red-600" role="alert">
+          <p className={`text-xs ${dark ? "text-red-300" : "text-red-600"}`} role="alert">
             {errorMessage}
           </p>
         ) : null}

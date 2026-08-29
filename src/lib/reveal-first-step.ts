@@ -16,7 +16,7 @@ import type { RecommendationInput } from "@/types/recommendation";
  * dus stress/herstel/energie. Voorkomt de voeding/omega-3-fallback die niet bij de
  * leefstijlstap (bv. box-breathing) past. Zie docs/core/COMPLIANCE.md.
  */
-const THEME_SUPPLEMENT_PILLAR: Partial<Record<PillarId, PillarId>> = {
+export const THEME_SUPPLEMENT_PILLAR: Partial<Record<PillarId, PillarId>> = {
   stress: "slaap",
   herstel: "slaap",
   energie: "slaap",

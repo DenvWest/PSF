@@ -4,7 +4,7 @@ export const eiwitpoederGidsData: SupplementData = {
   slug: "eiwitpoeder",
   naam: "Eiwitpoeder",
   metaTitle:
-    "Eiwitpoeder: Whey, Isolaat of Plantaardig? | PerfectSupplement",
+    "Eiwitpoeder: Whey, Isolaat of Plantaardig?",
   metaDescription:
     "Eiwitpoeder uitgelegd: whey, isolaat en plantaardig eiwit vergelijken op opname, eiwitgehalte, dosering en gebruik na je 40e.",
   datePublished: "2026-05-09",

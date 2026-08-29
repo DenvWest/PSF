@@ -57,6 +57,7 @@ export function buildSupplementDisclosure(
     signal: supplement.signal,
     qualityRule: QUALITY_RULE,
     comparisonPath: `${gatedPath}?from=${from}`,
+    hubSlug: recommendation.hubSlug ?? entry?.hubSlug ?? null,
     onHold: isSupplementOnHold(supplement.name),
     explanation,
   };

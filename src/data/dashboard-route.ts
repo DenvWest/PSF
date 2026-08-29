@@ -12,7 +12,7 @@ export const DASHBOARD_ROUTE_STEPS: DashboardRouteStep[] = [
     step: 1,
     title: "Leefstijlcheck",
     description:
-      "15 vragen over slaap, stress, energie, voeding, beweging en herstel. Je krijgt scores op 6 domeinen en een profiellabel.",
+      "16 vragen over slaap, stress, voeding, beweging en verbinding. Je krijgt scores op 5 leefstijldomeinen en een profiellabel.",
     timeLabel: "± 3 min",
   },
   {
@@ -125,7 +125,7 @@ export const DASHBOARD_ROUTE_FAQ = [
 ] as const;
 
 export const DASHBOARD_ROUTE_METADATA = {
-  title: "Hoe Werkt Jouw Dashboard? | PerfectSupplement",
+  title: "Hoe Werkt Jouw Dashboard?",
   description:
     `Je route in 6 stappen: Leefstijlcheck, ${INTAKE_DELIVERABLE.label}, dashboard, check-ins en hermeting. Gratis overzicht voor mannen 40+ — zonder diagnose.`,
 } as const;

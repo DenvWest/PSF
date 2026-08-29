@@ -71,7 +71,7 @@ export const creatineEnHerstelData: BlogArtikel = {
     "testosteron-en-energie-na-40",
   ],
   metaTitle:
-    "Creatine en herstel na 40: buffer, training en context | PerfectSupplement",
+    "Creatine en herstel na 40: buffer, training en context",
   metaDescription:
     "Creatine na 40: wat het wél doet (ATP-buffer), wat het niet oplost, en hoe je het koppelt aan slaap, training en vergelijken — zonder harde gezondheidsclaims.",
   keywords: [

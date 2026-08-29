@@ -5,7 +5,7 @@ export const onrustigeSlaper: ProfilePageData = {
   label: "Onrustige Slaper",
 
   seo: {
-    title: "Slaapproblemen Na 40? Dit Kun Je Eraan Doen | PerfectSupplement",
+    title: "Slaapproblemen Na 40? Dit Kun Je Eraan Doen",
     description:
       "Wakker om 3 uur, niet terug in slaap? Herkenning, uitleg in begrijpelijke taal en wat je stap voor stap kunt doen.",
     canonical: "https://perfectsupplement.nl/profiel/onrustige-slaper",

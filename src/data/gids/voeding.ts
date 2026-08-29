@@ -4,9 +4,9 @@ export const voedingGuide: GuideOptInData = {
   slug: "voeding",
   guideName: "Voedingsgids",
   seo: {
-    title: "Gratis Voedingsgids na 40 | PerfectSupplement",
+    title: "Gratis Voedingsgids na 40",
     description:
-      "Ontvang het voedings-stappenplan voor mannen 40+. Eiwit, ritme en vetten — praktische stappen vóór supplementen, zonder diagnoses.",
+      "Ontvang het voedings-stappenplan voor 30-plussers. Eiwit, ritme en vetten — praktische stappen vóór supplementen, zonder diagnoses.",
     canonical: "/gids/voeding",
   },
   heroLabel: "Gratis stappenplan",

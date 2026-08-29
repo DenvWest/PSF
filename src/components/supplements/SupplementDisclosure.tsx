@@ -12,6 +12,8 @@ export type SupplementDisclosureData = {
   signal: string;
   qualityRule: string;
   comparisonPath: string;
+  /** Categorie in de supplementengids (/supplementen); null zonder catalogusrij. */
+  hubSlug?: string | null;
   onHold: boolean;
   explanation: RecommendationExplanation;
 };

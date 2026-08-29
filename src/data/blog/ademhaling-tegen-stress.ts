@@ -53,7 +53,7 @@ export const ademhalingTegenStressData: BlogArtikel = {
   stressPillarTurbo:
     "Ademhaling is één van de vijf pijlers uit onze complete gids over stressvermindering. Benieuwd naar de andere vier?",
   metaTitle:
-    "Ademhaling tegen stress: 4-7-8, box breathing en coherent ademen | PerfectSupplement",
+    "Ademhaling tegen stress: 4-7-8, box breathing en coherent ademen",
   metaDescription:
     "Ademhalingstechnieken die binnen minuten werken: uitleg van 4-7-8, box breathing en coherent ademen voor mannen 40+ onder druk.",
   keywords: [

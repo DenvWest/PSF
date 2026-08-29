@@ -70,7 +70,7 @@ export const krachttrainingNa40Data: BlogArtikel = {
     "creatine-en-herstel",
     "middagdip-bloedsuiker-na-40",
   ],
-  metaTitle: "Krachttraining na 40: protocol, eiwit en herstel | PerfectSupplement",
+  metaTitle: "Krachttraining na 40: protocol, eiwit en herstel",
   metaDescription:
     "Krachttraining man 40+: sarcopenie voorkomen, eiwit, mitochondriën, cardio-combo en realistisch 8-weken startprotocol.",
   keywords: [

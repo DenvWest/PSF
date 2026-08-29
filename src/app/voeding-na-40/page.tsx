@@ -13,7 +13,7 @@ const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
-  title: "Voeding Na 40: Wat Mannen Vaak Missen | PerfectSupplement",
+  title: "Voeding Na 40: Wat Mannen Vaak Missen",
   description:
     "Eiwit, vetten, ritme en stabiliteit na 40 — zonder dieet-hype. Praktische stappen vóór supplementen, met links naar gidsen en kennisbank.",
   ...canonicalMetadata("/voeding-na-40"),

@@ -4,7 +4,7 @@ export const testosteronGuide: GuideOptInData = {
   slug: "testosteron",
   guideName: "Testosterongids",
   seo: {
-    title: "Gratis gids testosteron na 40 | PerfectSupplement",
+    title: "Gratis gids testosteron na 40",
     description:
       "Vraag de gratis gids aan over testosteron na 40. Wat verandert, wat je zelf kunt doen — zonder diagnoses.",
     canonical: "/gids/testosteron",

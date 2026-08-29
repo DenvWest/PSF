@@ -4,7 +4,7 @@ export const melatonineData: SupplementData = {
   slug: "melatonine",
   naam: "Melatonine",
   metaTitle:
-    "Melatonine: Welke Vorm Past Bij Jou? | PerfectSupplement",
+    "Melatonine: Welke Vorm Past Bij Jou?",
   metaDescription:
     "Melatonine uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",

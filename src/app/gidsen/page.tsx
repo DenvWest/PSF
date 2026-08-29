@@ -3,22 +3,24 @@ import Link from "next/link";
 import GuideCard from "@/components/gidsen/GuideCard";
 import Container from "@/components/layout/Container";
 import {
+  AUDIENCE_FILTERS,
   FILTER_CATEGORIES,
   filterGuides,
+  type AudienceFilter,
   type FilterCategory,
 } from "@/data/guides";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 
 export const metadata: Metadata = {
   title:
-    "Gratis gezondheidsgidsen: slaap, stress, energie, beweging en herstel | PerfectSupplement",
+    "Gratis gezondheidsgidsen: slaap, stress, energie, beweging en herstel",
   description:
-    "Compacte, onderbouwde gezondheidsgidsen voor mannen 40+. Kies slaap, stress, energie, beweging, herstel of testosteron — gratis via e-mail of webgids.",
+    "Compacte, onderbouwde gezondheidsgidsen voor 30-plussers. Kies slaap, stress, energie, beweging, herstel, overgang of testosteron — gratis via e-mail of webgids.",
   ...canonicalMetadata("/gidsen"),
 };
 
 type GidsenPageProps = {
-  searchParams: Promise<{ filter?: string }>;
+  searchParams: Promise<{ filter?: string; publiek?: string }>;
 };
 
 function resolveFilter(filterParam: string | undefined): FilterCategory | "alle" {
@@ -37,10 +39,25 @@ function resolveFilter(filterParam: string | undefined): FilterCategory | "alle"
   return match.key;
 }
 
+function resolveAudience(audienceParam: string | undefined): AudienceFilter {
+  const match = AUDIENCE_FILTERS.find((entry) => entry.key === audienceParam);
+  return match?.key ?? "alle";
+}
+
+/** Bouwt de href voor een filterchip terwijl de andere as (categorie/publiek) intact blijft. */
+function buildFilterHref(filter: FilterCategory | "alle", audience: AudienceFilter): string {
+  const params = new URLSearchParams();
+  if (filter !== "alle") params.set("filter", filter);
+  if (audience !== "alle") params.set("publiek", audience);
+  const query = params.toString();
+  return query ? `/gidsen?${query}` : "/gidsen";
+}
+
 export default async function GidsenPage({ searchParams }: GidsenPageProps) {
   const params = await searchParams;
   const activeFilter = resolveFilter(params.filter);
-  const guides = filterGuides(activeFilter);
+  const activeAudience = resolveAudience(params.publiek);
+  const guides = filterGuides(activeFilter, activeAudience);
 
   return (
     <main className="bg-[#F7F5F0] text-[#1B2620]">
@@ -57,20 +74,43 @@ export default async function GidsenPage({ searchParams }: GidsenPageProps) {
             Begin bij rust, ritme en herstel.
           </h1>
           <p className="mt-5 max-w-[620px] text-[clamp(16px,1.6vw,19px)] leading-relaxed text-[#5A6560]">
-            Compacte, onderbouwde gezondheidsgidsen voor mannen 40+. Geen wondermiddelen
+            Compacte, onderbouwde gezondheidsgidsen voor 30-plussers. Geen wondermiddelen
             — wel houdbare gewoontes die je energie, slaap en veerkracht
             ondersteunen. Elke gids is een instap, geen eindpunt.
           </p>
         </header>
 
         <nav
-          aria-label="Filter gidsen"
-          className="mt-10 flex flex-wrap gap-2.5 border-b border-[#E7E3D8] pb-2"
+          aria-label="Filter gidsen op publiek"
+          className="mt-10 flex flex-wrap gap-2"
+        >
+          {AUDIENCE_FILTERS.map((entry) => {
+            const isActive = activeAudience === entry.key;
+            const href = buildFilterHref(activeFilter, entry.key);
+
+            return (
+              <Link
+                key={entry.key}
+                href={href}
+                className={`min-h-9 rounded-full border px-3.5 py-1.5 text-[12.5px] font-medium transition-colors duration-200 ${
+                  isActive
+                    ? "border-[#1B2620] bg-[#1B2620] text-white"
+                    : "border-[#E4E0D6] bg-white text-[#5A6560] hover:border-[#1B2620]/30"
+                }`}
+              >
+                {entry.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <nav
+          aria-label="Filter gidsen op thema"
+          className="mt-4 flex flex-wrap gap-2.5 border-b border-[#E7E3D8] pb-2"
         >
           {FILTER_CATEGORIES.map((category) => {
             const isActive = activeFilter === category.key;
-            const href =
-              category.key === "alle" ? "/gidsen" : `/gidsen?filter=${category.key}`;
+            const href = buildFilterHref(category.key, activeAudience);
 
             return (
               <Link

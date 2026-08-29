@@ -4,9 +4,9 @@ export const bewegingGuide: GuideOptInData = {
   slug: "beweging",
   guideName: "Bewegingsgids",
   seo: {
-    title: "Gratis Bewegingsgids na 40 | PerfectSupplement",
+    title: "Gratis Bewegingsgids na 40",
     description:
-      "Ontvang het beweging-stappenplan voor mannen 40+. Kracht thuis, herstel en ritme — praktische stappen vóór supplementen, zonder diagnoses.",
+      "Ontvang het beweging-stappenplan voor 30-plussers. Kracht thuis, herstel en ritme — praktische stappen vóór supplementen, zonder diagnoses.",
     canonical: "/gids/beweging",
   },
   heroLabel: "Gratis stappenplan",

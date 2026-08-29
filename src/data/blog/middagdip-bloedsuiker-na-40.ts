@@ -76,7 +76,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
     "alcohol-slaap-energie-na-40",
     "eiwit-na-40",
   ],
-  metaTitle: "Middagdip na 40: bloedsuiker, koffie en wat wél helpt | PerfectSupplement",
+  metaTitle: "Middagdip na 40: bloedsuiker, koffie en wat wél helpt",
   metaDescription:
     "Middagdip mannen 40+: oorzaak bloedsuiker, insulineresistentie, koffie-trucs en vijf praktische aanpassingen voor stabielere energie.",
   keywords: [

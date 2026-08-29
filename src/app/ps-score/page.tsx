@@ -11,7 +11,7 @@ import { canonicalMetadata } from "@/lib/seo/canonical";
 import { buildBreadcrumbSchema } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
-  title: "PS-Score — hoe we supplementen beoordelen | PerfectSupplement",
+  title: "PS-Score — hoe we supplementen beoordelen",
   description:
     "De volledige rekenmethode achter onze supplementscore: vier onderdelen, de onderzoeksdosis per categorie, de opneembaarheid per vorm — en waarom prijs er niet in zit.",
   openGraph: {

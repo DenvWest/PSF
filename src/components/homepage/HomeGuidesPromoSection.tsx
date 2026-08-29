@@ -43,7 +43,7 @@ function GuidesFanFallback() {
 }
 
 export default function HomeGuidesPromoSection() {
-  const { title, body, secondaryLine, cta, ctaHref, imageSrc, imageAlt } =
+  const { title, body, cta, ctaHref, imageSrc, imageAlt } =
     HOMEPAGE_GUIDES_PROMO;
 
   return (
@@ -63,7 +63,6 @@ export default function HomeGuidesPromoSection() {
             <p className="mt-4 text-sm leading-relaxed text-stone-600 sm:text-base">
               {body}
             </p>
-            <p className="mt-3 text-sm leading-relaxed text-stone-500">{secondaryLine}</p>
             <Link
               href={ctaHref}
               className="mt-7 inline-flex min-h-[44px] items-center justify-center rounded-lg border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 shadow-sm transition hover:border-stone-400 hover:bg-stone-50 focus-visible:outline focus-visible:ring-2 focus-visible:ring-stone-400/40 focus-visible:ring-offset-2"

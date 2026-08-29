@@ -10,17 +10,27 @@ export type GuideVerdieping = {
   href: string;
 };
 
+export type AudienceFilter = "alle" | "mannen" | "vrouwen";
+
 export type Guide = {
   key: string;
   title: string;
   accent: string;
   tag: string;
   focusCategories: FilterCategory[];
+  /** Ontbreekt = neutraal, zichtbaar bij zowel "Voor mannen" als "Voor vrouwen". */
+  audience?: "mannen" | "vrouwen";
   promise: string;
   /** PDF-download nog niet live — toon coming-soon i.p.v. download-CTA */
   comingSoon?: boolean;
   /** Webgids-URL wanneer comingSoon (bijv. pillar-pagina) */
   contentHref?: string;
+  /** Vervangt de standaard coming-soon-tekst wanneer er geen pijlerpagina is */
+  comingSoonNote?: string;
+  /** Vervangt het label "Lees de webgids →" */
+  comingSoonCta?: string;
+  /** Overschrijft de afgeleide paginatitel wanneer `${title}gids` geen Nederlands oplevert */
+  seoTitle?: string;
   heroTitle: string;
   heroSub: string;
   benefits: string[];
@@ -44,6 +54,12 @@ export const FILTER_CATEGORIES: {
   { key: "energie-vitaliteit", label: "Energie & vitaliteit" },
   { key: "mentaal", label: "Mentale balans" },
   { key: "hormonaal", label: "Hormonale balans" },
+];
+
+export const AUDIENCE_FILTERS: { key: AudienceFilter; label: string }[] = [
+  { key: "alle", label: "Iedereen" },
+  { key: "mannen", label: "Ook voor mannen" },
+  { key: "vrouwen", label: "Ook voor vrouwen" },
 ];
 
 export const GUIDE_TRUST_ITEMS: GuideTrustItem[] = [
@@ -92,7 +108,7 @@ export const GUIDES: Guide[] = [
       "Je bent klaar met losse tips en wilt één rustig ritme",
     ],
     longform: [
-      "Slaap is geen luxe en geen zwakte. Het is het fundament waarop je dagen rusten — je energie, je focus, je humeur. Toch behandelen veel mannen boven de veertig slaap als het sluitstuk van de dag, in plaats van als het startpunt.",
+      "Slaap is geen luxe en geen zwakte. Het is het fundament waarop je dagen rusten — je energie, je focus, je humeur. Toch behandelen veel mensen slaap als het sluitstuk van de dag, in plaats van als het startpunt.",
       "Deze gids gaat niet over harder je best doen. Hij gaat over kleine, houdbare keuzes die je lijf helpen schakelen naar rust: licht, ritme, voeding, ademhaling. Geen quick fixes — wel dingen die je vanavond al kunt toepassen.",
       "We hebben de ruis weggelaten. Wat overblijft is compact, onderbouwd en praktisch. Lees het in twintig minuten en pas het toe in je eigen tempo.",
     ],
@@ -140,7 +156,7 @@ export const GUIDES: Guide[] = [
       "Je wilt rust zonder je ambitie op te geven",
     ],
     longform: [
-      "Stress is niet de vijand — het is een signaal. Het wordt pas een probleem als het nooit meer zakt. Voor veel mannen boven de veertig staat de wijzer structureel te hoog, zonder dat ze het doorhebben.",
+      "Stress is niet de vijand — het is een signaal. Het wordt pas een probleem als het nooit meer zakt. Bij veel mensen staat de wijzer structureel te hoog, zonder dat ze het doorhebben.",
       "Deze gids helpt je de knoppen te vinden waarmee je zelf het volume terugdraait: ademhaling, ritme, beweging en grenzen. Klein, concreet en vol te houden.",
     ],
     pullquote: "Rust is een vaardigheid, geen toeval.",
@@ -187,7 +203,7 @@ export const GUIDES: Guide[] = [
       "Je wilt energie die meegaat, geen kortstondige boost",
     ],
     longform: [
-      "Energie is geen kwestie van harder pushen. Het is het resultaat van hoe je eet, beweegt, rust en je dag indeelt. Voor veel mannen boven de veertig zit de winst niet in meer doen, maar in slimmer ritme.",
+      "Energie is geen kwestie van harder pushen. Het is het resultaat van hoe je eet, beweegt, rust en je dag indeelt. Vanaf je dertigste zit de winst zelden in meer doen, maar in slimmer ritme.",
       "Deze gids laat zien welke gewoontes bijdragen aan een stabieler energieniveau — onderbouwd, praktisch, en vol te houden in een druk leven.",
     ],
     pullquote: "Geen boost. Een basis.",
@@ -234,7 +250,7 @@ export const GUIDES: Guide[] = [
       "Je wilt veerkracht opbouwen, niet alleen presteren",
     ],
     longform: [
-      "Herstel is waar de winst zit. Niet tijdens de inspanning, maar erna — als je lijf zich aanpast en sterker wordt. Voor veel mannen boven de veertig wordt juist dat deel overgeslagen.",
+      "Herstel is waar de winst zit. Niet tijdens de inspanning, maar erna — als je lijf zich aanpast en sterker wordt. Juist dat deel wordt het vaakst overgeslagen.",
       "Deze gids helpt je herstel net zo serieus te nemen als inspanning, met houdbare routines die je veerkracht ondersteunen.",
     ],
     pullquote: "Sterker word je in de rust.",
@@ -306,11 +322,68 @@ export const GUIDES: Guide[] = [
     ],
   },
   {
+    key: "overgang",
+    title: "Overgang",
+    accent: "oklch(0.68 0.075 320)",
+    tag: "Hormonale balans",
+    focusCategories: ["hormonaal", "slaap-herstel"],
+    audience: "vrouwen",
+    comingSoon: true,
+    contentHref: "/overgang",
+    comingSoonNote:
+      "We werken aan de PDF. De volledige gids staat al op onze website — inclusief bronnen.",
+    comingSoonCta: "Lees de webgids →",
+    seoTitle: "Gratis Overgangsgids",
+    promise:
+      "Grip op je slaap, je energie en je botten in de jaren rond de overgang.",
+    heroTitle: "De overgang is geen ziekte. Wel een periode die om andere keuzes vraagt.",
+    heroSub:
+      "De jaren rond de overgang veranderen je slaap, je energie en je botten — vaak jaren voordat je cyclus stopt. Deze gids legt uit wat er gebeurt en welke leefstijlkeuzes er volgens onderzoek toe doen. Geen hormoonadvies, geen wondermiddelen.",
+    benefits: [
+      "Wat perimenopauze is, en waarom die meestal jaren vóór je laatste menstruatie begint",
+      "Waarom je slaap verandert — en wat ritme, temperatuur en alcohol daaraan doen",
+      "Krachttraining als de belangrijkste knop voor je spiermassa en je botten",
+      "Eiwit, calcium en vitamine D: waar de onderbouwing wél sterk is",
+      "Welke supplementen rond de overgang veel beloven en weinig bewijzen",
+      "Wanneer klachten bij je huisarts horen en niet bij een potje",
+    ],
+    recognition: [
+      "Je slaapt slechter dan vroeger, zonder dat er iets veranderd is",
+      "Je cyclus wordt onregelmatig en je stemming schommelt mee",
+      "Je traint hetzelfde, maar je lichaamssamenstelling verandert",
+      "Je leest overal iets anders over wat helpt",
+    ],
+    longform: [
+      "De overgang is geen moment maar een periode. Gemiddeld stopt de menstruatie rond je eenenvijftigste, maar de hormonale verschuiving begint vaak jaren daarvoor — de perimenopauze. Slaap, stemming en energie merken dat meestal als eerste, en die klachten worden dan toegeschreven aan drukte in plaats van aan wat er fysiologisch verandert.",
+      "Daarom begint deze gids bij leefstijl. Rond de overgang versnelt het verlies van spiermassa en botdichtheid, en juist daar heb je zelf het meeste invloed: krachttraining, genoeg eiwit, en een calcium- en vitamine D-inname die op orde is. Voor die drie is de onderbouwing het sterkst.",
+      "Wat we niet doen: beloven dat een supplement je opvliegers wegneemt. Voor de meeste kruidenpreparaten die daarvoor worden aangeprezen bestaat geen goedgekeurde Europese claim. Bepalen klachten je leven, dan is dat een gesprek met je huisarts — daar kan hormoontherapie ter sprake komen. Deze gids gaat over wat je er zelf omheen doet.",
+    ],
+    pullquote: "Niet tegenhouden. Wel opvangen.",
+    verdieping: [
+      {
+        label: "Pillar: Overgang",
+        sub: "De volledige webgids, met bronnen.",
+        href: "/overgang",
+      },
+      {
+        label: "Vergelijking: vitamine D",
+        sub: "Vorm, dosering en prijs per dag — onafhankelijk vergeleken.",
+        href: "/beste/vitamine-d",
+      },
+      {
+        label: "Gratis Leefstijlcheck",
+        sub: "Meet je startpunt in 3 minuten.",
+        href: "/intake",
+      },
+    ],
+  },
+  {
     key: "testosteron",
     title: "Testosteron",
     accent: "oklch(0.71 0.095 82)",
     tag: "Hormonale balans",
     focusCategories: ["hormonaal", "energie-vitaliteit"],
+    audience: "mannen",
     comingSoon: true,
     contentHref: "/testosteron-na-40",
     promise:
@@ -374,9 +447,27 @@ export function isValidFilter(
 
 export function filterGuides(
   filter: FilterCategory | "alle",
+  audience: AudienceFilter = "alle",
 ): Guide[] {
-  if (filter === "alle") {
-    return GUIDES;
+  const byCategory =
+    filter === "alle"
+      ? GUIDES
+      : GUIDES.filter((guide) => guide.focusCategories.includes(filter));
+
+  if (audience === "alle") {
+    return byCategory;
   }
-  return GUIDES.filter((guide) => guide.focusCategories.includes(filter));
+  // Geen `audience`-tag = neutrale gids, zichtbaar in beide gerichte views.
+  return byCategory.filter(
+    (guide) => !guide.audience || guide.audience === audience,
+  );
+}
+
+export function isValidAudience(
+  value: string | undefined,
+): value is AudienceFilter {
+  return (
+    value === undefined ||
+    AUDIENCE_FILTERS.some((entry) => entry.key === value)
+  );
 }

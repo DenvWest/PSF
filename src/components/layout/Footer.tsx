@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import CookiePreferencesButton from "@/components/analytics/CookiePreferencesButton";
 import FooterEventLink from "@/components/layout/FooterEventLink";
@@ -5,6 +6,14 @@ import Container from "@/components/layout/Container";
 import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 
 const footerColumns = [
+    {
+        title: "Supplementen",
+        links: [
+            { href: "/supplementen", label: "Supplementgids" },
+            { href: "/supplementen", label: "Vergelijkingen" },
+            { href: "/methodologie", label: "Methodologie" },
+        ],
+    },
     {
         title: "Start hier",
         links: [
@@ -18,14 +27,6 @@ const footerColumns = [
                 label: "Inzichten",
                 event: "inzichten_hub_nav_click",
             },
-        ],
-    },
-    {
-        title: "Supplementen",
-        links: [
-            { href: "/supplementen", label: "Supplementgids" },
-            { href: "/supplementen", label: "Vergelijkingen" },
-            { href: "/methodologie", label: "Methodologie" },
         ],
     },
     {
@@ -57,10 +58,25 @@ export default function Footer() {
     return (
         <footer className="border-t border-stone-200 bg-[var(--ps-bg)]">
             <Container>
-                <div className="grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10 lg:py-14">
+                <div className="pt-10 lg:pt-12">
+                    <Link href="/" className="inline-flex items-center gap-2.5">
+                        <Image
+                            src="/icon.png"
+                            alt="PerfectSupplement logo"
+                            width={28}
+                            height={28}
+                            className="h-7 w-7 rounded-lg"
+                        />
+                        <span className="font-serif text-lg text-stone-900">
+                            Perfect<span className="text-ps-green">Supplement</span>
+                        </span>
+                    </Link>
+                </div>
+
+                <div className="grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10 lg:py-12">
                     {footerColumns.map((column) => (
                         <div key={column.title}>
-                            <h4 className="text-sm font-semibold text-stone-900">
+                            <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-900">
                                 {column.title}
                             </h4>
                             <ul className="mt-4 space-y-2.5">

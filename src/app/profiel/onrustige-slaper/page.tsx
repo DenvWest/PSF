@@ -5,10 +5,10 @@ import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHo
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
-import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
+import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
 
 export const metadata: Metadata = {
-  title: "Slaapproblemen Na 40? Dit Kun Je Eraan Doen | PerfectSupplement",
+  title: "Slaapproblemen Na 40? Dit Kun Je Eraan Doen",
   description:
     "Wakker om 3 uur, niet meer terug in slaap? Herken je dit? Ontdek waarom je slaap verandert na 40 en wat je eraan kunt doen.",
   alternates: {
@@ -133,7 +133,7 @@ export default function OnrustigeSlaperPage() {
       <main>
         <Container>
           <article>
-            <IntakeResultsReturnBanner />
+            <CheckLensBanner target={{ kind: "profile", slug: "onrustige-slaper", label: "Onrustige Slaper" }} />
             {/* Breadcrumbs */}
             <nav aria-label="Breadcrumb" className="pt-6 pb-2">
               <ol className="flex flex-wrap items-center gap-1 text-sm text-slate-400">

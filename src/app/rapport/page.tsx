@@ -5,7 +5,7 @@ import { DeltaRow } from "@/components/report/DeltaRow";
 import type { DomainScoreKey } from "@/lib/intake-engine";
 
 export const metadata: Metadata = {
-  title: "30-Dagen Hermeting: Zie Jouw Voortgang | PerfectSupplement",
+  title: "30-Dagen Hermeting: Zie Jouw Voortgang",
   description:
     "Wat verandert er in 30 dagen? De PerfectSupplement-hermeting vergelijkt je startmeting met je huidige antwoorden en toont de verandering per domein — objectief en zonder attributie.",
   alternates: { canonical: "https://www.perfectsupplement.nl/rapport" },
@@ -135,7 +135,7 @@ export default function RapportLandingPage() {
                     >
                       intake
                     </Link>{" "}
-                    — 15 vragen over slaap, energie, stress en meer. Dit is je
+                    — 16 vragen over slaap, energie, stress en meer. Dit is je
                     startmeting.
                   </span>
                 </li>

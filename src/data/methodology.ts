@@ -1,5 +1,5 @@
 export const METHODOLOGY_METADATA = {
-  title: "Onze methodologie | PerfectSupplement",
+  title: "Onze methodologie",
   description:
     "Hoe PerfectSupplement werkt: Leefstijlcheck, persoonlijke voortgang en onafhankelijke supplementvergelijking. Transparant, onderbouwd en leefstijl eerst.",
 } as const;

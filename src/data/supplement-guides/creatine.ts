@@ -4,7 +4,7 @@ export const creatineGidsData: SupplementData = {
   slug: "creatine",
   naam: "Creatine",
   metaTitle:
-    "Creatine: Welke Vorm Past Bij Jou? | PerfectSupplement",
+    "Creatine: Welke Vorm Past Bij Jou?",
   metaDescription:
     "Creatine uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",

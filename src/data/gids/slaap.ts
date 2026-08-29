@@ -4,9 +4,9 @@ export const slaapGuide: GuideOptInData = {
   slug: "slaap",
   guideName: "Slaapgids",
   seo: {
-    title: "Gratis Slaapgids na 40 | PerfectSupplement",
+    title: "Gratis Slaapgids na 40",
     description:
-      "Interactieve slaapgids voor mannen 40+. Herken patronen, meet Inslapen, Doorslapen, Regelmaat en Uitgerust wakker — met persoonlijke vervolgstappen.",
+      "Interactieve slaapgids voor 30-plussers. Herken patronen, meet Inslapen, Doorslapen, Regelmaat en Uitgerust wakker — met persoonlijke vervolgstappen.",
     canonical: "/gids/slaap",
   },
   heroLabel: "Gratis gids",
@@ -25,7 +25,7 @@ export const slaapGuide: GuideOptInData = {
   },
   optIn: {
     sectionLabel: "Gratis slaapgids",
-    title: "De praktische slaapgids voor mannen 40+",
+    title: "De praktische slaapgids voor 30-plussers",
     subtitle:
       "Van herkenning naar actie: leefstijl eerst, supplementen als aanvulling — in één overzichtelijke PDF.",
     bulletPoints: [

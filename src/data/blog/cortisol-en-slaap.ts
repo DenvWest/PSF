@@ -47,7 +47,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Herken jij dit patroon?",
-      tekst: "Regelmatig wakker worden 's nachts — moe maar niet uitgerust opstaan — een gevoel van achterstand dat zich opstapelt. Dat is geen karakterzwakte en geen gevolg van te laat naar bed gaan. Het is een specifiek profiel dat je kunt herkennen én aanpakken. Misschien ben je een [Onrustige Slaper](/profiel/onrustige-slaper) — een veelvoorkomend patroon bij mannen boven de 40 waarbij cortisolontregeling de sleutelfactor is. Wil je weten hoe jouw stress en slaap scoren? [Doe de gratis Leefstijlcheck](/intake) — 15 vragen, 3 minuten, persoonlijk resultaat.",
+      tekst: "Regelmatig wakker worden 's nachts — moe maar niet uitgerust opstaan — een gevoel van achterstand dat zich opstapelt. Dat is geen karakterzwakte en geen gevolg van te laat naar bed gaan. Het is een specifiek profiel dat je kunt herkennen én aanpakken. Misschien ben je een [Onrustige Slaper](/profiel/onrustige-slaper) — een veelvoorkomend patroon bij mannen boven de 40 waarbij cortisolontregeling de sleutelfactor is. Wil je weten hoe jouw stress en slaap scoren? [Doe de gratis Leefstijlcheck](/intake) — 16 vragen, 3 minuten, persoonlijk resultaat.",
     },
     {
       type: "tekst",
@@ -77,7 +77,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     "slaaphygiene-mannen-40-plus",
   ],
   metaTitle:
-    "Cortisol en Slaap: Waarom Je Om 3 Uur Wakker Wordt | PerfectSupplement",
+    "Cortisol en Slaap: Waarom Je Om 3 Uur Wakker Wordt",
   metaDescription:
     "Wakker om 3 uur 's nachts? Cortisol is vaak de schuldige. Ontdek het verband en wat je eraan doet.",
   keywords: [

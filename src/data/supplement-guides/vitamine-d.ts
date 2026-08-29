@@ -4,7 +4,7 @@ export const vitamineDData: SupplementData = {
   slug: "vitamine-d",
   naam: "Vitamine D",
   metaTitle:
-    "Vitamine D: Welke Vorm Past Bij Jou? | PerfectSupplement",
+    "Vitamine D: Welke Vorm Past Bij Jou?",
   metaDescription:
     "Vitamine D uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",

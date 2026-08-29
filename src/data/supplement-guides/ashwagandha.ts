@@ -4,7 +4,7 @@ export const ashwagandhaData: SupplementData = {
   slug: "ashwagandha",
   naam: "Ashwagandha",
   metaTitle:
-    "Ashwagandha: Welke vorm past bij jou? | PerfectSupplement",
+    "Ashwagandha: Welke vorm past bij jou?",
   metaDescription:
     "Ashwagandha uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",

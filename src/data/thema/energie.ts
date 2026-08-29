@@ -205,10 +205,10 @@ export const energieThema: ThemaPageData = {
     sectionLabel: "PERSOONLIJK ADVIES",
     title: "Wil je weten wat er bij jou speelt?",
     subtitle:
-      `De Leefstijlcheck analyseert je energie, slaap, stress, voeding, beweging en herstel in 15 vragen. ${INTAKE_DELIVERABLE.premiumSubtitleSuffix}`,
+      `De Leefstijlcheck analyseert je energie, slaap, stress, voeding, beweging en herstel in 16 vragen. ${INTAKE_DELIVERABLE.premiumSubtitleSuffix}`,
     features: [
-      "15 vragen, 3 minuten",
-      "Scores op 6 leefstijldomeinen",
+      "16 vragen, 3 minuten",
+      "Scores op 5 leefstijldomeinen",
       INTAKE_DELIVERABLE.premiumFeatureBullet,
       INTAKE_CTA.supplementFeature,
     ],
@@ -275,7 +275,7 @@ export const energieThema: ThemaPageData = {
 
   seo: {
     title:
-      "Energie terugwinnen als man 40+ | Oorzaken, tips en supplementen | PerfectSupplement",
+      "Energie terugwinnen als man 40+ | Oorzaken, tips en supplementen",
     description:
       "Middagdips, hersenmist en weinig puf begrijpen. Leefstijl, verdieping wanneer nodig, en supplementinformatie onafhankelijk uit de doeken gedaan.",
     canonical: "/gids/energie",

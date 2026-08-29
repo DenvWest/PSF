@@ -54,7 +54,7 @@ function followUpTemplate(
 </p>
 ${ctaButton(absoluteUrl(ctaHref), ctaText)}
 <p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
-  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">Doe de gratis Leefstijlcheck</a> — 15 vragen, 3 minuten.
+  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">Doe de gratis Leefstijlcheck</a> — 16 vragen, 3 minuten.
 </p>`,
         unsubscribeUrl,
         data.guideName,
@@ -71,7 +71,7 @@ export function buildGenericGuideTemplates(
     3: followUpTemplate(
       thema,
       3,
-      `Tip 1: waar de meeste mannen beginnen met ${data.guideName.toLowerCase()}`,
+      `Tip 1: waar de meeste mensen beginnen met ${data.guideName.toLowerCase()}`,
       "Begin met één anker",
       "Kies deze week één gewoonte die je elke dag herhaalt. Niet vijf tegelijk — één die je wél volhoudt.",
       data.pillarHref,
@@ -100,7 +100,7 @@ export function buildGenericGuideTemplates(
       21,
       "Halverwege: volhouden loont",
       "Je bent op de goede weg",
-      "De mannen die het grootste verschil merken, zijn niet perfect — wel consistent. Blijf je ene anker vasthouden.",
+      "De mensen die het grootste verschil merken, zijn niet perfect — wel consistent. Blijf je ene anker vasthouden.",
       data.pillarHref,
       "Terug naar het protocol →",
     ),

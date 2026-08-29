@@ -83,7 +83,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
     "krachttraining-na-40",
   ],
   metaTitle:
-    "Eiwit verdelen over de dag: wanneer eten het verschil maakt | PerfectSupplement",
+    "Eiwit verdelen over de dag: wanneer eten het verschil maakt",
   metaDescription:
     "Eiwit verdelen over de dag: waarom ontbijt vóór 10 uur, spreiding per maaltijd en eiwit na training je energie en herstel ondersteunen — praktisch plan zonder hype.",
   keywords: [

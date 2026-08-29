@@ -17,7 +17,7 @@ import { buildArticleSchema } from "@/lib/seo/structuredData";
 const ACCENT = "oklch(0.69 0.095 50)";
 
 export const metadata: Metadata = {
-  title: "Beweging Na 40: Kracht, Ritme en Herstel | PerfectSupplement",
+  title: "Beweging Na 40: Kracht, Ritme en Herstel",
   description:
     "Krachttraining, cardio en herstel na 40 — zonder sportschool-hype. Praktische stappen vóór supplementen, met links naar blogs en kennisbank.",
   ...canonicalMetadata("/beweging-na-40"),

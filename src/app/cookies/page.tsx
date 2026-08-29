@@ -4,7 +4,7 @@ import CookiePreferencesButton from "@/components/analytics/CookiePreferencesBut
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
 
 export const metadata: Metadata = {
-  title: "Cookiebeleid | PerfectSupplement",
+  title: "Cookiebeleid",
   description:
     "Cookiebeleid van PerfectSupplement. Lees hoe wij omgaan met cookies en jouw privacy.",
   alternates: {

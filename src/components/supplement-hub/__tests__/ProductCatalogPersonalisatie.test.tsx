@@ -47,6 +47,40 @@ describe("ProductCatalog personalisatie", () => {
   });
 });
 
+describe("ProductCatalog categorie uit de URL", () => {
+  it("opent op de meegegeven categorie, ook met een persoonlijke selectie", () => {
+    render(
+      <ProductCatalog
+        products={products}
+        personalization={ready}
+        initieleCategorie="omega-3"
+      />,
+    );
+
+    const aantal = products.filter((p) => p.category === "omega-3").length;
+    expect(
+      screen.getByText(new RegExp(`${aantal} van ${products.length}`)),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: /Past bij jou · \d+/ }).getAttribute("aria-pressed"),
+    ).toBe("false");
+  });
+
+  it("negeert een categorie zonder producten en toont de hele lijst", () => {
+    render(
+      <ProductCatalog
+        products={products}
+        personalization={{ state: "no_intake" }}
+        initieleCategorie="bestaat-niet"
+      />,
+    );
+
+    expect(
+      screen.getByText(new RegExp(`${products.length} van ${products.length}`)),
+    ).toBeTruthy();
+  });
+});
+
 describe("ProductCatalog zoeken en pagineren", () => {
   it("toont tien producten en laadt de rest in stappen bij", () => {
     render(

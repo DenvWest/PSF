@@ -75,7 +75,7 @@ export const melatonineNa40Data: BlogArtikel = {
     "magnesium-en-slaap",
     "melatonine-wanneer-wel-niet",
   ],
-  metaTitle: "Melatonine Na 40: Waarom Het Niet Genoeg Is | PerfectSupplement",
+  metaTitle: "Melatonine Na 40: Waarom Het Niet Genoeg Is",
   metaDescription:
     "Melatonine slikken voor je slaap? Na 40 werkt dat anders dan je denkt. Wat je moet weten over dosering en alternatieven.",
   keywords: [

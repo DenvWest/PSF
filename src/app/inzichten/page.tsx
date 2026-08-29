@@ -28,7 +28,7 @@ import type { PillarId } from "@/types/dashboard";
 import type { InsightItem, InsightType } from "@/types/insight";
 
 export const metadata: Metadata = {
-  title: "Inzichten — Artikelen & Begrippen per Domein | PerfectSupplement",
+  title: "Inzichten — Artikelen & Begrippen per Domein",
   description:
     "Artikelen, deep dives en begrippen over slaap, stress, energie en herstel — gefilterd op wat voor jou relevant is. Start met je domein of doe de Leefstijlcheck.",
   ...canonicalMetadata("/inzichten"),
@@ -250,7 +250,7 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
                     Leefstijl — start hier
                   </p>
                   <h2 className="mt-2 font-display text-[28px] font-normal text-stone-900">
-                    Zes domeinen, één systeem
+                    {orderedPillarIds.length} domeinen, één systeem
                   </h2>
                 </div>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">

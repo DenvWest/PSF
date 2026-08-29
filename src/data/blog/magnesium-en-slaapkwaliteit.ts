@@ -100,7 +100,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     "melatonine-wanneer-wel-niet",
   ],
   metaTitle:
-    "De complete magnesiumgids voor mannen 40+: vormen, dosering en gebruik | PerfectSupplement",
+    "De complete magnesiumgids voor mannen 40+: vormen, dosering en gebruik",
   metaDescription:
     "Magnesium glycinaat, citraat, malaat, tauraat: welke vorm voor welk doel? Doseringen, voedingsbronnen en kwaliteitscriteria voor mannen 40+.",
   keywords: [

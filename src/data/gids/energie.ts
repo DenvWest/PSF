@@ -4,9 +4,9 @@ export const energieGuide: GuideOptInData = {
   slug: "energie",
   guideName: "Energiegids",
   seo: {
-    title: "Gratis Energiegids na 40 | PerfectSupplement",
+    title: "Gratis Energiegids na 40",
     description:
-      "Download de gratis Energiegids voor mannen 40+. Concrete stappen voor meer energie — zonder diagnoses.",
+      "Download de gratis Energiegids voor 30-plussers. Concrete stappen voor meer energie — zonder diagnoses.",
     canonical: "/gids/energie",
   },
   heroLabel: "Gratis gids",

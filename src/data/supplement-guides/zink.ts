@@ -4,7 +4,7 @@ export const zinkGidsData: SupplementData = {
   slug: "zink",
   naam: "Zink",
   metaTitle:
-    "Zink: Welke Vorm Past Bij Jou? | PerfectSupplement",
+    "Zink: Welke Vorm Past Bij Jou?",
   metaDescription:
     "Zink uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",

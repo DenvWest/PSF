@@ -6,7 +6,7 @@ import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { PROFILE_PAGES } from "@/data/profiles";
 
 export const metadata: Metadata = {
-  title: "Profielen: Welk Type Ben Jij? | PerfectSupplement",
+  title: "Profielen: Welk Type Ben Jij?",
   description:
     "Profielen voor mannen 40+: Stressdrager, Lage Batterij, Onrustige Slaper en Overtrainer. Herken jezelf en ontdek wat je kunt doen.",
   alternates: { canonical: "https://perfectsupplement.nl/profiel" },

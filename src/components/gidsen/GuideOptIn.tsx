@@ -171,6 +171,9 @@ type GuideOptInProps = {
   variant: GuideOptInVariant;
   comingSoon?: boolean;
   comingSoonHref?: string;
+  /** Voor gidsen zonder pijlerpagina: eigen tekst en knoplabel. */
+  comingSoonNote?: string;
+  comingSoonCta?: string;
 };
 
 function personalizedInboxLine(firstName: string, guideTitle: string): string {
@@ -185,6 +188,8 @@ export default function GuideOptIn({
   variant,
   comingSoon = false,
   comingSoonHref,
+  comingSoonNote,
+  comingSoonCta,
 }: GuideOptInProps) {
   const {
     guideTitle,
@@ -235,15 +240,15 @@ export default function GuideOptIn({
       <div className={boxClass} style={accentStyle}>
         <span className={badgeClass}>Binnenkort beschikbaar</span>
         <p className={bodyClass}>
-          We werken aan de gratis PDF-download. Intussen vind je alle inhoud op
-          onze webgids over {guideTitle.toLowerCase()}.
+          {comingSoonNote ??
+            `We werken aan de gratis PDF-download. Intussen vind je alle inhoud op onze webgids over ${guideTitle.toLowerCase()}.`}
         </p>
         <Link
           href={comingSoonHref ?? "/gidsen"}
           className={linkClass}
           style={linkStyle}
         >
-          Lees de webgids →
+          {comingSoonCta ?? "Lees de webgids →"}
         </Link>
       </div>
     );

@@ -14,7 +14,7 @@ const INLINE_LINK_CLASS =
 
 export const metadata: Metadata = {
   title:
-    "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust | PerfectSupplement",
+    "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust",
   description:
     "Langdurige stress voelt zwaarder na 40: slaap, energie en rust. Praktische stappen — zonder diagnoses of vage adviezen.",
   ...canonicalMetadata("/stress-verminderen-na-40"),
@@ -561,9 +561,9 @@ export default function StressVerminderenManPage() {
                     Ontdek Waar Jij Staat
                   </h2>
                   <p className="mt-3 text-gray-600 max-w-lg mx-auto leading-relaxed">
-                    Stress is één van de zes domeinen die we meten in de Leefstijlcheck. In 3
-                    minuten weet je hoe je scoort op stress, slaap, energie, herstel, voeding en
-                    beweging — en welk profiel bij jou past.
+                    Stress is één van de vijf leefstijldomeinen die we meten in de Leefstijlcheck.
+                    In 3 minuten weet je hoe je scoort op stress, slaap, voeding, beweging en
+                    verbinding — en welk profiel bij jou past.
                   </p>
                   <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
                   <Link

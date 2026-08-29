@@ -77,7 +77,7 @@ export const cortisolVerlagenData: BlogArtikel = {
   stressPillarTurbo:
     "Dit artikel over cortisol is onderdeel van onze complete gids over stressvermindering — van de [HPA-as](/kennisbank/hpa-as) tot een concreet weekplan.",
   metaTitle:
-    "Cortisol verlagen: 5 natuurlijke methodes voor mannen 40+ | PerfectSupplement",
+    "Cortisol verlagen: 5 natuurlijke methodes voor mannen 40+",
   metaDescription:
     "Chronisch verhoogd cortisol wordt vaak met leefstijl benaderd: slaap, beweging, ademhaling en voeding. Over plantenextracten en EU-claimstatus lees je meer in ons ashwagandha-artikel.",
   keywords: [

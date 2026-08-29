@@ -3,7 +3,7 @@ import type { SupplementData } from "@/types/supplement-guide";
 export const omega3Data: SupplementData = {
   slug: "omega-3",
   naam: "Omega-3",
-  metaTitle: "Omega-3: Welke Vorm Past Bij Jou? | PerfectSupplement",
+  metaTitle: "Omega-3: Welke Vorm Past Bij Jou?",
   metaDescription:
     "Omega-3 uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",

@@ -52,7 +52,7 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
     "omega-3-concentratie-energie",
   ],
   metaTitle:
-    "Vitamine D-tekort herkennen: signalen en testen | PerfectSupplement",
+    "Vitamine D-tekort herkennen: signalen en testen",
   metaDescription:
     "Hoe herken je vitamine D-tekort? Vermoeidheid, spieren, immuun — en waarom meten slimmer is dan gokken met hoge doses.",
   keywords: [

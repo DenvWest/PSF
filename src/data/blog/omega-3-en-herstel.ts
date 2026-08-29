@@ -55,7 +55,7 @@ export const omega3EnHerstelData: BlogArtikel = {
     "omega-3-concentratie-energie",
     "wat-is-omega-3",
   ],
-  metaTitle: "Omega-3 en herstel na 40 | PerfectSupplement",
+  metaTitle: "Omega-3 en herstel na 40",
   metaDescription:
     "Omega-3 en herstel: EPA/DHA, vergelijken en koppeling met pillar herstel en profiel overtrainer.",
   keywords: ["omega 3 herstel", "EPA DHA herstel", "omega 3 na 40"],

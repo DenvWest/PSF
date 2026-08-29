@@ -4,9 +4,9 @@ export const stressGuide: GuideOptInData = {
   slug: "stress",
   guideName: "Stressgids",
   seo: {
-    title: "Gratis Stressgids na 40 | PerfectSupplement",
+    title: "Gratis Stressgids na 40",
     description:
-      "Download de gratis Stressgids voor mannen 40+. Herkenning, praktische stappen en supplementinformatie — zonder diagnoses.",
+      "Download de gratis Stressgids voor 30-plussers. Herkenning, praktische stappen en supplementinformatie — zonder diagnoses.",
     canonical: "/gids/stress",
   },
   heroLabel: "Gratis gids",

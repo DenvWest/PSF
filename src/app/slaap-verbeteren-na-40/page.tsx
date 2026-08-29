@@ -12,7 +12,7 @@ import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta"
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 
 export const metadata: Metadata = {
-  title: "Slaap Verbeteren Na 40: Oorzaken, Tips & Supplementen | PerfectSupplement",
+  title: "Slaap Verbeteren Na 40: Oorzaken, Tips & Supplementen",
   description:
     "Slecht slapen na 40? Ontdek waarom je slaap verandert en wat je er nu aan doet. Van leefstijl tot supplementen — onderbouwd en praktisch.",
   ...canonicalMetadata("/slaap-verbeteren-na-40"),

@@ -19,7 +19,7 @@ import {
 } from "@/lib/vitaliteit";
 
 export const metadata: Metadata = {
-  title: "Jouw 30-dagen beeld | PerfectSupplement",
+  title: "Jouw 30-dagen beeld",
   robots: { index: false, follow: false },
   alternates: { canonical: "https://www.perfectsupplement.nl/rapport" },
 };

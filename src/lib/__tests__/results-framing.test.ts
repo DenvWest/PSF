@@ -22,7 +22,7 @@ describe("getRecognitionLine", () => {
 
   it("voegt meerdere symptomen samen met 'en'", () => {
     expect(getRecognitionLine(["slaap", "energie"])).toBe(
-      "Je begon met moeite met slapen en een lege batterij.",
+      "Je begon met moeite met slapen en weinig energie overdag.",
     );
   });
 

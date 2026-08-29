@@ -8,7 +8,7 @@ export const DISCLAIMER_TEXTS = {
   footer:
     "PerfectSupplement biedt leefstijl-informatie, geen medisch advies. Raadpleeg bij klachten je zorgverlener.",
   ctaMicro:
-    "15 vragen · 3 minuten · gratis · anoniem — geen medische test, wel leefstijl-inzicht op 7 domeinen.",
+    "16 vragen · 3 minuten · gratis · anoniem — geen medische test, wel inzicht op 5 leefstijldomeinen.",
   emailInline:
     "Geen medisch advies — bij twijfel of klachten: raadpleeg je zorgverlener.",
   emailSupplementScope:

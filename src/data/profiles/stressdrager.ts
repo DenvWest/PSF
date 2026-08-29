@@ -5,7 +5,7 @@ export const stressdragerProfile: ProfilePageData = {
   label: "Stressdrager",
 
   seo: {
-    title: "Stressdrager: Profiel Chronische Stress Mannen 40+ | PerfectSupplement",
+    title: "Stressdrager: Profiel Chronische Stress Na 40",
     description:
       "Continu aan, nooit echt uit? Het Stressdrager-profiel: herkenning, uitleg in begrijpelijke taal, quick wins en een 4-weken plan.",
     canonical: "https://perfectsupplement.nl/profiel/stressdrager",

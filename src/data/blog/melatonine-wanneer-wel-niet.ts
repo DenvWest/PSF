@@ -51,7 +51,7 @@ export const melatonineWanneerWelNietData: BlogArtikel = {
     "magnesium-en-slaap",
   ],
   metaTitle:
-    "Melatonine: wanneer wel, wanneer niet, dosering | PerfectSupplement",
+    "Melatonine: wanneer wel, wanneer niet, dosering",
   metaDescription:
     "Melatonine slim gebruiken: timing vs slaapmiddel, lage doses, jetlag en wanneer je beter eerst slaaphygiëne en licht aanpakt.",
   keywords: [

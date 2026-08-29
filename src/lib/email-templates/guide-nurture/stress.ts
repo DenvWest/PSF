@@ -86,7 +86,7 @@ ${ctaButton(absoluteUrl("/supplementen/ashwagandha"), "Lees de ashwagandhagids �
   Je hoeft je leven niet om te gooien
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Mannen die merkbaar minder gespannen zijn, veranderen zelden alles tegelijk. Ze kiezen één anker — ademhaling, wandeling, vaste bedtijd — en houden die 3 weken vol.
+  Wie merkbaar minder gespannen wordt, verandert zelden alles tegelijk. Je kiest één anker — ademhaling, wandeling, vaste bedtijd — en houdt dat 3 weken vol.
 </p>
 ${ctaButton(absoluteUrl("/stress-verminderen-na-40"), "Terug naar het stressprotocol →")}`,
         unsubscribeUrl,

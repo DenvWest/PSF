@@ -2,7 +2,7 @@ import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 
 export const ABOUT_METADATA = {
   title:
-    "Over PerfectSupplement — Leefstijl, herstel en supplementen | PerfectSupplement",
+    "Over PerfectSupplement — Leefstijl, herstel en supplementen",
   description:
     "Onafhankelijk leefstijlplatform voor mannen 40+: educatie, vergelijking en transparantie rond supplementen. Opgericht door leefstijlcoach Dennis van Westbroek — leefstijl eerst, supplementen alleen waar het zinvol is.",
 } as const;

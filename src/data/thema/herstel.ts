@@ -212,10 +212,10 @@ export const herstelThema: ThemaPageData = {
     sectionLabel: "PERSOONLIJK ADVIES",
     title: "Wil je weten hoe jouw herstel ervoor staat?",
     subtitle:
-      `De Leefstijlcheck analyseert je slaap, stress, energie, voeding, beweging en herstel in 15 vragen. ${INTAKE_DELIVERABLE.premiumSubtitleSuffix}`,
+      `De Leefstijlcheck analyseert je slaap, stress, energie, voeding, beweging en herstel in 16 vragen. ${INTAKE_DELIVERABLE.premiumSubtitleSuffix}`,
     features: [
-      "15 vragen, 3 minuten",
-      "Scores op 6 leefstijldomeinen",
+      "16 vragen, 3 minuten",
+      "Scores op 5 leefstijldomeinen",
       INTAKE_DELIVERABLE.premiumFeatureBullet,
       INTAKE_CTA.supplementFeature,
     ],
@@ -287,7 +287,7 @@ export const herstelThema: ThemaPageData = {
 
   seo: {
     title:
-      "Herstel verbeteren als man 40+ — Slaap, eiwit, cortisol, magnesium, omega-3 | PerfectSupplement",
+      "Herstel verbeteren als man 40+ — Slaap, eiwit, cortisol, magnesium, omega-3",
     description:
       "Waarom herstel na 40 anders is: MPS, cortisol, diepe slaap, inflammaging. Quick wins, supplementen (magnesium, omega-3, creatine, zink) en gerelateerde thema’s — plus gratis herstelgids.",
     canonical: "/gids/herstel",

@@ -14,7 +14,7 @@ const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
-  title: "Testosteron na 40: wat verandert en wat helpt | PerfectSupplement",
+  title: "Testosteron na 40: wat verandert en wat helpt",
   description:
     "Testosteron na 40 in begrijpelijke taal: leeftijdstrend, slaap, stress en training — zonder diagnoses. Links naar vergelijkingen en cluster-artikelen.",
   ...canonicalMetadata("/testosteron-na-40"),

@@ -63,7 +63,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
       type: "tekst",
       titel: "Wat nu?",
       tekst:
-        "Dit protocol is onderdeel van een breder verhaal. Slaapritme is één variabele — maar slaapkwaliteit na 40 wordt ook bepaald door slaaparchitectuur, stressrespons, hormoonbalans en voeding. [Lees de complete gids over slaap na je 40e.](/slaap-verbeteren-na-40)\n\nWil je weten welke supplementen bij jouw specifieke situatie passen? [Doe de gratis Leefstijlcheck](/intake) — 15 vragen, 3 minuten, direct een persoonlijk leefstijloverzicht.",
+        "Dit protocol is onderdeel van een breder verhaal. Slaapritme is één variabele — maar slaapkwaliteit na 40 wordt ook bepaald door slaaparchitectuur, stressrespons, hormoonbalans en voeding. [Lees de complete gids over slaap na je 40e.](/slaap-verbeteren-na-40)\n\nWil je weten welke supplementen bij jouw specifieke situatie passen? [Doe de gratis Leefstijlcheck](/intake) — 16 vragen, 3 minuten, direct een persoonlijk leefstijloverzicht.",
       },
     {
       type: "tekst",
@@ -98,7 +98,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
     "slaaphygiene-mannen-40-plus",
     "melatonine-wanneer-wel-niet",
   ],
-  metaTitle: "Slaapritme Herstellen in 7 Dagen | PerfectSupplement",
+  metaTitle: "Slaapritme Herstellen in 7 Dagen",
   metaDescription:
     "Een verschoven slaapritme herken je vaak na je 40e. Hier is een 7-dagen protocol dat je vanavond kunt starten — zonder medicatie.",
   keywords: [

@@ -6,7 +6,7 @@ export const overtrainerProfile: ProfilePageData = {
 
   seo: {
     title:
-      "Overtrainer: Te Veel Trainen, Te Weinig Recovery | Mannen 40+ | PerfectSupplement",
+      "Overtrainer: Te Veel Trainen, Te Weinig Recovery | Mannen 40+",
     description:
       "Als Overtrainer schuift trainingsvolume voorbij je recuperatiegrenzen. Chronisch vermoeid, veel trainingsstress op het lichaam, blessureachtige signalen. Herkenning en een vier weken-plan — geen diagnose.",
     canonical: "https://perfectsupplement.nl/profiel/overtrainer",

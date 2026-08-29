@@ -79,11 +79,14 @@ const WEERGAVEN: ReadonlyArray<{
 type ProductCatalogProps = {
   products: HubProduct[];
   personalization: HubPersonalization;
+  /** Categorie uit `?categorie=` — de catalogus opent er meteen op. */
+  initieleCategorie?: string | null;
 };
 
 export default function ProductCatalog({
   products,
   personalization,
+  initieleCategorie = null,
 }: ProductCatalogProps) {
   /** Alleen matches die ook echt een product in de catalogus hebben. */
   const persoonlijkeMatches = useMemo(() => {
@@ -110,8 +113,16 @@ export default function ProductCatalog({
     [products, persoonlijkeRedenen],
   );
 
+  /** Alleen een categorie die ook echt producten heeft; anders de hele lijst. */
+  const startCategorie = useMemo(() => {
+    if (!initieleCategorie) return null;
+    return products.some((product) => product.category === initieleCategorie)
+      ? initieleCategorie
+      : null;
+  }, [initieleCategorie, products]);
+
   const [categorie, setCategorie] = useState<string>(
-    persoonlijkAantal > 0 ? PERSOONLIJK : "alles",
+    startCategorie ?? (persoonlijkAantal > 0 ? PERSOONLIJK : "alles"),
   );
   const [zoek, setZoek] = useState("");
   const [alleenClaim, setAlleenClaim] = useState(false);
@@ -198,6 +209,19 @@ export default function ProductCatalog({
     [zichtbaar, limiet],
   );
   const restant = zichtbaar.length - getoond.length;
+
+  /** Hoe vaak landt iemand hier met een categorie uit een andere pagina? Eén
+   *  melding per bezoek, los van de klikken op de zijbalk. */
+  const gemeldeStart = useRef(false);
+  useEffect(() => {
+    if (!startCategorie || gemeldeStart.current) return;
+    gemeldeStart.current = true;
+    trackEvent(GA4_EVENTS.SUPPLEMENTEN_CATALOGUS_FILTER, {
+      facet: "categorie_uit_link",
+      waarde: startCategorie,
+    });
+    clarityTag("supplementen_categorie_uit_link", startCategorie);
+  }, [startCategorie]);
 
   /** Meten we elke toetsaanslag, dan meten we ruis; dit meet de zoekopdracht. */
   const zoekTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
 
 export const metadata: Metadata = {
-  title: "Affiliate Disclosure | PerfectSupplement",
+  title: "Affiliate Disclosure",
   description:
     "Affiliate disclosure van PerfectSupplement. Lees hoe wij omgaan met affiliate links en vergoedingen.",
   alternates: {

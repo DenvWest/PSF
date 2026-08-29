@@ -6,9 +6,11 @@ import ProductCatalog from "@/components/supplement-hub/ProductCatalog";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { CATALOG } from "@/data/supplement-hub/catalog";
 import { getHubProducts } from "@/lib/supplement-hub/product-catalog";
+import { HUB_CATEGORY_PARAM } from "@/lib/supplement-hub/hub-link";
 import { buildHubPersonalization } from "@/lib/supplement-hub/hub-personalization";
 import { getIntakeSessionFromCookie } from "@/lib/intake-session-server";
 import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBanner";
+import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
 import { hasNutritionLogForSession } from "@/lib/nutrition-log-server";
 import {
   buildBreadcrumbSchema,
@@ -19,7 +21,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title:
-    "Supplementengids | Onafhankelijk advies voor mannen 40+ | PerfectSupplement",
+    "Supplementengids | Onafhankelijk advies voor 30-plussers",
   description:
     "Alle supplementen met een berekende PS-Score, kwaliteitsrang en kostenrang per claim-conforme dag. Onafhankelijk, na te rekenen, zonder prijs in de score.",
   openGraph: {
@@ -45,8 +47,27 @@ const itemListSchema = buildNamedItemListSchema(
 
 const jsonLd = [breadcrumbSchema, itemListSchema];
 
-export default async function SupplementenPage() {
+type SupplementenPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+/**
+ * `?categorie=` zet de catalogus meteen op één stof. Andere pagina's (de
+ * uitkomst van de leefstijlcheck voorop) dragen hun aanbeveling zo over als
+ * navigatie: de onderbouwing blijft staan waar hij hoort, hier staan alleen de
+ * producten van die categorie langs dezelfde meetlat.
+ */
+function readCategoryParam(
+  searchParams: Record<string, string | string[] | undefined>,
+): string | null {
+  const raw = searchParams[HUB_CATEGORY_PARAM];
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return value && value.trim() !== "" ? value : null;
+}
+
+export default async function SupplementenPage({ searchParams }: SupplementenPageProps) {
   const products = getHubProducts();
+  const initieleCategorie = readCategoryParam(await searchParams);
   const { verifiedSessionId, session } = await getIntakeSessionFromCookie();
   const hasIntakeCookie = verifiedSessionId !== null;
   const hasSession = hasIntakeCookie && session !== null;
@@ -79,6 +100,7 @@ export default async function SupplementenPage() {
         >
           <Container>
             <VoortgangReturnBanner surface="supplementen" />
+            <IntakeResultsReturnBanner />
             <h1 className="font-display text-2xl font-bold tracking-tight text-stone-900 md:text-3xl">
               Supplementen
             </h1>
@@ -86,6 +108,7 @@ export default async function SupplementenPage() {
               <ProductCatalog
                 products={products}
                 personalization={personalization}
+                initieleCategorie={initieleCategorie}
               />
             </div>
           </Container>

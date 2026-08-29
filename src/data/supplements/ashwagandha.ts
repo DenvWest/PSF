@@ -9,7 +9,7 @@ export const ashwagandhaData: ComparisonPageData = {
   intro:
     "Constant alert en tegelijk uitgeput? Ashwagandha wordt vaak gekozen in drukke periodes — maar extract-type en withanolidegehalte verschillen sterk. Drie producten vergeleken op standaardisatie en transparantie. Voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim; vergelijk producten dus vooral op kwaliteit en specificaties, niet op beloofde uitkomsten.",
   seoTitle:
-    "Beste Ashwagandha Supplement 2026 — KSM-66 Vergelijking | PerfectSupplement",
+    "Beste Ashwagandha Supplement 2026 — KSM-66 Vergelijking",
   seoDescription:
     "Vergelijk de beste ashwagandha supplementen met KSM-66 extract. Onafhankelijke scores op withanoliden, dosering en prijs voor mannen 40+.",
   lastUpdated: "2026-04-19",

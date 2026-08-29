@@ -19,7 +19,7 @@ export const slaapGuideTemplates: Record<GuideNurtureDay, GuideNurtureTemplate> 
 <ul style="font-size: 15px; color: #555; line-height: 1.8; margin-bottom: 24px; padding-left: 20px;">
   <li>Een 7-dagen protocol dat je vanavond al kunt starten</li>
   <li>Welke supplementen wél en niet werken (met doseringen)</li>
-  <li>De #1 fout die de meeste mannen maken met slaap</li>
+  <li>De #1 fout die de meesten maken met slaap</li>
 </ul>
 ${ctaButton(absoluteUrl("/downloads/slaapgids-perfectsupplement.pdf"), "Download de Slaapgids (PDF) →")}
 <p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
@@ -38,7 +38,7 @@ ${ctaButton(absoluteUrl("/downloads/slaapgids-perfectsupplement.pdf"), "Download
   Je slaapritme is belangrijker dan de hoeveelheid slaap
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Veel mannen proberen "8 uur te halen" — maar een vast ritme (ook in het weekend) heeft meer impact dan een uur extra liggen.
+  Veel mensen proberen "8 uur te halen" — maar een vast ritme (ook in het weekend) heeft meer impact dan een uur extra liggen.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   Op onze slaappagina leggen we uit hoe je dit ritme opbouwt — stap voor stap.
@@ -105,7 +105,7 @@ ${ctaButton(absoluteUrl("/supplementen/magnesium"), "Lees de magnesiumgids →")
   Volhouden loont
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Slaap verbetert zelden in één nacht. De mannen die het grootste verschil merken, zijn consequent met ritme en avondafsluiting — niet perfect, wel structureel.
+  Slaap verbetert zelden in één nacht. De mensen die het grootste verschil merken, zijn consequent met ritme en avondafsluiting — niet perfect, wel structureel.
 </p>
 ${ctaButton(absoluteUrl("/slaap-verbeteren-na-40"), "Terug naar het complete slaapprotocol →")}`,
         unsubscribeUrl,

@@ -5,7 +5,7 @@ export const lageBatterijProfile: ProfilePageData = {
   label: "Lage Batterij",
 
   seo: {
-    title: "Altijd Moe Na 40? Dit Is Waarom (en Wat Je Eraan Doet) | PerfectSupplement",
+    title: "Altijd Moe Na 40? Dit Is Waarom (en Wat Je Eraan Doet)",
     description:
       "Je energie is op. Niet even, maar structureel. Herkenning, uitleg in begrijpelijke taal en wat je stap voor stap kunt doen.",
     canonical: "https://perfectsupplement.nl/profiel/lage-batterij",

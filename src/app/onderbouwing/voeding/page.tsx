@@ -13,7 +13,7 @@ import { NUTRITION_QUESTIONS } from "@/data/nutrition/lifescore-questions";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 
 export const metadata: Metadata = {
-  title: "Onderbouwing Voedingscheck | PerfectSupplement",
+  title: "Onderbouwing Voedingscheck",
   description:
     "Wetenschappelijke onderbouwing van de snelle voedingscheck per vraag — frequentie-proxy's, vuistregels en bronnen.",
   ...canonicalMetadata("/onderbouwing/voeding"),

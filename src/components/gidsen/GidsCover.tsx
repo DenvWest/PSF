@@ -23,7 +23,7 @@ export default function GidsCover({
   title,
   accent,
   label = "Gratis compacte gids",
-  subtitle = "voor mannen 40+",
+  subtitle = "voor 30-plussers",
   brand = "PerfectSupplement",
   className,
 }: GidsCoverProps) {

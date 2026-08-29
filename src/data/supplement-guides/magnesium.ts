@@ -4,7 +4,7 @@ export const magnesiumData: SupplementData = {
   slug: "magnesium",
   naam: "Magnesium",
   metaTitle:
-    "Magnesium: Welke Vorm Past Bij Jou? | PerfectSupplement",
+    "Magnesium: Welke Vorm Past Bij Jou?",
   metaDescription:
     "Magnesium uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",

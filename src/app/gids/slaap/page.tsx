@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
-import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
+import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
 import { GuideOptInForm } from "@/components/gids/GuideOptInForm";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import SleepAnalysisFlow from "@/components/sleep/SleepAnalysisFlow";
@@ -23,7 +23,7 @@ export default function SlaapGidsPage() {
     <main className="py-12 md:py-16">
       <Container>
         <article className="mx-auto max-w-2xl">
-          <IntakeResultsReturnBanner />
+          <CheckLensBanner target={{ kind: "guide", thema: "slaap" }} />
           <header className="mb-8">
             <p className="text-xs font-medium uppercase tracking-widest text-stone-400">
               {slaapGuide.heroLabel}

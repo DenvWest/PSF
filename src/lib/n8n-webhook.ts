@@ -1,5 +1,7 @@
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
+export const N8N_DELIVERY_CHANNEL = "n8n_webhook";
+
 export type DomainEventWebhookPayload = {
   id: string;
   organization_id: string;
@@ -106,11 +108,15 @@ export async function runPendingN8nDomainEvents(): Promise<{
     return { forwarded: 0, errors: 0 };
   }
 
+  // Filter server-side op nog-niet-bezorgd. Zonder dit filter haalt de query
+  // altijd dezelfde 50 oudste rijen op — zodra die bezorgd zijn slaat de lus ze
+  // allemaal over en bereikt hij nieuwe events nooit meer.
   const { data: pending, error } = await admin
     .from("domain_events")
     .select(
       "id, organization_id, occurred_at, event_type, session_id, email, payload, delivered_to",
     )
+    .not("delivered_to", "cs", `{${N8N_DELIVERY_CHANNEL}}`)
     .order("occurred_at", { ascending: true })
     .limit(50);
 
@@ -125,7 +131,7 @@ export async function runPendingN8nDomainEvents(): Promise<{
 
   for (const row of rows) {
     const delivered = Array.isArray(row.delivered_to) ? row.delivered_to : [];
-    if (delivered.includes("n8n_webhook")) {
+    if (delivered.includes(N8N_DELIVERY_CHANNEL)) {
       continue;
     }
 
@@ -145,7 +151,7 @@ export async function runPendingN8nDomainEvents(): Promise<{
     });
 
     if (ok) {
-      await markDomainEventDelivered(row.id, "n8n_webhook");
+      await markDomainEventDelivered(row.id, N8N_DELIVERY_CHANNEL);
       forwarded += 1;
     } else {
       errors += 1;

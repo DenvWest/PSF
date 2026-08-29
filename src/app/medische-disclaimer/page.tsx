@@ -3,7 +3,7 @@ import ContentPageLayout from "@/components/layout/ContentPageLayout";
 import { LEEFSTIJL_DISCLAIMER } from "@/data/leefstijl-disclaimer";
 
 export const metadata: Metadata = {
-  title: "Medische Disclaimer | PerfectSupplement",
+  title: "Medische Disclaimer",
   description:
     "Medische disclaimer van PerfectSupplement. Lees hoe wij omgaan met medische informatie op dit platform.",
   alternates: {

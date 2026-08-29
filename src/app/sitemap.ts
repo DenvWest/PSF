@@ -22,6 +22,7 @@ const PILLAR_PADEN = [
   "/voeding-na-40",
   "/beweging-na-40",
   "/testosteron-na-40",
+  "/overgang",
 ];
 
 const STATISCHE_PADEN = [

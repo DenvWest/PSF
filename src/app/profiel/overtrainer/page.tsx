@@ -4,7 +4,7 @@ import { intakeCtaMatchProfile } from "@/lib/intake-product-copy";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
-import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
+import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
 import { renderInlineMarkdownLinks } from "@/components/blog/inlineMarkdownLinks";
 import { overtrainerProfile } from "@/data/profiles/overtrainer";
 
@@ -183,7 +183,7 @@ export default function OvertrainerPage() {
       <main>
         <Container>
           <article>
-            <IntakeResultsReturnBanner />
+            <CheckLensBanner target={{ kind: "profile", slug: "overtrainer", label: "Overtrainer" }} />
             <nav aria-label="Breadcrumb" className="pt-6 pb-2">
               <ol className="flex flex-wrap items-center gap-1 text-sm text-slate-400">
                 <li className="flex items-center gap-1">

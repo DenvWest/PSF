@@ -54,7 +54,7 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
   stressPillarTurbo:
     "Grenzen stellen is de structurele oplossing voor chronische stress. In onze complete gids lees je ook over ademhaling, supplementen en een weekplan.",
   metaTitle:
-    "Grenzen stellen op werk: professioneel nee zeggen | PerfectSupplement",
+    "Grenzen stellen op werk: professioneel nee zeggen",
   metaDescription:
     "Hoe stel je grenzen op werk zonder je reputatie te schaden? Concrete stappen voor mannen 40+ onder druk — en wanneer het probleem de cultuur is.",
   keywords: [

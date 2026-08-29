@@ -5,9 +5,9 @@ import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 import IntakeClient from "./IntakeClient";
 
 export const metadata: Metadata = {
-  title: "Gratis Leefstijlcheck voor Mannen 40+ | PerfectSupplement",
+  title: "Gratis Leefstijlcheck voor 30-plussers",
   description:
-    `15 vragen, 3 minuten: persoonlijk inzicht in slaap, stress, energie en herstel. Gratis, anoniem — geen diagnose, wel een ${INTAKE_DELIVERABLE.intakeMetadataSuffix}.`,
+    `16 vragen, 3 minuten: persoonlijk inzicht in slaap, stress, energie en herstel. Gratis, anoniem — geen diagnose, wel een ${INTAKE_DELIVERABLE.intakeMetadataSuffix}.`,
   ...canonicalMetadata("/intake"),
 };
 

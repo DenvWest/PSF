@@ -65,7 +65,7 @@ export function createInitialChatState(): ChatIntakeState {
       {
         role: "assistant",
         content:
-          `Hallo! Ik help je met een korte leefstijlcheck. Ik stel je 15 vragen over slaap, energie, stress, voeding, beweging, herstel en leefstijl. Op basis van je antwoorden krijg je een persoonlijk ${INTAKE_DELIVERABLE.labelCapitalized}. Laten we beginnen!\n\nHoe beoordeel je je slaapkwaliteit? (1 = slecht, 4 = uitstekend)`,
+          `Hallo! Ik help je met een korte leefstijlcheck. Ik stel je 16 vragen over slaap, energie, stress, voeding, beweging, herstel en leefstijl. Op basis van je antwoorden krijg je een persoonlijk ${INTAKE_DELIVERABLE.labelCapitalized}. Laten we beginnen!\n\nHoe beoordeel je je slaapkwaliteit? (1 = slecht, 4 = uitstekend)`,
       },
     ],
     collectedAnswers: {},

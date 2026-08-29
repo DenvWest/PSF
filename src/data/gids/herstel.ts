@@ -4,9 +4,9 @@ export const herstelGuide: GuideOptInData = {
   slug: "herstel",
   guideName: "Herstelgids",
   seo: {
-    title: "Gratis Herstelgids na 40 | PerfectSupplement",
+    title: "Gratis Herstelgids na 40",
     description:
-      "Download de gratis Herstelgids voor mannen 40+. Begrijp waarom herstel trager gaat en wat je eraan doet.",
+      "Download de gratis Herstelgids voor 30-plussers. Begrijp waarom herstel trager gaat en wat je eraan doet.",
     canonical: "/gids/herstel",
   },
   heroLabel: "Gratis gids",

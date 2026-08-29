@@ -38,7 +38,7 @@ ${ctaButton(absoluteUrl("/voeding-na-40"), "Start met je stappenplan →")}
   Eén gewoonte, groot effect
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Veel mannen 40+ eten wel eiwit, maar niet verspreid over de dag. Richt op 20–30 g per maaltijd — dat ondersteunt herstel en spiermassa beter dan één grote portie 's avonds.
+  Veel mensen eten wel eiwit, maar niet verspreid over de dag. Richt op 20–30 g per maaltijd — dat ondersteunt herstel en spiermassa beter dan één grote portie 's avonds.
 </p>
 ${ctaButton(absoluteUrl("/voeding-na-40"), "Lees het complete voedingsprotocol →")}
 <p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">

@@ -77,7 +77,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
     "energie-verhogen-natuurlijk",
   ],
   metaTitle:
-    "Alcohol, slaap en energie na 40: wat één glas echt doet | PerfectSupplement",
+    "Alcohol, slaap en energie na 40: wat één glas echt doet",
   metaDescription:
     "Alcohol en vermoeidheid mannen 40+: REM-slaap, ochtendenergie, middagdip en vijf praktische aanpassingen zonder moraliseren.",
   keywords: [

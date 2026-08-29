@@ -83,7 +83,7 @@ export const eiwitNa40Data: BlogArtikel = {
     "middagdip-bloedsuiker-na-40",
     "eiwitinname-timing-mannen-40",
   ],
-  metaTitle: "Eiwit na 40: hoeveel gram per dag man | PerfectSupplement",
+  metaTitle: "Eiwit na 40: hoeveel gram per dag man",
   metaDescription:
     "Hoeveel eiwit heeft een man 40+ nodig? Anabole resistentie, 1,6 g/kg, spreiding over de dag en wanneer poeder zinvol is — onderbouwd en praktisch.",
   keywords: [

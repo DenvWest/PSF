@@ -56,7 +56,7 @@ export function ComparisonIntakeFallbackCta() {
           Niet zeker waar jij zou moeten beginnen?
         </h2>
         <p className="mb-6 text-stone-600">
-          De Leefstijlcheck geeft je in 3 min inzicht op 6 leefstijl-domeinen — zodat je weet waar
+          De Leefstijlcheck geeft je in 3 min inzicht op 5 leefstijl-domeinen — zodat je weet waar
           je aandacht het meeste oplevert.
         </p>
         <Link

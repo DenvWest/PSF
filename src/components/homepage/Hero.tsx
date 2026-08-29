@@ -1,6 +1,6 @@
-import Link from "next/link";
 import Container from "@/components/layout/Container";
-import HomeHeroCtas from "@/components/homepage/HomeHeroCtas";
+import HeroCheckPreview from "@/components/homepage/HeroCheckPreview";
+import HomeCheckCta from "@/components/homepage/HomeCheckCta";
 import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
 import { HOMEPAGE_HERO } from "@/data/homepage";
 
@@ -9,14 +9,14 @@ function CheckIcon() {
     <svg
       viewBox="0 0 20 20"
       fill="none"
-      className="h-5 w-5 shrink-0 text-ps-green"
+      className="mt-0.5 h-[18px] w-[18px] shrink-0 text-ps-green"
       aria-hidden
     >
-      <circle cx="10" cy="10" r="8.5" stroke="currentColor" strokeWidth="1.15" opacity="0.35" />
+      <circle cx="10" cy="10" r="9" fill="currentColor" opacity="0.12" />
       <path
         d="M6.25 10.15 8.6 12.5 13.85 7.35"
         stroke="currentColor"
-        strokeWidth="1.55"
+        strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -24,34 +24,8 @@ function CheckIcon() {
   );
 }
 
-function CheckBullet({
-  children,
-  index,
-}: {
-  children: string;
-  index: number;
-}) {
-  return (
-    <li
-      className="hero-check-item flex gap-3 text-sm leading-snug text-stone-700 motion-safe:animate-[fadeIn_0.45s_ease-out_forwards] motion-safe:opacity-0 motion-reduce:animate-none motion-reduce:opacity-100 sm:text-[15px]"
-      style={{ animationDelay: `${index * 100}ms` }}
-    >
-      <CheckIcon />
-      <span>{children}</span>
-    </li>
-  );
-}
-
 export default function Hero() {
-  const {
-    bullets,
-    headline,
-    subheadline,
-    eyebrow,
-    affiliateMicro,
-    affiliateMicroLinkLabel,
-    affiliateMicroLinkHref,
-  } = HOMEPAGE_HERO;
+  const { eyebrow, headline, subheadline, bullets, primaryCtaMicro } = HOMEPAGE_HERO;
 
   return (
     <section className="relative border-b border-stone-200/50 bg-[#F7F5F0]">
@@ -59,42 +33,56 @@ export default function Hero() {
       <GrainOverlay />
 
       <Container className="relative max-w-screen-xl">
-        <div className="max-w-3xl py-[clamp(2.5rem,6vh,4.5rem)]">
-          <p className="mb-5 inline-flex rounded-full border border-ps-green/35 bg-white/50 px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-widest text-ps-green">
-            {eyebrow}
-          </p>
+        {/*
+          Mobiel volgt de hero het IMU-model: kop gecentreerd, dan het beeld,
+          dan pas de tekst. Vanaf lg klapt hij terug naar twee kolommen, met het
+          beeld rechts naast de hele linkerkolom.
+        */}
+        <div className="flex flex-col gap-6 py-[clamp(2rem,5vh,5rem)] sm:gap-8 lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-start lg:gap-x-16 lg:gap-y-10">
+          {/*
+            `contents` laat kop en tekst op mobiel los meedoen in de flexkolom,
+            zodat het beeld ertussen kan staan (IMU-model). Vanaf lg worden ze
+            weer één cel, anders valt er een gat onder de kop.
+          */}
+          <div className="contents lg:col-start-1 lg:row-start-1 lg:block lg:max-w-2xl">
+            <div className="order-1 text-center lg:order-none lg:text-left">
+              <p className="mb-4 inline-flex rounded-full border border-ps-green/35 bg-white/50 px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-widest text-ps-green">
+                {eyebrow}
+              </p>
 
-          <h1 className="text-pretty text-3xl font-normal leading-[1.14] tracking-[0.01em] text-stone-900 sm:text-[2rem] sm:leading-[1.12] lg:text-[2.35rem]">
-            {headline}
-          </h1>
+              <h1 className="text-balance font-serif text-[1.625rem] leading-[1.2] text-stone-900 sm:text-[2.125rem] sm:leading-[1.15] lg:text-[2.75rem]">
+                {headline}
+              </h1>
+            </div>
 
-          <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-stone-600 sm:text-base">
-            {subheadline}
-          </p>
+            <div className="order-3 max-w-2xl lg:order-none lg:mt-7">
+              <p className="text-[15px] leading-relaxed text-stone-600 sm:text-base">
+                {subheadline}
+              </p>
 
-          <ul className="mt-7 space-y-3">
-            {bullets.map((bullet, index) => (
-              <CheckBullet key={bullet} index={index}>
-                {bullet}
-              </CheckBullet>
-            ))}
-          </ul>
+              <ul className="mt-5 space-y-2.5 sm:mt-6 sm:space-y-3">
+                {bullets.map((bullet) => (
+                  <li
+                    key={bullet}
+                    className="flex gap-2.5 text-sm leading-snug text-stone-700 sm:text-[15px]"
+                  >
+                    <CheckIcon />
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
 
-          <div className="mt-9">
-            <HomeHeroCtas />
+              <div className="mt-7 sm:mt-8">
+                <HomeCheckCta location="homepage_hero" className="w-full sm:w-auto" />
+                <p className="mt-3 text-xs text-stone-500">{primaryCtaMicro}</p>
+                <IntakeLastSessionLink theme="light" className="mt-3 block" />
+              </div>
+            </div>
           </div>
 
-          <p className="mt-4 max-w-xl text-xs leading-relaxed text-stone-500">
-            {affiliateMicro}{" "}
-            <Link
-              href={affiliateMicroLinkHref}
-              className="underline underline-offset-2 transition hover:text-stone-700"
-            >
-              {affiliateMicroLinkLabel}
-            </Link>
-          </p>
-
-          <IntakeLastSessionLink theme="light" className="mt-3 block" />
+          <div className="order-2 flex justify-center lg:order-none lg:col-start-2 lg:row-start-1 lg:justify-end">
+            <HeroCheckPreview />
+          </div>
         </div>
       </Container>
     </section>

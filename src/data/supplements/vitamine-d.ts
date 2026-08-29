@@ -16,7 +16,7 @@ export const vitamineDData: ComparisonPageData = {
   intro:
     "Moe en futloos terwijl de zon maandenlang te weinig schijnt? Vitamine D3 is in Nederland vaak een aandachtspunt na je 40e. Drie producten vergeleken op dosering, kwaliteit, opneembaarheid en prijs per dag.",
   seoTitle:
-    "Beste Vitamine D Supplement 2026 — D3 Vergelijking | PerfectSupplement",
+    "Beste Vitamine D Supplement 2026 — D3 Vergelijking",
   seoDescription:
     "Vergelijk de beste vitamine D3 supplementen op dosering, kwaliteit en prijs. Van Vitaminstore Super D3 tot Solgar — eerlijk gescoord voor mannen 40+.",
   lastUpdated: "2026-04-21",

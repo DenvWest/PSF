@@ -64,7 +64,7 @@ export const slaapVerbeterenData: BlogArtikel = {
     "energie-verhogen-natuurlijk",
   ],
   metaTitle:
-    "Slaap verbeteren na je 40e: wat werkt en wat niet | PerfectSupplement",
+    "Slaap verbeteren na je 40e: wat werkt en wat niet",
   metaDescription:
     "Slaap verandert na je 40e. Ontdek welke aanpassingen daadwerkelijk werken voor betere slaapkwaliteit — en waarom populaire adviezen soms averechts werken.",
   keywords: [

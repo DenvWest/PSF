@@ -13,7 +13,7 @@ const INLINE_LINK_CLASS =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
-  title: "Energie Na 40: Waarom Je Moe Bent en Wat Je Eraan Doet | PerfectSupplement",
+  title: "Energie Na 40: Waarom Je Moe Bent en Wat Je Eraan Doet",
   description:
     "Structureel moe na 40? Herkenning, oorzaken in begrijpelijke taal (slaap, ritme, eten, beweging) en wat je stap voor stap kunt doen.",
   ...canonicalMetadata("/energie-na-40"),
@@ -624,9 +624,9 @@ export default function EnergieNa40Page() {
                     Ontdek Waar Jij Staat
                   </h2>
                   <p className="mt-3 text-gray-600 max-w-lg mx-auto leading-relaxed">
-                    Energie is één van de zes domeinen die we meten in de Leefstijlcheck. In 3
-                    minuten weet je hoe je scoort op energie, slaap, stress, herstel, voeding en
-                    beweging — en welk profiel bij jou past.
+                    Energie is de uitkomst die de Leefstijlcheck meet. In 3 minuten weet je hoe je
+                    scoort op de vijf leefstijldomeinen eronder — slaap, stress, voeding, beweging
+                    en verbinding — en welk profiel bij jou past.
                   </p>
                   <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
                   <Link

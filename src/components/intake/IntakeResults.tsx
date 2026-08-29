@@ -11,7 +11,7 @@ import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import { MeasurementReminderOptIn } from "@/components/intake/MeasurementReminderOptIn";
 import IntakeMarketingContinuityNotice from "@/components/intake/IntakeMarketingContinuityNotice";
 import RevealFooterPanel from "@/components/intake/RevealFooterPanel";
-import RevealStoryPath from "@/components/intake/RevealStoryPath";
+import RevealReport from "@/components/intake/RevealReport";
 import ResultsRevealShell, {
   type ResultsRevealShellVariant,
 } from "@/components/intake/ResultsRevealShell";
@@ -46,7 +46,7 @@ export default function IntakeResults({
   firstName,
   hasActiveMarketingEmailConsent = false,
   primaryTheme: primaryThemeProp = null,
-  shellVariant = "fullscreen",
+  shellVariant = "dark-report",
   onRestart,
   mainNurtureSkipped = false,
   onConsentRevoked,
@@ -81,13 +81,16 @@ export default function IntakeResults({
 
   return (
     <ResultsRevealShell variant={shellVariant}>
-      <div className="reveal-results-flow flex flex-col gap-5 pt-2 lg:gap-7 lg:pt-4">
-        <section aria-label="Jouw leefstijloverzicht" className="reveal-results-act">
-          <RevealStoryPath model={model} profile={profile} answers={answers} firstName={firstName} />
-        </section>
+      <div className="flex flex-col gap-8 lg:gap-12">
+        <RevealReport
+          model={model}
+          answers={answers}
+          sessionId={sessionId}
+          firstName={firstName}
+        />
 
         {mainNurtureSkipped ? (
-          <section aria-label="E-mail vervolg" className="reveal-results-act">
+          <section aria-label="E-mail vervolg">
             <IntakeMarketingContinuityNotice
               hasActiveAccount={false}
               mainNurtureActive
@@ -100,25 +103,18 @@ export default function IntakeResults({
           <div className="text-center">
             <Link
               href={rapportUrl}
-              style={{
-                fontSize: 14,
-                color: "var(--sage)",
-                textDecoration: "underline",
-                textUnderlineOffset: 2,
-              }}
+              className="text-[14px] text-[#5A8F6A] underline underline-offset-2"
             >
               Bekijk je 30-dagen rapport →
             </Link>
           </div>
         ) : null}
 
-        <section aria-label="Nog even" className="reveal-results-act reveal-results-act--post-path">
-          <div className="reveal-results-post-path">
-            <IntakeFeedback sessionId={sessionId} variant="reveal-light" />
-            {showMeasurementReminderOptIn && sessionId ? (
-              <MeasurementReminderOptIn sessionId={sessionId} />
-            ) : null}
-          </div>
+        <section aria-label="Nog even" className="grid gap-4 md:grid-cols-2 md:items-start">
+          <IntakeFeedback sessionId={sessionId} variant="reveal-premium" />
+          {showMeasurementReminderOptIn && sessionId ? (
+            <MeasurementReminderOptIn sessionId={sessionId} tone="dark" />
+          ) : null}
         </section>
 
         <RevealFooterPanel

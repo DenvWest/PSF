@@ -3,7 +3,7 @@ import Link from "next/link";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
 
 export const metadata: Metadata = {
-  title: "Disclaimer | PerfectSupplement",
+  title: "Disclaimer",
   description:
     "Disclaimer van PerfectSupplement. Lees hoe wij omgaan met aansprakelijkheid en de inhoud van deze website.",
   alternates: {

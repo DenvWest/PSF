@@ -14,7 +14,7 @@ export const creatineData: ComparisonPageData = {
   intro:
     "Kracht verliest en herstel duurt langer na training? Creatine monohydraat is een van de best onderzochte supplementen voor spierkracht en herstel — maar zuiverheid en prijs per gram lopen uiteen. Drie producten vergeleken op kwaliteit en transparantie.",
   seoTitle:
-    "Beste Creatine 2026 — Monohydraat Vergelijking | PerfectSupplement",
+    "Beste Creatine 2026 — Monohydraat Vergelijking",
   seoDescription:
     "Vergelijk de beste creatine monohydraat supplementen op zuiverheid, Creapure® certificering en prijs. Onafhankelijk gescoord voor mannen 40+.",
   lastUpdated: "2026-04-21",

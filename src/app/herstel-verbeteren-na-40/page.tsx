@@ -16,7 +16,7 @@ const INLINE_LINK_THEME =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]";
 
 export const metadata: Metadata = {
-  title: "Herstel Verbeteren Na 40: Training, Voeding & Supplementen | PerfectSupplement",
+  title: "Herstel Verbeteren Na 40: Training, Voeding & Supplementen",
   description:
     "Trager herstel na 40? Lees waarom spierherstel verandert en wat werkt: slaap, eiwit, rust, magnesium, omega-3, vitamine D, creatine en meer — onderbouwd en stap voor stap.",
   ...canonicalMetadata("/herstel-verbeteren-na-40"),
@@ -746,8 +746,9 @@ export default function HerstelVerbeterenNa40Page() {
                     Ontdek Waar Jij Staat
                   </h2>
                   <p className="mt-3 text-gray-600 max-w-lg mx-auto">
-                    Herstel is een van de zes domeinen in de Leefstijlcheck. In 3 minuten zie je hoe je
-                    scoort op herstel, slaap, stress en energie — en wat je als eerste moet aanpakken.
+                    Herstel is een van de uitkomsten die de Leefstijlcheck meet. In 3 minuten zie je
+                    hoe je herstel eruitziet en op welk van de vijf leefstijldomeinen je het snelst
+                    winst pakt.
                   </p>
                   <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
                   <Link
