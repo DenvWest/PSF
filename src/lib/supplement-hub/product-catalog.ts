@@ -87,6 +87,8 @@ export interface HubProduct {
   imageSrc: string | null;
   imageAlt: string;
   themas: ThemaTag[];
+  /** Genormaliseerde tekst waarop de catalogus doorzoekbaar is. */
+  zoekIndex: string;
   guideHref: string;
   comparisonHref: string | null;
   score: TrustScoreResult;
@@ -129,6 +131,28 @@ function categoryEntry(category: SupplementCategory) {
     guideHref: bySlug?.guideHref ?? `/supplementen/${category}`,
     comparisonHref: bySlug?.comparisonHref ?? null,
   };
+}
+
+/**
+ * Kleine letters, accenten en koppeltekens weg. Zo vindt "omega 3" ook
+ * "Omega-3" en "vitamine d" ook "Vitamine D3".
+ */
+export function normalizeZoek(waarde: string): string {
+  return waarde
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+/** Elk woord uit de zoekterm moet ergens in de index voorkomen. */
+export function matchesZoek(product: HubProduct, zoekterm: string): boolean {
+  const genormaliseerd = normalizeZoek(zoekterm);
+  if (genormaliseerd === "") return true;
+  return genormaliseerd
+    .split(" ")
+    .every((woord) => product.zoekIndex.includes(woord));
 }
 
 function volledigeNaam(brand: string, name: string): string {
@@ -301,6 +325,18 @@ function buildCategory(data: ComparisonPageData): HubProduct[] {
       imageSrc: product.imageSrc ?? null,
       imageAlt: product.imageAlt ?? `${product.brand} ${product.name}`,
       themas: [...meta.themas],
+      zoekIndex: normalizeZoek(
+        [
+          product.name,
+          product.brand,
+          meta.label,
+          data.category,
+          product.werkzameStof,
+          form?.label ?? product.vorm,
+          product.variantTag,
+          ...meta.themas,
+        ].join(" "),
+      ),
       guideHref: meta.guideHref,
       comparisonHref: meta.comparisonHref,
       score,

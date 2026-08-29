@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import { CATALOG, type ThemaTag } from "@/data/supplement-hub/catalog";
 import {
   PS_SCORE_MODEL_VERSION,
@@ -52,6 +52,7 @@ export default function OnderbouwingPanel({
   className = "",
 }: OnderbouwingPanelProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const titelId = useId();
 
   const componenten = Object.keys(SCORE_WEIGHTS) as ScoreComponentId[];
   const gidsen = CATALOG.filter(
@@ -97,7 +98,7 @@ export default function OnderbouwingPanel({
 
       <dialog
         ref={dialogRef}
-        aria-labelledby="onderbouwing-titel"
+        aria-labelledby={titelId}
         onClick={(event) => {
           if (event.target === dialogRef.current) dialogRef.current?.close();
         }}
@@ -106,7 +107,7 @@ export default function OnderbouwingPanel({
         <div className="flex items-start justify-between gap-4 border-b border-stone-100 px-6 py-5">
           <div>
             <p
-              id="onderbouwing-titel"
+              id={titelId}
               className="font-display text-lg font-bold text-stone-900"
             >
               Onderbouwing

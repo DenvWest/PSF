@@ -24,11 +24,11 @@ function namenReeks(namen: string[]): string {
 }
 
 const GROEN_KADER =
-  "rounded-2xl border border-[#5A8F6A]/25 bg-gradient-to-br from-[#EAF6EE] to-[#F8FBF9] px-5 py-5";
+  "rounded-2xl border border-[#5A8F6A]/25 bg-gradient-to-br from-[#EAF6EE] to-[#F8FBF9] px-4 py-4 lg:px-5 lg:py-5";
 const EYEBROW =
   "font-display text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-[#5A8F6A]";
 const CTA_KNOP =
-  "mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ps-green px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-ps-green-hover hover:shadow-md";
+  "mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ps-green px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-ps-green-hover hover:shadow-md lg:mt-4";
 
 /**
  * Het persoonlijke blok bovenaan de zijbalk. In de eindstaat is dit een eigen
@@ -51,13 +51,12 @@ export default function HubPersonalBar({
         aria-label="Persoonlijke selectie"
       >
         <p className={EYEBROW}>Gratis Leefstijlcheck · 3 min</p>
-        <p className="mt-1.5 font-display text-lg font-bold leading-snug text-stone-900 sm:text-base sm:font-semibold">
+        <p className="mt-1 font-display text-base font-semibold leading-snug text-stone-900">
           Welke van deze {productCount} passen bij jou?
         </p>
-        <p className="mt-1.5 hidden text-sm leading-relaxed text-stone-600 sm:block">
-          Doe de gratis Leefstijlcheck (±3 min). Daarna markeren we hier de
-          producten die bij jouw antwoorden passen — en kun je er direct op
-          filteren.
+        <p className="mt-1.5 hidden text-sm leading-relaxed text-stone-600 lg:block">
+          Na de check markeren we hier de producten die bij jouw antwoorden
+          passen — en kun je er direct op filteren.
         </p>
         <Link
           href="/intake"
@@ -70,7 +69,7 @@ export default function HubPersonalBar({
         >
           Doe de Leefstijlcheck →
         </Link>
-        <IntakeCtaMicro className="mt-2 hidden text-xs text-stone-500 sm:block" />
+        <IntakeCtaMicro className="mt-2 hidden text-xs text-stone-500 lg:block" />
       </aside>
     );
   }
@@ -82,10 +81,10 @@ export default function HubPersonalBar({
         aria-label="Persoonlijke selectie"
       >
         <p className={EYEBROW}>Voedingscheck · 3 min</p>
-        <p className="mt-1.5 font-display text-lg font-bold leading-snug text-stone-900 sm:text-base sm:font-semibold">
+        <p className="mt-1 font-display text-base font-semibold leading-snug text-stone-900">
           Nog één stap: de voedingscheck
         </p>
-        <p className="mt-1.5 hidden text-sm leading-relaxed text-stone-600 sm:block">
+        <p className="mt-1.5 hidden text-sm leading-relaxed text-stone-600 lg:block">
           Je Leefstijlcheck staat genoteerd. We markeren pas producten als we
           weten wat er op je bord tekortschiet — eerst voeding, dan gericht
           vergelijken (±3 min).
@@ -101,7 +100,7 @@ export default function HubPersonalBar({
         >
           Doe de voedingscheck →
         </Link>
-        <p className="mt-2 text-xs text-stone-500">
+        <p className="mt-2 hidden text-xs text-stone-500 lg:block">
           Geen diagnose · geen account verplicht
         </p>
       </aside>
@@ -111,20 +110,19 @@ export default function HubPersonalBar({
   if (personalization.state === "geen_prioriteit" || matchNamen.length === 0) {
     return (
       <aside
-        className={`rounded-2xl border border-stone-200 bg-stone-50 px-5 py-5 ${className}`}
+        className={`rounded-2xl border border-stone-200 bg-stone-50 px-4 py-4 lg:px-5 lg:py-5 ${className}`}
         aria-label="Persoonlijke selectie"
       >
         <p className="font-display text-base font-semibold leading-snug text-stone-900">
           Je basis zit goed
         </p>
-        <p className="mt-1.5 text-sm leading-relaxed text-stone-600">
-          Uit je voedingscheck volgt geen supplement-prioriteit. Vergelijk
-          gerust verder, maar geen van deze producten is voor jou urgent —
-          algemene oriëntatie, geen persoonlijk medisch advies.
+        <p className="mt-1 text-sm leading-relaxed text-stone-600">
+          Uit je voedingscheck volgt geen supplement-prioriteit. Oriëntatie,
+          geen persoonlijk medisch advies.
         </p>
         <Link
           href="/intake"
-          className="mt-3 inline-block text-sm text-stone-500 transition-colors hover:text-ps-green"
+          className="mt-2 hidden text-sm text-stone-500 transition-colors hover:text-ps-green lg:inline-block"
         >
           Leefstijlcheck opnieuw doen →
         </Link>
@@ -138,7 +136,7 @@ export default function HubPersonalBar({
         type="button"
         onClick={onToggle}
         aria-pressed={actief}
-        className={`flex w-full items-center justify-between gap-3 rounded-xl px-5 py-3.5 text-sm transition-all ${
+        className={`flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm transition-all lg:px-5 lg:py-3.5 ${
           actief
             ? "bg-ps-green font-semibold text-white shadow-sm"
             : "border border-[#5A8F6A]/40 bg-[#F0FAF3] font-semibold text-[#3D6B4F] hover:border-ps-green"
@@ -152,13 +150,16 @@ export default function HubPersonalBar({
           {actief ? "✓" : "→"}
         </span>
       </button>
-      <p className="mt-2.5 px-1 text-xs leading-relaxed text-stone-500">
+      <p className="mt-2 px-1 text-xs leading-relaxed text-stone-500 lg:hidden">
+        Uit je check · geen medisch advies
+      </p>
+      <p className="mt-2.5 hidden px-1 text-xs leading-relaxed text-stone-500 lg:block">
         Past bij jou: {namenReeks(matchNamen)}. Op basis van je Leefstijlcheck
         en voedingscheck — algemene oriëntatie, geen persoonlijk medisch advies.
       </p>
       <Link
         href="/intake"
-        className="mt-2 inline-block px-1 text-xs text-stone-400 transition-colors hover:text-ps-green"
+        className="mt-2 hidden px-1 text-xs text-stone-400 transition-colors hover:text-ps-green lg:inline-block"
       >
         Leefstijlcheck opnieuw doen →
       </Link>

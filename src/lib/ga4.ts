@@ -24,6 +24,8 @@ export const GA4_EVENTS = {
   NUTRITION_RESULT_REOPEN_CLICK: 'nutrition_result_reopen_click',
   SUPPLEMENTEN_CATALOGUS_FILTER: 'supplementen_catalogus_filter',
   SUPPLEMENTEN_CATALOGUS_SORTERING: 'supplementen_catalogus_sortering',
+  SUPPLEMENTEN_CATALOGUS_ZOEK: 'supplementen_catalogus_zoek',
+  SUPPLEMENTEN_CATALOGUS_MEER: 'supplementen_catalogus_meer',
   SUPPLEMENTEN_PRODUCT_ONDERBOUWING: 'supplementen_product_onderbouwing',
   SUPPLEMENTEN_PRODUCT_UITGAAND: 'supplementen_product_uitgaand',
   SUPPLEMENTEN_METHODIEK_GEOPEND: 'supplementen_methodiek_geopend',

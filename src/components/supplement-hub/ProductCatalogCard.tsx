@@ -32,6 +32,8 @@ type ProductCatalogCardProps = {
   tieCount: number;
   /** Reden uit de check waarom deze categorie bij deze bezoeker past. */
   persoonlijkeReden?: string | null;
+  /** Eerste kaart in de lijst: die foto is op mobiel de LCP. */
+  eager?: boolean;
 };
 
 /**
@@ -43,6 +45,7 @@ export default function ProductCatalogCard({
   product,
   tieCount,
   persoonlijkeReden = null,
+  eager = false,
 }: ProductCatalogCardProps) {
   const band = getScoreBand(product.score.total);
   const claim = CLAIM_PRESENTATION[product.claimStance];
@@ -70,7 +73,8 @@ export default function ProductCatalogCard({
               width={224}
               height={224}
               className="h-full w-full object-contain p-2"
-              loading="lazy"
+              loading={eager ? "eager" : "lazy"}
+              fetchPriority={eager ? "high" : "auto"}
             />
           ) : (
             <span aria-hidden="true" className="text-4xl @[16rem]:text-3xl">
