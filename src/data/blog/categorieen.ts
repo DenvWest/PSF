@@ -20,6 +20,8 @@ export interface CategorieConfig {
     accent: string;
     tekst: string;
     cardAccent: string;
+    /** Achtergrondkleur van het staafje links op een bibliotheekkaart. */
+    rail: string;
   };
 }
 
@@ -29,7 +31,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     naam: "Stress",
     icoon: "🔥",
     beschrijving: "Cortisol, spanning en herstel. Van ademhaling tot ashwagandha.",
-    metaTitle: "Stress & cortisol na 40 — artikelen | PerfectSupplement",
+    metaTitle: "Stress & cortisol na 40 — artikelen",
     metaDescription:
       "Altijd 'aan' staan, cortisol en spanning na je 40e? Onderbouwde artikelen over stress, herstel en wat je lichaam signaleert.",
     intentTopics: [
@@ -50,6 +52,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       accent: "bg-amber-500/20 ring-amber-400/20",
       tekst: "text-amber-200",
       cardAccent: "border-l-amber-500/60",
+      rail: "bg-amber-500/70",
     },
   },
   slaap: {
@@ -57,7 +60,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     naam: "Slaap",
     icoon: "🌙",
     beschrijving: "Van slaaphygiëne tot melatonine. Wat werkt na je 40e.",
-    metaTitle: "Slaap verbeteren na 40 — artikelen | PerfectSupplement",
+    metaTitle: "Slaap verbeteren na 40 — artikelen",
     metaDescription:
       "Moe wakker worden, nachtelijk wakker liggen of slecht doorslapen? Praktische artikelen over slaap, melatonine en herstel na je 40e.",
     intentTopics: [
@@ -78,6 +81,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       accent: "bg-sky-500/20 ring-sky-400/20",
       tekst: "text-sky-200",
       cardAccent: "border-l-sky-500/60",
+      rail: "bg-sky-500/70",
     },
   },
   energie: {
@@ -86,7 +90,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     icoon: "⚡",
     beschrijving:
       "Testosteron, vitamine D en dagelijkse energie. Praktisch en onderbouwd.",
-    metaTitle: "Energie & vermoeidheid na 40 — artikelen | PerfectSupplement",
+    metaTitle: "Energie & vermoeidheid na 40 — artikelen",
     metaDescription:
       "Middagdip, trager herstel of vermoeidheid na je 40e? Artikelen over energie, testosteron, vitamine D en herstel — onderbouwd en praktisch.",
     intentTopics: [
@@ -107,6 +111,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       accent: "bg-emerald-500/20 ring-emerald-400/20",
       tekst: "text-emerald-200",
       cardAccent: "border-l-emerald-500/60",
+      rail: "bg-emerald-500/70",
     },
   },
   supplementen: {
@@ -114,7 +119,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     naam: "Supplementen",
     icoon: "🧬",
     beschrijving: "Werking, vormen en dosering. Per product uitgelegd.",
-    metaTitle: "Supplementen uitgelegd — werking & dosering | PerfectSupplement",
+    metaTitle: "Supplementen uitgelegd — werking & dosering",
     metaDescription:
       "Magnesium, omega-3, vitamine D en meer — werking, vormen en dosering uitgelegd voor mannen boven de 40. Geen verkooppraat.",
     intentTopics: [
@@ -135,6 +140,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       accent: "bg-violet-500/20 ring-violet-400/20",
       tekst: "text-violet-200",
       cardAccent: "border-l-stone-500/50",
+      rail: "bg-violet-500/60",
     },
   },
 };

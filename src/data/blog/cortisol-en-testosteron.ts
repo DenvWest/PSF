@@ -4,6 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const cortisolEnTestosteronData: BlogArtikel = {
   slug: "cortisol-en-testosteron",
   categorie: "stress",
+  audience: "mannen",
   titel: "Cortisol en testosteron na 40: stress, verhalen en wat onderzoek redelijkerwijs zegt",
   heroIntro:
     "Op internet klinkt het alsof elke stresspiep je testosteron “kills”. De werkelijkheid is genuanceerder: beide hormonen hangen samen met leefstijl en leeftijd, maar individuele labwaarden fluctueren en correlaties zijn geen simpele knoppen om thuis te draaien. Dit artikel verbindt [stress verminderen als man](/stress-verminderen-na-40) met het begrip [testosteron in de kennisbank](/kennisbank/testosteron) — zonder diagnose — en wijst naar tools zoals [ashwagandha vergelijken](/beste/ashwagandha) alleen als tweede lijn.",
@@ -62,7 +63,7 @@ export const cortisolEnTestosteronData: BlogArtikel = {
     "ademhaling-tegen-stress",
   ],
   metaTitle:
-    "Cortisol en testosteron na 40: feiten vs verhalen | PerfectSupplement",
+    "Cortisol en testosteron na 40: feiten vs verhalen",
   metaDescription:
     "Cortisol, testosteron en stress na 40: wat correlaties wél betekenen, wat niet, en welke stappen je veilig eerst zet — met links naar pillars en vergelijkingen.",
   keywords: [

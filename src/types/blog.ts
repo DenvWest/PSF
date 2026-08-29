@@ -1,4 +1,5 @@
 import type { ReferentieItem } from "@/types/referenties";
+import type { AudienceTag } from "@/lib/content-audience";
 
 export type BlogCategorie = "stress" | "slaap" | "energie" | "supplementen";
 
@@ -52,6 +53,9 @@ export interface BlogArtikel {
   /** Optioneel publiek pad (bv. `/beste/omega-3-supplement`); anders `/blog/${slug}`. */
   pad?: string;
   categorie: BlogCategorie;
+  /** Alleen zetten waar de fysiologie zelf geslachtsspecifiek is (testosteron,
+   *  overgang). Ontbreekt = geldt voor beide en blijft in elke lens staan. */
+  audience?: AudienceTag;
   titel: string;
   /** Introductietekst direct onder de H1 */
   heroIntro: string;

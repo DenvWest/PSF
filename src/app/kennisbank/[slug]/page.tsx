@@ -34,9 +34,15 @@ import { KENNISBANK_THEME_TO_PIJLER } from '@/data/insights'
 import { getContentMetadata } from '@/data/insight-metadata'
 import { KB_HUB_LABEL } from '@/components/kennisbank/kennisbank-layout'
 import { canAccessVerdieping } from '@/lib/kennisbank-access'
+import {
+  AUDIENCE_PARAM,
+  resolveContentAudience,
+  type ContentAudience,
+} from '@/lib/content-audience'
 
 interface Props {
   params: Promise<{ slug: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
 const comparisonLabels: Record<string, string> = {
@@ -82,7 +88,9 @@ export function generateStaticParams() {
   return [...themeParams, ...termParams]
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: Pick<Props, 'params'>): Promise<Metadata> {
   const { slug } = await params
 
   if (isValidTheme(slug)) {
@@ -111,11 +119,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function KennisbankSlugPage({ params }: Props) {
+export default async function KennisbankSlugPage({
+  params,
+  searchParams,
+}: Props) {
   const { slug } = await params
+  const query = await searchParams
+  const audience = resolveContentAudience(
+    typeof query[AUDIENCE_PARAM] === 'string' ? query[AUDIENCE_PARAM] : undefined,
+  )
 
   if (isValidTheme(slug)) {
-    return <ThemaPage theme={slug} />
+    return <ThemaPage theme={slug} audience={audience} />
   }
 
   const term = getTermBySlug(slug)
@@ -126,7 +141,13 @@ export default async function KennisbankSlugPage({ params }: Props) {
 
 // ── THEMA-DETAILPAGINA ──────────────────────────────────────────────────────
 
-function ThemaPage({ theme }: { theme: KennisbankTheme }) {
+function ThemaPage({
+  theme,
+  audience,
+}: {
+  theme: KennisbankTheme
+  audience: ContentAudience
+}) {
   const config = themeLabels[theme]
   const themeUrl = `https://perfectsupplement.nl/kennisbank/${theme}`
 
@@ -161,7 +182,7 @@ function ThemaPage({ theme }: { theme: KennisbankTheme }) {
           }),
         }}
       />
-      <KennisbankThemaPageContent theme={theme} />
+      <KennisbankThemaPageContent theme={theme} audience={audience} />
     </>
   )
 }

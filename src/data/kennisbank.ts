@@ -1,5 +1,6 @@
 import { toRefs } from '@/lib/referentie-bewijs'
 import type { ReferentieItem } from '@/types/referenties'
+import type { AudienceTag } from '@/lib/content-audience'
 
 export type KennisbankTheme =
   | 'lichaam-veroudering'
@@ -13,6 +14,8 @@ export interface KennisbankTerm {
   slug: string
   term: string
   theme: KennisbankTheme
+  /** Alleen bij geslachtsspecifieke fysiologie; ontbreekt = voor beide. */
+  audience?: AudienceTag
   /** 1 = basis SEO, 2 = verdieping, 3 = interventie/supplement-context. */
   insightTier: KennisbankInsightTier
   /** Handtekening-uitzondering: volledig publiek ondanks tier >= 2 (bv. melatonine-uitsluiting). */
@@ -44,6 +47,8 @@ export const themeLabels: Record<KennisbankTheme, {
     bg: string
     accent: string
     tekst: string
+    /** Achtergrondkleur van het staafje links op een bibliotheekkaart. */
+    rail: string
   }
 }> = {
   'lichaam-veroudering': {
@@ -54,6 +59,7 @@ export const themeLabels: Record<KennisbankTheme, {
       bg: 'from-rose-700 to-rose-800',
       accent: 'bg-white/10 ring-white/20',
       tekst: 'text-rose-200/80',
+      rail: 'bg-rose-500/65',
     },
   },
   'leefstijl-herstel': {
@@ -64,6 +70,7 @@ export const themeLabels: Record<KennisbankTheme, {
       bg: 'from-emerald-700 to-emerald-800',
       accent: 'bg-white/10 ring-white/20',
       tekst: 'text-emerald-200/80',
+      rail: 'bg-emerald-500/70',
     },
   },
   supplementwetenschap: {
@@ -74,6 +81,7 @@ export const themeLabels: Record<KennisbankTheme, {
       bg: 'from-sky-700 to-sky-800',
       accent: 'bg-white/10 ring-white/20',
       tekst: 'text-sky-200/80',
+      rail: 'bg-sky-500/70',
     },
   },
   longevity: {
@@ -84,6 +92,7 @@ export const themeLabels: Record<KennisbankTheme, {
       bg: 'from-amber-700 to-amber-800',
       accent: 'bg-white/10 ring-white/20',
       tekst: 'text-amber-200/80',
+      rail: 'bg-amber-500/70',
     },
   },
 }
@@ -615,6 +624,7 @@ Lees vergelijkingen dus op dosering, vorm en zuiverheid — en blijf slaap en ei
     insightTier: 3,
     term: 'Testosteron',
     theme: 'lichaam-veroudering',
+    audience: 'mannen',
     shortDefinition:
       'Het belangrijkste mannelijke geslachtshormoon — met invloed op energie, spierbehoud en stemming, maar sterk individueel en leeftijdsafhankelijk.',
     content: {

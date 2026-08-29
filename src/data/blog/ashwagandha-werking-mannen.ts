@@ -4,6 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const ashwagandhaData: BlogArtikel = {
   slug: "ashwagandha-werking-mannen",
   categorie: "supplementen",
+  audience: "mannen",
   titel: "Ashwagandha: hoe het werkt voor mannen boven de 40",
   heroIntro:
     "Ashwagandha is in de wetenschappelijke literatuur een van de best bestudeerde adaptogenen rond stressbelasting. Let wel: in de EU zijn er (nog) geen goedgekeurde gezondheidsclaims voor op het etiket. Hier lees je mechanismen, studie‑inzichten en valkuilen bij productkeuze — specifiek voor mannen boven de 40.",
@@ -77,7 +78,7 @@ export const ashwagandhaData: BlogArtikel = {
     "stress-werk-grenzen-stellen",
   ],
   metaTitle:
-    "Ashwagandha voor mannen 40+: werking, dosering en extracten | PerfectSupplement",
+    "Ashwagandha voor mannen 40+: werking, dosering en extracten",
   metaDescription:
     "Hoe werkt ashwagandha bij chronische stress? Uitleg over KSM-66, klinische studies, dosering en wat je kunt verwachten — specifiek voor mannen boven de 40.",
   keywords: [

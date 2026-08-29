@@ -4,6 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const testosteronEnEnergieNa40Data: BlogArtikel = {
   slug: "testosteron-en-energie-na-40",
   categorie: "energie",
+  audience: "mannen",
   titel: "Testosteron en energie na 40: wanneer is actie nodig?",
   heroIntro:
     "Testosteron daalt gemiddeld met 1-2% per jaar vanaf je dertigste — maar ‘laag’ is pas echt betekenisvol in combinatie met klachten en een zorgvuldige diagnose. Zo onderscheid je normale leeftijdsverandering van iets dat medische aandacht verdient.",
@@ -48,7 +49,7 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
     "omega-3-concentratie-energie",
   ],
   metaTitle:
-    "Testosteron en energie na 40: symptomen en diagnose | PerfectSupplement",
+    "Testosteron en energie na 40: symptomen en diagnose",
   metaDescription:
     "Wanneer is laag testosteron relevant voor vermoeidheid? Symptomen, meten ’s ochtends en waarom context belangrijker is dan één getal.",
   keywords: [

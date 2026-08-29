@@ -4,6 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const zinkEnTestosteronData: BlogArtikel = {
   slug: "zink-en-testosteron",
   categorie: "supplementen",
+  audience: "mannen",
   titel: "Zink en testosteron: wat de EU wél mag zeggen (en wat niet)",
   heroIntro:
     "Zink staat op etiketten vaak in één adem met testosteron — maar de toegestane claim gaat over instandhouding van een normaal testosterongehalte in het bloed bij voldoende inname, niet over een boost. Dit artikel verbindt [testosteron na 40](/testosteron-na-40) met onze [zink-vergelijking](/beste/zink) en het cluster [cortisol en testosteron](/blog/cortisol-en-testosteron).",
@@ -50,7 +51,7 @@ export const zinkEnTestosteronData: BlogArtikel = {
     "testosteron-en-energie-na-40",
     "vitamine-d-en-energie",
   ],
-  metaTitle: "Zink en testosteron: claims en vergelijken | PerfectSupplement",
+  metaTitle: "Zink en testosteron: claims en vergelijken",
   metaDescription:
     "Zink en testosteron uitgelegd: EU-claim, wanneer suppletie ter sprake komt en hoe je producten vergelijkt.",
   keywords: ["zink testosteron", "zink supplement mannen", "testosteron na 40"],

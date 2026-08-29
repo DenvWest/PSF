@@ -5,21 +5,25 @@ import BlogCategoriePageContent from "@/components/blog/BlogCategoriePageContent
 import {
   alleArtikelen,
   getArtikelBySlug,
-  getArtikelenByCategorie,
   getGerelateerdeArtikelen,
 } from "@/data/blog";
+import { getBlogLibraryItems } from "@/lib/library/blog-items";
+import {
+  AUDIENCE_PARAM,
+  resolveContentAudience,
+} from "@/lib/content-audience";
 import {
   CATEGORIE_CONFIG,
   GELDIGE_CATEGORIE_IDS,
   isGeldigeCategorie,
 } from "@/data/blog/categorieen";
-import type { BlogCategorie } from "@/types/blog";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import { absoluteUrl } from "@/lib/public-site-url";
 import { BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
 
 interface Props {
   params: Promise<{ categorie: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateStaticParams() {
@@ -28,7 +32,9 @@ export async function generateStaticParams() {
   return [...categorieParams, ...artikelParams];
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: Pick<Props, "params">): Promise<Metadata> {
   const { categorie } = await params;
 
   if (isGeldigeCategorie(categorie)) {
@@ -60,24 +66,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-function telAantalPerCategorie(): Record<BlogCategorie, number> {
-  return GELDIGE_CATEGORIE_IDS.reduce(
-    (acc, cat) => {
-      acc[cat] = alleArtikelen.filter((a) => a.categorie === cat).length;
-      return acc;
-    },
-    {} as Record<BlogCategorie, number>,
-  );
-}
-
-export default async function BlogCategoriePage({ params }: Props) {
+export default async function BlogCategoriePage({
+  params,
+  searchParams,
+}: Props) {
   const { categorie } = await params;
+  const query = await searchParams;
+  const audience = resolveContentAudience(
+    typeof query[AUDIENCE_PARAM] === "string" ? query[AUDIENCE_PARAM] : undefined,
+  );
 
   // /blog/stress, /blog/slaap, /blog/energie, /blog/supplementen
   if (isGeldigeCategorie(categorie)) {
     const config = CATEGORIE_CONFIG[categorie];
-    const artikelen = getArtikelenByCategorie(categorie);
-    const aantalPerCategorie = telAantalPerCategorie();
+    const items = getBlogLibraryItems();
 
     const categoryUrl = `https://perfectsupplement.nl/blog/${categorie}`;
 
@@ -129,8 +131,8 @@ export default async function BlogCategoriePage({ params }: Props) {
         />
         <BlogCategoriePageContent
           config={config}
-          artikelen={artikelen}
-          aantalPerCategorie={aantalPerCategorie}
+          items={items}
+          audience={audience}
         />
       </>
     );

@@ -29,6 +29,11 @@ export const GA4_EVENTS = {
   SUPPLEMENTEN_PRODUCT_ONDERBOUWING: 'supplementen_product_onderbouwing',
   SUPPLEMENTEN_PRODUCT_UITGAAND: 'supplementen_product_uitgaand',
   SUPPLEMENTEN_METHODIEK_GEOPEND: 'supplementen_methodiek_geopend',
+  BIBLIOTHEEK_PUBLIEK: 'bibliotheek_publiek',
+  BIBLIOTHEEK_FILTER: 'bibliotheek_filter',
+  BIBLIOTHEEK_ZOEK: 'bibliotheek_zoek',
+  BIBLIOTHEEK_MEER: 'bibliotheek_meer',
+  BIBLIOTHEEK_ITEM_GEOPEND: 'bibliotheek_item_geopend',
 } as const;
 
 export function trackEvent(
