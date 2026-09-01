@@ -6,7 +6,7 @@ export const cortisolVerlagenData: BlogArtikel = {
   categorie: "stress",
   titel: "Cortisol benaderen: vijf leefstijlroutes uit onderzoek, zonder medicatie",
   heroIntro:
-    "Chronisch verhoogd cortisol beïnvloedt je slaap, stemming en gewicht — vaak zonder dat je het doorhebt. Ontdek vijf methodes die klinisch zijn onderzocht en direct toepasbaar zijn voor mannen boven de 40.",
+    "Chronisch verhoogd cortisol beïnvloedt je slaap, stemming en gewicht — vaak zonder dat je het doorhebt. Ontdek vijf methodes die klinisch zijn onderzocht en direct toepasbaar zijn na je 40e.",
   leestijd: "7 min",
   gepubliceerdOp: "2026-04-01",
   laatstBijgewerktOp: "2026-05-23",
@@ -16,14 +16,14 @@ export const cortisolVerlagenData: BlogArtikel = {
       titel: "Wat cortisol met je lichaam doet na je 40e",
       bewijsNiveau: "beperkt",
       tekst:
-        "[Cortisol](/kennisbank/cortisol) is je primaire stresshormoon, aangemaakt door de bijnieren. Bij korte stress is dat nuttig: het scherpt je focus en geeft je energie. Het probleem begint wanneer het niveau chronisch verhoogd blijft. Na je 40e wordt de cortisolregulatie minder efficiënt — de zogenoemde [HPA-as](/kennisbank/hpa-as) (hypothalamus-hypofyse-bijnieras) reageert trager op signalen om cortisol terug te brengen. Het gevolg: opgebouwd vet rond de buik, slechter slaap, verminderde testosteronproductie en een gevoel van aanhoudende vermoeidheid ondanks voldoende rust.",
+        "[Cortisol](/kennisbank/cortisol) is je primaire stresshormoon, aangemaakt door de bijnieren. Bij korte stress is dat nuttig: het scherpt je focus en geeft je energie. Het probleem begint wanneer het niveau chronisch verhoogd blijft. Na je 40e wordt de cortisolregulatie minder efficiënt — de zogenoemde [HPA-as](/kennisbank/hpa-as) (hypothalamus-hypofyse-bijnieras) reageert trager op signalen om cortisol terug te brengen. Het gevolg: opgebouwd vet rond de buik, slechter slaap en een gevoel van aanhoudende vermoeidheid ondanks voldoende rust.",
     },
     {
       type: "tekst",
       titel: "Waarom standaard ontspanningstips tekortschieten",
       bewijsNiveau: "beperkt",
       tekst:
-        "\"Doe meer aan ontspanning\" is advies dat klopt maar onvolledig is. Voor mannen boven de 40 met een druk leven, gezin en werkverantwoordelijkheden is 'gewoon minder stress' geen reële optie. De vijf methodes hieronder zijn specifiek onderzocht op hun vermogen om het cortisolfysiologie te beïnvloeden — niet als vervanging van medische behandeling, maar als effectieve basisinterventies.",
+        "\"Doe meer aan ontspanning\" is advies dat klopt maar onvolledig is. Voor mensen boven de 40 met een druk leven, gezin en werkverantwoordelijkheden is 'gewoon minder stress' geen reële optie. De vijf methodes hieronder zijn specifiek onderzocht op hun vermogen om het cortisolfysiologie te beïnvloeden — niet als vervanging van medische behandeling, maar als effectieve basisinterventies.",
     },
     {
       type: "opsomming",
@@ -77,7 +77,7 @@ export const cortisolVerlagenData: BlogArtikel = {
   stressPillarTurbo:
     "Dit artikel over cortisol is onderdeel van onze complete gids over stressvermindering — van de [HPA-as](/kennisbank/hpa-as) tot een concreet weekplan.",
   metaTitle:
-    "Cortisol verlagen: 5 natuurlijke methodes voor mannen 40+",
+    "Cortisol verlagen: 5 natuurlijke methodes na 40",
   metaDescription:
     "Chronisch verhoogd cortisol wordt vaak met leefstijl benaderd: slaap, beweging, ademhaling en voeding. Over plantenextracten en EU-claimstatus lees je meer in ons ashwagandha-artikel.",
   keywords: [

@@ -15,7 +15,7 @@ export const omega3EnHerstelData: BlogArtikel = {
       type: "tekst",
       titel: "Herstel begint met gedrag",
       tekst:
-        "Rustdagen, eiwit en slaap bepalen voor een groot deel hoe snel je weer trainbaar bent. Omega-3 is voor veel mannen 40+ vooral relevant als je weinig vette vis eet — niet als vervanging van een deload week.",
+        "Rustdagen, eiwit en slaap bepalen voor een groot deel hoe snel je weer trainbaar bent. Omega-3 is na 40 vooral relevant als je weinig vette vis eet — niet als vervanging van een deload week.",
     },
     {
       type: "tekst",

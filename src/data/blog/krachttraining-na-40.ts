@@ -4,9 +4,9 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const krachttrainingNa40Data: BlogArtikel = {
   slug: "krachttraining-na-40",
   categorie: "energie",
-  titel: "Krachttraining na 40: hefboom voor energie, spieren en testosteron",
+  titel: "Krachttraining na 40: hefboom voor energie, spieren en herstel",
   heroIntro:
-    "Je hoeft geen bodybuilder te worden. Twee keer per week weerstandstraining is voor mannen 40+ vaak de sterkste hefboom voor spierbehoud, metabole gezondheid en het gevoel dat je lichaam nog meewerkt — gekoppeld aan [eiwit na 40](/blog/eiwit-na-40), [testosteron na 40](/testosteron-na-40) en [herstel na 40](/herstel-verbeteren-na-40).",
+    "Je hoeft geen bodybuilder te worden. Twee keer per week weerstandstraining is na 40 vaak de sterkste hefboom voor spierbehoud, metabole gezondheid en het gevoel dat je lichaam nog meewerkt — gekoppeld aan [eiwit na 40](/blog/eiwit-na-40) en [herstel na 40](/herstel-verbeteren-na-40).",
   leestijd: "10 min",
   gepubliceerdOp: "2026-05-23",
   laatstBijgewerktOp: "2026-05-23",
@@ -33,7 +33,7 @@ export const krachttrainingNa40Data: BlogArtikel = {
       type: "opsomming",
       titel: "Een realistisch startprotocol (8 weken)",
       inleiding:
-        "Gericht op mannen 40+ die (weer) beginnen — geen medisch programma, wel onderzoeksgewoonte.",
+        "Gericht op mensen 40+ die (weer) beginnen — geen medisch programma, wel onderzoeksgewoonte.",
       items: [
         "Week 1–2: 2× per week full-body — squat/goblet, push (bank/druk), pull (roeien), hip hinge (deadlift light). 2–3 sets × 8–12 reps, techniek eerst.",
         "Week 3–4: zelfde structuur, iets zwaarder of één set extra. Rust 48–72 uur tussen krachtdagen.",
@@ -44,9 +44,9 @@ export const krachttrainingNa40Data: BlogArtikel = {
     },
     {
       type: "tekst",
-      titel: "Testosteron en herstel — verwachtingen kalibreren",
+      titel: "Herstel — verwachtingen kalibreren",
       tekst:
-        "Krachttraining wordt in literatuur genoemd naast hormonale gezondheid, maar het is geen TRT-alternatief. Lees [testosteron na 40](/testosteron-na-40) voor voorzichtige kaders. Herstel — slaap, rustdagen, eiwit — bepaalt of je vooruitgang ziet. Train te veel zonder buffer? Bekijk het profiel [Overtrainer](/profiel/overtrainer).",
+        "Krachttraining wordt in literatuur genoemd naast hormonale gezondheid, maar het is geen hormoontherapie. Herstel — slaap, rustdagen, eiwit — bepaalt of je vooruitgang ziet. Train te veel zonder buffer? Bekijk het profiel [Overtrainer](/profiel/overtrainer).",
     },
     {
       type: "tekst",
@@ -58,8 +58,8 @@ export const krachttrainingNa40Data: BlogArtikel = {
   samenvatting:
     "Krachttraining 2–3× per week is na 40 de belangrijkste hefboom voor spierbehoud en metabole gezondheid. Combineer met eiwit, cardio en herstel — geen maximalisme zonder rustdagen.",
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: testosteron na 40",
-    href: "/testosteron-na-40",
+    label: "Hoofdstuk-gids: herstel verbeteren na 40",
+    href: "/herstel-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
     label: "Eiwitpoeder supplementen vergelijken",
@@ -72,7 +72,7 @@ export const krachttrainingNa40Data: BlogArtikel = {
   ],
   metaTitle: "Krachttraining na 40: protocol, eiwit en herstel",
   metaDescription:
-    "Krachttraining man 40+: sarcopenie voorkomen, eiwit, mitochondriën, cardio-combo en realistisch 8-weken startprotocol.",
+    "Krachttraining na 40: sarcopenie voorkomen, eiwit, mitochondriën, cardio-combo en realistisch 8-weken startprotocol.",
   keywords: [
     "krachttraining man 40",
     "sarcopenie voorkomen",

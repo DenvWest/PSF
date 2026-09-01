@@ -14,7 +14,7 @@ export const magnesiumEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Ken je dit?",
-      tekst: "Je ligt in bed, moe maar gespannen. Je spieren komen niet tot rust. Je draait je om, kijkt naar de klok — 23:30, dan 01:15, dan 02:40. Dat herkenbare gevoel van uitgeput zijn maar toch niet kunnen lossen. Dit is een van de meest gehoorde klachten bij mannen boven de 40 — en het heeft vaker dan je denkt een fysiologische verklaring. Geen slechte wil, geen slechte gewoonten. Magnesium speelt een rol in hoe je zenuwstelsel en spieren tot rust komen — en veel van die inname komt uit voeding: bladgroenten, noten en peulvruchten.",
+      tekst: "Je ligt in bed, moe maar gespannen. Je spieren komen niet tot rust. Je draait je om, kijkt naar de klok — 23:30, dan 01:15, dan 02:40. Dat herkenbare gevoel van uitgeput zijn maar toch niet kunnen lossen. Dit is een van de meest gehoorde klachten na 40 — en het heeft vaker dan je denkt een fysiologische verklaring. Geen slechte wil, geen slechte gewoonten. Magnesium speelt een rol in hoe je zenuwstelsel en spieren tot rust komen — en veel van die inname komt uit voeding: bladgroenten, noten en peulvruchten.",
     },
     {
       type: "tekst",

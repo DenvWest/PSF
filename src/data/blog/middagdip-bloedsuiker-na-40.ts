@@ -78,7 +78,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
   ],
   metaTitle: "Middagdip na 40: bloedsuiker, koffie en wat wél helpt",
   metaDescription:
-    "Middagdip mannen 40+: oorzaak bloedsuiker, insulineresistentie, koffie-trucs en vijf praktische aanpassingen voor stabielere energie.",
+    "Middagdip na 40: oorzaak bloedsuiker, insulineresistentie, koffie-trucs en vijf praktische aanpassingen voor stabielere energie.",
   keywords: [
     "middagdip mannen",
     "bloedsuiker na 40",

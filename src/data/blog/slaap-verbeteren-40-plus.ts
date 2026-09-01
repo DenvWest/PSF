@@ -20,7 +20,7 @@ export const slaapVerbeterenData: BlogArtikel = {
       type: "opsomming",
       titel: "Wat slaaponderzoek veel steunt",
       inleiding:
-        "Deze interventies zijn onderbouwd met slaaponderzoek en specifiek relevant voor mannen boven de 40. [Lees de complete aanpak voor betere slaap na je 40e.](/slaap-verbeteren-na-40)",
+        "Deze interventies zijn onderbouwd met slaaponderzoek en specifiek relevant na 40. [Lees de complete aanpak voor betere slaap na je 40e.](/slaap-verbeteren-na-40)",
       items: [
         "Vast slaapritme: Hetzelfde slaap- en waaktijd, ook in het weekend. Consistentie is de sterkste enkelvoudige interventie voor slaapkwaliteit.",
         "Blootstelling aan daglicht in de ochtend: Tien minuten buiten in de eerste twee uur na het opstaan resynchroniseert je circadiaanse klok.",
@@ -39,7 +39,7 @@ export const slaapVerbeterenData: BlogArtikel = {
       type: "tekst",
       titel: "De relatie tussen cortisol en slaap",
       tekst:
-        "[Cortisol](/kennisbank/cortisol) en slaap staan in een directe feedback-relatie. Slecht slapen verhoogt cortisol; hoog cortisol verstoort slaap. Voor mannen boven de 40 met stressvolle levens is dit een van de meest voorkomende oorzaken van slaapklachten. Stressmanagement overdag — beweging, ademhaling, sociale verbinding — is daarmee ook een slaapinterventie.",
+        "[Cortisol](/kennisbank/cortisol) en slaap staan in een directe feedback-relatie. Slecht slapen verhoogt cortisol; hoog cortisol verstoort slaap. Voor mensen boven de 40 met stressvolle levens is dit een van de meest voorkomende oorzaken van slaapklachten. Stressmanagement overdag — beweging, ademhaling, sociale verbinding — is daarmee ook een slaapinterventie.",
     },
   ],
   samenvatting:

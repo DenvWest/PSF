@@ -173,7 +173,7 @@ Het bijzondere aan adaptogens is dat ze niet in één richting werken. Ze worden
       howItWorks: `In de literatuur worden adaptogens vaak tegen de achtergrond van de HPA‑as besproken: de keten van hypothalamus, hypofyse en bijnieren die je stressreactie aanstuurt. Bij langdurige stress wordt die ketting vaker overactief gebleven dan gezonde rust toelaat.
 
 Onderzoek gebruikt nog steeds uiteenlopende plantendelen, doses en extractprofielen — een “adaptogeen‑effect” is geen uniform farmacologisch blok. RCT‑resultaten zijn het meest overtuigend voor afgebakende preparaten (vooral sommige ashwagandha‑extracten), minder voor de hele categorie.`,
-      whyItMatters: `Voor mannen na 40 met aanhoudende spanning is dat wel relevant: je zoekt iets dat veilig in de context van je totale leefstijl past, niet een belofte van “hormoon‑reset”. Waar humane trials suggestief zijn (bijv. stress‑ of slaapscores bij specifieke ashwagandha‑interventies), blijft het om groepsgemiddelden gaan en blijft duur, dosis en interactie met medicatie af te stemmen met een zorgprofessional.`,
+      whyItMatters: `Na 40 met aanhoudende spanning is dat wel relevant: je zoekt iets dat veilig in de context van je totale leefstijl past, niet een belofte van “hormoon‑reset”. Waar humane trials suggestief zijn (bijv. stress‑ of slaapscores bij specifieke ashwagandha‑interventies), blijft het om groepsgemiddelden gaan en blijft duur, dosis en interactie met medicatie af te stemmen met een zorgprofessional.`,
     },
     domeinMetBeperktCausaalBewijs: true,
     relatedSlugs: ['circadiaan-ritme'],
@@ -257,7 +257,7 @@ Na 40 wordt dit systeem gevoeliger voor verstoring. Blauw licht van schermen ond
     content: {
       whatIsIt: `De Aanbevolen Dagelijkse Hoeveelheid (ADH) is de Nederlandse vertaling van de Europese referentie-inname (RI). Het is de hoeveelheid van een vitamine of mineraal die voldoende is om aan de behoefte van vrijwel de gehele gezonde bevolking te voldoen.
 
-Je vindt de ADH op elk supplementetiket als percentage: "100% ADH" betekent dat één dosis de volledige aanbevolen hoeveelheid bevat. Maar de ADH is een minimum, geen optimum — en de waarden zijn vastgesteld voor de gemiddelde volwassene, niet specifiek voor mannen boven de 40.`,
+Je vindt de ADH op elk supplementetiket als percentage: "100% ADH" betekent dat één dosis de volledige aanbevolen hoeveelheid bevat. Maar de ADH is een minimum, geen optimum — en de waarden zijn vastgesteld voor de gemiddelde volwassene, niet specifiek voor 40+.`,
       howItWorks: `De ADH wordt vastgesteld door de Europese Autoriteit voor Voedselveiligheid (EFSA) en is wettelijk verplicht op etiketten. Voor magnesium is de ADH 375 mg per dag, voor vitamine D 5 µg, voor omega-3 (EPA+DHA) 250 mg.
 
 Belangrijk: de ADH is een referentiewaarde, geen persoonlijk advies. Iemand die intensief sport, chronische stress heeft of weinig vis eet kan een hogere behoefte hebben. Daarom kijken we bij onze beoordelingen niet alleen of een supplement de ADH haalt, maar of de dosering aansluit bij wat onderzoek laat zien voor specifieke doelgroepen.`,
@@ -373,15 +373,15 @@ Een wind-down routine — een vast signaal aan je lichaam dat het tijd is om af 
     insightTier: 1,
     term: 'Eiwitbehoefte na 40',
     theme: 'leefstijl-herstel',
-    shortDefinition: 'Na 40 heeft je lichaam meer eiwit nodig om spiermassa te behouden — maar de meeste mannen eten te weinig.',
+    shortDefinition: 'Na 40 heeft je lichaam meer eiwit nodig om spiermassa te behouden — maar de meeste mensen eten te weinig.',
     content: {
       whatIsIt: `Vanaf je 40e begint je lichaam geleidelijk spiermassa te verliezen — een proces dat sarcopenie heet. Gemiddeld verlies je 3-8% spiermassa per decennium na je 30e, en dat versnelt na je 50e. Eiwit is de belangrijkste bouwsteen om dit tegen te gaan.
 
-De standaard ADH voor eiwit (0,8 gram per kilogram lichaamsgewicht) is vastgesteld als minimum om deficiëntie te voorkomen — niet als optimum voor spierbehoud. Onderzoekers adviseren voor mannen boven de 40 eerder 1,2 tot 1,6 gram per kilogram, vooral in combinatie met krachttraining.`,
+De standaard ADH voor eiwit (0,8 gram per kilogram lichaamsgewicht) is vastgesteld als minimum om deficiëntie te voorkomen — niet als optimum voor spierbehoud. Onderzoekers adviseren na 40 eerder 1,2 tot 1,6 gram per kilogram, vooral in combinatie met krachttraining.`,
       howItWorks: `Na 40 treedt anabole resistentie op: je spieren reageren minder sterk op dezelfde hoeveelheid eiwit. Waar een 25-jarige met 20 gram eiwit per maaltijd een volledige spierproteïnesynthese-respons krijgt, heeft een 50-jarige daar 35-40 gram voor nodig.
 
 Dit betekent dat het niet alleen gaat om hoeveel eiwit je per dag eet, maar ook om de verdeling over de dag. Drie maaltijden met elk 30-40 gram eiwit is effectiever dan één maaltijd met 90 gram en twee met 15 gram.`,
-      whyItMatters: `Eiwitinname is een van de eerste dingen die wij controleren via de Leefstijlcheck. Veel mannen 40+ eten een ontbijt van brood met jam (5g eiwit) en een lunch van een broodje kaas (12g eiwit) — ruim onder wat hun lichaam nodig heeft. Dit is een leefstijlaanpassing die meer impact heeft dan welk supplement dan ook. Quick win: begin de dag met een eiwitrijk ontbijt (eieren, kwark, noten).`,
+      whyItMatters: `Eiwitinname is een van de eerste dingen die wij controleren via de Leefstijlcheck. Veel mensen 40+ eten een ontbijt van brood met jam (5g eiwit) en een lunch van een broodje kaas (12g eiwit) — ruim onder wat hun lichaam nodig heeft. Dit is een leefstijlaanpassing die meer impact heeft dan welk supplement dan ook. Quick win: begin de dag met een eiwitrijk ontbijt (eieren, kwark, noten).`,
     },
     relatedSlugs: ['slaaphygiene'],
     relatedComparisons: ['/beste/creatine'],
@@ -469,7 +469,7 @@ Ashwagandha en magnesium worden vaak gekozen bij spanning en slaap; die keuzes p
 In een gezond patroon helpt cortisol je op te starten na de nacht en alert te blijven wanneer dat nodig is. Het probleem ontstaat vooral wanneer het niveau structureel te hoog blijft, of wanneer het ritme kantelt — bijvoorbeeld minder ochtendpiek of juist nachtelijke pieken — waardoor je je uit balans voelt ondanks voldoende uren in bed.`,
       howItWorks: `Typisch is cortisol ’s ochtends hoger (wakker worden, alertheid) en ’s avonds lager, zodat melatonine en slaap de ruimte krijgen. Chronische stress verstoort dat beeld: het kan “de hele dag aan” staan, of juist onrustig schommelen.
 
-Er is ook een bekende wisselwerking met testosteron: bij langdurig hoge cortisolbelasting kan het lichaam voorrang geven aan stressas — met effecten op energie, spiermassa en libido die voor mannen 40+ merkbaar kunnen zijn. Het is geen simpele schakelaar; wel een reden om stress en herstel serieus te nemen naast eventuele supplementen.`,
+Er is ook een bekende wisselwerking met geslachtshormonen: bij langdurig hoge cortisolbelasting kan het lichaam voorrang geven aan de stressas — met effecten op energie, spiermassa en libido die na 40 merkbaar kunnen zijn. Het is geen simpele schakelaar; wel een reden om stress en herstel serieus te nemen naast eventuele supplementen.`,
       whyItMatters: `In de supplementwereld wordt ashwagandha (o.a. KSM-66) in studies in verband gebracht met lagere cortisolmarkers bij volwassenen onder stress — dat is populatie-onderzoek, geen garantie per persoon. Magnesium ondersteunt de normale werking van het zenuwstelsel (EFSA-goedgekeurde claim) en past vaak in hetzelfde verhaal: minder gespannen systeem, betere basis voor slaap.
 
 Kies altijd op kwaliteit, dosering en je totale plaatje (slaapritme, beweging, voeding); cortisol optimaliseer je niet met één capsule alleen.`,
@@ -499,7 +499,7 @@ Kies altijd op kwaliteit, dosering en je totale plaatje (slaapritme, beweging, v
     content: {
       whatIsIt: `Melatonine wordt aangemaakt in de pijnappelklier, een kleine structuur in je middenhersenen. Het is vooral een timing-signaal: het helpt je biologische klok te verankeren op donker en rust, niet om per se “hard” in slaap te vallen op commando. Vandaar het verschil tussen inslapen en een gezond 24-uursritme.
 
-Naarmate je ouder wordt, daalt de piek in endogene melatonine bij veel mensen geleidelijk. Dat verklaart geen individuele diagnose, wél waarom het thema vaker opduikt bij mannen 40+: later moe worden, eerder wakker, of slaap die minder diep aanvoelt terwijl de omstandigheden gelijk lijken.`,
+Naarmate je ouder wordt, daalt de piek in endogene melatonine bij veel mensen geleidelijk. Dat verklaart geen individuele diagnose, wél waarom het thema vaker opduikt na 40: later moe worden, eerder wakker, of slaap die minder diep aanvoelt terwijl de omstandigheden gelijk lijken.`,
       howItWorks: `Wanneer het donker wordt, neemt de signalering naar de pijnappelklier toe en stijgt melatonine. Fel licht — met name blauw licht van schermen laat op de avond — kan die curve afvlakken: je hersenen krijgen het signaal dat het nog “dag” is.
 
 Daardoor is licht hygiëne net zo relevant als doseringen op een flesje. Ook verstoringen in je vaste bed- en opsta-tijden (social jetlag) kunnen de timing van melatonine verschuiven, los van hoeveel milligram je inneemt.`,
@@ -658,7 +658,7 @@ Labtesten (totaal en soms vrij testosteron) horen in medische context: interpret
     shortDefinition:
       'Het cumulatieve tekort aan slaap over dagen of weken — vaak merkbaar als traagheid, prikkelbaarheid en slechter herstel.',
     content: {
-      whatIsIt: `Slaapschuld ontstaat wanneer je structureel minder slaapt dan je lichaam nodig heeft — niet alleen één slechte nacht. Veel mannen 40+ compenseren met koffie en “doorgaan”, terwijl concentratie, humeur en herstel langzaam afnemen.
+      whatIsIt: `Slaapschuld ontstaat wanneer je structureel minder slaapt dan je lichaam nodig heeft — niet alleen één slechte nacht. Veel mensen 40+ compenseren met koffie en “doorgaan”, terwijl concentratie, humeur en herstel langzaam afnemen.
 
 Het is geen officiële diagnose op zich; wel een bruikbaar begrip om te zien waarom kleine verbeteringen in bedtijd groot effect kunnen hebben.`,
       howItWorks: `Slaap bestaat uit cycli (licht, diep, REM). Tekort raakt vooral diepe slaap en REM — fases die belangrijk zijn voor herstel en geheugen. Je kunt “genoeg uren” hebben en toch niet uitgerust zijn als het ritme verstoord is (laat naar bed, schermlicht, alcohol).
@@ -688,7 +688,7 @@ Inhalen van slaap in het weekend helpt deels, maar lost een verstoord weekritme 
     shortDefinition:
       'Mensen bij wie je jezelf kunt zijn en op wie je kunt terugvallen — een van de sterkst onderbouwde leefstijlfactoren voor gezond ouder worden.',
     content: {
-      whatIsIt: `Sociale verbinding gaat niet over hoeveel mensen je kent, maar over de kwaliteit van een handvol relaties: mensen bij wie je jezelf kunt zijn en op wie je kunt terugvallen als het tegenzit. Voor veel mannen boven de 40 versmalt dat netwerk ongemerkt — werk, gezin en agenda eten de vriendschappen op die vroeger vanzelf gingen.
+      whatIsIt: `Sociale verbinding gaat niet over hoeveel mensen je kent, maar over de kwaliteit van een handvol relaties: mensen bij wie je jezelf kunt zijn en op wie je kunt terugvallen als het tegenzit. Voor veel mensen boven de 40 versmalt dat netwerk ongemerkt — werk, gezin en agenda eten de vriendschappen op die vroeger vanzelf gingen.
 
 In grote overzichtsstudies hangt het ontbreken van zulke steun samen met een hoger risico op vroegtijdig overlijden — in de orde van grootte van bekende risicofactoren als roken en overgewicht. Dat maakt verbinding geen 'soft' thema, maar een volwaardig leefstijldomein, naast slaap, stress, voeding en beweging.`,
       howItWorks: `Het mechanisme loopt via je stress-systeem. Betrouwbaar contact dempt de stressrespons: in gezelschap van mensen die je vertrouwt, komt je lichaam sneller terug in de herstelstand. Chronisch gebrek aan steun houdt datzelfde systeem juist licht geactiveerd — met doorwerking op slaap, energie en herstel.
@@ -702,7 +702,7 @@ In de Leefstijlcheck telt verbinding mee als interventiedomein. Scoort het bij j
     relatedComparisons: [],
     metaTitle: 'Sociale verbinding en gezondheid na je 40e | PerfectSupplement',
     metaDescription:
-      'Waarom sociale verbinding een volwaardig leefstijldomein is voor mannen 40+: wat het met je stress-systeem doet, wat de wetenschap zegt en welke kleine stap het meest oplevert. Geen supplement — bewust.',
+      'Waarom sociale verbinding een volwaardig leefstijldomein is na 40: wat het met je stress-systeem doet, wat de wetenschap zegt en welke kleine stap het meest oplevert. Geen supplement — bewust.',
     referenties: toRefs([
       'Holt-Lunstad J, Smith TB, Layton JB. Social relationships and mortality risk: a meta-analytic review. PLoS Med. 2010.',
       'Holt-Lunstad J, Smith TB, Baker M, et al. Loneliness and social isolation as risk factors for mortality: a meta-analytic review. Perspect Psychol Sci. 2015.',
@@ -751,7 +751,7 @@ Transparantie op het etiket (elementair mg, vorm, geen verkapte blends) is waar 
     shortDefinition:
       'Een langdurige disbalans tussen trainingbelasting en herstel — met vermoeidheid, slechtere prestaties en soms stemmingsverandering.',
     content: {
-      whatIsIt: `Overtraining (of het overtrainingssyndroom) is geen “lui zijn” — het is wanneer je lichaam wekenlang meer belasting krijgt dan het kan verwerken, ondanks slaap en voeding die op papier oké lijken. Veel fanatieke mannen 40+ herkennen het patroon: harder trainen terwijl prestaties en stemming achteruitgaan.
+      whatIsIt: `Overtraining (of het overtrainingssyndroom) is geen “lui zijn” — het is wanneer je lichaam wekenlang meer belasting krijgt dan het kan verwerken, ondanks slaap en voeding die op papier oké lijken. Veel fanatieke sporters 40+ herkennen het patroon: harder trainen terwijl prestaties en stemming achteruitgaan.
 
 Het verschilt van een normale dip na zware week: het houdt aan en verbetert niet met één rustweek.`,
       howItWorks: `Belasting = training + werkstress + slaaptekort. Herstel = slaap, voeding (eiwit), rustdagen en soms minder volume. Zonder die balans blijft het sympathische “aan”-gevoel langer hangen; herstelmarkers en subjectief welzijn kunnen achterblijven.
@@ -783,13 +783,13 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
     content: {
       whatIsIt: `Vitamine D is technisch geen vitamine maar een prohormoon: je huid zet cholesterol om in vitamine D3 onder UVB-licht. Daarna wordt het in lever en nieren geactiveerd. Het reguleert calcium, botten, spieren en immuunfunctie — honderden genen worden erdoor beïnvloed.`,
       howItWorks: `In Nederland is de zon tussen oktober en maart vaak te laag voor voldoende huidsynthese — vooral bij binnenwerk, donkere huid of bedekkende kleding. Voeding levert meestal te weinig (vette vis, verrijkte producten). Suppletie met D3 (cholecalciferol) is gangbaar na bloedmeting (25-OH-vitamine D) en medisch advies.`,
-      whyItMatters: `Veel mannen 40+ hebben in de winter een lage status zonder het te weten. EFSA erkent claims op botten, spieren en immuunsysteem — geen erkende claim op "meer energie" als etiketbelofte. Lees [vitamine D en energie](/blog/vitamine-d-en-energie), [tekort herkennen](/blog/vitamine-d-tekort-herkennen) en vergelijk producten op [/beste/vitamine-d](/beste/vitamine-d). De Leefstijlcheck vraagt naar zonlicht (LIF_SUN).`,
+      whyItMatters: `Veel mensen 40+ hebben in de winter een lage status zonder het te weten. EFSA erkent claims op botten, spieren en immuunsysteem — geen erkende claim op "meer energie" als etiketbelofte. Lees [vitamine D en energie](/blog/vitamine-d-en-energie), [tekort herkennen](/blog/vitamine-d-tekort-herkennen) en vergelijk producten op [/beste/vitamine-d](/beste/vitamine-d). De Leefstijlcheck vraagt naar zonlicht (LIF_SUN).`,
     },
     relatedSlugs: ['mitochondrien', 'testosteron'],
     relatedComparisons: ['/beste/vitamine-d'],
     metaTitle: 'Vitamine D: Wat Doet Het en Wanneer Suppletie?',
     metaDescription:
-      'Vitamine D uitgelegd: zonlicht, tekort in NL, EFSA-claims en wanneer meten zinvol is voor mannen 40+.',
+      'Vitamine D uitgelegd: zonlicht, tekort in NL, EFSA-claims en wanneer meten zinvol is na 40.',
     laatstBijgewerktOp: '2026-05-23',
     referenties: toRefs([
       'Holick MF. Vitamin D deficiency. N Engl J Med. 2007;357(3):266-281.',
@@ -810,7 +810,7 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
     content: {
       whatIsIt: `Insuline helpt glucose uit je bloed naar cellen te brengen. Bij insulineresistentie reageert het lichaam minder goed: de alvleesklier maakt meer insuline aan om hetzelfde effect te halen. Dat patroon wordt vaak genoemd in de context van type 2-diabetes-risico en “energiedips” na maaltijden — maar individuele klachten zijn niet specifiek genoeg om zelf te diagnosticeren.`,
       howItWorks: `Factoren die in onderzoek terugkomen: buikvet, weinig beweging, slaaptekort en hoge inname van ultra-bewerkte koolhydraten. Krachttraining en eiwitrijke maaltijden ondersteunen vaak stabilere bloedsuikerspiegels — geen wondermiddel, wel een praktische hefboom naast medische begeleiding.`,
-      whyItMatters: `Voor mannen 40+ hangt energie vaak samen met metabole gezondheid. Lees [energie na 40](/energie-na-40) en [testosteron na 40](/testosteron-na-40) voor voorzichtige koppelingen — altijd met huisarts bij aanhoudende klachten of risicofactoren.`,
+      whyItMatters: `Na 40 hangt energie vaak samen met metabole gezondheid. Lees [energie na 40](/energie-na-40) voor voorzichtige koppelingen — altijd met huisarts bij aanhoudende klachten of risicofactoren.`,
     },
     relatedSlugs: ['mitochondrien', 'atp'],
     relatedComparisons: [],

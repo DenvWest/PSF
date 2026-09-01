@@ -14,12 +14,12 @@ export const melatonineNa40Data: BlogArtikel = {
     {
       type: "tekst",
       titel: "Ken je dit?",
-      tekst: "Je pakt melatonine in de drogisterij. 3 mg, staat er op de verpakking. Je neemt het een halfuur voor bed. De eerste avond val je inderdaad iets makkelijker in slaap. Misschien de tweede ook. Maar na anderhalve week merk je weinig meer. Je slaap is nog steeds onrustig, je wordt nog steeds vroeg wakker, je bent overdag nog steeds niet uitgerust. Dit is het patroon dat veel mannen boven de 40 herkennen. En het is geen falen — het is het verkeerde gereedschap voor het eigenlijke probleem.",
+      tekst: "Je pakt melatonine in de drogisterij. 3 mg, staat er op de verpakking. Je neemt het een halfuur voor bed. De eerste avond val je inderdaad iets makkelijker in slaap. Misschien de tweede ook. Maar na anderhalve week merk je weinig meer. Je slaap is nog steeds onrustig, je wordt nog steeds vroeg wakker, je bent overdag nog steeds niet uitgerust. Dit is het patroon dat veel mensen boven de 40 herkennen. En het is geen falen — het is het verkeerde gereedschap voor het eigenlijke probleem.",
     },
     {
       type: "tekst",
       titel: "Wat melatonine is — en wat het niet is",
-      tekst: "[Melatonine](/kennisbank/melatonine) is geen slaapmiddel. Het is een signaalhormoon — een clock-shifter. Je pijnappelklier maakt het aan als reactie op duisternis en geeft daarmee een timing-signaal aan je lichaam: het wordt nacht, bereid je voor op slaap. Melatonine maakt je niet suf. Het maakt je ook niet in slaap. Het verschuift je biologische klok en verlaagt je drempel om de slaap in te gaan — maar alleen als het systeem erachter intact is. Het is het sein voor het vertrek, niet de trein zelf. Dat betekent dat melatonine nuttig kan zijn bij specifieke timing-problemen: jetlag, ploegendienst, of een flink verschoven slaap-waak-ritme. Maar bij de meeste slaapproblemen van mannen boven de 40 is timing niet het primaire probleem.",
+      tekst: "[Melatonine](/kennisbank/melatonine) is geen slaapmiddel. Het is een signaalhormoon — een clock-shifter. Je pijnappelklier maakt het aan als reactie op duisternis en geeft daarmee een timing-signaal aan je lichaam: het wordt nacht, bereid je voor op slaap. Melatonine maakt je niet suf. Het maakt je ook niet in slaap. Het verschuift je biologische klok en verlaagt je drempel om de slaap in te gaan — maar alleen als het systeem erachter intact is. Het is het sein voor het vertrek, niet de trein zelf. Dat betekent dat melatonine nuttig kan zijn bij specifieke timing-problemen: jetlag, ploegendienst, of een flink verschoven slaap-waak-ritme. Maar bij de meeste slaapproblemen na 40 is timing niet het primaire probleem.",
     },
     {
       type: "tekst",
@@ -29,7 +29,7 @@ export const melatonineNa40Data: BlogArtikel = {
     {
       type: "tekst",
       titel: "Het echte probleem na je 40e",
-      tekst: "Na je 40e verandert je slaaparchitectuur structureel. De hoeveelheid diepe slaap — slow-wave sleep — neemt geleidelijk af. Je slaapcycli worden korter en gefragmenteerder. Je wordt vaker even wakker zonder het te beseffen. Dat is op zichzelf al een fysiologisch gegeven. Maar bij veel mannen boven de 40 komt daar een tweede probleem bovenop: chronisch verhoogd cortisol. Cortisol en melatonine werken als tegenpolen op een wipwap — wanneer cortisol hoog is, wordt melatonine onderdrukt. Als je cortisolniveaus 's avonds niet normaal dalen — door werkstress, mentale onrust, slechte lichtblootstelling of een ontregeld dag-nachtritme — dan geeft melatonine weinig. Je geeft het sein voor vertrek, maar de trein staat nog op volle kracht. [Cortisol is vaak de échte boosdoener bij slaapproblemen. Hier is waarom.](/blog/cortisol-en-slaap)",
+      tekst: "Na je 40e verandert je slaaparchitectuur structureel. De hoeveelheid diepe slaap — slow-wave sleep — neemt geleidelijk af. Je slaapcycli worden korter en gefragmenteerder. Je wordt vaker even wakker zonder het te beseffen. Dat is op zichzelf al een fysiologisch gegeven. Maar bij veel mensen boven de 40 komt daar een tweede probleem bovenop: chronisch verhoogd cortisol. Cortisol en melatonine werken als tegenpolen op een wipwap — wanneer cortisol hoog is, wordt melatonine onderdrukt. Als je cortisolniveaus 's avonds niet normaal dalen — door werkstress, mentale onrust, slechte lichtblootstelling of een ontregeld dag-nachtritme — dan geeft melatonine weinig. Je geeft het sein voor vertrek, maar de trein staat nog op volle kracht. [Cortisol is vaak de échte boosdoener bij slaapproblemen. Hier is waarom.](/blog/cortisol-en-slaap)",
     },
     {
       type: "opsomming",
@@ -46,7 +46,7 @@ export const melatonineNa40Data: BlogArtikel = {
     {
       type: "tekst",
       titel: "Melatonine is een stukje van het verhaal",
-      tekst: "De vraag is niet 'werkt melatonine?' maar 'wat is het eigenlijke knelpunt in mijn slaap?' Voor de meeste mannen boven de 40 is dat antwoord complexer dan een timing-signaal. Het gaat om cortisolontregeling, afnemende diepe slaap, en een zenuwstelsel dat 's avonds niet tot rust komt. Melatonine lost dat niet op. Voor wanneer wél en niet: [melatonine wanneer wel en niet](/blog/melatonine-wanneer-wel-niet). Maar een combinatie van de juiste supplementen en leefstijlinterventies kan dat wel. [Melatonine is maar een stukje van het verhaal. Lees de complete gids over slaap na 40.](/slaap-verbeteren-na-40)",
+      tekst: "De vraag is niet 'werkt melatonine?' maar 'wat is het eigenlijke knelpunt in mijn slaap?' Na 40 is dat antwoord vaak complexer dan een timing-signaal. Het gaat om cortisolontregeling, afnemende diepe slaap, en een zenuwstelsel dat 's avonds niet tot rust komt. Melatonine lost dat niet op. Voor wanneer wél en niet: [melatonine wanneer wel en niet](/blog/melatonine-wanneer-wel-niet). Maar een combinatie van de juiste supplementen en leefstijlinterventies kan dat wel. [Melatonine is maar een stukje van het verhaal. Lees de complete gids over slaap na 40.](/slaap-verbeteren-na-40)",
     },
     {
       type: "tekst",
@@ -59,7 +59,7 @@ export const melatonineNa40Data: BlogArtikel = {
   supplementCTA: {
     naam: "Magnesium",
     uitleg:
-      "Voor de meeste mannen boven de 40 is magnesium rechtstreeks koppelbaar aan EFSA‑claims op zenuwstelsel en spieren; avondinname is een gangbare gewoonte naast leefstijl.",
+      "Na 40 is magnesium rechtstreeks koppelbaar aan EFSA‑claims op zenuwstelsel en spieren; avondinname is een gangbare gewoonte naast leefstijl.",
     href: "/beste/magnesium",
   },
   cornerstoneLink: {

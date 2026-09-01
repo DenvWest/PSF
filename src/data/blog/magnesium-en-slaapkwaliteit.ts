@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   slug: "magnesium-en-slaapkwaliteit",
   categorie: "supplementen",
-  titel: "De complete magnesiumgids: vormen, dosering en gebruik voor mannen 40+",
+  titel: "De complete magnesiumgids: vormen, dosering en gebruik na 40",
   heroIntro:
     "Magnesium is betrokken bij meer dan 300 enzymatische processen in het lichaam — van energieproductie en spierherstel tot slaap en stressregulatie. Het komt vooral uit bladgroenten, noten en peulvruchten; supplement is aanvulling, geen vervanging. Een praktische gids over vormen, doseringen en wanneer suppletie zinvol is.",
   leestijd: "16 min",
@@ -15,7 +15,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
       type: "tekst",
       titel: "Magnesium na je 40e: meer dan alleen ‘voor de nacht’",
       tekst:
-        "[De beste magnesium supplementen](/beste/magnesium) leveren het mineraal dat onder meer een rol speelt in de aanmaak van ATP (de belangrijkste energiedrager in het lichaam), de regulatie van het stresssysteem, spiersamentrekking, hartritme en de productie van melatonine. Na je 40e neemt de efficiëntie waarmee het lichaam magnesium opneemt via de darm geleidelijk af, terwijl de behoefte door stress en intensiever sporten juist kan toenemen. De ADH voor magnesium is 375 mg per dag (Gezondheidsraad); via voeding krijg je vaak een deel daarvan — vooral uit bladgroenten, noten en peulvruchten. Supplement kan aanvullen als je inname uit voeding laag blijft. Voor een korter, slaapgericht artikel: [magnesium voor slaap](/blog/magnesium-en-slaap).",
+        "[De beste magnesium supplementen](/beste/magnesium) leveren het mineraal dat onder meer een rol speelt in de aanmaak van ATP (de belangrijkste energiedrager in het lichaam), de regulatie van het stresssysteem, spiersamentrekking, hartritme en de productie van melatonine. Na je 40e neemt de efficiëntie waarmee het lichaam magnesium opneemt via de darm geleidelijk af, terwijl de behoefte door stress en intensiever sporten juist kan toenemen. De ADH voor magnesium is ongeveer 350 mg per dag voor mannen en 300 mg voor vrouwen (Gezondheidsraad); via voeding krijg je vaak een deel daarvan — vooral uit bladgroenten, noten en peulvruchten. Supplement kan aanvullen als je inname uit voeding laag blijft. Voor een korter, slaapgericht artikel: [magnesium voor slaap](/blog/magnesium-en-slaap).",
     },
     {
       type: "opsomming",
@@ -35,7 +35,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
       type: "tekst",
       titel: "Hoeveel heb je nodig? Elementair magnesium als maatstaf",
       tekst:
-        "De aanbevolen dagelijkse hoeveelheid voor mannen is 350 tot 400 mg elementair magnesium per dag. Via voeding komen de meeste Nederlandse mannen op 270 tot 300 mg — een tekort van 80 tot 120 mg. Belangrijk onderscheid: elementair magnesium is niet hetzelfde als het totale gewicht van het supplement. Een tablet van 500 mg magnesium glycinaat bevat slechts circa 70 mg elementair magnesium. Kijk altijd naar het elementaire magnesium per dagdosering op het etiket, niet naar het totale gewicht van de capsule of tablet. Voor specifieke doelen zoals slaap of stressregulatie liggen de onderzochte doseringen op 200 tot 400 mg elementair magnesium per dag. De EFSA hanteert een bovengrens van 350 mg elementair magnesium per dag via suppletie. Verdeel de inname bij voorkeur over de dag voor betere opname, of neem de volle avonddosis 30 tot 60 minuten voor het slapen.",
+        "De aanbevolen dagelijkse hoeveelheid is ongeveer 350 mg elementair magnesium per dag voor mannen en 300 mg voor vrouwen (Gezondheidsraad). Via voeding komen de meeste Nederlanders op 270 tot 300 mg — vaak 30 tot 80 mg onder de ADH. Belangrijk onderscheid: elementair magnesium is niet hetzelfde als het totale gewicht van het supplement. Een tablet van 500 mg magnesium glycinaat bevat slechts circa 70 mg elementair magnesium. Kijk altijd naar het elementaire magnesium per dagdosering op het etiket, niet naar het totale gewicht van de capsule of tablet. Voor specifieke doelen zoals slaap of stressregulatie liggen de onderzochte doseringen op 200 tot 400 mg elementair magnesium per dag. De EFSA hanteert een bovengrens van 250 tot 350 mg elementair magnesium per dag via suppletie. Verdeel de inname bij voorkeur over de dag voor betere opname, of neem de volle avonddosis 30 tot 60 minuten voor het slapen.",
     },
     {
       type: "opsomming",
@@ -79,11 +79,11 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Magnesium is een van de meest onderbelichte mineralen voor mannen boven de 40 — relevant voor slaap, stress, energie en hart. De meeste Nederlanders krijgen te weinig binnen via voeding. De juiste vorm bepaalt de effectiviteit: glycinaat voor slaap en stress, malaat voor energie, tauraat voor het hart. Kijk altijd naar het elementaire magnesiumgehalte per dagdosering.",
+    "Magnesium is een van de meest onderbelichte mineralen na 40 — relevant voor slaap, stress, energie en hart. De meeste Nederlanders krijgen te weinig binnen via voeding. De juiste vorm bepaalt de effectiviteit: glycinaat voor slaap en stress, malaat voor energie, tauraat voor het hart. Kijk altijd naar het elementaire magnesiumgehalte per dagdosering.",
   supplementCTA: {
     naam: "Magnesium",
     uitleg:
-      "Van glycinaat tot malaat: vergelijk vormen, doseringen en toepassingen — praktische informatie voor mannen 40+ die magnesium gericht willen inzetten.",
+      "Van glycinaat tot malaat: vergelijk vormen, doseringen en toepassingen — praktische informatie voor wie na 40 magnesium gericht wil inzetten.",
     href: "/supplementen/magnesium",
   },
   cornerstoneLink: {
@@ -100,9 +100,9 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     "melatonine-wanneer-wel-niet",
   ],
   metaTitle:
-    "De complete magnesiumgids voor mannen 40+: vormen, dosering en gebruik",
+    "De complete magnesiumgids na 40: vormen, dosering en gebruik",
   metaDescription:
-    "Magnesium glycinaat, citraat, malaat, tauraat: welke vorm voor welk doel? Doseringen, voedingsbronnen en kwaliteitscriteria voor mannen 40+.",
+    "Magnesium glycinaat, citraat, malaat, tauraat: welke vorm voor welk doel? Doseringen, voedingsbronnen en kwaliteitscriteria na 40.",
   keywords: [
     "magnesium vormen",
     "magnesium glycinaat",

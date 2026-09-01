@@ -39,7 +39,7 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
   supplementCTA: {
     naam: "Vitamine D",
     uitleg:
-      "D3, K2 en wat je op het etiket wilt zien — praktische keuzehulp voor mannen 40+.",
+      "D3, K2 en wat je op het etiket wilt zien — praktische keuzehulp na 40.",
     href: "/supplementen/vitamine-d",
   },
   cornerstoneLink: {

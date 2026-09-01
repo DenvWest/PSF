@@ -33,7 +33,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
       type: "opsomming",
       titel: "Vijf aanpassingen die vaak het meeste opleveren",
       inleiding:
-        "Geen abstinentie-preek — wel keuzes die in de praktijk verschil maken voor mannen 40+.",
+        "Geen abstinentie-preek — wel keuzes die in de praktijk verschil maken na 40.",
       items: [
         "Plan 2–3 alcoholvrije avonden per week — vaste dagen werken beter dan 'ik zie wel'.",
         "Stop 3 uur voor bed: alcohol dicht bij slaaptijd raakt REM en nachtelijk wakker worden het hardst.",
@@ -79,7 +79,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
   metaTitle:
     "Alcohol, slaap en energie na 40: wat één glas echt doet",
   metaDescription:
-    "Alcohol en vermoeidheid mannen 40+: REM-slaap, ochtendenergie, middagdip en vijf praktische aanpassingen zonder moraliseren.",
+    "Alcohol en vermoeidheid na 40: REM-slaap, ochtendenergie, middagdip en vijf praktische aanpassingen zonder moraliseren.",
   keywords: [
     "alcohol slaap mannen 40",
     "alcohol vermoeidheid",

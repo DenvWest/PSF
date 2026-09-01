@@ -95,7 +95,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       "Middagdip, trager herstel of vermoeidheid na je 40e? Artikelen over energie, testosteron, vitamine D en herstel — onderbouwd en praktisch.",
     intentTopics: [
       "middagdip",
-      "vermoeidheid man 40+",
+      "vermoeidheid na 40",
       "trager herstel",
       "lage energie",
     ],
@@ -121,7 +121,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     beschrijving: "Werking, vormen en dosering. Per product uitgelegd.",
     metaTitle: "Supplementen uitgelegd — werking & dosering",
     metaDescription:
-      "Magnesium, omega-3, vitamine D en meer — werking, vormen en dosering uitgelegd voor mannen boven de 40. Geen verkooppraat.",
+      "Magnesium, omega-3, vitamine D en meer — werking, vormen en dosering uitgelegd voor 40+. Geen verkooppraat.",
     intentTopics: [
       "magnesium vormen",
       "omega-3 dosering",

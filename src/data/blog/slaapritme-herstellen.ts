@@ -6,7 +6,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
   categorie: "slaap",
   titel: "Slaapritme Herstellen in 7 Dagen: Een Dag-voor-Dag Protocol",
   heroIntro:
-    "Een verschoven slaapritme is iets wat veel mannen 40+ herkennen — soms al weken. De wekker staat op 6:30, maar je lichaam denkt dat het 1 uur is. Of je slaapt 's weekends tot 9 uur en betaalt dat de hele week terug. Dit protocol geeft je een concreet actieplan — vanavond te starten, zonder medicatie.",
+    "Een verschoven slaapritme is iets wat veel mensen 40+ herkennen — soms al weken. De wekker staat op 6:30, maar je lichaam denkt dat het 1 uur is. Of je slaapt 's weekends tot 9 uur en betaalt dat de hele week terug. Dit protocol geeft je een concreet actieplan — vanavond te starten, zonder medicatie.",
   leestijd: "7 min",
   gepubliceerdOp: "2026-05-02",
   secties: [
@@ -33,7 +33,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
       type: "opsomming",
       titel: "Waarom je ritme verstoord raakt na je 40e",
       inleiding:
-        "Na je 40e wordt je biologische klok gevoeliger voor verstoringen — en zijn de verstoringen zelf groter geworden. Vier oorzaken die bij mannen boven de 40 het vaakst spelen:",
+        "Na je 40e wordt je biologische klok gevoeliger voor verstoringen — en zijn de verstoringen zelf groter geworden. Vier oorzaken die na 40 het vaakst spelen:",
       items: [
         "Weekend-jetlag: vrijdag en zaterdag laat naar bed, zondag uitslapen. Elke week twee uur tijdzone-verschuiving zonder het vliegtuig in te stappen — je brein ervaart dat letterlijk zo.",
         "Schermgebruik 's avonds: blauw licht onderdrukt melatonineaanmaak. Na 40 daalt de melatonineproductie toch al — schermen versterken dat effect sterk.",

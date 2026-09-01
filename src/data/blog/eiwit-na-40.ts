@@ -5,9 +5,9 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const eiwitNa40Data: BlogArtikel = {
   slug: "eiwit-na-40",
   categorie: "energie",
-  titel: "Eiwit na 40: hoeveel je écht nodig hebt (en waarom de meeste mannen tekortkomen)",
+  titel: "Eiwit na 40: hoeveel je écht nodig hebt (en waarom de meeste mensen tekortkomen)",
   heroIntro:
-    "Je eet \"gezond genoeg\", maar je spieren voelen minder responsief. Na je 40e is dat geen verbeelding: je lichaam heeft meer [eiwit](/kennisbank/eiwitbehoefte-na-40) nodig per maaltijd — en de meeste Nederlandse mannen halen de ondergrens niet. Hier lees je hoeveel, wanneer en waarom, gekoppeld aan [herstel na 40](/herstel-verbeteren-na-40) en [testosteron na 40](/testosteron-na-40) — zonder bodybuilding-hype.",
+    "Je eet \"gezond genoeg\", maar je spieren voelen minder responsief. Na je 40e is dat geen verbeelding: je lichaam heeft meer [eiwit](/kennisbank/eiwitbehoefte-na-40) nodig per maaltijd — en de meeste Nederlanders halen de ondergrens niet. Hier lees je hoeveel, wanneer en waarom, gekoppeld aan [herstel na 40](/herstel-verbeteren-na-40) en [voeding na 40](/voeding-na-40) — zonder bodybuilding-hype.",
   leestijd: "9 min",
   gepubliceerdOp: "2026-05-23",
   laatstBijgewerktOp: "2026-05-23",
@@ -16,13 +16,13 @@ export const eiwitNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Ken je dit?",
       tekst:
-        "Ontbijt: brood met jam. Lunch: broodje kaas. Avond: pasta met wat groente. Op papier eet je genoeg — maar als je je eiwit per maaltijd optelt, kom je vaak uit op 60 tot 80 gram per dag. Voor een man van 85 kilo die wil blijven bewegen, is dat structureel te weinig na 40. Je voelt het niet meteen als \"eiwittekort\", maar als trager herstel, minder veerkracht en een lichaam dat moeilijker spieren vasthoudt.",
+        "Ontbijt: brood met jam. Lunch: broodje kaas. Avond: pasta met wat groente. Op papier eet je genoeg — maar als je je eiwit per maaltijd optelt, kom je vaak uit op 60 tot 80 gram per dag. Bij 85 kilo en de wens om te blijven bewegen is dat structureel te weinig na 40. Je voelt het niet meteen als \"eiwittekort\", maar als trager herstel, minder veerkracht en een lichaam dat moeilijker spieren vasthoudt.",
     },
     {
       type: "tekst",
       titel: "Waarom 0,8 gram per kilo niet genoeg is",
       tekst:
-        "De officiële ADH (0,8 g/kg) is bedoeld om tekort te voorkomen — niet als optimum voor spierbehoud. Position papers en sportvoedingsliteratuur wijzen voor mannen 40+ vaker naar 1,2 tot 1,6 gram per kilogram lichaamsgewicht per dag, vooral bij krachttraining of actief werk. Bij 80 kg is dat 96 tot 128 gram per dag — verdeeld over meerdere maaltijden, niet in één avondmaaltijd. Meer uitleg over het mechanisme: zie [eiwitbehoefte na 40 in de kennisbank](/kennisbank/eiwitbehoefte-na-40).",
+        "De officiële ADH (0,8 g/kg) is bedoeld om tekort te voorkomen — niet als optimum voor spierbehoud. Position papers en sportvoedingsliteratuur wijzen na 40 vaker naar 1,2 tot 1,6 gram per kilogram lichaamsgewicht per dag, vooral bij krachttraining of actief werk. Bij 80 kg is dat 96 tot 128 gram per dag — verdeeld over meerdere maaltijden, niet in één avondmaaltijd. Meer uitleg over het mechanisme: zie [eiwitbehoefte na 40 in de kennisbank](/kennisbank/eiwitbehoefte-na-40).",
     },
     {
       type: "tekst",
@@ -44,9 +44,9 @@ export const eiwitNa40Data: BlogArtikel = {
     },
     {
       type: "tekst",
-      titel: "Eiwit, testosteron en herstel — wat wél en niet geldt",
+      titel: "Eiwit en herstel — wat wél en niet geldt",
       tekst:
-        "Eiwit is bouwmateriaal voor spieren en ondersteunt herstel na inspanning. Het is geen testosteronvervanger: hormonen hangen samen met slaap, stress en leeftijd — lees [testosteron na 40](/testosteron-na-40) voor voorzichtige kaders. Wel: zonder voldoende eiwit merk je krachttraining en herstel minder, ongeacht supplementen. Combineer dit artikel met [herstel verbeteren na 40](/herstel-verbeteren-na-40) voor slaap, rustdagen en eventueel creatine als tweede lijn.",
+        "Eiwit is bouwmateriaal voor spieren en ondersteunt herstel na inspanning. Het is geen hormoonvervanger: herstel hangt samen met slaap, stress en leeftijd. Wel: zonder voldoende eiwit merk je krachttraining en herstel minder, ongeacht supplementen. Combineer dit artikel met [herstel verbeteren na 40](/herstel-verbeteren-na-40) voor slaap, rustdagen en eventueel creatine als tweede lijn.",
     },
     {
       type: "tekst",
@@ -83,9 +83,9 @@ export const eiwitNa40Data: BlogArtikel = {
     "middagdip-bloedsuiker-na-40",
     "eiwitinname-timing-mannen-40",
   ],
-  metaTitle: "Eiwit na 40: hoeveel gram per dag man",
+  metaTitle: "Eiwit na 40: hoeveel gram per dag",
   metaDescription:
-    "Hoeveel eiwit heeft een man 40+ nodig? Anabole resistentie, 1,6 g/kg, spreiding over de dag en wanneer poeder zinvol is — onderbouwd en praktisch.",
+    "Hoeveel eiwit heb je na 40 nodig? Anabole resistentie, 1,6 g/kg, spreiding over de dag en wanneer poeder zinvol is — onderbouwd en praktisch.",
   keywords: [
     "eiwit man 40",
     "eiwitbehoefte 40 plus",

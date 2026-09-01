@@ -15,7 +15,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
       type: "tekst",
       titel: "Ken je dit?",
       tekst:
-        "Brood met jam om half acht, een broodje kaas om twaalf, pasta 's avonds met wat groente. Op papier eet je genoeg — maar het meeste eiwit komt pas laat op de dag. Rond drie uur zak je weg. Na training herstel je trager dan je verwacht. Dat patroon herkennen veel mannen boven de veertig: niet te weinig eten, wel te weinig eiwit op het moment dat je lichaam het nodig heeft.",
+        "Brood met jam om half acht, een broodje kaas om twaalf, pasta 's avonds met wat groente. Op papier eet je genoeg — maar het meeste eiwit komt pas laat op de dag. Rond drie uur zak je weg. Na training herstel je trager dan je verwacht. Dat patroon herkennen veel mensen boven de veertig: niet te weinig eten, wel te weinig eiwit op het moment dat je lichaam het nodig heeft.",
     },
     {
       type: "tekst",

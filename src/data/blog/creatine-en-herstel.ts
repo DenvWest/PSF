@@ -16,7 +16,7 @@ export const creatineEnHerstelData: BlogArtikel = {
       type: "tekst",
       titel: "Herstel is geen tablet — creatine is hooguit een stukje puzzel",
       tekst:
-        "Na je 40e merken veel mannen dat herstel tussen trainingen langer duurt, of dat ze ’s avonds nog “aan” staan terwijl ze fysiek moe zijn. Dat is zelden één molecuul; het is een mix van slaap, voeding, trainingsvolume en stress. Creatine hoort in dat plaatje als optionele ondersteuning rond korte, intense inspanning — niet als vervanging van rustdagen of een goed [slaapritme](/blog/slaapritme-herstellen).",
+        "Na je 40e merken veel mensen dat herstel tussen trainingen langer duurt, of dat ze ’s avonds nog “aan” staan terwijl ze fysiek moe zijn. Dat is zelden één molecuul; het is een mix van slaap, voeding, trainingsvolume en stress. Creatine hoort in dat plaatje als optionele ondersteuning rond korte, intense inspanning — niet als vervanging van rustdagen of een goed [slaapritme](/blog/slaapritme-herstellen).",
     },
     {
       type: "tekst",
