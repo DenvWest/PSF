@@ -185,6 +185,49 @@ describe("SchapView — de terugweg naar het leefstijlprofiel", () => {
   });
 });
 
+describe("SchapView — de spiegel leefstijl ↔ aanbod", () => {
+  const spiegel = () =>
+    screen.getByRole("region", { name: "Wat eerst komt, en wat je kunt kopen" });
+
+  it("staat bóven de tabs, zodat de volgorde vóór het aanbod komt", () => {
+    renderSchap("voeding", "producten");
+
+    const blok = spiegel();
+    const tablist = screen.getByRole("tablist");
+    // Node.compareDocumentPosition: 4 = de tablist volgt op de spiegel.
+    expect(blok.compareDocumentPosition(tablist) & 4).toBeTruthy();
+  });
+
+  it("blijft staan op elk onderdeel — het is geen tab die je moet aanklikken", () => {
+    renderSchap("voeding", "favorieten");
+    expect(spiegel()).toBeTruthy();
+  });
+
+  it("zet de gratis lagen links en de betaalde laag rechts, met hun nummers", () => {
+    renderSchap("voeding", "producten");
+
+    expect(within(spiegel()).getByText("Gratis · laag 1–5")).toBeTruthy();
+    expect(within(spiegel()).getByText("Betaald · laag 6 van 6")).toBeTruthy();
+    expect(within(spiegel()).getByText("Je eetbasis")).toBeTruthy();
+  });
+
+  it("draagt de doorstroom naar de gids, met de terugweg naar het dashboard", () => {
+    renderSchap("voeding", "producten");
+
+    const link = within(spiegel())
+      .getByText("Open de supplementengids")
+      .closest("a");
+    expect(link?.getAttribute("href")).toBe("/supplementen?from=voortgang");
+  });
+
+  it("staat er niet op een domein zonder ladder", () => {
+    renderSchap("energie", "producten");
+    expect(
+      screen.queryByRole("region", { name: "Wat eerst komt, en wat je kunt kopen" }),
+    ).toBeNull();
+  });
+});
+
 describe("SchapView — een tab die dit domein niet heeft", () => {
   it("valt terug op de default zonder te crashen", () => {
     renderSchap("slaap", "diensten");

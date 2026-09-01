@@ -74,8 +74,8 @@ describe("SupplementVerdictPanel — afleiding-disclosure", () => {
     fireEvent.click(toggle);
 
     expect(screen.getByText("Verberg hoe we hier komen")).toBeTruthy();
-    expect(screen.getByText(/slaapvragen/)).toBeTruthy();
-    expect(screen.getByText(/Zekerheid 1 van 4/)).toBeTruthy();
+    expect(screen.getByText(/laat een magnesiumsignaal zien/)).toBeTruthy();
+    expect(screen.getByText(/Zekerheid 1 van 4 —/)).toBeTruthy();
     expect(screen.getByText(/De claim die mag:/)).toBeTruthy();
   });
 
@@ -92,6 +92,88 @@ describe("SupplementVerdictPanel — afleiding-disclosure", () => {
     render(<SupplementVerdictPanel verdicts={[row(evidence)]} />);
     expect(screen.getByText("Bekijk de vergelijking")).toBeTruthy();
     expect(screen.queryByText(/€/)).toBeNull();
+  });
+});
+
+describe("SupplementVerdictPanel — de feitenstrook", () => {
+  it("zet signaal, zekerheid, bloedwaarde en EU-claim naast elkaar, zonder de kaart te openen", () => {
+    render(<SupplementVerdictPanel verdicts={[row(evidence)]} />);
+
+    for (const label of ["Signaal", "Zekerheid", "Bloedwaarde", "EU-claim"]) {
+      expect(screen.getByText(label)).toBeTruthy();
+    }
+    expect(screen.getByText("Je slaapvragen")).toBeTruthy();
+    expect(screen.getByText("1 van 4")).toBeTruthy();
+    expect(screen.getByText("Goedgekeurd")).toBeTruthy();
+  });
+
+  it("meldt eerlijk 'Geen signaal' als de check er geen liet zien", () => {
+    render(<SupplementVerdictPanel verdicts={[negativeRow("zink")]} />);
+    expect(screen.getByText("Geen signaal")).toBeTruthy();
+  });
+});
+
+describe("SupplementVerdictPanel — beeld en ladderplek", () => {
+  it("toont een merkloze productfoto bij de stof", () => {
+    render(<SupplementVerdictPanel verdicts={[row(evidence)]} />);
+
+    const img = screen.getByRole("img", { name: /magnesium/i });
+    expect(img.getAttribute("alt")).toBe(
+      "Voorbeeld van een magnesiumproduct uit de supplementengids",
+    );
+  });
+
+  it("draagt geen ladderplek zonder domein — liever niets dan de verkeerde laag", () => {
+    render(<SupplementVerdictPanel verdicts={[row(evidence)]} />);
+    expect(screen.queryByText("Plek in je plan")).toBeNull();
+  });
+
+  it("zet de stof op de laatste laag, met het aantal lagen ervóór", () => {
+    render(<SupplementVerdictPanel verdicts={[row(evidence)]} ladderDomain="voeding" />);
+
+    expect(screen.getByText("Plek in je plan")).toBeTruthy();
+    expect(screen.getByText("Laag 6 van 6 · Aanvullen & vergelijken")).toBeTruthy();
+    expect(screen.getByText("5 lagen komen hiervóór")).toBeTruthy();
+  });
+});
+
+describe("SupplementVerdictPanel — de twee uitgangen", () => {
+  it("wijst naar de catalogus én naar de vergelijking, met hun herkomst mee", () => {
+    render(<SupplementVerdictPanel verdicts={[row(evidence)]} />);
+
+    const catalogus = screen.getByText("Bekijk de producten").closest("a");
+    expect(catalogus?.getAttribute("href")).toBe(
+      "/supplementen?categorie=magnesium&from=voortgang",
+    );
+    expect(
+      screen.getByText("Bekijk de vergelijking").closest("a")?.getAttribute("href"),
+    ).toBe("/beste/magnesium?from=voortgang");
+  });
+
+  it("meldt per uitgang welke bestemming is gekozen", () => {
+    vi.mocked(trackEvent).mockClear();
+    render(<SupplementVerdictPanel verdicts={[row(evidence)]} surface="schap_slaap" />);
+
+    fireEvent.click(screen.getByText("Bekijk de producten"));
+    const calls = vi
+      .mocked(trackEvent)
+      .mock.calls.filter(([name]) => name === "dashboard_schap_vergelijking_click");
+    expect(calls).toHaveLength(1);
+    expect(calls[0][1]).toMatchObject({
+      ingredient: "magnesium",
+      surface: "schap_slaap",
+      bestemming: "catalogus",
+    });
+  });
+
+  // Een "Niet nodig" mag nooit stilzwijgend een koopsuggestie worden.
+  it("draagt geen enkele winkelroute bij een negatief oordeel", () => {
+    render(<SupplementVerdictPanel verdicts={[negativeRow("zink")]} />);
+    expect(screen.queryByText("Bekijk de producten")).toBeNull();
+    expect(screen.queryByText("Bekijk de vergelijking")).toBeNull();
+    expect(
+      screen.getByText(/Hier verdienen we niets aan/),
+    ).toBeTruthy();
   });
 });
 

@@ -4,7 +4,11 @@ import {
   type IngredientClaimKey,
 } from "@/data/approved-claims";
 import type { DomainScores } from "@/lib/intake-engine";
-import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
+import {
+  nutrientReferences,
+  type BloodMarkerValue,
+  type NutrientId,
+} from "@/data/nutrition/intake-reference";
 import type { RecommendationTriggerReason } from "@/types/recommendation";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 
@@ -161,4 +165,98 @@ export function buildAfleiding(
     bloedLine: bloedLine(ingredientKey),
     claimLine: claimLine(ingredientKey),
   };
+}
+
+/**
+ * De vier vergelijkbare feiten achter één oordeel, kort genoeg om naast elkaar
+ * te lezen. Zelfde bronnen en zelfde grenzen als `buildAfleiding` — dit is een
+ * compactere weergave van wat daar al in zinnen staat, geen tweede oordeel en
+ * geen nieuwe claim.
+ */
+export type VerdictFact = { label: string; value: string };
+
+const BLOOD_MARKER_SHORT: Record<BloodMarkerValue, string> = {
+  improves: "Maakt dit harder",
+  limited: "Beperkt bruikbaar",
+  none: "Voegt niets toe",
+};
+
+const SIGNAL_SHORT: Partial<Record<string, string>> = {
+  magnesium_signal: "Je slaapvragen",
+  omega3_deficiency: "Je voedingsvragen",
+  creatine_signal: "Belasting + herstel",
+  protein_gap_signal: "Inname + beweging",
+  cortisol_risk: "Aanhoudende spanning",
+  melatonine_signal: "Je inslaappatroon",
+};
+
+const HUB_RULE_SHORT: Partial<Record<string, string>> = {
+  creatine_custom_matcher: "Belasting + herstel",
+  protein_gap_signal: "Inname + beweging",
+  vitamin_d_fallback: "Aanmaak in Nederland",
+};
+
+function triggerShort(reason: RecommendationTriggerReason): string {
+  switch (reason.type) {
+    case "signal":
+      return SIGNAL_SHORT[reason.signal] ?? "Uit je check";
+    case "domain_below":
+      return `Je ${DOMAIN_LABEL[reason.domain]}`;
+    case "profile":
+      return `Profiel “${reason.label}”`;
+    case "hub_legacy":
+      return HUB_RULE_SHORT[reason.rule] ?? "Een regel in je check";
+    case "pillar":
+      return "Je focusdomein";
+  }
+}
+
+function signaalFact(verdict: StoredSupplementVerdict): string {
+  const triggeredBy = verdict.basedOn?.triggeredBy ?? [];
+  if (triggeredBy.length === 0) {
+    return "Geen signaal";
+  }
+  const first = triggerShort(triggeredBy[0]);
+  return triggeredBy.length > 1 ? `${first} +${triggeredBy.length - 1}` : first;
+}
+
+function zekerheidFact(ingredientKey: IngredientClaimKey): string {
+  const confidence = confidenceValue(ingredientKey);
+  return confidence === null ? "Niet te scoren" : `${confidence} van 4`;
+}
+
+function bloedFact(ingredientKey: IngredientClaimKey): string {
+  const nutrientId = NUTRIENT_BY_INGREDIENT[ingredientKey];
+  if (!nutrientId) {
+    return "Niet van toepassing";
+  }
+  return BLOOD_MARKER_SHORT[nutrientReferences[nutrientId].bloodMarker.value];
+}
+
+function claimFact(ingredientKey: IngredientClaimKey): string {
+  const entry = approvedClaims[ingredientKey];
+  if (!entry) {
+    return "Onbekend";
+  }
+  if (entry.status === "on_hold") {
+    return "On-hold bij EFSA";
+  }
+  if (entry.status === "forbidden") {
+    return "Niet toegestaan";
+  }
+  return getUsableClaims(ingredientKey).length > 0
+    ? "Goedgekeurd"
+    : "Geen erkende claim";
+}
+
+export function buildVerdictFacts(
+  ingredientKey: IngredientClaimKey,
+  verdict: StoredSupplementVerdict,
+): VerdictFact[] {
+  return [
+    { label: "Signaal", value: signaalFact(verdict) },
+    { label: "Zekerheid", value: zekerheidFact(ingredientKey) },
+    { label: "Bloedwaarde", value: bloedFact(ingredientKey) },
+    { label: "EU-claim", value: claimFact(ingredientKey) },
+  ];
 }

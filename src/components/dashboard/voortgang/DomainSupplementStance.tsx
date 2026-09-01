@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import SupplementVerdictPanel, {
   type VerdictPanelSurface,
@@ -8,6 +8,7 @@ import SupplementVerdictPanel, {
 import { getDomainProductStance, type ProductStanceDomain } from "@/data/domain-product-stance";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
+import type { PillarId } from "@/types/dashboard";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 
 /**
@@ -27,6 +28,12 @@ type DomainSupplementStanceProps = {
   verdicts: StoredSupplementVerdict[];
   nutritionLogCompleted: boolean;
   surface: VerdictPanelSurface;
+  /**
+   * Het leefstijldomein waarvan de ladder de rangorde levert. Zonder deze prop
+   * draagt de kaart geen ladderplek — beter niets dan een laag uit het verkeerde
+   * domein.
+   */
+  ladderDomain?: PillarId;
   /** Voor het schap (Schap · Producten-tab): daar ís deze sectie al het
    * aanbod, dus geen toggle-teaser nodig. Standaard false — ongewijzigd
    * gedrag op slaap/stress/voeding. */
@@ -43,11 +50,44 @@ type DomainSupplementStanceProps = {
  * blijft, en waarom. Nooit "wij weten het niet" verzamelen onder één label. */
 type ClosedReason = "geen_schap" | "geen_voedingscheck" | null;
 
+/**
+ * Elke dichte poort in dezelfde vorm: slotje, kop in klein kapitaal, reden.
+ * Dat is bewust dezelfde chassis als de open deur en als de productkaart —
+ * een gesloten schap hoort er even verzorgd uit te zien als een open schap,
+ * anders leest "dicht" als "kapot".
+ */
+function GeslotenPoort({
+  titel,
+  children,
+}: {
+  titel: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="rounded-2xl border border-[var(--divider)] bg-black/20 px-3.5 py-3.5">
+      <p className="flex items-center gap-1.5 text-[9.5px] font-bold uppercase tracking-[0.14em] text-[var(--text-subtle)]">
+        <Icons.Lock s={13} />
+        {titel}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+function PoortTekst({ children }: { children: ReactNode }) {
+  return (
+    <p className="mt-2 text-[12.5px] leading-relaxed text-[var(--text-muted)] text-pretty">
+      {children}
+    </p>
+  );
+}
+
 export default function DomainSupplementStance({
   domain,
   verdicts,
   nutritionLogCompleted,
   surface,
+  ladderDomain,
   openByDefault = false,
   poortOnly = false,
   onOpenFavorieten,
@@ -80,30 +120,9 @@ export default function DomainSupplementStance({
 
   if (stance.kind === "lifestyle_first") {
     return (
-      <div
-        className="rounded-2xl px-3.5 py-3.5"
-        style={{ border: "1px solid var(--divider)", background: "rgba(0,0,0,0.22)" }}
-      >
-        <p
-          className="flex items-center gap-1.5"
-          style={{
-            fontSize: 9.5,
-            fontWeight: 700,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: "var(--text-subtle)",
-          }}
-        >
-          <Icons.Lock s={13} />
-          Geen schap op dit domein
-        </p>
-        <p
-          className="text-pretty"
-          style={{ marginTop: 8, fontSize: 12.5, lineHeight: 1.6, color: "var(--text-muted)" }}
-        >
-          {stance.reason}
-        </p>
-      </div>
+      <GeslotenPoort titel="Geen schap op dit domein">
+        <PoortTekst>{stance.reason}</PoortTekst>
+      </GeslotenPoort>
     );
   }
 
@@ -113,31 +132,14 @@ export default function DomainSupplementStance({
 
   if (poortOnly) {
     return (
-      <div
-        className="rounded-2xl px-3.5 py-3.5"
-        style={{ border: "1px solid var(--divider)", background: "rgba(0,0,0,0.22)" }}
+      <GeslotenPoort
+        titel={!nutritionLogCompleted ? "De deur is dicht" : "Supplementen in je profiel"}
       >
-        <p
-          className="flex items-center gap-1.5"
-          style={{
-            fontSize: 9.5,
-            fontWeight: 700,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: "var(--text-subtle)",
-          }}
-        >
-          <Icons.Lock s={13} />
-          {!nutritionLogCompleted ? "De deur is dicht" : "Supplementen in je profiel"}
-        </p>
-        <p
-          className="text-pretty"
-          style={{ marginTop: 8, fontSize: 12.5, lineHeight: 1.6, color: "var(--text-muted)" }}
-        >
+        <PoortTekst>
           {!nutritionLogCompleted
             ? "Vul eerst je voeding in — zonder dat kunnen we niet zeggen of aanvullen iets toevoegt."
             : "Het oordeel en het aanbod staan op Keuze — hier leggen we alleen uit waarom de volgorde zo is."}
-        </p>
+        </PoortTekst>
         {onOpenFavorieten ? (
           <button
             type="button"
@@ -146,42 +148,24 @@ export default function DomainSupplementStance({
               clarityTag("dashboard_keuzes_poort", domain);
               onOpenFavorieten();
             }}
-            className="mt-3 cursor-pointer border-none bg-transparent p-0 text-[13px] font-semibold text-[var(--sage)]"
+            className="mt-3 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13px] font-semibold text-[var(--sage)]"
           >
-            Naar Favorieten →
+            Naar Favorieten
+            <Icons.ChevronRight s={13} />
           </button>
         ) : null}
-      </div>
+      </GeslotenPoort>
     );
   }
 
   if (!nutritionLogCompleted) {
     return (
-      <div
-        className="rounded-2xl px-3.5 py-3.5"
-        style={{ border: "1px solid var(--divider)", background: "rgba(0,0,0,0.22)" }}
-      >
-        <p
-          className="flex items-center gap-1.5"
-          style={{
-            fontSize: 9.5,
-            fontWeight: 700,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: "var(--text-subtle)",
-          }}
-        >
-          <Icons.Lock s={13} />
-          De deur is dicht
-        </p>
-        <p
-          className="text-pretty"
-          style={{ marginTop: 8, fontSize: 12.5, lineHeight: 1.6, color: "var(--text-muted)" }}
-        >
+      <GeslotenPoort titel="De deur is dicht">
+        <PoortTekst>
           Vul eerst je voeding in — zonder dat kunnen we niet zeggen of aanvullen iets
           toevoegt.
-        </p>
-      </div>
+        </PoortTekst>
+      </GeslotenPoort>
     );
   }
 
@@ -196,29 +180,26 @@ export default function DomainSupplementStance({
 
   return (
     <div
-      className="rounded-2xl px-3.5 py-3.5"
-      style={{
-        border: open ? "1px solid rgba(90, 143, 106, 0.42)" : "1px solid var(--divider)",
-        background: open ? "rgba(90, 143, 106, 0.09)" : "rgba(0,0,0,0.22)",
-        transition: "border-color 0.15s ease, background 0.15s ease",
-      }}
+      // Open blijft het veld donker en neutraal: de kaarten erin zijn lichter
+      // en moeten er los op liggen, net als de witte productkaarten op de
+      // stone-achtergrond van /supplementen. Een groene waas over het hele
+      // paneel trekt dat verschil juist dicht — de open-stand zit daarom in de
+      // rand en de kop, niet in het vlak.
+      className={`overflow-hidden rounded-2xl border bg-black/25 transition-colors duration-150 ${
+        open ? "border-[rgba(90,143,106,0.42)]" : "border-[var(--divider)]"
+      }`}
     >
       <button
         type="button"
         onClick={handleToggle}
         aria-expanded={open}
         aria-controls={`supplement-deur-${domain}`}
-        className="flex w-full cursor-pointer items-center justify-between gap-2 text-left"
+        className="flex w-full cursor-pointer items-center justify-between gap-2 px-3.5 py-3.5 text-left"
       >
         <span
-          className="flex items-center gap-1.5"
-          style={{
-            fontSize: 9.5,
-            fontWeight: 700,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: open ? "var(--sage, #5A8F6A)" : "var(--text-subtle)",
-          }}
+          className={`flex items-center gap-1.5 text-[9.5px] font-bold uppercase tracking-[0.14em] ${
+            open ? "text-[var(--sage,#5A8F6A)]" : "text-[var(--text-subtle)]"
+          }`}
         >
           <Icons.Lock s={13} />
           Wat een supplement hier wél en niet doet
@@ -234,11 +215,12 @@ export default function DomainSupplementStance({
         />
       </button>
       {open ? (
-        <div id={`supplement-deur-${domain}`} style={{ marginTop: 12 }}>
+        <div id={`supplement-deur-${domain}`} className="px-3.5 pb-3.5">
           <SupplementVerdictPanel
             verdicts={domainVerdicts}
             variant="full"
             surface={surface}
+            ladderDomain={ladderDomain}
             hideHeader
             showFavoriteSave={showFavoriteSave}
             favoriteSource={favoriteSource}

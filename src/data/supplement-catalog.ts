@@ -169,6 +169,17 @@ export function getCatalogEntryByHubSlug(slug: string): SupplementCatalogEntry |
   return SUPPLEMENT_CATALOG.find((entry) => entry.hubSlug === slug);
 }
 
+/**
+ * Van `approvedClaims`-sleutel naar catalogusregel. De oordelen op het
+ * dashboard dragen die sleutel (`vitamineD`), de productcatalogus zijn
+ * categorie (`vitamine-d`); dit is de enige plek waar die twee elkaar vinden.
+ */
+export function getCatalogEntryByClaimKey(
+  claimKey: string,
+): SupplementCatalogEntry | undefined {
+  return SUPPLEMENT_CATALOG.find((entry) => entry.claimKey === claimKey);
+}
+
 export function getCatalogEntryForPillar(pillarId: PillarId): SupplementCatalogEntry | undefined {
   const supplementId = PILLAR_SUPPLEMENT_IDS[pillarId];
   if (!supplementId) {

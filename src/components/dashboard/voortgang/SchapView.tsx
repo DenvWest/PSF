@@ -3,14 +3,17 @@
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
+import KeuzeSpiegel from "@/components/dashboard/voortgang/KeuzeSpiegel";
 import MovementSchapBasisCard from "@/components/dashboard/beweging/MovementSchapBasisCard";
 import FavoriteReminderControl from "@/components/dashboard/voortgang/FavoriteReminderControl";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
 import type { VerdictPanelSurface } from "@/components/dashboard/SupplementVerdictPanel";
 import { PILLAR } from "@/data/dashboard";
 import { SCHAP_DIENST_CARDS } from "@/data/movement/schap-diensten";
+import { getDomainProductStance } from "@/data/domain-product-stance";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
+import { buildKeuzeSpiegel } from "@/lib/keuze-spiegel";
 import { parseLadderFavoriteLayer, resolveLadderLayerName } from "@/lib/leefstijl-ladder";
 import { resolveDefaultSchapTab, resolveSchapTabs } from "@/lib/schap-tabs";
 import VoortgangTerugLink from "@/components/dashboard/voortgang/VoortgangTerugLink";
@@ -103,6 +106,24 @@ export default function SchapView({
 
   const domainFavorites = items.filter((item) => item.domain === domain);
 
+  const nutritionLogCompleted =
+    buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true;
+
+  // De spiegel toont het aanbod van dít domein, dus dezelfde filter als de
+  // stance eronder — anders staan er rechts stoffen die het schap zelf niet
+  // draagt.
+  const stance = stanceDomain ? getDomainProductStance(stanceDomain) : null;
+  const domainVerdicts =
+    stance?.kind === "candidates"
+      ? (data?.supplementVerdicts ?? []).filter((row) => stance.slugs.has(row.ingredientKey))
+      : [];
+
+  const spiegel = buildKeuzeSpiegel({
+    domain,
+    verdicts: domainVerdicts,
+    nutritionLogCompleted,
+  });
+
   function handleSwitchDomain(target: PillarId) {
     if (target === domain) {
       return;
@@ -128,9 +149,12 @@ export default function SchapView({
     <section aria-label={`Keuze — ${pillar.label}`} className="pt-4">
       <div className="mb-4">
         {onBack ? <VoortgangTerugLink onBack={onBack} /> : null}
-        <div className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[var(--text)]">
-          Keuze · {pillar.label}
-        </div>
+        <p className="text-[9.5px] font-bold uppercase tracking-[0.14em] text-[var(--text-subtle)]">
+          Keuze
+        </p>
+        <h2 className="mt-1 font-[family-name:var(--f-serif)] text-[22px] font-normal leading-tight text-[var(--text)]">
+          {pillar.label}
+        </h2>
       </div>
 
       {/* Onder md is dit de domeinschakelaar; vanaf md neemt de linker rail hem
@@ -189,27 +213,41 @@ export default function SchapView({
         </nav>
       ) : null}
 
-      <p className="mb-2 max-w-[62ch] text-[13px] leading-relaxed text-[var(--text-muted)] text-pretty">
-        Hier staat het aanbod, en alleen hier. Vandaag en Mijn Dag dragen de deur.
-      </p>
+      {/* Dezelfde rol als de keuzekolom-kop op /supplementen: eerst wat de
+          meetlat is, dan pas de lijst. Daaronder de terugweg naar het profiel
+          dat dit aanbod verantwoordt — tot 21 augustus liep die naad maar één
+          kant op, waardoor het aanbod losraakte van zijn onderbouwing zodra je
+          er eenmaal stond. */}
+      <div className="mb-4 rounded-2xl border border-[var(--divider)] bg-black/20 px-3.5 py-3.5">
+        <p className="max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--text-muted)] text-pretty">
+          Hier staat het aanbod, en alleen hier. Vandaag en Mijn Dag dragen de deur.
+          Elk oordeel hieronder komt uit je leefstijl- en voedingscheck, langs
+          dezelfde vier feiten: signaal, zekerheid, bloedwaarde en EU-claim.
+        </p>
+        {onOpenLeefstijlprofiel ? (
+          <button
+            type="button"
+            onClick={handleOpenLeefstijlprofiel}
+            className="mt-2.5 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-left text-[12.5px] font-semibold text-[var(--sage)]"
+          >
+            Waarom dit aanbod open of dicht staat — Leefstijlprofiel · {pillar.label}
+            <Icons.ChevronRight s={13} />
+          </button>
+        ) : null}
+      </div>
 
-      {onOpenLeefstijlprofiel ? (
-        <button
-          type="button"
-          onClick={handleOpenLeefstijlprofiel}
-          className="mb-4 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-left text-[13px] font-semibold text-[var(--sage)]"
-        >
-          Waarom dit aanbod open of dicht staat — Leefstijlprofiel · {pillar.label}
-          <Icons.ChevronRight s={13} />
-        </button>
-      ) : (
-        <div className="mb-4" />
-      )}
+      {spiegel ? (
+        <KeuzeSpiegel
+          spiegel={spiegel}
+          verdicts={domainVerdicts}
+          onOpenLeefstijlprofiel={onOpenLeefstijlprofiel}
+        />
+      ) : null}
 
       <nav
         role="tablist"
         aria-label="Onderdelen van je keuze"
-        className="mb-4 flex flex-wrap gap-2"
+        className="mb-4 inline-flex flex-wrap gap-1 rounded-xl border border-white/10 bg-black/20 p-1"
       >
         {tabs.map((tab) => {
           const selected = tab.id === currentTab;
@@ -222,10 +260,10 @@ export default function SchapView({
               aria-selected={selected}
               aria-controls={`schap-paneel-${tab.id}`}
               onClick={() => onTabChange(tab.id)}
-              className={`flex min-h-[44px] cursor-pointer items-center rounded-xl border px-4 text-[13.5px] font-semibold ${
+              className={`flex min-h-[38px] cursor-pointer items-center rounded-lg px-3.5 text-[13px] transition-colors ${
                 selected
-                  ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/[0.16] text-[#9CC5A9]"
-                  : "border-white/10 bg-white/[0.03] text-[var(--text-muted)]"
+                  ? "bg-[rgba(90,143,106,0.18)] font-semibold text-[#9CC5A9]"
+                  : "font-medium text-[var(--text-muted)] hover:text-[var(--text)]"
               }`}
             >
               {tab.label}
@@ -243,10 +281,9 @@ export default function SchapView({
           <DomainSupplementStance
             domain={stanceDomain}
             verdicts={data?.supplementVerdicts ?? []}
-            nutritionLogCompleted={
-              buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true
-            }
+            nutritionLogCompleted={nutritionLogCompleted}
             surface={SCHAP_SURFACE[domain] ?? "favorieten_schap_producten"}
+            ladderDomain={domain}
             openByDefault
             showFavoriteSave
             favoriteSource="aanbevolen"

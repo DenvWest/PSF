@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
@@ -9,7 +10,9 @@ import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSe
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent } from "@/lib/ga4";
-import { buildAfleiding } from "@/lib/supplement-afleiding";
+import { getIngredientVisual } from "@/data/supplement-hub/ingredient-visuals";
+import { resolveSupplementLadderPlek } from "@/lib/keuze-spiegel";
+import { buildAfleiding, buildVerdictFacts } from "@/lib/supplement-afleiding";
 import {
   buildVerdictCards,
   buildVerdictSummary,
@@ -18,18 +21,38 @@ import {
 } from "@/lib/supplement-verdict-copy";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
 import type { IngredientClaimKey } from "@/data/approved-claims";
+import type { PillarId } from "@/types/dashboard";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 
-const TONE_COLOR: Record<VerdictTone, string> = {
-  ja: "var(--sage, #5A8F6A)",
-  wacht: "var(--terra, #C8956C)",
-  nee: "var(--text-subtle)",
-};
-
-const TONE_BORDER: Record<VerdictTone, string> = {
-  ja: "rgba(90, 143, 106, 0.4)",
-  wacht: "rgba(200, 149, 108, 0.4)",
-  nee: "var(--divider-strong)",
+/**
+ * Eén toonschema per oordeel, in de tokens van het dashboard. De vorm volgt de
+ * productkaart op /supplementen — kop met badge, feitenstrook, uitklapbare
+ * onderbouwing, actierij — zodat dezelfde stof op beide oppervlakken hetzelfde
+ * leest. Wat verschilt is wat er vergeleken wordt: daar producten langs de
+ * PS-Score, hier één stof langs de check die het oordeel droeg.
+ */
+const TONE: Record<
+  VerdictTone,
+  { card: string; badge: string; dot: string; text: string }
+> = {
+  ja: {
+    card: "border-[rgba(90,143,106,0.40)]",
+    badge: "border-[rgba(90,143,106,0.45)] bg-[rgba(90,143,106,0.16)] text-[#9CC5A9]",
+    dot: "bg-[#9CC5A9]",
+    text: "text-[#9CC5A9]",
+  },
+  wacht: {
+    card: "border-[rgba(200,149,108,0.40)]",
+    badge: "border-[rgba(200,149,108,0.45)] bg-[rgba(200,149,108,0.14)] text-[#DDB58F]",
+    dot: "bg-[#DDB58F]",
+    text: "text-[#DDB58F]",
+  },
+  nee: {
+    card: "border-[var(--divider-strong)]",
+    badge: "border-white/10 bg-white/[0.05] text-[var(--text-muted)]",
+    dot: "bg-[var(--text-subtle)]",
+    text: "text-[var(--text-muted)]",
+  },
 };
 
 export type VerdictPanelSurface =
@@ -54,16 +77,34 @@ type SupplementVerdictPanelProps = {
   verdicts: StoredSupplementVerdict[];
   variant?: "summary" | "full";
   surface?: VerdictPanelSurface;
+  /**
+   * Het leefstijldomein dat de rangorde levert. Zonder deze prop draagt de
+   * kaart geen ladderplek: een laag uit het verkeerde domein is erger dan geen
+   * laag.
+   */
+  ladderDomain?: PillarId;
   onViewAll?: () => void;
   hideHeader?: boolean;
   showFavoriteSave?: boolean;
   favoriteSource?: "aanbevolen" | "mijn_keuze";
 };
 
+function formatOordeelDatum(iso: string): string | null {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+  return new Intl.DateTimeFormat("nl-NL", {
+    day: "numeric",
+    month: "short",
+  }).format(date);
+}
+
 export default function SupplementVerdictPanel({
   verdicts,
   variant = "full",
   surface = "voortgang",
+  ladderDomain,
   onViewAll,
   hideHeader = false,
   showFavoriteSave = false,
@@ -105,6 +146,7 @@ export default function SupplementVerdictPanel({
   }
 
   const isSummary = variant === "summary";
+  const plek = ladderDomain ? resolveSupplementLadderPlek(ladderDomain) : null;
   const verdictByIngredient = new Map(verdicts.map((row) => [row.ingredientKey, row]));
 
   const handleAfleidingToggle = (ingredientKey: string, verdict: string) => {
@@ -121,137 +163,173 @@ export default function SupplementVerdictPanel({
     }
   };
 
+  /**
+   * Beide uitgangen dragen dezelfde durable gebeurtenis met een `bestemming`
+   * erbij — zo is af te lezen of iemand de brede catalogus of de redactionele
+   * vergelijking kiest, zonder een tweede eventtype te verzinnen.
+   */
+  const handleUitgang = (
+    ingredientKey: string,
+    verdict: string,
+    bestemming: "catalogus" | "vergelijking",
+  ) => {
+    trackEvent("dashboard_schap_vergelijking_click", {
+      ingredient: ingredientKey,
+      verdict,
+      surface,
+      bestemming,
+    });
+    clarityTag("dashboard_schap_vergelijking", `${ingredientKey}:${bestemming}`);
+    emitIntakeClientEvent("dashboard.schap_vergelijking_click", {
+      ingredient_key: ingredientKey,
+      verdict,
+      surface,
+      bestemming,
+    });
+  };
+
   const verdictList = (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+    <div className="flex flex-col gap-2.5">
       {cards.map((card) => {
         const row = verdictByIngredient.get(card.ingredientKey);
         const afleiding = row
           ? buildAfleiding(card.ingredientKey as IngredientClaimKey, row)
           : null;
+        const facts = row
+          ? buildVerdictFacts(card.ingredientKey as IngredientClaimKey, row)
+          : [];
         const isOpen = openIngredient === card.ingredientKey;
+        const tone = TONE[card.tone];
+        const visual = getIngredientVisual(card.ingredientKey);
+        const datum = row ? formatOordeelDatum(row.createdAt) : null;
+        const heeftUitgang = Boolean(card.hubPath || card.comparisonPath);
 
         return (
           <article
             key={card.ingredientKey}
             data-tone={card.tone}
-            style={{
-              border: `1px solid ${TONE_BORDER[card.tone]}`,
-              borderRadius: 16,
-              background: "var(--panel, rgba(255,255,255,0.04))",
-              padding: "15px 14px",
-            }}
+            className={`@container overflow-hidden rounded-2xl border bg-white/[0.055] transition-colors duration-150 hover:bg-white/[0.075] ${tone.card}`}
           >
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-                gap: 8,
-                marginBottom: 9,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 9.5,
-                  fontWeight: 700,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  padding: "3px 8px",
-                  borderRadius: 999,
-                  border: `1px solid ${TONE_BORDER[card.tone]}`,
-                  color: "var(--text-muted)",
-                }}
-              >
-                Product
-              </span>
-              {showFavoriteSave ? (
-                <FavoriteSaveButton
-                  compact
-                  surface={surface}
-                  item={{
-                    id: card.ingredientKey,
-                    title: card.name,
-                    kind: "supplement",
-                    source: favoriteSource,
-                  }}
-                />
+            <div className="flex gap-3 p-3.5 @[22rem]:gap-4 @[22rem]:p-4 @[30rem]:p-5">
+              {visual ? (
+                /* De foto is de stof herkenbaar maken, geen merkaanbeveling:
+                   de alt-tekst noemt geen merk en er staat nergens een
+                   merknaam in de copy. Bij een oordeel dat géén "ja" is gaat
+                   hij grijs — het beeld mag nooit harder duwen dan het
+                   oordeel erboven. */
+                <span className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-black/30 @[26rem]:h-20 @[26rem]:w-20">
+                  <Image
+                    src={visual.imageSrc}
+                    alt={visual.imageAlt}
+                    width={160}
+                    height={160}
+                    className={`h-full w-full object-contain p-1.5 ${
+                      card.tone === "ja" ? "" : "opacity-45 grayscale"
+                    }`}
+                    loading="lazy"
+                  />
+                </span>
               ) : null}
-              <span
-                style={{
-                  marginLeft: "auto",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  whiteSpace: "nowrap",
-                  color: TONE_COLOR[card.tone],
-                }}
-              >
-                {card.label}
-              </span>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[9.5px] font-bold uppercase tracking-[0.14em] text-[var(--text-subtle)]">
+                      Product
+                    </p>
+                    <h3 className="mt-1 font-[family-name:var(--f-serif)] text-[16px] font-normal leading-tight text-[var(--text)]">
+                      {card.name}
+                    </h3>
+                  </div>
+                  <span
+                    className={`inline-flex flex-shrink-0 items-center gap-1.5 rounded-md border px-2 py-1 text-[10px] font-bold uppercase leading-none tracking-[0.08em] ${tone.badge}`}
+                  >
+                    <span
+                      aria-hidden
+                      className={`h-1.5 w-1.5 rounded-full ${tone.dot}`}
+                    />
+                    {card.label}
+                  </span>
+                </div>
+
+                <p className="mt-2 text-[12.5px] leading-relaxed text-[var(--text-muted)] text-pretty">
+                  {card.reason}
+                </p>
+              </div>
             </div>
 
-            <h3
-              style={{
-                fontFamily: "var(--f-serif)",
-                fontWeight: 400,
-                fontSize: 16,
-                lineHeight: 1.25,
-                color: "var(--text)",
-                margin: "0 0 6px",
-              }}
-            >
-              {card.name}
-            </h3>
-            <p
-              style={{
-                fontSize: 12.5,
-                color: "var(--text-muted)",
-                lineHeight: 1.55,
-                margin: 0,
-                textWrap: "pretty",
-              }}
-            >
-              {card.reason}
-            </p>
+            {plek ? (
+              /* De rangorde, niet de werking. Wat hier staat is onze eigen
+                 volgorde van adviseren — de laagtekst zegt zelf al dat deze
+                 laag geen vervanging is van de lagen erboven. Een cijfer voor
+                 hoeveel de stof "helpt" zou een gezondheidsclaim zijn en mag
+                 alleen in de goedgekeurde EU-bewoording. */
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-white/[0.07] px-3.5 py-2.5 @[22rem]:px-4 @[30rem]:px-5">
+                <p className="text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[var(--text-subtle)]">
+                  Plek in je plan
+                </p>
+                <span aria-hidden className="flex w-20 gap-[3px]">
+                  {Array.from({ length: plek.totalLayers }, (_, index) => (
+                    <span
+                      key={index}
+                      className={`h-1.5 flex-1 rounded-full ${
+                        index + 1 === plek.layerId
+                          ? "bg-[var(--terra,#C8956C)]"
+                          : "bg-[rgba(90,143,106,0.45)]"
+                      }`}
+                    />
+                  ))}
+                </span>
+                <p className="text-[11.5px] font-semibold text-[var(--text-muted)]">
+                  Laag {plek.layerId} van {plek.totalLayers} · {plek.layerName}
+                </p>
+                <p className="ml-auto text-[11px] text-[var(--text-subtle)]">
+                  {plek.layersAbove} lagen komen hiervóór
+                </p>
+              </div>
+            ) : null}
+
+            {facts.length > 0 ? (
+              <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-white/[0.07] bg-black/20 px-3.5 py-3 @[22rem]:px-4 @[26rem]:grid-cols-4 @[30rem]:px-5">
+                {facts.map((fact) => (
+                  <div key={fact.label} className="min-w-0">
+                    <dt className="text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[var(--text-subtle)]">
+                      {fact.label}
+                    </dt>
+                    <dd className="mt-0.5 text-[12.5px] font-semibold leading-snug text-[var(--text)] text-pretty">
+                      {fact.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
 
             {afleiding ? (
-              <>
+              <div className="border-t border-white/[0.07]">
                 <button
                   type="button"
                   onClick={() => handleAfleidingToggle(card.ingredientKey, card.verdict)}
                   aria-expanded={isOpen}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                    marginTop: 9,
-                    padding: 0,
-                    border: "none",
-                    background: "none",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "var(--text-muted)",
-                    cursor: "pointer",
-                  }}
+                  aria-controls={`afleiding-${card.ingredientKey}`}
+                  className="flex w-full cursor-pointer items-center justify-between gap-3 px-3.5 py-3 text-left text-[12px] font-semibold text-[var(--text-muted)] @[22rem]:px-4 @[30rem]:px-5"
                 >
                   {isOpen ? "Verberg hoe we hier komen" : "Hoe we hier komen"}
                   <Icons.ChevronRight
-                    s={12}
-                    style={{ transform: isOpen ? "rotate(90deg)" : undefined }}
+                    s={13}
+                    style={{
+                      flexShrink: 0,
+                      transform: isOpen ? "rotate(90deg)" : undefined,
+                      transition: "transform 0.15s ease",
+                    }}
                   />
                 </button>
+
                 {isOpen ? (
-                  <>
-                    <dl
-                      style={{
-                        margin: "9px 0 0",
-                        border: "1px solid var(--divider)",
-                        borderRadius: 10,
-                        background: "rgba(0,0,0,0.18)",
-                        overflow: "hidden",
-                      }}
-                    >
+                  <div
+                    id={`afleiding-${card.ingredientKey}`}
+                    className="border-t border-white/[0.07] px-3.5 pb-4 pt-3 @[22rem]:px-4 @[30rem]:px-5"
+                  >
+                    <dl className="overflow-hidden rounded-xl border border-[var(--divider)] bg-black/20">
                       <AfleidingRow
                         label="Signaal"
                         text={afleiding.signaalLine}
@@ -269,69 +347,64 @@ export default function SupplementVerdictPanel({
                         <AfleidingRow label="Bloedwaarde" text={afleiding.bloedLine} last />
                       ) : null}
                     </dl>
-                    <p
-                      style={{
-                        margin: "11px 0 0",
-                        fontSize: 12,
-                        lineHeight: 1.55,
-                        color: "var(--text-muted)",
-                        borderLeft: "2px solid rgba(90, 143, 106, 0.45)",
-                        paddingLeft: 10,
-                        textWrap: "pretty",
-                      }}
-                    >
+                    <p className="mt-3 border-l-2 border-[rgba(90,143,106,0.45)] pl-2.5 text-[12px] leading-relaxed text-[var(--text-muted)] text-pretty">
                       {afleiding.claimLine}
                     </p>
-                  </>
+                  </div>
                 ) : null}
-              </>
+              </div>
             ) : null}
 
-            <p
-              style={{
-                fontSize: 11,
-                color: "var(--text-subtle)",
-                lineHeight: 1.5,
-                margin: "9px 0 0",
-                textWrap: "pretty",
-              }}
-            >
-              {card.comparisonPath
-                ? "We ontvangen commissie als je via ons koopt. Het oordeel is los daarvan opgesteld en verandert niet mee."
-                : "Hier verdienen we niets aan, en je kunt er ook niets via ons kopen."}
-            </p>
+            <div className="border-t border-white/[0.07] px-3.5 py-3 @[22rem]:px-4 @[30rem]:px-5">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                {showFavoriteSave ? (
+                  <FavoriteSaveButton
+                    compact
+                    surface={surface}
+                    item={{
+                      id: card.ingredientKey,
+                      title: card.name,
+                      kind: "supplement",
+                      source: favoriteSource,
+                    }}
+                  />
+                ) : null}
+                {card.hubPath ? (
+                  <Link
+                    href={withVoortgangReturn(card.hubPath)}
+                    onClick={() =>
+                      handleUitgang(card.ingredientKey, card.verdict, "catalogus")
+                    }
+                    className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-[var(--sage,#5A8F6A)] no-underline"
+                  >
+                    Bekijk de producten
+                    <Icons.ChevronRight s={13} />
+                  </Link>
+                ) : null}
+                {card.comparisonPath ? (
+                  <Link
+                    href={withVoortgangReturn(card.comparisonPath)}
+                    onClick={() =>
+                      handleUitgang(card.ingredientKey, card.verdict, "vergelijking")
+                    }
+                    className="text-[12.5px] font-medium text-[var(--text-muted)] no-underline"
+                  >
+                    Bekijk de vergelijking
+                  </Link>
+                ) : null}
+                {datum ? (
+                  <span className="ml-auto text-[10px] text-[var(--text-subtle)]">
+                    Oordeel van {datum}
+                  </span>
+                ) : null}
+              </div>
 
-            {card.comparisonPath ? (
-              <Link
-                href={withVoortgangReturn(card.comparisonPath)}
-                onClick={() => {
-                  trackEvent("dashboard_schap_vergelijking_click", {
-                    ingredient: card.ingredientKey,
-                    verdict: card.verdict,
-                    surface,
-                  });
-                  clarityTag("dashboard_schap_vergelijking", card.ingredientKey);
-                  emitIntakeClientEvent("dashboard.schap_vergelijking_click", {
-                    ingredient_key: card.ingredientKey,
-                    verdict: card.verdict,
-                    surface,
-                  });
-                }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 4,
-                  marginTop: 11,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "var(--sage, #5A8F6A)",
-                  textDecoration: "none",
-                }}
-              >
-                Bekijk de vergelijking
-                <Icons.ChevronRight s={14} />
-              </Link>
-            ) : null}
+              <p className="mt-2 text-[10.5px] leading-relaxed text-[var(--text-subtle)] text-pretty">
+                {heeftUitgang
+                  ? "We ontvangen commissie als je via ons koopt. Het oordeel is los daarvan opgesteld en verandert niet mee."
+                  : "Hier verdienen we niets aan, en je kunt er ook niets via ons kopen."}
+              </p>
+            </div>
           </article>
         );
       })}
@@ -341,7 +414,7 @@ export default function SupplementVerdictPanel({
   return (
     <section
       aria-label={isSummary ? "Ons oordeel — samenvatting" : "Alle oordelen"}
-      style={{ marginBottom: hideHeader ? 0 : 24 }}
+      className={hideHeader ? undefined : "mb-6"}
     >
       {!hideHeader ? (
         isSummary ? (
@@ -369,34 +442,14 @@ export default function SupplementVerdictPanel({
         <button
           type="button"
           onClick={onViewAll}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            marginTop: 12,
-            padding: 0,
-            border: "none",
-            background: "none",
-            fontSize: 14,
-            fontWeight: 600,
-            color: "var(--sage)",
-            cursor: "pointer",
-          }}
+          className="mt-3 inline-flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 text-[14px] font-semibold text-[var(--sage)]"
         >
           Alle {allCards.length} oordelen + vergelijking →
           <Icons.ChevronRight s={16} />
         </button>
       ) : null}
 
-      <p
-        style={{
-          fontSize: 12,
-          color: "var(--text-subtle)",
-          lineHeight: 1.5,
-          margin: "10px 2px 0",
-          textWrap: "pretty",
-        }}
-      >
+      <p className="mx-0.5 mt-2.5 text-[12px] leading-relaxed text-[var(--text-subtle)] text-pretty">
         Op basis van je laatste check. Adviezen, geen diagnoses — bij aanhoudende
         klachten je huisarts.
       </p>
@@ -417,57 +470,23 @@ function AfleidingRow({
 }) {
   return (
     <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "78px minmax(0, 1fr)",
-        gap: "4px 10px",
-        padding: "10px 12px",
-        borderBottom: last ? "none" : "1px solid var(--divider)",
-      }}
+      className={`grid grid-cols-[78px_minmax(0,1fr)] gap-x-2.5 gap-y-1 px-3 py-2.5 ${
+        last ? "" : "border-b border-[var(--divider)]"
+      }`}
     >
-      <dt
-        style={{
-          fontSize: 9.5,
-          fontWeight: 600,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: "var(--text-subtle)",
-          paddingTop: 2,
-        }}
-      >
+      <dt className="pt-0.5 text-[9.5px] font-semibold uppercase tracking-[0.08em] text-[var(--text-subtle)]">
         {label}
       </dt>
-      <dd
-        style={{
-          margin: 0,
-          fontSize: 12.5,
-          lineHeight: 1.5,
-          color: "var(--text-muted)",
-          textWrap: "pretty",
-        }}
-      >
+      <dd className="m-0 text-[12.5px] leading-relaxed text-[var(--text-muted)] text-pretty">
         {text}
         {typeof confidence === "number" ? (
-          <span
-            aria-hidden
-            style={{
-              display: "inline-flex",
-              gap: 2,
-              verticalAlign: "-0.05em",
-              marginLeft: 5,
-            }}
-          >
+          <span aria-hidden className="ml-1.5 inline-flex gap-0.5 align-[-0.05em]">
             {[1, 2, 3, 4].map((step) => (
               <i
                 key={step}
-                style={{
-                  width: 5,
-                  height: 9,
-                  borderRadius: 1,
-                  display: "block",
-                  background:
-                    step <= confidence ? "var(--sage, #5A8F6A)" : "rgba(255,255,255,0.14)",
-                }}
+                className={`block h-[9px] w-[5px] rounded-[1px] ${
+                  step <= confidence ? "bg-[var(--sage,#5A8F6A)]" : "bg-white/15"
+                }`}
               />
             ))}
           </span>

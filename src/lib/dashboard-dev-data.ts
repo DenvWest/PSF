@@ -18,6 +18,7 @@ import type {
   PillarId,
 } from "@/types/dashboard";
 import type { DomainScores } from "@/lib/intake-engine";
+import type { StoredSupplementVerdict, VerdictEvidence } from "@/types/verdict";
 
 const DEV_INTAKE_ANSWERS: Record<string, number> = {
   SLP_QUAL: 3,
@@ -50,6 +51,89 @@ function devAnswersForCheck(checkId: "check1" | "check2"): Record<string, number
     NUT_O3: 2,
   };
 }
+
+/**
+ * Voedingslog + oordelen voor de dev-staat. Zonder deze twee blijft de
+ * Keuze-tab leeg — de voedingspoort is dicht en er is geen enkel oordeel om te
+ * tonen — en dan is precies het scherm dat het aanbod draagt lokaal niet te
+ * beoordelen. De set dekt bewust alle vier de tonen: aanvullen, niet nodig,
+ * eerst leefstijl en een oordeel zonder bewaarde snapshot.
+ */
+const DEV_NUTRITION_INTAKE: DashboardData["nutritionIntake"] = {
+  date: "2026-07-18",
+  items: [
+    { label: "Eiwit", band: "below", nutrient: "protein" },
+    { label: "Omega-3", band: "below", nutrient: "omega3" },
+    { label: "Magnesium", band: "around", nutrient: "magnesium" },
+    { label: "Vitamine D", band: "below", nutrient: "vitamin_d" },
+    { label: "Zink", band: "meets", nutrient: "zinc" },
+  ],
+};
+
+const DEV_VERDICT_EVIDENCE: VerdictEvidence = {
+  scores: toDomainScores(CHECKS.check2.scores),
+  signals: {
+    omega3_deficiency: true,
+    magnesium_signal: true,
+    cortisol_risk: false,
+    creatine_signal: false,
+    melatonine_signal: false,
+    protein_gap_signal: true,
+    low_recovery_no_load: false,
+    sleep_issue_no_stress: false,
+    energy_dip_unexplained: false,
+  },
+  profileLabel: "Onrustige Slaper",
+  triggeredBy: [{ type: "signal", signal: "magnesium_signal" }],
+  nutritionLogCompleted: true,
+};
+
+function devVerdict(
+  ingredientKey: string,
+  verdict: StoredSupplementVerdict["verdict"],
+  reasonKey: string,
+  basedOn: VerdictEvidence | null = DEV_VERDICT_EVIDENCE,
+): StoredSupplementVerdict {
+  return {
+    id: `dev-${ingredientKey}`,
+    ingredientKey,
+    verdict,
+    reasonKey,
+    rulesVersion: RULES_VERSION,
+    nextReviewAt: null,
+    createdAt: "2026-07-18T09:00:00.000Z",
+    supersededAt: null,
+    basedOn,
+  };
+}
+
+const DEV_SUPPLEMENT_VERDICTS: StoredSupplementVerdict[] = [
+  devVerdict("magnesium", "kopen", "trigger_matched"),
+  devVerdict("omega3", "kopen", "trigger_matched", {
+    ...DEV_VERDICT_EVIDENCE,
+    triggeredBy: [{ type: "signal", signal: "omega3_deficiency" }],
+  }),
+  devVerdict("eiwitpoeder", "kopen", "trigger_matched", {
+    ...DEV_VERDICT_EVIDENCE,
+    triggeredBy: [
+      { type: "signal", signal: "protein_gap_signal" },
+      { type: "domain_below", domain: "nutrition_score", score: 38, threshold: 50 },
+    ],
+  }),
+  devVerdict("vitamineD", "niet_nodig", "no_trigger_matched", {
+    ...DEV_VERDICT_EVIDENCE,
+    triggeredBy: [],
+  }),
+  devVerdict("zink", "niet_nodig", "no_trigger_matched", null),
+  devVerdict("creatine", "kopen", "trigger_matched", {
+    ...DEV_VERDICT_EVIDENCE,
+    triggeredBy: [{ type: "hub_legacy", rule: "creatine_custom_matcher" }],
+  }),
+  // De enige eerlijke "wacht"-toon die we hebben: ashwagandha staat echt
+  // on-hold bij EFSA. Hij hoort bij geen enkel domein-schap, dus hij verschijnt
+  // alleen op de surfaces die álle oordelen tonen.
+  devVerdict("ashwagandha", "eerst_leefstijl", "claim_on_hold", null),
+];
 
 function toDomainScores(scores: CheckScores): DomainScores {
   return {
@@ -243,10 +327,10 @@ export function buildDevDashboardData(
     prev,
     history,
     retest: mode === "retest",
-    nutritionIntake: null,
-    nutritionLastLoggedAt: null,
+    nutritionIntake: DEV_NUTRITION_INTAKE,
+    nutritionLastLoggedAt: "2026-07-18T09:00:00.000Z",
     nutritionRelogDue: false,
-    daysSinceNutritionLog: null,
+    daysSinceNutritionLog: 3,
     movementRecoveryTrend: [
       { date: "2026-07-10", value: 3 },
       { date: "2026-07-14", value: 2 },
@@ -298,7 +382,7 @@ export function buildDevDashboardData(
         : { slaap: 3, stress: 9 },
     domainMeasurements: devDomainMeasurements(mode),
     movementPrefs: EMPTY_MOVEMENT_PREFS,
-    supplementVerdicts: [],
+    supplementVerdicts: DEV_SUPPLEMENT_VERDICTS,
     proteinTarget: { gramsLow: 95, gramsHigh: 110 },
   };
 }

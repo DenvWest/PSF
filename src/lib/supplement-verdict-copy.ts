@@ -1,5 +1,7 @@
 import { approvedClaims, type IngredientClaimKey } from "@/data/approved-claims";
+import { getCatalogEntryByClaimKey } from "@/data/supplement-catalog";
 import { getAllowedComparisonPath } from "@/lib/comparison-availability";
+import { buildSupplementHubHref } from "@/lib/supplement-hub/hub-link";
 import type { StoredSupplementVerdict, VerdictValue } from "@/types/verdict";
 
 export type VerdictTone = "ja" | "nee" | "wacht";
@@ -74,6 +76,13 @@ export type VerdictCardCopy = {
   presentationKind: VerdictPresentationKind;
   reason: string;
   comparisonPath: string | null;
+  /**
+   * De productcatalogus, al gezet op deze categorie. Volgt exact dezelfde
+   * poort als `comparisonPath`: alleen bij "kopen" staat er een winkelroute
+   * naast het oordeel, zodat een "Niet nodig" nooit stilzwijgend een
+   * koopsuggestie wordt.
+   */
+  hubPath: string | null;
 };
 
 function ingredientName(ingredientKey: string): string {
@@ -93,6 +102,14 @@ function comparisonPathFor(ingredientKey: string, verdict: VerdictValue): string
   return getAllowedComparisonPath(slug);
 }
 
+function hubPathFor(ingredientKey: string, verdict: VerdictValue): string | null {
+  if (verdict !== "kopen") {
+    return null;
+  }
+  const hubSlug = getCatalogEntryByClaimKey(ingredientKey)?.hubSlug;
+  return hubSlug ? buildSupplementHubHref(hubSlug) : null;
+}
+
 export function toVerdictCardCopy(row: StoredSupplementVerdict): VerdictCardCopy {
   return {
     ingredientKey: row.ingredientKey,
@@ -104,6 +121,7 @@ export function toVerdictCardCopy(row: StoredSupplementVerdict): VerdictCardCopy
     presentationKind: presentationKindFor(row.reasonKey),
     reason: REASON_TEXT[row.reasonKey] ?? FALLBACK_REASON,
     comparisonPath: comparisonPathFor(row.ingredientKey, row.verdict),
+    hubPath: hubPathFor(row.ingredientKey, row.verdict),
   };
 }
 
