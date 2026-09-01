@@ -32,11 +32,9 @@ export default function KennisbankHubHero() {
             <div className="h-px w-8 bg-stone-300/90" aria-hidden />
             <p className="ps-eyebrow">{KB_HUB_LABEL}</p>
           </div>
-          <h1 className={KB_HERO_H1}>Begrippen & Concepten</h1>
+          <h1 className={KB_HERO_H1}>Begrippen en concepten</h1>
           <p className={KB_HERO_INTRO}>
-            Supplementen beoordelen begint met de juiste begrippen kennen. Van
-            hoe je lichaam verandert na 40 tot hoe je een etiket leest — hier
-            vind je de uitleg die ertoe doet.
+            Begrippen over supplementen en leefstijl, elk met bronnen.
           </p>
         </div>
       </Container>

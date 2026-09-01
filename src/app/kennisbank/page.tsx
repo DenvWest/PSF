@@ -15,9 +15,9 @@ import {
 } from "@/components/library/library-tokens";
 
 export const metadata: Metadata = {
-  title: "Kennisbank — Begrippen & Concepten",
+  title: "Kennisbank — Begrippen en concepten",
   description:
-    "Van biobeschikbaarheid tot healthspan. De belangrijkste begrippen over supplementen, leefstijl en gezond ouder worden — helder uitgelegd, met bronnen.",
+    "Begrippen over supplementen, leefstijl en gezond ouder worden, elk met bronnen.",
   alternates: {
     canonical: "https://perfectsupplement.nl/kennisbank",
   },
@@ -65,7 +65,7 @@ export default async function KennisbankPage({
                 "@type": "CollectionPage",
                 name: KB_HUB_LABEL,
                 description:
-                  "Begrippen en concepten over supplementen, leefstijl en gezond ouder worden — helder uitgelegd.",
+                  "Begrippen over supplementen en leefstijl, elk met bronnen.",
                 url: "https://perfectsupplement.nl/kennisbank",
                 isPartOf: {
                   "@type": "WebSite",
@@ -97,12 +97,11 @@ export default async function KennisbankPage({
           <header className="max-w-2xl">
             <p className={LIB_EYEBROW}>{KB_HUB_LABEL}</p>
             <h1 className="mt-2 font-display text-[clamp(1.9rem,3.6vw,2.6rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-stone-900">
-              Begrippen &amp; concepten
+              Begrippen en concepten
             </h1>
             <p className="mt-3 text-[1rem] leading-relaxed text-stone-600">
-              {items.length} begrippen die je nodig hebt om een etiket, een
-              dosering of een claim zelf te beoordelen. Elk begrip staat op
-              bronnen, niet op mening.
+              {items.length} begrippen over supplementen en leefstijl, elk met
+              bronnen.
             </p>
           </header>
 

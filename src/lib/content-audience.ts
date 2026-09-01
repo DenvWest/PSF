@@ -50,5 +50,5 @@ export const AUDIENCE_BAND_ORDER: Record<AudienceBand, number> = {
 };
 
 export function audienceTagLabel(tag: AudienceTag): string {
-  return tag === "mannen" ? "Mannenfysiologie" : "Vrouwenfysiologie";
+  return tag === "mannen" ? "Voor mannen" : "Voor vrouwen";
 }

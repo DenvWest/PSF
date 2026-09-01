@@ -48,8 +48,8 @@ const PAGINA = 12;
 
 const BAND_KOP: Record<AudienceBand, string | null> = {
   "voor-jou": null,
-  algemeen: "Geldt voor iedereen",
-  "andere-fysiologie": "Geschreven vanuit de andere fysiologie",
+  algemeen: "Voor iedereen",
+  "andere-fysiologie": "Voor de andere groep",
 };
 
 type LibraryBrowserProps = {
@@ -335,11 +335,10 @@ export default function LibraryBrowser({
         {getoond.length === 0 ? (
           <div className="mt-8 rounded-2xl border border-dashed border-stone-300 bg-white/60 px-6 py-12 text-center">
             <p className="font-display text-base font-semibold text-stone-900">
-              Niets gevonden met deze combinatie
+              Geen resultaten
             </p>
             <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-stone-500">
-              Probeer een ander onderwerp of wis de filters — de publiekskeuze
-              verbergt nooit iets, die verandert alleen de volgorde.
+              Probeer een andere zoekterm of wis de filters.
             </p>
             <button
               type="button"

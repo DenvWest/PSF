@@ -24,8 +24,6 @@ export default function BlogCategoriePageContent({
   items,
   audience,
 }: Props) {
-  const aantal = items.filter((item) => item.groupKey === config.id).length;
-
   return (
     <main className={LIB_PAGE_BG}>
       <Container className="pb-16 pt-[5.5rem] md:pb-20 md:pt-28">
@@ -57,9 +55,7 @@ export default function BlogCategoriePageContent({
             {config.naam}
           </h1>
           <p className="mt-3 text-[1rem] leading-relaxed text-stone-600">
-            {config.beschrijving} {aantal}{" "}
-            {aantal === 1 ? "artikel" : "artikelen"} met het mechanisme, het
-            bewijsniveau en de bronnen erbij.
+            {config.beschrijving}
           </p>
           <Link
             href={config.themaHref}
@@ -86,8 +82,8 @@ export default function BlogCategoriePageContent({
       <section className="border-t border-stone-200/70 py-16 md:py-20">
         <Container>
           <BlogThemaLinks
-            heading="Andere klachten verkennen?"
-            subtext="Onze themagidsen helpen je vanuit je symptoom verder."
+            heading="Andere themagidsen"
+            subtext="Gidsen over slaap, stress en energie."
           />
         </Container>
       </section>

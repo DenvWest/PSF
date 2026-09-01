@@ -14,8 +14,8 @@ interface BlogThemaLinksProps {
 }
 
 export default function BlogThemaLinks({
-  heading = "Liever beginnen bij je klacht?",
-  subtext = "Onze themagidsen helpen je begrijpen wat er speelt en wijzen je naar concrete stappen.",
+  heading = "Themagidsen",
+  subtext = "Gidsen over slaap, stress en energie.",
   centered = true,
 }: BlogThemaLinksProps) {
   return (

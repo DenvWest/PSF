@@ -19,7 +19,7 @@ import {
 export const metadata: Metadata = {
   title: "Herstelbibliotheek — Slaap, Stress & Herstel na 40",
   description:
-    "Moe wakker worden, altijd aan staan of trager herstel na 40? Rustige, onderbouwde artikelen over slaap, stress, energie en wat je lichaam signaleert — met een lens voor mannen- en vrouwenfysiologie.",
+    "Artikelen over slaap, stress, energie en herstel na 40. Onderbouwd, met bronnen.",
   alternates: {
     canonical: "https://perfectsupplement.nl/blog",
   },
@@ -65,7 +65,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                 "@type": "CollectionPage",
                 name: BLOG_HUB_LABEL,
                 description:
-                  "Rustige, onderbouwde artikelen over slaap, stress, energie en herstel na je 40e.",
+                  "Artikelen over slaap, stress, energie en supplementen.",
                 url: "https://perfectsupplement.nl/blog",
                 isPartOf: {
                   "@type": "WebSite",
@@ -97,13 +97,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
           <header className="max-w-2xl">
             <p className={LIB_EYEBROW}>{BLOG_HUB_LABEL}</p>
             <h1 className="mt-2 font-display text-[clamp(1.9rem,3.6vw,2.6rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-stone-900">
-              Begrijp waarom je lichaam niet meer herstelt zoals vroeger
+              Slaap, stress en herstel na 40
             </h1>
             <p className="mt-3 text-[1rem] leading-relaxed text-stone-600">
               {items.length} artikelen over slaap, stress, energie en
-              supplementen — met het mechanisme, het bewijsniveau en de bronnen
-              erbij. Kies voor wie je leest en de volgorde past zich aan — er
-              verdwijnt niets.
+              supplementen.
             </p>
           </header>
 

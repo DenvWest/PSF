@@ -10,17 +10,14 @@ import type { AudienceContext } from "@/components/library/LibraryAudienceLens";
 
 const AUDIENCE_CONTEXT: Record<ContentAudience, AudienceContext> = {
   alle: {
-    toelichting:
-      "De meeste begrippen zijn fysiologie die voor iedereen geldt — biobeschikbaarheid werkt niet anders per geslacht. Kies je fysiologie voor wat wél verschilt.",
+    toelichting: "Kies Mannen of Vrouwen voor hormonale begrippen.",
   },
   mannen: {
-    toelichting:
-      "Alleen bij hormonale begrippen loopt de fysiologie uiteen. Die staan nu bovenaan; de rest van de meetlat blijft identiek.",
+    toelichting: "Hormonale begrippen voor mannen staan nu bovenaan.",
     link: { label: "Naar de pijler Testosteron na 40", href: "/testosteron-na-40" },
   },
   vrouwen: {
-    toelichting:
-      "Oestrogeen stuurt na je veertigste botopbouw, slaap en herstel mee. Dat begrippenblok bouwen we nog uit; de overgangspijler behandelt het nu.",
+    toelichting: "Hormonale begrippen voor vrouwen staan nu bovenaan.",
     link: { label: "Naar de pijler Overgang", href: "/overgang" },
   },
 };
@@ -28,18 +25,13 @@ const AUDIENCE_CONTEXT: Record<ContentAudience, AudienceContext> = {
 const CROSS_LINKS = [
   {
     label: "Herstelbibliotheek",
-    hint: "De artikelen waarin deze begrippen samenkomen.",
+    hint: "Artikelen over slaap, stress en herstel.",
     href: "/blog",
   },
   {
     label: "Supplementen vergelijken",
-    hint: "Dezelfde meetlat over alle producten: PS-Score.",
+    hint: "Producten vergelijken op dezelfde criteria.",
     href: "/supplementen",
-  },
-  {
-    label: "Onze methode",
-    hint: "Hoe we beoordelen en wat we bewust niet claimen.",
-    href: "/onderbouwing",
   },
 ];
 
@@ -76,9 +68,8 @@ export default function KennisbankLibrary({
       allesLabel="Alle thema's"
       itemNoun={{ enkel: "begrip", meervoud: "begrippen" }}
       intro={{
-        title: "De begrippen achter het oordeel",
-        body: "Elk begrip legt uit wat het is, hoe het werkt en waarom het meeweegt in onze beoordeling — met minimaal vijf bronnen eronder.",
-        link: { label: "Zo beoordelen we", href: "/onderbouwing" },
+        title: "Thema's",
+        body: "Kies een thema of zoek een begrip.",
       }}
       audienceContext={AUDIENCE_CONTEXT}
       initialAudience={initialAudience}

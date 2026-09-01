@@ -23,7 +23,6 @@ export default function KennisbankThemaPageContent({
 }: KennisbankThemaPageContentProps) {
   const config = themeLabels[theme];
   const items = getKennisbankLibraryItems();
-  const aantal = items.filter((item) => item.groupKey === theme).length;
 
   return (
     <main className={LIB_PAGE_BG}>
@@ -56,8 +55,7 @@ export default function KennisbankThemaPageContent({
             {config.title}
           </h1>
           <p className="mt-3 text-[1rem] leading-relaxed text-stone-600">
-            {config.description} {aantal}{" "}
-            {aantal === 1 ? "begrip" : "begrippen"}, elk met de bronnen erbij.
+            {config.description}
           </p>
         </header>
 

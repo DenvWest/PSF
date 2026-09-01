@@ -32,7 +32,7 @@ describe("bibliotheek — publiekslens", () => {
     render(<BlogLibrary items={blogItems} initialAudience="vrouwen" />);
 
     expect(kaartTitels()[0]).toMatch(/Overgang/);
-    expect(screen.getByText("Geldt voor iedereen")).toBeTruthy();
+    expect(screen.getByText("Voor iedereen")).toBeTruthy();
   });
 
   it("laat de mannen-lens met de testosteronpijler beginnen", () => {
@@ -44,7 +44,7 @@ describe("bibliotheek — publiekslens", () => {
   it("schakelen van lens herordent zonder de lijst leeg te maken", () => {
     render(<BlogLibrary items={blogItems} />);
 
-    const groep = screen.getByRole("radiogroup", { name: /fysiologie/i });
+    const groep = screen.getByRole("radiogroup", { name: /voor wie/i });
     fireEvent.click(within(groep).getByRole("radio", { name: "Vrouwen" }));
 
     expect(kaartTitels()[0]).toMatch(/Overgang/);
@@ -82,7 +82,7 @@ describe("bibliotheek — filteren", () => {
       target: { value: "zzzzzz" },
     });
 
-    expect(screen.getByText(/Niets gevonden met deze combinatie/)).toBeTruthy();
+    expect(screen.getByText(/Geen resultaten/)).toBeTruthy();
     expect(
       screen.getAllByRole("button", { name: "Wis filters" }).length,
     ).toBeGreaterThan(0);

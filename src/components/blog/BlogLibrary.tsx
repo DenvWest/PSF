@@ -12,16 +12,14 @@ import type { AudienceContext } from "@/components/library/LibraryAudienceLens";
 const AUDIENCE_CONTEXT: Record<ContentAudience, AudienceContext> = {
   alle: {
     toelichting:
-      "Alles op volgorde van publicatie. Kies je fysiologie en de stukken die daar specifiek over gaan komen bovenaan — er verdwijnt niets.",
+      "Kies Mannen of Vrouwen om gerichte artikelen bovenaan te zetten.",
   },
   mannen: {
-    toelichting:
-      "Testosteron daalt na je veertigste met ongeveer een procent per jaar. Dat raakt slaap, herstel en spiermassa; die stukken staan nu vooraan.",
+    toelichting: "Artikelen voor mannen 40+ staan nu bovenaan.",
     link: { label: "Naar de pijler Testosteron na 40", href: "/testosteron-na-40" },
   },
   vrouwen: {
-    toelichting:
-      "In de perimenopauze verandert je slaap, herstel en botopbouw door dalend oestrogeen. De leefstijlbasis hieronder geldt onverkort; het hormonale deel staat in de overgangspijler.",
+    toelichting: "Artikelen over de overgang staan nu bovenaan.",
     link: { label: "Naar de pijler Overgang", href: "/overgang" },
   },
 };
@@ -29,17 +27,17 @@ const AUDIENCE_CONTEXT: Record<ContentAudience, AudienceContext> = {
 const CROSS_LINKS = [
   {
     label: "Kennisbank",
-    hint: "De begrippen achter de artikelen, met bronnen.",
+    hint: "Uitleg van begrippen, met bronnen.",
     href: "/kennisbank",
   },
   {
     label: "Supplementen vergelijken",
-    hint: "Dezelfde meetlat over alle producten: PS-Score.",
+    hint: "Producten vergelijken op dezelfde criteria.",
     href: "/supplementen",
   },
   {
     label: "Gezondheidsgidsen",
-    hint: "Per thema een gratis gids, ook voor mannen en vrouwen apart.",
+    hint: "Gratis gidsen per thema.",
     href: "/gidsen",
   },
 ];
@@ -77,9 +75,8 @@ export default function BlogLibrary({
       allesLabel="Alle onderwerpen"
       itemNoun={{ enkel: "artikel", meervoud: "artikelen" }}
       intro={{
-        title: "Lees op onderwerp, niet op toeval",
-        body: "Elk artikel noemt het mechanisme, het bewijsniveau en de bronnen eronder. Geen wondermiddelen, geen affiliate-links in de teksten.",
-        link: { label: "Zo beoordelen we", href: "/onderbouwing" },
+        title: "Onderwerpen",
+        body: "Kies een onderwerp of zoek op klacht.",
       }}
       audienceContext={AUDIENCE_CONTEXT}
       initialAudience={initialAudience}

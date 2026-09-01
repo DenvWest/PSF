@@ -53,7 +53,7 @@ export const themeLabels: Record<KennisbankTheme, {
 }> = {
   'lichaam-veroudering': {
     title: 'Lichaam & Veroudering',
-    description: 'Wat er fysiologisch verandert na je 40e — en waarom dat niet het einde is.',
+    description: 'Wat er in je lichaam verandert na je 40e.',
     icon: '🧬',
     colorClasses: {
       bg: 'from-rose-700 to-rose-800',
@@ -86,7 +86,7 @@ export const themeLabels: Record<KennisbankTheme, {
   },
   longevity: {
     title: 'Longevity & Gezond Ouder Worden',
-    description: 'Het grotere plaatje: niet langer leven, maar langer goed leven.',
+    description: 'Gezond ouder worden, niet alleen langer leven.',
     icon: '⏳',
     colorClasses: {
       bg: 'from-amber-700 to-amber-800',

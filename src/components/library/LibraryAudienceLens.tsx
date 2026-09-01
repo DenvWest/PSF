@@ -38,14 +38,14 @@ export default function LibraryAudienceLens({
 
   return (
     <section
-      aria-label="Voor wie lees je"
+      aria-label="Voor wie"
       className="rounded-2xl border border-ps-green/25 bg-gradient-to-br from-[#EAF6EE] to-[#F8FBF9] p-4 lg:p-5"
     >
-      <p className={`${LIB_EYEBROW} text-[#5A8F6A]`}>Voor wie lees je?</p>
+      <p className={`${LIB_EYEBROW} text-[#5A8F6A]`}>Voor wie</p>
 
       <div
         role="radiogroup"
-        aria-label="Kies je fysiologie"
+        aria-label="Kies voor wie"
         className="mt-2.5 grid grid-cols-3 gap-1 rounded-xl bg-white/70 p-1 ring-1 ring-inset ring-ps-green/15"
       >
         {AUDIENCE_OPTIONS.map((optie) => {
@@ -75,8 +75,8 @@ export default function LibraryAudienceLens({
 
       {value !== "alle" ? (
         <p className="mt-2 text-[0.75rem] tabular-nums text-stone-500">
-          {counts[value]} van {totaal} specifiek geschreven vanuit deze
-          fysiologie — de rest geldt voor beide.
+          {counts[value]} van {totaal} voor deze groep. De rest blijft
+          zichtbaar.
         </p>
       ) : null}
 
