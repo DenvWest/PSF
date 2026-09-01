@@ -110,4 +110,71 @@ describe("FOOD_SOURCES", () => {
       }
     }
   });
+
+  // ── v2-invarianten: elke waarde draagt zijn eigen herkomst en voorbehoud ──
+
+  it("claims nothing as verified without a source reference", () => {
+    for (const id of NUTRIENT_IDS) {
+      for (const source of FOOD_SOURCES[id]) {
+        if (source.verified) {
+          expect(source.source.ref).not.toBeNull();
+          expect(source.source.edition).not.toBeNull();
+        }
+      }
+    }
+  });
+
+  it("is honest that nothing has been checked against NEVO yet", () => {
+    for (const id of NUTRIENT_IDS) {
+      for (const source of FOOD_SOURCES[id]) {
+        expect(source.verified).toBe(false);
+        expect(source.source.ref).toBeNull();
+      }
+    }
+  });
+
+  it("explains every non-trivial spread", () => {
+    for (const id of NUTRIENT_IDS) {
+      for (const source of FOOD_SOURCES[id]) {
+        if (source.variability !== "low") {
+          expect(source.variabilityWhy, `${id}/${source.key}`).toBeTruthy();
+        }
+      }
+    }
+  });
+
+  it("explains every deviation in uptake", () => {
+    for (const id of NUTRIENT_IDS) {
+      for (const source of FOOD_SOURCES[id]) {
+        if (source.bioavailability !== "normal") {
+          expect(source.bioavailabilityWhy, `${id}/${source.key}`).toBeTruthy();
+        }
+      }
+    }
+  });
+
+  it("labels every omega-3 source as EPA/DHA or ALA", () => {
+    for (const source of FOOD_SOURCES.omega3) {
+      expect(source.omega3Kind, source.key).toBeDefined();
+    }
+  });
+
+  it("never gives an ALA source a value in the EPA/DHA unit", () => {
+    for (const source of FOOD_SOURCES.omega3) {
+      if (source.omega3Kind === "ala") {
+        expect(source.amount, source.key).toBeNull();
+      }
+    }
+  });
+
+  it("keeps plant-based magnesium and zinc marked as reduced uptake", () => {
+    const phytateGroups = ["wholegrain", "legumes", "nuts"];
+    for (const id of ["magnesium", "zinc"] as const) {
+      for (const source of FOOD_SOURCES[id]) {
+        if (phytateGroups.includes(source.portionGroup)) {
+          expect(source.bioavailability, `${id}/${source.key}`).toBe("reduced");
+        }
+      }
+    }
+  });
 });
