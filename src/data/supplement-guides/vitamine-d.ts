@@ -10,12 +10,12 @@ export const vitamineDData: SupplementData = {
   datePublished: "2026-03-01",
   h1: "Vitamine D: welke vorm past bij jou?",
   introTekst:
-    "Vitamine D werkt hormonaal — het beïnvloedt energie, stemming, calciumhuishouding en immuunmodulatie. Combinaties van D3 met K2 (vaak als MK-7) zijn daarom zo gangbaar na je 40e: ze sluiten aan bij zonlicht tekort én bij de wens calcium netjes naar bot ten goede te geleiden i.p.v. naar zacht weefsel waar het niet hoeft te zitten. Tekorten komen veel vaker voor in donkere maanden en bij weinig buitenbeweging — vaak zonder dat je het merkt.",
+    "Vitamine D werkt hormonaal — het beïnvloedt calciumhuishouding, spieren en immuunmodulatie. Combinaties van D3 met K2 (vaak als MK-7) zijn gangbaar na je 40e: ze sluiten aan bij zonlichttekort én bij de wens beide vetoplosbare vitamines in één product te nemen. Tekorten komen veel vaker voor in donkere maanden en bij weinig buitenbeweging — vaak zonder dat je het merkt.",
 
   watIsHet: {
     titel: "Wat doet vitamine D in je lichaam?",
     tekst:
-      "Vitamine D wordt aangemaakt in je huid bij blootstelling aan UVB-straling van de zon. Het fungeert als hormoon dat honderden genen reguleert — van calcium-opname tot immuunrespons tot de aanmaak van testosteron. Op supplementetiketten zie je doses vaak als percentage van de [ADH (aanbevolen dagelijkse hoeveelheid)](/kennisbank/adh) — een referentieminimum, geen persoonlijk optimum. Na je 40e daalt de aanmaakcapaciteit van je huid, terwijl je tegelijkertijd minder buiten bent en meer binnen werkt. Het resultaat: veel mannen hebben een tekort zonder het te weten. Vitamine K2 is de partner van D3: het zorgt dat calcium naar botten gaat in plaats van aderkalking te veroorzaken.",
+      "Vitamine D wordt aangemaakt in je huid bij blootstelling aan UVB-straling van de zon. Het fungeert als hormoon dat honderden genen reguleert — van calcium-opname tot immuunrespons. Op supplementetiketten zie je doses vaak als percentage van de [ADH (aanbevolen dagelijkse hoeveelheid)](/kennisbank/adh) — een referentieminimum, geen persoonlijk optimum. Na je 40e daalt de aanmaakcapaciteit van je huid, terwijl je tegelijkertijd minder buiten bent en meer binnen werkt. Het resultaat: veel mannen hebben een tekort zonder het te weten. Vitamine K2 verschijnt vaak naast D3 in combo-producten: vitamine K draagt bij tot de instandhouding van normale botten en tot de normale bloedstolling. De hartclaim voor K2 is door EFSA afgewezen — zie [vitamine K2](/kennisbank/vitamine-k2).",
   },
 
   waaromRelevant: {
@@ -66,7 +66,7 @@ export const vitamineDData: SupplementData = {
         geschiktVoor: "Tijdelijk of als je al K2 via voeding binnenkrijgt",
         dosering: "1.000–2.000 IE per dag",
         opmerking:
-          "Functioneel, maar bij hogere doseringen of langdurig gebruik is K2-toevoeging verstandig vanwege calcium-regulatie.",
+          "Functioneel: de erkende vitamine-D-claims gelden ook zonder K2. Een combo is handig als je beide stoffen wilt, geen vereiste.",
       },
     ],
     disclaimer:
@@ -84,7 +84,7 @@ export const vitamineDData: SupplementData = {
       {
         criterium: "K2 als MK-7",
         uitleg:
-          "MK-7 (menaquinon-7) heeft een langere halfwaardetijd dan MK-4 en werkt beter bij lagere dagelijkse doses. Combineer met D3.",
+          "MK-7 (menaquinon-7) heeft een langere halfwaardetijd dan MK-4 en past bij één dosis per dag. Combineer met D3 als je beide in één product wilt — niet omdat D3 zonder K2 'niet werkt'.",
       },
       {
         criterium: "Vetoplosbaar — innemen met vet",
@@ -147,7 +147,7 @@ export const vitamineDData: SupplementData = {
     {
       vraag: "Waarom wordt D3 vaak met K2 gecombineerd?",
       antwoord:
-        "D3 verbetert calciumopname; K2 (vooral MK-7) helpt calcium naar botten en weg van zachte weefsels. Die combinatie is ingestudeerd op lange termijn veiligheid bij suppletie.",
+        "D3 verhoogt de calciumopname (erkende claim). K2 (vaak MK-7) heeft eigen erkende claims op botten en bloedstolling. De zin dat K2 calcium 'uit slagaders houdt' is de hartclaim die EFSA heeft afgewezen. Vergelijk combo’s op de [vitamine D-pagina](/beste/vitamine-d).",
     },
   ],
 
@@ -169,6 +169,6 @@ export const vitamineDData: SupplementData = {
   productVergelijkingCta: {
     titel: "Welke vitamine D scoort het beste?",
     href: "/beste/vitamine-d",
-    linkLabel: "Vergelijk 3 D3-producten op dosering en prijs →",
+    linkLabel: "Vergelijk D3-producten én D3+K2-combinaties →",
   },
 };

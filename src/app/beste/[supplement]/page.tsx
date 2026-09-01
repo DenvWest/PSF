@@ -6,6 +6,7 @@ import {
   getSupplementComparisonData,
 } from "@/data/supplements";
 import { ChoiceHero } from "@/components/supplements/ChoiceHero";
+import { ComboVariantSection } from "@/components/supplements/ComboVariantSection";
 import { ComparisonTable } from "@/components/supplements/ComparisonTable";
 import { ProductCard } from "@/components/supplements/ProductCard";
 import { BuyingGuide } from "@/components/supplements/BuyingGuide";
@@ -95,8 +96,15 @@ export default async function Page({ params }: PageProps) {
 
   const pageUrl = absoluteUrl(`/beste/${supplement}`);
   const topProductLabel = data.topProductLabel ?? "Topkeuze";
+  const comboSlugs = new Set(
+    data.comboVariant?.choiceRoutes.map((route) => route.slug) ?? [],
+  );
+  const primaryProducts = data.products.filter((p) => !comboSlugs.has(p.slug));
+  const comboProducts = data.products.filter((p) => comboSlugs.has(p.slug));
   const topProduct =
-    data.products.find((p) => p.bestFor === topProductLabel) ?? data.products[0];
+    primaryProducts.find((p) => p.bestFor === topProductLabel) ??
+    data.products.find((p) => p.bestFor === topProductLabel) ??
+    data.products[0];
 
   const breadcrumbSchema = buildBreadcrumbSchema(data.breadcrumbs);
   const itemListSchema = buildItemListSchema(data.products, pageUrl);
@@ -200,6 +208,10 @@ export default async function Page({ params }: PageProps) {
           />
         </section>
 
+        {data.comboVariant ? (
+          <ComboVariantSection data={data} products={comboProducts} />
+        ) : null}
+
         <section className="mx-auto mt-16 w-full max-w-7xl px-6 lg:px-8">
           <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900">
             Veelgestelde vragen
@@ -211,7 +223,7 @@ export default async function Page({ params }: PageProps) {
           <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
             Alle varianten uitgelicht
           </h2>
-          {data.products.map((p, i) => (
+          {primaryProducts.map((p, i) => (
             <ProductCard
               key={p.slug}
               product={p}

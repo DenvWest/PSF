@@ -157,6 +157,10 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
   },
+  "vitamine-k2": {
+    theme: "nutrition",
+    relatedSupplementId: "vitamine-d3",
+  },
 };
 
 export function getContentMetadata(slug: string): ContentMetadata {

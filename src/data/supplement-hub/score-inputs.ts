@@ -172,6 +172,48 @@ export const PRODUCT_SCORE_INPUTS: Record<
       prijsPerEtiketdagCent: 16,
       prijsGecontroleerdOp: "2026-04-21",
     },
+    "vitaminstore-d3-k2-softgels": {
+      formKey: "d3-met-vetdrager",
+      label: {
+        werkzameStofGekwantificeerd: true,
+        dagdoseringVermeld: true,
+        samenstellingUitgesplitst: true,
+        proprietaryBlend: false,
+      },
+      certificeringen: [],
+      kwaliteitsmarkers: {},
+      dosisOnzekerReden: null,
+      prijsPerEtiketdagCent: 27,
+      prijsGecontroleerdOp: "2026-09-01",
+    },
+    "vitaminstore-d3-k2-drops": {
+      formKey: "d3-met-vetdrager",
+      label: {
+        werkzameStofGekwantificeerd: true,
+        dagdoseringVermeld: true,
+        samenstellingUitgesplitst: true,
+        proprietaryBlend: false,
+      },
+      certificeringen: [],
+      kwaliteitsmarkers: {},
+      dosisOnzekerReden: null,
+      prijsPerEtiketdagCent: 21,
+      prijsGecontroleerdOp: "2026-09-01",
+    },
+    "vitalnutrition-d3-k2": {
+      formKey: "d3-met-vetdrager",
+      label: {
+        werkzameStofGekwantificeerd: true,
+        dagdoseringVermeld: true,
+        samenstellingUitgesplitst: true,
+        proprietaryBlend: false,
+      },
+      certificeringen: [],
+      kwaliteitsmarkers: {},
+      dosisOnzekerReden: null,
+      prijsPerEtiketdagCent: 33,
+      prijsGecontroleerdOp: "2026-09-01",
+    },
   },
 
   creatine: {

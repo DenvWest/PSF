@@ -785,7 +785,7 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
       howItWorks: `In Nederland is de zon tussen oktober en maart vaak te laag voor voldoende huidsynthese — vooral bij binnenwerk, donkere huid of bedekkende kleding. Voeding levert meestal te weinig (vette vis, verrijkte producten). Suppletie met D3 (cholecalciferol) is gangbaar na bloedmeting (25-OH-vitamine D) en medisch advies.`,
       whyItMatters: `Veel mensen 40+ hebben in de winter een lage status zonder het te weten. EFSA erkent claims op botten, spieren en immuunsysteem — geen erkende claim op "meer energie" als etiketbelofte. Lees [vitamine D en energie](/blog/vitamine-d-en-energie), [tekort herkennen](/blog/vitamine-d-tekort-herkennen) en vergelijk producten op [/beste/vitamine-d](/beste/vitamine-d). De Leefstijlcheck vraagt naar zonlicht (LIF_SUN).`,
     },
-    relatedSlugs: ['mitochondrien', 'testosteron'],
+    relatedSlugs: ['mitochondrien', 'testosteron', 'vitamine-k2'],
     relatedComparisons: ['/beste/vitamine-d'],
     metaTitle: 'Vitamine D: Wat Doet Het en Wanneer Suppletie?',
     metaDescription:
@@ -798,6 +798,37 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
       'Bouillon R et al. Skeletal and extraskeletal actions of vitamin D: impact on health. Nat Rev Endocrinol. 2019;15(11):632-645.',
       'Amrein K et al. Vitamin D deficiency 2.0: an update on the current status worldwide. Eur J Clin Nutr. 2020;74(11):1498-1513.',
       'Spiro A, Buttriss JL. Vitamin D: an overview of vitamin D status and intake in Europe. Nutr Bull. 2014;39(4):322-350.',
+    ]),
+  },
+  {
+    slug: 'vitamine-k2',
+    insightTier: 3,
+    term: 'Vitamine K2',
+    theme: 'lichaam-veroudering',
+    shortDefinition:
+      'Een vetoplosbare vitamine (vaak als MK-7 in D3-combo’s) met twee geautoriseerde EU-claims — en één hartclaim die EFSA heeft afgewezen.',
+    content: {
+      whatIsIt: `Vitamine K is een familie: K1 (fylloquinon, vooral in groene bladgroenten) en K2 (menaquinonen, o.a. MK-4 en MK-7). In supplementen naast vitamine D3 zie je meestal K2 als MK-7, omdat die langer in het bloed blijft dan MK-4 en daardoor bij één dosis per dag past.
+
+De EU-etiketclaims gelden voor vitamine K als nutriënt, niet voor een merkvorm. Wat wél op het etiket mag: vitamine K draagt bij tot de instandhouding van normale botten, en tot de normale bloedstolling. Die twee zijn geautoriseerd (EFSA Journal 2009;7(9):1228).`,
+      howItWorks: `K2 activeert vitamine-K-afhankelijke eiwitten die betrokken zijn bij botmetabolisme en stolling. MK-7 heeft een langere halfwaardetijd dan MK-4; daarom doseren dagelijkse combo’s vaak 37–90 mcg MK-7 naast D3 in een oliedrager (beide zijn vetoplosbaar).
+
+De marketingzin die je overal ziet — K2 zou calcium uit slagaders 'wegsturen' en D3 zou zonder K2 onveilig zijn — is precies de hart- en bloedvatenclaim die EFSA heeft afgewezen (EFSA Journal 2012;10(3):2714, ID 125). Die mag nergens in copy. D3 heeft eigen erkende claims, onder meer op de normale opname van calcium en fosfor; K2 voegt daar de erkende bot- en stollingsclaims aan toe, geen hartbelofte.`,
+      whyItMatters: `Na 40 koopt de doelgroep D3+K2 vaak als één product. Dat is een echte keuzevraag bij vitamine D die je al overweegt — geen reden voor een losse K2-pagina. Vergelijk combinaties op [/beste/vitamine-d](/beste/vitamine-d) en lees [vitamine D](/kennisbank/vitamine-d) voor zonlicht, tekort en D3-claims. Bij vitamine-K-antagonisten (antistolling) eerst met arts of apotheker overleggen: de stollingsclaim is er niet voor niets. De claimgrens zelf staat ook bij [EFSA-claims](/kennisbank/efsa-claims).`,
+    },
+    relatedSlugs: ['vitamine-d', 'efsa-claims'],
+    relatedComparisons: ['/beste/vitamine-d'],
+    metaTitle: 'Vitamine K2: Wat Mag Op Het Etiket — En Wat Niet',
+    metaDescription:
+      'Vitamine K2 (MK-7) uitgelegd: geautoriseerde bot- en stollingsclaims, de afgewezen hartclaim, en waarom D3+K2 bij vitamine D hoort.',
+    laatstBijgewerktOp: '2026-09-01',
+    referenties: toRefs([
+      'EFSA Panel on Dietetic Products, Nutrition and Allergies. Scientific Opinion on the substantiation of health claims related to vitamin K. EFSA Journal. 2009;7(9):1228.',
+      'EFSA Panel on Dietetic Products, Nutrition and Allergies. Vitamin K2 and maintenance of the elastic properties of the arteries: scientific opinion. EFSA Journal. 2012;10(3):2714.',
+      'Commission Regulation (EU) No 432/2012 establishing a list of permitted health claims. Official Journal of the European Union. 2012.',
+      'Schurgers LJ, Teunissen KJ, Hamulyak K, et al. Vitamin K-containing dietary supplements: comparison of synthetic vitamin K1 and natto-derived menaquinone-7. Blood. 2007;109(8):3279-3283.',
+      'Knapen MH, Drummen NE, Smit E, Vermeer C, Theuwissen E. Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int. 2013;24(9):2499-2507.',
+      'Booth SL. Vitamin K: food composition and dietary intakes. Food Nutr Res. 2012;56:5505.',
     ]),
   },
   {

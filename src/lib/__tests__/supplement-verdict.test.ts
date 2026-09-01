@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { approvedClaims, type IngredientClaimKey } from "@/data/approved-claims";
+import { SUPPLEMENT_CATALOG } from "@/data/supplement-catalog";
 import { RULES_VERSION } from "@/lib/intake-engine";
 import {
   deriveSupplementVerdict,
@@ -121,7 +122,18 @@ describe("deriveSupplementVerdicts", () => {
     const verdicts = deriveSupplementVerdicts(baselineInput(), COMPLETED);
     const keys = verdicts.map((verdict) => verdict.ingredientKey).sort();
 
-    expect(keys).toEqual((Object.keys(approvedClaims) as IngredientClaimKey[]).sort());
+    expect(keys).toEqual(
+      (Object.keys(approvedClaims) as IngredientClaimKey[])
+        .filter((key) => {
+          const claim = approvedClaims[key];
+          if (claim.status === "forbidden" || claim.status === "on_hold") {
+            return true;
+          }
+          return SUPPLEMENT_CATALOG.some((entry) => entry.claimKey === key);
+        })
+        .sort(),
+    );
+    expect(keys).not.toContain("vitamineK");
   });
 
   it("legt de onderbouwing vast zodat het oordeel reproduceerbaar is", () => {

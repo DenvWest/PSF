@@ -116,4 +116,11 @@ export interface ComparisonPageData {
   moreAboutDescription?: string;
   moreAboutLinks?: RelatedLink[];
   readAlsoCards?: ReadAlsoCard[];
+  /** Optionele tweede keuzevraag (bv. D3+K2) naast de primaire ranking. */
+  comboVariant?: {
+    heading: string;
+    intro: string;
+    choiceRoutes: ChoiceRoute[];
+    tableRows: TableRow[];
+  };
 }

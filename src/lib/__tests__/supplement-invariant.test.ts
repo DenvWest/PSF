@@ -77,6 +77,9 @@ function collectAffiliateSlugs(data: ComparisonPageData): string[] {
   for (const route of data.choiceRoutes ?? []) {
     slugs.push(route.affiliateSlug);
   }
+  for (const route of data.comboVariant?.choiceRoutes ?? []) {
+    slugs.push(route.affiliateSlug);
+  }
   for (const product of data.products) {
     slugs.push(product.affiliateSlug);
   }

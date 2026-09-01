@@ -7,6 +7,7 @@ export type ClaimNutrient =
   | "epa_dha"
   | "dha"
   | "vitamine_d"
+  | "vitamine_k"
   | "zink"
   | "creatine";
 
@@ -23,6 +24,8 @@ export type EfsaClaimId =
   | "vitamineD.bones"
   | "vitamineD.muscle"
   | "vitamineD.calcium-phosphorus"
+  | "vitamineK.bones"
+  | "vitamineK.clotting"
   | "zink.testosterone"
   | "zink.immune"
   | "zink.cognition"
@@ -80,6 +83,12 @@ const VIT_D_5_RI: ClaimThreshold = {
   minAmount: 0.75,
   unit: "ug",
   nutrient: "vitamine_d",
+};
+
+const VIT_K_15_RI: ClaimThreshold = {
+  minAmount: 11.25,
+  unit: "ug",
+  nutrient: "vitamine_k",
 };
 
 const ZINK_15_RI: ClaimThreshold = {
@@ -266,6 +275,49 @@ export const approvedClaims = {
       },
     ],
     note: null,
+  },
+  vitamineK: {
+    ingredient: "Vitamine K",
+    comparisonPath: "/beste/vitamine-d",
+    status: "approved",
+    verified: true,
+    claims: [
+      {
+        id: "vitamineK.bones",
+        text: "Draagt bij tot de instandhouding van normale botten",
+        condition: "min. 11,25 ug (15% RI) per dagdosis",
+        threshold: VIT_K_15_RI,
+        status: "approved",
+      },
+      {
+        id: "vitamineK.clotting",
+        text: "Draagt bij tot de normale bloedstolling",
+        condition: "min. 11,25 ug (15% RI) per dagdosis",
+        threshold: VIT_K_15_RI,
+        status: "approved",
+      },
+    ],
+    supportingEvidence: [
+      {
+        vancouver:
+          "EFSA Panel on Dietetic Products, Nutrition and Allergies. Scientific Opinion on the substantiation of health claims related to vitamin K. EFSA Journal 2009;7(9):1228.",
+        url: "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2009.1228",
+        pmid: null,
+        evidenceType: "efsa_regulation",
+        audienceNote:
+          "Geautoriseerde claims: normale botten (ID 123/127/128/2879) en normale bloedstolling (ID 124/126).",
+      },
+      {
+        vancouver:
+          "EFSA Panel on Dietetic Products, Nutrition and Allergies. Scientific Opinion on the substantiation of a health claim related to vitamin K2 and maintenance of the elastic properties of the arteries. EFSA Journal 2012;10(3):2714.",
+        url: "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2714",
+        pmid: null,
+        evidenceType: "efsa_regulation",
+        audienceNote:
+          "Hart- en bloedvaten-claim voor K2 expliciet afgewezen (ID 125). Mag niet in copy.",
+      },
+    ],
+    note: "Hart- en bloedvaten-claim voor vitamine K2 is door EFSA afgewezen (EFSA Journal 2012;10(3):2714, ID 125). Geen copy over aderkalking, calcium in slagaders, of 'D3 werkt niet zonder K2'.",
   },
   zink: {
     ingredient: "Zink",

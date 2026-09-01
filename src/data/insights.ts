@@ -43,6 +43,7 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   mitochondrien: "energie",
   testosteron: "energie",
   "vitamine-d": "voeding",
+  "vitamine-k2": "voeding",
   insulineresistentie: "voeding",
   slaaphygiene: "slaap",
   "eiwitbehoefte-na-40": "voeding",

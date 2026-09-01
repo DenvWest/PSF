@@ -29,7 +29,15 @@ export const VERDICT_REVIEW_DAYS: Record<VerdictValue, number | null> = {
   nooit: null,
 };
 
-const INGREDIENT_KEYS = Object.keys(approvedClaims) as IngredientClaimKey[];
+const INGREDIENT_KEYS = (Object.keys(approvedClaims) as IngredientClaimKey[]).filter(
+  (ingredientKey) => {
+    const claim = approvedClaims[ingredientKey];
+    if (claim.status === "forbidden" || claim.status === "on_hold") {
+      return true;
+    }
+    return SUPPLEMENT_CATALOG.some((entry) => entry.claimKey === ingredientKey);
+  },
+);
 
 function catalogEntryFor(ingredientKey: IngredientClaimKey) {
   return SUPPLEMENT_CATALOG.find((entry) => entry.claimKey === ingredientKey);

@@ -29,6 +29,12 @@ export const affiliateLinks = {
     "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=vitamine-d&dl=products%2Fvitamine-d3",
   "solgar-vitamin-d3":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitamine-d&dl=product%2Fsolgar-vitamins-vitamin-d-3-25-ug1000-iu-vitamine-d-uit-levertraan-softgels-197241",
+  "vitaminstore-d3-k2-softgels":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitamine-d&dl=product%2Fvitaminstore-vitamine-d3-k2-softgels-1309847",
+  "vitaminstore-d3-k2-drops":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitamine-d&dl=product%2Fvitaminstore-vitamine-d3-k2-druppels-1306535",
+  "vitalnutrition-d3-k2":
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=vitamine-d&dl=products%2Fvitamine-d3-k2",
 
   // Creatine
   "vitalnutrition-creatine":
@@ -86,6 +92,9 @@ export const affiliateSlugToComparison = {
   "vitaminstore-super-d3": "vitamine-d",
   "vitalnutrition-vitamin-d3": "vitamine-d",
   "solgar-vitamin-d3": "vitamine-d",
+  "vitaminstore-d3-k2-softgels": "vitamine-d",
+  "vitaminstore-d3-k2-drops": "vitamine-d",
+  "vitalnutrition-d3-k2": "vitamine-d",
 
   "vitalnutrition-creatine": "creatine",
   "vitaminstore-creatine": "creatine",

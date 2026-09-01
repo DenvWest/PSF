@@ -31,7 +31,7 @@ import type {
 } from "@/types/supplement-score";
 
 /**
- * Bouwt één productcatalogus over alle vergelijkingen heen: 22 producten uit
+ * Bouwt één productcatalogus over alle vergelijkingen heen: 25 producten uit
  * zeven categorieën, elk met een berekende PS-Score, een EU-claimtoestand en
  * twee rangen binnen de eigen categorie.
  *

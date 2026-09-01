@@ -39,7 +39,7 @@ type ProductCatalogCardProps = {
 /**
  * Eén product als compacte rij: merk, naam, oordeel en de vier cijfers die je
  * naast elkaar wilt kunnen leggen. De rekenkundige onderbouwing zit achter één
- * uitklap, zodat een lijst van 22 producten te overzien blijft.
+ * uitklap, zodat een lijst van 25 producten te overzien blijft.
  */
 export default function ProductCatalogCard({
   product,

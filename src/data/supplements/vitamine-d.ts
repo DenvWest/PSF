@@ -14,12 +14,12 @@ export const vitamineDData: ComparisonPageData = {
   guideHref: "/supplementen/vitamine-d",
   h1: "Beste vitamine D supplement 2026 — onafhankelijk vergeleken",
   intro:
-    "Moe en futloos terwijl de zon maandenlang te weinig schijnt? Vitamine D3 is in Nederland vaak een aandachtspunt na je 40e. Drie producten vergeleken op dosering, kwaliteit, opneembaarheid en prijs per dag.",
+    "Moe en futloos terwijl de zon maandenlang te weinig schijnt? Vitamine D3 is in Nederland vaak een aandachtspunt na je 40e. Drie D3-producten vergeleken op dosering, kwaliteit, opneembaarheid en prijs per dag — plus D3+K2-combinaties als je die variant overweegt.",
   seoTitle:
-    "Beste Vitamine D Supplement 2026 — D3 Vergelijking",
+    "Beste Vitamine D Supplement 2026 — D3 en D3+K2",
   seoDescription:
-    "Vergelijk de beste vitamine D3 supplementen op dosering, kwaliteit en prijs. Van Vitaminstore Super D3 tot Solgar — eerlijk gescoord voor mannen 40+.",
-  lastUpdated: "2026-04-21",
+    "Vergelijk de beste vitamine D3 supplementen op dosering, kwaliteit en prijs. Inclusief D3+K2 (MK-7) in softgels en druppels — zonder afgewezen hartclaim.",
+  lastUpdated: "2026-09-01",
   tableDoseringColumnLabel: "µg (IU) / dag",
   ogImage: "https://perfectsupplement.nl/images/producten/Vitaminstore-Super-D3.jpg",
   ogImageAlt: "Vitaminstore Super D3 — topkeuze in de vergelijking",
@@ -35,6 +35,7 @@ export const vitamineDData: ComparisonPageData = {
   moreAboutDescription: "Vitamine D draagt o.a. bij tot normale botten, spieren en een normaal immuunsysteem — thema\u2019s die na je 40e vaker bespreekbaar worden met je zorgverlener.",
   moreAboutLinks: [
     { href: "/supplementen/vitamine-d", label: "Meer weten over vitamine D? Lees de uitgebreide gids →" },
+    { href: "/kennisbank/vitamine-k2", label: "Wat K2 wél mag beloven — en de hartclaim die EFSA afwees →" },
     { href: "/gids/energie", label: "Energieverlies na je 40e — oorzaken en oplossingen →" },
   ],
   readAlsoCards: [
@@ -225,6 +226,146 @@ export const vitamineDData: ComparisonPageData = {
       efsaClaimIds: VITAMINE_D_CLAIMS,
       thirdPartyTested: false,
     }),
+    withClaimFields({
+      slug: "vitaminstore-d3-k2-softgels",
+      name: "Vitaminstore Vitamine D3 & K2",
+      brand: "Vitaminstore",
+      affiliateSlug: "vitaminstore-d3-k2-softgels",
+      score: 8.6,
+      bestFor: "Dagelijks combo",
+      variantTag: "D3 + K2 MK-7 — softgels",
+      summary:
+        "Onderhoudsdosering in één softgel: 25 mcg D3 plus 45 mcg K2 als menaquinon-7, opgelost in olijfolie. Vitamine D draagt bij tot de normale opname van calcium en fosfor; vitamine K draagt bij tot de instandhouding van normale botten en tot de normale bloedstolling. Geen erkende hart- of bloedvatenclaim.",
+      specs: [
+        { label: "Vorm", value: "D3 + K2 (MK-7) in olijfolie" },
+        { label: "Dosering", value: "25 mcg D3 + 45 mcg K2 per softgel" },
+        { label: "Inhoud", value: "60 softgels" },
+        { label: "Prijs / dag", value: "€ 0,27" },
+        { label: "Prijs", value: "€ 15,95 (60 stuks)" },
+        { label: "Vegan", value: "Nee (gelatine)" },
+        { label: "Reviews", value: "23" },
+      ],
+      pros: [
+        "MK-7 plus olijfolie in één dagelijkse softgel",
+        "Beide stoffen boven de EU-drempel voor erkende claims",
+        "Eigen merk, scherp geprijsd voor een combo",
+      ],
+      cons: [
+        "Bevat gelatine — niet vegan",
+        "25 mcg D3 is onderhoud, geen hoge winterdosis",
+      ],
+      breakdown: [
+        { criterium: "Kwaliteit/vorm", score: 9 },
+        { criterium: "Dosering", score: 7 },
+        { criterium: "Prijs/kwaliteit", score: 8 },
+        { criterium: "Transparantie", score: 8 },
+      ],
+      imageSrc: "/images/producten/Vitaminstore-Vitamine-D3-K2.jpg",
+      imageAlt: "Vitaminstore Vitamine D3 & K2 softgels verpakking",
+      werkzameStof: "vitamineD",
+      vorm: "D3 (cholecalciferol) + K2 (MK-7) in olijfolie",
+      doseringPerDagdosis: {
+        hoeveelheid: 25,
+        eenheid: "ug",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: VITAMINE_D_CLAIMS,
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
+      slug: "vitaminstore-d3-k2-drops",
+      name: "Vitaminstore Vitamine D3 & K2 Druppels",
+      brand: "Vitaminstore",
+      affiliateSlug: "vitaminstore-d3-k2-drops",
+      score: 8.5,
+      bestFor: "Druppels",
+      variantTag: "D3 + K2 MK-7 — druppels",
+      summary:
+        "Zelfde formule als de softgels — 25 mcg D3 en 45 mcg K2 als MK-7 per 3 druppels, in olijfolie — maar vloeibaar. Handig als je geen capsules wilt, of de dosis wilt bijstellen (etiket: 3–6 druppels bij de maaltijd).",
+      specs: [
+        { label: "Vorm", value: "D3 + K2 (MK-7) druppels in olijfolie" },
+        { label: "Dosering", value: "25 mcg D3 + 45 mcg K2 per 3 druppels" },
+        { label: "Inhoud", value: "25 ml (~166 dagen bij 3 druppels)" },
+        { label: "Prijs / dag", value: "€ 0,21" },
+        { label: "Prijs", value: "€ 34,95 (25 ml)" },
+        { label: "Vegan", value: "Ja (geen gelatine)" },
+      ],
+      pros: [
+        "MK-7 in olijfolie, zonder capsule",
+        "Dosis per druppel aanpasbaar",
+        "Laagste prijs per dag van de combo’s bij 3 druppels",
+      ],
+      cons: [
+        "Fles is duurder in één keer (€34,95)",
+        "Tellen van druppels vraagt meer routine dan één softgel",
+      ],
+      breakdown: [
+        { criterium: "Kwaliteit/vorm", score: 9 },
+        { criterium: "Dosering", score: 8 },
+        { criterium: "Prijs/kwaliteit", score: 8 },
+        { criterium: "Transparantie", score: 8 },
+      ],
+      imageSrc: "/images/producten/Vitaminstore-Vitamine-D3-K2-Druppels.jpg",
+      imageAlt: "Vitaminstore Vitamine D3 & K2 druppels verpakking",
+      werkzameStof: "vitamineD",
+      vorm: "D3 (cholecalciferol) + K2 (MK-7) druppels in olijfolie",
+      doseringPerDagdosis: {
+        hoeveelheid: 25,
+        eenheid: "ug",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: VITAMINE_D_CLAIMS,
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
+      slug: "vitalnutrition-d3-k2",
+      name: "Vital Nutrition Vitamine D3 + K2",
+      brand: "Vital Nutrition",
+      affiliateSlug: "vitalnutrition-d3-k2",
+      score: 8.7,
+      bestFor: "Lab getest",
+      variantTag: "D3 + K2 MK-7 — softgels",
+      summary:
+        "25 mcg D3 (cholecalciferol) plus 37,5 mcg K2 als MK-7 in olijfolie. Nederlands geproduceerd en lab getest op zware metalen en mycotoxines — de meest transparante combo in deze set. Geen vegan optie: lanoline-D3 en rundergelatine.",
+      specs: [
+        { label: "Vorm", value: "D3 + K2 (MK-7) in olijfolie" },
+        { label: "Dosering", value: "25 mcg D3 + 37,5 mcg K2 per softgel" },
+        { label: "Inhoud", value: "60 softgels" },
+        { label: "Prijs / dag", value: "€ 0,33" },
+        { label: "Prijs", value: "€ 19,95" },
+        { label: "Vegan", value: "Nee (gelatine, lanoline)" },
+        { label: "Reviews", value: "7" },
+      ],
+      pros: [
+        "MK-7 met olijfolie, lab getest",
+        "Nederlands geproduceerd, etiket uitgesplitst",
+        "Tweede merchant naast Vitaminstore",
+      ],
+      cons: [
+        "Hoogste prijs per dag van de drie combo’s",
+        "Iets lagere K2-dosis (37,5 mcg) dan Vitaminstore (45 mcg)",
+      ],
+      breakdown: [
+        { criterium: "Kwaliteit/vorm", score: 9 },
+        { criterium: "Dosering", score: 7 },
+        { criterium: "Prijs/kwaliteit", score: 7 },
+        { criterium: "Transparantie", score: 10 },
+      ],
+      imageSrc: "/images/producten/Vital-Nutrition-Vitamine-D3-K2.jpg",
+      imageAlt: "Vital Nutrition Vitamine D3 + K2 softgels verpakking",
+      werkzameStof: "vitamineD",
+      vorm: "D3 (cholecalciferol) + K2 (MK-7) in olijfolie",
+      doseringPerDagdosis: {
+        hoeveelheid: 25,
+        eenheid: "ug",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: VITAMINE_D_CLAIMS,
+      thirdPartyTested: true,
+    }),
   ],
   tableRows: [
     {
@@ -258,6 +399,69 @@ export const vitamineDData: ComparisonPageData = {
       badge: "Vertrouwd merk",
     },
   ],
+  comboVariant: {
+    heading: "Vitamine D3 met K2 — als je de combinatie zoekt",
+    intro:
+      "In de praktijk koopt de doelgroep D3+K2 vaak als één product. Vitamine K draagt bij tot de instandhouding van normale botten en tot de normale bloedstolling — beide geautoriseerde EFSA-claims. De hart- en bloedvatenclaim voor K2 is door EFSA expliciet afgewezen: D3 werkt niet 'niet zonder K2', en calcium-in-slagaders hoort niet op het etiket. Kies MK-7 boven MK-4, bij voorkeur in olie, en overleg bij antistollingsmiddelen eerst met je arts.",
+    choiceRoutes: [
+      {
+        badgeLabel: "Dagelijks combo",
+        productName: "Vitaminstore Vitamine D3 & K2",
+        teaser:
+          "25 mcg D3 + 45 mcg K2 als MK-7 in olijfolie. Eén softgel per dag — de meest gangbare combo.",
+        affiliateSlug: "vitaminstore-d3-k2-softgels",
+        slug: "vitaminstore-d3-k2-softgels",
+      },
+      {
+        badgeLabel: "Druppels",
+        productName: "Vitaminstore Vitamine D3 & K2 Druppels",
+        teaser:
+          "Zelfde MK-7-formule, vloeibaar. Handig zonder capsules, of als je de dosis per druppel wilt bijstellen.",
+        affiliateSlug: "vitaminstore-d3-k2-drops",
+        slug: "vitaminstore-d3-k2-drops",
+      },
+      {
+        badgeLabel: "Lab getest",
+        productName: "Vital Nutrition Vitamine D3 + K2",
+        teaser:
+          "MK-7 in olijfolie, Nederlands geproduceerd en lab getest. Iets duurder per dag, meer transparantie.",
+        affiliateSlug: "vitalnutrition-d3-k2",
+        slug: "vitalnutrition-d3-k2",
+      },
+    ],
+    tableRows: [
+      {
+        slug: "vitaminstore-d3-k2-softgels",
+        name: "Vitaminstore D3 & K2",
+        type: "D3 + K2 MK-7, olijfolie",
+        dosering: "25 µg D3 + 45 µg K2 / dag",
+        transparantie: "Hoog",
+        gebruiksgemak: "Uitstekend",
+        prijs: "€ 0,27/dag",
+        badge: "Dagelijks combo",
+      },
+      {
+        slug: "vitaminstore-d3-k2-drops",
+        name: "Vitaminstore D3 & K2 druppels",
+        type: "D3 + K2 MK-7, druppels",
+        dosering: "25 µg D3 + 45 µg K2 / 3 druppels",
+        transparantie: "Hoog",
+        gebruiksgemak: "Goed",
+        prijs: "€ 0,21/dag",
+        badge: "Druppels",
+      },
+      {
+        slug: "vitalnutrition-d3-k2",
+        name: "Vital Nutrition D3 + K2",
+        type: "D3 + K2 MK-7, olijfolie",
+        dosering: "25 µg D3 + 37,5 µg K2 / dag",
+        transparantie: "Zeer hoog",
+        gebruiksgemak: "Uitstekend",
+        prijs: "€ 0,33/dag",
+        badge: "Lab getest",
+      },
+    ],
+  },
   comparisonCriteria: [
     "Kwaliteit/vorm",
     "Dosering",
@@ -289,6 +493,36 @@ export const vitamineDData: ComparisonPageData = {
       question: "Kan ik vitamine D combineren met magnesium?",
       answer:
         "Ja — magnesium is nodig voor activatie van vitamine D in het lichaam. Zonder voldoende magnesium kan vitamine D niet optimaal worden omgezet naar zijn actieve vorm. Overweeg beide als je een tekort aanvult. Bekijk onze [magnesiumvergelijking](/beste/magnesium) voor productkeuze.",
+    },
+    {
+      question: "Heb ik vitamine D met of zonder K2 nodig?",
+      answer:
+        "D3 alleen is een volwaardige keuze: de erkende vitamine-D-claims (botten, spieren, immuunsysteem, calciumopname) gelden ook zonder K2. Een combo is zinvol als je beide stoffen in één product wilt. K2 heeft eigen erkende claims op botten en bloedstolling — niet op hart en bloedvaten. Zie [vitamine K2](/kennisbank/vitamine-k2) voor de claimgrens.",
+    },
+    {
+      question: "Waarom wordt D3 vaak met K2 gecombineerd?",
+      answer:
+        "Beide zijn vetoplosbaar en worden vaak samen in olie verkocht. De marketingzin 'D3 werkt niet zonder K2' is een overclaim: EFSA heeft de hartclaim voor K2 afgewezen. Wat wél mag: vitamine D draagt bij tot de normale opname van calcium en fosfor; vitamine K draagt bij tot de instandhouding van normale botten en tot de normale bloedstolling.",
+    },
+    {
+      question: "Welke K2-vorm en dosering is gangbaar?",
+      answer:
+        "MK-7 (menaquinon-7) blijft langer in het bloed dan MK-4 en past bij één dosis per dag. De combo’s hier gebruiken 37,5–45 mcg MK-7 — ruim boven de 11,25 mcg die de EU-claimdrempel (15% RI) vraagt. NOW-varianten met MK-4 laten we bewust buiten de topkeuze.",
+    },
+    {
+      question: "Wanneer neem ik vitamine D3 en K2 in?",
+      answer:
+        "Bij een maaltijd met vet. D3 en K2 zijn vetoplosbaar; olijfolie in de capsule of druppel helpt, een vetrijke maaltijd ook. Avond of ochtend maakt voor de erkende claims niet uit — consistentie wel.",
+    },
+    {
+      question: "D3+K2: druppels of capsules?",
+      answer:
+        "Softgels zijn het makkelijkst vol te houden (één stuk, vaste dosis). Druppels zijn handig zonder capsules en laten de dosis bijstellen (3–6 druppels volgens het etiket). De werkzame stoffen zijn hetzelfde: D3 plus K2 als MK-7 in olijfolie.",
+    },
+    {
+      question: "Kan ik D3+K2 gebruiken naast bloedverdunners?",
+      answer:
+        "Overleg eerst met je arts of apotheker. Vitamine K draagt bij tot de normale bloedstolling; bij vitamine-K-antagonisten (zoals acenocoumarol of fenprocoumon) kan extra K2 de werking beïnvloeden. Dat is geen reden tot paniek, wel tot overleg vóór je start.",
     },
   ],
 };

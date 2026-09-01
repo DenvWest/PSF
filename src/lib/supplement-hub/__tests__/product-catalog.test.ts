@@ -13,7 +13,7 @@ const products = getHubProducts();
 
 describe("productcatalogus", () => {
   it("bevat elk product uit elke vergelijking", () => {
-    expect(products.length).toBe(22);
+    expect(products.length).toBe(25);
   });
 
   it("gebruikt uitsluitend vormen die in de vormregistratie staan", () => {

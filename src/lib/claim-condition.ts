@@ -23,6 +23,7 @@ function nutrientAmount(
     case "dha":
       return dosering.dhaMg ?? null;
     case "vitamine_d":
+    case "vitamine_k":
       return dosering.eenheid === "ug" ? dosering.hoeveelheid : null;
     case "zink":
       return dosering.elementair && dosering.eenheid === "mg"
