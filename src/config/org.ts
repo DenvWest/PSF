@@ -1,5 +1,3 @@
-import { DEFAULT_THEME, type ThemeConfig } from "./theme";
-
 export interface ScoringConfig {
   sleepMax: number;
   energyMax: number;
@@ -13,7 +11,6 @@ export interface OrgConfig {
   id: string;
   name: string;
   slug: string;
-  theme: ThemeConfig;
   scoring: ScoringConfig;
   supplements: string[];
   affiliatePrefix: string;
@@ -36,7 +33,6 @@ export const DEFAULT_ORG: OrgConfig = {
   id: DEFAULT_ORG_ID,
   name: "PerfectSupplement",
   slug: "perfectsupplement",
-  theme: DEFAULT_THEME,
   scoring: DEFAULT_SCORING,
   supplements: [
     "magnesium",
@@ -52,15 +48,6 @@ export const DEFAULT_ORG: OrgConfig = {
   emailFromAddress: "herinnering@mail.perfectsupplement.nl",
 };
 
-const orgRegistry: Record<string, OrgConfig> = {
-  [DEFAULT_ORG_ID]: DEFAULT_ORG,
-};
-
-export function getOrgConfig(orgId?: string): OrgConfig {
-  if (!orgId) return DEFAULT_ORG;
-  return orgRegistry[orgId] ?? DEFAULT_ORG;
-}
-
-export function registerOrg(config: OrgConfig): void {
-  orgRegistry[config.id] = config;
+export function getOrgConfig(_orgId?: string): OrgConfig {
+  return DEFAULT_ORG;
 }
