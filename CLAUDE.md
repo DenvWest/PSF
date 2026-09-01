@@ -175,7 +175,7 @@ De drie betekenissen van "affiliate" niet verwarren: `affiliate_clicks` (uitgaan
 
 ## UX-beslissingen (juni 2026)
 
-- /inzichten staat NIET meer in de top-nav (28 aug 2026): top-nav = Supplementen + Gezondheidsgidsen; /inzichten leeft in de footer met meetpunt `inzichten_hub_nav_click` (source: footer)
+- /inzichten staat NIET meer in de top-nav (28 aug 2026); sinds 1 sep 2026 ook niet meer in de footer (voorheen: footer-link met meetpunt `inzichten_hub_nav_click`) — top-nav = Supplementen + Gezondheidsgidsen, /inzichten heeft geen enkele nav-link meer, alleen bereikbaar via interne content-links
 - "Gidsen" heet overal **Gezondheidsgidsen** (leefstijl per thema, /gidsen + /gids/*); de gidsen per stof heten **Supplementgidsen** (/supplementen/*)
 - PersonalPathBridge verwijderd uit InzichtenHubHero (doublure met ContextStrip)
 - FocusAreaCard: 1 link per kaart (gids-link geschrapt)

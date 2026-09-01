@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import CookiePreferencesButton from "@/components/analytics/CookiePreferencesButton";
-import FooterEventLink from "@/components/layout/FooterEventLink";
 import Container from "@/components/layout/Container";
 import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 
@@ -10,23 +9,17 @@ const footerColumns = [
         title: "Supplementen",
         links: [
             { href: "/supplementen", label: "Supplementgids" },
-            { href: "/supplementen", label: "Vergelijkingen" },
             { href: "/methodologie", label: "Methodologie" },
+            { href: "/intake", label: "Leefstijlcheck" },
         ],
     },
     {
-        title: "Start hier",
+        title: "Informatie",
         links: [
-            { href: "/intake", label: "Leefstijlcheck" },
             { href: "/gidsen", label: "Gezondheidsgidsen" },
             { href: "/profiel", label: "Profielen" },
             { href: "/blog", label: "Blog" },
             { href: "/kennisbank", label: "Kennisbank" },
-            {
-                href: "/inzichten",
-                label: "Inzichten",
-                event: "inzichten_hub_nav_click",
-            },
         ],
     },
     {
@@ -42,6 +35,7 @@ const footerColumns = [
         title: "Account",
         links: [
             { href: "/account/login", label: "Inloggen" },
+            { href: "/dashboard", label: "Dashboard" },
         ],
     },
 ] as const;
@@ -82,21 +76,12 @@ export default function Footer() {
                             <ul className="mt-4 space-y-2.5">
                                 {column.links.map((link) => (
                                     <li key={`${column.title}-${link.label}`}>
-                                        {"event" in link ? (
-                                            <FooterEventLink
-                                                href={link.href}
-                                                label={link.label}
-                                                event={link.event}
-                                                className="text-sm text-stone-600 transition hover:text-stone-900"
-                                            />
-                                        ) : (
-                                            <Link
-                                                href={link.href}
-                                                className="text-sm text-stone-600 transition hover:text-stone-900"
-                                            >
-                                                {link.label}
-                                            </Link>
-                                        )}
+                                        <Link
+                                            href={link.href}
+                                            className="text-sm text-stone-600 transition hover:text-stone-900"
+                                        >
+                                            {link.label}
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>

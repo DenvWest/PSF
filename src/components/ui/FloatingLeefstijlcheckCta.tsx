@@ -39,7 +39,7 @@ function LeefstijlcheckPromoCard({
         {widget.title}
       </h2>
       <p className="mt-1.5 text-xs leading-relaxed text-white/90 sm:mt-2 sm:text-sm">
-        {widget.body}
+        Eerst je leefstijl, dan pas een supplement — de check laat zien wat jij nodig hebt.
       </p>
 
       <ul
@@ -67,7 +67,7 @@ function LeefstijlcheckPromoCard({
         href="/intake"
         className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-ps-green shadow-sm transition hover:bg-stone-50 sm:mt-6"
       >
-        Doe de Leefstijlcheck — gratis →
+        Ontdek: leefstijl of supplement? — gratis →
       </Link>
     </div>
   );
@@ -93,7 +93,7 @@ function MobileQuickCta({
         </span>
       </button>
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-        Snelle actie
+        {action.intent === "start" ? "Leefstijl of supplement?" : "Snelle actie"}
       </p>
       <Link
         href={action.href}
