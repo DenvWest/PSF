@@ -64,3 +64,42 @@ export const affiliateLinks = {
 } as const satisfies Record<string, string>;
 
 export type AffiliateSlug = keyof typeof affiliateLinks;
+
+/**
+ * Welke /beste/*-vergelijking elk affiliate-product bedient. Nodig omdat kliks op
+ * hetzelfde product soms via /beste/<slug> binnenkomen en soms via /product/<slug>
+ * (zie src/app/product/[slug]) — voor "hoeveel kliks krijgt de omega-3-vergelijking"
+ * moet je die twee paden bij elkaar optellen, niet los tellen.
+ */
+export const affiliateSlugToComparison = {
+  "arctic-blue-visolie": "omega-3-supplement",
+  "mollers-omega-3-citroen": "omega-3-supplement",
+  "minami-morepa-original": "omega-3-supplement",
+  "minami-morepa-vergelijking": "omega-3-supplement",
+  "vitals-liquid-epadha": "omega-3-supplement",
+  "arctic-blue-algenolie": "omega-3-supplement",
+
+  "vitaminstore-ashwagandha-ksm66": "ashwagandha",
+  "vitalnutrition-ashwagandha-ksm66": "ashwagandha",
+  "vitaminstore-solgar-ashwagandha": "ashwagandha",
+
+  "vitaminstore-super-d3": "vitamine-d",
+  "vitalnutrition-vitamin-d3": "vitamine-d",
+  "solgar-vitamin-d3": "vitamine-d",
+
+  "vitalnutrition-creatine": "creatine",
+  "vitaminstore-creatine": "creatine",
+  "mattisson-creatine-creapure": "creatine",
+
+  "vitalnutrition-zink": "zink",
+  "solgar-zink-picolinaat": "zink",
+  "bonusan-zinkmethionine": "zink",
+
+  "vitaminstore-super-magnesium": "magnesium",
+  "vital-nutrition-citraat": "magnesium",
+  "viridian-bisglycinaat": "magnesium",
+
+  "proteine-vital-nutrition-whey": "eiwitpoeder",
+  "proteine-orangefit-protein": "eiwitpoeder",
+  "proteine-royal-green-isolate": "eiwitpoeder",
+} as const satisfies Record<AffiliateSlug, string>;

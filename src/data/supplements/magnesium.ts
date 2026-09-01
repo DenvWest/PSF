@@ -30,7 +30,7 @@ export const magnesiumData: ComparisonPageData = {
   ],
   moreAboutTitle: "Meer over magnesium",
   moreAboutLinks: [
-    { href: "/beste/magnesium", label: "Magnesium vormen vergelijken — waar let je op per vorm en dosering? →" },
+    { href: "/supplementen/magnesium", label: "Magnesium vormen vergelijken — waar let je op per vorm en dosering? →" },
     { href: "/blog/magnesium-en-slaapkwaliteit", label: "Magnesium en slaapkwaliteit: wat zegt het onderzoek? →" },
   ],
   readAlsoCards: [

@@ -6,9 +6,14 @@ import {
 } from "@/lib/admin-auth";
 import type {
   AdminAffiliateSection,
+  AdminComparisonClickRow,
   AdminDashboardPayload,
   AdminNurtureSection,
 } from "@/lib/admin-dashboard-types";
+import {
+  affiliateSlugToComparison,
+  type AffiliateSlug,
+} from "@/data/affiliate-links";
 import { anonymizeEmailForAdmin } from "@/lib/nurture-unsubscribe";
 import type { DomainScores } from "@/lib/intake-engine";
 import { consumeRateLimit } from "@/lib/rate-limit";
@@ -230,6 +235,14 @@ function tsMs(value: unknown): number {
   return Number.isNaN(t) ? 0 : t;
 }
 
+function resolveComparison(productId: string): string {
+  return (
+    affiliateSlugToComparison[productId as AffiliateSlug] ?? "onbekend"
+  );
+}
+
+const THIRTY_DAYS_MS_ADMIN = 30 * 24 * 60 * 60 * 1000;
+
 async function loadAffiliateSection(
   admin: SupabaseClient,
 ): Promise<AdminAffiliateSection | null> {
@@ -244,15 +257,30 @@ async function loadAffiliateSection(
 
   const list = rows ?? [];
   const totalClicks = list.length;
+  const thirtyDaysAgoMs = Date.now() - THIRTY_DAYS_MS_ADMIN;
 
   const byProduct = new Map<string, number>();
   const byPage = new Map<string, number>();
+  const byComparisonAllTime = new Map<string, number>();
+  const byComparisonLast30 = new Map<string, number>();
 
   for (const row of list) {
     const pName = labelWithFallback(row.product_naam);
     byProduct.set(pName, (byProduct.get(pName) ?? 0) + 1);
     const page = labelWithFallback(row.pagina);
     byPage.set(page, (byPage.get(page) ?? 0) + 1);
+
+    const comparison = resolveComparison(labelWithFallback(row.product_id, ""));
+    byComparisonAllTime.set(
+      comparison,
+      (byComparisonAllTime.get(comparison) ?? 0) + 1,
+    );
+    if (tsMs(row.timestamp) >= thirtyDaysAgoMs) {
+      byComparisonLast30.set(
+        comparison,
+        (byComparisonLast30.get(comparison) ?? 0) + 1,
+      );
+    }
   }
 
   const clicksPerProduct = [...byProduct.entries()]
@@ -262,6 +290,16 @@ async function loadAffiliateSection(
   const clicksPerPage = [...byPage.entries()]
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count);
+
+  const clicksPerComparison: AdminComparisonClickRow[] = [
+    ...byComparisonAllTime.entries(),
+  ]
+    .map(([comparison, allTime]) => ({
+      comparison,
+      allTime,
+      last30Days: byComparisonLast30.get(comparison) ?? 0,
+    }))
+    .sort((a, b) => b.allTime - a.allTime);
 
   const sortedByTime = [...list].sort((a, b) => {
     return tsMs(b.timestamp) - tsMs(a.timestamp);
@@ -280,6 +318,7 @@ async function loadAffiliateSection(
     totalClicks,
     clicksPerProduct,
     clicksPerPage,
+    clicksPerComparison,
     recentClicks,
   };
 }

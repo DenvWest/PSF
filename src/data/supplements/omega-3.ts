@@ -31,7 +31,7 @@ export const omega3Data: ComparisonPageData = {
   ],
   moreAboutTitle: "Meer over omega-3",
   moreAboutLinks: [
-    { href: "/beste/omega-3-supplement", label: "Omega-3 vergelijken — alle vormen en criteria uitgelegd" },
+    { href: "/supplementen/omega-3", label: "Omega-3 vergelijken — alle vormen en criteria uitgelegd" },
     { href: "/wat-is-omega-3", label: "Wat is omega-3? Een introductie op vetzuren" },
   ],
   readAlsoCards: [

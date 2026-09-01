@@ -5,7 +5,7 @@ import { kennisbankTerms } from "@/data/kennisbank";
 import { alleArtikelen } from "@/data/blog";
 import { GELDIGE_CATEGORIE_IDS } from "@/data/blog/categorieen";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
-import { SUPPLEMENT_SLUGS } from "@/data/supplements";
+import { SUPPLEMENT_SLUGS, getSupplementComparisonData } from "@/data/supplements";
 import { getHubProductSlugs } from "@/lib/supplement-hub/product-catalog";
 
 const BASE = "https://perfectsupplement.nl";
@@ -52,8 +52,23 @@ function entries(
   }));
 }
 
+function vergelijkingEntries(
+  priority: number,
+  changeFrequency: Entry["changeFrequency"],
+): Entry[] {
+  return SUPPLEMENT_SLUGS.map((slug) => {
+    const data = getSupplementComparisonData(slug);
+    return {
+      url: `${BASE}/beste/${slug}`,
+      lastModified: data ? new Date(data.lastUpdated) : LAST_MOD,
+      changeFrequency,
+      priority,
+    };
+  });
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const vergelijking = entries(VERGELIJKINGS_PADEN, 0.9, "weekly");
+  const vergelijking = vergelijkingEntries(0.9, "weekly");
 
   const profielen = entries(
     PROFILE_SLUGS.map((s) => `/profiel/${s}`),

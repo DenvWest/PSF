@@ -555,10 +555,77 @@ export default function AdminDashboardPage() {
                   <h2 className="mb-6 text-lg font-semibold text-[#1a1a1a]">
                     Affiliate clicks
                   </h2>
+
+                  <div className="mb-8">
+                    <h3 className="mb-1 text-sm font-semibold text-[#1a1a1a]">
+                      Clicks per vergelijking
+                    </h3>
+                    <p className="mb-3 text-xs text-[#999]">
+                      Samengevoegd per /beste/*-vergelijking, ongeacht of de klik via
+                      /beste/&lt;slug&gt; of /product/&lt;slug&gt; binnenkwam. &quot;Sinds
+                      livegang&quot; vs. laatste 30 dagen.
+                    </p>
+                    <div
+                      className="w-full"
+                      style={{
+                        height: Math.min(
+                          400,
+                          40 +
+                            Math.max(3, data.affiliate.clicksPerComparison.length) *
+                              32,
+                        ),
+                      }}
+                    >
+                      {data.affiliate.clicksPerComparison.length === 0 ? (
+                        <p className="text-sm text-[#999]">Nog geen data.</p>
+                      ) : (
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart
+                            layout="vertical"
+                            data={data.affiliate.clicksPerComparison.map((row) => ({
+                              name: row.comparison,
+                              "Sinds livegang": row.allTime,
+                              "Laatste 30 dagen": row.last30Days,
+                            }))}
+                            margin={{ top: 4, right: 12, left: 4, bottom: 4 }}
+                          >
+                            <XAxis
+                              type="number"
+                              tick={{ fontSize: 11 }}
+                              allowDecimals={false}
+                            />
+                            <YAxis
+                              type="category"
+                              dataKey="name"
+                              width={160}
+                              tick={{ fontSize: 10 }}
+                              interval={0}
+                            />
+                            <Tooltip />
+                            <Legend wrapperStyle={{ fontSize: 11 }} />
+                            <Bar
+                              dataKey="Sinds livegang"
+                              fill="#d6d3d1"
+                              radius={[0, 4, 4, 0]}
+                              maxBarSize={14}
+                            />
+                            <Bar
+                              dataKey="Laatste 30 dagen"
+                              fill="#1a1a1a"
+                              radius={[0, 4, 4, 0]}
+                              maxBarSize={14}
+                            />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      )}
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <div>
                       <h3 className="mb-2 text-sm font-semibold text-[#1a1a1a]">
-                        Clicks per product
+                        Clicks per product{" "}
+                        <span className="font-normal text-[#999]">(sinds livegang)</span>
                       </h3>
                       <div
                         className="w-full"
@@ -606,7 +673,8 @@ export default function AdminDashboardPage() {
                     </div>
                     <div>
                       <h3 className="mb-2 text-sm font-semibold text-[#1a1a1a]">
-                        Clicks per pagina
+                        Clicks per pagina{" "}
+                        <span className="font-normal text-[#999]">(sinds livegang)</span>
                       </h3>
                       <div
                         className="w-full"

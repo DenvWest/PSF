@@ -87,10 +87,19 @@ export type AdminAffiliateClickRow = {
   timestamp: string;
 };
 
+export type AdminComparisonClickRow = {
+  /** /beste/<slug>-vergelijking waar dit product bij hoort, of "onbekend" als het niet te herleiden is. */
+  comparison: string;
+  allTime: number;
+  last30Days: number;
+};
+
 export type AdminAffiliateSection = {
   totalClicks: number;
   clicksPerProduct: { name: string; count: number }[];
   clicksPerPage: { name: string; count: number }[];
+  /** Kliks samengevoegd per /beste/*-vergelijking, ongeacht via welk pad (/beste/* of /product/*) er geklikt werd. */
+  clicksPerComparison: AdminComparisonClickRow[];
   recentClicks: AdminAffiliateClickRow[];
 };
 

@@ -27,6 +27,7 @@ import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBan
 import {
   buildBreadcrumbSchema,
   buildItemListSchema,
+  buildProductSchema,
 } from "@/lib/seo/structuredData";
 import { absoluteUrl } from "@/lib/public-site-url";
 import {
@@ -99,6 +100,9 @@ export default async function Page({ params }: PageProps) {
 
   const breadcrumbSchema = buildBreadcrumbSchema(data.breadcrumbs);
   const itemListSchema = buildItemListSchema(data.products, pageUrl);
+  const productSchemas = data.products.map((product) =>
+    buildProductSchema(product, pageUrl),
+  );
 
   const available = isSupplementAvailable(data.category);
   const disabledReason = getSupplementDisabledReason(data.category);
@@ -115,6 +119,13 @@ export default async function Page({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
       />
+      {productSchemas.map((schema, index) => (
+        <script
+          key={data.products[index].slug}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
 
       <TrustBar />
 

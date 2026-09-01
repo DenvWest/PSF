@@ -59,6 +59,22 @@ export function buildItemListSchema(
   };
 }
 
+export function buildProductSchema(product: SupplementProduct, pageUrl: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    brand: {
+      "@type": "Brand",
+      name: product.brand,
+    },
+    description: product.summary,
+    category: product.werkzameStof,
+    url: `${pageUrl}#${product.slug}`,
+    ...(product.imageSrc && { image: resolveSiteUrl(product.imageSrc) }),
+  };
+}
+
 export function buildHowToSchema(params: {
   name: string;
   description: string;
