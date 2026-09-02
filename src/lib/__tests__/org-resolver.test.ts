@@ -73,6 +73,22 @@ describe("resolveOrgIdFromSubdomain", () => {
     await resolveOrgIdFromSubdomain("acme");
     expect(stubs.from).toHaveBeenCalledTimes(1);
   });
+
+  it("caches an unknown slug as a real answer", async () => {
+    const stubs = stubAdminSlugLookup(null);
+    await resolveOrgIdFromSubdomain("unknown");
+    await resolveOrgIdFromSubdomain("unknown");
+    expect(stubs.from).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not cache a lookup error, so a transient failure recovers", async () => {
+    stubAdminSlugLookup(null, new Error("connection reset"));
+    await expect(resolveOrgIdFromSubdomain("acme")).resolves.toBe(DEFAULT_ORG_ID);
+
+    const recovered = stubAdminSlugLookup(PARTNER_ORG_ID);
+    await expect(resolveOrgIdFromSubdomain("acme")).resolves.toBe(PARTNER_ORG_ID);
+    expect(recovered.from).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("resolveOrgIdFromHost", () => {

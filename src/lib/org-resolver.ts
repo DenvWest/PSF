@@ -1,6 +1,9 @@
 import { DEFAULT_ORG_ID } from "@/config/org";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
+// Alleen uitkomsten cachen, geen storingen: een onbekende slug is een geldig
+// antwoord, maar een DB-fout is tijdelijk en zou anders 5 minuten lang de
+// verkeerde org vastpinnen (A2 in docs/research/VERDICT_MULTITENANT_VOLGORDE_EU_2026-08-30.md).
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
 type CacheEntry = {
@@ -48,7 +51,11 @@ export async function resolveOrgIdFromSubdomain(subdomain: string): Promise<stri
     .eq("slug", normalized)
     .maybeSingle<OrgSlugRow>();
 
-  if (error || !data?.id) {
+  if (error) {
+    return DEFAULT_ORG_ID;
+  }
+
+  if (!data?.id) {
     slugCache.set(normalized, {
       orgId: DEFAULT_ORG_ID,
       expiresAt: Date.now() + CACHE_TTL_MS,
