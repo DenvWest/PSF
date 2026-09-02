@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useRef, useState, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import LadderMomentButton from "@/components/dashboard/domain/LadderMomentButton";
 import { FactMicroReeks } from "@/components/dashboard/voortgang/MeetreeksChart";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
 import { clarityTag } from "@/lib/clarity";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
 import type { LadderEvidenceRow } from "@/lib/domain-ladder-readout";
 import { trackEvent } from "@/lib/ga4";
 import {
@@ -57,7 +58,8 @@ const STATE_STYLE: Record<LeefstijlLayerState, { bar: string; text: string }> = 
 
 type PrioriteitenLadderProps = {
   layers: readonly PrioriteitLayer[];
-  intro: string;
+  /** `null` waar `flowIntro` de volgorde al draagt — dan geen tweede alinea. */
+  intro: string | null;
   /** Standaard "Kies wat herkenbaar is" — past niet bij elk domein (voeding
    * heeft een volgorde, geen vrije keuze), dus overschrijfbaar per domein. */
   eyebrow?: string;
@@ -111,7 +113,154 @@ type PrioriteitenLadderProps = {
   chartColor?: string;
   /** Extra in een open laag — P6: supplementpoort + wearable-sleuf. */
   layerExtra?: (layerId: number) => ReactNode;
+  /**
+   * De lagen die de doorlopende volgorde dragen — bij alle vijf domeinen
+   * P1–P4. Wat daarbuiten valt (P5 meten, P6 aanvullen) staat los achter de
+   * lijn: dat zijn geen stappen die je afrondt maar lagen bovenop een
+   * staande basis. Weglaten = geen lijn, alle stappen los.
+   */
+  flowSteps?: readonly number[];
+  /**
+   * Staten voor de stepper waar ze afwijken van `layerStates` — voeding leest
+   * P4 uit de toereikendheid, niet uit de laagstaat. Zonder deze prop volgt
+   * de stepper `layerStates`.
+   */
+  stepStates?: Partial<Record<number, LeefstijlLayerState>>;
+  /** Eén regel boven de stepper die de volgorde uitlegt. Optioneel per domein. */
+  flowIntro?: string;
 };
+
+function stepPhase(state: LeefstijlLayerState | undefined): "voltooid" | "bezig" | "wacht" {
+  if (state === "ok") return "voltooid";
+  if (state === "winst" || state === "watch") return "bezig";
+  return "wacht";
+}
+
+/**
+ * De enige besturing van de ladder: zes genummerde knoppen met de naam van
+ * hun laag eronder. Verving de dubbele rij van augustus (roadmap-bollen bóven
+ * een rij P1–P6-chips die exact hetzelfde deden) — één rij, geen "P" meer op
+ * het scherm, en de bol zelf is de knop.
+ *
+ * De lijn loopt alleen door de lagen in `flowSteps`. Wat daarbuiten valt
+ * krijgt een spatie in plaats van een streep: de intro belooft een piramide
+ * ("wat eronder staat telt pas mee"), en een doorlopende lijn naar P6 zou van
+ * aanvullen een eindstation maken.
+ */
+function LagenStepper({
+  layers,
+  flowSteps,
+  stepStates,
+  stateLabels,
+  gekozenPerLaag,
+  openLayer,
+  domain,
+  onSelect,
+  onKeyDown,
+  tabRefs,
+}: {
+  layers: readonly PrioriteitLayer[];
+  flowSteps: readonly number[];
+  stepStates: Partial<Record<number, LeefstijlLayerState>>;
+  stateLabels?: Record<LeefstijlLayerState, string>;
+  gekozenPerLaag: Map<number, readonly unknown[]>;
+  openLayer: number | null;
+  domain: PillarId;
+  onSelect: (step: number) => void;
+  onKeyDown: (event: KeyboardEvent<HTMLButtonElement>, step: number) => void;
+  tabRefs: RefObject<Map<number, HTMLButtonElement>>;
+}) {
+  return (
+    <div
+      role="tablist"
+      aria-label="Lagen"
+      className="-mx-1 mb-4 flex flex-nowrap items-start gap-0 overflow-x-auto px-1 pb-1 [scrollbar-width:thin]"
+    >
+      {layers.map((layer, index) => {
+        const state = stepStates[layer.id];
+        const phase = stepPhase(state);
+        const isOpen = openLayer === layer.id;
+        const gekozenCount = gekozenPerLaag.get(layer.id)?.length ?? 0;
+        const stateLabel = state && stateLabels ? stateLabels[state] : null;
+        const isTabStop = isOpen || (openLayer == null && index === 0);
+        const bolClass =
+          phase === "voltooid"
+            ? "bg-[#5A8F6A] text-[#E7EDE8]"
+            : phase === "bezig"
+              ? "bg-[#C8956C] text-[#1A2620]"
+              : "bg-white/[0.13] text-[#9FB0A6]";
+        const nextLayer = layers[index + 1];
+        const inFlow =
+          nextLayer != null &&
+          flowSteps.includes(layer.id) &&
+          flowSteps.includes(nextLayer.id);
+
+        return (
+          <div key={layer.id} className="flex min-w-0 flex-1 items-start">
+            <button
+              type="button"
+              role="tab"
+              id={ladderLayerDomId(domain, layer.id)}
+              aria-selected={isOpen}
+              aria-controls={
+                isOpen ? `${ladderLayerDomId(domain, layer.id)}-paneel` : undefined
+              }
+              aria-label={tabAccessibleName(layer, stateLabel, gekozenCount)}
+              tabIndex={isTabStop ? 0 : -1}
+              data-layer={layer.id}
+              data-ls={state ?? undefined}
+              data-open={isOpen ? "true" : undefined}
+              ref={(node) => {
+                if (node) {
+                  tabRefs.current.set(layer.id, node);
+                } else {
+                  tabRefs.current.delete(layer.id);
+                }
+              }}
+              onClick={() => onSelect(layer.id)}
+              onKeyDown={(event) => onKeyDown(event, layer.id)}
+              className={`flex min-w-0 flex-1 cursor-pointer flex-col items-center gap-1 border-none bg-transparent p-0 pt-0.5 font-[inherit] transition-opacity ${
+                isOpen ? "opacity-100" : "opacity-70 hover:opacity-95"
+              }`}
+            >
+              <span
+                className={`relative flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${bolClass} ${
+                  isOpen ? "ring-2 ring-[#5A8F6A] ring-offset-2 ring-offset-[#16221C]" : ""
+                }`}
+              >
+                {layer.id}
+                {gekozenCount > 0 ? (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -right-0.5 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-[#16221C] text-[#9CC5A9]"
+                  >
+                    <Icons.Check s={9} />
+                  </span>
+                ) : null}
+              </span>
+              <span
+                aria-hidden="true"
+                className={`max-w-[6rem] text-center text-[10px] font-semibold leading-tight text-balance ${
+                  isOpen ? "text-[#E7EDE8]" : "text-[#9FB0A6]"
+                }`}
+              >
+                {layer.name}
+              </span>
+            </button>
+            {nextLayer != null ? (
+              <span
+                aria-hidden
+                className={`mx-0.5 mt-3.5 h-px min-w-[8px] flex-1 ${
+                  inFlow ? "bg-white/15" : "bg-transparent"
+                }`}
+              />
+            ) : null}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 function tabAccessibleName(
   layer: PrioriteitLayer,
@@ -124,6 +273,22 @@ function tabAccessibleName(
     parts.push(`${gekozenCount} gekozen`);
   }
   return parts.join(" · ");
+}
+
+/**
+ * De lat met zijn bron, zonder die bron twee keer te noemen.
+ *
+ * De meeste `benchmarkLabel`s dragen hun bron al tussen haakjes
+ * ("…(WHO 2020)"), en `benchmarkSource` bevat dan exact hetzelfde. Blind
+ * aanplakken gaf regels als "…(WHO 2015) (WHO 2015) · die haal je".
+ */
+function latRegel(fact: LadderEvidenceRow): string {
+  const label = fact.benchmarkLabel ?? "";
+  const source = fact.benchmarkSource;
+  if (!source || label.includes(source)) {
+    return label;
+  }
+  return `${label} (${source})`;
 }
 
 function LayerEvidence({
@@ -193,8 +358,7 @@ function LayerEvidence({
                     De lat
                   </span>
                   {" · "}
-                  {fact.benchmarkLabel}
-                  {fact.benchmarkSource ? ` (${fact.benchmarkSource})` : ""}
+                  {latRegel(fact)}
                   {statusMark ? (
                     <>
                       {" · "}
@@ -269,6 +433,9 @@ export default function PrioriteitenLadder({
   meetreeks = null,
   chartColor = "#5A8F6A",
   layerExtra,
+  flowSteps,
+  stepStates,
+  flowIntro,
 }: PrioriteitenLadderProps) {
   const isWerkplek = variant === "choose";
   const [internalOpenLayer, setInternalOpenLayer] = useState<number | null>(
@@ -294,6 +461,11 @@ export default function PrioriteitenLadder({
     if (openLayer === id) return;
     setOpenFactKey(null);
     trackEvent(`${domain}_ladder_layer_open`, { layer: id, surface });
+    if (domain === "voeding" && flowSteps?.includes(id)) {
+      trackEvent("nutrition_roadmap_step_opened", { step: id, surface });
+      emitAccountClientEvent("nutrition.roadmap_step_opened", { step: id, surface });
+      clarityTag("nutrition_roadmap_step", `p${id}`);
+    }
     clarityTag(`${domain}_ladder_layer`, `p${id}`);
     if (isControlled) {
       onOpenLayerChange(id);
@@ -351,77 +523,34 @@ export default function PrioriteitenLadder({
 
   return (
     <CockpitTile ariaLabel="Je prioriteiten" eyebrow={eyebrow}>
-      <p className="mb-3.5 mt-2.5 max-w-[58ch] text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
-        {intro}
-      </p>
+      {intro ? (
+        <p className="mb-3.5 mt-2.5 max-w-[58ch] text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
+          {intro}
+        </p>
+      ) : null}
 
-      <div
-        role="tablist"
-        aria-label="Prioriteiten"
-        className="-mx-1 flex flex-nowrap gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:thin]"
-      >
-        {layers.map((layer, index) => {
-          const isSelected = openLayer === layer.id;
-          const state = layerStates?.[layer.id] ?? null;
-          const styles = state ? STATE_STYLE[state] : null;
-          const gekozen = gekozenPerLaag.get(layer.id) ?? [];
-          const stateLabel = state && stateLabels ? stateLabels[state] : null;
-          const isTabStop =
-            isSelected || (openLayer == null && index === 0);
+      {flowIntro ? (
+        <p
+          className={`mb-2.5 max-w-[58ch] text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty ${
+            intro ? "" : "mt-2.5"
+          }`}
+        >
+          {flowIntro}
+        </p>
+      ) : null}
 
-          return (
-            <button
-              key={layer.id}
-              type="button"
-              role="tab"
-              id={ladderLayerDomId(domain, layer.id)}
-              aria-selected={isSelected}
-              aria-controls={
-                isSelected ? `${ladderLayerDomId(domain, layer.id)}-paneel` : undefined
-              }
-              aria-label={tabAccessibleName(layer, stateLabel, gekozen.length)}
-              tabIndex={isTabStop ? 0 : -1}
-              data-layer={layer.id}
-              data-ls={state ?? undefined}
-              data-open={isSelected ? "true" : undefined}
-              ref={(node) => {
-                if (node) {
-                  tabRefs.current.set(layer.id, node);
-                } else {
-                  tabRefs.current.delete(layer.id);
-                }
-              }}
-              onClick={() => handleSelect(layer.id)}
-              onKeyDown={(event) => handleTabKeyDown(event, layer.id)}
-              className={`relative flex min-w-[3.25rem] shrink-0 cursor-pointer flex-col items-center gap-0.5 overflow-hidden rounded-[10px] border px-2.5 py-2 font-[inherit] transition-colors ${
-                isSelected
-                  ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/[0.07]"
-                  : "border-white/10 bg-black/20"
-              }`}
-            >
-              <span
-                aria-hidden="true"
-                className={`absolute inset-x-0 top-0 h-0.5 ${
-                  styles ? styles.bar : isSelected ? "bg-[#5A8F6A]" : "bg-white/[0.14]"
-                }`}
-              />
-              <span
-                aria-hidden="true"
-                className={`pt-0.5 font-mono text-[11px] font-semibold tracking-[0.04em] ${
-                  isSelected ? "text-[#F1EFE8]" : "text-[#7E8C82]"
-                }`}
-              >
-                P{layer.id}
-              </span>
-              {gekozen.length > 0 ? (
-                <span aria-hidden="true" className="text-[#9CC5A9]">
-                  <Icons.Check s={11} />
-                </span>
-              ) : null}
-            </button>
-          );
-        })}
-      </div>
+      <LagenStepper
+        layers={layers}
+        flowSteps={flowSteps ?? []}
+        stepStates={{ ...(layerStates ?? {}), ...(stepStates ?? {}) }}
+        stateLabels={stateLabels}
+        gekozenPerLaag={gekozenPerLaag}
+        openLayer={openLayer}
+        domain={domain}
+        onSelect={handleSelect}
+        onKeyDown={handleTabKeyDown}
+        tabRefs={tabRefs}
+      />
 
       {openLayerData ? (
         <div

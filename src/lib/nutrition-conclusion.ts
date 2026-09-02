@@ -34,23 +34,23 @@ const LAYER_CONCLUSION: Record<
   NutritionLadderLayerId,
   (rowLabel: string, aboveOnOrder: boolean) => string
 > = {
-  1: (row) => `Je eetbasis staat er half — je ${row.toLowerCase()} draagt hem nog niet.`,
+  1: (row) => `Je voedingsbasis staat er half — je ${row.toLowerCase()} draagt hem nog niet.`,
   2: (row, above) =>
     above
-      ? `Je eetbasis staat. Wat er nu telt is de kwaliteit ervan, te beginnen bij je ${row.toLowerCase()}.`
-      : `Je eetbasis staat er grotendeels. De duidelijkste winst ligt nu bij je ${row.toLowerCase()}.`,
+      ? `Je voedingsbasis staat. Wat er nu telt is de kwaliteit ervan, te beginnen bij je ${row.toLowerCase()}.`
+      : `Je voedingsbasis staat er grotendeels. De duidelijkste winst ligt nu bij je ${row.toLowerCase()}.`,
   3: (row, above) =>
     above
       ? `Je basis en je kwaliteit staan. Wat overblijft is de verdeling — je ${row.toLowerCase()}.`
       : `Je bord is op orde op de punten die tellen. Wat overblijft is de verdeling — je ${row.toLowerCase()}.`,
   4: () => "Je eetbeeld staat. Wat er nu telt is wat er bij jouw situatie past.",
   5: () => "Je eetbeeld staat. Meten en timen zijn de volgende gereedschappen, geen fundament.",
-  6: () => "Je eetbasis staat. Wat je bord niet dekt, mag je nu vergelijken.",
+  6: () => "Je voedingsbasis staat. Wat je bord niet dekt, mag je nu vergelijken.",
 };
 
 /** Alles op orde — dan is volhouden het werk, en dat mag ongemakkelijk klinken. */
 const ALL_ON_ORDER =
-  "Je eetbasis staat. Vanaf hier is volhouden het werk — er is geen makkelijke winst meer te halen.";
+  "Je voedingsbasis staat. Vanaf hier is volhouden het werk — er is geen makkelijke winst meer te halen.";
 
 /** Geen enkele rij beoordeelbaar (alles opt-out of niets ingevuld). */
 const NOTHING_JUDGED =
@@ -73,7 +73,7 @@ export function buildNutritionHeadline(rows: readonly NutritionFactRow[]): strin
   const aboveOnOrder = rows
     .filter((row) => row.layer < focus && row.status !== "own")
     .every((row) => row.status === "meets");
-  return LAYER_CONCLUSION[focus](driver?.label ?? "eetbasis", aboveOnOrder);
+  return LAYER_CONCLUSION[focus](driver?.label ?? "voedingsbasis", aboveOnOrder);
 }
 
 /**

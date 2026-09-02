@@ -80,16 +80,31 @@ function nutritionReadout(overrides: Record<string, unknown> = {}) {
   });
   return {
     date: "2026-08-30",
-    headline: "Je eetbasis staat, op je plantaardige kant na.",
+    headline: "Je voedingsbasis staat, op je plantaardige kant na.",
     factRows: [],
     focusLayer: 1,
     layerStates: { 1: "winst", 2: "watch", 3: "wacht", 4: "wacht", 5: "wacht", 6: "wacht" },
-    gate: { open: false, reason: "Eerst je eetbasis; daarna pas het potje." },
+    gate: { open: false, reason: "Eerst je voedingsbasis; daarna pas het potje." },
     routes: [
       route("omega3", "gap"),
       route("magnesium", "partial"),
-      route("eiwit", "covered"),
+      route("protein", "covered"),
     ],
+    ladderReport: { sliders: {}, preference: "none", allergies: [] },
+    sufficiency: {
+      layerState: "winst",
+      contextLine: "82 kg · matige trainingsbelasting",
+      trainingLoadLabel: "Matige trainingsbelasting",
+      nutrients: [],
+      focusNutrients: ["omega3"],
+    },
+    contribution: [],
+    personalization: {
+      weightKg: 82,
+      trainingLoad: 2,
+      proteinTarget: { gramsLow: 90, gramsHigh: 105 },
+      ageRange: "45-54",
+    },
     ...overrides,
   };
 }
@@ -186,7 +201,7 @@ describe("DomainKompasScreen — slaap draagt hetzelfde scherm als beweging", ()
     const ladder = screen.getByRole("group", { name: "Je prioriteiten" });
     expect(within(ladder).queryByText("Grootste winst")).toBeNull();
     expect(
-      within(ladder).getByRole("button", { name: /Je eetbasis/ }).getAttribute("aria-pressed"),
+      within(ladder).getByRole("button", { name: /Voedingsbasis/ }).getAttribute("aria-pressed"),
     ).toBe("true");
     expect(screen.queryByRole("button", { name: /Open je voedingsbeeld/ })).not.toBeNull();
     expect(screen.queryByRole("button", { name: "Mijn Dag › vandaag" })).not.toBeNull();
@@ -238,7 +253,7 @@ describe("DomainKompasScreen — voeding draagt het tweeluik in plaats van het v
 
   it("noemt de reden dat de supplement-poort dicht staat, in de woorden van de check", () => {
     renderScreen("voeding", voedingData());
-    expect(screen.queryByText("Eerst je eetbasis; daarna pas het potje.")).not.toBeNull();
+    expect(screen.queryByText("Eerst je voedingsbasis; daarna pas het potje.")).not.toBeNull();
   });
 
   it("laat de prioriteitsknop meebewegen met de laag die je aanklikt", () => {

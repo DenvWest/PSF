@@ -336,7 +336,7 @@ export default function SchapView({
 
             Hier staat hij uitgeklapt en met zoekveld: dit is het scherm waar je
             je keuze uitwerkt, niet even aantikt. De poort blijft dezelfde —
-            staat je eetbasis niet, dan blijven de supplement-knoppen dicht met
+            staat je voedingsbasis niet, dan blijven de supplement-knoppen dicht met
             hun reden erbij. */}
         {currentTab === "logboek" && nutritionRoutes.length > 0 ? (
           <NutrientLogboekPanel

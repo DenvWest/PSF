@@ -5,6 +5,9 @@ import {
   resolveNutritionGate,
   resolveNutritionLayerStates,
 } from "@/lib/nutrition-ladder";
+import { contributionProfile } from "@/lib/nutrition-contribution";
+import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
+import { buildNutritionSufficiency } from "@/lib/nutrition-sufficiency";
 import { buildNutrientRouteStatuses } from "@/lib/nutrition-route-status";
 import { isVitaminDLowSunSeason } from "@/lib/nutrition-season";
 import { CHECK_LOG, CHECKS, PILLAR } from "@/data/dashboard";
@@ -106,16 +109,40 @@ const DEV_NUTRITION_READOUT: DashboardData["nutritionCheckinReadout"] = (() => {
     allergies: [] as string[],
   };
   const factRows = buildNutritionFactRows(report);
+  const layerStates = resolveNutritionLayerStates(factRows);
+  const routes = buildNutrientRouteStatuses(report, {
+    isDarkSeason: isVitaminDLowSunSeason(),
+  });
+  const selfReport = nutritionReportFromAnswers(report.sliders);
+  const contribution = contributionProfile(selfReport);
+  const personalization = {
+    weightKg: 82,
+    trainingLoad: 3 as number | undefined,
+    proteinTarget: { gramsLow: 95, gramsHigh: 110 },
+    ageRange: "45-54",
+  };
+  const sufficiency = buildNutritionSufficiency({
+    intakeItems: DEV_NUTRITION_INTAKE!.items.map((item) => ({
+      nutrient: item.nutrient,
+      band: item.band,
+    })),
+    routes,
+    contribution,
+    personalization,
+  });
+  layerStates[4] = sufficiency.layerState;
   return {
     date: "2026-07-18",
     headline: buildNutritionHeadline(factRows),
     factRows,
     focusLayer: resolveNutritionFocusLayer(factRows),
-    layerStates: resolveNutritionLayerStates(factRows),
+    layerStates,
     gate: resolveNutritionGate(factRows),
-    routes: buildNutrientRouteStatuses(report, {
-      isDarkSeason: isVitaminDLowSunSeason(),
-    }),
+    routes,
+    ladderReport: report,
+    sufficiency,
+    contribution,
+    personalization,
   };
 })();
 

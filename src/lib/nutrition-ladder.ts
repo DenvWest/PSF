@@ -48,20 +48,28 @@ export type NutritionLadderReport = {
 };
 
 /**
- * De laag waarop een cluster zijn feiten aflevert.
+ * De laag waarop een rij zijn feiten aflevert.
  *
- * Dit wijkt bewust af van `NutritionCluster.layer` voor C3. Die staat in de
- * data op 3 ("Verhoudingen"), en dat klopt voor de *naam* van het cluster —
- * eiwit per maaltijd is een verhouding. Maar §D2 van het besluit legt de
- * dragende eiwitrijen op laag 1: een eiwitbron die er niet is, is een gat in
- * je eetbasis, niet in je finetuning. De splitsing loopt daarom per rij en
- * niet per cluster, en staat hier zodat er één plek is waar hij te lezen is.
+ * Eén regel: **een ontbrekende bron is een gat in je eetbasis, een te vaak
+ * gemaakte keuze is een kwaliteitskwestie.** Dat volgt de clusters uit
+ * `lifestyle-pyramid.ts` — C3 en C4 dragen bronnen (laag 1), C5 draagt
+ * frequentie (laag 2) — met één uitzondering die per rij loopt en niet per
+ * cluster: `eiwitritme` komt uit C3 maar meet geen bron. Of je genoeg
+ * eiwitbronnen ééét is je basis; hoe je ze over de dag verdeelt is een
+ * verhouding, en dus laag 3.
+ *
+ * Dit is bewust anders dan de eerste versie, die `vezelbasis` en `visbron` op
+ * laag 2 zette. Dat leverde een "Voedingskwaliteit" op die over granen en vis
+ * ging terwijl de laag-samenvatting suiker en bewerking belooft — en het
+ * maakte de laag onbeoordeelbaar zodra iemand glutenvrij eet of geen vis eet,
+ * want dan bleef er één rij met een richtlijn over. Ontbrekende bronnen horen
+ * bij de basis; daar tellen ze mee, en daar dicht je ze.
  */
 const ROW_LAYER: Record<string, NutritionLadderLayerId> = {
   plantbasis: 1,
   eiwitbronnen: 1,
-  vezelbasis: 2,
-  visbron: 2,
+  vezelbasis: 1,
+  visbron: 1,
   minderen: 2,
   bewerkingsgraad: 2,
   eiwitritme: 3,
@@ -178,13 +186,37 @@ type RowSpec = {
   } | null;
 };
 
-/** Benchmarkregels komen uit de vraag zelf — één bron, geen tweede formulering. */
-function benchmarkOf(sliderId: string): { label: string | null; source: string | null } {
+/**
+ * Benchmarkregels komen uit de vraag zelf — één bron, geen tweede formulering.
+ *
+ * Twee dingen worden hier uit elkaar getrokken die in `benchmarkLabel` aan
+ * elkaar geplakt zitten. Een paar labels dragen achter een em-dash de caveat
+ * dat de vráág iets anders schat dan de norm meet ("deze vraag schat
+ * frequentie, niet procenten"). Op één regel achter de norm, gevolgd door de
+ * bron en de status, levert dat een lat-regel op die niemand uitleest. De norm
+ * blijft dus de lat; de caveat zakt naar de voetnoot, waar de rij al een sleuf
+ * voor heeft.
+ *
+ * De bron staat in de meeste labels al tussen haakjes. Er is er dus maar één
+ * nodig: staat hij er al in, dan geeft dit geen tweede terug — zie
+ * {@link appendSource}.
+ */
+function benchmarkOf(sliderId: string): {
+  label: string | null;
+  source: string | null;
+  caveat: string | null;
+} {
   const help = nutritionSliderQuestion(sliderId)?.help;
-  if (!help || help.benchmarkKind === null) {
-    return { label: null, source: null };
+  if (!help || help.benchmarkKind === null || !help.benchmarkLabel) {
+    return { label: null, source: null, caveat: null };
   }
-  return { label: help.benchmarkLabel, source: help.source };
+  const [norm, ...rest] = help.benchmarkLabel.split(" — ");
+  const caveat = rest.length > 0 ? rest.join(" — ") : null;
+  return {
+    label: norm.trim(),
+    source: help.source,
+    caveat: caveat ? `${caveat[0].toUpperCase()}${caveat.slice(1)}.` : null,
+  };
 }
 
 const ROW_SPECS: readonly RowSpec[] = [
@@ -245,6 +277,11 @@ const ROW_SPECS: readonly RowSpec[] = [
           answerLabel: "Je eet geen granen met gluten",
           status: "own",
           exemption: "opt-out",
+          // Zonder deze regel staat "de grootste vezelknop" onder een rij die
+          // geen richtlijn krijgt — dat leest als een gat waar er alleen een
+          // andere route is. Vis heeft dezelfde opvang; granen hadden hem niet.
+          footnote:
+            "Dan is dit niet jouw meetlat — je vezels komen uit peulvruchten, groente, noten en glutenvrije granen.",
         };
       }
       const index = sliderIndex(report, "wholegrain");
@@ -258,6 +295,7 @@ const ROW_SPECS: readonly RowSpec[] = [
         exemption: null,
         benchmarkLabel: benchmark.label,
         benchmarkSource: benchmark.source,
+        footnote: benchmark.caveat,
       };
     },
   },
@@ -285,6 +323,7 @@ const ROW_SPECS: readonly RowSpec[] = [
         exemption: null,
         benchmarkLabel: benchmark.label,
         benchmarkSource: benchmark.source,
+        footnote: benchmark.caveat,
       };
     },
   },
@@ -305,6 +344,7 @@ const ROW_SPECS: readonly RowSpec[] = [
         exemption: null,
         benchmarkLabel: benchmark.label,
         benchmarkSource: benchmark.source,
+        footnote: benchmark.caveat,
       };
     },
   },
@@ -347,6 +387,7 @@ const ROW_SPECS: readonly RowSpec[] = [
         exemption: null,
         benchmarkLabel: benchmark.label,
         benchmarkSource: benchmark.source,
+        footnote: benchmark.caveat,
       };
     },
   },
@@ -452,10 +493,10 @@ export const NUTRITION_LAYER_STATE_LABEL: Record<LeefstijlLayerState, string> = 
 };
 
 const WHY_WAIT: Partial<Record<NutritionLadderLayerId, string>> = {
-  2: "Kwaliteit kiezen loont pas als je eetbasis staat.",
+  2: "Kwaliteit kiezen loont pas als je voedingsbasis staat.",
   3: "Verhoudingen finetunen heeft geen zin zolang er nog een bron ontbreekt.",
   4: "Je situatie kleurt je stappen, hij verandert je volgorde niet.",
-  5: "Tellen en timen zijn gereedschappen, geen fundament. We openen dit niet eerder.",
+  5: "Tellen en timen blijven dicht — gereedschap, geen fundament. Je eigen reeks staat er wel: die zegt of het de goede kant op gaat.",
   6: "Eerst je tafel, dan het potje.",
 };
 
@@ -490,10 +531,10 @@ export function resolveNutritionGate(rows: readonly NutritionFactRow[]): Nutriti
   }
 
   // §E schrijft laag 1 voor, maar de noordster is breder: elk gat dat je mét
-  // eten kunt dichten hoort met eten gedicht te worden. Vezels en vis staan op
-  // laag 2 en zijn precies zulke gaten — die overslaan zou de poort openen op
-  // het moment dat het bord nog werk heeft, en dat is de omkering die de gate
-  // moet voorkomen. Laag 3 telt niet mee: een eiwitritme verschuiven is een
+  // eten kunt dichten hoort met eten gedicht te worden. Laag 1 draagt sinds de
+  // herindeling alle ontbrekende bronnen (planten, eiwit, vezels, vis); laag 2
+  // draagt de frequentiekeuzes, en te vaak frisdrank is óók een gat dat je met
+  // je bord dicht. Laag 3 telt niet mee: een eiwitritme verschuiven is een
   // verdeling, geen ontbrekende bron.
   const eatableGaps = rows.filter((row) => row.layer <= 2 && row.status === "below");
   if (eatableGaps.length > 0) {

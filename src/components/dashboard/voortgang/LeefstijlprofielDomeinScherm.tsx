@@ -13,14 +13,19 @@ import { buildDashboardAgendaHref, buildDashboardVandaagHref } from "@/lib/dashb
 import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
 import NutrientRoutePanel from "@/components/dashboard/voortgang/NutrientRoutePanel";
 import VerhoudingTabel from "@/components/nutrition/VerhoudingTabel";
+import VoedingsbasisOverzicht from "@/components/nutrition/VoedingsbasisOverzicht";
+import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
 import VoedingskwaliteitLaag from "@/components/nutrition/VoedingskwaliteitLaag";
+import SituatieVoedingLaag from "@/components/nutrition/SituatieVoedingLaag";
+import MetenTijdLaag from "@/components/nutrition/MetenTijdLaag";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
 import { trackEvent } from "@/lib/ga4";
-import { getLeefstijlLadder } from "@/lib/leefstijl-ladder";
+import { getLeefstijlLadder, LADDER_FLOW_STEPS } from "@/lib/leefstijl-ladder";
 import { buildLeefstijlprofielBronregel } from "@/lib/leefstijlprofiel-bronregel";
 import { hasSchap } from "@/lib/schap-availability";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
-import { buildMeetreeks } from "@/lib/voortgang-meetreeks";
+import { buildMeetreeks, type Meetreeks } from "@/lib/voortgang-meetreeks";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
 /**
@@ -47,10 +52,14 @@ function LayerSixSlot({
   domain,
   data,
   onOpenSchap,
+  focusNutrient = null,
+  p4ContextLine = null,
 }: {
   domain: PillarId;
   data?: DashboardData;
   onOpenSchap: () => void;
+  focusNutrient?: NutrientId | null;
+  p4ContextLine?: string | null;
 }) {
   const mapping = STANCE_BY_PILLAR[domain];
   const showWearable = domain === "beweging" || domain === "slaap";
@@ -83,12 +92,20 @@ function LayerSixSlot({
           de vijf routes zijn wat P6 te bieden heeft zolang de poort dicht is,
           en de context eromheen zodra hij open gaat. */}
       {domain === "voeding" && routeStatuses.length > 0 ? (
-        <NutrientRoutePanel
-          statuses={routeStatuses}
-          surface="leefstijlprofiel_voeding"
-          gateOpen={nutritionGate?.open === true}
-          gateReason={nutritionGate?.reason ?? null}
-        />
+        <>
+          {p4ContextLine ? (
+            <p className="m-0 max-w-[58ch] text-[12px] leading-relaxed text-[#9FB0A6] text-pretty">
+              {p4ContextLine}
+            </p>
+          ) : null}
+          <NutrientRoutePanel
+            statuses={routeStatuses}
+            surface="leefstijlprofiel_voeding"
+            gateOpen={nutritionGate?.open === true}
+            gateReason={nutritionGate?.reason ?? null}
+            focusNutrient={focusNutrient}
+          />
+        </>
       ) : null}
       {mapping && !nutritionGateClosed ? (
         <DomainSupplementStance
@@ -115,12 +132,18 @@ function LayerSixSlot({
  * De ladder zegt wat je als eerste zou aanpakken; deze slots zeggen waaróm —
  * op de laag waar het argument thuishoort, niet als losse blokken erboven.
  *
+ * - **P1 Voedingsbasis**: categorie-overzicht (groente, vezels, eiwit, …).
  * - **P2 Voedingskwaliteit**: ranglijst (PAN, productkennis) naast jouw
- *   laatste check (laag-2 feitenrijen). Dat is de kwaliteitsvraag, en hij
- *   hoort dus niet bij P1 (eetbasis) of P3 (verhoudingen).
+ *   laatste check. Sinds de herindeling draagt laag 2 alleen nog de
+ *   frequentievragen (suiker, bewerkingsgraad); ontbrekende bronnen staan op
+ *   P1, waar je ze met je bord dicht.
  * - **P3 Verhoudingen**: de feitenrij-tabel met filters. De naam van de laag
  *   is de vraag die de tabel beantwoordt: hoe verhoudt wat jij eet zich tot
  *   de richtlijn.
+ * - **P4 Op jouw situatie**: volstaat je inname gegeven werk en sport?
+ * - **P5 Meten & timing**: je eigen reeks — wat bewoog er sinds de vorige
+ *   check. Dicht voor calorieën tellen en eetvensters, open voor je eigen
+ *   meting; dat is de betekenis van "meten" die hier wél thuishoort.
  * - **P6 Aanvullen**: de bestaande supplement-poort.
  *
  * Buiten voeding heeft alleen P6 een slot — de andere lagen zijn daar leeg.
@@ -130,20 +153,57 @@ function NutritionLayerSlot({
   domain,
   data,
   onOpenSchap,
+  onGoP6,
+  p6FocusNutrient,
+  meetreeks,
 }: {
   layerId: number;
   domain: PillarId;
   data?: DashboardData;
   onOpenSchap: () => void;
+  onGoP6: (nutrient: NutrientId) => void;
+  p6FocusNutrient: NutrientId | null;
+  meetreeks: Meetreeks | null;
 }) {
   if (layerId === 6) {
-    return <LayerSixSlot domain={domain} data={data} onOpenSchap={onOpenSchap} />;
+    const readout = data?.nutritionCheckinReadout ?? null;
+    const focusLabel = p6FocusNutrient
+      ? readout?.sufficiency.nutrients.find((item) => item.nutrient === p6FocusNutrient)?.label
+      : null;
+    const p4ContextLine =
+      focusLabel != null
+        ? `Op jouw situatie (stap 4) zagen we dat ${focusLabel.toLowerCase()} waarschijnlijk niet volstaat — hier kies je wat je ermee doet.`
+        : null;
+    return (
+      <LayerSixSlot
+        domain={domain}
+        data={data}
+        onOpenSchap={onOpenSchap}
+        focusNutrient={p6FocusNutrient}
+        p4ContextLine={p4ContextLine}
+      />
+    );
   }
   if (domain !== "voeding") {
     return null;
   }
 
   const readout = data?.nutritionCheckinReadout ?? null;
+
+  if (layerId === 1 && readout) {
+    return (
+      <VoedingsbasisOverzicht
+        rijen={readout.factRows}
+        report={readout.ladderReport}
+        selfReport={
+          readout.ladderReport
+            ? nutritionReportFromAnswers(readout.ladderReport.sliders)
+            : null
+        }
+        surface="leefstijlprofiel_voeding"
+      />
+    );
+  }
 
   if (layerId === 2) {
     return (
@@ -155,14 +215,36 @@ function NutritionLayerSlot({
   }
 
   if (layerId === 3 && readout && readout.factRows.length > 0) {
+    // Alle rijen, niet alleen die van laag 3: dit is de enige plek waar het
+    // hele beeld naast elkaar staat, en de tabel filtert zelf op voedselgroep.
+    // De stepper zegt al dat dit stap 3 is en het paneel heet "Verhoudingen" —
+    // een kopregel die dat herhaalt voegt niets toe.
     return (
       <div className="mt-4">
         <VerhoudingTabel
           rijen={readout.factRows}
           surface="dashboard"
           checkDatum={readout.date}
+          titel="Je hele check op één rij"
         />
       </div>
+    );
+  }
+
+  if (layerId === 5) {
+    return <MetenTijdLaag meetreeks={meetreeks} surface="leefstijlprofiel_voeding" />;
+  }
+
+  if (layerId === 4 && readout) {
+    return (
+      <SituatieVoedingLaag
+        sufficiency={readout.sufficiency}
+        contribution={readout.contribution}
+        routes={readout.routes}
+        personalization={readout.personalization}
+        surface="leefstijlprofiel_voeding"
+        onGoP6={onGoP6}
+      />
     );
   }
 
@@ -195,6 +277,7 @@ export default function LeefstijlprofielDomeinScherm({
   const [picked, setPicked] = useState<{ domain: PillarId; layer: number | null } | null>(
     null,
   );
+  const [p6FocusNutrient, setP6FocusNutrient] = useState<NutrientId | null>(null);
   const pickedForDomain = picked?.domain === domain ? picked : null;
   const openLadderLayer = pickedForDomain
     ? pickedForDomain.layer
@@ -225,6 +308,11 @@ export default function LeefstijlprofielDomeinScherm({
     if (typeof window !== "undefined") {
       window.location.assign(href);
     }
+  };
+
+  const handleGoP6 = (nutrient: NutrientId) => {
+    setP6FocusNutrient(nutrient);
+    setPicked({ domain, layer: 6 });
   };
 
   const handleOpenSchap = () => {
@@ -304,8 +392,22 @@ export default function LeefstijlprofielDomeinScherm({
                       domain={domain}
                       data={data}
                       onOpenSchap={handleOpenSchap}
+                      onGoP6={handleGoP6}
+                      p6FocusNutrient={p6FocusNutrient}
+                      meetreeks={meetreeks}
                     />
                   )
+                : undefined
+            }
+            flowSteps={LADDER_FLOW_STEPS}
+            flowIntro={
+              domain === "voeding"
+                ? "Eerst je voedingsbasis, dan kwaliteit, dan verhoudingen — daarna kijken we of dat genoeg is voor jouw werk en sport."
+                : undefined
+            }
+            stepStates={
+              domain === "voeding" && data?.nutritionCheckinReadout
+                ? { 4: data.nutritionCheckinReadout.sufficiency.layerState }
                 : undefined
             }
             {...(isKompasDomain

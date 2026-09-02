@@ -114,7 +114,7 @@ export function routeChoiceBlockedReason(
   gateOpen: boolean,
 ): string {
   if (!gateOpen) {
-    return "Eerst je eetbasis. Zolang die niet staat, vergelijken we nog niets.";
+    return "Eerst je voedingsbasis. Zolang die niet staat, vergelijken we nog niets.";
   }
   return status.doorReasonNl;
 }

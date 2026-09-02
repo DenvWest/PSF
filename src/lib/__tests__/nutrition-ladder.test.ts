@@ -131,7 +131,7 @@ describe("winst-laag en staten", () => {
 
   it("zwijgt over lagen op of onder de winst-laag", () => {
     expect(nutritionLayerWhyWait(1, 1)).toBeNull();
-    expect(nutritionLayerWhyWait(2, 1)).toContain("eetbasis staat");
+    expect(nutritionLayerWhyWait(2, 1)).toContain("voedingsbasis staat");
     expect(nutritionLayerWhyWait(6, 1)).toBe("Eerst je tafel, dan het potje.");
   });
 });
@@ -146,9 +146,21 @@ describe("poort op laag 6", () => {
     expect(gate.reason).toContain("plantbasis");
   });
 
-  it("blijft dicht op een gat dat op laag 2 staat maar met eten te dichten is", () => {
-    const rows = buildNutritionFactRows(report({ ...ON_ORDER.sliders, wholegrain: 0 }));
+  it("blijft dicht op een frequentiegat op laag 2, dat je ook met eten dicht", () => {
+    // Te vaak frisdrank is geen ontbrekende bron (laag 1) maar een keuze die
+    // je te vaak maakt (laag 2). De poort telt hem toch mee: hij is met je
+    // bord te dichten, en dat is waar `eatableGaps` op selecteert.
+    const rows = buildNutritionFactRows(report({ ...ON_ORDER.sliders, sugaryDrinks: 7 }));
     expect(rows.some((row) => row.layer === 1 && row.status === "below")).toBe(false);
+    expect(rows.some((row) => row.layer === 2 && row.status === "below")).toBe(true);
+    expect(resolveNutritionGate(rows).open).toBe(false);
+  });
+
+  it("rekent een ontbrekende graanbron tot de eetbasis, niet tot de kwaliteit", () => {
+    // Vezels waren tot de herindeling laag 2. Een bron die ontbreekt hoort bij
+    // je basis: daar dicht je hem, en daar telt hij mee voor de poort.
+    const rows = buildNutritionFactRows(report({ ...ON_ORDER.sliders, wholegrain: 0 }));
+    expect(rows.find((row) => row.key === "vezelbasis")?.layer).toBe(1);
     expect(resolveNutritionGate(rows).open).toBe(false);
   });
 
@@ -192,11 +204,14 @@ describe("conclusiezin", () => {
   });
 
   it("spreekt de badge erboven niet tegen wanneer die laag alleen 'rond' staat", () => {
-    // Plantbasis blijft op `near` (laag 1 = houd in de gaten), winst op laag 2.
-    const rows = buildNutritionFactRows(report({ ...ON_ORDER.sliders, vegetables: 2, fruit: 0, berries: 0, wholegrain: 0 }));
+    // Plantbasis blijft op `near` (laag 1 = houd in de gaten), winst op laag 2
+    // via de frequentievraag die die laag sinds de herindeling draagt.
+    const rows = buildNutritionFactRows(
+      report({ ...ON_ORDER.sliders, vegetables: 2, fruit: 0, berries: 0, sugaryDrinks: 7 }),
+    );
     const headline = buildNutritionHeadline(rows);
     expect(resolveNutritionLayerStates(rows)[1]).toBe("watch");
-    expect(headline).not.toContain("Je eetbasis staat.");
+    expect(headline).not.toContain("Je voedingsbasis staat.");
     expect(headline).toContain("grotendeels");
   });
 });

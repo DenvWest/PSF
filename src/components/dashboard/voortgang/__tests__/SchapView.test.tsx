@@ -208,7 +208,7 @@ describe("SchapView — de spiegel leefstijl ↔ aanbod", () => {
 
     expect(within(spiegel()).getByText("Gratis · laag 1–5")).toBeTruthy();
     expect(within(spiegel()).getByText("Betaald · laag 6 van 6")).toBeTruthy();
-    expect(within(spiegel()).getByText("Je eetbasis")).toBeTruthy();
+    expect(within(spiegel()).getByText("Voedingsbasis")).toBeTruthy();
   });
 
   it("draagt de doorstroom naar de gids, met de terugweg naar het dashboard", () => {

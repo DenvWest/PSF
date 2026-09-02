@@ -12,6 +12,7 @@ import {
   ROUTE_STATUS_LABEL,
 } from "@/lib/nutrition-route-choice";
 import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
 
 /**
  * "Wat moet ik eten om hier vanaf te komen — en wanneer lukt dat niet meer?"
@@ -31,11 +32,13 @@ import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 function RouteRow({
   status,
   surface,
+  defaultOpen = false,
 }: {
   status: NutrientRouteStatus;
   surface: string;
+  defaultOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
 
   const handleToggle = () => {
     const next = !open;
@@ -190,12 +193,15 @@ export default function NutrientRoutePanel({
   surface,
   gateOpen,
   gateReason,
+  focusNutrient = null,
 }: {
   statuses: readonly NutrientRouteStatus[];
   surface: string;
   /** De laag-6-poort. Dicht = geen enkele vergelijk-link, ook niet per stof. */
   gateOpen: boolean;
   gateReason: string | null;
+  /** Vanuit P4: open deze stof bij binnenkomst. */
+  focusNutrient?: NutrientId | null;
 }) {
   if (statuses.length === 0) {
     return null;
@@ -223,7 +229,12 @@ export default function NutrientRoutePanel({
       </p>
       <ul className="m-0 flex list-none flex-col gap-3.5 p-0">
         {visible.map((status) => (
-          <RouteRow key={status.nutrient} status={status} surface={surface} />
+          <RouteRow
+            key={`${status.nutrient}-${focusNutrient === status.nutrient ? "focus" : "idle"}`}
+            status={status}
+            surface={surface}
+            defaultOpen={focusNutrient === status.nutrient}
+          />
         ))}
       </ul>
     </section>

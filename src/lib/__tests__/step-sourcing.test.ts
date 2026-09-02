@@ -124,11 +124,17 @@ describe("FOOD_SOURCES", () => {
     }
   });
 
-  it("is honest that nothing has been checked against NEVO yet", () => {
+  it("is honest about which sources are still unverified", () => {
+    // 2 september 2026: eerste NEVO 2025/9.0-import. Vóór die datum klopte
+    // deze test met de titel — nu zijn er geverifieerde rijen, dus de
+    // invariant verschuift van "niets is gecheckt" naar "een ongeverifieerde
+    // rij is altijd eerlijk gelabeld", wat het eigenlijke doel van deze test
+    // altijd al was.
     for (const id of NUTRIENT_IDS) {
       for (const source of FOOD_SOURCES[id]) {
-        expect(source.verified).toBe(false);
-        expect(source.source.ref).toBeNull();
+        if (!source.verified) {
+          expect(source.source.ref, `${id}/${source.key}`).toBeNull();
+        }
       }
     }
   });

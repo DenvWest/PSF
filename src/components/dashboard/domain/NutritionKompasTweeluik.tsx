@@ -103,7 +103,7 @@ export default function NutritionKompasTweeluik({
           {samenvatting.gateOpen
             ? "Per stof: uit je eten, uit een supplement, of allebei."
             : (samenvatting.gateReason ??
-              "Eerst je eetbasis; daarna pas de vraag of aanvullen aan de orde is.")}
+              "Eerst je voedingsbasis; daarna pas de vraag of aanvullen aan de orde is.")}
         </span>
       </button>
     </div>

@@ -14,6 +14,11 @@ type ClientEmitType = Extract<
   | "dashboard.beweging_programma_open"
   | "choice.shelf_opened"
   | "dashboard.schap_tab_selected"
+  | "nutrition.basis_category_viewed"
+  | "nutrition.basis_category_expanded"
+  | "nutrition.roadmap_step_opened"
+  | "nutrition.sufficiency_viewed"
+  | "nutrition.tijdlaag_viewed"
   | "cprofile.step_completed"
   | "cprofile.highlight_clicked"
 >;

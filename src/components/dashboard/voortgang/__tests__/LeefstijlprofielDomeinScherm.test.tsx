@@ -120,7 +120,7 @@ describe("LeefstijlprofielDomeinScherm", () => {
     expect(screen.getByRole("heading", { name: /Wat er onder je voeding staat/ })).toBeTruthy();
     expect(screen.getByText(/Wat hier staat is je keuze en de datum/)).toBeTruthy();
     expect(screen.queryByText("Grootste winst")).toBeNull();
-    fireEvent.click(screen.getByRole("tab", { name: /Je eetbasis/ }));
+    fireEvent.click(screen.getByRole("tab", { name: /Voedingsbasis/ }));
     expect(screen.queryByText("Jij mat")).toBeNull();
   });
 

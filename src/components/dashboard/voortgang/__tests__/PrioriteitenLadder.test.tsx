@@ -140,7 +140,7 @@ describe("PrioriteitenLadder", () => {
 
   it("werkt zonder subtitle — voeding heeft er geen", () => {
     const layersZonderSubtitle = [
-      { id: 1, name: "Je eetbasis", summary: "Samenvatting.", actions: [] },
+      { id: 1, name: "Voedingsbasis", summary: "Samenvatting.", actions: [] },
     ];
     render(
       <PrioriteitenLadder
@@ -150,7 +150,7 @@ describe("PrioriteitenLadder", () => {
         surface="test"
       />,
     );
-    expect(layerTab("Je eetbasis")).toBeTruthy();
+    expect(layerTab("Voedingsbasis")).toBeTruthy();
   });
 
   it("toont geen actieblok bij een laag zonder acties, wel het lege Mijn keuze", () => {

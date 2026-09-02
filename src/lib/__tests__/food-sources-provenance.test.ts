@@ -7,7 +7,7 @@ import {
   type FoodSource,
   type NutrientValue,
 } from "@/data/nutrition/food-sources";
-import { NUTRIENT_IDS } from "@/data/nutrition/intake-reference";
+import { NUTRIENT_IDS, type NutrientId } from "@/data/nutrition/intake-reference";
 
 /**
  * Herkomst-invarianten van de bronnentabel.
@@ -113,11 +113,13 @@ describe("amountForPortion — onze bewerking, expliciet gescheiden", () => {
 });
 
 describe("de huidige stand is eerlijk afleesbaar", () => {
-  it("geen enkele rij claimt vandaag verificatie", () => {
-    // Zodra de eerste NEVO-import landt, verandert deze test mee — en dan is
-    // dat een bewuste wijziging in plaats van een sluipende.
+  // 2 september 2026: eerste NEVO 2025/9.0-import. Deze test legt vast HOEVEEL
+  // rijen geverifieerd zijn, niet WELKE — een volgende import mag het aantal
+  // laten groeien, maar een daling betekent dat een verificatie stilletjes is
+  // teruggedraaid, en dat hoort een bewuste wijziging te zijn, geen sluipende.
+  it("geverifieerde rijen zijn nooit minder dan de laatste import opleverde", () => {
     const verified = ALL_SOURCES.filter((s) => s.verified);
-    expect(verified.map((s) => s.key)).toEqual([]);
+    expect(verified.length).toBeGreaterThanOrEqual(44);
   });
 
   it("elke rij zonder brondwaarde staat expliciet op niet-geverifieerd", () => {
@@ -125,6 +127,50 @@ describe("de huidige stand is eerlijk afleesbaar", () => {
       if (source.nutrientValue === undefined) {
         expect(source.verified, `${source.key}`).toBe(false);
       }
+    }
+  });
+
+  it("resterende TWIJFEL-rijen (niet uit NEVO te herleiden) blijven onverified", () => {
+    // Structurele gaten uit de import van 2 september 2026: geen goede NEVO-
+    // match (ander bereidingstype, ontbrekend product, of ambigue naam).
+    // Zie docs/plan/BESLUIT_NEVO_BRONVERMELDING.md voor de per-rij toelichting.
+    // key + nutriënt: sommige keys (kikkererwten, tonijn-blik, sardines, ...)
+    // komen in meerdere secties voor met een andere status per sectie — dus
+    // check per (nutrient, key)-paar, niet per kale key.
+    const openTwijfel: readonly [NutrientId, string][] = [
+      ["protein", "seitan"],
+      ["protein", "belegen-kaas"],
+      ["protein", "kikkererwten"],
+      ["magnesium", "zwarte-bonen"],
+      ["magnesium", "amandelen"],
+      ["magnesium", "volkorenbrood"],
+      ["magnesium", "tahin"],
+      ["magnesium", "pure-chocolade"],
+      ["magnesium", "witte-bonen"],
+      ["omega3", "zalm-wild"],
+      ["omega3", "haring"],
+      ["omega3", "zalm-gekweekt"],
+      ["omega3", "ansjovis"],
+      ["omega3", "sardines"],
+      ["omega3", "sprot"],
+      ["omega3", "gerookte-forel"],
+      ["omega3", "algenolie"],
+      ["omega3", "verrijkte-eieren"],
+      ["omega3", "tonijn-blik"],
+      ["vitamin_d", "haring"],
+      ["vitamin_d", "zalm"],
+      ["vitamin_d", "leverpastei"],
+      ["vitamin_d", "paddenstoelen-uv"],
+      ["vitamin_d", "plantaardige-drank-verrijkt"],
+      ["zinc", "oesters"],
+      ["zinc", "lamsvlees"],
+      ["zinc", "garnalen"],
+      ["zinc", "belegen-kaas"],
+    ];
+    for (const [nutrient, key] of openTwijfel) {
+      const source = FOOD_SOURCES[nutrient].find((s) => s.key === key);
+      expect(source, `${nutrient}/${key} niet gevonden`).toBeDefined();
+      expect(source?.verified, `${nutrient}/${key}`).toBe(false);
     }
   });
 });

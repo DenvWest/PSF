@@ -31,7 +31,8 @@ export type LeefstijlLayerState = "winst" | "ok" | "watch" | "wacht";
 
 export type LeefstijlLadderConfig = {
   layers: readonly LeefstijlLadderLayer[];
-  intro: string;
+  /** `null` waar een domein zijn volgorde al in `flowIntro` uitlegt. */
+  intro: string | null;
   eyebrow: string;
   /** Alleen waar hij expliciet is vastgelegd — nooit hergebruiken tussen domeinen. */
   safetyNetLine?: string;
@@ -55,8 +56,13 @@ const LADDERS: Partial<Record<PillarId, LeefstijlLadderConfig>> = {
   },
   voeding: {
     layers: NUTRITION_PRIORITY_LAYERS,
-    intro:
-      "Zes lagen, van je eetbasis tot aanvullen. Wat bovenaan staat draagt het meest; wat eronder staat telt pas mee als de lagen erboven staan. Open een laag om te zien wat wij aanraden en wat jij er zelf koos.",
+    // Voeding is het enige domein met een `flowIntro` die de volgorde al in
+    // eigen woorden uitlegt ("eerst je voedingsbasis, dan kwaliteit, …").
+    // Daarboven nog een generieke intro zetten gaf drie tekstblokken vóór de
+    // eerste laag opengaat, en de laatste zin ervan ("open een laag om te zien
+    // wat wij aanraden en wat jij er zelf koos") is hier bovendien onwaar:
+    // voeding draait op `variant="explain"`, waar je niets kiest.
+    intro: null,
     eyebrow: "Van onder naar boven",
     surface: "leefstijlprofiel_voeding",
   },
@@ -76,6 +82,18 @@ const LADDERS: Partial<Record<PillarId, LeefstijlLadderConfig>> = {
     surface: "leefstijlprofiel_verbinding",
   },
 };
+
+/**
+ * De lagen die bij elk domein de doorlopende volgorde dragen.
+ *
+ * P1–P4 zijn de basis die je opbouwt; P5 (meten & bijsturen) en P6
+ * (aanvullen, supplementen, wearables) staan daar los bovenop. Elke ladder
+ * heeft die scheiding: bij slaap heet P6 "Meten, gadgets & aanvullen", bij
+ * beweging "Supplementen · wearables". De stepper trekt daarom geen lijn naar
+ * 5 en 6 — dat zou van aanvullen een eindstation maken, terwijl de intro
+ * belooft dat wat eronder staat pas meetelt als de lagen erboven staan.
+ */
+export const LADDER_FLOW_STEPS: readonly number[] = [1, 2, 3, 4];
 
 /** Energie en herstel zijn readouts, geen plandomeinen — die hebben geen ladder. */
 export function getLeefstijlLadder(domain: PillarId): LeefstijlLadderConfig | null {

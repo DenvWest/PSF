@@ -107,7 +107,7 @@ describe("wat mag hij kiezen", () => {
 
   it("noemt de poort als reden zolang die dicht is, daarna de stof zelf", () => {
     const status = buildNutrientRouteStatus("protein", report({ proteinMeals: 1 }));
-    expect(routeChoiceBlockedReason(status, false)).toContain("eetbasis");
+    expect(routeChoiceBlockedReason(status, false)).toContain("voedingsbasis");
     expect(routeChoiceBlockedReason(status, true)).toBe(status.doorReasonNl);
   });
 });

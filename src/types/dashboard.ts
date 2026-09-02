@@ -23,6 +23,12 @@ import type {
 } from "@/lib/nutrition-ladder";
 import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 import type { LeefstijlLayerState } from "@/lib/leefstijl-ladder";
+import type { NutrientContribution } from "@/lib/nutrition-contribution";
+import type {
+  NutritionPersonalizationContext,
+  NutritionSufficiencySummary,
+} from "@/lib/nutrition-sufficiency";
+import type { NutritionLadderReport } from "@/lib/nutrition-ladder";
 import type { PlanProgress } from "@/types/lifestyle-plan";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 import type { ProteinTargetRange } from "@/lib/protein-target";
@@ -359,6 +365,11 @@ export type NutritionCheckinReadoutData = {
    * uit één klok komt en niet uit de browser van de bezoeker.
    */
   routes: NutrientRouteStatus[];
+  /** Ruwe ladder-antwoorden — voor P1-categorie-split (groente vs. fruit). */
+  ladderReport: NutritionLadderReport;
+  sufficiency: NutritionSufficiencySummary;
+  contribution: readonly NutrientContribution[];
+  personalization: NutritionPersonalizationContext;
 };
 
 export type DashboardData = {

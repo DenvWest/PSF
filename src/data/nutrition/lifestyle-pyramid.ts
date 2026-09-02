@@ -33,7 +33,7 @@ export const NUTRITION_LAYERS: readonly NutritionLayer[] = [
   {
     id: "eetbasis",
     layer: 1,
-    name: "Je eetbasis",
+    name: "Voedingsbasis",
     stateRule: "Nu zolang één cluster below is",
   },
   {
@@ -132,9 +132,9 @@ export type NutritionPriorityLayer = {
 export const NUTRITION_PRIORITY_LAYERS: readonly NutritionPriorityLayer[] = [
   {
     id: 1,
-    name: "Je eetbasis",
+    name: "Voedingsbasis",
     summary:
-      "Passende energie, een regelmatig patroon, een volwaardige basis met planten en eiwit, en water als standaard.",
+      "Passende energie, een regelmatig patroon, en de bronnen die je basis dragen: planten, eiwit, vezels en vis. Ontbreekt hier iets, dan dicht je dat met je bord.",
     actions: [
       "Zet één portie groente bij je avondeten.",
       "Ruil je brood naar volkoren bij je volgende boodschappen.",
@@ -145,10 +145,10 @@ export const NUTRITION_PRIORITY_LAYERS: readonly NutritionPriorityLayer[] = [
     id: 2,
     name: "Voedingskwaliteit",
     summary:
-      "Meer groente, peulvruchten, volkoren, noten en vis. Minder suikerhoudende dranken, zout en sterk bewerkte producten.",
+      "Minder suikerhoudende dranken, zout en sterk bewerkte producten. Welke bronnen op je bord liggen is laag 1; hier gaat het om hoe vaak iets je standaardkeuze is.",
     actions: [
       "Vervang één zoet drankmoment per dag door water of thee.",
-      "Leg één keer per week vis op je boodschappenlijst.",
+      "Kies één vaste maaltijd per week die je zelf klaarmaakt.",
       "Neem een handvol ongezouten noten als vaste tussendoor.",
     ],
   },
@@ -156,7 +156,7 @@ export const NUTRITION_PRIORITY_LAYERS: readonly NutritionPriorityLayer[] = [
     id: 3,
     name: "Verhoudingen",
     summary:
-      "Eiwit per maaltijd, vezels, de kwaliteit van je vetten en koolhydraten. Telt pas als je eetbasis en kwaliteit staan.",
+      "Eiwit per maaltijd, vezels, de kwaliteit van je vetten en koolhydraten. Telt pas als je voedingsbasis en kwaliteit staan.",
     actions: [
       "Verplaats één eiwitrijk moment naar je ontbijt.",
       "Voeg peulvruchten toe aan één warme maaltijd per week.",
@@ -174,7 +174,7 @@ export const NUTRITION_PRIORITY_LAYERS: readonly NutritionPriorityLayer[] = [
     id: 5,
     name: "Meten & timing",
     summary:
-      "Calorieën tellen, macro’s bijhouden, eten binnen een tijdvenster — dat zijn gereedschappen, geen fundament. Ze doen pas iets als je eetbasis en je verhoudingen staan. We openen dit niet eerder.",
+      "Wat er sinds je vorige check bewoog — je eigen reeks, niet een cijfer erbij. Calorieën tellen, macro’s bijhouden en eten binnen een tijdvenster blijven dicht: dat zijn gereedschappen, geen fundament.",
     actions: [],
   },
   {

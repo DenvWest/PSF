@@ -87,6 +87,11 @@ export const DOMAIN_EVENT_TYPES = [
   "guide.sleep_analysis.completed",
   "goal.benchmark_set",
   "goal.benchmark_rescored",
+  "nutrition.basis_category_viewed",
+  "nutrition.basis_category_expanded",
+  "nutrition.roadmap_step_opened",
+  "nutrition.sufficiency_viewed",
+  "nutrition.tijdlaag_viewed",
   // Connection Profile — zelf opgegeven voorkeuren, GEEN gezondheidsdata.
   // De ratio cprofile.completed / cprofile.step_completed{step:1} is de meting
   // die toetst of stap 2 te confronterend is (BESLUIT §12).

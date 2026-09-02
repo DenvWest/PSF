@@ -8,7 +8,7 @@ import {
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import { buildDeltaReport } from "@/lib/delta-report";
 import { compareNutritionEstimates } from "@/lib/nutrition-delta";
-import { nutritionAnswerLabelForNutrient } from "@/lib/nutrition-answer-labels";
+import { nutritionAnswerLabelForNutrient, parseNutritionLogSliders } from "@/lib/nutrition-answer-labels";
 import {
   buildNutritionFactRowsFromRaw,
   buildNutritionHeadline,
@@ -20,6 +20,12 @@ import {
   resolveNutritionLayerStates,
 } from "@/lib/nutrition-ladder";
 import { buildNutrientRouteStatuses } from "@/lib/nutrition-route-status";
+import { contributionProfile } from "@/lib/nutrition-contribution";
+import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
+import {
+  buildNutritionSufficiency,
+  type NutritionPersonalizationContext,
+} from "@/lib/nutrition-sufficiency";
 import { isVitaminDLowSunSeason } from "@/lib/nutrition-season";
 import {
   isNutritionScoreComparable,
@@ -522,17 +528,66 @@ export async function loadAccountDashboardData(
   if (latestLog && typeof latestLog.logged_at === "string") {
     const factRows = buildNutritionFactRowsFromRaw(latestLog.raw_inputs);
     const ladderReport = parseNutritionLadderReport(latestLog.raw_inputs);
+    const profileSnapshot = snapshots[snapshots.length - 1];
+    const trainingLoad = deriveTrainingLoadFromAnswers(profileSnapshot?.answers ?? {});
+    const proteinTargetForSufficiency =
+      profileSnapshot?.weightKg != null
+        ? computeProteinTarget({
+            weightKg: profileSnapshot.weightKg,
+            trainingLoad,
+            ...(profileSnapshot.ageRange ? { ageRange: profileSnapshot.ageRange } : {}),
+          })
+        : null;
+    const personalization: NutritionPersonalizationContext = {
+      weightKg: profileSnapshot?.weightKg ?? null,
+      trainingLoad,
+      proteinTarget: proteinTargetForSufficiency
+        ? {
+            gramsLow: proteinTargetForSufficiency.gramsLow,
+            gramsHigh: proteinTargetForSufficiency.gramsHigh,
+          }
+        : null,
+      ageRange: profileSnapshot?.ageRange ?? null,
+    };
     if (factRows.length > 0 && ladderReport) {
+      const layerStates = resolveNutritionLayerStates(factRows);
+      const sliders = parseNutritionLogSliders(latestLog.raw_inputs);
+      const selfReport = sliders ? nutritionReportFromAnswers(sliders) : {};
+      const contribution = contributionProfile(selfReport);
+      const intakeItems =
+        nutritionIntake?.items.map((item) => ({
+          nutrient: item.nutrient,
+          band: item.band,
+        })) ??
+        (Array.isArray(latestLog.estimate)
+          ? (latestLog.estimate as IntakeEstimate[]).map((entry) => ({
+              nutrient: entry.nutrient,
+              band: entry.band,
+            }))
+          : []);
+      const routes = buildNutrientRouteStatuses(ladderReport, {
+        isDarkSeason: isVitaminDLowSunSeason(),
+      });
+      const sufficiency = buildNutritionSufficiency({
+        intakeItems,
+        routes,
+        contribution,
+        personalization,
+      });
+      layerStates[4] = sufficiency.layerState;
+
       nutritionCheckinReadout = {
         date: formatDashboardDate(latestLog.logged_at),
         headline: buildNutritionHeadline(factRows),
         factRows,
         focusLayer: resolveNutritionFocusLayer(factRows),
-        layerStates: resolveNutritionLayerStates(factRows),
+        layerStates,
         gate: resolveNutritionGate(factRows),
-        routes: buildNutrientRouteStatuses(ladderReport, {
-          isDarkSeason: isVitaminDLowSunSeason(),
-        }),
+        routes,
+        ladderReport,
+        sufficiency,
+        contribution,
+        personalization,
       };
     }
   }
