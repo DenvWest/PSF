@@ -96,7 +96,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   },
   gerelateerdeSluggen: [
     "magnesium-en-slaap",
-    "slaap-verbeteren-40-plus",
+    "magnesium-in-combinatie-met-medicijnen",
     "melatonine-wanneer-wel-niet",
   ],
   metaTitle:

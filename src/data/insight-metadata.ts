@@ -66,6 +66,11 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
   },
+  "magnesium-in-combinatie-met-medicijnen": {
+    theme: "nutrition",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
   "melatonine-na-40": { theme: "sleep", gapSignal: "melatonine_signal" },
   "melatonine-wanneer-wel-niet": { theme: "sleep" },
   "middagdip-bloedsuiker-na-40": { theme: "nutrition" },

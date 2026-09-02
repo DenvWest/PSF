@@ -8,6 +8,7 @@ import { stressWerkGrenzenStellenData } from "./stress-werk-grenzen-stellen";
 import { slaaphygieneMannen40PlusData } from "./slaaphygiene-mannen-40-plus";
 import { magnesiumEnSlaapkwaliteitData } from "./magnesium-en-slaapkwaliteit";
 import { magnesiumEnSlaapData } from "./magnesium-en-slaap";
+import { magnesiumInCombinatieMetMedicijnenData } from "./magnesium-in-combinatie-met-medicijnen";
 import { melatonineWanneerWelNietData } from "./melatonine-wanneer-wel-niet";
 import { melatonineNa40Data } from "./melatonine-na-40";
 import { vitamineDTekortHerkennenData } from "./vitamine-d-tekort-herkennen";
@@ -39,6 +40,7 @@ export const alleArtikelen: BlogArtikel[] = [
   slaaphygieneMannen40PlusData,
   magnesiumEnSlaapkwaliteitData,
   magnesiumEnSlaapData,
+  magnesiumInCombinatieMetMedicijnenData,
   melatonineWanneerWelNietData,
   melatonineNa40Data,
   vitamineDTekortHerkennenData,

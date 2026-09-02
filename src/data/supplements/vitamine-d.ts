@@ -16,9 +16,9 @@ export const vitamineDData: ComparisonPageData = {
   intro:
     "Moe en futloos terwijl de zon maandenlang te weinig schijnt? Vitamine D3 is in Nederland vaak een aandachtspunt na je 40e. Drie D3-producten vergeleken op dosering, kwaliteit, opneembaarheid en prijs per dag — plus D3+K2-combinaties als je die variant overweegt.",
   seoTitle:
-    "Beste Vitamine D Supplement 2026 — D3 en D3+K2",
+    "Vitamine D3 Vergelijken: 3 Merken Getest (2026) | PerfectSupplement",
   seoDescription:
-    "Vergelijk de beste vitamine D3 supplementen op dosering, kwaliteit en prijs. Inclusief D3+K2 (MK-7) in softgels en druppels — zonder afgewezen hartclaim.",
+    "3 vitamine D3-producten eerlijk vergeleken op dosering, kwaliteit en prijs per dag (v.a. €0,14). Ook D3+K2 — zonder de hartclaim die EFSA afwees.",
   lastUpdated: "2026-09-01",
   tableDoseringColumnLabel: "µg (IU) / dag",
   ogImage: "https://perfectsupplement.nl/images/producten/Vitaminstore-Super-D3.jpg",

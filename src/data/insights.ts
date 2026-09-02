@@ -51,6 +51,7 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   slaapschuld: "slaap",
   adaptogens: "stress",
   atp: "energie",
+  "magnesium-in-combinatie-met-medicijnen": "voeding",
 };
 
 function parseLeestijdMinuten(leestijd: string): number {
