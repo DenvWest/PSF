@@ -94,7 +94,7 @@ function metaLine(item: VoortgangFavoriteItem): string | null {
   const laag = parseLadderFavoriteLayer(item.id);
   const laagNaam = item.domain && laag != null ? resolveLadderLayerName(item.domain, laag) : null;
   if (laagNaam) {
-    parts.push(`Laag ${laag} · ${laagNaam}`);
+    parts.push(`Prioriteit ${laag} · ${laagNaam}`);
   }
   if (item.kind === "supplement") {
     parts.push("Supplement");

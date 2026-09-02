@@ -4,6 +4,7 @@ import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
 import KeuzeSpiegel from "@/components/dashboard/voortgang/KeuzeSpiegel";
+import NutrientLogboekPanel from "@/components/dashboard/voortgang/NutrientLogboekPanel";
 import MovementSchapBasisCard from "@/components/dashboard/beweging/MovementSchapBasisCard";
 import FavoriteReminderControl from "@/components/dashboard/voortgang/FavoriteReminderControl";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
@@ -20,6 +21,14 @@ import VoortgangTerugLink from "@/components/dashboard/voortgang/VoortgangTerugL
 import { toProductStanceDomain } from "@/lib/schap-availability";
 import { buildKeuzeRailDomains } from "@/lib/context-rail";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
+import {
+  nutritionSourceFavoriteContext,
+  nutritionSourceFavoriteStatus,
+} from "@/lib/nutrition-favorite-source";
+import {
+  ROUTE_STATUS_COLOR,
+  routeChoiceFavoriteContext,
+} from "@/lib/nutrition-route-choice";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { DashboardData, DashboardModel, PillarId, SchapTabId } from "@/types/dashboard";
 
@@ -105,6 +114,11 @@ export default function SchapView({
   const stanceDomain = toProductStanceDomain(domain);
 
   const domainFavorites = items.filter((item) => item.domain === domain);
+
+  // Dezelfde routes die Kompas en het routepaneel lezen — één bron, drie
+  // dragers. Buiten voeding leeg: daar bestaan geen nutriëntroutes.
+  const nutritionRoutes =
+    domain === "voeding" ? (data?.nutritionCheckinReadout?.routes ?? []) : [];
 
   const nutritionLogCompleted =
     buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true;
@@ -314,6 +328,27 @@ export default function SchapView({
           </div>
         ) : null}
 
+        {/* Het voedingslogboek als eigen tab, niet meer als vast blok bovenaan.
+            Het verantwoordt nog steeds wat er op Producten staat — welke stof
+            je uit je eten haalt bepaalt of dat aanbod iets voor je is — maar
+            die verantwoording hoort náást het aanbod te staan en niet ervoor,
+            waar het alles wat je kwam doen een scherm naar beneden duwde.
+
+            Hier staat hij uitgeklapt en met zoekveld: dit is het scherm waar je
+            je keuze uitwerkt, niet even aantikt. De poort blijft dezelfde —
+            staat je eetbasis niet, dan blijven de supplement-knoppen dicht met
+            hun reden erbij. */}
+        {currentTab === "logboek" && nutritionRoutes.length > 0 ? (
+          <NutrientLogboekPanel
+            statuses={nutritionRoutes}
+            gateOpen={data?.nutritionCheckinReadout?.gate.open === true}
+            surface={SCHAP_SURFACE[domain] ?? "favorieten_schap_producten"}
+            proteinTarget={data?.proteinTarget ?? null}
+            ageRange={data?.ageRange ?? null}
+            showSearch
+          />
+        ) : null}
+
         {currentTab === "favorieten" ? (
           <div className="flex flex-col gap-3.5">
             {domainFavorites.length === 0 ? (
@@ -329,6 +364,20 @@ export default function SchapView({
                     const laag = parseLadderFavoriteLayer(item.id);
                     const laagNaam =
                       laag != null ? resolveLadderLayerName(domain, laag) : null;
+                    // Bronnen uit het voedingsroutepaneel horen niet bij een
+                    // laag maar bij een stof; zonder deze regel staat er over
+                    // twee weken alleen "Pompoenzaden" zonder waarom.
+                    // Idem voor een bewaarde routekeuze: "Eiwit: uit mijn
+                    // eten" zegt zonder deze regel niet waarop die keuze rust.
+                    const bronContext =
+                      nutritionSourceFavoriteContext(item.id) ??
+                      routeChoiceFavoriteContext(item.id);
+                    // Waar hij staat op die route. Bewust geen hoeveelheid —
+                    // zie `nutritionSourceFavoriteStatus`.
+                    const bronStatus = nutritionSourceFavoriteStatus(
+                      item.id,
+                      nutritionRoutes,
+                    );
                     return (
                       <CockpitTile key={item.id}>
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -338,7 +387,23 @@ export default function SchapView({
                             </span>
                             {laagNaam ? (
                               <span className="mt-1 block text-[11.5px] text-[var(--text-subtle)]">
-                                Laag {laag} · {laagNaam}
+                                Prioriteit {laag} · {laagNaam}
+                              </span>
+                            ) : null}
+                            {bronContext ? (
+                              <span className="mt-1 block text-[11.5px] text-[var(--text-subtle)] text-pretty">
+                                {bronContext}
+                              </span>
+                            ) : null}
+                            {bronStatus ? (
+                              <span
+                                className="mt-1 block text-[11.5px] font-semibold"
+                                style={{ color: ROUTE_STATUS_COLOR[bronStatus.status] }}
+                              >
+                                {bronStatus.label}
+                                {bronStatus.answerLabel
+                                  ? ` · jij: ${bronStatus.answerLabel}`
+                                  : ""}
                               </span>
                             ) : null}
                             {item.kind && item.kind !== "activiteit" ? (

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { isSchapTabId } from "@/lib/dashboard-url";
 import {
   resolveDefaultSchapTab,
   resolveSchapTabForDomain,
@@ -14,12 +15,29 @@ describe("resolveSchapTabs", () => {
     ]);
   });
 
-  it("geeft slaap en voeding producten en favorieten, zonder diensten", () => {
+  it("geeft slaap producten en favorieten, zonder diensten", () => {
     expect(resolveSchapTabs("slaap").map((tab) => tab.id)).toEqual(["producten", "favorieten"]);
+  });
+
+  it("geeft voeding een eigen logboek-tab tussen producten en favorieten", () => {
+    // De vijf nutriëntroutes stonden tot 1 september als vast blok bóven de
+    // tabs, waar ze alles wat je kwam doen een scherm naar beneden duwden.
+    // Als tab staan ze náást het aanbod dat ze verantwoorden.
     expect(resolveSchapTabs("voeding").map((tab) => tab.id)).toEqual([
       "producten",
+      "logboek",
       "favorieten",
     ]);
+  });
+
+  it("geeft het logboek alleen aan voeding — daarbuiten bestaan er geen routes", () => {
+    // Dezelfde regel als bij Diensten: geen tab zonder inhoud.
+    for (const domain of ["beweging", "slaap", "stress", "verbinding"] as const) {
+      expect(
+        resolveSchapTabs(domain).map((tab) => tab.id),
+        domain,
+      ).not.toContain("logboek");
+    }
   });
 
   // W4a: de Leefstijl-tab was de enige echte doublure van het schap —
@@ -83,6 +101,20 @@ describe("resolveSchapTabForDomain — je onderdeel reist mee bij een domeinwiss
       for (const wanted of ["producten", "diensten", "favorieten", "begeleiding"] as const) {
         const resolved = resolveSchapTabForDomain(domain, wanted);
         expect(resolveSchapTabs(domain).map((tab) => tab.id)).toContain(resolved);
+      }
+    }
+  });
+});
+
+describe("deeplinks", () => {
+  it("maakt elke tab die een domein draagt ook deeplinkbaar", () => {
+    // Twee lijsten die uiteen kunnen lopen: `resolveSchapTabs` bepaalt wat er
+    // rendert, `isSchapTabId` wat een URL mag openen. Een tab die alleen in de
+    // eerste staat is onbereikbaar via een link, en dat merk je pas als je hem
+    // deelt.
+    for (const domain of ["beweging", "slaap", "voeding"] as const) {
+      for (const tab of resolveSchapTabs(domain)) {
+        expect(isSchapTabId(tab.id), `${domain}/${tab.id}`).toBe(true);
       }
     }
   });

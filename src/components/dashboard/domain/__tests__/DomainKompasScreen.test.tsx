@@ -38,7 +38,11 @@ function data(overrides: Record<string, unknown> = {}): DashboardData {
   } as unknown as DashboardData;
 }
 
-function renderScreen(domain: PillarId, dashboardData?: DashboardData) {
+function renderScreen(
+  domain: PillarId,
+  dashboardData?: DashboardData,
+  handlers: { onGoVoortgangDomein?: () => void; onGoLogboek?: () => void } = {},
+) {
   return render(
     <DomainLadderFocusProvider>
       <LadderMomentsProvider>
@@ -48,12 +52,46 @@ function renderScreen(domain: PillarId, dashboardData?: DashboardData) {
             model={model()}
             data={dashboardData}
             onGoAgenda={() => {}}
-            onGoVoortgangDomein={() => {}}
+            onGoVoortgangDomein={handlers.onGoVoortgangDomein ?? (() => {})}
+            onGoLogboek={handlers.onGoLogboek}
           />
         </VoortgangFavoritesProvider>
       </LadderMomentsProvider>
     </DomainLadderFocusProvider>,
   );
+}
+
+/**
+ * Twee stoffen die aandacht vragen, één die gedekt is — genoeg om beide
+ * tellingen van het tweeluik uit elkaar te houden.
+ */
+function nutritionReadout(overrides: Record<string, unknown> = {}) {
+  const route = (nutrient: string, status: string) => ({
+    nutrient,
+    label: nutrient,
+    route: { kind: "direct" },
+    status,
+    answerLabel: null,
+    carriesVerdict: true,
+    sources: [],
+    supplementDoorOpen: false,
+    doorReasonNl: "",
+    comparisonPath: "/beste/magnesium",
+  });
+  return {
+    date: "2026-08-30",
+    headline: "Je eetbasis staat, op je plantaardige kant na.",
+    factRows: [],
+    focusLayer: 1,
+    layerStates: { 1: "winst", 2: "watch", 3: "wacht", 4: "wacht", 5: "wacht", 6: "wacht" },
+    gate: { open: false, reason: "Eerst je eetbasis; daarna pas het potje." },
+    routes: [
+      route("omega3", "gap"),
+      route("magnesium", "partial"),
+      route("eiwit", "covered"),
+    ],
+    ...overrides,
+  };
 }
 
 beforeEach(() => {
@@ -94,10 +132,18 @@ describe("DomainKompasScreen — slaap draagt hetzelfde scherm als beweging", ()
   it("laat een andere laag aanklikken en biedt de weg terug naar de winst-laag", () => {
     renderScreen("slaap", data());
     const ladder = screen.getByRole("group", { name: "Je prioriteiten" });
+    // Op de winst-laag zelf staat de knop er niet als knop, maar als merk: je
+    // hoeft nergens heen terug.
+    expect(screen.queryByText(/Jouw prioriteit — hier zit je winst/)).not.toBeNull();
+    expect(screen.queryByRole("button", { name: /Terug naar jouw prioriteit/ })).toBeNull();
+
     fireEvent.click(within(ladder).getByRole("button", { name: /Slaapomgeving/ }));
-    expect(screen.queryByText(/Jouw grootste winst zit op prioriteit/)).not.toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Terug daarheen" }));
-    expect(screen.queryByText(/Jouw grootste winst zit op prioriteit/)).toBeNull();
+    const terug = screen.getByRole("button", { name: /Terug naar jouw prioriteit/ });
+    expect(screen.queryByText(/Jouw prioriteit — hier zit je winst/)).toBeNull();
+
+    fireEvent.click(terug);
+    expect(screen.queryByRole("button", { name: /Terug naar jouw prioriteit/ })).toBeNull();
+    expect(screen.queryByText(/Jouw prioriteit — hier zit je winst/)).not.toBeNull();
   });
 
   it("koppelt elke gratis optie aan Mijn keuze én aan Mijn Dag", () => {
@@ -144,5 +190,71 @@ describe("DomainKompasScreen — slaap draagt hetzelfde scherm als beweging", ()
     ).toBe("true");
     expect(screen.queryByRole("button", { name: /Open je voedingsbeeld/ })).not.toBeNull();
     expect(screen.queryByRole("button", { name: "Mijn Dag › vandaag" })).not.toBeNull();
+  });
+});
+
+describe("DomainKompasScreen — voeding draagt het tweeluik in plaats van het volle logboek", () => {
+  const voedingData = () =>
+    data({
+      sleepCheckinSnapshot: null,
+      domainCheckDaysAgo: { voeding: 3 },
+      nutritionCheckinReadout: nutritionReadout(),
+    });
+
+  it("vervangt het logboek-blok door twee tellingen met elk hun eigen deur", async () => {
+    renderScreen("voeding", voedingData());
+    // Het volle logboek hoort hier niet meer te staan: geen chiprij, geen
+    // uitklapbare stofdossiers.
+    expect(screen.queryByRole("navigation", { name: "Kies een stof" })).toBeNull();
+    expect(screen.queryByText("Je voedingslogboek")).toBeNull();
+
+    expect(screen.queryByText("Voedingsstatus")).not.toBeNull();
+    expect(screen.queryByText("Voedingslogboek")).not.toBeNull();
+    // De aandacht-telling komt uit de check en staat er meteen: twee van de
+    // drie routes vragen aandacht (gap + partial).
+    expect(screen.queryByText("2 van de 3 stoffen vragen aandacht.")).not.toBeNull();
+
+    // De open-telling hangt aan je bewaarde keuzes en verschijnt pas als die
+    // binnen zijn — tot dan draagt de kaart zijn neutrale regel in plaats van
+    // een getal dat straks omlaag springt.
+    expect(screen.queryByText(/stoffen zonder keuze/)).toBeNull();
+    expect(
+      await screen.findByText("Nog 2 stoffen zonder keuze."),
+    ).not.toBeNull();
+  });
+
+  it("stuurt de status naar Voortgang en het logboek naar het schap", () => {
+    const onGoVoortgangDomein = vi.fn();
+    const onGoLogboek = vi.fn();
+    renderScreen("voeding", voedingData(), { onGoVoortgangDomein, onGoLogboek });
+
+    fireEvent.click(screen.getByText("Voedingsstatus").closest("button")!);
+    expect(onGoVoortgangDomein).toHaveBeenCalledTimes(1);
+    expect(onGoLogboek).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByText("Voedingslogboek").closest("button")!);
+    expect(onGoLogboek).toHaveBeenCalledTimes(1);
+  });
+
+  it("noemt de reden dat de supplement-poort dicht staat, in de woorden van de check", () => {
+    renderScreen("voeding", voedingData());
+    expect(screen.queryByText("Eerst je eetbasis; daarna pas het potje.")).not.toBeNull();
+  });
+
+  it("laat de prioriteitsknop meebewegen met de laag die je aanklikt", () => {
+    renderScreen("voeding", voedingData());
+    expect(screen.queryByText(/Jouw prioriteit — hier zit je winst/)).not.toBeNull();
+
+    const ladder = screen.getByRole("group", { name: "Je prioriteiten" });
+    const anderelaag = within(ladder)
+      .getAllByRole("button")
+      .find((button) => button.getAttribute("aria-pressed") === "false")!;
+    fireEvent.click(anderelaag);
+    expect(screen.getByRole("button", { name: /Terug naar jouw prioriteit 1/ })).not.toBeNull();
+  });
+
+  it("toont geen tweeluik zonder voedingscheck", () => {
+    renderScreen("voeding", data({ sleepCheckinSnapshot: null, domainCheckDaysAgo: {} }));
+    expect(screen.queryByText("Voedingsstatus")).toBeNull();
   });
 });

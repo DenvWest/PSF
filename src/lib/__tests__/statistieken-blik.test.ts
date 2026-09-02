@@ -73,6 +73,7 @@ function baseData(overrides: Partial<DashboardData> = {}): DashboardData {
     history: [],
     retest: false,
     nutritionIntake: null,
+    nutritionCheckinReadout: null,
     nutritionLastLoggedAt: null,
     nutritionRelogDue: false,
     daysSinceNutritionLog: null,
@@ -100,6 +101,7 @@ function baseData(overrides: Partial<DashboardData> = {}): DashboardData {
     movementPrefs: EMPTY_MOVEMENT_PREFS,
     supplementVerdicts: [],
     proteinTarget: null,
+    ageRange: null,
     ...overrides,
   };
 }

@@ -233,7 +233,7 @@ export const NUTRITION_QUESTION_EVIDENCE: NutritionQuestionEvidence[] = [
       "Huid aan daglicht is de belangrijkste bron van vitamine D — in Nederland vooral relevant buiten de zomermaanden.",
     scientificRationale: [
       "Gezondheidsraad en EFSA benadrukken zonlicht als primaire vitamine-D-bron.",
-      "In Nederland is huidproductie in winter beperkt; frequentie buiten is een bruikbare proxy.",
+      "Tussen oktober en maart staat de zon in Nederland te laag voor relevante huidaanmaak — hoe vaak je dan buiten komt, telt daarom niet meer mee als 'voldoende'. We corrigeren de uitslag op seizoen: dezelfde frequentie geeft in de winter een andere band dan in de zomer.",
       "Daglicht heeft ook aparte waarde voor circadiaan ritme — los van vitamine D.",
     ],
     answerMeaning: {

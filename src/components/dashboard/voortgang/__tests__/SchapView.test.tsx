@@ -70,9 +70,9 @@ describe("SchapView — welke tabs een domein draagt", () => {
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 
-  it("toont op voeding Leefstijl, Producten en Favorieten", () => {
+  it("toont op voeding Producten, Voedingslogboek en Favorieten", () => {
     renderSchap("voeding");
-    expect(tabLabels()).toEqual(["Producten", "Favorieten"]);
+    expect(tabLabels()).toEqual(["Producten", "Voedingslogboek", "Favorieten"]);
     expect(screen.queryByRole("tab", { name: "Diensten" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });

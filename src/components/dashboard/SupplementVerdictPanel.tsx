@@ -281,10 +281,10 @@ export default function SupplementVerdictPanel({
                   ))}
                 </span>
                 <p className="text-[11.5px] font-semibold text-[var(--text-muted)]">
-                  Laag {plek.layerId} van {plek.totalLayers} · {plek.layerName}
+                  Prioriteit {plek.layerId} van {plek.totalLayers} · {plek.layerName}
                 </p>
                 <p className="ml-auto text-[11px] text-[var(--text-subtle)]">
-                  {plek.layersAbove} lagen komen hiervóór
+                  {plek.layersAbove} prioriteiten komen hiervóór
                 </p>
               </div>
             ) : null}

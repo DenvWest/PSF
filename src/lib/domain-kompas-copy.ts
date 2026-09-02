@@ -3,9 +3,10 @@ import type { PillarId } from "@/types/dashboard";
 /**
  * De domeinen met een eigen Kompas-scherm in React. Verbinding staat nog als
  * prebuild-iframe op Kompas; die verhuist hierheen zodra zijn check per laag
- * een staat oplevert (zie `resolveDomainLadderReadout`). Voeding heeft die
- * staat nog niet — de ladder toont er zes lagen zonder oordeel, wat al zo
- * werkte voordat dit scherm bestond.
+ * een staat oplevert (zie `resolveDomainLadderReadout`). Voeding kreeg die
+ * staat in september: `nutrition-ladder.ts` legt de clusters uit de
+ * eetbasis-piramide op lagen, zodat de elf sliders die er al waren nu ook de
+ * ladder dragen en niet alleen de vijf nutriëntbanden.
  */
 export type DomainKompasDomain = Extract<PillarId, "beweging" | "slaap" | "voeding" | "stress">;
 

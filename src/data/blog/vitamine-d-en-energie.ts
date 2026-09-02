@@ -9,7 +9,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
     "In Nederland is een lage vitamine D-status in de winter geen uitzondering — maar “meer energie” staat niet op de lijst met erkende gezondheidsclaims. Dit artikel scheidt feiten van wensen: wanneer meten zinvol is, hoe [energie na 40](/energie-na-40) breder werkt dan één capsule, en hoe je [vitamine D supplementen](/beste/vitamine-d) eerlijk vergelijkt.",
   leestijd: "10 min",
   gepubliceerdOp: "2026-05-14",
-  laatstBijgewerktOp: "2026-05-23",
+  laatstBijgewerktOp: "2026-09-01",
   secties: [
     {
       type: "tekst",
@@ -27,9 +27,9 @@ export const vitamineDEnEnergieData: BlogArtikel = {
       type: "opsomming",
       titel: "Praktische route (zonder zelf-diagnose)",
       items: [
-        "Laat 25-OH-vitamine D meten als er aanwijzingen of risico zijn; doseer suppletie op advies, niet op gevoel alleen.",
+        "Laat 25-OH-vitamine D meten als er aanwijzingen of risico zijn; doseer suppletie op advies, niet op gevoel alleen — zie [vitamine D meten](/blog/vitamine-d-meten-wanneer-zinvol) en [hoge doses](/blog/vitamine-d-hoge-doses-social-media).",
         "Neem vetrijke maaltijd mee voor opname van D3-supplementen; vergelijk microgram/IE per capsule op onze [vergelijkingspagina](/beste/vitamine-d).",
-        "Verbeter eerst slaapritme en beweging; dat verandert subjectieve energie vaak sneller dan micronutriënten.",
+        "Verbeter eerst slaapritme en beweging; dat verandert subjectieve energie vaak sneller dan micronutriënten. Daglicht telt dubbel — zie [hoeveel zon je nodig hebt](/blog/vitamine-d-zon-nederland).",
         "Gebruik de [Leefstijlcheck](/intake) om domeinen te ordenen i.p.v. willekeurig te stapelen.",
       ],
     },

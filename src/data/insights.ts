@@ -44,6 +44,9 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   testosteron: "energie",
   "vitamine-d": "voeding",
   "vitamine-k2": "voeding",
+  "vitamine-d-en-k2-samen": "voeding",
+  "vitamine-d-hoge-doses-social-media": "voeding",
+  "vitamine-d-inname": "voeding",
   insulineresistentie: "voeding",
   slaaphygiene: "slaap",
   "eiwitbehoefte-na-40": "voeding",
@@ -51,6 +54,8 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   slaapschuld: "slaap",
   adaptogens: "stress",
   atp: "energie",
+  "multivitamine-zinvol-na-40": "voeding",
+  multivitamine: "voeding",
   "magnesium-in-combinatie-met-medicijnen": "voeding",
 };
 

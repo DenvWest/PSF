@@ -163,9 +163,14 @@ export function buildCheckinMeasurementValues(
  * bevestigd)" staan — magnesium en vitamine D met vertrouwen LAAG — en zo'n
  * drempel mag geen balk vullen en geen lijn trekken. Bovendien draagt elke
  * band de naam van een stof terwijl de meting een eetfrequentie is: magnesium
- * leunt op de plantporties-vraag, vitamine D op de daglicht-vraag. Zodra er
- * gebronde grenzen liggen (evidence-pass / `buildNutritionFactRows`) mag de
- * positie terug op de rijen die er één hebben.
+ * leunt op de plantporties-vraag, vitamine D op de daglicht-vraag.
+ *
+ * Ook de clusterrijen van `buildNutritionFactRows` horen hier niet, al hebben
+ * die sinds september wél een gebronde grens. Reden: dit is de reeks van wat
+ * hij *antwoordde*, en een clusterrij vat drie antwoorden samen — hij zou hier
+ * dus twee keer langskomen, één keer als vraag en één keer als cluster. De
+ * richtlijnpositie leest hij op de ladder, waar de clusterrij thuishoort
+ * (`evidenceByLayer` in `domain-ladder-readout.ts`).
  */
 export function buildNutritionMeasurementValues(
   rawInputs: unknown,

@@ -30,14 +30,13 @@ export type EvidenceTheme =
   | "beweging"
   | "slaap"
   | "stress"
-  | "motivatie"
   | "sociale-verbinding"
   | "mediterrane-leefstijl"
   | "gedragsverandering";
 
 export const LEEFSTIJLCHECK_EVIDENCE_PILLARS: string[] = [
   "Mediterrane leefstijl als breed leefstijlpatroon (voeding, ritme, beweging, herstel en sociale context).",
-  "Self-Determination Theory: autonomie, competentie en verbondenheid zijn drie gelijkwaardige, parallelle basisbehoeften (geen volgorde) die samen duurzame motivatie en gedragsverandering dragen.",
+  "Toets of het leefstijlpatroon aansluit bij gepubliceerde richtlijnen; de levenslijn toont als algemeen beeld wat er gebeurt als je te weinig doet — geen persoonlijke voorspelling.",
   "Leefstijlwetenschap met prioriteit voor umbrella reviews, meta-analyses, systematische reviews en internationale richtlijnen.",
   "Gedragsbehoud via kleine haalbare stappen, zelfregulatie en gewoontevorming.",
 ];
@@ -59,7 +58,7 @@ export const LEEFSTIJLCHECK_TRANSPARANTIE_NOTES: string[] = [
   "Per juli 2026: herstelscore telt alleen fysiek herstel (RCV_PHYS); stressherstel (STR_RCV) hoort bij stress.",
   "Per juli 2026 (rules_version 1.2.0): vitaliteit = 4 interventiedomeinen; profiellabel driver-based.",
   "Per juli 2026 (rules_version 1.3.0): verbinding als 5e interventiedomein (CON_SOC); vitaliteit = 5 interventiedomeinen.",
-  "Per juli 2026: het conceptuele model is verduidelijkt naar drie lagen (determinanten, gedrag, uitkomsten); de basisbehoeften worden als parallel beschreven en de 'energie-batterij' is als causaal mechanisme losgelaten.",
+  "Per september 2026: Self-Determination Theory is geen productmodel. De toets is of het leefstijlpatroon aansluit bij gepubliceerde richtlijnen; de levenslijn op de beweeggids is een algemeen beeld, geen persoonlijke voorspelling. De 'energie-batterij' blijft losgelaten als causaal mechanisme.",
   "Per juli 2026: verbinding-onderbouwing verbreed met de mortaliteits-meta-analyse (2010), de buffering-hypothese en sociale-netwerklagen (kwaliteit vs kwantiteit).",
   "Per juli 2026: MOV_CARD geherformuleerd naar matig-intensief bewegen met spreektest-anker en zone-2-toelichting; LIF_SUN-toelichting geherformuleerd naar daglicht-eerst. Inclusievere vraagteksten, geen waarde-wijziging.",
   "Per juli 2026 (rules_version 1.4.0): item-herskalering naar echte 0–100-schaal; NUT_PROT onbekend telt niet mee; CON_SOC kwaliteit-first; NRG_DEP herbouwd als compensatie-construct; urgentiedrempels ongewijzigd (empirische herijking wacht op N≥~100).",
@@ -94,17 +93,22 @@ export const LEEFSTIJLCHECK_READOUT_MODEL_NOTES: string[] = [
   "Internationale modellen (MEDLIFE, WHO 24-uurs, Positieve Gezondheid) gebruiken geen aparte domeinen ‘energie’ of ‘herstel’.",
   "Energie en vitaliteit worden in literatuur gemeten als uitkomst (bijv. Subjective Vitality Scale, SF-36 Vitality).",
   "Herstel wordt in leefstijlliteratuur benaderd via rust, slaap en belastingsbalans — niet als parallel gedragsdomein.",
-  "Daarom sturen alleen de vier interventiedomeinen je prioriteit en urgentie; energie en herstel zijn rapportages.",
+  "Daarom sturen alleen de vijf interventiedomeinen je prioriteit en urgentie; energie en herstel zijn rapportages.",
+  "Energie en herstel hangen samen (inspanning vraagt herstel), maar we presenteren dat niet als een simpele batterij die leegloopt — dat mechanisme is wetenschappelijk omstreden.",
 ];
 
-export const LEEFSTIJLCHECK_SDT_MODEL_NOTES: string[] = [
-  "We onderscheiden drie lagen: determinanten (waarom je iets volhoudt), gedrag (waar je op stuurt) en uitkomsten (wat je merkt).",
-  "Determinanten zijn de psychologische basisbehoeften uit de Self-Determination Theory: autonomie, competentie en verbondenheid — drie gelijkwaardige behoeften die parallel werken, niet in een vaste volgorde.",
-  "Gedrag = de interventiedomeinen slaap, stress, voeding, beweging en verbinding (plus leefstijlfactoren zoals alcohol en daglicht).",
-  "Uitkomsten = energie en herstel: rapporten die je leefstijl weerspiegelen, geen domeinen waar je los op stuurt.",
-  "Vervulde basisbehoeften geven niet alleen via gedrag meer energie, maar ook direct: iets doen omdat je het zelf wilt kost minder en levert meer op dan iets moeten.",
-  "Energie en herstel hangen samen (inspanning vraagt herstel), maar we presenteren dat niet als een simpele 'batterij die leegloopt' — dat mechanisme is wetenschappelijk omstreden.",
-  "Deze check is een leefstijlinstrument voor bewustwording en gedragsverandering — geen diagnose en geen behandeladvies.",
+export const LEEFSTIJLCHECK_ALIGNMENT_NOTES: string[] = [
+  "De check zet je antwoorden af tegen gepubliceerde richtlijnen en onderzochte leefstijlprincipes — geen leeftijdspercentielen en geen ziektevoorspelling.",
+  "Bewegen: WHO 2020 (wekelijkse matig-intensieve activiteit en minstens 2× spierversterkend). Slaap: consensusduur voor volwassenen. Voeding: mediterrane en Gezondheidsraad-patronen, plus eiwit en omega-3. Verbinding: sociale steun als leefstijlfactor.",
+  "Het resultaat verschijnt per domein als Sterk, Voldoende, Aandacht of Prioriteit. Voldoende betekent dat je patroon aansluit bij die principes — geen gezondheidscertificaat.",
+  "Sterk: hoge aansluiting (vanaf 80). Voldoende: aansluiting (vanaf 60). Aandacht: eronder (vanaf 40). Prioriteit: duidelijk onder de onderzochte patronen.",
+];
+
+export const LEEFSTIJLCHECK_LIFELINE_NOTES: string[] = [
+  "De levenslijn op de beweeggids toont twee versies van dezelfde persoon: de één doet niets extra, de ander traint 2 à 3 keer per week kracht en conditie.",
+  "Na je 40e neemt spiermassa en -kracht gemiddeld af (sarcopenie); krachttraining is de prikkel die dat het hardst remt. WHO adviseert minstens 2× per week spierversterkende activiteit.",
+  "In het begin lopen de lijnen bijna gelijk; het verschil wordt later zichtbaar. Daarom telt ‘nog niet voldoende’ nu al — niet pas wanneer je het voelt.",
+  "Dit is een algemeen beeld, geen persoonlijke voorspelling of biologische leeftijd. De check zegt of jouw huidige patroon aansluit; de levenslijn laat zien waarom die kloof over jaren groeit.",
 ];
 
 const sleepRefs: EvidenceReference[] = [
@@ -186,6 +190,16 @@ const movementRefs: EvidenceReference[] = [
     doi: "10.1136/bjsports-2018-099131",
     pmid: "29739785",
   },
+  {
+    apa: "Cruz-Jentoft AJ, Bahat G, Bauer J, et al. Sarcopenia: revised European consensus on definition and diagnosis. Age Ageing. 2019.",
+    doi: "10.1093/ageing/afy169",
+    pmid: "30312372",
+  },
+];
+
+export const LEEFSTIJLCHECK_LIFELINE_REFERENCES: EvidenceReference[] = [
+  movementRefs[0],
+  movementRefs[movementRefs.length - 1],
 ];
 
 const nutritionRefs: EvidenceReference[] = [
@@ -217,20 +231,6 @@ const nutritionRefs: EvidenceReference[] = [
 
 const behaviorRefs: EvidenceReference[] = [
   {
-    apa: "Deci EL, Ryan RM. Self-determination theory: A macrotheory of human motivation, development, and health. Can Psychol. 2008.",
-    doi: "10.1037/a0012801",
-  },
-  {
-    apa: "Ryan RM, Deci EL. Self-determination theory and the facilitation of intrinsic motivation. Am Psychol. 2000.",
-    doi: "10.1037/0003-066X.55.1.68",
-    pmid: "11392867",
-  },
-  {
-    apa: "Ntoumanis N, Ng JYY, Prestwich A, et al. A meta-analysis of self-determination theory-informed intervention studies. Health Psychol Rev. 2021.",
-    doi: "10.1080/17437199.2020.1718529",
-    pmid: "32064938",
-  },
-  {
     apa: "Lally P, van Jaarsveld CHM, Potts HWW, Wardle J. How are habits formed: Modelling habit formation in the real world. Eur J Soc Psychol. 2010.",
     doi: "10.1002/ejsp.674",
   },
@@ -240,6 +240,9 @@ const behaviorRefs: EvidenceReference[] = [
     pmid: "23512568",
   },
 ];
+
+const habitFormationRef = behaviorRefs[0];
+const bctTaxonomyRef = behaviorRefs[1];
 
 const socialConnectionRefs: EvidenceReference[] = [
   {
@@ -421,7 +424,7 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
       rationale:
         "Sterk als leefstijlsignaal; zwakker als zelfstandige domeinschaal (readout, geen interventiedomein).",
     },
-    references: [...movementRefs.slice(0, 2), ...sleepRefs.slice(0, 2), behaviorRefs[3]],
+    references: [...movementRefs.slice(0, 2), ...sleepRefs.slice(0, 2), habitFormationRef],
   },
   {
     questionId: "NRG_DEP",
@@ -497,7 +500,7 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
       rationale:
         "Consistent bewijs uit stressinterventies en gedragswetenschappelijke kaders.",
     },
-    references: [...stressRefs.slice(0, 4), behaviorRefs[4]],
+    references: [...stressRefs.slice(0, 4), bctTaxonomyRef],
   },
   {
     questionId: "NUT_O3",
@@ -543,7 +546,7 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
       rationale:
         "Goede onderbouwing in richtlijnen en systematische reviews naar ouder worden, training en herstel.",
     },
-    references: [...nutritionRefs.slice(2, 5), movementRefs[3], behaviorRefs[3]],
+    references: [...nutritionRefs.slice(2, 5), movementRefs[3], habitFormationRef],
   },
   {
     questionId: "MOV_STR",
@@ -598,7 +601,7 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
     scientificRationale: [
       "Kwaliteit weegt zwaarder dan kwantiteit: enkele sterke, gelijkwaardige relaties bufferen stress effectiever dan een groot netwerk — sociale netwerken zijn gelaagd en de binnenste laag draagt de meeste steun.",
       "Meta-analyses tonen dat sociale verbondenheid en steun samenhangen met betere gezondheidsuitkomsten op populatieniveau — als leefstijlfactor, geen diagnose.",
-      "Self-Determination Theory benadrukt verbondenheid als parallelle basisbehoefte naast autonomie en competentie voor duurzame gedragsverandering.",
+      "Wie steun ervaart, houdt andere leefstijlpatronen vaker vol — daarom telt verbinding als stuur-domein, niet als los psychologisch construct.",
       "Blue Zones-onderzoek wijst op 'belonging' als terugkerend patroon in lang gezonde leefgemeenschappen.",
     ],
     answerMeaning: {
@@ -694,7 +697,6 @@ export const LEEFSTIJLCHECK_REFERENCE_LIBRARY: Record<
   beweging: movementRefs,
   slaap: sleepRefs,
   stress: stressRefs,
-  motivatie: behaviorRefs,
   "sociale-verbinding": [
     {
       apa: "Holt-Lunstad J, Smith TB, Layton JB. Social relationships and mortality risk: a meta-analytic review. PLoS Med. 2010.",

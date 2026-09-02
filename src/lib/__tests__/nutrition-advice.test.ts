@@ -9,7 +9,7 @@ import { statementHasForbiddenPhrase, FORBIDDEN_STATUS_PHRASES } from "@/lib/nut
 import { getUsableClaims } from "@/data/approved-claims";
 import { nutrientReferences, NUTRIENT_IDS } from "@/data/nutrition/intake-reference";
 import { allLifestyleActionTexts, buildLifestyleAction } from "@/data/nutrition/portion-dictionary";
-import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
+import { estimateNutritionIntake, type IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 
 // ─── Hulpfuncties ────────────────────────────────────────────────────────────
@@ -24,6 +24,11 @@ function gapEstimate(nutrient: NutrientId): IntakeEstimate {
 
 function allGaps(): IntakeEstimate[] {
   return NUTRIENT_IDS.map(gapEstimate);
+}
+
+function lifestyleTextFor(items: NutritionAdviceItem[], nutrient: NutrientId): string {
+  const item = items.find((i) => i.nutrient === nutrient && i.kind === "lifestyle");
+  return item?.kind === "lifestyle" ? item.text : "";
 }
 
 // ─── A. Gap + goedgekeurd product → lifestyle gevolgd door supplement ────────
@@ -291,6 +296,50 @@ describe("portion-dictionary — lifestyleAction copy", () => {
     const summerText = summer.find((i) => i.kind === "lifestyle")?.text ?? "";
     expect(winterText).toContain("10 µg");
     expect(summerText).toContain("buiten");
+  });
+
+  it("band en copy blijven synchroon op dezelfde datum: 0× buiten geeft in winter én zomer een gap met de bijpassende actietekst", () => {
+    const winterDate = new Date("2026-01-15");
+    const summerDate = new Date("2026-07-15");
+
+    const winterEstimate = estimateNutritionIntake(
+      { sunExposurePerWeek: 0 },
+      winterDate,
+    );
+    const summerEstimate = estimateNutritionIntake(
+      { sunExposurePerWeek: 0 },
+      summerDate,
+    );
+    expect(winterEstimate.find((e) => e.nutrient === "vitamin_d")?.band).toBe("below");
+    expect(summerEstimate.find((e) => e.nutrient === "vitamin_d")?.band).toBe("below");
+
+    const winterAdvice = buildNutritionAdvice(winterEstimate, { adviceDate: winterDate });
+    const summerAdvice = buildNutritionAdvice(summerEstimate, { adviceDate: summerDate });
+    const winterText = lifestyleTextFor(winterAdvice, "vitamin_d");
+    const summerText = lifestyleTextFor(summerAdvice, "vitamin_d");
+    expect(winterText).toContain("10 µg");
+    expect(summerText).toContain("buiten");
+  });
+
+  it("3× buiten/week is in winter geen gap meer (geen 'meets', maar ook geen advies-item), in zomer wél 'meets'", () => {
+    const winterDate = new Date("2026-01-15");
+    const summerDate = new Date("2026-07-15");
+
+    const winterEstimate = estimateNutritionIntake(
+      { sunExposurePerWeek: 3 },
+      winterDate,
+    );
+    const summerEstimate = estimateNutritionIntake(
+      { sunExposurePerWeek: 3 },
+      summerDate,
+    );
+    expect(winterEstimate.find((e) => e.nutrient === "vitamin_d")?.band).toBe("around");
+    expect(summerEstimate.find((e) => e.nutrient === "vitamin_d")?.band).toBe("meets");
+
+    const winterAdvice = buildNutritionAdvice(winterEstimate, { adviceDate: winterDate });
+    expect(
+      winterAdvice.find((i) => i.nutrient === "vitamin_d"),
+    ).toBeUndefined();
   });
 
   it("alle lifestyle-teksten uit portion-dictionary zijn compliance-veilig", () => {

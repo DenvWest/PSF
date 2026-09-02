@@ -74,7 +74,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
   gerelateerdeSluggen: [
     "energie-verhogen-natuurlijk",
     "alcohol-slaap-energie-na-40",
-    "eiwit-na-40",
+    "zout-kalium-bloeddruk-na-40",
   ],
   metaTitle: "Middagdip na 40: bloedsuiker, koffie en wat wél helpt",
   metaDescription:

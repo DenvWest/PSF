@@ -9,12 +9,15 @@ import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyle
 import { PILLAR } from "@/data/dashboard";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_KOMPAS_COPY, isDomainKompasDomain } from "@/lib/domain-kompas-copy";
+import NutritionKompasTweeluik from "@/components/dashboard/domain/NutritionKompasTweeluik";
+import { buildNutritionKompasSamenvatting } from "@/lib/nutrition-kompas-samenvatting";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
 import { useDomainLadderFocus } from "@/lib/domain-ladder-focus-context";
 import { trackEvent } from "@/lib/ga4";
 import { getLeefstijlLadder } from "@/lib/leefstijl-ladder";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
 import { getScoreBandShortLabel } from "@/lib/score-bands";
+import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
 type DomainKompasScreenProps = {
@@ -23,6 +26,11 @@ type DomainKompasScreenProps = {
   data?: DashboardData;
   onGoAgenda: () => void;
   onGoVoortgangDomein: () => void;
+  /**
+   * Naar het volle logboek op het schap (`deel=logboek`). Alleen voeding heeft
+   * er een; zonder deze prop valt de tweeluik-kaart terug op Voortgang.
+   */
+  onGoLogboek?: () => void;
 };
 
 /**
@@ -47,6 +55,15 @@ type DomainKompasScreenProps = {
  * knop onderaan brengt je erheen. Ook de deur naar het schap ("Maak een
  * keuze") staat er niet als sluitregel op: dat was een tweede weg naar
  * dezelfde bestemming als de deur op de Kompas-home (N1).
+ *
+ * Sinds 1 september geldt diezelfde regel voor het voedingslogboek. Dat stond
+ * hier een tijd als volledig blok — vijf stoffen met chiprij, uitklapbare
+ * dossiers en drie knoppen per stof — en maakte van dit scherm een dossier in
+ * plaats van een kompas. Wat ervoor in de plaats kwam is
+ * {@link NutritionKompasTweeluik}: de stand van dat logboek in twee tellingen,
+ * met een deur naar Voortgang (je voedingsbeeld) en een naar het schap (het
+ * volle logboek). Hetzelfde principe als de dagkaart en de schap-deur — één
+ * plek per vraag, en Kompas draagt de vraag *waar sta ik en wat pak ik nu*.
  */
 export default function DomainKompasScreen({
   domain,
@@ -54,6 +71,7 @@ export default function DomainKompasScreen({
   data,
   onGoAgenda,
   onGoVoortgangDomein,
+  onGoLogboek,
 }: DomainKompasScreenProps) {
   // De laagkeuze woont in de context, niet in dit scherm: de contextkolom kiest
   // met dezelfde `selectLayer` (roadmap §7.2). Wat hier nog wél lokaal is, is de
@@ -71,6 +89,18 @@ export default function DomainKompasScreen({
   // bruikbaar.
   const selectedLayerId = selected && selected.domain === domain ? selected.layerId : null;
   const activeLayerId = selectedLayerId ?? focusLayerId ?? 1;
+
+  // De open-telling weegt je bewaarde routekeuzes mee, dus hij hangt aan de
+  // favorieten. Vóór hydratatie zou hij te hoog staan en daarna omlaag
+  // springen; `hydrated` houdt de kaart dan op zijn neutrale regel.
+  const { items: favoriteItems, hydrated: favoritesHydrated } = useVoortgangFavorites();
+  const nutritionSamenvatting = useMemo(
+    () =>
+      domain === "voeding"
+        ? buildNutritionKompasSamenvatting(data?.nutritionCheckinReadout, favoriteItems)
+        : null,
+    [domain, data?.nutritionCheckinReadout, favoriteItems],
+  );
 
   const score = model.scores[domain] ?? 0;
   const daysAgo = data?.domainCheckDaysAgo?.[domain];
@@ -101,6 +131,9 @@ export default function DomainKompasScreen({
   }
 
   const activeLayer = ladder.layers.find((layer) => layer.id === activeLayerId) ?? null;
+  // Zonder schap-deur is Voortgang de eerlijkste bestemming: daar staat de
+  // ladder mét feitenrijen, en dat is nog steeds een antwoord op de vraag.
+  const handleGoLogboek = onGoLogboek ?? onGoVoortgangDomein;
   const measuredLine =
     daysAgo == null
       ? `nog geen ${copy.checkNoun}`
@@ -144,21 +177,57 @@ export default function DomainKompasScreen({
               {activeLayer.summary}
             </p>
           ) : null}
-          {focusLayerId != null && activeLayerId !== focusLayerId ? (
-            <p className="mt-2 max-w-[58ch] text-[11.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-              Je kijkt naar prioriteit {activeLayerId}. Jouw grootste winst zit op prioriteit{" "}
-              {focusLayerId}.{" "}
+          {/* De prioriteitsknop staat direct onder de ladder en niet meer als
+              losse zin verderop: wie afdwaalt van zijn winst-laag moet dat zien
+              op de plek waar hij afdwaalde, niet twee blokken lager. Hij toont
+              ook wat hij ís als je er wél op staat — anders leest het scherm
+              alsof er geen aanbeveling was. */}
+          {focusLayerId != null ? (
+            activeLayerId === focusLayerId ? (
+              <p className="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-[rgba(90,143,106,0.35)] bg-[rgba(90,143,106,0.14)] px-2.5 py-1 text-[11.5px] font-semibold text-[#9CC5A9]">
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[#9CC5A9]" />
+                Jouw prioriteit — hier zit je winst
+              </p>
+            ) : (
               <button
                 type="button"
-                onClick={() => selectLayer({ domain, layerId: focusLayerId })}
-                className="cursor-pointer border-none bg-transparent p-0 text-left font-semibold text-[#9CC5A9] underline"
+                onClick={() => {
+                  trackEvent(`dashboard_${domain}_prioriteit_terug`, {
+                    surface: copy.surface,
+                    from_layer: activeLayerId,
+                    to_layer: focusLayerId,
+                  });
+                  selectLayer({ domain, layerId: focusLayerId });
+                }}
+                className="mt-2.5 inline-flex min-h-8 cursor-pointer items-center gap-1.5 rounded-full border border-white/15 bg-transparent px-2.5 text-[11.5px] font-semibold text-[#9CC5A9] transition hover:border-[rgba(90,143,106,0.5)]"
               >
-                Terug daarheen
+                <Icons.ChevronLeft s={13} />
+                Terug naar jouw prioriteit {focusLayerId}
               </button>
-            </p>
+            )
           ) : null}
         </div>
       </DomainKompasHead>
+
+      {/* Voeding kreeg op Kompas het volledige logboek: vijf stoffen met
+          chiprij, uitklapbare dossiers, bronnen en drie knoppen per stof. Dat
+          blok is niet fout — het is alleen niet van dit scherm. Kompas is waar
+          je leest waar je staat en welke prioriteit je pakt; je keuze uitwerken
+          doe je op het schap, waar hetzelfde blok uitgeklapt en met zoekveld
+          staat, en je meetreeks lees je op Voortgang.
+
+          Wat hier blijft is de *stand* van het logboek: twee tellingen, twee
+          deuren. Zie `buildNutritionKompasSamenvatting` voor waarom die twee
+          tellingen niet dezelfde vraag beantwoorden. */}
+      {nutritionSamenvatting ? (
+        <NutritionKompasTweeluik
+          samenvatting={nutritionSamenvatting}
+          keuzesGeladen={favoritesHydrated}
+          surface={copy.surface}
+          onGoVoortgang={onGoVoortgangDomein}
+          onGoLogboek={handleGoLogboek}
+        />
+      ) : null}
 
       {/* De opties op de laag die je aanklikte. Staat er niets klaar, dan legt
           het blok uit waarom, in plaats van te verdwijnen onder je vinger. */}

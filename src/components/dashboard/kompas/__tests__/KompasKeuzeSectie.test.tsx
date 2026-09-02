@@ -283,7 +283,7 @@ describe("KompasKeuzeSectie — toggle en Aanbevolen", () => {
     fireEvent.click(screen.getByRole("tab", { name: "Aanbevolen" }));
 
     expect(screen.getByText(WINST_LAYER_ACTION)).toBeTruthy();
-    expect(screen.getByText(`Laag 2 · ${WINST_LAYER.name}`)).toBeTruthy();
+    expect(screen.getByText(`Prioriteit 2 · ${WINST_LAYER.name}`)).toBeTruthy();
 
     fireEvent.click(
       screen.getByRole("button", { name: `Open ${WINST_LAYER_ACTION} op je ladder` }),
@@ -303,7 +303,7 @@ describe("KompasKeuzeSectie — toggle en Aanbevolen", () => {
 
     const voedingLaag1 = getLeefstijlLadder("voeding")!.layers.find((row) => row.id === 1)!;
     expect(screen.getByText("Voeding")).toBeTruthy();
-    expect(screen.getByText(`Laag 1 · ${voedingLaag1.name}`)).toBeTruthy();
+    expect(screen.getByText(`Prioriteit 1 · ${voedingLaag1.name}`)).toBeTruthy();
     // Beweging houdt zijn eigen, gemeten laag.
     expect(screen.getByText(WINST_LAYER_ACTION)).toBeTruthy();
   });

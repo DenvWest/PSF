@@ -3,14 +3,16 @@ import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { QUESTIONS } from "@/data/intake-questions";
 import {
+  LEEFSTIJLCHECK_ALIGNMENT_NOTES,
   LEEFSTIJLCHECK_EVIDENCE_BY_ID,
   LEEFSTIJLCHECK_EVIDENCE_PILLARS,
   LEEFSTIJLCHECK_INTERPRETATION_NOTES,
   LEEFSTIJLCHECK_INTERVENTION_DOMAINS,
+  LEEFSTIJLCHECK_LIFELINE_NOTES,
+  LEEFSTIJLCHECK_LIFELINE_REFERENCES,
   LEEFSTIJLCHECK_READOUT_DOMAINS,
   LEEFSTIJLCHECK_READOUT_MODEL_NOTES,
   LEEFSTIJLCHECK_REFERENCE_LIBRARY,
-  LEEFSTIJLCHECK_SDT_MODEL_NOTES,
   LEEFSTIJLCHECK_STRENGTH_DISCLAIMER,
   LEEFSTIJLCHECK_TRANSPARANTIE_NOTES,
   MOV_SED_EVIDENCE,
@@ -37,7 +39,6 @@ export default function OnderbouwingPage() {
     "beweging",
     "slaap",
     "stress",
-    "motivatie",
     "sociale-verbinding",
     "mediterrane-leefstijl",
     "gedragsverandering",
@@ -145,35 +146,46 @@ export default function OnderbouwingPage() {
               <li key={item}>- {item}</li>
             ))}
           </ul>
-        </section>
 
-        <section className="mt-14 max-w-4xl">
-          <h2 className={sectionTitleClass}>Hoe dit model werkt</h2>
-          <p className="mt-4 text-base leading-relaxed text-stone-600">
-            De check kijkt naar drie lagen die op elkaar inwerken: onderaan de
-            determinanten (waarom je volhoudt), daarboven je gedrag, en bovenaan wat
-            je ervaart. Ze beïnvloeden elkaar — er is geen strakke eenrichtingsvolgorde.
+          <h3 className="mt-10 font-display text-xl font-semibold text-stone-900">
+            Wanneer voldoet leefstijl?
+          </h3>
+          <p className="mt-3 text-base leading-relaxed text-stone-600">
+            De check beantwoordt geen medische vraag. Hij laat zien of jouw
+            patroon aansluit bij onderzochte leefstijlprincipes — per domein,
+            in begrijpelijke labels.
           </p>
-          <figure
-            className="mt-6 rounded-2xl border border-stone-200 bg-white p-6"
-            aria-label="Drielaags model: determinanten dragen gedrag, gedrag leidt tot uitkomsten; vervulde basisbehoeften geven ook direct energie."
-          >
-            <ol className="space-y-3 text-sm leading-relaxed text-stone-700">
-              <li><strong>Determinanten</strong> — Autonomie · Competentie · Verbinding <span className="text-stone-400">(parallel)</span></li>
-              <li aria-hidden className="text-stone-400">↓</li>
-              <li><strong>Gedrag</strong> — Slaap · Stress · Voeding · Beweging · Verbinding</li>
-              <li aria-hidden className="text-stone-400">↓</li>
-              <li><strong>Uitkomsten</strong> — Energie · Herstel <span className="text-stone-400">(rapport)</span></li>
-            </ol>
-            <p className="mt-3 text-xs text-stone-500">
-              Vervulde basisbehoeften geven óók direct energie — niet alleen via gedrag.
-            </p>
-          </figure>
-          <ul className="mt-6 space-y-2 text-base leading-relaxed text-stone-600">
-            {LEEFSTIJLCHECK_SDT_MODEL_NOTES.map((item) => (
+          <ul className="mt-4 space-y-2 text-base leading-relaxed text-stone-600">
+            {LEEFSTIJLCHECK_ALIGNMENT_NOTES.map((item) => (
               <li key={item}>- {item}</li>
             ))}
           </ul>
+
+          <h3 className="mt-10 font-display text-xl font-semibold text-stone-900">
+            Levenslijn: als er te weinig gebeurt
+          </h3>
+          <p className="mt-3 text-base leading-relaxed text-stone-600">
+            Als het patroon nog niet voldoet, groeit het verschil over de jaren.
+            De levenslijn maakt dat zichtbaar als algemeen beeld — niet als
+            persoonlijke voorspelling.
+          </p>
+          <ul className="mt-4 space-y-2 text-base leading-relaxed text-stone-600">
+            {LEEFSTIJLCHECK_LIFELINE_NOTES.map((item) => (
+              <li key={item}>- {item}</li>
+            ))}
+          </ul>
+          <p className="mt-5 text-sm font-semibold uppercase tracking-wide text-stone-800">
+            Bronnen
+          </p>
+          <EvidenceReferenceList
+            references={LEEFSTIJLCHECK_LIFELINE_REFERENCES}
+          />
+          <Link
+            href="/beweging-na-40#levenslijn"
+            className="mt-4 inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-stone-800 transition hover:bg-stone-50"
+          >
+            Bekijk de levenslijn →
+          </Link>
         </section>
 
         <section className="mt-14 max-w-4xl">
@@ -200,8 +212,9 @@ export default function OnderbouwingPage() {
           </p>
           <p className="mt-3 text-base leading-relaxed text-stone-600">
             Specifiek steunt de methodiek op mediterrane leefstijlprincipes,
-            Self-Determination Theory (Deci & Ryan) en literatuur over
-            gewoontevorming, zelfregulatie en gedragsbehoud in kleine stappen.
+            internationale richtlijnen (onder meer WHO en slaapconsensus) en
+            literatuur over gewoontevorming, zelfregulatie en gedragsbehoud in
+            kleine stappen.
           </p>
         </section>
 

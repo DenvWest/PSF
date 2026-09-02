@@ -33,6 +33,18 @@ export function resolveSchapTabs(domain: PillarId): SchapTabDescriptor[] {
     tabs.push({ id: "diensten", label: "Diensten" });
   }
 
+  // Alleen voeding: de vijf nutriëntroutes met hun keuze. Tot 1 september
+  // stond dat blok vast bovenaan het schap, boven de tabs — inhoudelijk juist
+  // (het verantwoordt het aanbod eronder) maar het duwde alles wat je kwam
+  // doen een scherm naar beneden. Als tab staat het naast Favorieten in
+  // plaats van erboven: even bereikbaar, niet meer in de weg.
+  //
+  // De voorwaarde is dezelfde als bij Diensten: geen tab zonder inhoud. Buiten
+  // voeding bestaan er geen nutriëntroutes, dus daar komt hij niet.
+  if (domain === "voeding") {
+    tabs.push({ id: "logboek", label: "Voedingslogboek" });
+  }
+
   // Favorieten van dit domein — snelle beheer.
   tabs.push({ id: "favorieten", label: "Favorieten" });
 

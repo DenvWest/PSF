@@ -132,8 +132,8 @@ describe("SupplementVerdictPanel — beeld en ladderplek", () => {
     render(<SupplementVerdictPanel verdicts={[row(evidence)]} ladderDomain="voeding" />);
 
     expect(screen.getByText("Plek in je plan")).toBeTruthy();
-    expect(screen.getByText("Laag 6 van 6 · Aanvullen & vergelijken")).toBeTruthy();
-    expect(screen.getByText("5 lagen komen hiervóór")).toBeTruthy();
+    expect(screen.getByText("Prioriteit 6 van 6 · Aanvullen & vergelijken")).toBeTruthy();
+    expect(screen.getByText("5 prioriteiten komen hiervóór")).toBeTruthy();
   });
 });
 

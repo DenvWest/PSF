@@ -72,7 +72,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     intentArticleLinks: [
       { label: "Slaap verbeteren na 40", slug: "slaap-verbeteren-40-plus" },
       { label: "Melatonine na 40", slug: "melatonine-na-40" },
-      { label: "Melatonine: wanneer wel/niet", slug: "melatonine-wanneer-wel-niet" },
+      { label: "Vitamine D en slaap", slug: "vitamine-d-en-slaap" },
       { label: "Magnesium en slaap", slug: "magnesium-en-slaap" },
     ],
     themaHref: "/slaap-verbeteren-na-40",
@@ -100,10 +100,10 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       "lage energie",
     ],
     intentArticleLinks: [
-      { label: "Energie verhogen", slug: "energie-verhogen-natuurlijk" },
-      { label: "Middagdip en bloedsuiker", slug: "middagdip-bloedsuiker-na-40" },
-      { label: "Alcohol en energie", slug: "alcohol-slaap-energie-na-40" },
-      { label: "Krachttraining na 40", slug: "krachttraining-na-40" },
+      { label: "Zonnebrand en vitamine D", slug: "zonnebrand-en-vitamine-d" },
+      { label: "Vitamine D door het jaar", slug: "vitamine-d-seizoenen-jaarritme" },
+      { label: "Vitamine D meten", slug: "vitamine-d-meten-wanneer-zinvol" },
+      { label: "Schildklier, diabetes, duizeligheid", slug: "vitamine-d-aandoeningen-onderzoek" },
     ],
     themaHref: "/energie-na-40",
     kleur: {
@@ -124,14 +124,14 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       "Magnesium, omega-3, vitamine D en meer — werking, vormen en dosering uitgelegd voor 40+. Geen verkooppraat.",
     intentTopics: [
       "magnesium vormen",
-      "omega-3 dosering",
-      "vitamine D",
+      "vitamine D met K2",
+      "vitamine D dosering",
       "supplement kiezen",
     ],
     intentArticleLinks: [
       { label: "Magnesium en slaap", slug: "magnesium-en-slaap" },
-      { label: "Omega-3 en herstel", slug: "omega-3-en-herstel" },
-      { label: "Vitamine D en energie", slug: "vitamine-d-en-energie" },
+      { label: "Vitamine D en K2 samen", slug: "vitamine-d-en-k2-samen" },
+      { label: "Hoge doses vitamine D", slug: "vitamine-d-hoge-doses-social-media" },
       { label: "Zink en testosteron", slug: "zink-en-testosteron" },
     ],
     themaHref: "/supplementen",

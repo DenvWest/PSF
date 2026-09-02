@@ -2481,6 +2481,7 @@ const KompasHome = ({
   model,
   data,
   onGoAgenda,
+  onGoKeuze,
   onGoVoortgangDomein,
   agendaDate: _agendaDate,
   onAgendaDateChange: _onAgendaDateChange,
@@ -2686,6 +2687,7 @@ const KompasHome = ({
         data={data}
         onGoAgenda={() => onGoAgenda()}
         onGoVoortgangDomein={() => onGoVoortgangDomein(domainView)}
+        onGoLogboek={() => onGoKeuze(domainView, "logboek")}
       />,
     );
   }

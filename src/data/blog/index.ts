@@ -25,6 +25,16 @@ import { eiwitinnameTimingMannen40Data } from "./eiwitinname-timing-mannen-40";
 import { middagdipBloedsuikerNa40Data } from "./middagdip-bloedsuiker-na-40";
 import { krachttrainingNa40Data } from "./krachttraining-na-40";
 import { alcoholSlaapEnergieNa40Data } from "./alcohol-slaap-energie-na-40";
+import { zonnebrandEnVitamineDData } from "./zonnebrand-en-vitamine-d";
+import { vitamineDZonNederlandData } from "./vitamine-d-zon-nederland";
+import { vitamineDEnK2SamenData } from "./vitamine-d-en-k2-samen";
+import { vitamineDHogeDosesSocialMediaData } from "./vitamine-d-hoge-doses-social-media";
+import { vitamineDMetenWanneerZinvolData } from "./vitamine-d-meten-wanneer-zinvol";
+import { vitamineDSeizoenenJaarritmeData } from "./vitamine-d-seizoenen-jaarritme";
+import { vitamineDAandoeningenOnderzoekData } from "./vitamine-d-aandoeningen-onderzoek";
+import { vitamineDEnSlaapData } from "./vitamine-d-en-slaap";
+import { multivitamineZinvolNa40Data } from "./multivitamine-zinvol-na-40";
+import { zoutKaliumBloeddrukNa40Data } from "./zout-kalium-bloeddruk-na-40";
 import { cornerstoneSupplementenArtikelen } from "./cornerstone-supplementen";
 
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
@@ -57,6 +67,16 @@ export const alleArtikelen: BlogArtikel[] = [
   middagdipBloedsuikerNa40Data,
   krachttrainingNa40Data,
   alcoholSlaapEnergieNa40Data,
+  zonnebrandEnVitamineDData,
+  vitamineDZonNederlandData,
+  vitamineDEnK2SamenData,
+  vitamineDHogeDosesSocialMediaData,
+  vitamineDMetenWanneerZinvolData,
+  vitamineDSeizoenenJaarritmeData,
+  vitamineDAandoeningenOnderzoekData,
+  vitamineDEnSlaapData,
+  multivitamineZinvolNa40Data,
+  zoutKaliumBloeddrukNa40Data,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>

@@ -7,9 +7,9 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
   titel: "Vitamine D-tekort: herken je de signalen?",
   heroIntro:
     "Vermoeidheid, spierzwakte, vaker ziek — het passen allemaal bij [vitamine D-tekort](/kennisbank/vitamine-d), maar ze zijn niet specifiek. Zo zet je signalen in context en wat je vervolgens praktisch kunt doen als man boven de 40.",
-  leestijd: "6 min",
+  leestijd: "9 min",
   gepubliceerdOp: "2026-03-10",
-  laatstBijgewerktOp: "2026-05-23",
+  laatstBijgewerktOp: "2026-09-01",
   secties: [
     {
       type: "tekst",
@@ -20,22 +20,49 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
     {
       type: "opsomming",
       titel: "Signalen die wél aanleiding zijn om te meten",
+      inleiding:
+        "Geen van deze klachten is specifiek voor vitamine D — ze passen bij tientallen oorzaken. Ze zijn een reden om te meten, niet om te concluderen.",
       items: [
         "Aanhoudende vermoeidheid ondanks redelijke slaap.",
         "Spierzwakte of sneller spiervermoeidheid dan je gewend bent.",
+        "Spierpijn of spierkrampen zonder duidelijke aanleiding, en bij ernstiger tekort bot- of gewrichtspijn (vaak onderrug, bekken, benen).",
         "Vaker luchtweginfecties in het seizoen waarin je weinig buiten komt.",
+        "Somberheid of lusteloosheid in het winterhalfjaar — met het uitdrukkelijke voorbehoud hieronder.",
         "Botklachten in combinatie met risicofactoren (weinig zon, oudere leeftijd, absorptiestoornissen).",
       ],
+      callouts: [
+        {
+          variant: "letop",
+          tekst:
+            "Deze lijst is bedoeld om te bepalen of meten zinvol is. Herkenning is geen diagnose: dezelfde klachten passen bij schildklierproblemen, bloedarmoede, slaaptekort, depressie en nog veel meer. Aanhoudende klachten horen bij de huisarts.",
+        },
+      ],
+    },
+    {
+      type: "tekst",
+      titel: "Waarom de spierklachten er wél uitspringen",
+      bewijsNiveau: "redelijk",
+      tekst:
+        "Van alle klachten in de lijst hierboven heeft de spierkant de sterkste onderbouwing. Vitamine D speelt een rol in de spierfunctie, en het is een van de weinige terreinen waar de EU een claim heeft toegelaten: vitamine D draagt bij tot de instandhouding van een normale spierfunctie. Bij een uitgesproken tekort is spierzwakte — vooral in de bovenbenen en heupen, merkbaar bij traplopen of opstaan uit een stoel — een bekend en herkenbaar beeld.\n\nBij een ernstig en langdurig tekort kan osteomalacie ontstaan: verweking van het botweefsel, met diffuse bot- en spierpijn. Dat is een medisch beeld dat door een arts wordt vastgesteld, geen zelfherkenning.",
+    },
+    {
+      type: "tekst",
+      titel: "Stemming: het klopt minder goed dan het voelt",
+      bewijsNiveau: "beperkt",
+      tekst:
+        "Somberheid staat op elke online symptomenlijst, en de associatie is echt gevonden: mensen met lagere waarden rapporteren vaker sombere klachten. Maar trials waarin vitamine D wordt gegeven om stemming te verbeteren, laten bij mensen zonder aangetoond tekort doorgaans weinig tot geen effect zien.\n\nDe verklaring ligt waarschijnlijk in wat beide veroorzaakt: in de winter kom je minder buiten, krijg je minder daglicht, beweeg je minder en zie je minder mensen. Dat drukt je stemming én je vitamine D-waarde, zonder dat het een het ander veroorzaakt. Hetzelfde patroon bespreken we voor andere aandoeningen in [vitamine D en schildklier, diabetes en duizeligheid](/blog/vitamine-d-aandoeningen-onderzoek) en voor de seizoenen in [vitamine D door het jaar heen](/blog/vitamine-d-seizoenen-jaarritme).",
+      bewijsKanttekening:
+        "Onderzoek naar vitamine D en stemming is heterogeen en wordt bemoeilijkt door omgekeerde causaliteit. Lees dit als 'niet aangetoond', niet als 'weerlegd' — en bespreek aanhoudende somberheid met je huisarts.",
     },
     {
       type: "tekst",
       titel: "Wat meten betekent",
       tekst:
-        "De standaardtest is 25-hydroxyvitamine D in bloed. Interpretatie hangt af van referentiewaarden van het lab; bespreek uitslagen met je arts. Suppletie is veilig binnen gangbare doseringen, maar extreem hoge doses op eigen houtje zijn niet nodig en kunnen bijwerkingen geven. Vitamine K2 wordt vaak gecombineerd met D3 voor calciumgeleiding — zie onze supplementpagina voor context.",
+        "De standaardtest is 25-hydroxyvitamine D in bloed. Interpretatie hangt af van referentiewaarden van het lab; bespreek uitslagen met je arts. Let op de eenheid: nmol/l en ng/ml schelen een factor 2,5. Wanneer meten iets toevoegt en hoe je een uitslag leest, staat in [vitamine D meten](/blog/vitamine-d-meten-wanneer-zinvol). Suppletie is veilig binnen gangbare doseringen, maar extreem hoge doses op eigen houtje zijn niet nodig en kunnen bijwerkingen geven — zie [hoge doses vitamine D](/blog/vitamine-d-hoge-doses-social-media). Vitamine K2 wordt vaak met D3 gecombineerd; wat daar wel en niet over geclaimd mag worden staat in [vitamine D en K2 samen](/blog/vitamine-d-en-k2-samen).",
     },
   ],
   samenvatting:
-    "Vitamine D-tekort gaat vaak gepaard met vage klachten; aanhoudende vermoeidheid en spierzwakte zijn redenen om 25-OH-D te laten meten. Bij vastgesteld tekort kan suppletie onder begeleiding zinvol zijn — laat je niet verleiden tot hoge doses zonder monitoring.",
+    "Vitamine D-tekort gaat vaak gepaard met vage klachten; aanhoudende vermoeidheid en spierzwakte zijn redenen om 25-OH-D te laten meten. Van alle signalen heeft de spierkant de sterkste onderbouwing — bij stemming is de samenhang waarschijnlijk vooral een gedeelde winteroorzaak. Bij vastgesteld tekort kan suppletie onder begeleiding zinvol zijn; laat je niet verleiden tot hoge doses zonder monitoring.",
   supplementCTA: {
     naam: "Vitamine D",
     uitleg:
@@ -47,9 +74,16 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
     href: "/energie-na-40",
   },
   gerelateerdeSluggen: [
+    "vitamine-d-meten-wanneer-zinvol",
+    "vitamine-d-zon-nederland",
     "energie-verhogen-natuurlijk",
-    "testosteron-en-energie-na-40",
-    "omega-3-concentratie-energie",
+  ],
+  kernpunten: [
+    "Geen enkele klacht is specifiek voor vitamine D — ze zijn reden om te meten, niet om te concluderen.",
+    "Spierzwakte in bovenbenen en heupen is het best onderbouwde signaal.",
+    "Vitamine D heeft een toegelaten EU-claim op normale spierfunctie.",
+    "Bij stemming is de samenhang waarschijnlijk een gedeelde winteroorzaak.",
+    "Aanhoudende klachten horen bij de huisarts, niet bij een symptomenlijst.",
   ],
   metaTitle:
     "Vitamine D-tekort herkennen: signalen en testen",
@@ -58,6 +92,9 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
   keywords: [
     "vitamine d tekort",
     "vitamine d vermoeidheid",
+    "vitamine d tekort symptomen",
+    "vitamine d spierpijn",
+    "vitamine d somber",
     "25-OH vitamine d",
     "vitamine d mannen",
   ],
@@ -68,5 +105,8 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
     "Aranow C. Vitamin D immune function clinical disease J Investig Med vitamin D physiology beyond bone.",
     "EFSA Vitamin D authorised health claims bone teeth muscle immune EU register dossier reference.",
     "Amrein K et al. Vitamin D deficiency 2 revisiting supplementation critical care contexts broader clinical supplementation evidence.",
+    "Beaudart C, Buckinx F, Rabenda V, et al. The effects of vitamin D on skeletal muscle strength, muscle mass, and muscle power: a systematic review and meta-analysis of randomized controlled trials. J Clin Endocrinol Metab. 2014;99(11):4336-4345.",
+    "Gowda U, Mutowo MP, Smith BJ, Wluka AE, Renzaho AM. Vitamin D supplementation to reduce depression in adults: meta-analysis of randomized controlled trials. Nutrition. 2015;31(3):421-429.",
+    "Uday S, Hogler W. Nutritional rickets and osteomalacia in the twenty-first century: revised concepts, public health, and prevention strategies. Curr Osteoporos Rep. 2017;15(4):293-302.",
   ]),
 };

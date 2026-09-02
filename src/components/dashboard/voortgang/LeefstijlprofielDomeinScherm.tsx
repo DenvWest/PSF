@@ -11,6 +11,7 @@ import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import { buildDashboardAgendaHref, buildDashboardVandaagHref } from "@/lib/dashboard-url";
 import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
+import NutrientRoutePanel from "@/components/dashboard/voortgang/NutrientRoutePanel";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
 import { trackEvent } from "@/lib/ga4";
 import { getLeefstijlLadder } from "@/lib/leefstijl-ladder";
@@ -54,13 +55,40 @@ function LayerSixSlot({
   const nutritionDone =
     buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true;
 
+  // Op voeding zelf geldt een derde voorwaarde bovenop "check gedaan": er mag
+  // geen gat meer openstaan in de eetbasis (BESLUIT_VOEDING_PIRAMIDE §E). Dat
+  // is de enige formulering die "eerst je tafel, dan het potje" waarmaakt in
+  // plaats van hem alleen te citeren — en de reden dat hij dicht is, staat
+  // erbij, telkens in de bewoording van zijn eigen check.
+  const nutritionGate = domain === "voeding" ? data?.nutritionCheckinReadout?.gate ?? null : null;
+  const routeStatuses =
+    domain === "voeding" ? data?.nutritionCheckinReadout?.routes ?? [] : [];
+  const nutritionGateClosed = domain === "voeding" && nutritionGate?.open !== true;
+
   if (!mapping && !showWearable) {
     return null;
   }
 
   return (
     <div className="mt-4 flex flex-col gap-3">
-      {mapping ? (
+      {nutritionGateClosed ? (
+        <p className="m-0 max-w-[58ch] text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+          {nutritionGate?.reason ??
+            "Zonder voedingscheck weten we niet of er iets aan te vullen valt."}
+        </p>
+      ) : null}
+      {/* Op voeding staat de vraag "haal ik dit uit mijn eten" vóór het schap:
+          de vijf routes zijn wat P6 te bieden heeft zolang de poort dicht is,
+          en de context eromheen zodra hij open gaat. */}
+      {domain === "voeding" && routeStatuses.length > 0 ? (
+        <NutrientRoutePanel
+          statuses={routeStatuses}
+          surface="leefstijlprofiel_voeding"
+          gateOpen={nutritionGate?.open === true}
+          gateReason={nutritionGate?.reason ?? null}
+        />
+      ) : null}
+      {mapping && !nutritionGateClosed ? (
         <DomainSupplementStance
           domain={mapping.stance}
           verdicts={data?.supplementVerdicts ?? []}

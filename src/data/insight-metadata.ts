@@ -74,6 +74,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "melatonine-na-40": { theme: "sleep", gapSignal: "melatonine_signal" },
   "melatonine-wanneer-wel-niet": { theme: "sleep" },
   "middagdip-bloedsuiker-na-40": { theme: "nutrition" },
+  "multivitamine-zinvol-na-40": { theme: "nutrition" },
   "omega-3-concentratie-energie": {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
@@ -98,7 +99,43 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
   },
+  "vitamine-d-en-k2-samen": {
+    theme: "nutrition",
+    relatedSupplementId: "vitamine-d3",
+  },
+  "vitamine-d-hoge-doses-social-media": {
+    theme: "nutrition",
+    relatedSupplementId: "vitamine-d3",
+  },
+  "vitamine-d-aandoeningen-onderzoek": {
+    theme: "nutrition",
+    relatedSupplementId: "vitamine-d3",
+  },
+  "vitamine-d-en-slaap": {
+    theme: "sleep",
+    relatedSupplementId: "vitamine-d3",
+  },
+  "vitamine-d-inname": {
+    theme: "nutrition",
+    relatedSupplementId: "vitamine-d3",
+  },
+  "vitamine-d-meten-wanneer-zinvol": {
+    theme: "nutrition",
+    relatedSupplementId: "vitamine-d3",
+  },
+  "vitamine-d-seizoenen-jaarritme": {
+    theme: "nutrition",
+    relatedSupplementId: "vitamine-d3",
+  },
   "vitamine-d-tekort-herkennen": {
+    theme: "nutrition",
+    relatedSupplementId: "vitamine-d3",
+  },
+  "vitamine-d-zon-nederland": {
+    theme: "nutrition",
+    relatedSupplementId: "vitamine-d3",
+  },
+  "zonnebrand-en-vitamine-d": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
   },
@@ -116,6 +153,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "nutrition",
     relatedSupplementId: "zink",
   },
+  "zout-kalium-bloeddruk-na-40": { theme: "nutrition" },
 
   // ── Kennisbank ────────────────────────────────────────────────────────────
   adaptogens: { theme: "stress", profile: "Stressdrager" },
@@ -140,6 +178,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   healthspan: { theme: "movement" },
   "hpa-as": { theme: "stress", gapSignal: "cortisol_risk" },
   insulineresistentie: { theme: "nutrition" },
+  "kalium-natrium-balans": { theme: "nutrition" },
   magnesiumvormen: {
     theme: "sleep",
     gapSignal: "magnesium_signal",
@@ -147,6 +186,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   },
   melatonine: { theme: "sleep", gapSignal: "melatonine_signal" },
   mitochondrien: { theme: "movement" },
+  multivitamine: { theme: "nutrition" },
   "nervus-vagus": { theme: "stress", planPhase: 1 },
   overtrainingssyndroom: {
     theme: "movement",

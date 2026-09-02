@@ -1,3 +1,12 @@
+import { buildNutritionHeadline } from "@/lib/nutrition-conclusion";
+import {
+  buildNutritionFactRows,
+  resolveNutritionFocusLayer,
+  resolveNutritionGate,
+  resolveNutritionLayerStates,
+} from "@/lib/nutrition-ladder";
+import { buildNutrientRouteStatuses } from "@/lib/nutrition-route-status";
+import { isVitaminDLowSunSeason } from "@/lib/nutrition-season";
 import { CHECK_LOG, CHECKS, PILLAR } from "@/data/dashboard";
 import {
   perfectSupplementMeasurementConfig,
@@ -69,6 +78,46 @@ const DEV_NUTRITION_INTAKE: DashboardData["nutritionIntake"] = {
     { label: "Zink", band: "meets", nutrient: "zinc" },
   ],
 };
+
+/**
+ * De eetbasis-ladder van de dev-persona, berekend uit antwoorden in plaats van
+ * met de hand geschreven: zo loopt de dev-weergave door dezelfde engine als
+ * productie en kan een fixture niet stilletjes uit de pas gaan lopen.
+ *
+ * Deze antwoorden zetten de winst bewust op laag 1 — twee plantporties, weinig
+ * volkoren, vis nooit — zodat het scherm zijn drukste toestand toont.
+ */
+const DEV_NUTRITION_READOUT: DashboardData["nutritionCheckinReadout"] = (() => {
+  const report = {
+    sliders: {
+      vegetables: 2,
+      fruit: 4,
+      berries: 2,
+      nutsSeedsLegumes: 1,
+      oilyFish: 0,
+      proteinMeals: 2,
+      meatLegumes: 1,
+      dairy: 1,
+      daylight: 2,
+      wholegrain: 1,
+      sugaryDrinks: 5,
+    },
+    preference: "none",
+    allergies: [] as string[],
+  };
+  const factRows = buildNutritionFactRows(report);
+  return {
+    date: "2026-07-18",
+    headline: buildNutritionHeadline(factRows),
+    factRows,
+    focusLayer: resolveNutritionFocusLayer(factRows),
+    layerStates: resolveNutritionLayerStates(factRows),
+    gate: resolveNutritionGate(factRows),
+    routes: buildNutrientRouteStatuses(report, {
+      isDarkSeason: isVitaminDLowSunSeason(),
+    }),
+  };
+})();
 
 const DEV_VERDICT_EVIDENCE: VerdictEvidence = {
   scores: toDomainScores(CHECKS.check2.scores),
@@ -328,6 +377,7 @@ export function buildDevDashboardData(
     history,
     retest: mode === "retest",
     nutritionIntake: DEV_NUTRITION_INTAKE,
+    nutritionCheckinReadout: DEV_NUTRITION_READOUT,
     nutritionLastLoggedAt: "2026-07-18T09:00:00.000Z",
     nutritionRelogDue: false,
     daysSinceNutritionLog: 3,
@@ -384,5 +434,6 @@ export function buildDevDashboardData(
     movementPrefs: EMPTY_MOVEMENT_PREFS,
     supplementVerdicts: DEV_SUPPLEMENT_VERDICTS,
     proteinTarget: { gramsLow: 95, gramsHigh: 110 },
+    ageRange: "55+",
   };
 }

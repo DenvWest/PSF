@@ -13,10 +13,11 @@ import {
   NUTRIENT_IDS,
   type NutrientId,
 } from "@/data/nutrition/intake-reference";
+import { seasonFromDate } from "@/lib/nutrition-season";
 
 /** Semver van de engine — wordt opgeslagen in intake_intake_log.estimate_version (F0). */
-// 1.2.0: nutsSeedsLegumesPerWeek toegevoegd als magnesium-proxy.
-export const ESTIMATE_VERSION = "1.2.0";
+// 1.3.0: vitamin_d-band gebruikt nu seasonalThresholds i.p.v. vaste grenzen.
+export const ESTIMATE_VERSION = "1.3.0";
 
 /**
  * Plat record van frequentie-antwoorden uit het gewoonte-zelfrapport (gewone dag/week).
@@ -89,17 +90,26 @@ function combineSignals(
 
 /**
  * Schat de voedings-inname per nutriënt op basis van een gewoonte-zelfrapport (gewone dag/week).
- * Deterministisch, puur — dezelfde input geeft altijd dezelfde output.
+ * Deterministisch, puur (bij gelijke referenceDate) — dezelfde input geeft altijd dezelfde output.
  *
  * @param report - Frequentie-antwoorden van de gebruiker (F0: raw_inputs).
+ * @param referenceDate - Bepaalt het seizoen voor vitamin_d (zie seasonalThresholds
+ *   in intake-reference.ts); default vandaag. Geef dezelfde datum door als aan
+ *   buildNutritionAdvice()/getNutrientLifestyleAction() zodat band en copy synchroon lopen.
  * @returns Array van IntakeEstimate (F0: estimate), één per nutriënt.
  */
 export function estimateNutritionIntake(
-  report: NutritionSelfReport
+  report: NutritionSelfReport,
+  referenceDate: Date = new Date(),
 ): IntakeEstimate[] {
+  const vitaminDSeason = seasonFromDate(referenceDate);
+
   return NUTRIENT_IDS.map((id) => {
     const ref = nutrientReferences[id];
-    const { belowMax, meetsMin } = ref.thresholds;
+    const { belowMax, meetsMin } =
+      id === "vitamin_d" && ref.seasonalThresholds
+        ? ref.seasonalThresholds[vitaminDSeason]
+        : ref.thresholds;
 
     let signal: number | undefined;
 

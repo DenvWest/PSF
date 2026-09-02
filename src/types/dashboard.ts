@@ -16,6 +16,13 @@ import type { StoredSleepCheckinSnapshot } from "@/lib/sleep-checkin-parse";
 import type { SleepFactRow } from "@/lib/sleep-checkin-readout";
 import type { StressCheckReport } from "@/lib/stress-ladder";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
+import type {
+  NutritionFactRow,
+  NutritionGate,
+  NutritionLadderLayerId,
+} from "@/lib/nutrition-ladder";
+import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
+import type { LeefstijlLayerState } from "@/lib/leefstijl-ladder";
 import type { PlanProgress } from "@/types/lifestyle-plan";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 import type { ProteinTargetRange } from "@/lib/protein-target";
@@ -143,7 +150,12 @@ export type VoortgangScreen =
  * surface-strings (`schap_slaap`) dragen meetreeksen die niet mogen breken
  * omdat een label verandert.
  */
-export type SchapTabId = "producten" | "diensten" | "begeleiding" | "favorieten";
+export type SchapTabId =
+  | "producten"
+  | "diensten"
+  | "begeleiding"
+  | "logboek"
+  | "favorieten";
 
 export type LeefstijlprofielView = "aanbevolen" | "mijn_keuze";
 
@@ -328,6 +340,27 @@ export type SleepCheckinReadoutData = StoredSleepCheckinSnapshot & {
   factRows: SleepFactRow[];
 };
 
+/**
+ * De voedingscheck als laduitlezing. Anders dan beweging en slaap bevriest
+ * voeding geen conclusie in `raw_inputs`: de rijen én de kop worden allebei
+ * herberekend uit de opgeslagen antwoorden, zodat een regel-fix in de engine
+ * ook oude logs op Voortgang bereikt. Zie `nutrition-ladder.ts`.
+ */
+export type NutritionCheckinReadoutData = {
+  date: string;
+  headline: string;
+  factRows: NutritionFactRow[];
+  focusLayer: NutritionLadderLayerId | null;
+  layerStates: Record<NutritionLadderLayerId, LeefstijlLayerState>;
+  gate: NutritionGate;
+  /**
+   * Per nutriënt: haal je hem uit je eten, wat eet je ervoor, en mag de
+   * vergelijk-deur open. Server-side berekend zodat het seizoen (vitamine D)
+   * uit één klok komt en niet uit de browser van de bezoeker.
+   */
+  routes: NutrientRouteStatus[];
+};
+
 export type DashboardData = {
   empty: boolean;
   current: (CheckSnapshot & { trend: CheckTrend; trendBaselines?: CheckTrendBaselines }) | null;
@@ -335,6 +368,8 @@ export type DashboardData = {
   history: CheckLogEntry[];
   retest: boolean;
   nutritionIntake: { date: string; items: NutritionIntakeItem[] } | null;
+  /** De eetbasis-ladder uit de laatste voedingscheck; null zonder log. */
+  nutritionCheckinReadout: NutritionCheckinReadoutData | null;
   /** ISO-timestamp van de laatste voedingslog; null zonder log. */
   nutritionLastLoggedAt: string | null;
   /** True wanneer de laatste log ≥14 dagen geleden is — in-app her-log-nudge. */
@@ -394,6 +429,15 @@ export type DashboardData = {
    * src/lib/nutrient-personalization.ts).
    */
   proteinTarget: ProteinTargetRange | null;
+  /**
+   * De leeftijdsband uit de check ("40–44" … "55+"), of null zonder check.
+   *
+   * Alleen de eiwitrij in het voedingslogboek leest hem, om uit te leggen
+   * waarom de ondergrens daar hoger ligt. Een band is grof genoeg om geen
+   * geboortedatum te zijn en fijn genoeg voor die ene uitleg — het ruwe
+   * gewicht blijft server-side (zie `nutrition-protein-personal.ts`).
+   */
+  ageRange: string | null;
 };
 
 export type IdentityField = {

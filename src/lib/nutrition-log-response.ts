@@ -41,7 +41,7 @@ export function buildNutritionLogResponse(
   const score = computeNutritionScore(answers.sliders);
   const band = getVitalityBand(score);
   const estimate = withContextualEstimateLabels(
-    estimateNutritionIntake(report),
+    estimateNutritionIntake(report, adviceDate),
     answers.preference,
     answers.allergies,
   );

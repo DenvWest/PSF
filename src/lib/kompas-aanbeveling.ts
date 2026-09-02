@@ -13,7 +13,7 @@ import type { DashboardData, PillarId } from "@/types/dashboard";
  *
  * 1. **De laag komt uit je laatste meting.** Waar een eigen domeincheck een
  *    winst-laag aflevert (`resolveDomainLadderReadout`: beweging, slaap,
- *    stress) is dát de laag. Die verschuift dus niet vanzelf — hij verschuift
+ *    stress, voeding) is dát de laag. Die verschuift dus niet vanzelf — hij verschuift
  *    als je opnieuw meet. Datzelfde geldt voor de vólgorde: welk domein
  *    bovenaan staat volgt `model.enginePriority`, en die weegt de losse
  *    domeinchecks al mee.
@@ -22,10 +22,11 @@ import type { DashboardData, PillarId } from "@/types/dashboard";
  *    onder punt 1 breken: dan staat er de ene week iets anders dan je laagst
  *    gemeten punt.
  *
- * Voeding en verbinding hebben (nog) geen check die per laag een staat
- * oplevert. Tot 26 augustus 2026 leverden ze daarom niets: het hele
- * aanbevelingsblok verdween zodra je prioriteitsdomein er een van was — terwijl
- * beide wél een volwaardige ladder hebben. Ze vallen nu terug op laag 1, en
+ * Verbinding heeft (nog) geen check die per laag een staat oplevert; voeding
+ * kreeg die in september (`nutrition-ladder.ts`). Tot 26 augustus 2026
+ * leverden ze allebei niets: het hele aanbevelingsblok verdween zodra je
+ * prioriteitsdomein er een van was — terwijl beide wél een volwaardige ladder
+ * hebben. Zonder check valt een domein terug op laag 1, en
  * zeggen er eerlijk bij dat dat de onderkant van de ladder is en niet een
  * uitkomst van een meting ({@link KompasAanbevelingOrigin}). Datzelfde pad
  * vangt ook beweging/slaap/stress op zolang hun check nog niet gedaan is.

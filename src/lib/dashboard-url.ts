@@ -176,6 +176,7 @@ const VALID_SCHAP_TABS = new Set<SchapTabId>([
   "producten",
   "diensten",
   "begeleiding",
+  "logboek",
   "favorieten",
 ]);
 

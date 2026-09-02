@@ -30,6 +30,20 @@ export const slaapritmeHerstellenData: BlogArtikel = {
       ],
     },
     {
+      type: "tekst",
+      titel: "Waarom ochtendlicht zo krachtig werkt",
+      bewijsNiveau: "redelijk",
+      tekst:
+        "In het protocol hieronder staat ochtendlicht pas bij dag 5–6, maar het mechanisme verdient een eigen uitleg — want dit is het signaal waarop je klok het sterkst reageert. Daglicht buiten haalt makkelijk 10.000 tot 50.000 lux; binnenverlichting meestal geen 500. Dat verschil is wat je [circadiaan ritme](/kennisbank/circadiaan-ritme) nodig heeft om zich elke dag opnieuw op tijd te zetten: ochtendlicht verschuift je klok naar voren, waardoor je 's avonds op tijd slaperig wordt en 's ochtends makkelijker wakker bent. Onderzoek naar natuurlijk licht laat zien dat deze fase-verschuiving meetbaar is binnen enkele dagen — geen weken.\n\nVoor mannen 40+ is dit dubbel relevant. Je rijdt 's ochtends in het donker naar kantoor en zit 's avonds achter een scherm — de lichtcurve die je klok binnenkrijgt, staat op zijn kop. In Nederland is dat van oktober tot maart een half jaar lang de standaardsituatie, niet de uitzondering. En de gevoeligheid van je systeem voor licht als tijdsignaal verandert met leeftijd, wat dit voor deze doelgroep een groter hefboompunt maakt dan voor iemand van 25.",
+      callouts: [
+        {
+          variant: "kerninzicht",
+          tekst:
+            "Bewolkt daglicht buiten is nog altijd tien tot twintig keer feller dan een verlichte huiskamer — 'geen zon' is geen excuus om binnen te blijven.",
+        },
+      ],
+    },
+    {
       type: "opsomming",
       titel: "Waarom je ritme verstoord raakt na je 40e",
       inleiding:
@@ -49,7 +63,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
       items: [
         "Dag 1–2: Kies één vaste opstijdtijd en houd die ook in het weekend aan. Stel dit nu in — niet maandag. Cafeïne stop na 14:00 uur. Cafeïne heeft een halfwaardetijd van 5–7 uur: een koffie om 15:00 blokkeert nog de helft van zijn effect om 22:00.",
         "Dag 3–4: Voeg een vaste avondroutine toe. Begin 60 minuten voor bed: dim het licht, leg je telefoon weg, doe iets rustigs (lezen, stretching, rustig gesprek). Geen schermen, geen nieuws, geen e-mail. Dit geeft je zenuwstelsel een duidelijk signaal dat de dag voorbij is.",
-        "Dag 5–6: Voeg ochtendlicht toe — minimaal 10 minuten buiten binnen een uur na het opstaan. Geen zonnebril. Dit is het krachtigste signaal dat je je biologische klok kunt geven. Voeg ook een korte avondwandeling toe (20–30 min): lichaamsbeweging 's avonds verlaagt je kerntemperatuur en versnelt de overgang naar slaap.",
+        "Dag 5–6: Voeg ochtendlicht toe — minimaal 10 minuten buiten binnen een uur na het opstaan. Geen zonnebril, bewolkt telt mee. Dit is het krachtigste signaal dat je je biologische klok kunt geven (zie hierboven waarom). Voeg ook een korte avondwandeling toe (20–30 min): lichaamsbeweging 's avonds verlaagt je kerntemperatuur en versnelt de overgang naar slaap.",
         "Dag 7: Evalueer. Hoe lang duurt het voor je in slaap valt? Val je eerder in slaap dan voor dit protocol? Word je uitgeruster wakker? Houd de interventies aan die het meeste verschil maakten. Slaapritme herstel is geen sprint — na zeven dagen ben je op weg, maar de echte verankering duurt 2 tot 3 weken.",
       ],
     },
@@ -111,11 +125,13 @@ export const slaapritmeHerstellenData: BlogArtikel = {
     "melatonine slaapritme",
   ],
   referenties: toRefs([
-    "Wright KP et al. Entrainment of the human circadian clock to natural light dark cycle Sleep 2013 context outdoor light resetting.",
+    "Wright KP et al. Entrainment of the human circadian clock to the natural light-dark cycle. Curr Biol 2013;23(16):1554-1558. PMID 23910656.",
     "Gooley JJ et al. Exposure room light suppresses melatonin J Clin Endocrinol Metab brightness thresholds evening light physiology.",
     "Wittmann M et al. Social jetlag misalignment biological social time Chronobiol Int 2006 weekend chronotype foundational.",
     "Claustrat B, Leston J. Melatonin circadian rhythm sleep disorders Endotext NIH NBK550972 2022.",
     "Czeisler CA et al. Human sleep duration stability precision circadian neuroscience landmark reviews frameworks.",
     "NIH Office Dietary Supplements Magnesium magnesium physiology consumer fact sheet supplementation context.",
+    "Blume C, Garbazza C, Spitschan M. Effects of light on human circadian rhythms, sleep and mood. Somnologie 2019;23(3):147-156. PMID 31534436.",
+    "Duffy JF, Czeisler CA. Effect of light on human circadian physiology. Sleep Med Clin 2009;4(2):165-177. PMID 20161220.",
   ]),
 };

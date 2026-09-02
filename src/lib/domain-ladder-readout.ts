@@ -10,6 +10,11 @@ import { resolveRecommendedLayers } from "@/components/dashboard/voortgang/Favor
 import type { MovementFactRow } from "@/lib/movement-assessment";
 import type { LeefstijlLayerState } from "@/lib/leefstijl-ladder";
 import { MOVEMENT_LAYER_STATE_LABEL, movementLayerWhyWait } from "@/lib/movement-ladder";
+import {
+  NUTRITION_LAYER_STATE_LABEL,
+  nutritionLayerWhyWait,
+  type NutritionLadderLayerId,
+} from "@/lib/nutrition-ladder";
 import { sleepLayerWhyWait } from "@/lib/sleep-ladder";
 import { assessStress } from "@/lib/stress-assessment";
 import { resolveStressFocusLayer, resolveStressLayerStates, stressLayerWhyWait } from "@/lib/stress-ladder";
@@ -27,9 +32,11 @@ import type { DashboardData, PillarId } from "@/types/dashboard";
  * zonder staten bij en op Kompas stond een prebuild-iframe. Wie hier een
  * domein bij zet, zet 'm op alle drie tegelijk bij.
  *
- * Voeding en verbinding hebben wél een ladder maar (nog) geen check die per
- * laag een staat oplevert. Die krijgen `null` — de ladder toont dan zes lagen
- * zonder oordeel, wat eerlijk is en al zo werkte.
+ * Sinds september leest voeding mee: `nutrition-ladder.ts` legt de clusters
+ * uit `lifestyle-pyramid.ts` op lagen en levert per laag dezelfde vier standen.
+ * Verbinding heeft wél een ladder maar (nog) geen check die per laag een staat
+ * oplevert; die krijgt `null` — de ladder toont dan zes lagen zonder oordeel,
+ * wat eerlijk is en al zo werkte.
  */
 
 export type LadderEvidenceStatus = "below" | "near" | "meets" | "own";
@@ -80,8 +87,8 @@ export type DomainLadderReadout = {
  * `null` betekent: we hebben hier geen reden, dus we doen ook niet alsof. Dat
  * is de machinaal toetsbare kant van tegenspraak J3 — geen redenblok waar
  * `evidenceByLayer` leeg is én `whyWait` niets teruggeeft. Stress levert
- * vandaag op elke laag `null` (zijn feitenrijen komen met T1d), voeding en
- * verbinding hebben helemaal geen readout. Dat is de eerlijke stand, geen bug.
+ * vandaag op elke laag `null` (zijn feitenrijen komen met T1d) en verbinding
+ * heeft helemaal geen readout. Dat is de eerlijke stand, geen bug.
  *
  * De conclusiezin (`headline`) is met opzet géén val: die staat al bovenaan
  * het domeinscherm en is niet per laag geschreven.
@@ -239,6 +246,54 @@ function stressReadout(data: DashboardData | undefined): DomainLadderReadout | n
   };
 }
 
+/**
+ * Voeding draagt zijn eigen laagveld op elke rij — net als slaap, en anders dan
+ * beweging waar de koppeling in een aparte tabel staat. Groeperen volstaat dus.
+ *
+ * De kop is hier niet bevroren maar meeberekend (`buildNutritionHeadline` in
+ * `account-dashboard`), en `focusLayer` mag `null` zijn: staat alles op zijn
+ * richtlijn, dan is er geen winst-laag. De ladder valt dan terug op laag 1,
+ * dezelfde val als bij beweging — dat claimt niets en houdt het scherm
+ * bruikbaar.
+ */
+function nutritionReadout(data: DashboardData | undefined): DomainLadderReadout | null {
+  const snapshot = data?.nutritionCheckinReadout ?? null;
+  if (!snapshot) {
+    return null;
+  }
+  const focus = snapshot.focusLayer;
+
+  const evidenceByLayer: Partial<Record<number, LadderEvidenceRow[]>> = {};
+  for (const row of snapshot.factRows) {
+    (evidenceByLayer[row.layer] ??= []).push({
+      key: row.key,
+      label: row.label,
+      answerLabel: row.answerLabel,
+      benchmarkLabel: row.benchmarkLabel ?? null,
+      benchmarkSource: row.benchmarkSource ?? null,
+      whyLine: row.whyLine,
+      footnote: row.footnote ?? null,
+      // "own" betekent: geen richtlijn om tegen af te zetten. Die rij krijgt
+      // geen badge — het antwoord ís het ijkpunt.
+      ...(row.status === "own" ? {} : { status: row.status }),
+    });
+  }
+
+  return {
+    headline: snapshot.headline,
+    focusLayer: focus ?? 1,
+    layerStates: snapshot.layerStates,
+    stateLabels: NUTRITION_LAYER_STATE_LABEL,
+    whyWait: (layerId) =>
+      nutritionLayerWhyWait(layerId as NutritionLadderLayerId, focus),
+    evidenceByLayer,
+    // Eén laag, niet twee — zelfde reden als bij slaap: elke laag boven de
+    // winst-laag zegt zelf dat hij kan wachten. Zonder winst-laag bevelen we
+    // niets aan; dan staat er niets meer open.
+    recommendedLayerIds: focus == null ? [] : [focus],
+  };
+}
+
 export function resolveDomainLadderReadout(
   domain: PillarId,
   data: DashboardData | undefined,
@@ -246,5 +301,6 @@ export function resolveDomainLadderReadout(
   if (domain === "beweging") return movementReadout(data);
   if (domain === "slaap") return sleepReadout(data);
   if (domain === "stress") return stressReadout(data);
+  if (domain === "voeding") return nutritionReadout(data);
   return null;
 }

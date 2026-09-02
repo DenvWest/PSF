@@ -22,6 +22,23 @@ import type { PillarId } from "@/types/dashboard";
 
 export type PrioriteitLayer = LeefstijlLadderLayer;
 
+/**
+ * Waar zijn antwoord staat ten opzichte van de richtlijn ernaast.
+ *
+ * Feit, geen cijfer: "onder" en "rond" zeggen waar hij staat zonder een
+ * afstand te noemen die de zelfrapportage niet draagt. `own` krijgt geen merk
+ * — daar is geen lat, dus is er niets om onder te staan.
+ */
+const STATUS_MARK: Record<
+  NonNullable<LadderEvidenceRow["status"]>,
+  { label: string; className: string } | null
+> = {
+  below: { label: "hier zit je onder", className: "text-[#C8956C]" },
+  near: { label: "hier zit je rond", className: "text-[#C99A3C]" },
+  meets: { label: "die haal je", className: "text-[#9CC5A9]" },
+  own: null,
+};
+
 /** Anker per laag: de ladder bovenaan het scherm scrollt hierheen. */
 export function ladderLayerDomId(domain: PillarId, layerId: number): string {
   return `ladder-laag-${domain}-p${layerId}`;
@@ -136,6 +153,10 @@ function LayerEvidence({
           const showLat =
             Boolean(fact.benchmarkLabel) &&
             (reeksRow == null || reeksRow.scale === "richtlijn");
+          // Waar hij staat ten opzichte van die lat, in drie woorden. Alleen
+          // waar er een lat ís: zonder richtlijn is er niets om onder of boven
+          // te staan, en dan zou dit een oordeel verzinnen dat we niet hebben.
+          const statusMark = showLat ? STATUS_MARK[fact.status ?? "own"] : null;
 
           return (
             <li key={fact.key}>
@@ -171,6 +192,12 @@ function LayerEvidence({
                   {" · "}
                   {fact.benchmarkLabel}
                   {fact.benchmarkSource ? ` (${fact.benchmarkSource})` : ""}
+                  {statusMark ? (
+                    <>
+                      {" · "}
+                      <span className={statusMark.className}>{statusMark.label}</span>
+                    </>
+                  ) : null}
                 </p>
               ) : (
                 <p className="mt-1 text-[12px] leading-relaxed text-[#7E8C82] text-pretty">
@@ -181,6 +208,12 @@ function LayerEvidence({
               {fact.whyLine ? (
                 <p className="mt-1 text-[11.5px] leading-relaxed text-[#7E8C82] text-pretty">
                   {fact.whyLine}
+                </p>
+              ) : null}
+
+              {fact.footnote ? (
+                <p className="mt-1 text-[11.5px] leading-relaxed text-[#7E8C82] text-pretty">
+                  {fact.footnote}
                 </p>
               ) : null}
 

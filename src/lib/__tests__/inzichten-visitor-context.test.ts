@@ -39,6 +39,7 @@ const EMPTY_DASHBOARD: DashboardData = {
   history: [],
   retest: false,
   nutritionIntake: null,
+  nutritionCheckinReadout: null,
   nutritionLastLoggedAt: null,
   nutritionRelogDue: false,
   daysSinceNutritionLog: null,
@@ -66,6 +67,7 @@ const EMPTY_DASHBOARD: DashboardData = {
   movementPrefs: { startPattern: null, anchor: null },
   supplementVerdicts: [],
   proteinTarget: null,
+  ageRange: null,
 };
 
 const DASHBOARD_WITH_DATA: DashboardData = {
@@ -96,6 +98,7 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   history: [],
   retest: false,
   nutritionIntake: null,
+  nutritionCheckinReadout: null,
   nutritionLastLoggedAt: null,
   nutritionRelogDue: false,
   daysSinceNutritionLog: null,
@@ -123,6 +126,7 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   movementPrefs: { startPattern: null, anchor: null },
   supplementVerdicts: [],
   proteinTarget: null,
+  ageRange: null,
 };
 
 const DASHBOARD_WITH_ANSWERS: DashboardData = {

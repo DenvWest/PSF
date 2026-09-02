@@ -10,6 +10,18 @@ import { buildDeltaReport } from "@/lib/delta-report";
 import { compareNutritionEstimates } from "@/lib/nutrition-delta";
 import { nutritionAnswerLabelForNutrient } from "@/lib/nutrition-answer-labels";
 import {
+  buildNutritionFactRowsFromRaw,
+  buildNutritionHeadline,
+  parseNutritionLadderReport,
+} from "@/lib/nutrition-conclusion";
+import {
+  resolveNutritionFocusLayer,
+  resolveNutritionGate,
+  resolveNutritionLayerStates,
+} from "@/lib/nutrition-ladder";
+import { buildNutrientRouteStatuses } from "@/lib/nutrition-route-status";
+import { isVitaminDLowSunSeason } from "@/lib/nutrition-season";
+import {
   daysSinceIsoDate,
   isNutritionRelogDue,
 } from "@/lib/nutrition-relog-eligibility";
@@ -86,6 +98,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   history: [],
   retest: false,
   nutritionIntake: null,
+  nutritionCheckinReadout: null,
   nutritionLastLoggedAt: null,
   nutritionRelogDue: false,
   daysSinceNutritionLog: null,
@@ -113,6 +126,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   movementPrefs: EMPTY_MOVEMENT_PREFS,
   supplementVerdicts: [],
   proteinTarget: null,
+  ageRange: null,
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -170,6 +184,7 @@ type SessionRow = {
   answers: unknown;
   rules_version: string | null;
   weight_kg: number | null;
+  age_range: string | null;
 };
 
 export type AccountSessionSnapshot = {
@@ -185,6 +200,12 @@ export type AccountSessionSnapshot = {
   movementPrefs: MovementPrefs;
   rulesVersion: string;
   weightKg: number | null;
+  /**
+   * De leefstijdband uit de check ("40–44" … "55+"). Alleen de eiwitfactor
+   * leest hem; micronutriënten houden hun vaste RI (zie
+   * `nutrient-personalization.ts`).
+   */
+  ageRange: string | null;
 };
 
 export function mapSessionSnapshotToPrev(
@@ -349,7 +370,9 @@ export async function loadAccountDashboardData(
 
   const { data, error } = await admin
     .from("intake_sessions")
-    .select("id,domain_scores,created_at,profile_label,first_name,answers,rules_version,weight_kg")
+    .select(
+      "id,domain_scores,created_at,profile_label,first_name,answers,rules_version,weight_kg,age_range",
+    )
     .eq("account_id", accountId)
     .order("created_at", { ascending: true });
 
@@ -403,6 +426,7 @@ export async function loadAccountDashboardData(
           typeof row.weight_kg === "number" && Number.isFinite(row.weight_kg)
             ? row.weight_kg
             : null,
+        ageRange: typeof row.age_range === "string" ? row.age_range : null,
       };
     })
     .filter((row): row is AccountSessionSnapshot => row !== null);
@@ -483,6 +507,29 @@ export async function loadAccountDashboardData(
       });
     if (items.length > 0 && typeof latestLog.logged_at === "string") {
       nutritionIntake = { date: formatDashboardDate(latestLog.logged_at), items };
+    }
+  }
+
+  // De ladder-uitlezing komt uit dezelfde log, maar uit `raw_inputs` in plaats
+  // van `estimate`: de clusters hangen aan de gegeven antwoorden, niet aan de
+  // vijf nutriëntbanden. Herberekend en niet bevroren — zelfde regel als bij
+  // beweging, zodat een engine-fix ook oude logs bereikt.
+  let nutritionCheckinReadout: DashboardData["nutritionCheckinReadout"] = null;
+  if (latestLog && typeof latestLog.logged_at === "string") {
+    const factRows = buildNutritionFactRowsFromRaw(latestLog.raw_inputs);
+    const ladderReport = parseNutritionLadderReport(latestLog.raw_inputs);
+    if (factRows.length > 0 && ladderReport) {
+      nutritionCheckinReadout = {
+        date: formatDashboardDate(latestLog.logged_at),
+        headline: buildNutritionHeadline(factRows),
+        factRows,
+        focusLayer: resolveNutritionFocusLayer(factRows),
+        layerStates: resolveNutritionLayerStates(factRows),
+        gate: resolveNutritionGate(factRows),
+        routes: buildNutrientRouteStatuses(ladderReport, {
+          isDarkSeason: isVitaminDLowSunSeason(),
+        }),
+      };
     }
   }
 
@@ -967,6 +1014,7 @@ export async function loadAccountDashboardData(
       ? computeProteinTarget({
           weightKg: latestSnapshot.weightKg,
           trainingLoad: deriveTrainingLoadFromAnswers(latestSnapshot.answers ?? {}),
+          ...(latestSnapshot.ageRange ? { ageRange: latestSnapshot.ageRange } : {}),
         })
       : null;
   const proteinTarget = proteinTargetFull
@@ -1000,6 +1048,7 @@ export async function loadAccountDashboardData(
     history,
     retest: snapshots.length >= 2,
     nutritionIntake,
+    nutritionCheckinReadout,
     nutritionLastLoggedAt,
     nutritionRelogDue,
     daysSinceNutritionLog,
@@ -1027,5 +1076,6 @@ export async function loadAccountDashboardData(
     domainMeasurements,
     supplementVerdicts: [],
     proteinTarget,
+    ageRange: latestSnapshot.ageRange,
   };
 }

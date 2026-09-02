@@ -11,6 +11,7 @@
 
 import type { IngredientClaimKey } from "@/data/approved-claims";
 import { buildLifestyleAction } from "@/data/nutrition/portion-dictionary";
+import type { VitaminDSeason } from "@/lib/nutrition-season";
 
 export type NutrientId =
   | "protein"
@@ -59,8 +60,17 @@ export interface NutrientReference {
   referenceLabel: string;
   /** Bestaand /beste/-pad; voor de supplement-gate (F2) en link-generatie. */
   comparisonPath: string;
-  /** Frequentie-grenzen voor band-bepaling (indicatief, zie TODO). */
+  /**
+   * Frequentie-grenzen voor band-bepaling (indicatief, zie TODO).
+   * Alleen gebruikt als deze nutriënt geen `seasonalThresholds` heeft.
+   */
   thresholds: NutrientThresholds;
+  /**
+   * Alleen voor vitamin_d: zonlicht-aanmaak hangt sterk af van het seizoen
+   * (Gezondheidsraad 2012 — okt-mrt vrijwel geen relevante huidaanmaak in NL).
+   * Als aanwezig, wint dit van `thresholds` in estimateNutritionIntake().
+   */
+  seasonalThresholds?: Record<VitaminDSeason, NutrientThresholds>;
   /**
    * Leefstijl-eerst voedingsactie (F2). Informatief en concreet — geen statuswoorden.
    * Verschijnt altijd vóór een eventuele supplement-suggestie (priority 1).
@@ -170,23 +180,33 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
     referenceLabel: "dagelijks buiten (huid aan zonlicht)",
     comparisonPath: "/beste/vitamine-d",
     thresholds: {
-      // VOORSTEL (niet bevestigd) — vertrouwen: LAAG, zwakste van de vijf.
-      // Gezondheidsraad-advies over vitamine D (Evaluatie voedingsnormen
-      // vitamine D, 2012) is primair gericht op suppletie voor risicogroepen
-      // (65+, gesluierd, donkere huid, weinig buiten), niet op een gevalideerde
-      // "keer buiten per week"-frequentie. Aanmaak hangt sterk af van duur,
-      // tijdstip, seizoen en huidoppervlak — een frequentie-telling zonder
-      // duur/seizoen is een zwakke proxy. De copy zelf splitst al zomer/winter
-      // (portion-dictionary.ts); overweeg de drempel op dezelfde as te zetten
-      // i.p.v. alleen "×/week".
+      // Zomer-drempel (apr-sep) — ook het fallback-gedrag voor code die geen
+      // seizoen doorgeeft. Zie seasonalThresholds hieronder voor de volledige
+      // onderbouwing en de winter-variant.
       belowMax: 1,
       meetsMin: 3,
+    },
+    seasonalThresholds: {
+      // Gezondheidsraad, Evaluatie voedingsnormen vitamine D (2012): buiten
+      // Nederland's zomerhalfjaar (okt-mrt) staat de zon te laag voor
+      // relevante cutane aanmaak, ongeacht hoe vaak iemand buiten komt.
+      // Orwoll et al., JCEM 2009;94(4):1214-22 (PMID 19174492) en Harju et
+      // al., Eur J Nutr 2022 (PMC9596536) noemen winter/voorjaar expliciet
+      // als risicofactor, los van blootstellingsfrequentie.
+      // Zomer: frequentie is een bruikbare (zij het indicatieve) proxy.
+      summer: { belowMax: 1, meetsMin: 3 },
+      // Winter: zon draagt niet genoeg bij om "meets" via buiten komen waar
+      // te maken — meetsMin ligt daarom boven wat de vraag ooit kan opleveren
+      // (max haalbaar antwoord is 7×/week), zodat de band nooit ten onrechte
+      // een voldoende suggereert. De winter-actie (voeding/supplement,
+      // portion-dictionary.ts) blijft het aangewezen pad, niet "vaker buiten".
+      winter: { belowMax: 1, meetsMin: 99 },
     },
     lifestyleAction: buildLifestyleAction("vitamin_d", { season: "summer" }),
     claimKey: "vitamineD",
     confidence: 1,
     confidenceWhy:
-      "Aanmaak hangt af van duur, tijdstip en seizoen — hoe vaak je buiten komt zegt daar weinig over.",
+      "Aanmaak hangt af van duur, tijdstip en seizoen — hoe vaak je buiten komt zegt daar weinig over. We corrigeren nu wel voor het seizoen: in de winter telt buiten komen niet meer mee als 'voldoende'.",
     bloodMarker: {
       value: "improves",
       why: "25(OH)D is de standaardbepaling en zegt echt iets over je voorraad — de enige van de vijf waar een prik concreet iets toevoegt.",

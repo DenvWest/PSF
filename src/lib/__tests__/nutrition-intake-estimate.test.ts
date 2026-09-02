@@ -59,20 +59,54 @@ describe("estimateNutritionIntake — protein", () => {
   });
 });
 
-describe("estimateNutritionIntake — vitamin_d", () => {
+describe("estimateNutritionIntake — vitamin_d (zomer, default referenceDate)", () => {
+  const SUMMER = new Date("2026-07-15");
+
   it("0× buiten/week → below", () => {
-    const result = estimateNutritionIntake({ sunExposurePerWeek: 0 });
+    const result = estimateNutritionIntake({ sunExposurePerWeek: 0 }, SUMMER);
     expect(bandFor(result, "vitamin_d")).toBe("below");
   });
 
   it("1× buiten/week → around", () => {
-    const result = estimateNutritionIntake({ sunExposurePerWeek: 1 });
+    const result = estimateNutritionIntake({ sunExposurePerWeek: 1 }, SUMMER);
     expect(bandFor(result, "vitamin_d")).toBe("around");
   });
 
   it("3× buiten/week → meets", () => {
-    const result = estimateNutritionIntake({ sunExposurePerWeek: 3 });
+    const result = estimateNutritionIntake({ sunExposurePerWeek: 3 }, SUMMER);
     expect(bandFor(result, "vitamin_d")).toBe("meets");
+  });
+});
+
+describe("estimateNutritionIntake — vitamin_d (winter: zon telt niet meer als 'meets')", () => {
+  const WINTER = new Date("2026-01-15");
+
+  it("0× buiten/week → below (zelfde als zomer)", () => {
+    const result = estimateNutritionIntake({ sunExposurePerWeek: 0 }, WINTER);
+    expect(bandFor(result, "vitamin_d")).toBe("below");
+  });
+
+  it("3× buiten/week → around in winter, niet meets zoals in zomer", () => {
+    const result = estimateNutritionIntake({ sunExposurePerWeek: 3 }, WINTER);
+    expect(bandFor(result, "vitamin_d")).toBe("around");
+  });
+
+  it("7× (dagelijks) buiten/week → nog steeds geen 'meets' via zon alleen", () => {
+    const result = estimateNutritionIntake({ sunExposurePerWeek: 7 }, WINTER);
+    expect(bandFor(result, "vitamin_d")).not.toBe("meets");
+  });
+
+  it("seizoensgrens: september (maand 8) = zomer, oktober (maand 9) = winter", () => {
+    const sep = estimateNutritionIntake(
+      { sunExposurePerWeek: 3 },
+      new Date("2026-09-30"),
+    );
+    const oct = estimateNutritionIntake(
+      { sunExposurePerWeek: 3 },
+      new Date("2026-10-01"),
+    );
+    expect(bandFor(sep, "vitamin_d")).toBe("meets");
+    expect(bandFor(oct, "vitamin_d")).toBe("around");
   });
 });
 
