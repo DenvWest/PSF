@@ -43,29 +43,36 @@ beforeEach(() => {
   remove.mockClear();
 });
 
+function layerTab(label: string) {
+  return screen.getByRole("tab", { name: new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) });
+}
+
 describe("PrioriteitenLadder", () => {
   it("toont alle lagen dicht, zonder statuslabel — geen afgeleide score", () => {
     render(
       <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="stress" surface="test" />,
     );
-    expect(screen.getByText("Eerste prioriteit")).toBeTruthy();
-    expect(screen.getByText("Tweede prioriteit")).toBeTruthy();
+    expect(layerTab("Eerste prioriteit")).toBeTruthy();
+    expect(layerTab("Tweede prioriteit")).toBeTruthy();
     expect(screen.queryByText("Samenvatting een.")).toBeNull();
     // Geen enkele state-badge (winst/ok/watch/wacht) — dit is zelfselectie, geen scoring.
     expect(screen.queryByText(/Grootste winst|Op orde|Houd in de gaten|Nog niet nu/)).toBeNull();
   });
 
-  it("opent en sluit een laag op klik, onafhankelijk van de andere lagen", () => {
+  it("wisselt van paneel op tabklik en klapt de actieve tab niet dicht", () => {
     render(
       <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="stress" surface="test" />,
     );
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     expect(screen.getByText("Samenvatting een.")).toBeTruthy();
     expect(screen.queryByText("Samenvatting twee.")).toBeNull();
 
-    fireEvent.click(screen.getByText("Tweede prioriteit"));
+    fireEvent.click(layerTab("Tweede prioriteit"));
     expect(screen.getByText("Samenvatting twee.")).toBeTruthy();
     expect(screen.queryByText("Samenvatting een.")).toBeNull();
+
+    fireEvent.click(layerTab("Tweede prioriteit"));
+    expect(screen.getByText("Samenvatting twee.")).toBeTruthy();
   });
 
   it("laat een buitenstaander bepalen welke laag open staat", () => {
@@ -83,7 +90,7 @@ describe("PrioriteitenLadder", () => {
     expect(screen.getByText("Samenvatting twee.")).toBeTruthy();
 
     // Gestuurd: de klik meldt zich, maar opent niets uit zichzelf.
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     expect(onOpenLayerChange).toHaveBeenCalledWith(1);
     expect(screen.queryByText("Samenvatting een.")).toBeNull();
 
@@ -99,9 +106,10 @@ describe("PrioriteitenLadder", () => {
     );
     expect(screen.getByText("Samenvatting een.")).toBeTruthy();
 
-    // Nog een klik op dezelfde laag is "dicht", niet opnieuw open.
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
-    expect(onOpenLayerChange).toHaveBeenLastCalledWith(null);
+    onOpenLayerChange.mockClear();
+    fireEvent.click(layerTab("Eerste prioriteit"));
+    expect(onOpenLayerChange).not.toHaveBeenCalled();
+    expect(screen.getByText("Samenvatting een.")).toBeTruthy();
   });
 
   it("geeft elke laag een anker-id, zodat de ladder in de kop ernaartoe kan scrollen", () => {
@@ -142,7 +150,7 @@ describe("PrioriteitenLadder", () => {
         surface="test"
       />,
     );
-    expect(screen.getByText("Je eetbasis")).toBeTruthy();
+    expect(layerTab("Je eetbasis")).toBeTruthy();
   });
 
   it("toont geen actieblok bij een laag zonder acties, wel het lege Mijn keuze", () => {
@@ -152,7 +160,7 @@ describe("PrioriteitenLadder", () => {
     render(
       <PrioriteitenLadder layers={layersLeeg} intro="Intro-tekst." domain="voeding" surface="test" />,
     );
-    fireEvent.click(screen.getByText("Meten & timing"));
+    fireEvent.click(layerTab("Meten & timing"));
     expect(screen.getByText("Gereedschap, geen fundament.")).toBeTruthy();
     expect(screen.queryByText("Wat je hier kunt doen")).toBeNull();
     expect(screen.getByText("Mijn keuze op deze laag")).toBeTruthy();
@@ -176,7 +184,7 @@ describe("PrioriteitenLadder", () => {
     render(
       <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="stress" surface="test" />,
     );
-    fireEvent.click(screen.getByText("Tweede prioriteit"));
+    fireEvent.click(layerTab("Tweede prioriteit"));
     fireEvent.click(screen.getAllByRole("button", { name: "Zet bij Mijn keuze" })[0]);
 
     expect(save).toHaveBeenCalledWith(
@@ -201,12 +209,12 @@ describe("PrioriteitenLadder", () => {
       <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="stress" surface="test" />,
     );
 
-    // Dicht: alleen de teller, geen inhoud.
-    expect(screen.getByText("2 gekozen")).toBeTruthy();
-    expect(screen.getByText("1 gekozen")).toBeTruthy();
+    // Dicht: alleen de teller in de tab, geen inhoud.
+    expect(layerTab("2 gekozen")).toBeTruthy();
+    expect(layerTab("1 gekozen")).toBeTruthy();
     expect(screen.queryByText("Iets eigens")).toBeNull();
 
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     expect(screen.getByText("Iets eigens")).toBeTruthy();
     // De keuze van laag 2 blijft achter zijn eigen rij.
     expect(screen.queryByText(/^Actie 2a$/)).toBeNull();
@@ -219,14 +227,14 @@ describe("PrioriteitenLadder", () => {
     render(
       <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="stress" surface="test" />,
     );
-    expect(screen.queryByText(/gekozen$/)).toBeNull();
+    expect(screen.queryByRole("tab", { name: /gekozen/ })).toBeNull();
   });
 
   it("noemt een laag alleen 'Aanbevolen' als de check hem aanwijst", () => {
     const { rerender } = render(
       <PrioriteitenLadder layers={LAYERS} intro="Intro-tekst." domain="beweging" surface="test" />,
     );
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     expect(screen.getByText("Wat je hier kunt doen")).toBeTruthy();
 
     rerender(
@@ -258,7 +266,7 @@ describe("PrioriteitenLadder", () => {
         focusLayer={2}
       />,
     );
-    expect(screen.getByText("Op orde")).toBeTruthy();
+    expect(layerTab("Op orde")).toBeTruthy();
     expect(screen.getByText("Grootste winst")).toBeTruthy();
     // De winst-laag staat meteen open.
     expect(screen.getByText("Samenvatting twee.")).toBeTruthy();
@@ -302,14 +310,14 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
 
   it("draagt de verklaring van de laag onverkort", () => {
     renderExplain();
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     expect(screen.getByText("Samenvatting een.")).toBeTruthy();
     expect(screen.getByText("Actie 1a")).toBeTruthy();
   });
 
   it("draagt geen save-knop — kiezen gebeurt op Kompas", () => {
     renderExplain();
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     expect(screen.queryByRole("button", { name: /Zet bij Mijn keuze/ })).toBeNull();
     expect(screen.getByRole("link", { name: /Kies dit op Kompas/ })).toBeTruthy();
   });
@@ -324,7 +332,7 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
       },
     ];
     renderExplain();
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     expect(screen.queryByText("Mijn keuze op deze laag")).toBeNull();
     expect(screen.queryByRole("button", { name: /Zet op Mijn Dag/ })).toBeNull();
   });
@@ -339,7 +347,7 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
       },
     ];
     renderExplain();
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     expect(screen.getByText("Jij koos")).toBeTruthy();
     expect(screen.getByText("Iets eigens")).toBeTruthy();
     expect(screen.queryByRole("button", { name: /Zet bij Mijn keuze/ })).toBeNull();
@@ -356,7 +364,7 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
     ];
     renderExplain();
     // De dichte rij houdt zijn teller: feedback zonder tweede archief.
-    expect(screen.getByText("1 gekozen")).toBeTruthy();
+    expect(layerTab("1 gekozen")).toBeTruthy();
   });
 
   it("houdt de keuze-affordance in de standaardstand — verbinding heeft geen Kompas-scherm", () => {
@@ -368,7 +376,7 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
         surface="test"
       />,
     );
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     expect(screen.getAllByRole("button", { name: /Zet bij Mijn keuze/ }).length).toBeGreaterThan(0);
     expect(screen.getByText("Mijn keuze op deze laag")).toBeTruthy();
   });
@@ -396,7 +404,7 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
         }}
       />,
     );
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     expect(screen.getByText(/Kracht · 1× per week/)).toBeTruthy();
     expect(screen.getByText(/De lat/)).toBeTruthy();
     expect(screen.getByText(/Richtlijn: 2× per week krachttraining/)).toBeTruthy();
@@ -447,7 +455,7 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
         }}
       />,
     );
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     expect(screen.getByText(/Spanning · Regelmatig/)).toBeTruthy();
     expect(screen.getByText(/Geen richtlijn — dit is jouw eigen antwoord/)).toBeTruthy();
     expect(screen.queryByText(/De lat/)).toBeNull();
@@ -518,7 +526,7 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
         }}
       />,
     );
-    fireEvent.click(screen.getByText("Eerste prioriteit"));
+    fireEvent.click(layerTab("Eerste prioriteit"));
     fireEvent.click(screen.getByRole("button", { name: /Over tijd/ }));
     expect(
       screen.getByRole("img", { name: /Kracht over 2 meetmomenten, links je laatste meting/ }),

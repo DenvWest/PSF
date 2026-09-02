@@ -15,6 +15,7 @@ export type NutritionQuestionId =
   | "daylight"
   | "wholegrain"
   | "sugaryDrinks"
+  | "ultraProcessed"
   | "b12_vegan";
 
 export type NutritionQuestionEvidence = {
@@ -40,6 +41,10 @@ export const NUTRITION_EVIDENCE_DISCLAIMER =
 
 export const NUTRITION_EVIDENCE_STRENGTH_DISCLAIMER =
   "Sterren meten signaalsterkte: hoe goed onderbouwd is het dat deze vraag een relevant voedingspatroon weerspiegelt? Dit is geen beoordeling van jouw gezondheid.";
+
+const novaRef: EvidenceReference = {
+  apa: "Monteiro CA, Cannon G, Levy RB, et al. Ultra-processed foods: what they are and how to identify them. Public Health Nutrition. 2019;22(5):936-941.",
+};
 
 const voedingscentrumRef: EvidenceReference = {
   apa: "Voedingscentrum. Schijf van Vijf — richtlijnen voor volwassenen. 2024.",
@@ -296,6 +301,31 @@ export const NUTRITION_QUESTION_EVIDENCE: NutritionQuestionEvidence[] = [
     references: [fiberRef, gezondheidsraadRef, voedingscentrumRef],
   },
   {
+    questionId: "ultraProcessed",
+    title: "Bewerkingsgraad",
+    whyThisQuestion:
+      "Deze vraag gaat niet over één stof maar over de vorm waarin je eet — hoe vaak een kant-en-klaarproduct je standaardkeuze is, los van de suiker- en zoutvraag die we apart stellen.",
+    scientificRationale: [
+      "De NOVA-classificatie onderscheidt voedsel naar bewerkingsgraad; groep 4 (sterk bewerkt) is de categorie waar deze vraag naar peilt.",
+      "In grote Europese cohorten hangt een hoger aandeel sterk bewerkte producten samen met ongunstiger uitkomsten, ook na correctie voor energie-inname en losse nutriënten.",
+      "Er bestaat geen Nederlandse populatierichtlijn voor bewerkingsgraad — daarom is de lat hier een vuistregel en geen norm.",
+      "De vraag weegt negatief mee in de totaalscore, net als de suikervraag — geen aparte nutriënt-band.",
+    ],
+    answerMeaning: {
+      higherAlignment:
+        "Minder vaak kant-en-klaar als standaardkeuze past bij een patroon met meer onbewerkte basis.",
+      lowerAlignment:
+        "Vaker kant-en-klaar wijst op een patroon waar bewerkte producten de basis dragen — daar zit ruimte, ongeacht de losse nutriënten.",
+    },
+    strength: {
+      stars: 3,
+      label: "Redelijk bewijs",
+      rationale:
+        "Consistent observationeel verband in cohorten, maar geen interventiebewijs en geen officiële norm; zelf-gerapporteerde frequentie is bovendien een grove maat.",
+    },
+    references: [novaRef, gezondheidsraadRef],
+  },
+  {
     questionId: "b12_vegan",
     title: "B12 bij veganistisch eten",
     whyThisQuestion:
@@ -335,5 +365,6 @@ export const NUTRITION_EVIDENCE_DISPLAY_ORDER: NutritionQuestionId[] = [
   "daylight",
   "wholegrain",
   "sugaryDrinks",
+  "ultraProcessed",
   "b12_vegan",
 ];

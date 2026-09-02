@@ -32,9 +32,9 @@ function allEvidenceStrings(): string[] {
 }
 
 describe("nutrition-question-evidence — coverage", () => {
-  it("heeft 10 MVP entries", () => {
-    expect(NUTRITION_QUESTION_EVIDENCE).toHaveLength(10);
-    expect(NUTRITION_EVIDENCE_DISPLAY_ORDER).toHaveLength(10);
+  it("heeft 11 entries (10 MVP + ultraProcessed)", () => {
+    expect(NUTRITION_QUESTION_EVIDENCE).toHaveLength(11);
+    expect(NUTRITION_EVIDENCE_DISPLAY_ORDER).toHaveLength(11);
   });
 
   it("evidenceForGap(protein) gebruikt proteinMeals als primair", () => {

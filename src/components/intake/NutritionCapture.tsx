@@ -40,6 +40,7 @@ import type { LifestyleExtra } from "@/lib/nutrition-lifestyle-extras";
 import { type NutrientDelta } from "@/lib/nutrition-delta";
 import IntakeSlider from "@/components/intake/IntakeSlider";
 import NutritionResultView from "@/components/intake/NutritionResultView";
+import { buildNutritionFactRowsFromRaw } from "@/lib/nutrition-conclusion";
 
 type Step =
   | { kind: "coreBeforeDiet"; index: number }
@@ -568,6 +569,18 @@ export default function NutritionCapture() {
         delta={step.delta}
         proteinMealsPerDay={
           hasResultsParam ? step.proteinMealsPerDay : proteinMealsFromSliders(sliders)
+        }
+        /* Dezelfde feitenrijen als de ladder op het dashboard toont — één
+           bron, twee weergaven. Bij terugkeer via ?results= staan de sliders
+           niet in state; dan valt het blok stil weg. */
+        factRows={
+          hasResultsParam
+            ? []
+            : buildNutritionFactRowsFromRaw({
+                sliders,
+                preference: preference ?? "none",
+                allergies,
+              })
         }
         fromDashboard={fromDashboard}
         originDomain={originDomain}

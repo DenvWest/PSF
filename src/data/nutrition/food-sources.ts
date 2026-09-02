@@ -2,11 +2,37 @@
  * Voedingsbronnen per nutriënt — "wat lever ik met één portie".
  * Productkennis, geen persoonsdata.
  *
- * Alle getallen zijn INDICATIEF (orde van grootte per portie) — verifiëren
- * tegen NEVO/Voedingscentrum vóór livegang, net als portion-dictionary.ts.
- * Sinds v2 staat die stand per rij in `source` + `verified` in plaats van
- * alleen in deze comment: geen enkele rij is vandaag geverifieerd, en dat is
- * afleesbaar in plaats van te onthouden.
+ * Alle getallen zijn vandaag INDICATIEF (orde van grootte per portie) — te
+ * vervangen door NEVO-waarden vóór livegang, net als portion-dictionary.ts.
+ * Die stand staat per rij in `source` + `verified` in plaats van alleen in
+ * deze comment: geen enkele rij is vandaag geverifieerd, en dat is afleesbaar
+ * in plaats van te onthouden.
+ *
+ * ## Citeren mag, herrekenen is van ons (v3)
+ *
+ * NEVO is herbruikbaar: data.overheid.nl noemt CC BY 4.0, en RIVM staat
+ * gebruik toe "only unchanged and stating the source and version number", met
+ * de voorgeschreven referentie in `NEVO_CITATION`. Die twee lopen niet
+ * helemaal gelijk — CC BY staat afgeleide werken toe, "unchanged" niet — en
+ * daarom houden we de strengste lezing aan.
+ *
+ * Dat dwingt een scheiding af die deze tabel eerder niet had, en die ook los
+ * van de licentie beter is:
+ *
+ * - `nutrientValue` — het gehalte per 100 g zoals de bron het publiceert.
+ *   Ongewijzigd, met code en editie. Dit is het geciteerde deel.
+ * - `amount` — datzelfde gehalte omgerekend naar onze portie. Onze bewerking,
+ *   via `amountForPortion()`, en dus nooit te presenteren als brondcijfer.
+ *
+ * Zonder die scheiding is aan `amount: 16` bij "125 g makreel" niet af te
+ * lezen welk deel uit NEVO komt en welk deel uit een portie-aanname — en een
+ * afgeleid getal is niet tegen een brondbestand te leggen, waardoor
+ * `verified` betekenisloos zou zijn.
+ *
+ * Wat NIET uit NEVO komt en dus een eigen verificatiespoor houdt:
+ * `bioavailability`, `variability`, `preparationNote` en `qualityNote`. Dat
+ * zijn literatuuroordelen, en juist die dragen bij magnesium en zink de
+ * zwaarste conclusie (fytaat maakt mg uit brood iets anders dan mg uit vlees).
  *
  * VERIFY: Gezondheidsraad ADH before referenceLabel/threshold updates
  *         (350 mg Mg, 9–11 mg Zn, 10 µg vit D).
@@ -59,6 +85,50 @@ export interface SourceRef {
 }
 
 /**
+ * Een gehalte zoals de brondataset het publiceert — ongewijzigd overgenomen.
+ *
+ * ## Waarom dit apart staat van `amount`
+ *
+ * NEVO's gebruiksvoorwaarden staan hergebruik toe "only unchanged and stating
+ * the source and version number". Een waarde per 100 g die wij
+ * vermenigvuldigen met een zelfgekozen portiegrootte is per definitie
+ * gewijzigd — die mag je niet als NEVO-cijfer presenteren.
+ *
+ * Vandaar de splitsing: `NutrientValue` is het geciteerde deel (ongewijzigd,
+ * met code en versie), `FoodSource.amount` is onze eigen portieberekening
+ * daarbovenop. Zonder die scheiding is aan `amount: 16` niet af te lezen welk
+ * deel uit de bron komt en welk deel uit een portie-aanname — en dat is niet
+ * alleen een licentiekwestie maar ook een verificatiekwestie: je kunt een
+ * afgeleid getal niet tegen een brondbestand leggen.
+ *
+ * Verplichte bronvermelding bij elke NEVO-waarde, letterlijk zoals RIVM hem
+ * voorschrijft: zie `NEVO_CITATION`.
+ */
+export interface NutrientValue {
+  /** Het gehalte zoals de bron het geeft, per `per`. Nooit herrekend. */
+  value: number;
+  /** Eenheid van `value`: "g" voor eiwit, "mg" voor mineralen, "µg" voor vitamine D. */
+  unit: "g" | "mg" | "µg";
+  /**
+   * Waar `value` bij hoort. NEVO publiceert per 100 g eetbaar gedeelte; dat is
+   * de enige waarde die we ongewijzigd citeren.
+   */
+  per: "100g";
+  /** De brondataset. Bij NEVO: `origin: "nevo"` met de NEVO-code als `ref`. */
+  source: SourceRef;
+  /** De naam zoals de brondataset het voedingsmiddel noemt — niet onze `labelNl`. */
+  sourceNameNl?: string;
+}
+
+/**
+ * De bronvermelding die RIVM voorschrijft voor elk gebruik van NEVO-gegevens.
+ * Letterlijk overnemen; de versie hoort erbij en verandert per editie.
+ *
+ * Bron: https://www.rivm.nl/en/dutch-food-composition-database/access-nevo-data/nevo-online/copyright-and-disclaimer
+ */
+export const NEVO_CITATION = "NEVO-online versie 2025/9.0, RIVM, Bilthoven";
+
+/**
  * Hoe sterk het gehalte rond de tabelwaarde spreidt.
  * - `low` — structureel bestanddeel, spreiding verwaarloosbaar (eiwit in vlees).
  * - `moderate` — bodem, ras en groeiomstandigheden werken door (mineralen in planten).
@@ -93,8 +163,27 @@ export interface FoodSource {
   labelNl: string;
   /** Portie waar `amount` bij hoort, zoals getoond: "25 g (handvol)". */
   portionNl: string;
-  /** Per portie, in de eenheid van het nutriënt; null = niet te geven. */
+  /**
+   * Per portie, in de eenheid van het nutriënt; null = niet te geven.
+   *
+   * **Dit is onze eigen afgeleide waarde, geen brondcijfer.** Het is de
+   * brondwaarde per 100 g (`nutrientValue`) omgerekend naar de portie in
+   * `portionNl`. Presenteer hem daarom nooit als NEVO-getal: de bron
+   * publiceert per 100 g, en de portiegrootte is onze keuze.
+   *
+   * Zolang `nutrientValue` ontbreekt is dit een indicatieve literatuurwaarde
+   * uit N0 — dan staat `verified` op false en is er niets om tegen te leggen.
+   */
   amount: number | null;
+  /**
+   * Het gehalte zoals de brondataset het publiceert, ongewijzigd. Ontbreekt
+   * zolang de rij niet tegen NEVO (of een andere dataset) is gelegd.
+   *
+   * Dit veld is de bron van waarheid; `amount` is ervan afgeleid. Een rij mag
+   * alleen `verified: true` dragen als dit veld gevuld is — zie
+   * `isNevoBacked()`.
+   */
+  nutrientValue?: NutrientValue;
   portionGroup: PortionGroup;
   /** Nederlands seizoen als [startmaand, eindmaand], 1-based en inclusief. */
   seasonMonths?: readonly [number, number];
@@ -107,10 +196,16 @@ export interface FoodSource {
   /** Welke bron dit gehalte leverde. */
   source: SourceRef;
   /**
-   * Of de waarde daadwerkelijk naast de bron is gelegd. Vandaag overal `false`:
-   * de getallen zijn indicatief sinds N0 en de NEVO-licentie is nog niet rond.
-   * Het veld bestaat om dat verschil zichtbaar te houden, niet om het te
-   * vergeten.
+   * Of het gehalte daadwerkelijk naast de brondataset is gelegd.
+   *
+   * Slaat **alleen op `nutrientValue`**, niet op de rest van de rij:
+   * `bioavailability`, `variability` en de bijbehorende toelichtingen zijn
+   * literatuuroordelen die niet in NEVO staan en dus een eigen
+   * verificatiespoor houden. Een rij met `verified: true` heeft een
+   * nageslagen gehalte, geen nageslagen fytaat-oordeel.
+   *
+   * Vandaag overal `false`: de getallen zijn indicatief sinds N0. Het veld
+   * bestaat om dat verschil zichtbaar te houden, niet om het te vergeten.
    */
   verified: boolean;
   variability: Variability;
@@ -1210,6 +1305,38 @@ const ZINC_SOURCES: readonly FoodSource[] = [
     bioavailability: "normal",
   },
 ];
+
+/**
+ * Is dit gehalte tegen een brondataset gelegd?
+ *
+ * De invariant die deze functie bewaakt: `verified: true` zonder
+ * `nutrientValue` kan niet bestaan — dan is er niets om tegen te leggen. Een
+ * test dwingt dat af over de hele tabel.
+ */
+export function isSourceBacked(source: FoodSource): boolean {
+  return source.nutrientValue !== undefined && source.verified;
+}
+
+/**
+ * Reken een brondwaarde per 100 g om naar de portie van deze rij.
+ *
+ * Dit is de enige plek waar die vermenigvuldiging hoort te gebeuren, en het is
+ * expliciet **onze** bewerking — niet de brondwaarde. Vandaar dat het
+ * resultaat naar `amount` gaat en niet terug in `nutrientValue`.
+ *
+ * @param grams - Portiegrootte in gram. Komt uit `portion-dictionary.ts` of
+ *   uit de portie die deze rij zelf noemt; bij een bereik (120–150 g fruit)
+ *   geeft de aanroeper zelf aan welke kant hij wil.
+ * @returns Het gehalte voor die portie, afgerond op één decimaal — meer
+ *   precisie dan de bron zelf heeft zou schijnnauwkeurigheid zijn.
+ */
+export function amountForPortion(
+  value: NutrientValue,
+  grams: number,
+): number | null {
+  if (!Number.isFinite(grams) || grams <= 0) return null;
+  return Math.round((value.value * grams) / 100 * 10) / 10;
+}
 
 export const FOOD_SOURCES: Record<NutrientId, readonly FoodSource[]> = {
   protein: PROTEIN_SOURCES,

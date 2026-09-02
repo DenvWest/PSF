@@ -126,11 +126,28 @@ describe("estimateNutritionIntake — magnesium", () => {
     expect(bandFor(result, "magnesium")).toBe("meets");
   });
 
-  it("noten/zaden/week verrijkt magnesium-signaal", () => {
-    const lowVeg = estimateNutritionIntake({ vegFruitPerDay: 1, nutsSeedsLegumesPerWeek: 0 });
+  it("noten/zaden per week worden als week gelezen, niet als dag", () => {
+    // Regressietest op de eenheidsfout: de oude engine nam Math.max over
+    // vegFruitPerDay (porties/dag) en nutsSeedsLegumesPerWeek (porties/week)
+    // en legde het resultaat tegen een drempel in porties/dag. "4× noten per
+    // week" leverde daardoor hetzelfde getal als "4 porties groente per dag",
+    // terwijl er een factor 7 tussen zit.
+    //
+    // 4× noten per week is ~0,6 portie per dag. Naast een drempel van 2 tot 4
+    // plantporties per dag is dat weinig, ook al is een portie noten
+    // magnesiumdichter dan een portie groente (factor 1,4 in de engine).
     const withNuts = estimateNutritionIntake({ vegFruitPerDay: 1, nutsSeedsLegumesPerWeek: 4 });
+    expect(bandFor(withNuts, "magnesium")).toBe("below");
+  });
+
+  it("dagelijks noten tilt het magnesium-signaal wél omhoog", () => {
+    // Dezelfde bron, een realistische frequentie: 7× per week haalt de
+    // notenlat (14 ÷ 1,4 = 10 porties/week) wél. Dat is het bewijs dat de
+    // correctie geen bronnen wegdrukt maar ze op hun eigen schaal legt.
+    const lowVeg = estimateNutritionIntake({ vegFruitPerDay: 1, nutsSeedsLegumesPerWeek: 0 });
+    const daily = estimateNutritionIntake({ vegFruitPerDay: 1, nutsSeedsLegumesPerWeek: 14 });
     expect(bandFor(lowVeg, "magnesium")).toBe("below");
-    expect(bandFor(withNuts, "magnesium")).not.toBe("below");
+    expect(bandFor(daily, "magnesium")).not.toBe("below");
   });
 });
 
@@ -148,6 +165,35 @@ describe("estimateNutritionIntake — zinc", () => {
   it("2 porties/dag → meets", () => {
     const result = estimateNutritionIntake({ meatLegumesPerDay: 2 });
     expect(bandFor(result, "zinc")).toBe("meets");
+  });
+});
+
+describe("eenheden: per dag en per week zijn niet uitwisselbaar", () => {
+  it("zink: 3 porties zuivel/dag geeft niet dezelfde band als 3 porties vlees/dag", () => {
+    // Zuivel is een zwakkere zinkbron dan vlees (factor 0,5). Voorheen
+    // maximeerde de engine beide velden ongewogen, waardoor een zuivelrijk
+    // patroon dezelfde band kreeg als een vleesrijk patroon.
+    const meat = estimateNutritionIntake({ meatLegumesPerDay: 2 });
+    const dairy = estimateNutritionIntake({ dairyServingsPerDay: 2 });
+    expect(bandFor(meat, "zinc")).toBe("meets");
+    expect(bandFor(dairy, "zinc")).not.toBe("meets");
+  });
+
+  it("zink: genoeg zuivel haalt de band alsnog", () => {
+    // De zwakkere bron wordt niet weggedrukt, hij heeft meer porties nodig:
+    // lat 2/dag ÷ 0,5 = 4 porties/dag.
+    const result = estimateNutritionIntake({ dairyServingsPerDay: 4 });
+    expect(bandFor(result, "zinc")).toBe("meets");
+  });
+
+  it("een weekveld haalt nooit een dagdrempel op zijn ruwe getal", () => {
+    // De kern van de eenheidsfout, generiek: het hoogste weekantwoord dat de
+    // vragenlijst kent (5×/week) mag nooit een band opleveren alsof het een
+    // dagfrequentie was.
+    const weekly = estimateNutritionIntake({ nutsSeedsLegumesPerWeek: 5 });
+    const daily = estimateNutritionIntake({ vegFruitPerDay: 5 });
+    expect(bandFor(daily, "magnesium")).toBe("meets");
+    expect(bandFor(weekly, "magnesium")).not.toBe("meets");
   });
 });
 

@@ -24,7 +24,11 @@ import {
   buildNutritionLogResponse,
   type NutritionPreference,
 } from "@/lib/nutrition-log-response";
-import { computeNutritionScore, nutritionReportFromAnswers } from "@/lib/nutrition-score";
+import {
+  computeNutritionScore,
+  nutritionReportFromAnswers,
+  NUTRITION_SCORE_VERSION,
+} from "@/lib/nutrition-score";
 
 const SLIDER_IDS = new Set(
   NUTRITION_QUESTIONS.filter(
@@ -218,6 +222,7 @@ export async function POST(request: NextRequest) {
     estimate,
     estimate_version: ESTIMATE_VERSION,
     nutrition_score: score,
+    nutrition_score_version: NUTRITION_SCORE_VERSION,
   });
 
   if (logError) {

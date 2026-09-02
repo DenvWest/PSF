@@ -77,7 +77,7 @@ describe("LeefstijlprofielDomeinScherm", () => {
     expect(screen.queryByText("Wat jij koos")).toBeNull();
     expect(screen.queryByText("Supplementen en wearables")).toBeNull();
     expect(screen.queryByText("Zelfde blok als op je check-in resultaat")).toBeNull();
-    expect(screen.getByText("Dagelijks bewegen")).toBeTruthy();
+    expect(screen.getByRole("tab", { name: /Dagelijks bewegen/ })).toBeTruthy();
     expect(screen.queryByText("Jouw route")).toBeNull();
   });
 
@@ -120,7 +120,7 @@ describe("LeefstijlprofielDomeinScherm", () => {
     expect(screen.getByRole("heading", { name: /Wat er onder je voeding staat/ })).toBeTruthy();
     expect(screen.getByText(/Wat hier staat is je keuze en de datum/)).toBeTruthy();
     expect(screen.queryByText("Grootste winst")).toBeNull();
-    fireEvent.click(screen.getByText("Je eetbasis"));
+    fireEvent.click(screen.getByRole("tab", { name: /Je eetbasis/ }));
     expect(screen.queryByText("Jij mat")).toBeNull();
   });
 
@@ -136,7 +136,7 @@ describe("LeefstijlprofielDomeinScherm", () => {
     );
 
     expect(screen.queryByText(/wearable-reeks komt hier later bij/)).toBeNull();
-    fireEvent.click(screen.getByText("Supplementen · wearables"));
+    fireEvent.click(screen.getByRole("tab", { name: /Supplementen/ }));
     expect(screen.getByText(/wearable-reeks komt hier later bij/)).toBeTruthy();
     expect(screen.getByRole("link", { name: /Kies dit op Kompas/ })).toBeTruthy();
   });
@@ -233,5 +233,26 @@ describe("LeefstijlprofielDomeinScherm", () => {
     expect(
       screen.getByRole("img", { name: /Kracht over 2 meetmomenten, links je laatste meting/ }),
     ).toBeTruthy();
+  });
+
+  it("zet op voeding-P2 de ranglijst klaar zonder check, en jouw check ernaast", () => {
+    render(
+      <LeefstijlprofielDomeinScherm
+        model={model}
+        data={buildData()}
+        domain="voeding"
+        onBack={vi.fn()}
+        onOpenSchap={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("tab", { name: /Voedingskwaliteit/ }));
+    expect(screen.getByRole("button", { name: "Ranglijst" }).getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+    expect(screen.getByText(/Kwaliteit — wat er op je groente en fruit zit/)).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Jouw check" }));
+    expect(screen.getByText("Dit komt uit je voedingscheck.")).toBeTruthy();
   });
 });

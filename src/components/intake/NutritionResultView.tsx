@@ -23,6 +23,9 @@ import {
   evidenceForGap,
 } from "@/data/nutrition/nutrient-evidence-map";
 import { withNutritionReturn } from "@/lib/nutrition-return-link";
+import VerhoudingTabel from "@/components/nutrition/VerhoudingTabel";
+import KwaliteitEetwijzer from "@/components/nutrition/KwaliteitEetwijzer";
+import type { NutritionFactRow } from "@/lib/nutrition-ladder";
 
 interface NutritionResultViewProps {
   score: number;
@@ -31,6 +34,8 @@ interface NutritionResultViewProps {
   advice: NutritionAdviceItem[];
   lifestyleExtras?: LifestyleExtra[];
   delta: NutrientDelta[] | null;
+  /** Feitenrijen uit dezelfde antwoorden; leeg als de sliders niet in state staan. */
+  factRows?: readonly NutritionFactRow[];
   proteinMealsPerDay?: number;
   fromDashboard: boolean;
   originDomain: string | null;
@@ -46,6 +51,7 @@ export default function NutritionResultView({
   advice,
   lifestyleExtras = [],
   delta,
+  factRows = [],
   proteinMealsPerDay,
   fromDashboard,
   originDomain,
@@ -162,6 +168,19 @@ export default function NutritionResultView({
           {getVitalityBandMessage(score, "Je voeding")} Een reflectie van hoe vaak je
           iets eet — geen diagnose.
         </p>
+
+        {factRows.length > 0 ? (
+          <div className="mb-4">
+            <VerhoudingTabel rijen={factRows} surface="check" />
+          </div>
+        ) : null}
+
+        {/* Kwaliteit staat onder verhouding en niet ertussen: eerst hoeveel je
+            eet (dat is jouw uitslag), dan wat er op zit (dat is productkennis
+            die voor iedereen gelijk is). */}
+        <div className="mb-8">
+          <KwaliteitEetwijzer surface="check" />
+        </div>
 
         <h2 className="mb-2 text-center font-serif text-xl font-normal text-[#1c1917]">
           Wat je binnenkrijgt

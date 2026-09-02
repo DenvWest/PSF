@@ -101,7 +101,7 @@ export const NUTRITION_CLUSTERS: readonly NutritionCluster[] = [
   },
   {
     id: "C5",
-    sliderIds: ["sugaryDrinks"],
+    sliderIds: ["sugaryDrinks", "ultraProcessed"],
     layer: 2,
     whyLine: "Frequentie voorspelt hier meer dan hoeveelheid",
   },

@@ -63,6 +63,7 @@ const ROW_LAYER: Record<string, NutritionLadderLayerId> = {
   vezelbasis: 2,
   visbron: 2,
   minderen: 2,
+  bewerkingsgraad: 2,
   eiwitritme: 3,
 };
 
@@ -73,6 +74,7 @@ const ROW_ORDER = [
   "vezelbasis",
   "visbron",
   "minderen",
+  "bewerkingsgraad",
   "eiwitritme",
 ] as const;
 
@@ -303,6 +305,29 @@ const ROW_SPECS: readonly RowSpec[] = [
         exemption: null,
         benchmarkLabel: benchmark.label,
         benchmarkSource: benchmark.source,
+      };
+    },
+  },
+  {
+    key: "bewerkingsgraad",
+    cluster: "C5",
+    label: "Bewerkingsgraad",
+    whyLine: "De vorm waarin je eet, los van suiker en zout apart.",
+    build: (report) => {
+      const index = sliderIndex(report, "ultraProcessed");
+      const answerLabel = stopLabel(nutritionSliderQuestion("ultraProcessed"), index);
+      if (index === undefined || !answerLabel) return null;
+      const benchmark = benchmarkOf("ultraProcessed");
+      return {
+        answerLabel,
+        // Zelfde drempels als `minderen`: het is dezelfde FREQ_BAD-schaal en
+        // dezelfde soort vraag (hoe vaak is dit je standaardkeuze).
+        status: index <= 2 ? "meets" : index <= 4 ? "near" : "below",
+        exemption: null,
+        benchmarkLabel: benchmark.label,
+        benchmarkSource: benchmark.source,
+        footnote:
+          "Geen Nederlandse norm voor bewerkingsgraad — dit is een vuistregel, geen richtlijn.",
       };
     },
   },

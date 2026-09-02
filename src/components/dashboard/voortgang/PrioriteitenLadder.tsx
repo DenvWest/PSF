@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import LadderMomentButton from "@/components/dashboard/domain/LadderMomentButton";
@@ -45,15 +45,14 @@ export function ladderLayerDomId(domain: PillarId, layerId: number): string {
 }
 
 /** Canon uit `dashboard-supplementroute-prebuild-v1` (`.pl-row`, r.1100). */
-const STATE_STYLE: Record<LeefstijlLayerState, { bar: string; text: string; row: string }> = {
+const STATE_STYLE: Record<LeefstijlLayerState, { bar: string; text: string }> = {
   winst: {
     bar: "bg-[#C8956C]",
     text: "text-[#C8956C]",
-    row: "border-[#C8956C]/34 bg-[#C8956C]/[0.06]",
   },
-  ok: { bar: "bg-[#5A8F6A]", text: "text-[#9CC5A9]", row: "border-white/10" },
-  watch: { bar: "bg-[#C99A3C]", text: "text-[#C99A3C]", row: "border-white/10" },
-  wacht: { bar: "bg-white/[0.13]", text: "text-[#7E8C82]", row: "border-white/10" },
+  ok: { bar: "bg-[#5A8F6A]", text: "text-[#9CC5A9]" },
+  watch: { bar: "bg-[#C99A3C]", text: "text-[#C99A3C]" },
+  wacht: { bar: "bg-white/[0.13]", text: "text-[#7E8C82]" },
 };
 
 type PrioriteitenLadderProps = {
@@ -99,7 +98,8 @@ type PrioriteitenLadderProps = {
   /**
    * Welke laag open staat. Alleen meegeven waar een ander blok op hetzelfde
    * scherm de ladder stuurt; zonder deze twee props houdt de ladder zijn
-   * eigen staat bij.
+   * eigen staat bij. `null` is de start zonder readout — een tab opnieuw
+   * tikken zet hem niet terug naar null.
    */
   openLayer?: number | null;
   onOpenLayerChange?: (layerId: number | null) => void;
@@ -113,14 +113,17 @@ type PrioriteitenLadderProps = {
   layerExtra?: (layerId: number) => ReactNode;
 };
 
-function layerPadClass(layerId: number): string {
-  if (layerId <= 2) {
-    return "px-3.5 py-3 pl-5 xl:py-4";
+function tabAccessibleName(
+  layer: PrioriteitLayer,
+  stateLabel: string | null,
+  gekozenCount: number,
+): string {
+  const parts = [`P${layer.id}`, layer.name];
+  if (stateLabel) parts.push(stateLabel);
+  if (gekozenCount > 0) {
+    parts.push(`${gekozenCount} gekozen`);
   }
-  if (layerId >= 5) {
-    return "px-3.5 py-2.5 pl-5 xl:py-2";
-  }
-  return "px-3.5 py-3 pl-5";
+  return parts.join(" · ");
 }
 
 function LayerEvidence({
@@ -240,6 +243,10 @@ function LayerEvidence({
  *
  * In `explain` is de open laag het dossier (jij mat · de lat · jij koos) en
  * de deur naar Kompas. Afvinken gebeurt op Mijn Dag, niet op deze ladder.
+ *
+ * De lagen staan als horizontale tabs: P1–P6 boven, het resultaat van de
+ * gekozen laag vult het paneel. Dat laat later een dag-as onder de rij toe
+ * zonder de P-knoppen te herbouwen.
  */
 export default function PrioriteitenLadder({
   layers,
@@ -280,19 +287,41 @@ export default function PrioriteitenLadder({
     gekozenPerLaag.set(laag, [...(gekozenPerLaag.get(laag) ?? []), item]);
   }
   const gekozenTotaal = [...gekozenPerLaag.values()].reduce((sum, rows) => sum + rows.length, 0);
+  const tabRefs = useRef<Map<number, HTMLButtonElement>>(new Map());
+  const openLayerData = layers.find((layer) => layer.id === openLayer) ?? null;
 
-  function handleToggle(id: number) {
-    const next = openLayer === id ? null : id;
+  function handleSelect(id: number) {
+    if (openLayer === id) return;
     setOpenFactKey(null);
-    if (next != null) {
-      trackEvent(`${domain}_ladder_layer_open`, { layer: id, surface });
-      clarityTag(`${domain}_ladder_layer`, `p${id}`);
-    }
+    trackEvent(`${domain}_ladder_layer_open`, { layer: id, surface });
+    clarityTag(`${domain}_ladder_layer`, `p${id}`);
     if (isControlled) {
-      onOpenLayerChange(next);
+      onOpenLayerChange(id);
       return;
     }
-    setInternalOpenLayer(next);
+    setInternalOpenLayer(id);
+  }
+
+  function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, currentId: number) {
+    const ids = layers.map((layer) => layer.id);
+    const index = ids.indexOf(currentId);
+    if (index < 0) return;
+
+    let nextId: number | null = null;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextId = ids[(index + 1) % ids.length] ?? null;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextId = ids[(index - 1 + ids.length) % ids.length] ?? null;
+    } else if (event.key === "Home") {
+      nextId = ids[0] ?? null;
+    } else if (event.key === "End") {
+      nextId = ids[ids.length - 1] ?? null;
+    }
+    if (nextId == null) return;
+
+    event.preventDefault();
+    handleSelect(nextId);
+    tabRefs.current.get(nextId)?.focus();
   }
 
   function handleToggleFact(key: string) {
@@ -309,218 +338,237 @@ export default function PrioriteitenLadder({
     clarityTag("voortgang_ladder_kompas_click", `${domain}:p${layerId}`);
   }
 
+  const openState = openLayerData ? (layerStates?.[openLayerData.id] ?? null) : null;
+  const openStyles = openState ? STATE_STYLE[openState] : null;
+  const openGekozen = openLayerData ? (gekozenPerLaag.get(openLayerData.id) ?? []) : [];
+  const openIsAanbevolen = openLayerData
+    ? (recommendedLayerIds?.includes(openLayerData.id) ?? false)
+    : false;
+  const openWaitLine =
+    openLayerData && openState === "wacht" ? (whyWait?.(openLayerData.id) ?? null) : null;
+  const openFacts = openLayerData ? (evidenceByLayer?.[openLayerData.id] ?? []) : [];
+  const openExtra = openLayerData ? (layerExtra?.(openLayerData.id) ?? null) : null;
+
   return (
     <CockpitTile ariaLabel="Je prioriteiten" eyebrow={eyebrow}>
       <p className="mb-3.5 mt-2.5 max-w-[58ch] text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
         {intro}
       </p>
 
-      <div className="flex flex-col gap-2">
-        {layers.map((layer) => {
-          const isOpen = openLayer === layer.id;
+      <div
+        role="tablist"
+        aria-label="Prioriteiten"
+        className="-mx-1 flex flex-nowrap gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:thin]"
+      >
+        {layers.map((layer, index) => {
+          const isSelected = openLayer === layer.id;
           const state = layerStates?.[layer.id] ?? null;
           const styles = state ? STATE_STYLE[state] : null;
           const gekozen = gekozenPerLaag.get(layer.id) ?? [];
-          const isAanbevolen = recommendedLayerIds?.includes(layer.id) ?? false;
-          const waitLine = state === "wacht" ? (whyWait?.(layer.id) ?? null) : null;
-          const facts = evidenceByLayer?.[layer.id] ?? [];
-          const extra = layerExtra?.(layer.id) ?? null;
+          const stateLabel = state && stateLabels ? stateLabels[state] : null;
+          const isTabStop =
+            isSelected || (openLayer == null && index === 0);
 
           return (
-            <article
+            <button
               key={layer.id}
+              type="button"
+              role="tab"
               id={ladderLayerDomId(domain, layer.id)}
+              aria-selected={isSelected}
+              aria-controls={
+                isSelected ? `${ladderLayerDomId(domain, layer.id)}-paneel` : undefined
+              }
+              aria-label={tabAccessibleName(layer, stateLabel, gekozen.length)}
+              tabIndex={isTabStop ? 0 : -1}
               data-layer={layer.id}
               data-ls={state ?? undefined}
-              data-open={isOpen ? "true" : undefined}
-              className={`relative overflow-hidden rounded-[14px] border bg-black/20 transition-colors ${
-                isOpen
+              data-open={isSelected ? "true" : undefined}
+              ref={(node) => {
+                if (node) {
+                  tabRefs.current.set(layer.id, node);
+                } else {
+                  tabRefs.current.delete(layer.id);
+                }
+              }}
+              onClick={() => handleSelect(layer.id)}
+              onKeyDown={(event) => handleTabKeyDown(event, layer.id)}
+              className={`relative flex min-w-[3.25rem] shrink-0 cursor-pointer flex-col items-center gap-0.5 overflow-hidden rounded-[10px] border px-2.5 py-2 font-[inherit] transition-colors ${
+                isSelected
                   ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/[0.07]"
-                  : (styles?.row ?? "border-white/10")
+                  : "border-white/10 bg-black/20"
               }`}
             >
               <span
                 aria-hidden="true"
-                className={`absolute bottom-0 left-0 top-0 w-1 ${
-                  styles ? styles.bar : isOpen ? "bg-[#5A8F6A]" : "bg-white/[0.14]"
+                className={`absolute inset-x-0 top-0 h-0.5 ${
+                  styles ? styles.bar : isSelected ? "bg-[#5A8F6A]" : "bg-white/[0.14]"
                 }`}
               />
-              <button
-                type="button"
-                onClick={() => handleToggle(layer.id)}
-                aria-expanded={isOpen}
-                className={`flex w-full cursor-pointer items-start gap-3 border-none bg-transparent text-left font-[inherit] ${layerPadClass(layer.id)}`}
+              <span
+                aria-hidden="true"
+                className={`pt-0.5 font-mono text-[11px] font-semibold tracking-[0.04em] ${
+                  isSelected ? "text-[#F1EFE8]" : "text-[#7E8C82]"
+                }`}
               >
-                <span
-                  aria-hidden="true"
-                  className="min-w-[34px] shrink-0 pt-[3px] font-mono text-[9.5px] font-semibold uppercase tracking-[0.06em] text-[#7E8C82]"
-                >
-                  P{layer.id}
+                P{layer.id}
+              </span>
+              {gekozen.length > 0 ? (
+                <span aria-hidden="true" className="text-[#9CC5A9]">
+                  <Icons.Check s={11} />
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span
-                    className={`block font-serif leading-tight text-[#F1EFE8] ${
-                      layer.id <= 2 ? "text-[16px] xl:text-[18px]" : "text-[16px]"
-                    }`}
-                  >
-                    {layer.name}
-                  </span>
-                  {state && styles && stateLabels ? (
-                    <span
-                      className={`mt-1 block text-[9.5px] font-bold uppercase tracking-[0.14em] ${styles.text}`}
-                    >
-                      {stateLabels[state]}
-                    </span>
-                  ) : null}
-                  {layer.subtitle ? (
-                    <span className="mt-1 block text-[12.5px] leading-snug text-[#9FB0A6]">
-                      {layer.subtitle}
-                    </span>
-                  ) : null}
-                  {gekozen.length > 0 ? (
-                    <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#5A8F6A]/45 bg-[#5A8F6A]/[0.14] px-2 py-0.5 text-[10.5px] font-semibold text-[#9CC5A9]">
-                      <Icons.Check s={11} />
-                      {gekozen.length} gekozen
-                    </span>
-                  ) : null}
-                </span>
-                <span
-                  aria-hidden="true"
-                  className={`shrink-0 pt-1 text-[13px] text-[#7E8C82] transition-transform ${
-                    isOpen ? "rotate-90" : ""
-                  }`}
-                >
-                  <Icons.ChevronRight s={15} />
-                </span>
-              </button>
-
-              {isOpen ? (
-                <div className="border-t border-white/[0.06] px-3.5 pb-4 pl-5">
-                  <p className="mt-3 max-w-[60ch] text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
-                    {layer.summary}
-                  </p>
-                  {waitLine ? (
-                    <p className="mt-3 max-w-[58ch] border-l border-white/10 pl-2.5 text-[11.5px] leading-relaxed text-[#7E8C82] text-pretty">
-                      {waitLine}
-                    </p>
-                  ) : null}
-
-                  <LayerEvidence
-                    facts={facts}
-                    meetreeks={meetreeks}
-                    chartColor={chartColor}
-                    openFactKey={openFactKey}
-                    onToggleFact={handleToggleFact}
-                  />
-
-                  {!isWerkplek && gekozen.length > 0 ? (
-                    <div className="mt-4">
-                      <p className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
-                        Jij koos
-                      </p>
-                      <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
-                        {gekozen.map((item) => (
-                          <li
-                            key={item.id}
-                            className="text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty"
-                          >
-                            {item.title}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
-
-                  {layer.actions.length > 0 ? (
-                    <>
-                      <p className="mb-2 mt-4 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
-                        {isAanbevolen ? "Aanbevolen na je check" : "Wat je hier kunt doen"}
-                      </p>
-                      <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
-                        {layer.actions.map((action) => (
-                          <li
-                            key={action}
-                            className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-l border-[#5A8F6A]/40 pl-2.5"
-                          >
-                            <span className="min-w-[16ch] flex-1 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-                              {action}
-                            </span>
-                            {isWerkplek ? (
-                              <FavoriteSaveButton
-                                surface={surface}
-                                labels={{ save: "Zet bij Mijn keuze", saved: "Staat bij Mijn keuze" }}
-                                item={{
-                                  id: ladderActionFavoriteId(domain, layer.id, action),
-                                  title: action,
-                                  kind: "activiteit",
-                                  domain,
-                                  source: isAanbevolen ? "aanbevolen" : "mijn_keuze",
-                                }}
-                              />
-                            ) : null}
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  ) : null}
-
-                  {isWerkplek ? (
-                    <>
-                      <p className="mb-2 mt-4 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
-                        Mijn keuze op deze laag
-                      </p>
-                      {gekozen.length === 0 ? (
-                        <p className="max-w-[58ch] text-[12px] leading-relaxed text-[#7E8C82] text-pretty">
-                          Hier koos je nog niets. Dat hoeft ook niet — de laag lezen kost je niets
-                          en verplicht je tot niets.
-                        </p>
-                      ) : (
-                        <ul className="m-0 flex list-none flex-col gap-2 p-0">
-                          {gekozen.map((item) => (
-                            <li
-                              key={item.id}
-                              className="rounded-[10px] border border-[#5A8F6A]/30 bg-[#5A8F6A]/[0.07] px-2.5 py-2"
-                            >
-                              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                                <span className="min-w-[16ch] flex-1 text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
-                                  {item.title}
-                                </span>
-                                <FavoriteSaveButton compact surface={surface} item={item} />
-                              </div>
-                              {!isCadenceLadderAction(item.title) ? (
-                                <div className="mt-2">
-                                  <LadderMomentButton
-                                    domain={domain}
-                                    title={item.title}
-                                    surface={surface}
-                                    layer={layer.id}
-                                  />
-                                </div>
-                              ) : null}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </>
-                  ) : null}
-
-                  {extra}
-
-                  {kompasHref ? (
-                    <a
-                      href={kompasHref}
-                      onClick={() => handleKompasClick(layer.id)}
-                      className="mt-3 inline-flex cursor-pointer items-center gap-1 text-[13px] font-semibold text-[#9CC5A9] no-underline"
-                    >
-                      Kies dit op Kompas <Icons.ChevronRight s={13} />
-                    </a>
-                  ) : null}
-                </div>
               ) : null}
-            </article>
+            </button>
           );
         })}
       </div>
+
+      {openLayerData ? (
+        <div
+          role="tabpanel"
+          id={`${ladderLayerDomId(domain, openLayerData.id)}-paneel`}
+          aria-labelledby={ladderLayerDomId(domain, openLayerData.id)}
+          data-layer={openLayerData.id}
+          data-ls={openState ?? undefined}
+          className="mt-3 rounded-[14px] border border-[#5A8F6A]/45 bg-[#5A8F6A]/[0.07] px-3.5 py-4"
+        >
+          <h2 className="m-0 font-serif text-[18px] font-normal leading-tight text-[#F1EFE8]">
+            {openLayerData.name}
+          </h2>
+          {openState && openStyles && stateLabels ? (
+            <p
+              className={`mt-1 m-0 text-[9.5px] font-bold uppercase tracking-[0.14em] ${openStyles.text}`}
+            >
+              {stateLabels[openState]}
+            </p>
+          ) : null}
+          {openLayerData.subtitle ? (
+            <p className="mt-1 m-0 text-[12.5px] leading-snug text-[#9FB0A6]">
+              {openLayerData.subtitle}
+            </p>
+          ) : null}
+
+          <p className="mt-3 max-w-[60ch] text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
+            {openLayerData.summary}
+          </p>
+          {openWaitLine ? (
+            <p className="mt-3 max-w-[58ch] border-l border-white/10 pl-2.5 text-[11.5px] leading-relaxed text-[#7E8C82] text-pretty">
+              {openWaitLine}
+            </p>
+          ) : null}
+
+          <LayerEvidence
+            facts={openFacts}
+            meetreeks={meetreeks}
+            chartColor={chartColor}
+            openFactKey={openFactKey}
+            onToggleFact={handleToggleFact}
+          />
+
+          {!isWerkplek && openGekozen.length > 0 ? (
+            <div className="mt-4">
+              <p className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+                Jij koos
+              </p>
+              <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
+                {openGekozen.map((item) => (
+                  <li
+                    key={item.id}
+                    className="text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty"
+                  >
+                    {item.title}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {openLayerData.actions.length > 0 ? (
+            <>
+              <p className="mb-2 mt-4 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+                {openIsAanbevolen ? "Aanbevolen na je check" : "Wat je hier kunt doen"}
+              </p>
+              <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
+                {openLayerData.actions.map((action) => (
+                  <li
+                    key={action}
+                    className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-l border-[#5A8F6A]/40 pl-2.5"
+                  >
+                    <span className="min-w-[16ch] flex-1 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+                      {action}
+                    </span>
+                    {isWerkplek ? (
+                      <FavoriteSaveButton
+                        surface={surface}
+                        labels={{ save: "Zet bij Mijn keuze", saved: "Staat bij Mijn keuze" }}
+                        item={{
+                          id: ladderActionFavoriteId(domain, openLayerData.id, action),
+                          title: action,
+                          kind: "activiteit",
+                          domain,
+                          source: openIsAanbevolen ? "aanbevolen" : "mijn_keuze",
+                        }}
+                      />
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+
+          {isWerkplek ? (
+            <>
+              <p className="mb-2 mt-4 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+                Mijn keuze op deze laag
+              </p>
+              {openGekozen.length === 0 ? (
+                <p className="max-w-[58ch] text-[12px] leading-relaxed text-[#7E8C82] text-pretty">
+                  Hier koos je nog niets. Dat hoeft ook niet — de laag lezen kost je niets
+                  en verplicht je tot niets.
+                </p>
+              ) : (
+                <ul className="m-0 flex list-none flex-col gap-2 p-0">
+                  {openGekozen.map((item) => (
+                    <li
+                      key={item.id}
+                      className="rounded-[10px] border border-[#5A8F6A]/30 bg-[#5A8F6A]/[0.07] px-2.5 py-2"
+                    >
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                        <span className="min-w-[16ch] flex-1 text-[12.5px] leading-relaxed text-[#CDD7D0] text-pretty">
+                          {item.title}
+                        </span>
+                        <FavoriteSaveButton compact surface={surface} item={item} />
+                      </div>
+                      {!isCadenceLadderAction(item.title) ? (
+                        <div className="mt-2">
+                          <LadderMomentButton
+                            domain={domain}
+                            title={item.title}
+                            surface={surface}
+                            layer={openLayerData.id}
+                          />
+                        </div>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          ) : null}
+
+          {openExtra}
+
+          {kompasHref ? (
+            <a
+              href={kompasHref}
+              onClick={() => handleKompasClick(openLayerData.id)}
+              className="mt-3 inline-flex cursor-pointer items-center gap-1 text-[13px] font-semibold text-[#9CC5A9] no-underline"
+            >
+              Kies dit op Kompas <Icons.ChevronRight s={13} />
+            </a>
+          ) : null}
+        </div>
+      ) : null}
 
       {onGoAgenda ? (
         <div className="mt-4 border-t border-white/[0.06] pt-3">

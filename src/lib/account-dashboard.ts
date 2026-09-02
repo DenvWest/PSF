@@ -22,6 +22,10 @@ import {
 import { buildNutrientRouteStatuses } from "@/lib/nutrition-route-status";
 import { isVitaminDLowSunSeason } from "@/lib/nutrition-season";
 import {
+  isNutritionScoreComparable,
+  NUTRITION_SCORE_VERSION,
+} from "@/lib/nutrition-score";
+import {
   daysSinceIsoDate,
   isNutritionRelogDue,
 } from "@/lib/nutrition-relog-eligibility";
@@ -449,7 +453,7 @@ export async function loadAccountDashboardData(
       .order("created_at", { ascending: true }),
     admin
       .from("intake_intake_log")
-      .select("estimate, logged_at, nutrition_score, raw_inputs")
+      .select("estimate, logged_at, nutrition_score, nutrition_score_version, raw_inputs")
       .in("session_id", sessionIds)
       .order("logged_at", { ascending: true }),
     admin
@@ -601,7 +605,16 @@ export async function loadAccountDashboardData(
     });
   }
 
-  type LogRow = { logged_at: unknown; nutrition_score: unknown };
+  // Voedingslogs dragen hun eigen engine-versie (NUTRITION_SCORE_VERSION), niet
+  // die van de Leefstijlcheck. Punten van vóór de versionering hebben null en
+  // worden hieronder uit de reeks gefilterd: hun noemer was een andere
+  // (11 sliders i.p.v. 12), dus een lijn er dwars doorheen zou een verandering
+  // tonen die alleen uit de vragenlijst komt.
+  type LogRow = {
+    logged_at: unknown;
+    nutrition_score: unknown;
+    nutrition_score_version: unknown;
+  };
   for (const row of (logRows ?? []) as LogRow[]) {
     if (typeof row.nutrition_score !== "number" || !Number.isFinite(row.nutrition_score)) {
       continue;
@@ -613,11 +626,16 @@ export async function loadAccountDashboardData(
     if (!Number.isFinite(ts)) {
       continue;
     }
+    const scoreVersion =
+      typeof row.nutrition_score_version === "string" ? row.nutrition_score_version : null;
+    if (!isNutritionScoreComparable(scoreVersion, NUTRITION_SCORE_VERSION)) {
+      continue;
+    }
     series.voeding.push({
       value: Math.round(row.nutrition_score),
       ts,
       source: "nutrition_log",
-      rulesVersion: null,
+      rulesVersion: scoreVersion,
     });
   }
 

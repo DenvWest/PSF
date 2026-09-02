@@ -30,6 +30,10 @@ beforeEach(() => {
  * laagnaam en elke actie hier komt woordelijk uit `src/data/`, dus als een
  * domein zijn copy verandert valt dat hier om — niet pas op het scherm.
  */
+function layerTab(label: string) {
+  return screen.getByRole("tab", { name: new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) });
+}
+
 describe("PrioriteitenLadder op echte domeindata", () => {
   it("zet de zes slaaplagen neer en toont de acties van de laag die je opent", () => {
     const ladder = getLeefstijlLadder("slaap")!;
@@ -44,12 +48,12 @@ describe("PrioriteitenLadder op echte domeindata", () => {
     );
 
     for (const layer of ladder.layers) {
-      expect(screen.getByText(layer.name), layer.name).toBeTruthy();
+      expect(layerTab(layer.name), layer.name).toBeTruthy();
     }
 
     const tweede = ladder.layers[1];
     expect(screen.queryByText(tweede.actions[0])).toBeNull();
-    fireEvent.click(screen.getByText(tweede.name));
+    fireEvent.click(layerTab(tweede.name));
     expect(screen.getByText(tweede.actions[0])).toBeTruthy();
     expect(screen.getByText("Mijn keuze op deze laag")).toBeTruthy();
   });
@@ -65,7 +69,7 @@ describe("PrioriteitenLadder op echte domeindata", () => {
         surface={ladder.surface}
       />,
     );
-    fireEvent.click(screen.getByText(eerste.name));
+    fireEvent.click(layerTab(eerste.name));
     fireEvent.click(screen.getAllByRole("button", { name: "Zet bij Mijn keuze" })[0]);
 
     expect(save).toHaveBeenCalledWith(
@@ -100,7 +104,7 @@ describe("PrioriteitenLadder op echte domeindata", () => {
     expect(screen.getByText("Aanbevolen na je check")).toBeTruthy();
 
     // Een laag die de check niet aanwijst claimt geen aanbeveling.
-    fireEvent.click(screen.getByText(ladder.layers[0].name));
+    fireEvent.click(layerTab(ladder.layers[0].name));
     expect(screen.getByText("Wat je hier kunt doen")).toBeTruthy();
     expect(screen.queryByText("Aanbevolen na je check")).toBeNull();
   });

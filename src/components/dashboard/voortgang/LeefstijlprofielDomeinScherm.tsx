@@ -12,6 +12,8 @@ import { clarityTag } from "@/lib/clarity";
 import { buildDashboardAgendaHref, buildDashboardVandaagHref } from "@/lib/dashboard-url";
 import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
 import NutrientRoutePanel from "@/components/dashboard/voortgang/NutrientRoutePanel";
+import VerhoudingTabel from "@/components/nutrition/VerhoudingTabel";
+import VoedingskwaliteitLaag from "@/components/nutrition/VoedingskwaliteitLaag";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
 import { trackEvent } from "@/lib/ga4";
 import { getLeefstijlLadder } from "@/lib/leefstijl-ladder";
@@ -105,6 +107,66 @@ function LayerSixSlot({
       ) : null}
     </div>
   );
+}
+
+/**
+ * Wat er onder een ladder-laag hangt, per laag.
+ *
+ * De ladder zegt wat je als eerste zou aanpakken; deze slots zeggen waaróm —
+ * op de laag waar het argument thuishoort, niet als losse blokken erboven.
+ *
+ * - **P2 Voedingskwaliteit**: ranglijst (PAN, productkennis) naast jouw
+ *   laatste check (laag-2 feitenrijen). Dat is de kwaliteitsvraag, en hij
+ *   hoort dus niet bij P1 (eetbasis) of P3 (verhoudingen).
+ * - **P3 Verhoudingen**: de feitenrij-tabel met filters. De naam van de laag
+ *   is de vraag die de tabel beantwoordt: hoe verhoudt wat jij eet zich tot
+ *   de richtlijn.
+ * - **P6 Aanvullen**: de bestaande supplement-poort.
+ *
+ * Buiten voeding heeft alleen P6 een slot — de andere lagen zijn daar leeg.
+ */
+function NutritionLayerSlot({
+  layerId,
+  domain,
+  data,
+  onOpenSchap,
+}: {
+  layerId: number;
+  domain: PillarId;
+  data?: DashboardData;
+  onOpenSchap: () => void;
+}) {
+  if (layerId === 6) {
+    return <LayerSixSlot domain={domain} data={data} onOpenSchap={onOpenSchap} />;
+  }
+  if (domain !== "voeding") {
+    return null;
+  }
+
+  const readout = data?.nutritionCheckinReadout ?? null;
+
+  if (layerId === 2) {
+    return (
+      <VoedingskwaliteitLaag
+        rijen={readout?.factRows ?? []}
+        checkDatum={readout?.date ?? null}
+      />
+    );
+  }
+
+  if (layerId === 3 && readout && readout.factRows.length > 0) {
+    return (
+      <div className="mt-4">
+        <VerhoudingTabel
+          rijen={readout.factRows}
+          surface="dashboard"
+          checkDatum={readout.date}
+        />
+      </div>
+    );
+  }
+
+  return null;
 }
 
 export default function LeefstijlprofielDomeinScherm({
@@ -236,10 +298,14 @@ export default function LeefstijlprofielDomeinScherm({
             }
             layerExtra={
               isKompasDomain
-                ? (layerId) =>
-                    layerId === 6 ? (
-                      <LayerSixSlot domain={domain} data={data} onOpenSchap={handleOpenSchap} />
-                    ) : null
+                ? (layerId) => (
+                    <NutritionLayerSlot
+                      layerId={layerId}
+                      domain={domain}
+                      data={data}
+                      onOpenSchap={handleOpenSchap}
+                    />
+                  )
                 : undefined
             }
             {...(isKompasDomain

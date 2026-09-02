@@ -1,7 +1,8 @@
 /**
  * Data-gedreven vragenset voor de Lifesum-stijl voedingscheck.
  *
- * Flow (P1): planten → allergie → voorkeur → dieet-sliders (13 kernvragen).
+ * Flow (P1): planten → allergie → voorkeur → dieet-sliders (14 kernvragen:
+ * 12 sliders + 2 meta-vragen).
  * Elke slider definieert eigen stops; scoring in nutrition-score.ts.
  */
 
@@ -77,6 +78,7 @@ export const NUTRITION_CORE_SLIDER_IDS_AFTER_DIET = [
   "daylight",
   "wholegrain",
   "sugaryDrinks",
+  "ultraProcessed",
 ] as const;
 
 /** Alle kern-sliders in volgorde (vóór + na dieet-meta). */
@@ -383,6 +385,24 @@ const SLIDER_BY_ID: Record<string, SliderQuestion> = {
         "Populatierichtlijn: vrije suikers onder 10% van je energie (WHO 2015) — deze vraag schat frequentie, niet procenten",
       benchmarkKind: "populatierichtlijn",
       source: "WHO 2015",
+    },
+    scale: "frequency",
+    defaultIndex: 2,
+    stops: buildStops(FREQUENCY_LABELS, FREQ_BAD),
+  },
+  ultraProcessed: {
+    kind: "slider",
+    id: "ultraProcessed",
+    prompt: "Hoe vaak is een kant-en-klaarproduct je hoofdmaaltijd of tussendoortje?",
+    helper: "bijv. magnetronmaaltijd, vleeswaren, chips, koek uit een pak",
+    help: {
+      title: "Waarom bewerkingsgraad apart telt",
+      body: "Deze vraag gaat niet over één stof maar over de vorm waarin je eet. In grote Europese cohorten hangt een hoger aandeel sterk bewerkte producten samen met ongunstiger uitkomsten, ook los van suiker en zout — en die twee vragen we al apart. Er bestaat geen officiële Nederlandse norm voor, dus dit is een vuistregel: hoe vaker dit je standaardkeuze is, hoe meer ruimte er zit.",
+      anchor: "C5",
+      benchmarkLabel:
+        "Vuistregel: hoe minder vaak sterk bewerkt je standaardkeuze is, hoe beter (NOVA-classificatie, Monteiro 2019)",
+      benchmarkKind: "vuistregel",
+      source: "Monteiro 2019",
     },
     scale: "frequency",
     defaultIndex: 2,
