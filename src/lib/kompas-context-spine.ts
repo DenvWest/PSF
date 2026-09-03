@@ -11,6 +11,7 @@ import {
   type LadderLayerReason,
 } from "@/lib/domain-ladder-readout";
 import { buildCycleLine } from "@/lib/kompas-home";
+import { buildNutritionPriorities } from "@/lib/nutrition-prioriteiten";
 import { getLeefstijlLadder } from "@/lib/leefstijl-ladder";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
@@ -56,6 +57,16 @@ export type ContextSpineUrgency =
       isFocusLayer: boolean;
       /** Feitzin uit de check, of null — dan tonen we er geen. */
       reason: LadderLayerReason | null;
+      /**
+       * Wat er ná deze laag komt — hoogstens twee richtingen, in de bewoording
+       * van het Kompas.
+       *
+       * De zone toont al één laag met zijn feitzin; dat ís prioriteit 1. Wat
+       * eraan ontbrak is het vervolg: dat je na deze stap niet in het niets
+       * kijkt. Leeg zodra het domein geen prioriteitenmodule heeft (alleen
+       * voeding heeft er een) of zodra deze laag de enige is die telt.
+       */
+      vervolg: readonly string[];
     }
   | {
       /** Er is een ladder, maar de check wijst er geen winst-laag in aan. */
@@ -153,7 +164,36 @@ function buildUrgency(
     stateLabel: state && readout ? readout.stateLabels[state] : null,
     isFocusLayer: readout != null && layer.id === readout.focusLayer,
     reason: resolveLadderLayerReason(readout, layer.id),
+    vervolg: resolveVervolg(bar.domain, layer.id, data),
   };
+}
+
+/**
+ * De richtingen ná de laag die de zone toont.
+ *
+ * Eén bron met het Kompas — `buildNutritionPriorities` op dezelfde feitenrijen
+ * — zodat de contextkolom nooit een andere volgorde noemt dan het scherm
+ * ernaast. De richting die deze laag zelf al draagt valt eraf: die staat er
+ * hierboven al, en hem herhalen maakt van een vervolg een echo.
+ *
+ * Twee is het maximum. De kolom is smal en dit is context, geen lijst.
+ */
+function resolveVervolg(
+  domain: PillarId,
+  layerId: number,
+  data: DashboardData | undefined,
+): readonly string[] {
+  if (domain !== "voeding") {
+    return [];
+  }
+  const factRows = data?.nutritionCheckinReadout?.factRows;
+  if (!factRows || factRows.length === 0) {
+    return [];
+  }
+  return buildNutritionPriorities(factRows)
+    .priorities.filter((priority) => priority.layer !== layerId)
+    .slice(0, 2)
+    .map((priority) => priority.label);
 }
 
 function buildRitme(

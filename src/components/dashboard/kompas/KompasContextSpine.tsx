@@ -179,6 +179,27 @@ export default function KompasContextSpine({
             ladder.
           </p>
         )}
+
+        {/* Wat er ná deze laag komt. Zonder dit eindigt de kolom bij één laag
+            en kijk je daarna in het niets; met een vervolg is de laag een stap
+            in een route. Dezelfde bron als het Kompas ernaast. */}
+        {urgency.vervolg.length > 0 ? (
+          <div className="mt-2.5 border-t border-white/10 pt-2">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82]">
+              Daarna
+            </span>
+            <ul className="m-0 mt-1 flex list-none flex-col gap-0.5 p-0">
+              {urgency.vervolg.map((richting) => (
+                <li
+                  key={richting}
+                  className="text-[11.5px] leading-snug text-[#9FB0A6] text-pretty"
+                >
+                  {richting}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </section>
     );
   } else if (urgency?.kind === "geen_winstlaag") {

@@ -20,6 +20,8 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "choice.shelf_opened",
   "dashboard.schap_tab_selected",
   "nutrition.basis_category_viewed",
+  "nutrition.kompas_priorities_viewed",
+  "nutrition.kompas_priority_clicked",
   "nutrition.basis_category_expanded",
   "nutrition.roadmap_step_opened",
   "nutrition.sufficiency_viewed",

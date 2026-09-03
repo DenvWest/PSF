@@ -10,7 +10,9 @@ import { PILLAR } from "@/data/dashboard";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_KOMPAS_COPY, isDomainKompasDomain } from "@/lib/domain-kompas-copy";
 import NutritionKompasTweeluik from "@/components/dashboard/domain/NutritionKompasTweeluik";
+import NutritionPrioriteiten from "@/components/dashboard/domain/NutritionPrioriteiten";
 import { buildNutritionKompasSamenvatting } from "@/lib/nutrition-kompas-samenvatting";
+import { buildNutritionPriorities } from "@/lib/nutrition-prioriteiten";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
 import { useDomainLadderFocus } from "@/lib/domain-ladder-focus-context";
 import { trackEvent } from "@/lib/ga4";
@@ -100,6 +102,18 @@ export default function DomainKompasScreen({
         ? buildNutritionKompasSamenvatting(data?.nutritionCheckinReadout, favoriteItems)
         : null,
     [domain, data?.nutritionCheckinReadout, favoriteItems],
+  );
+
+  // Waarheen, náást hoever. Draait op dezelfde feitenrijen als de ladder —
+  // geen tweede meting, dus het Kompas kan nooit iets anders zeggen dan
+  // Voortgang.
+  const nutritionFactRows = data?.nutritionCheckinReadout?.factRows;
+  const nutritionPrioriteiten = useMemo(
+    () =>
+      domain === "voeding" && nutritionFactRows
+        ? buildNutritionPriorities(nutritionFactRows)
+        : null,
+    [domain, nutritionFactRows],
   );
 
   const score = model.scores[domain] ?? 0;
@@ -219,6 +233,18 @@ export default function DomainKompasScreen({
           Wat hier blijft is de *stand* van het logboek: twee tellingen, twee
           deuren. Zie `buildNutritionKompasSamenvatting` voor waarom die twee
           tellingen niet dezelfde vraag beantwoorden. */}
+      {/* Waarheen staat boven hoever: de eerste vraag is welke stap je zet,
+          niet hoe ver je bent. De tellingen eronder blijven — ze beantwoorden
+          een andere vraag, en een stand lees je pas met interesse als je weet
+          waar hij over gaat. */}
+      {nutritionPrioriteiten ? (
+        <NutritionPrioriteiten
+          prioriteiten={nutritionPrioriteiten}
+          surface={copy.surface}
+          onOpenLayer={(layerId) => selectLayer({ domain, layerId })}
+        />
+      ) : null}
+
       {nutritionSamenvatting ? (
         <NutritionKompasTweeluik
           samenvatting={nutritionSamenvatting}
