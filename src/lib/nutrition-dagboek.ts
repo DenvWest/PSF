@@ -172,8 +172,25 @@ export type DagboekDag = {
   /** ISO-datum van de geregistreerde dag. */
   date: string;
   soort: DagSoort;
-  /** Porties per voedselgroep. Ontbrekende groep = niet ingevuld, niet nul. */
+  /**
+   * Porties per voedselgroep. Ontbrekende groep = niet ingevuld, niet nul.
+   *
+   * Blijft de bron voor alle analyse (breedte, variatie, weekendvergelijking,
+   * zelfrapport-brug), ook nu de invoer per eetmoment loopt: `meals` wordt bij
+   * het opslaan hiernaartoe opgeteld. Zo blijven dagen uit de platte-lijst-tijd
+   * leesbaar en hoeft geen enkele rekenfunctie mee te veranderen.
+   */
   porties: Partial<Record<VoedselgroepId, number>>;
+  /**
+   * Wat er op welk eetmoment stond. Leeg bij dagen die met de platte lijst
+   * zijn ingevuld — dan is alleen het dagtotaal bekend, niet de verdeling.
+   *
+   * Losjes getypeerd om een importcyclus met `nutrition-eetmomenten.ts` te
+   * vermijden; die module levert de nauwe `DagMomenten`.
+   */
+  momenten?: Record<string, Partial<Record<VoedselgroepId, number>>>;
+  /** Water in milliliters; null wanneer niet geregistreerd. */
+  waterMl?: number | null;
 };
 
 export type DagboekVoortgang = {

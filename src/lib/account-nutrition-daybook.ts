@@ -1,5 +1,12 @@
 import type { OrgScopedClient } from "@/lib/db/scoped";
 import {
+  isEetmomentId,
+  normaliseerWaterMl,
+  portiesUitMomenten,
+  type DagMomenten,
+  type MomentInhoud,
+} from "@/lib/nutrition-eetmomenten";
+import {
   dagSoortVoor,
   DAGBOEK_GROEPEN,
   type DagboekDag,
@@ -57,6 +64,29 @@ export function sanitizePortions(raw: unknown): Partial<Record<VoedselgroepId, n
   return result;
 }
 
+/**
+ * Maakt van ruwe momenten-invoer een geldige structuur.
+ *
+ * Zelfde filosofie als {@link sanitizePortions}: onbekende sleutels vallen
+ * eraf zonder de rest weg te gooien. Een moment dat na het schoonmaken leeg is,
+ * verdwijnt helemaal — een lege bak is hetzelfde als geen bak, en een
+ * `{"lunch": {}}` in de opslag zou "lunch overgeslagen" en "lunch vergeten in
+ * te vullen" ononderscheidbaar maken.
+ */
+export function sanitizeMeals(raw: unknown): DagMomenten {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    return {};
+  }
+  const result: DagMomenten = {};
+  for (const [momentId, inhoud] of Object.entries(raw as Record<string, unknown>)) {
+    if (!isEetmomentId(momentId)) continue;
+    const schoon = sanitizePortions(inhoud) as MomentInhoud;
+    if (Object.keys(schoon).length === 0) continue;
+    result[momentId] = schoon;
+  }
+  return result;
+}
+
 /** ISO-datum (YYYY-MM-DD), en niet in de toekomst. */
 export function isValidEntryDate(value: string, today: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -72,7 +102,7 @@ export async function listDaybookDays(
 ): Promise<DagboekDag[]> {
   const { data, error } = await supabase
     .from("account_nutrition_daybook")
-    .select("entry_date, day_kind, portions")
+    .select("entry_date, day_kind, portions, meals, water_ml")
     .eq("account_id", accountId)
     .order("entry_date", { ascending: false })
     .limit(limit);
@@ -91,6 +121,8 @@ export async function listDaybookDays(
       // welke reden dan ook zonder geldige soort binnenkwam, telt alsnog mee.
       soort: kind === "weekend" || kind === "doordeweeks" ? kind : dagSoortVoor(date),
       porties: sanitizePortions(row.portions),
+      momenten: sanitizeMeals(row.meals),
+      waterMl: normaliseerWaterMl(row.water_ml),
     };
   });
 }
@@ -98,14 +130,29 @@ export async function listDaybookDays(
 export async function upsertDaybookDay(
   supabase: OrgScopedClient,
   accountId: string,
-  input: { date: string; porties: Partial<Record<VoedselgroepId, number>> },
+  input: {
+    date: string;
+    /** Optioneel: wordt afgeleid uit `momenten` wanneer die er zijn. */
+    porties?: Partial<Record<VoedselgroepId, number>>;
+    momenten?: DagMomenten;
+    waterMl?: number | null;
+  },
 ): Promise<boolean> {
+  // De momenten zijn de invoervorm; `portions` blijft de bron waar alle
+  // analyse op rekent. Afleiden in plaats van allebei laten aanleveren, zodat
+  // ze niet uit elkaar kunnen lopen.
+  const momenten = input.momenten ?? {};
+  const heeftMomenten = Object.keys(momenten).length > 0;
+  const porties = heeftMomenten ? portiesUitMomenten(momenten) : (input.porties ?? {});
+
   const { error } = await supabase.from("account_nutrition_daybook").upsert(
     {
       account_id: accountId,
       entry_date: input.date,
       day_kind: dagSoortVoor(input.date),
-      portions: input.porties,
+      portions: porties,
+      meals: momenten,
+      water_ml: input.waterMl ?? null,
     },
     { onConflict: "account_id,entry_date" },
   );

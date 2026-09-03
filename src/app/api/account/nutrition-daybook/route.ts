@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   isValidEntryDate,
   listDaybookDays,
+  sanitizeMeals,
   sanitizePortions,
   upsertDaybookDay,
 } from "@/lib/account-nutrition-daybook";
+import { normaliseerWaterMl } from "@/lib/nutrition-eetmomenten";
 import { getAccountFromCookie } from "@/lib/account-server";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
@@ -82,10 +84,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Twee invoervormen naast elkaar: `meals` is de huidige (per eetmoment),
+  // `portions` blijft geldig voor clients die de platte lijst nog sturen.
+  const momenten = sanitizeMeals(record.meals);
   const porties = sanitizePortions(record.portions);
-  if (Object.keys(porties).length === 0) {
+  const waterMl = normaliseerWaterMl(record.water_ml);
+
+  const heeftInhoud =
+    Object.keys(momenten).length > 0 ||
+    Object.keys(porties).length > 0 ||
+    (waterMl !== null && waterMl > 0);
+
+  if (!heeftInhoud) {
     return NextResponse.json(
-      { error: "Vul minstens één voedselgroep in." },
+      { error: "Vul minstens één eetmoment in." },
       { status: 400 },
     );
   }
@@ -98,7 +110,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const ok = await upsertDaybookDay(admin, account.id, { date, porties });
+  const ok = await upsertDaybookDay(admin, account.id, {
+    date,
+    porties,
+    momenten,
+    waterMl,
+  });
   if (!ok) {
     return NextResponse.json({ error: "Kon je dag niet opslaan." }, { status: 500 });
   }

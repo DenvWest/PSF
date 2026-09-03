@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { OrgScopedClient } from "@/lib/db/scoped";
 import {
   isValidEntryDate,
+  sanitizeMeals,
   sanitizePortions,
   upsertDaybookDay,
 } from "@/lib/account-nutrition-daybook";
@@ -59,6 +60,38 @@ describe("isValidEntryDate", () => {
   });
 });
 
+describe("sanitizeMeals", () => {
+  it("houdt geldige momenten met inhoud", () => {
+    expect(sanitizeMeals({ ontbijt: { zuivel: 1 }, avondeten: { groente: 2 } })).toEqual({
+      ontbijt: { zuivel: 1 },
+      avondeten: { groente: 2 },
+    });
+  });
+
+  it("laat onbekende momenten vallen", () => {
+    expect(sanitizeMeals({ brunch: { zuivel: 1 }, lunch: { groente: 1 } })).toEqual({
+      lunch: { groente: 1 },
+    });
+  });
+
+  it("verwijdert momenten die na opschonen leeg zijn", () => {
+    // Een lege bak is hetzelfde als geen bak: anders zijn "overgeslagen" en
+    // "vergeten in te vullen" niet uit elkaar te houden.
+    expect(sanitizeMeals({ ontbijt: {}, lunch: { pizza: 3 } })).toEqual({});
+  });
+
+  it("past dezelfde portie-validatie toe binnen een moment", () => {
+    expect(sanitizeMeals({ lunch: { groente: 2.7, fruit: -1 } })).toEqual({
+      lunch: { groente: 2 },
+    });
+  });
+
+  it("geeft een lege structuur bij onzin", () => {
+    expect(sanitizeMeals(null)).toEqual({});
+    expect(sanitizeMeals([1, 2])).toEqual({});
+  });
+});
+
 describe("upsertDaybookDay", () => {
   it("leidt de dagsoort af uit de datum en schrijft op (account, dag)", async () => {
     const rows: Record<string, unknown>[] = [];
@@ -95,12 +128,73 @@ describe("upsertDaybookDay", () => {
     });
 
     // De lock: het dagboek verrijkt de readout en voedt nooit een score.
+    // Geen score-, calorie- of gramkolom — water is de enige eenheid, en die
+    // draagt geen norm.
     expect(Object.keys(rows[0]).sort()).toEqual([
       "account_id",
       "day_kind",
       "entry_date",
+      "meals",
       "portions",
+      "water_ml",
     ]);
+  });
+
+  it("leidt porties af uit de momenten", async () => {
+    // De momenten zijn de invoervorm; `portions` blijft de bron voor analyse.
+    // Allebei laten aanleveren zou ze uit elkaar kunnen laten lopen.
+    const rows: Record<string, unknown>[] = [];
+    const upsert = vi.fn((row: Record<string, unknown>) => {
+      rows.push(row);
+      return Promise.resolve({ error: null });
+    });
+    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+
+    await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      momenten: { ontbijt: { zuivel: 1 }, lunch: { zuivel: 1, groente: 2 } },
+    });
+
+    expect(rows[0].portions).toEqual({ zuivel: 2, groente: 2 });
+    expect(rows[0].meals).toEqual({
+      ontbijt: { zuivel: 1 },
+      lunch: { zuivel: 1, groente: 2 },
+    });
+  });
+
+  it("accepteert nog steeds een platte portie-map", async () => {
+    // Backward-compat: een client die de oude vorm stuurt blijft werken.
+    const rows: Record<string, unknown>[] = [];
+    const upsert = vi.fn((row: Record<string, unknown>) => {
+      rows.push(row);
+      return Promise.resolve({ error: null });
+    });
+    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+
+    await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      porties: { groente: 3 },
+    });
+
+    expect(rows[0].portions).toEqual({ groente: 3 });
+    expect(rows[0].meals).toEqual({});
+  });
+
+  it("bewaart water als eenheid", async () => {
+    const rows: Record<string, unknown>[] = [];
+    const upsert = vi.fn((row: Record<string, unknown>) => {
+      rows.push(row);
+      return Promise.resolve({ error: null });
+    });
+    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+
+    await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      momenten: { lunch: { groente: 1 } },
+      waterMl: 1500,
+    });
+
+    expect(rows[0].water_ml).toBe(1500);
   });
 
   it("meldt falen zonder te werpen", async () => {

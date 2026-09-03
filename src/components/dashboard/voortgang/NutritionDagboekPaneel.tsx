@@ -10,20 +10,22 @@ import {
   analyseerDagboek,
   dagSoortVoor,
   dekkingsRegel,
-  DAGBOEK_GROEPEN,
-  DAGBOEK_LABELS,
   DAGBOEK_TOTAAL,
   DAGEN_PER_SOORT,
   type DagboekDag,
   type DagSoort,
 } from "@/lib/nutrition-dagboek";
+import NutritionDagInvoer from "@/components/dashboard/voortgang/NutritionDagInvoer";
+import {
+  portiesUitMomenten,
+  type DagMomenten,
+} from "@/lib/nutrition-eetmomenten";
 import {
   kalibratieRegel,
   kalibratieRijen,
   selfReportUitDagboek,
 } from "@/lib/nutrition-dagboek-selfreport";
 import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
-import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 
 /**
  * Het 2+2-dagboek op P5 (Meten & timing).
@@ -35,19 +37,17 @@ import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
  *
  * ## De invoervorm
  *
- * Per voedselgroep een aantal porties, met plus en min. Geen grammen, geen
- * zoekveld, geen productendatabase: dit is een steekproef van je patroon, en
- * de vraag "hoeveel porties groente at je gisteren" is uit het hoofd te
- * beantwoorden op een manier die "hoeveel gram" nooit is.
+ * Per eetmoment (zie `NutritionDagInvoer`), niet per voedselgroep: mensen
+ * halen hun dag terug als "bij het ontbijt yoghurt, 's avonds groente en vis",
+ * niet als dertien groepen op nul. Geen zoekveld en geen productendatabase —
+ * dit is een steekproef van je patroon, en "hoeveel porties groente" is uit
+ * het hoofd te beantwoorden op een manier die "hoeveel gram" nooit is.
  *
  * ## Waarom gisteren de standaarddag is
  *
  * Vandaag is nog niet af, en verder terug dan een paar dagen wordt gokken. Het
  * paneel biedt de laatste zeven dagen aan en zet gisteren voorop.
  */
-
-const KNOP =
-  "inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/[0.03] text-[#9FB0A6] transition-colors hover:border-white/30 hover:text-[#E7EDE8] disabled:opacity-40";
 
 function dagLabel(isoDate: string, today: string): string {
   if (isoDate === addAgendaDays(today, -1)) return "Gisteren";
@@ -81,7 +81,8 @@ export default function NutritionDagboekPaneel({
   const [geladen, setGeladen] = useState(false);
   const [open, setOpen] = useState(false);
   const [datum, setDatum] = useState(() => addAgendaDays(todayInAgendaTimezone(), -1));
-  const [porties, setPorties] = useState<Partial<Record<VoedselgroepId, number>>>({});
+  const [momenten, setMomenten] = useState<DagMomenten>({});
+  const [waterMl, setWaterMl] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -142,7 +143,8 @@ export default function NutritionDagboekPaneel({
   function openInvoer() {
     const eerste = keuzedagen.find((dag) => !alIngevuld.has(dag)) ?? keuzedagen[0];
     setDatum(eerste);
-    setPorties({});
+    setMomenten({});
+    setWaterMl(null);
     setError(null);
     setOpen(true);
     trackEvent("nutrition_dagboek_open", { surface, ingevuld: dagen.length });
@@ -153,17 +155,11 @@ export default function NutritionDagboekPaneel({
     clarityTag("nutrition_dagboek", surface);
   }
 
-  function stel(groep: VoedselgroepId, delta: number) {
-    setPorties((huidig) => {
-      const nieuw = Math.max(0, Math.min((huidig[groep] ?? 0) + delta, 20));
-      return { ...huidig, [groep]: nieuw };
-    });
-  }
-
   async function bewaar() {
     if (busy) return;
-    if (Object.keys(porties).length === 0) {
-      setError("Vul minstens één voedselgroep in.");
+    const heeftInhoud = Object.keys(momenten).length > 0 || (waterMl ?? 0) > 0;
+    if (!heeftInhoud) {
+      setError("Vul minstens één eetmoment in.");
       return;
     }
     setBusy(true);
@@ -173,7 +169,7 @@ export default function NutritionDagboekPaneel({
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date: datum, portions: porties }),
+        body: JSON.stringify({ date: datum, meals: momenten, water_ml: waterMl }),
       });
       if (!response.ok) {
         throw new Error("Kon je dag niet opslaan.");
@@ -182,7 +178,12 @@ export default function NutritionDagboekPaneel({
       const nieuweDag: DagboekDag = {
         date: datum,
         soort: dagSoortVoor(datum),
-        porties,
+        // De momenten zijn de invoervorm; `porties` blijft waar alle analyse
+        // op rekent. Zelfde afleiding als de server doet, zodat het scherm
+        // meteen klopt zonder opnieuw te laden.
+        porties: portiesUitMomenten(momenten),
+        momenten,
+        waterMl,
       };
       const volgende = [nieuweDag, ...dagen.filter((dag) => dag.date !== datum)];
       setDagen(volgende);
@@ -331,46 +332,13 @@ export default function NutritionDagboekPaneel({
             {DAGEN_PER_SOORT}.
           </p>
 
-          <ul className="m-0 mt-2.5 flex list-none flex-col gap-1.5 p-0">
-            {DAGBOEK_GROEPEN.map((groep) => {
-              const label = DAGBOEK_LABELS[groep];
-              const waarde = porties[groep] ?? 0;
-              return (
-                <li key={groep} className="flex items-center justify-between gap-3">
-                  <span className="min-w-[12ch] flex-1 text-[12.5px] leading-snug text-[#CDD7D0]">
-                    {label}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      disabled={busy || waarde === 0}
-                      onClick={() => stel(groep, -1)}
-                      aria-label={`Eén ${label.toLowerCase()} minder`}
-                      className={KNOP}
-                    >
-                      −
-                    </button>
-                    <span className="w-5 text-center text-[13px] tabular-nums text-[#E7EDE8]">
-                      {waarde}
-                    </span>
-                    <button
-                      type="button"
-                      disabled={busy}
-                      onClick={() => stel(groep, 1)}
-                      aria-label={`Eén ${label.toLowerCase()} meer`}
-                      className={KNOP}
-                    >
-                      +
-                    </button>
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-
-          <p className="m-0 mt-2 text-[11px] leading-relaxed text-[#7E8C82]">
-            Porties, geen grammen. Een schatting uit je hoofd is precies genoeg.
-          </p>
+          <NutritionDagInvoer
+            momenten={momenten}
+            onChange={setMomenten}
+            waterMl={waterMl}
+            onWaterChange={setWaterMl}
+            busy={busy}
+          />
 
           {error ? (
             <p role="status" className="mt-2 text-[11.5px] leading-relaxed text-[#C8956C]">
