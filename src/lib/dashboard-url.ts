@@ -43,6 +43,7 @@ export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | nu
     }
     url.searchParams.delete("screen");
     url.searchParams.delete("fav");
+    url.searchParams.delete("laag");
     url.searchParams.delete("schap");
     return "hub";
   }
@@ -57,6 +58,7 @@ export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | nu
     url.searchParams.delete("screen");
     url.searchParams.delete("domein");
     url.searchParams.delete("fav");
+    url.searchParams.delete("laag");
   } else {
     url.searchParams.set("screen", canonical);
     if (legacy === "domein") {
@@ -68,6 +70,9 @@ export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | nu
     }
     if (legacy === "inzichten") {
       url.searchParams.delete("fav");
+    }
+    if (url.searchParams.get("fav") !== "voeding") {
+      url.searchParams.delete("laag");
     }
   }
   return canonical;
@@ -172,6 +177,48 @@ export function parseLeefstijlprofielDomeinFromUrl(url: string | URL): PillarId 
 /** @deprecated Gebruik parseLeefstijlprofielDomeinFromUrl */
 export const parseFavorietenDomeinFromUrl = parseLeefstijlprofielDomeinFromUrl;
 
+/** P5/P6-shortcuts onder Voeding in de voortgang-rail. Geen P-cijfers in de URL. */
+export const VOEDING_LAAG_SLUGS = ["meten-timing", "aanvullen"] as const;
+export type VoedingLaagSlug = (typeof VOEDING_LAAG_SLUGS)[number];
+export type VoedingLaagId = 5 | 6;
+
+const VOEDING_LAAG_ID_BY_SLUG: Record<VoedingLaagSlug, VoedingLaagId> = {
+  "meten-timing": 5,
+  aanvullen: 6,
+};
+
+export function isVoedingLaagSlug(value: unknown): value is VoedingLaagSlug {
+  return value === "meten-timing" || value === "aanvullen";
+}
+
+export function voedingLaagIdFromSlug(slug: VoedingLaagSlug): VoedingLaagId {
+  return VOEDING_LAAG_ID_BY_SLUG[slug];
+}
+
+export function voedingLaagSlugFromId(layer: number): VoedingLaagSlug | null {
+  if (layer === 5) {
+    return "meten-timing";
+  }
+  if (layer === 6) {
+    return "aanvullen";
+  }
+  return null;
+}
+
+/**
+ * Alleen geldig op Voeding: `fav=voeding&laag=meten-timing|aanvullen`.
+ * Andere domeinen of onbekende slugs worden genegeerd.
+ */
+export function parseVoedingLaagFromUrl(url: string | URL): VoedingLaagSlug | null {
+  const parsed =
+    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
+  if (parseLeefstijlprofielDomeinFromUrl(parsed) !== "voeding") {
+    return null;
+  }
+  const laag = parsed.searchParams.get("laag");
+  return isVoedingLaagSlug(laag) ? laag : null;
+}
+
 const VALID_SCHAP_TABS = new Set<SchapTabId>([
   "producten",
   "diensten",
@@ -257,6 +304,7 @@ export function syncDashboardKeuzeParams(
   url.searchParams.delete("blik");
   url.searchParams.delete("screen");
   url.searchParams.delete("fav");
+  url.searchParams.delete("laag");
   url.searchParams.delete("schap");
 
   if (domain) {
@@ -293,6 +341,7 @@ export function canonicalizeDashboardTabParam(url: URL): DashboardTabId | null {
     url.searchParams.set("screen", "hermeting");
     url.searchParams.delete("domein");
     url.searchParams.delete("fav");
+    url.searchParams.delete("laag");
     url.searchParams.delete("deel");
     url.searchParams.delete("schap");
     return "voortgang";
@@ -317,6 +366,7 @@ export function canonicalizeDashboardTabParam(url: URL): DashboardTabId | null {
   url.searchParams.set("domein", domein);
   url.searchParams.delete("screen");
   url.searchParams.delete("fav");
+  url.searchParams.delete("laag");
   url.searchParams.delete("schap");
   url.searchParams.delete("blik");
   if (deel) {
@@ -417,6 +467,7 @@ export function buildDashboardVoortgangHref(
   _blik?: null,
   domein?: PillarId | null,
   fav?: PillarId | null,
+  laag?: VoedingLaagSlug | null,
 ): string {
   const params = new URLSearchParams({ tab: "voortgang" });
   let resolvedScreen = screen && screen !== "hub" ? screen : null;
@@ -435,6 +486,9 @@ export function buildDashboardVoortgangHref(
   }
   if (resolvedScreen === "leefstijlprofiel" && resolvedFav) {
     params.set("fav", resolvedFav);
+    if (resolvedFav === "voeding" && isVoedingLaagSlug(laag)) {
+      params.set("laag", laag);
+    }
   }
   return `/dashboard?${params.toString()}`;
 }
@@ -442,6 +496,7 @@ export function buildDashboardVoortgangHref(
 export type SyncDashboardVoortgangOptions = {
   domein?: PillarId | null;
   fav?: PillarId | null;
+  laag?: VoedingLaagSlug | null;
 };
 
 export function syncDashboardVoortgangScreenParam(
@@ -463,6 +518,7 @@ export function syncDashboardVoortgangScreenParam(
     url.searchParams.delete("screen");
     url.searchParams.delete("domein");
     url.searchParams.delete("fav");
+    url.searchParams.delete("laag");
     url.searchParams.delete("deel");
     url.searchParams.delete("schap");
   } else {
@@ -472,8 +528,14 @@ export function syncDashboardVoortgangScreenParam(
     url.searchParams.delete("schap");
     if (screen === "leefstijlprofiel" && options?.fav) {
       url.searchParams.set("fav", options.fav);
+      if (options.fav === "voeding" && isVoedingLaagSlug(options.laag)) {
+        url.searchParams.set("laag", options.laag);
+      } else {
+        url.searchParams.delete("laag");
+      }
     } else {
       url.searchParams.delete("fav");
+      url.searchParams.delete("laag");
     }
   }
 
@@ -648,6 +710,7 @@ export function syncDashboardTabParam(
   url.searchParams.delete("blik");
   url.searchParams.delete("domein");
   url.searchParams.delete("fav");
+  url.searchParams.delete("laag");
   url.searchParams.delete("deel");
   url.searchParams.delete("schap");
   if (tab === "agenda" || tab === "vandaag") {

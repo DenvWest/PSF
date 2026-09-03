@@ -1,5 +1,9 @@
 import { PILLAR } from "@/data/dashboard";
-import { buildDashboardKeuzeHref } from "@/lib/dashboard-url";
+import { NUTRITION_LAYERS } from "@/data/nutrition/lifestyle-pyramid";
+import {
+  buildDashboardKeuzeHref,
+  type VoedingLaagSlug,
+} from "@/lib/dashboard-url";
 import { hasSchap, schapGateReason } from "@/lib/schap-availability";
 import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
@@ -146,6 +150,23 @@ export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
   { id: "hub", label: "Overzicht", icon: "Home" },
   { id: "leefstijlprofiel", label: "Leefstijlprofiel", icon: "User" },
   { id: "hermeting", label: "Hermeting", icon: "Calendar" },
+];
+
+export type VoedingRailLayer = {
+  id: 5 | 6;
+  slug: VoedingLaagSlug;
+  label: string;
+};
+
+function voedingRailLayer(slug: VoedingLaagSlug, id: 5 | 6): VoedingRailLayer {
+  const layer = NUTRITION_LAYERS.find((item) => item.id === slug);
+  return { id, slug, label: layer?.name ?? slug };
+}
+
+/** P5/P6 onder Voeding in de voortgang-rail — zelfde namen als de ladder. */
+export const VOEDING_RAIL_LAYERS: readonly VoedingRailLayer[] = [
+  voedingRailLayer("meten-timing", 5),
+  voedingRailLayer("aanvullen", 6),
 ];
 
 export function resolveVoortgangRailActiveItem(screen: VoortgangScreen): VoortgangRailItemId {

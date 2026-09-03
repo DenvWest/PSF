@@ -150,6 +150,9 @@ import {
   parseLeefstijlprofielDomeinFromUrl,
   parseKeuzeDomeinFromUrl,
   parseVoortgangScreenFromUrl,
+  parseVoedingLaagFromUrl,
+  isVoedingLaagSlug,
+  voedingLaagIdFromSlug,
   canonicalizeDashboardTabParam,
   canonicalizeVoortgangScreenParam,
   getLegacyVoortgangScreenAlias,
@@ -161,6 +164,7 @@ import {
   syncDashboardVoortgangScreenParam,
   type AgendaViewId,
   type SyncDashboardVoortgangOptions,
+  type VoedingLaagSlug,
 } from "@/lib/dashboard-url";
 import type {
   AccountPriorityPrefData,
@@ -213,6 +217,7 @@ type SharedSectionProps = {
   ) => void;
   onOpenInzichten: () => void;
   leefstijlprofielDomein: PillarId | null;
+  voedingLaag: VoedingLaagSlug | null;
   /** Het domein waarvan de Keuze-tab het aanbod toont. */
   keuzeDomein: PillarId | null;
   /** Actief onderdeel op de Keuze-tab. */
@@ -2759,6 +2764,7 @@ const SECTION_RENDERERS: Record<
         tab={props.tab}
         screen={props.voortgangScreen}
         leefstijlprofielDomein={props.leefstijlprofielDomein}
+        voedingLaag={props.voedingLaag}
         hermetingSlot={
           props.empty ? null : (
             <div className="flex flex-col gap-4">
@@ -2889,6 +2895,9 @@ function DashboardContent({
     initialVoortgangScreen ?? "hub",
   );
   const [leefstijlprofielDomein, setLeefstijlprofielDomein] = useState<PillarId | null>(null);
+  const [voedingLaag, setVoedingLaag] = useState<VoedingLaagSlug | null>(() =>
+    parseVoedingLaagFromUrl(`http://localhost/dashboard?${searchParams.toString()}`),
+  );
   // Het domein van de Keuze-tab zodra de gebruiker hem hier wisselt: `pushState`
   // werkt `useSearchParams` niet bij, dus de URL is de bron bij binnenkomst en
   // deze staat wint daarna.
@@ -2987,6 +2996,9 @@ function DashboardContent({
       ? activeVoortgangFavDomein
       : null;
 
+  const activeVoedingLaag =
+    activeLeefstijlprofielDomein === "voeding" ? voedingLaag : null;
+
   /**
    * Welk schap de Keuze-tab opent: het domein uit de URL, anders het domein dat
    * je op Leefstijlprofiel bekijkt, anders je prioriteit. `null` betekent dat
@@ -3070,24 +3082,35 @@ function DashboardContent({
       if (screen === "inzichten") {
         setVoortgangScreen("leefstijlprofiel");
         setLeefstijlprofielDomein(null);
+        setVoedingLaag(null);
         syncDashboardVoortgangScreenParam("leefstijlprofiel");
         return;
       }
       if (screen === "domein") {
         const nextDomein = options?.domein ?? options?.fav ?? null;
+        const nextLaag =
+          nextDomein === "voeding" && isVoedingLaagSlug(options?.laag) ? options.laag : null;
         setVoortgangScreen("leefstijlprofiel");
         setLeefstijlprofielDomein(nextDomein);
-        syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: nextDomein });
+        setVoedingLaag(nextLaag);
+        syncDashboardVoortgangScreenParam("leefstijlprofiel", {
+          fav: nextDomein,
+          laag: nextLaag,
+        });
         return;
       }
       setVoortgangScreen(screen);
       if (screen === "leefstijlprofiel") {
         const nextFav =
           options && "fav" in options ? (options.fav ?? null) : leefstijlprofielDomein;
+        const nextLaag =
+          nextFav === "voeding" && isVoedingLaagSlug(options?.laag) ? options.laag : null;
         setLeefstijlprofielDomein(nextFav);
-        syncDashboardVoortgangScreenParam(screen, { fav: nextFav });
+        setVoedingLaag(nextLaag);
+        syncDashboardVoortgangScreenParam(screen, { fav: nextFav, laag: nextLaag });
         return;
       }
+      setVoedingLaag(null);
       syncDashboardVoortgangScreenParam(screen);
     },
     [leefstijlprofielDomein],
@@ -3145,7 +3168,21 @@ function DashboardContent({
         surface,
       });
       clarityTag("dashboard_voortgang", `leefstijlprofiel_${domain}`);
-      handleVoortgangScreenChange("leefstijlprofiel", { fav: domain });
+      handleVoortgangScreenChange("leefstijlprofiel", { fav: domain, laag: null });
+    },
+    [handleVoortgangScreenChange],
+  );
+
+  const handleVoortgangVoedingLaagOpen = useCallback(
+    (laag: VoedingLaagSlug, surface: "rail" | "topnav") => {
+      trackEvent("dashboard_voortgang_hub_click", {
+        destination: "leefstijlprofiel",
+        domain: "voeding",
+        layer: voedingLaagIdFromSlug(laag),
+        surface,
+      });
+      clarityTag("dashboard_voortgang", `leefstijlprofiel_voeding_${laag}`);
+      handleVoortgangScreenChange("leefstijlprofiel", { fav: "voeding", laag });
     },
     [handleVoortgangScreenChange],
   );
@@ -3160,6 +3197,11 @@ function DashboardContent({
     [handleVoortgangDomeinOpen],
   );
 
+  const handleRailVoedingLaagOpen = useCallback(
+    (laag: VoedingLaagSlug) => handleVoortgangVoedingLaagOpen(laag, "rail"),
+    [handleVoortgangVoedingLaagOpen],
+  );
+
   const handleTopNavVoortgangOpen = useCallback(
     (item: VoortgangRailItemId) => handleVoortgangItemOpen(item, "topnav"),
     [handleVoortgangItemOpen],
@@ -3168,6 +3210,11 @@ function DashboardContent({
   const handleTopNavLeefstijlprofielDomeinOpen = useCallback(
     (domain: PillarId) => handleVoortgangDomeinOpen(domain, "topnav"),
     [handleVoortgangDomeinOpen],
+  );
+
+  const handleTopNavVoedingLaagOpen = useCallback(
+    (laag: VoedingLaagSlug) => handleVoortgangVoedingLaagOpen(laag, "topnav"),
+    [handleVoortgangVoedingLaagOpen],
   );
 
   /** Domeinschakelaar van de Keuze-tab in de linker rail (md+). */
@@ -3216,9 +3263,13 @@ function DashboardContent({
         if (parsedScreen === "leefstijlprofiel" || parsedScreen === "domein") {
           const urlFav = parseLeefstijlprofielDomeinFromUrl(url);
           setLeefstijlprofielDomein(urlFav);
+          setVoedingLaag(parseVoedingLaagFromUrl(url));
+        } else {
+          setVoedingLaag(null);
         }
       } else {
         setVoortgangScreen("hub");
+        setVoedingLaag(null);
         if (parsedTab === "keuze") {
           setKeuzeDomeinOverride(resolveSchapDomain(parseKeuzeDomeinFromUrl(url)));
         }
@@ -3278,6 +3329,7 @@ function DashboardContent({
       }
       if (parsedTab === "voortgang") {
         setVoortgangScreen(parseVoortgangScreenFromUrl(url));
+        setVoedingLaag(parseVoedingLaagFromUrl(url));
       }
       if (parsedTab === "keuze") {
         setKeuzeDomeinOverride(resolveSchapDomain(parseKeuzeDomeinFromUrl(url)));
@@ -3303,6 +3355,7 @@ function DashboardContent({
     }
     if (nextTab === "voortgang" && tab === "voortgang" && voortgangScreen !== "hub") {
       setVoortgangScreen("hub");
+      setVoedingLaag(null);
       syncDashboardVoortgangScreenParam("hub");
       trackEvent("dashboard_voortgang_tab_reset", {
         source: "tabbar",
@@ -3312,8 +3365,10 @@ function DashboardContent({
     }
     if (nextTab !== "voortgang") {
       setVoortgangScreen("hub");
+      setVoedingLaag(null);
     } else if (nextTab !== tab) {
       setVoortgangScreen("hub");
+      setVoedingLaag(null);
     }
     // De tab-balk is het "opnieuw beginnen"-gebaar: hij laat de Keuze-tab
     // terugvallen op je prioriteitsdomein, net zoals Kompas terugvalt op de
@@ -3336,6 +3391,7 @@ function DashboardContent({
     }
     setVoortgangScreen("leefstijlprofiel");
     setLeefstijlprofielDomein(domain);
+    setVoedingLaag(null);
     syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: domain });
     setTab("voortgang");
   };
@@ -3412,6 +3468,7 @@ function DashboardContent({
     onVoortgangScreenChange: handleVoortgangScreenChange,
     onOpenInzichten: () => handleVoortgangScreenChange("leefstijlprofiel", { fav: null }),
     leefstijlprofielDomein: activeLeefstijlprofielDomein,
+    voedingLaag: activeVoedingLaag,
     keuzeDomein: activeKeuzeDomein,
     keuzeDeel: activeKeuzeDeel,
     onGoKeuze: handleGoKeuze,
@@ -3611,9 +3668,11 @@ function DashboardContent({
       <VoortgangTopNav
         activeItem={resolveVoortgangRailActiveItem(voortgangScreen)}
         leefstijlprofielDomein={activeLeefstijlprofielDomein}
+        voedingLaag={activeVoedingLaag}
         domains={railDomainItems}
         onOpenItem={handleTopNavVoortgangOpen}
         onOpenDomein={handleTopNavLeefstijlprofielDomeinOpen}
+        onOpenVoedingLaag={handleTopNavVoedingLaagOpen}
       />
     ) : null;
 
@@ -3653,6 +3712,8 @@ function DashboardContent({
         railVoortgangDomains={railDomainItems}
         onOpenVoortgangItem={handleRailVoortgangOpen}
         onOpenLeefstijlprofielDomein={handleRailLeefstijlprofielDomeinOpen}
+        railVoortgangVoedingLaag={activeVoedingLaag}
+        onOpenVoedingLaag={handleRailVoedingLaagOpen}
         railKeuzeDomains={keuzeRailDomains}
         railKeuzeActiveDomein={activeKeuzeDomein}
         onOpenKeuzeDomein={handleRailKeuzeDomeinOpen}

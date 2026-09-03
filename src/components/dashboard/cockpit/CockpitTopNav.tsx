@@ -30,6 +30,8 @@ export type CockpitTopNavItem = {
   active?: boolean;
   /** Hangt onder het item erboven (bijv. domeinen onder Leefstijlprofiel). */
   indent?: boolean;
+  /** Tweede nest (bijv. P5/P6 onder Voeding). `indent` blijft 1. */
+  indentLevel?: 1 | 2;
   /**
    * Zichtbaar maar niet aanklikbaar — met de reden als `title`. Voor
    * bestemmingen die bewust dicht staan (bijv. een domein zonder aanbod op de
@@ -198,9 +200,17 @@ export default function CockpitTopNav({
 
             // De ingesprongen items krijgen een doorlopende geleidelijn: de
             // rand van de wrapper, niet die van de knop — die is al in gebruik
-            // voor de actieve staat.
-            return item.indent ? (
-              <div key={item.id} className="ml-3 border-l border-white/10 pl-2">
+            // voor de actieve staat. Level 2 hangt visueel onder Voeding, niet
+            // als extra domein.
+            const indentLevel = item.indentLevel ?? (item.indent ? 1 : 0);
+            const indentClass =
+              indentLevel === 2
+                ? "ml-6 border-l border-white/10 pl-2"
+                : indentLevel === 1
+                  ? "ml-3 border-l border-white/10 pl-2"
+                  : undefined;
+            return indentClass ? (
+              <div key={item.id} className={indentClass}>
                 {button}
               </div>
             ) : (

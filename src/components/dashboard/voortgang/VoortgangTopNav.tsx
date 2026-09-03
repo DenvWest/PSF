@@ -4,7 +4,12 @@ import CockpitTopNav, {
   type CockpitTopNavItem,
 } from "@/components/dashboard/cockpit/CockpitTopNav";
 import { PILLAR } from "@/data/dashboard";
-import type { ContextRailDomainItem, VoortgangRailItemId } from "@/lib/context-rail";
+import {
+  VOEDING_RAIL_LAYERS,
+  type ContextRailDomainItem,
+  type VoortgangRailItemId,
+} from "@/lib/context-rail";
+import type { VoedingLaagSlug } from "@/lib/dashboard-url";
 import type { PillarId } from "@/types/dashboard";
 
 /**
@@ -16,15 +21,18 @@ type VoortgangTopNavProps = {
   activeItem: VoortgangRailItemId;
   /** Het domein binnen het leefstijlprofiel, of `null` op de keuzehub. */
   leefstijlprofielDomein: PillarId | null;
+  voedingLaag?: VoedingLaagSlug | null;
   domains: ContextRailDomainItem[];
   onOpenItem: (item: VoortgangRailItemId) => void;
   onOpenDomein: (domain: PillarId) => void;
+  onOpenVoedingLaag?: (laag: VoedingLaagSlug) => void;
 };
 
 function resolveTitle({
   activeItem,
   leefstijlprofielDomein,
-}: Pick<VoortgangTopNavProps, "activeItem" | "leefstijlprofielDomein">): {
+  voedingLaag,
+}: Pick<VoortgangTopNavProps, "activeItem" | "leefstijlprofielDomein" | "voedingLaag">): {
   title: string;
   icon: string;
   color?: string;
@@ -33,6 +41,14 @@ function resolveTitle({
     return { title: "Hermeting", icon: "Calendar" };
   }
   if (activeItem === "leefstijlprofiel") {
+    if (leefstijlprofielDomein === "voeding" && voedingLaag) {
+      const layer = VOEDING_RAIL_LAYERS.find((item) => item.slug === voedingLaag);
+      return {
+        title: `Voeding · ${layer?.label ?? voedingLaag}`,
+        icon: "User",
+        color: PILLAR.voeding.color,
+      };
+    }
     return leefstijlprofielDomein
       ? {
           title: `Leefstijlprofiel · ${PILLAR[leefstijlprofielDomein].label}`,
@@ -47,11 +63,17 @@ function resolveTitle({
 export default function VoortgangTopNav({
   activeItem,
   leefstijlprofielDomein,
+  voedingLaag = null,
   domains,
   onOpenItem,
   onOpenDomein,
+  onOpenVoedingLaag,
 }: VoortgangTopNavProps) {
-  const { title, icon, color } = resolveTitle({ activeItem, leefstijlprofielDomein });
+  const { title, icon, color } = resolveTitle({
+    activeItem,
+    leefstijlprofielDomein,
+    voedingLaag,
+  });
 
   const items: CockpitTopNavItem[] = [
     {
@@ -68,15 +90,37 @@ export default function VoortgangTopNav({
       active: activeItem === "leefstijlprofiel" && !leefstijlprofielDomein,
       onSelect: () => onOpenItem("leefstijlprofiel"),
     },
-    ...domains.map((domain) => ({
-      id: `domein-${domain.id}`,
-      label: domain.label,
-      dotColor: domain.color,
-      trailing: String(domain.score),
-      indent: true,
-      active: activeItem === "leefstijlprofiel" && leefstijlprofielDomein === domain.id,
-      onSelect: () => onOpenDomein(domain.id),
-    })),
+    ...domains.flatMap((domain) => {
+      const domainItem: CockpitTopNavItem = {
+        id: `domein-${domain.id}`,
+        label: domain.label,
+        dotColor: domain.color,
+        trailing: String(domain.score),
+        indent: true,
+        active:
+          activeItem === "leefstijlprofiel" &&
+          leefstijlprofielDomein === domain.id &&
+          (domain.id !== "voeding" || voedingLaag == null),
+        onSelect: () => onOpenDomein(domain.id),
+      };
+      if (domain.id !== "voeding") {
+        return [domainItem];
+      }
+      return [
+        domainItem,
+        ...VOEDING_RAIL_LAYERS.map((layer) => ({
+          id: `voeding-laag-${layer.slug}`,
+          label: layer.label,
+          indent: true,
+          indentLevel: 2 as const,
+          active:
+            activeItem === "leefstijlprofiel" &&
+            leefstijlprofielDomein === "voeding" &&
+            voedingLaag === layer.slug,
+          onSelect: () => onOpenVoedingLaag?.(layer.slug),
+        })),
+      ];
+    }),
     {
       id: "hermeting",
       label: "Hermeting",

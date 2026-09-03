@@ -8,8 +8,13 @@ import VoortgangTerugLink from "@/components/dashboard/voortgang/VoortgangTerugL
 import LeefstijlprofielDomeinScherm from "@/components/dashboard/voortgang/LeefstijlprofielDomeinScherm";
 import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
 import { clarityTag } from "@/lib/clarity";
+import {
+  type SyncDashboardVoortgangOptions,
+  type VoedingLaagSlug,
+  voedingLaagIdFromSlug,
+  voedingLaagSlugFromId,
+} from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
-import type { SyncDashboardVoortgangOptions } from "@/lib/dashboard-url";
 import type {
   AccountPriorityPrefData,
   DashboardData,
@@ -27,6 +32,7 @@ type VoortgangHubProps = {
   tab: DashboardTabId;
   screen: VoortgangScreen;
   leefstijlprofielDomein: PillarId | null;
+  voedingLaag?: VoedingLaagSlug | null;
   /**
    * Het hermeting-scherm. Komt als slot binnen omdat de secties (`retest`,
    * `future`) in `Dashboard.tsx` wonen en daar hun data al krijgen — tot 27
@@ -46,6 +52,7 @@ function VoortgangHubInner({
   tab,
   screen,
   leefstijlprofielDomein,
+  voedingLaag = null,
   hermetingSlot,
   onScreenChange,
   onGoAgenda,
@@ -72,7 +79,7 @@ function VoortgangHubInner({
       domain,
     });
     clarityTag("dashboard_voortgang", `leefstijlprofiel_${domain}`);
-    navigate("leefstijlprofiel", { fav: domain });
+    navigate("leefstijlprofiel", { fav: domain, laag: null });
   };
 
   let content: ReactNode;
@@ -88,6 +95,21 @@ function VoortgangHubInner({
         model={model!}
         data={data}
         domain={leefstijlprofielDomein}
+        urlLayer={
+          leefstijlprofielDomein === "voeding" && voedingLaag
+            ? voedingLaagIdFromSlug(voedingLaag)
+            : null
+        }
+        onUrlLayerChange={
+          leefstijlprofielDomein === "voeding"
+            ? (layer) => {
+                navigate("leefstijlprofiel", {
+                  fav: "voeding",
+                  laag: layer == null ? null : voedingLaagSlugFromId(layer),
+                });
+              }
+            : undefined
+        }
         onBack={goBack}
         onOpenSchap={onGoKeuze}
       />

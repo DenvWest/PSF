@@ -280,6 +280,8 @@ export default function LeefstijlprofielDomeinScherm({
   data,
   domain,
   adviesExtra,
+  urlLayer = null,
+  onUrlLayerChange,
   onBack,
   onOpenSchap,
 }: {
@@ -287,6 +289,9 @@ export default function LeefstijlprofielDomeinScherm({
   data?: DashboardData;
   domain: PillarId;
   adviesExtra?: ReactNode;
+  /** Deep link vanuit de rail/topnav: P5 of P6 op Voeding. */
+  urlLayer?: 5 | 6 | null;
+  onUrlLayerChange?: (layer: 5 | 6 | null) => void;
   onBack: () => void;
   onOpenSchap: (domain: PillarId) => void;
 }) {
@@ -300,15 +305,45 @@ export default function LeefstijlprofielDomeinScherm({
   );
 
   const [picked, setPicked] = useState<{ domain: PillarId; layer: number | null } | null>(
-    null,
+    urlLayer != null ? { domain, layer: urlLayer } : null,
   );
   const [p6FocusNutrient, setP6FocusNutrient] = useState<NutrientId | null>(null);
+
+  useEffect(() => {
+    if (urlLayer === 5 || urlLayer === 6) {
+      setPicked({ domain, layer: urlLayer });
+      return;
+    }
+    setPicked((prev) => {
+      if (prev?.domain !== domain) {
+        return null;
+      }
+      if (prev.layer === 5 || prev.layer === 6) {
+        return null;
+      }
+      return prev;
+    });
+  }, [domain, urlLayer]);
+
   const pickedForDomain = picked?.domain === domain ? picked : null;
   const openLadderLayer = pickedForDomain
     ? pickedForDomain.layer
-    : (readout?.focusLayer ?? null);
+    : urlLayer != null
+      ? urlLayer
+      : (readout?.focusLayer ?? null);
 
   const hasConclusion = readout !== null;
+  const controlLadder = readout != null || domain === "voeding";
+
+  const handleOpenLayerChange = (next: number | null) => {
+    if (next == null) {
+      return;
+    }
+    setPicked({ domain, layer: next });
+    if (domain === "voeding") {
+      onUrlLayerChange?.(next === 5 || next === 6 ? next : null);
+    }
+  };
 
   useEffect(() => {
     trackEvent("domain_tool.snapshot_viewed", {
@@ -338,6 +373,9 @@ export default function LeefstijlprofielDomeinScherm({
   const handleGoP6 = (nutrient: NutrientId) => {
     setP6FocusNutrient(nutrient);
     setPicked({ domain, layer: 6 });
+    if (domain === "voeding") {
+      onUrlLayerChange?.(6);
+    }
   };
 
   const handleOpenSchap = () => {
@@ -405,10 +443,8 @@ export default function LeefstijlprofielDomeinScherm({
             evidenceByLayer={readout?.evidenceByLayer}
             meetreeks={meetreeks}
             chartColor={pillar.color}
-            openLayer={readout ? openLadderLayer : undefined}
-            onOpenLayerChange={
-              readout ? (next) => setPicked({ domain, layer: next }) : undefined
-            }
+            openLayer={controlLadder ? openLadderLayer : undefined}
+            onOpenLayerChange={controlLadder ? handleOpenLayerChange : undefined}
             layerExtra={
               isKompasDomain
                 ? (layerId) => (
@@ -459,7 +495,16 @@ export default function LeefstijlprofielDomeinScherm({
             {readout.focusLayer}.{" "}
             <button
               type="button"
-              onClick={() => setPicked({ domain, layer: readout.focusLayer })}
+              onClick={() => {
+                setPicked({ domain, layer: readout.focusLayer });
+                if (domain === "voeding") {
+                  onUrlLayerChange?.(
+                    readout.focusLayer === 5 || readout.focusLayer === 6
+                      ? readout.focusLayer
+                      : null,
+                  );
+                }
+              }}
               className="cursor-pointer border-none bg-transparent p-0 text-left font-semibold text-[#9CC5A9] underline"
             >
               Terug daarheen

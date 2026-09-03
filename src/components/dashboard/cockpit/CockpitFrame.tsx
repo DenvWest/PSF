@@ -19,6 +19,7 @@ import type {
   ContextRailToolId,
   VoortgangRailItemId,
 } from "@/lib/context-rail";
+import type { VoedingLaagSlug } from "@/lib/dashboard-url";
 import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
 type CockpitFrameProps = {
@@ -45,6 +46,8 @@ type CockpitFrameProps = {
   railVoortgangDomains?: ContextRailDomainItem[];
   onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
   onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
+  railVoortgangVoedingLaag?: VoedingLaagSlug | null;
+  onOpenVoedingLaag?: (laag: VoedingLaagSlug) => void;
   railKeuzeDomains?: ContextRailKeuzeItem[];
   railKeuzeActiveDomein?: PillarId | null;
   onOpenKeuzeDomein?: (id: PillarId) => void;
@@ -126,6 +129,8 @@ export default function CockpitFrame({
   railVoortgangDomains,
   onOpenVoortgangItem,
   onOpenLeefstijlprofielDomein,
+  railVoortgangVoedingLaag = null,
+  onOpenVoedingLaag,
   railKeuzeDomains,
   railKeuzeActiveDomein = null,
   onOpenKeuzeDomein,
@@ -315,6 +320,8 @@ export default function CockpitFrame({
             voortgangDomains={railVoortgangDomains}
             onOpenVoortgangItem={onOpenVoortgangItem}
             onOpenLeefstijlprofielDomein={onOpenLeefstijlprofielDomein}
+            voortgangVoedingLaag={railVoortgangVoedingLaag}
+            onOpenVoedingLaag={onOpenVoedingLaag}
             keuzeDomains={railKeuzeDomains}
             keuzeActiveDomein={railKeuzeActiveDomein}
             onOpenKeuzeDomein={onOpenKeuzeDomein}

@@ -255,4 +255,22 @@ describe("LeefstijlprofielDomeinScherm", () => {
     fireEvent.click(screen.getByRole("button", { name: "Jouw check" }));
     expect(screen.getByText("Dit komt uit je voedingscheck.")).toBeTruthy();
   });
+
+  it("opent Meten & timing via urlLayer zonder voedingscheck", () => {
+    render(
+      <LeefstijlprofielDomeinScherm
+        model={model}
+        data={buildData()}
+        domain="voeding"
+        urlLayer={5}
+        onBack={vi.fn()}
+        onOpenSchap={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("heading", { name: "Meten & timing" })).toBeTruthy();
+    expect(screen.getByRole("tab", { name: /Meten & timing/ }).getAttribute("aria-selected")).toBe(
+      "true",
+    );
+  });
 });

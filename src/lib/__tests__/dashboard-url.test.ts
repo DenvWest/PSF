@@ -17,6 +17,10 @@ import {
   parseKeuzeDeelFromUrl,
   parseKeuzeDomeinFromUrl,
   parseVoortgangScreenFromUrl,
+  parseVoedingLaagFromUrl,
+  isVoedingLaagSlug,
+  voedingLaagIdFromSlug,
+  voedingLaagSlugFromId,
   canonicalizeDashboardTabParam,
   canonicalizeVoortgangScreenParam,
   getLegacyVoortgangScreenAlias,
@@ -154,6 +158,21 @@ describe("buildDashboardVoortgangHref", () => {
   it("includes fav for leefstijlprofiel deep links", () => {
     expect(buildDashboardVoortgangHref("leefstijlprofiel", null, null, "beweging")).toBe(
       "/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging",
+    );
+  });
+
+  it("includes laag only on voeding P5/P6 shortcuts", () => {
+    expect(
+      buildDashboardVoortgangHref("leefstijlprofiel", null, null, "voeding", "meten-timing"),
+    ).toBe("/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=meten-timing");
+    expect(
+      buildDashboardVoortgangHref("leefstijlprofiel", null, null, "voeding", "aanvullen"),
+    ).toBe("/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=aanvullen");
+    expect(
+      buildDashboardVoortgangHref("leefstijlprofiel", null, null, "beweging", "meten-timing"),
+    ).toBe("/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging");
+    expect(buildDashboardVoortgangHref("leefstijlprofiel", null, null, "voeding")).toBe(
+      "/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding",
     );
   });
 
@@ -307,6 +326,50 @@ describe("parseLeefstijlprofielDomeinFromUrl", () => {
   });
 });
 
+describe("parseVoedingLaagFromUrl", () => {
+  it("leest geldige slugs alleen op voeding", () => {
+    expect(
+      parseVoedingLaagFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=meten-timing",
+      ),
+    ).toBe("meten-timing");
+    expect(
+      parseVoedingLaagFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=aanvullen",
+      ),
+    ).toBe("aanvullen");
+  });
+
+  it("negeert laag op andere domeinen en onbekende slugs", () => {
+    expect(
+      parseVoedingLaagFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging&laag=meten-timing",
+      ),
+    ).toBeNull();
+    expect(
+      parseVoedingLaagFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=5",
+      ),
+    ).toBeNull();
+    expect(
+      parseVoedingLaagFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding",
+      ),
+    ).toBeNull();
+  });
+
+  it("mapt slug naar ladderlaag 5/6", () => {
+    expect(isVoedingLaagSlug("meten-timing")).toBe(true);
+    expect(isVoedingLaagSlug("aanvullen")).toBe(true);
+    expect(isVoedingLaagSlug("5")).toBe(false);
+    expect(voedingLaagIdFromSlug("meten-timing")).toBe(5);
+    expect(voedingLaagIdFromSlug("aanvullen")).toBe(6);
+    expect(voedingLaagSlugFromId(5)).toBe("meten-timing");
+    expect(voedingLaagSlugFromId(6)).toBe("aanvullen");
+    expect(voedingLaagSlugFromId(1)).toBeNull();
+  });
+});
+
 describe("syncDashboardVoortgangScreenParam", () => {
   it("sets and clears screen on voortgang tab", () => {
     const originalPush = window.history.pushState;
@@ -335,6 +398,64 @@ describe("syncDashboardVoortgangScreenParam", () => {
     nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).toContain("tab=voortgang");
     expect(nextUrl).not.toContain("screen=");
+
+    window.history.pushState = originalPush;
+  });
+
+  it("zet en wist laag op voeding, en wist hem bij domeinwissel", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL("http://localhost/dashboard?tab=voortgang"),
+    });
+
+    syncDashboardVoortgangScreenParam("leefstijlprofiel", {
+      fav: "voeding",
+      laag: "meten-timing",
+    });
+    let nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("fav=voeding");
+    expect(nextUrl).toContain("laag=meten-timing");
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL(nextUrl),
+    });
+    pushState.mockClear();
+
+    syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: "voeding" });
+    nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("fav=voeding");
+    expect(nextUrl).not.toContain("laag=");
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL(
+        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=aanvullen",
+      ),
+    });
+    pushState.mockClear();
+
+    syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: "slaap" });
+    nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("fav=slaap");
+    expect(nextUrl).not.toContain("laag=");
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL(
+        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=meten-timing",
+      ),
+    });
+    pushState.mockClear();
+
+    syncDashboardVoortgangScreenParam("hub");
+    nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).not.toContain("laag=");
+    expect(nextUrl).not.toContain("fav=");
 
     window.history.pushState = originalPush;
   });

@@ -5,6 +5,7 @@ import {
   buildKompasRailDomains,
   resolveVoortgangRailActiveItem,
   KOMPAS_RAIL_PILLAR_IDS,
+  VOEDING_RAIL_LAYERS,
   VOORTGANG_RAIL_ITEMS,
 } from "@/lib/context-rail";
 
@@ -81,6 +82,18 @@ describe("buildDomainRailTools", () => {
     expect(check?.disabled).toBe(true);
     expect(check?.href).toBeUndefined();
     expect(check?.disabledHint).toContain("hermeting");
+  });
+});
+
+describe("VOEDING_RAIL_LAYERS", () => {
+  it("draagt Meten & timing en Aanvullen & vergelijken als P5/P6-slugs", () => {
+    expect(VOEDING_RAIL_LAYERS.map((layer) => layer.slug)).toEqual([
+      "meten-timing",
+      "aanvullen",
+    ]);
+    expect(VOEDING_RAIL_LAYERS.map((layer) => layer.id)).toEqual([5, 6]);
+    expect(VOEDING_RAIL_LAYERS[0]?.label).toBe("Meten & timing");
+    expect(VOEDING_RAIL_LAYERS[1]?.label).toBe("Aanvullen & vergelijken");
   });
 });
 

@@ -75,6 +75,31 @@ describe("VoortgangTopNav", () => {
     }
   });
 
+  it("draagt Meten & timing en Aanvullen & vergelijken onder Voeding", () => {
+    renderNav();
+    openPanel();
+    expect(screen.getByRole("menuitem", { name: "Meten & timing" })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: "Aanvullen & vergelijken" })).toBeTruthy();
+  });
+
+  it("opent een voeding-laag vanuit het paneel", () => {
+    const onOpenVoedingLaag = vi.fn();
+    renderNav({ onOpenVoedingLaag });
+    openPanel();
+    fireEvent.click(screen.getByRole("menuitem", { name: "Meten & timing" }));
+    expect(onOpenVoedingLaag).toHaveBeenCalledWith("meten-timing");
+    expect(screen.queryByRole("menu")).toBeNull();
+  });
+
+  it("noemt ingeklapt de open voeding-laag", () => {
+    renderNav({
+      activeItem: "leefstijlprofiel",
+      leefstijlprofielDomein: "voeding",
+      voedingLaag: "aanvullen",
+    });
+    expect(screen.getByRole("button", { name: /Voeding · Aanvullen & vergelijken/ })).toBeTruthy();
+  });
+
   it("sluit het paneel zodra je een bestemming kiest", () => {
     renderNav();
     openPanel();
