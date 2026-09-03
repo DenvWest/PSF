@@ -18,6 +18,7 @@ import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
 import VoedingskwaliteitLaag from "@/components/nutrition/VoedingskwaliteitLaag";
 import SituatieVoedingLaag from "@/components/nutrition/SituatieVoedingLaag";
 import MetenTijdLaag from "@/components/nutrition/MetenTijdLaag";
+import NutritionReflectiePaneel from "@/components/dashboard/voortgang/NutritionReflectiePaneel";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
 import { trackEvent } from "@/lib/ga4";
@@ -238,7 +239,16 @@ function NutritionLayerSlot({
   }
 
   if (layerId === 5) {
-    return <MetenTijdLaag meetreeks={meetreeks} surface="leefstijlprofiel_voeding" />;
+    // De eigen reeks zegt of het de goede kant op gaat; de terugblik zegt of
+    // wat je plande ook lukte. Twee soorten "meten" op de laag die er zijn
+    // naam aan ontleent — en de terugblik is de enige weg terug van een
+    // gepland moment naar je voortgang.
+    return (
+      <>
+        <MetenTijdLaag meetreeks={meetreeks} surface="leefstijlprofiel_voeding" />
+        <NutritionReflectiePaneel surface="leefstijlprofiel_voeding" />
+      </>
+    );
   }
 
   if (layerId === 4 && readout) {

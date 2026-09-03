@@ -17,6 +17,8 @@ type ClientEmitType = Extract<
   | "nutrition.basis_category_viewed"
   | "nutrition.kompas_priorities_viewed"
   | "nutrition.kompas_priority_clicked"
+  | "nutrition.reflectie_shown"
+  | "nutrition.reflectie_answered"
   | "nutrition.basis_category_expanded"
   | "nutrition.roadmap_step_opened"
   | "nutrition.sufficiency_viewed"

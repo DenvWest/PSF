@@ -94,6 +94,8 @@ export const DOMAIN_EVENT_TYPES = [
   "nutrition.tijdlaag_viewed",
   "nutrition.kompas_priorities_viewed",
   "nutrition.kompas_priority_clicked",
+  "nutrition.reflectie_shown",
+  "nutrition.reflectie_answered",
   // Connection Profile — zelf opgegeven voorkeuren, GEEN gezondheidsdata.
   // De ratio cprofile.completed / cprofile.step_completed{step:1} is de meting
   // die toetst of stap 2 te confronterend is (BESLUIT §12).
