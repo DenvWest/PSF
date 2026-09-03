@@ -199,6 +199,8 @@ export default function NutritionDagboekPaneel({
       if (na.voortgang.compleet && !uitkomst.voortgang.compleet) {
         emitAccountClientEvent("nutrition.dagboek_completed", {
           verschillen: na.verschillen.length,
+          variatie_band: na.variatie.band,
+          dekking: na.variatie.dekking,
           surface,
         });
       }
@@ -247,6 +249,15 @@ export default function NutritionDagboekPaneel({
       {uitkomst.breedte.regel ? (
         <p className="m-0 mt-2 max-w-[58ch] text-[12.5px] leading-relaxed text-[#E7EDE8] text-pretty">
           {uitkomst.breedte.regel}
+        </p>
+      ) : null}
+
+      {/* Variatie na breedte: breedte telt of een groep voorkwam, variatie of
+          hij terugkwam. Die tweede vraag is pas te stellen als de eerste
+          beantwoord is. */}
+      {uitkomst.variatie.regel ? (
+        <p className="m-0 mt-2 max-w-[58ch] text-[12.5px] leading-relaxed text-[#E7EDE8] text-pretty">
+          {uitkomst.variatie.regel}
         </p>
       ) : null}
 

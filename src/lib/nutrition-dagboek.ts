@@ -271,6 +271,48 @@ export type DagboekBreedte = {
   regel: string | null;
 };
 
+/**
+ * Hoe gevarieerd je volwaardige bord staat.
+ *
+ * ## Wat dit meet, en wat niet
+ *
+ * Het dagboek kent porties per groep, geen bronnen. "Hoeveel verschillende
+ * soorten groente" is dus niet te beantwoorden, en een band die zich zo
+ * voordoet zou liegen. Wat er wél in zit zijn twee assen die samen iets
+ * zeggen over variatie:
+ *
+ * - **Dekking** — uit hoeveel van de zeven volwaardige groepen kwam er iets.
+ * - **Consistentie** — kwamen die groepen op elke dag terug, of eenmalig.
+ *
+ * Iemand die vier dagen lang alleen groente en brood eet haalt een lage
+ * dekking. Iemand die op één dag alles eet en drie dagen niets haalt een lage
+ * consistentie. Beide zijn vormen van eenzijdigheid die de breedte-telling uit
+ * `berekenBreedte` niet ziet — die middelt ze weg.
+ *
+ * ## Waarom alleen volwaardige groepen
+ *
+ * Dertig verschillende ultrabewerkte producten is geen gevarieerd
+ * voedingspatroon. Een maat die snacks en dranken meetelt beloont precies het
+ * verkeerde, dus die tellen hier niet mee — zie {@link VOLWAARDIGE_GROEPEN}.
+ *
+ * ## Waarom een band en geen getal
+ *
+ * "Je eet 27 producten" suggereert een precisie die vier dagen niet hebben, en
+ * het nodigt uit tot optimaliseren op het getal. Vier banden zeggen genoeg om
+ * op te handelen en niet meer dan de invoer draagt.
+ */
+export type VariatieBand = "laag" | "gemiddeld" | "goed" | "zeer-gevarieerd";
+
+export type DagboekVariatie = {
+  band: VariatieBand;
+  /** Van hoeveel volwaardige groepen kwam er iets — 0 tot 7. */
+  dekking: number;
+  /** Hoeveel volwaardige groepen op élke dag terugkwamen. */
+  consistent: number;
+  /** Eén regel; null zolang het dagboek niet compleet is. */
+  regel: string | null;
+};
+
 export type DagboekUitkomst = {
   voortgang: DagboekVoortgang;
   /**
@@ -285,6 +327,11 @@ export type DagboekUitkomst = {
    * weekendpatroon vier dagen nodig heeft.
    */
   breedte: DagboekBreedte;
+  /**
+   * Hoe gevarieerd je volwaardige bord staat. Anders dan `breedte` telt dit
+   * alleen volwaardige groepen, en weegt het mee of ze terugkomen.
+   */
+  variatie: DagboekVariatie;
   /** Eén regel over het patroon; null zolang er niets te zeggen valt. */
   samenvatting: string | null;
 };
@@ -407,12 +454,88 @@ function bouwBreedteRegel(
   return `${basis} ${namen.join(", ")} en ${laatste} kwamen op geen enkele dag voor.`;
 }
 
+/**
+ * De variatieband uit dekking en consistentie.
+ *
+ * De drempels zijn vuistregels op een schaal van zeven groepen, geen
+ * gevalideerde norm — vandaar dat de copy nergens "richtlijn" zegt. Ze zijn zo
+ * gekozen dat de middelste twee banden het grootste deel van de patronen
+ * dekken: een band waar bijna niemand in valt, zegt niets.
+ *
+ * Consistentie kan dekking nooit overtreffen (een groep die op elke dag
+ * terugkomt, kwam ook voor), dus de combinatie is altijd zinnig.
+ */
+export function berekenVariatie(dagen: readonly DagboekDag[]): DagboekVariatie {
+  const voortgang = dagboekVoortgang(dagen);
+
+  const dekking = VOLWAARDIGE_GROEPEN.filter((groep) =>
+    dagen.some((dag) => (dag.porties[groep] ?? 0) > 0),
+  ).length;
+
+  const consistent = VOLWAARDIGE_GROEPEN.filter((groep) =>
+    dagen.length > 0 && dagen.every((dag) => (dag.porties[groep] ?? 0) > 0),
+  ).length;
+
+  const band: VariatieBand =
+    dekking >= 6 && consistent >= 4
+      ? "zeer-gevarieerd"
+      : dekking >= 5 && consistent >= 2
+        ? "goed"
+        : dekking >= 3
+          ? "gemiddeld"
+          : "laag";
+
+  return {
+    band,
+    dekking,
+    consistent,
+    // Onder vier dagen is dekking een momentopname: wie op dag één toevallig
+    // weinig at, krijgt "laag" over iets wat nog niet gemeten is.
+    regel: voortgang.compleet
+      ? bouwVariatieRegel(band, dekking, consistent)
+      : null,
+  };
+}
+
+const VARIATIE_LABEL: Record<VariatieBand, string> = {
+  laag: "eenzijdig",
+  gemiddeld: "gemiddeld gevarieerd",
+  goed: "goed gevarieerd",
+  "zeer-gevarieerd": "zeer gevarieerd",
+};
+
+/**
+ * De regel bij de band.
+ *
+ * Zonder aansporing en zonder compliment: wat er staat is wat er gemeten is,
+ * plus welke van de twee assen het beeld bepaalt. Dat laatste maakt hem
+ * bruikbaar — "vijf groepen, maar geen enkele elke dag" wijst een andere kant
+ * op dan "drie groepen, alle drie elke dag".
+ */
+function bouwVariatieRegel(
+  band: VariatieBand,
+  dekking: number,
+  consistent: number,
+): string {
+  const totaal = VOLWAARDIGE_GROEPEN.length;
+  const basis = `Je volwaardige bord is ${VARIATIE_LABEL[band]}: ${dekking} van de ${totaal} groepen kwamen voorbij`;
+
+  if (consistent === 0) {
+    return `${basis}, geen enkele op alle vier de dagen. Wat terugkomt telt zwaarder dan wat één keer langskwam.`;
+  }
+  if (consistent === dekking) {
+    return `${basis}, en die kwamen alle vier de dagen terug.`;
+  }
+  return `${basis}; ${consistent} daarvan op alle vier de dagen.`;
+}
+
 export function analyseerDagboek(dagen: readonly DagboekDag[]): DagboekUitkomst {
   const voortgang = dagboekVoortgang(dagen);
   const breedte = berekenBreedte(dagen);
+  const variatie = berekenVariatie(dagen);
 
   if (!voortgang.compleet) {
-    return { voortgang, verschillen: [], breedte, samenvatting: null };
+    return { voortgang, verschillen: [], breedte, variatie, samenvatting: null };
   }
 
   const doordeweekse = dagen.filter((dag) => dag.soort === "doordeweeks");
@@ -444,6 +567,7 @@ export function analyseerDagboek(dagen: readonly DagboekDag[]): DagboekUitkomst 
     voortgang,
     verschillen,
     breedte,
+    variatie,
     samenvatting: bouwSamenvatting(verschillen),
   };
 }

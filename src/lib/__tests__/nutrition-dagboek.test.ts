@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   analyseerDagboek,
   berekenBreedte,
+  berekenVariatie,
   dagboekVoortgang,
   dagSoortVoor,
   dekkingsRegel,
@@ -227,6 +228,82 @@ describe("berekenBreedte", () => {
     // dus niet suggereren dat hij variatie meet.
     const breedte = berekenBreedte([dag(MA, { groente: 5 })]);
     expect(breedte.regel ?? "").not.toMatch(/divers|variatie|afwisseling|soorten/i);
+  });
+});
+
+describe("berekenVariatie", () => {
+  /** Vier dagen met dezelfde inhoud, zodat alleen de groepen variëren. */
+  function vier(porties: DagboekDag["porties"]): DagboekDag[] {
+    return [dag(MA, porties), dag(DI, porties), dag(ZA, porties), dag(ZO, porties)];
+  }
+
+  it("zwijgt zolang het dagboek niet compleet is", () => {
+    // Onder vier dagen is dekking een momentopname, geen patroon.
+    const variatie = berekenVariatie([dag(MA, { groente: 2 })]);
+    expect(variatie.regel).toBeNull();
+  });
+
+  it("noemt een smal bord eenzijdig", () => {
+    const variatie = berekenVariatie(vier({ groente: 2, granen: 2 }));
+    expect(variatie.band).toBe("laag");
+    expect(variatie.dekking).toBe(2);
+  });
+
+  it("beloont dekking én consistentie", () => {
+    const variatie = berekenVariatie(
+      vier({ groente: 3, fruit: 2, peulvruchten: 1, noten: 1, granen: 2, vis: 1 }),
+    );
+    expect(variatie.band).toBe("zeer-gevarieerd");
+    expect(variatie.consistent).toBe(6);
+  });
+
+  it("telt snacks en dranken niet mee", () => {
+    // Dertig ultrabewerkte producten is geen gevarieerd patroon.
+    const variatie = berekenVariatie(vier({ suiker: 5, dranken: 5, zetmeel: 3 }));
+    expect(variatie.dekking).toBe(0);
+    expect(variatie.band).toBe("laag");
+  });
+
+  it("onderscheidt breed-maar-wisselend van smal-maar-vast", () => {
+    // Vijf groepen die elk één keer voorkwamen...
+    const wisselend = [
+      dag(MA, { groente: 2, fruit: 1 }),
+      dag(DI, { peulvruchten: 1, noten: 1 }),
+      dag(ZA, { granen: 2 }),
+      dag(ZO, { vis: 1 }),
+    ];
+    // ...tegenover drie groepen die er elke dag waren.
+    const vast = vier({ groente: 3, granen: 2, zuivel: 1 });
+
+    expect(berekenVariatie(wisselend).consistent).toBe(0);
+    expect(berekenVariatie(vast).consistent).toBeGreaterThan(0);
+    // Dit is precies het verschil dat berekenBreedte wegmiddelt.
+    expect(berekenVariatie(wisselend).regel).toMatch(/geen enkele/i);
+  });
+
+  it("houdt consistentie nooit boven dekking", () => {
+    // Een groep die elke dag terugkomt, kwam ook voor.
+    const varianten = [
+      vier({ groente: 1 }),
+      vier({ groente: 1, vis: 1, noten: 1 }),
+      [dag(MA, { groente: 1 }), dag(DI, {}), dag(ZA, { fruit: 1 }), dag(ZO, {})],
+    ];
+    for (const dagen of varianten) {
+      const variatie = berekenVariatie(dagen);
+      expect(variatie.consistent).toBeLessThanOrEqual(variatie.dekking);
+    }
+  });
+
+  it("claimt nooit variatie binnen een groep", () => {
+    // Het dagboek kent geen bronnen: "hoeveel soorten groente" is niet te
+    // beantwoorden, en de copy mag dat niet suggereren.
+    const regel = berekenVariatie(vier({ groente: 5, fruit: 3, vis: 1 })).regel ?? "";
+    expect(regel).not.toMatch(/soorten|verschillende producten|afwisseling binnen/i);
+  });
+
+  it("noemt geen score of getal buiten de groepentelling", () => {
+    const regel = berekenVariatie(vier({ groente: 2, vis: 1, noten: 1 })).regel ?? "";
+    expect(regel).not.toMatch(/score|punt|%|kcal/i);
   });
 });
 
