@@ -46,7 +46,6 @@ function renderHub(
       tab="voortgang"
       screen={screenId}
       leefstijlprofielDomein={opts.leefstijlprofielDomein ?? null}
-      leefstijlprofielAdviesExtra={null}
       hermetingSlot={<div data-testid="hermeting">hermeting</div>}
       onScreenChange={onScreenChange}
       onPrefUpdated={vi.fn()}

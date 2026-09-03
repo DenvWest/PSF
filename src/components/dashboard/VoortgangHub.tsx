@@ -27,7 +27,6 @@ type VoortgangHubProps = {
   tab: DashboardTabId;
   screen: VoortgangScreen;
   leefstijlprofielDomein: PillarId | null;
-  leefstijlprofielAdviesExtra: ReactNode;
   /**
    * Het hermeting-scherm. Komt als slot binnen omdat de secties (`retest`,
    * `future`) in `Dashboard.tsx` wonen en daar hun data al krijgen — tot 27
@@ -47,7 +46,6 @@ function VoortgangHubInner({
   tab,
   screen,
   leefstijlprofielDomein,
-  leefstijlprofielAdviesExtra,
   hermetingSlot,
   onScreenChange,
   onGoAgenda,
@@ -90,9 +88,6 @@ function VoortgangHubInner({
         model={model!}
         data={data}
         domain={leefstijlprofielDomein}
-        adviesExtra={
-          leefstijlprofielDomein === "voeding" ? leefstijlprofielAdviesExtra : null
-        }
         onBack={goBack}
         onOpenSchap={onGoKeuze}
       />

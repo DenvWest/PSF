@@ -63,9 +63,11 @@ function LayerSixSlot({
 }) {
   const mapping = STANCE_BY_PILLAR[domain];
   const showWearable = domain === "beweging" || domain === "slaap";
-  const nutritionDone =
-    buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true;
 
+  // Op voeding zelf is de eigen check (P1-P6, nutritionCheckinReadout) de
+  // bron van waarheid — niet het oude losse voeding-inname-item, dat hier
+  // een dubbele en verouderde gate zou zijn.
+  //
   // Op voeding zelf geldt een derde voorwaarde bovenop "check gedaan": er mag
   // geen gat meer openstaan in de eetbasis (BESLUIT_VOEDING_PIRAMIDE §E). Dat
   // is de enige formulering die "eerst je tafel, dan het potje" waarmaakt in
@@ -75,6 +77,10 @@ function LayerSixSlot({
   const routeStatuses =
     domain === "voeding" ? data?.nutritionCheckinReadout?.routes ?? [] : [];
   const nutritionGateClosed = domain === "voeding" && nutritionGate?.open !== true;
+  const nutritionDone =
+    domain === "voeding"
+      ? nutritionGate?.open === true
+      : buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true;
 
   if (!mapping && !showWearable) {
     return null;
@@ -416,6 +422,15 @@ export default function LeefstijlprofielDomeinScherm({
           />
         ) : null}
 
+        {adviesExtra}
+
+        {/*
+          Waar je grootste winst zit staat ONDER de laag die je openhebt, niet
+          erboven. Bovenaan las het als een oordeel over het scherm dat je net
+          opende ("je kijkt naar de verkeerde laag"); onderaan is het wat het
+          is: een navigatiehulp, nadat je de feiten van deze laag hebt gezien.
+          Volgorde over het hele scherm: feiten, dan advies, dan richting.
+        */}
         {readout &&
         readout.focusLayer != null &&
         openLadderLayer != null &&
@@ -432,8 +447,6 @@ export default function LeefstijlprofielDomeinScherm({
             </button>
           </p>
         ) : null}
-
-        {adviesExtra}
 
         {hasSchap(domain) ? (
           <button

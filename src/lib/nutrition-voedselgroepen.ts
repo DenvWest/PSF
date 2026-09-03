@@ -20,6 +20,7 @@ import type {
   NutritionFactRow,
   NutritionFactRowKey,
   NutritionLadderReport,
+  NutritionRowExemption,
 } from "@/lib/nutrition-ladder";
 import { resolveNutritionOptOut } from "@/lib/nutrition-ladder";
 
@@ -63,6 +64,41 @@ export type CategorieKaart = {
   aanbevolenBron: string | null;
   status: LadderEvidenceStatus;
   footnote: string | null;
+  /**
+   * Waaróm deze rij geen richtlijn heeft. Draagt de tekst in de lege
+   * richtlijn-cel: zonder dit veld stond daar "geen norm", en dat leest als
+   * een ontbrekend getal in plaats van als de uitkomst die het is.
+   *
+   * Komt rechtstreeks van de feitenrij mee — geen tweede beoordeling. Null
+   * betekent: er ís een richtlijn, dus de vraag speelt niet.
+   */
+  exemption: NutritionRowExemption | null;
+};
+
+/**
+ * Wat er in de richtlijn-cel staat wanneer er geen richtlijn is.
+ *
+ * Drie verschillende dingen die allemaal "leeg" waren:
+ *
+ * - `geen-norm` — de vraag heeft geen Nederlandse richtlijn achter zich. Jouw
+ *   antwoord is dan het ijkpunt, en dat is een uitkomst, geen gat.
+ * - `opt-out` — je eet dit niet, dus deze meetlat is niet van jou.
+ * - `niet-gemeten` — de check heeft er (nog) niet naar gevraagd.
+ *
+ * Nooit een formulering die suggereert dat er een grens was die je miste —
+ * dezelfde invariant als in `nutrition-ladder.ts`.
+ */
+export const GEEN_RICHTLIJN_LABEL: Record<NutritionRowExemption, string> = {
+  "geen-norm": "Geen NL-richtlijn — jouw antwoord is het ijkpunt",
+  "opt-out": "Niet jouw meetlat",
+  "niet-gemeten": "Nog niet gevraagd",
+};
+
+/** Korte vorm voor de mobiele regel onder het antwoord. */
+export const GEEN_RICHTLIJN_LABEL_KORT: Record<NutritionRowExemption, string> = {
+  "geen-norm": "geen NL-richtlijn — jouw antwoord is het ijkpunt",
+  "opt-out": "niet jouw meetlat",
+  "niet-gemeten": "nog niet gevraagd",
 };
 
 const STATUS_PRIORITEIT: Record<LadderEvidenceStatus, number> = {
@@ -96,6 +132,22 @@ function worstStatus(statuses: readonly LadderEvidenceStatus[]): LadderEvidenceS
     (worst, status) => (STATUS_PRIORITEIT[status] < STATUS_PRIORITEIT[worst] ? status : worst),
     "own" as LadderEvidenceStatus,
   );
+}
+
+/**
+ * De exemption die de richtlijn-cel moet dragen.
+ *
+ * Een rij die wél een richtlijn heeft, geeft null terug — ook als de ladder er
+ * een exemption op zette. Anders zou een categorie tegelijk een norm én de
+ * mededeling "geen norm" tonen. De richtlijn wint: die is concreter.
+ *
+ * Ontbreekt de rij helemaal, dan is er niet naar gevraagd. Dat is een derde
+ * geval, en het verdient een eigen tekst — niet dezelfde als "geen norm".
+ */
+function exemptionOf(row: NutritionFactRow | undefined): NutritionRowExemption | null {
+  if (!row) return "niet-gemeten";
+  if (row.benchmarkLabel) return null;
+  return row.exemption ?? "geen-norm";
 }
 
 function rowMap(factRows: readonly NutritionFactRow[]): Map<NutritionFactRowKey, NutritionFactRow> {
@@ -157,6 +209,7 @@ function buildGroenteKaart(
     aanbevolenBron: plantbasis?.benchmarkSource ?? null,
     status: plantbasis?.status ?? "own",
     footnote: plantbasis?.footnote ?? null,
+    exemption: exemptionOf(plantbasis),
   };
 }
 
@@ -175,6 +228,7 @@ function buildFruitKaart(
     aanbevolenBron: plantbasis?.benchmarkSource ?? null,
     status: plantbasis?.status ?? "own",
     footnote: plantbasis?.footnote ?? null,
+    exemption: exemptionOf(plantbasis),
   };
 }
 
@@ -193,6 +247,7 @@ function buildSliderGroepKaart(
     aanbevolenBron: primary?.benchmarkSource ?? null,
     status: primary?.status ?? "own",
     footnote: primary?.footnote ?? null,
+    exemption: exemptionOf(primary),
   };
 }
 
@@ -210,6 +265,7 @@ function buildCombinedGroepKaart(groep: Voedselgroep, rows: NutritionFactRow[]):
     aanbevolenBron: primary?.benchmarkSource ?? null,
     status: worstStatus(statuses),
     footnote: primary?.footnote ?? null,
+    exemption: exemptionOf(primary),
   };
 }
 

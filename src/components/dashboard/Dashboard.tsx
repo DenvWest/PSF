@@ -2759,9 +2759,6 @@ const SECTION_RENDERERS: Record<
         tab={props.tab}
         screen={props.voortgangScreen}
         leefstijlprofielDomein={props.leefstijlprofielDomein}
-        leefstijlprofielAdviesExtra={
-          props.empty ? null : <NutritionIntakeSection {...props} />
-        }
         hermetingSlot={
           props.empty ? null : (
             <div className="flex flex-col gap-4">

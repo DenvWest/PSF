@@ -10,7 +10,12 @@ import { trackEvent } from "@/lib/ga4";
 import { heeftDetail } from "@/lib/nutrition-categorie-detail";
 import type { NutritionSelfReport } from "@/lib/nutrition-intake-estimate";
 import type { NutritionFactRow, NutritionLadderReport } from "@/lib/nutrition-ladder";
-import { categorieKaarten, type CategorieKaart } from "@/lib/nutrition-voedselgroepen";
+import {
+  categorieKaarten,
+  GEEN_RICHTLIJN_LABEL,
+  GEEN_RICHTLIJN_LABEL_KORT,
+  type CategorieKaart,
+} from "@/lib/nutrition-voedselgroepen";
 
 /**
  * P1 Voedingsbasis — het categorie-overzicht als tabel, met doordruk per rij.
@@ -126,15 +131,21 @@ function CategorieRij({
 
         <td className="py-2.5 pr-3 align-top text-[12.5px] leading-snug text-[#E7EDE8]">
           {kaart.jij}
-          {kaart.aanbevolen ? (
-            <span className="mt-0.5 block text-[11px] leading-snug text-[#7E8C82] sm:hidden">
-              richtlijn: {kaart.aanbevolen}
-            </span>
-          ) : null}
+          <span className="mt-0.5 block text-[11px] leading-snug text-[#7E8C82] sm:hidden">
+            {kaart.aanbevolen
+              ? `richtlijn: ${kaart.aanbevolen}`
+              : kaart.exemption
+                ? GEEN_RICHTLIJN_LABEL_KORT[kaart.exemption]
+                : null}
+          </span>
         </td>
 
         <td className="hidden py-2.5 pr-3 align-top text-[11.5px] leading-snug text-[#9FB0A6] sm:table-cell">
-          {kaart.aanbevolen ?? <span className="text-[#7E8C82]">geen norm</span>}
+          {kaart.aanbevolen ?? (
+            <span className="text-[#7E8C82]">
+              {kaart.exemption ? GEEN_RICHTLIJN_LABEL[kaart.exemption] : "Geen norm"}
+            </span>
+          )}
           {kaart.aanbevolenBron ? (
             <span className="block text-[10.5px] text-[#7E8C82]">{kaart.aanbevolenBron}</span>
           ) : null}
