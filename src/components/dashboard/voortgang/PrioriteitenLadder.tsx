@@ -4,6 +4,7 @@ import { useRef, useState, type KeyboardEvent, type ReactNode, type RefObject } 
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import LadderMomentButton from "@/components/dashboard/domain/LadderMomentButton";
+import { resolveLadderAffordances } from "@/lib/ladder-affordances";
 import { FactMicroReeks } from "@/components/dashboard/voortgang/MeetreeksChart";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
 import { clarityTag } from "@/lib/clarity";
@@ -638,7 +639,31 @@ export default function PrioriteitenLadder({
                           source: openIsAanbevolen ? "aanbevolen" : "mijn_keuze",
                         }}
                       />
-                    ) : null}
+                    ) : (
+                      /* Uitlegmodus (voeding) toonde deze acties als kale
+                         tekst: drie concrete zinnen — "zet één portie groente
+                         bij je avondeten" — zonder enige manier om er iets mee
+                         te doen. Daarmee eindigde de hele voedingsketen bij een
+                         diagnose, en was de enige handeling ná je check de
+                         deur naar het schap.
+
+                         Een moment plannen is geen keuze-uitwerking maar een
+                         handeling op zichzelf, dus hij hoort ook hier. Wat
+                         `explain` blijft weren is `keuze`: die hoort bij een
+                         ladder waar je kiest, en voeding kiest niet per laag. */
+                      resolveLadderAffordances({
+                        domain,
+                        layerId: openLayerData.id,
+                        action,
+                      }).includes("moment") ? (
+                        <LadderMomentButton
+                          domain={domain}
+                          title={action}
+                          surface={surface}
+                          layer={openLayerData.id}
+                        />
+                      ) : null
+                    )}
                   </li>
                 ))}
               </ul>

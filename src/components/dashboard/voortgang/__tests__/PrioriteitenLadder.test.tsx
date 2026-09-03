@@ -10,6 +10,22 @@ let favoriteItems: FakeFavorite[] = [];
 const save = vi.fn();
 const remove = vi.fn();
 
+const plan = vi.fn(async () => {});
+let momentsAvailable = true;
+
+vi.mock("@/lib/ladder-moments-context", () => ({
+  useLadderMoments: () =>
+    momentsAvailable
+      ? {
+          hydrated: true,
+          momentFor: () => null,
+          plan,
+          move: vi.fn(),
+          cancel: vi.fn(),
+        }
+      : null,
+}));
+
 vi.mock("@/lib/voortgang-favorites-context", () => ({
   useVoortgangFavorites: () => ({
     items: favoriteItems,
@@ -322,7 +338,7 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
     expect(screen.getByRole("link", { name: /Kies dit op Kompas/ })).toBeTruthy();
   });
 
-  it("draagt geen tweede 'Mijn keuze op deze laag' en geen plan-knop", () => {
+  it("draagt geen tweede 'Mijn keuze op deze laag'", () => {
     favoriteItems = [
       {
         id: "laag-beweging-p1-actie-1a",
@@ -334,7 +350,31 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
     renderExplain();
     fireEvent.click(layerTab("Eerste prioriteit"));
     expect(screen.queryByText("Mijn keuze op deze laag")).toBeNull();
-    expect(screen.queryByRole("button", { name: /Zet op Mijn Dag/ })).toBeNull();
+  });
+
+  it("geeft elke actie een moment, ook in uitlegmodus", () => {
+    // Uitlegmodus toonde acties als kale tekst. Kiezen hoort hier niet — dat
+    // is wat `explain` weert — maar een moment plannen is een handeling op
+    // zichzelf, en zonder die knop eindigt de keten bij de diagnose.
+    favoriteItems = [];
+    renderExplain();
+    fireEvent.click(layerTab("Eerste prioriteit"));
+    expect(screen.queryByRole("button", { name: /Zet bij Mijn keuze/ })).toBeNull();
+    expect(screen.getAllByRole("button", { name: /Zet op Mijn Dag/ }).length).toBeGreaterThan(0);
+  });
+
+  it("laat de moment-knop weg zonder agenda-provider", () => {
+    // Buiten de provider is er geen dag om iets op te zetten; de knop
+    // verdwijnt dan stil in plaats van te stranden bij de API.
+    favoriteItems = [];
+    momentsAvailable = false;
+    try {
+      renderExplain();
+      fireEvent.click(layerTab("Eerste prioriteit"));
+      expect(screen.queryByRole("button", { name: /Zet op Mijn Dag/ })).toBeNull();
+    } finally {
+      momentsAvailable = true;
+    }
   });
 
   it("toont de gekozen titel read-only in de open laag", () => {
