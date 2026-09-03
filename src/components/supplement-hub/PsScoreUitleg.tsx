@@ -144,6 +144,54 @@ export default function PsScoreUitleg() {
             </li>
           ))}
         </ul>
+
+        <div className="mt-6 rounded-2xl border border-stone-200 bg-[#F7F5F0] px-6 py-5">
+          <h3 className="font-display text-base font-semibold text-stone-900">
+            Waarom deze verhouding
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-stone-600">
+            Exacte percentages zijn een redactionele prioritering — geen
+            meta-analyse schrijft &ldquo;30% dosering&rdquo; voor. Effectpotentieel
+            (dosering + vorm = 55%) weegt zwaarder dan vertrouwen en nut
+            (claimdekking, transparantie, toetsing = 45%), omdat een ondergedoseerd
+            of slecht opneembaar product geen effect kan leveren dat onderzoek
+            belooft. De onderbouwing per keuze staat in de kennisbank.
+          </p>
+          <p className="mt-4 text-[11px] font-medium uppercase tracking-wide text-stone-400">
+            Verdieping
+          </p>
+          <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+            {(
+              [
+                ["ps-score-model", "PS-Score"],
+                ["scoregewichten", "Scoregewichten"],
+                ["onderzoeksdosis", "Onderzoeksdosis"],
+                ["claimdekking", "Claimdekking"],
+                ["etikettransparantie", "Etikettransparantie"],
+                ["onafhankelijke-toetsing", "Onafhankelijke toetsing"],
+              ] as const
+            ).map(([slug, label]) => (
+              <li key={slug}>
+                <Link
+                  href={`/kennisbank/${slug}`}
+                  className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] hover:decoration-ps-green"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-sm text-stone-500">
+            Of blader het thema{" "}
+            <Link
+              href="/kennisbank/ps-score"
+              className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] hover:decoration-ps-green"
+            >
+              PS-Score &amp; beoordeling
+            </Link>
+            .
+          </p>
+        </div>
       </section>
 
       <section aria-labelledby="claim">
@@ -512,31 +560,57 @@ export default function PsScoreUitleg() {
           Leefstijlcheck.
         </p>
 
-        <div className="mt-6 rounded-2xl border border-stone-200 bg-white p-6">
-          <h3 className="font-display text-base font-semibold text-stone-900">
-            Wat veranderde in 1.1.0
-          </h3>
-          <ul className="mt-3 space-y-2.5 text-sm leading-relaxed text-stone-600">
-            <li>
-              <strong>Claimdekking erbij, als vijfde onderdeel (20%).</strong>{" "}
-              De andere gewichten schoven mee terug.
-            </li>
-            <li>
-              <strong>
-                De onderzoeksdosis voor omega-3 ging van 500 naar 1000 mg
-                EPA+DHA.
-              </strong>{" "}
-              Dat was een fout in 1.0.0: 500 mg is de algemene
-              innameaanbeveling, niet de dosering waarbij het onderzoek dat wij
-              aanhalen effect laat zien. Onze eigen definitie vroeg om het
-              tweede getal.
-            </li>
-            <li>
-              <strong>Kwaliteitsmarkers per categorie.</strong> Oxidatiewaarde en
-              verontreinigingstest kregen een plek in de toetsing, alleen waar ze
-              van toepassing zijn.
-            </li>
-          </ul>
+        <div className="mt-6 space-y-4">
+          <div className="rounded-2xl border border-stone-200 bg-white p-6">
+            <h3 className="font-display text-base font-semibold text-stone-900">
+              Wat veranderde in 1.2.0
+            </h3>
+            <ul className="mt-3 space-y-2.5 text-sm leading-relaxed text-stone-600">
+              <li>
+                <strong>Gewichten herschikt naar 30 / 25 / 15 / 15 / 15.</strong>{" "}
+                Dosering (+5) en toetsing (+5) omhoog; claimdekking en
+                transparantie elk −5. Vorm blijft 25%. Exacte % blijven een
+                prioritering — toegelicht onder{" "}
+                <Link
+                  href="/kennisbank/scoregewichten"
+                  className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] hover:decoration-ps-green"
+                >
+                  scoregewichten
+                </Link>
+                .
+              </li>
+              <li>
+                <strong>Kennisbankcategorie PS-Score &amp; beoordeling.</strong>{" "}
+                Zes termen met bronnen, gekoppeld vanaf deze pagina.
+              </li>
+            </ul>
+          </div>
+          <div className="rounded-2xl border border-stone-200 bg-white p-6">
+            <h3 className="font-display text-base font-semibold text-stone-900">
+              Wat veranderde in 1.1.0
+            </h3>
+            <ul className="mt-3 space-y-2.5 text-sm leading-relaxed text-stone-600">
+              <li>
+                <strong>Claimdekking erbij, als vijfde onderdeel (toen 20%).</strong>{" "}
+                De andere gewichten schoven mee terug.
+              </li>
+              <li>
+                <strong>
+                  De onderzoeksdosis voor omega-3 ging van 500 naar 1000 mg
+                  EPA+DHA.
+                </strong>{" "}
+                Dat was een fout in 1.0.0: 500 mg is de algemene
+                innameaanbeveling, niet de dosering waarbij het onderzoek dat wij
+                aanhalen effect laat zien. Onze eigen definitie vroeg om het
+                tweede getal.
+              </li>
+              <li>
+                <strong>Kwaliteitsmarkers per categorie.</strong> Oxidatiewaarde en
+                verontreinigingstest kregen een plek in de toetsing, alleen waar ze
+                van toepassing zijn.
+              </li>
+            </ul>
+          </div>
         </div>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-stone-600">
           De redactionele beoordeling op onze{" "}

@@ -128,6 +128,28 @@ export default function SituatieVoedingLaag({
 }) {
   const contributionByNutrient = new Map(contribution.map((item) => [item.nutrient, item]));
 
+  /**
+   * De invoer waarop dit oordeel rust, met de gaten zichtbaar.
+   *
+   * Een leeg veld is hier informatie: het zegt welke knop je kunt omzetten om
+   * dit scherm scherper te maken. Daarom staan lege velden er wél in, met
+   * "niet ingevuld" — weglaten zou de indruk wekken dat alles bekend is.
+   */
+  const situatieVelden: { label: string; waarde: string | null }[] = [
+    {
+      label: "Gewicht",
+      waarde: personalization.weightKg != null ? `${personalization.weightKg} kg` : null,
+    },
+    { label: "Trainingsbelasting", waarde: sufficiency.trainingLoadLabel },
+    { label: "Leeftijd", waarde: personalization.ageRange },
+    {
+      label: "Eiwitdoel",
+      waarde: personalization.proteinTarget
+        ? `${personalization.proteinTarget.gramsLow}–${personalization.proteinTarget.gramsHigh} g/dag`
+        : null,
+    },
+  ];
+
   useEffect(() => {
     trackEvent("nutrition_sufficiency_view", {
       surface,
@@ -147,23 +169,49 @@ export default function SituatieVoedingLaag({
   );
 
   return (
-    <div className="mt-4 flex flex-col gap-4">
-      <section>
-        <p className="mb-1.5 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+    <div className="@container mt-4 flex flex-col gap-4">
+      {/* Wat er van jou meeweegt, als box in plaats van als alinea.
+          
+          Deze laag heet "Op jouw situatie", en die situatie is niet alleen
+          voeding: je gewicht, hoe hard je traint en je leeftijd sturen wat
+          "genoeg" betekent. Als losse zinnen leest dat als context bij de
+          lijst eronder; als box is het wat het is — de invoer waarop het
+          oordeel rust, met de gaten er zichtbaar in. */}
+      <section
+        aria-label="Wat we van je meewegen"
+        className="overflow-hidden rounded-xl border border-white/10 bg-black/20"
+      >
+        <p className="m-0 border-b border-white/10 px-3.5 py-2 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
           Wat we van je meewegen
         </p>
-        <p className="m-0 max-w-[58ch] text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
-          {sufficiency.contextLine ??
-            "Vul gewicht en beweging in je profiel aan — dan kunnen we je eiwitdoel en trainingsbelasting meenemen."}
-        </p>
-        {sufficiency.trainingLoadLabel ? (
-          <p className="mb-0 mt-1.5 text-[12px] text-[#9FB0A6]">{sufficiency.trainingLoadLabel}</p>
+        <dl className="m-0 grid grid-cols-2 gap-x-4 gap-y-0 px-3.5 py-1 @[520px]:grid-cols-3">
+          {situatieVelden.map((veld) => (
+            <div key={veld.label} className="min-w-0 border-b border-white/[0.06] py-2 last:border-b-0">
+              <dt className="m-0 text-[10.5px] uppercase tracking-[0.08em] text-[#7E8C82]">
+                {veld.label}
+              </dt>
+              <dd
+                className={`m-0 mt-0.5 truncate text-[13px] font-semibold ${
+                  veld.waarde ? "text-[#E7EDE8]" : "text-[#5F6C64]"
+                }`}
+                title={veld.waarde ?? undefined}
+              >
+                {veld.waarde ?? "niet ingevuld"}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        {sufficiency.contextLine ? (
+          <p className="m-0 border-t border-white/10 px-3.5 py-2 text-[12px] leading-relaxed text-[#CDD7D0] text-pretty">
+            {sufficiency.contextLine}
+          </p>
         ) : null}
-        {/* Deze laag heet "Op jouw situatie". Zonder deze regel leest dat als
-            een belofte dat álles is meegenomen — ook een ploegendienst, die we
-            nergens uitvragen. */}
+        {/* Deze laag belooft dat werk, sport en voorkeuren je stappen kleuren.
+            Sport en gewicht wegen mee; werk vragen we nergens uit. Die belofte
+            half waarmaken zonder het te zeggen laat de lezer denken dat een
+            ploegendienst is meegenomen. */}
         {sufficiency.blindeVlekken.length > 0 ? (
-          <p className="mb-0 mt-2 max-w-[58ch] text-[11.5px] leading-relaxed text-[#7E8C82] text-pretty">
+          <p className="m-0 border-t border-white/10 px-3.5 py-2 text-[11.5px] leading-relaxed text-[#7E8C82] text-pretty">
             Nog niet meegewogen: {sufficiency.blindeVlekken.join(", ")}.
           </p>
         ) : null}

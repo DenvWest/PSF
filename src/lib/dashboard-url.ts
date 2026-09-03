@@ -177,27 +177,48 @@ export function parseLeefstijlprofielDomeinFromUrl(url: string | URL): PillarId 
 /** @deprecated Gebruik parseLeefstijlprofielDomeinFromUrl */
 export const parseFavorietenDomeinFromUrl = parseLeefstijlprofielDomeinFromUrl;
 
-/** P5/P6-shortcuts onder Voeding in de voortgang-rail. Geen P-cijfers in de URL. */
-export const VOEDING_LAAG_SLUGS = ["meten-timing", "aanvullen"] as const;
+/**
+ * De drie knoppen van Voeding als URL-slug. Geen P-cijfers in de URL: de
+ * nummering hoort bij de eetbasis-piramide en niet bij een adres dat iemand
+ * kan delen.
+ *
+ * `eetbasis` is er 3 sep bijgekomen, toen Voeding van zes naar drie knoppen
+ * ging (zie `voeding-drieluik.ts`). Hij deeplinkt naar laag 1, en die knop
+ * toont ook de lagen 2 en 4 — de URL wijst dus naar de knop, niet naar één
+ * ladderlaag.
+ */
+export const VOEDING_LAAG_SLUGS = ["meten-timing", "eetbasis", "aanvullen"] as const;
 export type VoedingLaagSlug = (typeof VOEDING_LAAG_SLUGS)[number];
-export type VoedingLaagId = 5 | 6;
+export type VoedingLaagId = 1 | 5 | 6;
 
 const VOEDING_LAAG_ID_BY_SLUG: Record<VoedingLaagSlug, VoedingLaagId> = {
   "meten-timing": 5,
+  eetbasis: 1,
   aanvullen: 6,
 };
 
 export function isVoedingLaagSlug(value: unknown): value is VoedingLaagSlug {
-  return value === "meten-timing" || value === "aanvullen";
+  return (
+    value === "meten-timing" || value === "eetbasis" || value === "aanvullen"
+  );
 }
 
 export function voedingLaagIdFromSlug(slug: VoedingLaagSlug): VoedingLaagId {
   return VOEDING_LAAG_ID_BY_SLUG[slug];
 }
 
+/**
+ * De slug van de knop die deze ladderlaag draagt.
+ *
+ * De lagen 2 en 4 hebben geen eigen slug: ze staan onder Voedingsbasis, dus
+ * die geven `eetbasis` terug. Laag 3 wordt niet meer getoond en geeft null.
+ */
 export function voedingLaagSlugFromId(layer: number): VoedingLaagSlug | null {
   if (layer === 5) {
     return "meten-timing";
+  }
+  if (layer === 1 || layer === 2 || layer === 4) {
+    return "eetbasis";
   }
   if (layer === 6) {
     return "aanvullen";
@@ -206,7 +227,7 @@ export function voedingLaagSlugFromId(layer: number): VoedingLaagSlug | null {
 }
 
 /**
- * Alleen geldig op Voeding: `fav=voeding&laag=meten-timing|aanvullen`.
+ * Alleen geldig op Voeding: `fav=voeding&laag=meten-timing|eetbasis|aanvullen`.
  * Andere domeinen of onbekende slugs worden genegeerd.
  */
 export function parseVoedingLaagFromUrl(url: string | URL): VoedingLaagSlug | null {

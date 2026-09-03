@@ -6,6 +6,7 @@ const THEME_ACCENT: Record<KennisbankTheme, string> = {
   "leefstijl-herstel": "border-l-emerald-500/65",
   supplementwetenschap: "border-l-sky-500/65",
   longevity: "border-l-amber-500/60",
+  "ps-score": "border-l-stone-500/65",
 };
 
 interface KennisbankTermKaartProps {

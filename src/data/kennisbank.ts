@@ -7,6 +7,7 @@ export type KennisbankTheme =
   | 'leefstijl-herstel'
   | 'supplementwetenschap'
   | 'longevity'
+  | 'ps-score'
 
 export type KennisbankInsightTier = 1 | 2 | 3
 
@@ -95,6 +96,17 @@ export const themeLabels: Record<KennisbankTheme, {
       rail: 'bg-amber-500/70',
     },
   },
+  'ps-score': {
+    title: 'PS-Score & beoordeling',
+    description: 'Hoe we supplementen berekenen: gewichten, onderzoeksdosis en toetsing.',
+    icon: '📊',
+    colorClasses: {
+      bg: 'from-stone-700 to-stone-800',
+      accent: 'bg-white/10 ring-white/20',
+      tekst: 'text-stone-200/80',
+      rail: 'bg-stone-500/70',
+    },
+  },
 }
 
 export const kennisbankTerms: KennisbankTerm[] = [
@@ -115,9 +127,9 @@ De chemische vorm van de stof. Magnesiumoxide heeft een biobeschikbaarheid van o
 Of je het met voedsel inneemt. Vetoplosbare stoffen (zoals vitamine D en omega-3) worden beter opgenomen met een vetrijke maaltijd.
 
 Je individuele darmgezondheid. Ontstekingen, medicijngebruik of een verstoord microbioom kunnen de opname verlagen.`,
-      whyItMatters: `Een goedkoop supplement met lage biobeschikbaarheid is uiteindelijk duurder dan het lijkt. De relevante maat is niet de prijs per capsule, maar de prijs per daadwerkelijk opgenomen milligram. Daarom weegt biobeschikbaarheid 25% mee in onze beoordelingsmethodiek.`,
+      whyItMatters: `Een goedkoop supplement met lage biobeschikbaarheid is uiteindelijk duurder dan het lijkt. De relevante maat is niet de prijs per capsule, maar de prijs per daadwerkelijk opgenomen milligram. Daarom weegt vorm en opneembaarheid 25% mee in de [PS-Score](/kennisbank/ps-score-model) — naast dosering, die zwaarder telt.`,
     },
-    relatedSlugs: ['chelaatvorm'],
+    relatedSlugs: ['chelaatvorm', 'ps-score-model', 'scoregewichten'],
     relatedComparisons: ['/beste/magnesium', '/beste/omega-3-supplement', '/beste/ashwagandha', '/beste/vitamine-d', '/beste/creatine', '/beste/zink'],
     metaTitle: 'Biobeschikbaarheid: Wat Het Is en Waarom Het Matteert',
     metaDescription: 'Niet alles wat je slikt wordt opgenomen. Biobeschikbaarheid bepaalt hoeveel je lichaam écht gebruikt. Uitgelegd in begrijpelijke taal.',
@@ -289,9 +301,9 @@ Het EU-register bevat alle goedgekeurde claims. Bijvoorbeeld: "Magnesium draagt 
       howItWorks: `Een fabrikant dient een dossier in bij EFSA met wetenschappelijk bewijs. EFSA beoordeelt of de claim voldoende onderbouwd is. Alleen goedgekeurde claims mogen op etiketten en in reclame gebruikt worden. Claims die zijn afgewezen mogen niet meer worden gemaakt.
 
 Er is een tussencategorie: "on hold" claims. Dit zijn claims voor botanische stoffen (zoals ashwagandha, rhodiola) die nog niet beoordeeld zijn. Fabrikanten mogen deze claims voorlopig nog gebruiken, maar er is geen garantie dat ze worden goedgekeurd.`,
-      whyItMatters: `Wanneer een supplement beweert dat het "je immuunsysteem versterkt" zonder dat die claim is goedgekeurd, is dat misleidend — en illegaal. Wij controleren bij elke beoordeling of de claims op het etiket en de website van de fabrikant overeenkomen met het EFSA-register. Een product dat ongefundeerde claims maakt, scoort lager op transparantie.`,
+      whyItMatters: `Wanneer een supplement beweert dat het "je immuunsysteem versterkt" zonder dat die claim is goedgekeurd, is dat misleidend — en illegaal. In de [PS-Score](/kennisbank/ps-score-model) scheiden we twee vragen: óf een product de claim mag voeren (label, geen punten) versus hoeveel van de erkende claims deze dosering ontsluit ([claimdekking](/kennisbank/claimdekking), 15% van de score).`,
     },
-    relatedSlugs: ['adh'],
+    relatedSlugs: ['adh', 'claimdekking', 'ps-score-model'],
     relatedComparisons: ['/beste/magnesium', '/beste/ashwagandha', '/beste/vitamine-d'],
     metaTitle: 'EFSA-claims: Welke Supplementclaims Zijn Écht Goedgekeurd?',
     metaDescription: 'Niet elke claim op een supplementetiket is waar. EFSA keurt ze goed of af. Wat mag wel en niet? Uitgelegd.',
@@ -317,9 +329,9 @@ In tegenstelling tot medicijnen worden supplementen in de EU niet vooraf getest 
       howItWorks: `Bekende onafhankelijke testorganisaties zijn NIZO (Nederland), Eurofins, NSF International en Informed Sport. Een fabrikant stuurt monsters op, het lab test op zuiverheid, potentie en contaminanten, en geeft een certificaat af.
 
 Let op: "laboratorium getest" op een etiket zonder te vermelden welk lab is weinig waard. Transparante merken publiceren de naam van het testlab en maken certificaten beschikbaar op hun website.`,
-      whyItMatters: `Een supplement kan een mooi etiket hebben met indrukwekkende doseringen, maar zonder onafhankelijke verificatie weet je niet of die doseringen kloppen. Derde-partij testen wegen mee in onze transparantie-score (20% van de totale beoordeling). Merken die hun testresultaten publiceren scoren hoger.`,
+      whyItMatters: `Een supplement kan een mooi etiket hebben met indrukwekkende doseringen, maar zonder onafhankelijke verificatie weet je niet of die doseringen kloppen. In de [PS-Score](/kennisbank/ps-score-model) telt gepubliceerde onafhankelijke toetsing mee in het onderdeel [onafhankelijke toetsing](/kennisbank/onafhankelijke-toetsing) (15% van de totale score) — niet in etikettransparantie. Merken die hun testresultaten publiceren scoren daar hoger.`,
     },
-    relatedSlugs: ['efsa-claims', 'biobeschikbaarheid'],
+    relatedSlugs: ['efsa-claims', 'biobeschikbaarheid', 'onafhankelijke-toetsing', 'ps-score-model'],
     relatedComparisons: ['/beste/omega-3-supplement', '/beste/ashwagandha', '/beste/creatine'],
     metaTitle: 'Derde-partij Testen: Hoe Weet Je Of Er Inzit Wat Erop Staat?',
     metaDescription: 'Supplementen worden niet vooraf gecontroleerd. Derde-partij testen zijn de beste garantie. Wat moet je weten?',
@@ -988,6 +1000,219 @@ Dat betekent niet dat elke vitamine of elk mineraal nutteloos is — het beteken
       'Gezondheidsraad. Achtergronddocument vitamine D en overige voedingsnormen — gerichte suppletie-advisering risicogroepen.',
       'Voedingscentrum. Voedingssupplementen: wanneer zinvol en voor wie — adviesbasis Nederlandse consument.',
       'EFSA NDA Panel. Scientific opinions on health claims related to vitamins and minerals — claim-per-stof in plaats van productniveau.',
+    ]),
+  },
+  {
+    slug: 'ps-score-model',
+    insightTier: 1,
+    term: 'PS-Score',
+    theme: 'ps-score',
+    laatstBijgewerktOp: '2026-09-03',
+    shortDefinition:
+      'Een berekende score van 0 tot 100 voor supplementen in onze catalogus — uit etiketfeiten, EU-claims en gepubliceerde toetsing, zonder prijs.',
+    content: {
+      whatIsIt: `De PS-Score is geen redactioneel cijfer dat iemand intikt. Het is een geversioneerde rekensom: vijf onderdelen leveren elk 0–100 punten (of vallen weg als we ze niet kunnen vaststellen), en die worden gewogen tot één totaal. Modelversie 1.2.0 staat vastgelegd op [/ps-score](/ps-score); wijzigt de formule, dan wijzigt de versie en herberekenen we de catalogus.
+
+Drie uitgangspunten sturen het model. Berekend, niet ingetypt: elk onderdeel volgt uit een etiketfeit, het Europese claimregister of een labrapport dat de fabrikant publiceert. Prijs zit er niet in: kosten krijgen een aparte rang, zodat kwaliteit en prijs los af te wegen blijven. Niet weten is geen nul: ontbreekt bijvoorbeeld het elementaire gehalte, dan valt dat onderdeel weg en hernormaliseren we het gewicht over de rest.`,
+      howItWorks: `De vijf onderdelen zijn: [dosering t.o.v. onderzoeksdosis](/kennisbank/onderzoeksdosis) (30%), vorm en opneembaarheid (25%), [dekking van erkende EU-claims](/kennisbank/claimdekking) (15%), [etikettransparantie](/kennisbank/etikettransparantie) (15%) en [onafhankelijke toetsing](/kennisbank/onafhankelijke-toetsing) (15%). Waarom precies die verhouding — en waarom dat geen natuurwet is — staat onder [scoregewichten](/kennisbank/scoregewichten).
+
+Op productkaarten zie je per onderdeel de punten en het effectieve gewicht. Valt een onderdeel uit (bijvoorbeeld claimdekking bij ashwagandha, waar geen EU-claim bestaat), dan herverdeelt het model automatisch. De redactionele scores op [/beste](/beste/magnesium)-pagina's (0–10, met o.a. smaak en gemak) staan hier los van.`,
+      whyItMatters: `Zonder openbare rekensom is een "kwaliteitsscore" een marketinglabel. De PS-Score laat zien waar een cijfer vandaan komt, wat het model bewust niet meet (eigen labanalyses, smaak, geschiktheid voor jouw doel), en hoe je effectpotentieel (dosis × vorm) kunt scheiden van vertrouwen (transparantie en toetsing). Bekijk de volledige methode op [/ps-score](/ps-score) of blader door producten op [/supplementen](/supplementen#producten).`,
+    },
+    relatedSlugs: [
+      'scoregewichten',
+      'onderzoeksdosis',
+      'claimdekking',
+      'etikettransparantie',
+      'onafhankelijke-toetsing',
+      'biobeschikbaarheid',
+    ],
+    relatedComparisons: ['/beste/magnesium', '/beste/omega-3-supplement'],
+    metaTitle: 'PS-Score: Hoe We Supplementen Berekenen',
+    metaDescription:
+      'De PS-Score (0–100) is berekend uit dosering, vorm, EU-claims, etikettransparantie en toetsing. Model 1.2.0 uitgelegd.',
+    referenties: toRefs([
+      'European Parliament and Council. Regulation (EC) No 1924/2006 on nutrition and health claims made on foods. OJ L 404, 30.12.2006.',
+      'EFSA NDA Panel. Guidance on the scientific requirements for health claims related to antioxidants, oxidative damage and cardiovascular health. EFSA Journal methodological frame.',
+      'Dwyer JT et al. Dietary supplements: regulatory challenges and research resources. Nutrients. 2018;10(1):41.',
+      'Maughan RJ et al. IOC consensus statement: dietary supplements and the high-performance athlete. Br J Sports Med. 2018;52(7):439-455.',
+      'Calder PC. Very long-chain n-3 fatty acids and human health: fact, fiction and the future. Proc Nutr Soc / Ann Nutr Metab context PMID 31808863.',
+      'Institute of Medicine. Dietary Reference Intakes: the essential guide to nutrient requirements — dose vs. adequacy framing.',
+    ]),
+  },
+  {
+    slug: 'scoregewichten',
+    insightTier: 1,
+    term: 'Scoregewichten',
+    theme: 'ps-score',
+    laatstBijgewerktOp: '2026-09-03',
+    domeinMetBeperktCausaalBewijs: true,
+    shortDefinition:
+      'De percentages waarmee de vijf PS-Score-onderdelen meetellen — een bewuste prioritering, geen percentage dat een meta-analyse voorschrijft.',
+    content: {
+      whatIsIt: `In model 1.2.0 wegen de onderdelen als volgt: dosering 30%, vorm en opneembaarheid 25%, claimdekking 15%, etikettransparantie 15%, onafhankelijke toetsing 15%. Samen 100%. Exacte percentages zijn redactionele keuzes: er bestaat geen peer-reviewed studie die zegt "vorm moet 25% zijn". Wel bestaat sterk bewijs dat elk onderdeel ertoe doet — en dat effect zonder adequate dosis of opneembare vorm niet te verwachten is.
+
+Andere scoremodellen wegen anders. Zo legt een Amerikaans label-scoremodel "clinical adequacy" (dosering t.o.v. onderzoek) vaak het zwaarst — rond de 35% — en combineert transparantie met andere labeldimensies. Wij houden vijf aparte onderdelen omdat EU-claimdekking en gepubliceerde toetsing in Europa een andere rol spelen dan in DSHEA-landen.`,
+      howItWorks: `Effectpotentieel krijgt 55%: dosering (30%) is de poort — onder de [onderzoeksdosis](/kennisbank/onderzoeksdosis) schaalt de score lineair mee; vorm (25%) voorkomt dat oxide of ethylester even hoog scoort als beter opneembare varianten. Vertrouwen en nut krijgen 45%: [claimdekking](/kennisbank/claimdekking) (15%) meet hoeveel erkende EU-claims deze dosering ontsluit, niet of de claim "mag"; [etikettransparantie](/kennisbank/etikettransparantie) (15%) straft proprietary blends en ontbrekende getallen; [toetsing](/kennisbank/onafhankelijke-toetsing) (15%) beloont gepubliceerde externe controle.
+
+Ten opzichte van 1.1.0 ging dosering omhoog (+5), claimdekking en transparantie omlaag (−5 elk), toetsing omhoog (+5). Claimdrempels liggen vaak ver onder onderzoeksdoses; transparantie is een hygiene-factor met afnemende meerwaarde zodra het etiket open is; literatuur over label-inaccurateit en contaminatie onderbouwt meer gewicht voor toetsing — met een plafond van 15%, omdat wij (nog) geen eigen labanalyses doen.`,
+      whyItMatters: `Zonder uitleg van de gewichten lijkt elk cijfer willekeurig. Met uitleg kun je het oneens zijn — en dat is precies het punt. Lees de rekensom op [/ps-score](/ps-score) of het overzicht onder [PS-Score](/kennisbank/ps-score-model).`,
+    },
+    relatedSlugs: [
+      'ps-score-model',
+      'onderzoeksdosis',
+      'claimdekking',
+      'etikettransparantie',
+      'onafhankelijke-toetsing',
+      'biobeschikbaarheid',
+    ],
+    relatedComparisons: [],
+    metaTitle: 'Scoregewichten: Waarom 30/25/15/15/15 in de PS-Score',
+    metaDescription:
+      'Waarom dosering 30% weegt en toetsing 15%: redactionele prioritering met literatuur over dosis, vorm, claims en verificatie.',
+    referenties: toRefs([
+      'Calder PC. n-3 Fatty acids and cardiovascular disease: evidence explained and mechanisms explored. Clin Sci / Ann Nutr Metab 2020 PMID 31808863 — research dose vs. population advice.',
+      'Walker AF et al. Mg citrate vs Mg oxide bioavailability urinary excretion RCT. Magnes Res. 2003;16(3):183-191.',
+      'Neubronner J et al. Enhanced increase of omega-3 index from re-esterified triglycerides versus ethyl esters. Eur J Clin Nutr. 2011;65(2):247-254.',
+      'Jagim AR et al. Common ingredient profiles of multi-ingredient pre-workout supplements: proprietary blends and underdosing risks. J Int Soc Sports Nutr context.',
+      'Dwyer JT, Coates PM, Smith MJ. Dietary supplements: knowledge and confidence among healthcare professionals — quality verification need. Nutrients reviews.',
+      'Or F et al. Analytical challenges ensuring dietary supplement quality: international perspectives. Front Pharmacol. 2021;12:714434.',
+    ]),
+  },
+  {
+    slug: 'onderzoeksdosis',
+    insightTier: 1,
+    term: 'Onderzoeksdosis',
+    theme: 'ps-score',
+    laatstBijgewerktOp: '2026-09-03',
+    shortDefinition:
+      'De dagdosering waarbij het aangehaalde onderzoek effect laat zien — niet de wettelijke claimdrempel, en niet "meer is beter".',
+    content: {
+      whatIsIt: `De onderzoeksdosis is de ondergrens waartegen de PS-Score de etiketdosering afzet. Blijft een product daaronder, dan schaalt het doseringsonderdeel lineair mee (100 mg elementair magnesium bij een doel van 200 mg → 50 punten). Komt de dosis tussen onderzoeksdosis en bovengrens, dan is dat onderdeel 100. Erboven volgt aftrek: hoger is hier niet beter.
+
+Dat is iets anders dan de EFSA-claimdrempel. Die bepaalt of een fabrikant een goedgekeurde zin op de verpakking mag zetten — bij mineralen vaak al vanaf 15% van de referentie-inname. Die drempel zegt weinig over of de dosis in de buurt komt van wat trials en meta-analyses gebruikten.`,
+      howItWorks: `Per categorie staat de waarde vast in het scoremodel. Magnesium: 200 mg elementair (meta-analyses rond slaap/stress), bovengrens 250 mg (EFSA UL voor magnesium uit supplementen). Omega-3: 1000 mg EPA+DHA (cardiometabole trials; model 1.0.0 had hier foutief 500 mg, een innameaanbeveling), UL 5 g. Vitamine D: 20 µg D3, UL 100 µg. Zink: 15 mg elementair, UL 25 mg. Creatine: 3 g (EFSA-claimvoorwaarde / ISSN onderhoud 3–5 g), bovengrens 5 g. Ashwagandha: 300 mg gestandaardiseerd wortelextract, bovengrens 600 mg. Eiwitpoeder: 20 g eiwit per portie (MPS-plateau), bovengrens 40 g. Melatonine: doseringsonderdeel valt uit — geen eenduidige onderzoeksdosis in dit model.
+
+De volledige tabel met bronvermelding staat op [/ps-score](/ps-score).`,
+      whyItMatters: `Dosering weegt 30% in de [PS-Score](/kennisbank/ps-score-model) — het zwaarste onderdeel — omdat een ondergedoseerd product geen effect kan leveren dat het onderzoek belooft, ongeacht hoe mooi de vorm of het etiket is. Zie ook [scoregewichten](/kennisbank/scoregewichten) en [claimdekking](/kennisbank/claimdekking).`,
+    },
+    relatedSlugs: ['ps-score-model', 'scoregewichten', 'claimdekking', 'efsa-claims', 'vitamine-d-inname'],
+    relatedComparisons: [
+      '/beste/magnesium',
+      '/beste/omega-3-supplement',
+      '/beste/vitamine-d',
+      '/beste/creatine',
+    ],
+    metaTitle: 'Onderzoeksdosis: Waartegen We Dosering Meten',
+    metaDescription:
+      'Onderzoeksdosis vs. EFSA-claimdrempel: waarom 200 mg magnesium of 1000 mg EPA+DHA de PS-Score stuurt, niet de wettelijke ondergrens.',
+    referenties: toRefs([
+      'Zhang Y et al. Association of magnesium intake and status with sleep quality: systematic review/meta-analysis contexts PMID 33865376.',
+      'Abbasi B et al. The effect of magnesium supplementation on primary insomnia in elderly: double-blind placebo-controlled clinical trial. J Res Med Sci. 2012;17(12):1161-1169. PMID 28445426 context cluster.',
+      'Calder PC. Very long-chain n-3 fatty acids and human health. Ann Nutr Metab. 2020;76(Suppl 1) — PMID 31808863; ~1 g EPA+DHA trial dosing.',
+      'Bischoff-Ferrari HA et al. A pooled analysis of vitamin D dose requirements for fracture prevention. BMJ. 2012;345:e4229. PMID 22833605.',
+      'EFSA NDA Panel. Scientific Opinion on the Tolerable Upper Intake Level of magnesium / vitamin D / zinc — UL frames for supplemental intake.',
+      'Kreider RB et al. International Society of Sports Nutrition position stand: safety and efficacy of creatine supplementation. J Int Soc Sports Nutr. 2017;14:18. PMID 28615996.',
+      'EFSA NDA Panel. Creatine and increase in physical performance — conditions of use 3 g/day. EFSA Journal. 2011;9(7):2303.',
+    ]),
+  },
+  {
+    slug: 'claimdekking',
+    insightTier: 1,
+    term: 'Claimdekking',
+    theme: 'ps-score',
+    laatstBijgewerktOp: '2026-09-03',
+    shortDefinition:
+      'Hoeveel van de erkende EU-gezondheidsclaims voor een stof deze dagdosering ontsluit — een aandeel, geen ja/nee-label.',
+    content: {
+      whatIsIt: `Claimdekking beantwoordt: van alle bruikbare, goedgekeurde claims die voor deze stof op de Europese lijst staan, hoeveel haalt déze dosering? Het resultaat is een percentage van 0 tot 100 dat 15% meeweegt in de [PS-Score](/kennisbank/ps-score-model).
+
+Dat is iets anders dan de vraag "mag dit product zijn claim voeren?". Die tweede vraag is een drempel (vaak 15% van de referentie-inname bij mineralen): alles of niets, geen glijdende schaal. Daarom staat die uitkomst als label op de productkaart, niet als punten.`,
+      howItWorks: `Voor magnesium of zink is er in de praktijk één relevante drempel: haal je die, dan dekt de dosering de bruikbare claims. Bij omega-3 is er wél een gradient. De hartclaim vraagt 250 mg EPA+DHA per dag; de hersen- en gezichtsclaims vragen elk apart 250 mg DHA. Een olie met veel EPA en weinig DHA ontsluit er één van de drie — dat verschil is echt en telt mee.
+
+Bestaat er geen erkende claim (ashwagandha, eiwit als zodanig), dan valt claimdekking weg en hernormaliseert het model. Kosten rekenen we apart per claim-conforme dag: doseer je onder de drempel, dan heb je meer nodig en stijgt de dagprijs.`,
+      whyItMatters: `Claimdrempels liggen vaak ver onder de [onderzoeksdosis](/kennisbank/onderzoeksdosis). Alleen "claim-conform" zijn zegt dus weinig over of de dosis in trialgebied ligt. Daarom weegt claimdekking lichter dan dosering (15% vs. 30%), maar verdwijnt het niet: voor omega-3 maakt de DHA-splitsing een reëel verschil tussen producten. Achtergrond: [EFSA-claims](/kennisbank/efsa-claims).`,
+    },
+    relatedSlugs: ['efsa-claims', 'onderzoeksdosis', 'ps-score-model', 'scoregewichten', 'adh'],
+    relatedComparisons: ['/beste/omega-3-supplement', '/beste/magnesium'],
+    metaTitle: 'Claimdekking: EU-Claims Ontsluiten in de PS-Score',
+    metaDescription:
+      'Claim mogen vs. claimdekking: waarom de PS-Score meet hoeveel erkende EU-claims jouw dosering ontsluit — vooral relevant bij omega-3.',
+    referenties: toRefs([
+      'European Parliament and Council. Regulation (EC) No 1924/2006 on nutrition and health claims made on foods.',
+      'European Commission. EU Register of nutrition and health claims — authorised Article 13/14 claims and conditions of use.',
+      'EFSA NDA Panel. Scientific Opinion on health claims related to eicosapentaenoic acid (EPA) and docosahexaenoic acid (DHA) — heart, brain and vision claim conditions.',
+      'EFSA NDA Panel. Scientific Opinion on health claims related to magnesium — source-of conditions tied to Annex Regulation 1924/2006.',
+      'Pravst I. Health claims on foods in the EU: regulation, science and consumer protection. Eur J Nutr / Food Law reviews.',
+      'Verhagen H, van Loveren H. Status of nutrition and health claims in Europe: scientific and regulatory perspectives.',
+    ]),
+  },
+  {
+    slug: 'etikettransparantie',
+    insightTier: 1,
+    term: 'Etikettransparantie',
+    theme: 'ps-score',
+    laatstBijgewerktOp: '2026-09-03',
+    shortDefinition:
+      'Vier controleerbare etiketfeiten: gekwantificeerde werkzame stof, dagdosering, uitgesplitste samenstelling, en geen proprietary blend.',
+    content: {
+      whatIsIt: `Etikettransparantie meet of je zelf kunt nalopen wat erin zit — niet of het product "werkt". In de PS-Score zijn het vier ja/nee-feiten die optellen tot 100 punten: werkzame stof in een getal (30), expliciete dagdosering (25), samenstelling per vorm uitgesplitst (25), geen proprietary blend (20). Het onderdeel weegt 15% mee.`,
+      howItWorks: `Proprietary blends vermelden wel ingredienten, maar niet de hoeveelheid per stof. In pre-workout- en complexproducten zit een groot deel van de actieve stoffen vaak in zo'n blend — waardoor je niet kunt checken of de dosis in de buurt van onderzoek komt. Uitgesplitste samenstelling is vooral relevant bij mengsels (meerdere magnesiumvormen, EPA én DHA): zonder verdeling kun je de effectieve dosis per vorm niet herleiden.
+
+Ontbreekt het elementaire gehalte of de dagdosering, dan kunnen andere scoreonderdelen (dosering, claimdekking) soms niet berekend worden. Transparantie is dus ook de voorwaarde om de rest van het model eerlijk te laten werken.`,
+      whyItMatters: `Zonder open etiket is elke "klinische dosis"-claim oncontroleerbaar. Literatuur over sport- en afslanksupplementen laat zien dat blends underdosing en verborgen stimulerende stoffen faciliteren. Daarom blijft transparantie in de score — maar lichter dan dosering: eenmaal volledig open is de meerwaarde afnemend. Zie [PS-Score](/kennisbank/ps-score-model) en [scoregewichten](/kennisbank/scoregewichten).`,
+    },
+    relatedSlugs: ['ps-score-model', 'scoregewichten', 'onderzoeksdosis', 'onafhankelijke-toetsing', 'derde-partij-testen'],
+    relatedComparisons: ['/beste/magnesium', '/beste/ashwagandha'],
+    metaTitle: 'Etikettransparantie: Wat Je Zelf Op de Verpakking Nakijkt',
+    metaDescription:
+      'Vier etiketfeiten in de PS-Score: hoeveelheid, dagdosering, uitsplitsing en geen proprietary blend — waarom dat 15% weegt.',
+    referenties: toRefs([
+      'Jagim AR et al. Multi-ingredient pre-workout supplements: prevalence of proprietary blends and implications for efficacy and safety. J Int Soc Sports Nutr.',
+      'Attipoe S et al. Label accuracy of select weight-loss dietary supplements — proprietary blends and undisclosed amounts. Nutrients. 2024;16(24):4369.',
+      'US FDA. Dietary Supplement Labeling Guide — proprietary blend declaration rules (net weight, descending order).',
+      'Maughan RJ et al. IOC consensus statement: dietary supplements and the high-performance athlete — quality and labeling concerns.',
+      'Cohen PA. Hazards of hindsight — monitoring the safety of nutritional supplements. N Engl J Med. 2014;370(14):1277-1280.',
+      'Dwyer JT et al. Dietary supplements: regulatory challenges and research resources. Nutrients. 2018;10(1):41.',
+    ]),
+  },
+  {
+    slug: 'onafhankelijke-toetsing',
+    insightTier: 1,
+    term: 'Onafhankelijke toetsing',
+    theme: 'ps-score',
+    laatstBijgewerktOp: '2026-09-03',
+    shortDefinition:
+      'Of een merk eindproduct of grondstof extern laat controleren én dat publiceert — plus categorie-markers zoals TOTOX of zware metalen.',
+    content: {
+      whatIsIt: `Onafhankelijke toetsing in de PS-Score meet of er bewijs buiten de fabrikant zichtbaar is: een onafhankelijk labonderzoek op het eindproduct (70 punten) en erkende grondstofkeurmerken zoals Creapure® of Quali-D® (tot 30 punten). Daarnaast tellen categorie-specifieke markers mee waar ze ergens over gaan — bijvoorbeeld oxidatiewaarde (TOTOX/PV/AV) bij omega-3, of verontreinigingstesten bij eiwit en ashwagandha.
+
+Dit is niet hetzelfde als [etikettransparantie](/kennisbank/etikettransparantie): transparantie vraagt of getallen op de verpakking staan; toetsing vraagt of iemand buiten het merk die inhoud of zuiverheid heeft nagekeken en of dat is gepubliceerd.`,
+      howItWorks: `Universeel: labtest + keurmerken, genormaliseerd op 100. Merkgebonden grondstofstandaarden tellen hier mee omdat de chemische vorm eronder al in het vorm-onderdeel scoort — één feit één keer. Gestandaardiseerde botanicals (KSM-66®) tellen hier juist niet mee: daar ís standaardisatie de vorm.
+
+Bij omega-3 weegt een gepubliceerde oxidatiewaarde zwaar (GOED hanteert TOTOX ≤26 als vrijwillige bovengrens); zonder waarde is versheid niet te controleren. Verontreiniging (zware metalen, dioxines, pesticiden) telt waar de categorie dat vraagt. Ontbreekt een marker of is hij niet van toepassing, dan krimpt de noemer mee — geen straf-nul voor creatine omdat creatine niet oxideert.
+
+Belangrijke grens: wij analyseren (nog) geen potjes zelf. Een merk dat wél test maar niets publiceert, scoort lager dan het verdient. Zie ook [derde-partij testen](/kennisbank/derde-partij-testen).`,
+      whyItMatters: `Reviews laten structureel label-inaccurateit, adulteratie en contaminatie zien in het supplementveld. Zonder verificatie rusten dosis- en vormscores op onbewezen etiketclaims. Daarom weegt toetsing in model 1.2.0 15% (was 10%) — met een plafond, omdat gepubliceerde COA's nog geen eigen meting zijn. Volledige methode: [/ps-score](/ps-score).`,
+    },
+    relatedSlugs: [
+      'derde-partij-testen',
+      'etikettransparantie',
+      'ps-score-model',
+      'scoregewichten',
+      'epa-dha',
+    ],
+    relatedComparisons: ['/beste/omega-3-supplement', '/beste/creatine', '/beste/ashwagandha'],
+    metaTitle: 'Onafhankelijke Toetsing in de PS-Score',
+    metaDescription:
+      'Labtest, keurmerken en TOTOX/metalen in de PS-Score: wat 15% weegt, en waarom publicatie telt — niet alleen "getest"-claims.',
+    referenties: toRefs([
+      'Or F et al. Analytical challenges and metrological approaches to ensuring dietary supplement quality: international perspectives. Front Pharmacol. 2021;12:714434.',
+      'Martinez-Sanz JM et al. Intended or unintended doping? A review of the presence of doping substances in dietary supplements used in sports. Nutrients / adulteration prevalence reviews.',
+      'Crawford C et al. Screening for consistency and contamination within and between bottles of herbal supplements. PLoS One. 2021;16(12):e0260463.',
+      'GOED. GOED Voluntary Monograph — oxidation limits including TOTOX ≤26 for EPA/DHA oils.',
+      'Maughan RJ et al. IOC consensus statement: dietary supplements and the high-performance athlete. Br J Sports Med. 2018;52(7):439-455.',
+      'Commission Regulation (EU) 2023/915 on maximum levels for certain contaminants in food — heavy metals and dioxins context for fish oils.',
     ]),
   },
 ]

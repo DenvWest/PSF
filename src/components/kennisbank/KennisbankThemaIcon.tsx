@@ -37,5 +37,11 @@ export default function KennisbankThemaIcon({
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l3.5 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
         </svg>
       );
+    case "ps-score":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className} aria-hidden>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5h15M7.5 16.5V9M12 16.5V6M16.5 16.5v-4.5" />
+        </svg>
+      );
   }
 }

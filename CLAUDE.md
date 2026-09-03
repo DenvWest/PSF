@@ -66,9 +66,8 @@ src/
 ## Belangrijke regels — LEES DIT
 
 ### Git & deploy
-- **NOOIT automatisch committen.** Stop altijd na aanpassingen zodat Dennis kan reviewen.
+- **Committen mag automatisch, pushen niet.** Na een afgeronde wijziging in `src/`: draai eerst de volledige klaar-check (`grep -rn "console.log" src/` + `npx tsc --noEmit` + `vitest` + `eslint --max-warnings 0`). Slaagt alles, commit dan zelf — één commit per afgeronde taak, geen tussentijdse deelcommits. Faalt er iets, dan NOOIT committen: eerst melden en waar mogelijk fixen, pas committen als alles groen is. **Nooit `git push`** — dat blijft altijd bij Dennis.
 - Verifieer met `npx tsc --noEmit` + `vitest` + `eslint --max-warnings 0` (de pre-push hook draait tsc+vitest). Draai **NIET** `next build` of `rm -rf .next` terwijl `next dev` live is — dat crasht de dev-server; de productie-build draait op de server via `deploy.sh`.
-- Draai `grep -rn "console.log" src/` voor elke commit — geen debug-logging in productie.
 - `.env.local` NOOIT overschrijven of committen.
 - Server-lockfile met `npx npm@10.8.2 install` genereren (server npm 10/node 20 vs lokaal npm 11/node 24; anders faalt `npm ci` op de server).
 - Na env var wijzigingen op server: `sudo systemctl restart perfectsupplement`

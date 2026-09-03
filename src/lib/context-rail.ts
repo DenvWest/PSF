@@ -2,6 +2,7 @@ import { PILLAR } from "@/data/dashboard";
 import { NUTRITION_LAYERS } from "@/data/nutrition/lifestyle-pyramid";
 import {
   buildDashboardKeuzeHref,
+  type VoedingLaagId,
   type VoedingLaagSlug,
 } from "@/lib/dashboard-url";
 import { hasSchap, schapGateReason } from "@/lib/schap-availability";
@@ -153,19 +154,24 @@ export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
 ];
 
 export type VoedingRailLayer = {
-  id: 5 | 6;
+  id: VoedingLaagId;
   slug: VoedingLaagSlug;
   label: string;
 };
 
-function voedingRailLayer(slug: VoedingLaagSlug, id: 5 | 6): VoedingRailLayer {
+function voedingRailLayer(slug: VoedingLaagSlug, id: VoedingLaagId): VoedingRailLayer {
   const layer = NUTRITION_LAYERS.find((item) => item.id === slug);
   return { id, slug, label: layer?.name ?? slug };
 }
 
-/** P5/P6 onder Voeding in de voortgang-rail — zelfde namen als de ladder. */
+/**
+ * De drie knoppen van Voeding, ook in de rail — zelfde namen en zelfde
+ * volgorde als het scherm (`voeding-drieluik.ts`). Meten & timing vooraan:
+ * daar vul je in, de rest volgt daaruit.
+ */
 export const VOEDING_RAIL_LAYERS: readonly VoedingRailLayer[] = [
   voedingRailLayer("meten-timing", 5),
+  voedingRailLayer("eetbasis", 1),
   voedingRailLayer("aanvullen", 6),
 ];
 

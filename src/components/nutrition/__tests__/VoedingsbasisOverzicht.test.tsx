@@ -36,22 +36,30 @@ function renderOverzicht() {
 }
 
 describe("VoedingsbasisOverzicht", () => {
-  it("toont een tabel met een rij per categorie", () => {
+  it("toont een meetbaan per categorie, met jouw antwoord en de richtlijn", () => {
     renderOverzicht();
-    expect(screen.getByRole("table")).toBeTruthy();
-    expect(screen.getByRole("columnheader", { name: "Categorie" })).toBeTruthy();
-    expect(screen.getByRole("columnheader", { name: "Jij" })).toBeTruthy();
-    expect(screen.getByRole("columnheader", { name: "Richtlijn" })).toBeTruthy();
-    expect(screen.getByRole("rowheader", { name: /Groente/ })).toBeTruthy();
+    // Geen tabel meer: de vraag van deze laag is "waar zit mijn ruimte", en
+    // dat beantwoordt een balk in één oogopslag waar een spreadsheet je liet
+    // rekenen.
+    expect(screen.queryByRole("table")).toBeNull();
+    const banen = screen.getAllByRole("listitem");
+    expect(banen.length).toBeGreaterThan(1);
+    expect(screen.getByText("Groente")).toBeTruthy();
+  });
+
+  it("vat samen hoeveel categorieën ruimte laten zien", () => {
+    renderOverzicht();
+    // De samenvatting is een telling, geen uitleg van de vorm eronder.
+    expect(screen.getByText(/met ruimte|op orde/)).toBeTruthy();
+    expect(screen.getByText(/totaal/)).toBeTruthy();
   });
 
   it("zet de categorie met de meeste ruimte bovenaan", () => {
     renderOverzicht();
-    const rowHeaders = screen.getAllByRole("rowheader");
-    const statussen = screen.getAllByText(/ruimte|bijna|op orde|eigen ijkpunt/);
-    expect(rowHeaders.length).toBeGreaterThan(1);
-    // De eerste rij draagt de zwaarste status van de set.
-    expect(statussen[0].textContent).toBeTruthy();
+    const statussen = screen.getAllByText(/^(ruimte|bijna|op orde|eigen ijkpunt)$/);
+    expect(statussen.length).toBeGreaterThan(1);
+    // Ruimte eerst — dat is de sortering waar deze laag op draait.
+    expect(statussen[0].textContent).toBe("ruimte");
   });
 
   it("klapt een categorie open en toont de bronnen erachter", () => {

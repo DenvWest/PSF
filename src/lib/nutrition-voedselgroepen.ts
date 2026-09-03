@@ -106,6 +106,20 @@ export type CategorieKaart = {
    * betekent: er ís een richtlijn, dus de vraag speelt niet.
    */
   exemption: NutritionRowExemption | null;
+  /**
+   * Waar jouw antwoord staat op de schaal van zijn eigen vraag, 0–1.
+   *
+   * De sliders hebben genummerde stops ("nooit" … "dagelijks"), en dat is een
+   * echte positie — geen afgeleide van de status. Daarmee kan een balk per
+   * categorie een eigen meetwaarde tonen in plaats van alleen de kleur van
+   * `status` te herhalen.
+   *
+   * Null waar de categorie geen slider heeft (de gecombineerde groepen lezen
+   * meerdere feitenrijen) of waar de check de vraag niet stelde. De UI toont
+   * dan de statuszone zonder markering — een balk zonder positie is eerlijker
+   * dan een positie die we verzinnen.
+   */
+  schaalPositie: number | null;
 };
 
 /**
@@ -148,6 +162,25 @@ function stopLabel(sliderId: string, index: number | undefined): string | null {
   }
   const clamped = Math.min(Math.max(Math.trunc(index), 0), question.stops.length - 1);
   return question.stops[clamped]?.label ?? null;
+}
+
+/**
+ * De positie van een antwoord op zijn eigen schaal, 0–1.
+ *
+ * Deelt door het aantal stops min één, zodat de laatste stop op 1 uitkomt en
+ * niet op 0,8: de bovenste stop ís het einde van de schaal, geen tussenstand.
+ */
+function sliderPositie(sliderId: string, index: number | undefined): number | null {
+  const question = nutritionSliderQuestion(sliderId);
+  if (!question || index === undefined || !Number.isFinite(index)) {
+    return null;
+  }
+  const laatste = question.stops.length - 1;
+  if (laatste <= 0) {
+    return null;
+  }
+  const clamped = Math.min(Math.max(Math.trunc(index), 0), laatste);
+  return clamped / laatste;
 }
 
 function sliderIndex(report: NutritionLadderReport, id: string): number | undefined {
@@ -243,6 +276,7 @@ function buildGroenteKaart(
     status: plantbasis?.status ?? "own",
     footnote: plantbasis?.footnote ?? null,
     exemption: exemptionOf(plantbasis),
+    schaalPositie: sliderPositie("vegetables", sliderIndex(report, "vegetables")),
   };
 }
 
@@ -262,6 +296,12 @@ function buildFruitKaart(
     status: plantbasis?.status ?? "own",
     footnote: plantbasis?.footnote ?? null,
     exemption: exemptionOf(plantbasis),
+    // Fruit leest twee sliders (fruit + bessen); de laagste van de twee draagt
+    // de balk, want die bepaalt waar de ruimte zit.
+    schaalPositie: laagstePositie([
+      sliderPositie("fruit", sliderIndex(report, "fruit")),
+      sliderPositie("berries", sliderIndex(report, "berries")),
+    ]),
   };
 }
 
@@ -281,7 +321,14 @@ function buildSliderGroepKaart(
     status: primary?.status ?? "own",
     footnote: primary?.footnote ?? null,
     exemption: exemptionOf(primary),
+    schaalPositie: sliderPositie(sliderId, sliderIndex(report, sliderId)),
   };
+}
+
+/** De laagste van een paar posities — null als er geen enkele is. */
+function laagstePositie(posities: (number | null)[]): number | null {
+  const echte = posities.filter((p): p is number => p != null);
+  return echte.length > 0 ? Math.min(...echte) : null;
 }
 
 function buildCombinedGroepKaart(groep: Voedselgroep, rows: NutritionFactRow[]): CategorieKaart {
@@ -299,6 +346,11 @@ function buildCombinedGroepKaart(groep: Voedselgroep, rows: NutritionFactRow[]):
     status: worstStatus(statuses),
     footnote: primary?.footnote ?? null,
     exemption: exemptionOf(primary),
+    // Gecombineerde groepen lezen meerdere feitenrijen zonder één eigen
+    // slider. Ze krijgen daarom geen positie: de balk toont dan zijn zone
+    // zonder markering, wat eerlijker is dan een gemiddelde over vragen die
+    // niet op dezelfde schaal staan.
+    schaalPositie: null,
   };
 }
 

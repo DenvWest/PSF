@@ -70,15 +70,27 @@ describe("VoortgangTopNav", () => {
   it("zet alle vijf domeinen in het paneel, ook zonder horizontaal scrollen", () => {
     renderNav();
     openPanel();
-    for (const label of ["Slaap", "Beweging", "Voeding", "Stress", "Verbinding"]) {
-      expect(screen.getByRole("menuitem", { name: new RegExp(`^${label}`) })).toBeTruthy();
+    // De naam is het domeinlabel gevolgd door zijn score ("Voeding40"). Een
+    // losse prefix-match op "Voeding" zou sinds het drieluik ook
+    // "Voedingsbasis" raken, dus staat het cijfer in het patroon.
+    for (const [label, score] of [
+      ["Slaap", 25],
+      ["Beweging", 63],
+      ["Voeding", 40],
+      ["Stress", 0],
+      ["Verbinding", 33],
+    ] as const) {
+      expect(
+        screen.getByRole("menuitem", { name: new RegExp(`^${label}${score}$`) }),
+      ).toBeTruthy();
     }
   });
 
-  it("draagt Meten & timing en Aanvullen & vergelijken onder Voeding", () => {
+  it("draagt de drie voeding-knoppen onder Voeding", () => {
     renderNav();
     openPanel();
     expect(screen.getByRole("menuitem", { name: "Meten & timing" })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: "Voedingsbasis" })).toBeTruthy();
     expect(screen.getByRole("menuitem", { name: "Aanvullen & vergelijken" })).toBeTruthy();
   });
 

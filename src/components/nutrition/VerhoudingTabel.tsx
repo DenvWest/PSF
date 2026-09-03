@@ -2,6 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { clarityTag } from "@/lib/clarity";
+import {
+  BALK_ZONES,
+  heeftStatusKleur,
+  markerPositie,
+  STATUS_KLEUR,
+  surfaceStyles,
+  type DashboardSurface,
+} from "@/lib/dashboard-surface";
 import { trackEvent } from "@/lib/ga4";
 import type { LadderEvidenceStatus } from "@/lib/domain-ladder-readout";
 import type { NutritionFactRow, NutritionFactRowKey } from "@/lib/nutrition-ladder";
@@ -34,39 +42,6 @@ import {
  *   kunnen onderbouwen — zie de `exemption`-copy per rij.
  */
 
-type Surface = "check" | "dashboard";
-
-const STYLES = {
-  check: {
-    kaart: "rounded-[14px] border border-[#ebe7e2] bg-[#faf9f7]",
-    kop: "text-[#78716c]",
-    tekst: "text-[#1c1917]",
-    zacht: "text-[#78716c]",
-    rij: "border-[#ebe7e2]",
-    knop: "text-[#5A8F6A]",
-    chipUit: "border-[#e4e0da] bg-white text-[#57534e]",
-    chipAan: "border-[#5A8F6A] bg-[#5A8F6A] text-white",
-    paneel: "bg-white/70",
-  },
-  dashboard: {
-    kaart: "rounded-2xl border border-white/10 bg-black/20",
-    kop: "text-[#9FB0A6]",
-    tekst: "text-[#E7EDE8]",
-    zacht: "text-[#9FB0A6]",
-    rij: "border-white/10",
-    knop: "text-[#9CC5A9]",
-    chipUit: "border-white/15 bg-transparent text-[#9FB0A6]",
-    chipAan: "border-[#9CC5A9] bg-[#9CC5A9]/20 text-[#E7EDE8]",
-    paneel: "bg-black/25",
-  },
-} as const;
-
-const STATUS_KLEUR: Record<Exclude<LadderEvidenceStatus, "own">, string> = {
-  below: "#C24B4B",
-  near: "#D4824A",
-  meets: "#3D8B5A",
-};
-
 const STATUS_LABEL: Record<LadderEvidenceStatus, string> = {
   below: "hier zit je ruimte",
   near: "bijna op niveau",
@@ -82,8 +57,54 @@ const STATUS_RANG: Record<LadderEvidenceStatus, number> = {
   own: 3,
 };
 
+/**
+ * De verhoudingsbalk: drie zones met daarop de marker waar jij staat.
+ *
+ * De zones staan op zeer laag contrast — ze zijn de schaal, niet de boodschap.
+ * De marker draagt de volle kleur van je status; dat is wat je moet zien als je
+ * langs de lijst scant. Rijen zonder richtlijn krijgen geen balk: er is dan
+ * geen schaal om iets op af te lezen.
+ *
+ * `aria-hidden`, want de rij zegt het al in woorden (`STATUS_LABEL`) — een
+ * screenreader zou hier alleen de vorm herhalen.
+ */
+function VerhoudingBalk({ status, bed }: { status: LadderEvidenceStatus; bed: string }) {
+  if (!heeftStatusKleur(status)) {
+    return null;
+  }
+  return (
+    <span
+      aria-hidden
+      className={`relative mt-1.5 block h-1.5 w-full overflow-hidden rounded-full ${bed}`}
+    >
+      <span className="absolute inset-0 flex">
+        {BALK_ZONES.map((zone) => (
+          <span
+            key={zone.status}
+            className="h-full"
+            style={{
+              width: `${zone.breedte}%`,
+              backgroundColor: STATUS_KLEUR[zone.status],
+              opacity: 0.22,
+            }}
+          />
+        ))}
+      </span>
+      <span
+        className="absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2"
+        style={{
+          left: `${markerPositie(status)}%`,
+          backgroundColor: STATUS_KLEUR[status],
+          // De ring snijdt de marker los van de zone eronder, op beide surfaces.
+          "--tw-ring-color": "rgba(0,0,0,0.28)",
+        } as React.CSSProperties}
+      />
+    </span>
+  );
+}
+
 function StatusBol({ status }: { status: LadderEvidenceStatus }) {
-  if (status === "own") {
+  if (!heeftStatusKleur(status)) {
     return (
       <span
         aria-hidden
@@ -137,36 +158,48 @@ function Rij({
   onToggle,
 }: {
   rij: NutritionFactRow;
-  surface: Surface;
+  surface: DashboardSurface;
   open: boolean;
   onToggle: () => void;
 }) {
-  const s = STYLES[surface];
+  const s = surfaceStyles(surface);
   const status = rij.status ?? "own";
   const paneelId = `verhouding-waarom-${rij.key}`;
 
   return (
     <li className={`border-t ${s.rij}`}>
-      <div className="px-4 py-2.5 @[520px]:grid @[520px]:grid-cols-[1.2fr_1fr_1.5fr] @[520px]:items-baseline @[520px]:gap-3">
-        <span className="flex items-center gap-2">
-          <StatusBol status={status} />
-          <span className={`text-[13px] font-semibold leading-snug ${s.tekst} text-pretty`}>
-            {rij.label}
+      <div className="px-4 py-3">
+        {/* Kop en status op één regel: het onderdeel links, het oordeel rechts.
+            Dat oordeel stond eerst alleen in kleur en in een sr-only regel —
+            nu leest iedereen hetzelfde. */}
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="flex min-w-0 items-center gap-2">
+            <StatusBol status={status} />
+            <span className={`truncate text-[13px] font-semibold leading-snug ${s.tekst}`}>
+              {rij.label}
+            </span>
           </span>
-          {/* Kleur alleen is geen informatie (WCAG 1.4.1). */}
-          <span className="sr-only">: {STATUS_LABEL[status]}</span>
-        </span>
+          <span className={`shrink-0 text-[11px] font-semibold leading-snug ${s.zacht}`}>
+            {STATUS_LABEL[status]}
+          </span>
+        </div>
 
-        <span
-          className={`mt-0.5 block text-[13px] leading-snug @[520px]:mt-0 ${s.tekst}`}
-          style={{ fontVariantNumeric: "tabular-nums" }}
-        >
-          {rij.answerLabel}
-        </span>
+        <VerhoudingBalk status={status} bed={s.balkBed} />
 
-        <span className={`mt-0.5 block text-[11.5px] leading-snug ${s.zacht} text-pretty @[520px]:mt-0`}>
-          {rij.benchmarkLabel ?? STATUS_LABEL.own}
-        </span>
+        {/* Onder de balk: waar jij staat en waar de lat ligt. Dezelfde twee
+            waarden als voorheen, maar nu als uiteinden van één schaal in
+            plaats van twee kolommen die je zelf moet vergelijken. */}
+        <div className="mt-1.5 flex items-baseline justify-between gap-3">
+          <span
+            className={`text-[12.5px] leading-snug ${s.tekst}`}
+            style={{ fontVariantNumeric: "tabular-nums" }}
+          >
+            jij: {rij.answerLabel}
+          </span>
+          <span className={`shrink-0 text-right text-[11.5px] leading-snug ${s.zacht} text-pretty`}>
+            {rij.benchmarkLabel ? `de lat: ${rij.benchmarkLabel}` : STATUS_LABEL.own}
+          </span>
+        </div>
       </div>
 
       <div className="px-4 pb-2">
@@ -240,15 +273,21 @@ export default function VerhoudingTabel({
   surface,
   checkDatum = null,
   titel = "Wat je eet, naast de richtlijn",
+  onGoAanvullen,
 }: {
   /** Feitenrijen uit `buildNutritionFactRows` — dezelfde bron als de ladder. */
   rijen: readonly NutritionFactRow[];
-  surface: Surface;
+  surface: DashboardSurface;
   /** Weergavedatum van de laatste voedingscheck; toont waar dit vandaan komt. */
   checkDatum?: string | null;
   titel?: string;
+  /**
+   * Uitgang naar "aanvullen" (P6). Optioneel: op de check-surface bestaat die
+   * laag nog niet, en dan hoort er geen CTA onder te staan.
+   */
+  onGoAanvullen?: () => void;
 }) {
-  const s = STYLES[surface];
+  const s = surfaceStyles(surface);
   const [selectie, setSelectie] = useState<VoedselgroepId[]>([]);
   const [openRij, setOpenRij] = useState<NutritionFactRowKey | null>(null);
   const gezien = useRef(false);
@@ -267,6 +306,13 @@ export default function VerhoudingTabel({
       .slice()
       .sort((a, b) => STATUS_RANG[a.status ?? "own"] - STATUS_RANG[b.status ?? "own"]);
   }, [rijen, selectie]);
+
+  // De telling gaat over álle rijen, niet over de filterselectie: de CTA gaat
+  // over je voeding, niet over het lijstje dat je nu toevallig openhebt.
+  const aantalRuimte = useMemo(
+    () => rijen.filter((rij) => (rij.status ?? "own") === "below").length,
+    [rijen],
+  );
 
   useEffect(() => {
     if (gezien.current || rijen.length === 0) return;
@@ -368,21 +414,6 @@ export default function VerhoudingTabel({
         </div>
       ) : null}
 
-      <div
-        aria-hidden
-        className={`hidden border-t px-4 pb-1.5 pt-2 @[520px]:grid @[520px]:grid-cols-[1.2fr_1fr_1.5fr] @[520px]:gap-3 ${s.rij}`}
-      >
-        <span className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${s.kop}`}>
-          Onderdeel
-        </span>
-        <span className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${s.kop}`}>
-          Jij
-        </span>
-        <span className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${s.kop}`}>
-          De lat
-        </span>
-      </div>
-
       {gesorteerd.length > 0 ? (
         <ul className="m-0 flex list-none flex-col p-0">
           {gesorteerd.map((rij) => (
@@ -401,6 +432,35 @@ export default function VerhoudingTabel({
           op Alles.
         </p>
       )}
+
+      {/* Eén uitgang onder de lijst, niet dertien in de rijen: de vraag "en
+          nu?" komt pas op als je het hele beeld hebt gezien. Alleen tonen als
+          er ook echt ruimte is — bij nul rode rijen is er niets aan te vullen,
+          en dan is de CTA een verkooppraatje in plaats van een antwoord. */}
+      {onGoAanvullen && aantalRuimte > 0 ? (
+        <div className={`border-t px-4 py-3 ${s.rij}`}>
+          <p className={`m-0 text-[12.5px] leading-relaxed ${s.tekst} text-pretty`}>
+            {aantalRuimte === 1
+              ? "Eén onderdeel met ruimte."
+              : `${aantalRuimte} onderdelen met ruimte.`}{" "}
+            De meeste dicht je met je bord.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("nutrition_verhouding_cta_click", {
+                surface,
+                rood: aantalRuimte,
+              });
+              clarityTag("nutrition_verhouding_cta", String(aantalRuimte));
+              onGoAanvullen();
+            }}
+            className={`mt-1 cursor-pointer border-none bg-transparent p-0 text-left text-[12.5px] font-semibold ${s.knop}`}
+          >
+            Kijk of aanvullen zin heeft ›
+          </button>
+        </div>
+      ) : null}
 
       <p className={`m-0 border-t px-4 py-3 text-[11px] leading-relaxed ${s.rij} ${s.kop} text-pretty`}>
         Hoe vaak je iets eet, naast een algemene richtlijn voor de bevolking —

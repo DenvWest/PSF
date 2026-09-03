@@ -358,15 +358,28 @@ describe("parseVoedingLaagFromUrl", () => {
     ).toBeNull();
   });
 
-  it("mapt slug naar ladderlaag 5/6", () => {
+  it("mapt slug naar ladderlaag en terug", () => {
     expect(isVoedingLaagSlug("meten-timing")).toBe(true);
+    expect(isVoedingLaagSlug("eetbasis")).toBe(true);
     expect(isVoedingLaagSlug("aanvullen")).toBe(true);
     expect(isVoedingLaagSlug("5")).toBe(false);
     expect(voedingLaagIdFromSlug("meten-timing")).toBe(5);
+    expect(voedingLaagIdFromSlug("eetbasis")).toBe(1);
     expect(voedingLaagIdFromSlug("aanvullen")).toBe(6);
     expect(voedingLaagSlugFromId(5)).toBe("meten-timing");
+    expect(voedingLaagSlugFromId(1)).toBe("eetbasis");
     expect(voedingLaagSlugFromId(6)).toBe("aanvullen");
-    expect(voedingLaagSlugFromId(1)).toBeNull();
+  });
+
+  /**
+   * De lagen 2 (kwaliteit) en 4 (situatie) staan onder de knop Voedingsbasis,
+   * dus hun slug is `eetbasis`. Laag 3 (verhoudingen) wordt niet meer getoond
+   * en heeft geen adres.
+   */
+  it("wijst gebundelde lagen naar hun knop en laat laag 3 los", () => {
+    expect(voedingLaagSlugFromId(2)).toBe("eetbasis");
+    expect(voedingLaagSlugFromId(4)).toBe("eetbasis");
+    expect(voedingLaagSlugFromId(3)).toBeNull();
   });
 });
 

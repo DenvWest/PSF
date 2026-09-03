@@ -206,6 +206,12 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
   },
+  "ps-score-model": { theme: "nutrition" },
+  scoregewichten: { theme: "nutrition" },
+  onderzoeksdosis: { theme: "nutrition" },
+  claimdekking: { theme: "nutrition" },
+  etikettransparantie: { theme: "nutrition" },
+  "onafhankelijke-toetsing": { theme: "nutrition" },
 };
 
 export function getContentMetadata(slug: string): ContentMetadata {

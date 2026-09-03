@@ -22,9 +22,15 @@ import type {
  * docs/plan/ANALYSE_PRODUCTPLATFORM_SUPPLEMENTEN.md §C3, die prijs voor 20%
  * in de score legde.
  */
-export const PS_SCORE_MODEL_VERSION = "1.1.0";
+/**
+ * 1.2.0 — gewichten herschikt op effectpotentieel vs. vertrouwen:
+ * dosering 30%, vorm 25%, claimdekking/transparantie/toetsing elk 15%.
+ * Exacte % zijn redactionele prioritering (geen meta-analyse schrijft 30% voor);
+ * onderbouwing in kennisbank/scoregewichten en /ps-score.
+ */
+export const PS_SCORE_MODEL_VERSION = "1.2.0";
 
-export const PS_SCORE_MODEL_DATE = "2026-08-27";
+export const PS_SCORE_MODEL_DATE = "2026-09-03";
 
 export const SCORE_COMPONENT_LABELS: Record<ScoreComponentId, string> = {
   claimdekking: "Dekking van erkende EU-claims",
@@ -34,13 +40,14 @@ export const SCORE_COMPONENT_LABELS: Record<ScoreComponentId, string> = {
   toetsing: "Onafhankelijke toetsing",
 };
 
-/** Gewichten tellen op tot 1. Valt een onderdeel uit, dan hernormaliseert de rest. */
+/** Gewichten tellen op tot 1. Valt een onderdeel uit, dan hernormaliseert de rest.
+ * Volgorde = UI-balk (effectpotentieel eerst). */
 export const SCORE_WEIGHTS: Record<ScoreComponentId, number> = {
-  claimdekking: 0.2,
-  dosering: 0.25,
+  dosering: 0.3,
   vorm: 0.25,
-  transparantie: 0.2,
-  toetsing: 0.1,
+  claimdekking: 0.15,
+  transparantie: 0.15,
+  toetsing: 0.15,
 };
 
 export const TIER_POINTS: Record<BioavailabilityTier, number> = {

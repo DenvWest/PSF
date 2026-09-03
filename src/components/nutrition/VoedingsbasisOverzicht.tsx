@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import CategorieDetailPaneel from "@/components/nutrition/CategorieDetailPaneel";
+import VerschuivingTabel from "@/components/nutrition/VerschuivingTabel";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import type { LadderEvidenceStatus } from "@/lib/domain-ladder-readout";
@@ -10,50 +11,53 @@ import { trackEvent } from "@/lib/ga4";
 import { heeftDetail } from "@/lib/nutrition-categorie-detail";
 import type { NutritionSelfReport } from "@/lib/nutrition-intake-estimate";
 import type { NutritionFactRow, NutritionLadderReport } from "@/lib/nutrition-ladder";
+import { surfaceStyles } from "@/lib/dashboard-surface";
+import { bouwVerschuiving } from "@/lib/voedingsbasis-verschuiving";
+import type { DomainMeasurement } from "@/types/dashboard";
 import {
   categorieKaarten,
-  GEEN_RICHTLIJN_LABEL,
   GEEN_RICHTLIJN_LABEL_KORT,
   type CategorieKaart,
 } from "@/lib/nutrition-voedselgroepen";
 
 /**
- * P1 Voedingsbasis — het categorie-overzicht als tabel, met doordruk per rij.
+ * P1 Voedingsbasis — één meetbalk per categorie.
  *
- * ## Waarom een tabel en geen kaartenraster
+ * ## Waarom balken en geen tabel
  *
- * De vorige vorm zette elke categorie in een eigen kaart met een eigen
- * `Jij`/`Aanbevolen`-lijstje. Dat leest prima bij drie categorieën en valt uit
- * elkaar bij zeven: je vergelijkt kaarten met elkaar, en dat is precies wat een
- * raster moeilijk maakt — je oog moet per kaart opnieuw zoeken waar "Jij"
- * staat. Een tabel zet die waarden in een kolom onder elkaar, en dan is
- * vergelijken gratis.
+ * De tabel hiervoor zette per categorie vier kolommen naast elkaar (jij, de
+ * richtlijn, de status, en een uitklap). Dat leest als een spreadsheet: je
+ * vergelijkt cellen met elkaar en moet zelf uitrekenen waar de ruimte zit.
+ * Terwijl de vraag van deze laag maar één ding is — *waar heb ik de meeste
+ * ruimte* — en dat is precies wat een balk in één oogopslag beantwoordt.
  *
- * Het is ook wat de inhoud ís: één rij per categorie, dezelfde velden per rij,
- * gesorteerd op waar de ruimte zit. Dat is een tabel, geen verzameling kaarten.
+ * Elke categorie krijgt daarom zijn eigen baan met zijn eigen meetwaarde: waar
+ * jouw antwoord op de schaal van díé vraag staat. Zeven banen onder elkaar
+ * lezen als één instrument, en de langste lege ruimte is meteen je antwoord.
+ *
+ * ## Waarom de meetwaarde niet de status herhaalt
+ *
+ * De status (`below`/`near`/`meets`) is een oordeel in drie stappen; de
+ * `schaalPositie` is waar je antwoord op zijn eigen schaal staat. Die twee
+ * zeggen iets anders: twee categorieën kunnen allebei "ruimte" hebben terwijl
+ * de één op de eerste stop staat en de ander vlak onder de lat. De balk toont
+ * die afstand, de kleur toont het oordeel.
+ *
+ * Categorieën zonder eigen slider (de gecombineerde groepen) krijgen een baan
+ * zonder markering — hun kleur zegt genoeg, en een verzonnen positie zou de
+ * enige echte meetwaarde op dit scherm onbetrouwbaar maken.
  *
  * ## De doordruk
  *
- * Elke rij die bronnen achter zich heeft, klapt open naar
- * `CategorieDetailPaneel`: welke stoffen deze groep draagt en uit welke bronnen.
- * Eén rij tegelijk open — twee open dossiers naast elkaar brengen de muur terug
- * die de tabel net wegnam, en de vraag is per categorie te beantwoorden.
- *
- * Categorieën zonder bronnen (suiker: daar kies je niet tussen bronnen, daar
- * minder je) krijgen geen knop. Een knop die een leeg paneel opent belooft een
- * antwoord dat er niet is.
- *
- * ## Mobiel
- *
- * Onder 640px zakt de richtlijn-kolom weg onder het antwoord in dezelfde cel:
- * op 375px is een vierkolomstabel niet te lezen, en de richtlijn hoort bij het
- * antwoord — niet bij de statuskolom.
+ * Elke categorie die bronnen achter zich heeft, klapt open naar
+ * `CategorieDetailPaneel`: welke stoffen deze groep draagt en uit welke
+ * bronnen. Eén tegelijk open — de vraag is per categorie te beantwoorden.
  */
 
 const STATUS_KLEUR: Record<Exclude<LadderEvidenceStatus, "own">, string> = {
   below: "#C8956C",
   near: "#C99A3C",
-  meets: "#9CC5A9",
+  meets: "#5A8F6A",
 };
 
 const STATUS_LABEL: Record<LadderEvidenceStatus, string> = {
@@ -63,7 +67,7 @@ const STATUS_LABEL: Record<LadderEvidenceStatus, string> = {
   own: "eigen ijkpunt",
 };
 
-/** Ruimte eerst — dat is waar de tabel voor bestaat. */
+/** Ruimte eerst — dat is waar deze laag voor bestaat. */
 const STATUS_VOLGORDE: Record<LadderEvidenceStatus, number> = {
   below: 0,
   near: 1,
@@ -71,21 +75,44 @@ const STATUS_VOLGORDE: Record<LadderEvidenceStatus, number> = {
   own: 3,
 };
 
-function StatusMerk({ status }: { status: LadderEvidenceStatus }) {
-  const kleur = status === "own" ? "transparent" : STATUS_KLEUR[status];
+/**
+ * De meetbaan van één categorie.
+ *
+ * De gevulde breedte is de schaalpositie; de fijne streep is de lat. Zonder
+ * positie blijft de baan leeg met alleen zijn kleur — dan draagt de kleur het
+ * oordeel en belooft de baan geen precisie die er niet is.
+ */
+function Meetbaan({
+  positie,
+  status,
+}: {
+  positie: number | null;
+  status: LadderEvidenceStatus;
+}) {
+  const kleur = status === "own" ? "#7E8C82" : STATUS_KLEUR[status];
   return (
-    <span className="flex items-center justify-end gap-1.5 whitespace-nowrap text-[11px] font-semibold text-[#9FB0A6]">
-      <span
-        aria-hidden
-        className="inline-block h-2 w-2 shrink-0 rounded-full border"
-        style={{ backgroundColor: kleur, borderColor: status === "own" ? "#7E8C82" : kleur }}
-      />
-      {STATUS_LABEL[status]}
-    </span>
+    <div className="relative mt-2 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
+      {positie != null ? (
+        <span
+          aria-hidden
+          className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-500"
+          style={{
+            width: `${Math.max(3, Math.round(positie * 100))}%`,
+            background: `linear-gradient(90deg, ${kleur}55, ${kleur})`,
+          }}
+        />
+      ) : (
+        <span
+          aria-hidden
+          className="absolute inset-y-0 left-0 w-full rounded-full opacity-25"
+          style={{ background: kleur }}
+        />
+      )}
+    </div>
   );
 }
 
-function CategorieRij({
+function CategorieBaan({
   kaart,
   open,
   onToggle,
@@ -100,96 +127,80 @@ function CategorieRij({
 }) {
   const uitklapbaar = heeftDetail(kaart.id);
   const paneelId = `voedingsbasis-detail-${kaart.id}`;
+  const kleur = kaart.status === "own" ? "#9FB0A6" : STATUS_KLEUR[kaart.status];
+
+  const kop = (
+    <>
+      <span className="flex items-baseline justify-between gap-3">
+        <span className="flex min-w-0 items-center gap-1.5">
+          {uitklapbaar ? (
+            <span
+              aria-hidden
+              className="inline-flex shrink-0 text-[#7E8C82] transition-transform"
+              style={{ transform: open ? "rotate(90deg)" : undefined }}
+            >
+              <Icons.ChevronRight s={11} />
+            </span>
+          ) : null}
+          <span className="truncate text-[13px] font-semibold leading-snug text-[#E7EDE8]">
+            {kaart.label}
+          </span>
+        </span>
+        <span
+          className="shrink-0 text-[10.5px] font-semibold uppercase tracking-[0.06em]"
+          style={{ color: kleur }}
+        >
+          {STATUS_LABEL[kaart.status]}
+        </span>
+      </span>
+      <Meetbaan positie={kaart.schaalPositie} status={kaart.status} />
+      <span className="mt-1.5 flex items-baseline justify-between gap-3">
+        <span className="min-w-0 truncate text-[11.5px] leading-snug text-[#9FB0A6]">
+          {kaart.jij}
+        </span>
+        <span className="shrink-0 text-[10.5px] leading-snug text-[#7E8C82]">
+          {kaart.aanbevolen ??
+            (kaart.exemption ? GEEN_RICHTLIJN_LABEL_KORT[kaart.exemption] : null)}
+        </span>
+      </span>
+    </>
+  );
 
   return (
-    <>
-      <tr className="border-t border-white/10">
-        <th scope="row" className="py-2.5 pr-3 text-left align-top font-normal">
-          {uitklapbaar ? (
-            <button
-              type="button"
-              onClick={onToggle}
-              aria-expanded={open}
-              aria-controls={paneelId}
-              className="flex items-start gap-1.5 text-left text-[13px] font-semibold leading-snug text-[#E7EDE8] transition-colors hover:text-white"
-            >
-              <span
-                aria-hidden
-                className="mt-[3px] inline-flex shrink-0 text-[#7E8C82] transition-transform"
-                style={{ transform: open ? "rotate(90deg)" : undefined }}
-              >
-                <Icons.ChevronRight s={12} />
-              </span>
-              {kaart.label}
-            </button>
-          ) : (
-            <span className="flex items-start gap-1.5 pl-[18px] text-[13px] font-semibold leading-snug text-[#E7EDE8]">
-              {kaart.label}
-            </span>
-          )}
-        </th>
-
-        <td className="py-2.5 pr-3 align-top text-[12.5px] leading-snug text-[#E7EDE8]">
-          {kaart.jij}
-          <span className="mt-0.5 block text-[11px] leading-snug text-[#7E8C82] sm:hidden">
-            {kaart.aanbevolen
-              ? `richtlijn: ${kaart.aanbevolen}`
-              : kaart.exemption
-                ? GEEN_RICHTLIJN_LABEL_KORT[kaart.exemption]
-                : null}
-          </span>
-        </td>
-
-        <td className="hidden py-2.5 pr-3 align-top text-[11.5px] leading-snug text-[#9FB0A6] sm:table-cell">
-          {kaart.aanbevolen ?? (
-            <span className="text-[#7E8C82]">
-              {kaart.exemption ? GEEN_RICHTLIJN_LABEL[kaart.exemption] : "Geen norm"}
-            </span>
-          )}
-          {kaart.aanbevolenBron ? (
-            <span className="block text-[10.5px] text-[#7E8C82]">{kaart.aanbevolenBron}</span>
-          ) : null}
-        </td>
-
-        <td className="py-2.5 pl-2 align-top">
-          <StatusMerk status={kaart.status} />
-        </td>
-      </tr>
-
-      {kaart.footnote ? (
-        <tr>
-          <td colSpan={4} className="pb-2 pl-[18px] pr-3 pt-0">
-            <p className="m-0 max-w-[62ch] text-[11px] leading-relaxed text-[#7E8C82] text-pretty">
-              {kaart.footnote}
-            </p>
-          </td>
-        </tr>
-      ) : null}
+    <li className="min-w-0">
+      {uitklapbaar ? (
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={open}
+          aria-controls={paneelId}
+          className="w-full cursor-pointer border-none bg-transparent p-0 text-left font-[inherit]"
+        >
+          {kop}
+        </button>
+      ) : (
+        <div>{kop}</div>
+      )}
 
       {open ? (
-        <tr id={paneelId}>
-          <td colSpan={4} className="border-t border-white/5 bg-black/20 px-3 py-2">
-            <CategorieDetailPaneel
-              categorieId={kaart.id}
-              categorieLabel={kaart.label}
-              report={report}
-              surface={surface}
-            />
-          </td>
-        </tr>
+        <div id={paneelId} className="mt-2 rounded-lg bg-black/25 px-3 py-2.5">
+          <CategorieDetailPaneel
+            categorieId={kaart.id}
+            categorieLabel={kaart.label}
+            report={report}
+            surface={surface}
+          />
+        </div>
       ) : null}
-    </>
+    </li>
   );
 }
 
-/**
- * P1 Voedingsbasis — categorie-overzicht: groente, vezels, eiwit, etc.
- * Eén bron (`factRows`); geen tweede berekening naast de ladder.
- */
 export default function VoedingsbasisOverzicht({
   rijen,
   report,
   selfReport = null,
+  moments = [],
   surface,
 }: {
   rijen: readonly NutritionFactRow[];
@@ -200,6 +211,8 @@ export default function VoedingsbasisOverzicht({
    * waar de nutriënt-engine op draait. Null = doordruk toont de neutrale staat.
    */
   selfReport?: NutritionSelfReport | null;
+  /** De meetmomenten van voeding, nieuwste eerst — voedt de verschuivingstabel. */
+  moments?: readonly DomainMeasurement[];
   surface: string;
 }) {
   const kaarten = useMemo(() => {
@@ -210,6 +223,11 @@ export default function VoedingsbasisOverzicht({
       (a, b) => STATUS_VOLGORDE[a.status] - STATUS_VOLGORDE[b.status],
     );
   }, [rijen, report]);
+
+  const verschuiving = useMemo(
+    () => bouwVerschuiving({ kaarten, moments }),
+    [kaarten, moments],
+  );
 
   const [openCategorie, setOpenCategorie] = useState<string | null>(null);
   const kaartSignature = kaarten.map((kaart) => `${kaart.id}:${kaart.status}`).join("|");
@@ -235,7 +253,7 @@ export default function VoedingsbasisOverzicht({
 
   if (kaarten.length === 0) {
     return (
-      <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3.5">
+      <div className={`mt-4 ${surfaceStyles("dashboard").kaart} px-4 py-3.5`}>
         <p className="m-0 text-[13.5px] leading-relaxed text-[#9FB0A6] text-pretty">
           Doe de voedingscheck om per categorie te zien waar je staat ten opzichte van de
           richtlijn.
@@ -244,55 +262,70 @@ export default function VoedingsbasisOverzicht({
     );
   }
 
-  const uitklapbaar = kaarten.filter((kaart) => heeftDetail(kaart.id)).length;
+  // De legenda-regel is een telling, geen uitleg. De vorige zin ("wat
+  // aanbevolen is en wat jij doet, waar de meeste ruimte zit bovenaan")
+  // beschreef de vorm van het blok eronder — dat is precies wat de vorm zelf
+  // al doet. Wat je daar wél wilt lezen is hoeveel categorieën ruimte laten
+  // zien, want dat is het antwoord waar je voor kwam.
+  const metRuimte = kaarten.filter((kaart) => kaart.status === "below").length;
+  const opOrde = kaarten.filter((kaart) => kaart.status === "meets").length;
 
   return (
     <div className="mt-4">
-      <p className="mb-2.5 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
-        Per categorie
-      </p>
-      <p className="mb-3 max-w-[62ch] text-[12px] leading-relaxed text-[#9FB0A6] text-pretty">
-        Wat aanbevolen is en wat jij doet, waar de meeste ruimte zit bovenaan.
-        {uitklapbaar > 0 ? " Klap een categorie open om te zien welke stoffen hij levert." : ""}
-      </p>
-
-      <div className="overflow-x-auto rounded-2xl border border-white/10 bg-black/25 px-3 py-1">
-        <table className="w-full border-collapse text-left">
-          <caption className="sr-only">
-            Voedingsbasis per categorie: jouw antwoord naast de richtlijn
-          </caption>
-          <thead>
-            <tr>
-              <th className="py-2 pr-3 text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#7E8C82]">
-                Categorie
-              </th>
-              <th className="py-2 pr-3 text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#7E8C82]">
-                Jij
-              </th>
-              <th className="hidden py-2 pr-3 text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#7E8C82] sm:table-cell">
-                Richtlijn
-              </th>
-              <th className="py-2 pl-2 text-right text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#7E8C82]">
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {kaarten.map((kaart) => (
-              <CategorieRij
-                key={kaart.id}
-                kaart={kaart}
-                open={openCategorie === kaart.id}
-                onToggle={() =>
-                  setOpenCategorie((huidig) => (huidig === kaart.id ? null : kaart.id))
-                }
-                report={selfReport}
-                surface={surface}
+      {/* De samenvatting als balk in plaats van als alinea: drie tellingen
+          naast elkaar lezen sneller dan een zin die hetzelfde zegt, en ze
+          dragen dezelfde kleurtaal als de banen eronder. */}
+      <div
+        className={`flex flex-wrap items-center gap-x-4 gap-y-1.5 border border-white/10 bg-black/20 px-3.5 py-2.5 ${
+          verschuiving.momenten.length > 1 ? "rounded-t-xl" : "mb-3 rounded-xl"
+        }`}
+      >
+        <p className="m-0 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+          Per categorie
+        </p>
+        <span className="flex items-center gap-3.5">
+          {metRuimte > 0 ? (
+            <span className="flex items-center gap-1.5 text-[11.5px] font-semibold text-[#C8956C]">
+              <span
+                aria-hidden
+                className="inline-block h-1.5 w-1.5 rounded-full"
+                style={{ backgroundColor: STATUS_KLEUR.below }}
               />
-            ))}
-          </tbody>
-        </table>
+              {metRuimte} met ruimte
+            </span>
+          ) : null}
+          {opOrde > 0 ? (
+            <span className="flex items-center gap-1.5 text-[11.5px] font-semibold text-[#9CC5A9]">
+              <span
+                aria-hidden
+                className="inline-block h-1.5 w-1.5 rounded-full"
+                style={{ backgroundColor: STATUS_KLEUR.meets }}
+              />
+              {opOrde} op orde
+            </span>
+          ) : null}
+          <span className="text-[11px] text-[#7E8C82]">{kaarten.length} totaal</span>
+        </span>
       </div>
+
+      {/* De verschuiving sluit aan op de kop: hij zegt hoe de stand eronder
+          tot stand kwam, dus geen losse kaart ertussen. */}
+      <VerschuivingTabel verschuiving={verschuiving} />
+
+      <ul className="m-0 mt-3.5 flex list-none flex-col gap-3.5 p-0" role="list">
+        {kaarten.map((kaart) => (
+          <CategorieBaan
+            key={kaart.id}
+            kaart={kaart}
+            open={openCategorie === kaart.id}
+            onToggle={() =>
+              setOpenCategorie((huidig) => (huidig === kaart.id ? null : kaart.id))
+            }
+            report={selfReport}
+            surface={surface}
+          />
+        ))}
+      </ul>
     </div>
   );
 }

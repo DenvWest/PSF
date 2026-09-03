@@ -14,6 +14,7 @@ import {
   type EetwijzerItem,
 } from "@/data/nutrition/pesticiden-eetwijzer";
 import { clarityTag } from "@/lib/clarity";
+import { surfaceStyles, type DashboardSurface } from "@/lib/dashboard-surface";
 import { trackEvent } from "@/lib/ga4";
 
 /**
@@ -40,29 +41,6 @@ import { trackEvent } from "@/lib/ga4";
  *    als disclaimer.
  */
 
-type Surface = "check" | "dashboard";
-
-const STYLES = {
-  check: {
-    kaart: "rounded-[14px] border border-[#ebe7e2] bg-[#faf9f7]",
-    kop: "text-[#78716c]",
-    tekst: "text-[#1c1917]",
-    zacht: "text-[#78716c]",
-    rij: "border-[#ebe7e2]",
-    knop: "text-[#5A8F6A]",
-    balkBed: "bg-[#efece7]",
-  },
-  dashboard: {
-    kaart: "rounded-2xl border border-white/10 bg-black/20",
-    kop: "text-[#9FB0A6]",
-    tekst: "text-[#E7EDE8]",
-    zacht: "text-[#9FB0A6]",
-    rij: "border-white/10",
-    knop: "text-[#9CC5A9]",
-    balkBed: "bg-white/10",
-  },
-} as const;
-
 /** Langste balk in beeld = hoogste waarde in de lijst; schaal per lijst. */
 function balkBreedte(residuen: number, max: number): string {
   if (max <= 0) return "0%";
@@ -79,11 +57,11 @@ function Lijst({
   titel: string;
   items: EetwijzerItem[];
   gemiddelde: number | null;
-  surface: Surface;
+  surface: DashboardSurface;
   /** Aantal rijen dat zichtbaar is vóór "toon alles"; null = alles tonen. */
   ingeklapt: number | null;
 }) {
-  const s = STYLES[surface];
+  const s = surfaceStyles(surface);
   const max = items.reduce((hoogste, item) => Math.max(hoogste, item.residuen), 0);
   const zichtbaar = ingeklapt === null ? items : items.slice(0, ingeklapt);
 
@@ -158,11 +136,11 @@ export default function KwaliteitEetwijzer({
   surface,
   standaardIngeklapt = true,
 }: {
-  surface: Surface;
+  surface: DashboardSurface;
   /** Toon eerst de kop van beide lijsten; de rest achter één knop. */
   standaardIngeklapt?: boolean;
 }) {
-  const s = STYLES[surface];
+  const s = surfaceStyles(surface);
   const [uitgeklapt, setUitgeklapt] = useState(!standaardIngeklapt);
   const gezien = useRef(false);
 

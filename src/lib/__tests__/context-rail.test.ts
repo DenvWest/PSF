@@ -86,14 +86,18 @@ describe("buildDomainRailTools", () => {
 });
 
 describe("VOEDING_RAIL_LAYERS", () => {
-  it("draagt Meten & timing en Aanvullen & vergelijken als P5/P6-slugs", () => {
+  it("draagt de drie voeding-knoppen, met meten & timing vooraan", () => {
     expect(VOEDING_RAIL_LAYERS.map((layer) => layer.slug)).toEqual([
       "meten-timing",
+      "eetbasis",
       "aanvullen",
     ]);
-    expect(VOEDING_RAIL_LAYERS.map((layer) => layer.id)).toEqual([5, 6]);
-    expect(VOEDING_RAIL_LAYERS[0]?.label).toBe("Meten & timing");
-    expect(VOEDING_RAIL_LAYERS[1]?.label).toBe("Aanvullen & vergelijken");
+    expect(VOEDING_RAIL_LAYERS.map((layer) => layer.id)).toEqual([5, 1, 6]);
+    expect(VOEDING_RAIL_LAYERS.map((layer) => layer.label)).toEqual([
+      "Meten & timing",
+      "Voedingsbasis",
+      "Aanvullen & vergelijken",
+    ]);
   });
 });
 

@@ -23,6 +23,7 @@ export const KENNISBANK_THEME_TO_PIJLER: Record<KennisbankTheme, PillarId> = {
   "leefstijl-herstel": "herstel",
   supplementwetenschap: "voeding",
   longevity: "herstel",
+  "ps-score": "voeding",
 };
 
 export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {

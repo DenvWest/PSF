@@ -166,7 +166,15 @@ export default function CockpitHeader({
                 role="tab"
                 aria-selected={active}
                 onClick={() => onSelectTab(tab.id)}
-                className={`relative flex shrink-0 items-center gap-1.5 rounded-[10px] px-2 py-2 text-[13px] font-medium transition lg:gap-2 lg:px-3 lg:text-[13.5px] ${
+                /* Op tablet (sm t/m md) staan de vier labels naast de
+                   wordmark, de context-bel én het profielmenu in één rij die
+                   ~640px breed is. Dan wint elk label ruimte van de volgende
+                   en breekt de rij. Daar dragen de iconen de navigatie —
+                   `title` en `aria-label` houden hem leesbaar voor wie hem
+                   niet ziet — en vanaf md is er kolomruimte voor de woorden. */
+                title={tab.label}
+                aria-label={tab.label}
+                className={`relative flex shrink-0 items-center justify-center gap-1.5 rounded-[10px] px-2 py-2 text-[13px] font-medium transition md:justify-start lg:gap-2 lg:px-3 lg:text-[13.5px] ${
                   active
                     ? "text-[#F1EFE8] after:absolute after:inset-x-2 after:bottom-0.5 after:h-0.5 after:rounded-full after:bg-[#5A8F6A] lg:after:inset-x-3"
                     : "text-[#9FB0A6] hover:bg-white/[0.05] hover:text-[#F1EFE8]"
@@ -178,7 +186,7 @@ export default function CockpitHeader({
                     style={{ color: active ? "#5A8F6A" : "rgba(159,176,166,0.85)" }}
                   />
                 </span>
-                {tab.label}
+                <span className="hidden md:inline">{tab.label}</span>
               </button>
             );
           })}

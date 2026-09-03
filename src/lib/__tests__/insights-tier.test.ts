@@ -11,7 +11,7 @@ describe("kennisbank insightTier metadata", () => {
       expect(term.insightTier).toBeGreaterThanOrEqual(1);
       expect(term.insightTier).toBeLessThanOrEqual(3);
     }
-    expect(kennisbankTerms.length).toBe(29);
+    expect(kennisbankTerms.length).toBe(35);
   });
 });
 

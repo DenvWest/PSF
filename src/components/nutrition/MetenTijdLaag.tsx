@@ -9,6 +9,7 @@ import {
   type TijdlaagRichting,
 } from "@/lib/nutrition-tijdlaag";
 import type { Meetreeks } from "@/lib/voortgang-meetreeks";
+import { surfaceStyles } from "@/lib/dashboard-surface";
 
 const RICHTING: Record<TijdlaagRichting, { teken: string; label: string; className: string }> = {
   vooruit: { teken: "↑", label: "vooruit", className: "text-[#9CC5A9]" },
@@ -51,7 +52,7 @@ export default function MetenTijdLaag({
 
   if (momenten === 0) {
     return (
-      <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3.5">
+      <div className={`mt-4 ${surfaceStyles("dashboard").kaart} px-4 py-3.5`}>
         <p className="m-0 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
           Zodra je je eerste voedingscheck hebt gedaan, staat hier je nulpunt. Na de
           tweede zie je wat er bewoog.
@@ -62,7 +63,7 @@ export default function MetenTijdLaag({
 
   if (momenten === 1) {
     return (
-      <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3.5">
+      <div className={`mt-4 ${surfaceStyles("dashboard").kaart} px-4 py-3.5`}>
         <p className="m-0 text-[13px] font-medium leading-snug text-[#E7EDE8] text-pretty">
           Dit is je nulpunt{laatsteDatum ? ` van ${laatsteDatum}` : ""}.
         </p>
