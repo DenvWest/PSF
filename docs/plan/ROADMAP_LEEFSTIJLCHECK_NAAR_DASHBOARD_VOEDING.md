@@ -436,3 +436,128 @@ De volgorde uit §8 verandert op twee punten: het "grootste winst"-verzetje en d
 | **—** | NEVO-import afmaken: 32 resterende bronnen (§10.9) | handmatig | vóór 7 |
 
 **Niet in deze roadmap:** multitenant/behandelaarstoegang (§10.2 — alleen de naad schoonhouden), database-velduitbreiding voor bewerkingsgraad (§10.7 — pas na plak 5), affiliate in de agenda (§10.8 — mag niet).
+
+---
+
+## 12 · Het dagboek verdiepen — drie informatieniveaus (3 sep, na plak 5)
+
+Aanleiding: het 2+2-dagboek draait live, maar met zeven grove groepen. De vraag is hoeveel dieper het mag gaan, en waar dat ophoudt. Het antwoord uit de review — **drie informatieniveaus, waarvan er twee onder de motorkap blijven** — is juist, en de code staat er beter voor dan verwacht.
+
+### 12.1 · Wat er al ligt (geverifieerd)
+
+**Niveau 2 en 3 bestaan al grotendeels.** Dat is de belangrijkste vondst van deze analyse.
+
+| Laag | Bestaat als | Stand |
+|---|---|---|
+| Macro's (eiwit) | `NUTRIENT_SIGNAL_SOURCES.protein` — 3 gewogen velden | ✅ werkt |
+| Micro's, risicogestuurd | `nutrientReferences` — 5 stoffen mét interventiepad | ✅ werkt |
+| Bijdrage per bron | `contributionFor()` — aandeel binnen eigen antwoorden | ✅ werkt |
+| Vertrouwensniveau | `NutrientConfidence` 1–4, per stof | ✅ werkt |
+| Bronnentabel | `food-sources.ts` — 79 rijen, 47 NEVO-geverifieerd | ⚠️ half |
+
+De vijf nutriënten (`protein`, `omega3`, `magnesium`, `vitamin_d`, `zinc`) zijn **precies de risicogestuurde selectie** die de review voorstelt: alleen stoffen met een interventiepad, niet "we meten er 25". En `nutrition-contribution.ts` draagt al de harde grens die daarbij hoort:
+
+> **Geen milligrammen, geen dagtotalen, geen percentage van een ADH.** De `share` is een aandeel binnen je eigen antwoorden, niet een fractie van een norm.
+
+Drie redenen staan daar gedocumenteerd: de check meet frequenties niet grammen, `food-sources` is nog niet volledig geverifieerd, en bij magnesium/zink bepaalt fytaat de opname méér dan het gehalte. **Die grens moet blijven staan** — ook als het dagboek preciezer wordt.
+
+### 12.2 · Het echte gat: het dagboek voedt de nutriëntlaag niet
+
+`NUTRIENT_SIGNAL_SOURCES` leest uit `NutritionSelfReport` — velden als `oilyFishPerWeek`, `nutsSeedsLegumesPerWeek`, `dairyServingsPerDay`. Die komen uit de **check** (de elf sliders), niet uit het dagboek.
+
+Het dagboek schrijft `{groente: 3, "vlees-vis": 2}`. Dat is grover: "vlees & vis" is één bak waar de nutriëntlaag *vis apart* nodig heeft voor omega-3, en *vlees apart* voor zink.
+
+**Dus: het dagboek kan de nutriëntlaag vandaag niet voeden, en dat is precies waar een verfijning van de groepen iets oplevert.** Niet omdat meer categorieën op zichzelf beter zijn, maar omdat een paar gerichte splitsingen het dagboek koppelbaar maken aan wat er al draait.
+
+### 12.3 · Van 7 naar 12 groepen — de splitsingen die iets doen
+
+De review noemt 12–15 groepen. Ik zou naar **12** gaan, en elke splitsing verantwoorden vanuit wat hij ontsluit — niet vanuit volledigheid.
+
+| Nu (7) | Wordt (12) | Wat het ontsluit |
+|---|---|---|
+| Groente | Groente | — |
+| Fruit | Fruit | — |
+| **Vlees & vis** | **Vis** | omega-3-route wordt voedbaar uit het dagboek |
+| | **Vlees & gevogelte** | zink-route idem |
+| | **Vlees-/visvervangers** | vegetarische route krijgt eigen signaal |
+| Zuivel | Zuivel & alternatieven | — |
+| — | **Eieren** | eiwitverdeling; nu onzichtbaar |
+| Granen | Volkoren granen | — |
+| — | **Aardappelen/rijst/pasta** | scheidt volkoren van zetmeel |
+| Noten & peulvruchten | **Noten & zaden** | magnesium-route (fytaat-context) |
+| | **Peulvruchten** | eiwit + vezels, andere fytaat-context |
+| — | **Oliën & vetten** | vetkwaliteit — de enige echte kwaliteitsknop die ontbreekt |
+| Suiker & bewerkt | Snacks, snoep & gebak | — |
+| | (blijft samen) | |
+| — | **Dranken** | suikerhoudend vs. water; nu alleen in de check |
+
+Wat ik **niet** overneem uit de 15-lijst: "bewerkte kant-en-klaarmaaltijden/fastfood" als aparte groep naast snacks. Dat is dezelfde as (bewerkingsgraad) in twee bakken, en het dwingt de invuller tot een indeling die hij zelf niet maakt.
+
+**Kosten:** 12 rijen plus/min in plaats van 7. Dat is de grens van wat per dag nog invulbaar is — daarboven wordt het een formulier.
+
+### 12.4 · Supabase: waarom dit géén migratie kost
+
+De tabel slaat `portions jsonb` op:
+
+```
+portions jsonb not null default '{}'::jsonb
+```
+
+Een JSONB-map met groep-ids als sleutel. **Meer groepen = meer sleutels, geen schemawijziging.** De migratie uit plak 4 is er precies op gebouwd:
+
+> `portions` — Porties per voedselgroep-id. Ontbrekende groep betekent niet-ingevuld, niet nul.
+
+Wat wél moet:
+
+1. **`VOEDSELGROEPEN` uitbreiden** in `nutrition-voedselgroepen.ts` — dat is de bron voor zowel de categorietabel op laag 1 als `DAGBOEK_GROEPEN`.
+2. **`rowKeys` per nieuwe groep bepalen** — welke feitenrij(en) uit de check hoort erbij. Hier zit het denkwerk: "Eieren" hangt aan `eiwitbronnen`, "Oliën & vetten" aan niets bestaands (dus `own`-status, zie §10.10).
+3. **`sanitizePortions()` volgt automatisch** — die valideert tegen `DAGBOEK_GROEPEN`.
+4. **Bestaande rijen blijven geldig.** Een dag die met 7 groepen is ingevuld mist straks 5 sleutels, en dat leest als "niet ingevuld" — precies wat de kolomcomment belooft. Geen backfill.
+
+**Eén ding dat wél breekt:** `berekenBreedte()` deelt door `DAGBOEK_GROEPEN.length`. Een dag uit het 7-groepen-tijdperk krijgt dan "3 van de 12" terwijl er 12 nooit gevraagd zijn. Fix: de noemer per dag vastleggen bij invoer, of breedte alleen berekenen over dagen ná de uitbreiding. Dat is dezelfde soort versie-grens als `NUTRITION_DELTA_COMPARABLE_FROM` — en hij verdient dezelfde behandeling.
+
+### 12.5 · Variatie ≠ aantal producten
+
+De review legt hier de vinger op het juiste punt: *"30 verschillende ultra-bewerkte producten is natuurlijk geen betere voeding."*
+
+Daarom telt een diversiteitsmaat **alleen binnen volwaardige groepen**. Concreet: groente, fruit, volkoren, peulvruchten, noten/zaden, vis — niet snacks, niet dranken, niet kant-en-klaar.
+
+En de uitkomst is een band, geen getal: *laag · gemiddeld · goed · zeer gevarieerd*. Niet "je eet 27 producten" — dat getal suggereert een precisie die een steekproef van vier dagen niet heeft, en het nodigt uit tot optimaliseren op het getal.
+
+**Maar let op:** dit vereist alsnog dat het dagboek weet *welke* groente, en dat is de bronnenvraag uit §10.7 die ik toen als te duur afwees. Met 12 groepen wordt de vraag anders: **spreiding over 12 groepen is al een bruikbare variatie-proxy**, en die is gratis. Echte diversiteit binnen een groep blijft wachten op een invoervorm die niemand afschrikt.
+
+### 12.6 · Wat de gebruiker ziet
+
+De review sluit met de belangrijkste regel, en die verdient een lock:
+
+> De gebruiker ziet vooral begrijpelijke conclusies als "eiwitverdeling kan beter" of "weinig bronnen van omega-3", niet een dashboard met 30 nutriënten.
+
+Dat is exact wat `NutrientRouteStatus` al doet (`gap` / `partial` / `off_route` / `unmeasured`) en wat de sufficiency-laag op P4 toont. **De verdieping zit in de invoer en in de motorkap — niet in de uitvoer.** Meer groepen invullen betekent scherpere routes, niet meer schermen.
+
+### 12.7 · Voorstel: 7 dagen optioneel, 4 blijft de norm
+
+Op de vraag "is 7 dagen optioneel?": **ja, maar niet als doel.**
+
+- **4 dagen (2+2) blijft de norm** en de voortgangsteller. Dat is de afruil die data oplevert.
+- **Extra dagen mogen**, en tellen mee in breedte en weekendvergelijking — de rekenfuncties middelen al over wat er is.
+- **Geen tweede teller, geen "7/7"-doel.** Zodra 7 een doel wordt, is 4 een halve prestatie, en dan hebben we de streak terug die we in plak 3 bewust weerden.
+
+Praktisch: het paneel zegt na vier dagen "Nog een dag invullen" in plaats van "compleet — klaar". Dat staat er al.
+
+### 12.8 · Bouwvolgorde voor deze verdieping
+
+| Plak | Wat | Kosten | Vereist |
+|---|---|---|---|
+| **7a** | `VOEDSELGROEPEN` 7 → 12, met `rowKeys` per groep | middel | — |
+| **7b** | Breedte-noemer versievast maken (§12.4) | klein | 7a |
+| **7c** | Dagboek koppelen aan `NUTRIENT_SIGNAL_SOURCES` — vis/vlees/noten apart voeden de routes | **groot** | 7a |
+| **7d** | Variatie-band over volwaardige groepen (§12.5) | klein | 7a |
+| — | NEVO-import afmaken (32 rijen) | handmatig | vóór 7c |
+
+**7c is de plak die het meeste oplevert en het meeste denkwerk kost.** Hij maakt van het dagboek een tweede bron naast de check — en dan komt de kalibratievraag uit §10.5 pas echt tot leven: wat je zei tegenover wat je registreerde, per nutriënt.
+
+### 12.9 · Wat ik hier niet zou doen
+
+- **Macro's in grammen tonen.** "237 gram koolhydraten" hoort bij een voedingsanalyse, niet bij patroonherkenning. De review zegt dit zelf en het staat al als lock in `nutrition-contribution.ts`.
+- **Alle micronutriënten uitvragen.** De vijf met een interventiepad zijn de vijf waar we iets mee kunnen. Een zesde toevoegen zonder route betekent een bevinding zonder vervolg.
+- **Een aparte "voedingsanalyse"-module bouwen.** De 3–7 daagse registratie uit de review ís het dagboek, met meer dagen. Twee modules die hetzelfde vragen is de valkuil die `intake_intake_log` naast `account_nutrition_daybook` al bijna opleverde.

@@ -11,12 +11,13 @@ import {
   dagSoortVoor,
   dekkingsRegel,
   DAGBOEK_GROEPEN,
+  DAGBOEK_LABELS,
   DAGBOEK_TOTAAL,
   DAGEN_PER_SOORT,
   type DagboekDag,
   type DagSoort,
 } from "@/lib/nutrition-dagboek";
-import { VOEDSELGROEPEN, type VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
+import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 
 /**
  * Het 2+2-dagboek op P5 (Meten & timing).
@@ -276,8 +277,7 @@ export default function NutritionDagboekPaneel({ surface }: { surface: string })
 
           <ul className="m-0 mt-2.5 flex list-none flex-col gap-1.5 p-0">
             {DAGBOEK_GROEPEN.map((groep) => {
-              const label =
-                VOEDSELGROEPEN.find((entry) => entry.id === groep)?.label ?? groep;
+              const label = DAGBOEK_LABELS[groep];
               const waarde = porties[groep] ?? 0;
               return (
                 <li key={groep} className="flex items-center justify-between gap-3">

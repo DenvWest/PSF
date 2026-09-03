@@ -71,6 +71,24 @@ const CATEGORIE_PORTIEGROEPEN: Record<VoedselgroepId, readonly PortionGroup[]> =
   // tussen bronnen, je mindert. Een doordruk zou een keuze suggereren die de
   // categorie niet kent.
   suiker: [],
+
+  // De fijnere dagboekgroepen. Ze delen hun portiegroepen met de check-
+  // categorieën hierboven — "Vis" dekt wat binnen "Vlees & vis" de `oilyFish`-
+  // helft was. Dat is precies waarom ze bestaan: de nutriëntroutes hebben vis,
+  // vlees en noten los nodig (omega-3, zink, magnesium), en in één bak is dat
+  // niet uit elkaar te trekken.
+  vis: ["oilyFish"],
+  vlees: ["leanMeat"],
+  eieren: ["egg"],
+  peulvruchten: ["legumes"],
+  // Aardappelen, rijst en pasta staan niet in food-sources.ts: ze dragen geen
+  // van de vijf nutriënten met een interventiepad. De groep bestaat om het
+  // dagboek volledig te maken, niet om een doordruk te openen.
+  zetmeel: [],
+  // Oliën en vetten idem — vetkwaliteit is een echte as, maar geen van de vijf
+  // routes loopt erlangs. Zodra er een vetroute komt, hangt hij hier.
+  vetten: [],
+  dranken: [],
 };
 
 /**

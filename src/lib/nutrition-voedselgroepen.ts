@@ -24,6 +24,24 @@ import type {
 } from "@/lib/nutrition-ladder";
 import { resolveNutritionOptOut } from "@/lib/nutrition-ladder";
 
+/**
+ * Alle voedselgroepen die het systeem kent.
+ *
+ * Twee lijsten putten hieruit, en ze zijn bewust niet gelijk:
+ *
+ * - **{@link VOEDSELGROEPEN}** — de zeven die de *check* kan beoordelen. Elke
+ *   groep hangt aan minstens één feitenrij, dus er valt iets over te zeggen
+ *   tegenover een richtlijn.
+ * - **{@link DAGBOEK_GROEPEN}** (in `nutrition-dagboek.ts`) — de twaalf die je
+ *   zélf per dag invult. Die mogen fijner zijn: je weet wat je at, ook als de
+ *   check er geen vraag over stelt.
+ *
+ * De vijf extra dagboekgroepen (vis apart van vlees, eieren, peulvruchten
+ * apart van noten, oliën, dranken) bestaan niet omdat meer categorieën beter
+ * zijn, maar omdat de nutriëntroutes ze los nodig hebben: omega-3 loopt via
+ * vis, zink via vlees, magnesium via noten. Zolang die drie in één bak zitten,
+ * kan het dagboek die routes niet voeden.
+ */
 export type VoedselgroepId =
   | "groente"
   | "fruit"
@@ -31,7 +49,15 @@ export type VoedselgroepId =
   | "zuivel"
   | "granen"
   | "noten"
-  | "suiker";
+  | "suiker"
+  // Alleen in het dagboek — de check stelt hier (nog) geen aparte vraag over.
+  | "vis"
+  | "vlees"
+  | "eieren"
+  | "peulvruchten"
+  | "zetmeel"
+  | "vetten"
+  | "dranken";
 
 export interface Voedselgroep {
   id: VoedselgroepId;
@@ -44,6 +70,13 @@ export interface Voedselgroep {
  * Volgorde volgt het bord: eerst de plantkant, dan de eiwitkant, dan wat je
  * mindert. Niet gesorteerd op hoe vaak een groep voorkomt — dat zou per
  * gebruiker verschillen en de knoppenrij bij elke check laten verspringen.
+ */
+/**
+ * De groepen die de **check** beoordeelt — bron voor de categorietabel op P1.
+ *
+ * Ongewijzigd sinds de tabel bestaat: elke rij hier hangt aan een feitenrij,
+ * en zonder feitenrij valt er niets tegenover een richtlijn te zetten. De
+ * fijnere dagboekindeling staat los (zie {@link VoedselgroepId}).
  */
 export const VOEDSELGROEPEN: readonly Voedselgroep[] = [
   { id: "groente", label: "Groente", rowKeys: ["plantbasis"] },

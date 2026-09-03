@@ -1,4 +1,4 @@
-import { VOEDSELGROEPEN, type VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
+import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 
 /**
  * Het 2+2-dagboek: twee doordeweekse dagen, twee weekenddagen.
@@ -50,16 +50,122 @@ export const DAGEN_PER_SOORT = 2;
 export const DAGBOEK_TOTAAL = DAGEN_PER_SOORT * 2;
 
 /**
- * De groepen die je per dag invult.
+ * De groepen die je per dag invult — twaalf, fijner dan de zeven van de check.
  *
- * Dezelfde zeven als de categorietabel op laag 1, en met opzet: het dagboek
- * moet tegen je check te leggen zijn, en dat kan alleen als beide over
- * dezelfde groepen praten. Een dagboek met een eigen indeling levert twee
- * beelden op die niemand op elkaar kan leggen.
+ * ## Waarom fijner dan de check
+ *
+ * De check vraagt naar frequenties en moet daarom bij elke vraag een
+ * richtlijn kunnen leggen; groepen zonder norm bundelt hij. Het dagboek vraagt
+ * wat je gisteren at, en dat weet je preciezer dan een gemiddelde over weken.
+ *
+ * Beslissend is wat de vijf nutriëntroutes nodig hebben. Omega-3 loopt via
+ * vis, zink via vlees, magnesium via noten — drie routes die in één bak
+ * "vlees & vis & noten" niet uit elkaar te trekken zijn. De splitsingen
+ * hieronder bestaan dus niet omdat meer categorieën beter zijn, maar omdat ze
+ * elk een route ontsluiten die anders dicht blijft.
+ *
+ * ## Wat er níét bij kwam
+ *
+ * "Kant-en-klaar en fastfood" als aparte groep naast snacks. Dat is dezelfde
+ * as (bewerkingsgraad) in twee bakken, en het dwingt de invuller tot een
+ * indeling die hij zelf niet maakt — is een afhaalpizza een snack of een
+ * maaltijd? Beide bakken zouden half gevuld worden.
+ *
+ * ## Volgorde
+ *
+ * Plantkant, eiwitkant, dragers, dan wat je mindert — de volgorde van een
+ * bord, niet van een database. Twaalf rijen is de grens van wat per dag nog
+ * in te vullen is; daarboven wordt het een formulier.
  */
-export const DAGBOEK_GROEPEN: readonly VoedselgroepId[] = VOEDSELGROEPEN.map(
-  (groep) => groep.id,
-);
+export const DAGBOEK_GROEPEN: readonly VoedselgroepId[] = [
+  "groente",
+  "fruit",
+  "peulvruchten",
+  "noten",
+  "granen",
+  "zetmeel",
+  "vis",
+  "vlees",
+  "eieren",
+  "zuivel",
+  "vetten",
+  "dranken",
+  "suiker",
+] as const;
+
+/**
+ * De zeven groepen van vóór de uitbreiding.
+ *
+ * Bestaat alleen om oude registraties eerlijk af te meten (zie
+ * {@link gevraagdeGroepen}). Nooit gebruiken om iets nieuws mee in te vullen.
+ */
+export const LEGACY_DAGBOEK_GROEPEN: readonly VoedselgroepId[] = [
+  "groente",
+  "fruit",
+  "vlees-vis",
+  "zuivel",
+  "granen",
+  "noten",
+  "suiker",
+] as const;
+
+/** De zes groepen die er bij de uitbreiding bij kwamen — de versie-vingerafdruk. */
+export const NIEUWE_DAGBOEK_GROEPEN: readonly VoedselgroepId[] = [
+  "peulvruchten",
+  "zetmeel",
+  "vis",
+  "vlees",
+  "eieren",
+  "vetten",
+  "dranken",
+] as const;
+
+/**
+ * Labels voor de dagboekgroepen.
+ *
+ * Eigen tabel en niet `VOEDSELGROEPEN.find()`: de vijf nieuwe groepen staan
+ * daar niet in, en de gedeelde groepen krijgen hier soms een preciezer label
+ * ("Noten & zaden" in plaats van "Noten & peulvruchten", want peulvruchten
+ * hebben nu een eigen rij).
+ */
+export const DAGBOEK_LABELS: Record<VoedselgroepId, string> = {
+  groente: "Groente",
+  fruit: "Fruit",
+  peulvruchten: "Peulvruchten",
+  noten: "Noten & zaden",
+  granen: "Volkoren granen",
+  zetmeel: "Aardappelen, rijst, pasta",
+  vis: "Vis",
+  vlees: "Vlees & gevogelte",
+  eieren: "Eieren",
+  zuivel: "Zuivel & alternatieven",
+  vetten: "Oliën & vetten",
+  dranken: "Dranken",
+  suiker: "Snacks, snoep & gebak",
+  // Alleen in de check-tabel; nooit in het dagboek getoond.
+  "vlees-vis": "Vlees & vis",
+};
+
+/**
+ * De groepen waarbinnen variatie iets zegt over voedingskwaliteit.
+ *
+ * Dertig verschillende ultrabewerkte producten is geen gevarieerd
+ * voedingspatroon. Een variatiemaat die snacks en dranken meetelt, beloont
+ * dus precies het verkeerde — daarom telt hij alleen binnen wat volwaardig is.
+ *
+ * Nog niet in gebruik: echte variatie vereist dat het dagboek weet wélke
+ * groente, en dat vraagt een invoervorm die er nog niet is. Dit is de lijst
+ * waar die maat straks op rust.
+ */
+export const VOLWAARDIGE_GROEPEN: readonly VoedselgroepId[] = [
+  "groente",
+  "fruit",
+  "peulvruchten",
+  "noten",
+  "granen",
+  "vis",
+  "eieren",
+] as const;
 
 /** Eén ingevulde dag: per groep het aantal porties. */
 export type DagboekDag = {
@@ -193,7 +299,7 @@ export type DagboekUitkomst = {
 const VERSCHIL_DREMPEL = 1;
 
 function groepLabel(groep: VoedselgroepId): string {
-  return VOEDSELGROEPEN.find((entry) => entry.id === groep)?.label ?? groep;
+  return DAGBOEK_LABELS[groep] ?? groep;
 }
 
 /**
@@ -206,6 +312,26 @@ function groepLabel(groep: VoedselgroepId): string {
  */
 function groepenOpDag(dag: DagboekDag): VoedselgroepId[] {
   return DAGBOEK_GROEPEN.filter((groep) => (dag.porties[groep] ?? 0) > 0);
+}
+
+/**
+ * Hoeveel groepen er bij het invullen van deze dag gevraagd zijn.
+ *
+ * Het dagboek ging van zeven naar dertien groepen. Een dag die met zeven is
+ * ingevuld tegen dertien afmeten geeft "3 van de 13" voor iets wat destijds
+ * "3 van de 7" was — een verslechtering die alleen in de noemer zit. Zelfde
+ * soort grens als NUTRITION_DELTA_COMPARABLE_FROM: de meting is niet fout, ze
+ * is alleen niet vergelijkbaar zonder te weten waartegen ze liep.
+ *
+ * De sleutels van de dag zijn het bewijs: wie een van de nieuwe groepen heeft
+ * (ook op nul) kreeg de nieuwe lijst voorgeschoteld. Geen migratie nodig,
+ * geen extra kolom — de data draagt haar eigen versie.
+ */
+function gevraagdeGroepen(dag: DagboekDag): readonly VoedselgroepId[] {
+  const heeftNieuwe = NIEUWE_DAGBOEK_GROEPEN.some(
+    (groep) => dag.porties[groep] !== undefined,
+  );
+  return heeftNieuwe ? DAGBOEK_GROEPEN : LEGACY_DAGBOEK_GROEPEN;
 }
 
 export function berekenBreedte(dagen: readonly DagboekDag[]): DagboekBreedte {
@@ -226,14 +352,29 @@ export function berekenBreedte(dagen: readonly DagboekDag[]): DagboekBreedte {
 
   const gemiddeldPerDag = totaal / dagen.length;
 
-  const ontbrekend: BreedteRij[] = DAGBOEK_GROEPEN.filter(
-    (groep) => (dagenPerGroep.get(groep) ?? 0) === 0,
-  ).map((groep) => ({ groep, label: groepLabel(groep), dagen: 0 }));
+  // De noemer is die van de smalste dag in de set: zolang er één dag met de
+  // oude zeven groepen tussen zit, is dertien niet de lat waartegen alles liep.
+  const noemer = Math.min(...dagen.map((dag) => gevraagdeGroepen(dag).length));
+
+  // Alleen groepen die op élke dag gevraagd zijn kunnen "ontbrekend" heten.
+  // Een groep die pas sinds de uitbreiding bestaat, ontbrak op oude dagen niet
+  // — er is toen niet naar gevraagd.
+  const overalGevraagd = dagen.reduce<readonly VoedselgroepId[]>(
+    (smalste, dag) => {
+      const gevraagd = gevraagdeGroepen(dag);
+      return gevraagd.length < smalste.length ? gevraagd : smalste;
+    },
+    DAGBOEK_GROEPEN,
+  );
+
+  const ontbrekend: BreedteRij[] = overalGevraagd
+    .filter((groep) => (dagenPerGroep.get(groep) ?? 0) === 0)
+    .map((groep) => ({ groep, label: groepLabel(groep), dagen: 0 }));
 
   return {
     gemiddeldPerDag,
     ontbrekend,
-    regel: bouwBreedteRegel(gemiddeldPerDag, ontbrekend, dagen.length),
+    regel: bouwBreedteRegel(gemiddeldPerDag, ontbrekend, dagen.length, noemer),
   };
 }
 
@@ -249,10 +390,11 @@ function bouwBreedteRegel(
   gemiddeld: number,
   ontbrekend: readonly BreedteRij[],
   aantalDagen: number,
+  noemer: number,
 ): string {
   const afgerond = gemiddeld.toFixed(1).replace(".", ",");
   const dagWoord = aantalDagen === 1 ? "dag" : "dagen";
-  const basis = `Over ${aantalDagen} ${dagWoord} at je uit gemiddeld ${afgerond} van de ${DAGBOEK_GROEPEN.length} groepen per dag.`;
+  const basis = `Over ${aantalDagen} ${dagWoord} at je uit gemiddeld ${afgerond} van de ${noemer} groepen per dag.`;
 
   if (ontbrekend.length === 0) {
     return `${basis} Elke groep kwam minstens één keer voorbij.`;

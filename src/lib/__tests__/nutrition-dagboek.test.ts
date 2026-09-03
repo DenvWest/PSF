@@ -6,9 +6,14 @@ import {
   dagSoortVoor,
   dekkingsRegel,
   DAGBOEK_GROEPEN,
+  DAGBOEK_LABELS,
   DAGBOEK_TOTAAL,
+  LEGACY_DAGBOEK_GROEPEN,
+  NIEUWE_DAGBOEK_GROEPEN,
+  VOLWAARDIGE_GROEPEN,
   type DagboekDag,
 } from "@/lib/nutrition-dagboek";
+import { VOEDSELGROEPEN } from "@/lib/nutrition-voedselgroepen";
 
 function dag(
   date: string,
@@ -226,11 +231,73 @@ describe("berekenBreedte", () => {
 });
 
 describe("groepen", () => {
-  it("gebruikt dezelfde zeven groepen als de categorietabel", () => {
-    // Het dagboek moet tegen de check te leggen zijn; een eigen indeling
-    // levert twee beelden op die niemand op elkaar kan leggen.
-    expect(DAGBOEK_GROEPEN).toContain("groente");
-    expect(DAGBOEK_GROEPEN).toContain("suiker");
-    expect(DAGBOEK_GROEPEN.length).toBe(7);
+  it("is fijner dan de check-tabel", () => {
+    // Het dagboek vraagt wat je gisteren at; dat weet je preciezer dan een
+    // gemiddelde over weken. De splitsingen bestaan om de nutriëntroutes te
+    // kunnen voeden — vis, vlees en noten los.
+    expect(DAGBOEK_GROEPEN.length).toBeGreaterThan(VOEDSELGROEPEN.length);
+    expect(DAGBOEK_GROEPEN).toContain("vis");
+    expect(DAGBOEK_GROEPEN).toContain("vlees");
+    expect(DAGBOEK_GROEPEN).toContain("peulvruchten");
+  });
+
+  it("bundelt vlees en vis niet meer", () => {
+    // "vlees-vis" is de legacy-bak: omega-3 en zink zijn er niet uit te halen.
+    expect(DAGBOEK_GROEPEN).not.toContain("vlees-vis");
+    expect(LEGACY_DAGBOEK_GROEPEN).toContain("vlees-vis");
+  });
+
+  it("geeft elke dagboekgroep een label", () => {
+    for (const groep of DAGBOEK_GROEPEN) {
+      expect(DAGBOEK_LABELS[groep]).toBeTruthy();
+    }
+  });
+
+  it("telt variatie alleen binnen volwaardige groepen", () => {
+    // Dertig ultrabewerkte producten is geen gevarieerd patroon.
+    expect(VOLWAARDIGE_GROEPEN).not.toContain("suiker");
+    expect(VOLWAARDIGE_GROEPEN).not.toContain("dranken");
+    expect(VOLWAARDIGE_GROEPEN).toContain("groente");
+  });
+
+  it("houdt legacy en nieuw uit elkaar", () => {
+    // Samen dekken ze het dagboek; overlap zou de versie-vingerafdruk
+    // onbruikbaar maken.
+    for (const groep of NIEUWE_DAGBOEK_GROEPEN) {
+      expect(LEGACY_DAGBOEK_GROEPEN).not.toContain(groep);
+      expect(DAGBOEK_GROEPEN).toContain(groep);
+    }
+  });
+});
+
+describe("breedte over de groepen-uitbreiding heen", () => {
+  it("meet een oude dag tegen zeven, niet tegen dertien", () => {
+    // Zonder deze regel wordt "3 van de 7" ineens "3 van de 13" — een
+    // verslechtering die alleen in de noemer zit.
+    const oud = dag(MA, { groente: 2, fruit: 1, granen: 1 });
+    expect(berekenBreedte([oud]).regel).toMatch(/van de 7 groepen/);
+  });
+
+  it("meet een nieuwe dag tegen dertien", () => {
+    const nieuw = dag(MA, { groente: 2, vis: 1, vlees: 0 });
+    expect(berekenBreedte([nieuw]).regel).toMatch(/van de 13 groepen/);
+  });
+
+  it("valt terug op de smalste noemer in een gemengde set", () => {
+    // Eén oude dag in de set betekent dat dertien niet de lat was waartegen
+    // alles liep.
+    const gemengd = [
+      dag(MA, { groente: 2, fruit: 1 }),
+      dag(DI, { groente: 2, vis: 1 }),
+    ];
+    expect(berekenBreedte(gemengd).regel).toMatch(/van de 7 groepen/);
+  });
+
+  it("noemt een nieuwe groep niet ontbrekend op een oude dag", () => {
+    // Er is toen niet naar gevraagd; dat is geen gat.
+    const oud = dag(MA, { groente: 2, fruit: 1 });
+    const ontbrekend = berekenBreedte([oud]).ontbrekend.map((rij) => rij.groep);
+    expect(ontbrekend).not.toContain("vis");
+    expect(ontbrekend).toContain("zuivel");
   });
 });
