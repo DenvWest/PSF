@@ -212,9 +212,9 @@ export const herstelThema: ThemaPageData = {
     sectionLabel: "PERSOONLIJK ADVIES",
     title: "Wil je weten hoe jouw herstel ervoor staat?",
     subtitle:
-      `De Leefstijlcheck analyseert je slaap, stress, energie, voeding, beweging en herstel in 16 vragen. ${INTAKE_DELIVERABLE.premiumSubtitleSuffix}`,
+      `De Leefstijlcheck analyseert je slaap, stress, energie, voeding, beweging en herstel in 18 vragen. ${INTAKE_DELIVERABLE.premiumSubtitleSuffix}`,
     features: [
-      "16 vragen, 3 minuten",
+      "18 vragen, 3 minuten",
       "Scores op 5 leefstijldomeinen",
       INTAKE_DELIVERABLE.premiumFeatureBullet,
       INTAKE_CTA.supplementFeature,

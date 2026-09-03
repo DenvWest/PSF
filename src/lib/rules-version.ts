@@ -54,6 +54,21 @@ export const ITEM_SCALE_COMPARABLE_FROM = "1.4.0" as const;
 /** Verbinding-delta alleen vergelijkbaar vanaf 1.3.0 (CON_SOC bestaat pas vanaf hier). */
 export const CONNECTION_DELTA_COMPARABLE_FROM = "1.3.0" as const;
 
+/**
+ * Voeding-delta alleen vergelijkbaar vanaf 1.7.0.
+ *
+ * Tot 1.6.0 rustte `nutrition_score` op twee items (NUT_O3, NUT_PROT); vanaf
+ * 1.7.0 op vier (NUT_STRUCT en NUT_QUAL erbij). Het gemiddelde loopt daarmee
+ * over een andere set, dus twee scores over deze grens meten niet hetzelfde —
+ * precies de situatie waarvoor ITEM_SCALE_COMPARABLE_FROM bij 1.4.0 werd
+ * aangelegd.
+ *
+ * Alleen het voedingsdomein: de andere zes items zijn ongewijzigd, dus hun
+ * delta's blijven over deze grens heen gewoon vergelijkbaar. Zelfde soort
+ * domein-only wijziging als de beweging-uitbreiding in 1.5.0.
+ */
+export const NUTRITION_DELTA_COMPARABLE_FROM = "1.7.0" as const;
+
 export function isRecoveryDeltaComparable(
   baselineVersion: string,
   currentVersion: string,
@@ -64,6 +79,19 @@ export function isRecoveryDeltaComparable(
   return (
     !isRulesVersionBefore(baselineVersion, RECOVERY_DELTA_COMPARABLE_FROM) &&
     !isRulesVersionBefore(currentVersion, RECOVERY_DELTA_COMPARABLE_FROM)
+  );
+}
+
+export function isNutritionDeltaComparable(
+  baselineVersion: string,
+  currentVersion: string,
+): boolean {
+  if (baselineVersion === currentVersion) {
+    return true;
+  }
+  return (
+    !isRulesVersionBefore(baselineVersion, NUTRITION_DELTA_COMPARABLE_FROM) &&
+    !isRulesVersionBefore(currentVersion, NUTRITION_DELTA_COMPARABLE_FROM)
   );
 }
 

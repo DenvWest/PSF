@@ -85,7 +85,7 @@ export default function OnderbouwingPage() {
         <section className="mt-14 max-w-4xl">
           <h2 className={sectionTitleClass}>Hoe is deze leefstijlcheck ontwikkeld?</h2>
           <p className="mt-4 text-base leading-relaxed text-stone-600">
-            De vragenlijst bevat 16 vragen verdeeld over de domeinen slaap,
+            De vragenlijst bevat 18 vragen verdeeld over de domeinen slaap,
             energie, stress, voeding, beweging, herstel en leefstijl. Selectie
             van vragen is gebaseerd op wetenschappelijke leefstijlmodellen,
             internationale richtlijnen en toepasbaarheid in dagelijkse routines.

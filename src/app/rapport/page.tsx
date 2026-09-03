@@ -135,7 +135,7 @@ export default function RapportLandingPage() {
                     >
                       intake
                     </Link>{" "}
-                    — 16 vragen over slaap, energie, stress en meer. Dit is je
+                    — 18 vragen over slaap, energie, stress en meer. Dit is je
                     startmeting.
                   </span>
                 </li>

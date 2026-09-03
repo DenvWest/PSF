@@ -12,7 +12,7 @@ export const DASHBOARD_ROUTE_STEPS: DashboardRouteStep[] = [
     step: 1,
     title: "Leefstijlcheck",
     description:
-      "16 vragen over slaap, stress, voeding, beweging en verbinding. Je krijgt scores op 5 leefstijldomeinen en een profiellabel.",
+      "18 vragen over slaap, stress, voeding, beweging en verbinding. Je krijgt scores op 5 leefstijldomeinen en een profiellabel.",
     timeLabel: "± 3 min",
   },
   {

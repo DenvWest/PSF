@@ -385,7 +385,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
                 </p>
                 <div className="mx-auto mt-6 flex max-w-md flex-wrap justify-center gap-x-6 gap-y-2">
                   <span className="text-sm text-white/70">
-                    ✓ 16 vragen, 3 minuten
+                    ✓ 18 vragen, 3 minuten
                   </span>
                   <span className="text-sm text-white/70">
                     ✓ Scores op 5 leefstijldomeinen

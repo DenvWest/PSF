@@ -48,6 +48,8 @@ export type QuestionId =
   | "CON_SOC"
   | "NUT_O3"
   | "NUT_PROT"
+  | "NUT_STRUCT"
+  | "NUT_QUAL"
   | "MOV_STR"
   | "MOV_CARD"
   | "RCV_PHYS"
@@ -232,6 +234,35 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
       { label: "2x per week of vaker", value: 3 },
       { label: "Ongeveer 1x per week", value: 2 },
       { label: "Zelden of nooit", value: 1 },
+    ],
+  },
+  {
+    id: "NUT_STRUCT",
+    category: "voeding",
+    questionIndex: 3,
+    question: "Eet je op vaste momenten, of schuift het per dag?",
+    subtitle:
+      "Regelmaat zegt iets anders dan wát je eet — een patroon dat elke dag verschuift is lastiger bij te sturen.",
+    options: [
+      { label: "Vaste momenten, vrijwel elke dag", value: 4 },
+      { label: "Grote lijnen vast, met uitschieters", value: 3 },
+      { label: "Het verschilt sterk per dag", value: 2 },
+      { label: "Ik eet wanneer het uitkomt", value: 1 },
+    ],
+  },
+  {
+    id: "NUT_QUAL",
+    category: "voeding",
+    questionIndex: 4,
+    question:
+      "Hoe vaak bestaat je maaltijd vooral uit onbewerkte producten die je zelf klaarmaakt?",
+    subtitle:
+      "Denk aan groente, vlees, vis, peulvruchten, granen — tegenover kant-en-klaar, afhaal of pakjes.",
+    options: [
+      { label: "Vrijwel elke maaltijd", value: 4 },
+      { label: "Meestal wel", value: 3 },
+      { label: "Ongeveer de helft", value: 2 },
+      { label: "Meestal niet", value: 1 },
     ],
   },
   {

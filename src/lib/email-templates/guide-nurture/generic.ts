@@ -54,7 +54,7 @@ function followUpTemplate(
 </p>
 ${ctaButton(absoluteUrl(ctaHref), ctaText)}
 <p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
-  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">Doe de gratis Leefstijlcheck</a> — 16 vragen, 3 minuten.
+  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">Doe de gratis Leefstijlcheck</a> — 18 vragen, 3 minuten.
 </p>`,
         unsubscribeUrl,
         data.guideName,

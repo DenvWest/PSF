@@ -28,8 +28,19 @@ import { isRulesVersionBefore } from "@/lib/rules-version";
  *           gaf "Overtrainer" bij movement_score<35 — precies omgekeerd, dat is te wéínig
  *           bewegen. Branch verwijderd; movement-fallback-loop krijgt een score-grens (>60 =
  *           geen relabel) zodat hij niet per ongeluk een prima ander domein aanwijst.
+ * 1.7.0 — voeding-domein uitgebreid van 2 naar 4 score-items: NUT_STRUCT (eetstructuur) en
+ *           NUT_QUAL (bewerkingsgraad) erbij naast NUT_O3 en NUT_PROT. Reden: met twee items
+ *           viel niet te bepalen of iemand een structuur-, kwaliteits- of verhoudingsprobleem
+ *           heeft, en dat is precies wat de trechter naar de Voedingcheck nodig heeft.
+ *           calcDomainScoresV170 identiek aan V150 behalve nutrition_score; overige 6 domeinen
+ *           ongewijzigd — zelfde soort domain-only wijziging als 1.5.0 (beweging).
+ *           Nieuwe NUTRITION_DELTA_COMPARABLE_FROM (1.7.0): het gemiddelde loopt over een
+ *           andere itemset, dus voedingsscores zijn niet vergelijkbaar over deze grens.
+ *           NUT_CONTEXT en NUT_DOEL horen bij deze uitbreiding maar scoren NIET mee: context
+ *           beschrijft omstandigheden (vegetarisch is geen tekort), doel beschrijft richting
+ *           (twee mensen met hetzelfde bord horen dezelfde score te krijgen).
  */
-export const RULES_VERSION = "1.6.0" as const;
+export const RULES_VERSION = "1.7.0" as const;
 
 export interface DomainScores {
   sleep_score: number;
@@ -524,6 +535,29 @@ function calcDomainScoresV150(answers: Record<string, number>): DomainScores {
   };
 }
 
+/**
+ * 1.7.0 — alleen `nutrition_score` wijkt af van V150.
+ *
+ * Vier items in plaats van twee. `averageItemScores` negeert null-waarden, dus
+ * een sessie waarin NUT_STRUCT en NUT_QUAL ontbreken (opgeslagen vóór 1.7.0,
+ * opnieuw doorgerekend) levert nog steeds het oude tweeitem-gemiddelde op in
+ * plaats van een kunstmatig lage score. Dat maakt hem veilig voor herberekening
+ * van oude sessies; vergelijkbaarheid van de *delta* is een andere vraag, en
+ * die bewaakt NUTRITION_DELTA_COMPARABLE_FROM.
+ */
+function calcDomainScoresV170(answers: Record<string, number>): DomainScores {
+  const base = calcDomainScoresV150(answers);
+  return {
+    ...base,
+    nutrition_score: averageItemScores([
+      scaleItemScore(getAnswer(answers, "NUT_O3"), 3),
+      nutritionProteinItemScore(getAnswer(answers, "NUT_PROT")),
+      scaleItemScore(getAnswer(answers, "NUT_STRUCT"), 4),
+      scaleItemScore(getAnswer(answers, "NUT_QUAL"), 4),
+    ]),
+  };
+}
+
 function getSignals(
   answers: Record<string, number>,
   scores?: DomainScores,
@@ -701,7 +735,10 @@ export function calcDomainScores(
   if (isRulesVersionBefore(rulesVersion, "1.5.0")) {
     return calcDomainScoresV140(answers);
   }
-  return calcDomainScoresV150(answers);
+  if (isRulesVersionBefore(rulesVersion, "1.7.0")) {
+    return calcDomainScoresV150(answers);
+  }
+  return calcDomainScoresV170(answers);
 }
 
 export function getUrgency(scores: DomainScores): UrgencyResult {

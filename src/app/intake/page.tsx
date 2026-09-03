@@ -7,7 +7,7 @@ import IntakeClient from "./IntakeClient";
 export const metadata: Metadata = {
   title: "Gratis Leefstijlcheck voor 30-plussers",
   description:
-    `16 vragen, 3 minuten: persoonlijk inzicht in slaap, stress, energie en herstel. Gratis, anoniem — geen diagnose, wel een ${INTAKE_DELIVERABLE.intakeMetadataSuffix}.`,
+    `18 vragen, 3 minuten: persoonlijk inzicht in slaap, stress, energie en herstel. Gratis, anoniem — geen diagnose, wel een ${INTAKE_DELIVERABLE.intakeMetadataSuffix}.`,
   ...canonicalMetadata("/intake"),
 };
 
