@@ -1,0 +1,107 @@
+import { NextRequest, NextResponse } from "next/server";
+import {
+  isValidEntryDate,
+  listDaybookDays,
+  sanitizePortions,
+  upsertDaybookDay,
+} from "@/lib/account-nutrition-daybook";
+import { getAccountFromCookie } from "@/lib/account-server";
+import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
+import { consumeRateLimitForIp } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
+import { DEFAULT_ORG_ID } from "@/config/org";
+import { orgScoped } from "@/lib/db/scoped";
+import { getClientIp } from "@/lib/turnstile-verify";
+
+/**
+ * Het 2+2-dagboek: registreren en teruglezen.
+ *
+ * GET levert de dagen; de analyse (weekendverschil, voortgang) gebeurt in de
+ * client op `nutrition-dagboek.ts`, zodat er één implementatie van die regels
+ * bestaat en de tests er direct op kunnen draaien.
+ */
+
+export async function GET() {
+  const account = await getAccountFromCookie();
+  if (!account) {
+    return NextResponse.json({ error: "Niet ingelogd." }, { status: 401 });
+  }
+
+  const admin = orgScoped(DEFAULT_ORG_ID);
+  if (!admin.raw) {
+    return NextResponse.json(
+      { error: "Database is nog niet geconfigureerd op de server." },
+      { status: 503 },
+    );
+  }
+
+  try {
+    const days = await listDaybookDays(admin, account.id);
+    return NextResponse.json({ days }, { status: 200 });
+  } catch {
+    return NextResponse.json({ error: "Kon je dagboek niet laden." }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const rateLimit = await consumeRateLimitForIp(
+    "intake_session",
+    getClientIp(request),
+    getRateLimitConfig("intake_session"),
+  );
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Te veel pogingen. Probeer het over een paar minuten opnieuw." },
+      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
+    );
+  }
+
+  const account = await getAccountFromCookie();
+  if (!account) {
+    return NextResponse.json({ error: "Niet ingelogd." }, { status: 401 });
+  }
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Ongeldig verzoek." }, { status: 400 });
+  }
+
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json({ error: "Ongeldige dag." }, { status: 400 });
+  }
+
+  const record = body as Record<string, unknown>;
+  const date = typeof record.date === "string" ? record.date.trim() : "";
+
+  if (!isValidEntryDate(date, todayInAgendaTimezone())) {
+    return NextResponse.json(
+      { error: "Kies een dag die al geweest is." },
+      { status: 400 },
+    );
+  }
+
+  const porties = sanitizePortions(record.portions);
+  if (Object.keys(porties).length === 0) {
+    return NextResponse.json(
+      { error: "Vul minstens één voedselgroep in." },
+      { status: 400 },
+    );
+  }
+
+  const admin = orgScoped(DEFAULT_ORG_ID);
+  if (!admin.raw) {
+    return NextResponse.json(
+      { error: "Database is nog niet geconfigureerd op de server." },
+      { status: 503 },
+    );
+  }
+
+  const ok = await upsertDaybookDay(admin, account.id, { date, porties });
+  if (!ok) {
+    return NextResponse.json({ error: "Kon je dag niet opslaan." }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true }, { status: 200 });
+}

@@ -8,7 +8,8 @@ import {
 import { getAccountFromCookie } from "@/lib/account-server";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
-import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import { DEFAULT_ORG_ID } from "@/config/org";
+import { orgScoped } from "@/lib/db/scoped";
 import { getClientIp } from "@/lib/turnstile-verify";
 
 /**
@@ -43,8 +44,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Niet ingelogd." }, { status: 401 });
   }
 
-  const admin = createSupabaseAdmin();
-  if (!admin) {
+  const admin = orgScoped(DEFAULT_ORG_ID);
+  if (!admin.raw) {
     return NextResponse.json(
       { error: "Database is nog niet geconfigureerd op de server." },
       { status: 503 },
@@ -95,8 +96,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Ongeldige terugblik." }, { status: 400 });
   }
 
-  const admin = createSupabaseAdmin();
-  if (!admin) {
+  const admin = orgScoped(DEFAULT_ORG_ID);
+  if (!admin.raw) {
     return NextResponse.json(
       { error: "Database is nog niet geconfigureerd op de server." },
       { status: 503 },

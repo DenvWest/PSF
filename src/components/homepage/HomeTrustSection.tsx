@@ -21,7 +21,7 @@ export default function HomeTrustSection() {
       aria-labelledby="belofte-heading"
     >
       <Container>
-        <div className="max-w-2xl">
+        <div className="mx-auto max-w-2xl">
           <h2
             id="belofte-heading"
             className="font-serif text-2xl leading-tight text-stone-900 sm:text-3xl"

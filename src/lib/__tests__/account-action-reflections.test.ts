@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { OrgScopedClient } from "@/lib/db/scoped";
 import {
   isReflectionAnswer,
   listReflectedBlockIds,
@@ -15,7 +15,8 @@ function selectStub(result: { data: unknown; error: unknown }) {
     limit: vi.fn(() => Promise.resolve(result)),
     then: (resolve: (value: unknown) => unknown) => Promise.resolve(result).then(resolve),
   };
-  return { from: vi.fn(() => chain), chain } as unknown as {
+  return { raw: {}, from: vi.fn(() => chain), chain } as unknown as {
+    raw: unknown;
     from: () => typeof chain;
     chain: typeof chain;
   };
@@ -39,14 +40,14 @@ describe("isReflectionAnswer", () => {
 describe("listReflectedBlockIds", () => {
   it("levert de beantwoorde blok-ids", async () => {
     const stub = selectStub({ data: [{ block_id: "a" }, { block_id: "b" }], error: null });
-    const ids = await listReflectedBlockIds(stub as unknown as SupabaseClient, "acc");
+    const ids = await listReflectedBlockIds(stub as unknown as OrgScopedClient, "acc");
     expect(ids).toEqual(["a", "b"]);
   });
 
   it("geeft een lege lijst bij een fout in plaats van te werpen", async () => {
     const stub = selectStub({ data: null, error: { message: "boom" } });
     await expect(
-      listReflectedBlockIds(stub as unknown as SupabaseClient, "acc"),
+      listReflectedBlockIds(stub as unknown as OrgScopedClient, "acc"),
     ).resolves.toEqual([]);
   });
 });
@@ -58,7 +59,7 @@ describe("listReflectionAnswers", () => {
       error: null,
     });
     const answers = await listReflectionAnswers(
-      stub as unknown as SupabaseClient,
+      stub as unknown as OrgScopedClient,
       "acc",
       "voeding",
     );
@@ -69,7 +70,7 @@ describe("listReflectionAnswers", () => {
 describe("upsertActionReflection", () => {
   it("schrijft op (account, blok) zodat een tweede antwoord niet stapelt", async () => {
     const upsert = vi.fn(() => Promise.resolve({ error: null }));
-    const supabase = { from: vi.fn(() => ({ upsert })) } as unknown as SupabaseClient;
+    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
 
     const ok = await upsertActionReflection(supabase, "acc", {
       blockId: "b1",
@@ -86,7 +87,7 @@ describe("upsertActionReflection", () => {
 
   it("meldt falen zonder te werpen", async () => {
     const upsert = vi.fn(() => Promise.resolve({ error: { message: "nee" } }));
-    const supabase = { from: vi.fn(() => ({ upsert })) } as unknown as SupabaseClient;
+    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
     await expect(
       upsertActionReflection(supabase, "acc", {
         blockId: "b1",
@@ -102,7 +103,7 @@ describe("upsertActionReflection", () => {
       payloads.push(row);
       return Promise.resolve({ error: null });
     });
-    const supabase = { from: vi.fn(() => ({ upsert })) } as unknown as SupabaseClient;
+    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
     await upsertActionReflection(supabase, "acc", {
       blockId: "b1",
       domain: "voeding",

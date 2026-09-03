@@ -39,6 +39,9 @@ function withOrgId<T extends Row>(values: T, orgId: string): T {
  * Client waarvan elke `.from(table)` het organization_id-filter/injectie automatisch
  * toepast. Alleen bedoeld voor tabellen die een `organization_id`-kolom dragen.
  */
+/** Het type dat `orgScoped()` teruggeeft — voor server-lagen die hem aannemen. */
+export type OrgScopedClient = ReturnType<typeof orgScoped>;
+
 export function orgScoped(orgId: string) {
   const admin = createSupabaseAdmin();
 

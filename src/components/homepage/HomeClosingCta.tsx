@@ -12,7 +12,7 @@ export default function HomeClosingCta() {
       aria-labelledby="afsluiting-heading"
     >
       <Container>
-        <div className="max-w-2xl">
+        <div className="mx-auto max-w-2xl">
           <h2
             id="afsluiting-heading"
             className="font-serif text-2xl leading-tight text-stone-900 sm:text-3xl"

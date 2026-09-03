@@ -55,12 +55,12 @@ export default function Hero() {
               </h1>
             </div>
 
-            <div className="order-3 max-w-2xl lg:order-none lg:mt-7">
+            <div className="order-3 mx-auto max-w-2xl text-center lg:order-none lg:mx-0 lg:mt-7 lg:text-left">
               <p className="text-[15px] leading-relaxed text-stone-600 sm:text-base">
                 {subheadline}
               </p>
 
-              <ul className="mt-5 space-y-2.5 sm:mt-6 sm:space-y-3">
+              <ul className="mt-5 space-y-2.5 text-left sm:mt-6 sm:space-y-3">
                 {bullets.map((bullet) => (
                   <li
                     key={bullet}
@@ -72,7 +72,7 @@ export default function Hero() {
                 ))}
               </ul>
 
-              <div className="mt-7 sm:mt-8">
+              <div className="mt-7 flex flex-col items-center sm:mt-8 lg:items-start">
                 <HomeCheckCta location="homepage_hero" className="w-full sm:w-auto" />
                 <p className="mt-3 text-xs text-stone-500">{primaryCtaMicro}</p>
                 <IntakeLastSessionLink theme="light" className="mt-3 block" />

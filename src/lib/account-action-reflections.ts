@@ -1,4 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { OrgScopedClient } from "@/lib/db/scoped";
 import type { ReflectieAntwoord } from "@/lib/nutrition-reflectie";
 
 /**
@@ -37,7 +37,7 @@ export function isReflectionAnswer(value: string): value is ReflectieAntwoord {
  * set genoeg, en het scheelt een payload die met elke week groeit.
  */
 export async function listReflectedBlockIds(
-  supabase: SupabaseClient,
+  supabase: OrgScopedClient,
   accountId: string,
 ): Promise<string[]> {
   const { data, error } = await supabase
@@ -45,15 +45,15 @@ export async function listReflectedBlockIds(
     .select("block_id")
     .eq("account_id", accountId);
 
-  if (error || !data) {
+  if (error || !Array.isArray(data)) {
     return [];
   }
-  return data.map((row) => String(row.block_id));
+  return data.map((row) => String((row as unknown as Record<string, unknown>).block_id));
 }
 
 /** De antwoorden zelf, nieuwste eerst — voor de reeks-regel in de tijdlaag. */
 export async function listReflectionAnswers(
-  supabase: SupabaseClient,
+  supabase: OrgScopedClient,
   accountId: string,
   domain: string,
   limit = 20,
@@ -66,16 +66,16 @@ export async function listReflectionAnswers(
     .order("created_at", { ascending: false })
     .limit(limit);
 
-  if (error || !data) {
+  if (error || !Array.isArray(data)) {
     return [];
   }
   return data
-    .map((row) => String(row.answer))
+    .map((row) => String((row as unknown as Record<string, unknown>).answer))
     .filter((answer): answer is ReflectieAntwoord => isReflectionAnswer(answer));
 }
 
 export async function upsertActionReflection(
-  supabase: SupabaseClient,
+  supabase: OrgScopedClient,
   accountId: string,
   input: { blockId: string; domain: string; answer: ReflectieAntwoord },
 ): Promise<boolean> {

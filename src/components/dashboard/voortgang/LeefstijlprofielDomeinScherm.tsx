@@ -18,6 +18,7 @@ import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
 import VoedingskwaliteitLaag from "@/components/nutrition/VoedingskwaliteitLaag";
 import SituatieVoedingLaag from "@/components/nutrition/SituatieVoedingLaag";
 import MetenTijdLaag from "@/components/nutrition/MetenTijdLaag";
+import NutritionDagboekPaneel from "@/components/dashboard/voortgang/NutritionDagboekPaneel";
 import NutritionReflectiePaneel from "@/components/dashboard/voortgang/NutritionReflectiePaneel";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
@@ -246,6 +247,11 @@ function NutritionLayerSlot({
     return (
       <>
         <MetenTijdLaag meetreeks={meetreeks} surface="leefstijlprofiel_voeding" />
+        {/* Drie soorten "meten" op de laag die er zijn naam aan ontleent: je
+            eigen reeks (gaat het de goede kant op), het dagboek (wat zit er
+            onder je gemiddelde) en de terugblik (lukte wat je plande). Geen
+            van drieën raakt de voedingsscore — die komt uit de check. */}
+        <NutritionDagboekPaneel surface="leefstijlprofiel_voeding" />
         <NutritionReflectiePaneel surface="leefstijlprofiel_voeding" />
       </>
     );
