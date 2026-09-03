@@ -17,6 +17,12 @@ import {
   type DagboekDag,
   type DagSoort,
 } from "@/lib/nutrition-dagboek";
+import {
+  kalibratieRegel,
+  kalibratieRijen,
+  selfReportUitDagboek,
+} from "@/lib/nutrition-dagboek-selfreport";
+import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
 import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 
 /**
@@ -59,7 +65,17 @@ const SOORT_LABEL: Record<DagSoort, string> = {
   weekend: "weekenddag",
 };
 
-export default function NutritionDagboekPaneel({ surface }: { surface: string }) {
+export default function NutritionDagboekPaneel({
+  surface,
+  checkSliders = null,
+}: {
+  surface: string;
+  /**
+   * De slider-antwoorden uit de voedingscheck, voor de kalibratie. Null zonder
+   * check — dan toont het paneel alleen wat het dagboek zelf ziet.
+   */
+  checkSliders?: Record<string, number> | null;
+}) {
   const today = todayInAgendaTimezone();
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
   const [geladen, setGeladen] = useState(false);
@@ -90,6 +106,27 @@ export default function NutritionDagboekPaneel({ surface }: { surface: string })
 
   const uitkomst = useMemo(() => analyseerDagboek(dagen), [dagen]);
   const dekking = dekkingsRegel(uitkomst);
+
+  // Wat je zei tegenover wat je registreerde. Twee schattingen naast elkaar —
+  // geen correctie op de check, wel een uitspraak over hoe zeker we van dat
+  // patroon mogen zijn.
+  const kalibratie = useMemo(() => {
+    if (!checkSliders) return null;
+    const uitDagboek = selfReportUitDagboek(dagen);
+    if (!uitDagboek) return null;
+    return kalibratieRegel(kalibratieRijen(nutritionReportFromAnswers(checkSliders), uitDagboek));
+  }, [checkSliders, dagen]);
+
+  // Eén melding zodra de kalibratie voor het eerst iets te zeggen heeft: dat
+  // getal zegt of het dagboek daadwerkelijk iets toevoegt aan de check.
+  useEffect(() => {
+    if (!kalibratie) return;
+    emitAccountClientEvent("nutrition.dagboek_kalibratie_shown", {
+      filled_days: dagen.length,
+      surface,
+    });
+  }, [kalibratie, dagen.length, surface]);
+
 
   // De zeven dagen waaruit je kunt kiezen: gisteren voorop, vandaag niet mee.
   const keuzedagen = useMemo(
@@ -216,6 +253,14 @@ export default function NutritionDagboekPaneel({ surface }: { surface: string })
       {uitkomst.samenvatting ? (
         <p className="m-0 mt-2 max-w-[58ch] text-[12.5px] leading-relaxed text-[#E7EDE8] text-pretty">
           {uitkomst.samenvatting}
+        </p>
+      ) : null}
+
+      {/* De kalibratie staat onderaan: hij gaat niet over je eten maar over je
+          meting, en dat is een stap abstracter dan de rest van het blok. */}
+      {kalibratie ? (
+        <p className="m-0 mt-2 max-w-[58ch] border-t border-white/10 pt-2 text-[11.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+          {kalibratie}
         </p>
       ) : null}
 

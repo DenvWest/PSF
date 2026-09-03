@@ -251,7 +251,10 @@ function NutritionLayerSlot({
             eigen reeks (gaat het de goede kant op), het dagboek (wat zit er
             onder je gemiddelde) en de terugblik (lukte wat je plande). Geen
             van drieën raakt de voedingsscore — die komt uit de check. */}
-        <NutritionDagboekPaneel surface="leefstijlprofiel_voeding" />
+        <NutritionDagboekPaneel
+          surface="leefstijlprofiel_voeding"
+          checkSliders={readout?.ladderReport?.sliders ?? null}
+        />
         <NutritionReflectiePaneel surface="leefstijlprofiel_voeding" />
       </>
     );
