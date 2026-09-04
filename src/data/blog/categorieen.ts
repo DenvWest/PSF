@@ -125,13 +125,15 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     intentTopics: [
       "magnesium vormen",
       "vitamine D met K2",
-      "vitamine D dosering",
-      "supplement kiezen",
+      "whey of isolaat",
+      "heb ik eiwitpoeder nodig",
     ],
     intentArticleLinks: [
       { label: "Magnesium en slaap", slug: "magnesium-en-slaap" },
       { label: "Vitamine D en K2 samen", slug: "vitamine-d-en-k2-samen" },
       { label: "Hoge doses vitamine D", slug: "vitamine-d-hoge-doses-social-media" },
+      { label: "Whey: wanneer wel en niet", slug: "whey-wanneer-wel-en-niet" },
+      { label: "Whey concentraat of isolaat", slug: "whey-concentraat-isolaat-hydrolysaat" },
       { label: "Zink en testosteron", slug: "zink-en-testosteron" },
     ],
     themaHref: "/supplementen",

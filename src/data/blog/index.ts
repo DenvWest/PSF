@@ -35,6 +35,14 @@ import { vitamineDAandoeningenOnderzoekData } from "./vitamine-d-aandoeningen-on
 import { vitamineDEnSlaapData } from "./vitamine-d-en-slaap";
 import { multivitamineZinvolNa40Data } from "./multivitamine-zinvol-na-40";
 import { zoutKaliumBloeddrukNa40Data } from "./zout-kalium-bloeddruk-na-40";
+import { wheyWanneerWelEnNietData } from "./whey-wanneer-wel-en-niet";
+import { wheyConcentraatIsolaatHydrolysaatData } from "./whey-concentraat-isolaat-hydrolysaat";
+import { wheyOfPlantaardigEiwitData } from "./whey-of-plantaardig-eiwit";
+import { wheyEnDarmklachtenData } from "./whey-en-darmklachten";
+import { wheyHoeveelEnWanneerData } from "./whey-hoeveel-en-wanneer";
+import { wheyEtiketLezenData } from "./whey-etiket-lezen";
+import { isWheySchadelijkData } from "./is-whey-schadelijk";
+import { eiwitEnWheyInDeOvergangData } from "./eiwit-en-whey-in-de-overgang";
 import { cornerstoneSupplementenArtikelen } from "./cornerstone-supplementen";
 
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
@@ -77,6 +85,14 @@ export const alleArtikelen: BlogArtikel[] = [
   vitamineDEnSlaapData,
   multivitamineZinvolNa40Data,
   zoutKaliumBloeddrukNa40Data,
+  wheyWanneerWelEnNietData,
+  wheyConcentraatIsolaatHydrolysaatData,
+  wheyOfPlantaardigEiwitData,
+  wheyEnDarmklachtenData,
+  wheyHoeveelEnWanneerData,
+  wheyEtiketLezenData,
+  isWheySchadelijkData,
+  eiwitEnWheyInDeOvergangData,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>

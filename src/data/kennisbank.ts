@@ -395,8 +395,8 @@ De standaard ADH voor eiwit (0,8 gram per kilogram lichaamsgewicht) is vastgeste
 Dit betekent dat het niet alleen gaat om hoeveel eiwit je per dag eet, maar ook om de verdeling over de dag. Drie maaltijden met elk 30-40 gram eiwit is effectiever dan één maaltijd met 90 gram en twee met 15 gram.`,
       whyItMatters: `Eiwitinname is een van de eerste dingen die wij controleren via de Leefstijlcheck. Veel mensen 40+ eten een ontbijt van brood met jam (5g eiwit) en een lunch van een broodje kaas (12g eiwit) — ruim onder wat hun lichaam nodig heeft. Dit is een leefstijlaanpassing die meer impact heeft dan welk supplement dan ook. Quick win: begin de dag met een eiwitrijk ontbijt (eieren, kwark, noten).`,
     },
-    relatedSlugs: ['slaaphygiene', 'kalium-natrium-balans'],
-    relatedComparisons: ['/beste/creatine'],
+    relatedSlugs: ['wei-eiwit', 'leucinedrempel', 'slaaphygiene'],
+    relatedComparisons: ['/beste/eiwitpoeder', '/beste/creatine'],
     metaTitle: 'Eiwitbehoefte na 40: Hoeveel Heb Je Écht Nodig?',
     metaDescription: 'Na 40 heb je meer eiwit nodig dan je denkt. De wetenschap achter spierbehoud, simpel uitgelegd.',
     referenties: toRefs([
@@ -1213,6 +1213,76 @@ Belangrijke grens: wij analyseren (nog) geen potjes zelf. Een merk dat wél test
       'GOED. GOED Voluntary Monograph — oxidation limits including TOTOX ≤26 for EPA/DHA oils.',
       'Maughan RJ et al. IOC consensus statement: dietary supplements and the high-performance athlete. Br J Sports Med. 2018;52(7):439-455.',
       'Commission Regulation (EU) 2023/915 on maximum levels for certain contaminants in food — heavy metals and dioxins context for fish oils.',
+    ]),
+  },
+  {
+    slug: 'wei-eiwit',
+    insightTier: 1,
+    term: 'Wei-eiwit (whey)',
+    theme: 'supplementwetenschap',
+    shortDefinition:
+      'Het eiwit uit de wei die overblijft bij kaasbereiding — snel opneembaar, rijk aan leucine, en in poedervorm vooral een praktische manier om een eiwitgat te dichten.',
+    content: {
+      whatIsIt: `Wei-eiwit, in het Engels whey, is de eiwitfractie uit de waterige laag die overblijft wanneer melk stremt bij de kaasbereiding. Ongeveer een vijfde van het eiwit in koemelk is wei; de rest is caseïne. Gedroogd levert dat een poeder met alle negen essentiële aminozuren en een relatief hoog gehalte aan leucine.
+
+Er zijn drie handelsvormen, die verschillen in hoever de wei is doorgefilterd: concentraat (doorgaans 70–80% eiwit), isolaat (88–92%, vrijwel zonder lactose) en hydrolysaat (voorgeknipt eiwit, vooral in klinische voeding). De verschillen zitten in lactose, calorieën en prijs — niet in een eigen werking. De keuze staat uitgewerkt in [concentraat, isolaat of hydrolysaat](/blog/whey-concentraat-isolaat-hydrolysaat).`,
+      howItWorks: `Wei-eiwit verlaat de maag snel en levert daardoor binnen een uur een piek aan aminozuren in het bloed. Die piek — en vooral het leucinedeel ervan — zet de spiereiwitsynthese aan: het proces waarmee je lichaam spierweefsel onderhoudt en herstelt. Zie [leucinedrempel](/kennisbank/leucinedrempel) voor de hoeveelheid die daarvoor nodig is.
+
+Na je veertigste reageert spierweefsel minder sterk op dezelfde portie eiwit; dat heet anabole resistentie. Waar bij jonge volwassenen 20 tot 25 gram hoogwaardig eiwit per eetmoment volstaat, wijst onderzoek bij ouderen richting ongeveer 0,4 gram per kilo lichaamsgewicht per maaltijd. Zie [eiwitbehoefte na 40](/kennisbank/eiwitbehoefte-na-40) voor het dagtotaal en [hoeveel whey per dag](/blog/whey-hoeveel-en-wanneer) voor de verdeling.
+
+Wat wei niet doet: het beïnvloedt geen hormoonwaarden en heeft geen eigen effect bovenop het eiwit dat erin zit. Dezelfde gram eiwit uit kwark, ei of vis levert dezelfde bouwstenen.`,
+      whyItMatters: `De EU staat op eiwit twee claims toe: eiwitten dragen bij tot de groei en de instandhouding van spiermassa, en tot de instandhouding van normale botten (Verordening (EU) 432/2012). Die gelden voor élk product dat genoeg eiwit levert — ook voor een pak kwark. Claims over testosteron, energie of vetverbranding zijn niet toegestaan; zie [EFSA-claims](/kennisbank/efsa-claims).
+
+Praktisch is de vraag niet of wei werkt, maar of jij een eiwitgat hebt: [voor wie whey iets toevoegt](/blog/whey-wanneer-wel-en-niet). Verdraag je het slecht, dan is de oorzaak vaker een toevoeging dan de lactose — zie [whey en darmklachten](/blog/whey-en-darmklachten). Bij zuivelbezwaar is [plantaardig eiwit](/blog/whey-of-plantaardig-eiwit) een volwaardig alternatief met een grotere portie. Vergelijk producten op [/beste/eiwitpoeder](/beste/eiwitpoeder) of in de [supplementengids](/supplementen).`,
+    },
+    relatedSlugs: ['eiwitbehoefte-na-40', 'leucinedrempel', 'biobeschikbaarheid'],
+    relatedComparisons: ['/beste/eiwitpoeder'],
+    metaTitle: 'Wei-eiwit (Whey): Wat Het Is En Wat Het Doet',
+    metaDescription:
+      'Wei-eiwit uitgelegd: herkomst, concentraat versus isolaat, waarom leucine telt, wat de EU-claims wel en niet toestaan en wanneer poeder iets toevoegt.',
+    laatstBijgewerktOp: '2026-09-04',
+    referenties: toRefs([
+      'Devries MC, Phillips SM. Supplemental protein in support of muscle mass and health: advantage whey. J Food Sci. 2015;80(S1):A8-A15.',
+      'Boirie Y, Dangin M, Gachon P, Vasson MP, Maubois JL, Beaufrere B. Slow and fast dietary proteins differently modulate postprandial protein accretion. Proc Natl Acad Sci U S A. 1997;94(26):14930-14935.',
+      'Morton RW, Murphy KT, McKellar SR, et al. A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength. Br J Sports Med. 2018;52(6):376-384.',
+      'Moore DR, Churchward-Venne TA, Witard OC, et al. Protein ingestion to stimulate myofibrillar protein synthesis requires greater relative protein intakes in healthy older versus younger men. J Gerontol A Biol Sci Med Sci. 2015;70(1):57-62.',
+      'Commission Regulation (EU) No 432/2012 establishing a list of permitted health claims made on foods. Official Journal of the European Union. 2012.',
+      'Smithers GW. Whey and whey proteins: from gutter-to-gold. Int Dairy J. 2008;18(7):695-704.',
+    ]),
+  },
+  {
+    slug: 'leucinedrempel',
+    insightTier: 2,
+    term: 'Leucinedrempel',
+    theme: 'supplementwetenschap',
+    shortDefinition:
+      'De hoeveelheid leucine per eetmoment die nodig lijkt om de spieropbouw maximaal aan te zetten — en die met de leeftijd omhooggaat.',
+    content: {
+      whatIsIt: `Leucine is een van de negen essentiële aminozuren en tegelijk het aminozuur met de sterkste signaalfunctie: het zet, meer dan de andere, het startsein voor de spiereiwitsynthese. De leucinedrempel is de werkhypothese dat er per eetmoment een minimum aan leucine nodig is voordat dat startsein volledig afgaat — in de literatuur meestal geplaatst rond 2,5 tot 3 gram.
+
+Het is een vuistregel uit onderzoek, geen natuurconstante. De drempel is afgeleid uit metingen van de spiereiwitsynthese over enkele uren, meestal bij kleine groepen deelnemers.`,
+      howItWorks: `Het leucinegehalte verschilt per eiwitbron: wei-eiwit bevat ongeveer 10 tot 11 procent leucine, erwten- en sojaeiwit rond de 8 procent. Daardoor haalt ongeveer 25 gram [wei-eiwit](/kennisbank/wei-eiwit) de drempel, terwijl je van een plantaardige blend eerder 30 tot 40 gram nodig hebt — de rekensom achter [whey of plantaardig eiwit](/blog/whey-of-plantaardig-eiwit).
+
+Met het ouder worden ligt de drempel hoger: spierweefsel reageert minder sterk op dezelfde portie, zodat er meer eiwit per eetmoment nodig is voor dezelfde respons. Dat is de reden dat adviezen voor 40-plussers uitkomen op ongeveer 0,4 gram eiwit per kilo per maaltijd in plaats van de 0,24 die bij jongeren volstaat.
+
+Een veelgemaakte fout is om die redenering door te trekken naar losse leucine- of BCAA-supplementen. Leucine zet het proces wel aan, maar zonder de overige aminozuren ontbreken de bouwstenen om er iets mee te doen; in vergelijkend onderzoek doen losse BCAA's onder voor een volledige eiwitbron.`,
+      whyItMatters: `De praktische vertaling is simpel: kijk niet alleen naar je dagtotaal maar naar de gram eiwit per eetmoment, en reken bij plantaardige bronnen met een grotere portie. Dat is precies waar de meeste 40-plussers hun winst laten liggen — zie [eiwitbehoefte na 40](/kennisbank/eiwitbehoefte-na-40) en [hoeveel whey per dag](/blog/whey-hoeveel-en-wanneer).
+
+Wat het níet betekent: dat je leucine of BCAA's los moet bijkopen. Een eiwitrijke maaltijd of een gewone schep poeder levert de drempel al. Producten die extra leucine als verkoopargument voeren, verhogen vooral de prijs — zie [het etiket lezen](/blog/whey-etiket-lezen).`,
+    },
+    relatedSlugs: ['wei-eiwit', 'eiwitbehoefte-na-40', 'biobeschikbaarheid'],
+    relatedComparisons: ['/beste/eiwitpoeder'],
+    metaTitle: 'Leucinedrempel: Hoeveel Eiwit Per Maaltijd?',
+    metaDescription:
+      'De leucinedrempel uitgelegd: waarom 2,5 tot 3 gram leucine per eetmoment wordt genoemd, hoe bronnen verschillen en waarom losse BCAA\'s niet de oplossing zijn.',
+    laatstBijgewerktOp: '2026-09-04',
+    referenties: toRefs([
+      'Moore DR, Churchward-Venne TA, Witard OC, et al. Protein ingestion to stimulate myofibrillar protein synthesis requires greater relative protein intakes in healthy older versus younger men. J Gerontol A Biol Sci Med Sci. 2015;70(1):57-62.',
+      'Wolfe RR. Branched-chain amino acids and muscle protein synthesis in humans: myth or reality? J Int Soc Sports Nutr. 2017;14:30.',
+      'Gorissen SHM, Crombag JJR, Senden JMG, et al. Protein content and amino acid composition of commercially available plant-based protein isolates. Amino Acids. 2018;50(12):1685-1695.',
+      'Churchward-Venne TA, Breen L, Di Donato DM, et al. Leucine supplementation of a low-protein mixed macronutrient beverage enhances myofibrillar protein synthesis in young men: a randomized controlled trial. Am J Clin Nutr. 2014;99(2):276-286.',
+      'Pinckaers PJM, Trommelen J, Snijders T, van Loon LJC. The anabolic response to plant-based protein ingestion. Sports Med. 2021;51(Suppl 1):59-74.',
+      'Bauer J, Biolo G, Cederholm T, et al. Evidence-based recommendations for optimal dietary protein intake in older people: a position paper from the PROT-AGE Study Group. J Am Med Dir Assoc. 2013;14(8):542-559.',
     ]),
   },
 ]

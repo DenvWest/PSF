@@ -31,7 +31,7 @@ describe("bibliotheek — publiekslens", () => {
   it("zet de eigen fysiologie bovenaan en de andere onder een eigen kop", () => {
     render(<BlogLibrary items={blogItems} initialAudience="vrouwen" />);
 
-    expect(kaartTitels()[0]).toMatch(/Overgang/);
+    expect(kaartTitels()[0]).toMatch(/overgang/i);
     expect(screen.getByText("Voor iedereen")).toBeTruthy();
   });
 
@@ -47,7 +47,7 @@ describe("bibliotheek — publiekslens", () => {
     const groep = screen.getByRole("radiogroup", { name: /voor wie/i });
     fireEvent.click(within(groep).getByRole("radio", { name: "Vrouwen" }));
 
-    expect(kaartTitels()[0]).toMatch(/Overgang/);
+    expect(kaartTitels()[0]).toMatch(/overgang/i);
     expect(kaartTitels().length).toBeGreaterThan(1);
   });
 });

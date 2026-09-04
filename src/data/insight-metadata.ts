@@ -39,6 +39,11 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     relatedSupplementId: "creatine",
     profile: "Overtrainer",
   },
+  "eiwit-en-whey-in-de-overgang": {
+    theme: "nutrition",
+    gapSignal: "protein_gap_signal",
+    relatedSupplementId: "eiwitpoeder",
+  },
   "eiwit-na-40": {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
@@ -53,6 +58,10 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "movement",
     gapSignal: "energy_dip_unexplained",
     profile: "Lage Batterij",
+  },
+  "is-whey-schadelijk": {
+    theme: "nutrition",
+    relatedSupplementId: "eiwitpoeder",
   },
   "krachttraining-na-40": { theme: "movement", planPhase: 1 },
   "magnesium-en-slaap": {
@@ -153,6 +162,32 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "nutrition",
     relatedSupplementId: "zink",
   },
+  "whey-concentraat-isolaat-hydrolysaat": {
+    theme: "nutrition",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "whey-en-darmklachten": {
+    theme: "nutrition",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "whey-etiket-lezen": {
+    theme: "nutrition",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "whey-hoeveel-en-wanneer": {
+    theme: "nutrition",
+    gapSignal: "protein_gap_signal",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "whey-of-plantaardig-eiwit": {
+    theme: "nutrition",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "whey-wanneer-wel-en-niet": {
+    theme: "nutrition",
+    gapSignal: "protein_gap_signal",
+    relatedSupplementId: "eiwitpoeder",
+  },
   "zout-kalium-bloeddruk-na-40": { theme: "nutrition" },
 
   // ── Kennisbank ────────────────────────────────────────────────────────────
@@ -166,6 +201,16 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "derde-partij-testen": { theme: "nutrition" },
   "efsa-claims": { theme: "nutrition" },
   "eiwitbehoefte-na-40": {
+    theme: "nutrition",
+    gapSignal: "protein_gap_signal",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  leucinedrempel: {
+    theme: "nutrition",
+    gapSignal: "protein_gap_signal",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "wei-eiwit": {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
     relatedSupplementId: "eiwitpoeder",
