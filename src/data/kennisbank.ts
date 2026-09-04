@@ -645,7 +645,7 @@ Je voorraad op zich is klein; het geheim zit in het tempo van hersynthese. Daaro
 Macro’s (koolhydraten, vetten, eiwitten) zijn uiteindelijk de grondstoffen; training verhoogt het vermogen om die om te zetten in bruikbare ATP.`,
       whyItMatters: `Als je creatine of andere “energie”-supplementen beoordeelt, is het nuttig ATP te begrijpen als keten: substraat → mitochondriën → ATP → prestatie/herstel. Creatine ondersteunt de snelle herlading, niet magisch oneindig vermogen.
 
-Lees vergelijkingen dus op dosering, vorm en zuiverheid — en blijf slaap en eiwit (zie ook eiwit na 40) als basis zien.`,
+Lees vergelijkingen dus op dosering, vorm en zuiverheid — en blijf slaap en eiwit (zie ook eiwit na 40) als basis zien. Concreet uitgewerkt staat dat in [creatine dosering en laadfase](/blog/creatine-dosering-en-laadfase), [welke vorm je koopt](/blog/creatine-vormen-en-keurmerken) en het cognitiespoor in [creatine en je brein](/blog/creatine-en-brein-slaaptekort). Producten vergelijk je op [/beste/creatine](/beste/creatine); alle stoffen naast elkaar staan op de [supplementengids](/supplementen).`,
     },
     relatedSlugs: ['mitochondrien', 'eiwitbehoefte-na-40'],
     relatedComparisons: ['/beste/creatine'],

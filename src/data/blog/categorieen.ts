@@ -123,12 +123,14 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     metaDescription:
       "Magnesium, omega-3, vitamine D en meer — werking, vormen en dosering uitgelegd voor 40+. Geen verkooppraat.",
     intentTopics: [
+      "creatine dosering",
       "magnesium vormen",
       "vitamine D met K2",
-      "vitamine D dosering",
       "supplement kiezen",
     ],
     intentArticleLinks: [
+      { label: "Creatine dosering en laadfase", slug: "creatine-dosering-en-laadfase" },
+      { label: "Creatine bijwerkingen", slug: "creatine-bijwerkingen-nieren-haaruitval" },
       { label: "Magnesium en slaap", slug: "magnesium-en-slaap" },
       { label: "Vitamine D en K2 samen", slug: "vitamine-d-en-k2-samen" },
       { label: "Hoge doses vitamine D", slug: "vitamine-d-hoge-doses-social-media" },

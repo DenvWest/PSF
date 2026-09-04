@@ -62,13 +62,13 @@ export const creatineEnHerstelData: BlogArtikel = {
     href: "/herstel-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
-    label: "Creatine supplementen vergelijken",
-    href: "/beste/creatine",
+    label: "Alle supplementen op één meetlat",
+    href: "/supplementen",
   },
   gerelateerdeSluggen: [
-    "omega-3-concentratie-energie",
-    "magnesium-en-slaapkwaliteit",
-    "testosteron-en-energie-na-40",
+    "creatine-dosering-en-laadfase",
+    "creatine-bijwerkingen-nieren-haaruitval",
+    "creatine-en-brein-slaaptekort",
   ],
   metaTitle:
     "Creatine en herstel na 40: buffer, training en context",

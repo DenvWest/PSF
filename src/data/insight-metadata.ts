@@ -39,6 +39,38 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     relatedSupplementId: "creatine",
     profile: "Overtrainer",
   },
+  "creatine-bijwerkingen-nieren-haaruitval": {
+    theme: "nutrition",
+    gapSignal: "creatine_signal",
+    relatedSupplementId: "creatine",
+  },
+  "creatine-dosering-en-laadfase": {
+    theme: "nutrition",
+    gapSignal: "creatine_signal",
+    relatedSupplementId: "creatine",
+  },
+  "creatine-en-brein-slaaptekort": {
+    theme: "sleep",
+    relatedSupplementId: "creatine",
+  },
+  "creatine-voor-vrouwen-na-40": {
+    theme: "movement",
+    gapSignal: "creatine_signal",
+    relatedSupplementId: "creatine",
+  },
+  "creatine-vormen-en-keurmerken": {
+    theme: "nutrition",
+    relatedSupplementId: "creatine",
+  },
+  "creatine-wanneer-innemen": {
+    theme: "nutrition",
+    relatedSupplementId: "creatine",
+  },
+  "creatine-water-vasthouden-en-gewicht": {
+    theme: "movement",
+    gapSignal: "creatine_signal",
+    relatedSupplementId: "creatine",
+  },
   "eiwit-na-40": {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",

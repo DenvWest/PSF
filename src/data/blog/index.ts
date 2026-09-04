@@ -16,6 +16,13 @@ import { testosteronEnEnergieNa40Data } from "./testosteron-en-energie-na-40";
 import { omega3ConcentratieEnergieData } from "./omega-3-concentratie-energie";
 import { slaapritmeHerstellenData } from "./slaapritme-herstellen";
 import { creatineEnHerstelData } from "./creatine-en-herstel";
+import { creatineBijwerkingenData } from "./creatine-bijwerkingen-nieren-haaruitval";
+import { creatineDoseringEnLaadfaseData } from "./creatine-dosering-en-laadfase";
+import { creatineWanneerInnemenData } from "./creatine-wanneer-innemen";
+import { creatineVormenEnKeurmerkenData } from "./creatine-vormen-en-keurmerken";
+import { creatineWaterVasthoudenData } from "./creatine-water-vasthouden-en-gewicht";
+import { creatineEnBreinData } from "./creatine-en-brein-slaaptekort";
+import { creatineVoorVrouwenData } from "./creatine-voor-vrouwen-na-40";
 import { vitamineDEnEnergieData } from "./vitamine-d-en-energie";
 import { cortisolEnTestosteronData } from "./cortisol-en-testosteron";
 import { zinkEnTestosteronData } from "./zink-en-testosteron";
@@ -58,6 +65,13 @@ export const alleArtikelen: BlogArtikel[] = [
   omega3ConcentratieEnergieData,
   slaapritmeHerstellenData,
   creatineEnHerstelData,
+  creatineBijwerkingenData,
+  creatineDoseringEnLaadfaseData,
+  creatineWanneerInnemenData,
+  creatineVormenEnKeurmerkenData,
+  creatineWaterVasthoudenData,
+  creatineEnBreinData,
+  creatineVoorVrouwenData,
   vitamineDEnEnergieData,
   cortisolEnTestosteronData,
   zinkEnTestosteronData,

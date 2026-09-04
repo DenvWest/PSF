@@ -153,12 +153,20 @@ export const creatineGidsData: SupplementData = {
 
   blogLinks: [
     {
-      href: "/blog/testosteron-en-energie-na-40",
-      titel: "Testosteron en energie na 40: wanneer is actie nodig?",
+      href: "/blog/creatine-dosering-en-laadfase",
+      titel: "Creatine dosering: hoeveel per dag, en is een laadfase nodig?",
     },
     {
-      href: "/blog/energie-verhogen-natuurlijk",
-      titel: "Energie verhogen na je 40e: de fysiologie en wat je kunt doen",
+      href: "/blog/creatine-bijwerkingen-nieren-haaruitval",
+      titel: "Creatine bijwerkingen: nieren, haaruitval en kramp op een rij",
+    },
+    {
+      href: "/blog/creatine-vormen-en-keurmerken",
+      titel: "Creatine monohydraat, HCL of Creapure: welke vorm koop je?",
+    },
+    {
+      href: "/blog/creatine-water-vasthouden-en-gewicht",
+      titel: "Word je dik van creatine? Over water vasthouden en de weegschaal",
     },
     {
       href: "/supplement-kiezen-waar-op-letten",

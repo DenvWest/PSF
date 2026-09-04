@@ -15,6 +15,13 @@ function kaartTitels(): string[] {
     .map((kop) => kop.textContent ?? "");
 }
 
+/** Titels van alles wat expliciet vanuit de vrouwelijke fysiologie is geschreven. */
+const vrouwenTitels = new Set(
+  blogItems
+    .filter((item) => item.audience === "vrouwen")
+    .map((item) => item.title),
+);
+
 describe("bibliotheek — publiekslens", () => {
   it("verbergt niets: het totaal blijft gelijk in elke lens", () => {
     const { rerender } = render(<BlogLibrary items={blogItems} />);
@@ -31,7 +38,7 @@ describe("bibliotheek — publiekslens", () => {
   it("zet de eigen fysiologie bovenaan en de andere onder een eigen kop", () => {
     render(<BlogLibrary items={blogItems} initialAudience="vrouwen" />);
 
-    expect(kaartTitels()[0]).toMatch(/Overgang/);
+    expect(vrouwenTitels.has(kaartTitels()[0])).toBe(true);
     expect(screen.getByText("Voor iedereen")).toBeTruthy();
   });
 
@@ -47,7 +54,7 @@ describe("bibliotheek — publiekslens", () => {
     const groep = screen.getByRole("radiogroup", { name: /voor wie/i });
     fireEvent.click(within(groep).getByRole("radio", { name: "Vrouwen" }));
 
-    expect(kaartTitels()[0]).toMatch(/Overgang/);
+    expect(vrouwenTitels.has(kaartTitels()[0])).toBe(true);
     expect(kaartTitels().length).toBeGreaterThan(1);
   });
 });
