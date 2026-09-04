@@ -45,11 +45,15 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
     label: "Hoofdstuk-gids: energie na 40",
     href: "/energie-na-40",
   },
+  supplementenHubLink: {
+    label: "Alle supplementen langs dezelfde meetlat",
+    href: "/supplementen",
+  },
   gerelateerdeSluggen: [
+    "omega-3-hoeveel-per-dag",
+    "omega-3-uit-voeding-of-supplement",
     "omega-3-en-herstel",
     "energie-verhogen-natuurlijk",
-    "vitamine-d-tekort-herkennen",
-    "testosteron-en-energie-na-40",
   ],
   metaTitle:
     "Omega-3 en energie/concentratie: wat is bewezen?",

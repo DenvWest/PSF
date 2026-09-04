@@ -56,6 +56,10 @@ export const vitamineDEnEnergieData: BlogArtikel = {
     label: "Vitamine D supplementen vergelijken",
     href: "/beste/vitamine-d",
   },
+  supplementenHubLink: {
+    label: "Alle supplementen langs dezelfde meetlat",
+    href: "/supplementen",
+  },
   gerelateerdeSluggen: [
     "vitamine-d-tekort-herkennen",
     "middagdip-bloedsuiker-na-40",

@@ -10,6 +10,11 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   // ── Blog ──────────────────────────────────────────────────────────────────
   "ademhaling-tegen-stress": { theme: "stress", planPhase: 1 },
   "alcohol-slaap-energie-na-40": { theme: "sleep" },
+  "algenolie-of-visolie": {
+    theme: "nutrition",
+    gapSignal: "omega3_deficiency",
+    relatedSupplementId: "omega-3",
+  },
   "ashwagandha-werking-mannen": {
     theme: "stress",
     gapSignal: "cortisol_risk",
@@ -75,6 +80,28 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "melatonine-wanneer-wel-niet": { theme: "sleep" },
   "middagdip-bloedsuiker-na-40": { theme: "nutrition" },
   "multivitamine-zinvol-na-40": { theme: "nutrition" },
+  "omega-3-en-hart-onderzoek": {
+    theme: "nutrition",
+    relatedSupplementId: "omega-3",
+  },
+  "omega-3-en-medicijnen": {
+    theme: "nutrition",
+    relatedSupplementId: "omega-3",
+  },
+  "omega-3-hoeveel-per-dag": {
+    theme: "nutrition",
+    gapSignal: "omega3_deficiency",
+    relatedSupplementId: "omega-3",
+  },
+  "omega-3-index-meten": {
+    theme: "nutrition",
+    relatedSupplementId: "omega-3",
+  },
+  "omega-3-uit-voeding-of-supplement": {
+    theme: "nutrition",
+    gapSignal: "omega3_deficiency",
+    relatedSupplementId: "omega-3",
+  },
   "omega-3-concentratie-energie": {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
@@ -134,6 +161,10 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "vitamine-d-zon-nederland": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+  },
+  "visolie-oxidatie-en-bijwerkingen": {
+    theme: "nutrition",
+    relatedSupplementId: "omega-3",
   },
   "zonnebrand-en-vitamine-d": {
     theme: "nutrition",

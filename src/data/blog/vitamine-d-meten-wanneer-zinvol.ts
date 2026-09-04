@@ -105,6 +105,10 @@ export const vitamineDMetenWanneerZinvolData: BlogArtikel = {
     label: "Vitamine D supplementen vergelijken",
     href: "/beste/vitamine-d",
   },
+  supplementenHubLink: {
+    label: "Alle supplementen langs dezelfde meetlat",
+    href: "/supplementen",
+  },
   gerelateerdeSluggen: [
     "vitamine-d-tekort-herkennen",
     "vitamine-d-hoge-doses-social-media",

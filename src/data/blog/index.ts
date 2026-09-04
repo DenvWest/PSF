@@ -35,6 +35,13 @@ import { vitamineDAandoeningenOnderzoekData } from "./vitamine-d-aandoeningen-on
 import { vitamineDEnSlaapData } from "./vitamine-d-en-slaap";
 import { multivitamineZinvolNa40Data } from "./multivitamine-zinvol-na-40";
 import { zoutKaliumBloeddrukNa40Data } from "./zout-kalium-bloeddruk-na-40";
+import { omega3HoeveelPerDagData } from "./omega-3-hoeveel-per-dag";
+import { omega3UitVoedingOfSupplementData } from "./omega-3-uit-voeding-of-supplement";
+import { algenolieOfVisolieData } from "./algenolie-of-visolie";
+import { visolieOxidatieEnBijwerkingenData } from "./visolie-oxidatie-en-bijwerkingen";
+import { omega3IndexMetenData } from "./omega-3-index-meten";
+import { omega3EnMedicijnenData } from "./omega-3-en-medicijnen";
+import { omega3EnHartOnderzoekData } from "./omega-3-en-hart-onderzoek";
 import { cornerstoneSupplementenArtikelen } from "./cornerstone-supplementen";
 
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
@@ -77,6 +84,13 @@ export const alleArtikelen: BlogArtikel[] = [
   vitamineDEnSlaapData,
   multivitamineZinvolNa40Data,
   zoutKaliumBloeddrukNa40Data,
+  omega3HoeveelPerDagData,
+  omega3UitVoedingOfSupplementData,
+  algenolieOfVisolieData,
+  visolieOxidatieEnBijwerkingenData,
+  omega3IndexMetenData,
+  omega3EnMedicijnenData,
+  omega3EnHartOnderzoekData,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>

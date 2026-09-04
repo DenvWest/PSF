@@ -50,10 +50,14 @@ export const omega3EnHerstelData: BlogArtikel = {
     label: "Pillar: herstel verbeteren na 40",
     href: "/herstel-verbeteren-na-40",
   },
+  supplementenHubLink: {
+    label: "Alle supplementen langs dezelfde meetlat",
+    href: "/supplementen",
+  },
   gerelateerdeSluggen: [
+    "omega-3-hoeveel-per-dag",
     "creatine-en-herstel",
     "omega-3-concentratie-energie",
-    "wat-is-omega-3",
   ],
   metaTitle: "Omega-3 en herstel na 40",
   metaDescription:

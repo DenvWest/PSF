@@ -101,6 +101,10 @@ export const vitamineDEnK2SamenData: BlogArtikel = {
     label: "Vitamine D supplementen vergelijken",
     href: "/beste/vitamine-d",
   },
+  supplementenHubLink: {
+    label: "Alle supplementen langs dezelfde meetlat",
+    href: "/supplementen",
+  },
   gerelateerdeSluggen: [
     "zonnebrand-en-vitamine-d",
     "vitamine-d-hoge-doses-social-media",
