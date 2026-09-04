@@ -769,7 +769,7 @@ In de Leefstijlcheck telt verbinding mee als interventiedomein. Scoort het bij j
       howItWorks: `Oxide heeft doorgaans lagere opname; citraat en glycinaat worden vaak beter verdragen en opgenomen. Bisglycinaat (chelaat) wordt gekoppeld aan aminozuur-transporters — relevant als je gevoelige darmen hebt.
 
 Transparantie op het etiket (elementair mg, vorm, geen verkapte blends) is waar onze [magnesiumvergelijking](/beste/magnesium) op scoort.`,
-      whyItMatters: `Kies vorm op doel en verdraging: avond/ontspanning vs algemene aanvulling. Lees ook [biobeschikbaarheid](/kennisbank/biobeschikbaarheid) en [chelaatvorm](/kennisbank/chelaatvorm).`,
+      whyItMatters: `Kies vorm op doel en verdraging: avond/ontspanning vs algemene aanvulling. Reken daarbij altijd met elementair magnesium van de achterkant — zie [hoeveel magnesium per dag](/blog/hoeveel-magnesium-per-dag) — en verdeel de dagdosering, want het opgenomen percentage daalt naarmate de dosis stijgt ([wanneer innemen](/blog/magnesium-wanneer-innemen)). Of magnesium in jouw situatie überhaupt iets toevoegt, staat per profiel in [voor wie magnesium zinvol is](/blog/magnesium-voor-wie-wel-niet). Lees ook [biobeschikbaarheid](/kennisbank/biobeschikbaarheid) en [chelaatvorm](/kennisbank/chelaatvorm).`,
     },
     relatedSlugs: ['biobeschikbaarheid', 'chelaatvorm'],
     relatedComparisons: ['/beste/magnesium'],

@@ -35,6 +35,14 @@ import { vitamineDAandoeningenOnderzoekData } from "./vitamine-d-aandoeningen-on
 import { vitamineDEnSlaapData } from "./vitamine-d-en-slaap";
 import { multivitamineZinvolNa40Data } from "./multivitamine-zinvol-na-40";
 import { zoutKaliumBloeddrukNa40Data } from "./zout-kalium-bloeddruk-na-40";
+import { magnesiumTekortHerkennenData } from "./magnesium-tekort-herkennen";
+import { hoeveelMagnesiumPerDagData } from "./hoeveel-magnesium-per-dag";
+import { magnesiumWanneerInnemenData } from "./magnesium-wanneer-innemen";
+import { magnesiumEnSpierkrampenData } from "./magnesium-en-spierkrampen";
+import { magnesiumUitVoedingData } from "./magnesium-uit-voeding";
+import { magnesiumVoorWieWelNietData } from "./magnesium-voor-wie-wel-niet";
+import { magnesiumEnStressData } from "./magnesium-en-stress";
+import { magnesiumOvergangVrouwenData } from "./magnesium-overgang-vrouwen";
 import { cornerstoneSupplementenArtikelen } from "./cornerstone-supplementen";
 
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
@@ -77,6 +85,14 @@ export const alleArtikelen: BlogArtikel[] = [
   vitamineDEnSlaapData,
   multivitamineZinvolNa40Data,
   zoutKaliumBloeddrukNa40Data,
+  magnesiumTekortHerkennenData,
+  hoeveelMagnesiumPerDagData,
+  magnesiumWanneerInnemenData,
+  magnesiumEnSpierkrampenData,
+  magnesiumUitVoedingData,
+  magnesiumVoorWieWelNietData,
+  magnesiumEnStressData,
+  magnesiumOvergangVrouwenData,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>

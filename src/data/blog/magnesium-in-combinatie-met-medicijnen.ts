@@ -70,9 +70,9 @@ export const magnesiumInCombinatieMetMedicijnenData: BlogArtikel = {
     href: "/beste/magnesium",
   },
   gerelateerdeSluggen: [
-    "magnesium-en-slaap",
-    "magnesium-en-slaapkwaliteit",
-    "vitamine-d-en-energie",
+    "magnesium-voor-wie-wel-niet",
+    "magnesium-tekort-herkennen",
+    "magnesium-wanneer-innemen",
   ],
   metaTitle: "Magnesium in combinatie met medicijnen: interacties op een rij",
   metaDescription:
