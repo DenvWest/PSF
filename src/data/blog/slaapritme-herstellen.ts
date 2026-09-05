@@ -5,6 +5,8 @@ export const slaapritmeHerstellenData: BlogArtikel = {
   slug: "slaapritme-herstellen",
   categorie: "slaap",
   titel: "Slaapritme Herstellen in 7 Dagen: Een Dag-voor-Dag Protocol",
+  coverImage: "/images/blog/slaapritme-herstellen.jpg",
+  coverImageAlt: "Ochtendlicht door een raam bij het ontwaken",
   heroIntro:
     "Een verschoven slaapritme is iets wat veel mensen 40+ herkennen — soms al weken. De wekker staat op 6:30, maar je lichaam denkt dat het 1 uur is. Of je slaapt 's weekends tot 9 uur en betaalt dat de hele week terug. Dit protocol geeft je een concreet actieplan — vanavond te starten, zonder medicatie.",
   leestijd: "7 min",

@@ -5,6 +5,8 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
   slug: "stress-werk-grenzen-stellen",
   categorie: "stress",
   titel: "Grenzen stellen op werk zonder je carrière te saboteren",
+  coverImage: "/images/blog/stress-werk-grenzen-stellen.jpg",
+  coverImageAlt: "Rustige moderne werkplek met natuurlijk licht",
   heroIntro:
     "Nee zeggen voelt riskant als je verantwoordelijkheid draagt of je positie wilt behouden. Toch zijn grenzen geen luxe — ze beschermen je prestaties en je gezondheid. Hier lees je hoe je dat inhoudelijk en gedragsmatig aanpakt.",
   leestijd: "7 min",

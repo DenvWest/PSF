@@ -98,7 +98,9 @@ export default function LibraryBrowser({
   const [zoek, setZoek] = useState("");
   const [actieveFilters, setActieveFilters] = useState<string[]>([]);
   const [sort, setSort] = useState<LibrarySort>(sorts[0]?.key ?? "nieuwste");
-  const [weergave, setWeergave] = useState<Weergave>("lijst");
+  const [weergave, setWeergave] = useState<Weergave>(
+    surface === "blog" ? "raster" : "lijst",
+  );
   const [zichtbaar, setZichtbaar] = useState(PAGINA);
 
   const zoekTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -352,7 +354,7 @@ export default function LibraryBrowser({
           <div
             className={
               weergave === "raster"
-                ? "mt-5 grid gap-3 sm:grid-cols-2"
+                ? "mt-5 grid gap-5 @container sm:grid-cols-2"
                 : "mt-5 flex flex-col gap-3"
             }
           >
@@ -374,6 +376,7 @@ export default function LibraryBrowser({
                     item={item}
                     audience={audience}
                     weergave={weergave}
+                    prioriteitBeeld={index < 2}
                     onOpen={() =>
                       trackEvent(GA4_EVENTS.BIBLIOTHEEK_ITEM_GEOPEND, {
                         surface,

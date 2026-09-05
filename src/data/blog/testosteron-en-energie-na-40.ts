@@ -6,6 +6,8 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
   categorie: "energie",
   audience: "mannen",
   titel: "Testosteron en energie na 40: wanneer is actie nodig?",
+  coverImage: "/images/blog/testosteron-en-energie-na-40.jpg",
+  coverImageAlt: "Man die gewichten tilt in een sportschool",
   heroIntro:
     "Testosteron daalt gemiddeld met 1-2% per jaar vanaf je dertigste — maar ‘laag’ is pas echt betekenisvol in combinatie met klachten en een zorgvuldige diagnose. Zo onderscheid je normale leeftijdsverandering van iets dat medische aandacht verdient.",
   leestijd: "9 min",

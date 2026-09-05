@@ -18,6 +18,7 @@ import {
   isGeldigeCategorie,
 } from "@/data/blog/categorieen";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
+import { blogCover } from "@/lib/blog-cover";
 import { absoluteUrl } from "@/lib/public-site-url";
 import { BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
 
@@ -52,6 +53,9 @@ export async function generateMetadata({
   const title = artikel.metaTitle ?? artikel.titel;
   const description = artikel.metaDescription ?? artikel.heroIntro;
 
+  const cover = blogCover(artikel);
+  const coverUrl = absoluteUrl(cover.src);
+
   return {
     title,
     description,
@@ -62,6 +66,13 @@ export async function generateMetadata({
       title,
       description,
       publishedTime: artikel.gepubliceerdOp,
+      images: [{ url: coverUrl, alt: cover.alt }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [coverUrl],
     },
   };
 }

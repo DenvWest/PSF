@@ -5,6 +5,8 @@ export const vitamineDHogeDosesSocialMediaData: BlogArtikel = {
   slug: "vitamine-d-hoge-doses-social-media",
   categorie: "supplementen",
   titel: "Hoge doses vitamine D: wat social media niet vertelt",
+  coverImage: "/images/blog/vitamine-d-hoge-doses-social-media.jpg",
+  coverImageAlt: "Smartphone in de hand, social media en online claims",
   heroIntro:
     "10.000 IE per dag, 50.000 IE per week, 'de officiële adviezen zijn veel te laag' — hoge doses [vitamine D](/kennisbank/vitamine-d) zijn een terugkerend genre op elke tijdlijn. Het argument is altijd hetzelfde: instanties zijn te voorzichtig en meer is beter. Er zijn inmiddels grote trials die precies dat hebben onderzocht, en de uitkomst is niet wat de posts beloven. Soms is het zelfs de omgekeerde kant op.",
   leestijd: "9 min",

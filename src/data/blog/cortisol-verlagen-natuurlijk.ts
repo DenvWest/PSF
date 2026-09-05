@@ -5,6 +5,8 @@ export const cortisolVerlagenData: BlogArtikel = {
   slug: "cortisol-verlagen-natuurlijk",
   categorie: "stress",
   titel: "Cortisol benaderen: vijf leefstijlroutes uit onderzoek, zonder medicatie",
+  coverImage: "/images/blog/cortisol-verlagen-natuurlijk.jpg",
+  coverImageAlt: "Persoon in rustige houding bij natuurlijk licht, gericht op herstel van stress",
   heroIntro:
     "Chronisch verhoogd cortisol beïnvloedt je slaap, stemming en gewicht — vaak zonder dat je het doorhebt. Ontdek vijf methodes die klinisch zijn onderzocht en direct toepasbaar zijn na je 40e.",
   leestijd: "7 min",

@@ -5,6 +5,8 @@ export const creatineWanneerInnemenData: BlogArtikel = {
   slug: "creatine-wanneer-innemen",
   categorie: "supplementen",
   titel: "Wanneer neem je creatine in? Voor of na training, en op rustdagen",
+  coverImage: "/images/blog/creatine-wanneer-innemen.jpg",
+  coverImageAlt: "Sportschoolinterieur met trainingsapparatuur",
   heroIntro:
     "Rond geen enkel supplement wordt zoveel gediscussieerd over timing als rond creatine. Voor de training voor 'de pomp', erna voor 'het anabole venster', of juist 's ochtends met je koffie. De eerlijke samenvatting: het innamemoment is de minst belangrijke knop die je hebt, en dagelijkse herhaling de belangrijkste. Hier lees je wat er wél gemeten is — en hoe je van creatine een routine maakt die je niet vergeet. Alle supplementen naast elkaar: [supplementengids](/supplementen).",
   leestijd: "8 min",

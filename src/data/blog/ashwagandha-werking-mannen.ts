@@ -6,6 +6,8 @@ export const ashwagandhaData: BlogArtikel = {
   categorie: "supplementen",
   audience: "mannen",
   titel: "Ashwagandha: hoe het werkt voor mannen boven de 40",
+  coverImage: "/images/blog/ashwagandha-werking-mannen.jpg",
+  coverImageAlt: "Gedroogde kruiden en wortels op een rustige ondergrond",
   heroIntro:
     "Ashwagandha is in de wetenschappelijke literatuur een van de best bestudeerde adaptogenen rond stressbelasting. Let wel: in de EU zijn er (nog) geen goedgekeurde gezondheidsclaims voor op het etiket. Hier lees je mechanismen, studie‑inzichten en valkuilen bij productkeuze — specifiek voor mannen boven de 40.",
   leestijd: "8 min",

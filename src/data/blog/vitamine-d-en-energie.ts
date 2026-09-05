@@ -5,6 +5,8 @@ export const vitamineDEnEnergieData: BlogArtikel = {
   slug: "vitamine-d-en-energie",
   categorie: "energie",
   titel: "Vitamine D en energie na 40: tekort, verwachtingen en vergelijken",
+  coverImage: "/images/blog/vitamine-d-en-energie.jpg",
+  coverImageAlt: "Zonnig strand met helder blauwe lucht",
   heroIntro:
     "In Nederland is een lage vitamine D-status in de winter geen uitzondering — maar “meer energie” staat niet op de lijst met erkende gezondheidsclaims. Dit artikel scheidt feiten van wensen: wanneer meten zinvol is, hoe [energie na 40](/energie-na-40) breder werkt dan één capsule, en hoe je [vitamine D supplementen](/beste/vitamine-d) eerlijk vergelijkt.",
   leestijd: "10 min",

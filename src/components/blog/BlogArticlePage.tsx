@@ -12,6 +12,7 @@ import BlogSamenvatting from "./BlogSamenvatting";
 import BlogKernpunten from "./BlogKernpunten";
 import BlogSupplementCTA from "./BlogSupplementCTA";
 import BlogCornerstoneLink from "./BlogCornerstoneLink";
+import Image from "next/image";
 import Link from "next/link";
 import BlogGerelateerd from "./BlogGerelateerd";
 import BlogIntakeCTA from "./BlogIntakeCTA";
@@ -40,6 +41,8 @@ import { BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
 import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
 import InsightPhaseNote from "@/components/insights/InsightPhaseNote";
 import { getContentMetadata } from "@/data/insight-metadata";
+import { absoluteUrl } from "@/lib/public-site-url";
+import { blogCover } from "@/lib/blog-cover";
 
 interface BlogArticlePageProps {
   artikel: BlogArtikel;
@@ -87,6 +90,9 @@ export default function BlogArticlePage({
     : hoofdSecties;
   const sectiesNaMid = showMidArticleCta ? hoofdSecties.slice(midIndex) : [];
 
+  const cover = blogCover(artikel);
+  const coverAbsolute = absoluteUrl(cover.src);
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -103,6 +109,7 @@ export default function BlogArticlePage({
       url: "https://perfectsupplement.nl",
     },
     description: artikel.metaDescription ?? artikel.heroIntro,
+    image: [coverAbsolute],
     mainEntityOfPage: `https://perfectsupplement.nl${blogArtikelPad(artikel)}`,
   };
 
@@ -125,6 +132,17 @@ export default function BlogArticlePage({
                   { label: artikel.titel },
                 ]}
               />
+
+              <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-xl bg-stone-100">
+                <Image
+                  src={cover.src}
+                  alt={cover.alt}
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 72ch"
+                />
+              </div>
 
               <div className="mt-8">
                 <BlogCategorieBadge categorie={artikel.categorie} />

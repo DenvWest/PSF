@@ -5,6 +5,8 @@ export const vitamineDEnK2SamenData: BlogArtikel = {
   slug: "vitamine-d-en-k2-samen",
   categorie: "supplementen",
   titel: "Vitamine D en K2 samen: nodig, of slimme marketing?",
+  coverImage: "/images/blog/vitamine-d-en-k2-samen.jpg",
+  coverImageAlt: "Supplementcapsules en vitaminen op een neutrale ondergrond",
   heroIntro:
     "Bijna elk vitamine D-schap staat inmiddels vol met D3+K2. De reden die je overal hoort — zonder K2 stuurt vitamine D calcium je slagaders in — klinkt alarmerend genoeg om de duurdere variant te pakken. Die specifieke belofte is in Europa beoordeeld en afgewezen. Wat er wél voor de combinatie te zeggen valt, is rustiger en eerlijker. Hier lees je waar de grens ligt tussen [vitamine D](/kennisbank/vitamine-d), [K2](/kennisbank/vitamine-k2) en verkooppraat.",
   leestijd: "9 min",

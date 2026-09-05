@@ -5,6 +5,8 @@ export const vitamineDEnSlaapData: BlogArtikel = {
   slug: "vitamine-d-en-slaap",
   categorie: "slaap",
   titel: "Vitamine D en slaap: het verband, de omkering en de avondmythe",
+  coverImage: "/images/blog/vitamine-d-en-slaap.jpg",
+  coverImageAlt: "Berglandschap bij helder daglicht",
   heroIntro:
     "Dat een laag vitamine D samenhangt met slechter slapen, lees je overal. Wat er zelden bij staat: het daglicht dat je vitamine D maakt, zet óók je biologische klok gelijk — en dat tweede effect op je slaap is veel beter onderbouwd dan het eerste. Hier lees je hoe [vitamine D](/kennisbank/vitamine-d) en [slaap na 40](/slaap-verbeteren-na-40) zich werkelijk tot elkaar verhouden, inclusief de vraag of je het 's avonds moet vermijden.",
   leestijd: "9 min",

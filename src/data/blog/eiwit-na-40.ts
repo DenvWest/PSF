@@ -6,6 +6,8 @@ export const eiwitNa40Data: BlogArtikel = {
   slug: "eiwit-na-40",
   categorie: "energie",
   titel: "Eiwit na 40: hoeveel je écht nodig hebt (en waarom de meeste mensen tekortkomen)",
+  coverImage: "/images/blog/eiwit-na-40.jpg",
+  coverImageAlt: "Gezonde maaltijd met eiwitrijke ingrediënten in een kom",
   heroIntro:
     "Je eet \"gezond genoeg\", maar je spieren voelen minder responsief. Na je 40e is dat geen verbeelding: je lichaam heeft meer [eiwit](/kennisbank/eiwitbehoefte-na-40) nodig per maaltijd — en de meeste Nederlanders halen de ondergrens niet. Hier lees je hoeveel, wanneer en waarom, gekoppeld aan [herstel na 40](/herstel-verbeteren-na-40) en [voeding na 40](/voeding-na-40) — zonder bodybuilding-hype.",
   leestijd: "9 min",

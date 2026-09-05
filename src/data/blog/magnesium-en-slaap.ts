@@ -5,6 +5,8 @@ export const magnesiumEnSlaapData: BlogArtikel = {
   slug: "magnesium-en-slaap",
   categorie: "slaap",
   titel: "Magnesium voor Slaap: Werkt Het Écht?",
+  coverImage: "/images/blog/magnesium-en-slaap.jpg",
+  coverImageAlt: "Sterrenhemel boven bergen in de nacht",
   heroIntro:
     "Magnesium staat bovenaan elke lijst met slaaptips. Maar niet elke magnesiumvorm werkt — en niet elke dosering doet wat de verpakking belooft. Hier lees je wat het onderzoek zegt over de juiste vorm, de juiste dosering en het juiste moment.",
   leestijd: "6 min",

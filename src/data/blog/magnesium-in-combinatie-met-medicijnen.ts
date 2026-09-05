@@ -5,6 +5,8 @@ export const magnesiumInCombinatieMetMedicijnenData: BlogArtikel = {
   slug: "magnesium-in-combinatie-met-medicijnen",
   categorie: "supplementen",
   titel: "Magnesium in combinatie met medicijnen: waar je op moet letten",
+  coverImage: "/images/blog/magnesium-in-combinatie-met-medicijnen.jpg",
+  coverImageAlt: "Supplementpotjes en capsules op een rustige achtergrond",
   heroIntro:
     "Magnesium is een van de meest gebruikte supplementen na je 40e — en een van de meest voorgeschreven groepen medicijnen (bloeddrukverlagers, maagzuurremmers, antibiotica) kan de opname of werking daarvan beïnvloeden. Dit artikel zet de bekende interacties op een rij, zonder een vervanging te zijn voor advies van je arts of apotheker.",
   leestijd: "7 min",

@@ -5,6 +5,8 @@ export const creatineDoseringEnLaadfaseData: BlogArtikel = {
   slug: "creatine-dosering-en-laadfase",
   categorie: "supplementen",
   titel: "Creatine dosering: hoeveel per dag, en is een laadfase nodig?",
+  coverImage: "/images/blog/creatine-dosering-en-laadfase.jpg",
+  coverImageAlt: "Fitnessspullen en trainingsomgeving",
   heroIntro:
     "Op de ene verpakking staat 20 gram per dag in week één, op de andere gewoon 3 gram. Beide kloppen — ze verschillen alleen in hoe snel je op hetzelfde punt uitkomt. Dit artikel legt uit wat een laadfase precies doet, waarom 3 tot 5 gram voor bijna iedereen de verstandige standaard is, en hoe je aan de dosering ziet of een verkoper je iets duurs probeert aan te praten. Alle supplementen naast elkaar staan op de [supplementengids](/supplementen).",
   leestijd: "9 min",

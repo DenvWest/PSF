@@ -5,6 +5,8 @@ export const creatineBijwerkingenData: BlogArtikel = {
   slug: "creatine-bijwerkingen-nieren-haaruitval",
   categorie: "supplementen",
   titel: "Creatine bijwerkingen: nieren, haaruitval en kramp op een rij",
+  coverImage: "/images/blog/creatine-bijwerkingen-nieren-haaruitval.jpg",
+  coverImageAlt: "Atleet die een trainingsbeweging uitvoert",
   heroIntro:
     "Geen supplement heeft zoveel hardnekkige verhalen om zich heen als creatine. Het zou je nieren belasten, je kaal maken en je laten verkrampen. Twee van die drie zorgen komen uit één enkele meting die vaak verkeerd wordt gelezen. Hier lees je per zorg wat er in het onderzoek staat, waar de echte grens ligt, en waarom je bij twijfel eerst naar je huisarts gaat en niet naar een forum. Vergelijken doe je daarna op de [supplementengids](/supplementen).",
   leestijd: "10 min",

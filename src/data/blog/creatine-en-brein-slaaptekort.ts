@@ -5,6 +5,8 @@ export const creatineEnBreinData: BlogArtikel = {
   slug: "creatine-en-brein-slaaptekort",
   categorie: "supplementen",
   titel: "Creatine en je brein: wat het onderzoek bij slaaptekort laat zien",
+  coverImage: "/images/blog/creatine-en-brein-slaaptekort.jpg",
+  coverImageAlt: "Persoon die geconcentreerd leest of nadenkt",
   heroIntro:
     "Creatine als 'nootropic' is een van de snelst groeiende verhalen op social media. En anders dan bij veel supplementenhypes zit er echt onderzoek onder — alleen niet het onderzoek dat de posts suggereren. Hier lees je waar de bewijslijn sterk is (kortdurend slaaptekort, vegetariërs), waar hij dun blijft (uitgeruste mensen, dagelijks functioneren) en waarom geen enkele verkoper dit in Europa op het etiket mag zetten. Voor de brede vergelijking: [alle supplementen](/supplementen).",
   leestijd: "9 min",

@@ -5,6 +5,8 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
   slug: "vitamine-d-tekort-herkennen",
   categorie: "energie",
   titel: "Vitamine D-tekort: herken je de signalen?",
+  coverImage: "/images/blog/vitamine-d-tekort-herkennen.jpg",
+  coverImageAlt: "Zonlicht over een groen natuurlandschap",
   heroIntro:
     "Vermoeidheid, spierzwakte, vaker ziek — het passen allemaal bij [vitamine D-tekort](/kennisbank/vitamine-d), maar ze zijn niet specifiek. Zo zet je signalen in context en wat je vervolgens praktisch kunt doen als man boven de 40.",
   leestijd: "9 min",

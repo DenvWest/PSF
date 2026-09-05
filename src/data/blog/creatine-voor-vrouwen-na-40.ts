@@ -6,6 +6,8 @@ export const creatineVoorVrouwenData: BlogArtikel = {
   categorie: "supplementen",
   audience: "vrouwen",
   titel: "Creatine voor vrouwen na 40: wat er wel en niet onderzocht is",
+  coverImage: "/images/blog/creatine-voor-vrouwen-na-40.jpg",
+  coverImageAlt: "Vrouw die krachttraining of yoga doet",
   heroIntro:
     "Creatine staat al decennia in het schap als mannending, terwijl vrouwen van nature een kleinere creatinevoorraad hebben en er via voeding minder van binnenkrijgen. Rond de overgang komt daar spier- en botverlies bij. Dat maakt de vraag legitiem — en het antwoord genuanceerder dan zowel de sceptici als de enthousiastelingen doen voorkomen. Hier lees je wat er in vrouwen is onderzocht, wat er van mannen is geleend, en waar de grens ligt. Vergelijken kan op de [supplementengids](/supplementen).",
   leestijd: "9 min",

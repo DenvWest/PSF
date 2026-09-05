@@ -5,6 +5,8 @@ export const vitamineDAandoeningenOnderzoekData: BlogArtikel = {
   slug: "vitamine-d-aandoeningen-onderzoek",
   categorie: "energie",
   titel: "Vitamine D en schildklier, diabetes en duizeligheid: wat het onderzoek werkelijk zegt",
+  coverImage: "/images/blog/vitamine-d-aandoeningen-onderzoek.jpg",
+  coverImageAlt: "Wetenschappelijke boeken en aantekeningen op een bureau",
   heroIntro:
     "Zoek op vitamine D en je krijgt een reeks aandoeningen voorgeschoteld: de schildklier, diabetes, duizeligheid, je immuunsysteem. Bij vrijwel elk daarvan is dezelfde bevinding gedaan — mensen met de aandoening hebben gemiddeld een lagere vitamine D-waarde. Wat daar wel en niet uit volgt, is precies het onderwerp van dit artikel. Wij stellen geen diagnoses; dit is een leesgids bij wat je online tegenkomt over [vitamine D](/kennisbank/vitamine-d).",
   leestijd: "11 min",

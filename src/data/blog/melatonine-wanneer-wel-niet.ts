@@ -5,6 +5,8 @@ export const melatonineWanneerWelNietData: BlogArtikel = {
   slug: "melatonine-wanneer-wel-niet",
   categorie: "slaap",
   titel: "Melatonine: wanneer wel en wanneer niet gebruiken?",
+  coverImage: "/images/blog/melatonine-wanneer-wel-niet.jpg",
+  coverImageAlt: "Nachtelijke sterrenhemel boven een donker landschap",
   heroIntro:
     "[Melatonine](/kennisbank/melatonine) is geen slaapmiddel in de klassieke zin — het is een signaalhormoon dat je lichaam vertelt dat het nacht wordt. Verkeerd gedoseerd kan het juist je slaapritme verstoren. Zo gebruik je het verstandig.",
   leestijd: "7 min",

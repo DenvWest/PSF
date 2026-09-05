@@ -2,6 +2,7 @@ import { alleArtikelen } from "@/data/blog";
 import { CATEGORIE_CONFIG } from "@/data/blog/categorieen";
 import { PUBLIEK_PIJLERS, type PubliekPijler } from "@/data/blog/publiek-pijlers";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
+import { blogCover, categorieCover } from "@/lib/blog-cover";
 import {
   normalizeSearch,
   type LibraryItem,
@@ -32,6 +33,7 @@ export function toLibraryItem(artikel: BlogArtikel): LibraryItem {
     groupKey: artikel.categorie,
     groupLabel: config.naam,
     accentClass: config.kleur.rail,
+    image: blogCover(artikel),
     audience: artikel.audience,
     metaLabel: `${artikel.leestijd} leestijd`,
     sourceCount: artikel.referenties.length,
@@ -59,6 +61,7 @@ function pijlerNaarItem(pijler: PubliekPijler): LibraryItem {
     groupKey: pijler.categorie,
     groupLabel: config.naam,
     accentClass: config.kleur.rail,
+    image: categorieCover(pijler.categorie),
     audience: pijler.audience,
     metaLabel: `${pijler.leestijd} leestijd`,
     sourceCount: pijler.bronnen,
