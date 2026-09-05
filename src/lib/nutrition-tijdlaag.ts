@@ -41,8 +41,6 @@ export type NutritionTijdlaag = {
   /** Label van het moment ervoor — waar we mee vergelijken. */
   vorigeDatum: string | null;
   rijen: readonly TijdlaagRij[];
-  /** Eén zin over het geheel; null zolang er niets te vergelijken valt. */
-  samenvatting: string | null;
 };
 
 function richtingVan(nu: number | null, eerder: number | null): TijdlaagRichting {
@@ -68,30 +66,6 @@ function bouwRij(row: MeetreeksRow): TijdlaagRij | null {
   };
 }
 
-/**
- * De samenvattende zin.
- *
- * Hij telt alleen wat écht van richting veranderde. "Vier gelijk, één vooruit"
- * is eerlijker dan "je gaat vooruit", want bij zelfrapportage op een
- * stops-schaal is één stap verschil vaak ruis. Daarom noemt de zin het aantal
- * en niet de conclusie.
- */
-function bouwSamenvatting(rijen: readonly TijdlaagRij[]): string | null {
-  const vooruit = rijen.filter((rij) => rij.richting === "vooruit").length;
-  const achteruit = rijen.filter((rij) => rij.richting === "achteruit").length;
-
-  if (vooruit === 0 && achteruit === 0) {
-    return "Sinds je vorige check staat alles op dezelfde stand. Dat is geen stilstand — een patroon vasthouden is precies wat op deze laag telt.";
-  }
-  if (achteruit === 0) {
-    return `${vooruit} ${vooruit === 1 ? "antwoord ging" : "antwoorden gingen"} vooruit sinds je vorige check, de rest bleef gelijk.`;
-  }
-  if (vooruit === 0) {
-    return `${achteruit} ${achteruit === 1 ? "antwoord ging" : "antwoorden gingen"} terug sinds je vorige check. Eén check is nog geen trend — kijk of het volgende moment hetzelfde laat zien.`;
-  }
-  return `${vooruit} vooruit, ${achteruit} terug sinds je vorige check. Bij zelfgerapporteerde vragen is één stap verschil vaak ruis; de richting over meerdere checks zegt meer.`;
-}
-
 export function buildNutritionTijdlaag(meetreeks: Meetreeks | null): NutritionTijdlaag {
   const moments = meetreeks?.moments ?? [];
   const leeg: NutritionTijdlaag = {
@@ -99,7 +73,6 @@ export function buildNutritionTijdlaag(meetreeks: Meetreeks | null): NutritionTi
     laatsteDatum: moments[0]?.dateLabel ?? null,
     vorigeDatum: moments[1]?.dateLabel ?? null,
     rijen: [],
-    samenvatting: null,
   };
 
   if (!meetreeks || moments.length === 0) {
@@ -116,6 +89,5 @@ export function buildNutritionTijdlaag(meetreeks: Meetreeks | null): NutritionTi
   return {
     ...leeg,
     rijen,
-    samenvatting: moments.length >= 2 ? bouwSamenvatting(rijen) : null,
   };
 }

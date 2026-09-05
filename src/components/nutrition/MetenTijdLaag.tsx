@@ -25,6 +25,10 @@ const RICHTING: Record<TijdlaagRichting, { teken: string; label: string; classNa
  * geen fundament). Wat hij wél draagt is de andere betekenis van meten: je
  * eigen reeks. Die stond tot nu toe verstopt achter "Over tijd" per losse rij
  * op P1-P3, terwijl de laag die *Meten* heet leeg was.
+ *
+ * Bij ≥2 meetmomenten begint het scherm direct bij de rijen — geen eyebrow,
+ * samenvatting of datumregel erboven. De kop (kruimelpad + titel) draagt
+ * `MetenTijdKop` in het domeinscherm.
  */
 export default function MetenTijdLaag({
   meetreeks,
@@ -34,7 +38,7 @@ export default function MetenTijdLaag({
   surface: string;
 }) {
   const tijdlaag = buildNutritionTijdlaag(meetreeks);
-  const { momenten, rijen, samenvatting, laatsteDatum, vorigeDatum } = tijdlaag;
+  const { momenten, rijen, laatsteDatum } = tijdlaag;
 
   useEffect(() => {
     trackEvent("nutrition_tijdlaag_view", {
@@ -77,20 +81,6 @@ export default function MetenTijdLaag({
 
   return (
     <div className="mt-4">
-      <p className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
-        Sinds je vorige check
-      </p>
-      {samenvatting ? (
-        <p className="mb-1 max-w-[58ch] text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
-          {samenvatting}
-        </p>
-      ) : null}
-      {laatsteDatum && vorigeDatum ? (
-        <p className="mb-3 text-[11.5px] leading-relaxed text-[#7E8C82]">
-          {vorigeDatum} → {laatsteDatum} · {momenten} meetmomenten
-        </p>
-      ) : null}
-
       <ul className="m-0 flex list-none flex-col gap-2 p-0">
         {rijen.map((rij) => {
           const richting = RICHTING[rij.richting];

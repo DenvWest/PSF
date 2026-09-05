@@ -43,7 +43,8 @@ describe("buildNutritionTijdlaag", () => {
       buildMeetreeks([moment("a", "1 aug 2026", [value("vis", "Visbron", "1× per week", 2)])]),
     );
     expect(tijdlaag.momenten).toBe(1);
-    expect(tijdlaag.samenvatting).toBeNull();
+    expect(tijdlaag.rijen).toHaveLength(1);
+    expect(tijdlaag.rijen[0].richting).toBe("nieuw");
   });
 
   it("leest de richting tussen de twee nieuwste momenten", () => {
@@ -72,7 +73,7 @@ describe("buildNutritionTijdlaag", () => {
     expect(tijdlaag.rijen[0].eerder).toBeNull();
   });
 
-  it("telt vooruit en achteruit los in de samenvatting, zonder conclusie", () => {
+  it("telt vooruit en achteruit los per rij, zonder delta of percentage", () => {
     const tijdlaag = buildNutritionTijdlaag(
       buildMeetreeks([
         moment("oud", "1 jul 2026", [
@@ -85,12 +86,13 @@ describe("buildNutritionTijdlaag", () => {
         ]),
       ]),
     );
-    expect(tijdlaag.samenvatting).toContain("1 vooruit, 1 terug");
-    // Nooit een delta of percentage — de stops-schaal draagt dat niet.
-    expect(tijdlaag.samenvatting).not.toMatch(/%/);
+    const vooruit = tijdlaag.rijen.filter((rij) => rij.richting === "vooruit");
+    const achteruit = tijdlaag.rijen.filter((rij) => rij.richting === "achteruit");
+    expect(vooruit).toHaveLength(1);
+    expect(achteruit).toHaveLength(1);
   });
 
-  it("zegt bij een ongewijzigde reeks dat vasthouden het werk is", () => {
+  it("markeert een ongewijzigde reeks als gelijk", () => {
     const tijdlaag = buildNutritionTijdlaag(
       buildMeetreeks([
         moment("oud", "1 jul 2026", [value("vis", "Visbron", "1× per week", 2)]),
@@ -98,7 +100,6 @@ describe("buildNutritionTijdlaag", () => {
       ]),
     );
     expect(tijdlaag.rijen[0].richting).toBe("gelijk");
-    expect(tijdlaag.samenvatting).toContain("dezelfde stand");
   });
 
   it("laat de domeinscore erbuiten — die woont op Voortgang-home", () => {
@@ -115,6 +116,5 @@ describe("buildNutritionTijdlaag", () => {
     const tijdlaag = buildNutritionTijdlaag(null);
     expect(tijdlaag.momenten).toBe(0);
     expect(tijdlaag.rijen).toHaveLength(0);
-    expect(tijdlaag.samenvatting).toBeNull();
   });
 });
