@@ -417,10 +417,13 @@ async function TermPage({ slug }: { slug: string }) {
                       <Link
                         key={href}
                         href={href}
-                        className="group flex items-center justify-between rounded-lg border border-stone-200/95 bg-white px-5 py-4 text-[0.875rem] font-medium text-stone-800 transition-colors hover:border-stone-300 hover:bg-stone-50/75"
+                        className="group flex items-center justify-between rounded-xl border border-stone-200/80 bg-gradient-to-b from-white to-stone-50/60 px-5 py-4 text-[0.875rem] font-semibold text-stone-800 shadow-[0_1px_2px_rgba(28,25,23,0.03)] transition-[border-color,color,background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-ps-green/45 hover:bg-ps-green-light/40 hover:text-ps-green hover:shadow-[0_4px_14px_rgba(90,143,106,0.16)] active:translate-y-0"
                       >
                         <span>{comparisonLabels[href] ?? href}</span>
-                        <span className="text-stone-400 transition-colors group-hover:text-stone-500" aria-hidden>
+                        <span
+                          aria-hidden
+                          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-stone-200/90 bg-white text-stone-400 transition-[transform,border-color,color] duration-200 ease-out motion-safe:group-hover:translate-x-0.5 group-hover:border-ps-green/45 group-hover:text-ps-green"
+                        >
                           →
                         </span>
                       </Link>
@@ -439,9 +442,9 @@ async function TermPage({ slug }: { slug: string }) {
                       <Link
                         key={related.slug}
                         href={`/kennisbank/${related.slug}`}
-                        className="group flex flex-col rounded-lg border border-stone-200/95 bg-white px-5 py-4 transition-colors hover:border-stone-300 hover:bg-stone-50/80"
+                        className="group flex flex-col rounded-xl border border-stone-200/80 bg-gradient-to-b from-white to-stone-50/60 px-5 py-4 shadow-[0_1px_2px_rgba(28,25,23,0.03)] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-ps-green/45 hover:bg-ps-green-light/40 hover:shadow-[0_4px_14px_rgba(90,143,106,0.16)] active:translate-y-0"
                       >
-                        <span className="text-[0.875rem] font-medium text-stone-900">{related.term}</span>
+                        <span className="text-[0.875rem] font-semibold text-stone-900 transition-colors group-hover:text-ps-green">{related.term}</span>
                         <span className="mt-1.5 text-[0.8125rem] leading-snug text-stone-500">{related.shortDefinition}</span>
                       </Link>
                     ))}
@@ -468,9 +471,12 @@ async function TermPage({ slug }: { slug: string }) {
                   </p>
                   <Link
                     href="/intake"
-                    className="mt-8 inline-flex min-h-11 items-center justify-center rounded-md border border-stone-800/90 bg-stone-900 px-7 text-[0.875rem] font-medium text-white transition hover:bg-stone-800"
+                    className="group mt-8 inline-flex min-h-12 items-center justify-center gap-1.5 rounded-xl bg-ps-green px-7 text-[0.875rem] font-semibold text-white shadow-[0_2px_8px_rgba(90,143,106,0.28)] transition-[background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:bg-ps-green-hover hover:shadow-[0_6px_18px_rgba(90,143,106,0.36)] active:translate-y-0"
                   >
                     Start de Leefstijlcheck
+                    <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5">
+                      →
+                    </span>
                   </Link>
                 </section>
               )}

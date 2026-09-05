@@ -40,9 +40,12 @@ export default function KennisbankTier1FooterCta({
             pillar: pillarId,
           })
         }
-        className="mt-8 inline-flex min-h-11 items-center justify-center rounded-md border border-stone-800/90 bg-stone-900 px-7 text-[0.875rem] font-medium text-white transition hover:bg-stone-800"
+        className="group mt-8 inline-flex min-h-12 items-center justify-center gap-1.5 rounded-xl bg-ps-green px-7 text-[0.875rem] font-semibold text-white shadow-[0_2px_8px_rgba(90,143,106,0.28)] transition-[background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:bg-ps-green-hover hover:shadow-[0_6px_18px_rgba(90,143,106,0.36)] active:translate-y-0"
       >
-        Doe de gratis Leefstijlcheck →
+        Doe de gratis Leefstijlcheck
+        <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5">
+          →
+        </span>
       </Link>
     </section>
   );
