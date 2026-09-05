@@ -12,7 +12,6 @@ import BlogSamenvatting from "./BlogSamenvatting";
 import BlogKernpunten from "./BlogKernpunten";
 import BlogSupplementCTA from "./BlogSupplementCTA";
 import BlogCornerstoneLink from "./BlogCornerstoneLink";
-import Image from "next/image";
 import Link from "next/link";
 import BlogGerelateerd from "./BlogGerelateerd";
 import BlogIntakeCTA from "./BlogIntakeCTA";
@@ -21,28 +20,25 @@ import ArticleBodyReadingChrome, {
   ARTICLE_HIDE_TOC_BELOW_ITEMS,
 } from "@/components/content/ArticleBodyReadingChrome";
 import ArticleTableOfContents from "@/components/content/ArticleTableOfContents";
-import ReadingLayoutDesktopGutters from "@/components/content/ReadingLayoutDesktopGutters";
-import {
-  READING_ROW_GAP_CLASS,
-  READING_TOC_COL_CLASS,
-  READING_RAIL_COL_CLASS,
-} from "@/lib/article-reading-columns";
 import { alleArtikelen } from "@/data/blog";
 import { CATEGORIE_CONFIG } from "@/data/blog/categorieen";
 import ArticleSidebar from "@/components/article/ArticleSidebar";
 import ArticleMobileReturnBar from "@/components/article/ArticleMobileReturnBar";
+import ArticleReadingFrame from "@/components/article/ArticleReadingFrame";
+import ArticleFigure from "@/components/article/ArticleFigure";
 import BlogCategorieIcon from "@/components/blog/BlogCategorieIcon";
 import { renderInlineMarkdownLinks } from "./inlineMarkdownLinks";
 import {
   REDACTIE_VERANTWOORDELIJKE_STANDARD,
   STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM,
 } from "@/lib/redactie-standaarden";
-import { BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
+import { BLOG_BACK_LINK, BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
 import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
 import InsightPhaseNote from "@/components/insights/InsightPhaseNote";
 import { getContentMetadata } from "@/data/insight-metadata";
-import { absoluteUrl } from "@/lib/public-site-url";
 import { blogCover } from "@/lib/blog-cover";
+import { blogBodyImage } from "@/data/article-body-images";
+import { buildArticleImageObjects } from "@/lib/seo/structuredData";
 
 interface BlogArticlePageProps {
   artikel: BlogArtikel;
@@ -91,7 +87,7 @@ export default function BlogArticlePage({
   const sectiesNaMid = showMidArticleCta ? hoofdSecties.slice(midIndex) : [];
 
   const cover = blogCover(artikel);
-  const coverAbsolute = absoluteUrl(cover.src);
+  const bodyImage = blogBodyImage(artikel.slug);
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -109,9 +105,31 @@ export default function BlogArticlePage({
       url: "https://perfectsupplement.nl",
     },
     description: artikel.metaDescription ?? artikel.heroIntro,
-    image: [coverAbsolute],
+    image: buildArticleImageObjects([
+      { src: cover.src, alt: cover.alt, caption: cover.alt },
+      ...(bodyImage ? [bodyImage] : []),
+    ]),
     mainEntityOfPage: `https://perfectsupplement.nl${blogArtikelPad(artikel)}`,
   };
+
+  const firstSectie = sectiesVoorMid[0];
+  const restVoorMid = sectiesVoorMid.slice(1);
+
+  const sidebar = (
+    <ArticleSidebar
+      headings={tocItems.map((t) => ({ id: t.id, text: t.label }))}
+      clusterTitle={clusterTitle}
+      clusterArticles={clusterArticles}
+      currentSlug={artikel.slug}
+      back={BLOG_BACK_LINK}
+      sectionIcon={
+        <BlogCategorieIcon
+          categorie={artikel.categorie}
+          className="h-3.5 w-3.5"
+        />
+      }
+    />
+  );
 
   return (
     <>
@@ -121,80 +139,48 @@ export default function BlogArticlePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
 
-      <header className="border-b border-stone-200/75 bg-white">
-        <Container className="py-11 md:py-[3.25rem]">
-          <div className={`flex min-w-0 flex-col lg:flex-row lg:items-start ${READING_ROW_GAP_CLASS}`}>
-            <ReadingLayoutDesktopGutters />
-            <div className="min-w-0 w-full max-w-[min(72ch,calc(100%-0.75rem))] mx-auto lg:mx-0">
-              <Breadcrumbs
-                items={[
-                  { label: BLOG_HUB_LABEL, href: "/blog" },
-                  { label: artikel.titel },
-                ]}
-              />
+      <Container className="pt-11 md:pt-[3.25rem]">
+        <ArticleReadingFrame sidebar={sidebar}>
+          <article className="w-full min-w-0 max-w-[72ch]">
+            <Breadcrumbs
+              items={[
+                { label: BLOG_HUB_LABEL, href: "/blog" },
+                { label: artikel.titel },
+              ]}
+            />
 
-              <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-xl bg-stone-100">
-                <Image
-                  src={cover.src}
-                  alt={cover.alt}
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 720px"
-                />
+            <ArticleFigure
+              src={cover.src}
+              alt={cover.alt}
+              caption={cover.alt}
+              priority
+              className="mt-8"
+            />
+
+            <div className="mt-8">
+              <BlogCategorieBadge categorie={artikel.categorie} />
+
+              <h1 className="mt-6 font-display text-[clamp(2rem,4vw,2.6rem)] font-semibold leading-[1.12] tracking-[-0.02em] text-stone-900">
+                {artikel.titel}
+              </h1>
+
+              <div className="mt-5">
+                <BlogMeta leestijd={artikel.leestijd} gepubliceerdOp={artikel.gepubliceerdOp} />
               </div>
 
-              <div className="mt-8">
-                <BlogCategorieBadge categorie={artikel.categorie} />
+              <p className={HERO_PROSE}>{renderInlineMarkdownLinks(artikel.heroIntro)}</p>
 
-                <h1 className="mt-6 font-display text-[clamp(2rem,4vw,2.6rem)] font-semibold leading-[1.12] tracking-[-0.02em] text-stone-900">
-                  {artikel.titel}
-                </h1>
-
-                <div className="mt-5">
-                  <BlogMeta leestijd={artikel.leestijd} gepubliceerdOp={artikel.gepubliceerdOp} />
-                </div>
-
-                <p className={HERO_PROSE}>{renderInlineMarkdownLinks(artikel.heroIntro)}</p>
-
-                <div
-                  role="note"
-                  className="mt-7 max-w-[72ch] rounded-lg border border-stone-200/95 bg-[color-mix(in_srgb,var(--ps-bg)_92%,transparent)] px-4 py-3.5 text-[0.875rem] leading-[1.7] text-stone-600"
-                >
-                  {artikel.leesNuanceOnderHero ?? DEFAULT_HERO_NUANCE}
-                </div>
+              <div
+                role="note"
+                className="mt-7 max-w-[72ch] rounded-lg border border-stone-200/95 bg-[color-mix(in_srgb,var(--ps-bg)_92%,transparent)] px-4 py-3.5 text-[0.875rem] leading-[1.7] text-stone-600"
+              >
+                {artikel.leesNuanceOnderHero ?? DEFAULT_HERO_NUANCE}
               </div>
             </div>
-          </div>
-        </Container>
-      </header>
 
-      <Container className="pt-14 md:pt-[4.25rem]">
-        <div className={`flex w-full min-w-0 flex-col lg:flex-row lg:items-start ${READING_ROW_GAP_CLASS}`}>
-          <aside className={`${READING_TOC_COL_CLASS} hidden min-h-0 lg:block`}>
-            <div className="sticky top-[var(--sticky-toc-offset)] max-h-[calc(100vh-var(--sticky-toc-offset)-2rem)] overflow-y-auto pb-14 pt-0.5 xl:pb-16">
-              <ArticleSidebar
-                headings={tocItems.map((t) => ({ id: t.id, text: t.label }))}
-                clusterTitle={clusterTitle}
-                clusterArticles={clusterArticles}
-                currentSlug={artikel.slug}
-                back={{ label: BLOG_HUB_LABEL, href: "/blog" }}
-                sectionIcon={
-                  <BlogCategorieIcon
-                    categorie={artikel.categorie}
-                    className="h-3.5 w-3.5"
-                  />
-                }
-              />
-            </div>
-          </aside>
-          <div className={`${READING_RAIL_COL_CLASS} hidden lg:flex`} aria-hidden="true">
-            <div className="relative min-h-24 w-[2px] flex-1 overflow-hidden rounded-full bg-stone-200/92" />
-          </div>
-          <div className="min-w-0 flex-1">
             <ArticleBodyReadingChrome tocItems={[]} hideTocBelowItemCount={999}>
               <ArticleMobileReturnBar
-                back={{ label: BLOG_HUB_LABEL, href: "/blog" }}
+                back={BLOG_BACK_LINK}
                 sectionLabel={clusterTitle}
                 sectionHref={clusterHref}
                 sectionIcon={
@@ -211,11 +197,27 @@ export default function BlogArticlePage({
                 </div>
               ) : null}
 
-              {sectiesVoorMid.map((sectie, index) => (
+              {firstSectie ? (
                 <BlogSectie
-                  key={`${sectie.titel}-${String(index)}`}
+                  sectie={firstSectie}
+                  anchorId={blogSectionDomId(artikel.slug, 0, firstSectie.titel)}
+                />
+              ) : null}
+
+              {bodyImage ? (
+                <ArticleFigure
+                  src={bodyImage.src}
+                  alt={bodyImage.alt}
+                  caption={bodyImage.caption}
+                  className="mt-10 md:mt-12"
+                />
+              ) : null}
+
+              {restVoorMid.map((sectie, index) => (
+                <BlogSectie
+                  key={`${sectie.titel}-${String(index + 1)}`}
                   sectie={sectie}
-                  anchorId={blogSectionDomId(artikel.slug, index, sectie.titel)}
+                  anchorId={blogSectionDomId(artikel.slug, index + 1, sectie.titel)}
                 />
               ))}
 
@@ -288,8 +290,8 @@ export default function BlogArticlePage({
                 />
               </div>
             </ArticleBodyReadingChrome>
-          </div>
-        </div>
+          </article>
+        </ArticleReadingFrame>
 
         {planPhase ? <InsightPhaseNote planPhase={planPhase} /> : null}
 

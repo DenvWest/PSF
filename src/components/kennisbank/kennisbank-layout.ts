@@ -2,6 +2,11 @@
 
 export const KB_HUB_LABEL = "Kennisbank";
 
+export const KB_BACK_LINK = {
+  label: "Terug naar de kennisbank",
+  href: "/kennisbank",
+} as const;
+
 export const KB_BG_CLASS = "bg-[#F7F5F0]";
 
 export const KB_HERO_PT = "pt-[5.75rem] md:pt-32";

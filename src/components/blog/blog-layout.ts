@@ -2,6 +2,11 @@
 
 export const BLOG_HUB_LABEL = "Herstelbibliotheek";
 
+export const BLOG_BACK_LINK = {
+  label: "Terug naar het blog",
+  href: "/blog",
+} as const;
+
 /** Blog surface background (#F7F5F0) */
 export const BLOG_BG_CLASS = "bg-[#F7F5F0]";
 

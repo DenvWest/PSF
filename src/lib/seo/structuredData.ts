@@ -140,10 +140,28 @@ export function buildArticleSchema(params: {
   };
 }
 
+export interface ArticleImageRef {
+  src: string;
+  alt: string;
+  caption: string;
+}
+
+export function buildArticleImageObjects(images: ArticleImageRef[]) {
+  return images.map((img) => ({
+    "@type": "ImageObject" as const,
+    url: resolveSiteUrl(img.src),
+    caption: img.caption,
+    description: img.alt,
+    width: 1600,
+    height: 900,
+  }));
+}
+
 export function buildDefinedTermSchema(params: {
   term: string;
   description: string;
   slug: string;
+  images?: ArticleImageRef[];
 }) {
   return {
     "@context": "https://schema.org",
@@ -151,6 +169,9 @@ export function buildDefinedTermSchema(params: {
     name: params.term,
     description: params.description,
     url: `https://perfectsupplement.nl/kennisbank/${params.slug}`,
+    ...(params.images && params.images.length > 0
+      ? { image: buildArticleImageObjects(params.images) }
+      : {}),
     inDefinedTermSet: {
       "@type": "DefinedTermSet",
       name: "PerfectSupplement Kennisbank",

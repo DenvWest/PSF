@@ -1,9 +1,8 @@
 import type { ReactNode } from 'react'
 import TableOfContents from '@/components/article/TableOfContents'
 import ClusterArticles from '@/components/article/ClusterArticles'
-import ArticleSidebarHeader, {
-  type ArticleSidebarBackLink,
-} from '@/components/article/ArticleSidebarHeader'
+import ArticleSidebarHeader from '@/components/article/ArticleSidebarHeader'
+import type { ArticleSidebarBackLink } from '@/components/article/ArticleBackLink'
 
 interface ArticleSidebarProps {
   headings: { id: string; text: string }[]

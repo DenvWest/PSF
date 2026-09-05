@@ -12,17 +12,15 @@ import type { KennisbankTheme } from '@/data/kennisbank'
 import ArticleReferentiesFooter from '@/components/content/ArticleReferentiesFooter'
 import ArticleBodyReadingChrome from '@/components/content/ArticleBodyReadingChrome'
 import ArticleTableOfContents from '@/components/content/ArticleTableOfContents'
-import ReadingLayoutDesktopGutters from '@/components/content/ReadingLayoutDesktopGutters'
 import { renderInlineMarkdownLinks } from '@/components/blog/inlineMarkdownLinks'
 import { buildKennisbankTocItems } from '@/lib/article-toc'
-import { buildDefinedTermSchema } from '@/lib/seo/structuredData'
 import {
-  READING_ROW_GAP_CLASS,
-  READING_TOC_COL_CLASS,
-  READING_RAIL_COL_CLASS,
-} from '@/lib/article-reading-columns'
+  buildDefinedTermSchema,
+} from '@/lib/seo/structuredData'
 import ArticleSidebar from '@/components/article/ArticleSidebar'
 import ArticleMobileReturnBar from '@/components/article/ArticleMobileReturnBar'
+import ArticleReadingFrame from '@/components/article/ArticleReadingFrame'
+import ArticleFigure from '@/components/article/ArticleFigure'
 import {
   REDACTIE_VERANTWOORDELIJKE_STANDARD,
   STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM,
@@ -33,13 +31,16 @@ import KennisbankTier1FooterCta from '@/components/kennisbank/KennisbankTier1Foo
 import InsightPhaseNote from '@/components/insights/InsightPhaseNote'
 import { KENNISBANK_THEME_TO_PIJLER } from '@/data/insights'
 import { getContentMetadata } from '@/data/insight-metadata'
-import { KB_HUB_LABEL } from '@/components/kennisbank/kennisbank-layout'
+import { KB_BACK_LINK, KB_HUB_LABEL } from '@/components/kennisbank/kennisbank-layout'
 import { canAccessVerdieping } from '@/lib/kennisbank-access'
 import {
   AUDIENCE_PARAM,
   resolveContentAudience,
   type ContentAudience,
 } from '@/lib/content-audience'
+import { kennisbankCover, themaCover } from '@/lib/kennisbank-cover'
+import { kennisbankBodyImage } from '@/data/article-body-images'
+import { absoluteUrl } from '@/lib/public-site-url'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -96,17 +97,32 @@ export async function generateMetadata({
 
   if (isValidTheme(slug)) {
     const config = themeLabels[slug]
+    const cover = themaCover(slug)
+    const coverUrl = absoluteUrl(cover.src)
     return {
       title: `${config.title} — Kennisbank | PerfectSupplement`,
       description: config.description,
       alternates: {
         canonical: `https://perfectsupplement.nl/kennisbank/${slug}`,
       },
+      openGraph: {
+        title: `${config.title} — Kennisbank | PerfectSupplement`,
+        description: config.description,
+        images: [{ url: coverUrl, alt: cover.alt }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${config.title} — Kennisbank | PerfectSupplement`,
+        description: config.description,
+        images: [coverUrl],
+      },
     }
   }
 
   const term = getTermBySlug(slug)
   if (!term) return {}
+  const cover = kennisbankCover(term)
+  const coverUrl = absoluteUrl(cover.src)
   return {
     title: `${term.metaTitle} | PerfectSupplement`,
     description: term.metaDescription,
@@ -116,6 +132,13 @@ export async function generateMetadata({
     openGraph: {
       title: `${term.metaTitle} | PerfectSupplement`,
       description: term.metaDescription,
+      images: [{ url: coverUrl, alt: cover.alt }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${term.metaTitle} | PerfectSupplement`,
+      description: term.metaDescription,
+      images: [coverUrl],
     },
   }
 }
@@ -213,10 +236,17 @@ async function TermPage({ slug }: { slug: string }) {
   const verantwoordelijke = term.inhoudelijkeVerantwoordelijke ?? REDACTIE_VERANTWOORDELIJKE_STANDARD
   const { planPhase } = getContentMetadata(term.slug)
 
+  const cover = kennisbankCover(term)
+  const bodyImage = kennisbankBodyImage(term.slug)
+
   const definedTermSchema = buildDefinedTermSchema({
     term: term.term,
     description: term.shortDefinition,
     slug: term.slug,
+    images: [
+      { src: cover.src, alt: cover.alt, caption: cover.alt },
+      ...(bodyImage ? [bodyImage] : []),
+    ],
   })
 
   const breadcrumbSchema = {
@@ -229,6 +259,19 @@ async function TermPage({ slug }: { slug: string }) {
       { '@type': 'ListItem', position: 4, name: term.term, item: `https://perfectsupplement.nl/kennisbank/${term.slug}` },
     ],
   }
+
+  const sidebar = (
+    <ArticleSidebar
+      headings={tocItems.map((t) => ({ id: t.id, text: t.label }))}
+      clusterTitle={themeLabels[term.theme].title}
+      back={KB_BACK_LINK}
+      clusterArticles={kennisbankTerms
+        .filter((t) => t.theme === term.theme && t.slug !== term.slug)
+        .slice(0, 8)
+        .map((t) => ({ href: `/kennisbank/${t.slug}`, title: t.term }))}
+      currentSlug={term.slug}
+    />
+  )
 
   return (
     <>
@@ -244,12 +287,8 @@ async function TermPage({ slug }: { slug: string }) {
       <main>
         <Container>
           <div className="py-10 md:py-16">
-            <article>
-              <div
-                className={`mb-12 flex min-w-0 flex-col md:mb-[4rem] lg:flex-row lg:items-start ${READING_ROW_GAP_CLASS}`}
-              >
-              <ReadingLayoutDesktopGutters />
-              <div className="w-full min-w-0 max-w-[72ch] mx-auto lg:mx-0">
+            <ArticleReadingFrame sidebar={sidebar}>
+              <article className="w-full min-w-0 max-w-[72ch]">
                 <nav aria-label="Breadcrumb" className="mb-10">
                   <ol className="flex flex-wrap items-center gap-2 text-[0.8125rem] text-stone-400">
                     <li>
@@ -274,7 +313,14 @@ async function TermPage({ slug }: { slug: string }) {
                   </ol>
                 </nav>
 
-                <header>
+                <ArticleFigure
+                  src={cover.src}
+                  alt={cover.alt}
+                  caption={cover.alt}
+                  priority
+                />
+
+                <header className="mt-8">
                   <span className="inline-flex rounded-full border border-stone-200/95 bg-white/95 px-3 py-1 text-[0.6875rem] font-medium uppercase tracking-[0.05em] text-stone-500">
                     {themeLabels[term.theme].title}
                   </span>
@@ -285,31 +331,10 @@ async function TermPage({ slug }: { slug: string }) {
                     {term.shortDefinition}
                   </p>
                 </header>
-              </div>
-            </div>
 
-            <div className={`flex w-full min-w-0 flex-col lg:flex-row lg:items-start ${READING_ROW_GAP_CLASS}`}>
-              <aside className={`${READING_TOC_COL_CLASS} hidden min-h-0 lg:block`}>
-                <div className="sticky top-[var(--sticky-toc-offset)] max-h-[calc(100vh-var(--sticky-toc-offset)-2rem)] overflow-y-auto pb-14 pt-0.5 xl:pb-16">
-                  <ArticleSidebar
-                    headings={tocItems.map((t) => ({ id: t.id, text: t.label }))}
-                    clusterTitle={themeLabels[term.theme].title}
-                    back={{ label: KB_HUB_LABEL, href: '/kennisbank' }}
-                    clusterArticles={kennisbankTerms
-                      .filter((t) => t.theme === term.theme && t.slug !== term.slug)
-                      .slice(0, 8)
-                      .map((t) => ({ href: `/kennisbank/${t.slug}`, title: t.term }))}
-                    currentSlug={term.slug}
-                  />
-                </div>
-              </aside>
-              <div className={`${READING_RAIL_COL_CLASS} hidden lg:flex`} aria-hidden="true">
-                <div className="relative min-h-24 w-[2px] flex-1 overflow-hidden rounded-full bg-stone-200/92" />
-              </div>
-              <div className="min-w-0 flex-1">
                 <ArticleBodyReadingChrome tocItems={[]} hideTocBelowItemCount={999}>
                   <ArticleMobileReturnBar
-                    back={{ label: KB_HUB_LABEL, href: '/kennisbank' }}
+                    back={KB_BACK_LINK}
                     sectionLabel={themeLabels[term.theme].title}
                     sectionHref={`/kennisbank/${term.theme}`}
                   />
@@ -324,6 +349,15 @@ async function TermPage({ slug }: { slug: string }) {
                     </h2>
                     {renderParagraphs(term.content.whatIsIt)}
                   </section>
+
+                  {bodyImage ? (
+                    <ArticleFigure
+                      src={bodyImage.src}
+                      alt={bodyImage.alt}
+                      caption={bodyImage.caption}
+                      className="mb-4 md:mb-6"
+                    />
+                  ) : null}
 
                   {planPhase ? <InsightPhaseNote planPhase={planPhase} /> : null}
 
@@ -370,8 +404,8 @@ async function TermPage({ slug }: { slug: string }) {
                     </>
                   )}
                 </ArticleBodyReadingChrome>
-              </div>
-            </div>
+              </article>
+            </ArticleReadingFrame>
 
               {term.relatedComparisons.length > 0 ? (
                 <section aria-labelledby="kb-vergelijkingen" className="mx-auto mt-20 max-w-[min(var(--reading-layout-max-width),100%)] md:mt-[5.25rem]">
@@ -440,7 +474,6 @@ async function TermPage({ slug }: { slug: string }) {
                   </Link>
                 </section>
               )}
-            </article>
           </div>
         </Container>
       </main>

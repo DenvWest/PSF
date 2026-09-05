@@ -7,6 +7,13 @@ import { GELDIGE_CATEGORIE_IDS } from "@/data/blog/categorieen";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import { SUPPLEMENT_SLUGS, getSupplementComparisonData } from "@/data/supplements";
 import { getHubProductSlugs } from "@/lib/supplement-hub/product-catalog";
+import { blogCover } from "@/lib/blog-cover";
+import { kennisbankCover } from "@/lib/kennisbank-cover";
+import {
+  articleBodyImageSrcs,
+  blogBodyImage,
+  kennisbankBodyImage,
+} from "@/data/article-body-images";
 
 const BASE = "https://perfectsupplement.nl";
 const LAST_MOD = new Date("2026-05-01");
@@ -91,26 +98,38 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const inzichten = entries(["/inzichten"], 0.8, "weekly");
 
-  const kennisbank = entries(
-    ["/kennisbank", ...kennisbankTerms.map((t) => `/kennisbank/${t.slug}`)],
-    0.7,
-    "monthly",
-  );
+  const kennisbankHub = entries(["/kennisbank"], 0.7, "monthly");
+  const kennisbank = kennisbankTerms.map((term) => {
+    const cover = kennisbankCover(term);
+    const srcs = articleBodyImageSrcs(cover.src, kennisbankBodyImage(term.slug));
+    return {
+      url: `${BASE}/kennisbank/${term.slug}`,
+      lastModified: LAST_MOD,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      images: srcs.map((src) => `${BASE}${src}`),
+    };
+  });
 
   const vergelijkingSet = new Set(VERGELIJKINGS_PADEN);
-  const blogCanonicals = alleArtikelen
-    .map((a) => blogArtikelPad(a))
-    .filter((pad) => !vergelijkingSet.has(pad));
-
-  const blog = entries(
-    [
-      "/blog",
-      ...GELDIGE_CATEGORIE_IDS.map((c) => `/blog/${c}`),
-      ...blogCanonicals,
-    ],
+  const blogHub = entries(
+    ["/blog", ...GELDIGE_CATEGORIE_IDS.map((c) => `/blog/${c}`)],
     0.7,
     "weekly",
   );
+  const blog = alleArtikelen
+    .filter((artikel) => !vergelijkingSet.has(blogArtikelPad(artikel)))
+    .map((artikel) => {
+      const cover = blogCover(artikel);
+      const srcs = articleBodyImageSrcs(cover.src, blogBodyImage(artikel.slug));
+      return {
+        url: `${BASE}${blogArtikelPad(artikel)}`,
+        lastModified: LAST_MOD,
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+        images: srcs.map((src) => `${BASE}${src}`),
+      };
+    });
 
   const producten = entries(
     getHubProductSlugs().map((slug) => `/product/${slug}`),
@@ -127,7 +146,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...gids,
     ...producten,
     ...inzichten,
+    ...kennisbankHub,
     ...kennisbank,
+    ...blogHub,
     ...blog,
     ...statisch,
   ];
