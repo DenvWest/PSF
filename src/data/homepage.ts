@@ -9,9 +9,9 @@ import { GUIDES } from "@/data/guides";
 
 export const HOMEPAGE_HERO = {
   eyebrow: "VOOR 30-PLUSSERS",
-  headline: "Zullen wij je helpen uitzoeken wat jouw lichaam écht nodig heeft?",
+  headline: "Duizenden supplementen. Maar heb jij er überhaupt één nodig?",
   subheadline:
-    "Wij verkopen geen supplementen. We vergelijken ze — en we zeggen het hardop wanneer je er beter geen kunt kopen.",
+    "Wij verkopen geen supplementen. We zoeken eerst uit of je er één nodig hebt — en pas daarna welk product goed is.",
   /** De drie regels die de subkop ontlasten: wat we doen, wat de check oplevert, waar het op rust. */
   bullets: [
     "Eerst je leefstijl, dan pas een supplement — en alleen als het daar nog iets aan toevoegt",
@@ -64,7 +64,7 @@ export const HOMEPAGE_PROOF = {
 export const HOMEPAGE_TRUST = {
   title: "Soms is het antwoord: koop niets.",
   intro:
-    "Wij verkopen geen supplementen en we hebben geen eigen merk. Daardoor kunnen we iets zeggen wat een webshop nooit zegt: dat je in jouw geval beter kunt beginnen bij je slaap, je eten of je herstel — en dat potje kunt laten staan.",
+    "Andere vergelijkingssites beginnen bij het product. Wij beginnen bij de vraag of je het nodig hebt. Wij verkopen geen supplementen en we hebben geen eigen merk. Daardoor kunnen we iets zeggen wat een webshop nooit zegt: dat je in jouw geval beter kunt beginnen bij je slaap, je eten of je herstel — en dat potje kunt laten staan.",
   points: [
     "We noemen alleen effecten waarvoor een Europees goedgekeurde gezondheidsclaim bestaat. Haalt een ingrediënt die drempel niet, dan schrijven we dat op.",
     "Elk product rekenen we om naar de werkzame dosering per dag, zodat potten van verschillende grootte eerlijk naast elkaar liggen.",
