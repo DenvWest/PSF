@@ -16,9 +16,10 @@
  * eigen waarden meer.
  *
  * **De twee surfaces.** `dashboard` is het donkere Voortgang-oppervlak binnen
- * `.ps-dash`; `check` is het lichte oppervlak van de intake. Dezelfde
- * componenten draaien op allebei — daarom is de surface een parameter en geen
- * media query.
+ * `.ps-dash`; `check` is het donkere intake-resultaat (leefstijlrapport).
+ * Visueel dezelfde taal, aparte event-payload zodat check vs dashboard
+ * meetbaar blijft. Dezelfde componenten draaien op allebei — daarom is de
+ * surface een parameter en geen media query.
  *
  * **Waarom hier klassen staan en geen CSS-variabelen.** `globals.css` heeft al
  * een `.ps-dash`-tokenset (`--panel`, `--text-muted`, `--divider`). Die dekt de
@@ -59,16 +60,16 @@ export type SurfaceStyles = {
 };
 
 const CHECK: SurfaceStyles = {
-  kaart: "rounded-[14px] border border-[#ebe7e2] bg-[#faf9f7]",
-  paneel: "bg-white/70",
-  kop: "text-[#78716c]",
-  tekst: "text-[#1c1917]",
-  zacht: "text-[#78716c]",
-  rij: "border-[#ebe7e2]",
-  knop: "text-[#5A8F6A]",
-  chipUit: "border-[#e4e0da] bg-white text-[#57534e]",
-  chipAan: "border-[#5A8F6A] bg-[#5A8F6A] text-white",
-  balkBed: "bg-[#efece7]",
+  kaart: "rounded-2xl border border-white/10 bg-black/20",
+  paneel: "bg-black/25",
+  kop: "text-[#9FB0A6]",
+  tekst: "text-[#E7EDE8]",
+  zacht: "text-[#9FB0A6]",
+  rij: "border-white/10",
+  knop: "text-[#9CC5A9]",
+  chipUit: "border-white/15 bg-transparent text-[#9FB0A6]",
+  chipAan: "border-[#9CC5A9] bg-[#9CC5A9]/20 text-[#E7EDE8]",
+  balkBed: "bg-white/10",
 };
 
 const DASHBOARD: SurfaceStyles = {

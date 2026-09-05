@@ -28,7 +28,7 @@ export default function NutritionEvidenceDisclosure({
   contextId,
   from = "direct",
   summaryLabel = "Waarom dit telt",
-  className = "group mt-3 rounded-[12px] border border-[#ebe7e2] bg-white/60",
+  className = "group mt-3 rounded-[12px] border border-white/10 bg-black/20",
 }: NutritionEvidenceDisclosureProps) {
   const tracked = useRef(false);
 
@@ -51,20 +51,20 @@ export default function NutritionEvidenceDisclosure({
 
   return (
     <details className={className} onToggle={handleToggle}>
-      <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-[#5A8F6A] [&::-webkit-details-marker]:hidden">
+      <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-[#9CC5A9] [&::-webkit-details-marker]:hidden">
         {summaryLabel}
       </summary>
-      <div className="space-y-3 border-t border-[#ebe7e2] px-4 pb-4 pt-3">
-        <p className="text-sm leading-relaxed text-[#57534e]">
+      <div className="space-y-3 border-t border-white/10 px-4 pb-4 pt-3">
+        <p className="text-sm leading-relaxed text-[#C6D1C9]">
           {evidence.whyThisQuestion}
         </p>
-        <ul className="space-y-1 text-sm leading-relaxed text-[#57534e]">
+        <ul className="space-y-1 text-sm leading-relaxed text-[#C6D1C9]">
           {rationalePreview.map((line) => (
             <li key={line}>- {line}</li>
           ))}
         </ul>
         {secondaryQuestionIds.length > 0 ? (
-          <p className="text-xs leading-relaxed text-[#78716c]">
+          <p className="text-xs leading-relaxed text-[#7E8C82]">
             Ook relevant:{" "}
             {secondaryQuestionIds
               .map((id) => NUTRITION_EVIDENCE_BY_ID[id].title)
@@ -76,7 +76,7 @@ export default function NutritionEvidenceDisclosure({
             `/onderbouwing/voeding#${evidence.questionId}`,
             from === "dashboard" ? "dashboard" : undefined,
           )}
-          className="inline-block text-xs font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] hover:decoration-[#5A8F6A]"
+          className="inline-block text-xs font-medium text-[#9CC5A9] underline decoration-[#9CC5A9]/35 underline-offset-[3px] hover:decoration-[#9CC5A9]"
         >
           Volledige onderbouwing →
         </Link>

@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import NutritionIntakeHero from "@/components/intake/NutritionIntakeHero";
 import ProteinTargetCard from "@/components/intake/ProteinTargetCard";
+import ResultsRevealShell from "@/components/intake/ResultsRevealShell";
 import {
   nutrientReferences,
   type NutrientId,
@@ -13,6 +14,7 @@ import { clarityTag } from "@/lib/clarity";
 import { buildDashboardAgendaHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
+import { buildNutritionHeadline } from "@/lib/nutrition-conclusion";
 import type { LifestyleExtra } from "@/lib/nutrition-lifestyle-extras";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { deltaStatementFor, type NutrientDelta } from "@/lib/nutrition-delta";
@@ -41,13 +43,20 @@ interface NutritionResultViewProps {
   originDomain: string | null;
 }
 
-const KOMPAS_LIGHT_PANEL =
-  "overflow-hidden rounded-[28px] border border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white shadow-[0_16px_48px_rgba(15,28,16,0.10)]";
+const PANEL =
+  "rounded-2xl border border-white/10 bg-black/20";
+const DETAILS_SUMMARY =
+  "cursor-pointer list-none px-5 py-3.5 text-sm font-medium text-[#9CC5A9] [&::-webkit-details-marker]:hidden";
+const SECONDARY_CTA =
+  "inline-flex min-h-[44px] w-full items-center justify-center rounded-xl border border-white/20 px-6 py-3.5 text-sm font-semibold text-[#F1EFE8] no-underline transition hover:bg-white/[0.07]";
+const PRIMARY_CTA =
+  "inline-flex min-h-[44px] w-full items-center justify-center rounded-xl bg-[#5A8F6A] px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90";
+const FOOTNOTE_LINK =
+  "font-medium text-[#9CC5A9] underline decoration-[#9CC5A9]/35 underline-offset-[3px] hover:decoration-[#9CC5A9]";
 
 export default function NutritionResultView({
   score,
   estimate,
-  statements,
   advice,
   lifestyleExtras = [],
   delta,
@@ -128,6 +137,9 @@ export default function NutritionResultView({
       ? `${gaps.length} aandachtspunt${gaps.length === 1 ? "" : "en"} op je frequentie`
       : "Op basis van je frequentie geen aandachtspunten";
 
+  const headline =
+    factRows.length > 0 ? buildNutritionHeadline(factRows) : summaryLine;
+
   const focusRef = focusNutrient ? nutrientReferences[focusNutrient] : null;
 
   function handleDashboardReturn() {
@@ -152,263 +164,271 @@ export default function NutritionResultView({
   const focusGapEvidence = focusNutrient ? evidenceForGap(focusNutrient) : null;
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center px-6 py-12">
-      <div className={`w-full max-w-lg px-6 py-8 sm:px-8 ${KOMPAS_LIGHT_PANEL}`}>
-        <h1 className="mb-4 text-center font-serif text-3xl font-normal text-[#1c1917]">
-          Je voedingsscore
-        </h1>
-
-        <NutritionIntakeHero
-          score={score}
-          estimate={estimate}
-          statements={statements}
-        />
-
-        <p className="mb-8 text-center text-sm leading-relaxed text-[#57534e]">
-          {getVitalityBandMessage(score, "Je voeding")} Een reflectie van hoe vaak je
-          iets eet — geen diagnose.
-        </p>
-
-        {factRows.length > 0 ? (
-          <div className="mb-4">
-            <VerhoudingTabel rijen={factRows} surface="check" />
-          </div>
-        ) : null}
-
-        {/* Kwaliteit staat onder verhouding en niet ertussen: eerst hoeveel je
-            eet (dat is jouw uitslag), dan wat er op zit (dat is productkennis
-            die voor iedereen gelijk is). */}
-        <div className="mb-8">
-          <KwaliteitEetwijzer surface="check" />
-        </div>
-
-        <h2 className="mb-2 text-center font-serif text-xl font-normal text-[#1c1917]">
-          Wat je binnenkrijgt
-        </h2>
-        <p className="mb-4 text-center text-sm font-medium text-[#1c1917]">
-          {summaryLine}
-        </p>
-
-        {focusRef ? (
-          <section
-            aria-labelledby="focus-heading"
-            className={`mb-6 rounded-[14px] border px-5 py-5 ${
-              focusNutrient === "protein"
-                ? "border-[#C8956C]/35 bg-[#C8956C]/[0.08]"
-                : "border-[#ebe7e2] bg-[#faf9f7]"
-            }`}
-          >
-            <h2
-              id="focus-heading"
-              className={`mb-3 text-xs font-semibold uppercase tracking-[0.16em] ${
-                focusNutrient === "protein"
-                  ? "text-[#B07F52]"
-                  : "text-[#78716c]"
-              }`}
-            >
-              Focus: {focusRef.label}
-            </h2>
-            <p className="text-sm leading-relaxed text-[#1c1917]">
-              {lifestyleTextFor(focusNutrient)}
+    <ResultsRevealShell variant="dark-report">
+      <div className="flex flex-col gap-8 lg:gap-12">
+        <div className="grid gap-6 lg:gap-8">
+          <header>
+            <p className="m-0 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#7E8C82]">
+              Je voedingscheck
             </p>
+          </header>
+
+          <section
+            aria-label="Jouw voedingsbeeld"
+            className="grid gap-6 rounded-3xl border border-white/12 bg-white/[0.035] p-4 sm:p-6 md:grid-cols-[minmax(0,280px)_minmax(0,1fr)] md:gap-8 md:p-7"
+          >
+            <NutritionIntakeHero score={score} />
+
+            <div className="min-w-0 border-t border-white/[0.07] pt-6 md:border-l md:border-t-0 md:pl-8 md:pt-0">
+              <div className="grid gap-2">
+                <p className="m-0 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#7E8C82]">
+                  Uit je antwoorden
+                </p>
+                <h1
+                  className="m-0 text-[26px] leading-tight text-[#F1EFE8] sm:text-[30px]"
+                  style={{ fontFamily: "var(--f-serif, Georgia, serif)" }}
+                >
+                  {headline}
+                </h1>
+                <p
+                  className="m-0 max-w-[46ch] text-[13.5px] leading-relaxed text-[#C6D1C9]"
+                  style={{ textWrap: "pretty" }}
+                >
+                  {getVitalityBandMessage(score, "Je voeding")} Een reflectie van
+                  hoe vaak je iets eet — geen diagnose.
+                </p>
+              </div>
+
+              {focusRef ? (
+                <section
+                  aria-labelledby="focus-heading"
+                  className={`mt-6 rounded-2xl border px-5 py-5 ${
+                    focusNutrient === "protein"
+                      ? "border-[#C8956C]/35 bg-[#C8956C]/[0.08]"
+                      : PANEL
+                  }`}
+                >
+                  <h2
+                    id="focus-heading"
+                    className={`mb-3 text-xs font-semibold uppercase tracking-[0.16em] ${
+                      focusNutrient === "protein"
+                        ? "text-[#C8956C]"
+                        : "text-[#7E8C82]"
+                    }`}
+                  >
+                    Focus: {focusRef.label}
+                  </h2>
+                  <p className="text-sm leading-relaxed text-[#F1EFE8]">
+                    {lifestyleTextFor(focusNutrient)}
+                  </p>
+                  {fromDashboard ? (
+                    <p className="mt-3 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+                      Dit is je weekpatroon-stap — geen dagelijkse tekort-meting. Zet hem op Mijn Dag
+                      en bouw 14 dagen aan voordat je opnieuw logt.
+                    </p>
+                  ) : null}
+
+                  {focusGapEvidence ? (
+                    <NutritionEvidenceDisclosure
+                      evidence={focusGapEvidence.primary}
+                      secondaryQuestionIds={focusGapEvidence.secondaryIds}
+                      surface="result"
+                      contextId={focusNutrient!}
+                      from={evidenceFrom}
+                    />
+                  ) : null}
+
+                  {focusNutrient === "protein" ? (
+                    <details className={`group mt-4 ${PANEL}`}>
+                      <summary className={DETAILS_SUMMARY}>
+                        Bereken je precieze eiwitdoel
+                      </summary>
+                      <div className="border-t border-white/10 px-2 pb-3 pt-2">
+                        <ProteinTargetCard
+                          hideHeading
+                          proteinMealsYesterday={proteinMealsPerDay}
+                        />
+                      </div>
+                    </details>
+                  ) : null}
+                </section>
+              ) : (
+                <p className="mt-6 text-sm leading-relaxed text-[#9FB0A6]">
+                  Houd vast wat voor jou werkt — je frequentie geeft geen
+                  aandachtspunten.
+                </p>
+              )}
+            </div>
+          </section>
+
+          {factRows.length > 0 ? (
+            <VerhoudingTabel rijen={factRows} surface="check" />
+          ) : null}
+
+          <details className={`group ${PANEL}`}>
+            <summary className={DETAILS_SUMMARY}>
+              Kwaliteit — wat er op groente en fruit zit
+            </summary>
+            <div className="border-t border-white/10 p-3">
+              <KwaliteitEetwijzer surface="check" />
+            </div>
+          </details>
+
+          {lifestyleExtras.length > 0 ? (
+            <section
+              aria-labelledby="lifestyle-extras-heading"
+              className={`${PANEL} px-5 py-5`}
+            >
+              <h2
+                id="lifestyle-extras-heading"
+                className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#7E8C82]"
+              >
+                Ook relevant voor jou
+              </h2>
+              <ul className="flex flex-col gap-3">
+                {lifestyleExtras.map((extra) => (
+                  <li key={extra.id}>
+                    <p className="text-sm leading-relaxed text-[#F1EFE8]">{extra.text}</p>
+                    <NutritionEvidenceDisclosure
+                      evidence={evidenceForExtra(extra.id)}
+                      surface="result"
+                      contextId={extra.id}
+                      from={evidenceFrom}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {otherGaps.length > 0 ? (
+            <details className={`group ${PANEL}`}>
+              <summary className={DETAILS_SUMMARY}>
+                Jouw stappen ({otherGaps.length})
+              </summary>
+              <ul className="flex flex-col gap-2 border-t border-white/10 px-3 pb-3 pt-3">
+                {otherGaps.map((e) => {
+                  const gapEvidence = evidenceForGap(e.nutrient);
+                  return (
+                    <li
+                      key={e.nutrient}
+                      className="rounded-[12px] border border-white/10 bg-black/25 px-4 py-3 text-sm leading-relaxed text-[#C6D1C9]"
+                    >
+                      <span className="font-medium text-[#F1EFE8]">
+                        {nutrientReferences[e.nutrient].label}
+                      </span>
+                      {" — "}
+                      {lifestyleTextFor(e.nutrient)}
+                      <NutritionEvidenceDisclosure
+                        evidence={gapEvidence.primary}
+                        secondaryQuestionIds={gapEvidence.secondaryIds}
+                        surface="result"
+                        contextId={e.nutrient}
+                        from={evidenceFrom}
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            </details>
+          ) : null}
+
+          {supplements.length > 0 ? (
+            <details className={`group ${PANEL}`}>
+              <summary className={DETAILS_SUMMARY}>
+                Supplementen, indien gewenst
+              </summary>
+              <ul className="flex flex-col gap-2 border-t border-white/10 px-3 pb-3 pt-3">
+                {supplements.map((item) => (
+                  <li key={item.nutrient}>
+                    <Link
+                      href={item.comparisonPath}
+                      className="block rounded-[12px] border border-[#C8956C]/30 bg-[#C8956C]/10 px-4 py-3 text-sm font-medium text-[#C8956C] transition-colors hover:bg-[#C8956C]/20"
+                    >
+                      Vergelijk {nutrientReferences[item.nutrient].label} →
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : null}
+
+          {visibleDeltas && visibleDeltas.length > 0 ? (
+            <details className="group rounded-2xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/10">
+              <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-[#C6D1C9] [&::-webkit-details-marker]:hidden">
+                Sinds je vorige check —{" "}
+                {[
+                  deltaImproved.length > 0
+                    ? `${deltaImproved.length} verbeterd`
+                    : null,
+                  deltaWorsened.length > 0
+                    ? `${deltaWorsened.length} terug`
+                    : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </summary>
+              <ul className="flex flex-col gap-2 border-t border-white/10 px-3 pb-3 pt-3">
+                {visibleDeltas.map((d, i) => (
+                  <li
+                    key={i}
+                    className="rounded-[12px] border border-white/10 bg-black/25 px-4 py-3 text-sm leading-relaxed text-[#C6D1C9]"
+                  >
+                    {deltaStatementFor(d)}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : null}
+
+          <DomeinIjkpuntCheckPrompt domain="voeding" domainLabel="Voeding" />
+
+          <div className="space-y-4 text-center">
             {fromDashboard ? (
-              <p className="mt-3 text-[12.5px] leading-relaxed text-[#78716c] text-pretty">
-                Dit is je weekpatroon-stap — geen dagelijkse tekort-meting. Zet hem op Mijn Dag
-                en bouw 14 dagen aan voordat je opnieuw logt.
+              <>
+                <Link
+                  href={agendaHref}
+                  onClick={handleAgendaClick}
+                  className={PRIMARY_CTA}
+                >
+                  Zet op Mijn Dag →
+                </Link>
+                <Link
+                  href={dashboardHref}
+                  onClick={handleDashboardReturn}
+                  className={SECONDARY_CTA}
+                >
+                  Terug naar dashboard
+                </Link>
+              </>
+            ) : (
+              <Link href="/" className={SECONDARY_CTA}>
+                Sluiten
+              </Link>
+            )}
+            {!fromDashboard ? (
+              <p className="text-xs leading-relaxed text-[#7E8C82]">
+                Of{" "}
+                <Link href="/intake" className={FOOTNOTE_LINK}>
+                  doe de volledige Leefstijlcheck
+                </Link>{" "}
+                voor jouw volgorde over alle pijlers.
               </p>
             ) : null}
-
-            {focusGapEvidence ? (
-              <NutritionEvidenceDisclosure
-                evidence={focusGapEvidence.primary}
-                secondaryQuestionIds={focusGapEvidence.secondaryIds}
-                surface="result"
-                contextId={focusNutrient!}
-                from={evidenceFrom}
-              />
-            ) : null}
-
-            {focusNutrient === "protein" ? (
-              <details className="group mt-4 rounded-[12px] border border-[#ebe7e2] bg-white/60">
-                <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-[#5A8F6A] [&::-webkit-details-marker]:hidden">
-                  Bereken je precieze eiwitdoel
-                </summary>
-                <div className="border-t border-[#ebe7e2] px-2 pb-3 pt-2">
-                  <ProteinTargetCard
-                    surface="light"
-                    proteinMealsYesterday={proteinMealsPerDay}
-                  />
-                </div>
-              </details>
-            ) : null}
-          </section>
-        ) : (
-          <p className="mb-6 text-center text-sm leading-relaxed text-[#57534e]">
-            Houd vast wat voor jou werkt — je frequentie geeft geen
-            aandachtspunten.
-          </p>
-        )}
-
-        {lifestyleExtras.length > 0 ? (
-          <section
-            aria-labelledby="lifestyle-extras-heading"
-            className="mb-6 rounded-[14px] border border-[#ebe7e2] bg-[#faf9f7] px-5 py-5"
-          >
-            <h2
-              id="lifestyle-extras-heading"
-              className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#78716c]"
-            >
-              Ook relevant voor jou
-            </h2>
-            <ul className="flex flex-col gap-3">
-              {lifestyleExtras.map((extra) => (
-                <li key={extra.id}>
-                  <p className="text-sm leading-relaxed text-[#1c1917]">{extra.text}</p>
-                  <NutritionEvidenceDisclosure
-                    evidence={evidenceForExtra(extra.id)}
-                    surface="result"
-                    contextId={extra.id}
-                    from={evidenceFrom}
-                  />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        {otherGaps.length > 0 ? (
-          <details className="group mb-4 rounded-[14px] border border-[#ebe7e2] bg-[#faf9f7]">
-            <summary className="cursor-pointer list-none px-5 py-3.5 text-sm font-medium text-[#5A8F6A] [&::-webkit-details-marker]:hidden">
-              Jouw stappen ({otherGaps.length})
-            </summary>
-            <ul className="flex flex-col gap-2 border-t border-[#ebe7e2] px-3 pb-3 pt-3">
-              {otherGaps.map((e) => {
-                const gapEvidence = evidenceForGap(e.nutrient);
-                return (
-                <li
-                  key={e.nutrient}
-                  className="rounded-[12px] border border-[#ebe7e2] bg-white px-4 py-3 text-sm leading-relaxed text-[#1c1917]"
-                >
-                  <span className="font-medium text-[#1c1917]">
-                    {nutrientReferences[e.nutrient].label}
-                  </span>
-                  {" — "}
-                  {lifestyleTextFor(e.nutrient)}
-                  <NutritionEvidenceDisclosure
-                    evidence={gapEvidence.primary}
-                    secondaryQuestionIds={gapEvidence.secondaryIds}
-                    surface="result"
-                    contextId={e.nutrient}
-                    from={evidenceFrom}
-                  />
-                </li>
-                );
-              })}
-            </ul>
-          </details>
-        ) : null}
-
-        {supplements.length > 0 ? (
-          <details className="group mb-4 rounded-[14px] border border-[#ebe7e2] bg-[#faf9f7]">
-            <summary className="cursor-pointer list-none px-5 py-3.5 text-sm font-medium text-[#5A8F6A] [&::-webkit-details-marker]:hidden">
-              Supplementen, indien gewenst
-            </summary>
-            <ul className="flex flex-col gap-2 border-t border-[#ebe7e2] px-3 pb-3 pt-3">
-              {supplements.map((item) => (
-                <li key={item.nutrient}>
-                  <Link
-                    href={item.comparisonPath}
-                    className="block rounded-[12px] border border-[#C8956C]/30 bg-[#C8956C]/5 px-4 py-3 text-sm font-medium text-[#B07F52] transition-colors hover:bg-[#C8956C]/10"
-                  >
-                    Vergelijk {nutrientReferences[item.nutrient].label} →
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </details>
-        ) : null}
-
-        {visibleDeltas && visibleDeltas.length > 0 ? (
-          <details className="group mb-8 rounded-[14px] border border-[#5A8F6A]/30 bg-[#5A8F6A]/10">
-            <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-[#57534e] [&::-webkit-details-marker]:hidden">
-              Sinds je vorige check —{" "}
-              {[
-                deltaImproved.length > 0
-                  ? `${deltaImproved.length} verbeterd`
-                  : null,
-                deltaWorsened.length > 0
-                  ? `${deltaWorsened.length} terug`
-                  : null,
-              ]
-                .filter(Boolean)
-                .join(" · ")}
-            </summary>
-            <ul className="flex flex-col gap-2 border-t border-[#ebe7e2] px-3 pb-3 pt-3">
-              {visibleDeltas.map((d, i) => (
-                <li
-                  key={i}
-                  className="rounded-[12px] border border-[#5A8F6A]/30 bg-white/70 px-4 py-3 text-sm leading-relaxed text-[#57534e]"
-                >
-                  {deltaStatementFor(d)}
-                </li>
-              ))}
-            </ul>
-          </details>
-        ) : null}
-
-        <DomeinIjkpuntCheckPrompt domain="voeding" domainLabel="Voeding" />
-
-        <div className="mt-8 space-y-4 text-center">
-          {fromDashboard ? (
-            <>
+            <p className="text-xs leading-relaxed text-[#7E8C82]">
               <Link
-                href={agendaHref}
-                onClick={handleAgendaClick}
-                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] bg-[#5A8F6A] px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+                href={withNutritionReturn(
+                  "/onderbouwing/voeding",
+                  fromDashboard ? "dashboard" : undefined,
+                )}
+                className={FOOTNOTE_LINK}
               >
-                Zet op Mijn Dag →
+                Wetenschappelijke onderbouwing van de voedingscheck
               </Link>
-              <Link
-                href={dashboardHref}
-                onClick={handleDashboardReturn}
-                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] border border-[#e4e0da] bg-[#faf9f7] px-6 py-3.5 text-sm font-semibold text-[#1c1917] no-underline transition-colors hover:bg-[#f5f3ef]"
-              >
-                Terug naar dashboard
-              </Link>
-            </>
-          ) : (
-            <Link
-              href="/"
-              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] border border-[#e4e0da] bg-[#faf9f7] px-6 py-3.5 text-sm font-semibold text-[#1c1917] no-underline transition-colors hover:bg-[#f5f3ef]"
-            >
-              Sluiten
-            </Link>
-          )}
-          {!fromDashboard ? (
-            <p className="text-xs leading-relaxed text-[#78716c]">
-              Of{" "}
-              <Link
-                href="/intake"
-                className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] hover:decoration-[#5A8F6A]"
-              >
-                doe de volledige Leefstijlcheck
-              </Link>{" "}
-              voor jouw volgorde over alle pijlers.
             </p>
-          ) : null}
-          <p className="text-xs leading-relaxed text-[#78716c]">
-            <Link
-              href={withNutritionReturn(
-                "/onderbouwing/voeding",
-                fromDashboard ? "dashboard" : undefined,
-              )}
-              className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] hover:decoration-[#5A8F6A]"
-            >
-              Wetenschappelijke onderbouwing van de voedingscheck
-            </Link>
-          </p>
+          </div>
         </div>
       </div>
-    </div>
+    </ResultsRevealShell>
   );
 }

@@ -12,14 +12,18 @@ type ProteinTargetCardProps = {
   /** Eiwitrijke eetmomenten op een gewone dag (NutritionSelfReport.proteinMealsPerDay) — voor de gat-brug. */
   proteinMealsYesterday?: number;
   surface?: "intake" | "light";
+  /** Verberg de eigen kop — de aanroeper (bijv. een `<details>`-samenvatting) heeft die al. */
+  hideHeading?: boolean;
 };
 
 export default function ProteinTargetCard({
   trainingLoad,
   proteinMealsYesterday,
   surface = "intake",
+  hideHeading = false,
 }: ProteinTargetCardProps) {
   const isLight = surface === "light";
+  const showIntro = !isLight && !hideHeading;
   const proteinMealsLine =
     typeof proteinMealsYesterday !== "number"
       ? null
@@ -82,9 +86,9 @@ export default function ProteinTargetCard({
     }
   }
 
-  const shellClass = isLight
-    ? "px-1 py-1"
-    : "rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40 px-5 py-5";
+  const shellClass = showIntro
+    ? "rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40 px-5 py-5"
+    : "px-1 py-1";
   const headingClass = isLight
     ? "text-sm font-semibold text-[#1c1917]"
     : "text-sm font-semibold text-intake-ink";
@@ -124,7 +128,7 @@ export default function ProteinTargetCard({
 
   return (
     <section className={shellClass}>
-      {!isLight ? (
+      {showIntro ? (
         <>
           <h3 className={headingClass}>Bereken je precieze eiwitdoel</h3>
           <p className={bodyClass}>
@@ -176,7 +180,7 @@ export default function ProteinTargetCard({
           ) : null}
         </div>
       ) : (
-        <div className={isLight ? "space-y-4" : "mt-4 space-y-4"}>
+        <div className={showIntro ? "mt-4 space-y-4" : "space-y-4"}>
           <div>
             <label htmlFor="protein-weight" className={labelClass}>
               Je gewicht (kg)
