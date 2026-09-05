@@ -63,7 +63,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
         "Voor avondroutine en inslapen: magnesium glycinaat (bisglycinaat), 200–400 mg elementair, 30 tot 60 minuten voor het slapen (zoals in onderzoeksprotocollen; individuele respons verschilt). Glycine is een remmende neurotransmitter en wordt bestudeerd rond kerntemperatuur. Combineer met een vast slaapritme en geen schermen een uur voor bed.",
         "Voor stressverlichting: magnesium glycinaat of tauraat, 200–300 mg elementair, verdeeld over de dag. Magnesium draagt bij tot normale psychologische functie en normale werking van het zenuwstelsel (EFSA). Stressregulatie is vooral gedrag en leefstijl — suppletie is hooguit ondersteunend.",
         "Voor energie en sport: magnesium malaat of citraat, 200–400 mg elementair, bij de maaltijd. Malaat is betrokken bij energieproductie in de citroenzuurcyclus; citraat ondersteunt ATP-synthese. Combineer met voldoende eiwit en herstelmoment na training.",
-        "Voor algemeen welzijn (40+): een supplement met meerdere vormen gecombineerd — zoals glycinaat, citraat en tauraat — in een totaaldosering van 150 tot 300 mg elementair per dag. Dekt meerdere behoeften tegelijk zonder specifieke timing.",
+        "Voor algemeen welzijn (30+): een supplement met meerdere vormen gecombineerd — zoals glycinaat, citraat en tauraat — in een totaaldosering van 150 tot 300 mg elementair per dag. Dekt meerdere behoeften tegelijk zonder specifieke timing.",
       ],
     },
     {

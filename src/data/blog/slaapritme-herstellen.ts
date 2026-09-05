@@ -8,7 +8,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
   coverImage: "/images/blog/slaapritme-herstellen.jpg",
   coverImageAlt: "Ochtendlicht door een raam bij het ontwaken",
   heroIntro:
-    "Een verschoven slaapritme is iets wat veel mensen 40+ herkennen — soms al weken. De wekker staat op 6:30, maar je lichaam denkt dat het 1 uur is. Of je slaapt 's weekends tot 9 uur en betaalt dat de hele week terug. Dit protocol geeft je een concreet actieplan — vanavond te starten, zonder medicatie.",
+    "Een verschoven slaapritme is iets wat veel mensen 30+ herkennen — soms al weken. De wekker staat op 6:30, maar je lichaam denkt dat het 1 uur is. Of je slaapt 's weekends tot 9 uur en betaalt dat de hele week terug. Dit protocol geeft je een concreet actieplan — vanavond te starten, zonder medicatie.",
   leestijd: "7 min",
   gepubliceerdOp: "2026-05-02",
   secties: [
@@ -36,7 +36,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
       titel: "Waarom ochtendlicht zo krachtig werkt",
       bewijsNiveau: "redelijk",
       tekst:
-        "In het protocol hieronder staat ochtendlicht pas bij dag 5–6, maar het mechanisme verdient een eigen uitleg — want dit is het signaal waarop je klok het sterkst reageert. Daglicht buiten haalt makkelijk 10.000 tot 50.000 lux; binnenverlichting meestal geen 500. Dat verschil is wat je [circadiaan ritme](/kennisbank/circadiaan-ritme) nodig heeft om zich elke dag opnieuw op tijd te zetten: ochtendlicht verschuift je klok naar voren, waardoor je 's avonds op tijd slaperig wordt en 's ochtends makkelijker wakker bent. Onderzoek naar natuurlijk licht laat zien dat deze fase-verschuiving meetbaar is binnen enkele dagen — geen weken.\n\nVoor mannen 40+ is dit dubbel relevant. Je rijdt 's ochtends in het donker naar kantoor en zit 's avonds achter een scherm — de lichtcurve die je klok binnenkrijgt, staat op zijn kop. In Nederland is dat van oktober tot maart een half jaar lang de standaardsituatie, niet de uitzondering. En de gevoeligheid van je systeem voor licht als tijdsignaal verandert met leeftijd, wat dit voor deze doelgroep een groter hefboompunt maakt dan voor iemand van 25.",
+        "In het protocol hieronder staat ochtendlicht pas bij dag 5–6, maar het mechanisme verdient een eigen uitleg — want dit is het signaal waarop je klok het sterkst reageert. Daglicht buiten haalt makkelijk 10.000 tot 50.000 lux; binnenverlichting meestal geen 500. Dat verschil is wat je [circadiaan ritme](/kennisbank/circadiaan-ritme) nodig heeft om zich elke dag opnieuw op tijd te zetten: ochtendlicht verschuift je klok naar voren, waardoor je 's avonds op tijd slaperig wordt en 's ochtends makkelijker wakker bent. Onderzoek naar natuurlijk licht laat zien dat deze fase-verschuiving meetbaar is binnen enkele dagen — geen weken.\n\nVoor mannen 30+ is dit dubbel relevant. Je rijdt 's ochtends in het donker naar kantoor en zit 's avonds achter een scherm — de lichtcurve die je klok binnenkrijgt, staat op zijn kop. In Nederland is dat van oktober tot maart een half jaar lang de standaardsituatie, niet de uitzondering. En de gevoeligheid van je systeem voor licht als tijdsignaal verandert met leeftijd, wat dit voor deze doelgroep een groter hefboompunt maakt dan voor iemand van 20.",
       callouts: [
         {
           variant: "kerninzicht",

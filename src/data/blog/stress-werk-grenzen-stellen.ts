@@ -58,7 +58,7 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
   metaTitle:
     "Grenzen stellen op werk: professioneel nee zeggen",
   metaDescription:
-    "Hoe stel je grenzen op werk zonder je reputatie te schaden? Concrete stappen voor 40+ onder druk — en wanneer het probleem de cultuur is.",
+    "Hoe stel je grenzen op werk zonder je reputatie te schaden? Concrete stappen voor 30+ onder druk — en wanneer het probleem de cultuur is.",
   keywords: [
     "grenzen stellen werk",
     "nee zeggen werk",

@@ -17,7 +17,7 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Twee tekorten die bij elkaar horen",
       tekst:
-        "Zout te veel, kalium te weinig — bij de meeste Nederlandse mannen 40+ spelen beide tegelijk. Dat is meer dan toeval. Natrium (uit zout) en kalium sturen samen de vochtbalans en de spanning op je vaatwand, maar in tegengestelde richting. Kijk je naar maar één kant van die balans, dan mis je de helft van het verhaal.",
+        "Zout te veel, kalium te weinig — bij de meeste Nederlandse mannen 30+ spelen beide tegelijk. Dat is meer dan toeval. Natrium (uit zout) en kalium sturen samen de vochtbalans en de spanning op je vaatwand, maar in tegengestelde richting. Kijk je naar maar één kant van die balans, dan mis je de helft van het verhaal.",
     },
     {
       type: "tekst",

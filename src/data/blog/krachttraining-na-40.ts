@@ -35,7 +35,7 @@ export const krachttrainingNa40Data: BlogArtikel = {
       type: "opsomming",
       titel: "Een realistisch startprotocol (8 weken)",
       inleiding:
-        "Gericht op mensen 40+ die (weer) beginnen — geen medisch programma, wel onderzoeksgewoonte.",
+        "Gericht op mensen 30+ die (weer) beginnen — geen medisch programma, wel onderzoeksgewoonte.",
       items: [
         "Week 1–2: 2× per week full-body — squat/goblet, push (bank/druk), pull (roeien), hip hinge (deadlift light). 2–3 sets × 8–12 reps, techniek eerst.",
         "Week 3–4: zelfde structuur, iets zwaarder of één set extra. Rust 48–72 uur tussen krachtdagen.",

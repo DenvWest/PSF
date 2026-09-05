@@ -57,7 +57,7 @@ export const ademhalingTegenStressData: BlogArtikel = {
   metaTitle:
     "Ademhaling tegen stress: 4-7-8, box breathing en coherent ademen",
   metaDescription:
-    "Ademhalingstechnieken die binnen minuten werken: uitleg van 4-7-8, box breathing en coherent ademen voor 40+ onder druk.",
+    "Ademhalingstechnieken die binnen minuten werken: uitleg van 4-7-8, box breathing en coherent ademen voor 30+ onder druk.",
   keywords: [
     "ademhaling stress",
     "4-7-8 ademhaling",
