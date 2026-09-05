@@ -77,7 +77,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     categorie: "supplementen",
     titel: "Wat is omega-3?",
     coverImage: "/images/blog/wat-is-omega-3.jpg",
-    coverImageAlt: "Keukeninterieur met verse producten",
+    coverImageAlt: "Verse zalm, sardines en visolie als omega-3-bronnen",
     heroIntro:
       "Een introductie op de rol van omega-3 vetzuren in het lichaam en waarom de bron ertoe doet.",
     leestijd: "8 min",
@@ -106,7 +106,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     categorie: "supplementen",
     titel: "Waar let je op bij omega-3?",
     coverImage: "/images/blog/waar-let-je-op-bij-omega-3.jpg",
-    coverImageAlt: "Laptop en notities: vergelijken en kiezen",
+    coverImageAlt: "Omega-3-capsules en potjes naast verse vis bij het vergelijken",
     heroIntro:
       "Kwaliteit, dosering en zuiverheid \u2014 wat er werkelijk toe doet bij de keuze van een omega-3 supplement.",
     leestijd: "12 min",

@@ -65,7 +65,7 @@ export const energieVerhogenData: BlogArtikel = {
   metaDescription:
     "Aanhoudende vermoeidheid na je 30e? Ontdek fysiologische factoren en vijf leefstijlpunten die in onderzoek met energie en herstel in verband worden gebracht.",
   keywords: [
-    "energie verhogen 40",
+    "energie verhogen 30",
     "vermoeidheid mannen 30",
     "mitochondriale functie",
     "vitamine D vermoeidheid",

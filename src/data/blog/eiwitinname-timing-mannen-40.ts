@@ -6,7 +6,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
   categorie: "energie",
   titel: "Hoe je eiwit over de dag verdeelt — en waarom dat telt",
   coverImage: "/images/blog/eiwitinname-timing-mannen-40.jpg",
-  coverImageAlt: "Kleurrijk bord met verse maaltijd, verdeeld over de dag",
+  coverImageAlt: "Eiwitrijke maaltijd met kip, eieren en cottage cheese",
   heroIntro:
     "Brood met jam 's ochtends, pas 's avonds vlees — je eet genoeg calorieën, maar je eiwit zit aan het verkeerde uur. Rond drie uur zak je weg; na training herstel je trager dan je verwacht. Na je 30e telt wanneer je eet net zo hard als hoeveel. Hier lees je hoe spreiding bloedsuiker, energie en herstel beïnvloedt, gekoppeld aan [voeding na 30](/voeding-na-40) en [eiwit na 30](/blog/eiwit-na-40).",
   leestijd: "8 min",

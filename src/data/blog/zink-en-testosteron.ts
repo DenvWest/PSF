@@ -7,7 +7,7 @@ export const zinkEnTestosteronData: BlogArtikel = {
   audience: "mannen",
   titel: "Zink en testosteron: wat de EU wél mag zeggen (en wat niet)",
   coverImage: "/images/blog/zink-en-testosteron.jpg",
-  coverImageAlt: "Bord met zinkrijke voeding zoals vlees en groenten",
+  coverImageAlt: "Gegrild vlees, oesters en pompoenpitten als zinkrijke voeding",
   heroIntro:
     "Zink staat op etiketten vaak in één adem met testosteron — maar de toegestane claim gaat over instandhouding van een normaal testosterongehalte in het bloed bij voldoende inname, niet over een boost. Dit artikel verbindt [testosteron na 30](/testosteron-na-40) met onze [zink-vergelijking](/beste/zink) en het cluster [cortisol en testosteron](/blog/cortisol-en-testosteron).",
   leestijd: "9 min",

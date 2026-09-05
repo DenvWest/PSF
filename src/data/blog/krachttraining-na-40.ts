@@ -81,7 +81,7 @@ export const krachttrainingNa40Data: BlogArtikel = {
     "spierbehoud 30 plus",
     "weerstandstraining mannen",
     "krachttraining testosteron",
-    "VO2max trainen 40",
+    "VO2max trainen 30",
   ],
   referenties: toRefs([
     "Phillips SM et al. Protein requirements and supplementation in strength sports. Nutrition. 2004;20(7-8):689-695.",
