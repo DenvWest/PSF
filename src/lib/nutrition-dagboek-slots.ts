@@ -1,6 +1,7 @@
 import {
   DAGBOEK_LABELS,
   DAGEN_PER_SOORT,
+  dagSoortVoor,
   type DagboekDag,
   type DagSoort,
 } from "@/lib/nutrition-dagboek";
@@ -34,6 +35,8 @@ export type DagboekSlot = {
   /** Stabiel binnen een render: soort plus volgnummer. */
   id: string;
   soort: DagSoort;
+  /** 0 of 1 binnen deze soort — de eerste vrije dag gaat naar plek 0. */
+  index: number;
   /** De dag die deze plek vult, of null zolang hij open staat. */
   dag: DagboekDag | null;
 };
@@ -97,10 +100,41 @@ export function bouwDagboekSlots(dagen: readonly DagboekDag[]): DagboekSlot[] {
       slots.push({
         id: `${soort}-${index}`,
         soort,
+        index,
         dag: vanSoort[index] ?? null,
       });
     }
   }
 
   return slots;
+}
+
+/** Dagen in het keuzeloket die bij deze soort horen, volgorde behouden. */
+export function dagenVanSoort(
+  keuzedagen: readonly string[],
+  soort: DagSoort,
+): string[] {
+  return keuzedagen.filter((dag) => dagSoortVoor(dag) === soort);
+}
+
+/**
+ * Welke kalenderdag een lege plek opent.
+ *
+ * De plek vraagt om een soort, niet om de eerstvolgende lege dag in de
+ * lijst. Anders opent een weekendplek op zaterdag alsnog vrijdag: de
+ * knop zei "vul een weekenddag in" en je kreeg een doordeweekse dag.
+ *
+ * `slotIndex` verdeelt vrije dagen over de twee plekken van dezelfde
+ * soort, zodat de tweede weekendplek niet dezelfde zaterdag voorstelt
+ * als de eerste.
+ */
+export function kiesDatumVoorSlot(
+  keuzedagen: readonly string[],
+  alIngevuld: ReadonlySet<string>,
+  soort: DagSoort,
+  slotIndex: number,
+): string | null {
+  const vanSoort = dagenVanSoort(keuzedagen, soort);
+  const vrij = vanSoort.filter((dag) => !alIngevuld.has(dag));
+  return vrij[slotIndex] ?? vrij[0] ?? vanSoort[0] ?? null;
 }

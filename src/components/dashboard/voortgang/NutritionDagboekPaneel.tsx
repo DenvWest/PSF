@@ -21,8 +21,11 @@ import {
 import NutritionDagInvoer from "@/components/dashboard/voortgang/NutritionDagInvoer";
 import {
   bouwDagboekSlots,
+  dagenVanSoort,
   dagGroepenTelling,
   dagSamenvatting,
+  kiesDatumVoorSlot,
+  type DagboekSlot,
 } from "@/lib/nutrition-dagboek-slots";
 import {
   portiesUitMomenten,
@@ -51,24 +54,16 @@ import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
  * dit is een steekproef van je patroon, en "hoeveel porties groente" is uit
  * het hoofd te beantwoorden op een manier die "hoeveel gram" nooit is.
  *
- * ## Waarom gisteren de standaarddag is
+ * ## De vorm: vier plekken, elk een knop (5 sep)
  *
- * Vandaag is nog niet af, en verder terug dan een paar dagen wordt gokken. Het
- * paneel biedt de laatste zeven dagen aan en zet gisteren voorop.
+ * Een lege plek was een statusregel ("open") plus één knop onder de tabel.
+ * Op zaterdag zei die knop "vul een weekenddag in" en opende hij vrijdag —
+ * de eerstvolgende lege dag in de lijst, niet de soort die de plek vroeg.
  *
- * ## De vorm: vier plekken, geen stapel zinnen (5 sep)
- *
- * Dit paneel toonde zijn stand als zes alinea's onder elkaar — een teller, een
- * dekkingsregel, een breedteregel, een variatieregel, een samenvatting en een
- * kalibratieregel. Je moest ze alle zes lezen om te weten wat je had ingevuld,
- * en het eenvoudigste antwoord stond er niet bij: wélke vier dagen dit dagboek
- * zoekt en welke daarvan je al hebt.
- *
- * Nu draagt een tabel van vier plekken dat antwoord (zie
- * `nutrition-dagboek-slots.ts`): twee doordeweekse, twee weekend, elk gevuld
- * met wat er die dag stond of leeg met een knop erin. De bevindingen staan
- * eronder als korte regels — ze zeggen iets over je patroon, niet over je
- * voortgang, en dat verschil was in de oude stapel niet te zien.
+ * Nu ís de rij de knop. Een lege weekendplek opent een weekenddag (vandaag
+ * als vandaag weekend is, anders de meest recente vrije), en de invoer
+ * klapt onder die rij open. Een gevulde rij opent dezelfde dag om te
+ * corrigeren — upsert in `account_nutrition_daybook` overschrijft.
  *
  * ## Waarom het laadt zodra het paneel bestaat
  *
@@ -78,7 +73,10 @@ import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
  * daarna gevuld wordt, dus het scherm springt niet.
  */
 
+const EXTRA_SLOT_ID = "extra";
+
 function dagLabel(isoDate: string, today: string): string {
+  if (isoDate === today) return "Vandaag";
   if (isoDate === addAgendaDays(today, -1)) return "Gisteren";
   const datum = new Date(`${isoDate}T12:00:00.000Z`);
   return new Intl.DateTimeFormat("nl-NL", {
@@ -94,6 +92,10 @@ const SOORT_LABEL: Record<DagSoort, string> = {
   weekend: "weekenddag",
 };
 
+function momentenVanDag(dag: DagboekDag): DagMomenten {
+  return (dag.momenten as DagMomenten | undefined) ?? {};
+}
+
 export default function NutritionDagboekPaneel({
   surface,
   checkSliders = null,
@@ -108,7 +110,7 @@ export default function NutritionDagboekPaneel({
   const today = todayInAgendaTimezone();
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
   const [geladen, setGeladen] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [openSlotId, setOpenSlotId] = useState<string | null>(null);
   const [datum, setDatum] = useState(() =>
     addAgendaDays(todayInAgendaTimezone(), -1),
   );
@@ -162,12 +164,12 @@ export default function NutritionDagboekPaneel({
     });
   }, [kalibratie, dagen.length, surface]);
 
-  // De zeven dagen waaruit je kunt kiezen: gisteren voorop, vandaag niet mee.
+  // Vandaag erbij: een weekendplek op zaterdag moet vandaag kunnen openen.
+  // De API aanvaardt vandaag al; het keuzeloket sloot hem eerder buiten
+  // omdat "vandaag nog niet af is" — dat geldt voor een willekeurige extra
+  // dag, niet voor de soort die de plek zelf vraagt.
   const keuzedagen = useMemo(
-    () =>
-      Array.from({ length: 7 }, (_, index) =>
-        addAgendaDays(today, -(index + 1)),
-      ),
+    () => Array.from({ length: 7 }, (_, index) => addAgendaDays(today, -index)),
     [today],
   );
 
@@ -176,20 +178,72 @@ export default function NutritionDagboekPaneel({
     [dagen],
   );
 
-  function openInvoer() {
+  const openSlot = slots.find((slot) => slot.id === openSlotId) ?? null;
+  const bewerktBestaande = Boolean(openSlot?.dag);
+
+  function meldOpen(soort: DagSoort, filledSlot: boolean) {
+    trackEvent("nutrition_dagboek_open", {
+      surface,
+      ingevuld: dagen.length,
+      soort,
+      bewerken: filledSlot ? 1 : 0,
+    });
+    emitAccountClientEvent("nutrition.dagboek_opened", {
+      filled_days: dagen.length,
+      day_kind: soort,
+      slot_filled: filledSlot,
+      surface,
+    });
+    clarityTag("nutrition_dagboek", surface);
+  }
+
+  function sluitInvoer() {
+    setOpenSlotId(null);
+    setError(null);
+  }
+
+  function openPlek(slot: DagboekSlot) {
+    if (!geladen || busy) return;
+    if (openSlotId === slot.id) {
+      sluitInvoer();
+      return;
+    }
+
+    const bestaande = slot.dag;
+    if (bestaande) {
+      setDatum(bestaande.date);
+      setMomenten(momentenVanDag(bestaande));
+      setWaterMl(bestaande.waterMl ?? null);
+    } else {
+      const gekozen = kiesDatumVoorSlot(
+        keuzedagen,
+        alIngevuld,
+        slot.soort,
+        slot.index,
+      );
+      setDatum(gekozen ?? keuzedagen[0]!);
+      setMomenten({});
+      setWaterMl(null);
+    }
+    setError(null);
+    setOpenSlotId(slot.id);
+    meldOpen(slot.soort, Boolean(bestaande));
+  }
+
+  function openExtraDag() {
+    if (!geladen || busy) return;
+    if (openSlotId === EXTRA_SLOT_ID) {
+      sluitInvoer();
+      return;
+    }
     const eerste =
-      keuzedagen.find((dag) => !alIngevuld.has(dag)) ?? keuzedagen[0];
+      keuzedagen.find((dag) => !alIngevuld.has(dag)) ?? keuzedagen[0]!;
     setDatum(eerste);
     setMomenten({});
     setWaterMl(null);
     setError(null);
-    setOpen(true);
-    trackEvent("nutrition_dagboek_open", { surface, ingevuld: dagen.length });
-    emitAccountClientEvent("nutrition.dagboek_opened", {
-      filled_days: dagen.length,
-      surface,
-    });
-    clarityTag("nutrition_dagboek", surface);
+    setOpenSlotId(EXTRA_SLOT_ID);
+    meldOpen(dagSoortVoor(eerste), false);
   }
 
   async function bewaar() {
@@ -231,7 +285,7 @@ export default function NutritionDagboekPaneel({
         ...dagen.filter((dag) => dag.date !== datum),
       ];
       setDagen(volgende);
-      setOpen(false);
+      sluitInvoer();
 
       trackEvent("nutrition_dagboek_day_saved", {
         surface,
@@ -265,6 +319,13 @@ export default function NutritionDagboekPaneel({
 
   const ingevuld = voortgang.doordeweeks + voortgang.weekend;
 
+  const datumOpties = bewerktBestaande
+    ? [datum]
+    : openSlot
+      ? dagenVanSoort(keuzedagen, openSlot.soort)
+      : keuzedagen;
+  const zichtbareDatums = datumOpties.length > 0 ? datumOpties : keuzedagen;
+
   // De bevindingen als korte regels onder de tabel. Ze zeggen iets over je
   // patroon, niet over je voortgang — en dat verschil was in de oude stapel
   // van zes alinea's niet te zien.
@@ -273,6 +334,81 @@ export default function NutritionDagboekPaneel({
     uitkomst.variatie.regel,
     uitkomst.samenvatting,
   ].filter((regel): regel is string => Boolean(regel));
+
+  function invoerVelden() {
+    return (
+      <div className="px-3.5 pb-3 pt-1">
+        {bewerktBestaande ? (
+          <p className="m-0 text-[12px] leading-relaxed text-[#9FB0A6]">
+            Je bewerkt {dagLabel(datum, today)}. Opslaan overschrijft wat er
+            stond.
+          </p>
+        ) : (
+          <label className="block text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+            Welke dag?
+            <select
+              value={datum}
+              disabled={busy}
+              onChange={(event) => setDatum(event.target.value)}
+              className="mt-1 block min-h-9 w-full rounded-[10px] border border-white/10 bg-black/25 px-2.5 text-[13px] font-normal normal-case tracking-normal text-[#F1EFE8]"
+            >
+              {zichtbareDatums.map((dag) => (
+                <option key={dag} value={dag}>
+                  {dagLabel(dag, today)}
+                  {alIngevuld.has(dag) && dag !== datum ? " · al ingevuld" : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
+        <p className="m-0 mt-1.5 text-[11px] leading-relaxed text-[#7E8C82]">
+          Dit telt als {SOORT_LABEL[dagSoortVoor(datum)]}. Je hebt er{" "}
+          {dagSoortVoor(datum) === "weekend"
+            ? voortgang.weekend
+            : voortgang.doordeweeks}{" "}
+          van {DAGEN_PER_SOORT}.
+        </p>
+
+        <NutritionDagInvoer
+          momenten={momenten}
+          onChange={setMomenten}
+          waterMl={waterMl}
+          onWaterChange={setWaterMl}
+          busy={busy}
+        />
+
+        {error ? (
+          <p
+            role="status"
+            className="mt-2 text-[11.5px] leading-relaxed text-[#C8956C]"
+          >
+            {error}
+          </p>
+        ) : null}
+
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => void bewaar()}
+            className="inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-full border border-[#5A8F6A]/55 bg-[#5A8F6A]/20 px-3.5 text-[12.5px] font-semibold text-[#F1EFE8] disabled:opacity-60"
+          >
+            <Icons.Check s={13} />
+            Bewaar deze dag
+          </button>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={sluitInvoer}
+            className="min-h-9 cursor-pointer border-none bg-transparent px-1 text-[12.5px] text-[#9FB0A6]"
+          >
+            Annuleer
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section
@@ -290,45 +426,79 @@ export default function NutritionDagboekPaneel({
 
       {/* De vier plekken. Zolang het dagboek laadt staan ze er als skeleton:
           dezelfde vorm, zodat het paneel niet verspringt zodra de dagen
-          binnen zijn. */}
+          binnen zijn. Daarna is elke rij de knop: leeg vult, gevuld
+          corrigeert. */}
       <ul className="m-0 list-none p-0" role="list">
         {slots.map((slot) => {
           const dag = geladen ? slot.dag : null;
-          return (
-            <li
-              key={slot.id}
-              className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 border-b border-white/[0.06] px-3.5 py-2.5 last:border-b-0"
-            >
-              <span className="min-w-0">
-                <span className="block text-[12.5px] font-semibold leading-snug text-[#E7EDE8]">
-                  {dag ? dagLabel(dag.date, today) : SOORT_LABEL[slot.soort]}
-                </span>
-                {!geladen ? (
+          const isOpen = geladen && openSlotId === slot.id;
+
+          if (!geladen) {
+            return (
+              <li
+                key={slot.id}
+                className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 border-b border-white/[0.06] px-3.5 py-2.5 last:border-b-0"
+              >
+                <span className="min-w-0">
+                  <span className="block text-[12.5px] font-semibold leading-snug text-[#E7EDE8]">
+                    {SOORT_LABEL[slot.soort]}
+                  </span>
                   <span
                     aria-hidden
                     className="mt-1 block h-2.5 w-32 animate-pulse rounded-full bg-white/[0.07]"
                   />
-                ) : (
-                  <span className="mt-0.5 block truncate text-[11.5px] leading-snug text-[#9FB0A6]">
-                    {dag ? dagSamenvatting(dag) : "Nog niet ingevuld"}
-                  </span>
-                )}
-              </span>
-
-              {!geladen ? (
+                </span>
                 <span
                   aria-hidden
                   className="h-2.5 w-12 animate-pulse rounded-full bg-white/[0.07]"
                 />
-              ) : dag ? (
-                <span className="shrink-0 text-[11px] tabular-nums text-[#7E8C82]">
-                  {dagGroepenTelling(dag)} groepen
+              </li>
+            );
+          }
+
+          return (
+            <li
+              key={slot.id}
+              className="border-b border-white/[0.06] last:border-b-0"
+            >
+              <button
+                type="button"
+                disabled={busy}
+                aria-label={
+                  dag
+                    ? `${dagLabel(dag.date, today)} bewerken`
+                    : `${SOORT_LABEL[slot.soort]} invullen`
+                }
+                aria-expanded={isOpen}
+                aria-controls={`dagboek-invoer-${slot.id}`}
+                onClick={() => openPlek(slot)}
+                className={`grid w-full cursor-pointer grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 border-none px-3.5 py-2.5 text-left transition-colors hover:bg-white/[0.04] focus-visible:bg-white/[0.06] disabled:cursor-wait ${
+                  isOpen ? "bg-white/[0.04]" : "bg-transparent"
+                }`}
+              >
+                <span className="min-w-0">
+                  <span className="block text-[12.5px] font-semibold leading-snug text-[#E7EDE8]">
+                    {dag ? dagLabel(dag.date, today) : SOORT_LABEL[slot.soort]}
+                  </span>
+                  <span className="mt-0.5 block truncate text-[11.5px] leading-snug text-[#9FB0A6]">
+                    {dag ? dagSamenvatting(dag) : "Nog niet ingevuld"}
+                  </span>
                 </span>
-              ) : (
-                <span className="shrink-0 text-[10.5px] font-semibold uppercase tracking-[0.06em] text-[#7E8C82]">
-                  open
-                </span>
-              )}
+
+                {dag ? (
+                  <span className="shrink-0 text-[11px] tabular-nums text-[#7E8C82]">
+                    {dagGroepenTelling(dag)} groepen
+                  </span>
+                ) : (
+                  <span className="shrink-0 text-[10.5px] font-semibold uppercase tracking-[0.06em] text-[#9CC5A9]">
+                    Invullen
+                  </span>
+                )}
+              </button>
+
+              {isOpen ? (
+                <div id={`dagboek-invoer-${slot.id}`}>{invoerVelden()}</div>
+              ) : null}
             </li>
           );
         })}
@@ -387,87 +557,21 @@ export default function NutritionDagboekPaneel({
           </ul>
         ) : null}
 
-        {!open ? (
+        {geladen && voortgang.compleet && openSlotId !== EXTRA_SLOT_ID ? (
           <button
             type="button"
-            onClick={openInvoer}
+            onClick={openExtraDag}
             className="mt-2.5 inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-lg border border-[#5A8F6A]/40 bg-[#5A8F6A]/[0.14] px-2.5 text-[11.5px] font-semibold text-[#9CC5A9]"
           >
             <Icons.Calendar s={13} />
-            {voortgang.compleet
-              ? "Nog een dag invullen"
-              : voortgang.volgende
-                ? `Vul een ${SOORT_LABEL[voortgang.volgende]} in`
-                : "Vul een dag in"}
+            Nog een dag invullen
           </button>
         ) : null}
-
-        {open ? (
-          <div className="mt-2.5 rounded-[12px] border border-white/10 bg-black/25 p-3">
-            <label className="block text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
-              Welke dag?
-              <select
-                value={datum}
-                disabled={busy}
-                onChange={(event) => setDatum(event.target.value)}
-                className="mt-1 block min-h-9 w-full rounded-[10px] border border-white/10 bg-black/25 px-2.5 text-[13px] font-normal normal-case tracking-normal text-[#F1EFE8]"
-              >
-                {keuzedagen.map((dag) => (
-                  <option key={dag} value={dag}>
-                    {dagLabel(dag, today)}
-                    {alIngevuld.has(dag) ? " · al ingevuld" : ""}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <p className="m-0 mt-1.5 text-[11px] leading-relaxed text-[#7E8C82]">
-              Dit telt als {SOORT_LABEL[dagSoortVoor(datum)]}. Je hebt er{" "}
-              {dagSoortVoor(datum) === "weekend"
-                ? voortgang.weekend
-                : voortgang.doordeweeks}{" "}
-              van {DAGEN_PER_SOORT}.
-            </p>
-
-            <NutritionDagInvoer
-              momenten={momenten}
-              onChange={setMomenten}
-              waterMl={waterMl}
-              onWaterChange={setWaterMl}
-              busy={busy}
-            />
-
-            {error ? (
-              <p
-                role="status"
-                className="mt-2 text-[11.5px] leading-relaxed text-[#C8956C]"
-              >
-                {error}
-              </p>
-            ) : null}
-
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => void bewaar()}
-                className="inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-full border border-[#5A8F6A]/55 bg-[#5A8F6A]/20 px-3.5 text-[12.5px] font-semibold text-[#F1EFE8] disabled:opacity-60"
-              >
-                <Icons.Check s={13} />
-                Bewaar deze dag
-              </button>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => setOpen(false)}
-                className="min-h-9 cursor-pointer border-none bg-transparent px-1 text-[12.5px] text-[#9FB0A6]"
-              >
-                Annuleer
-              </button>
-            </div>
-          </div>
-        ) : null}
       </div>
+
+      {openSlotId === EXTRA_SLOT_ID ? (
+        <div className="border-t border-white/10">{invoerVelden()}</div>
+      ) : null}
     </section>
   );
 }

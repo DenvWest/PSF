@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   bouwDagboekSlots,
+  dagenVanSoort,
   dagGroepenTelling,
   dagSamenvatting,
+  kiesDatumVoorSlot,
 } from "@/lib/nutrition-dagboek-slots";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 
@@ -69,5 +71,51 @@ describe("nutrition-dagboek-slots", () => {
 
   it("telt alleen groepen met porties", () => {
     expect(dagGroepenTelling(dag("2026-09-02", { groente: 2, fruit: 0 }))).toBe(1);
+  });
+});
+
+describe("kiesDatumVoorSlot", () => {
+  // Zaterdag 5 sep 2026 plus de zes dagen daarvoor: twee weekdagen
+  // ontbreken niet — wél twee weekenddagen (zat + zon).
+  const keuzedagen = [
+    "2026-09-05", // za
+    "2026-09-04", // vr
+    "2026-09-03", // do
+    "2026-09-02", // wo
+    "2026-09-01", // di
+    "2026-08-31", // ma
+    "2026-08-30", // zo
+  ];
+
+  it("houdt alleen dagen van de gevraagde soort", () => {
+    expect(dagenVanSoort(keuzedagen, "weekend")).toEqual([
+      "2026-09-05",
+      "2026-08-30",
+    ]);
+    expect(dagenVanSoort(keuzedagen, "doordeweeks")).toHaveLength(5);
+  });
+
+  it("opent een weekendplek op zaterdag als een weekenddag, niet als vrijdag", () => {
+    const gevuld = new Set(["2026-09-02", "2026-09-01"]);
+    expect(kiesDatumVoorSlot(keuzedagen, gevuld, "weekend", 0)).toBe(
+      "2026-09-05",
+    );
+    expect(kiesDatumVoorSlot(keuzedagen, gevuld, "weekend", 1)).toBe(
+      "2026-08-30",
+    );
+  });
+
+  it("slaat dagen over die al in het dagboek staan", () => {
+    const gevuld = new Set(["2026-09-05"]);
+    expect(kiesDatumVoorSlot(keuzedagen, gevuld, "weekend", 0)).toBe(
+      "2026-08-30",
+    );
+  });
+
+  it("geeft de eerste vrije dag terug als de tweede plek geen eigen dag meer heeft", () => {
+    const gevuld = new Set(["2026-09-05"]);
+    expect(kiesDatumVoorSlot(keuzedagen, gevuld, "weekend", 1)).toBe(
+      "2026-08-30",
+    );
   });
 });
