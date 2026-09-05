@@ -307,6 +307,18 @@ export default function LeefstijlprofielKeuzeHub({
                 ? () => onOpenDomain(domain)
                 : undefined;
 
+              if (domain === "voeding") {
+                return (
+                  <li key={domain}>
+                    <CheckedPlainBlok
+                      pillar={pillar}
+                      meetregel={buildMeetregel(daysAgo, savedCount)}
+                      onClick={onClick}
+                    />
+                  </li>
+                );
+              }
+
               if (daysAgo == null) {
                 return (
                   <li key={domain}>

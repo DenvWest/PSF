@@ -61,9 +61,9 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
       href: "/blog/supplementen",
     },
     gerelateerdeSluggen: [
-      "waar-let-je-op-bij-omega-3",
-      "wat-is-omega-3",
-      "omega-3-concentratie-energie",
+      "omega-3-hoeveel-per-dag",
+      "algenolie-of-visolie",
+      "visolie-oxidatie-en-bijwerkingen",
     ],
     metaTitle: "Beste omega-3 supplement: keuzehulp op inhoud en prijs per dag",
     metaDescription:
@@ -90,9 +90,9 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
       href: "/blog/supplementen",
     },
     gerelateerdeSluggen: [
-      "waar-let-je-op-bij-omega-3",
-      "beste-omega-3-supplement",
-      "omega-3-concentratie-energie",
+      "omega-3-uit-voeding-of-supplement",
+      "omega-3-en-hart-onderzoek",
+      "algenolie-of-visolie",
     ],
     metaTitle: "Wat is omega-3? EPA, DHA en supplementen uitgelegd",
     metaDescription:
@@ -119,9 +119,9 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
       href: "/blog/supplementen",
     },
     gerelateerdeSluggen: [
-      "wat-is-omega-3",
-      "beste-omega-3-supplement",
-      "omega-3-concentratie-energie",
+      "omega-3-hoeveel-per-dag",
+      "visolie-oxidatie-en-bijwerkingen",
+      "omega-3-index-meten",
     ],
     metaTitle: "Omega-3 kiezen: waar let je op bij EPA, DHA en kwaliteit?",
     metaDescription:

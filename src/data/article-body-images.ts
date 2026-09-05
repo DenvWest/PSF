@@ -380,6 +380,144 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "Magnesiumcapsules naast een glas water op een nachtkastje",
     "Magnesium ondersteunt slaap en spierontspanning in de overgang, maar is geen bewezen middel tegen opvliegers.",
   ),
+  "omega-3-hoeveel-per-dag": img(
+    "blog",
+    "omega-3-hoeveel-per-dag",
+    "Maatbeker en visoliecapsules op een licht werkblad",
+    "Hoeveel omega-3 per dag je nodig hebt hangt af van EPA en DHA samen, niet van het aantal capsules.",
+  ),
+  "omega-3-uit-voeding-of-supplement": img(
+    "blog",
+    "omega-3-uit-voeding-of-supplement",
+    "Verse zalm en sardines naast een potje visolie",
+    "Twee porties vette vis per week leveren vaak al wat een supplement belooft.",
+  ),
+  "algenolie-of-visolie": img(
+    "blog",
+    "algenolie-of-visolie",
+    "Algenoliecapsules naast een schaaltje verse vis",
+    "Algenolie levert dezelfde EPA en DHA als visolie, maar dan rechtstreeks uit de bron.",
+  ),
+  "visolie-oxidatie-en-bijwerkingen": img(
+    "blog",
+    "visolie-oxidatie-en-bijwerkingen",
+    "Visoliecapsules bij daglicht op een werkblad",
+    "Ranzige visolie ruik je eerder dan je hem proeft; versheid staat zelden op het etiket.",
+  ),
+  "omega-3-index-meten": img(
+    "blog",
+    "omega-3-index-meten",
+    "Bloedafnamebuisje en labformulier op een bureau",
+    "De omega-3-index meet wat er in je membranen zit, niet wat je slikt.",
+  ),
+  "omega-3-en-medicijnen": img(
+    "blog",
+    "omega-3-en-medicijnen",
+    "Medicijndoosje en visoliecapsules naast elkaar",
+    "Omega-3 en bloedverdunners vragen om overleg met je arts, niet om zelf schatten.",
+  ),
+  "omega-3-en-hart-onderzoek": img(
+    "blog",
+    "omega-3-en-hart-onderzoek",
+    "Stethoscoop naast een open onderzoeksrapport",
+    "VITAL, REDUCE-IT en STRENGTH vonden niet hetzelfde — de dosis en de vorm verschilden.",
+  ),
+  "magnesium-tekort-herkennen": img(
+    "blog",
+    "magnesium-tekort-herkennen",
+    "Pompoenpitten en amandelen op een houten plank",
+    "Een magnesiumtekort herken je zelden aan één klacht; bloedwaarden zeggen weinig.",
+  ),
+  "hoeveel-magnesium-per-dag": img(
+    "blog",
+    "hoeveel-magnesium-per-dag",
+    "Maatlepel met magnesiumpoeder naast een glas water",
+    "De ADH voor magnesium telt voeding mee — een supplement vult alleen het gat.",
+  ),
+  "magnesium-wanneer-innemen": img(
+    "blog",
+    "magnesium-wanneer-innemen",
+    "Glas water en een supplement op een nachtkastje",
+    "Wanneer je magnesium inneemt verandert vooral hoe goed je het verdraagt.",
+  ),
+  "magnesium-en-spierkrampen": img(
+    "blog",
+    "magnesium-en-spierkrampen",
+    "Kuitspier die na het sporten wordt gemasseerd",
+    "Bij krampen zonder tekort doet extra magnesium meestal niets.",
+  ),
+  "magnesium-uit-voeding": img(
+    "blog",
+    "magnesium-uit-voeding",
+    "Bladgroenten, noten en volkoren op een werkblad",
+    "Groene bladgroenten, noten en volkoren dragen je magnesium — het potje vult aan.",
+  ),
+  "magnesium-voor-wie-wel-niet": img(
+    "blog",
+    "magnesium-voor-wie-wel-niet",
+    "Notitieblok met een afweging naast supplementen",
+    "Bij nierproblemen of bepaalde medicatie is magnesium geen vanzelfsprekende keuze.",
+  ),
+  "magnesium-en-stress": img(
+    "blog",
+    "magnesium-en-stress",
+    "Persoon in rustige houding bij natuurlijk licht",
+    "Stress verhoogt de magnesiumbehoefte; magnesium haalt de stressbron niet weg.",
+  ),
+  "magnesium-overgang-vrouwen": img(
+    "blog",
+    "magnesium-overgang-vrouwen",
+    "Vrouw in rustig ochtendlicht bij een raam",
+    "In de overgang verandert de slaap eerder dan de magnesiumstatus.",
+  ),
+  "whey-wanneer-wel-en-niet": img(
+    "blog",
+    "whey-wanneer-wel-en-niet",
+    "Shakebeker naast een bord met eieren en kwark",
+    "Whey is handig als je bord het niet redt, niet als vervanging van dat bord.",
+  ),
+  "whey-concentraat-isolaat-hydrolysaat": img(
+    "blog",
+    "whey-concentraat-isolaat-hydrolysaat",
+    "Drie schepjes eiwitpoeder naast elkaar",
+    "Concentraat, isolaat en hydrolysaat verschillen in lactose en prijs, nauwelijks in spieropbouw.",
+  ),
+  "whey-of-plantaardig-eiwit": img(
+    "blog",
+    "whey-of-plantaardig-eiwit",
+    "Erwten- en sojaeiwit naast een schaal kwark",
+    "Plantaardig eiwit werkt ook, mits je op de leucine en de totale inname let.",
+  ),
+  "whey-en-darmklachten": img(
+    "blog",
+    "whey-en-darmklachten",
+    "Persoon met een glas water aan een keukentafel",
+    "Darmklachten bij whey komen vaker van lactose dan van het eiwit zelf.",
+  ),
+  "whey-hoeveel-en-wanneer": img(
+    "blog",
+    "whey-hoeveel-en-wanneer",
+    "Weegschaal met eiwitpoeder en een shakebeker",
+    "De dagtotalen bepalen je spieropbouw; de timing is de fijnafstelling.",
+  ),
+  "whey-etiket-lezen": img(
+    "blog",
+    "whey-etiket-lezen",
+    "Handen die een etiket op een pot eiwitpoeder lezen",
+    "Op het etiket telt het eiwit per portie, niet de claim op de voorkant.",
+  ),
+  "is-whey-schadelijk": img(
+    "blog",
+    "is-whey-schadelijk",
+    "Pot eiwitpoeder op een rustig aanrecht",
+    "Voor gezonde nieren is whey binnen normale doseringen niet schadelijk gebleken.",
+  ),
+  "eiwit-en-whey-in-de-overgang": img(
+    "blog",
+    "eiwit-en-whey-in-de-overgang",
+    "Vrouw bereidt een eiwitrijke maaltijd in de keuken",
+    "In de overgang stijgt de eiwitbehoefte terwijl de eetlust vaak juist daalt.",
+  ),
 };
 
 const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
@@ -592,6 +730,18 @@ const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "onafhankelijke-toetsing",
     "Labrapport met grafieken naast een gesloten potje",
     "Onafhankelijke toetsing laat zien of batch en etiket overeenkomen, buiten de marketingafdeling om.",
+  ),
+  "leucinedrempel": img(
+    "kennisbank",
+    "leucinedrempel",
+    "Kwark, eieren en peulvruchten op een werkblad",
+    "De leucinedrempel is de hoeveelheid per maaltijd die spieropbouw op gang brengt.",
+  ),
+  "wei-eiwit": img(
+    "kennisbank",
+    "wei-eiwit",
+    "Schepje wei-eiwitpoeder naast een shakebeker",
+    "Wei-eiwit is snel opneembaar en leucinerijk, wat het geschikt maakt rond training.",
   ),
 };
 

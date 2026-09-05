@@ -10,6 +10,11 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   // ── Blog ──────────────────────────────────────────────────────────────────
   "ademhaling-tegen-stress": { theme: "stress", planPhase: 1 },
   "alcohol-slaap-energie-na-40": { theme: "sleep" },
+  "algenolie-of-visolie": {
+    theme: "nutrition",
+    gapSignal: "omega3_deficiency",
+    relatedSupplementId: "omega-3",
+  },
   "ashwagandha-werking-mannen": {
     theme: "stress",
     gapSignal: "cortisol_risk",
@@ -71,6 +76,11 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     gapSignal: "creatine_signal",
     relatedSupplementId: "creatine",
   },
+  "eiwit-en-whey-in-de-overgang": {
+    theme: "nutrition",
+    gapSignal: "protein_gap_signal",
+    relatedSupplementId: "eiwitpoeder",
+  },
   "eiwit-na-40": {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
@@ -86,7 +96,52 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     gapSignal: "energy_dip_unexplained",
     profile: "Lage Energie",
   },
+  "is-whey-schadelijk": {
+    theme: "nutrition",
+    relatedSupplementId: "eiwitpoeder",
+  },
   "krachttraining-na-40": { theme: "movement", planPhase: 1 },
+  "hoeveel-magnesium-per-dag": {
+    theme: "nutrition",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-en-spierkrampen": {
+    theme: "movement",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-en-stress": {
+    theme: "stress",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+    profile: "Stressdrager",
+  },
+  "magnesium-overgang-vrouwen": {
+    theme: "nutrition",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-tekort-herkennen": {
+    theme: "nutrition",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-uit-voeding": {
+    theme: "nutrition",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-voor-wie-wel-niet": {
+    theme: "nutrition",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-wanneer-innemen": {
+    theme: "sleep",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
   "magnesium-en-slaap": {
     theme: "sleep",
     gapSignal: "magnesium_signal",
@@ -107,6 +162,28 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "melatonine-wanneer-wel-niet": { theme: "sleep" },
   "middagdip-bloedsuiker-na-40": { theme: "nutrition" },
   "multivitamine-zinvol-na-40": { theme: "nutrition" },
+  "omega-3-en-hart-onderzoek": {
+    theme: "nutrition",
+    relatedSupplementId: "omega-3",
+  },
+  "omega-3-en-medicijnen": {
+    theme: "nutrition",
+    relatedSupplementId: "omega-3",
+  },
+  "omega-3-hoeveel-per-dag": {
+    theme: "nutrition",
+    gapSignal: "omega3_deficiency",
+    relatedSupplementId: "omega-3",
+  },
+  "omega-3-index-meten": {
+    theme: "nutrition",
+    relatedSupplementId: "omega-3",
+  },
+  "omega-3-uit-voeding-of-supplement": {
+    theme: "nutrition",
+    gapSignal: "omega3_deficiency",
+    relatedSupplementId: "omega-3",
+  },
   "omega-3-concentratie-energie": {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
@@ -167,6 +244,10 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
   },
+  "visolie-oxidatie-en-bijwerkingen": {
+    theme: "nutrition",
+    relatedSupplementId: "omega-3",
+  },
   "zonnebrand-en-vitamine-d": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
@@ -185,6 +266,32 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "nutrition",
     relatedSupplementId: "zink",
   },
+  "whey-concentraat-isolaat-hydrolysaat": {
+    theme: "nutrition",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "whey-en-darmklachten": {
+    theme: "nutrition",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "whey-etiket-lezen": {
+    theme: "nutrition",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "whey-hoeveel-en-wanneer": {
+    theme: "nutrition",
+    gapSignal: "protein_gap_signal",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "whey-of-plantaardig-eiwit": {
+    theme: "nutrition",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "whey-wanneer-wel-en-niet": {
+    theme: "nutrition",
+    gapSignal: "protein_gap_signal",
+    relatedSupplementId: "eiwitpoeder",
+  },
   "zout-kalium-bloeddruk-na-40": { theme: "nutrition" },
 
   // ── Kennisbank ────────────────────────────────────────────────────────────
@@ -198,6 +305,16 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "derde-partij-testen": { theme: "nutrition" },
   "efsa-claims": { theme: "nutrition" },
   "eiwitbehoefte-na-40": {
+    theme: "nutrition",
+    gapSignal: "protein_gap_signal",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  leucinedrempel: {
+    theme: "nutrition",
+    gapSignal: "protein_gap_signal",
+    relatedSupplementId: "eiwitpoeder",
+  },
+  "wei-eiwit": {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
     relatedSupplementId: "eiwitpoeder",

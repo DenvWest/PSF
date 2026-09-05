@@ -103,6 +103,10 @@ export const vitamineDHogeDosesSocialMediaData: BlogArtikel = {
     label: "Vitamine D supplementen vergelijken",
     href: "/beste/vitamine-d",
   },
+  supplementenHubLink: {
+    label: "Alle supplementen langs dezelfde meetlat",
+    href: "/supplementen",
+  },
   gerelateerdeSluggen: [
     "vitamine-d-en-k2-samen",
     "vitamine-d-meten-wanneer-zinvol",

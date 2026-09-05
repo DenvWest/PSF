@@ -75,6 +75,10 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
     label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
+  supplementenHubLink: {
+    label: "Alle supplementen langs dezelfde meetlat",
+    href: "/supplementen",
+  },
   gerelateerdeSluggen: [
     "vitamine-d-meten-wanneer-zinvol",
     "vitamine-d-zon-nederland",

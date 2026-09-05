@@ -22,9 +22,6 @@ const SRC_ROOT = join(process.cwd(), "src");
 const DOMAIN_ALLOWLIST: readonly { file: string; phrase: string }[] = [
   // De stressgids telt vier bronnen van stress, geen check-domeinen.
   { file: "src/data/gids/stress.ts", phrase: "4 domeinen" },
-  { file: "src/data/thema/stress.ts", phrase: "4 domeinen" },
-  // Vier oorzaken van energieverlies, geen check-domeinen.
-  { file: "src/data/thema/energie.ts", phrase: "vier domeinen" },
 ];
 
 /** Uitgeschreven getallen tellen net zo hard als cijfers. */

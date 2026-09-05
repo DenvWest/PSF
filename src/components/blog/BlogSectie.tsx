@@ -91,14 +91,13 @@ export default function BlogSectie({ sectie, anchorId }: BlogSectieProps) {
         return (
           <section
             key={subId}
-            id={subId}
-            tabIndex={-1}
-            aria-labelledby={`h3-${subId}`}
+            aria-labelledby={subId}
             className="scroll-mt-[calc(var(--reading-scroll-margin)-0.45rem)] mt-9 border-l border-stone-200/65 pl-4 md:mt-11 md:pl-[1.0625rem]"
           >
             <h3
-              id={`h3-${subId}`}
-              className="font-display text-[1.05rem] font-semibold leading-snug text-stone-800 md:text-[1.09rem]"
+              id={subId}
+              tabIndex={-1}
+              className="scroll-mt-[var(--reading-scroll-margin)] font-display text-[1.05rem] font-semibold leading-snug text-stone-800 md:text-[1.09rem]"
             >
               {sub.titel}
             </h3>

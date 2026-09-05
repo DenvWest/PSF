@@ -1,4 +1,5 @@
 import { CATEGORIE_CONFIG } from "@/data/blog/categorieen";
+import { newestPublicJpg } from "@/lib/public-jpg";
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
 
 export interface BlogCover {
@@ -35,11 +36,12 @@ export function categorieCover(categorie: BlogCategorie): BlogCover {
 
 /** Artikeleigen beeld wint; anders valt het terug op het categoriebeeld. */
 export function blogCover(
-  artikel: Pick<BlogArtikel, "categorie" | "coverImage" | "coverImageAlt">,
+  artikel: Pick<BlogArtikel, "categorie"> &
+    Partial<Pick<BlogArtikel, "coverImage" | "coverImageAlt">>,
 ): BlogCover {
   if (artikel.coverImage) {
     return {
-      src: artikel.coverImage,
+      src: newestPublicJpg(artikel.coverImage),
       alt: artikel.coverImageAlt || categorieCover(artikel.categorie).alt,
     };
   }

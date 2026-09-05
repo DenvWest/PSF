@@ -54,7 +54,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
       type: "tekst",
       titel: "Wanneer eiwitpoeder logisch is",
       tekst:
-        "Poeder is geen vervanging voor maaltijden — het is een praktische aanvulling als ontbijt of lunch structureel eiwitarm blijft. Handig na training of op drukke werkdagen. Vergelijk op eiwit per euro op onze [eiwitpoeder-vergelijking](/beste/eiwitpoeder). Begin altijd bij je bord; poeder is spoor B.",
+        "Poeder is geen vervanging voor maaltijden — het is een praktische aanvulling als ontbijt of lunch structureel eiwitarm blijft. Handig na training of op drukke werkdagen. Hoeveel per keer en of het moment uitmaakt, staat in [hoeveel whey per dag](/blog/whey-hoeveel-en-wanneer). Vergelijk op eiwit per euro op onze [eiwitpoeder-vergelijking](/beste/eiwitpoeder) of in de [supplementengids](/supplementen?categorie=eiwitpoeder). Begin altijd bij je bord; poeder is spoor B.",
     },
     {
       type: "tekst",

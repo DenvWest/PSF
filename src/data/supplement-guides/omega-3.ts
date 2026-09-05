@@ -3,11 +3,11 @@ import type { SupplementData } from "@/types/supplement-guide";
 export const omega3Data: SupplementData = {
   slug: "omega-3",
   naam: "Omega-3",
-  metaTitle: "Omega-3: Welke Vorm Past Bij Jou?",
+  metaTitle: "Omega-3 uitgelegd: EPA, DHA, vormen en dosering",
   metaDescription:
-    "Omega-3 uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
+    "Wat EPA en DHA in je lichaam doen, welke vormen er zijn en hoeveel je nodig hebt. De uitleg vóór de productkeuze — objectief en onafhankelijk.",
   datePublished: "2026-03-01",
-  h1: "Omega-3: welke vorm past bij jou?",
+  h1: "Omega-3: wat EPA en DHA doen en hoeveel je nodig hebt",
   introTekst:
     "Omega-3 vetzuren zijn essentieel — je lichaam maakt ze niet zelf aan. EPA en DHA ondersteunen je hersenen, hart en ontstekingsbalans. Na je 30e worden deze functies steeds relevanter, terwijl de meeste mannen structureel te weinig omega-3 binnenkrijgen.",
 
@@ -131,7 +131,7 @@ export const omega3Data: SupplementData = {
     {
       vraag: "Hoeveel EPA versus DHA heb ik nodig?",
       antwoord:
-        "Voor algemene gezondheid is een verhouding van roughly 1:1 goed. Voor stemming en stress kies je een hogere EPA-ratio (2:1 of meer). Voor hersenfunctie en ogen juist meer DHA.",
+        "Voor algemene gezondheid is een verhouding van ongeveer 1:1 prima. Voor stemming en stress kies je een hogere EPA-ratio (2:1 of meer). Voor hersenfunctie en ogen juist meer DHA.",
     },
     {
       vraag: "Is plantaardige omega-3 (ALA) genoeg?",
@@ -152,16 +152,20 @@ export const omega3Data: SupplementData = {
 
   blogLinks: [
     {
-      href: "/blog/omega-3-concentratie-energie",
-      titel: "Omega-3 en concentratie: wat zegt het onderzoek?",
+      href: "/blog/omega-3-hoeveel-per-dag",
+      titel: "Hoeveel omega-3 per dag? Rekenen met EPA+DHA, niet met visolie",
     },
     {
-      href: "/waar-let-je-op-bij-omega-3",
-      titel: "Waar let je op bij omega-3?",
+      href: "/blog/algenolie-of-visolie",
+      titel: "Algenolie of visolie: dezelfde stof, een andere schakel",
     },
     {
-      href: "/supplement-kiezen-waar-op-letten",
-      titel: "Supplement kiezen: waar op letten?",
+      href: "/blog/visolie-oxidatie-en-bijwerkingen",
+      titel: "Visboeren en ranzige olie: het kwaliteitssignaal op je bord",
+    },
+    {
+      href: "/blog/omega-3-en-hart-onderzoek",
+      titel: "Omega-3 en het hart: wat de grote trials vonden",
     },
   ],
 

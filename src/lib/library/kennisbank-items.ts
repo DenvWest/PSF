@@ -30,6 +30,7 @@ export function toLibraryItem(term: KennisbankTerm): LibraryItem {
     searchText: normalizeSearch(
       [term.term, term.shortDefinition, config.title].join(" "),
     ),
+    ...(cover ? { image: cover } : {}),
   };
 }
 

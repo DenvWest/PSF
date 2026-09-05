@@ -41,21 +41,20 @@ Lees vóór je begint:
 - Imports via `@/` (niet relatief)
 - Nederlandse UI strings, Engelse variabelen/functies
 - Verander NIETS aan: [lijst]
-- Geen git commands, geen commit
 - .env.local niet aanraken
+- Na groene klaar-check: direct git add (alleen deze taak) + git commit; nooit git push
 
 ## Acceptatiecriterium
 - [ ] [concreet meetbaar resultaat]
 - [ ] Geen nieuwe console.log in src/
-- [ ] npm run build groen
+- [ ] tsc --noEmit groen
+- [ ] Wijzigingen gecommit (niet gepusht)
 
 ## Verificatie
-Draai vóór je stopt:
+Draai vóór je stopt, daarna **direct** committen:
 1. grep -rn "console.log" src/
-2. npm run build
-
-Niet automatisch committen. Stop na aanpassingen zodat ik kan reviewen.
-# Voorgestelde commit: git add -A && git commit -m "feat: [OMSCHRIJVING]"
+2. npx tsc --noEmit
+3. Groen → meteen git add (alleen bestanden van deze taak) + git commit via HEREDOC. Geen vraag, geen pauze. Nooit git push.
 ```
 
 ---
@@ -87,20 +86,19 @@ Voeg een "Wanneer magnesium?" sectie toe aan de magnesium-vergelijkingspagina:
 - Nederlandse UI, Engelse code
 - Verander NIETS aan: src/data/affiliate-links.ts, src/lib/scoring.ts, globals.css, deploy.sh
 - Geen affiliate links in nieuwe copy buiten bestaande productkaarten
-- Geen git commands, geen commit
+- Na groene klaar-check: direct git add (alleen deze taak) + git commit; nooit git push
 
 ## Acceptatiecriterium
 - [ ] Eén h1 op de pagina (bestaand), nieuwe sectie als h2
 - [ ] Claims komen uit getUsableClaims('magnesium') of equivalent
 - [ ] Interne link naar /supplementen/magnesium met turbo-snippet erboven
 - [ ] Geen console.log, geen placeholders
+- [ ] Wijzigingen gecommit (niet gepusht)
 
 ## Verificatie
 1. grep -rn "console.log" src/
-2. npm run build
-
-Niet automatisch committen. Stop na aanpassingen zodat ik kan reviewen.
-# Voorgestelde commit: git add -A && git commit -m "feat: magnesium vergelijking wanneer-sectie"
+2. npx tsc --noEmit
+3. Groen → meteen git add + git commit -m "feat: magnesium vergelijking wanneer-sectie". Nooit git push.
 ```
 
 ---

@@ -401,8 +401,7 @@ function LayerEvidence({
 }
 
 /**
- * Zelfselectie in plaats van inferentie, gegeneraliseerd uit
- * ConnectionPriorityOverview: zes prioriteiten, geen afgeleide status. Voor
+ * Zelfselectie in plaats van inferentie: zes prioriteiten, geen afgeleide status. Voor
  * domeinen zonder eigen scoring-engine is dit de eerlijke vorm. Beweging,
  * slaap en stress leveren staten via `layerStates`.
  *

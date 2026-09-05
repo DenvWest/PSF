@@ -34,6 +34,7 @@ export const GA4_EVENTS = {
   BIBLIOTHEEK_ZOEK: 'bibliotheek_zoek',
   BIBLIOTHEEK_MEER: 'bibliotheek_meer',
   BIBLIOTHEEK_ITEM_GEOPEND: 'bibliotheek_item_geopend',
+  ARTIKEL_SUPPLEMENTEN_HUB_CLICK: 'artikel_supplementen_hub_click',
 } as const;
 
 export function trackEvent(

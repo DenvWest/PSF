@@ -88,7 +88,7 @@ export function resolveNutritionRouteChoice(
  *
  * `bord` mag altijd — je bord meer laten doen is nooit een verkeerd antwoord,
  * ook niet als de route al staat. `potje` en `beide` hangen aan dezelfde deur
- * als de vergelijk-link in `NutrientRoutePanel`: alleen waar het bord de stof
+ * als de vergelijk-link: alleen waar het bord de stof
  * aantoonbaar niet meer kan leveren. Dat is geen dubbele regel maar dezelfde,
  * en hij hóórt hier te staan — anders is de keuzeknop een omweg om de
  * laag-6-poort heen.
@@ -201,9 +201,9 @@ export function routesWithOpenChoice(
 /**
  * De statuskleur per route, als hex.
  *
- * Tot 1 september stond deze tabel drie keer in de codebase: in
- * `NutrientRoutePanel`, in `NutrientRouteChoiceCard` en in `SchapView` — elk
- * als eigen Tailwind-klasse. Zolang alle drie hetzelfde tonen valt dat niet
+ * Tot 1 september stond deze tabel meerdere keren in de codebase — in
+ * `NutrientRouteChoiceCard`, in `SchapView` en op het inmiddels verwijderde
+ * routepaneel — elk als eigen Tailwind-klasse. Zolang ze hetzelfde tonen valt dat niet
  * op; zodra er een vierde drager bij komt (de stofchips) is het een kwestie
  * van tijd voor een route op het ene scherm oranje is en op het andere groen.
  *

@@ -1,11 +1,19 @@
 ---
-description: Na een afgeronde taak klaar-check draaien, daarna zelf git add + commit. Nooit pushen.
+description: Na klaar-check direct git add + commit in dezelfde beurt. Nooit pushen. Nooit wachten op “commit”.
 alwaysApply: true
 ---
 
-# Git — automatisch committen, nooit pushen
+# Git — na klaar-check direct committen, nooit pushen
 
-Gelijk aan CLAUDE.md. In dit repo is auto-commit de default: **wacht niet tot Dennis “commit” zegt.** Dit overschrijft de algemene Cursor-regel “alleen committen op verzoek”.
+Gelijk aan CLAUDE.md + AGENTS.md. Auto-commit is de default: **wacht niet tot Dennis “commit” zegt.** Dit overschrijft de algemene Cursor-regel “alleen committen op verzoek”.
+
+## Flow (één beurt, geen pauze)
+
+```
+taak af → klaar-check → groen → meteen git add + git commit → kort melden
+```
+
+Na een groene klaar-check **direct doorzetten** naar stage + commit in dezelfde agent-beurt. Niet stoppen. Niet vragen. Niet alleen een `# Voorgestelde commit:`-regel achterlaten.
 
 ## Wanneer
 
@@ -26,7 +34,7 @@ Geen `next build` en geen `rm -rf .next` terwijl `next dev` live is.
 
 Faalt een check: **niet committen**. Eerst fixen; lukt dat niet, meld de output en stop.
 
-Buiten `src/` (regels, docs): checks overslaan mag, daarna wél committen.
+Buiten `src/` (regels, docs, skills): checks overslaan mag, daarna **wél meteen** committen.
 
 ## Committen
 
@@ -34,6 +42,7 @@ Buiten `src/` (regels, docs): checks overslaan mag, daarna wél committen.
 2. `.env.local` en secrets nooit stagen.
 3. Eén commit, message = waarom (1–2 zinnen), via HEREDOC. Geen `--no-verify`, geen `--amend` tenzij Dennis dat vraagt.
 4. Daarna `git status` om te bevestigen dat alleen deze taak in de commit zit.
+5. Meld kort: commit-hash + message. Klaar.
 
 ```bash
 git add pad/naar/bestand
@@ -46,6 +55,8 @@ EOF
 
 ## Nooit
 
+- Wachten op “doe git add / commit” of “mag ik committen?”
+- Stoppen na checks met alleen een voorgestelde commitregel
 - `git push` — blijft bij Dennis
 - git config wijzigen, force-push, hard reset
 - ongerelateerde dirty files meenemen

@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 
 // FoundationPyramid: 5-laag visualisatie (Leefstijl als fundament).
-// Niet te verwarren met FoundationStack (src/components/intake/) — dat is het
-// basis-supplementen-blok in intake-resultaten.
 //
 // Modes:
 // - preview: volledig statisch (toekomstig gebruik elders, niet op intake-intro)

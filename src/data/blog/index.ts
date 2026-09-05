@@ -42,6 +42,29 @@ import { vitamineDAandoeningenOnderzoekData } from "./vitamine-d-aandoeningen-on
 import { vitamineDEnSlaapData } from "./vitamine-d-en-slaap";
 import { multivitamineZinvolNa40Data } from "./multivitamine-zinvol-na-40";
 import { zoutKaliumBloeddrukNa40Data } from "./zout-kalium-bloeddruk-na-40";
+import { omega3HoeveelPerDagData } from "./omega-3-hoeveel-per-dag";
+import { omega3UitVoedingOfSupplementData } from "./omega-3-uit-voeding-of-supplement";
+import { algenolieOfVisolieData } from "./algenolie-of-visolie";
+import { visolieOxidatieEnBijwerkingenData } from "./visolie-oxidatie-en-bijwerkingen";
+import { omega3IndexMetenData } from "./omega-3-index-meten";
+import { omega3EnMedicijnenData } from "./omega-3-en-medicijnen";
+import { omega3EnHartOnderzoekData } from "./omega-3-en-hart-onderzoek";
+import { magnesiumTekortHerkennenData } from "./magnesium-tekort-herkennen";
+import { hoeveelMagnesiumPerDagData } from "./hoeveel-magnesium-per-dag";
+import { magnesiumWanneerInnemenData } from "./magnesium-wanneer-innemen";
+import { magnesiumEnSpierkrampenData } from "./magnesium-en-spierkrampen";
+import { magnesiumUitVoedingData } from "./magnesium-uit-voeding";
+import { magnesiumVoorWieWelNietData } from "./magnesium-voor-wie-wel-niet";
+import { magnesiumEnStressData } from "./magnesium-en-stress";
+import { magnesiumOvergangVrouwenData } from "./magnesium-overgang-vrouwen";
+import { wheyWanneerWelEnNietData } from "./whey-wanneer-wel-en-niet";
+import { wheyConcentraatIsolaatHydrolysaatData } from "./whey-concentraat-isolaat-hydrolysaat";
+import { wheyOfPlantaardigEiwitData } from "./whey-of-plantaardig-eiwit";
+import { wheyEnDarmklachtenData } from "./whey-en-darmklachten";
+import { wheyHoeveelEnWanneerData } from "./whey-hoeveel-en-wanneer";
+import { wheyEtiketLezenData } from "./whey-etiket-lezen";
+import { isWheySchadelijkData } from "./is-whey-schadelijk";
+import { eiwitEnWheyInDeOvergangData } from "./eiwit-en-whey-in-de-overgang";
 import { cornerstoneSupplementenArtikelen } from "./cornerstone-supplementen";
 import { overgangSlaapproblemenOpvliegersData } from "./overgang-slaapproblemen-opvliegers";
 import { overgangBuikvetGewichtstoenameData } from "./overgang-buikvet-gewichtstoename";
@@ -111,6 +134,29 @@ export const alleArtikelen: BlogArtikel[] = [
   vermoeidheidBloedwaardenCheckenMannenData,
   magnesiumHerstelMannen40Data,
   krachtverliesEiwitbehoefteNa40Data,
+  omega3HoeveelPerDagData,
+  omega3UitVoedingOfSupplementData,
+  algenolieOfVisolieData,
+  visolieOxidatieEnBijwerkingenData,
+  omega3IndexMetenData,
+  omega3EnMedicijnenData,
+  omega3EnHartOnderzoekData,
+  magnesiumTekortHerkennenData,
+  hoeveelMagnesiumPerDagData,
+  magnesiumWanneerInnemenData,
+  magnesiumEnSpierkrampenData,
+  magnesiumUitVoedingData,
+  magnesiumVoorWieWelNietData,
+  magnesiumEnStressData,
+  magnesiumOvergangVrouwenData,
+  wheyWanneerWelEnNietData,
+  wheyConcentraatIsolaatHydrolysaatData,
+  wheyOfPlantaardigEiwitData,
+  wheyEnDarmklachtenData,
+  wheyHoeveelEnWanneerData,
+  wheyEtiketLezenData,
+  isWheySchadelijkData,
+  eiwitEnWheyInDeOvergangData,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>

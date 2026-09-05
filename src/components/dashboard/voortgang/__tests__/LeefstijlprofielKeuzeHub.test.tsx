@@ -134,6 +134,19 @@ describe("LeefstijlprofielKeuzeHub", () => {
     expect(screen.getByText("Gemeten vandaag")).toBeTruthy();
   });
 
+  it("houdt Voeding klikbaar, ook zonder check", () => {
+    const onOpenDomain = vi.fn();
+    render(
+      <LeefstijlprofielKeuzeHub
+        data={buildData({})}
+        onBack={vi.fn()}
+        onOpenDomain={onOpenDomain}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: /Voeding\s+Nog niet/ }));
+    expect(onOpenDomain).toHaveBeenCalledWith("voeding");
+  });
+
   it("renders stress kengetallen from the T1d snapshot", () => {
     render(
       <LeefstijlprofielKeuzeHub

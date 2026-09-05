@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  COOKIE_CATEGORY_SHORT,
   COOKIE_INVENTORY,
+  DEFAULT_OPTIONAL_COOKIE_PREFERENCES,
   categoryToggleState,
   cookieCountByCategory,
   cookiesByCategory,
@@ -50,5 +52,28 @@ describe("cookie-inventory", () => {
     expect(
       categoryToggleState("marketing", { statistics: false, marketing: false }).editable,
     ).toBe(true);
+  });
+
+  it("houdt optionele cookies standaard uit", () => {
+    expect(DEFAULT_OPTIONAL_COOKIE_PREFERENCES).toEqual({
+      statistics: false,
+      marketing: false,
+    });
+    expect(
+      categoryToggleState("statistics", DEFAULT_OPTIONAL_COOKIE_PREFERENCES).checked,
+    ).toBe(false);
+    expect(
+      categoryToggleState("marketing", DEFAULT_OPTIONAL_COOKIE_PREFERENCES).checked,
+    ).toBe(false);
+    expect(
+      categoryToggleState("necessary", DEFAULT_OPTIONAL_COOKIE_PREFERENCES).checked,
+    ).toBe(true);
+  });
+
+  it("heeft korte consent-tekst alleen voor statistieken en marketing", () => {
+    expect(COOKIE_CATEGORY_SHORT.necessary).toBeUndefined();
+    expect(COOKIE_CATEGORY_SHORT.preferences).toBeUndefined();
+    expect(COOKIE_CATEGORY_SHORT.statistics).toMatch(/anoniem/i);
+    expect(COOKIE_CATEGORY_SHORT.marketing).toMatch(/geen advertenties/i);
   });
 });

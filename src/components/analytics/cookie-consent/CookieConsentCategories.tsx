@@ -4,6 +4,7 @@ import Link from "next/link";
 import CookieConsentToggle from "@/components/analytics/cookie-consent/CookieConsentToggle";
 import {
   COOKIE_CATEGORY_LABELS,
+  COOKIE_CATEGORY_SHORT,
   categoryToggleState,
   type CookieCategory,
 } from "@/data/cookie-inventory";
@@ -37,8 +38,9 @@ export default function CookieConsentCategories({
           Deze website maakt gebruik van cookies
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-stone-600">
-          Wij gebruiken cookies om de website goed te laten werken en anoniem gebruik te
-          meten. Lees meer in onze{" "}
+          Noodzakelijke cookies houden de site werkend. Statistieken (anoniem) en marketing
+          staan uit tot jij ze toestaat — marketing is geen advertentie, alleen als je zelf
+          op een partnerlink klikt. Lees meer in onze{" "}
           <Link
             href="/privacy"
             className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green"
@@ -52,6 +54,7 @@ export default function CookieConsentCategories({
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {CATEGORY_ORDER.map((category) => {
           const toggle = categoryToggleState(category, preferences);
+          const short = COOKIE_CATEGORY_SHORT[category];
 
           return (
             <article
@@ -74,6 +77,9 @@ export default function CookieConsentCategories({
                 }
                 label={`${COOKIE_CATEGORY_LABELS[category]} cookies`}
               />
+              {short ? (
+                <p className="text-[11px] leading-snug text-stone-500">{short}</p>
+              ) : null}
             </article>
           );
         })}

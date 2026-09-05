@@ -380,7 +380,7 @@ export default function LibraryBrowser({
                     item={item}
                     audience={audience}
                     weergave={weergave}
-                    prioriteitBeeld={index < 2}
+                    prioriteitBeeld={index < 4}
                     onOpen={() =>
                       trackEvent(GA4_EVENTS.BIBLIOTHEEK_ITEM_GEOPEND, {
                         surface,

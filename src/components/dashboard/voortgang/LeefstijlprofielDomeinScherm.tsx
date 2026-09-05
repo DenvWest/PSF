@@ -120,17 +120,11 @@ function LayerSixSlot({
 
   // Op voeding zelf is de eigen check (P1-P6, nutritionCheckinReadout) de
   // bron van waarheid — niet het oude losse voeding-inname-item, dat hier
-  // een dubbele en verouderde gate zou zijn.
-  //
-  // Op voeding zelf geldt een derde voorwaarde bovenop "check gedaan": er mag
-  // geen gat meer openstaan in de eetbasis (BESLUIT_VOEDING_PIRAMIDE §E). Dat
-  // is de enige formulering die "eerst je tafel, dan het potje" waarmaakt in
-  // plaats van hem alleen te citeren — en de reden dat hij dicht is, staat
-  // erbij, telkens in de bewoording van zijn eigen check.
+  // een dubbele en verouderde gate zou zijn. De vergelijk-tabel toont de
+  // rijen; zonder check blijft hij leeg.
   const nutritionGate = domain === "voeding" ? data?.nutritionCheckinReadout?.gate ?? null : null;
   const routeStatuses =
     domain === "voeding" ? data?.nutritionCheckinReadout?.routes ?? [] : [];
-  const nutritionGateClosed = domain === "voeding" && nutritionGate?.open !== true;
   const nutritionDone =
     domain === "voeding"
       ? nutritionGate?.open === true
@@ -152,19 +146,14 @@ function LayerSixSlot({
         statuses={routeStatuses}
         surface="leefstijlprofiel_voeding"
         gateOpen={nutritionGate?.open === true}
-        gateReden={
-          nutritionGateClosed
-            ? nutritionGate?.reason ??
-              "Zonder voedingscheck weten we niet of er iets aan te vullen valt."
-            : null
-        }
+        compact
         focusNutrient={focusNutrient}
         onBack={onBack}
       />
     );
   }
 
-  if (!mapping || nutritionGateClosed) {
+  if (!mapping) {
     return null;
   }
 
@@ -754,8 +743,11 @@ export default function LeefstijlprofielDomeinScherm({
                   : null
               }
               onderbouwing={onderbouwingKnop}
+              tabelOnly={isDrieluik}
               kompasHref={
-                isKompasDomain ? buildDashboardVandaagHref(domain) : undefined
+                isKompasDomain && !isDrieluik
+                  ? buildDashboardVandaagHref(domain)
+                  : undefined
               }
               onKompas={() => {
                 trackEvent("domein_prioriteit_kompas_click", {

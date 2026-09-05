@@ -1,10 +1,17 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { affiliateLinks, type AffiliateSlug } from "@/data/affiliate-links";
+import { dispatchCookiePreferences } from "@/lib/analytics-consent-client";
 import { trackAffiliateClick } from "@/lib/track-affiliate-click";
-import { trackAffiliateKlik } from "@/lib/ga4";
+import { GA4_EVENTS, trackAffiliateKlik, trackEvent } from "@/lib/ga4";
 import { trackClick } from "@/lib/track";
+import {
+  captureNurtureToken,
+  getNurtureToken,
+} from "@/lib/nurture-click-attribution";
+import { readMarketingConsentStateClient } from "@/lib/marketing-consent-client";
+import { clarityTag } from "@/lib/clarity";
 
 type Props = {
   affiliateSlug: AffiliateSlug;
@@ -24,6 +31,10 @@ export function AffiliateLink({
   position,
   className,
 }: Props) {
+  useEffect(() => {
+    captureNurtureToken();
+  }, []);
+
   const href = affiliateLinks[affiliateSlug];
 
   if (!href) {
@@ -39,8 +50,18 @@ export function AffiliateLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer sponsored"
+      referrerPolicy="strict-origin"
+      title="Schakel marketingcookies in via cookievoorkeuren om naar de partner te gaan"
       className={className}
-      onClick={() => {
+      onClick={(event) => {
+        if (readMarketingConsentStateClient() !== "granted") {
+          event.preventDefault();
+          trackEvent(GA4_EVENTS.COOKIE_MARKETING_GATE, { action: "blocked" });
+          clarityTag("cookie_marketing_gate", "blocked");
+          dispatchCookiePreferences({ openSettings: true });
+          return;
+        }
+
         const positionStr = position !== undefined ? String(position) : undefined;
         trackAffiliateClick(affiliateSlug, {
           pageType: sourcePage ?? SUPABASE_CLICK_SOURCE,
@@ -57,6 +78,7 @@ export function AffiliateLink({
           categorie: SUPABASE_CLICK_SOURCE,
           pagina:
             typeof window !== "undefined" ? window.location.pathname : "",
+          nt: getNurtureToken() ?? undefined,
         });
       }}
     >

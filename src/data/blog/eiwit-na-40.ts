@@ -54,7 +54,7 @@ export const eiwitNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Wanneer eiwitpoeder logisch is",
       tekst:
-        "Poeder is geen vervanging voor maaltijden — het is een praktische aanvulling als je met voeding niet aan je dagtotaal komt. Handig na training, drukke werkdagen of als ontbijt structureel te koolhydraat-dominant is. Vergelijk op eiwit per euro en zoetstoffen op onze [eiwitpoeder-vergelijking](/beste/eiwitpoeder). Twijfel je over nierfunctie of veel eiwit bij medische voorgeschiedenis? Bespreek je inname met je huisarts.",
+        "Poeder is geen vervanging voor maaltijden — het is een praktische aanvulling als je met voeding niet aan je dagtotaal komt. Handig na training, drukke werkdagen of als ontbijt structureel te koolhydraat-dominant is. Of dat voor jou geldt, staat per situatie uitgewerkt in [voor wie whey iets toevoegt](/blog/whey-wanneer-wel-en-niet); welke vorm daarbij past in [concentraat, isolaat of hydrolysaat](/blog/whey-concentraat-isolaat-hydrolysaat). Vergelijk op eiwit per euro en zoetstoffen op onze [eiwitpoeder-vergelijking](/beste/eiwitpoeder), of bekijk [alle eiwitpoeders in de supplementengids](/supplementen?categorie=eiwitpoeder). Twijfel je over nierfunctie of veel eiwit bij medische voorgeschiedenis? Bespreek je inname met je huisarts.",
     },
     {
       type: "tekst",

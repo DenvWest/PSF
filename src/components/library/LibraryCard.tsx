@@ -15,7 +15,7 @@ type LibraryCardProps = {
   audience: ContentAudience;
   /** "lijst" = één per rij met de meta rechts; "raster" = kaarten met beeld. */
   weergave: "lijst" | "raster";
-  /** Eerste rij in het raster: beeld eager laden voor de LCP. */
+  /** Eerste rijen in het raster: beeld eager laden voor de LCP. */
   prioriteitBeeld?: boolean;
   onOpen?: () => void;
 };

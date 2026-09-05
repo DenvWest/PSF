@@ -15,12 +15,6 @@ function samenvattingVoorKaart(artikel: BlogArtikel): string {
   return zinnen.endsWith(".") ? zinnen : `${zinnen}.`;
 }
 
-/** "6 min" → 6; onbekende notatie levert Infinity zodat het nooit als kort telt. */
-export function leestijdInMinuten(leestijd: string): number {
-  const match = leestijd.match(/\d+/);
-  return match ? Number(match[0]) : Number.POSITIVE_INFINITY;
-}
-
 export function toLibraryItem(artikel: BlogArtikel): LibraryItem {
   const config = CATEGORIE_CONFIG[artikel.categorie];
   const samenvatting = samenvattingVoorKaart(artikel);

@@ -55,6 +55,10 @@ export const multivitamineZinvolNa40Data: BlogArtikel = {
     label: "Supplementen vergelijken op onderbouwing",
     href: "/supplementen",
   },
+  supplementenHubLink: {
+    label: "Alle supplementen langs dezelfde meetlat",
+    href: "/supplementen",
+  },
   gerelateerdeSluggen: [
     "eiwit-na-40",
     "vitamine-d-en-energie",

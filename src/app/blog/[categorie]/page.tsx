@@ -52,7 +52,6 @@ export async function generateMetadata({
 
   const title = artikel.metaTitle ?? artikel.titel;
   const description = artikel.metaDescription ?? artikel.heroIntro;
-
   const cover = blogCover(artikel);
   const coverUrl = absoluteUrl(cover.src);
 

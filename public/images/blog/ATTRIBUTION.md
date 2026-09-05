@@ -15,6 +15,10 @@ slaap ← slaap-verbeteren-40-plus, energie ← energie-verhogen-natuurlijk,
 supplementen ← creatine-vormen-en-keurmerken) en vangen alleen artikelen zonder eigen beeld
 plus de twee pijlerpagina's. Vervang ze door eigen beelden zodra die er zijn.
 
+De batch van 4 september 2026 (omega-3 / magnesium / whey) hergebruikt bestaande
+covers uit deze map — dezelfde pixels, eigen bestandsnaam per slug — zodat de
+hub niet op de categorie-fallback terugvalt. Inline-kopieën staan in `inline/`.
+
 ## AI-gegenereerd (geen mensen — product/landschap/voedsel)
 
 | Bestand | Opmerking |

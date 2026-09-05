@@ -234,7 +234,6 @@ async function TermPage({ slug }: { slug: string }) {
   const laatstDatum = term.laatstBijgewerktOp ?? STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM
   const verantwoordelijke = term.inhoudelijkeVerantwoordelijke ?? REDACTIE_VERANTWOORDELIJKE_STANDARD
   const { planPhase } = getContentMetadata(term.slug)
-
   const cover = kennisbankCover(term)
   const bodyImage = kennisbankBodyImage(term.slug)
 

@@ -79,6 +79,23 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
         "Onafhankelijk getest? Certificeringen van [derde partijen](/kennisbank/derde-partij-testen) geven extra zekerheid over zuiverheid en doseernauwkeurigheid.",
       ],
     },
+    {
+      type: "opsomming",
+      titel: "Verder lezen: de rest van de magnesiumgids",
+      inleiding:
+        "Deze gids geeft het overzicht. Elk van de onderstaande artikelen gaat één vraag dieper in, met per onderwerp het bewijsniveau erbij — inclusief de onderwerpen waar magnesium er slecht vanaf komt.",
+      items: [
+        "[Magnesiumtekort herkennen](/blog/magnesium-tekort-herkennen) — waarom je bloedwaarde minder dan één procent van je voorraad meet, en wanneer een bepaling wél zin heeft.",
+        "[Hoeveel magnesium per dag](/blog/hoeveel-magnesium-per-dag) — het verschil tussen de ADH van 350 mg en de bovengrens van 250 mg uit supplementen.",
+        "[Wanneer neem je magnesium in](/blog/magnesium-wanneer-innemen) — waarom verdelen meer uitmaakt dan het tijdstip, en waar je afstand van houdt.",
+        "[Magnesium uit voeding](/blog/magnesium-uit-voeding) — wat een normale portie oplevert en waarom witte bloem vier vijfde kwijtraakt.",
+        "[Voor wie is magnesium zinvol](/blog/magnesium-voor-wie-wel-niet) — acht profielen, met per profiel hoe sterk de onderbouwing is.",
+        "[Magnesium en spierkrampen](/blog/magnesium-en-spierkrampen) — de Cochrane-conclusie die het bestverkochte argument onderuithaalt.",
+        "[Magnesium en stress](/blog/magnesium-en-stress) — het tweerichtingsverkeer tussen spanning en magnesiumverlies.",
+        "[Magnesium in de overgang](/blog/magnesium-overgang-vrouwen) — sterk voor botbehoud, niet voor opvliegers.",
+        "Alle stoffen die wij beoordelen staan met hun onderbouwing naast elkaar in de [supplementengids](/supplementen).",
+      ],
+    },
   ],
   samenvatting:
     "Magnesium is een van de meest onderbelichte mineralen na 30 — relevant voor slaap, stress, energie en hart. De meeste Nederlanders krijgen te weinig binnen via voeding. De juiste vorm bepaalt de effectiviteit: glycinaat voor slaap en stress, malaat voor energie, tauraat voor het hart. Kijk altijd naar het elementaire magnesiumgehalte per dagdosering.",
@@ -97,9 +114,9 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     href: "/beste/magnesium",
   },
   gerelateerdeSluggen: [
-    "magnesium-en-slaap",
-    "magnesium-in-combinatie-met-medicijnen",
-    "melatonine-wanneer-wel-niet",
+    "magnesium-voor-wie-wel-niet",
+    "hoeveel-magnesium-per-dag",
+    "magnesium-tekort-herkennen",
   ],
   metaTitle:
     "De complete magnesiumgids: vormen, dosering en gebruik",

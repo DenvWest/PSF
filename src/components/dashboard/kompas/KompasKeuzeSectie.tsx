@@ -475,8 +475,7 @@ function PrimaireKnop({
  * "De analyse wijst nu X aan — meebewegen?"
  *
  * Alleen zichtbaar als je zélf een focus koos én de analyse daarna iets anders
- * aanwees (`shouldShowEngineShiftNudge`). Dezelfde afweging als op Agenda in
- * `PriorityOverTimePanel`, maar hier op de plek waar het verschil ook te zien
+ * aanwees (`shouldShowEngineShiftNudge`). Hier op de plek waar het verschil ook te zien
  * is: naast de twee kaarten die het dragen.
  *
  * De knop schrijft `accept_engine` naar dezelfde voorkeur als de focus-picker

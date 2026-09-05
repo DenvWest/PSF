@@ -422,4 +422,27 @@ describe("LeefstijlprofielDomeinScherm", () => {
     fireEvent.click(within(kruimels).getByRole("button", { name: /Overzicht/ }));
     expect(onBack).toHaveBeenCalled();
   });
+
+  it("toont de drie voeding-lagen als tabel zonder extra tekst", () => {
+    render(
+      <LeefstijlprofielDomeinScherm
+        model={model}
+        data={buildData()}
+        domain="voeding"
+        onBack={vi.fn()}
+        onOpenSchap={vi.fn()}
+      />,
+    );
+
+    // Zonder deeplink opent het drieluik op de eerste knop: Voedingsbasis.
+    // Zonder check draagt die zijn eigen lege staat — geen tabel, geen
+    // prioriteitenstrip, en geen tekstframe eromheen.
+    expect(
+      screen.getByText(/Doe de voedingscheck om per categorie te zien/),
+    ).toBeTruthy();
+    expect(screen.queryByText(/prioriteit /)).toBeNull();
+    expect(screen.queryByText(/Uit je voedingscheck/)).toBeNull();
+    expect(screen.queryByText(/Eerst je bord/)).toBeNull();
+    expect(screen.queryByText("Open je keuze ›")).toBeNull();
+  });
 });

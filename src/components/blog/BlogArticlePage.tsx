@@ -12,6 +12,7 @@ import BlogSamenvatting from "./BlogSamenvatting";
 import BlogKernpunten from "./BlogKernpunten";
 import BlogSupplementCTA from "./BlogSupplementCTA";
 import BlogCornerstoneLink from "./BlogCornerstoneLink";
+import BlogSupplementenHubLink from "@/components/blog/BlogSupplementenHubLink";
 import Link from "next/link";
 import BlogGerelateerd from "./BlogGerelateerd";
 import BlogIntakeCTA from "./BlogIntakeCTA";
@@ -273,6 +274,12 @@ export default function BlogArticlePage({
                         →
                       </span>
                     </Link>
+                  ) : null}
+                  {artikel.supplementenHubLink ? (
+                    <BlogSupplementenHubLink
+                      link={artikel.supplementenHubLink}
+                      artikelSlug={artikel.slug}
+                    />
                   ) : null}
                 </div>
 

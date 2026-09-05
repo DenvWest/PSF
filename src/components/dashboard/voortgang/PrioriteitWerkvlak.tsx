@@ -217,6 +217,7 @@ export default function PrioriteitWerkvlak({
   onderbouwing,
   kompasHref,
   onKompas,
+  tabelOnly = false,
   children,
 }: {
   prioriteit: WerkbankPrioriteit;
@@ -239,6 +240,8 @@ export default function PrioriteitWerkvlak({
    */
   kompasHref?: string;
   onKompas?: () => void;
+  /** Alleen de tabel — geen samenvatting, feitenlijst of Kompas-deur. */
+  tabelOnly?: boolean;
   /** De inhoud van deze prioriteit — bij voeding de bestaande panelen. */
   children?: ReactNode;
 }) {
@@ -254,11 +257,13 @@ export default function PrioriteitWerkvlak({
           <h2 className={`m-0 min-w-0 text-[15px] font-semibold leading-snug ${s.tekst}`}>
             {prioriteit.naam}
           </h2>
-          <span className={`shrink-0 text-[12.5px] ${s.zacht}`}>
-            prioriteit {aantal} van {totaal}
-          </span>
+          {tabelOnly ? null : (
+            <span className={`shrink-0 text-[12.5px] ${s.zacht}`}>
+              prioriteit {aantal} van {totaal}
+            </span>
+          )}
         </div>
-        {staatLabel ? (
+        {tabelOnly || !staatLabel ? null : (
           <span
             className="flex shrink-0 items-center gap-1.5 text-[11.5px] font-semibold"
             style={{ color: prioriteit.staat ? STAAT_KLEUR[prioriteit.staat] : undefined }}
@@ -274,28 +279,32 @@ export default function PrioriteitWerkvlak({
             />
             {staatLabel}
           </span>
-        ) : null}
+        )}
       </div>
 
-      <p className={`m-0 mt-3 max-w-[62ch] text-[13px] leading-relaxed ${s.zacht} text-pretty`}>
-        {prioriteit.samenvatting}
-      </p>
+      {tabelOnly ? null : (
+        <p className={`m-0 mt-3 max-w-[62ch] text-[13px] leading-relaxed ${s.zacht} text-pretty`}>
+          {prioriteit.samenvatting}
+        </p>
+      )}
 
-      {waaromWachten ? (
+      {tabelOnly || !waaromWachten ? null : (
         <p
           className={`m-0 mt-2 max-w-[62ch] rounded-lg bg-white/[0.035] px-3 py-2 text-[12px] leading-relaxed ${s.zacht} text-pretty`}
         >
           {waaromWachten}
         </p>
-      ) : null}
+      )}
 
-      <Feitenlijst rijen={feiten} meetreeks={meetreeks} kleur={kleur} />
+      {tabelOnly ? null : <Feitenlijst rijen={feiten} meetreeks={meetreeks} kleur={kleur} />}
 
-      {onderbouwing ? <div className="mt-4 lg:hidden">{onderbouwing}</div> : null}
+      {tabelOnly || !onderbouwing ? null : (
+        <div className="mt-4 lg:hidden">{onderbouwing}</div>
+      )}
 
       {children}
 
-      {kompasHref ? (
+      {tabelOnly || !kompasHref ? null : (
         <a
           href={kompasHref}
           onClick={onKompas}
@@ -303,7 +312,7 @@ export default function PrioriteitWerkvlak({
         >
           Kies dit op Kompas ›
         </a>
-      ) : null}
+      )}
     </section>
   );
 }

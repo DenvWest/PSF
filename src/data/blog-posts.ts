@@ -13,7 +13,7 @@ export type BlogPost = {
   publishedAt: string;
   /** Human-readable, e.g. "8 min" */
   readingTime: string;
-  /** Path under /public, e.g. /images/blog/omega-3-basics.jpg */
+  /** Path under /public, e.g. /images/blog/wat-is-omega-3.jpg */
   coverImage: string;
   coverImageAlt: string;
   seoTitle?: string;

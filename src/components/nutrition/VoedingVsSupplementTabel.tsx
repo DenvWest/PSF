@@ -37,6 +37,9 @@ import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
  * weg: de kolommen zéggen dat al.
  */
 
+const TH =
+  "px-3.5 py-2 text-[9.5px] font-bold uppercase tracking-[0.13em] text-[#7E8C82]";
+
 function Kruimelpad({ onBack }: { onBack: () => void }) {
   return (
     <nav
@@ -81,37 +84,105 @@ export default function VoedingVsSupplementTabel({
   gateOpen,
   gateReden = null,
   focusNutrient = null,
+  compact = false,
   onBack,
 }: {
   statuses: readonly NutrientRouteStatus[];
   surface: string;
   /** De laag-6-poort: staat je eetbasis? Zonder dat blijft rechts dicht. */
   gateOpen: boolean;
-  /**
-   * Waarom de poort dicht is, in de bewoording van je eigen check.
-   *
-   * Stond tot 3 sep als losse alinea bóven de tabel, samen met drie andere
-   * tekstblokken. Die stapel was precies wat dit scherm overvol maakte: vier
-   * alinea's proza vóór het ene beeld waar de laag om draait. De reden hoort
-   * in de kolom waar hij over gaat — dat is de kolom "Aanvullen", en daar
-   * staat hij nu als kopregel boven de rijen.
-   */
   gateReden?: string | null;
   focusNutrient?: string | null;
+  compact?: boolean;
   /** Terug naar Voortgang-home. De tabel draagt zijn eigen terugweg. */
   onBack?: () => void;
 }) {
   const s = surfaceStyles("dashboard");
 
   if (statuses.length === 0) {
+    if (!compact) {
+      return null;
+    }
     return (
-      <div className="@container">
-        <div className={`overflow-hidden rounded-xl border ${s.rij} bg-black/20`}>
-          <TabelKop onBack={onBack} />
-          <p className="m-0 px-3.5 py-3.5 text-[13.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-            Doe de voedingscheck om per stof te zien of aanvullen in beeld komt.
-          </p>
-        </div>
+      <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-black/20">
+        <table className="w-full border-collapse text-left">
+          <caption className="sr-only">Vergelijken</caption>
+          <thead>
+            <tr className="border-b border-white/10">
+              <th className={TH}>Stof</th>
+              <th className={TH}>Uit je eten</th>
+              <th className={TH}>Aanvullen</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colSpan={3} className="px-3.5 py-3 text-[12.5px] text-[#9FB0A6]">
+                Nog geen voedingscheck — dan blijft vergelijken leeg.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
+  if (compact) {
+    return (
+      <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-black/20">
+        <TabelKop onBack={onBack} />
+        <table className="w-full border-collapse text-left">
+          <caption className="sr-only">Vergelijken</caption>
+          <thead>
+            <tr className="border-b border-white/10">
+              <th className={TH}>Stof</th>
+              <th className={TH}>Uit je eten</th>
+              <th className={TH}>Aanvullen</th>
+            </tr>
+          </thead>
+          <tbody>
+            {statuses.map((status) => {
+              const deurOpen = gateOpen && status.supplementDoorOpen;
+              const isFocus = focusNutrient === status.nutrient;
+              return (
+                <tr
+                  key={status.nutrient}
+                  className={`border-b border-white/[0.06] last:border-b-0 ${
+                    isFocus ? "bg-white/[0.035]" : ""
+                  }`}
+                >
+                  <th
+                    scope="row"
+                    className={`px-3.5 py-2.5 text-[13px] font-semibold ${s.tekst}`}
+                  >
+                    {status.label}
+                  </th>
+                  <td className={`px-3.5 py-2.5 text-[12.5px] ${s.zacht}`}>
+                    {status.answerLabel || "—"}
+                  </td>
+                  <td className="px-3.5 py-2.5 text-[12.5px] text-[#CDD7D0]">
+                    {deurOpen ? (
+                      <Link
+                        href={status.comparisonPath}
+                        onClick={() => {
+                          trackEvent("nutrition_supplement_vergelijk_click", {
+                            surface,
+                            nutrient: status.nutrient,
+                          });
+                          clarityTag("nutrition_supplement_vergelijk", status.nutrient);
+                        }}
+                        className={`inline-flex text-[12px] font-semibold no-underline ${s.knop}`}
+                      >
+                        Vergelijk ›
+                      </Link>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     );
   }
