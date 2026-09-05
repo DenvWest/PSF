@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Fragment,
   useMemo,
   useRef,
   useState,
@@ -98,9 +97,7 @@ export default function LibraryBrowser({
   const [zoek, setZoek] = useState("");
   const [actieveFilters, setActieveFilters] = useState<string[]>([]);
   const [sort, setSort] = useState<LibrarySort>(sorts[0]?.key ?? "nieuwste");
-  const [weergave, setWeergave] = useState<Weergave>(
-    surface === "blog" ? "raster" : "lijst",
-  );
+  const [weergave, setWeergave] = useState<Weergave>("raster");
   const [zichtbaar, setZichtbaar] = useState(PAGINA);
 
   const zoekTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -362,12 +359,19 @@ export default function LibraryBrowser({
               const toonKop = audience !== "alle" && kop !== null;
 
               return (
-                <Fragment key={item.id}>
+                <div
+                  key={item.id}
+                  className={
+                    weergave === "raster"
+                      ? `flex flex-col gap-3 ${toonKop ? "sm:col-span-2" : ""}`
+                      : undefined
+                  }
+                >
                   {toonKop ? (
                     <p
                       className={`font-display text-[0.68rem] font-semibold uppercase tracking-[0.09em] text-stone-400 ${
                         index === 0 ? "" : "mt-3 border-t border-stone-200/80 pt-4"
-                      } ${weergave === "raster" ? "sm:col-span-2" : ""}`}
+                      }`}
                     >
                       {kop}
                     </p>
@@ -386,7 +390,7 @@ export default function LibraryBrowser({
                       })
                     }
                   />
-                </Fragment>
+                </div>
               );
             })}
           </div>
@@ -402,7 +406,9 @@ export default function LibraryBrowser({
           </button>
         ) : null}
 
-        {footerSlot}
+        {footerSlot != null ? (
+          <div key="library-footer">{footerSlot}</div>
+        ) : null}
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ export type LibraryItem = {
   /** Tailwind-klasse voor het kleurstaafje links op de kaart. */
   accentClass: string;
   audience?: AudienceTag;
-  /** Coverbeeld; alleen de blog levert dit, de kennisbank blijft tekstueel. */
+  /** Coverbeeld; blog en kennisbank leveren dit via hun cover-resolvers. */
   image?: { src: string; alt: string };
   /** Bijv. "6 min leestijd" — links in de metaregel. */
   metaLabel?: string;

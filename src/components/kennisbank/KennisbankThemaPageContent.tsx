@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { KennisbankTheme } from "@/data/kennisbank";
 import { themeLabels } from "@/data/kennisbank";
 import Container from "@/components/layout/Container";
@@ -11,6 +12,7 @@ import {
   LIB_EYEBROW,
   LIB_PAGE_BG,
 } from "@/components/library/library-tokens";
+import { themaCover } from "@/lib/kennisbank-cover";
 
 interface KennisbankThemaPageContentProps {
   theme: KennisbankTheme;
@@ -23,6 +25,7 @@ export default function KennisbankThemaPageContent({
 }: KennisbankThemaPageContentProps) {
   const config = themeLabels[theme];
   const items = getKennisbankLibraryItems();
+  const cover = themaCover(theme);
 
   return (
     <main className={LIB_PAGE_BG}>
@@ -48,6 +51,17 @@ export default function KennisbankThemaPageContent({
             <li className="font-medium text-stone-600">{config.title}</li>
           </ol>
         </nav>
+
+        <div className="relative mb-8 aspect-[16/9] w-full max-w-3xl overflow-hidden rounded-xl bg-stone-100 md:mb-10">
+          <Image
+            src={cover.src}
+            alt={cover.alt}
+            fill
+            priority
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 768px"
+          />
+        </div>
 
         <header className="max-w-2xl">
           <p className={LIB_EYEBROW}>{KB_HUB_LABEL}</p>

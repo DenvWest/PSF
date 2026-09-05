@@ -22,6 +22,10 @@ export interface KennisbankTerm {
   /** Handtekening-uitzondering: volledig publiek ondanks tier >= 2 (bv. melatonine-uitsluiting). */
   publicFullContent?: boolean
   shortDefinition: string
+  /** Pad naar coverbeeld, bijv. `/images/kennisbank/<slug>.jpg`. Ontbreekt → thema-fallback. */
+  coverImage?: string
+  /** Beschrijvende NL alt-tekst bij coverImage (geen keyword-stuffing). */
+  coverImageAlt?: string
   content: {
     whatIsIt: string
     howItWorks: string
@@ -116,6 +120,8 @@ export const kennisbankTerms: KennisbankTerm[] = [
     term: 'Biobeschikbaarheid',
     theme: 'supplementwetenschap',
     shortDefinition: 'Het percentage van een stof dat je lichaam daadwerkelijk opneemt en kan gebruiken.',
+    coverImage: '/images/kennisbank/biobeschikbaarheid.jpg',
+    coverImageAlt: "Supplementcapsules en natuurlijke ingrediënten op een licht werkblad",
     content: {
       whatIsIt: `Niet alles wat je slikt, komt ook aan waar het moet zijn. Biobeschikbaarheid is het percentage van een ingenomen stof dat daadwerkelijk je bloedbaan bereikt en door je cellen gebruikt kan worden. Dit verschilt enorm per supplementvorm — bij sommige vormen neemt je lichaam slechts 4% op, bij andere meer dan 80%.
 
@@ -148,6 +154,8 @@ Je individuele darmgezondheid. Ontstekingen, medicijngebruik of een verstoord mi
     term: 'Chelaatvorm',
     theme: 'supplementwetenschap',
     shortDefinition: 'Een mineraal gebonden aan een aminozuur, waardoor je lichaam het veel beter opneemt.',
+    coverImage: '/images/kennisbank/chelaatvorm.jpg',
+    coverImageAlt: "Poeders en capsules van mineralen op een rustig werkblad",
     content: {
       whatIsIt: `Chelaat komt van het Griekse "chele" — klauw. Bij een chelaatvorm wordt een mineraal vastgepakt door een aminozuur. Dit maakt het herkenbaar voor je darmwand, waardoor het als voedingsstof wordt opgenomen in plaats van als losse chemische verbinding.
 
@@ -178,6 +186,8 @@ Een gecheleerd mineraal is beschermd door het aminozuur. Het reist intact naar j
     theme: 'supplementwetenschap',
     shortDefinition:
       'Traditioneel en in moderne fytotherapie besproken planten en paddenstoelen die in studies soms met stress- en slaapmarkers worden geassocieerd — per soort en extract sterk verschillend.',
+    coverImage: '/images/kennisbank/adaptogens.jpg',
+    coverImageAlt: "Gedroogde kruiden en wortels in natuurlijk licht",
     content: {
       whatIsIt: `Adaptogens zijn een categorie planten en paddenstoelen die al eeuwen gebruikt worden in Ayurveda en traditionele Chinese geneeskunde. De term werd in 1947 geïntroduceerd door de Russische farmacoloog Nikolai Lazarev.
 
@@ -208,6 +218,8 @@ Onderzoek gebruikt nog steeds uiteenlopende plantendelen, doses en extractprofie
     term: 'EPA en DHA',
     theme: 'supplementwetenschap',
     shortDefinition: 'De twee actieve omega-3 vetzuren die je lichaam niet zelf aanmaakt.',
+    coverImage: '/images/kennisbank/epa-dha-v2.jpg',
+    coverImageAlt: "Gegrilde zalmfilet op een bord — bron van EPA en DHA",
     content: {
       whatIsIt: `EPA (eicosapentaeenzuur) en DHA (docosahexaeenzuur) zijn de twee omega-3 vetzuren waar het werkelijk om draait. ALA — de plantaardige omega-3 uit lijnzaad en walnoten — wordt soms ook omega-3 genoemd, maar je lichaam zet slechts 5-10% daarvan om naar EPA en DHA.
 
@@ -236,6 +248,8 @@ EFSA-goedgekeurde claims: EPA+DHA dragen bij aan een normale hartfunctie (bij 25
     term: 'Circadiaan Ritme',
     theme: 'lichaam-veroudering',
     shortDefinition: 'Je interne 24-uursklok die slaap, hormonen, energie en stofwisseling aanstuurt.',
+    coverImage: '/images/kennisbank/circadiaan-ritme.jpg',
+    coverImageAlt: "Ochtendzon boven een rustig landschap",
     content: {
       whatIsIt: `Je circadiaan ritme is een biologische klok die in vrijwel elke cel van je lichaam tikt. Het wordt aangestuurd door een klein klompje hersencellen — de suprachiasmatische nucleus — en gesynchroniseerd door licht.
 
@@ -266,6 +280,8 @@ Na 40 wordt dit systeem gevoeliger voor verstoring. Blauw licht van schermen ond
     term: 'ADH (Aanbevolen Dagelijkse Hoeveelheid)',
     theme: 'supplementwetenschap',
     shortDefinition: 'De Nederlandse richtlijn voor de minimale dagelijkse inname van vitamines en mineralen.',
+    coverImage: '/images/kennisbank/adh.jpg',
+    coverImageAlt: "Glas water op een tafel bij zacht daglicht",
     content: {
       whatIsIt: `De Aanbevolen Dagelijkse Hoeveelheid (ADH) is de Nederlandse vertaling van de Europese referentie-inname (RI). Het is de hoeveelheid van een vitamine of mineraal die voldoende is om aan de behoefte van vrijwel de gehele gezonde bevolking te voldoen.
 
@@ -294,6 +310,8 @@ Belangrijk: de ADH is een referentiewaarde, geen persoonlijk advies. Iemand die 
     term: 'EFSA-claims',
     theme: 'supplementwetenschap',
     shortDefinition: 'Door de Europese voedselautoriteit goedgekeurde uitspraken over wat een supplement mag beweren.',
+    coverImage: '/images/kennisbank/efsa-claims.jpg',
+    coverImageAlt: "Documenten en aantekeningen op een ordelijk werkblad",
     content: {
       whatIsIt: `EFSA-claims zijn gezondheidsclaims die officieel zijn goedgekeurd door de European Food Safety Authority. In de EU mag een supplementfabrikant niet zomaar beweren dat zijn product "goed is voor je hart" of "je energie verhoogt" — die claim moet wetenschappelijk onderbouwd en goedgekeurd zijn.
 
@@ -322,6 +340,8 @@ Er is een tussencategorie: "on hold" claims. Dit zijn claims voor botanische sto
     term: 'Derde-partij Testen',
     theme: 'supplementwetenschap',
     shortDefinition: 'Onafhankelijke laboratoriumtesten die controleren of in een supplement zit wat er op het etiket staat.',
+    coverImage: '/images/kennisbank/derde-partij-testen.jpg',
+    coverImageAlt: "Laboratoriumglaswerk in een heldere, rustige setting",
     content: {
       whatIsIt: `Derde-partij testen betekent dat een onafhankelijk laboratorium — niet de fabrikant zelf — controleert of een supplement daadwerkelijk bevat wat er op het etiket staat. Dit omvat de juiste dosering van actieve ingrediënten, afwezigheid van zware metalen, en controle op verontreinigingen.
 
@@ -350,6 +370,8 @@ Let op: "laboratorium getest" op een etiket zonder te vermelden welk lab is wein
     term: 'Slaaphygiëne',
     theme: 'leefstijl-herstel',
     shortDefinition: 'Het geheel van gewoontes en omgevingsfactoren dat de kwaliteit van je slaap bepaalt.',
+    coverImage: '/images/kennisbank/slaaphygiene.jpg',
+    coverImageAlt: "Netjes opgemaakt bed in een rustige slaapkamer",
     content: {
       whatIsIt: `Slaaphygiëne is geen trendy term — het is de wetenschappelijke verzamelnaam voor alle factoren die bepalen hoe goed je slaapt. Van de temperatuur in je slaapkamer tot het tijdstip waarop je je laatste koffie drinkt — het zijn de gewoontes rondom slaap die samen bepalen of je 's ochtends uitgerust wakker wordt.
 
@@ -386,6 +408,8 @@ Een wind-down routine — een vast signaal aan je lichaam dat het tijd is om af 
     term: 'Eiwitbehoefte na 40',
     theme: 'leefstijl-herstel',
     shortDefinition: 'Na 40 heeft je lichaam meer eiwit nodig om spiermassa te behouden — maar de meeste mensen eten te weinig.',
+    coverImage: '/images/kennisbank/eiwitbehoefte-na-40.jpg',
+    coverImageAlt: "Eiwitrijke maaltijd met groenten en vlees of peulvruchten",
     content: {
       whatIsIt: `Vanaf je 40e begint je lichaam geleidelijk spiermassa te verliezen — een proces dat sarcopenie heet. Gemiddeld verlies je 3-8% spiermassa per decennium na je 30e, en dat versnelt na je 50e. Eiwit is de belangrijkste bouwsteen om dit tegen te gaan.
 
@@ -415,6 +439,8 @@ Dit betekent dat het niet alleen gaat om hoeveel eiwit je per dag eet, maar ook 
     theme: 'leefstijl-herstel',
     shortDefinition:
       'De verhouding tussen kalium en natrium in je voeding — bij de meeste Nederlandse mannen structureel scheef door te veel zout en te weinig kalium.',
+    coverImage: '/images/kennisbank/kalium-natrium-balans.jpg',
+    coverImageAlt: "Verse groenten en fruit op een snijplank",
     content: {
       whatIsIt: `Kalium en natrium werken samen op je bloeddruk, maar in tegengestelde richting. Natrium (vooral uit zout) houdt vocht vast en verhoogt de druk op je vaatwand; kalium helpt je nieren juist natrium af te voeren en ontspant de vaatwand. Het gaat niet om één stof geïsoleerd, maar om de verhouding.
 
@@ -444,6 +470,8 @@ Omdat de bronnen zo verschillend zijn, is dit in de praktijk één interventie m
     term: 'Healthspan',
     theme: 'longevity',
     shortDefinition: 'Het aantal jaren dat je in goede gezondheid leeft — niet hoe oud je wordt, maar hoe goed.',
+    coverImage: '/images/kennisbank/healthspan.jpg',
+    coverImageAlt: "Persoon die een pad oploopt in de buitenlucht",
     content: {
       whatIsIt: `Lifespan is hoe lang je leeft. Healthspan is hoe lang je goed leeft — zonder chronische ziekten, zonder dagelijkse beperkingen, met energie en veerkracht. Het verschil tussen die twee noemen onderzoekers de "morbidity gap": de jaren aan het einde van je leven die je in slechte gezondheid doorbrengt.
 
@@ -473,6 +501,8 @@ De vijf pijlers waar onderzoekers naar kijken: slaapkwaliteit, voedingspatroon, 
     theme: 'lichaam-veroudering',
     shortDefinition:
       'Het communicatiesysteem tussen je hersenen en bijnieren dat je stressreactie aanstuurt.',
+    coverImage: '/images/kennisbank/hpa-as.jpg',
+    coverImageAlt: "Persoon in rustige houding bij natuurlijk licht",
     content: {
       whatIsIt: `De HPA-as is de hypothalamus-hypofyse-bijnier-as: het regelsysteem achter je stressreactie. Als je hersenen een belasting signaleren — fysiek of mentaal — stuurt de hypothalamus (een klein gebied diep in je hersenen) een ketenreactie in gang. De hypofyse (een klier onder je hersenen) maakt ACTH aan, en daarmee zet je bijnieren (kleine orgaantjes boven je nieren) cortisolproductie aan.
 
@@ -505,6 +535,8 @@ Ashwagandha en magnesium worden vaak gekozen bij spanning en slaap; die keuzes p
     theme: 'lichaam-veroudering',
     shortDefinition:
       'Je belangrijkste stresshormoon: het geeft je energie overdag, maar veroorzaakt problemen als het te lang te hoog blijft.',
+    coverImage: '/images/kennisbank/cortisol-v2.jpg',
+    coverImageAlt: "Persoon in rustige meditatiehouding bij warm natuurlijk licht",
     content: {
       whatIsIt: `Cortisol is een hormoon dat je bijnieren aanmaken. Het staat centraal in je stressrespons, maar het doet meer: het speelt mee in je dag-nachtritme, je bloedsuikerregulatie, je immuunsysteem en hoe waakzaam je overdag bent. Kortom: het verbindt “wat er speelt” met “wat je lichaam klaarmaakt om te doen”.
 
@@ -538,6 +570,8 @@ Kies altijd op kwaliteit, dosering en je totale plaatje (slaapritme, beweging, v
     theme: 'lichaam-veroudering',
     shortDefinition:
       'Het hormoon dat je lichaam helpt “nacht” te signaleren; de eigen aanmaak neigt te dalen na je 40e.',
+    coverImage: '/images/kennisbank/melatonine.jpg',
+    coverImageAlt: "Nachthemel met sterren boven een rustig landschap",
     content: {
       whatIsIt: `Melatonine wordt aangemaakt in de pijnappelklier, een kleine structuur in je middenhersenen. Het is vooral een timing-signaal: het helpt je biologische klok te verankeren op donker en rust, niet om per se “hard” in slaap te vallen op commando. Vandaar het verschil tussen inslapen en een gezond 24-uursritme.
 
@@ -571,6 +605,8 @@ Verbeter eerst het ritme (licht overdag, dimmen ’s avonds, vaste tijden): dat 
     theme: 'lichaam-veroudering',
     shortDefinition:
       'De energiefabriekjes in je cellen: ze zetten voedingsstoffen en zuurstof om in ATP voor alles wat je lichaam doet.',
+    coverImage: '/images/kennisbank/mitochondrien.jpg',
+    coverImageAlt: "Zonlicht door bomen in een rustig bos",
     content: {
       whatIsIt: `Mitochondriën zijn organellen in bijna al je cellen — minuscule fabrieken die energie leveren. Ze nemen bouwstoffen en zuurstof en maken daar ATP van, de directe “brandstofmunt” voor spierbeweging, hersenwerk, hartslag en herstel. Hoe meer een weefsel onder stroom moet staan, hoe meer mitochondriën het gewoonlijk bevat; hart en hersenen horen bij de topverbruikers.
 
@@ -599,10 +635,12 @@ Combi die vaak werkt: structureel bewegen + voldoende eiwit + gerichte supplemen
   {
     slug: 'nervus-vagus',
     insightTier: 2,
-    term: 'Nervus vagus (zwerfzenuw)',
+    term: 'Nervus vagus',
     theme: 'leefstijl-herstel',
     shortDefinition:
       'De lange rustzenuw tussen hersenen en romp die herstel en vertering ondersteunt — gedeeltelijk beïnvloedbaar via ademhaling.',
+    coverImage: '/images/kennisbank/nervus-vagus.jpg',
+    coverImageAlt: "Persoon in rustige ademhalingshouding bij natuurlijk licht",
     content: {
       whatIsIt: `De nervus vagus — vaak zwerfzenuw genoemd — is een van de hoofdaders van het parasympathische deel van je autonome zenuwstelsel. Hij loopt vanuit de hersenstam langs onder meer hart, longen en maag-darmtraject en coördineert “rust-digest”-taken: een lagere hartfrequentie wanneer dat past, ondersteuning van vertering en een rem op overmatige alertheid.
 
@@ -636,6 +674,8 @@ Combineer dit met eerlijke grenzen op werkdruk; supplementen zijn hooguit een tw
     theme: 'supplementwetenschap',
     shortDefinition:
       'Het energiemolecuul dat vrijwel al je lichaamsfuncties aandrijft — van spier tot denken.',
+    coverImage: '/images/kennisbank/atp.jpg',
+    coverImageAlt: "Iemand die krachttraining doet in een lichte ruimte",
     content: {
       whatIsIt: `ATP (adenosinetrifosfaat) is het molecuul waarmee cellen betalen voor arbeid. Spiercontracties, zenuwimpulsen, transport over membranen, aanmaak van eiwitten — het draait op het vrijmaken van energie uit ATP naar ADP. Zonder constante aanmaak en recycling zou elke inspanning onmiddellijk stoppen.
 
@@ -669,6 +709,8 @@ Lees vergelijkingen dus op dosering, vorm en zuiverheid — en blijf slaap en ei
     audience: 'mannen',
     shortDefinition:
       'Het belangrijkste mannelijke geslachtshormoon — met invloed op energie, spierbehoud en stemming, maar sterk individueel en leeftijdsafhankelijk.',
+    coverImage: '/images/kennisbank/testosteron.jpg',
+    coverImageAlt: "Persoon die buiten beweegt met natuurlijke energie",
     content: {
       whatIsIt: `Testosteron wordt vooral in de testikels aangemaakt (met een klein deel uit de bijnieren). Het hoort bij mannelijke ontwikkeling, spiermassa, botdichtheid en libido — maar “normaal” is een bandbreedte, geen enkel doelgetal op een bonnetje.
 
@@ -699,6 +741,8 @@ Labtesten (totaal en soms vrij testosteron) horen in medische context: interpret
     theme: 'leefstijl-herstel',
     shortDefinition:
       'Het cumulatieve tekort aan slaap over dagen of weken — vaak merkbaar als traagheid, prikkelbaarheid en slechter herstel.',
+    coverImage: '/images/kennisbank/slaapschuld.jpg',
+    coverImageAlt: "Slaapkamer in zacht ochtendlicht na een korte nacht",
     content: {
       whatIsIt: `Slaapschuld ontstaat wanneer je structureel minder slaapt dan je lichaam nodig heeft — niet alleen één slechte nacht. Veel mensen 40+ compenseren met koffie en “doorgaan”, terwijl concentratie, humeur en herstel langzaam afnemen.
 
@@ -729,6 +773,8 @@ Inhalen van slaap in het weekend helpt deels, maar lost een verstoord weekritme 
     theme: 'leefstijl-herstel',
     shortDefinition:
       'Mensen bij wie je jezelf kunt zijn en op wie je kunt terugvallen — een van de sterkst onderbouwde leefstijlfactoren voor gezond ouder worden.',
+    coverImage: '/images/kennisbank/sociale-verbinding.jpg',
+    coverImageAlt: "Mensen in gesprek bij natuurlijk licht",
     content: {
       whatIsIt: `Sociale verbinding gaat niet over hoeveel mensen je kent, maar over de kwaliteit van een handvol relaties: mensen bij wie je jezelf kunt zijn en op wie je kunt terugvallen als het tegenzit. Voor veel mensen boven de 40 versmalt dat netwerk ongemerkt — werk, gezin en agenda eten de vriendschappen op die vroeger vanzelf gingen.
 
@@ -762,6 +808,8 @@ In de Leefstijlcheck telt verbinding mee als interventiedomein. Scoort het bij j
     theme: 'supplementwetenschap',
     shortDefinition:
       'Niet elk magnesium op het etiket wordt even goed opgenomen — de chemische vorm bepaalt opname en doel.',
+    coverImage: '/images/kennisbank/magnesiumvormen.jpg',
+    coverImageAlt: "Groene bladgroenten en zaden op een licht werkblad",
     content: {
       whatIsIt: `Magnesium komt in supplementen als verschillende zouten: oxide, citraat, bisglycinaat, tauraat, enzovoort. Het elementaire magnesium per capsule verschilt per vorm — en dus ook wat je lichaam effectief binnenkrijgt.
 
@@ -792,6 +840,8 @@ Transparantie op het etiket (elementair mg, vorm, geen verkapte blends) is waar 
     theme: 'leefstijl-herstel',
     shortDefinition:
       'Een langdurige disbalans tussen trainingbelasting en herstel — met vermoeidheid, slechtere prestaties en soms stemmingsverandering.',
+    coverImage: '/images/kennisbank/overtrainingssyndroom.jpg',
+    coverImageAlt: "Atleet in herstelmoment na intensieve training",
     content: {
       whatIsIt: `Overtraining (of het overtrainingssyndroom) is geen “lui zijn” — het is wanneer je lichaam wekenlang meer belasting krijgt dan het kan verwerken, ondanks slaap en voeding die op papier oké lijken. Veel fanatieke sporters 40+ herkennen het patroon: harder trainen terwijl prestaties en stemming achteruitgaan.
 
@@ -822,6 +872,8 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
     theme: 'lichaam-veroudering',
     shortDefinition:
       'Een vetoplosbare stof die je huid maakt onder invloed van UVB-zonlicht — en die in Nederland vaak tekortschiet, vooral in de winter.',
+    coverImage: '/images/kennisbank/vitamine-d.jpg',
+    coverImageAlt: "Zonlicht op zee of strand bij helder weer",
     content: {
       whatIsIt: `Vitamine D is technisch geen vitamine maar een prohormoon: je huid zet cholesterol om in vitamine D3 onder UVB-licht. Daarna wordt het in lever en nieren geactiveerd. Het reguleert calcium, botten, spieren en immuunfunctie — honderden genen worden erdoor beïnvloed.`,
       howItWorks: `In Nederland is de zon tussen oktober en maart vaak te laag voor voldoende huidsynthese — vooral bij binnenwerk, donkere huid of bedekkende kleding. Wat daarbij telt is de hoek: onder een zonnestand van ongeveer 45 graden bereikt te weinig UVB de grond, en achter glas gebeurt er niets omdat ramen UVB wegfilteren. Melanine en leeftijd verlengen de benodigde blootstelling; de huid maakt na verzadiging vanzelf niets meer aan, waardoor je via de zon geen overdosis kunt oplopen.
@@ -859,6 +911,8 @@ Lees verder: [vitamine D en energie](/blog/vitamine-d-en-energie), [tekort herke
     theme: 'lichaam-veroudering',
     shortDefinition:
       'Een vetoplosbare vitamine (vaak als MK-7 in D3-combo’s) met twee geautoriseerde EU-claims — en één hartclaim die EFSA heeft afgewezen.',
+    coverImage: '/images/kennisbank/vitamine-k2.jpg',
+    coverImageAlt: "Supplementen en oliecapsules op een werkblad",
     content: {
       whatIsIt: `Vitamine K is een familie: K1 (fylloquinon, vooral in groene bladgroenten) en K2 (menaquinonen, o.a. MK-4 en MK-7). In supplementen naast vitamine D3 zie je meestal K2 als MK-7, omdat die langer in het bloed blijft dan MK-4 en daardoor bij één dosis per dag past.
 
@@ -890,6 +944,8 @@ De marketingzin die je overal ziet — K2 zou calcium uit slagaders 'wegsturen' 
     theme: 'supplementwetenschap',
     shortDefinition:
       'Wanneer en waarmee je vitamine D inneemt: vet maakt verschil, het tijdstip nauwelijks — en een paar combinaties vragen wél aandacht.',
+    coverImage: '/images/kennisbank/vitamine-d-inname.jpg',
+    coverImageAlt: "Capsule naast een maaltijd met vet in natuurlijk licht",
     content: {
       whatIsIt: `Rondom het innemen van vitamine D circuleren veel regels die stelliger klinken dan het onderzoek rechtvaardigt: 's ochtends zou beter zijn, 's avonds zou je slaap verstoren, en van alles zou je het niet samen mogen nemen. De hoofdlijn is eenvoudiger.
 
@@ -927,6 +983,8 @@ Belangrijker dan het innamemoment is de vraag of je het überhaupt nodig hebt: z
     theme: 'lichaam-veroudering',
     shortDefinition:
       'Wanneer cellen minder gevoelig worden voor insuline — vaak besproken rond energie, gewicht en metabole gezondheid na 40.',
+    coverImage: '/images/kennisbank/insulineresistentie.jpg',
+    coverImageAlt: "Gebalanceerde maaltijd met vezels en eiwit",
     content: {
       whatIsIt: `Insuline helpt glucose uit je bloed naar cellen te brengen. Bij insulineresistentie reageert het lichaam minder goed: de alvleesklier maakt meer insuline aan om hetzelfde effect te halen. Dat patroon wordt vaak genoemd in de context van type 2-diabetes-risico en “energiedips” na maaltijden — maar individuele klachten zijn niet specifiek genoeg om zelf te diagnosticeren.`,
       howItWorks: `Factoren die in onderzoek terugkomen: buikvet, weinig beweging, slaaptekort en hoge inname van ultra-bewerkte koolhydraten. Krachttraining en eiwitrijke maaltijden ondersteunen vaak stabilere bloedsuikerspiegels — geen wondermiddel, wel een praktische hefboom naast medische begeleiding.`,
@@ -953,6 +1011,8 @@ Belangrijker dan het innamemoment is de vraag of je het überhaupt nodig hebt: z
     theme: 'longevity',
     shortDefinition:
       'Een disbalans tussen vrije radicalen en antioxidanten — vaak genoemd bij veroudering, training en voeding.',
+    coverImage: '/images/kennisbank/oxidatieve-stress.jpg',
+    coverImageAlt: "Berglandschap in helder, fris daglicht",
     content: {
       whatIsIt: `Je lichaam produceert continu reactieve zuurstofsoorten als bijproduct van energieproductie en afweer. Antioxidanten (eigen enzymen én uit voeding) neutraliseren het overschot. Als de balans scheef staat, spreken onderzoekers van oxidatieve stress — een concept, geen diagnose die je thuis meet.`,
       howItWorks: `Intensieve training verhoogt tijdelijk oxidatieve signalen; dat hoort bij adaptatie als herstel en voeding meekomen. Chronische ontsteking, roken, slaaptekort en ongezonde voeding worden vaker genoemd als aanhoudende belasting.`,
@@ -979,6 +1039,8 @@ Belangrijker dan het innamemoment is de vraag of je het überhaupt nodig hebt: z
     theme: 'supplementwetenschap',
     shortDefinition:
       'Eén supplement met een breed pakket vitamines en mineralen tegelijk — bedoeld als "alles-in-één", niet gericht op een specifiek tekort.',
+    coverImage: '/images/kennisbank/multivitamine.jpg',
+    coverImageAlt: "Kleurrijke groenten, fruit en capsules op een werkblad",
     content: {
       whatIsIt: `Een multivitamine bundelt tien tot dertig micronutriënten in één capsule of tablet, vaak rond de aanbevolen dagelijkse hoeveelheid (ADH) per stof. Het idee is dekking "voor de zekerheid" — niet een antwoord op een gemeten tekort of een specifiek profiel.
 
@@ -1010,6 +1072,8 @@ Dat betekent niet dat elke vitamine of elk mineraal nutteloos is — het beteken
     laatstBijgewerktOp: '2026-09-03',
     shortDefinition:
       'Een berekende score van 0 tot 100 voor supplementen in onze catalogus — uit etiketfeiten, EU-claims en gepubliceerde toetsing, zonder prijs.',
+    coverImage: '/images/kennisbank/ps-score-model.jpg',
+    coverImageAlt: "Notitieboek en etiketonderzoek op een rustig werkblad",
     content: {
       whatIsIt: `De PS-Score is geen redactioneel cijfer dat iemand intikt. Het is een geversioneerde rekensom: vijf onderdelen leveren elk 0–100 punten (of vallen weg als we ze niet kunnen vaststellen), en die worden gewogen tot één totaal. Modelversie 1.2.0 staat vastgelegd op [/ps-score](/ps-score); wijzigt de formule, dan wijzigt de versie en herberekenen we de catalogus.
 
@@ -1087,6 +1151,8 @@ Ten opzichte van 1.1.0 ging dosering omhoog (+5), claimdekking en transparantie 
     laatstBijgewerktOp: '2026-09-03',
     shortDefinition:
       'De dagdosering waarbij het aangehaalde onderzoek effect laat zien — niet de wettelijke claimdrempel, en niet "meer is beter".',
+    coverImage: '/images/kennisbank/onderzoeksdosis.jpg',
+    coverImageAlt: "Wetenschappelijke publicaties en notities op een bureau",
     content: {
       whatIsIt: `De onderzoeksdosis is de ondergrens waartegen de PS-Score de etiketdosering afzet. Blijft een product daaronder, dan schaalt het doseringsonderdeel lineair mee (100 mg elementair magnesium bij een doel van 200 mg → 50 punten). Komt de dosis tussen onderzoeksdosis en bovengrens, dan is dat onderdeel 100. Erboven volgt aftrek: hoger is hier niet beter.
 
@@ -1124,6 +1190,8 @@ De volledige tabel met bronvermelding staat op [/ps-score](/ps-score).`,
     laatstBijgewerktOp: '2026-09-03',
     shortDefinition:
       'Hoeveel van de erkende EU-gezondheidsclaims voor een stof deze dagdosering ontsluit — een aandeel, geen ja/nee-label.',
+    coverImage: '/images/kennisbank/claimdekking-v2.jpg',
+    coverImageAlt: "Supplementcapsules en notitieboek op een licht werkblad",
     content: {
       whatIsIt: `Claimdekking beantwoordt: van alle bruikbare, goedgekeurde claims die voor deze stof op de Europese lijst staan, hoeveel haalt déze dosering? Het resultaat is een percentage van 0 tot 100 dat 15% meeweegt in de [PS-Score](/kennisbank/ps-score-model).
 
@@ -1155,6 +1223,8 @@ Bestaat er geen erkende claim (ashwagandha, eiwit als zodanig), dan valt claimde
     laatstBijgewerktOp: '2026-09-03',
     shortDefinition:
       'Vier controleerbare etiketfeiten: gekwantificeerde werkzame stof, dagdosering, uitgesplitste samenstelling, en geen proprietary blend.',
+    coverImage: '/images/kennisbank/etikettransparantie.jpg',
+    coverImageAlt: "Supplementetiketten en capsules in helder licht",
     content: {
       whatIsIt: `Etikettransparantie meet of je zelf kunt nalopen wat erin zit — niet of het product "werkt". In de PS-Score zijn het vier ja/nee-feiten die optellen tot 100 punten: werkzame stof in een getal (30), expliciete dagdosering (25), samenstelling per vorm uitgesplitst (25), geen proprietary blend (20). Het onderdeel weegt 15% mee.`,
       howItWorks: `Proprietary blends vermelden wel ingredienten, maar niet de hoeveelheid per stof. In pre-workout- en complexproducten zit een groot deel van de actieve stoffen vaak in zo'n blend — waardoor je niet kunt checken of de dosis in de buurt van onderzoek komt. Uitgesplitste samenstelling is vooral relevant bij mengsels (meerdere magnesiumvormen, EPA én DHA): zonder verdeling kun je de effectieve dosis per vorm niet herleiden.
@@ -1184,6 +1254,8 @@ Ontbreekt het elementaire gehalte of de dagdosering, dan kunnen andere scoreonde
     laatstBijgewerktOp: '2026-09-03',
     shortDefinition:
       'Of een merk eindproduct of grondstof extern laat controleren én dat publiceert — plus categorie-markers zoals TOTOX of zware metalen.',
+    coverImage: '/images/kennisbank/onafhankelijke-toetsing.jpg',
+    coverImageAlt: "Laboratoriumsetting met glaswerk en meetapparatuur",
     content: {
       whatIsIt: `Onafhankelijke toetsing in de PS-Score meet of er bewijs buiten de fabrikant zichtbaar is: een onafhankelijk labonderzoek op het eindproduct (70 punten) en erkende grondstofkeurmerken zoals Creapure® of Quali-D® (tot 30 punten). Daarnaast tellen categorie-specifieke markers mee waar ze ergens over gaan — bijvoorbeeld oxidatiewaarde (TOTOX/PV/AV) bij omega-3, of verontreinigingstesten bij eiwit en ashwagandha.
 
