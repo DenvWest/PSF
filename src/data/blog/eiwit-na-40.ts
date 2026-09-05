@@ -5,11 +5,11 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const eiwitNa40Data: BlogArtikel = {
   slug: "eiwit-na-40",
   categorie: "energie",
-  titel: "Eiwit na 40: hoeveel je écht nodig hebt (en waarom de meeste mensen tekortkomen)",
+  titel: "Eiwit na 30: hoeveel je écht nodig hebt (en waarom de meeste mensen tekortkomen)",
   coverImage: "/images/blog/eiwit-na-40.jpg",
   coverImageAlt: "Gezonde maaltijd met eiwitrijke ingrediënten in een kom",
   heroIntro:
-    "Je eet \"gezond genoeg\", maar je spieren voelen minder responsief. Na je 40e is dat geen verbeelding: je lichaam heeft meer [eiwit](/kennisbank/eiwitbehoefte-na-40) nodig per maaltijd — en de meeste Nederlanders halen de ondergrens niet. Hier lees je hoeveel, wanneer en waarom, gekoppeld aan [herstel na 40](/herstel-verbeteren-na-40) en [voeding na 40](/voeding-na-40) — zonder bodybuilding-hype.",
+    "Je eet \"gezond genoeg\", maar je spieren voelen minder responsief. Na je 30e is dat geen verbeelding: je lichaam heeft meer [eiwit](/kennisbank/eiwitbehoefte-na-40) nodig per maaltijd — en de meeste Nederlanders halen de ondergrens niet. Hier lees je hoeveel, wanneer en waarom, gekoppeld aan [herstel na 30](/herstel-verbeteren-na-40) en [voeding na 30](/voeding-na-40) — zonder bodybuilding-hype.",
   leestijd: "9 min",
   gepubliceerdOp: "2026-05-23",
   laatstBijgewerktOp: "2026-05-23",
@@ -18,19 +18,19 @@ export const eiwitNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Ken je dit?",
       tekst:
-        "Ontbijt: brood met jam. Lunch: broodje kaas. Avond: pasta met wat groente. Op papier eet je genoeg — maar als je je eiwit per maaltijd optelt, kom je vaak uit op 60 tot 80 gram per dag. Bij 85 kilo en de wens om te blijven bewegen is dat structureel te weinig na 40. Je voelt het niet meteen als \"eiwittekort\", maar als trager herstel, minder veerkracht en een lichaam dat moeilijker spieren vasthoudt.",
+        "Ontbijt: brood met jam. Lunch: broodje kaas. Avond: pasta met wat groente. Op papier eet je genoeg — maar als je je eiwit per maaltijd optelt, kom je vaak uit op 60 tot 80 gram per dag. Bij 85 kilo en de wens om te blijven bewegen is dat structureel te weinig na 30. Je voelt het niet meteen als \"eiwittekort\", maar als trager herstel, minder veerkracht en een lichaam dat moeilijker spieren vasthoudt.",
     },
     {
       type: "tekst",
       titel: "Waarom 0,8 gram per kilo niet genoeg is",
       tekst:
-        "De officiële ADH (0,8 g/kg) is bedoeld om tekort te voorkomen — niet als optimum voor spierbehoud. Position papers en sportvoedingsliteratuur wijzen na 40 vaker naar 1,2 tot 1,6 gram per kilogram lichaamsgewicht per dag, vooral bij krachttraining of actief werk. Bij 80 kg is dat 96 tot 128 gram per dag — verdeeld over meerdere maaltijden, niet in één avondmaaltijd. Meer uitleg over het mechanisme: zie [eiwitbehoefte na 40 in de kennisbank](/kennisbank/eiwitbehoefte-na-40).",
+        "De officiële ADH (0,8 g/kg) is bedoeld om tekort te voorkomen — niet als optimum voor spierbehoud. Position papers en sportvoedingsliteratuur wijzen na 30 vaker naar 1,2 tot 1,6 gram per kilogram lichaamsgewicht per dag, vooral bij krachttraining of actief werk. Bij 80 kg is dat 96 tot 128 gram per dag — verdeeld over meerdere maaltijden, niet in één avondmaaltijd. Meer uitleg over het mechanisme: zie [eiwitbehoefte na 30 in de kennisbank](/kennisbank/eiwitbehoefte-na-40).",
     },
     {
       type: "tekst",
       titel: "Anabole resistentie: dezelfde portie, minder effect",
       tekst:
-        "Na 40 reageert spierweefsel minder sterk op dezelfde hoeveelheid eiwit per maaltijd. Waar een jongere met 20 gram al een volledige spierproteïnesynthese-respons kan krijgen, heeft een 50-jarige vaak 30 tot 40 gram nodig per maaltijd. Dat heet anabole resistentie — geen ziekte, wel een reden om eiwit bewuster te spreiden: ontbijt, lunch en diner elk eiwitrijk, met eventueel een tussendoortje na training.",
+        "Na 30 reageert spierweefsel minder sterk op dezelfde hoeveelheid eiwit per maaltijd. Waar een jongere met 20 gram al een volledige spierproteïnesynthese-respons kan krijgen, heeft een 50-jarige vaak 30 tot 40 gram nodig per maaltijd. Dat heet anabole resistentie — geen ziekte, wel een reden om eiwit bewuster te spreiden: ontbijt, lunch en diner elk eiwitrijk, met eventueel een tussendoortje na training.",
     },
     {
       type: "opsomming",
@@ -48,7 +48,7 @@ export const eiwitNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Eiwit en herstel — wat wél en niet geldt",
       tekst:
-        "Eiwit is bouwmateriaal voor spieren en ondersteunt herstel na inspanning. Het is geen hormoonvervanger: herstel hangt samen met slaap, stress en leeftijd. Wel: zonder voldoende eiwit merk je krachttraining en herstel minder, ongeacht supplementen. Combineer dit artikel met [herstel verbeteren na 40](/herstel-verbeteren-na-40) voor slaap, rustdagen en eventueel creatine als tweede lijn.",
+        "Eiwit is bouwmateriaal voor spieren en ondersteunt herstel na inspanning. Het is geen hormoonvervanger: herstel hangt samen met slaap, stress en leeftijd. Wel: zonder voldoende eiwit merk je krachttraining en herstel minder, ongeacht supplementen. Combineer dit artikel met [herstel verbeteren na 30](/herstel-verbeteren-na-40) voor slaap, rustdagen en eventueel creatine als tweede lijn.",
     },
     {
       type: "tekst",
@@ -64,7 +64,7 @@ export const eiwitNa40Data: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Na 40 heb je meer eiwit nodig per dag én per maaltijd dan de standaard ADH. Mik op 1,2–1,6 g/kg bij actief leven, spreid over de dag, en gebruik poeder alleen als aanvulling. Koppel eiwit aan slaap en trainingsbalans — niet aan hormoon-mythes.",
+    "Na 30 heb je meer eiwit nodig per dag én per maaltijd dan de standaard ADH. Mik op 1,2–1,6 g/kg bij actief leven, spreid over de dag, en gebruik poeder alleen als aanvulling. Koppel eiwit aan slaap en trainingsbalans — niet aan hormoon-mythes.",
   supplementCTA: {
     naam: "Eiwitpoeder",
     uitleg:
@@ -72,7 +72,7 @@ export const eiwitNa40Data: BlogArtikel = {
     href: "/beste/eiwitpoeder",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: herstel verbeteren na 40",
+    label: "Hoofdstuk-gids: herstel verbeteren na 30",
     href: "/herstel-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
@@ -85,16 +85,16 @@ export const eiwitNa40Data: BlogArtikel = {
     "middagdip-bloedsuiker-na-40",
     "eiwitinname-timing-mannen-40",
   ],
-  metaTitle: "Eiwit na 40: hoeveel gram per dag",
+  metaTitle: "Eiwit na 30: hoeveel gram per dag",
   metaDescription:
-    "Hoeveel eiwit heb je na 40 nodig? Anabole resistentie, 1,6 g/kg, spreiding over de dag en wanneer poeder zinvol is — onderbouwd en praktisch.",
+    "Hoeveel eiwit heb je na 30 nodig? Anabole resistentie, 1,6 g/kg, spreiding over de dag en wanneer poeder zinvol is — onderbouwd en praktisch.",
   keywords: [
-    "eiwit man 40",
-    "eiwitbehoefte 40 plus",
+    "eiwit man 30",
+    "eiwitbehoefte 30 plus",
     "hoeveel eiwit per dag man",
     "anabole resistentie",
     "spiermassa behouden 40",
-    "eiwitpoeder mannen 40",
+    "eiwitpoeder mannen 30",
   ],
   referenties: toRefs([
     "Baum JI, Kim IY, Wolfe RR. Protein consumption and the elderly: what is the optimal level of intake? Nutrients. 2016;8(6):359.",

@@ -44,7 +44,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
     href: "/supplementen/omega-3",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   gerelateerdeSluggen: [
@@ -56,7 +56,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
   metaTitle:
     "Omega-3 en energie/concentratie: wat is bewezen?",
   metaDescription:
-    "Helpt omega-3 bij concentratie en energie? Eerlijke uitleg over EPA/DHA, studies en wanneer suppletie logisch is na 40.",
+    "Helpt omega-3 bij concentratie en energie? Eerlijke uitleg over EPA/DHA, studies en wanneer suppletie logisch is na 30.",
   keywords: [
     "omega 3 energie",
     "EPA DHA concentratie",

@@ -8,7 +8,7 @@ export const vitamineDEnSlaapData: BlogArtikel = {
   coverImage: "/images/blog/vitamine-d-en-slaap.jpg",
   coverImageAlt: "Berglandschap bij helder daglicht",
   heroIntro:
-    "Dat een laag vitamine D samenhangt met slechter slapen, lees je overal. Wat er zelden bij staat: het daglicht dat je vitamine D maakt, zet óók je biologische klok gelijk — en dat tweede effect op je slaap is veel beter onderbouwd dan het eerste. Hier lees je hoe [vitamine D](/kennisbank/vitamine-d) en [slaap na 40](/slaap-verbeteren-na-40) zich werkelijk tot elkaar verhouden, inclusief de vraag of je het 's avonds moet vermijden.",
+    "Dat een laag vitamine D samenhangt met slechter slapen, lees je overal. Wat er zelden bij staat: het daglicht dat je vitamine D maakt, zet óók je biologische klok gelijk — en dat tweede effect op je slaap is veel beter onderbouwd dan het eerste. Hier lees je hoe [vitamine D](/kennisbank/vitamine-d) en [slaap na 30](/slaap-verbeteren-na-40) zich werkelijk tot elkaar verhouden, inclusief de vraag of je het 's avonds moet vermijden.",
   leestijd: "9 min",
   gepubliceerdOp: "2026-09-01",
   laatstBijgewerktOp: "2026-09-01",
@@ -53,7 +53,7 @@ export const vitamineDEnSlaapData: BlogArtikel = {
       type: "tekst",
       titel: "Wat wél doet wat je hoopt",
       tekst:
-        "Als je slaapt slecht en je overweegt vitamine D, is de eerlijke volgorde deze: het middel met de sterkste onderbouwing voor slaap is niet in dit artikel te koop. Vast opstaan en naar bed gaan, fel licht in de ochtend, geen alcohol vlak voor bed en een koele slaapkamer doen aantoonbaar meer dan welk micronutriënt ook. Zie [slaap verbeteren na 40](/blog/slaap-verbeteren-40-plus) en [alcohol, slaap en energie](/blog/alcohol-slaap-energie-na-40).\n\nDat betekent niet dat vitamine D irrelevant is. Bij een gemeten tekort is aanvullen zinvol om redenen die wél erkend zijn — botten, spieren, immuunfunctie. Als je slaap daarbij verbetert, is dat meegenomen; het is alleen niet iets om op te rekenen. Melatonine als timingssignaal is een ander verhaal: zie [melatonine wanneer wel en niet](/blog/melatonine-wanneer-wel-niet).",
+        "Als je slaapt slecht en je overweegt vitamine D, is de eerlijke volgorde deze: het middel met de sterkste onderbouwing voor slaap is niet in dit artikel te koop. Vast opstaan en naar bed gaan, fel licht in de ochtend, geen alcohol vlak voor bed en een koele slaapkamer doen aantoonbaar meer dan welk micronutriënt ook. Zie [slaap verbeteren na 30](/blog/slaap-verbeteren-40-plus) en [alcohol, slaap en energie](/blog/alcohol-slaap-energie-na-40).\n\nDat betekent niet dat vitamine D irrelevant is. Bij een gemeten tekort is aanvullen zinvol om redenen die wél erkend zijn — botten, spieren, immuunfunctie. Als je slaap daarbij verbetert, is dat meegenomen; het is alleen niet iets om op te rekenen. Melatonine als timingssignaal is een ander verhaal: zie [melatonine wanneer wel en niet](/blog/melatonine-wanneer-wel-niet).",
     },
     {
       type: "opsomming",
@@ -89,7 +89,7 @@ export const vitamineDEnSlaapData: BlogArtikel = {
     href: "/beste/magnesium",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: slaap verbeteren na 40",
+    label: "Hoofdstuk-gids: slaap verbeteren na 30",
     href: "/slaap-verbeteren-na-40",
   },
   vergelijkingExtraLink: {

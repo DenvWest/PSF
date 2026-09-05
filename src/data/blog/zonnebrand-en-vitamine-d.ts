@@ -8,7 +8,7 @@ export const zonnebrandEnVitamineDData: BlogArtikel = {
   coverImage: "/images/blog/zonnebrand-en-vitamine-d.jpg",
   coverImageAlt: "Rustig strand met zacht zonlicht en milde bewolking",
   heroIntro:
-    "Op social media is het een vast refrein: zonnebrandcrème blokkeert 97% van je vitamine D-aanmaak, dus smeer je jezelf een tekort aan. Het eerste deel van die zin klopt in een laboratorium. Het tweede deel houdt in veldonderzoek geen stand — en het verschil tussen die twee is het hele verhaal. Hier lees je waarom, en wat het betekent voor [vitamine D](/kennisbank/vitamine-d) en [energie na 40](/energie-na-40).",
+    "Op social media is het een vast refrein: zonnebrandcrème blokkeert 97% van je vitamine D-aanmaak, dus smeer je jezelf een tekort aan. Het eerste deel van die zin klopt in een laboratorium. Het tweede deel houdt in veldonderzoek geen stand — en het verschil tussen die twee is het hele verhaal. Hier lees je waarom, en wat het betekent voor [vitamine D](/kennisbank/vitamine-d) en [energie na 30](/energie-na-40).",
   leestijd: "9 min",
   gepubliceerdOp: "2026-09-01",
   laatstBijgewerktOp: "2026-09-01",
@@ -52,7 +52,7 @@ export const zonnebrandEnVitamineDData: BlogArtikel = {
       type: "tekst",
       titel: "In Nederland is de breedtegraad het echte probleem",
       tekst:
-        "Voor wie op 52 graden noorderbreedte woont is de discussie over crème sowieso ondergeschikt aan iets fundamentelers: van ongeveer oktober tot maart staat de zon hier zo laag dat er nauwelijks UVB van de juiste golflengte door de atmosfeer komt. Je huid maakt dan bijna niets aan, met of zonder zonbescherming. Dat is de reden dat de winterstatus in Nederland bij veel mensen laag ligt — niet de tube in de badkamerkast.\n\nDaar komt bij wat het meeste verschil maakt en zelden in een reel past: binnenwerk, een donkere huidskleur (meer melanine betekent langere blootstelling voor dezelfde aanmaak), bedekkende kleding en leeftijd. De huidsynthesecapaciteit neemt met het ouder worden af, wat de doelgroep boven de 40 direct raakt. Wil je weten of dat bij jou speelt, lees dan [vitamine D-tekort herkennen](/blog/vitamine-d-tekort-herkennen).",
+        "Voor wie op 52 graden noorderbreedte woont is de discussie over crème sowieso ondergeschikt aan iets fundamentelers: van ongeveer oktober tot maart staat de zon hier zo laag dat er nauwelijks UVB van de juiste golflengte door de atmosfeer komt. Je huid maakt dan bijna niets aan, met of zonder zonbescherming. Dat is de reden dat de winterstatus in Nederland bij veel mensen laag ligt — niet de tube in de badkamerkast.\n\nDaar komt bij wat het meeste verschil maakt en zelden in een reel past: binnenwerk, een donkere huidskleur (meer melanine betekent langere blootstelling voor dezelfde aanmaak), bedekkende kleding en leeftijd. De huidsynthesecapaciteit neemt met het ouder worden af, wat de doelgroep boven de 30 direct raakt. Wil je weten of dat bij jou speelt, lees dan [vitamine D-tekort herkennen](/blog/vitamine-d-tekort-herkennen).",
     },
     {
       type: "opsomming",
@@ -84,7 +84,7 @@ export const zonnebrandEnVitamineDData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: ordenen in plaats van stapelen",
       tekst:
-        "Vermoeidheid heeft zelden één oorzaak, en vitamine D is er hooguit één van. In de [Leefstijlcheck](/intake) vragen we onder meer naar zonlicht (LIF_SUN) en zetten we slaap, stress, voeding en beweging naast elkaar — zodat je ziet waar je winst zit voordat je iets koopt. De brede context staat in [energie na 40](/energie-na-40).",
+        "Vermoeidheid heeft zelden één oorzaak, en vitamine D is er hooguit één van. In de [Leefstijlcheck](/intake) vragen we onder meer naar zonlicht (LIF_SUN) en zetten we slaap, stress, voeding en beweging naast elkaar — zodat je ziet waar je winst zit voordat je iets koopt. De brede context staat in [energie na 30](/energie-na-40).",
     },
   ],
   kernpunten: [
@@ -103,7 +103,7 @@ export const zonnebrandEnVitamineDData: BlogArtikel = {
     href: "/beste/vitamine-d",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   vergelijkingExtraLink: {

@@ -4,11 +4,11 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const krachttrainingNa40Data: BlogArtikel = {
   slug: "krachttraining-na-40",
   categorie: "energie",
-  titel: "Krachttraining na 40: hefboom voor energie, spieren en herstel",
+  titel: "Krachttraining na 30: hefboom voor energie, spieren en herstel",
   coverImage: "/images/blog/krachttraining-na-40.jpg",
   coverImageAlt: "Persoon die krachttraining doet met gewichten",
   heroIntro:
-    "Je hoeft geen bodybuilder te worden. Twee keer per week weerstandstraining is na 40 vaak de sterkste hefboom voor spierbehoud, metabole gezondheid en het gevoel dat je lichaam nog meewerkt — gekoppeld aan [eiwit na 40](/blog/eiwit-na-40) en [herstel na 40](/herstel-verbeteren-na-40).",
+    "Je hoeft geen bodybuilder te worden. Twee keer per week weerstandstraining is na 30 vaak de sterkste hefboom voor spierbehoud, metabole gezondheid en het gevoel dat je lichaam nog meewerkt — gekoppeld aan [eiwit na 30](/blog/eiwit-na-40) en [herstel na 30](/herstel-verbeteren-na-40).",
   leestijd: "10 min",
   gepubliceerdOp: "2026-05-23",
   laatstBijgewerktOp: "2026-05-23",
@@ -17,13 +17,13 @@ export const krachttrainingNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Ken je dit?",
       tekst:
-        "Je traint minder dan vroeger — niet uit luiheid, maar omdat herstel langer duurt en je schema vol zit. Ondertussen voel je dat je spieren slapper worden en traplopen zwaarder. Cardio alleen voelt veilig, maar krachttraining is na 40 juist wat sarcopenie (spierverlies) het hardst remt. Het gaat om zwaarte die je kunt dragen, niet om uren in de gym.",
+        "Je traint minder dan vroeger — niet uit luiheid, maar omdat herstel langer duurt en je schema vol zit. Ondertussen voel je dat je spieren slapper worden en traplopen zwaarder. Cardio alleen voelt veilig, maar krachttraining is na 30 juist wat sarcopenie (spierverlies) het hardst remt. Het gaat om zwaarte die je kunt dragen, niet om uren in de gym.",
     },
     {
       type: "tekst",
-      titel: "Waarom krachttraining na 40 anders telt",
+      titel: "Waarom krachttraining na 30 anders telt",
       tekst:
-        "Vanaf je 40e verlies je gemiddeld 3–8% spiermassa per decennium als je niets doet. Spier is metabool actief weefsel: minder spier betekent vaak lagere insulinegevoeligheid en minder veerkracht. Krachttraining geeft een duidelijke prikkel om spier te behouden of op te bouwen — mits je genoeg [eiwit](/kennisbank/eiwitbehoefte-na-40) eet en herstelt.",
+        "Vanaf je 30e verlies je gemiddeld 3–8% spiermassa per decennium als je niets doet. Spier is metabool actief weefsel: minder spier betekent vaak lagere insulinegevoeligheid en minder veerkracht. Krachttraining geeft een duidelijke prikkel om spier te behouden of op te bouwen — mits je genoeg [eiwit](/kennisbank/eiwitbehoefte-na-40) eet en herstelt.",
     },
     {
       type: "tekst",
@@ -58,9 +58,9 @@ export const krachttrainingNa40Data: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Krachttraining 2–3× per week is na 40 de belangrijkste hefboom voor spierbehoud en metabole gezondheid. Combineer met eiwit, cardio en herstel — geen maximalisme zonder rustdagen.",
+    "Krachttraining 2–3× per week is na 30 de belangrijkste hefboom voor spierbehoud en metabole gezondheid. Combineer met eiwit, cardio en herstel — geen maximalisme zonder rustdagen.",
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: herstel verbeteren na 40",
+    label: "Hoofdstuk-gids: herstel verbeteren na 30",
     href: "/herstel-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
@@ -72,13 +72,13 @@ export const krachttrainingNa40Data: BlogArtikel = {
     "creatine-en-herstel",
     "middagdip-bloedsuiker-na-40",
   ],
-  metaTitle: "Krachttraining na 40: protocol, eiwit en herstel",
+  metaTitle: "Krachttraining na 30: protocol, eiwit en herstel",
   metaDescription:
-    "Krachttraining na 40: sarcopenie voorkomen, eiwit, mitochondriën, cardio-combo en realistisch 8-weken startprotocol.",
+    "Krachttraining na 30: sarcopenie voorkomen, eiwit, mitochondriën, cardio-combo en realistisch 8-weken startprotocol.",
   keywords: [
-    "krachttraining man 40",
+    "krachttraining man 30",
     "sarcopenie voorkomen",
-    "spierbehoud 40 plus",
+    "spierbehoud 30 plus",
     "weerstandstraining mannen",
     "krachttraining testosteron",
     "VO2max trainen 40",

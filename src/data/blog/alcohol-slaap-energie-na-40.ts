@@ -4,11 +4,11 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
   slug: "alcohol-slaap-energie-na-40",
   categorie: "energie",
-  titel: "Alcohol, slaap en energie na 40: waarom 'één glas' zwaarder weegt",
+  titel: "Alcohol, slaap en energie na 30: waarom 'één glas' zwaarder weegt",
   coverImage: "/images/blog/alcohol-slaap-energie-na-40.jpg",
   coverImageAlt: "Wijnglas op een tafel in avondlicht",
   heroIntro:
-    "Een biertje of glas wijn 's avonds voelt als ontspanning — en soms val je sneller in slaap. Maar de ochtend erna vertelt vaak een ander verhaal: minder diepe slaap, vroege wake-ups en een middagdip die niet weg te koffien is. Na je 40e is dat patroon vaker merkbaar. Hier lees je wat alcohol doet met slaap en [energie na 40](/energie-na-40) — zonder moraliseren, wel met praktische keuzes.",
+    "Een biertje of glas wijn 's avonds voelt als ontspanning — en soms val je sneller in slaap. Maar de ochtend erna vertelt vaak een ander verhaal: minder diepe slaap, vroege wake-ups en een middagdip die niet weg te koffien is. Na je 30e is dat patroon vaker merkbaar. Hier lees je wat alcohol doet met slaap en [energie na 30](/energie-na-40) — zonder moraliseren, wel met praktische keuzes.",
   leestijd: "8 min",
   gepubliceerdOp: "2026-05-23",
   laatstBijgewerktOp: "2026-05-23",
@@ -23,7 +23,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Waarom alcohol slaap anders voelt dan het is",
       tekst:
-        "Alcohol is een centraal zenuwstelsel-depressivum: het kan inslapen versnellen, maar de architectuur van je nacht verandert. REM-slaap — belangrijk voor herstel en geheugen — wordt vaak ingekort of verschoven. In de tweede helft van de nacht, wanneer alcohol wordt afgebroken, word je lichter wakker: meer fragmentatie, minder diepe slaap. [Cortisol](/kennisbank/cortisol) kan 's nachts pieken in plaats van dalen. Dat is geen karakterzwakte; het is fysiologie. Lees ook [slaap verbeteren na 40](/slaap-verbeteren-na-40) voor het bredere ritme-verhaal.",
+        "Alcohol is een centraal zenuwstelsel-depressivum: het kan inslapen versnellen, maar de architectuur van je nacht verandert. REM-slaap — belangrijk voor herstel en geheugen — wordt vaak ingekort of verschoven. In de tweede helft van de nacht, wanneer alcohol wordt afgebroken, word je lichter wakker: meer fragmentatie, minder diepe slaap. [Cortisol](/kennisbank/cortisol) kan 's nachts pieken in plaats van dalen. Dat is geen karakterzwakte; het is fysiologie. Lees ook [slaap verbeteren na 30](/slaap-verbeteren-na-40) voor het bredere ritme-verhaal.",
     },
     {
       type: "tekst",
@@ -35,7 +35,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
       type: "opsomming",
       titel: "Vijf aanpassingen die vaak het meeste opleveren",
       inleiding:
-        "Geen abstinentie-preek — wel keuzes die in de praktijk verschil maken na 40.",
+        "Geen abstinentie-preek — wel keuzes die in de praktijk verschil maken na 30.",
       items: [
         "Plan 2–3 alcoholvrije avonden per week — vaste dagen werken beter dan 'ik zie wel'.",
         "Stop 3 uur voor bed: alcohol dicht bij slaaptijd raakt REM en nachtelijk wakker worden het hardst.",
@@ -48,13 +48,13 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Supplementen zijn geen tegenmiddel",
       tekst:
-        "Magnesium of melatonine lossen alcoholverstoring niet op. Magnesium draagt onder voorwaarden bij aan normale werking van zenuwstelsel en spieren (EFSA); melatonine is een timing-signaal, geen slaapmiddel — zie [melatonine na 40](/blog/melatonine-na-40). Eerst het avondritueel, dan pas gericht aanvullen waar je echt tekort komt.",
+        "Magnesium of melatonine lossen alcoholverstoring niet op. Magnesium draagt onder voorwaarden bij aan normale werking van zenuwstelsel en spieren (EFSA); melatonine is een timing-signaal, geen slaapmiddel — zie [melatonine na 30](/blog/melatonine-na-40). Eerst het avondritueel, dan pas gericht aanvullen waar je echt tekort komt.",
     },
     {
       type: "tekst",
       titel: "Turbo: waar lekt jouw energie weg?",
       tekst:
-        "In de [Leefstijlcheck](/intake) zie je hoe slaap, voeding, stress en alcohol samenkomen in één profiel — inclusief NRG_DEP. Wil je het energiethema in één gids? Start bij [energie na 40](/energie-na-40).",
+        "In de [Leefstijlcheck](/intake) zie je hoe slaap, voeding, stress en alcohol samenkomen in één profiel — inclusief NRG_DEP. Wil je het energiethema in één gids? Start bij [energie na 30](/energie-na-40).",
     },
   ],
   samenvatting:
@@ -66,7 +66,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
     href: "/beste/omega-3-supplement",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   vergelijkingExtraLink: {
@@ -79,11 +79,11 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
     "energie-verhogen-natuurlijk",
   ],
   metaTitle:
-    "Alcohol, slaap en energie na 40: wat één glas echt doet",
+    "Alcohol, slaap en energie na 30: wat één glas echt doet",
   metaDescription:
-    "Alcohol en vermoeidheid na 40: REM-slaap, ochtendenergie, middagdip en vijf praktische aanpassingen zonder moraliseren.",
+    "Alcohol en vermoeidheid na 30: REM-slaap, ochtendenergie, middagdip en vijf praktische aanpassingen zonder moraliseren.",
   keywords: [
-    "alcohol slaap mannen 40",
+    "alcohol slaap mannen 30",
     "alcohol vermoeidheid",
     "alcohol energie dag erna",
     "alcohol REM slaap",

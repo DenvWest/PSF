@@ -8,14 +8,14 @@ export const magnesiumInCombinatieMetMedicijnenData: BlogArtikel = {
   coverImage: "/images/blog/magnesium-in-combinatie-met-medicijnen.jpg",
   coverImageAlt: "Supplementpotjes en capsules op een rustige achtergrond",
   heroIntro:
-    "Magnesium is een van de meest gebruikte supplementen na je 40e — en een van de meest voorgeschreven groepen medicijnen (bloeddrukverlagers, maagzuurremmers, antibiotica) kan de opname of werking daarvan beïnvloeden. Dit artikel zet de bekende interacties op een rij, zonder een vervanging te zijn voor advies van je arts of apotheker.",
+    "Magnesium is een van de meest gebruikte supplementen na je 30e — en een van de meest voorgeschreven groepen medicijnen (bloeddrukverlagers, maagzuurremmers, antibiotica) kan de opname of werking daarvan beïnvloeden. Dit artikel zet de bekende interacties op een rij, zonder een vervanging te zijn voor advies van je arts of apotheker.",
   leestijd: "7 min",
   gepubliceerdOp: "2026-09-02",
   laatstBijgewerktOp: "2026-09-02",
   secties: [
     {
       type: "tekst",
-      titel: "Waarom dit een reële vraag is na je 40e",
+      titel: "Waarom dit een reële vraag is na je 30e",
       tekst:
         "Hoe ouder je wordt, hoe groter de kans dat je naast een [magnesiumsupplement](/beste/magnesium) ook vaste medicatie gebruikt — voor bloeddruk, cholesterol, maagklachten of botdichtheid. Magnesium is farmacologisch niet inert: het kan de opname van sommige geneesmiddelen in de darm vertragen, en sommige geneesmiddelen beïnvloeden op hun beurt hoeveel magnesium je lichaam vasthoudt of juist uitscheidt. Dat is geen reden om magnesium te mijden — wel om te weten welke combinaties aandacht verdienen.",
     },

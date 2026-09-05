@@ -14,14 +14,14 @@ const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
-  title: "Testosteron na 40: wat verandert en wat helpt",
+  title: "Testosteron na 30: wat verandert en wat helpt",
   description:
-    "Testosteron na 40 in begrijpelijke taal: leeftijdstrend, slaap, stress en training — zonder diagnoses. Links naar vergelijkingen en cluster-artikelen.",
+    "Testosteron na 30 in begrijpelijke taal: leeftijdstrend, slaap, stress en training — zonder diagnoses. Links naar vergelijkingen en cluster-artikelen.",
   ...canonicalMetadata("/testosteron-na-40"),
   openGraph: {
-    title: "Testosteron Na 40: Complete Gids",
+    title: "Testosteron Na 30: Complete Gids",
     description:
-      "Wat verandert na 40, wat onderzoek redelijkerwijs zegt en welke stappen je veilig eerst zet.",
+      "Wat verandert na 30, wat onderzoek redelijkerwijs zegt en welke stappen je veilig eerst zet.",
     url: "/testosteron-na-40",
     type: "article",
   },
@@ -30,9 +30,9 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Testosteron Na 40: Wat Verandert en Wat Je Zelf Kunt Doen",
+  headline: "Testosteron Na 30: Wat Verandert en Wat Je Zelf Kunt Doen",
   description:
-    "Testosteron na 40: leefstijl, verwachtingen en wanneer medische hulp past.",
+    "Testosteron na 30: leefstijl, verwachtingen en wanneer medische hulp past.",
   author: {
     "@type": "Organization",
     name: "PerfectSupplement",
@@ -50,7 +50,7 @@ const articleSchema = {
 
 const faqItems = [
   {
-    q: "Daalt testosteron altijd na 40?",
+    q: "Daalt testosteron altijd na 30?",
     a: "Gemiddeld dalen de testosteronwaarden langzaam met de leeftijd, maar de verschillen tussen mannen zijn groot. Vermoeidheid of minder zin in seks heeft vaak meerdere oorzaken. Alleen bloedonderzoek bij een arts geeft zekerheid over jouw waarden.",
   },
   {
@@ -106,7 +106,7 @@ export default function TestosteronNa40Page() {
                   Complete gids
                 </p>
                 <h1 className="mt-2 font-serif text-4xl font-bold text-gray-900 md:text-5xl">
-                  Testosteron na 40: wat verandert en wat je zelf kunt doen
+                  Testosteron na 30: wat verandert en wat je zelf kunt doen
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 14 min
@@ -126,7 +126,7 @@ export default function TestosteronNa40Page() {
                   </li>
                   <li>
                     <a href="#wat-verandert" className="hover:underline">
-                      Wat gemiddeld verandert na 40
+                      Wat gemiddeld verandert na 30
                     </a>
                   </li>
                   <li>
@@ -187,7 +187,7 @@ export default function TestosteronNa40Page() {
               <section id="herkenning" className="mt-12 scroll-mt-24">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">Ken Je Dit?</h2>
                 <p className="mt-4 text-lg leading-relaxed text-gray-700">
-                  Veel mannen 40+ merken veranderingen die ze online snel aan hormonen koppelen.
+                  Veel mannen 30+ merken veranderingen die ze online snel aan hormonen koppelen.
                   Herkenning is nuttig — zelf-diagnose niet.
                 </p>
                 <p className="mt-6 font-medium text-gray-700">Ken je dit:</p>
@@ -208,7 +208,7 @@ export default function TestosteronNa40Page() {
 
               <section id="wat-verandert" className="mt-14 scroll-mt-24">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
-                  Wat gemiddeld verandert na 40
+                  Wat gemiddeld verandert na 30
                 </h2>
                 <p className="mt-4 leading-relaxed text-gray-700">
                   Onderzoek bij grote groepen mannen laat zien dat het testosteron gemiddeld langzaam
@@ -292,7 +292,7 @@ export default function TestosteronNa40Page() {
                   </Link>{" "}
                   en de gids{" "}
                   <Link href="/slaap-verbeteren-na-40" className={LINK}>
-                    slaap verbeteren na 40
+                    slaap verbeteren na 30
                   </Link>
                   .
                 </p>
@@ -305,7 +305,7 @@ export default function TestosteronNa40Page() {
                   relevant naast hormoonverhalen, geen vervanging van medische beoordeling. Eiwit
                   (≈1,6–2 g/kg lichaamsgewicht als richtlijn met je diëtist/arts) en herstel: zie{" "}
                   <Link href="/herstel-verbeteren-na-40" className={LINK}>
-                    herstel verbeteren na 40
+                    herstel verbeteren na 30
                   </Link>{" "}
                   en{" "}
                   <Link href="/blog/creatine-en-herstel" className={LINK}>
@@ -404,10 +404,10 @@ export default function TestosteronNa40Page() {
                   Geen supplement vervangt een meting of medisch advies — en geen enkele combinatie
                   van supplementen verhoogt gegarandeerd je testosteron. Onderstaande opties passen
                   vooral bij{" "}
-                  <strong className="text-gray-900">spierbehoud en krachttraining na 40</strong>,
+                  <strong className="text-gray-900">spierbehoud en krachttraining na 30</strong>,
                   naast slaap, eiwit via voeding en stressmanagement. Meer diepgang:{" "}
                   <Link href="/herstel-verbeteren-na-40" className={LINK}>
-                    herstel verbeteren na 40
+                    herstel verbeteren na 30
                   </Link>{" "}
                   en{" "}
                   <Link href="/blog/creatine-en-herstel" className={LINK}>
@@ -529,7 +529,7 @@ export default function TestosteronNa40Page() {
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30 sm:col-span-2"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
-                      Testosteron en energie na 40: vermoeidheid is breder dan één bloedwaarde.
+                      Testosteron en energie na 30: vermoeidheid is breder dan één bloedwaarde.
                     </p>
                     <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
                       Lees het artikel →

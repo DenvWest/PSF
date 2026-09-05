@@ -8,7 +8,7 @@ export const vitamineDSeizoenenJaarritmeData: BlogArtikel = {
   coverImage: "/images/blog/vitamine-d-seizoenen-jaarritme.jpg",
   coverImageAlt: "Mensen in gesprek in een lichte, seizoensgebonden setting",
   heroIntro:
-    "De meeste mensen denken dat hun vitamine D-status meebeweegt met het weer: zon is hoog, dus status is hoog. In werkelijkheid loopt je waarde maanden achter op de zon. Je piek valt in de nazomer, je dal in het vroege voorjaar — en dat verschil verklaart waarom februari en maart de maanden zijn waarin een tekort zich meldt. Hier lees je hoe dat jaarritme werkt, wat het onderzoek erover laat zien en wat het betekent voor [vitamine D](/kennisbank/vitamine-d) en [energie na 40](/energie-na-40).",
+    "De meeste mensen denken dat hun vitamine D-status meebeweegt met het weer: zon is hoog, dus status is hoog. In werkelijkheid loopt je waarde maanden achter op de zon. Je piek valt in de nazomer, je dal in het vroege voorjaar — en dat verschil verklaart waarom februari en maart de maanden zijn waarin een tekort zich meldt. Hier lees je hoe dat jaarritme werkt, wat het onderzoek erover laat zien en wat het betekent voor [vitamine D](/kennisbank/vitamine-d) en [energie na 30](/energie-na-40).",
   leestijd: "10 min",
   gepubliceerdOp: "2026-09-01",
   laatstBijgewerktOp: "2026-09-01",
@@ -99,7 +99,7 @@ export const vitamineDSeizoenenJaarritmeData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: wat er nog meer met de seizoenen meebeweegt",
       tekst:
-        "Daglicht stuurt niet alleen vitamine D-aanmaak maar ook je slaap-waakritme, en in de winter verschuiven allebei. In de [Leefstijlcheck](/intake) vragen we naar zonlicht (LIF_SUN) naast slaap, stress en beweging — zodat je ziet welke van die seizoensfactoren bij jou het zwaarst weegt. De bredere gids: [energie na 40](/energie-na-40).",
+        "Daglicht stuurt niet alleen vitamine D-aanmaak maar ook je slaap-waakritme, en in de winter verschuiven allebei. In de [Leefstijlcheck](/intake) vragen we naar zonlicht (LIF_SUN) naast slaap, stress en beweging — zodat je ziet welke van die seizoensfactoren bij jou het zwaarst weegt. De bredere gids: [energie na 30](/energie-na-40).",
     },
   ],
   kernpunten: [
@@ -118,7 +118,7 @@ export const vitamineDSeizoenenJaarritmeData: BlogArtikel = {
     href: "/beste/vitamine-d",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   vergelijkingExtraLink: {

@@ -25,9 +25,9 @@ export const PUBLIEK_PIJLERS: PubliekPijler[] = [
   {
     slug: "pijler-testosteron-na-40",
     href: "/testosteron-na-40",
-    titel: "Testosteron na 40: wat er daalt en wat je eraan doet",
+    titel: "Testosteron na 30: wat er daalt en wat je eraan doet",
     samenvatting:
-      "Testosteron zakt na je veertigste met ongeveer een procent per jaar. Wat dat merkbaar doet met energie, herstel en spiermassa — en welke leefstijlknoppen er volgens onderzoek toe doen.",
+      "Testosteron zakt na je dertigste met ongeveer een procent per jaar. Wat dat merkbaar doet met energie, herstel en spiermassa — en welke leefstijlknoppen er volgens onderzoek toe doen.",
     categorie: "energie",
     audience: "mannen",
     leestijd: "12 min",

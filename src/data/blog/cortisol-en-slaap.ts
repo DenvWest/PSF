@@ -8,7 +8,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
   coverImage: "/images/blog/cortisol-en-slaap.jpg",
   coverImageAlt: "Slaapkamer in zachte avondlichting, rustig beddengoed",
   heroIntro:
-    "Je valt prima in slaap, maar om 3 uur lig je klaarwakker. Hart bonkt, gedachten racen, slaap wil niet meer komen. Dit is geen toeval en geen slechte gewil — dit is [cortisol](/kennisbank/cortisol) dat te vroeg gas geeft. Hier lees je waarom dit patroon na je 40e zo hardnekkig is, en wat je er concreet aan kunt doen.",
+    "Je valt prima in slaap, maar om 3 uur lig je klaarwakker. Hart bonkt, gedachten racen, slaap wil niet meer komen. Dit is geen toeval en geen slechte gewil — dit is [cortisol](/kennisbank/cortisol) dat te vroeg gas geeft. Hier lees je waarom dit patroon na je 30e zo hardnekkig is, en wat je er concreet aan kunt doen.",
   leestijd: "6 min",
   gepubliceerdOp: "2026-05-02",
   laatstBijgewerktOp: "2026-05-23",
@@ -25,8 +25,8 @@ export const cortisolEnSlaapData: BlogArtikel = {
     },
     {
       type: "tekst",
-      titel: "Waarom dit na je 40e erger wordt",
-      tekst: "Na je 40e spelen twee processen tegelijk. Ten eerste daalt de natuurlijke melatonineproductie met de leeftijd — de pijnappelklier maakt minder aan en reageert minder gevoelig op duisternis. Je slaapdrempel wordt daardoor verhoogd: het duurt langer om in te slapen en de slaap is lichter. Ten tweede wordt de [HPA-as](/kennisbank/hpa-as) — de communicatielijn tussen hersenen en bijnieren die cortisol reguleert — minder responsief. Bij chronische stress reageert dit systeem trager op de rem. Cortisol bouwt op en wordt minder goed afgebroken. Het resultaat is een dubbel probleem: minder melatonine om je door de nacht te dragen, en meer cortisol dat te vroeg opstijgt. Dat is precies de combinatie die het 3-uur-patroon veroorzaakt. [Lees de informatieve melatonine-gids](/supplementen/melatonine).",
+      titel: "Waarom dit na je 30e erger wordt",
+      tekst: "Na je 30e spelen twee processen tegelijk. Ten eerste daalt de natuurlijke melatonineproductie met de leeftijd — de pijnappelklier maakt minder aan en reageert minder gevoelig op duisternis. Je slaapdrempel wordt daardoor verhoogd: het duurt langer om in te slapen en de slaap is lichter. Ten tweede wordt de [HPA-as](/kennisbank/hpa-as) — de communicatielijn tussen hersenen en bijnieren die cortisol reguleert — minder responsief. Bij chronische stress reageert dit systeem trager op de rem. Cortisol bouwt op en wordt minder goed afgebroken. Het resultaat is een dubbel probleem: minder melatonine om je door de nacht te dragen, en meer cortisol dat te vroeg opstijgt. Dat is precies de combinatie die het 3-uur-patroon veroorzaakt. [Lees de informatieve melatonine-gids](/supplementen/melatonine).",
     },
     {
       type: "tekst",
@@ -37,7 +37,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
       type: "opsomming",
       titel: "Wat je hieraan kunt doen",
       inleiding:
-        "Het goede nieuws: dit patroon is beïnvloedbaar. Het vraagt aanpak op twee niveaus — leefstijl en eventueel gerichte supplementen. [Lees de complete aanpak voor betere slaap na je 40e.](/slaap-verbeteren-na-40)",
+        "Het goede nieuws: dit patroon is beïnvloedbaar. Het vraagt aanpak op twee niveaus — leefstijl en eventueel gerichte supplementen. [Lees de complete aanpak voor betere slaap na je 30e.](/slaap-verbeteren-na-40)",
       items: [
         "Avondroutine: cortisol heeft een afbouwsignaal nodig. Een vaste avondroutine — zelfde tijd, dezelfde volgorde — traint je [HPA-as](/kennisbank/hpa-as) om eerder te remmen. Dim het licht na 21:00. Blauw licht van schermen blokkeert melatonineaanmaak en houdt cortisol actief.",
         "Geen schermen 60 minuten voor bed: dit is het meest onderbouwde advies in slaaponderzoek. Niet vanwege de content, maar vanwege het lichtspectrum. Gebruik een e-reader met warm licht, een boek, of luister naar iets rustigs.",
@@ -49,7 +49,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Herken jij dit patroon?",
-      tekst: "Regelmatig wakker worden 's nachts — moe maar niet uitgerust opstaan — een gevoel van achterstand dat zich opstapelt. Dat is geen karakterzwakte en geen gevolg van te laat naar bed gaan. Het is een specifiek profiel dat je kunt herkennen én aanpakken. Misschien ben je een [Onrustige Slaper](/profiel/onrustige-slaper) — een veelvoorkomend patroon na 40 waarbij cortisolontregeling de sleutelfactor is. Wil je weten hoe jouw stress en slaap scoren? [Doe de gratis Leefstijlcheck](/intake) — 18 vragen, 3 minuten, persoonlijk resultaat.",
+      tekst: "Regelmatig wakker worden 's nachts — moe maar niet uitgerust opstaan — een gevoel van achterstand dat zich opstapelt. Dat is geen karakterzwakte en geen gevolg van te laat naar bed gaan. Het is een specifiek profiel dat je kunt herkennen én aanpakken. Misschien ben je een [Onrustige Slaper](/profiel/onrustige-slaper) — een veelvoorkomend patroon na 30 waarbij cortisolontregeling de sleutelfactor is. Wil je weten hoe jouw stress en slaap scoren? [Doe de gratis Leefstijlcheck](/intake) — 18 vragen, 3 minuten, persoonlijk resultaat.",
     },
     {
       type: "tekst",
@@ -58,7 +58,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Wakker worden om 3 uur kan samenhangeren met een vroegere cortisolopbouw dan passend is voor diepe slaap. Na je 40e speelt vaak minder melatonine en tragere stressrem mee. Aanpak: vaste avondroutine, geen schermen voor bed, en eventueel magnesium glycinaat (EFSA: zenuwstelsel/spieren) en — met kennis van EU‑claimstatus — ashwagandha zoals in studies. Rekening houden met weken voordat je eventuele veranderingen beoordeelt.",
+    "Wakker worden om 3 uur kan samenhangeren met een vroegere cortisolopbouw dan passend is voor diepe slaap. Na je 30e speelt vaak minder melatonine en tragere stressrem mee. Aanpak: vaste avondroutine, geen schermen voor bed, en eventueel magnesium glycinaat (EFSA: zenuwstelsel/spieren) en — met kennis van EU‑claimstatus — ashwagandha zoals in studies. Rekening houden met weken voordat je eventuele veranderingen beoordeelt.",
   supplementCTA: {
     naam: "Ashwagandha",
     uitleg:
@@ -66,7 +66,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     href: "/beste/ashwagandha",
   },
   cornerstoneLink: {
-    label: "Complete gids: slaap verbeteren na je 40e",
+    label: "Complete gids: slaap verbeteren na je 30e",
     href: "/slaap-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
@@ -89,7 +89,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     "slaap cortisol melatonine",
     "wakker worden nacht oorzaak",
     "cortisol ritme herstellen",
-    "slaap mannen 40",
+    "slaap mannen 30",
   ],
   referenties: toRefs([
     "Leproult R et al. Sleep loss results in an elevation of cortisol levels the next evening. Sleep. 1997;20(10):865-870.",

@@ -65,7 +65,7 @@ export const creatineWanneerInnemenData: BlogArtikel = {
       type: "tekst",
       titel: "Creatine en slaap: geen reden om het 's avonds te mijden",
       tekst:
-        "Creatine is geen stimulerend middel; het bevat geen cafeïne en werkt niet op je zenuwstelsel zoals een pre-workout dat doet. Er is geen goede reden om avondinname te vermijden vanwege je nachtrust. Wat je wél tegenkomt, is dat creatine vaak ín een pre-workout zit — dan is de cafeïne de boosdoener, niet de creatine. Lees het etiket van een combinatieproduct dus op wat er verder in zit.\n\nSlaap je slecht en zoek je daar een supplementaire route voor, dan is creatine niet de juiste afdeling. Begin bij [slaap verbeteren na 40](/slaap-verbeteren-na-40) en kijk daarna pas naar producten.",
+        "Creatine is geen stimulerend middel; het bevat geen cafeïne en werkt niet op je zenuwstelsel zoals een pre-workout dat doet. Er is geen goede reden om avondinname te vermijden vanwege je nachtrust. Wat je wél tegenkomt, is dat creatine vaak ín een pre-workout zit — dan is de cafeïne de boosdoener, niet de creatine. Lees het etiket van een combinatieproduct dus op wat er verder in zit.\n\nSlaap je slecht en zoek je daar een supplementaire route voor, dan is creatine niet de juiste afdeling. Begin bij [slaap verbeteren na 30](/slaap-verbeteren-na-40) en kijk daarna pas naar producten.",
     },
     {
       type: "tekst",

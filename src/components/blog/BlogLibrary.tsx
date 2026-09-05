@@ -15,8 +15,8 @@ const AUDIENCE_CONTEXT: Record<ContentAudience, AudienceContext> = {
       "Kies Mannen of Vrouwen om gerichte artikelen bovenaan te zetten.",
   },
   mannen: {
-    toelichting: "Artikelen voor mannen 40+ staan nu bovenaan.",
-    link: { label: "Naar de pijler Testosteron na 40", href: "/testosteron-na-40" },
+    toelichting: "Artikelen voor mannen 30+ staan nu bovenaan.",
+    link: { label: "Naar de pijler Testosteron na 30", href: "/testosteron-na-40" },
   },
   vrouwen: {
     toelichting: "Artikelen over de overgang staan nu bovenaan.",

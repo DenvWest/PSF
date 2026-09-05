@@ -4,20 +4,20 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const energieVerhogenData: BlogArtikel = {
   slug: "energie-verhogen-natuurlijk",
   categorie: "energie",
-  titel: "Energie verhogen na je 40e: de fysiologie en wat je kunt doen",
+  titel: "Energie verhogen na je 30e: de fysiologie en wat je kunt doen",
   coverImage: "/images/blog/energie-verhogen-natuurlijk.jpg",
   coverImageAlt: "Persoon die een pad oploopt in de buitenlucht",
   heroIntro:
-    "Aanhoudende vermoeidheid na je 40e is zelden één probleem. Het is meestal een stapeling van verstoorde energieproductie, hormoonveranderingen en leefstijlfactoren. Hier is een helder overzicht van wat er speelt en wat je kunt aanpakken.",
+    "Aanhoudende vermoeidheid na je 30e is zelden één probleem. Het is meestal een stapeling van verstoorde energieproductie, hormoonveranderingen en leefstijlfactoren. Hier is een helder overzicht van wat er speelt en wat je kunt aanpakken.",
   leestijd: "8 min",
   gepubliceerdOp: "2026-02-15",
   laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
-      titel: "Waarom energie na je 40e afneemt",
+      titel: "Waarom energie na je 30e afneemt",
       tekst:
-        "Energieniveau is de resultante van mitochondriale functie, hormoonbalans, slaapkwaliteit en stressbelasting. Na je 40e veranderen al deze factoren tegelijk: de mitochondriale efficiëntie neemt af, testosteron daalt geleidelijk, slaap wordt lichter en cortisol wordt minder goed gereguleerd. Het is dus niet één oorzaak die je moet aanpakken, maar een samenspel.",
+        "Energieniveau is de resultante van mitochondriale functie, hormoonbalans, slaapkwaliteit en stressbelasting. Na je 30e veranderen al deze factoren tegelijk: de mitochondriale efficiëntie neemt af, testosteron daalt geleidelijk, slaap wordt lichter en cortisol wordt minder goed gereguleerd. Het is dus niet één oorzaak die je moet aanpakken, maar een samenspel.",
     },
     {
       type: "tekst",
@@ -30,7 +30,7 @@ export const energieVerhogenData: BlogArtikel = {
       titel: "Vijf aanknopingspunten voor meer energie",
       items: [
         "Beweeg regelmatig en varieer intensiteit: Zowel duurtraining als HIIT stimuleren mitochondriale aanmaak op verschillende manieren.",
-        "Prioriteer slaap boven alles: Slaaptekort verlaagt energie meer dan bijna elke andere factor. Acht uur is na 40 voor de meeste mensen het minimum voor volledig herstel.",
+        "Prioriteer slaap boven alles: Slaaptekort verlaagt energie meer dan bijna elke andere factor. Acht uur is na 30 voor de meeste mensen het minimum voor volledig herstel.",
         "Stabiliseer bloedsuiker: Schommelende bloedsuikerspiegel veroorzaakt energiedips. Eet maaltijden met genoeg eiwit en complexe koolhydraten; beperk geraffineerde suikers. Lees [bloedsuiker en de middagdip](/blog/middagdip-bloedsuiker-na-40) en [insulineresistentie](/kennisbank/insulineresistentie).",
         "Verminder cortisol: Chronische stress verbruikt energie en interfereert met herstel. Stressmanagement is ook energiebeheer.",
         "Controleer tekorten: [beste vitamine D-supplementen](/beste/vitamine-d) horen bij een gemeten tekort, net als B12 en ijzer — veelvoorkomende maar makkelijk te corrigeren oorzaken van vermoeidheid. Bloedonderzoek geeft uitsluitsel.",
@@ -44,7 +44,7 @@ export const energieVerhogenData: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Energieverlies na je 40e is aanpakbaar als je de juiste oorzaken target: slaap, beweging, bloedsuikerstabiliteit en eventuele tekorten. Voeg je stressmanagement toe, dan ondersteun je ook de hormonale kant van energieregulatie.",
+    "Energieverlies na je 30e is aanpakbaar als je de juiste oorzaken target: slaap, beweging, bloedsuikerstabiliteit en eventuele tekorten. Voeg je stressmanagement toe, dan ondersteun je ook de hormonale kant van energieregulatie.",
   supplementCTA: {
     naam: "Vitamine D",
     uitleg:
@@ -52,7 +52,7 @@ export const energieVerhogenData: BlogArtikel = {
     href: "/supplementen/vitamine-d",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   gerelateerdeSluggen: [
@@ -61,12 +61,12 @@ export const energieVerhogenData: BlogArtikel = {
     "slaap-verbeteren-40-plus",
   ],
   metaTitle:
-    "Energie verhogen na je 40e: fysiologie en praktische aanpak",
+    "Energie verhogen na je 30e: fysiologie en praktische aanpak",
   metaDescription:
-    "Aanhoudende vermoeidheid na je 40e? Ontdek fysiologische factoren en vijf leefstijlpunten die in onderzoek met energie en herstel in verband worden gebracht.",
+    "Aanhoudende vermoeidheid na je 30e? Ontdek fysiologische factoren en vijf leefstijlpunten die in onderzoek met energie en herstel in verband worden gebracht.",
   keywords: [
     "energie verhogen 40",
-    "vermoeidheid mannen 40",
+    "vermoeidheid mannen 30",
     "mitochondriale functie",
     "vitamine D vermoeidheid",
     "energie verbeteren natuurlijk",

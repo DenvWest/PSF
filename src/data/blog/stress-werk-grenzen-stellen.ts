@@ -15,9 +15,9 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
   secties: [
     {
       type: "tekst",
-      titel: "Waarom grenzen op werk zo moeilijk zijn na je 40e",
+      titel: "Waarom grenzen op werk zo moeilijk zijn na je 30e",
       tekst:
-        "Rond je veertigste combineer je vaak senioriteit met meer afhankelijkheid van je inkomen: gezin, hypotheek, ouders die zorg nodig hebben. Tegelijk verwacht men van je dat je beschikbaar bent — mail, Teams, telefoon. Chronische beschikbaarheid houdt je cortisol hoog en ondermijnt diepe concentratie. Grenzen zijn dus geen ‘soft skill’; ze zijn een randvoorwaarde voor duurzame werkprestatie. Bij aanhoudende stress kun je [beste ashwagandha-supplementen](/beste/ashwagandha) als gerichte aanvulling overwegen.",
+        "Rond je dertigste combineer je vaak senioriteit met meer afhankelijkheid van je inkomen: gezin, hypotheek, ouders die zorg nodig hebben. Tegelijk verwacht men van je dat je beschikbaar bent — mail, Teams, telefoon. Chronische beschikbaarheid houdt je cortisol hoog en ondermijnt diepe concentratie. Grenzen zijn dus geen ‘soft skill’; ze zijn een randvoorwaarde voor duurzame werkprestatie. Bij aanhoudende stress kun je [beste ashwagandha-supplementen](/beste/ashwagandha) als gerichte aanvulling overwegen.",
     },
     {
       type: "opsomming",
@@ -45,7 +45,7 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
   samenvatting:
     "Grenzen zijn afspraken over beschikbaarheid en prioriteit — geen zwakte. Werk met duidelijke scope, tijdslots en nee met alternatief; bij structurele miskenning is de oorzaak vaak breder dan jouw assertiviteit.",
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: stress verminderen na 40",
+    label: "Hoofdstuk-gids: stress verminderen na 30",
     href: "/stress-verminderen-na-40",
   },
   gerelateerdeSluggen: [

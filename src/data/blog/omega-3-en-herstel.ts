@@ -4,11 +4,11 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const omega3EnHerstelData: BlogArtikel = {
   slug: "omega-3-en-herstel",
   categorie: "supplementen",
-  titel: "Omega-3 en herstel na 40: EPA/DHA in het herstelplaatje",
+  titel: "Omega-3 en herstel na 30: EPA/DHA in het herstelplaatje",
   coverImage: "/images/blog/omega-3-en-herstel.jpg",
   coverImageAlt: "Verse maaltijd met vette vis of omega-3-rijke producten",
   heroIntro:
-    "Omega-3 wordt vaak geassocieerd met hart en hersenen — maar in herstelcontext gaat het vooral om of je genoeg [EPA en DHA](/kennisbank/epa-dha) binnenkrijgt en hoe dat past naast slaap, training en [oxidatieve stress](/kennisbank/oxidatieve-stress)-regulatie. Verbind dit met [herstel verbeteren na 40](/herstel-verbeteren-na-40) en vergelijk producten op [/beste/omega-3-supplement](/beste/omega-3-supplement).",
+    "Omega-3 wordt vaak geassocieerd met hart en hersenen — maar in herstelcontext gaat het vooral om of je genoeg [EPA en DHA](/kennisbank/epa-dha) binnenkrijgt en hoe dat past naast slaap, training en [oxidatieve stress](/kennisbank/oxidatieve-stress)-regulatie. Verbind dit met [herstel verbeteren na 30](/herstel-verbeteren-na-40) en vergelijk producten op [/beste/omega-3-supplement](/beste/omega-3-supplement).",
   leestijd: "10 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-05-14",
@@ -17,7 +17,7 @@ export const omega3EnHerstelData: BlogArtikel = {
       type: "tekst",
       titel: "Herstel begint met gedrag",
       tekst:
-        "Rustdagen, eiwit en slaap bepalen voor een groot deel hoe snel je weer trainbaar bent. Omega-3 is na 40 vooral relevant als je weinig vette vis eet — niet als vervanging van een deload week.",
+        "Rustdagen, eiwit en slaap bepalen voor een groot deel hoe snel je weer trainbaar bent. Omega-3 is na 30 vooral relevant als je weinig vette vis eet — niet als vervanging van een deload week.",
     },
     {
       type: "tekst",
@@ -49,7 +49,7 @@ export const omega3EnHerstelData: BlogArtikel = {
     href: "/beste/omega-3-supplement",
   },
   cornerstoneLink: {
-    label: "Pillar: herstel verbeteren na 40",
+    label: "Pillar: herstel verbeteren na 30",
     href: "/herstel-verbeteren-na-40",
   },
   gerelateerdeSluggen: [
@@ -57,10 +57,10 @@ export const omega3EnHerstelData: BlogArtikel = {
     "omega-3-concentratie-energie",
     "wat-is-omega-3",
   ],
-  metaTitle: "Omega-3 en herstel na 40",
+  metaTitle: "Omega-3 en herstel na 30",
   metaDescription:
     "Omega-3 en herstel: EPA/DHA, vergelijken en koppeling met pillar herstel en profiel overtrainer.",
-  keywords: ["omega 3 herstel", "EPA DHA herstel", "omega 3 na 40"],
+  keywords: ["omega 3 herstel", "EPA DHA herstel", "omega 3 na 30"],
   referenties: toRefs([
     "Calder PC. Omega-3 fatty acids and inflammatory processes. Nutrients.",
     "Mozaffarian D, Wu JH. Omega-3 fatty acids and cardiovascular disease. J Am Coll Cardiol.",

@@ -13,32 +13,32 @@ const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
-  title: "Voeding Na 40: Wat Mannen Vaak Missen",
+  title: "Voeding Na 30: Wat Mannen Vaak Missen",
   description:
-    "Eiwit, vetten, ritme en stabiliteit na 40 — zonder dieet-hype. Praktische stappen vóór supplementen, met links naar gidsen en kennisbank.",
+    "Eiwit, vetten, ritme en stabiliteit na 30 — zonder dieet-hype. Praktische stappen vóór supplementen, met links naar gidsen en kennisbank.",
   ...canonicalMetadata("/voeding-na-40"),
   openGraph: {
-    title: "Voeding Na 40 — eerst basis, dan pas supplementen",
+    title: "Voeding Na 30 — eerst basis, dan pas supplementen",
     description:
-      "Herkenning, leefstijlstappen en wanneer vergelijkingen zinvol zijn — voor mannen 40+.",
+      "Herkenning, leefstijlstappen en wanneer vergelijkingen zinvol zijn — voor mannen 30+.",
     url: "/voeding-na-40",
     type: "article",
   },
 };
 
 const articleSchema = buildArticleSchema({
-  headline: "Voeding Na 40: Wat Mannen Vaak Missen",
+  headline: "Voeding Na 30: Wat Mannen Vaak Missen",
   description:
-    "Eiwit, vetten, ritme en stabiliteit na 40 — praktische stappen vóór supplementen.",
+    "Eiwit, vetten, ritme en stabiliteit na 30 — praktische stappen vóór supplementen.",
   path: "/voeding-na-40",
   datePublished: "2026-06-04",
 });
 
 const faqSchema = buildFaqSchema([
   {
-    question: "Hoeveel eiwit heb ik nodig na 40?",
+    question: "Hoeveel eiwit heb ik nodig na 30?",
     answer:
-      "Na 40+ en bij meer bewegen helpt voldoende eiwit spiermassa en herstel — verspreid over de dag, niet in één portie. Gangbare richtlijnen liggen rond 1,0–1,2 g/kg bij weinig training en hoger bij krachtwerk; exact hangt af van gewicht en activiteit. Bij aanhoudende klachten: bespreek inname met je huisarts.",
+      "Na 30+ en bij meer bewegen helpt voldoende eiwit spiermassa en herstel — verspreid over de dag, niet in één portie. Gangbare richtlijnen liggen rond 1,0–1,2 g/kg bij weinig training en hoger bij krachtwerk; exact hangt af van gewicht en activiteit. Bij aanhoudende klachten: bespreek inname met je huisarts.",
   },
   {
     question: "Moet ik meteen supplementen nemen?",
@@ -74,11 +74,11 @@ export default function VoedingNa40Page() {
                     Leefstijl eerst
                   </p>
                   <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                    Voeding Na 40: Wat Mannen Vaak Missen
+                    Voeding Na 30: Wat Mannen Vaak Missen
                   </h1>
                   <p className="mt-4 text-lg text-gray-600">
                     Ken je dit: je eet “gezond genoeg”, maar herstel, energie en spiermassa
-                    voelen alsof ze achterlopen? Na 40 verandert hoe je lichaam eiwit gebruikt,
+                    voelen alsof ze achterlopen? Na 30 verandert hoe je lichaam eiwit gebruikt,
                     hoe stabiel je bloedsuiker blijft en hoeveel je echt binnenkrijgt — zonder
                     dat je meer hoeft te “willen”.
                   </p>
@@ -117,7 +117,7 @@ export default function VoedingNa40Page() {
                     </li>
                     <li>
                       <a href="#biologie" className={LINK}>
-                        Wat er na 40 verandert
+                        Wat er na 30 verandert
                       </a>
                     </li>
                     <li>
@@ -163,7 +163,7 @@ export default function VoedingNa40Page() {
 
                 <section id="biologie" className="mt-12">
                   <h2 className="font-serif text-2xl font-bold text-gray-900">
-                    Wat er na 40 verandert
+                    Wat er na 30 verandert
                   </h2>
                   <p className="mt-4 text-gray-700 leading-relaxed">
                     Spieronderhoud vraagt meer{" "}
@@ -196,7 +196,7 @@ export default function VoedingNa40Page() {
                       <strong>Eiwit bij elke maaltijd</strong> — eieren, kwark, vis, peulvruchten.
                       Lees{" "}
                       <Link href="/blog/eiwit-na-40" className={LINK}>
-                        eiwit na 40
+                        eiwit na 30
                       </Link>
                       .
                     </li>
@@ -204,7 +204,7 @@ export default function VoedingNa40Page() {
                       <strong>Vaste eetmomenten</strong> — vooral ontbijt binnen 2 uur na opstaan
                       helpt ritme en middagdip (
                       <Link href="/blog/middagdip-bloedsuiker-na-40" className={LINK}>
-                        middagdip na 40
+                        middagdip na 30
                       </Link>
                       ).
                     </li>

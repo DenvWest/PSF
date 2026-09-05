@@ -47,13 +47,13 @@ export const slaapritmeHerstellenData: BlogArtikel = {
     },
     {
       type: "opsomming",
-      titel: "Waarom je ritme verstoord raakt na je 40e",
+      titel: "Waarom je ritme verstoord raakt na je 30e",
       inleiding:
-        "Na je 40e wordt je biologische klok gevoeliger voor verstoringen — en zijn de verstoringen zelf groter geworden. Vier oorzaken die na 40 het vaakst spelen:",
+        "Na je 30e wordt je biologische klok gevoeliger voor verstoringen — en zijn de verstoringen zelf groter geworden. Vier oorzaken die na 30 het vaakst spelen:",
       items: [
         "Weekend-jetlag: vrijdag en zaterdag laat naar bed, zondag uitslapen. Elke week twee uur tijdzone-verschuiving zonder het vliegtuig in te stappen — je brein ervaart dat letterlijk zo.",
-        "Schermgebruik 's avonds: blauw licht onderdrukt melatonineaanmaak. Na 40 daalt de melatonineproductie toch al — schermen versterken dat effect sterk.",
-        "Dalende melatonine: je pijnappelklier produceert vanaf je 40e structureel minder melatonine. Je slaperigheidssignaal komt later, zwakker en korter dan tien jaar geleden.",
+        "Schermgebruik 's avonds: blauw licht onderdrukt melatonineaanmaak. Na 30 daalt de melatonineproductie toch al — schermen versterken dat effect sterk.",
+        "Dalende melatonine: je pijnappelklier produceert vanaf je 30e structureel minder melatonine. Je slaperigheidssignaal komt later, zwakker en korter dan tien jaar geleden.",
         "Onregelmatige tijden: late werkdagen, zakelijke diners, wisselende wekkers — je biologische klok kan niet verankeren. Zonder vast ankerpunt drijft hij af.",
       ],
     },
@@ -79,7 +79,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
       type: "tekst",
       titel: "Wat nu?",
       tekst:
-        "Dit protocol is onderdeel van een breder verhaal. Slaapritme is één variabele — maar slaapkwaliteit na 40 wordt ook bepaald door slaaparchitectuur, stressrespons, hormoonbalans en voeding. [Lees de complete gids over slaap na je 40e.](/slaap-verbeteren-na-40)\n\nWil je weten welke supplementen bij jouw specifieke situatie passen? [Doe de gratis Leefstijlcheck](/intake) — 18 vragen, 3 minuten, direct een persoonlijk leefstijloverzicht.",
+        "Dit protocol is onderdeel van een breder verhaal. Slaapritme is één variabele — maar slaapkwaliteit na 30 wordt ook bepaald door slaaparchitectuur, stressrespons, hormoonbalans en voeding. [Lees de complete gids over slaap na je 30e.](/slaap-verbeteren-na-40)\n\nWil je weten welke supplementen bij jouw specifieke situatie passen? [Doe de gratis Leefstijlcheck](/intake) — 18 vragen, 3 minuten, direct een persoonlijk leefstijloverzicht.",
       },
     {
       type: "tekst",
@@ -102,7 +102,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
     href: "/beste/magnesium",
   },
   cornerstoneLink: {
-    label: "Complete gids: slaap verbeteren na je 40e",
+    label: "Complete gids: slaap verbeteren na je 30e",
     href: "/slaap-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
@@ -116,14 +116,14 @@ export const slaapritmeHerstellenData: BlogArtikel = {
   ],
   metaTitle: "Slaapritme Herstellen in 7 Dagen",
   metaDescription:
-    "Een verschoven slaapritme herken je vaak na je 40e. Hier is een 7-dagen protocol dat je vanavond kunt starten — zonder medicatie.",
+    "Een verschoven slaapritme herken je vaak na je 30e. Hier is een 7-dagen protocol dat je vanavond kunt starten — zonder medicatie.",
   keywords: [
     "slaapritme herstellen",
     "circadiaan ritme",
     "biologische klok herstellen",
     "slaapritme verbeteren",
     "weekend jetlag",
-    "slaapritme mannen 40",
+    "slaapritme mannen 30",
     "melatonine slaapritme",
   ],
   referenties: toRefs([

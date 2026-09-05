@@ -17,23 +17,23 @@ import { buildArticleSchema } from "@/lib/seo/structuredData";
 const ACCENT = "oklch(0.69 0.095 50)";
 
 export const metadata: Metadata = {
-  title: "Beweging Na 40: Kracht, Ritme en Herstel",
+  title: "Beweging Na 30: Kracht, Ritme en Herstel",
   description:
-    "Krachttraining, cardio en herstel na 40 — zonder sportschool-hype. Praktische stappen vóór supplementen, met links naar blogs en kennisbank.",
+    "Krachttraining, cardio en herstel na 30 — zonder sportschool-hype. Praktische stappen vóór supplementen, met links naar blogs en kennisbank.",
   ...canonicalMetadata("/beweging-na-40"),
   openGraph: {
-    title: "Beweging Na 40 — eerst belasting en rust, dan pas supplementen",
+    title: "Beweging Na 30 — eerst belasting en rust, dan pas supplementen",
     description:
-      "Herkenning, trainingsritme en wanneer creatine of eiwit zinvol zijn — voor mannen 40+.",
+      "Herkenning, trainingsritme en wanneer creatine of eiwit zinvol zijn — voor mannen 30+.",
     url: "/beweging-na-40",
     type: "article",
   },
 };
 
 const articleSchema = buildArticleSchema({
-  headline: "Beweging Na 40: Kracht, Ritme en Herstel",
+  headline: "Beweging Na 30: Kracht, Ritme en Herstel",
   description:
-    "Krachttraining, cardio en herstel na 40 — praktische stappen vóór supplementen.",
+    "Krachttraining, cardio en herstel na 30 — praktische stappen vóór supplementen.",
   path: "/beweging-na-40",
   datePublished: "2026-06-04",
 });
@@ -78,11 +78,11 @@ export default function BewegingNa40Page() {
                 Leefstijl eerst
               </p>
               <h1 className="mt-4 font-serif text-[clamp(36px,6vw,64px)] font-normal leading-[1.04] text-[#F4F1E9]">
-                Beweging Na 40: Kracht, Ritme en Herstel
+                Beweging Na 30: Kracht, Ritme en Herstel
               </h1>
               <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-[#9FB0A6] md:text-[19px]">
                 Ken je dit: je traint nog “genoeg”, maar herstel duurt langer,
-                spieren voelen trager terug en je bent vaker stijf? Na 40
+                spieren voelen trager terug en je bent vaker stijf? Na 30
                 verandert hoe snel je belastbaar bent — niet omdat bewegen
                 niet meer werkt, maar omdat ritme en rust zwaarder meetellen.
               </p>

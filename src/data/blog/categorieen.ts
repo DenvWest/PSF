@@ -31,9 +31,9 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     naam: "Stress",
     icoon: "🔥",
     beschrijving: "Cortisol, spanning en herstel. Van ademhaling tot ashwagandha.",
-    metaTitle: "Stress & cortisol na 40 — artikelen",
+    metaTitle: "Stress & cortisol na 30 — artikelen",
     metaDescription:
-      "Altijd 'aan' staan, cortisol en spanning na je 40e? Onderbouwde artikelen over stress, herstel en wat je lichaam signaleert.",
+      "Altijd 'aan' staan, cortisol en spanning na je 30e? Onderbouwde artikelen over stress, herstel en wat je lichaam signaleert.",
     intentTopics: [
       "altijd aan staan",
       "cortisol symptomen",
@@ -59,19 +59,19 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     id: "slaap",
     naam: "Slaap",
     icoon: "🌙",
-    beschrijving: "Van slaaphygiëne tot melatonine. Wat werkt na je 40e.",
-    metaTitle: "Slaap verbeteren na 40 — artikelen",
+    beschrijving: "Van slaaphygiëne tot melatonine. Wat werkt na je 30e.",
+    metaTitle: "Slaap verbeteren na 30 — artikelen",
     metaDescription:
-      "Moe wakker worden, nachtelijk wakker liggen of slecht doorslapen? Praktische artikelen over slaap, melatonine en herstel na je 40e.",
+      "Moe wakker worden, nachtelijk wakker liggen of slecht doorslapen? Praktische artikelen over slaap, melatonine en herstel na je 30e.",
     intentTopics: [
       "moe wakker worden",
       "nachtelijk wakker",
       "slecht doorslapen",
-      "slaap na 40",
+      "slaap na 30",
     ],
     intentArticleLinks: [
-      { label: "Slaap verbeteren na 40", slug: "slaap-verbeteren-40-plus" },
-      { label: "Melatonine na 40", slug: "melatonine-na-40" },
+      { label: "Slaap verbeteren na 30", slug: "slaap-verbeteren-40-plus" },
+      { label: "Melatonine na 30", slug: "melatonine-na-40" },
       { label: "Vitamine D en slaap", slug: "vitamine-d-en-slaap" },
       { label: "Magnesium en slaap", slug: "magnesium-en-slaap" },
     ],
@@ -90,12 +90,12 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     icoon: "⚡",
     beschrijving:
       "Testosteron, vitamine D en dagelijkse energie. Praktisch en onderbouwd.",
-    metaTitle: "Energie & vermoeidheid na 40 — artikelen",
+    metaTitle: "Energie & vermoeidheid na 30 — artikelen",
     metaDescription:
-      "Middagdip, trager herstel of vermoeidheid na je 40e? Artikelen over energie, testosteron, vitamine D en herstel — onderbouwd en praktisch.",
+      "Middagdip, trager herstel of vermoeidheid na je 30e? Artikelen over energie, testosteron, vitamine D en herstel — onderbouwd en praktisch.",
     intentTopics: [
       "middagdip",
-      "vermoeidheid na 40",
+      "vermoeidheid na 30",
       "trager herstel",
       "lage energie",
     ],

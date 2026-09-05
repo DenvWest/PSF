@@ -77,7 +77,7 @@ export const vitamineDHogeDosesSocialMediaData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: check of dit überhaupt jouw knop is",
       tekst:
-        "Als vermoeidheid je aanleiding is om vitamine D te overwegen, is de kans groot dat slaap, stress of eiwitinname meer opleveren. De [Leefstijlcheck](/intake) zet die domeinen naast elkaar zodat je gericht kiest in plaats van stapelt. Bredere context: [energie na 40](/energie-na-40).",
+        "Als vermoeidheid je aanleiding is om vitamine D te overwegen, is de kans groot dat slaap, stress of eiwitinname meer opleveren. De [Leefstijlcheck](/intake) zet die domeinen naast elkaar zodat je gericht kiest in plaats van stapelt. Bredere context: [energie na 30](/energie-na-40).",
     },
   ],
   kernpunten: [

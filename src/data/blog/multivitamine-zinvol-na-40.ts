@@ -60,7 +60,7 @@ export const multivitamineZinvolNa40Data: BlogArtikel = {
     "vitamine-d-en-energie",
     "creatine-en-herstel",
   ],
-  metaTitle: "Waarom wij geen multivitamine aanbevelen — is het zinvol na 40?",
+  metaTitle: "Waarom wij geen multivitamine aanbevelen — is het zinvol na 30?",
   metaDescription:
     "Multivitamine zin of onzin? Onderzoek laat geen duidelijk voordeel zien bij niet-deficiënte volwassenen. Waarom gerichte suppletie op je eigen profiel beter werkt.",
   keywords: [
@@ -68,7 +68,7 @@ export const multivitamineZinvolNa40Data: BlogArtikel = {
     "is een multivitamine zinvol",
     "multivitamine zin of onzin",
     "multivitamine of losse vitamines",
-    "multivitamine mannen 40",
+    "multivitamine mannen 30",
   ],
   referenties: toRefs([
     "Guallar E et al. Enough is enough: stop wasting money on vitamin and mineral supplements. Ann Intern Med. 2013;159(12):850-851.",

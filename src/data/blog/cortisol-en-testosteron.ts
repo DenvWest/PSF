@@ -5,7 +5,7 @@ export const cortisolEnTestosteronData: BlogArtikel = {
   slug: "cortisol-en-testosteron",
   categorie: "stress",
   audience: "mannen",
-  titel: "Cortisol en testosteron na 40: stress, verhalen en wat onderzoek redelijkerwijs zegt",
+  titel: "Cortisol en testosteron na 30: stress, verhalen en wat onderzoek redelijkerwijs zegt",
   coverImage: "/images/blog/cortisol-en-testosteron.jpg",
   coverImageAlt: "Man van middelbare leeftijd die krachttraining doet",
   heroIntro:
@@ -16,9 +16,9 @@ export const cortisolEnTestosteronData: BlogArtikel = {
   secties: [
     {
       type: "tekst",
-      titel: "Waarom dit thema mannen 40+ raakt",
+      titel: "Waarom dit thema mannen 30+ raakt",
       tekst:
-        "Veel mannen merken meer mentale belasting (werk, zorg, financiën) tegelijk met fysieke signalen zoals minder herstel of minder zin in training. Dat voelt alsof “hormonen het zijn” — en deels klopt het dat hormonale assen veranderen met de leeftijd. Toch is het gevaarlijk om vanuit blogs harde uitspraken te doen over jouw cortisol of testosteron zonder meting en context. Blijf bij herkenning en leefstijl: zie ook [cortisol in de kennisbank](/kennisbank/cortisol) en de pillar [testosteron na 40](/testosteron-na-40) voor voorzichtige kaders.",
+        "Veel mannen merken meer mentale belasting (werk, zorg, financiën) tegelijk met fysieke signalen zoals minder herstel of minder zin in training. Dat voelt alsof “hormonen het zijn” — en deels klopt het dat hormonale assen veranderen met de leeftijd. Toch is het gevaarlijk om vanuit blogs harde uitspraken te doen over jouw cortisol of testosteron zonder meting en context. Blijf bij herkenning en leefstijl: zie ook [cortisol in de kennisbank](/kennisbank/cortisol) en de pillar [testosteron na 30](/testosteron-na-40) voor voorzichtige kaders.",
     },
     {
       type: "tekst",
@@ -30,7 +30,7 @@ export const cortisolEnTestosteronData: BlogArtikel = {
       type: "tekst",
       titel: "Testosteron: trend, niet dagelijkse thermostaat",
       tekst:
-        "Gemiddeld dalen totale testosteronspiegels geleidelijk met de leeftijd, met grote individuele spreiding. Vermoeidheid of libidoverandering heeft talloze niet-hormonale oorzaken. Wil je het serieus uitzoeken, hoort dat in medische context — niet als zelf-diagnose via internet. Onze [testosteron na 40 pillar](/testosteron-na-40) beschrijft waar je op let in taal die past bij zelfmanagement en zorgprofessional als volgende stap.",
+        "Gemiddeld dalen totale testosteronspiegels geleidelijk met de leeftijd, met grote individuele spreiding. Vermoeidheid of libidoverandering heeft talloze niet-hormonale oorzaken. Wil je het serieus uitzoeken, hoort dat in medische context — niet als zelf-diagnose via internet. Onze [testosteron na 30 pillar](/testosteron-na-40) beschrijft waar je op let in taal die past bij zelfmanagement en zorgprofessional als volgende stap.",
     },
     {
       type: "opsomming",
@@ -52,7 +52,7 @@ export const cortisolEnTestosteronData: BlogArtikel = {
   samenvatting:
     "Cortisol en testosteron horen bij complexe regelsystemen — geen cartoon van ‘hoog vs laag’. Pak slaap, training en stress eerst aan; zoek medische evaluatie bij aanhoudende klachten; gebruik supplementen vergelijkend en voorzichtig.",
   cornerstoneLink: {
-    label: "Stress verminderen — pillar voor mannen 40+",
+    label: "Stress verminderen — pillar voor mannen 30+",
     href: "/stress-verminderen-na-40",
   },
   vergelijkingExtraLink: {
@@ -65,13 +65,13 @@ export const cortisolEnTestosteronData: BlogArtikel = {
     "ademhaling-tegen-stress",
   ],
   metaTitle:
-    "Cortisol en testosteron na 40: feiten vs verhalen",
+    "Cortisol en testosteron na 30: feiten vs verhalen",
   metaDescription:
-    "Cortisol, testosteron en stress na 40: wat correlaties wél betekenen, wat niet, en welke stappen je veilig eerst zet — met links naar pillars en vergelijkingen.",
+    "Cortisol, testosteron en stress na 30: wat correlaties wél betekenen, wat niet, en welke stappen je veilig eerst zet — met links naar pillars en vergelijkingen.",
   keywords: [
     "cortisol testosteron",
     "stress testosteron mannen",
-    "testosteron na 40",
+    "testosteron na 30",
     "cortisol verlagen",
   ],
   referenties: toRefs([

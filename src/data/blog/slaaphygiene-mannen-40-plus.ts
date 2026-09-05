@@ -4,11 +4,11 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const slaaphygieneMannen40PlusData: BlogArtikel = {
   slug: "slaaphygiene-mannen-40-plus",
   categorie: "slaap",
-  titel: "Slaaphygiëne: wat wél werkt na je 40e",
+  titel: "Slaaphygiëne: wat wél werkt na je 30e",
   coverImage: "/images/blog/slaaphygiene-mannen-40-plus.jpg",
   coverImageAlt: "Persoon die ontspannen ligt te rusten in een donkere slaapkamer",
   heroIntro:
-    "Lijstjes met slaaptips zijn er genoeg — maar wat heeft na je veertigste echt prioriteit? Hier focussen we op de interventies met de hoogste impact op je slaaparchitectuur en je [circadiaanse ritme](/kennisbank/circadiaan-ritme).",
+    "Lijstjes met slaaptips zijn er genoeg — maar wat heeft na je dertigste echt prioriteit? Hier focussen we op de interventies met de hoogste impact op je slaaparchitectuur en je [circadiaanse ritme](/kennisbank/circadiaan-ritme).",
   leestijd: "7 min",
   gepubliceerdOp: "2026-03-22",
   secties: [
@@ -16,13 +16,13 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom generieke tips tekortschieten",
       tekst:
-        "Na je 40e daalt de hoeveelheid diepe slaap en wordt je slaap lichter. Tegelijk verwerk je mentale spanning minder snel — waardoor dezelfde gewoontes (zoals laat sporten of avondalcohol) harder binnenkomen. [Slaaphygiëne](/kennisbank/slaaphygiene) is dan vooral: consistentie, licht, temperatuur en prikkelbeheer — niet ‘meer proberen te slapen’.",
+        "Na je 30e daalt de hoeveelheid diepe slaap en wordt je slaap lichter. Tegelijk verwerk je mentale spanning minder snel — waardoor dezelfde gewoontes (zoals laat sporten of avondalcohol) harder binnenkomen. [Slaaphygiëne](/kennisbank/slaaphygiene) is dan vooral: consistentie, licht, temperatuur en prikkelbeheer — niet ‘meer proberen te slapen’.",
     },
     {
       type: "opsomming",
       titel: "De vier pijlers met het meeste effect",
       inleiding:
-        "Deze gewoontes verankeren je [circadiaanse ritme](/kennisbank/circadiaan-ritme) en leveren vaak het meeste op vóór supplementen. [Lees de complete aanpak voor betere slaap na je 40e.](/slaap-verbeteren-na-40)",
+        "Deze gewoontes verankeren je [circadiaanse ritme](/kennisbank/circadiaan-ritme) en leveren vaak het meeste op vóór supplementen. [Lees de complete aanpak voor betere slaap na je 30e.](/slaap-verbeteren-na-40)",
       items: [
         "Vast ritme: zelfde opsta- en bedtijd, ook in het weekend — dit verankert je interne klok sterker dan elke app.",
         "Licht: minimaal tien minuten buitenlicht ’s ochtends; ’s avonds dimmen en schermen beperken 60-90 min voor slapen.",
@@ -38,9 +38,9 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Na je 40e win je het meeste slaapkwaliteit met een vast ritme, ochtendlicht, koele kamer en striktere cafeïne- en alcoholregels. Voeg een shutdown-routine toe als je hoofd blijft malen.",
+    "Na je 30e win je het meeste slaapkwaliteit met een vast ritme, ochtendlicht, koele kamer en striktere cafeïne- en alcoholregels. Voeg een shutdown-routine toe als je hoofd blijft malen.",
   cornerstoneLink: {
-    label: "Complete gids: slaap verbeteren na je 40e",
+    label: "Complete gids: slaap verbeteren na je 30e",
     href: "/slaap-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
@@ -53,9 +53,9 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
     "ademhaling-tegen-stress",
   ],
   metaTitle:
-    "Slaaphygiëne na 40: wat wél werkt",
+    "Slaaphygiëne na 30: wat wél werkt",
   metaDescription:
-    "Slaaphygiëne na je 40e: de vier pijlers met het meeste effect — ritme, licht, temperatuur en prikkels — zonder slaap-hype.",
+    "Slaaphygiëne na je 30e: de vier pijlers met het meeste effect — ritme, licht, temperatuur en prikkels — zonder slaap-hype.",
   keywords: [
     "slaaphygiëne",
     "beter slapen 40",

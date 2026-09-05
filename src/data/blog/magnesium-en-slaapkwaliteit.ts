@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   slug: "magnesium-en-slaapkwaliteit",
   categorie: "supplementen",
-  titel: "De complete magnesiumgids: vormen, dosering en gebruik na 40",
+  titel: "De complete magnesiumgids: vormen, dosering en gebruik na 30",
   coverImage: "/images/blog/magnesium-en-slaapkwaliteit.jpg",
   coverImageAlt: "Verse bladgroenten en noten op een houten plank",
   heroIntro:
@@ -15,9 +15,9 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   secties: [
     {
       type: "tekst",
-      titel: "Magnesium na je 40e: meer dan alleen ‘voor de nacht’",
+      titel: "Magnesium na je 30e: meer dan alleen ‘voor de nacht’",
       tekst:
-        "[De beste magnesium supplementen](/beste/magnesium) leveren het mineraal dat onder meer een rol speelt in de aanmaak van ATP (de belangrijkste energiedrager in het lichaam), de regulatie van het stresssysteem, spiersamentrekking, hartritme en de productie van melatonine. Na je 40e neemt de efficiëntie waarmee het lichaam magnesium opneemt via de darm geleidelijk af, terwijl de behoefte door stress en intensiever sporten juist kan toenemen. De ADH voor magnesium is ongeveer 350 mg per dag voor mannen en 300 mg voor vrouwen (Gezondheidsraad); via voeding krijg je vaak een deel daarvan — vooral uit bladgroenten, noten en peulvruchten. Supplement kan aanvullen als je inname uit voeding laag blijft. Voor een korter, slaapgericht artikel: [magnesium voor slaap](/blog/magnesium-en-slaap).",
+        "[De beste magnesium supplementen](/beste/magnesium) leveren het mineraal dat onder meer een rol speelt in de aanmaak van ATP (de belangrijkste energiedrager in het lichaam), de regulatie van het stresssysteem, spiersamentrekking, hartritme en de productie van melatonine. Na je 30e neemt de efficiëntie waarmee het lichaam magnesium opneemt via de darm geleidelijk af, terwijl de behoefte door stress en intensiever sporten juist kan toenemen. De ADH voor magnesium is ongeveer 350 mg per dag voor mannen en 300 mg voor vrouwen (Gezondheidsraad); via voeding krijg je vaak een deel daarvan — vooral uit bladgroenten, noten en peulvruchten. Supplement kan aanvullen als je inname uit voeding laag blijft. Voor een korter, slaapgericht artikel: [magnesium voor slaap](/blog/magnesium-en-slaap).",
     },
     {
       type: "opsomming",
@@ -81,15 +81,15 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Magnesium is een van de meest onderbelichte mineralen na 40 — relevant voor slaap, stress, energie en hart. De meeste Nederlanders krijgen te weinig binnen via voeding. De juiste vorm bepaalt de effectiviteit: glycinaat voor slaap en stress, malaat voor energie, tauraat voor het hart. Kijk altijd naar het elementaire magnesiumgehalte per dagdosering.",
+    "Magnesium is een van de meest onderbelichte mineralen na 30 — relevant voor slaap, stress, energie en hart. De meeste Nederlanders krijgen te weinig binnen via voeding. De juiste vorm bepaalt de effectiviteit: glycinaat voor slaap en stress, malaat voor energie, tauraat voor het hart. Kijk altijd naar het elementaire magnesiumgehalte per dagdosering.",
   supplementCTA: {
     naam: "Magnesium",
     uitleg:
-      "Van glycinaat tot malaat: vergelijk vormen, doseringen en toepassingen — praktische informatie voor wie na 40 magnesium gericht wil inzetten.",
+      "Van glycinaat tot malaat: vergelijk vormen, doseringen en toepassingen — praktische informatie voor wie na 30 magnesium gericht wil inzetten.",
     href: "/supplementen/magnesium",
   },
   cornerstoneLink: {
-    label: "Complete gids: slaap verbeteren na je 40e",
+    label: "Complete gids: slaap verbeteren na je 30e",
     href: "/slaap-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
@@ -102,9 +102,9 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     "melatonine-wanneer-wel-niet",
   ],
   metaTitle:
-    "De complete magnesiumgids na 40: vormen, dosering en gebruik",
+    "De complete magnesiumgids na 30: vormen, dosering en gebruik",
   metaDescription:
-    "Magnesium glycinaat, citraat, malaat, tauraat: welke vorm voor welk doel? Doseringen, voedingsbronnen en kwaliteitscriteria na 40.",
+    "Magnesium glycinaat, citraat, malaat, tauraat: welke vorm voor welk doel? Doseringen, voedingsbronnen en kwaliteitscriteria na 30.",
   keywords: [
     "magnesium vormen",
     "magnesium glycinaat",

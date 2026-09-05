@@ -51,7 +51,7 @@ export const vitamineDZonNederlandData: BlogArtikel = {
         { titel: "Blote huid en glas" },
       ],
       tekst:
-        "Melanine is een natuurlijke UV-filter. Een donkere huid heeft aanzienlijk langere blootstelling nodig voor dezelfde aanmaak als een lichte huid — schattingen lopen uiteen van drie tot zes keer zo lang. Dat is de reden dat mensen met een donkere huid in Noordwest-Europa een duidelijk hoger risico op een lage status hebben.\n\nLeeftijd telt ook mee, en dat raakt de doelgroep hier direct. De concentratie 7-dehydrocholesterol in de huid — de grondstof voor de hele reactie — neemt met het ouder worden af. Rond de zeventig ligt de aanmaakcapaciteit fors lager dan op je twintigste; boven de veertig is de afname al ingezet.\n\nDan de oppervlakte: gezicht en handen alleen is een klein deel van je huid. Armen en benen erbij maakt een groot verschil in dezelfde tijd. En achter glas gebeurt er niets — ramen laten UVA door maar filteren UVB vrijwel volledig weg. Wie de hele dag bij een raam zit, zit voor vitamine D binnen.",
+        "Melanine is een natuurlijke UV-filter. Een donkere huid heeft aanzienlijk langere blootstelling nodig voor dezelfde aanmaak als een lichte huid — schattingen lopen uiteen van drie tot zes keer zo lang. Dat is de reden dat mensen met een donkere huid in Noordwest-Europa een duidelijk hoger risico op een lage status hebben.\n\nLeeftijd telt ook mee, en dat raakt de doelgroep hier direct. De concentratie 7-dehydrocholesterol in de huid — de grondstof voor de hele reactie — neemt met het ouder worden af. Rond de zeventig ligt de aanmaakcapaciteit fors lager dan op je twintigste; boven de dertig is de afname al ingezet.\n\nDan de oppervlakte: gezicht en handen alleen is een klein deel van je huid. Armen en benen erbij maakt een groot verschil in dezelfde tijd. En achter glas gebeurt er niets — ramen laten UVA door maar filteren UVB vrijwel volledig weg. Wie de hele dag bij een raam zit, zit voor vitamine D binnen.",
       bewijsKanttekening:
         "De tijdsschattingen in dit soort onderzoek komen uit modellen en gecontroleerde blootstelling, niet uit metingen bij individuen in het dagelijks leven. Gebruik ze als ordegrootte, niet als recept.",
     },
@@ -59,7 +59,7 @@ export const vitamineDZonNederlandData: BlogArtikel = {
       type: "tekst",
       titel: "Wat voeding bijdraagt (en waarom dat weinig is)",
       tekst:
-        "Vitamine D zit van nature in weinig producten: vette vis is de belangrijkste bron, daarnaast eigeel en in kleine hoeveelheden vlees. In Nederland wordt margarine, halvarine en bak-en-braadproduct verplicht verrijkt, wat een basisbijdrage levert. Voor de meeste mensen komt de inname via voeding samen niet in de buurt van wat de huid in de zomer op een goede dag maakt.\n\nDat is geen argument om vis te laten staan — vette vis levert ook [EPA en DHA](/kennisbank/epa-dha) — maar wel de reden dat het Nederlandse suppletieadvies bestaat voor specifieke groepen. Meer over hoe voeding en supplementen zich verhouden staat in [voeding na 40](/voeding-na-40).",
+        "Vitamine D zit van nature in weinig producten: vette vis is de belangrijkste bron, daarnaast eigeel en in kleine hoeveelheden vlees. In Nederland wordt margarine, halvarine en bak-en-braadproduct verplicht verrijkt, wat een basisbijdrage levert. Voor de meeste mensen komt de inname via voeding samen niet in de buurt van wat de huid in de zomer op een goede dag maakt.\n\nDat is geen argument om vis te laten staan — vette vis levert ook [EPA en DHA](/kennisbank/epa-dha) — maar wel de reden dat het Nederlandse suppletieadvies bestaat voor specifieke groepen. Meer over hoe voeding en supplementen zich verhouden staat in [voeding na 30](/voeding-na-40).",
     },
     {
       type: "opsomming",
@@ -76,7 +76,7 @@ export const vitamineDZonNederlandData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: zonlicht is één van de knoppen",
       tekst:
-        "Daglicht doet meer dan vitamine D: het zet ook je [circadiaan ritme](/kennisbank/circadiaan-ritme) gelijk, wat direct doorwerkt in slaap en energie. In de [Leefstijlcheck](/intake) vragen we naar zonlicht (LIF_SUN) naast slaap, stress en beweging, zodat je ziet welke knop bij jou het meeste oplevert. De bredere gids: [energie na 40](/energie-na-40).",
+        "Daglicht doet meer dan vitamine D: het zet ook je [circadiaan ritme](/kennisbank/circadiaan-ritme) gelijk, wat direct doorwerkt in slaap en energie. In de [Leefstijlcheck](/intake) vragen we naar zonlicht (LIF_SUN) naast slaap, stress en beweging, zodat je ziet welke knop bij jou het meeste oplevert. De bredere gids: [energie na 30](/energie-na-40).",
     },
   ],
   kernpunten: [
@@ -95,7 +95,7 @@ export const vitamineDZonNederlandData: BlogArtikel = {
     href: "/beste/vitamine-d",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   vergelijkingExtraLink: {

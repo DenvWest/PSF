@@ -14,14 +14,14 @@ const INLINE_LINK_CLASS =
 
 export const metadata: Metadata = {
   title:
-    "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust",
+    "Stress Verminderen na 30: Van Altijd 'Aan' Naar Meer Rust",
   description:
-    "Langdurige stress voelt zwaarder na 40: slaap, energie en rust. Praktische stappen — zonder diagnoses of vage adviezen.",
+    "Langdurige stress voelt zwaarder na 30: slaap, energie en rust. Praktische stappen — zonder diagnoses of vage adviezen.",
   ...canonicalMetadata("/stress-verminderen-na-40"),
   openGraph: {
-    title: "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust",
+    title: "Stress Verminderen na 30: Van Altijd 'Aan' Naar Meer Rust",
     description:
-      "Langdurige stress voelt zwaarder na 40: slaap, energie en rust. Hier lees je wat je zelf kunt doen.",
+      "Langdurige stress voelt zwaarder na 30: slaap, energie en rust. Hier lees je wat je zelf kunt doen.",
     url: "/stress-verminderen-na-40",
     type: "article",
   },
@@ -30,9 +30,9 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust",
+  headline: "Stress Verminderen na 30: Van Altijd 'Aan' Naar Meer Rust",
   description:
-    "Langdurige stress voelt zwaarder na 40: slaap, energie en rust. Praktische stappen — zonder diagnoses.",
+    "Langdurige stress voelt zwaarder na 30: slaap, energie en rust. Praktische stappen — zonder diagnoses.",
   author: {
     "@type": "Organization",
     name: "PerfectSupplement",
@@ -114,7 +114,7 @@ export default function StressVerminderenManPage() {
                   Complete Gids
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                  Stress Verminderen na 40: Van Altijd &apos;Aan&apos; Naar Meer Rust
+                  Stress Verminderen na 30: Van Altijd &apos;Aan&apos; Naar Meer Rust
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 12 min
@@ -135,7 +135,7 @@ export default function StressVerminderenManPage() {
                   </li>
                   <li>
                     <a href="#wat-er-gebeurt" className="hover:underline">
-                      Waarom stress na 40 vaak zwaarder voelt
+                      Waarom stress na 30 vaak zwaarder voelt
                     </a>
                   </li>
                   <li>
@@ -211,10 +211,10 @@ export default function StressVerminderenManPage() {
                 </p>
               </section>
 
-              {/* 4–6. Stress na 40, HPA, cortisol/testosteron */}
+              {/* 4–6. Stress na 30, HPA, cortisol/testosteron */}
               <section id="wat-er-gebeurt" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
-                  Waarom stress na 40 vaak zwaarder voelt
+                  Waarom stress na 30 vaak zwaarder voelt
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Stress is niet per definitie slecht. Kortdurende stress — een deadline, een
@@ -222,7 +222,7 @@ export default function StressVerminderenManPage() {
                   begint wanneer de spanning lang aan blijft staan en rust zeldzaam wordt.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Na je 40e merken veel mannen dat herstel langer duurt: waar een zware week vroeger
+                  Na je 30e merken veel mannen dat herstel langer duurt: waar een zware week vroeger
                   met een goed weekend weer vlak werd, blijft het gevoel van &quot;aan&quot; langer
                   hangen. Dat past vaak bij druk op werk, gezin en verantwoordelijkheden — niet
                   automatisch bij een ziekte.
@@ -255,7 +255,7 @@ export default function StressVerminderenManPage() {
                     Hoe stress zich meestal uit — zonder medisch jargon
                   </h3>
                   <p className="mt-3 text-gray-700 leading-relaxed">
-                    In gesprekken met mannen 40+ horen we vaak hetzelfde patroon: je lichaam blijft
+                    In gesprekken met mannen 30+ horen we vaak hetzelfde patroon: je lichaam blijft
                     lang in een &quot;alles moet af&quot;-modus, terwijl je brein weinig momenten
                     krijgt om echt los te laten. Daardoor slaap je slechter, ben je sneller kort van
                     stok en blijft sporten of hobby&apos;s voelen als &quot;moeten&quot;.
@@ -326,7 +326,7 @@ export default function StressVerminderenManPage() {
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   → Worstel je ook met je slaap? Lees de complete gids:{" "}
                   <Link href="/slaap-verbeteren-na-40" className={INLINE_LINK_CLASS}>
-                    Slaap verbeteren na 40
+                    Slaap verbeteren na 30
                   </Link>
                 </p>
 
@@ -468,7 +468,7 @@ export default function StressVerminderenManPage() {
                     href="/energie-na-40"
                     className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] mt-2 inline-block text-sm"
                   >
-                    Lees de gids: Energie Na 40 →
+                    Lees de gids: Energie Na 30 →
                   </a>
                 </div>
 
@@ -531,7 +531,7 @@ export default function StressVerminderenManPage() {
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
-                      Volledige gids testosteron na 40: leefstijl eerst, supplementen in context.
+                      Volledige gids testosteron na 30: leefstijl eerst, supplementen in context.
                     </p>
                     <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
                       Naar de pillar →

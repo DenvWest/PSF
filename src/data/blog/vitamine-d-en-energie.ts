@@ -4,11 +4,11 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const vitamineDEnEnergieData: BlogArtikel = {
   slug: "vitamine-d-en-energie",
   categorie: "energie",
-  titel: "Vitamine D en energie na 40: tekort, verwachtingen en vergelijken",
+  titel: "Vitamine D en energie na 30: tekort, verwachtingen en vergelijken",
   coverImage: "/images/blog/vitamine-d-en-energie.jpg",
   coverImageAlt: "Zonnig strand met helder blauwe lucht",
   heroIntro:
-    "In Nederland is een lage vitamine D-status in de winter geen uitzondering — maar “meer energie” staat niet op de lijst met erkende gezondheidsclaims. Dit artikel scheidt feiten van wensen: wanneer meten zinvol is, hoe [energie na 40](/energie-na-40) breder werkt dan één capsule, en hoe je [vitamine D supplementen](/beste/vitamine-d) eerlijk vergelijkt.",
+    "In Nederland is een lage vitamine D-status in de winter geen uitzondering — maar “meer energie” staat niet op de lijst met erkende gezondheidsclaims. Dit artikel scheidt feiten van wensen: wanneer meten zinvol is, hoe [energie na 30](/energie-na-40) breder werkt dan één capsule, en hoe je [vitamine D supplementen](/beste/vitamine-d) eerlijk vergelijkt.",
   leestijd: "10 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-09-01",
@@ -51,7 +51,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
     href: "/beste/vitamine-d",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   vergelijkingExtraLink: {
@@ -64,9 +64,9 @@ export const vitamineDEnEnergieData: BlogArtikel = {
     "krachttraining-na-40",
   ],
   metaTitle:
-    "Vitamine D en energie na 40: verwachtingen en vergelijken",
+    "Vitamine D en energie na 30: verwachtingen en vergelijken",
   metaDescription:
-    "Vitamine D in Nederland: wat claims wél zeggen, wanneer meten zinvol is, en hoe je vitamine D vergelijkt — gekoppeld aan energie na 40 zonder wonderbeloftes.",
+    "Vitamine D in Nederland: wat claims wél zeggen, wanneer meten zinvol is, en hoe je vitamine D vergelijkt — gekoppeld aan energie na 30 zonder wonderbeloftes.",
   keywords: [
     "vitamine d energie",
     "vitamine d vermoeidheid",

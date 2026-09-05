@@ -5,11 +5,11 @@ export const ashwagandhaData: BlogArtikel = {
   slug: "ashwagandha-werking-mannen",
   categorie: "supplementen",
   audience: "mannen",
-  titel: "Ashwagandha: hoe het werkt voor mannen boven de 40",
+  titel: "Ashwagandha: hoe het werkt voor mannen boven de 30",
   coverImage: "/images/blog/ashwagandha-werking-mannen.jpg",
   coverImageAlt: "Gedroogde kruiden en wortels op een rustige ondergrond",
   heroIntro:
-    "Ashwagandha is in de wetenschappelijke literatuur een van de best bestudeerde adaptogenen rond stressbelasting. Let wel: in de EU zijn er (nog) geen goedgekeurde gezondheidsclaims voor op het etiket. Hier lees je mechanismen, studie‑inzichten en valkuilen bij productkeuze — specifiek voor mannen boven de 40.",
+    "Ashwagandha is in de wetenschappelijke literatuur een van de best bestudeerde adaptogenen rond stressbelasting. Let wel: in de EU zijn er (nog) geen goedgekeurde gezondheidsclaims voor op het etiket. Hier lees je mechanismen, studie‑inzichten en valkuilen bij productkeuze — specifiek voor mannen boven de 30.",
   leestijd: "8 min",
   gepubliceerdOp: "2026-03-15",
   laatstBijgewerktOp: "2026-05-23",
@@ -19,7 +19,7 @@ export const ashwagandhaData: BlogArtikel = {
       titel: "Wat is ashwagandha en waarom is het relevant?",
       bewijsNiveau: "vroeg",
       tekst:
-        "[Beste ashwagandha-supplementen](/beste/ashwagandha) bevatten extracten van Withania somnifera — traditioneel gebruikt in Ayurveda en in de afgelopen decennia veel in klinische studies. De actieve fracties (withanoliden) worden in onderzoek in verband gebracht met de stressas (HPA); dat wil zeggen: hoe het organisme op langdurige belasting reageert — geen ‘stress uit’‑knop. Voor mannen boven de 40, bij wie stressregulatie vaak trager aanvoelt, is dat een veel besproken mechanisme in de literatuur.",
+        "[Beste ashwagandha-supplementen](/beste/ashwagandha) bevatten extracten van Withania somnifera — traditioneel gebruikt in Ayurveda en in de afgelopen decennia veel in klinische studies. De actieve fracties (withanoliden) worden in onderzoek in verband gebracht met de stressas (HPA); dat wil zeggen: hoe het organisme op langdurige belasting reageert — geen ‘stress uit’‑knop. Voor mannen boven de 30, bij wie stressregulatie vaak trager aanvoelt, is dat een veel besproken mechanisme in de literatuur.",
     },
     {
       type: "tekst",
@@ -71,7 +71,7 @@ export const ashwagandhaData: BlogArtikel = {
     href: "/supplementen/ashwagandha",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: stress verminderen na 40",
+    label: "Hoofdstuk-gids: stress verminderen na 30",
     href: "/stress-verminderen-na-40",
   },
   gerelateerdeSluggen: [
@@ -80,9 +80,9 @@ export const ashwagandhaData: BlogArtikel = {
     "stress-werk-grenzen-stellen",
   ],
   metaTitle:
-    "Ashwagandha voor mannen 40+: werking, dosering en extracten",
+    "Ashwagandha voor mannen 30+: werking, dosering en extracten",
   metaDescription:
-    "Hoe werkt ashwagandha bij chronische stress? Uitleg over KSM-66, klinische studies, dosering en wat je kunt verwachten — specifiek voor mannen boven de 40.",
+    "Hoe werkt ashwagandha bij chronische stress? Uitleg over KSM-66, klinische studies, dosering en wat je kunt verwachten — specifiek voor mannen boven de 30.",
   keywords: [
     "ashwagandha werking",
     "ashwagandha mannen",

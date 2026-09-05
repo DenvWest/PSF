@@ -5,11 +5,11 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const creatineEnHerstelData: BlogArtikel = {
   slug: "creatine-en-herstel",
   categorie: "supplementen",
-  titel: "Creatine en herstel na 40: waar het wél om draait (en waar niet)",
+  titel: "Creatine en herstel na 30: waar het wél om draait (en waar niet)",
   coverImage: "/images/blog/creatine-en-herstel.jpg",
   coverImageAlt: "Man die na training herstelt in de sportschool",
   heroIntro:
-    "Creatine wordt vaak geassocieerd met zware sets in de sportschool — maar achter de schermen gaat het om een kleine energiebuffer in spieren en hersenen. In dit artikel koppel je creatine aan [herstel na 40](/herstel-verbeteren-na-40): wat onderzoek redelijkerwijs suggereert, wat je eerst zelf moet regelen, en hoe je producten eerlijk vergelijkt via onze [creatine-vergelijking](/beste/creatine).",
+    "Creatine wordt vaak geassocieerd met zware sets in de sportschool — maar achter de schermen gaat het om een kleine energiebuffer in spieren en hersenen. In dit artikel koppel je creatine aan [herstel na 30](/herstel-verbeteren-na-40): wat onderzoek redelijkerwijs suggereert, wat je eerst zelf moet regelen, en hoe je producten eerlijk vergelijkt via onze [creatine-vergelijking](/beste/creatine).",
   leestijd: "11 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-05-14",
@@ -18,7 +18,7 @@ export const creatineEnHerstelData: BlogArtikel = {
       type: "tekst",
       titel: "Herstel is geen tablet — creatine is hooguit een stukje puzzel",
       tekst:
-        "Na je 40e merken veel mensen dat herstel tussen trainingen langer duurt, of dat ze ’s avonds nog “aan” staan terwijl ze fysiek moe zijn. Dat is zelden één molecuul; het is een mix van slaap, voeding, trainingsvolume en stress. Creatine hoort in dat plaatje als optionele ondersteuning rond korte, intense inspanning — niet als vervanging van rustdagen of een goed [slaapritme](/blog/slaapritme-herstellen).",
+        "Na je 30e merken veel mensen dat herstel tussen trainingen langer duurt, of dat ze ’s avonds nog “aan” staan terwijl ze fysiek moe zijn. Dat is zelden één molecuul; het is een mix van slaap, voeding, trainingsvolume en stress. Creatine hoort in dat plaatje als optionele ondersteuning rond korte, intense inspanning — niet als vervanging van rustdagen of een goed [slaapritme](/blog/slaapritme-herstellen).",
     },
     {
       type: "tekst",
@@ -48,7 +48,7 @@ export const creatineEnHerstelData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: vergelijk creatine inhoudelijk",
       tekst:
-        "Wil je geen marketingfolder maar een eerlijke score op zuiverheid, dosering en prijs? Onze [beste creatine supplementen](/beste/creatine) pagina zet drie monohydraat-opties naast elkaar — inclusief praktische FAQ. Combineer dat met de brede context van [herstel verbeteren na 40](/herstel-verbeteren-na-40) voor slaap, omega-3 en magnesium als tweede lijn.",
+        "Wil je geen marketingfolder maar een eerlijke score op zuiverheid, dosering en prijs? Onze [beste creatine supplementen](/beste/creatine) pagina zet drie monohydraat-opties naast elkaar — inclusief praktische FAQ. Combineer dat met de brede context van [herstel verbeteren na 30](/herstel-verbeteren-na-40) voor slaap, omega-3 en magnesium als tweede lijn.",
     },
   ],
   samenvatting:
@@ -60,7 +60,7 @@ export const creatineEnHerstelData: BlogArtikel = {
     href: "/beste/creatine",
   },
   cornerstoneLink: {
-    label: "Pillar: herstel verbeteren na 40",
+    label: "Pillar: herstel verbeteren na 30",
     href: "/herstel-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
@@ -73,14 +73,14 @@ export const creatineEnHerstelData: BlogArtikel = {
     "creatine-en-brein-slaaptekort",
   ],
   metaTitle:
-    "Creatine en herstel na 40: buffer, training en context",
+    "Creatine en herstel na 30: buffer, training en context",
   metaDescription:
-    "Creatine na 40: wat het wél doet (ATP-buffer), wat het niet oplost, en hoe je het koppelt aan slaap, training en vergelijken — zonder harde gezondheidsclaims.",
+    "Creatine na 30: wat het wél doet (ATP-buffer), wat het niet oplost, en hoe je het koppelt aan slaap, training en vergelijken — zonder harde gezondheidsclaims.",
   keywords: [
     "creatine herstel",
-    "creatine na 40",
+    "creatine na 30",
     "ATP creatine",
-    "herstel training mannen 40",
+    "herstel training mannen 30",
   ],
   referenties: toRefs([
     "Kreider RB et al. International Society of Sports Nutrition position stand: safety and efficacy of creatine supplementation in exercise, sport, and medicine. J Int Soc Sports Nutr. 2017;14:18.",

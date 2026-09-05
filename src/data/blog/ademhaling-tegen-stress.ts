@@ -40,7 +40,7 @@ export const ademhalingTegenStressData: BlogArtikel = {
   samenvatting:
     "Langzame, middenrifgestuurde ademhaling schakelt binnen minuten over naar een rustiger zenuwstelsel. Probeer 4-7-8 voor de nacht, box breathing onder werkstress en coherent ademen als dagelijkse gewoonte.",
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: stress verminderen na 40",
+    label: "Hoofdstuk-gids: stress verminderen na 30",
     href: "/stress-verminderen-na-40",
   },
   vergelijkingExtraLink: {

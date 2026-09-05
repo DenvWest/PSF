@@ -8,7 +8,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
   coverImage: "/images/blog/eiwitinname-timing-mannen-40.jpg",
   coverImageAlt: "Kleurrijk bord met verse maaltijd, verdeeld over de dag",
   heroIntro:
-    "Brood met jam 's ochtends, pas 's avonds vlees — je eet genoeg calorieën, maar je eiwit zit aan het verkeerde uur. Rond drie uur zak je weg; na training herstel je trager dan je verwacht. Na je 40e telt wanneer je eet net zo hard als hoeveel. Hier lees je hoe spreiding bloedsuiker, energie en herstel beïnvloedt, gekoppeld aan [voeding na 40](/voeding-na-40) en [eiwit na 40](/blog/eiwit-na-40).",
+    "Brood met jam 's ochtends, pas 's avonds vlees — je eet genoeg calorieën, maar je eiwit zit aan het verkeerde uur. Rond drie uur zak je weg; na training herstel je trager dan je verwacht. Na je 30e telt wanneer je eet net zo hard als hoeveel. Hier lees je hoe spreiding bloedsuiker, energie en herstel beïnvloedt, gekoppeld aan [voeding na 30](/voeding-na-40) en [eiwit na 30](/blog/eiwit-na-40).",
   leestijd: "8 min",
   gepubliceerdOp: "2026-06-18",
   laatstBijgewerktOp: "2026-07-11",
@@ -17,13 +17,13 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
       type: "tekst",
       titel: "Ken je dit?",
       tekst:
-        "Brood met jam om half acht, een broodje kaas om twaalf, pasta 's avonds met wat groente. Op papier eet je genoeg — maar het meeste eiwit komt pas laat op de dag. Rond drie uur zak je weg. Na training herstel je trager dan je verwacht. Dat patroon herkennen veel mensen boven de veertig: niet te weinig eten, wel te weinig eiwit op het moment dat je lichaam het nodig heeft.",
+        "Brood met jam om half acht, een broodje kaas om twaalf, pasta 's avonds met wat groente. Op papier eet je genoeg — maar het meeste eiwit komt pas laat op de dag. Rond drie uur zak je weg. Na training herstel je trager dan je verwacht. Dat patroon herkennen veel mensen boven de dertig: niet te weinig eten, wel te weinig eiwit op het moment dat je lichaam het nodig heeft.",
     },
     {
       type: "tekst",
       titel: "Waarom het moment steeds belangrijker wordt",
       tekst:
-        "Je spieren reageren minder sterk op dezelfde portie eiwit na je 40e. Waar 20 gram bij een jongere volstaat, heb jij vaak 30 tot 40 gram per maaltijd nodig voor genoeg prikkel voor je spieren. Meer uitleg over dat mechanisme: [eiwitbehoefte na 40](/kennisbank/eiwitbehoefte-na-40). Verdeel je eiwit over de dag: ontbijt, lunch en diner elk eiwitrijk. Eén grote portie 's avonds maakt een eiwitarme ochtend niet goed. Meer over hoeveel gram: [eiwit na 40](/blog/eiwit-na-40).",
+        "Je spieren reageren minder sterk op dezelfde portie eiwit na je 30e. Waar 20 gram bij een jongere volstaat, heb jij vaak 30 tot 40 gram per maaltijd nodig voor genoeg prikkel voor je spieren. Meer uitleg over dat mechanisme: [eiwitbehoefte na 30](/kennisbank/eiwitbehoefte-na-40). Verdeel je eiwit over de dag: ontbijt, lunch en diner elk eiwitrijk. Eén grote portie 's avonds maakt een eiwitarme ochtend niet goed. Meer over hoeveel gram: [eiwit na 30](/blog/eiwit-na-40).",
     },
     {
       type: "tekst",
@@ -48,7 +48,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
       type: "tekst",
       titel: "Eiwit, herstel en beweging — de koppeling",
       tekst:
-        "Meer eiwit zonder beweging helpt beperkt; meer training zonder eiwit remt herstel. Rustig duursport en krachttraining verhogen je behoefte — lees [krachttraining na 40](/blog/krachttraining-na-40) en de pillar [herstel verbeteren na 40](/herstel-verbeteren-na-40). Train je regelmatig terwijl je ontbijt en lunch eiwitarm blijven? Begin daar — niet met poeder. In de [Leefstijlcheck](/intake) zie je of voeding en beweging samen achterlopen.",
+        "Meer eiwit zonder beweging helpt beperkt; meer training zonder eiwit remt herstel. Rustig duursport en krachttraining verhogen je behoefte — lees [krachttraining na 30](/blog/krachttraining-na-40) en de pillar [herstel verbeteren na 30](/herstel-verbeteren-na-40). Train je regelmatig terwijl je ontbijt en lunch eiwitarm blijven? Begin daar — niet met poeder. In de [Leefstijlcheck](/intake) zie je of voeding en beweging samen achterlopen.",
     },
     {
       type: "tekst",
@@ -60,7 +60,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: ontdek jouw voedingsprioriteit",
       tekst:
-        "In de [Leefstijlcheck](/intake) zie je of voeding je eerste hefboom is — inclusief vragen over hoeveel eiwit je per dag eet. Herken je vooral energiedips en weinig veerkracht? Bekijk [Lage energie](/profiel/lage-energie) of start bij de pillar [voeding na 40](/voeding-na-40).",
+        "In de [Leefstijlcheck](/intake) zie je of voeding je eerste hefboom is — inclusief vragen over hoeveel eiwit je per dag eet. Herken je vooral energiedips en weinig veerkracht? Bekijk [Lage energie](/profiel/lage-energie) of start bij de pillar [voeding na 30](/voeding-na-40).",
     },
   ],
   samenvatting:
@@ -72,7 +72,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
     href: "/beste/eiwitpoeder",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: voeding na 40",
+    label: "Hoofdstuk-gids: voeding na 30",
     href: "/voeding-na-40",
   },
   vergelijkingExtraLink: {
@@ -89,11 +89,11 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
   metaDescription:
     "Eiwit verdelen over de dag: waarom ontbijt vóór 10 uur, spreiding per maaltijd en eiwit na training je energie en herstel ondersteunen — praktisch plan zonder hype.",
   keywords: [
-    "eiwit timing mannen 40",
+    "eiwit timing mannen 30",
     "eiwit ontbijt mannen",
     "eiwitinname spreiden",
     "eiwit spreiden dag",
-    "eiwit na training 40 plus",
+    "eiwit na training 30 plus",
     "middagdip eiwit ontbijt",
   ],
   referenties: toRefs([

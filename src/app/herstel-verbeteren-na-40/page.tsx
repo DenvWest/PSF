@@ -16,14 +16,14 @@ const INLINE_LINK_THEME =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]";
 
 export const metadata: Metadata = {
-  title: "Herstel Verbeteren Na 40: Training, Voeding & Supplementen",
+  title: "Herstel Verbeteren Na 30: Training, Voeding & Supplementen",
   description:
-    "Trager herstel na 40? Lees waarom spierherstel verandert en wat werkt: slaap, eiwit, rust, magnesium, omega-3, vitamine D, creatine en meer — onderbouwd en stap voor stap.",
+    "Trager herstel na 30? Lees waarom spierherstel verandert en wat werkt: slaap, eiwit, rust, magnesium, omega-3, vitamine D, creatine en meer — onderbouwd en stap voor stap.",
   ...canonicalMetadata("/herstel-verbeteren-na-40"),
   openGraph: {
-    title: "Herstel Verbeteren Na 40: De Complete Gids",
+    title: "Herstel Verbeteren Na 30: De Complete Gids",
     description:
-      "Trager herstel na je 40e? Training, slaap en voeding in balans brengen — plus welke supplementen het meeste onderbouwing hebben.",
+      "Trager herstel na je 30e? Training, slaap en voeding in balans brengen — plus welke supplementen het meeste onderbouwing hebben.",
     url: "/herstel-verbeteren-na-40",
     type: "article",
   },
@@ -32,9 +32,9 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Herstel Verbeteren Na 40: De Complete Gids",
+  headline: "Herstel Verbeteren Na 30: De Complete Gids",
   description:
-    "Waarom spierherstel na 40 verandert — en een praktisch protocol met voeding en supplementen.",
+    "Waarom spierherstel na 30 verandert — en een praktisch protocol met voeding en supplementen.",
   author: {
     "@type": "Organization",
     name: "PerfectSupplement",
@@ -56,10 +56,10 @@ const faqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Hoeveel eiwit per dag na 40 als ik train?",
+      name: "Hoeveel eiwit per dag na 30 als ik train?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Richt voor gezonde mannen 40+ bij regelmatige krachttraining vaak op ongeveer 1,2–1,6 g eiwit per kg lichaamsgewicht per dag, verdeeld over de dag. Zonder structurele training kun je dichter tegen 1,0–1,2 g/kg zitten — exacte behoefte hangt af van lichaamsmaat en training.",
+        text: "Richt voor gezonde mannen 30+ bij regelmatige krachttraining vaak op ongeveer 1,2–1,6 g eiwit per kg lichaamsgewicht per dag, verdeeld over de dag. Zonder structurele training kun je dichter tegen 1,0–1,2 g/kg zitten — exacte behoefte hangt af van lichaamsmaat en training.",
       },
     },
     {
@@ -119,7 +119,7 @@ export default function HerstelVerbeterenNa40Page() {
                   Complete Gids
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                  Herstel Verbeteren Na 40: De Complete Gids
+                  Herstel Verbeteren Na 30: De Complete Gids
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 12 min
@@ -139,7 +139,7 @@ export default function HerstelVerbeterenNa40Page() {
                   </li>
                   <li>
                     <a href="#wat-er-verandert" className="hover:underline">
-                      Wat er verandert na 40
+                      Wat er verandert na 30
                     </a>
                   </li>
                   <li>
@@ -149,7 +149,7 @@ export default function HerstelVerbeterenNa40Page() {
                   </li>
                   <li>
                     <a href="#spierherstel" className="hover:underline">
-                      Spierherstel na 40: wat verandert echt?
+                      Spierherstel na 30: wat verandert echt?
                     </a>
                   </li>
                   <li>
@@ -193,7 +193,7 @@ export default function HerstelVerbeterenNa40Page() {
                   niet lui of &ldquo;uit vorm&rdquo; — je ruimte om te herstellen is kleiner geworden.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Veel mannen 40+ merken hetzelfde patroon: belasting stapelt sneller op dan herstel.
+                  Veel mannen 30+ merken hetzelfde patroon: belasting stapelt sneller op dan herstel.
                   Dan voelt het alsof je harder moet trainen voor minder resultaat, terwijl de echte
                   winst juist zit in slimmer herstellen.
                 </p>
@@ -221,7 +221,7 @@ export default function HerstelVerbeterenNa40Page() {
                 </div>
                 <p className="mt-6 text-gray-700 leading-relaxed">In deze gids leer je:</p>
                 <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside">
-                  <li>Wat er biologisch verandert in herstel na je 40e</li>
+                  <li>Wat er biologisch verandert in herstel na je 30e</li>
                   <li>Waarom training zonder herstelstrategie vastloopt</li>
                   <li>Welke leefstijlinterventies het meeste effect geven</li>
                   <li>Welke supplementen onderbouwd zijn — en hoe je ze slim inzet</li>
@@ -230,10 +230,10 @@ export default function HerstelVerbeterenNa40Page() {
 
               <section id="wat-er-verandert" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
-                  Wat Er Verandert Na 40
+                  Wat Er Verandert Na 30
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Herstelproblemen na 40 zijn geen karakterkwestie. Je fysiologie verschuift echt. De
+                  Herstelproblemen na 30 zijn geen karakterkwestie. Je fysiologie verschuift echt. De
                   trainingsprikkel kan nog steeds sterk zijn, maar je systeem vraagt betere randvoorwaarden:
                   slaapkwaliteit, eiwitverdeling, stressregulatie en rustmomenten.
                 </p>
@@ -287,7 +287,7 @@ export default function HerstelVerbeterenNa40Page() {
                   </Link>
                   ,{" "}
                   <Link href="/kennisbank/eiwitbehoefte-na-40" className={INLINE_LINK_THEME}>
-                    eiwitbehoefte na 40
+                    eiwitbehoefte na 30
                   </Link>
                   ,{" "}
                   <Link href="/kennisbank/mitochondrien" className={INLINE_LINK_THEME}>
@@ -333,7 +333,7 @@ export default function HerstelVerbeterenNa40Page() {
                   Voeding is kritischer geworden
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Wetenschappelijke adviezen wijzen bij veel 40-plussers op een hogere eiwitinname dan
+                  Wetenschappelijke adviezen wijzen bij veel 30-plussers op een hogere eiwitinname dan
                   de minimale norm, zeker bij krachttraining of hersteldoelen
                   <RefNote number={10} />
                   . In de praktijk blijft de combinatie van krachttraining + voldoende eiwit de
@@ -355,7 +355,7 @@ export default function HerstelVerbeterenNa40Page() {
 
               <section id="spierherstel" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
-                  Spierherstel Na 40: Wat Verandert Echt?
+                  Spierherstel Na 30: Wat Verandert Echt?
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Herstel draait niet alleen om spierpijn. Het gaat om de snelheid waarmee je zenuwstelsel,
@@ -363,7 +363,7 @@ export default function HerstelVerbeterenNa40Page() {
                   volgende inspanning&rdquo;.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Na je 40e is dat proces gevoeliger voor slaaptekort, lage eiwitinname en chronische stress.
+                  Na je 30e is dat proces gevoeliger voor slaaptekort, lage eiwitinname en chronische stress.
                   Dat is precies waarom twee mannen met hetzelfde schema toch totaal verschillend kunnen reageren.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
@@ -392,7 +392,7 @@ export default function HerstelVerbeterenNa40Page() {
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Slaapproblemen als basis? Lees ook:{" "}
                   <Link href="/slaap-verbeteren-na-40" className={INLINE_LINK_THEME}>
-                    Slaap verbeteren na 40
+                    Slaap verbeteren na 30
                   </Link>
                 </p>
 
@@ -441,7 +441,7 @@ export default function HerstelVerbeterenNa40Page() {
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Supplementen zijn een aanvulling op training, voeding en slaap — geen vervanging. Dit zijn
-                  de opties met de meest relevante onderbouwing voor herstel na 40.
+                  de opties met de meest relevante onderbouwing voor herstel na 30.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">Magnesium (glycinaat)</h3>
@@ -621,7 +621,7 @@ export default function HerstelVerbeterenNa40Page() {
                     href="/slaap-verbeteren-na-40"
                     className={`mt-2 inline-block ${INLINE_LINK_THEME} text-sm`}
                   >
-                    Complete gids: Slaap verbeteren na 40 →
+                    Complete gids: Slaap verbeteren na 30 →
                   </Link>
                 </div>
 
@@ -638,7 +638,7 @@ export default function HerstelVerbeterenNa40Page() {
                     href="/stress-verminderen-na-40"
                     className={`mt-2 inline-block ${INLINE_LINK_THEME} text-sm`}
                   >
-                    Stress verminderen (man 40+) →
+                    Stress verminderen (man 30+) →
                   </Link>
                 </div>
 
@@ -654,21 +654,21 @@ export default function HerstelVerbeterenNa40Page() {
                     href="/energie-na-40"
                     className={`mt-2 inline-block ${INLINE_LINK_THEME} text-sm`}
                   >
-                    Energie na 40 gids →
+                    Energie na 30 gids →
                   </Link>
                 </div>
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   <div className="p-5 bg-stone-50 rounded-xl border border-stone-200">
                     <p className="text-gray-700 text-sm leading-relaxed">
-                      Testosteron verandert na 40 geleidelijk. Wat betekent dat voor energie, herstel en
+                      Testosteron verandert na 30 geleidelijk. Wat betekent dat voor energie, herstel en
                       prestaties?
                     </p>
                     <Link
                       href="/blog/testosteron-en-energie-na-40"
                       className="mt-2 inline-block text-green-700 text-sm font-semibold hover:text-green-800"
                     >
-                      Testosteron en energie na 40 →
+                      Testosteron en energie na 30 →
                     </Link>
                   </div>
                   <div className="p-5 bg-stone-50 rounded-xl border border-stone-200">
@@ -772,7 +772,7 @@ export default function HerstelVerbeterenNa40Page() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 text-gray-700 leading-relaxed">
-                      Richt voor gezonde mannen 40+ bij regelmatige krachttraining vaak op ongeveer 1,2–1,6 g
+                      Richt voor gezonde mannen 30+ bij regelmatige krachttraining vaak op ongeveer 1,2–1,6 g
                       eiwit per kg lichaamsgewicht per dag — verdeeld over meerdere maaltijden. Zo benutten je
                       spieren het eiwit beter naarmate je ouder wordt. Bij minder vaak trainen lig je lager in dat bereik.
                     </div>

@@ -8,7 +8,7 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
   coverImage: "/images/blog/vitamine-d-tekort-herkennen.jpg",
   coverImageAlt: "Zonlicht over een groen natuurlandschap",
   heroIntro:
-    "Vermoeidheid, spierzwakte, vaker ziek — het passen allemaal bij [vitamine D-tekort](/kennisbank/vitamine-d), maar ze zijn niet specifiek. Zo zet je signalen in context en wat je vervolgens praktisch kunt doen als man boven de 40.",
+    "Vermoeidheid, spierzwakte, vaker ziek — het passen allemaal bij [vitamine D-tekort](/kennisbank/vitamine-d), maar ze zijn niet specifiek. Zo zet je signalen in context en wat je vervolgens praktisch kunt doen als man boven de 30.",
   leestijd: "9 min",
   gepubliceerdOp: "2026-03-10",
   laatstBijgewerktOp: "2026-09-01",
@@ -68,11 +68,11 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
   supplementCTA: {
     naam: "Vitamine D",
     uitleg:
-      "D3, K2 en wat je op het etiket wilt zien — praktische keuzehulp na 40.",
+      "D3, K2 en wat je op het etiket wilt zien — praktische keuzehulp na 30.",
     href: "/supplementen/vitamine-d",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   gerelateerdeSluggen: [

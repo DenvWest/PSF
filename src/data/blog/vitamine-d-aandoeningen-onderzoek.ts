@@ -51,7 +51,7 @@ export const vitamineDAandoeningenOnderzoekData: BlogArtikel = {
         { titel: "Waar wel iets zit" },
       ],
       tekst:
-        "Dit is het onderwerp waar we het meeste over weten, omdat de vraag rechtstreeks is getest. Observationeel is het beeld sterk: een lage vitamine D-status hangt samen met een hoger risico op type 2-diabetes, en er is een mechanisme — vitamine D-receptoren zitten ook op de bètacellen van de alvleesklier die insuline afgeven.\n\nDe D2d-trial randomiseerde ruim 2400 mensen met prediabetes naar 4000 IE vitamine D3 per dag of placebo. Dat is precies de groep waar je het grootste effect zou verwachten. Na gemiddeld ruim twee jaar was de verlaging van het risico op diabetes niet statistisch significant. Ook de VITAL-trial vond geen effect op het ontstaan van diabetes.\n\nWaar wel iets zit: bij mensen met type 2-diabetes én een aangetoond vitamine D-tekort zijn in sommige studies bescheiden verbeteringen in HbA1c gezien. Dat is een wezenlijk andere uitspraak dan 'vitamine D helpt tegen diabetes'. Het gaat om het corrigeren van een tekort bij iemand die er een heeft, met een klein effect — niet om een behandeling. De bredere context over bloedsuiker en energie staat in [middagdip en bloedsuiker na 40](/blog/middagdip-bloedsuiker-na-40) en bij [insulineresistentie](/kennisbank/insulineresistentie).",
+        "Dit is het onderwerp waar we het meeste over weten, omdat de vraag rechtstreeks is getest. Observationeel is het beeld sterk: een lage vitamine D-status hangt samen met een hoger risico op type 2-diabetes, en er is een mechanisme — vitamine D-receptoren zitten ook op de bètacellen van de alvleesklier die insuline afgeven.\n\nDe D2d-trial randomiseerde ruim 2400 mensen met prediabetes naar 4000 IE vitamine D3 per dag of placebo. Dat is precies de groep waar je het grootste effect zou verwachten. Na gemiddeld ruim twee jaar was de verlaging van het risico op diabetes niet statistisch significant. Ook de VITAL-trial vond geen effect op het ontstaan van diabetes.\n\nWaar wel iets zit: bij mensen met type 2-diabetes én een aangetoond vitamine D-tekort zijn in sommige studies bescheiden verbeteringen in HbA1c gezien. Dat is een wezenlijk andere uitspraak dan 'vitamine D helpt tegen diabetes'. Het gaat om het corrigeren van een tekort bij iemand die er een heeft, met een klein effect — niet om een behandeling. De bredere context over bloedsuiker en energie staat in [middagdip en bloedsuiker na 30](/blog/middagdip-bloedsuiker-na-40) en bij [insulineresistentie](/kennisbank/insulineresistentie).",
     },
     {
       type: "tekst",
@@ -90,7 +90,7 @@ export const vitamineDAandoeningenOnderzoekData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: waar wij wél iets over kunnen zeggen",
       tekst:
-        "Wij vergelijken supplementen en ordenen leefstijl; diagnoses laten we aan de zorg. Wat we wél kunnen: laten zien welke claims op een etiket zijn toegestaan en welke niet — zie [EFSA-claims](/kennisbank/efsa-claims) — en met de [Leefstijlcheck](/intake) je slaap, stress, voeding en beweging ordenen zodat je weet waar je begint. De brede gids: [energie na 40](/energie-na-40).",
+        "Wij vergelijken supplementen en ordenen leefstijl; diagnoses laten we aan de zorg. Wat we wél kunnen: laten zien welke claims op een etiket zijn toegestaan en welke niet — zie [EFSA-claims](/kennisbank/efsa-claims) — en met de [Leefstijlcheck](/intake) je slaap, stress, voeding en beweging ordenen zodat je weet waar je begint. De brede gids: [energie na 30](/energie-na-40).",
     },
   ],
   kernpunten: [
@@ -109,7 +109,7 @@ export const vitamineDAandoeningenOnderzoekData: BlogArtikel = {
     href: "/beste/vitamine-d",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   vergelijkingExtraLink: {

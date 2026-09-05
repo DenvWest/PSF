@@ -14,7 +14,7 @@ const AUDIENCE_CONTEXT: Record<ContentAudience, AudienceContext> = {
   },
   mannen: {
     toelichting: "Hormonale begrippen voor mannen staan nu bovenaan.",
-    link: { label: "Naar de pijler Testosteron na 40", href: "/testosteron-na-40" },
+    link: { label: "Naar de pijler Testosteron na 30", href: "/testosteron-na-40" },
   },
   vrouwen: {
     toelichting: "Hormonale begrippen voor vrouwen staan nu bovenaan.",

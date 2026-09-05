@@ -9,7 +9,7 @@ export const zinkEnTestosteronData: BlogArtikel = {
   coverImage: "/images/blog/zink-en-testosteron.jpg",
   coverImageAlt: "Bord met zinkrijke voeding zoals vlees en groenten",
   heroIntro:
-    "Zink staat op etiketten vaak in één adem met testosteron — maar de toegestane claim gaat over instandhouding van een normaal testosterongehalte in het bloed bij voldoende inname, niet over een boost. Dit artikel verbindt [testosteron na 40](/testosteron-na-40) met onze [zink-vergelijking](/beste/zink) en het cluster [cortisol en testosteron](/blog/cortisol-en-testosteron).",
+    "Zink staat op etiketten vaak in één adem met testosteron — maar de toegestane claim gaat over instandhouding van een normaal testosterongehalte in het bloed bij voldoende inname, niet over een boost. Dit artikel verbindt [testosteron na 30](/testosteron-na-40) met onze [zink-vergelijking](/beste/zink) en het cluster [cortisol en testosteron](/blog/cortisol-en-testosteron).",
   leestijd: "9 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-05-14",
@@ -45,7 +45,7 @@ export const zinkEnTestosteronData: BlogArtikel = {
     href: "/beste/zink",
   },
   cornerstoneLink: {
-    label: "Pillar: testosteron na 40",
+    label: "Pillar: testosteron na 30",
     href: "/testosteron-na-40",
   },
   gerelateerdeSluggen: [
@@ -56,7 +56,7 @@ export const zinkEnTestosteronData: BlogArtikel = {
   metaTitle: "Zink en testosteron: claims en vergelijken",
   metaDescription:
     "Zink en testosteron uitgelegd: EU-claim, wanneer suppletie ter sprake komt en hoe je producten vergelijkt.",
-  keywords: ["zink testosteron", "zink supplement mannen", "testosteron na 40"],
+  keywords: ["zink testosteron", "zink supplement mannen", "testosteron na 30"],
   referenties: toRefs([
     "Prasad AS et al. Zinc status and serum testosterone levels in healthy adults. Nutrition. 1996;12(5):344-348.",
     "EFSA Panel on Dietetic Products, Nutrition and Allergies. Scientific opinion on zinc health claims.",

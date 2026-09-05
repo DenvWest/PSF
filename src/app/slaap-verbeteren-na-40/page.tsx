@@ -12,14 +12,14 @@ import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta"
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 
 export const metadata: Metadata = {
-  title: "Slaap Verbeteren Na 40: Oorzaken, Tips & Supplementen",
+  title: "Slaap Verbeteren Na 30: Oorzaken, Tips & Supplementen",
   description:
-    "Slecht slapen na 40? Ontdek waarom je slaap verandert en wat je er nu aan doet. Van leefstijl tot supplementen — onderbouwd en praktisch.",
+    "Slecht slapen na 30? Ontdek waarom je slaap verandert en wat je er nu aan doet. Van leefstijl tot supplementen — onderbouwd en praktisch.",
   ...canonicalMetadata("/slaap-verbeteren-na-40"),
   openGraph: {
-    title: "Slaap Verbeteren Na 40: De Complete Gids",
+    title: "Slaap Verbeteren Na 30: De Complete Gids",
     description:
-      "Slecht slapen na 40? Ontdek waarom je slaap verandert en wat je er nu aan doet.",
+      "Slecht slapen na 30? Ontdek waarom je slaap verandert en wat je er nu aan doet.",
     url: "/slaap-verbeteren-na-40",
     type: "article",
   },
@@ -28,9 +28,9 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Slaap Verbeteren Na 40: De Complete Gids",
+  headline: "Slaap Verbeteren Na 30: De Complete Gids",
   description:
-    "Slecht slapen na 40? Ontdek waarom je slaap verandert en wat je er nu aan doet.",
+    "Slecht slapen na 30? Ontdek waarom je slaap verandert en wat je er nu aan doet.",
   author: {
     "@type": "Organization",
     name: "PerfectSupplement",
@@ -52,10 +52,10 @@ const faqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Hoeveel slaap heb je nodig na 40?",
+      name: "Hoeveel slaap heb je nodig na 30?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "De meeste mannen 40+ hebben 7-8 uur nodig. Maar kwaliteit telt meer dan kwantiteit. 6,5 uur diepe, ononderbroken slaap is beter dan 8 uur lichte, gefragmenteerde slaap.",
+        text: "De meeste mannen 30+ hebben 7-8 uur nodig. Maar kwaliteit telt meer dan kwantiteit. 6,5 uur diepe, ononderbroken slaap is beter dan 8 uur lichte, gefragmenteerde slaap.",
       },
     },
     {
@@ -84,7 +84,7 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Is slecht slapen na 40 normaal?",
+      name: "Is slecht slapen na 30 normaal?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "De verandering is normaal — je slaappatroon verschuift met de leeftijd. Maar chronisch slecht slapen hoeft niet geaccepteerd te worden. Met de juiste aanpassingen kun je je slaapkwaliteit aanzienlijk verbeteren.",
@@ -117,7 +117,7 @@ export default function SlaapVerbeterenNa40Page() {
                   Complete Gids
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                  Slaap Verbeteren Na 40: De Complete Gids
+                  Slaap Verbeteren Na 30: De Complete Gids
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 12 min
@@ -138,7 +138,7 @@ export default function SlaapVerbeterenNa40Page() {
                   </li>
                   <li>
                     <a href="#wat-er-verandert" className="hover:underline">
-                      Wat er verandert na 40
+                      Wat er verandert na 30
                     </a>
                   </li>
                   <li>
@@ -186,14 +186,14 @@ export default function SlaapVerbeterenNa40Page() {
                   De korte lontjes. Het gevoel dat je leeft op reserves in plaats van echte energie.
                 </p>
                 <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-                  Je bent niet de enige. Na je 40e verandert er vaak iets in hoe diep je slaapt en hoe snel je
+                  Je bent niet de enige. Na je 30e verandert er vaak iets in hoe diep je slaapt en hoe snel je
                   wakker wordt. Dat is geen zwakte — en het goede nieuws: met ritme, licht en rust rond bedtijd kun je
                   veel winnen.
                 </p>
                 <p className="mt-4 text-gray-700">In deze gids leer je:</p>
                 <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside">
                   <li>
-                    Waarom je slaap na 40 anders kan voelen (en waarom &ldquo;gewoon eerder naar bed&rdquo; niet altijd werkt)
+                    Waarom je slaap na 30 anders kan voelen (en waarom &ldquo;gewoon eerder naar bed&rdquo; niet altijd werkt)
                   </li>
                   <li>Hoe overdag stress en schermen je nacht beïnvloeden — in begrijpelijke taal</li>
                   <li>5 concrete aanpassingen die je vanavond nog kunt starten</li>
@@ -204,10 +204,10 @@ export default function SlaapVerbeterenNa40Page() {
               {/* 4. Mechanisme */}
               <section id="wat-er-verandert" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
-                  Wat Er Verandert Na 40
+                  Wat Er Verandert Na 30
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Je slaap blijft niet je hele leven hetzelfde. Ze verandert mee met je biologie. Rond je 40e
+                  Je slaap blijft niet je hele leven hetzelfde. Ze verandert mee met je biologie. Rond je 30e
                   spelen drie veranderingen tegelijk op — en samen verklaren die waarom je opeens slechter slaapt, ook al ben je net zo moe als
                   vroeger.
                 </p>
@@ -221,7 +221,7 @@ export default function SlaapVerbeterenNa40Page() {
                     melatonine
                   </Link>{" "}
                   doet: kort gezegd helpt het je biologische klok om &quot;nu is het nacht&quot; te signaleren.
-                  Veel mensen merken na 40 dat inslapen langer duurt en prikkels (licht, geluid) harder binnenkomen.
+                  Veel mensen merken na 30 dat inslapen langer duurt en prikkels (licht, geluid) harder binnenkomen.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Schermlicht en laat scrollen geven je brein vaak langer het gevoel van &quot;nog even
@@ -253,12 +253,12 @@ export default function SlaapVerbeterenNa40Page() {
                   Je wordt gevoeliger voor verstoringen
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Na je 40e duurt het langer om van lichte slaap naar diepe slaap te zakken. En
+                  Na je 30e duurt het langer om van lichte slaap naar diepe slaap te zakken. En
                   eenmaal wakker geworden — door geluid, licht, een volle blaas, of zomaar — kom je
                   moeilijker terug. Je wordt makkelijker wakker en valt moeilijker weer in slaap.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Dat verklaart het klassieke patroon van de 40-plusser: makkelijk in slaap vallen,
+                  Dat verklaart het klassieke patroon van de 30-plusser: makkelijk in slaap vallen,
                   maar dan om 2 of 3 uur wakker liggen met een hoofd vol gedachten. Dat past vaak bij
                   stress en een scheef ritme — niet automatisch bij een hormoonprobleem bij jou.
                 </p>
@@ -379,7 +379,7 @@ export default function SlaapVerbeterenNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Je lichaam breekt cafeïne langzaam af: na 5-7 uur is pas de helft weg. Een kop
-                  koffie om 14:00 betekent dus dat om 21:00 nog de helft in je bloed zit. Na je 40e
+                  koffie om 14:00 betekent dus dat om 21:00 nog de helft in je bloed zit. Na je 30e
                   gaat dat afbreken nog langzamer — dan kan het 8-10 uur duren.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
@@ -410,7 +410,7 @@ export default function SlaapVerbeterenNa40Page() {
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Supplementen zijn geen vervanging voor de basis — maar als de basis klopt, kunnen
-                  ze het verschil maken. Hier zijn de drie meest bewezen opties voor mannen 40+.
+                  ze het verschil maken. Hier zijn de drie meest bewezen opties voor mannen 30+.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
@@ -427,9 +427,9 @@ export default function SlaapVerbeterenNa40Page() {
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Magnesium zit vooral in bladgroenten, noten en peulvruchten — voeding waar veel
-                  mannen 40+ structureel te weinig van binnenkrijgen. Langdurige stress
+                  mannen 30+ structureel te weinig van binnenkrijgen. Langdurige stress
                   <RefNote number={3} />
-                  {" "}en alcohol verhogen de behoefte, en na je 40e neemt de opname via de darmen
+                  {" "}en alcohol verhogen de behoefte, en na je 30e neemt de opname via de darmen
                   iets af. De ADH is 375 mg; haal je dat niet uit voeding, dan kan een supplement
                   aanvullen.
                 </p>
@@ -575,7 +575,7 @@ export default function SlaapVerbeterenNa40Page() {
                       href="/blog/alcohol-slaap-energie-na-40"
                       className="text-green-700 underline underline-offset-2 hover:text-green-800"
                     >
-                      alcohol, slaap en energie na 40
+                      alcohol, slaap en energie na 30
                     </Link>{" "}
                     voor het volledige plaatje — inclusief wat je de dag erna merkt.
                   </p>
@@ -606,7 +606,7 @@ export default function SlaapVerbeterenNa40Page() {
                     href="/stress-verminderen-na-40"
                     className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] text-sm"
                   >
-                    Lees de gids: Stress Verminderen na 40 →
+                    Lees de gids: Stress Verminderen na 30 →
                   </Link>
                 </div>
 
@@ -621,7 +621,7 @@ export default function SlaapVerbeterenNa40Page() {
                     href="/energie-na-40"
                     className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] text-sm"
                   >
-                    Lees de gids: Energie Na 40 →
+                    Lees de gids: Energie Na 30 →
                   </Link>
                 </div>
 
@@ -664,13 +664,13 @@ export default function SlaapVerbeterenNa40Page() {
 
                   <div className="p-5 bg-stone-50 rounded-xl border border-stone-200">
                     <p className="text-gray-700 text-sm leading-relaxed">
-                      Melatonine alleen is niet genoeg na 40. Dit is waarom — en wat beter werkt.
+                      Melatonine alleen is niet genoeg na 30. Dit is waarom — en wat beter werkt.
                     </p>
                     <Link
                       href="/blog/melatonine-na-40"
                       className="mt-2 inline-block text-green-700 text-sm font-semibold hover:text-green-800"
                     >
-                      Melatonine na 40 →
+                      Melatonine na 30 →
                     </Link>
                   </div>
                 </div>
@@ -685,13 +685,13 @@ export default function SlaapVerbeterenNa40Page() {
                 <div className="mt-6 space-y-3">
                   <details className="group border border-stone-200 rounded-xl overflow-hidden">
                     <summary className="flex items-center justify-between gap-4 cursor-pointer p-5 font-semibold text-gray-900 hover:bg-stone-50 transition-colors list-none">
-                      Hoeveel slaap heb je nodig na 40?
+                      Hoeveel slaap heb je nodig na 30?
                       <span className="shrink-0 text-green-700 group-open:rotate-45 transition-transform duration-200 text-xl leading-none">
                         +
                       </span>
                     </summary>
                     <div className="px-5 pb-5 text-gray-700 leading-relaxed">
-                      De meeste mannen 40+ hebben 7-8 uur nodig. Maar kwaliteit telt meer dan
+                      De meeste mannen 30+ hebben 7-8 uur nodig. Maar kwaliteit telt meer dan
                       kwantiteit. 6,5 uur diepe, ononderbroken slaap is beter dan 8 uur lichte,
                       gefragmenteerde slaap.
                     </div>
@@ -743,7 +743,7 @@ export default function SlaapVerbeterenNa40Page() {
 
                   <details className="group border border-stone-200 rounded-xl overflow-hidden">
                     <summary className="flex items-center justify-between gap-4 cursor-pointer p-5 font-semibold text-gray-900 hover:bg-stone-50 transition-colors list-none">
-                      Is slecht slapen na 40 normaal?
+                      Is slecht slapen na 30 normaal?
                       <span className="shrink-0 text-green-700 group-open:rotate-45 transition-transform duration-200 text-xl leading-none">
                         +
                       </span>

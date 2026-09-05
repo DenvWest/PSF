@@ -248,7 +248,7 @@ export default function BlogArticlePage({
                     href="/stress-verminderen-na-40"
                     className="mt-4 inline-flex text-[0.875rem] font-medium text-stone-800 underline decoration-stone-300 decoration-1 underline-offset-[3px] transition hover:text-stone-950 hover:decoration-stone-500"
                   >
-                    Lees de hoofdstuk‑gids: stress verminderen na 40
+                    Lees de hoofdstuk‑gids: stress verminderen na 30
                   </Link>
                 </aside>
               ) : null}

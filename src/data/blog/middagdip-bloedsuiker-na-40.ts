@@ -4,11 +4,11 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const middagdipBloedsuikerNa40Data: BlogArtikel = {
   slug: "middagdip-bloedsuiker-na-40",
   categorie: "energie",
-  titel: "Bloedsuiker, koffie en de middagdip na 40",
+  titel: "Bloedsuiker, koffie en de middagdip na 30",
   coverImage: "/images/blog/middagdip-bloedsuiker-na-40.jpg",
   coverImageAlt: "Kop koffie naast een lichte snack op een tafel",
   heroIntro:
-    "Half drie: je ogen vallen dicht achter je scherm. Nog één koffie, nog één koek — en een uur later voel je je alsnog leeg. Na je 40e is die middagdip vaker een signaal van schommelende bloedsuiker en [insulineresistentie](/kennisbank/insulineresistentie) op de achtergrond — geen karakterfout. Hier lees je wat er speelt en wat je praktisch kunt aanpassen, gekoppeld aan [energie na 40](/energie-na-40).",
+    "Half drie: je ogen vallen dicht achter je scherm. Nog één koffie, nog één koek — en een uur later voel je je alsnog leeg. Na je 30e is die middagdip vaker een signaal van schommelende bloedsuiker en [insulineresistentie](/kennisbank/insulineresistentie) op de achtergrond — geen karakterfout. Hier lees je wat er speelt en wat je praktisch kunt aanpassen, gekoppeld aan [energie na 30](/energie-na-40).",
   leestijd: "9 min",
   gepubliceerdOp: "2026-05-23",
   laatstBijgewerktOp: "2026-05-23",
@@ -23,7 +23,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Wat de middagdip fysiologisch kan zijn",
       tekst:
-        "Na een maaltijd met veel snelle koolhydraten stijgt je bloedsuiker snel. Insuline duwt glucose de cellen in — soms te hard, waardoor je bloedsuiker daarna juist onder je comfortzone zakt. Dat noemen veel mensen een crash: moe, hongerig, prikkelbaar. Na 40 neemt insulinegevoeligheid vaak af; je lichaam heeft meer insuline nodig voor hetzelfde effect. Dat patroon heet [insulineresistentie](/kennisbank/insulineresistentie) — geen diagnose die je thuis stelt, wel een concept dat veel middagdips verklaart.",
+        "Na een maaltijd met veel snelle koolhydraten stijgt je bloedsuiker snel. Insuline duwt glucose de cellen in — soms te hard, waardoor je bloedsuiker daarna juist onder je comfortzone zakt. Dat noemen veel mensen een crash: moe, hongerig, prikkelbaar. Na 30 neemt insulinegevoeligheid vaak af; je lichaam heeft meer insuline nodig voor hetzelfde effect. Dat patroon heet [insulineresistentie](/kennisbank/insulineresistentie) — geen diagnose die je thuis stelt, wel een concept dat veel middagdips verklaart.",
     },
     {
       type: "tekst",
@@ -37,7 +37,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
       inleiding:
         "Geen dieet-hype — wel gewoontes die in onderzoek vaak stabilere glucoserespons laten zien.",
       items: [
-        "Eiwit + vezels bij ontbijt en lunch: eieren, kwark, noten, peulvruchten — geen alleen-brood-maaltijden. Zie ook [eiwit na 40](/blog/eiwit-na-40) en [eiwitpoeder vergelijken](/beste/eiwitpoeder).",
+        "Eiwit + vezels bij ontbijt en lunch: eieren, kwark, noten, peulvruchten — geen alleen-brood-maaltijden. Zie ook [eiwit na 30](/blog/eiwit-na-40) en [eiwitpoeder vergelijken](/beste/eiwitpoeder).",
         "Beweging na de lunch: 10 minuten wandelen kan postprandiale glucosepiek afvlakken.",
         "Cafeïne-cap: laatste koffie vóór 12:00 als je middagdip structureel is.",
         "Vaste eettijden: lange gaps zonder eten kunnen cortisol én hongerpieken triggeren.",
@@ -48,7 +48,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "ATP, mitochondriën en de grotere energiefoto",
       tekst:
-        "Stabiele bloedsuiker is één laag; je cellen moeten glucose ook omzetten in bruikbare energie via [ATP](/kennisbank/atp) en [mitochondriën](/kennisbank/mitochondrien). Daarom werkt middagdip-aanpak het best samen met slaap, beweging en stress — lees de pillar [energie na 40](/energie-na-40) voor het weekplan.",
+        "Stabiele bloedsuiker is één laag; je cellen moeten glucose ook omzetten in bruikbare energie via [ATP](/kennisbank/atp) en [mitochondriën](/kennisbank/mitochondrien). Daarom werkt middagdip-aanpak het best samen met slaap, beweging en stress — lees de pillar [energie na 30](/energie-na-40) voor het weekplan.",
     },
     {
       type: "tekst",
@@ -58,7 +58,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Middagdip na 40 is vaak een bloedsuiker- en insulineverhaal, niet alleen moeheid. Stabiliseer met eiwitrijke maaltijden, beweging en minder suiker-koffie-trucs — en laat meten bij aanhoudende klachten.",
+    "Middagdip na 30 is vaak een bloedsuiker- en insulineverhaal, niet alleen moeheid. Stabiliseer met eiwitrijke maaltijden, beweging en minder suiker-koffie-trucs — en laat meten bij aanhoudende klachten.",
   supplementCTA: {
     naam: "Eiwitpoeder",
     uitleg:
@@ -66,7 +66,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
     href: "/beste/eiwitpoeder",
   },
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   vergelijkingExtraLink: {
@@ -78,12 +78,12 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
     "alcohol-slaap-energie-na-40",
     "zout-kalium-bloeddruk-na-40",
   ],
-  metaTitle: "Middagdip na 40: bloedsuiker, koffie en wat wél helpt",
+  metaTitle: "Middagdip na 30: bloedsuiker, koffie en wat wél helpt",
   metaDescription:
-    "Middagdip na 40: oorzaak bloedsuiker, insulineresistentie, koffie-trucs en vijf praktische aanpassingen voor stabielere energie.",
+    "Middagdip na 30: oorzaak bloedsuiker, insulineresistentie, koffie-trucs en vijf praktische aanpassingen voor stabielere energie.",
   keywords: [
     "middagdip mannen",
-    "bloedsuiker na 40",
+    "bloedsuiker na 30",
     "koffie verlagen energie",
     "stabiele energie middag",
     "insulineresistentie energie",

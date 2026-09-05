@@ -5,7 +5,7 @@ export const creatineVoorVrouwenData: BlogArtikel = {
   slug: "creatine-voor-vrouwen-na-40",
   categorie: "supplementen",
   audience: "vrouwen",
-  titel: "Creatine voor vrouwen na 40: wat er wel en niet onderzocht is",
+  titel: "Creatine voor vrouwen na 30: wat er wel en niet onderzocht is",
   coverImage: "/images/blog/creatine-voor-vrouwen-na-40.jpg",
   coverImageAlt: "Vrouw die krachttraining of yoga doet",
   heroIntro:
@@ -103,7 +103,7 @@ export const creatineVoorVrouwenData: BlogArtikel = {
     "creatine-dosering-en-laadfase",
     "krachttraining-na-40",
   ],
-  metaTitle: "Creatine voor vrouwen na 40: wat is onderzocht?",
+  metaTitle: "Creatine voor vrouwen na 30: wat is onderzocht?",
   metaDescription:
     "Creatine voor vrouwen: wat er in vrouwen is onderzocht rond kracht, spiermassa en bot na de overgang, of je er zwaar van wordt en welke dosering geldt.",
   keywords: [

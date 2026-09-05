@@ -13,14 +13,14 @@ const INLINE_LINK_CLASS =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
-  title: "Energie Na 40: Waarom Je Moe Bent en Wat Je Eraan Doet",
+  title: "Energie Na 30: Waarom Je Moe Bent en Wat Je Eraan Doet",
   description:
-    "Structureel moe na 40? Herkenning, oorzaken in begrijpelijke taal (slaap, ritme, eten, beweging) en wat je stap voor stap kunt doen.",
+    "Structureel moe na 30? Herkenning, oorzaken in begrijpelijke taal (slaap, ritme, eten, beweging) en wat je stap voor stap kunt doen.",
   ...canonicalMetadata("/energie-na-40"),
   openGraph: {
-    title: "Energie Na 40: Waarom Je Anders Bent (en Wat Je Eraan Doet)",
+    title: "Energie Na 30: Waarom Je Anders Bent (en Wat Je Eraan Doet)",
     description:
-      "Structureel moe na 40? Praktische stappen rond slaap, ritme, eten en beweging.",
+      "Structureel moe na 30? Praktische stappen rond slaap, ritme, eten en beweging.",
     url: "/energie-na-40",
     type: "article",
   },
@@ -29,9 +29,9 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Energie Na 40: Waarom Je Moe Bent en Wat Je Eraan Doet",
+  headline: "Energie Na 30: Waarom Je Moe Bent en Wat Je Eraan Doet",
   description:
-    "Structureel moe na 40? Herkenning, oorzaken in begrijpelijke taal en wat je stap voor stap kunt doen.",
+    "Structureel moe na 30? Herkenning, oorzaken in begrijpelijke taal en wat je stap voor stap kunt doen.",
   author: {
     "@type": "Organization",
     name: "PerfectSupplement",
@@ -53,7 +53,7 @@ const faqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Waarom ben ik altijd moe na mijn 40e?",
+      name: "Waarom ben ik altijd moe na mijn 30e?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "Vermoeidheid heeft meestal meerdere oorzaken tegelijk: te weinig slaap, onregelmatig ritme, weinig beweging, veel stress en maaltijden met snelle suikerpieken. Dat voelt anders dan \"één nachtje kort\". Wil je het biologische verhaal dieper (bijv. mitochondriën of ATP)? Zie de kennisbank — hier focussen we op wat je in je week kunt sturen.",
@@ -117,7 +117,7 @@ export default function EnergieNa40Page() {
                   Complete Gids
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                  Energie Na 40: Waarom Je Moe Bent en Wat Je Eraan Doet
+                  Energie Na 30: Waarom Je Moe Bent en Wat Je Eraan Doet
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 12 min
@@ -138,7 +138,7 @@ export default function EnergieNa40Page() {
                   </li>
                   <li>
                     <a href="#wat-er-verandert" className="hover:underline">
-                      Waarom energie na 40 anders voelt
+                      Waarom energie na 30 anders voelt
                     </a>
                   </li>
                   <li>
@@ -218,7 +218,7 @@ export default function EnergieNa40Page() {
               {/* 4. Wat er verandert */}
               <section id="wat-er-verandert" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
-                  Waarom energie na 40 anders kan voelen
+                  Waarom energie na 30 anders kan voelen
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Vermoeidheid is zelden één oorzaak. Meestal spelen slaap, stress, beweging en
@@ -249,7 +249,7 @@ export default function EnergieNa40Page() {
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Veel ontbijten en lunches zijn rijk aan snelle koolhydraten en arm aan eiwit. Dan
                   volgt vaak een snelle opfleuring en daarna een zware middag — onafhankelijk van je
-                  leeftijd, maar na 40 merken mensen dat vaker.
+                  leeftijd, maar na 30 merken mensen dat vaker.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
@@ -310,7 +310,7 @@ export default function EnergieNa40Page() {
                   Eten en energiepieken — wat je merkt in je dag
                 </h3>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  De meeste mannen 40+ eten relatief weinig eiwit bij het ontbijt en veel snelle
+                  De meeste mannen 30+ eten relatief weinig eiwit bij het ontbijt en veel snelle
                   koolhydraten. Het resultaat: een korte oppepper en daarna een zware middag — vaak
                   omschreven als hersenmist of snackdrang.
                 </p>
@@ -386,7 +386,7 @@ export default function EnergieNa40Page() {
                   <strong className="text-gray-900">Speelt stress ook een rol bij je vermoeidheid?</strong>{" "}
                   Lees de complete gids:{" "}
                   <Link href="/stress-verminderen-na-40" className={INLINE_LINK_CLASS}>
-                    Stress verminderen na 40
+                    Stress verminderen na 30
                   </Link>
                 </p>
 
@@ -470,7 +470,7 @@ export default function EnergieNa40Page() {
                 <h3 className="font-semibold text-xl text-gray-900 mt-10">Magnesium</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Magnesium speelt een rol bij meer dan 300 processen in je lichaam, waaronder het
-                  aanmaken van energie. Een tekort — dat bij 40+ veel voorkomt — leidt tot
+                  aanmaken van energie. Een tekort — dat bij 30+ veel voorkomt — leidt tot
                   vermoeidheid, spierkrampen en slechte slaap.
                 </p>
                 <div className="mt-4 p-5 bg-stone-50 rounded-lg border border-stone-200">
@@ -572,7 +572,7 @@ export default function EnergieNa40Page() {
                     href="/stress-verminderen-na-40"
                     className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
                   >
-                    Lees de gids: Stress Verminderen na 40 →
+                    Lees de gids: Stress Verminderen na 30 →
                   </Link>
                 </div>
 
@@ -587,7 +587,7 @@ export default function EnergieNa40Page() {
                     href="/slaap-verbeteren-na-40"
                     className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
                   >
-                    Lees de gids: Slaap Verbeteren na 40 →
+                    Lees de gids: Slaap Verbeteren na 30 →
                   </Link>
                 </div>
 
@@ -608,7 +608,7 @@ export default function EnergieNa40Page() {
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
-                      Testosteron na 40 in voorzichtige taal — gekoppeld aan energie en stress.
+                      Testosteron na 30 in voorzichtige taal — gekoppeld aan energie en stress.
                     </p>
                     <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
                       Naar de pillar →
@@ -647,7 +647,7 @@ export default function EnergieNa40Page() {
                 <div className="mt-6 space-y-3">
                   <details className="group border border-stone-200 rounded-xl overflow-hidden">
                     <summary className="flex items-center justify-between gap-4 cursor-pointer p-5 font-semibold text-gray-900 hover:bg-stone-50 transition-colors list-none">
-                      Waarom ben ik altijd moe na mijn 40e?
+                      Waarom ben ik altijd moe na mijn 30e?
                       <span className="shrink-0 text-green-700 group-open:rotate-45 transition-transform duration-200 text-xl leading-none">
                         +
                       </span>

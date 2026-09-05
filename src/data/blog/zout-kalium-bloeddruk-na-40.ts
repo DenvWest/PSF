@@ -4,11 +4,11 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
   slug: "zout-kalium-bloeddruk-na-40",
   categorie: "energie",
-  titel: "Zout en kalium na 40: waarom de verhouding telt, niet het zoutvaatje",
+  titel: "Zout en kalium na 30: waarom de verhouding telt, niet het zoutvaatje",
   coverImage: "/images/blog/zout-kalium-bloeddruk-na-40.jpg",
   coverImageAlt: "Verse groenten en kruiden, rijk aan kalium",
   heroIntro:
-    "Nederlandse mannen zitten structureel boven de aanbevolen 6 gram zout per dag — meer dan vrouwen, blijkt uit RIVM-onderzoek. Tegelijk krijgt bijna niemand genoeg kalium binnen. Dat is geen toeval: het zijn twee kanten van dezelfde [kalium-natriumbalans](/kennisbank/kalium-natrium-balans), en die stuurt mee op je bloeddruk. Dit artikel legt uit waar het misgaat, waarom het antwoord in je voeding zit en niet in een supplement, en hoe dat aansluit bij [energie na 40](/energie-na-40).",
+    "Nederlandse mannen zitten structureel boven de aanbevolen 6 gram zout per dag — meer dan vrouwen, blijkt uit RIVM-onderzoek. Tegelijk krijgt bijna niemand genoeg kalium binnen. Dat is geen toeval: het zijn twee kanten van dezelfde [kalium-natriumbalans](/kennisbank/kalium-natrium-balans), en die stuurt mee op je bloeddruk. Dit artikel legt uit waar het misgaat, waarom het antwoord in je voeding zit en niet in een supplement, en hoe dat aansluit bij [energie na 30](/energie-na-40).",
   leestijd: "8 min",
   gepubliceerdOp: "2026-09-02",
   laatstBijgewerktOp: "2026-09-02",
@@ -57,7 +57,7 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
   samenvatting:
     "Nederlandse mannen zitten structureel boven de aanbevolen zoutinname en onder de kaliumaanbeveling — twee kanten van dezelfde balans die meespeelt in je bloeddruk. De oplossing zit in minder bewerkt en meer plantaardig eten, niet in een supplement.",
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   gerelateerdeSluggen: [
@@ -65,7 +65,7 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
     "eiwit-na-40",
     "vitamine-d-en-energie",
   ],
-  metaTitle: "Zout en kalium na 40: de balans die je bloeddruk stuurt",
+  metaTitle: "Zout en kalium na 30: de balans die je bloeddruk stuurt",
   metaDescription:
     "Nederlandse mannen eten te veel zout en te weinig kalium. Waarom de verhouding telt, waar de bronnen zitten en waarom dit geen supplement-vraag is.",
   keywords: [

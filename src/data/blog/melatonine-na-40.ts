@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const melatonineNa40Data: BlogArtikel = {
   slug: "melatonine-na-40",
   categorie: "slaap",
-  titel: "Melatonine Na 40: Waarom Het Niet Genoeg Is",
+  titel: "Melatonine Na 30: Waarom Het Niet Genoeg Is",
   coverImage: "/images/blog/melatonine-na-40.jpg",
   coverImageAlt: "Zachte herfstzon door bomen, overgang van dag naar avond",
   heroIntro:
@@ -16,12 +16,12 @@ export const melatonineNa40Data: BlogArtikel = {
     {
       type: "tekst",
       titel: "Ken je dit?",
-      tekst: "Je pakt melatonine in de drogisterij. 3 mg, staat er op de verpakking. Je neemt het een halfuur voor bed. De eerste avond val je inderdaad iets makkelijker in slaap. Misschien de tweede ook. Maar na anderhalve week merk je weinig meer. Je slaap is nog steeds onrustig, je wordt nog steeds vroeg wakker, je bent overdag nog steeds niet uitgerust. Dit is het patroon dat veel mensen boven de 40 herkennen. En het is geen falen — het is het verkeerde gereedschap voor het eigenlijke probleem.",
+      tekst: "Je pakt melatonine in de drogisterij. 3 mg, staat er op de verpakking. Je neemt het een halfuur voor bed. De eerste avond val je inderdaad iets makkelijker in slaap. Misschien de tweede ook. Maar na anderhalve week merk je weinig meer. Je slaap is nog steeds onrustig, je wordt nog steeds vroeg wakker, je bent overdag nog steeds niet uitgerust. Dit is het patroon dat veel mensen boven de 30 herkennen. En het is geen falen — het is het verkeerde gereedschap voor het eigenlijke probleem.",
     },
     {
       type: "tekst",
       titel: "Wat melatonine is — en wat het niet is",
-      tekst: "[Melatonine](/kennisbank/melatonine) is geen slaapmiddel. Het is een signaalhormoon — een clock-shifter. Je pijnappelklier maakt het aan als reactie op duisternis en geeft daarmee een timing-signaal aan je lichaam: het wordt nacht, bereid je voor op slaap. Melatonine maakt je niet suf. Het maakt je ook niet in slaap. Het verschuift je biologische klok en verlaagt je drempel om de slaap in te gaan — maar alleen als het systeem erachter intact is. Het is het sein voor het vertrek, niet de trein zelf. Dat betekent dat melatonine nuttig kan zijn bij specifieke timing-problemen: jetlag, ploegendienst, of een flink verschoven slaap-waak-ritme. Maar bij de meeste slaapproblemen na 40 is timing niet het primaire probleem.",
+      tekst: "[Melatonine](/kennisbank/melatonine) is geen slaapmiddel. Het is een signaalhormoon — een clock-shifter. Je pijnappelklier maakt het aan als reactie op duisternis en geeft daarmee een timing-signaal aan je lichaam: het wordt nacht, bereid je voor op slaap. Melatonine maakt je niet suf. Het maakt je ook niet in slaap. Het verschuift je biologische klok en verlaagt je drempel om de slaap in te gaan — maar alleen als het systeem erachter intact is. Het is het sein voor het vertrek, niet de trein zelf. Dat betekent dat melatonine nuttig kan zijn bij specifieke timing-problemen: jetlag, ploegendienst, of een flink verschoven slaap-waak-ritme. Maar bij de meeste slaapproblemen na 30 is timing niet het primaire probleem.",
     },
     {
       type: "tekst",
@@ -30,14 +30,14 @@ export const melatonineNa40Data: BlogArtikel = {
     },
     {
       type: "tekst",
-      titel: "Het echte probleem na je 40e",
-      tekst: "Na je 40e verandert je slaaparchitectuur structureel. De hoeveelheid diepe slaap — slow-wave sleep — neemt geleidelijk af. Je slaapcycli worden korter en gefragmenteerder. Je wordt vaker even wakker zonder het te beseffen. Dat is op zichzelf al een fysiologisch gegeven. Maar bij veel mensen boven de 40 komt daar een tweede probleem bovenop: chronisch verhoogd cortisol. Cortisol en melatonine werken als tegenpolen op een wipwap — wanneer cortisol hoog is, wordt melatonine onderdrukt. Als je cortisolniveaus 's avonds niet normaal dalen — door werkstress, mentale onrust, slechte lichtblootstelling of een ontregeld dag-nachtritme — dan geeft melatonine weinig. Je geeft het sein voor vertrek, maar de trein staat nog op volle kracht. [Cortisol is vaak de échte boosdoener bij slaapproblemen. Hier is waarom.](/blog/cortisol-en-slaap)",
+      titel: "Het echte probleem na je 30e",
+      tekst: "Na je 30e verandert je slaaparchitectuur structureel. De hoeveelheid diepe slaap — slow-wave sleep — neemt geleidelijk af. Je slaapcycli worden korter en gefragmenteerder. Je wordt vaker even wakker zonder het te beseffen. Dat is op zichzelf al een fysiologisch gegeven. Maar bij veel mensen boven de 30 komt daar een tweede probleem bovenop: chronisch verhoogd cortisol. Cortisol en melatonine werken als tegenpolen op een wipwap — wanneer cortisol hoog is, wordt melatonine onderdrukt. Als je cortisolniveaus 's avonds niet normaal dalen — door werkstress, mentale onrust, slechte lichtblootstelling of een ontregeld dag-nachtritme — dan geeft melatonine weinig. Je geeft het sein voor vertrek, maar de trein staat nog op volle kracht. [Cortisol is vaak de échte boosdoener bij slaapproblemen. Hier is waarom.](/blog/cortisol-en-slaap)",
     },
     {
       type: "opsomming",
       titel: "Wat beter werkt: aanpak op de juiste laag",
       inleiding:
-        "Melatonine adresseert timing. Maar de meeste slaapproblemen na je 40e zitten in de laag eronder: cortisolregulatie, ontspanning van het zenuwstelsel, en de kwaliteit van diepe slaap. Dit zijn de aanpakken die verder reiken.",
+        "Melatonine adresseert timing. Maar de meeste slaapproblemen na je 30e zitten in de laag eronder: cortisolregulatie, ontspanning van het zenuwstelsel, en de kwaliteit van diepe slaap. Dit zijn de aanpakken die verder reiken.",
       items: [
         "Magnesium glycinaat: magnesium draagt bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycinaat heeft goede opname; glycine wordt in slaaponderzoek bestudeerd rond remmende neurotransmissie en temperatuur. Neem 200 tot 400 mg elementair magnesium 30 tot 60 minuten voor bed. [Magnesiumvormen vergeleken.](/beste/magnesium)",
         "Ashwagandha en cortisol: Withania somnifera is in gerandomiseerde studies onderzocht op cortisolmarkeringen en welbevinden; in de EU zijn daar nog geen goedgekeurde gezondheidsclaims voor (on-hold bij EFSA — zie [volledige uitleg](/blog/ashwagandha-werking-mannen)). Geen acuut ‘slaappil’‑effect; in onderzoek vaak merkbaar na weken. [Producten.](/beste/ashwagandha)",
@@ -48,7 +48,7 @@ export const melatonineNa40Data: BlogArtikel = {
     {
       type: "tekst",
       titel: "Melatonine is een stukje van het verhaal",
-      tekst: "De vraag is niet 'werkt melatonine?' maar 'wat is het eigenlijke knelpunt in mijn slaap?' Na 40 is dat antwoord vaak complexer dan een timing-signaal. Het gaat om cortisolontregeling, afnemende diepe slaap, en een zenuwstelsel dat 's avonds niet tot rust komt. Melatonine lost dat niet op. Voor wanneer wél en niet: [melatonine wanneer wel en niet](/blog/melatonine-wanneer-wel-niet). Maar een combinatie van de juiste supplementen en leefstijlinterventies kan dat wel. [Melatonine is maar een stukje van het verhaal. Lees de complete gids over slaap na 40.](/slaap-verbeteren-na-40)",
+      tekst: "De vraag is niet 'werkt melatonine?' maar 'wat is het eigenlijke knelpunt in mijn slaap?' Na 30 is dat antwoord vaak complexer dan een timing-signaal. Het gaat om cortisolontregeling, afnemende diepe slaap, en een zenuwstelsel dat 's avonds niet tot rust komt. Melatonine lost dat niet op. Voor wanneer wél en niet: [melatonine wanneer wel en niet](/blog/melatonine-wanneer-wel-niet). Maar een combinatie van de juiste supplementen en leefstijlinterventies kan dat wel. [Melatonine is maar een stukje van het verhaal. Lees de complete gids over slaap na 30.](/slaap-verbeteren-na-40)",
     },
     {
       type: "tekst",
@@ -57,15 +57,15 @@ export const melatonineNa40Data: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Melatonine is een timing-hormoon, geen klassiek slaapmiddel. Na je 40e zijn cortisolritme en afnemende diepe slaap vaak belangrijker dan alleen timing; dat lost melatonine niet structureel op. Gebruik het maximaal tijdelijk, bij voorkeur 0,3–0,5 mg. Magnesium (EFSA: zenuwstelsel/spieren) en ashwagandha (literatuur; geen EU‑claim) worden in artikelen en studies naast leefstijl besproken.",
+    "Melatonine is een timing-hormoon, geen klassiek slaapmiddel. Na je 30e zijn cortisolritme en afnemende diepe slaap vaak belangrijker dan alleen timing; dat lost melatonine niet structureel op. Gebruik het maximaal tijdelijk, bij voorkeur 0,3–0,5 mg. Magnesium (EFSA: zenuwstelsel/spieren) en ashwagandha (literatuur; geen EU‑claim) worden in artikelen en studies naast leefstijl besproken.",
   supplementCTA: {
     naam: "Magnesium",
     uitleg:
-      "Na 40 is magnesium rechtstreeks koppelbaar aan EFSA‑claims op zenuwstelsel en spieren; avondinname is een gangbare gewoonte naast leefstijl.",
+      "Na 30 is magnesium rechtstreeks koppelbaar aan EFSA‑claims op zenuwstelsel en spieren; avondinname is een gangbare gewoonte naast leefstijl.",
     href: "/beste/magnesium",
   },
   cornerstoneLink: {
-    label: "Complete gids: slaap verbeteren na je 40e",
+    label: "Complete gids: slaap verbeteren na je 30e",
     href: "/slaap-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
@@ -77,14 +77,14 @@ export const melatonineNa40Data: BlogArtikel = {
     "magnesium-en-slaap",
     "melatonine-wanneer-wel-niet",
   ],
-  metaTitle: "Melatonine Na 40: Waarom Het Niet Genoeg Is",
+  metaTitle: "Melatonine Na 30: Waarom Het Niet Genoeg Is",
   metaDescription:
-    "Melatonine slikken voor je slaap? Na 40 werkt dat anders dan je denkt. Wat je moet weten over dosering en alternatieven.",
+    "Melatonine slikken voor je slaap? Na 30 werkt dat anders dan je denkt. Wat je moet weten over dosering en alternatieven.",
   keywords: [
-    "melatonine na 40",
+    "melatonine na 30",
     "melatonine dosering",
     "melatonine werkt niet",
-    "slaap verbeteren mannen 40",
+    "slaap verbeteren mannen 30",
     "melatonine alternatieven",
     "cortisol slaap",
     "magnesium slaap",

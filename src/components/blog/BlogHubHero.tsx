@@ -43,7 +43,7 @@ export default function BlogHubHero({ compact = false }: BlogHubHeroProps) {
             <p className="ps-eyebrow tracking-[0.14em]">{BLOG_HUB_LABEL}</p>
           </div>
           <h1 className={`${BLOG_HERO_H1} md:leading-[1.05]`}>
-            Slaap, stress en herstel na 40
+            Slaap, stress en herstel na 30
           </h1>
           <p className={`${BLOG_HERO_INTRO} mt-8 md:mt-10`}>
             Artikelen over slaap, stress, energie en supplementen.

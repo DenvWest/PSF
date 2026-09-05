@@ -58,7 +58,7 @@ export const themeLabels: Record<KennisbankTheme, {
 }> = {
   'lichaam-veroudering': {
     title: 'Lichaam & Veroudering',
-    description: 'Wat er in je lichaam verandert na je 40e.',
+    description: 'Wat er in je lichaam verandert na je 30e.',
     icon: '🧬',
     colorClasses: {
       bg: 'from-rose-700 to-rose-800',
@@ -195,7 +195,7 @@ Het bijzondere aan adaptogens is dat ze niet in één richting werken. Ze worden
       howItWorks: `In de literatuur worden adaptogens vaak tegen de achtergrond van de HPA‑as besproken: de keten van hypothalamus, hypofyse en bijnieren die je stressreactie aanstuurt. Bij langdurige stress wordt die ketting vaker overactief gebleven dan gezonde rust toelaat.
 
 Onderzoek gebruikt nog steeds uiteenlopende plantendelen, doses en extractprofielen — een “adaptogeen‑effect” is geen uniform farmacologisch blok. RCT‑resultaten zijn het meest overtuigend voor afgebakende preparaten (vooral sommige ashwagandha‑extracten), minder voor de hele categorie.`,
-      whyItMatters: `Na 40 met aanhoudende spanning is dat wel relevant: je zoekt iets dat veilig in de context van je totale leefstijl past, niet een belofte van “hormoon‑reset”. Waar humane trials suggestief zijn (bijv. stress‑ of slaapscores bij specifieke ashwagandha‑interventies), blijft het om groepsgemiddelden gaan en blijft duur, dosis en interactie met medicatie af te stemmen met een zorgprofessional.`,
+      whyItMatters: `Na 30 met aanhoudende spanning is dat wel relevant: je zoekt iets dat veilig in de context van je totale leefstijl past, niet een belofte van “hormoon‑reset”. Waar humane trials suggestief zijn (bijv. stress‑ of slaapscores bij specifieke ashwagandha‑interventies), blijft het om groepsgemiddelden gaan en blijft duur, dosis en interactie met medicatie af te stemmen met een zorgprofessional.`,
     },
     domeinMetBeperktCausaalBewijs: true,
     relatedSlugs: ['circadiaan-ritme'],
@@ -256,13 +256,13 @@ EFSA-goedgekeurde claims: EPA+DHA dragen bij aan een normale hartfunctie (bij 25
 Dit ritme bepaalt wanneer je melatonine aanmaakt (slaap), wanneer je cortisol piekt (wakker worden), wanneer je spijsvertering het actiefst is, en wanneer je lichaam het efficiëntst herstelt. Het is niet alleen een slaapklok — het stuurt je hele fysiologie aan.`,
       howItWorks: `Licht via je netvlies signaleert aan je biologische klok of het dag of nacht is. Overdag: cortisol omhoog, melatonine omlaag, alertheid en spijsvertering actief. Bij duisternis: cortisol omlaag, melatonine omhoog, herstelprocessen geactiveerd.
 
-Na 40 wordt dit systeem gevoeliger voor verstoring. Blauw licht van schermen onderdrukt je melatonineproductie sterker, onregelmatige bedtijden verstoren het ritme sneller, en je cortisolcurve vlakt af — waardoor je 's ochtends trager op gang komt en 's avonds minder goed afschakelt.`,
+Na 30 wordt dit systeem gevoeliger voor verstoring. Blauw licht van schermen onderdrukt je melatonineproductie sterker, onregelmatige bedtijden verstoren het ritme sneller, en je cortisolcurve vlakt af — waardoor je 's ochtends trager op gang komt en 's avonds minder goed afschakelt.`,
       whyItMatters: `Een verstoord circadiaan ritme beïnvloedt niet alleen je slaap, maar ook je hormoonbalans, energieniveau, gewicht en herstelvermogen. Het verklaart waarom je 7 uur slaapt maar toch moe wakker wordt — het is niet altijd de kwantiteit, maar de timing en kwaliteit die uit zijn. Goed slaapritme is het fundament waar leefstijlverbeteringen en supplementen op bouwen.`,
     },
     relatedSlugs: ['adaptogens'],
     relatedComparisons: ['/beste/magnesium', '/beste/ashwagandha'],
     metaTitle: 'Circadiaan Ritme: Je Interne Klok Uitgelegd',
-    metaDescription: 'Je circadiaan ritme stuurt slaap, hormonen en energie aan. Na 40 wordt het gevoeliger. Wat kun je eraan doen?',
+    metaDescription: 'Je circadiaan ritme stuurt slaap, hormonen en energie aan. Na 30 wordt het gevoeliger. Wat kun je eraan doen?',
     referenties: toRefs([
       'Roenneberg T et al. Social jetlag mismatch biological social clock epidemiology frameworks Curr Biol.',
       'Wittmann M et al. Social jetlag humans chronotypes misalignment physiology Chronobiol Int.',
@@ -285,7 +285,7 @@ Na 40 wordt dit systeem gevoeliger voor verstoring. Blauw licht van schermen ond
     content: {
       whatIsIt: `De Aanbevolen Dagelijkse Hoeveelheid (ADH) is de Nederlandse vertaling van de Europese referentie-inname (RI). Het is de hoeveelheid van een vitamine of mineraal die voldoende is om aan de behoefte van vrijwel de gehele gezonde bevolking te voldoen.
 
-Je vindt de ADH op elk supplementetiket als percentage: "100% ADH" betekent dat één dosis de volledige aanbevolen hoeveelheid bevat. Maar de ADH is een minimum, geen optimum — en de waarden zijn vastgesteld voor de gemiddelde volwassene, niet specifiek voor 40+.`,
+Je vindt de ADH op elk supplementetiket als percentage: "100% ADH" betekent dat één dosis de volledige aanbevolen hoeveelheid bevat. Maar de ADH is een minimum, geen optimum — en de waarden zijn vastgesteld voor de gemiddelde volwassene, niet specifiek voor 30+.`,
       howItWorks: `De ADH wordt vastgesteld door de Europese Autoriteit voor Voedselveiligheid (EFSA) en is wettelijk verplicht op etiketten. Voor magnesium is de ADH 375 mg per dag, voor vitamine D 5 µg, voor omega-3 (EPA+DHA) 250 mg.
 
 Belangrijk: de ADH is een referentiewaarde, geen persoonlijk advies. Iemand die intensief sport, chronische stress heeft of weinig vis eet kan een hogere behoefte hebben. Daarom kijken we bij onze beoordelingen niet alleen of een supplement de ADH haalt, maar of de dosering aansluit bij wat onderzoek laat zien voor specifieke doelgroepen.`,
@@ -375,7 +375,7 @@ Let op: "laboratorium getest" op een etiket zonder te vermelden welk lab is wein
     content: {
       whatIsIt: `Slaaphygiëne is geen trendy term — het is de wetenschappelijke verzamelnaam voor alle factoren die bepalen hoe goed je slaapt. Van de temperatuur in je slaapkamer tot het tijdstip waarop je je laatste koffie drinkt — het zijn de gewoontes rondom slaap die samen bepalen of je 's ochtends uitgerust wakker wordt.
 
-Na 40 wordt slaaphygiëne belangrijker omdat je circadiaan ritme gevoeliger wordt voor verstoringen. Dezelfde gewoontes die op je 30e geen probleem waren (laat schermgebruik, wisselende bedtijden) kunnen na 40 merkbaar je slaapkwaliteit ondermijnen.`,
+Na 30 wordt slaaphygiëne belangrijker omdat je circadiaan ritme gevoeliger wordt voor verstoringen. Dezelfde gewoontes die op je 30e geen probleem waren (laat schermgebruik, wisselende bedtijden) kunnen na 30 merkbaar je slaapkwaliteit ondermijnen.`,
       howItWorks: `De basis van goede slaaphygiëne bestaat uit vijf pijlers:
 
 Een vast slaap-waakritme — ook in het weekend. Dit synchroniseert je circadiaan ritme en verbetert de kwaliteit van je diepe slaap.
@@ -392,7 +392,7 @@ Een wind-down routine — een vast signaal aan je lichaam dat het tijd is om af 
     relatedSlugs: ['circadiaan-ritme'],
     relatedComparisons: ['/beste/magnesium'],
     metaTitle: 'Slaaphygiëne: De Gewoontes Die Je Slaap Maken of Breken',
-    metaDescription: 'Slaaphygiëne is de basis voor goede slaap. Na 40 wordt het belangrijker. De 5 pijlers uitgelegd.',
+    metaDescription: 'Slaaphygiëne is de basis voor goede slaap. Na 30 wordt het belangrijker. De 5 pijlers uitgelegd.',
     referenties: toRefs([
       'Irish LA et al. Role sleep hygiene insomnia management rationale evidence Sleep Med Rev.',
       'Morgenthaler T et al. Practice parameters behavioral insomnia AASM standards contexts.',
@@ -405,24 +405,24 @@ Een wind-down routine — een vast signaal aan je lichaam dat het tijd is om af 
   {
     slug: 'eiwitbehoefte-na-40',
     insightTier: 1,
-    term: 'Eiwitbehoefte na 40',
+    term: 'Eiwitbehoefte na 30',
     theme: 'leefstijl-herstel',
-    shortDefinition: 'Na 40 heeft je lichaam meer eiwit nodig om spiermassa te behouden — maar de meeste mensen eten te weinig.',
+    shortDefinition: 'Na 30 heeft je lichaam meer eiwit nodig om spiermassa te behouden — maar de meeste mensen eten te weinig.',
     coverImage: '/images/kennisbank/eiwitbehoefte-na-40.jpg',
     coverImageAlt: "Eiwitrijke maaltijd met groenten en vlees of peulvruchten",
     content: {
-      whatIsIt: `Vanaf je 40e begint je lichaam geleidelijk spiermassa te verliezen — een proces dat sarcopenie heet. Gemiddeld verlies je 3-8% spiermassa per decennium na je 30e, en dat versnelt na je 50e. Eiwit is de belangrijkste bouwsteen om dit tegen te gaan.
+      whatIsIt: `Vanaf je 30e begint je lichaam geleidelijk spiermassa te verliezen — een proces dat sarcopenie heet. Gemiddeld verlies je 3-8% spiermassa per decennium na je 30e, en dat versnelt na je 50e. Eiwit is de belangrijkste bouwsteen om dit tegen te gaan.
 
-De standaard ADH voor eiwit (0,8 gram per kilogram lichaamsgewicht) is vastgesteld als minimum om deficiëntie te voorkomen — niet als optimum voor spierbehoud. Onderzoekers adviseren na 40 eerder 1,2 tot 1,6 gram per kilogram, vooral in combinatie met krachttraining.`,
-      howItWorks: `Na 40 treedt anabole resistentie op: je spieren reageren minder sterk op dezelfde hoeveelheid eiwit. Waar een 25-jarige met 20 gram eiwit per maaltijd een volledige spierproteïnesynthese-respons krijgt, heeft een 50-jarige daar 35-40 gram voor nodig.
+De standaard ADH voor eiwit (0,8 gram per kilogram lichaamsgewicht) is vastgesteld als minimum om deficiëntie te voorkomen — niet als optimum voor spierbehoud. Onderzoekers adviseren na 30 eerder 1,2 tot 1,6 gram per kilogram, vooral in combinatie met krachttraining.`,
+      howItWorks: `Na 30 treedt anabole resistentie op: je spieren reageren minder sterk op dezelfde hoeveelheid eiwit. Waar een 25-jarige met 20 gram eiwit per maaltijd een volledige spierproteïnesynthese-respons krijgt, heeft een 50-jarige daar 35-40 gram voor nodig.
 
 Dit betekent dat het niet alleen gaat om hoeveel eiwit je per dag eet, maar ook om de verdeling over de dag. Drie maaltijden met elk 30-40 gram eiwit is effectiever dan één maaltijd met 90 gram en twee met 15 gram.`,
-      whyItMatters: `Eiwitinname is een van de eerste dingen die wij controleren via de Leefstijlcheck. Veel mensen 40+ eten een ontbijt van brood met jam (5g eiwit) en een lunch van een broodje kaas (12g eiwit) — ruim onder wat hun lichaam nodig heeft. Dit is een leefstijlaanpassing die meer impact heeft dan welk supplement dan ook. Quick win: begin de dag met een eiwitrijk ontbijt (eieren, kwark, noten).`,
+      whyItMatters: `Eiwitinname is een van de eerste dingen die wij controleren via de Leefstijlcheck. Veel mensen 30+ eten een ontbijt van brood met jam (5g eiwit) en een lunch van een broodje kaas (12g eiwit) — ruim onder wat hun lichaam nodig heeft. Dit is een leefstijlaanpassing die meer impact heeft dan welk supplement dan ook. Quick win: begin de dag met een eiwitrijk ontbijt (eieren, kwark, noten).`,
     },
     relatedSlugs: ['slaaphygiene', 'kalium-natrium-balans'],
     relatedComparisons: ['/beste/creatine'],
-    metaTitle: 'Eiwitbehoefte na 40: Hoeveel Heb Je Écht Nodig?',
-    metaDescription: 'Na 40 heb je meer eiwit nodig dan je denkt. De wetenschap achter spierbehoud, simpel uitgelegd.',
+    metaTitle: 'Eiwitbehoefte na 30: Hoeveel Heb Je Écht Nodig?',
+    metaDescription: 'Na 30 heb je meer eiwit nodig dan je denkt. De wetenschap achter spierbehoud, simpel uitgelegd.',
     referenties: toRefs([
       'Wolfe RR. Branched-chain amino acids muscle protein synthesis aging reviews J Nutr.',
       'Bauer J et al. Evidence-based recommendations optimal protein intake older adults PROT-AGE initiative.',
@@ -476,7 +476,7 @@ Omdat de bronnen zo verschillend zijn, is dit in de praktijk één interventie m
       whatIsIt: `Lifespan is hoe lang je leeft. Healthspan is hoe lang je goed leeft — zonder chronische ziekten, zonder dagelijkse beperkingen, met energie en veerkracht. Het verschil tussen die twee noemen onderzoekers de "morbidity gap": de jaren aan het einde van je leven die je in slechte gezondheid doorbrengt.
 
 In Nederland is de gemiddelde levensverwachting rond de 82 jaar. Maar de gemiddelde gezonde levensverwachting ligt op ongeveer 64. Dat betekent gemiddeld 18 jaar met beperkingen. Healthspan-denken draait om het verkleinen van die kloof.`,
-      howItWorks: `Healthspan wordt bepaald door een samenspel van factoren: metabole gezondheid, spiermassa, cardiovasculaire fitheid, cognitieve functie en chronische ontsteking. Na 40 versnellen de meeste van deze processen — maar ze zijn grotendeels beïnvloedbaar.
+      howItWorks: `Healthspan wordt bepaald door een samenspel van factoren: metabole gezondheid, spiermassa, cardiovasculaire fitheid, cognitieve functie en chronische ontsteking. Na 30 versnellen de meeste van deze processen — maar ze zijn grotendeels beïnvloedbaar.
 
 De vijf pijlers waar onderzoekers naar kijken: slaapkwaliteit, voedingspatroon, beweging (met name krachttraining en VO2max), stressmanagement en sociale verbinding. Supplementen spelen een ondersteunende rol, maar pas nadat deze pijlers staan.`,
       whyItMatters: `PerfectSupplement is gebouwd vanuit healthspan-denken. Daarom staat leefstijl altijd op nummer één en supplementen op nummer twee. De Leefstijlcheck meet niet of je supplementen nodig hebt — hij meet hoe sterk je fundament is. Want een supplement op een zwak fundament is als een dakkapel op een rot dak.`,
@@ -484,7 +484,7 @@ De vijf pijlers waar onderzoekers naar kijken: slaapkwaliteit, voedingspatroon, 
     relatedSlugs: ['circadiaan-ritme'],
     relatedComparisons: [],
     metaTitle: 'Healthspan: Niet Hoe Lang, Maar Hoe Goed Je Leeft',
-    metaDescription: 'Healthspan is het aantal gezonde jaren. Na 40 wordt het verschil met lifespan groter. Maar je kunt er iets aan doen.',
+    metaDescription: 'Healthspan is het aantal gezonde jaren. Na 30 wordt het verschil met lifespan groter. Maar je kunt er iets aan doen.',
     referenties: toRefs([
       'Crimmins EM. Lifespan healthspan population health metrics methodological demography longevity science.',
       'WHO. World report aging health frameworks disability-free life expectancy concepts.',
@@ -510,13 +510,13 @@ Bij korte, gezonde stress piekt cortisol even en daalt het daarna weer. Bij aanh
       howItWorks: `In het kort ziet de keten er zo uit: je hersenen registreren spanning; de hypothalamus maakt CRH (corticotropin-releasing hormone) aan; de hypofyse reageert met ACTH; de bijnieren maken cortisol. Normaal helpt een terugkoppeling via cortisol het systeem weer af te remmen — “genoeg nu”.
 
 Bij chronische stress werkt die rem vaak minder soepel. Het systeem blijft langer sensitief, waardoor de curve van cortisol minder rustig wordt en andere hormonen — waaronder slaap en herstel — onder druk komen te staan. Daarom is de HPA-as geen abstract begrip uit een handboek: het verklaart waarom “stress” zich in het lichaam vertaalt naar vermoeidheid, onrust en slechter herstel als het lang duurt.`,
-      whyItMatters: `Na je 40ste wordt deze as bij veel mensen kwetsbaarder: dezelfde werkdruk of zorg kan langer nazinderen op fysiek vlak. Dat raakt slaapkwaliteit, energie en hoe snel je weer tot een rustiger baseline terugkeert — precies waar supplementen soms ondersteuning bieden, maar waar leefstijl de eerste hefboom blijft.
+      whyItMatters: `Na je 30ste wordt deze as bij veel mensen kwetsbaarder: dezelfde werkdruk of zorg kan langer nazinderen op fysiek vlak. Dat raakt slaapkwaliteit, energie en hoe snel je weer tot een rustiger baseline terugkeert — precies waar supplementen soms ondersteuning bieden, maar waar leefstijl de eerste hefboom blijft.
 
 Ashwagandha en magnesium worden vaak gekozen bij spanning en slaap; die keuzes plaatsen zich in deze context, maar zijn geen vervanging voor hersteltijd en patronen die de as weer naar rust helpen trekken.`,
     },
     relatedSlugs: ['adaptogens', 'cortisol'],
     relatedComparisons: ['/beste/ashwagandha', '/beste/magnesium'],
-    metaTitle: 'HPA-as: Wat Het Is en Waarom Het Na 40 Meer Voelt',
+    metaTitle: 'HPA-as: Wat Het Is en Waarom Het Na 30 Meer Voelt',
     metaDescription:
       'De HPA-as stuurt je stressreactie aan: van hypothalamus en hypofyse tot cortisol uit je bijnieren. Begrijpelijk uitgelegd.',
     referenties: toRefs([
@@ -543,7 +543,7 @@ Ashwagandha en magnesium worden vaak gekozen bij spanning en slaap; die keuzes p
 In een gezond patroon helpt cortisol je op te starten na de nacht en alert te blijven wanneer dat nodig is. Het probleem ontstaat vooral wanneer het niveau structureel te hoog blijft, of wanneer het ritme kantelt — bijvoorbeeld minder ochtendpiek of juist nachtelijke pieken — waardoor je je uit balans voelt ondanks voldoende uren in bed.`,
       howItWorks: `Typisch is cortisol ’s ochtends hoger (wakker worden, alertheid) en ’s avonds lager, zodat melatonine en slaap de ruimte krijgen. Chronische stress verstoort dat beeld: het kan “de hele dag aan” staan, of juist onrustig schommelen.
 
-Er is ook een bekende wisselwerking met geslachtshormonen: bij langdurig hoge cortisolbelasting kan het lichaam voorrang geven aan de stressas — met effecten op energie, spiermassa en libido die na 40 merkbaar kunnen zijn. Het is geen simpele schakelaar; wel een reden om stress en herstel serieus te nemen naast eventuele supplementen.`,
+Er is ook een bekende wisselwerking met geslachtshormonen: bij langdurig hoge cortisolbelasting kan het lichaam voorrang geven aan de stressas — met effecten op energie, spiermassa en libido die na 30 merkbaar kunnen zijn. Het is geen simpele schakelaar; wel een reden om stress en herstel serieus te nemen naast eventuele supplementen.`,
       whyItMatters: `In de supplementwereld wordt ashwagandha (o.a. KSM-66) in studies in verband gebracht met lagere cortisolmarkers bij volwassenen onder stress — dat is populatie-onderzoek, geen garantie per persoon. Magnesium ondersteunt de normale werking van het zenuwstelsel (EFSA-goedgekeurde claim) en past vaak in hetzelfde verhaal: minder gespannen systeem, betere basis voor slaap.
 
 Kies altijd op kwaliteit, dosering en je totale plaatje (slaapritme, beweging, voeding); cortisol optimaliseer je niet met één capsule alleen.`,
@@ -552,7 +552,7 @@ Kies altijd op kwaliteit, dosering en je totale plaatje (slaapritme, beweging, v
     relatedComparisons: ['/beste/ashwagandha'],
     metaTitle: 'Cortisol: Het Stresshormoon en Je Dag-Nachtritme',
     metaDescription:
-      'Wat cortisol doet, hoe het ritme kan verstorren bij stress, en waarom dat na 40 merkbaar wordt — helder uitgelegd.',
+      'Wat cortisol doet, hoe het ritme kan verstorren bij stress, en waarom dat na 30 merkbaar wordt — helder uitgelegd.',
     referenties: toRefs([
       'Chrousos GP. Stress and disorders of the stress system. Nat Rev Endocrinol. 2009;5(7):374-381.',
       'Smith GD et al. Cortisol Testosterone Coronary Heart Disease. Circulation. 2005;112(3):332-340.',
@@ -569,13 +569,13 @@ Kies altijd op kwaliteit, dosering en je totale plaatje (slaapritme, beweging, v
     term: 'Melatonine',
     theme: 'lichaam-veroudering',
     shortDefinition:
-      'Het hormoon dat je lichaam helpt “nacht” te signaleren; de eigen aanmaak neigt te dalen na je 40e.',
+      'Het hormoon dat je lichaam helpt “nacht” te signaleren; de eigen aanmaak neigt te dalen na je 30e.',
     coverImage: '/images/kennisbank/melatonine.jpg',
     coverImageAlt: "Nachthemel met sterren boven een rustig landschap",
     content: {
       whatIsIt: `Melatonine wordt aangemaakt in de pijnappelklier, een kleine structuur in je middenhersenen. Het is vooral een timing-signaal: het helpt je biologische klok te verankeren op donker en rust, niet om per se “hard” in slaap te vallen op commando. Vandaar het verschil tussen inslapen en een gezond 24-uursritme.
 
-Naarmate je ouder wordt, daalt de piek in endogene melatonine bij veel mensen geleidelijk. Dat verklaart geen individuele diagnose, wél waarom het thema vaker opduikt na 40: later moe worden, eerder wakker, of slaap die minder diep aanvoelt terwijl de omstandigheden gelijk lijken.`,
+Naarmate je ouder wordt, daalt de piek in endogene melatonine bij veel mensen geleidelijk. Dat verklaart geen individuele diagnose, wél waarom het thema vaker opduikt na 30: later moe worden, eerder wakker, of slaap die minder diep aanvoelt terwijl de omstandigheden gelijk lijken.`,
       howItWorks: `Wanneer het donker wordt, neemt de signalering naar de pijnappelklier toe en stijgt melatonine. Fel licht — met name blauw licht van schermen laat op de avond — kan die curve afvlakken: je hersenen krijgen het signaal dat het nog “dag” is.
 
 Daardoor is licht hygiëne net zo relevant als doseringen op een flesje. Ook verstoringen in je vaste bed- en opsta-tijden (social jetlag) kunnen de timing van melatonine verschuiven, los van hoeveel milligram je inneemt.`,
@@ -588,7 +588,7 @@ Verbeter eerst het ritme (licht overdag, dimmen ’s avonds, vaste tijden): dat 
     relatedComparisons: [],
     metaTitle: 'Melatonine: Hormoon, Ritme en Wat Suppletie Wél en Niet Is',
     metaDescription:
-      'Melatonine stuurt timing van slaap mee, vooral via je biologische klok. Wat er na 40 verandert en waar je op let bij suppletie.',
+      'Melatonine stuurt timing van slaap mee, vooral via je biologische klok. Wat er na 30 verandert en waar je op let bij suppletie.',
     referenties: toRefs([
       'Wurtman RJ. Age-Related Decreases in Melatonin Secretion. J Clin Endocrinol Metab. 2000;85(6):2135-2136.',
       'Claustrat B, Leston J. Melatonin circadian rhythm sleep disorders. Endotext (NIH). NBK550972, 2022.',
@@ -613,16 +613,16 @@ Verbeter eerst het ritme (licht overdag, dimmen ’s avonds, vaste tijden): dat 
 Ze zijn geen los detail uit biologieles: als mitochondriën minder efficiënt worden, voelt dat als minder buffer in de dag — minder veerkracht na inspanning, langzamer herstel, sneller “leeg” ondanks genoeg slaap op papier.`,
       howItWorks: `In zeer simpele termen “verbranden” mitochondriën brandstof met zuurstof in een keten van stappen (oxidatieve fosforylering) om ATP te laden. Daarbij ontstaan ook reactieve moleculen; normaal vangt je lichaam die op, maar bij disbalans speelt dat mee in vermoeidheid en veroudering op cellulair niveau.
 
-Trainingsprikkels — met name duur en kracht — geven het signaal om nieuwe of veerkrachtigere mitochondriën op te bouwen. Dat is een van de sterkste niet-supplementaire hefbomen voor energie na 40.`,
+Trainingsprikkels — met name duur en kracht — geven het signaal om nieuwe of veerkrachtigere mitochondriën op te bouwen. Dat is een van de sterkste niet-supplementaire hefbomen voor energie na 30.`,
       whyItMatters: `Onderzoek laat zien dat gemiddeld de mitochondriale functie in spierweefsel met de leeftijd kan afnemen; dat raakt het gevoel van energie en het trainbare vermogen. Supplementen zoals omega-3 vetzuren en creatine worden in verschillende lijnen onderzoek besproken rond membraangezondheid en snelle ATP-buffering — handig om te kennen als je vergelijkingen leest, maar nooit ter vervanging van beweging en voeding.
 
 Combi die vaak werkt: structureel bewegen + voldoende eiwit + gerichte supplementen waar evidence en kwaliteit kloppen.`,
     },
     relatedSlugs: ['atp', 'epa-dha'],
     relatedComparisons: ['/beste/omega-3-supplement', '/beste/creatine'],
-    metaTitle: 'Mitochondriën: Je Cellulaire Energie en Wat Er Na 40 Verandert',
+    metaTitle: 'Mitochondriën: Je Cellulaire Energie en Wat Er Na 30 Verandert',
     metaDescription:
-      'Mitochondriën maken ATP voor energie en herstel. Waarom dat na 40 anders voelt en wat rol speelt bij leefstijl en supplementen.',
+      'Mitochondriën maken ATP voor energie en herstel. Waarom dat na 30 anders voelt en wat rol speelt bij leefstijl en supplementen.',
     referenties: toRefs([
       'Short KR et al. Decline skeletal muscle mitochondrial function aging. Proc Natl Acad Sci USA. 2005;102(15):5618-5623.',
       'Lanza IR, Nair KS. Mitochondrial function aging skeletal muscle methodological exercise physiology.',
@@ -685,7 +685,7 @@ Je voorraad op zich is klein; het geheim zit in het tempo van hersynthese. Daaro
 Macro’s (koolhydraten, vetten, eiwitten) zijn uiteindelijk de grondstoffen; training verhoogt het vermogen om die om te zetten in bruikbare ATP.`,
       whyItMatters: `Als je creatine of andere “energie”-supplementen beoordeelt, is het nuttig ATP te begrijpen als keten: substraat → mitochondriën → ATP → prestatie/herstel. Creatine ondersteunt de snelle herlading, niet magisch oneindig vermogen.
 
-Lees vergelijkingen dus op dosering, vorm en zuiverheid — en blijf slaap en eiwit (zie ook eiwit na 40) als basis zien. Concreet uitgewerkt staat dat in [creatine dosering en laadfase](/blog/creatine-dosering-en-laadfase), [welke vorm je koopt](/blog/creatine-vormen-en-keurmerken) en het cognitiespoor in [creatine en je brein](/blog/creatine-en-brein-slaaptekort). Producten vergelijk je op [/beste/creatine](/beste/creatine); alle stoffen naast elkaar staan op de [supplementengids](/supplementen).`,
+Lees vergelijkingen dus op dosering, vorm en zuiverheid — en blijf slaap en eiwit (zie ook eiwit na 30) als basis zien. Concreet uitgewerkt staat dat in [creatine dosering en laadfase](/blog/creatine-dosering-en-laadfase), [welke vorm je koopt](/blog/creatine-vormen-en-keurmerken) en het cognitiespoor in [creatine en je brein](/blog/creatine-en-brein-slaaptekort). Producten vergelijk je op [/beste/creatine](/beste/creatine); alle stoffen naast elkaar staan op de [supplementengids](/supplementen).`,
     },
     relatedSlugs: ['mitochondrien', 'eiwitbehoefte-na-40'],
     relatedComparisons: ['/beste/creatine'],
@@ -714,15 +714,15 @@ Lees vergelijkingen dus op dosering, vorm en zuiverheid — en blijf slaap en ei
     content: {
       whatIsIt: `Testosteron wordt vooral in de testikels aangemaakt (met een klein deel uit de bijnieren). Het hoort bij mannelijke ontwikkeling, spiermassa, botdichtheid en libido — maar “normaal” is een bandbreedte, geen enkel doelgetal op een bonnetje.
 
-Na je 40e dalen gemiddelde waarden geleidelijk; hoe snel en hoe merkbaar dat is, verschilt sterk per persoon. Vermoeidheid of minder zin in training heeft vaak meerdere oorzaken tegelijk (slaap, stress, voeding, medicatie).`,
+Na je 30e dalen gemiddelde waarden geleidelijk; hoe snel en hoe merkbaar dat is, verschilt sterk per persoon. Vermoeidheid of minder zin in training heeft vaak meerdere oorzaken tegelijk (slaap, stress, voeding, medicatie).`,
       howItWorks: `Testosteron volgt een dagritme en reageert op slaap, inspanning en stressbelasting. Langdurige stress en slechte slaap kunnen samenhangen met minder gunstige hormonale patronen — dat is populatie-onderzoek, geen voorspelling voor jouw bloedwaarde.
 
 Labtesten (totaal en soms vrij testosteron) horen in medische context: interpretatie hangt af van tijdstip, klachten en andere markers. Zelf-diagnose via marketing is riskant.`,
-      whyItMatters: `Supplementen zoals zink of creatine worden soms besproken rond mannelijke gezondheid, maar vervangen geen medische beoordeling bij aanhoudende klachten. Lees onze pillar [testosteron na 40](/testosteron-na-40) en vergelijk zink inhoudelijk op [/beste/zink](/beste/zink) — altijd naast leefstijl (slaap, krachttraining, stress).`,
+      whyItMatters: `Supplementen zoals zink of creatine worden soms besproken rond mannelijke gezondheid, maar vervangen geen medische beoordeling bij aanhoudende klachten. Lees onze pillar [testosteron na 30](/testosteron-na-40) en vergelijk zink inhoudelijk op [/beste/zink](/beste/zink) — altijd naast leefstijl (slaap, krachttraining, stress).`,
     },
     relatedSlugs: ['cortisol', 'hpa-as'],
     relatedComparisons: ['/beste/zink', '/beste/creatine'],
-    metaTitle: 'Testosteron: Wat Het Is en Wat Verandert Na 40',
+    metaTitle: 'Testosteron: Wat Het Is en Wat Verandert Na 30',
     metaDescription:
       'Testosteron uitgelegd: functie, leeftijdstrend en waarom labwaarden context nodig hebben — zonder supplement-hype.',
     referenties: toRefs([
@@ -744,13 +744,13 @@ Labtesten (totaal en soms vrij testosteron) horen in medische context: interpret
     coverImage: '/images/kennisbank/slaapschuld.jpg',
     coverImageAlt: "Slaapkamer in zacht ochtendlicht na een korte nacht",
     content: {
-      whatIsIt: `Slaapschuld ontstaat wanneer je structureel minder slaapt dan je lichaam nodig heeft — niet alleen één slechte nacht. Veel mensen 40+ compenseren met koffie en “doorgaan”, terwijl concentratie, humeur en herstel langzaam afnemen.
+      whatIsIt: `Slaapschuld ontstaat wanneer je structureel minder slaapt dan je lichaam nodig heeft — niet alleen één slechte nacht. Veel mensen 30+ compenseren met koffie en “doorgaan”, terwijl concentratie, humeur en herstel langzaam afnemen.
 
 Het is geen officiële diagnose op zich; wel een bruikbaar begrip om te zien waarom kleine verbeteringen in bedtijd groot effect kunnen hebben.`,
       howItWorks: `Slaap bestaat uit cycli (licht, diep, REM). Tekort raakt vooral diepe slaap en REM — fases die belangrijk zijn voor herstel en geheugen. Je kunt “genoeg uren” hebben en toch niet uitgerust zijn als het ritme verstoord is (laat naar bed, schermlicht, alcohol).
 
 Inhalen van slaap in het weekend helpt deels, maar lost een verstoord weekritme niet volledig op.`,
-      whyItMatters: `Voor supplementen is slaap de basis: melatonine ondersteunt vooral timing, magnesium past bij ontspanning — geen vervanging van structurele slaapschuld. Lees [slaap verbeteren na 40](/slaap-verbeteren-na-40) en blogs over [slaapritme](/blog/slaapritme-herstellen).`,
+      whyItMatters: `Voor supplementen is slaap de basis: melatonine ondersteunt vooral timing, magnesium past bij ontspanning — geen vervanging van structurele slaapschuld. Lees [slaap verbeteren na 30](/slaap-verbeteren-na-40) en blogs over [slaapritme](/blog/slaapritme-herstellen).`,
     },
     relatedSlugs: ['melatonine', 'cortisol', 'slaaphygiene'],
     relatedComparisons: ['/beste/magnesium'],
@@ -776,7 +776,7 @@ Inhalen van slaap in het weekend helpt deels, maar lost een verstoord weekritme 
     coverImage: '/images/kennisbank/sociale-verbinding.jpg',
     coverImageAlt: "Mensen in gesprek bij natuurlijk licht",
     content: {
-      whatIsIt: `Sociale verbinding gaat niet over hoeveel mensen je kent, maar over de kwaliteit van een handvol relaties: mensen bij wie je jezelf kunt zijn en op wie je kunt terugvallen als het tegenzit. Voor veel mensen boven de 40 versmalt dat netwerk ongemerkt — werk, gezin en agenda eten de vriendschappen op die vroeger vanzelf gingen.
+      whatIsIt: `Sociale verbinding gaat niet over hoeveel mensen je kent, maar over de kwaliteit van een handvol relaties: mensen bij wie je jezelf kunt zijn en op wie je kunt terugvallen als het tegenzit. Voor veel mensen boven de 30 versmalt dat netwerk ongemerkt — werk, gezin en agenda eten de vriendschappen op die vroeger vanzelf gingen.
 
 In grote overzichtsstudies hangt het ontbreken van zulke steun samen met een hoger risico op vroegtijdig overlijden — in de orde van grootte van bekende risicofactoren als roken en overgewicht. Dat maakt verbinding geen 'soft' thema, maar een volwaardig leefstijldomein, naast slaap, stress, voeding en beweging.`,
       howItWorks: `Het mechanisme loopt via je stress-systeem. Betrouwbaar contact dempt de stressrespons: in gezelschap van mensen die je vertrouwt, komt je lichaam sneller terug in de herstelstand. Chronisch gebrek aan steun houdt datzelfde systeem juist licht geactiveerd — met doorwerking op slaap, energie en herstel.
@@ -788,9 +788,9 @@ In de Leefstijlcheck telt verbinding mee als interventiedomein. Scoort het bij j
     },
     relatedSlugs: ['nervus-vagus', 'cortisol', 'healthspan'],
     relatedComparisons: [],
-    metaTitle: 'Sociale verbinding en gezondheid na je 40e | PerfectSupplement',
+    metaTitle: 'Sociale verbinding en gezondheid na je 30e | PerfectSupplement',
     metaDescription:
-      'Waarom sociale verbinding een volwaardig leefstijldomein is na 40: wat het met je stress-systeem doet, wat de wetenschap zegt en welke kleine stap het meest oplevert. Geen supplement — bewust.',
+      'Waarom sociale verbinding een volwaardig leefstijldomein is na 30: wat het met je stress-systeem doet, wat de wetenschap zegt en welke kleine stap het meest oplevert. Geen supplement — bewust.',
     referenties: toRefs([
       'Holt-Lunstad J, Smith TB, Layton JB. Social relationships and mortality risk: a meta-analytic review. PLoS Med. 2010.',
       'Holt-Lunstad J, Smith TB, Baker M, et al. Loneliness and social isolation as risk factors for mortality: a meta-analytic review. Perspect Psychol Sci. 2015.',
@@ -843,13 +843,13 @@ Transparantie op het etiket (elementair mg, vorm, geen verkapte blends) is waar 
     coverImage: '/images/kennisbank/overtrainingssyndroom.jpg',
     coverImageAlt: "Atleet in herstelmoment na intensieve training",
     content: {
-      whatIsIt: `Overtraining (of het overtrainingssyndroom) is geen “lui zijn” — het is wanneer je lichaam wekenlang meer belasting krijgt dan het kan verwerken, ondanks slaap en voeding die op papier oké lijken. Veel fanatieke sporters 40+ herkennen het patroon: harder trainen terwijl prestaties en stemming achteruitgaan.
+      whatIsIt: `Overtraining (of het overtrainingssyndroom) is geen “lui zijn” — het is wanneer je lichaam wekenlang meer belasting krijgt dan het kan verwerken, ondanks slaap en voeding die op papier oké lijken. Veel fanatieke sporters 30+ herkennen het patroon: harder trainen terwijl prestaties en stemming achteruitgaan.
 
 Het verschilt van een normale dip na zware week: het houdt aan en verbetert niet met één rustweek.`,
       howItWorks: `Belasting = training + werkstress + slaaptekort. Herstel = slaap, voeding (eiwit), rustdagen en soms minder volume. Zonder die balans blijft het sympathische “aan”-gevoel langer hangen; herstelmarkers en subjectief welzijn kunnen achterblijven.
 
 Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; online checklists zijn geen vervanging.`,
-      whyItMatters: `Supplementen zoals creatine of magnesium ondersteunen delen van het plaatje, maar vervangen geen deload. Zie profiel [Overtrainer](/profiel/overtrainer), pillar [herstel na 40](/herstel-verbeteren-na-40) en blog [creatine en herstel](/blog/creatine-en-herstel).`,
+      whyItMatters: `Supplementen zoals creatine of magnesium ondersteunen delen van het plaatje, maar vervangen geen deload. Zie profiel [Overtrainer](/profiel/overtrainer), pillar [herstel na 30](/herstel-verbeteren-na-40) en blog [creatine en herstel](/blog/creatine-en-herstel).`,
     },
     relatedSlugs: ['mitochondrien', 'cortisol'],
     relatedComparisons: ['/beste/creatine', '/beste/magnesium'],
@@ -881,7 +881,7 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
 Zonbescherming filtert in laboratoriumtests 95–98% van datzelfde UVB, maar in veldonderzoek leidt normaal gebruik zelden tot een lagere status — mensen smeren dunner dan de testnorm en blijven langer buiten. Zie [zonnebrand en vitamine D](/blog/zonnebrand-en-vitamine-d), [hoeveel zon je nodig hebt](/blog/vitamine-d-zon-nederland) en het jaarritme in [vitamine D door het jaar heen](/blog/vitamine-d-seizoenen-jaarritme).
 
 Voeding levert meestal te weinig (vette vis, verrijkte producten). Suppletie met D3 (cholecalciferol) is gangbaar na bloedmeting (25-OH-vitamine D) en medisch advies. De EFSA-bovengrens voor langdurige inname bij volwassenen is 100 µg (4000 IE) per dag; grote trials als VITAL en D2d vonden bij mensen zonder tekort geen effect op hun primaire uitkomsten — zie [hoge doses vitamine D](/blog/vitamine-d-hoge-doses-social-media).`,
-      whyItMatters: `Veel mensen 40+ hebben in de winter een lage status zonder het te weten. EFSA erkent claims op botten, spieren en immuunsysteem — geen erkende claim op "meer energie" als etiketbelofte. De standaardtest is 25-OH-vitamine D, niet de actieve 1,25-vorm; wanneer meten iets toevoegt staat in [vitamine D meten](/blog/vitamine-d-meten-wanneer-zinvol). Praktische innamevragen (vet, tijdstip, combinaties) staan bij [vitamine D innemen](/kennisbank/vitamine-d-inname); wat onderzoek zegt over schildklier, diabetes en duizeligheid staat in [vitamine D en aandoeningen](/blog/vitamine-d-aandoeningen-onderzoek), en de slaapvraag in [vitamine D en slaap](/blog/vitamine-d-en-slaap).
+      whyItMatters: `Veel mensen 30+ hebben in de winter een lage status zonder het te weten. EFSA erkent claims op botten, spieren en immuunsysteem — geen erkende claim op "meer energie" als etiketbelofte. De standaardtest is 25-OH-vitamine D, niet de actieve 1,25-vorm; wanneer meten iets toevoegt staat in [vitamine D meten](/blog/vitamine-d-meten-wanneer-zinvol). Praktische innamevragen (vet, tijdstip, combinaties) staan bij [vitamine D innemen](/kennisbank/vitamine-d-inname); wat onderzoek zegt over schildklier, diabetes en duizeligheid staat in [vitamine D en aandoeningen](/blog/vitamine-d-aandoeningen-onderzoek), en de slaapvraag in [vitamine D en slaap](/blog/vitamine-d-en-slaap).
 
 Lees verder: [vitamine D en energie](/blog/vitamine-d-en-energie), [tekort herkennen](/blog/vitamine-d-tekort-herkennen) en de keuzevraag [D3 met of zonder K2](/blog/vitamine-d-en-k2-samen). Vergelijk producten op [/beste/vitamine-d](/beste/vitamine-d). De Leefstijlcheck vraagt naar zonlicht (LIF_SUN).`,
     },
@@ -889,7 +889,7 @@ Lees verder: [vitamine D en energie](/blog/vitamine-d-en-energie), [tekort herke
     relatedComparisons: ['/beste/vitamine-d'],
     metaTitle: 'Vitamine D: Wat Doet Het en Wanneer Suppletie?',
     metaDescription:
-      'Vitamine D uitgelegd: zonnestand en UVB in Nederland, zonbescherming, tekort, EFSA-claims, bovengrens en wanneer meten zinvol is na 40.',
+      'Vitamine D uitgelegd: zonnestand en UVB in Nederland, zonbescherming, tekort, EFSA-claims, bovengrens en wanneer meten zinvol is na 30.',
     laatstBijgewerktOp: '2026-09-01',
     referenties: toRefs([
       'Holick MF. Vitamin D deficiency. N Engl J Med. 2007;357(3):266-281.',
@@ -920,7 +920,7 @@ De EU-etiketclaims gelden voor vitamine K als nutriënt, niet voor een merkvorm.
       howItWorks: `K2 activeert vitamine-K-afhankelijke eiwitten die betrokken zijn bij botmetabolisme en stolling. MK-7 heeft een langere halfwaardetijd dan MK-4; daarom doseren dagelijkse combo’s vaak 37–90 mcg MK-7 naast D3 in een oliedrager (beide zijn vetoplosbaar).
 
 De marketingzin die je overal ziet — K2 zou calcium uit slagaders 'wegsturen' en D3 zou zonder K2 onveilig zijn — is precies de hart- en bloedvatenclaim die EFSA heeft afgewezen (EFSA Journal 2012;10(3):2714, ID 125). Die mag nergens in copy. D3 heeft eigen erkende claims, onder meer op de normale opname van calcium en fosfor; K2 voegt daar de erkende bot- en stollingsclaims aan toe, geen hartbelofte.`,
-      whyItMatters: `Na 40 koopt de doelgroep D3+K2 vaak als één product. Dat is een echte keuzevraag bij vitamine D die je al overweegt — geen reden voor een losse K2-pagina. Die afweging (wat MK-7 wel doet, wat de meerprijs waard is, wanneer je oppast) staat uitgewerkt in [vitamine D en K2 samen](/blog/vitamine-d-en-k2-samen). Vergelijk combinaties op [/beste/vitamine-d](/beste/vitamine-d) en lees [vitamine D](/kennisbank/vitamine-d) voor zonlicht, tekort en D3-claims. Bij vitamine-K-antagonisten (antistolling) eerst met arts of apotheker overleggen: de stollingsclaim is er niet voor niets. De claimgrens zelf staat ook bij [EFSA-claims](/kennisbank/efsa-claims).`,
+      whyItMatters: `Na 30 koopt de doelgroep D3+K2 vaak als één product. Dat is een echte keuzevraag bij vitamine D die je al overweegt — geen reden voor een losse K2-pagina. Die afweging (wat MK-7 wel doet, wat de meerprijs waard is, wanneer je oppast) staat uitgewerkt in [vitamine D en K2 samen](/blog/vitamine-d-en-k2-samen). Vergelijk combinaties op [/beste/vitamine-d](/beste/vitamine-d) en lees [vitamine D](/kennisbank/vitamine-d) voor zonlicht, tekort en D3-claims. Bij vitamine-K-antagonisten (antistolling) eerst met arts of apotheker overleggen: de stollingsclaim is er niet voor niets. De claimgrens zelf staat ook bij [EFSA-claims](/kennisbank/efsa-claims).`,
     },
     relatedSlugs: ['vitamine-d', 'efsa-claims', 'vitamine-d-inname'],
     relatedComparisons: ['/beste/vitamine-d'],
@@ -982,17 +982,17 @@ Belangrijker dan het innamemoment is de vraag of je het überhaupt nodig hebt: z
     term: 'Insulineresistentie',
     theme: 'lichaam-veroudering',
     shortDefinition:
-      'Wanneer cellen minder gevoelig worden voor insuline — vaak besproken rond energie, gewicht en metabole gezondheid na 40.',
+      'Wanneer cellen minder gevoelig worden voor insuline — vaak besproken rond energie, gewicht en metabole gezondheid na 30.',
     coverImage: '/images/kennisbank/insulineresistentie.jpg',
     coverImageAlt: "Gebalanceerde maaltijd met vezels en eiwit",
     content: {
       whatIsIt: `Insuline helpt glucose uit je bloed naar cellen te brengen. Bij insulineresistentie reageert het lichaam minder goed: de alvleesklier maakt meer insuline aan om hetzelfde effect te halen. Dat patroon wordt vaak genoemd in de context van type 2-diabetes-risico en “energiedips” na maaltijden — maar individuele klachten zijn niet specifiek genoeg om zelf te diagnosticeren.`,
       howItWorks: `Factoren die in onderzoek terugkomen: buikvet, weinig beweging, slaaptekort en hoge inname van ultra-bewerkte koolhydraten. Krachttraining en eiwitrijke maaltijden ondersteunen vaak stabilere bloedsuikerspiegels — geen wondermiddel, wel een praktische hefboom naast medische begeleiding.`,
-      whyItMatters: `Na 40 hangt energie vaak samen met metabole gezondheid. Lees [energie na 40](/energie-na-40) voor voorzichtige koppelingen — altijd met huisarts bij aanhoudende klachten of risicofactoren.`,
+      whyItMatters: `Na 30 hangt energie vaak samen met metabole gezondheid. Lees [energie na 30](/energie-na-40) voor voorzichtige koppelingen — altijd met huisarts bij aanhoudende klachten of risicofactoren.`,
     },
     relatedSlugs: ['mitochondrien', 'atp'],
     relatedComparisons: [],
-    metaTitle: 'Insulineresistentie: Uitleg en Relevantie Na 40',
+    metaTitle: 'Insulineresistentie: Uitleg en Relevantie Na 30',
     metaDescription:
       'Insulineresistentie in begrijpelijke taal: wat het betekent, wat onderzoek zegt en wanneer medische hulp past.',
     referenties: toRefs([
@@ -1048,7 +1048,7 @@ Dat onderscheidt een multivitamine van gerichte suppletie: waar [vitamine D](/ke
       howItWorks: `Grootschalige reviews vinden bij niet-deficiënte volwassenen geen consistent voordeel van multivitamines op harde uitkomsten zoals hart- en vaatziekten of kanker. De USPSTF-review concludeerde in 2013 onvoldoende bewijs voor een algemene aanbeveling, en het bijbehorende redactionele standpunt in Annals of Internal Medicine werd expliciet getiteld "Enough Is Enough". Het USPSTF-standpunt van 2022 herhaalde dat beeld en waarschuwde specifiek tegen bèta-caroteen en vitamine E in supplementvorm.
 
 Dat betekent niet dat elke vitamine of elk mineraal nutteloos is — het betekent dat "alles een beetje" iets anders is dan "gericht wat nodig is". De Gezondheidsraad en het Voedingscentrum adviseren gerichte suppletie voor specifieke risicogroepen (zoals vitamine D in de winter, of B12 bij een plantaardig voedingspatroon), niet een algemeen multivitamine-advies voor iedereen.`,
-      whyItMatters: `Voor een profiel na 40 is de vraag niet "welke multivitamine is het beste", maar "welk domein in mijn leefstijl vraagt om iets, en is dat met voeding of gericht supplement op te lossen". Een multivitamine beantwoordt die vraag niet — het slaat de vraag over. Lees het volledige argument in [waarom wij geen multivitamine aanbevelen](/blog/multivitamine-zinvol-na-40), of bekijk hoe we stoffen wél beoordelen via de [methodologie](/methodologie).`,
+      whyItMatters: `Voor een profiel na 30 is de vraag niet "welke multivitamine is het beste", maar "welk domein in mijn leefstijl vraagt om iets, en is dat met voeding of gericht supplement op te lossen". Een multivitamine beantwoordt die vraag niet — het slaat de vraag over. Lees het volledige argument in [waarom wij geen multivitamine aanbevelen](/blog/multivitamine-zinvol-na-40), of bekijk hoe we stoffen wél beoordelen via de [methodologie](/methodologie).`,
     },
     relatedSlugs: ['biobeschikbaarheid', 'efsa-claims'],
     relatedComparisons: [],

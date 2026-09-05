@@ -5,7 +5,7 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
   slug: "testosteron-en-energie-na-40",
   categorie: "energie",
   audience: "mannen",
-  titel: "Testosteron en energie na 40: wanneer is actie nodig?",
+  titel: "Testosteron en energie na 30: wanneer is actie nodig?",
   coverImage: "/images/blog/testosteron-en-energie-na-40.jpg",
   coverImageAlt: "Man die gewichten tilt in een sportschool",
   heroIntro:
@@ -38,9 +38,9 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Energie na 40 heeft zelden één hormonale oorzaak. Bij klachten die passen bij laag testosteron hoort een zorgvuldige meting en uitsluiting van andere factoren — geen zelftherapie op basis van een internettest.",
+    "Energie na 30 heeft zelden één hormonale oorzaak. Bij klachten die passen bij laag testosteron hoort een zorgvuldige meting en uitsluiting van andere factoren — geen zelftherapie op basis van een internettest.",
   cornerstoneLink: {
-    label: "Hoofdstuk-gids: energie na 40",
+    label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
   },
   gerelateerdeSluggen: [
@@ -51,11 +51,11 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
     "omega-3-concentratie-energie",
   ],
   metaTitle:
-    "Testosteron en energie na 40: symptomen en diagnose",
+    "Testosteron en energie na 30: symptomen en diagnose",
   metaDescription:
     "Wanneer is laag testosteron relevant voor vermoeidheid? Symptomen, meten ’s ochtends en waarom context belangrijker is dan één getal.",
   keywords: [
-    "testosteron mannen 40",
+    "testosteron mannen 30",
     "laag testosteron symptomen",
     "vermoeidheid testosteron",
   ],
