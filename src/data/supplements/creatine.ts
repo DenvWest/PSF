@@ -16,7 +16,7 @@ export const creatineData: ComparisonPageData = {
   seoTitle:
     "Beste Creatine 2026 — Monohydraat Vergelijking",
   seoDescription:
-    "Vergelijk de beste creatine monohydraat supplementen op zuiverheid, Creapure® certificering en prijs. Onafhankelijk gescoord voor mannen 40+.",
+    "Vergelijk de beste creatine monohydraat supplementen op zuiverheid, Creapure® certificering en prijs. Onafhankelijk gescoord voor mannen 30+.",
   lastUpdated: "2026-04-21",
   tableDoseringColumnLabel: "Dosering / dag",
   ogImage: "https://perfectsupplement.nl/images/producten/vital-Nutrition-Creatine-Monohydraat.jpg",
@@ -38,7 +38,7 @@ export const creatineData: ComparisonPageData = {
   readAlsoCards: [
     {
       href: "/herstel-verbeteren-na-40",
-      text: "Creatine is één stukje; lees de volledige herstelroute na 40 met slaap, eiwit en vergelijkingen.",
+      text: "Creatine is één stukje; lees de volledige herstelroute na 30 met slaap, eiwit en vergelijkingen.",
       cta: "Naar herstel-pillar →",
     },
     {
@@ -248,7 +248,7 @@ export const creatineData: ComparisonPageData = {
   comparisonCriteria: ["Zuiverheid", "Dosering/gemak", "Prijs/kwaliteit", "Transparantie"],
   faq: [
     {
-      question: "Is creatine veilig voor mannen boven de 40?",
+      question: "Is creatine veilig voor mannen boven de 30?",
       answer:
         "Ja. Creatine is het meest onderzochte sportsupplement ter wereld met een uitstekend veiligheidsprofiel bij gezonde volwassenen. Het belast de nieren niet bij normale doseringen (3–5 g/dag) en een gezonde nierfunctie. Raadpleeg bij bestaande nierproblematiek altijd je arts.",
     },

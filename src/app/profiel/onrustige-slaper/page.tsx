@@ -8,14 +8,14 @@ import Container from "@/components/layout/Container";
 import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
 
 export const metadata: Metadata = {
-  title: "Slaapproblemen Na 40? Dit Kun Je Eraan Doen",
+  title: "Slaapproblemen Na 30? Dit Kun Je Eraan Doen",
   description:
-    "Wakker om 3 uur, niet meer terug in slaap? Herken je dit? Ontdek waarom je slaap verandert na 40 en wat je eraan kunt doen.",
+    "Wakker om 3 uur, niet meer terug in slaap? Herken je dit? Ontdek waarom je slaap verandert na 30 en wat je eraan kunt doen.",
   alternates: {
     canonical: "https://perfectsupplement.nl/profiel/onrustige-slaper",
   },
   openGraph: {
-    title: "Slaapproblemen Na 40? Dit Kun Je Eraan Doen",
+    title: "Slaapproblemen Na 30? Dit Kun Je Eraan Doen",
     description:
       "Wakker om 3 uur, niet meer terug in slaap? Ontdek waarom en wat helpt — zonder medicatie.",
     url: "https://perfectsupplement.nl/profiel/onrustige-slaper",
@@ -53,7 +53,7 @@ const breadcrumbJsonLd = [
     "@type": "Article",
     headline: "Onrustige Slaper: Je Slaap Laat Je In De Steek",
     description:
-      "Wakker om 3 uur, niet meer terug in slaap? Ontdek waarom je slaap verandert na 40 en wat je eraan kunt doen.",
+      "Wakker om 3 uur, niet meer terug in slaap? Ontdek waarom je slaap verandert na 30 en wat je eraan kunt doen.",
     author: {
       "@type": "Organization",
       name: "PerfectSupplement",
@@ -221,7 +221,7 @@ export default function OnrustigeSlaperPage() {
               </h2>
               <div className="mt-6 space-y-5">
                 <p className="text-slate-600 leading-relaxed">
-                  Na je 40e verandert je slaap op een manier die je niet altijd bewust merkt. Je{" "}
+                  Na je 30e verandert je slaap op een manier die je niet altijd bewust merkt. Je{" "}
                   <Link
                     href="/kennisbank/melatonine"
                     className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
@@ -255,7 +255,7 @@ export default function OnrustigeSlaperPage() {
                 </p>
                 <p className="text-slate-600 leading-relaxed">
                   Dit is geen slaapstoornis in medische zin. Het is een verstoord evenwicht tussen
-                  stress en herstel dat veel mannen na 40 ervaren. Het verschil met een medische
+                  stress en herstel dat veel mannen na 30 ervaren. Het verschil met een medische
                   aandoening is belangrijk: dit kun je in veel gevallen aanpakken met
                   leefstijlaanpassingen en gerichte ondersteuning.
                 </p>

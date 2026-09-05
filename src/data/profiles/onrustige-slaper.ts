@@ -5,17 +5,17 @@ export const onrustigeSlaper: ProfilePageData = {
   label: "Onrustige Slaper",
 
   seo: {
-    title: "Slaapproblemen Na 40? Dit Kun Je Eraan Doen",
+    title: "Slaapproblemen Na 30? Dit Kun Je Eraan Doen",
     description:
       "Wakker om 3 uur, niet terug in slaap? Herkenning, uitleg in begrijpelijke taal en wat je stap voor stap kunt doen.",
     canonical: "https://perfectsupplement.nl/profiel/onrustige-slaper",
-    targetKeyword: "slaapproblemen man 40+",
+    targetKeyword: "slaapproblemen man 30+",
   },
 
   hero: {
     headline: "Onrustige Slaper: waarom je slaap je in de steek laat",
     subline:
-      "Je gaat op tijd naar bed. Je bent moe genoeg. Maar je lichaam weigert om écht te slapen. Na 40 is dat geen toeval.",
+      "Je gaat op tijd naar bed. Je bent moe genoeg. Maar je lichaam weigert om écht te slapen. Na 30 is dat geen toeval.",
   },
 
   recognition: {
@@ -48,13 +48,13 @@ export const onrustigeSlaper: ProfilePageData = {
       },
     ],
     closer:
-      "Als je hier drie of meer van herkent, past dat bij veel mannen 40+: je slaap voelt minder \"diep\" en je ritme wankelt sneller. Het goede nieuws: met ritme, licht en rust rond bedtijd kun je vaak veel winnen — zonder ingewikkelde theorie.",
+      "Als je hier drie of meer van herkent, past dat bij veel mannen 30+: je slaap voelt minder \"diep\" en je ritme wankelt sneller. Het goede nieuws: met ritme, licht en rust rond bedtijd kun je vaak veel winnen — zonder ingewikkelde theorie.",
   },
 
   understanding: {
-    title: "Waarom slechte slaap na 40 zo herkenbaar is",
+    title: "Waarom slechte slaap na 30 zo herkenbaar is",
     paragraphs: [
-      "Slaap bestaat uit wisselende fases: licht, diep en droomslaap. Diepe slaap is het gevoel van \"echt uitgerust\" — en veel mensen merken na 40 vaker dat ze die fase minder lang of minder stabiel ervaren. [Melatonine](/kennisbank/melatonine) stuurt je biologische klok; na 40 maakt je lichaam daar vaak minder van aan.",
+      "Slaap bestaat uit wisselende fases: licht, diep en droomslaap. Diepe slaap is het gevoel van \"echt uitgerust\" — en veel mensen merken na 30 vaker dat ze die fase minder lang of minder stabiel ervaren. [Melatonine](/kennisbank/melatonine) stuurt je biologische klok; na 30 maakt je lichaam daar vaak minder van aan.",
       "Een patroon dat vaak terugkomt: je valt nog wel in slaap, maar wordt vroeg wakker met een hoofd vol gedachten. Dat past vaak bij stress, onregelmatige tijden, schermen laat op de avond of alcohol rond het slapen gaan — en bij een [circadiaan ritme](/kennisbank/circadiaan-ritme) dat scheef staat. [Cortisol](/kennisbank/cortisol) dat 's avonds niet daalt, maakt doorslapen lastiger.",
       "Hulpmiddelen zoals melatonine of een wijntje kunnen kort helpen, maar lossen een scheef ritme zelden structureel op. Daarom beginnen we bij gedrag rond bedtijd: koel, donker, vaste opsta-tijd en minder prikkels vlak voor slapen.",
     ],
@@ -105,7 +105,7 @@ export const onrustigeSlaper: ProfilePageData = {
         {
           title: "Geen alcohol 3 uur voor bed",
           description:
-            "Alcohol helpt je sneller in slaap vallen maar verstoort je diepe slaap en REM-slaap. Je slaapt letterlijk oppervlakkiger. Na 40 wordt dit effect sterker.",
+            "Alcohol helpt je sneller in slaap vallen maar verstoort je diepe slaap en REM-slaap. Je slaapt letterlijk oppervlakkiger. Na 30 wordt dit effect sterker.",
           actionable: "Als je drinkt, doe het bij het avondeten — niet daarna.",
           timeframe: "Deze week",
         },

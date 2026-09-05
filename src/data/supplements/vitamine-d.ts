@@ -14,7 +14,7 @@ export const vitamineDData: ComparisonPageData = {
   guideHref: "/supplementen/vitamine-d",
   h1: "Beste vitamine D supplement 2026 — onafhankelijk vergeleken",
   intro:
-    "Moe en futloos terwijl de zon maandenlang te weinig schijnt? Vitamine D3 is in Nederland vaak een aandachtspunt na je 40e. Drie D3-producten vergeleken op dosering, kwaliteit, opneembaarheid en prijs per dag — plus D3+K2-combinaties als je die variant overweegt.",
+    "Moe en futloos terwijl de zon maandenlang te weinig schijnt? Vitamine D3 is in Nederland vaak een aandachtspunt na je 30e. Drie D3-producten vergeleken op dosering, kwaliteit, opneembaarheid en prijs per dag — plus D3+K2-combinaties als je die variant overweegt.",
   seoTitle:
     "Vitamine D3 Vergelijken: 3 Merken Getest (2026) | PerfectSupplement",
   seoDescription:
@@ -32,11 +32,11 @@ export const vitamineDData: ComparisonPageData = {
     { name: "Beste vitamine D", url: "https://perfectsupplement.nl/beste/vitamine-d" },
   ],
   moreAboutTitle: "Meer over vitamine D",
-  moreAboutDescription: "Vitamine D draagt o.a. bij tot normale botten, spieren en een normaal immuunsysteem — thema\u2019s die na je 40e vaker bespreekbaar worden met je zorgverlener.",
+  moreAboutDescription: "Vitamine D draagt o.a. bij tot normale botten, spieren en een normaal immuunsysteem — thema\u2019s die na je 30e vaker bespreekbaar worden met je zorgverlener.",
   moreAboutLinks: [
     { href: "/supplementen/vitamine-d", label: "Meer weten over vitamine D? Lees de uitgebreide gids →" },
     { href: "/kennisbank/vitamine-k2", label: "Wat K2 wél mag beloven — en de hartclaim die EFSA afwees →" },
-    { href: "/gids/energie", label: "Energieverlies na je 40e — oorzaken en oplossingen →" },
+    { href: "/gids/energie", label: "Energieverlies na je 30e — oorzaken en oplossingen →" },
   ],
   readAlsoCards: [
     {
@@ -472,7 +472,7 @@ export const vitamineDData: ComparisonPageData = {
     {
       question: "Hoeveel vitamine D heb ik per dag nodig?",
       answer:
-        "De Gezondheidsraad adviseert 10 mcg (400 IU) voor volwassenen, maar veel onderzoekers en artsen adviseren 25–50 mcg (1000–2000 IU), vooral bij beperkte zonblootstelling. Mannen 40+ in Nederland voldoen zelden aan hun behoefte via zon alleen.",
+        "De Gezondheidsraad adviseert 10 mcg (400 IU) voor volwassenen, maar veel onderzoekers en artsen adviseren 25–50 mcg (1000–2000 IU), vooral bij beperkte zonblootstelling. Mannen 30+ in Nederland voldoen zelden aan hun behoefte via zon alleen.",
     },
     {
       question: "Kan ik te veel vitamine D nemen?",

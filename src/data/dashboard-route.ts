@@ -127,5 +127,5 @@ export const DASHBOARD_ROUTE_FAQ = [
 export const DASHBOARD_ROUTE_METADATA = {
   title: "Hoe Werkt Jouw Dashboard?",
   description:
-    `Je route in 6 stappen: Leefstijlcheck, ${INTAKE_DELIVERABLE.label}, dashboard, check-ins en hermeting. Gratis overzicht voor mannen 40+ — zonder diagnose.`,
+    `Je route in 6 stappen: Leefstijlcheck, ${INTAKE_DELIVERABLE.label}, dashboard, check-ins en hermeting. Gratis overzicht voor mannen 30+ — zonder diagnose.`,
 } as const;

@@ -4,7 +4,7 @@ import { INTAKE_CTA, INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 export const stressThema: ThemaPageData = {
   slug: "stress",
   title: "Stress",
-  heroTitle: "Stress na je 40e: het is geen zwakte",
+  heroTitle: "Stress na je 30e: het is geen zwakte",
   heroSubtitle:
     "Je functioneert, maar het kost meer dan het zou moeten. Die constante spanning in je schouders, het korte lontje, het gevoel dat je altijd achter de feiten aanloopt — dat is geen karakter, dat is chronische stress.",
   heroLabel: "THEMA",
@@ -23,7 +23,7 @@ export const stressThema: ThemaPageData = {
 
   causes: {
     sectionLabel: "WAT ER SPEELT",
-    title: "Waarom stress anders voelt na je 40e",
+    title: "Waarom stress anders voelt na je 30e",
     intro:
       "Je slaapt slechter, hebt meer verantwoordelijkheden en je lichaam reageert anders dan tien jaar geleden. Die sluipende spanning heeft vaak meerdere bronnen — in vier herkenbare categorieën.",
     items: [
@@ -51,7 +51,7 @@ export const stressThema: ThemaPageData = {
       {
         title: "Fysiek & hormonaal",
         description:
-          "Na je 40e verandert de balans van cortisol, testosteron en herstel. Cortisol en testosteron concurreren om dezelfde bouwsteen (pregnenolon) — chronische stress kiest voor cortisol boven testosteron.",
+          "Na je 30e verandert de balans van cortisol, testosteron en herstel. Cortisol en testosteron concurreren om dezelfde bouwsteen (pregnenolon) — chronische stress kiest voor cortisol boven testosteron.",
         icon: "📊",
         source:
           "Cumming et al., J Clin Endocrinol Metab, 1983; Baulieu, Psychoneuroendocrinology, 1998",
@@ -165,7 +165,7 @@ export const stressThema: ThemaPageData = {
     subtitle:
       "Overzicht van herkenning, eenvoudige interventies en wanneer verdieping zinvol is — in één PDF, zonder poespas.",
     bulletPoints: [
-      "4 domeinen waar stress bij 40+ vandaan komt (en wat je wél kunt sturen)",
+      "4 domeinen waar stress bij 30+ vandaan komt (en wat je wél kunt sturen)",
       "Snelle interventies die je binnen 15 minuten kunt proberen",
       "Supplementinformatie op hoofdlijnen, gekoppeld aan onze gidsen",
       "Signalen wanneer professionele of medische begeleiding passend is",
@@ -178,7 +178,7 @@ export const stressThema: ThemaPageData = {
 
   pillarPage: {
     href: "/stress-verminderen-na-40",
-    title: "De complete gids: stress verminderen na 40",
+    title: "De complete gids: stress verminderen na 30",
     description:
       "Van de HPA-as en cortisol-testosteron balans tot een concreet vierwekenplan. Alles wat op deze pagina in het kort staat, uitgewerkt met bronnen en context.",
   },
@@ -276,7 +276,7 @@ export const stressThema: ThemaPageData = {
 
   seo: {
     title:
-      "Stress bij mannen 40+ herkennen en aanpakken",
+      "Stress bij mannen 30+ herkennen en aanpakken",
     description:
       "Chronische stress herkennen, oorzaken begrijpen en concrete stappen zetten. Leefstijl, supplementen en een gratis gids — onafhankelijk uitgelegd.",
     canonical: "/gids/stress",

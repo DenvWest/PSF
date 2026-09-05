@@ -290,7 +290,7 @@ export default function OvergangPage() {
                   niet de hele: de onderliggende hormonale verschuiving beïnvloedt ook rechtstreeks
                   hoe je slaapcyclus verloopt. Praktischer: lees de gids{" "}
                   <Link href="/slaap-verbeteren-na-40" className={LINK}>
-                    slaap verbeteren na 40
+                    slaap verbeteren na 30
                   </Link>{" "}
                   voor wat je aan ritme en avondgewoontes kunt doen — vóór je aan supplementen
                   denkt.
@@ -326,7 +326,7 @@ export default function OvergangPage() {
                   maaltijd<sup>[5]</sup>. Dat is meer dan de meeste mensen gewend zijn en meer dan de
                   algemene aanbeveling van 0,8 g/kg. Zie ook{" "}
                   <Link href="/herstel-verbeteren-na-40" className={LINK}>
-                    herstel verbeteren na 40
+                    herstel verbeteren na 30
                   </Link>{" "}
                   voor hoe je dat praktisch invult.
                 </p>
@@ -354,7 +354,7 @@ export default function OvergangPage() {
                   Vast bed- en wakker-tijdstip, een koelere slaapkamer (helpt bij nachtelijk
                   zweten), minder alcohol als slaapmiddel. Zie{" "}
                   <Link href="/slaap-verbeteren-na-40" className={LINK}>
-                    slaap verbeteren na 40
+                    slaap verbeteren na 30
                   </Link>{" "}
                   voor de volledige aanpak.
                 </p>

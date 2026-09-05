@@ -10,7 +10,7 @@ export const magnesiumData: SupplementData = {
   datePublished: "2026-03-01",
   h1: "Magnesium: welke vorm past bij jou?",
   introTekst:
-    "Magnesium is betrokken bij meer dan 300 processen in je lichaam — van slaap tot spierherstel tot stressregulatie. Na je 40e neemt de opname af terwijl de behoefte gelijk blijft of toeneemt. Toch is niet elke magnesiumvorm hetzelfde.",
+    "Magnesium is betrokken bij meer dan 300 processen in je lichaam — van slaap tot spierherstel tot stressregulatie. Na je 30e neemt de opname af terwijl de behoefte gelijk blijft of toeneemt. Toch is niet elke magnesiumvorm hetzelfde.",
 
   watIsHet: {
     titel: "Wat doet magnesium in je lichaam?",
@@ -19,7 +19,7 @@ export const magnesiumData: SupplementData = {
   },
 
   waaromRelevant: {
-    titel: "Waarom is magnesium belangrijk na je 40e?",
+    titel: "Waarom is magnesium belangrijk na je 30e?",
     punten: [
       {
         titel: "Slaapkwaliteit",
@@ -144,7 +144,7 @@ export const magnesiumData: SupplementData = {
     {
       vraag: "Kan ik niet genoeg magnesium via voeding binnenkrijgen?",
       antwoord:
-        "In theorie wel — noten, zaden, groene bladgroenten en volkoren bevatten magnesium. In de praktijk halen veel mannen boven de 40 het aanbevolen dagelijkse minimum niet, zeker bij stress of intensief sporten.",
+        "In theorie wel — noten, zaden, groene bladgroenten en volkoren bevatten magnesium. In de praktijk halen veel mannen boven de 30 het aanbevolen dagelijkse minimum niet, zeker bij stress of intensief sporten.",
     },
     {
       vraag: "Welke magnesiumvorm is het minst laxerend?",

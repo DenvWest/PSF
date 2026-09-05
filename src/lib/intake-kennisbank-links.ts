@@ -28,7 +28,7 @@ const DOMAIN_KENNISBANK: Record<
   },
   nutrition_score: {
     domainLabel: "Voeding",
-    label: "Eiwitbehoefte na 40",
+    label: "Eiwitbehoefte na 30",
     href: "/kennisbank/eiwitbehoefte-na-40",
   },
   movement_score: {

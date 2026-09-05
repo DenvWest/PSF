@@ -103,7 +103,7 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
       // drempel (eetmomenten/dag), geen dosis-drempel — andere as dan de
       // g/kg-berekening in protein-target.ts. Sluit aan bij dezelfde bron die
       // daar al staat: PROT-AGE Study Group (2013) beveelt 3-4 eiwitrijke
-      // eetmomenten/dag aan voor optimale eiwitsynthese bij 40+. belowMax=2/
+      // eetmomenten/dag aan voor optimale eiwitsynthese bij 30+. belowMax=2/
       // meetsMin=3 volgt die verdeling. Check tegen de PROT-AGE-brontekst zelf
       // (nu alleen indirect via protein-target.ts geciteerd).
       belowMax: 2,

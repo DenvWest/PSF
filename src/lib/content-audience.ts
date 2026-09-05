@@ -17,8 +17,8 @@ export const AUDIENCE_OPTIONS: ReadonlyArray<{
   short: string;
 }> = [
   { key: "alle", label: "Iedereen", short: "Iedereen" },
-  { key: "mannen", label: "Mannen 40+", short: "Mannen" },
-  { key: "vrouwen", label: "Vrouwen 40+", short: "Vrouwen" },
+  { key: "mannen", label: "Mannen 30+", short: "Mannen" },
+  { key: "vrouwen", label: "Vrouwen 30+", short: "Vrouwen" },
 ];
 
 /** URL-parameter; deelt de naam met /gidsen zodat de keuze overdraagbaar is. */

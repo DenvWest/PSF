@@ -4,12 +4,12 @@ import Container from "@/components/layout/Container";
 const TIER1_PILLARS = [
   {
     href: "/voeding-na-40",
-    title: "Voeding na 40",
+    title: "Voeding na 30",
     description: "Eiwit, ritme en vetten — eerst op orde, dan pas supplementen.",
   },
   {
     href: "/beweging-na-40",
-    title: "Beweging na 40",
+    title: "Beweging na 30",
     description: "Kracht, cardio en herstel — zonder sportschool-hype.",
   },
 ] as const;

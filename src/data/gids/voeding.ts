@@ -4,7 +4,7 @@ export const voedingGuide: GuideOptInData = {
   slug: "voeding",
   guideName: "Voedingsgids",
   seo: {
-    title: "Gratis Voedingsgids na 40",
+    title: "Gratis Voedingsgids na 30",
     description:
       "Ontvang het voedings-stappenplan voor 30-plussers. Eiwit, ritme en vetten — praktische stappen vóór supplementen, zonder diagnoses.",
     canonical: "/gids/voeding",
@@ -12,7 +12,7 @@ export const voedingGuide: GuideOptInData = {
   heroLabel: "Gratis stappenplan",
   heroTitle: "Spieronderhoud begint aan tafel — niet in een potje",
   heroSubtitle:
-    "Na je 40e telt eiwit per maaltijd, vette vis en een stabiel ritme zwaarder. Dit stappenplan helpt je herkennen wat er schuurt — en welke gewoonte je deze week kunt zetten.",
+    "Na je 30e telt eiwit per maaltijd, vette vis en een stabiel ritme zwaarder. Dit stappenplan helpt je herkennen wat er schuurt — en welke gewoonte je deze week kunt zetten.",
   recognition: {
     sectionLabel: "Herkenbaar?",
     title: "Dit hoor je jezelf misschien zeggen",

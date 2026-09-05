@@ -5,17 +5,17 @@ export const stressPlanTemplate: LifestylePlanTemplate = {
   domain: "stress",
   guideThema: "stress",
   version: "1.0",
-  title: "Stressplan na 40",
+  title: "Stressplan na 30",
   recognition: {
     heading: "Dit herken je misschien",
     body:
       "Je blijft 'aan' staan na werk — je hoofd draait door terwijl je thuis al zou moeten zijn. " +
       "Je piekert in bed over morgen. En op een drukke dag kom je nauwelijks toe aan echte herstelmomenten.\n\n" +
-      "Dat is geen karakterfout. Na je veertigste herstelt je stress-as trager; je lichaam schakelt minder snel terug naar rust. " +
+      "Dat is geen karakterfout. Na je dertigste herstelt je stress-as trager; je lichaam schakelt minder snel terug naar rust. " +
       "Herkenning is de eerste stap — daarna kun je gericht iets veranderen.",
   },
   mechanism: {
-    heading: "Waarom stressherstel na 40 trager gaat",
+    heading: "Waarom stressherstel na 30 trager gaat",
     body:
       "Je cortisol-as reageert nog steeds op druk, maar schakelt trager terug naar rust. " +
       "Een chronische 'aan'-stand trekt door in je avond, je slaap en je herstel — één stressvolle dag heeft meer nasleep dan vroeger.\n\n" +

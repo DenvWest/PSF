@@ -53,7 +53,7 @@ const LIFESTYLE_FALLBACK_BY_DOMAIN: Record<DomainKey, DomainSupplementTip> = {
     supplement: {
       name: "Leefstijlstappen",
       reason:
-        "Energie na 40 vraagt eerst aandacht voor slaap, voeding en beweging — geen supplementclaim op ‘direct meer energie’.",
+        "Energie na 30 vraagt eerst aandacht voor slaap, voeding en beweging — geen supplementclaim op ‘direct meer energie’.",
       url: "/energie-na-40",
     },
   },
@@ -71,7 +71,7 @@ const LIFESTYLE_FALLBACK_BY_DOMAIN: Record<DomainKey, DomainSupplementTip> = {
     supplement: {
       name: "Leefstijlstappen",
       reason:
-        "Voeding na 40 begint met structurele maaltijden en voldoende eiwit en vetzuren via voeding — supplementen zijn aanvulling, geen vervanging.",
+        "Voeding na 30 begint met structurele maaltijden en voldoende eiwit en vetzuren via voeding — supplementen zijn aanvulling, geen vervanging.",
       url: "/voeding-na-40",
     },
   },

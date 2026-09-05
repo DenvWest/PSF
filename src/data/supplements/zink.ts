@@ -18,7 +18,7 @@ export const zinkData: ComparisonPageData = {
   seoTitle:
     "Beste Zink Supplement 2026 — Methionine & Picolinaat Vergelijking",
   seoDescription:
-    "Vergelijk de beste zink supplementen op biobeschikbaarheid, dosering en prijs. Zinkmethionine vs picolinaat — eerlijk gescoord voor mannen 40+.",
+    "Vergelijk de beste zink supplementen op biobeschikbaarheid, dosering en prijs. Zinkmethionine vs picolinaat — eerlijk gescoord voor mannen 30+.",
   lastUpdated: "2026-04-21",
   tableDoseringColumnLabel: "Elementair zink / dag",
   ogImage: "https://perfectsupplement.nl/images/producten/vital-nutrition-zink-methionine.jpg",
@@ -35,12 +35,12 @@ export const zinkData: ComparisonPageData = {
   moreAboutDescription: "Zink draagt o.a. bij tot een normaal immuunsysteem, eiwitsynthese en — officieel geformuleerd — tot instandhouding van een normaal testosterongehalte in het bloed.",
   moreAboutLinks: [
     { href: "/supplement-kiezen-waar-op-letten", label: "Supplement kiezen: waar let je op? — praktische checklist →" },
-    { href: "/gids/energie", label: "Energieverlies na je 40e — oorzaken en wat je eraan kunt doen →" },
+    { href: "/gids/energie", label: "Energieverlies na je 30e — oorzaken en wat je eraan kunt doen →" },
   ],
   readAlsoCards: [
     {
       href: "/testosteron-na-40",
-      text: "Testosteron na 40 in voorzichtige taal: leefstijl eerst, labwaarden met zorgverlener.",
+      text: "Testosteron na 30 in voorzichtige taal: leefstijl eerst, labwaarden met zorgverlener.",
       cta: "Naar testosteron-pillar →",
     },
     {

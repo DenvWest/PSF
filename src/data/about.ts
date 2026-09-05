@@ -4,11 +4,11 @@ export const ABOUT_METADATA = {
   title:
     "Over PerfectSupplement — Leefstijl, herstel en supplementen",
   description:
-    "Onafhankelijk leefstijlplatform voor mannen 40+: educatie, vergelijking en transparantie rond supplementen. Opgericht door leefstijlcoach Dennis van Westbroek — leefstijl eerst, supplementen alleen waar het zinvol is.",
+    "Onafhankelijk leefstijlplatform voor mannen en vrouwen vanaf 30: educatie, vergelijking en transparantie rond supplementen. Opgericht door leefstijlcoach Dennis van Westbroek — leefstijl eerst, supplementen alleen waar het zinvol is.",
 } as const;
 
 export const ABOUT_TAGLINE =
-  "De rustige gids tussen leefstijl, herstel en supplementen — voor mannen 40+";
+  "De rustige gids tussen leefstijl, herstel en supplementen — voor mannen en vrouwen vanaf 30";
 
 export const ABOUT_SITE_URL = "https://perfectsupplement.nl";
 
@@ -19,7 +19,7 @@ export const ABOUT_FOUNDER = {
     "Leefstijlcoach en oprichter van PerfectSupplement",
   credentialsLine: "Leefstijlcoach · Oprichter PerfectSupplement",
   bioParagraphs: [
-    "PerfectSupplement is opgericht vanuit één vraag: welke supplementen zijn voor mannen 40+ wél een zinvolle aanvulling, en welke niet? Het platform vertaalt literatuur en richtlijnen naar heldere, eerlijke vergelijkingen — zonder verkooppraat.",
+    "PerfectSupplement is opgericht vanuit één vraag: welke supplementen zijn voor mannen en vrouwen vanaf 30 wél een zinvolle aanvulling, en welke niet? Het platform vertaalt literatuur en richtlijnen naar heldere, eerlijke vergelijkingen — zonder verkooppraat.",
     "Op dit platform spreek ik als oprichter en redacteur, niet als jouw zorgverlener. Er is geen behandelrelatie via deze site en PerfectSupplement levert geen medische zorg. Voor klachten of behandeling: raadpleeg een arts of zorgverlener in je regio.",
     "Ik claim geen alwetendheid: bij twijfel verwijs ik naar bronnen of naar je arts. Supplementen zijn nooit een vervanging voor professioneel medisch advies.",
   ],
@@ -31,9 +31,9 @@ export const ABOUT_FOUNDER_SAME_AS: string[] = [];
 export const ABOUT_HERO = {
   headline: "Eerst grip op de basis. Dan pas supplementen.",
   paragraphs: [
-    "De rustige gids tussen leefstijl, herstel en supplementen — voor mannen 40+.",
-    "Veel mannen herkennen dit: genoeg uren slaap, maar toch niet uitgerust wakker worden; een hoofd dat 'aan' blijft staan; wisselende energie; minder ruimte om te herstellen na training, werk of drukke periodes. Soms een onrustig gevoel of een buik die niet meewerkt — zonder dat je precies weet waar het vandaan komt.",
-    "Veel mannen lopen hier jarenlang mee door zonder overzicht in hun dagelijkse leefstijl. PerfectSupplement is er voor mannen 40+ die eerst grip willen op de basis — en pas daarna willen weten welke supplementen zinvol zijn.",
+    "De rustige gids tussen leefstijl, herstel en supplementen — voor mannen en vrouwen vanaf 30.",
+    "Veel mensen herkennen dit: genoeg uren slaap, maar toch niet uitgerust wakker worden; een hoofd dat 'aan' blijft staan; wisselende energie; minder ruimte om te herstellen na training, werk of drukke periodes. Soms een onrustig gevoel of een buik die niet meewerkt — zonder dat je precies weet waar het vandaan komt. Bij vrouwen komen daar in de overgang vaak nog slaap, stress en gewicht bij die anders aanvoelen dan voorheen.",
+    "Vanaf ongeveer dertig verandert er geleidelijk iets: herstel kost meer tijd, slaap en stress wegen zwaarder, en de basis — voeding, beweging, rust — wordt belangrijker dan toen alles nog vanzelf ging. PerfectSupplement is er voor mannen en vrouwen die dat willen zien vóór ze blind een pil volgen.",
   ],
 } as const;
 
@@ -42,35 +42,35 @@ export const ABOUT_STORY = {
   title: "Wie zit hierachter",
   paragraphs: [
     "Dennis van Westbroek weet dat niet alleen vanuit zijn werk als leefstijlcoach — maar ook vanuit eigen ervaring.",
-    "Jarenlang herkende Dennis in zijn eigen leven het patroon van drukke periodes, minder rust en het gevoel dat herstel en ontspanning steeds meer moeite kostten.",
+    "Jarenlang herkende hij in zijn eigen leven het patroon van drukke periodes, minder rust en het gevoel dat herstel en ontspanning steeds meer moeite kostten. Precies daarom zet hij zich hier voor in: zodat anderen niet hoeven te zoeken in een zee van ongefundeerde tips.",
   ],
 } as const;
 
 export const ABOUT_INSIGHT = {
   id: "waarom-leefstijl",
-  title: "Wat veel mannen over het hoofd zien",
+  title: "Wat er over tijd verandert — en wat online vaak mist",
   paragraphs: [
-    "Leefstijlfactoren hangen in het dagelijks leven vaak met elkaar samen — waaronder leefstijl, (ver)binding, autonomie en competentie die niet verzadigd zijn. Veel mannen merken dat als één van die onderdelen langere tijd scheef staat, de rest ook lastiger wordt om te overzien.",
+    "Leefstijlfactoren hangen in het dagelijks leven vaak met elkaar samen — slaap, stress, voeding, beweging en (ver)binding. Als één van die onderdelen langere tijd scheef staat, wordt de rest ook lastiger om te overzien. Dat merken mannen én vrouwen, elk op hun eigen manier.",
   ],
   vicieuzeCirkel:
     "Dennis hoort vaak hetzelfde verhaal: meer stress, minder rust, minder overzicht — en daardoor weer meer spanning.",
   keyInsightLead:
     "En precies daar gaat het mis met veel gezondheidsadvies online:",
   keyInsight:
-    "er wordt gezocht naar één supplement, terwijl de basis in je leefstijl nog niet op orde is.",
+    "er wordt gezocht naar één supplement of één snelle claim, terwijl de basis in je leefstijl nog niet op orde is — en influencers of platforms zonder stevige onderbouwing (of met vooral oog voor marge) te veel ruimte krijgen.",
 } as const;
 
 export const ABOUT_ORIGIN = {
   id: "waarom-perfectsupplement",
   title: "Waarom PerfectSupplement ontstond",
   paragraphs: [
-    "PerfectSupplement is ontstaan vanuit die frustratie. Niet omdat supplementen waardeloos zijn — maar omdat ze vaak worden verkocht alsof ze het hele probleem oplossen, terwijl een stabiele leefstijl bijna altijd eerst komt: slaap, stress, voeding, beweging en herstel.",
-    "Supplementen kunnen daarin een rol spelen — maar alleen als je weet of een product past bij jouw situatie en levensfase.",
+    "PerfectSupplement is ontstaan vanuit die frustratie. Niet omdat supplementen waardeloos zijn — maar omdat niet-onderbouwde content en margegedreven platforms te veel overhand krijgen, terwijl een stabiele leefstijl bijna altijd eerst komt: slaap, stress, voeding, beweging en herstel.",
+    "Supplementen kunnen daarin een rol spelen — maar alleen als je weet of een product past bij jouw situatie en levensfase, met vaste criteria en bronnen — niet omdat iemand eraan verdient.",
   ],
   positioning: {
     title: "Geen snelle oplossingen — wel richting",
     paragraphs: [
-      "PerfectSupplement is de rustige gids tussen leefstijl, herstel en supplementen: eerst overzicht in je leefstijl, daarna pas gericht aanvullen waar het zinvol is.",
+      "PerfectSupplement is de rustige, onafhankelijke gids tussen leefstijl, herstel en supplementen: eerst overzicht in je leefstijl, daarna pas gericht aanvullen waar het zinvol is.",
     ],
   },
 } as const;

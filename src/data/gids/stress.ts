@@ -4,7 +4,7 @@ export const stressGuide: GuideOptInData = {
   slug: "stress",
   guideName: "Stressgids",
   seo: {
-    title: "Gratis Stressgids na 40",
+    title: "Gratis Stressgids na 30",
     description:
       "Download de gratis Stressgids voor 30-plussers. Herkenning, praktische stappen en supplementinformatie — zonder diagnoses.",
     canonical: "/gids/stress",
@@ -29,7 +29,7 @@ export const stressGuide: GuideOptInData = {
     subtitle:
       "Herkenning, snelle interventies en supplementinformatie — in één PDF.",
     bulletPoints: [
-      "4 domeinen waar stress bij 40+ vandaan komt",
+      "4 domeinen waar stress bij 30+ vandaan komt",
       "Snelle interventies die je binnen 15 minuten kunt proberen",
       "Supplementinformatie op hoofdlijnen, gekoppeld aan onze gidsen",
     ],

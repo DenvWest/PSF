@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Container from "@/components/layout/Container";
 import BlogLibrary from "@/components/blog/BlogLibrary";
 import BlogIntakeCTA from "@/components/blog/BlogIntakeCTA";
@@ -17,9 +16,9 @@ import {
 } from "@/components/library/library-tokens";
 
 export const metadata: Metadata = {
-  title: "Herstelbibliotheek — Slaap, Stress & Herstel na 40",
+  title: "Herstelbibliotheek — Slaap, Stress & Herstel vanaf 30",
   description:
-    "Artikelen over slaap, stress, energie en herstel na 40. Onderbouwd, met bronnen.",
+    "Artikelen over slaap, stress, energie en herstel vanaf 30. Onderbouwd, met bronnen.",
   alternates: {
     canonical: "https://perfectsupplement.nl/blog",
   },
@@ -79,25 +78,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       />
 
       <main className={LIB_PAGE_BG}>
-        <Container className="pb-16 pt-[5.5rem] md:pb-20 md:pt-28">
-          <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center gap-2 text-[0.8125rem] text-stone-400">
-              <li>
-                <Link href="/" className="transition hover:text-stone-600">
-                  Home
-                </Link>
-              </li>
-              <li aria-hidden className="select-none">
-                ›
-              </li>
-              <li className="font-medium text-stone-600">{BLOG_HUB_LABEL}</li>
-            </ol>
-          </nav>
-
+        <Container className="pb-16 pt-8 md:pb-20 md:pt-10">
           <header className="max-w-2xl">
             <p className={LIB_EYEBROW}>{BLOG_HUB_LABEL}</p>
             <h1 className="mt-2 font-display text-[clamp(1.9rem,3.6vw,2.6rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-stone-900">
-              Slaap, stress en herstel na 40
+              Slaap, stress en herstel vanaf 30
             </h1>
             <p className="mt-3 text-[1rem] leading-relaxed text-stone-600">
               {items.length} artikelen over slaap, stress, energie en

@@ -5,7 +5,7 @@ export const nutritionPlanTemplate: LifestylePlanTemplate = {
   domain: "nutrition",
   guideThema: "voeding",
   version: "1.0",
-  title: "Voedingsplan na 40",
+  title: "Voedingsplan na 30",
   recognition: {
     heading: "Dit herken je misschien",
     body:
@@ -14,9 +14,9 @@ export const nutritionPlanTemplate: LifestylePlanTemplate = {
       "Herkenning is de eerste stap — daarna kun je gericht iets veranderen, maaltijd voor maaltijd.",
   },
   mechanism: {
-    heading: "Waarom voeding na 40 anders telt",
+    heading: "Waarom voeding na 30 anders telt",
     body:
-      "Na je 40e gebruikt je lichaam eiwit minder efficiënt voor spierbehoud. Stabiel bloedsuiker en voldoende vetzuren " +
+      "Na je 30e gebruikt je lichaam eiwit minder efficiënt voor spierbehoud. Stabiel bloedsuiker en voldoende vetzuren " +
       "ondersteunen energie en herstel — supplementen vullen aan waar voeding structureel tekortschiet.\n\n" +
       "Daarom win je hier het meeste met eiwit bij elke maaltijd en vette vis 2× per week — niet met het zoveelste potje. " +
       "Vergelijken pas als je basis op orde is.",
@@ -38,7 +38,7 @@ export const nutritionPlanTemplate: LifestylePlanTemplate = {
           title: "Begin elke maaltijd met 20–30 g eiwit — 2 eieren + kwark, 100 g kip of 135 g linzen.",
           rationale: {
             body:
-              "Voldoende eiwit per maaltijd ondersteunt spiermassa en herstel — vooral relevant na 40. " +
+              "Voldoende eiwit per maaltijd ondersteunt spiermassa en herstel — vooral relevant na 30. " +
               "Verspreid over de dag werkt beter dan één grote portie 's avonds.",
           },
           tags: ["eiwit"],

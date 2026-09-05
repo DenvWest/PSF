@@ -4,7 +4,7 @@ export const energieGuide: GuideOptInData = {
   slug: "energie",
   guideName: "Energiegids",
   seo: {
-    title: "Gratis Energiegids na 40",
+    title: "Gratis Energiegids na 30",
     description:
       "Download de gratis Energiegids voor 30-plussers. Concrete stappen voor meer energie — zonder diagnoses.",
     canonical: "/gids/energie",
@@ -12,7 +12,7 @@ export const energieGuide: GuideOptInData = {
   heroLabel: "Gratis gids",
   heroTitle: "Meer energie begint met begrijpen waar het lekt",
   heroSubtitle:
-    "Structurele vermoeidheid na 40 heeft meestal meerdere oorzaken. Deze gids helpt je de belangrijkste aanknopingspunten te zien.",
+    "Structurele vermoeidheid na 30 heeft meestal meerdere oorzaken. Deze gids helpt je de belangrijkste aanknopingspunten te zien.",
   recognition: {
     sectionLabel: "Herkenbaar?",
     title: "Dit hoor je jezelf misschien zeggen",
@@ -27,9 +27,9 @@ export const energieGuide: GuideOptInData = {
     sectionLabel: "Gratis energiegids",
     title: "Gratis Energiegids (PDF)",
     subtitle:
-      "Concrete stappen voor meer energie na 40 — van voeding en beweging tot supplementen met evidence.",
+      "Concrete stappen voor meer energie na 30 — van voeding en beweging tot supplementen met evidence.",
     bulletPoints: [
-      "Hoe leefstijl en hormonen elkaar versterken na je 40e",
+      "Hoe leefstijl en hormonen elkaar versterken na je 30e",
       "Eenvoudig weekplan: eten, beweging, licht",
       "Supplementinformatie op hoofdlijnen",
     ],

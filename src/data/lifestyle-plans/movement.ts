@@ -5,17 +5,17 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
   domain: "movement",
   guideThema: "beweging",
   version: "1.4",
-  title: "Bewegingsplan na 40",
+  title: "Bewegingsplan na 30",
   recognition: {
     heading: "Dit herken je misschien",
     body:
-      "Herstel duurt langer, of kracht en conditie lopen uit elkaar — ritme en rust tellen zwaarder na 40. " +
+      "Herstel duurt langer, of kracht en conditie lopen uit elkaar — ritme en rust tellen zwaarder na 30. " +
       "Eén lichte actie deze week is genoeg om te starten.",
   },
   mechanism: {
-    heading: "Waarom beweging na 40 anders werkt",
+    heading: "Waarom beweging na 30 anders werkt",
     body:
-      "Vanaf je 40e verlies je gemiddeld spiermassa als je geen krachtprikkel geeft. Cardio alleen houdt conditie op peil, " +
+      "Vanaf je 30e verlies je gemiddeld spiermassa als je geen krachtprikkel geeft. Cardio alleen houdt conditie op peil, " +
       "maar krachttraining is wat sarcopenie het hardst remt — mits je genoeg eiwit eet en herstelt.\n\n" +
       "Waar begin je? Met één echte krachtprikkel thuis als je net start — niet met een perfect schema. " +
       "Train je al regelmatig? Houd eerst je ritme en herstel scherp, bouw daarna pas volume op. " +
@@ -103,7 +103,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
           },
           showWhen: { type: "answerAtLeast", question: "MOV_CARD", value: 3 },
           link: {
-            label: "Beweging na 40 — kracht & conditie",
+            label: "Beweging na 30 — kracht & conditie",
             href: "/beweging-na-40",
             kind: "article",
           },
@@ -127,7 +127,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
           title: "2× per week full-body kracht",
           rationale: {
             body:
-              "Twee korte krachtsessies per week zijn voor veel mannen 40+ een haalbaar startpunt: squat/goblet, push, pull en hip hinge — 2–3 sets × 8–12 reps. " +
+              "Twee korte krachtsessies per week zijn voor veel mannen 30+ een haalbaar startpunt: squat/goblet, push, pull en hip hinge — 2–3 sets × 8–12 reps. " +
               "Techniek eerst, zwaarte daarna — rust 48–72 uur tussen krachtdagen.",
           },
           showWhen: { type: "answerAtMost", question: "MOV_STR", value: 2 },

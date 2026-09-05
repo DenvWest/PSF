@@ -10,21 +10,21 @@ export const creatineGidsData: SupplementData = {
   datePublished: "2026-03-01",
   h1: "Creatine: welke vorm past bij jou?",
   introTekst:
-    "Creatine monohydraat is het meest onderzochte supplement ter wereld — met bewezen effecten op spierkracht, herstel en, steeds vaker, cognitieve prestaties. Na je 40e neemt de natuurlijke creatineproductie af, terwijl spierverval en mentale belasting juist toenemen.",
+    "Creatine monohydraat is het meest onderzochte supplement ter wereld — met bewezen effecten op spierkracht, herstel en, steeds vaker, cognitieve prestaties. Na je 30e neemt de natuurlijke creatineproductie af, terwijl spierverval en mentale belasting juist toenemen.",
 
   watIsHet: {
     titel: "Wat doet creatine in je lichaam?",
     tekst:
-      "Creatine is een stof die van nature voorkomt in spierweefsel en de hersenen. Het vult de fosfaatbuffer aan waarmee je lichaam snel energie (ATP) aanmaakt bij korte, intensieve inspanning. Suppletie vergroot de creatinevoorraad in de spieren, waardoor je langer en krachtiger kunt presteren. Spiermassa en trainingsbelasting onder druk na 40 leggen onder meer een brug naar [eiwitbehoefte na 40](/kennisbank/eiwitbehoefte-na-40) als randvoorwaarde naast creatine. Bovendien is er groeiend wetenschappelijk bewijs dat creatine cognitieve functie ondersteunt — met name bij slaaptekort en mentale vermoeidheid.",
+      "Creatine is een stof die van nature voorkomt in spierweefsel en de hersenen. Het vult de fosfaatbuffer aan waarmee je lichaam snel energie (ATP) aanmaakt bij korte, intensieve inspanning. Suppletie vergroot de creatinevoorraad in de spieren, waardoor je langer en krachtiger kunt presteren. Spiermassa en trainingsbelasting onder druk na 30 leggen onder meer een brug naar [eiwitbehoefte na 40](/kennisbank/eiwitbehoefte-na-40) als randvoorwaarde naast creatine. Bovendien is er groeiend wetenschappelijk bewijs dat creatine cognitieve functie ondersteunt — met name bij slaaptekort en mentale vermoeidheid.",
   },
 
   waaromRelevant: {
-    titel: "Waarom is creatine belangrijk na je 40e?",
+    titel: "Waarom is creatine belangrijk na je 30e?",
     punten: [
       {
         titel: "Spierbehoud bij sarcopenie",
         uitleg:
-          "Vanaf je 40e verlies je gemiddeld 1–2% spiermassa per jaar. Creatine vertraagt dit proces meetbaar door spierkracht en -volume te ondersteunen.",
+          "Vanaf je 30e verlies je gemiddeld 1–2% spiermassa per jaar. Creatine vertraagt dit proces meetbaar door spierkracht en -volume te ondersteunen.",
       },
       {
         titel: "Sneller herstel na training",
@@ -125,7 +125,7 @@ export const creatineGidsData: SupplementData = {
 
   faq: [
     {
-      vraag: "Is creatine veilig voor mannen boven de 40?",
+      vraag: "Is creatine veilig voor mannen boven de 30?",
       antwoord:
         "Ja. Creatine is het meest onderzochte sportsupplement ter wereld met een uitstekend veiligheidsprofiel bij gezonde volwassenen. Het belast de nieren niet bij normale doseringen (3–5 g/dag) en een gezonde nierfunctie. Raadpleeg bij bestaande nierproblematiek altijd je arts.",
     },

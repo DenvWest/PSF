@@ -8,14 +8,14 @@ import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
 import { GenderAdaptiveText } from "@/components/personalization/GenderAdaptiveText";
 
 export const metadata: Metadata = {
-  title: "Altijd Moe Na 40? Dit Is Waarom",
+  title: "Altijd Moe Na 30? Dit Is Waarom",
   description:
     "Je energie is op. Niet even, maar structureel. Herken je dit? Ontdek wat er aan de hand is en wat je eraan kunt doen.",
   alternates: {
     canonical: "https://perfectsupplement.nl/profiel/lage-energie",
   },
   openGraph: {
-    title: "Altijd Moe Na 40? Dit Is Waarom",
+    title: "Altijd Moe Na 30? Dit Is Waarom",
     description:
       "Je energie is op. Niet even, maar structureel. Ontdek wat er aan de hand is en wat helpt.",
     url: "https://perfectsupplement.nl/profiel/lage-energie",
@@ -51,7 +51,7 @@ const breadcrumbJsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "Lage Energie: Altijd Moe Na 40?",
+    headline: "Lage Energie: Altijd Moe Na 30?",
     description:
       "Je energie is op. Niet even, maar structureel. Ontdek wat er aan de hand is en wat je eraan kunt doen.",
     author: {
@@ -156,7 +156,7 @@ export default function LageEnergiePage() {
                 Profiel
               </span>
               <h1 className="font-[var(--font-heading)] text-3xl md:text-5xl text-slate-900 leading-tight max-w-2xl">
-                Lage Energie: Altijd Moe Na 40?
+                Lage Energie: Altijd Moe Na 30?
               </h1>
               <p className="mt-5 text-xl text-slate-600 max-w-2xl leading-relaxed">
                 Je energie is niet even op — het is structureel. Elke dag weer. En nee, dat is niet
@@ -219,7 +219,7 @@ export default function LageEnergiePage() {
               </h3>
               <div className="mt-6 space-y-5">
                 <p className="text-slate-600 leading-relaxed">
-                  Na je 40e verandert er iets fundamenteels in hoe je lichaam energie aanmaakt. Je{" "}
+                  Na je 30e verandert er iets fundamenteels in hoe je lichaam energie aanmaakt. Je{" "}
                   <Link
                     href="/kennisbank/mitochondrien"
                     className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
@@ -275,7 +275,7 @@ export default function LageEnergiePage() {
                     }
                     neutral={
                       <>
-                        Tegelijk verandert vanaf je 40e ook je hormoonhuishouding geleidelijk —
+                        Tegelijk verandert vanaf je 30e ook je hormoonhuishouding geleidelijk —
                         bij mannen speelt dalend testosteron een rol, bij vrouwen de{" "}
                         <Link
                           href="/overgang"
@@ -461,7 +461,7 @@ export default function LageEnergiePage() {
                     href="/blog/vitamine-d-en-energie"
                     className="text-emerald-600 hover:underline font-medium"
                   >
-                    Lees: vitamine D en energie na 40 →
+                    Lees: vitamine D en energie na 30 →
                   </Link>
                 </div>
                 <div>

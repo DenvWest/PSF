@@ -4,13 +4,13 @@ export const testosteronGuide: GuideOptInData = {
   slug: "testosteron",
   guideName: "Testosterongids",
   seo: {
-    title: "Gratis gids testosteron na 40",
+    title: "Gratis gids testosteron na 30",
     description:
-      "Vraag de gratis gids aan over testosteron na 40. Wat verandert, wat je zelf kunt doen — zonder diagnoses.",
+      "Vraag de gratis gids aan over testosteron na 30. Wat verandert, wat je zelf kunt doen — zonder diagnoses.",
     canonical: "/gids/testosteron",
   },
   heroLabel: "Gratis gids",
-  heroTitle: "Wat verandert er met testosteron na 40?",
+  heroTitle: "Wat verandert er met testosteron na 30?",
   heroSubtitle:
     "Minder energie, minder herstel, veranderde lichaamssamenstelling — veel mannen vragen zich af wat er speelt. Deze gids legt het uit in begrijpelijke taal.",
   recognition: {
@@ -25,11 +25,11 @@ export const testosteronGuide: GuideOptInData = {
   },
   optIn: {
     sectionLabel: "Gratis gids",
-    title: "Testosteron na 40: wat verandert en wat je zelf kunt doen",
+    title: "Testosteron na 30: wat verandert en wat je zelf kunt doen",
     subtitle:
       "Geen snelle beloftes — wel een helder overzicht van wat er speelt en welke leefstijlstappen meetbaar zijn.",
     bulletPoints: [
-      "Wat er fysiologisch verandert na 40",
+      "Wat er fysiologisch verandert na 30",
       "Leefstijlfactoren die je wél kunt sturen",
       "Wanneer professioneel advies passend is",
     ],

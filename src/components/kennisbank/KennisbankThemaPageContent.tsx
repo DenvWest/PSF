@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import type { KennisbankTheme } from "@/data/kennisbank";
 import { themeLabels } from "@/data/kennisbank";
@@ -29,29 +28,7 @@ export default function KennisbankThemaPageContent({
 
   return (
     <main className={LIB_PAGE_BG}>
-      <Container className="pb-16 pt-[5.5rem] md:pb-20 md:pt-28">
-        <nav aria-label="Breadcrumb" className="mb-6">
-          <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem] text-stone-400">
-            <li>
-              <Link href="/" className="transition hover:text-stone-600">
-                Home
-              </Link>
-            </li>
-            <li aria-hidden className="select-none">
-              ›
-            </li>
-            <li>
-              <Link href="/kennisbank" className="transition hover:text-stone-600">
-                {KB_HUB_LABEL}
-              </Link>
-            </li>
-            <li aria-hidden className="select-none">
-              ›
-            </li>
-            <li className="font-medium text-stone-600">{config.title}</li>
-          </ol>
-        </nav>
-
+      <Container className="pb-16 pt-8 md:pb-20 md:pt-10">
         <div className="relative mb-8 aspect-[16/9] w-full max-w-3xl overflow-hidden rounded-xl bg-stone-100 md:mb-10">
           <Image
             src={cover.src}

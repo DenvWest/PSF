@@ -58,7 +58,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "blog",
     "slaap-verbeteren-40-plus",
     "Ochtendlicht door linnen gordijnen in een rustige slaapkamer",
-    "Slaap verbeteren na 40 vraagt vaak om ritme en licht — niet alleen om een extra supplement.",
+    "Slaap verbeteren na 30 vraagt vaak om ritme en licht — niet alleen om een extra supplement.",
   ),
   "slaaphygiene-mannen-40-plus": img(
     "blog",
@@ -94,7 +94,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "blog",
     "melatonine-na-40",
     "Wekker op een nachtkastje in gedempt licht",
-    "Melatonine na 40: de aanmaak verandert met de leeftijd, maar een pil is niet automatisch de eerste stap.",
+    "Melatonine na 30: de aanmaak verandert met de leeftijd, maar een pil is niet automatisch de eerste stap.",
   ),
   "slaapritme-herstellen": img(
     "blog",
@@ -112,7 +112,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "blog",
     "energie-verhogen-natuurlijk",
     "Wandelaar op een pad door heuvels in helder daglicht",
-    "Energie verhogen na 40 lukt vaker met beweging, slaap en voeding dan met een snelle stimulant.",
+    "Energie verhogen na 30 lukt vaker met beweging, slaap en voeding dan met een snelle stimulant.",
   ),
   "vitamine-d-tekort-herkennen": img(
     "blog",
@@ -124,7 +124,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "blog",
     "testosteron-en-energie-na-40",
     "Iemand die buiten traploopt in sportkleding",
-    "Testosteron en energie na 40: slaaptekort en overtraining drukken vaak harder dan één bloedwaarde.",
+    "Testosteron en energie na 30: slaaptekort en overtraining drukken vaak harder dan één bloedwaarde.",
   ),
   "omega-3-concentratie-energie": img(
     "blog",
@@ -142,13 +142,13 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "blog",
     "eiwit-na-40",
     "Eiwitshake naast eieren en yoghurt op een aanrecht",
-    "Eiwit na 40 ondersteunt spierbehoud; de verdeling over de dag telt minstens zo zwaar als het dagtotaal.",
+    "Eiwit na 30 ondersteunt spierbehoud; de verdeling over de dag telt minstens zo zwaar als het dagtotaal.",
   ),
   "eiwitinname-timing-mannen-40": img(
     "blog",
     "eiwitinname-timing-mannen-40",
     "Mealprep-bakjes met kip, eieren en yoghurt voor eiwit over de dag",
-    "Eiwitinname-timing na 40: een portie rond training en bij elke maaltijd is praktischer dan één grote piek.",
+    "Eiwitinname-timing na 30: een portie rond training en bij elke maaltijd is praktischer dan één grote piek.",
   ),
   "middagdip-bloedsuiker-na-40": img(
     "blog",
@@ -160,7 +160,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "blog",
     "krachttraining-na-40",
     "Halterschijven op een houten vloer in een lichte gym",
-    "Krachttraining na 40 is een van de duidelijkste manieren om spier- en botmassa te beschermen.",
+    "Krachttraining na 30 is een van de duidelijkste manieren om spier- en botmassa te beschermen.",
   ),
   "alcohol-slaap-energie-na-40": img(
     "blog",
@@ -262,7 +262,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "blog",
     "creatine-voor-vrouwen-na-40",
     "Vrouw die krachttraining doet in een lichte gym",
-    "Creatine voor vrouwen na 40 wordt steeds vaker onderzocht, vooral rond spierbehoud en training.",
+    "Creatine voor vrouwen na 30 wordt steeds vaker onderzocht, vooral rond spierbehoud en training.",
   ),
   "zink-en-testosteron": img(
     "blog",
@@ -280,7 +280,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "blog",
     "multivitamine-zinvol-na-40",
     "Kleurrijke groenten en fruit uitgespreid op een werkblad",
-    "Een multivitamine na 40 vult gaten; het vervangt geen patroon met groenten, vis en zonlicht.",
+    "Een multivitamine na 30 vult gaten; het vervangt geen patroon met groenten, vis en zonlicht.",
   ),
   "beste-omega-3-supplement": img(
     "blog",
@@ -433,7 +433,7 @@ const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "kennisbank",
     "eiwitbehoefte-na-40",
     "Gebakken vis met groenten en een portie peulvruchten",
-    "De eiwitbehoefte na 40 ligt vaak hoger dan de standaardrichtlijn, vooral bij krachttraining.",
+    "De eiwitbehoefte na 30 ligt vaak hoger dan de standaardrichtlijn, vooral bij krachttraining.",
   ),
   "kalium-natrium-balans": img(
     "kennisbank",

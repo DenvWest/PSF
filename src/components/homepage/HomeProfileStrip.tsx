@@ -37,7 +37,7 @@ export default function HomeProfileStrip() {
             Herken je een patroon?
           </h2>
           <p className="mt-3 text-stone-600 leading-relaxed">
-            Vier veelvoorkomende profielen bij mannen 40+ — met herkenning, uitleg en een
+            Vier veelvoorkomende profielen bij mannen 30+ — met herkenning, uitleg en een
             concreet plan. Geen diagnose, wel een startpunt.
           </p>
         </div>

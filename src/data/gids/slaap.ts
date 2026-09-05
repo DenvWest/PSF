@@ -4,7 +4,7 @@ export const slaapGuide: GuideOptInData = {
   slug: "slaap",
   guideName: "Slaapgids",
   seo: {
-    title: "Gratis Slaapgids na 40",
+    title: "Gratis Slaapgids na 30",
     description:
       "Interactieve slaapgids voor 30-plussers. Herken patronen, meet Inslapen, Doorslapen, Regelmaat en Uitgerust wakker — met persoonlijke vervolgstappen.",
     canonical: "/gids/slaap",

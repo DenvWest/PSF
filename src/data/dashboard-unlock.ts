@@ -4,7 +4,7 @@ import type { PillarId } from "@/types/dashboard";
 export const DASHBOARD_UNLOCK_METADATA = {
   title: "Hoe Werkt Jouw Dashboard?",
   description:
-    "Zo werkt je dashboard na de Leefstijlcheck: van check naar meetbaar overzicht met prioriteit, check-ins en hermeting. Gratis, geen wachtwoord — voor mannen 40+, zonder diagnose.",
+    "Zo werkt je dashboard na de Leefstijlcheck: van check naar meetbaar overzicht met prioriteit, check-ins en hermeting. Gratis, geen wachtwoord — voor mannen 30+, zonder diagnose.",
 } as const;
 
 export const DASHBOARD_UNLOCK_HERO = {
@@ -67,7 +67,7 @@ export const DASHBOARD_UNLOCK_CTA = {
 } as const;
 
 export const DASHBOARD_UNLOCK_SOCIAL_PROOF = {
-  line: "Mannen 40+ gebruiken het dashboard om niet elke maand opnieuw te beginnen.",
+  line: "Mannen 30+ gebruiken het dashboard om niet elke maand opnieuw te beginnen.",
 } as const;
 
 export const DASHBOARD_UNLOCK_ROUTE_ACCORDION = {

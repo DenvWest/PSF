@@ -275,7 +275,7 @@ const SLIDER_BY_ID: Record<string, SliderQuestion> = {
     helper: "bijv. ei, kwark, kip, vis, peulvruchten",
     help: {
       title: "Waarom eetmomenten, niet grammen",
-      body: "Voor mannen boven de veertig doet de *verdeling* over de dag meer dan het dagtotaal — daarom tellen we momenten. Op je resultaat zie je of je eiwit over de dag verdeeld staat of op één maaltijd hangt.",
+      body: "Voor mannen boven de dertig doet de *verdeling* over de dag meer dan het dagtotaal — daarom tellen we momenten. Op je resultaat zie je of je eiwit over de dag verdeeld staat of op één maaltijd hangt.",
       anchor: "C3",
       benchmarkLabel: "Vuistregel: 3 eiwitrijke eetmomenten per dag (PROT-AGE 2013)",
       benchmarkKind: "vuistregel",

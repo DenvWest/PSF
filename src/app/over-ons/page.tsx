@@ -46,7 +46,7 @@ const structuredData = {
     name: "PerfectSupplement",
     url: ABOUT_SITE_URL,
     description:
-      "Onafhankelijk platform voor mannen 40+ — leefstijl, herstel en transparante supplementvergelijking",
+      "Onafhankelijk platform voor mannen en vrouwen vanaf 30 — leefstijl, herstel en transparante supplementvergelijking",
     founder: {
       "@type": "Person",
       name: ABOUT_FOUNDER.name,
@@ -146,7 +146,7 @@ export default function OverOnsPage() {
                 </div>
               </section>
 
-              {/* ── Step 02: Wat mannen missen — RIGHT ─────────────────── */}
+              {/* ── Step 02: Wat er over tijd verandert — RIGHT ────────── */}
               <section id={ABOUT_INSIGHT.id} className="py-14 md:py-16 -mx-6 px-6 bg-white lg:-mx-8 lg:px-8">
                 {/* Mobile */}
                 <div className="lg:hidden space-y-6">

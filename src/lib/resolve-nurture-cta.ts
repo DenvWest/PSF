@@ -19,7 +19,7 @@ export type ResolvedNurtureCta = {
 
 const PILLAR_BY_DOMAIN: Record<DomainKey, { text: string; url: string }> = {
   sleep_score: {
-    text: "Lees de slaapgids voor mannen 40+",
+    text: "Lees de slaapgids voor mannen 30+",
     url: "/slaap-verbeteren-na-40",
   },
   stress_score: {
@@ -27,7 +27,7 @@ const PILLAR_BY_DOMAIN: Record<DomainKey, { text: string; url: string }> = {
     url: "/stress-verminderen-na-40",
   },
   energy_score: {
-    text: "Lees over energie na 40",
+    text: "Lees over energie na 30",
     url: "/energie-na-40",
   },
   nutrition_score: {

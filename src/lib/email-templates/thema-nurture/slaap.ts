@@ -35,7 +35,7 @@ export const slaapTemplates: Record<ThemaNurtureDay, ThemaNurtureTemplate> = {
   Goed dat je de stap zet. Beter slapen begint met begrijpen wat er verandert — en daar helpt deze gids bij.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Je bent niet de enige man boven de 40 die merkt dat slaap niet meer vanzelf gaat. Na je 40e produceert je lichaam minder melatonine, reageert het sterker op stress en herstelt het langzamer. Dat is normaal — maar het betekent wel dat je iets anders moet doen dan voorheen.
+  Je bent niet de enige man boven de 30 die merkt dat slaap niet meer vanzelf gaat. Na je 30e produceert je lichaam minder melatonine, reageert het sterker op stress en herstelt het langzamer. Dat is normaal — maar het betekent wel dat je iets anders moet doen dan voorheen.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 8px;">
   In de gids vind je:

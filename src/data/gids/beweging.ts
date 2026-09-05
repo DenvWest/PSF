@@ -4,7 +4,7 @@ export const bewegingGuide: GuideOptInData = {
   slug: "beweging",
   guideName: "Bewegingsgids",
   seo: {
-    title: "Gratis Bewegingsgids na 40",
+    title: "Gratis Bewegingsgids na 30",
     description:
       "Ontvang het beweging-stappenplan voor 30-plussers. Kracht thuis, herstel en ritme — praktische stappen vóór supplementen, zonder diagnoses.",
     canonical: "/gids/beweging",
@@ -12,7 +12,7 @@ export const bewegingGuide: GuideOptInData = {
   heroLabel: "Gratis stappenplan",
   heroTitle: "Kracht thuis houdt je spieren op peil — zonder sportschool-hype",
   heroSubtitle:
-    "Na je 40e telt herstel zwaarder dan volume. Dit stappenplan begint met één thuis-oefening en bouwt rustig op naar structurele krachttraining.",
+    "Na je 30e telt herstel zwaarder dan volume. Dit stappenplan begint met één thuis-oefening en bouwt rustig op naar structurele krachttraining.",
   recognition: {
     sectionLabel: "Herkenbaar?",
     title: "Dit hoor je jezelf misschien zeggen",

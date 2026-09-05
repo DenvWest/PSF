@@ -34,7 +34,7 @@ function GuidesFanFallback() {
             <span className="font-serif text-lg font-semibold leading-tight text-stone-800">
               {card.label}
             </span>
-            <span className="text-[0.625rem] text-stone-400">na 40</span>
+            <span className="text-[0.625rem] text-stone-400">na 30</span>
           </div>
         </div>
       ))}

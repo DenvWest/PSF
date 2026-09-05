@@ -78,7 +78,7 @@ export default function RapportLandingPage() {
                 Zie wat er verandert in 30 dagen
               </h1>
               <p className="text-lg text-slate-600 leading-relaxed">
-                Mannen 40+ die de intake doen ontvangen na 30 dagen een
+                Mannen 30+ die de intake doen ontvangen na 30 dagen een
                 uitnodiging om te hermeten. Het rapport toont de verandering per
                 domein — feitelijk, zonder conclusies over oorzaken.
               </p>

@@ -4,7 +4,7 @@ import { INTAKE_CTA, INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 export const energieThema: ThemaPageData = {
   slug: "energie",
   title: "Energie",
-  heroTitle: "Weinig energie na je 40e: meer dan gewoon moe zijn",
+  heroTitle: "Weinig energie na je 30e: meer dan gewoon moe zijn",
   heroSubtitle:
     "Je slaapt genoeg, maar je dag voelt zwaar. Die middagdip die steeds vroeger komt, het moeite kosten van taken die vroeger vanzelf gingen, die vage hersenmist — dat is geen luiheid, dat zijn signalen dat er iets uit balans is.",
   heroLabel: "THEMA",
@@ -16,14 +16,14 @@ export const energieThema: ThemaPageData = {
       "’s Middags stort ik in terwijl de dag nog niet klaar is.",
       "Ik stel dingen uit die vroeger geen moeite kostten — ik ben geen procastinator, denk ik.",
       "Mijn lichaam is op bed, mijn hoofd draait nog op halve toeren.",
-      "Ik dacht dat dit erbij hoorde na 40, maar iedereen lijkt het wel te hebben — en te accepteren.",
+      "Ik dacht dat dit erbij hoorde na 30, maar iedereen lijkt het wel te hebben — en te accepteren.",
       "Koffie houdt me overeind, maar versterkt de middagdip nóg meer.",
     ],
   },
 
   causes: {
     sectionLabel: "WAT ER SPEELT",
-    title: "Waar je energie vandaan komt (en weglekt) na je 40e",
+    title: "Waar je energie vandaan komt (en weglekt) na je 30e",
     intro:
       "Energieproblemen zijn zelden één-oorzakelijk. Bloedsuiker, hormonen, stress en beweging versterken elkaar. Hieronder vier domeinen die het vaakst een rol spelen.",
     items: [
@@ -60,7 +60,7 @@ export const energieThema: ThemaPageData = {
 
   scienceBlock: {
     sectionLabel: "WAT ONDERZOEK LAAT ZIEN",
-    title: "De wetenschap achter energieverlies na 40",
+    title: "De wetenschap achter energieverlies na 30",
     intro: "Geen meningen, maar meetbare feiten uit peer-reviewed onderzoek.",
     facts: [
       {
@@ -162,7 +162,7 @@ export const energieThema: ThemaPageData = {
       {
         name: "Eiwitpoeder",
         reason:
-          "Voldoende eiwitinname in je voeding ondersteunt spieronderhoud; na je 40e wordt behoud vaak meer aandacht. In de EU hebben eiwit‑supplementen o.a. claims rond spiermassa en botten onder voorwaarden — geen garantie voor ‘meer pit’ uit één scooptje.",
+          "Voldoende eiwitinname in je voeding ondersteunt spieronderhoud; na je 30e wordt behoud vaak meer aandacht. In de EU hebben eiwit‑supplementen o.a. claims rond spiermassa en botten onder voorwaarden — geen garantie voor ‘meer pit’ uit één scooptje.",
         guideLink: "/supplementen/eiwitpoeder",
         comparisonLink: "/beste/eiwitpoeder",
         icon: "💪",
@@ -174,9 +174,9 @@ export const energieThema: ThemaPageData = {
     sectionLabel: "GRATIS ENERGIEGIDS",
     title: "Gratis Energiegids (PDF)",
     subtitle:
-      "17 pagina's met concrete stappen voor meer energie na 40. Van voeding en beweging tot de supplementen met de beste evidence.",
+      "17 pagina's met concrete stappen voor meer energie na 30. Van voeding en beweging tot de supplementen met de beste evidence.",
     bulletPoints: [
-      "Hoe leefstijl en hormonen elkaar versterken na je 40e",
+      "Hoe leefstijl en hormonen elkaar versterken na je 30e",
       "Eenvoudig weekplan: eten, beweging, licht (haalbaar in drukke weken)",
       "Supplementinformatie op hoofdlijnen met links naar onze gidsen",
       "Wanneer vermoeidheid wél iets ernstigers kan betekenen — en wat je bespreekt",
@@ -189,7 +189,7 @@ export const energieThema: ThemaPageData = {
 
   pillarPage: {
     href: "/energie-na-40",
-    title: "De complete gids: energie terugwinnen na 40",
+    title: "De complete gids: energie terugwinnen na 30",
     description:
       "Van mitochondriën en bloedsuiker tot een concreet weekplan met supplementen. Alles wat op deze pagina in het kort staat, uitgewerkt met bronnen.",
   },
@@ -219,7 +219,7 @@ export const energieThema: ThemaPageData = {
 
   relatedArticles: [
     {
-      title: "Testosteron en energie na 40: wanneer is actie nodig?",
+      title: "Testosteron en energie na 30: wanneer is actie nodig?",
       slug: "testosteron-en-energie-na-40",
       category: "energie",
     },
@@ -254,7 +254,7 @@ export const energieThema: ThemaPageData = {
       },
       {
         context:
-          "Hersenen, hart: wanneer EPA/DHA volgens EU‑claims past na je 40e en hoe je producten beoordeelt.",
+          "Hersenen, hart: wanneer EPA/DHA volgens EU‑claims past na je 30e en hoe je producten beoordeelt.",
         href: "/supplementen/omega-3",
         label: "Omega-3 gids (EPA, DHA, keuzehulp)",
       },
@@ -266,16 +266,16 @@ export const energieThema: ThemaPageData = {
       },
       {
         context:
-          "Slaap je genoeg maar voel je je toch leeg? Herken het patroon van de Lage Energie — structurele vermoeidheid na 40.",
+          "Slaap je genoeg maar voel je je toch leeg? Herken het patroon van de Lage Energie — structurele vermoeidheid na 30.",
         href: "/profiel/lage-energie",
-        label: "Altijd moe na 40? Ontdek of je een Lage Energie profiel hebt →",
+        label: "Altijd moe na 30? Ontdek of je een Lage Energie profiel hebt →",
       },
     ],
   },
 
   seo: {
     title:
-      "Energie terugwinnen als man 40+ | Oorzaken, tips en supplementen",
+      "Energie terugwinnen als man 30+ | Oorzaken, tips en supplementen",
     description:
       "Middagdips, hersenmist en weinig puf begrijpen. Leefstijl, verdieping wanneer nodig, en supplementinformatie onafhankelijk uit de doeken gedaan.",
     canonical: "/gids/energie",

@@ -97,7 +97,7 @@ export const NUTRITION_QUESTION_EVIDENCE: NutritionQuestionEvidence[] = [
     questionId: "proteinMeals",
     title: "Eiwitrijke eetmomenten",
     whyThisQuestion:
-      "Hoe vaak je eiwit eet, vertelt meer over herstel en spiermassa dan één grote portie 's avonds — vooral na 40.",
+      "Hoe vaak je eiwit eet, vertelt meer over herstel en spiermassa dan één grote portie 's avonds — vooral na 30.",
     scientificRationale: [
       "Richtlijnen en reviews benadrukken voldoende eiwitinname en spreiding over meerdere maaltijden bij ouder worden en fysieke activiteit.",
       "Frequentie van eiwitmomenten is een praktische proxy wanneer je geen gram voor gram bijhoudt.",

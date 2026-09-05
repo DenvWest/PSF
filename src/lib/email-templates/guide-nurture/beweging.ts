@@ -14,7 +14,7 @@ export const bewegingGuideTemplates: Record<GuideNurtureDay, GuideNurtureTemplat
   Je beweging-stappenplan staat klaar
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Goed dat je begint met bewegen — niet met een supplementenmandje. Kracht thuis is vaak de sterkste hefboom na 40.
+  Goed dat je begint met bewegen — niet met een supplementenmandje. Kracht thuis is vaak de sterkste hefboom na 30.
 </p>
 <ul style="font-size: 15px; color: #555; line-height: 1.8; margin-bottom: 24px; padding-left: 20px;">
   <li>Deze week: één kracht-oefening thuis — geen materiaal nodig</li>

@@ -5,11 +5,11 @@ export const stressdragerProfile: ProfilePageData = {
   label: "Stressdrager",
 
   seo: {
-    title: "Stressdrager: Profiel Chronische Stress Na 40",
+    title: "Stressdrager: Profiel Chronische Stress Na 30",
     description:
       "Continu aan, nooit echt uit? Het Stressdrager-profiel: herkenning, uitleg in begrijpelijke taal, quick wins en een 4-weken plan.",
     canonical: "https://perfectsupplement.nl/profiel/stressdrager",
-    targetKeyword: "chronische stress man 40",
+    targetKeyword: "chronische stress man 30",
   },
 
   hero: {
@@ -48,15 +48,15 @@ export const stressdragerProfile: ProfilePageData = {
       },
     ],
     closer:
-      "Als je hier drie of meer van herkent, herkennen veel mannen 40+ hetzelfde patroon: je bent lang \"aan\" en komt moeilijk in echte rust. Dat zegt niets over je karakter — en je kunt het stap voor stap anders inrichten.",
+      "Als je hier drie of meer van herkent, herkennen veel mannen 30+ hetzelfde patroon: je bent lang \"aan\" en komt moeilijk in echte rust. Dat zegt niets over je karakter — en je kunt het stap voor stap anders inrichten.",
   },
 
   understanding: {
-    title: "Hoe stress zich vaak voelt na 40",
+    title: "Hoe stress zich vaak voelt na 30",
     paragraphs: [
       "Veel mannen merken dat ze overdag scherp blijven, maar 's avonds niet meer loslaten. Je hoofd blijft doorlopen, je lichaam voelt gespannen en slapen voelt oppervlakkig. Dat hoeft geen ziekte te zijn: het past vaak bij druk op werk, gezin en verantwoordelijkheden die elkaar opstapelen.",
       "Als je lang in die modus blijft, kost herstel meer moeite: je slaapt minder diep, je bent sneller geïrriteerd en kleine dingen voelen zwaarder. Chronisch verhoogd [cortisol](/kennisbank/cortisol) en een overactieve [HPA-as](/kennisbank/hpa-as) spelen hier vaak een rol — lees die begrippen in de kennisbank zonder dat we jouw situatie meten.",
-      "Langzamer [uitademen](/kennisbank/nervus-vagus) helpt je lichaam sneller schakelen naar rust. Dat is geen esoterie: het is een directe route via het parasympathische zenuwstelsel. Na je veertigste merken veel mensen dat dezelfde weekstructuur harder voelt dan tien jaar geleden. Kleine grenzen (ritme, scherm, cafeïne, beweging) helpen vaak meer dan nog harder \"doortrekken\".",
+      "Langzamer [uitademen](/kennisbank/nervus-vagus) helpt je lichaam sneller schakelen naar rust. Dat is geen esoterie: het is een directe route via het parasympathische zenuwstelsel. Na je dertigste merken veel mensen dat dezelfde weekstructuur harder voelt dan tien jaar geleden. Kleine grenzen (ritme, scherm, cafeïne, beweging) helpen vaak meer dan nog harder \"doortrekken\".",
     ],
   },
 
@@ -177,19 +177,19 @@ export const stressdragerProfile: ProfilePageData = {
   relatedPillar: {
     href: "/stress-verminderen-na-40",
     turboSnippet:
-      "Stress na 40: herkenning, slaap, energie en een concreet weekplan — zonder medisch jargon als diagnose.",
+      "Stress na 30: herkenning, slaap, energie en een concreet weekplan — zonder medisch jargon als diagnose.",
   },
 
   relatedComparisons: [
     {
       href: "/blog/cortisol-en-testosteron",
       turboSnippet:
-        "Cortisol en testosteron na 40: stress-as zonder mythes — brug tussen stress- en hormooncluster.",
+        "Cortisol en testosteron na 30: stress-as zonder mythes — brug tussen stress- en hormooncluster.",
     },
     {
       href: "/testosteron-na-40",
       turboSnippet:
-        "Testosteron na 40 in voorzichtige taal — leefstijl eerst, geen zelf-diagnose via internet.",
+        "Testosteron na 30 in voorzichtige taal — leefstijl eerst, geen zelf-diagnose via internet.",
     },
     {
       href: "/profiel/onrustige-slaper",

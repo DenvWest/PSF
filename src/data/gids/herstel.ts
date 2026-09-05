@@ -4,7 +4,7 @@ export const herstelGuide: GuideOptInData = {
   slug: "herstel",
   guideName: "Herstelgids",
   seo: {
-    title: "Gratis Herstelgids na 40",
+    title: "Gratis Herstelgids na 30",
     description:
       "Download de gratis Herstelgids voor 30-plussers. Begrijp waarom herstel trager gaat en wat je eraan doet.",
     canonical: "/gids/herstel",
@@ -12,7 +12,7 @@ export const herstelGuide: GuideOptInData = {
   heroLabel: "Gratis gids",
   heroTitle: "Beter herstellen begint met ruimte maken",
   heroSubtitle:
-    "Na je 40e herstelt je lichaam langzamer. Deze gids helpt je herkennen waar het wringt — en welke stappen realistisch zijn.",
+    "Na je 30e herstelt je lichaam langzamer. Deze gids helpt je herkennen waar het wringt — en welke stappen realistisch zijn.",
   recognition: {
     sectionLabel: "Herkenbaar?",
     title: "Dit hoor je jezelf misschien zeggen",
@@ -25,11 +25,11 @@ export const herstelGuide: GuideOptInData = {
   },
   optIn: {
     sectionLabel: "Gratis herstelgids",
-    title: "De complete gids voor herstel na 40",
+    title: "De complete gids voor herstel na 30",
     subtitle:
       "Van rust en slaap tot voeding en supplementen — in één overzichtelijke PDF.",
     bulletPoints: [
-      "Waarom herstel trager gaat na 40",
+      "Waarom herstel trager gaat na 30",
       "Een 7-dagen protocol voor meer herstelruimte",
       "Supplementinformatie op hoofdlijnen",
     ],

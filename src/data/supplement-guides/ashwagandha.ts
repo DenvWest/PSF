@@ -10,7 +10,7 @@ export const ashwagandhaData: SupplementData = {
   datePublished: "2026-03-01",
   h1: "Ashwagandha: welke vorm past bij jou?",
   introTekst:
-    "Ashwagandha is een adaptogeen — een plant die je lichaam helpt beter om te gaan met stress. Bij mannen boven de 40 is het een van de best onderzochte supplementen voor het verlagen van cortisol, het verbeteren van veerkracht en het ondersteunen van een gezonde slaap.",
+    "Ashwagandha is een adaptogeen — een plant die je lichaam helpt beter om te gaan met stress. Bij mannen boven de 30 is het een van de best onderzochte supplementen voor het verlagen van cortisol, het verbeteren van veerkracht en het ondersteunen van een gezonde slaap.",
 
   watIsHet: {
     titel: "Wat doet ashwagandha in je lichaam?",
@@ -19,7 +19,7 @@ export const ashwagandhaData: SupplementData = {
   },
 
   waaromRelevant: {
-    titel: "Waarom is ashwagandha belangrijk na je 40e?",
+    titel: "Waarom is ashwagandha belangrijk na je 30e?",
     punten: [
       {
         titel: "Cortisolverlaging",
@@ -29,7 +29,7 @@ export const ashwagandhaData: SupplementData = {
       {
         titel: "Testosteronondersteuning",
         uitleg:
-          "Onderzoek toont een bescheiden stijging van testosteronwaarden bij mannen na 8–12 weken gebruik — relevant gezien de geleidelijke daling na je 40e.",
+          "Onderzoek toont een bescheiden stijging van testosteronwaarden bij mannen na 8–12 weken gebruik — relevant gezien de geleidelijke daling na je 30e.",
       },
       {
         titel: "Slaapverbetering",

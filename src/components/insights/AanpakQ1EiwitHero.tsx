@@ -40,7 +40,7 @@ export default function AanpakQ1EiwitHero() {
           pillar="voeding"
           className="font-medium text-stone-600 underline decoration-stone-300 underline-offset-2 transition hover:text-stone-800"
         >
-          Lees waarom eiwit na 40 ertoe doet →
+          Lees waarom eiwit na 30 ertoe doet →
         </ApproachCardLink>
       </p>
 

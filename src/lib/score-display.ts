@@ -56,7 +56,7 @@ const STATUS_FRAMING: Record<DisplayStatus, (domain: string) => string> = {
   Aandacht: (domain) =>
     `${domain} is een aandachtspunt in je antwoorden.`,
   Prioriteit: (domain) =>
-    `${domain} vraagt prioriteit — dit zien we vaker bij mannen 40+ met drukke werkweken.`,
+    `${domain} vraagt prioriteit — dit zien we vaker bij mannen 30+ met drukke werkweken.`,
 };
 
 export function getDisplayStatusFraming(

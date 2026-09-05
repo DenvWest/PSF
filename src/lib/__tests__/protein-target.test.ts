@@ -25,7 +25,7 @@ describe("computeProteinTarget", () => {
     });
   });
 
-  it("ontbrekende trainingsbelasting → basis 40+ range", () => {
+  it("ontbrekende trainingsbelasting → basis 30+ range", () => {
     expect(computeProteinTarget({ weightKg: 80 })?.perKgLow).toBe(1.0);
   });
 

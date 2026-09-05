@@ -32,17 +32,17 @@ export const energieTemplates: Record<ThemaNurtureDay, ThemaNurtureTemplate> = {
   Je Energiegids staat klaar
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Goed dat je de stap zet. Meer energie begint met begrijpen wat er na je 40e verandert — en daar helpt deze gids bij.
+  Goed dat je de stap zet. Meer energie begint met begrijpen wat er na je 30e verandert — en daar helpt deze gids bij.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Je bent niet de enige man boven de 40 die merkt dat de tank sneller leeg voelt. Bloedsuiker, slaapkwaliteit, stress en micronutriënten spelen allemaal mee — en ze versterken elkaar vaak zonder dat je het merkt.
+  Je bent niet de enige man boven de 30 die merkt dat de tank sneller leeg voelt. Bloedsuiker, slaapkwaliteit, stress en micronutriënten spelen allemaal mee — en ze versterken elkaar vaak zonder dat je het merkt.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 8px;">
   In de gids vind je:
 </p>
 <ul style="font-size: 15px; color: #555; line-height: 1.8; margin-bottom: 24px; padding-left: 20px;">
   <li>Concrete stappen rond voeding, beweging en dagritme die je deze week kunt proberen</li>
-  <li>Hoe supplementen passen bij energie na 40 — realistisch en evidence-based</li>
+  <li>Hoe supplementen passen bij energie na 30 — realistisch en evidence-based</li>
   <li>Signalen waar je op let en wanneer verdieping bij een professional slim is</li>
 </ul>
 ${ctaButton(
@@ -56,7 +56,7 @@ ${ctaButton(
       ),
   },
   3: {
-    subject: "De #1 energie-fout na 40 die bijna niemand ziet aankomen",
+    subject: "De #1 energie-fout na 30 die bijna niemand ziet aankomen",
     html: (unsubscribeUrl) =>
       emailWrapper(
         `
@@ -73,7 +73,7 @@ ${ctaButton(
   Als bloedsuiker en slaap niet stabiel zijn, werkt cafeïne als een lening: eerst alert, daarna meer dip. Het duurzame werk zit eerst in een eiwitrijk ontbijt, voldoende water en ritme overdag — daarna heeft je lichaam minder nood aan “kunstmatige prikkels”.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Op onze energiepagina zetten we het op een rij: wat er speelt na 40 en hoe je klein en herhaalbaar start.
+  Op onze energiepagina zetten we het op een rij: wat er speelt na 30 en hoe je klein en herhaalbaar start.
 </p>
 ${ctaButton(
           absoluteUrl("/energie-na-40"),
@@ -97,7 +97,7 @@ ${ctaButton(
   Als je de afgelopen week meer op ritme zat met eten en bewegen, kun je bekijken of een supplement slim is om dat verschil te versterken.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Twee keuzes die vaak naar voren komen bij mannen 40+:
+  Twee keuzes die vaak naar voren komen bij mannen 30+:
 </p>
 <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 14px;">
   <tr style="border-bottom: 1px solid #e8e6e1;">

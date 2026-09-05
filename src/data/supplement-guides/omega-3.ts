@@ -9,16 +9,16 @@ export const omega3Data: SupplementData = {
   datePublished: "2026-03-01",
   h1: "Omega-3: welke vorm past bij jou?",
   introTekst:
-    "Omega-3 vetzuren zijn essentieel — je lichaam maakt ze niet zelf aan. EPA en DHA ondersteunen je hersenen, hart en ontstekingsbalans. Na je 40e worden deze functies steeds relevanter, terwijl de meeste mannen structureel te weinig omega-3 binnenkrijgen.",
+    "Omega-3 vetzuren zijn essentieel — je lichaam maakt ze niet zelf aan. EPA en DHA ondersteunen je hersenen, hart en ontstekingsbalans. Na je 30e worden deze functies steeds relevanter, terwijl de meeste mannen structureel te weinig omega-3 binnenkrijgen.",
 
   watIsHet: {
     titel: "Wat doet omega-3 in je lichaam?",
     tekst:
-      "Omega-3 is een verzamelnaam voor meervoudig onverzadigde vetzuren. De twee werkzame vormen zijn [EPA en DHA](/kennisbank/epa-dha) (eicosapentaeenzuur en docosahexaeenzuur). Ze bouwen zich in in celmembraan van zenuwcellen en weefsels waar signaaltransductie plaatsvindt: EPA heeft vooral naam in ontstekings- en stemmingmodellering; DHA is de dominante meer-onverzadigde vetzuurketen in grijze stof en netvlies — vandaar de nadruk op cognitie en visus in richtlijnen. ALA uit lijnzaad of walnoten is een plantaardige voorloper maar wordt maar beperkt (<10%) omgezet naar EPA/DHA bij de meeste volwassenen — niet voldoende om op te vertrouwen als enige bron als je zo weinig vis eet als de gemiddelde man 40+. Met de leeftijd neemt de cardiovasculaire ‘ruis’ en [oxidatieve spanning](/kennisbank/oxidatieve-stress) toe; stabiele omega-3-inname wordt daardoor praktischer relevant, los van elk marketingverhaal over ‘superhersenen’.",
+      "Omega-3 is een verzamelnaam voor meervoudig onverzadigde vetzuren. De twee werkzame vormen zijn [EPA en DHA](/kennisbank/epa-dha) (eicosapentaeenzuur en docosahexaeenzuur). Ze bouwen zich in in celmembraan van zenuwcellen en weefsels waar signaaltransductie plaatsvindt: EPA heeft vooral naam in ontstekings- en stemmingmodellering; DHA is de dominante meer-onverzadigde vetzuurketen in grijze stof en netvlies — vandaar de nadruk op cognitie en visus in richtlijnen. ALA uit lijnzaad of walnoten is een plantaardige voorloper maar wordt maar beperkt (<10%) omgezet naar EPA/DHA bij de meeste volwassenen — niet voldoende om op te vertrouwen als enige bron als je zo weinig vis eet als de gemiddelde man 30+. Met de leeftijd neemt de cardiovasculaire ‘ruis’ en [oxidatieve spanning](/kennisbank/oxidatieve-stress) toe; stabiele omega-3-inname wordt daardoor praktischer relevant, los van elk marketingverhaal over ‘superhersenen’.",
   },
 
   waaromRelevant: {
-    titel: "Waarom is omega-3 belangrijk na je 40e?",
+    titel: "Waarom is omega-3 belangrijk na je 30e?",
     punten: [
       {
         titel: "Ontstekingsremming",

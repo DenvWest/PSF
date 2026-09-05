@@ -27,7 +27,7 @@ export const FOUNDATION_STACK: FoundationSupplement[] = [
     claimCondition:
       "Bij een dagelijkse inname van minimaal 56,25 mg magnesium (15% RI).",
     reason:
-      "Veel mannen 40+ krijgen onvoldoende magnesium. Relevant voor slaap, spieren en zenuwstelsel.",
+      "Veel mannen 30+ krijgen onvoldoende magnesium. Relevant voor slaap, spieren en zenuwstelsel.",
     href: "/beste/magnesium",
     hasComparison: true,
   },

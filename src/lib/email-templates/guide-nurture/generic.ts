@@ -22,7 +22,7 @@ function day0Template(thema: GuideThema): GuideNurtureTemplate {
   Je ${data.guideName} staat klaar
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Goed dat je de stap zet. Deze gids helpt je herkennen wat er speelt — en welke stappen haalbaar zijn na je 40e.
+  Goed dat je de stap zet. Deze gids helpt je herkennen wat er speelt — en welke stappen haalbaar zijn na je 30e.
 </p>
 ${ctaButton(downloadUrl, ctaLabel)}`,
         unsubscribeUrl,

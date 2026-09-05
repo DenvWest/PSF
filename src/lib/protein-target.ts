@@ -2,7 +2,7 @@
  * Kwantitatieve eiwitrichtlijn (g/dag) op basis van gewicht en trainingsbelasting.
  *
  * - Eiwit schaalt met lichaamsgewicht (g/kg); trainings-/krachtbelasting moduleert
- *   de factor (spieronderhoud/opbouw, 40+). Leeftijd moduleert sinds 1 september
+ *   de factor (spieronderhoud/opbouw, 30+). Leeftijd moduleert sinds 1 september
  *   mee, maar alleen op de bovenste band — zie {@link ageFloor}.
  * - Output is een RANGE — geen schijnprecisie, en een inname-richtlijn, nooit een
  *   status. Pure functie, geen I/O.
@@ -19,7 +19,7 @@ const MAX_WEIGHT_KG = 250;
 
 export interface ProteinTargetInput {
   weightKg: number;
-  /** Trainings-/krachtbelasting 1–4 (max van MOV_STR/MOV_CARD). Afwezig → basis 40+. */
+  /** Trainings-/krachtbelasting 1–4 (max van MOV_STR/MOV_CARD). Afwezig → basis 30+. */
   trainingLoad?: number;
   /**
    * De leeftijdsband uit de check. Alleen `"55+"` verandert iets; zie

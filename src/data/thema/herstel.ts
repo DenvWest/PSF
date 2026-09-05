@@ -6,7 +6,7 @@ export const herstelThema: ThemaPageData = {
   title: "Herstel",
   heroTitle: "Herstel is waar groei begint",
   heroSubtitle:
-    "Je traint, je werkt, je doet alles goed — maar je lichaam herstelt niet meer zoals vroeger. Spierpijn die dagen aanhoudt, stijfheid bij het opstaan, of een vermoeidheid die niet weggaat met een nachtje slaap. Na 40 verandert je herstelvermogen. Dat is fysiologisch — maar je kunt er veel aan doen.",
+    "Je traint, je werkt, je doet alles goed — maar je lichaam herstelt niet meer zoals vroeger. Spierpijn die dagen aanhoudt, stijfheid bij het opstaan, of een vermoeidheid die niet weggaat met een nachtje slaap. Na 30 verandert je herstelvermogen. Dat is fysiologisch — maar je kunt er veel aan doen.",
   heroLabel: "THEMA",
 
   recognition: {
@@ -23,9 +23,9 @@ export const herstelThema: ThemaPageData = {
 
   causes: {
     sectionLabel: "WAT ER SPEELT",
-    title: "Waarom herstel verandert na 40",
+    title: "Waarom herstel verandert na 30",
     intro:
-      "Na je 40e verandert hoe snel je lichaam weefsel herstelt en spieren opbouwt. Dat zit in hormonen, slaap, eiwitrespons en ontstekingsbalans — geen gebrek aan discipline, wel andere fysiologie.",
+      "Na je 30e verandert hoe snel je lichaam weefsel herstelt en spieren opbouwt. Dat zit in hormonen, slaap, eiwitrespons en ontstekingsbalans — geen gebrek aan discipline, wel andere fysiologie.",
     items: [
       {
         title: "Spiereiwitaanmaak (MPS) wordt trager",
@@ -60,7 +60,7 @@ export const herstelThema: ThemaPageData = {
 
   scienceBlock: {
     sectionLabel: "WAT ONDERZOEK LAAT ZIEN",
-    title: "De wetenschap achter trager herstel na je 40e",
+    title: "De wetenschap achter trager herstel na je 30e",
     intro: "Geen meningen, maar meetbare feiten uit peer-reviewed onderzoek.",
     facts: [
       {
@@ -98,7 +98,7 @@ export const herstelThema: ThemaPageData = {
       {
         title: "Minimaal 30 g eiwit per hoofdmaaltijd",
         description:
-          "Eieren, kwark, kip, vis, peulvruchten — dit is de drempel voor optimale spiereiwitaanmaak na 40.",
+          "Eieren, kwark, kip, vis, peulvruchten — dit is de drempel voor optimale spiereiwitaanmaak na 30.",
         icon: "🥚",
       },
       {
@@ -132,7 +132,7 @@ export const herstelThema: ThemaPageData = {
     sectionLabel: "SUPPLEMENTEN DIE KUNNEN HELPEN",
     title: "Welke supplementen helpen bij herstel",
     intro:
-      "Supplementen zijn geen vervanging voor rust, slaap en voeding. Deze vier hebben in onderzoek en praktijk de meeste ondersteuning voor herstel na 40 — klik door naar de gids voor vormen en dosering; bij magnesium, omega-3, creatine en zink ook naar onze productvergelijking.",
+      "Supplementen zijn geen vervanging voor rust, slaap en voeding. Deze vier hebben in onderzoek en praktijk de meeste ondersteuning voor herstel na 30 — klik door naar de gids voor vormen en dosering; bij magnesium, omega-3, creatine en zink ook naar onze productvergelijking.",
     items: [
       {
         name: "Magnesium (glycinaat)",
@@ -169,7 +169,7 @@ export const herstelThema: ThemaPageData = {
       {
         name: "Eiwitpoeder",
         reason:
-          "Eiwitten dragen bij aan de groei en instandhouding van spiermassa. Na je 40e heb je meer eiwit nodig voor hetzelfde herstel — een eiwitpoeder vult dat gat efficiënt aan.",
+          "Eiwitten dragen bij aan de groei en instandhouding van spiermassa. Na je 30e heb je meer eiwit nodig voor hetzelfde herstel — een eiwitpoeder vult dat gat efficiënt aan.",
         guideLink: "/supplementen/eiwitpoeder",
         comparisonLink: "/beste/eiwitpoeder",
         icon: "💪",
@@ -179,14 +179,14 @@ export const herstelThema: ThemaPageData = {
 
   emailGate: {
     sectionLabel: "GRATIS HERSTELGIDS",
-    title: "De complete gids voor beter herstel na 40",
+    title: "De complete gids voor beter herstel na 30",
     subtitle:
       "Alles over rust, voeding, supplementen en mentaal herstel — in één overzichtelijke PDF. Direct toepasbaar.",
     bulletPoints: [
       "Waarom rustdagen net zo belangrijk zijn als trainingsdagen",
       "Een 7-dagen herstelprotocol dat je deze week kunt starten",
       "Doseerschema's voor magnesium, omega-3, creatine en zink bij herstel",
-      "De drie grootste herstelfouten die mannen 40+ maken",
+      "De drie grootste herstelfouten die mannen 30+ maken",
     ],
     ctaText: "Download ter inspiratie",
     privacyText:
@@ -196,16 +196,16 @@ export const herstelThema: ThemaPageData = {
 
   pillarPage: {
     href: "/herstel-verbeteren-na-40",
-    title: "De complete gids: herstel verbeteren na 40",
+    title: "De complete gids: herstel verbeteren na 30",
     description:
       "Van MPS en slaaparchitectuur tot een praktisch weekplan met voeding, training en supplementen. Alles op deze pagina, maar dan volledig uitgewerkt.",
   },
 
   expertQuote: {
     quote:
-      "Mannen boven de 40 die blijven presteren zonder bewust te herstellen, breken hun lichaam sneller af dan ze het opbouwen. Herstel is geen luxe — het is de voorwaarde.",
+      "Mannen boven de 30 die blijven presteren zonder bewust te herstellen, breken hun lichaam sneller af dan ze het opbouwen. Herstel is geen luxe — het is de voorwaarde.",
     author: "Sportfysioloog",
-    credential: "Specialisatie inspanningsfysiologie 40+",
+    credential: "Specialisatie inspanningsfysiologie 30+",
   },
 
   premiumCta: {
@@ -231,7 +231,7 @@ export const herstelThema: ThemaPageData = {
       category: "stress",
     },
     {
-      title: "Slaap verbeteren na 40: wat werkt écht?",
+      title: "Slaap verbeteren na 30: wat werkt écht?",
       slug: "slaap-verbeteren-40-plus",
       category: "slaap",
     },
@@ -272,7 +272,7 @@ export const herstelThema: ThemaPageData = {
       },
       {
         context:
-          "Meer trainen leidt na 40 snel tot overreaching. Herken de signalen voordat overtraining optreedt.",
+          "Meer trainen leidt na 30 snel tot overreaching. Herken de signalen voordat overtraining optreedt.",
         href: "/profiel/overtrainer",
         label: "Meer trainen ≠ beter worden. Herken overtraining →",
       },
@@ -287,9 +287,9 @@ export const herstelThema: ThemaPageData = {
 
   seo: {
     title:
-      "Herstel verbeteren als man 40+ — Slaap, eiwit, cortisol, magnesium, omega-3",
+      "Herstel verbeteren als man 30+ — Slaap, eiwit, cortisol, magnesium, omega-3",
     description:
-      "Waarom herstel na 40 anders is: MPS, cortisol, diepe slaap, inflammaging. Quick wins, supplementen (magnesium, omega-3, creatine, zink) en gerelateerde thema’s — plus gratis herstelgids.",
+      "Waarom herstel na 30 anders is: MPS, cortisol, diepe slaap, inflammaging. Quick wins, supplementen (magnesium, omega-3, creatine, zink) en gerelateerde thema’s — plus gratis herstelgids.",
     canonical: "/gids/herstel",
   },
 };

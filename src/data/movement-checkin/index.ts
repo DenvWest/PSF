@@ -57,7 +57,7 @@ export const MOVEMENT_QUESTIONS: MovementQuestion[] = [
     help: {
       title: "Wat kracht hier betekent",
       body:
-        "Spiermassa loopt na je veertigste terug zodra de prikkel wegvalt. Hoe váák je traint zegt daar meer over dan hoe zwaar. " +
+        "Spiermassa loopt na je dertigste terug zodra de prikkel wegvalt. Hoe váák je traint zegt daar meer over dan hoe zwaar. " +
         "Op je resultaat zie je je eigen antwoord naast de richtlijn.",
       anchor: "WHO 2020: 2× per week spierversterkend",
     },
@@ -266,7 +266,7 @@ export const MOVEMENT_QUESTIONS: MovementQuestion[] = [
 export const MOVEMENT_STATEMENTS: Record<MovementDimensionKey, Record<MovementBand, string>> = {
   kracht: {
     aandacht:
-      "Krachttraining schiet er nu bij in — en juist daar valt na 40 het meest te winnen.",
+      "Krachttraining schiet er nu bij in — en juist daar valt na 30 het meest te winnen.",
     redelijk:
       "Je doet al iets aan kracht. Er is ruimte om er net wat consistenter in te worden.",
     sterk: "Je traint kracht stevig — mooi, dat houdt je spieren op peil.",
@@ -285,7 +285,7 @@ export const MOVEMENT_STATEMENTS: Record<MovementDimensionKey, Record<MovementBa
     redelijk:
       "Je haalt af en toe een pittige sessie. Iets vaker duwt je conditie merkbaar verder.",
     sterk:
-      "Je haalt regelmatig intensieve inspanning — dat is precies wat cardiovasculaire achteruitgang na 40 tegenwerkt.",
+      "Je haalt regelmatig intensieve inspanning — dat is precies wat cardiovasculaire achteruitgang na 30 tegenwerkt.",
   },
   zitten: {
     aandacht:
@@ -319,7 +319,7 @@ export const MOVEMENT_STATEMENTS: Record<MovementDimensionKey, Record<MovementBa
   },
   mobiliteit: {
     aandacht:
-      "Je voelt je stijf — mobiliteit neemt vanaf ~40 sneller af dan de meeste mannen doorhebben.",
+      "Je voelt je stijf — mobiliteit neemt vanaf ~30 sneller af dan de meeste mannen doorhebben.",
     redelijk: "Redelijk soepel — een paar minuten per dag houdt dat op peil.",
     sterk: "Je voelt je soepel — dat draagt direct bij aan je functionele fitheid.",
   },
@@ -425,7 +425,7 @@ export const MOVEMENT_DEEPEN: Record<MovementDimensionKey, string | null> = {
   conditie:
     "Wil je verder? Bouw naar 150 min matig intensief per week op — verdeeld over minimaal 3 dagen bouwt duurzamer op dan één lange sessie.",
   intensiteit:
-    "Wil je verder? 75 minuten intensief per week (of een mix met matig) is de bovengrens van de beweegrichtlijn — daarboven is voor de meeste mannen 40+ herstel de beperkende factor, niet motivatie.",
+    "Wil je verder? 75 minuten intensief per week (of een mix met matig) is de bovengrens van de beweegrichtlijn — daarboven is voor de meeste mannen 30+ herstel de beperkende factor, niet motivatie.",
   zitten:
     "Wil je verder? Onderzoek naar zitgedrag laat zien dat losse onderbrekingen (elk uur even bewegen) een deel van het risico van langdurig zitten compenseren — los van je sportfrequentie.",
   conditie_ervaren:
@@ -499,7 +499,7 @@ export const MOVEMENT_IMPLICATIONS: Record<
     aandacht:
       "Zolang kracht onder één keer per week blijft, is dit het deel dat het meeste laat liggen — meer wandelen vult het niet op.",
     redelijk:
-      "Van één naar twee keer per week is de stap die na 40 het meeste spierweefsel behoudt; daar zit je winst nu.",
+      "Van één naar twee keer per week is de stap die na 30 het meeste spierweefsel behoudt; daar zit je winst nu.",
   },
   conditie: {
     aandacht:
@@ -521,7 +521,7 @@ export const MOVEMENT_IMPLICATIONS: Record<
   },
   mobiliteit: {
     aandacht:
-      "Mobiliteit neemt vanaf ongeveer 40 sneller af dan de meeste mannen doorhebben — dit deel bepaalt hoeveel je van de rest kunt doen.",
+      "Mobiliteit neemt vanaf ongeveer 30 sneller af dan de meeste mannen doorhebben — dit deel bepaalt hoeveel je van de rest kunt doen.",
     redelijk:
       "Je bent redelijk soepel; kort en vaak houdt dat op peil, niet lang en zelden.",
   },
@@ -620,7 +620,7 @@ export const MOVEMENT_FACT_WHY: Record<
     below: "Onder de richtlijn — hier levert hetzelfde kwartier meer op dan bij de andere delen.",
   },
   kracht: {
-    neutral: "Spierbehoud na 40 hangt aan frequentie, niet aan zwaarte.",
+    neutral: "Spierbehoud na 30 hangt aan frequentie, niet aan zwaarte.",
     below: "Richtlijn is 2× per week; jij zit daar nu onder. Eén vast moment brengt dit binnen bereik.",
   },
   zitten: { neutral: "Lang zitten weegt apart mee, los van je training." },

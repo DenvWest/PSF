@@ -20,7 +20,7 @@ export const PILLARS: Pillar[] = [
     color: "#5B6EAE",
     icon: "Moon",
     lever:
-      "Je valt laat in of slaapt onrustig — begin bij je avondritme, niet bij een potje. Na 40 reageert je diepe slaap sneller op licht en schermen dan op supplementen.",
+      "Je valt laat in of slaapt onrustig — begin bij je avondritme, niet bij een potje. Na 30 reageert je diepe slaap sneller op licht en schermen dan op supplementen.",
     quickWin: {
       title: "Vaste afbouw na 21:00",
       detail:
@@ -41,7 +41,7 @@ export const PILLARS: Pillar[] = [
     color: "#C4873B",
     icon: "Bolt",
     lever:
-      "Je energie zakt na de lunch of 's ochtends — begin bij daglicht en ritme. Na 40 verschuift je bioklok; licht en eiwit doen hier meer dan een energie-pill.",
+      "Je energie zakt na de lunch of 's ochtends — begin bij daglicht en ritme. Na 30 verschuift je bioklok; licht en eiwit doen hier meer dan een energie-pill.",
     quickWin: {
       title: "Daglicht binnen 30 min na opstaan",
       detail:
@@ -56,7 +56,7 @@ export const PILLARS: Pillar[] = [
     color: "#8B6E99",
     icon: "Wind",
     lever:
-      "Je blijft 'aan' staan na werk — begin bij je ademhaling, niet bij een supplement. Na 40 kost terugschakelen na spanning meer moeite; een korte reset helpt sneller dan je denkt.",
+      "Je blijft 'aan' staan na werk — begin bij je ademhaling, niet bij een supplement. Na 30 kost terugschakelen na spanning meer moeite; een korte reset helpt sneller dan je denkt.",
     quickWin: {
       title: "Box-breathing, 4 minuten",
       detail:
@@ -71,11 +71,11 @@ export const PILLARS: Pillar[] = [
     color: "#5A8F6A",
     icon: "Utensils",
     lever:
-      "Je ontbijt is te koolhydraat-dominant of te laat — begin bij je bord, niet bij een potje. Na 40 verliest je lichaam sneller spier en stabiliteit als eiwit tekortschiet.",
+      "Je ontbijt is te koolhydraat-dominant of te laat — begin bij je bord, niet bij een potje. Na 30 verliest je lichaam sneller spier en stabiliteit als eiwit tekortschiet.",
     quickWin: {
       title: "Eiwitrijk ontbijt",
       detail:
-        "30 g eiwit vóór 10 uur — ei + kwark of yoghurt met noten. Eiwit stabiliseert je bloedsuiker en remt spierverlies dat na je 40e versnelt. Begin bij je bord, niet bij een potje.",
+        "30 g eiwit vóór 10 uur — ei + kwark of yoghurt met noten. Eiwit stabiliseert je bloedsuiker en remt spierverlies dat na je 30e versnelt. Begin bij je bord, niet bij een potje.",
     },
     supplement: {
       name: "Omega-3",
@@ -122,7 +122,7 @@ export const PILLARS: Pillar[] = [
     color: "#7A8A6B",
     icon: "User",
     lever:
-      "Je staat er vaak alleen voor of contact schiet erbij in — begin klein: één betekenisvol moment per week. Sociale steun draagt je veerkracht, juist na 40.",
+      "Je staat er vaak alleen voor of contact schiet erbij in — begin klein: één betekenisvol moment per week. Sociale steun draagt je veerkracht, juist na 30.",
     quickWin: {
       title: "Eén contactmoment deze week",
       detail:

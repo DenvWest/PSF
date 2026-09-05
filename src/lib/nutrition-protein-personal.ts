@@ -59,5 +59,5 @@ export function proteinAgeNote(ageRange: string | null | undefined): string | nu
   if (!isProteinAgeBand(ageRange)) {
     return null;
   }
-  return "Vanaf 55 telt de verdeling over de dag zwaarder dan je dagtotaal — daarom ligt je ondergrens hier hoger dan de basis voor 40+.";
+  return "Vanaf 55 telt de verdeling over de dag zwaarder dan je dagtotaal — daarom ligt je ondergrens hier hoger dan de basis voor 30+.";
 }

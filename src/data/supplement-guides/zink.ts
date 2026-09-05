@@ -10,7 +10,7 @@ export const zinkGidsData: SupplementData = {
   datePublished: "2026-03-01",
   h1: "Zink: welke vorm past bij jou?",
   introTekst:
-    "Zink is betrokken bij meer dan 300 enzymatische processen in je lichaam — van testosteronproductie tot immuunfunctie tot wondgenezing. Na je 40e stijgt de behoefte terwijl de opname afneemt. Een tekort is daardoor bij mannen vaker dan gedacht.",
+    "Zink is betrokken bij meer dan 300 enzymatische processen in je lichaam — van testosteronproductie tot immuunfunctie tot wondgenezing. Na je 30e stijgt de behoefte terwijl de opname afneemt. Een tekort is daardoor bij mannen vaker dan gedacht.",
 
   watIsHet: {
     titel: "Wat doet zink in je lichaam?",
@@ -19,7 +19,7 @@ export const zinkGidsData: SupplementData = {
   },
 
   waaromRelevant: {
-    titel: "Waarom is zink belangrijk na je 40e?",
+    titel: "Waarom is zink belangrijk na je 30e?",
     punten: [
       {
         titel: "Testosteronproductie",
@@ -37,7 +37,7 @@ export const zinkGidsData: SupplementData = {
           "Zink speelt een sleutelrol bij celdeling en weefselreparatie. Zonder voldoende zink verlopen wondgenezing en spierherstel na training merkbaar trager.",
       },
       {
-        titel: "Verminderde opname na 40",
+        titel: "Verminderde opname na 30",
         uitleg:
           "De zinkopname in de darm neemt af met de leeftijd, terwijl de behoefte gelijk blijft of stijgt. Voeding alleen is dan vaak onvoldoende.",
       },
@@ -154,11 +154,11 @@ export const zinkGidsData: SupplementData = {
   blogLinks: [
     {
       href: "/blog/testosteron-en-energie-na-40",
-      titel: "Testosteron en energie na 40: wanneer is actie nodig?",
+      titel: "Testosteron en energie na 30: wanneer is actie nodig?",
     },
     {
       href: "/blog/energie-verhogen-natuurlijk",
-      titel: "Energie verhogen na je 40e: de fysiologie en wat je kunt doen",
+      titel: "Energie verhogen na je 30e: de fysiologie en wat je kunt doen",
     },
     {
       href: "/supplement-kiezen-waar-op-letten",

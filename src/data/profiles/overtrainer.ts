@@ -6,11 +6,11 @@ export const overtrainerProfile: ProfilePageData = {
 
   seo: {
     title:
-      "Overtrainer: Te Veel Trainen, Te Weinig Recovery | Mannen 40+",
+      "Overtrainer: Te Veel Trainen, Te Weinig Recovery | Mannen 30+",
     description:
       "Als Overtrainer schuift trainingsvolume voorbij je recuperatiegrenzen. Chronisch vermoeid, veel trainingsstress op het lichaam, blessureachtige signalen. Herkenning en een vier weken-plan — geen diagnose.",
     canonical: "https://perfectsupplement.nl/profiel/overtrainer",
-    targetKeyword: "overtraining symptomen herstel man 40",
+    targetKeyword: "overtraining symptomen herstel man 30",
   },
 
   hero: {
@@ -58,7 +58,7 @@ export const overtrainerProfile: ProfilePageData = {
       "Zware training is voor je lichaam ook belasting. Als er weinig echte rust tussen harde blokken zit, blijft het gevoel van \"aan\" langer hangen: moe, maar toch slecht landen in bed, en sneller geïrriteerd in werk en gezin.",
       "Slaap blijft dan vaak oppervlakkig — je bent wel moe, maar niet uitgerust. Dat maakt de volgende training zwaarder, terwijl je hoofd zegt dat je door moet. Dat patroon herkennen veel fanatieke sporters; het zegt niets over je karakter.",
       "Kleine blessure- of stijfheidsklachten die blijven terugkomen, passen bij te weinig herstel ten opzichte van volume. In de sportwereld heet dat vaak [overtraining](/kennisbank/overtrainingssyndroom): geen diagnose van jou als individu, wel een signaal om tijdelijk gas terug te nemen.",
-      "Na je veertigste is de marge tussen flinke vooruitgang en te weinig herstel kleiner — en je [eiwitbehoefte](/kennisbank/eiwitbehoefte-na-40) ligt vaak hoger dan je denkt. [Mitochondriën](/kennisbank/mitochondrien) hebben meer tijd nodig om energie te leveren tussen zware sessies. Dezelfde weekstructuur vraagt vaker om extra rust dan tien jaar geleden.",
+      "Na je dertigste is de marge tussen flinke vooruitgang en te weinig herstel kleiner — en je [eiwitbehoefte](/kennisbank/eiwitbehoefte-na-40) ligt vaak hoger dan je denkt. [Mitochondriën](/kennisbank/mitochondrien) hebben meer tijd nodig om energie te leveren tussen zware sessies. Dezelfde weekstructuur vraagt vaker om extra rust dan tien jaar geleden.",
     ],
   },
 
@@ -210,24 +210,24 @@ export const overtrainerProfile: ProfilePageData = {
   relatedPillar: {
     href: "/herstel-verbeteren-na-40",
     turboSnippet:
-      "Herstel na 40: waarom volume en slaap samenhangen — met bronnen en een concreet weekplan.",
+      "Herstel na 30: waarom volume en slaap samenhangen — met bronnen en een concreet weekplan.",
   },
 
   relatedComparisons: [
     {
       href: "/blog/eiwit-na-40",
       turboSnippet:
-        "Eiwit na 40: hoeveel gram per dag, spreiding en wanneer poeder als aanvulling past.",
+        "Eiwit na 30: hoeveel gram per dag, spreiding en wanneer poeder als aanvulling past.",
     },
     {
       href: "/blog/krachttraining-na-40",
       turboSnippet:
-        "Krachttraining na 40: spierbehoud, volume en herstel — wanneer minder harder trainen slimmer is.",
+        "Krachttraining na 30: spierbehoud, volume en herstel — wanneer minder harder trainen slimmer is.",
     },
     {
       href: "/blog/creatine-en-herstel",
       turboSnippet:
-        "Creatine na 40: ATP-buffer en training — wanneer het past en wanneer volume het echte probleem is.",
+        "Creatine na 30: ATP-buffer en training — wanneer het past en wanneer volume het echte probleem is.",
     },
     {
       href: "/kennisbank/overtrainingssyndroom",
@@ -237,7 +237,7 @@ export const overtrainerProfile: ProfilePageData = {
     {
       href: "/energie-na-40",
       turboSnippet:
-        "Trainingsvolume en energiehuishouding lopen vast in elkaar over — zo lees je voeding en dagritme na 40.",
+        "Trainingsvolume en energiehuishouding lopen vast in elkaar over — zo lees je voeding en dagritme na 30.",
     },
     {
       href: "/slaap-verbeteren-na-40",

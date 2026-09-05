@@ -188,7 +188,7 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
                 "@type": "CollectionPage",
                 name: "Inzichten",
                 description:
-                  "Artikelen, deep dives en begrippen over slaap, stress, energie en herstel voor mannen boven de 40.",
+                  "Artikelen, deep dives en begrippen over slaap, stress, energie en herstel voor mannen boven de 30.",
                 url: "https://perfectsupplement.nl/inzichten",
                 isPartOf: {
                   "@type": "WebSite",

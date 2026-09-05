@@ -43,7 +43,7 @@ export const SPORT_CATALOG: readonly SportCatalogEntry[] = [
     label: "Krachttraining",
     status: "ready",
     recommendation:
-      "dekt je kracht af — de bouwsteen die na je veertigste het snelst wegzakt",
+      "dekt je kracht af — de bouwsteen die na je dertigste het snelst wegzakt",
     coverage: {
       kracht: "dekt",
       duurbasis: "niet",

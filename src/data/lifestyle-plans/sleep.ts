@@ -5,17 +5,17 @@ export const sleepPlanTemplate: LifestylePlanTemplate = {
   domain: "sleep",
   guideThema: "slaap",
   version: "1.0",
-  title: "Slaapplan na 40",
+  title: "Slaapplan na 30",
   recognition: {
     heading: "Dit herken je misschien",
     body:
       "Je slaapt wel, maar wordt moe wakker. Je ligt 's nachts te malen over werk. " +
       "Je valt in slaap, maar wordt rond drie uur wakker — en in het weekend uitslapen helpt niet echt.\n\n" +
-      "Dat is geen karakterfout. Na je veertigste verandert hoe je lichaam ritme houdt, stress verwerkt en 's nachts herstelt. " +
+      "Dat is geen karakterfout. Na je dertigste verandert hoe je lichaam ritme houdt, stress verwerkt en 's nachts herstelt. " +
       "Herkenning is de eerste stap — daarna kun je gericht iets veranderen.",
   },
   mechanism: {
-    heading: "Waarom slaap na 40 anders werkt",
+    heading: "Waarom slaap na 30 anders werkt",
     body:
       "Je innerlijke klok wordt gevoeliger voor licht, stress en onregelmatige tijden. " +
       "Melatonine komt later op gang, cortisol blijft langer actief en één slechte nacht trekt sneller door naar de volgende.\n\n" +

@@ -75,8 +75,8 @@ const CHOICE_META: Record<
     tierExplanation:
       "Zware training is volle belasting: krachttraining of stevige conditie waarbij vlot praten niet " +
       "meer lukt. Die prikkel beschadigt spiervezels licht; in de rust erna herstelt je lichaam ze sterker " +
-      "— dat remt spierverlies na je 40e het hardst. Omdat de belasting hoog is, hoort er herstel bij: " +
-      "2× per week met 48 tot 72 uur ertussen is voor de meeste mannen 40+ haalbaar en effectief.",
+      "— dat remt spierverlies na je 30e het hardst. Omdat de belasting hoog is, hoort er herstel bij: " +
+      "2× per week met 48 tot 72 uur ertussen is voor de meeste mannen 30+ haalbaar en effectief.",
     durationLabel: "30–45 min",
     whyLinkLabel: "Waarom deze training?",
   },

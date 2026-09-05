@@ -49,7 +49,7 @@ const START_PATTERN_IDS = new Set<string>(
   WEEK_CATEGORY_OPTIONS.map((option) => option.id),
 );
 
-/** Anker-opties §5a BEWEEG_COCKPIT_FUTURE_YOU.md — 1:1, 40+ default-toon. */
+/** Anker-opties §5a BEWEEG_COCKPIT_FUTURE_YOU.md — 1:1, 30+ default-toon. */
 export const MOVEMENT_ANCHOR_OPTIONS: readonly {
   id: MovementAnchor;
   label: string;

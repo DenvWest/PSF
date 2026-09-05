@@ -17,7 +17,7 @@ const SURFACE = "kompas_beweging";
 
 const PATTERN_DESCRIPTIONS: Record<MovementStartPattern, string> = {
   kracht:
-    "Spierbehoud is na je 40e de snelste winst — thuis, zonder sportschool.",
+    "Spierbehoud is na je 30e de snelste winst — thuis, zonder sportschool.",
   conditie:
     "Stevig wandelen en rustig doorfietsen bouwen je motor stap voor stap op.",
   dagelijks_ritme:

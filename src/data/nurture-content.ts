@@ -206,16 +206,16 @@ export const nurtureContent: Record<
   // ── DAG 7: DEEP DIVE ─────────────────────────────────────
   day7_deepdive: {
     "Lage Energie": {
-      subject: "Waarom je energie daalt na 40 (en wat je eraan doet)",
+      subject: "Waarom je energie daalt na 30 (en wat je eraan doet)",
       preheader: "Het is niet 'normaal' — het is oplosbaar",
       greeting: "Een week geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
-        "Na 40 verandert je stofwisseling. Je mitochondriën — de energiecentrales van je cellen — worden minder efficiënt. Tegelijk daalt je testosteron geleidelijk, wat direct invloed heeft op je energieniveau.",
+        "Na 30 verandert je stofwisseling. Je mitochondriën — de energiecentrales van je cellen — worden minder efficiënt. Tegelijk daalt je testosteron geleidelijk, wat direct invloed heeft op je energieniveau.",
         "Maar dit is geen onvermijdelijk verval. Met de juiste voeding, beweging en gerichte supplementen kun je dit proces vertragen en zelfs deels omkeren.",
       ],
       // Overschreven op dag 7 door resolveLifestyleTipForDay (DAY_TIP_INDEX).
       tip: "Deze week: check je vispatroon en eiwitrijke maaltijden — voeding is de eerste hefboom voor energie.",
-      cta: { text: "Lees over energie na 40", url: "/energie-na-40" },
+      cta: { text: "Lees over energie na 30", url: "/energie-na-40" },
     },
     "Onrustige Slaper": {
       subject: "Slaap en brein: wat onderzoek laat zien",
@@ -227,7 +227,7 @@ export const nurtureContent: Record<
       ],
       // Overschreven op dag 7 door resolveLifestyleTipForDay (DAY_TIP_INDEX).
       tip: "Vaste bedtijd en gedimd licht het laatste halfuur — je zenuwstelsel heeft dat signaal nodig om af te schakelen.",
-      cta: { text: "Lees de slaapgids voor mannen 40+", url: "/slaap-verbeteren-na-40" },
+      cta: { text: "Lees de slaapgids voor mannen 30+", url: "/slaap-verbeteren-na-40" },
     },
     "Stressdrager": {
       subject: "Hoe chronische stress je lichaam beïnvloedt — en wat je kunt doen",
@@ -242,11 +242,11 @@ export const nurtureContent: Record<
       cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-na-40" },
     },
     "In Balans": {
-      subject: "Hoe je een goede basis vasthoudt na 40",
+      subject: "Hoe je een goede basis vasthoudt na 30",
       preheader: "Behoud vraagt dezelfde aandacht als opbouw",
       greeting: "Een week geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
-        "Een goede leefstijlbasis onderhoud je niet automatisch — het vraagt bewuste keuzes die je elke week opnieuw maakt. De mannen die na 40 vitaal blijven, zijn niet geluksvogels: ze hebben goede gewoontes die ze vasthouden.",
+        "Een goede leefstijlbasis onderhoud je niet automatisch — het vraagt bewuste keuzes die je elke week opnieuw maakt. De mannen die na 30 vitaal blijven, zijn niet geluksvogels: ze hebben goede gewoontes die ze vasthouden.",
         "Nu is het moment om te kijken waar nog winst zit. Voor de meeste mannen ligt die in voeding: vaker vette vis, meer variatie, en consistent vasthouden wat al werkt.",
       ],
       // Overschreven op dag 7 door resolveLifestyleTipForDay (DAY_TIP_INDEX).
@@ -258,7 +258,7 @@ export const nurtureContent: Record<
       preheader: "Slaap en volume bepalen je vooruitgang",
       greeting: "Een week geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
-        "Na 40 is de marge tussen flinke vooruitgang en te weinig herstel kleiner. Dezelfde weekstructuur vraagt vaker om extra rust dan tien jaar geleden.",
+        "Na 30 is de marge tussen flinke vooruitgang en te weinig herstel kleiner. Dezelfde weekstructuur vraagt vaker om extra rust dan tien jaar geleden.",
         "Supplementen komen pas nadat volume en slaap eerlijk zijn tegen het licht gehouden.",
       ],
       tip: "30–40 minuten wandelen zonder stopwatch — geen interval, geen PR. Alleen bewegen om je systeem te laten landen.",

@@ -375,7 +375,7 @@ const ROW_SPECS: readonly RowSpec[] = [
     key: "eiwitritme",
     cluster: "C3",
     label: "Eiwitritme",
-    whyLine: "Verdeling over de dag doet boven de veertig meer dan het totaal.",
+    whyLine: "Verdeling over de dag doet boven de dertig meer dan het totaal.",
     build: (report) => {
       const index = sliderIndex(report, "proteinMeals");
       const answerLabel = stopLabel(nutritionSliderQuestion("proteinMeals"), index);

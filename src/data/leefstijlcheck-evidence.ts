@@ -106,7 +106,7 @@ export const LEEFSTIJLCHECK_ALIGNMENT_NOTES: string[] = [
 
 export const LEEFSTIJLCHECK_LIFELINE_NOTES: string[] = [
   "De levenslijn op de beweeggids toont twee versies van dezelfde persoon: de één doet niets extra, de ander traint 2 à 3 keer per week kracht en conditie.",
-  "Na je 40e neemt spiermassa en -kracht gemiddeld af (sarcopenie); krachttraining is de prikkel die dat het hardst remt. WHO adviseert minstens 2× per week spierversterkende activiteit.",
+  "Na je 30e neemt spiermassa en -kracht gemiddeld af (sarcopenie); krachttraining is de prikkel die dat het hardst remt. WHO adviseert minstens 2× per week spierversterkende activiteit.",
   "In het begin lopen de lijnen bijna gelijk; het verschil wordt later zichtbaar. Daarom telt ‘nog niet voldoende’ nu al — niet pas wanneer je het voelt.",
   "Dit is een algemeen beeld, geen persoonlijke voorspelling of biologische leeftijd. De check zegt of jouw huidige patroon aansluit; de levenslijn laat zien waarom die kloof over jaren groeit.",
 ];

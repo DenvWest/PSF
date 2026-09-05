@@ -32,10 +32,10 @@ export const herstelTemplates: Record<ThemaNurtureDay, ThemaNurtureTemplate> = {
   Je Herstelgids staat klaar
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Goed dat je de stap zet. Beter herstellen na 40 begint met begrijpen waarom je lichaam langer nodig heeft — en daar helpt deze gids bij.
+  Goed dat je de stap zet. Beter herstellen na 30 begint met begrijpen waarom je lichaam langer nodig heeft — en daar helpt deze gids bij.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Je bent niet de enige man boven de 40 die merkt dat spierpijn, stijfheid of vermoeidheid blijft hangen terwijl je nog “alles goed doet”. Trainingsdruk, slaap, stress en voeding spelen allemaal mee — en ze versterken elkaar vaak zonder dat je het merkt.
+  Je bent niet de enige man boven de 30 die merkt dat spierpijn, stijfheid of vermoeidheid blijft hangen terwijl je nog “alles goed doet”. Trainingsdruk, slaap, stress en voeding spelen allemaal mee — en ze versterken elkaar vaak zonder dat je het merkt.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 8px;">
   In de gids vind je:
@@ -56,12 +56,12 @@ ${ctaButton(
       ),
   },
   3: {
-    subject: "De #1 herstelfout die mannen 40+ over het hoofd zien",
+    subject: "De #1 herstelfout die mannen 30+ over het hoofd zien",
     html: (unsubscribeUrl) =>
       emailWrapper(
         `
 <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; color: #1a1a1a; margin-bottom: 16px;">
-  De #1 herstelfout die mannen 40+ over het hoofd zien
+  De #1 herstelfout die mannen 30+ over het hoofd zien
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
   Heb je de Herstelgids al doorgenomen? Dan is dit het belangrijkste inzicht om te onthouden:
@@ -97,7 +97,7 @@ ${ctaButton(
   Als je de afgelopen week meer op rust en ritme hebt gelet, kun je bekijken of een supplement slim is om dat verschil te versterken.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Twee keuzes die vaak naar voren komen bij mannen 40+:
+  Twee keuzes die vaak naar voren komen bij mannen 30+:
 </p>
 <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 14px;">
   <tr style="border-bottom: 1px solid #e8e6e1;">

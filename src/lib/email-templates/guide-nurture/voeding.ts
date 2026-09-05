@@ -14,7 +14,7 @@ export const voedingGuideTemplates: Record<GuideNurtureDay, GuideNurtureTemplate
   Je voedings-stappenplan staat klaar
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Goed dat je begint bij de basis. Na je 40e telt eiwit per maaltijd zwaarder dan het perfecte dieet.
+  Goed dat je begint bij de basis. Na je 30e telt eiwit per maaltijd zwaarder dan het perfecte dieet.
 </p>
 <ul style="font-size: 15px; color: #555; line-height: 1.8; margin-bottom: 24px; padding-left: 20px;">
   <li>Deze week: eiwit bij elke maaltijd — concreet en haalbaar</li>
@@ -89,7 +89,7 @@ ${ctaButton(absoluteUrl("/supplementen/omega-3"), "Lees de omega-3 gids →")}
       ),
   },
   21: {
-    subject: "Voeding + beweging: het duo na 40",
+    subject: "Voeding + beweging: het duo na 30",
     html: (unsubscribeUrl) =>
       emailWrapper(
         `

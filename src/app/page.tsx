@@ -8,9 +8,9 @@ import HomeGuidesPromoSection from "@/components/homepage/HomeGuidesPromoSection
 import HomeClosingCta from "@/components/homepage/HomeClosingCta";
 import "./homepage.css";
 
-const HOME_TITLE = "Welke supplementen zijn zinvol na je 40e — en welke niet";
+const HOME_TITLE = "Welke supplementen zijn zinvol na je 30e — en welke niet";
 const HOME_DESCRIPTION =
-  "Onafhankelijke supplementvergelijkingen voor mannen 40+: vorm, werkzame dagdosering en prijs per dag. Alleen effecten met een goedgekeurde EU-claim, geen ranglijst op commissie.";
+  "Onafhankelijke supplementvergelijkingen voor mannen 30+: vorm, werkzame dagdosering en prijs per dag. Alleen effecten met een goedgekeurde EU-claim, geen ranglijst op commissie.";
 
 export const metadata: Metadata = {
   title: { absolute: HOME_TITLE },

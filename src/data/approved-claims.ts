@@ -54,7 +54,7 @@ export type SupportingEvidenceType =
   | "narrative_review"
   | "efsa_regulation";
 
-/** Peer-reviewed onderbouwing naast EFSA-claims; relevant voor doelgroep 40+. */
+/** Peer-reviewed onderbouwing naast EFSA-claims; relevant voor doelgroep 30+. */
 export interface SupportingEvidence {
   vancouver: string;
   url: string;
@@ -360,7 +360,7 @@ export const approvedClaims = {
         url: "https://pubmed.ncbi.nlm.nih.gov/24922193/",
         pmid: "24922193",
         evidenceType: "narrative_review",
-        audienceNote: "Zink en immuunfunctie bij ouderen — relevant voor 40+ mannen.",
+        audienceNote: "Zink en immuunfunctie bij ouderen — relevant voor 30+ mannen.",
       },
       {
         vancouver: "Prasad AS. Mol Med 2008;14(5-6):353-357.",

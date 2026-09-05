@@ -164,7 +164,7 @@ function buildSpoorHook(
     }
     return track.label.includes("Kracht")
       ? track.summary
-      : "Eén echte krachtprikkel per week houdt spiermassa op peil na 40.";
+      : "Eén echte krachtprikkel per week houdt spiermassa op peil na 30.";
   }
 
   return track.label.includes("Conditie")

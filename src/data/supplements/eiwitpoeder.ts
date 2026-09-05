@@ -31,12 +31,12 @@ export const eiwitpoederData: ComparisonPageData = {
   readAlsoCards: [
     {
       href: "/herstel-verbeteren-na-40",
-      text: "Eiwitdosering en herstel na 40 — in de pillar met slaap en rustdagen.",
+      text: "Eiwitdosering en herstel na 30 — in de pillar met slaap en rustdagen.",
       cta: "Naar herstel-pillar →",
     },
     {
       href: "/blog/eiwit-na-40",
-      text: "Hoeveel eiwit na 40, anabole resistentie en wanneer poeder zinvol is.",
+      text: "Hoeveel eiwit na 30, anabole resistentie en wanneer poeder zinvol is.",
       cta: "Lees het artikel →",
     },
     {
@@ -259,9 +259,9 @@ export const eiwitpoederData: ComparisonPageData = {
   ],
   faq: [
     {
-      question: "Hoeveel eiwit heb je nodig na 40?",
+      question: "Hoeveel eiwit heb je nodig na 30?",
       answer:
-        "Veel richtlijnen noemen 0,8 g/kg lichaamsgewicht, maar onderzoek naar spiermassa en herstel wijst voor mannen 40+ vaak op **1,2–1,6 g/kg per dag**. Train je structureel, dan zit je doorgaans aan de bovenkant van dat bereik. Verdeel je inname over de dag — eiwitpoeder is een praktische aanvulling, geen vervanging van volwaardige maaltijden.",
+        "Veel richtlijnen noemen 0,8 g/kg lichaamsgewicht, maar onderzoek naar spiermassa en herstel wijst voor mannen 30+ vaak op **1,2–1,6 g/kg per dag**. Train je structureel, dan zit je doorgaans aan de bovenkant van dat bereik. Verdeel je inname over de dag — eiwitpoeder is een praktische aanvulling, geen vervanging van volwaardige maaltijden.",
     },
     {
       question: "Is whey of plantaardig eiwit beter?",

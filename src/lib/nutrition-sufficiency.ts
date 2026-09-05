@@ -91,7 +91,7 @@ function proteinContextLine(ctx: NutritionPersonalizationContext): string | null
   }
   const load = trainingLoadLabelNl(ctx.trainingLoad);
   if (load) {
-    return `Met ${load.toLowerCase()} mik je op ${ctx.proteinTarget.gramsLow}–${ctx.proteinTarget.gramsHigh} g eiwit per dag — dat is hoger dan de basisrichtlijn na veertig.`;
+    return `Met ${load.toLowerCase()} mik je op ${ctx.proteinTarget.gramsLow}–${ctx.proteinTarget.gramsHigh} g eiwit per dag — dat is hoger dan de basisrichtlijn na dertig.`;
   }
   return `Op basis van je gewicht mik je op ${ctx.proteinTarget.gramsLow}–${ctx.proteinTarget.gramsHigh} g eiwit per dag.`;
 }

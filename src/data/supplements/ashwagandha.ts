@@ -11,7 +11,7 @@ export const ashwagandhaData: ComparisonPageData = {
   seoTitle:
     "Beste Ashwagandha Supplement 2026 — KSM-66 Vergelijking",
   seoDescription:
-    "Vergelijk de beste ashwagandha supplementen met KSM-66 extract. Onafhankelijke scores op withanoliden, dosering en prijs voor mannen 40+.",
+    "Vergelijk de beste ashwagandha supplementen met KSM-66 extract. Onafhankelijke scores op withanoliden, dosering en prijs voor mannen 30+.",
   lastUpdated: "2026-04-19",
   tableDoseringColumnLabel: "Dosering / dag",
   ogImage: "https://perfectsupplement.nl/images/producten/Vitaminstore-Ashwagandha-KSM-66.jpg",
@@ -28,12 +28,12 @@ export const ashwagandhaData: ComparisonPageData = {
   moreAboutDescription: "Vergelijk extracten op transparantie en dosering. Themapagina\u2019s over leefstijl (bijv. stress en slaap) zijn géén etiketbeloftes voor dit ingrediënt.",
   moreAboutLinks: [
     { href: "/supplementen/ashwagandha", label: "Meer weten over ashwagandha? Lees de uitgebreide gids →" },
-    { href: "/gids/stress", label: "Stress na je 40e — wat speelt er en wat helpt? →" },
+    { href: "/gids/stress", label: "Stress na je 30e — wat speelt er en wat helpt? →" },
   ],
   readAlsoCards: [
     {
       href: "/stress-verminderen-na-40",
-      text: "Stress na 40: herkenning, slaap en een concreet weekplan — zonder medisch jargon.",
+      text: "Stress na 30: herkenning, slaap en een concreet weekplan — zonder medisch jargon.",
       cta: "Naar stress-pillar →",
     },
     {

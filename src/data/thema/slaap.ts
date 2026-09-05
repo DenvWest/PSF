@@ -23,14 +23,14 @@ export const slaapThema: ThemaPageData = {
 
   causes: {
     sectionLabel: "WAT ER SPEELT",
-    title: "Waarom je slaap verandert na je 40e",
+    title: "Waarom je slaap verandert na je 30e",
     intro:
-      "Slaapproblemen na je 40e zijn niet alleen een kwestie van slechte gewoonten. Er zijn biologische verschuivingen die je slaapkwaliteit direct beïnvloeden.",
+      "Slaapproblemen na je 30e zijn niet alleen een kwestie van slechte gewoonten. Er zijn biologische verschuivingen die je slaapkwaliteit direct beïnvloeden.",
     items: [
       {
         title: "Melatonine daalt",
         description:
-          "Melatonine kan onder meer een rol spelen in timing van je slaap‑waaksysteem en circadiaan ritme. Je lichaam maakt gemiddeld minder melatonine aan naarmate je ouder wordt; na je 40e wordt die daling bij veel mensen meetbaar, wat kan samengaan met langer wakker liggen en lichter slapen.",
+          "Melatonine kan onder meer een rol spelen in timing van je slaap‑waaksysteem en circadiaan ritme. Je lichaam maakt gemiddeld minder melatonine aan naarmate je ouder wordt; na je 30e wordt die daling bij veel mensen meetbaar, wat kan samengaan met langer wakker liggen en lichter slapen.",
         icon: "🌙",
         source:
           "Wurtman RJ, J Clin Endocrinol Metab, 2000; Claustrat & Leston, Endotext, 2022",
@@ -161,7 +161,7 @@ export const slaapThema: ThemaPageData = {
 
   emailGate: {
     sectionLabel: "GRATIS SLAAPGIDS",
-    title: "De complete gids voor betere slaap na 40",
+    title: "De complete gids voor betere slaap na 30",
     subtitle:
       "Alles wat je moet weten over slaaphygiëne, supplementdosering en ritme-opbouw — in één overzichtelijke PDF.",
     bulletPoints: [
@@ -178,14 +178,14 @@ export const slaapThema: ThemaPageData = {
 
   pillarPage: {
     href: "/slaap-verbeteren-na-40",
-    title: "De complete gids: slaap verbeteren na 40",
+    title: "De complete gids: slaap verbeteren na 30",
     description:
       "Van de biologie achter slaapverandering tot een concreet weekplan met supplementen. Alles wat op deze pagina in het kort staat, uitgewerkt met bronnen en context.",
   },
 
   expertQuote: {
     quote:
-      "Slaap is de meest onderschatte interventie voor mannen boven de 40. Geen supplement compenseert voor structureel slaaptekort.",
+      "Slaap is de meest onderschatte interventie voor mannen boven de 30. Geen supplement compenseert voor structureel slaaptekort.",
     author: "Praktische voorlichting",
     credential:
       "Samengesteld door PerfectSupplement op basis van klinisch onderzoek",
@@ -209,7 +209,7 @@ export const slaapThema: ThemaPageData = {
 
   relatedArticles: [
     {
-      title: "Slaap verbeteren na je 40e: wat werkt en wat niet",
+      title: "Slaap verbeteren na je 30e: wat werkt en wat niet",
       slug: "slaap-verbeteren-40-plus",
       category: "slaap",
     },
@@ -260,9 +260,9 @@ export const slaapThema: ThemaPageData = {
 
   seo: {
     title:
-      "Slaap verbeteren als man 40+ — Oorzaken, tips en supplementen",
+      "Slaap verbeteren als man 30+ — Oorzaken, tips en supplementen",
     description:
-      "Waarom je slaap verandert na je 40e en wat je eraan kunt doen. Concrete leefstijltips, supplementadvies en een gratis slaapgids.",
+      "Waarom je slaap verandert na je 30e en wat je eraan kunt doen. Concrete leefstijltips, supplementadvies en een gratis slaapgids.",
     canonical: "/gids/slaap",
   },
 };

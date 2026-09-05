@@ -6,7 +6,7 @@ const COPY: Record<SupplementAdviceDisclaimerProps["variant"], string> = {
   profile:
     "Dit zijn mogelijke aandachtspunten uit je leefstijlcheck — geen persoonlijk medisch advies en niet voor iedereen geschikt. Bij medicatie, aandoeningen of twijfel: overleg met je huisarts.",
   foundation:
-    "Algemene informatie die veel mannen 40+ vergelijken — niet automatisch geschikt voor jou. Geen vervanging van voeding, beweging of medisch advies.",
+    "Algemene informatie die veel mannen 30+ vergelijken — niet automatisch geschikt voor jou. Geen vervanging van voeding, beweging of medisch advies.",
 };
 
 export default function SupplementAdviceDisclaimer({

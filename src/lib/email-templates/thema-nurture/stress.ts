@@ -35,7 +35,7 @@ export const stressTemplates: Record<ThemaNurtureDay, ThemaNurtureTemplate> = {
   Goed dat je de stap zet. Meer grip op stress begint met begrijpen wat er in je lichaam gebeurt — en daar helpt deze gids bij.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Je bent niet de enige man boven de 40 die merkt dat stress niet meer vanzelf wegzakt. Na je 40e reageert je stress-as gevoeliger op aanhoudende druk, herstelt je hormonale balans langzamer en kost chronische spanning meer van je slaap en energie. Dat is normaal — maar het betekent wel dat je andere keuzes maakt dan twintig jaar geleden.
+  Je bent niet de enige man boven de 30 die merkt dat stress niet meer vanzelf wegzakt. Na je 30e reageert je stress-as gevoeliger op aanhoudende druk, herstelt je hormonale balans langzamer en kost chronische spanning meer van je slaap en energie. Dat is normaal — maar het betekent wel dat je andere keuzes maakt dan twintig jaar geleden.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 8px;">
   In de gids vind je:
@@ -73,7 +73,7 @@ ${ctaButton(
   Veel mannen plannen rust na werktijd — maar blijven mentaal in dezelfde versnelling. Dan blijf je ’s avonds toch ‘aan’ en voel je je opgebrand zonder echt uitgerust te zijn. Echte recovery is een schakelmoment: van aandacht naar het nu, niet alleen minder taken.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Op onze stresspagina leggen we uit hoe je dat schakelmoment opbouwt — praktisch en haalbaar na 40.
+  Op onze stresspagina leggen we uit hoe je dat schakelmoment opbouwt — praktisch en haalbaar na 30.
 </p>
 ${ctaButton(
           absoluteUrl("/stress-verminderen-na-40"),
@@ -97,7 +97,7 @@ ${ctaButton(
   Als je de afgelopen week bewuster met stress bent omgegaan, merk je misschien al verschil. De basis telt het meest — en soms helpt een gericht supplement dat verschil te versterken.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Twee opties die het vaakst voorkomen bij mannen 40+:
+  Twee opties die het vaakst voorkomen bij mannen 30+:
 </p>
 <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 14px;">
   <tr style="border-bottom: 1px solid #e8e6e1;">

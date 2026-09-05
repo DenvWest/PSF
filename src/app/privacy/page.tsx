@@ -539,7 +539,7 @@ export default function PrivacyPage() {
             <section>
                 <h2 className="text-xl font-semibold text-stone-900">Minderjarigen</h2>
                 <p className="mt-3">
-                    Deze website richt zich op mannen vanaf ongeveer veertig jaar. We verzamelen niet bewust
+                    Deze website richt zich op mannen vanaf ongeveer dertig jaar. We verzamelen niet bewust
                     persoonsgegevens van personen jonger dan zestien jaar. Als je denkt dat we onbedoeld
                     dergelijke gegevens hebben verwerkt, neem dan contact met ons op zodat we dit kunnen
                     verwijderen.

@@ -10,16 +10,16 @@ export const vitamineDData: SupplementData = {
   datePublished: "2026-03-01",
   h1: "Vitamine D: welke vorm past bij jou?",
   introTekst:
-    "Vitamine D werkt hormonaal — het beïnvloedt calciumhuishouding, spieren en immuunmodulatie. Combinaties van D3 met K2 (vaak als MK-7) zijn gangbaar na je 40e: ze sluiten aan bij zonlichttekort én bij de wens beide vetoplosbare vitamines in één product te nemen. Tekorten komen veel vaker voor in donkere maanden en bij weinig buitenbeweging — vaak zonder dat je het merkt.",
+    "Vitamine D werkt hormonaal — het beïnvloedt calciumhuishouding, spieren en immuunmodulatie. Combinaties van D3 met K2 (vaak als MK-7) zijn gangbaar na je 30e: ze sluiten aan bij zonlichttekort én bij de wens beide vetoplosbare vitamines in één product te nemen. Tekorten komen veel vaker voor in donkere maanden en bij weinig buitenbeweging — vaak zonder dat je het merkt.",
 
   watIsHet: {
     titel: "Wat doet vitamine D in je lichaam?",
     tekst:
-      "Vitamine D wordt aangemaakt in je huid bij blootstelling aan UVB-straling van de zon. Het fungeert als hormoon dat honderden genen reguleert — van calcium-opname tot immuunrespons. Op supplementetiketten zie je doses vaak als percentage van de [ADH (aanbevolen dagelijkse hoeveelheid)](/kennisbank/adh) — een referentieminimum, geen persoonlijk optimum. Na je 40e daalt de aanmaakcapaciteit van je huid, terwijl je tegelijkertijd minder buiten bent en meer binnen werkt. Het resultaat: veel mannen hebben een tekort zonder het te weten. Vitamine K2 verschijnt vaak naast D3 in combo-producten: vitamine K draagt bij tot de instandhouding van normale botten en tot de normale bloedstolling. De hartclaim voor K2 is door EFSA afgewezen — zie [vitamine K2](/kennisbank/vitamine-k2).",
+      "Vitamine D wordt aangemaakt in je huid bij blootstelling aan UVB-straling van de zon. Het fungeert als hormoon dat honderden genen reguleert — van calcium-opname tot immuunrespons. Op supplementetiketten zie je doses vaak als percentage van de [ADH (aanbevolen dagelijkse hoeveelheid)](/kennisbank/adh) — een referentieminimum, geen persoonlijk optimum. Na je 30e daalt de aanmaakcapaciteit van je huid, terwijl je tegelijkertijd minder buiten bent en meer binnen werkt. Het resultaat: veel mannen hebben een tekort zonder het te weten. Vitamine K2 verschijnt vaak naast D3 in combo-producten: vitamine K draagt bij tot de instandhouding van normale botten en tot de normale bloedstolling. De hartclaim voor K2 is door EFSA afgewezen — zie [vitamine K2](/kennisbank/vitamine-k2).",
   },
 
   waaromRelevant: {
-    titel: "Waarom is vitamine D zo belangrijk na je 40e?",
+    titel: "Waarom is vitamine D zo belangrijk na je 30e?",
     punten: [
       {
         titel: "Vermoeidheid bij tekort",
@@ -105,7 +105,7 @@ export const vitamineDData: SupplementData = {
       {
         symptoom: "Energie",
         tekst:
-          "Een vitamine D-tekort is een van de meest over het hoofd geziene oorzaken van aanhoudende vermoeidheid bij mannen 40+.",
+          "Een vitamine D-tekort is een van de meest over het hoofd geziene oorzaken van aanhoudende vermoeidheid bij mannen 30+.",
         href: "/gids/energie",
       },
       {
@@ -127,7 +127,7 @@ export const vitamineDData: SupplementData = {
     {
       vraag: "Hoeveel vitamine D per dag?",
       antwoord:
-        "Voor de meeste mannen boven de 40 is 1.000–2.000 IE per dag een veilige dagelijkse onderhoudsdosis. Bij een bewezen tekort (bloedwaarde <50 nmol/L) kan een arts tijdelijk hogere doses adviseren.",
+        "Voor de meeste mannen boven de 30 is 1.000–2.000 IE per dag een veilige dagelijkse onderhoudsdosis. Bij een bewezen tekort (bloedwaarde <50 nmol/L) kan een arts tijdelijk hogere doses adviseren.",
     },
     {
       vraag: "Hoe weet ik of ik een tekort heb?",
@@ -158,11 +158,11 @@ export const vitamineDData: SupplementData = {
     },
     {
       href: "/blog/testosteron-en-energie-na-40",
-      titel: "Testosteron en energie na 40: wanneer is actie nodig?",
+      titel: "Testosteron en energie na 30: wanneer is actie nodig?",
     },
     {
       href: "/blog/energie-verhogen-natuurlijk",
-      titel: "Energie verhogen na je 40e: de fysiologie en wat je kunt doen",
+      titel: "Energie verhogen na je 30e: de fysiologie en wat je kunt doen",
     },
   ],
 

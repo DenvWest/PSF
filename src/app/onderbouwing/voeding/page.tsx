@@ -81,7 +81,7 @@ export default function OnderbouwingVoedingPage() {
           <p className="mt-4 text-sm leading-relaxed text-stone-500">
             Meer context:{" "}
             <Link href="/voeding-na-40" className="font-medium text-emerald-800 underline">
-              Voeding na 40
+              Voeding na 30
             </Link>
             {" · "}
             <Link href="/onderbouwing" className="font-medium text-emerald-800 underline">

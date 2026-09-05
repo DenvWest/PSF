@@ -2,7 +2,7 @@
  * Kwalitatieve eiwit-nadruk op basis van het activiteitsniveau (PAL).
  *
  * Verzilvert de PAL-kern: bij een actief leefpatroon ligt de eiwitbehoefte hoger
- * (spieronderhoud/herstel, 40+). Dit is een nuance op het eiwit-advies —
+ * (spieronderhoud/herstel, 30+). Dit is een nuance op het eiwit-advies —
  * KWALITATIEF, nooit een g/kg-getal (dat vereist gewicht) en nooit een status
  * ("tekort"). Blijft binnen de inname-vs-status-grens (COMPLIANCE.md).
  *

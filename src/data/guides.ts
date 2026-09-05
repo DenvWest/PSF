@@ -283,7 +283,7 @@ export const GUIDES: Guide[] = [
     promise: "Sterk en soepel blijven — ook als je al 'best actief' bent.",
     heroTitle: "Sterk blijven. Soepel bewegen. Zelfstandig ouder worden.",
     heroSub:
-      "Een compacte gids over waarom kracht en conditie na 40 zwaarder tellen dan volume — en hoe je begint met minder dan je denkt. Geen sportschool-hype, wel houdbare stappen.",
+      "Een compacte gids over waarom kracht en conditie na 30 zwaarder tellen dan volume — en hoe je begint met minder dan je denkt. Geen sportschool-hype, wel houdbare stappen.",
     benefits: [
       "Waarom wandelen en fietsen je spieren te weinig prikkelen",
       "Hoe krachttraining je spiermassa en botten op peil houdt",
@@ -300,12 +300,12 @@ export const GUIDES: Guide[] = [
     ],
     longform: [
       "Wandelen, fietsen en lichamelijk werk zijn goud waard — maar ze geven je spieren zelden de prikkel die nodig is om kracht op peil te houden. En juist die kracht bepaalt de komende decennia hoe soepel je beweegt en hoe zelfstandig je blijft.",
-      "Deze gids gaat niet over de sportschool of over presteren. Hij laat zien waarom gerichte kracht en conditie na 40 het verschil maken — en hoe je begint met één kleine stap die je vol kunt houden in een druk leven.",
+      "Deze gids gaat niet over de sportschool of over presteren. Hij laat zien waarom gerichte kracht en conditie na 30 het verschil maken — en hoe je begint met één kleine stap die je vol kunt houden in een druk leven.",
     ],
     pullquote: "Niet méér bewegen. Slimmer belasten.",
     verdieping: [
       {
-        label: "Pillar: Beweging na 40",
+        label: "Pillar: Beweging na 30",
         sub: "Kracht, ritme en herstel — nuchter uitgelegd.",
         href: "/beweging-na-40",
       },
@@ -406,7 +406,7 @@ export const GUIDES: Guide[] = [
       "Je zoekt een nuchter startpunt, geen quick fix",
     ],
     longform: [
-      "Rond je veertigste verandert er van alles — geleidelijk, niet dramatisch. Veel daarvan heb je zelf in de hand via je leefstijl: slaap, beweging, voeding en stress.",
+      "Rond je dertigste verandert er van alles — geleidelijk, niet dramatisch. Veel daarvan heb je zelf in de hand via je leefstijl: slaap, beweging, voeding en stress.",
       "Deze gids belooft niets. Hij laat zien welke leefstijlfactoren er volgens onderzoek toe doen — en wijst je door naar de domeinen die je écht kunt meten en verbeteren: je slaap, je herstel en je beweging.",
     ],
     pullquote: "Nuchter. Onderbouwd. Vol te houden.",

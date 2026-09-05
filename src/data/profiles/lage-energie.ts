@@ -5,11 +5,11 @@ export const lageEnergieProfile: ProfilePageData = {
   label: "Lage Energie",
 
   seo: {
-    title: "Altijd Moe Na 40? Dit Is Waarom (en Wat Je Eraan Doet)",
+    title: "Altijd Moe Na 30? Dit Is Waarom (en Wat Je Eraan Doet)",
     description:
       "Je energie is op. Niet even, maar structureel. Herkenning, uitleg in begrijpelijke taal en wat je stap voor stap kunt doen.",
     canonical: "https://perfectsupplement.nl/profiel/lage-energie",
-    targetKeyword: "altijd moe na 40",
+    targetKeyword: "altijd moe na 30",
   },
 
   hero: {
@@ -62,7 +62,7 @@ export const lageEnergieProfile: ProfilePageData = {
   },
 
   understanding: {
-    title: "Waarom je energie vaak minder voelt na 40",
+    title: "Waarom je energie vaak minder voelt na 30",
     paragraphs: [
       "Je lichaam haalt energie uit voeding, slaap en beweging. [Mitochondriën](/kennisbank/mitochondrien) — je energiefabriekjes in elke cel — maken [ATP](/kennisbank/atp) aan; als één van de drie pijlers scheef staat, merken veel mensen dat ze zich sneller leeg voelen.",
       "Veel zitten en weinig beweging versterken dat gevoel: je wordt sneller moe van dingen die vroeger vanzelf gingen. Schommelende bloedsuiker — soms gelinkt aan [insulineresistentie](/kennisbank/insulineresistentie) — geeft pieken en crashes. Een korte wandeling of vaste eetmomenten helpen vaak al om de dag \"vlakker\" te maken.",
@@ -180,19 +180,19 @@ export const lageEnergieProfile: ProfilePageData = {
   relatedPillar: {
     href: "/energie-na-40",
     turboSnippet:
-      "Energie na 40: ritme, voeding, slaap en supplementen — één gids met een concreet weekplan.",
+      "Energie na 30: ritme, voeding, slaap en supplementen — één gids met een concreet weekplan.",
   },
 
   relatedComparisons: [
     {
       href: "/blog/middagdip-bloedsuiker-na-40",
       turboSnippet:
-        "Middagdip na 40: bloedsuiker, koffie en wat je vóór 14:00 kunt sturen — zonder wilskracht-moraliseren.",
+        "Middagdip na 30: bloedsuiker, koffie en wat je vóór 14:00 kunt sturen — zonder wilskracht-moraliseren.",
     },
     {
       href: "/blog/krachttraining-na-40",
       turboSnippet:
-        "Krachttraining na 40: spierbehoud en energie zonder uren in de gym — het duo met eiwit en herstel.",
+        "Krachttraining na 30: spierbehoud en energie zonder uren in de gym — het duo met eiwit en herstel.",
     },
     {
       href: "/blog/alcohol-slaap-energie-na-40",
@@ -202,7 +202,7 @@ export const lageEnergieProfile: ProfilePageData = {
     {
       href: "/blog/eiwit-na-40",
       turboSnippet:
-        "Eiwit na 40: hoeveel gram per dag, anabole resistentie en wanneer poeder zinvol is.",
+        "Eiwit na 30: hoeveel gram per dag, anabole resistentie en wanneer poeder zinvol is.",
     },
     {
       href: "/blog/vitamine-d-en-energie",

@@ -155,7 +155,7 @@ export interface LifestylePlanTemplate {
   title: string;
   /** Herkenning bovenaan ("dit ben ik"). */
   recognition: PlanContentBlock;
-  /** Mechanisme ("waarom na 40"). */
+  /** Mechanisme ("waarom na 30"). */
   mechanism: PlanContentBlock;
   phases: PlanPhase[];
   /** Verplichte medische grens — advies, geen diagnose. */

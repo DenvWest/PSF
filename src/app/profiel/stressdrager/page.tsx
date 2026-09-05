@@ -61,7 +61,7 @@ function relatedLinkLabel(item: { href: string; linkText?: string }): string {
   if (item.href === "/profiel/onrustige-slaper") return "Bekijk het Onrustige Slaper-profiel";
   if (item.href === "/beste/ashwagandha") return "Bekijk de ashwagandha vergelijking";
   if (item.href === "/beste/magnesium") return "Bekijk de magnesium vergelijking";
-  if (item.href === "/blog/cortisol-en-testosteron") return "Lees: cortisol en testosteron na 40";
+  if (item.href === "/blog/cortisol-en-testosteron") return "Lees: cortisol en testosteron na 30";
   if (item.href === "/testosteron-na-40") return "Naar de testosteron-pillar";
   return "Lees meer";
 }
@@ -352,7 +352,7 @@ export default function StressdragerPage() {
                       href={profile.relatedPillar.href}
                       className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
                     >
-                      Alles over stressvermindering na 40 — de complete gids →
+                      Alles over stressvermindering na 30 — de complete gids →
                     </Link>
                   </div>
                 )}

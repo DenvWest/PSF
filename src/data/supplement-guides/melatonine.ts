@@ -10,16 +10,16 @@ export const melatonineData: SupplementData = {
   datePublished: "2026-03-01",
   h1: "Melatonine: welke vorm past bij jou?",
   introTekst:
-    "Melatonine regelt tijding — niet per se hoe diep je slaapt. Het vertelt je organisme dat het ‘nacht’ wordt: een signaal waar je slaapsysteem op inspeelt als de rest voor elkaar is. Slim gedoseerd versterkt vaak eerder je ritme dan je diepte van slaap. Na je 40e daalt eigen melatoninemaxima en kan timing verzakken; veel mensen gebruiken daarom kort tijdelijk lage doses in plaats van hoge capsules uit de gangbare schappen.",
+    "Melatonine regelt tijding — niet per se hoe diep je slaapt. Het vertelt je organisme dat het ‘nacht’ wordt: een signaal waar je slaapsysteem op inspeelt als de rest voor elkaar is. Slim gedoseerd versterkt vaak eerder je ritme dan je diepte van slaap. Na je 30e daalt eigen melatoninemaxima en kan timing verzakken; veel mensen gebruiken daarom kort tijdelijk lage doses in plaats van hoge capsules uit de gangbare schappen.",
 
   watIsHet: {
     titel: "Wat doet melatonine in je lichaam?",
     tekst:
-      "Melatonine wordt aangemaakt in je pijnappelklier zodra het donker wordt — het is het signaal dat je [circadiaans ritme](/kennisbank/circadiaan-ritme) ondersteunt: wanneer slapen, niet per se hoe diep. Het reguleert het tijdstip van slapen, niet de diepte ervan. Na je 40e neemt de melatonineproductie geleidelijk af: de piek wordt lager en later in de avond bereikt. Dit kan verklaren waarom je moeilijker in slaap valt, eerder wakker wordt of je slaap minder verkwikkend aanvoelt.",
+      "Melatonine wordt aangemaakt in je pijnappelklier zodra het donker wordt — het is het signaal dat je [circadiaans ritme](/kennisbank/circadiaan-ritme) ondersteunt: wanneer slapen, niet per se hoe diep. Het reguleert het tijdstip van slapen, niet de diepte ervan. Na je 30e neemt de melatonineproductie geleidelijk af: de piek wordt lager en later in de avond bereikt. Dit kan verklaren waarom je moeilijker in slaap valt, eerder wakker wordt of je slaap minder verkwikkend aanvoelt.",
   },
 
   waaromRelevant: {
-    titel: "Waarom is melatonine belangrijk na je 40e?",
+    titel: "Waarom is melatonine belangrijk na je 30e?",
     punten: [
       {
         titel: "Slaapinitiatie",
@@ -39,7 +39,7 @@ export const melatonineData: SupplementData = {
       {
         titel: "Leeftijdsgerelateerde daling",
         uitleg:
-          "Mannen boven de 40 maken aantoonbaar minder melatonine aan. Lage suppletie kan dit compenseren zonder het eigen systeem te onderdrukken.",
+          "Mannen boven de 30 maken aantoonbaar minder melatonine aan. Lage suppletie kan dit compenseren zonder het eigen systeem te onderdrukken.",
       },
     ],
   },
@@ -153,7 +153,7 @@ export const melatonineData: SupplementData = {
     },
     {
       href: "/blog/slaaphygiene-mannen-40-plus",
-      titel: "Slaaphygiëne: wat wél werkt na je 40e",
+      titel: "Slaaphygiëne: wat wél werkt na je 30e",
     },
     {
       href: "/blog/slaapritme-herstellen",

@@ -106,7 +106,7 @@ function relatedLinkLabel(item: { href: string; linkText?: string }): string {
   if (item.href === "/beste/zink") return "Bekijk de zink vergelijking";
   if (item.href === "/beste/creatine") return "Bekijk de creatine vergelijking";
   if (item.href === "/beste/eiwitpoeder") return "Bekijk de eiwitpoeder vergelijking";
-  if (item.href === "/blog/creatine-en-herstel") return "Lees: creatine en herstel na 40";
+  if (item.href === "/blog/creatine-en-herstel") return "Lees: creatine en herstel na 30";
   if (item.href === "/kennisbank/overtrainingssyndroom") return "Overtrainingssyndroom in de kennisbank";
   return "Lees meer";
 }
@@ -213,7 +213,7 @@ export default function OvertrainerPage() {
               </h1>
               <p className="mt-5 text-xl text-slate-600 max-w-2xl leading-relaxed">{profile.hero.subline}</p>
               <p className="mt-6 text-slate-600 max-w-2xl leading-relaxed">
-                Meer over herstel na 40: zie ook het{" "}
+                Meer over herstel na 30: zie ook het{" "}
                 <Link href="/gids/herstel" className="text-emerald-600 font-medium hover:text-emerald-700">
                   thema Herstel
                 </Link>
@@ -414,7 +414,7 @@ export default function OvertrainerPage() {
                       href={profile.relatedPillar.href}
                       className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
                     >
-                      Alles over herstel na 40 — het complete thema →
+                      Alles over herstel na 30 — het complete thema →
                     </Link>
                   </div>
                 )}

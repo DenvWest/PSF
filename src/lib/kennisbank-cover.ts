@@ -16,7 +16,7 @@ export interface KennisbankCover {
 const THEMA_COVER: Record<KennisbankTheme, KennisbankCover> = {
   "lichaam-veroudering": {
     src: "/images/kennisbank/thema-lichaam-veroudering.jpg",
-    alt: "Persoon in de buitenlucht bij natuurlijk licht, gericht op vitaliteit na 40",
+    alt: "Persoon in de buitenlucht bij natuurlijk licht, gericht op vitaliteit na 30",
   },
   "leefstijl-herstel": {
     src: "/images/kennisbank/thema-leefstijl-herstel.jpg",

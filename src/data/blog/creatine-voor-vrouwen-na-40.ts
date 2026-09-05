@@ -108,7 +108,7 @@ export const creatineVoorVrouwenData: BlogArtikel = {
     "Creatine voor vrouwen: wat er in vrouwen is onderzocht rond kracht, spiermassa en bot na de overgang, of je er zwaar van wordt en welke dosering geldt.",
   keywords: [
     "creatine vrouwen",
-    "creatine voor vrouwen 40",
+    "creatine voor vrouwen 30",
     "creatine overgang",
     "creatine vrouwen dosering",
     "creatine postmenopauzaal bot",

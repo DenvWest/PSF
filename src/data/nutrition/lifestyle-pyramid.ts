@@ -91,7 +91,7 @@ export const NUTRITION_CLUSTERS: readonly NutritionCluster[] = [
       "oilyFish",
     ],
     layer: 3,
-    whyLine: "Verdeling over de dag telt boven veertig",
+    whyLine: "Verdeling over de dag telt boven dertig",
   },
   {
     id: "C4",

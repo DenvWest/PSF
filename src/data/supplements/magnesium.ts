@@ -17,7 +17,7 @@ export const magnesiumData: ComparisonPageData = {
     "Slecht slapen, gespannen spieren of moeilijk tot rust komen? Magnesium wordt vaak genoemd — maar bisglycinaat, citraat of complex maakt wél uit. Drie producten vergeleken op vorm, elementaire dosering en prijs per dag.",
   seoTitle: "Beste magnesium supplement 2026 — onafhankelijk vergeleken",
   seoDescription:
-    "Vergelijk magnesiumsupplementen op vorm (bisglycinaat, citraat, complex), dosering en prijs per dag. Onafhankelijke analyse voor mannen 40+.",
+    "Vergelijk magnesiumsupplementen op vorm (bisglycinaat, citraat, complex), dosering en prijs per dag. Onafhankelijke analyse voor mannen 30+.",
   lastUpdated: "2026-04-18",
   tableDoseringColumnLabel: "Elementair mg / dag",
   topProductLabel: "Beste allround",
@@ -36,7 +36,7 @@ export const magnesiumData: ComparisonPageData = {
   readAlsoCards: [
     {
       href: "/slaap-verbeteren-na-40",
-      text: "Slaap na 40 in context — ritme, licht en supplementen in één pillar.",
+      text: "Slaap na 30 in context — ritme, licht en supplementen in één pillar.",
       cta: "Naar slaap-pillar →",
     },
     {

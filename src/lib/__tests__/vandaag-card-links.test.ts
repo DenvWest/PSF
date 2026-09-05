@@ -11,7 +11,7 @@ describe("firstSentence", () => {
   it("returns the first sentence before a period", () => {
     expect(
       firstSentence(
-        "Je valt laat in of slaapt onrustig. Na 40 reageert je diepe slaap sneller op licht.",
+        "Je valt laat in of slaapt onrustig. Na 30 reageert je diepe slaap sneller op licht.",
       ),
     ).toBe("Je valt laat in of slaapt onrustig.");
   });

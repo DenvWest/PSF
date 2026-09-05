@@ -98,7 +98,7 @@ export function day21SupplementChoice(params: {
       name: "Magnesium",
       comparePath: "/beste/magnesium",
       reason:
-        "Bij veel mannen 40+ wordt magnesium genoemd in de context van ontspanning en slaapritme — geen wonderpil, maar een veelbesproken optie om te vergelijken.",
+        "Bij veel mannen 30+ wordt magnesium genoemd in de context van ontspanning en slaapritme — geen wonderpil, maar een veelbesproken optie om te vergelijken.",
     };
   }
   if (id === "nutrition" || nutritionScoreLow(params.domainScores)) {
@@ -227,15 +227,15 @@ export function day0OpeningLineForDomain(
 ): string {
   const openings: Record<(typeof DOMAIN_IDS)[number], string> = {
     sleep:
-      "Slaap kwam als je grootste aandachtspunt naar voren — en na je veertigste vergeeft je lichaam een korte nacht minder snel: melatonine komt later op gang, cortisol blijft langer actief. Geen onwil; wel iets waar je op kunt sturen.",
+      "Slaap kwam als je grootste aandachtspunt naar voren — en na je dertigste vergeeft je lichaam een korte nacht minder snel: melatonine komt later op gang, cortisol blijft langer actief. Geen onwil; wel iets waar je op kunt sturen.",
     stress:
-      "Stress kwam als je grootste aandachtspunt naar voren. Aanhoudende stress is na 40 niet zomaar 'erbij' — je merkt het in je slaap, je herstel en hoe snel je weer 'aan' staat. Geen aanstellerij; wel iets waar je op kunt sturen.",
+      "Stress kwam als je grootste aandachtspunt naar voren. Aanhoudende stress is na 30 niet zomaar 'erbij' — je merkt het in je slaap, je herstel en hoe snel je weer 'aan' staat. Geen aanstellerij; wel iets waar je op kunt sturen.",
     energy:
       "Energie kwam als je grootste aandachtspunt naar voren — al is energie zelden het échte probleem. Het is meestal de optelsom van je slaap, voeding en beweging. Daarom kijken we eerst naar de bron, niet naar de zoveelste kop koffie.",
     recovery:
       "Herstel kwam als je grootste aandachtspunt naar voren. Herstel is het moment waarop je lichaam opbouwt — gebeurt dat te weinig, dan stapelt de vermoeidheid op. De winst zit hier bijna nooit in méér doen, maar in meer ruimte.",
     movement:
-      "Beweging kwam als je grootste aandachtspunt naar voren. Na je veertigste verlies je spiermassa sneller dan je merkt — niet door luiheid, maar omdat je spieren trager op prikkels reageren. Het goede nieuws: kracht is precies de hefboom die dat terugdraait.",
+      "Beweging kwam als je grootste aandachtspunt naar voren. Na je dertigste verlies je spiermassa sneller dan je merkt — niet door luiheid, maar omdat je spieren trager op prikkels reageren. Het goede nieuws: kracht is precies de hefboom die dat terugdraait.",
     nutrition:
       "Voeding kwam als je grootste aandachtspunt naar voren. Je voedingsbodem bepaalt of de rest überhaupt werkt — en juist daar zakt de inname vaak ongemerkt onder wat je nodig hebt. Klein bijsturen levert hier meestal het meeste op.",
   };

@@ -153,7 +153,7 @@ export const NUTRIENT_ROUTES: Record<NutrientId, NutrientRoute> = {
     boardEffortShortNl:
       "Drie momenten per dag met een stevige eiwitbron. Het zwaarste is het ontbijt, niet de hoeveelheid.",
     boardCannotCoverNl:
-      "Boven de veertig telt de verdeling zwaarder dan het dagtotaal. Krijg je drie momenten niet rond — bijvoorbeeld bij weinig eetlust 's ochtends — dan is dat het moment waarop een poeder iets oplost dat je bord niet oplost.",
+      "Boven de dertig telt de verdeling zwaarder dan het dagtotaal. Krijg je drie momenten niet rond — bijvoorbeeld bij weinig eetlust 's ochtends — dan is dat het moment waarop een poeder iets oplost dat je bord niet oplost.",
   },
   vitamin_d: {
     nutrient: "vitamin_d",

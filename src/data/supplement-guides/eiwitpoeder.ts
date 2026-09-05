@@ -6,11 +6,11 @@ export const eiwitpoederGidsData: SupplementData = {
   metaTitle:
     "Eiwitpoeder: Whey, Isolaat of Plantaardig?",
   metaDescription:
-    "Eiwitpoeder uitgelegd: whey, isolaat en plantaardig eiwit vergelijken op opname, eiwitgehalte, dosering en gebruik na je 40e.",
+    "Eiwitpoeder uitgelegd: whey, isolaat en plantaardig eiwit vergelijken op opname, eiwitgehalte, dosering en gebruik na je 30e.",
   datePublished: "2026-05-09",
   h1: "Eiwitpoeder: welke vorm past bij jou?",
   introTekst:
-    "Eiwitpoeder is geen magische spiermaker, maar een praktische manier om je dagelijkse eiwitinname te halen. Zeker na je 40e wordt dat belangrijker: je lichaam heeft meer eiwitprikkel nodig om spiermassa te behouden en goed te herstellen.",
+    "Eiwitpoeder is geen magische spiermaker, maar een praktische manier om je dagelijkse eiwitinname te halen. Zeker na je 30e wordt dat belangrijker: je lichaam heeft meer eiwitprikkel nodig om spiermassa te behouden en goed te herstellen.",
 
   watIsHet: {
     titel: "Wat doet eiwitpoeder in je lichaam?",
@@ -19,7 +19,7 @@ export const eiwitpoederGidsData: SupplementData = {
   },
 
   waaromRelevant: {
-    titel: "Waarom is eiwit belangrijk na je 40e?",
+    titel: "Waarom is eiwit belangrijk na je 30e?",
     punten: [
       {
         titel: "Spiermassa vasthouden",
@@ -39,7 +39,7 @@ export const eiwitpoederGidsData: SupplementData = {
       {
         titel: "Botten en gezond ouder worden",
         uitleg:
-          "Eiwitten dragen bij aan de instandhouding van normale botten. Voor mannen 40+ is dat relevant naast krachttraining, slaap en voldoende micronutrienten.",
+          "Eiwitten dragen bij aan de instandhouding van normale botten. Voor mannen 30+ is dat relevant naast krachttraining, slaap en voldoende micronutrienten.",
       },
     ],
   },
@@ -132,7 +132,7 @@ export const eiwitpoederGidsData: SupplementData = {
 
   faq: [
     {
-      vraag: "Hoeveel eiwit heb je nodig na je 40e?",
+      vraag: "Hoeveel eiwit heb je nodig na je 30e?",
       antwoord:
         "Een praktische bandbreedte is 1,2-1,6 g eiwit per kg lichaamsgewicht per dag, vooral als je krachttraining doet. De exacte behoefte hangt af van gewicht, training, energie-inname en gezondheid.",
     },
@@ -164,7 +164,7 @@ export const eiwitpoederGidsData: SupplementData = {
     },
     {
       href: "/slaap-verbeteren-na-40",
-      titel: "Slaap verbeteren na 40: herstel begint 's nachts",
+      titel: "Slaap verbeteren na 30: herstel begint 's nachts",
     },
   ],
 

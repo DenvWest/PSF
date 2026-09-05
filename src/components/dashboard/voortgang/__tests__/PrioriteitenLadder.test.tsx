@@ -438,7 +438,7 @@ describe("PrioriteitenLadder — variant 'explain': verklaren, niet kiezen", () 
               answerLabel: "1× per week",
               benchmarkLabel: "Richtlijn: 2× per week krachttraining",
               benchmarkSource: "WHO 2020",
-              whyLine: "Spierbehoud na 40 hangt aan frequentie.",
+              whyLine: "Spierbehoud na 30 hangt aan frequentie.",
             },
           ],
         }}

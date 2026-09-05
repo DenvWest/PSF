@@ -53,15 +53,15 @@ type RecognitionLineRow = {
 
 const GENERIC_OPENING: Record<ThemeSlug, string> = {
   sleep:
-    "Op basis van je antwoorden lijkt slaap nu je grootste hefboom — dat herkennen veel mannen 40+ met drukke werkweken.",
+    "Op basis van je antwoorden lijkt slaap nu je grootste hefboom — dat herkennen veel mannen 30+ met drukke werkweken.",
   stress:
-    "Op basis van je antwoorden lijkt stress nu je grootste hefboom — dat herkennen veel mannen 40+ met drukke werkweken.",
+    "Op basis van je antwoorden lijkt stress nu je grootste hefboom — dat herkennen veel mannen 30+ met drukke werkweken.",
   nutrition:
-    "Op basis van je antwoorden lijkt voeding nu je grootste hefboom — dat herkennen veel mannen 40+ met drukke werkweken.",
+    "Op basis van je antwoorden lijkt voeding nu je grootste hefboom — dat herkennen veel mannen 30+ met drukke werkweken.",
   movement:
-    "Op basis van je antwoorden lijkt beweging nu je grootste hefboom — dat herkennen veel mannen 40+ met drukke werkweken.",
+    "Op basis van je antwoorden lijkt beweging nu je grootste hefboom — dat herkennen veel mannen 30+ met drukke werkweken.",
   connection:
-    "Op basis van je antwoorden lijkt verbinding nu een aandachtspunt — sociaal contact en steun dragen je veerkracht, juist na 40.",
+    "Op basis van je antwoorden lijkt verbinding nu een aandachtspunt — sociaal contact en steun dragen je veerkracht, juist na 30.",
 };
 
 const STATIC_HEFBOOM: Record<ThemeSlug, string> = {
@@ -72,7 +72,7 @@ const STATIC_HEFBOOM: Record<ThemeSlug, string> = {
   nutrition:
     "Voeding beïnvloedt energie, herstel en hoe je reageert op druk. Structurele keuzes (eiwit, vetzuren, regelmaat) zijn meestal de **eerste stap** vóór supplementen.",
   movement:
-    "Beweging en kracht houden spieren en stofwisseling op peil — vooral na 40. Te veel zonder herstel kan averechts werken; **balans** is hier de hefboom.",
+    "Beweging en kracht houden spieren en stofwisseling op peil — vooral na 30. Te veel zonder herstel kan averechts werken; **balans** is hier de hefboom.",
   connection:
     "Verbinding en steun bepalen hoeveel je aankunt. Het gaat niet om veel contacten — **een paar mensen bij wie je tot rust komt** doen vaak meer dan nog een product of protocol.",
 };

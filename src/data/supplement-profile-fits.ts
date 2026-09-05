@@ -15,7 +15,7 @@ export const SUPPLEMENT_PROFILE_FITS: Record<
       slug: "onrustige-slaper",
       label: "Onrustige Slaper",
       snippet:
-        "Slecht slapen na 40? Magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid — start bij herkenning.",
+        "Slecht slapen na 30? Magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid — start bij herkenning.",
     },
     {
       slug: "stressdrager",

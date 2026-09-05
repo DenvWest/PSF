@@ -65,7 +65,7 @@ export const LIFESTYLE_PILLARS: readonly PyramidPillar[] = [
     label: "Beweging",
     sublabel: "Spierkracht",
     description:
-      "Kracht en beweging houden spieren, botten en stofwisseling op peil — vooral na 40.",
+      "Kracht en beweging houden spieren, botten en stofwisseling op peil — vooral na 30.",
   },
   {
     id: "connection",
