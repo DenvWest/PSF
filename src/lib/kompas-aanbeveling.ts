@@ -153,8 +153,7 @@ function buildForDomain(
  * dan staat het analyse-domein bovenaan mét beide markeringen zichtbaar. Stil
  * de focus overrulen zou de focuskeuze betekenisloos maken; hem stil negeren
  * zou een verschoven analyse verbergen. Zichtbaar naast elkaar is het eerlijke
- * midden — dezelfde lijn die `PriorityOverTimePanel` op Agenda aanhoudt
- * ("analyse blijft leidend", jij kiest).
+ * midden: analyse blijft leidend, jij kiest.
  *
  * `enginePriorityDomain` weegt de losse domeinchecks al mee: `currentScores`
  * in `account-dashboard.ts` is het laatste punt van een reeks waar
