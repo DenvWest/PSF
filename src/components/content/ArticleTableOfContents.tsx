@@ -44,7 +44,10 @@ export default function ArticleTableOfContents({ items, activeId }: ArticleTable
   }
 
   return (
-    <nav aria-labelledby={labelId} className="leading-[1.38] tracking-[-0.01em] text-stone-500">
+    <nav
+      aria-labelledby={labelId}
+      className="contents leading-[1.38] tracking-[-0.01em] text-stone-500 lg:block"
+    >
       <p
         id={labelId}
         className="mb-3 hidden font-display text-[0.62rem] font-medium uppercase tracking-[0.09em] text-stone-400 lg:block"
@@ -83,7 +86,7 @@ export default function ArticleTableOfContents({ items, activeId }: ArticleTable
         ref={detailsRef}
         open={mobileOpen}
         onToggle={(e) => setMobileOpen((e.target as HTMLDetailsElement).open)}
-        className="group sticky top-[var(--sticky-toc-mobile-offset)] z-40 rounded-xl border border-stone-200/70 bg-white/85 px-4 shadow-[0_2px_10px_rgba(28,25,23,0.06)] backdrop-blur-md lg:hidden motion-safe:transition-[border-color,box-shadow] motion-safe:duration-200 [&[open]]:shadow-[0_10px_28px_rgba(28,25,23,0.1)]"
+        className="group sticky top-[var(--sticky-toc-mobile-offset)] z-40 mb-9 rounded-xl border border-stone-200/70 bg-white/85 px-4 shadow-[0_2px_10px_rgba(28,25,23,0.06)] backdrop-blur-md lg:hidden lg:mb-0 motion-safe:transition-[border-color,box-shadow] motion-safe:duration-200 [&[open]]:shadow-[0_10px_28px_rgba(28,25,23,0.1)]"
       >
         <summary className="flex cursor-pointer list-none items-center gap-2.5 rounded-[0.625rem] py-3 text-stone-700 outline-none select-none [&::-webkit-details-marker]:hidden focus-visible:bg-ps-green-light/40 focus-visible:ring-2 focus-visible:ring-ps-green/40">
           <span

@@ -4,6 +4,7 @@ import type { MouseEvent as ReactMouseEvent } from 'react'
 import type { ArticleTocItem } from '@/types/article-reading'
 import ArticleTableOfContents from '@/components/content/ArticleTableOfContents'
 import {
+  ARTICLE_HIDE_TOC_BELOW_ITEMS,
   READING_MAIN_COL_CLASS,
   READING_RAIL_COL_CLASS,
   READING_ROW_GAP_CLASS,
@@ -11,9 +12,6 @@ import {
 } from '@/lib/article-reading-columns'
 import { parseReadingAnchorLinePx, readingProgressFraction } from '@/lib/reading-metrics'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
-/** Toon inhoudsopgave niet bij zeer korte artikelen (< 3 koppen). */
-export const ARTICLE_HIDE_TOC_BELOW_ITEMS = 3
 
 interface ArticleBodyReadingChromeProps {
   tocItems: ArticleTocItem[]

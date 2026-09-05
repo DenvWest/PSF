@@ -7,3 +7,6 @@ export const READING_RAIL_COL_CLASS = "flex w-2 shrink-0 justify-center self-str
 /** Hoofdtekstkolom: max ~70ch, mag krimpen op smalle lg-viewports (min-w-0). */
 export const READING_MAIN_COL_CLASS = 'min-w-0 w-full max-w-[70ch] flex-1'
 export const READING_ROW_GAP_CLASS = "gap-x-6"
+
+/** Toon inhoudsopgave niet bij zeer korte artikelen (< 3 koppen). */
+export const ARTICLE_HIDE_TOC_BELOW_ITEMS = 3

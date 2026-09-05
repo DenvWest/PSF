@@ -16,10 +16,9 @@ import Link from "next/link";
 import BlogGerelateerd from "./BlogGerelateerd";
 import BlogIntakeCTA from "./BlogIntakeCTA";
 import ArticleReferentiesFooter from "@/components/content/ArticleReferentiesFooter";
-import ArticleBodyReadingChrome, {
-  ARTICLE_HIDE_TOC_BELOW_ITEMS,
-} from "@/components/content/ArticleBodyReadingChrome";
+import ArticleBodyReadingChrome from "@/components/content/ArticleBodyReadingChrome";
 import ArticleTableOfContents from "@/components/content/ArticleTableOfContents";
+import { ARTICLE_HIDE_TOC_BELOW_ITEMS } from "@/lib/article-reading-columns";
 import { alleArtikelen } from "@/data/blog";
 import { CATEGORIE_CONFIG } from "@/data/blog/categorieen";
 import ArticleSidebar from "@/components/article/ArticleSidebar";
@@ -191,116 +190,120 @@ export default function BlogArticlePage({
                 }
               />
 
-              {showReadingGutters ? (
-                <div className="mb-9 lg:hidden">
+              {/* contents op mobiel: deze div en de nav in ArticleTableOfContents
+                  mogen sticky's containing block niet vernauwen tot hun eigen
+                  (kleine) hoogte — de al aanwezige relative ouder (children-slot
+                  van ArticleBodyReadingChrome) neemt die rol dan over. */}
+              <div className="contents lg:block">
+                {showReadingGutters ? (
                   <ArticleTableOfContents items={tocItems} activeId={null} />
+                ) : null}
+
+                {firstSectie ? (
+                  <BlogSectie
+                    sectie={firstSectie}
+                    anchorId={blogSectionDomId(artikel.slug, 0, firstSectie.titel)}
+                  />
+                ) : null}
+
+                {bodyImage ? (
+                  <ArticleFigure
+                    src={bodyImage.src}
+                    alt={bodyImage.alt}
+                    caption={bodyImage.caption}
+                    className="mt-10 md:mt-12"
+                  />
+                ) : null}
+
+                {restVoorMid.map((sectie, index) => (
+                  <BlogSectie
+                    key={`${sectie.titel}-${String(index + 1)}`}
+                    sectie={sectie}
+                    anchorId={blogSectionDomId(artikel.slug, index + 1, sectie.titel)}
+                  />
+                ))}
+
+                {showMidArticleCta ? (
+                  <BlogIntakeCTA
+                    placement="invite"
+                    locatie="blog_mid"
+                    className="mt-14"
+                  />
+                ) : null}
+
+                {sectiesNaMid.map((sectie, index) => {
+                  const sectieIndex = midIndex + index;
+                  return (
+                    <BlogSectie
+                      key={`${sectie.titel}-${String(sectieIndex)}`}
+                      sectie={sectie}
+                      anchorId={blogSectionDomId(artikel.slug, sectieIndex, sectie.titel)}
+                    />
+                  );
+                })}
+
+                {artikel.stressPillarTurbo ? (
+                  <aside className="mt-6 rounded-xl border border-stone-200/90 bg-[color-mix(in_srgb,var(--ps-bg)_96%,transparent)] px-6 py-6 md:px-7 md:py-8">
+                    <p className="font-display text-lg font-medium text-stone-900 md:text-xl">Meer diepgang bij stress?</p>
+                    <p className="mt-3 max-w-[70ch] text-[0.9375rem] leading-[1.75] text-stone-600">{artikel.stressPillarTurbo}</p>
+                    <Link
+                      href="/stress-verminderen-na-40"
+                      className="mt-4 inline-flex text-[0.875rem] font-medium text-stone-800 underline decoration-stone-300 decoration-1 underline-offset-[3px] transition hover:text-stone-950 hover:decoration-stone-500"
+                    >
+                      Lees de hoofdstuk‑gids: stress verminderen na 30
+                    </Link>
+                  </aside>
+                ) : null}
+
+                {artikel.kernpunten && artikel.kernpunten.length > 0 ? (
+                  <div className="mt-14">
+                    <BlogKernpunten punten={artikel.kernpunten} />
+                  </div>
+                ) : null}
+
+                <div className="mt-14">
+                  <BlogSamenvatting tekst={artikel.samenvatting} />
                 </div>
-              ) : null}
 
-              {firstSectie ? (
-                <BlogSectie
-                  sectie={firstSectie}
-                  anchorId={blogSectionDomId(artikel.slug, 0, firstSectie.titel)}
-                />
-              ) : null}
-
-              {bodyImage ? (
-                <ArticleFigure
-                  src={bodyImage.src}
-                  alt={bodyImage.alt}
-                  caption={bodyImage.caption}
-                  className="mt-10 md:mt-12"
-                />
-              ) : null}
-
-              {restVoorMid.map((sectie, index) => (
-                <BlogSectie
-                  key={`${sectie.titel}-${String(index + 1)}`}
-                  sectie={sectie}
-                  anchorId={blogSectionDomId(artikel.slug, index + 1, sectie.titel)}
-                />
-              ))}
-
-              {showMidArticleCta ? (
                 <BlogIntakeCTA
-                  placement="invite"
-                  locatie="blog_mid"
+                  placement="closing"
+                  locatie="blog_closing"
                   className="mt-14"
                 />
-              ) : null}
 
-              {sectiesNaMid.map((sectie, index) => {
-                const sectieIndex = midIndex + index;
-                return (
-                  <BlogSectie
-                    key={`${sectie.titel}-${String(sectieIndex)}`}
-                    sectie={sectie}
-                    anchorId={blogSectionDomId(artikel.slug, sectieIndex, sectie.titel)}
-                  />
-                );
-              })}
-
-              {artikel.stressPillarTurbo ? (
-                <aside className="mt-6 rounded-xl border border-stone-200/90 bg-[color-mix(in_srgb,var(--ps-bg)_96%,transparent)] px-6 py-6 md:px-7 md:py-8">
-                  <p className="font-display text-lg font-medium text-stone-900 md:text-xl">Meer diepgang bij stress?</p>
-                  <p className="mt-3 max-w-[70ch] text-[0.9375rem] leading-[1.75] text-stone-600">{artikel.stressPillarTurbo}</p>
-                  <Link
-                    href="/stress-verminderen-na-40"
-                    className="mt-4 inline-flex text-[0.875rem] font-medium text-stone-800 underline decoration-stone-300 decoration-1 underline-offset-[3px] transition hover:text-stone-950 hover:decoration-stone-500"
-                  >
-                    Lees de hoofdstuk‑gids: stress verminderen na 30
-                  </Link>
-                </aside>
-              ) : null}
-
-              {artikel.kernpunten && artikel.kernpunten.length > 0 ? (
-                <div className="mt-14">
-                  <BlogKernpunten punten={artikel.kernpunten} />
-                </div>
-              ) : null}
-
-              <div className="mt-14">
-                <BlogSamenvatting tekst={artikel.samenvatting} />
-              </div>
-
-              <BlogIntakeCTA
-                placement="closing"
-                locatie="blog_closing"
-                className="mt-14"
-              />
-
-              {artikel.supplementCTA ? (
-                <div className="mt-14">
-                  <BlogSupplementCTA cta={artikel.supplementCTA} />
-                </div>
-              ) : null}
-
-              <div className="mt-16 flex max-w-[72ch] flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-6">
-                <BlogCornerstoneLink link={artikel.cornerstoneLink} />
-                {artikel.vergelijkingExtraLink ? (
-                  <Link
-                    href={artikel.vergelijkingExtraLink.href}
-                    className="group inline-flex w-full flex-1 items-center justify-between gap-3 rounded-xl border border-stone-200/80 bg-gradient-to-b from-white to-stone-50/60 px-4 py-3.5 text-[0.875rem] font-semibold text-stone-700 shadow-[0_1px_2px_rgba(28,25,23,0.03)] transition-[border-color,color,background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-ps-green/45 hover:bg-ps-green-light/40 hover:text-ps-green hover:shadow-[0_4px_14px_rgba(90,143,106,0.16)] active:translate-y-0 sm:min-h-0 sm:max-w-fit"
-                  >
-                    <span>{artikel.vergelijkingExtraLink.label}</span>
-                    <span
-                      aria-hidden
-                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-stone-200/90 bg-white text-stone-400 transition-[transform,border-color,color] duration-200 ease-out motion-safe:group-hover:translate-x-0.5 group-hover:border-ps-green/45 group-hover:text-ps-green"
-                    >
-                      →
-                    </span>
-                  </Link>
+                {artikel.supplementCTA ? (
+                  <div className="mt-14">
+                    <BlogSupplementCTA cta={artikel.supplementCTA} />
+                  </div>
                 ) : null}
-              </div>
 
-              <div className="mt-20">
-                <ArticleReferentiesFooter
-                  referenties={artikel.referenties}
-                  laatstBijgewerktOp={laatst}
-                  wetenschappelijkGecontroleerdOp={laatst}
-                  verantwoordelijke={redacteur}
-                  aanvullendeDisclaimers={aanvullendeDisclaimerNodes}
-                />
+                <div className="mt-16 flex max-w-[72ch] flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-6">
+                  <BlogCornerstoneLink link={artikel.cornerstoneLink} />
+                  {artikel.vergelijkingExtraLink ? (
+                    <Link
+                      href={artikel.vergelijkingExtraLink.href}
+                      className="group inline-flex w-full flex-1 items-center justify-between gap-3 rounded-xl border border-stone-200/80 bg-gradient-to-b from-white to-stone-50/60 px-4 py-3.5 text-[0.875rem] font-semibold text-stone-700 shadow-[0_1px_2px_rgba(28,25,23,0.03)] transition-[border-color,color,background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-ps-green/45 hover:bg-ps-green-light/40 hover:text-ps-green hover:shadow-[0_4px_14px_rgba(90,143,106,0.16)] active:translate-y-0 sm:min-h-0 sm:max-w-fit"
+                    >
+                      <span>{artikel.vergelijkingExtraLink.label}</span>
+                      <span
+                        aria-hidden
+                        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-stone-200/90 bg-white text-stone-400 transition-[transform,border-color,color] duration-200 ease-out motion-safe:group-hover:translate-x-0.5 group-hover:border-ps-green/45 group-hover:text-ps-green"
+                      >
+                        →
+                      </span>
+                    </Link>
+                  ) : null}
+                </div>
+
+                <div className="mt-20">
+                  <ArticleReferentiesFooter
+                    referenties={artikel.referenties}
+                    laatstBijgewerktOp={laatst}
+                    wetenschappelijkGecontroleerdOp={laatst}
+                    verantwoordelijke={redacteur}
+                    aanvullendeDisclaimers={aanvullendeDisclaimerNodes}
+                  />
+                </div>
               </div>
             </ArticleBodyReadingChrome>
           </article>

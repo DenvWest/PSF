@@ -339,70 +339,74 @@ async function TermPage({ slug }: { slug: string }) {
                     sectionHref={`/kennisbank/${term.theme}`}
                   />
 
-                  <div className="mb-9 lg:hidden">
+                  {/* contents op mobiel: deze div en de nav in ArticleTableOfContents
+                      mogen sticky's containing block niet vernauwen tot hun eigen
+                      (kleine) hoogte — de al aanwezige relative ouder (children-slot
+                      van ArticleBodyReadingChrome) neemt die rol dan over. */}
+                  <div className="contents lg:block">
                     <ArticleTableOfContents items={tocItems} activeId={null} />
-                  </div>
 
-                  <section className={KB_SECTION_CLASS} aria-labelledby="wat-is-het">
-                    <h2 id="wat-is-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
-                      Wat is {term.term}?
-                    </h2>
-                    {renderParagraphs(term.content.whatIsIt)}
-                  </section>
+                    <section className={KB_SECTION_CLASS} aria-labelledby="wat-is-het">
+                      <h2 id="wat-is-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
+                        Wat is {term.term}?
+                      </h2>
+                      {renderParagraphs(term.content.whatIsIt)}
+                    </section>
 
-                  {bodyImage ? (
-                    <ArticleFigure
-                      src={bodyImage.src}
-                      alt={bodyImage.alt}
-                      caption={bodyImage.caption}
-                      className="mb-4 md:mb-6"
-                    />
-                  ) : null}
+                    {bodyImage ? (
+                      <ArticleFigure
+                        src={bodyImage.src}
+                        alt={bodyImage.alt}
+                        caption={bodyImage.caption}
+                        className="mb-4 md:mb-6"
+                      />
+                    ) : null}
 
-                  {planPhase ? <InsightPhaseNote planPhase={planPhase} /> : null}
+                    {planPhase ? <InsightPhaseNote planPhase={planPhase} /> : null}
 
-                  {isGated ? (
-                    <div className={`${KB_SECTION_CLASS} border-b-0`}>
-                      <KennisbankVerdiepingGate termSlug={term.slug} termName={term.term} />
-                    </div>
-                  ) : (
-                    <>
-                      <section className={KB_SECTION_CLASS} aria-labelledby="hoe-werkt-het">
-                        <h2 id="hoe-werkt-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
-                          Hoe werkt het?
-                        </h2>
-                        {renderParagraphs(term.content.howItWorks)}
-                      </section>
-
-                      <section className={KB_SECTION_CLASS} aria-labelledby="waarom-dit-ertoe-doet">
-                        <h2 id="waarom-dit-ertoe-doet" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
-                          Waarom dit ertoe doet voor jouw keuze
-                        </h2>
-                        {renderParagraphs(term.content.whyItMatters)}
-                      </section>
-
-                      {term.domeinMetBeperktCausaalBewijs ? (
-                        <aside
-                          className="mb-6 max-w-[72ch] rounded-lg border border-stone-200/90 bg-stone-50/80 px-4 py-3.5 text-[0.875rem] leading-relaxed text-stone-600 md:mb-8"
-                          role="note"
-                        >
-                          <strong className="font-semibold text-stone-800">Let op bij interpretatie:</strong> voor dit onderwerp
-                          is het causale interventiebewijs vaak beperkt, heterogeen of nog in ontwikkeling. De tekst beschrijft
-                          mechanismen en associaties uit de literatuur; dat is niet hetzelfde als een persoonlijke aanbeveling
-                          of een zorgpad.
-                        </aside>
-                      ) : null}
-
-                      <div className="mt-4 md:mt-6">
-                        <ArticleReferentiesFooter
-                          referenties={term.referenties}
-                          laatstBijgewerktOp={laatstDatum}
-                          wetenschappelijkGecontroleerdOp={laatstDatum}
-                          verantwoordelijke={verantwoordelijke}
-                        />
+                    {isGated ? (
+                      <div className={`${KB_SECTION_CLASS} border-b-0`}>
+                        <KennisbankVerdiepingGate termSlug={term.slug} termName={term.term} />
                       </div>
-                    </>
-                  )}
+                    ) : (
+                      <>
+                        <section className={KB_SECTION_CLASS} aria-labelledby="hoe-werkt-het">
+                          <h2 id="hoe-werkt-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
+                            Hoe werkt het?
+                          </h2>
+                          {renderParagraphs(term.content.howItWorks)}
+                        </section>
+
+                        <section className={KB_SECTION_CLASS} aria-labelledby="waarom-dit-ertoe-doet">
+                          <h2 id="waarom-dit-ertoe-doet" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
+                            Waarom dit ertoe doet voor jouw keuze
+                          </h2>
+                          {renderParagraphs(term.content.whyItMatters)}
+                        </section>
+
+                        {term.domeinMetBeperktCausaalBewijs ? (
+                          <aside
+                            className="mb-6 max-w-[72ch] rounded-lg border border-stone-200/90 bg-stone-50/80 px-4 py-3.5 text-[0.875rem] leading-relaxed text-stone-600 md:mb-8"
+                            role="note"
+                          >
+                            <strong className="font-semibold text-stone-800">Let op bij interpretatie:</strong> voor dit onderwerp
+                            is het causale interventiebewijs vaak beperkt, heterogeen of nog in ontwikkeling. De tekst beschrijft
+                            mechanismen en associaties uit de literatuur; dat is niet hetzelfde als een persoonlijke aanbeveling
+                            of een zorgpad.
+                          </aside>
+                        ) : null}
+
+                        <div className="mt-4 md:mt-6">
+                          <ArticleReferentiesFooter
+                            referenties={term.referenties}
+                            laatstBijgewerktOp={laatstDatum}
+                            wetenschappelijkGecontroleerdOp={laatstDatum}
+                            verantwoordelijke={verantwoordelijke}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </ArticleBodyReadingChrome>
               </article>
             </ArticleReadingFrame>
