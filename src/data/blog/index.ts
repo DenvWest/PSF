@@ -43,6 +43,16 @@ import { vitamineDEnSlaapData } from "./vitamine-d-en-slaap";
 import { multivitamineZinvolNa40Data } from "./multivitamine-zinvol-na-40";
 import { zoutKaliumBloeddrukNa40Data } from "./zout-kalium-bloeddruk-na-40";
 import { cornerstoneSupplementenArtikelen } from "./cornerstone-supplementen";
+import { overgangSlaapproblemenOpvliegersData } from "./overgang-slaapproblemen-opvliegers";
+import { overgangBuikvetGewichtstoenameData } from "./overgang-buikvet-gewichtstoename";
+import { overgangStressCortisolData } from "./overgang-stress-cortisol";
+import { magnesiumInDeOvergangData } from "./magnesium-in-de-overgang";
+import { vitamineDBotgezondheidOvergangData } from "./vitamine-d-botgezondheid-overgang";
+import { buikvetCortisolSlaapMannenData } from "./buikvet-cortisol-slaap-mannen";
+import { slaapkwaliteitTestosteronHerstelData } from "./slaapkwaliteit-testosteron-herstel";
+import { vermoeidheidBloedwaardenCheckenMannenData } from "./vermoeidheid-bloedwaarden-checken-mannen";
+import { magnesiumHerstelMannen40Data } from "./magnesium-herstel-mannen-40";
+import { krachtverliesEiwitbehoefteNa40Data } from "./krachtverlies-eiwitbehoefte-na-40";
 
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
 
@@ -91,6 +101,16 @@ export const alleArtikelen: BlogArtikel[] = [
   vitamineDEnSlaapData,
   multivitamineZinvolNa40Data,
   zoutKaliumBloeddrukNa40Data,
+  overgangSlaapproblemenOpvliegersData,
+  overgangBuikvetGewichtstoenameData,
+  overgangStressCortisolData,
+  magnesiumInDeOvergangData,
+  vitamineDBotgezondheidOvergangData,
+  buikvetCortisolSlaapMannenData,
+  slaapkwaliteitTestosteronHerstelData,
+  vermoeidheidBloedwaardenCheckenMannenData,
+  magnesiumHerstelMannen40Data,
+  krachtverliesEiwitbehoefteNa40Data,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>

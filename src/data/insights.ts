@@ -65,6 +65,10 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   "multivitamine-zinvol-na-40": "voeding",
   multivitamine: "voeding",
   "magnesium-in-combinatie-met-medicijnen": "voeding",
+  "magnesium-in-de-overgang": "slaap",
+  "magnesium-herstel-mannen-40": "herstel",
+  "krachtverlies-eiwitbehoefte-na-40": "voeding",
+  "vitamine-d-botgezondheid-overgang": "voeding",
 };
 
 function parseLeestijdMinuten(leestijd: string): number {

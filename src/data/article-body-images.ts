@@ -51,7 +51,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "ashwagandha-werking-mannen": img(
     "blog",
     "ashwagandha-werking-mannen",
-    "Gedroogde kruidenwortels in een houten schaal",
+    "Gedroogde ashwagandha-wortelstukken in een keramieken schaal",
     "Ashwagandha wordt onderzocht als adaptogeen; de wortel zelf zegt niets over dosering of productkwaliteit.",
   ),
   "slaap-verbeteren-40-plus": img(
@@ -147,7 +147,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "eiwitinname-timing-mannen-40": img(
     "blog",
     "eiwitinname-timing-mannen-40",
-    "Lunchbox met een evenwichtige maaltijd klaar voor onderweg",
+    "Mealprep-bakjes met kip, eieren en yoghurt voor eiwit over de dag",
     "Eiwitinname-timing na 40: een portie rond training en bij elke maaltijd is praktischer dan één grote piek.",
   ),
   "middagdip-bloedsuiker-na-40": img(
@@ -165,7 +165,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "alcohol-slaap-energie-na-40": img(
     "blog",
     "alcohol-slaap-energie-na-40",
-    "Leeg wijnglas of een late kop koffie op een tafel in avondlicht",
+    "Wijnglas op de voorgrond met een slaapkamer en kussen op de achtergrond",
     "Alcohol, slaap en energie: een avondglas of late cafeïne kan inslapen makkelijker maken, maar haalt diepe slaap onderuit.",
   ),
   "zout-kalium-bloeddruk-na-40": img(
@@ -213,7 +213,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "vitamine-d-hoge-doses-social-media": img(
     "blog",
     "vitamine-d-hoge-doses-social-media",
-    "Smartphone naast een open supplementpotje",
+    "Smartphone in de hand met vitamine D-capsules zacht op de achtergrond",
     "Hoge doses vitamine D op social media klinken overtuigend, maar megadoses vragen om labcontrole — niet om een trend.",
   ),
   "creatine-en-herstel": img(
@@ -273,7 +273,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "omega-3-en-herstel": img(
     "blog",
     "omega-3-en-herstel",
-    "Zalmfilet op een snijplank naast citroen",
+    "Gegrilde zalmfilet met omega-3-capsules en citroen",
     "Omega-3 en herstel: EPA en DHA spelen een rol bij ontstekingsresolutie na inspanning.",
   ),
   "multivitamine-zinvol-na-40": img(
@@ -291,13 +291,13 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "wat-is-omega-3": img(
     "blog",
     "wat-is-omega-3",
-    "Makreel of haring op een eenvoudig bord",
+    "Omega-3-softgels naast een verse zalmfilet",
     "Wat is omega-3: het gaat om EPA en DHA uit vis, niet om elk plantaardig oliezuur op een etiket.",
   ),
   "waar-let-je-op-bij-omega-3": img(
     "blog",
     "waar-let-je-op-bij-omega-3",
-    "Supplementetiket en een notitieboek bij daglicht",
+    "Visoliecapsules en een flesje naast een leeg notitieblok bij het vergelijken",
     "Waar let je op bij omega-3: dosis EPA/DHA, TOTOX of verse geur, en of de claim de inhoud dekt.",
   ),
   "beste-magnesium": img(
@@ -311,6 +311,66 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "supplement-kiezen-waar-op-letten",
     "Checklist en loep bij een supplementetiket",
     "Een supplement kiezen begint bij het etiket: dosis, vorm, keurmerk en wat er juist niet op staat.",
+  ),
+  "overgang-slaapproblemen-opvliegers": img(
+    "blog",
+    "overgang-slaapproblemen-opvliegers",
+    "Koel opgemaakt bed met een dun dekbed en los laken",
+    "Een koele slaapkamer met laag-voor-laag beddengoed dempt het effect van nachtelijke opvliegers op je slaap.",
+  ),
+  "overgang-buikvet-gewichtstoename": img(
+    "blog",
+    "overgang-buikvet-gewichtstoename",
+    "Persoon die krachttraining doet met een halter",
+    "Krachttraining behoudt spiermassa en ondersteunt de stofwisseling die in de overgang geleidelijk daalt.",
+  ),
+  "overgang-stress-cortisol": img(
+    "blog",
+    "overgang-stress-cortisol",
+    "Persoon die buiten rustig ademhaalt bij daglicht",
+    "Regelmaat en ademhaling dempen een stresssysteem dat in de overgang gevoeliger reageert op dezelfde prikkels.",
+  ),
+  "magnesium-in-de-overgang": img(
+    "blog",
+    "magnesium-in-de-overgang",
+    "Magnesiumcapsules naast een glas water op een nachtkastje",
+    "Magnesium ondersteunt slaap en spierontspanning in de overgang, maar is geen bewezen middel tegen opvliegers.",
+  ),
+  "vitamine-d-botgezondheid-overgang": img(
+    "blog",
+    "vitamine-d-botgezondheid-overgang",
+    "Wandelaar in zonlicht op een pad buiten",
+    "Vitamine D ondersteunt calciumopname voor de botten, maar vervangt niet de oestrogeenbescherming die wegvalt.",
+  ),
+  "buikvet-cortisol-slaap-mannen": img(
+    "blog",
+    "buikvet-cortisol-slaap-mannen",
+    "Hardloper die in de vroege ochtend buiten traint",
+    "Voldoende slaap en minder chronische stress remmen de cortisolgedreven opslag van buikvet sterker dan een dieet alleen.",
+  ),
+  "slaapkwaliteit-testosteron-herstel": img(
+    "blog",
+    "slaapkwaliteit-testosteron-herstel",
+    "Persoon die uitgerust wakker wordt in een lichte slaapkamer",
+    "De hoogste testosteronaanmaak vindt plaats in de vroege, diepe slaap — slaapkwaliteit telt zwaarder dan het aantal uren.",
+  ),
+  "vermoeidheid-bloedwaarden-checken-mannen": img(
+    "blog",
+    "vermoeidheid-bloedwaarden-checken-mannen",
+    "Bloedafnamebuisjes in een laboratoriumrek",
+    "Vitamine D, B12, ijzer en schildklierwaarden zijn de eerste bloedwaarden die aanhoudende vermoeidheid kunnen verklaren.",
+  ),
+  "magnesium-herstel-mannen-40": img(
+    "blog",
+    "magnesium-herstel-mannen-40",
+    "Sporttas en bidon in een kleedkamer na training",
+    "Magnesium ondersteunt spierherstel, maar een groot deel van trager herstel na 30 komt door anabole resistentie.",
+  ),
+  "krachtverlies-eiwitbehoefte-na-40": img(
+    "blog",
+    "krachtverlies-eiwitbehoefte-na-40",
+    "Eiwitrijke maaltijd met vlees, eieren en groenten",
+    "Oudere spieren hebben meer eiwit per maaltijd nodig om dezelfde opbouwprikkel te bereiken als jongere spieren.",
   ),
 };
 

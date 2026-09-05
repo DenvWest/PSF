@@ -244,6 +244,30 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   claimdekking: { theme: "nutrition" },
   etikettransparantie: { theme: "nutrition" },
   "onafhankelijke-toetsing": { theme: "nutrition" },
+  "overgang-slaapproblemen-opvliegers": { theme: "sleep" },
+  "overgang-buikvet-gewichtstoename": { theme: "movement" },
+  "overgang-stress-cortisol": { theme: "stress", gapSignal: "cortisol_risk" },
+  "magnesium-in-de-overgang": {
+    theme: "sleep",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "vitamine-d-botgezondheid-overgang": {
+    theme: "nutrition",
+    relatedSupplementId: "vitamine-d3",
+  },
+  "buikvet-cortisol-slaap-mannen": { theme: "stress", gapSignal: "cortisol_risk" },
+  "slaapkwaliteit-testosteron-herstel": { theme: "sleep" },
+  "vermoeidheid-bloedwaarden-checken-mannen": { theme: "nutrition" },
+  "magnesium-herstel-mannen-40": {
+    theme: "movement",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "krachtverlies-eiwitbehoefte-na-40": {
+    theme: "movement",
+    gapSignal: "protein_gap_signal",
+  },
 };
 
 export function getContentMetadata(slug: string): ContentMetadata {

@@ -22,6 +22,13 @@ const vrouwenTitels = new Set(
     .map((item) => item.title),
 );
 
+/** Titels van alles wat expliciet vanuit de mannelijke fysiologie is geschreven. */
+const mannenTitels = new Set(
+  blogItems
+    .filter((item) => item.audience === "mannen")
+    .map((item) => item.title),
+);
+
 describe("bibliotheek — publiekslens", () => {
   it("verbergt niets: het totaal blijft gelijk in elke lens", () => {
     const { rerender } = render(<BlogLibrary items={blogItems} />);
@@ -42,10 +49,10 @@ describe("bibliotheek — publiekslens", () => {
     expect(screen.getByText("Voor iedereen")).toBeTruthy();
   });
 
-  it("laat de mannen-lens met de testosteronpijler beginnen", () => {
+  it("zet in de mannen-lens de eigen fysiologie bovenaan", () => {
     render(<BlogLibrary items={blogItems} initialAudience="mannen" />);
 
-    expect(kaartTitels()[0]).toMatch(/Testosteron na 40/);
+    expect(mannenTitels.has(kaartTitels()[0])).toBe(true);
   });
 
   it("schakelen van lens herordent zonder de lijst leeg te maken", () => {
