@@ -5,8 +5,10 @@ import {
     BlogArticleExcerpt,
     BlogArticleIntro,
 } from "@/components/blog/BlogArticleIntro";
+import ArticleFigure from "@/components/article/ArticleFigure";
 import ContentSection from "@/components/ui/ContentSection";
-import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
+import { buildArticlePageMetadata, getBlogPostBySlug, getCoverImageSrc } from "@/data/blog-posts";
+import { blogBodyImage } from "@/data/article-body-images";
 import {
     attentionPoints,
     mistakes,
@@ -29,6 +31,8 @@ export default function WaarLetJeOpBijOmega3Page() {
     if (!post) {
         throw new Error("Blog post waar-let-je-op-bij-omega-3 ontbreekt");
     }
+    const coverSrc = getCoverImageSrc(post);
+    const bodyImage = blogBodyImage(post.slug);
 
     return (
         <main className="text-stone-900">
@@ -80,6 +84,16 @@ export default function WaarLetJeOpBijOmega3Page() {
                                 Vergelijk supplementen
                             </Link>
                         </div>
+
+                        {coverSrc ? (
+                            <ArticleFigure
+                                src={coverSrc}
+                                alt={post.coverImageAlt}
+                                caption={post.coverImageAlt}
+                                priority
+                                className="mt-12 max-w-4xl"
+                            />
+                        ) : null}
                     </div>
                 </Container>
             </section>
@@ -102,6 +116,17 @@ export default function WaarLetJeOpBijOmega3Page() {
                     ))}
                 </div>
             </ContentSection>
+
+            {bodyImage ? (
+                <Container>
+                    <ArticleFigure
+                        src={bodyImage.src}
+                        alt={bodyImage.alt}
+                        caption={bodyImage.caption}
+                        className="mt-4 mb-4 max-w-4xl md:mt-8"
+                    />
+                </Container>
+            ) : null}
 
             {/* 3. EPA en DHA uitgelegd */}
             <section className="border-t border-stone-100 py-12 md:py-16">

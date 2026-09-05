@@ -7,11 +7,26 @@ import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
+import ArticleFigure from "@/components/article/ArticleFigure";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { testosteronNa40References } from "@/data/references/testosteron-na-40";
 
 const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
+
+const COVER = {
+  src: "/images/blog/testosteron-na-40.jpg",
+  alt: "Man die krachttraining doet met een barbell in de gym",
+  caption:
+    "Testosteron na 30 hangt samen met slaap, stress en training — niet alleen met één hormoonwaarde.",
+};
+
+const BODY_IMAGE = {
+  src: "/images/blog/inline/testosteron-na-40.jpg",
+  alt: "Man die biceps curls doet met een stang in de sportschool",
+  caption:
+    "Krachttraining en herstel zijn praktische hefbomen naast slaap en stress — zonder snelle hormoonbeloftes.",
+};
 
 export const metadata: Metadata = {
   title: "Testosteron na 30: wat verandert en wat helpt",
@@ -24,6 +39,7 @@ export const metadata: Metadata = {
       "Wat verandert na 30, wat onderzoek redelijkerwijs zegt en welke stappen je veilig eerst zet.",
     url: "/testosteron-na-40",
     type: "article",
+    images: [{ url: COVER.src, alt: COVER.alt }],
   },
 };
 
@@ -33,6 +49,7 @@ const articleSchema = {
   headline: "Testosteron Na 30: Wat Verandert en Wat Je Zelf Kunt Doen",
   description:
     "Testosteron na 30: leefstijl, verwachtingen en wanneer medische hulp past.",
+  image: [`https://perfectsupplement.nl${COVER.src}`],
   author: {
     "@type": "Organization",
     name: "PerfectSupplement",
@@ -112,6 +129,14 @@ export default function TestosteronNa40Page() {
                   Bijgewerkt: mei 2026 · Leestijd: 14 min
                 </p>
               </header>
+
+              <ArticleFigure
+                src={COVER.src}
+                alt={COVER.alt}
+                caption={COVER.caption}
+                priority
+                className="mt-8"
+              />
 
               <nav
                 aria-label="Inhoudsopgave"
@@ -205,6 +230,13 @@ export default function TestosteronNa40Page() {
                   huisarts te bespreken.
                 </p>
               </section>
+
+              <ArticleFigure
+                src={BODY_IMAGE.src}
+                alt={BODY_IMAGE.alt}
+                caption={BODY_IMAGE.caption}
+                className="mt-12"
+              />
 
               <section id="wat-verandert" className="mt-14 scroll-mt-24">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">

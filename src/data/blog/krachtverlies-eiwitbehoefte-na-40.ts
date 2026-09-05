@@ -7,7 +7,7 @@ export const krachtverliesEiwitbehoefteNa40Data: BlogArtikel = {
   audience: "mannen",
   titel: "Krachtverlies na 30: waarom je eiwitbehoefte stijgt, niet daalt",
   coverImage: "/images/blog/krachtverlies-eiwitbehoefte-na-40.jpg",
-  coverImageAlt: "Man tijdens krachttraining in de sportschool",
+  coverImageAlt: "Rij dumbbells in de sportschool",
   heroIntro:
     "Merkbaar minder kracht dan een paar jaar geleden, ondanks dezelfde training? Vanaf ongeveer je dertigste begint sarcopenie — leeftijdsgerelateerd spierverlies — geleidelijk mee te tellen, en de gangbare eiwitaanbeveling is daar niet op berekend. Dit artikel legt uit waarom de behoefte omhoog gaat in plaats van omlaag, los van creatine of andere supplementen.",
   leestijd: "9 min",

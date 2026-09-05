@@ -56,7 +56,7 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2025-03-15",
     readingTime: "8 min",
     coverImageAlt:
-      "Ondersteunende afbeelding bij uitleg over omega-3 vetzuren EPA en DHA in supplementen.",
+      "Verse zalm, sardines en visolie als omega-3-bronnen",
     seoTitle: "Wat is omega-3? EPA, DHA en supplementen inhoudelijk uitgelegd",
     metaDescription:
       "Wat is omega-3? Informatie over EPA en DHA, het verschil tussen bronnen en waarom samenstelling bij supplementen belangrijk is voor vergelijken.",
@@ -78,7 +78,7 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2025-03-10",
     readingTime: "12 min",
     coverImageAlt:
-      "Visueel bij artikel over omega-3 kiezen: vergelijken op samenstelling, dosering en prijs per dag.",
+      "Omega-3-capsules en potjes naast verse vis bij het vergelijken",
     seoTitle:
       "Omega-3 supplement kiezen: waar let je op bij EPA, DHA en prijs?",
     metaDescription:

@@ -5,9 +5,11 @@ import {
     BlogArticleExcerpt,
     BlogArticleIntro,
 } from "@/components/blog/BlogArticleIntro";
+import ArticleFigure from "@/components/article/ArticleFigure";
 import ContentSection from "@/components/ui/ContentSection";
 import RelatedPages from "@/components/ui/RelatedPages";
-import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
+import { buildArticlePageMetadata, getBlogPostBySlug, getCoverImageSrc } from "@/data/blog-posts";
+import { blogBodyImage } from "@/data/article-body-images";
 import {
     keyPoints,
     supplementPoints,
@@ -49,6 +51,8 @@ export default function WhatIsOmega3Page() {
     if (!post) {
         throw new Error("Blog post wat-is-omega-3 ontbreekt");
     }
+    const coverSrc = getCoverImageSrc(post);
+    const bodyImage = blogBodyImage(post.slug);
 
     return (
         <main className="text-stone-900">
@@ -98,6 +102,16 @@ export default function WhatIsOmega3Page() {
                                     Bekijk beste keuzes
                                 </Link>
                             </div>
+
+                            {coverSrc ? (
+                                <ArticleFigure
+                                    src={coverSrc}
+                                    alt={post.coverImageAlt}
+                                    caption={post.coverImageAlt}
+                                    priority
+                                    className="mt-12 max-w-4xl"
+                                />
+                            ) : null}
                         </section>
                     </Container>
                 </div>
@@ -136,6 +150,17 @@ export default function WhatIsOmega3Page() {
                         .
                     </p>
                 </ContentSection>
+
+                {bodyImage ? (
+                    <Container>
+                        <ArticleFigure
+                            src={bodyImage.src}
+                            alt={bodyImage.alt}
+                            caption={bodyImage.caption}
+                            className="mt-4 mb-4 max-w-4xl md:mt-8"
+                        />
+                    </Container>
+                ) : null}
 
                 <ContentSection
                     title="Wat betekent dit voor supplementen?"

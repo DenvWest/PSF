@@ -7,7 +7,7 @@ export const vermoeidheidBloedwaardenCheckenMannenData: BlogArtikel = {
   audience: "mannen",
   titel: "Structureel moe na 30: welke bloedwaarden de moeite waard zijn",
   coverImage: "/images/blog/vermoeidheid-bloedwaarden-checken-mannen.jpg",
-  coverImageAlt: "Man van middelbare leeftijd tijdens een bloedafname bij de huisarts",
+  coverImageAlt: "Laboratoriumbuisjes en pipet bij bloedonderzoek",
   heroIntro:
     "Voordat je aan een supplement begint tegen vermoeidheid, is het de moeite waard om te weten of er iets aantoonbaars aan ten grondslag ligt. Een aantal tekorten geeft namelijk letterlijk het symptoom 'weinig energie' — en die zijn met een simpele bloedtest uit te sluiten of te bevestigen. Dit artikel zet de waarden op een rij die de moeite waard zijn om te bespreken met je huisarts.",
   leestijd: "8 min",

@@ -7,7 +7,7 @@ export const overgangStressCortisolData: BlogArtikel = {
   audience: "vrouwen",
   titel: "Waarom je in de overgang sneller over je toeren raakt",
   coverImage: "/images/blog/overgang-stress-cortisol.jpg",
-  coverImageAlt: "Vrouw van middelbare leeftijd die even pauzeert en ademhaalt",
+  coverImageAlt: "Persoon in yogahouding bij zonsondergang aan het water",
   heroIntro:
     "Dezelfde drukte als vorig jaar, maar nu voelt het zwaarder — sneller geïrriteerd, moeilijker ontspannen, een kort lontje dat er eerder niet was. Dat is niet 'gewoon drukte', maar een herkenbaar patroon dat samenhangt met wat er hormonaal gebeurt in deze fase. Achtergrond over de bredere overgang staat in [de overgangsgids](/overgang).",
   leestijd: "8 min",

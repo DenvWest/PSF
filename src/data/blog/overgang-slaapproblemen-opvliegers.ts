@@ -7,7 +7,7 @@ export const overgangSlaapproblemenOpvliegersData: BlogArtikel = {
   audience: "vrouwen",
   titel: "Overgang en slecht slapen: waarom opvliegers je nachtrust breken",
   coverImage: "/images/blog/overgang-slaapproblemen-opvliegers.jpg",
-  coverImageAlt: "Vrouw van middelbare leeftijd die 's nachts wakker ligt in bed",
+  coverImageAlt: "Opgemaakt bed in een rustige slaapkamer",
   heroIntro:
     "Wakker schieten van een hittegolf, het dekbed eraf, drijfnat weer onder — en dan een uur wakker liggen voor je weer wegzakt. Ongeveer de helft van de vrouwen in de overgang heeft hier last van, en het is geen toeval dat het uitgerekend nu begint. Dit artikel legt uit wat er hormonaal verandert en welke aanpassingen volgens onderzoek het meeste verschil maken. Achtergrond over de hele overgangsfase staat in [de overgangsgids](/overgang).",
   leestijd: "9 min",

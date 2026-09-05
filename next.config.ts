@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: projectRoot,
   },
+  // AVIF eerst (kleinere LCP-bytes), WebP als fallback. Bronbestanden blijven .jpg.
+  // Productie: Nginx moet de Accept-header doorsturen naar Next, anders geen AVIF.
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
   async redirects() {
     return [
       {

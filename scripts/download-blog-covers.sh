@@ -47,7 +47,9 @@ MAP=(
   "creatine-en-brein-slaaptekort|1511988617509-a57c8a288659"
   "creatine-voor-vrouwen-na-40|1518611012118-696072aa579a"
   "vitamine-d-en-k2-samen|1550572017-edd951b55104"
-  "vitamine-d-hoge-doses-social-media|1611162617474-5b21e879e113"
+  "vitamine-d-hoge-doses-social-media|1614440562463-5bb4a862db46"
+  "overgang|1573497019940-1c28c88b4f3e"
+  "testosteron-na-40|1605296867304-46d5465a13f1"
   "zink-en-testosteron|1476224203421-9ac39bcb3327"
   "omega-3-en-herstel|1565299624946-b28f40a0ae38"
   "multivitamine-zinvol-na-40|1556910103-1c02745aae4d"
@@ -56,6 +58,15 @@ MAP=(
   "waar-let-je-op-bij-omega-3|1486312338219-ce68d2c6f44d"
   "beste-magnesium|1522202176988-66273c2fd55f"
   "supplement-kiezen-waar-op-letten|1454165804606-c3d57bc86b40"
+  "buikvet-cortisol-slaap-mannen|1476480862126-209bfaa8edc8"
+  "krachtverlies-eiwitbehoefte-na-40|1576678927484-cc907957088c"
+  "magnesium-herstel-mannen-40|1587854692152-cbe660dbde88"
+  "slaapkwaliteit-testosteron-herstel|1522771739844-6a9f6d5f14af"
+  "vermoeidheid-bloedwaarden-checken-mannen|1532187863486-abf9dbad1b69"
+  "overgang-slaapproblemen-opvliegers|1540518614846-7eded433c457"
+  "overgang-buikvet-gewichtstoename|1541534741688-6078c6bfb5c5"
+  "overgang-stress-cortisol|1544367567-0f2fcb009e0b"
+  "vitamine-d-botgezondheid-overgang|1472214103451-9374bd1c798e"
 )
 
 # Fix duplicates: vitamine-d-zon and melatonine-na-40 share; vitamine-d-seizoenen and tekort share

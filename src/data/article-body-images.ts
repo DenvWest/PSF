@@ -81,7 +81,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "magnesium-in-combinatie-met-medicijnen": img(
     "blog",
     "magnesium-in-combinatie-met-medicijnen",
-    "Medicijndoosjes naast een glazen waterfles op een tafel",
+    "Magnesiumcapsules naast medicijnblisters en een glas water",
     "Magnesium in combinatie met medicijnen verdient extra aandacht: timing en interacties verschillen per middel.",
   ),
   "melatonine-wanneer-wel-niet": img(
@@ -141,7 +141,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "eiwit-na-40": img(
     "blog",
     "eiwit-na-40",
-    "Eiwitrijke maaltijd met vis, peulvruchten en groenten",
+    "Eiwitshake naast eieren en yoghurt op een aanrecht",
     "Eiwit na 40 ondersteunt spierbehoud; de verdeling over de dag telt minstens zo zwaar als het dagtotaal.",
   ),
   "eiwitinname-timing-mannen-40": img(
@@ -153,7 +153,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "middagdip-bloedsuiker-na-40": img(
     "blog",
     "middagdip-bloedsuiker-na-40",
-    "Tussendoortje met noten en fruit naast een glas water",
+    "Kop latte met stoom in zacht middaglicht",
     "Een middagdip hangt vaak samen met bloedsuiker: eiwit en vezels dempen de piek na de lunch.",
   ),
   "krachttraining-na-40": img(
@@ -183,7 +183,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "vitamine-d-zon-nederland": img(
     "blog",
     "vitamine-d-zon-nederland",
-    "Lage winterzon boven een polderlandschap",
+    "Lage winterzon boven een Nederlandse polder met kanaal",
     "Vitamine D uit zonlicht is in Nederland een seizoensverhaal: van oktober tot maart is de UV-index vaak te laag.",
   ),
   "vitamine-d-meten-wanneer-zinvol": img(
@@ -213,7 +213,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "vitamine-d-hoge-doses-social-media": img(
     "blog",
     "vitamine-d-hoge-doses-social-media",
-    "Smartphone in de hand met vitamine D-capsules zacht op de achtergrond",
+    "Persoon die buiten een foto maakt met een smartphone",
     "Hoge doses vitamine D op social media klinken overtuigend, maar megadoses vragen om labcontrole — niet om een trend.",
   ),
   "creatine-en-herstel": img(
@@ -267,7 +267,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "zink-en-testosteron": img(
     "blog",
     "zink-en-testosteron",
-    "Pompoenpitten, oesters en noten op een houten plank",
+    "Gegrild vlees, oesters en pompoenpitten als zinkrijke voeding",
     "Zink en testosteron: een tekort kan hormonen raken, maar extra zink boven de behoefte is geen boost.",
   ),
   "omega-3-en-herstel": img(
@@ -312,46 +312,16 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "Checklist en loep bij een supplementetiket",
     "Een supplement kiezen begint bij het etiket: dosis, vorm, keurmerk en wat er juist niet op staat.",
   ),
-  "overgang-slaapproblemen-opvliegers": img(
-    "blog",
-    "overgang-slaapproblemen-opvliegers",
-    "Koel opgemaakt bed met een dun dekbed en los laken",
-    "Een koele slaapkamer met laag-voor-laag beddengoed dempt het effect van nachtelijke opvliegers op je slaap.",
-  ),
-  "overgang-buikvet-gewichtstoename": img(
-    "blog",
-    "overgang-buikvet-gewichtstoename",
-    "Persoon die krachttraining doet met een halter",
-    "Krachttraining behoudt spiermassa en ondersteunt de stofwisseling die in de overgang geleidelijk daalt.",
-  ),
-  "overgang-stress-cortisol": img(
-    "blog",
-    "overgang-stress-cortisol",
-    "Persoon die buiten rustig ademhaalt bij daglicht",
-    "Regelmaat en ademhaling dempen een stresssysteem dat in de overgang gevoeliger reageert op dezelfde prikkels.",
-  ),
-  "magnesium-in-de-overgang": img(
-    "blog",
-    "magnesium-in-de-overgang",
-    "Magnesiumcapsules naast een glas water op een nachtkastje",
-    "Magnesium ondersteunt slaap en spierontspanning in de overgang, maar is geen bewezen middel tegen opvliegers.",
-  ),
-  "vitamine-d-botgezondheid-overgang": img(
-    "blog",
-    "vitamine-d-botgezondheid-overgang",
-    "Wandelaar in zonlicht op een pad buiten",
-    "Vitamine D ondersteunt calciumopname voor de botten, maar vervangt niet de oestrogeenbescherming die wegvalt.",
-  ),
   "buikvet-cortisol-slaap-mannen": img(
     "blog",
     "buikvet-cortisol-slaap-mannen",
-    "Hardloper die in de vroege ochtend buiten traint",
+    "Wandelaar of hardloper buiten op een pad",
     "Voldoende slaap en minder chronische stress remmen de cortisolgedreven opslag van buikvet sterker dan een dieet alleen.",
   ),
   "slaapkwaliteit-testosteron-herstel": img(
     "blog",
     "slaapkwaliteit-testosteron-herstel",
-    "Persoon die uitgerust wakker wordt in een lichte slaapkamer",
+    "Lichte slaapkamer met wit beddengoed in ochtendlicht",
     "De hoogste testosteronaanmaak vindt plaats in de vroege, diepe slaap — slaapkwaliteit telt zwaarder dan het aantal uren.",
   ),
   "vermoeidheid-bloedwaarden-checken-mannen": img(
@@ -371,6 +341,36 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "krachtverlies-eiwitbehoefte-na-40",
     "Eiwitrijke maaltijd met vlees, eieren en groenten",
     "Oudere spieren hebben meer eiwit per maaltijd nodig om dezelfde opbouwprikkel te bereiken als jongere spieren.",
+  ),
+  "overgang-slaapproblemen-opvliegers": img(
+    "blog",
+    "overgang-slaapproblemen-opvliegers",
+    "Koel opgemaakt bed met een dun dekbed en los laken",
+    "Een koele slaapkamer met laag-voor-laag beddengoed dempt het effect van nachtelijke opvliegers op je slaap.",
+  ),
+  "overgang-buikvet-gewichtstoename": img(
+    "blog",
+    "overgang-buikvet-gewichtstoename",
+    "Persoon die krachttraining doet met een barbell",
+    "Krachttraining behoudt spiermassa en ondersteunt de stofwisseling die in de overgang geleidelijk daalt.",
+  ),
+  "overgang-stress-cortisol": img(
+    "blog",
+    "overgang-stress-cortisol",
+    "Persoon in yogahouding bij zonsondergang",
+    "Regelmaat en ademhaling dempen een stresssysteem dat in de overgang gevoeliger reageert op dezelfde prikkels.",
+  ),
+  "vitamine-d-botgezondheid-overgang": img(
+    "blog",
+    "vitamine-d-botgezondheid-overgang",
+    "Landschap in warm zonlicht tussen heuvels",
+    "Vitamine D ondersteunt calciumopname voor de botten, maar vervangt niet de oestrogeenbescherming die wegvalt.",
+  ),
+  "magnesium-in-de-overgang": img(
+    "blog",
+    "magnesium-in-de-overgang",
+    "Magnesiumcapsules naast een glas water op een nachtkastje",
+    "Magnesium ondersteunt slaap en spierontspanning in de overgang, maar is geen bewezen middel tegen opvliegers.",
   ),
 };
 

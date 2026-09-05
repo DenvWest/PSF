@@ -7,7 +7,7 @@ export const overgangBuikvetGewichtstoenameData: BlogArtikel = {
   audience: "vrouwen",
   titel: "Buikvet en gewichtstoename in de overgang: wat er verandert",
   coverImage: "/images/blog/overgang-buikvet-gewichtstoename.jpg",
-  coverImageAlt: "Vrouw van middelbare leeftijd die wandelt in de buitenlucht",
+  coverImageAlt: "Vrouw die krachttraining doet met een barbell",
   heroIntro:
     "Hetzelfde eten, dezelfde beweging, en toch verschuift er iets — vaak rond het middel. Dat is geen inbeelding en ook geen kwestie van 'minder discipline'. De verschuiving in vetverdeling tijdens de overgang heeft een aanwijsbare hormonale basis, met een paar leefstijlfactoren die het verschil versterken of juist afremmen. Meer over de bredere fase in [de overgangsgids](/overgang).",
   leestijd: "8 min",

@@ -7,7 +7,7 @@ export const vitamineDBotgezondheidOvergangData: BlogArtikel = {
   audience: "vrouwen",
   titel: "Vitamine D en botgezondheid rond de overgang",
   coverImage: "/images/blog/vitamine-d-botgezondheid-overgang.jpg",
-  coverImageAlt: "Vrouw van middelbare leeftijd die buiten wandelt in zonlicht",
+  coverImageAlt: "Groen landschap in warm zonlicht tussen heuvels",
   heroIntro:
     "Botdichtheid is niet iets waar je op je vijfenveertigste al aan denkt — tot je leest dat het versnelde botverlies precies rond de overgang begint. Oestrogeen beschermt namelijk actief tegen botafbraak, en die bescherming valt weg op het moment dat je hem het hardst nodig hebt. Vitamine D speelt hierin een ondersteunende, niet-vervangende rol. Achtergrond over de bredere fase staat in [de overgangsgids](/overgang).",
   leestijd: "8 min",

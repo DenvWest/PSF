@@ -7,7 +7,7 @@ export const slaapkwaliteitTestosteronHerstelData: BlogArtikel = {
   audience: "mannen",
   titel: "Slaapkwaliteit en testosteron: waarom één slechte nacht al meetelt",
   coverImage: "/images/blog/slaapkwaliteit-testosteron-herstel.jpg",
-  coverImageAlt: "Man van middelbare leeftijd die wakker wordt uitgerust in bed",
+  coverImageAlt: "Rustige slaapkamer met wit beddengoed en nachtlamp",
   heroIntro:
     "Testosteronaanmaak gebeurt grotendeels tijdens slaap, geconcentreerd in de eerste diepe-slaapcycli van de nacht. Dat maakt slaap geen zijthema bij het gesprek over testosteron na 30, maar een van de meest directe hefbomen die je zelf in de hand hebt. Achtergrond over de bredere daling staat in de pillar [testosteron na 30](/testosteron-na-40).",
   leestijd: "9 min",

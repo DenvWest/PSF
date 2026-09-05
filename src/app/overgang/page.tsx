@@ -6,11 +6,26 @@ import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
+import ArticleFigure from "@/components/article/ArticleFigure";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { overgangReferences } from "@/data/references/overgang";
 
 const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
+
+const COVER = {
+  src: "/images/blog/overgang.jpg",
+  alt: "Glimlachende vrouw rond de vijftig met kort krullend haar",
+  caption:
+    "De overgang is een geleidelijke hormonale verschuiving — leefstijl helpt verwachtingen bijstellen, zonder wondermiddelen.",
+};
+
+const BODY_IMAGE = {
+  src: "/images/blog/inline/overgang.jpg",
+  alt: "Vrouw in profiel met gesloten ogen, rustmoment in de schemering",
+  caption:
+    "Beweging, slaap en krachttraining horen bij wat je zelf kunt doen in de overgang — naast medische zorg waar nodig.",
+};
 
 export const metadata: Metadata = {
   title: "Overgang: wat verandert en wat helpt",
@@ -23,6 +38,7 @@ export const metadata: Metadata = {
       "Wat er verandert, wat onderzoek redelijkerwijs zegt en welke stappen je veilig eerst zet.",
     url: "/overgang",
     type: "article",
+    images: [{ url: COVER.src, alt: COVER.alt }],
   },
 };
 
@@ -32,6 +48,7 @@ const articleSchema = {
   headline: "Overgang: Wat Verandert en Wat Je Zelf Kunt Doen",
   description:
     "De overgang: leefstijl, verwachtingen en wanneer medische hulp past.",
+  image: [`https://perfectsupplement.nl${COVER.src}`],
   author: {
     "@type": "Organization",
     name: "PerfectSupplement",
@@ -111,6 +128,14 @@ export default function OvergangPage() {
                   Bijgewerkt: augustus 2026 · Leestijd: 12 min
                 </p>
               </header>
+
+              <ArticleFigure
+                src={COVER.src}
+                alt={COVER.alt}
+                caption={COVER.caption}
+                priority
+                className="mt-8"
+              />
 
               <nav
                 aria-label="Inhoudsopgave"
@@ -200,6 +225,13 @@ export default function OvergangPage() {
                   te bespreken.
                 </p>
               </section>
+
+              <ArticleFigure
+                src={BODY_IMAGE.src}
+                alt={BODY_IMAGE.alt}
+                caption={BODY_IMAGE.caption}
+                className="mt-12"
+              />
 
               <section id="wat-verandert" className="mt-14 scroll-mt-24">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
