@@ -2,15 +2,14 @@
 
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import type { ArticleTocItem } from '@/types/article-reading'
-import { useId } from 'react'
+import { useId, useRef, useState } from 'react'
 
 interface ArticleTableOfContentsProps {
   items: ArticleTocItem[]
   activeId: string | null
 }
 
-function handleNavClick(e: ReactMouseEvent<HTMLAnchorElement>, id: string) {
-  e.preventDefault()
+function scrollToHeading(id: string) {
   const el = document.getElementById(id)
   el?.scrollIntoView({ behavior: "smooth", block: "start" })
   window.history.replaceState(null, "", `#${id}`)
@@ -23,9 +22,26 @@ function handleNavClick(e: ReactMouseEvent<HTMLAnchorElement>, id: string) {
   }
 }
 
+function handleNavClick(e: ReactMouseEvent<HTMLAnchorElement>, id: string) {
+  e.preventDefault()
+  scrollToHeading(id)
+}
+
 export default function ArticleTableOfContents({ items, activeId }: ArticleTableOfContentsProps) {
   const labelId = useId()
+  const detailsRef = useRef<HTMLDetailsElement>(null)
+  const [mobileOpen, setMobileOpen] = useState(false)
+
   if (items.length === 0) return null
+
+  const activeItem = items.find((item) => item.id === activeId) ?? items[0]
+
+  const handleMobileNavClick = (e: ReactMouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault()
+    scrollToHeading(id)
+    setMobileOpen(false)
+    if (detailsRef.current) detailsRef.current.open = false
+  }
 
   return (
     <nav aria-labelledby={labelId} className="leading-[1.38] tracking-[-0.01em] text-stone-500">
@@ -62,36 +78,61 @@ export default function ArticleTableOfContents({ items, activeId }: ArticleTable
         })}
       </ul>
 
-      {/* Mobiel */}
-      <details className="group rounded-lg border border-stone-200/80 bg-white/90 lg:hidden motion-safe:transition-[border-color] motion-safe:duration-150">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-[0.5625rem] px-4 py-[0.7rem] text-stone-600 outline-none select-none [&::-webkit-details-marker]:hidden focus-visible:bg-stone-50/95 focus-visible:ring-2 focus-visible:ring-stone-300/50 focus-visible:ring-offset-2">
-          <span className="text-[0.8125rem] font-medium tracking-tight">Inhoudsopgave</span>
+      {/* Mobiel: blijft sticky onder de header mee scrollen */}
+      <details
+        ref={detailsRef}
+        open={mobileOpen}
+        onToggle={(e) => setMobileOpen((e.target as HTMLDetailsElement).open)}
+        className="group sticky top-[var(--sticky-toc-mobile-offset)] z-40 -mx-4 rounded-xl border border-stone-200/70 bg-white/85 shadow-[0_2px_10px_rgba(28,25,23,0.06)] backdrop-blur-md lg:hidden motion-safe:transition-[border-color,box-shadow] motion-safe:duration-200 [&[open]]:shadow-[0_10px_28px_rgba(28,25,23,0.1)] px-4"
+      >
+        <summary className="flex cursor-pointer list-none items-center gap-2.5 rounded-[0.625rem] py-3 text-stone-700 outline-none select-none [&::-webkit-details-marker]:hidden focus-visible:bg-ps-green-light/40 focus-visible:ring-2 focus-visible:ring-ps-green/40">
           <span
-            className="inline-flex text-stone-400 motion-safe:transition-transform motion-safe:duration-150 group-open:rotate-180"
+            aria-hidden
+            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ps-green-light text-ps-green"
+          >
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden>
+              <path
+                d="M2.5 4h11M2.5 8h11M2.5 12h6.5"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
+            </svg>
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[0.66rem] font-medium uppercase tracking-[0.08em] text-stone-400">
+              Inhoudsopgave
+            </span>
+            <span className="mt-0.5 block truncate text-[0.8125rem] font-semibold tracking-tight text-stone-900">
+              {activeItem?.label ?? 'Op deze pagina'}
+            </span>
+          </span>
+          <span
+            className="inline-flex shrink-0 text-stone-400 motion-safe:transition-transform motion-safe:duration-200 group-open:rotate-180"
             aria-hidden
           >
             <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
               <path
                 d="M4 6 L8 10 L12 6"
                 stroke="currentColor"
-                strokeWidth="1.35"
+                strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
           </span>
         </summary>
-        <ul className="scroll-py-px list-none overflow-y-auto border-t border-stone-100/90 px-3 pb-2.5 pt-1">
+        <ul className="scroll-py-px max-h-[min(56vh,26rem)] list-none overflow-y-auto border-t border-stone-100 pb-3 pt-2">
           {items.map((item) => {
             const active = activeId === item.id
             return (
               <li key={`m-${item.id}`}>
                 <a
                   href={`#${item.id}`}
-                  onClick={(e) => handleNavClick(e, item.id)}
-                  className={`block rounded-md border border-transparent px-2 py-2 text-[0.8125rem] outline-none motion-safe:transition-[color,border-color,background-color] motion-safe:duration-150 focus-visible:bg-stone-50/98 focus-visible:ring-[1px] focus-visible:ring-stone-300 ${
-                    item.depth === 3 ? 'border-l border-stone-200/85 pl-[1.0625rem] text-[0.78rem]' : 'border-l-transparent pl-[0.5rem]'
-                  } ${active ? 'border-l-[#bab6b3] bg-stone-50/90 text-stone-900' : 'border-l-transparent text-stone-600 hover:bg-stone-50/80 hover:text-stone-800'} `}
+                  onClick={(e) => handleMobileNavClick(e, item.id)}
+                  className={`block rounded-lg border border-transparent px-2.5 py-2.5 text-[0.8125rem] outline-none motion-safe:transition-[color,border-color,background-color] motion-safe:duration-150 focus-visible:bg-ps-green-light/40 focus-visible:ring-[1px] focus-visible:ring-ps-green/40 ${
+                    item.depth === 3 ? 'ml-2 border-l border-stone-200/85 pl-[1.0625rem] text-[0.78rem]' : 'pl-[0.5rem]'
+                  } ${active ? 'bg-ps-green-light/50 font-medium text-ps-green' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'} `}
                 >
                   {item.label}
                 </a>

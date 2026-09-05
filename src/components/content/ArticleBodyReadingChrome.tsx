@@ -142,10 +142,24 @@ export default function ArticleBodyReadingChrome({
         type="button"
         onClick={onBackTopClick}
         aria-label="Terug naar boven"
-        className={`fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-[55] rounded-full border border-stone-300/95 bg-white/95 px-[0.9rem] py-2 text-[0.75rem] font-medium text-stone-700 backdrop-blur-sm motion-safe:transition-opacity motion-safe:duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/45 focus-visible:ring-offset-2 hover:border-stone-400 hover:text-stone-900 md:bottom-8 md:right-8 ${
+        className={`group fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-[55] inline-flex items-center gap-1.5 rounded-full border border-stone-200/90 bg-white/95 px-4 py-2.5 text-[0.75rem] font-semibold text-stone-700 shadow-[0_4px_16px_rgba(28,25,23,0.1)] backdrop-blur-md motion-safe:transition-[opacity,transform,border-color,color,background-color,box-shadow] motion-safe:duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ps-green/40 focus-visible:ring-offset-2 hover:-translate-y-0.5 hover:border-ps-green/45 hover:bg-ps-green-light/50 hover:text-ps-green hover:shadow-[0_8px_22px_rgba(90,143,106,0.22)] md:bottom-8 md:right-8 ${
           showBackTop ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
+        <span
+          aria-hidden
+          className="inline-flex h-4 w-4 shrink-0 items-center justify-center text-stone-400 transition-[transform,color] duration-200 group-hover:-translate-y-0.5 group-hover:text-ps-green"
+        >
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden className="h-3 w-3">
+            <path
+              d="M3.25 9.75 8 5l4.75 4.75"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
         Naar boven
       </button>
     </div>
