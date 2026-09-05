@@ -215,12 +215,17 @@ Vette vis (zalm, makreel, haring) en algen zijn de directe bronnen. Voor wie wei
       howItWorks: `EPA is vooral betrokken bij ontstekingsprocessen — het helpt ontstekingsreacties reguleren. DHA is een bouwsteen van je hersenen (zo'n 40% van de vetzuren in je hersenen is DHA) en je netvlies.
 
 EFSA-goedgekeurde claims: EPA+DHA dragen bij aan een normale hartfunctie (bij 250 mg/dag). DHA draagt bij aan normale hersenfunctie en een normaal gezichtsvermogen (bij 250 mg DHA/dag). Let op: er bestaat géén goedgekeurde EFSA-claim voor energie of vermoeidheid.`,
-      whyItMatters: `Bij het vergelijken van omega-3 supplementen is de totale visolie per capsule misleidend. Waar je op moet letten is de EPA+DHA-concentratie. Een capsule van 1000 mg visolie met slechts 300 mg EPA+DHA is veel minder effectief dan een capsule met 900 mg EPA+DHA. Dit verschil bepaalt zowel de effectiviteit als de werkelijke prijs per werkzame dosis.`,
+      whyItMatters: `Bij het vergelijken van omega-3 supplementen is de totale visolie per capsule misleidend. Waar je op moet letten is de EPA+DHA-concentratie. Een capsule van 1000 mg visolie met slechts 300 mg EPA+DHA is veel minder effectief dan een capsule met 900 mg EPA+DHA. Dit verschil bepaalt zowel de effectiviteit als de werkelijke prijs per werkzame dosis. De rekensom staat uitgewerkt in [hoeveel omega-3 per dag](/blog/omega-3-hoeveel-per-dag).
+
+Twee dingen die het etiket zelden vermeldt, wegen even zwaar. De eerste is versheid: EPA en DHA oxideren makkelijk, en de TOTOX-waarde die dat uitdrukt staat vrijwel nooit op de verpakking — zie [ranzige visolie en visboeren](/blog/visolie-oxidatie-en-bijwerkingen). De tweede is de bron: algenolie levert dezelfde vetzuren als visolie, maar is vaak DHA-dominant, wat bepaalt welke claims een product kan voeren — zie [algenolie of visolie](/blog/algenolie-of-visolie).
+
+Voor de vraag of je überhaupt moet aanvullen telt eerst je bord: [omega-3 uit voeding](/blog/omega-3-uit-voeding-of-supplement). Wil je je status laten meten, lees dan [omega-3-index meten](/blog/omega-3-index-meten). Wat de grote hart-trials wel en niet lieten zien staat in [omega-3 en het hart](/blog/omega-3-en-hart-onderzoek), en de interactievraag bij antistolling in [omega-3 en medicijnen](/blog/omega-3-en-medicijnen). Vergelijk producten op [/beste/omega-3-supplement](/beste/omega-3-supplement) of bekijk alle stoffen in de [supplementenafdeling](/supplementen).`,
     },
-    relatedSlugs: ['biobeschikbaarheid'],
+    relatedSlugs: ['biobeschikbaarheid', 'claimdekking', 'onafhankelijke-toetsing'],
     relatedComparisons: ['/beste/omega-3-supplement'],
     metaTitle: 'EPA en DHA: De Omega-3 Vetzuren Die Ertoe Doen',
-    metaDescription: 'EPA en DHA zijn de actieve omega-3 vetzuren. Wat doen ze, hoeveel heb je nodig, en waar let je op? Duidelijk uitgelegd.',
+    metaDescription: 'EPA en DHA zijn de actieve omega-3 vetzuren: wat ze doen, hoeveel je nodig hebt, en waarom versheid en de EPA/DHA-verhouding het etiket niet halen.',
+    laatstBijgewerktOp: '2026-09-04',
     referenties: toRefs([
       'Mozaffarian D, Wu JH. Omega-3 fatty acids cardiovascular effects mechanisms. J Am Coll Cardiol foundational reviews.',
       'Calder PC. Marine omega-3 fatty acids inflammatory processes insights translational frameworks.',

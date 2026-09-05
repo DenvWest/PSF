@@ -123,16 +123,16 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     metaDescription:
       "Magnesium, omega-3, vitamine D en meer — werking, vormen en dosering uitgelegd voor 40+. Geen verkooppraat.",
     intentTopics: [
+      "omega-3 dosering",
       "magnesium vormen",
       "vitamine D met K2",
-      "vitamine D dosering",
       "supplement kiezen",
     ],
     intentArticleLinks: [
-      { label: "Magnesium en slaap", slug: "magnesium-en-slaap" },
+      { label: "Hoeveel omega-3 per dag", slug: "omega-3-hoeveel-per-dag" },
+      { label: "Algenolie of visolie", slug: "algenolie-of-visolie" },
       { label: "Vitamine D en K2 samen", slug: "vitamine-d-en-k2-samen" },
-      { label: "Hoge doses vitamine D", slug: "vitamine-d-hoge-doses-social-media" },
-      { label: "Zink en testosteron", slug: "zink-en-testosteron" },
+      { label: "Magnesium en slaap", slug: "magnesium-en-slaap" },
     ],
     themaHref: "/supplementen",
     kleur: {

@@ -94,6 +94,10 @@ export const vitamineDEnSlaapData: BlogArtikel = {
     label: "Vitamine D supplementen vergelijken",
     href: "/beste/vitamine-d",
   },
+  supplementenHubLink: {
+    label: "Alle supplementen langs dezelfde meetlat",
+    href: "/supplementen",
+  },
   gerelateerdeSluggen: [
     "slaapritme-herstellen",
     "vitamine-d-seizoenen-jaarritme",

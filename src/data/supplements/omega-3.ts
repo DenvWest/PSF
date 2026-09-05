@@ -13,13 +13,13 @@ export const omega3Data: ComparisonPageData = {
   category: "omega-3",
   slug: "omega-3-supplement",
   guideHref: "/supplementen/omega-3",
-  h1: "Welke omega-3 visolie past bij jou?",
+  h1: "Beste omega-3 supplement: 4 visoliën op EPA/DHA en prijs per dag",
   intro:
     "Minder scherp, stijve gewrichten of weinig vis op je bord? Omega-3 is een logische aanvulling — maar EPA/DHA-gehalte en prijs per dag verschillen flink. Vier visoliën vergeleken op inhoud, zuiverheid en wat je per dag betaalt.",
-  seoTitle: "Beste omega-3 supplement 2026 — 4 visoliën onafhankelijk vergeleken",
+  seoTitle: "Beste omega-3: 4 visoliën op mg EPA+DHA, niet mg visolie",
   seoDescription:
-    "Vergelijk Vitals, Arctic Blue, Möller's en Minami MorEPA op EPA/DHA, prijs per dag en zuiverheid. Onafhankelijke analyse voor de beste omega-3 keuze in 2026.",
-  lastUpdated: "2026-04-18",
+    "Vier visoliën vergeleken op werkzame milligrammen EPA en DHA, prijs per werkzame dosis en welke EU-claims de dosering dekt. Geen top-20, geen etiketpraat.",
+  lastUpdated: "2026-09-04",
   tableDoseringColumnLabel: "EPA / DHA",
   topProductLabel: "Topkeuze",
   showEducationalLead: true,
@@ -31,19 +31,21 @@ export const omega3Data: ComparisonPageData = {
   ],
   moreAboutTitle: "Meer over omega-3",
   moreAboutLinks: [
-    { href: "/supplementen/omega-3", label: "Omega-3 vergelijken — alle vormen en criteria uitgelegd" },
-    { href: "/wat-is-omega-3", label: "Wat is omega-3? Een introductie op vetzuren" },
+    { href: "/supplementen/omega-3", label: "Omega-3 uitgelegd — wat EPA en DHA doen en hoeveel je nodig hebt" },
+    { href: "/blog/omega-3-hoeveel-per-dag", label: "Hoeveel omega-3 per dag? De rekensom achter het etiket" },
+    { href: "/blog/visolie-oxidatie-en-bijwerkingen", label: "Ranzige visolie herkennen: waarom versheid zelden op het etiket staat" },
+    { href: "/supplementen", label: "Alle supplementen langs dezelfde meetlat" },
   ],
   readAlsoCards: [
     {
-      href: "/herstel-verbeteren-na-40",
-      text: "EPA/DHA in context van slaap, eiwit en training — pillar herstel na 40.",
-      cta: "Naar herstel-pillar →",
+      href: "/blog/omega-3-uit-voeding-of-supplement",
+      text: "Eén portie vette vis levert 1500–2500 mg EPA+DHA. Reken eerst je bord na voordat je een potje koopt.",
+      cta: "Omega-3 uit voeding →",
     },
     {
-      href: "/blog/omega-3-en-herstel",
-      text: "Cluster: omega-3 koppelen aan herstel en vergelijken.",
-      cta: "Lees het artikel →",
+      href: "/blog/omega-3-en-hart-onderzoek",
+      text: "De EU-hartclaim gaat over normale werking, niet over risicoverlaging. Wat VITAL, REDUCE-IT en STRENGTH werkelijk vonden.",
+      cta: "Lees het onderzoek →",
     },
   ],
   choiceRoutes: [

@@ -100,6 +100,10 @@ export const vitamineDZonNederlandData: BlogArtikel = {
     label: "Vitamine D supplementen vergelijken",
     href: "/beste/vitamine-d",
   },
+  supplementenHubLink: {
+    label: "Alle supplementen langs dezelfde meetlat",
+    href: "/supplementen",
+  },
   gerelateerdeSluggen: [
     "vitamine-d-seizoenen-jaarritme",
     "zonnebrand-en-vitamine-d",

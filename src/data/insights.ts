@@ -57,6 +57,13 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   atp: "energie",
   "multivitamine-zinvol-na-40": "voeding",
   multivitamine: "voeding",
+  "omega-3-hoeveel-per-dag": "voeding",
+  "omega-3-uit-voeding-of-supplement": "voeding",
+  "algenolie-of-visolie": "voeding",
+  "visolie-oxidatie-en-bijwerkingen": "voeding",
+  "omega-3-index-meten": "voeding",
+  "omega-3-en-medicijnen": "voeding",
+  "omega-3-en-hart-onderzoek": "voeding",
   "magnesium-in-combinatie-met-medicijnen": "voeding",
 };
 

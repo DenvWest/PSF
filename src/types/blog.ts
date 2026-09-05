@@ -69,6 +69,8 @@ export interface BlogArtikel {
   cornerstoneLink: BlogCornerstoneLink;
   /** Optionele extra link naar productvergelijking (naast cornerstone naar educatieve pagina). */
   vergelijkingExtraLink?: BlogCornerstoneLink;
+  /** Doorstuur naar de supplementenafdeling (`/supplementen`) — hele catalogus, niet één stof. */
+  supplementenHubLink?: BlogCornerstoneLink;
   /** Sluggen van gerelateerde artikelen (2-3) */
   gerelateerdeSluggen: string[];
   /** Vancouver-stijl referenties + type werk (minimaal 5). */
