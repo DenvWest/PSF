@@ -56,6 +56,8 @@ export default function RootLayout({
           name="0107f4118169ab8"
           content="9822d5dcfc9e7853d2ef69971e75efc8"
         />
+      </head>
+      <body className="bg-[var(--ps-bg)] text-stone-900 antialiased">
         <Script
           id="consent-default"
           strategy="beforeInteractive"
@@ -71,8 +73,6 @@ gtag('consent', 'default', {
 });`,
           }}
         />
-      </head>
-      <body className="bg-[var(--ps-bg)] text-stone-900 antialiased">
         <AnalyticsLoader />
         <AppShell>{children}</AppShell>
         <CookieConsentBanner />
