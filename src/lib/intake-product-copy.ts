@@ -17,12 +17,17 @@ export const INTAKE_DELIVERABLE = {
 
 export const INTAKE_CTA = {
   primaryButton: "Doe de Leefstijlcheck — gratis →",
+  gratisButton: "Doe de Leefstijlcheck — gratis",
   startCheck: "Start de Leefstijlcheck →",
   discoverOverview: "Ontdek jouw leefstijloverzicht — gratis →",
   discoverOverviewShort: "Ontdek jouw leefstijloverzicht — gratis",
-  blogHeadline: "Zie waar jij de meeste winst pakt",
-  blogSubline:
-    "18 vragen · 3 min · gratis en anoniem — inzicht op 5 leefstijl-domeinen. Geen medische test.",
+  blogHeadline: "Wil jij zien waar jij de meeste winst pakt?",
+  blogSubline: "18 vragen · 3 min · gratis en anoniem",
+  blogClosingHeadline: "Wil jij weten wat jij nodig hebt?",
+  blogClosingSubline:
+    "De check laat zien of leefstijl eerst komt — of dat een supplement daarbij past.",
+  guideClosingSubline:
+    "De meeste klachten beginnen niet bij een tekort, maar bij leefstijl. De check laat zien of leefstijl eerst komt — of dat een supplement zinvol is.",
   kennisbankHeadline: "Wil je weten waar jij staat?",
   calculating: "We stellen je leefstijloverzicht samen...",
   supplementFeature:

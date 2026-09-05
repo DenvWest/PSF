@@ -6,6 +6,7 @@ import VormCard from "./VormCard";
 import RelevantieCard from "./RelevantieCard";
 import SymptoomLinkCard from "./SymptoomLinkCard";
 import FAQItem from "./FAQItem";
+import { IntakeCtaLink } from "@/components/common/IntakeCtaLink";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { INTAKE_CTA, INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
@@ -379,9 +380,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
                   iets voor jou is?
                 </h2>
                 <p className="mx-auto mt-4 max-w-lg text-base text-white/80">
-                  De meeste klachten beginnen niet bij een tekort, maar bij
-                  leefstijl. Onze check laat zien wat er écht speelt — en of een
-                  supplement zinvol is.
+                  {INTAKE_CTA.guideClosingSubline}
                 </p>
                 <div className="mx-auto mt-6 flex max-w-md flex-wrap justify-center gap-x-6 gap-y-2">
                   <span className="text-sm text-white/70">
@@ -399,15 +398,13 @@ export default function SupplementPage({ data }: SupplementPageProps) {
                 </div>
                 <IntakeCtaMicro className="mx-auto mt-6 max-w-md text-sm text-white/60" />
                 <div className="mt-6">
-                  <Link
-                    href="/intake"
-                    className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-ps-green shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
+                  <IntakeCtaLink
+                    locatie={`gids_afsluiter_${data.slug}`}
+                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-white px-8 py-3.5 text-base font-semibold text-ps-green shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
                   >
-                    Ontdek of{" "}
-                    {data.naam.charAt(0).toLowerCase() + data.naam.slice(1)} bij
-                    jou past — gratis
+                    {INTAKE_CTA.gratisButton}
                     <span aria-hidden>→</span>
-                  </Link>
+                  </IntakeCtaLink>
                 </div>
               </div>
             </section>

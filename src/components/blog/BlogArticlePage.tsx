@@ -222,7 +222,11 @@ export default function BlogArticlePage({
               ))}
 
               {showMidArticleCta ? (
-                <BlogIntakeCTA className="mx-auto mt-14 max-w-[min(38rem,100%)]" />
+                <BlogIntakeCTA
+                  placement="invite"
+                  locatie="blog_mid"
+                  className="mt-14"
+                />
               ) : null}
 
               {sectiesNaMid.map((sectie, index) => {
@@ -258,6 +262,12 @@ export default function BlogArticlePage({
               <div className="mt-14">
                 <BlogSamenvatting tekst={artikel.samenvatting} />
               </div>
+
+              <BlogIntakeCTA
+                placement="closing"
+                locatie="blog_closing"
+                className="mt-14"
+              />
 
               {artikel.supplementCTA ? (
                 <div className="mt-14">
@@ -300,8 +310,6 @@ export default function BlogArticlePage({
             <BlogGerelateerd artikelen={gerelateerde} />
           </div>
         ) : null}
-
-        <BlogIntakeCTA className="mx-auto mt-20 max-w-[min(38rem,100%)] md:mt-24" />
       </Container>
     </div>
     <FloatingLeefstijlcheckCta revealOnTimer={false} />

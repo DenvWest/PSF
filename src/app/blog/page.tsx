@@ -111,7 +111,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               initialAudience={audience}
               footerSlot={
                 <div className="mt-14 md:mt-16">
-                  <BlogIntakeCTA />
+                  <BlogIntakeCTA placement="invite" locatie="blog_hub" />
                 </div>
               }
             />
