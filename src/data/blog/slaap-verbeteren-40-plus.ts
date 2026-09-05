@@ -4,17 +4,17 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const slaapVerbeterenData: BlogArtikel = {
   slug: "slaap-verbeteren-40-plus",
   categorie: "slaap",
-  titel: "Slaap verbeteren na je 40e: wat werkt en wat niet",
+  titel: "Slaap verbeteren na je 30e: wat werkt en wat niet",
   coverImage: "/images/blog/slaap-verbeteren-40-plus.jpg",
   coverImageAlt: "Netjes opgemaakt bed in een rustige slaapkamer",
   heroIntro:
-    "Na je 40e verandert je slaaparchitectuur: minder diepe slaap, vaker wakker worden, eerder wakker zijn. Ontdek welke aanpassingen daadwerkelijk iets veranderen en waarom populaire adviezen soms averechts werken.",
+    "Na je 30e verandert je slaaparchitectuur: minder diepe slaap, vaker wakker worden, eerder wakker zijn. Ontdek welke aanpassingen daadwerkelijk iets veranderen en waarom populaire adviezen soms averechts werken.",
   leestijd: "9 min",
   gepubliceerdOp: "2026-03-01",
   secties: [
     {
       type: "tekst",
-      titel: "Waarom slaap na je 40e anders is",
+      titel: "Waarom slaap na je 30e anders is",
       tekst:
         "Slaap is geen statisch proces. Naarmate je ouder wordt, verschuift de balans tussen de slaapfasen: de hoeveelheid diepe slaap (slow-wave sleep) neemt af, de slaap wordt lichter en gefragmenteerder. Daarnaast verschuift het [circadiaanse ritme](/kennisbank/circadiaan-ritme) — het interne 24-uursklok — bij veel mensen richting een eerdere timing. Het gevolg: eerder moe 's avonds, eerder wakker 's ochtends. Dit is geen stoornis maar een biologische verschuiving. Begrijpen wat er verandert, helpt je realistische en effectieve aanpassingen te maken.",
     },
@@ -22,7 +22,7 @@ export const slaapVerbeterenData: BlogArtikel = {
       type: "opsomming",
       titel: "Wat slaaponderzoek veel steunt",
       inleiding:
-        "Deze interventies zijn onderbouwd met slaaponderzoek en specifiek relevant na 40. [Lees de complete aanpak voor betere slaap na je 40e.](/slaap-verbeteren-na-40)",
+        "Deze interventies zijn onderbouwd met slaaponderzoek en specifiek relevant na 30. [Lees de complete aanpak voor betere slaap na je 30e.](/slaap-verbeteren-na-40)",
       items: [
         "Vast slaapritme: Hetzelfde slaap- en waaktijd, ook in het weekend. Consistentie is de sterkste enkelvoudige interventie voor slaapkwaliteit.",
         "Blootstelling aan daglicht in de ochtend: Tien minuten buiten in de eerste twee uur na het opstaan resynchroniseert je circadiaanse klok.",
@@ -41,11 +41,11 @@ export const slaapVerbeterenData: BlogArtikel = {
       type: "tekst",
       titel: "De relatie tussen cortisol en slaap",
       tekst:
-        "[Cortisol](/kennisbank/cortisol) en slaap staan in een directe feedback-relatie. Slecht slapen verhoogt cortisol; hoog cortisol verstoort slaap. Voor mensen boven de 40 met stressvolle levens is dit een van de meest voorkomende oorzaken van slaapklachten. Stressmanagement overdag — beweging, ademhaling, sociale verbinding — is daarmee ook een slaapinterventie.",
+        "[Cortisol](/kennisbank/cortisol) en slaap staan in een directe feedback-relatie. Slecht slapen verhoogt cortisol; hoog cortisol verstoort slaap. Voor mensen boven de 30 met stressvolle levens is dit een van de meest voorkomende oorzaken van slaapklachten. Stressmanagement overdag — beweging, ademhaling, sociale verbinding — is daarmee ook een slaapinterventie.",
     },
   ],
   samenvatting:
-    "Slaap na je 40e verbeteren begint bij ritme, licht en temperatuur — drie factoren die je direct kunt aanpassen. Voeg je magnesium en stressmanagement toe, dan pak je ook de fysiologische oorzaken aan die specifiek na de 40e spelen.",
+    "Slaap na je 30e verbeteren begint bij ritme, licht en temperatuur — drie factoren die je direct kunt aanpassen. Voeg je magnesium en stressmanagement toe, dan pak je ook de fysiologische oorzaken aan die specifiek na de 30e spelen.",
   supplementCTA: {
     naam: "Magnesium",
     uitleg:
@@ -53,7 +53,7 @@ export const slaapVerbeterenData: BlogArtikel = {
     href: "/supplementen/magnesium",
   },
   cornerstoneLink: {
-    label: "Complete gids: slaap verbeteren na je 40e",
+    label: "Complete gids: slaap verbeteren na je 30e",
     href: "/slaap-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
@@ -66,9 +66,9 @@ export const slaapVerbeterenData: BlogArtikel = {
     "energie-verhogen-natuurlijk",
   ],
   metaTitle:
-    "Slaap verbeteren na je 40e: wat werkt en wat niet",
+    "Slaap verbeteren na je 30e: wat werkt en wat niet",
   metaDescription:
-    "Slaap verandert na je 40e. Ontdek welke aanpassingen daadwerkelijk werken voor betere slaapkwaliteit — en waarom populaire adviezen soms averechts werken.",
+    "Slaap verandert na je 30e. Ontdek welke aanpassingen daadwerkelijk werken voor betere slaapkwaliteit — en waarom populaire adviezen soms averechts werken.",
   keywords: [
     "slaap verbeteren 40",
     "slechter slapen ouder worden",
