@@ -5,6 +5,8 @@ export const wheyConcentraatIsolaatHydrolysaatData: BlogArtikel = {
   slug: "whey-concentraat-isolaat-hydrolysaat",
   categorie: "supplementen",
   titel: "Whey concentraat, isolaat of hydrolysaat: wat is het verschil waard?",
+  coverImage: "/images/blog/whey-concentraat-isolaat-hydrolysaat.jpg",
+  coverImageAlt: "Wit poeder met een maatlepel op een licht blad",
   heroIntro:
     "Drie bussen naast elkaar, dezelfde smaak, hetzelfde merk — en een prijsverschil dat kan oplopen tot het dubbele. Het verschil tussen concentraat, isolaat en hydrolysaat is echt, maar het is een verschil in filtering, niet in werking. Hier lees je wat er tijdens de productie gebeurt, wat dat op je etiket doet en in welke drie situaties de meerprijs van isolaat verdedigbaar is.",
   leestijd: "9 min",

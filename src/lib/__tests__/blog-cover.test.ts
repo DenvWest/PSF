@@ -42,9 +42,14 @@ describe("blog-cover", () => {
     }
   });
 
-  it("eigen coverImage van artikelen wijst naar een bestaand bestand", () => {
+  it("elk artikel heeft een eigen cover, niet alleen de categorie-fallback", () => {
+    const fallback = categorieCover("supplementen").src;
+    const zonder = alleArtikelen.filter((artikel) => !artikel.coverImage);
+    expect(zonder.map((artikel) => artikel.slug)).toEqual([]);
+
     for (const artikel of alleArtikelen) {
       const cover = blogCover(artikel);
+      expect(cover.src, artikel.slug).not.toBe(fallback);
       expect(existsSync(publicPad(cover.src)), `${artikel.slug} → ${cover.src}`).toBe(
         true,
       );
@@ -56,5 +61,15 @@ describe("blog-cover", () => {
       const src = getCoverImageSrc(post);
       expect(existsSync(publicPad(src)), `${post.slug} → ${src}`).toBe(true);
     }
+  });
+
+  it("kiest de nieuwste coverversie als die op schijf staat", () => {
+    const cover = blogCover({
+      categorie: "slaap",
+      coverImage: "/images/blog/cortisol-en-slaap.jpg",
+      coverImageAlt: "Rustige slaapkamer in avondlicht",
+    });
+    expect(cover.src).toBe("/images/blog/cortisol-en-slaap-v2.jpg");
+    expect(existsSync(publicPad(cover.src))).toBe(true);
   });
 });

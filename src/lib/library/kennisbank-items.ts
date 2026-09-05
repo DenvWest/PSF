@@ -1,4 +1,5 @@
 import { kennisbankTerms, themeLabels, type KennisbankTerm } from "@/data/kennisbank";
+import { kennisbankCover } from "@/lib/kennisbank-cover";
 import {
   normalizeSearch,
   type LibraryItem,
@@ -11,6 +12,7 @@ export function isVerdieping(term: KennisbankTerm): boolean {
 
 export function toLibraryItem(term: KennisbankTerm): LibraryItem {
   const config = themeLabels[term.theme];
+  const cover = kennisbankCover(term);
 
   return {
     id: term.slug,
@@ -27,6 +29,7 @@ export function toLibraryItem(term: KennisbankTerm): LibraryItem {
     searchText: normalizeSearch(
       [term.term, term.shortDefinition, config.title].join(" "),
     ),
+    ...(cover ? { image: cover } : {}),
   };
 }
 

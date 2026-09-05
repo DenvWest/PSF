@@ -20,13 +20,8 @@ import {
 import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
 import DomeinPaneel from "@/components/dashboard/voortgang/DomeinPaneel";
 import VoedingVsSupplementTabel from "@/components/nutrition/VoedingVsSupplementTabel";
-import VoedingsbasisOverzicht from "@/components/nutrition/VoedingsbasisOverzicht";
-import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
-import VoedingskwaliteitLaag from "@/components/nutrition/VoedingskwaliteitLaag";
-import SituatieVoedingLaag from "@/components/nutrition/SituatieVoedingLaag";
+import VerhoudingTabel from "@/components/nutrition/VerhoudingTabel";
 import MetenTijdLaag from "@/components/nutrition/MetenTijdLaag";
-import NutritionDagboekPaneel from "@/components/dashboard/voortgang/NutritionDagboekPaneel";
-import NutritionReflectiePaneel from "@/components/dashboard/voortgang/NutritionReflectiePaneel";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
 import { trackEvent } from "@/lib/ga4";
@@ -83,50 +78,29 @@ function LayerSixSlot({
 
   // Op voeding zelf is de eigen check (P1-P6, nutritionCheckinReadout) de
   // bron van waarheid — niet het oude losse voeding-inname-item, dat hier
-  // een dubbele en verouderde gate zou zijn.
-  //
-  // Op voeding zelf geldt een derde voorwaarde bovenop "check gedaan": er mag
-  // geen gat meer openstaan in de eetbasis (BESLUIT_VOEDING_PIRAMIDE §E). Dat
-  // is de enige formulering die "eerst je tafel, dan het potje" waarmaakt in
-  // plaats van hem alleen te citeren — en de reden dat hij dicht is, staat
-  // erbij, telkens in de bewoording van zijn eigen check.
+  // een dubbele en verouderde gate zou zijn. De vergelijk-tabel toont de
+  // rijen; zonder check blijft hij leeg.
   const nutritionGate = domain === "voeding" ? data?.nutritionCheckinReadout?.gate ?? null : null;
   const routeStatuses =
     domain === "voeding" ? data?.nutritionCheckinReadout?.routes ?? [] : [];
-  const nutritionGateClosed = domain === "voeding" && nutritionGate?.open !== true;
   const nutritionDone =
     domain === "voeding"
       ? nutritionGate?.open === true
       : buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true;
 
-  /**
-   * Op voeding is de tabel de hele laag (3 sep).
-   *
-   * Wat hier weg is: de losse gate-alinea, de contextregel die herhaalde wat
-   * je op P4 al las, en de wearable-belofte ("een wearable-reeks komt hier
-   * later bij") — die laatste stond op slaap en beweging, waar P6 verder leeg
-   * is, en zei niets over de keuze die je op deze laag maakt. Samen waren dat
-   * drie alinea's proza rond één beeld. De gate-reden zit nu in de tabel
-   * zelf, in de kolom waar hij over gaat.
-   */
-  if (domain === "voeding" && routeStatuses.length > 0) {
+  if (domain === "voeding") {
     return (
       <VoedingVsSupplementTabel
         statuses={routeStatuses}
         surface="leefstijlprofiel_voeding"
         gateOpen={nutritionGate?.open === true}
-        gateReden={
-          nutritionGateClosed
-            ? nutritionGate?.reason ??
-              "Zonder voedingscheck weten we niet of er iets aan te vullen valt."
-            : null
-        }
+        compact
         focusNutrient={focusNutrient}
       />
     );
   }
 
-  if (!mapping || nutritionGateClosed) {
+  if (!mapping) {
     return null;
   }
 
@@ -172,7 +146,6 @@ function NutritionLayerSlot({
   domain,
   data,
   onOpenSchap,
-  onGoP6,
   p6FocusNutrient,
   meetreeks,
 }: {
@@ -180,7 +153,6 @@ function NutritionLayerSlot({
   domain: PillarId;
   data?: DashboardData;
   onOpenSchap: () => void;
-  onGoP6: (nutrient: NutrientId) => void;
   p6FocusNutrient: NutrientId | null;
   meetreeks: Meetreeks | null;
 }) {
@@ -200,60 +172,23 @@ function NutritionLayerSlot({
 
   const readout = data?.nutritionCheckinReadout ?? null;
 
-  if (layerId === 1 && readout) {
+  if (layerId === 1) {
     return (
-      <VoedingsbasisOverzicht
-        rijen={readout.factRows}
-        report={readout.ladderReport}
-        selfReport={
-          readout.ladderReport
-            ? nutritionReportFromAnswers(readout.ladderReport.sliders)
-            : null
-        }
-        moments={meetreeks?.moments ?? []}
-        surface="leefstijlprofiel_voeding"
+      <VerhoudingTabel
+        rijen={readout?.factRows ?? []}
+        surface="dashboard"
+        compact
+        titel="Voedingsstatus"
       />
     );
   }
 
-  if (layerId === 2) {
-    return (
-      <VoedingskwaliteitLaag
-        rijen={readout?.factRows ?? []}
-        checkDatum={readout?.date ?? null}
-      />
-    );
+  if (layerId === 2 || layerId === 4) {
+    return null;
   }
 
   if (layerId === 5) {
-    // De eigen reeks zegt of het de goede kant op gaat; de terugblik zegt of
-    // wat je plande ook lukte. Drie soorten "meten" op de laag die er zijn
-    // naam aan ontleent: je eigen reeks, het dagboek (wat zit er onder je
-    // gemiddelde) en de terugblik. Geen van drieën raakt de voedingsscore —
-    // die komt uit de check.
-    return (
-      <>
-        <MetenTijdLaag meetreeks={meetreeks} surface="leefstijlprofiel_voeding" />
-        <NutritionDagboekPaneel
-          surface="leefstijlprofiel_voeding"
-          checkSliders={readout?.ladderReport?.sliders ?? null}
-        />
-        <NutritionReflectiePaneel surface="leefstijlprofiel_voeding" />
-      </>
-    );
-  }
-
-  if (layerId === 4 && readout) {
-    return (
-      <SituatieVoedingLaag
-        sufficiency={readout.sufficiency}
-        contribution={readout.contribution}
-        routes={readout.routes}
-        personalization={readout.personalization}
-        surface="leefstijlprofiel_voeding"
-        onGoP6={onGoP6}
-      />
-    );
+    return <MetenTijdLaag meetreeks={meetreeks} surface="leefstijlprofiel_voeding" />;
   }
 
   return null;
@@ -581,17 +516,17 @@ export default function LeefstijlprofielDomeinScherm({
         />
 
         <div className="mt-4 flex min-w-0 flex-col gap-3.5">
-          {/* Je cijfer met de bron erbij — één regel, vóór de laag waar je
-              voor kwam. */}
-          <DomeinPaneel
-            paneel={paneel}
-            domain={domain}
-            domainLabel={pillar.label}
-            surface="leefstijlprofiel_domein"
-            onGoMacro={onBack}
-          />
+          {isDrieluik ? null : (
+            <DomeinPaneel
+              paneel={paneel}
+              domain={domain}
+              domainLabel={pillar.label}
+              surface="leefstijlprofiel_domein"
+              onGoMacro={onBack}
+            />
+          )}
 
-          {nutrientRail.length > 0 ? (
+          {nutrientRail.length > 0 && !isDrieluik ? (
             <NutrientRail
               rijen={nutrientRail}
               surface="leefstijlprofiel_domein"
@@ -620,8 +555,11 @@ export default function LeefstijlprofielDomeinScherm({
                   : null
               }
               onderbouwing={onderbouwingKnop}
+              tabelOnly={isDrieluik}
               kompasHref={
-                isKompasDomain ? buildDashboardVandaagHref(domain) : undefined
+                isKompasDomain && !isDrieluik
+                  ? buildDashboardVandaagHref(domain)
+                  : undefined
               }
               onKompas={() => {
                 trackEvent("domein_prioriteit_kompas_click", {
@@ -642,7 +580,6 @@ export default function LeefstijlprofielDomeinScherm({
                       domain={domain}
                       data={data}
                       onOpenSchap={handleOpenSchap}
-                      onGoP6={handleGoP6}
                       p6FocusNutrient={p6FocusNutrient}
                       meetreeks={meetreeks}
                     />
@@ -653,9 +590,7 @@ export default function LeefstijlprofielDomeinScherm({
 
           {adviesExtra}
 
-          {/* De uitgangen op één rij: op smal onder elkaar, daarboven naast
-              elkaar. Twee losse regels onder een werkvlak lezen als restjes;
-              als rij lezen ze als wat ze zijn — waar je heen kunt. */}
+          {isDrieluik ? null : (
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {/* Op de domeinen zonder eigen Kompas-scherm droeg de ladder de weg
                 naar Mijn Dag; die weg blijft bestaan nu de ladder hier weg is —
@@ -680,6 +615,7 @@ export default function LeefstijlprofielDomeinScherm({
               </button>
             ) : null}
           </div>
+          )}
         </div>
       </div>
     </section>

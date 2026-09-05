@@ -5,6 +5,8 @@ export const visolieOxidatieEnBijwerkingenData: BlogArtikel = {
   slug: "visolie-oxidatie-en-bijwerkingen",
   categorie: "supplementen",
   titel: "Visboeren en een ranzige nasmaak: het kwaliteitssignaal dat niemand uitlegt",
+  coverImage: "/images/blog/visolie-oxidatie-en-bijwerkingen.jpg",
+  coverImageAlt: "Omega-3-capsules en potjes naast verse vis bij het vergelijken",
   heroIntro:
     "Terugkerende visboeren en een scherpe nasmaak worden meestal afgedaan als “hoort erbij”. Dat klopt niet. Het is vaak het enige signaal dat je krijgt dat een olie geoxideerd is — en oxidatie is het kwaliteitsverschil tussen omega-3-producten dat het minst op het etiket staat en het meest uitmaakt.",
   leestijd: "8 min",

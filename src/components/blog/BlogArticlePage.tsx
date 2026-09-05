@@ -41,6 +41,7 @@ import InsightPhaseNote from "@/components/insights/InsightPhaseNote";
 import { getContentMetadata } from "@/data/insight-metadata";
 import ArticleFigure from "@/components/article/ArticleFigure";
 import { blogCover } from "@/lib/blog-cover";
+import { blogBodyImage } from "@/data/article-body-images";
 
 interface BlogArticlePageProps {
   artikel: BlogArtikel;
@@ -88,6 +89,7 @@ export default function BlogArticlePage({
   const sectiesNaMid = showMidArticleCta ? hoofdSecties.slice(midIndex) : [];
 
   const cover = blogCover(artikel);
+  const bodyImage = blogBodyImage(artikel.slug, cover.alt, artikel.titel);
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -186,11 +188,20 @@ export default function BlogArticlePage({
               ) : null}
 
               {sectiesVoorMid.map((sectie, index) => (
-                <BlogSectie
-                  key={`${sectie.titel}-${String(index)}`}
-                  sectie={sectie}
-                  anchorId={blogSectionDomId(artikel.slug, index, sectie.titel)}
-                />
+                <div key={`${sectie.titel}-${String(index)}`}>
+                  <BlogSectie
+                    sectie={sectie}
+                    anchorId={blogSectionDomId(artikel.slug, index, sectie.titel)}
+                  />
+                  {index === 0 && bodyImage ? (
+                    <ArticleFigure
+                      src={bodyImage.src}
+                      alt={bodyImage.alt}
+                      caption={bodyImage.caption}
+                      className="mt-10 md:mt-12"
+                    />
+                  ) : null}
+                </div>
               ))}
 
               {showMidArticleCta ? (

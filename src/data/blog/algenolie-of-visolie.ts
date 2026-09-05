@@ -5,6 +5,8 @@ export const algenolieOfVisolieData: BlogArtikel = {
   slug: "algenolie-of-visolie",
   categorie: "supplementen",
   titel: "Algenolie of visolie: dezelfde stof, een andere schakel in de keten",
+  coverImage: "/images/blog/algenolie-of-visolie.jpg",
+  coverImageAlt: "Verse zalm, sardines en visolie als omega-3-bronnen",
   heroIntro:
     "Vis maakt zelf geen omega-3. Hij eet algen — en die algen maken [EPA en DHA](/kennisbank/epa-dha). Algenolie slaat die tussenstap over en levert precies dezelfde vetzuren. De vraag is dus niet welke van de twee “echt” is, maar wat je betaalt en welke verhouding je krijgt. Hier staat het verschil zonder het gebruikelijke plantaardig-versus-dierlijk-frame.",
   leestijd: "8 min",

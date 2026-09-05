@@ -274,6 +274,7 @@ export default function VerhoudingTabel({
   checkDatum = null,
   titel = "Wat je eet, naast de richtlijn",
   onGoAanvullen,
+  compact = false,
 }: {
   /** Feitenrijen uit `buildNutritionFactRows` — dezelfde bron als de ladder. */
   rijen: readonly NutritionFactRow[];
@@ -286,6 +287,8 @@ export default function VerhoudingTabel({
    * laag nog niet, en dan hoort er geen CTA onder te staan.
    */
   onGoAanvullen?: () => void;
+  /** Alleen rijen — geen inleiding, disclaimer of CTA. */
+  compact?: boolean;
 }) {
   const s = surfaceStyles(surface);
   const [selectie, setSelectie] = useState<VoedselgroepId[]>([]);
@@ -331,6 +334,59 @@ export default function VerhoudingTabel({
     });
     clarityTag("nutrition_verhouding", String(telling.below));
   }, [rijen, surface]);
+
+  if (compact) {
+    return (
+      <section aria-labelledby="verhouding-heading" className={`@container mt-4 ${s.kaart}`}>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left">
+            <caption id="verhouding-heading" className="sr-only">
+              {titel}
+            </caption>
+            <thead>
+              <tr className={`border-b ${s.rij}`}>
+                <th className={`px-3.5 py-2 text-[9.5px] font-bold uppercase tracking-[0.13em] ${s.zacht}`}>
+                  Onderdeel
+                </th>
+                <th className={`px-3.5 py-2 text-[9.5px] font-bold uppercase tracking-[0.13em] ${s.zacht}`}>
+                  Jij
+                </th>
+                <th className={`px-3.5 py-2 text-[9.5px] font-bold uppercase tracking-[0.13em] ${s.zacht}`}>
+                  De lat
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {gesorteerd.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className={`px-3.5 py-3 text-[12.5px] ${s.zacht}`}>
+                    Nog geen voedingscheck — dan blijven de rijen leeg.
+                  </td>
+                </tr>
+              ) : (
+                gesorteerd.map((rij) => (
+                  <tr key={rij.key} className={`border-b ${s.rij} last:border-b-0`}>
+                    <th
+                      scope="row"
+                      className={`px-3.5 py-2.5 text-[13px] font-semibold ${s.tekst}`}
+                    >
+                      {rij.label}
+                    </th>
+                    <td className={`px-3.5 py-2.5 text-[12.5px] ${s.tekst}`}>
+                      {rij.answerLabel || "—"}
+                    </td>
+                    <td className={`px-3.5 py-2.5 text-[12px] ${s.zacht}`}>
+                      {rij.benchmarkLabel || "—"}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    );
+  }
 
   if (rijen.length === 0) {
     return null;

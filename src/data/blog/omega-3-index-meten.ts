@@ -5,6 +5,8 @@ export const omega3IndexMetenData: BlogArtikel = {
   slug: "omega-3-index-meten",
   categorie: "supplementen",
   titel: "Omega-3-index meten: wanneer een test iets toevoegt en wanneer niet",
+  coverImage: "/images/blog/omega-3-index-meten.jpg",
+  coverImageAlt: "Aantekeningen en onderzoek bij het meten van een bloedwaarde",
   heroIntro:
     "Bij vitamine D is meten inmiddels gewoon. Bij omega-3 bestaat er ook een test — de omega-3-index — maar die zit in een heel andere fase van bewijs en beschikbaarheid. Hier lees je wat de index precies meet, waarom je huisarts hem zelden aanvraagt, en in welke situatie een thuistest wél informatie oplevert die je gedrag verandert.",
   leestijd: "8 min",

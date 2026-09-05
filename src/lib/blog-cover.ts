@@ -1,4 +1,5 @@
 import { CATEGORIE_CONFIG } from "@/data/blog/categorieen";
+import { newestPublicJpg } from "@/lib/public-jpg";
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
 
 export interface BlogCover {
@@ -39,7 +40,7 @@ export function blogCover(
 ): BlogCover {
   if (artikel.coverImage) {
     return {
-      src: artikel.coverImage,
+      src: newestPublicJpg(artikel.coverImage),
       alt: artikel.coverImageAlt || categorieCover(artikel.categorie).alt,
     };
   }

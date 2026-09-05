@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
 import type { DashboardData } from "@/types/dashboard";
 
@@ -130,6 +130,19 @@ describe("LeefstijlprofielKeuzeHub", () => {
       />,
     );
     expect(screen.getByText("Gemeten vandaag")).toBeTruthy();
+  });
+
+  it("houdt Voeding klikbaar, ook zonder check", () => {
+    const onOpenDomain = vi.fn();
+    render(
+      <LeefstijlprofielKeuzeHub
+        data={buildData({})}
+        onBack={vi.fn()}
+        onOpenDomain={onOpenDomain}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: /Voeding\s+Nog niet/ }));
+    expect(onOpenDomain).toHaveBeenCalledWith("voeding");
   });
 
   it("groups energie and herstel under 'Volgt uit de rest' with their drivers as links", () => {

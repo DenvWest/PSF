@@ -53,6 +53,7 @@ export default function VoortgangHubScroll({
           data={data}
           selectedDomain={selectedDomain}
           onSelectDomain={setSelectedDomain}
+          onOpenVoeding={() => onOpenDomain("voeding")}
         />
       </div>
     </>

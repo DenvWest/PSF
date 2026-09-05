@@ -5,6 +5,8 @@ export const wheyEnDarmklachtenData: BlogArtikel = {
   slug: "whey-en-darmklachten",
   categorie: "supplementen",
   titel: "Opgeblazen na je shake? Waarom whey vaak niet de schuldige is",
+  coverImage: "/images/blog/whey-en-darmklachten.jpg",
+  coverImageAlt: "Eiwitrijke voeding op een rustige ondergrond",
   heroIntro:
     "Een uur na je shake zit je vol lucht, of je moet plotseling naar de wc. De standaardconclusie is dan snel getrokken: lactose, dus isolaat kopen. Vaak klopt die conclusie niet — in een gewone portie concentraat zit minder lactose dan in een glas melk. Hier lees je welke drie oorzaken door elkaar worden gehaald, hoe je ze zelf uit elkaar houdt en wanneer klachten reden zijn om naar de huisarts te gaan.",
   leestijd: "8 min",

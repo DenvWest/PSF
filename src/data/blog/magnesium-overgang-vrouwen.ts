@@ -6,6 +6,8 @@ export const magnesiumOvergangVrouwenData: BlogArtikel = {
   categorie: "supplementen",
   audience: "vrouwen",
   titel: "Magnesium in de overgang: waarvoor het pleit en waarvoor niet",
+  coverImage: "/images/blog/magnesium-overgang-vrouwen.jpg",
+  coverImageAlt: "Magnesiumcapsules en een glas water op een rustig blad",
   heroIntro:
     "Magnesium duikt in vrijwel elk overgangsadvies op, meestal zonder onderscheid tussen de klachten waarvoor er iets te zeggen valt en de klachten waarvoor dat er niet is. Dat onderscheid is er wel degelijk. Voor opvliegers is magnesium in een placebogecontroleerde trial nadrukkelijk niet effectief gebleken; voor botbehoud en voor het aanvullen van een krappe inname staat het er heel anders voor. Hier lees je per klacht wat het beste bewijs oplevert.",
   leestijd: "10 min",

@@ -5,6 +5,8 @@ export const wheyHoeveelEnWanneerData: BlogArtikel = {
   slug: "whey-hoeveel-en-wanneer",
   categorie: "supplementen",
   titel: "Hoeveel whey per dag — en maakt het uit wanneer je hem neemt?",
+  coverImage: "/images/blog/whey-hoeveel-en-wanneer.jpg",
+  coverImageAlt: "Dumbbells als beeld bij eiwitbehoefte en kracht",
   heroIntro:
     "Het beeld dat je binnen dertig minuten na je laatste set moet drinken, houdt zich hardnekkig staande. Het onderzoek van de laatste vijftien jaar wijst een andere kant op: je dagtotaal en de verdeling over je maaltijden doen het werk, het exacte tijdstip nauwelijks. Hier lees je hoeveel gram per shake zin heeft na je veertigste, hoeveel per dag, en welke drie momenten wél iets toevoegen.",
   leestijd: "9 min",

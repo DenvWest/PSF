@@ -2524,10 +2524,14 @@ const KompasHome = ({
   useEffect(() => {
     const param = searchParams.get("kompas");
     const next = isPillarId(param) ? param : null;
+    if (next === "voeding") {
+      onGoVoortgangDomein("voeding");
+      return;
+    }
     startTransition(() => {
       setDomainView((current) => (current === next ? current : next));
     });
-  }, [searchParams]);
+  }, [searchParams, onGoVoortgangDomein]);
 
   const domainNavHandlersRef = useRef({
     onBack: () => {},
@@ -2576,6 +2580,10 @@ const KompasHome = ({
       surface,
     });
     clarityTag("dashboard_kompas_domain_switch", `${domainView}_${toDomain}`);
+    if (toDomain === "voeding") {
+      onGoVoortgangDomein("voeding");
+      return;
+    }
     setKompasDomain(toDomain);
   };
 
@@ -2585,6 +2593,10 @@ const KompasHome = ({
   ) => {
     trackEvent("dashboard_kompas_domain_open", { domain, surface });
     clarityTag("dashboard_kompas_domain", domain);
+    if (domain === "voeding") {
+      onGoVoortgangDomein("voeding");
+      return;
+    }
     setKompasDomain(domain);
   };
 

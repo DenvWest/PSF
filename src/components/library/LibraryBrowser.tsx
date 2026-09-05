@@ -98,9 +98,7 @@ export default function LibraryBrowser({
   const [zoek, setZoek] = useState("");
   const [actieveFilters, setActieveFilters] = useState<string[]>([]);
   const [sort, setSort] = useState<LibrarySort>(sorts[0]?.key ?? "nieuwste");
-  const [weergave, setWeergave] = useState<Weergave>(
-    surface === "blog" ? "raster" : "lijst",
-  );
+  const [weergave, setWeergave] = useState<Weergave>("raster");
   const [zichtbaar, setZichtbaar] = useState(PAGINA);
 
   const zoekTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

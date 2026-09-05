@@ -34,6 +34,9 @@ import { KENNISBANK_THEME_TO_PIJLER } from '@/data/insights'
 import { getContentMetadata } from '@/data/insight-metadata'
 import { KB_HUB_LABEL } from '@/components/kennisbank/kennisbank-layout'
 import { canAccessVerdieping } from '@/lib/kennisbank-access'
+import ArticleFigure from '@/components/article/ArticleFigure'
+import { kennisbankCover } from '@/lib/kennisbank-cover'
+import { kennisbankBodyImage } from '@/data/article-body-images'
 import {
   AUDIENCE_PARAM,
   resolveContentAudience,
@@ -211,6 +214,12 @@ async function TermPage({ slug }: { slug: string }) {
   const laatstDatum = term.laatstBijgewerktOp ?? STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM
   const verantwoordelijke = term.inhoudelijkeVerantwoordelijke ?? REDACTIE_VERANTWOORDELIJKE_STANDARD
   const { planPhase } = getContentMetadata(term.slug)
+  const cover = kennisbankCover(term)
+  const bodyImage = kennisbankBodyImage(
+    term.slug,
+    cover?.alt ?? `${term.term} — visuele toelichting bij dit begrip`,
+    term.term,
+  )
 
   const definedTermSchema = buildDefinedTermSchema({
     term: term.term,
@@ -274,6 +283,15 @@ async function TermPage({ slug }: { slug: string }) {
                 </nav>
 
                 <header>
+                  {cover ? (
+                    <ArticleFigure
+                      src={cover.src}
+                      alt={cover.alt}
+                      caption={cover.alt}
+                      priority
+                      className="mb-8"
+                    />
+                  ) : null}
                   <span className="inline-flex rounded-full border border-stone-200/95 bg-white/95 px-3 py-1 text-[0.6875rem] font-medium uppercase tracking-[0.05em] text-stone-500">
                     {themeLabels[term.theme].title}
                   </span>
@@ -315,6 +333,14 @@ async function TermPage({ slug }: { slug: string }) {
                       Wat is {term.term}?
                     </h2>
                     {renderParagraphs(term.content.whatIsIt)}
+                    {bodyImage ? (
+                      <ArticleFigure
+                        src={bodyImage.src}
+                        alt={bodyImage.alt}
+                        caption={bodyImage.caption}
+                        className="mt-10 md:mt-12"
+                      />
+                    ) : null}
                   </section>
 
                   {planPhase ? <InsightPhaseNote planPhase={planPhase} /> : null}

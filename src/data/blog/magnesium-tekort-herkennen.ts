@@ -5,6 +5,8 @@ export const magnesiumTekortHerkennenData: BlogArtikel = {
   slug: "magnesium-tekort-herkennen",
   categorie: "supplementen",
   titel: "Magnesiumtekort herkennen: waarom je bloedwaarde bijna niets zegt",
+  coverImage: "/images/blog/magnesium-tekort-herkennen.jpg",
+  coverImageAlt: "Verse bladgroenten en noten op een houten plank",
   heroIntro:
     "“Laat je magnesium prikken” klinkt als een logisch advies. Het probleem: minder dan één procent van al het magnesium in je lichaam zit in je bloed. Een normale uitslag sluit een tekort dus niet uit — en dat maakt magnesium een van de lastigste voedingsstoffen om over jezelf iets zinnigs te zeggen. Hier lees je wat er wél over te zeggen valt, welke klachten passen bij een laag magnesium en wanneer je met de vraag naar je huisarts gaat in plaats van naar de [supplementengids](/supplementen).",
   leestijd: "11 min",

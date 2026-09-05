@@ -5,6 +5,8 @@ export const hoeveelMagnesiumPerDagData: BlogArtikel = {
   slug: "hoeveel-magnesium-per-dag",
   categorie: "supplementen",
   titel: "Hoeveel magnesium per dag? Twee getallen die niet hetzelfde betekenen",
+  coverImage: "/images/blog/hoeveel-magnesium-per-dag.jpg",
+  coverImageAlt: "Verse bladgroenten, pompoenpitten en amandelen op een houten plank",
   heroIntro:
     "De aanbevolen dagelijkse hoeveelheid magnesium ligt rond de 350 mg voor mannen en 300 mg voor vrouwen. De bovengrens voor magnesium uit supplementen is 250 mg per dag. Dat lijkt tegenstrijdig en is het niet — het zijn twee getallen over twee verschillende dingen, en wie ze door elkaar haalt, koopt te veel of te weinig. Hier lees je wat elk getal betekent, hoe je elementair magnesium van etiketgewicht onderscheidt en waarom één grote dosis minder oplevert dan twee kleine.",
   leestijd: "11 min",

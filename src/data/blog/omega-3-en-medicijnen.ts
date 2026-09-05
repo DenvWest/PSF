@@ -5,6 +5,8 @@ export const omega3EnMedicijnenData: BlogArtikel = {
   slug: "omega-3-en-medicijnen",
   categorie: "supplementen",
   titel: "Omega-3 en medicijnen: de bloedingsangst, en waar hij vandaan komt",
+  coverImage: "/images/blog/omega-3-en-medicijnen.jpg",
+  coverImageAlt: "Supplementcapsules en potjes naast medicijnblisters op een rustig blad",
   heroIntro:
     "“Niet combineren met bloedverdunners” staat op vrijwel elke bijsluiter en op vrijwel elk forum. Het waarschuwende zinnetje is ouder dan het onderzoek dat het inmiddels genuanceerd heeft. Hier lees je wat er werkelijk gemeten is bij visolie naast antistolling, en welke situaties wél om overleg vragen — inclusief de operatie waar het advies vandaan komt.",
   leestijd: "8 min",

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { ALLE_CATEGORIEEN } from "@/data/blog/categorieen";
 import type { ContentAudience } from "@/lib/content-audience";
 import type { LibraryItem } from "@/lib/library/library-item";
-import { leestijdInMinuten } from "@/lib/library/blog-items";
+import { leestijdInMinuten } from "@/lib/library/leestijd";
 import BlogCategorieIcon from "@/components/blog/BlogCategorieIcon";
 import LibraryBrowser from "@/components/library/LibraryBrowser";
 import type { AudienceContext } from "@/components/library/LibraryAudienceLens";

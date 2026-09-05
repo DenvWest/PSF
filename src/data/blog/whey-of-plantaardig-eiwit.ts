@@ -5,6 +5,8 @@ export const wheyOfPlantaardigEiwitData: BlogArtikel = {
   slug: "whey-of-plantaardig-eiwit",
   categorie: "supplementen",
   titel: "Whey of plantaardig eiwit: hoe groot is het verschil echt?",
+  coverImage: "/images/blog/whey-of-plantaardig-eiwit.jpg",
+  coverImageAlt: "Eiwitrijke maaltijd met kip, eieren en cottage cheese",
   heroIntro:
     "Wie geen zuivel wil, hoort vaak dat plantaardig eiwit \"minder compleet\" is. Dat klopt op papier en is in de praktijk goed op te lossen — meestal met een grotere schep en een verstandige combinatie. Hier lees je hoe eiwitkwaliteit wordt gemeten, waarom leucine de kern van het verschil is, en hoeveel plantaardig poeder je nodig hebt om dezelfde prikkel te krijgen als van [wei-eiwit](/kennisbank/wei-eiwit).",
   leestijd: "9 min",

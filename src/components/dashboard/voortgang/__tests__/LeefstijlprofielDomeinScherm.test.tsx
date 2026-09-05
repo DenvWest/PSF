@@ -269,9 +269,8 @@ describe("LeefstijlprofielDomeinScherm", () => {
     // onder Voedingsbasis, samen met de basis en je situatie.
     expect(screen.queryByRole("button", { name: /Voedingskwaliteit/ })).toBeNull();
     kiesPrioriteit(/Voedingsbasis/);
-    // Zonder check opent de laag op wat er ontbreekt — niet op de ranglijst,
-    // die voor iedereen gelijk is en dus geen antwoord op "hoe sta ik ervoor".
-    expect(screen.getByText("Dit komt uit je voedingscheck.")).toBeTruthy();
+    expect(screen.getByRole("table")).toBeTruthy();
+    expect(screen.getByText(/Nog geen voedingscheck/)).toBeTruthy();
     expect(screen.queryByText(/Kwaliteit — wat er op je groente en fruit zit/)).toBeNull();
   });
 
@@ -330,5 +329,30 @@ describe("LeefstijlprofielDomeinScherm", () => {
       .getAllByRole("button", { name: /Meten & timing/ })
       .filter((knop) => knop.getAttribute("aria-pressed") === "true");
     expect(gekozen.length).toBeGreaterThan(0);
+  });
+
+  it("toont de drie voeding-lagen als tabel zonder extra tekst", () => {
+    render(
+      <LeefstijlprofielDomeinScherm
+        model={model}
+        data={buildData()}
+        domain="voeding"
+        onBack={vi.fn()}
+        onOpenSchap={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("table", { name: "Meting" })).toBeTruthy();
+    expect(screen.getByText("Nog geen meetmoment.")).toBeTruthy();
+    expect(screen.queryByText(/prioriteit /)).toBeNull();
+
+    kiesPrioriteit(/Voedingsbasis/);
+    expect(screen.getByRole("table", { name: "Voedingsstatus" })).toBeTruthy();
+    expect(screen.queryByText(/Uit je voedingscheck/)).toBeNull();
+
+    kiesPrioriteit(/Aanvullen & vergelijken/);
+    expect(screen.getByRole("table", { name: "Vergelijken" })).toBeTruthy();
+    expect(screen.queryByText(/Eerst je bord/)).toBeNull();
+    expect(screen.queryByText("Open je keuze ›")).toBeNull();
   });
 });

@@ -5,6 +5,8 @@ export const omega3UitVoedingOfSupplementData: BlogArtikel = {
   slug: "omega-3-uit-voeding-of-supplement",
   categorie: "supplementen",
   titel: "Omega-3 uit voeding of uit een potje? Wat één portie vis werkelijk levert",
+  coverImage: "/images/blog/omega-3-uit-voeding-of-supplement.jpg",
+  coverImageAlt: "Verse zalm en makreel als omega-3-rijke vette vis",
   heroIntro:
     "De eerlijke vraag komt vóór de productvraag: haal je genoeg [EPA en DHA](/kennisbank/epa-dha) uit je bord? Voor de meeste Nederlandse mannen is het antwoord nee — maar niet omdat vis zoveel beter zou zijn dan een capsule. Het gaat om hoe vaak je hem eet, en welke soort. Hier staat wat één portie zalm, haring of tonijn oplevert, en wanneer een supplement de logische aanvulling is.",
   leestijd: "9 min",

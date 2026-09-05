@@ -6,6 +6,8 @@ export const eiwitEnWheyInDeOvergangData: BlogArtikel = {
   categorie: "supplementen",
   audience: "vrouwen",
   titel: "Eiwit en whey in de overgang: waarom je behoefte stijgt terwijl je porties krimpen",
+  coverImage: "/images/blog/eiwit-en-whey-in-de-overgang.jpg",
+  coverImageAlt: "Eiwitrijke maaltijd met kip, eieren en cottage cheese",
   heroIntro:
     "In de jaren rond de overgang verandert er iets dat je niet op de weegschaal ziet: spiermassa en botdichtheid nemen sneller af dan daarvoor. Eiwit is een van de weinige knoppen waar je zelf aan kunt draaien — en juist in deze fase eten veel vrouwen minder, niet meer. Hier lees je hoeveel eiwit er in deze levensfase nodig is, wanneer een shake een praktische oplossing is en wat whey nadrukkelijk níét doet.",
   leestijd: "9 min",

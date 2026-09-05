@@ -37,6 +37,8 @@ type VoortgangMetingenPerDomeinProps = {
   data?: DashboardData;
   selectedDomain: PillarId;
   onSelectDomain: (domain: PillarId) => void;
+  /** Voeding opent het leefstijlprofiel — de reeks hier is geen stand op een schaal. */
+  onOpenVoeding?: () => void;
 };
 
 type MeetreeksView = "tabel" | "grafiek";
@@ -206,6 +208,7 @@ export default function VoortgangMetingenPerDomein({
   data,
   selectedDomain,
   onSelectDomain,
+  onOpenVoeding,
 }: VoortgangMetingenPerDomeinProps) {
   const [view, setView] = useState<MeetreeksView>("tabel");
   const [rowKey, setRowKey] = useState<string>(SCORE_ROW_KEY);
@@ -235,6 +238,10 @@ export default function VoortgangMetingenPerDomein({
   const handleSelectDomain = (domain: PillarId) => {
     trackEvent("dashboard_voortgang_metingen_domein_click", { domain });
     clarityTag("dashboard_voortgang", `metingen_${domain}`);
+    if (domain === "voeding" && onOpenVoeding) {
+      onOpenVoeding();
+      return;
+    }
     setRowKey(SCORE_ROW_KEY);
     setMomentIndex(null);
     onSelectDomain(domain);

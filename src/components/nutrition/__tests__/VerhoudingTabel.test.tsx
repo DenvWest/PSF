@@ -121,4 +121,17 @@ describe("VerhoudingTabel", () => {
     render(<VerhoudingTabel rijen={[RUIMTE]} surface="dashboard" />);
     expect(screen.queryByText(/Kijk of aanvullen zin heeft/)).toBeNull();
   });
+
+  it("is in compacte vorm alleen een tabel, zonder inleiding of CTA", () => {
+    render(
+      <VerhoudingTabel rijen={[RUIMTE, GOED]} surface="dashboard" compact titel="Voedingsstatus" />,
+    );
+    expect(screen.getByRole("table", { name: "Voedingsstatus" })).toBeTruthy();
+    expect(screen.getByText("Plantbasis")).toBeTruthy();
+    expect(screen.getByText("2 porties per dag")).toBeTruthy();
+    expect(screen.getByText("5 porties per dag")).toBeTruthy();
+    expect(screen.queryByText("hier zit je ruimte")).toBeNull();
+    expect(screen.queryByText(/Uit je voedingscheck/)).toBeNull();
+    expect(screen.queryByText(/Kijk of aanvullen zin heeft/)).toBeNull();
+  });
 });

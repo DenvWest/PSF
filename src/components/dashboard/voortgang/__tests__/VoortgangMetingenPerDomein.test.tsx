@@ -293,6 +293,14 @@ describe("VoortgangMetingenPerDomein — rest", () => {
     expect(onSelectDomain).toHaveBeenCalledWith("stress");
   });
 
+  it("opent Voeding in het leefstijlprofiel in plaats van de meetreeks te filteren", () => {
+    const onOpenVoeding = vi.fn();
+    const { onSelectDomain } = renderPanel({ onOpenVoeding });
+    fireEvent.click(screen.getByRole("button", { name: /Voeding/ }));
+    expect(onOpenVoeding).toHaveBeenCalledTimes(1);
+    expect(onSelectDomain).not.toHaveBeenCalled();
+  });
+
   it("stays honest when a domain has no measurements yet", () => {
     renderPanel({ selectedDomain: "beweging" });
     expect(screen.getByText(/Nog geen meetmomenten voor beweging\./)).toBeTruthy();

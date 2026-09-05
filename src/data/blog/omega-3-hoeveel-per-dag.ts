@@ -5,6 +5,8 @@ export const omega3HoeveelPerDagData: BlogArtikel = {
   slug: "omega-3-hoeveel-per-dag",
   categorie: "supplementen",
   titel: "Hoeveel omega-3 per dag? Waarom het getal op de voorkant niet klopt",
+  coverImage: "/images/blog/omega-3-hoeveel-per-dag.jpg",
+  coverImageAlt: "Omega-3-flesje met softgels en verse zalm",
   heroIntro:
     "“1000 mg visolie” klinkt als een ruime dosis, maar zegt niets over wat er werkt. De vraag is hoeveel [EPA en DHA](/kennisbank/epa-dha) er in zit — en daar zit tussen producten een factor drie tot vier verschil. Hier reken je in één keer uit wat jouw potje werkelijk levert, en zie je waarom de wettelijke drempel en de onderzoeksdosis twee heel verschillende getallen zijn.",
   leestijd: "9 min",

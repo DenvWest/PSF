@@ -5,6 +5,8 @@ export const magnesiumWanneerInnemenData: BlogArtikel = {
   slug: "magnesium-wanneer-innemen",
   categorie: "supplementen",
   titel: "Wanneer neem je magnesium in? Avond, ochtend en waar het écht op vastloopt",
+  coverImage: "/images/blog/magnesium-wanneer-innemen.jpg",
+  coverImageAlt: "Zachte herfstzon door bomen, overgang van dag naar avond",
   heroIntro:
     "Op de meeste verpakkingen staat “neem in voor het slapen”, en vrijwel elk artikel herhaalt dat. De onderbouwing voor dat tijdstip is dunner dan je zou denken. Wat wél verschil maakt: of je de dosis verdeelt, of je hem bij eten neemt, en of er in hetzelfde uur andere dingen door je darm gaan die met magnesium om dezelfde plek vechten. Hier lees je welke van die factoren aantoonbaar iets doen en welke vooral gewoonte zijn.",
   leestijd: "10 min",
