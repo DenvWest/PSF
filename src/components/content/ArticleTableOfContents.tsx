@@ -46,16 +46,16 @@ export default function ArticleTableOfContents({ items, activeId }: ArticleTable
   return (
     <nav
       aria-labelledby={labelId}
-      className="contents leading-[1.38] tracking-[-0.01em] text-stone-500 lg:block"
+      className="contents leading-[1.38] tracking-[-0.01em] text-stone-500 xl:block"
     >
       <p
         id={labelId}
-        className="mb-3 hidden font-display text-[0.62rem] font-medium uppercase tracking-[0.09em] text-stone-400 lg:block"
+        className="mb-3 hidden font-display text-[0.62rem] font-medium uppercase tracking-[0.09em] text-stone-400 xl:block"
       >
         Op deze pagina
       </p>
       {/* Desktop */}
-      <ul className="hidden max-h-[min(68vh,28rem)] list-none space-y-0 overflow-y-auto overscroll-contain pr-2 lg:block">
+      <ul className="hidden max-h-[min(68vh,28rem)] list-none space-y-0 overflow-y-auto overscroll-contain pr-2 xl:block">
         {items.map((item) => {
           const active = activeId === item.id
           const indent = item.depth === 3
@@ -86,7 +86,7 @@ export default function ArticleTableOfContents({ items, activeId }: ArticleTable
         ref={detailsRef}
         open={mobileOpen}
         onToggle={(e) => setMobileOpen((e.target as HTMLDetailsElement).open)}
-        className="group sticky top-[var(--sticky-toc-mobile-offset)] z-40 mb-9 rounded-xl border border-stone-200/70 bg-white/85 px-4 shadow-[0_2px_10px_rgba(28,25,23,0.06)] backdrop-blur-md lg:hidden lg:mb-0 motion-safe:transition-[border-color,box-shadow] motion-safe:duration-200 [&[open]]:shadow-[0_10px_28px_rgba(28,25,23,0.1)]"
+        className="group sticky top-[var(--sticky-toc-mobile-offset)] z-40 -mx-6 mb-9 rounded-none border-x-0 border-y border-stone-200/70 bg-white/85 px-6 shadow-[0_2px_10px_rgba(28,25,23,0.06)] backdrop-blur-md lg:-mx-8 xl:hidden xl:mb-0 motion-safe:transition-[border-color,box-shadow] motion-safe:duration-200 [&[open]]:shadow-[0_10px_28px_rgba(28,25,23,0.1)]"
       >
         <summary className="flex cursor-pointer list-none items-center gap-2.5 rounded-[0.625rem] py-3 text-stone-700 outline-none select-none [&::-webkit-details-marker]:hidden focus-visible:bg-ps-green-light/40 focus-visible:ring-2 focus-visible:ring-ps-green/40">
           <span

@@ -5,9 +5,13 @@ import type { ArticleTocItem } from '@/types/article-reading'
 import ArticleTableOfContents from '@/components/content/ArticleTableOfContents'
 import {
   ARTICLE_HIDE_TOC_BELOW_ITEMS,
+  READING_COMPACT_ONLY_CLASS,
   READING_MAIN_COL_CLASS,
   READING_RAIL_COL_CLASS,
   READING_ROW_GAP_CLASS,
+  READING_SIDEBAR_FLEX_CLASS,
+  READING_SIDEBAR_ONLY_CLASS,
+  READING_SPLIT_ROW_CLASS,
   READING_TOC_COL_CLASS,
 } from '@/lib/article-reading-columns'
 import { parseReadingAnchorLinePx, readingProgressFraction } from '@/lib/reading-metrics'
@@ -100,12 +104,12 @@ export default function ArticleBodyReadingChrome({
       </div>
 
       <div
-        className={`flex w-full min-w-0 flex-col items-stretch lg:flex-row ${READING_ROW_GAP_CLASS} ${
-          showToc ? '' : 'lg:justify-center'
+        className={`flex w-full min-w-0 items-stretch ${READING_SPLIT_ROW_CLASS} ${READING_ROW_GAP_CLASS} ${
+          showToc ? '' : 'xl:justify-center'
         }`}
       >
         {showToc ? (
-          <aside className={`${READING_TOC_COL_CLASS} hidden min-h-0 lg:block`}>
+          <aside className={`${READING_TOC_COL_CLASS} ${READING_SIDEBAR_ONLY_CLASS} min-h-0`}>
             <div className="sticky top-[var(--sticky-toc-offset)] pb-14 pt-0.5 xl:pb-16">
               <ArticleTableOfContents items={tocItems} activeId={activeId} />
             </div>
@@ -113,7 +117,7 @@ export default function ArticleBodyReadingChrome({
         ) : null}
 
         {showToc ? (
-          <div className={`${READING_RAIL_COL_CLASS} hidden lg:flex`} aria-hidden="true">
+          <div className={`${READING_RAIL_COL_CLASS} ${READING_SIDEBAR_FLEX_CLASS}`} aria-hidden="true">
             <div className="relative min-h-[6rem] w-[2px] flex-1 overflow-hidden rounded-full bg-stone-200/92">
               <div
                 className="motion-safe:ease-linear absolute left-0 top-0 h-full w-full origin-top rounded-full bg-stone-600/88 motion-safe:transition-transform motion-safe:duration-[130ms]"
@@ -125,10 +129,10 @@ export default function ArticleBodyReadingChrome({
 
         <div
           ref={measureRef}
-          className={`${READING_MAIN_COL_CLASS} mx-auto ${showToc ? 'lg:mx-0' : ''}`}
+          className={`${READING_MAIN_COL_CLASS} mx-auto ${showToc ? 'xl:mx-0' : ''}`}
         >
           {showToc ? (
-            <div className="mb-9 lg:hidden">
+            <div className={`mb-9 ${READING_COMPACT_ONLY_CLASS}`}>
               <ArticleTableOfContents items={tocItems} activeId={activeId} />
             </div>
           ) : null}

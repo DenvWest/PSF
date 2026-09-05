@@ -8,6 +8,7 @@ export interface ArticleSidebarBackLink {
 interface ArticleBackLinkProps {
   back: ArticleSidebarBackLink;
   className?: string;
+  variant?: "full" | "icon";
 }
 
 function BackArrowIcon() {
@@ -30,12 +31,31 @@ function BackArrowIcon() {
 }
 
 /**
- * Terugweg naar blog of kennisbank. Volle kolombreedte, label mag wrappen.
+ * Terugweg naar blog of kennisbank. `full` is de zijbalk-chip; `icon` is de
+ * compacte knop in de sticky leesbalk op telefoon en iPad.
  */
 export default function ArticleBackLink({
   back,
   className = "",
+  variant = "full",
 }: ArticleBackLinkProps) {
+  if (variant === "icon") {
+    return (
+      <Link
+        href={back.href}
+        aria-label={back.label}
+        className={`group inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-stone-200/90 bg-white text-stone-600 shadow-[0_1px_2px_rgba(28,25,23,0.04)] outline-none transition-[border-color,color,background-color,box-shadow,transform] duration-200 ease-out hover:border-ps-green/45 hover:bg-ps-green-light/50 hover:text-ps-green hover:shadow-[0_4px_14px_rgba(90,143,106,0.16)] focus-visible:ring-2 focus-visible:ring-ps-green/40 active:scale-[0.98] ${className}`}
+      >
+        <span
+          aria-hidden
+          className="inline-flex motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:-translate-x-0.5"
+        >
+          <BackArrowIcon />
+        </span>
+      </Link>
+    );
+  }
+
   return (
     <Link
       href={back.href}

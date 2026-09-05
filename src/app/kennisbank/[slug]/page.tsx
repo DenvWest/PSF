@@ -11,14 +11,13 @@ import {
 import type { KennisbankTheme } from '@/data/kennisbank'
 import ArticleReferentiesFooter from '@/components/content/ArticleReferentiesFooter'
 import ArticleBodyReadingChrome from '@/components/content/ArticleBodyReadingChrome'
-import ArticleTableOfContents from '@/components/content/ArticleTableOfContents'
 import { renderInlineMarkdownLinks } from '@/components/blog/inlineMarkdownLinks'
 import { buildKennisbankTocItems } from '@/lib/article-toc'
 import {
   buildDefinedTermSchema,
 } from '@/lib/seo/structuredData'
 import ArticleSidebar from '@/components/article/ArticleSidebar'
-import ArticleMobileReturnBar from '@/components/article/ArticleMobileReturnBar'
+import ArticleMobileReadingBar from '@/components/article/ArticleMobileReadingBar'
 import ArticleReadingFrame from '@/components/article/ArticleReadingFrame'
 import ArticleFigure from '@/components/article/ArticleFigure'
 import {
@@ -289,6 +288,12 @@ async function TermPage({ slug }: { slug: string }) {
           <div className="py-10 md:py-16">
             <ArticleReadingFrame sidebar={sidebar}>
               <article className="w-full min-w-0 max-w-[72ch]">
+                <ArticleMobileReadingBar
+                  back={KB_BACK_LINK}
+                  items={tocItems}
+                  className="-mt-10 md:-mt-16"
+                />
+
                 <nav aria-label="Breadcrumb" className="mb-10">
                   <ol className="flex flex-wrap items-center gap-2 text-[0.8125rem] text-stone-400">
                     <li>
@@ -333,19 +338,6 @@ async function TermPage({ slug }: { slug: string }) {
                 </header>
 
                 <ArticleBodyReadingChrome tocItems={[]} hideTocBelowItemCount={999}>
-                  <ArticleMobileReturnBar
-                    back={KB_BACK_LINK}
-                    sectionLabel={themeLabels[term.theme].title}
-                    sectionHref={`/kennisbank/${term.theme}`}
-                  />
-
-                  {/* contents op mobiel: deze div en de nav in ArticleTableOfContents
-                      mogen sticky's containing block niet vernauwen tot hun eigen
-                      (kleine) hoogte — de al aanwezige relative ouder (children-slot
-                      van ArticleBodyReadingChrome) neemt die rol dan over. */}
-                  <div className="contents lg:block">
-                    <ArticleTableOfContents items={tocItems} activeId={null} />
-
                     <section className={KB_SECTION_CLASS} aria-labelledby="wat-is-het">
                       <h2 id="wat-is-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
                         Wat is {term.term}?
@@ -406,7 +398,6 @@ async function TermPage({ slug }: { slug: string }) {
                         </div>
                       </>
                     )}
-                  </div>
                 </ArticleBodyReadingChrome>
               </article>
             </ArticleReadingFrame>

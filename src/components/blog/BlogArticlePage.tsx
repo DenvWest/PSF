@@ -17,12 +17,10 @@ import BlogGerelateerd from "./BlogGerelateerd";
 import BlogIntakeCTA from "./BlogIntakeCTA";
 import ArticleReferentiesFooter from "@/components/content/ArticleReferentiesFooter";
 import ArticleBodyReadingChrome from "@/components/content/ArticleBodyReadingChrome";
-import ArticleTableOfContents from "@/components/content/ArticleTableOfContents";
-import { ARTICLE_HIDE_TOC_BELOW_ITEMS } from "@/lib/article-reading-columns";
 import { alleArtikelen } from "@/data/blog";
 import { CATEGORIE_CONFIG } from "@/data/blog/categorieen";
 import ArticleSidebar from "@/components/article/ArticleSidebar";
-import ArticleMobileReturnBar from "@/components/article/ArticleMobileReturnBar";
+import ArticleMobileReadingBar from "@/components/article/ArticleMobileReadingBar";
 import ArticleReadingFrame from "@/components/article/ArticleReadingFrame";
 import ArticleFigure from "@/components/article/ArticleFigure";
 import BlogCategorieIcon from "@/components/blog/BlogCategorieIcon";
@@ -68,10 +66,8 @@ export default function BlogArticlePage({
   const redacteur = artikel.inhoudelijkeVerantwoordelijke ?? REDACTIE_VERANTWOORDELIJKE_STANDARD;
 
   const tocItems = buildBlogTocItems(artikel.slug, artikel.secties);
-  const showReadingGutters = tocItems.length >= ARTICLE_HIDE_TOC_BELOW_ITEMS;
 
   const clusterTitle = CATEGORIE_CONFIG[artikel.categorie].naam;
-  const clusterHref = `/blog/${artikel.categorie}`;
   const clusterArticles = alleArtikelen
     .filter((a) => a.categorie === artikel.categorie && a.slug !== artikel.slug)
     .slice(0, 8)
@@ -141,6 +137,12 @@ export default function BlogArticlePage({
       <Container className="pt-11 md:pt-[3.25rem]">
         <ArticleReadingFrame sidebar={sidebar}>
           <article className="w-full min-w-0 max-w-[72ch]">
+            <ArticleMobileReadingBar
+              back={BLOG_BACK_LINK}
+              items={tocItems}
+              className="-mt-11 md:-mt-[3.25rem]"
+            />
+
             <Breadcrumbs
               items={[
                 { label: BLOG_HUB_LABEL, href: "/blog" },
@@ -178,27 +180,6 @@ export default function BlogArticlePage({
             </div>
 
             <ArticleBodyReadingChrome tocItems={[]} hideTocBelowItemCount={999}>
-              <ArticleMobileReturnBar
-                back={BLOG_BACK_LINK}
-                sectionLabel={clusterTitle}
-                sectionHref={clusterHref}
-                sectionIcon={
-                  <BlogCategorieIcon
-                    categorie={artikel.categorie}
-                    className="h-3.5 w-3.5"
-                  />
-                }
-              />
-
-              {/* contents op mobiel: deze div en de nav in ArticleTableOfContents
-                  mogen sticky's containing block niet vernauwen tot hun eigen
-                  (kleine) hoogte — de al aanwezige relative ouder (children-slot
-                  van ArticleBodyReadingChrome) neemt die rol dan over. */}
-              <div className="contents lg:block">
-                {showReadingGutters ? (
-                  <ArticleTableOfContents items={tocItems} activeId={null} />
-                ) : null}
-
                 {firstSectie ? (
                   <BlogSectie
                     sectie={firstSectie}
@@ -304,7 +285,6 @@ export default function BlogArticlePage({
                     aanvullendeDisclaimers={aanvullendeDisclaimerNodes}
                   />
                 </div>
-              </div>
             </ArticleBodyReadingChrome>
           </article>
         </ArticleReadingFrame>

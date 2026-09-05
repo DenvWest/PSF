@@ -105,6 +105,14 @@
   --reading-layout-max-width: 88rem;
 }
 
+@media (max-width: 1279px) {
+  :root {
+    /* Header ~81px; compact leesbalk ~62px eronder */
+    --sticky-toc-mobile-offset: 5.125rem;
+    --reading-scroll-margin: 9.25rem;
+  }
+}
+
 /* Tailwind font utilities */
 @theme inline {
   --font-sans: var(--font-primary);
