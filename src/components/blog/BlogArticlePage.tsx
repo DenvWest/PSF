@@ -39,6 +39,8 @@ import { BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
 import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
 import InsightPhaseNote from "@/components/insights/InsightPhaseNote";
 import { getContentMetadata } from "@/data/insight-metadata";
+import ArticleFigure from "@/components/article/ArticleFigure";
+import { blogCover } from "@/lib/blog-cover";
 
 interface BlogArticlePageProps {
   artikel: BlogArtikel;
@@ -85,6 +87,8 @@ export default function BlogArticlePage({
     : hoofdSecties;
   const sectiesNaMid = showMidArticleCta ? hoofdSecties.slice(midIndex) : [];
 
+  const cover = blogCover(artikel);
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -101,6 +105,7 @@ export default function BlogArticlePage({
       url: "https://perfectsupplement.nl",
     },
     description: artikel.metaDescription ?? artikel.heroIntro,
+    image: `https://perfectsupplement.nl${cover.src}`,
     mainEntityOfPage: `https://perfectsupplement.nl${blogArtikelPad(artikel)}`,
   };
 
@@ -122,6 +127,14 @@ export default function BlogArticlePage({
                   { label: BLOG_HUB_LABEL, href: "/blog" },
                   { label: artikel.titel },
                 ]}
+              />
+
+              <ArticleFigure
+                src={cover.src}
+                alt={cover.alt}
+                caption={cover.alt}
+                priority
+                className="mt-8"
               />
 
               <div className="mt-8">

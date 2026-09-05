@@ -5,6 +5,8 @@ export const slaapVerbeterenData: BlogArtikel = {
   slug: "slaap-verbeteren-40-plus",
   categorie: "slaap",
   titel: "Slaap verbeteren na je 40e: wat werkt en wat niet",
+  coverImage: "/images/blog/slaap-verbeteren-40-plus.jpg",
+  coverImageAlt: "Netjes opgemaakt bed in een rustige slaapkamer",
   heroIntro:
     "Na je 40e verandert je slaaparchitectuur: minder diepe slaap, vaker wakker worden, eerder wakker zijn. Ontdek welke aanpassingen daadwerkelijk iets veranderen en waarom populaire adviezen soms averechts werken.",
   leestijd: "9 min",

@@ -5,6 +5,8 @@ export const krachttrainingNa40Data: BlogArtikel = {
   slug: "krachttraining-na-40",
   categorie: "energie",
   titel: "Krachttraining na 40: hefboom voor energie, spieren en herstel",
+  coverImage: "/images/blog/krachttraining-na-40.jpg",
+  coverImageAlt: "Persoon die krachttraining doet met gewichten",
   heroIntro:
     "Je hoeft geen bodybuilder te worden. Twee keer per week weerstandstraining is na 40 vaak de sterkste hefboom voor spierbehoud, metabole gezondheid en het gevoel dat je lichaam nog meewerkt — gekoppeld aan [eiwit na 40](/blog/eiwit-na-40) en [herstel na 40](/herstel-verbeteren-na-40).",
   leestijd: "10 min",

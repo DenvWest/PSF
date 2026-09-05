@@ -5,6 +5,8 @@ export const energieVerhogenData: BlogArtikel = {
   slug: "energie-verhogen-natuurlijk",
   categorie: "energie",
   titel: "Energie verhogen na je 40e: de fysiologie en wat je kunt doen",
+  coverImage: "/images/blog/energie-verhogen-natuurlijk.jpg",
+  coverImageAlt: "Persoon die een pad oploopt in de buitenlucht",
   heroIntro:
     "Aanhoudende vermoeidheid na je 40e is zelden één probleem. Het is meestal een stapeling van verstoorde energieproductie, hormoonveranderingen en leefstijlfactoren. Hier is een helder overzicht van wat er speelt en wat je kunt aanpakken.",
   leestijd: "8 min",

@@ -5,6 +5,8 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   slug: "magnesium-en-slaapkwaliteit",
   categorie: "supplementen",
   titel: "De complete magnesiumgids: vormen, dosering en gebruik na 40",
+  coverImage: "/images/blog/magnesium-en-slaapkwaliteit.jpg",
+  coverImageAlt: "Verse bladgroenten en noten op een houten plank",
   heroIntro:
     "Magnesium is betrokken bij meer dan 300 enzymatische processen in het lichaam — van energieproductie en spierherstel tot slaap en stressregulatie. Het komt vooral uit bladgroenten, noten en peulvruchten; supplement is aanvulling, geen vervanging. Een praktische gids over vormen, doseringen en wanneer suppletie zinvol is.",
   leestijd: "16 min",

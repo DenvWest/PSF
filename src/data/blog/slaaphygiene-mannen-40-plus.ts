@@ -5,6 +5,8 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
   slug: "slaaphygiene-mannen-40-plus",
   categorie: "slaap",
   titel: "Slaaphygiëne: wat wél werkt na je 40e",
+  coverImage: "/images/blog/slaaphygiene-mannen-40-plus.jpg",
+  coverImageAlt: "Persoon die ontspannen ligt te rusten in een donkere slaapkamer",
   heroIntro:
     "Lijstjes met slaaptips zijn er genoeg — maar wat heeft na je veertigste echt prioriteit? Hier focussen we op de interventies met de hoogste impact op je slaaparchitectuur en je [circadiaanse ritme](/kennisbank/circadiaan-ritme).",
   leestijd: "7 min",

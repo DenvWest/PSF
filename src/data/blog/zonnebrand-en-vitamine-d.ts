@@ -5,6 +5,8 @@ export const zonnebrandEnVitamineDData: BlogArtikel = {
   slug: "zonnebrand-en-vitamine-d",
   categorie: "energie",
   titel: "Blokkeert zonnebrand je vitamine D? Wat het lab zegt en wat de praktijk laat zien",
+  coverImage: "/images/blog/zonnebrand-en-vitamine-d.jpg",
+  coverImageAlt: "Rustig strand met zacht zonlicht en milde bewolking",
   heroIntro:
     "Op social media is het een vast refrein: zonnebrandcrème blokkeert 97% van je vitamine D-aanmaak, dus smeer je jezelf een tekort aan. Het eerste deel van die zin klopt in een laboratorium. Het tweede deel houdt in veldonderzoek geen stand — en het verschil tussen die twee is het hele verhaal. Hier lees je waarom, en wat het betekent voor [vitamine D](/kennisbank/vitamine-d) en [energie na 40](/energie-na-40).",
   leestijd: "9 min",

@@ -5,6 +5,8 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
   slug: "zout-kalium-bloeddruk-na-40",
   categorie: "energie",
   titel: "Zout en kalium na 40: waarom de verhouding telt, niet het zoutvaatje",
+  coverImage: "/images/blog/zout-kalium-bloeddruk-na-40.jpg",
+  coverImageAlt: "Verse groenten en kruiden, rijk aan kalium",
   heroIntro:
     "Nederlandse mannen zitten structureel boven de aanbevolen 6 gram zout per dag — meer dan vrouwen, blijkt uit RIVM-onderzoek. Tegelijk krijgt bijna niemand genoeg kalium binnen. Dat is geen toeval: het zijn twee kanten van dezelfde [kalium-natriumbalans](/kennisbank/kalium-natrium-balans), en die stuurt mee op je bloeddruk. Dit artikel legt uit waar het misgaat, waarom het antwoord in je voeding zit en niet in een supplement, en hoe dat aansluit bij [energie na 40](/energie-na-40).",
   leestijd: "8 min",

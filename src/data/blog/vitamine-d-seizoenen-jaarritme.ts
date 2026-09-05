@@ -5,6 +5,8 @@ export const vitamineDSeizoenenJaarritmeData: BlogArtikel = {
   slug: "vitamine-d-seizoenen-jaarritme",
   categorie: "energie",
   titel: "Vitamine D door het jaar heen: waarom je dieptepunt niet in december ligt",
+  coverImage: "/images/blog/vitamine-d-seizoenen-jaarritme-v2.jpg",
+  coverImageAlt: "Donker winterlandschap zonder zon — het seizoen van lage vitamine D",
   heroIntro:
     "De meeste mensen denken dat hun vitamine D-status meebeweegt met het weer: zon is hoog, dus status is hoog. In werkelijkheid loopt je waarde maanden achter op de zon. Je piek valt in de nazomer, je dal in het vroege voorjaar — en dat verschil verklaart waarom februari en maart de maanden zijn waarin een tekort zich meldt. Hier lees je hoe dat jaarritme werkt, wat het onderzoek erover laat zien en wat het betekent voor [vitamine D](/kennisbank/vitamine-d) en [energie na 40](/energie-na-40).",
   leestijd: "10 min",

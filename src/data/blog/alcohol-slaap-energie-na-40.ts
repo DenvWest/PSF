@@ -5,6 +5,8 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
   slug: "alcohol-slaap-energie-na-40",
   categorie: "energie",
   titel: "Alcohol, slaap en energie na 40: waarom 'één glas' zwaarder weegt",
+  coverImage: "/images/blog/alcohol-slaap-energie-na-40.jpg",
+  coverImageAlt: "Wijnglas op een nachtkastje naast een bed in avondlicht",
   heroIntro:
     "Een biertje of glas wijn 's avonds voelt als ontspanning — en soms val je sneller in slaap. Maar de ochtend erna vertelt vaak een ander verhaal: minder diepe slaap, vroege wake-ups en een middagdip die niet weg te koffien is. Na je 40e is dat patroon vaker merkbaar. Hier lees je wat alcohol doet met slaap en [energie na 40](/energie-na-40) — zonder moraliseren, wel met praktische keuzes.",
   leestijd: "8 min",

@@ -57,6 +57,10 @@ export interface BlogArtikel {
    *  overgang). Ontbreekt = geldt voor beide en blijft in elke lens staan. */
   audience?: AudienceTag;
   titel: string;
+  /** Coverbeeld onder breadcrumbs / op kaarten en OG (`/images/blog/<slug>.jpg`). */
+  coverImage?: string;
+  /** Beschrijvende NL alt-tekst bij coverImage (geen keyword-stuffing). */
+  coverImageAlt?: string;
   /** Introductietekst direct onder de H1 */
   heroIntro: string;
   leestijd: string;

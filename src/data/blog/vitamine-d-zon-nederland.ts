@@ -5,6 +5,8 @@ export const vitamineDZonNederlandData: BlogArtikel = {
   slug: "vitamine-d-zon-nederland",
   categorie: "energie",
   titel: "Hoeveel zon heb je écht nodig in Nederland voor vitamine D?",
+  coverImage: "/images/blog/vitamine-d-zon-nederland.jpg",
+  coverImageAlt: "Nederlandse polder in warm zonlicht bij lage zon",
   heroIntro:
     "'Vijftien minuten per dag' is het antwoord dat je overal leest. Dat getal komt ergens vandaan, maar het klopt alleen bij een bepaalde huid, een bepaald seizoen, een bepaald tijdstip en een bepaalde hoeveelheid blote huid. Op 52 graden noorderbreedte verandert dat plaatje per maand ingrijpend. Hier lees je wat de zonnestand met [vitamine D](/kennisbank/vitamine-d) doet — en wanneer je huid simpelweg buiten spel staat.",
   leestijd: "8 min",

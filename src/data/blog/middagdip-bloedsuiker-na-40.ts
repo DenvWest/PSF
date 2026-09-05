@@ -5,6 +5,8 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
   slug: "middagdip-bloedsuiker-na-40",
   categorie: "energie",
   titel: "Bloedsuiker, koffie en de middagdip na 40",
+  coverImage: "/images/blog/middagdip-bloedsuiker-na-40.jpg",
+  coverImageAlt: "Kop koffie met stoom in zacht middaglicht",
   heroIntro:
     "Half drie: je ogen vallen dicht achter je scherm. Nog één koffie, nog één koek — en een uur later voel je je alsnog leeg. Na je 40e is die middagdip vaker een signaal van schommelende bloedsuiker en [insulineresistentie](/kennisbank/insulineresistentie) op de achtergrond — geen karakterfout. Hier lees je wat er speelt en wat je praktisch kunt aanpassen, gekoppeld aan [energie na 40](/energie-na-40).",
   leestijd: "9 min",

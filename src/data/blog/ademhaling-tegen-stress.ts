@@ -5,6 +5,8 @@ export const ademhalingTegenStressData: BlogArtikel = {
   slug: "ademhaling-tegen-stress",
   categorie: "stress",
   titel: "Ademhalingstechnieken die binnen 5 minuten werken",
+  coverImage: "/images/blog/ademhaling-tegen-stress.jpg",
+  coverImageAlt: "Persoon die buiten yoga of ademhalingsoefeningen doet in de natuur",
   heroIntro:
     "Je ademhaling is de snelste manier om je zenuwstelsel te beïnvloeden. Geen apparaat nodig — alleen je neus, je middenrif en een paar minuten. Zo pak je acute stress aan zonder je dag stil te zetten.",
   leestijd: "6 min",

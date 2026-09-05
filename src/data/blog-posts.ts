@@ -13,7 +13,7 @@ export type BlogPost = {
   publishedAt: string;
   /** Human-readable, e.g. "8 min" */
   readingTime: string;
-  /** Path under /public, e.g. /images/blog/omega-3-basics.jpg */
+  /** Path under /public, e.g. /images/blog/wat-is-omega-3.jpg */
   coverImage: string;
   coverImageAlt: string;
   seoTitle?: string;
@@ -45,7 +45,7 @@ export const BLOG_POSTS: BlogPost[] = [
       "transparantie etiket",
     ],
     categoryKey: "default",
-    coverImage: "/images/blog/supplement-kiezen.jpg",
+    coverImage: "/images/blog/supplement-kiezen-waar-op-letten.jpg",
   },
   {
     slug: "wat-is-omega-3",
@@ -67,7 +67,7 @@ export const BLOG_POSTS: BlogPost[] = [
       "omega-3 supplement vergelijken",
     ],
     categoryKey: "omega-3",
-    coverImage: "/images/blog/omega-3-basics.jpg",
+    coverImage: "/images/blog/wat-is-omega-3.jpg",
   },
   {
     slug: "waar-let-je-op-bij-omega-3",
@@ -90,7 +90,7 @@ export const BLOG_POSTS: BlogPost[] = [
       "prijs per dag omega-3",
     ],
     categoryKey: "omega-3",
-    coverImage: "/images/blog/omega-3-criteria.jpg",
+    coverImage: "/images/blog/waar-let-je-op-bij-omega-3.jpg",
   },
 ];
 
