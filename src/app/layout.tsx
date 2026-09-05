@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { DM_Serif_Display, DM_Sans } from "next/font/google";
+import Script from "next/script";
 import AnalyticsLoader from "@/components/analytics/AnalyticsLoader";
 import CookieConsentBanner from "@/components/analytics/CookieConsentBanner";
 import AppShell from "@/components/layout/AppShell";
@@ -55,7 +56,9 @@ export default function RootLayout({
           name="0107f4118169ab8"
           content="9822d5dcfc9e7853d2ef69971e75efc8"
         />
-        <script
+        <Script
+          id="consent-default"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
