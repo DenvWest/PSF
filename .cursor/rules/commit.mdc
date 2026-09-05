@@ -1,0 +1,52 @@
+---
+description: Na een afgeronde taak klaar-check draaien, daarna zelf git add + commit. Nooit pushen.
+alwaysApply: true
+---
+
+# Git — automatisch committen, nooit pushen
+
+Gelijk aan CLAUDE.md. In dit repo is auto-commit de default: **wacht niet tot Dennis “commit” zegt.** Dit overschrijft de algemene Cursor-regel “alleen committen op verzoek”.
+
+## Wanneer
+
+Na elke **afgeronde taak** (één commit, geen tussentijdse deelcommits). Ook bij wijzigingen buiten `src/`.
+
+## Klaar-check — verplicht als `src/` is geraakt
+
+In deze volgorde, allemaal groen vóór de commit:
+
+```bash
+grep -rn "console.log" src/
+npx tsc --noEmit
+vitest
+eslint --max-warnings 0
+```
+
+Geen `next build` en geen `rm -rf .next` terwijl `next dev` live is.
+
+Faalt een check: **niet committen**. Eerst fixen; lukt dat niet, meld de output en stop.
+
+Buiten `src/` (regels, docs): checks overslaan mag, daarna wél committen.
+
+## Committen
+
+1. Stage **alleen** de bestanden van deze taak. Nooit `git add -A` als de working tree ander, ongecommit werk bevat.
+2. `.env.local` en secrets nooit stagen.
+3. Eén commit, message = waarom (1–2 zinnen), via HEREDOC. Geen `--no-verify`, geen `--amend` tenzij Dennis dat vraagt.
+4. Daarna `git status` om te bevestigen dat alleen deze taak in de commit zit.
+
+```bash
+git add pad/naar/bestand
+git commit -m "$(cat <<'EOF'
+feat(scope): waarom deze wijziging ertoe doet
+
+EOF
+)"
+```
+
+## Nooit
+
+- `git push` — blijft bij Dennis
+- git config wijzigen, force-push, hard reset
+- ongerelateerde dirty files meenemen
+- committen terwijl de klaar-check rood is
