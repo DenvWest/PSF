@@ -1,11 +1,13 @@
 import { PILLAR } from "@/data/dashboard";
-import { NUTRITION_LAYERS } from "@/data/nutrition/lifestyle-pyramid";
 import {
   buildDashboardKeuzeHref,
+  voedingLaagSlugFromId,
   type VoedingLaagId,
   type VoedingLaagSlug,
 } from "@/lib/dashboard-url";
 import { hasSchap, schapGateReason } from "@/lib/schap-availability";
+import { DRIELUIK, hoofdLaag } from "@/lib/voeding-drieluik";
+import { zichtbareDomeinen } from "@/lib/zichtbare-domeinen";
 import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
 export type VoortgangRailItemId = "hub" | "leefstijlprofiel" | "hermeting";
@@ -56,13 +58,20 @@ export type ContextRailApi = {
   onToolClick: (id: ContextRailToolId) => void;
 } | null;
 
-export const KOMPAS_RAIL_PILLAR_IDS: PillarId[] = [
+/**
+ * De domeinen in de Kompas-rail.
+ *
+ * Verbinding staat er niet meer bij: zie `zichtbare-domeinen.ts` voor waarom
+ * het domein wel gemeten maar niet getoond wordt. De filter loopt over de
+ * volle lijst zodat terugzetten één plek is.
+ */
+export const KOMPAS_RAIL_PILLAR_IDS: PillarId[] = zichtbareDomeinen([
   "slaap",
   "beweging",
   "voeding",
   "stress",
   "verbinding",
-];
+]);
 
 export function buildKompasRailDomains(
   scores: Record<string, number>,
@@ -153,27 +162,47 @@ export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
   { id: "hermeting", label: "Hermeting", icon: "Calendar" },
 ];
 
+/**
+ * Domeinen onder Leefstijlprofiel in de Voortgang-rail (desktop) en de
+ * inklapbare balk (onder md). Slaap, stress en beweging blijven in Kompas
+ * en op de hub; hun ladderlagen zijn hier nog leeg, dus staan ze niet in
+ * deze boom. Terugzetten is deze lijst uitbreiden — niet `VERBORGEN_DOMEINEN`.
+ */
+export const VOORTGANG_RAIL_PILLAR_IDS: readonly PillarId[] = ["voeding"];
+
+export function buildVoortgangRailDomains(
+  scores: Record<string, number>,
+): ContextRailDomainItem[] {
+  return buildKompasRailDomains(scores).filter((domain) =>
+    VOORTGANG_RAIL_PILLAR_IDS.includes(domain.id),
+  );
+}
+
 export type VoedingRailLayer = {
   id: VoedingLaagId;
   slug: VoedingLaagSlug;
   label: string;
 };
 
-function voedingRailLayer(slug: VoedingLaagSlug, id: VoedingLaagId): VoedingRailLayer {
-  const layer = NUTRITION_LAYERS.find((item) => item.id === slug);
-  return { id, slug, label: layer?.name ?? slug };
-}
-
 /**
  * De drie knoppen van Voeding, ook in de rail — zelfde namen en zelfde
- * volgorde als het scherm (`voeding-drieluik.ts`). Meten & timing vooraan:
- * daar vul je in, de rest volgt daaruit.
+ * volgorde als het scherm.
+ *
+ * Leest rechtstreeks uit `DRIELUIK` en niet meer uit `NUTRITION_LAYERS`. Die
+ * eerste draagt de *knop*namen, die tweede de namen van de piramidelagen, en
+ * dat zijn sinds 5 september niet meer dezelfde: de knop die de lagen 1, 2 en 4
+ * bundelt heet Voedingsstatus, terwijl laag 1 in de canon Voedingsbasis blijft
+ * heten. De rail las de laagnaam, dus stond in de navigatie een andere naam dan
+ * op de knop waar hij heen ging — precies de fout die deze afleiding moest
+ * voorkomen.
  */
-export const VOEDING_RAIL_LAYERS: readonly VoedingRailLayer[] = [
-  voedingRailLayer("meten-timing", 5),
-  voedingRailLayer("eetbasis", 1),
-  voedingRailLayer("aanvullen", 6),
-];
+export const VOEDING_RAIL_LAYERS: readonly VoedingRailLayer[] = DRIELUIK.map(
+  (stap) => ({
+    id: hoofdLaag(stap) as VoedingLaagId,
+    slug: voedingLaagSlugFromId(hoofdLaag(stap)) as VoedingLaagSlug,
+    label: stap.naam,
+  }),
+);
 
 export function resolveVoortgangRailActiveItem(screen: VoortgangScreen): VoortgangRailItemId {
   if (screen === "hermeting") {

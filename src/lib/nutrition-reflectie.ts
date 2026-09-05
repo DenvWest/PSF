@@ -72,8 +72,8 @@ export const REFLECTIE_OPTIES: readonly { id: ReflectieAntwoord; label: string }
   { id: "niet", label: "Niet gelukt" },
 ];
 
-function isVoedingsblok(block: AgendaBlockRecord): boolean {
-  return block.categoryId === "voeding";
+function isCategoryBlok(block: AgendaBlockRecord, categoryId: string): boolean {
+  return block.categoryId === categoryId;
 }
 
 /**
@@ -86,17 +86,21 @@ function isVoedingsblok(block: AgendaBlockRecord): boolean {
  *
  * Blokken van vandaag tellen niet mee — de dag is nog bezig, dus de vraag is
  * nog niet te beantwoorden.
+ *
+ * `categoryId` default `voeding` houdt bestaande callers intact; slaap (en later
+ * andere soft pillars) geven hun eigen agenda-categorie mee.
  */
 export function resolveReflectieMoment(
   blocks: readonly AgendaBlockRecord[],
   beantwoord: ReadonlySet<string>,
   today = todayInAgendaTimezone(),
+  categoryId = "voeding",
 ): ReflectieMoment | null {
   const oudsteToegestaan = addAgendaDays(today, -REFLECTIE_MAX_AGE_DAYS);
 
   const kandidaten = blocks.filter(
     (block) =>
-      isVoedingsblok(block) &&
+      isCategoryBlok(block, categoryId) &&
       !block.deletedAt &&
       block.date < today &&
       block.date >= oudsteToegestaan &&

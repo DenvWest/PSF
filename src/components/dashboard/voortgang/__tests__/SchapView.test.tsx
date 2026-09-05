@@ -127,17 +127,17 @@ describe("SchapView — de domeinschakelaar", () => {
     expect(labels).toEqual(["Slaap", "Beweging", "Voeding"]);
   });
 
-  // De poort zichtbaar houden: stress en verbinding hébben geen schap, en dat
-  // is een oordeel. Ze weglaten zou dat oordeel als een gat laten lezen.
-  it("toont stress en verbinding wél, dicht, mét de reden", () => {
+  // De poort zichtbaar houden: stress héést geen schap, en dat is een oordeel.
+  // Weglaten zou dat oordeel als een gat laten lezen. Verbinding staat er niet
+  // meer bij — dat domein is helemaal uit de interface.
+  it("toont stress wél, dicht, mét de reden", () => {
     renderSchap("slaap", null, { onSwitchDomain: vi.fn() });
-    for (const label of ["Stress", "Verbinding"]) {
-      const chip = within(domeinNav()).getByText(label);
-      expect(chip.closest("[aria-disabled]")).toBeTruthy();
-      expect(chip.closest("[aria-disabled]")?.getAttribute("title")).toContain(
-        "Geen aanbod",
-      );
-    }
+    const chip = within(domeinNav()).getByText("Stress");
+    expect(chip.closest("[aria-disabled]")).toBeTruthy();
+    expect(chip.closest("[aria-disabled]")?.getAttribute("title")).toContain(
+      "Geen aanbod",
+    );
+    expect(within(domeinNav()).queryByText("Verbinding")).toBeNull();
   });
 
   it("markeert het open domein en laat dat geen navigatie afvuren", () => {

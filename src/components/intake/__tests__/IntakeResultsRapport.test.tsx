@@ -76,7 +76,10 @@ describe("IntakeResults — startprofiel en route in één box", () => {
     const box = screen.getByRole("region", { name: "Jouw startprofiel en route" });
     expect(within(box).getByRole("img", { name: /^Leefstijl: \d+ van de 100/ })).not.toBeNull();
     expect(within(box).getByRole("heading", { level: 1 })).not.toBeNull();
-    expect(within(box).getAllByRole("button", { expanded: false }).length).toBe(4);
+    // Vier uitklapbare domeinen, niet vijf: verbinding is uit de interface
+    // (zie `zichtbare-domeinen.ts`). De score telt nog mee in het
+    // vitaliteitscijfer in de ring, maar krijgt geen eigen blok meer.
+    expect(within(box).getAllByRole("button", { expanded: false }).length).toBe(3);
     expect(within(box).getAllByRole("button", { expanded: true })).toHaveLength(1);
   });
 

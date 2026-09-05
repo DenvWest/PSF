@@ -10,7 +10,7 @@ import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
 import MeerHulpBridgeSheet from "@/components/dashboard/agenda/MeerHulpBridgeSheet";
 import { clarityTag } from "@/lib/clarity";
-import { buildBewegingHelpBridge } from "@/lib/beweging-help-bridge";
+import { buildDomainHelpBridge } from "@/lib/beweging-help-bridge";
 import { buildDashboardKeuzeHref } from "@/lib/dashboard-url";
 import { getCachedDailyLog, subscribeDailyLogCache } from "@/lib/daily-log-client";
 import AgendaPlanStepStrip from "@/components/dashboard/agenda/AgendaPlanStepStrip";
@@ -543,7 +543,19 @@ export default function AgendaDayTimeline({
         <MeerHulpBridgeSheet
           key={`help-${date}-${helpPreset.domain}`}
           open={addOpen}
-          bridge={buildBewegingHelpBridge(model, slot, nutritionLogCompleted)}
+          bridge={
+            buildDomainHelpBridge(
+              helpPreset.domain,
+              model,
+              slot,
+              nutritionLogCompleted,
+            ) ?? {
+              domain: helpPreset.domain,
+              stepTitle: null,
+              programLabel: null,
+              points: [],
+            }
+          }
           onClose={closeSheet}
           onOpenSchap={() => {
             closeSheet();

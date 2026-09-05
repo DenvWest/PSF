@@ -79,6 +79,7 @@ import {
 } from "@/lib/sleep-checkin-parse";
 import { buildSleepFactRows } from "@/lib/sleep-checkin-readout";
 import { parseStoredStressCheckin } from "@/lib/stress-checkin-parse";
+import { buildStressCheckinSnapshot } from "@/lib/stress-checkin-readout";
 import {
   buildCheckinMeasurementValues,
   buildNutritionMeasurementValues,
@@ -131,6 +132,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   movementCheckinSnapshot: null,
   hasStressCheckin: false,
   stressCheckinReport: null,
+  stressCheckinSnapshot: null,
   domainCheckDaysAgo: {},
   domainMeasurements: {},
   movementPrefs: EMPTY_MOVEMENT_PREFS,
@@ -817,7 +819,9 @@ export async function loadAccountDashboardData(
   // De ladderstaten wél: `stress-ladder.ts` (T1c) berekent ze uit dezelfde
   // ruwe antwoorden, niet bevroren — zelfde principe als bij beweging
   // hierboven, zodat een regel-fix ook oude rijen op Voortgang/Kompas bereikt.
+  // T1d: volledige snapshot (headline, factRows, delta) uit dezelfde raw_inputs.
   let stressCheckinReport: DashboardData["stressCheckinReport"] = null;
+  let stressCheckinSnapshot: DashboardData["stressCheckinSnapshot"] = null;
   const stressFullCheckins = ((checkinData ?? []) as CheckinRow[])
     .filter(
       (row) =>
@@ -832,6 +836,21 @@ export async function loadAccountDashboardData(
   const latestStressCheckin = stressFullCheckins[stressFullCheckins.length - 1];
   if (latestStressCheckin) {
     stressCheckinReport = parseStoredStressCheckin(latestStressCheckin.raw_inputs);
+    if (stressCheckinReport) {
+      const previousStressRow = stressFullCheckins[stressFullCheckins.length - 2];
+      const previousReport = previousStressRow
+        ? parseStoredStressCheckin(previousStressRow.raw_inputs)
+        : null;
+      const built = buildStressCheckinSnapshot({
+        report: stressCheckinReport,
+        previousReport,
+        startStatement: null,
+      });
+      stressCheckinSnapshot = {
+        ...built,
+        date: formatDashboardDate(latestStressCheckin.created_at),
+      };
+    }
   }
 
   // Ritme-aftellen op de leefstijlbalken: hoe lang geleden ververste de
@@ -1145,6 +1164,7 @@ export async function loadAccountDashboardData(
     movementCheckinSnapshot,
     hasStressCheckin,
     stressCheckinReport,
+    stressCheckinSnapshot,
     domainCheckDaysAgo,
     domainMeasurements,
     supplementVerdicts: [],

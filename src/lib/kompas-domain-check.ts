@@ -82,7 +82,16 @@ function daysPhrase(days: number): string {
   return `over ${days} dagen`;
 }
 
-function buildRemeasureState(
+/**
+ * De staat van een domein dat geen eigen check heeft en dus meeloopt met de
+ * hermeting.
+ *
+ * Geëxporteerd sinds 5 september: sinds verbinding uit de rail is, hebben alle
+ * rail-domeinen een eigen check en is deze tak niet meer via
+ * `buildDomainCheckStates` te bereiken. Hij blijft bestaan voor het volgende
+ * domein zonder eigen check, en wordt rechtstreeks getest.
+ */
+export function buildRemeasureState(
   domain: PillarId,
   remeasureDaysUntil: number | null,
 ): DomainCheckState {

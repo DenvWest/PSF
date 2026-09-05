@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import VoortgangTopNav from "@/components/dashboard/voortgang/VoortgangTopNav";
-import { buildKompasRailDomains } from "@/lib/context-rail";
+import { buildVoortgangRailDomains } from "@/lib/context-rail";
 
 /**
  * De Voortgang-navigatie onder md was een horizontale chiprij die de helft
@@ -14,7 +14,7 @@ import { buildKompasRailDomains } from "@/lib/context-rail";
 vi.mock("@/lib/ga4", () => ({ trackEvent: vi.fn() }));
 vi.mock("@/lib/clarity", () => ({ clarityTag: vi.fn() }));
 
-const domains = buildKompasRailDomains({
+const domains = buildVoortgangRailDomains({
   slaap: 25,
   beweging: 63,
   voeding: 40,
@@ -67,30 +67,21 @@ describe("VoortgangTopNav", () => {
     expect(onOpenItem).toHaveBeenCalledWith("hub");
   });
 
-  it("zet alle vijf domeinen in het paneel, ook zonder horizontaal scrollen", () => {
+  it("zet alleen voeding in het paneel — slaap, stress en beweging staan in de Kompas-rail", () => {
     renderNav();
     openPanel();
-    // De naam is het domeinlabel gevolgd door zijn score ("Voeding40"). Een
-    // losse prefix-match op "Voeding" zou sinds het drieluik ook
-    // "Voedingsbasis" raken, dus staat het cijfer in het patroon.
-    for (const [label, score] of [
-      ["Slaap", 25],
-      ["Beweging", 63],
-      ["Voeding", 40],
-      ["Stress", 0],
-      ["Verbinding", 33],
-    ] as const) {
-      expect(
-        screen.getByRole("menuitem", { name: new RegExp(`^${label}${score}$`) }),
-      ).toBeTruthy();
-    }
+    expect(screen.getByRole("menuitem", { name: /^Voeding40$/ })).toBeTruthy();
+    expect(screen.queryByRole("menuitem", { name: /^Slaap/ })).toBeNull();
+    expect(screen.queryByRole("menuitem", { name: /^Beweging/ })).toBeNull();
+    expect(screen.queryByRole("menuitem", { name: /^Stress/ })).toBeNull();
+    expect(screen.queryByRole("menuitem", { name: /^Verbinding/ })).toBeNull();
   });
 
   it("draagt de drie voeding-knoppen onder Voeding", () => {
     renderNav();
     openPanel();
     expect(screen.getByRole("menuitem", { name: "Meten & timing" })).toBeTruthy();
-    expect(screen.getByRole("menuitem", { name: "Voedingsbasis" })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: "Voedingsstatus" })).toBeTruthy();
     expect(screen.getByRole("menuitem", { name: "Aanvullen & vergelijken" })).toBeTruthy();
   });
 
@@ -115,8 +106,8 @@ describe("VoortgangTopNav", () => {
   it("sluit het paneel zodra je een bestemming kiest", () => {
     renderNav();
     openPanel();
-    fireEvent.click(screen.getByRole("menuitem", { name: /^Beweging/ }));
-    expect(onOpenDomein).toHaveBeenCalledWith("beweging");
+    fireEvent.click(screen.getByRole("menuitem", { name: /^Voeding40$/ }));
+    expect(onOpenDomein).toHaveBeenCalledWith("voeding");
     expect(screen.queryByRole("menu")).toBeNull();
   });
 

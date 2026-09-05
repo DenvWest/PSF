@@ -194,3 +194,51 @@ describe("resolveLadderLayerReason — de vanwege, en alleen waar hij bestaat", 
     expect(resolveLadderLayerReason(null, 1)).toBeNull();
   });
 });
+
+describe("resolveDomainLadderReadout — stress T1d leest zijn snapshot", () => {
+  it("groepeert factRows onder de juiste laag en draagt de headline", () => {
+    const readout = resolveDomainLadderReadout("stress", {
+      stressCheckinSnapshot: {
+        date: "2026-09-05",
+        headline: "Stress is nu vaak aanwezig — je staat veel 'aan'.",
+        focusLabel: "Overgang & grenzen",
+        answerLabel: "Dagelijks",
+        focusStatement: "",
+        implicationLine: "",
+        focusLayer: 1,
+        layerStates: { 1: "winst", 2: "wacht", 3: "wacht", 4: "wacht", 5: "wacht", 6: "wacht" },
+        kompasStatus: "",
+        primaryAction: null,
+        delta: null,
+        factRows: [
+          {
+            key: "STR_FREQ",
+            label: "Spanning",
+            answerLabel: "Dagelijks of bijna dagelijks",
+            benchmarkLabel: null,
+            status: "below",
+            layer: 1,
+            scoresWeight: true,
+            whyLine: "Hier valt nu de meeste winst te behalen.",
+          },
+          {
+            key: "STR_AUTO",
+            label: "Invloed op de opbouw",
+            answerLabel: "Soms, maar vaak ook niet",
+            benchmarkLabel: null,
+            status: "below",
+            layer: 2,
+            scoresWeight: false,
+            whyLine: "Dit stuurt de volgorde van je prioriteiten, niet je cijfer.",
+          },
+        ],
+      },
+    } as DashboardData);
+
+    expect(readout?.headline).toContain("aan");
+    expect(readout?.focusLayer).toBe(1);
+    expect(readout?.evidenceByLayer[1]?.[0]?.key).toBe("STR_FREQ");
+    expect(readout?.evidenceByLayer[2]?.[0]?.key).toBe("STR_AUTO");
+    expect(readout?.evidenceByLayer[1]?.[0]?.status).toBeUndefined();
+  });
+});

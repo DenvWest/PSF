@@ -5,6 +5,7 @@ import {
   prioritySegmentIndex,
 } from "@/lib/kompas-home";
 import { buildModel } from "@/lib/dashboard-model";
+import { resolvePlanStepContent } from "@/lib/day-model";
 import { KOMPAS_RAIL_PILLAR_IDS } from "@/lib/context-rail";
 import type { CheckScores, CheckTrend } from "@/types/dashboard";
 
@@ -36,7 +37,7 @@ const answers = {
 } as Record<string, number>;
 
 describe("buildKompasDomainRows", () => {
-  it("returns five domains in fixed rail order", () => {
+  it("returns the visible domains in fixed rail order", () => {
     const model = buildModel(
       { scores, vitality: 46, date: "10 jul 2026", trend },
       null,
@@ -48,7 +49,7 @@ describe("buildKompasDomainRows", () => {
     );
     const rows = buildKompasDomainRows(model);
 
-    expect(rows).toHaveLength(5);
+    expect(rows).toHaveLength(4);
     expect(rows.map((row) => row.id)).toEqual(KOMPAS_RAIL_PILLAR_IDS);
   });
 
@@ -104,7 +105,14 @@ describe("buildKompasDomainRows", () => {
     expect(beweging?.delta).toBeNull();
   });
 
-  it("falls back to quick-win copy for verbinding without a plan template", () => {
+  /**
+   * De quick-win-fallback werd hier via verbinding getest — het enige domein
+   * zonder plan-template. Dat domein staat niet meer in de rail (zie
+   * `zichtbare-domeinen.ts`), dus het gedrag wordt getest waar het woont:
+   * `resolvePlanStepContent` zelf. Zonder template valt hij terug op de
+   * quick-win-copy van de pilaar, ongeacht of dat domein getoond wordt.
+   */
+  it("falls back to quick-win copy for a domain without a plan template", () => {
     const model = buildModel(
       { scores, vitality: 46, date: "10 jul 2026", trend },
       null,
@@ -114,10 +122,10 @@ describe("buildKompasDomainRows", () => {
       null,
       null,
     );
-    const verbinding = buildKompasDomainRows(model).find((row) => row.id === "verbinding");
+    const stap = resolvePlanStepContent("verbinding", model, 0);
 
-    expect(verbinding?.nextStep).toBe("Eén contactmoment deze week");
-    expect(verbinding?.stepId).toBe("quickwin-verbinding");
+    expect(stap.title).toBe("Eén contactmoment deze week");
+    expect(stap.stepId).toBe("quickwin-verbinding");
   });
 });
 

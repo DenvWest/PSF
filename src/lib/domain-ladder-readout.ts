@@ -211,37 +211,58 @@ function sleepReadout(data: DashboardData | undefined): DomainLadderReadout | nu
 }
 
 /**
- * Stress heeft geen bevroren conclusiezin zoals beweging en slaap (die komt
- * pas met een volledige checkin-snapshot, T1d) — de kop hergebruikt daarom
- * bestaande, al gepubliceerde copy: het statement van `assessStress` voor de
- * dimensie die de winst-laag draagt (spanning → P1, herstel → P3), en anders
- * de laag-summary uit `STRESS_PRIORITY_LAYERS` zelf. Geen nieuwe zin, alleen
- * hergebruik van wat al vastligt.
+ * Stress T1d: volledige snapshot met factRows. Zonder snapshot (geen check)
+ * blijft de readout null — dezelfde poort als bij slaap/beweging.
  */
 function stressReadout(data: DashboardData | undefined): DomainLadderReadout | null {
-  const report = data?.stressCheckinReport ?? null;
-  if (!report) {
-    return null;
+  const snapshot = data?.stressCheckinSnapshot ?? null;
+  if (!snapshot) {
+    // Fallback voor callers die alleen het ruwe report zetten (tests, oudere
+    // fixtures) — zelfde states/focus, zonder evidence tot er factRows zijn.
+    const report = data?.stressCheckinReport ?? null;
+    if (!report) {
+      return null;
+    }
+    const focus = resolveStressFocusLayer(report);
+    const dimensionForFocus = focus === 1 ? "spanning" : focus === 3 ? "herstel" : null;
+    const matchedStatement = dimensionForFocus
+      ? assessStress({ STR_FREQ: report.STR_FREQ, STR_RCV: report.STR_RCV }).find(
+          (result) => result.dimension === dimensionForFocus,
+        )?.statement
+      : undefined;
+
+    return {
+      headline: matchedStatement ?? STRESS_LAYER_BY_ID[focus].summary,
+      focusLayer: focus,
+      layerStates: resolveStressLayerStates(report),
+      stateLabels: STRESS_LAYER_STATE_LABEL,
+      whyWait: (layerId) => stressLayerWhyWait(layerId as StressPriorityId, focus),
+      evidenceByLayer: {},
+      recommendedLayerIds: [focus],
+    };
   }
-  const focus = resolveStressFocusLayer(report);
-  const dimensionForFocus = focus === 1 ? "spanning" : focus === 3 ? "herstel" : null;
-  const matchedStatement = dimensionForFocus
-    ? assessStress({ STR_FREQ: report.STR_FREQ, STR_RCV: report.STR_RCV }).find(
-        (result) => result.dimension === dimensionForFocus,
-      )?.statement
-    : undefined;
+
+  const focus = snapshot.focusLayer;
+  const evidenceByLayer: Partial<Record<number, LadderEvidenceRow[]>> = {};
+  for (const row of snapshot.factRows) {
+    if (row.layer == null) continue;
+    (evidenceByLayer[row.layer] ??= []).push({
+      key: row.key,
+      label: row.label,
+      answerLabel: row.answerLabel,
+      benchmarkLabel: null,
+      whyLine: row.whyLine,
+      // Geen status-badge: stress meet tegen jezelf, niet tegen een richtlijn.
+    });
+  }
 
   return {
-    headline: matchedStatement ?? STRESS_LAYER_BY_ID[focus].summary,
+    headline: snapshot.headline,
     focusLayer: focus,
-    layerStates: resolveStressLayerStates(report),
+    layerStates: snapshot.layerStates,
     stateLabels: STRESS_LAYER_STATE_LABEL,
     whyWait: (layerId) => stressLayerWhyWait(layerId as StressPriorityId, focus),
-    // Feitrijen per laag komen pas met de checkin-snapshot (T1d) — de states
-    // hierboven staan al op zichzelf.
-    evidenceByLayer: {},
-    // Eén laag, niet twee — zelfde reden als bij slaap: elke laag boven de
-    // winst-laag zegt zelf dat hij kan wachten.
+    evidenceByLayer,
     recommendedLayerIds: [focus],
   };
 }

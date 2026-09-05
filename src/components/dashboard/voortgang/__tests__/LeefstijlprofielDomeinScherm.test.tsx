@@ -48,6 +48,7 @@ function buildData(overrides: Partial<DashboardData> = {}): DashboardData {
     movementCheckinSnapshot: null,
     hasStressCheckin: false,
     stressCheckinReport: null,
+    stressCheckinSnapshot: null,
     domainCheckDaysAgo: {},
     domainMeasurements: {},
     movementPrefs: {},
@@ -58,6 +59,48 @@ function buildData(overrides: Partial<DashboardData> = {}): DashboardData {
 }
 
 const model = {} as DashboardModel;
+
+function voedingReadout() {
+  const route = (nutrient: string, label: string, status: string) => ({
+    nutrient,
+    label,
+    route: { kind: "direct" },
+    status,
+    answerLabel: "1× per week",
+    carriesVerdict: true,
+    sources: [],
+    supplementDoorOpen: false,
+    doorReasonNl: "Eerst je bord.",
+    comparisonPath: "/beste/omega-3-supplement",
+  });
+  return {
+    date: "2026-08-30",
+    headline: "Je voedingsbasis staat, op je plantaardige kant na.",
+    factRows: [],
+    focusLayer: 1,
+    layerStates: { 1: "winst", 2: "watch", 3: "wacht", 4: "wacht", 5: "wacht", 6: "wacht" },
+    gate: { open: false, reason: "Eerst je voedingsbasis; daarna pas het potje." },
+    routes: [
+      route("omega3", "Omega-3", "gap"),
+      route("magnesium", "Magnesium", "partial"),
+    ],
+    ladderReport: { sliders: {}, preference: "none", allergies: [] },
+    sufficiency: {
+      layerState: "winst",
+      contextLine: "82 kg · matige trainingsbelasting",
+      trainingLoadLabel: "Matige trainingsbelasting",
+      nutrients: [],
+      focusNutrients: ["omega3"],
+    },
+    contribution: [],
+    personalization: {
+      weightKg: 82,
+      trainingLoad: 2,
+      proteinTarget: { gramsLow: 90, gramsHigh: 105 },
+      ageRange: "45-54",
+    },
+  } as unknown as NonNullable<DashboardData["nutritionCheckinReadout"]>;
+}
 
 /**
  * Kies een prioriteit in de keuzekolom.
@@ -125,15 +168,14 @@ describe("LeefstijlprofielDomeinScherm", () => {
         model={model}
         data={buildData({ domainCheckDaysAgo: { voeding: 2 } })}
         domain="voeding"
+        urlLayer={1}
         onBack={vi.fn()}
         onOpenSchap={vi.fn()}
       />,
     );
 
-    expect(screen.getByRole("heading", { name: /Wat er onder je voeding staat/ })).toBeTruthy();
-    expect(screen.getByText(/Wat hier staat is je keuze en de datum/)).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: /Wat er onder je voeding staat/ })).toBeNull();
     expect(screen.queryByText("Grootste winst")).toBeNull();
-    kiesPrioriteit(/Voedingsstatus/);
     expect(screen.queryByText("Jij mat")).toBeNull();
   });
 
@@ -260,6 +302,7 @@ describe("LeefstijlprofielDomeinScherm", () => {
         model={model}
         data={buildData()}
         domain="voeding"
+        urlLayer={1}
         onBack={vi.fn()}
         onOpenSchap={vi.fn()}
       />,
@@ -269,7 +312,6 @@ describe("LeefstijlprofielDomeinScherm", () => {
     // de statustabel ook geen eigen blok: zijn rijen delen de kolommen met de
     // voedselgroepen. Een tweede blok zou dezelfde meting twee keer tonen.
     expect(screen.queryByRole("button", { name: /Voedingskwaliteit/ })).toBeNull();
-    kiesPrioriteit(/Voedingsstatus/);
     expect(screen.queryByText("Dit komt uit je voedingscheck.")).toBeNull();
     // Zonder check opent de laag op wat er ontbreekt — niet op de ranglijst,
     // die voor iedereen gelijk is en dus geen antwoord op "hoe sta ik ervoor".
@@ -279,7 +321,7 @@ describe("LeefstijlprofielDomeinScherm", () => {
     expect(screen.queryByText(/Kwaliteit — wat er op je groente en fruit zit/)).toBeNull();
   });
 
-  it("toont op voeding drie knoppen, met de voedingsstatus vooraan", () => {
+  it("draagt de drie voeding-knoppen niet in het midden — die staan in de rail", () => {
     render(
       <LeefstijlprofielDomeinScherm
         model={model}
@@ -290,15 +332,27 @@ describe("LeefstijlprofielDomeinScherm", () => {
       />,
     );
 
-    const strip = screen.getByRole("group", { name: /Kies een prioriteit/ });
-    const namen = within(strip)
-      .getAllByRole("button")
-      .map((knop) => knop.textContent?.replace(/winst$/, "").trim());
-    expect(namen).toEqual([
-      "Voedingsstatus",
-      "Meten & timing",
-      "Aanvullen & vergelijken",
-    ]);
+    expect(screen.queryByRole("group", { name: /Kies een prioriteit/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: /Voedingsstatus/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: /Meten & timing/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: /Aanvullen & vergelijken/ })).toBeNull();
+  });
+
+  it("houdt de prioriteitenstrip op beweging", () => {
+    render(
+      <LeefstijlprofielDomeinScherm
+        model={model}
+        data={buildData({ domainCheckDaysAgo: { beweging: 4 } })}
+        domain="beweging"
+        onBack={vi.fn()}
+        onOpenSchap={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("group", { name: /Kies een prioriteit/ })).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: /Dagelijks bewegen/ }).length).toBeGreaterThan(
+      0,
+    );
   });
 
   it("laat Verhoudingen als knop verdwijnen", () => {
@@ -316,23 +370,56 @@ describe("LeefstijlprofielDomeinScherm", () => {
   });
 
   it("opent Meten & timing via urlLayer zonder voedingscheck", () => {
+    const onBack = vi.fn();
     render(
       <LeefstijlprofielDomeinScherm
         model={model}
         data={buildData()}
         domain="voeding"
         urlLayer={5}
-        onBack={vi.fn()}
+        onBack={onBack}
         onOpenSchap={vi.fn()}
       />,
     );
 
+    expect(screen.queryByRole("heading", { name: /Wat er onder je voeding staat/ })).toBeNull();
     expect(screen.getByRole("heading", { name: "Meten & timing" })).toBeTruthy();
-    // De keuzekolom markeert de actieve prioriteit met aria-pressed; de
-    // deeplink moet die stand zetten zonder dat er geklikt is.
-    const gekozen = screen
-      .getAllByRole("button", { name: /Meten & timing/ })
-      .filter((knop) => knop.getAttribute("aria-pressed") === "true");
-    expect(gekozen.length).toBeGreaterThan(0);
+    expect(screen.getByRole("region", { name: "Je 2+2-dagboek" })).toBeTruthy();
+    expect(screen.queryByRole("group", { name: /Kies een prioriteit/ })).toBeNull();
+
+    const kruimels = screen.getByRole("navigation", { name: "Kruimelpad" });
+    fireEvent.click(within(kruimels).getByRole("button", { name: /Overzicht/ }));
+    expect(onBack).toHaveBeenCalled();
+  });
+
+  it("draagt Aanvullen als kale tabel, zonder het tekstframe", () => {
+    const onBack = vi.fn();
+    const readout = voedingReadout();
+    render(
+      <LeefstijlprofielDomeinScherm
+        model={model}
+        data={buildData({
+          nutritionCheckinReadout: readout,
+        })}
+        domain="voeding"
+        urlLayer={6}
+        onBack={onBack}
+        onOpenSchap={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByRole("heading", { name: "Aanvullen & vergelijken" })).toBeNull();
+    expect(screen.queryByLabelText(/Waar je staat op voeding/)).toBeNull();
+    expect(screen.queryByText(/prioriteit 6 van/)).toBeNull();
+    expect(screen.queryByText("Kies dit op Kompas ›")).toBeNull();
+    expect(screen.queryByText(/Eerst je bord, dan het potje/)).toBeNull();
+
+    expect(screen.getByRole("heading", { name: "Aanvullen" })).toBeTruthy();
+    expect(screen.queryByRole("group", { name: /Kies een prioriteit/ })).toBeNull();
+    expect(screen.getByText("Omega-3")).toBeTruthy();
+
+    const kruimels = screen.getByRole("navigation", { name: "Kruimelpad" });
+    fireEvent.click(within(kruimels).getByRole("button", { name: /Overzicht/ }));
+    expect(onBack).toHaveBeenCalled();
   });
 });

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import * as Icons from "@/components/app/icons";
 import { clarityTag } from "@/lib/clarity";
 import { surfaceStyles } from "@/lib/dashboard-surface";
 import { trackEvent } from "@/lib/ga4";
@@ -28,7 +29,51 @@ import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
  * bord dus bovenop en het potje eronder, met de kolomnaam als label per helft,
  * zodat de volgorde (eerst bord, dan deur) blijft kloppen. De kolomkop staat
  * daar niet: die zou boven maar één van de twee helften staan.
+ *
+ * **De kop van het scherm zit in de tabel** (5 sep). Boven deze tabel stonden
+ * titel, bronregel, cijferbalk en een werkvlak-kop — aanlopen naar het ene
+ * beeld waar de laag om draait. De tabel draagt nu zijn eigen terugweg en naam.
+ * De voetregel die de kolommen herhaalde ("eerst je bord, dan het potje") is
+ * weg: de kolommen zéggen dat al.
  */
+
+function Kruimelpad({ onBack }: { onBack: () => void }) {
+  return (
+    <nav
+      aria-label="Kruimelpad"
+      className="flex items-center gap-0.5 text-[11.5px] font-semibold"
+    >
+      <button
+        type="button"
+        onClick={onBack}
+        className="inline-flex cursor-pointer items-center gap-0.5 border-none bg-transparent p-0 font-[inherit] text-[#9FB0A6] transition hover:text-[#F1EFE8]"
+      >
+        <Icons.ChevronLeft s={13} sw={2} style={{ color: "currentColor" }} />
+        Overzicht
+      </button>
+      <span aria-hidden className="px-1 text-[#5F6C64]">
+        ·
+      </span>
+      <span className="text-[#7E8C82]">Voeding</span>
+    </nav>
+  );
+}
+
+function TabelKop({ onBack }: { onBack?: () => void }) {
+  return (
+    <div className="border-b border-white/10 px-3.5 py-2.5">
+      {onBack ? <Kruimelpad onBack={onBack} /> : null}
+      <h2
+        className={`m-0 font-serif text-[17px] font-normal leading-none text-[#F1EFE8] ${
+          onBack ? "mt-1.5" : ""
+        }`}
+        style={{ fontFamily: "var(--f-serif)" }}
+      >
+        Aanvullen
+      </h2>
+    </div>
+  );
+}
 
 export default function VoedingVsSupplementTabel({
   statuses,
@@ -36,6 +81,7 @@ export default function VoedingVsSupplementTabel({
   gateOpen,
   gateReden = null,
   focusNutrient = null,
+  onBack,
 }: {
   statuses: readonly NutrientRouteStatus[];
   surface: string;
@@ -52,16 +98,29 @@ export default function VoedingVsSupplementTabel({
    */
   gateReden?: string | null;
   focusNutrient?: string | null;
+  /** Terug naar Voortgang-home. De tabel draagt zijn eigen terugweg. */
+  onBack?: () => void;
 }) {
   const s = surfaceStyles("dashboard");
 
   if (statuses.length === 0) {
-    return null;
+    return (
+      <div className="@container">
+        <div className={`overflow-hidden rounded-xl border ${s.rij} bg-black/20`}>
+          <TabelKop onBack={onBack} />
+          <p className="m-0 px-3.5 py-3.5 text-[13.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+            Doe de voedingscheck om per stof te zien of aanvullen in beeld komt.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="@container mt-4">
+    <div className="@container">
       <div className={`overflow-hidden rounded-xl border ${s.rij} bg-black/20`}>
+        <TabelKop onBack={onBack} />
+
         <div className="hidden grid-cols-[minmax(0,1fr)_minmax(0,1fr)] border-b border-white/10 @[30rem]:grid">
           <p className={`m-0 px-3.5 py-2 text-[9.5px] font-bold uppercase tracking-[0.13em] ${s.zacht}`}>
             Uit je eten
@@ -157,11 +216,6 @@ export default function VoedingVsSupplementTabel({
           })}
         </ul>
       </div>
-
-      <p className="m-0 mt-2 text-[10.5px] leading-relaxed text-[#7E8C82] text-pretty">
-        Eerst je bord, dan het potje: een vergelijk-link verschijnt alleen waar
-        je eten deze stof niet meer kan leveren.
-      </p>
     </div>
   );
 }

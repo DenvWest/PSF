@@ -107,15 +107,12 @@ describe("buildKompasAanbevelingen", () => {
     expect(layer.actions).toContain(weekB.action);
   });
 
-  it("geeft voeding en verbinding nu wél een aanbeveling, op laag 1", () => {
+  it("geeft voeding nu wél een aanbeveling, op laag 1", () => {
     const rows = buildKompasAanbevelingen("voeding", undefined, 0);
     const voeding = rows.find((row) => row.domain === "voeding")!;
-    const verbinding = rows.find((row) => row.domain === "verbinding")!;
 
     expect(voeding.layerId).toBe(1);
     expect(voeding.origin).toEqual({ kind: "ladder" });
-    expect(verbinding.layerId).toBe(1);
-    expect(verbinding.origin).toEqual({ kind: "ladder" });
   });
 
   it("verzint geen staat waar de check er geen levert", () => {
@@ -140,10 +137,11 @@ describe("buildKompasAanbevelingen", () => {
     expect(rows.filter((row) => row.isPriority)).toHaveLength(1);
   });
 
-  it("levert alle vijf de laddderdomeinen, ook zonder enige check", () => {
+  // Verbinding is uit de interface; zie `zichtbare-domeinen.ts`.
+  it("levert alle zichtbare ladderdomeinen, ook zonder enige check", () => {
     const rows = buildKompasAanbevelingen("slaap", undefined, 0);
     expect(rows.map((row) => row.domain).sort()).toEqual(
-      ["beweging", "slaap", "stress", "verbinding", "voeding"],
+      ["beweging", "slaap", "stress", "voeding"],
     );
   });
 
@@ -160,8 +158,8 @@ describe("buildKompasAanbevelingen", () => {
     expect(beweging.isEngineAdvice).toBe(false);
 
     // Geen domein raakt kwijt of dubbel door het voorop zetten.
-    expect(rows).toHaveLength(5);
-    expect(new Set(rows.map((row) => row.domain)).size).toBe(5);
+    expect(rows).toHaveLength(4);
+    expect(new Set(rows.map((row) => row.domain)).size).toBe(4);
   });
 
   it("houdt één kaart bovenaan als focus en analyse hetzelfde domein zijn", () => {

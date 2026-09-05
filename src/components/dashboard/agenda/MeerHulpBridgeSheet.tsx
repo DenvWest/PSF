@@ -5,7 +5,7 @@ import * as Icons from "@/components/app/icons";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
 import { clarityTag } from "@/lib/clarity";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
-import type { BewegingHelpBridge, HelpBridgeStatus } from "@/lib/beweging-help-bridge";
+import type { HelpBridge, HelpBridgeStatus } from "@/lib/beweging-help-bridge";
 
 const STATUS_LABEL: Record<HelpBridgeStatus, string> = {
   done: "gedaan",
@@ -28,7 +28,7 @@ export default function MeerHulpBridgeSheet({
   onOpenSchap,
 }: {
   open: boolean;
-  bridge: BewegingHelpBridge;
+  bridge: HelpBridge;
   onClose: () => void;
   onOpenSchap: () => void;
 }) {
@@ -51,7 +51,7 @@ export default function MeerHulpBridgeSheet({
 
   const handleOpenSchap = () => {
     emitAccountClientEvent("choice.shelf_opened", {
-      domain: "beweging",
+      domain: bridge.domain,
       from_state: "agenda_meer_hulp",
       surface: "meer_hulp_brug",
       target_screen: "schap",

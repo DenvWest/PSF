@@ -15,6 +15,12 @@ import type { MovementLadderCoverage, MovementLayerState } from "@/lib/movement-
 import type { StoredSleepCheckinSnapshot } from "@/lib/sleep-checkin-parse";
 import type { SleepFactRow } from "@/lib/sleep-checkin-readout";
 import type { StressCheckReport } from "@/lib/stress-ladder";
+import type {
+  StressCheckinReadoutDelta,
+  StressFactRow,
+} from "@/lib/stress-checkin-readout";
+import type { StressLayerState } from "@/lib/stress-ladder";
+import type { StressPriorityId } from "@/data/stress/lifestyle-priorities";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type {
   NutritionFactRow,
@@ -347,6 +353,26 @@ export type SleepCheckinReadoutData = StoredSleepCheckinSnapshot & {
 };
 
 /**
+ * Stress-check als laduitlezing. Net als bij beweging: focus, staten en
+ * feitenrijen worden herberekend uit `raw_inputs` — geen bevroren narratief —
+ * zodat een regel-fix ook oude rijen bereikt. Zie `stress-checkin-readout.ts`.
+ */
+export type StressCheckinReadoutData = {
+  date: string;
+  headline: string;
+  focusLabel: string;
+  answerLabel: string | null;
+  focusStatement: string;
+  implicationLine: string;
+  focusLayer: StressPriorityId;
+  layerStates: Record<StressPriorityId, StressLayerState>;
+  kompasStatus: string;
+  primaryAction: string | null;
+  delta: StressCheckinReadoutDelta | null;
+  factRows: StressFactRow[];
+};
+
+/**
  * De voedingscheck als laduitlezing. Anders dan beweging en slaap bevriest
  * voeding geen conclusie in `raw_inputs`: de rijen én de kop worden allebei
  * herberekend uit de opgeslagen antwoorden, zodat een regel-fix in de engine
@@ -422,6 +448,8 @@ export type DashboardData = {
   hasStressCheckin: boolean;
   /** Ruwe antwoorden van de laatste stress-check — herberekend tot ladderstaten, niet bevroren. */
   stressCheckinReport: StressCheckReport | null;
+  /** Volledige stress-readout (T1d): headline, factRows, delta — herberekend uit raw_inputs. */
+  stressCheckinSnapshot: StressCheckinReadoutData | null;
   /** Dagen sinds de laatste eigen domeincheck; ontbreekt = nog nooit gedaan. */
   domainCheckDaysAgo: Partial<Record<PillarId, number>>;
   /**

@@ -117,6 +117,7 @@ import {
   buildDomainRailTools,
   buildKeuzeRailDomains,
   buildKompasRailDomains,
+  buildVoortgangRailDomains,
   resolveVoortgangRailActiveItem,
   type ContextRailApi,
   type ContextRailMode,
@@ -2389,26 +2390,21 @@ const IdentitySection = () => {
 
 /** Domeinen op de donkere cockpit-shell (@container-breedteladder) — de rest
  * (energie/herstel: DomainSoonScreen) blijft op de smallere vaste breedte. */
-/** Het home-frame per domein — de prebuild die dat Vandaag-scherm draagt. */
-const DOMAIN_PREBUILD: Partial<Record<PillarId, { src: string; title: string }>> = {
-  verbinding: { src: "verbinding-v1.html?frame=K", title: "Verbinding — prebuild v1" },
-};
-
-/*
- * Tot 26 augustus startte de contextkolom dicht op de prebuild-domeinen: die
- * iframes hebben de volle breedte nodig voor hun eigen @container-lagen. Dat
- * is omgedraaid. Verbinding is nu juist het domein waar die kolom het meeste
- * draagt — de iframe weet niets van je ijkpunt, je ritme, of waaróm verbinding
- * geen schap heeft, en de kolom is daar de enige plek waar de app dat zelf
- * zegt. Een dichtgeklapte kolom verbergt precies de uitleg die dat scherm mist.
+/**
+ * Het home-frame per domein — de prebuild die dat Vandaag-scherm draagt.
+ *
+ * Leeg sinds 5 september. Verbinding was het laatste domein met een iframe, en
+ * dat domein is uit de interface (zie `zichtbare-domeinen.ts`). Het mechanisme
+ * blijft staan: elk domein dat later een prebuild krijgt hangt hem hier op,
+ * en `PrebuildFrame` met zijn postMessage-navbrug is er nog.
  */
+const DOMAIN_PREBUILD: Partial<Record<PillarId, { src: string; title: string }>> = {};
 
 const COCKPIT_WIDTH_DOMAINS = new Set<PillarId>([
   "beweging",
   "stress",
   "slaap",
   "voeding",
-  "verbinding",
 ]);
 
 const KOMPAS_LIGHT = {
@@ -3635,6 +3631,10 @@ function DashboardContent({
     () => buildKompasRailDomains(model?.scores ?? {}),
     [model?.scores],
   );
+  const voortgangRailDomains = useMemo(
+    () => buildVoortgangRailDomains(model?.scores ?? {}),
+    [model?.scores],
+  );
   const keuzeRailDomains = useMemo(() => buildKeuzeRailDomains(), []);
 
   const contextRailMode: ContextRailMode =
@@ -3669,7 +3669,7 @@ function DashboardContent({
         activeItem={resolveVoortgangRailActiveItem(voortgangScreen)}
         leefstijlprofielDomein={activeLeefstijlprofielDomein}
         voedingLaag={activeVoedingLaag}
-        domains={railDomainItems}
+        domains={voortgangRailDomains}
         onOpenItem={handleTopNavVoortgangOpen}
         onOpenDomein={handleTopNavLeefstijlprofielDomeinOpen}
         onOpenVoedingLaag={handleTopNavVoedingLaagOpen}
@@ -3709,7 +3709,7 @@ function DashboardContent({
         onBackToKompas={contextRailApi?.onBackToKompas}
         railVoortgangActiveItem={resolveVoortgangRailActiveItem(voortgangScreen)}
         railVoortgangLeefstijlprofielDomein={activeLeefstijlprofielDomein}
-        railVoortgangDomains={railDomainItems}
+        railVoortgangDomains={voortgangRailDomains}
         onOpenVoortgangItem={handleRailVoortgangOpen}
         onOpenLeefstijlprofielDomein={handleRailLeefstijlprofielDomeinOpen}
         railVoortgangVoedingLaag={activeVoedingLaag}

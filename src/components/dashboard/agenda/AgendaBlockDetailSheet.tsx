@@ -12,6 +12,7 @@ import { getBlockRoleLabel, minutesToTime, timeToMinutes } from "@/lib/agenda-ti
 import { clarityTag } from "@/lib/clarity";
 import { trackAgendaBlockUpdated, trackEvent } from "@/lib/ga4";
 import { isValidAgendaDate } from "@/lib/dashboard-url";
+import { hasHelpBridge } from "@/lib/beweging-help-bridge";
 import type { TimelineBlock } from "@/types/agenda";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
 
@@ -273,10 +274,8 @@ export default function AgendaBlockDetailSheet({
             onScheduledTimeChange={onScheduledTimeChange}
           />
 
-          {/* Tijdelijk beweging-only: de brug (Pad A, slice 3) leest movementPlanTemplate
-              en movementPrefs — andere domeinen hebben nog geen equivalente content.
-              Verbreedt zodra een domein zijn eigen brug-data draagt (§10). */}
-          {block.slot && onOpenHelpSheet && block.slot.domain === "beweging" ? (
+          {/* Brug naar Keuze: beweging en slaap dragen eigen bridge-data. */}
+          {block.slot && onOpenHelpSheet && hasHelpBridge(block.slot.domain) ? (
             <button
               type="button"
               disabled={busy || prefBusy}

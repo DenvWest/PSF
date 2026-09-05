@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { PILLAR } from "@/data/dashboard";
 import {
   addAgendaDays,
   buildWeekSchedulePreview,
@@ -85,7 +84,15 @@ describe("buildWeekSchedulePreview", () => {
     expect(bewegingSlot?.evidenceHref).toBe("/onderbouwing?from=dashboard#MOV_CARD");
   });
 
-  it("falls back to quickWin for domains without a plan template", () => {
+  /**
+   * Deze test controleerde de quickWin-fallback via verbinding: het enige
+   * geplande domein zonder plan-template. Verbinding is uit de interface (zie
+   * `zichtbare-domeinen.ts`) en wat overblijft heeft allemaal een template, dus
+   * de weekplanning kan die fallback niet meer bereiken. Dát is nu het gedrag
+   * dat vastgelegd hoort te worden; de fallback zelf is gedekt in
+   * `kompas-home.test.ts`, op `resolvePlanStepContent`.
+   */
+  it("plant alleen domeinen met een echte plan-template", () => {
     const model = buildFixtureModel({
       slaap: 60,
       energie: 70,
@@ -96,11 +103,13 @@ describe("buildWeekSchedulePreview", () => {
       verbinding: 30,
     });
 
-    const verbindingSlot = buildWeekSchedulePreview(model).find(
-      (slot) => slot.domain === "verbinding" && !slot.isToday,
-    );
-    expect(verbindingSlot?.title).toBe(PILLAR.verbinding.quickWin.title);
-    expect(verbindingSlot?.evidenceHref).toContain("/onderbouwing");
+    const domeinen = [
+      ...new Set(buildWeekSchedulePreview(model).map((slot) => slot.domain)),
+    ];
+    expect(domeinen).not.toContain("verbinding");
+    for (const domein of domeinen) {
+      expect(["slaap", "stress", "voeding", "beweging"]).toContain(domein);
+    }
   });
 
   it("does not expose score values in slot payload", () => {

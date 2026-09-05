@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildDomainCheckHref,
   buildDomainCheckStates,
+  buildRemeasureState,
   DOMAIN_CHECK_INTERVAL_DAYS,
 } from "@/lib/kompas-domain-check";
 
@@ -20,12 +21,12 @@ function build(
 describe("buildDomainCheckStates", () => {
   it("geeft elk rail-domein een status", () => {
     const states = build();
+    // Verbinding hoort niet meer in de rail; zie `zichtbare-domeinen.ts`.
     expect([...states.keys()]).toEqual([
       "slaap",
       "beweging",
       "voeding",
       "stress",
-      "verbinding",
     ]);
   });
 
@@ -68,8 +69,16 @@ describe("buildDomainCheckStates", () => {
     expect(state.daysUntil).toBe(0);
   });
 
-  it("laat verbinding meelopen met de hermeting, zonder eigen check", () => {
-    const state = build({}, "slaap", 8).get("verbinding")!;
+  /**
+   * De hermeting-staat werd hier via verbinding getest: het enige rail-domein
+   * zonder eigen check. Verbinding is uit de rail (zie
+   * `zichtbare-domeinen.ts`), en de vier die overblijven hebben allemaal een
+   * eigen check — de tak is dus niet meer via `buildDomainCheckStates` te
+   * bereiken. Hij blijft wél bestaan voor het volgende domein zonder check,
+   * dus hij wordt hier rechtstreeks getest in plaats van geschrapt.
+   */
+  it("laat een domein zonder eigen check meelopen met de hermeting", () => {
+    const state = buildRemeasureState("verbinding", 8);
     expect(state.status).toBe("remeasure");
     expect(state.actionable).toBe(false);
     expect(state.href).toBeNull();
@@ -78,9 +87,15 @@ describe("buildDomainCheckStates", () => {
   });
 
   it("zegt nu als de hermeting verlopen is", () => {
-    const state = build({}, "slaap", -3).get("verbinding")!;
+    const state = buildRemeasureState("verbinding", -3);
     expect(state.label).toBe("Meet mee in je hermeting — nu");
     expect(state.daysUntil).toBe(0);
+  });
+
+  it("geeft elk rail-domein een eigen check — geen hermeting-staat meer in de rail", () => {
+    for (const state of build().values()) {
+      expect(state.status).not.toBe("remeasure");
+    }
   });
 
   it("licht het prioriteitsdomein uit als die te doen is", () => {

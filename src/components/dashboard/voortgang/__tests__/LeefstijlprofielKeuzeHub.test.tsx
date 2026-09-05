@@ -44,6 +44,7 @@ function buildData(overrides: Partial<DashboardData>): DashboardData {
     movementCheckinSnapshot: null,
     hasStressCheckin: false,
     stressCheckinReport: null,
+    stressCheckinSnapshot: null,
     domainCheckDaysAgo: {},
     movementPrefs: {},
     supplementVerdicts: [],
@@ -53,13 +54,13 @@ function buildData(overrides: Partial<DashboardData>): DashboardData {
 }
 
 describe("LeefstijlprofielKeuzeHub", () => {
-  it("shows the honest verbinding line, never a check CTA for it", () => {
+  // Verbinding is uit de interface (zie `zichtbare-domeinen.ts`), dus ook het
+  // blok dat uitlegde waarom het geen eigen check had. De score blijft bestaan.
+  it("toont verbinding niet meer als domein", () => {
     render(
       <LeefstijlprofielKeuzeHub data={buildData({})} onBack={vi.fn()} onOpenDomain={vi.fn()} />,
     );
-    expect(
-      screen.getByText(/Verbinding meet mee in je leefstijlcheck, niet apart\./),
-    ).toBeTruthy();
+    expect(screen.queryByText(/Verbinding/)).toBeNull();
   });
 
   it("offers the check as the only action for an unmeasured domain", () => {
@@ -124,12 +125,79 @@ describe("LeefstijlprofielKeuzeHub", () => {
   it("falls back to a plain checked row for a measured domain without its own blok yet", () => {
     render(
       <LeefstijlprofielKeuzeHub
-        data={buildData({ domainCheckDaysAgo: { beweging: 0 } })}
+        data={buildData({ domainCheckDaysAgo: { voeding: 0 } })}
         onBack={vi.fn()}
         onOpenDomain={vi.fn()}
       />,
     );
     expect(screen.getByText("Gemeten vandaag")).toBeTruthy();
+  });
+
+  it("renders stress kengetallen from the T1d snapshot", () => {
+    render(
+      <LeefstijlprofielKeuzeHub
+        data={buildData({
+          domainCheckDaysAgo: { stress: 2 },
+          stressCheckinSnapshot: {
+            date: "2026-09-03",
+            headline: "",
+            focusLabel: "Overgang",
+            answerLabel: null,
+            focusStatement: "",
+            implicationLine: "",
+            focusLayer: 1,
+            layerStates: {} as never,
+            kompasStatus: "",
+            primaryAction: null,
+            delta: null,
+            factRows: [
+              {
+                key: "STR_FREQ",
+                label: "Spanning",
+                answerLabel: "Regelmatig",
+                benchmarkLabel: null,
+                status: "below",
+                layer: 1,
+                scoresWeight: true,
+                whyLine: "",
+              },
+            ],
+          },
+        })}
+        onBack={vi.fn()}
+        onOpenDomain={vi.fn()}
+      />,
+    );
+    expect(screen.getByText("Spanning")).toBeTruthy();
+    expect(screen.getByText("Regelmatig")).toBeTruthy();
+    expect(screen.getByText(/Geen richtlijn/)).toBeTruthy();
+  });
+
+  it("renders beweging kengetallen from the movement snapshot", () => {
+    render(
+      <LeefstijlprofielKeuzeHub
+        data={buildData({
+          domainCheckDaysAgo: { beweging: 1 },
+          movementCheckinSnapshot: {
+            date: "2026-09-04",
+            factRows: [
+              {
+                key: "kracht",
+                label: "Kracht",
+                answerLabel: "1× per week",
+                benchmarkLabel: "2× per week",
+                status: "below",
+                whyLine: "",
+              },
+            ],
+          } as never,
+        })}
+        onBack={vi.fn()}
+        onOpenDomain={vi.fn()}
+      />,
+    );
+    expect(screen.getByText("Kracht")).toBeTruthy();
+    expect(screen.getByText("1× per week")).toBeTruthy();
   });
 
   it("groups energie and herstel under 'Volgt uit de rest' with their drivers as links", () => {

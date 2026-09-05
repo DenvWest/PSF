@@ -19,11 +19,17 @@ describe("buildModel priority", () => {
       { scores, vitality: 50, date: "1 jul 2026", trend },
       null, [], false, null, null, null,
     );
-    const expected =
+    const gemeten =
       MEASURED_DOMAIN_TO_PILLAR[getPrimaryTheme(mapCheckScoresToDomainScores(scores), {})];
-    expect(model.priority.id).toBe(expected);
-    expect(["slaap", "stress", "voeding", "beweging", "verbinding"]).toContain(model.priority.id);
-    expect(["slaap", "stress", "voeding", "beweging", "verbinding"]).toContain(model.strongest.id);
+
+    // De engine wijst hier verbinding aan (laagste score), maar dat domein is
+    // uit de interface — zie `zichtbare-domeinen.ts`. Het dashboard wijkt dan
+    // uit naar de laagste zichtbare score. Let op: `nurture.primary_domain`
+    // volgt nog wél de engine, dus in dit geval lopen die twee uiteen.
+    expect(gemeten).toBe("verbinding");
+    expect(model.priority.id).not.toBe("verbinding");
+    expect(["slaap", "stress", "voeding", "beweging"]).toContain(model.priority.id);
+    expect(["slaap", "stress", "voeding", "beweging"]).toContain(model.strongest.id);
   });
 
   it("suppresses vitality delta when baseline rules version predates 1.3.0", () => {

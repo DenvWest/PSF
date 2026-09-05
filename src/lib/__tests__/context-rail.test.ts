@@ -3,17 +3,26 @@ import {
   buildDomainRailTools,
   buildKeuzeRailDomains,
   buildKompasRailDomains,
+  buildVoortgangRailDomains,
   resolveVoortgangRailActiveItem,
   KOMPAS_RAIL_PILLAR_IDS,
   VOEDING_RAIL_LAYERS,
   VOORTGANG_RAIL_ITEMS,
+  VOORTGANG_RAIL_PILLAR_IDS,
 } from "@/lib/context-rail";
 
 describe("buildKompasRailDomains", () => {
-  it("geeft vijf domeinen in vaste volgorde", () => {
+  it("geeft de zichtbare domeinen in vaste volgorde", () => {
     const domains = buildKompasRailDomains({});
     expect(domains.map((domain) => domain.id)).toEqual(KOMPAS_RAIL_PILLAR_IDS);
-    expect(domains).toHaveLength(5);
+    expect(domains).toHaveLength(4);
+  });
+
+  // Verbinding wordt nog gemeten maar niet meer getoond; zie
+  // `zichtbare-domeinen.ts` voor waarom de score wél blijft bestaan.
+  it("laat verbinding uit de rail", () => {
+    const domains = buildKompasRailDomains({ verbinding: 40 });
+    expect(domains.map((domain) => domain.id)).not.toContain("verbinding");
   });
 
   it("vult label, icon en kleur uit de pilaar-data en rondt de score af", () => {
@@ -30,7 +39,7 @@ describe("buildKompasRailDomains", () => {
 
   it("valt terug op 0 voor domeinen zonder score", () => {
     const domains = buildKompasRailDomains({ slaap: 70 });
-    expect(domains.find((domain) => domain.id === "verbinding")?.score).toBe(0);
+    expect(domains.find((domain) => domain.id === "voeding")?.score).toBe(0);
   });
 });
 
@@ -86,16 +95,19 @@ describe("buildDomainRailTools", () => {
 });
 
 describe("VOEDING_RAIL_LAYERS", () => {
-  it("draagt de drie voeding-knoppen, met meten & timing vooraan", () => {
+  it("draagt de drie voeding-knoppen, met de voedingsstatus vooraan", () => {
     expect(VOEDING_RAIL_LAYERS.map((layer) => layer.slug)).toEqual([
-      "meten-timing",
       "eetbasis",
+      "meten-timing",
       "aanvullen",
     ]);
-    expect(VOEDING_RAIL_LAYERS.map((layer) => layer.id)).toEqual([5, 1, 6]);
+    expect(VOEDING_RAIL_LAYERS.map((layer) => layer.id)).toEqual([1, 5, 6]);
+    // De rail draagt de knópnamen uit het drieluik, niet de laagnamen uit de
+    // piramide: laag 1 heet daar nog Voedingsbasis, maar de knop die hem
+    // draagt heet Voedingsstatus.
     expect(VOEDING_RAIL_LAYERS.map((layer) => layer.label)).toEqual([
+      "Voedingsstatus",
       "Meten & timing",
-      "Voedingsbasis",
       "Aanvullen & vergelijken",
     ]);
   });
@@ -114,6 +126,24 @@ describe("VOORTGANG_RAIL_ITEMS", () => {
     expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "hermeting")?.icon).toBe(
       "Calendar",
     );
+  });
+});
+
+describe("buildVoortgangRailDomains", () => {
+  it("draagt alleen voeding — slaap, stress en beweging blijven in de Kompas-rail", () => {
+    const voortgang = buildVoortgangRailDomains({
+      slaap: 25,
+      beweging: 63,
+      voeding: 40,
+      stress: 10,
+    });
+    expect(VOORTGANG_RAIL_PILLAR_IDS).toEqual(["voeding"]);
+    expect(voortgang.map((domain) => domain.id)).toEqual(["voeding"]);
+    expect(voortgang[0]?.score).toBe(40);
+
+    const kompas = buildKompasRailDomains({ slaap: 25, beweging: 63, voeding: 40, stress: 10 });
+    expect(kompas.map((domain) => domain.id)).toEqual(KOMPAS_RAIL_PILLAR_IDS);
+    expect(kompas).toHaveLength(4);
   });
 });
 
@@ -144,9 +174,9 @@ describe("buildKeuzeRailDomains", () => {
     expect(open.map((item) => item.id).sort()).toEqual(["beweging", "slaap", "voeding"]);
   });
 
-  it("houdt stress en verbinding dicht mét reden — geen onzichtbare poort", () => {
+  it("houdt stress dicht mét reden — geen onzichtbare poort", () => {
     const gated = buildKeuzeRailDomains().filter((item) => item.disabledHint != null);
-    expect(gated.map((item) => item.id).sort()).toEqual(["stress", "verbinding"]);
+    expect(gated.map((item) => item.id).sort()).toEqual(["stress"]);
     for (const item of gated) {
       expect(item.disabledHint).not.toBe("");
     }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import * as Icons from "@/components/app/icons";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
 import VoortgangTerugLink from "@/components/dashboard/voortgang/VoortgangTerugLink";
 import PrioriteitStrip from "@/components/dashboard/voortgang/PrioriteitStrip";
@@ -8,16 +9,18 @@ import NutrientRail from "@/components/dashboard/voortgang/NutrientRail";
 import PrioriteitWerkvlak from "@/components/dashboard/voortgang/PrioriteitWerkvlak";
 import DomeinOnderbouwing from "@/components/dashboard/voortgang/DomeinOnderbouwing";
 import type { VerdictPanelSurface } from "@/components/dashboard/SupplementVerdictPanel";
-import { PILLAR } from "@/data/dashboard";
+import { PILLAR, PILLAR_CHECKIN_ROUTES } from "@/data/dashboard";
 import type { ProductStanceDomain } from "@/data/domain-product-stance";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import {
   buildDashboardAgendaHref,
   buildDashboardVandaagHref,
+  buildMovementRoutingHref,
   type VoedingLaagId,
 } from "@/lib/dashboard-url";
 import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
+import { CHECK_NAME } from "@/lib/kompas-domain-check";
 import DomeinPaneel from "@/components/dashboard/voortgang/DomeinPaneel";
 import VoedingVsSupplementTabel from "@/components/nutrition/VoedingVsSupplementTabel";
 import VoedingsstatusTabel from "@/components/nutrition/VoedingsstatusTabel";
@@ -25,6 +28,9 @@ import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
 import MetenTijdLaag from "@/components/nutrition/MetenTijdLaag";
 import NutritionDagboekPaneel from "@/components/dashboard/voortgang/NutritionDagboekPaneel";
 import NutritionReflectiePaneel from "@/components/dashboard/voortgang/NutritionReflectiePaneel";
+import DomainReflectiePaneel from "@/components/dashboard/voortgang/DomainReflectiePaneel";
+import SlaapStatusBlok from "@/components/dashboard/voortgang/SlaapStatusBlok";
+import { buildSlaapStatusRijen } from "@/lib/slaap-statusblok";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
 import { trackEvent } from "@/lib/ga4";
@@ -66,16 +72,49 @@ const STANCE_BY_PILLAR: Partial<
   stress: { stance: "stress", surface: "leefstijlprofiel_stress" },
 };
 
+function MetenTijdKop({ onBack }: { onBack: () => void }) {
+  return (
+    <div>
+      <nav
+        aria-label="Kruimelpad"
+        className="flex items-center gap-0.5 text-[11.5px] font-semibold"
+      >
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex cursor-pointer items-center gap-0.5 border-none bg-transparent p-0 font-[inherit] text-[#9FB0A6] transition hover:text-[#F1EFE8]"
+        >
+          <Icons.ChevronLeft s={13} sw={2} style={{ color: "currentColor" }} />
+          Overzicht
+        </button>
+        <span aria-hidden className="px-1 text-[#5F6C64]">
+          ·
+        </span>
+        <span className="text-[#7E8C82]">Voeding</span>
+      </nav>
+      <h2
+        className="m-0 mt-1.5 font-serif text-[17px] font-normal leading-none text-[#F1EFE8]"
+        style={{ fontFamily: "var(--f-serif)" }}
+      >
+        Meten & timing
+      </h2>
+    </div>
+  );
+}
+
 function LayerSixSlot({
   domain,
   data,
   onOpenSchap,
   focusNutrient = null,
+  onBack,
 }: {
   domain: PillarId;
   data?: DashboardData;
   onOpenSchap: () => void;
   focusNutrient?: NutrientId | null;
+  /** De terugweg die de voedingstabel zelf draagt. */
+  onBack?: () => void;
 }) {
   const mapping = STANCE_BY_PILLAR[domain];
 
@@ -107,7 +146,7 @@ function LayerSixSlot({
    * drie alinea's proza rond één beeld. De gate-reden zit nu in de tabel
    * zelf, in de kolom waar hij over gaat.
    */
-  if (domain === "voeding" && routeStatuses.length > 0) {
+  if (domain === "voeding") {
     return (
       <VoedingVsSupplementTabel
         statuses={routeStatuses}
@@ -120,6 +159,7 @@ function LayerSixSlot({
             : null
         }
         focusNutrient={focusNutrient}
+        onBack={onBack}
       />
     );
   }
@@ -151,20 +191,24 @@ function LayerSixSlot({
  * **Voeding draait sinds 3 sep op drie knoppen** (zie `voeding-drieluik.ts`).
  * De zes ladderlagen blijven de bron; een knop kan er meer dan één tonen, en
  * die worden hier onder elkaar gerenderd in de volgorde die de knop noemt.
+ * De knoppen zelf staan in de zijbalk en de mobiele Voortgang-balk, niet
+ * nog eens als strip in dit scherm.
  *
  * - **P1 + P2 + P4 Voedingsstatus**: één tabel met de voedselgroepen, de
  *   kwaliteitsvragen én de stoffen — categorie, jouw antwoord, de balk, de
  *   richtlijn, de status. Dit waren drie componenten die dezelfde balkvorm
  *   herhaalden; zie `VoedingsstatusTabel` voor waarom ze samengevoegd zijn.
  *   Deze knop rendert zónder werkvlak-frame: de tabel draagt zijn eigen kop.
- * - **P5 Meten & timing**: je eigen reeks, je logboek en de terugblik.
+ * - **P5 Meten & timing**: je eigen reeks, je logboek en de terugblik —
+ *   kaal, met dezelfde tabelkop (kruimel + naam) als de andere twee.
  * - **P6 Aanvullen**: de vergelijking eten naast supplement.
  *
  * **P3 (Verhoudingen) heeft geen slot meer.** Die toonde de verdeling over je
  * eetmomenten — een detail van je logboek, geen eigen stap. Buiten voeding
- * heeft alleen P6 een slot; de andere lagen zijn daar leeg.
+ * heeft slaap op P6 een meten-slot (reeks + terugblik + poort); stress/beweging
+ * alleen P6 als poort. De andere lagen zijn daar leeg.
  */
-function NutritionLayerSlot({
+function DomainLayerSlot({
   layerId,
   domain,
   data,
@@ -183,12 +227,27 @@ function NutritionLayerSlot({
   onBack: () => void;
 }) {
   if (layerId === 6) {
+    if (domain === "slaap") {
+      return (
+        <>
+          <MetenTijdLaag meetreeks={meetreeks} surface="leefstijlprofiel_slaap" />
+          <DomainReflectiePaneel domain="slaap" surface="leefstijlprofiel_slaap" />
+          <LayerSixSlot
+            domain={domain}
+            data={data}
+            onOpenSchap={onOpenSchap}
+            focusNutrient={p6FocusNutrient}
+          />
+        </>
+      );
+    }
     return (
       <LayerSixSlot
         domain={domain}
         data={data}
         onOpenSchap={onOpenSchap}
         focusNutrient={p6FocusNutrient}
+        onBack={onBack}
       />
     );
   }
@@ -369,8 +428,8 @@ export default function LeefstijlprofielDomeinScherm({
    * Welke knop openstaat.
    *
    * Nooit `null` zolang het domein knoppen heeft: een leeg werkvlak naast een
-   * gevulde strip leest als een fout. Op voeding opent hij zonder deeplink op
-   * Meten & timing — daar vul je in, en de rest is daar een uitkomst van.
+   * gevulde strip leest als een fout. Op voeding kiest `kiesStartKnop` de
+   * eerste knop (Voedingsstatus) als er geen deeplink is.
    */
   const actievePrioriteitId = (() => {
     if (pickedForDomain?.layer != null) {
@@ -521,26 +580,29 @@ export default function LeefstijlprofielDomeinScherm({
     ) : null;
 
   /**
-   * Voedingsstatus draagt zichzelf — één tabel, niets eromheen (5 sep).
+   * Alle drie de voeding-knoppen dragen zichzelf — geen paginakop, geen
+   * werkvlak-frame. Status en Aanvullen zijn één tabel; Meten & timing is
+   * reeks + dagboek + terugblik onder dezelfde soort tabelkop.
    *
-   * Op deze knop stonden zeven aanlopen naar één beeld: terugknop, domeinlabel,
-   * paginatitel, bronregel, headline, cijferbalk en de stoffenrail. Daarna pas
-   * het werkvlak met nóg een kop, een samenvattingsregel en een feitenlijst die
-   * per rij herhaalde wat de tabel eronder in een kolom zegt.
+   * Op deze knoppen stonden zeven aanlopen naar één beeld: terugknop,
+   * domeinlabel, paginatitel, bronregel, headline, cijferbalk en de
+   * stoffenrail. Daarna pas het werkvlak met nóg een kop, een
+   * samenvattingsregel en een feitenlijst die per rij herhaalde wat de tabel
+   * eronder in een kolom zegt.
    *
-   * De tabel heeft dat frame niet nodig: hij draagt zijn eigen kruimelpad, zijn
-   * eigen naam, zijn telling en zijn filters. Wat wegvalt is geen informatie
-   * maar dezelfde informatie in een tweede vorm — met één uitzondering, de
-   * feitenlijst met bronregels, en die is één klik verderop op Meten & timing
-   * en op de onderbouwing van de andere knoppen.
+   * De tabel heeft dat frame niet nodig: hij draagt zijn eigen kruimelpad en
+   * zijn eigen naam. Wat wegvalt is geen informatie maar dezelfde informatie
+   * in een tweede vorm.
    *
-   * De strip blijft: dat is hoe je naar de andere twee knoppen komt.
+   * De drie knoppen staan in de zijbalk (md+) en de inklapbare Voortgang-balk
+   * (onder md). Een tweede rij pills in het midden herhaalde dezelfde route.
    */
-  const isKaleTabel = isDrieluik && actievePrioriteitId === 1;
+  const isKaleTabel = isDrieluik;
 
   return (
     <section aria-label={`Leefstijlprofiel — ${pillar.label}`} className="pt-4">
-      <div className={isKaleTabel ? "hidden" : "mb-5"}>
+      {isKaleTabel ? null : (
+      <div className="mb-5">
         <VoortgangTerugLink onBack={onBack} />
         <div className="min-w-0">
           {/* De balk in de header noemt het domein al; op mobiel zou deze
@@ -564,8 +626,41 @@ export default function LeefstijlprofielDomeinScherm({
               {readout.headline}
             </p>
           ) : null}
+          {!hasConclusion && CHECK_NAME[domain] && PILLAR_CHECKIN_ROUTES[domain] ? (
+            <a
+              href={`${PILLAR_CHECKIN_ROUTES[domain]}?from=dashboard&kompas=${domain}`}
+              className="mt-3 inline-flex text-[13px] font-semibold text-[var(--sage)] no-underline"
+              onClick={() => {
+                trackEvent("dashboard_voortgang_hub_click", {
+                  destination: "check",
+                  domain,
+                  surface: "leefstijlprofiel_domein_empty",
+                });
+                clarityTag("dashboard_leefstijlprofiel_check_cta", domain);
+              }}
+            >
+              Doe de {CHECK_NAME[domain]} →
+            </a>
+          ) : null}
+          {domain === "beweging" && data?.movementCheckinSnapshot?.focusDimension ? (
+            <a
+              href={buildMovementRoutingHref(data.movementCheckinSnapshot.focusDimension)}
+              className="mt-3 inline-flex text-[13px] font-semibold text-[var(--sage)] no-underline"
+              onClick={() => {
+                trackEvent("dashboard_voortgang_hub_click", {
+                  destination: "vandaag",
+                  domain: "beweging",
+                  surface: "leefstijlprofiel_focus_sync",
+                });
+                clarityTag("dashboard_beweging_focus_sync", "voortgang");
+              }}
+            >
+              Open dit op Vandaag →
+            </a>
+          ) : null}
         </div>
       </div>
+      )}
 
       {/* De werkbank.
 
@@ -580,18 +675,25 @@ export default function LeefstijlprofielDomeinScherm({
           laten zien, en klap je ze open wanneer je ze naast je prioriteit wilt
           leggen. Uitgeklapt beweegt de kolom mee met de laag die openstaat.
 
-          De prioriteiten blijven horizontaal: dat is een route (eerst je
-          basis, dan kwaliteit, dan verhoudingen), en een route lees je van
-          links naar rechts. */}
+          Buiten voeding blijven de prioriteiten horizontaal: dat is een
+          route, en een route lees je van links naar rechts. Op voeding
+          staan dezelfde drie knoppen al in de rail. */}
       <div className="@container">
-        <PrioriteitStrip
-          prioriteiten={knoppen}
-          actief={actievePrioriteitId}
-          onKies={handleKiesPrioriteit}
-          stateLabels={readout?.stateLabels}
-        />
+        {domain === "slaap" ? (
+          <div className="mb-3.5">
+            <SlaapStatusBlok rows={buildSlaapStatusRijen(readout?.evidenceByLayer)} />
+          </div>
+        ) : null}
+        {isDrieluik ? null : (
+          <PrioriteitStrip
+            prioriteiten={knoppen}
+            actief={actievePrioriteitId}
+            onKies={handleKiesPrioriteit}
+            stateLabels={readout?.stateLabels}
+          />
+        )}
 
-        <div className="mt-4 flex min-w-0 flex-col gap-3.5">
+        <div className={`flex min-w-0 flex-col gap-3.5 ${isDrieluik ? "" : "mt-4"}`}>
           {/* Je cijfer met de bron erbij — één regel, vóór de laag waar je
               voor kwam. */}
           {isKaleTabel ? null : (
@@ -614,22 +716,25 @@ export default function LeefstijlprofielDomeinScherm({
             />
           ) : null}
 
-          {/* De lagen onder de open knop. Op Voedingsstatus staan ze kaal —
-              de tabel is het scherm; elders zitten ze in het werkvlak, waar de
+          {/* De lagen onder de open knop. Op voeding staan ze kaal — de
+              tabel is het scherm; elders zitten ze in het werkvlak, waar de
               kop, de samenvatting en de feitenlijst hun context dragen. */}
           {isKaleTabel ? (
-            actieveLagen.map((laag) => (
-              <NutritionLayerSlot
-                key={laag}
-                layerId={laag}
-                domain={domain}
-                data={data}
-                onOpenSchap={handleOpenSchap}
-                p6FocusNutrient={p6FocusNutrient}
-                meetreeks={meetreeks}
-                onBack={onBack}
-              />
-            ))
+            <>
+              {actievePrioriteitId === 5 ? <MetenTijdKop onBack={onBack} /> : null}
+              {actieveLagen.map((laag) => (
+                <DomainLayerSlot
+                  key={laag}
+                  layerId={laag}
+                  domain={domain}
+                  data={data}
+                  onOpenSchap={handleOpenSchap}
+                  p6FocusNutrient={p6FocusNutrient}
+                  meetreeks={meetreeks}
+                  onBack={onBack}
+                />
+              ))}
+            </>
           ) : actievePrioriteit ? (
             <PrioriteitWerkvlak
               prioriteit={actievePrioriteit}
@@ -663,7 +768,7 @@ export default function LeefstijlprofielDomeinScherm({
             >
               {isKompasDomain
                 ? actieveLagen.map((laag) => (
-                    <NutritionLayerSlot
+                    <DomainLayerSlot
                       key={laag}
                       layerId={laag}
                       domain={domain}
@@ -685,13 +790,10 @@ export default function LeefstijlprofielDomeinScherm({
               als rij lezen ze als wat ze zijn — waar je heen kunt.
 
               Onder de kale tabel staan ze niet: daar zou een losse regel
-              tekst onder de tabel hangen, en de weg naar je keuze loopt daar
-              via de knop "Aanvullen & vergelijken" in de strip erboven. */}
-          <div
-            className={`flex flex-wrap items-center gap-x-5 gap-y-2 ${
-              isKaleTabel ? "hidden" : ""
-            }`}
-          >
+              tekst onder de tabel hangen, en de weg naar de andere knoppen
+              loopt via de zijbalk of de mobiele Voortgang-balk. */}
+          {isKaleTabel ? null : (
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {/* Op de domeinen zonder eigen Kompas-scherm droeg de ladder de weg
                 naar Mijn Dag; die weg blijft bestaan nu de ladder hier weg is —
                 kiezen en afvinken gebeurt daar, niet op dit scherm. */}
@@ -715,6 +817,7 @@ export default function LeefstijlprofielDomeinScherm({
               </button>
             ) : null}
           </div>
+          )}
         </div>
       </div>
     </section>

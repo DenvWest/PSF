@@ -19,6 +19,8 @@ type ClientEmitType = Extract<
   | "nutrition.kompas_priority_clicked"
   | "nutrition.reflectie_shown"
   | "nutrition.reflectie_answered"
+  | "sleep.reflectie_shown"
+  | "sleep.reflectie_answered"
   | "nutrition.dagboek_opened"
   | "nutrition.dagboek_day_saved"
   | "nutrition.dagboek_completed"

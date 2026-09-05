@@ -10,6 +10,7 @@ import { KOMPAS_RAIL_PILLAR_IDS } from "@/lib/context-rail";
 import { getReadoutDrivers, type ReadoutPillarId } from "@/lib/domain-role";
 import { trackEvent } from "@/lib/ga4";
 import { CHECK_NAME } from "@/lib/kompas-domain-check";
+import { resolveHubKengetalRows } from "@/lib/voortgang-hub-kengetallen";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { DashboardData, Pillar, PillarId } from "@/types/dashboard";
 
@@ -187,27 +188,6 @@ function CheckedPlainBlok({
   );
 }
 
-function VerbindingBlok({ pillar, onClick }: { pillar: Pillar; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="w-full cursor-pointer border-none bg-transparent p-0 text-left"
-    >
-      <CockpitTile>
-        <div className="flex items-center gap-2">
-          <DomainDot color={pillar.color} />
-          <span className="font-serif text-[17px] text-[var(--text)]">{pillar.label}</span>
-        </div>
-        <p className="m-0 mt-2 text-[13px] leading-relaxed text-[var(--text-muted)]">
-          Verbinding meet mee in je leefstijlcheck, niet apart. Je volgende hermeting brengt &apos;m
-          mee.
-        </p>
-      </CockpitTile>
-    </button>
-  );
-}
-
 function driverSentence(pillar: Pillar, drivers: PillarId[]): string {
   const labels = drivers.map((id) => PILLAR[id].label.toLowerCase());
   const joined =
@@ -292,14 +272,6 @@ export default function LeefstijlprofielKeuzeHub({
               const daysAgo = domainCheckDaysAgo?.[domain];
               const onClick = () => onOpenDomain(domain);
 
-              if (domain === "verbinding") {
-                return (
-                  <li key={domain}>
-                    <VerbindingBlok pillar={pillar} onClick={onClick} />
-                  </li>
-                );
-              }
-
               if (daysAgo == null) {
                 return (
                   <li key={domain}>
@@ -308,13 +280,13 @@ export default function LeefstijlprofielKeuzeHub({
                 );
               }
 
-              const sleepFactRows = domain === "slaap" ? data?.sleepCheckinSnapshot?.factRows : null;
-              if (sleepFactRows && sleepFactRows.length > 0) {
+              const kengetalRows = resolveHubKengetalRows(domain, data);
+              if (kengetalRows && kengetalRows.length > 0) {
                 return (
                   <li key={domain}>
                     <DomainKengetalBlok
                       pillar={pillar}
-                      rows={sleepFactRows.slice(0, 3)}
+                      rows={kengetalRows}
                       meetregel={buildMeetregel(daysAgo, savedCount)}
                       onClick={onClick}
                     />

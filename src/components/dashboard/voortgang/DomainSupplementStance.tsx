@@ -131,15 +131,20 @@ export default function DomainSupplementStance({
   }
 
   if (poortOnly) {
+    const dichtCopy =
+      domain === "sleep"
+        ? "Eerst gelegenheid, ritme en avondgedrag — en vul je voeding in. Zonder die basis kunnen we niet zeggen of magnesium iets toevoegt."
+        : "Vul eerst je voeding in — zonder dat kunnen we niet zeggen of aanvullen iets toevoegt.";
+    const openCopy =
+      domain === "sleep"
+        ? "Magnesium hoort bij aanvullen, niet bij de basis. Het oordeel en het aanbod staan op Keuze — hier leggen we alleen uit waarom de volgorde zo is."
+        : "Het oordeel en het aanbod staan op Keuze — hier leggen we alleen uit waarom de volgorde zo is.";
+
     return (
       <GeslotenPoort
         titel={!nutritionLogCompleted ? "De deur is dicht" : "Supplementen in je profiel"}
       >
-        <PoortTekst>
-          {!nutritionLogCompleted
-            ? "Vul eerst je voeding in — zonder dat kunnen we niet zeggen of aanvullen iets toevoegt."
-            : "Het oordeel en het aanbod staan op Keuze — hier leggen we alleen uit waarom de volgorde zo is."}
-        </PoortTekst>
+        <PoortTekst>{!nutritionLogCompleted ? dichtCopy : openCopy}</PoortTekst>
         {onOpenFavorieten ? (
           <button
             type="button"
@@ -162,8 +167,9 @@ export default function DomainSupplementStance({
     return (
       <GeslotenPoort titel="De deur is dicht">
         <PoortTekst>
-          Vul eerst je voeding in — zonder dat kunnen we niet zeggen of aanvullen iets
-          toevoegt.
+          {domain === "sleep"
+            ? "Eerst gelegenheid, ritme en avondgedrag — en vul je voeding in. Zonder die basis kunnen we niet zeggen of magnesium iets toevoegt."
+            : "Vul eerst je voeding in — zonder dat kunnen we niet zeggen of aanvullen iets toevoegt."}
         </PoortTekst>
       </GeslotenPoort>
     );

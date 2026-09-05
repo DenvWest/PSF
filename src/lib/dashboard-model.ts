@@ -3,6 +3,7 @@ import { isReadoutDomain } from "@/lib/domain-role";
 import { buildActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { EMPTY_MOVEMENT_PREFS } from "@/lib/movement-prefs";
 import { getPriorityPillar } from "@/lib/priority-pillar";
+import { filterZichtbareDomeinen } from "@/lib/zichtbare-domeinen";
 import type { MovementDayChoice, TimeBucket } from "@/lib/account-priority-pref";
 import { RULES_VERSION } from "@/lib/intake-engine";
 import { hasMethodologyChange } from "@/lib/rules-version";
@@ -18,6 +19,15 @@ import type {
 import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { PlanProgress } from "@/types/lifestyle-plan";
 
+/**
+ * De domeinen op volgorde van urgentie: laagste score eerst.
+ *
+ * Verborgen domeinen vallen hier weg (zie `zichtbare-domeinen.ts`). Dat moet
+ * hier gebeuren en niet pas in de weergave: deze lijst bepaalt je *prioriteit*,
+ * en een prioriteit die naar een scherm wijst dat niet bestaat is een dood
+ * spoor. De score blijft berekend en telt mee in vitaliteit — hij stuurt alleen
+ * niet meer waar je naartoe wordt gewezen.
+ */
 export function derivePriority(scores: CheckScores): Pillar[] {
   const sortByScore = (pillars: Pillar[]) =>
     [...pillars].sort(
@@ -25,8 +35,9 @@ export function derivePriority(scores: CheckScores): Pillar[] {
         scores[a.id] - scores[b.id] ||
         TIE_ORDER.indexOf(a.id) - TIE_ORDER.indexOf(b.id),
     );
-  const intervention = PILLARS.filter((pillar) => !isReadoutDomain(pillar.id));
-  const readout = PILLARS.filter((pillar) => isReadoutDomain(pillar.id));
+  const zichtbaar = filterZichtbareDomeinen(PILLARS, (pillar) => pillar.id);
+  const intervention = zichtbaar.filter((pillar) => !isReadoutDomain(pillar.id));
+  const readout = zichtbaar.filter((pillar) => isReadoutDomain(pillar.id));
   return [...sortByScore(intervention), ...sortByScore(readout)];
 }
 

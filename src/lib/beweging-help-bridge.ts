@@ -2,7 +2,7 @@ import { resolveActionKey } from "@/lib/day-model";
 import { findMovementStepTitle } from "@/lib/movement-today-choices";
 import { programLabelFor } from "@/lib/beweging-advies-treden";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
-import type { DashboardModel } from "@/types/dashboard";
+import type { DashboardModel, PillarId } from "@/types/dashboard";
 
 /**
  * De dunne #b-ingang (Pad A, slice 3): geen catalogus, alleen een statusstrip
@@ -22,33 +22,75 @@ export type HelpBridgePoint = {
   status: HelpBridgeStatus;
 };
 
-export type BewegingHelpBridge = {
+export type HelpBridge = {
+  domain: PillarId;
   stepTitle: string | null;
   programLabel: string | null;
   points: HelpBridgePoint[];
 };
 
+/** @deprecated Alias — gebruik `HelpBridge`. */
+export type BewegingHelpBridge = HelpBridge;
+
+const HELP_BRIDGE_DOMAINS: readonly PillarId[] = ["beweging", "slaap"];
+
+export function hasHelpBridge(domain: PillarId): boolean {
+  return HELP_BRIDGE_DOMAINS.includes(domain);
+}
+
+function ketenPoints(nutritionLogCompleted: boolean): HelpBridgePoint[] {
+  return [
+    { id: "check", label: "Check", status: "done" },
+    {
+      id: "onderbouwing",
+      label: "Onderbouwing",
+      status: nutritionLogCompleted ? "done" : "wacht",
+    },
+    { id: "schap", label: "Keuze", status: "now" },
+    { id: "vergelijking", label: "Vergelijking", status: "toekomstig" },
+  ];
+}
+
 export function buildBewegingHelpBridge(
   model: DashboardModel,
   slot: WeekDaySlot | null,
   nutritionLogCompleted: boolean,
-): BewegingHelpBridge {
+): HelpBridge {
   const stepTitle = slot ? findMovementStepTitle(resolveActionKey(model, slot)) : null;
   const programLabel = programLabelFor(model.movementPrefs.startPattern);
 
   return {
+    domain: "beweging",
     stepTitle,
     programLabel,
-    points: [
-      // De sheet is alleen bereikbaar via de dagstap-poort — de check staat dus al.
-      { id: "check", label: "Check", status: "done" },
-      {
-        id: "onderbouwing",
-        label: "Onderbouwing",
-        status: nutritionLogCompleted ? "done" : "wacht",
-      },
-      { id: "schap", label: "Keuze", status: "now" },
-      { id: "vergelijking", label: "Vergelijking", status: "toekomstig" },
-    ],
+    points: ketenPoints(nutritionLogCompleted),
   };
+}
+
+export function buildSlaapHelpBridge(
+  model: DashboardModel,
+  nutritionLogCompleted: boolean,
+): HelpBridge {
+  const focus = model.sleepFocus;
+  return {
+    domain: "slaap",
+    stepTitle: focus?.actions[0] ?? focus?.focusLabel ?? null,
+    programLabel: focus?.focusLabel ?? "Slaap",
+    points: ketenPoints(nutritionLogCompleted),
+  };
+}
+
+export function buildDomainHelpBridge(
+  domain: PillarId,
+  model: DashboardModel,
+  slot: WeekDaySlot | null,
+  nutritionLogCompleted: boolean,
+): HelpBridge | null {
+  if (domain === "beweging") {
+    return buildBewegingHelpBridge(model, slot, nutritionLogCompleted);
+  }
+  if (domain === "slaap") {
+    return buildSlaapHelpBridge(model, nutritionLogCompleted);
+  }
+  return null;
 }
