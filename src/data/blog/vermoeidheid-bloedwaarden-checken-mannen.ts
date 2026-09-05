@@ -4,7 +4,6 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const vermoeidheidBloedwaardenCheckenMannenData: BlogArtikel = {
   slug: "vermoeidheid-bloedwaarden-checken-mannen",
   categorie: "energie",
-  audience: "mannen",
   titel: "Structureel moe: welke bloedwaarden de moeite waard zijn",
   coverImage: "/images/blog/vermoeidheid-bloedwaarden-checken-mannen.jpg",
   coverImageAlt: "Laboratoriumbuisjes en pipet bij bloedonderzoek",
@@ -80,11 +79,11 @@ export const vermoeidheidBloedwaardenCheckenMannenData: BlogArtikel = {
   metaDescription:
     "Structureel moe na 30? Vitamine D, B12, ijzer, schildklier en glucose zijn de bloedwaarden die vermoeidheid kunnen verklaren — bespreek ze met je huisarts.",
   keywords: [
-    "moe man 30",
+    "moe na 30",
     "bloedwaarden vermoeidheid",
     "vitamine d tekort vermoeid",
-    "ijzertekort man",
-    "b12 tekort man",
+    "ijzertekort vermoeidheid",
+    "b12 tekort vermoeidheid",
   ],
   referenties: toRefs([
     "Wilson D, Jackson T, Sapey E, Lord JM. Frailty and sarcopenia: the potential role of an aged immune system. Ageing Res Rev. 2017;36:1-10.",

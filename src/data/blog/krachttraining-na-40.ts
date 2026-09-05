@@ -76,10 +76,10 @@ export const krachttrainingNa40Data: BlogArtikel = {
   metaDescription:
     "Krachttraining na 30: sarcopenie voorkomen, eiwit, mitochondriën, cardio-combo en realistisch 8-weken startprotocol.",
   keywords: [
-    "krachttraining man 30",
+    "krachttraining na 30",
     "sarcopenie voorkomen",
     "spierbehoud 30 plus",
-    "weerstandstraining mannen",
+    "weerstandstraining 30+",
     "krachttraining testosteron",
     "VO2max trainen 30",
   ],

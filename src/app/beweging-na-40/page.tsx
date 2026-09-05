@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Beweging Na 30 — eerst belasting en rust, dan pas supplementen",
     description:
-      "Herkenning, trainingsritme en wanneer creatine of eiwit zinvol zijn — voor mannen 30+.",
+      "Herkenning, trainingsritme en wanneer creatine of eiwit zinvol zijn — voor 30-plussers.",
     url: "/beweging-na-40",
     type: "article",
   },

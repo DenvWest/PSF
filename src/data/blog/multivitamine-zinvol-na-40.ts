@@ -68,7 +68,7 @@ export const multivitamineZinvolNa40Data: BlogArtikel = {
     "is een multivitamine zinvol",
     "multivitamine zin of onzin",
     "multivitamine of losse vitamines",
-    "multivitamine mannen 30",
+    "multivitamine na 30",
   ],
   referenties: toRefs([
     "Guallar E et al. Enough is enough: stop wasting money on vitamin and mineral supplements. Ann Intern Med. 2013;159(12):850-851.",

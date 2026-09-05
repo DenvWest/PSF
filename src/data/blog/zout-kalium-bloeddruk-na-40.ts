@@ -8,7 +8,7 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
   coverImage: "/images/blog/zout-kalium-bloeddruk-na-40.jpg",
   coverImageAlt: "Verse groenten en kruiden, rijk aan kalium",
   heroIntro:
-    "Nederlandse mannen zitten structureel boven de aanbevolen 6 gram zout per dag — meer dan vrouwen, blijkt uit RIVM-onderzoek. Tegelijk krijgt bijna niemand genoeg kalium binnen. Dat is geen toeval: het zijn twee kanten van dezelfde [kalium-natriumbalans](/kennisbank/kalium-natrium-balans), en die stuurt mee op je bloeddruk. Dit artikel legt uit waar het misgaat, waarom het antwoord in je voeding zit en niet in een supplement, en hoe dat aansluit bij [energie na 30](/energie-na-40).",
+    "In Nederland zit de zoutinname structureel boven de aanbevolen 6 gram per dag — mannen gemiddeld hoger dan vrouwen, blijkt uit RIVM-onderzoek. Tegelijk krijgt bijna niemand genoeg kalium binnen. Dat is geen toeval: het zijn twee kanten van dezelfde [kalium-natriumbalans](/kennisbank/kalium-natrium-balans), en die stuurt mee op je bloeddruk. Dit artikel legt uit waar het misgaat, waarom het antwoord in je voeding zit en niet in een supplement, en hoe dat aansluit bij [energie na 30](/energie-na-40).",
   leestijd: "8 min",
   gepubliceerdOp: "2026-09-02",
   laatstBijgewerktOp: "2026-09-02",
@@ -17,13 +17,13 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Twee tekorten die bij elkaar horen",
       tekst:
-        "Zout te veel, kalium te weinig — bij de meeste Nederlandse mannen 30+ spelen beide tegelijk. Dat is meer dan toeval. Natrium (uit zout) en kalium sturen samen de vochtbalans en de spanning op je vaatwand, maar in tegengestelde richting. Kijk je naar maar één kant van die balans, dan mis je de helft van het verhaal.",
+        "Zout te veel, kalium te weinig — bij veel 30-plussers spelen beide tegelijk. Dat is meer dan toeval. Natrium (uit zout) en kalium sturen samen de vochtbalans en de spanning op je vaatwand, maar in tegengestelde richting. Kijk je naar maar één kant van die balans, dan mis je de helft van het verhaal.",
     },
     {
       type: "tekst",
       titel: "Hoe kalium en natrium tegen elkaar inwerken",
       tekst:
-        "Natrium houdt vocht vast in je bloedbaan; te veel verhoogt de druk op de vaatwand. Kalium doet het tegenovergestelde: het helpt je nieren natrium af te voeren en ontspant de vaatwand. RIVM-onderzoek (rapport 2023-0373) laat zien dat Nederlandse mannen structureel boven de 6 gram zout per dag zitten. De Gezondheidsraad-richtlijn voor kalium wordt door het overgrote deel juist niet gehaald. Eén interventie — meer onbewerkt, plantaardig eten — werkt op beide assen tegelijk.",
+        "Natrium houdt vocht vast in je bloedbaan; te veel verhoogt de druk op de vaatwand. Kalium doet het tegenovergestelde: het helpt je nieren natrium af te voeren en ontspant de vaatwand. RIVM-onderzoek (rapport 2023-0373) laat zien dat de gemiddelde zoutinname structureel boven de 6 gram per dag ligt. De Gezondheidsraad-richtlijn voor kalium wordt door het overgrote deel juist niet gehaald. Eén interventie — meer onbewerkt, plantaardig eten — werkt op beide assen tegelijk.",
     },
     {
       type: "tekst",
@@ -55,7 +55,7 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Nederlandse mannen zitten structureel boven de aanbevolen zoutinname en onder de kaliumaanbeveling — twee kanten van dezelfde balans die meespeelt in je bloeddruk. De oplossing zit in minder bewerkt en meer plantaardig eten, niet in een supplement.",
+    "In Nederland zit de zoutinname structureel boven de aanbeveling en de kaliuminname eronder — twee kanten van dezelfde balans die meespeelt in je bloeddruk. De oplossing zit in minder bewerkt en meer plantaardig eten, niet in een supplement.",
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 30",
     href: "/energie-na-40",
@@ -67,12 +67,12 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
   ],
   metaTitle: "Zout en kalium: de balans die je bloeddruk stuurt",
   metaDescription:
-    "Nederlandse mannen eten te veel zout en te weinig kalium. Waarom de verhouding telt, waar de bronnen zitten en waarom dit geen supplement-vraag is.",
+    "Te veel zout en te weinig kalium: waarom de verhouding telt, waar de bronnen zitten en waarom dit geen supplement-vraag is.",
   keywords: [
     "minder zout eten tips",
     "hoeveel zout per dag",
     "kalium natrium balans",
-    "zout bloeddruk mannen",
+    "zout bloeddruk",
     "kalium voeding bronnen",
   ],
   referenties: toRefs([

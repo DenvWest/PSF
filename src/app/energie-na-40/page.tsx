@@ -230,7 +230,7 @@ export default function EnergieNa40Page() {
                   1. Herstel duurt langer na dezelfde week
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Veel mannen merken dat een drukke week langer &ldquo;naar&rdquo; voelt dan tien jaar geleden.
+                  Veel mensen merken dat een drukke week langer &ldquo;naar&rdquo; voelt dan tien jaar geleden.
                   Dat hoeft geen ziekte te zijn: het past vaak bij minder slaap, meer schermwerk en
                   minder beweging tussen vergaderingen door.
                 </p>
@@ -310,7 +310,7 @@ export default function EnergieNa40Page() {
                   Eten en energiepieken — wat je merkt in je dag
                 </h3>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  De meeste mannen 30+ eten relatief weinig eiwit bij het ontbijt en veel snelle
+                  De meeste 30-plussers eten relatief weinig eiwit bij het ontbijt en veel snelle
                   koolhydraten. Het resultaat: een korte oppepper en daarna een zware middag — vaak
                   omschreven als hersenmist of snackdrang.
                 </p>

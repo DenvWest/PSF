@@ -89,12 +89,12 @@ export const eiwitNa40Data: BlogArtikel = {
   metaDescription:
     "Hoeveel eiwit heb je na 30 nodig? Anabole resistentie, 1,6 g/kg, spreiding over de dag en wanneer poeder zinvol is — onderbouwd en praktisch.",
   keywords: [
-    "eiwit man 30",
+    "eiwit na 30",
     "eiwitbehoefte 30 plus",
-    "hoeveel eiwit per dag man",
+    "hoeveel eiwit per dag",
     "anabole resistentie",
     "spiermassa behouden 30",
-    "eiwitpoeder mannen 30",
+    "eiwitpoeder 30+",
   ],
   referenties: toRefs([
     "Baum JI, Kim IY, Wolfe RR. Protein consumption and the elderly: what is the optimal level of intake? Nutrients. 2016;8(6):359.",

@@ -83,7 +83,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
   metaDescription:
     "Alcohol en vermoeidheid na 30: REM-slaap, ochtendenergie, middagdip en vijf praktische aanpassingen zonder moraliseren.",
   keywords: [
-    "alcohol slaap mannen 30",
+    "alcohol slaap na 30",
     "alcohol vermoeidheid",
     "alcohol energie dag erna",
     "alcohol REM slaap",

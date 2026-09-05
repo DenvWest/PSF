@@ -89,8 +89,8 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
   metaDescription:
     "Eiwit verdelen over de dag: waarom ontbijt vóór 10 uur, spreiding per maaltijd en eiwit na training je energie en herstel ondersteunen — praktisch plan zonder hype.",
   keywords: [
-    "eiwit timing mannen 30",
-    "eiwit ontbijt mannen",
+    "eiwit timing na 30",
+    "eiwit ontbijt",
     "eiwitinname spreiden",
     "eiwit spreiden dag",
     "eiwit na training 30 plus",

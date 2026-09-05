@@ -4,7 +4,6 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const krachtverliesEiwitbehoefteNa40Data: BlogArtikel = {
   slug: "krachtverlies-eiwitbehoefte-na-40",
   categorie: "supplementen",
-  audience: "mannen",
   titel: "Krachtverlies na 30: waarom je eiwitbehoefte stijgt, niet daalt",
   coverImage: "/images/blog/krachtverlies-eiwitbehoefte-na-40.jpg",
   coverImageAlt: "Rij dumbbells in de sportschool",
@@ -19,14 +18,14 @@ export const krachtverliesEiwitbehoefteNa40Data: BlogArtikel = {
       titel: "Wat sarcopenie precies is",
       bewijsNiveau: "sterk",
       tekst:
-        "Vanaf ongeveer het dertigste levensjaar verliezen mannen gemiddeld zo'n 1 tot 2 procent spiermassa per jaar als er niets aan wordt gedaan — een proces dat sarcopenie heet en dat verder versnelt vanaf middelbare leeftijd. Het is geen ziekte maar een geleidelijk fysiologisch proces, aangedreven door dalende anabole hormoonspiegels (waaronder testosteron), minder fysieke activiteit in het dagelijks leven, en een verminderde gevoeligheid van spierweefsel voor de eiwitprikkel uit voeding.",
+        "Vanaf ongeveer het dertigste levensjaar verlies je gemiddeld zo'n 1 tot 2 procent spiermassa per jaar als er niets aan wordt gedaan — een proces dat sarcopenie heet en dat verder versnelt vanaf middelbare leeftijd. Het is geen ziekte maar een geleidelijk fysiologisch proces, aangedreven door dalende anabole hormoonspiegels (waaronder testosteron), minder fysieke activiteit in het dagelijks leven, en een verminderde gevoeligheid van spierweefsel voor de eiwitprikkel uit voeding.",
     },
     {
       type: "tekst",
       titel: "Waarom dezelfde hoeveelheid eiwit minder oplevert",
       bewijsNiveau: "sterk",
       tekst:
-        "Dat laatste mechanisme — anabole resistentie — is de kern van waarom de eiwitbehoefte stijgt. Bij een jongere spier is een relatief kleine hoeveelheid eiwit al genoeg om eiwitsynthese (spieropbouw) te activeren. Bij een oudere spier is voor hetzelfde effect een grotere hoeveelheid eiwit per maaltijd nodig om diezelfde drempel te halen. De algemene ADH van 0,8 gram eiwit per kilogram lichaamsgewicht — bedoeld om ondervoeding te voorkomen, niet om spiermassa te behouden — is daarom voor mannen na 30 een ondergrens, geen streefwaarde.",
+        "Dat laatste mechanisme — anabole resistentie — is de kern van waarom de eiwitbehoefte stijgt. Bij een jongere spier is een relatief kleine hoeveelheid eiwit al genoeg om eiwitsynthese (spieropbouw) te activeren. Bij een oudere spier is voor hetzelfde effect een grotere hoeveelheid eiwit per maaltijd nodig om diezelfde drempel te halen. De algemene ADH van 0,8 gram eiwit per kilogram lichaamsgewicht — bedoeld om ondervoeding te voorkomen, niet om spiermassa te behouden — is daarom na je 30e een ondergrens, geen streefwaarde.",
       bewijsKanttekening:
         "Onderzoek naar de exacte optimale hoeveelheid loopt uiteen; de cijfers hieronder zijn een redelijke consensus uit meerdere richtlijnen, geen exacte wet.",
     },
@@ -57,7 +56,7 @@ export const krachtverliesEiwitbehoefteNa40Data: BlogArtikel = {
     },
   ],
   kernpunten: [
-    "Vanaf ongeveer 30 jaar verliezen mannen zonder gerichte actie 1-2% spiermassa per jaar (sarcopenie).",
+    "Vanaf ongeveer 30 jaar verlies je zonder gerichte actie 1-2% spiermassa per jaar (sarcopenie).",
     "Anabole resistentie betekent dat oudere spieren meer eiwit per maaltijd nodig hebben om dezelfde opbouwprikkel te bereiken.",
     "De ADH van 0,8 g/kg is een ondergrens tegen ondervoeding, geen streefwaarde voor spierbehoud na 30.",
     "1,2-1,6 g/kg per dag, verdeeld over 3-4 maaltijden, gecombineerd met krachttraining, is de praktische vuistregel.",
@@ -79,10 +78,10 @@ export const krachtverliesEiwitbehoefteNa40Data: BlogArtikel = {
   ],
   metaTitle: "Krachtverlies na 30: waarom eiwitbehoefte stijgt",
   metaDescription:
-    "Waarom mannen na 30 meer eiwit nodig hebben om spiermassa te behouden, wat sarcopenie en anabole resistentie inhouden en welke hoeveelheid praktisch haalbaar is.",
+    "Waarom je na 30 meer eiwit nodig hebt om spiermassa te behouden, wat sarcopenie en anabole resistentie inhouden en welke hoeveelheid praktisch haalbaar is.",
   keywords: [
-    "krachtverlies man 30",
-    "eiwitbehoefte man 30",
+    "krachtverlies na 30",
+    "eiwitbehoefte 30+",
     "sarcopenie voorkomen",
     "spiermassa behouden 30",
     "eiwit spierverlies",

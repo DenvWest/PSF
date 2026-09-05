@@ -438,13 +438,13 @@ Dit betekent dat het niet alleen gaat om hoeveel eiwit je per dag eet, maar ook 
     term: 'Kalium-natriumbalans',
     theme: 'leefstijl-herstel',
     shortDefinition:
-      'De verhouding tussen kalium en natrium in je voeding — bij de meeste Nederlandse mannen structureel scheef door te veel zout en te weinig kalium.',
+      'De verhouding tussen kalium en natrium in je voeding — bij veel mensen in Nederland structureel scheef door te veel zout en te weinig kalium.',
     coverImage: '/images/kennisbank/kalium-natrium-balans.jpg',
     coverImageAlt: "Verse groenten en fruit op een snijplank",
     content: {
       whatIsIt: `Kalium en natrium werken samen op je bloeddruk, maar in tegengestelde richting. Natrium (vooral uit zout) houdt vocht vast en verhoogt de druk op je vaatwand; kalium helpt je nieren juist natrium af te voeren en ontspant de vaatwand. Het gaat niet om één stof geïsoleerd, maar om de verhouding.
 
-RIVM-onderzoek laat zien dat Nederlandse mannen structureel boven de aanbevolen 6 gram zout per dag zitten — meer dan vrouwen. Tegelijk blijft de kaliuminname bij het overgrote deel onder de aanbeveling. Die combinatie, niet één losse waarde, is waar het op de lange termijn om gaat.`,
+RIVM-onderzoek laat zien dat de gemiddelde zoutinname structureel boven de aanbevolen 6 gram per dag ligt — mannen gemiddeld hoger dan vrouwen. Tegelijk blijft de kaliuminname bij het overgrote deel onder de aanbeveling. Die combinatie, niet één losse waarde, is waar het op de lange termijn om gaat.`,
       howItWorks: `Kalium zit vooral in onbewerkt plantaardig voedsel: peulvruchten, groente, banaan, avocado en aardappel. Natrium zit vooral in bewerkt voedsel — brood, vleeswaren, kaas, kant-en-klare producten en sauzen leveren het merendeel van de dagelijkse inname, niet het zoutvaatje aan tafel.
 
 Omdat de bronnen zo verschillend zijn, is dit in de praktijk één interventie met twee kanten: vaker onbewerkt en plantaardig eten duwt de verhouding automatisch de goede kant op, zonder dat je natrium en kalium apart hoeft bij te houden.`,

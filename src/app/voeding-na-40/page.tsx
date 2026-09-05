@@ -13,21 +13,21 @@ const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
-  title: "Voeding Na 30: Wat Mannen Vaak Missen",
+  title: "Voeding Na 30: Wat Je Vaak Mist",
   description:
     "Eiwit, vetten, ritme en stabiliteit na 30 — zonder dieet-hype. Praktische stappen vóór supplementen, met links naar gidsen en kennisbank.",
   ...canonicalMetadata("/voeding-na-40"),
   openGraph: {
     title: "Voeding Na 30 — eerst basis, dan pas supplementen",
     description:
-      "Herkenning, leefstijlstappen en wanneer vergelijkingen zinvol zijn — voor mannen 30+.",
+      "Herkenning, leefstijlstappen en wanneer vergelijkingen zinvol zijn — voor 30-plussers.",
     url: "/voeding-na-40",
     type: "article",
   },
 };
 
 const articleSchema = buildArticleSchema({
-  headline: "Voeding Na 30: Wat Mannen Vaak Missen",
+  headline: "Voeding Na 30: Wat Je Vaak Mist",
   description:
     "Eiwit, vetten, ritme en stabiliteit na 30 — praktische stappen vóór supplementen.",
   path: "/voeding-na-40",
@@ -74,7 +74,7 @@ export default function VoedingNa40Page() {
                     Leefstijl eerst
                   </p>
                   <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                    Voeding Na 30: Wat Mannen Vaak Missen
+                    Voeding Na 30: Wat Je Vaak Mist
                   </h1>
                   <p className="mt-4 text-lg text-gray-600">
                     Ken je dit: je eet “gezond genoeg”, maar herstel, energie en spiermassa
@@ -171,7 +171,7 @@ export default function VoedingNa40Page() {
                       eiwit per maaltijd
                     </Link>{" "}
                     dan vroeger — niet één enorme portie aan het eind van de dag. Tegelijk
-                    reageert veel mannen gevoeliger op snelle suikerpieken (
+                    reageren veel mensen gevoeliger op snelle suikerpieken (
                     <Link href="/kennisbank/insulineresistentie" className={LINK}>
                       insulinegevoeligheid
                     </Link>

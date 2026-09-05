@@ -82,7 +82,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
   metaDescription:
     "Middagdip na 30: oorzaak bloedsuiker, insulineresistentie, koffie-trucs en vijf praktische aanpassingen voor stabielere energie.",
   keywords: [
-    "middagdip mannen",
+    "middagdip na 30",
     "bloedsuiker na 30",
     "koffie verlagen energie",
     "stabiele energie middag",

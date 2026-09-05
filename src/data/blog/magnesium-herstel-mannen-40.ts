@@ -4,7 +4,6 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const magnesiumHerstelMannen40Data: BlogArtikel = {
   slug: "magnesium-herstel-mannen-40",
   categorie: "supplementen",
-  audience: "mannen",
   titel: "Magnesium en herstel: waar het wel en niet bij helpt",
   coverImage: "/images/blog/magnesium-herstel-mannen-40.jpg",
   coverImageAlt: "Magnesiumcapsules die uit een potje rollen",
@@ -34,7 +33,7 @@ export const magnesiumHerstelMannen40Data: BlogArtikel = {
       type: "tekst",
       titel: "Waar magnesiumsuppletie wél aantoonbaar helpt",
       tekst:
-        "Het duidelijkste effect is bij mannen met een aantoonbaar tekort: suppletie normaliseert dan spierfunctie en vermindert kramp. Voor slaap is er ook redelijke onderbouwing, en goede slaap is zelf een van de sterkste herstelfactoren — zie [magnesium en slaap](/blog/magnesium-en-slaap). Bij een al voldoende magnesiumstatus is het bewijs voor extra prestatie- of herstelwinst door hogere doseringen zwak: het effect is dan vooral indirect, via betere slaap, niet via een direct 'meer magnesium = sneller spierherstel'-mechanisme.",
+        "Het duidelijkste effect is bij mensen met een aantoonbaar tekort: suppletie normaliseert dan spierfunctie en vermindert kramp. Voor slaap is er ook redelijke onderbouwing, en goede slaap is zelf een van de sterkste herstelfactoren — zie [magnesium en slaap](/blog/magnesium-en-slaap). Bij een al voldoende magnesiumstatus is het bewijs voor extra prestatie- of herstelwinst door hogere doseringen zwak: het effect is dan vooral indirect, via betere slaap, niet via een direct 'meer magnesium = sneller spierherstel'-mechanisme.",
     },
     {
       type: "opsomming",
@@ -42,7 +41,7 @@ export const magnesiumHerstelMannen40Data: BlogArtikel = {
       inleiding:
         "Voordat je naar een hoge dosering grijpt, is de basis vaak al voldoende.",
       items: [
-        "De ADH voor mannen ligt rond 350-400 mg per dag; volkoranen, noten en groene bladgroenten leveren een groot deel daarvan.",
+        "De ADH ligt rond 350-400 mg per dag voor mannen en iets lager voor vrouwen; volkoranen, noten en groene bladgroenten leveren een groot deel daarvan.",
         "Magnesiumcitraat of -bisglycinaat nemen beter op dan magnesiumoxide.",
         "Extra suppletie heeft het meeste nut bij intensieve training (verhoogd verlies via zweet) of een aantoonbaar lage inname via voeding.",
         "Bij nierproblemen of bloeddrukmedicatie eerst overleggen met arts of apotheker vanwege mogelijke interacties.",
@@ -81,8 +80,8 @@ export const magnesiumHerstelMannen40Data: BlogArtikel = {
     "Magnesium en spierherstel na 30: wat het mineraal fysiologisch doet, waarom herstel sowieso trager verloopt met leeftijd en waar suppletie aantoonbaar helpt.",
   keywords: [
     "magnesium herstel",
-    "magnesium sporten man",
-    "traag herstel man 30",
+    "magnesium sporten",
+    "traag herstel na 30",
     "magnesium spieren",
     "beste magnesium sporters",
   ],

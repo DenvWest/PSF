@@ -84,7 +84,7 @@ export const melatonineNa40Data: BlogArtikel = {
     "melatonine na 30",
     "melatonine dosering",
     "melatonine werkt niet",
-    "slaap verbeteren mannen 30",
+    "slaap verbeteren na 30",
     "melatonine alternatieven",
     "cortisol slaap",
     "magnesium slaap",

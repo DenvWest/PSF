@@ -72,7 +72,7 @@ export const slaapVerbeterenData: BlogArtikel = {
   keywords: [
     "slaap verbeteren 40",
     "slechter slapen ouder worden",
-    "slaapkwaliteit verbeteren mannen",
+    "slaapkwaliteit verbeteren",
     "magnesium slaap",
     "circadiaans ritme",
   ],

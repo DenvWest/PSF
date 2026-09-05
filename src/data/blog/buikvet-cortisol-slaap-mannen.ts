@@ -4,12 +4,11 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const buikvetCortisolSlaapMannenData: BlogArtikel = {
   slug: "buikvet-cortisol-slaap-mannen",
   categorie: "stress",
-  audience: "mannen",
   titel: "Buikvet: waarom slaap en stress meer wegen dan je dieet",
   coverImage: "/images/blog/buikvet-cortisol-slaap-mannen.jpg",
   coverImageAlt: "Hardloopschoenen op betonnen trappen bij buitenbeweging",
   heroIntro:
-    "Zelfde eetpatroon als een paar jaar geleden, toch een taille die langzaam meegroeit. Voedingsvragen zijn dan het eerste waar je aan denkt, maar bij mannen na 30 is de combinatie van chronische stress en slaaptekort minstens zo bepalend voor waar dat vet zich ophoopt. Zie ook de bredere pillar [testosteron na 30](/testosteron-na-40) voor hoe dit samenhangt met hormonen.",
+    "Zelfde eetpatroon als een paar jaar geleden, toch een taille die langzaam meegroeit. Voedingsvragen zijn dan het eerste waar je aan denkt, maar na 30 is de combinatie van chronische stress en slaaptekort minstens zo bepalend voor waar dat vet zich ophoopt. Zie ook de bredere pillar [testosteron na 30](/testosteron-na-40) voor hoe dit bij mannen samenhangt met hormonen.",
   leestijd: "8 min",
   gepubliceerdOp: "2026-09-05",
   laatstBijgewerktOp: "2026-09-05",
@@ -26,7 +25,7 @@ export const buikvetCortisolSlaapMannenData: BlogArtikel = {
       titel: "Slaaptekort is een cortisolversterker, geen los probleem",
       bewijsNiveau: "sterk",
       tekst:
-        "Te weinig of gefragmenteerde slaap verhoogt cortisol de volgende dag meetbaar, zelfs bij verder gezonde mannen. Dat effect is niet subtiel: onderzoek naar slaaprestrictie laat na een paar nachten van verkorte slaap al een duidelijke stijging in avondcortisol zien, met bijbehorende verminderde insulinegevoeligheid. Wie structureel onder de zes uur slaapt, stapelt dus twee vetopslag-bevorderende signalen op elkaar — dat is een directer effect dan de meeste voedingskeuzes.",
+        "Te weinig of gefragmenteerde slaap verhoogt cortisol de volgende dag meetbaar, zelfs bij verder gezonde volwassenen. Dat effect is niet subtiel: onderzoek naar slaaprestrictie laat na een paar nachten van verkorte slaap al een duidelijke stijging in avondcortisol zien, met bijbehorende verminderde insulinegevoeligheid. Wie structureel onder de zes uur slaapt, stapelt dus twee vetopslag-bevorderende signalen op elkaar — dat is een directer effect dan de meeste voedingskeuzes.",
       bewijsKanttekening:
         "Dit betekent niet dat voeding er niet toe doet — wel dat slaap en stress bij een vastzittend buikvetprobleem een blinde vlek zijn die voeding alleen niet oplost.",
     },
@@ -47,7 +46,7 @@ export const buikvetCortisolSlaapMannenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: het hele systeem, niet één knop",
       tekst:
-        "Buikvet bij mannen na 30 is zelden een los voedingsprobleem — slaap, stress en beweging spelen allemaal mee. De [Leefstijlcheck](/intake) brengt in kaart waar bij jou de grootste hefboom zit. Vergelijk supplementen die hierbij kunnen ondersteunen op [de supplementengids](/supplementen).",
+        "Buikvet na 30 is zelden een los voedingsprobleem — slaap, stress en beweging spelen allemaal mee. De [Leefstijlcheck](/intake) brengt in kaart waar bij jou de grootste hefboom zit. Vergelijk supplementen die hierbij kunnen ondersteunen op [de supplementengids](/supplementen).",
     },
   ],
   kernpunten: [
@@ -57,7 +56,7 @@ export const buikvetCortisolSlaapMannenData: BlogArtikel = {
     "Slaap en stressmanagement zijn geen bijzaak bij buikvet, maar een van de eerste knoppen om aan te draaien.",
   ],
   samenvatting:
-    "Buikvet bij mannen na 30 hangt sterker samen met slaap en stress dan vaak gedacht: chronisch cortisol stuurt vetopslag specifiek naar de buik, en slaaptekort verhoogt cortisol verder terwijl het de insulinegevoeligheid verlaagt. Voldoende slaap, krachttraining en minder alcohol zijn de interventies met het meeste bewijs — vóór je verder aan je voeding sleutelt.",
+    "Buikvet na 30 hangt sterker samen met slaap en stress dan vaak gedacht: chronisch cortisol stuurt vetopslag specifiek naar de buik, en slaaptekort verhoogt cortisol verder terwijl het de insulinegevoeligheid verlaagt. Voldoende slaap, krachttraining en minder alcohol zijn de interventies met het meeste bewijs — vóór je verder aan je voeding sleutelt.",
   cornerstoneLink: {
     label: "Stress verminderen na 30",
     href: "/stress-verminderen-na-40",
@@ -73,13 +72,13 @@ export const buikvetCortisolSlaapMannenData: BlogArtikel = {
   ],
   metaTitle: "Buikvet: waarom slaap en stress meer wegen",
   metaDescription:
-    "Waarom cortisol en slaaptekort bij mannen na 30 buikvet stimuleren, hoe dat mechanisme werkt en welke aanpassingen volgens onderzoek het meeste helpen.",
+    "Waarom cortisol en slaaptekort na 30 buikvet stimuleren, hoe dat mechanisme werkt en welke aanpassingen volgens onderzoek het meeste helpen.",
   keywords: [
-    "buikvet man 30",
+    "buikvet na 30",
     "cortisol buikvet",
     "slaaptekort buikvet",
-    "man 30 aankomen buik",
-    "visceraal vet man",
+    "aankomen buik 30+",
+    "visceraal vet",
   ],
   referenties: toRefs([
     "Björntorp P. Do stress reactions cause abdominal obesity and comorbidities? Obes Rev. 2001;2(2):73-86.",
