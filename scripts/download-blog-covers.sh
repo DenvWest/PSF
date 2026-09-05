@@ -33,7 +33,7 @@ MAP=(
   "zonnebrand-en-vitamine-d|1557683316-973673baf926"
   "vitamine-d-zon-nederland|1495567720989-cebdbdd97913"
   "vitamine-d-meten-wanneer-zinvol|1559757175-5700dde675bc"
-  "vitamine-d-seizoenen-jaarritme|1469474968028-56623f02e42e"
+  "vitamine-d-seizoenen-jaarritme|1766665357190-d0de0747024c"
   "vitamine-d-aandoeningen-onderzoek|1532094349884-543bc11b234d"
   "ashwagandha-werking-mannen|1515377905703-c4788e51af15"
   "magnesium-en-slaapkwaliteit|1498837167922-ddd27525d352"
@@ -42,9 +42,9 @@ MAP=(
   "creatine-bijwerkingen-nieren-haaruitval|1571019613454-1cb2f99b2d8b"
   "creatine-dosering-en-laadfase|1599058917212-d750089bc07e"
   "creatine-wanneer-innemen|1534438327276-14e5300c3a48"
-  "creatine-vormen-en-keurmerken|1556909114-f6e7ad7d3136"
-  "creatine-water-vasthouden-en-gewicht|1576678927484-cc907957088c"
-  "creatine-en-brein-slaaptekort|1511988617509-a57c8a288659"
+  "creatine-vormen-en-keurmerken|1775200279682-cf9af4cb2e4e"
+  "creatine-water-vasthouden-en-gewicht|1774935989990-5b46f7ad7f3e"
+  "creatine-en-brein-slaaptekort|1749074536771-a21868729dc8"
   "creatine-voor-vrouwen-na-40|1518611012118-696072aa579a"
   "vitamine-d-en-k2-samen|1550572017-edd951b55104"
   "vitamine-d-hoge-doses-social-media|1614440562463-5bb4a862db46"
@@ -53,7 +53,7 @@ MAP=(
   "zink-en-testosteron|1476224203421-9ac39bcb3327"
   "omega-3-en-herstel|1565299624946-b28f40a0ae38"
   "multivitamine-zinvol-na-40|1556910103-1c02745aae4d"
-  "beste-omega-3-supplement|1547592166-23ac45744acd"
+  "beste-omega-3-supplement|1693996047034-311ab7656691"
   "wat-is-omega-3|1441986300917-64674bd600d8"
   "waar-let-je-op-bij-omega-3|1486312338219-ce68d2c6f44d"
   "beste-magnesium|1522202176988-66273c2fd55f"
@@ -69,20 +69,17 @@ MAP=(
   "vitamine-d-botgezondheid-overgang|1472214103451-9374bd1c798e"
 )
 
-# Fix duplicates: vitamine-d-zon and melatonine-na-40 share; vitamine-d-seizoenen and tekort share
-# Reassign with remaining unique IDs from pool extras used above carefully:
-# melatonine-na-40 stays autumn sun; vitamine-d-zon uses mountains already used by vitamine-d-en-slaap
-# Use: 1551836022 and 1517245386807 for the two that need uniqueness
+# Fix duplicates / overrides
+# melatonine-na-40 stays autumn sun; vitamine-d-zon uses dedicated landscape ID
+# vitamine-d-seizoenen: donker seizoen (MAP ID) — geen cafe/mensen-override
 
 FAILED=()
 OK=0
 for entry in "${MAP[@]}"; do
   slug="${entry%%|*}"
   id="${entry##*|}"
-  # override duplicates
   case "$slug" in
     vitamine-d-zon-nederland) id="1551836022-d5d88e9218df" ;;
-    vitamine-d-seizoenen-jaarritme) id="1517245386807-bb43f82c33c4" ;;
   esac
   dest="$OUT/${slug}.jpg"
   raw="$TMP/${slug}.jpg"

@@ -9,9 +9,11 @@ function img(
   slug: string,
   alt: string,
   caption: string,
+  /** Optional filename stem when it differs from the article slug (e.g. cache-bust `-v2`). */
+  fileStem?: string,
 ): ArticleBodyImage {
   return {
-    src: `/images/${folder}/inline/${slug}.jpg`,
+    src: `/images/${folder}/inline/${fileStem ?? slug}.jpg`,
     alt,
     caption,
   };
@@ -27,8 +29,9 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "cortisol-en-slaap": img(
     "blog",
     "cortisol-en-slaap",
-    "Slaapkamer in avondlicht met gedempt nachtlampje",
-    "Cortisol en slaap hangen samen: als het stresshormoon ’s avonds hoog blijft, wordt inslapen lastiger.",
+    "Persoon die ’s nachts wakker ligt, verlicht door een telefoonscherm",
+    "Cortisol en slaap: als het stresshormoon ’s nachts piekt, blijf je wakker terwijl je eigenlijk wilt slapen.",
+    "cortisol-en-slaap-v2",
   ),
   "ademhaling-tegen-stress": img(
     "blog",
@@ -195,8 +198,9 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "vitamine-d-seizoenen-jaarritme": img(
     "blog",
     "vitamine-d-seizoenen-jaarritme",
-    "Herfstbos met laag zonlicht tussen de bomen",
-    "Het jaarritme van vitamine D volgt de seizoenen: voorraden dalen in de herfst als de zon lager staat.",
+    "Nederlands polderlandschap in zonlicht — het lichte seizoen",
+    "Het jaarritme van vitamine D: in het donkere seizoen daalt de voorraad, bij genoeg zonlicht kan die weer opladen.",
+    "vitamine-d-seizoenen-jaarritme-v2",
   ),
   "vitamine-d-aandoeningen-onderzoek": img(
     "blog",
@@ -243,20 +247,23 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "creatine-vormen-en-keurmerken": img(
     "blog",
     "creatine-vormen-en-keurmerken",
-    "Supplementetiket van dichtbij, zonder merken te tonen",
-    "Bij creatine-vormen telt Creapure of een vergelijkbaar keurmerk zwaarder dan een exotische variant op het etiket.",
+    "Beige supplementpoeder met zwarte maatlepel",
+    "Bij creatine-vormen telt zuivere monohydraat (met keurmerk) zwaarder dan een exotische variant op het etiket.",
+    "creatine-vormen-en-keurmerken-v2",
   ),
   "creatine-water-vasthouden-en-gewicht": img(
     "blog",
     "creatine-water-vasthouden-en-gewicht",
-    "Weegschaal op een badkamervloer in ochtendlicht",
+    "Voeten op een digitale weegschaal in ochtendlicht",
     "Creatine en gewicht: extra water in de spier is geen vetmassa, al kan de weegschaal wel een kilo stijgen.",
+    "creatine-water-vasthouden-en-gewicht-v2",
   ),
   "creatine-en-brein-slaaptekort": img(
     "blog",
     "creatine-en-brein-slaaptekort",
-    "Werkplek bij een raam na een late avond",
+    "Sterrenhemel boven een bergsilhouet in de nacht",
     "Creatine en het brein bij slaaptekort is een jong onderzoeksveld: hoopvol, maar geen vervanging van slaap.",
+    "creatine-en-brein-slaaptekort-v2",
   ),
   "creatine-voor-vrouwen-na-40": img(
     "blog",
@@ -285,8 +292,9 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "beste-omega-3-supplement": img(
     "blog",
     "beste-omega-3-supplement",
-    "Visoliecapsules naast een kleine kom sardines",
+    "Gegrilde zalm als natuurlijke omega-3-bron",
     "Het beste omega-3-supplement herken je aan EPA+DHA per capsule, oxidatie en een leesbaar etiket.",
+    "beste-omega-3-supplement-v2",
   ),
   "wat-is-omega-3": img(
     "blog",

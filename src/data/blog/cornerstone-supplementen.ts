@@ -47,8 +47,8 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     pad: "/beste/omega-3-supplement",
     categorie: "supplementen",
     titel: "Beste omega-3 supplement",
-    coverImage: "/images/blog/beste-omega-3-supplement.jpg",
-    coverImageAlt: "Verse soep of maaltijd met gezonde vetten",
+    coverImage: "/images/blog/beste-omega-3-supplement-v2.jpg",
+    coverImageAlt: "Omega-3-flesje met softgels en verse zalm",
     heroIntro:
       "De beste keuzes voor verschillende situaties: dagelijks gebruik, budget en premium kwaliteit.",
     leestijd: "15 min",

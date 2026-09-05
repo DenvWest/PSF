@@ -36,3 +36,11 @@ bash scripts/download-article-inline-images.sh
 | magnesium-herstel-mannen-40.jpg | Unsplash `1439066615861-d1af74d74000` — sporttas |
 | krachtverlies-eiwitbehoefte-na-40.jpg | Unsplash `1504674900247-0877df9cc836` — eiwitrijke maaltijd |
 | magnesium-in-de-overgang.jpg | AI — capsules + water op nachtkastje |
+| cortisol-en-slaap.jpg | Unsplash `1749074536771-a21868729dc8` — wakker in bed, telefoonlicht (stress/slaap) |
+| creatine-en-brein-slaaptekort.jpg | Unsplash `1419242902214-272b3f66ee7a` — sterrenhemel / nacht |
+| creatine-vormen-en-keurmerken.jpg | Unsplash `1774935989990-5b46f7ad7f3e` — poeder + maatlepel |
+| creatine-water-vasthouden-en-gewicht.jpg | Unsplash `1522844990619-4951c40f7eda` — voeten op weegschaal |
+| vitamine-d-seizoenen-jaarritme.jpg | Kopie zon-seizoen (`vitamine-d-zon-nederland`) — seizoenscontrast bij donkere cover |
+| beste-omega-3-supplement.jpg | Unsplash `1519708227418-c8fd9a32b7a2` — gegrilde zalm |
+
+Cache-bust: dezelfde zes als `*-v2.jpg`.

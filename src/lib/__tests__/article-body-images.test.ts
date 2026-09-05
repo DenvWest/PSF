@@ -12,7 +12,9 @@ describe("article body images", () => {
     for (const artikel of alleArtikelen) {
       const image = blogBodyImage(artikel.slug);
       expect(image, `geen inline-beeld voor blog ${artikel.slug}`).toBeDefined();
-      expect(image?.src).toBe(`/images/blog/inline/${artikel.slug}.jpg`);
+      expect(image?.src).toMatch(
+        new RegExp(`^/images/blog/inline/${artikel.slug}(-v\\d+)?\\.jpg$`),
+      );
       expect(image?.alt.length).toBeGreaterThan(20);
       expect(image?.caption.length).toBeGreaterThan(40);
     }
@@ -22,7 +24,9 @@ describe("article body images", () => {
     for (const term of kennisbankTerms) {
       const image = kennisbankBodyImage(term.slug);
       expect(image, `geen inline-beeld voor kennisbank ${term.slug}`).toBeDefined();
-      expect(image?.src).toBe(`/images/kennisbank/inline/${term.slug}.jpg`);
+      expect(image?.src).toMatch(
+        new RegExp(`^/images/kennisbank/inline/${term.slug}(-v\\d+)?\\.jpg$`),
+      );
       expect(image?.alt.length).toBeGreaterThan(20);
       expect(image?.caption.length).toBeGreaterThan(40);
     }

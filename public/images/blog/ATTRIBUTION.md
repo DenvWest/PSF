@@ -50,6 +50,14 @@ plus de twee pijlerpagina's. Vervang ze door eigen beelden zodra die er zijn.
 | overgang-buikvet-gewichtstoename.jpg | Unsplash `1541534741688-6078c6bfb5c5` — krachttraining |
 | overgang-stress-cortisol.jpg | Unsplash `1544367567-0f2fcb009e0b` — yoga/zonsondergang |
 | vitamine-d-botgezondheid-overgang.jpg | Unsplash `1472214103451-9374bd1c798e` — zonlicht landschap |
+| creatine-en-brein-slaaptekort.jpg | Unsplash `1749074536771-a21868729dc8` — wakker in bed met telefoon (slaaptekort) |
+| creatine-vormen-en-keurmerken.jpg | Unsplash slug `iYWf4PEd-lI` — wit poeder + maatlepel |
+| creatine-water-vasthouden-en-gewicht.jpg | Unsplash `1774935989990-5b46f7ad7f3e` — creatine/eiwitpoeder met scoop |
+| vitamine-d-seizoenen-jaarritme.jpg | Unsplash `1766665357190-d0de0747024c` — donker winterlandschap |
+| beste-omega-3-supplement.jpg | Unsplash `1693996047034-311ab7656691` — omega-3-flesje, softgels en zalm |
+| cortisol-en-slaap.jpg | Unsplash `1541781774459-bb2af2f05b55` — slapende kat onder dekbed |
+
+Cache-bust bestanden (zelfde pixels): `*-v2.jpg` voor de zes artikelen hierboven.
 
 Foto-ID's staan in `scripts/download-blog-covers.sh`. Herdownload met:
 
