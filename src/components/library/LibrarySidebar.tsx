@@ -156,7 +156,7 @@ export default function LibrarySidebar({
           <button
             type="button"
             onClick={onWisFilters}
-            className="h-10 flex-shrink-0 rounded-full border border-stone-200 bg-white px-4 text-sm text-stone-500 transition-colors hover:text-stone-900"
+            className="h-10 flex-shrink-0 rounded-full border border-stone-200/90 bg-white px-4 text-sm text-stone-500 shadow-[0_1px_2px_rgba(28,25,23,0.03)] transition-colors hover:text-stone-900"
           >
             Wis filters
           </button>
@@ -212,7 +212,7 @@ export default function LibrarySidebar({
                 type="button"
                 onClick={toggle.onToggle}
                 aria-pressed={toggle.actief}
-                className={`min-h-9 rounded-full border px-3.5 text-[0.8125rem] transition-colors ${chip(toggle.actief)}`}
+                className={`min-h-9 rounded-full border px-3.5 text-[0.8125rem] transition-[border-color,color,background-color,box-shadow,transform] duration-200 ease-out active:scale-[0.97] ${chip(toggle.actief)}`}
               >
                 {toggle.label}
               </button>
