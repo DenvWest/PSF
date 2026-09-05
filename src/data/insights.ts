@@ -72,6 +72,16 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   "magnesium-overgang-vrouwen": "voeding",
   "magnesium-wanneer-innemen": "slaap",
   "magnesium-en-spierkrampen": "herstel",
+  "whey-wanneer-wel-en-niet": "voeding",
+  "whey-concentraat-isolaat-hydrolysaat": "voeding",
+  "whey-of-plantaardig-eiwit": "voeding",
+  "whey-en-darmklachten": "voeding",
+  "whey-hoeveel-en-wanneer": "voeding",
+  "whey-etiket-lezen": "voeding",
+  "is-whey-schadelijk": "voeding",
+  "eiwit-en-whey-in-de-overgang": "voeding",
+  "wei-eiwit": "voeding",
+  leucinedrempel: "voeding",
 };
 
 function parseLeestijdMinuten(leestijd: string): number {

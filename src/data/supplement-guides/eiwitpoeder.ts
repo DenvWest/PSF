@@ -159,6 +159,14 @@ export const eiwitpoederGidsData: SupplementData = {
       titel: "Beste eiwitpoeder: whey en vegan vergeleken",
     },
     {
+      href: "/blog/whey-wanneer-wel-en-niet",
+      titel: "Whey: voor wie het wel en niet iets toevoegt",
+    },
+    {
+      href: "/blog/whey-concentraat-isolaat-hydrolysaat",
+      titel: "Whey concentraat, isolaat of hydrolysaat",
+    },
+    {
       href: "/beste/creatine",
       titel: "Beste creatine: herstel en kracht ondersteunen",
     },
