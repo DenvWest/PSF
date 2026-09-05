@@ -20,6 +20,8 @@ export type SchapBasisCard = {
   why: string;
   quality: string;
   role: string;
+  /** Ontbreekt of `"live"` = bewaarbaar. `"binnenkort"` = zichtbaar, niet te bewaren. */
+  availability?: "live" | "binnenkort";
   verdict: {
     gecheckt: string;
     sterk: string;

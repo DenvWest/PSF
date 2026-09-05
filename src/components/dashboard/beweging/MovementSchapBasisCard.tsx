@@ -17,6 +17,9 @@ type MovementSchapBasisCardProps = {
  * titel, waarom-tekst, kwaliteitsregel, rol, "Bewaar in Favorieten" +
  * "Bekijk ons oordeel". Bewaar-staat komt uit VoortgangFavoritesProvider
  * wanneer de kaart binnen Leefstijlprofiel rendert.
+ *
+ * Kaarten met `availability: "binnenkort"` blijven leesbaar (oordeel open),
+ * maar zijn niet te bewaren — partneraanbod volgt nog.
  */
 export default function MovementSchapBasisCard({
   card,
@@ -26,8 +29,10 @@ export default function MovementSchapBasisCard({
   const [savedLocal, setSavedLocal] = useState(false);
   const saved = savedProp ?? savedLocal;
   const [verdictOpen, setVerdictOpen] = useState(false);
+  const comingSoon = card.availability === "binnenkort";
 
   function handleSave() {
+    if (comingSoon) return;
     if (onSave) {
       onSave();
     } else {
@@ -56,9 +61,15 @@ export default function MovementSchapBasisCard({
         <span className="rounded-md border border-[#5A8F6A]/38 bg-[#5A8F6A]/15 px-2.5 py-1 text-[10.5px] font-medium uppercase tracking-[0.09em] text-[#9CC5A9]">
           {card.badge}
         </span>
-        <span className="shrink-0 rounded-full border border-[#5A8F6A]/45 bg-[#5A8F6A]/15 px-2.5 py-1 text-[11.5px] font-medium text-[#9CC5A9]">
-          Aanrader
-        </span>
+        {comingSoon ? (
+          <span className="shrink-0 rounded-full border border-white/15 bg-white/[0.04] px-2.5 py-1 text-[11.5px] font-medium text-[#9FB0A6]">
+            Binnenkort
+          </span>
+        ) : (
+          <span className="shrink-0 rounded-full border border-[#5A8F6A]/45 bg-[#5A8F6A]/15 px-2.5 py-1 text-[11.5px] font-medium text-[#9CC5A9]">
+            Aanrader
+          </span>
+        )}
       </div>
       <h3 className="mt-2.5 font-serif text-[16.5px] leading-tight text-[#F1EFE8]">
         {card.title}
@@ -73,7 +84,9 @@ export default function MovementSchapBasisCard({
       <p className="mt-1 text-[11.5px] text-[#7E8C82]">{card.role}</p>
 
       <div className="mt-3.5 flex flex-wrap items-center gap-3 border-t border-white/[0.06] pt-3">
-        {saved ? (
+        {comingSoon ? (
+          <span className="text-[13px] font-medium text-[#7E8C82]">Nog niet te bewaren</span>
+        ) : saved ? (
           <span className="flex items-center gap-1.5 text-[13px] font-semibold text-[#9CC5A9]">
             <Icons.Check s={14} /> Staat in Favorieten
           </span>

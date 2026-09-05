@@ -83,6 +83,19 @@ describe("SchapView — welke tabs een domein draagt", () => {
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 
+  it("houdt Diensten zichtbaar maar niet bewaarbaar (binnenkort)", () => {
+    renderSchap("beweging", "diensten");
+    expect(screen.getByRole("tab", { name: "Diensten" })).toBeTruthy();
+    expect(screen.getByText("PT-intake bij een lokale trainer")).toBeTruthy();
+    expect(screen.getAllByText("Binnenkort").length).toBeGreaterThanOrEqual(4);
+    expect(screen.queryByText("Bewaar in Favorieten")).toBeNull();
+    expect(
+      screen.getByText(
+        /Partneraanbod volgt — deze categorieën zijn alvast zichtbaar/,
+      ),
+    ).toBeTruthy();
+  });
+
   // W4a — het schap draagt aanbod en favorieten, geen leefstijl-werkplek.
   it("draagt op geen enkel domein nog een Leefstijl-tab", () => {
     for (const domain of ["beweging", "slaap", "voeding"] as const) {

@@ -309,22 +309,31 @@ export default function SchapView({
             <p className="m-0 max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--text-subtle)] text-pretty">
               Categorieën, geen specifieke aanbieders. We beoordelen de aanpak.
             </p>
-            {SCHAP_DIENST_CARDS.map((card) => (
-              <MovementSchapBasisCard
-                key={card.id}
-                card={card}
-                saved={isSaved(card.id)}
-                onSave={() =>
-                  save({
-                    id: card.id,
-                    title: card.title,
-                    kind: "dienst",
-                    domain,
-                    source: "mijn_keuze",
-                  })
-                }
-              />
-            ))}
+            <p className="m-0 max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--text-subtle)] text-pretty">
+              Partneraanbod volgt — deze categorieën zijn alvast zichtbaar, nog niet te bewaren.
+            </p>
+            {SCHAP_DIENST_CARDS.map((card) => {
+              const comingSoon = card.availability === "binnenkort";
+              return (
+                <MovementSchapBasisCard
+                  key={card.id}
+                  card={card}
+                  saved={isSaved(card.id)}
+                  onSave={
+                    comingSoon
+                      ? undefined
+                      : () =>
+                          save({
+                            id: card.id,
+                            title: card.title,
+                            kind: "dienst",
+                            domain,
+                            source: "mijn_keuze",
+                          })
+                  }
+                />
+              );
+            })}
           </div>
         ) : null}
 

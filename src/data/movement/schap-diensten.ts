@@ -20,6 +20,7 @@ export const SCHAP_DIENST_CARDS: readonly SchapBasisCard[] = [
     why: "Iemand die je vorm en belasting live bijstuurt, is de snelste manier om fouten uit je basis te halen — vooral bij kracht, waar techniek meer uitmaakt dan bij wandelen.",
     quality: "Kijk of de trainer met een intake en een opbouwschema werkt, niet alleen losse sessies.",
     role: "Aanvulling op prioriteit 2 · kracht + basisconditie",
+    availability: "binnenkort",
     verdict: {
       gecheckt: "Of één-op-één begeleiding voor jou meerwaarde heeft boven zelfstandig trainen.",
       sterk: "Directe correctie op techniek, en iemand die je opbouw bijhoudt.",
@@ -35,6 +36,7 @@ export const SCHAP_DIENST_CARDS: readonly SchapBasisCard[] = [
     why: "Een vaste avond met een groep maakt het makkelijker om twee keer per week te blijven komen dan een los abonnement.",
     quality: "Let op groepsgrootte — bij meer dan acht mensen per begeleider is er weinig ruimte voor individuele correctie.",
     role: "Aanvulling op prioriteit 2 · kracht + basisconditie",
+    availability: "binnenkort",
     verdict: {
       gecheckt: "Of een vaste groep de opkomst verhoogt ten opzichte van zelfstandig trainen.",
       sterk: "Vaste avond en groepsdruk werken voor wie zelf moeilijk begint.",
@@ -50,6 +52,7 @@ export const SCHAP_DIENST_CARDS: readonly SchapBasisCard[] = [
     why: "Wekelijks contact zonder reistijd, met iemand die je schema aanpast op wat je terugkoppelt.",
     quality: "Vraag wat er na het traject overblijft — een programma dat abrupt stopt laat je zonder vervolgstap.",
     role: "Aanvulling op prioriteit 2-3 · opbouw en consistentie",
+    availability: "binnenkort",
     verdict: {
       gecheckt: "Opzegtermijn, en wat er na de eerste periode overblijft.",
       sterk: "Flexibel in tijd, en goedkoper dan wekelijks fysiek begeleid worden.",
@@ -65,6 +68,7 @@ export const SCHAP_DIENST_CARDS: readonly SchapBasisCard[] = [
     why: "Een alternatief voor wandelen dat je gewrichten ontziet — met dezelfde regel: op spreektempo, niet op tijd.",
     quality: "Kies een rustig uur; in een druk bad haal je zelden je eigen tempo.",
     role: "Aanvulling naast je basis · prioriteit 1",
+    availability: "binnenkort",
     verdict: {
       gecheckt: "Of dit tempo ook echt bijdraagt, los van hoe fris het voelt.",
       sterk: "Ontziet gewrichten, en telt mee voor je dagbasis net als wandelen.",

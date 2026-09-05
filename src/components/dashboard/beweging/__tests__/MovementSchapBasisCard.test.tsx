@@ -1,10 +1,13 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import MovementSchapBasisCard from "@/components/dashboard/beweging/MovementSchapBasisCard";
 import { SCHAP_BASIS_CARDS } from "@/data/movement/schap-basis-cards";
+import type { SchapBasisCard } from "@/data/movement/schap-basis-cards";
+import { SCHAP_DIENST_CARDS } from "@/data/movement/schap-diensten";
 
 const wandelen = SCHAP_BASIS_CARDS.find((c) => c.id === "wandelen")!;
+const ptIntake = SCHAP_DIENST_CARDS.find((c) => c.id === "pt-intake")!;
 
 describe("MovementSchapBasisCard", () => {
   it("toont titel, waarom-tekst en rol, verdict dicht bij eerste render", () => {
@@ -29,6 +32,21 @@ describe("MovementSchapBasisCard", () => {
     fireEvent.click(screen.getByText("Bewaar in Favorieten"));
     expect(screen.queryByText("Staat in Favorieten")).not.toBeNull();
     expect(screen.queryByText("Bewaar in Favorieten")).toBeNull();
+  });
+
+  it("toont Binnenkort zonder Bewaar-knop en roept onSave niet aan", () => {
+    const onSave = vi.fn();
+    const card: SchapBasisCard = { ...ptIntake, availability: "binnenkort" };
+    render(<MovementSchapBasisCard card={card} onSave={onSave} />);
+
+    expect(screen.queryByText("Binnenkort")).not.toBeNull();
+    expect(screen.queryByText("Nog niet te bewaren")).not.toBeNull();
+    expect(screen.queryByText("Bewaar in Favorieten")).toBeNull();
+    expect(screen.queryByText("Aanrader")).toBeNull();
+    expect(onSave).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByText("Bekijk ons oordeel"));
+    expect(screen.queryByText(card.verdict.oordeel)).not.toBeNull();
   });
 
   it("noemt geen bedrijfsnaam of exacte afstand — alleen de twee veilige kaarten bestaan", () => {
