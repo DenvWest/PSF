@@ -13,19 +13,19 @@ export interface BlogCover {
 const CATEGORIE_COVER: Record<BlogCategorie, BlogCover> = {
   stress: {
     src: "/images/blog/categorie-stress.jpg",
-    alt: "Rustig moment aan een keukentafel met natuurlijk licht",
+    alt: "Persoon in rustige houding bij natuurlijk licht, gericht op herstel van stress",
   },
   slaap: {
     src: "/images/blog/categorie-slaap.jpg",
-    alt: "Opgemaakt bed in een slaapkamer met gedempt ochtendlicht",
+    alt: "Netjes opgemaakt bed in een rustige slaapkamer",
   },
   energie: {
     src: "/images/blog/categorie-energie.jpg",
-    alt: "Wandelaar op een bospad in de vroege ochtendzon",
+    alt: "Persoon die een pad oploopt in de buitenlucht",
   },
   supplementen: {
     src: "/images/blog/categorie-supplementen.jpg",
-    alt: "Supplementpotjes naast een glas water op een licht aanrechtblad",
+    alt: "Supplementen en capsules op een licht werkblad",
   },
 };
 

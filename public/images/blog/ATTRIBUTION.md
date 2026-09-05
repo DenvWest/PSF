@@ -10,6 +10,10 @@ Geen UI-credits op de pagina.
 
 Artikelen: `public/images/blog/<slug>.jpg` + velden in `src/data/blog/*.ts`.
 Categorie-fallbacks: `categorie-{stress|slaap|energie|supplementen}.jpg` via `src/lib/blog-cover.ts`.
+Die vier zijn kopieën van bestaande artikelbeelden (stress ← cortisol-verlagen-natuurlijk,
+slaap ← slaap-verbeteren-40-plus, energie ← energie-verhogen-natuurlijk,
+supplementen ← creatine-vormen-en-keurmerken) en vangen alleen artikelen zonder eigen beeld
+plus de twee pijlerpagina's. Vervang ze door eigen beelden zodra die er zijn.
 
 ## AI-gegenereerd (waar stock tekortschoot)
 

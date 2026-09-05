@@ -140,7 +140,7 @@ export default function BlogArticlePage({
                   fill
                   priority
                   className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 72ch"
+                  sizes="(max-width: 1024px) 100vw, 720px"
                 />
               </div>
 
