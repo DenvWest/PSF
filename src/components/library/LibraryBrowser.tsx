@@ -319,10 +319,10 @@ export default function LibraryBrowser({
                 onClick={() => setWeergave(optie)}
                 aria-pressed={weergave === optie}
                 title={optie === "lijst" ? "Lijst" : "Raster"}
-                className={`h-8 rounded-full px-3 text-[0.75rem] font-medium capitalize transition-colors ${
+                className={`h-8 rounded-full px-3 text-[0.75rem] font-medium capitalize transition-[background-color,color,box-shadow,transform] duration-200 ease-out ${
                   weergave === optie
-                    ? "bg-stone-900 text-white"
-                    : "text-stone-500 hover:text-stone-900"
+                    ? "bg-ps-green text-white shadow-[0_2px_6px_rgba(90,143,106,0.32)]"
+                    : "text-stone-500 hover:-translate-y-px hover:text-ps-green"
                 }`}
               >
                 {optie}
@@ -342,7 +342,7 @@ export default function LibraryBrowser({
             <button
               type="button"
               onClick={wisFilters}
-              className="mt-5 inline-flex min-h-10 items-center rounded-full bg-ps-green px-5 text-sm font-semibold text-white transition-colors hover:bg-ps-green-hover"
+              className="mt-5 inline-flex min-h-10 items-center rounded-full bg-ps-green px-5 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(90,143,106,0.28)] transition-[background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:bg-ps-green-hover hover:shadow-[0_6px_18px_rgba(90,143,106,0.36)] active:translate-y-0"
             >
               Wis filters
             </button>
@@ -400,7 +400,7 @@ export default function LibraryBrowser({
           <button
             type="button"
             onClick={toonMeer}
-            className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-stone-200 bg-white px-5 text-sm font-medium text-stone-700 transition-colors hover:border-stone-300 hover:text-ps-green"
+            className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-stone-200/80 bg-gradient-to-b from-white to-stone-50/60 px-5 text-sm font-semibold text-stone-700 shadow-[0_1px_2px_rgba(28,25,23,0.03)] transition-[border-color,color,background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-ps-green/45 hover:bg-ps-green-light/40 hover:text-ps-green hover:shadow-[0_4px_14px_rgba(90,143,106,0.16)] active:translate-y-0"
           >
             Toon meer ({restant})
           </button>

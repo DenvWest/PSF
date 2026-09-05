@@ -49,9 +49,12 @@ export default function KennisbankVerdiepingGate({
                 term: termSlug,
               })
             }
-            className="inline-flex min-h-[44px] items-center rounded-full bg-[#0E1A14] px-[22px] py-2.5 text-sm font-semibold text-[#F7F5F0] transition hover:bg-[#0E1A14]/90"
+            className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-ps-green px-[22px] py-2.5 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(90,143,106,0.28)] transition-[background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:bg-ps-green-hover hover:shadow-[0_6px_18px_rgba(90,143,106,0.36)] active:translate-y-0"
           >
-            Start de gratis check →
+            Start de gratis check
+            <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5">
+              →
+            </span>
           </Link>
           <Link
             href="/account/login"
@@ -61,7 +64,7 @@ export default function KennisbankVerdiepingGate({
                 term: termSlug,
               })
             }
-            className="inline-flex min-h-[44px] items-center rounded-full border border-[#E7E5E4] bg-white px-[22px] py-2.5 text-sm font-semibold text-stone-800 transition hover:border-stone-400"
+            className="inline-flex min-h-[44px] items-center rounded-full border border-stone-200/90 bg-white px-[22px] py-2.5 text-sm font-semibold text-stone-800 shadow-[0_1px_2px_rgba(28,25,23,0.03)] transition-[border-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-ps-green/45 hover:shadow-[0_4px_14px_rgba(28,25,23,0.08)] active:translate-y-0"
           >
             Ik heb al een account — inloggen
           </Link>
