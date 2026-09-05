@@ -10,10 +10,6 @@ import DomeinOnderbouwing from "@/components/dashboard/voortgang/DomeinOnderbouw
 import type { VerdictPanelSurface } from "@/components/dashboard/SupplementVerdictPanel";
 import { PILLAR } from "@/data/dashboard";
 import type { ProductStanceDomain } from "@/data/domain-product-stance";
-import {
-  routeHerkomstRegel,
-  routesVoorDomein,
-} from "@/lib/domain-nutrition-routes";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import {
@@ -26,7 +22,6 @@ import DomeinPaneel from "@/components/dashboard/voortgang/DomeinPaneel";
 import VoedingVsSupplementTabel from "@/components/nutrition/VoedingVsSupplementTabel";
 import VoedingsstatusTabel from "@/components/nutrition/VoedingsstatusTabel";
 import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
-import SituatieVoedingLaag from "@/components/nutrition/SituatieVoedingLaag";
 import MetenTijdLaag from "@/components/nutrition/MetenTijdLaag";
 import NutritionDagboekPaneel from "@/components/dashboard/voortgang/NutritionDagboekPaneel";
 import NutritionReflectiePaneel from "@/components/dashboard/voortgang/NutritionReflectiePaneel";
@@ -133,58 +128,16 @@ function LayerSixSlot({
     return null;
   }
 
-  /**
-   * Buiten voeding: dezelfde tabel, gefilterd tot de stoffen die dit domein
-   * kent (5 sep).
-   *
-   * Slaap en beweging toonden hier alleen een gesloten poort met "het oordeel
-   * en het aanbod staan op Keuze" — een deur zonder inhoud, terwijl het
-   * oordeel er wél is. Magnesium (slaap) en eiwit (beweging) hebben allebei
-   * een voedingsroute die de check al berekent.
-   *
-   * Het blijft een *doorverwijzing*, geen eigen oordeel: de statussen komen
-   * ongewijzigd uit de voedingscheck, en de regel eronder zegt dat ook. Deze
-   * check meet geen inname, dus hij mag er geen uitspraak over doen. Stress
-   * krijgt hier niets — zie `routesVoorDomein`.
-   */
-  const domeinRoutes = routesVoorDomein(
-    mapping.stance,
-    data?.nutritionCheckinReadout?.routes ?? [],
-  );
-  const herkomst = routeHerkomstRegel(mapping.stance, domeinRoutes);
-
   return (
     <div className="mt-4">
-      {domeinRoutes.length > 0 ? (
-        <>
-          <VoedingVsSupplementTabel
-            statuses={domeinRoutes}
-            surface={mapping.surface}
-            gateOpen={nutritionDone}
-            gateReden={
-              nutritionDone
-                ? null
-                : "Zonder voedingscheck weten we niet of er iets aan te vullen valt."
-            }
-          />
-          {herkomst ? (
-            <p className="m-0 mt-2 max-w-[58ch] text-[11px] leading-relaxed text-[#7E8C82] text-pretty">
-              {herkomst}
-            </p>
-          ) : null}
-        </>
-      ) : null}
-
-      <div className={domeinRoutes.length > 0 ? "mt-4" : undefined}>
-        <DomainSupplementStance
-          domain={mapping.stance}
-          verdicts={data?.supplementVerdicts ?? []}
-          nutritionLogCompleted={nutritionDone}
-          surface={mapping.surface}
-          poortOnly
-          onOpenFavorieten={onOpenSchap}
-        />
-      </div>
+      <DomainSupplementStance
+        domain={mapping.stance}
+        verdicts={data?.supplementVerdicts ?? []}
+        nutritionLogCompleted={nutritionDone}
+        surface={mapping.surface}
+        poortOnly
+        onOpenFavorieten={onOpenSchap}
+      />
     </div>
   );
 }
@@ -199,13 +152,11 @@ function LayerSixSlot({
  * De zes ladderlagen blijven de bron; een knop kan er meer dan één tonen, en
  * die worden hier onder elkaar gerenderd in de volgorde die de knop noemt.
  *
- * - **P1 + P2 Voedingsstatus**: één tabel met de voedselgroepen én de
- *   kwaliteitsvragen — categorie, jouw antwoord, de balk, de richtlijn, de
- *   status. Dit waren twee componenten die dezelfde balkvorm herhaalden; zie
- *   `VoedingsstatusTabel` voor waarom ze samengevoegd zijn.
- * - **P4 Op jouw situatie**: volstaat je inname gegeven gewicht en training?
- *   Blijft een eigen blok onder de tabel: die vraag heeft geen categorie-as,
- *   dus hij past niet in dezelfde rijen.
+ * - **P1 + P2 + P4 Voedingsstatus**: één tabel met de voedselgroepen, de
+ *   kwaliteitsvragen én de stoffen — categorie, jouw antwoord, de balk, de
+ *   richtlijn, de status. Dit waren drie componenten die dezelfde balkvorm
+ *   herhaalden; zie `VoedingsstatusTabel` voor waarom ze samengevoegd zijn.
+ *   Deze knop rendert zónder werkvlak-frame: de tabel draagt zijn eigen kop.
  * - **P5 Meten & timing**: je eigen reeks, je logboek en de terugblik.
  * - **P6 Aanvullen**: de vergelijking eten naast supplement.
  *
@@ -218,17 +169,18 @@ function NutritionLayerSlot({
   domain,
   data,
   onOpenSchap,
-  onGoP6,
   p6FocusNutrient,
   meetreeks,
+  onBack,
 }: {
   layerId: number;
   domain: PillarId;
   data?: DashboardData;
   onOpenSchap: () => void;
-  onGoP6: (nutrient: NutrientId) => void;
   p6FocusNutrient: NutrientId | null;
   meetreeks: Meetreeks | null;
+  /** De terugweg die de statustabel zelf draagt. */
+  onBack: () => void;
 }) {
   if (layerId === 6) {
     return (
@@ -259,8 +211,10 @@ function NutritionLayerSlot({
             ? nutritionReportFromAnswers(readout.ladderReport.sliders)
             : null
         }
+        nutrients={readout?.sufficiency.nutrients ?? []}
         moments={meetreeks?.moments ?? []}
         surface="leefstijlprofiel_voeding"
+        onBack={onBack}
       />
     );
   }
@@ -290,19 +244,11 @@ function NutritionLayerSlot({
     );
   }
 
-  if (layerId === 4 && readout) {
-    return (
-      <SituatieVoedingLaag
-        sufficiency={readout.sufficiency}
-        contribution={readout.contribution}
-        routes={readout.routes}
-        personalization={readout.personalization}
-        surface="leefstijlprofiel_voeding"
-        onGoP6={onGoP6}
-      />
-    );
-  }
-
+  // Laag 4 (volstaat dit voor jou) heeft geen eigen slot meer: de stoffen
+  // staan als derde groep in de tabel van laag 1. Wat hier stond — de
+  // meeweeg-box, een kaart per stof met bandregel en contextregel, en per
+  // stof een bronnenblok met NEVO-porties — beantwoordde dezelfde vraag in
+  // drie keer zoveel hoogte, en de bronnenblokken horen bij *aanvullen*.
   return null;
 }
 
@@ -574,9 +520,27 @@ export default function LeefstijlprofielDomeinScherm({
       />
     ) : null;
 
+  /**
+   * Voedingsstatus draagt zichzelf — één tabel, niets eromheen (5 sep).
+   *
+   * Op deze knop stonden zeven aanlopen naar één beeld: terugknop, domeinlabel,
+   * paginatitel, bronregel, headline, cijferbalk en de stoffenrail. Daarna pas
+   * het werkvlak met nóg een kop, een samenvattingsregel en een feitenlijst die
+   * per rij herhaalde wat de tabel eronder in een kolom zegt.
+   *
+   * De tabel heeft dat frame niet nodig: hij draagt zijn eigen kruimelpad, zijn
+   * eigen naam, zijn telling en zijn filters. Wat wegvalt is geen informatie
+   * maar dezelfde informatie in een tweede vorm — met één uitzondering, de
+   * feitenlijst met bronregels, en die is één klik verderop op Meten & timing
+   * en op de onderbouwing van de andere knoppen.
+   *
+   * De strip blijft: dat is hoe je naar de andere twee knoppen komt.
+   */
+  const isKaleTabel = isDrieluik && actievePrioriteitId === 1;
+
   return (
     <section aria-label={`Leefstijlprofiel — ${pillar.label}`} className="pt-4">
-      <div className="mb-5">
+      <div className={isKaleTabel ? "hidden" : "mb-5"}>
         <VoortgangTerugLink onBack={onBack} />
         <div className="min-w-0">
           {/* De balk in de header noemt het domein al; op mobiel zou deze
@@ -630,15 +594,17 @@ export default function LeefstijlprofielDomeinScherm({
         <div className="mt-4 flex min-w-0 flex-col gap-3.5">
           {/* Je cijfer met de bron erbij — één regel, vóór de laag waar je
               voor kwam. */}
-          <DomeinPaneel
-            paneel={paneel}
-            domain={domain}
-            domainLabel={pillar.label}
-            surface="leefstijlprofiel_domein"
-            onGoMacro={onBack}
-          />
+          {isKaleTabel ? null : (
+            <DomeinPaneel
+              paneel={paneel}
+              domain={domain}
+              domainLabel={pillar.label}
+              surface="leefstijlprofiel_domein"
+              onGoMacro={onBack}
+            />
+          )}
 
-          {nutrientRail.length > 0 ? (
+          {!isKaleTabel && nutrientRail.length > 0 ? (
             <NutrientRail
               rijen={nutrientRail}
               surface="leefstijlprofiel_domein"
@@ -648,7 +614,23 @@ export default function LeefstijlprofielDomeinScherm({
             />
           ) : null}
 
-          {actievePrioriteit ? (
+          {/* De lagen onder de open knop. Op Voedingsstatus staan ze kaal —
+              de tabel is het scherm; elders zitten ze in het werkvlak, waar de
+              kop, de samenvatting en de feitenlijst hun context dragen. */}
+          {isKaleTabel ? (
+            actieveLagen.map((laag) => (
+              <NutritionLayerSlot
+                key={laag}
+                layerId={laag}
+                domain={domain}
+                data={data}
+                onOpenSchap={handleOpenSchap}
+                p6FocusNutrient={p6FocusNutrient}
+                meetreeks={meetreeks}
+                onBack={onBack}
+              />
+            ))
+          ) : actievePrioriteit ? (
             <PrioriteitWerkvlak
               prioriteit={actievePrioriteit}
               aantal={actievePrioriteit.id}
@@ -679,8 +661,6 @@ export default function LeefstijlprofielDomeinScherm({
                 clarityTag("domein_prioriteit_kompas", domain);
               }}
             >
-              {/* Eén knop kan meer dan één ladderlaag dragen: Voedingsstatus
-                  toont de tabel (basis + kwaliteit) met je situatie eronder. */}
               {isKompasDomain
                 ? actieveLagen.map((laag) => (
                     <NutritionLayerSlot
@@ -689,9 +669,9 @@ export default function LeefstijlprofielDomeinScherm({
                       domain={domain}
                       data={data}
                       onOpenSchap={handleOpenSchap}
-                      onGoP6={handleGoP6}
                       p6FocusNutrient={p6FocusNutrient}
                       meetreeks={meetreeks}
+                      onBack={onBack}
                     />
                   ))
                 : null}
@@ -702,8 +682,16 @@ export default function LeefstijlprofielDomeinScherm({
 
           {/* De uitgangen op één rij: op smal onder elkaar, daarboven naast
               elkaar. Twee losse regels onder een werkvlak lezen als restjes;
-              als rij lezen ze als wat ze zijn — waar je heen kunt. */}
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+              als rij lezen ze als wat ze zijn — waar je heen kunt.
+
+              Onder de kale tabel staan ze niet: daar zou een losse regel
+              tekst onder de tabel hangen, en de weg naar je keuze loopt daar
+              via de knop "Aanvullen & vergelijken" in de strip erboven. */}
+          <div
+            className={`flex flex-wrap items-center gap-x-5 gap-y-2 ${
+              isKaleTabel ? "hidden" : ""
+            }`}
+          >
             {/* Op de domeinen zonder eigen Kompas-scherm droeg de ladder de weg
                 naar Mijn Dag; die weg blijft bestaan nu de ladder hier weg is —
                 kiezen en afvinken gebeurt daar, niet op dit scherm. */}

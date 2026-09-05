@@ -10,6 +10,7 @@ import type { LadderEvidenceStatus } from "@/lib/domain-ladder-readout";
 import { trackEvent } from "@/lib/ga4";
 import { heeftDetail } from "@/lib/nutrition-categorie-detail";
 import type { NutritionSelfReport } from "@/lib/nutrition-intake-estimate";
+import type { NutrientSufficiency } from "@/lib/nutrition-sufficiency";
 import type {
   NutritionFactRow,
   NutritionLadderReport,
@@ -18,8 +19,11 @@ import {
   bouwStatusFilters,
   bouwStatusRijen,
   filterStatusRijen,
+  SOORT_KOP,
+  SOORT_VOLGORDE,
   type StatusFilter,
   type StatusRij,
+  type StatusRijSoort,
 } from "@/lib/nutrition-statustabel";
 import { surfaceStyles } from "@/lib/dashboard-surface";
 import { bouwVerschuiving } from "@/lib/voedingsbasis-verschuiving";
@@ -46,13 +50,27 @@ import type { DomainMeasurement } from "@/types/dashboard";
  * zit de meeste ruimte" is precies wat een tabel met vijftien tekstcellen niet
  * geeft.
  *
- * ## Waarom de filters in de header staan
+ * ## Waarom de kop van het scherm in de tabel zit (5 sep)
  *
- * De tabel wordt lang (zeven groepen plus de kwaliteitsvragen), en de vraag
- * waarmee je binnenkomt is meestal "waar heb ik ruimte". Dat is een filter, geen
- * scrollactie. De knoppen tonen alleen statussen die deze check daadwerkelijk
- * opleverde — zie `bouwStatusFilters` — en verdwijnen helemaal als er niets te
- * filteren valt.
+ * Boven deze tabel stonden zeven dingen: een terugknop, een domeinlabel, een
+ * paginatitel, een bronregel, een headline uit de check, een cijferbalk en een
+ * inklapbare stoffenrail — en dán pas de tabel, met nog een eigen kopregel.
+ * Zeven aanlopen naar één beeld. Wie hier komt wil weten waar hij staat; dat
+ * staat in de rijen, niet in de aanloop.
+ *
+ * De tabel draagt nu zijn eigen kop: de terugweg (Overzicht › Voeding), de
+ * naam, de telling en de filters, in één balk. Alles wat daarbuiten viel is van
+ * dit scherm af. De filters horen erbij om dezelfde reden als altijd — de vraag
+ * waarmee je binnenkomt is "waar heb ik ruimte", en dat is een filter, geen
+ * scrollactie. Ze tonen alleen statussen die deze check opleverde (zie
+ * `bouwStatusFilters`) en verdwijnen als er niets te filteren valt.
+ *
+ * ## Waarom er groepskoppen tussen de rijen staan
+ *
+ * De tabel draagt drie soorten rijen — je bord, wat je mindert, en of de
+ * stoffen volstaan. Dat zijn drie vragen op dezelfde vijf kolommen, en zonder
+ * scheidsregel leest "Magnesium · onder de band" als een achtste voedselgroep.
+ * De koprij is één regel hoog en scheidt zonder de tabel in blokken te breken.
  *
  * ## Wat de tabel niet doet
  *
@@ -113,6 +131,36 @@ function Meetbaan({
         />
       )}
     </div>
+  );
+}
+
+/**
+ * De terugweg, binnen de tabel.
+ *
+ * Stond als losse knop boven de paginatitel. Die titel is er niet meer, dus
+ * de knop zou als los element boven een tabel zweven — en dat is precies de
+ * aanloop die weg moest. Als eerste regel van de tabelkop hoort hij bij het
+ * ding waar hij uit wegvoert.
+ */
+function Kruimelpad({ onBack }: { onBack: () => void }) {
+  return (
+    <nav
+      aria-label="Kruimelpad"
+      className="flex items-center gap-0.5 text-[11.5px] font-semibold"
+    >
+      <button
+        type="button"
+        onClick={onBack}
+        className="inline-flex cursor-pointer items-center gap-0.5 border-none bg-transparent p-0 font-[inherit] text-[#9FB0A6] transition hover:text-[#F1EFE8]"
+      >
+        <Icons.ChevronLeft s={13} sw={2} style={{ color: "currentColor" }} />
+        Overzicht
+      </button>
+      <span aria-hidden className="px-1 text-[#5F6C64]">
+        ·
+      </span>
+      <span className="text-[#7E8C82]">Voeding</span>
+    </nav>
   );
 }
 
@@ -233,8 +281,10 @@ export default function VoedingsstatusTabel({
   rijen,
   report,
   selfReport = null,
+  nutrients = [],
   moments = [],
   surface,
+  onBack,
 }: {
   rijen: readonly NutritionFactRow[];
   report: NutritionLadderReport | null;
@@ -244,17 +294,21 @@ export default function VoedingsstatusTabel({
    * waar de nutriënt-engine op draait. Null = doordruk toont de neutrale staat.
    */
   selfReport?: NutritionSelfReport | null;
+  /** De sufficiency-uitkomst per stof — de derde groep rijen (laag 4). */
+  nutrients?: readonly NutrientSufficiency[];
   /** De meetmomenten van voeding, nieuwste eerst — voedt de verschuivingstabel. */
   moments?: readonly DomainMeasurement[];
   surface: string;
+  /** Terug naar Voortgang-home. De tabel draagt zijn eigen terugweg. */
+  onBack?: () => void;
 }) {
   const kaarten = useMemo(
     () => categorieKaarten(rijen, report),
     [rijen, report],
   );
   const alleRijen = useMemo(
-    () => bouwStatusRijen(rijen, report),
-    [rijen, report],
+    () => bouwStatusRijen(rijen, report, nutrients),
+    [rijen, report, nutrients],
   );
   const filters = useMemo(() => bouwStatusFilters(alleRijen), [alleRijen]);
   const [filter, setFilter] = useState<StatusFilter["id"]>("alles");
@@ -305,7 +359,8 @@ export default function VoedingsstatusTabel({
 
   if (alleRijen.length === 0) {
     return (
-      <div className={`mt-4 ${surfaceStyles("dashboard").kaart} px-4 py-3.5`}>
+      <div className={`${surfaceStyles("dashboard").kaart} px-4 py-3.5`}>
+        {onBack ? <Kruimelpad onBack={onBack} /> : null}
         <p className="m-0 text-[13.5px] leading-relaxed text-[#9FB0A6] text-pretty">
           Doe de voedingscheck om per categorie te zien waar je staat ten
           opzichte van de richtlijn.
@@ -317,75 +372,90 @@ export default function VoedingsstatusTabel({
   const metRuimte = alleRijen.filter((rij) => rij.status === "below").length;
   const opOrde = alleRijen.filter((rij) => rij.status === "meets").length;
 
+  // De groepen in hun leesvolgorde, met alleen de groepen die na het filter
+  // nog rijen hebben. Een koprij boven nul rijen is een kop over niets.
+  const groepen = SOORT_VOLGORDE.map((soort: StatusRijSoort) => ({
+    soort,
+    rijen: zichtbaar.filter((rij) => rij.soort === soort),
+  })).filter((groep) => groep.rijen.length > 0);
+
   return (
-    <div className="@container mt-4">
+    <div className="@container">
       <div
         className={`overflow-hidden border border-white/10 bg-black/20 ${
           verschuiving.momenten.length > 1 ? "rounded-t-xl" : "rounded-xl"
         }`}
       >
-        {/* De header draagt de telling én de bediening. Twee dingen op één
-            balk, maar ze horen bij elkaar: de telling zegt wat er te filteren
-            valt, de knoppen doen het. */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-white/10 px-3.5 py-2.5">
-          <p className="m-0 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
-            Per categorie
-          </p>
-          <span className="flex items-center gap-3.5">
-            {metRuimte > 0 ? (
-              <span className="flex items-center gap-1.5 text-[11.5px] font-semibold text-[#C8956C]">
-                <span
-                  aria-hidden
-                  className="inline-block h-1.5 w-1.5 rounded-full"
-                  style={{ backgroundColor: STATUS_KLEUR.below }}
-                />
-                {metRuimte} met ruimte
-              </span>
-            ) : null}
-            {opOrde > 0 ? (
-              <span className="flex items-center gap-1.5 text-[11.5px] font-semibold text-[#9CC5A9]">
-                <span
-                  aria-hidden
-                  className="inline-block h-1.5 w-1.5 rounded-full"
-                  style={{ backgroundColor: STATUS_KLEUR.meets }}
-                />
-                {opOrde} op orde
-              </span>
-            ) : null}
-            <span className="text-[11px] text-[#7E8C82]">
-              {alleRijen.length} totaal
-            </span>
-          </span>
+        {/* De kop van het scherm: waar je vandaan komt, waar je bent, wat
+            eronder staat en hoe je het uitdunt. Eén balk, want het is één
+            vraag — waar sta ik, en waar kijk ik naar. */}
+        <div className="border-b border-white/10 px-3.5 py-2.5">
+          {onBack ? <Kruimelpad onBack={onBack} /> : null}
 
-          {filters.length > 0 ? (
-            <div
-              role="group"
-              aria-label="Filter op status"
-              className="ml-auto flex flex-wrap items-center gap-1.5"
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-2">
+            <h2
+              className="m-0 font-serif text-[17px] font-normal leading-none text-[#F1EFE8]"
+              style={{ fontFamily: "var(--f-serif)" }}
             >
-              {filters.map((optie) => {
-                const actief = filter === optie.id;
-                return (
-                  <button
-                    key={optie.id}
-                    type="button"
-                    onClick={() => kiesFilter(optie.id)}
-                    aria-pressed={actief}
-                    className={`min-h-7 cursor-pointer rounded-full border px-2.5 text-[11px] font-semibold transition-colors ${
-                      actief
-                        ? "border-[#9CC5A9]/50 bg-[#9CC5A9]/15 text-[#E7EDE8]"
-                        : "border-white/10 bg-transparent text-[#9FB0A6] hover:border-white/25"
-                    }`}
-                  >
-                    {optie.label}
-                    <span className="ml-1 tabular-nums text-[#7E8C82]">
-                      {optie.aantal}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          ) : null}
+              Voedingsstatus
+            </h2>
+
+            <span className="flex items-center gap-3.5">
+              {metRuimte > 0 ? (
+                <span className="flex items-center gap-1.5 text-[11.5px] font-semibold text-[#C8956C]">
+                  <span
+                    aria-hidden
+                    className="inline-block h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: STATUS_KLEUR.below }}
+                  />
+                  {metRuimte} met ruimte
+                </span>
+              ) : null}
+              {opOrde > 0 ? (
+                <span className="flex items-center gap-1.5 text-[11.5px] font-semibold text-[#9CC5A9]">
+                  <span
+                    aria-hidden
+                    className="inline-block h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: STATUS_KLEUR.meets }}
+                  />
+                  {opOrde} op orde
+                </span>
+              ) : null}
+              <span className="text-[11px] text-[#7E8C82]">
+                {alleRijen.length} totaal
+              </span>
+            </span>
+
+            {filters.length > 0 ? (
+              <div
+                role="group"
+                aria-label="Filter op status"
+                className="ml-auto flex flex-wrap items-center gap-1.5"
+              >
+                {filters.map((optie) => {
+                  const actief = filter === optie.id;
+                  return (
+                    <button
+                      key={optie.id}
+                      type="button"
+                      onClick={() => kiesFilter(optie.id)}
+                      aria-pressed={actief}
+                      className={`min-h-7 cursor-pointer rounded-full border px-2.5 text-[11px] font-semibold transition-colors ${
+                        actief
+                          ? "border-[#9CC5A9]/50 bg-[#9CC5A9]/15 text-[#E7EDE8]"
+                          : "border-white/10 bg-transparent text-[#9FB0A6] hover:border-white/25"
+                      }`}
+                    >
+                      {optie.label}
+                      <span className="ml-1 tabular-nums text-[#7E8C82]">
+                        {optie.aantal}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
         </div>
 
         {/* Kolomkoppen, alleen waar de rijen ook echt in kolommen staan. Op
@@ -403,20 +473,27 @@ export default function VoedingsstatusTabel({
           ))}
         </div>
 
-        <ul className="m-0 list-none p-0" role="list">
-          {zichtbaar.map((rij) => (
-            <StatusTabelRij
-              key={rij.id}
-              rij={rij}
-              open={openRij === rij.id}
-              onToggle={() =>
-                setOpenRij((huidig) => (huidig === rij.id ? null : rij.id))
-              }
-              report={selfReport}
-              surface={surface}
-            />
-          ))}
-        </ul>
+        {groepen.map((groep) => (
+          <section key={groep.soort}>
+            <h3 className="m-0 bg-white/[0.025] px-3.5 py-1.5 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+              {SOORT_KOP[groep.soort]}
+            </h3>
+            <ul className="m-0 list-none p-0" role="list">
+              {groep.rijen.map((rij) => (
+                <StatusTabelRij
+                  key={rij.id}
+                  rij={rij}
+                  open={openRij === rij.id}
+                  onToggle={() =>
+                    setOpenRij((huidig) => (huidig === rij.id ? null : rij.id))
+                  }
+                  report={selfReport}
+                  surface={surface}
+                />
+              ))}
+            </ul>
+          </section>
+        ))}
       </div>
 
       {/* De verschuiving sluit aan op de tabel: hij zegt hoe de stand erboven

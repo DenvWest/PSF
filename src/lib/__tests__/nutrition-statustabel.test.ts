@@ -57,6 +57,50 @@ describe("nutrition-statustabel", () => {
     expect(eerste.status).toBe("below");
   });
 
+  it("zet de stoffen achter de bord- en minder-rijen", () => {
+    const metStof = bouwStatusRijen(buildNutritionFactRows(report), report, [
+      {
+        nutrient: "magnesium",
+        label: "Magnesium",
+        outcome: "insufficient",
+        band: "below",
+        contextLine: null,
+        leadingSources: [],
+        p6Relevant: true,
+      },
+    ]);
+
+    // Ruimte-eerst geldt binnen een groep, niet eroverheen: een stof met
+    // ruimte mag niet tussen de voedselgroepen belanden, want dan leest hij
+    // als een achtste voedselgroep.
+    const soorten = metStof.map((rij) => rij.soort);
+    expect(soorten[soorten.length - 1]).toBe("stof");
+    expect(soorten.indexOf("stof")).toBe(soorten.lastIndexOf("stof"));
+  });
+
+  /**
+   * De check meet frequentie, geen milligrammen. De stof-rij mag dus wel een
+   * band tonen en een oordeel, maar nooit een hoeveelheid.
+   */
+  it("draagt de band als antwoord en het oordeel als richtlijn", () => {
+    const [stof] = bouwStatusRijen(buildNutritionFactRows(report), report, [
+      {
+        nutrient: "zinc",
+        label: "Zink",
+        outcome: "uncertain",
+        band: "around",
+        contextLine: null,
+        leadingSources: [],
+        p6Relevant: true,
+      },
+    ]).filter((rij) => rij.soort === "stof");
+
+    expect(stof.jij).toBe("Rond de band");
+    expect(stof.richtlijn).toBe("Onzeker — meer context nodig");
+    expect(stof.status).toBe("near");
+    expect(stof.categorieId).toBeNull();
+  });
+
   it("erft antwoord, richtlijn en status ongewijzigd van de feitenrij", () => {
     const factRows = buildNutritionFactRows(report);
     const minderen = factRows.find((rij) => rij.key === "minderen");

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it, vi } from "vitest";
+import type { ComponentProps } from "react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import VoedingsstatusTabel from "@/components/nutrition/VoedingsstatusTabel";
 import { buildNutritionFactRows } from "@/lib/nutrition-ladder";
@@ -27,7 +28,9 @@ const report = {
   allergies: [] as string[],
 };
 
-function renderTabel() {
+function renderTabel(
+  extra: Partial<ComponentProps<typeof VoedingsstatusTabel>> = {},
+) {
   const rijen = buildNutritionFactRows(report);
   return render(
     <VoedingsstatusTabel
@@ -35,20 +38,55 @@ function renderTabel() {
       report={report}
       selfReport={nutritionReportFromAnswers(report.sliders)}
       surface="test"
+      {...extra}
     />,
   );
 }
 
 describe("VoedingsstatusTabel", () => {
-  it("zet de voedselgroepen en de kwaliteitsvragen in één lijst", () => {
+  it("zet de voedselgroepen en de kwaliteitsvragen in dezelfde kolommen", () => {
     renderTabel();
     const rijen = screen.getAllByRole("listitem");
     expect(rijen.length).toBeGreaterThan(1);
     expect(screen.getByText("Groente")).toBeTruthy();
     // De kwaliteitsvragen stonden vroeger in een eigen blok eronder; ze delen
-    // nu dezelfde kolommen als de groepen.
-    expect(screen.getByText("Wat je mindert")).toBeTruthy();
+    // nu dezelfde kolommen als de groepen, onder een eigen groepskop.
+    expect(screen.getAllByText("Wat je mindert").length).toBeGreaterThan(0);
     expect(screen.getByText("Bewerkingsgraad")).toBeTruthy();
+  });
+
+  it("draagt zijn eigen kop met de terugweg erin", () => {
+    const onBack = vi.fn();
+    renderTabel({ onBack });
+
+    // De tabel heeft geen paginatitel meer boven zich staan; de kop hoort
+    // hierbij, net als het kruimelpad dat eruit wegvoert.
+    expect(screen.getByRole("heading", { name: "Voedingsstatus" })).toBeTruthy();
+    const kruimels = screen.getByRole("navigation", { name: "Kruimelpad" });
+    fireEvent.click(within(kruimels).getByRole("button", { name: /Overzicht/ }));
+    expect(onBack).toHaveBeenCalled();
+  });
+
+  it("zet de stoffen als derde groep in dezelfde tabel", () => {
+    renderTabel({
+      nutrients: [
+        {
+          nutrient: "magnesium" as const,
+          label: "Magnesium",
+          outcome: "insufficient" as const,
+          band: "below" as const,
+          contextLine: null,
+          leadingSources: [],
+          p6Relevant: true,
+        },
+      ],
+    });
+
+    // De vraag "volstaat dit voor jou" stond als eigen blok met kaarten en
+    // bronnenlijsten onder de tabel; hij is nu één rij in dezelfde kolommen.
+    expect(screen.getByText("Volstaat dit voor jou")).toBeTruthy();
+    expect(screen.getByText("Magnesium")).toBeTruthy();
+    expect(screen.getByText("Waarschijnlijk niet genoeg")).toBeTruthy();
   });
 
   it("toont de kolomkoppen die de rijen uitlijnen", () => {
@@ -82,10 +120,13 @@ describe("VoedingsstatusTabel", () => {
 
     expect(ruimte.getAttribute("aria-pressed")).toBe("true");
     // Alleen rijen met ruimte blijven staan; de andere statussen verdwijnen
-    // uit de lijst (de knoplabels blijven, met hun eigen telling).
-    const lijst = screen.getByRole("list");
-    expect(within(lijst).queryByText("op orde")).toBeNull();
-    expect(within(lijst).getAllByText("ruimte").length).toBeGreaterThan(0);
+    // uit de rijen (de knoplabels blijven, met hun eigen telling).
+    const statussen = screen
+      .getAllByRole("listitem")
+      .flatMap((rij) => within(rij).getAllByText(/^(ruimte|bijna|op orde|eigen ijkpunt)$/))
+      .map((cel) => cel.textContent);
+    expect(statussen).not.toContain("op orde");
+    expect(statussen).toContain("ruimte");
   });
 
   it("keert terug naar alle rijen via Alles", () => {

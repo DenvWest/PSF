@@ -4,6 +4,7 @@ import type {
   NutritionLadderReport,
   NutritionRowExemption,
 } from "@/lib/nutrition-ladder";
+import type { NutrientSufficiency } from "@/lib/nutrition-sufficiency";
 import {
   categorieKaarten,
   type CategorieKaart,
@@ -18,16 +19,27 @@ import {
  * De knop *Voedingsstatus* draagt drie ladderlagen (1, 2 en 4) en die werden
  * gerenderd door drie losse componenten onder elkaar: `VoedingsbasisOverzicht`
  * (zeven meetbanen), `VoedingskwaliteitLaag` (nog twee secties met dezelfde
- * balkvorm) en `SituatieVoedingLaag`. Drie keer dezelfde vorm, elk met eigen
+ * balkvorm) en de situatielaag. Drie keer dezelfde vorm, elk met eigen
  * inleidende zinnen ertussen — samen leest dat als een essay waar een overzicht
  * hoort te staan.
  *
  * De klacht was niet dat de balk verkeerd is, maar dat er drie stapels van
- * waren. Dit bestand legt de rijen van laag 1 en laag 2 op één rijmodel, zodat
- * er één tabel gerenderd kan worden waarin de balk een *kolom* is in plaats van
- * een blok. Laag 4 (je situatie) blijft een eigen component: die beantwoordt
- * een andere vraag ("volstaat dit gegeven je gewicht en training") en heeft
- * geen categorie-as, dus hij past niet in deze rijen.
+ * waren. Dit bestand legt de rijen van laag 1, laag 2 én laag 4 op één
+ * rijmodel, zodat er één tabel gerenderd kan worden waarin de balk een *kolom*
+ * is in plaats van een blok.
+ *
+ * ## Waarom laag 4 er sinds 5 sep bij hoort
+ *
+ * Laag 4 ("volstaat dit voor jou?") stond als eigen component onder de tabel,
+ * met per stof een kaart, een bandregel, een contextregel en een uitklapbaar
+ * bronnenblok met NEVO-porties. Dat is dezelfde vraag in een andere vorm — waar
+ * sta je ten opzichte van een lat — maar dan drie keer zo hoog per rij. En de
+ * bronnenblokken ("waar komt magnesium vandaan") horen bij *aanvullen*: dat is
+ * de knop waar je eten en supplement naast elkaar legt, niet de knop waar je
+ * afleest hoe je ervoor staat.
+ *
+ * Wat blijft is de status zelf: per stof of hij volstaat, met de check-band als
+ * antwoordtekst. Dat is één rij in dezelfde vijf kolommen.
  *
  * ## Wat hier níét gebeurt
  *
@@ -42,7 +54,7 @@ import {
  */
 
 /** Op welke as een rij ligt — de header-knoppen filteren hierop. */
-export type StatusRijSoort = "groep" | "kwaliteit";
+export type StatusRijSoort = "groep" | "kwaliteit" | "stof";
 
 export type StatusRij = {
   /** Uniek binnen de tabel; voedselgroep-id of feitenrij-key. */
@@ -66,6 +78,27 @@ export type StatusRij = {
   /** Klapt deze rij open naar zijn bronnen? Alleen voedselgroepen doen dat. */
   categorieId: VoedselgroepId | null;
 };
+
+/**
+ * De groepskoppen boven de rijen.
+ *
+ * De tabel zet ruimte bovenaan *binnen* een groep, niet over de hele tabel
+ * heen: een voedselgroep en een stof beantwoorden dezelfde vraag op een andere
+ * as ("wat ligt er op je bord" tegenover "wat komt er binnen"), en die door
+ * elkaar sorteren maakt van de tabel een ranglijst zonder onderwerp.
+ */
+export const SOORT_KOP: Record<StatusRijSoort, string> = {
+  groep: "Op je bord",
+  kwaliteit: "Wat je mindert",
+  stof: "Volstaat dit voor jou",
+};
+
+/** De leesvolgorde van de groepen: bord, minderen, stoffen. */
+export const SOORT_VOLGORDE: readonly StatusRijSoort[] = [
+  "groep",
+  "kwaliteit",
+  "stof",
+];
 
 /** De filterknoppen in de tabelheader, met hun telling. */
 export type StatusFilter = {
@@ -122,6 +155,56 @@ function uitKaart(kaart: CategorieKaart): StatusRij {
 }
 
 /**
+ * De rijen die de sufficiency-laag levert — één per stof.
+ *
+ * `jij` draagt de check-band en niet een hoeveelheid: de check meet frequentie,
+ * geen milligrammen, en dat mag deze kolom niet suggereren. De richtlijn-kolom
+ * draagt het oordeel ("volstaat waarschijnlijk"), want dát is waar de band aan
+ * getoetst wordt.
+ *
+ * De schaalpositie is de bandpositie, niet een dekkingsgetal: dezelfde drie
+ * banden als de rest van de tabel, zodat de balk overal hetzelfde betekent.
+ */
+const BAND_POSITIE = { below: 0.28, around: 0.6, meets: 0.88 } as const;
+
+const BAND_ANTWOORD = {
+  below: "Onder de band",
+  around: "Rond de band",
+  meets: "Op de band",
+} as const;
+
+const OUTCOME_STATUS: Record<
+  NutrientSufficiency["outcome"],
+  LadderEvidenceStatus
+> = {
+  insufficient: "below",
+  uncertain: "near",
+  sufficient: "meets",
+};
+
+const OUTCOME_OORDEEL: Record<NutrientSufficiency["outcome"], string> = {
+  insufficient: "Waarschijnlijk niet genoeg",
+  uncertain: "Onzeker — meer context nodig",
+  sufficient: "Volstaat waarschijnlijk",
+};
+
+function stofRijen(
+  nutrients: readonly NutrientSufficiency[],
+): StatusRij[] {
+  return nutrients.map((stof) => ({
+    id: `stof-${stof.nutrient}`,
+    soort: "stof" as const,
+    label: stof.label,
+    jij: BAND_ANTWOORD[stof.band],
+    richtlijn: OUTCOME_OORDEEL[stof.outcome],
+    status: OUTCOME_STATUS[stof.outcome],
+    exemption: null,
+    schaalPositie: BAND_POSITIE[stof.band],
+    categorieId: null,
+  }));
+}
+
+/**
  * Alle rijen van de statustabel, ruimte bovenaan.
  *
  * De sortering is stabiel binnen een status, dus de bordvolgorde uit
@@ -133,13 +216,17 @@ function uitKaart(kaart: CategorieKaart): StatusRij {
 export function bouwStatusRijen(
   factRows: readonly NutritionFactRow[],
   report: NutritionLadderReport | null,
+  nutrients: readonly NutrientSufficiency[] = [],
 ): StatusRij[] {
   const groepen = categorieKaarten(factRows, report).map(uitKaart);
   const kwaliteit = kwaliteitsRijen(factRows);
+  const stoffen = stofRijen(nutrients);
 
-  return [...groepen, ...kwaliteit].sort(
-    (a, b) => STATUS_VOLGORDE[a.status] - STATUS_VOLGORDE[b.status],
-  );
+  // Binnen elke groep ruimte eerst; de groepen zelf houden hun leesvolgorde.
+  const opRuimte = (rijen: StatusRij[]) =>
+    [...rijen].sort((a, b) => STATUS_VOLGORDE[a.status] - STATUS_VOLGORDE[b.status]);
+
+  return [...opRuimte(groepen), ...opRuimte(kwaliteit), ...opRuimte(stoffen)];
 }
 
 const FILTER_LABEL: Record<LadderEvidenceStatus, string> = {
