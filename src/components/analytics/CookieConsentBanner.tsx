@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import CookieConsentAboutPanel from "@/components/analytics/cookie-consent/CookieConsentAboutPanel";
 import CookieConsentCategories from "@/components/analytics/cookie-consent/CookieConsentCategories";
 import CookieConsentDetails from "@/components/analytics/cookie-consent/CookieConsentDetails";
+import { DEFAULT_OPTIONAL_COOKIE_PREFERENCES } from "@/data/cookie-inventory";
 import {
   ANALYTICS_GRANTED_EVENT,
   COOKIE_PREFERENCES_EVENT,
@@ -115,8 +116,12 @@ export default function CookieConsentBanner() {
     null,
   );
   const [activeTab, setActiveTab] = useState<ConsentTab>("consent");
-  const [statisticsEnabled, setStatisticsEnabled] = useState(false);
-  const [marketingEnabled, setMarketingEnabled] = useState(false);
+  const [statisticsEnabled, setStatisticsEnabled] = useState(
+    DEFAULT_OPTIONAL_COOKIE_PREFERENCES.statistics,
+  );
+  const [marketingEnabled, setMarketingEnabled] = useState(
+    DEFAULT_OPTIONAL_COOKIE_PREFERENCES.marketing,
+  );
   const [consentMeta, setConsentMeta] = useState<AnalyticsConsentMeta | null>(null);
   const [busy, setBusy] = useState(false);
   const mounted = useSyncExternalStore(
@@ -229,7 +234,10 @@ export default function CookieConsentBanner() {
 
   async function handleClose(): Promise<void> {
     if (isFirstVisit) {
-      await persistConsent({ statistics: false, marketing: false, source: "banner" });
+      await persistConsent({
+        ...DEFAULT_OPTIONAL_COOKIE_PREFERENCES,
+        source: "banner",
+      });
       return;
     }
     closeWithoutSaving();
@@ -358,14 +366,13 @@ export default function CookieConsentBanner() {
               aria-busy={busy}
               onClick={() =>
                 void persistConsent({
-                  statistics: false,
-                  marketing: false,
+                  ...DEFAULT_OPTIONAL_COOKIE_PREFERENCES,
                   source: consentSource,
                 })
               }
               className={secondaryButtonClass}
             >
-              Weigeren
+              Alleen noodzakelijk
             </button>
             <button
               type="button"

@@ -32,6 +32,19 @@ export const COOKIE_CATEGORY_DESCRIPTIONS: Record<CookieCategory, string> = {
     "Deze cookies registreren verwijzingen via affiliate links. Ze worden pas geplaatst wanneer je op een partnerlink klikt — er is geen pre-tracking.",
 };
 
+export const COOKIE_CATEGORY_SHORT: Partial<Record<CookieCategory, string>> = {
+  statistics: "Anoniem, zonder naam. Zo zien we of de site werkt.",
+  marketing: "Geen advertenties. Alleen bij een klik op een partnerlink.",
+};
+
+export const DEFAULT_OPTIONAL_COOKIE_PREFERENCES: {
+  statistics: boolean;
+  marketing: boolean;
+} = {
+  statistics: false,
+  marketing: false,
+};
+
 const PROVIDER_INFO_URLS: Record<string, string> = {
   PerfectSupplement: "https://perfectsupplement.nl/privacy",
   "Google Analytics": "https://policies.google.com/privacy",
