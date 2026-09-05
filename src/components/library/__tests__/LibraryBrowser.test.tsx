@@ -9,6 +9,10 @@ import { getKennisbankLibraryItems } from "@/lib/library/kennisbank-items";
 const blogItems = getBlogLibraryItems();
 const kennisbankItems = getKennisbankLibraryItems();
 
+const vrouwenTitels = blogItems
+  .filter((item) => item.audience === "vrouwen")
+  .map((item) => item.title);
+
 function kaartTitels(): string[] {
   return screen
     .getAllByRole("heading", { level: 3 })
@@ -31,7 +35,7 @@ describe("bibliotheek — publiekslens", () => {
   it("zet de eigen fysiologie bovenaan en de andere onder een eigen kop", () => {
     render(<BlogLibrary items={blogItems} initialAudience="vrouwen" />);
 
-    expect(kaartTitels()[0]).toMatch(/Overgang/);
+    expect(vrouwenTitels).toContain(kaartTitels()[0]);
     expect(screen.getByText("Voor iedereen")).toBeTruthy();
   });
 
@@ -47,7 +51,7 @@ describe("bibliotheek — publiekslens", () => {
     const groep = screen.getByRole("radiogroup", { name: /voor wie/i });
     fireEvent.click(within(groep).getByRole("radio", { name: "Vrouwen" }));
 
-    expect(kaartTitels()[0]).toMatch(/Overgang/);
+    expect(vrouwenTitels).toContain(kaartTitels()[0]);
     expect(kaartTitels().length).toBeGreaterThan(1);
   });
 });

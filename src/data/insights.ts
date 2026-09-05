@@ -65,6 +65,13 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   "omega-3-en-medicijnen": "voeding",
   "omega-3-en-hart-onderzoek": "voeding",
   "magnesium-in-combinatie-met-medicijnen": "voeding",
+  "magnesium-tekort-herkennen": "voeding",
+  "hoeveel-magnesium-per-dag": "voeding",
+  "magnesium-uit-voeding": "voeding",
+  "magnesium-voor-wie-wel-niet": "voeding",
+  "magnesium-overgang-vrouwen": "voeding",
+  "magnesium-wanneer-innemen": "slaap",
+  "magnesium-en-spierkrampen": "herstel",
 };
 
 function parseLeestijdMinuten(leestijd: string): number {

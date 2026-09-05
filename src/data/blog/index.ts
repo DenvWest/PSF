@@ -42,6 +42,14 @@ import { visolieOxidatieEnBijwerkingenData } from "./visolie-oxidatie-en-bijwerk
 import { omega3IndexMetenData } from "./omega-3-index-meten";
 import { omega3EnMedicijnenData } from "./omega-3-en-medicijnen";
 import { omega3EnHartOnderzoekData } from "./omega-3-en-hart-onderzoek";
+import { magnesiumTekortHerkennenData } from "./magnesium-tekort-herkennen";
+import { hoeveelMagnesiumPerDagData } from "./hoeveel-magnesium-per-dag";
+import { magnesiumWanneerInnemenData } from "./magnesium-wanneer-innemen";
+import { magnesiumEnSpierkrampenData } from "./magnesium-en-spierkrampen";
+import { magnesiumUitVoedingData } from "./magnesium-uit-voeding";
+import { magnesiumVoorWieWelNietData } from "./magnesium-voor-wie-wel-niet";
+import { magnesiumEnStressData } from "./magnesium-en-stress";
+import { magnesiumOvergangVrouwenData } from "./magnesium-overgang-vrouwen";
 import { cornerstoneSupplementenArtikelen } from "./cornerstone-supplementen";
 
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
@@ -91,6 +99,14 @@ export const alleArtikelen: BlogArtikel[] = [
   omega3IndexMetenData,
   omega3EnMedicijnenData,
   omega3EnHartOnderzoekData,
+  magnesiumTekortHerkennenData,
+  hoeveelMagnesiumPerDagData,
+  magnesiumWanneerInnemenData,
+  magnesiumEnSpierkrampenData,
+  magnesiumUitVoedingData,
+  magnesiumVoorWieWelNietData,
+  magnesiumEnStressData,
+  magnesiumOvergangVrouwenData,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>

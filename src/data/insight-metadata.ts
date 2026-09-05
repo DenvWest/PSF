@@ -60,6 +60,47 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     profile: "Lage Batterij",
   },
   "krachttraining-na-40": { theme: "movement", planPhase: 1 },
+  "hoeveel-magnesium-per-dag": {
+    theme: "nutrition",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-en-spierkrampen": {
+    theme: "movement",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-en-stress": {
+    theme: "stress",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+    profile: "Stressdrager",
+  },
+  "magnesium-overgang-vrouwen": {
+    theme: "nutrition",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-tekort-herkennen": {
+    theme: "nutrition",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-uit-voeding": {
+    theme: "nutrition",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-voor-wie-wel-niet": {
+    theme: "nutrition",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
+  "magnesium-wanneer-innemen": {
+    theme: "sleep",
+    gapSignal: "magnesium_signal",
+    relatedSupplementId: "magnesium-glycinaat",
+  },
   "magnesium-en-slaap": {
     theme: "sleep",
     gapSignal: "magnesium_signal",
