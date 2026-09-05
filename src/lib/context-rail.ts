@@ -164,11 +164,11 @@ export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
 
 /**
  * Domeinen onder Leefstijlprofiel in de Voortgang-rail (desktop) en de
- * inklapbare balk (onder md). Slaap, stress en beweging blijven in Kompas
- * en op de hub; hun ladderlagen zijn hier nog leeg, dus staan ze niet in
- * deze boom. Terugzetten is deze lijst uitbreiden — niet `VERBORGEN_DOMEINEN`.
+ * inklapbare balk (onder md). Dezelfde set als de Kompas-rail: slaap, stress
+ * en beweging tonen hun cijfer, maar openen geen scherm zolang ze niet in
+ * `KLIKBARE_VOORTGANG_DOMEINEN` staan. Voeding is de enige deur.
  */
-export const VOORTGANG_RAIL_PILLAR_IDS: readonly PillarId[] = ["voeding"];
+export const VOORTGANG_RAIL_PILLAR_IDS: readonly PillarId[] = KOMPAS_RAIL_PILLAR_IDS;
 
 export function buildVoortgangRailDomains(
   scores: Record<string, number>,

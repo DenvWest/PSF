@@ -20,6 +20,7 @@ import { getLeefstijlLadder } from "@/lib/leefstijl-ladder";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
 import { getScoreBandShortLabel } from "@/lib/score-bands";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
+import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
 type DomainKompasScreenProps = {
@@ -280,20 +281,22 @@ export default function DomainKompasScreen({
 
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 @[560px]:flex-row">
-          <button
-            type="button"
-            onClick={() => {
-              trackEvent(`dashboard_${domain}_voortgang_click`, {
-                surface: copy.surface,
-                state: "klaar",
-              });
-              clarityTag(`dashboard_${domain}_brug`, "klaar");
-              onGoVoortgangDomein();
-            }}
-            className="flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-2xl border-none bg-[#5A8F6A] px-4 text-[14px] font-semibold text-[#0E1810]"
-          >
-            {copy.voortgangLabel} <Icons.ChevronRight s={15} />
-          </button>
+          {isKlikbaarVoortgangDomein(domain) ? (
+            <button
+              type="button"
+              onClick={() => {
+                trackEvent(`dashboard_${domain}_voortgang_click`, {
+                  surface: copy.surface,
+                  state: "klaar",
+                });
+                clarityTag(`dashboard_${domain}_brug`, "klaar");
+                onGoVoortgangDomein();
+              }}
+              className="flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-2xl border-none bg-[#5A8F6A] px-4 text-[14px] font-semibold text-[#0E1810]"
+            >
+              {copy.voortgangLabel} <Icons.ChevronRight s={15} />
+            </button>
+          ) : null}
           <button
             type="button"
             onClick={() => {

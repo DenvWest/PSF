@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   filterZichtbareDomeinen,
+  isKlikbaarVoortgangDomein,
   isZichtbaarDomein,
+  KLIKBARE_VOORTGANG_DOMEINEN,
   VERBORGEN_DOMEINEN,
   zichtbareDomeinen,
 } from "@/lib/zichtbare-domeinen";
@@ -78,5 +80,13 @@ describe("zichtbare-domeinen", () => {
 
   it("is omkeerbaar via één lijst", () => {
     expect(VERBORGEN_DOMEINEN).toEqual(["verbinding"]);
+  });
+
+  it("laat alleen voeding een leefstijlprofiel-scherm openen", () => {
+    expect(KLIKBARE_VOORTGANG_DOMEINEN).toEqual(["voeding"]);
+    expect(isKlikbaarVoortgangDomein("voeding")).toBe(true);
+    expect(isKlikbaarVoortgangDomein("slaap")).toBe(false);
+    expect(isKlikbaarVoortgangDomein("stress")).toBe(false);
+    expect(isKlikbaarVoortgangDomein("beweging")).toBe(false);
   });
 });

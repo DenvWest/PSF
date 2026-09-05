@@ -8,6 +8,7 @@ import VoortgangTerugLink from "@/components/dashboard/voortgang/VoortgangTerugL
 import LeefstijlprofielDomeinScherm from "@/components/dashboard/voortgang/LeefstijlprofielDomeinScherm";
 import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
 import { clarityTag } from "@/lib/clarity";
+import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
 import {
   type SyncDashboardVoortgangOptions,
   type VoedingLaagSlug,
@@ -74,6 +75,9 @@ function VoortgangHubInner({
   };
 
   const openLeefstijlprofielDomein = (domain: PillarId) => {
+    if (!isKlikbaarVoortgangDomein(domain)) {
+      return;
+    }
     trackEvent("dashboard_voortgang_hub_click", {
       destination: "leefstijlprofiel",
       domain,
@@ -84,7 +88,11 @@ function VoortgangHubInner({
 
   let content: ReactNode;
 
-  if ((screen === "leefstijlprofiel" || screen === "domein") && leefstijlprofielDomein) {
+  if (
+    (screen === "leefstijlprofiel" || screen === "domein") &&
+    leefstijlprofielDomein &&
+    isKlikbaarVoortgangDomein(leefstijlprofielDomein)
+  ) {
     // Het echte scherm, niet de prebuild (19 aug). Aanbeveling en Mijn keuze
     // zitten sinds deze slice ín de ladder, per laag, en die draait op
     // `account_favorites` — dat kan een same-origin iframe niet leveren.

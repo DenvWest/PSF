@@ -167,6 +167,7 @@ import {
   type SyncDashboardVoortgangOptions,
   type VoedingLaagSlug,
 } from "@/lib/dashboard-url";
+import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
 import type {
   AccountPriorityPrefData,
   DashboardData,
@@ -2784,7 +2785,11 @@ const SECTION_RENDERERS: Record<
         deel={props.keuzeDeel}
         onDeelChange={(domain, deel) => props.onGoKeuze(domain, deel)}
         onSwitchDomain={(domain, deel) => props.onGoKeuze(domain, deel)}
-        onOpenLeefstijlprofiel={props.onGoVoortgangDomein}
+        onOpenLeefstijlprofiel={
+          isKlikbaarVoortgangDomein(props.keuzeDomein)
+            ? props.onGoVoortgangDomein
+            : undefined
+        }
       />
     ),
   future: () => <FutureSection />,
@@ -2975,7 +2980,7 @@ function DashboardContent({
       return null;
     }
     const paramFav = searchParams.get("fav");
-    if (isPillarId(paramFav)) {
+    if (isPillarId(paramFav) && isKlikbaarVoortgangDomein(paramFav)) {
       return paramFav;
     }
     if (typeof window !== "undefined") {
@@ -3084,21 +3089,24 @@ function DashboardContent({
       }
       if (screen === "domein") {
         const nextDomein = options?.domein ?? options?.fav ?? null;
+        const klikbaar = nextDomein && isKlikbaarVoortgangDomein(nextDomein) ? nextDomein : null;
         const nextLaag =
-          nextDomein === "voeding" && isVoedingLaagSlug(options?.laag) ? options.laag : null;
+          klikbaar === "voeding" && isVoedingLaagSlug(options?.laag) ? options.laag : null;
         setVoortgangScreen("leefstijlprofiel");
-        setLeefstijlprofielDomein(nextDomein);
+        setLeefstijlprofielDomein(klikbaar);
         setVoedingLaag(nextLaag);
         syncDashboardVoortgangScreenParam("leefstijlprofiel", {
-          fav: nextDomein,
+          fav: klikbaar,
           laag: nextLaag,
         });
         return;
       }
       setVoortgangScreen(screen);
       if (screen === "leefstijlprofiel") {
-        const nextFav =
+        const requestedFav =
           options && "fav" in options ? (options.fav ?? null) : leefstijlprofielDomein;
+        const nextFav =
+          requestedFav && isKlikbaarVoortgangDomein(requestedFav) ? requestedFav : null;
         const nextLaag =
           nextFav === "voeding" && isVoedingLaagSlug(options?.laag) ? options.laag : null;
         setLeefstijlprofielDomein(nextFav);
@@ -3158,6 +3166,10 @@ function DashboardContent({
 
   const handleVoortgangDomeinOpen = useCallback(
     (domain: PillarId, surface: "rail" | "topnav") => {
+      if (!isKlikbaarVoortgangDomein(domain)) {
+        handleVoortgangScreenChange("leefstijlprofiel", { fav: null });
+        return;
+      }
       trackEvent("dashboard_voortgang_hub_click", {
         destination: "leefstijlprofiel",
         domain,
@@ -3385,10 +3397,11 @@ function DashboardContent({
       trackDashboardTabSelected("voortgang");
       clarityTag("dashboard_tab", "voortgang");
     }
+    const fav = isKlikbaarVoortgangDomein(domain) ? domain : null;
     setVoortgangScreen("leefstijlprofiel");
-    setLeefstijlprofielDomein(domain);
+    setLeefstijlprofielDomein(fav);
     setVoedingLaag(null);
-    syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: domain });
+    syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav });
     setTab("voortgang");
   };
 

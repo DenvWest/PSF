@@ -67,14 +67,22 @@ describe("VoortgangTopNav", () => {
     expect(onOpenItem).toHaveBeenCalledWith("hub");
   });
 
-  it("zet alleen voeding in het paneel — slaap, stress en beweging staan in de Kompas-rail", () => {
+  it("toont slaap, stress en beweging met cijfer, maar alleen voeding is aanklikbaar", () => {
     renderNav();
     openPanel();
     expect(screen.getByRole("menuitem", { name: /^Voeding40$/ })).toBeTruthy();
-    expect(screen.queryByRole("menuitem", { name: /^Slaap/ })).toBeNull();
-    expect(screen.queryByRole("menuitem", { name: /^Beweging/ })).toBeNull();
-    expect(screen.queryByRole("menuitem", { name: /^Stress/ })).toBeNull();
+    expect(screen.getByRole("menuitem", { name: /^Slaap25$/ })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: /^Beweging63$/ })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: /^Stress0$/ })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: /^Slaap25$/ }).getAttribute("aria-disabled")).toBe(
+      "true",
+    );
+    expect(screen.getByRole("menuitem", { name: /^Voeding40$/ }).getAttribute("aria-disabled")).toBeNull();
     expect(screen.queryByRole("menuitem", { name: /^Verbinding/ })).toBeNull();
+
+    fireEvent.click(screen.getByRole("menuitem", { name: /^Slaap25$/ }));
+    expect(onOpenDomein).not.toHaveBeenCalled();
+    expect(screen.getByRole("menu")).toBeTruthy();
   });
 
   it("draagt de drie voeding-knoppen onder Voeding", () => {

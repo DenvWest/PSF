@@ -167,9 +167,9 @@ describe("DomainKompasScreen — slaap draagt hetzelfde scherm als beweging", ()
     expect(screen.getAllByRole("button", { name: /Zet op Mijn Dag/ }).length).toBeGreaterThan(0);
   });
 
-  it("sluit af met de eigen CTA-copy van slaap, niet die van beweging", () => {
+  it("sluit af zonder slaapbeeld-deur; Mijn Dag blijft", () => {
     renderScreen("slaap", data());
-    expect(screen.queryByRole("button", { name: /Open je slaapbeeld/ })).not.toBeNull();
+    expect(screen.queryByRole("button", { name: /Open je slaapbeeld/ })).toBeNull();
     expect(screen.queryByRole("button", { name: "Mijn Dag › vanavond" })).not.toBeNull();
     expect(screen.queryByRole("button", { name: /beweegbeeld/ })).toBeNull();
   });
@@ -189,7 +189,7 @@ describe("DomainKompasScreen — slaap draagt hetzelfde scherm als beweging", ()
     renderScreen("beweging", data({ sleepCheckinSnapshot: null, domainCheckDaysAgo: {} }));
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Beweging");
     expect(screen.queryByText(/nog geen beweegcheck/)).not.toBeNull();
-    expect(screen.queryByRole("button", { name: /Open je beweegbeeld/ })).not.toBeNull();
+    expect(screen.queryByRole("button", { name: /Open je beweegbeeld/ })).toBeNull();
     expect(screen.queryByRole("button", { name: "Mijn Dag › vandaag" })).not.toBeNull();
   });
 

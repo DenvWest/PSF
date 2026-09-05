@@ -100,7 +100,7 @@ describe("parseVoortgangScreenFromUrl", () => {
     );
     expect(canonicalizeVoortgangScreenParam(domeinUrl)).toBe("leefstijlprofiel");
     expect(domeinUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
-    expect(domeinUrl.searchParams.get("fav")).toBe("beweging");
+    expect(domeinUrl.searchParams.has("fav")).toBe(false);
     expect(domeinUrl.searchParams.has("domein")).toBe(false);
 
     const statistiekenUrl = new URL(
@@ -133,13 +133,14 @@ describe("parseVoortgangScreenFromUrl", () => {
     expect(favorietenUrl.searchParams.has("fav")).toBe(false);
     expect(favorietenUrl.searchParams.has("schap")).toBe(false);
 
-    // Legacy: screen=leefstijlprofiel&fav=beweging blijft leefstijlprofiel (lifestyle).
+    // Legacy: screen=leefstijlprofiel&fav=beweging landt op de hub — beweging
+    // opent tijdelijk geen leefstijlprofiel-scherm.
     const leefstijlprofielUrl = new URL(
       "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging",
     );
-    canonicalizeVoortgangScreenParam(leefstijlprofielUrl);
+    expect(canonicalizeVoortgangScreenParam(leefstijlprofielUrl)).toBe("leefstijlprofiel");
     expect(leefstijlprofielUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
-    expect(leefstijlprofielUrl.searchParams.get("fav")).toBe("beweging");
+    expect(leefstijlprofielUrl.searchParams.has("fav")).toBe(false);
   });
 });
 
@@ -155,9 +156,12 @@ describe("buildDashboardVoortgangHref", () => {
     );
   });
 
-  it("includes fav for leefstijlprofiel deep links", () => {
+  it("includes fav only for klikbare leefstijlprofiel-domeinen", () => {
+    expect(buildDashboardVoortgangHref("leefstijlprofiel", null, null, "voeding")).toBe(
+      "/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding",
+    );
     expect(buildDashboardVoortgangHref("leefstijlprofiel", null, null, "beweging")).toBe(
-      "/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging",
+      "/dashboard?tab=voortgang&screen=leefstijlprofiel",
     );
   });
 
@@ -170,7 +174,7 @@ describe("buildDashboardVoortgangHref", () => {
     ).toBe("/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=aanvullen");
     expect(
       buildDashboardVoortgangHref("leefstijlprofiel", null, null, "beweging", "meten-timing"),
-    ).toBe("/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging");
+    ).toBe("/dashboard?tab=voortgang&screen=leefstijlprofiel");
     expect(buildDashboardVoortgangHref("leefstijlprofiel", null, null, "voeding")).toBe(
       "/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding",
     );
@@ -301,12 +305,17 @@ describe("parseKeuzeDeelFromUrl", () => {
 });
 
 describe("parseLeefstijlprofielDomeinFromUrl", () => {
-  it("parses fav on leefstijlprofiel screen", () => {
+  it("parses fav on leefstijlprofiel screen alleen voor klikbare domeinen", () => {
+    expect(
+      parseLeefstijlprofielDomeinFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding",
+      ),
+    ).toBe("voeding");
     expect(
       parseLeefstijlprofielDomeinFromUrl(
         "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging",
       ),
-    ).toBe("beweging");
+    ).toBeNull();
   });
 
   it("returns null for invalid fav", () => {
@@ -317,12 +326,17 @@ describe("parseLeefstijlprofielDomeinFromUrl", () => {
     ).toBeNull();
   });
 
-  it("parses fav from legacy domein param", () => {
+  it("parses fav from legacy domein param alleen als het domein klikbaar is", () => {
+    expect(
+      parseLeefstijlprofielDomeinFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=domein&domein=voeding",
+      ),
+    ).toBe("voeding");
     expect(
       parseLeefstijlprofielDomeinFromUrl(
         "http://localhost/dashboard?tab=voortgang&screen=domein&domein=beweging",
       ),
-    ).toBe("beweging");
+    ).toBeNull();
   });
 });
 
@@ -454,7 +468,8 @@ describe("syncDashboardVoortgangScreenParam", () => {
 
     syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: "slaap" });
     nextUrl = pushState.mock.calls[0]?.[2] as string;
-    expect(nextUrl).toContain("fav=slaap");
+    expect(nextUrl).toContain("screen=leefstijlprofiel");
+    expect(nextUrl).not.toContain("fav=");
     expect(nextUrl).not.toContain("laag=");
 
     Object.defineProperty(window, "location", {

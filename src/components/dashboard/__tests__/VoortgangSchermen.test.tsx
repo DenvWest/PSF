@@ -77,9 +77,15 @@ describe("Voortgang-schermen na de ruil van 27 augustus", () => {
     expect(screen.getByTestId("hub")).toBeTruthy();
   });
 
-  it("opent het domeinscherm van het leefstijlprofiel met zijn domein", () => {
+  it("opent het domeinscherm van het leefstijlprofiel alleen voor voeding", () => {
+    renderHub("leefstijlprofiel", { leefstijlprofielDomein: "voeding" });
+    expect(screen.getByTestId("domein").textContent).toBe("domein:voeding");
+  });
+
+  it("houdt slaap op de keuzehub — cijfer wel, scherm niet", () => {
     renderHub("leefstijlprofiel", { leefstijlprofielDomein: "slaap" });
-    expect(screen.getByTestId("domein").textContent).toBe("domein:slaap");
+    expect(screen.getByTestId("keuzehub")).toBeTruthy();
+    expect(screen.queryByTestId("domein")).toBeNull();
   });
 
   it("draagt zelf geen navigatie — die zit in de rail en de topnav", () => {

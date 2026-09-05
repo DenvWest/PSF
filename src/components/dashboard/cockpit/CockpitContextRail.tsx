@@ -15,6 +15,7 @@ import {
   type VoortgangRailItemId,
 } from "@/lib/context-rail";
 import type { VoedingLaagSlug } from "@/lib/dashboard-url";
+import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
 import type { PillarId } from "@/types/dashboard";
 
 type IconComp = ComponentType<{ s?: number; sw?: number; style?: CSSProperties }>;
@@ -209,12 +210,14 @@ export default function CockpitContextRail({
 
   const renderVoortgangDomain = (domain: ContextRailDomainItem) => {
     const Icon = iconOf(domain.icon);
+    const clickable = isKlikbaarVoortgangDomein(domain.id);
     const domainActive =
+      clickable &&
       voortgangActiveItem === "leefstijlprofiel" &&
       voortgangLeefstijlprofielDomein === domain.id &&
       (domain.id !== "voeding" || voortgangVoedingLaag == null);
 
-    const domainButton = (
+    const domainRow = clickable ? (
       <button
         type="button"
         aria-current={domainActive ? "page" : undefined}
@@ -233,19 +236,28 @@ export default function CockpitContextRail({
           {domain.score}
         </span>
       </button>
+    ) : (
+      <span
+        aria-disabled
+        className={`${RAIL_SUB_ITEM} cursor-default border-transparent text-[#9FB0A6]`}
+      >
+        <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center">
+          {Icon ? <Icon s={14} style={{ color: domain.color }} /> : null}
+        </span>
+        <span className="min-w-0 flex-1 truncate">{domain.label}</span>
+        <span className="shrink-0 text-[11px] font-semibold tabular-nums text-[#7E8C82]">
+          {domain.score}
+        </span>
+      </span>
     );
 
     if (domain.id !== "voeding") {
-      return (
-        <div key={domain.id}>
-          {domainButton}
-        </div>
-      );
+      return <div key={domain.id}>{domainRow}</div>;
     }
 
     return (
       <div key={domain.id} className="flex flex-col gap-0.5">
-        {domainButton}
+        {domainRow}
         <div className="ml-2 flex flex-col gap-0.5 border-l border-white/10 pl-2">
           {VOEDING_RAIL_LAYERS.map((layer) => {
             const layerActive =

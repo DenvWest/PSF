@@ -26,7 +26,7 @@ type KeuzeSchermProps = {
   deel: SchapTabId | null;
   onDeelChange: (domain: PillarId, deel: SchapTabId) => void;
   onSwitchDomain: (domain: PillarId, deel: SchapTabId) => void;
-  onOpenLeefstijlprofiel: (domain: PillarId) => void;
+  onOpenLeefstijlprofiel?: (domain: PillarId) => void;
 };
 
 export default function KeuzeScherm({

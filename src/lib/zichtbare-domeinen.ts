@@ -69,3 +69,20 @@ export function filterZichtbareDomeinen<T>(
 export function zichtbareDomeinen(domains: readonly PillarId[]): PillarId[] {
   return domains.filter(isZichtbaarDomein);
 }
+
+/**
+ * Welke leefstijlprofiel-domeinen nog een scherm openen.
+ *
+ * Slaap, stress en beweging blijven in de Voortgang-rail en op de hub staan —
+ * hun cijfer mag je lezen — maar hun ladderlagen zijn nog leeg, dus een klik
+ * landt op een scherm dat niets toevoegt. Voeding heeft wél lagen, en is
+ * daarom de enige die doorklikt.
+ *
+ * Terugzetten is deze lijst uitbreiden. Niet `VERBORGEN_DOMEINEN`: dat haalt
+ * een domein helemaal uit beeld, en hier moet het cijfer juist blijven.
+ */
+export const KLIKBARE_VOORTGANG_DOMEINEN: readonly PillarId[] = ["voeding"];
+
+export function isKlikbaarVoortgangDomein(domain: PillarId): boolean {
+  return KLIKBARE_VOORTGANG_DOMEINEN.includes(domain);
+}

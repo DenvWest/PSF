@@ -1,5 +1,6 @@
 import { MOVEMENT_FOCUS_ORDER, type MovementFocusKey } from "@/data/movement-checkin";
 import { hasSchap } from "@/lib/schap-availability";
+import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
 import type { DashboardTabId, PillarId, SchapTabId, VoortgangScreen } from "@/types/dashboard";
 
 const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
@@ -50,6 +51,9 @@ export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | nu
 
   const legacy = getLegacyVoortgangScreenAlias(rawScreen);
   if (!legacy) {
+    if (rawScreen === "leefstijlprofiel" && stripNietKlikbaarFav(url)) {
+      return "leefstijlprofiel";
+    }
     return null;
   }
   const canonical = LEGACY_VOORTGANG_SCREEN_ALIASES[legacy];
@@ -74,6 +78,7 @@ export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | nu
     if (url.searchParams.get("fav") !== "voeding") {
       url.searchParams.delete("laag");
     }
+    stripNietKlikbaarFav(url);
   }
   return canonical;
 }
@@ -135,6 +140,28 @@ export function isPillarId(value: unknown): value is PillarId {
   return typeof value === "string" && KOMPAS_DOMAIN_IDS.has(value as PillarId);
 }
 
+/** Alleen voeding opent nu een leefstijlprofiel-scherm; andere favs vallen terug op de hub. */
+function klikbaarLeefstijlprofielFav(fav: string | null): PillarId | null {
+  if (!fav || !KOMPAS_DOMAIN_IDS.has(fav as PillarId)) {
+    return null;
+  }
+  const domain = fav as PillarId;
+  return isKlikbaarVoortgangDomein(domain) ? domain : null;
+}
+
+function stripNietKlikbaarFav(url: URL): boolean {
+  const fav = url.searchParams.get("fav");
+  if (!fav || !KOMPAS_DOMAIN_IDS.has(fav as PillarId)) {
+    return false;
+  }
+  if (isKlikbaarVoortgangDomein(fav as PillarId)) {
+    return false;
+  }
+  url.searchParams.delete("fav");
+  url.searchParams.delete("laag");
+  return true;
+}
+
 export function parseKompasFromUrl(url: string | URL): PillarId | null {
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
@@ -161,15 +188,13 @@ export function parseLeefstijlprofielDomeinFromUrl(url: string | URL): PillarId 
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
   const fav = parsed.searchParams.get("fav");
-  if (fav && KOMPAS_DOMAIN_IDS.has(fav as PillarId)) {
-    return fav as PillarId;
+  const fromFav = klikbaarLeefstijlprofielFav(fav);
+  if (fromFav) {
+    return fromFav;
   }
   const screen = parsed.searchParams.get("screen");
   if (screen === "domein") {
-    const domein = parsed.searchParams.get("domein");
-    if (domein && KOMPAS_DOMAIN_IDS.has(domein as PillarId)) {
-      return domein as PillarId;
-    }
+    return klikbaarLeefstijlprofielFav(parsed.searchParams.get("domein"));
   }
   return null;
 }
@@ -502,6 +527,10 @@ export function buildDashboardVoortgangHref(
     resolvedScreen = "leefstijlprofiel";
   }
 
+  if (resolvedScreen === "leefstijlprofiel") {
+    resolvedFav = klikbaarLeefstijlprofielFav(resolvedFav);
+  }
+
   if (resolvedScreen) {
     params.set("screen", resolvedScreen);
   }
@@ -548,10 +577,16 @@ export function syncDashboardVoortgangScreenParam(
     url.searchParams.delete("deel");
     url.searchParams.delete("schap");
     if (screen === "leefstijlprofiel" && options?.fav) {
-      url.searchParams.set("fav", options.fav);
-      if (options.fav === "voeding" && isVoedingLaagSlug(options.laag)) {
-        url.searchParams.set("laag", options.laag);
+      const fav = klikbaarLeefstijlprofielFav(options.fav);
+      if (fav) {
+        url.searchParams.set("fav", fav);
+        if (fav === "voeding" && isVoedingLaagSlug(options.laag)) {
+          url.searchParams.set("laag", options.laag);
+        } else {
+          url.searchParams.delete("laag");
+        }
       } else {
+        url.searchParams.delete("fav");
         url.searchParams.delete("laag");
       }
     } else {

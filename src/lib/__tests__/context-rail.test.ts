@@ -130,16 +130,17 @@ describe("VOORTGANG_RAIL_ITEMS", () => {
 });
 
 describe("buildVoortgangRailDomains", () => {
-  it("draagt alleen voeding — slaap, stress en beweging blijven in de Kompas-rail", () => {
+  it("toont de zichtbare Kompas-domeinen — slaap, stress en beweging met cijfer, voeding als deur", () => {
     const voortgang = buildVoortgangRailDomains({
       slaap: 25,
       beweging: 63,
       voeding: 40,
       stress: 10,
     });
-    expect(VOORTGANG_RAIL_PILLAR_IDS).toEqual(["voeding"]);
-    expect(voortgang.map((domain) => domain.id)).toEqual(["voeding"]);
-    expect(voortgang[0]?.score).toBe(40);
+    expect(VOORTGANG_RAIL_PILLAR_IDS).toEqual(KOMPAS_RAIL_PILLAR_IDS);
+    expect(voortgang.map((domain) => domain.id)).toEqual(["slaap", "beweging", "voeding", "stress"]);
+    expect(voortgang.find((domain) => domain.id === "voeding")?.score).toBe(40);
+    expect(voortgang.find((domain) => domain.id === "slaap")?.score).toBe(25);
 
     const kompas = buildKompasRailDomains({ slaap: 25, beweging: 63, voeding: 40, stress: 10 });
     expect(kompas.map((domain) => domain.id)).toEqual(KOMPAS_RAIL_PILLAR_IDS);

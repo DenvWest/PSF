@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { buildVoortgangHorizonRegel } from "@/lib/voortgang-horizon-copy";
+import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 import VoortgangBewijsband from "@/components/dashboard/voortgang/VoortgangBewijsband";
 
@@ -152,13 +153,15 @@ export default function VoortgangHero({
                   >
                     Wat staat er voor vandaag
                   </button>
-                  <button
-                    type="button"
-                    onClick={handleOpenDomain}
-                    className="inline-flex min-h-11 cursor-pointer items-center border-none bg-transparent px-1 text-[14px] text-[#9FB0A6] underline decoration-[rgba(159,176,166,0.45)] underline-offset-[3px]"
-                  >
-                    Bekijk je {model.priority.label.toLowerCase()}
-                  </button>
+                  {isKlikbaarVoortgangDomein(model.priority.id) ? (
+                    <button
+                      type="button"
+                      onClick={handleOpenDomain}
+                      className="inline-flex min-h-11 cursor-pointer items-center border-none bg-transparent px-1 text-[14px] text-[#9FB0A6] underline decoration-[rgba(159,176,166,0.45)] underline-offset-[3px]"
+                    >
+                      Bekijk je {model.priority.label.toLowerCase()}
+                    </button>
+                  ) : null}
                 </>
               )}
             </div>

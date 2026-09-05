@@ -10,6 +10,7 @@ import {
   type VoortgangRailItemId,
 } from "@/lib/context-rail";
 import type { VoedingLaagSlug } from "@/lib/dashboard-url";
+import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
 import type { PillarId } from "@/types/dashboard";
 
 /**
@@ -91,6 +92,7 @@ export default function VoortgangTopNav({
       onSelect: () => onOpenItem("leefstijlprofiel"),
     },
     ...domains.flatMap((domain) => {
+      const clickable = isKlikbaarVoortgangDomein(domain.id);
       const domainItem: CockpitTopNavItem = {
         id: `domein-${domain.id}`,
         label: domain.label,
@@ -98,10 +100,12 @@ export default function VoortgangTopNav({
         trailing: String(domain.score),
         indent: true,
         active:
+          clickable &&
           activeItem === "leefstijlprofiel" &&
           leefstijlprofielDomein === domain.id &&
           (domain.id !== "voeding" || voedingLaag == null),
-        onSelect: () => onOpenDomein(domain.id),
+        disabled: !clickable,
+        onSelect: clickable ? () => onOpenDomein(domain.id) : () => {},
       };
       if (domain.id !== "voeding") {
         return [domainItem];

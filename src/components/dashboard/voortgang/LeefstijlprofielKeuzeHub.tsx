@@ -12,6 +12,7 @@ import { trackEvent } from "@/lib/ga4";
 import { CHECK_NAME } from "@/lib/kompas-domain-check";
 import { resolveHubKengetalRows } from "@/lib/voortgang-hub-kengetallen";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
+import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
 import type { DashboardData, Pillar, PillarId } from "@/types/dashboard";
 
 type LeefstijlprofielKeuzeHubProps = {
@@ -71,10 +72,52 @@ function DomainKengetalBlok({
   pillar: Pillar;
   rows: KengetalRow[];
   meetregel: string;
-  onClick: () => void;
+  onClick?: () => void;
 }) {
   const [kop, ...rest] = rows;
   const vervolg = rest.slice(0, 2);
+  const clickable = onClick != null;
+
+  const body = (
+    <CockpitTile>
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex min-w-0 items-center gap-2">
+          <DomainDot color={pillar.color} />
+          <span className="font-serif text-[17px] text-[var(--text)]">{pillar.label}</span>
+        </span>
+        {clickable ? (
+          <Icons.ChevronRight s={18} style={{ color: "var(--text-subtle)", flexShrink: 0 }} />
+        ) : null}
+      </div>
+      <div className="mt-3">
+        <p className="m-0 text-[12px] text-[var(--text-muted)]">{kop.label}</p>
+        <p className="m-0 mt-0.5 text-[15px] font-medium text-[var(--text)]">
+          {kop.answerLabel}
+        </p>
+        <p className="m-0 mt-1 text-[11.5px] text-[var(--text-subtle)]">
+          {kop.benchmarkLabel ?? "Geen richtlijn — je eigen antwoord is de meetlat."}
+        </p>
+      </div>
+      {vervolg.length > 0 ? (
+        <ul className="m-0 mt-2.5 list-none space-y-1 p-0">
+          {vervolg.map((row) => (
+            <li
+              key={row.label}
+              className="flex items-baseline justify-between gap-2 text-[12.5px]"
+            >
+              <span className="text-[var(--text-muted)]">{row.label}</span>
+              <span className="text-[var(--text)]">{row.answerLabel}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      <p className="m-0 mt-2.5 text-[11px] text-[var(--text-subtle)]">{meetregel}</p>
+    </CockpitTile>
+  );
+
+  if (!clickable) {
+    return body;
+  }
 
   return (
     <button
@@ -82,38 +125,7 @@ function DomainKengetalBlok({
       onClick={onClick}
       className="w-full cursor-pointer border-none bg-transparent p-0 text-left"
     >
-      <CockpitTile>
-        <div className="flex items-center justify-between gap-3">
-          <span className="flex min-w-0 items-center gap-2">
-            <DomainDot color={pillar.color} />
-            <span className="font-serif text-[17px] text-[var(--text)]">{pillar.label}</span>
-          </span>
-          <Icons.ChevronRight s={18} style={{ color: "var(--text-subtle)", flexShrink: 0 }} />
-        </div>
-        <div className="mt-3">
-          <p className="m-0 text-[12px] text-[var(--text-muted)]">{kop.label}</p>
-          <p className="m-0 mt-0.5 text-[15px] font-medium text-[var(--text)]">
-            {kop.answerLabel}
-          </p>
-          <p className="m-0 mt-1 text-[11.5px] text-[var(--text-subtle)]">
-            {kop.benchmarkLabel ?? "Geen richtlijn — je eigen antwoord is de meetlat."}
-          </p>
-        </div>
-        {vervolg.length > 0 ? (
-          <ul className="m-0 mt-2.5 list-none space-y-1 p-0">
-            {vervolg.map((row) => (
-              <li
-                key={row.label}
-                className="flex items-baseline justify-between gap-2 text-[12.5px]"
-              >
-                <span className="text-[var(--text-muted)]">{row.label}</span>
-                <span className="text-[var(--text)]">{row.answerLabel}</span>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-        <p className="m-0 mt-2.5 text-[11px] text-[var(--text-subtle)]">{meetregel}</p>
-      </CockpitTile>
+      {body}
     </button>
   );
 }
@@ -166,24 +178,36 @@ function CheckedPlainBlok({
 }: {
   pillar: Pillar;
   meetregel: string;
-  onClick: () => void;
+  onClick?: () => void;
 }) {
+  const clickable = onClick != null;
+
+  const body = (
+    <CockpitTile>
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex min-w-0 items-center gap-2">
+          <DomainDot color={pillar.color} />
+          <span className="font-serif text-[17px] text-[var(--text)]">{pillar.label}</span>
+        </span>
+        {clickable ? (
+          <Icons.ChevronRight s={18} style={{ color: "var(--text-subtle)", flexShrink: 0 }} />
+        ) : null}
+      </div>
+      <p className="m-0 mt-1.5 text-[12px] text-[var(--text-subtle)]">{meetregel}</p>
+    </CockpitTile>
+  );
+
+  if (!clickable) {
+    return body;
+  }
+
   return (
     <button
       type="button"
       onClick={onClick}
       className="w-full cursor-pointer border-none bg-transparent p-0 text-left"
     >
-      <CockpitTile>
-        <div className="flex items-center justify-between gap-3">
-          <span className="flex min-w-0 items-center gap-2">
-            <DomainDot color={pillar.color} />
-            <span className="font-serif text-[17px] text-[var(--text)]">{pillar.label}</span>
-          </span>
-          <Icons.ChevronRight s={18} style={{ color: "var(--text-subtle)", flexShrink: 0 }} />
-        </div>
-        <p className="m-0 mt-1.5 text-[12px] text-[var(--text-subtle)]">{meetregel}</p>
-      </CockpitTile>
+      {body}
     </button>
   );
 }
@@ -223,16 +247,25 @@ function VolgtUitDeRestSectie({
                   {driverSentence(pillar, drivers)}
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {drivers.map((driverId) => (
-                    <button
-                      key={driverId}
-                      type="button"
-                      onClick={() => onOpenDomain(driverId)}
-                      className="cursor-pointer rounded-full border border-[var(--panel-border)] bg-transparent px-2.5 py-1 text-[11px] text-[var(--text)]"
-                    >
-                      {PILLAR[driverId].label}
-                    </button>
-                  ))}
+                  {drivers.map((driverId) =>
+                    isKlikbaarVoortgangDomein(driverId) ? (
+                      <button
+                        key={driverId}
+                        type="button"
+                        onClick={() => onOpenDomain(driverId)}
+                        className="cursor-pointer rounded-full border border-[var(--panel-border)] bg-transparent px-2.5 py-1 text-[11px] text-[var(--text)]"
+                      >
+                        {PILLAR[driverId].label}
+                      </button>
+                    ) : (
+                      <span
+                        key={driverId}
+                        className="rounded-full border border-[var(--panel-border)] px-2.5 py-1 text-[11px] text-[var(--text)]"
+                      >
+                        {PILLAR[driverId].label}
+                      </span>
+                    ),
+                  )}
                 </div>
               </CockpitTile>
             </li>
@@ -270,7 +303,9 @@ export default function LeefstijlprofielKeuzeHub({
               const pillar = PILLAR[domain];
               const savedCount = items.filter((item) => item.domain === domain).length;
               const daysAgo = domainCheckDaysAgo?.[domain];
-              const onClick = () => onOpenDomain(domain);
+              const onClick = isKlikbaarVoortgangDomein(domain)
+                ? () => onOpenDomain(domain)
+                : undefined;
 
               if (daysAgo == null) {
                 return (
