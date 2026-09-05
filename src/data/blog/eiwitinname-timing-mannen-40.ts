@@ -58,7 +58,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: ontdek jouw voedingsprioriteit",
       tekst:
-        "In de [Leefstijlcheck](/intake) zie je of voeding je eerste hefboom is — inclusief vragen over hoeveel eiwit je per dag eet. Herken je vooral energiedips en weinig veerkracht? Bekijk [Lage batterij](/profiel/lage-batterij) of start bij de pillar [voeding na 40](/voeding-na-40).",
+        "In de [Leefstijlcheck](/intake) zie je of voeding je eerste hefboom is — inclusief vragen over hoeveel eiwit je per dag eet. Herken je vooral energiedips en weinig veerkracht? Bekijk [Lage energie](/profiel/lage-energie) of start bij de pillar [voeding na 40](/voeding-na-40).",
     },
   ],
   samenvatting:

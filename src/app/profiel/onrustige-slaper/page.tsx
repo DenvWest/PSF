@@ -495,10 +495,10 @@ export default function OnrustigeSlaperPage() {
                     Altijd moe, ook als je wél slaapt? Misschien is energie je echte probleem.
                   </p>
                   <Link
-                    href="/profiel/lage-batterij"
+                    href="/profiel/lage-energie"
                     className="text-emerald-600 hover:underline font-medium"
                   >
-                    Ben jij een Lage Batterij? →
+                    Ben jij een Lage Energie? →
                   </Link>
                 </div>
               </div>

@@ -159,7 +159,7 @@ describe("POST /api/affiliate/click — met geldig nurture-token", () => {
     const token = buildNurtureAttributionToken({
       sessionId: "session-uuid-pii-check",
       sequenceDay: 7,
-      profileLabel: "Lage Batterij",
+      profileLabel: "Lage Energie",
       variant: null,
     });
 

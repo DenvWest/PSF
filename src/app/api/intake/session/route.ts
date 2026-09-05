@@ -338,7 +338,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { ageRange, symptoms, answers } = validated.value;
+  const { ageRange, gender, symptoms, answers } = validated.value;
   const { scores, urgency, profile } = computeIntakePersistenceFields(answers);
   const primaryTheme = getPrimaryTheme(scores, answers);
   const consent = consentValidated.value;
@@ -421,6 +421,7 @@ export async function POST(request: NextRequest) {
     urgency_level: urgency,
     profile_label: profile,
     age_range: ageRange,
+    gender,
     marketing_email: consent.marketingEmail
       ? consent.marketingEmailAddress
       : null,
@@ -499,6 +500,7 @@ export async function POST(request: NextRequest) {
       primaryTheme,
       symptomProfile: symptoms,
       ageRange,
+      gender,
     });
 
     if (!snapshotResult.ok) {

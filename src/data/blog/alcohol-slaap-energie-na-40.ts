@@ -15,7 +15,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Ken je dit?",
       tekst:
-        "Vrijdagavond twee glazen wijn. Je valt redelijk snel in slaap. Zaterdagochtend: wakker om 5:30, moe maar niet uitgerust. Zaterdagmiddag: leeg, prikkelbaar, trek in suiker of nog een koffie. Je schrijft het af aan leeftijd of een korte nacht — terwijl alcohol vaak de stille factor is. In de Leefstijlcheck (NRG_DEP) vragen we expliciet naar cafeïne, suiker én alcohol als 'energiebron'. Herken je dat patroon? Dan past het vaak bij profiel [Lage batterij](/profiel/lage-batterij) of [Onrustige slaper](/profiel/onrustige-slaper) — afhankelijk van wat het hardst terugkomt.",
+        "Vrijdagavond twee glazen wijn. Je valt redelijk snel in slaap. Zaterdagochtend: wakker om 5:30, moe maar niet uitgerust. Zaterdagmiddag: leeg, prikkelbaar, trek in suiker of nog een koffie. Je schrijft het af aan leeftijd of een korte nacht — terwijl alcohol vaak de stille factor is. In de Leefstijlcheck (NRG_DEP) vragen we expliciet naar cafeïne, suiker én alcohol als 'energiebron'. Herken je dat patroon? Dan past het vaak bij profiel [Lage energie](/profiel/lage-energie) of [Onrustige slaper](/profiel/onrustige-slaper) — afhankelijk van wat het hardst terugkomt.",
     },
     {
       type: "tekst",

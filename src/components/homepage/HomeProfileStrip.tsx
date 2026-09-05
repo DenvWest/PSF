@@ -17,8 +17,8 @@ const PROFILES = [
     hint: "Altijd aan, moeilijk ontspannen",
   },
   {
-    slug: "lage-batterij",
-    label: "Lage Batterij",
+    slug: "lage-energie",
+    label: "Lage Energie",
     hint: "Moe overdag, weinig veerkracht",
   },
   {

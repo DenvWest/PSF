@@ -60,7 +60,7 @@ const LIFESTYLE_BY_PROFILE: Record<
     text: "Bekijk je slaap-overzicht",
     url: "/intake",
   },
-  "Lage Batterij": {
+  "Lage Energie": {
     text: "Bekijk je leefstijl-overzicht",
     url: "/intake",
   },
@@ -82,7 +82,7 @@ const LIFESTYLE_BY_PROFILE: Record<
 // forbidden (melatonine) uit.
 const NURTURE_CLAIM_PREFERENCE: Record<NurtureProfileKey, IngredientClaimKey[]> = {
   "Onrustige Slaper": ["magnesium", "omega3"],
-  "Lage Batterij": ["omega3", "magnesium"],
+  "Lage Energie": ["omega3", "magnesium"],
   Overtrainer: ["magnesium", "omega3"],
   "In Balans": ["omega3", "magnesium"],
   Stressdrager: ["magnesium", "omega3"],

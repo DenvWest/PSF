@@ -20,7 +20,7 @@ const gateFull: NurturePlanGate = {
 
 const PROFILES: NurtureProfileKey[] = [
   "Onrustige Slaper",
-  "Lage Batterij",
+  "Lage Energie",
   "Stressdrager",
   "In Balans",
   "Overtrainer",
@@ -68,9 +68,9 @@ describe("nurture selection snapshot", () => {
         "In Balans|14": "supplement:/beste/omega-3-supplement",
         "In Balans|21": "supplement:/beste/omega-3-supplement",
         "In Balans|7": "pillar:/slaap-verbeteren-na-40",
-        "Lage Batterij|14": "supplement:/beste/omega-3-supplement",
-        "Lage Batterij|21": "supplement:/beste/omega-3-supplement",
-        "Lage Batterij|7": "pillar:/slaap-verbeteren-na-40",
+        "Lage Energie|14": "supplement:/beste/omega-3-supplement",
+        "Lage Energie|21": "supplement:/beste/omega-3-supplement",
+        "Lage Energie|7": "pillar:/slaap-verbeteren-na-40",
         "Onrustige Slaper|14": "supplement:/beste/magnesium",
         "Onrustige Slaper|21": "supplement:/beste/magnesium",
         "Onrustige Slaper|7": "pillar:/slaap-verbeteren-na-40",

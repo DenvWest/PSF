@@ -1,5 +1,5 @@
 import { useEffect, useRef, type MutableRefObject } from "react";
-import type { IntakeAgeRange, SymptomId } from "@/data/intake-questions";
+import type { IntakeAgeRange, IntakeGender, SymptomId } from "@/data/intake-questions";
 import type { IntakeConsentPayload } from "@/lib/intake-consent";
 import { calcDomainScores, type DomainScores } from "@/lib/intake-engine";
 import { saveIntakeSession } from "@/lib/intake-storage";
@@ -23,6 +23,7 @@ type UseIntakeSubmitParams = {
   answers: Record<string, number>;
   symptoms: SymptomId[];
   ageRange: IntakeAgeRange | null;
+  gender: IntakeGender | null;
   turnstileToken: string;
   honeypotWebsite: string;
   consent: IntakeConsentPayload | null;
@@ -41,6 +42,7 @@ export function useIntakeSubmit({
   answers,
   symptoms,
   ageRange,
+  gender,
   turnstileToken,
   honeypotWebsite,
   consent,
@@ -61,8 +63,8 @@ export function useIntakeSubmit({
     const ts = Date.now();
     const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
-    // Preview: geen leeftijd of geen turnstile-config → tonen zonder persistentie.
-    if (ageRange === null || !turnstileSiteKey) {
+    // Preview: geen leeftijd/geslacht of geen turnstile-config → tonen zonder persistentie.
+    if (ageRange === null || gender === null || !turnstileSiteKey) {
       const timer = window.setTimeout(() => {
         onCompleteRef.current({
           scores: computed,
@@ -100,6 +102,7 @@ export function useIntakeSubmit({
         symptoms,
         answers,
         ageRange,
+        gender,
         turnstileToken,
         website: honeypotWebsite,
         consent,
@@ -136,6 +139,7 @@ export function useIntakeSubmit({
     answers,
     symptoms,
     ageRange,
+    gender,
     turnstileToken,
     honeypotWebsite,
     consent,

@@ -223,7 +223,7 @@ export const PILLAR_DRAWER_FALLBACKS: Record<PillarId, PillarDrawerFallback> = {
       "Drink water vóór koffie in de ochtend.",
     ],
     guideHref: "/gids/voeding",
-    profileSlugs: ["lage-batterij"],
+    profileSlugs: ["lage-energie"],
   },
   movement: {
     quickWins: [
@@ -232,7 +232,7 @@ export const PILLAR_DRAWER_FALLBACKS: Record<PillarId, PillarDrawerFallback> = {
       "Kies één vaste trainingsdag en zet die in je agenda.",
     ],
     guideHref: "/gids/beweging",
-    profileSlugs: ["lage-batterij", "overtrainer"],
+    profileSlugs: ["lage-energie", "overtrainer"],
   },
   connection: {
     quickWins: [

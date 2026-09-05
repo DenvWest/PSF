@@ -4,17 +4,27 @@ import { useRef, useState } from "react";
 import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import {
   INTAKE_AGE_RANGE_OPTIONS,
+  INTAKE_GENDER_OPTIONS,
   SYMPTOMS,
   type IntakeAgeRange,
+  type IntakeGender,
   type Symptom,
   type SymptomId,
 } from "@/data/intake-questions";
+
+const GENDER_LABELS: Record<IntakeGender, string> = {
+  vrouw: "Vrouw",
+  man: "Man",
+  anders: "Anders",
+};
 
 type IntakeSymptomsProps = {
   firstName: string;
   onFirstNameChange: (value: string) => void;
   ageRange: IntakeAgeRange | null;
   onAgeRangeChange: (value: IntakeAgeRange) => void;
+  gender: IntakeGender | null;
+  onGenderChange: (value: IntakeGender) => void;
   symptoms: SymptomId[];
   onToggle: (id: SymptomId) => void;
   onNext: () => void;
@@ -28,6 +38,8 @@ export default function IntakeSymptoms({
   onFirstNameChange,
   ageRange,
   onAgeRangeChange,
+  gender,
+  onGenderChange,
   symptoms,
   onToggle,
   onNext,
@@ -39,7 +51,7 @@ export default function IntakeSymptoms({
   const [pointerLocked, setPointerLocked] = useState(false);
 
   const hasSelection = symptoms.length > 0;
-  const canProceed = ageRange !== null && hasSelection;
+  const canProceed = ageRange !== null && gender !== null && hasSelection;
 
   const handleToggle = (id: SymptomId) => {
     if (isProcessing.current) {
@@ -58,7 +70,9 @@ export default function IntakeSymptoms({
     ? "Verder naar leefstijlcheck →"
     : ageRange === null
       ? "Kies je leeftijd"
-      : "Selecteer minimaal 1 symptoom";
+      : gender === null
+        ? "Kies je geslacht"
+        : "Selecteer minimaal 1 symptoom";
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
@@ -163,6 +177,44 @@ export default function IntakeSymptoms({
                 }}
               >
                 {opt}
+              </button>
+            );
+          })}
+        </div>
+
+        <h2
+          className="mb-2 font-normal"
+          style={{
+            fontFamily: "var(--font-intake-heading), Georgia, serif",
+            fontSize: 26,
+            color: "rgba(255,255,255,0.92)",
+          }}
+        >
+          Wat is je geslacht?
+        </h2>
+
+        <div className="mb-8 grid grid-cols-3 gap-3">
+          {INTAKE_GENDER_OPTIONS.map((opt) => {
+            const active = gender === opt;
+            return (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => onGenderChange(opt)}
+                className="cursor-pointer rounded-[14px] text-center font-semibold transition-all duration-[250ms] ease-out"
+                style={{
+                  padding: "12px",
+                  fontSize: 14,
+                  background: active ? "#C8956C" : "rgba(255,255,255,0.07)",
+                  color: active ? "white" : "rgba(255,255,255,0.75)",
+                  border: active
+                    ? "1px solid rgba(200,149,108,0.5)"
+                    : "1px solid rgba(255,255,255,0.1)",
+                  boxShadow: active ? "0 4px 20px rgba(200,149,108,0.2)" : "none",
+                  fontFamily: "inherit",
+                }}
+              >
+                {GENDER_LABELS[opt]}
               </button>
             );
           })}

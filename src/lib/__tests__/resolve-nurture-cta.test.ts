@@ -21,7 +21,7 @@ import type { RecommendationInput } from "@/types/recommendation";
 const PROFILES: NurtureProfileKey[] = [
   "Stressdrager",
   "Onrustige Slaper",
-  "Lage Batterij",
+  "Lage Energie",
   "Overtrainer",
   "In Balans",
 ];
@@ -239,7 +239,7 @@ describe("lifestyleCtaForProfile", () => {
 
 describe("pillarCtaForProfile", () => {
   it("volgt zwakste domein", () => {
-    const cta = pillarCtaForProfile("Lage Batterij", "nutrition_score");
+    const cta = pillarCtaForProfile("Lage Energie", "nutrition_score");
     expect(cta.url).toBe("/gids/voeding");
     expect(cta.kind).toBe("pillar");
   });

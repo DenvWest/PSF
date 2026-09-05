@@ -83,7 +83,7 @@ export interface UrgencyResult {
 export interface ProfileLabel {
   name:
     | "Onrustige Slaper"
-    | "Lage Batterij"
+    | "Lage Energie"
     | "Stressdrager"
     | "Overtrainer"
     | "In Balans";
@@ -321,7 +321,7 @@ type NamedProfileDomain = Exclude<DomainId, "nutrition" | "recovery" | "connecti
  * elders correct bepaald door het echte patroon (movementLoad>=3 && rcvPhys<=1). */
 const NAMED_DOMAIN_LABELS: Record<NamedProfileDomain, ProfileLabel["name"]> = {
   sleep: "Onrustige Slaper",
-  energy: "Lage Batterij",
+  energy: "Lage Energie",
   stress: "Stressdrager",
   movement: "Overtrainer",
 };
@@ -785,7 +785,7 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
   if (scores.energy_score < 40) {
     const driver = pickLowestEnergyDriverDomain(scores);
     return {
-      name: "Lage Batterij",
+      name: "Lage Energie",
       domain: driver.domain,
       score: driver.score,
     };

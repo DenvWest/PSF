@@ -5,19 +5,20 @@ import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
 import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
+import { GenderAdaptiveText } from "@/components/personalization/GenderAdaptiveText";
 
 export const metadata: Metadata = {
   title: "Altijd Moe Na 40? Dit Is Waarom",
   description:
     "Je energie is op. Niet even, maar structureel. Herken je dit? Ontdek wat er aan de hand is en wat je eraan kunt doen.",
   alternates: {
-    canonical: "https://perfectsupplement.nl/profiel/lage-batterij",
+    canonical: "https://perfectsupplement.nl/profiel/lage-energie",
   },
   openGraph: {
     title: "Altijd Moe Na 40? Dit Is Waarom",
     description:
       "Je energie is op. Niet even, maar structureel. Ontdek wat er aan de hand is en wat helpt.",
-    url: "https://perfectsupplement.nl/profiel/lage-batterij",
+    url: "https://perfectsupplement.nl/profiel/lage-energie",
     type: "article",
   },
 };
@@ -42,15 +43,15 @@ const breadcrumbJsonLd = [
       {
         "@type": "ListItem",
         position: 3,
-        name: "Lage Batterij",
-        item: "https://perfectsupplement.nl/profiel/lage-batterij",
+        name: "Lage Energie",
+        item: "https://perfectsupplement.nl/profiel/lage-energie",
       },
     ],
   },
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "Lage Batterij: Altijd Moe Na 40?",
+    headline: "Lage Energie: Altijd Moe Na 40?",
     description:
       "Je energie is op. Niet even, maar structureel. Ontdek wat er aan de hand is en wat je eraan kunt doen.",
     author: {
@@ -116,7 +117,7 @@ const weekPlan = [
   },
 ];
 
-export default function LageBatterijPage() {
+export default function LageEnergiePage() {
   return (
     <>
       <script
@@ -127,7 +128,7 @@ export default function LageBatterijPage() {
       <main>
         <Container>
           <article>
-            <CheckLensBanner target={{ kind: "profile", slug: "lage-batterij", label: "Lage Batterij" }} />
+            <CheckLensBanner target={{ kind: "profile", slug: "lage-energie", label: "Lage Energie" }} />
             {/* Breadcrumbs */}
             <nav aria-label="Breadcrumb" className="pt-6 pb-2">
               <ol className="flex flex-wrap items-center gap-1 text-sm text-slate-400">
@@ -144,7 +145,7 @@ export default function LageBatterijPage() {
                   <span aria-hidden="true">/</span>
                 </li>
                 <li>
-                  <span className="text-slate-600">Lage Batterij</span>
+                  <span className="text-slate-600">Lage Energie</span>
                 </li>
               </ol>
             </nav>
@@ -155,7 +156,7 @@ export default function LageBatterijPage() {
                 Profiel
               </span>
               <h1 className="font-[var(--font-heading)] text-3xl md:text-5xl text-slate-900 leading-tight max-w-2xl">
-                Lage Batterij: Altijd Moe Na 40?
+                Lage Energie: Altijd Moe Na 40?
               </h1>
               <p className="mt-5 text-xl text-slate-600 max-w-2xl leading-relaxed">
                 Je energie is niet even op — het is structureel. Elke dag weer. En nee, dat is niet
@@ -245,17 +246,50 @@ export default function LageBatterijPage() {
                   te bewegen, niet door meteen groot en perfect te willen doen.
                 </p>
                 <p className="text-slate-600 leading-relaxed">
-                  Tegelijk gebeuren er nog twee dingen. Ten eerste daalt je{" "}
-                  <Link
-                    href="/kennisbank/testosteron"
-                    className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
-                  >
-                    testosteron
-                  </Link>
-                  spiegel met gemiddeld 1–2% per jaar. Testosteron speelt een directe rol in je
-                  energieniveau, je motivatie en je spiermassa. Ten tweede wordt je stofwisseling
-                  trager: je lichaam verbrandt minder calorieën in rust, slaat makkelijker vet op, en
-                  heeft meer moeite om voedingsstoffen te absorberen.
+                  <GenderAdaptiveText
+                    man={
+                      <>
+                        Tegelijk gebeuren er nog twee dingen. Ten eerste daalt je{" "}
+                        <Link
+                          href="/kennisbank/testosteron"
+                          className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
+                        >
+                          testosteron
+                        </Link>
+                        spiegel met gemiddeld 1–2% per jaar. Testosteron speelt een directe rol in
+                        je energieniveau, je motivatie en je spiermassa.
+                      </>
+                    }
+                    vrouw={
+                      <>
+                        Tegelijk speelt er nog iets: rond de perimenopauze schommelen en dalen je{" "}
+                        <Link
+                          href="/overgang"
+                          className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
+                        >
+                          hormoonspiegels
+                        </Link>
+                        , waaronder oestrogeen. Dat hangt samen met minder stabiele energie,
+                        slaap en stemming.
+                      </>
+                    }
+                    neutral={
+                      <>
+                        Tegelijk verandert vanaf je 40e ook je hormoonhuishouding geleidelijk —
+                        bij mannen speelt dalend testosteron een rol, bij vrouwen de{" "}
+                        <Link
+                          href="/overgang"
+                          className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
+                        >
+                          perimenopauze
+                        </Link>
+                        . Beide hangen samen met minder stabiele energie en motivatie.
+                      </>
+                    }
+                  />{" "}
+                  Daarnaast wordt je stofwisseling trager: je lichaam verbrandt minder calorieën
+                  in rust, slaat makkelijker vet op, en heeft meer moeite om voedingsstoffen te
+                  absorberen.
                 </p>
                 <p className="text-slate-600 leading-relaxed">
                   Het resultaat is een cascade: minder energie → minder beweging → slechtere slaap →
@@ -263,7 +297,7 @@ export default function LageBatterijPage() {
                   hem kunt doorbreken — als je weet waar je moet beginnen.
                 </p>
                 <p className="text-slate-600 leading-relaxed">
-                  En daar gaat het vaak mis. De meeste mannen proberen het op te lossen met meer
+                  En daar gaat het vaak mis. De meeste mensen proberen het op te lossen met meer
                   koffie, meer wilskracht, of door het te negeren. Geen van die dingen werkt
                   structureel. Wat wél werkt: begrijpen welke bouwstenen je lichaam mist en die
                   gericht aanvullen.
@@ -303,7 +337,7 @@ export default function LageBatterijPage() {
               <p className="text-slate-600 mb-6">
                 Leefstijlaanpassingen zijn de basis. Maar als je lichaam structureel voedingsstoffen
                 mist, kun je dat niet alleen met voeding oplossen. Twee supplementen zijn specifiek
-                relevant voor het Lage Batterij profiel:
+                relevant voor het Lage Energie profiel:
               </p>
 
               <div className="space-y-5">
@@ -407,7 +441,7 @@ export default function LageBatterijPage() {
                   href="/intake"
                   className="inline-flex items-center mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl transition-colors text-base"
                 >
-                  {intakeCtaMatchProfile("Lage Batterij")}
+                  {intakeCtaMatchProfile("Lage Energie")}
                 </Link>
               </div>
             </section>

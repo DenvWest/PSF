@@ -190,7 +190,7 @@ describe("nurture-attribution-token: affiliate.click payload-veiligheid", () => 
       const token = buildNurtureAttributionToken({
         sessionId: "session-uuid",
         sequenceDay: day,
-        profileLabel: "Lage Batterij",
+        profileLabel: "Lage Energie",
         variant: null,
       });
       const result = resolveNurtureAttributionToken(token);

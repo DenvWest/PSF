@@ -1,8 +1,10 @@
 import {
   INTAKE_AGE_RANGE_OPTIONS,
+  INTAKE_GENDER_OPTIONS,
   QUESTIONS,
   SYMPTOMS,
   type IntakeAgeRange,
+  type IntakeGender,
   type SymptomId,
 } from "@/data/intake-questions";
 import type { IntakeAnswers } from "@/types/intake-answers";
@@ -14,6 +16,7 @@ import {
 } from "@/lib/intake-engine";
 
 const AGE_SET = new Set<string>(INTAKE_AGE_RANGE_OPTIONS);
+const GENDER_SET = new Set<string>(INTAKE_GENDER_OPTIONS);
 const SYMPTOM_SET = new Set<SymptomId>(SYMPTOMS.map((s) => s.id));
 
 const QUESTION_VALID_VALUES: Record<
@@ -51,6 +54,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 
 export type ValidatedIntakeBody = {
   ageRange: IntakeAgeRange;
+  gender: IntakeGender;
   symptoms: SymptomId[];
   answers: IntakeAnswers;
 };
@@ -68,6 +72,11 @@ export function validateIntakeSubmission(body: unknown):
   const ageRange = body.ageRange;
   if (typeof ageRange !== "string" || !AGE_SET.has(ageRange)) {
     return { ok: false, error: "Ongeldige leeftijdscategorie." };
+  }
+
+  const gender = body.gender;
+  if (typeof gender !== "string" || !GENDER_SET.has(gender)) {
+    return { ok: false, error: "Ongeldige geslachtskeuze." };
   }
 
   const symptomsRaw = body.symptoms;
@@ -115,6 +124,7 @@ export function validateIntakeSubmission(body: unknown):
     ok: true,
     value: {
       ageRange: ageRange as IntakeAgeRange,
+      gender: gender as IntakeGender,
       symptoms,
       answers,
     },

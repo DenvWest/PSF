@@ -8,7 +8,7 @@ import { PROFILE_PAGES } from "@/data/profiles";
 export const metadata: Metadata = {
   title: "Profielen: Welk Type Ben Jij?",
   description:
-    "Profielen voor mannen 40+: Stressdrager, Lage Batterij, Onrustige Slaper en Overtrainer. Herken jezelf en ontdek wat je kunt doen.",
+    "Profielen voor dertigers en veertigers: Stressdrager, Lage Energie, Onrustige Slaper en Overtrainer. Herken jezelf en ontdek wat je kunt doen.",
   alternates: { canonical: "https://perfectsupplement.nl/profiel" },
 };
 

@@ -84,7 +84,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "energie-verhogen-natuurlijk": {
     theme: "movement",
     gapSignal: "energy_dip_unexplained",
-    profile: "Lage Batterij",
+    profile: "Lage Energie",
   },
   "krachttraining-na-40": { theme: "movement", planPhase: 1 },
   "magnesium-en-slaap": {

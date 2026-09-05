@@ -103,8 +103,8 @@ export default function MovementRecognition() {
               Overtrainer
             </Link>{" "}
             of{" "}
-            <Link href="/profiel/lage-batterij" className={LINK}>
-              Lage Batterij
+            <Link href="/profiel/lage-energie" className={LINK}>
+              Lage Energie
             </Link>{" "}
             — of start de{" "}
             <Link href="/intake" className={LINK}>

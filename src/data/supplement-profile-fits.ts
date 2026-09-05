@@ -60,16 +60,16 @@ export const SUPPLEMENT_PROFILE_FITS: Record<
         "Veel belasting en traag herstel? EPA/DHA passen vaak in het bredere herstelplaatje naast rust en slaap.",
     },
     {
-      slug: "lage-batterij",
-      label: "Lage Batterij",
+      slug: "lage-energie",
+      label: "Lage Energie",
       snippet:
         "Weinig vette vis en structurele vermoeidheid? Omega-3 ondersteunt hart- en hersenclaims (EFSA) in de juiste context.",
     },
   ],
   "vitamine-d": [
     {
-      slug: "lage-batterij",
-      label: "Lage Batterij",
+      slug: "lage-energie",
+      label: "Lage Energie",
       snippet:
         "Lage energie en weinig zon in de winter? Vitamine D hoort bij bot/spier/immuun — meet waar nodig.",
     },
@@ -110,8 +110,8 @@ export const SUPPLEMENT_PROFILE_FITS: Record<
         "Veel trainen zonder voldoende eiwit? Herstel begint op het bord — poeder is ondersteuning, geen shortcut.",
     },
     {
-      slug: "lage-batterij",
-      label: "Lage Batterij",
+      slug: "lage-energie",
+      label: "Lage Energie",
       snippet:
         "Te weinig eiwit bij ontbijt en lunch? Stabielere energie begint vaak met 25–30 g eiwit per maaltijd.",
     },

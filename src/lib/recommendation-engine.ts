@@ -55,7 +55,7 @@ function matchesCreatine(
   const cognitiveLoad = scores.energy_score < 50 && scores.stress_score < 50;
   const relevantProfile =
     getSortedDomains(scores)[0].domain === "recovery" ||
-    profileLabel.name === "Lage Batterij";
+    profileLabel.name === "Lage Energie";
 
   return (
     activeExerciser ||

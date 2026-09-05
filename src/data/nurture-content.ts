@@ -81,7 +81,7 @@ export const urgencyModifiers = {
 // Profielnamen komen rechtstreeks uit de intake-engine:
 //   sleep                  → "Onrustige Slaper"
 //   stress                 → "Stressdrager"
-//   lage energie/beweging → "Lage Batterij"
+//   lage energie/beweging → "Lage Energie"
 //   (lage voeding/herstel als zwakste domein) → "In Balans" of ander benoemd profiel als fallback
 //   (all > 60)→ "In Balans"
 // ============================================================
@@ -92,7 +92,7 @@ export const nurtureContent: Record<
 > = {
   // ── DAG 0: WELKOM ────────────────────────────────────────
   day0_welcome: {
-    "Lage Batterij": {
+    "Lage Energie": {
       subject: "Je leefstijl-overzicht staat klaar",
       preheader: "Je energiescore laat zien waar de winst zit",
       greeting: "Goed dat je de Leefstijlcheck hebt gedaan.",
@@ -151,7 +151,7 @@ export const nurtureContent: Record<
 
   // ── DAG 3: QUICK WINS ────────────────────────────────────
   day3_quickwins: {
-    "Lage Batterij": {
+    "Lage Energie": {
       subject: "3 dingen die je energie deze week verbeteren",
       preheader: "Kleine stappen, merkbaar verschil",
       greeting: "Drie dagen geleden deed je de Leefstijlcheck.",
@@ -205,7 +205,7 @@ export const nurtureContent: Record<
 
   // ── DAG 7: DEEP DIVE ─────────────────────────────────────
   day7_deepdive: {
-    "Lage Batterij": {
+    "Lage Energie": {
       subject: "Waarom je energie daalt na 40 (en wat je eraan doet)",
       preheader: "Het is niet 'normaal' — het is oplosbaar",
       greeting: "Een week geleden deed je de Leefstijlcheck.",
@@ -268,7 +268,7 @@ export const nurtureContent: Record<
 
   // ── DAG 14: HALVERWEGE ───────────────────────────────────
   day14_halfweg: {
-    "Lage Batterij": {
+    "Lage Energie": {
       subject: "Halverwege: merk je al verschil?",
       preheader: "Twee weken is genoeg om de eerste veranderingen te voelen",
       greeting: "Twee weken geleden deed je de Leefstijlcheck.",
@@ -327,7 +327,7 @@ export const nurtureContent: Record<
 
   // ── DAG 21: MOMENTUM ─────────────────────────────────────
   day21_momentum: {
-    "Lage Batterij": {
+    "Lage Energie": {
       subject: "Drie weken: je bouwt momentum op",
       preheader: "De gewoontes die je nu hebt, bepalen hoe je je over een maand voelt",
       greeting: "Drie weken geleden startte je met je leefstijl-overzicht.",
@@ -386,7 +386,7 @@ export const nurtureContent: Record<
 
   // ── DAG 30: HERHAALMETING ────────────────────────────────
   day30_herhaalmeting: {
-    "Lage Batterij": {
+    "Lage Energie": {
       subject: "30 dagen: tijd om te meten waar je staat",
       preheader: "Je Leefstijlcheck opnieuw doen duurt 3 minuten",
       greeting: "Een maand geleden deed je de Leefstijlcheck.",
@@ -550,7 +550,7 @@ export function nurtureOutputHasCrossDomainBalance(
 
 const KNOWN_PROFILES: ProfileLabelName[] = [
   "Onrustige Slaper",
-  "Lage Batterij",
+  "Lage Energie",
   "Stressdrager",
   "Overtrainer",
   "In Balans",
@@ -562,7 +562,7 @@ export function resolveNurtureProfileKey(
 ): NurtureProfileKey {
   const trimmed = profileLabel.trim();
   if (trimmed === "Stilzitter" || trimmed === "Stille Slijter") {
-    return "Lage Batterij";
+    return "Lage Energie";
   }
   if (trimmed === "Overtrainer") {
     return "Overtrainer";

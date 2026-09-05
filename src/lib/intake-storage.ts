@@ -1,5 +1,5 @@
 import type { MeasuredPillarId } from "@/lib/primary-theme";
-import type { IntakeAgeRange } from "@/data/intake-questions";
+import type { IntakeAgeRange, IntakeGender } from "@/data/intake-questions";
 import type { IntakeConsentPayload } from "@/lib/intake-consent";
 import type { DomainScores } from "@/lib/intake-engine";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
@@ -50,6 +50,7 @@ export async function saveIntakeSession(data: {
   symptoms: string[];
   answers: Record<string, number>;
   ageRange: IntakeAgeRange;
+  gender: IntakeGender;
   turnstileToken: string;
   website: string;
   consent: IntakeConsentPayload;
@@ -67,6 +68,7 @@ export async function saveIntakeSession(data: {
       credentials: "include",
       body: JSON.stringify({
         ageRange: data.ageRange,
+        gender: data.gender,
         symptoms: data.symptoms,
         answers: data.answers,
         turnstileToken: data.turnstileToken,

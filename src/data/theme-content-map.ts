@@ -19,7 +19,7 @@ export const THEME_CONTENT_MAP: Record<ThemeSlug, ThemeContentLinks> = {
   },
   nutrition: {
     pillarHref: "/voeding-na-40",
-    profileSlug: "lage-batterij",
+    profileSlug: "lage-energie",
     knowledgeSlugs: ["eiwitbehoefte-na-40", "insulineresistentie"],
   },
   movement: {

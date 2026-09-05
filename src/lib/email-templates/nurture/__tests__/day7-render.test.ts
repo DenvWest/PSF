@@ -31,8 +31,8 @@ const PROFILE_FIXTURES: Record<
     profileLabel: "Stressdrager",
     domainScores: { ...BASE_SCORES, stress_score: 25 },
   },
-  "Lage Batterij": {
-    profileLabel: "Lage Batterij",
+  "Lage Energie": {
+    profileLabel: "Lage Energie",
     domainScores: { ...BASE_SCORES, energy_score: 25 },
   },
   "In Balans": {

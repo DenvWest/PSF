@@ -135,7 +135,7 @@ export function nurtureNamePrefixHtml(firstName?: string | null): string {
 const PROFILE_URLS: Partial<Record<NurtureProfileKey, string>> = {
   "Onrustige Slaper": "/profiel/onrustige-slaper",
   Stressdrager: "/profiel/stressdrager",
-  "Lage Batterij": "/profiel/lage-batterij",
+  "Lage Energie": "/profiel/lage-energie",
   Overtrainer: "/profiel/overtrainer",
 };
 

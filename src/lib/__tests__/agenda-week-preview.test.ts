@@ -115,7 +115,7 @@ describe("buildWeekSchedulePreview", () => {
     });
 
     for (const slot of buildWeekSchedulePreview(model)) {
-      expect(JSON.stringify(slot)).not.toMatch(/"score"|Lage Batterij/i);
+      expect(JSON.stringify(slot)).not.toMatch(/"score"|Lage Energie/i);
     }
   });
 });

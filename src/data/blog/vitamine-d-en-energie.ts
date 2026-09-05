@@ -21,7 +21,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom energie een systeemvraag is",
       tekst:
-        "Slaap, stress, beweging en eiwit vormen samen je dagelijkse “batterij”. [Mitochondriën](/kennisbank/mitochondrien) en [ATP](/kennisbank/atp) helpen het plaatje te begrijpen zonder je zelf tot labrapport om te bouwen. Als je vooral herkenning zoekt bij dipjes en minder veerkracht, sluit het profiel [Lage batterij](/profiel/lage-batterij) vaak aan — met concrete routes naar thema’s en tools.",
+        "Slaap, stress, beweging en eiwit vormen samen je dagelijkse “batterij”. [Mitochondriën](/kennisbank/mitochondrien) en [ATP](/kennisbank/atp) helpen het plaatje te begrijpen zonder je zelf tot labrapport om te bouwen. Als je vooral herkenning zoekt bij dipjes en minder veerkracht, sluit het profiel [Lage energie](/profiel/lage-energie) vaak aan — met concrete routes naar thema’s en tools.",
     },
     {
       type: "opsomming",

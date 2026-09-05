@@ -1,4 +1,6 @@
 export const INTAKE_AGE_RANGE_OPTIONS = [
+  "30–34",
+  "35–39",
   "40–44",
   "45–49",
   "50–54",
@@ -6,6 +8,10 @@ export const INTAKE_AGE_RANGE_OPTIONS = [
 ] as const;
 
 export type IntakeAgeRange = (typeof INTAKE_AGE_RANGE_OPTIONS)[number];
+
+export const INTAKE_GENDER_OPTIONS = ["vrouw", "man", "anders"] as const;
+
+export type IntakeGender = (typeof INTAKE_GENDER_OPTIONS)[number];
 
 export type SymptomId = "stress" | "slaap" | "energie";
 

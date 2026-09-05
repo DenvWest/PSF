@@ -21,7 +21,7 @@ interface Props {
 /** Slugs met een eigen `profiel/[slug]/page.tsx` — niet dubbel prerenderen onder `[slug]`. */
 const STATIC_PROFIEL_SLUGS = new Set([
   "stressdrager",
-  "lage-batterij",
+  "lage-energie",
   "onrustige-slaper",
   "overtrainer",
 ]);

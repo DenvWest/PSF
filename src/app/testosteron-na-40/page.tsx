@@ -371,14 +371,14 @@ export default function TestosteronNa40Page() {
 
                 <div className="mt-4 rounded-xl border border-stone-200 bg-stone-50 p-5">
                   <p className="text-sm leading-relaxed text-gray-700">
-                    <strong className="text-gray-900">Lage batterij:</strong> structurele
+                    <strong className="text-gray-900">Lage energie:</strong> structurele
                     vermoeidheid, middagdips — energie breder dan één hormoon.
                   </p>
                   <Link
-                    href="/profiel/lage-batterij"
+                    href="/profiel/lage-energie"
                     className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
                   >
-                    Bekijk het Lage Batterij-profiel →
+                    Bekijk het Lage Energie-profiel →
                   </Link>
                 </div>
 

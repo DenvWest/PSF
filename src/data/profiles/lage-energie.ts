@@ -1,19 +1,19 @@
 import type { ProfilePageData } from "@/types/profile-page";
 
-export const lageBatterijProfile: ProfilePageData = {
-  slug: "lage-batterij",
-  label: "Lage Batterij",
+export const lageEnergieProfile: ProfilePageData = {
+  slug: "lage-energie",
+  label: "Lage Energie",
 
   seo: {
     title: "Altijd Moe Na 40? Dit Is Waarom (en Wat Je Eraan Doet)",
     description:
       "Je energie is op. Niet even, maar structureel. Herkenning, uitleg in begrijpelijke taal en wat je stap voor stap kunt doen.",
-    canonical: "https://perfectsupplement.nl/profiel/lage-batterij",
+    canonical: "https://perfectsupplement.nl/profiel/lage-energie",
     targetKeyword: "altijd moe na 40",
   },
 
   hero: {
-    headline: "Lage Batterij: ben jij al moe voor de dag begonnen is?",
+    headline: "Lage Energie: ben jij al moe voor de dag begonnen is?",
     subline:
       "Het is niet luiheid en niet \"gewoon ouder worden\". Vaak spelen slaap, voeding, beweging en stress samen — en je kunt daar concreet op sturen.",
   },
@@ -58,7 +58,7 @@ export const lageBatterijProfile: ProfilePageData = {
       },
     ],
     closer:
-      "Als je hier drie of meer van herkent, past dat bij veel mannen 40+: de dag voelt zwaarder terwijl je routine hetzelfde lijkt. Het goede nieuws: met kleine stappen in ritme, voeding en beweging kun je vaak merkbaar verschil maken.",
+      "Als je hier drie of meer van herkent, past dat bij veel dertigers en veertigers: de dag voelt zwaarder terwijl je routine hetzelfde lijkt. Het goede nieuws: met kleine stappen in ritme, voeding en beweging kun je vaak merkbaar verschil maken.",
   },
 
   understanding: {
@@ -224,6 +224,6 @@ export const lageBatterijProfile: ProfilePageData = {
   breadcrumbs: [
     { name: "Home", href: "/" },
     { name: "Profielen", href: "/profiel" },
-    { name: "Lage Batterij", href: "/profiel/lage-batterij" },
+    { name: "Lage Energie", href: "/profiel/lage-energie" },
   ],
 };

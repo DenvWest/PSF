@@ -327,10 +327,10 @@ describe("getProfileLabel", () => {
     expect(result.name).toBe("Onrustige Slaper");
   });
 
-  it("returns 'Lage Batterij' when energy < 40 with intervention driver domain", () => {
+  it("returns 'Lage Energie' when energy < 40 with intervention driver domain", () => {
     const scores = makeScores({ energy_score: 30 });
     const result = getProfileLabel(scores);
-    expect(result.name).toBe("Lage Batterij");
+    expect(result.name).toBe("Lage Energie");
     expect(result.domain).toBe("sleep");
     expect(isInterventionProfileDomain(result.domain)).toBe(true);
   });
@@ -358,10 +358,10 @@ describe("getProfileLabel", () => {
     expect(result.domain).toBe("movement");
   });
 
-  it("picks 'Lage Batterij' when energy is low, even if movement is also low", () => {
+  it("picks 'Lage Energie' when energy is low, even if movement is also low", () => {
     const scores = makeScores({ energy_score: 25, movement_score: 30 });
     const result = getProfileLabel(scores);
-    expect(result.name).toBe("Lage Batterij");
+    expect(result.name).toBe("Lage Energie");
     expect(result.domain).toBe("movement");
   });
 
@@ -374,7 +374,7 @@ describe("getProfileLabel", () => {
       stress_score: 70,
     });
     const result = getProfileLabel(scores);
-    expect(result.name).toBe("Lage Batterij");
+    expect(result.name).toBe("Lage Energie");
     expect(result.domain).toBe("nutrition");
   });
 
@@ -390,10 +390,10 @@ describe("getProfileLabel", () => {
     }
   });
 
-  it("picks movement as the 'Lage Batterij' driver when it is lower than other candidates", () => {
+  it("picks movement as the 'Lage Energie' driver when it is lower than other candidates", () => {
     const scores = makeScores({ energy_score: 35, movement_score: 20 });
     const result = getProfileLabel(scores);
-    expect(result.name).toBe("Lage Batterij");
+    expect(result.name).toBe("Lage Energie");
     expect(result.domain).toBe("movement");
   });
 

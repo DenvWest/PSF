@@ -1,4 +1,11 @@
-import type { IntakeAgeRange, SymptomId } from "@/data/intake-questions";
+import {
+  INTAKE_GENDER_OPTIONS,
+  type IntakeAgeRange,
+  type IntakeGender,
+  type SymptomId,
+} from "@/data/intake-questions";
+
+const GENDER_SET = new Set<string>(INTAKE_GENDER_OPTIONS);
 import {
   type DomainScoreKey,
   type DomainScores,
@@ -36,6 +43,7 @@ export type BaselineSnapshot = {
   primaryTheme: string | null;
   symptomProfile: SymptomId[];
   ageRange: IntakeAgeRange;
+  gender?: IntakeGender | null;
 };
 
 export type RemeasureCompletedPayload = {
@@ -57,6 +65,7 @@ export type CreateBaselineSnapshotInput = {
   primaryTheme: string | null;
   symptomProfile: SymptomId[];
   ageRange: IntakeAgeRange;
+  gender?: IntakeGender | null;
 };
 
 export function computePerDomainDelta(
@@ -197,6 +206,11 @@ function rowToBaselineSnapshot(row: Record<string, unknown>): BaselineSnapshot |
       ? row.primary_theme.trim()
       : null;
   const ageRange = row.age_range;
+  const genderRaw = row.gender;
+  const gender: IntakeGender | null =
+    typeof genderRaw === "string" && GENDER_SET.has(genderRaw)
+      ? (genderRaw as IntakeGender)
+      : null;
 
   if (
     !sessionId ||
@@ -230,6 +244,7 @@ function rowToBaselineSnapshot(row: Record<string, unknown>): BaselineSnapshot |
     primaryTheme,
     symptomProfile,
     ageRange: ageRange as IntakeAgeRange,
+    gender,
   };
 }
 
@@ -251,6 +266,7 @@ export async function createBaselineSnapshot(
     primary_theme: input.primaryTheme,
     symptom_profile: input.symptomProfile,
     age_range: input.ageRange,
+    gender: input.gender ?? null,
   });
 
   if (error) {
@@ -272,7 +288,7 @@ export async function loadBaselineSnapshot(
   const { data, error } = await admin
     .from("intake_baseline_snapshots")
     .select(
-      "session_id, organization_id, frozen_at, domain_scores, profile_label, urgency_level, rules_version, primary_theme, symptom_profile, age_range",
+      "session_id, organization_id, frozen_at, domain_scores, profile_label, urgency_level, rules_version, primary_theme, symptom_profile, age_range, gender",
     )
     .eq("session_id", sessionId)
     .maybeSingle();

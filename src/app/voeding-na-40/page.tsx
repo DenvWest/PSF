@@ -150,8 +150,8 @@ export default function VoedingNa40Page() {
                   </ul>
                   <p className="mt-4 text-gray-700 leading-relaxed">
                     Herken je een patroon?{" "}
-                    <Link href="/profiel/lage-batterij" className={LINK}>
-                      Lees het profiel Lage Batterij
+                    <Link href="/profiel/lage-energie" className={LINK}>
+                      Lees het profiel Lage Energie
                     </Link>{" "}
                     of start de{" "}
                     <Link href="/intake" className={LINK}>

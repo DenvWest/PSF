@@ -1,4 +1,4 @@
-import type { IntakeAgeRange, SymptomId } from "@/data/intake-questions";
+import type { IntakeAgeRange, IntakeGender, SymptomId } from "@/data/intake-questions";
 import type { DomainScores } from "@/lib/intake-engine";
 import type { StoredIntakeAnswers } from "@/types/intake-answers";
 
@@ -10,6 +10,7 @@ export type IntakeSessionInsert = {
   urgency_level: string;
   profile_label: string;
   age_range: IntakeAgeRange;
+  gender: IntakeGender;
   marketing_email: string | null;
   first_name: string | null;
   rules_version: string;

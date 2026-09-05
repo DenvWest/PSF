@@ -122,10 +122,10 @@ export const eiwitpoederGidsData: SupplementData = {
         href: "/gids/energie",
       },
       {
-        symptoom: "Lage Batterij",
+        symptoom: "Lage Energie",
         tekst:
           "Als snacks, alcohol of te weinig volwaardige maaltijden je herstel ondermijnen, begint winst vaak bij voeding.",
-        href: "/profiel/lage-batterij",
+        href: "/profiel/lage-energie",
       },
     ],
   },

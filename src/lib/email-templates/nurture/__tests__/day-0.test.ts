@@ -72,8 +72,8 @@ describe("dag-0 primaire CTA-knop", () => {
     expect(html).not.toMatch(/nurtureCtaButton[^>]*\/profiel\//);
   });
 
-  it("Lage Batterij — CTA bevat recoveryUrl", () => {
-    const data = buildData("Lage Batterij", "energy", {
+  it("Lage Energie — CTA bevat recoveryUrl", () => {
+    const data = buildData("Lage Energie", "energy", {
       stress_score: 50,
       sleep_score: 50,
       energy_score: 20,
@@ -164,7 +164,7 @@ describe("dag-0 weakspot-blok toont primair domein", () => {
   });
 
   it("primaryDomain=energy → label 'Energie'", () => {
-    const data = buildData("Lage Batterij", "energy", {
+    const data = buildData("Lage Energie", "energy", {
       stress_score: 50,
       sleep_score: 50,
       energy_score: 20,
@@ -225,8 +225,8 @@ describe("dag-0 domein-opening", () => {
     expect(html).toContain("melatonine komt later op gang");
   });
 
-  it("Lage Batterij — opening benoemt energie als aandachtspunt + mechanisme", () => {
-    const data = buildData("Lage Batterij", "energy", {
+  it("Lage Energie — opening benoemt energie als aandachtspunt + mechanisme", () => {
+    const data = buildData("Lage Energie", "energy", {
       stress_score: 50,
       sleep_score: 50,
       energy_score: 20,
@@ -379,7 +379,7 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
   });
 
   it("primaryDomain=movement → bevat NIET de oude energie-prioriteit-copy", () => {
-    const data = buildData("Lage Batterij", "movement", {
+    const data = buildData("Lage Energie", "movement", {
       sleep_score: 30,
       stress_score: 50,
       energy_score: 15,
@@ -459,7 +459,7 @@ describe("dag-0 interactie-regel", () => {
     expect(day0InteractionLine("energy", scores)).toContain(
       "Je slaap en voeding lijken redelijk op orde",
     );
-    const { html } = nurtureDay0Email(buildData("Lage Batterij", "energy", scores), CTX);
+    const { html } = nurtureDay0Email(buildData("Lage Energie", "energy", scores), CTX);
     expect(html).toContain("dan ligt de winst vaak in daglicht en beweging");
   });
 
@@ -550,7 +550,7 @@ describe("dag-0 voeding-brug", () => {
   });
 
   it("primaryDomain=energy → voeding-check link aanwezig", () => {
-    const data = buildData("Lage Batterij", "energy", {
+    const data = buildData("Lage Energie", "energy", {
       sleep_score: 70,
       stress_score: 70,
       energy_score: 20,
@@ -594,7 +594,7 @@ describe("dag-0 voeding-brug", () => {
   });
 
   it("voeding-brug is tekstlink, geen derde CTA-knop", () => {
-    const data = buildData("Lage Batterij", "energy", {
+    const data = buildData("Lage Energie", "energy", {
       sleep_score: 50,
       stress_score: 50,
       energy_score: 20,

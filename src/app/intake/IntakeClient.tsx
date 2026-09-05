@@ -16,6 +16,7 @@ import {
   CATEGORIES,
   QUESTIONS,
   type IntakeAgeRange,
+  type IntakeGender,
   type SymptomId,
 } from "@/data/intake-questions";
 import type { DomainScores } from "@/lib/intake-engine";
@@ -65,6 +66,7 @@ export default function IntakeClient() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [firstName, setFirstName] = useState("");
   const [ageRange, setAgeRange] = useState<IntakeAgeRange | null>(null);
+  const [gender, setGender] = useState<IntakeGender | null>(null);
   const [symptoms, setSymptoms] = useState<SymptomId[]>([]);
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -93,6 +95,7 @@ export default function IntakeClient() {
   function hydrateFromSession(session: IntakeSessionPayload) {
     setSymptoms(session.symptoms as SymptomId[]);
     setAgeRange(session.ageRange);
+    setGender(session.gender ?? null);
     setAnswers(session.answers);
     setScores(session.scores);
     setServerPrimaryTheme(null);
@@ -155,6 +158,7 @@ export default function IntakeClient() {
     answers,
     symptoms,
     ageRange,
+    gender,
     turnstileToken: intakeTurnstileToken,
     honeypotWebsite,
     consent: intakeConsent,
@@ -237,6 +241,7 @@ export default function IntakeClient() {
     setPhase("intro");
     setFirstName("");
     setAgeRange(null);
+    setGender(null);
     setSymptoms([]);
     setCurrentQ(0);
     setAnswers({});
@@ -353,6 +358,8 @@ export default function IntakeClient() {
             onFirstNameChange={setFirstName}
             ageRange={ageRange}
             onAgeRangeChange={setAgeRange}
+            gender={gender}
+            onGenderChange={setGender}
             symptoms={symptoms}
             onToggle={toggleSymptom}
             onNext={goToQuestions}
@@ -389,7 +396,7 @@ export default function IntakeClient() {
       {phase === "calculating" && (
         <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeCalculating
-            needsHumanVerification={ageRange !== null}
+            needsHumanVerification={ageRange !== null && gender !== null}
             onTurnstileToken={setIntakeTurnstileToken}
           />
         </div>

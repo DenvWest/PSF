@@ -438,7 +438,7 @@ export function buildDevDashboardData(
             cycleEndDate: "2026-07-10",
           },
     deltaReport,
-    profileLabel: "Lage Batterij",
+    profileLabel: "Lage Energie",
     firstName: "Dennis",
     answers: devAnswersForCheck(mode === "retest" ? "check2" : "check1"),
     sessionId: "dev-session",

@@ -1,6 +1,14 @@
-import type { IntakeAgeRange } from "@/data/intake-questions";
+import {
+  INTAKE_AGE_RANGE_OPTIONS,
+  INTAKE_GENDER_OPTIONS,
+  type IntakeAgeRange,
+  type IntakeGender,
+} from "@/data/intake-questions";
 import { hydrateDomainScores, type DomainScores } from "@/lib/intake-engine";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
+
+const AGE_RANGE_SET = new Set<string>(INTAKE_AGE_RANGE_OPTIONS);
+const GENDER_SET = new Set<string>(INTAKE_GENDER_OPTIONS);
 
 export type IntakeSessionPayload = {
   sessionId: string;
@@ -11,6 +19,7 @@ export type IntakeSessionPayload = {
   profile: string;
   timestamp: number;
   ageRange: IntakeAgeRange | null;
+  gender?: IntakeGender | null;
   firstName: string | null;
 };
 
@@ -23,6 +32,7 @@ type IntakeSessionRow = {
   profile_label: string | null;
   created_at: string | null;
   age_range: string | null;
+  gender?: string | null;
   first_name: string | null;
 };
 
@@ -48,9 +58,11 @@ export function intakeSessionRowToPayload(
 
   const ar = row.age_range;
   const ageRange: IntakeAgeRange | null =
-    ar === "40–44" || ar === "45–49" || ar === "50–54" || ar === "55+"
-      ? ar
-      : null;
+    typeof ar === "string" && AGE_RANGE_SET.has(ar) ? (ar as IntakeAgeRange) : null;
+
+  const g = row.gender;
+  const gender: IntakeGender | null =
+    typeof g === "string" && GENDER_SET.has(g) ? (g as IntakeGender) : null;
 
   const firstName =
     typeof row.first_name === "string" && row.first_name.trim().length > 0
@@ -66,6 +78,7 @@ export function intakeSessionRowToPayload(
     profile: profileLabel,
     timestamp: new Date(row.created_at).getTime(),
     ageRange,
+    gender,
     firstName,
   };
 }

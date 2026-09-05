@@ -266,9 +266,9 @@ export const energieThema: ThemaPageData = {
       },
       {
         context:
-          "Slaap je genoeg maar voel je je toch leeg? Herken het patroon van de Lage Batterij — structurele vermoeidheid na 40.",
-        href: "/profiel/lage-batterij",
-        label: "Altijd moe na 40? Ontdek of je een Lage Batterij profiel hebt →",
+          "Slaap je genoeg maar voel je je toch leeg? Herken het patroon van de Lage Energie — structurele vermoeidheid na 40.",
+        href: "/profiel/lage-energie",
+        label: "Altijd moe na 40? Ontdek of je een Lage Energie profiel hebt →",
       },
     ],
   },

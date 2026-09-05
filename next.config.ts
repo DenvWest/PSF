@@ -68,12 +68,17 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/profiel/stille-slijter",
-        destination: "/profiel/lage-batterij",
+        destination: "/profiel/lage-energie",
         permanent: true,
       },
       {
         source: "/profiel/stilzitter",
-        destination: "/profiel/lage-batterij",
+        destination: "/profiel/lage-energie",
+        permanent: true,
+      },
+      {
+        source: "/profiel/lage-batterij",
+        destination: "/profiel/lage-energie",
         permanent: true,
       },
       {
