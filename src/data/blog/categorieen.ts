@@ -121,7 +121,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     beschrijving: "Werking, vormen en dosering. Per product uitgelegd.",
     metaTitle: "Supplementen uitgelegd — werking & dosering",
     metaDescription:
-      "Magnesium, omega-3, vitamine D en meer — werking, vormen en dosering uitgelegd voor 40+. Geen verkooppraat.",
+      "Magnesium, omega-3, vitamine D en meer — werking, vormen en dosering uitgelegd voor 30+. Geen verkooppraat.",
     intentTopics: [
       "creatine dosering",
       "magnesium vormen",
