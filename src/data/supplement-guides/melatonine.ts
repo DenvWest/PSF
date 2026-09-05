@@ -153,7 +153,7 @@ export const melatonineData: SupplementData = {
     },
     {
       href: "/blog/slaaphygiene-mannen-40-plus",
-      titel: "Slaaphygiëne: wat wél werkt na je 30e",
+      titel: "Slaaphygiëne: wat wél werkt",
     },
     {
       href: "/blog/slaapritme-herstellen",

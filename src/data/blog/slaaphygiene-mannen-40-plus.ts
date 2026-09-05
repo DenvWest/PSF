@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const slaaphygieneMannen40PlusData: BlogArtikel = {
   slug: "slaaphygiene-mannen-40-plus",
   categorie: "slaap",
-  titel: "Slaaphygiëne: wat wél werkt na je 30e",
+  titel: "Slaaphygiëne: wat wél werkt",
   coverImage: "/images/blog/slaaphygiene-mannen-40-plus.jpg",
   coverImageAlt: "Persoon die ontspannen ligt te rusten in een donkere slaapkamer",
   heroIntro:
@@ -53,7 +53,7 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
     "ademhaling-tegen-stress",
   ],
   metaTitle:
-    "Slaaphygiëne na 30: wat wél werkt",
+    "Slaaphygiëne: wat wél werkt",
   metaDescription:
     "Slaaphygiëne na je 30e: de vier pijlers met het meeste effect — ritme, licht, temperatuur en prikkels — zonder slaap-hype.",
   keywords: [

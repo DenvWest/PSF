@@ -16,7 +16,7 @@ import {
 } from "@/components/library/library-tokens";
 
 export const metadata: Metadata = {
-  title: "Herstelbibliotheek — Slaap, Stress & Herstel vanaf 30",
+  title: "Herstelbibliotheek — slaap, stress en herstel",
   description:
     "Artikelen over slaap, stress, energie en herstel vanaf 30. Onderbouwd, met bronnen.",
   alternates: {

@@ -5,7 +5,7 @@ export const vermoeidheidBloedwaardenCheckenMannenData: BlogArtikel = {
   slug: "vermoeidheid-bloedwaarden-checken-mannen",
   categorie: "energie",
   audience: "mannen",
-  titel: "Structureel moe na 30: welke bloedwaarden de moeite waard zijn",
+  titel: "Structureel moe: welke bloedwaarden de moeite waard zijn",
   coverImage: "/images/blog/vermoeidheid-bloedwaarden-checken-mannen.jpg",
   coverImageAlt: "Laboratoriumbuisjes en pipet bij bloedonderzoek",
   heroIntro:
@@ -76,7 +76,7 @@ export const vermoeidheidBloedwaardenCheckenMannenData: BlogArtikel = {
     "vitamine-d-tekort-herkennen",
     "middagdip-bloedsuiker-na-40",
   ],
-  metaTitle: "Vermoeid na 30: welke bloedwaarden checken?",
+  metaTitle: "Vermoeid: welke bloedwaarden checken?",
   metaDescription:
     "Structureel moe na 30? Vitamine D, B12, ijzer, schildklier en glucose zijn de bloedwaarden die vermoeidheid kunnen verklaren — bespreek ze met je huisarts.",
   keywords: [

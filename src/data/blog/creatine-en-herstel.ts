@@ -5,7 +5,7 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const creatineEnHerstelData: BlogArtikel = {
   slug: "creatine-en-herstel",
   categorie: "supplementen",
-  titel: "Creatine en herstel na 30: waar het wél om draait (en waar niet)",
+  titel: "Creatine en herstel: waar het wél om draait (en waar niet)",
   coverImage: "/images/blog/creatine-en-herstel.jpg",
   coverImageAlt: "Man die na training herstelt in de sportschool",
   heroIntro:
@@ -73,7 +73,7 @@ export const creatineEnHerstelData: BlogArtikel = {
     "creatine-en-brein-slaaptekort",
   ],
   metaTitle:
-    "Creatine en herstel na 30: buffer, training en context",
+    "Creatine en herstel: buffer, training en context",
   metaDescription:
     "Creatine na 30: wat het wél doet (ATP-buffer), wat het niet oplost, en hoe je het koppelt aan slaap, training en vergelijken — zonder harde gezondheidsclaims.",
   keywords: [

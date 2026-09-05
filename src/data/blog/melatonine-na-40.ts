@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const melatonineNa40Data: BlogArtikel = {
   slug: "melatonine-na-40",
   categorie: "slaap",
-  titel: "Melatonine Na 30: Waarom Het Niet Genoeg Is",
+  titel: "Melatonine: waarom het zelden genoeg is",
   coverImage: "/images/blog/melatonine-na-40.jpg",
   coverImageAlt: "Zachte herfstzon door bomen, overgang van dag naar avond",
   heroIntro:
@@ -77,7 +77,7 @@ export const melatonineNa40Data: BlogArtikel = {
     "magnesium-en-slaap",
     "melatonine-wanneer-wel-niet",
   ],
-  metaTitle: "Melatonine Na 30: Waarom Het Niet Genoeg Is",
+  metaTitle: "Melatonine: waarom het zelden genoeg is",
   metaDescription:
     "Melatonine slikken voor je slaap? Na 30 werkt dat anders dan je denkt. Wat je moet weten over dosering en alternatieven.",
   keywords: [

@@ -31,7 +31,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     naam: "Stress",
     icoon: "🔥",
     beschrijving: "Cortisol, spanning en herstel. Van ademhaling tot ashwagandha.",
-    metaTitle: "Stress & cortisol na 30 — artikelen",
+    metaTitle: "Artikelen over stress & cortisol",
     metaDescription:
       "Altijd 'aan' staan, cortisol en spanning na je 30e? Onderbouwde artikelen over stress, herstel en wat je lichaam signaleert.",
     intentTopics: [
@@ -60,7 +60,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     naam: "Slaap",
     icoon: "🌙",
     beschrijving: "Van slaaphygiëne tot melatonine. Wat werkt na je 30e.",
-    metaTitle: "Slaap verbeteren na 30 — artikelen",
+    metaTitle: "Artikelen over slaap",
     metaDescription:
       "Moe wakker worden, nachtelijk wakker liggen of slecht doorslapen? Praktische artikelen over slaap, melatonine en herstel na je 30e.",
     intentTopics: [
@@ -90,7 +90,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     icoon: "⚡",
     beschrijving:
       "Testosteron, vitamine D en dagelijkse energie. Praktisch en onderbouwd.",
-    metaTitle: "Energie & vermoeidheid na 30 — artikelen",
+    metaTitle: "Artikelen over energie & vermoeidheid",
     metaDescription:
       "Middagdip, trager herstel of vermoeidheid na je 30e? Artikelen over energie, testosteron, vitamine D en herstel — onderbouwd en praktisch.",
     intentTopics: [

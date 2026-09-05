@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const vitamineDEnEnergieData: BlogArtikel = {
   slug: "vitamine-d-en-energie",
   categorie: "energie",
-  titel: "Vitamine D en energie na 30: tekort, verwachtingen en vergelijken",
+  titel: "Vitamine D en energie: tekort, verwachtingen en vergelijken",
   coverImage: "/images/blog/vitamine-d-en-energie.jpg",
   coverImageAlt: "Zonnig strand met helder blauwe lucht",
   heroIntro:
@@ -64,7 +64,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
     "krachttraining-na-40",
   ],
   metaTitle:
-    "Vitamine D en energie na 30: verwachtingen en vergelijken",
+    "Vitamine D en energie: verwachtingen en vergelijken",
   metaDescription:
     "Vitamine D in Nederland: wat claims wél zeggen, wanneer meten zinvol is, en hoe je vitamine D vergelijkt — gekoppeld aan energie na 30 zonder wonderbeloftes.",
   keywords: [

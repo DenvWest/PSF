@@ -60,7 +60,7 @@ export const multivitamineZinvolNa40Data: BlogArtikel = {
     "vitamine-d-en-energie",
     "creatine-en-herstel",
   ],
-  metaTitle: "Waarom wij geen multivitamine aanbevelen — is het zinvol na 30?",
+  metaTitle: "Waarom wij geen multivitamine aanbevelen",
   metaDescription:
     "Multivitamine zin of onzin? Onderzoek laat geen duidelijk voordeel zien bij niet-deficiënte volwassenen. Waarom gerichte suppletie op je eigen profiel beter werkt.",
   keywords: [

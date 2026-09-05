@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
   slug: "zout-kalium-bloeddruk-na-40",
   categorie: "energie",
-  titel: "Zout en kalium na 30: waarom de verhouding telt, niet het zoutvaatje",
+  titel: "Zout en kalium: waarom de verhouding telt, niet het zoutvaatje",
   coverImage: "/images/blog/zout-kalium-bloeddruk-na-40.jpg",
   coverImageAlt: "Verse groenten en kruiden, rijk aan kalium",
   heroIntro:
@@ -65,7 +65,7 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
     "eiwit-na-40",
     "vitamine-d-en-energie",
   ],
-  metaTitle: "Zout en kalium na 30: de balans die je bloeddruk stuurt",
+  metaTitle: "Zout en kalium: de balans die je bloeddruk stuurt",
   metaDescription:
     "Nederlandse mannen eten te veel zout en te weinig kalium. Waarom de verhouding telt, waar de bronnen zitten en waarom dit geen supplement-vraag is.",
   keywords: [

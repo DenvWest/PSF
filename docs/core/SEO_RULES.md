@@ -62,6 +62,7 @@ Zie [`CONTENT_MAP.md`](CONTENT_MAP.md) voor actuele routes.
 ## On-page SEO checklist (elke pagina)
 
 - [ ] Unieke `<title>` tag (50-60 karakters, zoekwoord vooraan)
+- [ ] Leeftijd-modifier (“na 30” / “na 40”) alleen in `<title>` / H1 / metaTitle als het **de query** is: pillars en clusters waarvan het onderwerp de leeftijd ís (bijv. “Eiwit na 30”). Categorie-hubs, overige cluster-blogs en kennisbank-termen: term of onderwerp zonder leeftijd; leeftijd mag in body en H2. Kennisbank = termnaam, tenzij de term zelf leeftijd ís (“Eiwitbehoefte na 30”).
 - [ ] `<meta name="description">` (120-155 karakters, CTA-achtig)
 - [ ] Eén `<h1>` met primair zoekwoord
 - [ ] Logische `<h2>` → `<h3>` hiërarchie (geen niveaus overslaan)
@@ -181,4 +182,4 @@ Blogpost → Vergelijkingspagina → Affiliate click
 
 ---
 
-*Laatst bijgewerkt: mei 2026*
+*Laatst bijgewerkt: september 2026*

@@ -100,7 +100,7 @@ export async function generateMetadata({
     const cover = themaCover(slug)
     const coverUrl = absoluteUrl(cover.src)
     return {
-      title: `${config.title} — Kennisbank | PerfectSupplement`,
+      title: `${config.title} — Kennisbank`,
       description: config.description,
       alternates: {
         canonical: `https://perfectsupplement.nl/kennisbank/${slug}`,
@@ -124,7 +124,7 @@ export async function generateMetadata({
   const cover = kennisbankCover(term)
   const coverUrl = absoluteUrl(cover.src)
   return {
-    title: `${term.metaTitle} | PerfectSupplement`,
+    title: term.metaTitle,
     description: term.metaDescription,
     alternates: {
       canonical: `https://perfectsupplement.nl/kennisbank/${term.slug}`,

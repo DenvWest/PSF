@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const omega3EnHerstelData: BlogArtikel = {
   slug: "omega-3-en-herstel",
   categorie: "supplementen",
-  titel: "Omega-3 en herstel na 30: EPA/DHA in het herstelplaatje",
+  titel: "Omega-3 en herstel: EPA/DHA in het herstelplaatje",
   coverImage: "/images/blog/omega-3-en-herstel.jpg",
   coverImageAlt: "Verse zalm en makreel als omega-3-rijke vette vis",
   heroIntro:
@@ -57,7 +57,7 @@ export const omega3EnHerstelData: BlogArtikel = {
     "omega-3-concentratie-energie",
     "wat-is-omega-3",
   ],
-  metaTitle: "Omega-3 en herstel na 30",
+  metaTitle: "Omega-3 en herstel: EPA/DHA in het herstelplaatje",
   metaDescription:
     "Omega-3 en herstel: EPA/DHA, vergelijken en koppeling met pillar herstel en profiel overtrainer.",
   keywords: ["omega 3 herstel", "EPA DHA herstel", "omega 3 na 30"],

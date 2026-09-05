@@ -209,7 +209,7 @@ export const slaapThema: ThemaPageData = {
 
   relatedArticles: [
     {
-      title: "Slaap verbeteren na je 30e: wat werkt en wat niet",
+      title: "Slaap verbeteren: wat werkt en wat niet",
       slug: "slaap-verbeteren-40-plus",
       category: "slaap",
     },

@@ -5,7 +5,7 @@ export const cortisolEnTestosteronData: BlogArtikel = {
   slug: "cortisol-en-testosteron",
   categorie: "stress",
   audience: "mannen",
-  titel: "Cortisol en testosteron na 30: stress, verhalen en wat onderzoek redelijkerwijs zegt",
+  titel: "Cortisol en testosteron: stress, verhalen en wat onderzoek redelijkerwijs zegt",
   coverImage: "/images/blog/cortisol-en-testosteron.jpg",
   coverImageAlt: "Man van middelbare leeftijd die krachttraining doet",
   heroIntro:
@@ -65,7 +65,7 @@ export const cortisolEnTestosteronData: BlogArtikel = {
     "ademhaling-tegen-stress",
   ],
   metaTitle:
-    "Cortisol en testosteron na 30: feiten vs verhalen",
+    "Cortisol en testosteron: feiten vs verhalen",
   metaDescription:
     "Cortisol, testosteron en stress na 30: wat correlaties wél betekenen, wat niet, en welke stappen je veilig eerst zet — met links naar pillars en vergelijkingen.",
   keywords: [

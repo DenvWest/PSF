@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
   slug: "alcohol-slaap-energie-na-40",
   categorie: "energie",
-  titel: "Alcohol, slaap en energie na 30: waarom 'één glas' zwaarder weegt",
+  titel: "Alcohol, slaap en energie: waarom 'één glas' zwaarder weegt",
   coverImage: "/images/blog/alcohol-slaap-energie-na-40.jpg",
   coverImageAlt: "Wijnglas op een nachtkastje naast een bed in avondlicht",
   heroIntro:
@@ -79,7 +79,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
     "energie-verhogen-natuurlijk",
   ],
   metaTitle:
-    "Alcohol, slaap en energie na 30: wat één glas echt doet",
+    "Alcohol, slaap en energie: wat één glas echt doet",
   metaDescription:
     "Alcohol en vermoeidheid na 30: REM-slaap, ochtendenergie, middagdip en vijf praktische aanpassingen zonder moraliseren.",
   keywords: [

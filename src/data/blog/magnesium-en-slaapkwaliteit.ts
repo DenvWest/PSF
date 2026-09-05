@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   slug: "magnesium-en-slaapkwaliteit",
   categorie: "supplementen",
-  titel: "De complete magnesiumgids: vormen, dosering en gebruik na 30",
+  titel: "De complete magnesiumgids: vormen, dosering en gebruik",
   coverImage: "/images/blog/magnesium-en-slaapkwaliteit.jpg",
   coverImageAlt: "Verse bladgroenten en noten op een houten plank",
   heroIntro:
@@ -102,7 +102,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     "melatonine-wanneer-wel-niet",
   ],
   metaTitle:
-    "De complete magnesiumgids na 30: vormen, dosering en gebruik",
+    "De complete magnesiumgids: vormen, dosering en gebruik",
   metaDescription:
     "Magnesium glycinaat, citraat, malaat, tauraat: welke vorm voor welk doel? Doseringen, voedingsbronnen en kwaliteitscriteria na 30.",
   keywords: [

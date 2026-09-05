@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const energieVerhogenData: BlogArtikel = {
   slug: "energie-verhogen-natuurlijk",
   categorie: "energie",
-  titel: "Energie verhogen na je 30e: de fysiologie en wat je kunt doen",
+  titel: "Energie verhogen: de fysiologie en wat je kunt doen",
   coverImage: "/images/blog/energie-verhogen-natuurlijk.jpg",
   coverImageAlt: "Persoon die een pad oploopt in de buitenlucht",
   heroIntro:
@@ -61,7 +61,7 @@ export const energieVerhogenData: BlogArtikel = {
     "slaap-verbeteren-40-plus",
   ],
   metaTitle:
-    "Energie verhogen na je 30e: fysiologie en praktische aanpak",
+    "Energie verhogen: fysiologie en praktische aanpak",
   metaDescription:
     "Aanhoudende vermoeidheid na je 30e? Ontdek fysiologische factoren en vijf leefstijlpunten die in onderzoek met energie en herstel in verband worden gebracht.",
   keywords: [

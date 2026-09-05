@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const middagdipBloedsuikerNa40Data: BlogArtikel = {
   slug: "middagdip-bloedsuiker-na-40",
   categorie: "energie",
-  titel: "Bloedsuiker, koffie en de middagdip na 30",
+  titel: "Bloedsuiker, koffie en de middagdip",
   coverImage: "/images/blog/middagdip-bloedsuiker-na-40.jpg",
   coverImageAlt: "Kop koffie met stoom in zacht middaglicht",
   heroIntro:
@@ -78,7 +78,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
     "alcohol-slaap-energie-na-40",
     "zout-kalium-bloeddruk-na-40",
   ],
-  metaTitle: "Middagdip na 30: bloedsuiker, koffie en wat wél helpt",
+  metaTitle: "Middagdip: bloedsuiker, koffie en wat wél helpt",
   metaDescription:
     "Middagdip na 30: oorzaak bloedsuiker, insulineresistentie, koffie-trucs en vijf praktische aanpassingen voor stabielere energie.",
   keywords: [

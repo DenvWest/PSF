@@ -5,7 +5,7 @@ export const buikvetCortisolSlaapMannenData: BlogArtikel = {
   slug: "buikvet-cortisol-slaap-mannen",
   categorie: "stress",
   audience: "mannen",
-  titel: "Buikvet na 30: waarom slaap en stress meer wegen dan je dieet",
+  titel: "Buikvet: waarom slaap en stress meer wegen dan je dieet",
   coverImage: "/images/blog/buikvet-cortisol-slaap-mannen.jpg",
   coverImageAlt: "Hardloopschoenen op betonnen trappen bij buitenbeweging",
   heroIntro:
@@ -71,7 +71,7 @@ export const buikvetCortisolSlaapMannenData: BlogArtikel = {
     "cortisol-en-testosteron",
     "krachttraining-na-40",
   ],
-  metaTitle: "Buikvet na 30: waarom slaap en stress meer wegen",
+  metaTitle: "Buikvet: waarom slaap en stress meer wegen",
   metaDescription:
     "Waarom cortisol en slaaptekort bij mannen na 30 buikvet stimuleren, hoe dat mechanisme werkt en welke aanpassingen volgens onderzoek het meeste helpen.",
   keywords: [

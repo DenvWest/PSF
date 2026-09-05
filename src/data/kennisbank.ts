@@ -516,7 +516,7 @@ Ashwagandha en magnesium worden vaak gekozen bij spanning en slaap; die keuzes p
     },
     relatedSlugs: ['adaptogens', 'cortisol'],
     relatedComparisons: ['/beste/ashwagandha', '/beste/magnesium'],
-    metaTitle: 'HPA-as: Wat Het Is en Waarom Het Na 30 Meer Voelt',
+    metaTitle: 'HPA-as: Wat Het Is en Waarom Stress Er Op Doorwerkt',
     metaDescription:
       'De HPA-as stuurt je stressreactie aan: van hypothalamus en hypofyse tot cortisol uit je bijnieren. Begrijpelijk uitgelegd.',
     referenties: toRefs([
@@ -620,7 +620,7 @@ Combi die vaak werkt: structureel bewegen + voldoende eiwit + gerichte supplemen
     },
     relatedSlugs: ['atp', 'epa-dha'],
     relatedComparisons: ['/beste/omega-3-supplement', '/beste/creatine'],
-    metaTitle: 'Mitochondriën: Je Cellulaire Energie en Wat Er Na 30 Verandert',
+    metaTitle: 'Mitochondriën: Je Cellulaire Energie',
     metaDescription:
       'Mitochondriën maken ATP voor energie en herstel. Waarom dat na 30 anders voelt en wat rol speelt bij leefstijl en supplementen.',
     referenties: toRefs([
@@ -722,7 +722,7 @@ Labtesten (totaal en soms vrij testosteron) horen in medische context: interpret
     },
     relatedSlugs: ['cortisol', 'hpa-as'],
     relatedComparisons: ['/beste/zink', '/beste/creatine'],
-    metaTitle: 'Testosteron: Wat Het Is en Wat Verandert Na 30',
+    metaTitle: 'Testosteron: Wat Het Is en Wat Er Verandert',
     metaDescription:
       'Testosteron uitgelegd: functie, leeftijdstrend en waarom labwaarden context nodig hebben — zonder supplement-hype.',
     referenties: toRefs([
@@ -788,7 +788,7 @@ In de Leefstijlcheck telt verbinding mee als interventiedomein. Scoort het bij j
     },
     relatedSlugs: ['nervus-vagus', 'cortisol', 'healthspan'],
     relatedComparisons: [],
-    metaTitle: 'Sociale verbinding en gezondheid na je 30e | PerfectSupplement',
+    metaTitle: 'Sociale verbinding en gezondheid',
     metaDescription:
       'Waarom sociale verbinding een volwaardig leefstijldomein is na 30: wat het met je stress-systeem doet, wat de wetenschap zegt en welke kleine stap het meest oplevert. Geen supplement — bewust.',
     referenties: toRefs([
@@ -992,7 +992,7 @@ Belangrijker dan het innamemoment is de vraag of je het überhaupt nodig hebt: z
     },
     relatedSlugs: ['mitochondrien', 'atp'],
     relatedComparisons: [],
-    metaTitle: 'Insulineresistentie: Uitleg en Relevantie Na 30',
+    metaTitle: 'Insulineresistentie: Uitleg en Praktische Relevantie',
     metaDescription:
       'Insulineresistentie in begrijpelijke taal: wat het betekent, wat onderzoek zegt en wanneer medische hulp past.',
     referenties: toRefs([

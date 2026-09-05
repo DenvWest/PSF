@@ -5,7 +5,7 @@ export const magnesiumHerstelMannen40Data: BlogArtikel = {
   slug: "magnesium-herstel-mannen-40",
   categorie: "supplementen",
   audience: "mannen",
-  titel: "Magnesium en herstel na 30: waar het wel en niet bij helpt",
+  titel: "Magnesium en herstel: waar het wel en niet bij helpt",
   coverImage: "/images/blog/magnesium-herstel-mannen-40.jpg",
   coverImageAlt: "Magnesiumcapsules die uit een potje rollen",
   heroIntro:
@@ -76,7 +76,7 @@ export const magnesiumHerstelMannen40Data: BlogArtikel = {
     "krachttraining-na-40",
     "creatine-en-herstel",
   ],
-  metaTitle: "Magnesium en herstel na 30: wat werkt echt?",
+  metaTitle: "Magnesium en herstel: wat werkt echt?",
   metaDescription:
     "Magnesium en spierherstel na 30: wat het mineraal fysiologisch doet, waarom herstel sowieso trager verloopt met leeftijd en waar suppletie aantoonbaar helpt.",
   keywords: [

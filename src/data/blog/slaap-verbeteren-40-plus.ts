@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const slaapVerbeterenData: BlogArtikel = {
   slug: "slaap-verbeteren-40-plus",
   categorie: "slaap",
-  titel: "Slaap verbeteren na je 30e: wat werkt en wat niet",
+  titel: "Slaap verbeteren: wat werkt en wat niet",
   coverImage: "/images/blog/slaap-verbeteren-40-plus.jpg",
   coverImageAlt: "Netjes opgemaakt bed in een rustige slaapkamer",
   heroIntro:
@@ -66,7 +66,7 @@ export const slaapVerbeterenData: BlogArtikel = {
     "energie-verhogen-natuurlijk",
   ],
   metaTitle:
-    "Slaap verbeteren na je 30e: wat werkt en wat niet",
+    "Slaap verbeteren: wat werkt en wat niet",
   metaDescription:
     "Slaap verandert na je 30e. Ontdek welke aanpassingen daadwerkelijk werken voor betere slaapkwaliteit — en waarom populaire adviezen soms averechts werken.",
   keywords: [
