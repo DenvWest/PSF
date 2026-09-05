@@ -23,9 +23,13 @@ function prioriteit(
 }
 
 describe("voeding-drieluik", () => {
-  it("zet meten vooraan, want daar vul je in", () => {
-    expect(DRIELUIK.map((stap) => stap.id)).toEqual(["meten", "basis", "aanvullen"]);
-    expect(DRIELUIK[0].lagen).toEqual([5]);
+  it("zet de status vooraan, want daar staat het antwoord al", () => {
+    expect(DRIELUIK.map((stap) => stap.id)).toEqual(["basis", "meten", "aanvullen"]);
+    expect(DRIELUIK[0].lagen).toEqual([1, 2, 4]);
+  });
+
+  it("noemt de eerste knop Voedingsstatus, gelijk aan de deur op Kompas", () => {
+    expect(DRIELUIK[0].naam).toBe("Voedingsstatus");
   });
 
   it("bundelt de basis-, kwaliteits- en situatielaag onder één knop", () => {
@@ -86,13 +90,18 @@ describe("voeding-drieluik", () => {
     expect(kiesStartKnop({ urlLayer: 6, knoppen })).toBe("aanvullen");
   });
 
-  it("opent zonder deeplink op meten & timing", () => {
+  it("opent zonder deeplink op de voedingsstatus", () => {
     const knoppen = bouwDrieluik([prioriteit(5), prioriteit(1)]);
-    expect(kiesStartKnop({ urlLayer: null, knoppen })).toBe("meten");
+    expect(kiesStartKnop({ urlLayer: null, knoppen })).toBe("basis");
+  });
+
+  it("houdt de deeplink naar het logboek werkend nu hij niet meer vooraan staat", () => {
+    const knoppen = bouwDrieluik([prioriteit(1), prioriteit(5)]);
+    expect(kiesStartKnop({ urlLayer: 5, knoppen })).toBe("meten");
   });
 
   it("valt terug op de eerste knop bij een deeplink naar een laag zonder knop", () => {
     const knoppen = bouwDrieluik([prioriteit(5), prioriteit(1)]);
-    expect(kiesStartKnop({ urlLayer: 3, knoppen })).toBe("meten");
+    expect(kiesStartKnop({ urlLayer: 3, knoppen })).toBe("basis");
   });
 });

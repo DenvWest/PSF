@@ -10,6 +10,10 @@ import DomeinOnderbouwing from "@/components/dashboard/voortgang/DomeinOnderbouw
 import type { VerdictPanelSurface } from "@/components/dashboard/SupplementVerdictPanel";
 import { PILLAR } from "@/data/dashboard";
 import type { ProductStanceDomain } from "@/data/domain-product-stance";
+import {
+  routeHerkomstRegel,
+  routesVoorDomein,
+} from "@/lib/domain-nutrition-routes";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import {
@@ -20,9 +24,8 @@ import {
 import { isDomainKompasDomain } from "@/lib/domain-kompas-copy";
 import DomeinPaneel from "@/components/dashboard/voortgang/DomeinPaneel";
 import VoedingVsSupplementTabel from "@/components/nutrition/VoedingVsSupplementTabel";
-import VoedingsbasisOverzicht from "@/components/nutrition/VoedingsbasisOverzicht";
+import VoedingsstatusTabel from "@/components/nutrition/VoedingsstatusTabel";
 import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
-import VoedingskwaliteitLaag from "@/components/nutrition/VoedingskwaliteitLaag";
 import SituatieVoedingLaag from "@/components/nutrition/SituatieVoedingLaag";
 import MetenTijdLaag from "@/components/nutrition/MetenTijdLaag";
 import NutritionDagboekPaneel from "@/components/dashboard/voortgang/NutritionDagboekPaneel";
@@ -130,16 +133,58 @@ function LayerSixSlot({
     return null;
   }
 
+  /**
+   * Buiten voeding: dezelfde tabel, gefilterd tot de stoffen die dit domein
+   * kent (5 sep).
+   *
+   * Slaap en beweging toonden hier alleen een gesloten poort met "het oordeel
+   * en het aanbod staan op Keuze" — een deur zonder inhoud, terwijl het
+   * oordeel er wél is. Magnesium (slaap) en eiwit (beweging) hebben allebei
+   * een voedingsroute die de check al berekent.
+   *
+   * Het blijft een *doorverwijzing*, geen eigen oordeel: de statussen komen
+   * ongewijzigd uit de voedingscheck, en de regel eronder zegt dat ook. Deze
+   * check meet geen inname, dus hij mag er geen uitspraak over doen. Stress
+   * krijgt hier niets — zie `routesVoorDomein`.
+   */
+  const domeinRoutes = routesVoorDomein(
+    mapping.stance,
+    data?.nutritionCheckinReadout?.routes ?? [],
+  );
+  const herkomst = routeHerkomstRegel(mapping.stance, domeinRoutes);
+
   return (
     <div className="mt-4">
-      <DomainSupplementStance
-        domain={mapping.stance}
-        verdicts={data?.supplementVerdicts ?? []}
-        nutritionLogCompleted={nutritionDone}
-        surface={mapping.surface}
-        poortOnly
-        onOpenFavorieten={onOpenSchap}
-      />
+      {domeinRoutes.length > 0 ? (
+        <>
+          <VoedingVsSupplementTabel
+            statuses={domeinRoutes}
+            surface={mapping.surface}
+            gateOpen={nutritionDone}
+            gateReden={
+              nutritionDone
+                ? null
+                : "Zonder voedingscheck weten we niet of er iets aan te vullen valt."
+            }
+          />
+          {herkomst ? (
+            <p className="m-0 mt-2 max-w-[58ch] text-[11px] leading-relaxed text-[#7E8C82] text-pretty">
+              {herkomst}
+            </p>
+          ) : null}
+        </>
+      ) : null}
+
+      <div className={domeinRoutes.length > 0 ? "mt-4" : undefined}>
+        <DomainSupplementStance
+          domain={mapping.stance}
+          verdicts={data?.supplementVerdicts ?? []}
+          nutritionLogCompleted={nutritionDone}
+          surface={mapping.surface}
+          poortOnly
+          onOpenFavorieten={onOpenSchap}
+        />
+      </div>
     </div>
   );
 }
@@ -154,13 +199,14 @@ function LayerSixSlot({
  * De zes ladderlagen blijven de bron; een knop kan er meer dan één tonen, en
  * die worden hier onder elkaar gerenderd in de volgorde die de knop noemt.
  *
- * - **P1 Voedingsbasis**: categorie-overzicht (groente, vezels, eiwit, …).
- * - **P2 Voedingskwaliteit**: de frequentievragen (suiker, bewerkingsgraad).
- * - **P4 Op jouw situatie**: volstaat je inname gegeven werk en sport?
- *   Die drie staan samen onder de knop Voedingsbasis: het zijn drie vragen
- *   over dezelfde maaltijden, uit dezelfde check.
- * - **P5 Meten & timing**: je eigen reeks, je logboek en de terugblik. De
- *   eerste knop, want dit is de enige laag waar je iets invoert.
+ * - **P1 + P2 Voedingsstatus**: één tabel met de voedselgroepen én de
+ *   kwaliteitsvragen — categorie, jouw antwoord, de balk, de richtlijn, de
+ *   status. Dit waren twee componenten die dezelfde balkvorm herhaalden; zie
+ *   `VoedingsstatusTabel` voor waarom ze samengevoegd zijn.
+ * - **P4 Op jouw situatie**: volstaat je inname gegeven gewicht en training?
+ *   Blijft een eigen blok onder de tabel: die vraag heeft geen categorie-as,
+ *   dus hij past niet in dezelfde rijen.
+ * - **P5 Meten & timing**: je eigen reeks, je logboek en de terugblik.
  * - **P6 Aanvullen**: de vergelijking eten naast supplement.
  *
  * **P3 (Verhoudingen) heeft geen slot meer.** Die toonde de verdeling over je
@@ -200,13 +246,16 @@ function NutritionLayerSlot({
 
   const readout = data?.nutritionCheckinReadout ?? null;
 
-  if (layerId === 1 && readout) {
+  // Ook zonder readout: de tabel draagt zijn eigen lege staat ("doe de
+  // voedingscheck"). Die staat overslaan zou de knop laten openklappen naar
+  // niets, en juist wie nog geen check deed heeft de uitleg het hardst nodig.
+  if (layerId === 1) {
     return (
-      <VoedingsbasisOverzicht
-        rijen={readout.factRows}
-        report={readout.ladderReport}
+      <VoedingsstatusTabel
+        rijen={readout?.factRows ?? []}
+        report={readout?.ladderReport ?? null}
         selfReport={
-          readout.ladderReport
+          readout?.ladderReport
             ? nutritionReportFromAnswers(readout.ladderReport.sliders)
             : null
         }
@@ -216,13 +265,11 @@ function NutritionLayerSlot({
     );
   }
 
+  // Laag 2 (kwaliteit) heeft geen eigen slot meer: zijn rijen staan in de
+  // tabel van laag 1, waar ze dezelfde kolommen delen met de voedselgroepen.
+  // Een tweede blok zou dezelfde meting een tweede keer tonen.
   if (layerId === 2) {
-    return (
-      <VoedingskwaliteitLaag
-        rijen={readout?.factRows ?? []}
-        checkDatum={readout?.date ?? null}
-      />
-    );
+    return null;
   }
 
   if (layerId === 5) {
@@ -399,7 +446,7 @@ export default function LeefstijlprofielDomeinScherm({
 
   /**
    * De lagen die onder de open knop hangen. Op voeding kan dat er meer dan één
-   * zijn (Voedingsbasis draagt 1, 2 en 4); daarbuiten is het altijd de laag
+   * zijn (Voedingsstatus draagt 1, 2 en 4); daarbuiten is het altijd de laag
    * zelf.
    */
   const actieveLagen: readonly number[] =
@@ -632,8 +679,8 @@ export default function LeefstijlprofielDomeinScherm({
                 clarityTag("domein_prioriteit_kompas", domain);
               }}
             >
-              {/* Eén knop kan meer dan één ladderlaag dragen: Voedingsbasis
-                  toont de basis, de kwaliteit en je situatie onder elkaar. */}
+              {/* Eén knop kan meer dan één ladderlaag dragen: Voedingsstatus
+                  toont de tabel (basis + kwaliteit) met je situatie eronder. */}
               {isKompasDomain
                 ? actieveLagen.map((laag) => (
                     <NutritionLayerSlot

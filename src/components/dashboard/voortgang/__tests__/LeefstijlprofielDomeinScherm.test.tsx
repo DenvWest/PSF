@@ -133,7 +133,7 @@ describe("LeefstijlprofielDomeinScherm", () => {
     expect(screen.getByRole("heading", { name: /Wat er onder je voeding staat/ })).toBeTruthy();
     expect(screen.getByText(/Wat hier staat is je keuze en de datum/)).toBeTruthy();
     expect(screen.queryByText("Grootste winst")).toBeNull();
-    kiesPrioriteit(/Voedingsbasis/);
+    kiesPrioriteit(/Voedingsstatus/);
     expect(screen.queryByText("Jij mat")).toBeNull();
   });
 
@@ -254,7 +254,7 @@ describe("LeefstijlprofielDomeinScherm", () => {
     ).toBeTruthy();
   });
 
-  it("zet op voeding-P2 de lege check-staat neer, niet de ranglijst", () => {
+  it("vouwt de kwaliteitsvragen in de statustabel, zonder eigen knop of blok", () => {
     render(
       <LeefstijlprofielDomeinScherm
         model={model}
@@ -265,17 +265,21 @@ describe("LeefstijlprofielDomeinScherm", () => {
       />,
     );
 
-    // Voedingskwaliteit is sinds het drieluik geen eigen knop meer: hij staat
-    // onder Voedingsbasis, samen met de basis en je situatie.
+    // Voedingskwaliteit is sinds het drieluik geen eigen knop meer, en sinds
+    // de statustabel ook geen eigen blok: zijn rijen delen de kolommen met de
+    // voedselgroepen. Een tweede blok zou dezelfde meting twee keer tonen.
     expect(screen.queryByRole("button", { name: /Voedingskwaliteit/ })).toBeNull();
-    kiesPrioriteit(/Voedingsbasis/);
+    kiesPrioriteit(/Voedingsstatus/);
+    expect(screen.queryByText("Dit komt uit je voedingscheck.")).toBeNull();
     // Zonder check opent de laag op wat er ontbreekt — niet op de ranglijst,
     // die voor iedereen gelijk is en dus geen antwoord op "hoe sta ik ervoor".
-    expect(screen.getByText("Dit komt uit je voedingscheck.")).toBeTruthy();
+    expect(
+      screen.getByText(/Doe de voedingscheck om per categorie te zien/),
+    ).toBeTruthy();
     expect(screen.queryByText(/Kwaliteit — wat er op je groente en fruit zit/)).toBeNull();
   });
 
-  it("toont op voeding drie knoppen, met meten & timing vooraan", () => {
+  it("toont op voeding drie knoppen, met de voedingsstatus vooraan", () => {
     render(
       <LeefstijlprofielDomeinScherm
         model={model}
@@ -291,8 +295,8 @@ describe("LeefstijlprofielDomeinScherm", () => {
       .getAllByRole("button")
       .map((knop) => knop.textContent?.replace(/winst$/, "").trim());
     expect(namen).toEqual([
+      "Voedingsstatus",
       "Meten & timing",
-      "Voedingsbasis",
       "Aanvullen & vergelijken",
     ]);
   });

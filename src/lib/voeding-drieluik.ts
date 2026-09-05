@@ -18,18 +18,28 @@ import type { LeefstijlLayerState } from "@/lib/leefstijl-ladder";
  *
  * **Waarom deze drie, in deze volgorde.**
  *
- * 1. **Meten & timing** — hier vul je je logboek. Dat staat vooraan omdat het
- *    de enige plek is waar je iets *invoert*; al het andere op dit scherm is
- *    een uitkomst daarvan. Een scherm dat opent met een oordeel over eten dat
- *    je nog niet hebt ingevuld, vraagt om vertrouwen dat het nog niet verdiend
- *    heeft.
- * 2. **Voedingsbasis** — wat je eet en wat dat zegt. Hier komen de oude lagen
- *    1, 2 en 4 samen: de basis, de kwaliteit ervan, en of het volstaat voor
- *    jouw situatie. Drie vragen over dezelfde maaltijden, uit dezelfde check —
- *    ze stonden alleen apart omdat de piramide ze apart nummert.
+ * 1. **Voedingsstatus** — wat je check over je eten zegt. Hier komen de oude
+ *    lagen 1, 2 en 4 samen: de basis, de kwaliteit ervan, en of het volstaat
+ *    voor jouw situatie. Drie vragen over dezelfde maaltijden, uit dezelfde
+ *    check — ze stonden alleen apart omdat de piramide ze apart nummert.
+ * 2. **Meten & timing** — hier vul je je logboek, en zie je wat er sinds je
+ *    vorige check bewoog.
  * 3. **Aanvullen & vergelijken** — pas als 1 en 2 er staan: haal je het uit je
  *    eten, of komt er een supplement in beeld. Dit is de laag waar het scherm
  *    naartoe werkt.
+ *
+ * **Waarom de status vooraan staat, en niet het logboek (5 sep).** Tot nu toe
+ * opende dit scherm op Meten & timing, met als argument: daar voer je in, en
+ * de rest is daar een uitkomst van. Dat argument klopt over de *data* maar
+ * niet over de *vraag*. Wie dit scherm opent komt met "hoe sta ik ervoor", en
+ * dat antwoord staat al klaar — het komt uit de check, niet uit het logboek.
+ * Openen op een leeg invoerformulier laat het scherm zeggen "eerst werken",
+ * terwijl er een uitkomst ligt. Het logboek verdiept die uitkomst en staat
+ * dus erachter, niet ervoor.
+ *
+ * De naam volgde dezelfde beweging: op Kompas heet deze deur al
+ * **Voedingsstatus** (zie `NutritionKompasTweeluik`), en twee namen voor
+ * dezelfde bestemming laten het lijken alsof het twee plekken zijn.
  *
  * **Wat er niet meer is.** Laag 3 (Verhoudingen) toonde de verdeling over je
  * eetmomenten. Dat is een detail van je logboek, geen eigen stap in een route
@@ -52,16 +62,16 @@ export type DrieluikStap = {
 
 export const DRIELUIK: readonly DrieluikStap[] = [
   {
-    id: "meten",
-    naam: "Meten & timing",
-    samenvatting: "Vul je dag in — hier komt de rest vandaan.",
-    lagen: [5],
-  },
-  {
     id: "basis",
-    naam: "Voedingsbasis",
+    naam: "Voedingsstatus",
     samenvatting: "Wat je eet, hoe het staat, en of het voor jou volstaat.",
     lagen: [1, 2, 4],
+  },
+  {
+    id: "meten",
+    naam: "Meten & timing",
+    samenvatting: "Vul je dag in — wat zit er onder je gemiddelde?",
+    lagen: [5],
   },
   {
     id: "aanvullen",
@@ -84,7 +94,7 @@ export function stapVoorLaag(laag: number): DrieluikStap | null {
 /**
  * Eén knop, met de staat en telling van de lagen die eronder vallen.
  *
- * **Hoe drie staten er één worden.** `Voedingsbasis` bundelt de lagen 1, 2 en
+ * **Hoe drie staten er één worden.** `Voedingsstatus` bundelt de lagen 1, 2 en
  * 4, die elk hun eigen staat uit de check krijgen. De knop toont de *zwaarste*
  * daarvan: staat één van de drie op `winst`, dan is dat wat je wilt weten. Het
  * alternatief — een gemiddelde — bestaat niet: `winst` en `ok` middelen niet
@@ -161,7 +171,8 @@ export function bouwDrieluik(
  *
  * Een deeplink naar een laag opent de knop die hem draagt — ook als dat een
  * laag is die zelf geen knop meer heeft (P1, P2 en P4 openen allemaal
- * Voedingsbasis). Zonder deeplink: de eerste knop, want daar vul je in.
+ * Voedingsstatus). Zonder deeplink: de eerste knop, want daar staat het
+ * antwoord waar je voor kwam.
  */
 export function kiesStartKnop({
   urlLayer,
