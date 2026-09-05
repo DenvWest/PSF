@@ -70,8 +70,8 @@ export default function LibrarySidebar({
 }: LibrarySidebarProps) {
   const chip = (actief: boolean) =>
     actief
-      ? "border-ps-green bg-ps-green font-semibold text-white"
-      : "border-stone-200 bg-white text-stone-600";
+      ? "border-ps-green bg-ps-green font-semibold text-white shadow-[0_2px_8px_rgba(90,143,106,0.3)]"
+      : "border-stone-200/90 bg-white text-stone-600 shadow-[0_1px_2px_rgba(28,25,23,0.03)] hover:border-ps-green/40 hover:text-ps-green";
 
   const rijKnop = (actief: boolean) =>
     actief
@@ -117,7 +117,7 @@ export default function LibrarySidebar({
             aria-label="Onderwerp"
             value={group}
             onChange={(event) => onGroup(event.target.value)}
-            className={`h-10 appearance-none rounded-full border pl-4 pr-9 text-sm transition-colors focus:border-ps-green focus:outline-none focus:ring-1 focus:ring-ps-green ${chip(
+            className={`h-10 appearance-none rounded-full border pl-4 pr-9 text-sm transition-[border-color,color,background-color,box-shadow] duration-200 focus:border-ps-green focus:outline-none focus:ring-2 focus:ring-ps-green/40 ${chip(
               group !== "alles",
             )}`}
           >
@@ -146,7 +146,7 @@ export default function LibrarySidebar({
             type="button"
             onClick={toggle.onToggle}
             aria-pressed={toggle.actief}
-            className={`h-10 flex-shrink-0 rounded-full border px-4 text-sm transition-colors ${chip(toggle.actief)}`}
+            className={`h-10 flex-shrink-0 rounded-full border px-4 text-sm transition-[border-color,color,background-color,box-shadow,transform] duration-200 ease-out active:scale-[0.97] ${chip(toggle.actief)}`}
           >
             {toggle.label}
           </button>

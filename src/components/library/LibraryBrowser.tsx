@@ -268,7 +268,7 @@ export default function LibraryBrowser({
               value={zoek}
               onChange={(event) => wijzigZoek(event.target.value)}
               placeholder={zoekPlaceholder}
-              className="h-9 w-full rounded-full border border-stone-200 bg-white pl-9 pr-3 text-[0.8125rem] text-stone-800 placeholder:text-stone-400 focus:border-ps-green focus:outline-none focus:ring-1 focus:ring-ps-green"
+              className="h-9 w-full rounded-full border border-stone-200/90 bg-white pl-9 pr-3 text-[0.8125rem] text-stone-800 shadow-[0_1px_2px_rgba(28,25,23,0.03)] placeholder:text-stone-400 transition-shadow duration-200 focus:border-ps-green focus:outline-none focus:ring-2 focus:ring-ps-green/40 focus:shadow-[0_2px_10px_rgba(90,143,106,0.14)]"
             />
             <svg
               aria-hidden
