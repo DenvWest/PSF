@@ -22,6 +22,9 @@ nightly-compliance-audit.sh
 scripts/monthly-koag-audit.sh
 package-lock.json.backup
 tsconfig.tsbuildinfo
-.cursor/
+.cursor/*
+!.cursor/rules/
+.cursor/rules/*
+!.cursor/rules/*.mdc
 .tmp/
 .audit-screenshots/

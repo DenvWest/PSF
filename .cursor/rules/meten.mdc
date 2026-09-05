@@ -1,0 +1,50 @@
+---
+description: Meet-standaarden — denk tracking mee bij elke gedrags-/conversiewijziging
+alwaysApply: true
+---
+
+# Meet-standaarden — altijd toepassen
+
+Bij elke NIEUWE of GEACTIVEERDE CTA, knop, keuze-vertakking, opt-in of affiliate-link
+die gedrag of conversie kan beïnvloeden: bouw de meting mee in DEZELFDE wijziging, nooit achteraf.
+
+Kies de laag/lagen die bij de context passen — niet automatisch alle drie:
+- domain_events — durable, joinbaar aan conversie, gaat naar PostHog + n8n.
+  - Client (intake): `emitIntakeClientEvent(type, payload)` — ALLEEN waar een intake-sessie-cookie bestaat
+    (op publieke pagina's zonder sessie geeft /api/intake/events 401).
+    Een nieuw client-event vereist registratie op DRIE plekken, anders 403:
+    src/lib/events.ts (DOMAIN_EVENT_TYPES) + src/lib/intake-events-client.ts (ClientEmitType-union)
+    + de allowlist in src/app/api/intake/events/route.ts.
+  - Client (account): `emitAccountClientEvent(type, payload)` — ALLEEN waar een account-cookie bestaat
+    (dashboard; zonder cookie geeft /api/account/events 401).
+    Registratie op DRIE plekken: src/lib/events.ts + src/lib/account-events-client.ts
+    + de allowlist in src/app/api/account/events/route.ts.
+    Consent-bias: beide client-routes droppen durable events zonder analytics-consent (200, geen insert);
+    vergelijk funnel-ratio's alleen binnen het consented cohort.
+  - Server: `emitEvent(...)` in een API-route — voor acties die toch al server-side gebeuren
+    (form-submit, opt-in). Geen client-allowlist nodig.
+- GA4 — `trackEvent(name, params)`: aggregatie/funnel, óók op publieke pagina's. Altijd
+  betekenisvolle params meegeven; geen lege events.
+- Clarity — `clarityTag(key, value)`: filterbare tag zodat je recordings/heatmaps per pad of
+  variant kunt terugkijken.
+
+Regels:
+- Hergebruik bestaande event-types (bv. profile.recognition, remeasure.invited, affiliate.click,
+  email.opted_in) vóór je nieuwe verzint.
+- Client-tracking respecteert analytics-consent. GEEN PII (e-mail, naam) in GA4/Clarity-payloads;
+  PII hoort alleen in server-side domain_events waar functioneel nodig.
+- Bundel nooit meerdere conversie-gevoelige wijzigingen in één deploy zonder dat hun effect
+  los te meten is (attributie). Activeer geen dormant/feature-gated component zonder meetpunt.
+- Meld bij elke afronding kort: "Meetpunt: <event(s)> — hier lees je het effect af."
+
+## Privacy- en register-gate — altijd toepassen
+
+Bij elke wijziging die **persoonsgegevens**, **bijzondere gegevens (art. 9)**, een **nieuwe verwerker** of een **nieuw verwerkingsdoel** introduceert:
+
+1. **`docs/core/VERWERKINGSREGISTER.md`** — update in **dezelfde PR** als de codewijziging (nieuwe verwerking, verwerker, bewaartermijn, grondslag).
+2. **`src/app/privacy/page.tsx`** — bijwerken als de wijziging **publiek relevant** is (nieuwe cookie, verwerker, doel of bewaartermijn).
+3. **DPA** — nieuwe SaaS-verwerker: DPA accepteren en archiveren in `Documenten/.../privacy/dpa/` **vóór** productie-gebruik.
+4. **DPIA** — herzien bij nieuwe art. 9-verwerking, grootschalige profilering of nieuwe doorgifte buiten EU (`docs/core/DPIA.md`).
+5. **PDF's** — na register/privacy-wijziging: `npm run generate-legal-pdfs`.
+
+Geen nieuwe verwerker of PII-flow activeren zonder register-update. Zie ook `docs/cursors/monthly-privacy-register-review.md`.

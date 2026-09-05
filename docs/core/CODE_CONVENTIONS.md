@@ -18,12 +18,11 @@
 
 ## Git & Workflow (hard geleerd)
 
-1. **Altijd `git add -A && git commit -m "checkpoint"` VOOR elke Cursor-sessie** — Dennis heeft meerdere keren local work verloren
-2. **Nooit `git commit` in Cursor-prompts** — Cursor heeft in het verleden auto-committed
-3. **`npm run build` VOOR elke commit** — vangt module/import errors
-4. **`grep -rn "console.log" src/` VOOR elke commit** — geen debug in productie
-5. **Nooit `npm install/uninstall` zonder direct te committen**
-6. **`.env.local` NOOIT overschrijven of committen**
+1. **Altijd `git add` + `git commit` VOOR elke Cursor-sessie als er WIP is** — Dennis heeft meerdere keren local work verloren (checkpoint)
+2. **Na een afgeronde taak: klaar-check → direct committen** — zie [`AGENTS.md`](../../AGENTS.md) en `.cursor/rules/commit.mdc`. Nooit wachten op “commit”; nooit `git push`
+3. **Klaar-check vóór elke commit** — `grep -rn "console.log" src/` + `npx tsc --noEmit` + vitest + eslint (geen `next build` terwijl `next dev` live is)
+4. **Nooit `npm install/uninstall` zonder direct te committen**
+5. **`.env.local` NOOIT overschrijven of committen**
 
 ## Cursor-prompt format
 
@@ -35,9 +34,8 @@ Korte checklist — elke prompt moet bevatten:
 2. **Exacte file paths** waar wijzigingen moeten
 3. **Exacte JSX/Tailwind class names** (kopieer van werkende componenten)
 4. **Explicit "do not touch" lijst** (`"Verander NIETS aan [file]"`)
-5. **Voorgestelde commit message** als comment: `# Voorgestelde commit: git add -A && git commit -m "feat: ..."`
-6. **Afsluitende regel:** *"Niet automatisch committen, stop na aanpassingen zodat ik de wijzigingen kan reviewen."*
-7. **Sprint-per-sprint:** stop en review na elke sprint, `npm run build` na elke sprint
+5. **Verificatie + direct commit:** na groene klaar-check meteen `git add` (alleen deze taak) + `git commit`; nooit push
+6. **Sprint-per-sprint:** stop en review na elke sprint alleen als de prompt dat expliciet vraagt; anders commit na elke afgeronde sprint
 
 `console.log`-check wordt afgedwongen door `.githooks/pre-commit`; `npm run build` blijft handmatige/agent-verificatie (te traag voor pre-commit).
 

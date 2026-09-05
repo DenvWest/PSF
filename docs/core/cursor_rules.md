@@ -47,7 +47,7 @@ in een handgeschreven doc (zoals dit bestand), nooit in PROJECT_STATE.md zelf.
 - src/lib/scoring.ts nooit aanraken
 - globals.css nooit aanraken
 - deploy.sh nooit aanraken
-- Geen git commands uitvoeren
+- Na groene klaar-check: direct git add (alleen deze taak) + git commit; nooit git push
 
 ## Jouw taak
 De taak en de bestanden die je moet aanpassen staan hieronder aangegeven vanuit het plan.
@@ -55,5 +55,4 @@ Pas alleen die bestanden aan — niets daarbuiten.
 
 [output vanuit claude code staat gekopieerd in de prompt]
 
-# Voorgestelde commit: git add -A && git commit -m "feat: [OMSCHRIJVING]"
-Niet automatisch committen. Stop na de aanpassingen zodat ik kan reviewen.
+Na groene klaar-check: meteen git add + git commit. Geen vraag, geen pauze. Nooit git push.

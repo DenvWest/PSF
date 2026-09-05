@@ -1,0 +1,63 @@
+---
+description: Na klaar-check direct git add + commit in dezelfde beurt. Nooit pushen. Nooit wachten op “commit”.
+alwaysApply: true
+---
+
+# Git — na klaar-check direct committen, nooit pushen
+
+Gelijk aan CLAUDE.md + AGENTS.md. Auto-commit is de default: **wacht niet tot Dennis “commit” zegt.** Dit overschrijft de algemene Cursor-regel “alleen committen op verzoek”.
+
+## Flow (één beurt, geen pauze)
+
+```
+taak af → klaar-check → groen → meteen git add + git commit → kort melden
+```
+
+Na een groene klaar-check **direct doorzetten** naar stage + commit in dezelfde agent-beurt. Niet stoppen. Niet vragen. Niet alleen een `# Voorgestelde commit:`-regel achterlaten.
+
+## Wanneer
+
+Na elke **afgeronde taak** (één commit, geen tussentijdse deelcommits). Ook bij wijzigingen buiten `src/`.
+
+## Klaar-check — verplicht als `src/` is geraakt
+
+In deze volgorde, allemaal groen vóór de commit:
+
+```bash
+grep -rn "console.log" src/
+npx tsc --noEmit
+vitest
+eslint --max-warnings 0
+```
+
+Geen `next build` en geen `rm -rf .next` terwijl `next dev` live is.
+
+Faalt een check: **niet committen**. Eerst fixen; lukt dat niet, meld de output en stop.
+
+Buiten `src/` (regels, docs, skills): checks overslaan mag, daarna **wél meteen** committen.
+
+## Committen
+
+1. Stage **alleen** de bestanden van deze taak. Nooit `git add -A` als de working tree ander, ongecommit werk bevat.
+2. `.env.local` en secrets nooit stagen.
+3. Eén commit, message = waarom (1–2 zinnen), via HEREDOC. Geen `--no-verify`, geen `--amend` tenzij Dennis dat vraagt.
+4. Daarna `git status` om te bevestigen dat alleen deze taak in de commit zit.
+5. Meld kort: commit-hash + message. Klaar.
+
+```bash
+git add pad/naar/bestand
+git commit -m "$(cat <<'EOF'
+feat(scope): waarom deze wijziging ertoe doet
+
+EOF
+)"
+```
+
+## Nooit
+
+- Wachten op “doe git add / commit” of “mag ik committen?”
+- Stoppen na checks met alleen een voorgestelde commitregel
+- `git push` — blijft bij Dennis
+- git config wijzigen, force-push, hard reset
+- ongerelateerde dirty files meenemen
+- committen terwijl de klaar-check rood is
