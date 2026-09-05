@@ -280,10 +280,13 @@ export default function BlogArticlePage({
                 {artikel.vergelijkingExtraLink ? (
                   <Link
                     href={artikel.vergelijkingExtraLink.href}
-                    className="group inline-flex w-full flex-1 items-center justify-between gap-3 rounded-lg border border-stone-200 bg-white px-4 py-3.5 text-[0.875rem] font-medium text-stone-700 transition-colors hover:border-stone-300 hover:bg-stone-50/75 hover:text-stone-900 sm:min-h-0 sm:max-w-fit"
+                    className="group inline-flex w-full flex-1 items-center justify-between gap-3 rounded-xl border border-stone-200/80 bg-gradient-to-b from-white to-stone-50/60 px-4 py-3.5 text-[0.875rem] font-semibold text-stone-700 shadow-[0_1px_2px_rgba(28,25,23,0.03)] transition-[border-color,color,background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-ps-green/45 hover:bg-ps-green-light/40 hover:text-ps-green hover:shadow-[0_4px_14px_rgba(90,143,106,0.16)] active:translate-y-0 sm:min-h-0 sm:max-w-fit"
                   >
                     <span>{artikel.vergelijkingExtraLink.label}</span>
-                    <span className="text-stone-400 transition group-hover:text-stone-500" aria-hidden>
+                    <span
+                      aria-hidden
+                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-stone-200/90 bg-white text-stone-400 transition-[transform,border-color,color] duration-200 ease-out motion-safe:group-hover:translate-x-0.5 group-hover:border-ps-green/45 group-hover:text-ps-green"
+                    >
                       →
                     </span>
                   </Link>

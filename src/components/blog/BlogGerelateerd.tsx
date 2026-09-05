@@ -24,10 +24,10 @@ export default function BlogGerelateerd({ artikelen }: BlogGerelateerProps) {
           <Link
             key={artikel.slug}
             href={blogArtikelPad(artikel)}
-            className="group flex flex-col gap-2 rounded-xl border border-stone-200/95 bg-white p-5 transition-colors hover:border-stone-300 hover:bg-stone-50/85"
+            className="group flex flex-col gap-2 rounded-xl border border-stone-200/80 bg-gradient-to-b from-white to-stone-50/60 p-5 shadow-[0_1px_2px_rgba(28,25,23,0.03)] transition-[border-color,background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-ps-green/45 hover:bg-ps-green-light/30 hover:shadow-[0_6px_18px_rgba(90,143,106,0.14)] active:translate-y-0"
           >
             <BlogCategorieBadge categorie={artikel.categorie} />
-            <h3 className="text-sm font-semibold leading-snug text-stone-900 transition group-hover:text-stone-600">
+            <h3 className="text-sm font-semibold leading-snug text-stone-900 transition-colors group-hover:text-ps-green">
               {artikel.titel}
             </h3>
             <p className="text-xs text-stone-400">{artikel.leestijd} leestijd</p>
