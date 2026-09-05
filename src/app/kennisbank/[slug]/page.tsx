@@ -22,6 +22,7 @@ import {
   READING_RAIL_COL_CLASS,
 } from '@/lib/article-reading-columns'
 import ArticleSidebar from '@/components/article/ArticleSidebar'
+import ArticleMobileReturnBar from '@/components/article/ArticleMobileReturnBar'
 import {
   REDACTIE_VERANTWOORDELIJKE_STANDARD,
   STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM,
@@ -293,6 +294,7 @@ async function TermPage({ slug }: { slug: string }) {
                   <ArticleSidebar
                     headings={tocItems.map((t) => ({ id: t.id, text: t.label }))}
                     clusterTitle={themeLabels[term.theme].title}
+                    back={{ label: KB_HUB_LABEL, href: '/kennisbank' }}
                     clusterArticles={kennisbankTerms
                       .filter((t) => t.theme === term.theme && t.slug !== term.slug)
                       .slice(0, 8)
@@ -306,6 +308,12 @@ async function TermPage({ slug }: { slug: string }) {
               </div>
               <div className="min-w-0 flex-1">
                 <ArticleBodyReadingChrome tocItems={[]} hideTocBelowItemCount={999}>
+                  <ArticleMobileReturnBar
+                    back={{ label: KB_HUB_LABEL, href: '/kennisbank' }}
+                    sectionLabel={themeLabels[term.theme].title}
+                    sectionHref={`/kennisbank/${term.theme}`}
+                  />
+
                   <div className="mb-9 lg:hidden">
                     <ArticleTableOfContents items={tocItems} activeId={null} />
                   </div>

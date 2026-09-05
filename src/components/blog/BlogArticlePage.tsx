@@ -29,6 +29,8 @@ import {
 import { alleArtikelen } from "@/data/blog";
 import { CATEGORIE_CONFIG } from "@/data/blog/categorieen";
 import ArticleSidebar from "@/components/article/ArticleSidebar";
+import ArticleMobileReturnBar from "@/components/article/ArticleMobileReturnBar";
+import BlogCategorieIcon from "@/components/blog/BlogCategorieIcon";
 import { renderInlineMarkdownLinks } from "./inlineMarkdownLinks";
 import {
   REDACTIE_VERANTWOORDELIJKE_STANDARD,
@@ -71,6 +73,7 @@ export default function BlogArticlePage({
   const showReadingGutters = tocItems.length >= ARTICLE_HIDE_TOC_BELOW_ITEMS;
 
   const clusterTitle = CATEGORIE_CONFIG[artikel.categorie].naam;
+  const clusterHref = `/blog/${artikel.categorie}`;
   const clusterArticles = alleArtikelen
     .filter((a) => a.categorie === artikel.categorie && a.slug !== artikel.slug)
     .slice(0, 8)
@@ -157,6 +160,13 @@ export default function BlogArticlePage({
                 clusterTitle={clusterTitle}
                 clusterArticles={clusterArticles}
                 currentSlug={artikel.slug}
+                back={{ label: BLOG_HUB_LABEL, href: "/blog" }}
+                sectionIcon={
+                  <BlogCategorieIcon
+                    categorie={artikel.categorie}
+                    className="h-3.5 w-3.5"
+                  />
+                }
               />
             </div>
           </aside>
@@ -165,6 +175,18 @@ export default function BlogArticlePage({
           </div>
           <div className="min-w-0 flex-1">
             <ArticleBodyReadingChrome tocItems={[]} hideTocBelowItemCount={999}>
+              <ArticleMobileReturnBar
+                back={{ label: BLOG_HUB_LABEL, href: "/blog" }}
+                sectionLabel={clusterTitle}
+                sectionHref={clusterHref}
+                sectionIcon={
+                  <BlogCategorieIcon
+                    categorie={artikel.categorie}
+                    className="h-3.5 w-3.5"
+                  />
+                }
+              />
+
               {showReadingGutters ? (
                 <div className="mb-9 lg:hidden">
                   <ArticleTableOfContents items={tocItems} activeId={null} />

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { parseReadingAnchorLinePx } from '@/lib/reading-metrics'
+import { LIB_EYEBROW } from '@/components/library/library-tokens'
 
 interface TableOfContentsProps {
   headings: { id: string; text: string }[]
@@ -63,9 +64,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
 
   return (
     <nav aria-label="Inhoudsopgave" className="leading-[1.38] tracking-[-0.01em]">
-      <p className="mb-3 font-display text-[0.62rem] font-medium uppercase tracking-[0.09em] text-stone-400">
-        In dit artikel
-      </p>
+      <p className={`mb-2.5 ${LIB_EYEBROW}`}>In dit artikel</p>
       <ul className="list-none">
         {headings.map((heading) => {
           const active = activeId === heading.id
@@ -74,10 +73,10 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
               <a
                 href={`#${heading.id}`}
                 onClick={(e) => handleNavClick(e, heading.id)}
-                className={`block border-l-[1.5px] py-[0.375rem] pl-3 text-[0.75rem] leading-[1.42] outline-none motion-safe:transition-[color,border-color,background-color] motion-safe:duration-150 ${
+                className={`block border-l-[1.5px] py-[0.4rem] pl-3 text-[0.78rem] leading-[1.45] outline-none motion-safe:transition-[color,border-color,background-color] motion-safe:duration-150 ${
                   active
-                    ? 'border-l-[rgb(148_142_136_/_0.88)] bg-stone-50/70 text-stone-800'
-                    : 'border-l-transparent text-stone-500 hover:border-l-stone-200/95 hover:bg-stone-50/50 hover:text-stone-700 focus-visible:bg-stone-50/90 focus-visible:ring-1 focus-visible:ring-stone-300/80'
+                    ? 'border-l-ps-green bg-stone-50/80 font-medium text-stone-900'
+                    : 'border-l-stone-200/70 text-stone-500 hover:border-l-stone-300 hover:bg-stone-50/60 hover:text-stone-800 focus-visible:bg-stone-50/90 focus-visible:ring-1 focus-visible:ring-stone-300/80'
                 }`}
               >
                 {heading.text}
