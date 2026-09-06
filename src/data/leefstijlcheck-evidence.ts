@@ -526,6 +526,52 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
     references: nutritionRefs,
   },
   {
+    questionId: "NUT_STRUCT",
+    whyThisQuestion:
+      "Vaste eetmomenten zeggen iets anders dan wát je eet, en zijn een praktische indicator voor hoe stuurbaar je voedingspatroon is.",
+    scientificRationale: [
+      "Gedragswetenschappelijk onderzoek naar gewoontevorming laat zien dat consistente timing en context routines versterken en makkelijker maakt vol te houden.",
+      "Een patroon dat elke dag verschuift is lastiger te koppelen aan vaste keuzemomenten voor gezondere opties.",
+      "De vraag is een gedragsproxy, geen voedingswaarde-oordeel: regelmaat op zich zegt niets over kwaliteit van de maaltijd.",
+    ],
+    answerMeaning: {
+      higherAlignment:
+        "Een hoger antwoord (vaste momenten) sluit aan bij leefstijlpatronen waarin gewoontes makkelijker beklijven.",
+      lowerAlignment:
+        "Een lager antwoord (sterk wisselend of op elk moment) wordt vaker gezien binnen minder stuurbare eetpatronen.",
+    },
+    strength: {
+      stars: 3,
+      label: "Redelijk bewijs",
+      rationale:
+        "Onderbouwd vanuit gedragswetenschap over gewoontevorming; minder direct onderzocht dan voedingspatroon-uitkomsten zelf.",
+    },
+    references: [habitFormationRef, bctTaxonomyRef],
+  },
+  {
+    questionId: "NUT_QUAL",
+    whyThisQuestion:
+      "De verhouding onbewerkt versus bewerkt voedsel is een kernkenmerk van voedingskwaliteit binnen mediterrane leefstijlpatronen.",
+    scientificRationale: [
+      "Reviews naar koolhydraat- en voedingskwaliteit laten consistent gunstigere uitkomsten zien bij minder bewerkte voedingspatronen.",
+      "Mediterrane voedingsreviews definiëren het patroon mede via de mate van onbewerkte, zelf bereide maaltijden.",
+      "Zelf klaarmaken van onbewerkte producten is een praktische, herkenbare proxy voor voedingskwaliteit in een leefstijlcheck.",
+    ],
+    answerMeaning: {
+      higherAlignment:
+        "Een hoger antwoord sluit meer aan bij mediterrane voedingsprincipes met overwegend onbewerkte, zelfbereide maaltijden.",
+      lowerAlignment:
+        "Een lager antwoord wordt vaker gezien bij patronen met meer kant-en-klare of bewerkte maaltijden.",
+    },
+    strength: {
+      stars: 4,
+      label: "Sterk bewijs",
+      rationale:
+        "Stevige ondersteuning vanuit voedingsrichtlijnen en pattern-based meta-analyses naar bewerkingsgraad.",
+    },
+    references: nutritionRefs,
+  },
+  {
     questionId: "NUT_PROT",
     whyThisQuestion:
       "Regelmatige eiwitmomenten per maaltijd ondersteunen behoud van spierfunctie en herstel binnen een actieve leefstijl.",
