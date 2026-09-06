@@ -1,0 +1,46 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Deploy over SSH naar Hetzner
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: root
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            set -e
+            cd /root/perfectsupplement
+
+            echo "Pulling latest changes from Git..."
+            OLD_LOCK_HASH=$(git rev-parse HEAD:package-lock.json 2>/dev/null || echo "none")
+            git pull origin main
+            NEW_LOCK_HASH=$(git rev-parse HEAD:package-lock.json 2>/dev/null || echo "none")
+
+            if [[ "$OLD_LOCK_HASH" != "$NEW_LOCK_HASH" || ! -d node_modules ]]; then
+              echo "package-lock.json gewijzigd — installing dependencies..."
+              npm ci
+            else
+              echo "package-lock.json ongewijzigd — dependencies overslaan"
+            fi
+
+            echo "Building production version..."
+            npm run build
+
+            echo "Restarting Next.js service..."
+            sudo systemctl restart perfectsupplement
+
+            sleep 3
+            sudo systemctl status perfectsupplement --no-pager -l
+
+            echo "Deployment complete: https://perfectsupplement.nl"
