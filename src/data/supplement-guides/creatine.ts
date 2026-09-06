@@ -157,6 +157,10 @@ export const creatineGidsData: SupplementData = {
       titel: "Creatine dosering: hoeveel per dag, en is een laadfase nodig?",
     },
     {
+      href: "/blog/creatine-wanneer-innemen",
+      titel: "Wanneer neem je creatine in? Voor of na training, en op rustdagen",
+    },
+    {
       href: "/blog/creatine-bijwerkingen-nieren-haaruitval",
       titel: "Creatine bijwerkingen: nieren, haaruitval en kramp op een rij",
     },
@@ -167,6 +171,14 @@ export const creatineGidsData: SupplementData = {
     {
       href: "/blog/creatine-water-vasthouden-en-gewicht",
       titel: "Word je dik van creatine? Over water vasthouden en de weegschaal",
+    },
+    {
+      href: "/blog/creatine-en-herstel",
+      titel: "Creatine en herstel: waar het wél om draait (en waar niet)",
+    },
+    {
+      href: "/blog/creatine-en-brein-slaaptekort",
+      titel: "Creatine en je brein: wat het onderzoek bij slaaptekort laat zien",
     },
     {
       href: "/supplement-kiezen-waar-op-letten",

@@ -148,6 +148,10 @@ export const melatonineData: SupplementData = {
 
   blogLinks: [
     {
+      href: "/blog/melatonine-na-40",
+      titel: "Melatonine: waarom het zelden genoeg is",
+    },
+    {
       href: "/blog/melatonine-wanneer-wel-niet",
       titel: "Melatonine: wanneer wel en wanneer niet?",
     },

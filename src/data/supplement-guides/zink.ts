@@ -153,6 +153,10 @@ export const zinkGidsData: SupplementData = {
 
   blogLinks: [
     {
+      href: "/blog/zink-en-testosteron",
+      titel: "Zink en testosteron: wat de EU wél mag zeggen (en wat niet)",
+    },
+    {
       href: "/blog/testosteron-en-energie-na-40",
       titel: "Testosteron en energie na 30: wanneer is actie nodig?",
     },

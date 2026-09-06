@@ -155,16 +155,48 @@ export const magnesiumData: SupplementData = {
 
   blogLinks: [
     {
-      href: "/blog/magnesium-en-slaapkwaliteit",
-      titel: "Magnesium en slaapkwaliteit: wat zegt het onderzoek?",
-    },
-    {
-      href: "/blog/cortisol-verlagen-natuurlijk",
-      titel: "Cortisol verlagen: 5 bewezen methodes zonder medicatie",
+      href: "/blog/magnesium-tekort-herkennen",
+      titel: "Magnesiumtekort herkennen: waarom je bloedwaarde bijna niets zegt",
     },
     {
       href: "/blog/magnesium-en-slaap",
       titel: "Magnesium voor Slaap: Werkt Het Écht?",
+    },
+    {
+      href: "/blog/magnesium-en-slaapkwaliteit",
+      titel: "De complete magnesiumgids: vormen, dosering en gebruik",
+    },
+    {
+      href: "/blog/magnesium-en-stress",
+      titel: "Magnesium en stress: de vicieuze cirkel die twee kanten op werkt",
+    },
+    {
+      href: "/blog/magnesium-en-spierkrampen",
+      titel: "Magnesium tegen spierkrampen: wat het onderzoek wél en niet laat zien",
+    },
+    {
+      href: "/blog/magnesium-wanneer-innemen",
+      titel: "Wanneer neem je magnesium in? Avond, ochtend en waar het écht op vastloopt",
+    },
+    {
+      href: "/blog/magnesium-uit-voeding",
+      titel: "Magnesium uit voeding: waar het in zit en waarom je het toch misloopt",
+    },
+    {
+      href: "/blog/magnesium-voor-wie-wel-niet",
+      titel: "Voor wie is magnesium zinvol — en voor wie niet?",
+    },
+    {
+      href: "/blog/magnesium-in-combinatie-met-medicijnen",
+      titel: "Magnesium in combinatie met medicijnen: waar je op moet letten",
+    },
+    {
+      href: "/blog/magnesium-herstel-mannen-40",
+      titel: "Magnesium en herstel: waar het wel en niet bij helpt",
+    },
+    {
+      href: "/blog/cortisol-verlagen-natuurlijk",
+      titel: "Cortisol verlagen: 5 bewezen methodes zonder medicatie",
     },
   ],
 

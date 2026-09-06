@@ -32,6 +32,7 @@ export const omega3Data: ComparisonPageData = {
   moreAboutTitle: "Meer over omega-3",
   moreAboutLinks: [
     { href: "/supplementen/omega-3", label: "Omega-3 uitgelegd — wat EPA en DHA doen en hoeveel je nodig hebt" },
+    { href: "/kennisbank/epa-dha", label: "EPA en DHA in de kennisbank — de vetzuren die er echt toe doen" },
     { href: "/blog/omega-3-hoeveel-per-dag", label: "Hoeveel omega-3 per dag? De rekensom achter het etiket" },
     { href: "/blog/visolie-oxidatie-en-bijwerkingen", label: "Ranzige visolie herkennen: waarom versheid zelden op het etiket staat" },
     { href: "/supplementen", label: "Alle supplementen langs dezelfde meetlat" },

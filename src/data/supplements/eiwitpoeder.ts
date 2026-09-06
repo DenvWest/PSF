@@ -26,6 +26,7 @@ export const eiwitpoederData: ComparisonPageData = {
   moreAboutDescription: "Eiwit werkt het best als onderdeel van training, slaap en voeding. Begin met de gids als je eerst wilt bepalen of whey, isolaat of plantaardig eiwit bij je past.",
   moreAboutLinks: [
     { href: "/supplementen/eiwitpoeder", label: "Eiwitpoeder gids — whey, isolaat en plantaardig uitgelegd →" },
+    { href: "/kennisbank/wei-eiwit", label: "Wei-eiwit (whey) in de kennisbank — herkomst, leucine en EU-claims →" },
     { href: "/beste/creatine", label: "Beste creatine — handig naast eiwit bij krachttraining →" },
   ],
   readAlsoCards: [
