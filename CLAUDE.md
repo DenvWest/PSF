@@ -180,6 +180,7 @@ De drie betekenissen van "affiliate" niet verwarren: `affiliate_clicks` (uitgaan
 - FocusAreaCard: 1 link per kaart (gids-link geschrapt)
 - Dashboard SignalsSection: "Lees over →" per kaart vervangen door 1 sectie-footer naar /inzichten
 - InzichtenContextStrip (hub-variant): 1 CTA (feed), "Open dashboard →" verwijderd
+- **Voeding op Kompas (8 sep 2026)**: het voedingsdagboek staat op Kompas › Voeding, laag P1 — op productniveau (`src/data/nutrition/food-items.ts`), met micronutriënt-chips per regel. P2–P6 lezen diezelfde dag (`nutrition-lagen-uit-dagboek.ts`). Voortgang › voeding draagt alleen nog de samenvatting met één deur terug. Kompas leidt niet meer door naar Voortgang. **Lock**: porties tellen nooit op tot een dagtotaal in mg tegenover een ADH — het dagoverzicht telt *bronnen* (`nutrition-dagdekking.ts`); de weging per portie volgt de etiketteringsgrens uit Vo. 1169/2011 (15% "bron van", 30% "rijk aan").
 
 <!-- BEGIN:nextjs-agent-rules -->
 

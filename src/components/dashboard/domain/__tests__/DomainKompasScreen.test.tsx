@@ -41,7 +41,7 @@ function data(overrides: Record<string, unknown> = {}): DashboardData {
 function renderScreen(
   domain: PillarId,
   dashboardData?: DashboardData,
-  handlers: { onGoVoortgangDomein?: () => void; onGoLogboek?: () => void } = {},
+  handlers: { onGoVoortgangDomein?: () => void } = {},
 ) {
   return render(
     <DomainLadderFocusProvider>
@@ -53,7 +53,6 @@ function renderScreen(
             data={dashboardData}
             onGoAgenda={() => {}}
             onGoVoortgangDomein={handlers.onGoVoortgangDomein ?? (() => {})}
-            onGoLogboek={handlers.onGoLogboek}
           />
         </VoortgangFavoritesProvider>
       </LadderMomentsProvider>
@@ -62,8 +61,8 @@ function renderScreen(
 }
 
 /**
- * Twee stoffen die aandacht vragen, één die gedekt is — genoeg om beide
- * tellingen van het tweeluik uit elkaar te houden.
+ * Twee stoffen die aandacht vragen, één die gedekt is — genoeg om de
+ * prioriteitenrij en de aanvullaag uit elkaar te houden.
  */
 function nutritionReadout(overrides: Record<string, unknown> = {}) {
   const route = (nutrient: string, status: string) => ({
@@ -208,7 +207,7 @@ describe("DomainKompasScreen — slaap draagt hetzelfde scherm als beweging", ()
   });
 });
 
-describe("DomainKompasScreen — voeding draagt het tweeluik in plaats van het volle logboek", () => {
+describe("DomainKompasScreen — voeding draagt het dagboek op P1", () => {
   const voedingData = () =>
     data({
       sleepCheckinSnapshot: null,
@@ -216,44 +215,76 @@ describe("DomainKompasScreen — voeding draagt het tweeluik in plaats van het v
       nutritionCheckinReadout: nutritionReadout(),
     });
 
-  it("vervangt het logboek-blok door twee tellingen met elk hun eigen deur", async () => {
+  it("opent op het dagboek zelf, met de dagstrip en de vier eetmomenten", () => {
     renderScreen("voeding", voedingData());
-    // Het volle logboek hoort hier niet meer te staan: geen chiprij, geen
-    // uitklapbare stofdossiers.
-    expect(screen.queryByRole("navigation", { name: "Kies een stof" })).toBeNull();
-    expect(screen.queryByText("Je voedingslogboek")).toBeNull();
 
-    expect(screen.queryByText("Voedingsstatus")).not.toBeNull();
-    expect(screen.queryByText("Voedingslogboek")).not.toBeNull();
-    // De aandacht-telling komt uit de check en staat er meteen: twee van de
-    // drie routes vragen aandacht (gap + partial).
-    expect(screen.queryByText("2 van de 3 stoffen vragen aandacht.")).not.toBeNull();
+    expect(screen.queryByRole("region", { name: "Voedingsdagboek" })).not.toBeNull();
+    expect(screen.queryByRole("navigation", { name: "Kies een dag" })).not.toBeNull();
+    expect(screen.queryByRole("heading", { name: "Ontbijt" })).not.toBeNull();
+    expect(screen.queryByRole("heading", { name: "Avondeten" })).not.toBeNull();
 
-    // De open-telling hangt aan je bewaarde keuzes en verschijnt pas als die
-    // binnen zijn — tot dan draagt de kaart zijn neutrale regel in plaats van
-    // een getal dat straks omlaag springt.
-    expect(screen.queryByText(/stoffen zonder keuze/)).toBeNull();
+    // Het tweeluik dat hier stond is weg: het dagboek zelf staat er nu, dus een
+    // kaart met een deur ernaartoe is een omweg.
+    expect(screen.queryByText("Voedingslogboek")).toBeNull();
+  });
+
+  it("noemt geen dagtotaal in milligrammen maar dekking in stoffen", () => {
+    renderScreen("voeding", voedingData());
     expect(
-      await screen.findByText("Nog 2 stoffen zonder keuze."),
+      screen.queryByText("Nog niets ingevuld voor deze dag."),
     ).not.toBeNull();
+    expect(screen.queryByText(/kcal/)).toBeNull();
   });
 
-  it("stuurt de status naar Voortgang en het logboek naar het schap", () => {
-    const onGoVoortgangDomein = vi.fn();
-    const onGoLogboek = vi.fn();
-    renderScreen("voeding", voedingData(), { onGoVoortgangDomein, onGoLogboek });
-
-    fireEvent.click(screen.getByText("Voedingsstatus").closest("button")!);
-    expect(onGoVoortgangDomein).toHaveBeenCalledTimes(1);
-    expect(onGoLogboek).not.toHaveBeenCalled();
-
-    fireEvent.click(screen.getByText("Voedingslogboek").closest("button")!);
-    expect(onGoLogboek).toHaveBeenCalledTimes(1);
-  });
-
-  it("noemt de reden dat de supplement-poort dicht staat, in de woorden van de check", () => {
+  it("zet een product op de dag en toont wat het levert", async () => {
     renderScreen("voeding", voedingData());
-    expect(screen.queryByText("Eerst je voedingsbasis; daarna pas het potje.")).not.toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: /Wat at je bij avondeten\?/ }));
+    fireEvent.click(await screen.findByRole("button", { name: /^Spinazie/ }));
+
+    // De regel staat op de dag, mét de portie erachter.
+    expect(
+      await screen.findByRole("button", { name: /Eén portie spinazie meer/ }),
+    ).not.toBeNull();
+    // De chips staan op de regel zelf: dát is waarvoor dit dagboek bestaat.
+    expect(screen.getAllByText(/Vitamine K/).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/van de 18 stoffen kwamen langs/)).not.toBeNull();
+  });
+
+  it("laat P2 dezelfde dag lezen in plaats van een tweede meting", () => {
+    renderScreen("voeding", voedingData());
+
+    const ladder = screen.getByRole("group", { name: "Je prioriteiten" });
+    fireEvent.click(within(ladder).getByRole("button", { name: /Voedingskwaliteit/ }));
+
+    expect(screen.queryByRole("region", { name: "Voedingskwaliteit" })).not.toBeNull();
+    // Zonder ingevulde dag doet de laag geen uitspraak.
+    expect(screen.queryByText(/Zet er eerst iets in/)).not.toBeNull();
+    // Het dagboek blijft staan: invullen mag niet achter een andere laag
+    // verdwijnen.
+    expect(screen.queryByRole("region", { name: "Voedingsdagboek" })).not.toBeNull();
+  });
+
+  it("opent P1 ook wanneer de check een andere winst-laag aanwijst", () => {
+    renderScreen(
+      "voeding",
+      data({
+        sleepCheckinSnapshot: null,
+        domainCheckDaysAgo: { voeding: 3 },
+        nutritionCheckinReadout: nutritionReadout({
+          focusLayer: 3,
+          layerStates: { 1: "ok", 2: "ok", 3: "winst", 4: "wacht", 5: "wacht", 6: "wacht" },
+        }),
+      }),
+    );
+
+    const ladder = screen.getByRole("group", { name: "Je prioriteiten" });
+    expect(
+      within(ladder).getByRole("button", { name: /Voedingsbasis/ }).getAttribute("aria-pressed"),
+    ).toBe("true");
+    expect(
+      screen.queryByRole("button", { name: /Terug naar jouw prioriteit 3/ }),
+    ).not.toBeNull();
   });
 
   it("laat de prioriteitsknop meebewegen met de laag die je aanklikt", () => {
@@ -268,8 +299,8 @@ describe("DomainKompasScreen — voeding draagt het tweeluik in plaats van het v
     expect(screen.getByRole("button", { name: /Terug naar jouw prioriteit 1/ })).not.toBeNull();
   });
 
-  it("toont geen tweeluik zonder voedingscheck", () => {
+  it("toont het dagboek ook zonder voedingscheck", () => {
     renderScreen("voeding", data({ sleepCheckinSnapshot: null, domainCheckDaysAgo: {} }));
-    expect(screen.queryByText("Voedingsstatus")).toBeNull();
+    expect(screen.queryByRole("region", { name: "Voedingsdagboek" })).not.toBeNull();
   });
 });

@@ -102,6 +102,9 @@ export const DOMAIN_EVENT_TYPES = [
   "nutrition.dagboek_day_saved",
   "nutrition.dagboek_completed",
   "nutrition.dagboek_kalibratie_shown",
+  "nutrition.dagboek_item_added",
+  "nutrition.micronutrient_bronnen_opened",
+  "nutrition.dagdekking_viewed",
   // Connection Profile — zelf opgegeven voorkeuren, GEEN gezondheidsdata.
   // De ratio cprofile.completed / cprofile.step_completed{step:1} is de meting
   // die toetst of stap 2 te confronterend is (BESLUIT §12).

@@ -9,9 +9,8 @@ import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyle
 import { PILLAR } from "@/data/dashboard";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_KOMPAS_COPY, isDomainKompasDomain } from "@/lib/domain-kompas-copy";
-import NutritionKompasTweeluik from "@/components/dashboard/domain/NutritionKompasTweeluik";
+import VoedingKompasSectie from "@/components/dashboard/kompas/voeding/VoedingKompasSectie";
 import NutritionPrioriteiten from "@/components/dashboard/domain/NutritionPrioriteiten";
-import { buildNutritionKompasSamenvatting } from "@/lib/nutrition-kompas-samenvatting";
 import { buildNutritionPriorities } from "@/lib/nutrition-prioriteiten";
 import { resolveDomainLadderReadout } from "@/lib/domain-ladder-readout";
 import { useDomainLadderFocus } from "@/lib/domain-ladder-focus-context";
@@ -19,7 +18,6 @@ import { trackEvent } from "@/lib/ga4";
 import { getLeefstijlLadder } from "@/lib/leefstijl-ladder";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
 import { getScoreBandShortLabel } from "@/lib/score-bands";
-import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
@@ -29,11 +27,6 @@ type DomainKompasScreenProps = {
   data?: DashboardData;
   onGoAgenda: () => void;
   onGoVoortgangDomein: () => void;
-  /**
-   * Naar het volle logboek op het schap (`deel=logboek`). Alleen voeding heeft
-   * er een; zonder deze prop valt de tweeluik-kaart terug op Voortgang.
-   */
-  onGoLogboek?: () => void;
 };
 
 /**
@@ -59,14 +52,16 @@ type DomainKompasScreenProps = {
  * keuze") staat er niet als sluitregel op: dat was een tweede weg naar
  * dezelfde bestemming als de deur op de Kompas-home (N1).
  *
- * Sinds 1 september geldt diezelfde regel voor het voedingslogboek. Dat stond
- * hier een tijd als volledig blok — vijf stoffen met chiprij, uitklapbare
- * dossiers en drie knoppen per stof — en maakte van dit scherm een dossier in
- * plaats van een kompas. Wat ervoor in de plaats kwam is
- * {@link NutritionKompasTweeluik}: de stand van dat logboek in twee tellingen,
- * met een deur naar Voortgang (je voedingsbeeld) en een naar het schap (het
- * volle logboek). Hetzelfde principe als de dagkaart en de schap-deur — één
- * plek per vraag, en Kompas draagt de vraag *waar sta ik en wat pak ik nu*.
+ * Voeding is sinds 8 september de uitzondering op die regel, en met reden. Het
+ * voedingsdagboek stond onder Voortgang op laag 5, en dat klopte niet met wat
+ * de twee schermen dragen: Voortgang is de terugblik over weken, Kompas is
+ * *waar sta ik en wat pak ik nu*. Invullen wat je vanmiddag at is geen
+ * terugblik maar de handeling waar al het andere op draait — en hij lag vier
+ * klikken diep. Hij staat nu op P1, met de hogere lagen als lezingen van
+ * diezelfde dag; zie {@link VoedingKompasSectie}.
+ *
+ * Dat is geen dossier op een kompas: het scherm blijft antwoorden op "waar sta
+ * ik en wat pak ik nu", alleen is "nu" bij voeding het eerstvolgende bord.
  */
 export default function DomainKompasScreen({
   domain,
@@ -74,7 +69,6 @@ export default function DomainKompasScreen({
   data,
   onGoAgenda,
   onGoVoortgangDomein,
-  onGoLogboek,
 }: DomainKompasScreenProps) {
   // De laagkeuze woont in de context, niet in dit scherm: de contextkolom kiest
   // met dezelfde `selectLayer` (roadmap §7.2). Wat hier nog wél lokaal is, is de
@@ -91,19 +85,13 @@ export default function DomainKompasScreen({
   // ladder op prioriteit 1. Dat claimt niets, maar het scherm is wel meteen
   // bruikbaar.
   const selectedLayerId = selected && selected.domain === domain ? selected.layerId : null;
-  const activeLayerId = selectedLayerId ?? focusLayerId ?? 1;
-
-  // De open-telling weegt je bewaarde routekeuzes mee, dus hij hangt aan de
-  // favorieten. Vóór hydratatie zou hij te hoog staan en daarna omlaag
-  // springen; `hydrated` houdt de kaart dan op zijn neutrale regel.
-  const { items: favoriteItems, hydrated: favoritesHydrated } = useVoortgangFavorites();
-  const nutritionSamenvatting = useMemo(
-    () =>
-      domain === "voeding"
-        ? buildNutritionKompasSamenvatting(data?.nutritionCheckinReadout, favoriteItems)
-        : null,
-    [domain, data?.nutritionCheckinReadout, favoriteItems],
-  );
+  // Voeding opent altijd op P1, ook als de check elders je grootste winst ziet.
+  // P1 ís hier het dagboek: de handeling waar de andere lagen op teren. Openen
+  // op P3 zou een lezing tonen van een dag die nog niet is ingevuld, en de
+  // knop "terug naar jouw prioriteit" hieronder brengt je alsnog in één tik
+  // naar de laag die de check aanwijst.
+  const activeLayerId =
+    selectedLayerId ?? (domain === "voeding" ? 1 : (focusLayerId ?? 1));
 
   // Waarheen, náást hoever. Draait op dezelfde feitenrijen als de ladder —
   // geen tweede meting, dus het Kompas kan nooit iets anders zeggen dan
@@ -146,9 +134,6 @@ export default function DomainKompasScreen({
   }
 
   const activeLayer = ladder.layers.find((layer) => layer.id === activeLayerId) ?? null;
-  // Zonder schap-deur is Voortgang de eerlijkste bestemming: daar staat de
-  // ladder mét feitenrijen, en dat is nog steeds een antwoord op de vraag.
-  const handleGoLogboek = onGoLogboek ?? onGoVoortgangDomein;
   const measuredLine =
     daysAgo == null
       ? `nog geen ${copy.checkNoun}`
@@ -224,35 +209,32 @@ export default function DomainKompasScreen({
         </div>
       </DomainKompasHead>
 
-      {/* Voeding kreeg op Kompas het volledige logboek: vijf stoffen met
-          chiprij, uitklapbare dossiers, bronnen en drie knoppen per stof. Dat
-          blok is niet fout — het is alleen niet van dit scherm. Kompas is waar
-          je leest waar je staat en welke prioriteit je pakt; je keuze uitwerken
-          doe je op het schap, waar hetzelfde blok uitgeklapt en met zoekveld
-          staat, en je meetreeks lees je op Voortgang.
+      {/* Voeding draagt sinds 8 september het dagboek zelf, op P1. Wat hier
+          eerder stond was de *stand* van dat dagboek in twee tellingen, met een
+          deur naar Voortgang en een naar het schap — een goede vorm zolang het
+          invullen ergens anders gebeurde. Nu het hier gebeurt, is een kaart die
+          zegt "je hebt nog twee dagen open" een omweg naar een scherm dat er
+          al staat.
 
-          Wat hier blijft is de *stand* van het logboek: twee tellingen, twee
-          deuren. Zie `buildNutritionKompasSamenvatting` voor waarom die twee
-          tellingen niet dezelfde vraag beantwoorden. */}
-      {/* Waarheen staat boven hoever: de eerste vraag is welke stap je zet,
-          niet hoe ver je bent. De tellingen eronder blijven — ze beantwoorden
-          een andere vraag, en een stand lees je pas met interesse als je weet
-          waar hij over gaat. */}
+          De lagen eronder lezen dezelfde dag: P2 op kwaliteit, P3 op
+          verdeling, P6 op de vraag of aanvullen aan de orde is. Eén invoer,
+          vier lezingen — zie `VoedingKompasSectie`. */}
+      {domain === "voeding" ? (
+        <VoedingKompasSectie
+          laag={activeLayerId}
+          surface={copy.surface}
+          onGoVoortgang={onGoVoortgangDomein}
+        />
+      ) : null}
+
+      {/* Waarheen staat onder je dag: eerst wat er vandaag ligt, dan welke stap
+          je zet. De prioriteiten komen uit de check en wegen weken; ze horen
+          dus niet bovenaan een scherm dat over vandaag gaat. */}
       {nutritionPrioriteiten ? (
         <NutritionPrioriteiten
           prioriteiten={nutritionPrioriteiten}
           surface={copy.surface}
           onOpenLayer={(layerId) => selectLayer({ domain, layerId })}
-        />
-      ) : null}
-
-      {nutritionSamenvatting ? (
-        <NutritionKompasTweeluik
-          samenvatting={nutritionSamenvatting}
-          keuzesGeladen={favoritesHydrated}
-          surface={copy.surface}
-          onGoVoortgang={onGoVoortgangDomein}
-          onGoLogboek={handleGoLogboek}
         />
       ) : null}
 

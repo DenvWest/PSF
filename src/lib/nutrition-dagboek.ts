@@ -189,6 +189,19 @@ export type DagboekDag = {
    * vermijden; die module levert de nauwe `DagMomenten`.
    */
   momenten?: Record<string, Partial<Record<VoedselgroepId, number>>>;
+  /**
+   * Welke producten er per eetmoment op tafel stonden.
+   *
+   * Leeg bij dagen die op groepsniveau zijn ingevuld — en bij álle dagen
+   * zolang de items-migratie op de server nog niet gedraaid is. Deze laag is
+   * additief: `momenten` en `porties` worden eruit afgeleid, dus geen enkele
+   * rekenfunctie hoeft hem te kennen. Wie wél het product nodig heeft (het
+   * micronutriënt-overzicht op Kompas) leest hem hier.
+   *
+   * Losjes getypeerd om een importcyclus met `nutrition-dagboek-items.ts` te
+   * vermijden; die module levert de nauwe `DagItems`.
+   */
+  items?: Record<string, { key: string; porties: number }[]>;
   /** Water in milliliters; null wanneer niet geregistreerd. */
   waterMl?: number | null;
 };

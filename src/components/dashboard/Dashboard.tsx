@@ -2483,7 +2483,7 @@ const KompasHome = ({
   model,
   data,
   onGoAgenda,
-  onGoKeuze,
+  onGoKeuze: _onGoKeuze,
   onGoVoortgangDomein,
   agendaDate: _agendaDate,
   onAgendaDateChange: _onAgendaDateChange,
@@ -2521,14 +2521,10 @@ const KompasHome = ({
   useEffect(() => {
     const param = searchParams.get("kompas");
     const next = isPillarId(param) ? param : null;
-    if (next === "voeding") {
-      onGoVoortgangDomein("voeding");
-      return;
-    }
     startTransition(() => {
       setDomainView((current) => (current === next ? current : next));
     });
-  }, [searchParams, onGoVoortgangDomein]);
+  }, [searchParams]);
 
   const domainNavHandlersRef = useRef({
     onBack: () => {},
@@ -2577,10 +2573,6 @@ const KompasHome = ({
       surface,
     });
     clarityTag("dashboard_kompas_domain_switch", `${domainView}_${toDomain}`);
-    if (toDomain === "voeding") {
-      onGoVoortgangDomein("voeding");
-      return;
-    }
     setKompasDomain(toDomain);
   };
 
@@ -2589,11 +2581,11 @@ const KompasHome = ({
     surface: "kompas_home" | "context_rail" | "leefstijlkompas" = "kompas_home",
   ) => {
     trackEvent("dashboard_kompas_domain_open", { domain, surface });
+    // Voeding leidde tot 8 september door naar Voortgang: het domeinscherm op
+    // Kompas had toen niets eigens te tonen, want het dagboek stond daar. Nu
+    // het dagboek hier woont, is doorsturen precies de omweg die die regel
+    // wilde voorkomen.
     clarityTag("dashboard_kompas_domain", domain);
-    if (domain === "voeding") {
-      onGoVoortgangDomein("voeding");
-      return;
-    }
     setKompasDomain(domain);
   };
 
@@ -2701,7 +2693,6 @@ const KompasHome = ({
         data={data}
         onGoAgenda={() => onGoAgenda()}
         onGoVoortgangDomein={() => onGoVoortgangDomein(domainView)}
-        onGoLogboek={() => onGoKeuze(domainView, "logboek")}
       />,
     );
   }

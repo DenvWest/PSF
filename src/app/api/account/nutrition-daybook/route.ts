@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   isValidEntryDate,
   listDaybookDays,
+  sanitizeItems,
   sanitizeMeals,
   sanitizePortions,
   upsertDaybookDay,
@@ -84,13 +85,18 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Twee invoervormen naast elkaar: `meals` is de huidige (per eetmoment),
-  // `portions` blijft geldig voor clients die de platte lijst nog sturen.
+  // Drie invoervormen naast elkaar. `items` is de huidige (welk product, per
+  // eetmoment); `meals` blijft de groepsvorm voor wie wél weet dát hij groente
+  // at maar niet meer welke; `portions` blijft geldig voor clients die de
+  // platte lijst nog sturen. Alle drie tellen bij het opslaan naar `portions`
+  // toe — zie `upsertDaybookDay`.
+  const items = sanitizeItems(record.items);
   const momenten = sanitizeMeals(record.meals);
   const porties = sanitizePortions(record.portions);
   const waterMl = normaliseerWaterMl(record.water_ml);
 
   const heeftInhoud =
+    Object.keys(items).length > 0 ||
     Object.keys(momenten).length > 0 ||
     Object.keys(porties).length > 0 ||
     (waterMl !== null && waterMl > 0);
@@ -114,6 +120,7 @@ export async function POST(request: NextRequest) {
     date,
     porties,
     momenten,
+    items,
     waterMl,
   });
   if (!ok) {

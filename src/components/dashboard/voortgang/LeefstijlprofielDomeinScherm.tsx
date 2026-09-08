@@ -26,7 +26,7 @@ import VoedingVsSupplementTabel from "@/components/nutrition/VoedingVsSupplement
 import VoedingsstatusTabel from "@/components/nutrition/VoedingsstatusTabel";
 import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
 import MetenTijdLaag from "@/components/nutrition/MetenTijdLaag";
-import NutritionDagboekPaneel from "@/components/dashboard/voortgang/NutritionDagboekPaneel";
+import NutritionDagboekSamenvatting from "@/components/dashboard/voortgang/NutritionDagboekSamenvatting";
 import NutritionReflectiePaneel from "@/components/dashboard/voortgang/NutritionReflectiePaneel";
 import DomainReflectiePaneel from "@/components/dashboard/voortgang/DomainReflectiePaneel";
 import SlaapStatusBlok from "@/components/dashboard/voortgang/SlaapStatusBlok";
@@ -205,6 +205,7 @@ function DomainLayerSlot({
   p6FocusNutrient,
   meetreeks,
   onBack,
+  onGoKompas,
 }: {
   layerId: number;
   domain: PillarId;
@@ -214,6 +215,8 @@ function DomainLayerSlot({
   meetreeks: Meetreeks | null;
   /** De terugweg die de statustabel zelf draagt. */
   onBack: () => void;
+  /** Naar Kompas › domein, waar het voedingsdagboek staat. */
+  onGoKompas: () => void;
 }) {
   if (layerId === 6) {
     if (domain === "slaap") {
@@ -275,17 +278,21 @@ function DomainLayerSlot({
   }
 
   if (layerId === 5) {
-    // De eigen reeks zegt of het de goede kant op gaat; de terugblik zegt of
-    // wat je plande ook lukte. Drie soorten "meten" op de laag die er zijn
-    // naam aan ontleent: je eigen reeks, het dagboek (wat zit er onder je
-    // gemiddelde) en de terugblik. Geen van drieën raakt de voedingsscore —
+    // Drie soorten "meten" op de laag die er zijn naam aan ontleent: je eigen
+    // reeks (gaat het de goede kant op), je dagboek (wat kwam er langs) en de
+    // terugblik (lukte wat je plande). Geen van drieën raakt de voedingsscore —
     // die komt uit de check.
+    //
+    // Het dagboek stond hier als volledig invoerformulier. Sinds 8 september is
+    // dat een samenvatting: invullen gebeurt op Kompas, waar je dag staat. Twee
+    // plekken waar je dezelfde dag kunt bewerken is een garantie op twee
+    // schermen die elkaar tegenspreken.
     return (
       <>
         <MetenTijdLaag meetreeks={meetreeks} surface="leefstijlprofiel_voeding" />
-        <NutritionDagboekPaneel
+        <NutritionDagboekSamenvatting
           surface="leefstijlprofiel_voeding"
-          checkSliders={readout?.ladderReport?.sliders ?? null}
+          onGoKompas={onGoKompas}
         />
         <NutritionReflectiePaneel surface="leefstijlprofiel_voeding" />
       </>
@@ -484,6 +491,27 @@ export default function LeefstijlprofielDomeinScherm({
     });
     clarityTag("dashboard_leefstijlprofiel_domein", domain);
   }, [domain, hasConclusion]);
+
+  /**
+   * Naar Kompas › dit domein, langs dezelfde weg als Mijn Dag: pushState met
+   * een popstate erachteraan wanneer we al op /dashboard staan, zodat de
+   * client-router meeloopt zonder een volledige paginalading.
+   */
+  const handleGoKompas = () => {
+    trackEvent("dashboard_voortgang_hub_click", {
+      destination: "kompas",
+      surface: "leefstijlprofiel_domein",
+    });
+    const href = buildDashboardVandaagHref(domain);
+    if (typeof window !== "undefined" && window.location.pathname === "/dashboard") {
+      window.history.pushState(null, "", href);
+      window.dispatchEvent(new PopStateEvent("popstate"));
+      return;
+    }
+    if (typeof window !== "undefined") {
+      window.location.assign(href);
+    }
+  };
 
   const handleGoMijnDag = () => {
     trackEvent("dashboard_voortgang_hub_click", {
@@ -721,6 +749,7 @@ export default function LeefstijlprofielDomeinScherm({
                   p6FocusNutrient={p6FocusNutrient}
                   meetreeks={meetreeks}
                   onBack={onBack}
+                  onGoKompas={handleGoKompas}
                 />
               ))}
             </>
@@ -768,6 +797,7 @@ export default function LeefstijlprofielDomeinScherm({
                       onOpenSchap={handleOpenSchap}
                       p6FocusNutrient={p6FocusNutrient}
                       meetreeks={meetreeks}
+                      onGoKompas={handleGoKompas}
                       onBack={onBack}
                     />
                   ))

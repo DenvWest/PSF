@@ -384,7 +384,12 @@ describe("LeefstijlprofielDomeinScherm", () => {
 
     expect(screen.queryByRole("heading", { name: /Wat er onder je voeding staat/ })).toBeNull();
     expect(screen.getByRole("heading", { name: "Meten & timing" })).toBeTruthy();
-    expect(screen.getByRole("region", { name: "Je 2+2-dagboek" })).toBeTruthy();
+    // Het dagboek zelf staat sinds 8 september op Kompas; hier hangt de
+    // terugblik erover, met één deur ernaartoe.
+    expect(screen.getByRole("region", { name: "Je voedingsdagboek" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: /Vul je dag in op Kompas/ }),
+    ).toBeTruthy();
     expect(screen.queryByRole("group", { name: /Kies een prioriteit/ })).toBeNull();
 
     const kruimels = screen.getByRole("navigation", { name: "Kruimelpad" });

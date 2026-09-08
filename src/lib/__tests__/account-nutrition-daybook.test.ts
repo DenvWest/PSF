@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { OrgScopedClient } from "@/lib/db/scoped";
 import {
   isValidEntryDate,
+  sanitizeItems,
   sanitizeMeals,
   sanitizePortions,
   upsertDaybookDay,
@@ -92,6 +93,23 @@ describe("sanitizeMeals", () => {
   });
 });
 
+describe("sanitizeItems", () => {
+  it("houdt bekende producten en laat onbekende vallen", () => {
+    expect(
+      sanitizeItems({
+        ontbijt: [
+          { k: "havermout", n: 1 },
+          { k: "eenhoornvlees", n: 2 },
+        ],
+      }),
+    ).toEqual({ ontbijt: [{ key: "havermout", porties: 1 }] });
+  });
+
+  it("weigert onbekende momenten", () => {
+    expect(sanitizeItems({ brunch: [{ k: "ei", n: 1 }] })).toEqual({});
+  });
+});
+
 describe("upsertDaybookDay", () => {
   it("leidt de dagsoort af uit de datum en schrijft op (account, dag)", async () => {
     const rows: Record<string, unknown>[] = [];
@@ -129,11 +147,13 @@ describe("upsertDaybookDay", () => {
 
     // De lock: het dagboek verrijkt de readout en voedt nooit een score.
     // Geen score-, calorie- of gramkolom — water is de enige eenheid, en die
-    // draagt geen norm.
+    // draagt geen norm. `items` kwam er op 8 september bij: welk product je at,
+    // niet hoeveel het woog.
     expect(Object.keys(rows[0]).sort()).toEqual([
       "account_id",
       "day_kind",
       "entry_date",
+      "items",
       "meals",
       "portions",
       "water_ml",
@@ -160,6 +180,81 @@ describe("upsertDaybookDay", () => {
       ontbijt: { zuivel: 1 },
       lunch: { zuivel: 1, groente: 2 },
     });
+  });
+
+  it("leidt momenten en porties af uit de producten", async () => {
+    // `items` is de fijnste vorm; `meals` en `portions` worden eruit afgeleid,
+    // zodat alles wat op groepen rekent ongewijzigd blijft werken.
+    const rows: Record<string, unknown>[] = [];
+    const upsert = vi.fn((row: Record<string, unknown>) => {
+      rows.push(row);
+      return Promise.resolve({ error: null });
+    });
+    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+
+    await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      items: {
+        avondeten: [
+          { key: "spinazie", porties: 1 },
+          { key: "broccoli", porties: 2 },
+          { key: "zalm", porties: 1 },
+        ],
+      },
+    });
+
+    expect(rows[0].portions).toEqual({ groente: 3, vis: 1 });
+    expect(rows[0].meals).toEqual({ avondeten: { groente: 3, vis: 1 } });
+    expect(rows[0].items).toEqual({
+      avondeten: [
+        { k: "spinazie", n: 1 },
+        { k: "broccoli", n: 2 },
+        { k: "zalm", n: 1 },
+      ],
+    });
+  });
+
+  it("telt losse groepsporties bij de producten op", async () => {
+    // Wie spinazie invult én "1 portie groente" omdat hij niet meer weet wat
+    // het tweede was, heeft twee porties gegeten.
+    const rows: Record<string, unknown>[] = [];
+    const upsert = vi.fn((row: Record<string, unknown>) => {
+      rows.push(row);
+      return Promise.resolve({ error: null });
+    });
+    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+
+    await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      items: { avondeten: [{ key: "spinazie", porties: 1 }] },
+      momenten: { avondeten: { groente: 1 } },
+    });
+
+    expect(rows[0].portions).toEqual({ groente: 2 });
+  });
+
+  it("bewaart de dag alsnog wanneer de items-kolom nog niet bestaat", async () => {
+    // De migratie draait met de hand op de server. Tot dat moment mag een dag
+    // niet verloren gaan: de groepstellingen zijn er dan nog steeds.
+    const rows: Record<string, unknown>[] = [];
+    const upsert = vi.fn((row: Record<string, unknown>) => {
+      rows.push(row);
+      if ("items" in row) {
+        return Promise.resolve({ error: { message: "column items does not exist" } });
+      }
+      return Promise.resolve({ error: null });
+    });
+    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+
+    const ok = await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      items: { lunch: [{ key: "ei", porties: 2 }] },
+    });
+
+    expect(ok).toBe(true);
+    expect(rows).toHaveLength(2);
+    expect("items" in rows[1]).toBe(false);
+    expect(rows[1].portions).toEqual({ eieren: 2 });
   });
 
   it("accepteert nog steeds een platte portie-map", async () => {
