@@ -103,7 +103,7 @@ RLS is aan. Anon kan inserts doen op sessions, reminders en feedback.
 
 Verder in gebruik: `accounts` + `account_entitlements` (account-login/premium), en twee interne tabelfamilies (zie "Interne platformen"): **`pd_*`** (PartnerDesk) en **`af_*`** (affiliate-programma). Die zijn **RLS deny-all** (geen policies) en uitsluitend server-side benaderbaar via `createSupabaseAdmin()` (service-role); nooit via de anon-client.
 
-**Migraties**: SQL-bestand in `supabase/migrations/`, uitvoeren via de **Supabase Dashboard SQL Editor** — NOOIT `supabase db push` (de remote CLI-historie is leeg). `SUPABASE_SERVICE_ROLE_KEY` heeft een `sb_secret_`-waarde (niet de legacy `eyJ`-JWT).
+**Migraties**: SQL-bestand in `supabase/migrations/`, uitvoeren via de **Supabase Dashboard SQL Editor** — NOOIT `supabase db push` (de remote CLI-historie is leeg). Elke nieuwe migratie krijgt in **dezelfde commit** een blok in `supabase/migrations/OPENSTAAND.md` onder "Nog uit te voeren", inclusief het veld **Blokkeert deploy** — code die het nieuwe schema hard nodig heeft, blijft op de feature-branch tot Dennis de migratie heeft gedraaid. `npm run check:migraties` (draait ook in CI) bewaakt dit. `SUPABASE_SERVICE_ROLE_KEY` heeft een `sb_secret_`-waarde (niet de legacy `eyJ`-JWT).
 
 Schema check: `npm run check:db-schema` (vereist `supabase link`).
 
