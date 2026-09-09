@@ -15,7 +15,8 @@
     "analyse:movement-delta": "node scripts/movement-delta-falsify.mjs",
     "check:db-schema": "bash scripts/check-supabase-schema.sh",
     "build:prebuilds": "node scripts/build-prebuild-embeds.mjs",
-    "prepare": "git config core.hooksPath .githooks"
+    "prepare": "git config core.hooksPath .githooks",
+    "extract:usda": "node scripts/usda-extract.mjs"
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.0",

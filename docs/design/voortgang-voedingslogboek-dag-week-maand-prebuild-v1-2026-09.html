@@ -46,7 +46,10 @@
       mag naar het schap verwijzen, nooit naar een product.
 
   8.  Alle gehaltes komen uit src/data/nutrition/food-sources.ts. De
-      spreidingsmarges (±10/25/40 % naar `variability`) zijn PLAATSHOUDERS.
+      spreidingsmarges zijn sinds 9 sep gebronde factorbanden per
+      (stof × voedselklasse) — zie ONDERZOEK_SPREIDING_EN_USDA_2026-09 §1.7.
+      Ze blijven een tussenstap tot elke rij een waargenomen min/max uit
+      USDA FoodData Central draagt.
 
   TIJDLIJN: vandaag is woensdag 9 september 2026. Cyclus dag 1 = maandag
   17 augustus, hertest op dag 30 = 23 september. Alle geregistreerde dagen
@@ -673,7 +676,10 @@ var F = {
   pompoenzaden:    {label:"Pompoenzaden",          groep:"noten",        n:{protein:24.5,magnesium:535,zinc:7.94},   v:{protein:"low",magnesium:"moderate",zinc:"moderate"}, b:{magnesium:1,zinc:1}},
   linzen:          {label:"Linzen, gekookt",       groep:"peulvruchten", n:{protein:8.8,magnesium:36,zinc:1.4},      v:{protein:"low",magnesium:"moderate",zinc:"moderate"}, b:{magnesium:1,zinc:1}},
   kikkererwten:    {label:"Kikkererwten, gekookt", groep:"peulvruchten", n:{protein:8.0,magnesium:39,zinc:1.29},     v:{protein:"low",magnesium:"moderate",zinc:"moderate"}, b:{magnesium:1,zinc:1}},
-  zalm_gekweekt:   {label:"Zalm, gekweekt",        groep:"vis",          n:{protein:20.0,omega3:1440,vitamin_d:9.6}, v:{protein:"low",omega3:"high",vitamin_d:"high"},       b:{}},
+  /* Gecorrigeerd 9 sep: omega-3 1.440 → 1.150 mg (mediaan Noorse kweekzalm
+     1.030–1.300 sinds 2011) en vitamine D 9,6 → 6,5 µg (kweekzalm 2,3–9,5 over
+     studies). Zie ONDERZOEK_SPREIDING_EN_USDA §1.2–1.3. */
+  zalm_gekweekt:   {label:"Zalm, gekweekt",        groep:"vis",          n:{protein:20.0,omega3:1150,vitamin_d:6.5}, v:{protein:"low",omega3:"high",vitamin_d:"high"},       b:{}},
   haring:          {label:"Haring",                groep:"vis",          n:{protein:17.7,omega3:1900,vitamin_d:25},  v:{protein:"low",omega3:"high",vitamin_d:"high"},       b:{}},
   makreel:         {label:"Makreel",               groep:"vis",          n:{protein:18.6,omega3:2400,vitamin_d:8.0}, v:{protein:"low",omega3:"high",vitamin_d:"high"},       b:{}},
   tonijn_blik:     {label:"Tonijn uit blik",       groep:"vis",          n:{protein:24.9,omega3:200},                v:{protein:"low",omega3:"moderate"},                    b:{}},
@@ -688,8 +694,60 @@ var F = {
   pure_chocolade:  {label:"Pure chocolade 70 %",   groep:"suiker",       n:{protein:7.8,magnesium:225},              v:{protein:"low",magnesium:"moderate"},                 b:{}}
 };
 
-/** Spreiding per variability-klasse. PLAATSHOUDER — zie de kop van dit bestand. */
-var SPREAD = { low:0.10, moderate:0.25, high:0.40 };
+/**
+ * Spreidingsbanden per (stof × voedselklasse) — vermenigvuldigers op de
+ * tabelwaarde. Vervangt de ongebronde ±10/25/40 %-vuistregel van v0.
+ *
+ * Onderbouwing per rij staat in docs/plan/ONDERZOEK_SPREIDING_EN_USDA_2026-09.md
+ * §1.7. De twee correcties die eruit sprongen:
+ *
+ * - Plantaardige mineralen stonden op ±25 % (= 1,67× totale spreiding), terwijl
+ *   de literatuur 2,3× (tarwe-magnesium) tot 5,7× (sorghum-zink) laat zien
+ *   tussen cultivars en bodems. Die band is nu ×0,60–1,70.
+ * - Verrijkte producten stonden op ±10 %, terwijl het niveau in Nederland
+ *   wettelijk vastligt (margarine/halvarine 7,5 µg/100 g). Dat is
+ *   productietolerantie, geen biologische variatie: ×0,95–1,05.
+ *
+ * Vermenigvuldigers en geen percentages, omdat de spreiding bij vis
+ * asymmetrisch is: gekweekte zalm ligt vaker onder de tabelwaarde dan erboven.
+ *
+ * TUSSENSTAP. Zodra een rij een waargenomen `min`/`max` uit USDA FoodData
+ * Central draagt, wint die: de spreiding van de werkelijke monsters slaat elke
+ * klassenband. Deze tabel dekt de rijen waar de bron één monster had.
+ */
+var SPREAD = {
+  protein:   { dier:[0.90, 1.10], plant:[0.85, 1.15], _default:[0.90, 1.10] },
+  magnesium: { dier:[0.85, 1.15], plant:[0.60, 1.70], _default:[0.60, 1.70] },
+  zinc:      { dier:[0.85, 1.15], plant:[0.60, 1.70], _default:[0.60, 1.70] },
+  omega3:    { visGekweekt:[0.75, 1.25], visWild:[0.60, 1.50], _default:[0.60, 1.50] },
+  vitamin_d: { visGekweekt:[0.40, 1.60], visWild:[0.50, 2.00], verrijkt:[0.95, 1.05], _default:[0.60, 1.60] }
+};
+
+/** Producten waarvan het gehalte een verrijkingskeuze is, geen biologische waarde. */
+var VERRIJKT = { halvarine:1, "sojadrink-verrijkt":1, "plantaardige-drank-verrijkt":1, sojadrink_verrijkt:1 };
+/** Kweekvis: ander voer, andere spreiding dan wild. */
+var GEKWEEKT = { "zalm-gekweekt":1, zalm_gekweekt:1 };
+
+/**
+ * De spreidingsklasse van dit product bij deze stof.
+ *
+ * Afgeleid uit de voedselgroep in plaats van per rij opgeslagen — de groep
+ * draagt die informatie al, en een tweede veld dat ermee mee moet bewegen
+ * loopt een keer uit de pas. Alleen vitamine D kent de klasse "verrijkt":
+ * de eiwit- en mineraalgehaltes van een verrijkt product zijn wél gewoon
+ * biologisch.
+ */
+function klasseVoor(food, nutrientId){
+  if (nutrientId === "vitamin_d" && VERRIJKT[food.key]) return "verrijkt";
+  if (food.groep === "vis") return GEKWEEKT[food.key] ? "visGekweekt" : "visWild";
+  if (food.groep === "vlees" || food.groep === "eieren" || food.groep === "zuivel") return "dier";
+  return "plant";
+}
+
+function spreidingVoor(food, nutrientId){
+  var perStof = SPREAD[nutrientId] || {};
+  return perStof[klasseVoor(food, nutrientId)] || perStof._default || [0.90, 1.10];
+}
 
 /** Dertien geregistreerde dagen, elk als lijst van [productsleutel, gram]. */
 var DAGEN = {
@@ -788,8 +846,8 @@ function bandsVoor(items){
       var per = f.n[n.id];
       if (per == null) return;
       var v = (per * pair[1]) / 100;
-      var sp = SPREAD[f.v[n.id] || "low"];
-      lo += v * (1 - sp); hi += v * (1 + sp); pt += v;
+      var band = spreidingVoor({ key:pair[0], groep:f.groep }, n.id);
+      lo += v * band[0]; hi += v * band[1]; pt += v;
       if (f.b[n.id]) red += v;
       bron++;
     });

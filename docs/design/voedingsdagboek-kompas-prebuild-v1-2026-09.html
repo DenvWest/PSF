@@ -527,8 +527,10 @@ h1,h2,h3{font-family:var(--f-serif);font-weight:400;letter-spacing:-.005em}
     <li><b>Gerechten zijn samenstellingen</b>, geen voedingsmiddelen: <code>{ key, labelNl, componenten: [{ foodKey, grams }] }</code>. De mg komen altijd uit de componenten. Een gerecht met eigen gehaltes zou een tweede tabel zijn die van de eerste kan gaan afwijken.</li>
   </ul>
 
-  <h3>Spreiding — de plaatshouder die eruit moet</h3>
-  <p>De banden op het dagbeeld gebruiken ±10 % bij <code>variability: "low"</code>, ±25 % bij <code>moderate</code> en ±40 % bij <code>high</code>. Die drie getallen hebben <b>geen bron</b>. Ze staan hier omdat een punt-schatting bij wilde versus gekweekte vis liegt, en een band die iets te ruim is minder erg is dan een punt dat te precies is. Vóór livegang moeten ze vervangen worden door een spreiding die per stof uit de literatuur komt — of de band moet verdwijnen ten gunste van een expliciete "afhankelijk van de bron"-annotatie.</p>
+  <h3>Spreiding — nu gebronde factorbanden (bijgewerkt 9 sep)</h3>
+  <p>De ±10/25/40 %-vuistregel is weg. In de plaats staat een band per <b>(stof × voedselklasse)</b>, elk met een bron — zie <code>docs/plan/ONDERZOEK_SPREIDING_EN_USDA_2026-09.md</code> §1.7. Twee dingen bleken fout, in tegengestelde richting: plantaardige mineralen stonden veel te smal (de literatuur laat 2,3× tot 5,7× verschil zien tussen cultivars, tegen 1,67× voor ±25 %), en verrijkte producten stonden te ruim (het niveau ligt in Nederland wettelijk vast op 7,5 µg/100 g voor margarine en halvarine).</p>
+  <p>Vermenigvuldigers in plaats van percentages, omdat de spreiding bij vis asymmetrisch is: gekweekte zalm ligt vaker onder de tabelwaarde dan erboven.</p>
+  <p><b>Dit blijft een tussenstap.</b> USDA FoodData Central publiceert per voedingsmiddel per nutriënt een waargenomen <code>min</code>, <code>max</code>, <code>median</code> en <code>data_points</code>. Zodra een rij die draagt, wint de waargenomen spreiding van de klassenband — die dekt alleen nog de rijen waar de bron één monster had.</p>
 
   <h3>Meetpunten</h3>
   <ul>
@@ -565,8 +567,13 @@ var NUTRIENTS = [
    n = gehalte per 100 g per stof; v = variability; b = bioavailability;
    nevo = of de waarde tegen NEVO 2025/9.0 is gelegd. */
 var FOODS = [
+  /* Gecorrigeerd 9 sep na literatuuronderzoek. Omega-3 stond op 1.440 mg/100 g;
+     de mediaan van Noorse kweekzalm ligt sinds 2011 stabiel op 1.030–1.300 mg
+     (Food Chemistry 2022). Vitamine D stond op 9,6 µg; over studies ligt
+     kweekzalm op 2,3–9,5 µg met een reviewgemiddelde van 5,8–7,6 (Nutrients
+     2019). Zie ONDERZOEK_SPREIDING_EN_USDA §1.2 en §1.3. */
   { key:"zalm-gekweekt", label:"Zalm, gekweekt", groep:"vis", grams:125, portie:"125 g (moot)",
-    n:{ protein:20.0, omega3:1440, vitamin_d:9.6 }, v:{ omega3:"high", vitamin_d:"high", protein:"low" }, b:{}, nevo:false },
+    n:{ protein:20.0, omega3:1150, vitamin_d:6.5 }, v:{ omega3:"high", vitamin_d:"high", protein:"low" }, b:{}, nevo:false },
   { key:"zalm-wild", label:"Zalm, wild", groep:"vis", grams:125, portie:"125 g (moot)",
     n:{ protein:20.4, omega3:1760, vitamin_d:9.6 }, v:{ omega3:"high", vitamin_d:"high", protein:"low" }, b:{}, nevo:false },
   { key:"makreel", label:"Makreel", groep:"vis", grams:125, portie:"125 g",
@@ -745,8 +752,60 @@ var GROEP_LABEL = {
 };
 var DAGBOEK_GROEPEN = ["groente","fruit","peulvruchten","noten","granen","zetmeel","vis","vlees","eieren","zuivel","vetten","dranken","suiker"];
 
-/* Spreiding per variability-klasse. PLAATSHOUDER — zie notities. */
-var SPREAD = { low:0.10, moderate:0.25, high:0.40 };
+/**
+ * Spreidingsbanden per (stof × voedselklasse) — vermenigvuldigers op de
+ * tabelwaarde. Vervangt de ongebronde ±10/25/40 %-vuistregel van v0.
+ *
+ * Onderbouwing per rij staat in docs/plan/ONDERZOEK_SPREIDING_EN_USDA_2026-09.md
+ * §1.7. De twee correcties die eruit sprongen:
+ *
+ * - Plantaardige mineralen stonden op ±25 % (= 1,67× totale spreiding), terwijl
+ *   de literatuur 2,3× (tarwe-magnesium) tot 5,7× (sorghum-zink) laat zien
+ *   tussen cultivars en bodems. Die band is nu ×0,60–1,70.
+ * - Verrijkte producten stonden op ±10 %, terwijl het niveau in Nederland
+ *   wettelijk vastligt (margarine/halvarine 7,5 µg/100 g). Dat is
+ *   productietolerantie, geen biologische variatie: ×0,95–1,05.
+ *
+ * Vermenigvuldigers en geen percentages, omdat de spreiding bij vis
+ * asymmetrisch is: gekweekte zalm ligt vaker onder de tabelwaarde dan erboven.
+ *
+ * TUSSENSTAP. Zodra een rij een waargenomen `min`/`max` uit USDA FoodData
+ * Central draagt, wint die: de spreiding van de werkelijke monsters slaat elke
+ * klassenband. Deze tabel dekt de rijen waar de bron één monster had.
+ */
+var SPREAD = {
+  protein:   { dier:[0.90, 1.10], plant:[0.85, 1.15], _default:[0.90, 1.10] },
+  magnesium: { dier:[0.85, 1.15], plant:[0.60, 1.70], _default:[0.60, 1.70] },
+  zinc:      { dier:[0.85, 1.15], plant:[0.60, 1.70], _default:[0.60, 1.70] },
+  omega3:    { visGekweekt:[0.75, 1.25], visWild:[0.60, 1.50], _default:[0.60, 1.50] },
+  vitamin_d: { visGekweekt:[0.40, 1.60], visWild:[0.50, 2.00], verrijkt:[0.95, 1.05], _default:[0.60, 1.60] }
+};
+
+/** Producten waarvan het gehalte een verrijkingskeuze is, geen biologische waarde. */
+var VERRIJKT = { halvarine:1, "sojadrink-verrijkt":1, "plantaardige-drank-verrijkt":1, sojadrink_verrijkt:1 };
+/** Kweekvis: ander voer, andere spreiding dan wild. */
+var GEKWEEKT = { "zalm-gekweekt":1, zalm_gekweekt:1 };
+
+/**
+ * De spreidingsklasse van dit product bij deze stof.
+ *
+ * Afgeleid uit de voedselgroep in plaats van per rij opgeslagen — de groep
+ * draagt die informatie al, en een tweede veld dat ermee mee moet bewegen
+ * loopt een keer uit de pas. Alleen vitamine D kent de klasse "verrijkt":
+ * de eiwit- en mineraalgehaltes van een verrijkt product zijn wél gewoon
+ * biologisch.
+ */
+function klasseVoor(food, nutrientId){
+  if (nutrientId === "vitamin_d" && VERRIJKT[food.key]) return "verrijkt";
+  if (food.groep === "vis") return GEKWEEKT[food.key] ? "visGekweekt" : "visWild";
+  if (food.groep === "vlees" || food.groep === "eieren" || food.groep === "zuivel") return "dier";
+  return "plant";
+}
+
+function spreidingVoor(food, nutrientId){
+  var perStof = SPREAD[nutrientId] || {};
+  return perStof[klasseVoor(food, nutrientId)] || perStof._default || [0.90, 1.10];
+}
 
 var MOMENTS = [
   { id:"ontbijt", label:"Ontbijt" },
@@ -773,8 +832,8 @@ function amountFor(food, nutrientId, grams){
 function bandFor(food, nutrientId, grams){
   var v = amountFor(food, nutrientId, grams);
   if (v == null) return null;
-  var spread = SPREAD[food.v[nutrientId] || "low"];
-  return { point:v, lo:v * (1 - spread), hi:v * (1 + spread),
+  var f = spreidingVoor(food, nutrientId);
+  return { point:v, lo:v * f[0], hi:v * f[1],
            reduced: food.b[nutrientId] === "reduced" };
 }
 
