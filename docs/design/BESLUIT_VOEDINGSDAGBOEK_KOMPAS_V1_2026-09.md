@@ -2,9 +2,10 @@
 
 **Datum:** 9 september 2026
 **Status:** ontwerpvoorstel met prebuilds; nog niet gebouwd
+**Herzien:** 9 sep — één invoervorm in plaats van twee sporen (§1), de asymmetrie-regel op het weekscherm (§4), de meebewegende periodeschakelaar (§6), en een datumfout recht
 **Prebuilds:**
-- [`voedingsdagboek-kompas-prebuild-v1-2026-09.html`](voedingsdagboek-kompas-prebuild-v1-2026-09.html) — K1 Kompas › Voeding · K2 dag invullen (snel) · K3 dag invullen (precies) · K4 dagbeeld · K5 Kompas home
-- [`voortgang-voedingslogboek-dag-week-maand-prebuild-v1-2026-09.html`](voortgang-voedingslogboek-dag-week-maand-prebuild-v1-2026-09.html) — V1 dag · V2 week · V3 maand · A1 agenda · S1 voeding ↔ supplement
+- [`voedingsdagboek-kompas-prebuild-v1-2026-09.html`](voedingsdagboek-kompas-prebuild-v1-2026-09.html) — K1 Kompas › Voeding · K2 je dag · K3 dagbeeld · K4 Kompas home
+- [`voortgang-voedingslogboek-dag-week-maand-prebuild-v1-2026-09.html`](voortgang-voedingslogboek-dag-week-maand-prebuild-v1-2026-09.html) — V1 dag · V2 week (met periodeschakelaar) · V3 maand · A1 agenda · S1 schap
 
 **Aanname op elk scherm:** leefstijlcheck én voedingscheck zijn gedaan.
 **Voorafgaand:** [`ROADMAP_LEEFSTIJLCHECK_NAAR_DASHBOARD_VOEDING.md`](../plan/ROADMAP_LEEFSTIJLCHECK_NAAR_DASHBOARD_VOEDING.md) §10.5, §10.7, §12 — dit document werkt plak 7c uit en gaat op één punt bewust verder dan §12.9.
@@ -29,24 +30,26 @@ Het korte antwoord, per punt:
 
 ---
 
-## 1 · Eén dagboek, twee sporen
+## 1 · Eén invoervorm (herzien, 9 sep)
 
-De kern van het voorstel is dat er géén tweede instrument bij komt.
+**v0 stelde twee sporen naast elkaar voor:** snel (porties per voedselgroep, chiprij) en precies (producten en gerechten). Dat is losgelaten. Twee invoervormen met een schakelaar ertussen lezen als een product dat zijn eigen keuze niet heeft gemaakt, en de chiprij met dertien groepen ziet er onaf uit op een scherm dat verder uit echte gegevens bestaat.
 
-| | **Spoor A · Snel** (bestaat) | **Spoor B · Precies** (nieuw) |
-|---|---|---|
-| Je kiest | porties per voedselgroep | producten en gerechten met een portie |
-| Per dag | ± 2 minuten | ± 5 minuten |
-| Levert | breedte, variatie, weekendverschil, kalibratie | dat alles **plus** milligrammen en echte diversiteit |
-| Opslag | `portions` + `meals` | idem, plus `items` |
+**Het dagboek op Kompas kent nog één vorm: producten en gerechten.** Wat de groepenvorm bood was snelheid, en die is opgevangen met gerechten — één tik zet vier componenten neer, met hun porties al ingevuld.
 
-**Spoor B is een superset van spoor A.** Elk product draagt zijn voedselgroep, dus `portions` wordt bij het opslaan uit `items` afgeleid. Alles wat vandaag op `portions` rekent — `berekenBreedte`, `berekenVariatie`, de weekendvergelijking, `selfReportUitDagboek` — blijft werken zonder één regel wijziging.
+| | Kompas › Voeding › Je dag |
+|---|---|
+| Je kiest | een product of een heel gerecht, uit een zoekveld |
+| Portie | tik op het aantal gram en typ het |
+| Opslag | `account_nutrition_daybook`, sleutel `items` naast de bestaande `portions` en `meals` |
+| Levert | milligrammen per stof, én je groepen, breedte en variatie (afgeleid) |
 
-De omgekeerde weg bestaat niet: uit "3 porties groente" is nooit af te leiden wélke groente. Daarom is B een superset van A en niet andersom, en daarom **mag A nooit verdwijnen**: hij is de vorm die mensen daadwerkelijk invullen, en vier snel ingevulde dagen zijn meer waard dan één perfecte dag.
+**Elk product draagt zijn voedselgroep**, dus `portions` wordt bij het opslaan uit `items` afgeleid. Alles wat vandaag op `portions` rekent — `berekenBreedte`, `berekenVariatie`, de weekendvergelijking, `selfReportUitDagboek` — blijft werken zonder één regel wijziging.
 
-Per eetmoment mag je wisselen. Een dag met een precies avondeten en een snel ontbijt is een geldige dag — alleen niet één waar een dagtotaal in milligrammen bij past. Dat is een kenmerk, geen defect: zie §2.
+**Wat niet verdwijnt.** Het bestaande 2+2-paneel op Voortgang (P5, Meten & timing) blijft zoals het is. Oude dagen die met groepen zijn ingevuld blijven leesbaar: ze missen alleen `items`, en dat leest als "niet op productniveau ingevuld", niet als nul — dezelfde soort versiegrens die `gevraagdeGroepen()` al hanteert.
 
----
+**De portie is de knop.** Geen plus en min: de zinnige stapgrootte verschilt per product (5 g bij noten, 50 g bij aardappelen), en een stepper die dat probeert te raden kost bij een moot zalm acht tikken. Tikken opent een invoerveld, Enter of wegklikken legt vast, Escape laat staan.
+
+Bij een gerecht past dat **alleen die ene component** aan; het item houdt zijn naam en draagt de aantekening *aangepast*. Dat is eerlijker dan het gerecht als geheel schalen: wie een grotere moot zalm nam, nam niet ook meer spinazie.
 
 ## 2 · De ondergrens-regel
 
@@ -54,11 +57,11 @@ Per eetmoment mag je wisselen. Een dag met een precies avondeten en een snel ont
 
 > Deze waarden tellen **NIET** op tot een dagtotaal. De band per nutriënt komt uit frequentievragen, niet uit grammen.
 
-Die regel is geschreven voor de **check** en klopt daar volledig: frequenties tellen niet op tot milligrammen. Voor spoor B geldt hij niet op dezelfde manier — daar staat een concreet product met een concrete portie, en dat is precies de invoer waarvoor `amountForPortion()` bestaat. De drie redenen in de kop van `nutrient-routes.ts` staan er ook verschillend voor dan bij het schrijven:
+Die regel is geschreven voor de **check** en klopt daar volledig: frequenties tellen niet op tot milligrammen. Voor de productinvoer geldt hij niet op dezelfde manier — daar staat een concreet product met een concrete portie, en dat is precies de invoer waarvoor `amountForPortion()` bestaat. De drie redenen in de kop van `nutrient-routes.ts` staan er ook verschillend voor dan bij het schrijven:
 
 | Reden | Stand nu |
 |---|---|
-| "De check meet frequenties, geen grammen" | Geldt voor de check. Geldt **niet** voor spoor B. |
+| "De check meet frequenties, geen grammen" | Geldt voor de check. Geldt **niet** voor de productinvoer. |
 | "Elke waarde staat op `verified: false`" | **Achterhaald.** 44 van de 78 rijen zijn NEVO-geverifieerd. |
 | "Bij magnesium en zink bepaalt fytaat de opname méér dan het gehalte" | **Geldt onverkort.** Dit is de reden die blijft, en hij vraagt om annotatie, niet om verzwijgen. |
 
@@ -108,14 +111,42 @@ De drie zoomniveaus delen één grammatica — dezelfde stofvolgorde, dezelfde k
 | Niveau | Vraag | Toont | Toont **niet** |
 |---|---|---|---|
 | **Dag** | Wat stond er op mijn bord? | mg-ondergrens per stof, bronnen, opname-annotatie | een oordeel — één dag zegt niets over je patroon |
-| **Week** | Wat is mijn patroon? | 13 groepen × 7 dagen, dekking per stof, weekend vs. doordeweeks | **geen milligrammen** — de dagen zijn ongelijk volledig |
+| **Week** | Wat is mijn patroon? | de dagen als rijen, stoffen als kolommen, mg per dag náást elkaar | **geen weektotaal** — een som van ondergrenzen is een zwakkere ondergrens |
 | **Maand** | Klopt mijn check? | dekking over alle dagboekdagen, kalibratie, de cyclusband | **geen mg, geen gemiddelde** |
 
-**De zoomregel gaat bewust tegen de intuïtie in.** De gebruikelijke opbouw is: dag = ruw, maand = precies, want meer data. Hier is het omgekeerd, en dat volgt uit het instrument. Een maand bestaat uit dagen die met verschillende sporen en verschillende volledigheid zijn ingevuld. Daarover middelen voegt geen zekerheid toe — het verbergt alleen dat de onderliggende dagen niet hetzelfde meten. Wat een langere periode wél beter maakt is **dekking**: kwam er een bron voorbij, op hoeveel dagen. Die maat werkt op allebei de sporen, wordt betrouwbaarder met meer dagen, en beantwoordt de vraag die er voor een keuze toe doet.
+**De zoomregel gaat bewust tegen de intuïtie in.** De gebruikelijke opbouw is: dag = ruw, maand = precies, want meer data. Hier is het omgekeerd, en dat volgt uit het instrument. Een maand bestaat uit dagen die ongelijk volledig zijn ingevuld; daarover middelen voegt geen zekerheid toe, het verbergt alleen dat de onderliggende dagen niet hetzelfde meten. Wat een langere periode wél beter maakt is **dekking**.
 
-**De maand is waar het dagboek de check ontmoet.** Niet als tweede oordeel maar als kalibratie: *je zei 2× vis per week, je registreerde 2 visdagen over 9 dagen*. Dat is een dekkingsmaat, geen fout — het maakt de check eerlijker over zijn eigen onzekerheid, en het is de natuurlijke context bij de hertest. `nutrition-dagboek-selfreport.ts` doet dit al; het staat alleen op de verkeerde plek (in het dagboekpaneel in plaats van op maandniveau).
+### De asymmetrie — de regel die het weekscherm draagt (9 sep)
 
-**De band is de bestaande `VoortgangBewijsband`** met dagboekdagen als tweede baan onder de as. Zelfde geometrie, zelfde cycluslengte van 30, zelfde leesrichting. Metingen op de as, registraties eronder — dat onderscheid is semantisch juist én het lost het botsingsprobleem op dat negen genummerde bollen in dertig dagen anders geven.
+Uit de ondergrens-regel volgt iets dat v0 nog niet had uitgewerkt:
+
+> **Een ondergrens kan "gehaald" bewijzen, en "niet gehaald" nooit.**
+
+Haalt de ondergrens uit de bronnen die je noemde de richtwaarde, dan sta je erboven — wat je vergat te noemen kan er alleen bij komen. Haalt hij hem niet, dan volgt er niets uit.
+
+Daarom staat er op het weekscherm **geen "132 g onder"** (zoals in de app waar de vorm vandaan komt), geen rood kruis en geen weektotaal. Alleen een ✓ waar dekking bewezen is, en verder het getal zelf. De kolomvoet telt twee dingen: op hoeveel dagen er een bron was, en op hoeveel dagen dekking bewezen kon worden.
+
+### Niet elke stof is bewijsbaar — en dat hoort het scherm te zeggen
+
+Bij het doorrekenen van dertien echte dagen (met de gehaltes uit `food-sources.ts`) kwam dit eruit:
+
+| Stof | Bron aanwezig | Dekking bewezen |
+|---|---|---|
+| Magnesium | 13 van 13 dagen | **1** |
+| Omega-3 | 4 van 13 dagen | **3** |
+| Zink | 13 van 13 dagen | **0** |
+| Vitamine D | 4 van 13 dagen | **1** |
+
+Zink en vitamine D komen er structureel niet aan, en dat is geen eigenschap van deze gebruiker:
+
+- **Zink** — bronnen leveren 1–4 mg per portie tegen een richtwaarde van 9–11 mg. Alleen oesters halen dat in één portie. Een dagboek dat niet alles vangt, komt er nooit.
+- **Vitamine D** — komt bij vrijwel iedereen uit zonlicht en uit verrijking, niet uit voeding. Alleen vette vis tilt een dag erboven.
+
+Een kolom die nooit een vinkje kan geven, leest als falen terwijl hij een eigenschap van de méétmethode toont. Daarom draagt elke stof een `bewijsbaar`-vlag: staat die op false, dan toont het scherm géén dekkingsoordeel maar alleen de bronnentelling, met de reden erbij. Dezelfde soort eerlijkheid als de `own`-status in `nutrition-ladder.ts` — *nooit een badge die suggereert dat er een grens was die je miste.*
+
+### Wat er uit de bestaande app-vorm is overgenomen
+
+De weekvorm komt uit een screenshot van een bestaande calorie-app: dagen als rijen met dag-afkorting en datum, stoffen als kolommen, een samenvattingsrij eronder, een voetnoot, en periodetabs bovenaan. Die vorm is goed en overgenomen. Wat níét is overgenomen: `"132 g onder"`, het weektotaal, het dagbudget en de export-sheet (die hoort in de AVG-route, niet in een voedingsscherm).
 
 ### Een vondst uit het bouwen van de prebuild
 
@@ -124,9 +155,11 @@ Dekking op **groepsniveau** werkt voor magnesium, zink en eiwit. Voor **vitamine
 - Verrijkte margarine is een echte vitamine-D-bron, olijfolie niet. Op groepsniveau ("oliën & vetten") zijn die twee niet te scheiden — een teller die de groep meerekent meldt bij iedereen die olijfolie gebruikt volledige dekking.
 - "Vis" telt tonijn uit blik (200 mg EPA/DHA) even zwaar als makreel (3.000 mg).
 
-In de prebuild is `vetten` daarom uit de vitamine-D-dragers gehaald en staat de nuance in de copy. **Dit is het scherpste argument voor spoor B dat er is:** alleen daar staat wélke bron het was. Het is ook een concrete beperking van het huidige dagboek die vandaag niet zichtbaar is.
+Dat is meteen het scherpste argument voor de productvorm: alleen daar staat wélke bron het was.
 
----
+### Datumfout in v0
+
+De prebuilds lieten je zaterdag 12 september invullen terwijl vandaag woensdag 9 september is. Een dagboek dat een dag in de toekomst registreert, is geen dagboek. De tijdlijn staat nu vast: cyclus dag 1 = maandag 17 augustus, vandaag = dag 24, hertest op dag 30 = 23 september, en de dag die je invult is **zondag 6 september** — de laatste vrije weekenddag.
 
 ## 5 · Wat er aan de data moet gebeuren (en dit is punt 4 van de opdracht)
 
@@ -223,6 +256,25 @@ Dezelfde keuze, maar nu met iets waar je het niet mee oneens kunt zijn. Dat is h
 
 ---
 
+### Het schap beweegt mee met je logboek (9 sep)
+
+Het schap draagt **dezelfde periodeschakelaar** als het logboek, en beide delen één stand. Wissel je op Voortgang naar "2 weken geleden", dan toont het schap het bewijs van díé weken onder dezelfde keuze.
+
+Dat is meer dan gemak: een keuze die je in augustus maakte, hoort tegen het bewijs van augustus gelegd te kunnen worden, niet tegen dat van vandaag. Daarom krijgt `nutrition.route_choice_saved` een veld `periode` — dan is achteraf afleesbaar op welk bewijs een keuze rustte.
+
+**Wat niet meebeweegt is de poort.** Die hangt aan je check en aan je ladderstatus, niet aan een week logboek — anders zou een goede week hem openen en een slechte hem sluiten, en dan is het geen poort meer.
+
+**Het oordeel per stof kent vier vormen**, en ze mogen niet door elkaar lopen:
+
+| Patroon | Oordeel | Wat het zegt |
+|---|---|---|
+| Bewezen op elke dag | *Uit je eten* | geen aanleiding om aan te vullen |
+| Bron op sommige dagen, bewezen als hij er is | *Wisselend* | de bron werkt — je eet hem te weinig. Frequentievraag. |
+| Bron elke dag, zelden of nooit bewezen | *Hoeveelheid* | de bron ontbreekt niet; de hoeveelheid per dag (en bij fytaat de opname) is de beperking |
+| Niet bewijsbaar uit een dagboek | *Niet aan te tonen* | zegt iets over de meting, niet over jou |
+
+Eiwit valt buiten die vier: dat is een **verdelingsvraag**, geen aanvulvraag, en krijgt zijn eigen formulering.
+
 ## 7 · Agenda: drie soorten regels
 
 Op één dag kunnen drie voedingsregels staan, en ze zijn nadrukkelijk niet hetzelfde:
@@ -237,14 +289,12 @@ Ze delen de bestaande naad: favoriet-id `laag-voeding-p<n>-<slug>`, match op cat
 
 **Wat er nooit in de agenda komt: een productlink.** "Kies volkorenbrood bij de boodschappen" mag — dat is een aandachtspunt-actie zonder merk en zonder link. Een blok dat naar een product linkt omzeilt `resolveNutritionGate` volledig; dan zit de poort nog maar op één scherm dicht. De juiste weg is de deur naar het **schap**, waar de poort al hangt.
 
----
-
 ## 8 · Bouwvolgorde
 
 | Plak | Wat | Kosten | Hangt af van |
 |---|---|---|---|
 | **A** | `foods.ts` + `dishes.ts` als bron van waarheid; `FOOD_SOURCES` afgeleid; test op sleutel- en portie-uniciteit over de héle index | middel | — |
-| **B** | Spoor B in het dagboek: zoekveld, productkiezer, gerechtkiezer, `items` in de JSONB-kolom, `portions` afgeleid bij opslaan | middel | A |
+| **B** | Het dagboek op Kompas: zoekveld, productkiezer, gerechtkiezer, tikbare portie, `items` in de JSONB-kolom, `portions` afgeleid bij opslaan | middel | A |
 | **C** | Dagbeeld (K4): ondergrens per stof met band, richtwaarde-marker en opname-annotatie | klein | B |
 | **D** | Dagboekkaart op Kompas › Voeding + voorwaardelijke kaart op Kompas home | klein | — |
 | **E** | Logboek dag → week → maand op Voortgang; kalibratie verhuist naar maandniveau | middel | B |
@@ -255,7 +305,7 @@ Ze delen de bestaande naad: favoriet-id `laag-voeding-p<n>-<slug>`, match op cat
 
 **A is de plak die alles draagt.** Hem overslaan om sneller bij B te zijn betekent dat elk nieuw product in vijf lijsten moet, en dat de twee bestaande fouten er twintig worden. Punt 4 van de opdracht — veel meer producten en gerechten — is zonder A niet uitvoerbaar.
 
-**D kan los.** De dagboekkaart op Kompas werkt op spoor A en heeft B niet nodig; dat is de goedkoopste zichtbare verbetering in de lijst.
+**D kan los.** De dagboekkaart op Kompas is de vier plekken plus één knop; die werkt op wat er vandaag al ligt en heeft B niet nodig. Goedkoopste zichtbare verbetering in de lijst.
 
 ---
 
@@ -264,12 +314,13 @@ Ze delen de bestaande naad: favoriet-id `laag-voeding-p<n>-<slug>`, match op cat
 Nieuwe client-events vereisen registratie op drie plekken: `src/lib/events.ts`, `src/lib/intake-events-client.ts` en de allowlist in `src/app/api/intake/events/route.ts` (voor account-events: `src/app/api/account/events/route.ts`).
 
 **Bestaand, krijgt velden erbij:**
-- `nutrition.dagboek_opened` — `surface`, `spoor`
-- `nutrition.dagboek_day_saved` — `spoor`, `items`, `gerechten`
+- `nutrition.dagboek_opened` — `surface`, `date`
+- `nutrition.dagboek_day_saved` — `items`, `gerechten`, `aangepast`
 - `nutrition.dagboek_kalibratie_shown` — verhuist mee naar het maandscherm
 
 **Nieuw:**
-- `nutrition.dagboek_spoor_switched` — zegt of spoor B gebruikt wordt of alleen bestaat
+- `nutrition.dagboek_portie_aangepast` — zegt of de standaardporties kloppen: een product dat structureel wordt bijgesteld, hoort een andere standaardportie te krijgen
+- `nutrition.logboek_periode_changed` — zegt of mensen daadwerkelijk terugkijken, en hoe ver
 - `nutrition.dagboek_item_added` — `kind` (los/gerecht), `key`; dit is de lijst die bepaalt wélke producten er in plak 4 bij moeten
 - `nutrition.dagboek_dagbeeld_viewed` — is de mg-readout de bestemming?
 - `nutrition.dagboek_bron_detail_opened` — leeft de bronvraag ("waar zát die magnesium in")?
@@ -286,7 +337,8 @@ Nieuwe client-events vereisen registratie op drie plekken: `src/lib/events.ts`, 
 - **De voedingscheck op Kompas.** Zie §3.
 - **Een maandgemiddelde in milligrammen.** Ongelijk volledige dagen middelen is een vormfout, geen meting.
 - **Percentages van een ADH, waar dan ook.** Een marker toont een positie; een percentage maakt er een doel van.
-- **Spoor A vervangen door spoor B.** Vier snel ingevulde dagen zijn meer waard dan één perfecte.
+- **Het 2+2-paneel op Voortgang weghalen.** De groepenvorm is van Kompas af, niet uit het product: oude dagen moeten leesbaar blijven en niet iedereen wil op productniveau invullen.
+- **Een dag in de toekomst laten registreren.** v0 deed dat; zie §4.
 - **Een streak of een 7/7-doel.** Vier dagen blijft de norm; extra dagen tellen mee zonder van vier een halve prestatie te maken.
 - **Producten toevoegen vóór plak A.** Elke rij die nu bijkomt, moet straks alsnog om.
 - **Een tweede voedingsscore uit het dagboek.** Eén getal per domein, en dat komt uit de check.
@@ -297,6 +349,6 @@ Nieuwe client-events vereisen registratie op drie plekken: `src/lib/events.ts`, 
 
 Twee plekken waar dit voorstel verder gaat dan wat er staat. Ze zijn hier genoemd zodat ze een besluit zijn en geen slordigheid.
 
-1. **Roadmap §12.9 zegt: geen macro's in grammen tonen.** Dit voorstel toont eiwit in grammen op het dagbeeld. Reden: bij spoor B is eiwit uit concrete porties af te leiden, en de eiwitverdeling over de dag is een van de twee prioriteiten die het Kompas zelf noemt. Zonder grammen is die prioriteit niet af te lezen. De grens die blijft: geen koolhydraten, geen vet, geen calorieën — die dragen geen enkele route en zetten het dagboek om in een boekhouding.
+1. **Roadmap §12.9 zegt: geen macro's in grammen tonen.** Dit voorstel toont eiwit in grammen op het dagbeeld. Reden: uit concrete porties is eiwit af te leiden, en de eiwitverdeling over de dag is een van de twee prioriteiten die het Kompas zelf noemt. Zonder grammen is die prioriteit niet af te lezen. De grens die blijft: geen koolhydraten, geen vet, geen calorieën — die dragen geen enkele route en zetten het dagboek om in een boekhouding.
 
 2. **Roadmap §10.7 zegt: de uitbreiding zit niet in méér voedingsmiddelen.** Dat klopte toen de vraag was "helpt rij 80 de drie assen". Bij een productkiezer verandert de vraag: de index is dan geen naslagtabel meer maar de invoerwoordenlijst, en dáár telt dekking wél. Wat onveranderd blijft is dat meer rijen de *uitvoer* niet beter maken — de gebruiker ziet nog steeds vijf stoffen en begrijpelijke conclusies, geen dashboard met dertig nutriënten.
