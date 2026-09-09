@@ -198,6 +198,69 @@ De opdracht is om te groeien naar producten en gerechten die mensen echt in huis
 
 **De conclusie voor de productuitbreiding:** merkproducten leveren geen micronutriënten, van geen enkele bron. De uitbreiding moet dus lopen via **generieke voedingsmiddelen uit Foundation Foods**, met merkproducten hooguit als zoekingang die naar het generieke voedingsmiddel wijst ("AH volkorenbrood" → `volkorenbrood`). Dat is ook wat de gebruiker in de praktijk zoekt.
 
+### 2.5 · Supermarktproducten: een verwijzing, geen eigen rij
+
+**Vraag:** als onderzoek een gehalte per voedingsmiddel geeft, mag je dat dan op een supermarktproduct plakken?
+
+**Ja — en het is de enige manier waarop de productuitbreiding kan schalen.** Maar dan wel als *verwijzing*, niet als eigen gehalterij.
+
+#### Waarom het mag
+
+Voor een enkelvoudig product is het merk verpakking, geen samenstelling. "AH ongezouten amandelen" en "Jumbo amandelen" zijn allebei *amandelen*; het verschil tussen die twee is verwaarloosbaar naast het verschil tussen cultivars en groeigebieden — en dat laatste zit al in de band (§1.7: ×0,60–1,70 voor plantaardige mineralen).
+
+Dat is het beslissende argument, en het volgt uit de keuze om banden te tonen in plaats van punten: **de band is al ruimer dan het merkverschil.** Wie een puntwaarde claimt, kan een merkproduct niet verantwoorden. Wie een band toont, kan het wel — het merkverschil valt er binnen.
+
+Hetzelfde geldt voor bewerking waar mensen het tegendeel verwachten:
+
+- **Geroosterde versus rauwe noten.** Mineralen zijn elementen; ze verdwijnen niet bij verhitting. Roosteren onttrekt water, wat het gehalte per 100 g licht *verhoogt* — enkele procenten, ruim binnen de band. (Gezouten noten voegen natrium toe, en dat is een andere vraag.)
+- **Peulvruchten uit blik versus zelf gekookt.** Een deel van de mineralen loogt uit in het vocht. Reëel, maar bescheiden, en opnieuw binnen de band.
+
+#### Wanneer het niet mag
+
+Vier gevallen waarin het merk wél de samenstelling bepaalt:
+
+| Geval | Waarom | Wat dan |
+|---|---|---|
+| **Verrijkte producten** | het gehalte ís een fabrikantkeuze (plantaardige drank, ontbijtgranen, margarine) | etiket is de bron, per merk |
+| **Samengestelde producten** | een kant-en-klaarmaaltijd heeft een recept, geen voedingsmiddel-identiteit | als gerecht opnemen, uit componenten |
+| **Producten met een samenstellingsclaim** | "extra eiwit", "vezelrijk" — dan wijkt het merk bewust af | etiket |
+| **Producten waar de bewerkingsgraad de identiteit is** | volkoren versus wit brood zijn niet hetzelfde voedingsmiddel | apart voedingsmiddel, geen merkvariant |
+
+#### De vorm
+
+Een supermarktproduct krijgt dus **geen `nutrients`-veld**. Het wijst naar een voedingsmiddel en voegt toe wat het wél zelf weet: de verpakking en de portie.
+
+```ts
+export interface Product {
+  key: string;                 // "ah-amandelen-ongezouten"
+  labelNl: string;             // "Amandelen ongezouten"
+  merk?: string;               // "AH" — alleen om te vinden, nooit om te rekenen
+  /** Waar de gehaltes vandaan komen. Het product heeft er zelf geen. */
+  foodKey: string;             // "amandelen"
+  /** Wat de verpakking wél toevoegt: een portie die je herkent. */
+  porties: readonly { labelNl: string; grams: number }[];  // "handvol (25 g)", "zakje (200 g)"
+  /** Alleen bij verrijkte producten: dan wint het etiket van foodKey. */
+  etiket?: Partial<Record<NutrientId, { per100g: number; bron: string }>>;
+}
+```
+
+Drie consequenties, alle drie gunstig:
+
+1. **Een nieuw product is één regel** — sleutel, label, `foodKey`, porties. Geen onderzoek per product. Dát is wat de uitbreiding naar honderden producten haalbaar maakt.
+2. **Een verbeterd gehalte verbetert alle producten tegelijk.** Vervang de USDA-waarde voor `amandelen` en elk merk amandelen volgt.
+3. **De portie is de echte winst van het merk.** "Een zakje" of "een handvol" is precies wat het generieke voedingsmiddel niet weet, en wat de invoer sneller maakt.
+
+#### De copy-regel die erbij hoort
+
+Het getal blijft van het voedingsmiddel, niet van het merk. Op het scherm dus:
+
+> **Amandelen** · 25 g — magnesium 39–110 mg
+> *Gehalte van amandelen (USDA), niet van dit merk gemeten.*
+
+en niet "AH Amandelen: 65 mg magnesium". Dat laatste leest als een meting aan dat product, is dat niet, en zou bovendien een samenstellingsuitspraak over een merk zijn die wij niet hebben gedaan.
+
+---
+
 ### 2.5 · Waarom etappe 2 hier stopt
 
 De netwerkpolicy van deze omgeving blokkeert `api.nal.usda.gov` en `fdc.nal.usda.gov` (403 op CONNECT). De extractie kan hier niet draaien. Wat er wel ligt: het script (`scripts/usda-extract.mjs`), de productlijst en het verificatiepad. Zie etappe 3.
