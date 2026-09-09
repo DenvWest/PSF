@@ -181,6 +181,17 @@ h1,h2,h3{font-family:var(--f-serif);font-weight:400;letter-spacing:-.005em}
 .results .r-m{display:block;font-size:10.5px;color:#7E8C82;margin-top:2px}
 .results .r-t{flex:0 0 auto;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--terra);border:1px solid rgba(200,149,108,.4);border-radius:999px;padding:2px 7px}
 .results .r-t[data-kind="los"]{color:#9FB0A6;border-color:rgba(255,255,255,.16)}
+.results .r-open{flex:0 0 auto;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#7E8C82;border:1px dashed rgba(255,255,255,.18);border-radius:999px;padding:2px 7px}
+
+/* Bladeren als je niet weet hoe je iets moet spellen. Staat bóven het
+   zoekveld: typen is sneller als je het woord kent, en bladeren is er voor
+   als je dat niet doet — dus die volgorde. */
+.cats{display:flex;gap:5px;overflow-x:auto;padding:0 0 3px;margin:0 0 8px;scrollbar-width:none;list-style:none}
+.cats::-webkit-scrollbar{display:none}
+.cats button{flex:0 0 auto;min-height:32px;padding:0 11px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:transparent;color:var(--text-muted);font-size:11.5px;font-weight:500;cursor:pointer;white-space:nowrap;transition:border-color .15s,color .15s}
+.cats button:hover{border-color:rgba(255,255,255,.3);color:#E7EDE8}
+.cats button[aria-pressed="true"]{border-color:rgba(90,143,106,.55);background:rgba(90,143,106,.16);color:var(--sage-soft)}
+.cat-hint{margin:0 0 8px;font-size:10.5px;line-height:1.45;color:#7E8C82}
 
 .entry{border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.22);border-radius:14px;padding:11px;margin:0 0 8px}
 .entry-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
@@ -807,6 +818,52 @@ function spreidingVoor(food, nutrientId){
   return perStof[klasseVoor(food, nutrientId)] || perStof._default || [0.90, 1.10];
 }
 
+/**
+ * De zoekcategorieën, verkort tot wat deze prebuild aan producten draagt.
+ *
+ * De volledige taxonomie (drieëntwintig categorieën) staat in
+ * `src/data/nutrition/food-taxonomy.ts`, en de volledige catalogus met
+ * ruim driehonderdzeventig regels in `src/data/nutrition/food-catalog.ts`.
+ * Deze prebuild toont de vorm, niet de voorraad.
+ *
+ * Let op de twee assen: `cat` is waar je hem vindt (mag groeien), `groep` is
+ * welke voedselgroep hij vult (dertien, vast). Ze door elkaar halen breekt
+ * ofwel het zoeken ofwel de breedtemeting.
+ */
+var CATEGORIEEN = [
+  { id:"groenten", label:"Groenten" }, { id:"fruit", label:"Fruit" },
+  { id:"granen", label:"Granen & rijst" }, { id:"brood", label:"Brood" },
+  { id:"pasta", label:"Pasta" }, { id:"peulvruchten", label:"Peulvruchten" },
+  { id:"noten", label:"Noten" }, { id:"zaden", label:"Zaden" },
+  { id:"vlees", label:"Vlees" }, { id:"orgaanvlees", label:"Orgaanvlees" },
+  { id:"vis", label:"Vis" }, { id:"zeevruchten", label:"Schaaldieren" },
+  { id:"eieren", label:"Eieren" }, { id:"zuivel", label:"Zuivel" },
+  { id:"kaas", label:"Kaas" }, { id:"plantaardig", label:"Plantaardig" },
+  { id:"vetten", label:"Oliën & vetten" }, { id:"sauzen", label:"Sauzen" },
+  { id:"snacks", label:"Snacks" }
+];
+
+/** Waar een product woont als de voedselgroep het niet al zegt. */
+var CAT_OVERRIDE = {
+  pompoenzaden:"zaden", zonnebloempitten:"zaden", hennepzaad:"zaden",
+  lijnzaad:"zaden", chiazaad:"zaden", tahin:"sauzen",
+  volkorenbrood:"brood", "volkoren-pasta":"pasta",
+  "belegen-kaas":"kaas", huttenkase:"kaas",
+  tofu:"plantaardig", tempe:"plantaardig", "sojadrink-verrijkt":"plantaardig",
+  oesters:"zeevruchten", garnalen:"zeevruchten", leverpastei:"orgaanvlees",
+  "pure-chocolade":"snacks", aardappelen:"groenten", "witte-rijst":"granen",
+  avocado:"groenten"
+};
+var CAT_VAN_GROEP = {
+  groente:"groenten", fruit:"fruit", peulvruchten:"peulvruchten",
+  noten:"noten", granen:"granen", zetmeel:"granen", vis:"vis",
+  vlees:"vlees", eieren:"eieren", zuivel:"zuivel", vetten:"vetten",
+  dranken:"dranken", suiker:"snacks"
+};
+function catVan(food){
+  return CAT_OVERRIDE[food.key] || CAT_VAN_GROEP[food.groep] || "groenten";
+}
+
 var MOMENTS = [
   { id:"ontbijt", label:"Ontbijt" },
   { id:"lunch", label:"Lunch" },
@@ -1137,7 +1194,36 @@ function reducedWarning(sums){
 
 function searchEl(momentId){
   var wrap = document.createElement("div");
-  wrap.className = "search";
+  var open = { cat: null };
+
+  /* Bladeren per categorie. Eén categorie tegelijk: twee tegelijk levert een
+     lijst op waarin je nog steeds moet zoeken, en dan had je net zo goed
+     kunnen typen. */
+  var cats = document.createElement("ul");
+  cats.className = "cats";
+  CATEGORIEEN.forEach(function(c){
+    var li = document.createElement("li");
+    var b = document.createElement("button");
+    b.type = "button"; b.textContent = c.label;
+    b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", function(){
+      open.cat = (open.cat === c.id) ? null : c.id;
+      cats.querySelectorAll("button").forEach(function(o){ o.setAttribute("aria-pressed","false"); });
+      if (open.cat) b.setAttribute("aria-pressed","true");
+      toast('nutrition.dagboek_categorie_geopend { categorie: "' + (open.cat || "geen") + '" }');
+      paint("");
+    });
+    li.appendChild(b); cats.appendChild(li);
+  });
+  wrap.appendChild(cats);
+
+  var hint = document.createElement("p");
+  hint.className = "cat-hint";
+  hint.textContent = "Tik een categorie om te bladeren, of typ als je weet wat je zoekt.";
+  wrap.appendChild(hint);
+
+  var zoekvak = document.createElement("div");
+  zoekvak.className = "search";
   var input = document.createElement("input");
   input.type = "search";
   input.placeholder = "Zoek een product of gerecht…";
@@ -1148,19 +1234,31 @@ function searchEl(momentId){
   function paint(q){
     results.innerHTML = "";
     var term = q.trim().toLowerCase();
-    if (!term){ return; }
+    /* Zonder zoekterm én zonder categorie is er niets te tonen — een lijst van
+       alles is geen keuzehulp. Met een categorie tonen we die categorie. */
+    if (!term && !open.cat){ return; }
     var hits = [];
-    DISHES.forEach(function(d){
-      if (d.label.toLowerCase().indexOf(term) >= 0) hits.push({ kind:"dish", key:d.key, label:d.label, meta:d.comps.length + " componenten" });
-    });
+    if (term){
+      DISHES.forEach(function(d){
+        if (d.label.toLowerCase().indexOf(term) >= 0) hits.push({ kind:"dish", key:d.key, label:d.label, meta:d.comps.length + " componenten" });
+      });
+    }
     FOODS.forEach(function(f){
-      if (f.label.toLowerCase().indexOf(term) >= 0) hits.push({ kind:"food", key:f.key, label:f.label, meta:f.portie + " · " + GROEP_LABEL[f.groep] });
+      if (open.cat && catVan(f) !== open.cat) return;
+      if (term && f.label.toLowerCase().indexOf(term) < 0) return;
+      /* Een product zonder gehaltes is gewoon te loggen: hij vult zijn groep
+         en telt mee voor breedte en variatie. Alleen de milligrammen zeggen
+         "nog niet opgehaald" in plaats van een getal. */
+      var heeftGehaltes = Object.keys(f.n).length > 0;
+      hits.push({ kind:"food", key:f.key, label:f.label,
+        meta:f.portie + " · " + GROEP_LABEL[f.groep], open:!heeftGehaltes });
     });
-    hits.slice(0, 8).forEach(function(h){
+    hits.slice(0, open.cat ? 24 : 8).forEach(function(h){
       var li = document.createElement("li");
       var b = document.createElement("button");
       b.type = "button";
       b.innerHTML = '<span><span class="r-n">' + h.label + '</span><span class="r-m">' + h.meta + '</span></span>' +
+        (h.open ? '<span class="r-open" title="dit product is te loggen; zijn gehaltes zijn nog niet opgehaald">geen mg</span>' : '') +
         '<span class="r-t" data-kind="' + (h.kind === "dish" ? "gerecht" : "los") + '">' + (h.kind === "dish" ? "Gerecht" : "Los") + '</span>';
       b.addEventListener("click", function(){
         day[momentId] = day[momentId] || [];
@@ -1174,8 +1272,9 @@ function searchEl(momentId){
   }
 
   input.addEventListener("input", function(){ paint(this.value); });
-  wrap.appendChild(input);
-  wrap.appendChild(results);
+  zoekvak.appendChild(input);
+  zoekvak.appendChild(results);
+  wrap.appendChild(zoekvak);
   return wrap;
 }
 

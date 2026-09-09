@@ -261,6 +261,63 @@ en niet "AH Amandelen: 65 mg magnesium". Dat laatste leest als een meting aan da
 
 ---
 
+### 2.6 · De catalogus — gebouwd, 371 regels (9 sep)
+
+`src/data/nutrition/food-taxonomy.ts` en `src/data/nutrition/food-catalog.ts` staan er, met `src/data/__tests__/food-catalog.test.ts` als bewaking.
+
+| | |
+|---|---|
+| Catalogusregels | **371** |
+| Waarvan bereidingsvarianten | 113 |
+| Met gehaltes uit `FOOD_SOURCES` | 61 |
+| Nog op te halen (`bron: null`) | 310 |
+| Zoekcategorieën | 23 |
+| Voedselgroepen (vast) | 13 |
+| Tests die de invarianten bewaken | 17 |
+
+#### Twee assen, en waarom ze niet dezelfde mogen zijn
+
+Dit is de belangrijkste beslissing in de catalogus, en het is een die makkelijk verkeerd gaat:
+
+| As | Waar | Aantal | Mag groeien |
+|---|---|---|---|
+| **Voedselgroep** (`groep`) | analyse | **13, vast** | nee |
+| **Zoekcategorie** (`category`) | navigatie | 23 | ja, vrij |
+
+De dertien voedselgroepen dragen `berekenBreedte`, `berekenVariatie`, de weekendvergelijking en de brug naar de check. De noemer van *"je at uit 6 van de 13 groepen"* is onderdeel van een meting — een groep erbij maakt elke eerdere dag onvergelijkbaar.
+
+De drieëntwintig zoekcategorieën dragen niets anders dan het vinden. Die lijst mag naar vijftig groeien zonder dat er één meting verandert.
+
+**Daarom kan deze catalogus zonder risico naar duizenden regels.** Een test bewaakt het: elke regel moet in een van de dertien vallen, en de samengevoegde legacy-groep `vlees-vis` mag nergens voorkomen — die maakt vis en vlees onscheidbaar, en precies die scheiding hebben de omega-3- en zinkroute nodig.
+
+#### Wat ik anders deed dan de voorgestelde lijst
+
+Het oorspronkelijke voorstel had **"Diepvries"** en **"Conserven"** als categorieën. Dat is een val: het zijn *vormen*, geen soorten. Diepvriesbroccoli hoort onder groenten; hem ook onder "diepvries" zetten betekent dat hij op twee plekken staat, of dat iemand moet raden waar hij is.
+
+De vorm zit daarom op een eigen as (`Bereiding`) en werkt als filter *binnen* een categorie: groenten → broccoli → diepvries. Eén plek per voedingsmiddel, en de vraag "welke vorm" wordt gesteld waar hij hoort. Dat bracht de lijst van 25 naar 23.
+
+Tweede afwijking: een voedingsmiddel mag in **meer dan één categorie gevonden worden**. Havermout is een graan én een ontbijtproduct. `category` is waar hij woont (één, altijd), `ookIn` waar hij ook gevonden wordt. Geen duplicaten in de data, wel op de plekken waar mensen kijken.
+
+#### Wanneer een bereidingsvorm een eigen regel verdient
+
+De regel die de catalogus compact houdt: **alleen als de vorm het gehalte of de portie meetbaar verandert.** Drie mechanismen doen dat:
+
+- **Water.** Koken voegt toe (75 g droge pasta wordt 190 g gekookt), drogen haalt weg (vijgen concentreren viervoudig). Het gehalte per 100 g beweegt mee zonder dat er één molecuul bij of af gaat. Grootste bron van verschil, makkelijkst over het hoofd te zien.
+- **Uitloging.** Koken in ruim water laat mineralen weglopen; stomen veel minder. Bij blik zit een deel in het vocht dat je weggiet.
+- **Portie.** Een portie rauwe spinazie is 75 g, gekookt 150 g — dezelfde bak, ingekookt. Zonder aparte regel logt iemand structureel de helft.
+
+En waar het **niet** geldt: geroosterde noten. Mineralen zijn elementen; verhitting laat ze staan, en het waterverlies valt ruim binnen de spreidingsband. Een aparte regel zou een verschil suggereren dat de meting niet kan zien.
+
+Een test dwingt dit af: elke `bereiding` die van de basisvorm afwijkt, draagt een `waarom`. Bij het schrijven ving die test 23 varianten die ik zonder verantwoording had toegevoegd — precies waar hij voor bedoeld is.
+
+#### `bron: null` is een werkbare toestand
+
+Van de 371 regels dragen er 61 een verwijzing naar `FOOD_SOURCES`; de overige 310 staan op `null`. Dat is geen gat maar de eerlijke stand: **een regel zonder gehaltes is gewoon te loggen.** Hij vult zijn voedselgroep, telt mee voor breedte en variatie, en draagt zijn portie. Alleen de milligram-uitlezing zegt "nog niet opgehaald" in plaats van een getal — hetzelfde patroon als `unmeasured` in `nutrition-route-status.ts`.
+
+Wat we níét doen is een plausibel ogende waarde invullen om het gat te dichten. `zonderBron()` is daarmee ook de werklijst voor de USDA-extractie: dat getal hoort te dalen, niet de catalogus te blokkeren.
+
+---
+
 ### 2.5 · Waarom etappe 2 hier stopt
 
 De netwerkpolicy van deze omgeving blokkeert `api.nal.usda.gov` en `fdc.nal.usda.gov` (403 op CONNECT). De extractie kan hier niet draaien. Wat er wel ligt: het script (`scripts/usda-extract.mjs`), de productlijst en het verificatiepad. Zie etappe 3.
