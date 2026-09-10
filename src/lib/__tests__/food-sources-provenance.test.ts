@@ -174,3 +174,28 @@ describe("de huidige stand is eerlijk afleesbaar", () => {
     }
   });
 });
+
+describe("de twee verificatiesporen staan los (ONDERZOEK etappe 3b)", () => {
+  // `verified` slaat ALLEEN op `nutrientValue`. bioavailability, variability,
+  // preparationNote en qualityNote komen niet uit een voedingstabel (USDA noch
+  // NEVO) en houden een eigen literatuurspoor. Deze twee tests leggen die
+  // scheiding vast, zodat een latere USDA-import ze niet stilletjes samenvoegt.
+  it("een geverifieerd gehalte komt nooit uit 'literatuur' — dat is per definitie ongeverifieerd", () => {
+    for (const source of ALL_SOURCES) {
+      if (!source.verified) continue;
+      expect(
+        source.nutrientValue?.source.origin,
+        `${source.key} staat verified maar citeert 'literatuur'`,
+      ).not.toBe("literatuur");
+    }
+  });
+
+  it("verified koppelt niet aan het literatuuroordeel: geverifieerde rijen dragen nog steeds bioavailability/quality-notes", () => {
+    const verifiedMetOordeel = ALL_SOURCES.filter(
+      (s) =>
+        s.verified &&
+        (s.bioavailabilityWhy || s.variabilityWhy || s.qualityNote || s.preparationNote),
+    );
+    expect(verifiedMetOordeel.length).toBeGreaterThan(0);
+  });
+});

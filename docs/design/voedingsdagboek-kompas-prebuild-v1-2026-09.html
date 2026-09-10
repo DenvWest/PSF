@@ -541,7 +541,7 @@ h1,h2,h3{font-family:var(--f-serif);font-weight:400;letter-spacing:-.005em}
   <h3>Spreiding — nu gebronde factorbanden (bijgewerkt 9 sep)</h3>
   <p>De ±10/25/40 %-vuistregel is weg. In de plaats staat een band per <b>(stof × voedselklasse)</b>, elk met een bron — zie <code>docs/plan/ONDERZOEK_SPREIDING_EN_USDA_2026-09.md</code> §1.7. Twee dingen bleken fout, in tegengestelde richting: plantaardige mineralen stonden veel te smal (de literatuur laat 2,3× tot 5,7× verschil zien tussen cultivars, tegen 1,67× voor ±25 %), en verrijkte producten stonden te ruim (het niveau ligt in Nederland wettelijk vast op 7,5 µg/100 g voor margarine en halvarine).</p>
   <p>Vermenigvuldigers in plaats van percentages, omdat de spreiding bij vis asymmetrisch is: gekweekte zalm ligt vaker onder de tabelwaarde dan erboven.</p>
-  <p><b>Dit blijft een tussenstap.</b> USDA FoodData Central publiceert per voedingsmiddel per nutriënt een waargenomen <code>min</code>, <code>max</code>, <code>median</code> en <code>data_points</code>. Zodra een rij die draagt, wint de waargenomen spreiding van de klassenband — die dekt alleen nog de rijen waar de bron één monster had.</p>
+  <p><b>Dit blijft een tussenstap — en de code behandelt hem zo.</b> USDA FoodData Central publiceert per voedingsmiddel per nutriënt een waargenomen <code>min</code>, <code>max</code>, <code>median</code> en <code>data_points</code>. <code>bandFor</code> (en in de app <code>src/lib/nutrition-spread.ts</code>) laat die waargenomen spreiding winnen zodra een rij hem draagt; de klassenband dekt alleen nog de rijen waar de bron één monster had of — zoals de WebSearch-import van september 2026 — de gestructureerde velden niet meelevert.</p>
 
   <h3>Meetpunten</h3>
   <ul>
@@ -780,9 +780,11 @@ var DAGBOEK_GROEPEN = ["groente","fruit","peulvruchten","noten","granen","zetmee
  * Vermenigvuldigers en geen percentages, omdat de spreiding bij vis
  * asymmetrisch is: gekweekte zalm ligt vaker onder de tabelwaarde dan erboven.
  *
- * TUSSENSTAP. Zodra een rij een waargenomen `min`/`max` uit USDA FoodData
- * Central draagt, wint die: de spreiding van de werkelijke monsters slaat elke
- * klassenband. Deze tabel dekt de rijen waar de bron één monster had.
+ * TUSSENSTAP, en `bandFor` behandelt hem ook zo: draagt een rij een waargenomen
+ * `min`/`max` uit USDA Foundation Foods (`food.obs`, ≥2 monsters), dan wint die
+ * en telt deze tabel niet mee — de spreiding van de werkelijke monsters slaat
+ * elke klassenband. Deze tabel dekt de rijen waar de bron één monster had of
+ * (zoals de WebSearch-import van sep 2026) de gestructureerde velden mist.
  */
 var SPREAD = {
   protein:   { dier:[0.90, 1.10], plant:[0.85, 1.15], _default:[0.90, 1.10] },
@@ -885,13 +887,28 @@ function amountFor(food, nutrientId, grams){
   return (per100 * grams) / 100;
 }
 
-/** Ondergrens-band voor één regel: [laag, hoog] rond de puntwaarde. */
+/**
+ * Ondergrens-band voor één regel: [laag, hoog] rond de puntwaarde.
+ *
+ * Observed wint: draagt de rij een waargenomen `min`/`max` uit USDA Foundation
+ * Foods (`food.obs[nutrientId]`, ≥2 monsters), dan is dát de band en telt de
+ * klassenband niet mee. Anders de gebronde klassenband uit §1.7. `basis` zegt
+ * welke van de twee het werd — spiegelt src/lib/nutrition-spread.ts.
+ */
 function bandFor(food, nutrientId, grams){
-  var v = amountFor(food, nutrientId, grams);
-  if (v == null) return null;
+  var per100 = food.n[nutrientId];
+  if (per100 == null || !(grams > 0)) return null;
+  var reduced = food.b[nutrientId] === "reduced";
+  var factor = grams / 100;
+  var obs = food.obs && food.obs[nutrientId];
+  if (obs && obs.samples >= 2 && obs.max > obs.min){
+    var mid = (obs.median != null ? obs.median : per100);
+    return { point:mid * factor, lo:obs.min * factor, hi:obs.max * factor,
+             reduced:reduced, basis:"observed" };
+  }
+  var v = per100 * factor;
   var f = spreidingVoor(food, nutrientId);
-  return { point:v, lo:v * f[0], hi:v * f[1],
-           reduced: food.b[nutrientId] === "reduced" };
+  return { point:v, lo:v * f[0], hi:v * f[1], reduced:reduced, basis:"band" };
 }
 
 /** Telt regels op tot één band per stof, met het geremde aandeel apart. */

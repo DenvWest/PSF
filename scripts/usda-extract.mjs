@@ -30,13 +30,24 @@
  *
  * Uitvoer: scripts/out/usda-rapport.json + een samenvatting op stdout.
  *
- * ## Let op bij de eerste run
+ * ## Nutriëntnummers — geverifieerd (sep 2026)
  *
- * De nutriëntnummers hieronder zijn op naam én nummer gematcht. Alleen 328
- * (vitamine D) is geverifieerd tegen USDA-documentatie; de rest komt uit de
- * gangbare SR-nummering en is niet nageslagen. Het script logt per stof welke
- * sleutel daadwerkelijk aansloeg — controleer die regel op de eerste run
- * voordat je het rapport vertrouwt.
+ * De nummers hieronder zijn tegen USDA-documentatie gelegd: de 4-cijferige
+ * FDC-nutriënt-ID's en hun 3-cijferige SR-Legacy-equivalenten (de FNDDS
+ * Appendix K-crosswalk mapt die twee op elkaar). Alle zes bevestigd:
+ *
+ *   Protein            203 / 1003
+ *   Magnesium, Mg      304 / 1090
+ *   Zinc, Zn           309 / 1095
+ *   Vitamin D (D2+D3)  328 / 1114
+ *   EPA 20:5 n-3       629 / 1278
+ *   DHA 22:6 n-3       621 / 1272
+ *
+ * Bronnen: FDC OpenAPI-nutriëntdocumentatie (fdc.nal.usda.gov/api-spec) en de
+ * FNDDS-documentatie (Appendix K, ars.usda.gov). Het script matcht bovendien op
+ * naampatroon (`namePat`), zodat een editie die een afwijkend nummer voert
+ * alsnog aanslaat, en het logt per stof welke sleutel aansloeg — lees die regel
+ * bij de eerste echte API-run als extra controle.
  */
 
 import fs from "node:fs";

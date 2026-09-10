@@ -711,9 +711,11 @@ var F = {
  * Vermenigvuldigers en geen percentages, omdat de spreiding bij vis
  * asymmetrisch is: gekweekte zalm ligt vaker onder de tabelwaarde dan erboven.
  *
- * TUSSENSTAP. Zodra een rij een waargenomen `min`/`max` uit USDA FoodData
- * Central draagt, wint die: de spreiding van de werkelijke monsters slaat elke
- * klassenband. Deze tabel dekt de rijen waar de bron één monster had.
+ * TUSSENSTAP, en `bandsVoor` behandelt hem ook zo: draagt een rij een
+ * waargenomen `min`/`max` uit USDA Foundation Foods (`f.obs`, ≥2 monsters), dan
+ * wint die en telt deze tabel niet mee — de spreiding van de werkelijke
+ * monsters slaat elke klassenband. Deze tabel dekt de rijen waar de bron één
+ * monster had of (zoals de WebSearch-import van sep 2026) de velden mist.
  */
 var SPREAD = {
   protein:   { dier:[0.90, 1.10], plant:[0.85, 1.15], _default:[0.90, 1.10] },
@@ -835,7 +837,14 @@ function dagenVan(periodeId){
   return out;
 }
 
-/** Ondergrens-band per stof voor één dag. */
+/**
+ * Ondergrens-band per stof voor één dag.
+ *
+ * Observed wint: draagt een product een waargenomen `min`/`max` uit USDA
+ * Foundation Foods (`f.obs[n.id]`, ≥2 monsters), dan is dát de band voor dat
+ * item; anders de gebronde klassenband uit §1.7. Spiegelt bandFor in de
+ * Kompas-prebuild en src/lib/nutrition-spread.ts in de app.
+ */
 function bandsVoor(items){
   var out = {};
   NUTRIENTS.forEach(function(n){
@@ -845,10 +854,19 @@ function bandsVoor(items){
       if (!f) return;
       var per = f.n[n.id];
       if (per == null) return;
-      var v = (per * pair[1]) / 100;
-      var band = spreidingVoor({ key:pair[0], groep:f.groep }, n.id);
-      lo += v * band[0]; hi += v * band[1]; pt += v;
-      if (f.b[n.id]) red += v;
+      var factor = pair[1] / 100;
+      var obs = f.obs && f.obs[n.id];
+      var point, blo, bhi;
+      if (obs && obs.samples >= 2 && obs.max > obs.min){
+        blo = obs.min * factor; bhi = obs.max * factor;
+        point = (obs.median != null ? obs.median : per) * factor;
+      } else {
+        point = per * factor;
+        var band = spreidingVoor({ key:pair[0], groep:f.groep }, n.id);
+        blo = point * band[0]; bhi = point * band[1];
+      }
+      lo += blo; hi += bhi; pt += point;
+      if (f.b[n.id]) red += point;
       bron++;
     });
     out[n.id] = bron ? { lo:lo, hi:hi, pt:pt, red:red, bron:bron } : null;
