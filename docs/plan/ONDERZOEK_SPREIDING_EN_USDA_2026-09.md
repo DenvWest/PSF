@@ -269,11 +269,11 @@ en niet "AH Amandelen: 65 mg magnesium". Dat laatste leest als een meting aan da
 |---|---|
 | Catalogusregels | **371** |
 | Waarvan bereidingsvarianten | 113 |
-| Met gehaltes uit `FOOD_SOURCES` | 61 |
-| Nog op te halen (`bron: null`) | 310 |
+| Met gehaltes uit `FOOD_SOURCES` | 61 → **92** (10 sep) |
+| Nog op te halen (`bron: null`) | 310 → **279** (10 sep) |
 | Zoekcategorieën | 23 |
 | Voedselgroepen (vast) | 13 |
-| Tests die de invarianten bewaken | 17 |
+| Tests die de invarianten bewaken | 17 → **51** (10 sep) |
 
 #### Twee assen, en waarom ze niet dezelfde mogen zijn
 
@@ -318,9 +318,29 @@ Wat we níét doen is een plausibel ogende waarde invullen om het gat te dichten
 
 ---
 
-### 2.5 · Waarom etappe 2 hier stopt
+### 2.7 · Etappe 2 uitgevoerd — via WebSearch, want de API bleef dicht (10 sep)
 
-De netwerkpolicy van deze omgeving blokkeert `api.nal.usda.gov` en `fdc.nal.usda.gov` (403 op CONNECT). De extractie kan hier niet draaien. Wat er wel ligt: het script (`scripts/usda-extract.mjs`), de productlijst en het verificatiepad. Zie etappe 3.
+De netwerkpolicy blokkeert `api.nal.usda.gov` én `fdc.nal.usda.gov` nog steeds met 403 op CONNECT — voor `curl` en voor WebFetch, dus via geen enkel gereedschap. `npm run extract:usda` kan hier niet draaien. De opdrachtgever koos daarop bewust voor de tragere route: per voedingsmiddel zoeken, en per rij de match beoordelen.
+
+**Wat dat oplevert, en wat het kost.** WebSearch geeft de per-100 g-waarde en — via de FDC-detailpagina's die in de zoekresultaten opduiken — de fdcId. Wat het *niet* geeft zijn de gestructureerde `min`/`max`/`median`/`dataPoints`: die staan alleen in het FDC-record zelf. Alle 41 USDA-rijen uit deze ronde dragen daarom **geen `observed`** en vallen terug op de klassenband uit §1.7. Dat is precies de tussenstand die §1.7 beschrijft, en de code behandelt hem ook zo (`src/lib/nutrition-spread.ts`: observed wint zodra hij er is).
+
+**De discipline die we aanhielden.** Elke waarde is aan een fdcId gekoppeld die we in de zoekresultaten daadwerkelijk zagen; SR Legacy kreeg de voorkeur boven Foundation, omdat het enige voordeel van Foundation (de waargenomen spreiding) via deze route toch niet meekomt, terwijl zijn waarde↔id-paren juist vaker uiteenlopen. Kon een waarde niet eenduidig aan één record worden gekoppeld, dan is de rij **afgewezen** in plaats van ingevuld.
+
+| | 9 sep | 10 sep |
+|---|---|---|
+| Catalogusregels met een bron | 61 | **92** |
+| Bronrijen totaal | 78 | **119** |
+| Geverifieerd | 44 | **85** |
+| Waarvan uit USDA | 0 | **41** |
+| Met `observed` | 0 | 0 — wacht op de API-run |
+
+**Afgewezen, en waarom dat een resultaat is.** Boerenkool (Foundation 25 vs SR 47 mg magnesium — geen eenduidige koppeling), pijnboompitten (pinyon 234 vs dried 251 mg), amarant/gierst/teff (cooked-fdcId niet te bevestigen, of een droog/gekookt-portiemismatch), vette vis buiten forel (EPA/DHA en vitamine D lopen te sterk uiteen tussen wild en gekweekt), rauw-gewicht zink voor rood vlees dat niet in de snippets stond, en de smeersels (pindakaas, amandelpasta, hummus) waarvan de magnesiumwaarde tussen de met-zout-, zonder-zout- en commodity-records uiteenloopt. Kwark bestaat niet in de VS; oude kaas heeft geen eigen record en zou op een Gouda-waarde leunen die het vochtverschil niet kent.
+
+**Wat er structureel niet in hoort** en dus met opzet leeg blijft: samengestelde gerechten (die halen hun gehaltes uit componenten), verrijkte producten (etiket, §2.2), en producten die voor deze vijf stoffen verwaarloosbaar zijn — fruit, dranken, suikerwaren, de meeste sauzen. Dat is geen achterstand maar de eerlijke stand.
+
+### 2.5 · Waarom etappe 2 eerder stopte
+
+De netwerkpolicy van deze omgeving blokkeert `api.nal.usda.gov` en `fdc.nal.usda.gov` (403 op CONNECT). De extractie kan hier niet draaien. Wat er wel ligt: het script (`scripts/usda-extract.mjs`), de productlijst en het verificatiepad. Zie etappe 3 — en §2.7 voor wat er alsnog via WebSearch is gedaan.
 
 ---
 
@@ -333,7 +353,7 @@ De netwerkpolicy van deze omgeving blokkeert `api.nal.usda.gov` en `fdc.nal.usda
 | 1 | FDC-API-sleutel aanvragen (gratis, `api.data.gov`) | 2 minuten | — |
 | 2 | `scripts/usda-extract.mjs` draaien over de productlijst | ~1 uur machinetijd | netwerktoegang |
 | 3 | Per rij de match beoordelen: is dit hetzelfde voedingsmiddel? | **het echte werk** — ~80 rijen × oordeel | menselijk/modeloordeel |
-| 4 | `observed` vullen met `min`/`max`/`samples` | volgt uit 2 | — |
+| 4 | `observed` vullen met `min`/`max`/`samples` | volgt uit 2 | — · **dit is wat er nog het meest toe doet**: de code laat `observed` al winnen, alleen draagt nog geen enkele rij hem |
 | 5 | Verrijkte producten handmatig op NL-waarden zetten | ~6 rijen | — |
 | 6 | `food-sources.ts` omkeren naar de product-eerst index (§5 van het besluit) | middel | — |
 | 7 | Spreidingstabel §1.7 in de prebuilds vervangen door `observed` waar aanwezig | klein | 4 |
