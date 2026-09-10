@@ -121,6 +121,20 @@ h1,h2,h3{font-family:var(--f-serif);font-weight:400;letter-spacing:-.005em}
 .period-sum{margin:6px 0 0;font-size:14px;line-height:1.5;color:#CDD7D0;text-wrap:pretty}
 .period-sum b{color:var(--sage-soft);font-weight:600}
 
+/* het schap: van nutriënt naar producten — de omgekeerde index */
+.bronnen{list-style:none;margin:11px 0 0;padding:0}
+.bronnen li{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:9px 2px;border-bottom:1px solid rgba(255,255,255,.06)}
+.bronnen li:last-child{border-bottom:0}
+.bronnen .b-n{font-size:13px;color:#E7EDE8;font-weight:500}
+.bronnen .b-p{font-size:11px;color:var(--text-subtle);font-weight:400}
+.bronnen .b-v{font-size:13px;color:var(--sage-soft);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bronnen .b-m{font-size:11px;color:var(--terra);margin-left:5px}
+.bronnen .b-o{font-size:11px;color:var(--text-subtle);margin-left:5px}
+.bron-note{margin:11px 0 0;font-size:12px;line-height:1.55;color:var(--text-subtle);text-wrap:pretty}
+.cats{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0 0}
+.cats button{min-height:32px;padding:0 11px;border:1px solid rgba(255,255,255,.14);background:transparent;color:#9FB0A6;font-size:11.5px;border-radius:999px;cursor:pointer}
+.cats button[aria-pressed="true"]{color:var(--sage-soft);border-color:rgba(156,197,169,.45)}
+
 /* weektabel — dagen als rijen, stoffen als kolommen */
 .tbl-scroll{overflow-x:auto;margin:0 -4px;padding:0 4px}
 table.sum{border-collapse:collapse;width:100%;min-width:440px}
@@ -580,6 +594,16 @@ table.wk tbody tr + tr td,table.wk tbody tr + tr th{padding-top:4px}
       </div>
     </div>
   </div>
+
+  <div class="card" style="margin-top:13px">
+    <p class="eyebrow-s">Welke producten dragen deze stof</p>
+    <p class="job">Niet <em>"eet meer noten"</em>, maar: <b>dit dragen ze, en dit levert één portie</b>. Gerangschikt op wat een realistische portie bijdraagt — niet op het gehalte per 100&nbsp;g, want niemand eet 100&nbsp;g tahin.</p>
+    <nav class="periods" id="schap-stoffen" aria-label="Stof"></nav>
+    <div class="cats" id="schap-cats" role="group" aria-label="Zoekcategorie"></div>
+    <ul class="bronnen" id="schap-bronnen"></ul>
+    <p class="bron-note" id="schap-opname"></p>
+    <p class="bron-note" id="schap-herkomst"></p>
+  </div>
 </section>
 
 <!-- ══════════════════════════ NOTITIES ══════════════════════════ -->
@@ -872,6 +896,171 @@ function bandsVoor(items){
     out[n.id] = bron ? { lo:lo, hi:hi, pt:pt, red:red, bron:bron } : null;
   });
   return out;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DE OMGEKEERDE INDEX — van nutriënt naar producten (het schap, S1)
+
+   Spiegelt src/lib/nutrition-nutrient-index.ts. Vier randvoorwaarden:
+
+   1. Rangschikken op bijdrage per PORTIE, niet per 100 g. Niemand eet 100 g
+      tahin; op gehalte sorteren zet de lijst op zijn kop.
+   2. Een band, geen punt — en sorteren op de ONDERKANT, want dat is het enige
+      getal dat we als "minstens" durven noemen. Sorteren op de puntwaarde zou
+      ordenen op een getal dat de copy weigert te noemen.
+   3. De opname staat erbij (◆). Maar de fytaat:zink-verhouding staat er NIET
+      per product: die is een eigenschap van de hele maaltijd (ONDERZOEK §1.8),
+      en hoort dus op gerecht- en dagniveau.
+   4. Geen gezondheidsclaim en geen percentage van een ADH. De poort hierboven
+      hangt aan je check en je ladderstatus, niet aan deze lijst.
+═══════════════════════════════════════════════════════════════ */
+
+/**
+ * De portie waarop we een product afrekenen.
+ *
+ * In de app draagt elke catalogusregel zijn eigen portielijst
+ * (`src/data/nutrition/food-catalog.ts`). Deze prebuild heeft die niet, dus
+ * leidt hij de portie af uit de dagen die al geregistreerd zijn: de gram die je
+ * voor dit product het vaakst logde. Wat daar niet in voorkomt valt terug op
+ * een portie per voedselgroep.
+ */
+var PORTIE_PER_GROEP = { noten:25, granen:60, zetmeel:200, groente:150, fruit:120,
+  peulvruchten:150, vis:125, vlees:100, eieren:110, zuivel:150, vetten:10, suiker:20, dranken:200 };
+
+var PORTIE = (function(){
+  var tel = {};
+  Object.keys(DAGEN).forEach(function(iso){
+    DAGEN[iso].forEach(function(pair){
+      if (!tel[pair[0]]) tel[pair[0]] = {};
+      tel[pair[0]][pair[1]] = (tel[pair[0]][pair[1]] || 0) + 1;
+    });
+  });
+  var out = {};
+  Object.keys(F).forEach(function(key){
+    var per = tel[key], beste = null, vaakst = -1;
+    if (per){
+      Object.keys(per).forEach(function(g){
+        if (per[g] > vaakst){ vaakst = per[g]; beste = Number(g); }
+      });
+    }
+    out[key] = beste != null ? beste : (PORTIE_PER_GROEP[F[key].groep] || 100);
+  });
+  return out;
+})();
+
+/** De zoekcategorie (navigatie-as) — los van de voedselgroep (analyse-as). */
+var CAT_VAN_GROEP = { groente:"groenten", fruit:"fruit", peulvruchten:"peulvruchten",
+  noten:"noten", granen:"granen", zetmeel:"granen", vis:"vis", vlees:"vlees",
+  eieren:"eieren", zuivel:"zuivel", vetten:"vetten", dranken:"dranken", suiker:"snacks" };
+var CAT_OVERRIDE = { pompoenzaden:"zaden", volkorenbrood:"brood", volkoren_pasta:"pasta",
+  belegen_kaas:"kaas", pure_chocolade:"snacks", aardappelen:"groenten", witte_rijst:"granen" };
+var CAT_LABEL = { groenten:"Groenten", fruit:"Fruit", granen:"Granen", brood:"Brood",
+  pasta:"Pasta", peulvruchten:"Peulvruchten", noten:"Noten", zaden:"Zaden", vis:"Vis",
+  vlees:"Vlees", eieren:"Eieren", zuivel:"Zuivel", kaas:"Kaas", vetten:"Oliën & vetten",
+  snacks:"Snacks", dranken:"Dranken" };
+function catVan(key){ return CAT_OVERRIDE[key] || CAT_VAN_GROEP[F[key].groep] || "groenten"; }
+
+/** Band voor één product bij één stof, voor een portie in gram. Observed wint. */
+function bandVoorProduct(key, nutrientId, grams){
+  var f = F[key];
+  var per = f.n[nutrientId];
+  if (per == null || !(grams > 0)) return null;
+  var factor = grams / 100;
+  var obs = f.obs && f.obs[nutrientId];
+  if (obs && obs.samples >= 2 && obs.max > obs.min){
+    return { lo:obs.min*factor, hi:obs.max*factor,
+             point:(obs.median != null ? obs.median : per)*factor, basis:"observed" };
+  }
+  var v = per * factor;
+  var sp = spreidingVoor({ key:key, groep:f.groep }, nutrientId);
+  return { lo:v*sp[0], hi:v*sp[1], point:v, basis:"band" };
+}
+
+/** De producten die deze stof dragen, aflopend op de onderkant van hun band. */
+function bronnenVoorStof(nutrientId, categorie){
+  var uit = [];
+  Object.keys(F).forEach(function(key){
+    if (categorie && catVan(key) !== categorie) return;
+    var band = bandVoorProduct(key, nutrientId, PORTIE[key]);
+    if (!band) return;
+    uit.push({ key:key, label:F[key].label, grams:PORTIE[key], band:band,
+               geremd: !!F[key].b[nutrientId], cat:catVan(key) });
+  });
+  uit.sort(function(a,b){
+    return b.band.lo - a.band.lo || b.band.point - a.band.point ||
+           a.label.localeCompare(b.label, "nl");
+  });
+  return uit;
+}
+
+/**
+ * De opname-uitspraak, op lijstniveau en niet per product.
+ *
+ * Er wordt geen fytaat:zink-ratio berekend — die getallen hebben we niet, en ze
+ * verzinnen zou erger zijn dan ze weglaten. Wat we wél weten is welk deel van de
+ * bijdrage uit geremde bronnen komt (BESLUIT §2: meer dan de helft → vermelden).
+ */
+var OPNAME_STOF = {
+  magnesium:"Fytaat in noten, zaden, peulvruchten en volkoren bindt magnesium. Hoeveel er aankomt hangt af van de héle maaltijd, niet van één product.",
+  zinc:"Fytaat bindt zink, en de verhouding fytaat:zink van de hele maaltijd bepaalt de opname meer dan het gehalte van één product."
+};
+
+var schapStof = "magnesium";
+var schapCat = "";
+
+function renderBronnen(){
+  var navEl = document.getElementById("schap-stoffen");
+  if (!navEl) return;
+
+  navEl.innerHTML = "";
+  NUTRIENTS.forEach(function(n){
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = n.kort.replace(/\u00AD/g, "");
+    if (n.id === schapStof) b.setAttribute("aria-current", "page");
+    b.setAttribute("data-ev", 'nutrition.schap_bronnen_getoond { nutrient: "' + n.id + '" }');
+    b.addEventListener("click", function(){ schapStof = n.id; schapCat = ""; renderBronnen(); });
+    navEl.appendChild(b);
+  });
+
+  var stof = NUTRIENTS.filter(function(n){ return n.id === schapStof; })[0];
+  var alle = bronnenVoorStof(schapStof, "");
+  var cats = [];
+  alle.forEach(function(r){ if (cats.indexOf(r.cat) === -1) cats.push(r.cat); });
+
+  var catEl = document.getElementById("schap-cats");
+  catEl.innerHTML = "";
+  [""].concat(cats).forEach(function(c){
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = c === "" ? "Alles" : (CAT_LABEL[c] || c);
+    b.setAttribute("aria-pressed", String(c === schapCat));
+    if (c !== "") b.setAttribute("data-ev", 'nutrition.schap_categorie_gefilterd { nutrient: "' + schapStof + '", categorie: "' + c + '" }');
+    b.addEventListener("click", function(){ schapCat = c; renderBronnen(); });
+    catEl.appendChild(b);
+  });
+
+  var rijen = schapCat ? bronnenVoorStof(schapStof, schapCat) : alle;
+  var ul = document.getElementById("schap-bronnen");
+  ul.innerHTML = "";
+  rijen.slice(0, 12).forEach(function(r){
+    var li = document.createElement("li");
+    li.setAttribute("data-ev", 'nutrition.schap_bron_clicked { nutrient: "' + schapStof + '", key: "' + r.key + '" }');
+    li.innerHTML =
+      '<span><span class="b-n">' + r.label + '</span> ' +
+      '<span class="b-p">· ' + r.grams + ' g</span>' +
+      (r.geremd ? '<span class="b-m" title="fytaat remt de opname">◆</span>' : '') +
+      (r.band.basis === "observed" ? '<span class="b-o" title="waargenomen spreiding uit de bron">▨</span>' : '') +
+      '</span>' +
+      '<span class="b-v">' + fmt(r.band.lo, stof.unit) + '–' + fmt(r.band.hi, stof.unit) + ' ' + stof.unit + '</span>';
+    ul.appendChild(li);
+  });
+
+  document.getElementById("schap-opname").textContent = OPNAME_STOF[schapStof] || "";
+  document.getElementById("schap-herkomst").innerHTML =
+    'Een band, geen punt: het gehalte verschilt per ras, bodem en herkomst. ' +
+    '<b>Wat hier niet staat is een percentage van een dagbehoefte</b> — een marker toont een positie, een percentage maakt er een doel van. ' +
+    'En deze lijst opent de poort hierboven niet: die hangt aan je check, niet aan een productlijst.';
 }
 
 /** Porties per voedselgroep, afgeleid uit de producten — precies zoals de opslag het doet. */
@@ -1343,6 +1532,7 @@ function verdictVoor(n){
 }
 
 function renderSchap(){
+  renderBronnen();
   var ul = document.getElementById("verdicts");
   ul.innerHTML = "";
 

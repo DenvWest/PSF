@@ -30,8 +30,10 @@ type ClientEmitType = Extract<
   | "plan.phase_opened"
   | "plan.daily_rhythm_clicked"
   | "plan.week_category_selected"
-  | "wearable.interest_clicked"
   | "measurement.protein_cta_clicked"
+  | "nutrition.schap_bronnen_getoond"
+  | "nutrition.schap_bron_clicked"
+  | "nutrition.schap_categorie_gefilterd"
 >;
 
 export function emitIntakeClientEvent(

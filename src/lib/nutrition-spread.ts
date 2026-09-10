@@ -185,3 +185,28 @@ export function spreadBandForPortion(
     basis: per100.basis,
   };
 }
+
+/**
+ * De spreidingsband voor een waarde die al per portie geldt.
+ *
+ * Bestaat voor de rijen die (nog) geen `nutrientValue` per 100 g dragen: die
+ * hebben alleen een indicatieve `amount` bij hun eigen `portionNl`. De
+ * klassenband is een vermenigvuldiger, dus hij werkt net zo goed op zo'n
+ * waarde — alleen kan `observed` hier per definitie niet winnen, want er is
+ * geen brondrecord om hem uit te lezen. `basis` staat daarom altijd op
+ * `"band"`, zodat de UI niet kan doen alsof dit een waargenomen spreiding is.
+ */
+export function spreadBandForAmount(
+  amount: number,
+  nutrient: NutrientId,
+  groep: VoedselgroepId,
+  key: string,
+): SpreadBand {
+  const [lo, hi] = classFactor(nutrient, spreadClassFor(nutrient, groep, key));
+  return {
+    lo: round1(amount * lo),
+    hi: round1(amount * hi),
+    point: round1(amount),
+    basis: "band",
+  };
+}
