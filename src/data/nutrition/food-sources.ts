@@ -118,6 +118,26 @@ export interface NutrientValue {
   source: SourceRef;
   /** De naam zoals de brondataset het voedingsmiddel noemt — niet onze `labelNl`. */
   sourceNameNl?: string;
+  /**
+   * Waargenomen spreiding uit de bron, per 100 g in dezelfde `unit` als `value`.
+   *
+   * Alleen USDA Foundation Foods draagt dit: per nutriënt de `min`, `max`,
+   * `median` en het aantal monsters van de werkelijke labanalyses. Waar dit
+   * gevuld is, wint het van de gebronde klassenband uit ONDERZOEK §1.7 — de
+   * waargenomen spreiding van echte monsters slaat elke vuistregel. Ontbreekt
+   * het (SR Legacy, één monster, of de WebSearch-route die de gestructureerde
+   * FDC-velden niet meelevert), dan valt de rij terug op die klassenband.
+   *
+   * `samples` is USDA `dataPoints`; 0 of 1 betekent: geen spreiding beschikbaar,
+   * en dan horen `min`/`max` gelijk aan `value` te zijn of weggelaten. Vorm
+   * vastgelegd in ONDERZOEK_SPREIDING_EN_USDA_2026-09.md §2.3.
+   */
+  observed?: {
+    min: number;
+    max: number;
+    median?: number;
+    samples: number;
+  };
 }
 
 /**
@@ -127,6 +147,30 @@ export interface NutrientValue {
  * Bron: https://www.rivm.nl/en/dutch-food-composition-database/access-nevo-data/nevo-online/copyright-and-disclaimer
  */
 export const NEVO_CITATION = "NEVO-online versie 2025/9.0, RIVM, Bilthoven";
+
+/**
+ * USDA FoodData Central is public domain — geen licentie-akkoord, geen
+ * bronvermeldingsplicht in juridische zin; attributie blijft netjes. Deze
+ * regel hoort bij elke `origin: "usda"`-waarde.
+ *
+ * De sandbox van deze omgeving blokkeert de FDC-API (403 op CONNECT), dus de
+ * import van september 2026 liep via WebSearch: dat levert de per-100 g-waarde
+ * en de fdcId, maar niet de gestructureerde `min`/`max`/`median`/`dataPoints`.
+ * USDA-rijen uit die ronde dragen daarom geen `observed` en vallen terug op de
+ * klassenband uit ONDERZOEK §1.7. Een latere run van `scripts/usda-extract.mjs`
+ * met FDC-API-toegang vult `observed` alsnog, en dan wint dat van de band.
+ */
+export const USDA_CITATION =
+  "USDA FoodData Central, U.S. Department of Agriculture (public domain)";
+
+/**
+ * Bouw een USDA-bronreferentie: de fdcId als `ref`, het FDC-datatype als
+ * `edition`. Foundation Foods gaat vóór SR Legacy (ONDERZOEK §2.4), maar beide
+ * zijn bruikbaar; alleen het datatype legt vast welk record geciteerd is.
+ */
+function usda(fdcId: string, dataType: "Foundation" | "SR Legacy"): SourceRef {
+  return { origin: "usda", ref: fdcId, edition: dataType };
+}
 
 /**
  * Hoe sterk het gehalte rond de tabelwaarde spreidt.
@@ -949,6 +993,70 @@ const MAGNESIUM_SOURCES: readonly FoodSource[] = [
     bioavailabilityWhy: "Oxaalzuur in bladgroente bindt een deel van het magnesium.",
     preparationNote: "Kookvocht meenemen scheelt.",
   },
+
+  // ── USDA-import september 2026 (WebSearch-route; geen observed, zie USDA_CITATION) ──
+  {
+    key: "spinazie-rauw",
+    labelNl: "Spinazie, rauw",
+    portionNl: "75 g",
+    amount: 59.3,
+    portionGroup: "vegetables",
+    seasonMonths: [4, 10],
+    source: usda("168462", "SR Legacy"),
+    nutrientValue: {
+      value: 79,
+      unit: "mg",
+      per: "100g",
+      source: usda("168462", "SR Legacy"),
+      sourceNameNl: "Spinach, raw",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy:
+      "Oxaalzuur in bladgroente bindt magnesium — minder sterk dan fytaat, maar merkbaar.",
+  },
+  {
+    key: "spinazie-diepvries",
+    labelNl: "Spinazie, diepvries",
+    portionNl: "150 g",
+    amount: 112.5,
+    portionGroup: "vegetables",
+    source: usda("169287", "SR Legacy"),
+    nutrientValue: {
+      value: 75,
+      unit: "mg",
+      per: "100g",
+      source: usda("169287", "SR Legacy"),
+      sourceNameNl: "Spinach, frozen, chopped or leaf, unprepared",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy:
+      "Oxaalzuur in bladgroente bindt magnesium — minder sterk dan fytaat, maar merkbaar.",
+  },
+  {
+    key: "broccoli-gekookt",
+    labelNl: "Broccoli, gekookt",
+    portionNl: "150 g",
+    amount: 31.5,
+    portionGroup: "vegetables",
+    source: usda("169967", "SR Legacy"),
+    nutrientValue: {
+      value: 21,
+      unit: "mg",
+      per: "100g",
+      source: usda("169967", "SR Legacy"),
+      sourceNameNl: "Broccoli, cooked, boiled, drained, without salt",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "normal",
+  },
 ];
 
 /**
@@ -1648,10 +1756,26 @@ export function amountForPortion(
   return Math.round((value.value * grams) / 100 * 10) / 10;
 }
 
+/**
+ * Aflopend op `amount`, rijen zonder waarde (`null`) achteraan.
+ *
+ * Dit is de leesregel uit de {@link FoodSource}-doc, nu afgedwongen bij de
+ * constructie in plaats van met de hand onderhouden. Zo landt elke toegevoegde
+ * rij vanzelf op zijn plek, en blijft de belofte gelden die
+ * `nutrition-categorie-detail.ts` gebruikt ("FOOD_SOURCES staat al aflopend op
+ * amount; filteren houdt die volgorde"). Het verandert niets aan lijsten die al
+ * gesorteerd waren — het maakt alleen een nieuwe rij toevoegen veilig.
+ */
+function byAmountDesc(sources: readonly FoodSource[]): readonly FoodSource[] {
+  return [...sources].sort(
+    (a, b) => (b.amount ?? -Infinity) - (a.amount ?? -Infinity),
+  );
+}
+
 export const FOOD_SOURCES: Record<NutrientId, readonly FoodSource[]> = {
-  protein: PROTEIN_SOURCES,
-  omega3: OMEGA3_SOURCES,
-  magnesium: MAGNESIUM_SOURCES,
-  vitamin_d: VITAMIN_D_SOURCES,
-  zinc: ZINC_SOURCES,
+  protein: byAmountDesc(PROTEIN_SOURCES),
+  omega3: byAmountDesc(OMEGA3_SOURCES),
+  magnesium: byAmountDesc(MAGNESIUM_SOURCES),
+  vitamin_d: byAmountDesc(VITAMIN_D_SOURCES),
+  zinc: byAmountDesc(ZINC_SOURCES),
 };

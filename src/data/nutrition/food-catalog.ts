@@ -132,11 +132,11 @@ const P = {
    bereide vorm.
    ═══════════════════════════════════════════════════════════════════════ */
 const GROENTEN: readonly CatalogEntry[] = [
-  f("spinazie-rauw", "Spinazie, rauw", "groenten", "groente", P.bladRauw, null,
+  f("spinazie-rauw", "Spinazie, rauw", "groenten", "groente", P.bladRauw, "spinazie-rauw",
     { bereiding: "rauw", waarom: "150 g gekookt is ruim 400 g rauw — dezelfde bak, andere portie" }),
   f("spinazie-gekookt", "Spinazie, gekookt", "groenten", "groente", P.bladGekookt, "spinazie",
     { bereiding: "gekookt", waarom: "ingekookt; koken loogt een deel van de magnesium uit" }),
-  f("spinazie-diepvries", "Spinazie, diepvries", "groenten", "groente", P.bladGekookt, null,
+  f("spinazie-diepvries", "Spinazie, diepvries", "groenten", "groente", P.bladGekookt, "spinazie-diepvries",
     { bereiding: "diepvries", waarom: "geblancheerd vóór invriezen — uitloging zit er al in" }),
   f("boerenkool-gekookt", "Boerenkool, gekookt", "groenten", "groente", P.bladGekookt, "boerenkool", { bereiding: "gekookt" }),
   f("boerenkool-rauw", "Boerenkool, rauw", "groenten", "groente", P.bladRauw, null, { bereiding: "rauw", waarom: "andere portie" }),
@@ -149,7 +149,7 @@ const GROENTEN: readonly CatalogEntry[] = [
   f("witlof-rauw", "Witlof, rauw", "groenten", "groente", [["stronkje", 75]], null, { bereiding: "rauw" }),
   f("witlof-gekookt", "Witlof, gekookt", "groenten", "groente", [["stronkje", 100]], null, { bereiding: "gekookt" }),
 
-  f("broccoli-gekookt", "Broccoli, gekookt", "groenten", "groente", P.groente, null,
+  f("broccoli-gekookt", "Broccoli, gekookt", "groenten", "groente", P.groente, "broccoli-gekookt",
     { bereiding: "gekookt", waarom: "koken in ruim water loogt mineralen uit" }),
   f("broccoli-gestoomd", "Broccoli, gestoomd", "groenten", "groente", P.groente, null,
     { bereiding: "gestoomd", waarom: "stomen loogt beduidend minder uit dan koken" }),
