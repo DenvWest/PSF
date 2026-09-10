@@ -814,6 +814,60 @@ const PROTEIN_SOURCES: readonly FoodSource[] = [
     qualityNote:
       "Quinoa-eiwit is volwaardig — een van de weinige plantbronnen met alle essentiële aminozuren.",
   },
+  {
+    key: "paling",
+    labelNl: "Paling",
+    portionNl: "100 g",
+    amount: 23.7,
+    portionGroup: "oilyFish",
+    source: usda("174194", "SR Legacy"),
+    nutrientValue: {
+      value: 23.65,
+      unit: "g",
+      per: "100g",
+      source: usda("174194", "SR Legacy"),
+      sourceNameNl: "Fish, eel, mixed species, cooked, dry heat",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "rundergehakt",
+    labelNl: "Rundergehakt",
+    portionNl: "100 g",
+    amount: 18.7,
+    portionGroup: "leanMeat",
+    source: usda("171796", "SR Legacy"),
+    nutrientValue: {
+      value: 18.7,
+      unit: "g",
+      per: "100g",
+      source: usda("171796", "SR Legacy"),
+      sourceNameNl: "Beef, ground, 85% lean meat / 15% fat, raw",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "jonge-kaas",
+    labelNl: "Jonge kaas",
+    portionNl: "40 g (2 plakken)",
+    amount: 10,
+    portionGroup: "dairy",
+    source: usda("171241", "SR Legacy"),
+    nutrientValue: {
+      value: 24.9,
+      unit: "g",
+      per: "100g",
+      source: usda("171241", "SR Legacy"),
+      sourceNameNl: "Cheese, gouda",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
 ];
 
 const MAGNESIUM_SOURCES: readonly FoodSource[] = [
@@ -1849,6 +1903,28 @@ const VITAMIN_D_SOURCES: readonly FoodSource[] = [
     noteNl:
       "De hoofdroute, en de reden dat voeding dit gat niet dicht. Okt–mrt staat de aanmaak in NL vrijwel stil.",
   },
+
+  // ── USDA-import september 2026 (WebSearch-route; geen observed) ──
+  {
+    key: "forel",
+    labelNl: "Forel, gebakken",
+    portionNl: "125 g",
+    amount: 23.8,
+    portionGroup: "oilyFish",
+    source: usda("173718", "SR Legacy"),
+    nutrientValue: {
+      value: 19,
+      unit: "µg",
+      per: "100g",
+      source: usda("173718", "SR Legacy"),
+      sourceNameNl: "Fish, trout, rainbow, farmed, cooked, dry heat",
+    },
+    verified: true,
+    variability: "high",
+    variabilityWhy:
+      "Wild versus gekweekt en het seizoen doen vitamine D in vis een veelvoud verschillen.",
+    bioavailability: "normal",
+  },
 ];
 
 /**
@@ -2166,6 +2242,24 @@ const ZINC_SOURCES: readonly FoodSource[] = [
     variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
     bioavailability: "reduced",
     bioavailabilityWhy: FYT,
+  },
+  {
+    key: "jonge-kaas",
+    labelNl: "Jonge kaas",
+    portionNl: "40 g (2 plakken)",
+    amount: 1.6,
+    portionGroup: "dairy",
+    source: usda("171241", "SR Legacy"),
+    nutrientValue: {
+      value: 4,
+      unit: "mg",
+      per: "100g",
+      source: usda("171241", "SR Legacy"),
+      sourceNameNl: "Cheese, gouda",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
   },
 ];
 

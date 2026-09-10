@@ -380,7 +380,7 @@ const VLEES: readonly CatalogEntry[] = [
   f("kalkoenfilet", "Kalkoenfilet", "vlees", "vlees", P.vlees, null),
   f("rundvlees-mager", "Rundvlees, mager", "vlees", "vlees", P.vlees, "rundvlees-mager"),
   f("biefstuk", "Biefstuk", "vlees", "vlees", P.vlees, null),
-  f("rundergehakt", "Rundergehakt", "vlees", "vlees", P.vlees, null, { zoek: ["gehakt"] }),
+  f("rundergehakt", "Rundergehakt", "vlees", "vlees", P.vlees, "rundergehakt", { zoek: ["gehakt"] }),
   f("half-om-half-gehakt", "Half-om-half gehakt", "vlees", "vlees", P.vlees, null),
   f("varkenshaas", "Varkenshaas", "vlees", "vlees", P.vlees, "varkenshaas"),
   f("varkenskarbonade", "Karbonade", "vlees", "vlees", [["stuk", 120]], null),
@@ -423,7 +423,7 @@ const VIS: readonly CatalogEntry[] = [
   f("sardines-blik", "Sardines, uit blik", "vis", "vis", [["blikje", 100]], "sardines", { bereiding: "blik", waarom: "ingeblikt mét graat: het calciumgehalte wijkt daardoor sterk af van verse sardine" }),
   f("ansjovis", "Ansjovis", "vis", "vis", [["portie", 50]], "ansjovis"),
   f("sprot", "Sprot", "vis", "vis", [["portie", 100]], "sprot"),
-  f("forel", "Forel", "vis", "vis", P.vis, null),
+  f("forel", "Forel", "vis", "vis", P.vis, "forel"),
   f("gerookte-forel", "Forel, gerookt", "vis", "vis", [["portie", 100]], "gerookte-forel", { bereiding: "gerookt", waarom: "roken zout en droogt — ander vocht- en zoutgehalte dan vers" }),
   f("tonijn-blik", "Tonijn uit blik, op water", "vis", "vis", [["blikje uitgelekt", 100]], "tonijn-blik",
     { bereiding: "blik", waarom: "op water of op olie scheelt fors in vet — en dus in EPA/DHA per 100 g" }),
@@ -434,7 +434,7 @@ const VIS: readonly CatalogEntry[] = [
   f("schol", "Schol", "vis", "vis", P.vis, null),
   f("zeebaars", "Zeebaars", "vis", "vis", P.vis, null),
   f("dorade", "Dorade", "vis", "vis", P.vis, null),
-  f("paling", "Paling", "vis", "vis", [["portie", 100]], null),
+  f("paling", "Paling", "vis", "vis", [["portie", 100]], "paling"),
   f("pangasius", "Pangasius", "vis", "vis", P.vis, null),
   f("vissticks", "Vissticks", "vis", "vis", [["drie stuks", 90]], null, { bereiding: "gefrituurd", waarom: "paneer en frituurvet vormen het grootste deel van het gewicht" }),
 ];
@@ -487,7 +487,7 @@ const ZUIVEL: readonly CatalogEntry[] = [
 ];
 
 const KAAS: readonly CatalogEntry[] = [
-  f("jonge-kaas", "Jonge kaas", "kaas", "zuivel", P.kaasPlak, null, { zoek: ["48+", "goudse kaas"] }),
+  f("jonge-kaas", "Jonge kaas", "kaas", "zuivel", P.kaasPlak, "jonge-kaas", { zoek: ["48+", "goudse kaas"] }),
   f("belegen-kaas", "Belegen kaas", "kaas", "zuivel", [["plak", 30], ["twee plakken", 60]], "belegen-kaas",
     { waarom: "rijping onttrekt vocht — het eiwit per 100 g loopt op met de leeftijd" }),
   f("oude-kaas", "Oude kaas", "kaas", "zuivel", [["plak", 25]], null),
