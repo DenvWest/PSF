@@ -455,7 +455,7 @@ const ZEEVRUCHTEN: readonly CatalogEntry[] = [
    ═══════════════════════════════════════════════════════════════════════ */
 const EIEREN: readonly CatalogEntry[] = [
   f("ei-gekookt", "Ei, gekookt", "eieren", "eieren", [["stuk", 55], ["twee stuks", 110]], "eieren", { bereiding: "gekookt" }),
-  f("ei-gebakken", "Ei, gebakken", "eieren", "eieren", [["stuk", 55], ["twee stuks", 110]], null,
+  f("ei-gebakken", "Ei, gebakken", "eieren", "eieren", [["stuk", 55], ["twee stuks", 110]], "eieren",
     { bereiding: "gebakken", waarom: "bakvet telt mee in het gerecht, niet in het ei" }),
   f("roerei", "Roerei", "eieren", "eieren", [["twee eieren", 110]], null, { bereiding: "gebakken", waarom: "bakvet en soms melk gaan mee — dat is een gerecht, geen ei" }),
   f("omelet", "Omelet", "eieren", "eieren", [["twee eieren", 110], ["drie eieren", 165]], null, { bereiding: "gebakken", waarom: "bakvet telt mee in het gerecht, niet in het ei" }),
@@ -466,7 +466,7 @@ const EIEREN: readonly CatalogEntry[] = [
 ];
 
 const ZUIVEL: readonly CatalogEntry[] = [
-  f("melk-vol", "Volle melk", "zuivel", "zuivel", P.drank, null, { ookIn: ["dranken"] }),
+  f("melk-vol", "Volle melk", "zuivel", "zuivel", P.drank, "melk-vol", { ookIn: ["dranken"] }),
   f("melk-halfvol", "Halfvolle melk", "zuivel", "zuivel", P.drank, null,
     { ookIn: ["dranken"], waarom: "in Nederland verplicht verrijkt met vitamine D sinds 2021 — 1,5 µg per 100 ml" }),
   f("melk-mager", "Magere melk", "zuivel", "zuivel", P.drank, null, { ookIn: ["dranken"], waarom: "idem verrijkt" }),
@@ -492,8 +492,8 @@ const KAAS: readonly CatalogEntry[] = [
     { waarom: "rijping onttrekt vocht — het eiwit per 100 g loopt op met de leeftijd" }),
   f("oude-kaas", "Oude kaas", "kaas", "zuivel", [["plak", 25]], null),
   f("magere-kaas", "Magere kaas (20+/30+)", "kaas", "zuivel", P.kaasPlak, null),
-  f("mozzarella", "Mozzarella", "kaas", "zuivel", [["bol", 125], ["portie", 60]], null),
-  f("feta", "Feta", "kaas", "zuivel", [["portie", 40]], null),
+  f("mozzarella", "Mozzarella", "kaas", "zuivel", [["bol", 125], ["portie", 60]], "mozzarella"),
+  f("feta", "Feta", "kaas", "zuivel", [["portie", 40]], "feta"),
   f("geitenkaas", "Geitenkaas", "kaas", "zuivel", [["portie", 30]], null),
   f("schapenkaas", "Schapenkaas", "kaas", "zuivel", [["portie", 30]], null),
   f("parmezaan", "Parmezaanse kaas", "kaas", "zuivel", [["eetlepel geraspt", 10]], null),
