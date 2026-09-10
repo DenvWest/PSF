@@ -379,7 +379,7 @@ const VLEES: readonly CatalogEntry[] = [
   f("kippenvleugel", "Kippenvleugels", "vlees", "vlees", [["drie stuks", 100]], null),
   f("kalkoenfilet", "Kalkoenfilet", "vlees", "vlees", P.vlees, null),
   f("rundvlees-mager", "Rundvlees, mager", "vlees", "vlees", P.vlees, "rundvlees-mager"),
-  f("biefstuk", "Biefstuk", "vlees", "vlees", P.vlees, null),
+  f("biefstuk", "Biefstuk", "vlees", "vlees", P.vlees, "biefstuk"),
   f("rundergehakt", "Rundergehakt", "vlees", "vlees", P.vlees, "rundergehakt", { zoek: ["gehakt"] }),
   f("half-om-half-gehakt", "Half-om-half gehakt", "vlees", "vlees", P.vlees, null),
   f("varkenshaas", "Varkenshaas", "vlees", "vlees", P.vlees, "varkenshaas"),
@@ -400,9 +400,9 @@ const VLEES: readonly CatalogEntry[] = [
 ];
 
 const ORGAANVLEES: readonly CatalogEntry[] = [
-  f("runderlever", "Runderlever", "orgaanvlees", "vlees", [["portie", 100]], null,
+  f("runderlever", "Runderlever", "orgaanvlees", "vlees", [["portie", 100]], "runderlever",
     { waarom: "lever draagt vitamine A en ijzer in een orde die spiervlees niet haalt — nooit samenvoegen met vlees" }),
-  f("kippenlever", "Kippenlever", "orgaanvlees", "vlees", [["portie", 100]], null),
+  f("kippenlever", "Kippenlever", "orgaanvlees", "vlees", [["portie", 100]], "kippenlever"),
   f("varkenslever", "Varkenslever", "orgaanvlees", "vlees", [["portie", 100]], null),
   f("leverpastei", "Leverpastei", "orgaanvlees", "vlees", [["portie", 30]], "leverpastei", { ookIn: ["sauzen"] }),
   f("hart", "Hart", "orgaanvlees", "vlees", [["portie", 100]], null),
@@ -441,7 +441,7 @@ const VIS: readonly CatalogEntry[] = [
 
 const ZEEVRUCHTEN: readonly CatalogEntry[] = [
   f("garnalen", "Garnalen", "zeevruchten", "vis", [["portie", 100]], "garnalen"),
-  f("mosselen", "Mosselen", "zeevruchten", "vis", [["portie", 150]], null),
+  f("mosselen", "Mosselen", "zeevruchten", "vis", [["portie", 150]], "mosselen"),
   f("oesters", "Oesters", "zeevruchten", "vis", [["zes stuks", 100], ["drie stuks", 50]], "oesters",
     { waarom: "zinkgehalte is extreem hoog en varieert sterk per soort en seizoen" }),
   f("krab", "Krab", "zeevruchten", "vis", [["portie", 100]], null),
