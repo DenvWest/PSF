@@ -118,6 +118,26 @@ export interface NutrientValue {
   source: SourceRef;
   /** De naam zoals de brondataset het voedingsmiddel noemt — niet onze `labelNl`. */
   sourceNameNl?: string;
+  /**
+   * Waargenomen spreiding uit de bron, per 100 g in dezelfde `unit` als `value`.
+   *
+   * Alleen USDA Foundation Foods draagt dit: per nutriënt de `min`, `max`,
+   * `median` en het aantal monsters van de werkelijke labanalyses. Waar dit
+   * gevuld is, wint het van de gebronde klassenband uit ONDERZOEK §1.7 — de
+   * waargenomen spreiding van echte monsters slaat elke vuistregel. Ontbreekt
+   * het (SR Legacy, één monster, of de WebSearch-route die de gestructureerde
+   * FDC-velden niet meelevert), dan valt de rij terug op die klassenband.
+   *
+   * `samples` is USDA `dataPoints`; 0 of 1 betekent: geen spreiding beschikbaar,
+   * en dan horen `min`/`max` gelijk aan `value` te zijn of weggelaten. Vorm
+   * vastgelegd in ONDERZOEK_SPREIDING_EN_USDA_2026-09.md §2.3.
+   */
+  observed?: {
+    min: number;
+    max: number;
+    median?: number;
+    samples: number;
+  };
 }
 
 /**
@@ -127,6 +147,30 @@ export interface NutrientValue {
  * Bron: https://www.rivm.nl/en/dutch-food-composition-database/access-nevo-data/nevo-online/copyright-and-disclaimer
  */
 export const NEVO_CITATION = "NEVO-online versie 2025/9.0, RIVM, Bilthoven";
+
+/**
+ * USDA FoodData Central is public domain — geen licentie-akkoord, geen
+ * bronvermeldingsplicht in juridische zin; attributie blijft netjes. Deze
+ * regel hoort bij elke `origin: "usda"`-waarde.
+ *
+ * De sandbox van deze omgeving blokkeert de FDC-API (403 op CONNECT), dus de
+ * import van september 2026 liep via WebSearch: dat levert de per-100 g-waarde
+ * en de fdcId, maar niet de gestructureerde `min`/`max`/`median`/`dataPoints`.
+ * USDA-rijen uit die ronde dragen daarom geen `observed` en vallen terug op de
+ * klassenband uit ONDERZOEK §1.7. Een latere run van `scripts/usda-extract.mjs`
+ * met FDC-API-toegang vult `observed` alsnog, en dan wint dat van de band.
+ */
+export const USDA_CITATION =
+  "USDA FoodData Central, U.S. Department of Agriculture (public domain)";
+
+/**
+ * Bouw een USDA-bronreferentie: de fdcId als `ref`, het FDC-datatype als
+ * `edition`. Foundation Foods gaat vóór SR Legacy (ONDERZOEK §2.4), maar beide
+ * zijn bruikbaar; alleen het datatype legt vast welk record geciteerd is.
+ */
+function usda(fdcId: string, dataType: "Foundation" | "SR Legacy"): SourceRef {
+  return { origin: "usda", ref: fdcId, edition: dataType };
+}
 
 /**
  * Hoe sterk het gehalte rond de tabelwaarde spreidt.
@@ -628,6 +672,312 @@ const PROTEIN_SOURCES: readonly FoodSource[] = [
     qualityNote:
       "Losse graanportie telt op over de dag; alleen niet je hoofdbron.",
   },
+
+  // ── USDA-import september 2026 (WebSearch-route; geen observed) ──
+  {
+    key: "pinda",
+    labelNl: "Pinda's",
+    portionNl: "25 g (handvol)",
+    amount: 6.5,
+    portionGroup: "nuts",
+    source: usda("172430", "SR Legacy"),
+    nutrientValue: {
+      value: 25.8,
+      unit: "g",
+      per: "100g",
+      source: usda("172430", "SR Legacy"),
+      sourceNameNl: "Peanuts, all types, raw",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+    qualityNote:
+      "Pinda-eiwit is relatief compleet voor een plantbron, maar arm aan methionine — combineer over de dag met granen.",
+  },
+  {
+    key: "pistachenoten",
+    labelNl: "Pistachenoten",
+    portionNl: "25 g (handvol)",
+    amount: 5,
+    portionGroup: "nuts",
+    source: usda("170184", "SR Legacy"),
+    nutrientValue: {
+      value: 20.16,
+      unit: "g",
+      per: "100g",
+      source: usda("170184", "SR Legacy"),
+      sourceNameNl: "Nuts, pistachio nuts, raw",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+    qualityNote:
+      "Noteneiwit is onvolledig — vul over de dag aan met granen of peulvruchten voor alle essentiële aminozuren.",
+  },
+  {
+    key: "sojabonen-gekookt",
+    labelNl: "Sojabonen, gekookt",
+    portionNl: "150 g gekookt",
+    amount: 27.9,
+    portionGroup: "legumes",
+    source: usda("174271", "SR Legacy"),
+    nutrientValue: {
+      value: 18.6,
+      unit: "g",
+      per: "100g",
+      source: usda("174271", "SR Legacy"),
+      sourceNameNl: "Soybeans, mature seeds, cooked, boiled, without salt",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+    qualityNote:
+      "Soja-eiwit is volwaardig — het dekt alle essentiële aminozuren, ongebruikelijk voor een plantbron.",
+  },
+  {
+    key: "edamame",
+    labelNl: "Edamame",
+    portionNl: "150 g",
+    amount: 17.9,
+    portionGroup: "legumes",
+    source: usda("168411", "SR Legacy"),
+    nutrientValue: {
+      value: 11.9,
+      unit: "g",
+      per: "100g",
+      source: usda("168411", "SR Legacy"),
+      sourceNameNl: "Edamame, frozen, prepared",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+    qualityNote:
+      "Soja-eiwit is volwaardig — het dekt alle essentiële aminozuren, ongebruikelijk voor een plantbron.",
+  },
+  {
+    key: "spliterwten-gekookt",
+    labelNl: "Spliterwten, gekookt",
+    portionNl: "150 g gekookt",
+    amount: 12.5,
+    portionGroup: "legumes",
+    source: usda("172429", "SR Legacy"),
+    nutrientValue: {
+      value: 8.34,
+      unit: "g",
+      per: "100g",
+      source: usda("172429", "SR Legacy"),
+      sourceNameNl: "Peas, split, mature seeds, cooked, boiled, without salt",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+    qualityNote:
+      "Peulvrucht-eiwit is arm aan methionine — combineer over de dag met granen voor een compleet profiel.",
+  },
+  {
+    key: "tuinbonen-gekookt",
+    labelNl: "Tuinbonen, gekookt",
+    portionNl: "150 g gekookt",
+    amount: 11.4,
+    portionGroup: "legumes",
+    source: usda("173735", "SR Legacy"),
+    nutrientValue: {
+      value: 7.6,
+      unit: "g",
+      per: "100g",
+      source: usda("173735", "SR Legacy"),
+      sourceNameNl: "Broadbeans (fava beans), mature seeds, cooked, boiled, without salt",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+    qualityNote:
+      "Peulvrucht-eiwit is arm aan methionine — combineer over de dag met granen voor een compleet profiel.",
+  },
+  {
+    key: "quinoa-droog",
+    labelNl: "Quinoa, droog",
+    portionNl: "60 g droog",
+    amount: 8.5,
+    portionGroup: "wholegrain",
+    source: usda("168874", "SR Legacy"),
+    nutrientValue: {
+      value: 14.1,
+      unit: "g",
+      per: "100g",
+      source: usda("168874", "SR Legacy"),
+      sourceNameNl: "Quinoa, uncooked",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+    qualityNote:
+      "Quinoa-eiwit is volwaardig — een van de weinige plantbronnen met alle essentiële aminozuren.",
+  },
+  {
+    key: "paling",
+    labelNl: "Paling",
+    portionNl: "100 g",
+    amount: 23.7,
+    portionGroup: "oilyFish",
+    source: usda("174194", "SR Legacy"),
+    nutrientValue: {
+      value: 23.65,
+      unit: "g",
+      per: "100g",
+      source: usda("174194", "SR Legacy"),
+      sourceNameNl: "Fish, eel, mixed species, cooked, dry heat",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "rundergehakt",
+    labelNl: "Rundergehakt",
+    portionNl: "100 g",
+    amount: 18.7,
+    portionGroup: "leanMeat",
+    source: usda("171796", "SR Legacy"),
+    nutrientValue: {
+      value: 18.7,
+      unit: "g",
+      per: "100g",
+      source: usda("171796", "SR Legacy"),
+      sourceNameNl: "Beef, ground, 85% lean meat / 15% fat, raw",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "jonge-kaas",
+    labelNl: "Jonge kaas",
+    portionNl: "40 g (2 plakken)",
+    amount: 10,
+    portionGroup: "dairy",
+    source: usda("171241", "SR Legacy"),
+    nutrientValue: {
+      value: 24.9,
+      unit: "g",
+      per: "100g",
+      source: usda("171241", "SR Legacy"),
+      sourceNameNl: "Cheese, gouda",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "mosselen",
+    labelNl: "Mosselen",
+    portionNl: "150 g",
+    amount: 35.1,
+    portionGroup: "other",
+    source: usda("174217", "SR Legacy"),
+    nutrientValue: {
+      value: 23.4,
+      unit: "g",
+      per: "100g",
+      source: usda("174217", "SR Legacy"),
+      sourceNameNl: "Mollusks, mussel, blue, cooked, moist heat",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "biefstuk",
+    labelNl: "Biefstuk",
+    portionNl: "100 g",
+    amount: 22.4,
+    portionGroup: "leanMeat",
+    source: usda("171804", "SR Legacy"),
+    nutrientValue: {
+      value: 22.4,
+      unit: "g",
+      per: "100g",
+      source: usda("171804", "SR Legacy"),
+      sourceNameNl: "Beef, top sirloin, steak, trimmed to 1/8\" fat, select, raw",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "kippenlever",
+    labelNl: "Kippenlever",
+    portionNl: "100 g",
+    amount: 16.9,
+    portionGroup: "leanMeat",
+    source: usda("171060", "SR Legacy"),
+    nutrientValue: {
+      value: 16.9,
+      unit: "g",
+      per: "100g",
+      source: usda("171060", "SR Legacy"),
+      sourceNameNl: "Chicken, liver, all classes, raw",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "mozzarella",
+    labelNl: "Mozzarella",
+    portionNl: "125 g (bol)",
+    amount: 27.7,
+    portionGroup: "dairy",
+    source: usda("170845", "SR Legacy"),
+    nutrientValue: {
+      value: 22.17,
+      unit: "g",
+      per: "100g",
+      source: usda("170845", "SR Legacy"),
+      sourceNameNl: "Cheese, mozzarella, whole milk",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "feta",
+    labelNl: "Feta",
+    portionNl: "40 g",
+    amount: 7.9,
+    portionGroup: "dairy",
+    source: usda("173420", "SR Legacy"),
+    nutrientValue: {
+      value: 19.7,
+      unit: "g",
+      per: "100g",
+      source: usda("173420", "SR Legacy"),
+      sourceNameNl: "Cheese, feta",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "melk-vol",
+    labelNl: "Volle melk",
+    portionNl: "200 ml (glas)",
+    amount: 6.3,
+    portionGroup: "dairy",
+    source: usda("746782", "SR Legacy"),
+    nutrientValue: {
+      value: 3.15,
+      unit: "g",
+      per: "100g",
+      source: usda("746782", "SR Legacy"),
+      sourceNameNl: "Milk, whole, 3.25% milkfat, with added vitamin D",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+    noteNl:
+      "Alleen het eiwit is hier uit USDA overgenomen. De vitamine D van dat Amerikaanse record is verrijking en geldt niet voor Nederlandse volle melk — die is hier niet verrijkt.",
+  },
 ];
 
 const MAGNESIUM_SOURCES: readonly FoodSource[] = [
@@ -948,6 +1298,331 @@ const MAGNESIUM_SOURCES: readonly FoodSource[] = [
     bioavailability: "reduced",
     bioavailabilityWhy: "Oxaalzuur in bladgroente bindt een deel van het magnesium.",
     preparationNote: "Kookvocht meenemen scheelt.",
+  },
+
+  // ── USDA-import september 2026 (WebSearch-route; geen observed, zie USDA_CITATION) ──
+  {
+    key: "spinazie-rauw",
+    labelNl: "Spinazie, rauw",
+    portionNl: "75 g",
+    amount: 59.3,
+    portionGroup: "vegetables",
+    seasonMonths: [4, 10],
+    source: usda("168462", "SR Legacy"),
+    nutrientValue: {
+      value: 79,
+      unit: "mg",
+      per: "100g",
+      source: usda("168462", "SR Legacy"),
+      sourceNameNl: "Spinach, raw",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy:
+      "Oxaalzuur in bladgroente bindt magnesium — minder sterk dan fytaat, maar merkbaar.",
+  },
+  {
+    key: "spinazie-diepvries",
+    labelNl: "Spinazie, diepvries",
+    portionNl: "150 g",
+    amount: 112.5,
+    portionGroup: "vegetables",
+    source: usda("169287", "SR Legacy"),
+    nutrientValue: {
+      value: 75,
+      unit: "mg",
+      per: "100g",
+      source: usda("169287", "SR Legacy"),
+      sourceNameNl: "Spinach, frozen, chopped or leaf, unprepared",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy:
+      "Oxaalzuur in bladgroente bindt magnesium — minder sterk dan fytaat, maar merkbaar.",
+  },
+  {
+    key: "broccoli-gekookt",
+    labelNl: "Broccoli, gekookt",
+    portionNl: "150 g",
+    amount: 31.5,
+    portionGroup: "vegetables",
+    source: usda("169967", "SR Legacy"),
+    nutrientValue: {
+      value: 21,
+      unit: "mg",
+      per: "100g",
+      source: usda("169967", "SR Legacy"),
+      sourceNameNl: "Broccoli, cooked, boiled, drained, without salt",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "normal",
+  },
+  {
+    key: "hazelnoten",
+    labelNl: "Hazelnoten",
+    portionNl: "25 g (handvol)",
+    amount: 40.8,
+    portionGroup: "nuts",
+    source: usda("170581", "SR Legacy"),
+    nutrientValue: {
+      value: 163,
+      unit: "mg",
+      per: "100g",
+      source: usda("170581", "SR Legacy"),
+      sourceNameNl: "Nuts, hazelnuts or filberts",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+  },
+  {
+    key: "pecannoten",
+    labelNl: "Pecannoten",
+    portionNl: "25 g (handvol)",
+    amount: 30.3,
+    portionGroup: "nuts",
+    source: usda("170182", "SR Legacy"),
+    nutrientValue: {
+      value: 121,
+      unit: "mg",
+      per: "100g",
+      source: usda("170182", "SR Legacy"),
+      sourceNameNl: "Nuts, pecans",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+  },
+  {
+    key: "pistachenoten",
+    labelNl: "Pistachenoten",
+    portionNl: "25 g (handvol)",
+    amount: 30.3,
+    portionGroup: "nuts",
+    source: usda("170184", "SR Legacy"),
+    nutrientValue: {
+      value: 121,
+      unit: "mg",
+      per: "100g",
+      source: usda("170184", "SR Legacy"),
+      sourceNameNl: "Nuts, pistachio nuts, raw",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+  },
+  {
+    key: "macadamia",
+    labelNl: "Macadamianoten",
+    portionNl: "25 g (handvol)",
+    amount: 32.5,
+    portionGroup: "nuts",
+    source: usda("170178", "SR Legacy"),
+    nutrientValue: {
+      value: 130,
+      unit: "mg",
+      per: "100g",
+      source: usda("170178", "SR Legacy"),
+      sourceNameNl: "Nuts, macadamia nuts, raw",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+  },
+  {
+    key: "pinda",
+    labelNl: "Pinda's",
+    portionNl: "25 g (handvol)",
+    amount: 42,
+    portionGroup: "nuts",
+    source: usda("172430", "SR Legacy"),
+    nutrientValue: {
+      value: 168,
+      unit: "mg",
+      per: "100g",
+      source: usda("172430", "SR Legacy"),
+      sourceNameNl: "Peanuts, all types, raw",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+  },
+  {
+    key: "sesamzaad",
+    labelNl: "Sesamzaad",
+    portionNl: "10 g (eetlepel)",
+    amount: 35.1,
+    portionGroup: "nuts",
+    source: usda("170150", "SR Legacy"),
+    nutrientValue: {
+      value: 351,
+      unit: "mg",
+      per: "100g",
+      source: usda("170150", "SR Legacy"),
+      sourceNameNl: "Seeds, sesame seeds, whole, dried",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+  },
+  {
+    key: "maanzaad",
+    labelNl: "Maanzaad",
+    portionNl: "9 g (eetlepel)",
+    amount: 31.2,
+    portionGroup: "nuts",
+    source: usda("171330", "SR Legacy"),
+    nutrientValue: {
+      value: 347,
+      unit: "mg",
+      per: "100g",
+      source: usda("171330", "SR Legacy"),
+      sourceNameNl: "Seeds, poppy seed",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+  },
+  {
+    key: "sojabonen-gekookt",
+    labelNl: "Sojabonen, gekookt",
+    portionNl: "150 g gekookt",
+    amount: 129,
+    portionGroup: "legumes",
+    source: usda("174271", "SR Legacy"),
+    nutrientValue: {
+      value: 86,
+      unit: "mg",
+      per: "100g",
+      source: usda("174271", "SR Legacy"),
+      sourceNameNl: "Soybeans, mature seeds, cooked, boiled, without salt",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+  },
+  {
+    key: "edamame",
+    labelNl: "Edamame",
+    portionNl: "150 g",
+    amount: 96,
+    portionGroup: "legumes",
+    source: usda("168411", "SR Legacy"),
+    nutrientValue: {
+      value: 64,
+      unit: "mg",
+      per: "100g",
+      source: usda("168411", "SR Legacy"),
+      sourceNameNl: "Edamame, frozen, prepared",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+  },
+  {
+    key: "tuinbonen-gekookt",
+    labelNl: "Tuinbonen, gekookt",
+    portionNl: "150 g gekookt",
+    amount: 64.5,
+    portionGroup: "legumes",
+    source: usda("173735", "SR Legacy"),
+    nutrientValue: {
+      value: 43,
+      unit: "mg",
+      per: "100g",
+      source: usda("173735", "SR Legacy"),
+      sourceNameNl: "Broadbeans (fava beans), mature seeds, cooked, boiled, without salt",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+  },
+  {
+    key: "spliterwten-gekookt",
+    labelNl: "Spliterwten, gekookt",
+    portionNl: "150 g gekookt",
+    amount: 54,
+    portionGroup: "legumes",
+    source: usda("172429", "SR Legacy"),
+    nutrientValue: {
+      value: 36,
+      unit: "mg",
+      per: "100g",
+      source: usda("172429", "SR Legacy"),
+      sourceNameNl: "Peas, split, mature seeds, cooked, boiled, without salt",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+  },
+  {
+    key: "quinoa-droog",
+    labelNl: "Quinoa, droog",
+    portionNl: "60 g droog",
+    amount: 118.2,
+    portionGroup: "wholegrain",
+    source: usda("168874", "SR Legacy"),
+    nutrientValue: {
+      value: 197,
+      unit: "mg",
+      per: "100g",
+      source: usda("168874", "SR Legacy"),
+      sourceNameNl: "Quinoa, uncooked",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
+    preparationNote: "Droog gewicht — 60 g droog wordt ongeveer 180 g gekookt.",
+  },
+  {
+    key: "boekweit-gekookt",
+    labelNl: "Boekweit, gekookt",
+    portionNl: "150 g gekookt",
+    amount: 76.5,
+    portionGroup: "wholegrain",
+    source: usda("170686", "SR Legacy"),
+    nutrientValue: {
+      value: 51,
+      unit: "mg",
+      per: "100g",
+      source: usda("170686", "SR Legacy"),
+      sourceNameNl: "Buckwheat groats, roasted, cooked",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYTAAT,
   },
 ];
 
@@ -1338,6 +2013,28 @@ const VITAMIN_D_SOURCES: readonly FoodSource[] = [
     noteNl:
       "De hoofdroute, en de reden dat voeding dit gat niet dicht. Okt–mrt staat de aanmaak in NL vrijwel stil.",
   },
+
+  // ── USDA-import september 2026 (WebSearch-route; geen observed) ──
+  {
+    key: "forel",
+    labelNl: "Forel, gebakken",
+    portionNl: "125 g",
+    amount: 23.8,
+    portionGroup: "oilyFish",
+    source: usda("173718", "SR Legacy"),
+    nutrientValue: {
+      value: 19,
+      unit: "µg",
+      per: "100g",
+      source: usda("173718", "SR Legacy"),
+      sourceNameNl: "Fish, trout, rainbow, farmed, cooked, dry heat",
+    },
+    verified: true,
+    variability: "high",
+    variabilityWhy:
+      "Wild versus gekweekt en het seizoen doen vitamine D in vis een veelvoud verschillen.",
+    bioavailability: "normal",
+  },
 ];
 
 /**
@@ -1614,6 +2311,158 @@ const ZINC_SOURCES: readonly FoodSource[] = [
     preparationNote:
       "Zuurdesem breekt een deel van het fytaat af tijdens het rijzen; daar komt meer zink uit dan uit gistbrood.",
   },
+
+  // ── USDA-import september 2026 (WebSearch-route; geen observed) ──
+  {
+    key: "pecannoten",
+    labelNl: "Pecannoten",
+    portionNl: "25 g (handvol)",
+    amount: 1.1,
+    portionGroup: "nuts",
+    source: usda("170182", "SR Legacy"),
+    nutrientValue: {
+      value: 4.53,
+      unit: "mg",
+      per: "100g",
+      source: usda("170182", "SR Legacy"),
+      sourceNameNl: "Nuts, pecans",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYT,
+  },
+  {
+    key: "edamame",
+    labelNl: "Edamame",
+    portionNl: "150 g",
+    amount: 2.1,
+    portionGroup: "legumes",
+    source: usda("168411", "SR Legacy"),
+    nutrientValue: {
+      value: 1.37,
+      unit: "mg",
+      per: "100g",
+      source: usda("168411", "SR Legacy"),
+      sourceNameNl: "Edamame, frozen, prepared",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Bodem en ras werken door in het mineraalgehalte.",
+    bioavailability: "reduced",
+    bioavailabilityWhy: FYT,
+  },
+  {
+    key: "jonge-kaas",
+    labelNl: "Jonge kaas",
+    portionNl: "40 g (2 plakken)",
+    amount: 1.6,
+    portionGroup: "dairy",
+    source: usda("171241", "SR Legacy"),
+    nutrientValue: {
+      value: 4,
+      unit: "mg",
+      per: "100g",
+      source: usda("171241", "SR Legacy"),
+      sourceNameNl: "Cheese, gouda",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "runderlever",
+    labelNl: "Runderlever",
+    portionNl: "100 g",
+    amount: 5.3,
+    portionGroup: "leanMeat",
+    source: usda("168626", "SR Legacy"),
+    nutrientValue: {
+      value: 5.3,
+      unit: "mg",
+      per: "100g",
+      source: usda("168626", "SR Legacy"),
+      sourceNameNl: "Beef, liver, cooked, braised",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+    noteNl: "Lever draagt zink in een orde die spiervlees niet haalt.",
+  },
+  {
+    key: "mosselen",
+    labelNl: "Mosselen",
+    portionNl: "150 g",
+    amount: 4.1,
+    portionGroup: "other",
+    source: usda("174217", "SR Legacy"),
+    nutrientValue: {
+      value: 2.7,
+      unit: "mg",
+      per: "100g",
+      source: usda("174217", "SR Legacy"),
+      sourceNameNl: "Mollusks, mussel, blue, cooked, moist heat",
+    },
+    verified: true,
+    variability: "moderate",
+    variabilityWhy: "Soort, seizoen en groeiwater werken door.",
+    bioavailability: "normal",
+  },
+  {
+    key: "biefstuk",
+    labelNl: "Biefstuk",
+    portionNl: "100 g",
+    amount: 4,
+    portionGroup: "leanMeat",
+    source: usda("171804", "SR Legacy"),
+    nutrientValue: {
+      value: 4,
+      unit: "mg",
+      per: "100g",
+      source: usda("171804", "SR Legacy"),
+      sourceNameNl: "Beef, top sirloin, steak, trimmed to 1/8\" fat, select, raw",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "kippenlever",
+    labelNl: "Kippenlever",
+    portionNl: "100 g",
+    amount: 2.7,
+    portionGroup: "leanMeat",
+    source: usda("171060", "SR Legacy"),
+    nutrientValue: {
+      value: 2.7,
+      unit: "mg",
+      per: "100g",
+      source: usda("171060", "SR Legacy"),
+      sourceNameNl: "Chicken, liver, all classes, raw",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
+  {
+    key: "feta",
+    labelNl: "Feta",
+    portionNl: "40 g",
+    amount: 1.2,
+    portionGroup: "dairy",
+    source: usda("173420", "SR Legacy"),
+    nutrientValue: {
+      value: 3,
+      unit: "mg",
+      per: "100g",
+      source: usda("173420", "SR Legacy"),
+      sourceNameNl: "Cheese, feta",
+    },
+    verified: true,
+    variability: "low",
+    bioavailability: "normal",
+  },
 ];
 
 /**
@@ -1648,10 +2497,26 @@ export function amountForPortion(
   return Math.round((value.value * grams) / 100 * 10) / 10;
 }
 
+/**
+ * Aflopend op `amount`, rijen zonder waarde (`null`) achteraan.
+ *
+ * Dit is de leesregel uit de {@link FoodSource}-doc, nu afgedwongen bij de
+ * constructie in plaats van met de hand onderhouden. Zo landt elke toegevoegde
+ * rij vanzelf op zijn plek, en blijft de belofte gelden die
+ * `nutrition-categorie-detail.ts` gebruikt ("FOOD_SOURCES staat al aflopend op
+ * amount; filteren houdt die volgorde"). Het verandert niets aan lijsten die al
+ * gesorteerd waren — het maakt alleen een nieuwe rij toevoegen veilig.
+ */
+function byAmountDesc(sources: readonly FoodSource[]): readonly FoodSource[] {
+  return [...sources].sort(
+    (a, b) => (b.amount ?? -Infinity) - (a.amount ?? -Infinity),
+  );
+}
+
 export const FOOD_SOURCES: Record<NutrientId, readonly FoodSource[]> = {
-  protein: PROTEIN_SOURCES,
-  omega3: OMEGA3_SOURCES,
-  magnesium: MAGNESIUM_SOURCES,
-  vitamin_d: VITAMIN_D_SOURCES,
-  zinc: ZINC_SOURCES,
+  protein: byAmountDesc(PROTEIN_SOURCES),
+  omega3: byAmountDesc(OMEGA3_SOURCES),
+  magnesium: byAmountDesc(MAGNESIUM_SOURCES),
+  vitamin_d: byAmountDesc(VITAMIN_D_SOURCES),
+  zinc: byAmountDesc(ZINC_SOURCES),
 };

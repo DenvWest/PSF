@@ -28,3 +28,6 @@ tsconfig.tsbuildinfo
 !.cursor/rules/*.mdc
 .tmp/
 .audit-screenshots/
+
+# Uitvoer van scripts/usda-extract.mjs — rapport, geen broncode
+scripts/out/

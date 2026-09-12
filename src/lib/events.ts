@@ -102,6 +102,14 @@ export const DOMAIN_EVENT_TYPES = [
   "nutrition.dagboek_day_saved",
   "nutrition.dagboek_completed",
   "nutrition.dagboek_kalibratie_shown",
+  // Het schap (S1): van nutriënt naar producten. Deze drie beantwoorden of de
+  // omgekeerde index gebruikt wordt, welke producten mensen overwegen, en of de
+  // categoriefilter er toe doet. `schap_bron_clicked` gegroepeerd op `key` is de
+  // lijst die zegt welke catalogusregels als volgende een gehalte verdienen.
+  // Alleen productkennis in de payload — nutriënt, sleutel, categorie, aantal.
+  "nutrition.schap_bronnen_getoond",
+  "nutrition.schap_bron_clicked",
+  "nutrition.schap_categorie_gefilterd",
   // Connection Profile — zelf opgegeven voorkeuren, GEEN gezondheidsdata.
   // De ratio cprofile.completed / cprofile.step_completed{step:1} is de meting
   // die toetst of stap 2 te confronterend is (BESLUIT §12).

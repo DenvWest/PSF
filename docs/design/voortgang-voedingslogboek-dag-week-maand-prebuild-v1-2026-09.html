@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prebuild — Voedingslogboek op Voortgang: dag → week → maand, agenda en het schap (9 sep 2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<!--
+  WAT DIT BESTAND LOCKT (v2 — 9 sep)
+
+  1.  Drie zoomniveaus, één grammatica. Dag, week en maand delen dezelfde
+      stofvolgorde en dezelfde leesrichting. Wat verandert is de vraag.
+
+  2.  DE KERNREGEL: hoe verder je uitzoomt, hoe MINDER precies het getal.
+      Dag = milligrammen. Week = dezelfde milligrammen per dag náást elkaar,
+      nooit opgeteld. Maand = dekking en kalibratie, geen milligram meer.
+
+  3.  DE ASYMMETRIE die alles op het weekscherm draagt: een ondergrens kan
+      "gehaald" aantonen, nooit "niet gehaald". Haalt de ondergrens de
+      richtwaarde, dan is dekking bewezen — wat je vergat te noemen kan er
+      alleen bij komen. Haalt hij hem niet, dan volgt er niets uit.
+      Daarom staat er nergens "onder" of een rood vinkje. Alleen ✓ waar het
+      bewezen is, en verder het getal zelf.
+
+  4.  Niet elke stof kán bewezen worden. Magnesium en omega-3 wel — daar
+      bestaan bronnen die in één portie boven de richtwaarde uitkomen. Zink
+      en vitamine D praktisch niet: 11 mg zink uit een dagboek dat niet alles
+      vangt is vrijwel onhaalbaar, en vitamine D komt uit de zon en uit
+      verrijking. Voor die twee toont het scherm géén dekkingsoordeel, want
+      een kolom die nooit een vinkje kan geven zegt iets over de methode en
+      niets over de gebruiker.
+
+  5.  Het schap beweegt mee. Dezelfde periodeschakelaar, dezelfde
+      periodegebonden onderbouwing. Wissel je op Voortgang van week, dan
+      wisselt het bewijs onder je keuze mee.
+
+  6.  De vorm van het weekscherm komt uit een bestaande app (dagen als rijen,
+      stoffen als kolommen, een samenvattingsrij eronder). Wat NIET is
+      overgenomen: "132 g onder", een weektotaal, en een dagbudget. Die drie
+      veronderstellen een volledige registratie, en dat is precies wat een
+      dagboek niet is.
+
+  7.  Agenda draagt gedrag, geen diagnose en geen aanbod. Een voedingsblok
+      mag naar het schap verwijzen, nooit naar een product.
+
+  8.  Alle gehaltes komen uit src/data/nutrition/food-sources.ts. De
+      spreidingsmarges zijn sinds 9 sep gebronde factorbanden per
+      (stof × voedselklasse) — zie ONDERZOEK_SPREIDING_EN_USDA_2026-09 §1.7.
+      Ze blijven een tussenstap tot elke rij een waargenomen min/max uit
+      USDA FoodData Central draagt.
+
+  TIJDLIJN: vandaag is woensdag 9 september 2026. Cyclus dag 1 = maandag
+  17 augustus, hertest op dag 30 = 23 september. Alle geregistreerde dagen
+  liggen in het verleden — v1 liet je een zaterdag in de toekomst invullen.
+-->
+<style>
+:root{
+  --bg:#1a2e1a;
+  --panel:rgba(255,255,255,.05);
+  --panel-border:rgba(255,255,255,.12);
+  --text:rgba(255,255,255,.95);
+  --text-muted:rgba(255,255,255,.60);
+  --text-subtle:rgba(255,255,255,.40);
+  --divider:rgba(255,255,255,.08);
+  --divider-strong:rgba(255,255,255,.16);
+  --sage:#5A8F6A;
+  --sage-soft:#9CC5A9;
+  --terra:#C8956C;
+  --amber:#C99A3C;
+  --ink:#0E1810;
+  --f-serif:"DM Serif Display",Georgia,serif;
+  --f-sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;overflow-x:hidden}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--f-sans);font-size:14px;
+  background-image:
+    radial-gradient(ellipse 130% 70% at 50% -8%,rgba(127,178,142,.42) 0%,rgba(33,56,31,.75) 38%,transparent 68%),
+    radial-gradient(120% 80% at 50% -5%,#21381f 0%,transparent 55%);
+  background-attachment:fixed;-webkit-font-smoothing:antialiased;
+}
+button,input{font-family:inherit}
+h1,h2,h3{font-family:var(--f-serif);font-weight:400;letter-spacing:-.005em}
+
+.rev{position:sticky;top:0;z-index:60;background:#0b150c;border-bottom:1px solid var(--divider-strong);padding:8px 12px}
+.rev-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;max-width:1180px;margin:0 auto}
+.rev-lbl{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-subtle);font-weight:700;margin-right:2px}
+.rev button{min-height:34px;padding:0 10px;border-radius:999px;cursor:pointer;border:1px solid var(--panel-border);background:transparent;color:var(--text-muted);font-size:12px;font-weight:600}
+.rev button[aria-pressed="true"]{background:var(--sage);border-color:var(--sage);color:var(--ink)}
+.rev-note{font-size:11px;color:var(--text-subtle);margin:6px auto 0;line-height:1.45;max-width:1180px}
+
+.wrap{max-width:1180px;margin:0 auto;padding:18px 12px 80px}
+.screen[hidden]{display:none}
+.screen-head{margin:0 0 14px}
+.screen-head .eyebrow{margin:0;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9FB0A6}
+.screen-head h1{margin:8px 0 0;font-size:clamp(24px,5.5vw,31px);line-height:1.12;text-wrap:balance}
+.screen-head .job{margin:8px 0 0;font-size:13.5px;line-height:1.55;color:var(--text-muted);max-width:64ch;text-wrap:pretty}
+.screen-head .job b{color:var(--sage-soft);font-weight:600}
+
+.card{border:1px solid var(--panel-border);background:var(--panel);border-radius:20px;padding:16px}
+.card + .card{margin-top:12px}
+.eyebrow-s{margin:0 0 8px;font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7E8C82}
+.subtle{color:var(--text-subtle)}
+.hair{border:0;border-top:1px solid var(--divider);margin:13px 0}
+
+/* zoomschakelaar */
+.zoom{display:flex;gap:4px;border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.20);border-radius:14px;padding:4px}
+.zoom button{flex:1;min-height:40px;border-radius:10px;border:0;background:transparent;color:#9FB0A6;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s,color .15s}
+.zoom button[aria-current="page"]{background:rgba(255,255,255,.09);color:#F1EFE8;font-weight:600}
+.zoom-cap{margin:8px 0 0;font-size:11.5px;line-height:1.5;color:#7E8C82;text-wrap:pretty}
+
+/* periodeschakelaar — reist mee tussen Voortgang en het schap */
+.periods{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--divider);margin:0 0 2px;padding-bottom:0;scrollbar-width:none}
+.periods::-webkit-scrollbar{display:none}
+.periods button{flex:0 0 auto;min-height:44px;padding:0 14px;border:0;background:transparent;color:#9FB0A6;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.periods button[aria-current="page"]{color:var(--sage-soft);font-weight:600;border-bottom-color:var(--sage)}
+.period-range{margin:10px 0 0;font-size:12px;color:var(--text-subtle)}
+.period-sum{margin:6px 0 0;font-size:14px;line-height:1.5;color:#CDD7D0;text-wrap:pretty}
+.period-sum b{color:var(--sage-soft);font-weight:600}
+
+/* het schap: van nutriënt naar producten — de omgekeerde index */
+.bronnen{list-style:none;margin:11px 0 0;padding:0}
+.bronnen li{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:9px 2px;border-bottom:1px solid rgba(255,255,255,.06)}
+.bronnen li:last-child{border-bottom:0}
+.bronnen .b-n{font-size:13px;color:#E7EDE8;font-weight:500}
+.bronnen .b-p{font-size:11px;color:var(--text-subtle);font-weight:400}
+.bronnen .b-v{font-size:13px;color:var(--sage-soft);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bronnen .b-m{font-size:11px;color:var(--terra);margin-left:5px}
+.bronnen .b-o{font-size:11px;color:var(--text-subtle);margin-left:5px}
+.bron-note{margin:11px 0 0;font-size:12px;line-height:1.55;color:var(--text-subtle);text-wrap:pretty}
+.cats{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0 0}
+.cats button{min-height:32px;padding:0 11px;border:1px solid rgba(255,255,255,.14);background:transparent;color:#9FB0A6;font-size:11.5px;border-radius:999px;cursor:pointer}
+.cats button[aria-pressed="true"]{color:var(--sage-soft);border-color:rgba(156,197,169,.45)}
+
+/* weektabel — dagen als rijen, stoffen als kolommen */
+.tbl-scroll{overflow-x:auto;margin:0 -4px;padding:0 4px}
+table.sum{border-collapse:collapse;width:100%;min-width:440px}
+table.sum th,table.sum td{padding:0;text-align:right;vertical-align:baseline}
+table.sum thead th{font-size:11px;font-weight:600;color:#9FB0A6;padding:0 0 8px 10px;line-height:1.25;white-space:nowrap}
+table.sum thead th span{display:block;font-size:9.5px;font-weight:500;color:var(--text-subtle)}
+table.sum th.d{text-align:left;padding:0 10px 8px 0}
+table.sum tbody th{text-align:left;font-weight:500;font-size:12.5px;color:#CDD7D0;padding:9px 10px 9px 0;white-space:nowrap;border-top:1px solid var(--divider)}
+table.sum tbody th i{font-style:normal;color:var(--text-subtle);font-size:11.5px;margin-right:5px;display:inline-block;min-width:2.1ch}
+table.sum tbody td{font-size:12.5px;color:#E7EDE8;font-variant-numeric:tabular-nums;padding:9px 0 9px 10px;border-top:1px solid var(--divider);white-space:nowrap}
+table.sum tbody td[data-empty="true"]{color:var(--text-subtle)}
+table.sum tbody td b{font-weight:600}
+table.sum tbody td .ok{display:inline-block;margin-left:5px;color:var(--sage-soft);font-weight:700}
+table.sum tbody tr[data-today="true"] th,table.sum tbody tr[data-today="true"] td{background:rgba(255,255,255,.03)}
+table.sum tfoot th,table.sum tfoot td{border-top:1px solid var(--divider-strong);padding-top:11px;font-size:12px}
+table.sum tfoot th{text-align:left;color:#9FB0A6;font-weight:600;padding-right:10px}
+table.sum tfoot td{color:var(--sage-soft);padding-left:10px;font-weight:600}
+table.sum tfoot td span{display:block;font-weight:500;color:#7E8C82;font-size:11px;margin-top:2px;white-space:normal;min-width:9ch}
+.tbl-note{margin:12px 0 0;font-size:11.5px;line-height:1.55;color:#7E8C82;text-wrap:pretty}
+.tbl-note b{color:#9FB0A6;font-weight:600}
+
+/* stofrijen */
+.nutrows{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.nutrow .n-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.nutrow .n-n{font-size:13.5px;font-weight:600;color:#E7EDE8}
+.nutrow .n-v{font-size:12.5px;color:var(--sage-soft);font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.nutrow[data-state="none"] .n-v{color:#7E8C82;font-weight:500}
+.bar{position:relative;height:8px;border-radius:999px;background:rgba(255,255,255,.07);margin:7px 0 0}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,rgba(90,143,106,.55),var(--sage))}
+.bar .span{position:absolute;top:-3px;bottom:-3px;border-radius:999px;border:1px solid rgba(156,197,169,.55);background:rgba(156,197,169,.12)}
+.bar .ref{position:absolute;top:-5px;bottom:-5px;width:2px;background:rgba(255,255,255,.55);border-radius:2px}
+.n-legend{display:flex;align-items:center;gap:5px;margin:6px 0 0;font-size:10.5px;color:var(--text-subtle);line-height:1.4}
+.n-legend i{display:inline-block;width:2px;height:10px;background:rgba(255,255,255,.55);border-radius:2px;flex:0 0 auto}
+.nutrow .n-b{margin:6px 0 0;font-size:11.5px;line-height:1.5;color:#9FB0A6;text-wrap:pretty}
+.nutrow .n-b em{font-style:normal;color:var(--amber)}
+
+/* groepraster */
+.grid-scroll{overflow-x:auto;margin:0 -4px;padding:0 4px}
+table.wk{border-collapse:collapse;width:100%;min-width:430px}
+table.wk th,table.wk td{padding:0;text-align:center}
+table.wk th.g{text-align:left;font-weight:500;font-size:11.5px;color:#9FB0A6;padding:0 8px 0 0;white-space:nowrap;width:1%}
+table.wk thead th{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-subtle);padding-bottom:6px}
+table.wk thead th[data-weekend="true"]{color:var(--terra)}
+table.wk tbody tr + tr td,table.wk tbody tr + tr th{padding-top:4px}
+.cell{width:100%;height:17px;border-radius:5px;background:rgba(255,255,255,.045);display:block}
+.cell[data-n="1"]{background:rgba(90,143,106,.34)}
+.cell[data-n="2"]{background:rgba(90,143,106,.58)}
+.cell[data-n="3"]{background:rgba(90,143,106,.82)}
+.cell[data-n="4"]{background:var(--sage)}
+.cell[data-miss="true"]{background:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 3px,transparent 3px 6px)}
+.wk-legend{display:flex;flex-wrap:wrap;gap:5px 14px;margin:10px 0 0;padding:0;list-style:none;font-size:11px;color:#7E8C82}
+.wk-legend li{display:flex;align-items:center;gap:5px}
+.wk-legend span{width:14px;height:11px;border-radius:3px;display:inline-block}
+
+/* split */
+.split{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:12px 0 0}
+@media(min-width:560px){.split{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.split .s{border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.20);border-radius:14px;padding:12px}
+.split .s .k{margin:0 0 4px;font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7E8C82}
+.split .s .v{margin:0;font-family:var(--f-serif);font-size:23px;line-height:1.1}
+.split .s .b{margin:4px 0 0;font-size:11.5px;line-height:1.45;color:#9FB0A6}
+
+/* maandband */
+.band{position:relative;width:100%;aspect-ratio:340/104;margin:4px 0 0}
+.band svg{display:block;width:100%;height:auto;overflow:visible}
+.marks{position:absolute;inset:0;pointer-events:none}
+.mark{position:absolute;transform:translate(-50%,-50%);padding:0;border:0;background:transparent;cursor:pointer;pointer-events:auto;display:flex;align-items:center;justify-content:center}
+.mark[data-kind="check"]{width:36px;height:36px}
+.mark[data-kind="dagboek"]{width:18px;height:26px}
+.mark i{border-radius:50%;background:#132414;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:700}
+.mark[data-kind="check"] i{width:21px;height:21px;border:1.5px solid #E7EDE8;font-size:10px;color:#E7EDE8}
+.mark[data-kind="dagboek"] i{width:10px;height:10px;border:1.5px solid rgba(156,197,169,.75);font-size:0}
+.mark[data-kind="dagboek"][data-weekend="true"] i{border-color:var(--terra)}
+.mark[aria-pressed="true"] i{background:var(--sage);color:#0E1810;border-color:var(--sage);box-shadow:0 0 0 3px rgba(90,143,106,.3)}
+.mark:focus-visible{outline:2px solid var(--sage-soft);outline-offset:-2px;border-radius:8px}
+.band-read{margin:10px 0 0;min-height:62px}
+.band-read .t{margin:0;font-size:14.5px;font-weight:600;color:#E7EDE8}
+.band-read .b{margin:3px 0 0;font-size:13px;line-height:1.5;color:#CDD7D0;text-wrap:pretty}
+
+/* kalibratie */
+.calib{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.calib li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 10px;align-items:baseline;padding-bottom:9px;border-bottom:1px solid var(--divider)}
+.calib li:last-child{border-bottom:0;padding-bottom:0}
+.calib .c-n{font-size:12.5px;font-weight:600;color:#E7EDE8}
+.calib .c-t{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.calib .c-t[data-k="klopt"]{color:var(--sage-soft);border:1px solid rgba(156,197,169,.4)}
+.calib .c-t[data-k="hoger"]{color:var(--terra);border:1px solid rgba(200,149,108,.42)}
+.calib .c-t[data-k="lager"]{color:var(--amber);border:1px solid rgba(201,154,60,.42)}
+.calib .c-b{grid-column:1/-1;margin:2px 0 0;font-size:11.5px;line-height:1.5;color:#9FB0A6;text-wrap:pretty}
+
+/* agenda */
+.day{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.blk{display:flex;gap:11px;border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.20);border-radius:14px;padding:12px;text-align:left;width:100%;cursor:pointer}
+.blk:hover{border-color:rgba(255,255,255,.24)}
+.blk .t{flex:0 0 auto;width:46px;font-size:11.5px;color:var(--text-subtle);font-variant-numeric:tabular-nums;padding-top:1px}
+.blk .m{min-width:0;flex:1}
+.blk .m .n{margin:0;font-size:13.5px;font-weight:600;color:#E7EDE8;line-height:1.3}
+.blk .m .s{margin:3px 0 0;font-size:11.5px;line-height:1.45;color:#9FB0A6;text-wrap:pretty}
+.blk .c{flex:0 0 auto;width:3px;border-radius:999px;align-self:stretch}
+.blk[data-done="true"] .m .n{color:#9FB0A6;text-decoration:line-through;text-decoration-color:rgba(159,176,166,.45)}
+.chk{flex:0 0 auto;width:22px;height:22px;border-radius:7px;border:1.5px solid rgba(255,255,255,.22);display:inline-flex;align-items:center;justify-content:center;font-size:12px;color:transparent;align-self:center}
+.blk[data-done="true"] .chk{background:var(--sage);border-color:var(--sage);color:#0E1810}
+
+/* supplementen-oordeel */
+.verd{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+.verd li{border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.20);border-radius:16px;padding:13px}
+.verd .v-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.verd .v-n{font-size:14px;font-weight:600;color:#E7EDE8}
+.verd .v-t{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.verd .v-t[data-k="genoeg"]{color:var(--sage-soft);border:1px solid rgba(156,197,169,.42)}
+.verd .v-t[data-k="vraag"]{color:var(--terra);border:1px solid rgba(200,149,108,.45)}
+.verd .v-t[data-k="onmeetbaar"]{color:#9FB0A6;border:1px solid rgba(255,255,255,.16)}
+.verd .v-f{margin:8px 0 0;font-size:12px;line-height:1.5;color:var(--sage-soft);font-variant-numeric:tabular-nums}
+.verd .v-b{margin:6px 0 0;font-size:12.5px;line-height:1.55;color:#CDD7D0;text-wrap:pretty}
+
+/* routes */
+.routes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.route{border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.20);border-radius:16px;padding:13px}
+.route .r-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.route .r-n{font-size:14px;font-weight:600;color:#E7EDE8}
+.route .r-s{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.route .r-s[data-s="gap"]{color:var(--terra);border:1px solid rgba(200,149,108,.45)}
+.route .r-s[data-s="partial"]{color:var(--amber);border:1px solid rgba(201,154,60,.45)}
+.route .r-s[data-s="ok"]{color:var(--sage-soft);border:1px solid rgba(156,197,169,.4)}
+.route .r-t{margin:7px 0 0;font-size:12.5px;line-height:1.5;color:#CDD7D0;text-wrap:pretty}
+.route .r-e{margin:8px 0 0;padding:9px 10px;border-left:2px solid rgba(156,197,169,.45);background:rgba(90,143,106,.09);border-radius:0 10px 10px 0;font-size:12px;line-height:1.5;color:var(--sage-soft);text-wrap:pretty}
+.route .r-e b{color:#E7EDE8;font-weight:600}
+.opts{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.opt{min-height:38px;padding:0 13px;border-radius:11px;border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);font-size:12.5px;font-weight:600;cursor:pointer}
+.opt:hover{border-color:rgba(255,255,255,.32);color:#E7EDE8}
+.opt[aria-pressed="true"]{background:rgba(90,143,106,.18);border-color:rgba(90,143,106,.55);color:var(--sage-soft)}
+.opt[disabled]{opacity:.42;cursor:not-allowed}
+.gate{margin:12px 0 0;border:1px dashed rgba(255,255,255,.18);border-radius:14px;padding:12px;background:rgba(0,0,0,.18)}
+.gate p{margin:0;font-size:12px;line-height:1.55;color:#9FB0A6;text-wrap:pretty}
+.gate p + p{margin-top:6px}
+.gate b{color:#E7EDE8;font-weight:600}
+
+.lock{border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(0,0,0,.25);padding:12px}
+.lock p{margin:0;font-size:12px;line-height:1.55;color:#9FB0A6;text-wrap:pretty}
+.lock p + p{margin-top:6px}
+.lock b{color:#E7EDE8;font-weight:600}
+.lock em{font-style:normal;color:var(--amber)}
+
+.ctas{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0 0}
+.cta{min-height:46px;padding:0 18px;border-radius:16px;cursor:pointer;font-size:14px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.cta-1{background:var(--sage);border:1px solid var(--sage);color:var(--ink)}
+.cta-2{background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--text)}
+.cta-3{background:transparent;border:0;color:#9FB0A6;font-weight:400;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(159,176,166,.45);padding:0 4px}
+.toast{position:fixed;left:12px;right:12px;bottom:12px;z-index:70;max-width:1156px;margin:0 auto;background:#0b150c;border:1px solid var(--divider-strong);border-radius:12px;padding:9px 12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--sage-soft);word-break:break-word}
+.toast[hidden]{display:none}
+
+.notes{margin:34px 0 0;border-top:1px solid var(--divider-strong);padding:18px 0 0}
+.notes h2{font-size:17px;margin:0 0 10px}
+.notes h3{font-size:13px;margin:16px 0 5px;font-family:var(--f-sans);font-weight:700;color:#E7EDE8}
+.notes p,.notes li{font-size:12.5px;line-height:1.6;color:var(--text-muted);text-wrap:pretty}
+.notes code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--sage-soft)}
+.notes ul{margin:0;padding-left:18px}
+
+@media(min-width:1024px){
+  .wrap{padding:26px 24px 90px}
+  .two{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+  .two .card + .card{margin-top:12px}
+  .two > div > .card:first-child{margin-top:0}
+}
+</style>
+</head>
+<body>
+
+<div class="rev">
+  <div class="rev-row">
+    <span class="rev-lbl">Scherm</span>
+    <button type="button" data-screen="V1" aria-pressed="true">V1 · Dag</button>
+    <button type="button" data-screen="V2" aria-pressed="false">V2 · Week</button>
+    <button type="button" data-screen="V3" aria-pressed="false">V3 · Maand</button>
+    <button type="button" data-screen="A1" aria-pressed="false">A1 · Agenda</button>
+    <button type="button" data-screen="S1" aria-pressed="false">S1 · Schap</button>
+  </div>
+  <p class="rev-note">Vandaag is woensdag 9 september 2026. De periodeschakelaar op V2 en S1 deelt zijn stand: wissel je van week, dan wisselt het bewijs onder je keuze mee.</p>
+</div>
+
+<div class="wrap">
+
+<!-- ══════════════════════════ V1 · DAG ══════════════════════════ -->
+<section class="screen" id="s-V1" aria-label="Logboek dag">
+  <div class="screen-head">
+    <p class="eyebrow">Voortgang › Voeding › Logboek</p>
+    <h1>Je logboek — van één dag naar je maand.</h1>
+    <p class="job">Eén scherm, drie zoomniveaus. En één regel die tegen de intuïtie ingaat: <b>hoe verder je uitzoomt, hoe minder precies het getal wordt.</b> Op dagniveau koos je concrete producten, dus daar mogen milligrammen staan. Op maandniveau zijn de dagen ongelijk volledig — dan is een gemiddelde een getal dat nergens op slaat, en gaat het over dekking.</p>
+  </div>
+
+  <div class="card">
+    <nav class="zoom" aria-label="Zoomniveau">
+      <button type="button" aria-current="page" data-goto="V1">Dag</button>
+      <button type="button" data-goto="V2" data-ev='nutrition.logboek_zoom_changed { to: "week" }'>Week</button>
+      <button type="button" data-goto="V3" data-ev='nutrition.logboek_zoom_changed { to: "maand" }'>Maand</button>
+    </nav>
+    <p class="zoom-cap">Wat je op deze dag noemde, in milligrammen. Alleen mogelijk omdat je hier producten koos en geen groepen.</p>
+  </div>
+
+  <div class="two">
+    <div>
+      <div class="card">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+          <p class="eyebrow-s" style="margin:0">Zondag 6 september · weekenddag</p>
+          <button type="button" class="cta cta-3" style="min-height:auto" data-ev='nutrition.dagboek_opened { mode: "correct", date: "2026-09-06" }'>Aanpassen</button>
+        </div>
+        <ul class="nutrows" id="dag-rows" style="margin-top:12px"></ul>
+        <p style="margin:16px 0 0;padding-top:12px;border-top:1px solid var(--divider);font-size:11.5px;line-height:1.55;color:#7E8C82">
+          Eén dag zegt weinig over je patroon. De bevinding zit in de week ernaast.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <p class="eyebrow-s">Wat er die dag op tafel stond</p>
+        <ul class="day" id="dag-momenten"></ul>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow-s">Je bord die dag</p>
+        <div class="split" style="margin-top:0">
+          <div class="s"><p class="k">Groepen</p><p class="v" id="dag-groepen">—</p><p class="b" id="dag-groepen-b">—</p></div>
+          <div class="s"><p class="k">Producten</p><p class="v" id="dag-items">—</p><p class="b">genoemde bronnen — alleen die tellen mee</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ V2 · WEEK ══════════════════════════ -->
+<section class="screen" id="s-V2" hidden aria-label="Logboek week">
+  <div class="screen-head">
+    <p class="eyebrow">Voortgang › Voeding › Logboek</p>
+    <h1>Je week — dag naast dag.</h1>
+    <p class="job">De dagen als rijen, je stoffen als kolommen. Er wordt <b>niets opgeteld</b>: een weektotaal veronderstelt dat je alles registreerde, en dat doet niemand. Wat er wél staat is de asymmetrie die dit logboek eerlijk houdt — <b>een ondergrens kan "gehaald" aantonen, nooit "niet gehaald"</b>. Vandaar een ✓ waar het bewezen is, en verder alleen het getal.</p>
+  </div>
+
+  <div class="card">
+    <nav class="zoom" aria-label="Zoomniveau">
+      <button type="button" data-goto="V1" data-ev='nutrition.logboek_zoom_changed { to: "dag" }'>Dag</button>
+      <button type="button" aria-current="page" data-goto="V2">Week</button>
+      <button type="button" data-goto="V3" data-ev='nutrition.logboek_zoom_changed { to: "maand" }'>Maand</button>
+    </nav>
+    <nav class="periods" id="periods-V2" aria-label="Periode" style="margin-top:12px"></nav>
+    <p class="period-range" id="range-V2"></p>
+    <p class="period-sum" id="sum-V2"></p>
+  </div>
+
+  <div class="two">
+    <div>
+      <div class="card">
+        <p class="eyebrow-s">Micronutriënten</p>
+        <div class="tbl-scroll"><table class="sum" id="tbl-micro"></table></div>
+        <p class="tbl-note" id="note-micro"></p>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow-s">Macronutriënten</p>
+        <div class="tbl-scroll"><table class="sum" id="tbl-macro"></table></div>
+        <p class="tbl-note">Eiwit staat apart omdat het een andere grootheid is: je eet er tientallen grammen van, en de vraag is niet óf je genoeg hebt maar hoe het over je dag verdeeld staat. Dezelfde scheiding die <b>NUTRIENT_GROEP</b> in de code al maakt.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <p class="eyebrow-s">Je groepen deze periode</p>
+        <div class="grid-scroll"><table class="wk" id="wk-grid"></table></div>
+        <ul class="wk-legend">
+          <li><span style="background:rgba(255,255,255,.045)"></span>niets</li>
+          <li><span style="background:rgba(90,143,106,.34)"></span>1</li>
+          <li><span style="background:rgba(90,143,106,.58)"></span>2</li>
+          <li><span style="background:rgba(90,143,106,.82)"></span>3</li>
+          <li><span style="background:var(--sage)"></span>4 of meer</li>
+          <li><span style="background:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 3px,transparent 3px 6px)"></span>niet ingevuld</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow-s">Week tegenover weekend</p>
+        <div class="split" style="margin-top:0" id="split-wknd"></div>
+        <p style="margin:11px 0 0;font-size:12.5px;line-height:1.55;color:#CDD7D0;text-wrap:pretty" id="wknd-line"></p>
+      </div>
+
+      <div class="card">
+        <div class="lock">
+          <p><b>Waarom hier geen weektotaal staat.</b> Optellen zou suggereren dat de zeven dagen samen één meting vormen. Dat doen ze niet: op de dagen zonder registratie at je ook, en wat je op een geregistreerde dag vergat te noemen ontbreekt evengoed. Een som van ondergrenzen is een zwakkere ondergrens, geen sterker getal.</p>
+          <p><b>En waarom er geen "onder" staat.</b> Dat woord vraagt om een volledige registratie. Wat een ondergrens wél kan: <em>bewijzen</em> dat je erboven zat. Die kant op klopt hij altijd — wat je vergat te noemen kan er alleen bij komen.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ V3 · MAAND ══════════════════════════ -->
+<section class="screen" id="s-V3" hidden aria-label="Logboek maand">
+  <div class="screen-head">
+    <p class="eyebrow">Voortgang › Voeding › Logboek</p>
+    <h1>Je maand — waar het dagboek de check ontmoet.</h1>
+    <p class="job">Dertig dagen sinds je leefstijlcheck. Hier gaat het niet meer over milligrammen maar over twee vragen: <b>hoe vaak kwam een stof voorbij</b>, en <b>klopt wat je in de check zei met wat je registreerde</b>. Dat tweede is kalibratie, geen tweede oordeel — het maakt de check eerlijker over zijn eigen onzekerheid.</p>
+  </div>
+
+  <div class="card">
+    <nav class="zoom" aria-label="Zoomniveau">
+      <button type="button" data-goto="V1" data-ev='nutrition.logboek_zoom_changed { to: "dag" }'>Dag</button>
+      <button type="button" data-goto="V2" data-ev='nutrition.logboek_zoom_changed { to: "week" }'>Week</button>
+      <button type="button" aria-current="page" data-goto="V3">Maand</button>
+    </nav>
+    <p class="zoom-cap">Dekking en kalibratie. Geen milligram meer — de dagen zijn te ongelijk om over te middelen.</p>
+  </div>
+
+  <div class="two">
+    <div>
+      <div class="card">
+        <p class="eyebrow-s">Je cyclus · dag 24 van 30</p>
+        <div class="band">
+          <svg viewBox="0 0 340 104" role="img" aria-label="Je cyclus met je metingen en je dagboekdagen">
+            <line x1="16" y1="52" x2="324" y2="52" stroke="rgba(255,255,255,.14)" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="16" y1="52" x2="253" y2="52" stroke="#5A8F6A" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="253" y1="34" x2="253" y2="70" stroke="rgba(156,197,169,.55)" stroke-width="1.5" stroke-dasharray="3 3"/>
+            <text x="253" y="88" fill="rgba(255,255,255,.60)" font-size="8.5" text-anchor="middle" font-family="DM Sans,sans-serif">vandaag</text>
+            <text x="16" y="100" fill="rgba(255,255,255,.40)" font-size="8" text-anchor="start" font-family="DM Sans,sans-serif">17 aug</text>
+            <text x="324" y="100" fill="rgba(255,255,255,.40)" font-size="8" text-anchor="end" font-family="DM Sans,sans-serif">23 sep · hertest</text>
+            <circle cx="324" cy="52" r="4" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-dasharray="2 2"/>
+          </svg>
+          <div class="marks" id="band-marks"></div>
+        </div>
+        <div class="band-read" id="band-read"></div>
+        <ul style="display:flex;flex-wrap:wrap;gap:6px 16px;margin:8px 0 0;padding:0;list-style:none;font-size:11px;color:#7E8C82">
+          <li style="display:flex;align-items:center;gap:6px"><span style="width:13px;height:13px;border-radius:50%;border:1.5px solid #E7EDE8;display:inline-block"></span>meting</li>
+          <li style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(156,197,169,.75);display:inline-block"></span>dagboekdag</li>
+          <li style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;border:1.5px solid var(--terra);display:inline-block"></span>weekenddag</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow-s">Dekking per stof · op hoeveel van je 13 dagen kwam er een bron voorbij</p>
+        <ul class="nutrows" id="mnd-nutr"></ul>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <p class="eyebrow-s">Kalibratie · wat je zei tegenover wat je registreerde</p>
+        <ul class="calib" id="mnd-calib"></ul>
+        <div class="lock" style="margin-top:13px">
+          <p><b>Dit verandert je voedingsscore niet.</b> De score komt uit je check. Wat hier staat is hoe zeker die check over zichzelf mag zijn — en dat is een eigen bevinding, geen correctie.</p>
+          <p>Bij je hertest telt dit mee als context bij de vraag, niet als antwoord erop: <em>je zei toen twee keer vis per week; je registreerde vier visdagen over dertien dagen.</em></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow-s">Was aanvullen nodig?</p>
+        <p style="margin:0 0 11px;font-size:12.5px;line-height:1.55;color:#CDD7D0;text-wrap:pretty" id="mnd-supp-line"></p>
+        <div class="ctas" style="margin-top:0">
+          <button type="button" class="cta cta-1" data-goto="S1" data-ev='nutrition.logboek_naar_keuze { surface: "logboek_maand" }'>Bekijk je schap</button>
+          <button type="button" class="cta cta-3" data-ev='dashboard_voortgang_hub_click { destination: "hermeting", surface: "logboek_maand" }'>Naar je hertest →</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow-s">Wat de maand niet doet</p>
+        <div class="lock" style="border:0;background:transparent;padding:0">
+          <p><b>Geen maandgemiddelde in milligrammen.</b> Dertien dagen uit vierentwintig, ongelijk volledig — een gemiddelde daarover is geen meting maar een vormfout.</p>
+          <p><b>Geen streak en geen 7/7.</b> Vier dagen blijft de norm. Extra dagen tellen mee in dekking en in de weekendvergelijking; ze maken van vier geen halve prestatie.</p>
+          <p><b>Geen tweede score.</b> Eén getal per domein, en dat komt uit de check.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ A1 · AGENDA ══════════════════════════ -->
+<section class="screen" id="s-A1" hidden aria-label="Agenda">
+  <div class="screen-head">
+    <p class="eyebrow">Mijn Dag · woensdag 9 september</p>
+    <h1>Waar het dagboek de agenda raakt.</h1>
+    <p class="job">Drie soorten voedingsregels op één dag, en ze zijn nadrukkelijk niet hetzelfde: <b>een actie</b> uit je prioriteit, <b>een registratie</b> (het dagboek zelf), en <b>een reflectie</b> die alleen bestaat omdat je die actie plande. Wat er niet staat is een product — de agenda draagt gedrag, en de poort naar aanbod hangt aan het schap.</p>
+  </div>
+
+  <div class="two">
+    <div>
+      <div class="card">
+        <p class="eyebrow-s">Je dag</p>
+        <ul class="day" id="agenda-day"></ul>
+        <div class="ctas">
+          <button type="button" class="cta cta-2" data-ev='agenda_block_add_opened { surface: "mijn_dag", category: "voeding" }'>Blok toevoegen</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <p class="eyebrow-s">De drie soorten, en waarom ze uit elkaar blijven</p>
+        <div class="lock" style="border:0;background:transparent;padding:0">
+          <p><b>Actie.</b> Komt uit je prioriteit op Kompas, met een moment eraan. Eén blok, één moment — geen herhaling. Een herhalend blok dat je vijf dagen niet afvinkt is een schuldgenerator.</p>
+          <p><b>Registratie.</b> Het dagboek is geen prestatie maar een meting; hij staat er zolang je ronde niet vol is en verdwijnt daarna. Afvinken is hier "ingevuld", niet "goed gedaan".</p>
+          <p><b>Reflectie.</b> Verschijnt alleen ná een geplande actie, in je eigen woorden, zonder norm ernaast. Landt in de tijdlaag, nooit in de score. Een vaste zondagvraag zonder geplande actie is een vraag over niets, en die leert mensen de vraag te negeren.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow-s">Wat hier nooit komt te staan</p>
+        <div class="lock" style="border:0;background:transparent;padding:0">
+          <p><b>Een productlink.</b> "Kies volkorenbrood bij de boodschappen" mag: dat is een aandachtspunt-actie zonder merk en zonder link. Een blok dat naar een product linkt omzeilt de poort volledig — dan zit de poort alleen nog op één scherm dicht.</p>
+          <p>De juiste weg is de deur naar het <b>schap</b>, waar de poort al hangt.</p>
+        </div>
+        <div class="ctas">
+          <button type="button" class="cta cta-3" data-goto="S1" data-ev='nutrition.agenda_naar_schap { surface: "mijn_dag" }'>Naar je schap →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ S1 · SCHAP ══════════════════════════ -->
+<section class="screen" id="s-S1" hidden aria-label="Schap">
+  <div class="screen-head">
+    <p class="eyebrow">Keuze › Je schap</p>
+    <h1>Was aanvullen nodig — en volgens welk bewijs?</h1>
+    <p class="job">Het schap draagt dezelfde periodeschakelaar als je logboek. <b>Wissel je van week, dan wisselt het bewijs onder je keuze mee</b> — want een keuze die op vorige week rustte, hoort ook op vorige week gecontroleerd te kunnen worden. De check blijft eronder liggen; het dagboek maakt hem alleen preciezer.</p>
+  </div>
+
+  <div class="card">
+    <nav class="periods" id="periods-S1" aria-label="Periode"></nav>
+    <p class="period-range" id="range-S1"></p>
+    <p class="period-sum" id="sum-S1"></p>
+  </div>
+
+  <div class="two">
+    <div>
+      <div class="card">
+        <p class="eyebrow-s">Wat je eten in deze periode aantoonbaar leverde</p>
+        <ul class="verd" id="verdicts"></ul>
+        <div class="lock" style="margin-top:13px">
+          <p><b>Wat hier niet staat: dat je een supplement nodig hebt.</b> Een ondergrens die de richtwaarde niet haalt, is geen tekort — het is een open vraag. Bij zink en vitamine D is hij zelfs structureel niet te beantwoorden uit een dagboek, en dan zegt die kolom iets over de methode en niets over jou.</p>
+          <p>Wat het dagboek wél doet is de vraag scherper maken: <em>de bron werkt als je hem eet — je eet hem te weinig</em> is een ander antwoord dan <em>de bron werkt niet voor jou</em>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <p class="eyebrow-s">Je route per stof</p>
+        <ul class="routes" id="routes"></ul>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow-s">De poort</p>
+        <div class="gate">
+          <p><b>De poort naar aanvullen staat nog dicht.</b> Hij gaat pas open als je voedingsbasis en je voedingskwaliteit geen tekort meer laten zien, én er daarna nog een signaal overblijft. Bij jou staat kwaliteit nog op aandacht — dus eerst dat.</p>
+          <p>Dat is geen oordeel over supplementen. Het is de volgorde: eerst vaststellen wat er aan de hand is, dan pas wat je eraan kunt doen. Het dagboek opent deze poort nooit zelf; het maakt het restsignaal alleen harder of zachter.</p>
+        </div>
+        <div class="ctas">
+          <button type="button" class="cta cta-2" data-goto="V2" data-ev='nutrition.keuze_naar_logboek { surface: "schap" }'>Terug naar je logboek</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:13px">
+    <p class="eyebrow-s">Welke producten dragen deze stof</p>
+    <p class="job">Niet <em>"eet meer noten"</em>, maar: <b>dit dragen ze, en dit levert één portie</b>. Gerangschikt op wat een realistische portie bijdraagt — niet op het gehalte per 100&nbsp;g, want niemand eet 100&nbsp;g tahin.</p>
+    <nav class="periods" id="schap-stoffen" aria-label="Stof"></nav>
+    <div class="cats" id="schap-cats" role="group" aria-label="Zoekcategorie"></div>
+    <ul class="bronnen" id="schap-bronnen"></ul>
+    <p class="bron-note" id="schap-opname"></p>
+    <p class="bron-note" id="schap-herkomst"></p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ NOTITIES ══════════════════════════ -->
+<section class="notes">
+  <h2>Notities bij deze prebuild</h2>
+
+  <h3>De asymmetrie — de belangrijkste regel van dit bestand</h3>
+  <p>Een dagboek registreert wat je noemt, en niemand noemt alles. De som is dus een <b>ondergrens</b>. Dat heeft één consequentie die het hele weekscherm bepaalt: <b>je kunt "gehaald" bewijzen, en "niet gehaald" nooit.</b> Haalt de ondergrens de richtwaarde, dan sta je erboven — wat je vergat te noemen kan er alleen bij komen. Haalt hij hem niet, dan volgt er niets uit.</p>
+  <p>Daarom staat er in de tabel geen "132 g onder" (zoals de app waar de vorm vandaan komt) en geen rood kruis. Alleen een ✓ waar het bewezen is, en verder het getal zelf. De kolomvoet telt allebei: op hoeveel dagen er een bron was, en op hoeveel dagen dekking bewezen kon worden.</p>
+
+  <h3>Niet elke stof is bewijsbaar — en dat hoort het scherm te zeggen</h3>
+  <p>Bij het doorrekenen van dertien echte dagen kwam dit eruit: magnesium haalde de richtwaarde op één dag aantoonbaar, omega-3 op drie. <b>Zink geen enkele keer, vitamine D één keer.</b> Dat is geen toeval en het is geen gebrek aan de gebruiker.</p>
+  <ul>
+    <li><b>Zink</b> — 11 mg per dag uit losse porties is met bronnen van 1–4 mg per portie vrijwel alleen met oesters te halen. Een dagboek dat niet alles vangt, komt er nooit aan.</li>
+    <li><b>Vitamine D</b> — komt bij vrijwel iedereen uit zonlicht en uit verrijking, niet uit voeding. Alleen vette vis tilt een dag erboven.</li>
+  </ul>
+  <p>Een kolom die nooit een vinkje kan geven, leest als falen terwijl hij een eigenschap van de meetmethode toont. Daarom draagt elke stof een <code>bewijsbaar</code>-vlag: is die false, dan toont het scherm geen dekkingsoordeel maar alleen de bronnentelling, met de reden erbij. Dat is dezelfde soort eerlijkheid als de <code>own</code>-status in <code>nutrition-ladder.ts</code>: nooit een badge die suggereert dat er een grens was die je miste.</p>
+
+  <h3>Het schap beweegt mee</h3>
+  <p>V2 en S1 delen één periodestand. Wissel je op je logboek naar "2 weken geleden", dan toont het schap het bewijs van díé weken onder dezelfde keuze. Dat is meer dan een gemak: een keuze die je in augustus maakte, hoort tegen het bewijs van augustus gelegd te kunnen worden, niet tegen dat van vandaag.</p>
+  <p>Wat níét meebeweegt is de <b>poort</b>. Die hangt aan je check en aan je ladderstatus, niet aan een week logboek — anders zou een goede week hem openen en een slechte hem sluiten, en dan is het geen poort meer.</p>
+
+  <h3>Wat er uit de bestaande app is overgenomen, en wat niet</h3>
+  <ul>
+    <li><b>Wel:</b> dagen als rijen met dag-afkorting en datum, stoffen als kolommen, een samenvattingsrij onderaan, een voetnoot onder de tabel, en periodetabs bovenaan.</li>
+    <li><b>Niet: "132 g onder".</b> Vereist een volledige registratie.</li>
+    <li><b>Niet: een weektotaal.</b> Een som van ondergrenzen is een zwakkere ondergrens.</li>
+    <li><b>Niet: een dagbudget of een percentage.</b> Een richtwaarde is een positie, geen doel om vol te maken.</li>
+    <li><b>Niet: de export-sheet.</b> Die hoort thuis in de AVG-route (gegevens downloaden), niet als functie van een voedingsscherm.</li>
+  </ul>
+
+  <h3>Meetpunten</h3>
+  <ul>
+    <li><code>nutrition.logboek_zoom_changed</code> — dag, week of maand: waar kijken mensen?</li>
+    <li><code>nutrition.logboek_periode_changed</code> — nieuw. Zegt of mensen daadwerkelijk terugkijken, en hoe ver.</li>
+    <li><code>nutrition.logboek_naar_keuze</code> / <code>nutrition.keuze_naar_logboek</code> — loopt de brug tussen bewijs en keuze in beide richtingen?</li>
+    <li><code>nutrition.route_choice_saved</code> — bestaat; krijgt <code>periode</code> erbij, zodat afleesbaar is op welk bewijs een keuze rustte.</li>
+    <li><code>nutrition.agenda_action_planned</code> / <code>_completed</code> — het verschil tussen die twee is de enige eerlijke maat of dit domein gedrag oplevert.</li>
+  </ul>
+</section>
+
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   DATA — gehaltes per 100 g uit src/data/nutrition/food-sources.ts
+═══════════════════════════════════════════════════════════════ */
+
+/**
+ * Per stof: eenheid, richtwaarde en of dekking uit een dagboek überhaupt te
+ * bewijzen is.
+ *
+ * `bewijsbaar: false` betekent niet "onbelangrijk" maar "een ondergrens uit
+ * losse porties komt er praktisch nooit aan". Zink zit in bronnen van 1–4 mg
+ * per portie tegen een richtwaarde van 9–11; vitamine D komt bij vrijwel
+ * iedereen uit zon en verrijking. Een dekkingskolom die daar nooit een vinkje
+ * kan geven, zegt iets over de methode en niets over de gebruiker — dus toont
+ * het scherm er geen oordeel, alleen de bronnentelling met de reden erbij.
+ */
+var NUTRIENTS = [
+  { id:"protein",   label:"Eiwit",     kort:"Eiwit",   unit:"g",  groep:"macro", ref:null, refLabel:null,
+    bewijsbaar:false, waarom:"Bij eiwit is de vraag niet óf je genoeg hebt maar hoe het over je dag verdeeld staat." },
+  { id:"magnesium", label:"Magnesium", kort:"Magne­sium", unit:"mg", groep:"micro", ref:350, refLabel:"350 mg",
+    bewijsbaar:true },
+  { id:"zinc",      label:"Zink",      kort:"Zink",    unit:"mg", groep:"micro", ref:11, refLabel:"9–11 mg",
+    bewijsbaar:false, waarom:"Bronnen leveren 1–4 mg per portie tegen een richtwaarde van 9–11 mg. Uit een dagboek dat niet alles vangt, is dekking hier niet aan te tonen." },
+  { id:"omega3",    label:"Omega-3",   kort:"Omega-3", unit:"mg", groep:"micro", ref:200, refLabel:"200 mg",
+    bewijsbaar:true },
+  { id:"vitamin_d", label:"Vitamine D",kort:"Vit. D",  unit:"µg", groep:"micro", ref:10, refLabel:"10 µg",
+    bewijsbaar:false, waarom:"Komt bij vrijwel iedereen uit zonlicht en uit verrijking, niet uit voeding. Alleen vette vis tilt een dag erboven." }
+];
+
+var MICRO = NUTRIENTS.filter(function(n){ return n.groep === "micro"; });
+var MACRO = NUTRIENTS.filter(function(n){ return n.groep === "macro"; });
+
+/* Productsubset: alleen wat in de dertien geregistreerde dagen voorkomt. */
+var F = {
+  havermout:       {label:"Havermout",             groep:"granen",       n:{protein:13.3,magnesium:120,zinc:2.5},    v:{protein:"low",magnesium:"low",zinc:"low"},           b:{magnesium:1,zinc:1}},
+  volkorenbrood:   {label:"Volkorenbrood",         groep:"granen",       n:{protein:9.0,magnesium:79,zinc:1.41},     v:{protein:"low",magnesium:"low",zinc:"low"},           b:{magnesium:1,zinc:1}},
+  volkoren_pasta:  {label:"Volkoren pasta",        groep:"granen",       n:{protein:13.3,magnesium:110,zinc:1.9},    v:{protein:"low",magnesium:"low",zinc:"low"},           b:{magnesium:1,zinc:1}},
+  quinoa:          {label:"Quinoa, gekookt",       groep:"granen",       n:{protein:4.4,magnesium:64,zinc:1.09},     v:{protein:"low",magnesium:"moderate",zinc:"moderate"}, b:{magnesium:1,zinc:1}},
+  zilvervliesrijst:{label:"Zilvervliesrijst",      groep:"granen",       n:{protein:2.6,magnesium:39,zinc:0.8},      v:{protein:"low",magnesium:"low",zinc:"low"},           b:{magnesium:1,zinc:1}},
+  witte_rijst:     {label:"Witte rijst, gekookt",  groep:"zetmeel",      n:{protein:2.4,magnesium:12},               v:{protein:"low",magnesium:"low"},                      b:{}},
+  aardappelen:     {label:"Aardappelen, gekookt",  groep:"zetmeel",      n:{protein:2.0,magnesium:20},               v:{protein:"low",magnesium:"low"},                      b:{}},
+  spinazie:        {label:"Spinazie, gekookt",     groep:"groente",      n:{protein:2.9,magnesium:77},               v:{protein:"low",magnesium:"moderate"},                 b:{magnesium:1}},
+  broccoli:        {label:"Broccoli, gekookt",     groep:"groente",      n:{protein:2.8,magnesium:14},               v:{protein:"low",magnesium:"moderate"},                 b:{}},
+  paprika:         {label:"Paprika",               groep:"groente",      n:{protein:1.0,magnesium:10},               v:{protein:"low",magnesium:"moderate"},                 b:{}},
+  banaan:          {label:"Banaan",                groep:"fruit",        n:{protein:1.1,magnesium:28},               v:{protein:"low",magnesium:"low"},                      b:{}},
+  blauwe_bessen:   {label:"Blauwe bessen",         groep:"fruit",        n:{protein:0.7,magnesium:6},                v:{protein:"low",magnesium:"low"},                      b:{}},
+  amandelen:       {label:"Amandelen",             groep:"noten",        n:{protein:21.2,magnesium:260,zinc:3.1},    v:{protein:"low",magnesium:"moderate",zinc:"moderate"}, b:{magnesium:1,zinc:1}},
+  walnoten:        {label:"Walnoten",              groep:"noten",        n:{protein:15.2,magnesium:158},             v:{protein:"low",magnesium:"moderate"},                 b:{magnesium:1}},
+  pompoenzaden:    {label:"Pompoenzaden",          groep:"noten",        n:{protein:24.5,magnesium:535,zinc:7.94},   v:{protein:"low",magnesium:"moderate",zinc:"moderate"}, b:{magnesium:1,zinc:1}},
+  linzen:          {label:"Linzen, gekookt",       groep:"peulvruchten", n:{protein:8.8,magnesium:36,zinc:1.4},      v:{protein:"low",magnesium:"moderate",zinc:"moderate"}, b:{magnesium:1,zinc:1}},
+  kikkererwten:    {label:"Kikkererwten, gekookt", groep:"peulvruchten", n:{protein:8.0,magnesium:39,zinc:1.29},     v:{protein:"low",magnesium:"moderate",zinc:"moderate"}, b:{magnesium:1,zinc:1}},
+  /* Gecorrigeerd 9 sep: omega-3 1.440 → 1.150 mg (mediaan Noorse kweekzalm
+     1.030–1.300 sinds 2011) en vitamine D 9,6 → 6,5 µg (kweekzalm 2,3–9,5 over
+     studies). Zie ONDERZOEK_SPREIDING_EN_USDA §1.2–1.3. */
+  zalm_gekweekt:   {label:"Zalm, gekweekt",        groep:"vis",          n:{protein:20.0,omega3:1150,vitamin_d:6.5}, v:{protein:"low",omega3:"high",vitamin_d:"high"},       b:{}},
+  haring:          {label:"Haring",                groep:"vis",          n:{protein:17.7,omega3:1900,vitamin_d:25},  v:{protein:"low",omega3:"high",vitamin_d:"high"},       b:{}},
+  makreel:         {label:"Makreel",               groep:"vis",          n:{protein:18.6,omega3:2400,vitamin_d:8.0}, v:{protein:"low",omega3:"high",vitamin_d:"high"},       b:{}},
+  tonijn_blik:     {label:"Tonijn uit blik",       groep:"vis",          n:{protein:24.9,omega3:200},                v:{protein:"low",omega3:"moderate"},                    b:{}},
+  kipfilet:        {label:"Kipfilet",              groep:"vlees",        n:{protein:23.3,zinc:0.9},                  v:{protein:"low",zinc:"low"},                           b:{}},
+  rundvlees:       {label:"Rundvlees, mager",      groep:"vlees",        n:{protein:22.6,zinc:4.17},                 v:{protein:"low",zinc:"low"},                           b:{}},
+  eieren:          {label:"Eieren",                groep:"eieren",       n:{protein:11.2,zinc:1.48,vitamin_d:1.6},   v:{protein:"low",zinc:"low",vitamin_d:"moderate"},      b:{}},
+  skyr:            {label:"Skyr",                  groep:"zuivel",       n:{protein:10.6},                           v:{protein:"low"},                                      b:{}},
+  griekse_yoghurt: {label:"Griekse yoghurt",       groep:"zuivel",       n:{protein:8.2},                            v:{protein:"moderate"},                                 b:{}},
+  belegen_kaas:    {label:"Belegen kaas",          groep:"zuivel",       n:{protein:36.0,zinc:4.0},                  v:{protein:"low",zinc:"low"},                           b:{}},
+  halvarine:       {label:"Halvarine",             groep:"vetten",       n:{vitamin_d:7.5},                          v:{vitamin_d:"low"},                                    b:{}},
+  olijfolie:       {label:"Olijfolie",             groep:"vetten",       n:{},                                       v:{},                                                   b:{}},
+  pure_chocolade:  {label:"Pure chocolade 70 %",   groep:"suiker",       n:{protein:7.8,magnesium:225},              v:{protein:"low",magnesium:"moderate"},                 b:{}}
+};
+
+/**
+ * Spreidingsbanden per (stof × voedselklasse) — vermenigvuldigers op de
+ * tabelwaarde. Vervangt de ongebronde ±10/25/40 %-vuistregel van v0.
+ *
+ * Onderbouwing per rij staat in docs/plan/ONDERZOEK_SPREIDING_EN_USDA_2026-09.md
+ * §1.7. De twee correcties die eruit sprongen:
+ *
+ * - Plantaardige mineralen stonden op ±25 % (= 1,67× totale spreiding), terwijl
+ *   de literatuur 2,3× (tarwe-magnesium) tot 5,7× (sorghum-zink) laat zien
+ *   tussen cultivars en bodems. Die band is nu ×0,60–1,70.
+ * - Verrijkte producten stonden op ±10 %, terwijl het niveau in Nederland
+ *   wettelijk vastligt (margarine/halvarine 7,5 µg/100 g). Dat is
+ *   productietolerantie, geen biologische variatie: ×0,95–1,05.
+ *
+ * Vermenigvuldigers en geen percentages, omdat de spreiding bij vis
+ * asymmetrisch is: gekweekte zalm ligt vaker onder de tabelwaarde dan erboven.
+ *
+ * TUSSENSTAP, en `bandsVoor` behandelt hem ook zo: draagt een rij een
+ * waargenomen `min`/`max` uit USDA Foundation Foods (`f.obs`, ≥2 monsters), dan
+ * wint die en telt deze tabel niet mee — de spreiding van de werkelijke
+ * monsters slaat elke klassenband. Deze tabel dekt de rijen waar de bron één
+ * monster had of (zoals de WebSearch-import van sep 2026) de velden mist.
+ */
+var SPREAD = {
+  protein:   { dier:[0.90, 1.10], plant:[0.85, 1.15], _default:[0.90, 1.10] },
+  magnesium: { dier:[0.85, 1.15], plant:[0.60, 1.70], _default:[0.60, 1.70] },
+  zinc:      { dier:[0.85, 1.15], plant:[0.60, 1.70], _default:[0.60, 1.70] },
+  omega3:    { visGekweekt:[0.75, 1.25], visWild:[0.60, 1.50], _default:[0.60, 1.50] },
+  vitamin_d: { visGekweekt:[0.40, 1.60], visWild:[0.50, 2.00], verrijkt:[0.95, 1.05], _default:[0.60, 1.60] }
+};
+
+/** Producten waarvan het gehalte een verrijkingskeuze is, geen biologische waarde. */
+var VERRIJKT = { halvarine:1, "sojadrink-verrijkt":1, "plantaardige-drank-verrijkt":1, sojadrink_verrijkt:1 };
+/** Kweekvis: ander voer, andere spreiding dan wild. */
+var GEKWEEKT = { "zalm-gekweekt":1, zalm_gekweekt:1 };
+
+/**
+ * De spreidingsklasse van dit product bij deze stof.
+ *
+ * Afgeleid uit de voedselgroep in plaats van per rij opgeslagen — de groep
+ * draagt die informatie al, en een tweede veld dat ermee mee moet bewegen
+ * loopt een keer uit de pas. Alleen vitamine D kent de klasse "verrijkt":
+ * de eiwit- en mineraalgehaltes van een verrijkt product zijn wél gewoon
+ * biologisch.
+ */
+function klasseVoor(food, nutrientId){
+  if (nutrientId === "vitamin_d" && VERRIJKT[food.key]) return "verrijkt";
+  if (food.groep === "vis") return GEKWEEKT[food.key] ? "visGekweekt" : "visWild";
+  if (food.groep === "vlees" || food.groep === "eieren" || food.groep === "zuivel") return "dier";
+  return "plant";
+}
+
+function spreidingVoor(food, nutrientId){
+  var perStof = SPREAD[nutrientId] || {};
+  return perStof[klasseVoor(food, nutrientId)] || perStof._default || [0.90, 1.10];
+}
+
+/** Dertien geregistreerde dagen, elk als lijst van [productsleutel, gram]. */
+var DAGEN = {
+  "2026-08-19":[["havermout",60],["skyr",150],["banaan",120],["volkorenbrood",70],["belegen_kaas",30],["kipfilet",120],["witte_rijst",150],["broccoli",150],["olijfolie",10]],
+  "2026-08-21":[["volkorenbrood",70],["eieren",110],["halvarine",10],["linzen",150],["spinazie",100],["zilvervliesrijst",150],["amandelen",25]],
+  "2026-08-22":[["havermout",60],["griekse_yoghurt",100],["blauwe_bessen",80],["volkoren_pasta",75],["tonijn_blik",100],["paprika",100],["pure_chocolade",20]],
+  "2026-08-25":[["volkorenbrood",70],["belegen_kaas",30],["rundvlees",120],["aardappelen",200],["broccoli",150],["walnoten",25]],
+  "2026-08-26":[["havermout",60],["skyr",150],["banaan",120],["kikkererwten",150],["spinazie",100],["quinoa",150],["olijfolie",10]],
+  "2026-08-29":[["volkorenbrood",70],["eieren",110],["haring",100],["aardappelen",200],["broccoli",150],["amandelen",25]],
+  "2026-08-30":[["havermout",60],["griekse_yoghurt",100],["blauwe_bessen",80],["walnoten",20],["kipfilet",120],["zilvervliesrijst",150],["paprika",100]],
+  "2026-08-31":[["volkorenbrood",70],["belegen_kaas",30],["volkoren_pasta",75],["tonijn_blik",100],["paprika",100],["olijfolie",10]],
+  "2026-09-01":[["havermout",60],["skyr",150],["banaan",120],["linzen",150],["spinazie",150],["quinoa",150],["pompoenzaden",25]],
+  "2026-09-03":[["volkorenbrood",70],["eieren",110],["halvarine",10],["kipfilet",120],["aardappelen",200],["broccoli",150]],
+  "2026-09-05":[["havermout",60],["griekse_yoghurt",100],["blauwe_bessen",80],["walnoten",20],["makreel",125],["zilvervliesrijst",150],["spinazie",150]],
+  "2026-09-06":[["havermout",60],["griekse_yoghurt",100],["blauwe_bessen",80],["walnoten",20],["volkorenbrood",70],["belegen_kaas",30],["zalm_gekweekt",125],["quinoa",150],["spinazie",150],["amandelen",25]],
+  "2026-09-08":[["volkorenbrood",70],["eieren",110],["kikkererwten",150],["zilvervliesrijst",150],["broccoli",150],["olijfolie",10]]
+};
+
+/** Welk eetmoment welke producten droeg — alleen voor de dag die V1 toont. */
+var DAG_MOMENTEN = {
+  "2026-09-06":[
+    { label:"Ontbijt", inhoud:"Havermout met bessen en noten", keys:["havermout","griekse_yoghurt","blauwe_bessen","walnoten"] },
+    { label:"Lunch", inhoud:"Volkorenbrood met belegen kaas", keys:["volkorenbrood","belegen_kaas"] },
+    { label:"Avondeten", inhoud:"Zalm met quinoa en spinazie", keys:["zalm_gekweekt","quinoa","spinazie"] },
+    { label:"Tussendoor", inhoud:"Amandelen", keys:["amandelen"] }
+  ]
+};
+
+var PERIODES = [
+  { id:"w0", label:"Deze week",       start:"2026-09-07", range:"ma 7 – zo 13 sep" },
+  { id:"w1", label:"Vorige week",     start:"2026-08-31", range:"ma 31 aug – zo 6 sep" },
+  { id:"w2", label:"2 weken geleden", start:"2026-08-24", range:"ma 24 – zo 30 aug" },
+  { id:"w3", label:"3 weken geleden", start:"2026-08-17", range:"ma 17 – zo 23 aug" }
+];
+var periode = "w1"; /* vorige week is de eerste met genoeg dagen om iets te tonen */
+
+var GROEPEN = [
+  { id:"groente", label:"Groente" }, { id:"fruit", label:"Fruit" },
+  { id:"peulvruchten", label:"Peulvruchten" }, { id:"noten", label:"Noten & zaden" },
+  { id:"granen", label:"Volkoren granen" }, { id:"zetmeel", label:"Aardappel, rijst, pasta" },
+  { id:"vis", label:"Vis" }, { id:"vlees", label:"Vlees & gevogelte" },
+  { id:"eieren", label:"Eieren" }, { id:"zuivel", label:"Zuivel" },
+  { id:"vetten", label:"Oliën & vetten" }, { id:"dranken", label:"Dranken" },
+  { id:"suiker", label:"Snacks & zoet" }
+];
+
+var DAGNAAM = ["ma","di","wo","do","vr","za","zo"];
+var MAAND = ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
+var VANDAAG = "2026-09-09";
+var CYCLE = 30, CYCLE_START = "2026-08-17", CYCLE_DAY = 24;
+
+/* ═══════════════════════════════════════════════════════════════
+   REKENEN
+═══════════════════════════════════════════════════════════════ */
+
+function isoPlus(iso, dagen){
+  var d = new Date(iso + "T12:00:00Z");
+  d.setUTCDate(d.getUTCDate() + dagen);
+  return d.toISOString().slice(0, 10);
+}
+function isoDiff(a, b){
+  return Math.round((new Date(b + "T12:00:00Z") - new Date(a + "T12:00:00Z")) / 86400000);
+}
+function kortDatum(iso){
+  var d = new Date(iso + "T12:00:00Z");
+  return d.getUTCDate() + " " + MAAND[d.getUTCMonth()] + ".";
+}
+function isWeekend(iso){
+  var wd = new Date(iso + "T12:00:00Z").getUTCDay();
+  return wd === 0 || wd === 6;
+}
+
+/** De zeven dagen van een periode, met hun registratie (of null). */
+function dagenVan(periodeId){
+  var p = PERIODES.filter(function(x){ return x.id === periodeId; })[0];
+  var out = [];
+  for (var i = 0; i < 7; i++){
+    var iso = isoPlus(p.start, i);
+    out.push({
+      iso: iso, dag: DAGNAAM[i], weekend: i >= 5,
+      toekomst: iso > VANDAAG,
+      items: DAGEN[iso] || null
+    });
+  }
+  return out;
+}
+
+/**
+ * Ondergrens-band per stof voor één dag.
+ *
+ * Observed wint: draagt een product een waargenomen `min`/`max` uit USDA
+ * Foundation Foods (`f.obs[n.id]`, ≥2 monsters), dan is dát de band voor dat
+ * item; anders de gebronde klassenband uit §1.7. Spiegelt bandFor in de
+ * Kompas-prebuild en src/lib/nutrition-spread.ts in de app.
+ */
+function bandsVoor(items){
+  var out = {};
+  NUTRIENTS.forEach(function(n){
+    var lo = 0, hi = 0, pt = 0, red = 0, bron = 0;
+    items.forEach(function(pair){
+      var f = F[pair[0]];
+      if (!f) return;
+      var per = f.n[n.id];
+      if (per == null) return;
+      var factor = pair[1] / 100;
+      var obs = f.obs && f.obs[n.id];
+      var point, blo, bhi;
+      if (obs && obs.samples >= 2 && obs.max > obs.min){
+        blo = obs.min * factor; bhi = obs.max * factor;
+        point = (obs.median != null ? obs.median : per) * factor;
+      } else {
+        point = per * factor;
+        var band = spreidingVoor({ key:pair[0], groep:f.groep }, n.id);
+        blo = point * band[0]; bhi = point * band[1];
+      }
+      lo += blo; hi += bhi; pt += point;
+      if (f.b[n.id]) red += point;
+      bron++;
+    });
+    out[n.id] = bron ? { lo:lo, hi:hi, pt:pt, red:red, bron:bron } : null;
+  });
+  return out;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DE OMGEKEERDE INDEX — van nutriënt naar producten (het schap, S1)
+
+   Spiegelt src/lib/nutrition-nutrient-index.ts. Vier randvoorwaarden:
+
+   1. Rangschikken op bijdrage per PORTIE, niet per 100 g. Niemand eet 100 g
+      tahin; op gehalte sorteren zet de lijst op zijn kop.
+   2. Een band, geen punt — en sorteren op de ONDERKANT, want dat is het enige
+      getal dat we als "minstens" durven noemen. Sorteren op de puntwaarde zou
+      ordenen op een getal dat de copy weigert te noemen.
+   3. De opname staat erbij (◆). Maar de fytaat:zink-verhouding staat er NIET
+      per product: die is een eigenschap van de hele maaltijd (ONDERZOEK §1.8),
+      en hoort dus op gerecht- en dagniveau.
+   4. Geen gezondheidsclaim en geen percentage van een ADH. De poort hierboven
+      hangt aan je check en je ladderstatus, niet aan deze lijst.
+═══════════════════════════════════════════════════════════════ */
+
+/**
+ * De portie waarop we een product afrekenen.
+ *
+ * In de app draagt elke catalogusregel zijn eigen portielijst
+ * (`src/data/nutrition/food-catalog.ts`). Deze prebuild heeft die niet, dus
+ * leidt hij de portie af uit de dagen die al geregistreerd zijn: de gram die je
+ * voor dit product het vaakst logde. Wat daar niet in voorkomt valt terug op
+ * een portie per voedselgroep.
+ */
+var PORTIE_PER_GROEP = { noten:25, granen:60, zetmeel:200, groente:150, fruit:120,
+  peulvruchten:150, vis:125, vlees:100, eieren:110, zuivel:150, vetten:10, suiker:20, dranken:200 };
+
+var PORTIE = (function(){
+  var tel = {};
+  Object.keys(DAGEN).forEach(function(iso){
+    DAGEN[iso].forEach(function(pair){
+      if (!tel[pair[0]]) tel[pair[0]] = {};
+      tel[pair[0]][pair[1]] = (tel[pair[0]][pair[1]] || 0) + 1;
+    });
+  });
+  var out = {};
+  Object.keys(F).forEach(function(key){
+    var per = tel[key], beste = null, vaakst = -1;
+    if (per){
+      Object.keys(per).forEach(function(g){
+        if (per[g] > vaakst){ vaakst = per[g]; beste = Number(g); }
+      });
+    }
+    out[key] = beste != null ? beste : (PORTIE_PER_GROEP[F[key].groep] || 100);
+  });
+  return out;
+})();
+
+/** De zoekcategorie (navigatie-as) — los van de voedselgroep (analyse-as). */
+var CAT_VAN_GROEP = { groente:"groenten", fruit:"fruit", peulvruchten:"peulvruchten",
+  noten:"noten", granen:"granen", zetmeel:"granen", vis:"vis", vlees:"vlees",
+  eieren:"eieren", zuivel:"zuivel", vetten:"vetten", dranken:"dranken", suiker:"snacks" };
+var CAT_OVERRIDE = { pompoenzaden:"zaden", volkorenbrood:"brood", volkoren_pasta:"pasta",
+  belegen_kaas:"kaas", pure_chocolade:"snacks", aardappelen:"groenten", witte_rijst:"granen" };
+var CAT_LABEL = { groenten:"Groenten", fruit:"Fruit", granen:"Granen", brood:"Brood",
+  pasta:"Pasta", peulvruchten:"Peulvruchten", noten:"Noten", zaden:"Zaden", vis:"Vis",
+  vlees:"Vlees", eieren:"Eieren", zuivel:"Zuivel", kaas:"Kaas", vetten:"Oliën & vetten",
+  snacks:"Snacks", dranken:"Dranken" };
+function catVan(key){ return CAT_OVERRIDE[key] || CAT_VAN_GROEP[F[key].groep] || "groenten"; }
+
+/** Band voor één product bij één stof, voor een portie in gram. Observed wint. */
+function bandVoorProduct(key, nutrientId, grams){
+  var f = F[key];
+  var per = f.n[nutrientId];
+  if (per == null || !(grams > 0)) return null;
+  var factor = grams / 100;
+  var obs = f.obs && f.obs[nutrientId];
+  if (obs && obs.samples >= 2 && obs.max > obs.min){
+    return { lo:obs.min*factor, hi:obs.max*factor,
+             point:(obs.median != null ? obs.median : per)*factor, basis:"observed" };
+  }
+  var v = per * factor;
+  var sp = spreidingVoor({ key:key, groep:f.groep }, nutrientId);
+  return { lo:v*sp[0], hi:v*sp[1], point:v, basis:"band" };
+}
+
+/** De producten die deze stof dragen, aflopend op de onderkant van hun band. */
+function bronnenVoorStof(nutrientId, categorie){
+  var uit = [];
+  Object.keys(F).forEach(function(key){
+    if (categorie && catVan(key) !== categorie) return;
+    var band = bandVoorProduct(key, nutrientId, PORTIE[key]);
+    if (!band) return;
+    uit.push({ key:key, label:F[key].label, grams:PORTIE[key], band:band,
+               geremd: !!F[key].b[nutrientId], cat:catVan(key) });
+  });
+  uit.sort(function(a,b){
+    return b.band.lo - a.band.lo || b.band.point - a.band.point ||
+           a.label.localeCompare(b.label, "nl");
+  });
+  return uit;
+}
+
+/**
+ * De opname-uitspraak, op lijstniveau en niet per product.
+ *
+ * Er wordt geen fytaat:zink-ratio berekend — die getallen hebben we niet, en ze
+ * verzinnen zou erger zijn dan ze weglaten. Wat we wél weten is welk deel van de
+ * bijdrage uit geremde bronnen komt (BESLUIT §2: meer dan de helft → vermelden).
+ */
+var OPNAME_STOF = {
+  magnesium:"Fytaat in noten, zaden, peulvruchten en volkoren bindt magnesium. Hoeveel er aankomt hangt af van de héle maaltijd, niet van één product.",
+  zinc:"Fytaat bindt zink, en de verhouding fytaat:zink van de hele maaltijd bepaalt de opname meer dan het gehalte van één product."
+};
+
+var schapStof = "magnesium";
+var schapCat = "";
+
+function renderBronnen(){
+  var navEl = document.getElementById("schap-stoffen");
+  if (!navEl) return;
+
+  navEl.innerHTML = "";
+  NUTRIENTS.forEach(function(n){
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = n.kort.replace(/\u00AD/g, "");
+    if (n.id === schapStof) b.setAttribute("aria-current", "page");
+    b.setAttribute("data-ev", 'nutrition.schap_bronnen_getoond { nutrient: "' + n.id + '" }');
+    b.addEventListener("click", function(){ schapStof = n.id; schapCat = ""; renderBronnen(); });
+    navEl.appendChild(b);
+  });
+
+  var stof = NUTRIENTS.filter(function(n){ return n.id === schapStof; })[0];
+  var alle = bronnenVoorStof(schapStof, "");
+  var cats = [];
+  alle.forEach(function(r){ if (cats.indexOf(r.cat) === -1) cats.push(r.cat); });
+
+  var catEl = document.getElementById("schap-cats");
+  catEl.innerHTML = "";
+  [""].concat(cats).forEach(function(c){
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = c === "" ? "Alles" : (CAT_LABEL[c] || c);
+    b.setAttribute("aria-pressed", String(c === schapCat));
+    if (c !== "") b.setAttribute("data-ev", 'nutrition.schap_categorie_gefilterd { nutrient: "' + schapStof + '", categorie: "' + c + '" }');
+    b.addEventListener("click", function(){ schapCat = c; renderBronnen(); });
+    catEl.appendChild(b);
+  });
+
+  var rijen = schapCat ? bronnenVoorStof(schapStof, schapCat) : alle;
+  var ul = document.getElementById("schap-bronnen");
+  ul.innerHTML = "";
+  rijen.slice(0, 12).forEach(function(r){
+    var li = document.createElement("li");
+    li.setAttribute("data-ev", 'nutrition.schap_bron_clicked { nutrient: "' + schapStof + '", key: "' + r.key + '" }');
+    li.innerHTML =
+      '<span><span class="b-n">' + r.label + '</span> ' +
+      '<span class="b-p">· ' + r.grams + ' g</span>' +
+      (r.geremd ? '<span class="b-m" title="fytaat remt de opname">◆</span>' : '') +
+      (r.band.basis === "observed" ? '<span class="b-o" title="waargenomen spreiding uit de bron">▨</span>' : '') +
+      '</span>' +
+      '<span class="b-v">' + fmt(r.band.lo, stof.unit) + '–' + fmt(r.band.hi, stof.unit) + ' ' + stof.unit + '</span>';
+    ul.appendChild(li);
+  });
+
+  document.getElementById("schap-opname").textContent = OPNAME_STOF[schapStof] || "";
+  document.getElementById("schap-herkomst").innerHTML =
+    'Een band, geen punt: het gehalte verschilt per ras, bodem en herkomst. ' +
+    '<b>Wat hier niet staat is een percentage van een dagbehoefte</b> — een marker toont een positie, een percentage maakt er een doel van. ' +
+    'En deze lijst opent de poort hierboven niet: die hangt aan je check, niet aan een productlijst.';
+}
+
+/** Porties per voedselgroep, afgeleid uit de producten — precies zoals de opslag het doet. */
+function groepenVan(items){
+  var out = {};
+  items.forEach(function(pair){
+    var f = F[pair[0]];
+    if (!f) return;
+    out[f.groep] = (out[f.groep] || 0) + 1;
+  });
+  return out;
+}
+
+function fmt(v, unit){
+  if (v == null) return "—";
+  var d = (unit === "µg" || (unit === "mg" && v < 10)) ? 1 : 0;
+  var s = v.toFixed(d).replace(".", ",");
+  if (d === 0 && v >= 1000) s = Math.round(v).toLocaleString("nl-NL");
+  return s;
+}
+function fmtBand(b, unit, metEenheid){
+  if (!b) return "—";
+  var lo = fmt(b.lo, unit), hi = fmt(b.hi, unit);
+  return (lo === hi ? lo : lo + "–" + hi) + (metEenheid ? " " + unit : "");
+}
+/** Bewezen dekking: de ondergrens haalt de richtwaarde. */
+function isGedekt(n, band){
+  return !!(n.bewijsbaar && n.ref && band && band.lo >= n.ref);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PERIODESCHAKELAAR — gedeeld door V2 en S1
+═══════════════════════════════════════════════════════════════ */
+
+function renderPeriods(){
+  ["V2","S1"].forEach(function(scherm){
+    var nav = document.getElementById("periods-" + scherm);
+    if (!nav) return;
+    nav.innerHTML = "";
+    PERIODES.forEach(function(p){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = p.label;
+      if (p.id === periode) b.setAttribute("aria-current", "page");
+      b.addEventListener("click", function(){
+        periode = p.id;
+        toast('nutrition.logboek_periode_changed { periode: "' + p.id + '", surface: "' + scherm.toLowerCase() + '" }');
+        renderAll();
+      });
+      nav.appendChild(b);
+    });
+
+    var p = PERIODES.filter(function(x){ return x.id === periode; })[0];
+    var dagen = dagenVan(periode);
+    var gevuld = dagen.filter(function(d){ return d.items; });
+    document.getElementById("range-" + scherm).textContent = p.range + " 2026";
+    document.getElementById("sum-" + scherm).innerHTML = gevuld.length === 0
+      ? "Geen dagen geregistreerd in deze periode."
+      : "<b>" + gevuld.length + " van de 7 dagen</b> geregistreerd" +
+        (gevuld.filter(function(d){ return d.weekend; }).length
+          ? ", waarvan " + gevuld.filter(function(d){ return d.weekend; }).length + " in het weekend."
+          : " — nog geen weekenddag, dus de helft van je patroon ontbreekt.");
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   V1 · DAG
+═══════════════════════════════════════════════════════════════ */
+
+var V1_DAG = "2026-09-06";
+
+function renderDag(){
+  var items = DAGEN[V1_DAG];
+  var sums = bandsVoor(items);
+  var ul = document.getElementById("dag-rows");
+  ul.innerHTML = "";
+
+  NUTRIENTS.forEach(function(n){
+    var s = sums[n.id];
+    var li = document.createElement("li");
+    li.className = "nutrow";
+    li.setAttribute("data-state", s ? "has" : "none");
+    li.innerHTML = '<div class="n-h"><span class="n-n">' + n.label + '</span>' +
+      '<span class="n-v">' + (s ? "minstens " + fmtBand(s, n.unit, true) : "geen bron genoemd") + '</span></div>';
+
+    if (s){
+      var scale = n.ref ? Math.max(n.ref * 1.5, s.hi * 1.15) : Math.max(60, s.hi * 1.2);
+      var bar = document.createElement("div");
+      bar.className = "bar";
+      var lo = Math.min(100, (s.lo / scale) * 100);
+      var hi = Math.min(100, (s.hi / scale) * 100);
+      bar.innerHTML = '<span class="fill" style="width:' + lo + '%"></span>' +
+        '<span class="span" style="left:' + lo + '%;width:' + Math.max(1.5, hi - lo) + '%"></span>' +
+        (n.ref ? '<span class="ref" style="left:' + Math.min(100, (n.ref / scale) * 100) + '%"></span>' : '');
+      li.appendChild(bar);
+
+      if (n.ref){
+        li.insertAdjacentHTML("beforeend",
+          '<p class="n-legend"><i aria-hidden="true"></i><span>Richtwaarde ' + n.refLabel +
+          ' per dag — een positie, geen doel om vol te maken.</span></p>');
+      }
+      var b = document.createElement("p");
+      b.className = "n-b";
+      b.innerHTML = "Uit " + s.bron + (s.bron === 1 ? " bron" : " bronnen") + " die je noemde." +
+        (s.red / s.pt >= 0.5 && (n.id === "magnesium" || n.id === "zinc")
+          ? " <em>Ruim de helft komt uit fytaatrijke bronnen — daar haal je minder uit dan het getal zegt.</em>" : "") +
+        (isGedekt(n, s) ? " <span style=\"color:var(--sage-soft)\">De ondergrens haalt de richtwaarde: dekking is hier bewezen.</span>" : "");
+      li.appendChild(b);
+    }
+    ul.appendChild(li);
+  });
+
+  var m = document.getElementById("dag-momenten");
+  m.innerHTML = "";
+  (DAG_MOMENTEN[V1_DAG] || []).forEach(function(mom){
+    var detail = mom.keys.map(function(k){ return (F[k] || {}).label || k; }).join(" · ");
+    var li = document.createElement("li");
+    li.innerHTML =
+      '<div class="blk" style="cursor:default">' +
+        '<span class="t">' + mom.label + '</span>' +
+        '<span class="c" style="background:#5A8F6A"></span>' +
+        '<span class="m"><p class="n">' + mom.inhoud + '</p><p class="s">' + detail + '</p></span>' +
+      '</div>';
+    m.appendChild(li);
+  });
+
+  var groepen = groepenVan(items);
+  var aantal = Object.keys(groepen).length;
+  document.getElementById("dag-groepen").innerHTML =
+    aantal + ' <span style="font-size:14px;color:var(--text-subtle)">/ 13</span>';
+  var mist = GROEPEN.filter(function(g){ return !groepen[g.id]; })
+    .map(function(g){ return g.label.toLowerCase(); });
+  document.getElementById("dag-groepen-b").textContent =
+    mist.length ? mist.slice(0, 3).join(", ") + " kwamen niet voorbij." : "Elke groep kwam voorbij.";
+  document.getElementById("dag-items").textContent = items.length;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   V2 · WEEK — de samenvattingstabel
+═══════════════════════════════════════════════════════════════ */
+
+function renderTabel(elId, stoffen, noteId){
+  var tbl = document.getElementById(elId);
+  tbl.innerHTML = "";
+  var dagen = dagenVan(periode);
+
+  var thead = document.createElement("thead");
+  thead.innerHTML = '<tr><th class="d" scope="col"><span class="subtle" style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase">Dag</span></th>' +
+    stoffen.map(function(n){
+      return '<th scope="col">' + n.kort + '<span>' + n.unit + '</span></th>';
+    }).join("") + '</tr>';
+  tbl.appendChild(thead);
+
+  var tbody = document.createElement("tbody");
+  var tel = {}, dek = {};
+  stoffen.forEach(function(n){ tel[n.id] = 0; dek[n.id] = 0; });
+
+  dagen.forEach(function(d){
+    var tr = document.createElement("tr");
+    if (d.iso === VANDAAG) tr.setAttribute("data-today", "true");
+    var sums = d.items ? bandsVoor(d.items) : null;
+
+    tr.innerHTML = '<th scope="row"><i>' + d.dag + '</i>' + kortDatum(d.iso) + '</th>' +
+      stoffen.map(function(n){
+        if (!sums || !sums[n.id]){
+          return '<td data-empty="true" title="' + (d.items ? "geen bron van deze stof genoemd" : (d.toekomst ? "nog niet geweest" : "niet geregistreerd")) + '">—</td>';
+        }
+        tel[n.id]++;
+        var ok = isGedekt(n, sums[n.id]);
+        if (ok) dek[n.id]++;
+        return '<td><b>' + fmtBand(sums[n.id], n.unit, false) + '</b>' +
+          (ok ? '<span class="ok" title="de ondergrens haalt de richtwaarde">✓</span>' : '') + '</td>';
+      }).join("");
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody);
+
+  var gevuld = dagen.filter(function(d){ return d.items; }).length;
+  var tfoot = document.createElement("tfoot");
+  tfoot.innerHTML = '<tr><th scope="row">Deze periode</th>' +
+    stoffen.map(function(n){
+      if (!gevuld) return '<td>—</td>';
+      var boven = n.bewijsbaar
+        ? '<span>' + (dek[n.id] ? 'waarvan ✓ op ' + dek[n.id] + (dek[n.id] === 1 ? ' dag' : ' dagen') : 'geen dag aantoonbaar gedekt') + '</span>'
+        : '<span>dekking niet aantoonbaar uit een dagboek</span>';
+      return '<td>bron op ' + tel[n.id] + '/' + gevuld + boven + '</td>';
+    }).join("") + '</tr>';
+  tbl.appendChild(tfoot);
+
+  if (noteId){
+    var onbewijsbaar = stoffen.filter(function(n){ return !n.bewijsbaar && n.ref; });
+    document.getElementById(noteId).innerHTML =
+      '<b>✓ betekent: bewezen.</b> De ondergrens uit de bronnen die je noemde haalt de richtwaarde al — wat je vergat te noemen kan er alleen bij komen. ' +
+      'Geen ✓ betekent niet "te weinig": daar volgt uit een ondergrens niets uit.' +
+      (onbewijsbaar.length
+        ? '<br><br><b>Bij ' + onbewijsbaar.map(function(n){ return n.label; }).join(" en ") +
+          ' staat er geen dekkingsoordeel.</b> ' + onbewijsbaar.map(function(n){ return n.waarom; }).join(" ") +
+          ' Een kolom die nooit een vinkje kan geven, zegt iets over de meting en niets over jou.'
+        : '');
+  }
+}
+
+function renderGroepRaster(){
+  var tbl = document.getElementById("wk-grid");
+  tbl.innerHTML = "";
+  var dagen = dagenVan(periode);
+
+  var thead = document.createElement("thead");
+  thead.innerHTML = '<tr><th class="g"></th>' +
+    dagen.map(function(d){ return '<th data-weekend="' + d.weekend + '" scope="col">' + d.dag + '</th>'; }).join("") + '</tr>';
+  tbl.appendChild(thead);
+
+  var tbody = document.createElement("tbody");
+  GROEPEN.forEach(function(g){
+    var tr = document.createElement("tr");
+    tr.innerHTML = '<th class="g" scope="row">' + g.label + '</th>' +
+      dagen.map(function(d){
+        if (!d.items) return '<td><span class="cell" data-miss="true" title="niet ingevuld"></span></td>';
+        var n = groepenVan(d.items)[g.id] || 0;
+        return '<td><span class="cell" data-n="' + (n >= 4 ? 4 : n) + '" title="' + g.label + ' · ' + d.dag + ': ' +
+          (n ? n + (n === 1 ? " product" : " producten") : "niets") + '"></span></td>';
+      }).join("");
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody);
+}
+
+function renderWeekend(){
+  var dagen = dagenVan(periode).filter(function(d){ return d.items; });
+  var dw = dagen.filter(function(d){ return !d.weekend; });
+  var we = dagen.filter(function(d){ return d.weekend; });
+  function gem(set){
+    if (!set.length) return null;
+    return set.reduce(function(s, d){ return s + Object.keys(groepenVan(d.items)).length; }, 0) / set.length;
+  }
+  var a = gem(dw), b = gem(we);
+
+  document.getElementById("split-wknd").innerHTML =
+    '<div class="s"><p class="k">Doordeweeks</p><p class="v">' +
+      (a == null ? "—" : a.toFixed(1).replace(".", ",")) + '</p>' +
+      '<p class="b">groepen per dag, over ' + dw.length + (dw.length === 1 ? " dag" : " dagen") + '</p></div>' +
+    '<div class="s"><p class="k">Weekend</p><p class="v">' +
+      (b == null ? "—" : b.toFixed(1).replace(".", ",")) + '</p>' +
+      '<p class="b">groepen per dag, over ' + we.length + (we.length === 1 ? " dag" : " dagen") + '</p></div>';
+
+  var line;
+  if (a == null || b == null){
+    line = "Zolang er van één van beide soorten geen dag ligt, valt er niets te vergelijken — en een verschil suggereren dat er niet gemeten is, is erger dan geen verschil tonen.";
+  } else if (Math.abs(b - a) < 1){
+    line = "Je weekend en je week liggen minder dan één groep uit elkaar. Alles daaronder valt binnen wat je je verkeerd herinnert.";
+  } else if (b > a){
+    line = "Je weekend is bréder dan je week, niet smaller. Dat is een bevinding op zich, en niet degene die de meeste mensen verwachten.";
+  } else {
+    line = "Je weekend is smaller dan je week. Dat is de vorm die de weekendvergelijking bestaat om te vinden.";
+  }
+  document.getElementById("wknd-line").textContent = line;
+}
+
+function renderWeek(){
+  renderTabel("tbl-micro", MICRO, "note-micro");
+  renderTabel("tbl-macro", MACRO, null);
+  renderGroepRaster();
+  renderWeekend();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   V3 · MAAND
+═══════════════════════════════════════════════════════════════ */
+
+var MARK_READ = {
+  check1:["Dag 1 — je leefstijlcheck.","Hier begon je cyclus. Voeding kwam eruit als aandachtspunt, met kwaliteit en eiwitverdeling als grootste ruimte."],
+  check2:["Dag 4 — je voedingscheck.","Dertien vragen over je eetpatroon. Die uitkomst draagt je ladder en je prioriteiten — en verandert niet door wat je hierna registreerde."]
+};
+var bandSelected = null;
+var VB = { w:340, l:16, r:324, lane:52, laneLog:74 };
+function pctX(day){ return ((VB.l + (VB.r - VB.l) * ((day - 1) / (CYCLE - 1))) / VB.w) * 100; }
+
+function markers(){
+  var out = [
+    { day:1, kind:"check", label:"Je leefstijlcheck", read:MARK_READ.check1 },
+    { day:4, kind:"check", label:"Je voedingscheck", read:MARK_READ.check2 }
+  ];
+  Object.keys(DAGEN).forEach(function(iso){
+    var day = isoDiff(CYCLE_START, iso) + 1;
+    if (day < 1 || day > CYCLE) return;
+    var items = DAGEN[iso];
+    var sums = bandsVoor(items);
+    var gedekt = NUTRIENTS.filter(function(n){ return isGedekt(n, sums[n.id]); });
+    out.push({
+      day:day, kind:"dagboek", weekend:isWeekend(iso),
+      label:(isWeekend(iso) ? "Weekenddag" : "Doordeweekse dag") + " " + kortDatum(iso),
+      read:[
+        "Dag " + day + " — " + kortDatum(iso) + (isWeekend(iso) ? " (weekend)" : ""),
+        items.length + " producten over " + Object.keys(groepenVan(items)).length + " groepen." +
+        (gedekt.length
+          ? " Aantoonbaar gedekt: " + gedekt.map(function(n){ return n.label.toLowerCase(); }).join(" en ") + "."
+          : " Geen stof kwam aantoonbaar boven zijn richtwaarde uit.")
+      ]
+    });
+  });
+  return out.sort(function(a, b){ return a.day - b.day; });
+}
+
+function renderMaand(){
+  var box = document.getElementById("band-marks");
+  box.innerHTML = "";
+  markers().forEach(function(m){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "mark";
+    b.setAttribute("data-kind", m.kind);
+    if (m.weekend) b.setAttribute("data-weekend", "true");
+    b.setAttribute("aria-pressed", bandSelected === m.day ? "true" : "false");
+    b.setAttribute("aria-label", m.label + " — dag " + m.day);
+    b.title = m.label + " — dag " + m.day;
+    b.style.left = pctX(m.day) + "%";
+    b.style.top = (((m.kind === "check" ? VB.lane : VB.laneLog) / 104) * 100) + "%";
+    b.innerHTML = '<i>' + (m.kind === "check" ? "✓" : "") + '</i>';
+    b.addEventListener("click", function(){
+      bandSelected = (bandSelected === m.day) ? null : m.day;
+      toast('dashboard_voortgang_band_click { day: ' + m.day + ', kind: "' + m.kind + '" }');
+      renderMaand();
+    });
+    box.appendChild(b);
+  });
+
+  var sel = markers().filter(function(x){ return x.day === bandSelected; })[0];
+  var alle = Object.keys(DAGEN);
+  var we = alle.filter(isWeekend).length;
+  document.getElementById("band-read").innerHTML = sel
+    ? '<p class="t">' + sel.read[0] + '</p><p class="b">' + sel.read[1] + '</p>'
+    : '<p class="t">' + CYCLE_DAY + ' dagen sinds je leefstijlcheck.</p>' +
+      '<p class="b">Je registreerde ' + alle.length + ' dagen, waarvan ' + we + ' in het weekend. ' +
+      'Je hertest kan over ' + (CYCLE - CYCLE_DAY) + ' dagen — dan legt hij zijn eigen vragen naast wat je hier hebt staan.</p>';
+
+  /* dekking over álle dagboekdagen */
+  var ul = document.getElementById("mnd-nutr");
+  ul.innerHTML = "";
+  NUTRIENTS.forEach(function(n){
+    var raak = 0, bewezen = 0;
+    alle.forEach(function(iso){
+      var s = bandsVoor(DAGEN[iso])[n.id];
+      if (s) raak++;
+      if (isGedekt(n, s)) bewezen++;
+    });
+    var li = document.createElement("li");
+    li.className = "nutrow";
+    li.innerHTML = '<div class="n-h"><span class="n-n">' + n.label + '</span>' +
+      '<span class="n-v">' + raak + ' van ' + alle.length + ' dagen</span></div>' +
+      '<div class="bar"><span class="fill" style="width:' + (raak / alle.length) * 100 + '%"></span></div>' +
+      '<p class="n-b">' + maandLine(n, raak, bewezen, alle.length) + '</p>';
+    ul.appendChild(li);
+  });
+
+  var cl = document.getElementById("mnd-calib");
+  cl.innerHTML = "";
+  KALIBRATIE.forEach(function(k){
+    var tag = k.k === "klopt" ? "Komt overeen" : (k.k === "hoger" ? "Meer dan je zei" : "Minder dan je zei");
+    var li = document.createElement("li");
+    li.innerHTML =
+      '<span class="c-n">' + k.label + '</span>' +
+      '<span class="c-t" data-k="' + k.k + '">' + tag + '</span>' +
+      '<span class="c-b"><b style="color:#CDD7D0;font-weight:600">Je zei:</b> ' + k.zei +
+      ' · <b style="color:#CDD7D0;font-weight:600">Je registreerde:</b> ' + k.zag + '. ' + k.b + '</span>';
+    cl.appendChild(li);
+  });
+
+  var vis = alle.filter(function(iso){
+    return DAGEN[iso].some(function(p){ return (F[p[0]] || {}).groep === "vis"; });
+  }).length;
+  document.getElementById("mnd-supp-line").innerHTML =
+    'Over je ' + alle.length + ' geregistreerde dagen kwam er ' + vis + '× vis voorbij, tegen een drempel van 2× per wéék. ' +
+    'Magnesium haalde de richtwaarde op één dag aantoonbaar; zink en vitamine D zijn uit een dagboek niet aan te tonen. ' +
+    '<b style="color:var(--sage-soft)">Dat is geen supplementadvies</b> — het is het bewijs waarop je keuze rust.';
+}
+
+function maandLine(n, raak, bewezen, totaal){
+  if (n.id === "vitamin_d") return "Voeding dekt vitamine D bij vrijwel niemand; alleen vette vis tilt een dag erboven. Vanaf oktober doet je huid niet meer mee, en dan verschuift deze rij vanzelf.";
+  if (n.id === "omega3") return raak + " visdagen in " + totaal + " dagen, waarvan " + bewezen + " aantoonbaar boven de richtwaarde. De drempel is twee per wéék — dit is de rij waar je keuze het scherpst wordt.";
+  if (n.id === "zinc") return "Op " + raak + " van je " + totaal + " dagen een zinkbron, maar de richtwaarde is uit een dagboek niet aan te tonen: bronnen leveren 1–4 mg per portie tegen 9–11 mg per dag.";
+  if (n.id === "magnesium") return "Bijna elke dag een bron — meestal fytaatrijk. Op " + bewezen + " van je " + totaal + " dagen haalde de ondergrens de richtwaarde. De bron is er; de hoeveelheid en de opname zijn de beperking.";
+  return "Op " + (totaal - raak) + " van je " + totaal + " dagen kwam er geen bron voorbij.";
+}
+
+var KALIBRATIE = [
+  { label:"Vette vis", k:"lager", zei:"2× per week", zag:"4 visdagen over 13 dagen",
+    b:"Je registratie ligt onder wat je in de check aangaf. Dat is geen fout — het is de reden dat de check hier zijn eigen zekerheid naar beneden bijstelt." },
+  { label:"Groente", k:"klopt", zei:"dagelijks", zag:"op 12 van de 13 dagen",
+    b:"Wat je zei en wat je registreerde wijzen dezelfde kant op. Die rij mag de check dus zwaarder wegen." },
+  { label:"Noten & zaden", k:"hoger", zei:"paar keer per week", zag:"op 7 van de 13 dagen",
+    b:"Je eet er meer van dan je dacht. Dat verandert je magnesiumroute: de bron is er, de opname is de beperking." },
+  { label:"Eiwit per maaltijd", k:"lager", zei:"bij elke maaltijd", zag:"ontbijt draagt het minst",
+    b:"Over je geregistreerde dagen zat het grootste deel van je eiwit 's avonds. Dat is precies de prioriteit die je Kompas als tweede noemt." }
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   A1 · AGENDA
+═══════════════════════════════════════════════════════════════ */
+
+var SOORT_K = { actie:"Actie", registratie:"Registratie", reflectie:"Reflectie" };
+var AGENDA = [
+  { t:"07:30", n:"Ontbijt met eiwit", s:"Uit je prioriteit: eiwit beter over de dag verdelen.", c:"#5A8F6A", soort:"actie", done:true },
+  { t:"12:30", n:"Wandelen na de lunch", s:"20 minuten, buiten.", c:"#C26E4B", soort:"actie", done:true },
+  { t:"18:00", n:"Peulvruchten bij het avondeten", s:"Eén portie. Raakt magnesium en zink tegelijk.", c:"#5A8F6A", soort:"actie", done:false },
+  { t:"21:00", n:"Dagboek: vul vandaag in", s:"Doordeweekse dag 2 van 2. Verdwijnt zodra je ronde vol is.", c:"#5A8F6A", soort:"registratie", done:false },
+  { t:"21:15", n:"Ging het ontbijt met eiwit?", s:"Eén vraag, in je eigen woorden. Geen norm ernaast.", c:"#C8956C", soort:"reflectie", done:false }
+];
+
+function renderAgenda(){
+  var ul = document.getElementById("agenda-day");
+  ul.innerHTML = "";
+  AGENDA.forEach(function(b, i){
+    var el = document.createElement("button");
+    el.type = "button"; el.className = "blk";
+    el.setAttribute("data-done", b.done ? "true" : "false");
+    el.innerHTML =
+      '<span class="t">' + b.t + '</span>' +
+      '<span class="c" style="background:' + b.c + '"></span>' +
+      '<span class="m"><p class="n">' + b.n + '</p>' +
+      '<p class="s"><span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:' + b.c + '">' +
+      SOORT_K[b.soort] + '</span> · ' + b.s + '</p></span>' +
+      '<span class="chk" aria-hidden="true">✓</span>';
+    el.addEventListener("click", function(){
+      b.done = !b.done;
+      toast(b.soort === "registratie"
+        ? 'nutrition.dagboek_opened { surface: "mijn_dag" }'
+        : (b.soort === "reflectie"
+          ? 'nutrition.reflectie_answered { block: ' + i + ' }'
+          : 'nutrition.agenda_action_completed { block: ' + i + ', done: ' + b.done + ' }'));
+      renderAgenda();
+    });
+    var li = document.createElement("li");
+    li.appendChild(el);
+    ul.appendChild(li);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   S1 · SCHAP — het oordeel beweegt mee met de periode
+═══════════════════════════════════════════════════════════════ */
+
+var ROUTES = [
+  { id:"omega3", label:"Omega-3 (EPA/DHA)", status:"gap", statusLabel:"Gat",
+    t:"Je check zet omega-3 op aandacht: de drempel is 2× vette vis per week, en dat haal je niet.",
+    gekozen:null },
+  { id:"magnesium", label:"Magnesium", status:"partial", statusLabel:"Deels",
+    t:"Je band komt uit een groente-en-fruit-telling, terwijl noten, volkoren en peulvruchten de sterkere bronnen zijn. Vertrouwen: 1 van 4.",
+    gekozen:"Uit mijn eten" },
+  { id:"zinc", label:"Zink", status:"partial", statusLabel:"Deels",
+    t:"Dagelijks vlees, vis of peulvruchten is de vuistregel. Je zit daar deels op.",
+    gekozen:null },
+  { id:"vitamin_d", label:"Vitamine D", status:"partial", statusLabel:"Seizoen",
+    t:"In september doet je huid nog een deel van het werk. Vanaf oktober niet meer, en dan verschuift deze rij vanzelf.",
+    gekozen:null },
+  { id:"protein", label:"Eiwit", status:"ok", statusLabel:"Uit je eten",
+    t:"Eiwit bij elke maaltijd is de richtlijn, en je hoeveelheid is ruim. De verdeling over je dag is de vraag, niet de hoeveelheid.",
+    gekozen:"Uit mijn eten" }
+];
+
+/** Wat het eten in de gekozen periode aantoonbaar leverde, per stof. */
+function verdictVoor(n){
+  var dagen = dagenVan(periode).filter(function(d){ return d.items; });
+  var raak = 0, bewezen = 0;
+  dagen.forEach(function(d){
+    var s = bandsVoor(d.items)[n.id];
+    if (s) raak++;
+    if (isGedekt(n, s)) bewezen++;
+  });
+  return { dagen:dagen.length, raak:raak, bewezen:bewezen };
+}
+
+function renderSchap(){
+  renderBronnen();
+  var ul = document.getElementById("verdicts");
+  ul.innerHTML = "";
+
+  NUTRIENTS.forEach(function(n){
+    var v = verdictVoor(n);
+    var kind, tag, body;
+
+    if (v.dagen === 0){
+      kind = "onmeetbaar"; tag = "Geen dagen";
+      body = "In deze periode registreerde je niets, dus het dagboek zegt hier niets over. Je check blijft eronder liggen.";
+
+    } else if (n.id === "protein"){
+      /* Eiwit is geen aanvulvraag en hoort dus geen aanvuloordeel te krijgen.
+         De vraag is de verdeling over je dag, en die staat op je ladder. */
+      kind = "genoeg"; tag = "Verdelingsvraag";
+      body = n.waarom + " Op " + v.raak + " van je " + v.dagen +
+             (v.dagen === 1 ? " dag" : " dagen") + " kwam er een bron voorbij, en de hoeveelheid is ruim. " +
+             "Wat hier speelt is <b style=\"color:#E7EDE8;font-weight:600\">waar in je dag het zit</b>, niet of er genoeg is.";
+
+    } else if (!n.bewijsbaar){
+      kind = "onmeetbaar"; tag = "Niet aan te tonen";
+      body = n.waarom + " Wat het dagboek wél zegt: op " + v.raak + " van je " + v.dagen +
+             (v.dagen === 1 ? " dag" : " dagen") + " kwam er een bron voorbij.";
+
+    } else if (v.bewezen === v.dagen){
+      kind = "genoeg"; tag = "Uit je eten";
+      body = "Op elke geregistreerde dag haalde je ondergrens de richtwaarde al. Er is in deze periode geen aanleiding om aan te vullen.";
+
+    } else if (v.raak < v.dagen){
+      /* De bron ontbreekt op een deel van de dagen: dat is een frequentievraag. */
+      kind = "vraag"; tag = "Wisselend";
+      body = "Op " + v.raak + " van je " + v.dagen + " dagen kwam er een bron voorbij" +
+             (v.bewezen ? ", en op " + v.bewezen + " daarvan kwam je er aantoonbaar boven" : "") + ". " +
+             "Dat betekent: <b style=\"color:#E7EDE8;font-weight:600\">de bron werkt als je hem eet — je eet hem te weinig.</b> " +
+             "Dat is een frequentievraag, geen aanvulvraag.";
+
+    } else {
+      /* De bron is er elke dag, maar de ondergrens komt er (bijna) nooit boven:
+         dan gaat het over hoeveelheid en opname, niet over frequentie. */
+      kind = "vraag"; tag = v.bewezen ? "Hoeveelheid" : "Open vraag";
+      body = "Op élke geregistreerde dag kwam er een bron voorbij" +
+             (v.bewezen
+               ? ", maar de ondergrens haalde de richtwaarde op " + v.bewezen + " ervan."
+               : ", maar de ondergrens haalde de richtwaarde op geen enkele.") +
+             " De bron ontbreekt dus niet — <b style=\"color:#E7EDE8;font-weight:600\">de hoeveelheid per dag is de beperking</b>" +
+             (n.id === "magnesium" ? ", en bij fytaatrijke bronnen ook de opname" : "") + ". " +
+             "Dat is geen tekort: er volgt uit een ondergrens niets in die richting.";
+    }
+
+    var li = document.createElement("li");
+    li.innerHTML =
+      '<div class="v-h"><span class="v-n">' + n.label + '</span>' +
+      '<span class="v-t" data-k="' + kind + '">' + tag + '</span></div>' +
+      '<p class="v-f">Bron op ' + v.raak + ' van ' + v.dagen + (v.dagen === 1 ? " geregistreerde dag" : " geregistreerde dagen") +
+        (n.bewijsbaar ? ' · aantoonbaar gedekt op ' + v.bewezen : '') + '</p>' +
+      '<p class="v-b">' + body + '</p>';
+    ul.appendChild(li);
+  });
+
+  var rl = document.getElementById("routes");
+  rl.innerHTML = "";
+  ROUTES.forEach(function(r){
+    var n = NUTRIENTS.filter(function(x){ return x.id === r.id; })[0];
+    var v = verdictVoor(n);
+    var li = document.createElement("li");
+    li.className = "route";
+    var sKey = r.status === "ok" ? "ok" : (r.status === "gap" ? "gap" : "partial");
+    li.innerHTML =
+      '<div class="r-h"><span class="r-n">' + r.label + '</span>' +
+      '<span class="r-s" data-s="' + sKey + '">' + r.statusLabel + '</span></div>' +
+      '<p class="r-t">' + r.t + '</p>' +
+      '<p class="r-e"><b>Je logboek, ' + PERIODES.filter(function(p){ return p.id === periode; })[0].label.toLowerCase() + ':</b> ' +
+        (v.dagen === 0
+          ? 'geen dagen geregistreerd — dit bewijs is er nog niet.'
+          : 'bron op ' + v.raak + ' van ' + v.dagen + (v.dagen === 1 ? " dag" : " dagen") +
+            (n.bewijsbaar
+              ? (v.bewezen ? ', aantoonbaar gedekt op ' + v.bewezen + '.' : ', geen dag aantoonbaar gedekt.')
+              : '. Dekking is bij deze stof niet aan te tonen uit een dagboek.')) +
+      '</p>';
+
+    var opts = document.createElement("div");
+    opts.className = "opts";
+    ["Uit mijn eten","Uit een supplement","Allebei"].forEach(function(o){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "opt"; b.textContent = o;
+      b.setAttribute("aria-pressed", r.gekozen === o ? "true" : "false");
+      /* De poort staat dicht: supplementroutes blijven zichtbaar maar niet te
+         kiezen, met de reden ernaast. Verbergen laat de vraag verdwijnen in
+         plaats van hem te beantwoorden. */
+      if (o !== "Uit mijn eten"){
+        b.disabled = true;
+        b.title = "De poort naar aanvullen staat nog dicht — eerst je voedingskwaliteit.";
+      }
+      b.addEventListener("click", function(){
+        r.gekozen = (r.gekozen === o) ? null : o;
+        toast('nutrition.route_choice_saved { nutrient: "' + r.id + '", choice: "' + (r.gekozen || "geen") + '", periode: "' + periode + '" }');
+        renderSchap();
+      });
+      opts.appendChild(b);
+    });
+    li.appendChild(opts);
+    rl.appendChild(li);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BEDIENING
+═══════════════════════════════════════════════════════════════ */
+
+var toastTimer = null;
+function toast(msg){
+  var el = document.getElementById("toast");
+  if (!msg){ el.hidden = true; return; }
+  el.textContent = "→ " + msg;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.hidden = true; }, 4200);
+}
+
+var SCREENS = ["V1","V2","V3","A1","S1"];
+function renderAll(){
+  renderPeriods(); renderDag(); renderWeek(); renderMaand(); renderAgenda(); renderSchap();
+}
+function showScreen(id){
+  SCREENS.forEach(function(s){ document.getElementById("s-" + s).hidden = (s !== id); });
+  document.querySelectorAll("[data-screen]").forEach(function(b){
+    b.setAttribute("aria-pressed", b.getAttribute("data-screen") === id ? "true" : "false");
+  });
+  if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
+  window.scrollTo({ top:0, behavior:"instant" });
+}
+function screenFromHash(){
+  var id = (location.hash || "").replace("#", "");
+  return SCREENS.indexOf(id) >= 0 ? id : "V1";
+}
+
+document.querySelectorAll("[data-screen]").forEach(function(b){
+  b.addEventListener("click", function(){
+    var id = b.getAttribute("data-screen");
+    if (location.hash !== "#" + id) location.hash = id; else showScreen(id);
+  });
+});
+window.addEventListener("hashchange", function(){ showScreen(screenFromHash()); });
+
+document.addEventListener("click", function(e){
+  var el = e.target.closest("[data-ev],[data-goto]");
+  if (!el) return;
+  var ev = el.getAttribute("data-ev");
+  if (ev) toast(ev);
+  var go = el.getAttribute("data-goto");
+  if (go) showScreen(go);
+});
+
+renderAll();
+showScreen(screenFromHash());
+</script>
+</body>
+</html>
