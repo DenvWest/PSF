@@ -81,13 +81,35 @@ describe("herkomst is traceerbaar of expliciet afwezig", () => {
     expect(kapot.map((e) => `${e.key} → ${e.bron}`)).toEqual([]);
   });
 
-  it("levert de werklijst voor de USDA-extractie", () => {
+  it("levert de werklijst voor de USDA-extractie — alleen wat er echt een verdient", () => {
     const open = zonderBron();
     expect(open.length).toBeGreaterThan(0);
-    expect(open.every((entry) => entry.bron === null)).toBe(true);
-    // Alles bij elkaar hoort te kloppen: met bron + zonder bron = de catalogus.
+    // De werklijst bevat alleen op te halen regels: bron null én geen geenBron.
+    expect(open.every((entry) => entry.bron === null && !entry.geenBron)).toBe(true);
+    // Drie disjuncte stapels tellen samen op tot de hele catalogus.
     const metBron = FOOD_CATALOG.filter((entry) => entry.bron !== null);
-    expect(metBron.length + open.length).toBe(FOOD_CATALOG.length);
+    const geenBron = FOOD_CATALOG.filter((entry) => entry.geenBron);
+    expect(metBron.length + geenBron.length + open.length).toBe(FOOD_CATALOG.length);
+  });
+
+  it("markeert geen enkele regel als geenBron zonder ook bron op null te zetten", () => {
+    // Een gehalte én een reden waarom het er niet is, is tegenstrijdig: dan
+    // stáát het getal er. `geenBron` mag alleen op regels die geen bron dragen.
+    const tegenstrijdig = FOOD_CATALOG.filter(
+      (entry) => entry.geenBron && entry.bron !== null,
+    );
+    expect(tegenstrijdig.map((e) => `${e.key} (${e.geenBron} → ${e.bron})`)).toEqual([]);
+  });
+
+  it("laat de werklijst krimpen, niet verschuiven, door geenBron", () => {
+    // De hele reden voor geenBron: de werklijst is een echte deelverzameling
+    // van 'alles zonder gehalte'. Wie een verrijkt of samengesteld product
+    // toevoegt, laat dit getal dus niet stijgen.
+    const open = zonderBron();
+    const zonderGehalte = FOOD_CATALOG.filter((entry) => entry.bron === null);
+    expect(open.length).toBeLessThan(zonderGehalte.length);
+    const werklijst = new Set(open.map((e) => e.key));
+    expect([...werklijst].every((key) => zonderGehalte.some((e) => e.key === key))).toBe(true);
   });
 });
 
