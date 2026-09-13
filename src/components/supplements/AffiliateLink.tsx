@@ -20,6 +20,13 @@ type Props = {
   sourcePage?: string;
   position?: number;
   className?: string;
+  /**
+   * Supplement-categorie (bv. "magnesium") voor de `categorie`-kolom in
+   * affiliate_clicks. Zonder deze prop valt de klik terug op de generieke
+   * "vergelijking"-waarde, waarmee klikken van verschillende stoffen niet
+   * meer uit elkaar te houden zijn in getClicksPerCategory().
+   */
+  category?: string;
 };
 
 const SUPABASE_CLICK_SOURCE = "vergelijking";
@@ -30,6 +37,7 @@ export function AffiliateLink({
   sourcePage,
   position,
   className,
+  category,
 }: Props) {
   useEffect(() => {
     captureNurtureToken();
@@ -75,7 +83,7 @@ export function AffiliateLink({
         void trackClick({
           product_id: affiliateSlug,
           product_naam: affiliateSlug,
-          categorie: SUPABASE_CLICK_SOURCE,
+          categorie: category ?? SUPABASE_CLICK_SOURCE,
           pagina:
             typeof window !== "undefined" ? window.location.pathname : "",
           nt: getNurtureToken() ?? undefined,

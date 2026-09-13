@@ -8,9 +8,13 @@ import {
   getProductPricePerDay,
 } from "@/lib/comparison-cta-label";
 
-type Props = { topProduct: SupplementProduct };
+type Props = {
+  topProduct: SupplementProduct;
+  /** Supplement-categorie (bv. "magnesium") — voor affiliate_clicks.categorie. */
+  category?: string;
+};
 
-export function StickyMobileCta({ topProduct }: Props) {
+export function StickyMobileCta({ topProduct, category }: Props) {
   const [visible, setVisible] = useState(false);
   const price = getProductPricePerDay(topProduct);
   const ctaLabel = buildAffiliateCtaLabel(topProduct.bestFor, price);
@@ -41,6 +45,7 @@ export function StickyMobileCta({ topProduct }: Props) {
           affiliateSlug={topProduct.affiliateSlug}
           sourcePage="sticky-cta"
           position={1}
+          category={category}
           className="max-w-[min(200px,48vw)] shrink-0 truncate whitespace-nowrap rounded-xl bg-emerald-600 px-3 py-2.5 text-xs font-semibold text-white transition hover:bg-emerald-700 sm:max-w-none sm:px-4 sm:text-sm"
         >
           {ctaLabel} →

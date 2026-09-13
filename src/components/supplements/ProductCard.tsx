@@ -10,9 +10,16 @@ type Props = {
   product: SupplementProduct;
   position: number;
   isPrimary?: boolean;
+  /** Supplement-categorie (bv. "magnesium") — voor affiliate_clicks.categorie. */
+  category?: string;
 };
 
-export function ProductCard({ product, position, isPrimary = false }: Props) {
+export function ProductCard({
+  product,
+  position,
+  isPrimary = false,
+  category,
+}: Props) {
   const price = getProductPricePerDay(product);
   const ctaLabel = buildAffiliateCtaLabel(product.bestFor, price);
 
@@ -136,6 +143,7 @@ export function ProductCard({ product, position, isPrimary = false }: Props) {
                 affiliateSlug={product.affiliateSlug}
                 sourcePage="product-card"
                 position={position}
+                category={category}
                 className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 sm:w-auto"
               >
                 {ctaLabel} →
@@ -146,6 +154,7 @@ export function ProductCard({ product, position, isPrimary = false }: Props) {
               affiliateSlug={product.affiliateSlug}
               sourcePage="product-card"
               position={position}
+              category={category}
               className="mt-6 inline-flex text-sm font-medium text-emerald-700 underline decoration-emerald-300 underline-offset-4 transition hover:text-emerald-800"
             >
               {ctaLabel} →

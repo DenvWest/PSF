@@ -229,6 +229,7 @@ export default async function Page({ params }: PageProps) {
               product={p}
               position={i + 1}
               isPrimary={p.slug === topProduct.slug}
+              category={data.category}
             />
           ))}
         </section>
@@ -266,7 +267,7 @@ export default async function Page({ params }: PageProps) {
         </Container>
       </main>
 
-      <StickyMobileCta topProduct={topProduct} />
+      <StickyMobileCta topProduct={topProduct} category={data.category} />
     </>
   );
 }
