@@ -76,8 +76,17 @@ const VERRIJKT: ReadonlySet<string> = new Set([
   "ontbijtgranen-verrijkt",
 ]);
 
-/** Kweekvis: ander voer, andere spreiding dan wild. */
-const GEKWEEKT: ReadonlySet<string> = new Set(["zalm-gekweekt"]);
+/**
+ * Kweekvis: ander voer, andere spreiding dan wild. `forel` is in Nederland
+ * vrijwel uitsluitend kweekvis — de USDA-bron van `forel` noemt het record
+ * expliciet "farmed", en `gerookte-forel` draagt dezelfde reden in zijn
+ * `variabilityWhy`. Zonder deze twee kreeg forel de bredere wilde band.
+ */
+const GEKWEEKT: ReadonlySet<string> = new Set([
+  "zalm-gekweekt",
+  "forel",
+  "gerookte-forel",
+]);
 
 /**
  * De spreidingsklasse van dit product bij deze stof.
