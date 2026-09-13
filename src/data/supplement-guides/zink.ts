@@ -4,11 +4,11 @@ export const zinkGidsData: SupplementData = {
   slug: "zink",
   naam: "Zink",
   metaTitle:
-    "Zink: Welke Vorm Past Bij Jou?",
+    "Zink uitgelegd: vormen, dosering en opname",
   metaDescription:
     "Zink uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",
-  h1: "Zink: welke vorm past bij jou?",
+  h1: "Zink: welke vormen er zijn en hoeveel je per dag nodig hebt",
   introTekst:
     "Zink is betrokken bij meer dan 300 enzymatische processen in je lichaam — van testosteronproductie tot immuunfunctie tot wondgenezing. Na je 30e stijgt de behoefte terwijl de opname afneemt. Een tekort is daardoor bij mannen vaker dan gedacht.",
 

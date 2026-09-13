@@ -4,11 +4,11 @@ export const ashwagandhaData: SupplementData = {
   slug: "ashwagandha",
   naam: "Ashwagandha",
   metaTitle:
-    "Ashwagandha: Welke vorm past bij jou?",
+    "Ashwagandha uitgelegd: extracten, withanoliden en dosering",
   metaDescription:
     "Ashwagandha uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",
-  h1: "Ashwagandha: welke vorm past bij jou?",
+  h1: "Ashwagandha: welke extracten er zijn en waar je op let",
   introTekst:
     "Ashwagandha is een adaptogeen — een plant die je lichaam helpt beter om te gaan met stress. Bij mannen boven de 30 is het een van de best onderzochte supplementen voor het verlagen van cortisol, het verbeteren van veerkracht en het ondersteunen van een gezonde slaap.",
 

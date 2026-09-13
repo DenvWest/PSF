@@ -4,11 +4,11 @@ export const creatineGidsData: SupplementData = {
   slug: "creatine",
   naam: "Creatine",
   metaTitle:
-    "Creatine: Welke Vorm Past Bij Jou?",
+    "Creatine uitgelegd: monohydraat, dosering en kwaliteit",
   metaDescription:
     "Creatine uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",
-  h1: "Creatine: welke vorm past bij jou?",
+  h1: "Creatine: wat monohydraat is en hoeveel je per dag nodig hebt",
   introTekst:
     "Creatine monohydraat is het meest onderzochte supplement ter wereld — met bewezen effecten op spierkracht, herstel en, steeds vaker, cognitieve prestaties. Na je 30e neemt de natuurlijke creatineproductie af, terwijl spierverval en mentale belasting juist toenemen.",
 

@@ -8,7 +8,7 @@ export const eiwitpoederGidsData: SupplementData = {
   metaDescription:
     "Eiwitpoeder uitgelegd: whey, isolaat en plantaardig eiwit vergelijken op opname, eiwitgehalte, dosering en gebruik na je 30e.",
   datePublished: "2026-05-09",
-  h1: "Eiwitpoeder: welke vorm past bij jou?",
+  h1: "Eiwitpoeder: hoeveel eiwit je nodig hebt en welke vormen er zijn",
   introTekst:
     "Eiwitpoeder is geen magische spiermaker, maar een praktische manier om je dagelijkse eiwitinname te halen. Zeker na je 30e wordt dat belangrijker: je lichaam heeft meer eiwitprikkel nodig om spiermassa te behouden en goed te herstellen.",
 

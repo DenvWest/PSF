@@ -50,18 +50,11 @@ const GUIDES_WITH_COMPARISON = ALL_SUPPLEMENT_SLUGS.filter((slug) =>
 const OPEN_H1_COLLISIONS: Record<string, string> = {
   magnesium: "gated: 75 impressies, wacht op Search Console-check (A4)",
   "vitamine-d": "gated: /beste heeft 190 impressies, eerst SC-check",
-  ashwagandha: "open: ~0 impressies, veilig te fixen (B1)",
-  creatine: "open: ~0 impressies, veilig te fixen (B1)",
-  eiwitpoeder: "open: ~0 impressies, veilig te fixen (B1)",
-  zink: "open: ~0 impressies, veilig te fixen (B1)",
 };
 
 const OPEN_METATITLE_COLLISIONS: Record<string, string> = {
   magnesium: "gated: zie A4",
   "vitamine-d": "gated: eerst SC-check",
-  ashwagandha: "open: veilig te fixen (B1)",
-  creatine: "open: veilig te fixen (B1)",
-  zink: "open: veilig te fixen (B1)",
 };
 
 /** /beste-pagina's waarvan de H1 nog niet met "Beste" begint. */
@@ -188,10 +181,11 @@ describe("snippet-contract — reikwijdte en schuldenregister", () => {
   });
 
   it("het schuldenregister groeit niet ongemerkt", () => {
-    // Stand bij invoering (13 sep 2026). Deze getallen horen te DALEN.
-    // Gaat er een omhoog, dan is er nieuwe kannibalisatie bij gekomen.
-    expect(Object.keys(OPEN_H1_COLLISIONS).length).toBeLessThanOrEqual(6);
-    expect(Object.keys(OPEN_METATITLE_COLLISIONS).length).toBeLessThanOrEqual(5);
+    // Stand na de risicovrije B1-ronde (13 sep 2026): alleen nog de twee
+    // stoffen die op een Search Console-check wachten. Deze getallen horen
+    // te DALEN. Gaat er een omhoog, dan is er nieuwe kannibalisatie bij.
+    expect(Object.keys(OPEN_H1_COLLISIONS).length).toBeLessThanOrEqual(2);
+    expect(Object.keys(OPEN_METATITLE_COLLISIONS).length).toBeLessThanOrEqual(2);
     expect(Object.keys(OPEN_BESTE_H1).length).toBeLessThanOrEqual(1);
   });
 });
