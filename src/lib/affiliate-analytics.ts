@@ -1,5 +1,9 @@
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import {
+  SUPPLEMENT_SLUGS,
+  getSupplementComparisonData,
+} from "@/data/supplements";
 
 export type CountRow = { key: string; count: number };
 export type TrendRow = { date: string; count: number };
@@ -155,6 +159,50 @@ export async function getClickTrend(
   }
 
   return dayKeys.map((date) => ({ date, count: counts.get(date) ?? 0 }));
+}
+
+/**
+ * Conversie-readout per /beste/*-stof (vakantieweek A2). Vaste rijvolgorde
+ * over alle SUPPLEMENT_SLUGS — ook een stof met 0 klikken in de periode
+ * krijgt een rij, want tijdens een distributie-push is het ontbreken van
+ * een klik het signaal, niet een lege rij.
+ *
+ * Groepeert op `categorie` (niet `pagina`): sinds de A1-fix draagt elke
+ * /beste/*-klik zijn eigen stof-categorie (zie ENTITY_MODEL.md). Klikken
+ * van vóór die fix vallen nog onder de oude generieke "vergelijking"-
+ * waarde — dit leest dus vooruit vanaf nu, niet met terugwerkende kracht.
+ */
+export async function getClicksPerBesteCategory(
+  days: number,
+  organizationId?: string,
+): Promise<CountRow[]> {
+  const orgId = resolveOrgId(organizationId);
+  const admin = getAdminClient();
+  const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+
+  const { data, error } = await admin
+    .from("affiliate_clicks")
+    .select("categorie, timestamp")
+    .eq("organization_id", orgId)
+    .gte("timestamp", cutoff);
+
+  if (error) {
+    console.error("[affiliate-analytics] getClicksPerBesteCategory:", error);
+    throw error;
+  }
+
+  const counts = new Map<string, number>();
+  for (const row of data ?? []) {
+    if (typeof row.categorie !== "string" || row.categorie.length === 0) {
+      continue;
+    }
+    counts.set(row.categorie, (counts.get(row.categorie) ?? 0) + 1);
+  }
+
+  return SUPPLEMENT_SLUGS.map((slug) => {
+    const category = getSupplementComparisonData(slug)?.category ?? slug;
+    return { key: category, count: counts.get(category) ?? 0 };
+  });
 }
 
 export async function getIntakeByReferralSource(

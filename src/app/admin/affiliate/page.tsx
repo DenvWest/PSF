@@ -27,6 +27,84 @@ function horizontalBarHeight(rowCount: number): number {
   return Math.min(400, 40 + Math.max(3, rowCount) * 28);
 }
 
+function formatCtr(clicks: number, impressions: number): string {
+  if (impressions <= 0) return "—";
+  return `${((clicks / impressions) * 100).toFixed(1)}%`;
+}
+
+/**
+ * Conversie-readout /beste/*: klikken (30d, uit Supabase) naast handmatig
+ * geplakte Search Console-impressies. Bewust GEEN localStorage en GEEN
+ * nieuwe Supabase-tabel (CLAUDE.md: "geen localStorage — alles via
+ * Supabase", en A2-scope vroeg om geen nieuwe tabel) — de impressies zijn
+ * ruwe invoer voor één review-moment (dagelijkse Search Console-check),
+ * niet duurzame state. Ververs de pagina → invoer is weg, klikken niet.
+ */
+function BesteConversionReadout({ rows }: { rows: CountRow[] }) {
+  const [impressions, setImpressions] = useState<Record<string, string>>({});
+
+  return (
+    <div className="mt-6 overflow-x-auto">
+      <table className="w-full min-w-[480px] text-left text-sm">
+        <thead>
+          <tr
+            className="border-b text-[13px] text-[#999]"
+            style={{ borderColor: "#e8e6e1" }}
+          >
+            <th className="pb-3 pr-4 font-medium">Stof (/beste/*)</th>
+            <th className="pb-3 pr-4 font-medium">Klikken (30d)</th>
+            <th className="pb-3 pr-4 font-medium">
+              Impressies (SC, plak hier)
+            </th>
+            <th className="pb-3 font-medium">CTR</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => {
+            const raw = impressions[row.key] ?? "";
+            const parsed = Number(raw);
+            const impressionCount =
+              raw.trim().length > 0 && Number.isFinite(parsed) ? parsed : 0;
+            return (
+              <tr
+                key={row.key}
+                className="border-b last:border-b-0"
+                style={{ borderColor: "#e8e6e1" }}
+              >
+                <td className="py-3 pr-4 font-medium text-[#1a1a1a]">
+                  {row.key}
+                </td>
+                <td className="py-3 pr-4 text-[#555]">{row.count}</td>
+                <td className="py-3 pr-4">
+                  <input
+                    type="number"
+                    min={0}
+                    inputMode="numeric"
+                    placeholder="0"
+                    value={raw}
+                    onChange={(e) =>
+                      setImpressions((prev) => ({
+                        ...prev,
+                        [row.key]: e.target.value,
+                      }))
+                    }
+                    className="w-24 rounded-lg border px-2 py-1 text-sm text-[#1a1a1a]"
+                    style={{ borderColor: "#e8e6e1" }}
+                    aria-label={`Search Console-impressies voor ${row.key}`}
+                  />
+                </td>
+                <td className="py-3 font-medium text-[#1a1a1a]">
+                  {formatCtr(row.count, impressionCount)}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function CountBarChart({
   title,
   rows,
@@ -278,6 +356,23 @@ export default function AdminAffiliatePage() {
                     Laatste 30 kalenderdagen
                   </p>
                 </div>
+              </section>
+
+              <section
+                className="rounded-xl border bg-white p-6"
+                style={{ borderColor: "#e8e6e1" }}
+              >
+                <h2 className="text-lg font-semibold text-[#1a1a1a]">
+                  Conversie-readout — /beste/*
+                </h2>
+                <p className="mt-2 text-sm text-[#999]">
+                  Klikken uit Supabase (laatste 30 dagen) naast handmatig
+                  geplakte Search Console-impressies. Alle 7 stoffen altijd
+                  zichtbaar, ook bij 0 klikken — dat is tijdens een
+                  distributie-week het signaal. Invoer wordt niet bewaard;
+                  plak de actuele SC-cijfers bij elke check.
+                </p>
+                <BesteConversionReadout rows={data.clicksPerBesteCategory30d} />
               </section>
 
               <section

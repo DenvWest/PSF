@@ -5,6 +5,7 @@ import {
 } from "@/lib/admin-auth";
 import {
   getClickTrend,
+  getClicksPerBesteCategory,
   getClicksPerCategory,
   getClicksPerPage,
   getClicksPerSubId,
@@ -26,6 +27,8 @@ export type AdminAffiliatePayload = {
   clicksPerCategory: CountRow[];
   clickTrend: TrendRow[];
   intakeByReferralSource: CountRow[];
+  /** Conversie-readout /beste/*: klikken per stof, laatste 30 dagen, vaste rijvolgorde. */
+  clicksPerBesteCategory30d: CountRow[];
 };
 
 function sumCounts(rows: CountRow[]): number {
@@ -70,12 +73,14 @@ export async function GET(request: NextRequest) {
       clicksPerCategory,
       clickTrend,
       intakeByReferralSource,
+      clicksPerBesteCategory30d,
     ] = await Promise.all([
       getClicksPerPage(),
       getClicksPerSubId(),
       getClicksPerCategory(),
       getClickTrend(),
       getIntakeByReferralSource(),
+      getClicksPerBesteCategory(30),
     ]);
 
     const payload: AdminAffiliatePayload = {
@@ -86,6 +91,7 @@ export async function GET(request: NextRequest) {
       clicksPerCategory,
       clickTrend,
       intakeByReferralSource,
+      clicksPerBesteCategory30d,
     };
 
     return NextResponse.json(payload);
