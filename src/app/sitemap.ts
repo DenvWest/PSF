@@ -6,6 +6,8 @@ import { alleArtikelen } from "@/data/blog";
 import { GELDIGE_CATEGORIE_IDS } from "@/data/blog/categorieen";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import { SUPPLEMENT_SLUGS, getSupplementComparisonData } from "@/data/supplements";
+import { ALL_SUPPLEMENT_SLUGS } from "@/data/supplement-guides";
+import { VOEDING_STOF_SLUGS } from "@/lib/voeding-public";
 import { getHubProductSlugs } from "@/lib/supplement-hub/product-catalog";
 import { blogCover } from "@/lib/blog-cover";
 import { kennisbankCover } from "@/lib/kennisbank-cover";
@@ -35,8 +37,10 @@ const PILLAR_PADEN = [
 const STATISCHE_PADEN = [
   "/",
   "/intake",
+  "/intake/voeding",
   "/rapport",
   "/supplementen",
+  "/voeding",
   "/gidsen",
   "/over-ons",
   "/contact",
@@ -137,6 +141,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "weekly",
   );
 
+  const supplementGidsen = entries(
+    ALL_SUPPLEMENT_SLUGS.map((slug) => `/supplementen/${slug}`),
+    0.75,
+    "monthly",
+  );
+
+  const voedingStoffen = entries(
+    VOEDING_STOF_SLUGS.map((slug) => `/voeding/${slug}`),
+    0.75,
+    "monthly",
+  );
+
   const statisch = entries(STATISCHE_PADEN, 0.5, "yearly");
 
   return [
@@ -144,6 +160,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...pillars,
     ...profielen,
     ...gids,
+    ...supplementGidsen,
+    ...voedingStoffen,
     ...producten,
     ...inzichten,
     ...kennisbankHub,

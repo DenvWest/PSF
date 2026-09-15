@@ -35,6 +35,12 @@ export const GA4_EVENTS = {
   BIBLIOTHEEK_MEER: 'bibliotheek_meer',
   BIBLIOTHEEK_ITEM_GEOPEND: 'bibliotheek_item_geopend',
   ARTIKEL_SUPPLEMENTEN_HUB_CLICK: 'artikel_supplementen_hub_click',
+  BLOG_VOEDINGSCHECK_CLICK: 'blog_voedingscheck_click',
+  BLOG_GEZONDHEIDSGIDS_CLICK: 'blog_gezondheidsgids_click',
+  BLOG_VOEDING_HUB_CLICK: 'blog_voeding_hub_click',
+  VOEDING_BRONNEN_VIEWED: 'voeding_bronnen_viewed',
+  VOEDING_BRONNEN_EXPANDED: 'voeding_bronnen_expanded',
+  VOEDING_CHECK_CLICKED: 'voeding_check_clicked',
 } as const;
 
 export function trackEvent(
