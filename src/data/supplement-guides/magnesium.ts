@@ -3,12 +3,11 @@ import type { SupplementData } from "@/types/supplement-guide";
 export const magnesiumData: SupplementData = {
   slug: "magnesium",
   naam: "Magnesium",
-  metaTitle:
-    "Magnesium: Welke Vorm Past Bij Jou?",
+  metaTitle: "Magnesium uitgelegd: vormen, dosering en opname",
   metaDescription:
-    "Magnesium uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
+    "Wat magnesium in je lichaam doet, waarin bisglycinaat, citraat en oxide verschillen en hoeveel elementair magnesium je per dag nodig hebt.",
   datePublished: "2026-03-01",
-  h1: "Magnesium: welke vorm past bij jou?",
+  h1: "Magnesium: wat het doet en hoeveel je nodig hebt",
   introTekst:
     "Magnesium is betrokken bij meer dan 300 processen in je lichaam — van slaap tot spierherstel tot stressregulatie. Na je 30e neemt de opname af terwijl de behoefte gelijk blijft of toeneemt. Toch is niet elke magnesiumvorm hetzelfde.",
 

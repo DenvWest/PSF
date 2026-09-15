@@ -12,12 +12,12 @@ export const magnesiumData: ComparisonPageData = {
   category: "magnesium",
   slug: "magnesium",
   guideHref: "/supplementen/magnesium",
-  h1: "Welke magnesium past bij jou?",
+  h1: "Beste magnesium: bisglycinaat, citraat of complex?",
   intro:
     "Slecht slapen, gespannen spieren of moeilijk tot rust komen? Magnesium wordt vaak genoemd — maar bisglycinaat, citraat of complex maakt wél uit. Drie producten vergeleken op vorm, elementaire dosering en prijs per dag.",
-  seoTitle: "Beste magnesium supplement 2026 — onafhankelijk vergeleken",
+  seoTitle: "Beste magnesium 2026: bisglycinaat, citraat of complex",
   seoDescription:
-    "Vergelijk magnesiumsupplementen op vorm (bisglycinaat, citraat, complex), dosering en prijs per dag. Onafhankelijke analyse voor mannen 30+.",
+    "Bisglycinaat, citraat of complex? Drie magnesiumsupplementen vergeleken op vorm, elementaire mg per dag en prijs per dag. Voor mannen van 30 en ouder.",
   lastUpdated: "2026-04-18",
   tableDoseringColumnLabel: "Elementair mg / dag",
   topProductLabel: "Beste allround",
