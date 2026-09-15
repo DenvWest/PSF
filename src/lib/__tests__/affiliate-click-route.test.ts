@@ -80,6 +80,31 @@ describe("POST /api/affiliate/click — zonder nurture-token", () => {
     expect(emitCall.payload.profile_label).toBeUndefined();
   });
 
+  it("neemt pagina en surface mee in het domain-event", async () => {
+    const { POST } = await import("@/app/api/affiliate/click/route");
+
+    const req = makeRequest({
+      product_id: "vitaminstore-super-magnesium",
+      categorie: "magnesium",
+      pagina: "/beste/magnesium",
+      surface: "choice-hero",
+    });
+
+    const res = await POST(req as Parameters<typeof POST>[0]);
+    expect(res.status).toBe(200);
+
+    const emitCall = mockEmitEvent.mock.calls[0]?.[0] as {
+      payload: Record<string, unknown>;
+    };
+    expect(emitCall.payload.pagina).toBe("/beste/magnesium");
+    expect(emitCall.payload.surface).toBe("choice-hero");
+
+    const insertArg = mockInsert.mock.calls[0][0] as Record<string, unknown>;
+    expect(insertArg.pagina).toBe("/beste/magnesium");
+    expect(insertArg.categorie).toBe("magnesium");
+    expect("surface" in insertArg).toBe(false);
+  });
+
   it("affiliate_clicks insert blijft ongewijzigd (geen nt-veld)", async () => {
     const { POST } = await import("@/app/api/affiliate/click/route");
 
@@ -176,6 +201,8 @@ describe("POST /api/affiliate/click — met geldig nurture-token", () => {
     const ALLOWED_KEYS = new Set([
       "categorie",
       "comparison_slug",
+      "pagina",
+      "surface",
       "session_id",
       "sequence_day",
       "profile_label",

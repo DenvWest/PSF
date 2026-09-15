@@ -7,6 +7,7 @@ export type RateLimitRoute =
   | "contact"
   | "evidence_chat"
   | "intake_session"
+  | "comparison_view"
   | "intake_log_read"
   | "intake_chat"
   | "intake_feedback"
@@ -31,6 +32,7 @@ const ENV_LIMIT_KEYS: Record<RateLimitRoute, string> = {
   contact: "CONTACT_RATE_LIMIT",
   evidence_chat: "EVIDENCE_CHAT_RATE_LIMIT",
   intake_session: "INTAKE_SESSION_RATE_LIMIT",
+  comparison_view: "COMPARISON_VIEW_RATE_LIMIT",
   intake_log_read: "INTAKE_LOG_READ_RATE_LIMIT",
   intake_chat: "INTAKE_CHAT_RATE_LIMIT",
   intake_feedback: "INTAKE_FEEDBACK_RATE_LIMIT",
@@ -56,6 +58,7 @@ const ENV_WINDOW_KEYS: Record<RateLimitRoute, string> = {
   contact: "CONTACT_RATE_LIMIT_WINDOW_MS",
   evidence_chat: "EVIDENCE_CHAT_RATE_LIMIT_WINDOW_MS",
   intake_session: "INTAKE_SESSION_RATE_LIMIT_WINDOW_MS",
+  comparison_view: "COMPARISON_VIEW_RATE_LIMIT_WINDOW_MS",
   intake_log_read: "INTAKE_LOG_READ_RATE_LIMIT_WINDOW_MS",
   intake_chat: "INTAKE_CHAT_RATE_LIMIT_WINDOW_MS",
   intake_feedback: "INTAKE_FEEDBACK_RATE_LIMIT_WINDOW_MS",
@@ -81,6 +84,9 @@ const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   contact: { limit: 5, windowMs: 10 * 60 * 1000 },
   evidence_chat: { limit: 20, windowMs: 15 * 60 * 1000 },
   intake_session: { limit: 20, windowMs: 15 * 60 * 1000 },
+  // Eigen emmer: het bekijken van vergelijkingspagina's mag het intake-budget
+  // niet opeten — anders kost rondkijken je de meting van de trechter zelf.
+  comparison_view: { limit: 60, windowMs: 15 * 60 * 1000 },
   intake_log_read: { limit: 60, windowMs: 15 * 60 * 1000 },
   intake_chat: { limit: 30, windowMs: 15 * 60 * 1000 },
   intake_feedback: { limit: 10, windowMs: 15 * 60 * 1000 },
@@ -106,6 +112,7 @@ const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   contact: { limit: 1000, windowMs: 60 * 1000 },
   evidence_chat: { limit: 1000, windowMs: 60 * 1000 },
   intake_session: { limit: 1000, windowMs: 60 * 1000 },
+  comparison_view: { limit: 1000, windowMs: 60 * 1000 },
   intake_log_read: { limit: 1000, windowMs: 60 * 1000 },
   intake_chat: { limit: 1000, windowMs: 60 * 1000 },
   intake_feedback: { limit: 1000, windowMs: 60 * 1000 },

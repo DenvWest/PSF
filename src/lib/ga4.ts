@@ -50,6 +50,7 @@ export function trackAffiliateKlik(params: {
   product_naam: string;
   merk: string;
   positie_op_pagina: number;
+  categorie: string;
 }) {
   trackEvent(GA4_EVENTS.AFFILIATE_KLIK, params);
 }

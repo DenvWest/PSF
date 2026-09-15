@@ -15,7 +15,11 @@ function setMarketingConsent(state: "granted" | "denied" | null) {
 
 function renderLink() {
   render(
-    <AffiliateLink affiliateSlug="arctic-blue-visolie" sourcePage="test">
+    <AffiliateLink
+      affiliateSlug="arctic-blue-visolie"
+      category="omega-3"
+      sourcePage="test"
+    >
       Bekijk bij partner
     </AffiliateLink>,
   );
@@ -63,7 +67,7 @@ describe("AffiliateLink — marketing-consent-gate", () => {
     setMarketingConsent("granted");
     const link = renderLink();
 
-    expect(link.getAttribute("rel")).toBe("noopener noreferrer sponsored");
+    expect(link.getAttribute("rel")).toBe("nofollow sponsored noopener noreferrer");
     expect(link.getAttribute("target")).toBe("_blank");
     expect(link.getAttribute("referrerPolicy")).toBe("strict-origin");
   });
@@ -72,8 +76,14 @@ describe("AffiliateLink — marketing-consent-gate", () => {
 describe("AffiliateLink — onbekende slug", () => {
   it("toont een statusregel in plaats van een dode link", () => {
     render(
-      // @ts-expect-error — bewust een slug zonder link, om de fallback te dekken
-      <AffiliateLink affiliateSlug="bestaat-niet">Koop</AffiliateLink>,
+      <AffiliateLink
+        // @ts-expect-error — bewust een slug zonder link, om de fallback te dekken
+        affiliateSlug="bestaat-niet"
+        category="omega-3"
+        sourcePage="test"
+      >
+        Koop
+      </AffiliateLink>,
     );
 
     expect(screen.getByRole("status").textContent).toContain(

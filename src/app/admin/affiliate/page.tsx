@@ -11,7 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import type { AdminAffiliatePayload } from "@/app/api/admin/affiliate/route";
-import type { CountRow } from "@/lib/affiliate-analytics";
+import type { ComparisonFunnelRow, CountRow } from "@/lib/affiliate-analytics";
 
 function formatNlDay(iso: string): string {
   if (!iso) return "—";
@@ -21,6 +21,21 @@ function formatNlDay(iso: string): string {
     day: "numeric",
     month: "short",
   });
+}
+
+function formatCtr(row: ComparisonFunnelRow): string {
+  if (row.ctr === null) return "—";
+  return `${(row.ctr * 100).toLocaleString("nl-NL", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })}%`;
+}
+
+/** Wat deze regel je als eerste vertelt — de readout moet een volgorde geven. */
+function funnelVerdict(row: ComparisonFunnelRow): string {
+  if (row.views === 0) return "Geen bezoekers — distributie eerst";
+  if (row.clicks === 0) return "Wel bezoek, geen klik — conversie eerst";
+  return "Klikt al — verdubbelen";
 }
 
 function horizontalBarHeight(rowCount: number): number {
@@ -277,6 +292,50 @@ export default function AdminAffiliatePage() {
                   <p className="mt-2 text-[13px] text-[#999]">
                     Laatste 30 kalenderdagen
                   </p>
+                </div>
+              </section>
+
+              <section
+                className="rounded-xl border bg-white p-6"
+                style={{ borderColor: "#e8e6e1" }}
+              >
+                <h2 className="text-lg font-semibold text-[#1a1a1a]">
+                  Conversie per vergelijkingspagina
+                </h2>
+                <p className="mt-2 text-sm text-[#999]">
+                  Weergaves tellen mee vanaf analytics-toestemming, klikken vanaf
+                  marketing-toestemming — de CTR is daardoor een ondergrens.
+                </p>
+                <div className="mt-6 overflow-x-auto">
+                  <table className="w-full min-w-[520px] text-left text-sm">
+                    <thead>
+                      <tr
+                        className="border-b text-[13px] text-[#999]"
+                        style={{ borderColor: "#e8e6e1" }}
+                      >
+                        <th className="pb-3 pr-4 font-medium">Pagina</th>
+                        <th className="pb-3 pr-4 font-medium">Weergaves</th>
+                        <th className="pb-3 pr-4 font-medium">Klikken</th>
+                        <th className="pb-3 pr-4 font-medium">CTR</th>
+                        <th className="pb-3 font-medium">Wat dit zegt</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.comparisonFunnel.map((row) => (
+                        <tr
+                          key={row.slug}
+                          className="border-b last:border-b-0"
+                          style={{ borderColor: "#e8e6e1" }}
+                        >
+                          <td className="py-3 pr-4 text-[#1a1a1a]">{row.path}</td>
+                          <td className="py-3 pr-4 text-[#555]">{row.views}</td>
+                          <td className="py-3 pr-4 text-[#555]">{row.clicks}</td>
+                          <td className="py-3 pr-4 text-[#555]">{formatCtr(row)}</td>
+                          <td className="py-3 text-[#555]">{funnelVerdict(row)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </section>
 

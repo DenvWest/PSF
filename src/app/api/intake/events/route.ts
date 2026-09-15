@@ -6,7 +6,10 @@ import {
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
-import { getRateLimitConfig } from "@/lib/rate-limit-config";
+import {
+  getRateLimitConfig,
+  type RateLimitRoute,
+} from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
 
 const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
@@ -19,6 +22,7 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "dashboard.schap_getoond",
   "dashboard.advies_gate_passed",
   "dashboard.afleiding_opened",
+  "comparison.page_viewed",
   "intake.started",
   "intake.phase_completed",
   "intake.theme_revealed",
@@ -59,23 +63,30 @@ function normalizePayload(raw: unknown): Record<string, unknown> {
   return out;
 }
 
+/**
+ * Welke emmer dit event uit eet. Een paginaweergave op /beste/* komt van koud
+ * verkeer dat nog niets gekozen heeft; die mag het krappe intake-budget van
+ * 20 verzoeken niet opsouperen, anders verliest de trechtermeting events juist
+ * bij de bezoeker die wél doorklikt.
+ */
+function rateLimitRouteFor(eventType: string): RateLimitRoute {
+  return eventType === "comparison.page_viewed"
+    ? "comparison_view"
+    : "intake_session";
+}
+
+function tooManyRequests(retryAfterSeconds: number) {
+  return NextResponse.json(
+    { error: "Te veel pogingen. Probeer het over een paar minuten opnieuw." },
+    {
+      status: 429,
+      headers: { "Retry-After": String(retryAfterSeconds) },
+    },
+  );
+}
+
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = await consumeRateLimitForIp(
-    "intake_session",
-    clientIp,
-    getRateLimitConfig("intake_session"),
-  );
-
-  if (!rateLimit.allowed) {
-    return NextResponse.json(
-      { error: "Te veel pogingen. Probeer het over een paar minuten opnieuw." },
-      {
-        status: 429,
-        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
-      },
-    );
-  }
 
   const rawCookie = request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value;
   const cookieSessionId = verifySignedIntakeSessionCookie(rawCookie);
@@ -84,16 +95,43 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
+    // Onleesbare body telt mee in de strengste emmer — anders is dit een gratis
+    // manier om de limiet te omzeilen.
+    await consumeRateLimitForIp(
+      "intake_session",
+      clientIp,
+      getRateLimitConfig("intake_session"),
+    );
     return NextResponse.json({ error: "Ongeldig verzoek." }, { status: 400 });
   }
 
   if (!body || typeof body !== "object" || Array.isArray(body)) {
+    await consumeRateLimitForIp(
+      "intake_session",
+      clientIp,
+      getRateLimitConfig("intake_session"),
+    );
     return NextResponse.json({ error: "Ongeldig verzoek." }, { status: 400 });
   }
 
   const record = body as Record<string, unknown>;
   const eventTypeRaw =
     typeof record.event_type === "string" ? record.event_type.trim() : "";
+
+  const isToegestaan =
+    isDomainEventType(eventTypeRaw) && CLIENT_EMIT_TYPES.has(eventTypeRaw);
+  const emmer: RateLimitRoute = isToegestaan
+    ? rateLimitRouteFor(eventTypeRaw)
+    : "intake_session";
+  const rateLimit = await consumeRateLimitForIp(
+    emmer,
+    clientIp,
+    getRateLimitConfig(emmer),
+  );
+
+  if (!rateLimit.allowed) {
+    return tooManyRequests(rateLimit.retryAfterSeconds);
+  }
 
   if (!isDomainEventType(eventTypeRaw)) {
     return NextResponse.json({ error: "Ongeldig event." }, { status: 400 });
@@ -107,9 +145,12 @@ export async function POST(request: NextRequest) {
     typeof record.session_id === "string" ? record.session_id.trim() : "";
   const sessionId = cookieSessionId ?? (bodySessionId || null);
 
+  // comparison.page_viewed komt van koud extern verkeer op /beste/* — daar is per
+  // definitie nog geen intake-sessie. Zonder deze uitzondering telt de noemer niets.
   const sessionOptionalEvent =
     eventTypeRaw === "dashboard.first_checkin_started" ||
     eventTypeRaw === "dashboard.vitality_scored" ||
+    eventTypeRaw === "comparison.page_viewed" ||
     eventTypeRaw === "intake.started" ||
     eventTypeRaw === "intake.phase_completed";
   if (!sessionId && !sessionOptionalEvent) {

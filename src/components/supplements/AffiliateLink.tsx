@@ -12,21 +12,27 @@ import {
 } from "@/lib/nurture-click-attribution";
 import { readMarketingConsentStateClient } from "@/lib/marketing-consent-client";
 import { clarityTag } from "@/lib/clarity";
+import type { SupplementCategory } from "@/types/supplement";
 
 type Props = {
   affiliateSlug: AffiliateSlug;
   children: ReactNode;
-  /** Optioneel: extra context voor GA-affiliate_click (page_type). */
-  sourcePage?: string;
+  /**
+   * Stofcategorie van de pagina waar de link staat. Landt als `categorie` in
+   * affiliate_clicks en als `item_category` in GA4 — zonder dit veld valt elke
+   * klik in één bak en is de readout per vergelijkingspagina niet af te lezen.
+   */
+  category: SupplementCategory;
+  /** Welk blok op de pagina de klik opleverde (choice-hero, product-card, …). */
+  sourcePage: string;
   position?: number;
   className?: string;
 };
 
-const SUPABASE_CLICK_SOURCE = "vergelijking";
-
 export function AffiliateLink({
   affiliateSlug,
   children,
+  category,
   sourcePage,
   position,
   className,
@@ -49,7 +55,7 @@ export function AffiliateLink({
     <a
       href={href}
       target="_blank"
-      rel="noopener noreferrer sponsored"
+      rel="nofollow sponsored noopener noreferrer"
       referrerPolicy="strict-origin"
       title="Schakel marketingcookies in via cookievoorkeuren om naar de partner te gaan"
       className={className}
@@ -64,18 +70,22 @@ export function AffiliateLink({
 
         const positionStr = position !== undefined ? String(position) : undefined;
         trackAffiliateClick(affiliateSlug, {
-          pageType: sourcePage ?? SUPABASE_CLICK_SOURCE,
+          pageType: sourcePage,
           position: positionStr,
+          category,
         });
         trackAffiliateKlik({
           product_naam: affiliateSlug,
           merk: affiliateSlug.split("-").slice(0, -1).join("-") || affiliateSlug,
           positie_op_pagina: position ?? 0,
+          categorie: category,
         });
+        clarityTag("affiliate_click_categorie", category);
         void trackClick({
           product_id: affiliateSlug,
           product_naam: affiliateSlug,
-          categorie: SUPABASE_CLICK_SOURCE,
+          categorie: category,
+          surface: sourcePage,
           pagina:
             typeof window !== "undefined" ? window.location.pathname : "",
           nt: getNurtureToken() ?? undefined,

@@ -11,6 +11,7 @@ type ClientEmitType = Extract<
   | "dashboard.schap_getoond"
   | "dashboard.advies_gate_passed"
   | "dashboard.afleiding_opened"
+  | "comparison.page_viewed"
   | "intake.started"
   | "intake.phase_completed"
   | "intake.theme_revealed"

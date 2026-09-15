@@ -74,6 +74,7 @@ export function ComboVariantSection({ data, products }: Props) {
               {isPrimary ? (
                 <AffiliateLink
                   affiliateSlug={route.affiliateSlug}
+                  category={data.category}
                   sourcePage="combo-variant"
                   position={i + 1}
                   className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
@@ -83,6 +84,7 @@ export function ComboVariantSection({ data, products }: Props) {
               ) : (
                 <AffiliateLink
                   affiliateSlug={route.affiliateSlug}
+                  category={data.category}
                   sourcePage="combo-variant"
                   position={i + 1}
                   className="mt-4 inline-flex text-sm font-medium text-emerald-700 underline decoration-emerald-300 underline-offset-4 transition hover:text-emerald-800"
@@ -100,6 +102,7 @@ export function ComboVariantSection({ data, products }: Props) {
           <ProductCard
             key={product.slug}
             product={product}
+            category={data.category}
             position={i + 1}
             isPrimary={product.slug === primarySlug}
           />

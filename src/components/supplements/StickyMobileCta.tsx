@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { SupplementProduct } from "@/types/supplement";
+import type { SupplementCategory, SupplementProduct } from "@/types/supplement";
 import { AffiliateLink } from "@/components/supplements/AffiliateLink";
 import {
   buildAffiliateCtaLabel,
   getProductPricePerDay,
 } from "@/lib/comparison-cta-label";
 
-type Props = { topProduct: SupplementProduct };
+type Props = { topProduct: SupplementProduct; category: SupplementCategory };
 
-export function StickyMobileCta({ topProduct }: Props) {
+export function StickyMobileCta({ topProduct, category }: Props) {
   const [visible, setVisible] = useState(false);
   const price = getProductPricePerDay(topProduct);
   const ctaLabel = buildAffiliateCtaLabel(topProduct.bestFor, price);
@@ -39,6 +39,7 @@ export function StickyMobileCta({ topProduct }: Props) {
         </div>
         <AffiliateLink
           affiliateSlug={topProduct.affiliateSlug}
+          category={category}
           sourcePage="sticky-cta"
           position={1}
           className="max-w-[min(200px,48vw)] shrink-0 truncate whitespace-nowrap rounded-xl bg-emerald-600 px-3 py-2.5 text-xs font-semibold text-white transition hover:bg-emerald-700 sm:max-w-none sm:px-4 sm:text-sm"

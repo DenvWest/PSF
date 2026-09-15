@@ -8,7 +8,9 @@ import {
   getClicksPerCategory,
   getClicksPerPage,
   getClicksPerSubId,
+  getComparisonFunnel,
   getIntakeByReferralSource,
+  type ComparisonFunnelRow,
   type CountRow,
   type TrendRow,
 } from "@/lib/affiliate-analytics";
@@ -25,6 +27,7 @@ export type AdminAffiliatePayload = {
   clicksPerSubId: CountRow[];
   clicksPerCategory: CountRow[];
   clickTrend: TrendRow[];
+  comparisonFunnel: ComparisonFunnelRow[];
   intakeByReferralSource: CountRow[];
 };
 
@@ -69,12 +72,14 @@ export async function GET(request: NextRequest) {
       clicksPerSubId,
       clicksPerCategory,
       clickTrend,
+      comparisonFunnel,
       intakeByReferralSource,
     ] = await Promise.all([
       getClicksPerPage(),
       getClicksPerSubId(),
       getClicksPerCategory(),
       getClickTrend(),
+      getComparisonFunnel(),
       getIntakeByReferralSource(),
     ]);
 
@@ -85,6 +90,7 @@ export async function GET(request: NextRequest) {
       clicksPerSubId,
       clicksPerCategory,
       clickTrend,
+      comparisonFunnel,
       intakeByReferralSource,
     };
 
