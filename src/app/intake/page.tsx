@@ -1,14 +1,18 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
 import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 import IntakeClient from "./IntakeClient";
 
+const TITLE = "Gratis Leefstijlcheck voor 30-plussers";
+const DESCRIPTION = `18 vragen, 3 minuten: persoonlijk inzicht in slaap, stress, energie en herstel. Gratis, anoniem — geen diagnose, wel een ${INTAKE_DELIVERABLE.intakeMetadataSuffix}.`;
+
 export const metadata: Metadata = {
-  title: "Gratis Leefstijlcheck voor 30-plussers",
-  description:
-    `18 vragen, 3 minuten: persoonlijk inzicht in slaap, stress, energie en herstel. Gratis, anoniem — geen diagnose, wel een ${INTAKE_DELIVERABLE.intakeMetadataSuffix}.`,
+  title: TITLE,
+  description: DESCRIPTION,
   ...canonicalMetadata("/intake"),
+  ...basicOpenGraph({ path: "/intake", title: TITLE, description: DESCRIPTION }),
 };
 
 // useSearchParams() in IntakeClient requires a Suspense boundary; without it

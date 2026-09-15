@@ -11,6 +11,7 @@ import {
   resolveDashboardUnlockVariant,
 } from "@/lib/dashboard-unlock-variant";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
 import {
   buildFaqSchema,
   buildHowToSchema,
@@ -20,6 +21,11 @@ export const metadata: Metadata = {
   title: DASHBOARD_UNLOCK_METADATA.title,
   description: DASHBOARD_UNLOCK_METADATA.description,
   ...canonicalMetadata("/hoe-werkt-dashboard"),
+  ...basicOpenGraph({
+    path: "/hoe-werkt-dashboard",
+    title: DASHBOARD_UNLOCK_METADATA.title,
+    description: DASHBOARD_UNLOCK_METADATA.description,
+  }),
 };
 
 type HoeWerktDashboardPageProps = {

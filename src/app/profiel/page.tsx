@@ -4,12 +4,17 @@ import Container from "@/components/layout/Container";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { PROFILE_PAGES } from "@/data/profiles";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE = "Profielen: Welk Type Ben Jij?";
+const DESCRIPTION =
+  "Profielen voor dertigers en veertigers: Stressdrager, Lage Energie, Onrustige Slaper en Overtrainer. Herken jezelf en ontdek wat je kunt doen.";
 
 export const metadata: Metadata = {
-  title: "Profielen: Welk Type Ben Jij?",
-  description:
-    "Profielen voor dertigers en veertigers: Stressdrager, Lage Energie, Onrustige Slaper en Overtrainer. Herken jezelf en ontdek wat je kunt doen.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "https://perfectsupplement.nl/profiel" },
+  ...basicOpenGraph({ path: "/profiel", title: TITLE, description: DESCRIPTION }),
 };
 
 export default function ProfielOverzichtPage() {

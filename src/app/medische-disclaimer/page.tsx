@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
 import { LEEFSTIJL_DISCLAIMER } from "@/data/leefstijl-disclaimer";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE = "Medische Disclaimer";
+const DESCRIPTION =
+  "Medische disclaimer van PerfectSupplement. Lees hoe wij omgaan met medische informatie op dit platform.";
 
 export const metadata: Metadata = {
-  title: "Medische Disclaimer",
-  description:
-    "Medische disclaimer van PerfectSupplement. Lees hoe wij omgaan met medische informatie op dit platform.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: {
     canonical: "https://perfectsupplement.nl/medische-disclaimer",
   },
+  ...basicOpenGraph({ path: "/medische-disclaimer", title: TITLE, description: DESCRIPTION }),
 };
 
 export default function MedischeDisclaimerPage() {

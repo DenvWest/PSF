@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE = "Affiliate Disclosure";
+const DESCRIPTION =
+  "Affiliate disclosure van PerfectSupplement. Lees hoe wij omgaan met affiliate links en vergoedingen.";
 
 export const metadata: Metadata = {
-  title: "Affiliate Disclosure",
-  description:
-    "Affiliate disclosure van PerfectSupplement. Lees hoe wij omgaan met affiliate links en vergoedingen.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: {
     canonical: "https://perfectsupplement.nl/affiliate-disclosure",
   },
+  ...basicOpenGraph({ path: "/affiliate-disclosure", title: TITLE, description: DESCRIPTION }),
 };
 
 export default function AffiliateDisclosurePage() {

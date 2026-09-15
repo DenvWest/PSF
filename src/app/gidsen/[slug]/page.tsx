@@ -11,6 +11,7 @@ import {
   getGuideBySlug,
 } from "@/data/guides";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
 import type { GuideThema } from "@/types/guide-opt-in";
 
 type GuideLandingPageProps = {
@@ -33,10 +34,17 @@ export async function generateMetadata({
     };
   }
 
+  const title = guide.seoTitle ?? `Gratis ${guide.title}gids`;
+
   return {
-    title: guide.seoTitle ?? `Gratis ${guide.title}gids`,
+    title,
     description: guide.heroSub,
     ...canonicalMetadata(`/gidsen/${guide.key}`),
+    ...basicOpenGraph({
+      path: `/gidsen/${guide.key}`,
+      title,
+      description: guide.heroSub,
+    }),
   };
 }
 

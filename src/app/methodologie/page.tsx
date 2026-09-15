@@ -13,11 +13,17 @@ import {
 } from "@/components/methodology/methodology-typography";
 import { METHODOLOGY_METADATA, METHODOLOGY_SUPPLEMENTEN } from "@/data/methodology";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
 
 export const metadata: Metadata = {
   title: METHODOLOGY_METADATA.title,
   description: METHODOLOGY_METADATA.description,
   ...canonicalMetadata("/methodologie"),
+  ...basicOpenGraph({
+    path: "/methodologie",
+    title: METHODOLOGY_METADATA.title,
+    description: METHODOLOGY_METADATA.description,
+  }),
 };
 
 export default function MethodologiePage() {

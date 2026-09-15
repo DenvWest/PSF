@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import NutritionCapture from "@/components/intake/NutritionCapture";
+import { canonicalMetadata } from "@/lib/seo/canonical";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE = "Voedingscheck — PerfectSupplement";
+const DESCRIPTION =
+  "Beantwoord een paar korte vragen over wat je doorgaans eet en ontvang direct je voedingsscore, een inname-inschatting en leefstijladvies.";
 
 export const metadata: Metadata = {
-  title: "Voedingscheck — PerfectSupplement",
-  description:
-    "Beantwoord een paar korte vragen over wat je doorgaans eet en ontvang direct je voedingsscore, een inname-inschatting en leefstijladvies.",
+  title: TITLE,
+  description: DESCRIPTION,
+  ...canonicalMetadata("/intake/voeding"),
+  ...basicOpenGraph({ path: "/intake/voeding", title: TITLE, description: DESCRIPTION }),
 };
 
 function NutritionCaptureFallback() {

@@ -10,13 +10,18 @@ import {
   type FilterCategory,
 } from "@/data/guides";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE =
+  "Gratis gezondheidsgidsen: slaap, stress, energie, beweging en herstel";
+const DESCRIPTION =
+  "Compacte, onderbouwde gezondheidsgidsen voor 30-plussers. Kies slaap, stress, energie, beweging, herstel, overgang of testosteron — gratis via e-mail of webgids.";
 
 export const metadata: Metadata = {
-  title:
-    "Gratis gezondheidsgidsen: slaap, stress, energie, beweging en herstel",
-  description:
-    "Compacte, onderbouwde gezondheidsgidsen voor 30-plussers. Kies slaap, stress, energie, beweging, herstel, overgang of testosteron — gratis via e-mail of webgids.",
+  title: TITLE,
+  description: DESCRIPTION,
   ...canonicalMetadata("/gidsen"),
+  ...basicOpenGraph({ path: "/gidsen", title: TITLE, description: DESCRIPTION }),
 };
 
 type GidsenPageProps = {
