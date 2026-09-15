@@ -65,7 +65,7 @@ const faqSchema = {
       name: "Welk supplement helpt het beste tegen stress?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (officieel erkend bij voldoende inname). Voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim; sommige studies gaan over hoe mensen spanning ervaren — vergelijk producten op kwaliteit en overleg bij medicatie. Zie ook onze ashwagandha‑pagina.",
+        text: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (officieel erkend bij voldoende inname). Ashwagandha wordt in studies besproken rond spanning — vergelijk producten op extract en withanoliden op het etiket. Zie ook onze ashwagandha‑pagina.",
       },
     },
     {
@@ -369,8 +369,7 @@ export default function StressVerminderenManPage() {
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">Ashwagandha (KSM-66)</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Ashwagandha wordt in studies vaak besproken rond hoe mensen spanning ervaren.
-                  Voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim. We tonen wat
-                  het onderzoek laat zien, zonder beloftes. KSM‑66 is een veelgebruikt
+                  We tonen wat het onderzoek laat zien, zonder uitkomstbeloftes. KSM‑66 is een veelgebruikt
                   gestandaardiseerd extract — vergelijk producten op kwaliteit en overleg bij
                   medicatie.
                 </p>
@@ -607,10 +606,9 @@ export default function StressVerminderenManPage() {
                     </summary>
                     <div className="px-5 pb-5 leading-relaxed text-gray-700">
                       Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een
-                      normale psychologische functie (officieel erkend bij voldoende inname). Voor
-                      ashwagandha bestaat nog geen Europees erkende gezondheidsclaim; sommige
-                      studies gaan over hoe mensen spanning ervaren — vergelijk producten op
-                      kwaliteit en overleg bij medicatie. Zie ook onze ashwagandha‑pagina.
+                      normale psychologische functie (officieel erkend bij voldoende inname).
+                      Ashwagandha wordt in studies besproken rond spanning — vergelijk producten op
+                      extract en withanoliden op het etiket. Zie ook onze ashwagandha‑pagina.
                     </div>
                   </details>
 

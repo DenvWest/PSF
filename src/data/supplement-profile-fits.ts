@@ -49,7 +49,7 @@ export const SUPPLEMENT_PROFILE_FITS: Record<
       slug: "onrustige-slaper",
       label: "Onrustige Slaper",
       snippet:
-        "Lang wakker liggen door prikkels? Combineer slaaphygiëne met zorgvuldig gekozen supplementen — voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim.",
+        "Lang wakker liggen door prikkels? Combineer slaaphygiëne met zorgvuldig gekozen supplementen — vergelijk ashwagandha op extract en withanoliden op het etiket.",
     },
   ],
   "omega-3": [
