@@ -66,6 +66,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | [`core/ACCOUNT_DASHBOARD_SYSTEM.md`](core/ACCOUNT_DASHBOARD_SYSTEM.md) | Passwordless account (OTP/magic-link), `psf_account`-cookie, claim/revoke, dashboard-dataflow, check-in-meet-lus (F1–F3) |
 | [`plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md`](plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md) | Lifestyle Planning Engine (Kompas): scheduling, prioriteit, beweegsnacks, agenda/wearables, notificaties — Beweegplan als eerste module |
 | [`plan/LEEFSTIJLPLAN_HANDBOOK.md`](plan/LEEFSTIJLPLAN_HANDBOOK.md) | Leefstijlplan content/checklist-laag (templates, voortgang, events) |
+| [`plan/ARCHITECTUUR_ECOSYSTEEM_CONTENTGRAAF_2026-09.md`](plan/ARCHITECTUUR_ECOSYSTEEM_CONTENTGRAAF_2026-09.md) | Contentgraaf: artikel ↔ nutriënt ↔ voeding ↔ check ↔ supplement ↔ vergelijking. Audit + doelarchitectuur + gefaseerd codeerplan (graaf in code, niet in Supabase) |
 
 ### Layer 3 — Work (tijdelijk, verandert regelmatig)
 
@@ -114,6 +115,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Datum | Beslissing | Gedocumenteerd in |
 |---|---|---|
+| 15 sep 2026 | Ecosysteem-contentgraaf: de keten artikel→nutriënt→voeding→check→supplement bestaat al achter de check maar raakt de publieke laag nergens (0/78 artikelen linken naar de voedingscheck; 8 supplementgidsen ontbreken in de sitemap; 0 publieke pagina's op 371 voedingsmiddelen). Graaf blijft in code (`CONTENT_METADATA` uitbreiden), niet in Supabase; 5 nutriëntpagina's i.p.v. 371 voedingsmiddelpagina's | `plan/ARCHITECTUUR_ECOSYSTEEM_CONTENTGRAAF_2026-09.md` |
 | 16 juli 2026 | Pre-traffic gates: 1.4.0 live, funnel-events, waitlist-migratie prod, item-baseline N=2 | `core/CURRENT_SPRINT.md` + `research/ITEM_ANALYSE_BASELINE.md` |
 | 16 juli 2026 | Lifestyle Planning Engine: generieke leefstijlarchitectuur onder Kompas; content-laag (leefstijlplan) + planning-laag (`lp_*`); Beweegplan (hoofdactiviteiten + beweegsnacks) als eerste module | `plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md` |
 | 27 juni 2026 | Aanpak-modus maand-roadmap (27 jun–24 jul): één categorie diep (sport/kracht: eiwit→kracht→creatine) als bewezen sjabloon vóór breedte; nutriënt-personalisatie = surfacing van bestaande lib (computeProteinTarget/movement-pal) in de Aanpak-kaart; categorie-map als visie; meet-vóór-uitbreiden | `plan/PLAN_AANPAK_MAAND_ROADMAP.md` |
