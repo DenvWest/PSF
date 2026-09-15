@@ -19,7 +19,7 @@ export const vitamineDData: ComparisonPageData = {
     "Vitamine D3 Vergelijken: 3 Merken Getest (2026) | PerfectSupplement",
   seoDescription:
     "3 vitamine D3-producten eerlijk vergeleken op dosering, kwaliteit en prijs per dag (v.a. €0,14). Ook D3+K2 — zonder de hartclaim die EFSA afwees.",
-  lastUpdated: "2026-09-01",
+  lastUpdated: "2026-09-15",
   tableDoseringColumnLabel: "µg (IU) / dag",
   ogImage: "https://perfectsupplement.nl/images/producten/Vitaminstore-Super-D3.jpg",
   ogImageAlt: "Vitaminstore Super D3 — topkeuze in de vergelijking",
@@ -469,6 +469,11 @@ export const vitamineDData: ComparisonPageData = {
     "Transparantie",
   ],
   faq: [
+    {
+      question: "Welke vitamine D is het beste?",
+      answer:
+        "Dat hangt af van je situatie: dagelijks onderhoud (25 mcg), een hogere dosis bij tekort of in de winter (75 mcg), of D3+K2 in één capsule. We vergelijken drie producten op dosering, kwaliteit en prijs per dag — Vitaminstore Super D3 scoort het best op prijs-kwaliteit (€0,14/dag, Quali-D keurmerk).",
+    },
     {
       question: "Hoeveel vitamine D heb ik per dag nodig?",
       answer:

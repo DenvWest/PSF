@@ -137,7 +137,7 @@ export default async function Page({ params }: PageProps) {
 
       <TrustBar />
 
-      <main className="pb-24 md:pb-12">
+      <main className="pb-[calc(6rem+env(safe-area-inset-bottom,0px))] md:pb-12">
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 pt-6">
           <IntakeResultsReturnBanner />
           <VoortgangReturnBanner surface="beste" />

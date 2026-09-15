@@ -282,6 +282,11 @@ export const magnesiumData: ComparisonPageData = {
         "Dat is persoonlijk. Magnesium draagt bij tot vermindering van vermoeidheid — veel mensen kiezen voor opname bij een maaltijd om maagcomfort te houden. Bij meerdere tabletten per dag kun je de dosis verdelen. Voor concrete klachten of medicatie: stem het af met je arts.",
     },
     {
+      question: "Kan ik magnesium combineren met medicijnen?",
+      answer:
+        "Sommige combinaties verdienen aandacht — bisfosfonaten, bepaalde antibiotica, maagzuurremmers en diuretica. Houd vaak enkele uren tussen inname en bespreek je volledige medicatielijst met je apotheker. Uitgebreid uitgelegd in [magnesium en medicijnen](/blog/magnesium-in-combinatie-met-medicijnen).",
+    },
+    {
       question: "Werkt magnesium samen met vitamine D?",
       answer:
         "Ja. Magnesium speelt onder meer mee bij de omzetting van vitamine D naar biologisch actieve vormen in het lichaam. Wie beide aanvult, doet er goed aan op beide te letten. Zie ook onze [vitamine D-vergelijking](/beste/vitamine-d).",
