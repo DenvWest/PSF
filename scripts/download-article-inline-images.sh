@@ -114,6 +114,11 @@ for entry in "${MAP[@]}"; do
   slug="${rest%%|*}"
   id="${rest##*|}"
 
+  if [ "$kind" = "kennisbank" ]; then
+    echo "→ $kind/$slug SKIP (Pexels via scripts/download-kennisbank-pexels.py)"
+    OK=$((OK + 1))
+    continue
+  fi
   if [ "$kind" = "blog" ]; then
     dest="$BLOG_OUT/${slug}.jpg"
   else

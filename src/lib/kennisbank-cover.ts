@@ -16,23 +16,23 @@ export interface KennisbankCover {
 const THEMA_COVER: Record<KennisbankTheme, KennisbankCover> = {
   "lichaam-veroudering": {
     src: "/images/kennisbank/thema-lichaam-veroudering.jpg",
-    alt: "Persoon in de buitenlucht bij natuurlijk licht, gericht op vitaliteit na 30",
+    alt: "Bergmeer tussen dennen en pieken in zacht licht",
   },
   "leefstijl-herstel": {
     src: "/images/kennisbank/thema-leefstijl-herstel.jpg",
-    alt: "Rustige slaapkamer met natuurlijk ochtendlicht",
+    alt: "Onopgemaakt bed in natuurlijk ochtendlicht",
   },
   supplementwetenschap: {
     src: "/images/kennisbank/thema-supplementwetenschap.jpg",
-    alt: "Supplementcapsules en natuurlijke ingrediënten op een licht werkblad",
+    alt: "Houten lepels met kleurrijke kruidenpoeders",
   },
   longevity: {
     src: "/images/kennisbank/thema-longevity.jpg",
-    alt: "Pad door een park bij zacht avondlicht",
+    alt: "Bergmeer met sparren en pieken in avondlicht",
   },
   "ps-score": {
     src: "/images/kennisbank/thema-ps-score.jpg",
-    alt: "Notitieboek en etiketonderzoek op een rustig werkblad",
+    alt: "Notitieboek, pen en thee op een gebreide deken",
   },
 };
 

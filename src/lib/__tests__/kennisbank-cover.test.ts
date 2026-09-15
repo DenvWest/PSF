@@ -31,4 +31,19 @@ describe("kennisbank-cover", () => {
       expect(existsSync(publicPad(src)), `${item.id} → ${src}`).toBe(true);
     }
   });
+
+  it("elk begrip heeft een eigen cover, geen gedeelde thema-fallback", () => {
+    const seen = new Map<string, string>();
+    for (const term of kennisbankTerms) {
+      expect(term.coverImage, term.slug).toBeDefined();
+      const cover = kennisbankCover(term);
+      expect(cover.src).toBe(term.coverImage);
+      expect(cover.src.includes("/thema-"), `${term.slug} valt terug op thema`).toBe(
+        false,
+      );
+      const previous = seen.get(cover.src);
+      expect(previous, `dubbele cover ${cover.src} (${previous} en ${term.slug})`).toBeUndefined();
+      seen.set(cover.src, term.slug);
+    }
+  });
 });
