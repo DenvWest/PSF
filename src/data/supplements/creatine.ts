@@ -13,11 +13,10 @@ export const creatineData: ComparisonPageData = {
   h1: "Beste creatine supplement 2026 — onafhankelijk vergeleken",
   intro:
     "Kracht verliest en herstel duurt langer na training? Creatine monohydraat is een van de best onderzochte supplementen voor spierkracht en herstel — maar zuiverheid en prijs per gram lopen uiteen. Drie producten vergeleken op kwaliteit en transparantie.",
-  seoTitle:
-    "Beste Creatine 2026 — Monohydraat Vergelijking",
+  seoTitle: "Creatine Monohydraat: 3 Poeders op Zuiverheid en €/gram",
   seoDescription:
-    "Vergelijk de beste creatine monohydraat supplementen op zuiverheid, Creapure® certificering en prijs. Onafhankelijk gescoord voor mannen 30+.",
-  lastUpdated: "2026-04-21",
+    "Drie creatine monohydraat-producten op zuiverheid, Creapure® vs micronized en prijs per gram (v.a. €0,04/g). Geen laadfase-verkopers.",
+  lastUpdated: "2026-09-15",
   tableDoseringColumnLabel: "Dosering / dag",
   ogImage: "https://perfectsupplement.nl/images/producten/vital-Nutrition-Creatine-Monohydraat.jpg",
   ogImageAlt: "Vital Nutrition Creatine Monohydraat — topkeuze in de vergelijking",
