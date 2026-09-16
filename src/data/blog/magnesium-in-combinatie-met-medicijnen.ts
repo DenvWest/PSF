@@ -11,7 +11,7 @@ export const magnesiumInCombinatieMetMedicijnenData: BlogArtikel = {
     "Magnesium is een van de meest gebruikte supplementen na je 30e — en een van de meest voorgeschreven groepen medicijnen (bloeddrukverlagers, maagzuurremmers, antibiotica) kan de opname of werking daarvan beïnvloeden. Dit artikel zet de bekende interacties op een rij, zonder een vervanging te zijn voor advies van je arts of apotheker.",
   leestijd: "7 min",
   gepubliceerdOp: "2026-09-02",
-  laatstBijgewerktOp: "2026-09-02",
+  laatstBijgewerktOp: "2026-09-15",
   secties: [
     {
       type: "tekst",
@@ -76,9 +76,9 @@ export const magnesiumInCombinatieMetMedicijnenData: BlogArtikel = {
     "magnesium-tekort-herkennen",
     "magnesium-wanneer-innemen",
   ],
-  metaTitle: "Magnesium in combinatie met medicijnen: interacties op een rij",
+  metaTitle: "Magnesium + medicijnen: PPI, antibiotica, bisfosfonaten",
   metaDescription:
-    "Magnesium en medicijnen: welke combinaties (bisfosfonaten, antibiotica, maagzuurremmers, diuretica) aandacht verdienen — en wanneer je je apotheker moet raadplegen.",
+    "Neem je omeprazol, doxycycline of alendroninezuur? Zo voorkom je opnameproblemen met magnesium — en wanneer je je apotheker belt.",
   keywords: [
     "magnesium in combinatie met medicijnen",
     "magnesium en medicijnen interactie",

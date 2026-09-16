@@ -8,11 +8,10 @@ export const eiwitpoederData: ComparisonPageData = {
   h1: "Beste Eiwitpoeder 2026",
   intro:
     "Spieren die langzamer herstellen of te weinig eiwit via je voeding? Whey of plantaardig maakt uit voor opname en prijs. Drie eiwitpoeders vergeleken op eiwitgehalte, zuiverheid en wat je per portie betaalt.",
-  seoTitle:
-    "Beste Eiwitpoeder 2026: Whey & Vegan Vergelijking",
+  seoTitle: "Eiwitpoeder: 3 Opties op Whey vs Plantaardig en €/portie",
   seoDescription:
-    "Welk eiwitpoeder past bij jou? Whey of plantaardig? Vergelijking op eiwitgehalte, opname, prijs en zuiverheid.",
-  lastUpdated: "2026-05-03",
+    "Whey, isolaat of plantaardig? Drie eiwitpoeders op eiwit per portie, zuiverheid en prijs per shake. Geen merk-ranking met 15 poeders.",
+  lastUpdated: "2026-09-15",
   tableDoseringColumnLabel: "Proteïne per portie",
   topProductLabel: "Beste allround",
   showEducationalLead: true,

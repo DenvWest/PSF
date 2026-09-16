@@ -7,12 +7,11 @@ export const ashwagandhaData: ComparisonPageData = {
   guideHref: "/supplementen/ashwagandha",
   h1: "Beste ashwagandha supplement 2026 — onafhankelijk vergeleken",
   intro:
-    "Constant alert en tegelijk uitgeput? Ashwagandha wordt vaak gekozen in drukke periodes — maar extract-type en withanolidegehalte verschillen sterk. Drie producten vergeleken op standaardisatie en transparantie. Voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim; vergelijk producten dus vooral op kwaliteit en specificaties, niet op beloofde uitkomsten.",
-  seoTitle:
-    "Beste Ashwagandha Supplement 2026 — KSM-66 Vergelijking",
+    "Constant alert en tegelijk uitgeput? Ashwagandha wordt vaak gekozen in drukke periodes — maar extract-type en withanolidegehalte verschillen sterk. Drie producten vergeleken op KSM-66, withanolide-% en prijs per dag.",
+  seoTitle: "Ashwagandha: 3 Extracten op Withanoliden en KSM-66",
   seoDescription:
-    "Vergelijk de beste ashwagandha supplementen met KSM-66 extract. Onafhankelijke scores op withanoliden, dosering en prijs voor mannen 30+.",
-  lastUpdated: "2026-04-19",
+    "KSM-66 of heel wortel? Drie ashwagandha-supplementen op withanolidegehalte, extracttype en dagprijs (v.a. €0,23). Geen top-20.",
+  lastUpdated: "2026-09-15",
   tableDoseringColumnLabel: "Dosering / dag",
   ogImage: "https://perfectsupplement.nl/images/producten/Vitaminstore-Ashwagandha-KSM-66.jpg",
   ogImageAlt: "Vitaminstore Ashwagandha KSM-66 — topkeuze in de vergelijking",

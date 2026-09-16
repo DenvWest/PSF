@@ -9,9 +9,10 @@
  *      regel staan die al opgelost is, dan faalt de test óók. De lijst kan
  *      alleen krimpen.
  *
- * Werkvolgorde: eerst de vergelijkingspagina's (daar komt het geld binnen),
- * daarna de gidsen. Het magnesium-paar staat er al niet meer in: /beste/magnesium
- * rankt en is als eerste aangescherpt, met de gids mee naar informationele vorm.
+ * Stand na B1: de titels en beschrijvingen van de zeven vergelijkingen zijn
+ * onderscheidend. Wat er nog staat zit vrijwel volledig in de H1's — de gidsen
+ * voeren allemaal "X: welke vorm past bij jou?", wat de keuzezin van de
+ * vergelijking is en dus de botsing in stand houdt. Dat is de volgende ronde.
  */
 export const SNIPPET_CONTRACT_BASELINE: readonly string[] = [
   // /beste/ashwagandha
@@ -21,13 +22,10 @@ export const SNIPPET_CONTRACT_BASELINE: readonly string[] = [
   "/beste/ashwagandha::sjabloon",
   // /beste/creatine
   //   · H1 botst met /supplementen/creatine — geen eigen onderscheidend woord
-  //   · Titel botst met /supplementen/creatine — geen eigen onderscheidend woord
   "/beste/creatine::intentie-botsing",
   //   · H1 is hetzelfde sjabloon als /beste/ashwagandha, /beste/vitamine-d, /beste/zink — alleen de stofnaam verschilt
   "/beste/creatine::sjabloon",
   // /beste/eiwitpoeder
-  //   · Beschrijving is 110 tekens (moet 120–160 zijn)
-  "/beste/eiwitpoeder::beschrijving-lengte",
   //   · H1 botst met /supplementen/eiwitpoeder — geen eigen onderscheidend woord
   "/beste/eiwitpoeder::intentie-botsing",
   // /beste/vitamine-d
@@ -42,8 +40,6 @@ export const SNIPPET_CONTRACT_BASELINE: readonly string[] = [
   "/beste/zink::intentie-botsing",
   //   · H1 is hetzelfde sjabloon als /beste/ashwagandha, /beste/vitamine-d, /beste/creatine — alleen de stofnaam verschilt
   "/beste/zink::sjabloon",
-  //   · Titel is 65 tekens (moet 30–60 zijn)
-  "/beste/zink::titel-lengte",
   // /supplementen/ashwagandha
   //   · Beschrijving is 90 tekens (moet 120–160 zijn)
   "/supplementen/ashwagandha::beschrijving-lengte",
@@ -59,7 +55,6 @@ export const SNIPPET_CONTRACT_BASELINE: readonly string[] = [
   //   · Beschrijving is 87 tekens (moet 120–160 zijn)
   "/supplementen/creatine::beschrijving-lengte",
   //   · H1 botst met /beste/creatine — geen eigen onderscheidend woord
-  //   · Titel botst met /beste/creatine — geen eigen onderscheidend woord
   "/supplementen/creatine::intentie-botsing",
   //   · H1 van een gidspagina gebruikt de keuzezin "past bij jou" — die hoort bij /beste/*
   "/supplementen/creatine::rolverdeling",

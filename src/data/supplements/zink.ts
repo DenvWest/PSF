@@ -15,11 +15,10 @@ export const zinkData: ComparisonPageData = {
   h1: "Beste zink supplement 2026 — onafhankelijk vergeleken",
   intro:
     "Vaak verkouden, langzaam herstel of twijfel over je voedingsstatus? Zinkvorm en dosering bepalen of een supplement zinvol is. Drie producten vergeleken op biobeschikbaarheid, elementaire mg per dag en prijs — zink draagt bij tot het immuunsysteem, eiwitsynthese en (officieel geformuleerd) tot de instandhouding van een normaal testosterongehalte in het bloed.",
-  seoTitle:
-    "Beste Zink Supplement 2026 — Methionine & Picolinaat Vergelijking",
+  seoTitle: "Zink Vergelijken: Methionine vs Picolinaat op Elementair Mg",
   seoDescription:
-    "Vergelijk de beste zink supplementen op biobeschikbaarheid, dosering en prijs. Zinkmethionine vs picolinaat — eerlijk gescoord voor mannen 30+.",
-  lastUpdated: "2026-04-21",
+    "Drie zinksupplementen op biobeschikbare vorm, elementaire mg per dag en dagprijs. Geen mega-doses boven ADH — wel eerlijk opneembaar.",
+  lastUpdated: "2026-09-15",
   tableDoseringColumnLabel: "Elementair zink / dag",
   ogImage: "https://perfectsupplement.nl/images/producten/vital-nutrition-zink-methionine.jpg",
   ogImageAlt: "Vital Nutrition Zink 15 mg — topkeuze in de vergelijking",

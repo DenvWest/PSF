@@ -118,7 +118,7 @@ export const CLAIM_STANCE_LABELS: Record<ClaimStance, string> = {
   voldoet: "Voldoet aan de EU-claimvoorwaarde",
   voldoet_deels: "Voldoet deels aan de EU-claimvoorwaarde",
   voldoet_niet: "Onder de EU-claimvoorwaarde",
-  geen_erkende_claim: "Geen Europees erkende claim",
+  geen_erkende_claim: "Op etiketspecificaties",
   onbepaald: "Dosering niet vast te stellen",
 };
 
@@ -503,7 +503,7 @@ export function buildProductSamenvatting(product: HubProduct): string {
       break;
     case "geen_erkende_claim":
       zinnen.push(
-        "Voor dit ingrediënt bestaat geen Europees erkende gezondheidsclaim, dus vergelijken we op samenstelling en dosering.",
+        "Voor dit ingrediënt vergelijken we op samenstelling, dosering en transparantie op het etiket.",
       );
       break;
     case "onbepaald":

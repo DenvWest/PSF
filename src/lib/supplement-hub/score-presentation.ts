@@ -101,7 +101,7 @@ export const CLAIM_PRESENTATION: Record<ClaimStance, ClaimPresentation> = {
   voldoet_deels: { short: "Deels", dot: "bg-amber-500", text: "text-amber-800" },
   voldoet_niet: { short: "Onder drempel", dot: "bg-amber-600", text: "text-amber-900" },
   geen_erkende_claim: {
-    short: "Geen EU-claim",
+    short: "Specificaties",
     dot: "bg-stone-300",
     text: "text-stone-500",
   },
