@@ -1191,6 +1191,52 @@ heeft gelegd.
 
 ---
 
+### FASE 4B — Het check-resultaat krijgt de voedingsroute (P0 · uitgevoerd 16 sep 2026)
+
+Niet vooraf gepland; volgde uit een vraag van Dennis bij het aanvullingsblok in het dashboard.
+
+**Wat er mis was.** `NutritionResultView` — wat 100% van de check-doeners ziet — toonde de
+verhoudingen, de kwaliteit en het aanvullingsadvies met één knop: *"Vergelijk objectief"* naar
+`/beste/*`. Dat is een sprong van meting naar product met de voedingsstap ertussenuit. De copy
+eronder zei het goede ("een aanvulling op een gemeten gat, geen vervanging van de leefstijl-stap"),
+maar de enige knop weersprak dat.
+
+**Wat er al bestond.** Drie componenten beantwoorden de vraag *"wat haal ik hiervan uit mijn eten"*
+al — en alle drie stonden achter de inlog:
+
+| Component | Wat het doet | Stond op |
+|---|---|---|
+| `VoedingVsSupplementTabel` | je bord naast het potje, twee kolommen per stof | Voortgang |
+| `NutrientRouteChoiceCard` | status + bronnen per portie + gegate vergelijk-deur | Kompas, Keuze |
+| `NutrientLogboekPanel` | de lijst daarvan, één stof tegelijk open | Kompas, Keuze |
+
+**Wat er nu staat.** `VoedingVsSupplementTabel` op het check-resultaat, onder de `VerhoudingTabel`,
+met `gateOpen`/`gateReden` uit `resolveNutritionGate`.
+
+**Waarom die tabel en niet het paneel.** De eerste bedrading koos `NutrientLogboekPanel`, en die
+faalde meteen op een React-context: het paneel draagt de *keuze* ("uit mijn eten" / "aanvullen") en
+schrijft die via `useVoortgangFavorites` naar `account_favorites`. Wie net de check deed heeft nog
+geen account, en een keuzeknop die niets bewaart is erger dan geen keuzeknop. Het resultaatscherm
+hoort de **uitlezing** te dragen; de keuze staat een stap verderop in het dashboard. Dat onderscheid
+was niet zichtbaar in de componentnamen — de typechecker vond het.
+
+**Acceptatiecriteria (alle gehaald)**
+- [x] Eén parse van het ladderrapport voedt feitenrijen, routestatussen én de poort — drie
+      afleidingen uit één bron, zodat het resultaat niet drie dingen over dezelfde antwoorden zegt
+- [x] Geen enkele `/beste/`-link op het resultaat zolang `resolveNutritionGate` dicht staat
+- [x] Bij terugkeer via `?results=` (geen sliders in state) valt het blok stil weg
+- [x] Geen opgeteld mg-getal en geen percentage van een dagbehoefte — dezelfde grens als in
+      `food-sources.ts` en `nutrient-rail.ts`
+- [x] Het resultaat draagt de uitlezing, niet de keuze (test op de afwezigheid van de keuzeknoppen)
+
+**Nog niet gedaan (B en C uit het voorstel)**
+- **B** — "Vergelijk objectief" krijgt het bord ervóór in het aanvullingsblok zelf (copy in
+  `results-reveal-copy.ts`).
+- **C** — de omgekeerde weg: op `/beste/*` en `/supplementen/*` een blok "dit haal je ook uit eten".
+  Dat is fase 5-werk en meteen de brug naar de nutriëntpagina's.
+
+---
+
 ### FASE 5 — Nutriëntpagina's (P1 · ~4 dagen · de grootste kans)
 
 **Doel** — het ontbrekende scharnier tussen artikel, voeding, check en supplement.
