@@ -70,8 +70,8 @@ Dat is precies het ontbrekende scharnier — het is de enige pagina-soort die ar
 
 ### De grootste kans in één zin
 
-> Vijf nutriëntpagina's en één `resolveNextStep()`-functie veranderen 115 doodlopende SEO-pagina's
-> in 115 ingangen naar het volledige ecosysteem — zonder één bestaande URL te wijzigen.
+> Vijf nutriëntpagina's en één `resolveNextStep()`-functie veranderen 119 doodlopende SEO-pagina's
+> in 119 ingangen naar het volledige ecosysteem — zonder één bestaande URL te wijzigen.
 
 ---
 
@@ -921,12 +921,12 @@ De contentgraaf is compile-time data. Het zwaarste dat erbij komt is een `Map`-o
 
 | Dimensie | Vandaag | Doel |
 |---|---|---|
-| Artikelen met een contextuele vervolgstap | 0 (wel 4 gestapelde generieke CTA's) | 115 / 115 |
+| Artikelen met een contextuele vervolgstap | 0 (wel 4 gestapelde generieke CTA's) | 119 / 119 |
 | Artikelen die naar de voedingscheck linken | 0 / 78 | ~45 / 78 (elk stuk met een nutriënt of voedingsthema) |
 | Publieke pagina's op de voedingsdatabase | 0 | 6 (1 hub + 5 stoffen) |
 | Supplementgidsen in de sitemap | 0 / 8 | 8 / 8 |
 | Weespagina's | 15 (gemeten met de volledige graaf; 9 als je alleen artikel→artikel telt) | 0, afgedwongen door een test |
-| Contentitems met nutriëntrelatie | 0 | ~60 |
+| Contentitems met nutriëntrelatie | 0 → **61** (fase 1 gereed) | 61+ |
 | Content-events | 4 losse | 4 systematische + 2 hergebruikt |
 | Concurrerende gids-URL's | 13 (6 thema's dubbel) | 7 |
 | Dynamische publieke routes | 38 (`/supplementen` + 37 kennisbank) | 1 |
@@ -1005,7 +1005,18 @@ het probleem is niet dat links kapot zijn, maar dat ze de verkeerde kant op wijz
 
 ### FASE 1 — Graafdimensie toevoegen (P0 · ~2 dagen)
 
-**Doel** — `nutrients`, `problem` en de afgeleide `check` in het bestaande overlay-model.
+**Status: uitgevoerd op 16 september 2026.** 61 van 119 contentitems dragen nu een stof.
+Klaar-check groen (`tsc` 0 · 302 testbestanden / 3001 tests · `eslint --max-warnings 0`).
+
+**Afwijking van dit plan: er is géén `problem`-veld gekomen.** `gapSignal` ís al de
+probleemverwijzing — het is wat de check meet en wat `recommendation-engine.ts` als trigger
+gebruikt. Een tweede veld met dezelfde betekenis levert gegarandeerd twee waarheden op die uit
+de pas lopen. In plaats daarvan geeft `PROBLEMS` de bestaande signalen alleen een naam, een zin
+in gebruikerstaal, hun stof en hun check. Eén bron, twee lezingen: de engine leest het signaal,
+de content leest het probleem. Een test dwingt af dat `PROBLEMS` exact de sleutels van
+`DeficiencySignals` dekt, zodat er geen tweede vocabulaire kan ontstaan.
+
+**Doel** — `nutrients` en de afgeleide `check` in het bestaande overlay-model.
 
 **Wijzigen**
 - `src/types/insight.ts` — `ContentMetadata` uitbreiden (zie §6.4)
@@ -1025,11 +1036,28 @@ het probleem is niet dat links kapot zijn, maar dat ze de verkeerde kant op wijz
 **Acceptatiecriteria**
 - [ ] `npx tsc --noEmit` groen
 - [ ] Elk item met `relatedSupplementId` in {omega-3, magnesium-glycinaat, zink, vitamine-d3, eiwitpoeder} heeft ook `nutrients`
-- [ ] `resolveCheck()` geeft voor alle 115 items een `ContentCheckId`; snapshot-test op de verdeling
+- [ ] `resolveCheck()` geeft voor alle 119 items een `ContentCheckId`; snapshot-test op de verdeling
 - [ ] Elke `CONTENT_CHECKS`-entry wijst naar een bestaande route
 
 **Risico** — het invullen van `nutrients` op 60 items is redactioneel werk, geen techniek.
 Mitigatie: begin met de vijf clusters die al een `relatedSupplementId` dragen — dat is ~80% automatisch afleidbaar.
+
+*Uitkomst:* 56 items afgeleid uit `relatedSupplementId`, 5 met de hand toegevoegd
+(`multivitamine-zinvol-na-40`, `multivitamine`, `krachtverlies-eiwitbehoefte-na-40`,
+`vermoeidheid-bloedwaarden-checken-mannen`, `chelaatvorm`). Verdeling per stof:
+vitamine D 17 · magnesium 16 · eiwit 14 · omega-3 13 · zink 4.
+
+**`nutrients` staat bewust los van `relatedSupplementId` en wordt niet afgeleid.** Die twee zijn
+conceptueel verschillend: het ene zegt welk product we vergelijken, het andere welke stof het stuk
+behandelt. Zouden we de stof afleiden uit de catalogus, dan bepaalt het commerciële aanbod de
+contentgraaf — precies de inversie die dit plan bestrijdt. Een stuk over magnesium uit voeding
+draagt de stof ook als we morgen geen magnesium meer vergelijken. Wel bewaakt een test de drift in
+de nuttige richting: een stuk met een nutriëntdragend supplement móét die stof ook dragen.
+
+**Creatine, melatonine en ashwagandha krijgen geen stof.** Ze staan niet in `NutrientId` en de
+voedingscheck meet ze niet. Voor die stukken valt `resolveCheck()` terug op het thema, en dat
+klopt inhoudelijk: de vraag na een creatine-artikel is niet "haal ik dit uit mijn eten" maar
+"traint mijn belasting hier tegenop" — en dat meet de beweegcheck.
 
 ---
 
@@ -1088,7 +1116,7 @@ alleen via interne links vindbaar zijn, worden expliciet aangeboden.
 als secundaire regel. Verwacht: hogere doorklik, lagere bounce. **Meet dit voordat je het overal uitrolt.**
 
 **Acceptatiecriteria**
-- [ ] `resolveNextStep()` geeft voor elk van de 115 knopen een primaire stap
+- [ ] `resolveNextStep()` geeft voor elk van de 119 knopen een primaire stap
 - [ ] **Geen enkel contentknooppunt heeft `/beste/` als primaire stap** (invariant-test, §7.2)
 - [ ] Elke `NextStep.primary.href` resolvet naar een bestaande route
 - [ ] `NextStepBlock` rendert exact één primaire CTA
@@ -1379,7 +1407,7 @@ Interessant, maar nu expliciet **niet** bouwen:
 
 ---
 
-## 24. De vijf beslissingen die ik van jou nodig heb
+## 24. De zes beslissingen die ik van jou nodig heb
 
 1. **Graaf in code of in Supabase?** Mijn advies: code. Dit bepaalt fase 1 volledig.
 2. **Nutriëntpagina's: gaan we daarheen?** Mijn advies: ja, 5 pagina's, na fase 4.
@@ -1387,7 +1415,42 @@ Interessant, maar nu expliciet **niet** bouwen:
 3. **Gids-beslissing** (`/gids` vs `/gidsen`): ik heb je Search Console-data nodig per thema.
    Tot die tijd blijft `/gidsen/{slug}` uit de sitemap.
 4. **Omega-3 root-URL's**: bevestig 0 impressies over 90 dagen, dan 301. (Dit is taak A5 uit je 7-dagenplan.)
-5. **Mag de vervolgstap-wijziging (fase 3) de huidige CTA-stapel vervangen?** Het is de grootste
+5. **De leefstijlcheck verdwijnt bijna uit de content — is dat de bedoeling?**
+   Dit kwam pas boven water toen fase 1 het meetbaar maakte, en het is de scherpste consequentie
+   van de beslislogica uit §11.1. De afgeleide verdeling over 119 contentitems:
+
+   | Primaire check | Items |
+   |---|---|
+   | voeding | **80** |
+   | slaap | 14 |
+   | beweging | 13 |
+   | stress | 11 |
+   | **leefstijl** | **1** |
+
+   Vandaag linken 52 van de 78 artikelen naar `/intake` — de brede leefstijlcheck. Die produceert
+   `domain_scores`, `profile_label`, `urgency_level` en de e-mailopt-in: de hele personalisatie-
+   en nurture-ruggengraat. De afgeleide logica zou hem terugbrengen tot één contentpagina.
+
+   Dat is niet per se fout — een check van één minuut wordt vaker afgemaakt dan een van drie, en
+   de voedingscheck voedt hetzelfde dashboard. Maar het is een verschuiving in de diepte van het
+   conversiemoment, en die hoort bewust genomen te worden.
+
+   Drie opties, in volgorde van mijn voorkeur:
+   1. **De leefstijlcheck wordt de vaste secundaire stap** onder elke micro-check. Elke
+      contentpagina blijft hem aanbieden, alleen niet als primaire knop. Kost één regel in
+      `resolveSecondaryCheck()`.
+   2. **Splitsen op funnelfase:** koud verkeer (geen check-cookie) krijgt de leefstijlcheck,
+      terugkerend verkeer de micro-check. Kost personalisatie op een statische pagina — kan met
+      het bestaande `?from=`-patroon, maar niet zonder werk.
+   3. **Laten zoals de afleiding hem geeft** en meten. De micro-check is specifieker en de
+      voltooiing zal hoger liggen; of de diepte van het profiel eronder lijdt, is een empirische
+      vraag.
+
+   Ik heb optie 1 **niet** geïmplementeerd: `resolveSecondaryCheck()` blijft smal (alleen de
+   domeincheck na een stof), omdat een altijd-gevulde tweede plek de fase 3-vormgeving zou
+   vastzetten voordat die beslissing er is.
+
+6. **Mag de vervolgstap-wijziging (fase 3) de huidige CTA-stapel vervangen?** Het is de grootste
    zichtbare UX-wijziging in dit plan. Achter een flag, dus terugdraaibaar — maar het raakt
    115 pagina's tegelijk.
 
@@ -1410,7 +1473,7 @@ vervolgstap-hypothese klopt vóór je aan de nutriëntpagina's begint.
 
 Alle cijfers komen uit statische analyse van de codebase op commit `ad93564` (15 sep 2026):
 `src/data/blog/*` (78 artikelen), `src/data/kennisbank.ts` (37 termen),
-`src/data/insight-metadata.ts` (115 overlay-entries), `src/data/nutrition/food-catalog.ts` (371 regels),
+`src/data/insight-metadata.ts` (119 overlay-entries), `src/data/nutrition/food-catalog.ts` (371 regels),
 `src/data/nutrition/food-sources.ts` (119 rijen, 88 met `nutrientValue`),
 `src/app/sitemap.ts`, `src/app/robots.ts`, `next.config.ts` (33 redirects), en een routediff
 over alle 58 publieke `page.tsx`-bestanden.
