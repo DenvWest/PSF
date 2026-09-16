@@ -151,6 +151,10 @@ export const REVEAL_ROADMAP_COPY = {
   rungSupplement: "Aanvulling \u2014 pas hierna",
   rungLater: "In je dashboard",
   supplementCta: "Vergelijk objectief",
+  // Het bord staat vóór het potje. Deze regels maken dat zichtbaar in plaats
+  // van het alleen te beweren in de rationale eronder.
+  boardEyebrow: "EERST UIT JE ETEN",
+  boardSourcePrefix: "Sterkste bronnen:",
   claimPrefix: "Goedgekeurde EU-claim:",
   noSupplementNote:
     "Voor dit domein is er geen aanvulling met een goedgekeurde claim \u2014 hier doet je ritme het werk.",

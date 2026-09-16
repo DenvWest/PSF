@@ -1229,11 +1229,30 @@ was niet zichtbaar in de componentnamen — de typechecker vond het.
       `food-sources.ts` en `nutrient-rail.ts`
 - [x] Het resultaat draagt de uitlezing, niet de keuze (test op de afwezigheid van de keuzeknoppen)
 
-**Nog niet gedaan (B en C uit het voorstel)**
-- **B** — "Vergelijk objectief" krijgt het bord ervóór in het aanvullingsblok zelf (copy in
-  `results-reveal-copy.ts`).
-- **C** — de omgekeerde weg: op `/beste/*` en `/supplementen/*` een blok "dit haal je ook uit eten".
-  Dat is fase 5-werk en meteen de brug naar de nutriëntpagina's.
+**B — uitgevoerd 16 sep 2026.** Het aanvullingsblok in de results-reveal
+(`RevealDomainRoadmap` → `SupplementCard`) had één link: *"Vergelijk objectief"* naar `/beste/*`.
+De rationale eronder zei het goede, maar de vorm weersprak het. Er staat nu een blok **vóór** die
+knop: de drempel uit `nutrientRoute` ("1× per week vette vis, 2× is beter"), wie hem publiceerde
+wanneer dat iemand is (`sourceNl` — null bij vuistregel en proxy, dan staat er geen autoriteit die
+er niet is), en de drie sterkste bronnen bij naam.
+
+`claim-key-nutrient.ts` legt de brug: van `IngredientClaimKey` naar `NutrientId`. Vier van de negen
+claim-sleutels hebben er geen — creatine, melatonine, ashwagandha en vitamine K vallen buiten de
+voedingscheck. Voor die stoffen blijft het blok weg; `null` is daar het eerlijke antwoord in plaats
+van een bij elkaar gezochte bron.
+
+**Geen milligrammen en geen check-link — allebei door een bestaande test afgedwongen.**
+De eerste versie zette er een link naar de voedingscheck onder. `IntakeResultsRapport.test.tsx`
+heeft een test die letterlijk heet *"stuurt niemand terug naar de check of naar een gids-download"*,
+en die had gelijk: wie hier staat heeft net drie minuten vragen beantwoord, en dan meteen een
+tweede vragenlijst voorhouden is precies de lus terug die die regel voorkomt. Bovendien stond de
+voedingscheck al op dat scherm, in de lane "In je dashboard" — de link was een dubbeling.
+
+De kaart houdt dus één link, en dat blijft de vergelijking. Het bord ervóór is tekst. Dat is
+genoeg: de volgorde is nu zichtbaar in plaats van alleen beweerd.
+
+**C — nog niet gedaan.** De omgekeerde weg: op `/beste/*` en `/supplementen/*` een blok "dit haal
+je ook uit eten". Dat is fase 5-werk en meteen de brug naar de nutriëntpagina's.
 
 ---
 

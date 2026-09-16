@@ -58,6 +58,48 @@ function SupplementCard({
         {supplement.rationale} {supplement.trustLine}
       </p>
 
+      {/*
+        Het bord vóór het potje.
+
+        De rationale hierboven zegt al "een aanvulling op een gemeten gat, geen
+        vervanging van de leefstijl-stap" — maar zolang de enige knop naar de
+        vergelijking wees, weersprak de vorm de woorden. Dit blok maakt de
+        voedingsstap zichtbaar in plaats van hem alleen te beweren.
+
+        Geen milligrammen: de leefstijlcheck kent de voedingsroute van deze
+        persoon niet, dus dit is kennis, geen oordeel over zijn inname. De
+        drempel kan hij wél naast zijn eigen week leggen.
+
+        En geen link naar de voedingscheck, hoe verleidelijk ook. Wie hier staat
+        heeft net drie minuten vragen beantwoord; hem meteen een tweede
+        vragenlijst voorhouden is de lus terug die
+        `stuurt niemand terug naar de check` bewaakt. De voedingscheck staat al
+        op dit scherm, in de lane "In je dashboard" — daar hoort hij, als
+        vervolgstap en niet als concurrent van deze kaart.
+      */}
+      {supplement.voedingsroute ? (
+        <div className="grid gap-1.5 rounded-xl border border-white/10 bg-black/20 p-3">
+          <p className="m-0 text-[9.5px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82]">
+            {REVEAL_ROADMAP_COPY.boardEyebrow}
+          </p>
+          <p className="m-0 text-[13px] leading-snug text-[#F1EFE8]">
+            {supplement.voedingsroute.thresholdNl}
+            {supplement.voedingsroute.bronNl ? (
+              <span className="text-[#7E8C82]">
+                {" \u00b7 "}
+                {supplement.voedingsroute.bronNl}
+              </span>
+            ) : null}
+          </p>
+          <p className="m-0 text-[12px] leading-relaxed text-[#9FAFA4]">
+            <span className="text-[#7E8C82]">
+              {REVEAL_ROADMAP_COPY.boardSourcePrefix}{" "}
+            </span>
+            {supplement.voedingsroute.bronnen.join(" \u00b7 ")}
+          </p>
+        </div>
+      ) : null}
+
       <Link
         href={supplement.href}
         onClick={() => {

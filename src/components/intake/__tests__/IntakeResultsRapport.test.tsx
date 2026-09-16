@@ -178,6 +178,8 @@ describe("IntakeResults — startprofiel en route in één box", () => {
         expect(within(panel).queryByText(line)).not.toBeNull();
       }
       expect(within(panel).queryByText(domain.now.title)).not.toBeNull();
+      // Het bord vóór het potje is tekst, geen tweede knop: de kaart houdt
+      // precies één link, en dat blijft de vergelijking.
       expect(within(panel).queryAllByRole("link")).toHaveLength(domain.supplement ? 1 : 0);
 
       expect(domain.later.length).toBeGreaterThan(0);
@@ -217,6 +219,47 @@ describe("IntakeResults — startprofiel en route in één box", () => {
     }
     const panel = document.getElementById(`reveal-route-panel-${voeding.id}`) as HTMLElement;
     expect(within(panel).getByText(/eiwitinname blijft waarschijnlijk achter/)).not.toBeNull();
+  });
+
+  it("zet het bord vóór het potje op elke stof-aanvulling", () => {
+    renderResults();
+    for (const domain of roadmap()) {
+      const route = domain.supplement?.voedingsroute;
+      if (!route) continue;
+      const header = screen.getByRole("button", { name: new RegExp(domain.label) });
+      if (header.getAttribute("aria-expanded") !== "true") {
+        fireEvent.click(header);
+      }
+      const panel = document.getElementById(
+        `reveal-route-panel-${domain.id}`,
+      ) as HTMLElement;
+
+      // De drempel en de bronnen staan er...
+      expect(within(panel).queryByText(new RegExp(route.thresholdNl))).not.toBeNull();
+      for (const bron of route.bronnen) {
+        expect(within(panel).queryByText(new RegExp(bron, "i"))).not.toBeNull();
+      }
+
+      // ...en ze staan vóór de vergelijkknop, niet erna.
+      const tekst = panel.textContent ?? "";
+      const vergelijkLink = within(panel).getByRole("link");
+      expect(tekst.indexOf(route.thresholdNl)).toBeLessThan(
+        tekst.indexOf(vergelijkLink.textContent ?? ""),
+      );
+    }
+  });
+
+  it("noemt op het bord geen milligram en geen dagtotaal", () => {
+    // De leefstijlcheck kent de voedingsroute van deze persoon niet; een getal
+    // zou schijnprecisie zijn. Dezelfde grens als in food-sources.ts.
+    renderResults();
+    for (const domain of roadmap()) {
+      const header = screen.getByRole("button", { name: new RegExp(domain.label) });
+      if (header.getAttribute("aria-expanded") !== "true") {
+        fireEvent.click(header);
+      }
+    }
+    expect(document.body.textContent ?? "").not.toMatch(/\d+\s*mg\b/);
   });
 
   it("stuurt niemand terug naar de check of naar een gids-download", () => {
