@@ -180,6 +180,19 @@ nutrition-nutrient-index.ts → van nutriënt naar producten uit FOOD_CATALOG, g
 
 ### 3.3 Weesartikelen (0 inkomende links vanuit andere artikelen)
 
+> **Herzien 16 sep na fase 0.** Deze lijst telde alleen artikel→artikel. Met de volledige graaf
+> (ook gidsen, profielen, vergelijkingen en kennisbank als bron én doel) zijn het er **15**, en
+> drie daarvan zijn ernstiger dan een weesartikel:
+>
+> | Weespagina | Waarom dit erger is dan een artikel-wees |
+> |---|---|
+> | `/supplementen/zink` | **Een supplementgids met nul inkomende links.** De zink-vergelijking heeft dus wél een geldpagina maar geen enkele educatieve aanloop. |
+> | `/profiel/stressdrager` | Profielpagina's zijn juist bedoeld als ingang naar de check; deze wordt nergens aangeboden. |
+> | `/gids/voeding`, `/gids/beweging`, `/gids/testosteron` | Drie van de zeven Gezondheidsgidsen worden nergens vanuit content gelinkt — dat verklaart de 0/78 uit §3.4. |
+>
+> Verder nieuw: `/kennisbank/sociale-verbinding` (het domein is uit de interface gehaald) en
+> `/wat-is-omega-3`. De acht artikel-wezen hieronder staan er nog.
+
 ```
 /blog/eiwit-en-whey-in-de-overgang          (supplementen)
 /blog/is-whey-schadelijk                    (supplementen)
@@ -912,7 +925,7 @@ De contentgraaf is compile-time data. Het zwaarste dat erbij komt is een `Map`-o
 | Artikelen die naar de voedingscheck linken | 0 / 78 | ~45 / 78 (elk stuk met een nutriënt of voedingsthema) |
 | Publieke pagina's op de voedingsdatabase | 0 | 6 (1 hub + 5 stoffen) |
 | Supplementgidsen in de sitemap | 0 / 8 | 8 / 8 |
-| Weespagina's | 9 | 0, afgedwongen door een test |
+| Weespagina's | 15 (gemeten met de volledige graaf; 9 als je alleen artikel→artikel telt) | 0, afgedwongen door een test |
 | Contentitems met nutriëntrelatie | 0 | ~60 |
 | Content-events | 4 losse | 4 systematische + 2 hergebruikt |
 | Concurrerende gids-URL's | 13 (6 thema's dubbel) | 7 |
@@ -962,6 +975,9 @@ De contentgraaf is compile-time data. Het zwaarste dat erbij komt is een `Map`-o
 
 ### FASE 0 — Invarianten vastleggen (P0 · ~1 dag · geen zichtbare wijziging)
 
+**Status: uitgevoerd op 16 september 2026.** Resultaat: **151 knopen, 1.454 randen, 0 dode links,
+15 weespagina's**. Klaar-check groen (`tsc` 0 · 301 testbestanden / 2982 tests · `eslint --max-warnings 0`).
+
 **Doel** — de huidige stand machinaal controleerbaar maken, zodat geen enkele latere fase iets sloopt.
 
 **Onderzoeken**
@@ -974,12 +990,16 @@ De contentgraaf is compile-time data. Het zwaarste dat erbij komt is een `Map`-o
 - `src/app/__tests__/route-coverage.test.ts`
 
 **Tests (acceptatiecriteria)**
-- [ ] Elke interne link uit `graphEdges()` resolvet naar een bestaande route of een bestaand redirect-source
-- [ ] Elke indexeerbare route komt voor in `sitemap()`, of staat op een expliciete `SITEMAP_EXCLUDED`-lijst mét reden
-- [ ] Geen URL staat tegelijk in `sitemap()` en in `robots.disallow`
-- [ ] Snapshot: exact 9 weespagina's, 0 dode links (de snapshot is het startpunt, niet de norm)
+- [x] Elke interne link uit `graphEdges()` resolvet naar een bestaande route of een bestaand redirect-source — **0 dode links over 143 doelen**
+- [x] Elke indexeerbare route komt voor in `sitemap()`, of staat op een expliciete `SITEMAP_EXCLUDED`-lijst mét reden *(in fase 2 gerealiseerd)*
+- [x] Geen URL staat tegelijk in `sitemap()` en in `robots.disallow` *(in fase 2 gerealiseerd)*
+- [x] Nulmeting weespagina's als plafond, niet als norm: `BEKENDE_WEZEN` mag korter worden, nooit langer
+- [x] **Extra, niet vooraf gepland:** elke `/beste/`-vergelijking heeft ≥ 3 informationele inkomende links — slaagt vandaag
+- [x] Bewezen dat de dode-linktest kan falen (verzonnen paden worden afgewezen, routeset is niet vacuüm-groot)
 
-**Risico** — laag. Verwacht: de test faalt meteen op S1 en S2. Dat is de bedoeling; fase 2 repareert.
+**Risico** — laag. *Uitkomst:* de tests faalden inderdaad meteen op S1 en S2; fase 2 heeft die gerepareerd.
+Onverwacht meevaller: **nul dode interne links** over 143 doelen. Het redactionele linkweb is intact —
+het probleem is niet dat links kapot zijn, maar dat ze de verkeerde kant op wijzen (§3.4).
 
 ---
 
