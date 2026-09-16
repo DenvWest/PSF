@@ -184,7 +184,7 @@ export default function PsScoreUitleg() {
           <p className="mt-3 text-sm text-stone-500">
             Of blader het thema{" "}
             <Link
-              href="/kennisbank/ps-score"
+              href="/kennisbank/ps-score-model"
               className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] hover:decoration-ps-green"
             >
               PS-Score &amp; beoordeling
