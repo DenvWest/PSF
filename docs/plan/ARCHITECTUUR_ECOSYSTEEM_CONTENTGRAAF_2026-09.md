@@ -1102,6 +1102,20 @@ alleen via interne links vindbaar zijn, worden expliciet aangeboden.
 
 ### FASE 3 — Vervolgstap-resolver + component (P0 · ~2 dagen)
 
+**Status: uitgevoerd op 16 september 2026, uit (`NEXT_PUBLIC_CONTENT_NEXT_STEP` ongezet).**
+Klaar-check groen (`tsc` 0 · 304 testbestanden / 3020 tests · `eslint --max-warnings 0`).
+
+**Drie uitrolstanden in plaats van aan/uit**, op verzoek van Dennis:
+`off` (default, bestaande CTA's onveranderd) · `nutrients` (alleen de 61 stof-dragende stukken) ·
+`all`. De stof-dragende stukken zijn de scherpste hypothese — daar is de vervolgstap het meest
+specifiek ("haal je dit uit je eten?"), dus daar hoort het effect het eerst zichtbaar te worden.
+
+**Wat er vervangen wordt: alleen de afsluitende `BlogIntakeCTA`.** Die zei op elk artikel
+hetzelfde, ongeacht het onderwerp — dat is de generieke CTA die dit blok vervangt.
+`BlogSupplementCTA`, `BlogCornerstoneLink` en `BlogSupplementenHubLink` blijven staan: dat zijn
+onderwerpspecifieke content- en navigatielinks, geen concurrerende CTA's. Dat isoleert de
+variabele voor de meting.
+
 **Doel** — één contextuele vervolgstap per pagina, in plaats van vier gestapelde CTA's.
 
 **Onderzoeken** — `BlogArticlePage.tsx` (regels 209–286) · `BlogIntakeCTA` · `BlogSupplementCTA` · `BlogCornerstoneLink` · `BlogSupplementenHubLink` · `CheckLensBanner` · `feature-flags.ts`
@@ -1119,12 +1133,20 @@ alleen via interne links vindbaar zijn, worden expliciet aangeboden.
 als secundaire regel. Verwacht: hogere doorklik, lagere bounce. **Meet dit voordat je het overal uitrolt.**
 
 **Acceptatiecriteria**
-- [ ] `resolveNextStep()` geeft voor elk van de 119 knopen een primaire stap
-- [ ] **Geen enkel contentknooppunt heeft `/beste/` als primaire stap** (invariant-test, §7.2)
-- [ ] Elke `NextStep.primary.href` resolvet naar een bestaande route
-- [ ] `NextStepBlock` rendert exact één primaire CTA
-- [ ] Flag `contentNextStep=false` levert byte-identieke HTML aan vandaag
-- [ ] Meetpunt: `content.next_step_shown` / `content.next_step_clicked` — hier lees je af of content mensen verder brengt.
+- [x] `resolveNextStep()` geeft voor elk van de **151** knopen een primaire stap
+- [x] **Geen enkel contentknooppunt heeft `/beste/` als primaire stap** (invariant-test, §7.2)
+- [x] Elke `NextStep.primary.href` resolvet naar een bestaande check-route
+- [x] `NextStepBlock` rendert exact één primaire knop + hoogstens één secundaire tekstlink
+- [x] Vlag uit levert exact de HTML van vandaag — de `BlogIntakeCTA`-tak is ongewijzigd
+- [x] **Copy noemt geen mg, geen dagtotaal en geen percentage** op geen enkele knoop — dezelfde grens als in `nutrient-routes.ts`
+- [x] **Copy volgt `thresholdKind`:** bij een proxy-stof (magnesium, zink) alleen "kijk of de bronnen op je bord liggen", nooit "kijk of je hieraan komt". Eén proxy-stof tempert de belofte voor het hele stuk.
+- [x] Meetpunt: `content.next_step_shown` / `content.next_step_clicked` met `step_kind`, `target` en `positie` — hier lees je af of content mensen verder brengt.
+
+**Twee dingen die bestaande tests vingen en die het waard zijn te onthouden.**
+De copy zei eerst "zes domeinen"; `intake-copy-consistency.test.ts` wees erop dat de check er vijf
+zichtbare meet (verbinding staat in `VERBORGEN_DOMEINEN`). De zin leest nu `INTAKE_DOMAINS_LABEL`
+in plaats van een getal. En de eerste bedrading zette de marge op een wrapper in plaats van op de
+CTA zelf, waardoor de vlag-uit-route niet meer identiek was — teruggedraaid.
 
 ---
 

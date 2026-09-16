@@ -34,6 +34,9 @@ import { BLOG_BACK_LINK, BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
 import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
 import InsightPhaseNote from "@/components/insights/InsightPhaseNote";
 import { getContentMetadata } from "@/data/insight-metadata";
+import NextStepBlock from "@/components/content/NextStepBlock";
+import { nextStepForMetadata } from "@/lib/content-graph/next-step";
+import { isContentNextStepEnabled } from "@/lib/feature-flags";
 import { blogCover } from "@/lib/blog-cover";
 import { blogBodyImage } from "@/data/article-body-images";
 import { buildArticleImageObjects } from "@/lib/seo/structuredData";
@@ -68,6 +71,18 @@ export default function BlogArticlePage({
 
   const tocItems = buildBlogTocItems(artikel.slug, artikel.secties);
 
+  /**
+   * De contextuele vervolgstap vervangt de generieke afsluitende CTA — die zei
+   * op elk artikel hetzelfde, ongeacht het onderwerp. Achter een vlag, en de
+   * uitrol begint bij de stukken die een voedingsstof dragen: daar is de stap
+   * het meest specifiek, dus daar hoort het effect het eerst zichtbaar te zijn.
+   */
+  const contentMeta = getContentMetadata(artikel.slug);
+  const toontVervolgstap = isContentNextStepEnabled(
+    (contentMeta.nutrients?.length ?? 0) > 0,
+  );
+  const vervolgstap = toontVervolgstap ? nextStepForMetadata(contentMeta) : null;
+
   const clusterTitle = CATEGORIE_CONFIG[artikel.categorie].naam;
   const clusterArticles = alleArtikelen
     .filter((a) => a.categorie === artikel.categorie && a.slug !== artikel.slug)
@@ -76,7 +91,7 @@ export default function BlogArticlePage({
 
   const showMidArticleCta = isLongBlogArticle(artikel);
   const midIndex = Math.ceil(hoofdSecties.length / 2);
-  const { planPhase } = getContentMetadata(artikel.slug);
+  const { planPhase } = contentMeta;
   const sectiesVoorMid = showMidArticleCta
     ? hoofdSecties.slice(0, midIndex)
     : hoofdSecties;
@@ -247,11 +262,21 @@ export default function BlogArticlePage({
                   <BlogSamenvatting tekst={artikel.samenvatting} />
                 </div>
 
-                <BlogIntakeCTA
-                  placement="closing"
-                  locatie="blog_closing"
-                  className="mt-14"
-                />
+                {vervolgstap ? (
+                  <div className="mt-14">
+                    <NextStepBlock
+                      step={vervolgstap}
+                      node={artikel.slug}
+                      nodeType="blog"
+                    />
+                  </div>
+                ) : (
+                  <BlogIntakeCTA
+                    placement="closing"
+                    locatie="blog_closing"
+                    className="mt-14"
+                  />
+                )}
 
                 {artikel.supplementCTA ? (
                   <div className="mt-14">

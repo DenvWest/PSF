@@ -110,6 +110,13 @@ export const DOMAIN_EVENT_TYPES = [
   "nutrition.schap_bronnen_getoond",
   "nutrition.schap_bron_clicked",
   "nutrition.schap_categorie_gefilterd",
+  // Contentlaag — brengt een artikel iemand verder of loopt het dood? Dit was
+  // tot nu toe onmeetbaar: alle ~110 events zaten ín de app (dashboard, intake,
+  // plan), en op de 151 contentpagina's stond alleen affiliate.click. `stepKind`
+  // is de dimensie, zodat artikel→check, artikel→stof en artikel→vergelijking
+  // één query blijven in plaats van drie event-typen.
+  "content.next_step_shown",
+  "content.next_step_clicked",
   // Connection Profile — zelf opgegeven voorkeuren, GEEN gezondheidsdata.
   // De ratio cprofile.completed / cprofile.step_completed{step:1} is de meting
   // die toetst of stap 2 te confronterend is (BESLUIT §12).
