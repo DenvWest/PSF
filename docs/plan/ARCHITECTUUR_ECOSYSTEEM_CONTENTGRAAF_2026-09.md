@@ -652,12 +652,15 @@ function resolveCheck(meta: ContentMetadata): ContentCheckId {
 vraag die de lezer overhoudt is *"haal ik genoeg magnesium uit mijn eten?"* — en dat meet de
 voedingscheck, niet de slaapcheck. De stof is specifieker dan het domein, dus de stof wint.
 
-### 11.2 De gecombineerde route
+### 11.2 De tweede stap
 
-Wanneer een stuk zowel een nutriënt als een niet-voedingsdomein draagt (magnesium × slaap), toont
-het blok **één primaire CTA (voedingscheck) en één secundaire regel** naar de domeincheck.
-Niet twee gelijkwaardige knoppen — dat is de keuzeparalyse die je nu al hebt met vier gestapelde
-CTA-blokken.
+**Herzien 16 sep — zie besluit 5 in §24.** De tweede stap is **altijd de brede leefstijlcheck**,
+nooit een domeincheck. Eén regel onder de primaire CTA, geen tweede knop.
+
+Het oorspronkelijke ontwerp gaf een magnesium × slaap-artikel de slaapcheck als tweede stap. Dat
+is fout om twee redenen: de leefstijlcheck méét slaap al, dus het is dezelfde vraag twee keer; en
+koud verkeer heeft nog niets gemeten, waardoor een micro-check één losse deelscore zonder context
+oplevert. De micro-checks zijn hermetings-instrumenten en horen bij het dashboard.
 
 ### 11.3 De vervolgstap per funnelfase
 
@@ -1141,6 +1144,23 @@ als secundaire regel. Verwacht: hogere doorklik, lagere bounce. **Meet dit voord
 | `beweging` | theme movement | "Meet je beweegpatroon in een minuut" |
 | `leefstijl` | rest | "Zie in drie minuten waar je staat op zes domeinen" |
 
+**De copy moet `thresholdKind` meelezen — anders overclaimen we op het grootste cluster.**
+`nutrient-routes.ts` gradeert per stof hoe hard het antwoord is dat de voedingscheck kan geven:
+
+| Stof | Drempel | `thresholdKind` | Wat de CTA mag beloven |
+|---|---|---|---|
+| omega-3 (13 items) | 1–2× vette vis per week | `populatierichtlijn` | "kijk of je hieraan komt" — er is een gepubliceerde norm |
+| eiwit (14) | 3 eiwitrijke eetmomenten per dag | `vuistregel` | "kijk of je hieraan komt", met het woord vuistregel erbij |
+| vitamine D (17) | 15 min buiten per dag | `vuistregel` | idem |
+| **magnesium (16)** | dagelijks noten/peulvruchten/volkoren | **`proxy`** | **alleen "kijk of de bronnen op je bord liggen"** — de check meet de stof niet |
+| **zink (4)** | dagelijks vlees/vis/peulvruchten | **`proxy`** | idem |
+
+Magnesium is het grootste cluster van de site. Juist daar geeft `intake-reference.ts` vertrouwen
+1 van 4, omdat de band uit een groente-en-fruit-telling komt terwijl noten, volkoren en
+peulvruchten de sterkere bronnen zijn. Een CTA die daar "kijk of je een tekort hebt" zegt, claimt
+een precisie die het instrument niet heeft — precies waar `nutrient-routes.ts` een harde grens om
+heeft gelegd.
+
 **Acceptatiecriteria**
 - [ ] Elk contentitem met `nutrients ≠ []` biedt `/intake/voeding` als primaire of secundaire stap
 - [ ] Geen enkel item biedt twee checks als gelijkwaardige primaire CTA
@@ -1415,40 +1435,47 @@ Interessant, maar nu expliciet **niet** bouwen:
 3. **Gids-beslissing** (`/gids` vs `/gidsen`): ik heb je Search Console-data nodig per thema.
    Tot die tijd blijft `/gidsen/{slug}` uit de sitemap.
 4. **Omega-3 root-URL's**: bevestig 0 impressies over 90 dagen, dan 301. (Dit is taak A5 uit je 7-dagenplan.)
-5. **De leefstijlcheck verdwijnt bijna uit de content — is dat de bedoeling?**
-   Dit kwam pas boven water toen fase 1 het meetbaar maakte, en het is de scherpste consequentie
-   van de beslislogica uit §11.1. De afgeleide verdeling over 119 contentitems:
+5. **De leefstijlcheck als tweede stap — BESLOTEN op 16 september 2026.** ✅
 
-   | Primaire check | Items |
-   |---|---|
-   | voeding | **80** |
-   | slaap | 14 |
-   | beweging | 13 |
-   | stress | 11 |
-   | **leefstijl** | **1** |
+   *De vraag was:* de afgeleide logica bracht de brede leefstijlcheck terug tot één
+   contentpagina, terwijl die `domain_scores`, `profile_label`, `urgency_level` en de
+   e-mailopt-in produceert.
 
-   Vandaag linken 52 van de 78 artikelen naar `/intake` — de brede leefstijlcheck. Die produceert
-   `domain_scores`, `profile_label`, `urgency_level` en de e-mailopt-in: de hele personalisatie-
-   en nurture-ruggengraat. De afgeleide logica zou hem terugbrengen tot één contentpagina.
+   *Twee dingen bleken mis met die meting.* Ten eerste ging hij over 119 items — alleen blog en
+   kennisbank. De 32 andere knopen (8 pillars, 4 profielpagina's, 7 gezondheidsgidsen,
+   8 supplementgidsen, 7 vergelijkingen) hadden geen `CONTENT_METADATA` en zaten er niet in.
+   Juist de pagina's waar de brede check thuishoort, waren niet geteld. Ten tweede was er geen
+   terugvaloptie.
 
-   Dat is niet per se fout — een check van één minuut wordt vaker afgemaakt dan een van drie, en
-   de voedingscheck voedt hetzelfde dashboard. Maar het is een verschuiving in de diepte van het
-   conversiemoment, en die hoort bewust genomen te worden.
+   *Het besluit:* de primaire stap blijft de meest specifieke check voor het onderwerp van de
+   pagina, en de **tweede stap is altijd de brede leefstijlcheck**. Geen tweede knop — één regel
+   eronder.
 
-   Drie opties, in volgorde van mijn voorkeur:
-   1. **De leefstijlcheck wordt de vaste secundaire stap** onder elke micro-check. Elke
-      contentpagina blijft hem aanbieden, alleen niet als primaire knop. Kost één regel in
-      `resolveSecondaryCheck()`.
-   2. **Splitsen op funnelfase:** koud verkeer (geen check-cookie) krijgt de leefstijlcheck,
-      terugkerend verkeer de micro-check. Kost personalisatie op een statische pagina — kan met
-      het bestaande `?from=`-patroon, maar niet zonder werk.
-   3. **Laten zoals de afleiding hem geeft** en meten. De micro-check is specifieker en de
-      voltooiing zal hoger liggen; of de diepte van het profiel eronder lijdt, is een empirische
-      vraag.
+   *Waarop de domeincheck als tweede stap is geschrapt.* Het oorspronkelijke ontwerp (§11.2) gaf
+   een magnesium × slaap-artikel de voedingscheck als primaire en de sláápcheck als secundaire
+   stap. Dat klopt niet: de leefstijlcheck méét slaap al (`sleep_score` is een van zijn zes
+   domeinen), dus je stelt dezelfde vraag twee keer. En koud verkeer uit Google heeft nog niets
+   gemeten — een micro-check van één minuut levert dan één losse deelscore zonder context. De
+   micro-checks zijn hermetings-instrumenten: ze horen bij het dashboard en terugkerend verkeer.
+   Een domeincheck is dus óf primair, óf hij wordt vanuit content niet aangeboden.
 
-   Ik heb optie 1 **niet** geïmplementeerd: `resolveSecondaryCheck()` blijft smal (alleen de
-   domeincheck na een stof), omdat een altijd-gevulde tweede plek de fase 3-vormgeving zou
-   vastzetten voordat die beslissing er is.
+   *Resultaat over alle 151 knopen:*
+
+   | Primaire check | Knopen | | |
+   |---|---|---|---|
+   | voeding | 89 | pillars | 8× leefstijl |
+   | **leefstijl** | **21** | profielen | 4× leefstijl |
+   | slaap | 15 | supplementgidsen | 5× voeding, 3× leefstijl |
+   | beweging | 14 | vergelijkingen | 5× voeding, 2× leefstijl |
+   | stress | 12 | | |
+
+   **151 van de 151 pagina's bieden de leefstijlcheck aan** — 21 primair, 130 secundair.
+   Een test dwingt dat af.
+
+   *Geen nieuwe artikelen nodig.* De content voor de brede check bestaat al: 8 pillars en
+   4 profielpagina's, die er vandaag ook al naartoe linken. Een pillar zegt zelf dat een klacht
+   meerdere oorzaken heeft, en een profielpagina ís de uitkomst van de brede check. Wat ontbrak
+   was niet content maar hun plek in de graaf.
 
 6. **Mag de vervolgstap-wijziging (fase 3) de huidige CTA-stapel vervangen?** Het is de grootste
    zichtbare UX-wijziging in dit plan. Achter een flag, dus terugdraaibaar — maar het raakt

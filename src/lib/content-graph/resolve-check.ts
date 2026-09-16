@@ -58,28 +58,50 @@ export function resolveCheckEntry(meta: ContentMetadata): ContentCheck {
 }
 
 /**
- * De tweede check, als die er is.
+ * De tweede check — altijd de brede leefstijlcheck, en nooit een tweede knop.
  *
- * Draagt een stuk een stof én een niet-voedingsdomein (magnesium × slaap), dan
- * is er een tweede meting die er inhoudelijk toe doet. Die hoort als één
- * secundaire regel te verschijnen, niet als tweede knop: twee gelijkwaardige
- * CTA's is de keuzeparalyse die de huidige gestapelde blokken al veroorzaken.
+ * ## Waarom de domeincheck hier níét staat
+ *
+ * Het oorspronkelijke ontwerp gaf een stuk over magnesium × slaap de
+ * voedingscheck als primaire en de sláápcheck als secundaire stap. Dat leek
+ * logisch — twee relevante metingen — maar het klopt niet, om twee redenen die
+ * pas zichtbaar werden toen een test vroeg waar de leefstijlcheck dan nog werd
+ * aangeboden.
+ *
+ * 1. **Ze overlappen.** De leefstijlcheck meet slaap al; hij heeft
+ *    `sleep_score` als een van zijn zes domeinen. Slaapcheck én leefstijlcheck
+ *    naast elkaar aanbieden is dezelfde vraag twee keer stellen.
+ * 2. **Koud verkeer heeft nog niets gemeten.** Een micro-check van één minuut
+ *    levert iemand die net uit Google komt één losse deelscore zonder context.
+ *    De micro-checks zijn hermetings-instrumenten: ze horen bij het dashboard
+ *    en bij terugkerend verkeer, niet bij de tweede stap op een contentpagina.
+ *
+ * Dus: de primaire stap is de meest specifieke check voor het onderwerp van de
+ * pagina, en de tweede is altijd de brede check. Een domeincheck is óf
+ * primair, óf hij wordt vanuit content niet aangeboden.
+ *
+ * ## Waarom de brede check nooit uit beeld mag
+ *
+ * De micro-checks leveren een deelscore. De leefstijlcheck levert
+ * `domain_scores`, `profile_label`, `urgency_level` én de e-mailopt-in — de
+ * hele personalisatie- en nurture-ruggengraat.
+ *
+ * Toen `resolveCheck()` voor het eerst over alle content liep, bleek de
+ * afleiding hem terug te brengen tot vrijwel nul contentpagina's. Dat zou een
+ * verschuiving in de diepte van het conversiemoment zijn geweest die niemand
+ * gekozen had — een bijwerking van een afleidingsregel.
+ *
+ * De oplossing is niet de primaire regel verzwakken: een magnesium-artikel
+ * hoort naar de voedingscheck te wijzen, niet naar een vragenlijst van drie
+ * minuten. De oplossing is dat de brede check als tweede regel blijft staan.
+ *
+ * Twee gelijkwaardige knoppen is geen optie — dat is de keuzeparalyse die de
+ * huidige gestapelde CTA-blokken al veroorzaken. Eén regel, onder de primaire.
  */
 export function resolveSecondaryCheck(
   meta: ContentMetadata,
 ): ContentCheckId | null {
-  const primary = resolveCheck(meta);
-  if (primary !== "voeding") return null;
-  if (!meta.nutrients || meta.nutrients.length === 0) return null;
-
-  switch (meta.theme) {
-    case "sleep":
-      return "slaap";
-    case "stress":
-      return "stress";
-    case "movement":
-      return "beweging";
-    default:
-      return null;
-  }
+  // Op de leefstijlcheck zelf valt niets terug te vallen.
+  if (resolveCheck(meta) === "leefstijl") return null;
+  return "leefstijl";
 }

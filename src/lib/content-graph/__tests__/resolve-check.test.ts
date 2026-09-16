@@ -13,6 +13,8 @@ import { CONTENT_METADATA } from "@/data/insight-metadata";
 import { NUTRIENT_IDS } from "@/data/nutrition/intake-reference";
 import { getDeficiencySignals } from "@/lib/intake-engine";
 import { allInsights } from "@/data/insights";
+import { allGraphNodes } from "@/lib/content-graph/node";
+import { metadataForNode } from "@/data/content-graph/node-metadata";
 
 describe("CONTENT_CHECKS", () => {
   it("botst niet met de dashboard-CHECKS", async () => {
@@ -160,19 +162,84 @@ describe("resolveCheck", () => {
 });
 
 describe("resolveSecondaryCheck", () => {
-  it("geeft de domeincheck als tweede stap bij stof × niet-voedingsdomein", () => {
+  it("geeft altijd de brede leefstijlcheck onder een micro-check", () => {
     expect(resolveSecondaryCheck({ theme: "sleep", nutrients: ["magnesium"] })).toBe(
-      "slaap",
+      "leefstijl",
+    );
+    expect(resolveSecondaryCheck({ theme: "nutrition", nutrients: ["protein"] })).toBe(
+      "leefstijl",
+    );
+    expect(resolveSecondaryCheck({ theme: "sleep" })).toBe("leefstijl");
+  });
+
+  it("biedt de domeincheck niet als tweede stap aan", () => {
+    // De leefstijlcheck meet slaap al; ze naast elkaar zetten is dezelfde
+    // vraag twee keer stellen. Een domeincheck is óf primair, óf niet in beeld.
+    expect(resolveSecondaryCheck({ theme: "stress", nutrients: ["magnesium"] })).not.toBe(
+      "stress",
     );
   });
 
-  it("geeft niets terug als de stof en het domein allebei voeding zijn", () => {
-    expect(
-      resolveSecondaryCheck({ theme: "nutrition", nutrients: ["protein"] }),
-    ).toBeNull();
+  it("valt niet terug op zichzelf", () => {
+    expect(resolveSecondaryCheck({ theme: "connection" })).toBeNull();
+    expect(resolveSecondaryCheck({ checkOverride: "leefstijl" })).toBeNull();
   });
 
-  it("geeft niets terug zonder stof", () => {
-    expect(resolveSecondaryCheck({ theme: "sleep" })).toBeNull();
+  // De reden dat deze functie bestaat: de brede check levert domain_scores,
+  // profile_label, urgency_level en de e-mailopt-in. Verdwijnt hij uit de
+  // content, dan droogt de personalisatie- en nurture-instroom op.
+  it("houdt de leefstijlcheck op élke contentpagina bereikbaar", () => {
+    const zonder = allGraphNodes().filter((node) => {
+      const meta = metadataForNode(node);
+      return (
+        resolveCheck(meta) !== "leefstijl" &&
+        resolveSecondaryCheck(meta) !== "leefstijl"
+      );
+    });
+    expect(
+      zonder.map((n) => n.path),
+      "pagina's die de leefstijlcheck nergens aanbieden",
+    ).toEqual([]);
+  });
+});
+
+describe("metadataForNode", () => {
+  it("geeft elke knoop in de graaf metadata, niet alleen blog en kennisbank", () => {
+    for (const node of allGraphNodes()) {
+      expect(metadataForNode(node), `geen metadata voor ${node.path}`).toBeDefined();
+    }
+  });
+
+  it("stuurt pillars en profielpagina's naar de brede leefstijlcheck", () => {
+    // Een pillar zegt zelf dat een klacht meerdere oorzaken heeft, en een
+    // profielpagina ís de uitkomst van de brede check. Een micro-check van één
+    // minuut zou hun eigen boodschap tegenspreken.
+    const breed = allGraphNodes().filter(
+      (n) => n.type === "pillar" || n.type === "profiel",
+    );
+    expect(breed.length).toBeGreaterThan(10);
+    for (const node of breed) {
+      expect(resolveCheck(metadataForNode(node)), node.path).toBe("leefstijl");
+    }
+  });
+
+  it("geeft supplementgidsen en vergelijkingen hun stof", () => {
+    const magnesiumGids = allGraphNodes().find(
+      (n) => n.path === "/supplementen/magnesium",
+    );
+    expect(metadataForNode(magnesiumGids!).nutrients).toEqual(["magnesium"]);
+
+    const omegaVergelijking = allGraphNodes().find(
+      (n) => n.path === "/beste/omega-3-supplement",
+    );
+    expect(metadataForNode(omegaVergelijking!).nutrients).toEqual(["omega3"]);
+  });
+
+  it("geeft geen stof aan een supplement dat de voedingscheck niet meet", () => {
+    // Creatine, melatonine en ashwagandha staan niet in NutrientId.
+    for (const slug of ["creatine", "melatonine", "ashwagandha"]) {
+      const node = allGraphNodes().find((n) => n.path === `/supplementen/${slug}`);
+      expect(metadataForNode(node!).nutrients, slug).toBeUndefined();
+    }
   });
 });
