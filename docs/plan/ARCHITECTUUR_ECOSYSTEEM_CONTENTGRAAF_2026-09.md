@@ -173,7 +173,7 @@ nutrition-nutrient-index.ts → van nutriënt naar producten uit FOOD_CATALOG, g
 | S6 | **Legacy root-omega-3-pagina's kannibaliseren de gids** | `/wat-is-omega-3` + `/waar-let-je-op-bij-omega-3` naast `/supplementen/omega-3`, met een derde contentmodel | HIGH |
 | S7 | **15 van 37 kennisbanktermen tonen crawlers alleen `whatIsIt`** | `insightTier >= 2 && !publicFullContent && !canAccessVerdieping()` — alle 37 staan wel in de sitemap op priority 0.7 | MEDIUM |
 | S8 | **Breadcrumbs ontbreken op pillars, `/gids/*`, `/gidsen/*`, `/profiel`, `/inzichten`** | `Breadcrumbs`-component wordt alleen gebruikt in `BlogArticlePage` en `SupplementPage` | MEDIUM |
-| S9 | **`/gidsen/[slug]`, `/profiel`, `/faqs`, `/onderbouwing*`, `/hoe-werkt-dashboard` en de 3 legacy root-artikelen staan niet in de sitemap** | routediff tegen `sitemap.ts` | MEDIUM |
+| S9 | **`/gidsen/[slug]`, `/profiel`, `/faqs`, `/onderbouwing*`, `/hoe-werkt-dashboard` en de juridische pagina's staan niet in de sitemap** | routediff tegen `sitemap.ts`. *Correctie 16 sep: de drie legacy root-artikelen (`/wat-is-omega-3`, `/waar-let-je-op-bij-omega-3`, `/supplement-kiezen-waar-op-letten`) stonden er wél al in — ze dragen een eigen `pad` in `cornerstone-supplementen.ts` en komen via de blog-sectie mee.* | MEDIUM |
 | S10 | **Geen entity-linking in JSON-LD** — geen `@id`, geen `about`/`mentions`, geen `@graph` per pagina | `structuredData.ts` levert losse objecten | MEDIUM |
 | S11 | **`/blog/[categorie]` is een collision-route** die zowel categorieën als artikelen serveert | `generateStaticParams` mengt `GELDIGE_CATEGORIE_IDS` en artikel-slugs | LOW (werkt, maar fragiel) |
 | S12 | **9 weesartikelen** zonder enkele inkomende link vanuit andere artikelen | zie §3.3 | MEDIUM |
@@ -1017,12 +1017,22 @@ Mitigatie: begin met de vijf clusters die al een `relatedSupplementId` dragen �
 
 **Doel** — repareer wat aantoonbaar kapot is.
 
-**Wijzigen** — `src/app/sitemap.ts` (herstructureren naar `SITEMAP_SECTIONS`), `src/app/robots.ts`
+**Status: uitgevoerd op 16 september 2026** — commit op `claude/perfectsupplement-ecosystem-audit-p20dfl`.
+Resultaat: **184 → 202 URL's** (+19 toegevoegd, −1 verwijderd), 17 verschillende `lastModified`-datums
+in plaats van één gedeelde constante, 9 sitemap-tests groen, volledige klaar-check groen
+(`tsc` 0 · 300 testbestanden / 2971 tests · `eslint --max-warnings 0`).
+
+**Gewijzigd** — `src/app/sitemap.ts` (herstructureerd naar `SITEMAP_SECTIONS` + `SITEMAP_EXCLUDED`),
+`src/app/__tests__/sitemap.test.ts`. `robots.ts` bleek geen wijziging nodig te hebben: het conflict
+zat aan de sitemap-kant (`/rapport`).
 
 **Concreet**
 1. `/supplementen/{slug}` toevoegen (8 pagina's) — priority 0.8
 2. `/rapport` verwijderen (staat in `robots.disallow`)
-3. `/profiel`, `/faqs`, `/onderbouwing`, `/onderbouwing/voeding`, `/hoe-werkt-dashboard`, `/supplement-kiezen-waar-op-letten`, `/wat-is-omega-3`, `/waar-let-je-op-bij-omega-3` toevoegen
+3. `/profiel`, `/faqs`, `/onderbouwing`, `/onderbouwing/voeding`, `/hoe-werkt-dashboard` toevoegen.
+   **Niet** `/supplement-kiezen-waar-op-letten`, `/wat-is-omega-3` en `/waar-let-je-op-bij-omega-3`:
+   die dragen een eigen `pad` in `cornerstone-supplementen.ts` en komen al uit de blog-sectie.
+   Ze alsnog toevoegen gaf een dubbele URL.
 4. `/gidsen/{slug}` toevoegen (7) — **maar pas ná de gids-beslissing in fase 9**; tot die tijd op de `SITEMAP_EXCLUDED`-lijst met reden `"duplicate-intent-pending-decision"`
 5. `lastModified` per item uit echte data: `laatstBijgewerktOp ?? gepubliceerdOp` voor blog, `laatstBijgewerktOp` voor kennisbank, `lastUpdated` voor vergelijkingen (bestaat al)
 6. Juridische pagina's toevoegen op priority 0.3 (E-E-A-T-signaal)
