@@ -7,7 +7,7 @@ export const creatineEnHerstelData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Creatine en herstel: waar het wél om draait (en waar niet)",
   coverImage: "/images/blog/creatine-en-herstel.jpg",
-  coverImageAlt: "Man die na training herstelt in de sportschool",
+  coverImageAlt: "Halterstang die van de vloer wordt getild na een set",
   heroIntro:
     "Creatine wordt vaak geassocieerd met zware sets in de sportschool — maar achter de schermen gaat het om een kleine energiebuffer in spieren en hersenen. In dit artikel koppel je creatine aan [herstel na 30](/herstel-verbeteren-na-40): wat onderzoek redelijkerwijs suggereert, wat je eerst zelf moet regelen, en hoe je producten eerlijk vergelijkt via onze [creatine-vergelijking](/beste/creatine).",
   leestijd: "11 min",

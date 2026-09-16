@@ -6,7 +6,7 @@ export const buikvetCortisolSlaapMannenData: BlogArtikel = {
   categorie: "stress",
   titel: "Buikvet: waarom slaap en stress meer wegen dan je dieet",
   coverImage: "/images/blog/buikvet-cortisol-slaap-mannen.jpg",
-  coverImageAlt: "Hardloopschoenen op betonnen trappen bij buitenbeweging",
+  coverImageAlt: "Wandelpad door het bos — beweging, slaap en minder buikvet horen bij elkaar",
   heroIntro:
     "Zelfde eetpatroon als een paar jaar geleden, toch een taille die langzaam meegroeit. Voedingsvragen zijn dan het eerste waar je aan denkt, maar na 30 is de combinatie van chronische stress en slaaptekort minstens zo bepalend voor waar dat vet zich ophoopt. Zie ook de bredere pillar [testosteron na 30](/testosteron-na-40) voor hoe dit bij mannen samenhangt met hormonen.",
   leestijd: "8 min",

@@ -32,7 +32,7 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2026-03-01",
     readingTime: "14 min",
     coverImageAlt:
-      "Illustratie bij artikel over supplementen kiezen: aandacht voor etiket, dosering en kwaliteit.",
+      "Mensen aan een bureau die documenten en een etiket vergelijken",
     seoTitle:
       "Supplement kiezen: waar op letten? Dosering, vorm en transparantie",
     metaDescription:
@@ -56,7 +56,7 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2025-03-15",
     readingTime: "8 min",
     coverImageAlt:
-      "Verse zalm, sardines en visolie als omega-3-bronnen",
+      "Forel, sardines en een schaaltje olie als omega-3-bronnen",
     seoTitle: "Wat is omega-3? EPA, DHA en supplementen inhoudelijk uitgelegd",
     metaDescription:
       "Wat is omega-3? Informatie over EPA en DHA, het verschil tussen bronnen en waarom samenstelling bij supplementen belangrijk is voor vergelijken.",
@@ -78,7 +78,7 @@ export const BLOG_POSTS: BlogPost[] = [
     publishedAt: "2025-03-10",
     readingTime: "12 min",
     coverImageAlt:
-      "Omega-3-capsules en potjes naast verse vis bij het vergelijken",
+      "Witte potjes, visoliecapsules en verse vis op een aanrecht",
     seoTitle:
       "Omega-3 supplement kiezen: waar let je op bij EPA, DHA en prijs?",
     metaDescription:
@@ -147,6 +147,8 @@ export function buildArticlePageMetadata(slug: string): Metadata {
         {
           url: ogImage,
           alt: post.coverImageAlt,
+          width: 1600,
+          height: 900,
         },
       ],
     },

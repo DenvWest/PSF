@@ -6,7 +6,7 @@ export const creatineVormenEnKeurmerkenData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Creatine monohydraat, HCL of Creapure: welke vorm koop je?",
   coverImage: "/images/blog/creatine-vormen-en-keurmerken-v2.jpg",
-  coverImageAlt: "Wit supplementpoeder met maatlepel op een neutraal vlak",
+  coverImageAlt: "Wit supplementpoeder met een maatlepel op een neutraal vlak",
   heroIntro:
     "Het schap staat vol met varianten die allemaal beter zouden zijn dan de goedkoopste: HCL voor de opname, gebufferd tegen maagklachten, ethyl ester voor de celwand, gummies voor het gemak. Bijna al dat onderzoek dat de meerprijs zou rechtvaardigen, bestaat niet. Hier lees je welk verschil er wél toe doet — en welke keurmerken iets zeggen over wat er echt in de pot zit. Zoek je breder dan creatine: [alle supplementen](/supplementen).",
   leestijd: "9 min",

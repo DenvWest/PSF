@@ -6,7 +6,7 @@ export const algenolieOfVisolieData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Algenolie of visolie: dezelfde stof, een andere schakel in de keten",
   coverImage: "/images/blog/algenolie-of-visolie.jpg",
-  coverImageAlt: "Verse zalm, sardines en visolie als omega-3-bronnen",
+  coverImageAlt: "Zeewier op rotsen in ondiep water, de plantaardige bron van EPA en DHA",
   heroIntro:
     "Vis maakt zelf geen omega-3. Hij eet algen — en die algen maken [EPA en DHA](/kennisbank/epa-dha). Algenolie slaat die tussenstap over en levert precies dezelfde vetzuren. De vraag is dus niet welke van de twee “echt” is, maar wat je betaalt en welke verhouding je krijgt. Hier staat het verschil zonder het gebruikelijke plantaardig-versus-dierlijk-frame.",
   leestijd: "8 min",
@@ -96,8 +96,7 @@ export const algenolieOfVisolieData: BlogArtikel = {
     "visolie-oxidatie-en-bijwerkingen",
   ],
   metaTitle: "Algenolie of visolie? Dezelfde EPA en DHA, andere prijs",
-  metaDescription:
-    "Algenolie versus visolie: waarom algen de oorspronkelijke bron zijn, waarom algenolie vaak DHA-dominant is en wat krillolie en levertraan werkelijk toevoegen.",
+  metaDescription: "Algenolie of visolie: dezelfde EPA en DHA, andere bron. Voor wie plantaardig wil, waar je op let bij dosis en versheid.",
   keywords: [
     "algenolie of visolie",
     "plantaardige omega 3",

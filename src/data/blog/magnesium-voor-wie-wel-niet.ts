@@ -6,7 +6,7 @@ export const magnesiumVoorWieWelNietData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Voor wie is magnesium zinvol — en voor wie niet?",
   coverImage: "/images/blog/magnesium-voor-wie-wel-niet.jpg",
-  coverImageAlt: "Keuken met verse ingrediënten in plaats van een multi",
+  coverImageAlt: "Witte capsules naast een checklist in een notitieboek",
   heroIntro:
     "Magnesium wordt verkocht alsof het voor iedereen hetzelfde doet. Dat doet het niet. Bij iemand die maagzuurremmers slikt is de onderbouwing sterk; bij een goed etende dertiger zonder klachten is die er nauwelijks; en bij iemand met een verminderde nierfunctie is het een reden om éérst met de arts te overleggen. Dit artikel loopt acht profielen langs en zegt per profiel wat het beste bewijs oplevert — inclusief de gevallen waarin het antwoord “nee” of “niet zonder arts” is.",
   leestijd: "12 min",

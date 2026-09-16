@@ -6,7 +6,7 @@ export const slaapVerbeterenData: BlogArtikel = {
   categorie: "slaap",
   titel: "Slaap verbeteren: wat werkt en wat niet",
   coverImage: "/images/blog/slaap-verbeteren-40-plus.jpg",
-  coverImageAlt: "Netjes opgemaakt bed in een rustige slaapkamer",
+  coverImageAlt: "Opgemaakt bed met nachtlamp in een rustige slaapkamer",
   heroIntro:
     "Na je 30e verandert je slaaparchitectuur: minder diepe slaap, vaker wakker worden, eerder wakker zijn. Ontdek welke aanpassingen daadwerkelijk iets veranderen en waarom populaire adviezen soms averechts werken.",
   leestijd: "9 min",

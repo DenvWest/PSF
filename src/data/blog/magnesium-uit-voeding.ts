@@ -6,7 +6,7 @@ export const magnesiumUitVoedingData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Magnesium uit voeding: waar het in zit en waarom je het toch misloopt",
   coverImage: "/images/blog/magnesium-uit-voeding.jpg",
-  coverImageAlt: "Verse groenten en kruiden, rijk aan mineralen",
+  coverImageAlt: "Spinazie, pompoenpitten en amandelen op een houten plank",
   heroIntro:
     "Magnesium is geen zeldzame stof. Het zit in bladgroente, noten, zaden, peulvruchten, volkoren en pure chocolade — en toch zit een aanzienlijk deel van de Nederlandse bevolking onder de aanbevolen hoeveelheid. Dat komt niet doordat het voedsel verdwenen is, maar doordat de bewerking ervan is veranderd. Hier lees je hoeveel je met normale porties werkelijk binnenkrijgt, waar de verliezen zitten, en wanneer een supplement daar iets aan toevoegt.",
   leestijd: "10 min",
@@ -127,8 +127,7 @@ export const magnesiumUitVoedingData: BlogArtikel = {
     "magnesium-voor-wie-wel-niet",
   ],
   metaTitle: "Magnesium in voeding: waar zit het in en hoeveel per portie?",
-  metaDescription:
-    "Magnesium uit voeding: welke producten het meest leveren, hoeveel een normale portie oplevert, waarom witte bloem vier vijfde verliest en wanneer aanvullen zin heeft.",
+  metaDescription: "Magnesium uit voeding: spinazie, pitten en noten per portie, en wanneer een supplement het gat nog moet vullen.",
   keywords: [
     "magnesium in voeding",
     "waar zit magnesium in",

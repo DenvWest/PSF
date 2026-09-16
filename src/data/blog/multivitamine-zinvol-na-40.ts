@@ -6,7 +6,7 @@ export const multivitamineZinvolNa40Data: BlogArtikel = {
   categorie: "supplementen",
   titel: "Waarom wij geen multivitamine aanbevelen",
   coverImage: "/images/blog/multivitamine-zinvol-na-40.jpg",
-  coverImageAlt: "Keuken met verse ingrediënten in plaats van een multi",
+  coverImageAlt: "Keuken met verse groenten en olie in plaats van alleen een multi",
   heroIntro:
     "Zoek \"beste multivitamine\" en je krijgt tien tot veertig producten die allemaal winnen. Niemand in die lijstjes stelt de vraag die er echt toe doet: heb je een multivitamine nodig, of heb je iets specifieks nodig? Dit is geen vergelijking — het is het argument waarom we er geen maken.",
   leestijd: "6 min",

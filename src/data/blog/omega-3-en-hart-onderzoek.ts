@@ -6,7 +6,7 @@ export const omega3EnHartOnderzoekData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Omega-3 en het hart: waarom vier grote trials vier verschillende antwoorden gaven",
   coverImage: "/images/blog/omega-3-en-hart-onderzoek.jpg",
-  coverImageAlt: "Verse zalm op een bord, rijk aan omega-3",
+  coverImageAlt: "Laborant achter een microscoop bij onafhankelijk onderzoek",
   heroIntro:
     "Omega-3 heeft een toegelaten EU-hartclaim én een reeks grote trials die geen effect vonden. Dat lijkt tegenstrijdig, maar het is het niet: de claim en de trials gaan over verschillende mensen, doseringen en uitkomsten. Hier staat wat VITAL, ASCEND, REDUCE-IT en STRENGTH werkelijk hebben laten zien — inclusief het signaal over boezemfibrilleren dat zelden wordt genoemd.",
   leestijd: "10 min",
@@ -100,8 +100,7 @@ export const omega3EnHartOnderzoekData: BlogArtikel = {
     "omega-3-en-medicijnen",
   ],
   metaTitle: "Omega-3 en het hart: wat VITAL, REDUCE-IT en STRENGTH vonden",
-  metaDescription:
-    "Waarom omega-3 een EU-hartclaim heeft terwijl grote trials geen effect vonden, wat REDUCE-IT en STRENGTH onderscheidt en wat het signaal over boezemfibrilleren betekent.",
+  metaDescription: "Wat grote hartstudies met omega-3 wel en niet lieten zien: dosis, vorm en waarom VITAL, REDUCE-IT en STRENGTH uiteenlopen.",
   keywords: [
     "omega 3 hart",
     "is omega 3 gezond",

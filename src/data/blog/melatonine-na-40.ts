@@ -6,7 +6,7 @@ export const melatonineNa40Data: BlogArtikel = {
   categorie: "slaap",
   titel: "Melatonine: waarom het zelden genoeg is",
   coverImage: "/images/blog/melatonine-na-40.jpg",
-  coverImageAlt: "Zachte herfstzon door bomen, overgang van dag naar avond",
+  coverImageAlt: "Rode zonsondergang boven een stil landschap",
   heroIntro:
     "Je hebt melatonine geprobeerd. Misschien werkte het even — de eerste paar nachten viel je wat makkelijker in slaap. Maar na een week of twee was het effect weg. Je lag weer te draaien. Dat is geen pech en geen nocebo. Het heeft een fysiologische verklaring — en die begint bij begrijpen wat melatonine eigenlijk doet.",
   leestijd: "5 min",

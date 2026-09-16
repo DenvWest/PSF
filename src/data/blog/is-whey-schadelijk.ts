@@ -6,7 +6,7 @@ export const isWheySchadelijkData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Is whey schadelijk? Wat het onderzoek zegt over nieren, lever, botten en huid",
   coverImage: "/images/blog/is-whey-schadelijk.jpg",
-  coverImageAlt: "Man die na training herstelt in de sportschool",
+  coverImageAlt: "Pot wei-eiwitpoeder met schepje op een rustig aanrecht",
   heroIntro:
     "\"Dat gaat ten koste van je nieren\" is het meest herhaalde argument tegen eiwitpoeder — en tegelijk het slechtst onderbouwde. Er bestaan wél reële aandachtspunten rond whey, alleen zijn dat niet de punten die op verjaardagen langskomen. Hier zetten we vijf veelgehoorde zorgen naast het beschikbare bewijs, en daarna de drie dingen die wel je aandacht verdienen.",
   leestijd: "9 min",
@@ -130,8 +130,7 @@ export const isWheySchadelijkData: BlogArtikel = {
     "whey-wanneer-wel-en-niet",
   ],
   metaTitle: "Is whey schadelijk? Nieren, lever, botten en huid",
-  metaDescription:
-    "Is whey slecht voor je nieren, lever, botten of huid? Vijf veelgehoorde zorgen naast het onderzoek, plus de drie punten die wel je aandacht verdienen.",
+  metaDescription: "Is whey schadelijk voor nieren, lever of huid? Wat onderzoek zegt bij normale doseringen en hoe je het etiket leest.",
   keywords: [
     "is whey schadelijk",
     "whey nieren",

@@ -6,7 +6,7 @@ export const wheyOfPlantaardigEiwitData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Whey of plantaardig eiwit: hoe groot is het verschil echt?",
   coverImage: "/images/blog/whey-of-plantaardig-eiwit.jpg",
-  coverImageAlt: "Eiwitrijke maaltijd met kip, eieren en cottage cheese",
+  coverImageAlt: "Kom met tofu, ei en groenten als plantaardige én dierlijke eiwitbronnen",
   heroIntro:
     "Wie geen zuivel wil, hoort vaak dat plantaardig eiwit \"minder compleet\" is. Dat klopt op papier en is in de praktijk goed op te lossen — meestal met een grotere schep en een verstandige combinatie. Hier lees je hoe eiwitkwaliteit wordt gemeten, waarom leucine de kern van het verschil is, en hoeveel plantaardig poeder je nodig hebt om dezelfde prikkel te krijgen als van [wei-eiwit](/kennisbank/wei-eiwit).",
   leestijd: "9 min",
@@ -126,8 +126,7 @@ export const wheyOfPlantaardigEiwitData: BlogArtikel = {
     "eiwit-na-40",
   ],
   metaTitle: "Whey of plantaardig eiwit: het verschil in kwaliteit",
-  metaDescription:
-    "Whey versus plantaardig eiwit: DIAAS-scores, leucinegehalte en hoeveel gram je van een erwten- of sojablend nodig hebt voor dezelfde spierprikkel.",
+  metaDescription: "Whey of plantaardig eiwit: leucine, dagtotaal en wanneer een tofu- of erwtenpoeder dezelfde spierprikkel haalt.",
   keywords: [
     "whey of plantaardig eiwit",
     "plantaardig eiwitpoeder vergelijken",

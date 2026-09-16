@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { BlogArtikel, BlogSectie as BlogSectieData } from "@/types/blog";
 import { blogSectionDomId } from "@/lib/article-heading-id";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
@@ -76,11 +77,8 @@ export default function BlogArticlePage({
 
   const showMidArticleCta = isLongBlogArticle(artikel);
   const midIndex = Math.ceil(hoofdSecties.length / 2);
+  const bodyImageAt = Math.max(1, Math.floor(hoofdSecties.length / 2));
   const { planPhase } = getContentMetadata(artikel.slug);
-  const sectiesVoorMid = showMidArticleCta
-    ? hoofdSecties.slice(0, midIndex)
-    : hoofdSecties;
-  const sectiesNaMid = showMidArticleCta ? hoofdSecties.slice(midIndex) : [];
 
   const cover = blogCover(artikel);
   const bodyImage = blogBodyImage(artikel.slug);
@@ -107,9 +105,6 @@ export default function BlogArticlePage({
     ]),
     mainEntityOfPage: `https://perfectsupplement.nl${blogArtikelPad(artikel)}`,
   };
-
-  const firstSectie = sectiesVoorMid[0];
-  const restVoorMid = sectiesVoorMid.slice(1);
 
   const sidebar = (
     <ArticleSidebar
@@ -181,48 +176,29 @@ export default function BlogArticlePage({
             </div>
 
             <ArticleBodyReadingChrome tocItems={[]} hideTocBelowItemCount={999}>
-                {firstSectie ? (
-                  <BlogSectie
-                    sectie={firstSectie}
-                    anchorId={blogSectionDomId(artikel.slug, 0, firstSectie.titel)}
-                  />
-                ) : null}
-
-                {bodyImage ? (
-                  <ArticleFigure
-                    src={bodyImage.src}
-                    alt={bodyImage.alt}
-                    caption={bodyImage.caption}
-                    className="mt-10 md:mt-12"
-                  />
-                ) : null}
-
-                {restVoorMid.map((sectie, index) => (
-                  <BlogSectie
-                    key={`${sectie.titel}-${String(index + 1)}`}
-                    sectie={sectie}
-                    anchorId={blogSectionDomId(artikel.slug, index + 1, sectie.titel)}
-                  />
-                ))}
-
-                {showMidArticleCta ? (
-                  <BlogIntakeCTA
-                    placement="invite"
-                    locatie="blog_mid"
-                    className="mt-14"
-                  />
-                ) : null}
-
-                {sectiesNaMid.map((sectie, index) => {
-                  const sectieIndex = midIndex + index;
-                  return (
+                {hoofdSecties.map((sectie, index) => (
+                  <Fragment key={`${sectie.titel}-${String(index)}`}>
                     <BlogSectie
-                      key={`${sectie.titel}-${String(sectieIndex)}`}
                       sectie={sectie}
-                      anchorId={blogSectionDomId(artikel.slug, sectieIndex, sectie.titel)}
+                      anchorId={blogSectionDomId(artikel.slug, index, sectie.titel)}
                     />
-                  );
-                })}
+                    {bodyImage && index + 1 === bodyImageAt ? (
+                      <ArticleFigure
+                        src={bodyImage.src}
+                        alt={bodyImage.alt}
+                        caption={bodyImage.caption}
+                        className="mt-10 md:mt-12"
+                      />
+                    ) : null}
+                    {showMidArticleCta && index + 1 === midIndex ? (
+                      <BlogIntakeCTA
+                        placement="invite"
+                        locatie="blog_mid"
+                        className="mt-14"
+                      />
+                    ) : null}
+                  </Fragment>
+                ))}
 
                 {artikel.stressPillarTurbo ? (
                   <aside className="mt-6 rounded-xl border border-stone-200/90 bg-[color-mix(in_srgb,var(--ps-bg)_96%,transparent)] px-6 py-6 md:px-7 md:py-8">

@@ -6,7 +6,7 @@ export const wheyWanneerWelEnNietData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Whey: voor wie het wél iets toevoegt — en voor wie niet",
   coverImage: "/images/blog/whey-wanneer-wel-en-niet.jpg",
-  coverImageAlt: "Eiwitshake in een shaker na training",
+  coverImageAlt: "Eiwitshake in een shaker naast een schepje poeder",
   heroIntro:
     "Whey wordt verkocht alsof iedereen boven de veertig een bus in de kast hoort te hebben. Dat klopt niet. [Wei-eiwit](/kennisbank/wei-eiwit) is een geconcentreerd voedingsmiddel dat één probleem oplost: te weinig eiwit op de momenten dat je lichaam het nodig heeft. Heb je dat probleem niet, dan koop je duur poeder. Hier lees je per situatie wanneer een shake iets toevoegt, wanneer hij overbodig is en wanneer je er eerst met een arts over praat.",
   leestijd: "10 min",

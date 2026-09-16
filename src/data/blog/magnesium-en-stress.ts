@@ -6,7 +6,7 @@ export const magnesiumEnStressData: BlogArtikel = {
   categorie: "stress",
   titel: "Magnesium en stress: de vicieuze cirkel die twee kanten op werkt",
   coverImage: "/images/blog/magnesium-en-stress.jpg",
-  coverImageAlt: "Persoon in rustige houding bij natuurlijk licht, gericht op herstel van stress",
+  coverImageAlt: "Persoon in meditatiehouding in warm tegenlicht, gericht op herstel",
   heroIntro:
     "De gangbare voorstelling is enkelvoudig: te weinig magnesium, dus meer spanning. De literatuur beschrijft iets interessanters. Stress verhoogt namelijk zelf de magnesiumuitscheiding via de nier, en een lagere magnesiumstatus maakt het stresssysteem juist prikkelbaarder. Twee pijlen, dezelfde richting — een cirkel die zichzelf voedt. Hier lees je hoe dat mechanisme in elkaar zit, wat suppletieonderzoek werkelijk laat zien, en waarom dat laatste bescheidener is dan het eerste doet vermoeden.",
   leestijd: "10 min",
