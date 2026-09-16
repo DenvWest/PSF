@@ -40,6 +40,14 @@ import {
 import { kennisbankCover, themaCover } from '@/lib/kennisbank-cover'
 import { kennisbankBodyImage } from '@/data/article-body-images'
 import { absoluteUrl } from '@/lib/public-site-url'
+import {
+  buildKennisbankOpenGraphImages,
+  buildKennisbankSchemaImages,
+  buildKennisbankTwitterImages,
+  kennisbankImageKeywords,
+  resolveKennisbankBodyImage,
+  resolveKennisbankCover,
+} from '@/lib/seo/kennisbank-images'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -96,48 +104,64 @@ export async function generateMetadata({
 
   if (isValidTheme(slug)) {
     const config = themeLabels[slug]
-    const cover = themaCover(slug)
-    const coverUrl = absoluteUrl(cover.src)
+    const cover = resolveKennisbankCover(slug, themaCover(slug))
+    const pageUrl = absoluteUrl(`/kennisbank/${slug}`)
+    const keywords = kennisbankImageKeywords(slug)
     return {
       title: `${config.title} — Kennisbank`,
       description: config.description,
+      ...(keywords.length > 0 ? { keywords } : {}),
       alternates: {
-        canonical: `https://perfectsupplement.nl/kennisbank/${slug}`,
+        canonical: pageUrl,
       },
       openGraph: {
         title: `${config.title} — Kennisbank | PerfectSupplement`,
         description: config.description,
-        images: [{ url: coverUrl, alt: cover.alt }],
+        type: 'article',
+        url: pageUrl,
+        siteName: 'PerfectSupplement',
+        locale: 'nl_NL',
+        images: buildKennisbankOpenGraphImages(cover),
       },
       twitter: {
         card: 'summary_large_image',
         title: `${config.title} — Kennisbank | PerfectSupplement`,
         description: config.description,
-        images: [coverUrl],
+        images: buildKennisbankTwitterImages(cover),
       },
     }
   }
 
   const term = getTermBySlug(slug)
   if (!term) return {}
-  const cover = kennisbankCover(term)
-  const coverUrl = absoluteUrl(cover.src)
+  const cover = resolveKennisbankCover(term.slug, kennisbankCover(term))
+  const bodyImage = kennisbankBodyImage(term.slug)
+  const resolvedBody = bodyImage
+    ? resolveKennisbankBodyImage(term.slug, bodyImage)
+    : undefined
+  const pageUrl = absoluteUrl(`/kennisbank/${term.slug}`)
+  const keywords = kennisbankImageKeywords(term.slug)
   return {
     title: term.metaTitle,
     description: term.metaDescription,
+    ...(keywords.length > 0 ? { keywords } : {}),
     alternates: {
-      canonical: `https://perfectsupplement.nl/kennisbank/${term.slug}`,
+      canonical: pageUrl,
     },
     openGraph: {
       title: `${term.metaTitle} | PerfectSupplement`,
       description: term.metaDescription,
-      images: [{ url: coverUrl, alt: cover.alt }],
+      type: 'article',
+      url: pageUrl,
+      siteName: 'PerfectSupplement',
+      locale: 'nl_NL',
+      images: buildKennisbankOpenGraphImages(cover, resolvedBody),
     },
     twitter: {
       card: 'summary_large_image',
       title: `${term.metaTitle} | PerfectSupplement`,
       description: term.metaDescription,
-      images: [coverUrl],
+      images: buildKennisbankTwitterImages(cover, resolvedBody),
     },
   }
 }
@@ -234,17 +258,17 @@ async function TermPage({ slug }: { slug: string }) {
   const laatstDatum = term.laatstBijgewerktOp ?? STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM
   const verantwoordelijke = term.inhoudelijkeVerantwoordelijke ?? REDACTIE_VERANTWOORDELIJKE_STANDARD
   const { planPhase } = getContentMetadata(term.slug)
-  const cover = kennisbankCover(term)
-  const bodyImage = kennisbankBodyImage(term.slug)
+  const cover = resolveKennisbankCover(term.slug, kennisbankCover(term))
+  const rawBodyImage = kennisbankBodyImage(term.slug)
+  const bodyImage = rawBodyImage
+    ? resolveKennisbankBodyImage(term.slug, rawBodyImage)
+    : undefined
 
   const definedTermSchema = buildDefinedTermSchema({
     term: term.term,
     description: term.shortDefinition,
     slug: term.slug,
-    images: [
-      { src: cover.src, alt: cover.alt, caption: cover.alt },
-      ...(bodyImage ? [bodyImage] : []),
-    ],
+    images: buildKennisbankSchemaImages(cover, bodyImage),
   })
 
   const breadcrumbSchema = {
@@ -320,7 +344,8 @@ async function TermPage({ slug }: { slug: string }) {
                 <ArticleFigure
                   src={cover.src}
                   alt={cover.alt}
-                  caption={cover.alt}
+                  caption={cover.caption}
+                  title={cover.title}
                   priority
                 />
 
@@ -349,6 +374,7 @@ async function TermPage({ slug }: { slug: string }) {
                         src={bodyImage.src}
                         alt={bodyImage.alt}
                         caption={bodyImage.caption}
+                        title={bodyImage.alt}
                         className="mb-4 md:mb-6"
                       />
                     ) : null}

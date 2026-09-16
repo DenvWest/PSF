@@ -1,5 +1,6 @@
 import { kennisbankTerms, themeLabels, type KennisbankTerm } from "@/data/kennisbank";
 import { kennisbankCover } from "@/lib/kennisbank-cover";
+import { resolveKennisbankCover } from "@/lib/seo/kennisbank-images";
 import {
   normalizeSearch,
   type LibraryItem,
@@ -12,7 +13,7 @@ export function isVerdieping(term: KennisbankTerm): boolean {
 
 export function toLibraryItem(term: KennisbankTerm): LibraryItem {
   const config = themeLabels[term.theme];
-  const cover = kennisbankCover(term);
+  const cover = resolveKennisbankCover(term.slug, kennisbankCover(term));
 
   return {
     id: term.slug,
@@ -23,14 +24,19 @@ export function toLibraryItem(term: KennisbankTerm): LibraryItem {
     groupLabel: config.title,
     accentClass: config.colorClasses.rail,
     audience: term.audience,
-    image: cover,
+    image: { src: cover.src, alt: cover.alt },
     sourceCount: term.referenties.length,
     badge: isVerdieping(term) ? "Verdieping" : undefined,
     publishedAt: term.laatstBijgewerktOp,
     searchText: normalizeSearch(
-      [term.term, term.shortDefinition, config.title].join(" "),
+      [
+        term.term,
+        term.shortDefinition,
+        config.title,
+        cover.alt,
+        cover.caption,
+      ].join(" "),
     ),
-    ...(cover ? { image: cover } : {}),
   };
 }
 
