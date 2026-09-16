@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const cortisolVerlagenData: BlogArtikel = {
   slug: "cortisol-verlagen-natuurlijk",
   categorie: "stress",
-  titel: "Cortisol benaderen: vijf leefstijlroutes uit onderzoek, zonder medicatie",
+  titel: "Cortisol verlagen: vijf leefstijlroutes uit onderzoek, zonder medicatie",
   coverImage: "/images/blog/cortisol-verlagen-natuurlijk.jpg",
   coverImageAlt: "Persoon in rustige houding bij natuurlijk licht, gericht op herstel van stress",
   heroIntro:

@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs";
 export const vitamineDEnEnergieData: BlogArtikel = {
   slug: "vitamine-d-en-energie",
   categorie: "energie",
-  titel: "Vitamine D en energie: tekort, verwachtingen en vergelijken",
+  titel: "Vitamine D en energie: wat een tekort werkelijk met je doet",
   coverImage: "/images/blog/vitamine-d-en-energie.jpg",
   coverImageAlt: "Zonnig strand met helder blauwe lucht",
   heroIntro:

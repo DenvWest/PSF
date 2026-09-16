@@ -157,7 +157,7 @@ export const melatonineData: SupplementData = {
     },
     {
       href: "/blog/slaapritme-herstellen",
-      titel: "Slaapritme Herstellen in 7 Dagen: Een Dag-voor-Dag Protocol",
+      titel: "Slaapritme herstellen in 7 dagen: een dag-voor-dag protocol",
     },
   ],
 

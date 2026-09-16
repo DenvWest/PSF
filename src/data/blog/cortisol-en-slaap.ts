@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const cortisolEnSlaapData: BlogArtikel = {
   slug: "cortisol-en-slaap",
   categorie: "slaap",
-  titel: "Cortisol en Slaap: Waarom Je Om 3 Uur Wakker Wordt",
+  titel: "Cortisol en slaap: waarom je om 3 uur wakker wordt",
   coverImage: "/images/blog/cortisol-en-slaap-v2.jpg",
   coverImageAlt: "Slapende kat onder het dekbed — rust versus nachtelijke stress",
   heroIntro:
@@ -79,7 +79,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     "slaaphygiene-mannen-40-plus",
   ],
   metaTitle:
-    "Cortisol en Slaap: Waarom Je Om 3 Uur Wakker Wordt",
+    "Cortisol en slaap: waarom je om 3 uur wakker wordt",
   metaDescription:
     "Wakker om 3 uur 's nachts? Cortisol is vaak de schuldige. Ontdek het verband en wat je eraan doet.",
   keywords: [

@@ -5,7 +5,7 @@ export const magnesiumInDeOvergangData: BlogArtikel = {
   slug: "magnesium-in-de-overgang",
   categorie: "supplementen",
   audience: "vrouwen",
-  titel: "Magnesium in de overgang: wat het wel en niet doet",
+  titel: "Magnesium in de overgang: waar het bewijs sterk is — en waar niet",
   coverImage: "/images/blog/magnesium-in-de-overgang.jpg",
   coverImageAlt: "Magnesiumsupplement en een glas water op een lichte ondergrond",
   heroIntro:

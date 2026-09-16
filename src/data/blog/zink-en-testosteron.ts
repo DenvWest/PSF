@@ -5,20 +5,20 @@ export const zinkEnTestosteronData: BlogArtikel = {
   slug: "zink-en-testosteron",
   categorie: "supplementen",
   audience: "mannen",
-  titel: "Zink en testosteron: wat de EU wél mag zeggen (en wat niet)",
+  titel: "Zink en testosteron: boost, of gewoon een tekort aanvullen?",
   coverImage: "/images/blog/zink-en-testosteron.jpg",
   coverImageAlt: "Gegrild vlees, oesters en pompoenpitten als zinkrijke voeding",
   heroIntro:
-    "Zink staat op etiketten vaak in één adem met testosteron — maar de toegestane claim gaat over instandhouding van een normaal testosterongehalte in het bloed bij voldoende inname, niet over een boost. Dit artikel verbindt [testosteron na 30](/testosteron-na-40) met onze [zink-vergelijking](/beste/zink) en het cluster [cortisol en testosteron](/blog/cortisol-en-testosteron).",
+    "Zink staat op etiketten vaak in één adem met testosteron. Wat er werkelijk onderbouwd is, klinkt een stuk kalmer: bij voldoende inname draagt zink bij tot instandhouding van een normaal testosterongehalte in het bloed. Aanvullen wat ontbreekt, dus — geen boost bovenop normaal. Dit artikel verbindt [testosteron na 30](/testosteron-na-40) met onze [zink-vergelijking](/beste/zink) en het cluster [cortisol en testosteron](/blog/cortisol-en-testosteron).",
   leestijd: "9 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-05-14",
   secties: [
     {
       type: "tekst",
-      titel: "Claim vs verwachting",
+      titel: "Wat het etiket belooft, en wat ervan klopt",
       tekst:
-        "Veel marketing suggereert hogere testosteronspiegels door zink. De EU-formulering is voorzichtiger: bij adequate inname draagt zink bij tot instandhouding van een normaal testosterongehalte in het bloed. Dat is geen belofte dat je je anders voelt of dat labwaarden stijgen als je al voldoende zink binnenkrijgt via voeding.",
+        "Veel marketing suggereert hogere testosteronspiegels door zink. De enige onderbouwde formulering is voorzichtiger: bij adequate inname draagt zink bij tot instandhouding van een normaal testosterongehalte in het bloed. Dat is geen belofte dat je je anders voelt of dat labwaarden stijgen als je al voldoende zink binnenkrijgt via voeding.",
     },
     {
       type: "tekst",
@@ -53,9 +53,9 @@ export const zinkEnTestosteronData: BlogArtikel = {
     "testosteron-en-energie-na-40",
     "vitamine-d-en-energie",
   ],
-  metaTitle: "Zink en testosteron: claims en vergelijken",
+  metaTitle: "Zink en testosteron: verhoogt het je waarde of niet?",
   metaDescription:
-    "Zink en testosteron uitgelegd: EU-claim, wanneer suppletie ter sprake komt en hoe je producten vergelijkt.",
+    "Zink en testosteron uitgelegd: wat er wél onderbouwd is, wanneer suppletie ter sprake komt en hoe je producten op vorm en elementaire mg vergelijkt.",
   keywords: ["zink testosteron", "zink supplement mannen", "testosteron na 30"],
   referenties: toRefs([
     "Prasad AS et al. Zinc status and serum testosterone levels in healthy adults. Nutrition. 1996;12(5):344-348.",

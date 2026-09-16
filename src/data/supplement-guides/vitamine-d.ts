@@ -162,7 +162,7 @@ export const vitamineDData: SupplementData = {
     },
     {
       href: "/blog/energie-verhogen-natuurlijk",
-      titel: "Energie verhogen: de fysiologie en wat je kunt doen",
+      titel: "Energie verhogen: waar het misgaat en wat je eraan doet",
     },
   ],
 
