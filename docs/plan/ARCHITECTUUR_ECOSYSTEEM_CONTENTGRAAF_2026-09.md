@@ -928,7 +928,7 @@ De contentgraaf is compile-time data. Het zwaarste dat erbij komt is een `Map`-o
 | Artikelen die naar de voedingscheck linken | 0 / 78 | ~45 / 78 (elk stuk met een nutriënt of voedingsthema) |
 | Publieke pagina's op de voedingsdatabase | 0 → **6** (fase 5 gereed) | 6 (1 hub + 5 stoffen) |
 | Supplementgidsen in de sitemap | 0 / 8 | 8 / 8 |
-| Weespagina's | 15 (gemeten met de volledige graaf; 9 als je alleen artikel→artikel telt) | 0, afgedwongen door een test |
+| Weespagina's | 20 → **2** (fase 6 gereed) | 2, afgedwongen door een test |
 | Contentitems met nutriëntrelatie | 0 → **61** (fase 1 gereed) | 61+ |
 | Content-events | 4 losse | 4 systematische + 2 hergebruikt |
 | Concurrerende gids-URL's | 13 (6 thema's dubbel) | 7 |
@@ -1353,6 +1353,60 @@ afvinken vóór deploy; medische disclaimer verplicht.
 ---
 
 ### FASE 6 — Automatische interne linking (P1 · ~2 dagen)
+
+**Status: uitgevoerd op 17 september 2026, uit (`NEXT_PUBLIC_CONTENT_RELATED` ongezet).**
+**Weespagina's: 20 → 2.** 684 automatisch afgeleide links. Klaar-check groen
+(`tsc` 0 · 306 testbestanden / 3052 tests · `eslint --max-warnings 0`).
+
+**Eigen vlag, los van fase 3.** Het zijn twee onafhankelijke wijzigingen — de vervolgstap raakt de
+CTA onder een artikel, de verwante-lijst raakt wat eronder staat. Samen schakelen zou betekenen dat
+je achteraf niet weet welke van de twee het verschil maakte.
+
+**Twee aanpassingen op het algoritme uit dit plan, allebei door de meting afgedwongen.**
+
+*De stof is een gegarandeerde relatie, geen gescoorde.* Een stuk over magnesium hoort altijd naar
+`/voedingsstoffen/magnesium` te wijzen — dat is geen kwestie van genoeg overeenkomstige dimensies,
+dat is dezelfde stof. Een gedeelde stof weegt daarom 4 in plaats van 3, zodat hij alleen al over de
+drempel komt.
+
+*Hubs matchen op één thema.* Met drempel 4 voor iedereen bleven pillars, profielpagina's en
+gezondheidsgidsen leeg: hun metadata draagt alleen een thema, en dat is 2 punten. Maar voor een hub
+ís één gedeeld thema de relatie — `SEO_RULES.md` zegt al "pillar pages linken naar al hun
+cluster-posts en vice versa". De drempel is dus 2 zodra een van beide kanten een hub is, met een
+maximum van twee hublinks per pagina zodat een stress-artikel niet in pillar + profiel + gids
+verdrinkt.
+
+Daarnaast kregen profielpagina's hun domein als thema (`stressdrager` → stress). Zonder thema had
+`/profiel/stressdrager` niets om op te matchen; dat was de reden dat hij een wees was.
+
+**Wat er overblijft, en waarom het geen algoritme vraagt**
+
+| Weespagina | Waarom |
+|---|---|
+| `/gids/testosteron` | testosteron is geen `ThemeSlug` — een modelleergat, geen linkprobleem |
+| `/kennisbank/sociale-verbinding` | verbinding staat in `VERBORGEN_DOMEINEN`; het domein is bewust uit de interface gehaald |
+
+**Veertien knopen hebben geen uitgaande automatische links.** Dat is hetzelfde modelleergat van de
+andere kant: energie, herstel en testosteron bestaan als `PillarId` maar niet als `ThemeSlug`, en
+ashwagandha, creatine en melatonine dragen geen `NutrientId`. Voor die pagina's is er niets om op te
+matchen. Dat is een keuze waard in fase 7 of later — niet iets om met een lagere drempel weg te
+poetsen, want dan koppel je pagina's die niets delen.
+
+**Acceptatiecriteria**
+- [x] Weespagina's van 20 naar 2, en de twee die overblijven staan met reden vast
+- [x] De acht artikel-wezen uit de audit hebben allemaal inkomende links
+- [x] De vijf nieuwe stofpagina's hebben inkomende links
+- [x] Geen pagina toont meer dan 6 afgeleide links
+- [x] Ankertekst komt van de doelpagina (test vergelijkt met `node.title`)
+- [x] Handmatige `gerelateerdeSluggen` staan vooraan en tellen mee in de limiet
+- [x] Geen zelfverwijzing, geen dubbele link, alleen bestaande knopen
+- [x] Stabiel: twee aanroepen geven hetzelfde
+- [x] Meetpunt: `content.related_clicked{from,to,relation}`
+
+**Geen cyclus.** De tiebreak "minst gelinkt eerst" leest `inboundCounts()`, en dat telt alleen
+redactionele links uit de data. Zou hij de berekende links meetellen, dan voedt de functie zichzelf
+en hangt de uitkomst af van de volgorde waarin je hem aanroept. De automatische laag ligt erbovenop,
+niet erin.
 
 **Doel** — weespagina's structureel onmogelijk maken.
 

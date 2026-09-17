@@ -33,3 +33,18 @@ export function isContentNextStepEnabled(hasNutrients: boolean): boolean {
   if (rollout === "nutrients") return hasNutrients;
   return false;
 }
+
+/**
+ * Uitrolstand van de automatische "verder lezen"-laag.
+ *
+ * Losse vlag van `NEXT_PUBLIC_CONTENT_NEXT_STEP`, want het zijn twee
+ * onafhankelijke wijzigingen: de vervolgstap raakt de CTA onder een artikel, de
+ * verwante-lijst raakt wat eronder staat. Ze samen schakelen zou betekenen dat
+ * je achteraf niet weet welke van de twee het verschil maakte.
+ */
+export function isContentRelatedEnabled(hasNutrients: boolean): boolean {
+  const raw = process.env.NEXT_PUBLIC_CONTENT_RELATED;
+  if (raw === "all") return true;
+  if (raw === "nutrients") return hasNutrients;
+  return false;
+}

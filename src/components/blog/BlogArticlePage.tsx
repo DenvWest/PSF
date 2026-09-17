@@ -36,7 +36,12 @@ import InsightPhaseNote from "@/components/insights/InsightPhaseNote";
 import { getContentMetadata } from "@/data/insight-metadata";
 import NextStepBlock from "@/components/content/NextStepBlock";
 import { nextStepForMetadata } from "@/lib/content-graph/next-step";
-import { isContentNextStepEnabled } from "@/lib/feature-flags";
+import {
+  isContentNextStepEnabled,
+  isContentRelatedEnabled,
+} from "@/lib/feature-flags";
+import RelatedContentRail from "@/components/content/RelatedContentRail";
+import { relatedContent } from "@/lib/content-graph/related-content";
 import { blogCover } from "@/lib/blog-cover";
 import { blogBodyImage } from "@/data/article-body-images";
 import { buildArticleImageObjects } from "@/lib/seo/structuredData";
@@ -82,6 +87,20 @@ export default function BlogArticlePage({
     (contentMeta.nutrients?.length ?? 0) > 0,
   );
   const vervolgstap = toontVervolgstap ? nextStepForMetadata(contentMeta) : null;
+
+  /**
+   * De verwante pagina's, afgeleid uit de graaf. Losse vlag van de
+   * vervolgstap: het zijn twee onafhankelijke wijzigingen, en samen schakelen
+   * zou betekenen dat je achteraf niet weet welke het verschil maakte.
+   *
+   * `gerelateerdeSluggen` blijft leidend — de graaf vult aan wat niemand
+   * bijhoudt: de verwijzing terug naar een nieuw artikel, en de brug naar de
+   * voedingsstofpagina.
+   */
+  const heeftStof = (contentMeta.nutrients?.length ?? 0) > 0;
+  const verwant = isContentRelatedEnabled(heeftStof)
+    ? relatedContent(blogArtikelPad(artikel))
+    : null;
 
   const clusterTitle = CATEGORIE_CONFIG[artikel.categorie].naam;
   const clusterArticles = alleArtikelen
@@ -325,7 +344,15 @@ export default function BlogArticlePage({
 
         {gerelateerde.length > 0 ? (
           <div className="mx-auto mt-20 max-w-[min(var(--reading-layout-max-width),100%)] md:mt-24">
-            <BlogGerelateerd artikelen={gerelateerde} />
+            {verwant ? (
+              <RelatedContentRail
+                links={verwant}
+                from={artikel.slug}
+                fromType="blog"
+              />
+            ) : (
+              <BlogGerelateerd artikelen={gerelateerde} />
+            )}
           </div>
         ) : null}
       </Container>

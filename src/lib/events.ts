@@ -117,6 +117,7 @@ export const DOMAIN_EVENT_TYPES = [
   // één query blijven in plaats van drie event-typen.
   "content.next_step_shown",
   "content.next_step_clicked",
+  "content.related_clicked",
   // Connection Profile — zelf opgegeven voorkeuren, GEEN gezondheidsdata.
   // De ratio cprofile.completed / cprofile.step_completed{step:1} is de meting
   // die toetst of stap 2 te confronterend is (BESLUIT §12).

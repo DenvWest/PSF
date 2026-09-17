@@ -41,6 +41,13 @@ const SLUG_TO_NUTRIENT: Record<string, NutrientId> = {
   // voedingscheck meet ze niet.
 };
 
+/** Profielslug → het domein waar het profiel over gaat. */
+const PROFIEL_THEME: Record<string, ThemeSlug> = {
+  stressdrager: "stress",
+  "onrustige-slaper": "sleep",
+  overtrainer: "movement",
+};
+
 /** Slug van een voedingsstofpagina → de stof die hij behandelt. */
 const NUTRIENT_PAGE_NUTRIENT: Record<string, NutrientId> = Object.fromEntries(
   Object.values(NUTRIENT_PAGES).map((page) => [page.slug, page.nutrient]),
@@ -86,7 +93,14 @@ export function metadataForNode(node: GraphNode): ContentMetadata {
       };
 
     case "profiel":
-      return { checkOverride: "leefstijl" };
+      return {
+        // Een profielpagina draagt het domein waar hij over gaat; zonder thema
+        // heeft hij niets om op te matchen en blijft hij een wees. `lage-energie`
+        // krijgt er geen: energie is wel een PillarId maar geen ThemeSlug — dat
+        // is een modelleergat dat ouder is dan deze graaf.
+        ...(PROFIEL_THEME[node.slug] ? { theme: PROFIEL_THEME[node.slug] } : {}),
+        checkOverride: "leefstijl",
+      };
 
     case "supplementgids":
     case "vergelijking": {
