@@ -147,6 +147,13 @@ export default function VoedingNa40Page() {
                     <li>Je traint, maar spiermassa voelt lastiger vast te houden.</li>
                     <li>Je eet weinig vette vis; omega-3 komt vooral uit supplementenmarketing.</li>
                     <li>Je avondmaaltijd is laat of eenzijdig (veel koolhydraten, weinig eiwit).</li>
+                    <li>
+                      Je eet plantaardig en slikt geen B12 — zie de{" "}
+                      <Link href="/voedingstekort" className={LINK}>
+                        voedingstekort-gids
+                      </Link>
+                      .
+                    </li>
                   </ul>
                   <p className="mt-4 text-gray-700 leading-relaxed">
                     Herken je een patroon?{" "}
@@ -184,6 +191,16 @@ export default function VoedingNa40Page() {
                     </Link>{" "}
                     uit vette vis ondersteunen normale hartfunctie en hersenfunctie binnen
                     officiële claimkaders — geen wondermiddel tegen moeheid.
+                  </p>
+                  <p className="mt-4 text-gray-700 leading-relaxed">
+                    Wie weinig vis, zuivel of vlees eet, mist vaak meer dan eiwit:
+                    B12, jodium, EPA/DHA en vitamine D vullen zich niet vanzelf.
+                    De{" "}
+                    <Link href="/voedingstekort" className={LINK}>
+                      voedingstekort-gids
+                    </Link>{" "}
+                    laat dat zien in een micronutriëntengrafiek en een levenslijn
+                    — vooral relevant als je plantaardig eet.
                   </p>
                 </section>
 

@@ -42,6 +42,10 @@ export const GA4_EVENTS = {
   VOEDING_BRONNEN_VIEWED: 'voeding_bronnen_viewed',
   VOEDING_BRONNEN_EXPANDED: 'voeding_bronnen_expanded',
   VOEDING_CHECK_CLICKED: 'voeding_check_clicked',
+  VOEDINGSTEKORT_PATROON: 'voedingstekort_patroon',
+  VOEDINGSTEKORT_STOF: 'voedingstekort_stof',
+  VOEDINGSTEKORT_NAV: 'voedingstekort_nav',
+  GIDSEN_WEBGIDS_CLICK: 'gidsen_webgids_click',
 } as const;
 
 export function trackEvent(

@@ -12,12 +12,14 @@ import {
   type ReactNode,
 } from "react";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
+import { clarityTag } from "@/lib/clarity";
 import { isUsableFirstName } from "@/lib/intake-greetings";
 import type { GuideThema } from "@/types/guide-opt-in";
 
 type GuideOptInVariant = "hero" | "dark";
 
 type GuideOptInContextValue = {
+  guideKey: string;
   guideTitle: string;
   accent: string;
   firstName: string;
@@ -125,6 +127,7 @@ export function GuideOptInRoot({
 
   const value = useMemo(
     () => ({
+      guideKey,
       guideTitle,
       accent,
       firstName,
@@ -148,6 +151,7 @@ export function GuideOptInRoot({
       handleSubmit,
     }),
     [
+      guideKey,
       guideTitle,
       accent,
       firstName,
@@ -192,6 +196,7 @@ export default function GuideOptIn({
   comingSoonCta,
 }: GuideOptInProps) {
   const {
+    guideKey,
     guideTitle,
     accent,
     firstName,
@@ -247,6 +252,10 @@ export default function GuideOptIn({
           href={comingSoonHref ?? "/gidsen"}
           className={linkClass}
           style={linkStyle}
+          onClick={() => {
+            trackEvent(GA4_EVENTS.GIDSEN_WEBGIDS_CLICK, { gids: guideKey });
+            clarityTag("gidsen_webgids", guideKey);
+          }}
         >
           {comingSoonCta ?? "Lees de webgids →"}
         </Link>
