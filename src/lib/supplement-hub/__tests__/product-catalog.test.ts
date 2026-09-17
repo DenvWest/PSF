@@ -130,7 +130,7 @@ describe("productpagina's", () => {
       expect(tekst.length).toBeGreaterThan(80);
 
       if (product.claimStance === "geen_erkende_claim") {
-        expect(tekst).toContain("geen Europees erkende gezondheidsclaim");
+        expect(tekst).toContain("vergelijken we op samenstelling");
       }
       if (product.claimStance === "onbepaald") {
         expect(tekst).toContain("niet uit het etiket vast te stellen");

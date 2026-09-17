@@ -346,7 +346,7 @@ export default function OnrustigeSlaperPage() {
                     <p className="text-slate-600 leading-relaxed">
                       Als stress een rol speelt bij onrust &apos;s nachts, bespreken studies soms of
                       plantenextracten iets doen met hoe je spanning ervaart of met stresshormoonmarkers
-                      — maar voor ashwagandha bestaan in de EU géén afgeronde gezondheidsclaims (EFSA on‑hold).
+                      — vergelijk producten op extract en withanoliden op het etiket, niet op uitkomstbeloftes.
                       Gebruik het alleen als je die onzekerheid prima vindt.
                     </p>
                     <p className="text-slate-600 leading-relaxed">

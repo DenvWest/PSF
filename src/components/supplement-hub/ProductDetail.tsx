@@ -195,6 +195,7 @@ export default function ProductDetail({ product, peers }: ProductDetailProps) {
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <AffiliateLink
               affiliateSlug={product.affiliateSlug}
+              category={product.category}
               sourcePage="productpagina"
               className="inline-flex items-center justify-center rounded-xl bg-ps-green px-7 py-3.5 text-base font-semibold text-white shadow-sm transition-all hover:bg-ps-green-hover hover:shadow-md"
             >

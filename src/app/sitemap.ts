@@ -4,7 +4,8 @@ import { GUIDE_SLUGS } from "@/data/gids";
 import { kennisbankTerms } from "@/data/kennisbank";
 import { alleArtikelen } from "@/data/blog";
 import { GELDIGE_CATEGORIE_IDS } from "@/data/blog/categorieen";
-import { blogArtikelPad } from "@/lib/blog-artikel-pad";
+import { blogArtikelPad, blogArtikelPadRaw } from "@/lib/blog-artikel-pad";
+import { shouldIndexPath } from "@/lib/seo/omega3-root-consolidation";
 import { SUPPLEMENT_SLUGS, getSupplementComparisonData } from "@/data/supplements";
 import { getHubProductSlugs } from "@/lib/supplement-hub/product-catalog";
 import { blogCover } from "@/lib/blog-cover";
@@ -119,6 +120,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
   const blog = alleArtikelen
     .filter((artikel) => !vergelijkingSet.has(blogArtikelPad(artikel)))
+    .filter((artikel) => shouldIndexPath(blogArtikelPadRaw(artikel)))
     .map((artikel) => {
       const cover = blogCover(artikel);
       const srcs = articleBodyImageSrcs(cover.src, blogBodyImage(artikel.slug));

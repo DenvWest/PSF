@@ -71,7 +71,7 @@ const faqSchema = {
       name: "Wat is het beste supplement voor slaap?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (officieel erkend bij voldoende inname). Bij stressgerelateerde onrust kun je met je arts bespreken of ashwagandha past — voor dit kruid bestaat nog geen Europees erkende gezondheidsclaim; vergelijk producten zorgvuldig en overleg bij medicatie.",
+        text: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (officieel erkend bij voldoende inname). Bij stressgerelateerde onrust kun je met je arts bespreken of ashwagandha past — vergelijk producten op extract en withanoliden op het etiket en overleg bij medicatie.",
       },
     },
     {
@@ -461,8 +461,7 @@ export default function SlaapVerbeterenNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Ashwagandha is een plantenextract waar in studies soms naar spanning en slaap wordt
-                  gekeken. Voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim. We
-                  tonen wat het onderzoek laat zien, zonder beloftes. KSM‑66 is een veelgebruikt
+                  gekeken. We tonen wat het onderzoek laat zien, zonder uitkomstbeloftes. KSM‑66 is een veelgebruikt
                   gestandaardiseerd extract — vergelijk producten en overleg bij medicatie.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
@@ -723,8 +722,7 @@ export default function SlaapVerbeterenNa40Page() {
                       Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een
                       normale psychologische functie (officieel erkend bij voldoende inname). Bij
                       stressgerelateerde onrust kun je met je arts bespreken of ashwagandha past —
-                      voor dit kruid bestaat nog geen Europees erkende gezondheidsclaim; vergelijk
-                      producten zorgvuldig en overleg bij medicatie.
+                      vergelijk producten op extract en withanoliden op het etiket en overleg bij medicatie.
                     </div>
                   </details>
 

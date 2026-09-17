@@ -77,6 +77,10 @@ export const DOMAIN_EVENT_TYPES = [
   "dashboard.advies_gate_passed",
   "dashboard.afleiding_opened",
   "affiliate.click",
+  // A2 — noemer onder de affiliate-klik. Zonder weergaves per vergelijkingspagina
+  // is "0 klikken" niet te onderscheiden van "0 bezoekers". Payload bevat alleen
+  // productkennis: slug + categorie.
+  "comparison.page_viewed",
   "profile.recognition",
   "measurement.gap_detected",
   "measurement.checkin_completed",

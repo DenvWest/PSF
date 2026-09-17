@@ -65,7 +65,7 @@ const VITAMINED_EXPLANATIONS: Record<string, string> = {
 
 const ASHWAGANDHA_EXPLANATIONS: Record<string, string> = {
   "Extract kwaliteit":
-    "Wij beoordelen genoemd extracttype, withanolidepercentage en plantdeel. In de EU zijn gezondheidsclaims voor ashwagandha nog niet definitief afgerond (on-hold); je vergelijkt daarom vooral specificaties en betrouwbaarheid op het etiket.",
+    "Wij beoordelen extracttype (bijv. KSM-66), withanolidepercentage en plantdeel. Standaardisatie op het etiket maakt producten eerlijk vergelijkbaar.",
   Dosering:
     "Let op mg extract per dag en of fabrikant de standaardisatie steekt. Onderzoek gebruikt uiteenlopende doses; dat is geen garantie voor een persoonlijke uitkomst buiten onderzoekscontext.",
   "Prijs/kwaliteit":

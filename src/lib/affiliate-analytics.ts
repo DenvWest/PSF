@@ -1,3 +1,4 @@
+import { SUPPLEMENT_SLUGS } from "@/data/supplements";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
@@ -175,5 +176,81 @@ export async function getIntakeByReferralSource(
 
   return aggregateCounts(data ?? [], (row) =>
     labelOrFallback(row.referral_source, "direct/unknown"),
+  );
+}
+
+export type ComparisonFunnelRow = {
+  slug: string;
+  path: string;
+  views: number;
+  clicks: number;
+  /** null zolang er geen weergaves zijn — 0/0 is geen 0%. */
+  ctr: number | null;
+};
+
+/**
+ * De conversie-readout per vergelijkingspagina: weergaves (domain_events),
+ * affiliate-klikken (affiliate_clicks) en de verhouding ertussen. Alle zeven
+ * pagina's staan er altijd in, ook op nul — een ontbrekende regel zou "geen
+ * verkeer" verbergen achter "geen data".
+ *
+ * Geteld met `count: exact, head: true` en niet door rijen op te tellen:
+ * PostgREST levert standaard maximaal 1000 rijen, en een afgekapte noemer maakt
+ * de CTR stilzwijgend te hoog zodra er echt verkeer komt.
+ */
+export async function getComparisonFunnel(
+  organizationId?: string,
+): Promise<ComparisonFunnelRow[]> {
+  const orgId = resolveOrgId(organizationId);
+  const admin = getAdminClient();
+
+  async function countViews(slug: string): Promise<number> {
+    const { count, error } = await admin
+      .from("domain_events")
+      .select("id", { count: "exact", head: true })
+      .eq("organization_id", orgId)
+      .eq("event_type", "comparison.page_viewed")
+      .eq("payload->>slug", slug);
+
+    if (error) {
+      console.error("[affiliate-analytics] getComparisonFunnel views:", error);
+      throw error;
+    }
+    return count ?? 0;
+  }
+
+  async function countClicks(slug: string): Promise<number> {
+    const { count, error } = await admin
+      .from("affiliate_clicks")
+      .select("id", { count: "exact", head: true })
+      .eq("organization_id", orgId)
+      .eq("pagina", `/beste/${slug}`);
+
+    if (error) {
+      console.error("[affiliate-analytics] getComparisonFunnel clicks:", error);
+      throw error;
+    }
+    return count ?? 0;
+  }
+
+  const rows = await Promise.all(
+    SUPPLEMENT_SLUGS.map(async (slug) => {
+      const [views, clicks] = await Promise.all([
+        countViews(slug),
+        countClicks(slug),
+      ]);
+      return {
+        slug,
+        path: `/beste/${slug}`,
+        views,
+        clicks,
+        ctr: views > 0 ? clicks / views : null,
+      };
+    }),
+  );
+
+  return rows.sort(
+    (a, b) =>
+      b.views - a.views || b.clicks - a.clicks || a.slug.localeCompare(b.slug),
   );
 }

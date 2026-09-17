@@ -232,7 +232,7 @@ export const EVIDENCE_DOSE: Record<SupplementCategory, EvidenceDose | null> = {
     eenheid: "mg",
     meet: "dagdosis",
     omschrijving: "gestandaardiseerd wortelextract per dag",
-    bron: "Doseringen die in gepubliceerd KSM-66-onderzoek terugkomen. Let op: voor ashwagandha bestaat geen Europees erkende gezondheidsclaim.",
+    bron: "Doseringen die in gepubliceerd KSM-66-onderzoek terugkomen.",
   },
   eiwitpoeder: {
     onderzoeksdosis: 20,

@@ -18,6 +18,7 @@ export function affiliateGaEventLabel(slug: AffiliateSlug): string {
 export type AffiliateClickOptions = {
   pageType?: string;
   position?: string;
+  category?: string;
 };
 
 export function trackAffiliateClick(
@@ -27,6 +28,7 @@ export function trackAffiliateClick(
   const label = affiliateGaEventLabel(slug);
   const pageType = options?.pageType;
   const position = options?.position;
+  const category = options?.category;
 
   if (typeof window === "undefined") return;
 
@@ -44,6 +46,9 @@ export function trackAffiliateClick(
   }
   if (position !== undefined) {
     params.product_position = position;
+  }
+  if (category !== undefined) {
+    params.item_category = category;
   }
 
   gtag("event", "affiliate_click", params);

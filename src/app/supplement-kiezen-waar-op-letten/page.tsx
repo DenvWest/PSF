@@ -8,6 +8,7 @@ import {
 import ContentSection from "@/components/ui/ContentSection";
 import RelatedPages from "@/components/ui/RelatedPages";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { resolveOmega3RootHref } from "@/lib/seo/omega3-root-consolidation";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
 import {
@@ -31,7 +32,7 @@ const relatedPages = [
         description: "EPA, DHA, vorm van de olie en praktische keuzes voor dagelijks gebruik.",
     },
     {
-        href: "/waar-let-je-op-bij-omega-3",
+        href: resolveOmega3RootHref("/waar-let-je-op-bij-omega-3"),
         title: "Waar let je op bij omega-3?",
         description: "Dieper ingaan op dosering, transparantie en prijs per dag bij visolie en algenolie.",
     },

@@ -12,6 +12,11 @@ import {
   AFFILIATE_REF_COOKIE,
   REFERRAL_MAX_AGE_SEC,
 } from "@/lib/referral-attribution";
+import {
+  OMEGA3_GUIDE_PATH,
+  isOmega3RootConsolidationEnabled,
+  isOmega3RootPath,
+} from "@/lib/seo/omega3-root-consolidation";
 
 function requiresAdminAuth(pathname: string): boolean {
   const isAdminArea =
@@ -88,6 +93,12 @@ function buildContentSecurityPolicy(allowSelfFraming: boolean) {
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  // A5 — de twee omega-3 root-URL's naar de gids, zodra dat bevestigd veilig is.
+  // 308 en niet 307: dit is een permanente samenvoeging, geen tijdelijke omleiding.
+  if (isOmega3RootConsolidationEnabled() && isOmega3RootPath(pathname)) {
+    return NextResponse.redirect(new URL(OMEGA3_GUIDE_PATH, request.url), 308);
+  }
 
   if (pathname === "/account/login") {
     const accountCookie = request.cookies.get(ACCOUNT_SESSION_COOKIE_NAME)?.value;

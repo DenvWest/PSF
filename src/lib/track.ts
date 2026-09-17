@@ -2,6 +2,7 @@ export async function trackClick(data: {
   product_id: string;
   product_naam?: string;
   categorie?: string;
+  surface?: string;
   pagina?: string;
   nt?: string | null;
 }) {

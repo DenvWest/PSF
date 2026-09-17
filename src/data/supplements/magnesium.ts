@@ -12,13 +12,13 @@ export const magnesiumData: ComparisonPageData = {
   category: "magnesium",
   slug: "magnesium",
   guideHref: "/supplementen/magnesium",
-  h1: "Welke magnesium past bij jou?",
+  h1: "Beste magnesium: bisglycinaat, citraat of complex?",
   intro:
     "Slecht slapen, gespannen spieren of moeilijk tot rust komen? Magnesium wordt vaak genoemd — maar bisglycinaat, citraat of complex maakt wél uit. Drie producten vergeleken op vorm, elementaire dosering en prijs per dag.",
-  seoTitle: "Beste magnesium supplement 2026 — onafhankelijk vergeleken",
+  seoTitle: "Beste magnesium 2026: bisglycinaat, citraat of complex",
   seoDescription:
-    "Vergelijk magnesiumsupplementen op vorm (bisglycinaat, citraat, complex), dosering en prijs per dag. Onafhankelijke analyse voor mannen 30+.",
-  lastUpdated: "2026-04-18",
+    "Bisglycinaat, citraat of een 5-vormencomplex? Drie magnesiumsupplementen op elementaire mg en dagprijs (v.a. €0,20). Geen oxide als hoofdvorm, geen top-20.",
+  lastUpdated: "2026-09-15",
   tableDoseringColumnLabel: "Elementair mg / dag",
   topProductLabel: "Beste allround",
   showEducationalLead: false,
@@ -280,6 +280,11 @@ export const magnesiumData: ComparisonPageData = {
       question: "Wanneer neem ik magnesium het beste in?",
       answer:
         "Dat is persoonlijk. Magnesium draagt bij tot vermindering van vermoeidheid — veel mensen kiezen voor opname bij een maaltijd om maagcomfort te houden. Bij meerdere tabletten per dag kun je de dosis verdelen. Voor concrete klachten of medicatie: stem het af met je arts.",
+    },
+    {
+      question: "Kan ik magnesium combineren met medicijnen?",
+      answer:
+        "Sommige combinaties verdienen aandacht — bisfosfonaten, bepaalde antibiotica, maagzuurremmers en diuretica. Houd vaak enkele uren tussen inname en bespreek je volledige medicatielijst met je apotheker. Uitgebreid uitgelegd in [magnesium en medicijnen](/blog/magnesium-in-combinatie-met-medicijnen).",
     },
     {
       question: "Werkt magnesium samen met vitamine D?",

@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
   const product_naam = normalizeField(record.product_naam, MAX_FIELD);
   const categorie = normalizeField(record.categorie, MAX_FIELD);
   const pagina = normalizeField(record.pagina, MAX_PAGINA);
+  const surface = normalizeField(record.surface, MAX_FIELD);
   const rawNt = normalizeField(record.nt, MAX_FIELD);
 
   const { error } = await admin.from("affiliate_clicks").insert({
@@ -90,6 +91,8 @@ export async function POST(request: NextRequest) {
     payload: {
       categorie: categorie.length > 0 ? categorie : null,
       comparison_slug: product_id,
+      pagina: pagina.length > 0 ? pagina : null,
+      surface: surface.length > 0 ? surface : null,
       ...(attribution
         ? {
             session_id: attribution.sessionId,
