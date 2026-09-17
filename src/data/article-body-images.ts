@@ -524,19 +524,19 @@ const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   biobeschikbaarheid: img(
     "kennisbank",
     "biobeschikbaarheid",
-    "Capsules en een glas water op een rustig werkblad",
+    "Abrikozen op een snijplank bij daglicht",
     "Biobeschikbaarheid zegt hoeveel van een stof het lichaam daadwerkelijk opneemt — niet wat er op het etiket staat.",
   ),
   chelaatvorm: img(
     "kennisbank",
     "chelaatvorm",
-    "Fijne poeders in glazen schaaltjes bij daglicht",
+    "Amandelen op een lichte ondergrond",
     "Een chelaatvorm bindt een mineraal aan een aminozuur, wat de opname in de darm kan veranderen.",
   ),
   adaptogens: img(
     "kennisbank",
     "adaptogens",
-    "Gedroogde adaptogene kruiden in een keramieken kom",
+    "Gedroogde kamille en lavendel op houten lepels",
     "Adaptogenen zijn plantenextracten die in onderzoek duiken rond stressadaptatie — geen wondermiddelen.",
   ),
   "epa-dha": img(
@@ -560,13 +560,13 @@ const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "efsa-claims": img(
     "kennisbank",
     "efsa-claims",
-    "Stapel documenten en een markeerstift op een bureau",
+    "Leeg notitieboek op een bureau zonder leesbare tekst",
     "EFSA-claims zijn goedgekeurde gezondheidsclaims; wat niet op de lijst staat, mag een merk niet zomaar beloven.",
   ),
   "derde-partij-testen": img(
     "kennisbank",
     "derde-partij-testen",
-    "Laboratoriumglaswerk in een heldere werkruimte",
+    "Microscoop met reageerbuizen, zonder persoon in beeld",
     "Derde-partij-testen laten een onafhankelijk lab het product controleren, los van de fabrikant.",
   ),
   slaaphygiene: img(
@@ -590,13 +590,13 @@ const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   healthspan: img(
     "kennisbank",
     "healthspan",
-    "Oudere wandelaar op een bospad in de zon",
+    "Houten hangbrug door een groene bosrand",
     "Healthspan is de periode waarin je vitaal functioneert — langer dan alleen levensjaren erbij.",
   ),
   "hpa-as": img(
     "kennisbank",
     "hpa-as",
-    "Persoon in een rustpauze op een bank in het park",
+    "Mistig naaldbos in zacht licht",
     "De HPA-as koppelt hersenen, hypofyse en bijnieren: chronische stress houdt dit systeem langer ‘aan’.",
   ),
   cortisol: img(
@@ -620,19 +620,19 @@ const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "nervus-vagus": img(
     "kennisbank",
     "nervus-vagus",
-    "Persoon die rustig ademhaalt met gesloten ogen",
+    "Besneeuwde bergtoppen bij maanlicht",
     "De nervus vagus is de grote rem van het stresssysteem: trage uitademing kan hem activeren.",
   ),
   atp: img(
     "kennisbank",
     "atp",
-    "Sprintersblok of start van een korte krachtinspanning in een gym",
+    "Halterrekken in een lege sportschool",
     "ATP is de directe energiemunt van de cel; creatine helpt die voorraad sneller aanvullen.",
   ),
   testosteron: img(
     "kennisbank",
     "testosteron",
-    "Krachttraining met een barbell in een sobere gym",
+    "Rotsachtige bergtoppen in sneeuw",
     "Testosteron ondersteunt spier, libido en herstel; slaap en overgewicht wegen zwaarder dan de meeste pillen.",
   ),
   slaapschuld: img(
@@ -644,37 +644,37 @@ const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "sociale-verbinding": img(
     "kennisbank",
     "sociale-verbinding",
-    "Twee mensen in gesprek aan een tafeltje in de buitenlucht",
+    "Cappuccino op een houten tafel",
     "Sociale verbinding is een van de sterkste voorspellers van herstel en levensduur, naast slaap en beweging.",
   ),
   magnesiumvormen: img(
     "kennisbank",
     "magnesiumvormen",
-    "Verschillende poeders in kleine glazen potjes",
+    "Boerenkool en spruitjes als magnesiumrijke bladgroenten",
     "Magnesiumvormen verschillen in opname en darmtolerantie: oxide is goedkoop, glycine rustiger voor velen.",
   ),
   overtrainingssyndroom: img(
     "kennisbank",
     "overtrainingssyndroom",
-    "Lege hardloopschoenen naast een bank na een training",
+    "Stille kustlijn als beeld bij herstel na belasting",
     "Overtrainingssyndroom is meer dan moe na sport: prestatie, slaap en stemming zakken wekenlang in.",
   ),
   "vitamine-d": img(
     "kennisbank",
     "vitamine-d",
-    "Zon op huid bij een wandeling langs het water",
+    "Zonsondergang boven zee zonder personen in beeld",
     "Vitamine D ontstaat in de huid onder uv-B; in Nederland is dat een seizoensgebonden proces.",
   ),
   "vitamine-k2": img(
     "kennisbank",
     "vitamine-k2",
-    "Gefermenteerde kaas op een plank met groene kruiden",
+    "Blauwe kaas op een plank als gefermenteerde K2-bron",
     "Vitamine K2 zit in gefermenteerde voeding en speelt een rol bij calcium naar bot in plaats van naar de vaatwand.",
   ),
   "vitamine-d-inname": img(
     "kennisbank",
     "vitamine-d-inname",
-    "Druppelflesje vitamine D naast een eetlepel olie",
+    "Fles olijfolie bij daglicht",
     "Vitamine D-inname werkt beter bij een beetje vet; de dosis hangt af van status, niet van een vaste internetdosis.",
   ),
   insulineresistentie: img(
@@ -698,49 +698,49 @@ const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "ps-score-model": img(
     "kennisbank",
     "ps-score-model",
-    "Notitieboek met een eenvoudig score-overzicht op een bureau",
+    "Lege sticky notes op een bureau naast een toetsenbord",
     "Het PS-scoremodel weegt etiket, dosis, vorm en toetsing — zodat producten vergelijkbaar worden.",
   ),
   scoregewichten: img(
     "kennisbank",
     "scoregewichten",
-    "Balansweegschaal met gewichtjes op een werkblad",
+    "Bureau met koffie, koffiebonen en toetsenbord",
     "Scoregewichten bepalen hoe zwaar dosis, zuiverheid en claims meetellen in de eindscore.",
   ),
   onderzoeksdosis: img(
     "kennisbank",
     "onderzoeksdosis",
-    "Maatlepel poeder naast een wetenschappelijk artikel",
+    "Drie gelijke mealprep-bakjes met rijst, linzen en groenten",
     "De onderzoeksdosis is de hoeveelheid die in studies werd gebruikt — vaak hoger dan een marketingdosis op het etiket.",
   ),
   claimdekking: img(
     "kennisbank",
     "claimdekking",
-    "Etiket naast een uitvergrote ingrediëntenlijst",
+    "Open notitieboek zonder tekst op een wit bureau",
     "Claimdekking vraagt of de belofte op de voorkant wordt gedekt door de milligrammen op de achterkant.",
   ),
   etikettransparantie: img(
     "kennisbank",
     "etikettransparantie",
-    "Supplementpot met een volledig leesbare achterkant",
+    "Boerenkool, avocado en tomaat zonder etiketten",
     "Etikettransparantie betekent dat vorm, dosis en hulpstoffen zichtbaar zijn — geen proprietary blend zonder getallen.",
   ),
   "onafhankelijke-toetsing": img(
     "kennisbank",
     "onafhankelijke-toetsing",
-    "Labrapport met grafieken naast een gesloten potje",
+    "Rek met blauwe reageerbuizen, zonder persoon in beeld",
     "Onafhankelijke toetsing laat zien of batch en etiket overeenkomen, buiten de marketingafdeling om.",
   ),
   "leucinedrempel": img(
     "kennisbank",
     "leucinedrempel",
-    "Kwark, eieren en peulvruchten op een werkblad",
+    "Avocado-toast met ei als eiwitrijke maaltijd",
     "De leucinedrempel is de hoeveelheid per maaltijd die spieropbouw op gang brengt.",
   ),
   "wei-eiwit": img(
     "kennisbank",
     "wei-eiwit",
-    "Schepje wei-eiwitpoeder naast een shakebeker",
+    "Ontbijtbord met eieren, bacon en koffie",
     "Wei-eiwit is snel opneembaar en leucinerijk, wat het geschikt maakt rond training.",
   ),
 };

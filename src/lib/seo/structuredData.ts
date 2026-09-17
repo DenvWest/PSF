@@ -144,16 +144,23 @@ export interface ArticleImageRef {
   src: string;
   alt: string;
   caption: string;
+  /** Tooltip en extra signaal voor image search. */
+  title?: string;
+  /** Cover op de begrippenpagina. */
+  representativeOfPage?: boolean;
 }
 
 export function buildArticleImageObjects(images: ArticleImageRef[]) {
   return images.map((img) => ({
     "@type": "ImageObject" as const,
     url: resolveSiteUrl(img.src),
+    contentUrl: resolveSiteUrl(img.src),
+    ...(img.title ? { name: img.title } : { name: img.alt }),
     caption: img.caption,
     description: img.alt,
     width: 1600,
     height: 900,
+    ...(img.representativeOfPage ? { representativeOfPage: true } : {}),
   }));
 }
 

@@ -12,6 +12,7 @@ import {
   LIB_PAGE_BG,
 } from "@/components/library/library-tokens";
 import { themaCover } from "@/lib/kennisbank-cover";
+import { resolveKennisbankCover } from "@/lib/seo/kennisbank-images";
 
 interface KennisbankThemaPageContentProps {
   theme: KennisbankTheme;
@@ -24,21 +25,23 @@ export default function KennisbankThemaPageContent({
 }: KennisbankThemaPageContentProps) {
   const config = themeLabels[theme];
   const items = getKennisbankLibraryItems();
-  const cover = themaCover(theme);
+  const cover = resolveKennisbankCover(theme, themaCover(theme));
 
   return (
     <main className={LIB_PAGE_BG}>
       <Container className="pb-16 pt-8 md:pb-20 md:pt-10">
-        <div className="relative mb-8 aspect-[16/9] w-full max-w-3xl overflow-hidden rounded-xl bg-stone-100 md:mb-10">
+        <figure className="relative mb-8 aspect-[16/9] w-full max-w-3xl overflow-hidden rounded-xl bg-stone-100 md:mb-10">
           <Image
             src={cover.src}
             alt={cover.alt}
+            title={cover.title}
             fill
             priority
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 768px"
           />
-        </div>
+          <figcaption className="sr-only">{cover.caption}</figcaption>
+        </figure>
 
         <header className="max-w-2xl">
           <p className={LIB_EYEBROW}>{KB_HUB_LABEL}</p>

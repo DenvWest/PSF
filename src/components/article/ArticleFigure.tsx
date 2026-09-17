@@ -7,6 +7,8 @@ interface ArticleFigureProps {
   src: string;
   alt: string;
   caption: string;
+  /** Optioneel title-attribuut (tooltip + image SEO). */
+  title?: string;
   priority?: boolean;
   className?: string;
 }
@@ -15,6 +17,7 @@ export default function ArticleFigure({
   src,
   alt,
   caption,
+  title,
   priority = false,
   className = "",
 }: ArticleFigureProps) {
@@ -23,6 +26,7 @@ export default function ArticleFigure({
       <Image
         src={src}
         alt={alt}
+        title={title}
         width={ARTICLE_FIGURE_WIDTH}
         height={ARTICLE_FIGURE_HEIGHT}
         priority={priority}
