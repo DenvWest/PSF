@@ -19,6 +19,11 @@ import {
   type DagSoort,
 } from "@/lib/nutrition-dagboek";
 import NutritionDagInvoer from "@/components/dashboard/voortgang/NutritionDagInvoer";
+import NutritionProductInvoer from "@/components/dashboard/voortgang/NutritionProductInvoer";
+import {
+  portiesUitItems,
+  type DagboekItem,
+} from "@/lib/nutrition-dagboek-items";
 import {
   bouwDagboekSlots,
   dagenVanSoort,
@@ -115,6 +120,14 @@ export default function NutritionDagboekPaneel({
     addAgendaDays(todayInAgendaTimezone(), -1),
   );
   const [momenten, setMomenten] = useState<DagMomenten>({});
+  const [items, setItems] = useState<DagboekItem[]>([]);
+  /**
+   * Welke invoervorm open staat. "groepen" is de snelle (per eetmoment een
+   * voedselgroep), "producten" de precieze (wélk product, hoeveel gram).
+   * Groepen blijft de standaard: het is de vorm die in drie tikken klaar is,
+   * en wie preciezer wil kan schakelen.
+   */
+  const [vorm, setVorm] = useState<"groepen" | "producten">("groepen");
   const [waterMl, setWaterMl] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -213,6 +226,7 @@ export default function NutritionDagboekPaneel({
     if (bestaande) {
       setDatum(bestaande.date);
       setMomenten(momentenVanDag(bestaande));
+      setItems([...(bestaande.items ?? [])] as DagboekItem[]);
       setWaterMl(bestaande.waterMl ?? null);
     } else {
       const gekozen = kiesDatumVoorSlot(
@@ -240,6 +254,7 @@ export default function NutritionDagboekPaneel({
       keuzedagen.find((dag) => !alIngevuld.has(dag)) ?? keuzedagen[0]!;
     setDatum(eerste);
     setMomenten({});
+    setItems([]);
     setWaterMl(null);
     setError(null);
     setOpenSlotId(EXTRA_SLOT_ID);
@@ -248,7 +263,8 @@ export default function NutritionDagboekPaneel({
 
   async function bewaar() {
     if (busy) return;
-    const heeftInhoud = Object.keys(momenten).length > 0 || (waterMl ?? 0) > 0;
+    const heeftInhoud =
+      items.length > 0 || Object.keys(momenten).length > 0 || (waterMl ?? 0) > 0;
     if (!heeftInhoud) {
       setError("Vul minstens één eetmoment in.");
       return;
@@ -263,6 +279,7 @@ export default function NutritionDagboekPaneel({
         body: JSON.stringify({
           date: datum,
           meals: momenten,
+          items,
           water_ml: waterMl,
         }),
       });
@@ -276,8 +293,10 @@ export default function NutritionDagboekPaneel({
         // De momenten zijn de invoervorm; `porties` blijft waar alle analyse
         // op rekent. Zelfde afleiding als de server doet, zodat het scherm
         // meteen klopt zonder opnieuw te laden.
-        porties: portiesUitMomenten(momenten),
+        // Zelfde volgorde als de server: de fijnste laag die er is wint.
+        porties: items.length > 0 ? portiesUitItems(items) : portiesUitMomenten(momenten),
         momenten,
+        items,
         waterMl,
       };
       const volgende = [
@@ -370,13 +389,40 @@ export default function NutritionDagboekPaneel({
           van {DAGEN_PER_SOORT}.
         </p>
 
-        <NutritionDagInvoer
-          momenten={momenten}
-          onChange={setMomenten}
-          waterMl={waterMl}
-          onWaterChange={setWaterMl}
-          busy={busy}
-        />
+        <div
+          role="group"
+          aria-label="Invoervorm"
+          className="mt-2 mb-2.5 inline-flex gap-1 rounded-full border border-white/12 bg-white/[0.03] p-0.5"
+        >
+          {(["groepen", "producten"] as const).map((optie) => (
+            <button
+              key={optie}
+              type="button"
+              disabled={busy}
+              aria-pressed={vorm === optie}
+              onClick={() => setVorm(optie)}
+              className={`inline-flex min-h-7 cursor-pointer items-center rounded-full px-3 text-[11.5px] font-medium transition-colors disabled:opacity-50 ${
+                vorm === optie
+                  ? "bg-white/10 text-[#E7EDE8]"
+                  : "text-[#7E8C82] hover:text-[#9FB0A6]"
+              }`}
+            >
+              {optie === "groepen" ? "Per groep" : "Per product"}
+            </button>
+          ))}
+        </div>
+
+        {vorm === "producten" ? (
+          <NutritionProductInvoer items={items} onChange={setItems} busy={busy} />
+        ) : (
+          <NutritionDagInvoer
+            momenten={momenten}
+            onChange={setMomenten}
+            waterMl={waterMl}
+            onWaterChange={setWaterMl}
+            busy={busy}
+          />
+        )}
 
         {error ? (
           <p
