@@ -3,6 +3,7 @@ import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import NutritionGapGuideLink from "@/components/content/NutritionGapGuideLink";
 import {
   VOEDING_HUB_META,
   voedingDatabaseStats,
@@ -58,6 +59,12 @@ export default function VoedingHubPage() {
             <Link href="/voeding-na-40" className={`inline-flex min-h-11 items-center px-1 py-3 text-sm ${LINK}`}>
               Lees de voedingspijler →
             </Link>
+            <NutritionGapGuideLink
+              locatie="voeding_hub"
+              className={`inline-flex min-h-11 items-center px-1 py-3 text-sm ${LINK}`}
+            >
+              Voedingstekort-gids →
+            </NutritionGapGuideLink>
           </div>
         </div>
 

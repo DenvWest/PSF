@@ -322,6 +322,60 @@ export const GUIDES: Guide[] = [
     ],
   },
   {
+    key: "voedingstekort",
+    title: "Voedingstekort",
+    accent: "oklch(0.66 0.085 148)",
+    tag: "Micronutriënten",
+    focusCategories: ["energie-vitaliteit"],
+    comingSoon: true,
+    contentHref: "/voedingstekort",
+    comingSoonNote:
+      "We werken aan de PDF. De volledige gids staat al op onze website — inclusief micronutriëntengrafiek en levenslijn.",
+    comingSoonCta: "Lees de webgids →",
+    seoTitle: "Gratis Voedingstekortgids",
+    promise:
+      "Zien welke stoffen je bord niet vanzelf vult — vooral als je plantaardig eet.",
+    heroTitle: "Gezond eten is niet hetzelfde als complete voeding.",
+    heroSub:
+      "Een gids over B12, jodium, omega-3 en vitamine D: wat een chronisch tekort met je lijf doet, waarom veganisten hier extra op letten, en hoe je de gaten dichtzet. Geen diagnoses, wel een grafiek en een levenslijn.",
+    benefits: [
+      "Een micronutriëntengrafiek voor gemengd én plantaardig eten",
+      "Wat een chronisch tekort in je lichaam stil doet — stof voor stof",
+      "Waarom B12 jarenlang ‘prima’ kan voelen tot de voorraad op is",
+      "Vijf knoppen waarmee een vegan patroon wél compleet wordt",
+      "Een levenslijn die het verschil over de jaren laat zien",
+      "Wanneer bloedonderzoek bij je huisarts hoort, niet bij een potje",
+    ],
+    recognition: [
+      "Je eet grotendeels plantaardig en slikt geen B12",
+      "Vis en zuivel staan zelden op je bord",
+      "Je energie zakt weg terwijl je voeding er gezond uitziet",
+      "Je wilt de gaten kennen vóór je een supplement koopt",
+    ],
+    longform: [
+      "Een vol bord is geen garantie. B12 zit vrijwel alleen in dierlijke producten, EPA en DHA bijna alleen in vis of algen, en vitamine D maakt je huid in Nederland een half jaar nauwelijks aan. Wie plantaardig eet zonder die stoffen expres te organiseren, bouwt een stil tekort op — vaak jarenlang ongemerkt.",
+      "Deze gids gaat niet over diëten of over ‘vegan is ongezond’. Hij laat zien welke micronutriënten voorspelbaar krap zijn, wat een chronisch tekort met energie, zenuwen en botten doet, en hoe je de gaten dichtzet. Eerst begrijpen, dan meten, supplementen pas als laatste.",
+    ],
+    pullquote: "Niet méér eten. De stille gaten dichten.",
+    verdieping: [
+      {
+        label: "Webgids: Voedingstekort",
+        sub: "Grafiek, levenslijn en wat chronisch tekort doet.",
+        href: "/voedingstekort",
+      },
+      {
+        label: "Pillar: Voeding na 30",
+        sub: "Eiwit, ritme en vetten — nuchter uitgelegd.",
+        href: "/voeding-na-40",
+      },
+      {
+        label: "Gratis Leefstijlcheck",
+        sub: "Meet je startpunt in 3 minuten.",
+        href: "/intake",
+      },
+    ],
+  },
+  {
     key: "overgang",
     title: "Overgang",
     accent: "oklch(0.68 0.075 320)",
