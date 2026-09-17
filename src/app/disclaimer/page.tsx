@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE = "Disclaimer";
+const DESCRIPTION =
+  "Disclaimer van PerfectSupplement. Lees hoe wij omgaan met aansprakelijkheid en de inhoud van deze website.";
 
 export const metadata: Metadata = {
-  title: "Disclaimer",
-  description:
-    "Disclaimer van PerfectSupplement. Lees hoe wij omgaan met aansprakelijkheid en de inhoud van deze website.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: {
     canonical: "https://perfectsupplement.nl/disclaimer",
   },
+  ...basicOpenGraph({ path: "/disclaimer", title: TITLE, description: DESCRIPTION }),
 };
 
 export default function DisclaimerPage() {

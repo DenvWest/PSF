@@ -12,14 +12,19 @@ import {
   LIB_EYEBROW,
   LIB_PAGE_BG,
 } from "@/components/library/library-tokens";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE = "Kennisbank — Begrippen en concepten";
+const DESCRIPTION =
+  "Begrippen over supplementen, leefstijl en gezond ouder worden, elk met bronnen.";
 
 export const metadata: Metadata = {
-  title: "Kennisbank — Begrippen en concepten",
-  description:
-    "Begrippen over supplementen, leefstijl en gezond ouder worden, elk met bronnen.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: {
     canonical: "https://perfectsupplement.nl/kennisbank",
   },
+  ...basicOpenGraph({ path: "/kennisbank", title: TITLE, description: DESCRIPTION }),
 };
 
 type KennisbankPageProps = {

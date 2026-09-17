@@ -2,14 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
 import PrivacyRevokeConsent from "@/components/privacy/PrivacyRevokeConsent";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE = "Privacyverklaring";
+const DESCRIPTION =
+  "Privacyverklaring van PerfectSupplement. Lees hoe wij omgaan met jouw persoonsgegevens.";
 
 export const metadata: Metadata = {
-  title: "Privacyverklaring",
-  description:
-    "Privacyverklaring van PerfectSupplement. Lees hoe wij omgaan met jouw persoonsgegevens.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: {
     canonical: "https://perfectsupplement.nl/privacy",
   },
+  ...basicOpenGraph({ path: "/privacy", title: TITLE, description: DESCRIPTION }),
 };
 
 export default function PrivacyPage() {

@@ -4,6 +4,7 @@ import { DM_Serif_Display, DM_Sans } from "next/font/google";
 import Script from "next/script";
 import AnalyticsLoader from "@/components/analytics/AnalyticsLoader";
 import CookieConsentBanner from "@/components/analytics/CookieConsentBanner";
+import WebVitalsReporter from "@/components/analytics/WebVitalsReporter";
 import AppShell from "@/components/layout/AppShell";
 import "./globals.css";
 
@@ -74,6 +75,7 @@ gtag('consent', 'default', {
           }}
         />
         <AnalyticsLoader />
+        <WebVitalsReporter />
         <AppShell>{children}</AppShell>
         <CookieConsentBanner />
       </body>

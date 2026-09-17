@@ -22,12 +22,17 @@ import EvidenceReferenceList, {
 } from "@/components/evidence/EvidenceReferenceList";
 import EvidenceStars from "@/components/evidence/EvidenceStars";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE = "Onderbouwing Leefstijlcheck";
+const DESCRIPTION =
+  "Wetenschappelijke onderbouwing van de Leefstijlcheck per vraag, domein en resultaatinterpretatie.";
 
 export const metadata: Metadata = {
-  title: "Onderbouwing Leefstijlcheck",
-  description:
-    "Wetenschappelijke onderbouwing van de Leefstijlcheck per vraag, domein en resultaatinterpretatie.",
+  title: TITLE,
+  description: DESCRIPTION,
   ...canonicalMetadata("/onderbouwing"),
+  ...basicOpenGraph({ path: "/onderbouwing", title: TITLE, description: DESCRIPTION }),
 };
 
 const sectionTitleClass =

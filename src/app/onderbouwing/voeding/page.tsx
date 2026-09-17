@@ -11,12 +11,17 @@ import {
 } from "@/data/nutrition/nutrition-question-evidence";
 import { NUTRITION_QUESTIONS } from "@/data/nutrition/lifescore-questions";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE = "Onderbouwing Voedingscheck";
+const DESCRIPTION =
+  "Wetenschappelijke onderbouwing van de snelle voedingscheck per vraag — frequentie-proxy's, vuistregels en bronnen.";
 
 export const metadata: Metadata = {
-  title: "Onderbouwing Voedingscheck",
-  description:
-    "Wetenschappelijke onderbouwing van de snelle voedingscheck per vraag — frequentie-proxy's, vuistregels en bronnen.",
+  title: TITLE,
+  description: DESCRIPTION,
   ...canonicalMetadata("/onderbouwing/voeding"),
+  ...basicOpenGraph({ path: "/onderbouwing/voeding", title: TITLE, description: DESCRIPTION }),
 };
 
 const sectionTitleClass =

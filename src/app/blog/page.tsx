@@ -14,14 +14,19 @@ import {
   LIB_EYEBROW,
   LIB_PAGE_BG,
 } from "@/components/library/library-tokens";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE = "Herstelbibliotheek — slaap, stress en herstel";
+const DESCRIPTION =
+  "Artikelen over slaap, stress, energie en herstel vanaf 30. Onderbouwd, met bronnen.";
 
 export const metadata: Metadata = {
-  title: "Herstelbibliotheek — slaap, stress en herstel",
-  description:
-    "Artikelen over slaap, stress, energie en herstel vanaf 30. Onderbouwd, met bronnen.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: {
     canonical: "https://perfectsupplement.nl/blog",
   },
+  ...basicOpenGraph({ path: "/blog", title: TITLE, description: DESCRIPTION }),
 };
 
 type BlogPageProps = {

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
 import Container from "@/components/layout/Container";
 import {
   ABOUT_CONTACT,
@@ -23,6 +24,11 @@ export const metadata: Metadata = {
   title: ABOUT_METADATA.title,
   description: ABOUT_METADATA.description,
   ...canonicalMetadata("/over-ons"),
+  ...basicOpenGraph({
+    path: "/over-ons",
+    title: ABOUT_METADATA.title,
+    description: ABOUT_METADATA.description,
+  }),
 };
 
 const linkClass =

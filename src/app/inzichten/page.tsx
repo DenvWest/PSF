@@ -24,14 +24,19 @@ import {
 } from "@/data/insights";
 import { getInzichtenVisitorContext } from "@/lib/inzichten-visitor-context";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
 import type { PillarId } from "@/types/dashboard";
 import type { InsightItem, InsightType } from "@/types/insight";
 
+const TITLE = "Inzichten — Artikelen & Begrippen per Domein";
+const DESCRIPTION =
+  "Artikelen, deep dives en begrippen over slaap, stress, energie en herstel — gefilterd op wat voor jou relevant is. Start met je domein of doe de Leefstijlcheck.";
+
 export const metadata: Metadata = {
-  title: "Inzichten — Artikelen & Begrippen per Domein",
-  description:
-    "Artikelen, deep dives en begrippen over slaap, stress, energie en herstel — gefilterd op wat voor jou relevant is. Start met je domein of doe de Leefstijlcheck.",
+  title: TITLE,
+  description: DESCRIPTION,
   ...canonicalMetadata("/inzichten"),
+  ...basicOpenGraph({ path: "/inzichten", title: TITLE, description: DESCRIPTION }),
 };
 
 const VALID_PIJLERS = new Set<PillarId>(

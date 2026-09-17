@@ -35,6 +35,7 @@ export const GA4_EVENTS = {
   BIBLIOTHEEK_MEER: 'bibliotheek_meer',
   BIBLIOTHEEK_ITEM_GEOPEND: 'bibliotheek_item_geopend',
   ARTIKEL_SUPPLEMENTEN_HUB_CLICK: 'artikel_supplementen_hub_click',
+  WEB_VITAL: 'web_vital',
 } as const;
 
 export function trackEvent(
@@ -110,4 +111,14 @@ export function trackAgendaDaySelected(params: {
   surface?: string;
 }) {
   trackEvent("dashboard_agenda_day_selected", params);
+}
+
+export function trackWebVital(params: {
+  metric_name: string;
+  metric_value: number;
+  metric_id: string;
+  metric_rating: string;
+  page_path: string;
+}) {
+  trackEvent(GA4_EVENTS.WEB_VITAL, params);
 }

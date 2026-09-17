@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
 import FaqSearch from "@/components/faq-search";
 import Container from "@/components/layout/Container";
 import { faqHelpCards, faqItems } from "@/data/contact-faq";
+
+const DESCRIPTION = "Veelgestelde vragen, snelle routes en contactopties van PerfectSupplement.";
 
 export const metadata: Metadata = {
   title: {
     absolute: "FAQ's | PerfectSupplement",
   },
-  description:
-    "Veelgestelde vragen, snelle routes en contactopties van PerfectSupplement.",
+  description: DESCRIPTION,
   ...canonicalMetadata("/faqs"),
+  ...basicOpenGraph({
+    path: "/faqs",
+    title: "FAQ's | PerfectSupplement",
+    description: DESCRIPTION,
+  }),
 };
 
 export default function FaqPage() {

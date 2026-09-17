@@ -1,16 +1,23 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/contact-form";
 import Container from "@/components/layout/Container";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const DESCRIPTION = "Hulp, veelgestelde vragen en contactinformatie van PerfectSupplement.";
 
 export const metadata: Metadata = {
     title: {
         absolute: "Contact | PerfectSupplement",
     },
-    description:
-        "Hulp, veelgestelde vragen en contactinformatie van PerfectSupplement.",
+    description: DESCRIPTION,
     alternates: {
         canonical: "https://perfectsupplement.nl/contact",
     },
+    ...basicOpenGraph({
+        path: "/contact",
+        title: "Contact | PerfectSupplement",
+        description: DESCRIPTION,
+    }),
 };
 
 export default function ContactPage() {

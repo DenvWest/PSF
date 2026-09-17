@@ -2,14 +2,19 @@ import type { Metadata } from "next";
 import CookieInventoryTable from "@/components/analytics/CookieInventoryTable";
 import CookiePreferencesButton from "@/components/analytics/CookiePreferencesButton";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
+import { basicOpenGraph } from "@/lib/seo/open-graph";
+
+const TITLE = "Cookiebeleid";
+const DESCRIPTION =
+  "Cookiebeleid van PerfectSupplement. Lees hoe wij omgaan met cookies en jouw privacy.";
 
 export const metadata: Metadata = {
-  title: "Cookiebeleid",
-  description:
-    "Cookiebeleid van PerfectSupplement. Lees hoe wij omgaan met cookies en jouw privacy.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: {
     canonical: "https://perfectsupplement.nl/cookies",
   },
+  ...basicOpenGraph({ path: "/cookies", title: TITLE, description: DESCRIPTION }),
 };
 
 export default function CookiesPage() {
