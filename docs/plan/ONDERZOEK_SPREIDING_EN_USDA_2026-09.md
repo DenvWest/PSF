@@ -514,6 +514,56 @@ is er één dat FDC kent.
 **Wat nog open staat:** 194 identiteiten wachten op een curated query (met kern).
 De audit van de WebSearch-rijen is hiermee afgerond.
 
+### 2.11 · Herverificatie met een schone run (17 sep, avond)
+
+Na de patches van §2.9 en de audit van §2.10 is het script nog één keer volledig
+gedraaid, zonder naar de eerdere uitkomsten te kijken — een onafhankelijke
+controle op werk dat via WebSearch en via een eerste API-run tot stand kwam.
+
+**53 van 53 identiteiten gematcht, 0 fouten, 0 zonder treffer.**
+
+Drie controles, alle drie schoon:
+
+| Controle | Uitkomst |
+|---|---|
+| fdcId in `food-sources.ts` vs. verse run | **59 bevestigd, 0 mismatches** |
+| Gehaltes in de data vs. verse run | 27 van 29 binnen 0,3 % |
+| `observed`-blokken aanwezig | 39 — meer dan de 22 die deze run kon leveren |
+
+Dat laatste getal verdient uitleg: de run levert alleen spreiding voor rijen
+waar FDC `dataPoints` ≥ 2 geeft. Zeven rijen die wél een `min`/`max` dragen,
+hebben `dataPoints: 0` — griekse-yoghurt, havermout-eiwit, kabeljauw, kipfilet,
+magere kwark, skyr en tonijn uit blik. Volgens het contract in §2.3 betekent
+0 of 1 monster: *geen spreiding beschikbaar*. Die zeven zijn dus terecht niet
+als `observed` overgenomen; hun bereik komt uit een andere route.
+
+**De twee afwijkingen >15 % zijn geen fouten maar een bronconflict:**
+
+| Rij | In data (NEVO) | USDA | Verschil |
+|---|---|---|---|
+| makreel · vitamine D | 8,0 µg/100 g | 16,1 µg | +101 % |
+| sardines · vitamine D | 3,3 µg/100 g | 4,8 µg | +45 % |
+
+Beide matches zijn correct — "Fish, mackerel, Atlantic, raw" en "Fish, sardine,
+Atlantic, canned in oil, drained solids with bone" beschrijven precies wat onze
+rijen bedoelen. Maar beide rijen staan al op **NEVO**, geverifieerd, en NEVO
+hoort hier te winnen: dit is exact de uitzondering uit §2.2. Vitamine D in vis
+hangt af van vangstgebied, seizoen en voeding van de vis; het Amerikaanse
+gemiddelde beschrijft een andere populatie dan de Nederlandse handel.
+Bovendien draagt geen van beide USDA-waarden `dataPoints` > 0, dus er is niet
+eens een spreiding om tegen af te wegen.
+
+**Conclusie: de data is ongewijzigd gebleven.** Deze run heeft niets gepatcht en
+niets hoeven patchen. Dat is de nuttigste uitkomst die een herverificatie kan
+hebben — het bevestigt dat de WebSearch-route uit §2.7 en de correcties uit
+§2.9 en §2.10 klopten.
+
+Wat onveranderd open blijft: **194 identiteiten wachten op een curated query.**
+Dat is geen API-werk maar schrijfwerk — per identiteit een Engelse zoekterm met
+de val erbij, precies zoals `QUERIES` het nu doet voor de 53 die wél draaien.
+
+---
+
 ### 2.5 · Waarom etappe 2 eerder stopte
 
 De netwerkpolicy van deze omgeving blokkeert `api.nal.usda.gov` en `fdc.nal.usda.gov` (403 op CONNECT). De extractie kan hier niet draaien. Wat er wel ligt: het script (`scripts/usda-extract.mjs`), de productlijst en het verificatiepad. Zie etappe 3 — en §2.7 voor wat er alsnog via WebSearch is gedaan.
