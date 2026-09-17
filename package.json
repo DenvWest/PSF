@@ -15,6 +15,7 @@
     "analyse:movement-delta": "node scripts/movement-delta-falsify.mjs",
     "check:db-schema": "bash scripts/check-supabase-schema.sh",
     "check:migraties": "node scripts/check-migraties-openstaand.mjs",
+    "check:content-health": "node scripts/content-health.mjs",
     "build:prebuilds": "node scripts/build-prebuild-embeds.mjs",
     "prepare": "git config core.hooksPath .githooks",
     "extract:usda": "node scripts/usda-extract.mjs"

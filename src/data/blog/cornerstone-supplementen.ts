@@ -58,7 +58,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
       "Keuzehulp op basis van EPA/DHA, gebruik en prijs per dag \u2014 volledige pagina bevat topkeuzes en uitleg.",
     cornerstoneLink: {
       label: "Supplementen in de kennisbank",
-      href: "/blog/supplementen",
+      href: "/supplementen",
     },
     gerelateerdeSluggen: [
       "omega-3-hoeveel-per-dag",
@@ -87,7 +87,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
       "Basis over EPA, DHA en supplementen \u2014 de hoofdpagina bevat de volledige uitleg en vervolgstappen.",
     cornerstoneLink: {
       label: "Supplementen in de kennisbank",
-      href: "/blog/supplementen",
+      href: "/supplementen",
     },
     gerelateerdeSluggen: [
       "omega-3-uit-voeding-of-supplement",
@@ -116,7 +116,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
       "Criteria om omega-3 eerlijk te vergelijken \u2014 zie de hoofdgids voor checklists en details.",
     cornerstoneLink: {
       label: "Supplementen in de kennisbank",
-      href: "/blog/supplementen",
+      href: "/supplementen",
     },
     gerelateerdeSluggen: [
       "omega-3-hoeveel-per-dag",
@@ -145,7 +145,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
       "Keuzehulp per doel en vorm \u2014 de hoofdpagina toont topkeuzes en criteria.",
     cornerstoneLink: {
       label: "Supplementen in de kennisbank",
-      href: "/blog/supplementen",
+      href: "/supplementen",
     },
     gerelateerdeSluggen: [
       "magnesium-en-slaapkwaliteit",
@@ -174,7 +174,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
       "Kader om supplementen te beoordelen \u2014 de hoofdgids werkt dit verder uit.",
     cornerstoneLink: {
       label: "Supplementen in de kennisbank",
-      href: "/blog/supplementen",
+      href: "/supplementen",
     },
     gerelateerdeSluggen: [
       "beste-magnesium",

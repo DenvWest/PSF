@@ -66,6 +66,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | [`core/ACCOUNT_DASHBOARD_SYSTEM.md`](core/ACCOUNT_DASHBOARD_SYSTEM.md) | Passwordless account (OTP/magic-link), `psf_account`-cookie, claim/revoke, dashboard-dataflow, check-in-meet-lus (F1–F3) |
 | [`plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md`](plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md) | Lifestyle Planning Engine (Kompas): scheduling, prioriteit, beweegsnacks, agenda/wearables, notificaties — Beweegplan als eerste module |
 | [`plan/LEEFSTIJLPLAN_HANDBOOK.md`](plan/LEEFSTIJLPLAN_HANDBOOK.md) | Leefstijlplan content/checklist-laag (templates, voortgang, events) |
+| [`plan/ARCHITECTUUR_CONTENT_ECOSYSTEEM_2026-09.md`](plan/ARCHITECTUUR_CONTENT_ECOSYSTEEM_2026-09.md) | Content-graaf: artikel ↔ nutriënt ↔ check ↔ supplement. Audit, doelarchitectuur, gefaseerd codeerplan |
 
 ### Layer 3 — Work (tijdelijk, verandert regelmatig)
 
@@ -94,6 +95,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | FASE A nurture-implementatie | `archive/FASE_A_IMPLEMENTATIE.md` + `core/EMAIL_SYSTEM.md` |
 | Affiliate links | `core/AFFILIATE_SYSTEM.md` + `core/COMPLIANCE.md` |
 | Technische vraag | `core/ARCHITECTURE.md` + `core/CODE_CONVENTIONS.md` |
+| Interne links / CTA / artikel→check | `plan/ARCHITECTUUR_CONTENT_ECOSYSTEEM_2026-09.md` + `core/SEO_RULES.md` |
 | Cursor-prompt schrijven | `core/CURSOR_PROMPT_TEMPLATE.md` |
 | Wekelijkse audits (read-only) | `cursors/weekly-routines-claude-code.md` |
 | Maandelijkse strategiereview | `cursors/monthly-strategy-review.md` |
