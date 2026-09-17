@@ -7,7 +7,7 @@ export const zinkEnTestosteronData: BlogArtikel = {
   audience: "mannen",
   titel: "Zink en testosteron: boost, of gewoon een tekort aanvullen?",
   coverImage: "/images/blog/zink-en-testosteron.jpg",
-  coverImageAlt: "Gegrild vlees, oesters en pompoenpitten als zinkrijke voeding",
+  coverImageAlt: "Biefstuk, oesters en pompoenpitten als zinkrijke voeding",
   heroIntro:
     "Zink staat op etiketten vaak in één adem met testosteron. Wat er werkelijk onderbouwd is, klinkt een stuk kalmer: bij voldoende inname draagt zink bij tot instandhouding van een normaal testosterongehalte in het bloed. Aanvullen wat ontbreekt, dus — geen boost bovenop normaal. Dit artikel verbindt [testosteron na 30](/testosteron-na-40) met onze [zink-vergelijking](/beste/zink) en het cluster [cortisol en testosteron](/blog/cortisol-en-testosteron).",
   leestijd: "9 min",

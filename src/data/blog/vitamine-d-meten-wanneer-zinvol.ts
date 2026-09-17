@@ -6,7 +6,7 @@ export const vitamineDMetenWanneerZinvolData: BlogArtikel = {
   categorie: "energie",
   titel: "Vitamine D laten meten: wanneer is het zinvol en wat zegt je uitslag?",
   coverImage: "/images/blog/vitamine-d-meten-wanneer-zinvol.jpg",
-  coverImageAlt: "Persoon die nadenkt bij aantekeningen of onderzoek",
+  coverImageAlt: "Laboratoriumglaswerk in een lichte werkruimte, klaar voor een meting",
   heroIntro:
     "Er zijn twee manieren om met [vitamine D](/kennisbank/vitamine-d) om te gaan: gokken op basis van een tijdlijn, of één keer meten en het daarna weten. Meten is alleen niet voor iedereen nodig, en een uitslag lezen is lastiger dan het lijkt — labs hanteren verschillende afkapwaarden en organisaties zijn het onderling niet eens. Hier lees je wanneer meten wél iets toevoegt en hoe je een getal in context zet.",
   leestijd: "8 min",
@@ -117,8 +117,7 @@ export const vitamineDMetenWanneerZinvolData: BlogArtikel = {
     "vitamine-d-zon-nederland",
   ],
   metaTitle: "Vitamine D meten: wanneer zinvol en wat zegt je uitslag?",
-  metaDescription:
-    "Vitamine D laten meten: waarom 25-OH-D de juiste test is, wanneer meten iets toevoegt, het verschil tussen nmol/l en ng/ml en waarom afkapwaarden verschillen.",
+  metaDescription: "Wanneer vitamine D laten meten zinvol is, wat een labwaarde zegt, en waarom een eenmalige prik geen seizoensritme vervangt.",
   keywords: [
     "vitamine d meten",
     "25-oh vitamine d waarde",

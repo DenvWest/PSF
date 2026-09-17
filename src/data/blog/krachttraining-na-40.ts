@@ -6,7 +6,7 @@ export const krachttrainingNa40Data: BlogArtikel = {
   categorie: "energie",
   titel: "Krachttraining na 30: hefboom voor energie, spieren en herstel",
   coverImage: "/images/blog/krachttraining-na-40.jpg",
-  coverImageAlt: "Persoon die krachttraining doet met gewichten",
+  coverImageAlt: "Man die krachttraining doet in een sportschool",
   heroIntro:
     "Je hoeft geen bodybuilder te worden. Twee keer per week weerstandstraining is na 30 vaak de sterkste hefboom voor spierbehoud, metabole gezondheid en het gevoel dat je lichaam nog meewerkt — gekoppeld aan [eiwit na 30](/blog/eiwit-na-40) en [herstel na 30](/herstel-verbeteren-na-40).",
   leestijd: "10 min",
@@ -73,8 +73,7 @@ export const krachttrainingNa40Data: BlogArtikel = {
     "middagdip-bloedsuiker-na-40",
   ],
   metaTitle: "Krachttraining na 30: protocol, eiwit en herstel",
-  metaDescription:
-    "Krachttraining na 30: sarcopenie voorkomen, eiwit, mitochondriën, cardio-combo en realistisch 8-weken startprotocol.",
+  metaDescription: "Krachttraining na 30: waarom spier- en botmassa een halter nodig hebben, en hoe je dosering en herstel praktisch houdt.",
   keywords: [
     "krachttraining na 30",
     "sarcopenie voorkomen",

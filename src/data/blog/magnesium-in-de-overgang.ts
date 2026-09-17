@@ -7,7 +7,7 @@ export const magnesiumInDeOvergangData: BlogArtikel = {
   audience: "vrouwen",
   titel: "Magnesium in de overgang: waar het bewijs sterk is — en waar niet",
   coverImage: "/images/blog/magnesium-in-de-overgang.jpg",
-  coverImageAlt: "Magnesiumsupplement en een glas water op een lichte ondergrond",
+  coverImageAlt: "Supplementpot, capsules en een glas water op een licht blad",
   heroIntro:
     "Magnesium wordt bij zowat elke overgangsklacht genoemd — slaap, stemming, opvliegers, spierkrampen. Die veelzijdigheid is precies waarom het onderscheid tussen 'plausibel' en 'bewezen' er hier toe doet. Dit artikel zet op een rij waar magnesium wél onderbouwing heeft in deze levensfase en waar de claim harder is dan het bewijs. Bredere achtergrond staat in [de overgangsgids](/overgang).",
   leestijd: "8 min",

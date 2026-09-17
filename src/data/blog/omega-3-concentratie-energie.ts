@@ -6,7 +6,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
   categorie: "energie",
   titel: "Omega-3, concentratie en energie: wat zegt de wetenschap?",
   coverImage: "/images/blog/omega-3-concentratie-energie.jpg",
-  coverImageAlt: "Verse zalm op een bord, rijk aan omega-3",
+  coverImageAlt: "Gebakken zalmfilet met groenten op een donker bord",
   heroIntro:
     "EPA en DHA spelen een rol in hersenstructuur en ontstekingsregulatie. Word je daar mentaal energieker van? Een eerlijke afweging van wat studies wel en niet aantonen — zonder marketingclaims.",
   leestijd: "8 min",

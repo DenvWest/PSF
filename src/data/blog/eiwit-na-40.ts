@@ -7,7 +7,7 @@ export const eiwitNa40Data: BlogArtikel = {
   categorie: "energie",
   titel: "Eiwit na 30: hoeveel je écht nodig hebt (en waarom de meeste mensen tekortkomen)",
   coverImage: "/images/blog/eiwit-na-40.jpg",
-  coverImageAlt: "Eiwitshake in een shaker na training",
+  coverImageAlt: "Gekookte eieren op een bord als praktische eiwitbron na 30",
   heroIntro:
     "Je eet \"gezond genoeg\", maar je spieren voelen minder responsief. Na je 30e is dat geen verbeelding: je lichaam heeft meer [eiwit](/kennisbank/eiwitbehoefte-na-40) nodig per maaltijd — en de meeste Nederlanders halen de ondergrens niet. Hier lees je hoeveel, wanneer en waarom, gekoppeld aan [herstel na 30](/herstel-verbeteren-na-40) en [voeding na 30](/voeding-na-40) — zonder bodybuilding-hype.",
   leestijd: "9 min",
@@ -86,8 +86,7 @@ export const eiwitNa40Data: BlogArtikel = {
     "eiwitinname-timing-mannen-40",
   ],
   metaTitle: "Eiwit na 30: hoeveel gram per dag",
-  metaDescription:
-    "Hoeveel eiwit heb je na 30 nodig? Anabole resistentie, 1,6 g/kg, spreiding over de dag en wanneer poeder zinvol is — onderbouwd en praktisch.",
+  metaDescription: "Eiwit na 30: hoeveel per maaltijd, waarom eieren en kwark vaak winnen van alleen een shake, en hoe je verdeelt over de dag.",
   keywords: [
     "eiwit na 30",
     "eiwitbehoefte 30 plus",

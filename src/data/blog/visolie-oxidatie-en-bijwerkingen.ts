@@ -6,7 +6,7 @@ export const visolieOxidatieEnBijwerkingenData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Visboeren en een ranzige nasmaak: het kwaliteitssignaal dat niemand uitlegt",
   coverImage: "/images/blog/visolie-oxidatie-en-bijwerkingen.jpg",
-  coverImageAlt: "Omega-3-capsules en potjes naast verse vis bij het vergelijken",
+  coverImageAlt: "Gemorste visolie op een werkblad — versheid telt zwaarder dan de claim",
   heroIntro:
     "Terugkerende visboeren en een scherpe nasmaak worden meestal afgedaan als “hoort erbij”. Dat klopt niet. Het is vaak het enige signaal dat je krijgt dat een olie geoxideerd is — en oxidatie is het kwaliteitsverschil tussen omega-3-producten dat het minst op het etiket staat en het meest uitmaakt.",
   leestijd: "8 min",
@@ -109,8 +109,7 @@ export const visolieOxidatieEnBijwerkingenData: BlogArtikel = {
     "omega-3-en-medicijnen",
   ],
   metaTitle: "Visolie: ranzig, visboeren en bijwerkingen — wat betekent het?",
-  metaDescription:
-    "Visboeren en een scherpe nasmaak wijzen meestal op geoxideerde visolie. Wat TOTOX betekent, waarom die waarde zelden op het etiket staat en wat je zelf kunt doen.",
+  metaDescription: "Ranzige visolie, oprispingen en oxidatie: hoe je versheid herkent en wanneer een supplement meer kwaad dan goed doet.",
   keywords: [
     "visolie boeren",
     "ranzige visolie",

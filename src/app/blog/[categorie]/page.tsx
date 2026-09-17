@@ -65,7 +65,7 @@ export async function generateMetadata({
       title,
       description,
       publishedTime: artikel.gepubliceerdOp,
-      images: [{ url: coverUrl, alt: cover.alt }],
+      images: [{ url: coverUrl, alt: cover.alt, width: 1600, height: 900 }],
     },
     twitter: {
       card: "summary_large_image",

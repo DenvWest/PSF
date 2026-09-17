@@ -1,14 +1,20 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { alleArtikelen } from "@/data/blog";
 import { kennisbankTerms } from "@/data/kennisbank";
 import { blogBodyImage, kennisbankBodyImage } from "@/data/article-body-images";
+import { blogCover } from "@/lib/blog-cover";
 import { kennisbankCover } from "@/lib/kennisbank-cover";
 import sitemap from "@/app/sitemap";
 
 function publicPad(src: string): string {
   return join(process.cwd(), "public", src.replace(/^\//, ""));
+}
+
+function fileMd5(src: string): string {
+  return createHash("md5").update(readFileSync(publicPad(src))).digest("hex");
 }
 
 describe("article body images", () => {
@@ -25,6 +31,33 @@ describe("article body images", () => {
       );
       expect(image.alt.length, artikel.slug).toBeGreaterThan(20);
       expect(image.caption.length, artikel.slug).toBeGreaterThan(40);
+    }
+  });
+
+  it("blogcovers en inline-beelden zijn uniek per artikel en verschillen per slug", () => {
+    const coverByHash = new Map<string, string>();
+    const inlineByHash = new Map<string, string>();
+
+    for (const artikel of alleArtikelen) {
+      const cover = blogCover(artikel);
+      const body = blogBodyImage(artikel.slug);
+      expect(body, artikel.slug).toBeDefined();
+      if (!body) continue;
+
+      const coverHash = fileMd5(cover.src);
+      const bodyHash = fileMd5(body.src);
+      expect(coverHash, `${artikel.slug} cover==inline`).not.toBe(bodyHash);
+
+      const earlierCover = coverByHash.get(coverHash);
+      expect(earlierCover, `${artikel.slug} deelt cover met ${earlierCover}`).toBeUndefined();
+      coverByHash.set(coverHash, artikel.slug);
+
+      const earlierInline = inlineByHash.get(bodyHash);
+      expect(
+        earlierInline,
+        `${artikel.slug} deelt inline met ${earlierInline}`,
+      ).toBeUndefined();
+      inlineByHash.set(bodyHash, artikel.slug);
     }
   });
 
