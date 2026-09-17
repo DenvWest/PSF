@@ -66,7 +66,8 @@ src/
 ## Belangrijke regels — LEES DIT
 
 ### Git & deploy
-- **Committen en pushen mag automatisch.** Na een afgeronde wijziging in `src/`: draai eerst de volledige klaar-check (`grep -rn "console.log" src/` + `npx tsc --noEmit` + `vitest` + `eslint --max-warnings 0`). Slaagt alles, commit en push dan zelf (`git push -u origin main`) — één commit per afgeronde taak, geen tussentijdse deelcommits. Faalt er iets, dan NOOIT committen: eerst melden en waar mogelijk fixen, pas committen en pushen als alles groen is.
+- **Committen en pushen naar een feature-branch mag automatisch.** Na een afgeronde wijziging in `src/`: draai eerst de volledige klaar-check (`grep -rn "console.log" src/` + `npx tsc --noEmit` + `vitest` + `eslint --max-warnings 0`). Slaagt alles, commit dan zelf — één commit per afgeronde taak, geen tussentijdse deelcommits. Faalt er iets, dan NOOIT committen: eerst melden en waar mogelijk fixen, pas committen als alles groen is. Push daarna met `git push -u origin <feature-branch>`.
+- **Nooit rechtstreeks naar `main` pushen, nooit zelf mergen, nooit zelf deployen.** Een PR openen alleen als Dennis erom vraagt. `deploy.sh` blijft altijd bij Dennis.
 - Verifieer met `npx tsc --noEmit` + `vitest` + `eslint --max-warnings 0` (de pre-push hook draait tsc+vitest). Draai **NIET** `next build` of `rm -rf .next` terwijl `next dev` live is — dat crasht de dev-server; de productie-build draait op de server via `deploy.sh`.
 - `.env.local` NOOIT overschrijven of committen.
 - Server-lockfile met `npx npm@10.8.2 install` genereren (server npm 10/node 20 vs lokaal npm 11/node 24; anders faalt `npm ci` op de server).
