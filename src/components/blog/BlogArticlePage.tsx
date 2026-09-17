@@ -17,6 +17,7 @@ import BlogSupplementenHubLink from "@/components/blog/BlogSupplementenHubLink";
 import Link from "next/link";
 import BlogGerelateerd from "./BlogGerelateerd";
 import BlogIntakeCTA from "./BlogIntakeCTA";
+import BlogControleerVerbeterPad from "./BlogControleerVerbeterPad";
 import ArticleReferentiesFooter from "@/components/content/ArticleReferentiesFooter";
 import ArticleBodyReadingChrome from "@/components/content/ArticleBodyReadingChrome";
 import { alleArtikelen } from "@/data/blog";
@@ -266,11 +267,19 @@ export default function BlogArticlePage({
                     />
                   </div>
                 ) : (
-                  <BlogIntakeCTA
-                    placement="closing"
-                    locatie="blog_closing"
-                    className="mt-14"
-                  />
+                  <>
+                    <BlogControleerVerbeterPad
+                      categorie={artikel.categorie}
+                      artikelSlug={artikel.slug}
+                      className="mt-14"
+                    />
+
+                    <BlogIntakeCTA
+                      placement="closing"
+                      locatie="blog_closing"
+                      className="mt-14"
+                    />
+                  </>
                 )}
 
                 {artikel.supplementCTA ? (

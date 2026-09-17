@@ -11,6 +11,7 @@ import {
   ALL_SUPPLEMENT_SLUGS,
   getSupplementData,
 } from "@/data/supplement-guides";
+import { VOEDING_STOF_SLUGS } from "@/lib/voeding-public";
 import { getHubProductSlugs } from "@/lib/supplement-hub/product-catalog";
 import { blogCover } from "@/lib/blog-cover";
 import { kennisbankCover } from "@/lib/kennisbank-cover";
@@ -144,6 +145,7 @@ const HUB_PADEN = [
   "/",
   "/intake",
   "/supplementen",
+  "/voeding",
   "/gidsen",
   "/over-ons",
   "/contact",
@@ -187,6 +189,7 @@ type SitemapSectionId =
   | "profielen"
   | "gezondheidsgidsen"
   | "voedingsstoffen"
+  | "voedingRoute"
   | "producten"
   | "inzichten"
   | "kennisbank"
@@ -247,6 +250,13 @@ const SITEMAP_SECTIONS: Record<SitemapSectionId, () => Entry[]> = {
     paths(
       GUIDE_SLUGS.map((s) => `/gids/${s}`),
       0.8,
+      "monthly",
+    ),
+
+  voedingRoute: () =>
+    paths(
+      VOEDING_STOF_SLUGS.map((slug) => `/voeding/${slug}`),
+      0.75,
       "monthly",
     ),
 

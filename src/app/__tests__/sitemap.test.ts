@@ -5,6 +5,7 @@ import sitemap, { SITEMAP_EXCLUDED } from "@/app/sitemap";
 import robots from "@/app/robots";
 import { SUPPLEMENT_SLUGS, getSupplementComparisonData } from "@/data/supplements";
 import { ALL_SUPPLEMENT_SLUGS } from "@/data/supplement-guides";
+import { VOEDING_STOF_SLUGS } from "@/lib/voeding-public";
 
 const BASE = "https://perfectsupplement.nl";
 const APP_DIR = path.join(process.cwd(), "src", "app");
@@ -55,6 +56,20 @@ describe("sitemap vergelijkingspagina's", () => {
       expect(entry, `geen sitemap-entry voor /beste/${slug}`).toBeDefined();
       expect(entry?.lastModified).toEqual(new Date(data.lastUpdated));
     }
+  });
+
+  it("bevat alle supplementgidsen en voedingsstof-pagina's", () => {
+    const entries = sitemap();
+    const urls = new Set(entries.map((e) => e.url));
+
+    for (const slug of ALL_SUPPLEMENT_SLUGS) {
+      expect(urls.has(`https://perfectsupplement.nl/supplementen/${slug}`)).toBe(true);
+    }
+    for (const slug of VOEDING_STOF_SLUGS) {
+      expect(urls.has(`https://perfectsupplement.nl/voeding/${slug}`)).toBe(true);
+    }
+    expect(urls.has("https://perfectsupplement.nl/voeding")).toBe(true);
+    expect(urls.has("https://perfectsupplement.nl/intake/voeding")).toBe(true);
   });
 
   it("elke vergelijkingspagina heeft een unieke lastModified-datum wanneer de brondata dat ook heeft", () => {
