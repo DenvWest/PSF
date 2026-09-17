@@ -245,6 +245,9 @@ Wat wél open blijft: de check is nu een losse route (`/intake/voeding`) naast d
 **Plak 3 — Dagboekscherm.**
 Maaltijdblokken met de stoffen als kolomkop (niet per item), subtotaal per maaltijd, volle week met vier gemarkeerde meetdagen. Ronde RI-meters erboven. `Dashboard.tsx` (3.769 regels) terug naar één domein; kompas-componenten weg.
 
+**Plak 3b — Het dagboek uit laag 5 halen.** *(gevonden 17 sep)*
+De invoer staat nu op `/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding` → laag 5 (Meten & timing), vier stappen diep in het leefstijlprofiel. Dat is waar hij hoorde toen voeding één van zeven domeinen was; met één domein hoort het dagboek de eerste tab te zijn. De componenten zijn klaar (`NutritionDagboekPaneel` + `NutritionProductInvoer`), alleen hun plek klopt niet — dit is verhuiswerk, geen bouwwerk.
+
 **Plak 4 — Het tekortsysteem.**
 Vier vensters (1/7/14/30), richtingkolom, één bevinding in gewone taal, `bewijsbaar`-vlag per stof. Dit is de plak die de andere drie tabs betekenis geeft.
 
