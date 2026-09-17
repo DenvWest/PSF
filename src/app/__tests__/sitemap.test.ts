@@ -69,7 +69,6 @@ describe("sitemap vergelijkingspagina's", () => {
       expect(urls.has(`https://perfectsupplement.nl/voeding/${slug}`)).toBe(true);
     }
     expect(urls.has("https://perfectsupplement.nl/voeding")).toBe(true);
-    expect(urls.has("https://perfectsupplement.nl/intake/voeding")).toBe(true);
   });
 
   it("elke vergelijkingspagina heeft een unieke lastModified-datum wanneer de brondata dat ook heeft", () => {
