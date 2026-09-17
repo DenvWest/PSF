@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const ashwagandhaData: BlogArtikel = {
   slug: "ashwagandha-werking-mannen",
   categorie: "supplementen",
-  titel: "Ashwagandha: hoe het werkt bij chronische stress na 30",
+  titel: "Ashwagandha bij chronische stress: wat laat onderzoek zien?",
   coverImage: "/images/blog/ashwagandha-werking-mannen.jpg",
   coverImageAlt: "Gedroogde ashwagandha-wortelstukken op een rustige ondergrond",
   heroIntro:
@@ -56,7 +56,7 @@ export const ashwagandhaData: BlogArtikel = {
     },
     {
       type: "tekst",
-      titel: "EU‑claims, EFSA en VWS — wat jij moet weten",
+      titel: "Waarom er geen gezondheidsclaim op het potje staat",
       tekst:
         "Voor Withania somnifera (ashwagandha) staan er in de Europese Unie op dit moment geen definitief toegelaten gezondheidsclaims op de EU‑lijst voor dit ingrediënt. Dossiers voor botanische stoffen kunnen bij de Europese Autoriteit voor voedselveiligheid ([EFSA](/kennisbank/efsa-claims)) in de on-holdprocedure staan: onderzoek en veiligheid kunnen besproken zijn zonder dat er al een claim voor consumenten op het etiket mag. In Nederland zet het ministerie van Volksgezondheid, Welzijn en Sport (VWS) beleid en wetgeving uit; de Nederlandse Voedsel- en Warenautoriteit (NVWA) handhaaft markt en etikettering. Dit artikel vat literatuur samen en is geen medische aanbeveling of erkende productclaim. Bij klachten, medicatie of zwangerschap: overleg met een arts.",
     },

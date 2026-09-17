@@ -294,7 +294,7 @@ export default function ProductDetail({ product, peers }: ProductDetailProps) {
 
       <section aria-labelledby="claims" className="scroll-mt-24">
         <h2 id="claims" className="font-display text-2xl font-bold text-stone-900">
-          Wat dit product volgens de EU mag beweren
+          Welke claims deze dosering waarmaakt
         </h2>
 
         {product.claims.length > 0 ? (

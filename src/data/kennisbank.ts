@@ -137,7 +137,7 @@ Je individuele darmgezondheid. Ontstekingen, medicijngebruik of een verstoord mi
     },
     relatedSlugs: ['chelaatvorm', 'ps-score-model', 'scoregewichten'],
     relatedComparisons: ['/beste/magnesium', '/beste/omega-3-supplement', '/beste/ashwagandha', '/beste/vitamine-d', '/beste/creatine', '/beste/zink'],
-    metaTitle: 'Biobeschikbaarheid: Wat Het Is en Waarom Het Matteert',
+    metaTitle: 'Biobeschikbaarheid: hoeveel je lichaam écht opneemt',
     metaDescription: 'Niet alles wat je slikt wordt opgenomen. Biobeschikbaarheid bepaalt hoeveel je lichaam écht gebruikt. Uitgelegd in begrijpelijke taal.',
     referenties: toRefs([
       'Shargel L, Yu ABC. Applied Biopharmaceutics & Pharmacokinetics (referentiekader absorptie en first-pass). McGraw-Hill/edities.',
@@ -167,7 +167,7 @@ Een gecheleerd mineraal is beschermd door het aminozuur. Het reist intact naar j
     },
     relatedSlugs: ['biobeschikbaarheid'],
     relatedComparisons: ['/beste/magnesium', '/beste/zink'],
-    metaTitle: 'Chelaatvorm: Waarom de Vorm van je Mineraal Ertoe Doet',
+    metaTitle: 'Chelaatvorm: waarom de vorm van je mineraal ertoe doet',
     metaDescription: 'Chelaatvorm betekent dat een mineraal gebonden is aan een aminozuur. Dit verhoogt de opname drastisch. Simpel uitgelegd.',
     referenties: toRefs([
       'Schuschke LA et al. Amino acid chelated minerals methodological nutritional chemistry reviews absorption frames.',
@@ -200,7 +200,7 @@ Onderzoek gebruikt nog steeds uiteenlopende plantendelen, doses en extractprofie
     domeinMetBeperktCausaalBewijs: true,
     relatedSlugs: ['circadiaan-ritme'],
     relatedComparisons: ['/beste/ashwagandha'],
-    metaTitle: 'Adaptogens: Wat Ze Zijn en Hoe Ze Werken',
+    metaTitle: 'Adaptogens: wat ze zijn en wat onderzoek laat zien',
     metaDescription:
       'Adaptogens: wat het begrip betekent, waar HPA‑ en trial‑literatuur wel en niet over uitspreken — zonder marketingclaims.',
     referenties: toRefs([
@@ -235,7 +235,7 @@ Voor de vraag of je überhaupt moet aanvullen telt eerst je bord: [omega-3 uit v
     },
     relatedSlugs: ['biobeschikbaarheid', 'claimdekking', 'onafhankelijke-toetsing'],
     relatedComparisons: ['/beste/omega-3-supplement'],
-    metaTitle: 'EPA en DHA: De Omega-3 Vetzuren Die Ertoe Doen',
+    metaTitle: 'EPA en DHA: de twee omega-3 vetzuren die ertoe doen',
     metaDescription: 'EPA en DHA zijn de actieve omega-3 vetzuren: wat ze doen, hoeveel je nodig hebt, en waarom versheid en de EPA/DHA-verhouding het etiket niet halen.',
     laatstBijgewerktOp: '2026-09-04',
     referenties: toRefs([
@@ -266,7 +266,7 @@ Na 30 wordt dit systeem gevoeliger voor verstoring. Blauw licht van schermen ond
     },
     relatedSlugs: ['adaptogens'],
     relatedComparisons: ['/beste/magnesium', '/beste/ashwagandha'],
-    metaTitle: 'Circadiaan Ritme: Je Interne Klok Uitgelegd',
+    metaTitle: 'Circadiaan ritme: hoe je interne klok je dag stuurt',
     metaDescription: 'Je circadiaan ritme stuurt slaap, hormonen en energie aan. Na 30 wordt het gevoeliger. Wat kun je eraan doen?',
     referenties: toRefs([
       'Roenneberg T et al. Social jetlag mismatch biological social clock epidemiology frameworks Curr Biol.',
@@ -298,7 +298,7 @@ Belangrijk: de ADH is een referentiewaarde, geen persoonlijk advies. Iemand die 
     },
     relatedSlugs: ['biobeschikbaarheid'],
     relatedComparisons: ['/beste/magnesium', '/beste/omega-3-supplement', '/beste/vitamine-d', '/beste/zink'],
-    metaTitle: 'ADH: Wat de Aanbevolen Dagelijkse Hoeveelheid Écht Betekent',
+    metaTitle: 'ADH: wat de aanbevolen dagelijkse hoeveelheid écht betekent',
     metaDescription: 'De ADH is een minimum, geen optimum. Wat betekent het voor jouw supplementkeuze? Helder uitgelegd.',
     referenties: toRefs([
       'EFSA Panel DRV population reference intake methodology EU nutrient reference dossiers.',
@@ -328,7 +328,7 @@ Er is een tussencategorie: "on hold" claims. Dit zijn claims voor botanische sto
     },
     relatedSlugs: ['adh', 'claimdekking', 'ps-score-model'],
     relatedComparisons: ['/beste/magnesium', '/beste/ashwagandha', '/beste/vitamine-d'],
-    metaTitle: 'EFSA-claims: Welke Supplementclaims Zijn Écht Goedgekeurd?',
+    metaTitle: 'EFSA-claims: welke supplementclaims zijn écht goedgekeurd?',
     metaDescription: 'Niet elke claim op een supplementetiket is waar. EFSA keurt ze goed of af. Wat mag wel en niet? Uitgelegd.',
     referenties: toRefs([
       'European Parliament Council. Regulation EC 1924/2006 nutrition health claims legal framework EU.',
@@ -358,7 +358,7 @@ Let op: "laboratorium getest" op een etiket zonder te vermelden welk lab is wein
     },
     relatedSlugs: ['efsa-claims', 'biobeschikbaarheid', 'onafhankelijke-toetsing', 'ps-score-model'],
     relatedComparisons: ['/beste/omega-3-supplement', '/beste/ashwagandha', '/beste/creatine'],
-    metaTitle: 'Derde-partij Testen: Hoe Weet Je Of Er Inzit Wat Erop Staat?',
+    metaTitle: 'Derde-partij testen: zit erin wat erop staat?',
     metaDescription: 'Supplementen worden niet vooraf gecontroleerd. Derde-partij testen zijn de beste garantie. Wat moet je weten?',
     referenties: toRefs([
       'US FDA Dietary Supplement CGMP Final Rule 21 CFR Part 111 manufacturing quality regulatory reference.',
@@ -396,7 +396,7 @@ Een wind-down routine — een vast signaal aan je lichaam dat het tijd is om af 
     },
     relatedSlugs: ['circadiaan-ritme'],
     relatedComparisons: ['/beste/magnesium'],
-    metaTitle: 'Slaaphygiëne: De Gewoontes Die Je Slaap Maken of Breken',
+    metaTitle: 'Slaaphygiëne: de gewoontes die je slaap maken of breken',
     metaDescription: 'Slaaphygiëne is de basis voor goede slaap. Na 30 wordt het belangrijker. De 5 pijlers uitgelegd.',
     referenties: toRefs([
       'Irish LA et al. Role sleep hygiene insomnia management rationale evidence Sleep Med Rev.',
@@ -426,7 +426,7 @@ Dit betekent dat het niet alleen gaat om hoeveel eiwit je per dag eet, maar ook 
     },
     relatedSlugs: ['wei-eiwit', 'leucinedrempel', 'slaaphygiene', 'kalium-natrium-balans'],
     relatedComparisons: ['/beste/eiwitpoeder', '/beste/creatine'],
-    metaTitle: 'Eiwitbehoefte na 30: Hoeveel Heb Je Écht Nodig?',
+    metaTitle: 'Eiwitbehoefte na 30: hoeveel heb je écht nodig?',
     metaDescription: 'Na 30 heb je meer eiwit nodig dan je denkt. De wetenschap achter spierbehoud, simpel uitgelegd.',
     referenties: toRefs([
       'Wolfe RR. Branched-chain amino acids muscle protein synthesis aging reviews J Nutr.',
@@ -457,7 +457,7 @@ Omdat de bronnen zo verschillend zijn, is dit in de praktijk één interventie m
     },
     relatedSlugs: ['eiwitbehoefte-na-40'],
     relatedComparisons: [],
-    metaTitle: 'Kalium-natriumbalans: Waarom Verhouding Belangrijker Is Dan Zout Alleen',
+    metaTitle: 'Kalium-natriumbalans: de verhouding weegt zwaarder dan zout',
     metaDescription:
       'Kalium en natrium werken tegengesteld op je bloeddruk. Waarom de verhouding telt, waar kalium vandaan komt en waarom dit geen supplement-vraag is.',
     referenties: toRefs([
@@ -488,7 +488,7 @@ De vijf pijlers waar onderzoekers naar kijken: slaapkwaliteit, voedingspatroon, 
     },
     relatedSlugs: ['circadiaan-ritme'],
     relatedComparisons: [],
-    metaTitle: 'Healthspan: Niet Hoe Lang, Maar Hoe Goed Je Leeft',
+    metaTitle: 'Healthspan: niet hoe lang, maar hoe goed je leeft',
     metaDescription: 'Healthspan is het aantal gezonde jaren. Na 30 wordt het verschil met lifespan groter. Maar je kunt er iets aan doen.',
     referenties: toRefs([
       'Crimmins EM. Lifespan healthspan population health metrics methodological demography longevity science.',
@@ -521,7 +521,7 @@ Ashwagandha en magnesium worden vaak gekozen bij spanning en slaap; die keuzes p
     },
     relatedSlugs: ['adaptogens', 'cortisol'],
     relatedComparisons: ['/beste/ashwagandha', '/beste/magnesium'],
-    metaTitle: 'HPA-as: Wat Het Is en Waarom Stress Er Op Doorwerkt',
+    metaTitle: 'HPA-as: waarom langdurige stress je systeem uitput',
     metaDescription:
       'De HPA-as stuurt je stressreactie aan: van hypothalamus en hypofyse tot cortisol uit je bijnieren. Begrijpelijk uitgelegd.',
     referenties: toRefs([
@@ -555,7 +555,7 @@ Kies altijd op kwaliteit, dosering en je totale plaatje (slaapritme, beweging, v
     },
     relatedSlugs: ['hpa-as', 'melatonine'],
     relatedComparisons: ['/beste/ashwagandha'],
-    metaTitle: 'Cortisol: Het Stresshormoon en Je Dag-Nachtritme',
+    metaTitle: 'Cortisol: het stresshormoon en je dag-nachtritme',
     metaDescription:
       'Wat cortisol doet, hoe het ritme kan verstorren bij stress, en waarom dat na 30 merkbaar wordt — helder uitgelegd.',
     referenties: toRefs([
@@ -591,7 +591,7 @@ Verbeter eerst het ritme (licht overdag, dimmen ’s avonds, vaste tijden): dat 
     domeinMetBeperktCausaalBewijs: true,
     relatedSlugs: ['circadiaan-ritme', 'cortisol'],
     relatedComparisons: [],
-    metaTitle: 'Melatonine: Hormoon, Ritme en Wat Suppletie Wél en Niet Is',
+    metaTitle: 'Melatonine: wat het hormoon doet en wat een pil niet oplost',
     metaDescription:
       'Melatonine stuurt timing van slaap mee, vooral via je biologische klok. Wat er na 30 verandert en waar je op let bij suppletie.',
     referenties: toRefs([
@@ -625,7 +625,7 @@ Combi die vaak werkt: structureel bewegen + voldoende eiwit + gerichte supplemen
     },
     relatedSlugs: ['atp', 'epa-dha'],
     relatedComparisons: ['/beste/omega-3-supplement', '/beste/creatine'],
-    metaTitle: 'Mitochondriën: Je Cellulaire Energie',
+    metaTitle: 'Mitochondriën: waar je energie vandaan komt',
     metaDescription:
       'Mitochondriën maken ATP voor energie en herstel. Waarom dat na 30 anders voelt en wat rol speelt bij leefstijl en supplementen.',
     referenties: toRefs([
@@ -660,7 +660,7 @@ Combineer dit met eerlijke grenzen op werkdruk; supplementen zijn hooguit een tw
     domeinMetBeperktCausaalBewijs: true,
     relatedSlugs: ['slaaphygiene', 'hpa-as'],
     relatedComparisons: [],
-    metaTitle: 'Nervus Vagus: Je Rustzenuw en Ademhaling als Hefboom',
+    metaTitle: 'Nervus vagus: je rustzenuw, en ademhaling als knop',
     metaDescription:
       'Wat de nervus vagus doet, hoe die samenhangt met stress en herstel, en waarom ademhaling snel effect kan geven — uitgelegd in begrijpelijke taal.',
     referenties: toRefs([
@@ -694,7 +694,7 @@ Lees vergelijkingen dus op dosering, vorm en zuiverheid — en blijf slaap en ei
     },
     relatedSlugs: ['mitochondrien', 'eiwitbehoefte-na-40'],
     relatedComparisons: ['/beste/creatine'],
-    metaTitle: 'ATP: Het Energiemolecuul Achter Inspanning en Denken',
+    metaTitle: 'ATP: het energiemolecuul achter inspanning en denken',
     metaDescription:
       'Wat ATP is, hoe je lichaam het maakt en verbruikt, en waarom creatine in dat plaatje past — zonder marketingjargon.',
     referenties: toRefs([
@@ -727,7 +727,7 @@ Labtesten (totaal en soms vrij testosteron) horen in medische context: interpret
     },
     relatedSlugs: ['cortisol', 'hpa-as'],
     relatedComparisons: ['/beste/zink', '/beste/creatine'],
-    metaTitle: 'Testosteron: Wat Het Is en Wat Er Verandert',
+    metaTitle: 'Testosteron: wat er na je 30e verandert',
     metaDescription:
       'Testosteron uitgelegd: functie, leeftijdstrend en waarom labwaarden context nodig hebben — zonder supplement-hype.',
     referenties: toRefs([
@@ -759,7 +759,7 @@ Inhalen van slaap in het weekend helpt deels, maar lost een verstoord weekritme 
     },
     relatedSlugs: ['melatonine', 'cortisol', 'slaaphygiene'],
     relatedComparisons: ['/beste/magnesium'],
-    metaTitle: 'Slaapschuld: Wat Het Is en Hoe Je Het Terugdraait',
+    metaTitle: 'Slaapschuld: hoe diep hij wordt en hoe je hem inlost',
     metaDescription:
       'Slaapschuld uitgelegd: hoe tekort zich opstapelt en welke leefstijlstappen eerst helpen — vóór supplementen.',
     referenties: toRefs([
@@ -793,7 +793,7 @@ In de Leefstijlcheck telt verbinding mee als interventiedomein. Scoort het bij j
     },
     relatedSlugs: ['nervus-vagus', 'cortisol', 'healthspan'],
     relatedComparisons: [],
-    metaTitle: 'Sociale verbinding en gezondheid',
+    metaTitle: 'Sociale verbinding: waarom eenzaamheid je gezondheid raakt',
     metaDescription:
       'Waarom sociale verbinding een volwaardig leefstijldomein is na 30: wat het met je stress-systeem doet, wat de wetenschap zegt en welke kleine stap het meest oplevert. Geen supplement — bewust.',
     referenties: toRefs([
@@ -826,7 +826,7 @@ Transparantie op het etiket (elementair mg, vorm, geen verkapte blends) is waar 
     },
     relatedSlugs: ['biobeschikbaarheid', 'chelaatvorm'],
     relatedComparisons: ['/beste/magnesium'],
-    metaTitle: 'Magnesiumvormen: Oxide, Citraat, Bisglycinaat en Meer',
+    metaTitle: 'Magnesiumvormen: oxide, citraat of bisglycinaat?',
     metaDescription:
       'Magnesiumvormen vergeleken: opname, verdraging en waar je op let bij het kiezen van een supplement.',
     referenties: toRefs([
@@ -858,7 +858,7 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
     },
     relatedSlugs: ['mitochondrien', 'cortisol'],
     relatedComparisons: ['/beste/creatine', '/beste/magnesium'],
-    metaTitle: 'Overtrainingssyndroom: Tekenen en Herstelroute',
+    metaTitle: 'Overtrainingssyndroom: de signalen en de weg terug',
     metaDescription:
       'Overtraining uitgelegd: wanneer te veel belasting wint van herstel en welke stappen eerst helpen.',
     referenties: toRefs([
@@ -892,7 +892,7 @@ Lees verder: [vitamine D en energie](/blog/vitamine-d-en-energie), [tekort herke
     },
     relatedSlugs: ['mitochondrien', 'vitamine-k2', 'vitamine-d-inname'],
     relatedComparisons: ['/beste/vitamine-d'],
-    metaTitle: 'Vitamine D: Wat Doet Het en Wanneer Suppletie?',
+    metaTitle: 'Vitamine D: wat het doet en wanneer suppletie zin heeft',
     metaDescription:
       'Vitamine D uitgelegd: zonnestand en UVB in Nederland, zonbescherming, tekort, EFSA-claims, bovengrens en wanneer meten zinvol is na 30.',
     laatstBijgewerktOp: '2026-09-01',
@@ -929,7 +929,7 @@ De marketingzin die je overal ziet — K2 zou calcium uit slagaders 'wegsturen' 
     },
     relatedSlugs: ['vitamine-d', 'efsa-claims', 'vitamine-d-inname'],
     relatedComparisons: ['/beste/vitamine-d'],
-    metaTitle: 'Vitamine K2: Wat Mag Op Het Etiket — En Wat Niet',
+    metaTitle: 'Vitamine K2: wat het doet voor je botten en bloedvaten',
     metaDescription:
       'Vitamine K2 (MK-7) uitgelegd: geautoriseerde bot- en stollingsclaims, de afgewezen hartclaim, en waarom D3+K2 bij vitamine D hoort.',
     laatstBijgewerktOp: '2026-09-01',
@@ -968,7 +968,7 @@ Belangrijker dan het innamemoment is de vraag of je het überhaupt nodig hebt: z
     },
     relatedSlugs: ['vitamine-d', 'vitamine-k2', 'biobeschikbaarheid'],
     relatedComparisons: ['/beste/vitamine-d'],
-    metaTitle: 'Vitamine D Innemen: Wanneer, Waarmee En Wat Niet Combineren',
+    metaTitle: 'Vitamine D innemen: wanneer, waarmee en waarmee niet',
     metaDescription:
       'Vitamine D innemen: waarom vet wel uitmaakt en het tijdstip nauwelijks, en welke combinaties (vitamine A, calcium, plaspillen) aandacht vragen.',
     laatstBijgewerktOp: '2026-09-01',
@@ -997,7 +997,7 @@ Belangrijker dan het innamemoment is de vraag of je het überhaupt nodig hebt: z
     },
     relatedSlugs: ['mitochondrien', 'atp'],
     relatedComparisons: [],
-    metaTitle: 'Insulineresistentie: Uitleg en Praktische Relevantie',
+    metaTitle: 'Insulineresistentie: hoe het sluipt en wat je eraan doet',
     metaDescription:
       'Insulineresistentie in begrijpelijke taal: wat het betekent, wat onderzoek zegt en wanneer medische hulp past.',
     referenties: toRefs([
@@ -1025,7 +1025,7 @@ Belangrijker dan het innamemoment is de vraag of je het überhaupt nodig hebt: z
     },
     relatedSlugs: ['mitochondrien', 'epa-dha'],
     relatedComparisons: ['/beste/omega-3-supplement'],
-    metaTitle: 'Oxidatieve Stress: Wat Het Betekent in de Praktijk',
+    metaTitle: 'Oxidatieve stress: wat het is en wat antioxidanten wél doen',
     metaDescription:
       'Oxidatieve stress uitgelegd: balans, training, voeding en waarom meer supplementen niet automatisch beter is.',
     referenties: toRefs([
@@ -1057,7 +1057,7 @@ Dat betekent niet dat elke vitamine of elk mineraal nutteloos is — het beteken
     },
     relatedSlugs: ['biobeschikbaarheid', 'efsa-claims'],
     relatedComparisons: [],
-    metaTitle: 'Multivitamine: Wat Het Is en Wat Onderzoek Zegt',
+    metaTitle: 'Multivitamine: zinvol of overbodig? Wat onderzoek zegt',
     metaDescription:
       'Multivitamine uitgelegd: wat erin zit, wat grootschalig onderzoek vindt bij niet-deficiënte volwassenen, en waarom gerichte suppletie een ander uitgangspunt is.',
     referenties: toRefs([
@@ -1097,7 +1097,7 @@ Op productkaarten zie je per onderdeel de punten en het effectieve gewicht. Valt
       'biobeschikbaarheid',
     ],
     relatedComparisons: ['/beste/magnesium', '/beste/omega-3-supplement'],
-    metaTitle: 'PS-Score: Hoe We Supplementen Berekenen',
+    metaTitle: 'PS-Score: hoe wij supplementen beoordelen',
     metaDescription:
       'De PS-Score (0–100) is berekend uit dosering, vorm, EU-claims, etikettransparantie en toetsing. Model 1.2.0 uitgelegd.',
     referenties: toRefs([
@@ -1136,7 +1136,7 @@ Ten opzichte van 1.1.0 ging dosering omhoog (+5), claimdekking en transparantie 
       'biobeschikbaarheid',
     ],
     relatedComparisons: [],
-    metaTitle: 'Scoregewichten: Waarom 30/25/15/15/15 in de PS-Score',
+    metaTitle: 'Scoregewichten: waarom dosering het zwaarst weegt',
     metaDescription:
       'Waarom dosering 30% weegt en toetsing 15%: redactionele prioritering met literatuur over dosis, vorm, claims en verificatie.',
     referenties: toRefs([
@@ -1174,7 +1174,7 @@ De volledige tabel met bronvermelding staat op [/ps-score](/ps-score).`,
       '/beste/vitamine-d',
       '/beste/creatine',
     ],
-    metaTitle: 'Onderzoeksdosis: Waartegen We Dosering Meten',
+    metaTitle: 'Onderzoeksdosis: de meetlat waar wij dosering langs leggen',
     metaDescription:
       'Onderzoeksdosis vs. EFSA-claimdrempel: waarom 200 mg magnesium of 1000 mg EPA+DHA de PS-Score stuurt, niet de wettelijke ondergrens.',
     referenties: toRefs([
@@ -1208,7 +1208,7 @@ Bestaat er geen erkende claim (ashwagandha, eiwit als zodanig), dan valt claimde
     },
     relatedSlugs: ['efsa-claims', 'onderzoeksdosis', 'ps-score-model', 'scoregewichten', 'adh'],
     relatedComparisons: ['/beste/omega-3-supplement', '/beste/magnesium'],
-    metaTitle: 'Claimdekking: EU-Claims Ontsluiten in de PS-Score',
+    metaTitle: 'Claimdekking: welke claims jouw dosering waarmaakt',
     metaDescription:
       'Claim mogen vs. claimdekking: waarom de PS-Score meet hoeveel erkende EU-claims jouw dosering ontsluit — vooral relevant bij omega-3.',
     referenties: toRefs([
@@ -1239,7 +1239,7 @@ Ontbreekt het elementaire gehalte of de dagdosering, dan kunnen andere scoreonde
     },
     relatedSlugs: ['ps-score-model', 'scoregewichten', 'onderzoeksdosis', 'onafhankelijke-toetsing', 'derde-partij-testen'],
     relatedComparisons: ['/beste/magnesium', '/beste/ashwagandha'],
-    metaTitle: 'Etikettransparantie: Wat Je Zelf Op de Verpakking Nakijkt',
+    metaTitle: 'Etikettransparantie: wat je zelf op de verpakking nakijkt',
     metaDescription:
       'Vier etiketfeiten in de PS-Score: hoeveelheid, dagdosering, uitsplitsing en geen proprietary blend — waarom dat 15% weegt.',
     referenties: toRefs([
@@ -1280,7 +1280,7 @@ Belangrijke grens: wij analyseren (nog) geen potjes zelf. Een merk dat wél test
       'epa-dha',
     ],
     relatedComparisons: ['/beste/omega-3-supplement', '/beste/creatine', '/beste/ashwagandha'],
-    metaTitle: 'Onafhankelijke Toetsing in de PS-Score',
+    metaTitle: 'Onafhankelijke toetsing: wie controleert de fabrikant?',
     metaDescription:
       'Labtest, keurmerken en TOTOX/metalen in de PS-Score: wat 15% weegt, en waarom publicatie telt — niet alleen "getest"-claims.',
     referenties: toRefs([
@@ -1314,7 +1314,7 @@ Praktisch is de vraag niet of wei werkt, maar of jij een eiwitgat hebt: [voor wi
     },
     relatedSlugs: ['eiwitbehoefte-na-40', 'leucinedrempel', 'biobeschikbaarheid'],
     relatedComparisons: ['/beste/eiwitpoeder'],
-    metaTitle: 'Wei-eiwit (Whey): Wat Het Is En Wat Het Doet',
+    metaTitle: 'Wei-eiwit (whey): wat het is en wat het doet',
     metaDescription:
       'Wei-eiwit uitgelegd: herkomst, concentraat versus isolaat, waarom leucine telt, wat de EU-claims wel en niet toestaan en wanneer poeder iets toevoegt.',
     laatstBijgewerktOp: '2026-09-04',
@@ -1349,7 +1349,7 @@ Wat het níet betekent: dat je leucine of BCAA's los moet bijkopen. Een eiwitrij
     },
     relatedSlugs: ['wei-eiwit', 'eiwitbehoefte-na-40', 'biobeschikbaarheid'],
     relatedComparisons: ['/beste/eiwitpoeder'],
-    metaTitle: 'Leucinedrempel: Hoeveel Eiwit Per Maaltijd?',
+    metaTitle: 'Leucinedrempel: hoeveel eiwit heb je per maaltijd nodig?',
     metaDescription:
       'De leucinedrempel uitgelegd: waarom 2,5 tot 3 gram leucine per eetmoment wordt genoemd, hoe bronnen verschillen en waarom losse BCAA\'s niet de oplossing zijn.',
     laatstBijgewerktOp: '2026-09-04',

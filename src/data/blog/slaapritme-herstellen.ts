@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const slaapritmeHerstellenData: BlogArtikel = {
   slug: "slaapritme-herstellen",
   categorie: "slaap",
-  titel: "Slaapritme Herstellen in 7 Dagen: Een Dag-voor-Dag Protocol",
+  titel: "Slaapritme herstellen in 7 dagen: een dag-voor-dag protocol",
   coverImage: "/images/blog/slaapritme-herstellen.jpg",
   coverImageAlt: "Ochtendlicht door een raam bij het ontwaken",
   heroIntro:
@@ -114,7 +114,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
     "slaaphygiene-mannen-40-plus",
     "melatonine-wanneer-wel-niet",
   ],
-  metaTitle: "Slaapritme Herstellen in 7 Dagen",
+  metaTitle: "Slaapritme herstellen in 7 dagen: dag-voor-dag",
   metaDescription:
     "Een verschoven slaapritme herken je vaak na je 30e. Hier is een 7-dagen protocol dat je vanavond kunt starten — zonder medicatie.",
   keywords: [

@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const magnesiumEnSlaapData: BlogArtikel = {
   slug: "magnesium-en-slaap",
   categorie: "slaap",
-  titel: "Magnesium voor Slaap: Werkt Het Écht?",
+  titel: "Magnesium voor slaap: werkt het écht?",
   coverImage: "/images/blog/magnesium-en-slaap.jpg",
   coverImageAlt: "Sterrenhemel boven bergen in de nacht",
   heroIntro:
@@ -71,7 +71,7 @@ export const magnesiumEnSlaapData: BlogArtikel = {
     "magnesium-wanneer-innemen",
     "hoeveel-magnesium-per-dag",
   ],
-  metaTitle: "Magnesium voor Slaap: Werkt Het Écht?",
+  metaTitle: "Magnesium voor slaap: werkt het écht?",
   metaDescription:
     "Magnesium wordt overal aangeraden voor slaap. Maar werkt het? Welke vorm, welke dosering, en wanneer merk je effect?",
   keywords: [

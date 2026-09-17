@@ -17,7 +17,7 @@ export const omega3EnHartOnderzoekData: BlogArtikel = {
   secties: [
     {
       type: "tekst",
-      titel: "Wat de EU-claim wel en niet zegt",
+      titel: "Wat er wél op de verpakking mag — en wat niet",
       bewijsNiveau: "sterk",
       tekst:
         "In het Europese claimregister staat dat EPA en DHA bijdragen aan de normale werking van het hart, bij een inname van 250 mg per dag. Dat is een nutriëntclaim over een normale functie — het niveau van “je hart heeft dit nodig om te werken zoals het hoort”.\n\nWat er níet staat, is dat omega-3 hartinfarcten voorkomt of sterfte verlaagt. Die claim is nooit toegelaten, en dat is geen omissie: EFSA beoordeelt precies dat onderscheid. Marketing die de toegelaten zin gebruikt om de niet-toegelaten belofte te suggereren, is de meest voorkomende overtreding in deze categorie.\n\nHet verschil is niet formalistisch. “Draagt bij aan de normale werking” gaat over een tekort voorkomen. “Verlaagt je risico” gaat over een interventie bij mensen die al genoeg binnenkrijgen. De trials hieronder testten dat tweede — zie ook [EFSA-claims](/kennisbank/efsa-claims).",

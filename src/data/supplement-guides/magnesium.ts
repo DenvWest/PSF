@@ -159,7 +159,7 @@ export const magnesiumData: SupplementData = {
     },
     {
       href: "/blog/magnesium-en-slaap",
-      titel: "Magnesium voor Slaap: Werkt Het Écht?",
+      titel: "Magnesium voor slaap: werkt het écht?",
     },
     {
       href: "/blog/magnesium-en-slaapkwaliteit",

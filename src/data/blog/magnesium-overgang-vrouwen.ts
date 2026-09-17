@@ -5,7 +5,7 @@ export const magnesiumOvergangVrouwenData: BlogArtikel = {
   slug: "magnesium-overgang-vrouwen",
   categorie: "supplementen",
   audience: "vrouwen",
-  titel: "Magnesium in de overgang: waarvoor het pleit en waarvoor niet",
+  titel: "Magnesium per overgangsklacht: slapen, krampen, stemming",
   coverImage: "/images/blog/magnesium-overgang-vrouwen.jpg",
   coverImageAlt: "Magnesiumcapsules en een glas water op een rustig blad",
   heroIntro:
@@ -106,7 +106,7 @@ export const magnesiumOvergangVrouwenData: BlogArtikel = {
     "magnesium-uit-voeding",
     "magnesium-en-slaap",
   ],
-  metaTitle: "Magnesium in de overgang: waarvoor wel en waarvoor niet",
+  metaTitle: "Magnesium per overgangsklacht: wat staat sterk?",
   metaDescription:
     "Magnesium en de overgang: sterk voor botbehoud, bescheiden voor slaap en spanning, niet effectief tegen opvliegers in placebogecontroleerd onderzoek.",
   keywords: [

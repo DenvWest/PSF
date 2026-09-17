@@ -4,7 +4,7 @@ import { toRefs } from "@/lib/referentie-bewijs"
 export const energieVerhogenData: BlogArtikel = {
   slug: "energie-verhogen-natuurlijk",
   categorie: "energie",
-  titel: "Energie verhogen: de fysiologie en wat je kunt doen",
+  titel: "Energie verhogen: waar het misgaat en wat je eraan doet",
   coverImage: "/images/blog/energie-verhogen-natuurlijk.jpg",
   coverImageAlt: "Persoon die een pad oploopt in de buitenlucht",
   heroIntro:
