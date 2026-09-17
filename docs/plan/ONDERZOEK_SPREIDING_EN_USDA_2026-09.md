@@ -459,10 +459,60 @@ sabotage): eenheid per stof, orde van grootte bij omega-3, ALA-bronnen blijven o
 `amount: null`, `observed` alleen bij meer dan één monster, en een
 `observed`-band citeert altijd zijn USDA-record.
 
-**Wat nog open staat:** 194 identiteiten wachten op een curated query (met kern),
-en de 83 audits van de WebSearch-rijen uit §2.7 zijn nog niet gedaan — die zijn
-nu urgenter dan gedacht: als een script mét expliciete querylijst er 13 naast
-zat, verdient een WebSearch-ronde zonder die vangrail dezelfde argwaan.
+### 2.10 · De audit van de WebSearch-rijen — vier fouten, en wat ze gemeen hebben
+
+De 40 rijen uit §2.7 die deze sessie niet zelf had gepatcht, zijn alsnog naast
+hun echte FDC-record gelegd: elk record opgehaald, waarde vergeleken, datatype
+gecontroleerd.
+
+**Uitkomst: 36 goed, 4 fout.** En die vier hebben iets gemeen dat de moeite van
+het onthouden waard is — *in alle vier de gevallen was het getal plausibel en de
+rij zag er compleet uit.* Geen enkele bestaande test ving ze; alleen het record
+ernaast leggen bracht ze aan het licht.
+
+| rij | wat er stond | wat er klopte |
+|---|---|---|
+| `tuinbonen-gekookt` | fdcId 173735 = **zwarte bonen** | 173753 = tuinbonen; 7,6 g en 43 mg pasten daar exact bij |
+| `feta` (eiwit) | 19,7 g onder SR 173420 (= 14,2 g) | 19,7 g is Foundation 2259796 |
+| `feta` (zink) | 3,0 mg | 2,35 mg — de 3,0 kwam nergens vandaan |
+| `melk-vol` | datatype "SR Legacy" | 746782 is Foundation |
+
+Bij tuinbonen was zelfs de `sourceNameNl` al goed ("Broadbeans (fava beans)") —
+alleen het id wees naar een ander product, twee cijfers omgewisseld. De data was
+dus juist en de citatie fout: precies de fout die je niet vindt door naar de
+getallen te kijken.
+
+Daarnaast vier rijen met 2–4 % afwijking (een afgerond getal waar het record
+exacter is), gecorrigeerd naar de recordwaarde.
+
+**Wat de audit er gratis bij opleverde.** Zeventien van de opgehaalde records
+bleken `observed` te dragen die nog niet was overgenomen. Zestien daarvan zijn
+toegevoegd (de zeventiende had hem al), waaronder een paar waar de klassenband
+er ver naast zat:
+
+- magnesium in macadamia: 114–246 mg over 3 monsters → **×2,16**
+- zink in feta: 1,51–3,05 mg over 8 monsters → **×2,02**
+- magnesium in edamame: 46–81 mg → **×1,76**
+
+**Eindstand na de audit:** 107 geverifieerde rijen, **39 met waargenomen
+spreiding** (was 22), en alle 40 auditrijen wijzen nu naar een record dat hun
+waarde daadwerkelijk draagt.
+
+**Eén bewust gedeeld record.** Jonge en belegen kaas leunen allebei op
+"Cheese, gouda" (SR 171241) — USDA kent geen rijpingsgraad. Ze droegen daardoor
+identieke getallen zonder dat ergens stond dat dat een aanname is. Rijping
+onttrekt vocht en verhoogt het eiwit per 100 g, dus het getal is een ondergrens
+voor belegen en een bovengrens voor jong. Dat staat nu als `qualityNote` op alle
+vier de rijen, en een test dwingt af dat een gedeeld record die verantwoording
+draagt.
+
+**Vier nieuwe invarianten, opnieuw geverifieerd door sabotage:** geen twee
+voedingsmiddelen op hetzelfde FDC-record (tenzij verantwoord), een gedeeld record
+draagt een qualityNote op elke rij, een fdcId is een cijferreeks, en het datatype
+is er één dat FDC kent.
+
+**Wat nog open staat:** 194 identiteiten wachten op een curated query (met kern).
+De audit van de WebSearch-rijen is hiermee afgerond.
 
 ### 2.5 · Waarom etappe 2 eerder stopte
 

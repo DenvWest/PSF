@@ -149,3 +149,86 @@ describe("de USDA-import van 17 september 2026 — de vallen die hij opleverde",
     expect(fout).toEqual([]);
   });
 });
+
+describe("de USDA-audit van 17 september 2026 — één record, één voedingsmiddel", () => {
+  /**
+   * De audit legde alle 40 WebSearch-rijen naast hun echte FDC-record en vond
+   * vier fouten die geen enkele test ving:
+   *
+   *   - `tuinbonen-gekookt` wees naar 173735 (zwarte bonen) terwijl de waarden
+   *     7,6 g en 43 mg exact bij 173753 (tuinbonen) horen — twee cijfers
+   *     omgewisseld, data goed, citatie fout.
+   *   - `feta` droeg 19,7 g eiwit, de waarde van Foundation 2259796, onder het
+   *     id van SR 173420 (14,2 g). De waarde van het ene record, het id van het
+   *     andere.
+   *   - `melk-vol` stond als "SR Legacy" gelabeld terwijl 746782 Foundation is.
+   *   - vier rijen weken 2–4 % af omdat een afgerond getal was overgenomen.
+   *
+   * Wat die vier gemeen hebben: het getal was plausibel en de rij zag er af
+   * uit. Alleen het record ernaast leggen bracht het aan het licht. Deze tests
+   * bewaken wat daarvan zonder netwerktoegang te controleren is.
+   */
+  it("laat geen twee verschillende voedingsmiddelen hetzelfde FDC-record delen", () => {
+    // Een gedeeld record betekent óf een foute toekenning (de val uit de eerste
+    // API-run: zes groenten kregen hetzelfde boerenkoolrecord), óf een bewuste
+    // aanname die dan in een qualityNote hoort te staan.
+    const perRecord = new Map<string, Set<string>>();
+    for (const { source } of ALLE_RIJEN) {
+      const ref = source.nutrientValue?.source;
+      if (ref?.origin !== "usda" || !ref.ref) continue;
+      if (!perRecord.has(ref.ref)) perRecord.set(ref.ref, new Set());
+      perRecord.get(ref.ref)!.add(source.key);
+    }
+    const gedeeld = [...perRecord.entries()]
+      .filter(([, keys]) => keys.size > 1)
+      .map(([ref, keys]) => ({ ref, keys: [...keys] }));
+
+    // Jonge en belegen kaas delen bewust "Cheese, gouda": USDA kent geen
+    // rijpingsgraad. Die aanname staat in beide rijen als qualityNote.
+    const TOEGESTAAN = [["belegen-kaas", "jonge-kaas"]];
+    const onverklaard = gedeeld.filter(
+      ({ keys }) =>
+        !TOEGESTAAN.some(
+          (toe) =>
+            toe.length === keys.length && toe.every((k) => keys.includes(k)),
+        ),
+    );
+    expect(onverklaard).toEqual([]);
+  });
+
+  it("verantwoordt een bewust gedeeld record in een qualityNote op elke rij", () => {
+    // Zonder die notitie is niet te zien dat twee identieke getallen een
+    // aanname zijn en geen twee losse metingen.
+    const fout = ALLE_RIJEN.filter(
+      ({ source }) =>
+        ["belegen-kaas", "jonge-kaas"].includes(source.key) &&
+        source.nutrientValue &&
+        !source.qualityNote,
+    ).map(({ id, source }) => `${id}/${source.key}`);
+    expect(fout).toEqual([]);
+  });
+
+  it("citeert een fdcId als cijferreeks, niet als naam of losse tekst", () => {
+    // Een `ref` die geen fdcId is, is niet tegen FDC te leggen — en dan kan de
+    // audit van deze ronde niet herhaald worden.
+    const fout = ALLE_RIJEN.filter(({ source }) => {
+      const ref = source.nutrientValue?.source;
+      return ref?.origin === "usda" && (!ref.ref || !/^\d{3,8}$/.test(ref.ref));
+    }).map(({ source }) => `${source.key}: ref "${source.nutrientValue?.source.ref}"`);
+    expect(fout).toEqual([]);
+  });
+
+  it("voert bij een USDA-bron een datatype dat FDC ook kent", () => {
+    // "SR Legacy" waar het record Foundation is (melk-vol) maakt de citatie
+    // onnauwkeurig: het datatype bepaalt of er observed-data hoort te zijn.
+    const fout = ALLE_RIJEN.filter(({ source }) => {
+      const ref = source.nutrientValue?.source;
+      return (
+        ref?.origin === "usda" &&
+        ref.edition !== "Foundation" &&
+        ref.edition !== "SR Legacy"
+      );
+    }).map(({ source }) => `${source.key}: edition "${source.nutrientValue?.source.edition}"`);
+    expect(fout).toEqual([]);
+  });
+});
