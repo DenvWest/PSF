@@ -31,6 +31,7 @@ export const magnesiumData: ComparisonPageData = {
   moreAboutTitle: "Meer over magnesium",
   moreAboutLinks: [
     { href: "/supplementen/magnesium", label: "Magnesium vormen vergelijken — waar let je op per vorm en dosering? →" },
+    { href: "/kennisbank/magnesiumvormen", label: "Oxide, citraat of bisglycinaat — opname en verdraging uitgelegd →" },
     { href: "/blog/magnesium-en-slaapkwaliteit", label: "Magnesium en slaapkwaliteit: wat zegt het onderzoek? →" },
   ],
   readAlsoCards: [

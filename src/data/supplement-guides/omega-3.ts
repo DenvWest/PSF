@@ -156,6 +156,14 @@ export const omega3Data: SupplementData = {
       titel: "Hoeveel omega-3 per dag? Rekenen met EPA+DHA, niet met visolie",
     },
     {
+      href: "/blog/omega-3-index-meten",
+      titel: "Omega-3-index meten: wanneer een test iets toevoegt en wanneer niet",
+    },
+    {
+      href: "/blog/omega-3-uit-voeding-of-supplement",
+      titel: "Omega-3 uit voeding of uit een potje? Wat één portie vis werkelijk levert",
+    },
+    {
       href: "/blog/algenolie-of-visolie",
       titel: "Algenolie of visolie: dezelfde stof, een andere schakel",
     },
@@ -166,6 +174,18 @@ export const omega3Data: SupplementData = {
     {
       href: "/blog/omega-3-en-hart-onderzoek",
       titel: "Omega-3 en het hart: wat de grote trials vonden",
+    },
+    {
+      href: "/blog/omega-3-en-medicijnen",
+      titel: "Omega-3 en medicijnen: de bloedingsangst, en waar hij vandaan komt",
+    },
+    {
+      href: "/blog/omega-3-concentratie-energie",
+      titel: "Omega-3, concentratie en energie: wat zegt de wetenschap?",
+    },
+    {
+      href: "/blog/omega-3-en-herstel",
+      titel: "Omega-3 en herstel: EPA/DHA in het herstelplaatje",
     },
   ],
 

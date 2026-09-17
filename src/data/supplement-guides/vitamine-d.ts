@@ -15,7 +15,7 @@ export const vitamineDData: SupplementData = {
   watIsHet: {
     titel: "Wat doet vitamine D in je lichaam?",
     tekst:
-      "Vitamine D wordt aangemaakt in je huid bij blootstelling aan UVB-straling van de zon. Het fungeert als hormoon dat honderden genen reguleert — van calcium-opname tot immuunrespons. Op supplementetiketten zie je doses vaak als percentage van de [ADH (aanbevolen dagelijkse hoeveelheid)](/kennisbank/adh) — een referentieminimum, geen persoonlijk optimum. Na je 30e daalt de aanmaakcapaciteit van je huid, terwijl je tegelijkertijd minder buiten bent en meer binnen werkt. Het resultaat: veel mannen hebben een tekort zonder het te weten. Vitamine K2 verschijnt vaak naast D3 in combo-producten: vitamine K draagt bij tot de instandhouding van normale botten en tot de normale bloedstolling. De hartclaim voor K2 is door EFSA afgewezen — zie [vitamine K2](/kennisbank/vitamine-k2).",
+      "Vitamine D wordt aangemaakt in je huid bij blootstelling aan UVB-straling van de zon. Het fungeert als hormoon dat honderden genen reguleert — van calcium-opname tot immuunrespons. Op supplementetiketten zie je doses vaak als percentage van de [ADH (aanbevolen dagelijkse hoeveelheid)](/kennisbank/adh) — een referentieminimum, geen persoonlijk optimum. Na je 30e daalt de aanmaakcapaciteit van je huid, terwijl je tegelijkertijd minder buiten bent en meer binnen werkt. Het resultaat: veel mannen hebben een tekort zonder het te weten. Vitamine K2 verschijnt vaak naast D3 in combo-producten: vitamine K draagt bij tot de instandhouding van normale botten en tot de normale bloedstolling. De hartclaim voor K2 is door EFSA afgewezen — zie [vitamine K2](/kennisbank/vitamine-k2). De volledige achtergrond over zonnestand, seizoen en EFSA-claims staat in de [kennisbank](/kennisbank/vitamine-d).",
   },
 
   waaromRelevant: {
@@ -155,6 +155,38 @@ export const vitamineDData: SupplementData = {
     {
       href: "/blog/vitamine-d-tekort-herkennen",
       titel: "Vitamine D-tekort herkennen: signalen die mannen negeren",
+    },
+    {
+      href: "/blog/vitamine-d-meten-wanneer-zinvol",
+      titel: "Vitamine D laten meten: wanneer zinvol en wat zegt je uitslag?",
+    },
+    {
+      href: "/blog/vitamine-d-en-k2-samen",
+      titel: "Vitamine D en K2 samen: nodig, of slimme marketing?",
+    },
+    {
+      href: "/blog/vitamine-d-hoge-doses-social-media",
+      titel: "Hoge doses vitamine D: wat social media niet vertelt",
+    },
+    {
+      href: "/blog/vitamine-d-zon-nederland",
+      titel: "Hoeveel zon heb je écht nodig in Nederland voor vitamine D?",
+    },
+    {
+      href: "/blog/vitamine-d-seizoenen-jaarritme",
+      titel: "Vitamine D door het jaar heen: waarom je dieptepunt niet in december ligt",
+    },
+    {
+      href: "/blog/zonnebrand-en-vitamine-d",
+      titel: "Blokkeert zonnebrand je vitamine D?",
+    },
+    {
+      href: "/blog/vitamine-d-aandoeningen-onderzoek",
+      titel: "Vitamine D en schildklier, diabetes en duizeligheid: wat het onderzoek zegt",
+    },
+    {
+      href: "/blog/vitamine-d-en-energie",
+      titel: "Vitamine D en energie: tekort, verwachtingen en vergelijken",
     },
     {
       href: "/blog/testosteron-en-energie-na-40",

@@ -155,8 +155,8 @@ export const eiwitpoederGidsData: SupplementData = {
 
   blogLinks: [
     {
-      href: "/beste/eiwitpoeder",
-      titel: "Beste eiwitpoeder: whey en vegan vergeleken",
+      href: "/blog/eiwit-na-40",
+      titel: "Eiwit na 30: hoeveel je écht nodig hebt (en waarom de meeste mensen tekortkomen)",
     },
     {
       href: "/blog/whey-wanneer-wel-en-niet",
@@ -165,6 +165,34 @@ export const eiwitpoederGidsData: SupplementData = {
     {
       href: "/blog/whey-concentraat-isolaat-hydrolysaat",
       titel: "Whey concentraat, isolaat of hydrolysaat",
+    },
+    {
+      href: "/blog/whey-hoeveel-en-wanneer",
+      titel: "Hoeveel whey per dag — en maakt het uit wanneer je hem neemt?",
+    },
+    {
+      href: "/blog/eiwitinname-timing-mannen-40",
+      titel: "Hoe je eiwit over de dag verdeelt — en waarom dat telt",
+    },
+    {
+      href: "/blog/whey-etiket-lezen",
+      titel: "Het etiket van eiwitpoeder lezen: vier getallen en één valkuil",
+    },
+    {
+      href: "/blog/whey-of-plantaardig-eiwit",
+      titel: "Whey of plantaardig eiwit: hoe groot is het verschil echt?",
+    },
+    {
+      href: "/blog/is-whey-schadelijk",
+      titel: "Is whey schadelijk? Wat het onderzoek zegt over nieren, lever, botten en huid",
+    },
+    {
+      href: "/blog/whey-en-darmklachten",
+      titel: "Opgeblazen na je shake? Waarom whey vaak niet de schuldige is",
+    },
+    {
+      href: "/blog/krachtverlies-eiwitbehoefte-na-40",
+      titel: "Krachtverlies na 30: waarom je eiwitbehoefte stijgt, niet daalt",
     },
     {
       href: "/beste/creatine",

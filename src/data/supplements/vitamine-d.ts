@@ -35,6 +35,7 @@ export const vitamineDData: ComparisonPageData = {
   moreAboutDescription: "Vitamine D draagt o.a. bij tot normale botten, spieren en een normaal immuunsysteem — thema\u2019s die na je 30e vaker bespreekbaar worden met je zorgverlener.",
   moreAboutLinks: [
     { href: "/supplementen/vitamine-d", label: "Meer weten over vitamine D? Lees de uitgebreide gids →" },
+    { href: "/kennisbank/vitamine-d", label: "Zonnestand, seizoen en EFSA-claims uitgelegd in de kennisbank →" },
     { href: "/kennisbank/vitamine-k2", label: "Wat K2 wél mag beloven — en de hartclaim die EFSA afwees →" },
     { href: "/gids/energie", label: "Energieverlies na je 30e — oorzaken en oplossingen →" },
   ],
@@ -52,6 +53,11 @@ export const vitamineDData: ComparisonPageData = {
     {
       href: "/blog/vitamine-d-tekort-herkennen",
       text: "Signalen en vervolgstappen zonder zelf-diagnose.",
+      cta: "Lees het artikel →",
+    },
+    {
+      href: "/blog/vitamine-d-en-k2-samen",
+      text: "D3+K2: welke claims wél mogen en welke EFSA afwees.",
       cta: "Lees het artikel →",
     },
   ],
