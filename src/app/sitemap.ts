@@ -13,6 +13,7 @@ import {
 import { getHubProductSlugs } from "@/lib/supplement-hub/product-catalog";
 import { blogCover } from "@/lib/blog-cover";
 import { kennisbankCover } from "@/lib/kennisbank-cover";
+import { NUTRIENT_PAGE_SLUGS } from "@/data/nutrition/nutrient-pages";
 import { STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM } from "@/lib/redactie-standaarden";
 import {
   articleBodyImageSrcs,
@@ -184,6 +185,7 @@ type SitemapSectionId =
   | "pillars"
   | "profielen"
   | "gezondheidsgidsen"
+  | "voedingsstoffen"
   | "producten"
   | "inzichten"
   | "kennisbank"
@@ -221,6 +223,17 @@ const SITEMAP_SECTIONS: Record<SitemapSectionId, () => Entry[]> = {
     }),
 
   pillars: () => paths(PILLAR_PADEN, 0.85, "monthly"),
+
+  // Het scharnier tussen artikel, voeding, check en supplement.
+  voedingsstoffen: () =>
+    paths(
+      [
+        "/voedingsstoffen",
+        ...NUTRIENT_PAGE_SLUGS.map((slug) => `/voedingsstoffen/${slug}`),
+      ],
+      0.8,
+      "monthly",
+    ),
 
   profielen: () =>
     paths(

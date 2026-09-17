@@ -926,7 +926,7 @@ De contentgraaf is compile-time data. Het zwaarste dat erbij komt is een `Map`-o
 |---|---|---|
 | Artikelen met een contextuele vervolgstap | 0 (wel 4 gestapelde generieke CTA's) | 119 / 119 |
 | Artikelen die naar de voedingscheck linken | 0 / 78 | ~45 / 78 (elk stuk met een nutriënt of voedingsthema) |
-| Publieke pagina's op de voedingsdatabase | 0 | 6 (1 hub + 5 stoffen) |
+| Publieke pagina's op de voedingsdatabase | 0 → **6** (fase 5 gereed) | 6 (1 hub + 5 stoffen) |
 | Supplementgidsen in de sitemap | 0 / 8 | 8 / 8 |
 | Weespagina's | 15 (gemeten met de volledige graaf; 9 als je alleen artikel→artikel telt) | 0, afgedwongen door een test |
 | Contentitems met nutriëntrelatie | 0 → **61** (fase 1 gereed) | 61+ |
@@ -1257,6 +1257,42 @@ je ook uit eten". Dat is fase 5-werk en meteen de brug naar de nutriëntpagina's
 ---
 
 ### FASE 5 — Nutriëntpagina's (P1 · ~4 dagen · de grootste kans)
+
+**Status: uitgevoerd op 17 september 2026.** Zes nieuwe URL's, statisch gegenereerd, in de sitemap
+(202 → 208). Klaar-check groen (`tsc` 0 · 305 testbestanden / 3040 tests · `eslint --max-warnings 0`).
+
+| Stof | Bronnen | Gebrond | Artikelen | Vergelijking |
+|---|---|---|---|---|
+| Eiwit | 12 | 11 | 14 | `/beste/eiwitpoeder` |
+| **Omega-3** | 11 | **0** | 13 | `/beste/omega-3-supplement` |
+| Magnesium | 12 | 9 | 16 | `/beste/magnesium` |
+| Vitamine D | 9 | 5 | 17 | `/beste/vitamine-d` |
+| Zink | 12 | 9 | **4** | `/beste/zink` |
+
+**Twee gaten die de bouw blootlegde.**
+
+*Omega-3 heeft geen enkel gebrond gehalte.* Alle veertien rijen in `food-sources.ts` staan op
+`verified: false` — indicatieve literatuurwaarden. Dat is uitgerekend het cluster met de hardste
+gepubliceerde norm (Gezondheidsraad 2015) en een sterke commerciële pagina, dus het is de plek waar
+een USDA-waarde het meest oplevert. `scripts/usda-extract.mjs` heeft hier zijn volgende werk. De
+tabel liegt niet — elke rij draagt zijn herkomst — maar de voetregel zegt nu wel
+"geen van deze gehaltes is tegen een brondataset gelegd".
+
+*Zink heeft vier artikelen tegenover veertien tot zeventien bij de rest.* Dat bevestigt de
+audit-bevinding uit §9.1: een geldpagina met nauwelijks informationele steun.
+
+**Claims worden gelezen, niet overgeschreven.** De pagina haalt ze uit `approved-claims.ts` via
+`getUsableClaims(claimKey)`. Zou de redactionele copy ze herhalen, dan kan een pagina een claim
+blijven voeren die daar is ingetrokken — precies het soort drift dat een compliance-bron waardeloos
+maakt. Een test controleert dat de copy geen claimtekst bevat.
+
+**De voedingsstofpagina's zijn graafknopen** (156 in totaal). Daarmee zijn ze meteen weespagina's:
+vandaag linkt alleen de hub ernaartoe, en de hub is geen contentknoop. Dat staat als zodanig in
+`BEKENDE_WEZEN`; fase 6 verbindt ze in beide richtingen.
+
+Bij het toevoegen van dat knooptype liep `metadataForNode` er stil doorheen — de switch retourneerde
+`undefined` in plaats van te falen. Er staat nu een `never`-vangnet, zodat een volgend knooptype een
+typefout is.
 
 **Doel** — het ontbrekende scharnier tussen artikel, voeding, check en supplement.
 

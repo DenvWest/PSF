@@ -1,6 +1,7 @@
 import type { GraphNode } from "@/lib/content-graph/node";
 import { CONTENT_METADATA, type ContentMetadata } from "@/data/insight-metadata";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
+import { NUTRIENT_PAGES } from "@/data/nutrition/nutrient-pages";
 import type { ThemeSlug } from "@/lib/content/themes";
 
 /**
@@ -39,6 +40,11 @@ const SLUG_TO_NUTRIENT: Record<string, NutrientId> = {
   // ashwagandha, creatine en melatonine bewust niet: geen NutrientId, en de
   // voedingscheck meet ze niet.
 };
+
+/** Slug van een voedingsstofpagina → de stof die hij behandelt. */
+const NUTRIENT_PAGE_NUTRIENT: Record<string, NutrientId> = Object.fromEntries(
+  Object.values(NUTRIENT_PAGES).map((page) => [page.slug, page.nutrient]),
+);
 
 /** Pillar- en gidspad → het gemeten thema, waar dat bestaat. */
 const SLUG_TO_THEME: Record<string, ThemeSlug> = {
@@ -92,5 +98,20 @@ export function metadataForNode(node: GraphNode): ContentMetadata {
       const theme = SLUG_TO_THEME[node.slug];
       return theme ? { theme } : {};
     }
+
+    case "voedingsstof": {
+      const nutrient = NUTRIENT_PAGE_NUTRIENT[node.slug];
+      return nutrient ? { theme: "nutrition", nutrients: [nutrient] } : {};
+    }
+
+    default:
+      // Een nieuw knooptype zonder metadata-regel is een typefout, geen stille
+      // `undefined`. Zonder dit vangnet liep de switch er doorheen toen
+      // `voedingsstof` erbij kwam.
+      return assertNooit(node.type);
   }
+}
+
+function assertNooit(type: never): never {
+  throw new Error(`Geen metadata-regel voor knooptype: ${String(type)}`);
 }

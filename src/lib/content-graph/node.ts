@@ -5,6 +5,8 @@ import { ALL_SUPPLEMENT_SLUGS, getSupplementData } from "@/data/supplement-guide
 import { SUPPLEMENT_SLUGS, getSupplementComparisonData } from "@/data/supplements";
 import { PROFILE_PAGES, PROFILE_SLUGS } from "@/data/profiles";
 import { GUIDE_SLUGS, getGuideData } from "@/data/gids";
+import { NUTRIENT_PAGES } from "@/data/nutrition/nutrient-pages";
+import { NUTRIENT_IDS } from "@/data/nutrition/intake-reference";
 
 /**
  * De knopen van de contentgraaf: elke publieke pagina die inhoud draagt en
@@ -39,7 +41,8 @@ export type GraphNodeType =
   | "vergelijking"
   | "pillar"
   | "profiel"
-  | "gezondheidsgids";
+  | "gezondheidsgids"
+  | "voedingsstof";
 
 export interface GraphNode {
   /** Het pad is de identiteit. Eén pagina, één knoop. */
@@ -161,6 +164,17 @@ export function allGraphNodes(): GraphNode[] {
       slug,
       title: data.label,
       source: data,
+    });
+  }
+
+  for (const nutrient of NUTRIENT_IDS) {
+    const copy = NUTRIENT_PAGES[nutrient];
+    push({
+      path: `/voedingsstoffen/${copy.slug}`,
+      type: "voedingsstof",
+      slug: copy.slug,
+      title: copy.h1,
+      source: copy,
     });
   }
 

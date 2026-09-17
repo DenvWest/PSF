@@ -88,6 +88,7 @@ describe("contentgraaf", () => {
         "pillar",
         "profiel",
         "gezondheidsgids",
+        "voedingsstof",
       ]),
     );
   });
@@ -144,6 +145,15 @@ describe("weespagina's", () => {
    * naar nul en vervangt deze verwachting door `toEqual([])`.
    */
   const BEKENDE_WEZEN = [
+    // De vijf voedingsstofpagina's plus hun hub zijn nieuw (fase 5). Ze worden
+    // vandaag alleen vanaf de hub gelinkt, en de hub is geen contentknoop.
+    // Fase 6 verbindt ze: elk stuk dat een stof draagt hoort naar zijn
+    // stofpagina te wijzen, en andersom.
+    "/voedingsstoffen/eiwit",
+    "/voedingsstoffen/magnesium",
+    "/voedingsstoffen/omega-3",
+    "/voedingsstoffen/vitamine-d",
+    "/voedingsstoffen/zink",
     "/blog/eiwit-en-whey-in-de-overgang",
     "/blog/is-whey-schadelijk",
     "/blog/krachtverlies-eiwitbehoefte-na-40",
