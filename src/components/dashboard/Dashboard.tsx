@@ -94,8 +94,7 @@ import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import KompasContextSpine from "@/components/dashboard/kompas/KompasContextSpine";
-import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
-import NutritionDagboekPaneel from "@/components/dashboard/voortgang/NutritionDagboekPaneel";
+import DagboekScherm from "@/components/dashboard/dagboek/DagboekScherm";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
 import DomainKompasScreen from "@/components/dashboard/domain/DomainKompasScreen";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
@@ -2488,7 +2487,7 @@ const KompasHome = ({
   onGoVoortgangDomein,
   agendaDate: _agendaDate,
   onAgendaDateChange: _onAgendaDateChange,
-  onPrefUpdated,
+  onPrefUpdated: _onPrefUpdated,
   initialKompasView,
   kompasResetSignal: _kompasResetSignal,
   prefUpdatedAt: _prefUpdatedAt,
@@ -2721,27 +2720,20 @@ const KompasHome = ({
         dagboek de handeling die je dagelijks doet, en die hoort op de eerste
         tab.
 
-        Het paneel blijft óók op laag 5 staan: daar heeft het zijn context
-        (meetreeks, reflectie) en die drie horen bij elkaar. Dezelfde component,
-        twee plekken, een eigen `surface` zodat de meting ze uit elkaar houdt.
+        `KompasHomeCard` stond hier tot dezelfde dag onder: de ring met "je
+        leefstijl in vijf domeinen". Die is weggehaald en niet verplaatst —
+        vijf domeinen tonen op een tab die er één behandelt, maakt van het
+        dashboard weer het overzicht dat het niet meer is. De component blijft
+        bestaan voor het geval de domeinen terugkeren.
+
+        `NutritionDagboekPaneel` blijft wél op laag 5: daar heeft het zijn
+        context (meetreeks, reflectie) en die drie horen bij elkaar. Twee
+        vormen van hetzelfde dagboek, elk met een eigen `surface`, zodat de
+        meting ze uit elkaar houdt.
       */}
       <CockpitShell accent="#5A8F6A" ariaLabel="Je dagboek" embedded>
-        <NutritionDagboekPaneel
-          surface="dagboek_tab"
+        <DagboekScherm
           checkSliders={data?.nutritionCheckinReadout?.ladderReport?.sliders ?? null}
-        />
-      </CockpitShell>
-      <CockpitShell accent="#5A8F6A" ariaLabel="Kompas home" embedded>
-        <KompasHomeCard
-          model={currentModel}
-          data={data}
-          firstName={data?.firstName}
-          domainCheckDaysAgo={data?.domainCheckDaysAgo}
-          remeasureDaysUntil={data?.remeasure?.daysUntil ?? null}
-          onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
-          onOpenPriority={(domain) => openDomain(domain, "leefstijlkompas")}
-          onOpenAgenda={onGoAgenda}
-          onPrefUpdated={onPrefUpdated}
         />
       </CockpitShell>
     </section>
