@@ -40,7 +40,13 @@ import type { LifestyleExtra } from "@/lib/nutrition-lifestyle-extras";
 import { type NutrientDelta } from "@/lib/nutrition-delta";
 import IntakeSlider from "@/components/intake/IntakeSlider";
 import NutritionResultView from "@/components/intake/NutritionResultView";
-import { buildNutritionFactRowsFromRaw } from "@/lib/nutrition-conclusion";
+import { parseNutritionLadderReport } from "@/lib/nutrition-conclusion";
+import {
+  buildNutritionFactRows,
+  resolveNutritionGate,
+} from "@/lib/nutrition-ladder";
+import { buildNutrientRouteStatuses } from "@/lib/nutrition-route-status";
+import { isVitaminDLowSunSeason } from "@/lib/nutrition-season";
 
 type Step =
   | { kind: "coreBeforeDiet"; index: number }
@@ -559,6 +565,31 @@ export default function NutritionCapture() {
   }
 
   if (step.kind === "result") {
+    /*
+      Eén parse, drie afleidingen. De feitenrijen, de routestatussen en de
+      poort komen allemaal uit hetzelfde rapport — zouden ze elk hun eigen
+      parse doen, dan kan het resultaat drie keer iets anders zeggen over
+      dezelfde antwoorden.
+
+      Bij terugkeer via ?results= staan de sliders niet in state; dan is er
+      geen rapport en vallen de blokken die erop rusten stil weg, zoals de
+      feitenrijen dat al deden.
+    */
+    const ladderReport = hasResultsParam
+      ? null
+      : parseNutritionLadderReport({
+          sliders,
+          preference: preference ?? "none",
+          allergies,
+        });
+    const factRows = ladderReport ? buildNutritionFactRows(ladderReport) : [];
+    const routeStatuses = ladderReport
+      ? buildNutrientRouteStatuses(ladderReport, {
+          isDarkSeason: isVitaminDLowSunSeason(),
+        })
+      : [];
+    const nutritionGate = resolveNutritionGate(factRows);
+
     return (
       <NutritionResultView
         score={step.score}
@@ -571,17 +602,14 @@ export default function NutritionCapture() {
           hasResultsParam ? step.proteinMealsPerDay : proteinMealsFromSliders(sliders)
         }
         /* Dezelfde feitenrijen als de ladder op het dashboard toont — één
-           bron, twee weergaven. Bij terugkeer via ?results= staan de sliders
-           niet in state; dan valt het blok stil weg. */
-        factRows={
-          hasResultsParam
-            ? []
-            : buildNutritionFactRowsFromRaw({
-                sliders,
-                preference: preference ?? "none",
-                allergies,
-              })
-        }
+           bron, twee weergaven. */
+        factRows={factRows}
+        /* En dezelfde routestatussen: waar sta je per stof, wat haal je uit je
+           eten, en pas bij een gemeten gat de deur naar vergelijken. Die vraag
+           stond tot nu toe alleen in het dashboard, achter de inlog. */
+        routeStatuses={routeStatuses}
+        nutritionGateOpen={nutritionGate.open}
+        nutritionGateReason={nutritionGate.reason}
         fromDashboard={fromDashboard}
         originDomain={originDomain}
       />

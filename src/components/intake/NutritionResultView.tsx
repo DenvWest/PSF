@@ -26,6 +26,8 @@ import {
 } from "@/data/nutrition/nutrient-evidence-map";
 import { withNutritionReturn } from "@/lib/nutrition-return-link";
 import VerhoudingTabel from "@/components/nutrition/VerhoudingTabel";
+import VoedingVsSupplementTabel from "@/components/nutrition/VoedingVsSupplementTabel";
+import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 import KwaliteitEetwijzer from "@/components/nutrition/KwaliteitEetwijzer";
 import type { NutritionFactRow } from "@/lib/nutrition-ladder";
 
@@ -38,6 +40,19 @@ interface NutritionResultViewProps {
   delta: NutrientDelta[] | null;
   /** Feitenrijen uit dezelfde antwoorden; leeg als de sliders niet in state staan. */
   factRows?: readonly NutritionFactRow[];
+  /**
+   * Per stof: waar sta je, wat haalt je eten eruit, en — alleen bij een gemeten
+   * gat — de deur naar vergelijken. Leeg als de sliders niet in state staan.
+   */
+  routeStatuses?: readonly NutrientRouteStatus[];
+  /**
+   * Of de supplementdeur überhaupt open mag. Komt uit `resolveNutritionGate`:
+   * zonder check weten we niet of er iets aan te vullen valt, en dan blijft
+   * hij dicht.
+   */
+  nutritionGateOpen?: boolean;
+  /** Waarom de deur dicht is — een dichte deur zonder reden leest als storing. */
+  nutritionGateReason?: string | null;
   proteinMealsPerDay?: number;
   fromDashboard: boolean;
   originDomain: string | null;
@@ -61,6 +76,9 @@ export default function NutritionResultView({
   lifestyleExtras = [],
   delta,
   factRows = [],
+  routeStatuses = [],
+  nutritionGateOpen = false,
+  nutritionGateReason = null,
   proteinMealsPerDay,
   fromDashboard,
   originDomain,
@@ -263,6 +281,33 @@ export default function NutritionResultView({
 
           {factRows.length > 0 ? (
             <VerhoudingTabel rijen={factRows} surface="check" />
+          ) : null}
+
+          {/*
+            Je bord naast het potje, per stof.
+
+            Deze tabel stond tot nu toe alleen op Voortgang, achter de inlog —
+            terwijl hij precies de vraag beantwoordt die deze check oproept:
+            wat haal ik hiervan uit mijn eten, en wanneer lukt dat niet meer?
+
+            Bewust deze tabel en niet `NutrientLogboekPanel`: dat paneel draagt
+            de kéuze ("uit mijn eten" / "aanvullen") en schrijft die naar
+            `account_favorites` via `useVoortgangFavorites`. Wie net de check
+            deed heeft nog geen account, en een keuzeknop die niets bewaart is
+            erger dan geen keuzeknop. Hier hoort de uitlezing, niet de keuze —
+            die staat een stap verderop in het dashboard.
+
+            De volgorde binnen een rij is niet omkeerbaar: eerst het bord, dan
+            pas de deur. Rechts blijft dicht zolang de poort dicht is, met de
+            reden erbij.
+          */}
+          {routeStatuses.length > 0 ? (
+            <VoedingVsSupplementTabel
+              statuses={routeStatuses}
+              surface="check"
+              gateOpen={nutritionGateOpen}
+              gateReden={nutritionGateReason}
+            />
           ) : null}
 
           <details className={`group ${PANEL}`}>

@@ -1,5 +1,7 @@
 import type { ThemeSlug } from "@/lib/content/themes";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { DeficiencySignals, ProfileLabel } from "@/lib/intake-engine";
+import type { ContentCheckId } from "@/data/content-graph/checks";
 import type { PillarId } from "@/types/dashboard";
 
 export type InsightType = "artikel" | "deepdive" | "begrip";
@@ -29,4 +31,29 @@ export interface InsightItem {
   profile?: ProfileLabel["name"] | "Overtrainer";
   /** Personalisatie/weaving-naad — catalog-id (SUPPLEMENT_CATALOG) voor /beste/ + offer-catalog. */
   relatedSupplementId?: string;
+  /**
+   * De voedingsstof(fen) waar dit stuk over gaat — de brug naar de
+   * voedingsdatabase, de voedingscheck en `nutrition-route-status`.
+   *
+   * **Redactioneel, niet commercieel.** Dit veld staat los van
+   * `relatedSupplementId`: dat zegt welk product we vergelijken, dit zegt welke
+   * stof het stuk behandelt. Een stuk over magnesium uit voeding draagt de stof
+   * ook als we morgen geen magnesium meer vergelijken.
+   *
+   * Maximaal twee. Draagt een stuk er meer, dan heeft het geen onderwerp maar
+   * een opsomming, en de afgeleide vervolgstap wordt betekenisloos.
+   *
+   * Niet elke supplementstof is een nutriënt: creatine, melatonine en
+   * ashwagandha staan bewust niet in `NutrientId`. Voor die stukken valt
+   * `resolveCheck()` terug op het thema — en dat klopt: de vraag na een
+   * creatine-artikel is niet "haal ik dit uit mijn eten".
+   */
+  nutrients?: readonly NutrientId[];
+  /**
+   * Overschrijft de check die `resolveCheck()` zou kiezen.
+   *
+   * Alleen invullen als de afleiding aantoonbaar de verkeerde kant op wijst.
+   * Honderd handmatige toewijzingen lopen uit de pas; een functie niet.
+   */
+  checkOverride?: ContentCheckId;
 }

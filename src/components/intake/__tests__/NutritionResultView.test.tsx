@@ -3,7 +3,12 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import NutritionResultView from "@/components/intake/NutritionResultView";
 import { buildNutritionHeadline } from "@/lib/nutrition-conclusion";
-import { buildNutritionFactRows, type NutritionLadderReport } from "@/lib/nutrition-ladder";
+import {
+  buildNutritionFactRows,
+  resolveNutritionGate,
+  type NutritionLadderReport,
+} from "@/lib/nutrition-ladder";
+import { buildNutrientRouteStatuses } from "@/lib/nutrition-route-status";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
 
@@ -106,5 +111,61 @@ describe("NutritionResultView — leefstijlrapport", () => {
     expect(screen.getByRole("link", { name: /Zet op Mijn Dag/ })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Terug naar dashboard" })).toBeTruthy();
     expect(screen.queryByRole("link", { name: "Sluiten" })).toBeNull();
+  });
+});
+
+describe("NutritionResultView — de voedingsroute per stof", () => {
+  const STATUSES = buildNutrientRouteStatuses(LADDER);
+  const GATE_OPEN = resolveNutritionGate(buildNutritionFactRows(LADDER)).open;
+
+  it("toont de tabel die tot nu toe alleen op Voortgang stond", () => {
+    const { container } = renderResult({
+      routeStatuses: STATUSES,
+      nutritionGateOpen: GATE_OPEN,
+    });
+    // "Aanvullen" is de eigen kop van de tabel — je bord naast het potje.
+    // Meerdere treffers: de tabel rendert een brede en een gestapelde variant,
+    // zodat 375px niet twee stroken van 170px wordt.
+    expect(within(container).getAllByText("Aanvullen").length).toBeGreaterThan(0);
+  });
+
+  it("draagt de uitlezing, niet de keuze", () => {
+    // NutrientLogboekPanel schrijft keuzes naar account_favorites via
+    // useVoortgangFavorites. Wie net de check deed heeft nog geen account, en
+    // een keuzeknop die niets bewaart is erger dan geen keuzeknop.
+    const { container } = renderResult({
+      routeStatuses: STATUSES,
+      nutritionGateOpen: GATE_OPEN,
+    });
+    expect(container.textContent ?? "").not.toContain("Uit mijn eten");
+  });
+
+  it("laat het blok weg als de sliders niet in state staan", () => {
+    // Terugkeer via ?results=: geen rapport, dus geen route. Stil weg, geen
+    // half blok met lege regels.
+    const { container } = renderResult({ routeStatuses: [] });
+    expect(container.textContent).not.toContain("Nog niet opgehaald");
+  });
+
+  it("houdt de supplementdeur dicht als de poort dicht is", () => {
+    // resolveNutritionGate zegt: zonder check weten we niet of er iets aan te
+    // vullen valt. Dan hoort er geen enkele /beste/-link te staan.
+    const { container } = renderResult({
+      routeStatuses: STATUSES,
+      nutritionGateOpen: false,
+    });
+    const besteLinks = [...container.querySelectorAll("a[href^='/beste/']")];
+    expect(besteLinks).toHaveLength(0);
+  });
+
+  it("noemt geen opgeteld mg-getal en geen percentage van een dagbehoefte", () => {
+    // Dezelfde harde grens als in food-sources.ts en nutrient-rail.ts: de band
+    // komt uit frequentievragen, niet uit grammen.
+    const { container } = renderResult({
+      routeStatuses: STATUSES,
+      nutritionGateOpen: GATE_OPEN,
+    });
+    expect(container.textContent ?? "").not.toMatch(/\d+\s*%\s*van je dagbehoefte/i);
+    expect(container.textContent ?? "").not.toMatch(/je haalt .{0,20}\d+\s*mg per dag/i);
   });
 });

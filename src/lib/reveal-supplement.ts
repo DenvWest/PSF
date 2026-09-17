@@ -1,3 +1,4 @@
+import { nutrientForClaimKey } from "@/lib/claim-key-nutrient";
 import { approvedClaims } from "@/data/approved-claims";
 import type { SupplementDisclosureData } from "@/components/supplements/SupplementDisclosure";
 import { explainRecommendation } from "@/lib/recommendation-explainer";
@@ -36,6 +37,9 @@ export function buildSupplementDisclosure(
 
   const entry = getCatalogEntry(recommendation.supplementId);
   const gatedPath = entry ? resolveGatedComparisonPath(entry.claimKey) : null;
+  // De stof achter het potje — de brug naar de voedingsroute. Null voor
+  // creatine, melatonine en ashwagandha: die meet de voedingscheck niet.
+  const nutrient = nutrientForClaimKey(entry?.claimKey);
   if (!gatedPath) {
     return null;
   }
@@ -58,6 +62,7 @@ export function buildSupplementDisclosure(
     qualityRule: QUALITY_RULE,
     comparisonPath: `${gatedPath}?from=${from}`,
     hubSlug: recommendation.hubSlug ?? entry?.hubSlug ?? null,
+    nutrient,
     onHold: isSupplementOnHold(supplement.name),
     explanation,
   };

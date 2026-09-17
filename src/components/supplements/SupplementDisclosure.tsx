@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { Pill } from "@/components/app/icons";
 import type { RecommendationExplanation } from "@/types/recommendation-explanation";
 
@@ -14,6 +15,12 @@ export type SupplementDisclosureData = {
   comparisonPath: string;
   /** Categorie in de supplementengids (/supplementen); null zonder catalogusrij. */
   hubSlug?: string | null;
+  /**
+   * De voedingsstof achter dit supplement, of `null` als de voedingscheck hem
+   * niet meet (creatine, melatonine, ashwagandha). Draagt het blok "dit haal je
+   * ook uit je eten" — de stap die vóór vergelijken hoort.
+   */
+  nutrient?: NutrientId | null;
   onHold: boolean;
   explanation: RecommendationExplanation;
 };

@@ -2,7 +2,13 @@ import type { InsightItem } from "@/types/insight";
 
 export type ContentMetadata = Pick<
   InsightItem,
-  "theme" | "planPhase" | "gapSignal" | "profile" | "relatedSupplementId"
+  | "theme"
+  | "planPhase"
+  | "gapSignal"
+  | "profile"
+  | "relatedSupplementId"
+  | "nutrients"
+  | "checkOverride"
 >;
 
 /** Overlay gekeyed op InsightItem.slug; elke slug in allInsights heeft minstens theme. */
@@ -14,6 +20,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "ashwagandha-werking-mannen": {
     theme: "stress",
@@ -24,11 +31,13 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "sleep",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "beste-omega-3-supplement": {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "cortisol-en-slaap": { theme: "sleep", gapSignal: "cortisol_risk" },
   "cortisol-en-testosteron": { theme: "stress", gapSignal: "cortisol_risk" },
@@ -80,16 +89,19 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "eiwit-na-40": {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "eiwitinname-timing-mannen-40": {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "energie-verhogen-natuurlijk": {
     theme: "movement",
@@ -99,100 +111,119 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "is-whey-schadelijk": {
     theme: "nutrition",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "krachttraining-na-40": { theme: "movement", planPhase: 1 },
   "hoeveel-magnesium-per-dag": {
     theme: "nutrition",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "magnesium-en-spierkrampen": {
     theme: "movement",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "magnesium-en-stress": {
     theme: "stress",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
     profile: "Stressdrager",
+    nutrients: ["magnesium"],
   },
   "magnesium-overgang-vrouwen": {
     theme: "nutrition",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "magnesium-tekort-herkennen": {
     theme: "nutrition",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "magnesium-uit-voeding": {
     theme: "nutrition",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "magnesium-voor-wie-wel-niet": {
     theme: "nutrition",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "magnesium-wanneer-innemen": {
     theme: "sleep",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "magnesium-en-slaap": {
     theme: "sleep",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "magnesium-en-slaapkwaliteit": {
     theme: "sleep",
     planPhase: 2,
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "magnesium-in-combinatie-met-medicijnen": {
     theme: "nutrition",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "melatonine-na-40": { theme: "sleep", gapSignal: "melatonine_signal" },
   "melatonine-wanneer-wel-niet": { theme: "sleep" },
   "middagdip-bloedsuiker-na-40": { theme: "nutrition" },
-  "multivitamine-zinvol-na-40": { theme: "nutrition" },
+  "multivitamine-zinvol-na-40": { theme: "nutrition", nutrients: ["vitamin_d", "zinc"] },
   "omega-3-en-hart-onderzoek": {
     theme: "nutrition",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "omega-3-en-medicijnen": {
     theme: "nutrition",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "omega-3-hoeveel-per-dag": {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "omega-3-index-meten": {
     theme: "nutrition",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "omega-3-uit-voeding-of-supplement": {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "omega-3-concentratie-energie": {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "omega-3-en-herstel": {
     theme: "movement",
     gapSignal: "omega3_deficiency",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "slaap-verbeteren-40-plus": {
     theme: "sleep",
@@ -207,90 +238,111 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "vitamine-d-en-energie": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "vitamine-d-en-k2-samen": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "vitamine-d-hoge-doses-social-media": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "vitamine-d-aandoeningen-onderzoek": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "vitamine-d-en-slaap": {
     theme: "sleep",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "vitamine-d-inname": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "vitamine-d-meten-wanneer-zinvol": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "vitamine-d-seizoenen-jaarritme": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "vitamine-d-tekort-herkennen": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "vitamine-d-zon-nederland": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "visolie-oxidatie-en-bijwerkingen": {
     theme: "nutrition",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "zonnebrand-en-vitamine-d": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "waar-let-je-op-bij-omega-3": {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "wat-is-omega-3": {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   "zink-en-testosteron": {
     theme: "nutrition",
     relatedSupplementId: "zink",
+    nutrients: ["zinc"],
   },
   "whey-concentraat-isolaat-hydrolysaat": {
     theme: "nutrition",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "whey-en-darmklachten": {
     theme: "nutrition",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "whey-etiket-lezen": {
     theme: "nutrition",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "whey-hoeveel-en-wanneer": {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "whey-of-plantaardig-eiwit": {
     theme: "nutrition",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "whey-wanneer-wel-en-niet": {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "zout-kalium-bloeddruk-na-40": { theme: "nutrition" },
 
@@ -299,7 +351,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   adh: { theme: "nutrition" },
   atp: { theme: "movement" },
   biobeschikbaarheid: { theme: "nutrition" },
-  chelaatvorm: { theme: "nutrition" },
+  chelaatvorm: { theme: "nutrition", nutrients: ["magnesium", "zinc"] },
   "circadiaan-ritme": { theme: "sleep", planPhase: 1 },
   cortisol: { theme: "stress", gapSignal: "cortisol_risk", profile: "Stressdrager" },
   "derde-partij-testen": { theme: "nutrition" },
@@ -308,21 +360,25 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   leucinedrempel: {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "wei-eiwit": {
     theme: "nutrition",
     gapSignal: "protein_gap_signal",
     relatedSupplementId: "eiwitpoeder",
+    nutrients: ["protein"],
   },
   "epa-dha": {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
     relatedSupplementId: "omega-3",
+    nutrients: ["omega3"],
   },
   healthspan: { theme: "movement" },
   "hpa-as": { theme: "stress", gapSignal: "cortisol_risk" },
@@ -332,10 +388,11 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "sleep",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   melatonine: { theme: "sleep", gapSignal: "melatonine_signal" },
   mitochondrien: { theme: "movement" },
-  multivitamine: { theme: "nutrition" },
+  multivitamine: { theme: "nutrition", nutrients: ["vitamin_d", "zinc"] },
   "nervus-vagus": { theme: "stress", planPhase: 1 },
   overtrainingssyndroom: {
     theme: "movement",
@@ -350,10 +407,12 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "vitamine-d": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "vitamine-k2": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "ps-score-model": { theme: "nutrition" },
   scoregewichten: { theme: "nutrition" },
@@ -368,22 +427,26 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     theme: "sleep",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "vitamine-d-botgezondheid-overgang": {
     theme: "nutrition",
     relatedSupplementId: "vitamine-d3",
+    nutrients: ["vitamin_d"],
   },
   "buikvet-cortisol-slaap-mannen": { theme: "stress", gapSignal: "cortisol_risk" },
   "slaapkwaliteit-testosteron-herstel": { theme: "sleep" },
-  "vermoeidheid-bloedwaarden-checken-mannen": { theme: "nutrition" },
+  "vermoeidheid-bloedwaarden-checken-mannen": { theme: "nutrition", nutrients: ["vitamin_d"] },
   "magnesium-herstel-mannen-40": {
     theme: "movement",
     gapSignal: "magnesium_signal",
     relatedSupplementId: "magnesium-glycinaat",
+    nutrients: ["magnesium"],
   },
   "krachtverlies-eiwitbehoefte-na-40": {
     theme: "movement",
     gapSignal: "protein_gap_signal",
+    nutrients: ["protein"],
   },
 };
 

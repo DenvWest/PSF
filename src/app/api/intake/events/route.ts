@@ -46,6 +46,9 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "nutrition.schap_bronnen_getoond",
   "nutrition.schap_bron_clicked",
   "nutrition.schap_categorie_gefilterd",
+  "content.next_step_shown",
+  "content.next_step_clicked",
+  "content.related_clicked",
 ]);
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

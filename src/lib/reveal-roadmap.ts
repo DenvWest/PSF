@@ -1,3 +1,6 @@
+import { FOOD_SOURCES } from "@/data/nutrition/food-sources";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
+import { nutrientRoute } from "@/data/nutrition/nutrient-routes";
 import { PILLAR } from "@/data/dashboard";
 import { getDeficiencySignals } from "@/lib/intake-engine";
 import { KOMPAS_RAIL_PILLAR_IDS } from "@/lib/context-rail";
@@ -36,6 +39,19 @@ export type RevealRoadmapSupplement = {
   hubSlug: string | null;
   /** Gezet als dit supplement bij een ander domein hoort en daar al staat. */
   shownAt: string | null;
+  /**
+   * De voedingsroute achter dit potje: de drempel, wie hem publiceerde en de
+   * sterkste bronnen. `null` wanneer de voedingscheck deze stof niet meet.
+   *
+   * Dit blok gaat vóór de vergelijkknop staan, niet erna. De leefstijlcheck
+   * kent de voedingsroute van deze persoon niet — dat vraagt de voedingscheck —
+   * dus het is kennis met een uitnodiging, geen oordeel over zijn inname.
+   */
+  voedingsroute: {
+    thresholdNl: string;
+    bronNl: string | null;
+    bronnen: readonly string[];
+  } | null;
 };
 
 export type RevealRoadmapDomain = {
@@ -82,6 +98,39 @@ export function buildRevealRingRows(model: RevealModel): RevealRingRow[] {
  * bewust leeg met een uitlegregel. `buildSupplementDisclosure` gate't zelf op
  * goedgekeurde claims, dus hier komt nooit een niet-toegestane bewering binnen.
  */
+/**
+ * De voedingsroute bij een stof, in de vorm die de kaart toont.
+ *
+ * Alleen namen en een drempel — geen milligrammen. `food-sources.ts` en
+ * `nutrient-rail.ts` verbieden een opgeteld getal, en een puntwaarde per portie
+ * zou hier schijnprecisie zijn: we weten van deze persoon nog niet eens hoe
+ * vaak hij het eet. De drempel is wél bruikbaar, want daar kan hij zijn eigen
+ * week naast leggen.
+ */
+function buildVoedingsroute(
+  nutrient: NutrientId | null,
+): RevealRoadmapSupplement["voedingsroute"] {
+  if (!nutrient) return null;
+  const route = nutrientRoute(nutrient);
+  const bronnen = route.sources
+    .map((source) => foodSourceLabel(nutrient, source.foodSourceKey))
+    .filter((label): label is string => label !== null)
+    .slice(0, 3);
+  if (bronnen.length === 0) return null;
+  return {
+    thresholdNl: route.thresholdNl,
+    // Alleen noemen wie hem publiceerde als dat echt iemand is: bij een
+    // vuistregel en een proxy is `sourceNl` null, en dan hoort er geen
+    // autoriteit te staan die er niet is.
+    bronNl: route.sourceNl,
+    bronnen,
+  };
+}
+
+function foodSourceLabel(nutrient: NutrientId, key: string): string | null {
+  return FOOD_SOURCES[nutrient].find((row) => row.key === key)?.labelNl ?? null;
+}
+
 function resolveSupplement(
   pillar: Pillar,
   input: RecommendationInput,
@@ -106,6 +155,7 @@ function resolveSupplement(
     href: withIntakeReturn(disclosure.comparisonPath),
     hubSlug: disclosure.hubSlug ?? null,
     shownAt: null,
+    voedingsroute: buildVoedingsroute(disclosure.nutrient ?? null),
   };
 }
 
