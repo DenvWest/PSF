@@ -20,19 +20,19 @@ const METRICS: Metric[] = [
 
 const CAPTIONS: Band<{ text: string }>[] = [
   {
-    max: 39,
+    max: 42,
     text: "Je merkt nu waarschijnlijk nog niets. B12-voorraad in de lever kan jaren meegaan — precies daarom is dit het slimste moment.",
   },
   {
-    max: 49,
+    max: 52,
     text: "Nu voelt bijna alles nog vanzelfsprekend. De gaten groeien intussen stilletjes.",
   },
   {
-    max: 59,
+    max: 62,
     text: "Nu duiken de eerste “nét wat moeier, nét wat trager”-momentjes op.",
   },
   {
-    max: 69,
+    max: 72,
     text: "Nu telt wat je de jaren hiervoor wél of níét op je bord had.",
   },
   {
@@ -170,7 +170,7 @@ export default function NutritionGapLifeline() {
                 {MILESTONES.map((milestone) => (
                   <span
                     key={milestone}
-                    className="absolute top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/30"
+                    className="pointer-events-none absolute top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/30"
                     style={{ left: `${agePosition(milestone)}%` }}
                   >
                     <b className="absolute left-1/2 top-3 -translate-x-1/2 text-[10px] font-normal text-[#7E8C82]">
@@ -187,6 +187,9 @@ export default function NutritionGapLifeline() {
                 step={1}
                 value={age}
                 onChange={(event) => onAgeChange(Number(event.target.value))}
+                onInput={(event) =>
+                  onAgeChange(Number(event.currentTarget.value))
+                }
                 aria-label="Leeftijd"
                 aria-valuetext={`${age} jaar`}
                 className="w-full cursor-pointer appearance-none bg-transparent focus-visible:outline-none [&::-moz-range-thumb]:h-[22px] [&::-moz-range-thumb]:w-[22px] [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-[3px] [&::-moz-range-thumb]:border-[#102018] [&::-moz-range-thumb]:bg-[var(--ac)] [&::-moz-range-track]:h-1 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-white/15 [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-white/15 [&::-webkit-slider-thumb]:mt-[-9px] [&::-webkit-slider-thumb]:h-[22px] [&::-webkit-slider-thumb]:w-[22px] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-[#102018] [&::-webkit-slider-thumb]:bg-[var(--ac)]"
