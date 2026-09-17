@@ -112,10 +112,6 @@ export default function BlogArticlePage({
   const showMidArticleCta = isLongBlogArticle(artikel);
   const midIndex = Math.ceil(hoofdSecties.length / 2);
   const { planPhase } = contentMeta;
-  const sectiesVoorMid = showMidArticleCta
-    ? hoofdSecties.slice(0, midIndex)
-    : hoofdSecties;
-  const sectiesNaMid = showMidArticleCta ? hoofdSecties.slice(midIndex) : [];
   const bodyImageAt = Math.max(1, Math.floor(hoofdSecties.length / 2));
 
   const cover = blogCover(artikel);
