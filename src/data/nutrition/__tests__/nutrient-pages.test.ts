@@ -104,19 +104,22 @@ describe("voedingsstofpagina's — de bronnen", () => {
   });
 
   /**
-   * Nulmeting 17 september 2026. Omega-3 is de enige stof zonder één gehalte
-   * dat tegen een brondataset is gelegd: alle veertien rijen in
-   * `food-sources.ts` staan op `verified: false` en dragen een indicatieve
-   * literatuurwaarde. `scripts/usda-extract.mjs` heeft hier zijn volgende werk.
+   * Nulmeting 17 september 2026 was `["omega3"]`: de enige stof zonder één
+   * gehalte dat tegen een brondataset was gelegd. Diezelfde dag vulde de
+   * FDC-API-run van `scripts/usda-extract.mjs` zes omega-3-rijen met een
+   * USDA-gehalte (zalm wild en gekweekt, makreel, haring, sardines, tonijn uit
+   * blik), dus de lijst is nu leeg.
    *
-   * De tabel zegt dat per rij, dus de pagina liegt niet — maar het is wel het
-   * cluster met de hardste gepubliceerde norm (Gezondheidsraad) en de sterkste
-   * commerciële pagina, dus het is de plek waar een gebronde waarde het meest
-   * oplevert.
+   * Dat de lijst leeg is betekent niet dat het werk af is: het zegt dat elke
+   * stof mínstens één gebronde rij draagt. De ALA-bronnen (walnoten, lijnzaad,
+   * chiazaad) houden bewust `amount: null` — ALA zet maar voor enkele procenten
+   * om naar EPA/DHA, en USDA levert er dus geen bruikbaar EPA+DHA-getal voor.
    *
-   * Deze lijst is een plafond: hij mag korter worden, nooit langer.
+   * Deze lijst is een plafond: hij mag korter worden, nooit langer. Wordt hij
+   * langer, dan is een gebronde rij stilletjes teruggevallen op een
+   * literatuurwaarde.
    */
-  const ZONDER_GEVERIFIEERD_GEHALTE = ["omega3"];
+  const ZONDER_GEVERIFIEERD_GEHALTE: string[] = [];
 
   it("draagt per stof minstens één geverifieerd gehalte", () => {
     for (const nutrient of NUTRIENT_IDS) {

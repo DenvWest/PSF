@@ -403,10 +403,66 @@ mg. Zalm-gekweekt toont `0.318 g` EPA; dat is 318 mg. De catalogus rekent in mg.
 Wie `amount` rechtstreeks overneemt, bouwt een factor 1000 in — en dat is geen
 getal dat opvalt bij het nalezen.
 
+### 2.9 · Gepatcht — 59 rijen, en waar USDA níét de betere bron bleek
+
+Het rapport is toegepast op `food-sources.ts`. Niet automatisch: elke rij is
+langs een oordeel gegaan, en vier rijen zijn op grond daarvan **niet**
+overgenomen.
+
+| | vóór | ná |
+|---|---|---|
+| Rijen met `verified: true` | 85 | **107** |
+| Rijen met `observed` | 0 | **22** |
+| Stoffen zonder één gebronde rij | omega-3 | **geen** |
+| Openstaande TWIJFEL-rijen | 28 | **11** |
+
+Verdeeld over de stoffen: eiwit 19, magnesium 18, zink 14, omega-3 6, vitamine D 2.
+
+**Wat niet is overgenomen, en waarom dat het werk is.** Vier combinaties leverde
+USDA wél een getal voor, maar is hij niet de betere bron:
+
+- **vitamine D in vis** (haring, makreel, sardines). USDA geeft haring 4,2 µg
+  waar NEVO ~25 µg geeft. Dat lijkt een correctie, maar is het niet: beide
+  zalmrecords — zalm is de bekendste vitamine D-bron — dragen *helemaal geen*
+  vitamine D-waarde. Het is een onvolledig meetprogramma, geen lagere meting.
+- **vitamine D in leverpastei.** Het record geeft 0 µg. Dat leest als "niet
+  geanalyseerd", niet als "afwezig"; een 0 die een literatuurwaarde vervangt is
+  een verslechtering die er als precisie uitziet.
+
+**Twee bronconflicten die om een oordeel vroegen.**
+
+*Snijbiet* stond op NEVO-48 met 11 mg magnesium per 100 g; USDA geeft 86 mg — een
+factor 8. Vijf onafhankelijke USDA-records (rauw, gekookt met en zonder zout,
+twee FNDDS) geven consistent 81–86 mg, en 11 mg zou snijbiet ónder sla zetten
+terwijl het als sterke magnesiumbron geldt. Behandeld als invoerfout in onze
+tabel, vervangen, en met een `qualityNote` die het conflict vastlegt in plaats
+van het te laten verdwijnen.
+
+*Boerenkool* — het conflict uit §2.7 (Foundation 25 vs SR 47) loste zichzelf op:
+de 47 hoorde bij **rauwe** boerenkool in een oudere editie. De huidige records
+geven rauw ~33 en gekookt 25, en onze rij is de gekookte.
+
+**De factor-1000-val, en dat hij niet is ingelopen.** USDA voert EPA en DHA in
+gram. Gekweekte zalm staat er als 0,318 g EPA + 0,585 g DHA; dat is samen 903 mg
+per 100 g, en 1.129 mg per portie van 125 g. Rechtstreeks overnemen had 0,9 mg
+opgeleverd — een getal dat er volstrekt normaal uitziet in een kolom met
+milligrammen. Twee tests dekken dit nu af.
+
+**Wat de spreiding concreet doet.** Amandelen droegen een indicatieve 65 mg
+magnesium per portie; het wordt 64,4 — de schatting was goed. Maar de rij draagt
+nu een fdcId, een editie, en een gemeten band van 239–271 mg over 8 monsters in
+plaats van de klassenband 155–438. Dát is de winst: niet een ander getal, maar
+een getal dat je kunt narekenen.
+
+**Vijf nieuwe invarianten, vastgelegd als test** (alle vijf geverifieerd door
+sabotage): eenheid per stof, orde van grootte bij omega-3, ALA-bronnen blijven op
+`amount: null`, `observed` alleen bij meer dan één monster, en een
+`observed`-band citeert altijd zijn USDA-record.
+
 **Wat nog open staat:** 194 identiteiten wachten op een curated query (met kern),
-en de 83 audits van de WebSearch-rijen uit §2.7 zijn nog niet gedaan. Het
-rapport (`scripts/out/usda-rapport.json`) is de werklijst; er is nog niets in
-`food-sources.ts` gepatcht.
+en de 83 audits van de WebSearch-rijen uit §2.7 zijn nog niet gedaan — die zijn
+nu urgenter dan gedacht: als een script mét expliciete querylijst er 13 naast
+zat, verdient een WebSearch-ronde zonder die vangrail dezelfde argwaan.
 
 ### 2.5 · Waarom etappe 2 eerder stopte
 

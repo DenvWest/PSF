@@ -93,3 +93,59 @@ describe("de bronrijen zijn intern consistent — audit zonder de brondataset", 
     expect(fout).toEqual([]);
   });
 });
+
+describe("de USDA-import van 17 september 2026 — de vallen die hij opleverde", () => {
+  /**
+   * De eenheid staat al onder "intern consistent" hierboven; wat deze groep
+   * toevoegt is de orde van grootte. USDA publiceert EPA en DHA in **gram**,
+   * terwijl deze tabel omega-3 in milligram voert: gekweekte zalm staat er als
+   * `0.318 g` EPA en `0.585 g` DHA, samen 903 mg. De eenheidstest ziet zo'n
+   * fout niet — `unit: "mg"` klopt dan nog steeds, alleen de waarde is 1000×
+   * te klein. Dat is geen getal dat opvalt bij het nalezen.
+   */
+  it("houdt elke omega-3-waarde in een orde van grootte die bij mg hoort", () => {
+    // Een EPA+DHA-gehalte per 100 g ligt tussen ~10 mg (mager wit vis) en
+    // ~4.000 mg (makreel, haring). Onder de 10 staat er vrijwel zeker een
+    // gram-waarde die niet is omgerekend; boven de 10.000 een dubbele conversie.
+    const fout = ALLE_RIJEN.filter(({ id, source }) => {
+      if (id !== "omega3" || !source.nutrientValue) return false;
+      const v = source.nutrientValue.value;
+      return v > 0 && (v < 10 || v > 10000);
+    }).map(({ source }) => `${source.key}: ${source.nutrientValue?.value} mg/100g`);
+    expect(fout).toEqual([]);
+  });
+
+  it("laat ALA-bronnen op `amount: null` staan, ook na een USDA-import", () => {
+    // Walnoten en lijnzaad dragen wél een USDA-record, maar hun EPA/DHA is nul:
+    // ALA zet maar voor enkele procenten om. Een import die hier een getal
+    // neerzet, presenteert een ALA-bron als visvervanger.
+    const fout = ALLE_RIJEN.filter(
+      ({ source }) => source.omega3Kind === "ala" && source.amount !== null,
+    ).map(({ source }) => `${source.key}: amount ${source.amount}`);
+    expect(fout).toEqual([]);
+  });
+
+  it("draagt `observed` alleen waar er meer dan één monster is", () => {
+    // `samples` is USDA `dataPoints`. Eén monster is geen spreiding — dan hoort
+    // de rij terug te vallen op de klassenband uit ONDERZOEK §1.7 in plaats van
+    // een band van één meting te suggereren.
+    const fout = ALLE_RIJEN.filter(
+      ({ source }) =>
+        source.nutrientValue?.observed && source.nutrientValue.observed.samples < 2,
+    ).map(
+      ({ source }) =>
+        `${source.key}: samples ${source.nutrientValue?.observed?.samples}`,
+    );
+    expect(fout).toEqual([]);
+  });
+
+  it("citeert bij elke observed-band het USDA-record waar hij vandaan komt", () => {
+    // `observed` bestaat alleen in FDC. Een band zonder USDA-herkomst is met de
+    // hand ingevoerd en daarmee niet te controleren.
+    const fout = ALLE_RIJEN.filter(({ source }) => {
+      const nv = source.nutrientValue;
+      return nv?.observed && (nv.source.origin !== "usda" || !nv.source.ref);
+    }).map(({ source }) => `${source.key}: ${source.nutrientValue?.source.origin}`);
+    expect(fout).toEqual([]);
+  });
+});

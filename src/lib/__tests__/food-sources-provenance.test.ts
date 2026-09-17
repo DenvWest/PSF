@@ -137,35 +137,36 @@ describe("de huidige stand is eerlijk afleesbaar", () => {
     // key + nutriënt: sommige keys (kikkererwten, tonijn-blik, sardines, ...)
     // komen in meerdere secties voor met een andere status per sectie — dus
     // check per (nutrient, key)-paar, niet per kale key.
+    //
+    // 17 sep 2026: die twijfel ging over NEVO, niet over de stof zelf. De
+    // FDC-API-run loste 17 van de 28 op met een USDA-record — kaas, peulvruchten,
+    // noten, vette vis en schaaldieren staan nu gebrond. Wat hier overblijft zijn
+    // de rijen waar ook USDA geen antwoord geeft, en dat is per rij een andere
+    // reden:
+    //
+    //   - seitan, pure chocolade, ansjovis, sprot, gerookte forel: geen bruikbaar
+    //     FDC-record (ontbrekend product of een bereidingsvorm die te ver afligt).
+    //   - algenolie, verrijkte eieren, verrijkte plantaardige drank: verrijking is
+    //     een fabrikantkeuze binnen het NL-kader — het etiket is de bron, niet een
+    //     voedingstabel (ONDERZOEK §2.2).
+    //   - vitamin_d/haring, vitamin_d/zalm, vitamin_d/leverpastei: USDA's
+    //     vitamine D-programma is bij vis en orgaanvlees onvolledig. Beide
+    //     zalmrecords dragen géén vitamine D-waarde, en kippenleverpastei staat op
+    //     0 µg — dat leest als 'niet geanalyseerd', niet als 'afwezig'. Een 0 die
+    //     een literatuurwaarde vervangt is een verslechtering die er als precisie
+    //     uitziet. Zie ONDERZOEK §2.8.
     const openTwijfel: readonly [NutrientId, string][] = [
       ["protein", "seitan"],
-      ["protein", "belegen-kaas"],
-      ["protein", "kikkererwten"],
-      ["magnesium", "zwarte-bonen"],
-      ["magnesium", "amandelen"],
-      ["magnesium", "volkorenbrood"],
-      ["magnesium", "tahin"],
       ["magnesium", "pure-chocolade"],
-      ["magnesium", "witte-bonen"],
-      ["omega3", "zalm-wild"],
-      ["omega3", "haring"],
-      ["omega3", "zalm-gekweekt"],
       ["omega3", "ansjovis"],
-      ["omega3", "sardines"],
       ["omega3", "sprot"],
       ["omega3", "gerookte-forel"],
       ["omega3", "algenolie"],
       ["omega3", "verrijkte-eieren"],
-      ["omega3", "tonijn-blik"],
       ["vitamin_d", "haring"],
       ["vitamin_d", "zalm"],
       ["vitamin_d", "leverpastei"],
-      ["vitamin_d", "paddenstoelen-uv"],
       ["vitamin_d", "plantaardige-drank-verrijkt"],
-      ["zinc", "oesters"],
-      ["zinc", "lamsvlees"],
-      ["zinc", "garnalen"],
-      ["zinc", "belegen-kaas"],
     ];
     for (const [nutrient, key] of openTwijfel) {
       const source = FOOD_SOURCES[nutrient].find((s) => s.key === key);
