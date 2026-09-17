@@ -4,9 +4,9 @@ import NutritionCapture from "@/components/intake/NutritionCapture";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
 
-const TITLE = "Voedingscheck — PerfectSupplement";
+const TITLE = "Wat mis je? — PerfectSupplement";
 const DESCRIPTION =
-  "Beantwoord een paar korte vragen over wat je doorgaans eet en ontvang direct je voedingsscore, een inname-inschatting en leefstijladvies.";
+  "Beantwoord een paar korte vragen over wat je doorgaans eet en zie welke voedingsstoffen je waarschijnlijk mist — met wat je eraan kunt doen.";
 
 export const metadata: Metadata = {
   title: TITLE,

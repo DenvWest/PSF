@@ -80,7 +80,7 @@ export default function HubPersonalBar({
         className={`${GROEN_KADER} ${className}`}
         aria-label="Persoonlijke selectie"
       >
-        <p className={EYEBROW}>Voedingscheck · 3 min</p>
+        <p className={EYEBROW}>Wat mis je? · 3 min</p>
         <p className="mt-1 font-display text-base font-semibold leading-snug text-stone-900">
           Nog één stap: de voedingscheck
         </p>

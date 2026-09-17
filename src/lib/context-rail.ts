@@ -97,7 +97,7 @@ const DOMAIN_CHECK: Partial<Record<PillarId, { label: string; href: string }>> =
   beweging: { label: "Beweegcheck", href: "/intake/beweging?from=dashboard&kompas=beweging" },
   slaap: { label: "Slaapcheck", href: "/intake/slaap?from=dashboard&kompas=slaap" },
   stress: { label: "Stresscheck", href: "/intake/stress?from=dashboard&kompas=stress" },
-  voeding: { label: "Voedingscheck", href: "/intake/voeding?from=dashboard&kompas=voeding" },
+  voeding: { label: "Wat mis je?", href: "/intake/voeding?from=dashboard&kompas=voeding" },
 };
 
 const DOMAIN_GIDS: Partial<Record<PillarId, { label: string; href: string }>> = {

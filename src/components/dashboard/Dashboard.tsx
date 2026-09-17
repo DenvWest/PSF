@@ -2246,7 +2246,7 @@ const RecommendationsSection = ({ model, data }: SharedSectionProps) => {
 
   if (!nutritionLogCompleted) {
     return (
-      <section aria-label="Voedingscheck">
+      <section aria-label="Wat mis je?">
         <SectionHeader eyebrow="Eerst je bord" title="Doe de voedingscheck" />
         <Card pad={16}>
           <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: 0, textWrap: "pretty" }}>

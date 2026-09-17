@@ -217,7 +217,7 @@ export const REVEAL_ROADMAP_DASHBOARD_LANES: Record<string, RevealDashboardLane[
   ],
   voeding: [
     {
-      label: "Voedingscheck met je inname per dag",
+      label: "Wat mis je? — je inname per dag",
       detail: "Wat je b\u00ednnenkrijgt, niet wat je zou moeten eten.",
       soon: false,
     },

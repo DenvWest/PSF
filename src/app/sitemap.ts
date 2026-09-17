@@ -84,6 +84,11 @@ export const SITEMAP_EXCLUDED: ReadonlyArray<{
     reden: "Achter login.",
   },
   {
+    pad: "/intake/leefstijl",
+    reden:
+      "De brede leefstijlcheck, sinds 17 sep 2026 niet meer aangeboden (BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09 §3.9). De route blijft bestaan omdat bestaande sessies eraan hangen, maar hoort niet in de index: /intake draagt nu de check die wél wordt aangeboden.",
+  },
+  {
     pad: "/intake/voeding",
     reden:
       "Check-instrument, geen landingspagina. Wordt vanaf fase 4 vanuit content aangeboden.",

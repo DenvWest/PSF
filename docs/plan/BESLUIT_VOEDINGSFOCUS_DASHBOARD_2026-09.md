@@ -36,7 +36,7 @@ Stand op 17 sep 2026, geteld in `src/`:
 | Regels in `src/components/dashboard/` (incl. tests) | **33.373** |
 | Regels in `Dashboard.tsx` alleen | **3.769** |
 | `nutrition-*` libs in `src/lib/` | **42** (7.304 regels) |
-| Vragen in de Leefstijlcheck | **32** over 8 categorieën |
+| Vragen in de Leefstijlcheck | **18** over 8 categorieën (`INTAKE_QUESTION_COUNT`) |
 | Domeinen in `VALID_KOMPAS_VIEWS` | **7** |
 | Uitgangen vanuit het dashboard naar `/beste/*` | **0** |
 
@@ -78,7 +78,7 @@ Dit is daarnaast geen nieuwe afweging: het longevity-home-besluit van 25 juli ve
 
 ---
 
-## 3. De acht beslissingen
+## 3. De negen beslissingen
 
 ### 3.1 Kompas verdwijnt als begrip
 
@@ -157,15 +157,41 @@ Wat hier **niet** gebouwd wordt: een echte bestelfunctie. Dat betekent transacti
 
 ### 3.8 Voedingscheck van ~10-13 vragen
 
-De huidige check: 32 vragen, 8 categorieën, 5 fases, RULES_VERSION 1.4.0, scoring over 6 domeinen, profiellabels. Een zwaar apparaat voor 2 invullers.
+De huidige check: 18 vragen over 8 categorieën, 5 fases, RULES_VERSION 1.4.0, scoring over 6 domeinen, profiellabels. Een zwaar apparaat voor 2 invullers.
 
 Nieuw: **~10-13 frequentievragen, één categorie, één uitkomst** — je nutriëntgaten, gerangschikt, met route naar het product. Het dagboek (§3.2) kalibreert ze.
 
 **Die set bestaat al** (vastgesteld 17 sep, zie plak 2). `lifescore-questions.ts` draagt 12 sliders plus 2 meta-vragen — groente, fruit, bessen, noten-zaden-peulvruchten, vette vis, eiwitmomenten, vlees-vis-peulvruchten, zuivel, daglicht, volkoren, suikerdranken, ultrabewerkt, plus allergieën en voedingsvoorkeur. Allemaal frequentievragen, elk met een `help`-blok dat zijn bron en benchmark noemt en onderscheidt tussen "populatierichtlijn" en "vuistregel".
 
-Dat dekt de zes nutriënten waarvan v1 dacht dat ze nog een vraag nodig hadden: daglicht vangt vitamine D, noten-zaden magnesium, zuivel calcium, vlees-peulvruchten ijzer en B12. Er komt dus **geen nieuwe vragenset**; de 32-vragen-leefstijlcheck wordt alleen niet meer de ingang.
+Dat dekt de zes nutriënten waarvan v1 dacht dat ze nog een vraag nodig hadden: daglicht vangt vitamine D, noten-zaden magnesium, zuivel calcium, vlees-peulvruchten ijzer en B12. Er komt dus **geen nieuwe vragenset**; de brede leefstijlcheck wordt alleen niet meer de ingang.
 
 De scoring voor slaap/stress/beweging/verbinding blijft in `src/lib/` staan maar wordt niet meer aangeroepen. **Niet verwijderen** — het `RULES_VERSION`-contract en de hermeting-deltalogica zijn duur verworven (drie P1-bugs gevonden en gefixt bij 1.4.0).
+
+
+### 3.9 Eén check, en hij heet "Wat mis je?"
+
+Na plak 2 bleek er niet één check te zijn maar twee, met twee ingangen naar één doel:
+
+| | Leefstijlcheck (`/intake`) | Voedingscheck (`/intake/voeding`) |
+|---|---|---|
+| Vragen | 18 over 8 categorieën | 12 sliders + 2 meta |
+| Levert | profiellabel, domeinscores, urgentie | nutriëntgaten voor alle vijf de stoffen |
+| Leidt naar | een herstelplan | de supplementroute |
+
+Alleen de tweede leidt naar `/beste/*`. Daarom: **de voedingscheck verhuist naar `/intake` en wordt de enige ingang.** De brede versie blijft in de code en verdwijnt uit de UI — hetzelfde /inzichten-precedent als de rest van dit besluit.
+
+**Waarom niet samenvoegen.** 18 + 14 = 32 vragen. Bij twee invullers is korter de oplossing, niet completer; en de vier domeinen die de lange check meet, staan sinds juni al niet meer in de nav. Samenvoegen zou het probleem verdubbelen in plaats van oplossen.
+
+**Waarom de voedingscheck wint.** Hij is de betere check: elke vraag draagt een `help`-blok met bron en benchmark, en onderscheidt expliciet "populatierichtlijn" van "vuistregel". Dat is feit-eerst zoals `WRITING_VOICE.md` het voorschrijft, en zo netjes is het in de lange check niet gedaan.
+
+**De naam wordt "Wat mis je?"** — de vraag die de gebruiker zelf heeft.
+
+Twee namen die zijn afgewezen, met reden:
+
+- **"Supplementcheck"** belooft een supplementadvies terwijl de uitkomst vaak "eet twee keer per week vette vis" is. Dat breekt de voeding-eerst-regel, het is verkoop-taal op een pagina die objectiviteit claimt, en een tool die zich als supplementadvies presenteert is compliance-technisch een zwaarder pad dan een tool die een voedingspatroon in kaart brengt.
+- **"Voedingscheck"** is te smal: de check vraagt ook naar daglicht, en dat is geen voeding.
+
+Wat niet verandert: de scoring-engine, `RULES_VERSION 1.4.0`, en de leesbaarheid van bestaande sessies. Dit is een route- en labelwijziging, geen datamigratie.
 
 
 ---
@@ -179,7 +205,7 @@ De voorwaarde uit het 15-aug-verdict was dat dashboardwerk alleen mag als de bal
 | Dashboard-componenten (excl. tests) | 106 | ~40 | **−66** |
 | Dashboard-tabs | 4, over 7 domeinen | 4, over 1 domein | **0** (labels om) |
 | Domeinen in de UI | 7 | 1 | **−6** |
-| Check-vragen | 32 | ~10-13 | **−19** |
+| Check-vragen als ingang | 18 (leefstijl) | 14 (voeding) | **−4**, en een andere uitkomst |
 | Uitgangen naar `/beste/*` | 0 | ≥3 | **+3** |
 | Actieve `agenda.*`-events | 7 | ~3 (voedingsblokken) | **−4** |
 
@@ -214,7 +240,7 @@ De vragen: groente · fruit · bessen · noten-zaden-peulvruchten · vette vis �
 
 Dat dekt de zes "ontbrekende" nutriënten uit §3.8 ruimer dan daar voorgesteld — daglicht vangt vitamine D, noten-zaden magnesium, zuivel calcium, vlees-peulvruchten ijzer en B12. **Er hoeft dus geen nieuwe vragenset te komen.**
 
-Wat wél open blijft: de check is nu een losse route (`/intake/voeding`) naast de leefstijlcheck van 32 vragen. Die twee moeten nog één ingang krijgen — dat is UI-werk in plak 3, geen vragenwerk.
+Wat wél open blijft: de check is nu een losse route (`/intake/voeding`) naast de brede leefstijlcheck. Die twee moeten nog één ingang krijgen — dat is UI-werk, uitgevoerd in §3.9.
 
 **Plak 3 — Dagboekscherm.**
 Maaltijdblokken met de stoffen als kolomkop (niet per item), subtotaal per maaltijd, volle week met vier gemarkeerde meetdagen. Ronde RI-meters erboven. `Dashboard.tsx` (3.769 regels) terug naar één domein; kompas-componenten weg.
