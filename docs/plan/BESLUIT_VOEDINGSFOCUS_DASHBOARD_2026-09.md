@@ -161,7 +161,9 @@ De huidige check: 32 vragen, 8 categorieën, 5 fases, RULES_VERSION 1.4.0, scori
 
 Nieuw: **~10-13 frequentievragen, één categorie, één uitkomst** — je nutriëntgaten, gerangschikt, met route naar het product. Het dagboek (§3.2) kalibreert ze.
 
-Bruikbaar uit de huidige set: `NUT_O3`, `NUT_PROT`, `NUT_STRUCT`, `NUT_QUAL` — vier vragen die al in de goede vorm staan (frequentie, geen zelfdiagnose). Aan te vullen met ~6 vragen voor wat nu ongedekt is: zuivel/calcium, groente/foliumzuur, vlees/ijzer+B12, zon/vitamine D, noten-zaden/magnesium, vis-anders/jodium.
+**Die set bestaat al** (vastgesteld 17 sep, zie plak 2). `lifescore-questions.ts` draagt 12 sliders plus 2 meta-vragen — groente, fruit, bessen, noten-zaden-peulvruchten, vette vis, eiwitmomenten, vlees-vis-peulvruchten, zuivel, daglicht, volkoren, suikerdranken, ultrabewerkt, plus allergieën en voedingsvoorkeur. Allemaal frequentievragen, elk met een `help`-blok dat zijn bron en benchmark noemt en onderscheidt tussen "populatierichtlijn" en "vuistregel".
+
+Dat dekt de zes nutriënten waarvan v1 dacht dat ze nog een vraag nodig hadden: daglicht vangt vitamine D, noten-zaden magnesium, zuivel calcium, vlees-peulvruchten ijzer en B12. Er komt dus **geen nieuwe vragenset**; de 32-vragen-leefstijlcheck wordt alleen niet meer de ingang.
 
 De scoring voor slaap/stress/beweging/verbinding blijft in `src/lib/` staan maar wordt niet meer aangeroepen. **Niet verwijderen** — het `RULES_VERSION`-contract en de hermeting-deltalogica zijn duur verworven (drie P1-bugs gevonden en gefixt bij 1.4.0).
 
@@ -205,8 +207,14 @@ Elke plak is apart reviewbaar en apart te deployen. Plak 0 blokkeert alles wat e
 **Plak 1 — De USDA-run.**
 De API antwoordt weer (geverifieerd 17 sep; hij stond op 403). Hij levert `min`/`max`/`dataPoints` — de `observed`-spreiding waar `nutrition-spread.ts` op wacht, ter vervanging van de klassenband ×0,60–1,70. Vereist een eigen `FDC_API_KEY`; DEMO_KEY loopt na ~3 records tegen zijn dagquotum. **Elke fdcId tegen zijn `description` controleren** — een testmatch voor gekookte spinazie gaf asperges terug.
 
-**Plak 2 — Voedingscheck (~10-13 vragen).**
-Nieuwe vragenset, hergebruik van de vier bestaande `NUT_*`-vragen. Uitkomst: gaten gerangschikt.
+**Plak 2 — Voedingscheck. ~~Te bouwen~~ → blijkt al te bestaan (17 sep).**
+`lifescore-questions.ts` draagt al precies wat §3.8 beschrijft: **12 sliders plus 2 meta-vragen**, allemaal frequentievragen, met een eigen `help`-blok per vraag (bron, benchmark, "populatierichtlijn" vs. "vuistregel"). Hij draait op `/intake/voeding` via `NutritionCapture.tsx` en voedt `nutrition-score.ts` → `nutrition-intake-estimate.ts`, die alle vijf de nutriënten schat. 67 tests groen.
+
+De vragen: groente · fruit · bessen · noten-zaden-peulvruchten · vette vis · eiwitmomenten · vlees-vis-peulvruchten · zuivel · daglicht · volkoren · suikerdranken · ultrabewerkt, plus allergieën en voedingsvoorkeur.
+
+Dat dekt de zes "ontbrekende" nutriënten uit §3.8 ruimer dan daar voorgesteld — daglicht vangt vitamine D, noten-zaden magnesium, zuivel calcium, vlees-peulvruchten ijzer en B12. **Er hoeft dus geen nieuwe vragenset te komen.**
+
+Wat wél open blijft: de check is nu een losse route (`/intake/voeding`) naast de leefstijlcheck van 32 vragen. Die twee moeten nog één ingang krijgen — dat is UI-werk in plak 3, geen vragenwerk.
 
 **Plak 3 — Dagboekscherm.**
 Maaltijdblokken met de stoffen als kolomkop (niet per item), subtotaal per maaltijd, volle week met vier gemarkeerde meetdagen. Ronde RI-meters erboven. `Dashboard.tsx` (3.769 regels) terug naar één domein; kompas-componenten weg.
