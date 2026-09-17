@@ -68,3 +68,38 @@ describe("een doel weet of het audit of nieuw werk is", () => {
     }
   });
 });
+
+describe("elke query draagt een kern — de vangrail tegen foute matches", () => {
+  // Waarom deze test bestaat: in de eerste echte API-run (17 sep 2026) zat 13
+  // van de 53 rijen ernaast. "herring atlantic raw" gaf kabeljauw, "black beans
+  // cooked boiled" gaf boerenkool, "tofu raw firm" gaf bieten. FDC sorteert op
+  // relevantie en geeft bij een zoekterm zonder echte treffer gewoon het
+  // populairste record dat één woord deelt. Zonder kern is elke nieuwe query
+  // een herhaling van die fout, met een getal dat er goed uitziet.
+  it("heeft voor elke query minstens één kern-term", () => {
+    const zonder = Object.entries(QUERIES)
+      .filter(([, v]) => !Array.isArray(v.kern) || v.kern.length === 0)
+      .map(([k]) => k);
+    expect(zonder).toEqual([]);
+  });
+
+  it("gebruikt kern-termen in kleine letters — de vergelijking is lowercase", () => {
+    const fout = Object.entries(QUERIES)
+      .flatMap(([k, v]) => (v.kern ?? []).map((t) => [k, t]))
+      .filter(([, t]) => t !== t.toLowerCase());
+    expect(fout).toEqual([]);
+  });
+
+  it("laat de kern niet naar een ander voedingsmiddel wijzen dan de query", () => {
+    // Een kern die nergens in de eigen query voorkomt, is een typefout of een
+    // verkeerd gekopieerde regel. "beans" bij `haring` zou hier vallen.
+    const losgeraakt = Object.entries(QUERIES).filter(([, v]) => {
+      const q = v.q.toLowerCase();
+      return !(v.kern ?? []).some((t) => {
+        const stam = t.toLowerCase().replace(/[,\s].*$/, "").replace(/s$/, "");
+        return q.includes(stam);
+      });
+    });
+    expect(losgeraakt.map(([k]) => k)).toEqual([]);
+  });
+});

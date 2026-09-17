@@ -113,70 +113,83 @@ const NUTRIENTS = {
  * letten — geen documentatie maar werkinstructie: de val waar een automatische
  * match in trapt. Een ★ markeert een rij die een expliciet oordeel vraagt.
  *
+ * `kern` is de vangrail, en hij is er niet theoretisch: in de eerste echte
+ * API-run (17 sep 2026) zat 13 van de 53 rijen ernaast doordat het script
+ * `treffers[0]` blind overnam. "herring atlantic raw" gaf kabeljauw — er is
+ * geen haring in de Foundation-tak, dus FDC gaf het populairste record dat
+ * "atlantic" of "raw" deelde. "black beans cooked boiled" gaf boerenkool, dat
+ * "cooked, boiled, drained" in zijn naam draagt. "tofu raw firm" gaf bieten,
+ * "leverpastei" gaf tomatenpuree, "sardines" gaf ansjovis.
+ *
+ * Elk van die getallen zag er precies zo uit als een goed getal. Daarom moet
+ * de beschrijving van het gekozen record minstens één `kern`-term bevatten,
+ * anders telt de treffer niet. Voeg je een query toe, dan hoort er een kern
+ * bij; zonder kern slaat het script de rij over in plaats van te gokken.
+ *
  * Deze map is bewust NIET de werklijst — die komt uit de catalogus. Staat een
  * fetchbare identiteit hier niet in, dan meldt het rapport `query-ontbreekt`
  * in plaats van blind op het Nederlandse label te zoeken.
  */
 export const QUERIES = {
-  amandelen:            { q: "almonds raw",                          let: "ongezouten, ongeroosterd" },
-  walnoten:             { q: "walnuts english raw",                  let: "ALA, telt niet mee voor EPA/DHA" },
-  cashewnoten:          { q: "cashew nuts raw",                      let: "rauw, niet geroosterd/gezouten" },
-  pompoenzaden:         { q: "pumpkin seeds kernels dried",          let: "gepeld; ongepeld scheelt fors" },
-  zonnebloempitten:     { q: "sunflower seed kernels dried",         let: "ongezouten" },
-  hennepzaad:           { q: "hemp seed hulled",                     let: "gepeld" },
-  lijnzaad:             { q: "flaxseed",                             let: "gemalen vs heel; ALA-bron" },
-  tahin:                { q: "sesame butter tahini",                 let: "van geroosterd of rauw zaad" },
+  amandelen:            { q: "almonds raw",                          kern: ["almond"], let: "ongezouten, ongeroosterd" },
+  walnoten:             { q: "walnuts english raw",                  kern: ["walnut"], let: "ALA, telt niet mee voor EPA/DHA" },
+  cashewnoten:          { q: "cashew nuts raw",                      kern: ["cashew"], let: "rauw, niet geroosterd/gezouten" },
+  pompoenzaden:         { q: "pumpkin seeds kernels dried",          kern: ["pumpkin"], let: "gepeld; ongepeld scheelt fors" },
+  zonnebloempitten:     { q: "sunflower seed kernels dried",         kern: ["sunflower"], let: "ongezouten" },
+  hennepzaad:           { q: "hemp seed hulled",                     kern: ["hemp"], let: "gepeld" },
+  lijnzaad:             { q: "flaxseed",                             kern: ["flaxseed", "flax seed", "linseed"], let: "gemalen vs heel; ALA-bron" },
+  tahin:                { q: "sesame butter tahini",                 kern: ["tahini", "sesame"], let: "van geroosterd of rauw zaad" },
 
-  havermout:            { q: "oats rolled dry",                      let: "droog gewicht, niet bereid" },
-  volkorenbrood:        { q: "bread whole-wheat commercially prepared", let: "★ NL-volkoren wijkt af — andere uitmaalgraad en zout. Twijfel = geen match" },
-  "volkoren-pasta":     { q: "pasta whole wheat dry",                let: "droog" },
-  quinoa:               { q: "quinoa cooked",                        let: "gekookt, niet droog" },
-  zilvervliesrijst:     { q: "rice brown long-grain cooked",         let: "gekookt" },
-  "rijst-wit-gekookt":  { q: "rice white long-grain cooked enriched", let: "★ VS verrijkt witte rijst; NL niet" },
-  "aardappel-gekookt":  { q: "potatoes boiled without skin",         let: "gekookt zonder schil" },
+  havermout:            { q: "oats whole grain rolled",                                 kern: ["oats,"], let: "★ eerste treffer was havermeel (Flour, oat) — kern op \"oats,\" dwingt de vlokken af" },
+  volkorenbrood:        { q: "bread whole-wheat commercially prepared", kern: ["bread"], let: "★ NL-volkoren wijkt af — andere uitmaalgraad en zout. Twijfel = geen match" },
+  "volkoren-pasta":     { q: "pasta whole-wheat dry",                kern: ["pasta", "spaghetti", "macaroni"], let: "droog" },
+  quinoa:               { q: "quinoa cooked",                        kern: ["quinoa"], let: "gekookt, niet droog" },
+  zilvervliesrijst:     { q: "rice brown long-grain cooked",         kern: ["rice"], let: "gekookt" },
+  "rijst-wit-gekookt":  { q: "rice white long-grain regular enriched cooked", kern: ["rice"], let: "★ VS verrijkt witte rijst; NL niet. Regular, niet parboiled (dat scheelt in mineralen)" },
+  "aardappel-gekookt":  { q: "potatoes boiled cooked without skin flesh",         kern: ["potato"], let: "★ gekookt zonder schil, vruchtvlees — niet het schil-record" },
 
-  linzen:               { q: "lentils cooked boiled",                let: "gekookt zonder zout" },
-  kikkererwten:         { q: "chickpeas garbanzo cooked",            let: "gekookt, niet uit blik" },
-  "zwarte-bonen":       { q: "black beans cooked boiled",            let: "gekookt" },
-  kidneybonen:          { q: "kidney beans red cooked boiled",       let: "gekookt" },
-  "witte-bonen":        { q: "white beans cooked boiled",            let: "gekookt" },
-  "erwten-diepvries":   { q: "peas green frozen",                    let: "diepvries, onbereid" },
-  tofu:                 { q: "tofu raw firm",                        let: "★ calciumsulfaat vs nigari scheelt in mineralen" },
-  tempe:                { q: "tempeh",                               let: "onbereid" },
+  linzen:               { q: "lentils mature seeds cooked boiled without salt",                kern: ["lentil"], let: "gekookt zonder zout" },
+  kikkererwten:         { q: "chickpeas mature seeds cooked boiled without salt",            kern: ["chickpea", "garbanzo"], let: "gekookt, niet uit blik" },
+  "zwarte-bonen":       { q: "beans black mature seeds cooked boiled without salt",            kern: ["black"], let: "gekookt" },
+  kidneybonen:          { q: "beans kidney red mature seeds cooked boiled without salt",       kern: ["kidney"], let: "gekookt" },
+  "witte-bonen":        { q: "beans white mature seeds cooked boiled without salt",             kern: ["bean"], let: "gekookt; ★ USDA schrijft \"Beans, white\" — kern op \"white bean\" mist dat" },
+  "erwten-diepvries":   { q: "peas green frozen cooked boiled drained without salt",                    kern: ["pea"], let: "diepvries, onbereid" },
+  tofu:                 { q: "tofu raw firm",                        kern: ["tofu"], let: "★ calciumsulfaat vs nigari scheelt in mineralen" },
+  tempe:                { q: "tempeh",                               kern: ["tempeh"], let: "onbereid" },
 
-  spinazie:             { q: "spinach cooked boiled drained",        let: "gekookt en uitgelekt" },
-  boerenkool:           { q: "kale cooked boiled drained",           let: "gekookt" },
-  snijbiet:             { q: "swiss chard cooked boiled",            let: "gekookt" },
-  "broccoli-gekookt":   { q: "broccoli cooked boiled drained",       let: "gekookt" },
-  "paprika-rauw":       { q: "peppers sweet red raw",                let: "rauw" },
-  "paddenstoelen-uv":   { q: "mushrooms white exposed to ultraviolet light", let: "★ alleen UV-behandeld draagt vitamine D" },
-  banaan:               { q: "bananas raw",                          let: "rauw" },
-  avocado:              { q: "avocados raw",                         let: "rauw" },
-  "gedroogde-vijgen":   { q: "figs dried uncooked",                  let: "gedroogd" },
+  spinazie:             { q: "spinach cooked boiled drained without salt",        kern: ["spinach"], let: "gekookt en uitgelekt" },
+  boerenkool:           { q: "kale cooked boiled drained",           kern: ["kale"], let: "gekookt" },
+  snijbiet:             { q: "chard swiss cooked boiled drained without salt",            kern: ["chard"], let: "gekookt" },
+  "broccoli-gekookt":   { q: "broccoli cooked boiled drained without salt",       kern: ["broccoli"], let: "gekookt" },
+  "paprika-rauw":       { q: "peppers sweet red raw",                kern: ["pepper"], let: "rauw" },
+  "paddenstoelen-uv":   { q: "mushrooms white exposed to ultraviolet light", kern: ["mushroom"], let: "★ alleen UV-behandeld draagt vitamine D" },
+  banaan:               { q: "bananas ripe raw",                          kern: ["banana"], let: "★ overrijp scheelt in suiker; \"ripe and slightly ripe\" is de normale banaan" },
+  avocado:              { q: "avocados raw",                         kern: ["avocado"], let: "rauw" },
+  "gedroogde-vijgen":   { q: "figs dried uncooked",                  kern: ["fig"], let: "gedroogd" },
 
-  "zalm-gekweekt":      { q: "salmon atlantic farmed raw",           let: "★ gekweekt ≠ wild; vitamine D en EPA/DHA verschillen factor 2–4" },
-  "zalm-wild":          { q: "salmon atlantic wild raw",             let: "★ vangstgebied telt: Oostzee ≈ 2× Noordzee" },
-  makreel:              { q: "mackerel atlantic raw",                let: "★ soort telt: Atlantic ≠ King ≠ Spanish" },
-  haring:               { q: "herring atlantic raw",                 let: "rauw, niet gerookt of gemarineerd" },
-  sardines:             { q: "sardines atlantic canned in oil drained", let: "uitgelekt; op olie vs water scheelt" },
-  "tonijn-blik":        { q: "tuna light canned in water drained",   let: "op water, uitgelekt" },
-  kabeljauw:            { q: "cod atlantic raw",                     let: "rauw" },
-  garnalen:             { q: "shrimp raw",                           let: "rauw" },
-  oesters:              { q: "oysters eastern raw",                  let: "★ zink varieert extreem per soort en seizoen" },
+  "zalm-gekweekt":      { q: "salmon atlantic farmed raw",           kern: ["salmon"], let: "★ gekweekt ≠ wild; vitamine D en EPA/DHA verschillen factor 2–4" },
+  "zalm-wild":          { q: "salmon atlantic wild raw",             kern: ["salmon"], let: "★ vangstgebied telt: Oostzee ≈ 2× Noordzee" },
+  makreel:              { q: "mackerel atlantic raw",                kern: ["mackerel"], let: "★ soort telt: Atlantic ≠ King ≠ Spanish" },
+  haring:               { q: "herring atlantic raw",                 kern: ["herring"], let: "rauw, niet gerookt of gemarineerd" },
+  sardines:             { q: "sardines atlantic canned in oil drained", kern: ["sardine"], let: "uitgelekt; op olie vs water scheelt" },
+  "tonijn-blik":        { q: "tuna light canned in water drained",   kern: ["tuna"], let: "op water, uitgelekt" },
+  kabeljauw:            { q: "cod atlantic raw",                     kern: ["cod"], let: "rauw" },
+  garnalen:             { q: "shrimp raw",                           kern: ["shrimp", "prawn"], let: "rauw" },
+  oesters:              { q: "oysters eastern raw",                  kern: ["oyster"], let: "★ zink varieert extreem per soort en seizoen" },
 
-  kipfilet:             { q: "chicken breast skinless boneless raw", let: "zonder vel, rauw" },
-  "rundvlees-mager":    { q: "beef loin lean raw",                   let: "mager, rauw" },
-  varkenshaas:          { q: "pork tenderloin lean raw",             let: "rauw" },
-  kalfsvlees:           { q: "veal loin lean raw",                   let: "rauw" },
-  lamsvlees:            { q: "lamb loin lean raw",                   let: "rauw" },
-  leverpastei:          { q: "liver pate chicken canned",            let: "★ leverproducten verschillen sterk per recept" },
+  kipfilet:             { q: "chicken breast skinless boneless raw", kern: ["chicken"], let: "zonder vel, rauw" },
+  "rundvlees-mager":    { q: "beef loin lean raw",                   kern: ["beef"], let: "mager, rauw" },
+  varkenshaas:          { q: "pork tenderloin lean raw",             kern: ["pork"], let: "rauw" },
+  kalfsvlees:           { q: "veal loin lean raw",                   kern: ["veal"], let: "rauw" },
+  lamsvlees:            { q: "lamb loin lean raw",                   kern: ["lamb"], let: "rauw" },
+  leverpastei:          { q: "liver pate chicken canned",            kern: ["pate", "liver"], let: "★ leverproducten verschillen sterk per recept" },
 
-  eieren:               { q: "egg whole raw fresh",                  let: "★ vitamine D volgt het legvoer; NL-waarde kan afwijken" },
-  "magere-kwark":       { q: "cheese cottage lowfat",                let: "★ kwark bestaat niet in de VS — beste benadering is magere kwark uit NEVO of etiket" },
-  skyr:                 { q: "yogurt greek plain nonfat",            let: "★ skyr ≠ Griekse yoghurt; eiwit ligt hoger" },
-  "griekse-yoghurt":    { q: "yogurt greek plain whole milk",        let: "vetgehalte bepaalt eiwit per 100 g" },
-  huttenkase:           { q: "cheese cottage creamed large curd",    let: "vetgehalte" },
-  "belegen-kaas":       { q: "cheese gouda",                         let: "★ rijping bepaalt vocht en dus eiwit per 100 g" },
+  eieren:               { q: "egg whole raw fresh",                  kern: ["egg"], let: "★ vitamine D volgt het legvoer; NL-waarde kan afwijken" },
+  "magere-kwark":       { q: "cheese cottage lowfat",                kern: ["cottage"], let: "★ kwark bestaat niet in de VS — beste benadering is magere kwark uit NEVO of etiket" },
+  skyr:                 { q: "yogurt greek plain nonfat",            kern: ["yogurt", "skyr"], let: "★ skyr ≠ Griekse yoghurt; eiwit ligt hoger" },
+  "griekse-yoghurt":    { q: "yogurt greek plain whole milk",        kern: ["yogurt"], let: "vetgehalte bepaalt eiwit per 100 g" },
+  huttenkase:           { q: "cheese cottage creamed large curd",    kern: ["cottage"], let: "vetgehalte" },
+  "belegen-kaas":       { q: "cheese gouda",                         kern: ["gouda", "cheese"], let: "★ rijping bepaalt vocht en dus eiwit per 100 g" },
 };
 
 /** Producten die nooit uit USDA komen — verrijking is nationaal geregeld. */
@@ -264,18 +277,49 @@ async function fdc(pad, params) {
   return res.json();
 }
 
-/** De beste match: Foundation Foods gaat voor, SR Legacy is de terugval. */
-async function zoekVoedingsmiddel(query) {
+/**
+ * Staat dit FDC-record werkelijk voor het gevraagde voedingsmiddel?
+ *
+ * De reden dat deze functie bestaat: FDC's relevantie-sortering zet bij een
+ * zoekterm zonder treffers gewoon het populairste record bovenaan dat één
+ * woord deelt. "herring atlantic raw" leverde zo kabeljauw, "black beans
+ * cooked boiled" leverde boerenkool (die draagt "cooked, boiled, drained" in
+ * zijn naam), en "tofu raw firm" leverde bieten. Dertien van de 53 rijen in de
+ * eerste run zaten er zo naast — allemaal met een keurig ogend getal.
+ *
+ * `kern` is daarom geen zoekterm maar een controle: het woord dat in de
+ * beschrijving móét staan, anders is het een ander voedingsmiddel. Een
+ * afgewezen match is het gewenste resultaat, geen mislukking.
+ */
+function naamDekt(beschrijving, kern) {
+  const naam = String(beschrijving ?? "").toLowerCase();
+  return kern.some((k) => naam.includes(k.toLowerCase()));
+}
+
+/**
+ * De beste match: Foundation Foods gaat voor, SR Legacy is de terugval.
+ *
+ * Twee harde regels boven op de vorige versie: `requireAllWords` staat aan, en
+ * alleen records waarvan de naam de `kern` draagt komen in aanmerking. Levert
+ * dat niets op, dan is "geen treffer" het eerlijke antwoord.
+ */
+async function zoekVoedingsmiddel(query, kern) {
+  const afgewezen = [];
   for (const dataType of ["Foundation", "SR Legacy"]) {
     const r = await fdc("/foods/search", {
       query,
       dataType,
-      pageSize: "5",
-      requireAllWords: "false",
+      pageSize: "10",
+      requireAllWords: "true",
     });
-    if (r.foods?.length) return { dataType, treffers: r.foods };
+    const treffers = (r.foods ?? []).filter((f) => {
+      if (naamDekt(f.description, kern)) return true;
+      afgewezen.push({ fdcId: f.fdcId, naam: f.description, dataType });
+      return false;
+    });
+    if (treffers.length) return { dataType, treffers, afgewezen };
   }
-  return null;
+  return { dataType: null, treffers: [], afgewezen };
 }
 
 /** Haal onze vijf stoffen uit een FDC-detailrecord, met spreiding waar aanwezig. */
@@ -361,10 +405,19 @@ async function main() {
     const item = { key: doel.key, soort: doel.soort, catalogusKeys: doel.catalogusKeys, ...QUERIES[doel.key] };
     process.stderr.write(`[${i + 1}/${teZoeken.length}] ${doel.key} … `);
     try {
-      const treffer = await zoekVoedingsmiddel(item.q);
-      if (!treffer) {
-        rapport.rijen.push({ ...item, status: "geen-treffer" });
-        process.stderr.write("geen treffer\n");
+      if (!item.kern?.length) {
+        rapport.rijen.push({ ...item, status: "kern-ontbreekt" });
+        process.stderr.write("kern ontbreekt — overgeslagen\n");
+        continue;
+      }
+      const treffer = await zoekVoedingsmiddel(item.q, item.kern);
+      if (!treffer.treffers.length) {
+        rapport.rijen.push({
+          ...item,
+          status: "geen-treffer",
+          afgewezen: treffer.afgewezen.slice(0, 5),
+        });
+        process.stderr.write(`geen treffer (${treffer.afgewezen.length} afgewezen)\n`);
         continue;
       }
       const best = treffer.treffers[0];
@@ -385,6 +438,7 @@ async function main() {
         fdcNaam: best.description,
         publicatie: best.publishedDate ?? null,
         alternatieven: treffer.treffers.slice(1).map((f) => ({ fdcId: f.fdcId, naam: f.description })),
+        afgewezen: treffer.afgewezen.slice(0, 5),
         stoffen,
       });
       process.stderr.write(`${treffer.dataType} #${best.fdcId}\n`);

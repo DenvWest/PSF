@@ -338,6 +338,76 @@ De netwerkpolicy blokkeert `api.nal.usda.gov` én `fdc.nal.usda.gov` nog steeds 
 
 **Wat er structureel niet in hoort** en dus met opzet leeg blijft: samengestelde gerechten (die halen hun gehaltes uit componenten), verrijkte producten (etiket, §2.2), en producten die voor deze vijf stoffen verwaarloosbaar zijn — fruit, dranken, suikerwaren, de meeste sauzen. Dat is geen achterstand maar de eerlijke stand.
 
+### 2.8 · De API ging open — en de eerste run zat er voor een kwart naast (17 sep)
+
+De blokkade uit §2.7 is weg: `api.nal.usda.gov` antwoordt met 200, ook op de
+detail-endpoint. Met een eigen sleutel van api.data.gov (gratis, in `.env.local`,
+3.600 verzoeken per uur) draaide de volledige run in één keer: 53 identiteiten
+met een curated query, 0 fouten.
+
+**De vondst zit niet in de data maar in het script.** De eerste run leverde 53
+nette treffers op — en 13 daarvan wezen naar een ander voedingsmiddel:
+
+| gevraagd | query | wat FDC teruggaf |
+|---|---|---|
+| haring | `herring atlantic raw` | Fish, cod, Atlantic |
+| makreel | `mackerel atlantic raw` | Fish, cod, Atlantic |
+| zwarte bonen | `black beans cooked boiled` | Kale, frozen, cooked, boiled |
+| spinazie, snijbiet, broccoli, linzen, witte bonen | idem | dezelfde boerenkool |
+| tofu | `tofu raw firm` | Beets, raw |
+| leverpastei | `liver pate chicken canned` | Tomato, puree, canned |
+| sardines | `sardines atlantic canned in oil` | Anchovies, canned in olive oil |
+| pompoenzaden | `pumpkin seeds kernels dried` | Seeds, sunflower seed |
+
+Twee oorzaken, samen: `requireAllWords: "false"` en `treffers[0]` blind
+overnemen. Er ís geen haring in de Foundation-tak, dus FDC gaf het populairste
+record dat "atlantic" of "raw" deelde. Boerenkool won zes keer omdat het
+"cooked, boiled, drained" in zijn naam draagt — precies de woorden die elke
+gekookte groente in zijn query heeft.
+
+Was dit automatisch overgenomen, dan had haring het EPA/DHA-gehalte van
+kabeljauw gekregen: 54 mg DHA in plaats van ~2.000. Het getal zou er precies zo
+uitzien als een goed getal. Dat is dezelfde val die §2.7 beschrijft, nu in
+scriptvorm — en de reden dat dit script rapporteert en niet patcht.
+
+**De vangrail.** Elke query draagt nu een `kern`: de term die in de
+FDC-beschrijving moet staan, anders telt de treffer niet. Plus
+`requireAllWords: "true"`. Een query zonder kern wordt overgeslagen in plaats
+van gegokt. Afgewezen kandidaten komen in het rapport, zodat zichtbaar blijft
+wát er is geweigerd.
+
+Daarna nog zeven correcties op variantniveau — het product klopte, de bereiding
+niet: havermeel in plaats van havervlokken, aardappelschil in plaats van
+vruchtvlees, overrijpe banaan, parboiled rijst. En tien rijen stonden op een
+"with salt"-record; die wijzen nu naar de zoutloze variant.
+
+**Eindstand: 53 van 53 kloppen op product én bereiding, 0 gedeelde fdcId's.**
+
+**Wat de spreiding waard blijkt.** 29 rijen dragen nu echte `min`/`max`/
+`dataPoints`. De hypothese uit §1.7 — dat de klassenband bij plantaardige
+mineralen het grofst is — klopt, maar in twee richtingen:
+
+| | waargenomen | klassenband ×0,60–1,70 |
+|---|---|---|
+| magnesium in amandelen | 238,5–271 mg (n=8) → **×1,14** | ×2,83 — vijf keer te breed |
+| magnesium in pompoenzaden | 579–603 mg (n=3) → **×1,04** | ×2,83 |
+| zink in UV-paddenstoelen | 0,26–1,57 mg (n=62) → **×6,04** | ×2,83 — te *smal* |
+| magnesium in kabeljauw | 7,4–30,1 mg (n=8) → **×4,06** | ×2,83 — te smal |
+
+De vuistregel is dus niet systematisch te ruim of te krap: hij is gewoon niet
+het juiste instrument. Waar monsters bestaan, vervangt de waarneming hem — en
+`nutrition-spread.ts` doet dat al zodra de data er is.
+
+**Een val voor de volgende stap:** USDA geeft EPA en DHA in **gram**, niet in
+mg. Zalm-gekweekt toont `0.318 g` EPA; dat is 318 mg. De catalogus rekent in mg.
+Wie `amount` rechtstreeks overneemt, bouwt een factor 1000 in — en dat is geen
+getal dat opvalt bij het nalezen.
+
+**Wat nog open staat:** 194 identiteiten wachten op een curated query (met kern),
+en de 83 audits van de WebSearch-rijen uit §2.7 zijn nog niet gedaan. Het
+rapport (`scripts/out/usda-rapport.json`) is de werklijst; er is nog niets in
+`food-sources.ts` gepatcht.
+
 ### 2.5 · Waarom etappe 2 eerder stopte
 
 De netwerkpolicy van deze omgeving blokkeert `api.nal.usda.gov` en `fdc.nal.usda.gov` (403 op CONNECT). De extractie kan hier niet draaien. Wat er wel ligt: het script (`scripts/usda-extract.mjs`), de productlijst en het verificatiepad. Zie etappe 3 — en §2.7 voor wat er alsnog via WebSearch is gedaan.
