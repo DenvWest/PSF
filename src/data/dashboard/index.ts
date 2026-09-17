@@ -313,14 +313,25 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
   { id: "toekomst", type: "future" },
 ];
 
+/**
+ * De vier tabs houden hun ids, en dragen sinds 17 september 2026 andere
+ * labels: het dashboard gaat van zeven domeinen naar één, en dan beschrijft
+ * "Kompas" niets meer — een kompas heeft meerdere richtingen nodig.
+ *
+ * De ids blijven omdat ze in de URL staan (`?tab=vandaag`) en in opgeslagen
+ * events; een hernoeming daar zou oude links breken en meetreeksen splitsen
+ * zonder dat er iets aan de betekenis verandert.
+ *
+ * Zie BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md §3.1.
+ */
 export const DASHBOARD_TABS: DashboardTab[] = [
   {
     id: "vandaag",
-    label: "Kompas",
-    icon: "Compass",
-    title: "Kompas",
-    subtitle: "Je domeinen — waar je kunt verdiepen.",
-    emptyHint: "Doe je eerste check — dan weet je waar je begint.",
+    label: "Dagboek",
+    icon: "BookOpen",
+    title: "Je dagboek",
+    subtitle: "Wat je at, en wat dat minstens levert.",
+    emptyHint: "Vul je eerste dag in — dan zie je wat eruit komt.",
   },
   {
     id: "agenda",
@@ -331,9 +342,9 @@ export const DASHBOARD_TABS: DashboardTab[] = [
   },
   {
     id: "voortgang",
-    label: "Voortgang",
+    label: "Je patroon",
     icon: "BarChart",
-    title: "Voortgang",
+    title: "Je patroon",
     subtitle: "Wat zich opstapelt sinds je check.",
     emptyHint: "Doe je eerste check — daarna verzamelt zich hier je bewijs.",
   },

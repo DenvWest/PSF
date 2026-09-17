@@ -95,6 +95,7 @@ import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import KompasContextSpine from "@/components/dashboard/kompas/KompasContextSpine";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
+import NutritionDagboekPaneel from "@/components/dashboard/voortgang/NutritionDagboekPaneel";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
 import DomainKompasScreen from "@/components/dashboard/domain/DomainKompasScreen";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
@@ -2712,7 +2713,24 @@ const KompasHome = ({
   }
 
   return (
-    <section aria-label="Kompas" className="-mt-2 flex flex-col gap-2.5">
+    <section aria-label="Je dagboek" className="-mt-2 flex flex-col gap-2.5">
+      {/*
+        Het dagboek stond tot 17 september 2026 op laag 5 van het
+        leefstijlprofiel — vier stappen diep, op de plek die klopte toen voeding
+        één domein tussen andere was. Nu voeding het enige domein is, is het
+        dagboek de handeling die je dagelijks doet, en die hoort op de eerste
+        tab.
+
+        Het paneel blijft óók op laag 5 staan: daar heeft het zijn context
+        (meetreeks, reflectie) en die drie horen bij elkaar. Dezelfde component,
+        twee plekken, een eigen `surface` zodat de meting ze uit elkaar houdt.
+      */}
+      <CockpitShell accent="#5A8F6A" ariaLabel="Je dagboek" embedded>
+        <NutritionDagboekPaneel
+          surface="dagboek_tab"
+          checkSliders={data?.nutritionCheckinReadout?.ladderReport?.sliders ?? null}
+        />
+      </CockpitShell>
       <CockpitShell accent="#5A8F6A" ariaLabel="Kompas home" embedded>
         <KompasHomeCard
           model={currentModel}
