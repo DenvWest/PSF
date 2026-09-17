@@ -1,4 +1,6 @@
-import { existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { alleArtikelen } from "@/data/blog";
@@ -71,5 +73,55 @@ describe("blog-cover", () => {
     });
     expect(cover.src).toBe("/images/blog/cortisol-en-slaap-v2.jpg");
     expect(existsSync(publicPad(cover.src))).toBe(true);
+  });
+
+  it("elke bibliotheekkaart heeft een visueel uniek coverbeeld", () => {
+    const items = getBlogLibraryItems();
+    const bySrc = new Map<string, string[]>();
+    const byHash = new Map<string, string[]>();
+
+    for (const item of items) {
+      const src = item.image?.src ?? "";
+      bySrc.set(src, [...(bySrc.get(src) ?? []), item.id]);
+      const digest = createHash("sha256")
+        .update(readFileSync(publicPad(src)))
+        .digest("hex");
+      byHash.set(digest, [...(byHash.get(digest) ?? []), item.id]);
+    }
+
+    const gedeeldPad = [...bySrc.entries()].filter(([, ids]) => ids.length > 1);
+    expect(gedeeldPad, `zelfde pad: ${JSON.stringify(gedeeldPad)}`).toEqual([]);
+
+    const gedeeldHash = [...byHash.entries()].filter(([, ids]) => ids.length > 1);
+    expect(gedeeldHash, `zelfde bestand: ${JSON.stringify(gedeeldHash)}`).toEqual(
+      [],
+    );
+
+    const python = `
+from PIL import Image
+import sys
+
+def ahash(path, size=8):
+    img = Image.open(path).convert("L").resize((size, size), Image.Resampling.BILINEAR)
+    pixels = list(img.getdata())
+    avg = sum(pixels) / len(pixels)
+    return "".join("1" if p >= avg else "0" for p in pixels)
+
+paths = [line.strip() for line in sys.stdin if line.strip()]
+hashes = [(path, ahash(path)) for path in paths]
+dupes = []
+for i, (a_path, a_hash) in enumerate(hashes):
+    for b_path, b_hash in hashes[i + 1:]:
+        dist = sum(x != y for x, y in zip(a_hash, b_hash))
+        if dist <= 1:
+            dupes.append(f"d={dist} {a_path} <-> {b_path}")
+print("\\n".join(dupes) if dupes else "OK")
+`;
+
+    const output = execFileSync("python3", ["-c", python], {
+      encoding: "utf8",
+      input: items.map((item) => publicPad(item.image?.src ?? "")).join("\n"),
+    });
+    expect(output.trim(), output).toBe("OK");
   });
 });

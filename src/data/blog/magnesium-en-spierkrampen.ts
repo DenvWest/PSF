@@ -6,7 +6,7 @@ export const magnesiumEnSpierkrampenData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Magnesium tegen spierkrampen: wat het onderzoek wél en niet laat zien",
   coverImage: "/images/blog/magnesium-en-spierkrampen.jpg",
-  coverImageAlt: "Krachttraining in een sportschool — krampen na inspanning vragen om context",
+  coverImageAlt: "Boerenkool, palmkool en spruitjes op een donkere ondergrond",
   heroIntro:
     "Kramp in je kuit, midden in de nacht. De reflex is bijna universeel: magnesium. Toch is dit precies het gebruik waarvoor de bewijsvoering het zwakst is — een Cochrane-review concludeerde dat magnesium bij oudere volwassenen waarschijnlijk geen klinisch betekenisvolle vermindering van krampen geeft. Dat is ongemakkelijk nieuws voor het bestverkochte argument van de hele categorie. Hier lees je wat er dan wél achter nachtkrampen zit, en in welke situaties magnesium alsnog verdedigbaar is.",
   leestijd: "10 min",

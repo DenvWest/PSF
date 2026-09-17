@@ -6,7 +6,7 @@ export const wheyEtiketLezenData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Het etiket van eiwitpoeder lezen: vier getallen en één valkuil",
   coverImage: "/images/blog/whey-etiket-lezen.jpg",
-  coverImageAlt: "Handen aan een bureau met documenten bij het vergelijken van etiketten",
+  coverImageAlt: "Kisten wortels, bieten en bladgroenten op een markt",
   heroIntro:
     "De voorkant van de bus verkoopt, de achterkant informeert. Wie leert waar hij moet kijken, ziet binnen dertig seconden of een poeder goed of duur is — en of het eiwitgehalte op de voorkant eerlijk tot stand komt. Hier lees je welke vier getallen ertoe doen, hoe je de prijs per 100 gram eiwit uitrekent, en waarom een lange lijst losse aminozuren een waarschuwing is.",
   leestijd: "9 min",
