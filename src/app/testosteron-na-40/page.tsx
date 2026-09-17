@@ -16,25 +16,25 @@ const LINK =
 
 const COVER = {
   src: "/images/blog/testosteron-na-40.jpg",
-  alt: "Man die krachttraining doet met een barbell in de gym",
+  alt: "Halterschijf op een rek in een sportschool",
   caption:
     "Testosteron na 30 hangt samen met slaap, stress en training — niet alleen met één hormoonwaarde.",
 };
 
 const BODY_IMAGE = {
   src: "/images/blog/inline/testosteron-na-40.jpg",
-  alt: "Man die biceps curls doet met een stang in de sportschool",
+  alt: "Lege sportschool met loopbanden en krachtbanken bij raamlicht",
   caption:
     "Krachttraining en herstel zijn praktische hefbomen naast slaap en stress — zonder snelle hormoonbeloftes.",
 };
 
 export const metadata: Metadata = {
-  title: "Testosteron na 30: wat verandert en wat helpt",
+  title: "Testosteron na 30: wat verandert en wat je zelf kunt doen",
   description:
     "Testosteron na 30 in begrijpelijke taal: leeftijdstrend, slaap, stress en training — zonder diagnoses. Links naar vergelijkingen en cluster-artikelen.",
   ...canonicalMetadata("/testosteron-na-40"),
   openGraph: {
-    title: "Testosteron Na 30: Complete Gids",
+    title: "Testosteron na 30: complete gids",
     description:
       "Wat verandert na 30, wat onderzoek redelijkerwijs zegt en welke stappen je veilig eerst zet.",
     url: "/testosteron-na-40",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Testosteron Na 30: Wat Verandert en Wat Je Zelf Kunt Doen",
+  headline: "Testosteron na 30: wat verandert en wat je zelf kunt doen",
   description:
     "Testosteron na 30: leefstijl, verwachtingen en wanneer medische hulp past.",
   image: [`https://perfectsupplement.nl${COVER.src}`],

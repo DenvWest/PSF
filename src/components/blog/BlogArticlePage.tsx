@@ -135,7 +135,11 @@ export default function BlogArticlePage({
     },
     description: artikel.metaDescription ?? artikel.heroIntro,
     image: buildArticleImageObjects([
-      { src: cover.src, alt: cover.alt, caption: cover.alt },
+      {
+        src: cover.src,
+        alt: cover.alt,
+        caption: artikel.coverCaption ?? cover.alt,
+      },
       ...(bodyImage ? [bodyImage] : []),
     ]),
     mainEntityOfPage: `https://perfectsupplement.nl${blogArtikelPad(artikel)}`,
@@ -184,7 +188,7 @@ export default function BlogArticlePage({
             <ArticleFigure
               src={cover.src}
               alt={cover.alt}
-              caption={cover.alt}
+              caption={artikel.coverCaption ?? cover.alt}
               priority
               className="mt-8"
             />

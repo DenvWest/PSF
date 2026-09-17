@@ -7,7 +7,9 @@ export const cortisolEnTestosteronData: BlogArtikel = {
   audience: "mannen",
   titel: "Cortisol en testosteron: stress, verhalen en wat onderzoek redelijkerwijs zegt",
   coverImage: "/images/blog/cortisol-en-testosteron.jpg",
-  coverImageAlt: "Man van middelbare leeftijd die krachttraining doet",
+  coverImageAlt: "Handen tijdens een werkoverleg aan een houten tafel",
+  coverCaption:
+    "Cortisol en testosteron hangen samen met slaap en stress, maar het is geen simpele knop om thuis te draaien.",
   heroIntro:
     "Op internet klinkt het alsof elke stresspiep je testosteron “kills”. De werkelijkheid is genuanceerder: beide hormonen hangen samen met leefstijl en leeftijd, maar individuele labwaarden fluctueren en correlaties zijn geen simpele knoppen om thuis te draaien. Dit artikel verbindt [stress verminderen als man](/stress-verminderen-na-40) met het begrip [testosteron in de kennisbank](/kennisbank/testosteron) — zonder diagnose — en wijst naar tools zoals [ashwagandha vergelijken](/beste/ashwagandha) alleen als tweede lijn.",
   leestijd: "12 min",
@@ -64,8 +66,7 @@ export const cortisolEnTestosteronData: BlogArtikel = {
     "testosteron-en-energie-na-40",
     "ademhaling-tegen-stress",
   ],
-  metaTitle:
-    "Cortisol en testosteron: feiten vs verhalen",
+  metaTitle: "Cortisol en testosteron: wat onderzoek redelijkerwijs zegt",
   metaDescription:
     "Cortisol, testosteron en stress na 30: wat correlaties wél betekenen, wat niet, en welke stappen je veilig eerst zet — met links naar pillars en vergelijkingen.",
   keywords: [

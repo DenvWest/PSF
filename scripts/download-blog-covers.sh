@@ -11,7 +11,7 @@ MAP=(
   "cortisol-en-slaap|1541781774459-bb2af2f05b55"
   "ademhaling-tegen-stress|1544367567-0f2fcb009e0b"
   "stress-werk-grenzen-stellen|1497366216548-37526070297c"
-  "cortisol-en-testosteron|1571019614242-c5c5dee9f50b"
+  "cortisol-en-testosteron|1517245386807-bb43f82c33c4"
   "slaap-verbeteren-40-plus|1522771739844-6a9f6d5f14af"
   "slaaphygiene-mannen-40-plus|1511295742362-92c96b1cf484"
   "magnesium-en-slaap|1519681393784-d120267933ba"
@@ -49,7 +49,7 @@ MAP=(
   "vitamine-d-en-k2-samen|1550572017-edd951b55104"
   "vitamine-d-hoge-doses-social-media|1614440562463-5bb4a862db46"
   "overgang|1573497019940-1c28c88b4f3e"
-  "testosteron-na-40|1605296867304-46d5465a13f1"
+  # testosteron-na-40 cover = kopie van kennisbank/testosteron.jpg (geen Unsplash-keuken)
   "zink-en-testosteron|1476224203421-9ac39bcb3327"
   "omega-3-en-herstel|1565299624946-b28f40a0ae38"
   "multivitamine-zinvol-na-40|1556910103-1c02745aae4d"

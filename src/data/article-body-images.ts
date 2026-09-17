@@ -329,7 +329,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "slaapkwaliteit-testosteron-herstel": img(
     "blog",
     "slaapkwaliteit-testosteron-herstel",
-    "Lichte slaapkamer met wit beddengoed in ochtendlicht",
+    "Opgemaakt bed in een lichte slaapkamer bij daglicht",
     "De hoogste testosteronaanmaak vindt plaats in de vroege, diepe slaap — slaapkwaliteit telt zwaarder dan het aantal uren.",
   ),
   "vermoeidheid-bloedwaarden-checken-mannen": img(

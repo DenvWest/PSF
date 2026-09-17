@@ -8,6 +8,8 @@ export const slaapkwaliteitTestosteronHerstelData: BlogArtikel = {
   titel: "Slaapkwaliteit en testosteron: waarom één slechte nacht al meetelt",
   coverImage: "/images/blog/slaapkwaliteit-testosteron-herstel.jpg",
   coverImageAlt: "Hotelbed met strak wit linnengoed in een rustige slaapkamer",
+  coverCaption:
+    "De hoogste testosteronaanmaak zit in de vroege diepe slaap — kwaliteit weegt zwaarder dan het aantal uren.",
   heroIntro:
     "Testosteronaanmaak gebeurt grotendeels tijdens slaap, geconcentreerd in de eerste diepe-slaapcycli van de nacht. Dat maakt slaap geen zijthema bij het gesprek over testosteron na 30, maar een van de meest directe hefbomen die je zelf in de hand hebt. Achtergrond over de bredere daling staat in de pillar [testosteron na 30](/testosteron-na-40).",
   leestijd: "9 min",
@@ -65,7 +67,7 @@ export const slaapkwaliteitTestosteronHerstelData: BlogArtikel = {
   samenvatting:
     "Testosteronaanmaak gebeurt grotendeels tijdens de eerste diepe-slaapcycli van de nacht, wat slaap tot een directe hefboom maakt naast de geleidelijke daling met leeftijd. Onderzoek laat na een week van vijf uur slaap een daling van 10-15% zien — vergelijkbaar met tien tot vijftien jaar veroudering. Slaapapneu is een specifieke, onderschatte oorzaak bij mannen met overgewicht. Vast ritme, voldoende uren en minder avondalcohol zijn de eerste stappen.",
   cornerstoneLink: {
-    label: "Testosteron na 30: wat er daalt en wat je eraan doet",
+    label: "Testosteron na 30: wat verandert en wat je zelf kunt doen",
     href: "/testosteron-na-40",
   },
   vergelijkingExtraLink: {
@@ -77,7 +79,7 @@ export const slaapkwaliteitTestosteronHerstelData: BlogArtikel = {
     "testosteron-en-energie-na-40",
     "buikvet-cortisol-slaap-mannen",
   ],
-  metaTitle: "Slaapkwaliteit en testosteron: het directe verband",
+  metaTitle: "Slaapkwaliteit en testosteron: waarom één slechte nacht meetelt",
   metaDescription:
     "Waarom testosteronaanmaak vooral tijdens diepe slaap gebeurt, wat onderzoek laat zien bij slaaptekort en hoe slaapapneu een onderschatte factor is na 30.",
   keywords: [

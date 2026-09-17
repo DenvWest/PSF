@@ -249,7 +249,7 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "Testosteron en training — halter in een lege sportschool",
     coverCaption:
       "Testosteron ondersteunt spier, libido en herstel; slaap en overgewicht wegen zwaarder dan de meeste pillen.",
-    coverTitle: "Testosteron na 40: wat verandert?",
+    coverTitle: "Testosteron na 30: wat verandert?",
     inlineAlt:
       "Berglandschap — vitaliteit en hormoonbalans bij testosteron",
     inlineCaption:

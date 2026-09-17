@@ -7,7 +7,9 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
   audience: "mannen",
   titel: "Testosteron en energie na 30: wanneer is actie nodig?",
   coverImage: "/images/blog/testosteron-en-energie-na-40.jpg",
-  coverImageAlt: "Man die gewichten tilt in een sportschool",
+  coverImageAlt: "Man die een barbell van de vloer tilt in een sportschool",
+  coverCaption:
+    "Vermoeidheid na 30 heeft zelden één hormonale oorzaak; slaap, training en meten wegen zwaarder dan één bloedwaarde.",
   heroIntro:
     "Testosteron daalt gemiddeld met 1-2% per jaar vanaf je dertigste — maar ‘laag’ is pas echt betekenisvol in combinatie met klachten en een zorgvuldige diagnose. Zo onderscheid je normale leeftijdsverandering van iets dat medische aandacht verdient.",
   leestijd: "9 min",
@@ -50,8 +52,7 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
     "energie-verhogen-natuurlijk",
     "omega-3-concentratie-energie",
   ],
-  metaTitle:
-    "Testosteron en energie na 30: symptomen en diagnose",
+  metaTitle: "Testosteron en energie na 30: wanneer is actie nodig?",
   metaDescription:
     "Wanneer is laag testosteron relevant voor vermoeidheid? Symptomen, meten ’s ochtends en waarom context belangrijker is dan één getal.",
   keywords: [

@@ -2,7 +2,8 @@ import { alleArtikelen } from "@/data/blog";
 import { CATEGORIE_CONFIG } from "@/data/blog/categorieen";
 import { PUBLIEK_PIJLERS, type PubliekPijler } from "@/data/blog/publiek-pijlers";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
-import { blogCover, categorieCover } from "@/lib/blog-cover";
+import { blogCover } from "@/lib/blog-cover";
+import { newestPublicJpg } from "@/lib/public-jpg";
 import {
   normalizeSearch,
   type LibraryItem,
@@ -55,7 +56,10 @@ function pijlerNaarItem(pijler: PubliekPijler): LibraryItem {
     groupKey: pijler.categorie,
     groupLabel: config.naam,
     accentClass: config.kleur.rail,
-    image: categorieCover(pijler.categorie),
+    image: {
+      src: newestPublicJpg(pijler.coverImage),
+      alt: pijler.coverImageAlt,
+    },
     audience: pijler.audience,
     metaLabel: `${pijler.leestijd} leestijd`,
     sourceCount: pijler.bronnen,

@@ -61,6 +61,8 @@ export interface BlogArtikel {
   coverImage: string;
   /** Beschrijvende NL alt-tekst bij coverImage (geen keyword-stuffing). */
   coverImageAlt: string;
+  /** Redactioneel bijschrift onder de cover; anders coverImageAlt. */
+  coverCaption?: string;
   /** Introductietekst direct onder de H1 */
   heroIntro: string;
   leestijd: string;
