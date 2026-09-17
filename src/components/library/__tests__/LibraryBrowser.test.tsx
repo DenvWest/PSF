@@ -101,4 +101,21 @@ describe("bibliotheek — filteren", () => {
       screen.getAllByRole("button", { name: "Wis filters" }).length,
     ).toBeGreaterThan(0);
   });
+
+  it("toont tien artikelen per pagina met genummerde navigatie", () => {
+    render(<BlogLibrary items={blogItems} />);
+
+    const eerste = kaartTitels();
+    expect(eerste).toHaveLength(10);
+    expect(screen.queryByRole("button", { name: /Toon meer/ })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Pagina 2" }));
+
+    const tweede = kaartTitels();
+    expect(tweede).toHaveLength(10);
+    expect(tweede[0]).not.toBe(eerste[0]);
+    expect(screen.getByRole("button", { name: "Pagina 2" }).getAttribute("aria-current")).toBe(
+      "page",
+    );
+  });
 });

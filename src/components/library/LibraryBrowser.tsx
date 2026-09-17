@@ -22,6 +22,12 @@ import {
   type LibraryItem,
   type LibrarySort,
 } from "@/lib/library/library-item";
+import {
+  LIBRARY_PAGE_SIZE,
+  libraryPageCount,
+  libraryPageTokens,
+  sliceLibraryPage,
+} from "@/lib/library/library-pagination";
 import LibraryCard from "@/components/library/LibraryCard";
 import LibrarySidebar, {
   type LibraryCrossLink,
@@ -41,9 +47,6 @@ export type LibraryFilterDef = {
 };
 
 type Weergave = "lijst" | "raster";
-
-/** Aantal items per stap; de rest komt met "Toon meer". */
-const PAGINA = 12;
 
 const BAND_KOP: Record<AudienceBand, string | null> = {
   "voor-jou": null,
@@ -98,7 +101,8 @@ export default function LibraryBrowser({
   const [actieveFilters, setActieveFilters] = useState<string[]>([]);
   const [sort, setSort] = useState<LibrarySort>(sorts[0]?.key ?? "nieuwste");
   const [weergave, setWeergave] = useState<Weergave>("raster");
-  const [zichtbaar, setZichtbaar] = useState(PAGINA);
+  const [pagina, setPagina] = useState(1);
+  const lijstRef = useRef<HTMLDivElement | null>(null);
 
   const zoekTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -155,15 +159,16 @@ export default function LibraryBrowser({
     }));
   }, [gefilterd, audience]);
 
-  const getoond = rijen.slice(0, zichtbaar);
-  const restant = rijen.length - getoond.length;
+  const paginaAantal = libraryPageCount(rijen.length);
+  const huidigePagina = Math.min(pagina, paginaAantal);
+  const getoond = sliceLibraryPage(rijen, huidigePagina);
 
   const filtersActief =
     group !== "alles" || zoek.trim().length > 0 || actieveFilters.length > 0;
 
   function kiesAudience(value: ContentAudience) {
     setAudience(value);
-    setZichtbaar(PAGINA);
+    setPagina(1);
     trackEvent(GA4_EVENTS.BIBLIOTHEEK_PUBLIEK, { surface, publiek: value });
     clarityTag(`${surface}_publiek`, value);
 
@@ -180,13 +185,13 @@ export default function LibraryBrowser({
 
   function kiesGroup(value: string) {
     setGroup(value);
-    setZichtbaar(PAGINA);
+    setPagina(1);
     trackEvent(GA4_EVENTS.BIBLIOTHEEK_FILTER, { surface, groep: value });
   }
 
   function wijzigZoek(value: string) {
     setZoek(value);
-    setZichtbaar(PAGINA);
+    setPagina(1);
     if (zoekTimer.current) clearTimeout(zoekTimer.current);
     if (value.trim().length < 3) return;
     zoekTimer.current = setTimeout(() => {
@@ -196,7 +201,7 @@ export default function LibraryBrowser({
 
   function toggleFilter(key: string) {
     const gekozen = filters.find((filter) => filter.key === key);
-    setZichtbaar(PAGINA);
+    setPagina(1);
 
     setActieveFilters((huidig) => {
       if (huidig.includes(key)) {
@@ -218,12 +223,16 @@ export default function LibraryBrowser({
     setGroup("alles");
     setZoek("");
     setActieveFilters([]);
-    setZichtbaar(PAGINA);
+    setPagina(1);
   }
 
-  function toonMeer() {
-    setZichtbaar((huidig) => huidig + PAGINA);
-    trackEvent(GA4_EVENTS.BIBLIOTHEEK_MEER, { surface, getoond: zichtbaar });
+  function kiesPagina(next: number) {
+    const doel = Math.min(Math.max(1, next), paginaAantal);
+    if (doel === huidigePagina) return;
+    setPagina(doel);
+    trackEvent(GA4_EVENTS.BIBLIOTHEEK_MEER, { surface, pagina: doel });
+    clarityTag(`${surface}_pagina`, String(doel));
+    lijstRef.current?.scrollIntoView?.({ behavior: "smooth", block: "start" });
   }
 
   const aantalLabel = `${gefilterd.length} ${
@@ -289,7 +298,7 @@ export default function LibraryBrowser({
               value={sort}
               onChange={(event) => {
                 setSort(event.target.value as LibrarySort);
-                setZichtbaar(PAGINA);
+                setPagina(1);
               }}
               className={`${LIB_TOOLBAR_BUTTON} appearance-none pr-8`}
             >
@@ -349,14 +358,17 @@ export default function LibraryBrowser({
           </div>
         ) : (
           <div
+            ref={lijstRef}
             className={
               weergave === "raster"
-                ? "mt-5 grid gap-5 @container sm:grid-cols-2"
-                : "mt-5 flex flex-col gap-3"
+                ? "mt-5 scroll-mt-24 grid gap-5 @container sm:grid-cols-2"
+                : "mt-5 scroll-mt-24 flex flex-col gap-3"
             }
           >
             {getoond.map(({ item, kop }, index) => {
               const toonKop = audience !== "alle" && kop !== null;
+              const positie =
+                (huidigePagina - 1) * LIBRARY_PAGE_SIZE + index + 1;
 
               return (
                 <div
@@ -380,13 +392,13 @@ export default function LibraryBrowser({
                     item={item}
                     audience={audience}
                     weergave={weergave}
-                    prioriteitBeeld={index < 4}
+                    prioriteitBeeld={huidigePagina === 1 && index < 4}
                     onOpen={() =>
                       trackEvent(GA4_EVENTS.BIBLIOTHEEK_ITEM_GEOPEND, {
                         surface,
                         groep: item.groupKey,
                         publiek: audience,
-                        positie: index + 1,
+                        positie,
                       })
                     }
                   />
@@ -396,14 +408,54 @@ export default function LibraryBrowser({
           </div>
         )}
 
-        {restant > 0 ? (
-          <button
-            type="button"
-            onClick={toonMeer}
-            className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-stone-200/80 bg-gradient-to-b from-white to-stone-50/60 px-5 text-sm font-semibold text-stone-700 shadow-[0_1px_2px_rgba(28,25,23,0.03)] transition-[border-color,color,background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-ps-green/45 hover:bg-ps-green-light/40 hover:text-ps-green hover:shadow-[0_4px_14px_rgba(90,143,106,0.16)] active:translate-y-0"
+        {getoond.length > 0 && paginaAantal > 1 ? (
+          <nav
+            aria-label="Paginering"
+            className="mt-6 flex flex-wrap items-center justify-center gap-1.5"
           >
-            Toon meer ({restant})
-          </button>
+            <button
+              type="button"
+              onClick={() => kiesPagina(huidigePagina - 1)}
+              disabled={huidigePagina === 1}
+              className={`${LIB_TOOLBAR_BUTTON} min-h-11 disabled:cursor-not-allowed disabled:opacity-40`}
+            >
+              Vorige
+            </button>
+            {libraryPageTokens(huidigePagina, paginaAantal).map((token, index) =>
+              token === "ellipsis" ? (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-1.5 text-sm text-stone-400"
+                  aria-hidden
+                >
+                  …
+                </span>
+              ) : (
+                <button
+                  key={token}
+                  type="button"
+                  aria-label={`Pagina ${token}`}
+                  aria-current={token === huidigePagina ? "page" : undefined}
+                  onClick={() => kiesPagina(token)}
+                  className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-sm font-semibold transition-[background-color,color,box-shadow,transform] duration-200 ease-out ${
+                    token === huidigePagina
+                      ? "bg-ps-green text-white shadow-[0_2px_6px_rgba(90,143,106,0.32)]"
+                      : "border border-stone-200 bg-white text-stone-600 hover:-translate-y-px hover:border-stone-300 hover:text-stone-900"
+                  }`}
+                >
+                  {token}
+                </button>
+              ),
+            )}
+            <button
+              type="button"
+              onClick={() => kiesPagina(huidigePagina + 1)}
+              disabled={huidigePagina === paginaAantal}
+              className={`${LIB_TOOLBAR_BUTTON} min-h-11 disabled:cursor-not-allowed disabled:opacity-40`}
+            >
+              Volgende
+            </button>
+          </nav>
         ) : null}
 
         {footerSlot != null ? (
