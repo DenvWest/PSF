@@ -360,6 +360,38 @@ De netwerkpolicy van deze omgeving blokkeert `api.nal.usda.gov` en `fdc.nal.usda
 
 Stap 3 is de reden dat dit niet één script is. "Almonds, raw" uit Foundation Foods matcht op onze rij `amandelen`, maar "Bread, whole-wheat, commercially prepared" is *niet* hetzelfde als Nederlands volkorenbrood — andere uitmaalgraad, ander zoutgehalte, ander recept. Dat oordeel per rij is het werk.
 
+### 3.1b · Vervolgsessie 12 sep — de API-onafhankelijke taken afgerond
+
+De FDC-API bleef dicht (403 op CONNECT in de proxy-policy, bevestigd via
+`$HTTPS_PROXY/__agentproxy/status`). Stap 2/3/4 wachten dus nog op een lokale
+run van het script; lever `scripts/out/usda-rapport.json` aan, dan draait het
+oordeelswerk daarop. Wat zonder API wél is gedaan:
+
+- **De lege regels gesorteerd (`geenBron`).** `bron: null` betekende twee
+  dingen door elkaar. Een nieuw veld `geenBron` scheidt `verwaarloosbaar`,
+  `verrijkt` en `samengesteld` van "nog op te halen". `zonderBron()` sluit ze
+  uit: de werklijst kromp van 279 naar **164** en verschuift niet meer mee als
+  de catalogus met frisdrank of kant-en-klaar groeit.
+- **`usda-extract.mjs` catalogus-gedreven.** De hardgecodeerde zoeklijst (54
+  rijen, een momentopname) is vervangen: het script leest nu `food-catalog.ts`
+  en leidt de identiteiten af (247 fetchbaar: 83 audit / 164 open). De Engelse
+  zoektermen blijven curated in `QUERIES`; een identiteit zonder query komt als
+  `query-ontbreekt` in het rapport (194 nu) in plaats van blind op een NL-label
+  te zoeken. `--plan` toont de dekking offline. De audit-gaten uit §2.7 (de
+  WebSearch-rijen zonder query) staan zo expliciet in het rapport.
+- **De supermarktlaag gebouwd (§2.5).** `src/data/nutrition/food-products.ts`:
+  een `Product` wijst met `foodKey` naar een `CatalogEntry` en draagt geen eigen
+  gehalte. `etiket` bestaat precies dan als de foodKey een `verrijkt`-regel is
+  (getest). Alleen citeerbare kaderwaarden zijn geseed (margarine 7,5/25 µg,
+  verplichte melk 1,5 µg); merkspecifieke etiketten (plantaardige dranken,
+  verrijkte granen, eiwitshakes/-repen) wachten op een gelezen verpakking — een
+  verzonnen getal blijft verboden.
+
+Nog open: de API-run zelf (stap 2/3/4), de verrijkte merkproducten met echte
+etiketten, de omkering van `food-sources.ts` (§5 van het besluit), en de
+breedte-uitbreiding gestuurd door `nutrition.dagboek_item_added` (TAAK 4 van de
+vervolgprompt — pas ná dit).
+
 ### 3.2 · De prompt voor het vervolg
 
 ```

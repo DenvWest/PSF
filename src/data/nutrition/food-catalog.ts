@@ -73,6 +73,24 @@ export interface CatalogEntry {
   porties: readonly Portie[];
   /** Sleutel in `FOOD_SOURCES`, of null zolang de gehaltes niet opgehaald zijn. */
   bron: string | null;
+  /**
+   * Waarom deze regel geen gehalterij heeft — als dat een producteigenschap is,
+   * geen achterstand. Ontbreekt het veld terwijl `bron` null is, dan staat de
+   * regel écht op de werklijst (`zonderBron()`).
+   *
+   * - `samengesteld`: gehaltes komen uit de componenten (soep, kant-en-klaar-
+   *   maaltijd, muesli). Wacht op `dishes.ts`, niet op een tabel.
+   * - `verrijkt`: het zinvolle getal staat op het etiket, niet in USDA
+   *   (margarine, verrijkte melk, plantaardige drank, eiwitshake). Wacht op de
+   *   supermarktlaag.
+   * - `verwaarloosbaar`: draagt voor déze vijf stoffen niets (water, koffie,
+   *   frisdrank, snoep, pure oliën, de meeste sauzen, vers fruit). Een getal
+   *   ophalen zou nul opleveren.
+   *
+   * Invariant: een regel met `geenBron` heeft altijd `bron: null`
+   * (zie `food-catalog.test.ts`).
+   */
+  geenBron?: "samengesteld" | "verrijkt" | "verwaarloosbaar";
   /** Extra woorden waarop gezocht wordt — spreektaal, streeknamen, spelfouten. */
   zoek?: readonly string[];
   /** Waarom deze vorm een eigen regel is. Verplicht zodra `bereiding` staat. */
@@ -92,6 +110,7 @@ function f(
     ookIn?: readonly FoodCategoryId[];
     zoek?: readonly string[];
     waarom?: string;
+    geenBron?: CatalogEntry["geenBron"];
   } = {},
 ): CatalogEntry {
   return {
@@ -212,38 +231,38 @@ const GROENTEN: readonly CatalogEntry[] = [
    fractie van die van vers fruit.
    ═══════════════════════════════════════════════════════════════════════ */
 const FRUIT: readonly CatalogEntry[] = [
-  f("appel", "Appel", "fruit", "fruit", [["stuk", 130]], null, { zoek: ["elstar", "jonagold"] }),
-  f("peer", "Peer", "fruit", "fruit", [["stuk", 150]], null),
+  f("appel", "Appel", "fruit", "fruit", [["stuk", 130]], null, { geenBron: "verwaarloosbaar", zoek: ["elstar", "jonagold"] }),
+  f("peer", "Peer", "fruit", "fruit", [["stuk", 150]], null, { geenBron: "verwaarloosbaar" }),
   f("banaan", "Banaan", "fruit", "fruit", [["stuk", 120], ["kleine", 90]], "banaan"),
-  f("sinaasappel", "Sinaasappel", "fruit", "fruit", [["stuk", 150]], null),
-  f("mandarijn", "Mandarijn", "fruit", "fruit", [["stuk", 70], ["twee stuks", 140]], null, { zoek: ["clementine"] }),
-  f("grapefruit", "Grapefruit", "fruit", "fruit", [["halve", 125]], null, { zoek: ["pompelmoes"] }),
-  f("citroen", "Citroen", "fruit", "fruit", [["partje", 15], ["halve", 45]], null),
-  f("limoen", "Limoen", "fruit", "fruit", [["partje", 12]], null),
-  f("kiwi", "Kiwi", "fruit", "fruit", [["stuk", 75], ["twee stuks", 150]], null),
-  f("mango", "Mango", "fruit", "fruit", [["halve", 100], ["portie", 150]], null),
-  f("ananas", "Ananas", "fruit", "fruit", [["schijf", 80], ["portie", 150]], null),
-  f("druiven", "Druiven", "fruit", "fruit", [["handvol", 80], ["tros", 150]], null),
-  f("aardbeien", "Aardbeien", "fruit", "fruit", [["handvol", 80], ["bakje", 250]], null),
-  f("blauwe-bessen", "Blauwe bessen", "fruit", "fruit", [["handvol", 60], ["bakje", 125]], null, { zoek: ["bosbessen"] }),
-  f("frambozen", "Frambozen", "fruit", "fruit", [["handvol", 60], ["bakje", 125]], null),
-  f("bramen", "Bramen", "fruit", "fruit", [["handvol", 60]], null),
-  f("kersen", "Kersen", "fruit", "fruit", [["handvol", 80]], null),
-  f("perzik", "Perzik", "fruit", "fruit", [["stuk", 130]], null),
-  f("nectarine", "Nectarine", "fruit", "fruit", [["stuk", 130]], null),
-  f("pruim", "Pruim", "fruit", "fruit", [["stuk", 60], ["twee stuks", 120]], null),
-  f("abrikoos-vers", "Abrikoos, vers", "fruit", "fruit", [["stuk", 40], ["drie stuks", 120]], null, { bereiding: "rauw" }),
-  f("meloen", "Meloen", "fruit", "fruit", [["partje", 150]], null, { zoek: ["galia", "cantaloupe", "watermeloen"] }),
-  f("granaatappel", "Granaatappel", "fruit", "fruit", [["halve", 90], ["handvol pitjes", 60]], null),
-  f("vijg-vers", "Vijg, vers", "fruit", "fruit", [["stuk", 50]], null, { bereiding: "rauw" }),
+  f("sinaasappel", "Sinaasappel", "fruit", "fruit", [["stuk", 150]], null, { geenBron: "verwaarloosbaar" }),
+  f("mandarijn", "Mandarijn", "fruit", "fruit", [["stuk", 70], ["twee stuks", 140]], null, { geenBron: "verwaarloosbaar", zoek: ["clementine"] }),
+  f("grapefruit", "Grapefruit", "fruit", "fruit", [["halve", 125]], null, { geenBron: "verwaarloosbaar", zoek: ["pompelmoes"] }),
+  f("citroen", "Citroen", "fruit", "fruit", [["partje", 15], ["halve", 45]], null, { geenBron: "verwaarloosbaar" }),
+  f("limoen", "Limoen", "fruit", "fruit", [["partje", 12]], null, { geenBron: "verwaarloosbaar" }),
+  f("kiwi", "Kiwi", "fruit", "fruit", [["stuk", 75], ["twee stuks", 150]], null, { geenBron: "verwaarloosbaar" }),
+  f("mango", "Mango", "fruit", "fruit", [["halve", 100], ["portie", 150]], null, { geenBron: "verwaarloosbaar" }),
+  f("ananas", "Ananas", "fruit", "fruit", [["schijf", 80], ["portie", 150]], null, { geenBron: "verwaarloosbaar" }),
+  f("druiven", "Druiven", "fruit", "fruit", [["handvol", 80], ["tros", 150]], null, { geenBron: "verwaarloosbaar" }),
+  f("aardbeien", "Aardbeien", "fruit", "fruit", [["handvol", 80], ["bakje", 250]], null, { geenBron: "verwaarloosbaar" }),
+  f("blauwe-bessen", "Blauwe bessen", "fruit", "fruit", [["handvol", 60], ["bakje", 125]], null, { geenBron: "verwaarloosbaar", zoek: ["bosbessen"] }),
+  f("frambozen", "Frambozen", "fruit", "fruit", [["handvol", 60], ["bakje", 125]], null, { geenBron: "verwaarloosbaar" }),
+  f("bramen", "Bramen", "fruit", "fruit", [["handvol", 60]], null, { geenBron: "verwaarloosbaar" }),
+  f("kersen", "Kersen", "fruit", "fruit", [["handvol", 80]], null, { geenBron: "verwaarloosbaar" }),
+  f("perzik", "Perzik", "fruit", "fruit", [["stuk", 130]], null, { geenBron: "verwaarloosbaar" }),
+  f("nectarine", "Nectarine", "fruit", "fruit", [["stuk", 130]], null, { geenBron: "verwaarloosbaar" }),
+  f("pruim", "Pruim", "fruit", "fruit", [["stuk", 60], ["twee stuks", 120]], null, { geenBron: "verwaarloosbaar" }),
+  f("abrikoos-vers", "Abrikoos, vers", "fruit", "fruit", [["stuk", 40], ["drie stuks", 120]], null, { geenBron: "verwaarloosbaar", bereiding: "rauw" }),
+  f("meloen", "Meloen", "fruit", "fruit", [["partje", 150]], null, { geenBron: "verwaarloosbaar", zoek: ["galia", "cantaloupe", "watermeloen"] }),
+  f("granaatappel", "Granaatappel", "fruit", "fruit", [["halve", 90], ["handvol pitjes", 60]], null, { geenBron: "verwaarloosbaar" }),
+  f("vijg-vers", "Vijg, vers", "fruit", "fruit", [["stuk", 50]], null, { geenBron: "verwaarloosbaar", bereiding: "rauw" }),
   f("gedroogde-vijgen", "Vijgen, gedroogd", "fruit", "fruit", [["vier stuks", 40], ["twee stuks", 20]], "gedroogde-vijgen",
     { bereiding: "gedroogd", waarom: "drogen concentreert het gehalte per 100 g ongeveer viervoudig" }),
   f("dadels", "Dadels", "fruit", "fruit", [["twee stuks", 40], ["stuk", 20]], null, { bereiding: "gedroogd", waarom: "gedroogd; kleine portie, hoog gehalte per 100 g" }),
   f("rozijnen", "Rozijnen", "fruit", "fruit", [["handvol", 30], ["eetlepel", 15]], null, { bereiding: "gedroogd", waarom: "gedroogd" }),
   f("abrikoos-gedroogd", "Abrikozen, gedroogd", "fruit", "fruit", [["vier stuks", 32]], null, { bereiding: "gedroogd", waarom: "gedroogd" }),
   f("pruimen-gedroogd", "Pruimen, gedroogd", "fruit", "fruit", [["drie stuks", 30]], null, { bereiding: "gedroogd", waarom: "gedroogd" }),
-  f("fruit-diepvries", "Rood fruit, diepvries", "fruit", "fruit", [["handvol", 80]], null, { bereiding: "diepvries", waarom: "vocht komt vrij bij ontdooien; portie wijkt af van vers" }),
-  f("appelmoes", "Appelmoes", "fruit", "fruit", [["schaaltje", 100]], null, { zoek: ["appelmoes uit pot"] }),
+  f("fruit-diepvries", "Rood fruit, diepvries", "fruit", "fruit", [["handvol", 80]], null, { geenBron: "verwaarloosbaar", bereiding: "diepvries", waarom: "vocht komt vrij bij ontdooien; portie wijkt af van vers" }),
+  f("appelmoes", "Appelmoes", "fruit", "fruit", [["schaaltje", 100]], null, { geenBron: "verwaarloosbaar", zoek: ["appelmoes uit pot"] }),
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -457,8 +476,8 @@ const EIEREN: readonly CatalogEntry[] = [
   f("ei-gekookt", "Ei, gekookt", "eieren", "eieren", [["stuk", 55], ["twee stuks", 110]], "eieren", { bereiding: "gekookt" }),
   f("ei-gebakken", "Ei, gebakken", "eieren", "eieren", [["stuk", 55], ["twee stuks", 110]], "eieren",
     { bereiding: "gebakken", waarom: "bakvet telt mee in het gerecht, niet in het ei" }),
-  f("roerei", "Roerei", "eieren", "eieren", [["twee eieren", 110]], null, { bereiding: "gebakken", waarom: "bakvet en soms melk gaan mee — dat is een gerecht, geen ei" }),
-  f("omelet", "Omelet", "eieren", "eieren", [["twee eieren", 110], ["drie eieren", 165]], null, { bereiding: "gebakken", waarom: "bakvet telt mee in het gerecht, niet in het ei" }),
+  f("roerei", "Roerei", "eieren", "eieren", [["twee eieren", 110]], null, { geenBron: "samengesteld", bereiding: "gebakken", waarom: "bakvet en soms melk gaan mee — dat is een gerecht, geen ei" }),
+  f("omelet", "Omelet", "eieren", "eieren", [["twee eieren", 110], ["drie eieren", 165]], null, { geenBron: "samengesteld", bereiding: "gebakken", waarom: "bakvet telt mee in het gerecht, niet in het ei" }),
   f("eiwit", "Eiwit (los)", "eieren", "eieren", [["stuk", 33], ["drie stuks", 100]], null, { waarom: "vitamine D en zink zitten vrijwel volledig in de dooier" }),
   f("eidooier", "Eidooier (los)", "eieren", "eieren", [["stuk", 18]], null),
   f("verrijkte-eieren", "Omega-3 verrijkte eieren", "eieren", "eieren", [["twee stuks", 110]], "verrijkte-eieren",
@@ -468,8 +487,8 @@ const EIEREN: readonly CatalogEntry[] = [
 const ZUIVEL: readonly CatalogEntry[] = [
   f("melk-vol", "Volle melk", "zuivel", "zuivel", P.drank, "melk-vol", { ookIn: ["dranken"] }),
   f("melk-halfvol", "Halfvolle melk", "zuivel", "zuivel", P.drank, null,
-    { ookIn: ["dranken"], waarom: "in Nederland verplicht verrijkt met vitamine D sinds 2021 — 1,5 µg per 100 ml" }),
-  f("melk-mager", "Magere melk", "zuivel", "zuivel", P.drank, null, { ookIn: ["dranken"], waarom: "idem verrijkt" }),
+    { geenBron: "verrijkt", ookIn: ["dranken"], waarom: "in Nederland verplicht verrijkt met vitamine D sinds 2021 — 1,5 µg per 100 ml" }),
+  f("melk-mager", "Magere melk", "zuivel", "zuivel", P.drank, null, { geenBron: "verrijkt", ookIn: ["dranken"], waarom: "idem verrijkt" }),
   f("karnemelk", "Karnemelk", "zuivel", "zuivel", P.drank, null, { ookIn: ["dranken"] }),
   f("yoghurt-vol", "Volle yoghurt", "zuivel", "zuivel", P.zuivel, null),
   f("yoghurt-mager", "Magere yoghurt", "zuivel", "zuivel", P.zuivel, null),
@@ -482,7 +501,7 @@ const ZUIVEL: readonly CatalogEntry[] = [
   f("creme-fraiche", "Crème fraîche", "zuivel", "zuivel", [["eetlepel", 15]], null, { ookIn: ["sauzen"] }),
   f("room", "Room", "zuivel", "zuivel", [["eetlepel", 15]], null),
   f("slagroom", "Slagroom", "zuivel", "zuivel", [["eetlepel", 15]], null, { ookIn: ["snacks"] }),
-  f("boter", "Roomboter", "zuivel", "vetten", [["mespunt", 5], ["eetlepel", 15]], null, { ookIn: ["vetten"], waarom: "telt als vet, niet als zuivel" }),
+  f("boter", "Roomboter", "zuivel", "vetten", [["mespunt", 5], ["eetlepel", 15]], null, { geenBron: "verwaarloosbaar", ookIn: ["vetten"], waarom: "telt als vet, niet als zuivel" }),
   f("drinkyoghurt", "Drinkyoghurt", "zuivel", "zuivel", P.drank, null, { ookIn: ["dranken"] }),
 ];
 
@@ -512,58 +531,58 @@ const PLANTAARDIG: readonly CatalogEntry[] = [
   f("sojadrink-verrijkt", "Sojadrink, verrijkt", "plantaardig", "zuivel", P.drank, "sojadrink-verrijkt",
     { ookIn: ["dranken"], waarom: "verrijkingsniveau is een merkkeuze — controleer het etiket" }),
   f("sojadrink-onverrijkt", "Sojadrink, onverrijkt", "plantaardig", "zuivel", P.drank, null, { ookIn: ["dranken"] }),
-  f("havermelk", "Havermelk", "plantaardig", "zuivel", P.drank, null, { ookIn: ["dranken"], zoek: ["haverdrink"] }),
-  f("amandeldrink", "Amandeldrink", "plantaardig", "zuivel", P.drank, null, { ookIn: ["dranken"] }),
-  f("kokosdrink", "Kokosdrink", "plantaardig", "zuivel", P.drank, null, { ookIn: ["dranken"] }),
-  f("rijstdrink", "Rijstdrink", "plantaardig", "zuivel", P.drank, null, { ookIn: ["dranken"] }),
+  f("havermelk", "Havermelk", "plantaardig", "zuivel", P.drank, null, { geenBron: "verrijkt", ookIn: ["dranken"], zoek: ["haverdrink"] }),
+  f("amandeldrink", "Amandeldrink", "plantaardig", "zuivel", P.drank, null, { geenBron: "verrijkt", ookIn: ["dranken"] }),
+  f("kokosdrink", "Kokosdrink", "plantaardig", "zuivel", P.drank, null, { geenBron: "verrijkt", ookIn: ["dranken"] }),
+  f("rijstdrink", "Rijstdrink", "plantaardig", "zuivel", P.drank, null, { geenBron: "verrijkt", ookIn: ["dranken"] }),
   f("plantaardige-drank-verrijkt", "Plantaardige drank, verrijkt", "plantaardig", "zuivel", P.drank, "plantaardige-drank-verrijkt", { ookIn: ["dranken"] }),
-  f("sojayoghurt", "Sojayoghurt", "plantaardig", "zuivel", P.zuivel, null),
-  f("plantaardige-yoghurt", "Plantaardige yoghurt", "plantaardig", "zuivel", P.zuivel, null),
+  f("sojayoghurt", "Sojayoghurt", "plantaardig", "zuivel", P.zuivel, null, { geenBron: "verrijkt" }),
+  f("plantaardige-yoghurt", "Plantaardige yoghurt", "plantaardig", "zuivel", P.zuivel, null, { geenBron: "verrijkt" }),
   f("tofu", "Tofu", "plantaardig", "peulvruchten", [["portie", 100], ["blok", 200]], "tofu",
     { waarom: "stremmen met calciumsulfaat of nigari geeft een ander mineraalprofiel" }),
   f("tempe", "Tempé", "plantaardig", "peulvruchten", [["portie", 100]], "tempe",
     { bereiding: "gefermenteerd", waarom: "fermentatie breekt fytaat af — meer mineraal beschikbaar dan uit sojabonen" }),
   f("seitan", "Seitan", "plantaardig", "granen", [["portie", 100]], "seitan", { waarom: "tarwe-eiwit; telt in de granengroep" }),
-  f("vegan-gehakt", "Vegetarisch gehakt", "plantaardig", "peulvruchten", [["portie", 100]], null),
-  f("vegan-burger", "Vegetarische burger", "plantaardig", "peulvruchten", [["stuk", 90]], null),
-  f("vegan-worst", "Vegetarische worst", "plantaardig", "peulvruchten", [["stuk", 70]], null),
-  f("vleesvervanger-stukjes", "Vegetarische stukjes", "plantaardig", "peulvruchten", [["portie", 100]], null),
+  f("vegan-gehakt", "Vegetarisch gehakt", "plantaardig", "peulvruchten", [["portie", 100]], null, { geenBron: "verrijkt" }),
+  f("vegan-burger", "Vegetarische burger", "plantaardig", "peulvruchten", [["stuk", 90]], null, { geenBron: "verrijkt" }),
+  f("vegan-worst", "Vegetarische worst", "plantaardig", "peulvruchten", [["stuk", 70]], null, { geenBron: "verrijkt" }),
+  f("vleesvervanger-stukjes", "Vegetarische stukjes", "plantaardig", "peulvruchten", [["portie", 100]], null, { geenBron: "verrijkt" }),
 ];
 
 const VETTEN: readonly CatalogEntry[] = [
-  f("olijfolie-ev", "Olijfolie, extra vierge", "vetten", "vetten", P.olie, null, { zoek: ["evoo"] }),
-  f("olijfolie", "Olijfolie", "vetten", "vetten", P.olie, null),
-  f("koolzaadolie", "Koolzaadolie", "vetten", "vetten", P.olie, null, { zoek: ["raapolie", "canola"] }),
-  f("zonnebloemolie", "Zonnebloemolie", "vetten", "vetten", P.olie, null),
-  f("avocado-olie", "Avocado-olie", "vetten", "vetten", P.olie, null),
-  f("lijnzaadolie", "Lijnzaadolie", "vetten", "vetten", P.olie, null, { waarom: "ALA-bron; telt niet mee voor EPA/DHA" }),
-  f("sesamolie", "Sesamolie", "vetten", "vetten", [["theelepel", 5]], null),
-  f("kokosolie", "Kokosolie", "vetten", "vetten", P.olie, null),
+  f("olijfolie-ev", "Olijfolie, extra vierge", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar", zoek: ["evoo"] }),
+  f("olijfolie", "Olijfolie", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar" }),
+  f("koolzaadolie", "Koolzaadolie", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar", zoek: ["raapolie", "canola"] }),
+  f("zonnebloemolie", "Zonnebloemolie", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar" }),
+  f("avocado-olie", "Avocado-olie", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar" }),
+  f("lijnzaadolie", "Lijnzaadolie", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar", waarom: "ALA-bron; telt niet mee voor EPA/DHA" }),
+  f("sesamolie", "Sesamolie", "vetten", "vetten", [["theelepel", 5]], null, { geenBron: "verwaarloosbaar" }),
+  f("kokosolie", "Kokosolie", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar" }),
   f("algenolie", "Algenolie", "vetten", "vetten", [["theelepel", 5]], "algenolie",
     { waarom: "de enige plantaardige EPA/DHA-bron — gehalte is een productspecificatie" }),
   f("halvarine", "Halvarine", "vetten", "vetten", [["mespunt", 5], ["voor twee sneden", 10]], "halvarine",
     { waarom: "in Nederland verrijkt met 7,5 µg vitamine D per 100 g — wettelijk kader, geen tabelwaarde" }),
-  f("margarine", "Margarine", "vetten", "vetten", [["mespunt", 5], ["voor twee sneden", 10]], null, { waarom: "idem verrijkt" }),
-  f("bakboter", "Bak- en braadboter", "vetten", "vetten", [["eetlepel", 15]], null),
+  f("margarine", "Margarine", "vetten", "vetten", [["mespunt", 5], ["voor twee sneden", 10]], null, { geenBron: "verrijkt", waarom: "idem verrijkt" }),
+  f("bakboter", "Bak- en braadboter", "vetten", "vetten", [["eetlepel", 15]], null, { geenBron: "verwaarloosbaar" }),
 ];
 
 const SAUZEN: readonly CatalogEntry[] = [
   f("pindakaas", "Pindakaas", "sauzen", "noten", [["eetlepel", 15], ["voor twee sneden", 30]], null, { ookIn: ["ontbijt"], waarom: "telt in de notengroep" }),
   f("amandelpasta", "Amandelpasta", "sauzen", "noten", [["eetlepel", 15]], null, { ookIn: ["ontbijt"] }),
   f("tahin", "Tahin (sesampasta)", "sauzen", "noten", [["eetlepel", 20]], "tahin"),
-  f("hummus", "Hummus", "sauzen", "peulvruchten", [["eetlepel", 25], ["portie", 60]], null, { waarom: "telt als peulvrucht" }),
-  f("mayonaise", "Mayonaise", "sauzen", "vetten", [["eetlepel", 15]], null),
-  f("ketchup", "Ketchup", "sauzen", "suiker", [["eetlepel", 15]], null),
-  f("mosterd", "Mosterd", "sauzen", "vetten", [["theelepel", 5]], null),
-  f("pesto", "Pesto", "sauzen", "vetten", [["eetlepel", 15]], null),
-  f("tomatensaus", "Tomatensaus", "sauzen", "groente", [["portie", 125]], null, { zoek: ["pastasaus"] }),
-  f("sojasaus", "Sojasaus", "sauzen", "vetten", [["eetlepel", 15]], null),
-  f("teriyakisaus", "Teriyakisaus", "sauzen", "suiker", [["eetlepel", 15]], null),
-  f("chilisaus", "Chilisaus", "sauzen", "suiker", [["eetlepel", 15]], null),
-  f("sambal", "Sambal", "sauzen", "groente", [["theelepel", 5]], null),
-  f("currysaus", "Currysaus", "sauzen", "vetten", [["portie", 100]], null),
-  f("dressing", "Slasaus / dressing", "sauzen", "vetten", [["eetlepel", 15]], null),
-  f("appelstroop", "Appelstroop", "sauzen", "suiker", [["voor twee sneden", 20]], null, { ookIn: ["ontbijt"] }),
+  f("hummus", "Hummus", "sauzen", "peulvruchten", [["eetlepel", 25], ["portie", 60]], null, { geenBron: "samengesteld", waarom: "telt als peulvrucht" }),
+  f("mayonaise", "Mayonaise", "sauzen", "vetten", [["eetlepel", 15]], null, { geenBron: "verwaarloosbaar" }),
+  f("ketchup", "Ketchup", "sauzen", "suiker", [["eetlepel", 15]], null, { geenBron: "verwaarloosbaar" }),
+  f("mosterd", "Mosterd", "sauzen", "vetten", [["theelepel", 5]], null, { geenBron: "verwaarloosbaar" }),
+  f("pesto", "Pesto", "sauzen", "vetten", [["eetlepel", 15]], null, { geenBron: "verwaarloosbaar" }),
+  f("tomatensaus", "Tomatensaus", "sauzen", "groente", [["portie", 125]], null, { geenBron: "verwaarloosbaar", zoek: ["pastasaus"] }),
+  f("sojasaus", "Sojasaus", "sauzen", "vetten", [["eetlepel", 15]], null, { geenBron: "verwaarloosbaar" }),
+  f("teriyakisaus", "Teriyakisaus", "sauzen", "suiker", [["eetlepel", 15]], null, { geenBron: "verwaarloosbaar" }),
+  f("chilisaus", "Chilisaus", "sauzen", "suiker", [["eetlepel", 15]], null, { geenBron: "verwaarloosbaar" }),
+  f("sambal", "Sambal", "sauzen", "groente", [["theelepel", 5]], null, { geenBron: "verwaarloosbaar" }),
+  f("currysaus", "Currysaus", "sauzen", "vetten", [["portie", 100]], null, { geenBron: "verwaarloosbaar" }),
+  f("dressing", "Slasaus / dressing", "sauzen", "vetten", [["eetlepel", 15]], null, { geenBron: "verwaarloosbaar" }),
+  f("appelstroop", "Appelstroop", "sauzen", "suiker", [["voor twee sneden", 20]], null, { geenBron: "verwaarloosbaar", ookIn: ["ontbijt"] }),
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -573,57 +592,57 @@ const SAUZEN: readonly CatalogEntry[] = [
    loggen mogelijk te maken, niet om te rekenen.
    ═══════════════════════════════════════════════════════════════════════ */
 const ONTBIJT: readonly CatalogEntry[] = [
-  f("muesli", "Muesli", "ontbijt", "granen", [["schaaltje", 60]], null),
-  f("granola", "Granola", "ontbijt", "granen", [["schaaltje", 50]], null, { waarom: "bevat toegevoegd vet en suiker — anders dan muesli" }),
-  f("cornflakes", "Cornflakes", "ontbijt", "granen", [["schaaltje", 30]], null),
+  f("muesli", "Muesli", "ontbijt", "granen", [["schaaltje", 60]], null, { geenBron: "samengesteld" }),
+  f("granola", "Granola", "ontbijt", "granen", [["schaaltje", 50]], null, { geenBron: "samengesteld", waarom: "bevat toegevoegd vet en suiker — anders dan muesli" }),
+  f("cornflakes", "Cornflakes", "ontbijt", "granen", [["schaaltje", 30]], null, { geenBron: "verwaarloosbaar" }),
   f("ontbijtgranen-volkoren", "Volkoren ontbijtgranen", "ontbijt", "granen", [["schaaltje", 45]], null),
   f("ontbijtgranen-verrijkt", "Ontbijtgranen, verrijkt", "ontbijt", "granen", [["schaaltje", 45]], null,
-    { waarom: "verrijking is een merkkeuze — het etiket is de bron" }),
-  f("ontbijtkoek", "Ontbijtkoek", "ontbijt", "suiker", [["plak", 25]], null),
-  f("jam", "Jam", "ontbijt", "suiker", [["voor twee sneden", 20]], null),
-  f("honing", "Honing", "ontbijt", "suiker", [["theelepel", 7]], null),
-  f("hagelslag", "Hagelslag", "ontbijt", "suiker", [["voor twee sneden", 15]], null),
+    { geenBron: "verrijkt", waarom: "verrijking is een merkkeuze — het etiket is de bron" }),
+  f("ontbijtkoek", "Ontbijtkoek", "ontbijt", "suiker", [["plak", 25]], null, { geenBron: "verwaarloosbaar" }),
+  f("jam", "Jam", "ontbijt", "suiker", [["voor twee sneden", 20]], null, { geenBron: "verwaarloosbaar" }),
+  f("honing", "Honing", "ontbijt", "suiker", [["theelepel", 7]], null, { geenBron: "verwaarloosbaar" }),
+  f("hagelslag", "Hagelslag", "ontbijt", "suiker", [["voor twee sneden", 15]], null, { geenBron: "verwaarloosbaar" }),
 ];
 
 const SNACKS: readonly CatalogEntry[] = [
-  f("popcorn", "Popcorn", "snacks", "granen", [["kom", 25]], null),
-  f("chips", "Chips", "snacks", "suiker", [["handvol", 25], ["kleine zak", 40]], null),
-  f("tortillachips", "Tortillachips", "snacks", "granen", [["handvol", 30]], null, { zoek: ["nachos"] }),
-  f("koek", "Koekje", "snacks", "suiker", [["stuk", 15], ["twee stuks", 30]], null),
+  f("popcorn", "Popcorn", "snacks", "granen", [["kom", 25]], null, { geenBron: "verwaarloosbaar" }),
+  f("chips", "Chips", "snacks", "suiker", [["handvol", 25], ["kleine zak", 40]], null, { geenBron: "verwaarloosbaar" }),
+  f("tortillachips", "Tortillachips", "snacks", "granen", [["handvol", 30]], null, { geenBron: "verwaarloosbaar", zoek: ["nachos"] }),
+  f("koek", "Koekje", "snacks", "suiker", [["stuk", 15], ["twee stuks", 30]], null, { geenBron: "verwaarloosbaar" }),
   f("pure-chocolade", "Pure chocolade 70 %", "snacks", "suiker", [["twee blokjes", 20], ["reep", 100]], "pure-chocolade",
     { waarom: "levert meetbaar magnesium — de enige snack met een nutriëntroute" }),
-  f("melkchocolade", "Melkchocolade", "snacks", "suiker", [["twee blokjes", 20]], null),
-  f("snoep", "Snoep", "snacks", "suiker", [["handvol", 30]], null),
-  f("ijs", "IJs", "snacks", "suiker", [["bolletje", 60], ["schaaltje", 120]], null),
-  f("proteinereep", "Proteïnereep", "snacks", "suiker", [["reep", 60]], null),
-  f("mueslireep", "Mueslireep", "snacks", "granen", [["reep", 30]], null),
-  f("gebak", "Gebak", "snacks", "suiker", [["punt", 90]], null, { zoek: ["taart", "cake"] }),
-  f("stroopwafel", "Stroopwafel", "snacks", "suiker", [["stuk", 35]], null),
+  f("melkchocolade", "Melkchocolade", "snacks", "suiker", [["twee blokjes", 20]], null, { geenBron: "verwaarloosbaar" }),
+  f("snoep", "Snoep", "snacks", "suiker", [["handvol", 30]], null, { geenBron: "verwaarloosbaar" }),
+  f("ijs", "IJs", "snacks", "suiker", [["bolletje", 60], ["schaaltje", 120]], null, { geenBron: "verwaarloosbaar" }),
+  f("proteinereep", "Proteïnereep", "snacks", "suiker", [["reep", 60]], null, { geenBron: "verrijkt" }),
+  f("mueslireep", "Mueslireep", "snacks", "granen", [["reep", 30]], null, { geenBron: "samengesteld" }),
+  f("gebak", "Gebak", "snacks", "suiker", [["punt", 90]], null, { geenBron: "verwaarloosbaar", zoek: ["taart", "cake"] }),
+  f("stroopwafel", "Stroopwafel", "snacks", "suiker", [["stuk", 35]], null, { geenBron: "verwaarloosbaar" }),
 ];
 
 const SOEPEN: readonly CatalogEntry[] = [
-  f("groentesoep", "Groentesoep", "soepen", "groente", [["kom", 250]], null),
-  f("tomatensoep", "Tomatensoep", "soepen", "groente", [["kom", 250]], null),
-  f("linzensoep", "Linzensoep", "soepen", "peulvruchten", [["kom", 250]], null),
-  f("erwtensoep", "Erwtensoep", "soepen", "peulvruchten", [["kom", 300]], null, { zoek: ["snert"] }),
-  f("kippensoep", "Kippensoep", "soepen", "vlees", [["kom", 250]], null),
-  f("pompoensoep", "Pompoensoep", "soepen", "groente", [["kom", 250]], null),
-  f("champignonsoep", "Champignonsoep", "soepen", "groente", [["kom", 250]], null),
-  f("bouillon", "Bouillon", "soepen", "dranken", [["kom", 250]], null),
+  f("groentesoep", "Groentesoep", "soepen", "groente", [["kom", 250]], null, { geenBron: "samengesteld" }),
+  f("tomatensoep", "Tomatensoep", "soepen", "groente", [["kom", 250]], null, { geenBron: "samengesteld" }),
+  f("linzensoep", "Linzensoep", "soepen", "peulvruchten", [["kom", 250]], null, { geenBron: "samengesteld" }),
+  f("erwtensoep", "Erwtensoep", "soepen", "peulvruchten", [["kom", 300]], null, { geenBron: "samengesteld", zoek: ["snert"] }),
+  f("kippensoep", "Kippensoep", "soepen", "vlees", [["kom", 250]], null, { geenBron: "samengesteld" }),
+  f("pompoensoep", "Pompoensoep", "soepen", "groente", [["kom", 250]], null, { geenBron: "samengesteld" }),
+  f("champignonsoep", "Champignonsoep", "soepen", "groente", [["kom", 250]], null, { geenBron: "samengesteld" }),
+  f("bouillon", "Bouillon", "soepen", "dranken", [["kom", 250]], null, { geenBron: "verwaarloosbaar" }),
 ];
 
 const MAALTIJDEN: readonly CatalogEntry[] = [
-  f("pizza", "Pizza", "maaltijden", "granen", [["punt", 125], ["hele", 350]], null),
-  f("lasagne", "Lasagne", "maaltijden", "granen", [["portie", 350]], null),
-  f("nasi", "Nasi goreng", "maaltijden", "zetmeel", [["portie", 350]], null),
-  f("bami", "Bami goreng", "maaltijden", "granen", [["portie", 350]], null),
-  f("curry-maaltijd", "Curry met rijst", "maaltijden", "zetmeel", [["portie", 400]], null),
-  f("stamppot", "Stamppot", "maaltijden", "zetmeel", [["portie", 350]], null, { zoek: ["boerenkoolstamppot", "hutspot"] }),
-  f("maaltijdsalade", "Maaltijdsalade", "maaltijden", "groente", [["portie", 300]], null),
-  f("pokebowl", "Pokébowl", "maaltijden", "zetmeel", [["portie", 400]], null),
-  f("burrito", "Burrito", "maaltijden", "granen", [["stuk", 300]], null),
-  f("wrap-gevuld", "Gevulde wrap", "maaltijden", "granen", [["stuk", 200]], null),
-  f("quiche", "Quiche", "maaltijden", "granen", [["punt", 150]], null),
+  f("pizza", "Pizza", "maaltijden", "granen", [["punt", 125], ["hele", 350]], null, { geenBron: "samengesteld" }),
+  f("lasagne", "Lasagne", "maaltijden", "granen", [["portie", 350]], null, { geenBron: "samengesteld" }),
+  f("nasi", "Nasi goreng", "maaltijden", "zetmeel", [["portie", 350]], null, { geenBron: "samengesteld" }),
+  f("bami", "Bami goreng", "maaltijden", "granen", [["portie", 350]], null, { geenBron: "samengesteld" }),
+  f("curry-maaltijd", "Curry met rijst", "maaltijden", "zetmeel", [["portie", 400]], null, { geenBron: "samengesteld" }),
+  f("stamppot", "Stamppot", "maaltijden", "zetmeel", [["portie", 350]], null, { geenBron: "samengesteld", zoek: ["boerenkoolstamppot", "hutspot"] }),
+  f("maaltijdsalade", "Maaltijdsalade", "maaltijden", "groente", [["portie", 300]], null, { geenBron: "samengesteld" }),
+  f("pokebowl", "Pokébowl", "maaltijden", "zetmeel", [["portie", 400]], null, { geenBron: "samengesteld" }),
+  f("burrito", "Burrito", "maaltijden", "granen", [["stuk", 300]], null, { geenBron: "samengesteld" }),
+  f("wrap-gevuld", "Gevulde wrap", "maaltijden", "granen", [["stuk", 200]], null, { geenBron: "samengesteld" }),
+  f("quiche", "Quiche", "maaltijden", "granen", [["punt", 150]], null, { geenBron: "samengesteld" }),
   f("friet", "Friet", "maaltijden", "zetmeel", [["kleine portie", 150], ["portie", 250]], null, { bereiding: "gefrituurd", waarom: "frituren onttrekt water en voegt vet toe — beide kanten op een factor" }),
   f("aardappel-gekookt", "Aardappelen, gekookt", "maaltijden", "zetmeel", [["stuk", 75], ["portie", 200]], null,
     { bereiding: "gekookt", ookIn: ["groenten"], waarom: "koken loogt kalium en magnesium uit" }),
@@ -634,21 +653,21 @@ const MAALTIJDEN: readonly CatalogEntry[] = [
 ];
 
 const DRANKEN: readonly CatalogEntry[] = [
-  f("water", "Water", "dranken", "dranken", [["glas", 200], ["fles", 500]], null),
-  f("bruiswater", "Bruiswater", "dranken", "dranken", P.drank, null, { zoek: ["spa rood", "mineraalwater"] }),
-  f("koffie", "Koffie", "dranken", "dranken", [["kop", 125], ["mok", 200]], null),
-  f("thee", "Thee", "dranken", "dranken", [["kop", 200]], null),
-  f("groene-thee", "Groene thee", "dranken", "dranken", [["kop", 200]], null),
-  f("sinaasappelsap", "Sinaasappelsap", "dranken", "fruit", P.drank, null, { waarom: "telt in de fruitgroep, maar zonder de vezel van heel fruit" }),
-  f("appelsap", "Appelsap", "dranken", "fruit", P.drank, null),
-  f("groentesap", "Groentesap", "dranken", "groente", P.drank, null),
-  f("frisdrank", "Frisdrank", "dranken", "suiker", [["glas", 200], ["blikje", 330]], null),
-  f("frisdrank-light", "Frisdrank, light / zero", "dranken", "dranken", [["glas", 200], ["blikje", 330]], null),
+  f("water", "Water", "dranken", "dranken", [["glas", 200], ["fles", 500]], null, { geenBron: "verwaarloosbaar" }),
+  f("bruiswater", "Bruiswater", "dranken", "dranken", P.drank, null, { geenBron: "verwaarloosbaar", zoek: ["spa rood", "mineraalwater"] }),
+  f("koffie", "Koffie", "dranken", "dranken", [["kop", 125], ["mok", 200]], null, { geenBron: "verwaarloosbaar" }),
+  f("thee", "Thee", "dranken", "dranken", [["kop", 200]], null, { geenBron: "verwaarloosbaar" }),
+  f("groene-thee", "Groene thee", "dranken", "dranken", [["kop", 200]], null, { geenBron: "verwaarloosbaar" }),
+  f("sinaasappelsap", "Sinaasappelsap", "dranken", "fruit", P.drank, null, { geenBron: "verwaarloosbaar", waarom: "telt in de fruitgroep, maar zonder de vezel van heel fruit" }),
+  f("appelsap", "Appelsap", "dranken", "fruit", P.drank, null, { geenBron: "verwaarloosbaar" }),
+  f("groentesap", "Groentesap", "dranken", "groente", P.drank, null, { geenBron: "verwaarloosbaar" }),
+  f("frisdrank", "Frisdrank", "dranken", "suiker", [["glas", 200], ["blikje", 330]], null, { geenBron: "verwaarloosbaar" }),
+  f("frisdrank-light", "Frisdrank, light / zero", "dranken", "dranken", [["glas", 200], ["blikje", 330]], null, { geenBron: "verwaarloosbaar" }),
   f("chocolademelk", "Chocolademelk", "dranken", "zuivel", P.drank, null),
-  f("sportdrank", "Sportdrank", "dranken", "suiker", [["fles", 500]], null),
-  f("bier", "Bier", "dranken", "dranken", [["glas", 250], ["fles", 330]], null),
-  f("wijn", "Wijn", "dranken", "dranken", [["glas", 150]], null),
-  f("eiwitshake", "Eiwitshake", "dranken", "zuivel", [["shake", 300]], null, { waarom: "eiwitgehalte is een merkkeuze — het etiket is de bron" }),
+  f("sportdrank", "Sportdrank", "dranken", "suiker", [["fles", 500]], null, { geenBron: "verwaarloosbaar" }),
+  f("bier", "Bier", "dranken", "dranken", [["glas", 250], ["fles", 330]], null, { geenBron: "verwaarloosbaar" }),
+  f("wijn", "Wijn", "dranken", "dranken", [["glas", 150]], null, { geenBron: "verwaarloosbaar" }),
+  f("eiwitshake", "Eiwitshake", "dranken", "zuivel", [["shake", 300]], null, { geenBron: "verrijkt", waarom: "eiwitgehalte is een merkkeuze — het etiket is de bron" }),
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -715,10 +734,16 @@ export function searchCatalog(query: string, limiet = 20): CatalogEntry[] {
 }
 
 /**
- * De werklijst voor `scripts/usda-extract.mjs`: alles wat te loggen is maar
- * nog geen gehaltes heeft. Dit getal hoort te dalen, niet de catalogus te
- * blokkeren — een regel zonder gehaltes is bruikbaar, alleen niet in mg.
+ * De werklijst voor `scripts/usda-extract.mjs`: alles wat te loggen is, nog
+ * geen gehaltes heeft, én er ook echt een verdient. Een regel met `geenBron`
+ * hoort er niet in — die mist een tabelwaarde omdat dat een producteigenschap
+ * is (`verwaarloosbaar`), op het etiket staat (`verrijkt`) of uit componenten
+ * komt (`samengesteld`), niet omdat er nog werk aan is.
+ *
+ * Zo zegt dit getal wat het belooft: het krimpt naarmate de extractie vordert,
+ * en het verschuift niet mee als de catalogus met kant-en-klaar of frisdrank
+ * groeit.
  */
 export function zonderBron(): CatalogEntry[] {
-  return FOOD_CATALOG.filter((entry) => entry.bron === null);
+  return FOOD_CATALOG.filter((entry) => entry.bron === null && !entry.geenBron);
 }

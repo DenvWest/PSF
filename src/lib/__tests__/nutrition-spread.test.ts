@@ -26,6 +26,14 @@ describe("spreadClassFor — de klasse volgt de voedselgroep", () => {
     expect(spreadClassFor("omega3", "vis", "haring")).toBe("visWild");
   });
 
+  it("kent forel als gekweekt — de USDA-bron zelf noemt het record 'farmed'", () => {
+    // Regressietest: forel viel eerder buiten GEKWEEKT en kreeg zo de bredere
+    // wilde band, terwijl food-sources.ts het bronrecord expliciet "farmed"
+    // noemt (forel) resp. "vrijwel altijd gekweekt" (gerookte-forel).
+    expect(spreadClassFor("vitamin_d", "vis", "forel")).toBe("visGekweekt");
+    expect(spreadClassFor("omega3", "vis", "gerookte-forel")).toBe("visGekweekt");
+  });
+
   it("noemt de rest plantaardig", () => {
     expect(spreadClassFor("magnesium", "noten", "amandelen")).toBe("plant");
     expect(spreadClassFor("magnesium", "peulvruchten", "linzen")).toBe("plant");
