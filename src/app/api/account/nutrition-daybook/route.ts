@@ -7,6 +7,7 @@ import {
   upsertDaybookDay,
 } from "@/lib/account-nutrition-daybook";
 import { normaliseerWaterMl } from "@/lib/nutrition-eetmomenten";
+import { sanitizeItems } from "@/lib/nutrition-dagboek-items";
 import { getAccountFromCookie } from "@/lib/account-server";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
@@ -84,13 +85,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Twee invoervormen naast elkaar: `meals` is de huidige (per eetmoment),
-  // `portions` blijft geldig voor clients die de platte lijst nog sturen.
+  // Drie invoervormen naast elkaar, van fijn naar grof: `items` is de huidige
+  // (product per eetmoment), `meals` blijft geldig voor clients die per groep
+  // per moment sturen, en `portions` voor de platte lijst. Welke van de drie
+  // de porties bepaalt, beslist `upsertDaybookDay`.
+  const items = sanitizeItems(record.items);
   const momenten = sanitizeMeals(record.meals);
   const porties = sanitizePortions(record.portions);
   const waterMl = normaliseerWaterMl(record.water_ml);
 
   const heeftInhoud =
+    items.length > 0 ||
     Object.keys(momenten).length > 0 ||
     Object.keys(porties).length > 0 ||
     (waterMl !== null && waterMl > 0);
@@ -114,6 +119,7 @@ export async function POST(request: NextRequest) {
     date,
     porties,
     momenten,
+    items,
     waterMl,
   });
   if (!ok) {

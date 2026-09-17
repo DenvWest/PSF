@@ -189,6 +189,17 @@ export type DagboekDag = {
    * vermijden; die module levert de nauwe `DagMomenten`.
    */
   momenten?: Record<string, Partial<Record<VoedselgroepId, number>>>;
+  /**
+   * Welke producten en gerechten er die dag stonden, met hun gewicht in gram.
+   *
+   * Leeg bij dagen uit de groepen- en momentenperiode; dat leest als "niet op
+   * productniveau ingevuld", niet als nul. De fijnste laag die er is wint bij
+   * het afleiden van `porties`, maar `porties` blijft de analyse-as.
+   *
+   * Losjes getypeerd om dezelfde reden als `momenten`: `nutrition-dagboek-items.ts`
+   * levert de nauwe `DagboekItem` en importeert deze module.
+   */
+  items?: readonly { moment: string; key: string; grams: number }[];
   /** Water in milliliters; null wanneer niet geregistreerd. */
   waterMl?: number | null;
 };

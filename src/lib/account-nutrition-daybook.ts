@@ -1,5 +1,10 @@
 import type { OrgScopedClient } from "@/lib/db/scoped";
 import {
+  portiesUitItems,
+  sanitizeItems,
+  type DagboekItem,
+} from "@/lib/nutrition-dagboek-items";
+import {
   isEetmomentId,
   normaliseerWaterMl,
   portiesUitMomenten,
@@ -102,7 +107,7 @@ export async function listDaybookDays(
 ): Promise<DagboekDag[]> {
   const { data, error } = await supabase
     .from("account_nutrition_daybook")
-    .select("entry_date, day_kind, portions, meals, water_ml")
+    .select("entry_date, day_kind, portions, meals, water_ml, items")
     .eq("account_id", accountId)
     .order("entry_date", { ascending: false })
     .limit(limit);
@@ -122,6 +127,9 @@ export async function listDaybookDays(
       soort: kind === "weekend" || kind === "doordeweeks" ? kind : dagSoortVoor(date),
       porties: sanitizePortions(row.portions),
       momenten: sanitizeMeals(row.meals),
+      // Ontbreekt de kolom nog (migratie niet gedraaid), dan leest dit als een
+      // dag uit de groepenperiode: een lege lijst, geen fout.
+      items: sanitizeItems(row.items),
       waterMl: normaliseerWaterMl(row.water_ml),
     };
   });
@@ -132,18 +140,25 @@ export async function upsertDaybookDay(
   accountId: string,
   input: {
     date: string;
-    /** Optioneel: wordt afgeleid uit `momenten` wanneer die er zijn. */
+    /** Optioneel: wordt afgeleid uit `items` of `momenten` wanneer die er zijn. */
     porties?: Partial<Record<VoedselgroepId, number>>;
     momenten?: DagMomenten;
+    items?: readonly DagboekItem[];
     waterMl?: number | null;
   },
 ): Promise<boolean> {
   // De momenten zijn de invoervorm; `portions` blijft de bron waar alle
   // analyse op rekent. Afleiden in plaats van allebei laten aanleveren, zodat
   // ze niet uit elkaar kunnen lopen.
+  // Volgorde: items winnen van momenten, momenten van losse porties. Elke laag
+  // is fijner dan de vorige, dus de fijnste die er is beschrijft de dag het best.
   const momenten = input.momenten ?? {};
-  const heeftMomenten = Object.keys(momenten).length > 0;
-  const porties = heeftMomenten ? portiesUitMomenten(momenten) : (input.porties ?? {});
+  const items = input.items ?? [];
+  const porties = items.length > 0
+    ? portiesUitItems(items)
+    : Object.keys(momenten).length > 0
+      ? portiesUitMomenten(momenten)
+      : (input.porties ?? {});
 
   const { error } = await supabase.from("account_nutrition_daybook").upsert(
     {
@@ -152,6 +167,7 @@ export async function upsertDaybookDay(
       day_kind: dagSoortVoor(input.date),
       portions: porties,
       meals: momenten,
+      items,
       water_ml: input.waterMl ?? null,
     },
     { onConflict: "account_id,entry_date" },

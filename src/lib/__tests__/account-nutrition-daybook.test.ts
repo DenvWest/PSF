@@ -128,16 +128,43 @@ describe("upsertDaybookDay", () => {
     });
 
     // De lock: het dagboek verrijkt de readout en voedt nooit een score.
-    // Geen score-, calorie- of gramkolom — water is de enige eenheid, en die
-    // draagt geen norm.
+    // Geen score- en geen caloriekolom, en geen grammen op dagniveau — water
+    // is de enige eenheid die een dag als geheel draagt, en die draagt geen
+    // norm. De grammen in `items` zijn een eigenschap van één product, niet
+    // van de dag: ze zeggen hoeveel van díé bron je noemde, en daar hangt de
+    // milligram-ondergrens aan. Een dagtotaal in grammen blijft verboden.
     expect(Object.keys(rows[0]).sort()).toEqual([
       "account_id",
       "day_kind",
       "entry_date",
+      "items",
       "meals",
       "portions",
       "water_ml",
     ]);
+  });
+
+  it("leidt porties af uit de items, en die winnen van de momenten", async () => {
+    const rows: Record<string, unknown>[] = [];
+    const upsert = vi.fn((row: Record<string, unknown>) => {
+      rows.push(row);
+      return Promise.resolve({ error: null });
+    });
+    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+
+    await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      porties: { groente: 9 },
+      momenten: { ontbijt: { zuivel: 1 } },
+      items: [{ moment: "ontbijt", key: "havermout", grams: 60 }],
+    });
+
+    // De fijnste laag beschrijft de dag het best: de meegegeven `porties` en
+    // de momenten worden genegeerd zodra er items zijn.
+    const porties = rows[0].portions as Record<string, number>;
+    expect(porties.groente).toBeUndefined();
+    expect(porties.zuivel).toBeUndefined();
+    expect(Object.values(porties).reduce((a, b) => a + b, 0)).toBe(1);
   });
 
   it("leidt porties af uit de momenten", async () => {

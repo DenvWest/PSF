@@ -7,8 +7,8 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20260905090000_intake_gender.sql`
-- **Openstaand:** 0 migraties
-- **Laatst bijgewerkt:** 8 september 2026
+- **Openstaand:** 1 migratie
+- **Laatst bijgewerkt:** 17 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
@@ -16,7 +16,11 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 Volgorde = van boven naar beneden (de timestamp in de bestandsnaam).
 
-_Leeg — er staat niets open._
+### [ ] 20260917210000_daybook_items.sql
+- **Wat:** voegt `items jsonb not null default '[]'` toe aan `account_nutrition_daybook` — producten en gerechten per eetmoment, zodat het dagboek weet wélk product je at en niet alleen welke voedselgroep. `portions` blijft de analyse-as en wordt eruit afgeleid.
+- **Blokkeert deploy:** nee — de leeslaag behandelt een ontbrekende kolom als een lege lijst, precies zoals een dag uit de groepenperiode. Het scherm toont dan de groepenvorm; niets crasht.
+- **Hoort bij:** plak 3 van BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09 §3.2, en §1 van BESLUIT_VOEDINGSDAGBOEK_KOMPAS_V1_2026-09.
+- **Terugdraaien:** `alter table public.account_nutrition_daybook drop column if exists items;` — additief, dus terugdraaien kost alleen de ingevoerde items.
 
 ## Runbook bij thuiskomst
 
