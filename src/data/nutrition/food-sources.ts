@@ -1923,7 +1923,7 @@ const OMEGA3_SOURCES: readonly FoodSource[] = [
   },
   {
     key: "tonijn-blik",
-    labelNl: "Tonijn uit blik",
+    labelNl: "Tonijn uit blik, op water",
     portionNl: "100 g uitgelekt",
     amount: 222,
     portionGroup: "other",
@@ -2319,7 +2319,7 @@ const ZINC_SOURCES: readonly FoodSource[] = [
   {
     key: "pompoenzaden",
     labelNl: "Pompoenzaden",
-    portionNl: "25 g",
+    portionNl: "25 g (handvol)",
     amount: 2,
     portionGroup: "nuts",
     source: usda("170556", "SR Legacy"),
@@ -2461,8 +2461,8 @@ const ZINC_SOURCES: readonly FoodSource[] = [
   {
     key: "belegen-kaas",
     labelNl: "Belegen kaas",
-    portionNl: "30 g (1 snee)",
-    amount: 1.2,
+    portionNl: "50 g (2 sneden)",
+    amount: 1.95,
     portionGroup: "dairy",
     source: usda("171241", "SR Legacy"),
     nutrientValue: {
@@ -2476,7 +2476,7 @@ const ZINC_SOURCES: readonly FoodSource[] = [
     variability: "low",
     bioavailability: "normal",
     qualityNote:
-      "USDA kent alleen \"Cheese, gouda\" zonder rijpingsgraad, dus jonge en belegen kaas delen hier hetzelfde record (SR 171241). Rijping onttrekt vocht en verhoogt daarmee het eiwit- en mineraalgehalte per 100 g: belegen kaas ligt in werkelijkheid hoger dan jong. Dit getal is dus een ondergrens voor belegen en een bovengrens voor jong; een NEVO-ronde kan het onderscheid alsnog aanbrengen.",
+      "Portie op 17 sep 2026 gelijkgetrokken met de eiwitrij (was 30 g / 1 snee): dezelfde sleutel droeg twee porties, en in de omgekeerde index (nutrition-food-index.ts) kan er maar een winnen. amount is navenant herrekend uit dezelfde 3,9 mg/100 g. USDA kent alleen \"Cheese, gouda\" zonder rijpingsgraad, dus jonge en belegen kaas delen hier hetzelfde record (SR 171241). Rijping onttrekt vocht en verhoogt daarmee het eiwit- en mineraalgehalte per 100 g: belegen kaas ligt in werkelijkheid hoger dan jong. Dit getal is dus een ondergrens voor belegen en een bovengrens voor jong; een NEVO-ronde kan het onderscheid alsnog aanbrengen.",
   },
   {
     key: "volkorenbrood",
