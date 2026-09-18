@@ -6,21 +6,15 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Status
 
-- **Baseline toegepast t/m:** `20260905090000_intake_gender.sql`
-- **Openstaand:** 1 migratie
-- **Laatst bijgewerkt:** 17 september 2026
+- **Baseline toegepast t/m:** `20260917210000_daybook_items.sql`
+- **Openstaand:** 0 migraties
+- **Laatst bijgewerkt:** 18 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
 
-Volgorde = van boven naar beneden (de timestamp in de bestandsnaam).
-
-### [ ] 20260917210000_daybook_items.sql
-- **Wat:** voegt `items jsonb not null default '[]'` toe aan `account_nutrition_daybook` — producten en gerechten per eetmoment, zodat het dagboek weet wélk product je at en niet alleen welke voedselgroep. `portions` blijft de analyse-as en wordt eruit afgeleid.
-- **Blokkeert deploy:** nee — de leeslaag behandelt een ontbrekende kolom als een lege lijst, precies zoals een dag uit de groepenperiode. Het scherm toont dan de groepenvorm; niets crasht.
-- **Hoort bij:** plak 3 van BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09 §3.2, en §1 van BESLUIT_VOEDINGSDAGBOEK_KOMPAS_V1_2026-09.
-- **Terugdraaien:** `alter table public.account_nutrition_daybook drop column if exists items;` — additief, dus terugdraaien kost alleen de ingevoerde items.
+_(niets openstaand)_
 
 ## Runbook bij thuiskomst
 
@@ -53,4 +47,4 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
-| _(nog niets)_ | | |
+| 18 september 2026 | `20260917210000_daybook_items.sql` | Bevestigd via Supabase-logs (Postgres-foutmeldingen `column ... items does not exist` stoppen na 12:59) + `npm run check:db-schema` groen. |
