@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import PatroonScherm from "@/components/dashboard/patroon/PatroonScherm";
 import VoortgangHero from "@/components/dashboard/voortgang/VoortgangHero";
 import VoortgangMetingenPerDomein from "@/components/dashboard/voortgang/VoortgangMetingenPerDomein";
 import { DOMAIN_CHECK_PILLAR_IDS } from "@/lib/kompas-domain-check";
@@ -38,6 +39,17 @@ export default function VoortgangHubScroll({
 
   return (
     <>
+      {/*
+        Het tekortsysteem staat bovenaan omdat het het antwoord is waar deze
+        tab voor bestaat (besluit §3.7): waar zit je gat, en hoe hardnekkig is
+        het. De blokken eronder komen uit de tijd dat Voortgang alle
+        leefstijldomeinen droeg — die blijven staan tot plak 8 ze ontkoppelt,
+        want pas snoeien als het nieuwe pad bewezen werkt.
+      */}
+      <div className="mb-3.5">
+        <PatroonScherm />
+      </div>
+
       <VoortgangHero
         model={model}
         data={data}

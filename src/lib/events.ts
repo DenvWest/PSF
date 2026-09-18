@@ -106,6 +106,11 @@ export const DOMAIN_EVENT_TYPES = [
   "nutrition.dagboek_day_saved",
   "nutrition.dagboek_completed",
   "nutrition.dagboek_kalibratie_shown",
+  // Je patroon (plak 4): het tekortsysteem als scherm. `nutrient` is de stof
+  // waar de bevinding op wijst, en dat is de dimensie die zegt welke
+  // vergelijkingspagina dit scherm zou moeten voeden. Geen vrije tekst, geen
+  // dagboekinhoud — alleen de stof, de telling en de richting.
+  "nutrition.tekortsysteem_viewed",
   // Het schap (S1): van nutriënt naar producten. Deze drie beantwoorden of de
   // omgekeerde index gebruikt wordt, welke producten mensen overwegen, en of de
   // categoriefilter er toe doet. `schap_bron_clicked` gegroepeerd op `key` is de
