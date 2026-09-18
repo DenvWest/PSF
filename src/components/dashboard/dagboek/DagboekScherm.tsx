@@ -169,12 +169,14 @@ export default function DagboekScherm({
   }
 
   function voegToe(key: string) {
-    if (!zoekMoment || !catalogEntry(key)) return;
-    const entry = catalogEntry(key)!;
+    if (!zoekMoment) return;
+    const entry = catalogEntry(key);
+    if (!entry) return;
     const grams = entry.porties[0]?.grams ?? 100;
     wijzig([...items, { moment: zoekMoment, key, grams }]);
+    // Het veld blijft open: een maaltijd is zelden één product, en de
+    // toegevoegde regel verschijnt er direct onder als bevestiging.
     setZoek("");
-    setZoekMoment(null);
   }
 
   const dagLabel = new Date(datum).toLocaleDateString("nl-NL", {
@@ -207,43 +209,6 @@ export default function DagboekScherm({
         busy={busy}
       />
 
-      {zoekMoment ? (
-        <div className="relative">
-          <input
-            type="search"
-            autoFocus
-            value={zoek}
-            disabled={busy}
-            onChange={(event) => setZoek(event.target.value)}
-            onBlur={() => window.setTimeout(() => setZoekMoment(null), 150)}
-            placeholder={`Zoek een product voor ${
-              EETMOMENTEN.find((m) => m.id === zoekMoment)?.label.toLowerCase() ?? ""
-            }…`}
-            aria-label="Zoek een product"
-            className="w-full rounded-xl border border-white/15 bg-white/[0.03] px-3 py-2 text-[13px] text-[#F1EFE8] outline-none transition-colors placeholder:text-[#6F8177] focus:border-white/40"
-          />
-          {treffers.length > 0 ? (
-            <ul className="absolute z-20 m-0 mt-1 w-full list-none overflow-hidden rounded-xl border border-white/15 bg-[#16241a] p-0 shadow-2xl">
-              {treffers.map((entry) => (
-                <li key={entry.key}>
-                  <button
-                    type="button"
-                    onMouseDown={(event) => event.preventDefault()}
-                    onClick={() => voegToe(entry.key)}
-                    className="flex w-full cursor-pointer items-baseline justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
-                  >
-                    <span className="text-[13px] text-[#F1EFE8]">{entry.labelNl}</span>
-                    <span className="text-[10.5px] text-[#6F8177]">
-                      {entry.porties[0]?.labelNl ?? ""}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-      ) : null}
-
       <div className="flex flex-col gap-2.5">
         {EETMOMENTEN.map((moment) => (
           <DagboekMaaltijd
@@ -252,8 +217,47 @@ export default function DagboekScherm({
             label={moment.label}
             items={items}
             busy={busy}
+            zoekSlot={
+              zoekMoment === moment.id ? (
+                <div className="relative">
+                  <input
+                    type="search"
+                    autoFocus
+                    value={zoek}
+                    disabled={busy}
+                    onChange={(event) => setZoek(event.target.value)}
+                    placeholder={`Zoek een product voor ${moment.label.toLowerCase()}…`}
+                    aria-label={`Zoek een product voor ${moment.label.toLowerCase()}`}
+                    className="w-full rounded-xl border border-white/15 bg-white/[0.03] px-3 py-2 text-[13px] text-[#F1EFE8] outline-none transition-colors placeholder:text-[#6F8177] focus:border-white/40"
+                  />
+                  {treffers.length > 0 ? (
+                    <ul className="absolute z-20 m-0 mt-1 w-full list-none overflow-hidden rounded-xl border border-white/15 bg-[#16241a] p-0 shadow-2xl">
+                      {treffers.map((entry) => (
+                        <li key={entry.key}>
+                          <button
+                            type="button"
+                            onMouseDown={(event) => event.preventDefault()}
+                            onClick={() => voegToe(entry.key)}
+                            className="flex w-full cursor-pointer items-baseline justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
+                          >
+                            <span className="text-[13px] text-[#F1EFE8]">
+                              {entry.labelNl}
+                            </span>
+                            <span className="text-[10.5px] text-[#6F8177]">
+                              {entry.porties[0]?.labelNl ?? ""}
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              ) : null
+            }
             onToevoegen={(id) => {
-              setZoekMoment(id);
+              // Nogmaals op dezelfde knop sluit het veld weer: zonder die
+              // uitgang blijft het open zodra je het per ongeluk opent.
+              setZoekMoment((huidig) => (huidig === id ? null : id));
               setZoek("");
             }}
             onGram={(item, grams) =>

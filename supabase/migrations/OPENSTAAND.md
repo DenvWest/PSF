@@ -18,7 +18,7 @@ Volgorde = van boven naar beneden (de timestamp in de bestandsnaam).
 
 ### [ ] 20260917210000_daybook_items.sql
 - **Wat:** voegt `items jsonb not null default '[]'` toe aan `account_nutrition_daybook` — producten en gerechten per eetmoment, zodat het dagboek weet wélk product je at en niet alleen welke voedselgroep. `portions` blijft de analyse-as en wordt eruit afgeleid.
-- **Blokkeert deploy:** nee — de leeslaag behandelt een ontbrekende kolom als een lege lijst, precies zoals een dag uit de groepenperiode. Het scherm toont dan de groepenvorm; niets crasht.
+- **Blokkeert deploy:** JA. Dit stond eerder op "nee" met als reden dat de leeslaag een ontbrekende kolom als lege lijst behandelt. Dat klopt niet: `listDaybookDays` vraagt `items` op ín de select (`account-nutrition-daybook.ts`), en Postgres geeft op een onbekende kolom een fout (42703) op de hele query. Die fout wordt opgevangen met `return []`, dus het dagboek leest dan *volledig* leeg — niet alleen de items. Opslaan faalt om dezelfde reden: `items` zit in de upsert-payload. Zonder deze migratie is het dagboek dus stuk, niet gedegradeerd.
 - **Hoort bij:** plak 3 van BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09 §3.2, en §1 van BESLUIT_VOEDINGSDAGBOEK_KOMPAS_V1_2026-09.
 - **Terugdraaien:** `alter table public.account_nutrition_daybook drop column if exists items;` — additief, dus terugdraaien kost alleen de ingevoerde items.
 
