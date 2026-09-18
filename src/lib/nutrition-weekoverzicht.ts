@@ -131,8 +131,13 @@ export function bouwWeekoverzicht(
     const aandeel = inWeek.length > 0 ? aandeelVanRi(nutrient, gemiddeld) : null;
     const referentie = referentieRij.personalTarget ? null : referentieRij.value;
 
+    // Alleen een bewijsbare stof mag een afstand tonen. Zink en vitamine D
+    // hebben wel een wettelijke RI (referentie is dus niet null), maar §3.4
+    // van het besluit zegt: die twee krijgen geen oordeel, alleen hun
+    // bronnentelling — een "te gaan"-getal zou hier alsnog een oordeel zijn,
+    // verpakt als afstand in plaats van als tekort.
     const teGaan =
-      referentie !== null && aandeel !== null && aandeel < 1
+      bewijsbaar && referentie !== null && aandeel !== null && aandeel < 1
         ? Math.round((referentie - gemiddeld) * 10) / 10
         : null;
 

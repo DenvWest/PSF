@@ -99,6 +99,21 @@ describe("bouwWeekoverzicht", () => {
     expect(vitD.gedekt).toBeNull();
   });
 
+  it("geeft zink en vitamine D geen te-gaan, ook al hebben ze een RI", () => {
+    // Regressie: zink en vitamine D hebben wél een wettelijke referentie
+    // (10 mg, 5 µg), dus een naïeve teGaan-berekening die alleen op
+    // `referentie !== null` let, geeft ze alsnog een afstand. Dat is precies
+    // het oordeel dat §3.4 van het besluit verbiedt voor onbewijsbare stoffen.
+    const dagen = [dag("2026-09-14", [{ key: "havermout", grams: 100 }])];
+    const week = bouwWeekoverzicht(dagen, "2026-09-14");
+
+    const zink = week.rijen.find((r) => r.nutrient === "zinc")!;
+    const vitD = week.rijen.find((r) => r.nutrient === "vitamin_d")!;
+
+    expect(zink.teGaan).toBeNull();
+    expect(vitD.teGaan).toBeNull();
+  });
+
   it("geeft eiwit geen referentie — dat doel komt uit gewicht en belasting", () => {
     const week = bouwWeekoverzicht(
       [dag("2026-09-14", [{ key: "havermout", grams: 100 }])],
