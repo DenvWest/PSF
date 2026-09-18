@@ -146,6 +146,17 @@ export type VoortgangScreen =
    * Stond tot 27 augustus als vierde tab in de hoofdnavigatie.
    */
   | "hermeting"
+  /**
+   * Het weekoverzicht: één week voedingsstoffen als verhaal, met de tabel
+   * gemiddeld/referentie/te-gaan per stof.
+   *
+   * Eigen scherm en geen blok op de hub, om dezelfde reden als hermeting er
+   * een is: het beantwoordt een andere vraag ("hoe ging deze week") dan de hub
+   * ("waar sta ik nu"), en het draagt een eigen week die je vooruit en
+   * achteruit kunt bladeren. Dat heeft een eigen URL nodig, anders kun je een
+   * week niet delen of terugvinden.
+   */
+  | "weekoverzicht"
   /** @deprecated Legacy — het schap is de Keuze-tab geworden (`tab=keuze`). */
   | "schap"
   /** @deprecated Legacy — redirect naar leefstijlprofiel */

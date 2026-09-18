@@ -111,6 +111,11 @@ export const DOMAIN_EVENT_TYPES = [
   // vergelijkingspagina dit scherm zou moeten voeden. Geen vrije tekst, geen
   // dagboekinhoud — alleen de stof, de telling en de richting.
   "nutrition.tekortsysteem_viewed",
+  // De uitgang van het dashboard naar de monetisatie. Dit was tot plak 4 het
+  // ontbrekende event: 33.373 regels dashboard met nul kliks naar /beste/*.
+  // Gegroepeerd op `nutrient` zegt het welke vergelijkingspagina het dashboard
+  // voedt; `covered` of mensen ook doorklikken als hun dekking al bewezen is.
+  "nutrition.week_nutrient_clicked",
   // Het schap (S1): van nutriënt naar producten. Deze drie beantwoorden of de
   // omgekeerde index gebruikt wordt, welke producten mensen overwegen, en of de
   // categoriefilter er toe doet. `schap_bron_clicked` gegroepeerd op `key` is de

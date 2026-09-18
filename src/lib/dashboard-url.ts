@@ -8,6 +8,7 @@ const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
   "inzichten",
   "leefstijlprofiel",
   "hermeting",
+  "weekoverzicht",
   "schap",
   "domein",
 ]);
