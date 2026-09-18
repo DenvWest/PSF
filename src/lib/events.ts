@@ -108,6 +108,7 @@ export const DOMAIN_EVENT_TYPES = [
   "nutrition.dagboek_kalibratie_shown",
   "nutrition.dagboek_zoeken_toegevoegd",
   "nutrition.dagboek_dag_gekopieerd",
+  "nutrition.dagboek_scherm_geopend",
   // Het schap (S1): van nutriënt naar producten. Deze drie beantwoorden of de
   // omgekeerde index gebruikt wordt, welke producten mensen overwegen, en of de
   // categoriefilter er toe doet. `schap_bron_clicked` gegroepeerd op `key` is de
