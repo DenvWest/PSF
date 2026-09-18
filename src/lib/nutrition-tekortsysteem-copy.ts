@@ -144,3 +144,18 @@ export function geenBevindingZin(reeksen: readonly Vensterreeks[]): string {
   }
   return "Op wat je registreerde staat geen stof structureel onder de referentie. Dat is wat je dagboek aantoont, en het kan alleen meer worden dan dit.";
 }
+
+/**
+ * Een hoeveelheid zoals een Nederlandse lezer hem schrijft: komma als
+ * decimaalteken, en geen nullen achter de komma die niets toevoegen.
+ *
+ * `8.1 g` is Engels en leest als een fout op een Nederlandse pagina;
+ * `124.4 mg` net zo. Dit staat hier en niet in de component omdat drie
+ * schermen dezelfde getallen tonen en ze niet uit elkaar mogen lopen.
+ */
+export function hoeveelheid(waarde: number): string {
+  const afgerond = Math.round(waarde * 10) / 10;
+  return Number.isInteger(afgerond)
+    ? String(afgerond)
+    : afgerond.toFixed(1).replace(".", ",");
+}

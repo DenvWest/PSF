@@ -1,10 +1,11 @@
 "use client";
 
+import { hoeveelheid } from "@/lib/nutrition-tekortsysteem-copy";
 import type { WeekRij } from "@/lib/nutrition-weekoverzicht";
 
 /**
  * Eén stof als samenvattingskaart: het gemiddelde links, de week als staafjes
- * rechts, en een `>` die naar de detailweek gaat.
+ * rechts, en een chevron naar de detailweek.
  *
  * ## Waarom staafjes en geen ring
  *
@@ -29,75 +30,68 @@ type Props = {
   onOpen: () => void;
 };
 
-const DAGLETTER = ["M", "D", "W", "D", "V", "Z", "Z"] as const;
+const DAGLETTER = ["m", "d", "w", "d", "v", "z", "z"] as const;
 
 export default function PatroonSamenvattingKaart({ rij, dagen, onOpen }: Props) {
   // De schaal loopt tot de referentie of tot de hoogste dag — wat groter is.
   // Zonder die tweede helft loopt een zalmdag van 760 % buiten beeld en lijkt
   // hij gelijk aan een dag die precies de referentie haalt.
-  const hoogste = Math.max(
-    rij.referentie ?? 0,
-    ...dagen.map((dag) => dag ?? 0),
-    1,
-  );
+  const hoogste = Math.max(rij.referentie ?? 0, ...dagen.map((d) => d ?? 0), 1);
 
   const kleur = !rij.bewijsbaar
-    ? "#C99A3C"
+    ? "var(--vd-amber)"
     : rij.gedekt
-      ? "#5A8F6A"
-      : "#C8956C";
+      ? "var(--vd-sage)"
+      : "var(--vd-terra)";
 
   return (
     <li>
-      <button
-        type="button"
-        onClick={onOpen}
-        className="flex w-full cursor-pointer items-stretch gap-3 rounded-2xl border border-white/8 bg-white/[0.02] p-3.5 text-left transition-colors hover:border-white/20"
-      >
-        <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
-          <span className="flex items-baseline gap-1.5">
-            <b className="font-serif text-[15px] font-normal text-[#F1EFE8]">
-              {rij.label}
-            </b>
-            {rij.gedekt ? <span className="text-[11px] text-[#5A8F6A]">✓</span> : null}
+      <button type="button" onClick={onOpen} className="vd-kaart">
+        <span className="vd-kaart-txt">
+          <span style={{ display: "flex", alignItems: "baseline", gap: "0.375rem" }}>
+            <b className="vd-kaart-naam">{rij.label}</b>
+            {rij.gedekt ? (
+              <span className="vd-pil" data-toon="sage">
+                gedekt
+              </span>
+            ) : !rij.bewijsbaar ? (
+              <span className="vd-pil" data-toon="amber">
+                n.t.b.
+              </span>
+            ) : null}
           </span>
-          <span className="text-[10.5px] text-[#7E8C82]">Gem. deze week</span>
-          <span className="font-serif text-[19px] font-normal leading-tight text-[#F1EFE8]">
-            {rij.dagenMetBron === 0 ? "n.o." : `${rij.gemiddeld} ${rij.unit}`}
+          <span className="vd-kaart-sub">Gem. deze week</span>
+          <span className="vd-kaart-waarde">
+            {rij.dagenMetBron === 0
+              ? "n.o."
+              : `${hoeveelheid(rij.gemiddeld)} ${rij.unit}`}
           </span>
-          {rij.referentie !== null ? (
-            <span className="font-mono text-[9.5px] tabular-nums text-[#6F8177]">
-              referentie {rij.referentie} {rij.unit}
-            </span>
-          ) : (
-            <span className="font-mono text-[9.5px] tabular-nums text-[#6F8177]">
-              eigen doel
-            </span>
-          )}
+          <span className="vd-kaart-ri">
+            {rij.referentie === null
+              ? "eigen doel"
+              : `van ${rij.referentie} ${rij.unit} RI`}
+          </span>
         </span>
 
-        <span aria-hidden className="flex items-end gap-1 pb-4">
+        <span aria-hidden className="vd-staafjes">
           {dagen.map((waarde, index) => {
             const hoogte =
-              waarde === null ? 3 : Math.max(4, Math.round((waarde / hoogste) * 46));
+              waarde === null ? 3 : Math.max(4, Math.round((waarde / hoogste) * 44));
             return (
-              <span key={index} className="flex flex-col items-center gap-1">
+              <span key={index} className="vd-staaf">
                 <span
-                  className="block w-[7px] rounded-full"
                   style={{
                     height: `${hoogte}px`,
-                    background: waarde === null ? "rgba(255,255,255,0.10)" : kleur,
+                    background: waarde === null ? "var(--vd-track)" : kleur,
                   }}
                 />
-                <i className="text-[8.5px] not-italic text-[#6F8177]">
-                  {DAGLETTER[index]}
-                </i>
+                <i>{DAGLETTER[index]}</i>
               </span>
             );
           })}
         </span>
 
-        <span aria-hidden className="flex items-center text-[16px] text-[#6F8177]">
+        <span aria-hidden className="vd-chevron">
           ›
         </span>
       </button>

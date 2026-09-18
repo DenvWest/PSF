@@ -105,3 +105,24 @@ describe("geenBevindingZin", () => {
     expect(geenBevindingZin(metData)).toContain("structureel");
   });
 });
+
+describe("richting bij een dag zonder bron", () => {
+  it("noemt een losse dag zonder bron geen daling", () => {
+    // Zalm op één dag, daarna dagen zonder vis. Vandaag staat omega-3 dus op
+    // nul terwijl de week de referentie ruim haalt — dat is het ritme van
+    // twee keer per week vis, geen verslechtering.
+    const dagen = [
+      dag("2026-09-14", [{ key: "zalm-gekweekt", grams: 140 }]),
+      dag("2026-09-15", [{ key: "havermout", grams: 40 }]),
+      dag("2026-09-16", [{ key: "havermout", grams: 40 }]),
+      dag("2026-09-17", [{ key: "havermout", grams: 40 }]),
+    ];
+
+    const reeksen = bouwTekortsysteem(dagen, "2026-09-17");
+    const omega = reeksen.find((r) => r.nutrient === "omega3")!;
+
+    expect(omega.vensters[0]!.dagenMetBron).toBe(0);
+    expect(omega.vensters[3]!.dagenMetBron).toBeGreaterThan(0);
+    expect(omega.richting).not.toBe("verslechtert");
+  });
+});

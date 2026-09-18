@@ -152,6 +152,17 @@ function bepaalRichting(vensters: readonly Venster[]): Richting {
   // Eén dag die meer dan het dubbele van de lange termijn laat zien, is een
   // uitschieter en geen trend — zeker bij stoffen die uit één bron komen.
   if (kort.dagen_terug === 1 && verhouding >= 2) return "piekt";
+
+  // En hetzelfde in spiegelbeeld, wat er eerst niet stond. Wie twee keer per
+  // week vis eet, heeft op vijf van de zeven dagen nul omega-3; het venster
+  // van vandaag staat dan op 0 % tegen een maand die de referentie haalt.
+  // "Zakt" is daar een uitspraak over een trend op grond van één dag — precies
+  // de fout die de regel hierboven in de andere richting al weigert. Een dag
+  // zonder bron is geen daling, het is een dag zonder bron.
+  if (kort.dagen_terug === 1 && kort.dagenMetBron === 0 && lang.dagenMetBron > 0) {
+    return "vlak";
+  }
+
   if (verhouding >= 1.15) return "verbetert";
   if (verhouding <= 0.85) return "verslechtert";
   return "vlak";

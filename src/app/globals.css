@@ -98,11 +98,93 @@
   --intake-divider: rgba(255, 255, 255, 0.08);
   --intake-card-border: rgba(255, 255, 255, 0.12);
 
+  /*
+   * Voedingsdashboard — één palet dat licht en donker draagt.
+   *
+   * Het dashboard stond tot nu toe op hardcoded donkere hex-waardes, verspreid
+   * over de componenten. Daardoor kón er geen licht thema zijn: elke kleur zat
+   * in JSX vastgeschroefd. Deze tokens zijn de bron, en de prebuild
+   * (artifact 236a3d44, "Vier tabs, één voeding") is waar ze vandaan komen.
+   *
+   * De donkere kant staat onder [data-voeding-thema="donker"] en achter
+   * prefers-color-scheme, zodat de schakelaar in beide richtingen wint.
+   */
+  --vd-bg: #F4F6F2;
+  --vd-surface: #FFFFFF;
+  --vd-surface-2: #EDF1EA;
+  --vd-surface-3: #E3EADF;
+  --vd-line: #D8E0D4;
+  --vd-line-2: #C3CFBE;
+  --vd-ink: #12220F;
+  --vd-ink-2: #4A5C46;
+  --vd-ink-3: #7B8C77;
+  --vd-sage: #3C7A56;
+  --vd-sage-fill: #DCEBE1;
+  --vd-terra: #C26E4B;
+  --vd-terra-fill: #F7E5DC;
+  --vd-amber: #A8801F;
+  --vd-amber-fill: #F5EBD2;
+  --vd-track: #E3EADF;
+  --vd-shadow: 0 1px 2px rgba(18, 34, 15, 0.05),
+    0 12px 32px -22px rgba(18, 34, 15, 0.4);
+
   /* Editorial / article reading (blog + kennisbank) — sticky TOC + anchors */
   --reading-scroll-margin: 6.75rem;
   --sticky-toc-offset: 6.875rem;
   --sticky-toc-mobile-offset: 4.75rem;
   --reading-layout-max-width: 88rem;
+}
+
+/*
+ * De donkere kant van het voedingsdashboard.
+ *
+ * Twee blokken en niet één: het eerste volgt de systeemvoorkeur zolang de
+ * gebruiker niets koos, het tweede wint altijd als hij wél koos. Zonder die
+ * :not()-guard zou een expliciete keuze voor licht op een donker systeem
+ * genegeerd worden.
+ */
+:root:not([data-voeding-thema="licht"]) {
+  @media (prefers-color-scheme: dark) {
+    --vd-bg: #0D190B;
+    --vd-surface: #152410;
+    --vd-surface-2: #1B2E17;
+    --vd-surface-3: #22391D;
+    --vd-line: #2B4026;
+    --vd-line-2: #3A5233;
+    --vd-ink: #EDF3EA;
+    --vd-ink-2: #A9BCA4;
+    --vd-ink-3: #7E9179;
+    --vd-sage: #7FC194;
+    --vd-sage-fill: #1E3A27;
+    --vd-terra: #E0A183;
+    --vd-terra-fill: #3A2419;
+    --vd-amber: #D9B45C;
+    --vd-amber-fill: #332813;
+    --vd-track: #22391D;
+    --vd-shadow: 0 1px 2px rgba(0, 0, 0, 0.45),
+      0 12px 32px -22px rgba(0, 0, 0, 0.9);
+  }
+}
+
+[data-voeding-thema="donker"] {
+  --vd-bg: #0D190B;
+  --vd-surface: #152410;
+  --vd-surface-2: #1B2E17;
+  --vd-surface-3: #22391D;
+  --vd-line: #2B4026;
+  --vd-line-2: #3A5233;
+  --vd-ink: #EDF3EA;
+  --vd-ink-2: #A9BCA4;
+  --vd-ink-3: #7E9179;
+  --vd-sage: #7FC194;
+  --vd-sage-fill: #1E3A27;
+  --vd-terra: #E0A183;
+  --vd-terra-fill: #3A2419;
+  --vd-amber: #D9B45C;
+  --vd-amber-fill: #332813;
+  --vd-track: #22391D;
+  --vd-shadow: 0 1px 2px rgba(0, 0, 0, 0.45),
+    0 12px 32px -22px rgba(0, 0, 0, 0.9);
 }
 
 @media (max-width: 1279px) {
@@ -2822,3 +2904,593 @@ html.floating-cta-active footer {
   background: rgba(90, 143, 106, 0.40);
   color: #fff;
 }
+
+/* ── Voedingsdashboard — Je patroon + weekoverzicht ──────────────
+ *
+ * De vorm komt uit de prebuild "Vier tabs, één voeding" (artifact 236a3d44).
+ * Klassen en geen Tailwind-utilities, om één reden: deze blokken dragen
+ * tokens die per thema wisselen (`--vd-*`), en een utility-klasse kan geen
+ * custom property lezen die pas in een media-query of op een data-attribuut
+ * zijn waarde krijgt. De rest van het project blijft Tailwind.
+ */
+
+.vd-root {
+  --f-serif: var(--font-heading-stack);
+  --f-sans: var(--font-primary);
+  --f-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: var(--vd-bg);
+  color: var(--vd-ink);
+  font-family: var(--f-sans);
+}
+
+.vd-root h2,
+.vd-root h3 {
+  font-family: var(--f-serif);
+  font-weight: 400;
+  margin: 0;
+  text-wrap: balance;
+}
+
+/* Kop van een scherm: titel links, actie rechts */
+.vd-kop {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.875rem;
+}
+
+.vd-kop h2 {
+  font-size: 1.1875rem;
+  color: var(--vd-ink);
+}
+
+.vd-eyebrow {
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--vd-ink-3);
+  font-weight: 500;
+}
+
+.vd-tag {
+  font-size: 0.6875rem;
+  color: var(--vd-ink-3);
+}
+
+.vd-themaknop {
+  font: inherit;
+  font-size: 0.8125rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--vd-ink-2);
+  background: var(--vd-surface);
+  border: 1px solid var(--vd-line);
+  border-radius: 999px;
+  padding: 0.4375rem 0.9375rem;
+  cursor: pointer;
+}
+
+.vd-themaknop:hover {
+  color: var(--vd-ink);
+  border-color: var(--vd-ink-3);
+}
+
+.vd-themaknop:focus-visible {
+  outline: 2px solid var(--vd-sage);
+  outline-offset: 2px;
+}
+
+/* Segmented control — perioden, vensters, routes */
+.vd-segment {
+  display: inline-flex;
+  background: var(--vd-surface-2);
+  border: 1px solid var(--vd-line);
+  border-radius: 999px;
+  padding: 0.1875rem;
+  gap: 0.125rem;
+}
+
+.vd-segment button {
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 0;
+  background: none;
+  color: var(--vd-ink-3);
+  padding: 0.3125rem 0.8125rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.vd-segment button[aria-pressed="true"] {
+  background: var(--vd-surface);
+  color: var(--vd-ink);
+  box-shadow: 0 1px 2px rgba(18, 34, 15, 0.1);
+}
+
+.vd-segment button:focus-visible {
+  outline: 2px solid var(--vd-sage);
+  outline-offset: 1px;
+}
+
+/* De bevinding: één zin, met een icoon en een terra-vlak */
+.vd-bevinding {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.8125rem;
+  border-radius: 12px;
+  background: var(--vd-terra-fill);
+  border: 1px solid var(--vd-terra);
+  margin-bottom: 0.875rem;
+}
+
+.vd-bevinding-ico {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--vd-surface);
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--vd-terra);
+}
+
+.vd-bevinding-txt {
+  min-width: 0;
+}
+
+.vd-bevinding-txt b {
+  font-size: 0.8125rem;
+  display: block;
+  color: var(--vd-ink);
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.vd-bevinding-txt p {
+  margin: 0.1875rem 0 0;
+  font-size: 0.75rem;
+  color: var(--vd-ink-2);
+  line-height: 1.5;
+}
+
+.vd-bevinding-txt em {
+  font-style: normal;
+  font-family: var(--f-mono);
+  font-size: 0.71875rem;
+  color: var(--vd-terra);
+  font-weight: 700;
+}
+
+/* Tabel met rand: vensters én weekoverzicht delen deze vorm */
+.vd-tabel {
+  border: 1px solid var(--vd-line);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 0.875rem;
+  background: var(--vd-surface);
+}
+
+.vd-tabel-kop,
+.vd-tabel-rij {
+  display: grid;
+  gap: 0.375rem;
+  align-items: center;
+}
+
+.vd-tabel-kop {
+  padding: 0.5rem 0.75rem;
+  background: var(--vd-surface-2);
+  border-bottom: 1px solid var(--vd-line);
+}
+
+.vd-tabel-kop span {
+  font-size: 0.59375rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--vd-ink-3);
+  font-weight: 600;
+  text-align: center;
+}
+
+.vd-tabel-kop span:first-child {
+  text-align: left;
+}
+
+.vd-tabel-kop span:last-child {
+  text-align: right;
+}
+
+.vd-tabel-rij {
+  padding: 0.5625rem 0.75rem;
+  border-bottom: 1px solid var(--vd-line);
+}
+
+.vd-tabel-rij:last-child {
+  border-bottom: 0;
+}
+
+/* Vensters: 1 / 7 / 14 / 30 naast elkaar, elk een mini-staaf */
+.vd-venster-kop,
+.vd-venster-rij {
+  grid-template-columns: 1fr repeat(4, 52px) 66px;
+}
+
+.vd-naam {
+  font-size: 0.78125rem;
+  font-weight: 500;
+  color: var(--vd-ink);
+  min-width: 0;
+}
+
+.vd-naam i {
+  font-style: normal;
+  display: block;
+  font-size: 0.625rem;
+  color: var(--vd-ink-3);
+}
+
+.vd-cel {
+  height: 26px;
+  border-radius: 6px;
+  background: var(--vd-track);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.vd-cel > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 6px;
+}
+
+.vd-cel b {
+  position: relative;
+  font-family: var(--f-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--vd-ink-2);
+}
+
+/*
+ * Ligt het cijfer op een gevulde staaf, dan krijgt het een eigen donkere pil.
+ *
+ * De vulkleuren zijn in beide thema's licht (in donker juist lichter), dus
+ * meekleuren met de inkt geeft licht-op-licht in donkere modus en
+ * donker-op-donker was in lichte modus al krap. Een vaste donkere pil met
+ * witte tekst leest in allebei, en hij is smal genoeg om de staaf eronder
+ * zichtbaar te laten.
+ */
+.vd-cel b[data-gevuld="ja"] {
+  color: #fff;
+  background: rgba(12, 24, 10, 0.72);
+  padding: 0.0625rem 0.25rem;
+  border-radius: 4px;
+}
+
+.vd-trend {
+  font-size: 0.65625rem;
+  text-align: right;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.vd-trend[data-richting="op"] { color: var(--vd-sage); }
+.vd-trend[data-richting="neer"] { color: var(--vd-terra); }
+.vd-trend[data-richting="vlak"] { color: var(--vd-ink-3); }
+
+/* Weekoverzicht: stof / gemiddeld / referentie / te gaan */
+.vd-week-kop,
+.vd-week-rij {
+  grid-template-columns: 1fr 62px 72px 72px;
+}
+
+.vd-week-rij {
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+a.vd-week-rij:hover {
+  background: var(--vd-surface-2);
+}
+
+a.vd-week-rij:focus-visible {
+  outline: 2px solid var(--vd-sage);
+  outline-offset: -2px;
+}
+
+.vd-getal {
+  font-family: var(--f-mono);
+  font-size: 0.71875rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--vd-ink-2);
+}
+
+.vd-getal[data-toon="stil"] { color: var(--vd-ink-3); }
+.vd-getal[data-toon="terra"] { color: var(--vd-terra); }
+
+/* Samenvattingskaart per stof, met week-staafjes */
+.vd-kaart {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  gap: 0.75rem;
+  border: 1px solid var(--vd-line);
+  border-radius: 13px;
+  background: var(--vd-surface);
+  padding: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.15s;
+}
+
+@media (hover: hover) {
+  .vd-kaart:hover {
+    border-color: var(--vd-line-2);
+    background: var(--vd-surface-2);
+  }
+}
+
+.vd-kaart:focus-visible {
+  outline: 2px solid var(--vd-sage);
+  outline-offset: 2px;
+}
+
+.vd-kaart-txt {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.0625rem;
+  justify-content: center;
+}
+
+.vd-kaart-naam {
+  font-family: var(--f-sans);
+  font-size: 0.84375rem;
+  font-weight: 700;
+  color: var(--vd-ink);
+}
+
+.vd-kaart-sub {
+  font-size: 0.65625rem;
+  color: var(--vd-ink-3);
+}
+
+.vd-kaart-waarde {
+  font-family: var(--f-serif);
+  font-size: 1.1875rem;
+  line-height: 1.2;
+  color: var(--vd-ink);
+}
+
+.vd-kaart-ri {
+  font-family: var(--f-mono);
+  font-size: 0.59375rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--vd-ink-3);
+}
+
+.vd-staafjes {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex: none;
+  align-self: center;
+}
+
+.vd-staaf {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  /* Vaste baan, zodat alle staven op dezelfde grondlijn eindigen. Zonder
+     deze hoogte gaat elke staaf vanaf zijn eigen top hangen en lijkt de week
+     willekeurig verspringen. */
+  height: 52px;
+}
+
+.vd-staaf > span {
+  display: block;
+  width: 7px;
+  border-radius: 999px;
+  flex: none;
+}
+
+.vd-staaf i {
+  font-style: normal;
+  font-size: 0.53125rem;
+  color: var(--vd-ink-3);
+}
+
+.vd-chevron {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--vd-ink-3);
+}
+
+/* Pil voor een status of een claim */
+.vd-pil {
+  display: inline-block;
+  font-size: 0.59375rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.125rem 0.4375rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.vd-pil[data-toon="sage"] { background: var(--vd-sage-fill); color: var(--vd-sage); }
+.vd-pil[data-toon="terra"] { background: var(--vd-terra-fill); color: var(--vd-terra); }
+.vd-pil[data-toon="amber"] { background: var(--vd-amber-fill); color: var(--vd-amber); }
+.vd-pil[data-toon="stil"] { background: var(--vd-surface-2); color: var(--vd-ink-3); }
+
+/* Toelichting onder een blok */
+.vd-note {
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: var(--vd-ink-2);
+  background: var(--vd-surface-2);
+  border-left: 2px solid var(--vd-sage);
+  border-radius: 0 8px 8px 0;
+  padding: 0.625rem 0.75rem;
+  margin: 0.875rem 0 0;
+}
+
+.vd-note strong {
+  color: var(--vd-ink);
+  font-weight: 700;
+}
+
+.vd-note[data-toon="terra"] { border-left-color: var(--vd-terra); }
+.vd-note[data-toon="amber"] { border-left-color: var(--vd-amber); }
+
+/* Rij die naar een volgend scherm gaat */
+.vd-rij-knop {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border: 1px solid var(--vd-line);
+  border-radius: 13px;
+  background: var(--vd-surface);
+  padding: 0.875rem;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+@media (hover: hover) {
+  .vd-rij-knop:hover {
+    border-color: var(--vd-line-2);
+    background: var(--vd-surface-2);
+  }
+}
+
+.vd-rij-knop:focus-visible {
+  outline: 2px solid var(--vd-sage);
+  outline-offset: 2px;
+}
+
+/* Weekbladeraar */
+.vd-blader {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--vd-line);
+  background: var(--vd-surface);
+  color: var(--vd-ink-2);
+  border-radius: 9px;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.875rem;
+}
+
+.vd-blader:hover:not(:disabled) {
+  border-color: var(--vd-sage);
+  color: var(--vd-sage);
+}
+
+.vd-blader:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.vd-blader:focus-visible {
+  outline: 2px solid var(--vd-sage);
+  outline-offset: 2px;
+}
+
+.vd-paneel {
+  background: var(--vd-surface);
+  border: 1px solid var(--vd-line);
+  border-radius: 16px;
+  box-shadow: var(--vd-shadow);
+  padding: 1.125rem;
+}
+
+@media (max-width: 460px) {
+  /*
+   * Onder 460px worden de vensterkolommen smaller in plaats van te wringen.
+   * De tabel blijft alle vier tonen: ze wegnemen zou de vergelijking slopen
+   * die de hele reden van dit scherm is.
+   */
+  .vd-venster-kop,
+  .vd-venster-rij {
+    grid-template-columns: 1fr repeat(4, 38px) 50px;
+    gap: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .vd-week-kop,
+  .vd-week-rij {
+    grid-template-columns: 1fr 52px 58px 58px;
+    gap: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .vd-paneel { padding: 0.875rem; }
+}
+
+.vd-terug {
+  font: inherit;
+  font-size: 0.8125rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--vd-ink-2);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.vd-terug:hover { color: var(--vd-ink); }
+
+.vd-terug:focus-visible {
+  outline: 2px solid var(--vd-sage);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.vd-weekbalk {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.875rem;
+}
+
+.vd-weektitel {
+  font-size: 1rem;
+  text-align: center;
+  color: var(--vd-ink);
+}
+
+.vd-naam-kop {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+/* Een tabel die niet direct op een note volgt, krijgt lucht erboven */
+.vd-tabel--los { margin-top: 0.875rem; }

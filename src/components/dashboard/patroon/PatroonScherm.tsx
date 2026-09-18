@@ -2,8 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import PatroonSamenvattingKaart from "@/components/dashboard/patroon/PatroonSamenvattingKaart";
-import PatroonVensterrij from "@/components/dashboard/patroon/PatroonVensterrij";
+import PatroonVensterTabel from "@/components/dashboard/patroon/PatroonVensterTabel";
 import WeekoverzichtScherm from "@/components/dashboard/patroon/WeekoverzichtScherm";
+import {
+  VoedingThemaKnop,
+  VoedingThemaProvider,
+} from "@/components/dashboard/patroon/VoedingThema";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
@@ -28,26 +32,24 @@ import {
  *
  * ## Drie lagen, niet één hoop
  *
- * Dit scherm was één lange lijst: bevinding, dan vijf stoffen × vier vensters
- * onder elkaar. Dat is alles tegelijk tonen en de lezer laten uitzoeken wat
- * belangrijk is.
- *
- * Nu zijn het drie lagen, elk met een eigen vraag:
- *
  * 1. **Deze landing** — hoe ligt het er deze week bij, per stof, in één blik.
- * 2. **Het weekoverzicht** (`screen=weekoverzicht`) — hoe ging déze week, met
- *    de tabel en de route naar het product.
- * 3. **De vier vensters** — hoe hardnekkig is het, uitklapbaar onderaan.
+ * 2. **Het weekoverzicht** — hoe ging déze week, met de route naar het product.
+ * 3. **De vier vensters** — hoe hardnekkig is het, als tabel onderaan.
  *
  * Die derde laag stond eerst bovenaan en permanent open. Hij is het
  * zwaarstwegende bewijs maar niet de eerste vraag: je opent dit scherm om te
  * zien hoe het ervoor staat, niet om vijf reeksen van vier getallen te lezen.
- * Hij is dus ingeklapt, niet weg — wie de bevinding wil natrekken, kan dat.
+ *
+ * ## Licht én donker
+ *
+ * Alle kleuren komen uit `--vd-*`-tokens in `globals.css`, niet uit hardcoded
+ * hex in de JSX. Dat is wat een licht thema überhaupt mogelijk maakt, en het
+ * volgt de prebuild "Vier tabs, één voeding".
  */
 
 type Weergave = "landing" | "weekoverzicht";
 
-export default function PatroonScherm() {
+function PatroonInhoud() {
   const vandaag = todayInAgendaTimezone();
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
   const [laden, setLaden] = useState(true);
@@ -151,81 +153,100 @@ export default function PatroonScherm() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <header className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="m-0 font-serif text-[19px] font-normal text-[#F1EFE8]">
-          Je patroon
-        </h2>
-        <span className="text-[11px] text-[#7E8C82]">
-          {gevuldeDagen === 0
-            ? "nog geen dagen"
-            : `${gevuldeDagen} ${gevuldeDagen === 1 ? "dag" : "dagen"} geregistreerd`}
-        </span>
-      </header>
+    <div className="vd-paneel">
+      <div className="vd-kop">
+        <div>
+          <p className="vd-eyebrow" style={{ margin: 0 }}>
+            Voedingsstoffen
+          </p>
+          <h2>Je patroon</h2>
+        </div>
+        <VoedingThemaKnop />
+      </div>
 
       {laden ? (
-        <p className="m-0 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-3 text-[12px] leading-relaxed text-[#7E8C82]">
-          Je patroon wordt berekend…
-        </p>
+        <p className="vd-note">Je patroon wordt berekend…</p>
       ) : zin ? (
-        <p className="m-0 rounded-2xl border-l-2 border-[#C8956C] bg-white/[0.03] px-3.5 py-3 text-[13px] leading-relaxed text-[#F1EFE8]">
-          {zin.tekst}
-        </p>
+        <div className="vd-bevinding">
+          <span className="vd-bevinding-ico" aria-hidden>
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="var(--vd-terra)"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            >
+              <path d="M12 8v5" />
+              <circle cx="12" cy="16.5" r=".6" fill="var(--vd-terra)" />
+              <path d="M10.3 3.9 2.6 17.4A2 2 0 0 0 4.3 20.4h15.4a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+            </svg>
+          </span>
+          <div className="vd-bevinding-txt">
+            <b>{zin.tekst}</b>
+          </div>
+        </div>
       ) : (
-        <p className="m-0 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-3 text-[12px] leading-relaxed text-[#9FB0A6]">
-          {geenBevindingZin(reeksen)}
-        </p>
+        <p className="vd-note">{geenBevindingZin(reeksen)}</p>
       )}
 
       {!laden ? (
         <>
-          <section aria-label="Voedingsstoffen deze week">
-            <h3 className="m-0 mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
-              Voedingsstoffen
-            </h3>
-            <ul className="m-0 flex list-none flex-col gap-2 p-0">
-              {week.rijen.map((rij) => (
-                <PatroonSamenvattingKaart
-                  key={rij.nutrient}
-                  rij={rij}
-                  dagen={weekPerStof.get(rij.nutrient) ?? []}
-                  onOpen={() => {
-                    trackEvent("nutrition_weekoverzicht_opened", {
-                      nutrient: rij.nutrient,
-                      surface: "stof_kaart",
-                    });
-                    setWeergave("weekoverzicht");
-                  }}
-                />
-              ))}
-            </ul>
-          </section>
+          <div className="vd-kop" style={{ marginTop: "1rem" }}>
+            <p className="vd-eyebrow" style={{ margin: 0 }}>
+              Deze week
+            </p>
+            <span className="vd-tag">
+              {gevuldeDagen === 0
+                ? "nog geen dagen"
+                : `${gevuldeDagen} ${gevuldeDagen === 1 ? "dag" : "dagen"} geregistreerd`}
+            </span>
+          </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              trackEvent("nutrition_weekoverzicht_opened", {
-                nutrient: "geen",
-                surface: "rapport_rij",
-              });
-              setWeergave("weekoverzicht");
-            }}
-            className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-3 text-left transition-colors hover:border-white/20"
+          <ul
+            className="m-0 flex list-none flex-col gap-2 p-0"
+            aria-label="Voedingsstoffen deze week"
           >
-            <span className="flex flex-col gap-0.5">
-              <b className="font-serif text-[15px] font-normal text-[#F1EFE8]">
-                Wekelijks overzicht
-              </b>
-              <span className="text-[11px] text-[#7E8C82]">
-                Je week per stof, met wat elk gat dicht.
-              </span>
-            </span>
-            <span aria-hidden className="text-[16px] text-[#6F8177]">
-              ›
-            </span>
-          </button>
+            {week.rijen.map((rij) => (
+              <PatroonSamenvattingKaart
+                key={rij.nutrient}
+                rij={rij}
+                dagen={weekPerStof.get(rij.nutrient) ?? []}
+                onOpen={() => {
+                  trackEvent("nutrition_weekoverzicht_opened", {
+                    nutrient: rij.nutrient,
+                    surface: "stof_kaart",
+                  });
+                  setWeergave("weekoverzicht");
+                }}
+              />
+            ))}
+          </ul>
 
-          <section aria-label="Hoe hardnekkig">
+          <div className="mt-3 flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                trackEvent("nutrition_weekoverzicht_opened", {
+                  nutrient: "geen",
+                  surface: "rapport_rij",
+                });
+                setWeergave("weekoverzicht");
+              }}
+              className="vd-rij-knop"
+            >
+              <span className="flex flex-col gap-0.5">
+                <b className="vd-kaart-naam">Wekelijks overzicht</b>
+                <span className="vd-kaart-sub">
+                  Je week per stof, met wat elk gat dicht.
+                </span>
+              </span>
+              <span aria-hidden className="vd-chevron">
+                ›
+              </span>
+            </button>
+
             <button
               type="button"
               onClick={() => {
@@ -237,44 +258,49 @@ export default function PatroonScherm() {
                 }
               }}
               aria-expanded={vensterOpen}
-              className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-3 text-left transition-colors hover:border-white/20"
+              className="vd-rij-knop"
             >
               <span className="flex flex-col gap-0.5">
-                <b className="font-serif text-[15px] font-normal text-[#F1EFE8]">
-                  Hoe hardnekkig is dit?
-                </b>
-                <span className="text-[11px] text-[#7E8C82]">
+                <b className="vd-kaart-naam">Hoe hardnekkig is dit?</b>
+                <span className="vd-kaart-sub">
                   Vandaag, 7, 14 en 30 dagen naast elkaar.
                 </span>
               </span>
-              <span aria-hidden className="text-[13px] text-[#6F8177]">
-                {vensterOpen ? "▲" : "▼"}
+              <span aria-hidden className="vd-chevron">
+                {vensterOpen ? "▴" : "▾"}
               </span>
             </button>
+          </div>
 
-            {vensterOpen ? (
-              <>
-                <ul className="m-0 mt-2.5 flex list-none flex-col gap-2.5 p-0">
-                  {reeksen.map((reeks) => (
-                    <PatroonVensterrij key={reeks.nutrient} reeks={reeks} />
-                  ))}
-                </ul>
+          {vensterOpen ? (
+            <div className="mt-3">
+              <PatroonVensterTabel reeksen={reeksen} />
 
-                <p className="m-0 mt-2.5 rounded-xl border-l-2 border-[#5A8F6A] bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-[#9FB0A6]">
-                  <strong className="font-bold text-[#F1EFE8]">
-                    Vier vensters, geen gemiddelde.
-                  </strong>{" "}
-                  Een stof die in alle vier laag staat is een patroon; een stof
-                  die alleen vandaag laag staat is een dag. Daarom staan ze
-                  naast elkaar en maken we er geen cijfer van. Alles blijft een
-                  ondergrens: een ✓ bewijst dat je het haalde, en het ontbreken
-                  ervan bewijst niets.
-                </p>
-              </>
-            ) : null}
-          </section>
+              <p className="vd-note" data-toon="terra">
+                <strong>Vier vensters, geen gemiddelde.</strong> Een stof die in
+                alle vier laag staat is een patroon; een stof die alleen vandaag
+                laag staat is een dag. Daarom staan ze naast elkaar en maken we
+                er geen cijfer van.
+              </p>
+
+              <p className="vd-note" data-toon="amber">
+                <strong>Zink en vitamine D krijgen geen oordeel.</strong> Bronnen
+                leveren 1–4 mg zink per portie tegen 10 mg RI; vitamine D komt
+                uit zon en verrijking, niet uit voeding. Meer dagen meten maakt
+                een onmeetbare stof niet meetbaar.
+              </p>
+            </div>
+          ) : null}
         </>
       ) : null}
     </div>
+  );
+}
+
+export default function PatroonScherm() {
+  return (
+    <VoedingThemaProvider>
+      <PatroonInhoud />
+    </VoedingThemaProvider>
   );
 }
