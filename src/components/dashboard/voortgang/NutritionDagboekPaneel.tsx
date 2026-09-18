@@ -202,6 +202,33 @@ export default function NutritionDagboekPaneel({
     setError(null);
   }
 
+  // Andere al ingevulde dagen, om een dag mee te beginnen in plaats van leeg.
+  // Meest recent eerst — dat is meestal de dag die je nog vers hebt.
+  const kopieerBronnen = useMemo(
+    () =>
+      dagen
+        .filter((dag) => dag.date !== datum)
+        .sort((a, b) => b.date.localeCompare(a.date)),
+    [dagen, datum],
+  );
+
+  function kopieerVanDag(bronDatum: string) {
+    const bron = dagen.find((dag) => dag.date === bronDatum);
+    if (!bron) return;
+    setMomenten(momentenVanDag(bron));
+    setWaterMl(bron.waterMl ?? null);
+    trackEvent("nutrition_dagboek_dag_gekopieerd", {
+      surface,
+      van_soort: bron.soort,
+      naar_soort: dagSoortVoor(datum),
+    });
+    emitAccountClientEvent("nutrition.dagboek_dag_gekopieerd", {
+      surface,
+      van_soort: bron.soort,
+      naar_soort: dagSoortVoor(datum),
+    });
+  }
+
   function openPlek(slot: DagboekSlot) {
     if (!geladen || busy) return;
     if (openSlotId === slot.id) {
@@ -370,12 +397,34 @@ export default function NutritionDagboekPaneel({
           van {DAGEN_PER_SOORT}.
         </p>
 
+        {kopieerBronnen.length > 0 ? (
+          <label className="mt-2 block text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+            Kopiëren van
+            <select
+              value=""
+              disabled={busy}
+              onChange={(event) => {
+                if (event.target.value) kopieerVanDag(event.target.value);
+              }}
+              className="mt-1 block min-h-9 w-full rounded-[10px] border border-white/10 bg-black/25 px-2.5 text-[13px] font-normal normal-case tracking-normal text-[#F1EFE8]"
+            >
+              <option value="">Begin leeg, of kopieer een eerdere dag…</option>
+              {kopieerBronnen.map((dag) => (
+                <option key={dag.date} value={dag.date}>
+                  {dagLabel(dag.date, today)} · {dagSamenvatting(dag)}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+
         <NutritionDagInvoer
           momenten={momenten}
           onChange={setMomenten}
           waterMl={waterMl}
           onWaterChange={setWaterMl}
           busy={busy}
+          surface={surface}
         />
 
         {error ? (

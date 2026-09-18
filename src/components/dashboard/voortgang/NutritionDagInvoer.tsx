@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import * as Icons from "@/components/app/icons";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
+import { trackEvent } from "@/lib/ga4";
+import type { CatalogEntry } from "@/data/nutrition/food-catalog";
 import {
   EETMOMENTEN,
   groepenVoorMoment,
@@ -14,6 +17,7 @@ import {
 } from "@/lib/nutrition-eetmomenten";
 import { DAGBOEK_LABELS } from "@/lib/nutrition-dagboek";
 import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
+import NutritionVoedingsmiddelZoeken from "@/components/dashboard/voortgang/NutritionVoedingsmiddelZoeken";
 
 /**
  * Eén dag invullen, per eetmoment.
@@ -44,14 +48,18 @@ export default function NutritionDagInvoer({
   waterMl,
   onWaterChange,
   busy = false,
+  surface,
 }: {
   momenten: DagMomenten;
   onChange: (volgende: DagMomenten) => void;
   waterMl: number | null;
   onWaterChange: (ml: number | null) => void;
   busy?: boolean;
+  /** Voor de meetpunten van de zoekfunctie; optioneel zodat oudere aanroepen blijven werken. */
+  surface?: string;
 }) {
   const [openMoment, setOpenMoment] = useState<EetmomentId | null>("ontbijt");
+  const [zoekMoment, setZoekMoment] = useState<EetmomentId | null>(null);
 
   function zetGroep(moment: EetmomentId, groep: VoedselgroepId, aantal: number) {
     const inhoud = { ...(momenten[moment] ?? {}) };
@@ -67,6 +75,31 @@ export default function NutritionDagInvoer({
       volgende[moment] = inhoud;
     }
     onChange(volgende);
+  }
+
+  function voegToeUitZoeken(moment: EetmomentId, entry: CatalogEntry) {
+    const huidigeInhoud = momenten[moment] ?? {};
+    zetGroep(moment, entry.groep, (huidigeInhoud[entry.groep] ?? 0) + 1);
+    trackEvent("nutrition_dagboek_zoeken_toegevoegd", {
+      surface: surface ?? "",
+      moment,
+      groep: entry.groep,
+      food_key: entry.key,
+    });
+    emitAccountClientEvent("nutrition.dagboek_zoeken_toegevoegd", {
+      surface,
+      moment,
+      groep: entry.groep,
+      food_key: entry.key,
+    });
+  }
+
+  function toggleZoeken(moment: EetmomentId) {
+    const opent = zoekMoment !== moment;
+    setZoekMoment(opent ? moment : null);
+    if (opent) {
+      trackEvent("nutrition_dagboek_zoeken_open", { surface: surface ?? "", moment });
+    }
   }
 
   const structuur = structuurRegel(momenten);
@@ -123,6 +156,25 @@ export default function NutritionDagInvoer({
 
               {isOpen ? (
                 <div className="border-t border-white/[0.07] px-2.5 py-2">
+                  {zoekMoment === moment.id ? (
+                    <NutritionVoedingsmiddelZoeken
+                      momentLabel={moment.label}
+                      busy={busy}
+                      onClose={() => setZoekMoment(null)}
+                      onAdd={(entry) => voegToeUitZoeken(moment.id, entry)}
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => toggleZoeken(moment.id)}
+                      className="mb-2 flex min-h-9 w-full cursor-pointer items-center gap-2 rounded-[10px] border border-white/10 bg-black/20 px-2.5 text-[12.5px] text-[#9FB0A6] transition-colors hover:border-white/25 hover:text-[#E7EDE8] disabled:opacity-50"
+                    >
+                      <Icons.Search s={13} />
+                      Voedingsmiddel zoeken
+                    </button>
+                  )}
+
                   {/* Wat je al koos, met een teller. Alleen deze rijen dragen
                       een aantal — de rest is een chip die je aantikt. */}
                   {gekozen.length > 0 ? (
@@ -176,7 +228,13 @@ export default function NutritionDagInvoer({
 
                   {/* Alle dertien blijven bereikbaar; alleen de volgorde
                       verschilt per moment. Wie 's ochtends vis eet moet dat
-                      gewoon kunnen invullen. */}
+                      gewoon kunnen invullen. Fallback voor wat de zoekfunctie
+                      niet dekt — de catalogus is groot, maar nooit compleet. */}
+                  {zoekMoment !== moment.id ? (
+                    <p className="m-0 mb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#7E8C82]">
+                      Of kies direct een groep
+                    </p>
+                  ) : null}
                   <div className="flex flex-wrap gap-1.5">
                     {groepenVoorMoment(moment.id)
                       .filter((groep) => !(inhoud[groep] ?? 0))
