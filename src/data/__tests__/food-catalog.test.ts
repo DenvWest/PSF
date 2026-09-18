@@ -3,6 +3,7 @@ import {
   FOOD_CATALOG,
   catalogByCategory,
   catalogEntry,
+  catalogImageSrc,
   searchCatalog,
   zonderBron,
 } from "@/data/nutrition/food-catalog";
@@ -175,5 +176,24 @@ describe("zoeken en bladeren", () => {
   it("vindt een regel terug op zijn sleutel", () => {
     expect(catalogEntry("amandelen")?.labelNl).toBe("Amandelen");
     expect(catalogEntry("bestaat-niet")).toBeNull();
+  });
+});
+
+describe("catalogusfoto's delen een eigenaar per grondstof", () => {
+  it("wijst bereidingsvarianten van spinazie naar één foto", () => {
+    expect(catalogEntry("spinazie-rauw")?.imageOwner).toBe("spinazie-gekookt");
+    expect(catalogEntry("spinazie-gekookt")?.imageOwner).toBe("spinazie-gekookt");
+    expect(catalogEntry("spinazie-diepvries")?.imageOwner).toBe("spinazie-gekookt");
+    expect(catalogImageSrc(catalogEntry("spinazie-rauw")!)).toBe(
+      "/images/voedingsmiddelen/spinazie-gekookt.jpg",
+    );
+  });
+
+  it("laat imageOwner alleen naar een bestaande catalogus-sleutel wijzen", () => {
+    const keys = new Set(FOOD_CATALOG.map((entry) => entry.key));
+    const kapot = FOOD_CATALOG.filter(
+      (entry) => entry.imageOwner && !keys.has(entry.imageOwner),
+    );
+    expect(kapot.map((e) => `${e.key} → ${e.imageOwner}`)).toEqual([]);
   });
 });

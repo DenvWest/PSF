@@ -1,6 +1,7 @@
 "use client";
 
 import { catalogEntry } from "@/data/nutrition/food-catalog";
+import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import {
@@ -142,8 +143,11 @@ export default function DagboekMaaltijd({
                     className="border-b border-white/[0.06] last:border-b-0"
                   >
                     <td className="max-w-0 px-3 py-2">
-                      <span className="block truncate text-[12.5px] font-medium text-[#F1EFE8]">
-                        {entry.labelNl}
+                      <span className="flex min-w-0 items-center gap-2">
+                        <FoodThumbnail entry={entry} size={40} />
+                        <span className="block min-w-0 truncate text-[12.5px] font-medium text-[#F1EFE8]">
+                          {entry.labelNl}
+                        </span>
                       </span>
                       <label className="mt-0.5 flex items-center gap-1">
                         <span className="sr-only">Gram voor {entry.labelNl}</span>

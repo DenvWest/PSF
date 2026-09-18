@@ -74,6 +74,12 @@ export interface CatalogEntry {
   /** Sleutel in `FOOD_SOURCES`, of null zolang de gehaltes niet opgehaald zijn. */
   bron: string | null;
   /**
+   * Sleutel van de entry die de foto draagt — zichzelf als hij 'm zelf heeft,
+   * of de eigenaar bij een bereidingsvariant (zie food-image-download.py).
+   * Ontbreekt zolang er geen foto is.
+   */
+  imageOwner?: string;
+  /**
    * Waarom deze regel geen gehalterij heeft — als dat een producteigenschap is,
    * geen achterstand. Ontbreekt het veld terwijl `bron` null is, dan staat de
    * regel écht op de werklijst (`zonderBron()`).
@@ -111,6 +117,7 @@ function f(
     zoek?: readonly string[];
     waarom?: string;
     geenBron?: CatalogEntry["geenBron"];
+    imageOwner?: string;
   } = {},
 ): CatalogEntry {
   return {
@@ -152,30 +159,30 @@ const P = {
    ═══════════════════════════════════════════════════════════════════════ */
 const GROENTEN: readonly CatalogEntry[] = [
   f("spinazie-rauw", "Spinazie, rauw", "groenten", "groente", P.bladRauw, "spinazie-rauw",
-    { bereiding: "rauw", waarom: "150 g gekookt is ruim 400 g rauw — dezelfde bak, andere portie" }),
+    { bereiding: "rauw", waarom: "150 g gekookt is ruim 400 g rauw — dezelfde bak, andere portie", imageOwner: "spinazie-gekookt" }),
   f("spinazie-gekookt", "Spinazie, gekookt", "groenten", "groente", P.bladGekookt, "spinazie",
-    { bereiding: "gekookt", waarom: "ingekookt; koken loogt een deel van de magnesium uit" }),
+    { bereiding: "gekookt", waarom: "ingekookt; koken loogt een deel van de magnesium uit", imageOwner: "spinazie-gekookt" }),
   f("spinazie-diepvries", "Spinazie, diepvries", "groenten", "groente", P.bladGekookt, "spinazie-diepvries",
-    { bereiding: "diepvries", waarom: "geblancheerd vóór invriezen — uitloging zit er al in" }),
-  f("boerenkool-gekookt", "Boerenkool, gekookt", "groenten", "groente", P.bladGekookt, "boerenkool", { bereiding: "gekookt" }),
-  f("boerenkool-rauw", "Boerenkool, rauw", "groenten", "groente", P.bladRauw, null, { bereiding: "rauw", waarom: "andere portie" }),
+    { bereiding: "diepvries", waarom: "geblancheerd vóór invriezen — uitloging zit er al in", imageOwner: "spinazie-gekookt" }),
+  f("boerenkool-gekookt", "Boerenkool, gekookt", "groenten", "groente", P.bladGekookt, "boerenkool", { bereiding: "gekookt", imageOwner: "boerenkool-gekookt" }),
+  f("boerenkool-rauw", "Boerenkool, rauw", "groenten", "groente", P.bladRauw, null, { bereiding: "rauw", waarom: "andere portie", imageOwner: "boerenkool-gekookt" }),
   f("snijbiet-gekookt", "Snijbiet, gekookt", "groenten", "groente", P.bladGekookt, "snijbiet", { bereiding: "gekookt" }),
-  f("andijvie-rauw", "Andijvie, rauw", "groenten", "groente", P.bladRauw, null, { bereiding: "rauw" }),
-  f("andijvie-gekookt", "Andijvie, gekookt", "groenten", "groente", P.bladGekookt, null, { bereiding: "gekookt", waarom: "krimpt sterk" }),
+  f("andijvie-rauw", "Andijvie, rauw", "groenten", "groente", P.bladRauw, null, { bereiding: "rauw", imageOwner: "andijvie-gekookt" }),
+  f("andijvie-gekookt", "Andijvie, gekookt", "groenten", "groente", P.bladGekookt, null, { bereiding: "gekookt", waarom: "krimpt sterk", imageOwner: "andijvie-gekookt" }),
   f("sla-kropsla", "Kropsla", "groenten", "groente", P.bladRauw, null, { zoek: ["sla", "ijsbergsla"] }),
   f("rucola", "Rucola", "groenten", "groente", [["handvol", 25]], null, { zoek: ["raketsla"] }),
   f("veldsla", "Veldsla", "groenten", "groente", [["handvol", 25]], null),
-  f("witlof-rauw", "Witlof, rauw", "groenten", "groente", [["stronkje", 75]], null, { bereiding: "rauw" }),
-  f("witlof-gekookt", "Witlof, gekookt", "groenten", "groente", [["stronkje", 100]], null, { bereiding: "gekookt" }),
+  f("witlof-rauw", "Witlof, rauw", "groenten", "groente", [["stronkje", 75]], null, { bereiding: "rauw", imageOwner: "witlof-gekookt" }),
+  f("witlof-gekookt", "Witlof, gekookt", "groenten", "groente", [["stronkje", 100]], null, { bereiding: "gekookt", imageOwner: "witlof-gekookt" }),
 
   f("broccoli-gekookt", "Broccoli, gekookt", "groenten", "groente", P.groente, "broccoli-gekookt",
-    { bereiding: "gekookt", waarom: "koken in ruim water loogt mineralen uit" }),
+    { bereiding: "gekookt", waarom: "koken in ruim water loogt mineralen uit", imageOwner: "broccoli-gekookt" }),
   f("broccoli-gestoomd", "Broccoli, gestoomd", "groenten", "groente", P.groente, null,
-    { bereiding: "gestoomd", waarom: "stomen loogt beduidend minder uit dan koken" }),
-  f("broccoli-rauw", "Broccoli, rauw", "groenten", "groente", [["handvol roosjes", 60]], null, { bereiding: "rauw" }),
-  f("broccoli-diepvries", "Broccoli, diepvries", "groenten", "groente", P.groente, null, { bereiding: "diepvries", waarom: "geblancheerd vóór invriezen — een deel van de uitloging zit er al in" }),
-  f("bloemkool-gekookt", "Bloemkool, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt" }),
-  f("bloemkool-rauw", "Bloemkool, rauw", "groenten", "groente", [["handvol roosjes", 60]], null, { bereiding: "rauw" }),
+    { bereiding: "gestoomd", waarom: "stomen loogt beduidend minder uit dan koken", imageOwner: "broccoli-gekookt" }),
+  f("broccoli-rauw", "Broccoli, rauw", "groenten", "groente", [["handvol roosjes", 60]], null, { bereiding: "rauw", imageOwner: "broccoli-gekookt" }),
+  f("broccoli-diepvries", "Broccoli, diepvries", "groenten", "groente", P.groente, null, { bereiding: "diepvries", waarom: "geblancheerd vóór invriezen — een deel van de uitloging zit er al in", imageOwner: "broccoli-gekookt" }),
+  f("bloemkool-gekookt", "Bloemkool, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt", imageOwner: "bloemkool-gekookt" }),
+  f("bloemkool-rauw", "Bloemkool, rauw", "groenten", "groente", [["handvol roosjes", 60]], null, { bereiding: "rauw", imageOwner: "bloemkool-gekookt" }),
   f("spruitjes-gekookt", "Spruitjes, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt" }),
   f("rodekool-gekookt", "Rodekool, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt" }),
   f("witte-kool-gekookt", "Witte kool, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt" }),
@@ -183,40 +190,40 @@ const GROENTEN: readonly CatalogEntry[] = [
     { bereiding: "gefermenteerd", waarom: "fermentatie verandert de samenstelling en voegt zout toe" }),
   f("paksoi-gekookt", "Paksoi, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt" }),
 
-  f("wortel-rauw", "Wortel, rauw", "groenten", "groente", [["stuk", 80], ["portie", 100]], null, { bereiding: "rauw", zoek: ["worteltjes", "peen"] }),
-  f("wortel-gekookt", "Wortel, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt" }),
+  f("wortel-rauw", "Wortel, rauw", "groenten", "groente", [["stuk", 80], ["portie", 100]], null, { bereiding: "rauw", zoek: ["worteltjes", "peen"], imageOwner: "wortel-rauw" }),
+  f("wortel-gekookt", "Wortel, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt", imageOwner: "wortel-rauw" }),
   f("pastinaak-gekookt", "Pastinaak, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt" }),
   f("biet-gekookt", "Rode biet, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt", zoek: ["bietjes", "kroot"] }),
   f("knolselderij-gekookt", "Knolselderij, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt" }),
   f("radijs", "Radijs", "groenten", "groente", [["handvol", 50]], null),
   f("koolraap-gekookt", "Koolraap, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt" }),
 
-  f("tomaat", "Tomaat", "groenten", "groente", [["stuk", 100], ["handvol cherry", 80]], null, { zoek: ["cherrytomaat", "tomaatjes"] }),
+  f("tomaat", "Tomaat", "groenten", "groente", [["stuk", 100], ["handvol cherry", 80]], null, { zoek: ["cherrytomaat", "tomaatjes"], imageOwner: "tomaat" }),
   f("tomaat-blik", "Tomaten, uit blik", "groenten", "groente", [["half blik", 200], ["blik", 400]], null,
-    { bereiding: "blik", waarom: "verhit verwerkt; lycopeen komt beter vrij, vocht telt mee" }),
-  f("paprika-rauw", "Paprika, rauw", "groenten", "groente", [["halve", 75], ["stuk", 150]], null, { bereiding: "rauw" }),
-  f("paprika-gebakken", "Paprika, gebakken", "groenten", "groente", [["portie", 100]], null, { bereiding: "gebakken", waarom: "vochtverlies concentreert het gehalte per 100 g" }),
+    { bereiding: "blik", waarom: "verhit verwerkt; lycopeen komt beter vrij, vocht telt mee", imageOwner: "tomaat" }),
+  f("paprika-rauw", "Paprika, rauw", "groenten", "groente", [["halve", 75], ["stuk", 150]], null, { bereiding: "rauw", imageOwner: "paprika-rauw" }),
+  f("paprika-gebakken", "Paprika, gebakken", "groenten", "groente", [["portie", 100]], null, { bereiding: "gebakken", waarom: "vochtverlies concentreert het gehalte per 100 g", imageOwner: "paprika-rauw" }),
   f("komkommer", "Komkommer", "groenten", "groente", [["stuk (⅓)", 100], ["plakjes", 50]], null),
-  f("courgette-gebakken", "Courgette, gebakken", "groenten", "groente", P.groente, null, { bereiding: "gebakken", waarom: "vochtverlies plus opgenomen bakvet" }),
-  f("courgette-gekookt", "Courgette, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt" }),
+  f("courgette-gebakken", "Courgette, gebakken", "groenten", "groente", P.groente, null, { bereiding: "gebakken", waarom: "vochtverlies plus opgenomen bakvet", imageOwner: "courgette-gebakken" }),
+  f("courgette-gekookt", "Courgette, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt", imageOwner: "courgette-gebakken" }),
   f("aubergine-gebakken", "Aubergine, gebakken", "groenten", "groente", P.groente, null, { bereiding: "gebakken", zoek: ["eierplant"], waarom: "aubergine zuigt bakvet op als een spons — dat telt in het gerecht" }),
-  f("pompoen-gekookt", "Pompoen, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt", waarom: "aubergine zuigt bakvet op als een spons — dat telt in het gerecht" }),
-  f("pompoen-geroosterd", "Pompoen, geroosterd", "groenten", "groente", P.groente, null, { bereiding: "geroosterd", waarom: "droge hitte onttrekt vocht zonder uitloging" }),
+  f("pompoen-gekookt", "Pompoen, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt", waarom: "aubergine zuigt bakvet op als een spons — dat telt in het gerecht", imageOwner: "pompoen-gekookt" }),
+  f("pompoen-geroosterd", "Pompoen, geroosterd", "groenten", "groente", P.groente, null, { bereiding: "geroosterd", waarom: "droge hitte onttrekt vocht zonder uitloging", imageOwner: "pompoen-gekookt" }),
 
-  f("ui-rauw", "Ui, rauw", "groenten", "groente", [["halve", 60], ["stuk", 120]], null, { bereiding: "rauw" }),
-  f("ui-gebakken", "Ui, gebakken", "groenten", "groente", [["portie", 60]], null, { bereiding: "gebakken", waarom: "ui slinkt tot een derde en neemt bakvet op" }),
+  f("ui-rauw", "Ui, rauw", "groenten", "groente", [["halve", 60], ["stuk", 120]], null, { bereiding: "rauw", imageOwner: "ui-rauw" }),
+  f("ui-gebakken", "Ui, gebakken", "groenten", "groente", [["portie", 60]], null, { bereiding: "gebakken", waarom: "ui slinkt tot een derde en neemt bakvet op", imageOwner: "ui-rauw" }),
   f("prei-gekookt", "Prei, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt" }),
   f("knoflook", "Knoflook", "groenten", "groente", [["teen", 4], ["twee tenen", 8]], null),
   f("asperges-gekookt", "Asperges, gekookt", "groenten", "groente", [["portie", 150]], null, { bereiding: "gekookt" }),
   f("mais-blik", "Maïs, uit blik", "groenten", "granen", [["opscheplepel", 80]], null,
-    { bereiding: "blik", waarom: "telt als graan, niet als groente — dat is de voedselgroep die hem draagt" }),
-  f("mais-kolf", "Maïskolf", "groenten", "granen", [["kolf", 90]], null),
+    { bereiding: "blik", waarom: "telt als graan, niet als groente — dat is de voedselgroep die hem draagt", imageOwner: "mais-kolf" }),
+  f("mais-kolf", "Maïskolf", "groenten", "granen", [["kolf", 90]], null, { imageOwner: "mais-kolf" }),
   f("doperwten-diepvries", "Doperwten, diepvries", "groenten", "peulvruchten", P.groente, "erwten-diepvries",
-    { bereiding: "diepvries", waarom: "telt als peulvrucht" }),
-  f("sperziebonen-gekookt", "Sperziebonen, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt", zoek: ["haricots verts", "prinsessenbonen"] }),
-  f("sperziebonen-diepvries", "Sperziebonen, diepvries", "groenten", "groente", P.groente, null, { bereiding: "diepvries", waarom: "geblancheerd vóór invriezen" }),
-  f("champignons-gebakken", "Champignons, gebakken", "groenten", "groente", [["portie", 100]], null, { bereiding: "gebakken", zoek: ["paddenstoelen"], waarom: "champignons verliezen ruim de helft van hun vocht bij bakken" }),
-  f("champignons-rauw", "Champignons, rauw", "groenten", "groente", [["handvol", 60]], null, { bereiding: "rauw", waarom: "champignons verliezen ruim de helft van hun vocht bij bakken" }),
+    { bereiding: "diepvries", waarom: "telt als peulvrucht", imageOwner: "erwten-diepvries" }),
+  f("sperziebonen-gekookt", "Sperziebonen, gekookt", "groenten", "groente", P.groente, null, { bereiding: "gekookt", zoek: ["haricots verts", "prinsessenbonen"], imageOwner: "sperziebonen-gekookt" }),
+  f("sperziebonen-diepvries", "Sperziebonen, diepvries", "groenten", "groente", P.groente, null, { bereiding: "diepvries", waarom: "geblancheerd vóór invriezen", imageOwner: "sperziebonen-gekookt" }),
+  f("champignons-gebakken", "Champignons, gebakken", "groenten", "groente", [["portie", 100]], null, { bereiding: "gebakken", zoek: ["paddenstoelen"], waarom: "champignons verliezen ruim de helft van hun vocht bij bakken", imageOwner: "champignons-gebakken" }),
+  f("champignons-rauw", "Champignons, rauw", "groenten", "groente", [["handvol", 60]], null, { bereiding: "rauw", waarom: "champignons verliezen ruim de helft van hun vocht bij bakken", imageOwner: "champignons-gebakken" }),
   f("paddenstoelen-uv", "Paddenstoelen, UV-behandeld", "groenten", "groente", [["portie", 100]], "paddenstoelen-uv",
     { waarom: "alleen UV-behandelde paddenstoelen dragen vitamine D" }),
   f("zeewier-nori", "Nori (zeewier)", "groenten", "groente", [["vel", 3], ["portie", 10]], null, { zoek: ["zeewier", "wakame"] }),
@@ -250,17 +257,17 @@ const FRUIT: readonly CatalogEntry[] = [
   f("kersen", "Kersen", "fruit", "fruit", [["handvol", 80]], null, { geenBron: "verwaarloosbaar" }),
   f("perzik", "Perzik", "fruit", "fruit", [["stuk", 130]], null, { geenBron: "verwaarloosbaar" }),
   f("nectarine", "Nectarine", "fruit", "fruit", [["stuk", 130]], null, { geenBron: "verwaarloosbaar" }),
-  f("pruim", "Pruim", "fruit", "fruit", [["stuk", 60], ["twee stuks", 120]], null, { geenBron: "verwaarloosbaar" }),
-  f("abrikoos-vers", "Abrikoos, vers", "fruit", "fruit", [["stuk", 40], ["drie stuks", 120]], null, { geenBron: "verwaarloosbaar", bereiding: "rauw" }),
+  f("pruim", "Pruim", "fruit", "fruit", [["stuk", 60], ["twee stuks", 120]], null, { geenBron: "verwaarloosbaar", imageOwner: "pruim" }),
+  f("abrikoos-vers", "Abrikoos, vers", "fruit", "fruit", [["stuk", 40], ["drie stuks", 120]], null, { geenBron: "verwaarloosbaar", bereiding: "rauw", imageOwner: "abrikoos-vers" }),
   f("meloen", "Meloen", "fruit", "fruit", [["partje", 150]], null, { geenBron: "verwaarloosbaar", zoek: ["galia", "cantaloupe", "watermeloen"] }),
   f("granaatappel", "Granaatappel", "fruit", "fruit", [["halve", 90], ["handvol pitjes", 60]], null, { geenBron: "verwaarloosbaar" }),
-  f("vijg-vers", "Vijg, vers", "fruit", "fruit", [["stuk", 50]], null, { geenBron: "verwaarloosbaar", bereiding: "rauw" }),
+  f("vijg-vers", "Vijg, vers", "fruit", "fruit", [["stuk", 50]], null, { geenBron: "verwaarloosbaar", bereiding: "rauw", imageOwner: "vijg-vers" }),
   f("gedroogde-vijgen", "Vijgen, gedroogd", "fruit", "fruit", [["vier stuks", 40], ["twee stuks", 20]], "gedroogde-vijgen",
-    { bereiding: "gedroogd", waarom: "drogen concentreert het gehalte per 100 g ongeveer viervoudig" }),
+    { bereiding: "gedroogd", waarom: "drogen concentreert het gehalte per 100 g ongeveer viervoudig", imageOwner: "vijg-vers" }),
   f("dadels", "Dadels", "fruit", "fruit", [["twee stuks", 40], ["stuk", 20]], null, { bereiding: "gedroogd", waarom: "gedroogd; kleine portie, hoog gehalte per 100 g" }),
   f("rozijnen", "Rozijnen", "fruit", "fruit", [["handvol", 30], ["eetlepel", 15]], null, { bereiding: "gedroogd", waarom: "gedroogd" }),
-  f("abrikoos-gedroogd", "Abrikozen, gedroogd", "fruit", "fruit", [["vier stuks", 32]], null, { bereiding: "gedroogd", waarom: "gedroogd" }),
-  f("pruimen-gedroogd", "Pruimen, gedroogd", "fruit", "fruit", [["drie stuks", 30]], null, { bereiding: "gedroogd", waarom: "gedroogd" }),
+  f("abrikoos-gedroogd", "Abrikozen, gedroogd", "fruit", "fruit", [["vier stuks", 32]], null, { bereiding: "gedroogd", waarom: "gedroogd", imageOwner: "abrikoos-vers" }),
+  f("pruimen-gedroogd", "Pruimen, gedroogd", "fruit", "fruit", [["drie stuks", 30]], null, { bereiding: "gedroogd", waarom: "gedroogd", imageOwner: "pruim" }),
   f("fruit-diepvries", "Rood fruit, diepvries", "fruit", "fruit", [["handvol", 80]], null, { geenBron: "verwaarloosbaar", bereiding: "diepvries", waarom: "vocht komt vrij bij ontdooien; portie wijkt af van vers" }),
   f("appelmoes", "Appelmoes", "fruit", "fruit", [["schaaltje", 100]], null, { geenBron: "verwaarloosbaar", zoek: ["appelmoes uit pot"] }),
 ];
@@ -281,8 +288,8 @@ const GRANEN: readonly CatalogEntry[] = [
     { bereiding: "gekookt", zoek: ["bruine rijst"] }),
   f("basmatirijst-gekookt", "Basmatirijst, gekookt", "granen", "zetmeel", P.rijstGekookt, null, { bereiding: "gekookt" }),
   f("wilde-rijst-gekookt", "Wilde rijst, gekookt", "granen", "granen", P.rijstGekookt, null, { bereiding: "gekookt" }),
-  f("quinoa", "Quinoa, gekookt", "granen", "granen", P.rijstGekookt, "quinoa", { bereiding: "gekookt" }),
-  f("quinoa-droog", "Quinoa, droog", "granen", "granen", [["portie droog", 60]], "quinoa-droog", { bereiding: "rauw", waarom: "droog gewicht; verdrievoudigt bij koken" }),
+  f("quinoa", "Quinoa, gekookt", "granen", "granen", P.rijstGekookt, "quinoa", { bereiding: "gekookt", imageOwner: "quinoa" }),
+  f("quinoa-droog", "Quinoa, droog", "granen", "granen", [["portie droog", 60]], "quinoa-droog", { bereiding: "rauw", waarom: "droog gewicht; verdrievoudigt bij koken", imageOwner: "quinoa" }),
   f("bulgur-gekookt", "Bulgur, gekookt", "granen", "granen", P.rijstGekookt, null, { bereiding: "gekookt" }),
   f("couscous-gekookt", "Couscous, gekookt", "granen", "granen", P.rijstGekookt, null, { bereiding: "gekookt" }),
   f("boekweit-gekookt", "Boekweit, gekookt", "granen", "granen", P.rijstGekookt, "boekweit-gekookt", { bereiding: "gekookt" }),
@@ -318,10 +325,10 @@ const BROOD: readonly CatalogEntry[] = [
 
 const PASTA: readonly CatalogEntry[] = [
   f("volkoren-pasta", "Volkoren pasta, droog", "pasta", "granen", P.pastaDroog, "volkoren-pasta",
-    { bereiding: "rauw", waarom: "droog gewicht — 75 g droog wordt ongeveer 190 g gekookt" }),
-  f("volkoren-pasta-gekookt", "Volkoren pasta, gekookt", "pasta", "granen", [["portie", 190]], null, { bereiding: "gekookt" }),
-  f("pasta-wit-droog", "Pasta, droog", "pasta", "granen", P.pastaDroog, null, { bereiding: "rauw", zoek: ["spaghetti", "penne", "macaroni", "fusilli", "tagliatelle"] }),
-  f("pasta-wit-gekookt", "Pasta, gekookt", "pasta", "granen", [["portie", 190]], null, { bereiding: "gekookt" }),
+    { bereiding: "rauw", waarom: "droog gewicht — 75 g droog wordt ongeveer 190 g gekookt", imageOwner: "volkoren-pasta-gekookt" }),
+  f("volkoren-pasta-gekookt", "Volkoren pasta, gekookt", "pasta", "granen", [["portie", 190]], null, { bereiding: "gekookt", imageOwner: "volkoren-pasta-gekookt" }),
+  f("pasta-wit-droog", "Pasta, droog", "pasta", "granen", P.pastaDroog, null, { bereiding: "rauw", zoek: ["spaghetti", "penne", "macaroni", "fusilli", "tagliatelle"], imageOwner: "pasta-wit-gekookt" }),
+  f("pasta-wit-gekookt", "Pasta, gekookt", "pasta", "granen", [["portie", 190]], null, { bereiding: "gekookt", imageOwner: "pasta-wit-gekookt" }),
   f("linzenpasta-droog", "Linzenpasta, droog", "pasta", "peulvruchten", P.pastaDroog, null,
     { bereiding: "rauw", waarom: "telt als peulvrucht, niet als graan — dat is het hele punt van dit product" }),
   f("kikkererwtenpasta-droog", "Kikkererwtenpasta, droog", "pasta", "peulvruchten", P.pastaDroog, null, { bereiding: "rauw" }),
@@ -338,26 +345,26 @@ const PASTA: readonly CatalogEntry[] = [
    regel — mineralen zijn elementen, en het waterverlies valt binnen de band.
    ═══════════════════════════════════════════════════════════════════════ */
 const PEULVRUCHTEN: readonly CatalogEntry[] = [
-  f("kikkererwten-gekookt", "Kikkererwten, gekookt", "peulvruchten", "peulvruchten", P.peul, "kikkererwten", { bereiding: "gekookt" }),
+  f("kikkererwten-gekookt", "Kikkererwten, gekookt", "peulvruchten", "peulvruchten", P.peul, "kikkererwten", { bereiding: "gekookt", imageOwner: "kikkererwten-gekookt" }),
   f("kikkererwten-blik", "Kikkererwten, uit blik", "peulvruchten", "peulvruchten", P.peul, null,
-    { bereiding: "blik", waarom: "uitgelekt; een deel van de mineralen blijft in het vocht achter" }),
-  f("linzen-gekookt", "Linzen, gekookt", "peulvruchten", "peulvruchten", P.peul, "linzen", { bereiding: "gekookt" }),
-  f("linzen-rood-gekookt", "Rode linzen, gekookt", "peulvruchten", "peulvruchten", P.peul, "linzen", { bereiding: "gekookt", waarom: "kleurvariant van linzen — cultivar, geen vormverandering; valt binnen de spreidingsband" }),
-  f("linzen-groen-gekookt", "Groene linzen, gekookt", "peulvruchten", "peulvruchten", P.peul, "linzen", { bereiding: "gekookt", waarom: "kleurvariant van linzen — cultivar, geen vormverandering; valt binnen de spreidingsband" }),
-  f("linzen-bruin-gekookt", "Bruine linzen, gekookt", "peulvruchten", "peulvruchten", P.peul, "linzen", { bereiding: "gekookt", waarom: "kleurvariant van linzen — cultivar, geen vormverandering; valt binnen de spreidingsband" }),
-  f("linzen-blik", "Linzen, uit blik", "peulvruchten", "peulvruchten", P.peul, null, { bereiding: "blik", waarom: "uitgelekt" }),
-  f("kidneybonen-gekookt", "Kidneybonen, gekookt", "peulvruchten", "peulvruchten", P.peul, "kidneybonen", { bereiding: "gekookt" }),
-  f("kidneybonen-blik", "Kidneybonen, uit blik", "peulvruchten", "peulvruchten", P.peul, null, { bereiding: "blik", waarom: "uitgelekt" }),
+    { bereiding: "blik", waarom: "uitgelekt; een deel van de mineralen blijft in het vocht achter", imageOwner: "kikkererwten-gekookt" }),
+  f("linzen-gekookt", "Linzen, gekookt", "peulvruchten", "peulvruchten", P.peul, "linzen", { bereiding: "gekookt", imageOwner: "linzen-gekookt" }),
+  f("linzen-rood-gekookt", "Rode linzen, gekookt", "peulvruchten", "peulvruchten", P.peul, "linzen", { bereiding: "gekookt", waarom: "kleurvariant van linzen — cultivar, geen vormverandering; valt binnen de spreidingsband", imageOwner: "linzen-gekookt" }),
+  f("linzen-groen-gekookt", "Groene linzen, gekookt", "peulvruchten", "peulvruchten", P.peul, "linzen", { bereiding: "gekookt", waarom: "kleurvariant van linzen — cultivar, geen vormverandering; valt binnen de spreidingsband", imageOwner: "linzen-gekookt" }),
+  f("linzen-bruin-gekookt", "Bruine linzen, gekookt", "peulvruchten", "peulvruchten", P.peul, "linzen", { bereiding: "gekookt", waarom: "kleurvariant van linzen — cultivar, geen vormverandering; valt binnen de spreidingsband", imageOwner: "linzen-gekookt" }),
+  f("linzen-blik", "Linzen, uit blik", "peulvruchten", "peulvruchten", P.peul, null, { bereiding: "blik", waarom: "uitgelekt", imageOwner: "linzen-gekookt" }),
+  f("kidneybonen-gekookt", "Kidneybonen, gekookt", "peulvruchten", "peulvruchten", P.peul, "kidneybonen", { bereiding: "gekookt", imageOwner: "kidneybonen-gekookt" }),
+  f("kidneybonen-blik", "Kidneybonen, uit blik", "peulvruchten", "peulvruchten", P.peul, null, { bereiding: "blik", waarom: "uitgelekt", imageOwner: "kidneybonen-gekookt" }),
   f("zwarte-bonen-gekookt", "Zwarte bonen, gekookt", "peulvruchten", "peulvruchten", P.peul, "zwarte-bonen", { bereiding: "gekookt" }),
-  f("witte-bonen-gekookt", "Witte bonen, gekookt", "peulvruchten", "peulvruchten", P.peul, "witte-bonen", { bereiding: "gekookt" }),
-  f("cannellinibonen-blik", "Cannellinibonen, uit blik", "peulvruchten", "peulvruchten", P.peul, null, { bereiding: "blik", waarom: "uitgelekt; een deel van de mineralen blijft in het vocht achter" }),
+  f("witte-bonen-gekookt", "Witte bonen, gekookt", "peulvruchten", "peulvruchten", P.peul, "witte-bonen", { bereiding: "gekookt", imageOwner: "witte-bonen-gekookt" }),
+  f("cannellinibonen-blik", "Cannellinibonen, uit blik", "peulvruchten", "peulvruchten", P.peul, null, { bereiding: "blik", waarom: "uitgelekt; een deel van de mineralen blijft in het vocht achter", imageOwner: "witte-bonen-gekookt" }),
   f("bruine-bonen-gekookt", "Bruine bonen, gekookt", "peulvruchten", "peulvruchten", P.peul, null, { bereiding: "gekookt" }),
   f("sojabonen-gekookt", "Sojabonen, gekookt", "peulvruchten", "peulvruchten", P.peul, "sojabonen-gekookt", { bereiding: "gekookt" }),
   f("edamame", "Edamame", "peulvruchten", "peulvruchten", [["handvol", 80], ["portie", 150]], "edamame"),
   f("spliterwten-gekookt", "Spliterwten, gekookt", "peulvruchten", "peulvruchten", P.peul, "spliterwten-gekookt", { bereiding: "gekookt" }),
   f("kapucijners", "Kapucijners", "peulvruchten", "peulvruchten", P.peul, null),
   f("tuinbonen-gekookt", "Tuinbonen, gekookt", "peulvruchten", "peulvruchten", P.peul, "tuinbonen-gekookt", { bereiding: "gekookt" }),
-  f("erwten-diepvries", "Doperwten, diepvries", "peulvruchten", "peulvruchten", P.groente, "erwten-diepvries", { bereiding: "diepvries", waarom: "geblancheerd vóór invriezen" }),
+  f("erwten-diepvries", "Doperwten, diepvries", "peulvruchten", "peulvruchten", P.groente, "erwten-diepvries", { bereiding: "diepvries", waarom: "geblancheerd vóór invriezen", imageOwner: "erwten-diepvries" }),
 ];
 
 const NOTEN: readonly CatalogEntry[] = [
@@ -432,21 +439,21 @@ const ORGAANVLEES: readonly CatalogEntry[] = [
 
 const VIS: readonly CatalogEntry[] = [
   f("zalm-gekweekt", "Zalm, gekweekt", "vis", "vis", P.vis, "zalm-gekweekt",
-    { waarom: "gekweekt draagt fors minder vitamine D en EPA/DHA dan wild — factor twee tot vier" }),
-  f("zalm-wild", "Zalm, wild", "vis", "vis", P.vis, "zalm-wild", { waarom: "vangstgebied telt: Oostzee ongeveer tweemaal Noordzee" }),
-  f("zalm-gerookt", "Zalm, gerookt", "vis", "vis", [["portie", 75]], null, { bereiding: "gerookt", waarom: "gezouten en gedroogd — ander vocht- en zoutgehalte" }),
-  f("zalm-blik", "Zalm, uit blik", "vis", "vis", [["portie", 100]], null, { bereiding: "blik", waarom: "ingeblikt mét graat en vocht — ander profiel dan verse moot" }),
-  f("makreel", "Makreel", "vis", "vis", P.vis, "makreel"),
-  f("makreel-gerookt", "Makreel, gerookt", "vis", "vis", [["portie", 100]], null, { bereiding: "gerookt", waarom: "roken zout en droogt; het vetgehalte per 100 g loopt op" }),
+    { waarom: "gekweekt draagt fors minder vitamine D en EPA/DHA dan wild — factor twee tot vier", imageOwner: "zalm-gekweekt" }),
+  f("zalm-wild", "Zalm, wild", "vis", "vis", P.vis, "zalm-wild", { waarom: "vangstgebied telt: Oostzee ongeveer tweemaal Noordzee", imageOwner: "zalm-gekweekt" }),
+  f("zalm-gerookt", "Zalm, gerookt", "vis", "vis", [["portie", 75]], null, { bereiding: "gerookt", waarom: "gezouten en gedroogd — ander vocht- en zoutgehalte", imageOwner: "zalm-gekweekt" }),
+  f("zalm-blik", "Zalm, uit blik", "vis", "vis", [["portie", 100]], null, { bereiding: "blik", waarom: "ingeblikt mét graat en vocht — ander profiel dan verse moot", imageOwner: "zalm-gekweekt" }),
+  f("makreel", "Makreel", "vis", "vis", P.vis, "makreel", { imageOwner: "makreel" }),
+  f("makreel-gerookt", "Makreel, gerookt", "vis", "vis", [["portie", 100]], null, { bereiding: "gerookt", waarom: "roken zout en droogt; het vetgehalte per 100 g loopt op", imageOwner: "makreel" }),
   f("haring", "Haring", "vis", "vis", [["stuk", 100]], "haring", { zoek: ["maatjes", "nieuwe haring"] }),
   f("sardines-blik", "Sardines, uit blik", "vis", "vis", [["blikje", 100]], "sardines", { bereiding: "blik", waarom: "ingeblikt mét graat: het calciumgehalte wijkt daardoor sterk af van verse sardine" }),
   f("ansjovis", "Ansjovis", "vis", "vis", [["portie", 50]], "ansjovis"),
   f("sprot", "Sprot", "vis", "vis", [["portie", 100]], "sprot"),
-  f("forel", "Forel", "vis", "vis", P.vis, "forel"),
-  f("gerookte-forel", "Forel, gerookt", "vis", "vis", [["portie", 100]], "gerookte-forel", { bereiding: "gerookt", waarom: "roken zout en droogt — ander vocht- en zoutgehalte dan vers" }),
+  f("forel", "Forel", "vis", "vis", P.vis, "forel", { imageOwner: "forel" }),
+  f("gerookte-forel", "Forel, gerookt", "vis", "vis", [["portie", 100]], "gerookte-forel", { bereiding: "gerookt", waarom: "roken zout en droogt — ander vocht- en zoutgehalte dan vers", imageOwner: "forel" }),
   f("tonijn-blik", "Tonijn uit blik, op water", "vis", "vis", [["blikje uitgelekt", 100]], "tonijn-blik",
-    { bereiding: "blik", waarom: "op water of op olie scheelt fors in vet — en dus in EPA/DHA per 100 g" }),
-  f("tonijn-vers", "Tonijn, vers", "vis", "vis", P.vis, null),
+    { bereiding: "blik", waarom: "op water of op olie scheelt fors in vet — en dus in EPA/DHA per 100 g", imageOwner: "tonijn-vers" }),
+  f("tonijn-vers", "Tonijn, vers", "vis", "vis", P.vis, null, { imageOwner: "tonijn-vers" }),
   f("kabeljauw", "Kabeljauw", "vis", "vis", P.vis, "kabeljauw"),
   f("koolvis", "Koolvis", "vis", "vis", P.vis, null),
   f("schelvis", "Schelvis", "vis", "vis", P.vis, null),
@@ -473,9 +480,9 @@ const ZEEVRUCHTEN: readonly CatalogEntry[] = [
    EIEREN, ZUIVEL EN KAAS
    ═══════════════════════════════════════════════════════════════════════ */
 const EIEREN: readonly CatalogEntry[] = [
-  f("ei-gekookt", "Ei, gekookt", "eieren", "eieren", [["stuk", 55], ["twee stuks", 110]], "eieren", { bereiding: "gekookt" }),
+  f("ei-gekookt", "Ei, gekookt", "eieren", "eieren", [["stuk", 55], ["twee stuks", 110]], "eieren", { bereiding: "gekookt", imageOwner: "ei-gekookt" }),
   f("ei-gebakken", "Ei, gebakken", "eieren", "eieren", [["stuk", 55], ["twee stuks", 110]], "eieren",
-    { bereiding: "gebakken", waarom: "bakvet telt mee in het gerecht, niet in het ei" }),
+    { bereiding: "gebakken", waarom: "bakvet telt mee in het gerecht, niet in het ei", imageOwner: "ei-gekookt" }),
   f("roerei", "Roerei", "eieren", "eieren", [["twee eieren", 110]], null, { geenBron: "samengesteld", bereiding: "gebakken", waarom: "bakvet en soms melk gaan mee — dat is een gerecht, geen ei" }),
   f("omelet", "Omelet", "eieren", "eieren", [["twee eieren", 110], ["drie eieren", 165]], null, { geenBron: "samengesteld", bereiding: "gebakken", waarom: "bakvet telt mee in het gerecht, niet in het ei" }),
   f("eiwit", "Eiwit (los)", "eieren", "eieren", [["stuk", 33], ["drie stuks", 100]], null, { waarom: "vitamine D en zink zitten vrijwel volledig in de dooier" }),
@@ -485,17 +492,17 @@ const EIEREN: readonly CatalogEntry[] = [
 ];
 
 const ZUIVEL: readonly CatalogEntry[] = [
-  f("melk-vol", "Volle melk", "zuivel", "zuivel", P.drank, "melk-vol", { ookIn: ["dranken"] }),
+  f("melk-vol", "Volle melk", "zuivel", "zuivel", P.drank, "melk-vol", { ookIn: ["dranken"], imageOwner: "melk-vol" }),
   f("melk-halfvol", "Halfvolle melk", "zuivel", "zuivel", P.drank, null,
-    { geenBron: "verrijkt", ookIn: ["dranken"], waarom: "in Nederland verplicht verrijkt met vitamine D sinds 2021 — 1,5 µg per 100 ml" }),
-  f("melk-mager", "Magere melk", "zuivel", "zuivel", P.drank, null, { geenBron: "verrijkt", ookIn: ["dranken"], waarom: "idem verrijkt" }),
+    { geenBron: "verrijkt", ookIn: ["dranken"], waarom: "in Nederland verplicht verrijkt met vitamine D sinds 2021 — 1,5 µg per 100 ml", imageOwner: "melk-vol" }),
+  f("melk-mager", "Magere melk", "zuivel", "zuivel", P.drank, null, { geenBron: "verrijkt", ookIn: ["dranken"], waarom: "idem verrijkt", imageOwner: "melk-vol" }),
   f("karnemelk", "Karnemelk", "zuivel", "zuivel", P.drank, null, { ookIn: ["dranken"] }),
-  f("yoghurt-vol", "Volle yoghurt", "zuivel", "zuivel", P.zuivel, null),
-  f("yoghurt-mager", "Magere yoghurt", "zuivel", "zuivel", P.zuivel, null),
+  f("yoghurt-vol", "Volle yoghurt", "zuivel", "zuivel", P.zuivel, null, { imageOwner: "yoghurt-vol" }),
+  f("yoghurt-mager", "Magere yoghurt", "zuivel", "zuivel", P.zuivel, null, { imageOwner: "yoghurt-vol" }),
   f("griekse-yoghurt", "Griekse yoghurt", "zuivel", "zuivel", P.zuivel, "griekse-yoghurt", { waarom: "vetgehalte bepaalt het eiwit per 100 g" }),
   f("skyr", "Skyr", "zuivel", "zuivel", P.zuivel, "skyr", { waarom: "geen Griekse yoghurt — het eiwit ligt beduidend hoger" }),
-  f("magere-kwark", "Magere kwark", "zuivel", "zuivel", [["schaaltje", 150], ["bak", 250]], "magere-kwark"),
-  f("volle-kwark", "Volle kwark", "zuivel", "zuivel", [["schaaltje", 150]], null),
+  f("magere-kwark", "Magere kwark", "zuivel", "zuivel", [["schaaltje", 150], ["bak", 250]], "magere-kwark", { imageOwner: "magere-kwark" }),
+  f("volle-kwark", "Volle kwark", "zuivel", "zuivel", [["schaaltje", 150]], null, { imageOwner: "magere-kwark" }),
   f("kefir", "Kefir", "zuivel", "zuivel", P.drank, null, { bereiding: "gefermenteerd", waarom: "fermentatie verandert de samenstelling en de verteerbaarheid van lactose" }),
   f("huttenkase", "Hüttenkäse", "zuivel", "zuivel", [["schaaltje", 100]], "huttenkase", { ookIn: ["kaas"], zoek: ["cottage cheese"] }),
   f("creme-fraiche", "Crème fraîche", "zuivel", "zuivel", [["eetlepel", 15]], null, { ookIn: ["sauzen"] }),
@@ -529,8 +536,8 @@ const KAAS: readonly CatalogEntry[] = [
    ═══════════════════════════════════════════════════════════════════════ */
 const PLANTAARDIG: readonly CatalogEntry[] = [
   f("sojadrink-verrijkt", "Sojadrink, verrijkt", "plantaardig", "zuivel", P.drank, "sojadrink-verrijkt",
-    { ookIn: ["dranken"], waarom: "verrijkingsniveau is een merkkeuze — controleer het etiket" }),
-  f("sojadrink-onverrijkt", "Sojadrink, onverrijkt", "plantaardig", "zuivel", P.drank, null, { ookIn: ["dranken"] }),
+    { ookIn: ["dranken"], waarom: "verrijkingsniveau is een merkkeuze — controleer het etiket", imageOwner: "sojadrink-verrijkt" }),
+  f("sojadrink-onverrijkt", "Sojadrink, onverrijkt", "plantaardig", "zuivel", P.drank, null, { ookIn: ["dranken"], imageOwner: "sojadrink-verrijkt" }),
   f("havermelk", "Havermelk", "plantaardig", "zuivel", P.drank, null, { geenBron: "verrijkt", ookIn: ["dranken"], zoek: ["haverdrink"] }),
   f("amandeldrink", "Amandeldrink", "plantaardig", "zuivel", P.drank, null, { geenBron: "verrijkt", ookIn: ["dranken"] }),
   f("kokosdrink", "Kokosdrink", "plantaardig", "zuivel", P.drank, null, { geenBron: "verrijkt", ookIn: ["dranken"] }),
@@ -550,8 +557,8 @@ const PLANTAARDIG: readonly CatalogEntry[] = [
 ];
 
 const VETTEN: readonly CatalogEntry[] = [
-  f("olijfolie-ev", "Olijfolie, extra vierge", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar", zoek: ["evoo"] }),
-  f("olijfolie", "Olijfolie", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar" }),
+  f("olijfolie-ev", "Olijfolie, extra vierge", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar", zoek: ["evoo"], imageOwner: "olijfolie-ev" }),
+  f("olijfolie", "Olijfolie", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar", imageOwner: "olijfolie-ev" }),
   f("koolzaadolie", "Koolzaadolie", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar", zoek: ["raapolie", "canola"] }),
   f("zonnebloemolie", "Zonnebloemolie", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar" }),
   f("avocado-olie", "Avocado-olie", "vetten", "vetten", P.olie, null, { geenBron: "verwaarloosbaar" }),
@@ -645,10 +652,10 @@ const MAALTIJDEN: readonly CatalogEntry[] = [
   f("quiche", "Quiche", "maaltijden", "granen", [["punt", 150]], null, { geenBron: "samengesteld" }),
   f("friet", "Friet", "maaltijden", "zetmeel", [["kleine portie", 150], ["portie", 250]], null, { bereiding: "gefrituurd", waarom: "frituren onttrekt water en voegt vet toe — beide kanten op een factor" }),
   f("aardappel-gekookt", "Aardappelen, gekookt", "maaltijden", "zetmeel", [["stuk", 75], ["portie", 200]], null,
-    { bereiding: "gekookt", ookIn: ["groenten"], waarom: "koken loogt kalium en magnesium uit" }),
-  f("aardappel-gebakken", "Aardappelen, gebakken", "maaltijden", "zetmeel", [["portie", 200]], null, { bereiding: "gebakken", ookIn: ["groenten"], waarom: "bakvet gaat mee het gerecht in; de aardappel zelf verliest vocht" }),
-  f("aardappelpuree", "Aardappelpuree", "maaltijden", "zetmeel", [["portie", 200]], null, { ookIn: ["groenten"] }),
-  f("ovenaardappel", "Ovenaardappel", "maaltijden", "zetmeel", [["portie", 200]], null, { bereiding: "geroosterd", ookIn: ["groenten"], waarom: "droge hitte onttrekt vocht zonder uitloging — anders dan koken" }),
+    { bereiding: "gekookt", ookIn: ["groenten"], waarom: "koken loogt kalium en magnesium uit", imageOwner: "aardappel-gekookt" }),
+  f("aardappel-gebakken", "Aardappelen, gebakken", "maaltijden", "zetmeel", [["portie", 200]], null, { bereiding: "gebakken", ookIn: ["groenten"], waarom: "bakvet gaat mee het gerecht in; de aardappel zelf verliest vocht", imageOwner: "aardappel-gekookt" }),
+  f("aardappelpuree", "Aardappelpuree", "maaltijden", "zetmeel", [["portie", 200]], null, { ookIn: ["groenten"], imageOwner: "aardappel-gekookt" }),
+  f("ovenaardappel", "Ovenaardappel", "maaltijden", "zetmeel", [["portie", 200]], null, { bereiding: "geroosterd", ookIn: ["groenten"], waarom: "droge hitte onttrekt vocht zonder uitloging — anders dan koken", imageOwner: "aardappel-gekookt" }),
   f("zoete-aardappel-gekookt", "Zoete aardappel, gekookt", "maaltijden", "zetmeel", [["portie", 200]], null, { bereiding: "gekookt", ookIn: ["groenten"] }),
 ];
 
@@ -689,6 +696,12 @@ const BY_KEY: ReadonlyMap<string, CatalogEntry> = new Map(
 
 export function catalogEntry(key: string): CatalogEntry | null {
   return BY_KEY.get(key) ?? null;
+}
+
+/** Pad naar de catalogusfoto. Geen bestandscheck — de UI valt terug als hij ontbreekt. */
+export function catalogImageSrc(entry: CatalogEntry): string | null {
+  const owner = entry.imageOwner ?? entry.key;
+  return `/images/voedingsmiddelen/${owner}.jpg`;
 }
 
 /** Alles wat in een categorie te vinden is — inclusief wat er via `ookIn` bij hoort. */

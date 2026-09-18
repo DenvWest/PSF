@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { catalogEntry, searchCatalog } from "@/data/nutrition/food-catalog";
+import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import {
   itemsVanMoment,
@@ -129,9 +130,12 @@ export default function NutritionProductInvoer({
                 <button
                   type="button"
                   onClick={() => voegToe(entry.key)}
-                  className="flex w-full cursor-pointer items-baseline justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
+                  className="flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
                 >
-                  <span className="text-[13px] text-[#E7EDE8]">{entry.labelNl}</span>
+                  <span className="flex min-w-0 items-center gap-2">
+                    <FoodThumbnail entry={entry} size={40} />
+                    <span className="truncate text-[13px] text-[#E7EDE8]">{entry.labelNl}</span>
+                  </span>
                   <span className="text-[10.5px] text-[#6F8177]">
                     {entry.porties[0]?.labelNl ?? ""}
                   </span>
@@ -152,6 +156,7 @@ export default function NutritionProductInvoer({
                 key={`${item.moment}-${item.key}-${index}`}
                 className="flex items-center gap-2 border-b border-white/[0.06] py-1.5 last:border-b-0"
               >
+                <FoodThumbnail entry={entry} size={40} />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[12.5px] text-[#E7EDE8]">
                     {entry.labelNl}
