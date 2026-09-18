@@ -102,6 +102,45 @@ describe("DagboekScherm — zoeken per maaltijd", () => {
     ).toBeNull();
   });
 
+  it("toont wat je eerder at zodra het veld opengaat, nog voor je typt", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        if (String(input).includes("/api/account/nutrition-daybook")) {
+          return jsonResponse({
+            days: [
+              {
+                date: "2026-09-16",
+                soort: "doordeweeks",
+                porties: {},
+                items: [{ moment: "ontbijt", key: "havermout", grams: 60 }],
+              },
+              {
+                date: "2026-09-17",
+                soort: "doordeweeks",
+                porties: {},
+                items: [{ moment: "lunch", key: "volkorenbrood", grams: 70 }],
+              },
+            ],
+          });
+        }
+        return jsonResponse({});
+      }),
+    );
+
+    render(<DagboekScherm />);
+
+    fireEvent.click(
+      within(maaltijdBlok("Ontbijt")).getByRole("button", { name: "+ Toevoegen" }),
+    );
+
+    expect(await screen.findByText("Eerder gegeten")).toBeTruthy();
+    // Meest recente dag eerst: donderdag (volkorenbrood) vóór woensdag.
+    const knoppen = screen.getAllByRole("button", { name: /Havermout|Volkorenbrood/ });
+    expect(knoppen[0]!.textContent).toContain("Volkorenbrood");
+    expect(knoppen[1]!.textContent).toContain("Havermout");
+  });
+
   it("schrijft het toegevoegde product naar het dagboek-endpoint", async () => {
     render(<DagboekScherm />);
 

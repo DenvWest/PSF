@@ -1,7 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { catalogEntry, searchCatalog } from "@/data/nutrition/food-catalog";
+import {
+  catalogEntry,
+  searchCatalog,
+  type CatalogEntry,
+} from "@/data/nutrition/food-catalog";
+import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
@@ -119,10 +124,37 @@ export default function DagboekScherm({
   );
 
   const ondergrens = useMemo(() => nutrientenUitItems(items), [items]);
+
+  /**
+   * Wat je eerder logde, meest recent eerst.
+   *
+   * Een leeg zoekveld gaf eerder een lege lijst: je moest weten hoe een product
+   * heet voor je iets zag. Mensen eten grotendeels hetzelfde, dus het antwoord
+   * op "wat at je" staat meestal al in je eigen dagen — dit maakt herhalen één
+   * tik in plaats van opnieuw typen. Geen nieuwe opslag: `dagen` staat er al.
+   */
+  const recent = useMemo(() => {
+    const gezien = new Set<string>();
+    const uit: CatalogEntry[] = [];
+    for (const dag of [...dagen].sort((a, b) => b.date.localeCompare(a.date))) {
+      for (const item of sanitizeItems(dag.items ?? [])) {
+        if (gezien.has(item.key)) continue;
+        const entry = catalogEntry(item.key);
+        if (!entry) continue;
+        gezien.add(item.key);
+        uit.push(entry);
+        if (uit.length >= MAX_TREFFERS) return uit;
+      }
+    }
+    return uit;
+  }, [dagen]);
+
   const treffers = useMemo(
     () => (zoek.trim() ? searchCatalog(zoek, MAX_TREFFERS) : []),
     [zoek],
   );
+
+  const suggesties = zoek.trim() ? treffers : recent;
 
   const bewaar = useCallback(
     async (volgende: DagboekItem[]) => {
@@ -230,26 +262,36 @@ export default function DagboekScherm({
                     aria-label={`Zoek een product voor ${moment.label.toLowerCase()}`}
                     className="w-full rounded-xl border border-white/15 bg-white/[0.03] px-3 py-2 text-[13px] text-[#F1EFE8] outline-none transition-colors placeholder:text-[#6F8177] focus:border-white/40"
                   />
-                  {treffers.length > 0 ? (
-                    <ul className="absolute z-20 m-0 mt-1 w-full list-none overflow-hidden rounded-xl border border-white/15 bg-[#16241a] p-0 shadow-2xl">
-                      {treffers.map((entry) => (
-                        <li key={entry.key}>
-                          <button
-                            type="button"
-                            onMouseDown={(event) => event.preventDefault()}
-                            onClick={() => voegToe(entry.key)}
-                            className="flex w-full cursor-pointer items-baseline justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
-                          >
-                            <span className="text-[13px] text-[#F1EFE8]">
-                              {entry.labelNl}
-                            </span>
-                            <span className="text-[10.5px] text-[#6F8177]">
-                              {entry.porties[0]?.labelNl ?? ""}
-                            </span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
+                  {suggesties.length > 0 ? (
+                    <div className="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border border-white/15 bg-[#16241a] shadow-2xl">
+                      {!zoek.trim() ? (
+                        <p className="m-0 border-b border-white/10 px-3 py-1.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#6F8177]">
+                          Eerder gegeten
+                        </p>
+                      ) : null}
+                      <ul className="m-0 list-none p-0">
+                        {suggesties.map((entry) => (
+                          <li key={entry.key}>
+                            <button
+                              type="button"
+                              onMouseDown={(event) => event.preventDefault()}
+                              onClick={() => voegToe(entry.key)}
+                              className="flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
+                            >
+                              <span className="flex min-w-0 items-center gap-2">
+                                <FoodThumbnail entry={entry} size={40} />
+                                <span className="truncate text-[13px] text-[#F1EFE8]">
+                                  {entry.labelNl}
+                                </span>
+                              </span>
+                              <span className="shrink-0 text-[10.5px] text-[#6F8177]">
+                                {entry.porties[0]?.labelNl ?? ""}
+                              </span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ) : null}
                 </div>
               ) : null
