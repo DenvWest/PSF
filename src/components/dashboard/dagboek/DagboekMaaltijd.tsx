@@ -1,6 +1,5 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
@@ -62,22 +61,15 @@ export default function DagboekMaaltijd({
   onGram,
   onToevoegen,
   busy = false,
-  zoekSlot = null,
 }: {
   moment: EetmomentId;
   label: string;
   items: readonly DagboekItem[];
   onVerwijder: (item: DagboekItem) => void;
   onGram: (item: DagboekItem, grams: number) => void;
+  /** "+ Toevoegen" opent het zoekscherm voor dit moment (zie `DagboekZoekScherm`). */
   onToevoegen: (moment: EetmomentId) => void;
   busy?: boolean;
-  /**
-   * Het zoekveld, als deze maaltijd de aangeklikte is. Het stond eerder boven
-   * de maaltijdenlijst: je klikte "+ Toevoegen" bij Tussendoor en het veld
-   * verscheen buiten beeld, bovenaan het scherm. Nu staat het onder de kop
-   * van de maaltijd waar je het opende.
-   */
-  zoekSlot?: ReactNode;
 }) {
   const eigen = itemsVanMoment(items, moment);
   const totalen = nutrientenUitItems(eigen);
@@ -116,10 +108,6 @@ export default function DagboekMaaltijd({
           </button>
         </div>
       </header>
-
-      {zoekSlot ? (
-        <div className="border-b border-white/10 px-3 py-2.5">{zoekSlot}</div>
-      ) : null}
 
       {eigen.length === 0 ? (
         <p className="m-0 px-3 py-2.5 text-[11.5px] italic leading-relaxed text-[#6F8177]">

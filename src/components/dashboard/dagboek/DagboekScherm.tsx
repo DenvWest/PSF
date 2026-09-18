@@ -6,7 +6,6 @@ import {
   searchCatalog,
   type CatalogEntry,
 } from "@/data/nutrition/food-catalog";
-import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
@@ -24,6 +23,7 @@ import DagboekWeekstrip, {
   meetdagenUit,
   weekRond,
 } from "@/components/dashboard/dagboek/DagboekWeekstrip";
+import DagboekZoekScherm from "@/components/dashboard/dagboek/DagboekZoekScherm";
 
 /**
  * Het dagboek als eigen scherm: je week, je stand, je maaltijden.
@@ -200,15 +200,18 @@ export default function DagboekScherm({
     void bewaar(volgende);
   }
 
-  function voegToe(key: string) {
+  function voegToe(entry: CatalogEntry) {
     if (!zoekMoment) return;
-    const entry = catalogEntry(key);
-    if (!entry) return;
     const grams = entry.porties[0]?.grams ?? 100;
-    wijzig([...items, { moment: zoekMoment, key, grams }]);
-    // Het veld blijft open: een maaltijd is zelden één product, en de
-    // toegevoegde regel verschijnt er direct onder als bevestiging.
+    wijzig([...items, { moment: zoekMoment, key: entry.key, grams }]);
+    // Het scherm blijft open: een maaltijd is zelden één product, en de
+    // toegevoegde regel verschijnt er direct boven de resultaten als
+    // bevestiging.
     setZoek("");
+  }
+
+  function verwijderUitZoeken(item: DagboekItem) {
+    wijzig(items.filter((i) => i !== item));
   }
 
   const dagLabel = new Date(datum).toLocaleDateString("nl-NL", {
@@ -216,6 +219,30 @@ export default function DagboekScherm({
     day: "numeric",
     month: "long",
   });
+
+  if (zoekMoment) {
+    return (
+      <DagboekZoekScherm
+        moment={zoekMoment}
+        toegevoegd={items.filter((item) => item.moment === zoekMoment)}
+        suggesties={suggesties}
+        zoekActief={zoek.trim().length > 0}
+        zoek={zoek}
+        onZoekChange={setZoek}
+        onMomentChange={(id) => {
+          setZoekMoment(id);
+          setZoek("");
+        }}
+        onKies={voegToe}
+        onVerwijder={verwijderUitZoeken}
+        onSluiten={() => {
+          setZoekMoment(null);
+          setZoek("");
+        }}
+        busy={busy}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -249,57 +276,8 @@ export default function DagboekScherm({
             label={moment.label}
             items={items}
             busy={busy}
-            zoekSlot={
-              zoekMoment === moment.id ? (
-                <div className="relative">
-                  <input
-                    type="search"
-                    autoFocus
-                    value={zoek}
-                    disabled={busy}
-                    onChange={(event) => setZoek(event.target.value)}
-                    placeholder={`Zoek een product voor ${moment.label.toLowerCase()}…`}
-                    aria-label={`Zoek een product voor ${moment.label.toLowerCase()}`}
-                    className="w-full rounded-xl border border-white/15 bg-white/[0.03] px-3 py-2 text-[13px] text-[#F1EFE8] outline-none transition-colors placeholder:text-[#6F8177] focus:border-white/40"
-                  />
-                  {suggesties.length > 0 ? (
-                    <div className="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border border-white/15 bg-[#16241a] shadow-2xl">
-                      {!zoek.trim() ? (
-                        <p className="m-0 border-b border-white/10 px-3 py-1.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#6F8177]">
-                          Eerder gegeten
-                        </p>
-                      ) : null}
-                      <ul className="m-0 list-none p-0">
-                        {suggesties.map((entry) => (
-                          <li key={entry.key}>
-                            <button
-                              type="button"
-                              onMouseDown={(event) => event.preventDefault()}
-                              onClick={() => voegToe(entry.key)}
-                              className="flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
-                            >
-                              <span className="flex min-w-0 items-center gap-2">
-                                <FoodThumbnail entry={entry} size={40} />
-                                <span className="truncate text-[13px] text-[#F1EFE8]">
-                                  {entry.labelNl}
-                                </span>
-                              </span>
-                              <span className="shrink-0 text-[10.5px] text-[#6F8177]">
-                                {entry.porties[0]?.labelNl ?? ""}
-                              </span>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
-                </div>
-              ) : null
-            }
             onToevoegen={(id) => {
-              // Nogmaals op dezelfde knop sluit het veld weer: zonder die
-              // uitgang blijft het open zodra je het per ongeluk opent.
-              setZoekMoment((huidig) => (huidig === id ? null : id));
+              setZoekMoment(id);
               setZoek("");
             }}
             onGram={(item, grams) =>

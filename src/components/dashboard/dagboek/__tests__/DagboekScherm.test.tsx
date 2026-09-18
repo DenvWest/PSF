@@ -36,7 +36,7 @@ beforeEach(() => {
   );
 });
 
-/** Het maaltijdblok waar deze kop in staat. */
+/** Het maaltijdblok waar deze kop in staat — alleen zichtbaar buiten het zoekscherm. */
 function maaltijdBlok(label: string): HTMLElement {
   const kop = screen.getByRole("heading", { name: label });
   const blok = kop.closest("section");
@@ -44,65 +44,76 @@ function maaltijdBlok(label: string): HTMLElement {
   return blok;
 }
 
-describe("DagboekScherm — zoeken per maaltijd", () => {
-  it("opent het zoekveld binnen de maaltijd die je aanklikt", async () => {
+async function openZoeken(momentLabel: string) {
+  fireEvent.click(
+    within(maaltijdBlok(momentLabel)).getByRole("button", { name: "+ Toevoegen" }),
+  );
+}
+
+describe("DagboekScherm — zoeken als eigen scherm", () => {
+  it("vervangt de dagweergave door het zoekscherm van de aangeklikte maaltijd", async () => {
     render(<DagboekScherm />);
+    await openZoeken("Avondeten");
 
-    const avondeten = maaltijdBlok("Avondeten");
-    fireEvent.click(within(avondeten).getByRole("button", { name: "+ Toevoegen" }));
-
-    // Het veld hoort in het avondeten-blok te staan, niet ergens bovenaan.
     expect(
-      within(maaltijdBlok("Avondeten")).getByLabelText(
-        "Zoek een product voor avondeten",
-      ),
+      await screen.findByLabelText("Zoek een product voor avondeten"),
     ).toBeTruthy();
     expect(
-      within(maaltijdBlok("Ontbijt")).queryByRole("searchbox"),
-    ).toBeNull();
+      screen.getByRole("button", { name: /Avondeten/ }),
+    ).toBeTruthy();
+    // De maaltijdenlijst is weg zolang je zoekt — geen tabel meer op de
+    // achtergrond, dit is een eigen scherm.
+    expect(screen.queryByRole("heading", { name: "Ontbijt" })).toBeNull();
   });
 
-  it("voegt een gezocht product toe en houdt het veld open voor het volgende", async () => {
+  it("voegt een gezocht product toe, toont het als toegevoegd en houdt het veld open", async () => {
     render(<DagboekScherm />);
+    await openZoeken("Ontbijt");
 
-    const ontbijt = maaltijdBlok("Ontbijt");
-    fireEvent.click(within(ontbijt).getByRole("button", { name: "+ Toevoegen" }));
-
-    const veld = within(maaltijdBlok("Ontbijt")).getByLabelText(
-      "Zoek een product voor ontbijt",
-    );
+    const veld = await screen.findByLabelText("Zoek een product voor ontbijt");
     fireEvent.change(veld, { target: { value: "havermout" } });
     fireEvent.click(await screen.findByRole("button", { name: /Havermout/ }));
 
     await waitFor(() => {
-      expect(within(maaltijdBlok("Ontbijt")).getByText("Havermout")).toBeTruthy();
+      expect(
+        within(screen.getByLabelText("Toegevoegd bij ontbijt")).getByText(
+          "Havermout",
+        ),
+      ).toBeTruthy();
     });
 
-    // Klaar voor het volgende product: het veld staat er nog, zonder zoekterm.
-    const naVeld = within(maaltijdBlok("Ontbijt")).getByLabelText(
-      "Zoek een product voor ontbijt",
-    ) as HTMLInputElement;
-    expect(naVeld.value).toBe("");
+    // Klaar voor het volgende product: het veld staat er nog, leeg.
+    expect(
+      (screen.getByLabelText("Zoek een product voor ontbijt") as HTMLInputElement)
+        .value,
+    ).toBe("");
   });
 
-  it("sluit het zoekveld als je nogmaals op Toevoegen klikt", async () => {
+  it("gaat met de terug-knop terug naar je dag", async () => {
     render(<DagboekScherm />);
+    await openZoeken("Lunch");
+    expect(await screen.findByLabelText("Zoek een product voor lunch")).toBeTruthy();
 
-    const lunch = maaltijdBlok("Lunch");
-    fireEvent.click(within(lunch).getByRole("button", { name: "+ Toevoegen" }));
-    expect(
-      within(maaltijdBlok("Lunch")).getByLabelText("Zoek een product voor lunch"),
-    ).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Terug naar je dag" }));
 
-    fireEvent.click(
-      within(maaltijdBlok("Lunch")).getByRole("button", { name: "+ Toevoegen" }),
-    );
-    expect(
-      within(maaltijdBlok("Lunch")).queryByLabelText("Zoek een product voor lunch"),
-    ).toBeNull();
+    expect(screen.getByRole("heading", { name: "Lunch" })).toBeTruthy();
+    expect(screen.queryByLabelText("Zoek een product voor lunch")).toBeNull();
   });
 
-  it("toont wat je eerder at zodra het veld opengaat, nog voor je typt", async () => {
+  it("wisselt van maaltijd via het dropdownmenu, zonder het zoekscherm te verlaten", async () => {
+    render(<DagboekScherm />);
+    await openZoeken("Ontbijt");
+    await screen.findByLabelText("Zoek een product voor ontbijt");
+
+    fireEvent.click(screen.getByRole("button", { name: /Ontbijt/ }));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Avondeten" }));
+
+    expect(
+      await screen.findByLabelText("Zoek een product voor avondeten"),
+    ).toBeTruthy();
+  });
+
+  it("toont wat je eerder at zodra het scherm opengaat, nog voor je typt", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn((input: RequestInfo | URL) => {
@@ -129,10 +140,7 @@ describe("DagboekScherm — zoeken per maaltijd", () => {
     );
 
     render(<DagboekScherm />);
-
-    fireEvent.click(
-      within(maaltijdBlok("Ontbijt")).getByRole("button", { name: "+ Toevoegen" }),
-    );
+    await openZoeken("Ontbijt");
 
     expect(await screen.findByText("Eerder gegeten")).toBeTruthy();
     // Meest recente dag eerst: donderdag (volkorenbrood) vóór woensdag.
@@ -143,12 +151,10 @@ describe("DagboekScherm — zoeken per maaltijd", () => {
 
   it("schrijft het toegevoegde product naar het dagboek-endpoint", async () => {
     render(<DagboekScherm />);
+    await openZoeken("Ontbijt");
 
-    fireEvent.click(
-      within(maaltijdBlok("Ontbijt")).getByRole("button", { name: "+ Toevoegen" }),
-    );
     fireEvent.change(
-      within(maaltijdBlok("Ontbijt")).getByLabelText("Zoek een product voor ontbijt"),
+      await screen.findByLabelText("Zoek een product voor ontbijt"),
       { target: { value: "havermout" } },
     );
     fireEvent.click(await screen.findByRole("button", { name: /Havermout/ }));
