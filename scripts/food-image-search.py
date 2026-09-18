@@ -458,29 +458,66 @@ def photo_owners(entries: list[tuple[str, str]]) -> list[tuple[str, str]]:
     return owners
 
 
+HEADER = "key\tlabelNl\tquery\tphoto_id\tphotographer\tthumbnail_url\tpage_url"
+
+
+def load_done_keys(path: Path) -> set[str]:
+    if not path.exists():
+        return set()
+    done: set[str] = set()
+    for line in path.read_text(encoding="utf-8").splitlines()[1:]:
+        if not line.strip():
+            continue
+        done.add(line.split("\t", 1)[0])
+    return done
+
+
 def search(api_key: str, query: str) -> list[dict]:
     params = urllib.parse.urlencode(
         {"query": query, "per_page": 3, "orientation": "square"}
     )
-    req = urllib.request.Request(
-        f"{SEARCH_URL}?{params}",
-        headers={"Authorization": api_key, "User-Agent": "PerfectSupplement/1.0"},
-    )
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        payload = json.loads(resp.read().decode("utf-8"))
-    photos = payload.get("photos") or []
-    rows = []
-    for photo in photos[:3]:
-        src = photo.get("src") or {}
-        rows.append(
-            {
-                "id": photo.get("id"),
-                "photographer": photo.get("photographer") or "",
-                "thumbnail": src.get("medium") or "",
-                "page": photo.get("url") or "",
-            }
-        )
-    return rows
+    url = f"{SEARCH_URL}?{params}"
+    headers = {"Authorization": api_key, "User-Agent": "PerfectSupplement/1.0"}
+    while True:
+        req = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as err:
+            if err.code != 429:
+                raise
+            reset = err.headers.get("X-Ratelimit-Reset")
+            now = int(time.time())
+            wait = 1200
+            if reset:
+                try:
+                    reset_i = int(reset)
+                    if reset_i > now:
+                        wait = max(30, reset_i - now + 2)
+                    else:
+                        wait = max(30, reset_i)
+                except ValueError:
+                    wait = 1200
+            wait = min(wait, 3600)
+            print(
+                f"RATE LIMIT — X-Ratelimit-Reset={reset!r}; waiting {wait}s then retrying",
+                flush=True,
+            )
+            time.sleep(wait)
+            continue
+        photos = payload.get("photos") or []
+        rows = []
+        for photo in photos[:3]:
+            src = photo.get("src") or {}
+            rows.append(
+                {
+                    "id": photo.get("id"),
+                    "photographer": photo.get("photographer") or "",
+                    "thumbnail": src.get("medium") or "",
+                    "page": photo.get("url") or "",
+                }
+            )
+        return rows
 
 
 def main() -> int:
@@ -512,7 +549,19 @@ def main() -> int:
     jobs = [(key, label) for key, label in owners if not only or key in only]
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    lines = ["key\tlabelNl\tquery\tphoto_id\tphotographer\tthumbnail_url\tpage_url"]
+    done = load_done_keys(OUT_FILE)
+    if done:
+        jobs = [(key, label) for key, label in jobs if key not in done]
+        print(f"resume: {len(done)} owners already in {OUT_FILE}, {len(jobs)} remaining")
+
+    if OUT_FILE.exists():
+        existing = OUT_FILE.read_text(encoding="utf-8").splitlines()
+        lines = existing[:] if existing and existing[0] == HEADER else [HEADER]
+        if lines and lines[-1] == "":
+            lines.pop()
+    else:
+        lines = [HEADER]
+
     empty = 0
     for index, (key, label) in enumerate(jobs):
         query = QUERIES[key]
@@ -520,15 +569,30 @@ def main() -> int:
             photos = search(api_key, query)
         except urllib.error.HTTPError as err:
             print(f"FAIL {key}: HTTP {err.code} {err.reason}", file=sys.stderr)
+            OUT_FILE.write_text("\n".join(lines) + "\n", encoding="utf-8")
             return 1
         except urllib.error.URLError as err:
             print(f"FAIL {key}: {err}", file=sys.stderr)
+            OUT_FILE.write_text("\n".join(lines) + "\n", encoding="utf-8")
             return 1
         if not photos:
             empty += 1
-            print(f"NONE {key:42s}  q={query!r}")
+            print(f"NONE {key:42s}  q={query!r}", flush=True)
+            lines.append(
+                "\t".join(
+                    [
+                        key,
+                        label.replace("\t", " "),
+                        query.replace("\t", " "),
+                        "",
+                        "",
+                        "",
+                        "",
+                    ]
+                )
+            )
         else:
-            print(f"OK   {key:42s}  {len(photos)}  q={query!r}")
+            print(f"OK   {key:42s}  {len(photos)}  q={query!r}", flush=True)
             for photo in photos:
                 lines.append(
                     "\t".join(
@@ -543,12 +607,12 @@ def main() -> int:
                         ]
                     )
                 )
+        OUT_FILE.write_text("\n".join(lines) + "\n", encoding="utf-8")
         if index + 1 < len(jobs):
             time.sleep(0.5)
 
-    OUT_FILE.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"\nwrote {OUT_FILE} ({len(lines) - 1} candidate rows, {len(jobs)} owners)")
-    print(f"owners with 0 candidates: {empty}")
+    print(f"\nwrote {OUT_FILE} ({len(lines) - 1} candidate rows)")
+    print(f"owners with 0 candidates this run: {empty}")
     return 0
 
 
