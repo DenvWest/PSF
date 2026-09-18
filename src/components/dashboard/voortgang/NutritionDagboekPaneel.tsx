@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
@@ -469,16 +468,8 @@ export default function NutritionDagboekPaneel({
         <h4 className="m-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
           Twee weekdagen, twee weekenddagen
         </h4>
-        <span className="flex items-center gap-2.5">
-          <Link
-            href="/dashboard/dagboek"
-            className="text-[11px] font-semibold text-[#9CC5A9] no-underline hover:underline"
-          >
-            Dagboek openen →
-          </Link>
-          <span className="text-[11px] tabular-nums text-[#7E8C82]">
-            {geladen ? `${ingevuld} / ${DAGBOEK_TOTAAL}` : "—"}
-          </span>
+        <span className="text-[11px] tabular-nums text-[#7E8C82]">
+          {geladen ? `${ingevuld} / ${DAGBOEK_TOTAAL}` : "—"}
         </span>
       </div>
 
