@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
+import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import { bedragVanItem, type DagboekItemBron } from "@/lib/nutrition-dagboek-items";
@@ -94,105 +95,138 @@ export default function DagboekPortieInvoer({
           <Icons.ChevronLeft s={18} />
         </button>
         <h2 className="m-0 min-w-0 flex-1 truncate font-serif text-[17px] font-normal text-[#F1EFE8]">
-          {label}
+          Toevoegen
         </h2>
-        <button
-          type="button"
-          disabled={busyFavoriet}
-          onClick={() =>
-            bewaard ? onVerwijderFavoriet(bron, itemKey) : onBewaarFavoriet(bron, itemKey)
-          }
-          aria-label={bewaard ? `Verwijder ${label} uit favorieten` : `Bewaar ${label} als favoriet`}
-          aria-pressed={bewaard}
-          className={`flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
-            bewaard ? "text-[#C99A3C]" : "text-[#6F8177] hover:text-[#C99A3C]"
-          }`}
-        >
-          <Icons.Star s={17} filled={bewaard} />
-        </button>
       </header>
 
-      <label className="flex flex-col gap-1.5">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
-          Eetmoment
-        </span>
-        <select
-          value={moment}
-          onChange={(event) => setMoment(event.target.value as EetmomentId)}
-          className="rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-2 text-[13px] text-[#F1EFE8] outline-none transition-colors focus:border-white/40"
-        >
-          {EETMOMENTEN.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.label}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      {bron === "voeding" ? (
-        <label className="flex flex-col gap-1.5">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
-            Hoeveelheid
-          </span>
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              inputMode="numeric"
-              min={1}
-              max={2000}
-              value={grams}
-              disabled={busy}
-              onChange={(event) =>
-                setGrams(Math.max(1, Math.trunc(Number(event.target.value)) || 1))
-              }
-              className="w-24 rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-2 text-right font-mono text-[13px] tabular-nums text-[#F1EFE8] outline-none transition-colors focus:border-white/40"
-            />
-            <span className="text-[12px] text-[#6F8177]">gram</span>
-            {voedingEntry?.porties.length ? (
-              <span className="text-[11px] text-[#6F8177]">
-                ({voedingEntry.porties[0]?.labelNl} ≈ {voedingEntry.porties[0]?.grams} g)
-              </span>
-            ) : null}
-          </div>
-        </label>
-      ) : (
-        <label className="flex flex-col gap-1.5">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
-            Aantal
-          </span>
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              inputMode="numeric"
-              min={1}
-              max={20}
-              value={aantalPorties}
-              disabled={busy}
-              onChange={(event) =>
-                setAantalPorties(Math.max(1, Math.trunc(Number(event.target.value)) || 1))
-              }
-              className="w-24 rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-2 text-right font-mono text-[13px] tabular-nums text-[#F1EFE8] outline-none transition-colors focus:border-white/40"
-            />
-            <span className="text-[12px] text-[#6F8177]">
-              × {supplementEntry?.porties[0]?.labelNl ?? "portie"}
+      <section className="overflow-hidden rounded-2xl border border-white/10">
+        <div className="flex items-center gap-3 border-b border-white/10 bg-white/[0.03] px-4 py-3">
+          {voedingEntry ? (
+            <FoodThumbnail entry={voedingEntry} size={48} />
+          ) : (
+            <span
+              aria-hidden
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#6C8FC9]/20 text-[19px] font-medium text-[#9DB3E0]"
+            >
+              {label.trim().charAt(0).toUpperCase() || "?"}
             </span>
-          </div>
-        </label>
-      )}
+          )}
+          <span className="min-w-0 flex-1">
+            <span className="block truncate font-sans text-[14px] font-bold text-[#F1EFE8]">
+              {label}
+            </span>
+            {bron === "supplement" ? (
+              <span className="block text-[10.5px] text-[#6F8177]">supplement</span>
+            ) : null}
+          </span>
+          <button
+            type="button"
+            disabled={busyFavoriet}
+            onClick={() =>
+              bewaard ? onVerwijderFavoriet(bron, itemKey) : onBewaarFavoriet(bron, itemKey)
+            }
+            aria-label={
+              bewaard ? `Verwijder ${label} uit favorieten` : `Bewaar ${label} als favoriet`
+            }
+            aria-pressed={bewaard}
+            className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
+              bewaard ? "text-[#C99A3C]" : "text-[#6F8177] hover:text-[#C99A3C]"
+            }`}
+          >
+            <Icons.Star s={18} filled={bewaard} />
+          </button>
+        </div>
 
-      <div className="rounded-2xl border border-white/8 bg-white/[0.02] px-4 py-3.5">
-        <p className="m-0 text-[13px] text-[#9FB0A6]">
-          {bijdrage
-            ? (
-                <>
-                  Levert{" "}
-                  <b className="font-semibold text-[#F1EFE8]">
-                    {Math.round(bijdrage.value * 10) / 10} {bijdrage.unit}
-                  </b>{" "}
-                  {nutrientReferences[nutrient].label.toLowerCase()}.
-                </>
-              )
-            : "Geen bekend gehalte voor deze stof."}
+        <div className="flex flex-col gap-3.5 px-4 py-3.5">
+          <label className="flex flex-col gap-1.5">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
+              Eetmoment
+            </span>
+            <select
+              value={moment}
+              onChange={(event) => setMoment(event.target.value as EetmomentId)}
+              className="rounded-lg border border-white/15 bg-black/20 px-2.5 py-2 text-[13px] text-[#F1EFE8] outline-none transition-colors focus:border-white/40"
+            >
+              {EETMOMENTEN.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {bron === "voeding" ? (
+            <label className="flex flex-col gap-1.5">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
+                Hoeveelheid
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={2000}
+                  value={grams}
+                  disabled={busy}
+                  onChange={(event) =>
+                    setGrams(Math.max(1, Math.trunc(Number(event.target.value)) || 1))
+                  }
+                  className="w-24 rounded-lg border border-white/15 bg-black/20 px-2.5 py-2 text-right font-mono text-[13px] tabular-nums text-[#F1EFE8] outline-none transition-colors focus:border-white/40"
+                />
+                <span className="text-[12px] text-[#6F8177]">gram</span>
+                {voedingEntry?.porties.length ? (
+                  <span className="text-[11px] text-[#6F8177]">
+                    ({voedingEntry.porties[0]?.labelNl} ≈ {voedingEntry.porties[0]?.grams} g)
+                  </span>
+                ) : null}
+              </div>
+            </label>
+          ) : (
+            <label className="flex flex-col gap-1.5">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
+                Aantal
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={20}
+                  value={aantalPorties}
+                  disabled={busy}
+                  onChange={(event) =>
+                    setAantalPorties(Math.max(1, Math.trunc(Number(event.target.value)) || 1))
+                  }
+                  className="w-24 rounded-lg border border-white/15 bg-black/20 px-2.5 py-2 text-right font-mono text-[13px] tabular-nums text-[#F1EFE8] outline-none transition-colors focus:border-white/40"
+                />
+                <span className="text-[12px] text-[#6F8177]">
+                  × {supplementEntry?.porties[0]?.labelNl ?? "portie"}
+                </span>
+              </div>
+            </label>
+          )}
+        </div>
+      </section>
+
+      <div className="flex items-center gap-3 rounded-2xl border border-[#5A8F6A]/25 bg-[#5A8F6A]/[0.06] px-4 py-3.5">
+        <span
+          aria-hidden
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#5A8F6A]/20 text-[#9CC5A9]"
+        >
+          <Icons.TrendUp s={16} />
+        </span>
+        <p className="m-0 text-[13px] leading-relaxed text-[#9FB0A6]">
+          {bijdrage ? (
+            <>
+              Levert{" "}
+              <b className="font-semibold text-[#F1EFE8]">
+                {Math.round(bijdrage.value * 10) / 10} {bijdrage.unit}
+              </b>{" "}
+              {nutrientReferences[nutrient].label.toLowerCase()}.
+            </>
+          ) : (
+            "Geen bekend gehalte voor deze stof."
+          )}
         </p>
       </div>
 
