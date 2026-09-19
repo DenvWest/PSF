@@ -114,6 +114,11 @@ export const DOMAIN_EVENT_TYPES = [
   "nutrition.dagboek_nutrient_opened",
   "nutrition.dagboek_zoek_item_gekozen",
   "nutrition.dagboek_portie_bevestigd",
+  // De ster-knop: bewaart een voedingsmiddel/supplement in "Mijn producten"/
+  // "Mijn supplementen", los van de automatische geschiedenis. `bron` zegt
+  // welk tabblad het raakt.
+  "nutrition.dagboek_favoriet_toegevoegd",
+  "nutrition.dagboek_favoriet_verwijderd",
   // Je patroon (plak 4): het tekortsysteem als scherm. `nutrient` is de stof
   // waar de bevinding op wijst, en dat is de dimensie die zegt welke
   // vergelijkingspagina dit scherm zou moeten voeden. Geen vrije tekst, geen

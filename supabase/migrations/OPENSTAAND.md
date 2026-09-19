@@ -7,14 +7,18 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20260917210000_daybook_items.sql`
-- **Openstaand:** 0 migraties
-- **Laatst bijgewerkt:** 18 september 2026
+- **Openstaand:** 1 migratie
+- **Laatst bijgewerkt:** 19 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
 
-_(niets openstaand)_
+### [ ] 20260919120000_account_dagboek_favorieten.sql
+- **Wat:** nieuwe tabel `account_dagboek_favorieten` — handmatig bewaarde dagboek-favorieten (voeding/supplement, ster-knop op het zoekscherm), RLS deny-all.
+- **Blokkeert deploy:** ja (branch `claude/dagboek-hero-balken`)
+- **Hoort bij:** plak E van de Dagboek-zoekflow-iteratie (favorieten-backend)
+- **Terugdraaien:** `drop table if exists public.account_dagboek_favorieten;`
 
 ## Runbook bij thuiskomst
 
