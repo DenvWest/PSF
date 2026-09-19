@@ -163,7 +163,7 @@ export type NutrientOndergrens = {
 };
 
 /** Wat één item van één nutriënt levert, of null als het gehalte ontbreekt. */
-function bedragVanItem(
+export function bedragVanItem(
   item: DagboekItem,
   nutrient: NutrientId,
 ): { value: number; unit: "g" | "mg" | "µg" } | null {

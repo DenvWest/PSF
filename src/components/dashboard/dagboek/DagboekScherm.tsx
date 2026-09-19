@@ -6,6 +6,7 @@ import {
   searchCatalog,
   type CatalogEntry,
 } from "@/data/nutrition/food-catalog";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
@@ -13,19 +14,40 @@ import { trackEvent } from "@/lib/ga4";
 import { dagSoortVoor, type DagboekDag } from "@/lib/nutrition-dagboek";
 import {
   nutrientenGesplitstUitItems,
-  portiesUitItems,
   sanitizeItems,
+  portiesUitItems,
   type DagboekItem,
+  type DagboekItemBron,
 } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { ProteinTargetRange } from "@/lib/protein-target";
+import DagboekCatalogusZoek from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
 import DagboekHero from "@/components/dashboard/dagboek/DagboekHero";
 import DagboekMaaltijd from "@/components/dashboard/dagboek/DagboekMaaltijd";
 import DagboekNutrientBalken from "@/components/dashboard/dagboek/DagboekNutrientBalken";
+import DagboekNutrientDetail from "@/components/dashboard/dagboek/DagboekNutrientDetail";
+import DagboekPortieInvoer from "@/components/dashboard/dagboek/DagboekPortieInvoer";
 import DagboekWeekstrip, {
   meetdagenUit,
   weekRond,
 } from "@/components/dashboard/dagboek/DagboekWeekstrip";
+
+/**
+ * De vier toestanden van het scherm-achter-een-balk: overzicht (het bestaande
+ * dagboek), detail (status + lijst per stof), zoek (catalogus) en portie
+ * (aantal + eenheid, vlak vóór opslaan). Eén union in plaats van vier losse
+ * booleans, zodat "welk scherm is actief" nooit tegenstrijdig kan worden.
+ *
+ * Bewust géén eigen App Router-route per stof: de rest van het dashboard
+ * navigeert ook via in-memory state (zie `tab`/`domainView` in Dashboard.tsx),
+ * en een sub-route zou de rail-conditie uit een later plak nodeloos
+ * compliceren.
+ */
+type NutrientScherm =
+  | { scherm: "overzicht" }
+  | { scherm: "detail"; nutrient: NutrientId }
+  | { scherm: "zoek"; nutrient: NutrientId }
+  | { scherm: "portie"; nutrient: NutrientId; bron: DagboekItemBron; key: string };
 
 /**
  * Het dagboek als eigen scherm: je week, je stand, je maaltijden.
@@ -80,6 +102,7 @@ export default function DagboekScherm({
   const [error, setError] = useState<string | null>(null);
   const [zoekMoment, setZoekMoment] = useState<EetmomentId | null>(null);
   const [zoek, setZoek] = useState("");
+  const [scherm, setScherm] = useState<NutrientScherm>({ scherm: "overzicht" });
 
   useEffect(() => {
     let afgebroken = false;
@@ -160,6 +183,27 @@ export default function DagboekScherm({
 
   const suggesties = zoek.trim() ? treffers : recent;
 
+  /**
+   * Zelfde "eerder gebruikt"-gedachte als `recent`, maar als ruwe items in
+   * plaats van alleen `CatalogEntry` — de nutriëntdetail-zoekflow (plak C)
+   * toont ook supplementen, en die heeft `bron` nodig om de juiste catalogus
+   * te raadplegen.
+   */
+  const recenteItems = useMemo(() => {
+    const gezien = new Set<string>();
+    const uit: DagboekItem[] = [];
+    for (const dag of [...dagen].sort((a, b) => b.date.localeCompare(a.date))) {
+      for (const item of sanitizeItems(dag.items ?? [])) {
+        const dedupSleutel = `${item.bron}:${item.key}`;
+        if (gezien.has(dedupSleutel)) continue;
+        gezien.add(dedupSleutel);
+        uit.push(item);
+        if (uit.length >= MAX_TREFFERS * 2) return uit;
+      }
+    }
+    return uit;
+  }, [dagen]);
+
   const bewaar = useCallback(
     async (volgende: DagboekItem[]) => {
       setBusy(true);
@@ -215,11 +259,77 @@ export default function DagboekScherm({
     setZoek("");
   }
 
+  /** Sluit de nutriëntdetail-flow (plak C) af: schrijft het item en gaat terug naar het detailscherm. */
+  function voegNutrientItemToe(
+    nutrient: NutrientId,
+    bron: DagboekItemBron,
+    key: string,
+    moment: EetmomentId,
+    grams: number,
+  ) {
+    wijzig([...items, { moment, bron, key, grams }]);
+    emitAccountClientEvent("nutrition.dagboek_portie_bevestigd", {
+      nutrient,
+      bron,
+      surface: "dagboek_tab",
+    });
+    trackEvent("nutrition_dagboek_portie_bevestigd", { nutrient, bron });
+    setScherm({ scherm: "detail", nutrient });
+  }
+
   const dagLabel = new Date(datum).toLocaleDateString("nl-NL", {
     weekday: "long",
     day: "numeric",
     month: "long",
   });
+
+  if (scherm.scherm === "zoek") {
+    return (
+      <DagboekCatalogusZoek
+        nutrient={scherm.nutrient}
+        eerderGebruikt={recenteItems}
+        onTerug={() => setScherm({ scherm: "detail", nutrient: scherm.nutrient })}
+        onKies={(bron, key) => {
+          emitAccountClientEvent("nutrition.dagboek_zoek_item_gekozen", {
+            nutrient: scherm.nutrient,
+            bron,
+            surface: "dagboek_tab",
+          });
+          trackEvent("nutrition_dagboek_zoek_item_gekozen", { nutrient: scherm.nutrient, bron });
+          setScherm({ scherm: "portie", nutrient: scherm.nutrient, bron, key });
+        }}
+      />
+    );
+  }
+
+  if (scherm.scherm === "portie") {
+    return (
+      <DagboekPortieInvoer
+        bron={scherm.bron}
+        itemKey={scherm.key}
+        nutrient={scherm.nutrient}
+        busy={busy}
+        onTerug={() => setScherm({ scherm: "zoek", nutrient: scherm.nutrient })}
+        onBevestig={(moment, grams) =>
+          voegNutrientItemToe(scherm.nutrient, scherm.bron, scherm.key, moment, grams)
+        }
+      />
+    );
+  }
+
+  if (scherm.scherm === "detail") {
+    return (
+      <DagboekNutrientDetail
+        nutrient={scherm.nutrient}
+        items={items}
+        stof={ondergrens.find((s) => s.nutrient === scherm.nutrient)}
+        busy={busy}
+        onTerug={() => setScherm({ scherm: "overzicht" })}
+        onVoegToe={() => setScherm({ scherm: "zoek", nutrient: scherm.nutrient })}
+        onVerwijder={(item) => wijzig(items.filter((i) => i !== item))}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -233,12 +343,13 @@ export default function DagboekScherm({
       <DagboekNutrientBalken
         stoffen={ondergrens}
         proteinTarget={proteinTarget}
-        onSelect={() => {
-          // Plak A: nog geen eigen detailscherm per stof (komt in plak C) —
-          // een klik brengt je vast bij de eetmomenten waar je het item vindt.
-          document
-            .getElementById("dagboek-eetmomenten")
-            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        onSelect={(nutrient) => {
+          emitAccountClientEvent("nutrition.dagboek_nutrient_opened", {
+            nutrient,
+            surface: "dagboek_tab",
+          });
+          trackEvent("nutrition_dagboek_nutrient_opened", { nutrient });
+          setScherm({ scherm: "detail", nutrient });
         }}
       />
 

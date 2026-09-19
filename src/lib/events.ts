@@ -106,6 +106,14 @@ export const DOMAIN_EVENT_TYPES = [
   "nutrition.dagboek_day_saved",
   "nutrition.dagboek_completed",
   "nutrition.dagboek_kalibratie_shown",
+  // Plak C — de balk-naar-detail-naar-zoek-naar-portie-flow. `nutrient_opened`
+  // zegt welke stof mensen aanklikken (voedt straks de urgentie-volgorde in
+  // plak E); `zoek_item_gekozen` of ze eerder gebruikt of nieuw zoeken, en of
+  // dat een voedingsmiddel of een supplement is; `portie_bevestigd` sluit de
+  // flow — pas dán staat het item echt in het dagboek.
+  "nutrition.dagboek_nutrient_opened",
+  "nutrition.dagboek_zoek_item_gekozen",
+  "nutrition.dagboek_portie_bevestigd",
   // Je patroon (plak 4): het tekortsysteem als scherm. `nutrient` is de stof
   // waar de bevinding op wijst, en dat is de dimensie die zegt welke
   // vergelijkingspagina dit scherm zou moeten voeden. Geen vrije tekst, geen

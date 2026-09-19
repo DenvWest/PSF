@@ -172,3 +172,60 @@ describe("DagboekScherm — zoeken per maaltijd", () => {
     });
   });
 });
+
+describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
+  it("opent het detailscherm van een stof als je op de balk klikt", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+
+    expect(
+      await screen.findByRole("heading", { name: "Magnesium" }),
+    ).toBeTruthy();
+    // De weekstrip en de eetmomenten horen niet meer op dit scherm te staan.
+    expect(screen.queryByRole("button", { name: "+ Toevoegen" })).toBeNull();
+  });
+
+  it("gaat van detail naar zoeken naar portie-invoer en schrijft een supplement-item weg", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    await screen.findByRole("heading", { name: "Magnesium" });
+
+    fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    );
+    fireEvent.change(zoekveld, { target: { value: "magnesiumcitraat" } });
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: /Magnesiumcitraat/ }),
+    );
+
+    // Portie-invoerscherm: bevestigen schrijft het item weg en brengt je
+    // terug naar het detailscherm van dezelfde stof.
+    const bevestig = await screen.findByRole("button", { name: "Toevoegen" });
+    fireEvent.click(bevestig);
+
+    await waitFor(() => {
+      const posts = vi.mocked(fetch).mock.calls.filter(
+        ([input, init]) =>
+          String(input).includes("/api/account/nutrition-daybook") &&
+          Boolean(
+            init &&
+              typeof init === "object" &&
+              "method" in init &&
+              init.method === "POST",
+          ),
+      );
+      expect(posts.length).toBeGreaterThan(0);
+      const body = JSON.parse(String((posts[0]![1] as RequestInit).body));
+      expect(body.items[0].bron).toBe("supplement");
+      expect(body.items[0].key).toBe("magnesiumcitraat-capsule");
+    });
+
+    expect(
+      await screen.findByRole("heading", { name: "Magnesium" }),
+    ).toBeTruthy();
+  });
+});
