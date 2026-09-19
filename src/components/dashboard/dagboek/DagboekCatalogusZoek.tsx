@@ -11,6 +11,7 @@ import {
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekItem, DagboekItemBron } from "@/lib/nutrition-dagboek-items";
+import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 
 const MAX_TREFFERS = 8;
 
@@ -29,12 +30,17 @@ type Resultaat =
 export default function DagboekCatalogusZoek({
   nutrient,
   eerderGebruikt,
+  moment,
+  onMomentChange,
   onKies,
   onTerug,
 }: {
   nutrient: NutrientId;
   /** Items uit eerdere dagen, meest recent eerst — voor de "eerder gebruikt"-lijst. */
   eerderGebruikt: readonly DagboekItem[];
+  /** Het eetmoment waar de keuze straks aan toegevoegd wordt — hier al te kiezen, zoals MyFitnessPal's dropdown. */
+  moment: EetmomentId;
+  onMomentChange: (moment: EetmomentId) => void;
   onKies: (bron: DagboekItemBron, key: string) => void;
   onTerug: () => void;
 }) {
@@ -93,6 +99,23 @@ export default function DagboekCatalogusZoek({
           Voeg toe bij {nutrientReferences[nutrient].label.toLowerCase()}
         </h2>
       </header>
+
+      <label className="flex flex-col gap-1.5">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
+          Eetmoment
+        </span>
+        <select
+          value={moment}
+          onChange={(event) => onMomentChange(event.target.value as EetmomentId)}
+          className="rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-2 text-[13px] text-[#F1EFE8] outline-none transition-colors focus:border-white/40"
+        >
+          {EETMOMENTEN.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.label}
+            </option>
+          ))}
+        </select>
+      </label>
 
       <div className="relative">
         <input

@@ -22,6 +22,7 @@ export default function DagboekPortieInvoer({
   bron,
   itemKey,
   nutrient,
+  moment: initieelMoment,
   onBevestig,
   onTerug,
   busy = false,
@@ -30,6 +31,8 @@ export default function DagboekPortieInvoer({
   itemKey: string;
   /** De stof waarvandaan je kwam — bepaalt welke bijdrage hier getoond wordt. */
   nutrient: NutrientId;
+  /** Startwaarde uit de dropdown op het zoekscherm — hier nog aan te passen vlak vóór bevestigen. */
+  moment: EetmomentId;
   onBevestig: (moment: EetmomentId, grams: number) => void;
   onTerug: () => void;
   busy?: boolean;
@@ -38,7 +41,7 @@ export default function DagboekPortieInvoer({
   const supplementEntry = bron === "supplement" ? supplementCatalogEntry(itemKey) : null;
   const label = voedingEntry?.labelNl ?? supplementEntry?.labelNl ?? null;
 
-  const [moment, setMoment] = useState<EetmomentId>("ontbijt");
+  const [moment, setMoment] = useState<EetmomentId>(initieelMoment);
   const [aantalPorties, setAantalPorties] = useState(1);
 
   // Voeding start op de gangbare portie in gram; een supplement telt in

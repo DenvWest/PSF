@@ -46,8 +46,14 @@ import DagboekWeekstrip, {
 type NutrientScherm =
   | { scherm: "overzicht" }
   | { scherm: "detail"; nutrient: NutrientId }
-  | { scherm: "zoek"; nutrient: NutrientId }
-  | { scherm: "portie"; nutrient: NutrientId; bron: DagboekItemBron; key: string };
+  | { scherm: "zoek"; nutrient: NutrientId; moment: EetmomentId }
+  | {
+      scherm: "portie";
+      nutrient: NutrientId;
+      bron: DagboekItemBron;
+      key: string;
+      moment: EetmomentId;
+    };
 
 /**
  * Het dagboek als eigen scherm: je week, je stand, je maaltijden.
@@ -288,6 +294,8 @@ export default function DagboekScherm({
       <DagboekCatalogusZoek
         nutrient={scherm.nutrient}
         eerderGebruikt={recenteItems}
+        moment={scherm.moment}
+        onMomentChange={(moment) => setScherm({ ...scherm, moment })}
         onTerug={() => setScherm({ scherm: "detail", nutrient: scherm.nutrient })}
         onKies={(bron, key) => {
           emitAccountClientEvent("nutrition.dagboek_zoek_item_gekozen", {
@@ -296,7 +304,7 @@ export default function DagboekScherm({
             surface: "dagboek_tab",
           });
           trackEvent("nutrition_dagboek_zoek_item_gekozen", { nutrient: scherm.nutrient, bron });
-          setScherm({ scherm: "portie", nutrient: scherm.nutrient, bron, key });
+          setScherm({ scherm: "portie", nutrient: scherm.nutrient, bron, key, moment: scherm.moment });
         }}
       />
     );
@@ -308,8 +316,11 @@ export default function DagboekScherm({
         bron={scherm.bron}
         itemKey={scherm.key}
         nutrient={scherm.nutrient}
+        moment={scherm.moment}
         busy={busy}
-        onTerug={() => setScherm({ scherm: "zoek", nutrient: scherm.nutrient })}
+        onTerug={() =>
+          setScherm({ scherm: "zoek", nutrient: scherm.nutrient, moment: scherm.moment })
+        }
         onBevestig={(moment, grams) =>
           voegNutrientItemToe(scherm.nutrient, scherm.bron, scherm.key, moment, grams)
         }
@@ -325,7 +336,9 @@ export default function DagboekScherm({
         stof={ondergrens.find((s) => s.nutrient === scherm.nutrient)}
         busy={busy}
         onTerug={() => setScherm({ scherm: "overzicht" })}
-        onVoegToe={() => setScherm({ scherm: "zoek", nutrient: scherm.nutrient })}
+        onVoegToe={() =>
+          setScherm({ scherm: "zoek", nutrient: scherm.nutrient, moment: "ontbijt" })
+        }
         onVerwijder={(item) => wijzig(items.filter((i) => i !== item))}
       />
     );

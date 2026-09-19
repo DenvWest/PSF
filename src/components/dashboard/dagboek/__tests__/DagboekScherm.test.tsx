@@ -228,4 +228,48 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
       await screen.findByRole("heading", { name: "Magnesium" }),
     ).toBeTruthy();
   });
+
+  it("neemt het eetmoment dat je op het zoekscherm koos mee naar het portiescherm", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    await screen.findByRole("heading", { name: "Magnesium" });
+    fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
+
+    // De dropdown staat bovenaan het zoekscherm, vóór je iets kiest.
+    const momentVeld = await screen.findByLabelText("Eetmoment");
+    fireEvent.change(momentVeld, { target: { value: "lunch" } });
+
+    fireEvent.change(
+      screen.getByLabelText("Zoek een voedingsmiddel of supplement"),
+      { target: { value: "magnesiumcitraat" } },
+    );
+    fireEvent.click(
+      await screen.findByRole("button", { name: /Magnesiumcitraat/ }),
+    );
+
+    // Het portiescherm start op hetzelfde moment, niet op de oude default.
+    const momentOpPortiescherm = (await screen.findByLabelText(
+      "Eetmoment",
+    )) as HTMLSelectElement;
+    expect(momentOpPortiescherm.value).toBe("lunch");
+
+    fireEvent.click(await screen.findByRole("button", { name: "Toevoegen" }));
+
+    await waitFor(() => {
+      const posts = vi.mocked(fetch).mock.calls.filter(
+        ([input, init]) =>
+          String(input).includes("/api/account/nutrition-daybook") &&
+          Boolean(
+            init &&
+              typeof init === "object" &&
+              "method" in init &&
+              init.method === "POST",
+          ),
+      );
+      expect(posts.length).toBeGreaterThan(0);
+      const body = JSON.parse(String((posts[0]![1] as RequestInit).body));
+      expect(body.items[0].moment).toBe("lunch");
+    });
+  });
 });
