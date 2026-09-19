@@ -199,7 +199,7 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
     fireEvent.change(zoekveld, { target: { value: "magnesiumcitraat" } });
 
     fireEvent.click(
-      await screen.findByRole("button", { name: /Magnesiumcitraat/ }),
+      await screen.findByRole("button", { name: /^Magnesiumcitraat/ }),
     );
 
     // Portie-invoerscherm: bevestigen schrijft het item weg en brengt je
@@ -245,7 +245,7 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
       { target: { value: "magnesiumcitraat" } },
     );
     fireEvent.click(
-      await screen.findByRole("button", { name: /Magnesiumcitraat/ }),
+      await screen.findByRole("button", { name: /^Magnesiumcitraat/ }),
     );
 
     // Het portiescherm start op hetzelfde moment, niet op de oude default.
@@ -271,5 +271,61 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
       const body = JSON.parse(String((posts[0]![1] as RequestInit).body));
       expect(body.items[0].moment).toBe("lunch");
     });
+  });
+});
+
+describe("DagboekScherm — favorieten", () => {
+  it("bewaart een zoekresultaat als favoriet via de ster-knop, zonder het te kiezen", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    await screen.findByRole("heading", { name: "Magnesium" });
+    fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
+
+    fireEvent.change(
+      await screen.findByLabelText("Zoek een voedingsmiddel of supplement"),
+      { target: { value: "magnesiumcitraat" } },
+    );
+
+    fireEvent.click(
+      await screen.findByRole("button", {
+        name: /Bewaar Magnesiumcitraat.*als favoriet/,
+      }),
+    );
+
+    await waitFor(() => {
+      const posts = vi.mocked(fetch).mock.calls.filter(
+        ([input, init]) =>
+          String(input).includes("/api/account/dagboek-favorieten") &&
+          Boolean(
+            init &&
+              typeof init === "object" &&
+              "method" in init &&
+              init.method === "POST",
+          ),
+      );
+      expect(posts.length).toBeGreaterThan(0);
+      const body = JSON.parse(String((posts[0]![1] as RequestInit).body));
+      expect(body).toEqual({ bron: "supplement", key: "magnesiumcitraat-capsule" });
+    });
+
+    // Klikken op de ster brengt je niet naar het portiescherm — je bent nog op het zoekscherm.
+    expect(
+      screen.queryByRole("heading", { name: "Voeg toe bij magnesium" }),
+    ).toBeTruthy();
+  });
+
+  it("toont het tabblad Mijn supplementen als je erop klikt", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    await screen.findByRole("heading", { name: "Magnesium" });
+    fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
+
+    fireEvent.click(await screen.findByRole("tab", { name: "Mijn supplementen" }));
+
+    expect(
+      screen.getByText("Nog geen supplementen bewaard of gebruikt."),
+    ).toBeTruthy();
   });
 });

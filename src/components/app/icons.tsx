@@ -412,3 +412,16 @@ export function MoreHorizontal(props: IconProps) {
     </I>
   );
 }
+
+/** Favoriet-ster: outline ongevuld, of `fill="currentColor"` als bewaard. */
+export function Star(props: IconProps & { filled?: boolean }) {
+  const { filled = false, ...rest } = props;
+  return (
+    <I {...rest}>
+      <path
+        d="m12 3 2.6 5.7 6.2.7-4.6 4.3 1.2 6.1L12 16.9l-5.4 2.9 1.2-6.1L3.2 9.4l6.2-.7Z"
+        fill={filled ? "currentColor" : "none"}
+      />
+    </I>
+  );
+}

@@ -5,6 +5,7 @@ import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import * as Icons from "@/components/app/icons";
+import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import { bedragVanItem, type DagboekItemBron } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 
@@ -23,9 +24,13 @@ export default function DagboekPortieInvoer({
   itemKey,
   nutrient,
   moment: initieelMoment,
+  favorieten,
   onBevestig,
+  onBewaarFavoriet,
+  onVerwijderFavoriet,
   onTerug,
   busy = false,
+  busyFavoriet = false,
 }: {
   bron: DagboekItemBron;
   itemKey: string;
@@ -33,13 +38,19 @@ export default function DagboekPortieInvoer({
   nutrient: NutrientId;
   /** Startwaarde uit de dropdown op het zoekscherm — hier nog aan te passen vlak vóór bevestigen. */
   moment: EetmomentId;
+  /** Handmatig bewaarde favorieten — bepaalt of de ster hier al gevuld staat. */
+  favorieten: readonly DagboekFavoriet[];
   onBevestig: (moment: EetmomentId, grams: number) => void;
+  onBewaarFavoriet: (bron: DagboekItemBron, key: string) => void;
+  onVerwijderFavoriet: (bron: DagboekItemBron, key: string) => void;
   onTerug: () => void;
   busy?: boolean;
+  busyFavoriet?: boolean;
 }) {
   const voedingEntry = bron === "voeding" ? catalogEntry(itemKey) : null;
   const supplementEntry = bron === "supplement" ? supplementCatalogEntry(itemKey) : null;
   const label = voedingEntry?.labelNl ?? supplementEntry?.labelNl ?? null;
+  const bewaard = favorieten.some((f) => f.bron === bron && f.key === itemKey);
 
   const [moment, setMoment] = useState<EetmomentId>(initieelMoment);
   const [aantalPorties, setAantalPorties] = useState(1);
@@ -82,9 +93,23 @@ export default function DagboekPortieInvoer({
         >
           <Icons.ChevronLeft s={18} />
         </button>
-        <h2 className="m-0 min-w-0 truncate font-serif text-[17px] font-normal text-[#F1EFE8]">
+        <h2 className="m-0 min-w-0 flex-1 truncate font-serif text-[17px] font-normal text-[#F1EFE8]">
           {label}
         </h2>
+        <button
+          type="button"
+          disabled={busyFavoriet}
+          onClick={() =>
+            bewaard ? onVerwijderFavoriet(bron, itemKey) : onBewaarFavoriet(bron, itemKey)
+          }
+          aria-label={bewaard ? `Verwijder ${label} uit favorieten` : `Bewaar ${label} als favoriet`}
+          aria-pressed={bewaard}
+          className={`flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
+            bewaard ? "text-[#C99A3C]" : "text-[#6F8177] hover:text-[#C99A3C]"
+          }`}
+        >
+          <Icons.Star s={17} filled={bewaard} />
+        </button>
       </header>
 
       <label className="flex flex-col gap-1.5">

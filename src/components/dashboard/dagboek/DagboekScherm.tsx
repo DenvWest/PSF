@@ -8,6 +8,7 @@ import {
 } from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
+import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
@@ -109,6 +110,8 @@ export default function DagboekScherm({
   const [zoekMoment, setZoekMoment] = useState<EetmomentId | null>(null);
   const [zoek, setZoek] = useState("");
   const [scherm, setScherm] = useState<NutrientScherm>({ scherm: "overzicht" });
+  const [favorieten, setFavorieten] = useState<DagboekFavoriet[]>([]);
+  const [busyFavoriet, setBusyFavoriet] = useState(false);
 
   useEffect(() => {
     let afgebroken = false;
@@ -127,6 +130,27 @@ export default function DagboekScherm({
         if (!afgebroken) setDagen([]);
       } finally {
         if (!afgebroken) setLaden(false);
+      }
+    })();
+    return () => {
+      afgebroken = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let afgebroken = false;
+    void (async () => {
+      try {
+        const response = await fetch("/api/account/dagboek-favorieten", {
+          credentials: "include",
+        });
+        if (!response.ok) throw new Error("laden mislukt");
+        const body = (await response.json()) as { items?: DagboekFavoriet[] };
+        if (!afgebroken) setFavorieten(body.items ?? []);
+      } catch {
+        // Zonder favorieten valt de tab terug op alleen geschiedenis — geen
+        // reden om het hele scherm te laten mislukken.
+        if (!afgebroken) setFavorieten([]);
       }
     })();
     return () => {
@@ -283,6 +307,49 @@ export default function DagboekScherm({
     setScherm({ scherm: "detail", nutrient });
   }
 
+  /** De ster-knop: optimistisch bijwerken, dan pas de server-call. */
+  async function bewaarFavoriet(bron: DagboekItemBron, key: string) {
+    setFavorieten((vorige) =>
+      vorige.some((f) => f.bron === bron && f.key === key)
+        ? vorige
+        : [...vorige, { bron, key }],
+    );
+    setBusyFavoriet(true);
+    try {
+      await fetch("/api/account/dagboek-favorieten", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bron, key }),
+      });
+      emitAccountClientEvent("nutrition.dagboek_favoriet_toegevoegd", {
+        bron,
+        surface: "dagboek_tab",
+      });
+      trackEvent("nutrition_dagboek_favoriet_toegevoegd", { bron });
+    } finally {
+      setBusyFavoriet(false);
+    }
+  }
+
+  async function verwijderFavoriet(bron: DagboekItemBron, key: string) {
+    setFavorieten((vorige) => vorige.filter((f) => !(f.bron === bron && f.key === key)));
+    setBusyFavoriet(true);
+    try {
+      await fetch(
+        `/api/account/dagboek-favorieten?bron=${encodeURIComponent(bron)}&key=${encodeURIComponent(key)}`,
+        { method: "DELETE", credentials: "include" },
+      );
+      emitAccountClientEvent("nutrition.dagboek_favoriet_verwijderd", {
+        bron,
+        surface: "dagboek_tab",
+      });
+      trackEvent("nutrition_dagboek_favoriet_verwijderd", { bron });
+    } finally {
+      setBusyFavoriet(false);
+    }
+  }
+
   const dagLabel = new Date(datum).toLocaleDateString("nl-NL", {
     weekday: "long",
     day: "numeric",
@@ -294,6 +361,7 @@ export default function DagboekScherm({
       <DagboekCatalogusZoek
         nutrient={scherm.nutrient}
         eerderGebruikt={recenteItems}
+        favorieten={favorieten}
         moment={scherm.moment}
         onMomentChange={(moment) => setScherm({ ...scherm, moment })}
         onTerug={() => setScherm({ scherm: "detail", nutrient: scherm.nutrient })}
@@ -306,6 +374,9 @@ export default function DagboekScherm({
           trackEvent("nutrition_dagboek_zoek_item_gekozen", { nutrient: scherm.nutrient, bron });
           setScherm({ scherm: "portie", nutrient: scherm.nutrient, bron, key, moment: scherm.moment });
         }}
+        onBewaarFavoriet={(bron, key) => void bewaarFavoriet(bron, key)}
+        onVerwijderFavoriet={(bron, key) => void verwijderFavoriet(bron, key)}
+        busyFavoriet={busyFavoriet}
       />
     );
   }
@@ -317,7 +388,11 @@ export default function DagboekScherm({
         itemKey={scherm.key}
         nutrient={scherm.nutrient}
         moment={scherm.moment}
+        favorieten={favorieten}
         busy={busy}
+        busyFavoriet={busyFavoriet}
+        onBewaarFavoriet={(bron, key) => void bewaarFavoriet(bron, key)}
+        onVerwijderFavoriet={(bron, key) => void verwijderFavoriet(bron, key)}
         onTerug={() =>
           setScherm({ scherm: "zoek", nutrient: scherm.nutrient, moment: scherm.moment })
         }

@@ -10,6 +10,7 @@ import {
 } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import * as Icons from "@/components/app/icons";
+import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import type { DagboekItem, DagboekItemBron } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 
@@ -19,6 +20,23 @@ type Resultaat =
   | { bron: "voeding"; entry: CatalogEntry }
   | { bron: "supplement"; entry: SupplementCatalogEntry };
 
+type TabId = "alle" | "producten" | "supplementen";
+
+const TABS: readonly { id: TabId; label: string }[] = [
+  { id: "alle", label: "Alle" },
+  { id: "producten", label: "Mijn producten" },
+  { id: "supplementen", label: "Mijn supplementen" },
+];
+
+function resultaatVoor(bron: DagboekItemBron, key: string): Resultaat | null {
+  if (bron === "voeding") {
+    const entry = catalogEntry(key);
+    return entry ? { bron: "voeding", entry } : null;
+  }
+  const entry = supplementCatalogEntry(key);
+  return entry ? { bron: "supplement", entry } : null;
+}
+
 /**
  * Het zoekscherm binnen een nutriëntdetail: zoekt in beide catalogi tegelijk,
  * met "eerder gebruikt" als startpunt vóór er getypt is.
@@ -26,25 +44,47 @@ type Resultaat =
  * Zoekt over de hele catalogus, niet gefilterd op `nutrient` — wie "kaas"
  * typt wil kaas kunnen kiezen ook al draagt die niets bij aan omega-3. De
  * `nutrient`-context bepaalt alleen welk detailscherm je hierna terugbrengt.
+ *
+ * ## De drie tabbladen
+ *
+ * "Alle" is het bestaande gedrag: eerder gebruikt vóór je typt, zoekresultaten
+ * erna. "Mijn producten"/"Mijn supplementen" tonen één gemengde lijst per
+ * bron — bewaarde favorieten (ster-knop) eerst, daarna de rest van je
+ * geschiedenis die nog niet bewaard is. Zo is er nooit een lege tab zolang je
+ * ooit iets van die bron logde, en de ster blijft een bewuste bovenaan-zet in
+ * plaats van de enige manier om iets terug te vinden.
  */
 export default function DagboekCatalogusZoek({
   nutrient,
   eerderGebruikt,
+  favorieten,
   moment,
   onMomentChange,
   onKies,
+  onBewaarFavoriet,
+  onVerwijderFavoriet,
   onTerug,
+  busyFavoriet = false,
 }: {
   nutrient: NutrientId;
   /** Items uit eerdere dagen, meest recent eerst — voor de "eerder gebruikt"-lijst. */
   eerderGebruikt: readonly DagboekItem[];
+  /** Handmatig bewaarde favorieten, ongeacht geschiedenis. */
+  favorieten: readonly DagboekFavoriet[];
   /** Het eetmoment waar de keuze straks aan toegevoegd wordt — hier al te kiezen, zoals MyFitnessPal's dropdown. */
   moment: EetmomentId;
   onMomentChange: (moment: EetmomentId) => void;
   onKies: (bron: DagboekItemBron, key: string) => void;
+  onBewaarFavoriet: (bron: DagboekItemBron, key: string) => void;
+  onVerwijderFavoriet: (bron: DagboekItemBron, key: string) => void;
   onTerug: () => void;
+  busyFavoriet?: boolean;
 }) {
   const [zoek, setZoek] = useState("");
+  const [tab, setTab] = useState<TabId>("alle");
+
+  const isFavoriet = (bron: DagboekItemBron, key: string) =>
+    favorieten.some((f) => f.bron === bron && f.key === key);
 
   const recent = useMemo(() => {
     const gezien = new Set<string>();
@@ -52,19 +92,10 @@ export default function DagboekCatalogusZoek({
     for (const item of eerderGebruikt) {
       const dedupSleutel = `${item.bron}:${item.key}`;
       if (gezien.has(dedupSleutel)) continue;
-
-      if (item.bron === "voeding") {
-        const entry = catalogEntry(item.key);
-        if (!entry) continue;
-        gezien.add(dedupSleutel);
-        uit.push({ bron: "voeding", entry });
-      } else {
-        const entry = supplementCatalogEntry(item.key);
-        if (!entry) continue;
-        gezien.add(dedupSleutel);
-        uit.push({ bron: "supplement", entry });
-      }
-
+      const resultaat = resultaatVoor(item.bron, item.key);
+      if (!resultaat) continue;
+      gezien.add(dedupSleutel);
+      uit.push(resultaat);
       if (uit.length >= MAX_TREFFERS) return uit;
     }
     return uit;
@@ -82,7 +113,45 @@ export default function DagboekCatalogusZoek({
     return [...voeding, ...supplementen].slice(0, MAX_TREFFERS * 2);
   }, [zoek]);
 
-  const resultaten = zoek.trim() ? treffers : recent;
+  /** "Mijn producten"/"Mijn supplementen": favorieten eerst, dan de rest van de geschiedenis van die bron. */
+  function mijnLijst(bron: DagboekItemBron): Resultaat[] {
+    const gezien = new Set<string>();
+    const uit: Resultaat[] = [];
+    for (const favoriet of favorieten) {
+      if (favoriet.bron !== bron || gezien.has(favoriet.key)) continue;
+      const resultaat = resultaatVoor(favoriet.bron, favoriet.key);
+      if (!resultaat) continue;
+      gezien.add(favoriet.key);
+      uit.push(resultaat);
+    }
+    for (const item of eerderGebruikt) {
+      if (item.bron !== bron || gezien.has(item.key)) continue;
+      const resultaat = resultaatVoor(item.bron, item.key);
+      if (!resultaat) continue;
+      gezien.add(item.key);
+      uit.push(resultaat);
+    }
+    return uit;
+  }
+
+  const resultaten =
+    tab === "alle"
+      ? zoek.trim()
+        ? treffers
+        : recent
+      : tab === "producten"
+        ? mijnLijst("voeding")
+        : mijnLijst("supplement");
+
+  const toontEerderGebruikt = tab === "alle" && !zoek.trim();
+  const legeMelding =
+    tab === "alle"
+      ? zoek.trim()
+        ? "Niets gevonden."
+        : "Nog niets eerder geregistreerd."
+      : tab === "producten"
+        ? "Nog geen voedingsmiddelen bewaard of gebruikt."
+        : "Nog geen supplementen bewaard of gebruikt.";
 
   return (
     <div className="flex flex-col gap-3">
@@ -129,56 +198,115 @@ export default function DagboekCatalogusZoek({
         />
       </div>
 
-      {!zoek.trim() && resultaten.length > 0 ? (
-        <p className="m-0 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#6F8177]">
-          Eerder gebruikt
-        </p>
-      ) : null}
+      <nav
+        role="tablist"
+        aria-label="Bron van producten"
+        className="inline-flex flex-wrap gap-1 rounded-xl border border-white/10 bg-black/20 p-1"
+      >
+        {TABS.map((t) => {
+          const selected = t.id === tab;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              id={`dagboek-zoek-tab-${t.id}`}
+              aria-selected={selected}
+              aria-controls={`dagboek-zoek-paneel-${t.id}`}
+              onClick={() => setTab(t.id)}
+              className={`flex min-h-[34px] cursor-pointer items-center rounded-lg px-3 text-[12.5px] transition-colors ${
+                selected
+                  ? "bg-[rgba(90,143,106,0.18)] font-semibold text-[#9CC5A9]"
+                  : "font-medium text-[#7E8C82] hover:text-[#9FB0A6]"
+              }`}
+            >
+              {t.label}
+            </button>
+          );
+        })}
+      </nav>
 
-      {resultaten.length === 0 ? (
-        <p className="m-0 rounded-xl border border-dashed border-white/10 px-3.5 py-3 text-[12px] leading-relaxed text-[#7E8C82]">
-          {zoek.trim() ? "Niets gevonden." : "Nog niets eerder geregistreerd."}
-        </p>
-      ) : (
-        <ul className="m-0 list-none divide-y divide-white/[0.06] rounded-xl border border-white/10 p-0">
-          {resultaten.map((resultaat) => {
-            const key = `${resultaat.bron}-${resultaat.entry.key}`;
-            const label = resultaat.entry.labelNl;
-            const portieLabel = resultaat.entry.porties[0]?.labelNl ?? "";
-            return (
-              <li key={key}>
-                <button
-                  type="button"
-                  onClick={() => onKies(resultaat.bron, resultaat.entry.key)}
-                  className="flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors hover:bg-white/[0.06]"
-                >
-                  <span className="flex min-w-0 items-center gap-2">
-                    {resultaat.bron === "voeding" ? (
-                      <FoodThumbnail entry={resultaat.entry} size={40} />
-                    ) : (
-                      <span
-                        aria-hidden
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#6C8FC9]/20 text-[17px] font-medium text-[#9DB3E0]"
-                      >
-                        {label.trim().charAt(0).toUpperCase() || "?"}
+      <div
+        role="tabpanel"
+        id={`dagboek-zoek-paneel-${tab}`}
+        aria-labelledby={`dagboek-zoek-tab-${tab}`}
+        className="flex flex-col gap-2"
+      >
+        {toontEerderGebruikt && resultaten.length > 0 ? (
+          <p className="m-0 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#6F8177]">
+            Eerder gebruikt
+          </p>
+        ) : null}
+
+        {resultaten.length === 0 ? (
+          <p className="m-0 rounded-xl border border-dashed border-white/10 px-3.5 py-3 text-[12px] leading-relaxed text-[#7E8C82]">
+            {legeMelding}
+          </p>
+        ) : (
+          <ul className="m-0 list-none divide-y divide-white/[0.06] rounded-xl border border-white/10 p-0">
+            {resultaten.map((resultaat) => {
+              const key = `${resultaat.bron}-${resultaat.entry.key}`;
+              const label = resultaat.entry.labelNl;
+              const portieLabel = resultaat.entry.porties[0]?.labelNl ?? "";
+              const bewaard = isFavoriet(resultaat.bron, resultaat.entry.key);
+              return (
+                <li key={key} className="flex items-center">
+                  <button
+                    type="button"
+                    onClick={() => onKies(resultaat.bron, resultaat.entry.key)}
+                    className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors hover:bg-white/[0.06]"
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      {resultaat.bron === "voeding" ? (
+                        <FoodThumbnail entry={resultaat.entry} size={40} />
+                      ) : (
+                        <span
+                          aria-hidden
+                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#6C8FC9]/20 text-[17px] font-medium text-[#9DB3E0]"
+                        >
+                          {label.trim().charAt(0).toUpperCase() || "?"}
+                        </span>
+                      )}
+                      <span className="min-w-0">
+                        <span className="block truncate text-[13px] text-[#F1EFE8]">
+                          {label}
+                        </span>
+                        {resultaat.bron === "supplement" ? (
+                          <span className="block text-[10px] text-[#6F8177]">supplement</span>
+                        ) : null}
                       </span>
-                    )}
-                    <span className="min-w-0">
-                      <span className="block truncate text-[13px] text-[#F1EFE8]">
-                        {label}
-                      </span>
-                      {resultaat.bron === "supplement" ? (
-                        <span className="block text-[10px] text-[#6F8177]">supplement</span>
-                      ) : null}
                     </span>
-                  </span>
-                  <span className="shrink-0 text-[10.5px] text-[#6F8177]">{portieLabel}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+                    <span className="shrink-0 text-[10.5px] text-[#6F8177]">{portieLabel}</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={busyFavoriet}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      if (bewaard) {
+                        onVerwijderFavoriet(resultaat.bron, resultaat.entry.key);
+                      } else {
+                        onBewaarFavoriet(resultaat.bron, resultaat.entry.key);
+                      }
+                    }}
+                    aria-label={
+                      bewaard ? `Verwijder ${label} uit favorieten` : `Bewaar ${label} als favoriet`
+                    }
+                    aria-pressed={bewaard}
+                    className={`mr-2 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
+                      bewaard
+                        ? "text-[#C99A3C]"
+                        : "text-[#6F8177] hover:text-[#C99A3C]"
+                    }`}
+                  >
+                    <Icons.Star s={16} filled={bewaard} />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
