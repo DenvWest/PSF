@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { catalogEntry, searchCatalog } from "@/data/nutrition/food-catalog";
+import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import {
@@ -69,7 +70,7 @@ export default function NutritionProductInvoer({
     // De eerste portie is wat mensen het vaakst bedoelen; die staat vooraan in
     // de catalogus. Aanpassen kan daarna in het gramveld.
     const grams = entry.porties[0]?.grams ?? 100;
-    onChange([...items, { moment, key, grams }]);
+    onChange([...items, { moment, bron: "voeding", key, grams }]);
     setZoek("");
   }
 
@@ -149,41 +150,49 @@ export default function NutritionProductInvoer({
       {items.length > 0 ? (
         <ul className="flex flex-col gap-1">
           {items.map((item, index) => {
-            const entry = catalogEntry(item.key);
-            if (!entry) return null;
+            const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
+            const label =
+              item.bron === "supplement"
+                ? (supplementCatalogEntry(item.key)?.labelNl ?? null)
+                : (voedingEntry?.labelNl ?? null);
+            if (!label) return null;
+            const eenheid =
+              item.bron === "supplement"
+                ? (supplementCatalogEntry(item.key)?.porties[0]?.labelNl ?? "portie")
+                : "g";
             return (
               <li
                 key={`${item.moment}-${item.key}-${index}`}
                 className="flex items-center gap-2 border-b border-white/[0.06] py-1.5 last:border-b-0"
               >
-                <FoodThumbnail entry={entry} size={40} />
+                {voedingEntry ? <FoodThumbnail entry={voedingEntry} size={40} /> : null}
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[12.5px] text-[#E7EDE8]">
-                    {entry.labelNl}
+                    {label}
                   </span>
                   <span className="block text-[10.5px] text-[#6F8177]">
                     {EETMOMENTEN.find((m) => m.id === item.moment)?.label}
                   </span>
                 </span>
                 <label className="flex items-center gap-1">
-                  <span className="sr-only">Gram voor {entry.labelNl}</span>
+                  <span className="sr-only">Aantal voor {label}</span>
                   <input
                     type="number"
                     inputMode="numeric"
                     min={1}
-                    max={2000}
+                    max={item.bron === "supplement" ? 20 : 2000}
                     value={item.grams}
                     disabled={busy}
                     onChange={(event) => zetGram(index, Number(event.target.value))}
                     className={GRAM_VELD}
                   />
-                  <span className="text-[11px] text-[#6F8177]">g</span>
+                  <span className="text-[11px] text-[#6F8177]">{eenheid}</span>
                 </label>
                 <button
                   type="button"
                   disabled={busy}
                   onClick={() => verwijder(index)}
-                  aria-label={`Verwijder ${entry.labelNl}`}
+                  aria-label={`Verwijder ${label}`}
                   className="cursor-pointer rounded-full px-1.5 py-0.5 text-[13px] leading-none text-[#6F8177] transition-colors hover:text-[#E7EDE8] disabled:opacity-40"
                 >
                   &times;

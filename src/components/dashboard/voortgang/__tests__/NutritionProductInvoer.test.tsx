@@ -4,7 +4,12 @@ import { describe, expect, it, vi } from "vitest";
 import NutritionProductInvoer from "@/components/dashboard/voortgang/NutritionProductInvoer";
 import type { DagboekItem } from "@/lib/nutrition-dagboek-items";
 
-const HAVERMOUT: DagboekItem = { moment: "ontbijt", key: "havermout", grams: 60 };
+const HAVERMOUT: DagboekItem = {
+  moment: "ontbijt",
+  bron: "voeding",
+  key: "havermout",
+  grams: 60,
+};
 
 describe("NutritionProductInvoer", () => {
   it("zoekt een product en voegt het toe met zijn gangbare portie", () => {
@@ -39,7 +44,7 @@ describe("NutritionProductInvoer", () => {
       <NutritionProductInvoer items={[HAVERMOUT]} onChange={onChange} />,
     );
 
-    fireEvent.change(screen.getByLabelText(/gram voor/i), { target: { value: "100" } });
+    fireEvent.change(screen.getByLabelText(/aantal voor/i), { target: { value: "100" } });
     expect((onChange.mock.calls[0] as [DagboekItem[]])[0][0].grams).toBe(100);
 
     onChange.mockClear();
@@ -68,7 +73,10 @@ describe("NutritionProductInvoer", () => {
     it("zegt het apart wanneer een product nog geen gehalte heeft", () => {
       render(
         <NutritionProductInvoer
-          items={[HAVERMOUT, { moment: "ontbijt", key: "spinazie-rauw", grams: 30 }]}
+          items={[
+            HAVERMOUT,
+            { moment: "ontbijt", bron: "voeding", key: "spinazie-rauw", grams: 30 },
+          ]}
           onChange={vi.fn()}
         />,
       );

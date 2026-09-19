@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
+import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
@@ -45,6 +46,20 @@ const KOLOMMEN: readonly { id: NutrientId; kop: string }[] = [
 function bedragVoor(item: DagboekItem, nutrient: NutrientId): number | null {
   const enkel = nutrientenUitItems([item]).find((n) => n.nutrient === nutrient);
   return enkel ? enkel.minstens : null;
+}
+
+/** Het label voor een item — voeding uit FOOD_CATALOG, supplement uit SUPPLEMENT_CATALOG. */
+function labelVoor(item: DagboekItem): string | null {
+  if (item.bron === "supplement") return supplementCatalogEntry(item.key)?.labelNl ?? null;
+  return catalogEntry(item.key)?.labelNl ?? null;
+}
+
+/** De portie-eenheid onder de invoer: gram bij voeding, de eigen portienaam bij een supplement. */
+function eenheidVoor(item: DagboekItem): string {
+  if (item.bron === "supplement") {
+    return supplementCatalogEntry(item.key)?.porties[0]?.labelNl ?? "portie";
+  }
+  return "g";
 }
 
 /** De eenheid staat in de kolomkop, dus hier alleen het getal. */
@@ -148,8 +163,10 @@ export default function DagboekMaaltijd({
             </thead>
             <tbody>
               {eigen.map((item, index) => {
-                const entry = catalogEntry(item.key);
-                if (!entry) return null;
+                const label = labelVoor(item);
+                if (!label) return null;
+                const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
+                const eenheid = eenheidVoor(item);
                 return (
                   <tr
                     key={`${item.key}-${index}`}
@@ -157,24 +174,26 @@ export default function DagboekMaaltijd({
                   >
                     <td className="max-w-0 px-3 py-2">
                       <span className="flex min-w-0 items-center gap-2">
-                        <FoodThumbnail entry={entry} size={40} />
+                        {voedingEntry ? (
+                          <FoodThumbnail entry={voedingEntry} size={40} />
+                        ) : null}
                         <span className="block min-w-0 truncate text-[12.5px] font-medium text-[#F1EFE8]">
-                          {entry.labelNl}
+                          {label}
                         </span>
                       </span>
                       <label className="mt-0.5 flex items-center gap-1">
-                        <span className="sr-only">Gram voor {entry.labelNl}</span>
+                        <span className="sr-only">Aantal voor {label}</span>
                         <input
                           type="number"
                           inputMode="numeric"
                           min={1}
-                          max={2000}
+                          max={item.bron === "supplement" ? 20 : 2000}
                           value={item.grams}
                           disabled={busy}
                           onChange={(event) => onGram(item, Number(event.target.value))}
                           className="w-14 rounded-md border border-white/12 bg-black/25 px-1.5 py-0.5 text-right font-mono text-[10.5px] tabular-nums text-[#9FB0A6] outline-none transition-colors focus:border-white/40"
                         />
-                        <span className="font-mono text-[10px] text-[#6F8177]">g</span>
+                        <span className="font-mono text-[10px] text-[#6F8177]">{eenheid}</span>
                       </label>
                     </td>
                     {KOLOMMEN.map((kolom) => {
@@ -195,7 +214,7 @@ export default function DagboekMaaltijd({
                         type="button"
                         disabled={busy}
                         onClick={() => onVerwijder(item)}
-                        aria-label={`Verwijder ${entry.labelNl}`}
+                        aria-label={`Verwijder ${label}`}
                         className="cursor-pointer rounded px-1 text-[13px] leading-none text-[#6F8177] transition-colors hover:text-[#F1EFE8] disabled:opacity-40"
                       >
                         &times;

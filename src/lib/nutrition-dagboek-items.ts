@@ -1,5 +1,6 @@
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
+import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 import { isEetmomentId, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { indexedFood, NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
@@ -44,17 +45,36 @@ import { indexedFood, NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
  * horen bij hún portie en worden hier niet gebruikt.
  */
 
-/** Eén geregistreerd product of gerecht, op één eetmoment. */
+/** Waar een geregistreerd item vandaan komt: een voedingsmiddel of een supplement. */
+export type DagboekItemBron = "voeding" | "supplement";
+
+/** Eén geregistreerd product, gerecht of supplement, op één eetmoment. */
 export type DagboekItem = {
   moment: EetmomentId;
-  /** Sleutel in `FOOD_CATALOG`. */
+  /**
+   * Ontbreekt in elke rij die vóór de supplement-uitbreiding is opgeslagen —
+   * `sanitizeItems` vult die dan aan met `"voeding"`, want elke bestaande rij
+   * wijst naar `FOOD_CATALOG`. Geen migratie nodig: de opslag blijft dezelfde
+   * jsonb-kolom.
+   */
+  bron: DagboekItemBron;
+  /** Sleutel in `FOOD_CATALOG` (bron `"voeding"`) of `SUPPLEMENT_CATALOG` (bron `"supplement"`). */
   key: string;
-  /** Gewicht in gram. Hele grammen; het dagboek claimt geen halve. */
+  /**
+   * Bij `bron: "voeding"`: gewicht in gram. Bij `bron: "supplement"`: aantal
+   * porties uit `SupplementCatalogEntry.porties[0]` — een supplement wordt in
+   * capsules/schepjes geteld, niet in gram, maar deelt hetzelfde numerieke
+   * veld om geen derde getal-kolom nodig te maken. Hele aantallen; het
+   * dagboek claimt geen halve.
+   */
   grams: number;
 };
 
 /** Grootste portie die het dagboek accepteert — hoger is bijna altijd een typfout. */
 const MAX_GRAMS = 2000;
+
+/** Grootste aantal supplement-porties per item — hoger is bijna altijd een typfout. */
+const MAX_SUPPLEMENT_PORTIES = 20;
 
 /** Hoeveel items één dag mag dragen. Daarboven wordt het een boekhouding. */
 const MAX_ITEMS = 60;
@@ -76,11 +96,24 @@ export function sanitizeItems(raw: unknown): DagboekItem[] {
   for (const entry of raw) {
     if (result.length >= MAX_ITEMS) break;
     if (!entry || typeof entry !== "object" || Array.isArray(entry)) continue;
-    const { moment, key, grams } = entry as Record<string, unknown>;
+    const { moment, bron: ruweBron, key, grams } = entry as Record<string, unknown>;
     if (typeof moment !== "string" || !isEetmomentId(moment)) continue;
-    if (typeof key !== "string" || !catalogEntry(key)) continue;
-    if (typeof grams !== "number" || !Number.isFinite(grams) || grams <= 0) continue;
-    result.push({ moment, key, grams: Math.min(Math.trunc(grams), MAX_GRAMS) });
+    if (typeof key !== "string") continue;
+    const bron: DagboekItemBron = ruweBron === "supplement" ? "supplement" : "voeding";
+    if (bron === "voeding") {
+      if (!catalogEntry(key)) continue;
+      if (typeof grams !== "number" || !Number.isFinite(grams) || grams <= 0) continue;
+      result.push({ moment, bron, key, grams: Math.min(Math.trunc(grams), MAX_GRAMS) });
+    } else {
+      if (!supplementCatalogEntry(key)) continue;
+      if (typeof grams !== "number" || !Number.isFinite(grams) || grams <= 0) continue;
+      result.push({
+        moment,
+        bron,
+        key,
+        grams: Math.min(Math.trunc(grams), MAX_SUPPLEMENT_PORTIES),
+      });
+    }
   }
   return result;
 }
@@ -93,6 +126,11 @@ export function sanitizeItems(raw: unknown): DagboekItem[] {
  * en een half bord spinazie maakt je dag niet half zo gevarieerd. De
  * hoeveelheid leeft in `grams` en wordt daar gebruikt waar hij iets betekent:
  * in de milligram-uitlezing.
+ *
+ * Een supplement-item (`bron: "supplement"`) vult hier bewust niets: het staat
+ * niet in `FOOD_CATALOG`, dus `catalogEntry` levert `null` en het item valt
+ * stilzwijgend weg. Dat is geen gat maar correct gedrag — `portions` meet
+ * variatie in wát je eet, en een capsule is geen voedselgroep.
  */
 export function portiesUitItems(
   items: readonly DagboekItem[],
@@ -124,6 +162,31 @@ export type NutrientOndergrens = {
   zonderGehalte: number;
 };
 
+/** Wat één item van één nutriënt levert, of null als het gehalte ontbreekt. */
+function bedragVanItem(
+  item: DagboekItem,
+  nutrient: NutrientId,
+): { value: number; unit: "g" | "mg" | "µg" } | null {
+  if (item.bron === "supplement") {
+    const entry = supplementCatalogEntry(item.key);
+    if (!entry || entry.nutrient !== nutrient) return null;
+    // Eén supplementregel draagt vandaag één portie-vorm; `grams` is het
+    // aantal van die portie (zie DagboekItem.grams).
+    const portie = entry.porties[0];
+    if (!portie) return null;
+    return { value: portie.amount * item.grams, unit: portie.unit };
+  }
+
+  const entry = catalogEntry(item.key);
+  const bronKey = entry?.bron;
+  const rij = bronKey
+    ? indexedFood(bronKey)?.nutrients.find((n) => n.nutrient === nutrient)
+    : undefined;
+  const per100g = rij?.source.nutrientValue;
+  if (!per100g) return null;
+  return { value: (per100g.value * item.grams) / 100, unit: per100g.unit };
+}
+
 /**
  * De milligram-ondergrens per nutriënt over één dag.
  *
@@ -131,6 +194,10 @@ export type NutrientOndergrens = {
  * Een stof zonder enkele bron komt niet als nul terug maar helemaal niet —
  * nul zou beweren dat je er niets van binnenkreeg, en dat weet dit dagboek
  * niet.
+ *
+ * Telt voeding én supplementen mee, zonder onderscheid — een supplement dekt
+ * een tekort net zo goed als voeding. Wie het onderscheid wél nodig heeft
+ * (de hero-cirkel en de nutriëntbalken), gebruikt {@link nutrientenGesplitstUitItems}.
  */
 export function nutrientenUitItems(
   items: readonly DagboekItem[],
@@ -144,20 +211,14 @@ export function nutrientenUitItems(
     let unit: "g" | "mg" | "µg" | null = null;
 
     for (const item of items) {
-      const entry = catalogEntry(item.key);
-      const bronKey = entry?.bron;
-      const rij = bronKey
-        ? indexedFood(bronKey)?.nutrients.find((n) => n.nutrient === nutrient)
-        : undefined;
-      const per100g = rij?.source.nutrientValue;
-
-      if (!per100g) {
+      const bedrag = bedragVanItem(item, nutrient);
+      if (!bedrag) {
         zonderGehalte += 1;
         continue;
       }
-      minstens += (per100g.value * item.grams) / 100;
+      minstens += bedrag.value;
       bronnen += 1;
-      unit = per100g.unit;
+      unit = bedrag.unit;
     }
 
     if (bronnen === 0 || !unit) continue;
@@ -171,6 +232,41 @@ export function nutrientenUitItems(
   }
 
   return result;
+}
+
+/** `NutrientOndergrens`, uitgesplitst naar wat er uit voeding kwam en wat uit supplementen. */
+export type NutrientOndergrensGesplitst = NutrientOndergrens & {
+  /** Het deel van `minstens` dat uit voeding kwam, in dezelfde eenheid. */
+  uitVoeding: number;
+  /** Het deel van `minstens` dat uit supplementen kwam, in dezelfde eenheid. */
+  uitSupplement: number;
+};
+
+/**
+ * Zelfde ondergrens als {@link nutrientenUitItems}, met de bron erbij.
+ *
+ * Puur additief: de som zelf verandert niet, alleen de twee delen waaruit hij
+ * is opgebouwd worden zichtbaar. Bedoeld voor de hero-cirkel en de
+ * nutriëntbalken, die voeding en supplement in aparte kleuren tonen.
+ */
+export function nutrientenGesplitstUitItems(
+  items: readonly DagboekItem[],
+): NutrientOndergrensGesplitst[] {
+  return nutrientenUitItems(items).map((stof) => {
+    let uitVoeding = 0;
+    let uitSupplement = 0;
+    for (const item of items) {
+      const bedrag = bedragVanItem(item, stof.nutrient);
+      if (!bedrag) continue;
+      if (item.bron === "supplement") uitSupplement += bedrag.value;
+      else uitVoeding += bedrag.value;
+    }
+    return {
+      ...stof,
+      uitVoeding: Math.round(uitVoeding * 10) / 10,
+      uitSupplement: Math.round(uitSupplement * 10) / 10,
+    };
+  });
 }
 
 /** De items van één eetmoment, in de volgorde waarin ze zijn ingevoerd. */

@@ -12,7 +12,7 @@ import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
 import { dagSoortVoor, type DagboekDag } from "@/lib/nutrition-dagboek";
 import {
-  nutrientenUitItems,
+  nutrientenGesplitstUitItems,
   portiesUitItems,
   sanitizeItems,
   type DagboekItem,
@@ -127,7 +127,7 @@ export default function DagboekScherm({
     [week, gevuldeDatums, meetdagen],
   );
 
-  const ondergrens = useMemo(() => nutrientenUitItems(items), [items]);
+  const ondergrens = useMemo(() => nutrientenGesplitstUitItems(items), [items]);
 
   /**
    * Wat je eerder logde, meest recent eerst.
@@ -209,7 +209,7 @@ export default function DagboekScherm({
     const entry = catalogEntry(key);
     if (!entry) return;
     const grams = entry.porties[0]?.grams ?? 100;
-    wijzig([...items, { moment: zoekMoment, key, grams }]);
+    wijzig([...items, { moment: zoekMoment, bron: "voeding", key, grams }]);
     // Het veld blijft open: een maaltijd is zelden één product, en de
     // toegevoegde regel verschijnt er direct onder als bevestiging.
     setZoek("");

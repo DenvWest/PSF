@@ -156,7 +156,7 @@ describe("upsertDaybookDay", () => {
       date: "2026-09-01",
       porties: { groente: 9 },
       momenten: { ontbijt: { zuivel: 1 } },
-      items: [{ moment: "ontbijt", key: "havermout", grams: 60 }],
+      items: [{ moment: "ontbijt", bron: "voeding", key: "havermout", grams: 60 }],
     });
 
     // De fijnste laag beschrijft de dag het best: de meegegeven `porties` en
