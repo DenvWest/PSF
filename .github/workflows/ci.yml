@@ -18,6 +18,8 @@ jobs:
 
       - run: npm ci
 
+      - run: pip install --break-system-packages Pillow
+
       - run: npm run check:migraties
 
       - run: npm run lint
