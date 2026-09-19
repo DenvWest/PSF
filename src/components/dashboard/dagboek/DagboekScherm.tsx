@@ -18,8 +18,10 @@ import {
   type DagboekItem,
 } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
+import type { ProteinTargetRange } from "@/lib/protein-target";
+import DagboekHero from "@/components/dashboard/dagboek/DagboekHero";
 import DagboekMaaltijd from "@/components/dashboard/dagboek/DagboekMaaltijd";
-import DagboekRingen from "@/components/dashboard/dagboek/DagboekRingen";
+import DagboekNutrientBalken from "@/components/dashboard/dagboek/DagboekNutrientBalken";
 import DagboekWeekstrip, {
   meetdagenUit,
   weekRond,
@@ -51,8 +53,10 @@ const MAX_TREFFERS = 8;
 
 export default function DagboekScherm({
   checkSliders = null,
+  proteinTarget = null,
 }: {
   checkSliders?: Record<string, number> | null;
+  proteinTarget?: ProteinTargetRange | null;
 }) {
   void checkSliders;
 
@@ -224,15 +228,27 @@ export default function DagboekScherm({
         <span className="text-[11px] capitalize text-[#7E8C82]">{dagLabel}</span>
       </header>
 
-      {ondergrens.length > 0 ? (
-        <DagboekRingen stoffen={ondergrens} />
-      ) : (
+      <DagboekHero stoffen={ondergrens} proteinTarget={proteinTarget} />
+
+      <DagboekNutrientBalken
+        stoffen={ondergrens}
+        proteinTarget={proteinTarget}
+        onSelect={() => {
+          // Plak A: nog geen eigen detailscherm per stof (komt in plak C) —
+          // een klik brengt je vast bij de eetmomenten waar je het item vindt.
+          document
+            .getElementById("dagboek-eetmomenten")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }}
+      />
+
+      {ondergrens.length === 0 ? (
         <p className="m-0 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-3 text-[12px] leading-relaxed text-[#7E8C82]">
           {laden
             ? "Je dagboek wordt geladen…"
             : "Nog niets geregistreerd voor deze dag. Zodra je een product toevoegt, staat hier wat het minstens levert."}
         </p>
-      )}
+      ) : null}
 
       <DagboekWeekstrip
         dagen={stripDagen}
@@ -241,7 +257,7 @@ export default function DagboekScherm({
         busy={busy}
       />
 
-      <div className="flex flex-col gap-2.5">
+      <div id="dagboek-eetmomenten" className="flex flex-col gap-2.5">
         {EETMOMENTEN.map((moment) => (
           <DagboekMaaltijd
             key={moment.id}

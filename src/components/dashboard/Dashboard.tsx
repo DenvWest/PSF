@@ -2734,6 +2734,7 @@ const KompasHome = ({
       <CockpitShell accent="#5A8F6A" ariaLabel="Je dagboek" embedded>
         <DagboekScherm
           checkSliders={data?.nutritionCheckinReadout?.ladderReport?.sliders ?? null}
+          proteinTarget={data?.proteinTarget ?? null}
         />
       </CockpitShell>
     </section>
