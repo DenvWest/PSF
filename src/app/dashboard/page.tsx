@@ -15,6 +15,7 @@ import {
   parseVoortgangScreenFromUrl,
   type AgendaViewId,
 } from "@/lib/dashboard-url";
+import { isZichtbaarDomein } from "@/lib/zichtbare-domeinen";
 import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
 export const metadata = {
@@ -82,11 +83,24 @@ const VALID_KOMPAS_VIEWS = new Set<PillarId>([
   "verbinding",
 ]);
 
+/**
+ * Het domein uit `?kompas=`, mits het bestaat én getoond wordt.
+ *
+ * De zichtbaarheidscheck staat hier bewust naast de bestaanscheck. Een oude
+ * link, een bookmark of een nurture-mail kan nog `?kompas=stress` dragen, en
+ * zonder filter opende dat de contextkolom op een verborgen domein: de rail
+ * toonde "Overgang & grenzen · STRESS" midden in het voedingsdagboek, met een
+ * ladder die nergens meer heen ging.
+ *
+ * `undefined` laat het dashboard terugvallen op zijn eigen prioriteit, en die
+ * is al gefilterd (`getPriorityPillarId`).
+ */
 function parseInitialKompasView(kompas?: string): PillarId | undefined {
-  if (kompas && VALID_KOMPAS_VIEWS.has(kompas as PillarId)) {
-    return kompas as PillarId;
+  if (!kompas || !VALID_KOMPAS_VIEWS.has(kompas as PillarId)) {
+    return undefined;
   }
-  return undefined;
+  const domain = kompas as PillarId;
+  return isZichtbaarDomein(domain) ? domain : undefined;
 }
 
 function parseInitialAgendaView(tab?: string, view?: string): AgendaViewId | undefined {

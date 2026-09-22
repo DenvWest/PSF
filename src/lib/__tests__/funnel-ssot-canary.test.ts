@@ -5,6 +5,7 @@ import { type DomainScores } from "@/lib/intake-engine";
 import { MEASURED_DOMAIN_TO_PILLAR } from "@/lib/measured-pillar-map";
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import { buildRevealModel } from "@/lib/reveal-model";
+import { isZichtbaarDomein } from "@/lib/zichtbare-domeinen";
 
 const BASELINE = 70;
 
@@ -43,12 +44,30 @@ describe("gate-symmetrie (compliance-canary)", () => {
 });
 
 describe("ladder-eenheid (reveal-kop ≡ priority)", () => {
+  /**
+   * De kop op REVEAL en de prioriteit eronder moeten hetzelfde domein noemen.
+   *
+   * Voor een zichtbaar domein is dat het gemeten thema zelf. Valt de meting op
+   * een verborgen domein (stress, verbinding), dan wijst de kop naar het
+   * laagst scorende zichtbare domein — anders stuurt hij naar een scherm dat
+   * niet bestaat. Zie `resolvePrimaryPillar` in `reveal-model.ts`.
+   */
   it.each(LADDER_SCORE_VECTORS)(
     "priority.id matches primary theme for $name",
     ({ scores }) => {
       const model = buildRevealModel(scores, {});
       const theme = getPrimaryTheme(scores, {});
-      expect(model.priority.id).toBe(MEASURED_DOMAIN_TO_PILLAR[theme]);
+      const gemeten = MEASURED_DOMAIN_TO_PILLAR[theme];
+
+      if (isZichtbaarDomein(gemeten)) {
+        expect(model.priority.id).toBe(gemeten);
+      } else {
+        expect(model.priority.id).toBe(model.ladder[0]?.id);
+      }
+
+      // Wat in beide gevallen moet gelden: de kop wijst nooit naar een domein
+      // dat uit de interface is.
+      expect(isZichtbaarDomein(model.priority.id)).toBe(true);
     },
   );
 });

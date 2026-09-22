@@ -21,13 +21,8 @@ function build(
 describe("buildDomainCheckStates", () => {
   it("geeft elk rail-domein een status", () => {
     const states = build();
-    // Verbinding hoort niet meer in de rail; zie `zichtbare-domeinen.ts`.
-    expect([...states.keys()]).toEqual([
-      "slaap",
-      "beweging",
-      "voeding",
-      "stress",
-    ]);
+    // Verbinding en stress horen niet meer in de rail; zie `zichtbare-domeinen.ts`.
+    expect([...states.keys()]).toEqual(["slaap", "beweging", "voeding"]);
   });
 
   it("markeert een nooit gedane check als direct te doen", () => {
@@ -40,11 +35,11 @@ describe("buildDomainCheckStates", () => {
   });
 
   it("telt af zolang het interval loopt", () => {
-    const state = build({ stress: 5 }).get("stress")!;
+    const state = build({ voeding: 5 }).get("voeding")!;
     expect(state.status).toBe("counting");
     expect(state.actionable).toBe(false);
     expect(state.daysUntil).toBe(DOMAIN_CHECK_INTERVAL_DAYS - 5);
-    expect(state.label).toBe("Nieuwe stresscheck over 9 dagen");
+    expect(state.label).toBe("Nieuwe voedingscheck over 9 dagen");
     expect(state.progress).toBeCloseTo(5 / DOMAIN_CHECK_INTERVAL_DAYS);
   });
 
@@ -99,16 +94,16 @@ describe("buildDomainCheckStates", () => {
   });
 
   it("licht het prioriteitsdomein uit als die te doen is", () => {
-    const states = build({ slaap: 20, stress: 30 }, "slaap");
+    const states = build({ slaap: 20, voeding: 30 }, "slaap");
     expect(states.get("slaap")!.highlighted).toBe(true);
-    expect(states.get("stress")!.highlighted).toBe(false);
+    expect(states.get("voeding")!.highlighted).toBe(false);
   });
 
   it("licht niets uit als de focuscheck nog aftelt, ook niet bij een groter meetgat elders", () => {
-    const states = build({ slaap: 2, stress: 40 }, "slaap");
+    const states = build({ slaap: 2, voeding: 40 }, "slaap");
     expect([...states.values()].some((state) => state.highlighted)).toBe(false);
     expect(states.get("beweging")!.actionable).toBe(true);
-    expect(states.get("stress")!.actionable).toBe(true);
+    expect(states.get("voeding")!.actionable).toBe(true);
   });
 
   it("licht nooit een ander domein uit dan de focus", () => {

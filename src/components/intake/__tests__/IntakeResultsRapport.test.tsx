@@ -41,7 +41,7 @@ const SCORES: DomainScores = {
 const MISMATCH_SCORES: DomainScores = {
   ...SCORES,
   sleep_score: 38,
-  stress_score: 15,
+  nutrition_score: 15,
 };
 
 const ANSWERS: Record<string, number> = {};
@@ -76,10 +76,10 @@ describe("IntakeResults — startprofiel en route in één box", () => {
     const box = screen.getByRole("region", { name: "Jouw startprofiel en route" });
     expect(within(box).getByRole("img", { name: /^Leefstijl: \d+ van de 100/ })).not.toBeNull();
     expect(within(box).getByRole("heading", { level: 1 })).not.toBeNull();
-    // Vier uitklapbare domeinen, niet vijf: verbinding is uit de interface
-    // (zie `zichtbare-domeinen.ts`). De score telt nog mee in het
-    // vitaliteitscijfer in de ring, maar krijgt geen eigen blok meer.
-    expect(within(box).getAllByRole("button", { expanded: false }).length).toBe(3);
+    // Drie uitklapbare domeinen: verbinding en stress zijn uit de interface
+    // (zie `zichtbare-domeinen.ts`). Hun scores tellen nog mee in het
+    // vitaliteitscijfer in de ring, maar krijgen geen eigen blok meer.
+    expect(within(box).getAllByRole("button", { expanded: false }).length).toBe(2);
     expect(within(box).getAllByRole("button", { expanded: true })).toHaveLength(1);
   });
 
@@ -129,11 +129,11 @@ describe("IntakeResults — startprofiel en route in één box", () => {
     const focus = built.find((domain) => domain.isFocus)!;
 
     // Regressietest: sleep_score (38) triggert getProfileLabel's vaste
-    // cascade ("Onrustige Slaper"), maar stress (15) is de echte laagste
+    // cascade ("Onrustige Slaper"), maar voeding (15) is de echte laagste
     // score. De kop moet het echte startpunt volgen.
-    expect(focus.id).toBe("stress");
+    expect(focus.id).toBe("voeding");
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain(
-      "Stress is je startpunt",
+      "Voeding is je startpunt",
     );
     expect(screen.queryByText("Onrustige Slaper")).toBeNull();
   });

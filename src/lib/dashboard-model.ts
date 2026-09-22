@@ -3,7 +3,7 @@ import { isReadoutDomain } from "@/lib/domain-role";
 import { buildActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { EMPTY_MOVEMENT_PREFS } from "@/lib/movement-prefs";
 import { getPriorityPillar } from "@/lib/priority-pillar";
-import { filterZichtbareDomeinen } from "@/lib/zichtbare-domeinen";
+import { filterZichtbareDomeinen, isZichtbaarDomein } from "@/lib/zichtbare-domeinen";
 import type { MovementDayChoice, TimeBucket } from "@/lib/account-priority-pref";
 import { RULES_VERSION } from "@/lib/intake-engine";
 import { hasMethodologyChange } from "@/lib/rules-version";
@@ -72,12 +72,18 @@ export function buildModel(
   const ladder = derivePriority(scores);
   const domainScores = mapCheckScoresToDomainScores(scores);
   const enginePriority = getPriorityPillar(domainScores, answers ?? {});
-  const priority =
-    chosenPriorityId != null
-      ? (PILLARS.find((pillar) => pillar.id === chosenPriorityId) ?? enginePriority)
-      : enginePriority;
-  const priorityIsUserChosen =
-    chosenPriorityId != null && chosenPriorityId !== enginePriority.id;
+  // Een eigen keuze wint van de engine — behalve wanneer hij naar een domein
+  // wijst dat uit de interface is. Zo'n keuze staat nog in `priorityPref` van
+  // iedereen die hem maakte vóór dat domein verdween, en zonder deze grens
+  // bleef de contextkolom een stress-ladder tonen in een dashboard waar stress
+  // verder nergens meer bestaat. De voorkeur blijft opgeslagen; hij wordt
+  // alleen niet meer gevolgd zolang het domein verborgen is.
+  const gekozen =
+    chosenPriorityId != null && isZichtbaarDomein(chosenPriorityId)
+      ? (PILLARS.find((pillar) => pillar.id === chosenPriorityId) ?? null)
+      : null;
+  const priority = gekozen ?? enginePriority;
+  const priorityIsUserChosen = gekozen != null && gekozen.id !== enginePriority.id;
   const strongest = [...PILLARS]
     .filter((pillar) => !isReadoutDomain(pillar.id))
     .sort((a, b) => scores[b.id] - scores[a.id])

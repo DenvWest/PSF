@@ -20,7 +20,9 @@ describe("derivePersonalization", () => {
     verbinding: 80 },
       null,
     );
-    expect(result.priorityPillarId).toBe("stress");
+    // Stress heeft hier de laagste zichtbare score niet meer nodig: het domein
+    // is uit de interface, dus energie wint. Zie `zichtbare-domeinen.ts`.
+    expect(result.priorityPillarId).toBe("voeding");
     expect(result.profileLabel).toBeNull();
   });
 });

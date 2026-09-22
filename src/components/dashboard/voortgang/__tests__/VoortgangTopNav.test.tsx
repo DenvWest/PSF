@@ -67,18 +67,19 @@ describe("VoortgangTopNav", () => {
     expect(onOpenItem).toHaveBeenCalledWith("hub");
   });
 
-  it("toont slaap, stress en beweging met cijfer, maar alleen voeding is aanklikbaar", () => {
+  it("toont slaap en beweging met cijfer, maar alleen voeding is aanklikbaar", () => {
     renderNav();
     openPanel();
     expect(screen.getByRole("menuitem", { name: /^Voeding40$/ })).toBeTruthy();
     expect(screen.getByRole("menuitem", { name: /^Slaap25$/ })).toBeTruthy();
     expect(screen.getByRole("menuitem", { name: /^Beweging63$/ })).toBeTruthy();
-    expect(screen.getByRole("menuitem", { name: /^Stress0$/ })).toBeTruthy();
     expect(screen.getByRole("menuitem", { name: /^Slaap25$/ }).getAttribute("aria-disabled")).toBe(
       "true",
     );
     expect(screen.getByRole("menuitem", { name: /^Voeding40$/ }).getAttribute("aria-disabled")).toBeNull();
+    // Verbinding en stress zijn uit de interface; zie `zichtbare-domeinen.ts`.
     expect(screen.queryByRole("menuitem", { name: /^Verbinding/ })).toBeNull();
+    expect(screen.queryByRole("menuitem", { name: /^Stress/ })).toBeNull();
 
     fireEvent.click(screen.getByRole("menuitem", { name: /^Slaap25$/ }));
     expect(onOpenDomein).not.toHaveBeenCalled();

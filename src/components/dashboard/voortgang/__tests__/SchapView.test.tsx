@@ -140,16 +140,15 @@ describe("SchapView — de domeinschakelaar", () => {
     expect(labels).toEqual(["Slaap", "Beweging", "Voeding"]);
   });
 
-  // De poort zichtbaar houden: stress héést geen schap, en dat is een oordeel.
-  // Weglaten zou dat oordeel als een gat laten lezen. Verbinding staat er niet
-  // meer bij — dat domein is helemaal uit de interface.
-  it("toont stress wél, dicht, mét de reden", () => {
+  /**
+   * Stress stond hier tot 22 september als dichte chip mét reden: het héést
+   * geen schap, en dat oordeel hoorde zichtbaar te blijven. Nu het domein
+   * helemaal uit de interface is, vervalt die afweging — een chip voor iets
+   * dat nergens meer bestaat is geen oordeel maar ruis.
+   */
+  it("toont verbinding noch stress in de domeinschakelaar", () => {
     renderSchap("slaap", null, { onSwitchDomain: vi.fn() });
-    const chip = within(domeinNav()).getByText("Stress");
-    expect(chip.closest("[aria-disabled]")).toBeTruthy();
-    expect(chip.closest("[aria-disabled]")?.getAttribute("title")).toContain(
-      "Geen aanbod",
-    );
+    expect(within(domeinNav()).queryByText("Stress")).toBeNull();
     expect(within(domeinNav()).queryByText("Verbinding")).toBeNull();
   });
 

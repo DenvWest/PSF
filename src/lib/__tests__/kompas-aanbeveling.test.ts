@@ -137,11 +137,11 @@ describe("buildKompasAanbevelingen", () => {
     expect(rows.filter((row) => row.isPriority)).toHaveLength(1);
   });
 
-  // Verbinding is uit de interface; zie `zichtbare-domeinen.ts`.
+  // Verbinding en stress zijn uit de interface; zie `zichtbare-domeinen.ts`.
   it("levert alle zichtbare ladderdomeinen, ook zonder enige check", () => {
     const rows = buildKompasAanbevelingen("slaap", undefined, 0);
     expect(rows.map((row) => row.domain).sort()).toEqual(
-      ["beweging", "slaap", "stress", "voeding"],
+      ["beweging", "slaap", "voeding"],
     );
   });
 

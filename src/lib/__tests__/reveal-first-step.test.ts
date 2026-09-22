@@ -62,16 +62,23 @@ describe("resolveRevealFirstStep", () => {
     const model = buildRevealModel(scores, answers);
     const input = buildRecommendationInput({ scores, answers });
 
-    expect(model.priority.id).toBe("stress");
-    expect(model.topLadder[1]?.id).toBe("voeding");
+    // Stress staat op de laagste score maar is uit de interface, dus voeding
+    // wordt de prioriteit; zie `zichtbare-domeinen.ts`.
+    expect(model.priority.id).toBe("voeding");
+    expect(model.topLadder[1]?.id).toBe("slaap");
 
     const step = resolveRevealFirstStep(model, input, {
       selectedPillar: model.topLadder[1],
     });
 
-    expect(step.lifestyle.title).toBe(PILLAR.voeding.quickWin.title);
+    // De kern van deze test: chip 2 toont de quickWin van het gekózen domein,
+    // niet die van de prioriteit. Welk domein dat is volgt uit de ladder.
+    expect(step.lifestyle.title).toBe(PILLAR.slaap.quickWin.title);
+    expect(step.lifestyle.title).not.toBe(model.priority.quickWin.title);
+    // Het supplementadvies volgt datzelfde gekozen domein: slaap geeft
+    // magnesium, waar de prioriteit (voeding) omega-3 zou geven.
     expect(step.qualifiesForSupplement).toBe(true);
-    expect(step.supplement?.name).toBe("Omega-3");
+    expect(step.supplement?.name).toBe("Magnesium");
   });
 
   it("includes upcoming dashboard features", () => {

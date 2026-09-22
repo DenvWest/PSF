@@ -4,6 +4,7 @@ import { derivePriority } from "@/lib/dashboard-model";
 import type { DomainScores } from "@/lib/intake-engine";
 import { MEASURED_DOMAIN_TO_PILLAR } from "@/lib/measured-pillar-map";
 import { getPrimaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
+import { isZichtbaarDomein } from "@/lib/zichtbare-domeinen";
 import { getRecognitionLine, getVitalityFraming } from "@/lib/results-framing";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import type { CheckScores, Pillar, PillarId } from "@/types/dashboard";
@@ -55,12 +56,32 @@ export type RevealModel = {
   lifestyle: RevealLifestyleItem[];
 };
 
-function resolvePrimaryPillar(primaryTheme: MeasuredPillarId): {
+/**
+ * Vertaalt het gemeten hoofdthema naar de pijler die REVEAL aanwijst.
+ *
+ * De meting zelf blijft ongefilterd: `getPrimaryTheme` mag gerust "stress"
+ * teruggeven, want dat is wat de check heeft vastgesteld en die uitkomst hoort
+ * niet te veranderen omdat de interface verandert.
+ *
+ * De **bestemming** hoort dat wel te volgen. Een verborgen domein heeft geen
+ * hub, geen ladderlagen en geen schap, dus "Bekijk je startpunt — Stress"
+ * wijst naar een scherm dat niet bestaat. Valt het hoofdthema in een verborgen
+ * domein, dan wijst REVEAL naar het laagst scorende zichtbare domein — dezelfde
+ * volgorde die `derivePriority` aanhoudt, zodat de tekst en de ladder eronder
+ * hetzelfde domein noemen.
+ */
+function resolvePrimaryPillar(
+  primaryTheme: MeasuredPillarId,
+  ladder: Pillar[],
+): {
   primaryPillarId: PillarId;
   primaryPillarLabel: string;
   primaryPillarHref: string;
 } {
-  const primaryPillarId = MEASURED_DOMAIN_TO_PILLAR[primaryTheme];
+  const gemeten = MEASURED_DOMAIN_TO_PILLAR[primaryTheme];
+  const primaryPillarId = isZichtbaarDomein(gemeten)
+    ? gemeten
+    : (ladder[0]?.id ?? gemeten);
   const pillar = PILLARS.find((entry) => entry.id === primaryPillarId);
   return {
     primaryPillarId,
@@ -76,9 +97,9 @@ export function buildRevealModel(
   primaryThemeInput?: MeasuredPillarId,
 ): RevealModel {
   const primaryTheme = primaryThemeInput ?? getPrimaryTheme(scores, answers);
-  const primaryPillar = resolvePrimaryPillar(primaryTheme);
   const checkScores = mapDomainScoresToCheckScores(scores);
   const ladder = derivePriority(checkScores);
+  const primaryPillar = resolvePrimaryPillar(primaryTheme, ladder);
   const priority = PILLAR[primaryPillar.primaryPillarId];
   const strongest = [...ladder]
     .sort((a, b) => checkScores[b.id] - checkScores[a.id])

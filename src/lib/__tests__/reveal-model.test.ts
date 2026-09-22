@@ -41,21 +41,36 @@ function scoresScreenshotMismatch(): DomainScores {
 }
 
 describe("buildRevealModel", () => {
-  it("geeft stress als prioriteit met twee leefstijlstappen", () => {
+  /**
+   * De meting en de bestemming lopen hier bewust uiteen.
+   *
+   * `primaryTheme` blijft "stress": dat is wat de check heeft vastgesteld, en
+   * die uitkomst mag niet veranderen omdat de interface verandert — anders
+   * leest een hermeting als vooruitgang die er niet is.
+   *
+   * `primaryPillarId` volgt de interface wél: stress is verborgen
+   * (`zichtbare-domeinen.ts`), dus de kop wijst naar het laagst scorende
+   * zichtbare domein in plaats van naar een scherm dat niet bestaat.
+   */
+  it("meet stress maar wijst naar een zichtbaar domein", () => {
     const model = buildRevealModel(
       scoresWithStressPriority(),
       EMPTY_ANSWERS,
       ["stress"],
     );
-    expect(model.priority.id).toBe("stress");
-    expect(model.lifestyle).toHaveLength(2);
-    expect(model.lifestyle[0].win.title).toBe("Box-breathing, 4 minuten");
-    expect(model.lifestyle[0].role).toBe("prioriteit");
-    expect(model.lifestyle[1].role).toBe("kracht");
+
+    expect(model.primaryTheme).toBe("stress");
     expect(model.recognitionLine).toBe("Je begon met minder rust en meer prikkelbaarheid.");
     expect(model.driverLine).toContain("stress");
-    expect(model.primaryTheme).toBe("stress");
-    expect(model.primaryPillarId).toBe("stress");
+
+    expect(model.primaryPillarId).not.toBe("stress");
+    expect(model.priority.id).toBe(model.ladder[0]?.id);
+    expect(model.priority.id).not.toBe("stress");
+
+    expect(model.lifestyle).toHaveLength(2);
+    expect(model.lifestyle[0].role).toBe("prioriteit");
+    expect(model.lifestyle[0].win.title).toBe(model.priority.quickWin.title);
+    expect(model.lifestyle[1].role).toBe("kracht");
     expect("profileName" in model).toBe(false);
     expect("supplement" in model).toBe(false);
   });

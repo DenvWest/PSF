@@ -147,7 +147,14 @@ describe("LeefstijlprofielKeuzeHub", () => {
     expect(onOpenDomain).toHaveBeenCalledWith("voeding");
   });
 
-  it("renders stress kengetallen from the T1d snapshot", () => {
+  /**
+   * Tot 22 september rendeerde dit de stress-kengetallen uit de T1d-snapshot.
+   * Stress is nu uit de interface (`zichtbare-domeinen.ts`), dus de snapshot
+   * mag binnenkomen maar hoort niets meer te tonen. Het mechanisme zelf — een
+   * snapshot die zijn factRows rendert — blijft gedekt door de beweging-test
+   * hieronder.
+   */
+  it("toont geen stress-kengetallen meer, ook niet met een gevulde snapshot", () => {
     render(
       <LeefstijlprofielKeuzeHub
         data={buildData({
@@ -182,9 +189,8 @@ describe("LeefstijlprofielKeuzeHub", () => {
         onOpenDomain={vi.fn()}
       />,
     );
-    expect(screen.getByText("Spanning")).toBeTruthy();
-    expect(screen.getByText("Regelmatig")).toBeTruthy();
-    expect(screen.getByText(/Geen richtlijn/)).toBeTruthy();
+    expect(screen.queryByText("Spanning")).toBeNull();
+    expect(screen.queryByText("Regelmatig")).toBeNull();
   });
 
   it("renders beweging kengetallen from the movement snapshot", () => {

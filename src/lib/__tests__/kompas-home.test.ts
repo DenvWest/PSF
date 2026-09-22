@@ -49,7 +49,7 @@ describe("buildKompasDomainRows", () => {
     );
     const rows = buildKompasDomainRows(model);
 
-    expect(rows).toHaveLength(4);
+    expect(rows).toHaveLength(3);
     expect(rows.map((row) => row.id)).toEqual(KOMPAS_RAIL_PILLAR_IDS);
   });
 
@@ -140,11 +140,13 @@ describe("prioritySegmentIndex", () => {
         answers,
         null,
         null,
-        "stress",
+        "voeding",
       ),
     );
 
-    expect(prioritySegmentIndex(rows)).toBe(3);
+    expect(prioritySegmentIndex(rows)).toBe(
+      KOMPAS_RAIL_PILLAR_IDS.indexOf("voeding"),
+    );
   });
 });
 

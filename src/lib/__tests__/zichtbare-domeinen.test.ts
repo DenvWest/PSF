@@ -8,10 +8,15 @@ import {
   zichtbareDomeinen,
 } from "@/lib/zichtbare-domeinen";
 import { KOMPAS_RAIL_PILLAR_IDS } from "@/lib/context-rail";
-import { derivePriority } from "@/lib/dashboard-model";
+import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { INTERVENTION_DOMAIN_SCORE_KEYS } from "@/lib/intake-engine";
 import { resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import type { CheckScores, PillarId } from "@/types/dashboard";
+
+const LEGE_TREND = {
+  slaap: [], energie: [], stress: [], voeding: [],
+  beweging: [], herstel: [], verbinding: [],
+};
 
 const scores: CheckScores = {
   slaap: 60,
@@ -25,9 +30,13 @@ const scores: CheckScores = {
 };
 
 describe("zichtbare-domeinen", () => {
-  it("verbergt verbinding", () => {
+  it("verbergt verbinding en stress", () => {
     expect(isZichtbaarDomein("verbinding")).toBe(false);
+    expect(isZichtbaarDomein("stress")).toBe(false);
     expect(isZichtbaarDomein("voeding")).toBe(true);
+    // Slaap en beweging blijven: die dragen het voeding/supplement-verhaal mee.
+    expect(isZichtbaarDomein("slaap")).toBe(true);
+    expect(isZichtbaarDomein("beweging")).toBe(true);
   });
 
   it("filtert een kale domeinlijst met behoud van volgorde", () => {
@@ -42,8 +51,9 @@ describe("zichtbare-domeinen", () => {
     ]);
   });
 
-  it("houdt verbinding uit de Kompas-rail", () => {
+  it("houdt verbinding en stress uit de Kompas-rail", () => {
     expect(KOMPAS_RAIL_PILLAR_IDS).not.toContain("verbinding");
+    expect(KOMPAS_RAIL_PILLAR_IDS).not.toContain("stress");
     expect(KOMPAS_RAIL_PILLAR_IDS).toContain("voeding");
   });
 
@@ -78,15 +88,78 @@ describe("zichtbare-domeinen", () => {
     expect(facets.map((facet) => facet.key)).toContain("connection");
   });
 
+  /**
+   * Het gat dat bij het verbergen van stress aan het licht kwam: een eerder
+   * gekozen prioriteit blijft in `account_priority_pref` staan, en die keuze
+   * won van de engine. De contextkolom toonde daardoor een stress-ladder in
+   * een dashboard waar stress verder nergens meer bestond.
+   *
+   * De voorkeur blijft bewaard — hij wordt alleen niet gevolgd zolang het
+   * domein verborgen is.
+   */
+  it("volgt een opgeslagen prioriteitskeuze niet als die op een verborgen domein wijst", () => {
+    const model = buildModel(
+      { scores, vitality: 50, date: "22 sep 2026", trend: LEGE_TREND },
+      null,
+      [],
+      false,
+      {},
+      null,
+      null,
+      "stress",
+    );
+
+    expect(model.priority.id).not.toBe("stress");
+    expect(isZichtbaarDomein(model.priority.id)).toBe(true);
+    // Geen "eigen keuze"-label voor een keuze die niet gevolgd wordt.
+    expect(model.priorityIsUserChosen).toBe(false);
+  });
+
+  it("volgt een opgeslagen keuze wél als het domein zichtbaar is", () => {
+    const model = buildModel(
+      { scores, vitality: 50, date: "22 sep 2026", trend: LEGE_TREND },
+      null,
+      [],
+      false,
+      {},
+      null,
+      null,
+      "slaap",
+    );
+
+    expect(model.priority.id).toBe("slaap");
+  });
+
   it("is omkeerbaar via één lijst", () => {
-    expect(VERBORGEN_DOMEINEN).toEqual(["verbinding"]);
+    expect(VERBORGEN_DOMEINEN).toEqual(["verbinding", "stress"]);
   });
 
   it("laat alleen voeding een leefstijlprofiel-scherm openen", () => {
     expect(KLIKBARE_VOORTGANG_DOMEINEN).toEqual(["voeding"]);
     expect(isKlikbaarVoortgangDomein("voeding")).toBe(true);
     expect(isKlikbaarVoortgangDomein("slaap")).toBe(false);
-    expect(isKlikbaarVoortgangDomein("stress")).toBe(false);
     expect(isKlikbaarVoortgangDomein("beweging")).toBe(false);
+  });
+
+  /**
+   * Stress had de laagste score in deze fixture en zou zonder filter de
+   * prioriteit worden — net als verbinding. Beide moeten wegblijven.
+   */
+  it("wijst nooit stress aan als prioriteit", () => {
+    const prioriteit = derivePriority({ ...scores, stress: 5 });
+    expect(prioriteit.map((pillar) => pillar.id)).not.toContain("stress");
+  });
+
+  it("laat de stress-score meetellen in vitaliteit", () => {
+    const facets = resolveVitaliteitFacets({
+      sleep_score: 60,
+      energy_score: 60,
+      stress_score: 10,
+      nutrition_score: 60,
+      movement_score: 60,
+      recovery_score: 60,
+      connection_score: 60,
+    });
+    expect(facets.map((facet) => facet.key)).toContain("stress");
   });
 });
