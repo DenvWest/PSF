@@ -92,14 +92,34 @@ describe("sanitizeMeals", () => {
   });
 });
 
+/**
+ * Een dagboek-client met één bestaande dag erin.
+ *
+ * `upsertDaybookDay` leest de dag eerst en voegt samen, dus de dubbel moet
+ * allebei kunnen: `select(...).eq(...).eq(...).maybeSingle()` en `upsert(...)`.
+ * `bestaand: null` staat voor een dag die nog niet bestaat.
+ */
+function daybookClient(bestaand: Record<string, unknown> | null) {
+  const rows: Record<string, unknown>[] = [];
+  const upsert = vi.fn((row: Record<string, unknown>) => {
+    rows.push(row);
+    return Promise.resolve({ error: null });
+  });
+  const select = vi.fn(() => ({
+    eq: () => ({
+      eq: () => ({ maybeSingle: () => Promise.resolve({ data: bestaand, error: null }) }),
+    }),
+  }));
+  const supabase = {
+    raw: {},
+    from: vi.fn(() => ({ select, upsert })),
+  } as unknown as OrgScopedClient;
+  return { supabase, rows, upsert, select };
+}
+
 describe("upsertDaybookDay", () => {
   it("leidt de dagsoort af uit de datum en schrijft op (account, dag)", async () => {
-    const rows: Record<string, unknown>[] = [];
-    const upsert = vi.fn((row: Record<string, unknown>) => {
-      rows.push(row);
-      return Promise.resolve({ error: null });
-    });
-    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+    const { supabase, rows, upsert } = daybookClient(null);
 
     // 5 september 2026 is een zaterdag.
     const ok = await upsertDaybookDay(supabase, "acc", {
@@ -115,12 +135,7 @@ describe("upsertDaybookDay", () => {
   });
 
   it("schrijft geen score-, calorie- of gramveld mee", async () => {
-    const rows: Record<string, unknown>[] = [];
-    const upsert = vi.fn((row: Record<string, unknown>) => {
-      rows.push(row);
-      return Promise.resolve({ error: null });
-    });
-    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+    const { supabase, rows } = daybookClient(null);
 
     await upsertDaybookDay(supabase, "acc", {
       date: "2026-09-01",
@@ -145,12 +160,7 @@ describe("upsertDaybookDay", () => {
   });
 
   it("leidt porties af uit de items, en die winnen van de momenten", async () => {
-    const rows: Record<string, unknown>[] = [];
-    const upsert = vi.fn((row: Record<string, unknown>) => {
-      rows.push(row);
-      return Promise.resolve({ error: null });
-    });
-    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+    const { supabase, rows } = daybookClient(null);
 
     await upsertDaybookDay(supabase, "acc", {
       date: "2026-09-01",
@@ -170,12 +180,7 @@ describe("upsertDaybookDay", () => {
   it("leidt porties af uit de momenten", async () => {
     // De momenten zijn de invoervorm; `portions` blijft de bron voor analyse.
     // Allebei laten aanleveren zou ze uit elkaar kunnen laten lopen.
-    const rows: Record<string, unknown>[] = [];
-    const upsert = vi.fn((row: Record<string, unknown>) => {
-      rows.push(row);
-      return Promise.resolve({ error: null });
-    });
-    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+    const { supabase, rows } = daybookClient(null);
 
     await upsertDaybookDay(supabase, "acc", {
       date: "2026-09-01",
@@ -191,12 +196,7 @@ describe("upsertDaybookDay", () => {
 
   it("accepteert nog steeds een platte portie-map", async () => {
     // Backward-compat: een client die de oude vorm stuurt blijft werken.
-    const rows: Record<string, unknown>[] = [];
-    const upsert = vi.fn((row: Record<string, unknown>) => {
-      rows.push(row);
-      return Promise.resolve({ error: null });
-    });
-    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+    const { supabase, rows } = daybookClient(null);
 
     await upsertDaybookDay(supabase, "acc", {
       date: "2026-09-01",
@@ -208,12 +208,7 @@ describe("upsertDaybookDay", () => {
   });
 
   it("bewaart water als eenheid", async () => {
-    const rows: Record<string, unknown>[] = [];
-    const upsert = vi.fn((row: Record<string, unknown>) => {
-      rows.push(row);
-      return Promise.resolve({ error: null });
-    });
-    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+    const { supabase, rows } = daybookClient(null);
 
     await upsertDaybookDay(supabase, "acc", {
       date: "2026-09-01",
@@ -224,9 +219,123 @@ describe("upsertDaybookDay", () => {
     expect(rows[0].water_ml).toBe(1500);
   });
 
+  /**
+   * De regressie waarvoor de merge is gebouwd.
+   *
+   * De dagboek-UI stuurt alleen `{ date, items }`. Schreef die POST de hele rij
+   * weg, dan was het water van die ochtend stil verdwenen zodra je 's avonds
+   * een product toevoegde. Geen foutmelding, en de UI leest het veld niet meer
+   * — dus onzichtbaar.
+   */
+  it("laat water en momenten staan bij een POST die alleen items noemt", async () => {
+    const { supabase, rows } = daybookClient({
+      portions: { zuivel: 1 },
+      meals: { ontbijt: { zuivel: 1 } },
+      water_ml: 1500,
+      items: [],
+    });
+
+    await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      items: [{ moment: "lunch", bron: "voeding", key: "havermout", grams: 60 }],
+    });
+
+    expect(rows[0].water_ml).toBe(1500);
+    expect(rows[0].meals).toEqual({ ontbijt: { zuivel: 1 } });
+  });
+
+  it("laat items staan bij een POST die alleen water noemt", async () => {
+    const { supabase, rows } = daybookClient({
+      portions: { granen: 1 },
+      meals: {},
+      water_ml: null,
+      items: [{ moment: "ontbijt", bron: "voeding", key: "havermout", grams: 60 }],
+    });
+
+    await upsertDaybookDay(supabase, "acc", { date: "2026-09-01", waterMl: 750 });
+
+    expect(rows[0].water_ml).toBe(750);
+    expect(rows[0].items).toHaveLength(1);
+    // De porties blijven uit de bewaarde items komen, niet uit niets.
+    expect(rows[0].portions).toEqual({ granen: 1 });
+  });
+
+  /**
+   * De andere kant van hetzelfde onderscheid: expliciet leeg is een opdracht,
+   * geen stilte. Zo blijft je laatste product verwijderen mogelijk.
+   */
+  it("wist wél wat expliciet leeg wordt meegestuurd", async () => {
+    const { supabase, rows } = daybookClient({
+      portions: { granen: 1 },
+      meals: { ontbijt: { granen: 1 } },
+      water_ml: 1500,
+      items: [{ moment: "ontbijt", bron: "voeding", key: "havermout", grams: 60 }],
+    });
+
+    await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      items: [],
+      waterMl: null,
+    });
+
+    expect(rows[0].items).toEqual([]);
+    expect(rows[0].water_ml).toBeNull();
+    // `meals` is niet genoemd en blijft dus staan.
+    expect(rows[0].meals).toEqual({ ontbijt: { granen: 1 } });
+  });
+
+  it("gedraagt zich als vanouds bij een dag die nog niet bestaat", async () => {
+    const { supabase, rows } = daybookClient(null);
+
+    await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      items: [{ moment: "ontbijt", bron: "voeding", key: "havermout", grams: 60 }],
+    });
+
+    expect(rows[0].water_ml).toBeNull();
+    expect(rows[0].meals).toEqual({});
+  });
+
+  /**
+   * Een mislukte lezing mag een registratie niet blokkeren: dan valt de
+   * schrijving terug op het oude gedrag in plaats van te weigeren.
+   */
+  it("schrijft door wanneer de bestaande dag niet te lezen is", async () => {
+    const rows: Record<string, unknown>[] = [];
+    const upsert = vi.fn((row: Record<string, unknown>) => {
+      rows.push(row);
+      return Promise.resolve({ error: null });
+    });
+    const select = vi.fn(() => ({
+      eq: () => ({
+        eq: () => ({
+          maybeSingle: () => Promise.resolve({ data: null, error: { message: "kolom weg" } }),
+        }),
+      }),
+    }));
+    const supabase = {
+      raw: {},
+      from: vi.fn(() => ({ select, upsert })),
+    } as unknown as OrgScopedClient;
+
+    const ok = await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      items: [{ moment: "ontbijt", bron: "voeding", key: "havermout", grams: 60 }],
+    });
+
+    expect(ok).toBe(true);
+    expect(rows).toHaveLength(1);
+  });
+
   it("meldt falen zonder te werpen", async () => {
+    const select = vi.fn(() => ({
+      eq: () => ({ eq: () => ({ maybeSingle: () => Promise.resolve({ data: null, error: null }) }) }),
+    }));
     const upsert = vi.fn(() => Promise.resolve({ error: { message: "nee" } }));
-    const supabase = { raw: {}, from: vi.fn(() => ({ upsert })) } as unknown as OrgScopedClient;
+    const supabase = {
+      raw: {},
+      from: vi.fn(() => ({ select, upsert })),
+    } as unknown as OrgScopedClient;
     await expect(
       upsertDaybookDay(supabase, "acc", { date: "2026-09-01", porties: { groente: 1 } }),
     ).resolves.toBe(false);

@@ -135,6 +135,37 @@ export async function listDaybookDays(
   });
 }
 
+/**
+ * Schrijft één dag weg, en laat staan wat de aanroeper niet noemde.
+ *
+ * ## Waarom dit samenvoegt en niet overschrijft
+ *
+ * Een dag draagt vier invoervormen naast elkaar: `items` (product per
+ * eetmoment), `meals` (groep per eetmoment), `portions` (platte lijst) en
+ * `water_ml`. Ze worden door verschillende schermen geschreven — de dagboek-UI
+ * stuurt vandaag alléén `{ date, items }`.
+ *
+ * Tot september 2026 schreef deze functie de hele rij onvoorwaardelijk weg,
+ * ook de velden waar niets over gezegd was. Een POST met alleen items zette
+ * daarmee `meals` op `{}` en `water_ml` op `null`: wie 's ochtends zijn water
+ * registreerde en 's avonds een product toevoegde, was dat water stil kwijt.
+ * Geen foutmelding, geen zichtbaar spoor — de UI leest die velden niet meer,
+ * dus het verdween onopgemerkt.
+ *
+ * Een veld dat de aanroeper niet noemt, blijft daarom staan. `undefined`
+ * betekent "hier zeg ik niets over"; een expliciete lege waarde (`[]`, `{}`,
+ * `null`) betekent "maak dit leeg" en wist wél. Dat onderscheid is de hele
+ * reden dat de velden optioneel zijn in plaats van met een default gevuld.
+ *
+ * ## Waarom eerst lezen en dan schrijven
+ *
+ * Een `upsert` stuurt altijd een hele rij; welke kolommen bij een conflict
+ * worden bijgewerkt, hangt af van wat er in de body zit. Die regel klopt wel,
+ * maar hij staat in PostgREST en niet in dit bestand — en een stille
+ * gedragsverandering daar zou hier weer dataverlies opleveren. Door de
+ * bestaande rij expliciet te lezen en de samenvoeging zelf te doen, staat de
+ * bedoeling in onze eigen code en is hij te testen.
+ */
 export async function upsertDaybookDay(
   supabase: OrgScopedClient,
   accountId: string,
@@ -147,18 +178,24 @@ export async function upsertDaybookDay(
     waterMl?: number | null;
   },
 ): Promise<boolean> {
+  const bestaand = await leesDag(supabase, accountId, input.date);
+
+  // Niet genoemd = laten staan. Zie de doc hierboven: dit is het verschil
+  // tussen "ik zeg hier niets over" en "maak dit leeg".
+  const momenten = input.momenten ?? bestaand?.momenten ?? {};
+  const items = input.items ?? bestaand?.items ?? [];
+  const waterMl = input.waterMl !== undefined ? input.waterMl : (bestaand?.waterMl ?? null);
+
   // De momenten zijn de invoervorm; `portions` blijft de bron waar alle
   // analyse op rekent. Afleiden in plaats van allebei laten aanleveren, zodat
   // ze niet uit elkaar kunnen lopen.
   // Volgorde: items winnen van momenten, momenten van losse porties. Elke laag
   // is fijner dan de vorige, dus de fijnste die er is beschrijft de dag het best.
-  const momenten = input.momenten ?? {};
-  const items = input.items ?? [];
   const porties = items.length > 0
     ? portiesUitItems(items)
     : Object.keys(momenten).length > 0
       ? portiesUitMomenten(momenten)
-      : (input.porties ?? {});
+      : (input.porties ?? bestaand?.porties ?? {});
 
   const { error } = await supabase.from("account_nutrition_daybook").upsert(
     {
@@ -168,10 +205,66 @@ export async function upsertDaybookDay(
       portions: porties,
       meals: momenten,
       items,
-      water_ml: input.waterMl ?? null,
+      water_ml: waterMl,
     },
     { onConflict: "account_id,entry_date" },
   );
 
   return !error;
+}
+
+/**
+ * De dag zoals hij nu opgeslagen staat, of null als hij er nog niet is.
+ *
+ * Faalt de lezing (kolom bestaat nog niet, netwerk weg), dan levert dit `null`
+ * en gedraagt de schrijving zich als vanouds: een nieuwe dag wegschrijven.
+ * Dat is de veilige kant om op te falen — een mislukte lezing mag een
+ * registratie niet blokkeren.
+ */
+type BestaandeDag = {
+  porties: Partial<Record<VoedselgroepId, number>>;
+  momenten: DagMomenten;
+  items: DagboekItem[];
+  waterMl: number | null;
+};
+
+/**
+ * De minimale vorm van de select-keten die deze functie gebruikt.
+ *
+ * De PostgREST-builder draagt zijn hele generieke typeboom mee; die hier
+ * uitschrijven levert alleen diepte-fouten op en zegt niets over wat we nodig
+ * hebben. Dit beschrijft precies de drie stappen die we aanroepen.
+ */
+type DagQuery = {
+  eq: (kolom: string, waarde: string) => DagQuery;
+  maybeSingle: () => Promise<{ data: unknown; error: unknown }>;
+};
+
+async function leesDag(
+  supabase: OrgScopedClient,
+  accountId: string,
+  date: string,
+): Promise<BestaandeDag | null> {
+  try {
+    const query = supabase
+      .from("account_nutrition_daybook")
+      .select("portions, meals, water_ml, items") as unknown as DagQuery;
+
+    const { data, error } = await query
+      .eq("account_id", accountId)
+      .eq("entry_date", date)
+      .maybeSingle();
+
+    if (error || !data || typeof data !== "object") return null;
+
+    const row = data as Record<string, unknown>;
+    return {
+      porties: sanitizePortions(row.portions),
+      momenten: sanitizeMeals(row.meals),
+      items: sanitizeItems(row.items),
+      waterMl: normaliseerWaterMl(row.water_ml),
+    };
+  } catch {
+    return null;
+  }
 }

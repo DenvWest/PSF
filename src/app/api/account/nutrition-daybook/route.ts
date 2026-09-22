@@ -89,18 +89,33 @@ export async function POST(request: NextRequest) {
   // (product per eetmoment), `meals` blijft geldig voor clients die per groep
   // per moment sturen, en `portions` voor de platte lijst. Welke van de drie
   // de porties bepaalt, beslist `upsertDaybookDay`.
-  const items = sanitizeItems(record.items);
-  const momenten = sanitizeMeals(record.meals);
-  const porties = sanitizePortions(record.portions);
-  const waterMl = normaliseerWaterMl(record.water_ml);
+  //
+  // Een veld dat de client niet stuurde blijft `undefined` en wordt door
+  // `upsertDaybookDay` met rust gelaten; een veld dat wél meekwam overschrijft,
+  // ook als het leeg is. Dat onderscheid moet hier overeind blijven: zou de
+  // route een ontbrekend veld als `{}` doorgeven, dan is "niets gezegd" niet
+  // meer van "maak leeg" te onderscheiden en wist de eerste productinvoer het
+  // water van die dag — precies het dataverlies dat de merge moet voorkomen.
+  const items = record.items !== undefined ? sanitizeItems(record.items) : undefined;
+  const momenten = record.meals !== undefined ? sanitizeMeals(record.meals) : undefined;
+  const porties = record.portions !== undefined ? sanitizePortions(record.portions) : undefined;
+  const waterMl = record.water_ml !== undefined ? normaliseerWaterMl(record.water_ml) : undefined;
 
-  const heeftInhoud =
-    items.length > 0 ||
-    Object.keys(momenten).length > 0 ||
-    Object.keys(porties).length > 0 ||
-    (waterMl !== null && waterMl > 0);
+  // Een verzoek moet érgens over gaan: noemt het geen enkele vorm, dan is er
+  // niets te registreren en niets te wissen.
+  //
+  // Een vorm die leeg meekomt telt wél mee. Dat is het verschil tussen "ik zeg
+  // hier niets over" en "maak dit leeg", en het is precies wat er gebeurt als
+  // je je laatste product van de dag verwijdert: de client stuurt `items: []`.
+  // Dat als lege registratie weigeren liet die laatste regel bij een herlaadslag
+  // terugkomen — een 400 op een handeling die de gebruiker bewust deed.
+  const noemtEenVorm =
+    items !== undefined ||
+    momenten !== undefined ||
+    porties !== undefined ||
+    waterMl !== undefined;
 
-  if (!heeftInhoud) {
+  if (!noemtEenVorm) {
     return NextResponse.json(
       { error: "Vul minstens één eetmoment in." },
       { status: 400 },
