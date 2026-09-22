@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   catalogEntry,
   searchCatalog,
@@ -105,6 +105,11 @@ export default function DagboekScherm({
     null,
   );
   const [busy, setBusy] = useState(false);
+  /**
+   * Volgnummer van de laatste schrijving. Alleen het antwoord op het hoogste
+   * nummer mag nog state zetten — zie `bewaar`.
+   */
+  const schrijfTeller = useRef(0);
   const [laden, setLaden] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [zoekMoment, setZoekMoment] = useState<EetmomentId | null>(null);
@@ -236,6 +241,14 @@ export default function DagboekScherm({
 
   const bewaar = useCallback(
     async (volgende: DagboekItem[]) => {
+      // Elke schrijving claimt een nummer; alleen de nieuwste mag het
+      // resultaat nog neerzetten. Twee snelle toevoegingen (op mobiel niet
+      // theoretisch: tik, tik) kunnen elkaar op een trage verbinding inhalen,
+      // en dan zou een laat antwoord op een oud verzoek de nieuwere lijst
+      // terugdraaien zonder dat er iets misging.
+      const nummer = ++schrijfTeller.current;
+      const isNieuwste = () => schrijfTeller.current === nummer;
+
       setBusy(true);
       setError(null);
       try {
@@ -246,6 +259,7 @@ export default function DagboekScherm({
           body: JSON.stringify({ date: datum, items: volgende }),
         });
         if (!response.ok) throw new Error("Kon je dag niet opslaan.");
+        if (!isNieuwste()) return;
 
         const nieuweDag: DagboekDag = {
           date: datum,
@@ -254,6 +268,9 @@ export default function DagboekScherm({
           items: volgende,
         };
         setDagen((vorige) => [nieuweDag, ...vorige.filter((d) => d.date !== datum)]);
+        // De server heeft deze lijst nu; de lokale override mag weg. Laten
+        // staan zou hem bij een volgende dagwissel alsnog kunnen terugzetten.
+        setBewerkt((huidig) => (huidig?.datum === datum ? null : huidig));
 
         trackEvent("nutrition_dagboek_day_saved", {
           surface: "dagboek_tab",
@@ -265,9 +282,15 @@ export default function DagboekScherm({
           surface: "dagboek_tab",
         });
       } catch (cause) {
+        if (!isNieuwste()) return;
+        // Terugdraaien naar wat de server bevestigd heeft. Zonder dit bleef de
+        // optimistische regel staan en zag je een product dat níét is
+        // opgeslagen — bij een herlaadslag was het weg, zonder dat iets dat
+        // aankondigde.
+        setBewerkt((huidig) => (huidig?.datum === datum ? null : huidig));
         setError(cause instanceof Error ? cause.message : "Kon je dag niet opslaan.");
       } finally {
-        setBusy(false);
+        if (isNieuwste()) setBusy(false);
       }
     },
     [datum, gevuldeDatums.length],

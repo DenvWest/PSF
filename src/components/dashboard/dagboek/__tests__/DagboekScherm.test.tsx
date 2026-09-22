@@ -329,3 +329,114 @@ describe("DagboekScherm — favorieten", () => {
     ).toBeTruthy();
   });
 });
+
+/**
+ * De regels zoals ze in de maaltijdtabel staan — niet in het zoekveld.
+ *
+ * De eerste cel draagt naast de productnaam ook het label van het
+ * aantal-invoerveld, vandaar dat aanroepers op de naam matchen met
+ * `startsWith` in plaats van op gelijkheid.
+ */
+function regelsIn(label: string): string[] {
+  return within(maaltijdBlok(label))
+    .queryAllByRole("row")
+    .map((rij) => rij.querySelector("td")?.textContent?.trim() ?? "")
+    .filter(Boolean);
+}
+
+describe("DagboekScherm — opslaan dat misgaat", () => {
+  /**
+   * De optimistische regel verscheen meteen, maar bleef ook staan als de POST
+   * mislukte. Je zag dan een product dat niet was opgeslagen, en bij een
+   * herlaadslag was het weg zonder dat iets dat had aangekondigd.
+   */
+  it("draait de regel terug en meldt het wanneer opslaan mislukt", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+        if (String(input).includes("/api/account/nutrition-daybook")) {
+          if (init?.method === "POST") {
+            return Promise.resolve({ ok: false, json: () => Promise.resolve({}) } as Response);
+          }
+          return jsonResponse({ days: [] });
+        }
+        return jsonResponse({});
+      }),
+    );
+
+    render(<DagboekScherm />);
+
+    const ontbijt = maaltijdBlok("Ontbijt");
+    fireEvent.click(within(ontbijt).getByRole("button", { name: "+ Toevoegen" }));
+    const veld = within(maaltijdBlok("Ontbijt")).getByLabelText(
+      "Zoek een product voor ontbijt",
+    );
+    fireEvent.change(veld, { target: { value: "havermout" } });
+    fireEvent.click(await screen.findByRole("button", { name: /Havermout/ }));
+
+    // De melding komt, en de regel die niet is opgeslagen staat er niet meer.
+    expect((await screen.findByRole("status")).textContent).toContain(
+      "Kon je dag niet opslaan.",
+    );
+    await waitFor(() => {
+      expect(within(maaltijdBlok("Ontbijt")).queryByText("Havermout")).toBeNull();
+    });
+  });
+
+  /**
+   * Twee snelle toevoegingen op een trage verbinding: als het antwoord op de
+   * eerste ná dat op de tweede binnenkomt, mag het de tweede niet terugdraaien.
+   */
+  it("laat een laat antwoord op een oud verzoek de nieuwere lijst niet overschrijven", async () => {
+    const wachtenden: Array<(waarde: Response) => void> = [];
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+        if (String(input).includes("/api/account/nutrition-daybook")) {
+          if (init?.method === "POST") {
+            return new Promise<Response>((resolve) => {
+              wachtenden.push(resolve);
+            });
+          }
+          return jsonResponse({ days: [] });
+        }
+        return jsonResponse({});
+      }),
+    );
+
+    render(<DagboekScherm />);
+
+    const ontbijt = maaltijdBlok("Ontbijt");
+    fireEvent.click(within(ontbijt).getByRole("button", { name: "+ Toevoegen" }));
+    const veld = within(maaltijdBlok("Ontbijt")).getByLabelText(
+      "Zoek een product voor ontbijt",
+    );
+
+    fireEvent.change(veld, { target: { value: "havermout" } });
+    fireEvent.click(await screen.findByRole("button", { name: /Havermout/ }));
+
+    fireEvent.change(veld, { target: { value: "walnoten" } });
+    fireEvent.click(await screen.findByRole("button", { name: /Walnoten/ }));
+
+    await waitFor(() => expect(wachtenden).toHaveLength(2));
+
+    // Het tweede verzoek slaagt, daarna pas het eerste — de omgekeerde
+    // volgorde waarin een trage verbinding ze kan afleveren.
+    wachtenden[1]({ ok: true, json: () => Promise.resolve({}) } as Response);
+    await waitFor(() => expect(regelsIn("Ontbijt").length).toBeGreaterThan(1));
+    wachtenden[0]({ ok: true, json: () => Promise.resolve({}) } as Response);
+
+    // Even naar een andere dag en terug: daarmee leest het scherm niet meer uit
+    // de optimistische override maar uit wat de antwoorden hebben neergezet.
+    // Zou het late antwoord op het oude verzoek hebben mogen schrijven, dan
+    // droeg die dag nu alleen nog havermout.
+    fireEvent.click(screen.getByRole("button", { name: /^do 17/ }));
+    fireEvent.click(screen.getByRole("button", { name: /^vr 18/ }));
+
+    await waitFor(() => {
+      expect(regelsIn("Ontbijt").some((r) => r.startsWith("Havermout"))).toBe(true);
+    });
+    expect(regelsIn("Ontbijt").some((r) => r.startsWith("Walnoten"))).toBe(true);
+  });
+});
