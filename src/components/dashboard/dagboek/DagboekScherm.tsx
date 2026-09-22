@@ -327,7 +327,10 @@ export default function DagboekScherm({
       surface: "dagboek_tab",
     });
     trackEvent("nutrition_dagboek_portie_bevestigd", { nutrient, bron });
-    setScherm({ scherm: "detail", nutrient });
+    // Terug naar de zoeklijst, niet naar het detailscherm: een maaltijd is
+    // zelden één product, en het volgende staat meestal in dezelfde lijst.
+    // Wie klaar is, gebruikt de terugknop — die staat er nog.
+    setScherm({ scherm: "zoek", nutrient, moment });
   }
 
   /** De ster-knop: optimistisch bijwerken, dan pas de server-call. */
@@ -379,50 +382,54 @@ export default function DagboekScherm({
     month: "long",
   });
 
-  if (scherm.scherm === "zoek") {
+  // Zoeken en portie-invoer delen één scherm: de portielaag ligt óver de
+  // zoeklijst in plaats van ernaast. Een maaltijd is zelden één product, en zo
+  // is het tweede product één tik verder dan het eerste in plaats van de hele
+  // route terug.
+  if (scherm.scherm === "zoek" || scherm.scherm === "portie") {
+    const moment = scherm.moment;
+    const nutrient = scherm.nutrient;
     return (
-      <DagboekCatalogusZoek
-        nutrient={scherm.nutrient}
-        eerderGebruikt={recenteItems}
-        favorieten={favorieten}
-        moment={scherm.moment}
-        onMomentChange={(moment) => setScherm({ ...scherm, moment })}
-        onTerug={() => setScherm({ scherm: "detail", nutrient: scherm.nutrient })}
-        onKies={(bron, key) => {
-          emitAccountClientEvent("nutrition.dagboek_zoek_item_gekozen", {
-            nutrient: scherm.nutrient,
-            bron,
-            surface: "dagboek_tab",
-          });
-          trackEvent("nutrition_dagboek_zoek_item_gekozen", { nutrient: scherm.nutrient, bron });
-          setScherm({ scherm: "portie", nutrient: scherm.nutrient, bron, key, moment: scherm.moment });
-        }}
-        onBewaarFavoriet={(bron, key) => void bewaarFavoriet(bron, key)}
-        onVerwijderFavoriet={(bron, key) => void verwijderFavoriet(bron, key)}
-        busyFavoriet={busyFavoriet}
-      />
-    );
-  }
+      <>
+        <DagboekCatalogusZoek
+          nutrient={nutrient}
+          eerderGebruikt={recenteItems}
+          favorieten={favorieten}
+          moment={moment}
+          onMomentChange={(volgende) => setScherm({ ...scherm, moment: volgende })}
+          onTerug={() => setScherm({ scherm: "detail", nutrient })}
+          onKies={(bron, key) => {
+            emitAccountClientEvent("nutrition.dagboek_zoek_item_gekozen", {
+              nutrient,
+              bron,
+              surface: "dagboek_tab",
+            });
+            trackEvent("nutrition_dagboek_zoek_item_gekozen", { nutrient, bron });
+            setScherm({ scherm: "portie", nutrient, bron, key, moment });
+          }}
+          onBewaarFavoriet={(bron, key) => void bewaarFavoriet(bron, key)}
+          onVerwijderFavoriet={(bron, key) => void verwijderFavoriet(bron, key)}
+          busyFavoriet={busyFavoriet}
+        />
 
-  if (scherm.scherm === "portie") {
-    return (
-      <DagboekPortieInvoer
-        bron={scherm.bron}
-        itemKey={scherm.key}
-        nutrient={scherm.nutrient}
-        moment={scherm.moment}
-        favorieten={favorieten}
-        busy={busy}
-        busyFavoriet={busyFavoriet}
-        onBewaarFavoriet={(bron, key) => void bewaarFavoriet(bron, key)}
-        onVerwijderFavoriet={(bron, key) => void verwijderFavoriet(bron, key)}
-        onTerug={() =>
-          setScherm({ scherm: "zoek", nutrient: scherm.nutrient, moment: scherm.moment })
-        }
-        onBevestig={(moment, grams) =>
-          voegNutrientItemToe(scherm.nutrient, scherm.bron, scherm.key, moment, grams)
-        }
-      />
+        {scherm.scherm === "portie" ? (
+          <DagboekPortieInvoer
+            bron={scherm.bron}
+            itemKey={scherm.key}
+            nutrient={nutrient}
+            moment={moment}
+            favorieten={favorieten}
+            busy={busy}
+            busyFavoriet={busyFavoriet}
+            onBewaarFavoriet={(bron, key) => void bewaarFavoriet(bron, key)}
+            onVerwijderFavoriet={(bron, key) => void verwijderFavoriet(bron, key)}
+            onTerug={() => setScherm({ scherm: "zoek", nutrient, moment })}
+            onBevestig={(gekozenMoment, grams) =>
+              voegNutrientItemToe(nutrient, scherm.bron, scherm.key, gekozenMoment, grams)
+            }
+          />
+        ) : null}
+      </>
     );
   }
 

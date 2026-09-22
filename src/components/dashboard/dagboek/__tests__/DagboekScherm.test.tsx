@@ -202,8 +202,8 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
       await screen.findByRole("button", { name: /^Magnesiumcitraat/ }),
     );
 
-    // Portie-invoerscherm: bevestigen schrijft het item weg en brengt je
-    // terug naar het detailscherm van dezelfde stof.
+    // De portielaag komt over de zoeklijst heen; bevestigen schrijft het item
+    // weg en laat je in de lijst achter voor het volgende product.
     const bevestig = await screen.findByRole("button", { name: "Toevoegen" });
     fireEvent.click(bevestig);
 
@@ -224,21 +224,27 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
       expect(body.items[0].key).toBe("magnesiumcitraat-capsule");
     });
 
+    // Terug in de zoeklijst, klaar voor het volgende product — niet terug naar
+    // het detailscherm, want een maaltijd is zelden één product.
     expect(
-      await screen.findByRole("heading", { name: "Magnesium" }),
+      await screen.findByLabelText("Zoek een voedingsmiddel of supplement"),
     ).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog")).toBeNull();
+    });
   });
 
-  it("neemt het eetmoment dat je op het zoekscherm koos mee naar het portiescherm", async () => {
+  it("neemt het eetmoment dat je op het zoekscherm koos mee naar wat je opslaat", async () => {
     render(<DagboekScherm />);
 
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
 
-    // De dropdown staat bovenaan het zoekscherm, vóór je iets kiest.
-    const momentVeld = await screen.findByLabelText("Eetmoment");
-    fireEvent.change(momentVeld, { target: { value: "lunch" } });
+    // Het moment kies je op het zoekscherm, één keer voor alles wat je in deze
+    // sessie toevoegt. Chips in plaats van een select.
+    const momentGroep = await screen.findByRole("group", { name: "Eetmoment" });
+    fireEvent.click(within(momentGroep).getByRole("button", { name: "Lunch" }));
 
     fireEvent.change(
       screen.getByLabelText("Zoek een voedingsmiddel of supplement"),
@@ -248,13 +254,11 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
       await screen.findByRole("button", { name: /^Magnesiumcitraat/ }),
     );
 
-    // Het portiescherm start op hetzelfde moment, niet op de oude default.
-    const momentOpPortiescherm = (await screen.findByLabelText(
-      "Eetmoment",
-    )) as HTMLSelectElement;
-    expect(momentOpPortiescherm.value).toBe("lunch");
+    // De portielaag herhaalt de keuze niet, maar bevestigt hem wel in woorden.
+    const laag = await screen.findByRole("dialog");
+    expect(within(laag).getByText(/naar lunch/)).toBeTruthy();
 
-    fireEvent.click(await screen.findByRole("button", { name: "Toevoegen" }));
+    fireEvent.click(within(laag).getByRole("button", { name: "Toevoegen" }));
 
     await waitFor(() => {
       const posts = vi.mocked(fetch).mock.calls.filter(
@@ -438,5 +442,70 @@ describe("DagboekScherm — opslaan dat misgaat", () => {
       expect(regelsIn("Ontbijt").some((r) => r.startsWith("Havermout"))).toBe(true);
     });
     expect(regelsIn("Ontbijt").some((r) => r.startsWith("Walnoten"))).toBe(true);
+  });
+});
+
+describe("DagboekScherm — portielaag over de zoeklijst", () => {
+  /** Opent de portielaag voor het eerste "eerder gebruikt"-product. */
+  async function openPortielaag() {
+    render(<DagboekScherm />);
+    fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    await screen.findByRole("heading", { name: "Magnesium" });
+    fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    );
+    fireEvent.change(zoekveld, { target: { value: "havermout" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    return screen.findByRole("dialog");
+  }
+
+  /**
+   * De winst van de laag: de lijst blijft eronder staan, dus het volgende
+   * product is één tik verder in plaats van de hele route terug.
+   */
+  it("laat de zoeklijst staan terwijl de laag open is", async () => {
+    await openPortielaag();
+
+    expect(
+      screen.getByLabelText("Zoek een voedingsmiddel of supplement"),
+    ).toBeTruthy();
+  });
+
+  it("zet de hoeveelheid met één tik op een gangbare portie", async () => {
+    const laag = await openPortielaag();
+
+    const gram = within(laag).getByLabelText("Gram") as HTMLInputElement;
+    const start = gram.value;
+
+    // Elke portie uit de catalogus is een knop; de tweede wijkt af van de eerste.
+    const porties = within(laag)
+      .getAllByRole("button")
+      .filter((knop) => /gram$/.test(knop.getAttribute("aria-label") ?? ""));
+    expect(porties.length).toBeGreaterThan(0);
+
+    const andere = porties.find(
+      (knop) => !(knop.getAttribute("aria-label") ?? "").includes(` ${start} gram`),
+    );
+    if (andere) {
+      fireEvent.click(andere);
+      expect(gram.value).not.toBe(start);
+    }
+  });
+
+  it("sluit de laag met Escape zonder iets op te slaan", async () => {
+    await openPortielaag();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog")).toBeNull();
+    });
+    const posts = vi.mocked(fetch).mock.calls.filter(
+      ([input, init]) =>
+        String(input).includes("/api/account/nutrition-daybook") &&
+        Boolean(init && typeof init === "object" && "method" in init && init.method === "POST"),
+    );
+    expect(posts).toHaveLength(0);
   });
 });

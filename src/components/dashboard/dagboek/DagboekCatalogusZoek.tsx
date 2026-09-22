@@ -154,7 +154,7 @@ export default function DagboekCatalogusZoek({
         : "Nog geen supplementen bewaard of gebruikt.";
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2.5">
       <header className="flex items-center gap-2.5">
         <button
           type="button"
@@ -164,30 +164,13 @@ export default function DagboekCatalogusZoek({
         >
           <Icons.ChevronLeft s={18} />
         </button>
-        <h2 className="m-0 font-serif text-[17px] font-normal text-[#F1EFE8]">
+        <h2 className="m-0 min-w-0 flex-1 truncate font-serif text-[16px] font-normal text-[#F1EFE8]">
           Voeg toe bij {nutrientReferences[nutrient].label.toLowerCase()}
         </h2>
       </header>
 
       <section className="overflow-hidden rounded-2xl border border-white/10">
-        <div className="flex flex-col gap-3 border-b border-white/10 bg-white/[0.03] px-4 py-3.5">
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
-              Eetmoment
-            </span>
-            <select
-              value={moment}
-              onChange={(event) => onMomentChange(event.target.value as EetmomentId)}
-              className="rounded-lg border border-white/15 bg-black/20 px-2.5 py-2 text-[13px] text-[#F1EFE8] outline-none transition-colors focus:border-white/40"
-            >
-              {EETMOMENTEN.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
+        <div className="flex flex-col gap-2.5 border-b border-white/10 bg-white/[0.03] px-3 py-3">
           <div className="relative">
             <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#6F8177]">
               <Icons.Search s={15} />
@@ -199,8 +182,39 @@ export default function DagboekCatalogusZoek({
               onChange={(event) => setZoek(event.target.value)}
               placeholder="Zoek een voedingsmiddel of supplement…"
               aria-label="Zoek een voedingsmiddel of supplement"
-              className="w-full rounded-xl border border-white/15 bg-black/20 py-2.5 pl-9 pr-3 text-[13px] text-[#F1EFE8] outline-none transition-colors placeholder:text-[#6F8177] focus:border-white/40"
+              className="w-full rounded-xl border border-white/15 bg-black/20 py-2.5 pl-9 pr-3 text-[16px] sm:text-[13px] text-[#F1EFE8] outline-none transition-colors placeholder:text-[#6F8177] focus:border-white/40"
             />
+          </div>
+
+          {/*
+            Het eetmoment staat hier en niet meer op de portielaag: je kiest het
+            één keer voor alles wat je in deze sessie toevoegt. Chips in plaats
+            van een select, want vier opties passen op één regel en een select
+            kost een extra tik plus een systeemmenu over de lijst heen.
+          */}
+          <div
+            role="group"
+            aria-label="Eetmoment"
+            className="flex flex-wrap gap-1.5"
+          >
+            {EETMOMENTEN.map((m) => {
+              const actief = m.id === moment;
+              return (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => onMomentChange(m.id)}
+                  aria-pressed={actief}
+                  className={`min-h-[32px] cursor-pointer rounded-lg border px-2.5 text-[12px] transition-colors ${
+                    actief
+                      ? "border-[#5A8F6A] bg-[#5A8F6A]/20 font-semibold text-[#9CC5A9]"
+                      : "border-white/10 bg-white/[0.02] text-[#7E8C82] hover:border-white/25 hover:text-[#9FB0A6]"
+                  }`}
+                >
+                  {m.label}
+                </button>
+              );
+            })}
           </div>
 
           <nav
@@ -238,7 +252,7 @@ export default function DagboekCatalogusZoek({
           aria-labelledby={`dagboek-zoek-tab-${tab}`}
         >
           {toontEerderGebruikt && resultaten.length > 0 ? (
-            <p className="m-0 border-b border-white/10 px-4 py-1.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#6F8177]">
+            <p className="m-0 border-b border-white/10 px-3 py-1.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#6F8177]">
               Eerder gebruikt
             </p>
           ) : null}
@@ -259,7 +273,7 @@ export default function DagboekCatalogusZoek({
                     <button
                       type="button"
                       onClick={() => onKies(resultaat.bron, resultaat.entry.key)}
-                      className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors hover:bg-white/[0.06]"
+                      className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
                     >
                       <span className="flex min-w-0 items-center gap-2">
                         {resultaat.bron === "voeding" ? (
