@@ -4,6 +4,7 @@ import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 import { isEetmomentId, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { indexedFood, NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
+import { BASE_UNIT, toBase, type NutrientUnit } from "@/lib/nutrition-units";
 
 /**
  * Producten en gerechten op het 2+2-dagboek — de invoervorm die weet wélk
@@ -147,17 +148,28 @@ export function portiesUitItems(
 /** Wat één nutriënt uit de geregistreerde items oplevert. */
 export type NutrientOndergrens = {
   nutrient: NutrientId;
-  /** Som over de items die een gehalte hadden, in de eenheid van het nutriënt. */
+  /**
+   * Som over de items die een gehalte hadden, in {@link unit}.
+   *
+   * Elk bedrag wordt vóór het optellen naar de basiseenheid van de stof
+   * gerekend (`nutrition-units.ts`), zodat mg en µg nooit bij elkaar opgeteld
+   * kunnen worden.
+   */
   minstens: number;
-  unit: "g" | "mg" | "µg";
+  /** Altijd `BASE_UNIT[nutrient]` — vast per stof, niet afhankelijk van de items. */
+  unit: NutrientUnit;
   /** Hoeveel items aan dit bedrag bijdroegen. */
   bronnen: number;
   /**
-   * Hoeveel geregistreerde items géén gehalte voor deze stof hadden.
+   * Hoeveel geregistreerde voedingsitems géén gehalte voor deze stof hadden.
    *
    * Dit getal hoort in beeld te blijven: het is het verschil tussen "je at
    * weinig magnesium" en "we weten van drie dingen die je at niet hoeveel
    * magnesium erin zit".
+   *
+   * Telt alleen voeding. Een supplement dat een ándere stof draagt, zwijgt
+   * niet over deze stof — het gaat er niet over, en het als zwijgend tellen
+   * zou de zin erboven onwaar maken.
    */
   zonderGehalte: number;
 };
@@ -166,7 +178,7 @@ export type NutrientOndergrens = {
 export function bedragVanItem(
   item: DagboekItem,
   nutrient: NutrientId,
-): { value: number; unit: "g" | "mg" | "µg" } | null {
+): { value: number; unit: NutrientUnit } | null {
   if (item.bron === "supplement") {
     const entry = supplementCatalogEntry(item.key);
     if (!entry || entry.nutrient !== nutrient) return null;
@@ -188,7 +200,8 @@ export function bedragVanItem(
 }
 
 /**
- * De milligram-ondergrens per nutriënt over één dag.
+ * De ondergrens per nutriënt over één dag, elk in zijn eigen basiseenheid
+ * (`BASE_UNIT`): eiwit in g, magnesium/zink/omega-3 in mg, vitamine D in µg.
  *
  * Levert alleen de nutriënten waarvoor ten minste één item een gehalte had.
  * Een stof zonder enkele bron komt niet als nul terug maar helemaal niet —
@@ -202,36 +215,74 @@ export function bedragVanItem(
 export function nutrientenUitItems(
   items: readonly DagboekItem[],
 ): NutrientOndergrens[] {
-  const result: NutrientOndergrens[] = [];
+  return NUTRIENT_ORDER.map((nutrient) => telOp(items, nutrient)).filter(
+    (stof): stof is NutrientOndergrensGesplitst => stof !== null,
+  );
+}
 
-  for (const nutrient of NUTRIENT_ORDER) {
-    let minstens = 0;
-    let bronnen = 0;
-    let zonderGehalte = 0;
-    let unit: "g" | "mg" | "µg" | null = null;
+/**
+ * De som voor één stof, met de twee delen waaruit hij bestaat.
+ *
+ * Eén doorloop over de items voor allebei: {@link nutrientenGesplitstUitItems}
+ * liep vroeger per stof nog een tweede keer door de lijst om hetzelfde nog
+ * eens uit te rekenen, waardoor de delen door hun eigen afronding minimaal
+ * van het totaal konden afwijken. Nu komen som en delen uit dezelfde optelling
+ * en klopt `uitVoeding + uitSupplement === minstens` per constructie.
+ */
+function telOp(
+  items: readonly DagboekItem[],
+  nutrient: NutrientId,
+): NutrientOndergrensGesplitst | null {
+  const unit = BASE_UNIT[nutrient];
+  let uitVoeding = 0;
+  let uitSupplement = 0;
+  let bronnen = 0;
+  let zonderGehalte = 0;
 
-    for (const item of items) {
-      const bedrag = bedragVanItem(item, nutrient);
-      if (!bedrag) {
-        zonderGehalte += 1;
-        continue;
-      }
-      minstens += bedrag.value;
-      bronnen += 1;
-      unit = bedrag.unit;
+  for (const item of items) {
+    const bedrag = bedragVanItem(item, nutrient);
+    if (!bedrag) {
+      // Een supplement dat een ándere stof draagt, zwijgt hier niet — het
+      // gaat gewoon niet over deze stof. Drie magnesiumcapsules mogen niet als
+      // "drie producten waarvan we het eiwitgehalte niet kennen" gaan tellen:
+      // dat getal draagt in de UI de zin "van sommige producten kennen we het
+      // gehalte nog niet", en die slaat op voeding met een open `bron`.
+      if (item.bron !== "supplement") zonderGehalte += 1;
+      continue;
     }
 
-    if (bronnen === 0 || !unit) continue;
-    result.push({
-      nutrient,
-      minstens: Math.round(minstens * 10) / 10,
-      unit,
-      bronnen,
-      zonderGehalte,
-    });
+    // Optellen mag pas als beide bedragen in dezelfde eenheid staan. Een
+    // eenheid die niet naar de basis te rekenen is, telt niet mee als nul maar
+    // als een gat — zie nutrition-units.ts.
+    const inBasis = toBase(bedrag.value, bedrag.unit, nutrient);
+    if (inBasis === null) {
+      if (item.bron !== "supplement") zonderGehalte += 1;
+      continue;
+    }
+
+    if (item.bron === "supplement") uitSupplement += inBasis;
+    else uitVoeding += inBasis;
+    bronnen += 1;
   }
 
-  return result;
+  if (bronnen === 0) return null;
+
+  // Pas hier afronden, niet tijdens het optellen: bij vitamine D is 0,1 µg een
+  // significante stap op een dagbehoefte van 10 µg, en een afronding per item
+  // stapelt over een dag met veel regels.
+  return {
+    nutrient,
+    minstens: afgerond(uitVoeding + uitSupplement),
+    unit,
+    bronnen,
+    zonderGehalte,
+    uitVoeding: afgerond(uitVoeding),
+    uitSupplement: afgerond(uitSupplement),
+  };
+}
+
+function afgerond(waarde: number): number {
+  return Math.round(waarde * 10) / 10;
 }
 
 /** `NutrientOndergrens`, uitgesplitst naar wat er uit voeding kwam en wat uit supplementen. */
@@ -252,21 +303,9 @@ export type NutrientOndergrensGesplitst = NutrientOndergrens & {
 export function nutrientenGesplitstUitItems(
   items: readonly DagboekItem[],
 ): NutrientOndergrensGesplitst[] {
-  return nutrientenUitItems(items).map((stof) => {
-    let uitVoeding = 0;
-    let uitSupplement = 0;
-    for (const item of items) {
-      const bedrag = bedragVanItem(item, stof.nutrient);
-      if (!bedrag) continue;
-      if (item.bron === "supplement") uitSupplement += bedrag.value;
-      else uitVoeding += bedrag.value;
-    }
-    return {
-      ...stof,
-      uitVoeding: Math.round(uitVoeding * 10) / 10,
-      uitSupplement: Math.round(uitSupplement * 10) / 10,
-    };
-  });
+  return NUTRIENT_ORDER.map((nutrient) => telOp(items, nutrient)).filter(
+    (stof): stof is NutrientOndergrensGesplitst => stof !== null,
+  );
 }
 
 /** De items van één eetmoment, in de volgorde waarin ze zijn ingevoerd. */

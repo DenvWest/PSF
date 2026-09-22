@@ -185,6 +185,70 @@ describe("nutrientenUitItems — de ondergrens-regel", () => {
 
     expect(gemengdMagnesium).toBeCloseTo(voedingMagnesium + 200, 1);
   });
+
+  /**
+   * Regressie op de zwijg-teller. Een magnesiumcapsule zegt niets over eiwit —
+   * dat is iets anders dan "van dit product kennen we het eiwitgehalte niet",
+   * en precies die zin hangt in de UI aan dit getal.
+   */
+  it("telt een supplement van een andere stof niet als item zonder gehalte", () => {
+    const metCapsule = nutrientenUitItems([
+      { moment: "ontbijt", bron: "voeding", key: "havermout", grams: 60 },
+      { moment: "ontbijt", bron: "supplement", key: "magnesiumcitraat-capsule", grams: 1 },
+    ]);
+    const eiwit = metCapsule.find((n) => n.nutrient === "protein");
+
+    expect(eiwit).toBeDefined();
+    expect(eiwit!.zonderGehalte).toBe(0);
+  });
+
+  it("blijft voedingsitems zonder gehalte wél tellen", () => {
+    const gemengd = nutrientenUitItems([
+      { moment: "ontbijt", bron: "voeding", key: "havermout", grams: 60 },
+      { moment: "ontbijt", bron: "voeding", key: "appel", grams: 130 },
+      { moment: "ontbijt", bron: "supplement", key: "magnesiumcitraat-capsule", grams: 1 },
+    ]);
+    const magnesium = gemengd.find((n) => n.nutrient === "magnesium")!;
+
+    // Twee voedingsitems: één met gehalte, één zonder. De capsule telt mee als
+    // bron, maar nooit als zwijger.
+    expect(magnesium.zonderGehalte).toBe(1);
+    expect(magnesium.bronnen).toBe(2);
+  });
+
+  it("zet de eenheid vast per stof, niet op die van het laatste item", () => {
+    const alleenSupplement = nutrientenUitItems([
+      { moment: "ontbijt", bron: "supplement", key: "wei-eiwitpoeder-schep", grams: 1 },
+    ]);
+    expect(alleenSupplement.find((n) => n.nutrient === "protein")!.unit).toBe("g");
+
+    const alleenVoeding = nutrientenUitItems([
+      { moment: "ontbijt", bron: "voeding", key: "havermout", grams: 60 },
+    ]);
+    expect(alleenVoeding.find((n) => n.nutrient === "magnesium")!.unit).toBe("mg");
+  });
+
+  /**
+   * Afronden gebeurde vroeger twee keer: per portie en nog eens over de som.
+   * Over een dag met veel regels stapelt dat. Nu wordt er één keer afgerond,
+   * aan het eind.
+   */
+  it("rondt pas aan het eind af, niet per item", () => {
+    const veelKleineRegels = Array.from({ length: 10 }, () => ({
+      moment: "ontbijt" as const,
+      bron: "voeding" as const,
+      key: "havermout",
+      grams: 7,
+    }));
+
+    const gestapeld = nutrientenUitItems(veelKleineRegels)
+      .find((n) => n.nutrient === "magnesium")!.minstens;
+    const inEenKeer = nutrientenUitItems([
+      { moment: "ontbijt", bron: "voeding", key: "havermout", grams: 70 },
+    ]).find((n) => n.nutrient === "magnesium")!.minstens;
+
+    expect(gestapeld).toBeCloseTo(inEenKeer, 1);
+  });
 });
 
 describe("nutrientenGesplitstUitItems", () => {
@@ -199,6 +263,17 @@ describe("nutrientenGesplitstUitItems", () => {
     expect(magnesium!.uitSupplement).toBe(200);
     expect(magnesium!.uitVoeding).toBeGreaterThan(0);
     expect(magnesium!.uitVoeding + magnesium!.uitSupplement).toBeCloseTo(magnesium!.minstens, 1);
+  });
+
+  it("laat de delen exact tot het totaal optellen, zonder afrondingsverschil", () => {
+    const gesplitst = nutrientenGesplitstUitItems([
+      { moment: "ontbijt", bron: "voeding", key: "havermout", grams: 63 },
+      { moment: "lunch", bron: "voeding", key: "havermout", grams: 37 },
+      { moment: "ontbijt", bron: "supplement", key: "magnesiumcitraat-capsule", grams: 1 },
+    ]);
+    const magnesium = gesplitst.find((n) => n.nutrient === "magnesium")!;
+
+    expect(magnesium.uitVoeding + magnesium.uitSupplement).toBe(magnesium.minstens);
   });
 
   it("zet uitSupplement op 0 bij een dag zonder supplementen", () => {
