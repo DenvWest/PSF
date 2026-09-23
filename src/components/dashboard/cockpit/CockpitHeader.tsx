@@ -4,6 +4,7 @@ import type { ComponentType, CSSProperties, ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import Wordmark from "@/components/app/Wordmark";
 import CockpitProfileMenu from "@/components/dashboard/cockpit/CockpitProfileMenu";
+import CockpitMoreMenu from "@/components/dashboard/cockpit/CockpitMoreMenu";
 import { DASHBOARD_TABS } from "@/data/dashboard";
 import type { CockpitContextPresentation } from "@/lib/cockpit-context-layout";
 import type { DashboardTabId } from "@/types/dashboard";
@@ -190,6 +191,7 @@ export default function CockpitHeader({
               </button>
             );
           })}
+          <CockpitMoreMenu variant="header" />
         </div>
 
         <div className="hidden items-center gap-2 sm:flex">

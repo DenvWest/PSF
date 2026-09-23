@@ -2,6 +2,7 @@
 
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
+import CockpitMoreMenu from "@/components/dashboard/cockpit/CockpitMoreMenu";
 import { DASHBOARD_TABS } from "@/data/dashboard";
 import type { DashboardTabId } from "@/types/dashboard";
 
@@ -45,6 +46,7 @@ export default function CockpitBottomNav({
             </button>
           );
         })}
+        <CockpitMoreMenu variant="bottom" />
       </div>
     </nav>
   );
