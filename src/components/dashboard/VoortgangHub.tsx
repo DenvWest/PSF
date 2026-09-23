@@ -26,17 +26,13 @@ type VoortgangHubProps = {
    */
   hermetingSlot: ReactNode;
   onScreenChange: (screen: VoortgangScreen) => void;
-  onGoAgenda: () => void;
 };
 
 function VoortgangHubInner({
-  model,
-  data,
   tab,
   screen,
   hermetingSlot,
   onScreenChange,
-  onGoAgenda,
 }: Omit<VoortgangHubProps, "onPrefUpdated">) {
   useEffect(() => {
     if (tab !== "voortgang") {
@@ -61,12 +57,7 @@ function VoortgangHubInner({
   } else {
     content = (
       <section aria-label="Je patroon">
-        <VoortgangHubScroll
-          model={model!}
-          data={data}
-          onGoAgenda={onGoAgenda}
-          onGoHermeting={() => onScreenChange("hermeting")}
-        />
+        <VoortgangHubScroll />
       </section>
     );
   }

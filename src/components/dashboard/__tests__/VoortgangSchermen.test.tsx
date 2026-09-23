@@ -27,7 +27,6 @@ vi.mock("@/lib/clarity", () => ({ clarityTag: vi.fn() }));
 const model = { priority: { id: "voeding", label: "Voeding" } } as DashboardModel;
 
 const onScreenChange = vi.fn();
-const onGoAgenda = vi.fn();
 
 function renderHub(screenId: VoortgangScreen) {
   return render(
@@ -37,14 +36,12 @@ function renderHub(screenId: VoortgangScreen) {
       screen={screenId}
       hermetingSlot={<div data-testid="hermeting">hermeting</div>}
       onScreenChange={onScreenChange}
-      onGoAgenda={onGoAgenda}
     />,
   );
 }
 
 beforeEach(() => {
   onScreenChange.mockClear();
-  onGoAgenda.mockClear();
 });
 
 describe("Voortgang-schermen na de domeinsnoei van 23 september", () => {

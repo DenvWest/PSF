@@ -89,7 +89,10 @@ import {
   SIGNALS,
   TAB_SECTIONS,
 } from "@/data/dashboard";
-import { perfectSupplementMeasurementConfig } from "@/data/measurement-config";
+import {
+  DOMAIN_KEY_TO_PILLAR,
+  perfectSupplementMeasurementConfig,
+} from "@/data/measurement-config";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
@@ -123,6 +126,7 @@ import {
   type ContextRailToolId,
   type VoortgangRailItemId,
 } from "@/lib/context-rail";
+import { isZichtbaarDomein } from "@/lib/zichtbare-domeinen";
 import { VoortgangFavoritesProvider } from "@/lib/voortgang-favorites-context";
 import {
   DomainLadderFocusProvider,
@@ -1491,12 +1495,27 @@ const RetestSection = ({
     const { vitality, method, perDomain, coupling, movedPriority } =
       deltaReport;
     const forwardPillar = model.priority;
-    const baselinePriorityLabel = movedPriority
-      ? (domainConfigById.get(movedPriority.from)?.label ?? movedPriority.from)
+    // `movedPriority` komt uit de scoring-engine (`delta-report.ts`) en loopt
+    // ongefilterd over alle domeinen — ook de verborgen. "Verschoven van
+    // stress naar verbinding" leest als een aanbeveling voor twee domeinen
+    // die nergens meer heen gaan, dus de zin toont alleen als bron én
+    // bestemming allebei zichtbaar zijn (in de praktijk: nooit, zolang
+    // voeding het enige zichtbare domein is).
+    const visibleMovedPriority =
+      movedPriority &&
+      isZichtbaarDomein(DOMAIN_KEY_TO_PILLAR[movedPriority.from]) &&
+      isZichtbaarDomein(DOMAIN_KEY_TO_PILLAR[movedPriority.to])
+        ? movedPriority
+        : null;
+    const baselinePriorityLabel = visibleMovedPriority
+      ? (domainConfigById.get(visibleMovedPriority.from)?.label ?? visibleMovedPriority.from)
       : null;
-    const currentPriorityLabel = movedPriority
-      ? (domainConfigById.get(movedPriority.to)?.label ?? movedPriority.to)
+    const currentPriorityLabel = visibleMovedPriority
+      ? (domainConfigById.get(visibleMovedPriority.to)?.label ?? visibleMovedPriority.to)
       : forwardPillar.label;
+    const visiblePerDomain = perDomain.filter((row) =>
+      isZichtbaarDomein(DOMAIN_KEY_TO_PILLAR[row.domainId]),
+    );
     const forwardHabitKernel = buildHabitScoreKernel({
       vitality: model.vitality,
       priorityId: forwardPillar.id,
@@ -1588,7 +1607,7 @@ const RetestSection = ({
                 </p>
               )}
             <div style={{ display: "flex", flexDirection: "column" }}>
-              {perDomain.map((row, i) => {
+              {visiblePerDomain.map((row, i) => {
                 const domain = domainConfigById.get(row.domainId);
                 return (
                   <div
@@ -1721,7 +1740,7 @@ const RetestSection = ({
                   marginBottom: 8,
                 }}
               >
-                {movedPriority
+                {visibleMovedPriority
                   ? `Je prioriteit is verschoven van ${baselinePriorityLabel?.toLowerCase()} naar ${currentPriorityLabel.toLowerCase()}.`
                   : `Je vertrekpunt blijft ${forwardPillar.label.toLowerCase()}.`}
               </div>
@@ -1777,7 +1796,7 @@ const RetestSection = ({
 
   const prevScores = model.prevScores;
   const prevPriority = derivePriority(prevScores)[0];
-  const rows = [...PILLARS]
+  const rows = PILLARS.filter((pillar) => isZichtbaarDomein(pillar.id))
     .map((pillar) => ({
       pillar,
       now: model.scores[pillar.id],
@@ -2778,7 +2797,6 @@ const SECTION_RENDERERS: Record<
           )
         }
         onScreenChange={props.onVoortgangScreenChange}
-        onGoAgenda={() => props.onGoAgenda()}
       />
     ),
   keuze: (props) =>

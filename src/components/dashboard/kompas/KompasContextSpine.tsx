@@ -452,7 +452,7 @@ export default function KompasContextSpine({
             onClick={handleRemeasure}
             className="mt-3 inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-lg border-none bg-[#5A8F6A] px-3 text-[13px] font-semibold text-[#0f1c10]"
           >
-            Doe de hermeting <Icons.ArrowRight s={13} />
+            Meet je voeding opnieuw <Icons.ArrowRight s={13} />
           </button>
         ) : (
           <button
@@ -460,7 +460,7 @@ export default function KompasContextSpine({
             onClick={handleRemeasure}
             className="mt-2 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[12.5px] font-semibold text-[#C8956C]"
           >
-            Alvast je hermeting doen <Icons.ArrowRight s={12} />
+            Alvast je voeding opnieuw meten <Icons.ArrowRight s={12} />
           </button>
         )
       ) : null}
