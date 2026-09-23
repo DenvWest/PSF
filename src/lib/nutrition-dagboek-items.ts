@@ -200,6 +200,43 @@ export function bedragVanItem(
 }
 
 /**
+ * Wat een catalogusregel op zijn eigen standaardportie levert — zonder dat er
+ * al een `DagboekItem` gelogd is.
+ *
+ * Zelfde formule als {@link bedragVanItem}, maar met `porties[0]` in plaats
+ * van `item.grams`: bedoeld voor de productvergelijking, waar je meerdere
+ * catalogusregels naast elkaar wilt zien op hún realistische portie ("1
+ * plakje zalm", "1 schep eiwitpoeder") in plaats van per 100 g.
+ */
+export function bedragVoorStandaardPortie(
+  bron: DagboekItemBron,
+  key: string,
+  nutrient: NutrientId,
+): { value: number; unit: NutrientUnit; portieLabel: string } | null {
+  if (bron === "supplement") {
+    const entry = supplementCatalogEntry(key);
+    if (!entry || entry.nutrient !== nutrient) return null;
+    const portie = entry.porties[0];
+    if (!portie) return null;
+    return { value: portie.amount, unit: portie.unit, portieLabel: portie.labelNl };
+  }
+
+  const entry = catalogEntry(key);
+  const portie = entry?.porties[0];
+  const bronKey = entry?.bron;
+  const rij = bronKey
+    ? indexedFood(bronKey)?.nutrients.find((n) => n.nutrient === nutrient)
+    : undefined;
+  const per100g = rij?.source.nutrientValue;
+  if (!per100g || !portie) return null;
+  return {
+    value: (per100g.value * portie.grams) / 100,
+    unit: per100g.unit,
+    portieLabel: portie.labelNl,
+  };
+}
+
+/**
  * De ondergrens per nutriënt over één dag, elk in zijn eigen basiseenheid
  * (`BASE_UNIT`): eiwit in g, magnesium/zink/omega-3 in mg, vitamine D in µg.
  *

@@ -29,6 +29,11 @@ import DagboekNutrientBalken from "@/components/dashboard/dagboek/DagboekNutrien
 import DagboekNutrientDetail from "@/components/dashboard/dagboek/DagboekNutrientDetail";
 import DagboekPortieInvoer from "@/components/dashboard/dagboek/DagboekPortieInvoer";
 import DagboekProductDetail from "@/components/dashboard/dagboek/DagboekProductDetail";
+import DagboekVergelijkTabel from "@/components/dashboard/dagboek/DagboekVergelijkTabel";
+import DagboekVergelijkZoek, {
+  MAX_VERGELIJK,
+  type VergelijkResultaat,
+} from "@/components/dashboard/dagboek/DagboekVergelijkZoek";
 import DagboekWeekstrip, {
   meetdagenUit,
   weekRond,
@@ -56,7 +61,9 @@ type NutrientScherm =
       key: string;
       moment: EetmomentId;
     }
-  | { scherm: "product"; item: DagboekItem };
+  | { scherm: "product"; item: DagboekItem }
+  | { scherm: "vergelijkZoek" }
+  | { scherm: "vergelijk" };
 
 /**
  * Het dagboek als eigen scherm: je week, je stand, je maaltijden.
@@ -118,6 +125,7 @@ export default function DagboekScherm({
   const [zoek, setZoek] = useState("");
   const [scherm, setScherm] = useState<NutrientScherm>({ scherm: "overzicht" });
   const [favorieten, setFavorieten] = useState<DagboekFavoriet[]>([]);
+  const [vergelijkSelectie, setVergelijkSelectie] = useState<VergelijkResultaat[]>([]);
   const [busyFavoriet, setBusyFavoriet] = useState(false);
 
   useEffect(() => {
@@ -378,6 +386,21 @@ export default function DagboekScherm({
     }
   }
 
+  function toggleVergelijk(resultaat: VergelijkResultaat) {
+    setVergelijkSelectie((vorige) => {
+      const aanwezig = vorige.some(
+        (r) => r.bron === resultaat.bron && r.entry.key === resultaat.entry.key,
+      );
+      if (aanwezig) {
+        return vorige.filter(
+          (r) => !(r.bron === resultaat.bron && r.entry.key === resultaat.entry.key),
+        );
+      }
+      if (vorige.length >= MAX_VERGELIJK) return vorige;
+      return [...vorige, resultaat];
+    });
+  }
+
   const dagLabel = new Date(datum).toLocaleDateString("nl-NL", {
     weekday: "long",
     day: "numeric",
@@ -449,6 +472,40 @@ export default function DagboekScherm({
     );
   }
 
+  if (scherm.scherm === "vergelijkZoek") {
+    return (
+      <DagboekVergelijkZoek
+        eerderGebruikt={recenteItems}
+        geselecteerd={vergelijkSelectie}
+        onToggle={toggleVergelijk}
+        onTerug={() => setScherm({ scherm: "overzicht" })}
+        onVergelijk={() => {
+          trackEvent("nutrition_dagboek_vergelijk_gestart", {
+            aantal: vergelijkSelectie.length,
+          });
+          emitAccountClientEvent("nutrition.dagboek_vergelijk_gestart", {
+            aantal: vergelijkSelectie.length,
+            surface: "dagboek_tab",
+          });
+          setScherm({ scherm: "vergelijk" });
+        }}
+      />
+    );
+  }
+
+  if (scherm.scherm === "vergelijk") {
+    return (
+      <DagboekVergelijkTabel
+        producten={vergelijkSelectie}
+        onTerug={() => setScherm({ scherm: "vergelijkZoek" })}
+        onVerwijder={(resultaat) => {
+          toggleVergelijk(resultaat);
+          if (vergelijkSelectie.length <= 2) setScherm({ scherm: "vergelijkZoek" });
+        }}
+      />
+    );
+  }
+
   if (scherm.scherm === "detail") {
     return (
       <DagboekNutrientDetail
@@ -469,7 +526,19 @@ export default function DagboekScherm({
     <div className="flex flex-col gap-4">
       <header className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">Je dag</h2>
-        <span className="text-[11px] capitalize text-[var(--vd-ink-3)]">{dagLabel}</span>
+        <span className="flex items-center gap-2.5">
+          <span className="text-[11px] capitalize text-[var(--vd-ink-3)]">{dagLabel}</span>
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("nutrition_dagboek_vergelijk_geopend", {});
+              setScherm({ scherm: "vergelijkZoek" });
+            }}
+            className="cursor-pointer whitespace-nowrap rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] transition-colors hover:border-[var(--vd-sage)] hover:text-[var(--vd-sage-2)]"
+          >
+            Vergelijk producten
+          </button>
+        </span>
       </header>
 
       <DagboekHero stoffen={ondergrens} proteinTarget={proteinTarget} />

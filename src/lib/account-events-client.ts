@@ -31,6 +31,7 @@ type ClientEmitType = Extract<
   | "nutrition.dagboek_favoriet_toegevoegd"
   | "nutrition.dagboek_favoriet_verwijderd"
   | "nutrition.dagboek_product_geopend"
+  | "nutrition.dagboek_vergelijk_gestart"
   | "nutrition.tekortsysteem_viewed"
   | "nutrition.week_nutrient_clicked"
   | "nutrition.patroon_nutrient_toggle"

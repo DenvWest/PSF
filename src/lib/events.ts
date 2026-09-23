@@ -123,6 +123,10 @@ export const DOMAIN_EVENT_TYPES = [
   // levert per stof, met ADH-balk). `bron` zegt of het om voeding of een
   // supplement ging.
   "nutrition.dagboek_product_geopend",
+  // De vergelijkingsflow: kiest iemand 2+ producten om naast elkaar te zien,
+  // en hoeveel. `aantal` zegt of mensen de limiet van 4 opzoeken of bij 2-3
+  // blijven steken.
+  "nutrition.dagboek_vergelijk_gestart",
   // Je patroon (plak 4): het tekortsysteem als scherm. `nutrient` is de stof
   // waar de bevinding op wijst, en dat is de dimensie die zegt welke
   // vergelijkingspagina dit scherm zou moeten voeden. Geen vrije tekst, geen
