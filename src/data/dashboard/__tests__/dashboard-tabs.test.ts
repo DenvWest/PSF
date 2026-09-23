@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { DASHBOARD_TABS, TAB_SECTIONS } from "@/data/dashboard";
+import {
+  DASHBOARD_MORE_ITEMS,
+  DASHBOARD_TABS,
+  TAB_SECTIONS,
+} from "@/data/dashboard";
 
 /**
  * De tabs zijn op 17 september 2026 hernoemd maar niet verplaatst: het
@@ -37,5 +41,35 @@ describe("de vier dashboardtabs", () => {
     for (const tab of DASHBOARD_TABS) {
       expect(tab.emptyHint.length).toBeGreaterThan(0);
     }
+  });
+});
+
+/**
+ * Het "Meer"-menu staat náást de tabs, niet erin: de vier tabs zijn één lus
+ * (meten, wegen, kiezen, plannen) en wat onder Meer valt is de meetlat waar
+ * die lus tegen afleest.
+ */
+describe("het Meer-menu", () => {
+  it("is geen vijfde tab", () => {
+    const tabIds = DASHBOARD_TABS.map((tab) => tab.id);
+    for (const item of DASHBOARD_MORE_ITEMS) {
+      expect(tabIds).not.toContain(item.id);
+    }
+    expect(DASHBOARD_TABS).toHaveLength(4);
+  });
+
+  it("geeft elk item een route en een regel uitleg", () => {
+    // Zonder hint is het een kale lijst met woorden; de hint zegt wat je er
+    // doet, en dat is wat iemand zoekt die het menu opent.
+    for (const item of DASHBOARD_MORE_ITEMS) {
+      expect(item.href.startsWith("/"), item.id).toBe(true);
+      expect(item.hint.length, item.id).toBeGreaterThan(0);
+      expect(item.label.length, item.id).toBeGreaterThan(0);
+    }
+  });
+
+  it("houdt de ids uniek, want ze staan in de meting", () => {
+    const ids = DASHBOARD_MORE_ITEMS.map((item) => item.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });

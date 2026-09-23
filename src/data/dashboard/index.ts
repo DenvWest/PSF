@@ -5,6 +5,7 @@ import type {
   CheckLogEntry,
   DashboardSection,
   DashboardSectionType,
+  DashboardIconName,
   DashboardTab,
   DashboardTabId,
   IdentityField,
@@ -371,3 +372,41 @@ export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
   voortgang: ["voortgangHub"],
   keuze: ["keuze"],
 };
+
+/**
+ * Het "Meer"-menu naast de vier tabs.
+ *
+ * ## Waarom dit geen vijfde tab is
+ *
+ * De vier tabs vormen één lus: Dagboek meet, Je patroon weegt, Keuze dicht,
+ * Mijn Dag plant. Wat hier staat zit niet ín die lus maar eronder — je doelen
+ * zijn de meetlat waar alle vier tegen aflezen, niet een vijfde stap.
+ *
+ * Een tab erbij zou die lus ook letterlijk verzwakken: vijf items delen
+ * dezelfde breedte die nu vier labels net aankan.
+ *
+ * ## Waarom een eigen lijst en geen accountinstelling
+ *
+ * Je doel is geen accountgegeven zoals je e-mailadres. Het bepaalt wat elk
+ * cijfer in je dagboek betekent, dus hoort het bij het dashboard en niet
+ * achter je profiel. Deze lijst is het huis waar latere doelen (gewicht,
+ * andere stoffen) bij kunnen zonder dat de navigatie opnieuw op de schop moet.
+ */
+export type DashboardMoreItem = {
+  id: string;
+  label: string;
+  icon: DashboardIconName;
+  href: string;
+  /** Eén regel onder het label — wat je er doet, niet wat het is. */
+  hint: string;
+};
+
+export const DASHBOARD_MORE_ITEMS: DashboardMoreItem[] = [
+  {
+    id: "doelen",
+    label: "Doelen",
+    icon: "Target",
+    href: "/dashboard/doelen",
+    hint: "Je gewicht, hoe zwaar je traint en je eiwitdoel.",
+  },
+];
