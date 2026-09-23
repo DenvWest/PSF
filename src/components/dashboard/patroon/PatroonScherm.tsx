@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
+import PatroonNutrientTabel from "@/components/dashboard/patroon/PatroonNutrientTabel";
 import PatroonSamenvattingKaart from "@/components/dashboard/patroon/PatroonSamenvattingKaart";
 import PatroonSubtabs, {
   type PatroonSectie,
@@ -62,6 +64,9 @@ function PatroonInhoud() {
   const [laden, setLaden] = useState(true);
   const [sectie, setSectie] = useState<PatroonSectie>("samenvatting");
   const [weekOffset, setWeekOffset] = useState(0);
+  const [verborgenNutrients, setVerborgenNutrients] = useState<Set<NutrientId>>(
+    () => new Set(),
+  );
   const gemeld = useRef(false);
 
   useEffect(() => {
@@ -84,6 +89,57 @@ function PatroonInhoud() {
       afgebroken = true;
     };
   }, []);
+
+  useEffect(() => {
+    let afgebroken = false;
+    void (async () => {
+      try {
+        const response = await fetch("/api/account/nutrient-zichtbaarheid", {
+          credentials: "include",
+        });
+        if (!response.ok) return;
+        const body = (await response.json()) as { verborgen?: NutrientId[] };
+        if (!afgebroken) setVerborgenNutrients(new Set(body.verborgen ?? []));
+      } catch {
+        /* stoffen blijven gewoon allemaal aan */
+      }
+    })();
+    return () => {
+      afgebroken = true;
+    };
+  }, []);
+
+  const toggleNutrient = (nutrient: NutrientId) => {
+    setVerborgenNutrients((huidig) => {
+      const volgende = new Set(huidig);
+      const wordtZichtbaar = volgende.has(nutrient);
+      if (wordtZichtbaar) {
+        volgende.delete(nutrient);
+      } else {
+        volgende.add(nutrient);
+      }
+
+      trackEvent("nutrition_patroon_nutrient_toggle", {
+        nutrient,
+        zichtbaar: wordtZichtbaar,
+      });
+      emitAccountClientEvent("nutrition.patroon_nutrient_toggle", {
+        nutrient,
+        zichtbaar: wordtZichtbaar,
+      });
+
+      void fetch("/api/account/nutrient-zichtbaarheid", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nutrient, zichtbaar: wordtZichtbaar }),
+      }).catch(() => {
+        /* voorkeur blijft lokaal staan; volgende poging probeert opnieuw */
+      });
+
+      return volgende;
+    });
+  };
 
   const reeksen = useMemo(
     () => bouwTekortsysteem(dagen, vandaag),
@@ -182,6 +238,13 @@ function PatroonInhoud() {
         <p className="vd-note">Je patroon wordt berekend…</p>
       ) : sectie === "samenvatting" ? (
         <>
+          <PatroonNutrientTabel
+            rijen={week.rijen}
+            trends={trends}
+            verborgen={verborgenNutrients}
+            onToggle={toggleNutrient}
+          />
+
           {zin ? (
             <div className="vd-bevinding">
               <span className="vd-bevinding-ico" aria-hidden>
@@ -379,7 +442,16 @@ function PatroonInhoud() {
             betekent dat je die week niets registreerde — geen nul, want dat
             zou een meting beweren die er niet is.
           </p>
-          <PatroonTrend trends={trends} />
+          <PatroonTrend
+            trends={trends.filter((trend) => !verborgenNutrients.has(trend.nutrient))}
+          />
+          {trends.length > 0 &&
+          trends.every((trend) => verborgenNutrients.has(trend.nutrient)) ? (
+            <p className="vd-note">
+              Alle stoffen staan uit in de tabel bij Samenvatting. Zet er daar
+              minstens één aan om een trend te zien.
+            </p>
+          ) : null}
         </>
       )}
     </div>

@@ -7,8 +7,8 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20260917210000_daybook_items.sql`
-- **Openstaand:** 1 migratie
-- **Laatst bijgewerkt:** 19 september 2026
+- **Openstaand:** 2 migraties
+- **Laatst bijgewerkt:** 23 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
@@ -19,6 +19,12 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 - **Blokkeert deploy:** ja (branch `claude/dagboek-hero-balken`)
 - **Hoort bij:** plak E van de Dagboek-zoekflow-iteratie (favorieten-backend)
 - **Terugdraaien:** `drop table if exists public.account_dagboek_favorieten;`
+
+### [ ] 20260923100000_account_nutrient_zichtbaarheid.sql
+- **Wat:** nieuwe tabel `account_nutrient_zichtbaarheid` — aan/uit-voorkeur per voedingsstof voor de premium nutriëntentabel op Je patroon (Samenvatting), RLS deny-all.
+- **Blokkeert deploy:** ja (branch `claude/dagboek-hero-balken`)
+- **Hoort bij:** premium nutriëntentabel met aan/uit-toggle op Je patroon
+- **Terugdraaien:** `drop table if exists public.account_nutrient_zichtbaarheid;`
 
 ## Runbook bij thuiskomst
 

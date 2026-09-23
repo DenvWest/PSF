@@ -32,6 +32,7 @@ type ClientEmitType = Extract<
   | "nutrition.dagboek_favoriet_verwijderd"
   | "nutrition.tekortsysteem_viewed"
   | "nutrition.week_nutrient_clicked"
+  | "nutrition.patroon_nutrient_toggle"
   | "nutrition.basis_category_expanded"
   | "nutrition.roadmap_step_opened"
   | "nutrition.sufficiency_viewed"

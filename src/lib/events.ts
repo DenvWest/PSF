@@ -129,6 +129,10 @@ export const DOMAIN_EVENT_TYPES = [
   // Gegroepeerd op `nutrient` zegt het welke vergelijkingspagina het dashboard
   // voedt; `covered` of mensen ook doorklikken als hun dekking al bewezen is.
   "nutrition.week_nutrient_clicked",
+  // De premium nutriëntentabel bovenaan Samenvatting: welke stoffen mensen
+  // uitzetten. `zichtbaar` is de nieuwe staat na de klik, zodat een query op
+  // `nutrient` groeperen laat zien welke stof het vaakst verborgen wordt.
+  "nutrition.patroon_nutrient_toggle",
   // Het schap (S1): van nutriënt naar producten. Deze drie beantwoorden of de
   // omgekeerde index gebruikt wordt, welke producten mensen overwegen, en of de
   // categoriefilter er toe doet. `schap_bron_clicked` gegroepeerd op `key` is de
