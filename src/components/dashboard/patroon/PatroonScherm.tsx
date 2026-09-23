@@ -9,10 +9,7 @@ import PatroonSubtabs, {
 import PatroonTelcirkels from "@/components/dashboard/patroon/PatroonTelcirkels";
 import PatroonTrend from "@/components/dashboard/patroon/PatroonTrend";
 import PatroonVensterTabel from "@/components/dashboard/patroon/PatroonVensterTabel";
-import {
-  VoedingThemaKnop,
-  VoedingThemaProvider,
-} from "@/components/dashboard/patroon/VoedingThema";
+import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
@@ -51,10 +48,12 @@ import {
  * eerst moest lezen en dan nog moest openklappen. Een tab-balk laat in één
  * blik zien wát er allemaal is, en je kiest.
  *
- * ## Licht én donker
+ * ## Eén gedeeld thema
  *
  * Alle kleuren komen uit `--vd-*`-tokens in `globals.css`, niet uit hardcoded
- * hex in de JSX.
+ * hex in de JSX. Sinds 23 september 2026 zijn dat dezelfde tokens als
+ * Dagboek/Mijn Dag en CockpitShell gebruiken — één donker voedingsdashboard,
+ * geen licht/donker-keuze meer.
  */
 
 function PatroonInhoud() {
@@ -175,7 +174,6 @@ function PatroonInhoud() {
     <div className="vd-paneel">
       <div className="vd-scherm-kop">
         <h2>Je patroon</h2>
-        <VoedingThemaKnop />
       </div>
 
       <PatroonSubtabs actief={sectie} onKies={kiesSectie} />

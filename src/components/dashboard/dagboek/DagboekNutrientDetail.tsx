@@ -70,11 +70,11 @@ export default function DagboekNutrientDetail({
           type="button"
           onClick={onTerug}
           aria-label="Terug naar je dag"
-          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-[#9FB0A6] transition-colors hover:border-white/30 hover:text-[#F1EFE8]"
+          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-[var(--vd-ink-2)] transition-colors hover:border-white/30 hover:text-[var(--vd-ink)]"
         >
           <Icons.ChevronLeft s={18} />
         </button>
-        <h2 className="m-0 font-serif text-[19px] font-normal text-[#F1EFE8]">{label}</h2>
+        <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">{label}</h2>
       </header>
 
       <section className="overflow-hidden rounded-2xl border border-white/10">
@@ -82,18 +82,18 @@ export default function DagboekNutrientDetail({
           <span
             aria-hidden
             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-              gedekt ? "bg-[#5A8F6A]/20 text-[#9CC5A9]" : "bg-white/[0.05] text-[#6F8177]"
+              gedekt ? "bg-[rgb(var(--vd-sage-rgb)/20%)] text-[var(--vd-sage-2)]" : "bg-white/[0.05] text-[var(--vd-ink-4)]"
             }`}
           >
             <Icons.Utensils s={16} />
           </span>
-          <h3 className="m-0 font-sans text-[13.5px] font-bold text-[#F1EFE8]">Status vandaag</h3>
+          <h3 className="m-0 font-sans text-[13.5px] font-bold text-[var(--vd-ink)]">Status vandaag</h3>
         </header>
         <div className="px-4 py-3.5">
           {stof ? (
-            <p className="m-0 text-[13px] leading-relaxed text-[#9FB0A6]">
+            <p className="m-0 text-[13px] leading-relaxed text-[var(--vd-ink-2)]">
               Vandaag minstens{" "}
-              <b className="font-semibold text-[#F1EFE8]">
+              <b className="font-semibold text-[var(--vd-ink)]">
                 {stof.minstens} {stof.unit}
               </b>
               {" "}
@@ -109,7 +109,7 @@ export default function DagboekNutrientDetail({
               .
             </p>
           ) : (
-            <p className="m-0 text-[13px] leading-relaxed text-[#7E8C82]">
+            <p className="m-0 text-[13px] leading-relaxed text-[var(--vd-ink-3)]">
               Nog niets geregistreerd dat {label.toLowerCase()} levert. Voeg hieronder je eerste
               product of supplement toe.
             </p>
@@ -122,7 +122,7 @@ export default function DagboekNutrientDetail({
           value={zichtbaarMoment}
           onChange={(event) => setZichtbaarMoment(event.target.value as EetmomentId | "alle")}
           aria-label="Filter op eetmoment"
-          className="rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1.5 text-[12px] text-[#9FB0A6] outline-none transition-colors focus:border-white/40"
+          className="rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1.5 text-[12px] text-[var(--vd-ink-2)] outline-none transition-colors focus:border-white/40"
         >
           <option value="alle">Alle momenten</option>
           {EETMOMENTEN.map((moment) => (
@@ -135,7 +135,7 @@ export default function DagboekNutrientDetail({
           type="button"
           disabled={busy}
           onClick={onVoegToe}
-          className="cursor-pointer whitespace-nowrap rounded-lg border border-[#5A8F6A]/40 bg-[#5A8F6A]/10 px-3.5 py-1.5 text-[12px] font-semibold text-[#9CC5A9] transition-colors hover:border-[#5A8F6A] hover:bg-[#5A8F6A]/20 disabled:opacity-50"
+          className="cursor-pointer whitespace-nowrap rounded-lg border border-[rgb(var(--vd-sage-rgb)/40%)] bg-[rgb(var(--vd-sage-rgb)/10%)] px-3.5 py-1.5 text-[12px] font-semibold text-[var(--vd-sage-2)] transition-colors hover:border-[var(--vd-sage)] hover:bg-[rgb(var(--vd-sage-rgb)/20%)] disabled:opacity-50"
         >
           + Voeg toe
         </button>
@@ -143,16 +143,16 @@ export default function DagboekNutrientDetail({
 
       <section className="overflow-hidden rounded-2xl border border-white/10">
         <header className="flex items-center justify-between gap-2.5 border-b border-white/10 bg-white/[0.03] px-4 py-3">
-          <h3 className="m-0 font-sans text-[13.5px] font-bold text-[#F1EFE8]">
+          <h3 className="m-0 font-sans text-[13.5px] font-bold text-[var(--vd-ink)]">
             Wat hieraan bijdroeg
           </h3>
-          <span className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
+          <span className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]">
             {bijdragend.length} {bijdragend.length === 1 ? "item" : "items"}
           </span>
         </header>
 
         {bijdragend.length === 0 ? (
-          <p className="m-0 px-4 py-6 text-center text-[12px] leading-relaxed text-[#6F8177]">
+          <p className="m-0 px-4 py-6 text-center text-[12px] leading-relaxed text-[var(--vd-ink-4)]">
             Nog niets dat {label.toLowerCase()} levert voor dit filter.
           </p>
         ) : (
@@ -172,21 +172,21 @@ export default function DagboekNutrientDetail({
                   ) : (
                     <span
                       aria-hidden
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#6C8FC9]/20 text-[16px] font-medium text-[#9DB3E0]"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[rgb(var(--vd-accent-2-rgb)/20%)] text-[16px] font-medium text-[var(--vd-accent-2)]"
                     >
                       {itemLabel.trim().charAt(0).toUpperCase() || "?"}
                     </span>
                   )}
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[13px] text-[#F1EFE8]">
+                    <span className="block truncate text-[13px] text-[var(--vd-ink)]">
                       {itemLabel}
                     </span>
-                    <span className="block text-[10.5px] text-[#6F8177]">
+                    <span className="block text-[10.5px] text-[var(--vd-ink-4)]">
                       {momentLabel}
                       {item.bron === "supplement" ? " · supplement" : null}
                     </span>
                   </span>
-                  <span className="shrink-0 font-mono text-[12px] tabular-nums text-[#9FB0A6]">
+                  <span className="shrink-0 font-mono text-[12px] tabular-nums text-[var(--vd-ink-2)]">
                     {Math.round(bedrag.value * 10) / 10} {bedrag.unit}
                   </span>
                   <button
@@ -194,7 +194,7 @@ export default function DagboekNutrientDetail({
                     disabled={busy}
                     onClick={() => onVerwijder(item)}
                     aria-label={`Verwijder ${itemLabel}`}
-                    className="shrink-0 cursor-pointer rounded px-1.5 py-1 text-[14px] leading-none text-[#6F8177] transition-colors hover:text-[#F1EFE8] disabled:opacity-40"
+                    className="shrink-0 cursor-pointer rounded px-1.5 py-1 text-[14px] leading-none text-[var(--vd-ink-4)] transition-colors hover:text-[var(--vd-ink)] disabled:opacity-40"
                   >
                     &times;
                   </button>

@@ -160,11 +160,11 @@ export default function DagboekCatalogusZoek({
           type="button"
           onClick={onTerug}
           aria-label="Terug"
-          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-[#9FB0A6] transition-colors hover:border-white/30 hover:text-[#F1EFE8]"
+          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-[var(--vd-ink-2)] transition-colors hover:border-white/30 hover:text-[var(--vd-ink)]"
         >
           <Icons.ChevronLeft s={18} />
         </button>
-        <h2 className="m-0 min-w-0 flex-1 truncate font-serif text-[16px] font-normal text-[#F1EFE8]">
+        <h2 className="m-0 min-w-0 flex-1 truncate font-serif text-[16px] font-normal text-[var(--vd-ink)]">
           Voeg toe bij {nutrientReferences[nutrient].label.toLowerCase()}
         </h2>
       </header>
@@ -172,7 +172,7 @@ export default function DagboekCatalogusZoek({
       <section className="overflow-hidden rounded-2xl border border-white/10">
         <div className="flex flex-col gap-2.5 border-b border-white/10 bg-white/[0.03] px-3 py-3">
           <div className="relative">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#6F8177]">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--vd-ink-4)]">
               <Icons.Search s={15} />
             </span>
             <input
@@ -182,7 +182,7 @@ export default function DagboekCatalogusZoek({
               onChange={(event) => setZoek(event.target.value)}
               placeholder="Zoek een voedingsmiddel of supplement…"
               aria-label="Zoek een voedingsmiddel of supplement"
-              className="w-full rounded-xl border border-white/15 bg-black/20 py-2.5 pl-9 pr-3 text-[16px] sm:text-[13px] text-[#F1EFE8] outline-none transition-colors placeholder:text-[#6F8177] focus:border-white/40"
+              className="w-full rounded-xl border border-white/15 bg-black/20 py-2.5 pl-9 pr-3 text-[16px] sm:text-[13px] text-[var(--vd-ink)] outline-none transition-colors placeholder:text-[var(--vd-ink-4)] focus:border-white/40"
             />
           </div>
 
@@ -207,8 +207,8 @@ export default function DagboekCatalogusZoek({
                   aria-pressed={actief}
                   className={`min-h-[32px] cursor-pointer rounded-lg border px-2.5 text-[12px] transition-colors ${
                     actief
-                      ? "border-[#5A8F6A] bg-[#5A8F6A]/20 font-semibold text-[#9CC5A9]"
-                      : "border-white/10 bg-white/[0.02] text-[#7E8C82] hover:border-white/25 hover:text-[#9FB0A6]"
+                      ? "border-[var(--vd-sage)] bg-[rgb(var(--vd-sage-rgb)/20%)] font-semibold text-[var(--vd-sage-2)]"
+                      : "border-white/10 bg-white/[0.02] text-[var(--vd-ink-3)] hover:border-white/25 hover:text-[var(--vd-ink-2)]"
                   }`}
                 >
                   {m.label}
@@ -235,8 +235,8 @@ export default function DagboekCatalogusZoek({
                   onClick={() => setTab(t.id)}
                   className={`flex min-h-[34px] cursor-pointer items-center rounded-lg px-3 text-[12.5px] transition-colors ${
                     selected
-                      ? "bg-[rgba(90,143,106,0.18)] font-semibold text-[#9CC5A9]"
-                      : "font-medium text-[#7E8C82] hover:text-[#9FB0A6]"
+                      ? "bg-[rgb(var(--vd-sage-rgb)/18%)] font-semibold text-[var(--vd-sage-2)]"
+                      : "font-medium text-[var(--vd-ink-3)] hover:text-[var(--vd-ink-2)]"
                   }`}
                 >
                   {t.label}
@@ -252,13 +252,13 @@ export default function DagboekCatalogusZoek({
           aria-labelledby={`dagboek-zoek-tab-${tab}`}
         >
           {toontEerderGebruikt && resultaten.length > 0 ? (
-            <p className="m-0 border-b border-white/10 px-3 py-1.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#6F8177]">
+            <p className="m-0 border-b border-white/10 px-3 py-1.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[var(--vd-ink-4)]">
               Eerder gebruikt
             </p>
           ) : null}
 
           {resultaten.length === 0 ? (
-            <p className="m-0 px-4 py-6 text-center text-[12px] leading-relaxed text-[#6F8177]">
+            <p className="m-0 px-4 py-6 text-center text-[12px] leading-relaxed text-[var(--vd-ink-4)]">
               {legeMelding}
             </p>
           ) : (
@@ -281,21 +281,21 @@ export default function DagboekCatalogusZoek({
                         ) : (
                           <span
                             aria-hidden
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#6C8FC9]/20 text-[17px] font-medium text-[#9DB3E0]"
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[rgb(var(--vd-accent-2-rgb)/20%)] text-[17px] font-medium text-[var(--vd-accent-2)]"
                           >
                             {label.trim().charAt(0).toUpperCase() || "?"}
                           </span>
                         )}
                         <span className="min-w-0">
-                          <span className="block truncate text-[13px] text-[#F1EFE8]">
+                          <span className="block truncate text-[13px] text-[var(--vd-ink)]">
                             {label}
                           </span>
                           {resultaat.bron === "supplement" ? (
-                            <span className="block text-[10px] text-[#6F8177]">supplement</span>
+                            <span className="block text-[10px] text-[var(--vd-ink-4)]">supplement</span>
                           ) : null}
                         </span>
                       </span>
-                      <span className="shrink-0 text-[10.5px] text-[#6F8177]">{portieLabel}</span>
+                      <span className="shrink-0 text-[10.5px] text-[var(--vd-ink-4)]">{portieLabel}</span>
                     </button>
                     <button
                       type="button"
@@ -315,7 +315,7 @@ export default function DagboekCatalogusZoek({
                       }
                       aria-pressed={bewaard}
                       className={`mr-3 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
-                        bewaard ? "text-[#C99A3C]" : "text-[#6F8177] hover:text-[#C99A3C]"
+                        bewaard ? "text-[var(--vd-amber)]" : "text-[var(--vd-ink-4)] hover:text-[var(--vd-amber)]"
                       }`}
                     >
                       <Icons.Star s={16} filled={bewaard} />

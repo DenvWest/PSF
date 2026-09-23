@@ -101,12 +101,12 @@ export default function DagboekPortieInvoer({
         aria-label="Product niet gevonden"
         className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 px-3 pb-3"
       >
-        <div className="w-full max-w-lg rounded-2xl border border-white/12 bg-[#101A12] p-4">
-          <p className="m-0 text-[12px] text-[#7E8C82]">Dit product bestaat niet (meer).</p>
+        <div className="w-full max-w-lg rounded-2xl border border-white/12 bg-[var(--vd-surface)] p-4">
+          <p className="m-0 text-[12px] text-[var(--vd-ink-3)]">Dit product bestaat niet (meer).</p>
           <button
             type="button"
             onClick={onTerug}
-            className="mt-3 cursor-pointer rounded-lg border border-white/15 bg-white/[0.03] px-3 py-1.5 text-[12px] text-[#9FB0A6]"
+            className="mt-3 cursor-pointer rounded-lg border border-white/15 bg-white/[0.03] px-3 py-1.5 text-[12px] text-[var(--vd-ink-2)]"
           >
             Terug
           </button>
@@ -136,7 +136,7 @@ export default function DagboekPortieInvoer({
       <div
         ref={paneel}
         tabIndex={-1}
-        className="relative flex w-full max-w-lg flex-col gap-3 rounded-t-2xl border border-b-0 border-white/12 bg-[#101A12] px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 outline-none sm:mb-3 sm:rounded-b-2xl sm:border-b"
+        className="relative flex w-full max-w-lg flex-col gap-3 rounded-t-2xl border border-b-0 border-white/12 bg-[var(--vd-surface)] px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 outline-none sm:mb-3 sm:rounded-b-2xl sm:border-b"
       >
         <span
           aria-hidden
@@ -149,16 +149,16 @@ export default function DagboekPortieInvoer({
           ) : (
             <span
               aria-hidden
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#6C8FC9]/20 text-[17px] font-medium text-[#9DB3E0]"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[rgb(var(--vd-accent-2-rgb)/20%)] text-[17px] font-medium text-[var(--vd-accent-2)]"
             >
               {label.trim().charAt(0).toUpperCase() || "?"}
             </span>
           )}
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-[14px] font-bold text-[#F1EFE8]">
+            <span className="block truncate text-[14px] font-bold text-[var(--vd-ink)]">
               {label}
             </span>
-            <span className="block text-[10.5px] text-[#6F8177]">
+            <span className="block text-[10.5px] text-[var(--vd-ink-4)]">
               {bron === "supplement" ? "supplement · " : ""}
               naar {momentLabel}
             </span>
@@ -174,7 +174,7 @@ export default function DagboekPortieInvoer({
             }
             aria-pressed={bewaard}
             className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
-              bewaard ? "text-[#C99A3C]" : "text-[#6F8177] hover:text-[#C99A3C]"
+              bewaard ? "text-[var(--vd-amber)]" : "text-[var(--vd-ink-4)] hover:text-[var(--vd-amber)]"
             }`}
           >
             <Icons.Star s={18} filled={bewaard} />
@@ -196,12 +196,12 @@ export default function DagboekPortieInvoer({
                       aria-label={`${portie.labelNl}, ${portie.grams} gram`}
                       className={`min-h-[36px] cursor-pointer rounded-lg border px-3 text-[12.5px] transition-colors ${
                         actief
-                          ? "border-[#5A8F6A] bg-[#5A8F6A]/20 font-semibold text-[#9CC5A9]"
-                          : "border-white/12 bg-white/[0.03] text-[#9FB0A6] hover:border-white/30"
+                          ? "border-[var(--vd-sage)] bg-[rgb(var(--vd-sage-rgb)/20%)] font-semibold text-[var(--vd-sage-2)]"
+                          : "border-white/12 bg-white/[0.03] text-[var(--vd-ink-2)] hover:border-white/30"
                       }`}
                     >
                       {portie.labelNl}
-                      <span className="ml-1.5 text-[10.5px] text-[#6F8177]">
+                      <span className="ml-1.5 text-[10.5px] text-[var(--vd-ink-4)]">
                         {portie.grams} g
                       </span>
                     </button>
@@ -211,7 +211,7 @@ export default function DagboekPortieInvoer({
             ) : null}
 
             <label className="flex items-center gap-2.5">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]">
                 Gram
               </span>
               <input
@@ -224,13 +224,13 @@ export default function DagboekPortieInvoer({
                 onChange={(event) =>
                   setGrams(Math.max(1, Math.trunc(Number(event.target.value)) || 1))
                 }
-                className="w-20 rounded-lg border border-white/15 bg-black/20 px-2.5 py-2 text-right font-mono text-[13px] tabular-nums text-[#F1EFE8] outline-none transition-colors focus:border-white/40"
+                className="w-20 rounded-lg border border-white/15 bg-black/20 px-2.5 py-2 text-right font-mono text-[13px] tabular-nums text-[var(--vd-ink)] outline-none transition-colors focus:border-white/40"
               />
             </label>
           </>
         ) : (
           <label className="flex items-center gap-2.5">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]">
               Aantal
             </span>
             <input
@@ -243,22 +243,22 @@ export default function DagboekPortieInvoer({
               onChange={(event) =>
                 setAantalPorties(Math.max(1, Math.trunc(Number(event.target.value)) || 1))
               }
-              className="w-20 rounded-lg border border-white/15 bg-black/20 px-2.5 py-2 text-right font-mono text-[13px] tabular-nums text-[#F1EFE8] outline-none transition-colors focus:border-white/40"
+              className="w-20 rounded-lg border border-white/15 bg-black/20 px-2.5 py-2 text-right font-mono text-[13px] tabular-nums text-[var(--vd-ink)] outline-none transition-colors focus:border-white/40"
             />
-            <span className="text-[12px] text-[#6F8177]">
+            <span className="text-[12px] text-[var(--vd-ink-4)]">
               × {supplementEntry?.porties[0]?.labelNl ?? "portie"}
             </span>
           </label>
         )}
 
-        <p className="m-0 flex items-center gap-2 rounded-xl border border-[#5A8F6A]/25 bg-[#5A8F6A]/[0.06] px-3 py-2 text-[12.5px] leading-relaxed text-[#9FB0A6]">
-          <span aria-hidden className="shrink-0 text-[#9CC5A9]">
+        <p className="m-0 flex items-center gap-2 rounded-xl border border-[rgb(var(--vd-sage-rgb)/25%)] bg-[rgb(var(--vd-sage-rgb)/6%)] px-3 py-2 text-[12.5px] leading-relaxed text-[var(--vd-ink-2)]">
+          <span aria-hidden className="shrink-0 text-[var(--vd-sage-2)]">
             <Icons.TrendUp s={14} />
           </span>
           {bijdrage ? (
             <>
               Levert{" "}
-              <b className="font-semibold text-[#F1EFE8]">
+              <b className="font-semibold text-[var(--vd-ink)]">
                 {Math.round(bijdrage.value * 10) / 10} {bijdrage.unit}
               </b>{" "}
               {nutrientReferences[nutrient].label.toLowerCase()}.
@@ -272,7 +272,7 @@ export default function DagboekPortieInvoer({
           <button
             type="button"
             onClick={onTerug}
-            className="min-h-[44px] cursor-pointer rounded-xl border border-white/15 bg-white/[0.03] px-4 text-[13px] text-[#9FB0A6] transition-colors hover:border-white/30"
+            className="min-h-[44px] cursor-pointer rounded-xl border border-white/15 bg-white/[0.03] px-4 text-[13px] text-[var(--vd-ink-2)] transition-colors hover:border-white/30"
           >
             Annuleer
           </button>
@@ -280,7 +280,7 @@ export default function DagboekPortieInvoer({
             type="button"
             disabled={busy}
             onClick={() => onBevestig(moment, effectieveGrams)}
-            className="min-h-[44px] flex-1 cursor-pointer rounded-xl bg-[#5A8F6A] px-4 text-[13px] font-semibold text-[#0f1c10] transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="min-h-[44px] flex-1 cursor-pointer rounded-xl bg-[var(--vd-sage)] px-4 text-[13px] font-semibold text-[var(--vd-bg)] transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             Toevoegen
           </button>

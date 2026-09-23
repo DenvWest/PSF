@@ -28,9 +28,9 @@ const REFERENTIE_INNAME: Partial<Record<NutrientId, number>> = {
   omega3: REFERENCE_INTAKES.omega3.value,
 };
 
-const VOEDING_KLEUR = "#5A8F6A";
-const SUPPLEMENT_KLEUR = "#6C8FC9";
-const NIET_BEWIJSBAAR_RAND = "#C99A3C";
+const VOEDING_KLEUR = "var(--vd-sage)";
+const SUPPLEMENT_KLEUR = "var(--vd-accent-2)";
+const NIET_BEWIJSBAAR_RAND = "var(--vd-amber)";
 
 const STRAAL = 22;
 const OMTREK = 2 * Math.PI * STRAAL;
@@ -81,7 +81,7 @@ export default function DagboekNutrientBalken({
               type="button"
               onClick={() => onSelect(nutrient)}
               className={`flex w-full cursor-pointer flex-col items-center gap-1 rounded-2xl border px-1 py-2.5 text-center transition-colors hover:border-white/20 hover:bg-white/[0.04] ${
-                nietBewijsbaar ? "border-[#C99A3C]/30" : "border-white/8"
+                nietBewijsbaar ? "border-[rgb(var(--vd-amber-rgb)/30%)]" : "border-white/8"
               } bg-white/[0.02]`}
             >
               <span className="relative block h-[52px] w-[52px]">
@@ -91,7 +91,7 @@ export default function DagboekNutrientBalken({
                     cy="26"
                     r={STRAAL}
                     fill="none"
-                    stroke="rgba(255,255,255,0.08)"
+                    stroke="var(--vd-track)"
                     strokeWidth="5"
                   />
                   <circle
@@ -115,12 +115,12 @@ export default function DagboekNutrientBalken({
                   />
                 </svg>
                 <span className="absolute inset-0 flex items-center justify-center">
-                  <b className="font-serif text-[12px] font-normal leading-none text-[#F1EFE8]">
+                  <b className="font-serif text-[12px] font-normal leading-none text-[var(--vd-ink)]">
                     {totaal === null ? "—" : `${Math.round(totaal * 100)}%`}
                   </b>
                 </span>
               </span>
-              <span className="text-[10px] font-semibold leading-tight text-[#9FB0A6]">
+              <span className="text-[10px] font-semibold leading-tight text-[var(--vd-ink-2)]">
                 {nutrientReferences[nutrient].label}
                 {nietBewijsbaar ? (
                   <span aria-hidden style={{ color: NIET_BEWIJSBAAR_RAND }}>

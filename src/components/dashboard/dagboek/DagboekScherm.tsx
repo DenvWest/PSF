@@ -452,8 +452,8 @@ export default function DagboekScherm({
   return (
     <div className="flex flex-col gap-4">
       <header className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="m-0 font-serif text-[19px] font-normal text-[#F1EFE8]">Je dag</h2>
-        <span className="text-[11px] capitalize text-[#7E8C82]">{dagLabel}</span>
+        <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">Je dag</h2>
+        <span className="text-[11px] capitalize text-[var(--vd-ink-3)]">{dagLabel}</span>
       </header>
 
       <DagboekHero stoffen={ondergrens} proteinTarget={proteinTarget} />
@@ -472,7 +472,7 @@ export default function DagboekScherm({
       />
 
       {ondergrens.length === 0 ? (
-        <p className="m-0 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-3 text-[12px] leading-relaxed text-[#7E8C82]">
+        <p className="m-0 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-3 text-[12px] leading-relaxed text-[var(--vd-ink-3)]">
           {laden
             ? "Je dagboek wordt geladen…"
             : "Nog niets geregistreerd voor deze dag. Zodra je een product toevoegt, staat hier wat het minstens levert."}
@@ -505,12 +505,12 @@ export default function DagboekScherm({
                     onChange={(event) => setZoek(event.target.value)}
                     placeholder={`Zoek een product voor ${moment.label.toLowerCase()}…`}
                     aria-label={`Zoek een product voor ${moment.label.toLowerCase()}`}
-                    className="w-full rounded-xl border border-white/15 bg-white/[0.03] px-3 py-2 text-[13px] text-[#F1EFE8] outline-none transition-colors placeholder:text-[#6F8177] focus:border-white/40"
+                    className="w-full rounded-xl border border-white/15 bg-white/[0.03] px-3 py-2 text-[13px] text-[var(--vd-ink)] outline-none transition-colors placeholder:text-[var(--vd-ink-4)] focus:border-white/40"
                   />
                   {suggesties.length > 0 ? (
-                    <div className="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border border-white/15 bg-[#16241a] shadow-2xl">
+                    <div className="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border border-white/15 bg-[var(--vd-surface-2)] shadow-2xl">
                       {!zoek.trim() ? (
-                        <p className="m-0 border-b border-white/10 px-3 py-1.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#6F8177]">
+                        <p className="m-0 border-b border-white/10 px-3 py-1.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[var(--vd-ink-4)]">
                           Eerder gegeten
                         </p>
                       ) : null}
@@ -525,11 +525,11 @@ export default function DagboekScherm({
                             >
                               <span className="flex min-w-0 items-center gap-2">
                                 <FoodThumbnail entry={entry} size={40} />
-                                <span className="truncate text-[13px] text-[#F1EFE8]">
+                                <span className="truncate text-[13px] text-[var(--vd-ink)]">
                                   {entry.labelNl}
                                 </span>
                               </span>
-                              <span className="shrink-0 text-[10.5px] text-[#6F8177]">
+                              <span className="shrink-0 text-[10.5px] text-[var(--vd-ink-4)]">
                                 {entry.porties[0]?.labelNl ?? ""}
                               </span>
                             </button>
@@ -560,14 +560,14 @@ export default function DagboekScherm({
       </div>
 
       {error ? (
-        <p role="status" className="m-0 text-[11.5px] leading-relaxed text-[#C8956C]">
+        <p role="status" className="m-0 text-[11.5px] leading-relaxed text-[var(--vd-terra)]">
           {error}
         </p>
       ) : null}
 
       {ondergrens.length > 0 ? (
-        <p className="m-0 rounded-xl border-l-2 border-[#5A8F6A] bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-[#9FB0A6]">
-          <strong className="font-bold text-[#F1EFE8]">
+        <p className="m-0 rounded-xl border-l-2 border-[var(--vd-sage)] bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-[var(--vd-ink-2)]">
+          <strong className="font-bold text-[var(--vd-ink)]">
             Alles hier is een ondergrens.
           </strong>{" "}
           Niemand noemt alles — de koffie, de olijfolie, het broodje dat je

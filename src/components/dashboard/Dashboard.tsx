@@ -2736,7 +2736,7 @@ const KompasHome = ({
         vormen van hetzelfde dagboek, elk met een eigen `surface`, zodat de
         meting ze uit elkaar houdt.
       */}
-      <CockpitShell accent="#5A8F6A" ariaLabel="Je dagboek" embedded>
+      <CockpitShell accent="#5A8F6A" ariaLabel="Je dagboek" embedded className="vd-root">
         <DagboekScherm
           checkSliders={data?.nutritionCheckinReadout?.ladderReport?.sliders ?? null}
           proteinTarget={data?.proteinTarget ?? null}

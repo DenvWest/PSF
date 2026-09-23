@@ -99,92 +99,62 @@
   --intake-card-border: rgba(255, 255, 255, 0.12);
 
   /*
-   * Voedingsdashboard — één palet dat licht en donker draagt.
+   * Voedingsdashboard — één donker palet, gedeeld door Je patroon, Dagboek/
+   * Mijn Dag en de cockpit-schermen (Beweging).
    *
-   * Het dashboard stond tot nu toe op hardcoded donkere hex-waardes, verspreid
-   * over de componenten. Daardoor kón er geen licht thema zijn: elke kleur zat
-   * in JSX vastgeschroefd. Deze tokens zijn de bron, en de prebuild
-   * (artifact 236a3d44, "Vier tabs, één voeding") is waar ze vandaan komen.
+   * Tot 23 september 2026 waren dit twee gescheiden systemen: Je patroon had
+   * dit tokenpalet met een licht+donker schakelaar, terwijl Dagboek en
+   * CockpitShell dezelfde donkere kleuren als losse hex in elke component
+   * hadden staan. Wissel je van tab, dan sprong het scherm van kaartjes-licht
+   * naar cockpit-donker — twee ontwerptalen in één dashboard. Nu is er nog
+   * maar één donkere basis: geen licht-variant meer (Dagboek had er nooit
+   * een), en de tokens zijn de bron voor alle drie.
    *
-   * De donkere kant staat onder [data-voeding-thema="donker"] en achter
-   * prefers-color-scheme, zodat de schakelaar in beide richtingen wint.
+   * --vd-accent-2 is het tweede accent voor "supplement" naast --vd-sage
+   * ("voeding") in de dekkingscirkels van het dagboek.
    */
-  --vd-bg: #F4F6F2;
-  --vd-surface: #FFFFFF;
-  --vd-surface-2: #EDF1EA;
-  --vd-surface-3: #E3EADF;
-  --vd-line: #D8E0D4;
-  --vd-line-2: #C3CFBE;
-  --vd-ink: #12220F;
-  --vd-ink-2: #4A5C46;
-  --vd-ink-3: #7B8C77;
-  --vd-sage: #3C7A56;
-  --vd-sage-fill: #DCEBE1;
-  --vd-terra: #C26E4B;
-  --vd-terra-fill: #F7E5DC;
-  --vd-amber: #A8801F;
-  --vd-amber-fill: #F5EBD2;
-  --vd-track: #E3EADF;
-  --vd-shadow: 0 1px 2px rgba(18, 34, 15, 0.05),
-    0 12px 32px -22px rgba(18, 34, 15, 0.4);
-
-  /* Editorial / article reading (blog + kennisbank) — sticky TOC + anchors */
-  --reading-scroll-margin: 6.75rem;
-  --sticky-toc-offset: 6.875rem;
-  --sticky-toc-mobile-offset: 4.75rem;
-  --reading-layout-max-width: 88rem;
-}
-
-/*
- * De donkere kant van het voedingsdashboard.
- *
- * Twee blokken en niet één: het eerste volgt de systeemvoorkeur zolang de
- * gebruiker niets koos, het tweede wint altijd als hij wél koos. Zonder die
- * :not()-guard zou een expliciete keuze voor licht op een donker systeem
- * genegeerd worden.
- */
-:root:not([data-voeding-thema="licht"]) {
-  @media (prefers-color-scheme: dark) {
-    --vd-bg: #0D190B;
-    --vd-surface: #152410;
-    --vd-surface-2: #1B2E17;
-    --vd-surface-3: #22391D;
-    --vd-line: #2B4026;
-    --vd-line-2: #3A5233;
-    --vd-ink: #EDF3EA;
-    --vd-ink-2: #A9BCA4;
-    --vd-ink-3: #7E9179;
-    --vd-sage: #7FC194;
-    --vd-sage-fill: #1E3A27;
-    --vd-terra: #E0A183;
-    --vd-terra-fill: #3A2419;
-    --vd-amber: #D9B45C;
-    --vd-amber-fill: #332813;
-    --vd-track: #22391D;
-    --vd-shadow: 0 1px 2px rgba(0, 0, 0, 0.45),
-      0 12px 32px -22px rgba(0, 0, 0, 0.9);
-  }
-}
-
-[data-voeding-thema="donker"] {
   --vd-bg: #0D190B;
   --vd-surface: #152410;
   --vd-surface-2: #1B2E17;
   --vd-surface-3: #22391D;
   --vd-line: #2B4026;
   --vd-line-2: #3A5233;
-  --vd-ink: #EDF3EA;
-  --vd-ink-2: #A9BCA4;
-  --vd-ink-3: #7E9179;
-  --vd-sage: #7FC194;
-  --vd-sage-fill: #1E3A27;
-  --vd-terra: #E0A183;
-  --vd-terra-fill: #3A2419;
-  --vd-amber: #D9B45C;
-  --vd-amber-fill: #332813;
-  --vd-track: #22391D;
+  --vd-ink: #F1EFE8;
+  --vd-ink-2: #9FB0A6;
+  --vd-ink-3: #7E8C82;
+  --vd-ink-4: #6F8177;
+  --vd-sage: #5A8F6A;
+  --vd-sage-2: #9CC5A9;
+  --vd-sage-fill: rgba(90, 143, 106, 0.15);
+  --vd-terra: #C8956C;
+  --vd-terra-fill: rgba(200, 149, 108, 0.15);
+  --vd-amber: #C99A3C;
+  --vd-amber-fill: rgba(201, 154, 60, 0.15);
+  --vd-accent-2: #6C8FC9;
+  --vd-accent-2-fill: rgba(108, 143, 201, 0.15);
+  --vd-track: rgba(255, 255, 255, 0.08);
   --vd-shadow: 0 1px 2px rgba(0, 0, 0, 0.45),
     0 12px 32px -22px rgba(0, 0, 0, 0.9);
+
+  /*
+   * RGB-componenten van dezelfde tokens, voor Tailwind's `/NN`-opacity-
+   * modifier: `bg-[#hex]/20` kan Tailwind zelf van alpha voorzien, maar
+   * `bg-[var(--vd-sage)]/20` niet — een custom property is voor Tailwind een
+   * ondoorzichtige string, geen kleur om in te mengen. `bg-[rgb(var(--vd-sage-rgb)/20%)]`
+   * werkt wel: de opacity zit dan al in de CSS-functie, niet in Tailwinds modifier.
+   */
+  --vd-sage-rgb: 90 143 106;
+  --vd-sage-2-rgb: 156 197 169;
+  --vd-terra-rgb: 200 149 108;
+  --vd-amber-rgb: 201 154 60;
+  --vd-accent-2-rgb: 108 143 201;
+  --vd-ink-rgb: 241 239 232;
+
+  /* Editorial / article reading (blog + kennisbank) — sticky TOC + anchors */
+  --reading-scroll-margin: 6.75rem;
+  --sticky-toc-offset: 6.875rem;
+  --sticky-toc-mobile-offset: 4.75rem;
+  --reading-layout-max-width: 88rem;
 }
 
 @media (max-width: 1279px) {
@@ -2957,30 +2927,6 @@ html.floating-cta-active footer {
 .vd-tag {
   font-size: 0.6875rem;
   color: var(--vd-ink-3);
-}
-
-.vd-themaknop {
-  font: inherit;
-  font-size: 0.8125rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  color: var(--vd-ink-2);
-  background: var(--vd-surface);
-  border: 1px solid var(--vd-line);
-  border-radius: 999px;
-  padding: 0.4375rem 0.9375rem;
-  cursor: pointer;
-}
-
-.vd-themaknop:hover {
-  color: var(--vd-ink);
-  border-color: var(--vd-ink-3);
-}
-
-.vd-themaknop:focus-visible {
-  outline: 2px solid var(--vd-sage);
-  outline-offset: 2px;
 }
 
 /* Segmented control — perioden, vensters, routes */

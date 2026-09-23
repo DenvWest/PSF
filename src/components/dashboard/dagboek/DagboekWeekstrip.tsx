@@ -60,26 +60,26 @@ export default function DagboekWeekstrip({
                 }${dag.meetdag ? ", meetdag" : ""}`}
                 className={`relative w-full cursor-pointer rounded-[10px] border px-0.5 py-1.5 text-center transition-colors disabled:opacity-50 ${
                   actief
-                    ? "border-2 border-[#F1EFE8] py-[5px]"
+                    ? "border-2 border-[var(--vd-ink)] py-[5px]"
                     : dag.gevuld
-                      ? "border-[#5A8F6A]/70 bg-[#5A8F6A]/15"
+                      ? "border-[rgb(var(--vd-sage-rgb)/70%)] bg-[rgb(var(--vd-sage-rgb)/15%)]"
                       : "border-white/10 bg-white/[0.02] hover:border-white/25"
                 }`}
               >
                 <b
                   className={`block text-[11px] font-bold ${
-                    dag.gevuld ? "text-[#9CC5A9]" : "text-[#9FB0A6]"
+                    dag.gevuld ? "text-[var(--vd-sage-2)]" : "text-[var(--vd-ink-2)]"
                   }`}
                 >
                   {dagNaam}
                 </b>
-                <i className="block text-[9.5px] not-italic tabular-nums text-[#6F8177]">
+                <i className="block text-[9.5px] not-italic tabular-nums text-[var(--vd-ink-4)]">
                   {datum.getDate()}
                 </i>
                 {dag.meetdag ? (
                   <span
                     aria-hidden
-                    className="absolute right-1 top-1 block h-[5px] w-[5px] rounded-full bg-[#C8956C]"
+                    className="absolute right-1 top-1 block h-[5px] w-[5px] rounded-full bg-[var(--vd-terra)]"
                   />
                 ) : null}
               </button>
@@ -88,8 +88,8 @@ export default function DagboekWeekstrip({
         })}
       </ul>
 
-      <p className="m-0 flex flex-wrap items-center gap-1.5 text-[10.5px] leading-relaxed text-[#6F8177]">
-        <span aria-hidden className="block h-[5px] w-[5px] rounded-full bg-[#C8956C]" />
+      <p className="m-0 flex flex-wrap items-center gap-1.5 text-[10.5px] leading-relaxed text-[var(--vd-ink-4)]">
+        <span aria-hidden className="block h-[5px] w-[5px] rounded-full bg-[var(--vd-terra)]" />
         Meetdag — deze vier dragen je patroon. Extra dagen invullen mag en
         verbetert je dekking, maar de vergelijking draait op twee doordeweekse
         en twee weekenddagen.

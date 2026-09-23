@@ -46,9 +46,9 @@ function kleurVoor(
 }
 
 const STREEK: Record<RingKleur, string> = {
-  sage: "#5A8F6A",
-  terra: "#C8956C",
-  amber: "#C99A3C",
+  sage: "var(--vd-sage)",
+  terra: "var(--vd-terra)",
+  amber: "var(--vd-amber)",
 };
 
 export default function DagboekRingen({
@@ -91,7 +91,7 @@ export default function DagboekRingen({
                   cy="32"
                   r={STRAAL}
                   fill="none"
-                  stroke="rgba(255,255,255,0.08)"
+                  stroke="var(--vd-track)"
                   strokeWidth="6"
                 />
                 <circle
@@ -107,20 +107,20 @@ export default function DagboekRingen({
                 />
               </svg>
               <span className="absolute inset-0 flex flex-col items-center justify-center">
-                <b className="font-serif text-[15px] font-normal leading-none text-[#F1EFE8]">
+                <b className="font-serif text-[15px] font-normal leading-none text-[var(--vd-ink)]">
                   {aandeel === null ? "—" : `${Math.round(aandeel * 100)}%`}
                 </b>
-                <i className="mt-0.5 text-[9px] not-italic text-[#7E8C82]">
+                <i className="mt-0.5 text-[9px] not-italic text-[var(--vd-ink-3)]">
                   {aandeel === null ? "eigen doel" : "van RI"}
                 </i>
               </span>
             </span>
 
-            <span className="text-[10.5px] font-semibold leading-tight text-[#9FB0A6]">
+            <span className="text-[10.5px] font-semibold leading-tight text-[var(--vd-ink-2)]">
               {nutrientReferences[stof.nutrient].label}
-              {gedekt ? <span className="ml-1 text-[#5A8F6A]">✓</span> : null}
+              {gedekt ? <span className="ml-1 text-[var(--vd-sage)]">✓</span> : null}
             </span>
-            <span className="font-mono text-[9px] tabular-nums text-[#6F8177]">
+            <span className="font-mono text-[9px] tabular-nums text-[var(--vd-ink-4)]">
               minstens {stof.minstens} {stof.unit}
             </span>
           </li>

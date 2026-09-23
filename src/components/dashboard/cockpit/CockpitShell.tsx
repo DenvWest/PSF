@@ -13,7 +13,12 @@ type CockpitShellProps = {
 /**
  * Donker cockpit-paneel in de preview-taal (MovementDashboardPreview):
  * forest-gradient, fijne grid-overlay met radial-mask en accent-glow.
- * Herbruikbaar voor Beweging nu en Mijn Dag/Voortgang later.
+ * Gebruikt door Beweging en Dagboek/Mijn Dag.
+ *
+ * De gradient loopt sinds 23 september 2026 over de gedeelde `--vd-bg`/
+ * `--vd-surface`-tokens uit `globals.css` in plaats van eigen hex — dezelfde
+ * tokens die Dagboek en Je patroon dragen, zodat er geen los kleurenpaar meer
+ * buiten dat systeem om bestaat.
  */
 export default function CockpitShell({
   accent,
@@ -35,7 +40,7 @@ export default function CockpitShell({
           ? ({ "--ac": accent } as CSSProperties)
           : ({
               "--ac": accent,
-              background: "linear-gradient(160deg, #131F1D, #0C1315)",
+              background: "linear-gradient(160deg, var(--vd-surface), var(--vd-bg))",
             } as CSSProperties)
       }
     >

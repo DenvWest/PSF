@@ -44,8 +44,8 @@ const REFERENTIE_INNAME: Record<(typeof BALKEN_NUTRIENTEN)[number], number | nul
   omega3: REFERENCE_INTAKES.omega3.value,
 };
 
-const VOEDING_KLEUR = "#5A8F6A";
-const SUPPLEMENT_KLEUR = "#6C8FC9";
+const VOEDING_KLEUR = "var(--vd-sage)";
+const SUPPLEMENT_KLEUR = "var(--vd-accent-2)";
 
 const STRAAL = 60;
 const OMTREK = 2 * Math.PI * STRAAL;
@@ -105,7 +105,7 @@ export default function DagboekHero({
             cy="68"
             r={STRAAL}
             fill="none"
-            stroke="rgba(255,255,255,0.08)"
+            stroke="var(--vd-track)"
             strokeWidth="11"
           />
           <circle
@@ -131,15 +131,15 @@ export default function DagboekHero({
           />
         </svg>
         <span className="absolute inset-0 flex flex-col items-center justify-center">
-          <b className="font-serif text-[28px] font-normal leading-none text-[#F1EFE8]">
+          <b className="font-serif text-[28px] font-normal leading-none text-[var(--vd-ink)]">
             {totaal === null ? "—" : `${Math.round(totaal * 100)}%`}
           </b>
-          <i className="mt-1 text-[10px] not-italic uppercase tracking-[0.08em] text-[#7E8C82]">
+          <i className="mt-1 text-[10px] not-italic uppercase tracking-[0.08em] text-[var(--vd-ink-3)]">
             dekking vandaag
           </i>
         </span>
       </span>
-      <p className="m-0 flex max-w-[240px] flex-col items-center gap-1 text-center text-[11px] leading-relaxed text-[#7E8C82]">
+      <p className="m-0 flex max-w-[240px] flex-col items-center gap-1 text-center text-[11px] leading-relaxed text-[var(--vd-ink-3)]">
         <span>
           Gemiddeld over magnesium, eiwit, zink en omega-3 — een ondergrens,
           geen dagtotaal.

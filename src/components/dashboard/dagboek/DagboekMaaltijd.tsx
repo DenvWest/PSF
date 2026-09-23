@@ -106,26 +106,26 @@ export default function DagboekMaaltijd({
   return (
     <section className="overflow-hidden rounded-2xl border border-white/10">
       <header className="flex items-center justify-between gap-2.5 border-b border-white/10 bg-white/[0.03] px-3 py-2.5">
-        <h3 className="m-0 font-sans text-[13.5px] font-bold text-[#F1EFE8]">{label}</h3>
+        <h3 className="m-0 font-sans text-[13.5px] font-bold text-[var(--vd-ink)]">{label}</h3>
         <div className="flex items-center gap-2.5">
-          <span className="text-right font-mono text-[10px] leading-tight tabular-nums text-[#6F8177]">
+          <span className="text-right font-mono text-[10px] leading-tight tabular-nums text-[var(--vd-ink-4)]">
             {grootste ? (
               <>
-                <b className="block text-[11px] font-normal text-[#9FB0A6]">
+                <b className="block text-[11px] font-normal text-[var(--vd-ink-2)]">
                   {grootste.minstens} {grootste.unit}{" "}
                   {nutrientReferences[grootste.nutrient].label.toLowerCase()}
                 </b>
                 {eigen.length} {eigen.length === 1 ? "item" : "items"}
               </>
             ) : (
-              <b className="block text-[11px] font-normal text-[#6F8177]">Nog leeg</b>
+              <b className="block text-[11px] font-normal text-[var(--vd-ink-4)]">Nog leeg</b>
             )}
           </span>
           <button
             type="button"
             disabled={busy}
             onClick={() => onToevoegen(moment)}
-            className="cursor-pointer whitespace-nowrap rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1 text-[11px] font-semibold text-[#9FB0A6] transition-colors hover:border-[#5A8F6A] hover:text-[#9CC5A9] disabled:opacity-50"
+            className="cursor-pointer whitespace-nowrap rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] transition-colors hover:border-[var(--vd-sage)] hover:text-[var(--vd-sage-2)] disabled:opacity-50"
           >
             + Toevoegen
           </button>
@@ -137,7 +137,7 @@ export default function DagboekMaaltijd({
       ) : null}
 
       {eigen.length === 0 ? (
-        <p className="m-0 px-3 py-2.5 text-[11.5px] italic leading-relaxed text-[#6F8177]">
+        <p className="m-0 px-3 py-2.5 text-[11.5px] italic leading-relaxed text-[var(--vd-ink-4)]">
           Nog niets geregistreerd voor {label.toLowerCase()}.
         </p>
       ) : (
@@ -145,13 +145,13 @@ export default function DagboekMaaltijd({
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="px-3 py-1.5 text-left text-[9.5px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]">
+                <th className="px-3 py-1.5 text-left text-[9.5px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]">
                   Product
                 </th>
                 {KOLOMMEN.map((kolom) => (
                   <th
                     key={kolom.id}
-                    className="w-[52px] px-1 py-1.5 text-right text-[9.5px] font-semibold uppercase tracking-[0.06em] text-[#6F8177]"
+                    className="w-[52px] px-1 py-1.5 text-right text-[9.5px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]"
                   >
                     {kolom.kop}
                   </th>
@@ -177,7 +177,7 @@ export default function DagboekMaaltijd({
                         {voedingEntry ? (
                           <FoodThumbnail entry={voedingEntry} size={40} />
                         ) : null}
-                        <span className="block min-w-0 truncate text-[12.5px] font-medium text-[#F1EFE8]">
+                        <span className="block min-w-0 truncate text-[12.5px] font-medium text-[var(--vd-ink)]">
                           {label}
                         </span>
                       </span>
@@ -191,9 +191,9 @@ export default function DagboekMaaltijd({
                           value={item.grams}
                           disabled={busy}
                           onChange={(event) => onGram(item, Number(event.target.value))}
-                          className="w-14 rounded-md border border-white/12 bg-black/25 px-1.5 py-0.5 text-right font-mono text-[10.5px] tabular-nums text-[#9FB0A6] outline-none transition-colors focus:border-white/40"
+                          className="w-14 rounded-md border border-white/12 bg-black/25 px-1.5 py-0.5 text-right font-mono text-[10.5px] tabular-nums text-[var(--vd-ink-2)] outline-none transition-colors focus:border-white/40"
                         />
-                        <span className="font-mono text-[10px] text-[#6F8177]">{eenheid}</span>
+                        <span className="font-mono text-[10px] text-[var(--vd-ink-4)]">{eenheid}</span>
                       </label>
                     </td>
                     {KOLOMMEN.map((kolom) => {
@@ -202,7 +202,7 @@ export default function DagboekMaaltijd({
                         <td
                           key={kolom.id}
                           className={`px-1 py-2 text-right font-mono text-[11px] tabular-nums ${
-                            bedrag === null ? "italic text-[#5D6E62]" : "text-[#9FB0A6]"
+                            bedrag === null ? "italic text-[var(--vd-ink-4)]" : "text-[var(--vd-ink-2)]"
                           }`}
                         >
                           {toon(bedrag)}
@@ -215,7 +215,7 @@ export default function DagboekMaaltijd({
                         disabled={busy}
                         onClick={() => onVerwijder(item)}
                         aria-label={`Verwijder ${label}`}
-                        className="cursor-pointer rounded px-1 text-[13px] leading-none text-[#6F8177] transition-colors hover:text-[#F1EFE8] disabled:opacity-40"
+                        className="cursor-pointer rounded px-1 text-[13px] leading-none text-[var(--vd-ink-4)] transition-colors hover:text-[var(--vd-ink)] disabled:opacity-40"
                       >
                         &times;
                       </button>
@@ -224,7 +224,7 @@ export default function DagboekMaaltijd({
                 );
               })}
               <tr className="bg-white/[0.03]">
-                <td className="px-3 py-2 text-[11.5px] font-bold text-[#F1EFE8]">
+                <td className="px-3 py-2 text-[11.5px] font-bold text-[var(--vd-ink)]">
                   Samen minstens
                 </td>
                 {KOLOMMEN.map((kolom) => {
@@ -232,7 +232,7 @@ export default function DagboekMaaltijd({
                   return (
                     <td
                       key={kolom.id}
-                      className="px-1 py-2 text-right font-mono text-[11px] font-bold tabular-nums text-[#F1EFE8]"
+                      className="px-1 py-2 text-right font-mono text-[11px] font-bold tabular-nums text-[var(--vd-ink)]"
                     >
                       {totaal ? toon(totaal.minstens) : "—"}
                     </td>
