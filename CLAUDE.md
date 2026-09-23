@@ -67,7 +67,10 @@ src/
 
 ### Git & deploy
 - **Committen en pushen naar een feature-branch mag automatisch.** Na een afgeronde wijziging in `src/`: draai eerst de volledige klaar-check (`grep -rn "console.log" src/` + `npx tsc --noEmit` + `vitest` + `eslint --max-warnings 0`). Slaagt alles, commit dan zelf — één commit per afgeronde taak, geen tussentijdse deelcommits. Faalt er iets, dan NOOIT committen: eerst melden en waar mogelijk fixen, pas committen als alles groen is. Push daarna met `git push -u origin <feature-branch>`.
-- **Nooit rechtstreeks naar `main` pushen, nooit zelf mergen, nooit zelf deployen.** Een PR openen alleen als Dennis erom vraagt. `deploy.sh` blijft altijd bij Dennis.
+- **Nooit rechtstreeks naar `main` pushen.** Werk gaat altijd via een PR vanaf een feature-branch.
+- **PR's mergen naar `main` mag zelfstandig, uitsluitend als alle CI-checks slagen** (`gh pr checks <nummer>` volledig `pass`, `mergeable: MERGEABLE`, `mergeStateStatus: CLEAN`). Staat er ook maar één check op `pending` of `fail`, of zijn er merge-conflicten: niet mergen, melden en wachten. Gebruik `gh pr merge <nummer> --squash` (of `--merge`, nooit `--admin`/`--force`, nooit checks overslaan).
+- **`bash deploy.sh` draait Dennis altijd zelf, nooit automatisch na een merge.** Een merge naar `main` betekent dus niet dat er iets live komt te staan — dat is een bewuste, aparte stap van Dennis.
+- Zie [`.claude/skills/pr-klaarmelden/SKILL.md`](.claude/skills/pr-klaarmelden/SKILL.md) voor de volledige merge-routine (CI bewaken, wanneer wel/niet mergen, hoe melden).
 - Verifieer met `npx tsc --noEmit` + `vitest` + `eslint --max-warnings 0` (de pre-push hook draait tsc+vitest). Draai **NIET** `next build` of `rm -rf .next` terwijl `next dev` live is — dat crasht de dev-server; de productie-build draait op de server via `deploy.sh`.
 - `.env.local` NOOIT overschrijven of committen.
 - Server-lockfile met `npx npm@10.8.2 install` genereren (server npm 10/node 20 vs lokaal npm 11/node 24; anders faalt `npm ci` op de server).
