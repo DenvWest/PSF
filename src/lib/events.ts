@@ -119,6 +119,10 @@ export const DOMAIN_EVENT_TYPES = [
   // welk tabblad het raakt.
   "nutrition.dagboek_favoriet_toegevoegd",
   "nutrition.dagboek_favoriet_verwijderd",
+  // Klik op een gelogd product opent zijn detailkaart (wat dit ene item
+  // levert per stof, met ADH-balk). `bron` zegt of het om voeding of een
+  // supplement ging.
+  "nutrition.dagboek_product_geopend",
   // Je patroon (plak 4): het tekortsysteem als scherm. `nutrient` is de stof
   // waar de bevinding op wijst, en dat is de dimensie die zegt welke
   // vergelijkingspagina dit scherm zou moeten voeden. Geen vrije tekst, geen

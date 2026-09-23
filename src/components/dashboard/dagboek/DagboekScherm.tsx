@@ -28,6 +28,7 @@ import DagboekMaaltijd from "@/components/dashboard/dagboek/DagboekMaaltijd";
 import DagboekNutrientBalken from "@/components/dashboard/dagboek/DagboekNutrientBalken";
 import DagboekNutrientDetail from "@/components/dashboard/dagboek/DagboekNutrientDetail";
 import DagboekPortieInvoer from "@/components/dashboard/dagboek/DagboekPortieInvoer";
+import DagboekProductDetail from "@/components/dashboard/dagboek/DagboekProductDetail";
 import DagboekWeekstrip, {
   meetdagenUit,
   weekRond,
@@ -54,7 +55,8 @@ type NutrientScherm =
       bron: DagboekItemBron;
       key: string;
       moment: EetmomentId;
-    };
+    }
+  | { scherm: "product"; item: DagboekItem };
 
 /**
  * Het dagboek als eigen scherm: je week, je stand, je maaltijden.
@@ -433,6 +435,20 @@ export default function DagboekScherm({
     );
   }
 
+  if (scherm.scherm === "product") {
+    return (
+      <DagboekProductDetail
+        item={scherm.item}
+        busy={busy}
+        onTerug={() => setScherm({ scherm: "overzicht" })}
+        onVerwijder={(item) => {
+          wijzig(items.filter((i) => i !== item));
+          setScherm({ scherm: "overzicht" });
+        }}
+      />
+    );
+  }
+
   if (scherm.scherm === "detail") {
     return (
       <DagboekNutrientDetail
@@ -555,6 +571,14 @@ export default function DagboekScherm({
               )
             }
             onVerwijder={(item) => wijzig(items.filter((i) => i !== item))}
+            onOpenProduct={(item) => {
+              emitAccountClientEvent("nutrition.dagboek_product_geopend", {
+                bron: item.bron,
+                surface: "dagboek_tab",
+              });
+              trackEvent("nutrition_dagboek_product_geopend", { bron: item.bron });
+              setScherm({ scherm: "product", item });
+            }}
           />
         ))}
       </div>

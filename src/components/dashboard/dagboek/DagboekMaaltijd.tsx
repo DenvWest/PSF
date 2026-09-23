@@ -76,6 +76,7 @@ export default function DagboekMaaltijd({
   onVerwijder,
   onGram,
   onToevoegen,
+  onOpenProduct,
   busy = false,
   zoekSlot = null,
 }: {
@@ -85,6 +86,7 @@ export default function DagboekMaaltijd({
   onVerwijder: (item: DagboekItem) => void;
   onGram: (item: DagboekItem, grams: number) => void;
   onToevoegen: (moment: EetmomentId) => void;
+  onOpenProduct: (item: DagboekItem) => void;
   busy?: boolean;
   /**
    * Het zoekveld, als deze maaltijd de aangeklikte is. Het stond eerder boven
@@ -173,14 +175,18 @@ export default function DagboekMaaltijd({
                     className="border-b border-white/[0.06] last:border-b-0"
                   >
                     <td className="max-w-0 px-3 py-2">
-                      <span className="flex min-w-0 items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onOpenProduct(item)}
+                        className="flex min-w-0 cursor-pointer items-center gap-2 text-left"
+                      >
                         {voedingEntry ? (
                           <FoodThumbnail entry={voedingEntry} size={40} />
                         ) : null}
-                        <span className="block min-w-0 truncate text-[12.5px] font-medium text-[var(--vd-ink)]">
+                        <span className="block min-w-0 truncate text-[12.5px] font-medium text-[var(--vd-ink)] underline decoration-white/20 underline-offset-2">
                           {label}
                         </span>
-                      </span>
+                      </button>
                       <label className="mt-0.5 flex items-center gap-1">
                         <span className="sr-only">Aantal voor {label}</span>
                         <input
