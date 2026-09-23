@@ -26,6 +26,9 @@ function dag(date: string, items: { key: string; grams: number }[]): DagboekDag 
 /** Havermout draagt magnesium, eiwit en zink — handig als enige bron. */
 const HAVER = (grams: number) => ({ key: "havermout", grams });
 
+/** Kipfilet draagt eiwit maar géén magnesium — een geregistreerde dag zonder magnesiumbron. */
+const KIP = (grams: number) => ({ key: "kipfilet", grams });
+
 describe("de wettelijke referentie-innames", () => {
   it("draagt de waarden uit bijlage XIII", () => {
     expect(REFERENCE_INTAKES.magnesium.value).toBe(375);
@@ -205,6 +208,43 @@ describe("de bevinding", () => {
     expect(bevinding).not.toBeNull();
     expect(bevinding!.dagenOnder).toBe(3);
     expect(bevinding!.dagenGemeten).toBe(3);
+  });
+
+  it("telt elke geregistreerde dag mee, ook de dagen zonder bron voor die stof", () => {
+    // Vier dagen geregistreerd, waarvan twee met een magnesiumbron. De twee
+    // kipdagen zijn echte nullen voor magnesium: er stonden wel bronnen op,
+    // alleen geen die magnesium droeg. Ze uit de noemer laten vallen levert
+    // "2 van de 2" op naast een scherm dat "4 dagen geregistreerd" zegt — de
+    // zin claimt dan een patroon dat de data niet draagt.
+    const dagen = [
+      dag("2026-09-17", [HAVER(40)]),
+      dag("2026-09-16", [KIP(150)]),
+      dag("2026-09-15", [HAVER(40)]),
+      dag("2026-09-14", [KIP(150)]),
+    ];
+    const bevinding = bepaalBevinding(bouwTekortsysteem(dagen, VANDAAG), dagen, VANDAAG);
+
+    expect(bevinding).not.toBeNull();
+    expect(bevinding!.dagenGemeten).toBe(4);
+    expect(bevinding!.dagenOnder).toBe(4);
+  });
+
+  it("houdt dezelfde noemer aan als de vensters", () => {
+    // De vensters delen al door alle geregistreerde dagen. Als de bevinding
+    // een andere noemer hanteert, spreken twee getallen op hetzelfde scherm
+    // elkaar tegen.
+    const dagen = [
+      dag("2026-09-17", [HAVER(40)]),
+      dag("2026-09-16", [KIP(150)]),
+      dag("2026-09-15", [KIP(150)]),
+    ];
+    const reeksen = bouwTekortsysteem(dagen, VANDAAG);
+    const bevinding = bepaalBevinding(reeksen, dagen, VANDAAG);
+    const maandVenster = reeksen
+      .find((r) => r.nutrient === bevinding!.nutrient)!
+      .vensters.find((v) => v.dagen_terug === 30)!;
+
+    expect(bevinding!.dagenGemeten).toBe(maandVenster.dagen);
   });
 
   it("kiest nooit een stof die een dagboek niet kan aantonen", () => {

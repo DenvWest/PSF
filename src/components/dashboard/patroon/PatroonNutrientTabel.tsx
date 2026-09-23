@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
+import { REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
 import { trackEvent } from "@/lib/ga4";
 import {
   hoeveelheid,
@@ -139,6 +140,12 @@ export default function PatroonNutrientTabel({ reeksen, verborgen, onToggle }: P
 
           {gesorteerd.map((reeks) => {
             const venster = reeks.vensters.find((v) => v.dagen_terug === vensterLengte);
+            // Eiwit rekent tegen gewicht en belasting (`protein-target.ts`),
+            // niet tegen de etiket-RI — `aandeel` is daar dus null. Zonder
+            // label leest die lege ADH-cel als "niets gemeten", terwijl het
+            // "hier geldt een ander doel" betekent. Dezelfde term als de
+            // venstertabel en de weekkaarten gebruiken.
+            const eigenDoel = REFERENCE_INTAKES[reeks.nutrient].personalTarget;
             const vulling =
               !venster || venster.aandeel === null
                 ? 0
@@ -162,12 +169,30 @@ export default function PatroonNutrientTabel({ reeksen, verborgen, onToggle }: P
                       <span className="vd-pil" data-toon="amber">
                         n.t.b.
                       </span>
+                    ) : eigenDoel ? (
+                      <span className="vd-pil" data-toon="amber">
+                        eigen doel
+                      </span>
                     ) : null}
                   </span>
                 </span>
 
+                {/*
+                  De eenheid hoort bij het getal, niet bij de kolomkop: de
+                  stoffen staan onder elkaar in g, mg én µg, dus "60" zegt
+                  zonder eenheid niets. De kaarten onder deze tabel schrijven
+                  hem al voluit — zonder dit stonden dezelfde cijfers op twee
+                  plekken verschillend.
+
+                  "n.o." staat er alleen als er geen dag geregistreerd is. Een
+                  geregistreerde dag zonder bron voor deze stof is een echte
+                  nul en hoort ook zo te lezen; "n.o." zou daar beweren dat je
+                  niets invulde terwijl je dat wel deed.
+                */}
                 <span className="vd-getal">
-                  {!venster || venster.dagen === 0 ? "n.o." : hoeveelheid(venster.gemiddeld)}
+                  {!venster || venster.dagen === 0
+                    ? "n.o."
+                    : `${hoeveelheid(venster.gemiddeld)} ${reeks.unit}`}
                 </span>
 
                 <span className="vd-cel">
