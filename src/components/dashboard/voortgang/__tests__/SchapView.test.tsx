@@ -36,7 +36,6 @@ function renderSchap(
   activeTab: SchapTabId | null = null,
   handlers: {
     onSwitchDomain?: (domain: PillarId) => void;
-    onOpenLeefstijlprofiel?: (domain: PillarId) => void;
   } = {},
 ) {
   return render(
@@ -180,21 +179,6 @@ describe("SchapView — de domeinschakelaar", () => {
   it("staat er niet zonder handler — geen chip die nergens heen gaat", () => {
     renderSchap("slaap");
     expect(screen.queryByRole("navigation", { name: "Schap van een ander domein" })).toBeNull();
-  });
-});
-
-describe("SchapView — de terugweg naar het leefstijlprofiel", () => {
-  it("wijst naar het profiel van dit domein", () => {
-    const onOpenLeefstijlprofiel = vi.fn();
-    renderSchap("voeding", null, { onOpenLeefstijlprofiel });
-
-    fireEvent.click(screen.getByRole("button", { name: /Leefstijlprofiel · Voeding/ }));
-    expect(onOpenLeefstijlprofiel).toHaveBeenCalledWith("voeding");
-  });
-
-  it("staat er niet zonder handler", () => {
-    renderSchap("voeding");
-    expect(screen.queryByRole("button", { name: /Leefstijlprofiel/ })).toBeNull();
   });
 });
 

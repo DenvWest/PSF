@@ -10,7 +10,7 @@ import {
   isSchapTabId,
 } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
-import type { PillarId, VoortgangScreen } from "@/types/dashboard";
+import type { PillarId } from "@/types/dashboard";
 
 type PrebuildRoute = {
   tab?: string;
@@ -62,12 +62,9 @@ export function resolvePrebuildHref(route: PrebuildRoute): string | null {
         return buildDashboardKeuzeHref(fav, isSchapTabId(route.schap) ? route.schap : null);
       }
     }
-    return buildDashboardVoortgangHref(
-      (route.screen ?? "hub") as VoortgangScreen,
-      null,
-      null,
-      asPillar(route.fav),
-    );
+    // Leefstijlprofiel (de domeinhub) is opgeheven — elke andere `screen`
+    // dan hermeting valt terug op de hub.
+    return buildDashboardVoortgangHref(route.screen === "hermeting" ? "hermeting" : "hub");
   }
   return null;
 }

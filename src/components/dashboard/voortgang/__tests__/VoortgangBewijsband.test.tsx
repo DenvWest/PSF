@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import VoortgangBewijsband from "@/components/dashboard/voortgang/VoortgangBewijsband";
 import type { DashboardData } from "@/types/dashboard";
@@ -20,19 +20,15 @@ const REMEASURE: NonNullable<DashboardData["remeasure"]> = {
 };
 
 function renderBand(props: Partial<Parameters<typeof VoortgangBewijsband>[0]> = {}) {
-  const onSelectDomain = vi.fn();
   render(
     <VoortgangBewijsband
       cycleEvidence={CYCLE_EVIDENCE}
       remeasure={REMEASURE}
       domainCheckDaysAgo={{ slaap: 4, voeding: 9 }}
       priorityLabel="Slaap"
-      selectedDomain={null}
-      onSelectDomain={onSelectDomain}
       {...props}
     />,
   );
-  return { onSelectDomain };
 }
 
 describe("VoortgangBewijsband", () => {
@@ -43,12 +39,6 @@ describe("VoortgangBewijsband", () => {
     expect(screen.getByRole("button", { name: "Slaap — dag 8" })).toBeTruthy();
   });
 
-  it("opens the domain below when its measurement is clicked", () => {
-    const { onSelectDomain } = renderBand();
-    fireEvent.click(screen.getByRole("button", { name: "Slaap — dag 8" }));
-    expect(onSelectDomain).toHaveBeenCalledWith("slaap");
-  });
-
   it("moves the caption to the clicked day", () => {
     renderBand();
     fireEvent.click(screen.getByRole("button", { name: "Slaap — dag 8" }));
@@ -56,15 +46,15 @@ describe("VoortgangBewijsband", () => {
     expect(screen.getByText("Je mat je slaap.")).toBeTruthy();
   });
 
-  it("keeps the leefstijlcheck marker from claiming a domain", () => {
-    const { onSelectDomain } = renderBand();
+  it("moves the caption for the leefstijlcheck marker too", () => {
+    renderBand();
     fireEvent.click(screen.getByRole("button", { name: "Je leefstijlcheck — dag 1" }));
-    expect(onSelectDomain).not.toHaveBeenCalled();
     expect(screen.getByText("Dag 1 · 16 jul")).toBeTruthy();
   });
 
-  it("marks the open domain as pressed", () => {
-    renderBand({ selectedDomain: "voeding" });
+  it("marks the clicked day as pressed", () => {
+    renderBand();
+    fireEvent.click(screen.getByRole("button", { name: "Voeding — dag 3" }));
     expect(
       screen.getByRole("button", { name: "Voeding — dag 3" }).getAttribute("aria-pressed"),
     ).toBe("true");

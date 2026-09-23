@@ -4,7 +4,6 @@ import Link from "next/link";
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import {
-  VOEDING_RAIL_LAYERS,
   VOORTGANG_RAIL_ITEMS,
   type ContextRailDomainItem,
   type ContextRailKeuzeItem,
@@ -14,8 +13,6 @@ import {
   type ContextRailVoortgangItem,
   type VoortgangRailItemId,
 } from "@/lib/context-rail";
-import type { VoedingLaagSlug } from "@/lib/dashboard-url";
-import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
 import type { PillarId } from "@/types/dashboard";
 
 type IconComp = ComponentType<{ s?: number; sw?: number; style?: CSSProperties }>;
@@ -34,12 +31,7 @@ type CockpitContextRailProps = {
   onBackToKompas?: () => void;
   domainLabel?: string | null;
   voortgangActiveItem?: VoortgangRailItemId | null;
-  voortgangLeefstijlprofielDomein?: PillarId | null;
-  voortgangDomains?: ContextRailDomainItem[];
   onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
-  onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
-  voortgangVoedingLaag?: VoedingLaagSlug | null;
-  onOpenVoedingLaag?: (laag: VoedingLaagSlug) => void;
   /** Keuze-modus: welk schap open staat en welke domeinen er een hebben. */
   keuzeDomains?: ContextRailKeuzeItem[];
   keuzeActiveDomein?: PillarId | null;
@@ -51,12 +43,6 @@ const ZONEFLAG =
 
 const RAIL_ITEM =
   "flex w-full items-center gap-2.5 rounded-[12px] border px-2.5 py-2 text-left text-[13.5px] font-medium transition";
-
-const RAIL_SUB_ITEM =
-  "flex w-full items-center gap-2 rounded-[10px] border px-2 py-1.5 text-left text-[12.5px] font-medium transition";
-
-const RAIL_NEST_ITEM =
-  "flex w-full items-center gap-2 rounded-[9px] border px-2 py-1 text-left text-[12px] font-medium transition";
 
 function iconOf(name: string): IconComp | null {
   return (Icons[name as keyof typeof Icons] as IconComp | undefined) ?? null;
@@ -102,12 +88,7 @@ export default function CockpitContextRail({
   onBackToKompas,
   domainLabel,
   voortgangActiveItem = null,
-  voortgangLeefstijlprofielDomein = null,
-  voortgangDomains = [],
   onOpenVoortgangItem,
-  onOpenLeefstijlprofielDomein,
-  voortgangVoedingLaag = null,
-  onOpenVoedingLaag,
   keuzeDomains = [],
   keuzeActiveDomein = null,
   onOpenKeuzeDomein,
@@ -208,120 +189,9 @@ export default function CockpitContextRail({
     );
   };
 
-  const renderVoortgangDomain = (domain: ContextRailDomainItem) => {
-    const Icon = iconOf(domain.icon);
-    const clickable = isKlikbaarVoortgangDomein(domain.id);
-    const domainActive =
-      clickable &&
-      voortgangActiveItem === "leefstijlprofiel" &&
-      voortgangLeefstijlprofielDomein === domain.id &&
-      (domain.id !== "voeding" || voortgangVoedingLaag == null);
-
-    const domainRow = clickable ? (
-      <button
-        type="button"
-        aria-current={domainActive ? "page" : undefined}
-        onClick={() => onOpenLeefstijlprofielDomein?.(domain.id)}
-        className={`${RAIL_SUB_ITEM} ${
-          domainActive
-            ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/12 text-[#F1EFE8]"
-            : "border-transparent text-[#9FB0A6] hover:border-white/10 hover:bg-white/[0.05] hover:text-[#F1EFE8]"
-        }`}
-      >
-        <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center">
-          {Icon ? <Icon s={14} style={{ color: domain.color }} /> : null}
-        </span>
-        <span className="min-w-0 flex-1 truncate">{domain.label}</span>
-        <span className="shrink-0 text-[11px] font-semibold tabular-nums text-[#7E8C82]">
-          {domain.score}
-        </span>
-      </button>
-    ) : (
-      <span
-        aria-disabled
-        className={`${RAIL_SUB_ITEM} cursor-default border-transparent text-[#9FB0A6]`}
-      >
-        <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center">
-          {Icon ? <Icon s={14} style={{ color: domain.color }} /> : null}
-        </span>
-        <span className="min-w-0 flex-1 truncate">{domain.label}</span>
-        <span className="shrink-0 text-[11px] font-semibold tabular-nums text-[#7E8C82]">
-          {domain.score}
-        </span>
-      </span>
-    );
-
-    if (domain.id !== "voeding") {
-      return <div key={domain.id}>{domainRow}</div>;
-    }
-
-    return (
-      <div key={domain.id} className="flex flex-col gap-0.5">
-        {domainRow}
-        <div className="ml-2 flex flex-col gap-0.5 border-l border-white/10 pl-2">
-          {VOEDING_RAIL_LAYERS.map((layer) => {
-            const layerActive =
-              voortgangActiveItem === "leefstijlprofiel" &&
-              voortgangLeefstijlprofielDomein === "voeding" &&
-              voortgangVoedingLaag === layer.slug;
-            return (
-              <button
-                key={layer.slug}
-                type="button"
-                aria-current={layerActive ? "page" : undefined}
-                onClick={() => onOpenVoedingLaag?.(layer.slug)}
-                className={`${RAIL_NEST_ITEM} ${
-                  layerActive
-                    ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/12 text-[#F1EFE8]"
-                    : "border-transparent text-[#9FB0A6] hover:border-white/10 hover:bg-white/[0.05] hover:text-[#F1EFE8]"
-                }`}
-              >
-                <span className="min-w-0 flex-1 truncate">{layer.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-
   const renderVoortgangItem = (item: ContextRailVoortgangItem) => {
     const Icon = iconOf(item.icon);
-    const active =
-      item.id === voortgangActiveItem &&
-      (item.id !== "leefstijlprofiel" || voortgangLeefstijlprofielDomein == null);
-
-    if (item.id === "leefstijlprofiel") {
-      return (
-        <div key={item.id} className="flex flex-col gap-0.5">
-          <button
-            type="button"
-            aria-current={active ? "page" : undefined}
-            onClick={() => onOpenVoortgangItem?.("leefstijlprofiel")}
-            className={`${RAIL_ITEM} ${
-              active
-                ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/12 text-[#F1EFE8]"
-                : "border-transparent text-[#9FB0A6] hover:border-white/10 hover:bg-white/[0.05] hover:text-[#F1EFE8]"
-            }`}
-          >
-            <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-              {Icon ? (
-                <Icon
-                  s={16}
-                  style={{ color: active ? "#5A8F6A" : "rgba(159,176,166,0.85)" }}
-                />
-              ) : null}
-            </span>
-            <span className="min-w-0 flex-1 truncate">{item.label}</span>
-          </button>
-          {voortgangDomains.length > 0 ? (
-            <div className="ml-2 flex flex-col gap-0.5 border-l border-white/10 pl-2">
-              {voortgangDomains.map(renderVoortgangDomain)}
-            </div>
-          ) : null}
-        </div>
-      );
-    }
+    const active = item.id === voortgangActiveItem;
 
     return (
       <button

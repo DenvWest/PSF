@@ -1,23 +1,22 @@
 import { MOVEMENT_FOCUS_ORDER, type MovementFocusKey } from "@/data/movement-checkin";
 import { hasSchap } from "@/lib/schap-availability";
-import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
 import type { DashboardTabId, PillarId, SchapTabId, VoortgangScreen } from "@/types/dashboard";
 
-const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
-  "hub",
-  "inzichten",
-  "leefstijlprofiel",
-  "hermeting",
-  "weekoverzicht",
-  "schap",
-  "domein",
-]);
+const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>(["hub", "hermeting"]);
 
+/**
+ * Alles wat vóór 23 september een eigen scherm was — Leefstijlprofiel (de
+ * domeinhub), het losse weekoverzicht, en hun eigen legacy-namen van dáárvoor
+ * — landt nu op de hub. `fav`/`laag`/`domein` op tab=voortgang worden overal
+ * waar deze tabel wordt toegepast mee opgeruimd.
+ */
 const LEGACY_VOORTGANG_SCREEN_ALIASES: Record<string, VoortgangScreen> = {
   statistieken: "hub",
   lichaamssamenstelling: "hub",
-  inzichten: "leefstijlprofiel",
-  domein: "leefstijlprofiel",
+  inzichten: "hub",
+  domein: "hub",
+  leefstijlprofiel: "hub",
+  weekoverzicht: "hub",
 };
 
 export type LegacyVoortgangScreen = keyof typeof LEGACY_VOORTGANG_SCREEN_ALIASES;
@@ -33,55 +32,29 @@ export function getLegacyVoortgangScreenAlias(raw: string | null): LegacyVoortga
 export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | null {
   const rawScreen = url.searchParams.get("screen");
 
-  // `screen=favorieten` is legacy (22 aug): het losse domein-overstijgende
-  // scherm is opgeheven, favorieten leven nu op de Favorieten-tab van het
-  // schap. Oude links/bookmarks dragen de naam nog — mét een domein mét schap
-  // vertalen we door naar dat schap, anders valt de route terug op de hub.
+  // `screen=favorieten` mét een domein dat een schap heeft is de oude naam
+  // van dat schap (22 aug) — `canonicalizeDashboardTabParam` herschrijft die
+  // route naar `tab=keuze` vóórdat deze functie draait. Komt hij hier tóch
+  // langs (geen schap-domein), dan is de hub de eerlijkste landing.
   if (rawScreen === "favorieten") {
-    const fav = url.searchParams.get("fav");
-    if (fav && KOMPAS_DOMAIN_IDS.has(fav as PillarId) && hasSchap(fav as PillarId)) {
-      url.searchParams.set("screen", "schap");
-      return "schap";
-    }
     url.searchParams.delete("screen");
     url.searchParams.delete("fav");
     url.searchParams.delete("laag");
     url.searchParams.delete("schap");
+    url.searchParams.delete("domein");
     return "hub";
   }
 
   const legacy = getLegacyVoortgangScreenAlias(rawScreen);
   if (!legacy) {
-    if (rawScreen === "leefstijlprofiel" && stripNietKlikbaarFav(url)) {
-      return "leefstijlprofiel";
-    }
     return null;
   }
-  const canonical = LEGACY_VOORTGANG_SCREEN_ALIASES[legacy];
   url.searchParams.delete("blik");
-  if (canonical === "hub") {
-    url.searchParams.delete("screen");
-    url.searchParams.delete("domein");
-    url.searchParams.delete("fav");
-    url.searchParams.delete("laag");
-  } else {
-    url.searchParams.set("screen", canonical);
-    if (legacy === "domein") {
-      const domein = url.searchParams.get("domein");
-      url.searchParams.delete("domein");
-      if (domein && KOMPAS_DOMAIN_IDS.has(domein as PillarId)) {
-        url.searchParams.set("fav", domein);
-      }
-    }
-    if (legacy === "inzichten") {
-      url.searchParams.delete("fav");
-    }
-    if (url.searchParams.get("fav") !== "voeding") {
-      url.searchParams.delete("laag");
-    }
-    stripNietKlikbaarFav(url);
-  }
-  return canonical;
+  url.searchParams.delete("screen");
+  url.searchParams.delete("domein");
+  url.searchParams.delete("fav");
+  url.searchParams.delete("laag");
+  return "hub";
 }
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -141,28 +114,6 @@ export function isPillarId(value: unknown): value is PillarId {
   return typeof value === "string" && KOMPAS_DOMAIN_IDS.has(value as PillarId);
 }
 
-/** Alleen voeding opent nu een leefstijlprofiel-scherm; andere favs vallen terug op de hub. */
-function klikbaarLeefstijlprofielFav(fav: string | null): PillarId | null {
-  if (!fav || !KOMPAS_DOMAIN_IDS.has(fav as PillarId)) {
-    return null;
-  }
-  const domain = fav as PillarId;
-  return isKlikbaarVoortgangDomein(domain) ? domain : null;
-}
-
-function stripNietKlikbaarFav(url: URL): boolean {
-  const fav = url.searchParams.get("fav");
-  if (!fav || !KOMPAS_DOMAIN_IDS.has(fav as PillarId)) {
-    return false;
-  }
-  if (isKlikbaarVoortgangDomein(fav as PillarId)) {
-    return false;
-  }
-  url.searchParams.delete("fav");
-  url.searchParams.delete("laag");
-  return true;
-}
-
 export function parseKompasFromUrl(url: string | URL): PillarId | null {
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
@@ -171,99 +122,6 @@ export function parseKompasFromUrl(url: string | URL): PillarId | null {
     return kompas as PillarId;
   }
   return null;
-}
-
-/** Voortgang › domein-scherm (S4): zelfde geldige domein-set als de Kompas-param. */
-export function parseVoortgangDomeinFromUrl(url: string | URL): PillarId | null {
-  const parsed =
-    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
-  const domein = parsed.searchParams.get("domein");
-  if (domein && KOMPAS_DOMAIN_IDS.has(domein as PillarId)) {
-    return domein as PillarId;
-  }
-  return null;
-}
-
-/** Leefstijlprofiel / Favorieten deep link — scoped view per domein. */
-export function parseLeefstijlprofielDomeinFromUrl(url: string | URL): PillarId | null {
-  const parsed =
-    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
-  const fav = parsed.searchParams.get("fav");
-  const fromFav = klikbaarLeefstijlprofielFav(fav);
-  if (fromFav) {
-    return fromFav;
-  }
-  const screen = parsed.searchParams.get("screen");
-  if (screen === "domein") {
-    return klikbaarLeefstijlprofielFav(parsed.searchParams.get("domein"));
-  }
-  return null;
-}
-
-/** @deprecated Gebruik parseLeefstijlprofielDomeinFromUrl */
-export const parseFavorietenDomeinFromUrl = parseLeefstijlprofielDomeinFromUrl;
-
-/**
- * De drie knoppen van Voeding als URL-slug. Geen P-cijfers in de URL: de
- * nummering hoort bij de eetbasis-piramide en niet bij een adres dat iemand
- * kan delen.
- *
- * `eetbasis` is er 3 sep bijgekomen, toen Voeding van zes naar drie knoppen
- * ging (zie `voeding-drieluik.ts`). Hij deeplinkt naar laag 1, en die knop
- * toont ook de lagen 2 en 4 — de URL wijst dus naar de knop, niet naar één
- * ladderlaag.
- */
-export const VOEDING_LAAG_SLUGS = ["meten-timing", "eetbasis", "aanvullen"] as const;
-export type VoedingLaagSlug = (typeof VOEDING_LAAG_SLUGS)[number];
-export type VoedingLaagId = 1 | 5 | 6;
-
-const VOEDING_LAAG_ID_BY_SLUG: Record<VoedingLaagSlug, VoedingLaagId> = {
-  "meten-timing": 5,
-  eetbasis: 1,
-  aanvullen: 6,
-};
-
-export function isVoedingLaagSlug(value: unknown): value is VoedingLaagSlug {
-  return (
-    value === "meten-timing" || value === "eetbasis" || value === "aanvullen"
-  );
-}
-
-export function voedingLaagIdFromSlug(slug: VoedingLaagSlug): VoedingLaagId {
-  return VOEDING_LAAG_ID_BY_SLUG[slug];
-}
-
-/**
- * De slug van de knop die deze ladderlaag draagt.
- *
- * De lagen 2 en 4 hebben geen eigen slug: ze staan onder Voedingsbasis, dus
- * die geven `eetbasis` terug. Laag 3 wordt niet meer getoond en geeft null.
- */
-export function voedingLaagSlugFromId(layer: number): VoedingLaagSlug | null {
-  if (layer === 5) {
-    return "meten-timing";
-  }
-  if (layer === 1 || layer === 2 || layer === 4) {
-    return "eetbasis";
-  }
-  if (layer === 6) {
-    return "aanvullen";
-  }
-  return null;
-}
-
-/**
- * Alleen geldig op Voeding: `fav=voeding&laag=meten-timing|eetbasis|aanvullen`.
- * Andere domeinen of onbekende slugs worden genegeerd.
- */
-export function parseVoedingLaagFromUrl(url: string | URL): VoedingLaagSlug | null {
-  const parsed =
-    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
-  if (parseLeefstijlprofielDomeinFromUrl(parsed) !== "voeding") {
-    return null;
-  }
-  const laag = parsed.searchParams.get("laag");
-  return isVoedingLaagSlug(laag) ? laag : null;
 }
 
 const VALID_SCHAP_TABS = new Set<SchapTabId>([
@@ -494,66 +352,18 @@ function normalizeVoortgangScreen(raw: string | null): VoortgangScreen {
 export function parseVoortgangScreenFromUrl(url: string | URL): VoortgangScreen {
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
-  const screen = parsed.searchParams.get("screen");
-  // `favorieten` mét een domein dát een schap heeft is de oude naam van het
-  // schap. Legacy screens worden hier gelezen, niet herschreven — de URL
-  // opschonen doet `canonicalizeVoortgangScreenParam`, en dat draait alleen op
-  // popstate. Wie een oude bookmark opent moet ook zónder die opschoning op
-  // het juiste scherm landen.
-  if (screen === "favorieten") {
-    const fav = parsed.searchParams.get("fav");
-    if (fav && KOMPAS_DOMAIN_IDS.has(fav as PillarId) && hasSchap(fav as PillarId)) {
-      return "schap";
-    }
-  }
-  return normalizeVoortgangScreen(screen);
+  return normalizeVoortgangScreen(parsed.searchParams.get("screen"));
 }
 
-export function buildDashboardVoortgangHref(
-  screen?: VoortgangScreen | null,
-  _blik?: null,
-  domein?: PillarId | null,
-  fav?: PillarId | null,
-  laag?: VoedingLaagSlug | null,
-): string {
+export function buildDashboardVoortgangHref(screen?: VoortgangScreen | null): string {
   const params = new URLSearchParams({ tab: "voortgang" });
-  let resolvedScreen = screen && screen !== "hub" ? screen : null;
-  let resolvedFav = fav ?? null;
-
-  if (resolvedScreen === "domein") {
-    resolvedScreen = "leefstijlprofiel";
-    resolvedFav = resolvedFav ?? domein ?? null;
-  }
-  if (resolvedScreen === "inzichten") {
-    resolvedScreen = "leefstijlprofiel";
-  }
-
-  if (resolvedScreen === "leefstijlprofiel") {
-    resolvedFav = klikbaarLeefstijlprofielFav(resolvedFav);
-  }
-
-  if (resolvedScreen) {
-    params.set("screen", resolvedScreen);
-  }
-  if (resolvedScreen === "leefstijlprofiel" && resolvedFav) {
-    params.set("fav", resolvedFav);
-    if (resolvedFav === "voeding" && isVoedingLaagSlug(laag)) {
-      params.set("laag", laag);
-    }
+  if (screen === "hermeting") {
+    params.set("screen", "hermeting");
   }
   return `/dashboard?${params.toString()}`;
 }
 
-export type SyncDashboardVoortgangOptions = {
-  domein?: PillarId | null;
-  fav?: PillarId | null;
-  laag?: VoedingLaagSlug | null;
-};
-
-export function syncDashboardVoortgangScreenParam(
-  screen: VoortgangScreen,
-  options?: SyncDashboardVoortgangOptions,
-): void {
+export function syncDashboardVoortgangScreenParam(screen: VoortgangScreen): void {
   if (typeof window === "undefined") {
     return;
   }
@@ -564,36 +374,16 @@ export function syncDashboardVoortgangScreenParam(
   url.searchParams.delete("view");
   url.searchParams.delete("dag");
   url.searchParams.delete("blik");
+  url.searchParams.delete("domein");
+  url.searchParams.delete("fav");
+  url.searchParams.delete("laag");
+  url.searchParams.delete("deel");
+  url.searchParams.delete("schap");
 
-  if (screen === "hub") {
-    url.searchParams.delete("screen");
-    url.searchParams.delete("domein");
-    url.searchParams.delete("fav");
-    url.searchParams.delete("laag");
-    url.searchParams.delete("deel");
-    url.searchParams.delete("schap");
+  if (screen === "hermeting") {
+    url.searchParams.set("screen", "hermeting");
   } else {
-    url.searchParams.set("screen", screen);
-    url.searchParams.delete("domein");
-    url.searchParams.delete("deel");
-    url.searchParams.delete("schap");
-    if (screen === "leefstijlprofiel" && options?.fav) {
-      const fav = klikbaarLeefstijlprofielFav(options.fav);
-      if (fav) {
-        url.searchParams.set("fav", fav);
-        if (fav === "voeding" && isVoedingLaagSlug(options.laag)) {
-          url.searchParams.set("laag", options.laag);
-        } else {
-          url.searchParams.delete("laag");
-        }
-      } else {
-        url.searchParams.delete("fav");
-        url.searchParams.delete("laag");
-      }
-    } else {
-      url.searchParams.delete("fav");
-      url.searchParams.delete("laag");
-    }
+    url.searchParams.delete("screen");
   }
 
   const nextHref = url.toString();

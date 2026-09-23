@@ -5,23 +5,10 @@ import { useEffect } from "react";
 import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScroll";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 import VoortgangTerugLink from "@/components/dashboard/voortgang/VoortgangTerugLink";
-import LeefstijlprofielDomeinScherm from "@/components/dashboard/voortgang/LeefstijlprofielDomeinScherm";
-import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
-import { clarityTag } from "@/lib/clarity";
-import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
-import {
-  type SyncDashboardVoortgangOptions,
-  type VoedingLaagSlug,
-  voedingLaagIdFromSlug,
-  voedingLaagSlugFromId,
-} from "@/lib/dashboard-url";
-import { trackEvent } from "@/lib/ga4";
 import type {
-  AccountPriorityPrefData,
   DashboardData,
   DashboardModel,
   DashboardTabId,
-  PillarId,
   VoortgangScreen,
 } from "@/types/dashboard";
 
@@ -32,19 +19,14 @@ type VoortgangHubProps = {
   data?: DashboardData;
   tab: DashboardTabId;
   screen: VoortgangScreen;
-  leefstijlprofielDomein: PillarId | null;
-  voedingLaag?: VoedingLaagSlug | null;
   /**
    * Het hermeting-scherm. Komt als slot binnen omdat de secties (`retest`,
    * `future`) in `Dashboard.tsx` wonen en daar hun data al krijgen — tot 27
    * augustus als eigen tabblad, sindsdien als scherm binnen Voortgang.
    */
   hermetingSlot: ReactNode;
-  onScreenChange: (screen: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => void;
-  onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
+  onScreenChange: (screen: VoortgangScreen) => void;
   onGoAgenda: () => void;
-  /** Naar de Keuze-tab: het aanbod van dít domein. */
-  onGoKeuze: (domain: PillarId) => void;
 };
 
 function VoortgangHubInner({
@@ -52,12 +34,9 @@ function VoortgangHubInner({
   data,
   tab,
   screen,
-  leefstijlprofielDomein,
-  voedingLaag = null,
   hermetingSlot,
   onScreenChange,
   onGoAgenda,
-  onGoKeuze,
 }: Omit<VoortgangHubProps, "onPrefUpdated">) {
   useEffect(() => {
     if (tab !== "voortgang") {
@@ -65,72 +44,13 @@ function VoortgangHubInner({
     }
   }, [tab, onScreenChange]);
 
-  const navigate = (next: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => {
-    onScreenChange(next, options);
-  };
-
   const goBack = () => {
-    trackEvent("dashboard_voortgang_terug", { from: screen });
-    navigate("hub");
-  };
-
-  const openLeefstijlprofielDomein = (domain: PillarId) => {
-    if (!isKlikbaarVoortgangDomein(domain)) {
-      return;
-    }
-    trackEvent("dashboard_voortgang_hub_click", {
-      destination: "leefstijlprofiel",
-      domain,
-    });
-    clarityTag("dashboard_voortgang", `leefstijlprofiel_${domain}`);
-    navigate("leefstijlprofiel", { fav: domain, laag: null });
+    onScreenChange("hub");
   };
 
   let content: ReactNode;
 
-  if (
-    (screen === "leefstijlprofiel" || screen === "domein") &&
-    leefstijlprofielDomein &&
-    isKlikbaarVoortgangDomein(leefstijlprofielDomein)
-  ) {
-    // Het echte scherm, niet de prebuild (19 aug). Aanbeveling en Mijn keuze
-    // zitten sinds deze slice ín de ladder, per laag, en die draait op
-    // `account_favorites` — dat kan een same-origin iframe niet leveren.
-    // Bestand A (leefstijlprofiel-domein-keuze-prebuild-v3) blijft de bron
-    // voor de vorm; docs/design is waar je hem leest.
-    content = (
-      <LeefstijlprofielDomeinScherm
-        model={model!}
-        data={data}
-        domain={leefstijlprofielDomein}
-        urlLayer={
-          leefstijlprofielDomein === "voeding" && voedingLaag
-            ? voedingLaagIdFromSlug(voedingLaag)
-            : null
-        }
-        onUrlLayerChange={
-          leefstijlprofielDomein === "voeding"
-            ? (layer) => {
-                navigate("leefstijlprofiel", {
-                  fav: "voeding",
-                  laag: layer == null ? null : voedingLaagSlugFromId(layer),
-                });
-              }
-            : undefined
-        }
-        onBack={goBack}
-        onOpenSchap={onGoKeuze}
-      />
-    );
-  } else if (screen === "leefstijlprofiel" || screen === "inzichten") {
-    content = (
-      <LeefstijlprofielKeuzeHub
-        data={data}
-        onBack={goBack}
-        onOpenDomain={openLeefstijlprofielDomein}
-      />
-    );
-  } else if (screen === "hermeting") {
+  if (screen === "hermeting") {
     content = (
       <section aria-label="Hermeting" className="pt-4">
         <VoortgangTerugLink onBack={goBack} />
@@ -140,15 +60,12 @@ function VoortgangHubInner({
     );
   } else {
     content = (
-      <section aria-label="Voortgang navigatie">
+      <section aria-label="Je patroon">
         <VoortgangHubScroll
           model={model!}
           data={data}
           onGoAgenda={onGoAgenda}
-          onGoHermeting={() => navigate("hermeting")}
-          onOpenDomain={(domain: PillarId) => {
-            openLeefstijlprofielDomein(domain);
-          }}
+          onGoHermeting={() => onScreenChange("hermeting")}
         />
       </section>
     );

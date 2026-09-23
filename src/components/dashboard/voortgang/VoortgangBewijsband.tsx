@@ -25,17 +25,13 @@ import {
   scrubZone,
   type BandMeasurement,
 } from "@/lib/voortgang-bewijsband";
-import type { DashboardData, PillarId } from "@/types/dashboard";
+import type { DashboardData } from "@/types/dashboard";
 
 type VoortgangBewijsbandProps = {
   cycleEvidence: DashboardData["cycleEvidence"];
   remeasure: DashboardData["remeasure"];
   domainCheckDaysAgo: DashboardData["domainCheckDaysAgo"] | undefined;
   priorityLabel: string;
-  /** Welk domein onder de band open staat — de band markeert dat meetmoment. */
-  selectedDomain?: PillarId | null;
-  /** Een meting aanklikken opent datzelfde domein in de reeks eronder. */
-  onSelectDomain?: (domain: PillarId) => void;
 };
 
 type IconComp = ComponentType<{ s?: number; sw?: number; style?: CSSProperties }>;
@@ -327,8 +323,6 @@ export default function VoortgangBewijsband({
   remeasure,
   domainCheckDaysAgo,
   priorityLabel,
-  selectedDomain = null,
-  onSelectDomain,
 }: VoortgangBewijsbandProps) {
   if (!remeasure) {
     return null;
@@ -346,8 +340,6 @@ export default function VoortgangBewijsband({
       priorityLabel={priorityLabel}
       isWachtend={isWachtend}
       defaultHeadDay={defaultHeadDay}
-      selectedDomain={selectedDomain}
-      onSelectDomain={onSelectDomain}
     />
   );
 }
@@ -359,8 +351,6 @@ function VoortgangBewijsbandInner({
   priorityLabel,
   isWachtend,
   defaultHeadDay,
-  selectedDomain,
-  onSelectDomain,
 }: {
   cycleEvidence: DashboardData["cycleEvidence"];
   remeasure: NonNullable<DashboardData["remeasure"]>;
@@ -368,8 +358,6 @@ function VoortgangBewijsbandInner({
   priorityLabel: string;
   isWachtend: boolean;
   defaultHeadDay: number;
-  selectedDomain: PillarId | null;
-  onSelectDomain?: (domain: PillarId) => void;
 }) {
   const [headDay, setHeadDay] = useState(defaultHeadDay);
   const scrubDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -450,9 +438,6 @@ function VoortgangBewijsbandInner({
       "dashboard_voortgang",
       `band_meting_${measurement.pillarId ?? "leefstijlcheck"}`,
     );
-    if (measurement.pillarId) {
-      onSelectDomain?.(measurement.pillarId);
-    }
   };
 
   return (
@@ -481,8 +466,7 @@ function VoortgangBewijsbandInner({
             {measurements.map((m) =>
               renderMeasurementMarker({
                 measurement: m,
-                active:
-                  m.day === headDay || (m.pillarId != null && m.pillarId === selectedDomain),
+                active: m.day === headDay,
                 onSelect: () => handleSelectMeasurement(m),
               }),
             )}

@@ -26,4 +26,4 @@ export function hasVoortgangReturnParam(
   return value === VOORTGANG_RETURN_VALUE;
 }
 
-export const VOORTGANG_LEEFSTIJLPROFIEL_HREF = buildDashboardVoortgangHref("leefstijlprofiel");
+export const VOORTGANG_HUB_HREF = buildDashboardVoortgangHref("hub");

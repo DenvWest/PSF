@@ -244,7 +244,7 @@ export default function MovementCapture() {
     const { snapshot, start } = step;
     const startLine = start ? `Sinds je start: ${start.statement}` : null;
     const programHref = buildMovementRoutingHref(snapshot.focusDimension);
-    const voortgangHref = buildDashboardVoortgangHref("domein", null, "beweging");
+    const voortgangHref = buildDashboardVoortgangHref("hub");
 
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">

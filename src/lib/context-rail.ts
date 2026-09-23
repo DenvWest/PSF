@@ -1,16 +1,10 @@
 import { PILLAR } from "@/data/dashboard";
-import {
-  buildDashboardKeuzeHref,
-  voedingLaagSlugFromId,
-  type VoedingLaagId,
-  type VoedingLaagSlug,
-} from "@/lib/dashboard-url";
+import { buildDashboardKeuzeHref } from "@/lib/dashboard-url";
 import { hasSchap, schapGateReason } from "@/lib/schap-availability";
-import { DRIELUIK, hoofdLaag } from "@/lib/voeding-drieluik";
 import { zichtbareDomeinen } from "@/lib/zichtbare-domeinen";
 import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
-export type VoortgangRailItemId = "hub" | "leefstijlprofiel" | "hermeting";
+export type VoortgangRailItemId = "hub" | "hermeting";
 
 /**
  * Contextuele linker rail (slice 1): pure bouwers voor wat de rail toont.
@@ -147,77 +141,18 @@ export type ContextRailVoortgangItem = {
 };
 
 /**
- * Favorieten staat sinds 21 augustus niet meer als los item in deze rail: het
- * schap draagt zelf een Favorieten-tab (per domein gefilterd), dus een
- * tweede, domein-overstijgende ingang hier was dubbel.
- *
- * Sinds 27 augustus staat het schap hier helemaal niet meer: het is de
- * Keuze-tab in de hoofdnavigatie geworden. Op de vrijgekomen plek staat
- * Hermeting — die was een eigen tab, terwijl hij hoort bij de meetreeksen
- * die hij voedt.
+ * Sinds 23 september nog maar twee bestemmingen. Leefstijlprofiel (de
+ * domeinhub) is opgeheven toen voeding het enige domein werd — "Je patroon"
+ * draagt voeding nu rechtstreeks. Hermeting bleef staan: dat was een eigen
+ * tab, en hoort bij de meetreeksen die hij voedt.
  */
 export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
-  { id: "hub", label: "Overzicht", icon: "Home" },
-  { id: "leefstijlprofiel", label: "Leefstijlprofiel", icon: "User" },
+  { id: "hub", label: "Je patroon", icon: "BarChart" },
   { id: "hermeting", label: "Hermeting", icon: "Calendar" },
 ];
 
-/**
- * Domeinen onder Leefstijlprofiel in de Voortgang-rail (desktop) en de
- * inklapbare balk (onder md). Dezelfde set als de Kompas-rail: slaap, stress
- * en beweging tonen hun cijfer, maar openen geen scherm zolang ze niet in
- * `KLIKBARE_VOORTGANG_DOMEINEN` staan. Voeding is de enige deur.
- */
-export const VOORTGANG_RAIL_PILLAR_IDS: readonly PillarId[] = KOMPAS_RAIL_PILLAR_IDS;
-
-export function buildVoortgangRailDomains(
-  scores: Record<string, number>,
-): ContextRailDomainItem[] {
-  return buildKompasRailDomains(scores).filter((domain) =>
-    VOORTGANG_RAIL_PILLAR_IDS.includes(domain.id),
-  );
-}
-
-export type VoedingRailLayer = {
-  id: VoedingLaagId;
-  slug: VoedingLaagSlug;
-  label: string;
-};
-
-/**
- * De drie knoppen van Voeding, ook in de rail — zelfde namen en zelfde
- * volgorde als het scherm.
- *
- * Leest rechtstreeks uit `DRIELUIK` en niet meer uit `NUTRITION_LAYERS`. Die
- * eerste draagt de *knop*namen, die tweede de namen van de piramidelagen, en
- * dat zijn sinds 5 september niet meer dezelfde: de knop die de lagen 1, 2 en 4
- * bundelt heet Voedingsstatus, terwijl laag 1 in de canon Voedingsbasis blijft
- * heten. De rail las de laagnaam, dus stond in de navigatie een andere naam dan
- * op de knop waar hij heen ging — precies de fout die deze afleiding moest
- * voorkomen.
- */
-export const VOEDING_RAIL_LAYERS: readonly VoedingRailLayer[] = DRIELUIK.map(
-  (stap) => ({
-    id: hoofdLaag(stap) as VoedingLaagId,
-    slug: voedingLaagSlugFromId(hoofdLaag(stap)) as VoedingLaagSlug,
-    label: stap.naam,
-  }),
-);
-
 export function resolveVoortgangRailActiveItem(screen: VoortgangScreen): VoortgangRailItemId {
-  if (screen === "hermeting") {
-    return "hermeting";
-  }
-  if (
-    screen === "leefstijlprofiel" ||
-    screen === "inzichten" ||
-    screen === "domein"
-  ) {
-    return "leefstijlprofiel";
-  }
-  // `schap` is legacy en wordt bij binnenkomst naar de Keuze-tab herschreven;
-  // komt hij hier toch langs, dan is Overzicht de eerlijkste plek.
-  return "hub";
+  return screen === "hermeting" ? "hermeting" : "hub";
 }
 
 export type ContextRailKeuzeItem = {

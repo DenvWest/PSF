@@ -2,40 +2,23 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import VoortgangTopNav from "@/components/dashboard/voortgang/VoortgangTopNav";
-import { buildVoortgangRailDomains } from "@/lib/context-rail";
 
 /**
  * De Voortgang-navigatie onder md was een horizontale chiprij die de helft
  * van de bestemmingen buiten beeld duwde (en "Overzicht" helemaal miste).
- * Sinds 26 augustus is het één inklapbare balk in de sticky header, met
- * dezelfde bestemmingen als de rail.
+ * Sinds 26 augustus is het één inklapbare balk in de sticky header. Sinds 23
+ * september kent Voortgang nog maar twee bestemmingen — Je patroon en
+ * Hermeting — want Leefstijlprofiel (de domeinhub) is opgeheven toen voeding
+ * het enige domein werd.
  */
 
 vi.mock("@/lib/ga4", () => ({ trackEvent: vi.fn() }));
 vi.mock("@/lib/clarity", () => ({ clarityTag: vi.fn() }));
 
-const domains = buildVoortgangRailDomains({
-  slaap: 25,
-  beweging: 63,
-  voeding: 40,
-  stress: 0,
-  verbinding: 33,
-});
-
 const onOpenItem = vi.fn();
-const onOpenDomein = vi.fn();
 
 function renderNav(props: Partial<React.ComponentProps<typeof VoortgangTopNav>> = {}) {
-  return render(
-    <VoortgangTopNav
-      activeItem="hub"
-      leefstijlprofielDomein={null}
-      domains={domains}
-      onOpenItem={onOpenItem}
-      onOpenDomein={onOpenDomein}
-      {...props}
-    />,
-  );
+  return render(<VoortgangTopNav activeItem="hub" onOpenItem={onOpenItem} {...props} />);
 }
 
 function openPanel() {
@@ -44,13 +27,12 @@ function openPanel() {
 
 beforeEach(() => {
   onOpenItem.mockClear();
-  onOpenDomein.mockClear();
 });
 
 describe("VoortgangTopNav", () => {
-  it("noemt ingeklapt waar je bent, inclusief het domein", () => {
-    renderNav({ activeItem: "leefstijlprofiel", leefstijlprofielDomein: "slaap" });
-    expect(screen.getByRole("button", { name: /Leefstijlprofiel · Slaap/ })).toBeTruthy();
+  it("noemt ingeklapt Je patroon als je daar staat", () => {
+    renderNav({ activeItem: "hub" });
+    expect(screen.getByRole("button", { name: /Je patroon/ })).toBeTruthy();
   });
 
   it("houdt het paneel dicht tot je hem opent", () => {
@@ -60,63 +42,22 @@ describe("VoortgangTopNav", () => {
     expect(screen.getByRole("menu")).toBeTruthy();
   });
 
-  it("draagt Overzicht — de chiprij die hier stond miste die bestemming", () => {
-    renderNav({ activeItem: "leefstijlprofiel", leefstijlprofielDomein: "voeding" });
+  it("draagt Je patroon en Hermeting, verder niets", () => {
+    renderNav();
     openPanel();
-    fireEvent.click(screen.getByRole("menuitem", { name: "Overzicht" }));
+    expect(screen.getByRole("menuitem", { name: "Je patroon" })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: "Hermeting" })).toBeTruthy();
+    expect(screen.queryAllByRole("menuitem")).toHaveLength(2);
+  });
+
+  it("opent Je patroon vanuit het paneel", () => {
+    renderNav({ activeItem: "hermeting" });
+    openPanel();
+    fireEvent.click(screen.getByRole("menuitem", { name: "Je patroon" }));
     expect(onOpenItem).toHaveBeenCalledWith("hub");
   });
 
-  it("toont alleen voeding, en die is aanklikbaar", () => {
-    renderNav();
-    openPanel();
-    expect(screen.getByRole("menuitem", { name: /^Voeding40$/ })).toBeTruthy();
-    expect(screen.getByRole("menuitem", { name: /^Voeding40$/ }).getAttribute("aria-disabled")).toBeNull();
-    // De andere vier zijn uit de interface; zie `zichtbare-domeinen.ts`.
-    for (const label of [/^Verbinding/, /^Stress/, /^Slaap/, /^Beweging/]) {
-      expect(screen.queryByRole("menuitem", { name: label })).toBeNull();
-    }
-
-    // Voeding klikt wél door — dat is de enige deur die overblijft.
-    fireEvent.click(screen.getByRole("menuitem", { name: /^Voeding40$/ }));
-    expect(onOpenDomein).toHaveBeenCalledWith("voeding");
-  });
-
-  it("draagt de drie voeding-knoppen onder Voeding", () => {
-    renderNav();
-    openPanel();
-    expect(screen.getByRole("menuitem", { name: "Meten & timing" })).toBeTruthy();
-    expect(screen.getByRole("menuitem", { name: "Voedingsstatus" })).toBeTruthy();
-    expect(screen.getByRole("menuitem", { name: "Aanvullen & vergelijken" })).toBeTruthy();
-  });
-
-  it("opent een voeding-laag vanuit het paneel", () => {
-    const onOpenVoedingLaag = vi.fn();
-    renderNav({ onOpenVoedingLaag });
-    openPanel();
-    fireEvent.click(screen.getByRole("menuitem", { name: "Meten & timing" }));
-    expect(onOpenVoedingLaag).toHaveBeenCalledWith("meten-timing");
-    expect(screen.queryByRole("menu")).toBeNull();
-  });
-
-  it("noemt ingeklapt de open voeding-laag", () => {
-    renderNav({
-      activeItem: "leefstijlprofiel",
-      leefstijlprofielDomein: "voeding",
-      voedingLaag: "aanvullen",
-    });
-    expect(screen.getByRole("button", { name: /Voeding · Aanvullen & vergelijken/ })).toBeTruthy();
-  });
-
-  it("sluit het paneel zodra je een bestemming kiest", () => {
-    renderNav();
-    openPanel();
-    fireEvent.click(screen.getByRole("menuitem", { name: /^Voeding40$/ }));
-    expect(onOpenDomein).toHaveBeenCalledWith("voeding");
-    expect(screen.queryByRole("menu")).toBeNull();
-  });
-
-  it("draagt Hermeting — sinds 27 augustus een scherm hier, geen eigen tabblad", () => {
+  it("opent Hermeting vanuit het paneel — sinds 27 augustus een scherm hier, geen eigen tabblad", () => {
     renderNav();
     openPanel();
     fireEvent.click(screen.getByRole("menuitem", { name: "Hermeting" }));
@@ -129,9 +70,22 @@ describe("VoortgangTopNav", () => {
     expect(screen.queryByRole("menuitem", { name: /Schap|Keuze/ })).toBeNull();
   });
 
+  it("draagt geen leefstijlprofiel meer — de domeinhub is opgeheven", () => {
+    renderNav();
+    openPanel();
+    expect(screen.queryByRole("menuitem", { name: /Leefstijlprofiel/ })).toBeNull();
+  });
+
   it("noemt ingeklapt Hermeting als je daar staat", () => {
     renderNav({ activeItem: "hermeting" });
     expect(screen.getByRole("button", { name: /Hermeting/ })).toBeTruthy();
+  });
+
+  it("sluit het paneel zodra je een bestemming kiest", () => {
+    renderNav();
+    openPanel();
+    fireEvent.click(screen.getByRole("menuitem", { name: "Hermeting" }));
+    expect(screen.queryByRole("menu")).toBeNull();
   });
 
   it("sluit op Escape", () => {

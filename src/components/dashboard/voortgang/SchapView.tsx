@@ -52,8 +52,6 @@ type SchapViewProps = {
    * geen chip.
    */
   onSwitchDomain?: (domain: PillarId) => void;
-  /** De terugweg: het leefstijlprofiel dat dit aanbod verantwoordt. */
-  onOpenLeefstijlprofiel?: (domain: PillarId) => void;
 };
 
 const SCHAP_SURFACE: Partial<Record<PillarId, VerdictPanelSurface>> = {
@@ -85,12 +83,10 @@ const SCHAP_SURFACE: Partial<Record<PillarId, VerdictPanelSurface>> = {
  * Eén tab tegelijk zichtbaar. Tabs zonder inhoud renderen niet — die regel
  * woont in `resolveSchapTabs`.
  *
- * Twee navigatie-rijen boven de tabs, en ze doen bewust iets anders:
- * de domeinschakelaar (chips, rond) wisselt van scháp, de tabs (blokken)
- * wisselen van onderdeel bínnen dit schap. Daaronder de terugweg naar het
- * leefstijlprofiel — tot 21 augustus liep die naad maar één kant op ("Open je
- * schap ›" op het profiel), waardoor het aanbod losraakte van zijn
- * verantwoording zodra je er eenmaal stond.
+ * Eén navigatie-rij boven de tabs: de domeinschakelaar (chips, rond) wisselt
+ * van scháp, de tabs (blokken) wisselen van onderdeel bínnen dit schap. Tot
+ * 23 september droeg dit blok ook de terugweg naar het leefstijlprofiel — de
+ * domeinhub die is opgeheven toen voeding het enige domein werd.
  */
 /** Dezelfde vijf domeinen als de linker rail — één bron, twee dragers. */
 const KEUZE_CHIP_DOMAINS = buildKeuzeRailDomains();
@@ -102,7 +98,6 @@ export default function SchapView({
   onTabChange,
   onBack,
   onSwitchDomain,
-  onOpenLeefstijlprofiel,
 }: SchapViewProps) {
   const { items, isSaved, save } = useVoortgangFavorites();
   const pillar = PILLAR[domain];
@@ -152,11 +147,6 @@ export default function SchapView({
     });
     clarityTag("schap_domein_wissel", `${domain}:${target}`);
     onSwitchDomain?.(target);
-  }
-
-  function handleOpenLeefstijlprofiel() {
-    clarityTag("schap_naar_leefstijlprofiel", domain);
-    onOpenLeefstijlprofiel?.(domain);
   }
 
   return (
@@ -228,35 +218,16 @@ export default function SchapView({
       ) : null}
 
       {/* Dezelfde rol als de keuzekolom-kop op /supplementen: eerst wat de
-          meetlat is, dan pas de lijst. Daaronder de terugweg naar het profiel
-          dat dit aanbod verantwoordt — tot 21 augustus liep die naad maar één
-          kant op, waardoor het aanbod losraakte van zijn onderbouwing zodra je
-          er eenmaal stond. */}
+          meetlat is, dan pas de lijst. */}
       <div className="mb-4 rounded-2xl border border-[var(--divider)] bg-black/20 px-3.5 py-3.5">
         <p className="max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--text-muted)] text-pretty">
           Hier staat het aanbod, en alleen hier. Vandaag en Mijn Dag dragen de deur.
           Elk oordeel hieronder komt uit je leefstijl- en voedingscheck, langs
           dezelfde vier feiten: signaal, zekerheid, bloedwaarde en EU-claim.
         </p>
-        {onOpenLeefstijlprofiel ? (
-          <button
-            type="button"
-            onClick={handleOpenLeefstijlprofiel}
-            className="mt-2.5 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-left text-[12.5px] font-semibold text-[var(--sage)]"
-          >
-            Waarom dit aanbod open of dicht staat — Leefstijlprofiel · {pillar.label}
-            <Icons.ChevronRight s={13} />
-          </button>
-        ) : null}
       </div>
 
-      {spiegel ? (
-        <KeuzeSpiegel
-          spiegel={spiegel}
-          verdicts={domainVerdicts}
-          onOpenLeefstijlprofiel={onOpenLeefstijlprofiel}
-        />
-      ) : null}
+      {spiegel ? <KeuzeSpiegel spiegel={spiegel} verdicts={domainVerdicts} /> : null}
 
       <nav
         role="tablist"

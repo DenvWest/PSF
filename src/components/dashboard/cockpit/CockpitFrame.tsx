@@ -19,7 +19,6 @@ import type {
   ContextRailToolId,
   VoortgangRailItemId,
 } from "@/lib/context-rail";
-import type { VoedingLaagSlug } from "@/lib/dashboard-url";
 import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
 type CockpitFrameProps = {
@@ -42,12 +41,7 @@ type CockpitFrameProps = {
   onToolClick?: (id: ContextRailToolId) => void;
   onBackToKompas?: () => void;
   railVoortgangActiveItem?: VoortgangRailItemId | null;
-  railVoortgangLeefstijlprofielDomein?: PillarId | null;
-  railVoortgangDomains?: ContextRailDomainItem[];
   onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
-  onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
-  railVoortgangVoedingLaag?: VoedingLaagSlug | null;
-  onOpenVoedingLaag?: (laag: VoedingLaagSlug) => void;
   railKeuzeDomains?: ContextRailKeuzeItem[];
   railKeuzeActiveDomein?: PillarId | null;
   onOpenKeuzeDomein?: (id: PillarId) => void;
@@ -125,12 +119,7 @@ export default function CockpitFrame({
   onToolClick,
   onBackToKompas,
   railVoortgangActiveItem = null,
-  railVoortgangLeefstijlprofielDomein = null,
-  railVoortgangDomains,
   onOpenVoortgangItem,
-  onOpenLeefstijlprofielDomein,
-  railVoortgangVoedingLaag = null,
-  onOpenVoedingLaag,
   railKeuzeDomains,
   railKeuzeActiveDomein = null,
   onOpenKeuzeDomein,
@@ -316,12 +305,7 @@ export default function CockpitFrame({
             onBackToKompas={onBackToKompas}
             domainLabel={railDomainLabel}
             voortgangActiveItem={railVoortgangActiveItem}
-            voortgangLeefstijlprofielDomein={railVoortgangLeefstijlprofielDomein}
-            voortgangDomains={railVoortgangDomains}
             onOpenVoortgangItem={onOpenVoortgangItem}
-            onOpenLeefstijlprofielDomein={onOpenLeefstijlprofielDomein}
-            voortgangVoedingLaag={railVoortgangVoedingLaag}
-            onOpenVoedingLaag={onOpenVoedingLaag}
             keuzeDomains={railKeuzeDomains}
             keuzeActiveDomein={railKeuzeActiveDomein}
             onOpenKeuzeDomein={onOpenKeuzeDomein}

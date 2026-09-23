@@ -26,7 +26,6 @@ type KeuzeSchermProps = {
   deel: SchapTabId | null;
   onDeelChange: (domain: PillarId, deel: SchapTabId) => void;
   onSwitchDomain: (domain: PillarId, deel: SchapTabId) => void;
-  onOpenLeefstijlprofiel?: (domain: PillarId) => void;
 };
 
 export default function KeuzeScherm({
@@ -36,7 +35,6 @@ export default function KeuzeScherm({
   deel,
   onDeelChange,
   onSwitchDomain,
-  onOpenLeefstijlprofiel,
 }: KeuzeSchermProps) {
   // De URL is de bron bij binnenkomst; daarna wint de klik. `pushState` uit
   // het sync-pad werkt `useSearchParams` niet bij, dus het gekozen onderdeel
@@ -80,7 +78,6 @@ export default function KeuzeScherm({
       activeTab={activeDeel}
       onTabChange={handleDeelChange}
       onSwitchDomain={handleSwitchDomain}
-      onOpenLeefstijlprofiel={onOpenLeefstijlprofiel}
     />
   );
 }

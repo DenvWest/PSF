@@ -13,14 +13,9 @@ import {
   parseAgendaViewFromUrl,
   parseDagFromUrl,
   parseKompasFromUrl,
-  parseLeefstijlprofielDomeinFromUrl,
   parseKeuzeDeelFromUrl,
   parseKeuzeDomeinFromUrl,
   parseVoortgangScreenFromUrl,
-  parseVoedingLaagFromUrl,
-  isVoedingLaagSlug,
-  voedingLaagIdFromSlug,
-  voedingLaagSlugFromId,
   canonicalizeDashboardTabParam,
   canonicalizeVoortgangScreenParam,
   getLegacyVoortgangScreenAlias,
@@ -41,38 +36,28 @@ describe("parseVoortgangScreenFromUrl", () => {
     ).toBe("hub");
   });
 
-  it("parses valid subview screens", () => {
+  it("parses hermeting", () => {
     expect(
-      parseVoortgangScreenFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel",
-      ),
-    ).toBe("leefstijlprofiel");
-    // `screen=favorieten` is legacy (22 aug, opgeheven scherm): zonder domein
-    // valt de route terug op de hub.
-    expect(
-      parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=favorieten"),
-    ).toBe("hub");
-    // Oude bookmark: `favorieten` mét een schap-domein wás het schap. Dit is
-    // de lees-kant, want `canonicalize` draait alleen op popstate.
-    expect(
-      parseVoortgangScreenFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
-      ),
-    ).toBe("schap");
-    // Een domein zonder schap heeft geen bestemming meer — terug naar de hub.
-    expect(
-      parseVoortgangScreenFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=stress",
-      ),
-    ).toBe("hub");
-    expect(
-      parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=inzichten"),
-    ).toBe("leefstijlprofiel");
-    expect(
-      parseVoortgangScreenFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=domein&domein=beweging",
-      ),
-    ).toBe("leefstijlprofiel");
+      parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=hermeting"),
+    ).toBe("hermeting");
+  });
+
+  // Leefstijlprofiel (de domeinhub), inzichten, domein, weekoverzicht en het
+  // legacy favorieten-scherm bestonden allemaal vóór 23 september — voeding
+  // is nu het enige domein en die schermen zijn opgeheven. Oude links vallen
+  // terug op de hub.
+  it("redirects opgeheven schermen naar de hub", () => {
+    for (const screen of [
+      "leefstijlprofiel",
+      "inzichten",
+      "domein",
+      "weekoverzicht",
+      "favorieten",
+    ]) {
+      expect(
+        parseVoortgangScreenFromUrl(`http://localhost/dashboard?tab=voortgang&screen=${screen}`),
+      ).toBe("hub");
+    }
   });
 
   it("redirects legacy statistieken screens", () => {
@@ -89,17 +74,18 @@ describe("parseVoortgangScreenFromUrl", () => {
   });
 
   it("canonicalizeVoortgangScreenParam rewrites legacy screen params in-place", () => {
-    const inzichtenUrl = new URL(
-      "http://localhost/dashboard?tab=voortgang&screen=inzichten",
+    const leefstijlprofielUrl = new URL(
+      "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding",
     );
-    expect(canonicalizeVoortgangScreenParam(inzichtenUrl)).toBe("leefstijlprofiel");
-    expect(inzichtenUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
+    expect(canonicalizeVoortgangScreenParam(leefstijlprofielUrl)).toBe("hub");
+    expect(leefstijlprofielUrl.searchParams.has("screen")).toBe(false);
+    expect(leefstijlprofielUrl.searchParams.has("fav")).toBe(false);
 
     const domeinUrl = new URL(
       "http://localhost/dashboard?tab=voortgang&screen=domein&domein=beweging",
     );
-    expect(canonicalizeVoortgangScreenParam(domeinUrl)).toBe("leefstijlprofiel");
-    expect(domeinUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
+    expect(canonicalizeVoortgangScreenParam(domeinUrl)).toBe("hub");
+    expect(domeinUrl.searchParams.has("screen")).toBe(false);
     expect(domeinUrl.searchParams.has("fav")).toBe(false);
     expect(domeinUrl.searchParams.has("domein")).toBe(false);
 
@@ -113,18 +99,9 @@ describe("parseVoortgangScreenFromUrl", () => {
     expect(getLegacyVoortgangScreenAlias("hub")).toBeNull();
     expect(canonicalizeVoortgangScreenParam(new URL("http://localhost/dashboard?tab=voortgang"))).toBeNull();
 
-    // Legacy (22 aug, scherm opgeheven): `favorieten` mét een schap-domein was
-    // en is het schap. Oude links dragen de oude naam nog, dus die schuiven door.
-    const favorietenSchapUrl = new URL(
-      "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging&schap=producten",
-    );
-    expect(canonicalizeVoortgangScreenParam(favorietenSchapUrl)).toBe("schap");
-    expect(favorietenSchapUrl.searchParams.get("screen")).toBe("schap");
-    expect(favorietenSchapUrl.searchParams.get("fav")).toBe("beweging");
-    expect(favorietenSchapUrl.searchParams.get("schap")).toBe("producten");
-
-    // Zonder domein mét schap is er geen bestemming meer — terug naar de hub,
-    // geen dode `screen=favorieten` die blijft hangen.
+    // `screen=favorieten` (22 aug, opgeheven scherm) valt terug op de hub —
+    // `canonicalizeDashboardTabParam` heeft een schap-domein al naar
+    // `tab=keuze` herschreven vóórdat deze functie draait.
     const favorietenUrl = new URL(
       "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=stress&schap=producten",
     );
@@ -132,15 +109,6 @@ describe("parseVoortgangScreenFromUrl", () => {
     expect(favorietenUrl.searchParams.has("screen")).toBe(false);
     expect(favorietenUrl.searchParams.has("fav")).toBe(false);
     expect(favorietenUrl.searchParams.has("schap")).toBe(false);
-
-    // Legacy: screen=leefstijlprofiel&fav=beweging landt op de hub — beweging
-    // opent tijdelijk geen leefstijlprofiel-scherm.
-    const leefstijlprofielUrl = new URL(
-      "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging",
-    );
-    expect(canonicalizeVoortgangScreenParam(leefstijlprofielUrl)).toBe("leefstijlprofiel");
-    expect(leefstijlprofielUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
-    expect(leefstijlprofielUrl.searchParams.has("fav")).toBe(false);
   });
 });
 
@@ -150,39 +118,9 @@ describe("buildDashboardVoortgangHref", () => {
     expect(buildDashboardVoortgangHref("hub")).toBe("/dashboard?tab=voortgang");
   });
 
-  it("includes screen for subviews", () => {
-    expect(buildDashboardVoortgangHref("leefstijlprofiel")).toBe(
-      "/dashboard?tab=voortgang&screen=leefstijlprofiel",
-    );
-  });
-
-  it("includes fav only for klikbare leefstijlprofiel-domeinen", () => {
-    expect(buildDashboardVoortgangHref("leefstijlprofiel", null, null, "voeding")).toBe(
-      "/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding",
-    );
-    expect(buildDashboardVoortgangHref("leefstijlprofiel", null, null, "beweging")).toBe(
-      "/dashboard?tab=voortgang&screen=leefstijlprofiel",
-    );
-  });
-
-  it("includes laag only on voeding P5/P6 shortcuts", () => {
-    expect(
-      buildDashboardVoortgangHref("leefstijlprofiel", null, null, "voeding", "meten-timing"),
-    ).toBe("/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=meten-timing");
-    expect(
-      buildDashboardVoortgangHref("leefstijlprofiel", null, null, "voeding", "aanvullen"),
-    ).toBe("/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=aanvullen");
-    expect(
-      buildDashboardVoortgangHref("leefstijlprofiel", null, null, "beweging", "meten-timing"),
-    ).toBe("/dashboard?tab=voortgang&screen=leefstijlprofiel");
-    expect(buildDashboardVoortgangHref("leefstijlprofiel", null, null, "voeding")).toBe(
-      "/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding",
-    );
-  });
-
-  it("draagt geen fav meer voor het legacy schap-scherm — dat is de Keuze-tab", () => {
-    expect(buildDashboardVoortgangHref("schap", null, null, "beweging")).toBe(
-      "/dashboard?tab=voortgang&screen=schap",
+  it("includes screen for hermeting", () => {
+    expect(buildDashboardVoortgangHref("hermeting")).toBe(
+      "/dashboard?tab=voortgang&screen=hermeting",
     );
   });
 });
@@ -304,99 +242,6 @@ describe("parseKeuzeDeelFromUrl", () => {
   });
 });
 
-describe("parseLeefstijlprofielDomeinFromUrl", () => {
-  it("parses fav on leefstijlprofiel screen alleen voor klikbare domeinen", () => {
-    expect(
-      parseLeefstijlprofielDomeinFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding",
-      ),
-    ).toBe("voeding");
-    expect(
-      parseLeefstijlprofielDomeinFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging",
-      ),
-    ).toBeNull();
-  });
-
-  it("returns null for invalid fav", () => {
-    expect(
-      parseLeefstijlprofielDomeinFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=invalid",
-      ),
-    ).toBeNull();
-  });
-
-  it("parses fav from legacy domein param alleen als het domein klikbaar is", () => {
-    expect(
-      parseLeefstijlprofielDomeinFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=domein&domein=voeding",
-      ),
-    ).toBe("voeding");
-    expect(
-      parseLeefstijlprofielDomeinFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=domein&domein=beweging",
-      ),
-    ).toBeNull();
-  });
-});
-
-describe("parseVoedingLaagFromUrl", () => {
-  it("leest geldige slugs alleen op voeding", () => {
-    expect(
-      parseVoedingLaagFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=meten-timing",
-      ),
-    ).toBe("meten-timing");
-    expect(
-      parseVoedingLaagFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=aanvullen",
-      ),
-    ).toBe("aanvullen");
-  });
-
-  it("negeert laag op andere domeinen en onbekende slugs", () => {
-    expect(
-      parseVoedingLaagFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging&laag=meten-timing",
-      ),
-    ).toBeNull();
-    expect(
-      parseVoedingLaagFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=5",
-      ),
-    ).toBeNull();
-    expect(
-      parseVoedingLaagFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding",
-      ),
-    ).toBeNull();
-  });
-
-  it("mapt slug naar ladderlaag en terug", () => {
-    expect(isVoedingLaagSlug("meten-timing")).toBe(true);
-    expect(isVoedingLaagSlug("eetbasis")).toBe(true);
-    expect(isVoedingLaagSlug("aanvullen")).toBe(true);
-    expect(isVoedingLaagSlug("5")).toBe(false);
-    expect(voedingLaagIdFromSlug("meten-timing")).toBe(5);
-    expect(voedingLaagIdFromSlug("eetbasis")).toBe(1);
-    expect(voedingLaagIdFromSlug("aanvullen")).toBe(6);
-    expect(voedingLaagSlugFromId(5)).toBe("meten-timing");
-    expect(voedingLaagSlugFromId(1)).toBe("eetbasis");
-    expect(voedingLaagSlugFromId(6)).toBe("aanvullen");
-  });
-
-  /**
-   * De lagen 2 (kwaliteit) en 4 (situatie) staan onder de knop Voedingsbasis,
-   * dus hun slug is `eetbasis`. Laag 3 (verhoudingen) wordt niet meer getoond
-   * en heeft geen adres.
-   */
-  it("wijst gebundelde lagen naar hun knop en laat laag 3 los", () => {
-    expect(voedingLaagSlugFromId(2)).toBe("eetbasis");
-    expect(voedingLaagSlugFromId(4)).toBe("eetbasis");
-    expect(voedingLaagSlugFromId(3)).toBeNull();
-  });
-});
-
 describe("syncDashboardVoortgangScreenParam", () => {
   it("sets and clears screen on voortgang tab", () => {
     const originalPush = window.history.pushState;
@@ -408,11 +253,11 @@ describe("syncDashboardVoortgangScreenParam", () => {
       value: new URL("http://localhost/dashboard?tab=voortgang"),
     });
 
-    syncDashboardVoortgangScreenParam("leefstijlprofiel");
+    syncDashboardVoortgangScreenParam("hermeting");
     expect(pushState).toHaveBeenCalledOnce();
     let nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).toContain("tab=voortgang");
-    expect(nextUrl).toContain("screen=leefstijlprofiel");
+    expect(nextUrl).toContain("screen=hermeting");
 
     Object.defineProperty(window, "location", {
       configurable: true,
@@ -429,48 +274,10 @@ describe("syncDashboardVoortgangScreenParam", () => {
     window.history.pushState = originalPush;
   });
 
-  it("zet en wist laag op voeding, en wist hem bij domeinwissel", () => {
+  it("ruimt oude fav/laag/domein-params op, ook al bestaan ze niet meer als schermen", () => {
     const originalPush = window.history.pushState;
     const pushState = vi.fn();
     window.history.pushState = pushState as typeof window.history.pushState;
-
-    Object.defineProperty(window, "location", {
-      configurable: true,
-      value: new URL("http://localhost/dashboard?tab=voortgang"),
-    });
-
-    syncDashboardVoortgangScreenParam("leefstijlprofiel", {
-      fav: "voeding",
-      laag: "meten-timing",
-    });
-    let nextUrl = pushState.mock.calls[0]?.[2] as string;
-    expect(nextUrl).toContain("fav=voeding");
-    expect(nextUrl).toContain("laag=meten-timing");
-
-    Object.defineProperty(window, "location", {
-      configurable: true,
-      value: new URL(nextUrl),
-    });
-    pushState.mockClear();
-
-    syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: "voeding" });
-    nextUrl = pushState.mock.calls[0]?.[2] as string;
-    expect(nextUrl).toContain("fav=voeding");
-    expect(nextUrl).not.toContain("laag=");
-
-    Object.defineProperty(window, "location", {
-      configurable: true,
-      value: new URL(
-        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=aanvullen",
-      ),
-    });
-    pushState.mockClear();
-
-    syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: "slaap" });
-    nextUrl = pushState.mock.calls[0]?.[2] as string;
-    expect(nextUrl).toContain("screen=leefstijlprofiel");
-    expect(nextUrl).not.toContain("fav=");
-    expect(nextUrl).not.toContain("laag=");
 
     Object.defineProperty(window, "location", {
       configurable: true,
@@ -478,12 +285,12 @@ describe("syncDashboardVoortgangScreenParam", () => {
         "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=voeding&laag=meten-timing",
       ),
     });
-    pushState.mockClear();
 
     syncDashboardVoortgangScreenParam("hub");
-    nextUrl = pushState.mock.calls[0]?.[2] as string;
-    expect(nextUrl).not.toContain("laag=");
+    const nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).not.toContain("fav=");
+    expect(nextUrl).not.toContain("laag=");
+    expect(nextUrl).not.toContain("screen=");
 
     window.history.pushState = originalPush;
   });

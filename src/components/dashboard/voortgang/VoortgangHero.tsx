@@ -4,8 +4,7 @@ import { useEffect, useRef } from "react";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { buildVoortgangHorizonRegel } from "@/lib/voortgang-horizon-copy";
-import { isKlikbaarVoortgangDomein } from "@/lib/zichtbare-domeinen";
-import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
+import type { DashboardData, DashboardModel } from "@/types/dashboard";
 import VoortgangBewijsband from "@/components/dashboard/voortgang/VoortgangBewijsband";
 
 type VoortgangHeroProps = {
@@ -13,11 +12,6 @@ type VoortgangHeroProps = {
   data?: DashboardData;
   onGoAgenda: () => void;
   onGoHermeting: () => void;
-  onOpenDomain: (domain: PillarId) => void;
-  /** Het domein dat de reeks onder de hero toont — de band markeert die meting. */
-  selectedDomain?: PillarId | null;
-  /** Een meting in de band aanklikken opent datzelfde domein in de reeks eronder. */
-  onSelectDomain?: (domain: PillarId) => void;
 };
 
 export default function VoortgangHero({
@@ -25,9 +19,6 @@ export default function VoortgangHero({
   data,
   onGoAgenda,
   onGoHermeting,
-  onOpenDomain,
-  selectedDomain = null,
-  onSelectDomain,
 }: VoortgangHeroProps) {
   const trackedStateRef = useRef<string | null>(null);
 
@@ -77,13 +68,6 @@ export default function VoortgangHero({
     });
     clarityTag("dashboard_voortgang", "hermeting");
     onGoHermeting();
-  };
-
-  const handleOpenDomain = () => {
-    const domain = model.priority.id;
-    trackEvent("dashboard_voortgang_domein_click", { domain });
-    clarityTag("dashboard_voortgang", `domeinring_${domain}`);
-    onOpenDomain(domain);
   };
 
   return (
@@ -145,24 +129,13 @@ export default function VoortgangHero({
                   </button>
                 </>
               ) : (
-                <>
-                  <button
-                    type="button"
-                    onClick={handleGoAgenda}
-                    className="inline-flex min-h-[46px] cursor-pointer items-center justify-center rounded-full border border-[var(--sage)] bg-[var(--sage)] px-5 text-[14.5px] font-semibold text-[#0E1C10]"
-                  >
-                    Wat staat er voor vandaag
-                  </button>
-                  {isKlikbaarVoortgangDomein(model.priority.id) ? (
-                    <button
-                      type="button"
-                      onClick={handleOpenDomain}
-                      className="inline-flex min-h-11 cursor-pointer items-center border-none bg-transparent px-1 text-[14px] text-[#9FB0A6] underline decoration-[rgba(159,176,166,0.45)] underline-offset-[3px]"
-                    >
-                      Bekijk je {model.priority.label.toLowerCase()}
-                    </button>
-                  ) : null}
-                </>
+                <button
+                  type="button"
+                  onClick={handleGoAgenda}
+                  className="inline-flex min-h-[46px] cursor-pointer items-center justify-center rounded-full border border-[var(--sage)] bg-[var(--sage)] px-5 text-[14.5px] font-semibold text-[#0E1C10]"
+                >
+                  Wat staat er voor vandaag
+                </button>
               )}
             </div>
           </div>
@@ -172,8 +145,6 @@ export default function VoortgangHero({
             remeasure={data?.remeasure ?? null}
             domainCheckDaysAgo={data?.domainCheckDaysAgo}
             priorityLabel={model.priority.label}
-            selectedDomain={selectedDomain}
-            onSelectDomain={onSelectDomain}
           />
         </div>
       </div>

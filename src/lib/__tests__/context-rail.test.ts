@@ -3,12 +3,9 @@ import {
   buildDomainRailTools,
   buildKeuzeRailDomains,
   buildKompasRailDomains,
-  buildVoortgangRailDomains,
   resolveVoortgangRailActiveItem,
   KOMPAS_RAIL_PILLAR_IDS,
-  VOEDING_RAIL_LAYERS,
   VOORTGANG_RAIL_ITEMS,
-  VOORTGANG_RAIL_PILLAR_IDS,
 } from "@/lib/context-rail";
 
 describe("buildKompasRailDomains", () => {
@@ -93,59 +90,12 @@ describe("buildDomainRailTools", () => {
   });
 });
 
-describe("VOEDING_RAIL_LAYERS", () => {
-  it("draagt de drie voeding-knoppen, met de voedingsstatus vooraan", () => {
-    expect(VOEDING_RAIL_LAYERS.map((layer) => layer.slug)).toEqual([
-      "eetbasis",
-      "meten-timing",
-      "aanvullen",
-    ]);
-    expect(VOEDING_RAIL_LAYERS.map((layer) => layer.id)).toEqual([1, 5, 6]);
-    // De rail draagt de knópnamen uit het drieluik, niet de laagnamen uit de
-    // piramide: laag 1 heet daar nog Voedingsbasis, maar de knop die hem
-    // draagt heet Voedingsstatus.
-    expect(VOEDING_RAIL_LAYERS.map((layer) => layer.label)).toEqual([
-      "Voedingsstatus",
-      "Meten & timing",
-      "Aanvullen & vergelijken",
-    ]);
-  });
-});
-
 describe("VOORTGANG_RAIL_ITEMS", () => {
-  it("toont Overzicht, Leefstijlprofiel (User) en Hermeting (Calendar) — het schap is de Keuze-tab", () => {
-    expect(VOORTGANG_RAIL_ITEMS.map((item) => item.id)).toEqual([
-      "hub",
-      "leefstijlprofiel",
-      "hermeting",
-    ]);
-    expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "leefstijlprofiel")?.icon).toBe(
-      "User",
-    );
+  it("toont Je patroon en Hermeting — het schap is de Keuze-tab, Leefstijlprofiel is opgeheven", () => {
+    expect(VOORTGANG_RAIL_ITEMS.map((item) => item.id)).toEqual(["hub", "hermeting"]);
     expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "hermeting")?.icon).toBe(
       "Calendar",
     );
-  });
-});
-
-describe("buildVoortgangRailDomains", () => {
-  it("toont alleen voeding, als deur", () => {
-    const voortgang = buildVoortgangRailDomains({
-      slaap: 25,
-      beweging: 63,
-      voeding: 40,
-      stress: 10,
-    });
-    expect(VOORTGANG_RAIL_PILLAR_IDS).toEqual(KOMPAS_RAIL_PILLAR_IDS);
-    expect(voortgang.map((domain) => domain.id)).toEqual(["voeding"]);
-    expect(voortgang.find((domain) => domain.id === "voeding")?.score).toBe(40);
-    // Stress en slaap scoren lager en zouden zonder filter bovenaan staan.
-    expect(voortgang.map((domain) => domain.id)).not.toContain("stress");
-    expect(voortgang.map((domain) => domain.id)).not.toContain("slaap");
-
-    const kompas = buildKompasRailDomains({ slaap: 25, beweging: 63, voeding: 40, stress: 10 });
-    expect(kompas.map((domain) => domain.id)).toEqual(KOMPAS_RAIL_PILLAR_IDS);
-    expect(kompas).toHaveLength(1);
   });
 });
 
@@ -153,16 +103,6 @@ describe("resolveVoortgangRailActiveItem", () => {
   it("licht hub en hermeting op", () => {
     expect(resolveVoortgangRailActiveItem("hub")).toBe("hub");
     expect(resolveVoortgangRailActiveItem("hermeting")).toBe("hermeting");
-  });
-
-  it("licht Leefstijlprofiel op voor inzichten, domein en leefstijlprofiel", () => {
-    expect(resolveVoortgangRailActiveItem("leefstijlprofiel")).toBe("leefstijlprofiel");
-    expect(resolveVoortgangRailActiveItem("inzichten")).toBe("leefstijlprofiel");
-    expect(resolveVoortgangRailActiveItem("domein")).toBe("leefstijlprofiel");
-  });
-
-  it("valt terug op Overzicht voor het legacy schap-scherm", () => {
-    expect(resolveVoortgangRailActiveItem("schap")).toBe("hub");
   });
 });
 

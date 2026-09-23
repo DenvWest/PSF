@@ -173,7 +173,7 @@ export default function SleepCheckin() {
       typeof window !== "undefined" &&
       new URLSearchParams(window.location.search).get("from") === "dashboard";
     const voortgangHref = fromDashboard
-      ? buildDashboardVoortgangHref("domein", null, "slaap")
+      ? buildDashboardVoortgangHref("hub")
       : "/account/login?from=intake";
     const kompasHref = fromDashboard
       ? "/dashboard?kompas=slaap"

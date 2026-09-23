@@ -67,10 +67,7 @@ function parseInitialVoortgangScreen(tab?: string, screen?: string) {
   const parsed = parseVoortgangScreenFromUrl(
     `http://localhost/dashboard?tab=voortgang&screen=${encodeURIComponent(screen)}`,
   );
-  if (parsed === "hub" || parsed === "schap") {
-    return undefined;
-  }
-  return parsed;
+  return parsed === "hub" ? undefined : parsed;
 }
 
 const VALID_KOMPAS_VIEWS = new Set<PillarId>([

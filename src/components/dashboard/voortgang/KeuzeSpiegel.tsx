@@ -11,14 +11,11 @@ import type { KeuzeSpiegel as KeuzeSpiegelModel } from "@/lib/keuze-spiegel";
 import { SUPPLEMENT_HUB_PATH } from "@/lib/supplement-hub/hub-link";
 import { buildVerdictCards } from "@/lib/supplement-verdict-copy";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
-import type { PillarId } from "@/types/dashboard";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 
 type KeuzeSpiegelProps = {
   spiegel: KeuzeSpiegelModel;
   verdicts: StoredSupplementVerdict[];
-  /** Naar het leefstijlprofiel van dit domein — daar staat de hele ladder. */
-  onOpenLeefstijlprofiel?: (domain: PillarId) => void;
 };
 
 /**
@@ -83,11 +80,7 @@ function KolomKop({
  * de EU-toelating van een stof. Wat ze wél samen dragen is de rangorde, en die
  * staat er in woorden bij.
  */
-export default function KeuzeSpiegel({
-  spiegel,
-  verdicts,
-  onOpenLeefstijlprofiel,
-}: KeuzeSpiegelProps) {
+export default function KeuzeSpiegel({ spiegel, verdicts }: KeuzeSpiegelProps) {
   const { leefstijl, aanbod, domain, totalLayers } = spiegel;
   // Geen slice: het aantal hier moet kloppen met de telregel eronder. Vijf
   // kandidaten is het maximum dat een domein draagt (voeding), dus dit blijft
@@ -101,12 +94,6 @@ export default function KeuzeSpiegel({
       pillar: domain,
       destination: "supplementen",
     });
-  }
-
-  function handleLeefstijl() {
-    trackEvent("dashboard_spiegel_leefstijl_click", { domain });
-    clarityTag("keuze_spiegel_leefstijl", domain);
-    onOpenLeefstijlprofiel?.(domain);
   }
 
   return (
@@ -165,16 +152,6 @@ export default function KeuzeSpiegel({
             </p>
           ) : null}
 
-          {onOpenLeefstijlprofiel ? (
-            <button
-              type="button"
-              onClick={handleLeefstijl}
-              className="mt-auto inline-flex cursor-pointer items-center gap-1 self-start border-none bg-transparent p-0 text-left text-[12.5px] font-semibold text-[var(--sage)]"
-            >
-              Alle {totalLayers} lagen in je leefstijlprofiel
-              <Icons.ChevronRight s={13} />
-            </button>
-          ) : null}
         </div>
 
         {/* Rechts: betaald, en het komt als laatste. */}

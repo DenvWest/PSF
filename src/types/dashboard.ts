@@ -138,31 +138,21 @@ export type DashboardIconName =
  */
 export type DashboardTabId = "vandaag" | "agenda" | "voortgang" | "keuze";
 
+/**
+ * Twee schermen. Tot 23 september droeg Voortgang ook Leefstijlprofiel (een
+ * domeinhub) en een los weekoverzicht — die zijn opgeheven toen voeding het
+ * enige domein werd: de domeinhub had nog maar één deur, en het weekoverzicht
+ * leeft al als subtab in `PatroonScherm` (sectie "week"). Alle oude
+ * `screen=`-waarden blijven als legacy-alias in `dashboard-url.ts` herkend en
+ * vallen terug op "hub".
+ */
 export type VoortgangScreen =
   | "hub"
-  | "leefstijlprofiel"
   /**
    * Meet of het werkt: het aftellen naar je hermeting én het verslag erna.
    * Stond tot 27 augustus als vierde tab in de hoofdnavigatie.
    */
-  | "hermeting"
-  /**
-   * Het weekoverzicht: één week voedingsstoffen als verhaal, met de tabel
-   * gemiddeld/referentie/te-gaan per stof.
-   *
-   * Eigen scherm en geen blok op de hub, om dezelfde reden als hermeting er
-   * een is: het beantwoordt een andere vraag ("hoe ging deze week") dan de hub
-   * ("waar sta ik nu"), en het draagt een eigen week die je vooruit en
-   * achteruit kunt bladeren. Dat heeft een eigen URL nodig, anders kun je een
-   * week niet delen of terugvinden.
-   */
-  | "weekoverzicht"
-  /** @deprecated Legacy — het schap is de Keuze-tab geworden (`tab=keuze`). */
-  | "schap"
-  /** @deprecated Legacy — redirect naar leefstijlprofiel */
-  | "inzichten"
-  /** @deprecated Legacy — redirect naar leefstijlprofiel&fav= */
-  | "domein";
+  | "hermeting";
 
 /**
  * Vier sub-oppervlakken van de Keuze-tab, nooit tegelijk zichtbaar.
