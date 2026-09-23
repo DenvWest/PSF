@@ -52,10 +52,11 @@ describe("leeftijdsvloer (55+)", () => {
     expect(ouder?.perKgHigh).toBe(basis?.perKgHigh);
   });
 
-  it("laat de drie banden onder 55 ongemoeid", () => {
-    // Binnen 40–54 legt geen enkele bron een grens; een getal zou daar
-    // verzonnen zijn.
-    for (const ageRange of ["40–44", "45–49", "50–54"]) {
+  it("laat alle banden onder 55 ongemoeid", () => {
+    // Binnen 30–54 legt geen enkele bron een grens; een getal zou daar
+    // verzonnen zijn. De twee jongste banden horen er sinds de verbreding
+    // naar 30+ bij — ze mogen de vloer net zo min verschuiven als de rest.
+    for (const ageRange of ["30–34", "35–39", "40–44", "45–49", "50–54"]) {
       const result = computeProteinTarget({ weightKg: 80, ageRange });
       expect(result?.perKgLow, ageRange).toBe(1.0);
     }
