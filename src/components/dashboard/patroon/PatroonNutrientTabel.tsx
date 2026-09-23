@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
-import { hoeveelheid } from "@/lib/nutrition-tekortsysteem-copy";
+import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 import type { WeekRij } from "@/lib/nutrition-weekoverzicht";
 import type { NutrientTrend } from "@/lib/nutrition-trend";
 
 /**
  * De premium nutriëntentabel bovenaan Samenvatting: alle stoffen op één rij,
- * met hun weekgemiddelde, aandeel van de RI en trendrichting — en een
+ * met hun weekgemiddelde, aandeel van de ADH en trendrichting — en een
  * chip-rij erboven om stoffen die niet relevant zijn (bijv. een stof zonder
  * interventiedoel voor jou) te verbergen.
  *
@@ -100,17 +100,15 @@ export default function PatroonNutrientTabel({ rijen, trends, verborgen, onToggl
           <div className="vd-tabel-kop vd-nutrienttabel-kop">
             <span>Stof</span>
             <span>Gem.</span>
-            <span>% RI</span>
+            <span>ADH</span>
             <span>Trend</span>
           </div>
 
           {zichtbareRijen.map((rij) => {
             const richting = trendRichting(trends.find((t) => t.nutrient === rij.nutrient));
-            const kleur = !rij.bewijsbaar
-              ? "amber"
-              : rij.gedekt
-                ? "sage"
-                : "terra";
+            const vulling =
+              rij.aandeel === null ? 0 : Math.min(Math.round(rij.aandeel * 100), 100);
+            const heeftBalk = rij.dagenMetBron > 0 && rij.referentie !== null;
 
             return (
               <Link
@@ -137,8 +135,18 @@ export default function PatroonNutrientTabel({ rijen, trends, verborgen, onToggl
                   {rij.dagenMetBron === 0 ? "n.o." : hoeveelheid(rij.gemiddeld)}
                 </span>
 
-                <span className="vd-getal" data-toon={kleur === "terra" ? "terra" : "stil"}>
-                  {rij.aandeel === null ? "—" : `${Math.round(rij.aandeel * 100)}%`}
+                <span className="vd-cel">
+                  {heeftBalk ? (
+                    <span
+                      style={{
+                        width: `${vulling}%`,
+                        background: rij.gedekt ? "var(--vd-sage)" : "var(--vd-terra)",
+                      }}
+                    />
+                  ) : null}
+                  <b data-gevuld={heeftBalk && vulling > 0 ? "ja" : "nee"}>
+                    {heeftBalk ? percentageADH(rij.aandeel) : "—"}
+                  </b>
                 </span>
 
                 <span className="vd-trend" data-richting={richting ?? "vlak"}>

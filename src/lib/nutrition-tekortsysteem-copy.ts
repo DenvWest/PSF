@@ -159,3 +159,23 @@ export function hoeveelheid(waarde: number): string {
     ? String(afgerond)
     : afgerond.toFixed(1).replace(".", ",");
 }
+
+/**
+ * Een aandeel van de ADH als percentage, in UI-taal.
+ *
+ * "ADH" (Aanbevolen Dagelijkse Hoeveelheid) in plaats van het juridische "RI"
+ * (referentie-inname): RI is de correcte term in de databronnen
+ * (`reference-intake.ts`, EU 1169/2011) maar zegt een lezer niets — ADH is de
+ * term die op elk voedingsetiket staat en die mensen al kennen.
+ *
+ * Onder de 10 % krijgt het een decimaal, omdat 4 % en 4,4 % anders allebei
+ * "4" worden terwijl dat op maandbasis een portie noten scheelt. Een echte
+ * nul is de uitzondering: "0,0%" suggereert een precisie die er niet is, en
+ * leest als een meting die net niet nul was.
+ */
+export function percentageADH(aandeel: number | null): string {
+  if (aandeel === null) return "—";
+  const pct = aandeel * 100;
+  if (pct === 0) return "0%";
+  return pct < 10 ? `${pct.toFixed(1).replace(".", ",")}%` : `${Math.round(pct)}%`;
+}

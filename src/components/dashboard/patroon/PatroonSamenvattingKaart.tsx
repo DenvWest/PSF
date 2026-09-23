@@ -69,7 +69,7 @@ export default function PatroonSamenvattingKaart({ rij, dagen, onOpen }: Props) 
           <span className="vd-kaart-ri">
             {rij.referentie === null
               ? "eigen doel"
-              : `van ${rij.referentie} ${rij.unit} RI`}
+              : `van ${rij.referentie} ${rij.unit} ADH`}
           </span>
         </span>
 

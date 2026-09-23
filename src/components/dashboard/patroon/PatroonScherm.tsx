@@ -15,7 +15,7 @@ import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThem
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
-import { hoeveelheid } from "@/lib/nutrition-tekortsysteem-copy";
+import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 import { clarityTag } from "@/lib/clarity";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { nutrientenUitItems, sanitizeItems } from "@/lib/nutrition-dagboek-items";
@@ -349,72 +349,87 @@ function PatroonInhoud() {
             <div className="vd-tabel-kop vd-week-kop">
               <span>Stof</span>
               <span>Gem.</span>
-              <span>Referentie</span>
-              <span>Te gaan</span>
+              <span>ADH</span>
             </div>
 
-            {week.rijen.map((rij) => (
-              <Link
-                key={rij.nutrient}
-                href={rij.comparisonPath}
-                onClick={() => {
-                  // De enige uitgang van het dashboard naar de monetisatie.
-                  // `nutrient` zegt welke vergelijkingspagina dit scherm
-                  // voedt, `covered` of mensen ook klikken als hun dekking al
-                  // bewezen is.
-                  trackEvent("nutrition_week_nutrient_clicked", {
-                    nutrient: rij.nutrient,
-                    gedekt: rij.gedekt === true,
-                    destination: rij.comparisonPath,
-                  });
-                  emitAccountClientEvent("nutrition.week_nutrient_clicked", {
-                    nutrient: rij.nutrient,
-                    covered: rij.gedekt === true,
-                    days_logged: week.dagenGeregistreerd,
-                  });
-                  clarityTag("nutrition_weekoverzicht", `stof_${rij.nutrient}`);
-                }}
-                className="vd-tabel-rij vd-week-rij"
-              >
-                <span className="vd-naam">
-                  <span className="vd-naam-kop">
-                    {rij.label}
-                    {rij.gedekt ? (
-                      <span className="vd-pil" data-toon="sage">
-                        gedekt
-                      </span>
-                    ) : null}
-                  </span>
-                  <i>
-                    {rij.bewijsbaar
-                      ? `bron op ${rij.dagenMetBron} van ${week.dagenGeregistreerd} dagen`
-                      : "met een dagboek niet aan te tonen"}
-                  </i>
-                </span>
+            {week.rijen.map((rij) => {
+              const vulling =
+                rij.aandeel === null ? 0 : Math.min(Math.round(rij.aandeel * 100), 100);
 
-                <span className="vd-getal">
-                  {rij.dagenMetBron === 0 ? "n.o." : hoeveelheid(rij.gemiddeld)}
-                </span>
-                <span className="vd-getal" data-toon="stil">
-                  {rij.referentie === null
-                    ? "eigen"
-                    : `${rij.referentie} ${rij.unit}`}
-                </span>
-                <span className="vd-getal" data-toon="terra">
-                  {rij.teGaan === null
-                    ? "—"
-                    : `${hoeveelheid(rij.teGaan)} ${rij.unit}`}
-                </span>
-              </Link>
-            ))}
+              return (
+                <Link
+                  key={rij.nutrient}
+                  href={rij.comparisonPath}
+                  onClick={() => {
+                    // De enige uitgang van het dashboard naar de monetisatie.
+                    // `nutrient` zegt welke vergelijkingspagina dit scherm
+                    // voedt, `covered` of mensen ook klikken als hun dekking al
+                    // bewezen is.
+                    trackEvent("nutrition_week_nutrient_clicked", {
+                      nutrient: rij.nutrient,
+                      gedekt: rij.gedekt === true,
+                      destination: rij.comparisonPath,
+                    });
+                    emitAccountClientEvent("nutrition.week_nutrient_clicked", {
+                      nutrient: rij.nutrient,
+                      covered: rij.gedekt === true,
+                      days_logged: week.dagenGeregistreerd,
+                    });
+                    clarityTag("nutrition_weekoverzicht", `stof_${rij.nutrient}`);
+                  }}
+                  className="vd-tabel-rij vd-week-rij"
+                >
+                  <span className="vd-naam">
+                    <span className="vd-naam-kop">
+                      {rij.label}
+                      {rij.gedekt ? (
+                        <span className="vd-pil" data-toon="sage">
+                          gedekt
+                        </span>
+                      ) : null}
+                    </span>
+                    <i>
+                      {rij.dagenMetBron === 0
+                        ? rij.bewijsbaar
+                          ? "nog niets geregistreerd"
+                          : "met een dagboek niet aan te tonen"
+                        : rij.referentie === null
+                          ? "eigen doel"
+                          : rij.teGaan === null
+                            ? `${rij.referentie} ${rij.unit} ADH — gehaald`
+                            : `nog ${hoeveelheid(rij.teGaan)} ${rij.unit} te gaan tot ${rij.referentie} ${rij.unit}`}
+                    </i>
+                  </span>
+
+                  <span className="vd-getal">
+                    {rij.dagenMetBron === 0 ? "n.o." : hoeveelheid(rij.gemiddeld)}
+                  </span>
+
+                  <span className="vd-cel">
+                    {rij.dagenMetBron > 0 && rij.referentie !== null ? (
+                      <span
+                        style={{
+                          width: `${vulling}%`,
+                          background: rij.gedekt ? "var(--vd-sage)" : "var(--vd-terra)",
+                        }}
+                      />
+                    ) : null}
+                    <b data-gevuld={rij.dagenMetBron > 0 && vulling > 0 ? "ja" : "nee"}>
+                      {rij.dagenMetBron === 0 || rij.referentie === null
+                        ? "—"
+                        : percentageADH(rij.aandeel)}
+                    </b>
+                  </span>
+                </Link>
+              );
+            })}
           </div>
 
           <p className="vd-note">
-            <strong>&ldquo;Te gaan&rdquo; is een afstand, geen tekort.</strong> Het
-            is wat er nog tussen je registratie en de referentie zit. Dat je het
-            niet registreerde betekent niet dat je het niet binnenkreeg — daarom
-            staat er nooit een kruis, en bij een gehaalde referentie
-            &ldquo;gedekt&rdquo;.
+            <strong>ADH is een ondergrens, geen bewijs van een tekort.</strong>{" "}
+            Dat je iets niet registreerde betekent niet dat je het niet
+            binnenkreeg — daarom staat er nooit een kruis, en bij een gehaalde
+            ADH &ldquo;gedekt&rdquo;.
           </p>
         </>
       ) : sectie === "voedingsstoffen" ? (

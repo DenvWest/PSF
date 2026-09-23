@@ -1,7 +1,11 @@
 "use client";
 
 import { REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
-import { RICHTING_LABEL, VENSTER_LABEL } from "@/lib/nutrition-tekortsysteem-copy";
+import {
+  percentageADH,
+  RICHTING_LABEL,
+  VENSTER_LABEL,
+} from "@/lib/nutrition-tekortsysteem-copy";
 import type { Richting, Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 import { NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
 
@@ -48,21 +52,6 @@ const RICHTING_TEKEN: Record<Richting, string> = {
   onbekend: "—",
 };
 
-/**
- * Een aandeel als percentage.
- *
- * Onder de 10 % krijgt het een decimaal, omdat 4 % en 4,4 % anders allebei
- * "4" worden terwijl dat op maandbasis een portie noten scheelt. Een echte
- * nul is de uitzondering: "0,0%" suggereert een precisie die er niet is, en
- * leest als een meting die net niet nul was.
- */
-function percentage(aandeel: number | null): string {
-  if (aandeel === null) return "—";
-  const pct = aandeel * 100;
-  if (pct === 0) return "0%";
-  return pct < 10 ? `${pct.toFixed(1).replace(".", ",")}%` : `${Math.round(pct)}%`;
-}
-
 export default function PatroonVensterTabel({
   reeksen,
 }: {
@@ -98,7 +87,7 @@ export default function PatroonVensterTabel({
               <i>
                 {eigenDoel
                   ? "eigen doel"
-                  : `${referentie.value} ${referentie.unit} RI`}
+                  : `${referentie.value} ${referentie.unit} ADH`}
               </i>
             </span>
 
@@ -130,7 +119,7 @@ export default function PatroonVensterTabel({
                     hoeft geen van beide een uitzondering te zijn.
                   */}
                   <b data-gevuld={!leeg && !eigenDoel && vulling > 0 ? "ja" : "nee"}>
-                    {leeg || eigenDoel ? "—" : percentage(venster.aandeel)}
+                    {leeg || eigenDoel ? "—" : percentageADH(venster.aandeel)}
                   </b>
                 </span>
               );
