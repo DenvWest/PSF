@@ -593,7 +593,7 @@ export default function DagboekScherm({
                     className="w-full rounded-xl border border-white/15 bg-white/[0.03] px-3 py-2 text-[13px] text-[var(--vd-ink)] outline-none transition-colors placeholder:text-[var(--vd-ink-4)] focus:border-white/40"
                   />
                   {suggesties.length > 0 ? (
-                    <div className="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border border-white/15 bg-[var(--vd-surface-2)] shadow-2xl">
+                    <div className="absolute z-20 mt-1 max-h-[280px] w-full overflow-y-auto overflow-x-hidden rounded-xl border border-white/15 bg-[var(--vd-surface-2)] shadow-2xl">
                       {!zoek.trim() ? (
                         <p className="m-0 border-b border-white/10 px-3 py-1.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[var(--vd-ink-4)]">
                           Eerder gegeten

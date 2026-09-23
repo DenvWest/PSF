@@ -178,7 +178,7 @@ export default function DagboekMaaltijd({
                       <button
                         type="button"
                         onClick={() => onOpenProduct(item)}
-                        className="flex min-w-0 cursor-pointer items-center gap-2 text-left"
+                        className="flex w-full min-w-0 cursor-pointer items-center gap-2 text-left"
                       >
                         {voedingEntry ? (
                           <FoodThumbnail entry={voedingEntry} size={40} />
