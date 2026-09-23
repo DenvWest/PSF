@@ -7,7 +7,7 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20260917210000_daybook_items.sql`
-- **Openstaand:** 2 migraties
+- **Openstaand:** 3 migraties
 - **Laatst bijgewerkt:** 23 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
@@ -25,6 +25,12 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 - **Blokkeert deploy:** ja (branch `claude/dagboek-hero-balken`)
 - **Hoort bij:** premium nutriëntentabel met aan/uit-toggle op Je patroon
 - **Terugdraaien:** `drop table if exists public.account_nutrient_zichtbaarheid;`
+
+### [ ] 20260923150000_account_voedingsdoelen.sql
+- **Wat:** nieuwe tabel `account_voedingsdoelen` — eigen voedingsdoelen per account (gewicht, trainingsbelasting, handmatig eiwitdoel), één rij per account, RLS deny-all.
+- **Blokkeert deploy:** ja (branch `feat/voedingsdoelen-instellingen`)
+- **Hoort bij:** instellingen-scherm voor voedingsdoelen (stap 2 van de doelgroepverbreding naar 30+)
+- **Terugdraaien:** `drop table if exists public.account_voedingsdoelen;`
 
 ## Runbook bij thuiskomst
 

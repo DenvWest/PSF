@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import AccountSettings from "@/components/account/AccountSettings";
+import VoedingsdoelenKaart from "@/components/account/VoedingsdoelenKaart";
 import { getAccountFromCookie } from "@/lib/account-server";
 
 export const metadata = {
@@ -15,5 +16,15 @@ export default async function AccountPage() {
     redirect("/account/login");
   }
 
-  return <AccountSettings email={account.email} />;
+  return (
+    <>
+      <AccountSettings email={account.email} />
+      {/*
+        De kaart haalt zijn eigen gegevens op: de richtlijn wordt server-side
+        gerekend zodat het gewicht uit de check nooit als prop de client
+        bereikt — dezelfde grens die DashboardData aanhoudt.
+      */}
+      <VoedingsdoelenKaart />
+    </>
+  );
 }
