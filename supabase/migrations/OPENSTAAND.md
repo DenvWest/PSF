@@ -6,31 +6,15 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Status
 
-- **Baseline toegepast t/m:** `20260917210000_daybook_items.sql`
-- **Openstaand:** 3 migraties
+- **Baseline toegepast t/m:** `20260923150000_account_voedingsdoelen.sql`
+- **Openstaand:** geen
 - **Laatst bijgewerkt:** 23 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
 
-### [ ] 20260919120000_account_dagboek_favorieten.sql
-- **Wat:** nieuwe tabel `account_dagboek_favorieten` — handmatig bewaarde dagboek-favorieten (voeding/supplement, ster-knop op het zoekscherm), RLS deny-all.
-- **Blokkeert deploy:** ja (branch `claude/dagboek-hero-balken`)
-- **Hoort bij:** plak E van de Dagboek-zoekflow-iteratie (favorieten-backend)
-- **Terugdraaien:** `drop table if exists public.account_dagboek_favorieten;`
-
-### [ ] 20260923100000_account_nutrient_zichtbaarheid.sql
-- **Wat:** nieuwe tabel `account_nutrient_zichtbaarheid` — aan/uit-voorkeur per voedingsstof voor de premium nutriëntentabel op Je patroon (Samenvatting), RLS deny-all.
-- **Blokkeert deploy:** ja (branch `claude/dagboek-hero-balken`)
-- **Hoort bij:** premium nutriëntentabel met aan/uit-toggle op Je patroon
-- **Terugdraaien:** `drop table if exists public.account_nutrient_zichtbaarheid;`
-
-### [ ] 20260923150000_account_voedingsdoelen.sql
-- **Wat:** nieuwe tabel `account_voedingsdoelen` — eigen voedingsdoelen per account (gewicht, trainingsbelasting, handmatig eiwitdoel), één rij per account, RLS deny-all.
-- **Blokkeert deploy:** ja (branch `feat/voedingsdoelen-instellingen`)
-- **Hoort bij:** instellingen-scherm voor voedingsdoelen (stap 2 van de doelgroepverbreding naar 30+)
-- **Terugdraaien:** `drop table if exists public.account_voedingsdoelen;`
+Niets — alle migraties t/m de baseline zijn gedraaid.
 
 ## Runbook bij thuiskomst
 
@@ -63,4 +47,7 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 23 september 2026 | `20260919120000_account_dagboek_favorieten.sql` | Bevestigd via `npm run check:db-schema`: tabel aanwezig met 6 kolommen. |
+| 23 september 2026 | `20260923100000_account_nutrient_zichtbaarheid.sql` | Bevestigd via `npm run check:db-schema`: tabel aanwezig met 6 kolommen. |
+| 23 september 2026 | `20260923150000_account_voedingsdoelen.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: tabel aanwezig met 7 kolommen. PR #24 daarna gemerged. |
 | 18 september 2026 | `20260917210000_daybook_items.sql` | Bevestigd via Supabase-logs (Postgres-foutmeldingen `column ... items does not exist` stoppen na 12:59) + `npm run check:db-schema` groen. |
