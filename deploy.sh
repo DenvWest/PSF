@@ -40,6 +40,14 @@ else
     echo "📦 package-lock.json ongewijzigd — dependencies overslaan"
 fi
 
+# Turbopack's persistente cache hield op 23 sep 2026 een CSS-artefact van
+# 17 sep vast: globals.css was gewijzigd, maar de gebouwde bundel miste alles
+# vanaf de `.vd-*`-blokken. De JS was wel nieuw, dus "Je patroon" rende live
+# volledig ongestyled. De cache overleeft een git pull en wordt niet
+# ongeldig verklaard, dus gooien we 'm per deploy weg.
+echo "🧹 Build-cache opruimen..."
+rm -rf .next/cache/turbopack
+
 echo "🏗️  Building production version..."
 npm run build
 
