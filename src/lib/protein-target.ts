@@ -50,8 +50,8 @@ export type ProteinTargetRange = Pick<ProteinTarget, "gramsLow" | "gramsHigh">;
  * PROT-AGE (2013) en ESPEN (2014) adviseren voor gezonde ouderen minimaal
  * 1,0–1,2 g/kg per dag, oplopend bij training en ziekte. De scherpe knik in
  * die literatuur ligt rond 65 — en bij sarcopenie en ziekte, niet bij een
- * verjaardag. Onze check meet alleen 40–44 / 45–49 / 50–54 / 55+, en die
- * bovenste band is open: hij bevat zowel een 56-jarige als iemand van 70.
+ * verjaardag. Onze check meet 30–34 / 35–39 / 40–44 / 45–49 / 50–54 / 55+, en
+ * die bovenste band is open: hij bevat zowel een 56-jarige als iemand van 70.
  *
  * Wat we daaruit wél mogen afleiden is een **ondergrens**, geen nieuwe curve.
  * Voor wie in die open band valt is 1,0 g/kg de onderkant van wat beide
@@ -59,10 +59,15 @@ export type ProteinTargetRange = Pick<ProteinTarget, "gramsLow" | "gramsHigh">;
  * op, en raakt het de bovengrens niet — die wordt al door training bepaald, en
  * twee factoren die dezelfde grens omhoog duwen zou dubbeltellen zijn.
  *
- * De drie banden eronder doen niets. Niet uit voorzichtigheid maar omdat er
- * geen bron is die binnen 40–54 een grens legt: daar zou een getal verzonnen
- * zijn, en dat is precies wat de discipline in `nutrient-personalization.ts`
+ * De banden eronder doen niets. Niet uit voorzichtigheid maar omdat er geen
+ * bron is die binnen 30–54 een grens legt: daar zou een getal verzonnen zijn,
+ * en dat is precies wat de discipline in `nutrient-personalization.ts`
  * verbiedt.
+ *
+ * Geslacht moduleert hier evenmin. PROT-AGE en ESPEN geven hun g/kg-factoren
+ * voor beide; het verschil in eiwitbehoefte loopt via lichaamsgewicht, en dat
+ * zit al in de formule. Een aparte factor per geslacht zou datzelfde verschil
+ * een tweede keer tellen.
  */
 function ageFloor(ageRange: string | undefined): number | null {
   return ageRange === "55+" ? 1.2 : null;

@@ -2,7 +2,7 @@
 
 ## Wat dit project is
 
-PerfectSupplement (perfectsupplement.nl) is een onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Focus: slaap, stress, energie, herstel. Positionering: "De Consumentenbond van supplementen" — objectief, wetenschappelijk onderbouwd.
+PerfectSupplement (perfectsupplement.nl) is een onafhankelijk supplementen-vergelijkingsplatform voor mannen en vrouwen 30+. Focus: slaap, stress, energie, herstel. Positionering: "De Consumentenbond van supplementen" — objectief, wetenschappelijk onderbouwd.
 
 **Monetisatie.** Huidig/live: externe affiliate links (Daisycon, Arctic Blue direct) op de vergelijkingspagina's. In opbouw (2026): eigen partnerbeheer (**PartnerDesk**) en een **eigen affiliate-programma** rondom Leefstijlcheck — zie "Interne platformen (2026)".
 
