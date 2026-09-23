@@ -23,7 +23,12 @@ export default function CockpitBottomNav({
       aria-label="Hoofdnavigatie"
       className="fixed inset-x-0 bottom-0 z-20 border-t border-white/10 bg-[rgba(12,19,21,0.92)] pb-[env(safe-area-inset-bottom,0px)] backdrop-blur-md sm:hidden"
     >
-      <div className="flex" role="tablist">
+      {/*
+        Meer staat naast de tablist en niet erin: hij opent een lijst en toont
+        geen paneel, dus `role="tab"` zou liegen over wat er gebeurt.
+      */}
+      <div className="flex">
+        <div className="flex flex-1" role="tablist">
         {DASHBOARD_TABS.map((tab) => {
           const Icon = Icons[tab.icon as keyof typeof Icons] as IconComp;
           const active = tab.id === activeTab;
@@ -46,6 +51,7 @@ export default function CockpitBottomNav({
             </button>
           );
         })}
+        </div>
         <CockpitMoreMenu variant="bottom" />
       </div>
     </nav>

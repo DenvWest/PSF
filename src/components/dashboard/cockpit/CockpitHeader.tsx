@@ -152,11 +152,19 @@ export default function CockpitHeader({
           />
         </div>
 
-        <div
-          className="hidden min-w-0 gap-0.5 overflow-x-auto scrollbar-hide sm:flex sm:justify-self-center md:justify-self-start"
-          role="tablist"
-          aria-label="Hoofdnavigatie"
-        >
+        {/*
+          De tablist en de Meer-knop delen één rij maar staan in aparte
+          containers. Twee redenen: Meer is geen tab (hij opent een lijst en
+          toont geen paneel, dus `role="tab"` zou liegen), en de tablist
+          scrollt horizontaal — een uitklapmenu daarbinnen zou door
+          `overflow-x-auto` worden afgeknipt.
+        */}
+        <div className="hidden min-w-0 items-center gap-0.5 sm:flex sm:justify-self-center md:justify-self-start">
+          <div
+            className="flex min-w-0 gap-0.5 overflow-x-auto scrollbar-hide"
+            role="tablist"
+            aria-label="Hoofdnavigatie"
+          >
           {DASHBOARD_TABS.map((tab) => {
             const Icon = Icons[tab.icon as keyof typeof Icons] as IconComp;
             const active = tab.id === activeTab;
@@ -191,6 +199,7 @@ export default function CockpitHeader({
               </button>
             );
           })}
+          </div>
           <CockpitMoreMenu variant="header" />
         </div>
 
