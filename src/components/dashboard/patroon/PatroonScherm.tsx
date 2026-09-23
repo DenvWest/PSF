@@ -239,8 +239,7 @@ function PatroonInhoud() {
       ) : sectie === "samenvatting" ? (
         <>
           <PatroonNutrientTabel
-            rijen={week.rijen}
-            trends={trends}
+            reeksen={reeksen}
             verborgen={verborgenNutrients}
             onToggle={toggleNutrient}
           />

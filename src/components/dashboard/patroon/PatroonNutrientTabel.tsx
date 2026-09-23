@@ -1,72 +1,105 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import type { NutrientId } from "@/data/nutrition/intake-reference";
-import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
-import type { WeekRij } from "@/lib/nutrition-weekoverzicht";
-import type { NutrientTrend } from "@/lib/nutrition-trend";
+import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
+import { trackEvent } from "@/lib/ga4";
+import {
+  hoeveelheid,
+  percentageADH,
+  RICHTING_TEKEN,
+  RICHTING_TOON,
+} from "@/lib/nutrition-tekortsysteem-copy";
+import type { Vensterreeks, VensterLengte } from "@/lib/nutrition-tekortsysteem";
 
 /**
  * De premium nutriëntentabel bovenaan Samenvatting: alle stoffen op één rij,
- * met hun weekgemiddelde, aandeel van de ADH en trendrichting — en een
- * chip-rij erboven om stoffen die niet relevant zijn (bijv. een stof zonder
- * interventiedoel voor jou) te verbergen.
+ * met hun gemiddelde over de gekozen periode, hun ADH-balk en trendrichting —
+ * een chip-rij erboven om stoffen te verbergen, en een periode-schakelaar
+ * (dag/week/maand) die zowel de cijfers als de volgorde herberekent.
  *
- * ## Waarom een aparte tabel naast de samenvattingskaarten
+ * ## Waarom dit op `Vensterreeks` bouwt en niet op `WeekRij`
  *
- * De kaarten eronder (`PatroonSamenvattingKaart`) tonen per stof de zeven
- * losse dagen — dat is de "hoe liep mijn week"-vraag. Deze tabel beantwoordt
- * een andere vraag: "waar sta ik nu, in één oogopslag, over alle stoffen". Een
- * tabelrij leent zich daarvoor beter dan zeven kaarten die je moet aftellen.
+ * Het tekortsysteem (`nutrition-tekortsysteem.ts`) berekent al drie vensters
+ * die precies op dag/week/maand passen (1, 7, 30 dagen) — dezelfde cijfers
+ * die de Voedingsstoffen-sectie al toont. Een periode-schakelaar hier is dus
+ * geen nieuwe rekenkern, alleen een nieuwe blik op wat al bestaat.
  *
- * ## Waarom de trendrichting hier een pijl is en geen staafjesreeks
+ * ## Waarom de sortering per periode opnieuw gebeurt
  *
- * `PatroonTrend` toont de volledige zes-weken-reeks al met staafjes — die
- * herhalen zou ruis toevoegen. Hier is genoeg: gaat de laatste volle week
- * omhoog, omlaag of vlak t.o.v. de week ervoor. Twee vergelijkbare punten,
- * geen twaalf.
+ * "Laagste ADH eerst" betekent iets anders per venster: een stof kan vandaag
+ * laag staan en over de maand juist gedekt zijn (of andersom). De volgorde
+ * herberekenen bij elke periodewissel is dus geen optimalisatie maar de
+ * kern van het idee — de stof die nú de meeste aandacht verdient staat boven.
  *
  * ## "Uit" is een weergavefilter, geen datawijziging
  *
- * Verbergen raakt alleen wat hier en in de trend-sectie te zien is. Het
- * dagboek en het tekortsysteem blijven de stof gewoon meerekenen — een
- * verborgen stof is niet "genegeerd", alleen "niet getoond".
+ * Verbergen raakt alleen wat hier te zien is. Het dagboek en het
+ * tekortsysteem blijven de stof gewoon meerekenen — een verborgen stof is
+ * niet "genegeerd", alleen "niet getoond".
  */
 
+type Periode = "dag" | "week" | "maand";
+
+const VENSTER_VOOR_PERIODE: Record<Periode, VensterLengte> = {
+  dag: 1,
+  week: 7,
+  maand: 30,
+};
+
+const PERIODE_LABEL: Record<Periode, string> = {
+  dag: "Vandaag",
+  week: "Deze week",
+  maand: "Deze maand",
+};
+
 type Props = {
-  rijen: readonly WeekRij[];
-  trends: readonly NutrientTrend[];
+  reeksen: readonly Vensterreeks[];
   verborgen: ReadonlySet<NutrientId>;
   onToggle: (nutrient: NutrientId) => void;
 };
 
-function trendRichting(trend: NutrientTrend | undefined): "op" | "neer" | "vlak" | null {
-  if (!trend) return null;
-  const bekend = trend.punten.filter((p) => p.waarde !== null);
-  if (bekend.length < 2) return null;
-  const laatste = bekend[bekend.length - 1]!;
-  const vorige = bekend[bekend.length - 2]!;
-  const verschil = (laatste.waarde ?? 0) - (vorige.waarde ?? 0);
-  const drempel = (vorige.waarde ?? 0) * 0.05;
-  if (Math.abs(verschil) <= Math.max(drempel, 0.01)) return "vlak";
-  return verschil > 0 ? "op" : "neer";
-}
+export default function PatroonNutrientTabel({ reeksen, verborgen, onToggle }: Props) {
+  const [periode, setPeriode] = useState<Periode>("week");
+  const vensterLengte = VENSTER_VOOR_PERIODE[periode];
 
-const TREND_PIJL: Record<"op" | "neer" | "vlak", string> = {
-  op: "↑",
-  neer: "↓",
-  vlak: "→",
-};
+  const zichtbaar = reeksen.filter((reeks) => !verborgen.has(reeks.nutrient));
 
-export default function PatroonNutrientTabel({ rijen, trends, verborgen, onToggle }: Props) {
-  const zichtbareRijen = rijen.filter((rij) => !verborgen.has(rij.nutrient));
+  // Laagste ADH eerst: wat geen aandeel heeft (nog niets geregistreerd, of een
+  // eigen doel) komt onderaan — dat is geen "laag", dat is "onbekend", en dat
+  // hoort niet boven een stof die aantoonbaar achterblijft.
+  const gesorteerd = [...zichtbaar].sort((a, b) => {
+    const va = a.vensters.find((v) => v.dagen_terug === vensterLengte);
+    const vb = b.vensters.find((v) => v.dagen_terug === vensterLengte);
+    const aa = va?.aandeel;
+    const ab = vb?.aandeel;
+    if (aa == null && ab == null) return 0;
+    if (aa == null) return 1;
+    if (ab == null) return -1;
+    return aa - ab;
+  });
 
   return (
     <div className="vd-nutrienttabel-blok">
       <div className="vd-kop" style={{ marginBottom: "0.5rem" }}>
         <p className="vd-eyebrow" style={{ margin: 0 }}>
-          Deze week — al je stoffen
+          {PERIODE_LABEL[periode]} — al je stoffen, laagste ADH eerst
         </p>
+        <div className="vd-segment" role="group" aria-label="Periode">
+          {(Object.keys(VENSTER_VOOR_PERIODE) as Periode[]).map((optie) => (
+            <button
+              key={optie}
+              type="button"
+              aria-pressed={periode === optie}
+              onClick={() => {
+                setPeriode(optie);
+                trackEvent("nutrition_patroon_periode_gekozen", { periode: optie });
+              }}
+            >
+              {optie === "dag" ? "Dag" : optie === "week" ? "Week" : "Maand"}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div
@@ -74,23 +107,23 @@ export default function PatroonNutrientTabel({ rijen, trends, verborgen, onToggl
         role="group"
         aria-label="Voedingsstoffen tonen of verbergen"
       >
-        {rijen.map((rij) => {
-          const aan = !verborgen.has(rij.nutrient);
+        {reeksen.map((reeks) => {
+          const aan = !verborgen.has(reeks.nutrient);
           return (
             <button
-              key={rij.nutrient}
+              key={reeks.nutrient}
               type="button"
               className="vd-chip"
               aria-pressed={aan}
-              onClick={() => onToggle(rij.nutrient)}
+              onClick={() => onToggle(reeks.nutrient)}
             >
-              {rij.label}
+              {reeks.label}
             </button>
           );
         })}
       </div>
 
-      {zichtbareRijen.length === 0 ? (
+      {gesorteerd.length === 0 ? (
         <p className="vd-note" style={{ marginTop: "0.625rem" }}>
           Alle stoffen staan uit. Zet er hierboven minstens één aan om de
           tabel te zien.
@@ -104,26 +137,28 @@ export default function PatroonNutrientTabel({ rijen, trends, verborgen, onToggl
             <span>Trend</span>
           </div>
 
-          {zichtbareRijen.map((rij) => {
-            const richting = trendRichting(trends.find((t) => t.nutrient === rij.nutrient));
+          {gesorteerd.map((reeks) => {
+            const venster = reeks.vensters.find((v) => v.dagen_terug === vensterLengte);
             const vulling =
-              rij.aandeel === null ? 0 : Math.min(Math.round(rij.aandeel * 100), 100);
-            const heeftBalk = rij.dagenMetBron > 0 && rij.referentie !== null;
+              !venster || venster.aandeel === null
+                ? 0
+                : Math.min(Math.round(venster.aandeel * 100), 100);
+            const heeftBalk = Boolean(venster && venster.dagen > 0 && venster.aandeel !== null);
 
             return (
               <Link
-                key={rij.nutrient}
-                href={rij.comparisonPath}
+                key={reeks.nutrient}
+                href={nutrientReferences[reeks.nutrient].comparisonPath}
                 className="vd-tabel-rij vd-nutrienttabel-rij"
               >
                 <span className="vd-naam">
                   <span className="vd-naam-kop">
-                    {rij.label}
-                    {rij.gedekt ? (
+                    {reeks.label}
+                    {venster?.gedekt ? (
                       <span className="vd-pil" data-toon="sage">
                         gedekt
                       </span>
-                    ) : !rij.bewijsbaar ? (
+                    ) : !reeks.bewijsbaar ? (
                       <span className="vd-pil" data-toon="amber">
                         n.t.b.
                       </span>
@@ -132,7 +167,7 @@ export default function PatroonNutrientTabel({ rijen, trends, verborgen, onToggl
                 </span>
 
                 <span className="vd-getal">
-                  {rij.dagenMetBron === 0 ? "n.o." : hoeveelheid(rij.gemiddeld)}
+                  {!venster || venster.dagen === 0 ? "n.o." : hoeveelheid(venster.gemiddeld)}
                 </span>
 
                 <span className="vd-cel">
@@ -140,17 +175,17 @@ export default function PatroonNutrientTabel({ rijen, trends, verborgen, onToggl
                     <span
                       style={{
                         width: `${vulling}%`,
-                        background: rij.gedekt ? "var(--vd-sage)" : "var(--vd-terra)",
+                        background: venster?.gedekt ? "var(--vd-sage)" : "var(--vd-terra)",
                       }}
                     />
                   ) : null}
                   <b data-gevuld={heeftBalk && vulling > 0 ? "ja" : "nee"}>
-                    {heeftBalk ? percentageADH(rij.aandeel) : "—"}
+                    {heeftBalk ? percentageADH(venster!.aandeel) : "—"}
                   </b>
                 </span>
 
-                <span className="vd-trend" data-richting={richting ?? "vlak"}>
-                  {richting ? TREND_PIJL[richting] : "–"}
+                <span className="vd-trend" data-richting={RICHTING_TOON[reeks.richting]}>
+                  {RICHTING_TEKEN[reeks.richting]}
                 </span>
               </Link>
             );

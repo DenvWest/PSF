@@ -46,6 +46,23 @@ export const RICHTING_LABEL: Record<Richting, string> = {
   onbekend: "te weinig dagen",
 };
 
+/** Voor `.vd-trend[data-richting]`: de vijf richtingen op de drie kleurtonen die dat token kent. */
+export const RICHTING_TOON: Record<Richting, "op" | "neer" | "vlak"> = {
+  verbetert: "op",
+  verslechtert: "neer",
+  vlak: "vlak",
+  piekt: "vlak",
+  onbekend: "vlak",
+};
+
+export const RICHTING_TEKEN: Record<Richting, string> = {
+  verbetert: "↗",
+  verslechtert: "↘",
+  vlak: "→",
+  piekt: "◆",
+  onbekend: "—",
+};
+
 /**
  * Een korte uitleg per richting, in de tweede persoon.
  *

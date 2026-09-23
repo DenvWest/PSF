@@ -4,9 +4,11 @@ import { REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
 import {
   percentageADH,
   RICHTING_LABEL,
+  RICHTING_TEKEN,
+  RICHTING_TOON,
   VENSTER_LABEL,
 } from "@/lib/nutrition-tekortsysteem-copy";
-import type { Richting, Vensterreeks } from "@/lib/nutrition-tekortsysteem";
+import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 import { NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
 
 /**
@@ -35,22 +37,6 @@ import { NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
  * eigenschap van de meetmethode is; de kolom blijft daar leeg met de reden
  * eronder.
  */
-
-const RICHTING_TOON: Record<Richting, "op" | "neer" | "vlak"> = {
-  verbetert: "op",
-  verslechtert: "neer",
-  vlak: "vlak",
-  piekt: "vlak",
-  onbekend: "vlak",
-};
-
-const RICHTING_TEKEN: Record<Richting, string> = {
-  verbetert: "↗",
-  verslechtert: "↘",
-  vlak: "→",
-  piekt: "◆",
-  onbekend: "—",
-};
 
 export default function PatroonVensterTabel({
   reeksen,
