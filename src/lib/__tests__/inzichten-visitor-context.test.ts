@@ -169,9 +169,10 @@ describe("getInzichtenVisitorContext", () => {
     mockLoadAccountDashboardData.mockResolvedValue(DASHBOARD_WITH_DATA);
     const result = await getInzichtenVisitorContext();
     expect(result).not.toBeNull();
-    expect(result?.priorityPillarId).toBe("slaap");
-    expect(result?.priorityLabel).toBe("Slaap");
-    expect(result?.orderedPillarIds[0]).toBe("slaap");
+    // Slaap is verborgen; voeding is het laagste zichtbare domein.
+    expect(result?.priorityPillarId).toBe("voeding");
+    expect(result?.priorityLabel).toBe("Voeding");
+    expect(result?.orderedPillarIds[0]).toBe("voeding");
     expect(result?.profileLabel).toBe("Onrustige Slaper");
     expect(result?.gapSignals).toBeNull();
     expect(result?.activePlan).toBeNull();

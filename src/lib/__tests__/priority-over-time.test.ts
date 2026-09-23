@@ -47,7 +47,14 @@ describe("priority-over-time", () => {
     expect(countEnginePriorityChanges(history)).toBe(1);
   });
 
-  it("flags nudge when user pin diverges from engine", () => {
+  /**
+   * De nudge vuurt alleen als een eigen pin van de engine afwijkt. Met voeding
+   * als enige zichtbare interventiedomein kán dat niet meer — de pin en de
+   * engine wijzen altijd hetzelfde aan. Deze test legt die stand vast; komt er
+   * een tweede domein terug, dan faalt hij en hoort de oorspronkelijke
+   * divergentie-assertie er weer in.
+   */
+  it("flags no nudge while only one domain is visible", () => {
     const scores = buildScores();
     const trend: CheckTrend = Object.fromEntries(
       Object.keys(scores).map((key) => [key, [scores[key as keyof CheckScores]]]),
@@ -60,10 +67,10 @@ describe("priority-over-time", () => {
       { MOV_CARD: 1 },
       null,
       null,
-      "beweging",
+      "voeding",
       null,
     );
 
-    expect(shouldShowEngineShiftNudge(model)).toBe(true);
+    expect(shouldShowEngineShiftNudge(model)).toBe(false);
   });
 });

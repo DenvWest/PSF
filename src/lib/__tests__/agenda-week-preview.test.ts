@@ -67,7 +67,14 @@ describe("buildWeekSchedulePreview", () => {
     expect(todaySlot?.title).toBe(model.activeHabit?.title);
   });
 
-  it("routes beweging onderbouwing to a movement anchor from intake answers", () => {
+  /**
+   * Beweging droeg deze test tot 22 september: zijn onderbouwing wees naar een
+   * anker uit de intake-antwoorden. Dat domein is uit de interface
+   * (`zichtbare-domeinen.ts`), dus de week bestaat nu volledig uit voeding —
+   * en de regel die de test bewaakt (elk slot wijst naar zijn eigen
+   * onderbouwing) geldt daar onverminderd.
+   */
+  it("routes a slot to its own onderbouwing", () => {
     const model = buildFixtureModel({
       slaap: 60,
       energie: 70,
@@ -78,10 +85,12 @@ describe("buildWeekSchedulePreview", () => {
       verbinding: 70,
     });
 
-    const bewegingSlot = buildWeekSchedulePreview(model).find(
-      (slot) => slot.domain === "beweging" && slot.isToday,
-    );
-    expect(bewegingSlot?.evidenceHref).toBe("/onderbouwing?from=dashboard#MOV_CARD");
+    const slots = buildWeekSchedulePreview(model);
+    expect(slots.map((slot) => slot.domain)).not.toContain("beweging");
+
+    const vandaag = slots.find((slot) => slot.isToday);
+    expect(vandaag?.domain).toBe("voeding");
+    expect(vandaag?.evidenceHref).toBe("/onderbouwing/voeding?from=dashboard");
   });
 
   /**

@@ -123,9 +123,9 @@ describe("buildContextSpine — urgentie", () => {
 
   it("wijst zonder check geen laag aan, maar noemt de check die het oplost", () => {
     const spine = buildContextSpine({
-      domain: "beweging",
+      domain: "voeding",
       openLayerId: null,
-      data: data({ movementCheckinSnapshot: null }),
+      data: data({ nutritionCheckinSnapshot: null }),
       model: model(null),
       todayActionDone: false,
     });
@@ -133,8 +133,8 @@ describe("buildContextSpine — urgentie", () => {
       throw new Error("verwacht geen_winstlaag");
     }
     // Geen laag 1 als schijnprecisie — wel de weg vooruit.
-    expect(spine.urgency.line).toContain("beweegcheck");
-    expect(spine.urgency.cta?.href).toBe("/intake/beweging?from=dashboard&kompas=beweging");
+    expect(spine.urgency.line).toContain("voedingscheck");
+    expect(spine.urgency.cta?.href).toBe("/intake/voeding?from=dashboard&kompas=voeding");
   });
 
   it("draagt geen urgentie voor een domein zonder ladder", () => {

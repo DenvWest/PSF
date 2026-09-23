@@ -49,7 +49,7 @@ describe("buildKompasDomainRows", () => {
     );
     const rows = buildKompasDomainRows(model);
 
-    expect(rows).toHaveLength(3);
+    expect(rows).toHaveLength(1);
     expect(rows.map((row) => row.id)).toEqual(KOMPAS_RAIL_PILLAR_IDS);
   });
 
@@ -62,11 +62,11 @@ describe("buildKompasDomainRows", () => {
       answers,
       null,
       null,
-      "beweging",
+      "voeding",
     );
     const rows = buildKompasDomainRows(model);
 
-    expect(rows.find((row) => row.id === "beweging")?.isPriority).toBe(true);
+    expect(rows.find((row) => row.id === "voeding")?.isPriority).toBe(true);
     expect(rows.filter((row) => row.isPriority)).toHaveLength(1);
   });
 
@@ -80,16 +80,16 @@ describe("buildKompasDomainRows", () => {
       null,
       null,
     );
-    const beweging = buildKompasDomainRows(model).find((row) => row.id === "beweging");
+    const voeding = buildKompasDomainRows(model).find((row) => row.id === "voeding");
 
-    expect(beweging?.score).toBe(38);
-    expect(beweging?.delta).toBe(8);
+    expect(voeding?.score).toBe(45);
+    expect(voeding?.delta).toBe(3);
   });
 
   it("returns null delta when fewer than two trend points", () => {
     const singlePointTrend: CheckTrend = {
       ...trend,
-      beweging: [38],
+      voeding: [45],
     };
     const model = buildModel(
       { scores, vitality: 46, date: "10 jul 2026", trend: singlePointTrend },
@@ -100,9 +100,9 @@ describe("buildKompasDomainRows", () => {
       null,
       null,
     );
-    const beweging = buildKompasDomainRows(model).find((row) => row.id === "beweging");
+    const voeding = buildKompasDomainRows(model).find((row) => row.id === "voeding");
 
-    expect(beweging?.delta).toBeNull();
+    expect(voeding?.delta).toBeNull();
   });
 
   /**

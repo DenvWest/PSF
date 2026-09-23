@@ -287,10 +287,19 @@ describe("VoortgangMetingenPerDomein — as en herkomst", () => {
 });
 
 describe("VoortgangMetingenPerDomein — rest", () => {
-  it("switches domain from the chips", () => {
-    const { onSelectDomain } = renderPanel();
-    fireEvent.click(screen.getByRole("button", { name: /Stress/ }));
-    expect(onSelectDomain).toHaveBeenCalledWith("stress");
+  /**
+   * De chiprij droeg tot 22 september vier domeinen; wisselen tussen twee
+   * ervan was hier de test. Alleen voeding is nog zichtbaar
+   * (`zichtbare-domeinen.ts`), dus er valt niets meer te wisselen — wat
+   * overblijft is de eis dat er ook geen chip staat die nergens heen gaat.
+   * De voeding-chip zelf is gedekt door de test hieronder.
+   */
+  it("toont geen chip voor een verborgen domein", () => {
+    renderPanel();
+    for (const label of [/Stress/, /Slaap/, /Beweging/, /Verbinding/]) {
+      expect(screen.queryByRole("button", { name: label })).toBeNull();
+    }
+    expect(screen.getByRole("button", { name: /Voeding/ })).toBeTruthy();
   });
 
   it("opent Voeding in het leefstijlprofiel in plaats van de meetreeks te filteren", () => {

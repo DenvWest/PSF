@@ -76,10 +76,10 @@ describe("IntakeResults — startprofiel en route in één box", () => {
     const box = screen.getByRole("region", { name: "Jouw startprofiel en route" });
     expect(within(box).getByRole("img", { name: /^Leefstijl: \d+ van de 100/ })).not.toBeNull();
     expect(within(box).getByRole("heading", { level: 1 })).not.toBeNull();
-    // Drie uitklapbare domeinen: verbinding en stress zijn uit de interface
-    // (zie `zichtbare-domeinen.ts`). Hun scores tellen nog mee in het
+    // Eén domeinblok: alleen voeding is nog zichtbaar (`zichtbare-domeinen.ts`).
+    // De scores van de verborgen domeinen tellen nog mee in het
     // vitaliteitscijfer in de ring, maar krijgen geen eigen blok meer.
-    expect(within(box).getAllByRole("button", { expanded: false }).length).toBe(2);
+    expect(within(box).queryAllByRole("button", { expanded: false })).toHaveLength(0);
     expect(within(box).getAllByRole("button", { expanded: true })).toHaveLength(1);
   });
 
@@ -116,9 +116,10 @@ describe("IntakeResults — startprofiel en route in één box", () => {
     // aan als de route. Sinds 29 augustus draagt de uitkomst dat label niet
     // meer: het overzicht is een meting, en een persona-naam ernaast leest als
     // een oordeel dat de check niet gemeten heeft.
-    expect(focus.id).toBe("slaap");
+    // Slaap scoort het laagst maar is verborgen; voeding draagt het startpunt.
+    expect(focus.id).toBe("voeding");
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain(
-      "Slaap is je startpunt",
+      "Voeding is je startpunt",
     );
     expect(screen.queryByText("Onrustige Slaper")).toBeNull();
   });
@@ -149,6 +150,12 @@ describe("IntakeResults — startprofiel en route in één box", () => {
     ).toBe("/affiliate-disclosure");
   });
 
+  /**
+   * De "maar één tegelijk open"-regel is met één zichtbaar domein niet meer
+   * door te klikken: de roadmap bevat alleen voeding. Wat blijft gelden is dat
+   * je startpunt open staat, en dat er nooit meer dan één blok open is.
+   * Komt er een tweede domein terug, dan hoort de klik-assertie hier weer in.
+   */
   it("opent standaard je startpunt en houdt maar één domein open", () => {
     renderResults();
     const built = roadmap();
@@ -156,12 +163,7 @@ describe("IntakeResults — startprofiel en route in één box", () => {
 
     const open = screen.getByRole("button", { expanded: true });
     expect(open.textContent).toContain(built[0]!.label);
-
-    fireEvent.click(screen.getByRole("button", { name: new RegExp(built[2]!.label) }));
     expect(screen.getAllByRole("button", { expanded: true })).toHaveLength(1);
-    expect(screen.getByRole("button", { expanded: true }).textContent).toContain(
-      built[2]!.label,
-    );
   });
 
   it("houdt het per domein bij \u00e9\u00e9n stap, hooguit \u00e9\u00e9n aanvulling en de dashboard-lanes", () => {

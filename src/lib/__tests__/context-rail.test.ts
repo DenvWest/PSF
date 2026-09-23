@@ -15,28 +15,25 @@ describe("buildKompasRailDomains", () => {
   it("geeft de zichtbare domeinen in vaste volgorde", () => {
     const domains = buildKompasRailDomains({});
     expect(domains.map((domain) => domain.id)).toEqual(KOMPAS_RAIL_PILLAR_IDS);
-    expect(domains).toHaveLength(3);
+    expect(domains).toHaveLength(1);
   });
 
   // Verbinding en stress worden nog gemeten maar niet meer getoond; zie
   // `zichtbare-domeinen.ts` voor waarom de score wél blijft bestaan.
-  it("laat verbinding en stress uit de rail", () => {
-    const domains = buildKompasRailDomains({ verbinding: 40, stress: 10 });
-    const ids = domains.map((domain) => domain.id);
-    expect(ids).not.toContain("verbinding");
-    expect(ids).not.toContain("stress");
+  it("laat elk verborgen domein uit de rail", () => {
+    const domains = buildKompasRailDomains({
+      verbinding: 40, stress: 10, slaap: 20, beweging: 30,
+    });
+    expect(domains.map((domain) => domain.id)).toEqual(["voeding"]);
   });
 
   it("vult label, icon en kleur uit de pilaar-data en rondt de score af", () => {
-    const domains = buildKompasRailDomains({ slaap: 62.4, beweging: 41.6 });
-    const slaap = domains[0];
-    const beweging = domains[1];
+    const domains = buildKompasRailDomains({ voeding: 62.4 });
+    const voeding = domains[0];
 
-    expect(slaap.label).toBe("Slaap");
-    expect(slaap.icon).toBe("Moon");
-    expect(slaap.color).toBe("#5B6EAE");
-    expect(slaap.score).toBe(62);
-    expect(beweging.score).toBe(42);
+    expect(voeding.label).toBe("Voeding");
+    expect(voeding.score).toBe(62);
+    expect(buildKompasRailDomains({ voeding: 41.6 })[0].score).toBe(42);
   });
 
   it("valt terug op 0 voor domeinen zonder score", () => {
@@ -132,7 +129,7 @@ describe("VOORTGANG_RAIL_ITEMS", () => {
 });
 
 describe("buildVoortgangRailDomains", () => {
-  it("toont de zichtbare Kompas-domeinen — slaap en beweging met cijfer, voeding als deur", () => {
+  it("toont alleen voeding, als deur", () => {
     const voortgang = buildVoortgangRailDomains({
       slaap: 25,
       beweging: 63,
@@ -140,15 +137,15 @@ describe("buildVoortgangRailDomains", () => {
       stress: 10,
     });
     expect(VOORTGANG_RAIL_PILLAR_IDS).toEqual(KOMPAS_RAIL_PILLAR_IDS);
-    expect(voortgang.map((domain) => domain.id)).toEqual(["slaap", "beweging", "voeding"]);
+    expect(voortgang.map((domain) => domain.id)).toEqual(["voeding"]);
     expect(voortgang.find((domain) => domain.id === "voeding")?.score).toBe(40);
-    expect(voortgang.find((domain) => domain.id === "slaap")?.score).toBe(25);
-    // Stress heeft de laagste score en zou zonder filter bovenaan staan.
+    // Stress en slaap scoren lager en zouden zonder filter bovenaan staan.
     expect(voortgang.map((domain) => domain.id)).not.toContain("stress");
+    expect(voortgang.map((domain) => domain.id)).not.toContain("slaap");
 
     const kompas = buildKompasRailDomains({ slaap: 25, beweging: 63, voeding: 40, stress: 10 });
     expect(kompas.map((domain) => domain.id)).toEqual(KOMPAS_RAIL_PILLAR_IDS);
-    expect(kompas).toHaveLength(3);
+    expect(kompas).toHaveLength(1);
   });
 });
 
@@ -174,9 +171,9 @@ describe("buildKeuzeRailDomains", () => {
     expect(buildKeuzeRailDomains().map((item) => item.id)).toEqual(KOMPAS_RAIL_PILLAR_IDS);
   });
 
-  it("laat beweging, slaap en voeding open", () => {
+  it("laat alleen voeding open", () => {
     const open = buildKeuzeRailDomains().filter((item) => item.disabledHint == null);
-    expect(open.map((item) => item.id).sort()).toEqual(["beweging", "slaap", "voeding"]);
+    expect(open.map((item) => item.id).sort()).toEqual(["voeding"]);
   });
 
   /**

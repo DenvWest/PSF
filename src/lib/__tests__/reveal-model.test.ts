@@ -115,14 +115,16 @@ describe("buildRevealModel", () => {
     for (const scores of [energieLaagst, herstelLaagst]) {
       const model = buildRevealModel(scores, EMPTY_ANSWERS);
       expect(model.priority.id).toBe(model.primaryPillarId);
-      expect(["slaap", "stress", "voeding", "beweging", "verbinding"]).toContain(model.priority.id);
+      expect(["voeding", "energie", "herstel"]).toContain(model.priority.id);
     }
   });
 
   it("gebruikt de geïnjecteerde primaryTheme i.p.v. te herberekenen", () => {
     const model = buildRevealModel(scoresWithStressPriority(), EMPTY_ANSWERS, [], "sleep");
+    // De meting blijft wat er is geïnjecteerd; de bestemming volgt de
+    // interface, en slaap is daar niet meer bij.
     expect(model.primaryTheme).toBe("sleep");
-    expect(model.primaryPillarId).toBe("slaap");
-    expect(model.priority.id).toBe("slaap");
+    expect(model.primaryPillarId).not.toBe("slaap");
+    expect(model.priority.id).toBe(model.ladder[0]?.id);
   });
 });

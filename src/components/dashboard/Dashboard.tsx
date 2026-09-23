@@ -3683,6 +3683,24 @@ function DashboardContent({
   // DomainTopNav in de header de enige manier om van domein te wisselen.
   const hideDomainTopNav = isDesktopRail && contextRailMode === "domainTools";
 
+  /**
+   * De linker rail verdwijnt zodra hij niets meer te kiezen heeft.
+   *
+   * De domeinzones ("Je domeinen", "Kiezen op") bestaan om tussen domeinen te
+   * schakelen. Sinds alleen voeding nog zichtbaar is
+   * (`zichtbare-domeinen.ts`) staat daar één regel die naar het scherm wijst
+   * waar je al bent — een kolom breedte voor een knop die niets doet.
+   *
+   * Als voorwaarde en niet als vaste `false`, zodat een domein terugzetten in
+   * `VERBORGEN_DOMEINEN` de rail vanzelf weer laat verschijnen. Agenda verbergt
+   * hem los daarvan: daar zit het profiel al in de header.
+   */
+  const railHeeftKeuze =
+    contextRailMode === "voortgang" ||
+    contextRailMode === "profile" ||
+    (contextRailMode === "keuze" ? keuzeRailDomains.length > 1 : railDomainItems.length > 1);
+  const hideRail = tab === "agenda" || !railHeeftKeuze;
+
   const kompasDomainNav =
     viewedDomain && domainNavApi && !hideDomainTopNav ? (
       <DomainTopNav
@@ -3758,7 +3776,7 @@ function DashboardContent({
         inspectorDoelFooter={inspectorDoelFooter}
         inspectorExtra={inspectorExtra}
         inspectorPanel={inspectorPanel}
-        hideRail={tab === "agenda"}
+        hideRail={hideRail}
       >
         <div
           className={`w-full ${

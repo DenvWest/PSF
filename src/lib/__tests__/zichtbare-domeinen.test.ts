@@ -30,18 +30,17 @@ const scores: CheckScores = {
 };
 
 describe("zichtbare-domeinen", () => {
-  it("verbergt verbinding en stress", () => {
-    expect(isZichtbaarDomein("verbinding")).toBe(false);
-    expect(isZichtbaarDomein("stress")).toBe(false);
+  it("toont alleen voeding", () => {
+    for (const verborgen of ["verbinding", "stress", "slaap", "beweging"] as const) {
+      expect(isZichtbaarDomein(verborgen)).toBe(false);
+    }
     expect(isZichtbaarDomein("voeding")).toBe(true);
-    // Slaap en beweging blijven: die dragen het voeding/supplement-verhaal mee.
-    expect(isZichtbaarDomein("slaap")).toBe(true);
-    expect(isZichtbaarDomein("beweging")).toBe(true);
   });
 
   it("filtert een kale domeinlijst met behoud van volgorde", () => {
-    const lijst: PillarId[] = ["slaap", "verbinding", "voeding"];
-    expect(zichtbareDomeinen(lijst)).toEqual(["slaap", "voeding"]);
+    const lijst: PillarId[] = ["slaap", "energie", "verbinding", "voeding"];
+    // Energie is een readout, geen interventiedomein — die blijft zichtbaar.
+    expect(zichtbareDomeinen(lijst)).toEqual(["energie", "voeding"]);
   });
 
   it("filtert objecten via hun domein", () => {
@@ -51,10 +50,8 @@ describe("zichtbare-domeinen", () => {
     ]);
   });
 
-  it("houdt verbinding en stress uit de Kompas-rail", () => {
-    expect(KOMPAS_RAIL_PILLAR_IDS).not.toContain("verbinding");
-    expect(KOMPAS_RAIL_PILLAR_IDS).not.toContain("stress");
-    expect(KOMPAS_RAIL_PILLAR_IDS).toContain("voeding");
+  it("houdt de verborgen domeinen uit de Kompas-rail", () => {
+    expect(KOMPAS_RAIL_PILLAR_IDS).toEqual(["voeding"]);
   });
 
   /**
@@ -124,21 +121,25 @@ describe("zichtbare-domeinen", () => {
       {},
       null,
       null,
-      "slaap",
+      "voeding",
     );
 
-    expect(model.priority.id).toBe("slaap");
+    expect(model.priority.id).toBe("voeding");
   });
 
   it("is omkeerbaar via één lijst", () => {
-    expect(VERBORGEN_DOMEINEN).toEqual(["verbinding", "stress"]);
+    expect(VERBORGEN_DOMEINEN).toEqual([
+      "verbinding",
+      "stress",
+      "slaap",
+      "beweging",
+    ]);
   });
 
   it("laat alleen voeding een leefstijlprofiel-scherm openen", () => {
     expect(KLIKBARE_VOORTGANG_DOMEINEN).toEqual(["voeding"]);
     expect(isKlikbaarVoortgangDomein("voeding")).toBe(true);
     expect(isKlikbaarVoortgangDomein("slaap")).toBe(false);
-    expect(isKlikbaarVoortgangDomein("beweging")).toBe(false);
   });
 
   /**

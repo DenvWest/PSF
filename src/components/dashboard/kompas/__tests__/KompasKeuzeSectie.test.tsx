@@ -121,16 +121,17 @@ describe("KompasKeuzeSectie — Mijn keuze (default tab)", () => {
 
   it("toont de gekozen handelingen zelf, gegroepeerd per domein", () => {
     favoriteItems = [
-      { id: "laag-beweging-p1-wandelen", title: "Elke dag 20 minuten wandelen", kind: "activiteit", domain: "beweging" },
-      { id: "supp-magnesium", title: "Magnesium", kind: "supplement", domain: "slaap" },
+      { id: "laag-voeding-p1-eiwit", title: "Eiwit bij elke maaltijd", kind: "activiteit", domain: "voeding" },
+      { id: "supp-magnesium", title: "Magnesium", kind: "supplement", domain: "voeding" },
     ];
     renderSectie();
 
     expect(screen.getByRole("heading", { name: "Wat je koos" })).toBeTruthy();
-    expect(screen.getByText("Elke dag 20 minuten wandelen")).toBeTruthy();
+    expect(screen.getByText("Eiwit bij elke maaltijd")).toBeTruthy();
     expect(screen.getByText("Magnesium")).toBeTruthy();
     expect(screen.getByText("Supplement")).toBeTruthy();
-    expect(screen.getByText(/2 handelingen, over 2 domeinen/)).toBeTruthy();
+    // Eén domein: de samenvatting noemt geen domeinaantal meer.
+    expect(screen.getByText(/2 handelingen — bewaard op Keuze/)).toBeTruthy();
   });
 
   it("zet het prioriteitsdomein als eerste kaart", () => {
@@ -146,20 +147,41 @@ describe("KompasKeuzeSectie — Mijn keuze (default tab)", () => {
 
   it("een supplement-rij linkt naar de Keuze-tab van zijn eigen domein", () => {
     favoriteItems = [
-      { id: "supp-magnesium", title: "Magnesium", kind: "supplement", domain: "slaap" },
+      { id: "supp-magnesium", title: "Magnesium", kind: "supplement", domain: "voeding" },
     ];
-    renderSectie("beweging");
+    renderSectie("voeding");
 
     const rij = screen.getByRole("link", { name: "Bekijk Magnesium op Keuze" });
     expect(rij.getAttribute("href")).toBe(
-      "/dashboard?tab=keuze&domein=slaap&deel=favorieten",
+      "/dashboard?tab=keuze&domein=voeding&deel=favorieten",
     );
 
     fireEvent.click(rij);
     expect(trackEvent).toHaveBeenCalledWith(
       "dashboard_kompas_keuzes_click",
-      expect.objectContaining({ view: "mijn_keuze", domain: "slaap", destination: "schap", element: "rij" }),
+      expect.objectContaining({ view: "mijn_keuze", domain: "voeding", destination: "schap", element: "rij" }),
     );
+  });
+
+  /**
+   * Regressie: een bewaarde keuze op een inmiddels verborgen domein viel
+   * stilzwijgend weg. `buildKeuzeGroups` liep alleen over de rail, en die kent
+   * sinds 22 september alleen voeding — dus had een slaap-rij wél een domein
+   * maar geen groep om in te landen, en verdween hij zonder melding.
+   *
+   * Hij blijft nu staan én klikbaar: `SCHAP_DOMAINS` is een eigen lijst over
+   * aanbod, niet over dashboard-zichtbaarheid, en slaap heeft nog een schap.
+   */
+  it("houdt een bewaarde keuze op een verborgen domein in beeld", () => {
+    favoriteItems = [
+      { id: "supp-magnesium", title: "Magnesium", kind: "supplement", domain: "slaap" },
+    ];
+    renderSectie("voeding");
+
+    expect(screen.getByText("Magnesium")).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: "Bekijk Magnesium op Keuze" }).getAttribute("href"),
+    ).toBe("/dashboard?tab=keuze&domein=slaap&deel=favorieten");
   });
 
   it("een activiteit zonder moment opent het domeinscherm", () => {
@@ -211,34 +233,37 @@ describe("KompasKeuzeSectie — Mijn keuze (default tab)", () => {
     expect(onOpenDomain).toHaveBeenCalledWith("stress");
   });
 
+  // Twee domeinen naast elkaar: de kaarten staan naast elkaar en zijn dus
+  // smal, waardoor elke kaart na vijf rijen inkort. Het tweede domein komt uit
+  // een bewaarde keuze op een inmiddels verborgen domein — die blijft staan.
   it("kort een lange domeinlijst in met een resttelling", () => {
     favoriteItems = [
       ...Array.from({ length: 10 }, (_, index) => ({
-        id: `laag-slaap-p1-actie-${index}`,
-        title: `Slaapactie ${index}`,
+        id: `laag-voeding-p1-actie-${index}`,
+        title: `Voedingsactie ${index}`,
         kind: "activiteit",
-        domain: "slaap" as PillarId,
+        domain: "voeding" as PillarId,
       })),
-      { id: "laag-beweging-p1-wandelen", title: "Wandelen", kind: "activiteit", domain: "beweging" },
+      { id: "supp-magnesium", title: "Magnesium", kind: "supplement", domain: "slaap" },
     ];
-    renderSectie("slaap");
+    renderSectie("voeding");
 
-    expect(screen.getByText("Slaapactie 0")).toBeTruthy();
-    expect(screen.queryByText("Slaapactie 5")).toBeNull();
+    expect(screen.getByText("Voedingsactie 0")).toBeTruthy();
+    expect(screen.queryByText("Voedingsactie 5")).toBeNull();
     expect(screen.getByText("+5 meer op Keuze")).toBeTruthy();
   });
 
   it("laat één domein verder doorlopen, want die kaart is volle breedte", () => {
     favoriteItems = Array.from({ length: 10 }, (_, index) => ({
-      id: `laag-slaap-p1-actie-${index}`,
-      title: `Slaapactie ${index}`,
+      id: `laag-voeding-p1-actie-${index}`,
+      title: `Voedingsactie ${index}`,
       kind: "activiteit",
-      domain: "slaap" as PillarId,
+      domain: "voeding" as PillarId,
     }));
-    renderSectie("slaap");
+    renderSectie("voeding");
 
-    expect(screen.getByText("Slaapactie 7")).toBeTruthy();
-    expect(screen.queryByText("Slaapactie 8")).toBeNull();
+    expect(screen.getByText("Voedingsactie 7")).toBeTruthy();
+    expect(screen.queryByText("Voedingsactie 8")).toBeNull();
     expect(screen.getByText("+2 meer op Keuze")).toBeTruthy();
   });
 
@@ -304,8 +329,6 @@ describe("KompasKeuzeSectie — toggle en Aanbevolen", () => {
     const voedingLaag1 = getLeefstijlLadder("voeding")!.layers.find((row) => row.id === 1)!;
     expect(screen.getByText("Voeding")).toBeTruthy();
     expect(screen.getByText(`Prioriteit 1 · ${voedingLaag1.name}`)).toBeTruthy();
-    // Beweging houdt zijn eigen, gemeten laag.
-    expect(screen.getByText(WINST_LAYER_ACTION)).toBeTruthy();
   });
 
   it("zegt er eerlijk bij dat een terugval-laag niet uit een meting komt", () => {

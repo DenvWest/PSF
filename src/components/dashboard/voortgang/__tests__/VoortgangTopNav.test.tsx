@@ -67,23 +67,19 @@ describe("VoortgangTopNav", () => {
     expect(onOpenItem).toHaveBeenCalledWith("hub");
   });
 
-  it("toont slaap en beweging met cijfer, maar alleen voeding is aanklikbaar", () => {
+  it("toont alleen voeding, en die is aanklikbaar", () => {
     renderNav();
     openPanel();
     expect(screen.getByRole("menuitem", { name: /^Voeding40$/ })).toBeTruthy();
-    expect(screen.getByRole("menuitem", { name: /^Slaap25$/ })).toBeTruthy();
-    expect(screen.getByRole("menuitem", { name: /^Beweging63$/ })).toBeTruthy();
-    expect(screen.getByRole("menuitem", { name: /^Slaap25$/ }).getAttribute("aria-disabled")).toBe(
-      "true",
-    );
     expect(screen.getByRole("menuitem", { name: /^Voeding40$/ }).getAttribute("aria-disabled")).toBeNull();
-    // Verbinding en stress zijn uit de interface; zie `zichtbare-domeinen.ts`.
-    expect(screen.queryByRole("menuitem", { name: /^Verbinding/ })).toBeNull();
-    expect(screen.queryByRole("menuitem", { name: /^Stress/ })).toBeNull();
+    // De andere vier zijn uit de interface; zie `zichtbare-domeinen.ts`.
+    for (const label of [/^Verbinding/, /^Stress/, /^Slaap/, /^Beweging/]) {
+      expect(screen.queryByRole("menuitem", { name: label })).toBeNull();
+    }
 
-    fireEvent.click(screen.getByRole("menuitem", { name: /^Slaap25$/ }));
-    expect(onOpenDomein).not.toHaveBeenCalled();
-    expect(screen.getByRole("menu")).toBeTruthy();
+    // Voeding klikt wél door — dat is de enige deur die overblijft.
+    fireEvent.click(screen.getByRole("menuitem", { name: /^Voeding40$/ }));
+    expect(onOpenDomein).toHaveBeenCalledWith("voeding");
   });
 
   it("draagt de drie voeding-knoppen onder Voeding", () => {

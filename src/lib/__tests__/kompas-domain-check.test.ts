@@ -21,16 +21,16 @@ function build(
 describe("buildDomainCheckStates", () => {
   it("geeft elk rail-domein een status", () => {
     const states = build();
-    // Verbinding en stress horen niet meer in de rail; zie `zichtbare-domeinen.ts`.
-    expect([...states.keys()]).toEqual(["slaap", "beweging", "voeding"]);
+    // Alleen voeding is nog zichtbaar; zie `zichtbare-domeinen.ts`.
+    expect([...states.keys()]).toEqual(["voeding"]);
   });
 
   it("markeert een nooit gedane check als direct te doen", () => {
-    const state = build().get("beweging")!;
+    const state = build().get("voeding")!;
     expect(state.status).toBe("never");
     expect(state.actionable).toBe(true);
-    expect(state.ctaLabel).toBe("Doe de beweegcheck");
-    expect(state.href).toBe("/intake/beweging?from=dashboard&kompas=beweging");
+    expect(state.ctaLabel).toBe("Doe de voedingscheck");
+    expect(state.href).toBe("/intake/voeding?from=dashboard&kompas=voeding");
     expect(state.progress).toBe(1);
   });
 
@@ -49,7 +49,7 @@ describe("buildDomainCheckStates", () => {
   });
 
   it("toont een verse check als net gedaan", () => {
-    const state = build({ slaap: 0 }).get("slaap")!;
+    const state = build({ voeding: 0 }).get("voeding")!;
     expect(state.status).toBe("fresh");
     expect(state.actionable).toBe(false);
     expect(state.label).toBe("Vandaag gemeten · volgende over 14 dagen");
@@ -57,7 +57,7 @@ describe("buildDomainCheckStates", () => {
   });
 
   it("opent de check weer na het interval", () => {
-    const state = build({ slaap: DOMAIN_CHECK_INTERVAL_DAYS + 7 }).get("slaap")!;
+    const state = build({ voeding: DOMAIN_CHECK_INTERVAL_DAYS + 7 }).get("voeding")!;
     expect(state.status).toBe("due");
     expect(state.actionable).toBe(true);
     expect(state.label).toBe("Laatst gemeten: 21 dagen geleden");
@@ -94,16 +94,13 @@ describe("buildDomainCheckStates", () => {
   });
 
   it("licht het prioriteitsdomein uit als die te doen is", () => {
-    const states = build({ slaap: 20, voeding: 30 }, "slaap");
-    expect(states.get("slaap")!.highlighted).toBe(true);
-    expect(states.get("voeding")!.highlighted).toBe(false);
+    const states = build({ voeding: 30 }, "voeding");
+    expect(states.get("voeding")!.highlighted).toBe(true);
   });
 
-  it("licht niets uit als de focuscheck nog aftelt, ook niet bij een groter meetgat elders", () => {
-    const states = build({ slaap: 2, voeding: 40 }, "slaap");
+  it("licht niets uit als de focuscheck nog aftelt", () => {
+    const states = build({ voeding: 2 }, "voeding");
     expect([...states.values()].some((state) => state.highlighted)).toBe(false);
-    expect(states.get("beweging")!.actionable).toBe(true);
-    expect(states.get("voeding")!.actionable).toBe(true);
   });
 
   it("licht nooit een ander domein uit dan de focus", () => {

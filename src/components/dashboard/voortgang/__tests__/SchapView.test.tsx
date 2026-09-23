@@ -133,11 +133,12 @@ describe("SchapView — de domeinschakelaar", () => {
   const domeinNav = () => screen.getByRole("navigation", { name: "Kiezen op een ander domein" });
 
   it("laat alleen domeinen mét aanbod klikken, in Kompas-volgorde", () => {
-    renderSchap("slaap", null, { onSwitchDomain: vi.fn() });
+    renderSchap("voeding", null, { onSwitchDomain: vi.fn() });
     const labels = within(domeinNav())
       .getAllByRole("button")
       .map((chip) => chip.textContent ?? "");
-    expect(labels).toEqual(["Slaap", "Beweging", "Voeding"]);
+    // Alleen voeding is nog zichtbaar; zie `zichtbare-domeinen.ts`.
+    expect(labels).toEqual(["Voeding"]);
   });
 
   /**
@@ -154,8 +155,8 @@ describe("SchapView — de domeinschakelaar", () => {
 
   it("markeert het open domein en laat dat geen navigatie afvuren", () => {
     const onSwitchDomain = vi.fn();
-    renderSchap("slaap", null, { onSwitchDomain });
-    const actief = within(domeinNav()).getByRole("button", { name: "Slaap" });
+    renderSchap("voeding", null, { onSwitchDomain });
+    const actief = within(domeinNav()).getByRole("button", { name: "Voeding" });
     expect(actief.getAttribute("aria-current")).toBe("page");
 
     fireEvent.click(actief);

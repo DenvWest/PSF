@@ -8,9 +8,11 @@ describe("derivePersonalization", () => {
     verbinding: 80 },
       "Onrustige Slaper",
     );
-    expect(result.priorityPillarId).toBe("slaap");
-    expect(result.priorityLabel).toBe("Slaap");
-    expect(result.orderedPillarIds[0]).toBe("slaap");
+    // Slaap scoort het laagst maar is verborgen (`zichtbare-domeinen.ts`), dus
+    // voeding wint als laagste zichtbare interventiedomein.
+    expect(result.priorityPillarId).toBe("voeding");
+    expect(result.priorityLabel).toBe("Voeding");
+    expect(result.orderedPillarIds[0]).toBe("voeding");
     expect(result.profileLabel).toBe("Onrustige Slaper");
   });
 

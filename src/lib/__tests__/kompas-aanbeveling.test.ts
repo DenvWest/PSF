@@ -137,19 +137,21 @@ describe("buildKompasAanbevelingen", () => {
     expect(rows.filter((row) => row.isPriority)).toHaveLength(1);
   });
 
-  // Verbinding en stress zijn uit de interface; zie `zichtbare-domeinen.ts`.
+  // Alleen voeding is nog zichtbaar; zie `zichtbare-domeinen.ts`. Een focus op
+  // een verborgen domein voegt zichzelf nog wel toe — de kaart hoort te blijven
+  // bestaan zolang iets hem expliciet aanwijst.
   it("levert alle zichtbare ladderdomeinen, ook zonder enige check", () => {
-    const rows = buildKompasAanbevelingen("slaap", undefined, 0);
-    expect(rows.map((row) => row.domain).sort()).toEqual(
-      ["beweging", "slaap", "voeding"],
-    );
+    const rows = buildKompasAanbevelingen("voeding", undefined, 0);
+    expect(rows.map((row) => row.domain).sort()).toEqual(["voeding"]);
   });
 
   it("zet het analyse-domein vóór je focus als die uiteenlopen", () => {
-    // Focus staat handmatig op beweging, de analyse wijst stress aan.
-    const rows = buildKompasAanbevelingen("beweging", undefined, 0, "stress");
+    // Focus staat handmatig op beweging, de analyse wijst voeding aan. Beide
+    // krijgen een kaart, ook al is beweging als domein verborgen: een expliciet
+    // aangewezen focus hoort niet stilzwijgend te verdwijnen.
+    const rows = buildKompasAanbevelingen("beweging", undefined, 0, "voeding");
 
-    expect(rows[0]?.domain).toBe("stress");
+    expect(rows[0]?.domain).toBe("voeding");
     expect(rows[0]?.isEngineAdvice).toBe(true);
     expect(rows[0]?.isPriority).toBe(false);
 
@@ -158,8 +160,7 @@ describe("buildKompasAanbevelingen", () => {
     expect(beweging.isEngineAdvice).toBe(false);
 
     // Geen domein raakt kwijt of dubbel door het voorop zetten.
-    expect(rows).toHaveLength(4);
-    expect(new Set(rows.map((row) => row.domain)).size).toBe(4);
+    expect(new Set(rows.map((row) => row.domain)).size).toBe(rows.length);
   });
 
   it("houdt één kaart bovenaan als focus en analyse hetzelfde domein zijn", () => {

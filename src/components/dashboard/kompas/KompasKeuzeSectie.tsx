@@ -104,8 +104,30 @@ function metaLine(item: VoortgangFavoriteItem): string | null {
   return parts.length > 0 ? parts.join(" · ") : null;
 }
 
-function domainOrder(priorityDomain: PillarId): PillarId[] {
-  return [priorityDomain, ...KOMPAS_RAIL_PILLAR_IDS.filter((id) => id !== priorityDomain)];
+/**
+ * De leesvolgorde van de kaarten: je prioriteitsdomein eerst, daarna de rail.
+ *
+ * `extra` vangt de domeinen die niet (meer) in de rail staan maar wél in je
+ * bewaarde keuzes voorkomen. Zonder die vangnet-stap viel zo'n rij stilzwijgend
+ * weg zodra zijn domein verborgen werd (`zichtbare-domeinen.ts`): hij had een
+ * domein, maar er was geen groep om in te landen — dus verdween hij uit beeld
+ * zonder dat iets dat meldde. Wat jij koos hoort zichtbaar te blijven, ook als
+ * het domein zelf uit de interface is.
+ */
+function domainOrder(
+  priorityDomain: PillarId,
+  extra: readonly PillarId[] = [],
+): PillarId[] {
+  const volgorde = [
+    priorityDomain,
+    ...KOMPAS_RAIL_PILLAR_IDS.filter((id) => id !== priorityDomain),
+  ];
+  for (const domain of extra) {
+    if (!volgorde.includes(domain)) {
+      volgorde.push(domain);
+    }
+  }
+  return volgorde;
 }
 
 /**
@@ -119,7 +141,10 @@ function buildKeuzeGroups(
   priorityDomain: PillarId,
 ): KeuzeGroup[] {
   const groups: KeuzeGroup[] = [];
-  for (const domain of domainOrder(priorityDomain)) {
+  const gebruikteDomeinen = items
+    .map((item) => item.domain)
+    .filter((domain): domain is PillarId => domain != null);
+  for (const domain of domainOrder(priorityDomain, gebruikteDomeinen)) {
     const rows = items.filter((item) => item.domain === domain);
     if (rows.length === 0) {
       continue;

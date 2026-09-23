@@ -110,6 +110,17 @@ describe("buildModel priority override", () => {
     Object.keys(scores).map((key) => [key, [scores[key as keyof CheckScores]]]),
   ) as CheckTrend;
 
+  /**
+   * `enginePriority` en `priority` blijven aparte velden, ook nu ze op dezelfde
+   * uitkomst landen.
+   *
+   * Sinds alleen voeding nog zichtbaar is (`zichtbare-domeinen.ts`) is het het
+   * enige interventiedomein dat de engine kan kiezen, en dus kan een eigen pin
+   * er niet meer van afwijken. Het onderscheid blijft wel in het model staan:
+   * zodra er een tweede domein terugkomt, werkt de divergentie weer — en
+   * `priorityIsUserChosen` hoort ondertussen eerlijk `false` te zijn in plaats
+   * van een keuze te claimen die niets verandert.
+   */
   it("keeps engine priority separate from user pin", () => {
     const model = buildModel(
       { scores, vitality: 52, date: "10 jul 2026", trend },
@@ -119,14 +130,15 @@ describe("buildModel priority override", () => {
       { MOV_CARD: 1, SLP_ONSET: 2 },
       null,
       null,
-      "beweging",
+      "voeding",
       "avond",
       "19:30",
     );
 
-    expect(model.enginePriority.id).not.toBe("beweging");
-    expect(model.priority.id).toBe("beweging");
-    expect(model.priorityIsUserChosen).toBe(true);
+    expect(model.enginePriority.id).toBe("voeding");
+    expect(model.priority.id).toBe("voeding");
+    // Geen "eigen keuze"-label wanneer de pin hetzelfde zegt als de engine.
+    expect(model.priorityIsUserChosen).toBe(false);
     expect(model.timeBucket).toBe("avond");
     expect(model.scheduledTime).toBe("19:30");
     expect(model.ladder[0]?.id).toBe(model.enginePriority.id);

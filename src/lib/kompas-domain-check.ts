@@ -1,3 +1,4 @@
+import { zichtbareDomeinen } from "@/lib/zichtbare-domeinen";
 import { KOMPAS_RAIL_PILLAR_IDS } from "@/lib/context-rail";
 import type { PillarId } from "@/types/dashboard";
 
@@ -11,13 +12,24 @@ export const DOMAIN_CHECK_INTERVAL_DAYS = 14;
 /** Lengte van de hermetingscyclus — bron voor het verbinding-aftellen. */
 const REMEASURE_CYCLE_DAYS = 30;
 
-/** Domeinen met een eigen check-flow. Verbinding meet alleen mee in de hermeting. */
-export const DOMAIN_CHECK_PILLAR_IDS: PillarId[] = [
+/**
+ * Domeinen met een eigen check-flow, voor zover ze nog getoond worden.
+ *
+ * De vier hieronder hébben een check; `zichtbareDomeinen` bepaalt welke ervan
+ * je ook te zien krijgt. Verbinding staat er sowieso niet bij: dat meet alleen
+ * mee in de hermeting.
+ *
+ * Het filter staat hier en niet bij elke lezer, omdat deze lijst op meerdere
+ * plekken chips en rijen vult — de metingen-per-domein op Voortgang, de
+ * check-staten op het Kompas. Zonder filter bleven daar domeinen staan die de
+ * rest van de interface niet meer kent.
+ */
+export const DOMAIN_CHECK_PILLAR_IDS: PillarId[] = zichtbareDomeinen([
   "slaap",
   "beweging",
   "voeding",
   "stress",
-];
+]);
 
 export const CHECK_NAME: Partial<Record<PillarId, string>> = {
   slaap: "slaapcheck",

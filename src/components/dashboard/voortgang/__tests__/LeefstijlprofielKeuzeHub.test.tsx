@@ -56,22 +56,40 @@ function buildData(overrides: Partial<DashboardData>): DashboardData {
 describe("LeefstijlprofielKeuzeHub", () => {
   // Verbinding is uit de interface (zie `zichtbare-domeinen.ts`), dus ook het
   // blok dat uitlegde waarom het geen eigen check had. De score blijft bestaan.
-  it("toont verbinding niet meer als domein", () => {
+  /**
+   * Alleen voeding is nog een eigen domeintegel (`zichtbare-domeinen.ts`).
+   *
+   * De woorden "slaap" en "beweging" mogen wél blijven staan: ze verschijnen in
+   * de uitleg onder de readouts ("Energie volgt uit je slaap, voeding en
+   * beweging"). Dat is een verklaring, geen deur — vandaar dat deze test op
+   * knoppen kijkt en niet op tekst.
+   */
+  it("geeft alleen voeding een eigen domeintegel", () => {
     render(
       <LeefstijlprofielKeuzeHub data={buildData({})} onBack={vi.fn()} onOpenDomain={vi.fn()} />,
     );
-    expect(screen.queryByText(/Verbinding/)).toBeNull();
+    const tegels = screen
+      .getAllByRole("button")
+      .map((knop) => knop.textContent ?? "")
+      .filter((tekst) => /Nog niet|Gemeten/.test(tekst));
+
+    expect(tegels).toHaveLength(1);
+    expect(tegels[0]).toContain("Voeding");
   });
 
   it("offers the check as the only action for an unmeasured domain", () => {
     render(
       <LeefstijlprofielKeuzeHub data={buildData({})} onBack={vi.fn()} onOpenDomain={vi.fn()} />,
     );
-    expect(screen.getByText(/Je hebt je slaapcheck nog niet gedaan\./)).toBeTruthy();
-    expect(screen.getByText("Doe de slaapcheck →")).toBeTruthy();
+    expect(screen.getByText(/Nog niet apart gemeten/)).toBeTruthy();
   });
 
-  it("renders the sleep kengetal-blok from factRows once slaap is measured", () => {
+  /**
+   * Tot 22 september rendeerde dit het slaap-kengetalblok uit de snapshot.
+   * Slaap is nu uit de interface, dus de snapshot mag binnenkomen maar hoort
+   * niets meer te tonen — zelfde grens als bij stress hieronder.
+   */
+  it("toont geen slaap-kengetallen meer, ook niet met een gevulde snapshot", () => {
     render(
       <LeefstijlprofielKeuzeHub
         data={buildData({
@@ -116,11 +134,9 @@ describe("LeefstijlprofielKeuzeHub", () => {
       />,
     );
 
-    expect(screen.getByText("Slaapduur")).toBeTruthy();
-    expect(screen.getByText("6 tot 7 uur")).toBeTruthy();
-    expect(screen.getByText("Populatierichtlijn: 7+ uur")).toBeTruthy();
-    expect(screen.getByText("Gemeten 6 dagen geleden")).toBeTruthy();
-    expect(screen.queryByRole("button", { name: /Slaapduur/ })).toBeNull();
+    expect(screen.queryByText("Slaapduur")).toBeNull();
+    expect(screen.queryByText("6 tot 7 uur")).toBeNull();
+    expect(screen.queryByText("Gemeten 6 dagen geleden")).toBeNull();
   });
 
   it("falls back to a plain checked row for a measured domain without its own blok yet", () => {
@@ -193,7 +209,8 @@ describe("LeefstijlprofielKeuzeHub", () => {
     expect(screen.queryByText("Regelmatig")).toBeNull();
   });
 
-  it("renders beweging kengetallen from the movement snapshot", () => {
+  /** Zelfde grens als bij slaap en stress: beweging is uit de interface. */
+  it("toont geen beweging-kengetallen meer, ook niet met een gevulde snapshot", () => {
     render(
       <LeefstijlprofielKeuzeHub
         data={buildData({
@@ -216,8 +233,8 @@ describe("LeefstijlprofielKeuzeHub", () => {
         onOpenDomain={vi.fn()}
       />,
     );
-    expect(screen.getByText("Kracht")).toBeTruthy();
-    expect(screen.getByText("1× per week")).toBeTruthy();
+    expect(screen.queryByText("Kracht")).toBeNull();
+    expect(screen.queryByText("1× per week")).toBeNull();
   });
 
   it("groups energie and herstel under 'Volgt uit de rest' — alleen voeding is een deur", () => {
@@ -235,7 +252,7 @@ describe("LeefstijlprofielKeuzeHub", () => {
     expect(onOpenDomain).toHaveBeenCalledWith("voeding");
   });
 
-  it("opent voeding vanaf de kengetaltegel, slaap niet", () => {
+  it("opent voeding vanaf de kengetaltegel", () => {
     const onOpenDomain = vi.fn();
     render(
       <LeefstijlprofielKeuzeHub
@@ -271,8 +288,11 @@ describe("LeefstijlprofielKeuzeHub", () => {
         onOpenDomain={onOpenDomain}
       />,
     );
-    fireEvent.click(screen.getByText("Slaapduur"));
+    // De slaap-kengetallen renderen niet meer, dus er valt niets op te klikken
+    // dat het verkeerde domein zou openen.
+    expect(screen.queryByText("Slaapduur")).toBeNull();
     expect(onOpenDomain).not.toHaveBeenCalled();
+
     fireEvent.click(screen.getAllByRole("button", { name: /Voeding/ })[0]);
     expect(onOpenDomain).toHaveBeenCalledWith("voeding");
   });
