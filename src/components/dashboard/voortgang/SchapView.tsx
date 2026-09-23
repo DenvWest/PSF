@@ -223,7 +223,7 @@ export default function SchapView({
         <p className="max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--text-muted)] text-pretty">
           Hier staat het aanbod, en alleen hier. Vandaag en Mijn Dag dragen de deur.
           Elk oordeel hieronder komt uit je leefstijl- en voedingscheck, langs
-          dezelfde vier feiten: signaal, zekerheid, bloedwaarde en EU-claim.
+          dezelfde feiten: signaal, zekerheid en EU-claim.
         </p>
       </div>
 
