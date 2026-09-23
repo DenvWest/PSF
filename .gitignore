@@ -31,3 +31,7 @@ tsconfig.tsbuildinfo
 
 # Uitvoer van scripts/usda-extract.mjs — rapport, geen broncode
 scripts/out/
+
+# Python bytecode-cache — machine-/versiespecifiek, geen broncode
+__pycache__/
+*.pyc
