@@ -23,10 +23,6 @@ import {
   bepaalBevinding,
   bouwTekortsysteem,
 } from "@/lib/nutrition-tekortsysteem";
-import {
-  bevindingZin,
-  geenBevindingZin,
-} from "@/lib/nutrition-tekortsysteem-copy";
 import { bouwTrend } from "@/lib/nutrition-trend";
 import {
   bouwWeekoverzicht,
@@ -149,7 +145,6 @@ function PatroonInhoud() {
     () => bepaalBevinding(reeksen, dagen, vandaag),
     [reeksen, dagen, vandaag],
   );
-  const zin = useMemo(() => bevindingZin(bevinding), [bevinding]);
 
   const huidigeWeek = useMemo(() => weekStart(vandaag), [vandaag]);
   const bekekenWeekStart = useMemo(
@@ -243,31 +238,6 @@ function PatroonInhoud() {
             verborgen={verborgenNutrients}
             onToggle={toggleNutrient}
           />
-
-          {zin ? (
-            <div className="vd-bevinding">
-              <span className="vd-bevinding-ico" aria-hidden>
-                <svg
-                  viewBox="0 0 24 24"
-                  width="18"
-                  height="18"
-                  fill="none"
-                  stroke="var(--vd-terra)"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                >
-                  <path d="M12 8v5" />
-                  <circle cx="12" cy="16.5" r=".6" fill="var(--vd-terra)" />
-                  <path d="M10.3 3.9 2.6 17.4A2 2 0 0 0 4.3 20.4h15.4a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
-                </svg>
-              </span>
-              <div className="vd-bevinding-txt">
-                <b>{zin.tekst}</b>
-              </div>
-            </div>
-          ) : (
-            <p className="vd-note">{geenBevindingZin(reeksen)}</p>
-          )}
 
           <div className="vd-kop" style={{ marginTop: "1rem" }}>
             <p className="vd-eyebrow" style={{ margin: 0 }}>

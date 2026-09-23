@@ -39,7 +39,7 @@ export default function CockpitBottomNav({
               role="tab"
               aria-selected={active}
               onClick={() => onSelectTab(tab.id)}
-              className={`flex flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[11px] font-medium transition ${
+              className={`flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 py-2.5 text-[10px] font-medium transition ${
                 active ? "text-[#F1EFE8]" : "text-[#9FB0A6]"
               }`}
             >
@@ -47,7 +47,7 @@ export default function CockpitBottomNav({
                 s={20}
                 style={{ color: active ? "#5A8F6A" : "rgba(159,176,166,0.85)" }}
               />
-              {tab.label}
+              <span className="max-w-full truncate">{tab.label}</span>
             </button>
           );
         })}

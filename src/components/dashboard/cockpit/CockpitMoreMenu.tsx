@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
+import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
 import { DASHBOARD_MORE_ITEMS } from "@/data/dashboard";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
@@ -23,6 +24,14 @@ import { trackEvent } from "@/lib/ga4";
  * component met een `variant` houdt die twee synchroon: een item toevoegen
  * aan `DASHBOARD_MORE_ITEMS` laat het op beide plekken verschijnen, zonder
  * dat iemand de tweede vergeet.
+ *
+ * ## Waarom de onderbalk een sheet opent en de header een popover
+ *
+ * Op mobiel (onderbalk) staat de knop onderin een `fixed` balk — een klein
+ * popover daarboven oogt als een losse ballon zonder duidelijke relatie tot
+ * de rest van het scherm. Vanaf `sm` (header) is een popover naast de knop
+ * wel op zijn plek, net als de rest van de navigatie daar. Beide varianten
+ * tonen dezelfde `DASHBOARD_MORE_ITEMS`-lijst.
  */
 
 type Variant = "header" | "bottom";
@@ -30,12 +39,49 @@ type Variant = "header" | "bottom";
 const MENU_ITEM =
   "flex w-full items-start gap-2.5 rounded-[10px] px-2.5 py-2 text-left no-underline transition hover:bg-white/[0.06]";
 
+function MeerItems({ onNavigate }: { onNavigate: () => void }) {
+  return (
+    <div className="flex flex-col gap-1">
+      {DASHBOARD_MORE_ITEMS.map((item) => {
+        const Icon = Icons[item.icon as keyof typeof Icons] as React.ComponentType<{
+          s?: number;
+        }>;
+        return (
+          <Link
+            key={item.id}
+            role="menuitem"
+            href={item.href}
+            onClick={() => {
+              onNavigate();
+              trackEvent("dashboard_more_item_click", { item: item.id });
+            }}
+            className={MENU_ITEM}
+          >
+            <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center text-[#9FB0A6]">
+              <Icon s={15} />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[13.5px] text-[#F1EFE8]">
+                {item.label}
+              </span>
+              <span className="block text-[12px] leading-snug text-[#9FB0A6]">
+                {item.hint}
+              </span>
+            </span>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function CockpitMoreMenu({ variant }: { variant: Variant }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
 
   useEffect(() => {
-    if (!open) {
+    if (!open || variant !== "header") {
       return;
     }
     const onPointerDown = (event: MouseEvent) => {
@@ -54,11 +100,11 @@ export default function CockpitMoreMenu({ variant }: { variant: Variant }) {
       document.removeEventListener("mousedown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [open, variant]);
 
   const knop =
     variant === "bottom"
-      ? `flex flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[11px] font-medium transition ${
+      ? `flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 py-2.5 text-[10px] font-medium transition ${
           open ? "text-[#F1EFE8]" : "text-[#9FB0A6]"
         }`
       : `relative flex shrink-0 items-center justify-center gap-1.5 rounded-[10px] px-2 py-2 text-[13px] font-medium transition md:justify-start lg:gap-2 lg:px-3 lg:text-[13.5px] ${
@@ -78,7 +124,7 @@ export default function CockpitMoreMenu({ variant }: { variant: Variant }) {
           setOpen((prev) => !prev);
           if (!open) clarityTag("dashboard_more_menu", "open");
         }}
-        aria-haspopup="menu"
+        aria-haspopup={variant === "bottom" ? "dialog" : "menu"}
         aria-expanded={open}
         aria-label="Meer"
         title="Meer"
@@ -105,50 +151,19 @@ export default function CockpitMoreMenu({ variant }: { variant: Variant }) {
         )}
       </button>
 
-      {open ? (
+      {open && variant === "bottom" ? (
+        <AgendaSheetFrame titleId={titleId} title="Meer" onClose={() => setOpen(false)}>
+          <MeerItems onNavigate={() => setOpen(false)} />
+        </AgendaSheetFrame>
+      ) : null}
+
+      {open && variant === "header" ? (
         <div
           role="menu"
           aria-label="Meer"
-          /*
-            Op de onderbalk klapt het menu omhoog en op de header omlaag — in
-            beide gevallen vanaf de knop, zodat de lijst niet over de
-            navigatie heen valt waar hij vandaan komt.
-          */
-          className={`absolute z-30 w-[248px] rounded-[14px] border border-white/10 bg-[rgba(16,24,26,0.98)] p-1.5 shadow-[0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-md ${
-            variant === "bottom"
-              ? "bottom-[calc(100%+6px)] right-1"
-              : "right-0 top-[calc(100%+6px)]"
-          }`}
+          className="absolute right-0 top-[calc(100%+6px)] z-30 w-[248px] rounded-[14px] border border-white/10 bg-[rgba(16,24,26,0.98)] p-1.5 shadow-[0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur-md"
         >
-          {DASHBOARD_MORE_ITEMS.map((item) => {
-            const Icon = Icons[item.icon as keyof typeof Icons] as React.ComponentType<{
-              s?: number;
-            }>;
-            return (
-              <Link
-                key={item.id}
-                role="menuitem"
-                href={item.href}
-                onClick={() => {
-                  setOpen(false);
-                  trackEvent("dashboard_more_item_click", { item: item.id });
-                }}
-                className={MENU_ITEM}
-              >
-                <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center text-[#9FB0A6]">
-                  <Icon s={15} />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-[13.5px] text-[#F1EFE8]">
-                    {item.label}
-                  </span>
-                  <span className="block text-[12px] leading-snug text-[#9FB0A6]">
-                    {item.hint}
-                  </span>
-                </span>
-              </Link>
-            );
-          })}
+          <MeerItems onNavigate={() => setOpen(false)} />
         </div>
       ) : null}
     </div>
