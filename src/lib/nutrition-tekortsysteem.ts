@@ -284,13 +284,19 @@ export function bepaalBevinding(
     const langste = [...reeks.vensters].reverse().find((v) => v.dagen > 0);
     if (!langste || langste.aandeel === null || langste.aandeel >= 1) continue;
 
+    // De noemer is elke geregistreerde dag, niet alleen de dagen waarop deze
+    // stof voorkwam — dezelfde regel die `bouwVenster` hanteert. Een dag
+    // waarop je wel bronnen noemde maar geen ervan deze stof droeg, is een
+    // echte nul voor deze stof en hoort dus in de telling. Zou je hem
+    // overslaan, dan leest "2 van de 2 dagen" als een patroon terwijl je vier
+    // dagen registreerde: de zin overdrijft de hardnekkigheid precies daar
+    // waar hij hem moet bewijzen.
     let dagenOnder = 0;
     let dagenGemeten = 0;
     for (const dag of maand) {
-      const stof = nutrientenUitItems(itemsVan(dag)).find((n) => n.nutrient === reeks.nutrient);
-      if (!stof) continue;
       dagenGemeten += 1;
-      const aandeel = aandeelVanRi(reeks.nutrient, stof.minstens);
+      const stof = nutrientenUitItems(itemsVan(dag)).find((n) => n.nutrient === reeks.nutrient);
+      const aandeel = aandeelVanRi(reeks.nutrient, stof?.minstens ?? 0);
       if (aandeel !== null && aandeel < 1) dagenOnder += 1;
     }
 
