@@ -52,7 +52,7 @@ export const krachtverliesEiwitbehoefteNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eiwit is de basis, geen quick fix",
       tekst:
-        "Krachtverlies tegengaan werkt het best als voeding, training en herstel op elkaar aansluiten. De [Leefstijlcheck](/intake) laat zien waar bij jou de grootste winst zit. Vergelijk supplementen op [de supplementengids](/supplementen) of lees de volledige [supplementgids eiwitpoeder](/supplementen/eiwitpoeder).",
+        "Krachtverlies tegengaan werkt het best als voeding, training en herstel op elkaar aansluiten. De [check](/intake) laat zien of je eiwitinname daarbij al op peil is. Vergelijk supplementen op [de supplementengids](/supplementen) of lees de volledige [supplementgids eiwitpoeder](/supplementen/eiwitpoeder).",
     },
   ],
   kernpunten: [

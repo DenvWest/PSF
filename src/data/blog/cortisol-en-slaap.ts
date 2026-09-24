@@ -49,7 +49,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Herken jij dit patroon?",
-      tekst: "Regelmatig wakker worden 's nachts — moe maar niet uitgerust opstaan — een gevoel van achterstand dat zich opstapelt. Dat is geen karakterzwakte en geen gevolg van te laat naar bed gaan. Het is een specifiek profiel dat je kunt herkennen én aanpakken. Misschien ben je een [Onrustige Slaper](/profiel/onrustige-slaper) — een veelvoorkomend patroon na 30 waarbij cortisolontregeling de sleutelfactor is. Wil je weten hoe jouw stress en slaap scoren? [Doe de gratis Leefstijlcheck](/intake) — 18 vragen, 3 minuten, persoonlijk resultaat.",
+      tekst: "Regelmatig wakker worden 's nachts — moe maar niet uitgerust opstaan — een gevoel van achterstand dat zich opstapelt. Dat is geen karakterzwakte en geen gevolg van te laat naar bed gaan. Het is een specifiek profiel dat je kunt herkennen én aanpakken. Misschien ben je een [Onrustige Slaper](/profiel/onrustige-slaper) — een veelvoorkomend patroon na 30 waarbij cortisolontregeling de sleutelfactor is. Wil je weten of je voeding je cortisol en slaap al ondersteunt? [Doe de gratis check](/intake) — 14 vragen, 1 minuut, persoonlijk resultaat.",
     },
     {
       type: "tekst",

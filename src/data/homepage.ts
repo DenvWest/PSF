@@ -1,10 +1,9 @@
-import type { QuestionId } from "@/data/intake-questions";
 import type { HomepageProofCounts } from "@/lib/homepage-proof";
 import {
-  INTAKE_DOMAINS_LABEL,
-  INTAKE_QUESTION_COUNT,
-  INTAKE_QUESTIONS_LABEL,
-} from "@/lib/intake-facts";
+  CHECK_DURATION_LABEL,
+  CHECK_QUESTION_COUNT,
+  CHECK_QUESTIONS_LABEL,
+} from "@/lib/check-facts";
 import { GUIDES } from "@/data/guides";
 
 export const HOMEPAGE_HERO = {
@@ -14,30 +13,26 @@ export const HOMEPAGE_HERO = {
     "Wij verkopen geen supplementen. We zoeken eerst uit of je er één nodig hebt — en pas daarna welk product goed is.",
   /** De drie regels die de subkop ontlasten: wat we doen, wat de check oplevert, waar het op rust. */
   bullets: [
-    "Eerst je leefstijl, dan pas een supplement — en alleen als het daar nog iets aan toevoegt",
-    `${INTAKE_QUESTION_COUNT} vragen geven je een score op ${INTAKE_DOMAINS_LABEL} en per supplement een oordeel: kopen, eerst leefstijl, of niet nodig`,
+    "Eerst je voeding, dan pas een supplement — en alleen als het daar nog iets aan toevoegt",
+    `${CHECK_QUESTIONS_LABEL} laten zien welke voedingsstoffen je waarschijnlijk mist, en per supplement een oordeel: kopen, eerst voeding aanpassen, of niet nodig`,
     "Onderbouwd met peer-reviewed onderzoek en Europees goedgekeurde claims, niet met marketing",
   ],
-  primaryCta: "Doe de gratis Leefstijlcheck",
+  primaryCta: "Doe de gratis check",
   primaryCtaHref: "/intake",
-  primaryCtaMicro: "3 minuten · geen account · direct je uitslag",
+  primaryCtaMicro: `${CHECK_DURATION_LABEL} · geen account · direct je uitslag`,
   /**
    * De hero toont het product zelf: drie vragen uit de check. Bewust drie en
    * niet vier — de vierde kaart duwde de knop op mobiel onder de vouw.
    */
   preview: {
-    progressLabel: `Vraag 3 van ${INTAKE_QUESTION_COUNT}`,
-    progressPercent: Math.round((3 / INTAKE_QUESTION_COUNT) * 100),
-    questionIds: [
-      "SLP_QUAL",
-      "MOV_CARD",
-      "NUT_O3",
-    ] as const satisfies readonly QuestionId[],
+    progressLabel: `Vraag 3 van ${CHECK_QUESTION_COUNT}`,
+    progressPercent: Math.round((3 / CHECK_QUESTION_COUNT) * 100),
+    questionIds: ["oilyFish", "proteinMeals", "ultraProcessed"] as const,
   },
   widget: {
     eyebrow: "Gratis",
-    title: "Leefstijlcheck voor 30-plussers",
-    body: `${INTAKE_QUESTIONS_LABEL} · 3 minuten · inzicht op ${INTAKE_DOMAINS_LABEL}.`,
+    title: "Check voor 30-plussers",
+    body: `${CHECK_QUESTIONS_LABEL} · ${CHECK_DURATION_LABEL} · zie wat je mist.`,
     cta: "Start direct",
   },
 } as const;
@@ -64,7 +59,7 @@ export const HOMEPAGE_PROOF = {
 export const HOMEPAGE_TRUST = {
   title: "Soms is het antwoord: koop niets.",
   intro:
-    "Andere vergelijkingssites beginnen bij het product. Wij beginnen bij de vraag of je het nodig hebt. Wij verkopen geen supplementen en we hebben geen eigen merk. Daardoor kunnen we iets zeggen wat een webshop nooit zegt: dat je in jouw geval beter kunt beginnen bij je slaap, je eten of je herstel — en dat potje kunt laten staan.",
+    "Andere vergelijkingssites beginnen bij het product. Wij beginnen bij de vraag of je het nodig hebt. Wij verkopen geen supplementen en we hebben geen eigen merk. Daardoor kunnen we iets zeggen wat een webshop nooit zegt: dat je in jouw geval beter eerst kunt kijken naar wat je eet — en dat potje kunt laten staan.",
   points: [
     "We noemen alleen effecten waarvoor een Europees goedgekeurde gezondheidsclaim bestaat. Haalt een ingrediënt die drempel niet, dan schrijven we dat op.",
     "Elk product rekenen we om naar de werkzame dosering per dag, zodat potten van verschillende grootte eerlijk naast elkaar liggen.",
@@ -93,23 +88,5 @@ export const HOMEPAGE_GUIDES_PROMO = {
 export const HOMEPAGE_CLOSING = {
   title: "Benieuwd wat voor jou zinvol is?",
   body:
-    `${INTAKE_QUESTION_COUNT} vragen over je slaap, stress, voeding, beweging en verbinding. Daarna weet je waar je staat — en of aanvullen in jouw geval het overwegen waard is.`,
-} as const;
-
-/**
- * Wat er over is van het oude Leefstijlcheck-blok op de homepage: de sectie is
- * opgegaan in de hero, maar `FloatingLeefstijlcheckCta` (blog, pijlerpagina's)
- * leest deze domeinlijst nog. `leefstijl` is een vragenbak zonder eigen score
- * en hoort er daarom niet in.
- */
-export const HOMEPAGE_LIFESTYLE = {
-  scoredCategoryIds: [
-    "slaap",
-    "energie",
-    "stress",
-    "verbinding",
-    "voeding",
-    "beweging",
-    "herstel",
-  ] as const,
+    `${CHECK_QUESTIONS_LABEL} over wat je eet. Daarna weet je welke voedingsstoffen je waarschijnlijk mist — en of aanvullen in jouw geval het overwegen waard is.`,
 } as const;

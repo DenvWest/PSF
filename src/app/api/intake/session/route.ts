@@ -32,6 +32,7 @@ import {
 } from "@/lib/intake-session-cookie";
 import { hasActiveIntakeMarketingEmailConsent } from "@/lib/intake-marketing-consent-server";
 import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
+import { getLatestNutritionLogAt } from "@/lib/nutrition-log-server";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
@@ -216,11 +217,18 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const hasActiveMarketingEmailConsent =
-    await hasActiveIntakeMarketingEmailConsent(admin, sessionId);
+  const [hasActiveMarketingEmailConsent, latestNutritionLogAt] =
+    await Promise.all([
+      hasActiveIntakeMarketingEmailConsent(admin, sessionId),
+      getLatestNutritionLogAt(sessionId),
+    ]);
 
   return NextResponse.json(
-    { session: loaded.session, hasActiveMarketingEmailConsent },
+    {
+      session: loaded.session,
+      hasActiveMarketingEmailConsent,
+      latestNutritionLogAt,
+    },
     { status: 200 },
   );
 }

@@ -48,7 +48,7 @@ export const cortisolEnTestosteronData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: van inzicht naar actie",
       tekst:
-        "Wil je zien hoe jouw domeinen (slaap, stress, energie, herstel) samenkomen? Doe de [Leefstijlcheck](/intake) en gebruik de uitkomst om gericht te lezen — pillar stress, pillar testosteron, en vergelijkingen alleen waar ze inhoudelijk aansluiten.",
+        "Wil je zien of je voeding je testosteron- en cortisolbalans al ondersteunt? Doe de [check](/intake) en gebruik de uitkomst om gericht te lezen — pillar stress, pillar testosteron, en vergelijkingen alleen waar ze inhoudelijk aansluiten.",
     },
   ],
   samenvatting:

@@ -76,7 +76,7 @@ export const creatineDoseringEnLaadfaseData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: vergelijk op prijs per claim-conforme dag",
       tekst:
-        "Zodra je weet dat 3 tot 5 gram per dag de maat is, wordt vergelijken simpel rekenwerk. Op de [supplementengids](/supplementen) staat elk supplement met een berekende PS-Score en de kostenrang per claim-conforme dag — dus niet de prijs per pot, maar de prijs per dag dat je de dosis haalt waar het onderzoek over gaat. Voor creatine specifiek: [beste creatine](/beste/creatine). Weet je nog niet of creatine bij jouw situatie past, begin dan bij de [Leefstijlcheck](/intake).",
+        "Zodra je weet dat 3 tot 5 gram per dag de maat is, wordt vergelijken simpel rekenwerk. Op de [supplementengids](/supplementen) staat elk supplement met een berekende PS-Score en de kostenrang per claim-conforme dag — dus niet de prijs per pot, maar de prijs per dag dat je de dosis haalt waar het onderzoek over gaat. Voor creatine specifiek: [beste creatine](/beste/creatine). Weet je nog niet of creatine bij jouw situatie past, begin dan bij de [check](/intake) en zie of je voeding al genoeg eiwit en energie levert om er iets aan te hebben.",
     },
   ],
   kernpunten: [

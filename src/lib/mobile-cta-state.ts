@@ -28,7 +28,7 @@ export function resolvePrimaryMobileCta(options: {
 
   return {
     href: "/intake",
-    label: "Doe de Leefstijlcheck",
+    label: "Doe de gratis check",
     intent: "start",
   };
 }

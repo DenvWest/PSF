@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { saveIntakeSession } from "@/lib/intake-storage";
+import { latestMeasurementAt, saveIntakeSession } from "@/lib/intake-storage";
 
 const okScores = {
   sleep_score: 50,
@@ -79,5 +79,24 @@ describe("saveIntakeSession", () => {
     );
     const res = await saveIntakeSession(baseInput);
     expect(res?.primaryTheme).toBeNull();
+  });
+});
+
+describe("latestMeasurementAt", () => {
+  const sept3 = Date.parse("2026-09-03T10:00:00Z");
+
+  it("gebruikt de voedingscheck-datum als die recenter is dan de brede check", () => {
+    expect(latestMeasurementAt(sept3, "2026-09-24T08:00:00Z")).toBe(
+      Date.parse("2026-09-24T08:00:00Z"),
+    );
+  });
+
+  it("houdt de sessie-datum aan als de voedingscheck ouder is", () => {
+    expect(latestMeasurementAt(sept3, "2026-08-01T08:00:00Z")).toBe(sept3);
+  });
+
+  it("valt terug op de sessie-datum zonder of met ongeldige voedingslog", () => {
+    expect(latestMeasurementAt(sept3, null)).toBe(sept3);
+    expect(latestMeasurementAt(sept3, "geen-datum")).toBe(sept3);
   });
 });

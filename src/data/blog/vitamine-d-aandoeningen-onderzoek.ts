@@ -90,7 +90,7 @@ export const vitamineDAandoeningenOnderzoekData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: waar wij wél iets over kunnen zeggen",
       tekst:
-        "Wij vergelijken supplementen en ordenen leefstijl; diagnoses laten we aan de zorg. Wat we wél kunnen: laten zien welke claims op een etiket zijn toegestaan en welke niet — zie [EFSA-claims](/kennisbank/efsa-claims) — en met de [Leefstijlcheck](/intake) je slaap, stress, voeding en beweging ordenen zodat je weet waar je begint. De brede gids: [energie na 30](/energie-na-40).",
+        "Wij vergelijken supplementen en ordenen leefstijl; diagnoses laten we aan de zorg. Wat we wél kunnen: laten zien welke claims op een etiket zijn toegestaan en welke niet — zie [EFSA-claims](/kennisbank/efsa-claims) — en met de [check](/intake) checken of je voeding al genoeg vitamine D levert, zodat je weet waar je begint. De brede gids: [energie na 30](/energie-na-40).",
     },
   ],
   kernpunten: [
