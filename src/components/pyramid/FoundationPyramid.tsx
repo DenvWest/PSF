@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 //
 // Modes:
 // - preview: volledig statisch (toekomstig gebruik elders, niet op intake-intro)
-// - methodologyPreview: highlight leefstijl (voeding) + supplementen voor /methodologie
+// - methodologyPreview: highlight leefstijl + vitaliteit (outcomes) voor /methodologie
 // - personalized: alleen leefstijl-pijlers klikbaar; drawer via onPillarClick (caller)
 
 import {
@@ -484,22 +484,22 @@ export default function FoundationPyramid(props: FoundationPyramidProps) {
           const layer = getLayerMeta(geom.id);
           const yCenter = (geom.yTop + geom.yBottom) / 2;
           const isLifestyle = geom.id === "lifestyle";
-          const isSupplements = geom.id === "supplements";
+          const isOutcomes = geom.id === "outcomes";
           const isMethodology = props.mode === "methodologyPreview";
 
           const fill = isLifestyle
             ? "rgba(90, 143, 106, 0.14)"
-            : isMethodology && isSupplements
+            : isMethodology && isOutcomes
               ? "rgba(200, 149, 108, 0.10)"
               : "var(--intake-bg-elevated)";
 
           const stroke = isLifestyle
             ? "var(--intake-terra)"
-            : isMethodology && isSupplements
+            : isMethodology && isOutcomes
               ? "var(--intake-sage)"
               : "var(--intake-card-border)";
 
-          const strokeWidth = isLifestyle || (isMethodology && isSupplements) ? 1.5 : 1;
+          const strokeWidth = isLifestyle || (isMethodology && isOutcomes) ? 1.5 : 1;
 
           return (
             <g key={geom.id}>

@@ -84,7 +84,7 @@ export const zonnebrandEnVitamineDData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: ordenen in plaats van stapelen",
       tekst:
-        "Vermoeidheid heeft zelden één oorzaak, en vitamine D is er hooguit één van. In de [check](/intake) zie je of je voeding al genoeg vitamine D en andere energie-gerelateerde voedingsstoffen levert — zodat je weet waar je winst zit voordat je iets koopt. De brede context staat in [energie na 30](/energie-na-40).",
+        "Vermoeidheid heeft zelden één oorzaak, en vitamine D is er hooguit één van. In de [Leefstijlcheck](/intake) vragen we onder meer naar zonlicht (LIF_SUN) en zetten we slaap, stress, voeding en beweging naast elkaar — zodat je ziet waar je winst zit voordat je iets koopt. De brede context staat in [energie na 30](/energie-na-40).",
     },
   ],
   kernpunten: [

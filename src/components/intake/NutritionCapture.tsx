@@ -235,7 +235,6 @@ export default function NutritionCapture() {
   });
   const [isLoadingResult, setIsLoadingResult] = useState(hasResultsParam);
   const [resultsLoadError, setResultsLoadError] = useState<string | null>(null);
-  const [isCheckingSession, setIsCheckingSession] = useState(!hasResultsParam);
   const trackedSkipsRef = useRef<Set<string>>(new Set());
 
   const ctx = dietContext(preference, allergies);
@@ -376,46 +375,6 @@ export default function NutritionCapture() {
       cancelled = true;
     };
   }, [fromDashboard, hasResultsParam]);
-
-  /**
-   * Voorkomt dat iemand zonder Leefstijlcheck-sessie alle 14 vragen invult om
-   * pas bij het opslaan (`/api/intake/nutrition-log`) een 401 te zien. Deze
-   * check hergebruikt hetzelfde endpoint als de resultaten-herlaadflow
-   * hierboven, alleen vóór de eerste vraag i.p.v. bij een `?resultaten=true`
-   * deeplink — dezelfde foutmelding (`step.kind === "error"`, hieronder)
-   * verschijnt dan meteen in plaats van na alle vragen.
-   */
-  useEffect(() => {
-    if (hasResultsParam) {
-      return;
-    }
-
-    let cancelled = false;
-
-    void (async () => {
-      try {
-        const res = await fetch("/api/intake/nutrition-log/latest", {
-          credentials: "include",
-        });
-        if (cancelled) {
-          return;
-        }
-        if (res.status === 401) {
-          setStep({ kind: "error", message: "401" });
-        }
-      } catch {
-        // Netwerkfout: laat de vragenflow gewoon starten, opslaan faalt anders vanzelf.
-      } finally {
-        if (!cancelled) {
-          setIsCheckingSession(false);
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [hasResultsParam]);
 
   function resetFlow() {
     setStep({ kind: "coreBeforeDiet", index: 0 });
@@ -667,15 +626,6 @@ export default function NutritionCapture() {
     );
   }
 
-  if (!hasResultsParam && isCheckingSession) {
-    return (
-      <div
-        className="relative flex min-h-screen flex-col items-center justify-center"
-        aria-hidden
-      />
-    );
-  }
-
   if (hasResultsParam && resultsLoadError) {
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">
@@ -697,16 +647,11 @@ export default function NutritionCapture() {
       return (
         <div className="relative flex min-h-screen flex-col items-center justify-center">
           <div className="w-full max-w-lg px-6 py-12 text-center">
-            <p className="mb-2 text-base font-medium text-intake-ink">
-              Eerst een korte basis, dan je voedingsrapport.
-            </p>
-            <p className="mb-6 text-sm leading-relaxed text-intake-ink/80">
-              We bewaren je voedingscheck bij je Leefstijlcheck-profiel — die
-              doe je eerst, in 3 minuten. Daarna kun je altijd terugkomen voor
-              de voedingscheck.
+            <p className="mb-6 text-base text-intake-ink">
+              Om je voedingsrapport op te slaan, heb je eerst een Leefstijlcheck nodig.
             </p>
             <Link
-              href="/intake/leefstijl"
+              href="/intake"
               className="inline-block rounded-[12px] bg-intake-terra px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-intake-terra/90"
             >
               Start de Leefstijlcheck →

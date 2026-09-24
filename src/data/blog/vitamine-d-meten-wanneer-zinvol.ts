@@ -81,7 +81,7 @@ export const vitamineDMetenWanneerZinvolData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: als de uitslag normaal is",
       tekst:
-        "Een normale vitamine D-waarde bij aanhoudende vermoeidheid stuurt je naar de plek waar meestal meer te halen valt: slaapritme, stressbelasting, eiwitinname en beweging. De [check](/intake) laat zien of je eiwitinname en andere voedingsstoffen al op peil zijn. Het bredere verhaal staat in [energie na 30](/energie-na-40).",
+        "Een normale vitamine D-waarde bij aanhoudende vermoeidheid stuurt je naar de plek waar meestal meer te halen valt: slaapritme, stressbelasting, eiwitinname en beweging. De [Leefstijlcheck](/intake) ordent die domeinen in één profiel. Het bredere verhaal staat in [energie na 30](/energie-na-40).",
     },
   ],
   kernpunten: [

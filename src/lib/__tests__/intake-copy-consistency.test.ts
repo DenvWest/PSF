@@ -7,7 +7,6 @@ import {
   INTAKE_DOMAIN_COUNT,
   INTAKE_QUESTION_COUNT,
 } from "@/lib/intake-facts";
-import { CHECK_QUESTION_COUNT } from "@/lib/check-facts";
 
 /**
  * De getallen over de Leefstijlcheck stonden in ~40 losse teksten en liepen
@@ -15,12 +14,6 @@ import { CHECK_QUESTION_COUNT } from "@/lib/check-facts";
  * is de enige reden dat dat niet opnieuw gebeurt — hij faalt zodra copy een
  * ander aantal noemt dan de engine kent, of zodra de engine verandert zonder
  * dat de copy meegaat.
- *
- * Sinds de check op /intake ("Wat mis je?", 14 vragen) naast de brede
- * leefstijlcheck op /intake/leefstijl (18 vragen) bestaat, telt een "X
- * vragen" ook mee als hij het aantal van de eerste noemt — de sweep kent
- * geen dossier-context, dus hij accepteert beide echte aantallen en
- * verwerpt al het overige.
  */
 
 const SRC_ROOT = join(process.cwd(), "src");
@@ -105,8 +98,7 @@ describe("intake-copy-consistency", () => {
           ...line.matchAll(/\b(veertien|vijftien|zestien|zeventien|achttien) vragen\b/gi),
         ];
         for (const match of matches) {
-          const count = readCount(match[1]);
-          if (count !== INTAKE_QUESTION_COUNT && count !== CHECK_QUESTION_COUNT) {
+          if (readCount(match[1]) !== INTAKE_QUESTION_COUNT) {
             wrong.push(`${file.replace(`${process.cwd()}/`, "")}:${index} — "${match[0]}"`);
           }
         }
@@ -115,7 +107,7 @@ describe("intake-copy-consistency", () => {
 
     expect(
       wrong,
-      `Copy noemt een ander aantal vragen dan de brede leefstijlcheck (${INTAKE_QUESTION_COUNT}) of de check op /intake (${CHECK_QUESTION_COUNT}) heeft.`,
+      `Copy noemt een ander aantal vragen dan de check heeft (${INTAKE_QUESTION_COUNT}).`,
     ).toEqual([]);
   });
 

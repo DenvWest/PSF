@@ -75,7 +75,7 @@ export const magnesiumOvergangVrouwenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: het bredere overgangsbeeld",
       tekst:
-        "Magnesium is in deze fase een klein onderdeel van een groter geheel — slaap, botten, spiermassa, spanning en energie hangen hier meer dan ooit samen. De bredere gids staat op [overgang](/overgang), en of je voeding in deze fase genoeg magnesium levert, zie je in de [check](/intake). Wil je de stoffen die in deze fase langskomen naast elkaar zien met hun onderbouwing, dan staan ze compleet in de [supplementengids](/supplementen).",
+        "Magnesium is in deze fase een klein onderdeel van een groter geheel — slaap, botten, spiermassa, spanning en energie hangen hier meer dan ooit samen. De bredere gids staat op [overgang](/overgang), en welk domein bij jou het zwaarst weegt komt uit de [Leefstijlcheck](/intake). Wil je de stoffen die in deze fase langskomen naast elkaar zien met hun onderbouwing, dan staan ze compleet in de [supplementengids](/supplementen).",
     },
   ],
   kernpunten: [

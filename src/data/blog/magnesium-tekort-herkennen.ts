@@ -103,7 +103,7 @@ export const magnesiumTekortHerkennenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: van vermoeden naar volgorde",
       tekst:
-        "Het lastige aan magnesium is niet de stof — het is de vraag of jouw klacht daar überhaupt bij hoort. De [check](/intake) loopt je voedingspatroon langs en laat zien of een krappe magnesiuminname aannemelijk is, zodat je weet of dat spoor de moeite waard is voordat je verder zoekt. Wil je eerst zien welke stoffen er überhaupt bestaan voor jouw klacht en hoe ze scoren, kijk dan in de [supplementengids](/supplementen) — met per stof de onderbouwing en de dosering, niet een verzonnen winnaar.",
+        "Het lastige aan magnesium is niet de stof — het is de vraag of jouw klacht daar überhaupt bij hoort. De [Leefstijlcheck](/intake) loopt slaap, stress, beweging en voeding langs en laat zien welk domein bij jou het zwaarst weegt, zodat je niet aan het eind van de rij begint. Wil je eerst zien welke stoffen er überhaupt bestaan voor jouw klacht en hoe ze scoren, kijk dan in de [supplementengids](/supplementen) — met per stof de onderbouwing en de dosering, niet een verzonnen winnaar.",
     },
   ],
   kernpunten: [

@@ -65,12 +65,6 @@ src/
 
 ## Belangrijke regels — LEES DIT
 
-### Bestaande besluiten eerst — voor je een groot plan maakt
-- **`docs/plan/` bevat besluiten die al genomen zijn — niet alleen voor PartnerDesk/affiliate, voor het hele platform.** Voor je een wijziging plant die een naam, canonieke route, navigatiestructuur, dashboard-indeling of architectuur raakt (rename, pivot, nieuwe hoofdnavigatie, "welke check/pagina is de ingang"): eerst `grep -rli "<kernwoorden van je taak>" docs/plan/` draaien. Een reeds genomen besluit — inclusief afgewezen namen/opties met hun reden — is leidend, ook als het je eigen aanname tegenspreekt.
-- Vind je een besluit dat conflicteert met wat gevraagd wordt: meld dat expliciet aan de gebruiker vóórdat je een eigen plan bouwt of code wijzigt. Niet zelf overrulen, niet zelf negeren.
-- Neem jij (met de gebruiker) zelf een nieuw besluit over naam/architectuur/scope, of wijk je bewust af van een bestaand besluit: leg dat vast in `docs/plan/` op dezelfde manier als de bestaande documenten — datum, status, wat is afgewezen en waarom, wat vervangt het. Een gesprek dat alleen in de chatgeschiedenis van één sessie leeft, bestaat voor de volgende sessie niet.
-- Dit geldt evengoed voor een subagent of Explore-taak die je zelf spawnt: geef `docs/plan/` expliciet mee als plek om te doorzoeken, verwacht niet dat een codebase-scan het vanzelf vindt.
-
 ### Git & deploy
 - **Committen en pushen naar een feature-branch mag automatisch.** Na een afgeronde wijziging in `src/`: draai eerst de volledige klaar-check (`grep -rn "console.log" src/` + `npx tsc --noEmit` + `vitest` + `eslint --max-warnings 0`). Slaagt alles, commit dan zelf — één commit per afgeronde taak, geen tussentijdse deelcommits. Faalt er iets, dan NOOIT committen: eerst melden en waar mogelijk fixen, pas committen als alles groen is. Push daarna met `git push -u origin <feature-branch>`.
 - **Nooit rechtstreeks naar `main` pushen.** Werk gaat altijd via een PR vanaf een feature-branch.
