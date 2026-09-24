@@ -68,7 +68,7 @@ export default function HeaderClient({
     [isLoggedIn, hasIntakeSession],
   );
   const secondaryMobileAction = isLoggedIn
-    ? { href: "/intake", label: "Doe de gratis check" }
+    ? { href: "/intake/voeding", label: "Doe de gratis check" }
     : { href: resolvedAccountLinkHref, label: "Inloggen" };
 
   return (
@@ -111,7 +111,7 @@ export default function HeaderClient({
               {accountLinkLabel}
             </Link>
             <Link
-              href="/intake"
+              href="/intake/voeding"
               className="hidden rounded-lg bg-ps-green px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-ps-green-hover md:inline-flex"
             >
               Doe de gratis check →

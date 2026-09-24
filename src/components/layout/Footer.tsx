@@ -10,7 +10,7 @@ const footerColumns = [
         links: [
             { href: "/supplementen", label: "Supplementgids" },
             { href: "/methodologie", label: "Methodologie" },
-            { href: "/intake", label: "Leefstijlcheck" },
+            { href: "/intake/voeding", label: "Voedingcheck" },
         ],
     },
     {

@@ -25,7 +25,7 @@ function LeefstijlcheckPromoCard({
         type="button"
         onClick={onDismiss}
         className="absolute right-2 top-2 flex h-11 w-11 items-center justify-center rounded-lg text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/50"
-        aria-label="Sluit Leefstijlcheck-promo"
+        aria-label="Sluit Voedingcheck-promo"
       >
         <span aria-hidden className="text-xl leading-none">
           ×
@@ -39,7 +39,7 @@ function LeefstijlcheckPromoCard({
         {widget.title}
       </h2>
       <p className="mt-1.5 text-xs leading-relaxed text-white/90 sm:mt-2 sm:text-sm">
-        Eerst je leefstijl, dan pas een supplement — de check laat zien wat jij nodig hebt.
+        Eerst je voeding, dan pas een supplement — de check laat zien wat je mist.
       </p>
 
       <ul
@@ -64,10 +64,10 @@ function LeefstijlcheckPromoCard({
       </ul>
 
       <Link
-        href="/intake"
+        href="/intake/voeding"
         className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-ps-green shadow-sm transition hover:bg-stone-50 sm:mt-6"
       >
-        Ontdek: leefstijl of supplement? — gratis →
+        Ontdek: voeding of supplement? — gratis →
       </Link>
     </div>
   );
@@ -93,7 +93,7 @@ function MobileQuickCta({
         </span>
       </button>
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-        {action.intent === "start" ? "Leefstijl of supplement?" : "Snelle actie"}
+        {action.intent === "start" ? "Voeding of supplement?" : "Snelle actie"}
       </p>
       <Link
         href={action.href}
@@ -231,7 +231,7 @@ export default function FloatingLeefstijlcheckCta({
   return (
     <aside
       role="complementary"
-      aria-label="Leefstijlcheck"
+      aria-label="Voedingcheck"
       aria-hidden={!isShown}
       className={[
         "fixed z-40 transition-all duration-500 ease-out",
