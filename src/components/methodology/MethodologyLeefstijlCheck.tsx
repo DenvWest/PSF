@@ -97,7 +97,7 @@ export default function MethodologyLeefstijlCheck() {
           onClick={() =>
             trackEvent(GA4_EVENTS.INTAKE_CTA_CLICKED, {
               location: "methodologie",
-              target: "/intake",
+              target: intakeCta.href,
             })
           }
           className={methodologyPrimaryBtnClass}

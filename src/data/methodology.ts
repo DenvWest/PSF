@@ -1,26 +1,26 @@
 export const METHODOLOGY_METADATA = {
   title: "Onze methodologie",
   description:
-    "Hoe PerfectSupplement werkt: Leefstijlcheck, persoonlijke voortgang en onafhankelijke supplementvergelijking. Transparant, onderbouwd en leefstijl eerst.",
+    "Hoe PerfectSupplement werkt: Voedingcheck, persoonlijke voortgang en onafhankelijke supplementvergelijking. Transparant, onderbouwd en voeding eerst.",
 } as const;
 
 export const METHODOLOGY_HERO = {
   eyebrow: "Onze aanpak",
   headline: "Onze methodologie",
   lead:
-    "Eerst wat je kunt sturen — leefstijl en vitaliteit. Supplementen pas waar dat logisch is. Onafhankelijk onderbouwd, volledig transparant.",
+    "Eerst wat je kunt sturen — je voeding. Supplementen pas waar dat logisch is. Onafhankelijk onderbouwd, volledig transparant.",
 } as const;
 
 export const METHODOLOGY_CHAPTERS = [
   { id: "verhaal", number: "01", label: "Waarom wij anders beginnen" },
-  { id: "leefstijl", number: "02", label: "Leefstijlcheck & voortgang" },
+  { id: "leefstijl", number: "02", label: "Voedingcheck & voortgang" },
   { id: "supplementen", number: "03", label: "Onafhankelijke vergelijking" },
 ] as const;
 
 export const METHODOLOGY_JOURNEY = {
   title: "Waarom wij anders beginnen",
   quote:
-    "Je voelt het al langer: minder herstel, minder scherpte, slaap die niet meer vanzelf terugkomt. De meeste sites antwoorden met een pil. Wij beginnen waar het echt zit — in zowel je leefstijl als je vitaliteit.",
+    "Je voelt het al langer: minder herstel, minder scherpte, slaap die niet meer vanzelf terugkomt. De meeste sites antwoorden met een pil. Wij beginnen waar het echt zit: bij wat je eet.",
   steps: [
     {
       number: "01",
@@ -29,8 +29,8 @@ export const METHODOLOGY_JOURNEY = {
     },
     {
       number: "02",
-      title: "Leefstijlcheck",
-      body: "Drie minuten, vijf pijlers. Geen quiz met een supplement als uitkomst — wel een eerlijk beeld van waar jij nu op kunt sturen.",
+      title: "Voedingcheck",
+      body: "Eén minuut, vijf nutriëntbanden. Geen quiz met een supplement als uitkomst — wel een eerlijk beeld van wat je voeding wel en niet dekt.",
     },
     {
       number: "03",
@@ -45,7 +45,7 @@ export const METHODOLOGY_JOURNEY = {
     {
       number: "05",
       title: "Supplement",
-      body: "Pas als de basis staat. Onafhankelijk vergeleken — nooit als vervanging van leefstijl.",
+      body: "Pas als de basis staat. Onafhankelijk vergeleken — nooit als vervanging van voeding.",
     },
   ],
 } as const;
@@ -65,7 +65,7 @@ export const METHODOLOGY_VALUES: ReadonlyArray<{
   {
     id: "prioriteit",
     title: "Prioriteit",
-    summary: "Laagste hefboom eerst; supplementen nooit als vervanging van leefstijl.",
+    summary: "Laagste hefboom eerst; supplementen nooit als vervanging van voeding.",
   },
   {
     id: "kwaliteit",
@@ -81,27 +81,27 @@ export const METHODOLOGY_VALUES: ReadonlyArray<{
 
 export const METHODOLOGY_LEEFSTIJLCHECK = {
   id: "leefstijlcheck",
-  title: "De Leefstijlcheck",
-  titleAccent: "Vijf pijlers",
+  title: "De Voedingcheck",
+  titleAccent: "Vijf nutriëntbanden",
   subtitle:
-    "Leefstijl is waar je op stuurt; vitaliteit laat zien wat het oplevert.",
-  pyramidEyebrow: "Leefstijlcheck",
-  pyramidCardTitle: "Leefstijl en vitaliteit",
-  pillarsBridge: "In de check meet je vijf gebieden:",
+    "Voeding is waar je op stuurt; de check laat zien wat je mist.",
+  pyramidEyebrow: "Voedingcheck",
+  pyramidCardTitle: "Voeding en supplement",
+  pillarsBridge: "In de check meet je vijf nutriëntbanden:",
   interventionDomains: [
-    { label: "Slaap", detail: "Herstel en ritme — de basis waar energie op bouwt" },
-    { label: "Stress", detail: "Zenuwstelsel en herstel — of je lichaam oplaadt of alert blijft" },
-    { label: "Voeding", detail: "Energie en opbouw — wat je structureel eet telt altijd" },
-    { label: "Beweging", detail: "Kracht en stofwisseling — spieren die verdwijnen als je niets doet" },
-    { label: "Verbinding", detail: "Doel, relaties en steun — vaak onderschat, wel essentieel" },
+    { label: "Eiwit", detail: "Opbouw en herstel — verdeeld over de dag telt zwaarder dan het dagtotaal" },
+    { label: "Omega-3", detail: "Vooral uit vette vis — de meeste eetpatronen komen er structureel onder" },
+    { label: "Magnesium", detail: "Bladgroenten, noten en peulvruchten — vaak de eerste die wegvalt bij weinig planten" },
+    { label: "Vitamine D", detail: "Zon plus voeding samen — via voeding alleen is een tekort niet uit te sluiten" },
+    { label: "Zink", detail: "Vlees, vis en peulvruchten — klein volume, groot verschil bij een krap patroon" },
   ],
   intakeCta: {
-    href: "/intake",
-    label: "Start de Leefstijlcheck",
+    href: "/intake/voeding",
+    label: "Start de Voedingcheck",
   },
   onderbouwingLink: {
-    href: "/onderbouwing#interventie-rapport",
-    title: "Waarom leefstijl én vitaliteit",
+    href: "/onderbouwing/voeding",
+    title: "Waarom deze vragen",
     subtitle: "Wetenschappelijke onderbouwing",
   },
 } as const;
@@ -195,9 +195,9 @@ export const METHODOLOGY_AFFILIATE_FOOTNOTE = {
 } as const;
 
 export const METHODOLOGY_CTA = {
-  title: "Start met de Leefstijlcheck",
-  lead: "Krijg in drie minuten een helder leefstijloverzicht.",
-  buttonLabel: "Start de Leefstijlcheck",
-  href: "/intake",
+  title: "Start met de Voedingcheck",
+  lead: "Krijg in een minuut een helder voedingsoverzicht.",
+  buttonLabel: "Start de Voedingcheck",
+  href: "/intake/voeding",
   privacySummary: "Gratis · geen account · AVG-proof",
 } as const;
