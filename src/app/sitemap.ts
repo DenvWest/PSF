@@ -148,6 +148,7 @@ const PILLAR_PADEN = [
 /** Hubs en vaste pagina's zonder eigen wijzigingsdatum. */
 const HUB_PADEN = [
   "/",
+  "/check",
   "/intake",
   "/supplementen",
   "/voeding",

@@ -1,6 +1,5 @@
 import type { HomepageProofCounts } from "@/lib/homepage-proof";
 import {
-  VOEDINGCHECK_DURATION_LABEL,
   VOEDINGCHECK_QUESTION_COUNT,
   VOEDINGCHECK_QUESTIONS_LABEL,
 } from "@/lib/voedingcheck-facts";
@@ -17,9 +16,9 @@ export const HOMEPAGE_HERO = {
     `${VOEDINGCHECK_QUESTIONS_LABEL} laten zien welke voedingsstoffen je waarschijnlijk mist, en per supplement een oordeel: kopen, eerst voeding aanpassen, of niet nodig`,
     "Onderbouwd met peer-reviewed onderzoek en Europees goedgekeurde claims, niet met marketing",
   ],
-  primaryCta: "Doe de gratis Voedingcheck",
-  primaryCtaHref: "/intake/voeding",
-  primaryCtaMicro: `${VOEDINGCHECK_DURATION_LABEL} · geen account · direct je uitslag`,
+  primaryCta: "Doe de gratis check",
+  primaryCtaHref: "/check",
+  primaryCtaMicro: "geen account · kies wat bij je past",
   /**
    * De hero toont het product zelf: drie vragen uit de check. Bewust drie en
    * niet vier — de vierde kaart duwde de knop op mobiel onder de vouw.
@@ -31,8 +30,8 @@ export const HOMEPAGE_HERO = {
   },
   widget: {
     eyebrow: "Gratis",
-    title: "Voedingcheck voor 30-plussers",
-    body: `${VOEDINGCHECK_QUESTIONS_LABEL} · ${VOEDINGCHECK_DURATION_LABEL} · zie wat je mist.`,
+    title: "Check voor 30-plussers",
+    body: "Voedingcheck of Leefstijlcheck — kies wat bij je vraag past.",
     cta: "Start direct",
   },
 } as const;
@@ -89,14 +88,4 @@ export const HOMEPAGE_CLOSING = {
   title: "Benieuwd wat voor jou zinvol is?",
   body:
     `${VOEDINGCHECK_QUESTIONS_LABEL} over wat je eet. Daarna weet je welke voedingsstoffen je waarschijnlijk mist — en of aanvullen in jouw geval het overwegen waard is.`,
-} as const;
-
-/**
- * Wat er over is van het oude Leefstijlcheck-blok op de homepage: de sectie is
- * opgegaan in de hero, maar `FloatingLeefstijlcheckCta` (blog, pijlerpagina's)
- * leest deze lijst nog voor zijn domeinchips. Sinds de Voedingcheck de enige
- * gepromote check is, is er nog maar één domein te tonen.
- */
-export const HOMEPAGE_LIFESTYLE = {
-  scoredCategoryIds: ["voeding"] as const,
 } as const;
