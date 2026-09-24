@@ -86,7 +86,7 @@ export const magnesiumEnSpierkrampenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eerst het patroon, dan de stof",
       tekst:
-        "Krampen zijn zelden een losstaand probleem — ze komen vaker in gezelschap van slecht herstel, hoge belasting of onrustige slaap. De [Leefstijlcheck](/intake) legt die combinatie bloot en laat zien welk domein bij jou het zwaarst weegt, zodat je niet maandenlang de verkeerde knop indrukt.",
+        "Krampen zijn zelden een losstaand probleem, maar een krappe magnesiuminname via voeding is wel iets wat je zelf kunt nagaan. De [check](/intake) brengt in een paar minuten in kaart of je voedingspatroon genoeg magnesium levert, zodat je niet blind een potje erbij koopt.",
     },
   ],
   kernpunten: [

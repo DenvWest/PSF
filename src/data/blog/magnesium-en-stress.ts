@@ -74,7 +74,7 @@ export const magnesiumEnStressData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: waar jouw spanning vandaan komt",
       tekst:
-        "Spanning, slecht slapen en een lage batterij lopen zelden los van elkaar — en welk domein bij jou vooropstaat, bepaalt of magnesium überhaupt in beeld hoort. De [Leefstijlcheck](/intake) legt die verhouding bloot in een paar minuten. Wil je daarna zien welke stoffen bij het stressdomein horen en hoe sterk hun onderbouwing is, dan staan ze naast elkaar in de [supplementengids](/supplementen).",
+        "Spanning, slecht slapen en een lage batterij lopen zelden los van elkaar, en juist bij aanhoudende stress loopt je magnesiumverlies op. De [check](/intake) laat in een paar minuten zien of je voeding dat verlies nog bijbeent. Wil je daarna zien welke stoffen bij het stressdomein horen en hoe sterk hun onderbouwing is, dan staan ze naast elkaar in de [supplementengids](/supplementen).",
     },
   ],
   kernpunten: [

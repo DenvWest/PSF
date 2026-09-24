@@ -89,7 +89,7 @@ export const magnesiumVoorWieWelNietData: BlogArtikel = {
       type: "tekst",
       titel: "Als je in geen enkel profiel past",
       tekst:
-        "Dat is een veelvoorkomende uitkomst en het is geen slecht nieuws. Het betekent dat magnesium waarschijnlijk niet de knop is die bij jou het meeste doet — en dat het zinvoller is om te bepalen welke knop dat wél is dan om er alsnog een potje bij te kopen.\n\nDat is precies wat de [Leefstijlcheck](/intake) doet: hij loopt slaap, stress, beweging en voeding langs en laat zien welk domein bij jou het zwaarst weegt, zodat je aan de goede kant van de rij begint. En wil je zelf de stoffen naast elkaar zien met hun onderbouwing, dosering en vorm, dan staat dat compleet in de [supplementengids](/supplementen) — inclusief de stoffen waar wij niet enthousiast over zijn.",
+        "Dat is een veelvoorkomende uitkomst en het is geen slecht nieuws. Het betekent dat magnesium waarschijnlijk niet de knop is die bij jou het meeste doet — en dat het zinvoller is om te bepalen welke knop dat wél is dan om er alsnog een potje bij te kopen.\n\nDat is precies waar de [check](/intake) bij helpt: hij loopt je voedingspatroon langs en laat zien of een tekort aan magnesium of andere voedingsstoffen aannemelijk is, zodat je weet of dat spoor de moeite waard is. En wil je zelf de stoffen naast elkaar zien met hun onderbouwing, dosering en vorm, dan staat dat compleet in de [supplementengids](/supplementen) — inclusief de stoffen waar wij niet enthousiast over zijn.",
     },
   ],
   kernpunten: [

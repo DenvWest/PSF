@@ -2,21 +2,16 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { HOMEPAGE_HERO, HOMEPAGE_LIFESTYLE } from "@/data/homepage";
-import { CATEGORIES } from "@/data/intake-questions";
+import { HOMEPAGE_HERO } from "@/data/homepage";
 import { getAccountStatus, getLastSession } from "@/lib/intake-storage";
 import { resolvePrimaryMobileCta, type MobileCtaAction } from "@/lib/mobile-cta-state";
 import { useInBodyLeefstijlcheckCtaVisible } from "@/lib/use-in-body-leefstijlcheck-cta-visible";
 
 function LeefstijlcheckPromoCard({
   widget,
-  domainPreview,
-  remainingDomainCount,
   onDismiss,
 }: {
   widget: (typeof HOMEPAGE_HERO)["widget"];
-  domainPreview: typeof CATEGORIES;
-  remainingDomainCount: number;
   onDismiss: () => void;
 }) {
   return (
@@ -25,7 +20,7 @@ function LeefstijlcheckPromoCard({
         type="button"
         onClick={onDismiss}
         className="absolute right-2 top-2 flex h-11 w-11 items-center justify-center rounded-lg text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/50"
-        aria-label="Sluit Leefstijlcheck-promo"
+        aria-label="Sluit check-promo"
       >
         <span aria-hidden className="text-xl leading-none">
           ×
@@ -39,35 +34,14 @@ function LeefstijlcheckPromoCard({
         {widget.title}
       </h2>
       <p className="mt-1.5 text-xs leading-relaxed text-white/90 sm:mt-2 sm:text-sm">
-        Eerst je leefstijl, dan pas een supplement — de check laat zien wat jij nodig hebt.
+        Eerst je voeding, dan pas een supplement — de check laat zien wat je mist.
       </p>
-
-      <ul
-        className="mt-4 hidden flex-wrap gap-2 sm:flex"
-        aria-label="Domeinen in de check"
-      >
-        {domainPreview.map((category) => (
-          <li key={category.id} className="list-none">
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white">
-              <span aria-hidden>{category.icon}</span>
-              {category.label}
-            </span>
-          </li>
-        ))}
-        {remainingDomainCount > 0 ? (
-          <li className="list-none">
-            <span className="inline-flex rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white">
-              +{remainingDomainCount} meer
-            </span>
-          </li>
-        ) : null}
-      </ul>
 
       <Link
         href="/intake"
         className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-ps-green shadow-sm transition hover:bg-stone-50 sm:mt-6"
       >
-        Ontdek: leefstijl of supplement? — gratis →
+        Doe de gratis check →
       </Link>
     </div>
   );
@@ -93,7 +67,7 @@ function MobileQuickCta({
         </span>
       </button>
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-        {action.intent === "start" ? "Leefstijl of supplement?" : "Snelle actie"}
+        {action.intent === "start" ? "Voeding of supplement?" : "Snelle actie"}
       </p>
       <Link
         href={action.href}
@@ -121,11 +95,6 @@ export default function FloatingLeefstijlcheckCta({
   showOnAllScreens = false,
 }: FloatingLeefstijlcheckCtaProps = {}) {
   const { widget } = HOMEPAGE_HERO;
-  const scoredDomains = CATEGORIES.filter((category) =>
-    (HOMEPAGE_LIFESTYLE.scoredCategoryIds as readonly string[]).includes(category.id),
-  );
-  const domainPreview = scoredDomains.slice(0, 4);
-  const remainingDomainCount = scoredDomains.length - domainPreview.length;
   const [dismissed, setDismissed] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -231,7 +200,7 @@ export default function FloatingLeefstijlcheckCta({
   return (
     <aside
       role="complementary"
-      aria-label="Leefstijlcheck"
+      aria-label="Check"
       aria-hidden={!isShown}
       className={[
         "fixed z-40 transition-all duration-500 ease-out",
@@ -251,8 +220,6 @@ export default function FloatingLeefstijlcheckCta({
       ) : (
         <LeefstijlcheckPromoCard
           widget={widget}
-          domainPreview={domainPreview}
-          remainingDomainCount={remainingDomainCount}
           onDismiss={() => setDismissed(true)}
         />
       )}

@@ -85,7 +85,7 @@ export const magnesiumWanneerInnemenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: timing is de laatste vraag, niet de eerste",
       tekst:
-        "Voordat het innamemoment ertoe doet, moet vaststaan dát magnesium bij jouw klacht past. Die volgorde — welk domein, welke stof, dan pas welke dosering en welk moment — loopt de [Leefstijlcheck](/intake) met je door. Wil je zelf eerst zien welke stoffen er voor jouw klacht in aanmerking komen en hoe ze op onderbouwing scoren, dan staat dat naast elkaar in de [supplementengids](/supplementen).",
+        "Voordat het innamemoment ertoe doet, moet vaststaan dát magnesium bij jouw klacht past. Of magnesium via je voeding al voldoende binnenkomt, en dus of aanvullen sowieso zinvol is, loop je na met de [check](/intake). Wil je zelf eerst zien welke stoffen er voor jouw klacht in aanmerking komen en hoe ze op onderbouwing scoren, dan staat dat naast elkaar in de [supplementengids](/supplementen).",
     },
   ],
   kernpunten: [
