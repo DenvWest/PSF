@@ -185,9 +185,10 @@ export async function POST(request: NextRequest) {
 
   // Haal de vorige log op (voor delta-berekening) — vóór de nieuwe insert.
   let previousEstimate: IntakeEstimate[] | null = null;
+  let previousLoggedAt: string | null = null;
   const { data: prevRows } = await admin
     .from("intake_intake_log")
-    .select("estimate")
+    .select("estimate, logged_at")
     .eq("session_id", sessionId)
     .order("logged_at", { ascending: false })
     .limit(1);
@@ -196,6 +197,8 @@ export async function POST(request: NextRequest) {
     const raw = prevRows[0].estimate;
     if (Array.isArray(raw) && raw.length > 0) {
       previousEstimate = raw as IntakeEstimate[];
+      previousLoggedAt =
+        typeof prevRows[0].logged_at === "string" ? prevRows[0].logged_at : null;
     }
   }
 
@@ -262,5 +265,8 @@ export async function POST(request: NextRequest) {
     console.error("[api/intake/nutrition-log] emit error:", emitErr);
   }
 
-  return NextResponse.json(responsePayload, { status: 200 });
+  return NextResponse.json(
+    { ...responsePayload, loggedAt: new Date().toISOString(), previousLoggedAt },
+    { status: 200 },
+  );
 }

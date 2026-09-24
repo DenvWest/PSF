@@ -46,6 +46,7 @@ import {
   resolveNutritionGate,
 } from "@/lib/nutrition-ladder";
 import { buildNutrientRouteStatuses } from "@/lib/nutrition-route-status";
+import type { NutritionAnswers } from "@/lib/nutrition-log-response";
 import { isVitaminDLowSunSeason } from "@/lib/nutrition-season";
 
 type Step =
@@ -62,6 +63,9 @@ type Step =
       delta: NutrientDelta[] | null;
       score: number;
       proteinMealsPerDay?: number;
+      loggedAt: string | null;
+      previousLoggedAt: string | null;
+      restoredAnswers: NutritionAnswers | null;
     }
   | { kind: "error"; message: string };
 
@@ -344,6 +348,9 @@ export default function NutritionCapture() {
           delta: NutrientDelta[] | null;
           score: number;
           proteinMealsPerDay?: number;
+          loggedAt?: string | null;
+          previousLoggedAt?: string | null;
+          answers?: NutritionAnswers;
         };
 
         trackEvent(GA4_EVENTS.NUTRITION_RESULT_REOPEN_CLICK, {
@@ -360,6 +367,9 @@ export default function NutritionCapture() {
           delta: data.delta ?? null,
           score: data.score,
           proteinMealsPerDay: data.proteinMealsPerDay,
+          loggedAt: data.loggedAt ?? null,
+          previousLoggedAt: data.previousLoggedAt ?? null,
+          restoredAnswers: data.answers ?? null,
         });
       } catch {
         if (!cancelled) {
@@ -554,6 +564,8 @@ export default function NutritionCapture() {
         score: number;
         band?: { id: string };
         proteinMealsPerDay?: number;
+        loggedAt?: string | null;
+        previousLoggedAt?: string | null;
       };
 
       clarityTag("nutrition_flow", "completed");
@@ -578,6 +590,9 @@ export default function NutritionCapture() {
         delta: data.delta ?? null,
         score: data.score,
         proteinMealsPerDay: data.proteinMealsPerDay ?? proteinMealsFromSliders(sliders),
+        loggedAt: data.loggedAt ?? null,
+        previousLoggedAt: data.previousLoggedAt ?? null,
+        restoredAnswers: null,
       });
     } catch {
       setStep({ kind: "error", message: "Er ging iets mis. Probeer het opnieuw." });
@@ -612,17 +627,15 @@ export default function NutritionCapture() {
       parse doen, dan kan het resultaat drie keer iets anders zeggen over
       dezelfde antwoorden.
 
-      Bij terugkeer via ?results= staan de sliders niet in state; dan is er
-      geen rapport en vallen de blokken die erop rusten stil weg, zoals de
-      feitenrijen dat al deden.
+      Bij terugkeer via ?resultaten=true staan de sliders niet in state; dan
+      komen de antwoorden uit de opgeslagen log (raw_inputs).
     */
-    const ladderReport = hasResultsParam
-      ? null
-      : parseNutritionLadderReport({
-          sliders,
-          preference: preference ?? "none",
-          allergies,
-        });
+    const reportAnswers = hasResultsParam
+      ? step.restoredAnswers
+      : { sliders, preference: preference ?? "none", allergies };
+    const ladderReport = reportAnswers
+      ? parseNutritionLadderReport(reportAnswers)
+      : null;
     const factRows = ladderReport ? buildNutritionFactRows(ladderReport) : [];
     const routeStatuses = ladderReport
       ? buildNutrientRouteStatuses(ladderReport, {
@@ -653,6 +666,8 @@ export default function NutritionCapture() {
         nutritionGateReason={nutritionGate.reason}
         fromDashboard={fromDashboard}
         originDomain={originDomain}
+        loggedAt={step.loggedAt}
+        previousLoggedAt={step.previousLoggedAt}
       />
     );
   }

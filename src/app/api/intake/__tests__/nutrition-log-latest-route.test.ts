@@ -170,6 +170,22 @@ describe("GET /api/intake/nutrition-log/latest", () => {
     expect(data.loggedAt).toBe("2026-07-11T10:00:00Z");
   });
 
+  it("geeft de opgeslagen antwoorden terug, zodat herladen de rijen per stof herbouwt", async () => {
+    mockLimit.mockResolvedValue({
+      data: [{ estimate: [], raw_inputs: VALID_RAW, logged_at: "2026-07-11T10:00:00Z" }],
+      error: null,
+    });
+
+    const { GET } = await import("@/app/api/intake/nutrition-log/latest/route");
+    const res = await GET(makeGet("signed-cookie-value"));
+    const data = (await res.json()) as {
+      answers: { sliders: Record<string, number> };
+      previousLoggedAt: string | null;
+    };
+    expect(data.answers.sliders).toEqual(VALID_SLIDERS);
+    expect(data.previousLoggedAt).toBeNull();
+  });
+
   it("twee logs → 200 met delta-array t.o.v. de vorige log", async () => {
     const { estimateNutritionIntake } = await import("@/lib/nutrition-intake-estimate");
     const { nutritionReportFromAnswers } = await import("@/lib/nutrition-score");
@@ -189,7 +205,11 @@ describe("GET /api/intake/nutrition-log/latest", () => {
     const res = await GET(makeGet("signed-cookie-value"));
 
     expect(res.status).toBe(200);
-    const data = (await res.json()) as { delta: unknown[] | null };
+    const data = (await res.json()) as {
+      delta: unknown[] | null;
+      previousLoggedAt: string | null;
+    };
     expect(Array.isArray(data.delta)).toBe(true);
+    expect(data.previousLoggedAt).toBe("2026-07-04T10:00:00Z");
   });
 });

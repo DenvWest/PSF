@@ -118,15 +118,17 @@ describe("NutritionResultView — de voedingsroute per stof", () => {
   const STATUSES = buildNutrientRouteStatuses(LADDER);
   const GATE_OPEN = resolveNutritionGate(buildNutritionFactRows(LADDER)).open;
 
-  it("toont de tabel die tot nu toe alleen op Voortgang stond", () => {
+  it("toont één rij per stof", () => {
     const { container } = renderResult({
       routeStatuses: STATUSES,
       nutritionGateOpen: GATE_OPEN,
     });
-    // "Aanvullen" is de eigen kop van de tabel — je bord naast het potje.
-    // Meerdere treffers: de tabel rendert een brede en een gestapelde variant,
-    // zodat 375px niet twee stroken van 170px wordt.
-    expect(within(container).getAllByText("Aanvullen").length).toBeGreaterThan(0);
+    expect(
+      within(container).getByText("Per stof — wat je nu kunt doen"),
+    ).toBeTruthy();
+    for (const status of STATUSES) {
+      expect(container.querySelector(`#stof-${status.nutrient}`)).not.toBeNull();
+    }
   });
 
   it("draagt de uitlezing, niet de keuze", () => {
@@ -141,8 +143,7 @@ describe("NutritionResultView — de voedingsroute per stof", () => {
   });
 
   it("laat het blok weg als de sliders niet in state staan", () => {
-    // Terugkeer via ?results=: geen rapport, dus geen route. Stil weg, geen
-    // half blok met lege regels.
+    // Zonder rapport geen route. Stil weg, geen half blok met lege regels.
     const { container } = renderResult({ routeStatuses: [] });
     expect(container.textContent).not.toContain("Nog niet opgehaald");
   });
@@ -156,6 +157,8 @@ describe("NutritionResultView — de voedingsroute per stof", () => {
     });
     const besteLinks = [...container.querySelectorAll("a[href^='/beste/']")];
     expect(besteLinks).toHaveLength(0);
+    const hubLinks = [...container.querySelectorAll("a[href^='/supplementen']")];
+    expect(hubLinks).toHaveLength(0);
   });
 
   it("noemt geen opgeteld mg-getal en geen percentage van een dagbehoefte", () => {

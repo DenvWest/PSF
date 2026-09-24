@@ -17,16 +17,14 @@ import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
 import { buildNutritionHeadline } from "@/lib/nutrition-conclusion";
 import type { LifestyleExtra } from "@/lib/nutrition-lifestyle-extras";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
-import { deltaStatementFor, type NutrientDelta } from "@/lib/nutrition-delta";
+import type { NutrientDelta } from "@/lib/nutrition-delta";
 import { getVitalityBandMessage } from "@/lib/vitality-gauge";
 import NutritionEvidenceDisclosure from "@/components/evidence/NutritionEvidenceDisclosure";
-import {
-  evidenceForExtra,
-  evidenceForGap,
-} from "@/data/nutrition/nutrient-evidence-map";
+import { evidenceForExtra } from "@/data/nutrition/nutrient-evidence-map";
 import { withNutritionReturn } from "@/lib/nutrition-return-link";
 import VerhoudingTabel from "@/components/nutrition/VerhoudingTabel";
-import VoedingVsSupplementTabel from "@/components/nutrition/VoedingVsSupplementTabel";
+import NutrientResultRows from "@/components/intake/NutrientResultRows";
+import { buildNutrientResultRows } from "@/lib/nutrition-result-rows";
 import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 import KwaliteitEetwijzer from "@/components/nutrition/KwaliteitEetwijzer";
 import type { NutritionFactRow } from "@/lib/nutrition-ladder";
@@ -56,6 +54,8 @@ interface NutritionResultViewProps {
   proteinMealsPerDay?: number;
   fromDashboard: boolean;
   originDomain: string | null;
+  loggedAt?: string | null;
+  previousLoggedAt?: string | null;
 }
 
 const PANEL =
@@ -82,6 +82,8 @@ export default function NutritionResultView({
   proteinMealsPerDay,
   fromDashboard,
   originDomain,
+  loggedAt = null,
+  previousLoggedAt = null,
 }: NutritionResultViewProps) {
   const gaps = estimate.filter((e) => e.band === "below");
   const proteinEstimate = estimate.find((e) => e.nutrient === "protein");
@@ -91,7 +93,6 @@ export default function NutritionResultView({
     ? "protein"
     : (gaps[0]?.nutrient ?? null);
 
-  const otherGaps = gaps.filter((e) => e.nutrient !== focusNutrient);
   const supplements = advice.filter(
     (a): a is Extract<NutritionAdviceItem, { kind: "supplement" }> =>
       a.kind === "supplement",
@@ -99,12 +100,16 @@ export default function NutritionResultView({
   const supplementRevealTracked = useRef(false);
   const lifestyleExtraTracked = useRef(false);
 
-  function lifestyleTextFor(nutrient: NutrientId): string {
+  function adviceTextFor(nutrient: NutrientId): string | null {
     const fromAdvice = advice.find(
       (item): item is Extract<NutritionAdviceItem, { kind: "lifestyle" }> =>
         item.kind === "lifestyle" && item.nutrient === nutrient,
     );
-    return fromAdvice?.text ?? nutrientReferences[nutrient].lifestyleAction;
+    return fromAdvice?.text ?? null;
+  }
+
+  function lifestyleTextFor(nutrient: NutrientId): string {
+    return adviceTextFor(nutrient) ?? nutrientReferences[nutrient].lifestyleAction;
   }
 
   useEffect(() => {
@@ -141,14 +146,6 @@ export default function NutritionResultView({
     });
   }, [supplements, fromDashboard]);
 
-  const visibleDeltas = delta
-    ? delta.filter((d) => d.direction !== "unchanged")
-    : null;
-  const deltaImproved =
-    visibleDeltas?.filter((d) => d.direction === "improved") ?? [];
-  const deltaWorsened =
-    visibleDeltas?.filter((d) => d.direction === "worsened") ?? [];
-
   const summaryLine = proteinIsGap
     ? "Eiwit is je grootste winst nu"
     : gaps.length > 0
@@ -179,7 +176,29 @@ export default function NutritionResultView({
   const agendaHref = buildDashboardAgendaHref();
 
   const evidenceFrom = fromDashboard ? "dashboard" : "direct";
-  const focusGapEvidence = focusNutrient ? evidenceForGap(focusNutrient) : null;
+  const rows = buildNutrientResultRows({
+    routeStatuses,
+    gateOpen: nutritionGateOpen,
+    focusNutrient,
+    delta,
+    loggedAt,
+    previousLoggedAt,
+    lifestyleTextFor: adviceTextFor,
+  });
+
+  function proteinExtra(nutrient: NutrientId) {
+    if (nutrient !== "protein") {
+      return null;
+    }
+    return (
+      <details className={`group ${PANEL}`}>
+        <summary className={DETAILS_SUMMARY}>Bereken je precieze eiwitdoel</summary>
+        <div className="border-t border-white/10 px-2 pb-3 pt-2">
+          <ProteinTargetCard hideHeading proteinMealsYesterday={proteinMealsPerDay} />
+        </div>
+      </details>
+    );
+  }
 
   return (
     <ResultsRevealShell variant="dark-report">
@@ -217,10 +236,10 @@ export default function NutritionResultView({
                 </p>
               </div>
 
-              {focusRef ? (
+              {focusRef && focusNutrient ? (
                 <section
                   aria-labelledby="focus-heading"
-                  className={`mt-6 rounded-2xl border px-5 py-5 ${
+                  className={`mt-6 rounded-2xl border px-5 py-4 ${
                     focusNutrient === "protein"
                       ? "border-[#C8956C]/35 bg-[#C8956C]/[0.08]"
                       : PANEL
@@ -228,15 +247,11 @@ export default function NutritionResultView({
                 >
                   <h2
                     id="focus-heading"
-                    className={`mb-3 text-xs font-semibold uppercase tracking-[0.16em] ${
-                      focusNutrient === "protein"
-                        ? "text-[#C8956C]"
-                        : "text-[#7E8C82]"
-                    }`}
+                    className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#C8956C]"
                   >
-                    Focus: {focusRef.label}
+                    Begin bij {focusRef.label.toLowerCase()}
                   </h2>
-                  <p className="text-sm leading-relaxed text-[#F1EFE8]">
+                  <p className="m-0 text-sm leading-relaxed text-[#F1EFE8] text-pretty">
                     {lifestyleTextFor(focusNutrient)}
                   </p>
                   {fromDashboard ? (
@@ -245,29 +260,13 @@ export default function NutritionResultView({
                       en bouw 14 dagen aan voordat je opnieuw logt.
                     </p>
                   ) : null}
-
-                  {focusGapEvidence ? (
-                    <NutritionEvidenceDisclosure
-                      evidence={focusGapEvidence.primary}
-                      secondaryQuestionIds={focusGapEvidence.secondaryIds}
-                      surface="result"
-                      contextId={focusNutrient!}
-                      from={evidenceFrom}
-                    />
-                  ) : null}
-
-                  {focusNutrient === "protein" ? (
-                    <details className={`group mt-4 ${PANEL}`}>
-                      <summary className={DETAILS_SUMMARY}>
-                        Bereken je precieze eiwitdoel
-                      </summary>
-                      <div className="border-t border-white/10 px-2 pb-3 pt-2">
-                        <ProteinTargetCard
-                          hideHeading
-                          proteinMealsYesterday={proteinMealsPerDay}
-                        />
-                      </div>
-                    </details>
+                  {rows.length > 0 ? (
+                    <a
+                      href={`#stof-${focusNutrient}`}
+                      className={`mt-3 inline-block text-[12.5px] ${FOOTNOTE_LINK}`}
+                    >
+                      Waarom, en alle {rows.length} stoffen op een rij ↓
+                    </a>
                   ) : null}
                 </section>
               ) : (
@@ -279,35 +278,15 @@ export default function NutritionResultView({
             </div>
           </section>
 
+          <NutrientResultRows
+            rows={rows}
+            gateNote={nutritionGateOpen ? null : nutritionGateReason}
+            evidenceFrom={evidenceFrom}
+            extraFor={proteinExtra}
+          />
+
           {factRows.length > 0 ? (
             <VerhoudingTabel rijen={factRows} surface="check" />
-          ) : null}
-
-          {/*
-            Je bord naast het potje, per stof.
-
-            Deze tabel stond tot nu toe alleen op Voortgang, achter de inlog —
-            terwijl hij precies de vraag beantwoordt die deze check oproept:
-            wat haal ik hiervan uit mijn eten, en wanneer lukt dat niet meer?
-
-            Bewust deze tabel en niet `NutrientLogboekPanel`: dat paneel draagt
-            de kéuze ("uit mijn eten" / "aanvullen") en schrijft die naar
-            `account_favorites` via `useVoortgangFavorites`. Wie net de check
-            deed heeft nog geen account, en een keuzeknop die niets bewaart is
-            erger dan geen keuzeknop. Hier hoort de uitlezing, niet de keuze —
-            die staat een stap verderop in het dashboard.
-
-            De volgorde binnen een rij is niet omkeerbaar: eerst het bord, dan
-            pas de deur. Rechts blijft dicht zolang de poort dicht is, met de
-            reden erbij.
-          */}
-          {routeStatuses.length > 0 ? (
-            <VoedingVsSupplementTabel
-              statuses={routeStatuses}
-              surface="check"
-              gateOpen={nutritionGateOpen}
-              gateReden={nutritionGateReason}
-            />
           ) : null}
 
           <details className={`group ${PANEL}`}>
@@ -344,86 +323,6 @@ export default function NutritionResultView({
                 ))}
               </ul>
             </section>
-          ) : null}
-
-          {otherGaps.length > 0 ? (
-            <details className={`group ${PANEL}`}>
-              <summary className={DETAILS_SUMMARY}>
-                Jouw stappen ({otherGaps.length})
-              </summary>
-              <ul className="flex flex-col gap-2 border-t border-white/10 px-3 pb-3 pt-3">
-                {otherGaps.map((e) => {
-                  const gapEvidence = evidenceForGap(e.nutrient);
-                  return (
-                    <li
-                      key={e.nutrient}
-                      className="rounded-[12px] border border-white/10 bg-black/25 px-4 py-3 text-sm leading-relaxed text-[#C6D1C9]"
-                    >
-                      <span className="font-medium text-[#F1EFE8]">
-                        {nutrientReferences[e.nutrient].label}
-                      </span>
-                      {" — "}
-                      {lifestyleTextFor(e.nutrient)}
-                      <NutritionEvidenceDisclosure
-                        evidence={gapEvidence.primary}
-                        secondaryQuestionIds={gapEvidence.secondaryIds}
-                        surface="result"
-                        contextId={e.nutrient}
-                        from={evidenceFrom}
-                      />
-                    </li>
-                  );
-                })}
-              </ul>
-            </details>
-          ) : null}
-
-          {supplements.length > 0 ? (
-            <details className={`group ${PANEL}`}>
-              <summary className={DETAILS_SUMMARY}>
-                Supplementen, indien gewenst
-              </summary>
-              <ul className="flex flex-col gap-2 border-t border-white/10 px-3 pb-3 pt-3">
-                {supplements.map((item) => (
-                  <li key={item.nutrient}>
-                    <Link
-                      href={item.comparisonPath}
-                      className="block rounded-[12px] border border-[#C8956C]/30 bg-[#C8956C]/10 px-4 py-3 text-sm font-medium text-[#C8956C] transition-colors hover:bg-[#C8956C]/20"
-                    >
-                      Vergelijk {nutrientReferences[item.nutrient].label} →
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          ) : null}
-
-          {visibleDeltas && visibleDeltas.length > 0 ? (
-            <details className="group rounded-2xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/10">
-              <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-[#C6D1C9] [&::-webkit-details-marker]:hidden">
-                Sinds je vorige check —{" "}
-                {[
-                  deltaImproved.length > 0
-                    ? `${deltaImproved.length} verbeterd`
-                    : null,
-                  deltaWorsened.length > 0
-                    ? `${deltaWorsened.length} terug`
-                    : null,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </summary>
-              <ul className="flex flex-col gap-2 border-t border-white/10 px-3 pb-3 pt-3">
-                {visibleDeltas.map((d, i) => (
-                  <li
-                    key={i}
-                    className="rounded-[12px] border border-white/10 bg-black/25 px-4 py-3 text-sm leading-relaxed text-[#C6D1C9]"
-                  >
-                    {deltaStatementFor(d)}
-                  </li>
-                ))}
-              </ul>
-            </details>
           ) : null}
 
           <DomeinIjkpuntCheckPrompt domain="voeding" domainLabel="Voeding" />
