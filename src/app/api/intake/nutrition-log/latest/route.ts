@@ -114,10 +114,13 @@ export async function GET(request: NextRequest) {
   }
 
   let previousEstimate: IntakeEstimate[] | null = null;
+  let previousLoggedAt: string | null = null;
   if (rows.length > 1) {
     const rawPrev = rows[1].estimate;
     if (Array.isArray(rawPrev) && rawPrev.length > 0) {
       previousEstimate = rawPrev as IntakeEstimate[];
+      previousLoggedAt =
+        typeof rows[1].logged_at === "string" ? rows[1].logged_at : null;
     }
   }
 
@@ -129,6 +132,8 @@ export async function GET(request: NextRequest) {
       ...response,
       proteinMealsPerDay: report.proteinMealsPerDay,
       loggedAt: latest.logged_at,
+      previousLoggedAt,
+      answers,
     },
     { status: 200 },
   );
