@@ -72,7 +72,7 @@ export const creatineVoorVrouwenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eerst je eigen plaatje, dan een product",
       tekst:
-        "Of creatine bij jou de zinnige stap is, hangt af van hoe je slaapt, eet en beweegt. De [Leefstijlcheck](/intake) ordent dat in een paar minuten en laat zien waar je winst het grootst is. Wil je daarna zelf vergelijken: op de [supplementengids](/supplementen) staan alle supplementen langs dezelfde meetlat — PS-Score, kwaliteitsrang en prijs per claim-conforme dag — met [beste creatine](/beste/creatine) voor deze categorie.",
+        "Of creatine bij jou de zinnige stap is, hangt af van hoe je slaapt, eet en beweegt. De [Voedingcheck](/intake/voeding) laat in een paar minuten zien of je eetpatroon al genoeg eiwit en energie levert om daar iets aan te hebben. Wil je daarna zelf vergelijken: op de [supplementengids](/supplementen) staan alle supplementen langs dezelfde meetlat — PS-Score, kwaliteitsrang en prijs per claim-conforme dag — met [beste creatine](/beste/creatine) voor deze categorie.",
     },
   ],
   kernpunten: [

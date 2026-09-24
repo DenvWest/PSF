@@ -53,7 +53,7 @@ export const overgangSlaapproblemenOpvliegersData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eerst het hele plaatje, dan een keuze",
       tekst:
-        "Slaap, stress en energie hangen in deze fase samen — de [Leefstijlcheck](/intake) brengt in een paar minuten in kaart waar bij jou de grootste winst zit. Wil je daarna gericht een supplement vergelijken, dan staan alle opties op [de supplementengids](/supplementen) langs dezelfde meetlat.",
+        "Slaap, stress en energie hangen in deze fase samen, en voeding is daarbij een factor die je zelf kunt nagaan. De [Voedingcheck](/intake/voeding) brengt in een paar minuten in kaart of je voeding al genoeg magnesium en andere slaapondersteunende stoffen levert. Wil je daarna gericht een supplement vergelijken, dan staan alle opties op [de supplementengids](/supplementen) langs dezelfde meetlat.",
     },
   ],
   kernpunten: [

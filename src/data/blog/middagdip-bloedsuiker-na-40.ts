@@ -54,7 +54,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: ontdek jouw energieprofiel",
       tekst:
-        "In de [Leefstijlcheck](/intake) zie je hoe energie, voeding en stress samenkomen — inclusief vragen over koffie, suiker en alcohol als energiebron. Herken je vooral leegte en weinig veerkracht? Bekijk het profiel [Lage energie](/profiel/lage-energie).",
+        "In de [Voedingcheck](/intake/voeding) zie je of je voedingspatroon je bloedsuiker stabiel houdt — inclusief vragen over koffie, suiker en alcohol als energiebron. Herken je vooral leegte en weinig veerkracht? Bekijk het profiel [Lage energie](/profiel/lage-energie).",
     },
   ],
   samenvatting:

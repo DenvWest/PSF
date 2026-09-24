@@ -53,7 +53,7 @@ export const overgangBuikvetGewichtstoenameData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: waar jouw grootste winst zit",
       tekst:
-        "Voeding, slaap, stress en beweging spelen hier allemaal mee — de [Leefstijlcheck](/intake) zet in een paar minuten op een rij waar bij jou de grootste hefboom ligt. Wil je een supplement laten meewegen naast leefstijl, vergelijk dan op [de supplementengids](/supplementen).",
+        "Voeding speelt hier een grote rol — de [Voedingcheck](/intake/voeding) zet in een paar minuten op een rij of je eetpatroon meewerkt of tegenwerkt bij gewichtstoename in deze fase. Wil je een supplement laten meewegen naast leefstijl, vergelijk dan op [de supplementengids](/supplementen).",
     },
   ],
   kernpunten: [

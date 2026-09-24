@@ -77,7 +77,7 @@ export const vitamineDEnK2SamenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eerst weten wat je nodig hebt",
       tekst:
-        "Voordat je vormen en doseringen vergelijkt, is de vraag of vitamine D bij jou überhaupt de knop is die iets doet. De [Leefstijlcheck](/intake) ordent slaap, stress, voeding en beweging zodat je niet op gevoel stapelt. Hoe we producten wegen staat in onze [PS-Score-methodiek](/ps-score).",
+        "Voordat je vormen en doseringen vergelijkt, is de vraag of vitamine D bij jou überhaupt de knop is die iets doet. De [Voedingcheck](/intake/voeding) laat in een paar minuten zien of je voeding al genoeg vitamine D en K2 levert, zodat je niet op gevoel stapelt. Hoe we producten wegen staat in onze [PS-Score-methodiek](/ps-score).",
     },
   ],
   kernpunten: [

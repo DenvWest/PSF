@@ -86,7 +86,7 @@ export const hoeveelMagnesiumPerDagData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: van dosering naar de juiste stof",
       tekst:
-        "Een dosering bepalen heeft alleen zin als magnesium überhaupt de stof is die bij jouw klacht hoort. In de [supplementengids](/supplementen) staan alle stoffen die wij beoordelen naast elkaar, met per stof de onderzoeksdosis, de vorm en de onderbouwing — zodat je ziet of magnesium bovenaan jouw rij hoort of ergens halverwege. Weet je dat nog niet, dan wijst de [Leefstijlcheck](/intake) eerst het domein aan.",
+        "Een dosering bepalen heeft alleen zin als magnesium überhaupt de stof is die bij jouw klacht hoort. In de [supplementengids](/supplementen) staan alle stoffen die wij beoordelen naast elkaar, met per stof de onderzoeksdosis, de vorm en de onderbouwing — zodat je ziet of magnesium bovenaan jouw rij hoort of ergens halverwege. Weet je dat nog niet, dan laat de [Voedingcheck](/intake/voeding) zien of je voeding al genoeg magnesium levert.",
     },
   ],
   kernpunten: [

@@ -70,7 +70,7 @@ export const vitamineDEnSlaapData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: slaap en zonlicht in één beeld",
       tekst:
-        "In de [Leefstijlcheck](/intake) komen slaapritme en zonlicht (LIF_SUN) samen met stress en beweging in één profiel, zodat je ziet welke factor bij jou het zwaarst weegt. Het seizoenspatroon achter je vitamine D-status staat in [vitamine D door het jaar heen](/blog/vitamine-d-seizoenen-jaarritme).",
+        "In de [Voedingcheck](/intake/voeding) zie je of je voeding al genoeg vitamine D-bronnen levert, zodat je weet of een supplement naast zonlicht zinvol is. Het seizoenspatroon achter je vitamine D-status staat in [vitamine D door het jaar heen](/blog/vitamine-d-seizoenen-jaarritme).",
     },
   ],
   kernpunten: [

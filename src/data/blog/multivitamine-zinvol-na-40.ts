@@ -29,7 +29,7 @@ export const multivitamineZinvolNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Waarom \"gericht\" wint van \"allemaal een beetje\"",
       tekst:
-        "Onze aanpak op deze site is precies het tegenovergestelde uitgangspunt: je vult een [Leefstijlcheck](/intake) in, en op basis van je profiel — niet op basis van wat iedereen slikt — komt daar een gerichte aanbeveling uit. Een tekort aan magnesium los je op met magnesium, niet met een tablet die ook nog eens elf andere stoffen bevat die je al voldoende binnenkrijgt via voeding. Dat is geen marketingstandpunt; het is de basis van hoe we [supplementen beoordelen](/methodologie): per stof, per dosering, per bewijs — niet per pakket.",
+        "Onze aanpak op deze site is precies het tegenovergestelde uitgangspunt: je vult de [Voedingcheck](/intake/voeding) in, en op basis van wat je voeding wel en niet dekt — niet op basis van wat iedereen slikt — komt daar een gerichte aanbeveling uit. Een tekort aan magnesium los je op met magnesium, niet met een tablet die ook nog eens elf andere stoffen bevat die je al voldoende binnenkrijgt via voeding. Dat is geen marketingstandpunt; het is de basis van hoe we [supplementen beoordelen](/methodologie): per stof, per dosering, per bewijs — niet per pakket.",
     },
     {
       type: "opsomming",
@@ -46,7 +46,7 @@ export const multivitamineZinvolNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "De vraag die je jezelf kunt stellen",
       tekst:
-        "In plaats van \"welke multivitamine is het beste\", is de bruikbaardere vraag: welk domein in je leefstijl — slaap, energie, herstel, stress — vraagt om iets, en is dat met voeding op te lossen of met een gerichte stof? Onze [Leefstijlcheck](/intake) beantwoordt die vraag in een paar minuten. Wil je liever zelf een specifieke stof vergelijken op kwaliteit en dosering, kijk dan in de [supplementgids](/supplementen) — met per product de onderbouwing, niet een verzonnen winnaar.",
+        "In plaats van \"welke multivitamine is het beste\", is de bruikbaardere vraag: welk domein in je leefstijl — slaap, energie, herstel, stress — vraagt om iets, en is dat met voeding op te lossen of met een gerichte stof? Onze [Voedingcheck](/intake/voeding) laat in een paar minuten zien of dat aan je voeding ligt. Wil je liever zelf een specifieke stof vergelijken op kwaliteit en dosering, kijk dan in de [supplementgids](/supplementen) — met per product de onderbouwing, niet een verzonnen winnaar.",
     },
   ],
   samenvatting:

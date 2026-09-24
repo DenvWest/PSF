@@ -48,7 +48,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
       type: "tekst",
       titel: "Eiwit, herstel en beweging — de koppeling",
       tekst:
-        "Meer eiwit zonder beweging helpt beperkt; meer training zonder eiwit remt herstel. Rustig duursport en krachttraining verhogen je behoefte — lees [krachttraining na 30](/blog/krachttraining-na-40) en de pillar [herstel verbeteren na 30](/herstel-verbeteren-na-40). Train je regelmatig terwijl je ontbijt en lunch eiwitarm blijven? Begin daar — niet met poeder. In de [Leefstijlcheck](/intake) zie je of voeding en beweging samen achterlopen.",
+        "Meer eiwit zonder beweging helpt beperkt; meer training zonder eiwit remt herstel. Rustig duursport en krachttraining verhogen je behoefte — lees [krachttraining na 30](/blog/krachttraining-na-40) en de pillar [herstel verbeteren na 30](/herstel-verbeteren-na-40). Train je regelmatig terwijl je ontbijt en lunch eiwitarm blijven? Begin daar — niet met poeder. In de [Voedingcheck](/intake/voeding) zie je of je eiwitinname over de dag verdeeld al op peil is.",
     },
     {
       type: "tekst",
@@ -60,7 +60,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: ontdek jouw voedingsprioriteit",
       tekst:
-        "In de [Leefstijlcheck](/intake) zie je of voeding je eerste hefboom is — inclusief vragen over hoeveel eiwit je per dag eet. Herken je vooral energiedips en weinig veerkracht? Bekijk [Lage energie](/profiel/lage-energie) of start bij de pillar [voeding na 30](/voeding-na-40).",
+        "In de [Voedingcheck](/intake/voeding) zie je of je eiwitinname al op peil is — met vragen over hoeveel eiwit je per dag eet. Herken je vooral energiedips en weinig veerkracht? Bekijk [Lage energie](/profiel/lage-energie) of start bij de pillar [voeding na 30](/voeding-na-40).",
     },
   ],
   samenvatting:

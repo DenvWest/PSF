@@ -35,7 +35,7 @@ export const zinkEnTestosteronData: BlogArtikel = {
         "Slaap, krachttraining en stress eerst — zie [stress-pillar](/stress-verminderen-na-40).",
         "Laat hormoonwaarden meten bij aanhoudende klachten; geen zelf-diagnose.",
         "Vergelijk zink op vorm (picolinaat, methionine) en elementaire mg op [/beste/zink](/beste/zink).",
-        "Gebruik de [Leefstijlcheck](/intake) om prioriteiten te ordenen.",
+        "Gebruik de [Voedingcheck](/intake/voeding) om te zien of je voeding al genoeg zink levert.",
       ],
     },
   ],

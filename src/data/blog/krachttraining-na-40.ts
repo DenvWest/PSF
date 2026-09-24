@@ -54,7 +54,7 @@ export const krachttrainingNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: check jouw beweging- en herstelscore",
       tekst:
-        "Hoe vaak train je kracht en cardio — en hoe snel herstel je? [Doe de Leefstijlcheck](/intake) en krijg een score op beweging en herstel naast energie en voeding.",
+        "Hoe vaak train je kracht en cardio — en hoe snel herstel je? [Doe de Voedingcheck](/intake/voeding) en zie of je eiwit- en energie-inname je herstel en trainingsopbouw al ondersteunen.",
     },
   ],
   samenvatting:

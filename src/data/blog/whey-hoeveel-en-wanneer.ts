@@ -95,7 +95,7 @@ export const wheyHoeveelEnWanneerData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eerst je dag, dan je bus",
       tekst:
-        "Weet je hoeveel gram je per dag mist en op welk moment, dan is de rest een productkeuze. In de [supplementengids](/supplementen) staan alle supplementen op dezelfde meetlat, en bij [alle eiwitpoeders](/supplementen?categorie=eiwitpoeder) zie je gram eiwit per portie, claimvoorwaarde en prijs per dag naast elkaar. Wil je eerst weten of eiwit überhaupt jouw knelpunt is: de [Leefstijlcheck](/intake) zet je vijf leefstijldomeinen in één profiel.",
+        "Weet je hoeveel gram je per dag mist en op welk moment, dan is de rest een productkeuze. In de [supplementengids](/supplementen) staan alle supplementen op dezelfde meetlat, en bij [alle eiwitpoeders](/supplementen?categorie=eiwitpoeder) zie je gram eiwit per portie, claimvoorwaarde en prijs per dag naast elkaar. Wil je eerst weten of eiwit überhaupt jouw knelpunt is: de [Voedingcheck](/intake/voeding) laat in een paar minuten zien of je voeding al genoeg eiwit levert.",
     },
   ],
   kernpunten: [

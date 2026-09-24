@@ -53,7 +53,7 @@ export const vitamineDBotgezondheidOvergangData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: botgezondheid is geen los thema",
       tekst:
-        "Bot, spier en hormonen hangen in deze fase samen — de [Leefstijlcheck](/intake) zet in kaart waar bij jou de grootste winst zit. Alle supplementen vergelijk je op [de supplementengids](/supplementen).",
+        "Bot, spier en hormonen hangen in deze fase samen — de [Voedingcheck](/intake/voeding) laat zien of je voeding al genoeg vitamine D en calcium levert voor je botten. Alle supplementen vergelijk je op [de supplementengids](/supplementen).",
     },
   ],
   kernpunten: [
