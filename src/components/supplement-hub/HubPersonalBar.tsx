@@ -4,6 +4,7 @@ import Link from "next/link";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 import type { HubPersonalization } from "@/lib/supplement-hub/hub-personalization";
+import { INTAKE_RESULTS_HREF } from "@/lib/intake-return-link";
 
 type HubPersonalBarProps = {
   personalization: HubPersonalization;
@@ -107,6 +108,33 @@ export default function HubPersonalBar({
     );
   }
 
+  if (personalization.state === "basis_eerst") {
+    return (
+      <aside
+        className={`rounded-2xl border border-stone-200 bg-stone-50 px-4 py-4 lg:px-5 lg:py-5 ${className}`}
+        aria-label="Persoonlijke selectie"
+      >
+        <p className="font-display text-base font-semibold leading-snug text-stone-900">
+          Eerst je bord
+        </p>
+        <p className="mt-1 text-sm leading-relaxed text-stone-600">
+          {personalization.reason} Daarom markeren we hier nog geen producten.
+        </p>
+        <Link
+          href={INTAKE_RESULTS_HREF}
+          onClick={() =>
+            trackEvent("hub_basis_eerst_resultaat_click", {
+              surface: "supplementen_catalogus",
+            })
+          }
+          className="mt-2 inline-block text-sm text-stone-500 transition-colors hover:text-ps-green"
+        >
+          Bekijk per stof wat je kunt doen →
+        </Link>
+      </aside>
+    );
+  }
+
   if (personalization.state === "geen_prioriteit" || matchNamen.length === 0) {
     return (
       <aside
@@ -117,14 +145,14 @@ export default function HubPersonalBar({
           Je basis zit goed
         </p>
         <p className="mt-1 text-sm leading-relaxed text-stone-600">
-          Uit je voedingscheck volgt geen supplement-prioriteit. Oriëntatie,
+          Uit je check volgt geen supplement-prioriteit. Oriëntatie,
           geen persoonlijk medisch advies.
         </p>
         <Link
           href="/intake"
           className="mt-2 hidden text-sm text-stone-500 transition-colors hover:text-ps-green lg:inline-block"
         >
-          Leefstijlcheck opnieuw doen →
+          Check opnieuw doen →
         </Link>
       </aside>
     );
@@ -154,14 +182,14 @@ export default function HubPersonalBar({
         Uit je check · geen medisch advies
       </p>
       <p className="mt-2.5 hidden px-1 text-xs leading-relaxed text-stone-500 lg:block">
-        Past bij jou: {namenReeks(matchNamen)}. Op basis van je Leefstijlcheck
-        en voedingscheck — algemene oriëntatie, geen persoonlijk medisch advies.
+        Past bij jou: {namenReeks(matchNamen)}. Op basis van je check: waar je
+        eten het niet dekt — algemene oriëntatie, geen persoonlijk medisch advies.
       </p>
       <Link
         href="/intake"
         className="mt-2 hidden px-1 text-xs text-stone-400 transition-colors hover:text-ps-green lg:inline-block"
       >
-        Leefstijlcheck opnieuw doen →
+        Check opnieuw doen →
       </Link>
     </aside>
   );
