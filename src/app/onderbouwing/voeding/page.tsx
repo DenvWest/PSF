@@ -9,11 +9,7 @@ import {
   NUTRITION_EVIDENCE_STRENGTH_DISCLAIMER,
   NUTRITION_EVIDENCE_BY_ID,
 } from "@/data/nutrition/nutrition-question-evidence";
-import {
-  NUTRITION_CORE_SLIDER_IDS,
-  NUTRITION_QUESTIONS,
-} from "@/data/nutrition/lifescore-questions";
-import { CHECK_DURATION_LABEL } from "@/lib/check-facts";
+import { NUTRITION_QUESTIONS } from "@/data/nutrition/lifescore-questions";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
 
@@ -67,8 +63,8 @@ export default function OnderbouwingVoedingPage() {
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-stone-600">
             De voedingscheck op{" "}
-            <Link href="/intake" className="font-medium text-emerald-800 underline">
-              /intake
+            <Link href="/intake/voeding" className="font-medium text-emerald-800 underline">
+              /intake/voeding
             </Link>{" "}
             is een lichtgewicht frequentie-check: geen dagboek, geen grammen-logging.
             Deze pagina legt uit waarom we elke vraag stellen en hoe we gaps inschatten.
@@ -82,7 +78,7 @@ export default function OnderbouwingVoedingPage() {
         <section className="mt-14 max-w-4xl">
           <h2 className={sectionTitleClass}>Wat meet de voedingscheck?</h2>
           <ul className="mt-4 space-y-2 text-base leading-relaxed text-stone-600">
-            <li>- {NUTRITION_CORE_SLIDER_IDS.length} frequentie-sliders + voorkeur en allergieën (opgeslagen, niet altijd in advies).</li>
+            <li>- 10 frequentie-sliders + voorkeur en allergieën (opgeslagen, niet altijd in advies).</li>
             <li>- 5 nutriënt-banden: eiwit, omega-3, magnesium, vitamine D en zink.</li>
             <li>- Leefstijl-eerst advies met portie-vuistregels; supplementen alleen via een vier-stappen gate.</li>
             <li>- Herhaal de check om verschil te zien — geen medische uitspraak.</li>
@@ -124,13 +120,12 @@ export default function OnderbouwingVoedingPage() {
             Van onderbouwing naar actie
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-emerald-100">
-            De check duurt ongeveer {CHECK_DURATION_LABEL}. Je krijgt direct
-            inzicht in je frequentie — en concrete stappen vóór je supplementen
-            overweegt.
+            De check duurt ongeveer drie minuten. Je krijgt direct inzicht in je
+            frequentie — en concrete stappen vóór je supplementen overweegt.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href="/intake"
+              href="/intake/voeding"
               className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100"
             >
               Doe de voedingscheck

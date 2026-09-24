@@ -1,13 +1,25 @@
 import { HOMEPAGE_HERO } from "@/data/homepage";
-import { nutritionSliderQuestion } from "@/data/nutrition/lifescore-questions";
+import {
+  CATEGORIES,
+  QUESTIONS,
+  type Category,
+  type IntakeQuestion,
+  type QuestionId,
+} from "@/data/intake-questions";
 
-const VOEDING_CATEGORY = { label: "Voeding", icon: "🥗" } as const;
+function getCategory(categoryId: Category["id"]): Category {
+  const category = CATEGORIES.find((c) => c.id === categoryId);
+  if (!category) {
+    throw new Error(`Unknown category: ${categoryId}`);
+  }
+  return category;
+}
 
-function getPreviewQuestions(ids: readonly string[]): { id: string; prompt: string }[] {
+function getPreviewQuestions(ids: readonly QuestionId[]): IntakeQuestion[] {
   return ids.map((id) => {
-    const question = nutritionSliderQuestion(id);
+    const question = QUESTIONS.find((q) => q.id === id);
     if (!question) {
-      throw new Error(`Unknown nutrition question: ${id}`);
+      throw new Error(`Unknown question: ${id}`);
     }
     return question;
   });
@@ -36,25 +48,28 @@ export default function HeroCheckPreview() {
       </div>
 
       <ul className="space-y-2.5 sm:space-y-3">
-        {previewQuestions.map((q, index) => (
-          <li
-            key={q.id}
-            /* De derde kaart valt weg op mobiel, anders duwt het beeld de knop onder de vouw. */
-            className={`list-none rounded-xl border border-stone-200/80 bg-white p-3.5 shadow-sm sm:p-4 ${
-              index === 2 ? "hidden sm:block" : ""
-            }`}
-          >
-            <div className="mb-2 flex items-center gap-2">
-              <span className="text-sm">{VOEDING_CATEGORY.icon}</span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-stone-500">
-                {VOEDING_CATEGORY.label}
-              </span>
-            </div>
-            <p className="text-sm font-medium leading-snug text-stone-800">
-              {q.prompt}
-            </p>
-          </li>
-        ))}
+        {previewQuestions.map((q, index) => {
+          const category = getCategory(q.category);
+          return (
+            <li
+              key={q.id}
+              /* De derde kaart valt weg op mobiel, anders duwt het beeld de knop onder de vouw. */
+              className={`list-none rounded-xl border border-stone-200/80 bg-white p-3.5 shadow-sm sm:p-4 ${
+                index === 2 ? "hidden sm:block" : ""
+              }`}
+            >
+              <div className="mb-2 flex items-center gap-2">
+                <span className="text-sm">{category.icon}</span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-stone-500">
+                  {category.label}
+                </span>
+              </div>
+              <p className="text-sm font-medium leading-snug text-stone-800">
+                {q.question}
+              </p>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

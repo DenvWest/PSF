@@ -26,8 +26,8 @@ describe("NextStepBlock", () => {
     const links = screen.getAllByRole("link");
     // Eén knop + één secundaire tekstlink — nooit twee knoppen naast elkaar.
     expect(links).toHaveLength(2);
-    expect(links[0]?.getAttribute("href")).toBe("/intake");
-    expect(links[1]?.getAttribute("href")).toBe("/intake/leefstijl");
+    expect(links[0]?.getAttribute("href")).toBe("/intake/voeding");
+    expect(links[1]?.getAttribute("href")).toBe("/intake");
   });
 
   it("meldt zijn vertoning één keer", () => {

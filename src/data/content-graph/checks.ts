@@ -40,14 +40,14 @@ export interface ContentCheck {
 export const CONTENT_CHECKS: Record<ContentCheckId, ContentCheck> = {
   leefstijl: {
     id: "leefstijl",
-    href: "/intake/leefstijl",
+    href: "/intake",
     label: "leefstijlcheck",
     duurLabel: "3 minuten",
     pillarId: null,
   },
   voeding: {
     id: "voeding",
-    href: "/intake",
+    href: "/intake/voeding",
     label: "voedingscheck",
     duurLabel: "1 minuut",
     pillarId: "voeding",

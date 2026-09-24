@@ -69,7 +69,7 @@ export const omega3UitVoedingOfSupplementData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eerst je bord, dan het schap",
       tekst:
-        "De volgorde die zich terugbetaalt: kijk eerst hoe vaak er vette vis op tafel staat, vul daarna pas aan. In de [check](/intake) breng je je visinname in kaart, zodat je ziet of omega-3 via voeding al op peil zit of dat aanvullen zin heeft. Blijkt aanvullen zinvol, dan reken je door met [hoeveel omega-3 per dag](/blog/omega-3-hoeveel-per-dag) en kies je op [beste omega-3 supplement](/beste/omega-3-supplement).",
+        "De volgorde die zich terugbetaalt: kijk eerst hoe vaak er vette vis op tafel staat, vul daarna pas aan. In de [Leefstijlcheck](/intake) komt je visinname samen met slaap, stress en beweging in één profiel, zodat je ziet of omega-3 bij jou überhaupt bovenaan hoort te staan. Blijkt aanvullen zinvol, dan reken je door met [hoeveel omega-3 per dag](/blog/omega-3-hoeveel-per-dag) en kies je op [beste omega-3 supplement](/beste/omega-3-supplement).",
     },
   ],
   kernpunten: [

@@ -51,7 +51,7 @@ export const magnesiumHerstelMannen40Data: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: herstel is meer dan één mineraal",
       tekst:
-        "Slaap, eiwitinname en trainingsopbouw wegen minstens zo zwaar als magnesium bij herstel na 30. De [check](/intake) laat zien of je voeding genoeg eiwit en magnesium levert voor herstel. Wil je magnesium toch toevoegen, vergelijk producten op [beste magnesium](/beste/magnesium) of lees de volledige [supplementgids magnesium](/supplementen/magnesium).",
+        "Slaap, eiwitinname en trainingsopbouw wegen minstens zo zwaar als magnesium bij herstel na 30. De [Leefstijlcheck](/intake) laat zien waar bij jou de grootste winst zit. Wil je magnesium toch toevoegen, vergelijk producten op [beste magnesium](/beste/magnesium) of lees de volledige [supplementgids magnesium](/supplementen/magnesium).",
     },
   ],
   kernpunten: [

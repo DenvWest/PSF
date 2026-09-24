@@ -76,7 +76,7 @@ export const vitamineDZonNederlandData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: zonlicht is één van de knoppen",
       tekst:
-        "Daglicht doet meer dan vitamine D: het zet ook je [circadiaan ritme](/kennisbank/circadiaan-ritme) gelijk, wat direct doorwerkt in slaap en energie. In de [check](/intake) zie je of je voeding al genoeg vitamine D-bronnen bevat, zodat je weet of zon alleen genoeg is of dat een supplement zinvol is. De bredere gids: [energie na 30](/energie-na-40).",
+        "Daglicht doet meer dan vitamine D: het zet ook je [circadiaan ritme](/kennisbank/circadiaan-ritme) gelijk, wat direct doorwerkt in slaap en energie. In de [Leefstijlcheck](/intake) vragen we naar zonlicht (LIF_SUN) naast slaap, stress en beweging, zodat je ziet welke knop bij jou het meeste oplevert. De bredere gids: [energie na 30](/energie-na-40).",
     },
   ],
   kernpunten: [

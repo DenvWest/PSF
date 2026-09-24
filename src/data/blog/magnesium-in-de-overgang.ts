@@ -56,7 +56,7 @@ export const magnesiumInDeOvergangData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eerst het hele plaatje",
       tekst:
-        "Magnesium is één puzzelstukje — slaap, stress en beweging bepalen samen een groter deel van hoe je je voelt in deze fase. De [check](/intake) laat zien of je voeding in deze fase genoeg magnesium levert. Wil je daarna gericht een magnesiumproduct kiezen, vergelijk dan op [beste magnesium](/beste/magnesium) of lees de volledige [supplementgids magnesium](/supplementen/magnesium).",
+        "Magnesium is één puzzelstukje — slaap, stress en beweging bepalen samen een groter deel van hoe je je voelt in deze fase. De [Leefstijlcheck](/intake) brengt dat in kaart. Wil je daarna gericht een magnesiumproduct kiezen, vergelijk dan op [beste magnesium](/beste/magnesium) of lees de volledige [supplementgids magnesium](/supplementen/magnesium).",
     },
   ],
   kernpunten: [
