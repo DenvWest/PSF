@@ -70,7 +70,7 @@ export const vitamineDEnSlaapData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: slaap en zonlicht in één beeld",
       tekst:
-        "In de [Voedingcheck](/intake/voeding) zie je of je voeding al genoeg vitamine D-bronnen levert, zodat je weet of een supplement naast zonlicht zinvol is. Het seizoenspatroon achter je vitamine D-status staat in [vitamine D door het jaar heen](/blog/vitamine-d-seizoenen-jaarritme).",
+        "In de [check](/intake) zie je of je voeding al genoeg vitamine D-bronnen levert, zodat je weet of een supplement naast zonlicht zinvol is. Het seizoenspatroon achter je vitamine D-status staat in [vitamine D door het jaar heen](/blog/vitamine-d-seizoenen-jaarritme).",
     },
   ],
   kernpunten: [

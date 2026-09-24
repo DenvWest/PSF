@@ -37,7 +37,7 @@ export const omega3EnHerstelData: BlogArtikel = {
       items: [
         "Eet 2× per week vette vis of kies een supplement met transparante EPA/DHA-waarden.",
         "Neem vetrijke maaltijd mee voor opname.",
-        "Check de [Voedingcheck](/intake/voeding) om te zien of je voeding al genoeg omega-3 levert.",
+        "Check de [check](/intake) om te zien of je voeding al genoeg omega-3 levert.",
       ],
     },
   ],

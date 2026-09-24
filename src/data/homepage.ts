@@ -1,8 +1,9 @@
 import type { HomepageProofCounts } from "@/lib/homepage-proof";
 import {
-  VOEDINGCHECK_QUESTION_COUNT,
-  VOEDINGCHECK_QUESTIONS_LABEL,
-} from "@/lib/voedingcheck-facts";
+  CHECK_DURATION_LABEL,
+  CHECK_QUESTION_COUNT,
+  CHECK_QUESTIONS_LABEL,
+} from "@/lib/check-facts";
 import { GUIDES } from "@/data/guides";
 
 export const HOMEPAGE_HERO = {
@@ -13,25 +14,25 @@ export const HOMEPAGE_HERO = {
   /** De drie regels die de subkop ontlasten: wat we doen, wat de check oplevert, waar het op rust. */
   bullets: [
     "Eerst je voeding, dan pas een supplement — en alleen als het daar nog iets aan toevoegt",
-    `${VOEDINGCHECK_QUESTIONS_LABEL} laten zien welke voedingsstoffen je waarschijnlijk mist, en per supplement een oordeel: kopen, eerst voeding aanpassen, of niet nodig`,
+    `${CHECK_QUESTIONS_LABEL} laten zien welke voedingsstoffen je waarschijnlijk mist, en per supplement een oordeel: kopen, eerst voeding aanpassen, of niet nodig`,
     "Onderbouwd met peer-reviewed onderzoek en Europees goedgekeurde claims, niet met marketing",
   ],
   primaryCta: "Doe de gratis check",
-  primaryCtaHref: "/check",
-  primaryCtaMicro: "geen account · kies wat bij je past",
+  primaryCtaHref: "/intake",
+  primaryCtaMicro: `${CHECK_DURATION_LABEL} · geen account · direct je uitslag`,
   /**
    * De hero toont het product zelf: drie vragen uit de check. Bewust drie en
    * niet vier — de vierde kaart duwde de knop op mobiel onder de vouw.
    */
   preview: {
-    progressLabel: `Vraag 3 van ${VOEDINGCHECK_QUESTION_COUNT}`,
-    progressPercent: Math.round((3 / VOEDINGCHECK_QUESTION_COUNT) * 100),
+    progressLabel: `Vraag 3 van ${CHECK_QUESTION_COUNT}`,
+    progressPercent: Math.round((3 / CHECK_QUESTION_COUNT) * 100),
     questionIds: ["oilyFish", "proteinMeals", "ultraProcessed"] as const,
   },
   widget: {
     eyebrow: "Gratis",
     title: "Check voor 30-plussers",
-    body: "Voedingcheck of Leefstijlcheck — kies wat bij je vraag past.",
+    body: `${CHECK_QUESTIONS_LABEL} · ${CHECK_DURATION_LABEL} · zie wat je mist.`,
     cta: "Start direct",
   },
 } as const;
@@ -87,5 +88,5 @@ export const HOMEPAGE_GUIDES_PROMO = {
 export const HOMEPAGE_CLOSING = {
   title: "Benieuwd wat voor jou zinvol is?",
   body:
-    `${VOEDINGCHECK_QUESTIONS_LABEL} over wat je eet. Daarna weet je welke voedingsstoffen je waarschijnlijk mist — en of aanvullen in jouw geval het overwegen waard is.`,
+    `${CHECK_QUESTIONS_LABEL} over wat je eet. Daarna weet je welke voedingsstoffen je waarschijnlijk mist — en of aanvullen in jouw geval het overwegen waard is.`,
 } as const;

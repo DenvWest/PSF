@@ -64,7 +64,7 @@ export const creatineWaterVasthoudenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: meet wat je wilt veranderen",
       tekst:
-        "Wil je op gewicht of vetpercentage sturen, dan is creatine niet je knop — voeding, eiwit en trainingsopbouw zijn dat. De [Voedingcheck](/intake/voeding) laat in een paar minuten zien of je voeding en eiwitinname daar al op orde zijn voordat je gaat stapelen. Zoek je daarna een product, dan zet de [supplementengids](/supplementen) alle supplementen langs dezelfde meetlat, met [beste creatine](/beste/creatine) voor deze categorie.",
+        "Wil je op gewicht of vetpercentage sturen, dan is creatine niet je knop — voeding, eiwit en trainingsopbouw zijn dat. De [check](/intake) laat in een paar minuten zien of je voeding en eiwitinname daar al op orde zijn voordat je gaat stapelen. Zoek je daarna een product, dan zet de [supplementengids](/supplementen) alle supplementen langs dezelfde meetlat, met [beste creatine](/beste/creatine) voor deze categorie.",
     },
   ],
   kernpunten: [

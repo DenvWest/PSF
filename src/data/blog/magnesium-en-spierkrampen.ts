@@ -86,7 +86,7 @@ export const magnesiumEnSpierkrampenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eerst het patroon, dan de stof",
       tekst:
-        "Krampen zijn zelden een losstaand probleem, maar een krappe magnesiuminname via voeding is wel iets wat je zelf kunt nagaan. De [Voedingcheck](/intake/voeding) brengt in een paar minuten in kaart of je voedingspatroon genoeg magnesium levert, zodat je niet blind een potje erbij koopt.",
+        "Krampen zijn zelden een losstaand probleem, maar een krappe magnesiuminname via voeding is wel iets wat je zelf kunt nagaan. De [check](/intake) brengt in een paar minuten in kaart of je voedingspatroon genoeg magnesium levert, zodat je niet blind een potje erbij koopt.",
     },
   ],
   kernpunten: [

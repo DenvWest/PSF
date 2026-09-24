@@ -95,7 +95,7 @@ export const magnesiumUitVoedingData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eerst het bord, dan het potje",
       tekst:
-        "De volgorde die wij aanhouden is niet ideologisch maar praktisch: voeding levert meer dan alleen het mineraal, en een supplement is pas logisch als je weet welk gat je dicht. Hoe je voedingspatroon er op dit punt voorstaat, breng je in een paar minuten in kaart met de [Voedingcheck](/intake/voeding). Wil je daarna gericht vergelijken, dan staan alle stoffen die wij beoordelen met hun onderbouwing naast elkaar in de [supplementengids](/supplementen); de bredere voedingsgids is [voeding na 40](/voeding-na-40).",
+        "De volgorde die wij aanhouden is niet ideologisch maar praktisch: voeding levert meer dan alleen het mineraal, en een supplement is pas logisch als je weet welk gat je dicht. Hoe je voedingspatroon er op dit punt voorstaat, breng je in een paar minuten in kaart met de [check](/intake). Wil je daarna gericht vergelijken, dan staan alle stoffen die wij beoordelen met hun onderbouwing naast elkaar in de [supplementengids](/supplementen); de bredere voedingsgids is [voeding na 40](/voeding-na-40).",
     },
   ],
   kernpunten: [

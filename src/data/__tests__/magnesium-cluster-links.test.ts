@@ -18,7 +18,6 @@ const STATISCHE_PADEN = new Set([
   "/energie-na-40",
   "/herstel-verbeteren-na-40",
   "/intake",
-  "/intake/voeding",
   "/overgang",
   "/slaap-verbeteren-na-40",
   "/stress-verminderen-na-40",

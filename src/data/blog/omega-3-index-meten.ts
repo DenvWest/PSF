@@ -59,7 +59,7 @@ export const omega3IndexMetenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eerst de inname, dan pas de meting",
       tekst:
-        "De volgorde die geld en teleurstelling scheelt: reken eerst uit wat je binnenkrijgt via [hoeveel omega-3 per dag](/blog/omega-3-hoeveel-per-dag) en [omega-3 uit voeding](/blog/omega-3-uit-voeding-of-supplement). Blijkt daaruit dat je ruim onder de richtlijn zit, dan weet je genoeg om te handelen. In de [Voedingcheck](/intake/voeding) zie je of je visinname waarschijnlijk genoeg omega-3 levert; producten vergelijk je in de [supplementenafdeling](/supplementen).",
+        "De volgorde die geld en teleurstelling scheelt: reken eerst uit wat je binnenkrijgt via [hoeveel omega-3 per dag](/blog/omega-3-hoeveel-per-dag) en [omega-3 uit voeding](/blog/omega-3-uit-voeding-of-supplement). Blijkt daaruit dat je ruim onder de richtlijn zit, dan weet je genoeg om te handelen. In de [check](/intake) zie je of je visinname waarschijnlijk genoeg omega-3 levert; producten vergelijk je in de [supplementenafdeling](/supplementen).",
     },
   ],
   kernpunten: [

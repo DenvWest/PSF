@@ -13,7 +13,7 @@ import {
   NUTRITION_CORE_SLIDER_IDS,
   NUTRITION_QUESTIONS,
 } from "@/data/nutrition/lifescore-questions";
-import { VOEDINGCHECK_DURATION_LABEL } from "@/lib/voedingcheck-facts";
+import { CHECK_DURATION_LABEL } from "@/lib/check-facts";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
 
@@ -67,8 +67,8 @@ export default function OnderbouwingVoedingPage() {
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-stone-600">
             De voedingscheck op{" "}
-            <Link href="/intake/voeding" className="font-medium text-emerald-800 underline">
-              /intake/voeding
+            <Link href="/intake" className="font-medium text-emerald-800 underline">
+              /intake
             </Link>{" "}
             is een lichtgewicht frequentie-check: geen dagboek, geen grammen-logging.
             Deze pagina legt uit waarom we elke vraag stellen en hoe we gaps inschatten.
@@ -124,13 +124,13 @@ export default function OnderbouwingVoedingPage() {
             Van onderbouwing naar actie
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-emerald-100">
-            De check duurt ongeveer {VOEDINGCHECK_DURATION_LABEL}. Je krijgt direct
+            De check duurt ongeveer {CHECK_DURATION_LABEL}. Je krijgt direct
             inzicht in je frequentie — en concrete stappen vóór je supplementen
             overweegt.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href="/intake/voeding"
+              href="/intake"
               className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100"
             >
               Doe de voedingscheck

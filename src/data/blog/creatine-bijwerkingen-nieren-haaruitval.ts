@@ -84,7 +84,7 @@ export const creatineBijwerkingenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: kies op inhoud, niet op angst",
       tekst:
-        "Als de veiligheidsvraag beantwoord is, blijft de echte vraag over: is creatine voor jou de juiste knop, of ligt je winst bij slaap, eiwit of trainingsopbouw? De [Voedingcheck](/intake/voeding) laat in een paar minuten zien of je eiwitinname al op peil is. Wil je zelf verder kijken: op de [supplementengids](/supplementen) staan alle supplementen langs dezelfde meetlat — PS-Score, kwaliteitsrang en prijs per claim-conforme dag — en creatine specifiek vergelijk je op [beste creatine](/beste/creatine).",
+        "Als de veiligheidsvraag beantwoord is, blijft de echte vraag over: is creatine voor jou de juiste knop, of ligt je winst bij slaap, eiwit of trainingsopbouw? De [check](/intake) laat in een paar minuten zien of je eiwitinname al op peil is. Wil je zelf verder kijken: op de [supplementengids](/supplementen) staan alle supplementen langs dezelfde meetlat — PS-Score, kwaliteitsrang en prijs per claim-conforme dag — en creatine specifiek vergelijk je op [beste creatine](/beste/creatine).",
     },
   ],
   kernpunten: [

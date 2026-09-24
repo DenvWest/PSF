@@ -79,7 +79,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
       type: "tekst",
       titel: "Wat nu?",
       tekst:
-        "Dit protocol is onderdeel van een breder verhaal. Slaapritme is één variabele — maar slaapkwaliteit na 30 wordt ook bepaald door slaaparchitectuur, stressrespons, hormoonbalans en voeding. [Lees de complete gids over slaap na je 30e.](/slaap-verbeteren-na-40)\n\nWil je weten of je voeding al genoeg binnenkrijgt om je slaap te ondersteunen? [Doe de gratis Voedingcheck](/intake/voeding) — 14 vragen, 1 minuut, direct een persoonlijk voedingsoverzicht.",
+        "Dit protocol is onderdeel van een breder verhaal. Slaapritme is één variabele — maar slaapkwaliteit na 30 wordt ook bepaald door slaaparchitectuur, stressrespons, hormoonbalans en voeding. [Lees de complete gids over slaap na je 30e.](/slaap-verbeteren-na-40)\n\nWil je weten of je voeding al genoeg binnenkrijgt om je slaap te ondersteunen? [Doe de gratis check](/intake) — 14 vragen, 1 minuut, direct een persoonlijk voedingsoverzicht.",
       },
     {
       type: "tekst",

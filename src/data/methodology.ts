@@ -1,7 +1,7 @@
 export const METHODOLOGY_METADATA = {
   title: "Onze methodologie",
   description:
-    "Hoe PerfectSupplement werkt: Voedingcheck, persoonlijke voortgang en onafhankelijke supplementvergelijking. Transparant, onderbouwd en voeding eerst.",
+    "Hoe PerfectSupplement werkt: de check 'Wat mis je?', persoonlijke voortgang en onafhankelijke supplementvergelijking. Transparant, onderbouwd en voeding eerst.",
 } as const;
 
 export const METHODOLOGY_HERO = {
@@ -13,7 +13,7 @@ export const METHODOLOGY_HERO = {
 
 export const METHODOLOGY_CHAPTERS = [
   { id: "verhaal", number: "01", label: "Waarom wij anders beginnen" },
-  { id: "leefstijl", number: "02", label: "Voedingcheck & voortgang" },
+  { id: "leefstijl", number: "02", label: "De check & voortgang" },
   { id: "supplementen", number: "03", label: "Onafhankelijke vergelijking" },
 ] as const;
 
@@ -29,7 +29,7 @@ export const METHODOLOGY_JOURNEY = {
     },
     {
       number: "02",
-      title: "Voedingcheck",
+      title: "Wat mis je?",
       body: "Eén minuut, vijf nutriëntbanden. Geen quiz met een supplement als uitkomst — wel een eerlijk beeld van wat je voeding wel en niet dekt.",
     },
     {
@@ -81,11 +81,11 @@ export const METHODOLOGY_VALUES: ReadonlyArray<{
 
 export const METHODOLOGY_LEEFSTIJLCHECK = {
   id: "leefstijlcheck",
-  title: "De Voedingcheck",
+  title: "De check",
   titleAccent: "Vijf nutriëntbanden",
   subtitle:
     "Voeding is waar je op stuurt; de check laat zien wat je mist.",
-  pyramidEyebrow: "Voedingcheck",
+  pyramidEyebrow: "Wat mis je?",
   pyramidCardTitle: "Voeding en supplement",
   pillarsBridge: "In de check meet je vijf nutriëntbanden:",
   interventionDomains: [
@@ -96,8 +96,8 @@ export const METHODOLOGY_LEEFSTIJLCHECK = {
     { label: "Zink", detail: "Vlees, vis en peulvruchten — klein volume, groot verschil bij een krap patroon" },
   ],
   intakeCta: {
-    href: "/intake/voeding",
-    label: "Start de Voedingcheck",
+    href: "/intake",
+    label: "Start de check",
   },
   onderbouwingLink: {
     href: "/onderbouwing/voeding",
@@ -195,9 +195,9 @@ export const METHODOLOGY_AFFILIATE_FOOTNOTE = {
 } as const;
 
 export const METHODOLOGY_CTA = {
-  title: "Start met de Voedingcheck",
+  title: "Start met de check",
   lead: "Krijg in een minuut een helder voedingsoverzicht.",
-  buttonLabel: "Start de Voedingcheck",
-  href: "/intake/voeding",
+  buttonLabel: "Start de check",
+  href: "/intake",
   privacySummary: "Gratis · geen account · AVG-proof",
 } as const;

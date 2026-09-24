@@ -7,11 +7,6 @@ import { getAccountStatus, getLastSession } from "@/lib/intake-storage";
 import { resolvePrimaryMobileCta, type MobileCtaAction } from "@/lib/mobile-cta-state";
 import { useInBodyLeefstijlcheckCtaVisible } from "@/lib/use-in-body-leefstijlcheck-cta-visible";
 
-const CHECK_OPTIONS = [
-  { id: "voeding", icon: "🥗", label: "Voedingcheck" },
-  { id: "leefstijl", icon: "☀️", label: "Leefstijlcheck" },
-] as const;
-
 function LeefstijlcheckPromoCard({
   widget,
   onDismiss,
@@ -25,7 +20,7 @@ function LeefstijlcheckPromoCard({
         type="button"
         onClick={onDismiss}
         className="absolute right-2 top-2 flex h-11 w-11 items-center justify-center rounded-lg text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/50"
-        aria-label="Sluit Voedingcheck-promo"
+        aria-label="Sluit check-promo"
       >
         <span aria-hidden className="text-xl leading-none">
           ×
@@ -39,28 +34,14 @@ function LeefstijlcheckPromoCard({
         {widget.title}
       </h2>
       <p className="mt-1.5 text-xs leading-relaxed text-white/90 sm:mt-2 sm:text-sm">
-        Eerst weten wat je nodig hebt, dan pas een supplement — kies de check die bij je vraag past.
+        Eerst je voeding, dan pas een supplement — de check laat zien wat je mist.
       </p>
 
-      <ul
-        className="mt-4 hidden flex-wrap gap-2 sm:flex"
-        aria-label="Checks om uit te kiezen"
-      >
-        {CHECK_OPTIONS.map((option) => (
-          <li key={option.id} className="list-none">
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white">
-              <span aria-hidden>{option.icon}</span>
-              {option.label}
-            </span>
-          </li>
-        ))}
-      </ul>
-
       <Link
-        href="/check"
+        href="/intake"
         className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-ps-green shadow-sm transition hover:bg-stone-50 sm:mt-6"
       >
-        Kies je check — gratis →
+        Doe de gratis check →
       </Link>
     </div>
   );
@@ -86,7 +67,7 @@ function MobileQuickCta({
         </span>
       </button>
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-        {action.intent === "start" ? "Kies je check" : "Snelle actie"}
+        {action.intent === "start" ? "Voeding of supplement?" : "Snelle actie"}
       </p>
       <Link
         href={action.href}

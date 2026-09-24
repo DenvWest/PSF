@@ -55,7 +55,7 @@ export const slaapkwaliteitTestosteronHerstelData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: slaap als eerste hefboom, niet als laatste",
       tekst:
-        "Wil je zien hoe slaap, stress en energie bij jou samenkomen? De [Voedingcheck](/intake/voeding) laat zien of je voeding daarbij al op orde is. Supplementen die hierbij aansluiten vergelijk je op [de supplementengids](/supplementen).",
+        "Wil je zien hoe slaap, stress en energie bij jou samenkomen? De [check](/intake) laat zien of je voeding daarbij al op orde is. Supplementen die hierbij aansluiten vergelijk je op [de supplementengids](/supplementen).",
     },
   ],
   kernpunten: [

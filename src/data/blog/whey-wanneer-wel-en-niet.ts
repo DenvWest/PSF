@@ -127,7 +127,7 @@ export const wheyWanneerWelEnNietData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: eerst kijken wat je écht mist",
       tekst:
-        "Kom je hier omdat je herstel achterblijft, dan is het zinvoller om eerst te zien of je voeding al genoeg eiwit levert: de [Voedingcheck](/intake/voeding) zet je eetpatroon in een paar minuten op een rij. Wil je eerst producten zien, dan staat in de [supplementengids](/supplementen) elke stof op dezelfde meetlat — inclusief [alle eiwitpoeders](/supplementen?categorie=eiwitpoeder) op PS-Score, EU-claimvoorwaarde en prijs per dag.",
+        "Kom je hier omdat je herstel achterblijft, dan is het zinvoller om eerst te zien of je voeding al genoeg eiwit levert: de [check](/intake) zet je eetpatroon in een paar minuten op een rij. Wil je eerst producten zien, dan staat in de [supplementengids](/supplementen) elke stof op dezelfde meetlat — inclusief [alle eiwitpoeders](/supplementen?categorie=eiwitpoeder) op PS-Score, EU-claimvoorwaarde en prijs per dag.",
     },
   ],
   kernpunten: [

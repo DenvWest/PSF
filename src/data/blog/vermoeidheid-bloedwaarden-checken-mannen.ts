@@ -51,7 +51,7 @@ export const vermoeidheidBloedwaardenCheckenMannenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: leefstijl naast de bloedtest",
       tekst:
-        "Een bloedtest sluit tekorten uit of bevestigt ze — de [Voedingcheck](/intake/voeding) brengt daarnaast in kaart of je eetpatroon al genoeg energie-gerelateerde voedingsstoffen levert. Beide geven samen een vollediger beeld dan één van de twee alleen.",
+        "Een bloedtest sluit tekorten uit of bevestigt ze — de [check](/intake) brengt daarnaast in kaart of je eetpatroon al genoeg energie-gerelateerde voedingsstoffen levert. Beide geven samen een vollediger beeld dan één van de twee alleen.",
     },
   ],
   kernpunten: [

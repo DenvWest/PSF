@@ -53,7 +53,7 @@ export const overgangStressCortisolData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: een compleet beeld in plaats van los symptoom bestrijden",
       tekst:
-        "Stress, slaap en energie beïnvloeden elkaar in deze fase sterk — de [Voedingcheck](/intake/voeding) laat in een paar minuten zien of je voeding al genoeg stress-ondersteunende voedingsstoffen levert. Vergelijken van supplementen kan daarna op [de supplementengids](/supplementen).",
+        "Stress, slaap en energie beïnvloeden elkaar in deze fase sterk — de [check](/intake) laat in een paar minuten zien of je voeding al genoeg stress-ondersteunende voedingsstoffen levert. Vergelijken van supplementen kan daarna op [de supplementengids](/supplementen).",
     },
   ],
   kernpunten: [

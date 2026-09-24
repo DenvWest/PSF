@@ -53,7 +53,7 @@ export const creatineEnBreinData: BlogArtikel = {
       type: "tekst",
       titel: "De volgorde die wél iets oplevert",
       tekst:
-        "Als de bevindingen het sterkst zijn onder slaaptekort, dan is de conclusie oncomfortabel maar logisch: het grootste rendement zit in de slaap zelf, niet in het supplement dat de schade wat verzacht. Een structureel slaaptekort van twee uur per nacht los je niet op met vijf gram poeder — zie [slaapschuld](/kennisbank/slaapschuld) en [slaapritme herstellen](/blog/slaapritme-herstellen).\n\nDat maakt creatine niet zinloos. Het maakt het een tweede laag: eerst de basis, dan een supplement waarvan het spiereffect goed onderbouwd is en het breineffect een bonusspoor in ontwikkeling. Die volgorde — basis eerst, dan pas stapelen — begint bij de vraag of je voeding al genoeg bouwstoffen levert; dat brengt de [Voedingcheck](/intake/voeding) in een paar minuten in kaart.",
+        "Als de bevindingen het sterkst zijn onder slaaptekort, dan is de conclusie oncomfortabel maar logisch: het grootste rendement zit in de slaap zelf, niet in het supplement dat de schade wat verzacht. Een structureel slaaptekort van twee uur per nacht los je niet op met vijf gram poeder — zie [slaapschuld](/kennisbank/slaapschuld) en [slaapritme herstellen](/blog/slaapritme-herstellen).\n\nDat maakt creatine niet zinloos. Het maakt het een tweede laag: eerst de basis, dan een supplement waarvan het spiereffect goed onderbouwd is en het breineffect een bonusspoor in ontwikkeling. Die volgorde — basis eerst, dan pas stapelen — begint bij de vraag of je voeding al genoeg bouwstoffen levert; dat brengt de [check](/intake) in een paar minuten in kaart.",
     },
     {
       type: "opsomming",

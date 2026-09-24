@@ -706,7 +706,7 @@ export default function NutritionCapture() {
               de voedingscheck.
             </p>
             <Link
-              href="/intake"
+              href="/intake/leefstijl"
               className="inline-block rounded-[12px] bg-intake-terra px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-intake-terra/90"
             >
               Start de Leefstijlcheck →

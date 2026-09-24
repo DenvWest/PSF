@@ -51,7 +51,7 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: waar voeding in je bredere leefstijlprofiel past",
       tekst:
-        "Zout en kalium zijn één van de voedingsfactoren die meespelen in je bredere energie- en herstelprofiel. In de [Voedingcheck](/intake/voeding) zie je in een paar minuten of je voeding al genoeg zout en kalium in balans houdt — zonder dat je losse nutriënten hoeft bij te houden.",
+        "Zout en kalium zijn één van de voedingsfactoren die meespelen in je bredere energie- en herstelprofiel. In de [check](/intake) zie je in een paar minuten of je voeding al genoeg zout en kalium in balans houdt — zonder dat je losse nutriënten hoeft bij te houden.",
     },
   ],
   samenvatting:

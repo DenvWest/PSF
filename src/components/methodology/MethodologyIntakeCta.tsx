@@ -7,7 +7,7 @@ import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 
 export default function MethodologyIntakeCta() {
   return (
-    <section className="my-16" aria-label="Voedingcheck">
+    <section className="my-16" aria-label="Check">
       <div className="rounded-[26px] border border-white/[0.07] bg-[#0E1A14] px-8 py-10 text-center text-[#F7F5F0] shadow-[0_30px_60px_-30px_rgba(14,26,20,0.6)] lg:px-12 lg:py-14">
         <h2 className="font-serif text-2xl leading-tight md:text-3xl">
           {METHODOLOGY_CTA.title}

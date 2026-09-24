@@ -71,7 +71,7 @@ export const creatineWanneerInnemenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: van innamemoment naar echte keuze",
       tekst:
-        "Als timing nauwelijks uitmaakt, waar zit je winst dan wel? In de keuze of dit supplement bij je situatie past, en in de prijs die je per dag betaalt. Op de [supplementengids](/supplementen) staan alle supplementen langs dezelfde meetlat met PS-Score en kosten per claim-conforme dag; creatine specifiek vergelijk je op [beste creatine](/beste/creatine). Weet je niet waar je moet beginnen, dan laat de [Voedingcheck](/intake/voeding) in een paar minuten zien of je voeding al genoeg eiwit en energie levert.",
+        "Als timing nauwelijks uitmaakt, waar zit je winst dan wel? In de keuze of dit supplement bij je situatie past, en in de prijs die je per dag betaalt. Op de [supplementengids](/supplementen) staan alle supplementen langs dezelfde meetlat met PS-Score en kosten per claim-conforme dag; creatine specifiek vergelijk je op [beste creatine](/beste/creatine). Weet je niet waar je moet beginnen, dan laat de [check](/intake) in een paar minuten zien of je voeding al genoeg eiwit en energie levert.",
     },
   ],
   kernpunten: [

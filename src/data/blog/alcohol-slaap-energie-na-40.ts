@@ -54,7 +54,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: waar lekt jouw energie weg?",
       tekst:
-        "In de [Voedingcheck](/intake/voeding) zie je of je eet- en drinkpatroon — inclusief alcohol — je energie al ondersteunt of juist ondermijnt. Wil je het energiethema in één gids? Start bij [energie na 30](/energie-na-40).",
+        "In de [check](/intake) zie je of je eet- en drinkpatroon — inclusief alcohol — je energie al ondersteunt of juist ondermijnt. Wil je het energiethema in één gids? Start bij [energie na 30](/energie-na-40).",
     },
   ],
   samenvatting:
