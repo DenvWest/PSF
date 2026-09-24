@@ -167,7 +167,20 @@ export async function saveReminderEmail(email: string) {
 export type IntakeSessionGetResponse = {
   session: IntakeSessionPayload | null;
   hasActiveMarketingEmailConsent: boolean;
+  latestNutritionLogAt: string | null;
 };
+
+export function latestMeasurementAt(
+  sessionTimestamp: number,
+  latestNutritionLogAt: string | null,
+): number {
+  const nutritionTimestamp = latestNutritionLogAt
+    ? Date.parse(latestNutritionLogAt)
+    : Number.NaN;
+  return Number.isFinite(nutritionTimestamp)
+    ? Math.max(sessionTimestamp, nutritionTimestamp)
+    : sessionTimestamp;
+}
 
 type AccountStatusResponse = {
   loggedIn: boolean;
@@ -197,6 +210,7 @@ async function fetchLastSession(): Promise<IntakeSessionGetResponse | null> {
       | {
           session?: IntakeSessionPayload | null;
           hasActiveMarketingEmailConsent?: boolean;
+          latestNutritionLogAt?: string | null;
           error?: string;
         }
       | null;
@@ -209,6 +223,10 @@ async function fetchLastSession(): Promise<IntakeSessionGetResponse | null> {
       session: json?.session ?? null,
       hasActiveMarketingEmailConsent:
         json?.hasActiveMarketingEmailConsent === true,
+      latestNutritionLogAt:
+        typeof json?.latestNutritionLogAt === "string"
+          ? json.latestNutritionLogAt
+          : null,
     };
   } catch {
     return null;

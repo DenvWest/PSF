@@ -3,10 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { INTAKE_RESULTS_HREF } from "@/lib/intake-return-link";
-import {
-  getLastSession,
-  type IntakeSessionPayload,
-} from "@/lib/intake-storage";
+import { getLastSession, latestMeasurementAt } from "@/lib/intake-storage";
 
 type IntakeLastSessionLinkProps = {
   theme?: "light" | "dark";
@@ -25,15 +22,20 @@ export default function IntakeLastSessionLink({
   theme = "light",
   className,
 }: IntakeLastSessionLinkProps) {
-  const [lastSession, setLastSession] = useState<IntakeSessionPayload | null>(
-    null,
-  );
+  const [measuredAt, setMeasuredAt] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     void getLastSession().then((loaded) => {
       if (!cancelled) {
-        setLastSession(loaded?.session ?? null);
+        setMeasuredAt(
+          loaded?.session
+            ? latestMeasurementAt(
+                loaded.session.timestamp,
+                loaded.latestNutritionLogAt,
+              )
+            : null,
+        );
       }
     });
     return () => {
@@ -49,11 +51,11 @@ export default function IntakeLastSessionLink({
   return (
     <div
       className={className ? `min-h-[1.5rem] ${className}` : "min-h-[1.5rem]"}
-      aria-hidden={lastSession ? undefined : true}
+      aria-hidden={measuredAt !== null ? undefined : true}
     >
-      {lastSession ? (
+      {measuredAt !== null ? (
         <Link href={INTAKE_RESULTS_HREF} className={linkClass}>
-          Laatste meting: {formatSessionDate(lastSession.timestamp)} — bekijk
+          Laatste meting: {formatSessionDate(measuredAt)} — bekijk
           resultaten →
         </Link>
       ) : null}
