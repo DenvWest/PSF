@@ -46,7 +46,7 @@ export const buikvetCortisolSlaapMannenData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: het hele systeem, niet één knop",
       tekst:
-        "Buikvet na 30 is zelden een los voedingsprobleem — slaap, stress en beweging spelen allemaal mee. De [Leefstijlcheck](/intake) brengt in kaart waar bij jou de grootste hefboom zit. Vergelijk supplementen die hierbij kunnen ondersteunen op [de supplementengids](/supplementen).",
+        "Buikvet na 30 is zelden een los voedingsprobleem — slaap, stress en beweging spelen allemaal mee. De [check](/intake) laat zien of je eetpatroon daar een hefboom in is — denk aan suiker, alcohol en avondeten. Vergelijk supplementen die hierbij kunnen ondersteunen op [de supplementengids](/supplementen).",
     },
   ],
   kernpunten: [

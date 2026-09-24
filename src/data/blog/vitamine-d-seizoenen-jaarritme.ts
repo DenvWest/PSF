@@ -99,7 +99,7 @@ export const vitamineDSeizoenenJaarritmeData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: wat er nog meer met de seizoenen meebeweegt",
       tekst:
-        "Daglicht stuurt niet alleen vitamine D-aanmaak maar ook je slaap-waakritme, en in de winter verschuiven allebei. In de [Leefstijlcheck](/intake) vragen we naar zonlicht (LIF_SUN) naast slaap, stress en beweging — zodat je ziet welke van die seizoensfactoren bij jou het zwaarst weegt. De bredere gids: [energie na 30](/energie-na-40).",
+        "Daglicht stuurt niet alleen vitamine D-aanmaak maar ook je slaap-waakritme, en in de winter verschuiven allebei. In de [check](/intake) zie je of je voeding in de wintermaanden genoeg vitamine D-bronnen bevat, zodat je weet of een supplement zin heeft. De bredere gids: [energie na 30](/energie-na-40).",
     },
   ],
   kernpunten: [

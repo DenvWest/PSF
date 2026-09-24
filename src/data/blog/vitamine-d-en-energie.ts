@@ -32,7 +32,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
         "Laat 25-OH-vitamine D meten als er aanwijzingen of risico zijn; doseer suppletie op advies, niet op gevoel alleen — zie [vitamine D meten](/blog/vitamine-d-meten-wanneer-zinvol) en [hoge doses](/blog/vitamine-d-hoge-doses-social-media).",
         "Neem vetrijke maaltijd mee voor opname van D3-supplementen; vergelijk microgram/IE per capsule op onze [vergelijkingspagina](/beste/vitamine-d).",
         "Verbeter eerst slaapritme en beweging; dat verandert subjectieve energie vaak sneller dan micronutriënten. Daglicht telt dubbel — zie [hoeveel zon je nodig hebt](/blog/vitamine-d-zon-nederland).",
-        "Gebruik de [Leefstijlcheck](/intake) om domeinen te ordenen i.p.v. willekeurig te stapelen.",
+        "Gebruik de [check](/intake) om te zien of je voeding al genoeg energie-gerelateerde voedingsstoffen levert i.p.v. willekeurig te stapelen.",
       ],
     },
     {

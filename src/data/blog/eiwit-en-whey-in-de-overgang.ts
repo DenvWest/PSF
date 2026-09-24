@@ -90,7 +90,7 @@ export const eiwitEnWheyInDeOvergangData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: zet het naast de rest van je herstel",
       tekst:
-        "Eiwit is één schuif; slaap, stress en beweging zijn de andere — en in de overgang schuiven ze vaak tegelijk. De bredere context staat in de [overgangsgids](/overgang); wat er per domein voor jou speelt, ordent de [Leefstijlcheck](/intake) in één profiel. Wil je producten zien: de [supplementengids](/supplementen) zet alle stoffen op dezelfde meetlat, met [alle eiwitpoeders](/supplementen?categorie=eiwitpoeder) naast elkaar.",
+        "Eiwit is één schuif; slaap, stress en beweging zijn de andere — en in de overgang schuiven ze vaak tegelijk. De bredere context staat in de [overgangsgids](/overgang); of je eiwitinname in de overgang al op peil is, zie je in de [check](/intake). Wil je producten zien: de [supplementengids](/supplementen) zet alle stoffen op dezelfde meetlat, met [alle eiwitpoeders](/supplementen?categorie=eiwitpoeder) naast elkaar.",
     },
   ],
   kernpunten: [
