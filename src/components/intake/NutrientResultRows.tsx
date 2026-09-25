@@ -41,6 +41,9 @@ function historyText(history: NutrientResultHistory): string {
   }
 }
 
+/** Vandaag-tab draagt het dagboek sinds de 17-sep-herindeling. */
+const DAGBOEK_HREF = "/dashboard?tab=vandaag";
+
 function historyColor(history: NutrientResultHistory): string {
   if (history.kind === "change" && history.direction === "improved") {
     return "text-[#9CC5A9]";
@@ -94,6 +97,22 @@ export default function NutrientResultRows({
       nutrient: row.nutrient,
     });
     clarityTag("nutrition_supplement_vergelijk", row.nutrient);
+  }
+
+  function handleJijNuClick(row: NutrientResultRow) {
+    trackEvent("nutrition_supplement_vergelijk_click", {
+      surface: "check_rij_jij_nu",
+      nutrient: row.nutrient,
+    });
+    clarityTag("nutrition_supplement_vergelijk", row.nutrient);
+  }
+
+  function handleRichtlijnClick(row: NutrientResultRow) {
+    trackEvent("nutrition_result_dagboek_click", {
+      surface: "check_rij_richtlijn",
+      nutrient: row.nutrient,
+    });
+    clarityTag("nutrition_result_dagboek", row.nutrient);
   }
 
   return (
@@ -167,18 +186,39 @@ export default function NutrientResultRows({
 
                 <div className="grid gap-4 border-t border-white/10 px-4 pb-4 pt-4 sm:px-5">
                   <dl className="m-0 grid gap-2 text-[13px] sm:grid-cols-2">
-                    <div className="rounded-xl bg-black/25 px-3.5 py-2.5">
-                      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
-                        Jij nu
-                      </dt>
-                      <dd className="m-0 mt-0.5 text-[#F1EFE8]">{row.answerLabel ?? "—"}</dd>
-                    </div>
-                    <div className="rounded-xl bg-black/25 px-3.5 py-2.5">
-                      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
-                        Richtlijn
+                    {row.doorOpen ? (
+                      <Link
+                        href={row.supplementHref}
+                        onClick={() => handleJijNuClick(row)}
+                        className="group/tegel block rounded-xl bg-black/25 px-3.5 py-2.5 no-underline transition-colors hover:bg-[#C8956C]/10"
+                      >
+                        <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82] transition-colors group-hover/tegel:text-[#C8956C]">
+                          <span className="group-hover/tegel:hidden">Jij nu</span>
+                          <span className="hidden group-hover/tegel:inline">
+                            Bekijk {row.label.toLowerCase()}-supplementen →
+                          </span>
+                        </dt>
+                        <dd className="m-0 mt-0.5 text-[#F1EFE8]">{row.answerLabel ?? "—"}</dd>
+                      </Link>
+                    ) : (
+                      <div className="rounded-xl bg-black/25 px-3.5 py-2.5">
+                        <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
+                          Jij nu
+                        </dt>
+                        <dd className="m-0 mt-0.5 text-[#F1EFE8]">{row.answerLabel ?? "—"}</dd>
+                      </div>
+                    )}
+                    <Link
+                      href={DAGBOEK_HREF}
+                      onClick={() => handleRichtlijnClick(row)}
+                      className="group/tegel block rounded-xl bg-black/25 px-3.5 py-2.5 no-underline transition-colors hover:bg-[#9CC5A9]/10"
+                    >
+                      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82] transition-colors group-hover/tegel:text-[#9CC5A9]">
+                        <span className="group-hover/tegel:hidden">Richtlijn</span>
+                        <span className="hidden group-hover/tegel:inline">Naar je dagboek →</span>
                       </dt>
                       <dd className="m-0 mt-0.5 text-[#C6D1C9]">{row.thresholdNl}</dd>
-                    </div>
+                    </Link>
                   </dl>
 
                   <div>
