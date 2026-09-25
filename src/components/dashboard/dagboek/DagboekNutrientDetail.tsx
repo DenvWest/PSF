@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import * as Icons from "@/components/app/icons";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
+import { trackEvent } from "@/lib/ga4";
 import {
   bedragVanItem,
   type DagboekItem,
@@ -115,6 +118,29 @@ export default function DagboekNutrientDetail({
             </p>
           )}
         </div>
+        <Link
+          href={nutrientReferences[nutrient].comparisonPath}
+          onClick={() => {
+            // Zelfde event als de vergelijkbare uitgang op Je patroon
+            // (PatroonScherm), met `surface` erbij zodat een query op
+            // `nutrient` de twee ingangen apart kan houden.
+            trackEvent("nutrition_week_nutrient_clicked", {
+              nutrient,
+              gedekt: gedekt === true,
+              destination: nutrientReferences[nutrient].comparisonPath,
+              surface: "dagboek",
+            });
+            emitAccountClientEvent("nutrition.week_nutrient_clicked", {
+              nutrient,
+              covered: gedekt === true,
+              surface: "dagboek",
+            });
+          }}
+          className="flex items-center justify-between gap-2.5 border-t border-white/10 bg-[rgb(var(--vd-sage-rgb)/6%)] px-4 py-3 text-[12.5px] font-semibold text-[var(--vd-sage-2)] transition-colors hover:bg-[rgb(var(--vd-sage-rgb)/12%)]"
+        >
+          <span>Dit uit een supplement halen? Zo kiezen we →</span>
+          <Icons.ChevronLeft s={14} style={{ transform: "rotate(180deg)" }} />
+        </Link>
       </section>
 
       <div className="flex flex-wrap items-center justify-between gap-2.5">
