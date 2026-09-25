@@ -35,11 +35,11 @@ export default function HubSluitCta({
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-stone-600 md:text-base">
           {naarVoeding
-            ? "Je Leefstijlcheck staat genoteerd. Met de voedingscheck weten we wat er op je bord tekortschiet — pas dan markeren we producten (±3 min)."
-            : "De meeste klachten beginnen niet bij een tekort. De gratis Leefstijlcheck laat zien wat er speelt en of een supplement daarbij zinvol is (±3 min)."}
+            ? "Je Leefstijlcheck staat genoteerd. Met de check 'Wat mis je?' weten we wat er op je bord tekortschiet — pas dan markeren we producten (±3 min)."
+            : "Eerst je bord, dan pas een potje. De gratis check laat zien welke voedingsstoffen je waarschijnlijk mist — en of een supplement dan nog iets toevoegt (±3 min)."}
         </p>
         <Link
-          href={naarVoeding ? "/intake/voeding?from=supplementen" : "/intake"}
+          href={naarVoeding ? "/intake?from=supplementen" : "/intake"}
           onClick={() =>
             trackEvent(GA4_EVENTS.INTAKE_CTA_CLICKED, {
               locatie: naarVoeding
@@ -49,7 +49,7 @@ export default function HubSluitCta({
           }
           className={KNOP}
         >
-          {naarVoeding ? "Doe de voedingscheck →" : "Doe de Leefstijlcheck →"}
+          Doe de check →
         </Link>
         {naarVoeding ? (
           <p className="mt-2 text-xs text-stone-500">

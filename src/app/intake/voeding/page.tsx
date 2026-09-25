@@ -11,8 +11,8 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
-  ...canonicalMetadata("/intake/voeding"),
-  ...basicOpenGraph({ path: "/intake/voeding", title: TITLE, description: DESCRIPTION }),
+  ...canonicalMetadata("/intake"),
+  ...basicOpenGraph({ path: "/intake", title: TITLE, description: DESCRIPTION }),
 };
 
 function NutritionCaptureFallback() {
