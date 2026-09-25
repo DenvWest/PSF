@@ -6,20 +6,15 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Status
 
-- **Baseline toegepast t/m:** `20260923150000_account_voedingsdoelen.sql`
-- **Openstaand:** 1
+- **Baseline toegepast t/m:** `20260925120000_intake_sessions_session_kind_nutrition.sql`
+- **Openstaand:** geen
 - **Laatst bijgewerkt:** 25 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
 
-### [ ] 20260925120000_intake_sessions_session_kind_nutrition.sql
-- **Wat:** verruimt de check-constraint op `intake_sessions.session_kind` met `'nutrition'` (de check op `/intake` krijgt een eigen sessie-ingang); zoekt de oude constraint op zijn definitie, niet op naam.
-- **Blokkeert deploy:** nee — nog geen code schrijft `'nutrition'`. S2 komt achter de vlag `CHECK_SESSION_CREATE_ENABLED` (standaard uit); die vlag pas aanzetten ná deze migratie.
-- **Hoort bij:** S1 van `docs/plan/BESLUITDOCUMENT_SESSIE_ARCHITECTUUR_2026-09.md` (branch `claude/sessie-architectuur-besluitdoc`)
-- **Terugdraaien:** alleen zolang er geen rij met `session_kind = 'nutrition'` bestaat: `alter table public.intake_sessions drop constraint intake_sessions_session_kind_check; alter table public.intake_sessions add constraint intake_sessions_session_kind_check check (session_kind in ('initial', 'remeasure'));`
-- **Controle na draaien:** `select pg_get_constraintdef(oid) from pg_constraint where conname = 'intake_sessions_session_kind_check';` → moet `'nutrition'` bevatten.
+Niets — alle migraties t/m de baseline zijn gedraaid.
 
 ## Runbook bij thuiskomst
 
@@ -52,6 +47,7 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 25 september 2026 | `20260925120000_intake_sessions_session_kind_nutrition.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npx supabase db query --linked`: `intake_sessions_session_kind_check` = `session_kind IN ('initial','remeasure','nutrition')`, geen tweede constraint. |
 | 23 september 2026 | `20260919120000_account_dagboek_favorieten.sql` | Bevestigd via `npm run check:db-schema`: tabel aanwezig met 6 kolommen. |
 | 23 september 2026 | `20260923100000_account_nutrient_zichtbaarheid.sql` | Bevestigd via `npm run check:db-schema`: tabel aanwezig met 6 kolommen. |
 | 23 september 2026 | `20260923150000_account_voedingsdoelen.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: tabel aanwezig met 7 kolommen. PR #24 daarna gemerged. |
