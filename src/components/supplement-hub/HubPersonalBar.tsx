@@ -34,7 +34,7 @@ const CTA_KNOP =
 /**
  * Het persoonlijke blok bovenaan de zijbalk. In de eindstaat is dit een eigen
  * knop die de catalogus terugbrengt tot wat bij deze bezoeker past; daarvoor is
- * het de poort ernaartoe (check, dan voedingscheck).
+ * het de poort ernaartoe: de check op /intake.
  */
 export default function HubPersonalBar({
   personalization,
@@ -51,7 +51,7 @@ export default function HubPersonalBar({
         className={`${GROEN_KADER} ${className}`}
         aria-label="Persoonlijke selectie"
       >
-        <p className={EYEBROW}>Gratis Leefstijlcheck · 3 min</p>
+        <p className={EYEBROW}>Wat mis je? · gratis · 3 min</p>
         <p className="mt-1 font-display text-base font-semibold leading-snug text-stone-900">
           Welke van deze {productCount} passen bij jou?
         </p>
@@ -68,7 +68,7 @@ export default function HubPersonalBar({
           }
           className={CTA_KNOP}
         >
-          Doe de Leefstijlcheck →
+          Doe de check →
         </Link>
         <IntakeCtaMicro className="mt-2 hidden text-xs text-stone-500 lg:block" />
       </aside>
@@ -83,7 +83,7 @@ export default function HubPersonalBar({
       >
         <p className={EYEBROW}>Wat mis je? · 3 min</p>
         <p className="mt-1 font-display text-base font-semibold leading-snug text-stone-900">
-          Nog één stap: de voedingscheck
+          Nog één stap: kijk wat je bord mist
         </p>
         <p className="mt-1.5 hidden text-sm leading-relaxed text-stone-600 lg:block">
           Je Leefstijlcheck staat genoteerd. We markeren pas producten als we
@@ -91,7 +91,7 @@ export default function HubPersonalBar({
           vergelijken (±3 min).
         </p>
         <Link
-          href="/intake/voeding?from=supplementen"
+          href="/intake?from=supplementen"
           onClick={() =>
             trackEvent("hub_voedingscheck_cta_click", {
               surface: "supplementen_catalogus",
@@ -99,7 +99,7 @@ export default function HubPersonalBar({
           }
           className={CTA_KNOP}
         >
-          Doe de voedingscheck →
+          Doe de check →
         </Link>
         <p className="mt-2 hidden text-xs text-stone-500 lg:block">
           Geen diagnose · geen account verplicht

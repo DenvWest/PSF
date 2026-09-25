@@ -91,7 +91,7 @@ export const SITEMAP_EXCLUDED: ReadonlyArray<{
   {
     pad: "/intake/voeding",
     reden:
-      "Check-instrument, geen landingspagina. Wordt vanaf fase 4 vanuit content aangeboden.",
+      "Zelfde check als /intake (canonical wijst daarheen). De route blijft voor dashboard-links en verstuurde nurture-mails, maar /intake is de enige ingang (CORRECTIE_VOEDINGCHECK_NAAMGEVING_2026-09).",
   },
   {
     pad: "/intake/slaap",
