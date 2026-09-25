@@ -1,5 +1,6 @@
 import { getAccountFromCookie } from "@/lib/account-server";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import { BROAD_CHECK_SESSION_KINDS } from "@/types/intake-session-insert";
 
 /**
  * Voor ingelogde accounts: nieuwste gekoppelde intake-sessie (zelfde als dashboard).
@@ -22,6 +23,7 @@ export async function resolveActiveIntakeSessionId(
     .from("intake_sessions")
     .select("id")
     .eq("account_id", account.id)
+    .in("session_kind", [...BROAD_CHECK_SESSION_KINDS])
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();

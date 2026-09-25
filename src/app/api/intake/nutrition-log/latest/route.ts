@@ -14,6 +14,7 @@ import {
   type NutritionPreference,
 } from "@/lib/nutrition-log-response";
 import { nutritionReportFromAnswers } from "@/lib/nutrition-score";
+import { isCheckSessionCreateEnabled } from "@/lib/intake-session-create";
 
 const PREFERENCE_VALUES = new Set(["none", "pescatarian", "vegetarian", "vegan"]);
 
@@ -71,8 +72,14 @@ export async function GET(request: NextRequest) {
   const sessionId = verifySignedIntakeSessionCookie(rawCookie);
 
   if (!sessionId) {
+    // `canCreateSession` vertelt de check of hij zelf een sessie mag aanmaken bij
+    // het opslaan. Hier en niet als pagina-prop: /intake wordt statisch gebouwd,
+    // en dan zou de vlag pas na een nieuwe build omgaan.
     return NextResponse.json(
-      { error: "Doe eerst de Leefstijlcheck via /intake." },
+      {
+        error: "Doe eerst de Leefstijlcheck via /intake.",
+        canCreateSession: isCheckSessionCreateEnabled(),
+      },
       { status: 401 },
     );
   }

@@ -3,12 +3,24 @@ import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
-import { getClientIp } from "@/lib/turnstile-verify";
+import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
 import { sha256Hex } from "@/lib/consent-hashing";
 import {
   INTAKE_SESSION_COOKIE_NAME,
+  intakeSessionCookieOptions,
+  signIntakeSessionId,
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
+import {
+  createNutritionCheckSession,
+  isCheckSessionCreateEnabled,
+  normalizeReferralSource,
+} from "@/lib/intake-session-create";
+import { rollbackIntakeSession } from "@/lib/intake-session-rollback";
+import { getAccountFromCookie } from "@/lib/account-server";
+import { accountStorageConsentRow } from "@/lib/account-storage-consent";
+import { attributeIntakeLead } from "@/lib/affiliate/conversions";
+import { AFFILIATE_REF_COOKIE } from "@/lib/referral-attribution";
 import {
   estimateNutritionIntake,
   ESTIMATE_VERSION,
@@ -84,11 +96,20 @@ function parseAnswers(raw: unknown): ParsedAnswers | null {
   return { sliders, allergies, preference };
 }
 
+const TURNSTILE_ACTION = "nutrition_check_save";
+
 function logSecurityEvent(
   event: string,
   details: Record<string, unknown> = {},
 ) {
   console.warn("[api/intake/nutrition-log][security]", { event, ...details });
+}
+
+function normalizeSingleLine(value: unknown): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+  return value.replace(/\s+/g, " ").trim();
 }
 
 export async function POST(request: NextRequest) {
@@ -141,14 +162,58 @@ export async function POST(request: NextRequest) {
   const report = nutritionReportFromAnswers(answers.sliders);
   const score = computeNutritionScore(answers.sliders);
 
-  const rawCookie = request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value;
-  const sessionId = verifySignedIntakeSessionCookie(rawCookie);
+  const cookieSessionId = verifySignedIntakeSessionCookie(
+    request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value,
+  );
+  const turnstileToken = normalizeSingleLine(bodyRecord.turnstileToken);
 
-  if (!sessionId) {
+  // Zonder token blijft het antwoord een 401: zo toont een oude, gecachte client
+  // nog steeds zijn doorverwijzing in plaats van een onbekende fout.
+  if (!cookieSessionId && (!isCheckSessionCreateEnabled() || !turnstileToken)) {
     return NextResponse.json(
       { error: "Doe eerst de Leefstijlcheck via /intake." },
       { status: 401 },
     );
+  }
+
+  if (!cookieSessionId) {
+    if (normalizeSingleLine(bodyRecord.website)) {
+      logSecurityEvent("honeypot_hit", { remoteIp: clientIp });
+      return NextResponse.json({ error: "Ongeldig verzoek" }, { status: 400 });
+    }
+
+    const turnstileCheck = await verifyTurnstileToken({
+      token: turnstileToken,
+      remoteIp: clientIp,
+      expectedAction: TURNSTILE_ACTION,
+      logContext: "api/intake/nutrition-log",
+    });
+
+    if (!turnstileCheck.ok) {
+      if (turnstileCheck.reason === "config") {
+        return NextResponse.json(
+          { error: "Human verification is nog niet geconfigureerd op de server." },
+          { status: 503 },
+        );
+      }
+      if (turnstileCheck.reason === "unavailable") {
+        return NextResponse.json(
+          { error: "Verificatie kon niet worden voltooid. Probeer het opnieuw." },
+          { status: 502 },
+        );
+      }
+      return NextResponse.json(
+        { error: "De human verification is mislukt. Probeer het opnieuw." },
+        { status: 403 },
+      );
+    }
+
+    if (!process.env.COOKIE_SECRET?.trim()) {
+      return NextResponse.json(
+        { error: "Sessie is nog niet geconfigureerd op de server." },
+        { status: 503 },
+      );
+    }
   }
 
   const admin = createSupabaseAdmin();
@@ -164,6 +229,41 @@ export async function POST(request: NextRequest) {
   const uaHash = sha256Hex(ua);
   const organizationId = getDefaultOrganizationId();
 
+  let sessionId: string;
+  let newSessionCookie: string | null = null;
+  let newSessionAccountId: string | null = null;
+
+  if (cookieSessionId) {
+    sessionId = cookieSessionId;
+  } else {
+    const account = await getAccountFromCookie();
+    const created = await createNutritionCheckSession(admin, {
+      organizationId,
+      accountId: account?.id ?? null,
+      referralSource: normalizeReferralSource(
+        request.cookies.get("psf_referral_source")?.value,
+      ),
+    });
+    if (!created.ok) {
+      return NextResponse.json(
+        { error: "Kon je check niet opslaan. Probeer het opnieuw." },
+        { status: 500 },
+      );
+    }
+    sessionId = created.sessionId;
+    newSessionCookie = signIntakeSessionId(sessionId);
+    newSessionAccountId = account?.id ?? null;
+    if (!newSessionCookie) {
+      await rollbackIntakeSession(admin, sessionId);
+      return NextResponse.json(
+        { error: "Kon sessie niet vastleggen." },
+        { status: 500 },
+      );
+    }
+  }
+
+  const isNewSession = newSessionCookie !== null;
+
   const consentRow = nutritionLogConsentRow({
     sessionId,
     organizationId,
@@ -177,28 +277,54 @@ export async function POST(request: NextRequest) {
 
   if (consentError) {
     console.error("[api/intake/nutrition-log] consent insert error:", consentError);
+    if (isNewSession) {
+      await rollbackIntakeSession(admin, sessionId);
+    }
     return NextResponse.json(
       { error: "Kon toestemming niet vastleggen. Probeer het opnieuw." },
       { status: 500 },
     );
   }
 
+  // Ingelogd zonder cookie: de nieuwe sessie hangt meteen aan het account, met
+  // dezelfde bewaar-toestemming die request-link bij een koppeling vastlegt.
+  if (newSessionAccountId) {
+    const { error: storageConsentError } = await admin
+      .from("consent_records")
+      .insert(
+        accountStorageConsentRow({ sessionId, organizationId, ipHash, uaHash }),
+      );
+    if (storageConsentError) {
+      console.error(
+        "[api/intake/nutrition-log] account storage consent insert error:",
+        storageConsentError,
+      );
+      await rollbackIntakeSession(admin, sessionId);
+      return NextResponse.json(
+        { error: "Kon toestemming niet vastleggen. Probeer het opnieuw." },
+        { status: 500 },
+      );
+    }
+  }
+
   // Haal de vorige log op (voor delta-berekening) — vóór de nieuwe insert.
   let previousEstimate: IntakeEstimate[] | null = null;
   let previousLoggedAt: string | null = null;
-  const { data: prevRows } = await admin
-    .from("intake_intake_log")
-    .select("estimate, logged_at")
-    .eq("session_id", sessionId)
-    .order("logged_at", { ascending: false })
-    .limit(1);
+  if (!isNewSession) {
+    const { data: prevRows } = await admin
+      .from("intake_intake_log")
+      .select("estimate, logged_at")
+      .eq("session_id", sessionId)
+      .order("logged_at", { ascending: false })
+      .limit(1);
 
-  if (prevRows && prevRows.length > 0) {
-    const raw = prevRows[0].estimate;
-    if (Array.isArray(raw) && raw.length > 0) {
-      previousEstimate = raw as IntakeEstimate[];
-      previousLoggedAt =
-        typeof prevRows[0].logged_at === "string" ? prevRows[0].logged_at : null;
+    if (prevRows && prevRows.length > 0) {
+      const raw = prevRows[0].estimate;
+      if (Array.isArray(raw) && raw.length > 0) {
+        previousEstimate = raw as IntakeEstimate[];
+        previousLoggedAt =
+          typeof prevRows[0].logged_at === "string" ? prevRows[0].logged_at : null;
+      }
     }
   }
 
@@ -230,10 +356,21 @@ export async function POST(request: NextRequest) {
 
   if (logError) {
     console.error("[api/intake/nutrition-log] log insert error:", logError);
+    if (isNewSession) {
+      await rollbackIntakeSession(admin, sessionId);
+    }
     return NextResponse.json(
       { error: "Kon rapportage niet opslaan." },
       { status: 500 },
     );
+  }
+
+  if (isNewSession) {
+    await attributeIntakeLead(admin, {
+      sessionId,
+      affRef: request.cookies.get(AFFILIATE_REF_COOKIE)?.value ?? null,
+      occurredAt: new Date().toISOString(),
+    });
   }
 
   // Emit anonieme signalen — breken de respons nooit.
@@ -246,6 +383,8 @@ export async function POST(request: NextRequest) {
         nutrition_score: score,
         band: responsePayload.band.id,
         estimate_version: ESTIMATE_VERSION,
+        session_created: isNewSession,
+        ...(isNewSession ? { session_kind: "nutrition" } : {}),
       },
       deliveredTo: ["posthog", "n8n_webhook"],
     });
@@ -265,8 +404,12 @@ export async function POST(request: NextRequest) {
     console.error("[api/intake/nutrition-log] emit error:", emitErr);
   }
 
-  return NextResponse.json(
+  const res = NextResponse.json(
     { ...responsePayload, loggedAt: new Date().toISOString(), previousLoggedAt },
     { status: 200 },
   );
+  if (newSessionCookie) {
+    res.cookies.set(INTAKE_SESSION_COOKIE_NAME, newSessionCookie, intakeSessionCookieOptions());
+  }
+  return res;
 }

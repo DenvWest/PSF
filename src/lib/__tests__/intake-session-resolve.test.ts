@@ -24,16 +24,22 @@ describe("resolveActiveIntakeSessionId", () => {
   });
 
   it("prefers latest account session over cookie when logged in", async () => {
+    const mockIn = vi.fn();
     mockGetAccount.mockResolvedValue({ id: "account-1" });
     mockAdmin.mockReturnValue({
       from: () => ({
         select: () => ({
           eq: () => ({
-            order: () => ({
-              limit: () => ({
-                maybeSingle: async () => ({ data: { id: "account-session-latest" } }),
-              }),
-            }),
+            in: (column: string, values: string[]) => {
+              mockIn(column, values);
+              return {
+                order: () => ({
+                  limit: () => ({
+                    maybeSingle: async () => ({ data: { id: "account-session-latest" } }),
+                  }),
+                }),
+              };
+            },
           }),
         }),
       }),
@@ -42,5 +48,6 @@ describe("resolveActiveIntakeSessionId", () => {
     await expect(resolveActiveIntakeSessionId("stale-cookie-session")).resolves.toBe(
       "account-session-latest",
     );
+    expect(mockIn).toHaveBeenCalledWith("session_kind", ["initial", "remeasure"]);
   });
 });

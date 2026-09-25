@@ -7,6 +7,7 @@ import {
 } from "@/lib/intake-remeasure-cookie";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import { BROAD_CHECK_SESSION_KINDS } from "@/types/intake-session-insert";
 
 function redirectToDashboard(query?: string): NextResponse {
   const path = query ? `/dashboard?${query}` : "/dashboard";
@@ -50,6 +51,7 @@ export async function GET() {
     .from("intake_sessions")
     .select("id")
     .eq("account_id", account.id)
+    .in("session_kind", [...BROAD_CHECK_SESSION_KINDS])
     .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle<{ id: string }>();

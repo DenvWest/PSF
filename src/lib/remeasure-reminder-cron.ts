@@ -7,6 +7,7 @@ import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import { BROAD_CHECK_SESSION_KINDS } from "@/types/intake-session-insert";
 
 let resendClient: Resend | null = null;
 
@@ -149,6 +150,7 @@ export async function runPendingRemeasureReminders(): Promise<{
     .from("intake_sessions")
     .select("id, account_id, created_at, profile_label")
     .in("account_id", accountIds)
+    .in("session_kind", [...BROAD_CHECK_SESSION_KINDS])
     .order("created_at", { ascending: true });
 
   if (sessionsError) {

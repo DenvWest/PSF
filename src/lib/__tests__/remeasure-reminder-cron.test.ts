@@ -19,13 +19,23 @@ vi.mock("@/lib/supabase-admin", () => ({
         };
       }
       if (table === "intake_sessions") {
-        return {
-          select: () => ({
-            in: () => ({
-              order: async () => ({ data: mockSessionRows(), error: null }),
-            }),
-          }),
+        // Past het session_kind-filter echt toe, zodat de test het gedrag van
+        // de query meet en niet alleen wat de mock teruggeeft.
+        const filters: Record<string, string[]> = {};
+        const chain = {
+          in: (column: string, values: string[]) => {
+            filters[column] = values;
+            return chain;
+          },
+          order: async () => {
+            const kinds = filters.session_kind;
+            const rows = (mockSessionRows() as { session_kind: string }[]).filter(
+              (row) => !kinds || kinds.includes(row.session_kind),
+            );
+            return { data: rows, error: null };
+          },
         };
+        return { select: () => chain };
       }
       if (table === "remeasure_reminders") {
         return { select: () => ({ in: async () => ({ data: [], error: null }) }) };
@@ -50,6 +60,7 @@ const BREDE_CHECK = {
   account_id: "account-1",
   created_at: LANG_GELEDEN,
   profile_label: "Lage Batterij",
+  session_kind: "initial",
 };
 
 const VOEDINGSSESSIE = {
@@ -57,6 +68,7 @@ const VOEDINGSSESSIE = {
   account_id: "account-1",
   created_at: "2026-02-01T10:00:00.000Z",
   profile_label: null,
+  session_kind: "nutrition",
 };
 
 describe("runPendingRemeasureReminders — kandidaatselectie", () => {
@@ -83,8 +95,20 @@ describe("runPendingRemeasureReminders — kandidaatselectie", () => {
     });
   });
 
-  it("slaat een account over zodra er naast de brede check een tweede sessie is (huidig gedrag = R3; S2 filtert op session_kind)", async () => {
+  it("houdt een account met één brede check als kandidaat, ook als er een voedingssessie naast staat (R3)", async () => {
     mockSessionRows.mockReturnValue([BREDE_CHECK, VOEDINGSSESSIE]);
+    await expect(runPendingRemeasureReminders()).resolves.toEqual({
+      scanned: 1,
+      sent: 0,
+      skipped: 1,
+    });
+  });
+
+  it("slaat een account met twee brede checks nog steeds over (die heeft al een hermeting)", async () => {
+    mockSessionRows.mockReturnValue([
+      BREDE_CHECK,
+      { ...BREDE_CHECK, id: "770e8400-e29b-41d4-a716-446655440000", session_kind: "remeasure" },
+    ]);
     await expect(runPendingRemeasureReminders()).resolves.toEqual({
       scanned: 0,
       sent: 0,
