@@ -278,6 +278,30 @@ export default function NutritionResultView({
             </div>
           </section>
 
+          <details className={`group ${PANEL}`}>
+            <summary className={DETAILS_SUMMARY}>Hoe werkt PerfectSupplement?</summary>
+            <div className="grid gap-3 border-t border-white/10 px-5 pb-4 pt-3 text-[13px] leading-relaxed text-[#C6D1C9]">
+              <p className="m-0 text-pretty">
+                Je check meet hoe vaak je iets eet, per stof vergeleken met een
+                richtlijn. Hieronder staat elke stof als eigen rij: wat je nu
+                doet, wat de richtlijn is, en wat er te doen valt.
+              </p>
+              <p className="m-0 text-pretty">
+                Elke rij geeft twee opties. <strong className="text-[#F1EFE8]">Bekijk jouw voeding</strong>{" "}
+                brengt je naar je dagboek — voeding staat bij ons voorop, en
+                voor de meeste gaten is dat de eerste stap. Lukt dat niet, of
+                heb je liever een aanvulling?{" "}
+                <strong className="text-[#F1EFE8]">Liever een supplement</strong> staat
+                er altijd naast en brengt je naar de vergelijking voor die stof.
+              </p>
+              <p className="m-0 text-pretty">
+                We wegen supplementen alleen op wetenschappelijk onderbouwde
+                claims (EFSA) — dat bepaalt welke tekst we over een product
+                mogen tonen, niet of je een supplement mag overwegen.
+              </p>
+            </div>
+          </details>
+
           <NutrientResultRows
             rows={rows}
             gateNote={nutritionGateOpen ? null : nutritionGateReason}
