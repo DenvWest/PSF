@@ -40,12 +40,21 @@ function leesAntwoorden(waarde: unknown): Record<string, number> {
   return uit;
 }
 
+/** Hoeveel recente sessies we doorzoeken naar een ingevuld veld. */
+const SESSIES_TERUG = 10;
+
 /**
  * De laatste check van dit account, voor zover die de doelen raakt.
  *
  * Eigen query in plaats van `loadAccountDashboardData`: dat laadt het hele
  * dashboard (logs, routes, trends) voor drie velden, en het geeft het gewicht
  * bewust niet terug.
+ *
+ * Per veld de nieuwste sessie die het draagt, niet simpelweg de nieuwste
+ * sessie: een check op `/intake` maakt een sessie zonder gewicht,
+ * leeftijdsband of brede-check-antwoorden. Zou alleen de nieuwste tellen, dan
+ * viel het eiwitdoel terug zodra iemand die check doet
+ * (BESLUITDOCUMENT_SESSIE_ARCHITECTUUR_2026-09.md §18, F1).
  */
 async function leesCheck(accountId: string): Promise<{
   gewichtKg: number | null;
@@ -62,18 +71,25 @@ async function leesCheck(accountId: string): Promise<{
     .select("weight_kg,age_range,answers")
     .eq("account_id", accountId)
     .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(SESSIES_TERUG);
 
   if (error || !data) {
     return { gewichtKg: null, trainingLoad: undefined, ageRange: null };
   }
 
-  const rij = data as unknown as CheckRij;
+  const rijen = data as unknown as CheckRij[];
+  const metGewicht = rijen.find((rij) => typeof rij.weight_kg === "number");
+  const metLeeftijd = rijen.find((rij) => typeof rij.age_range === "string");
+  const metAntwoorden = rijen.find(
+    (rij) => Object.keys(leesAntwoorden(rij.answers)).length > 0,
+  );
+
   return {
-    gewichtKg: typeof rij.weight_kg === "number" ? rij.weight_kg : null,
-    trainingLoad: deriveTrainingLoadFromAnswers(leesAntwoorden(rij.answers)),
-    ageRange: typeof rij.age_range === "string" ? rij.age_range : null,
+    gewichtKg: metGewicht?.weight_kg ?? null,
+    trainingLoad: metAntwoorden
+      ? deriveTrainingLoadFromAnswers(leesAntwoorden(metAntwoorden.answers))
+      : undefined,
+    ageRange: metLeeftijd?.age_range ?? null,
   };
 }
 

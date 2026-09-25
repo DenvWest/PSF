@@ -88,6 +88,7 @@ describe("GET /api/intake/nutrition-log/latest", () => {
   });
 
   afterEach(() => {
+    vi.unstubAllEnvs();
     vi.resetModules();
   });
 
@@ -104,12 +105,27 @@ describe("GET /api/intake/nutrition-log/latest", () => {
 
   it("geen/ongeldige sessiecookie → 401", async () => {
     mockVerifyCookie.mockReturnValue(null);
+    vi.stubEnv("CHECK_SESSION_CREATE_ENABLED", "");
 
     const { GET } = await import("@/app/api/intake/nutrition-log/latest/route");
     const res = await GET(makeGet());
 
     expect(res.status).toBe(401);
     expect(mockLimit).not.toHaveBeenCalled();
+    const data = (await res.json()) as { canCreateSession: boolean };
+    expect(data.canCreateSession).toBe(false);
+  });
+
+  it("zonder cookie meldt de 401 of de check zelf een sessie mag aanmaken (vlag aan)", async () => {
+    mockVerifyCookie.mockReturnValue(null);
+    vi.stubEnv("CHECK_SESSION_CREATE_ENABLED", "true");
+
+    const { GET } = await import("@/app/api/intake/nutrition-log/latest/route");
+    const res = await GET(makeGet());
+
+    expect(res.status).toBe(401);
+    const data = (await res.json()) as { canCreateSession: boolean };
+    expect(data.canCreateSession).toBe(true);
   });
 
   it("geen logs → 404", async () => {

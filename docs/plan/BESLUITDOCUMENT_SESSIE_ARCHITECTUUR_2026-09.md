@@ -460,3 +460,31 @@ Geen. Het 2+2-dagboek staat al op `account_id` + `entry_date`, los van elke sess
 ### 18.3 S1 staat klaar
 
 `supabase/migrations/20260925120000_intake_sessions_session_kind_nutrition.sql`, geregistreerd in `OPENSTAAND.md`, met een controlequery erbij. **Blokkeert deploy: nee**, want nog geen code schrijft `'nutrition'`. De migratie zoekt de oude constraint op zijn definitie, dus de naam vooraf opvragen is niet nodig (R5). Dennis draait hem in de SQL Editor; daarna mag de vlag van S2 aan.
+
+---
+
+## 19. S1 en S2 — uitgevoerd (25 sep)
+
+**S1** is door Dennis gedraaid en bevestigd op productie: `intake_sessions_session_kind_check` = `session_kind IN ('initial','remeasure','nutrition')`, zonder tweede constraint (`OPENSTAAND.md`, "Toegepast na baseline").
+
+**S2** is gebouwd achter de vlag `CHECK_SESSION_CREATE_ENABLED` (standaard uit):
+
+| Onderdeel | Waar |
+|---|---|
+| Type: `BroadCheckSessionInsert \| NutritionCheckSessionInsert`, plus `BROAD_CHECK_SESSION_KINDS` | `src/types/intake-session-insert.ts` |
+| Vlag, `normalizeReferralSource`, `createNutritionCheckSession` | `src/lib/intake-session-create.ts` (nieuw) |
+| Gedeelde cookie-opties | `intakeSessionCookieOptions()` in `src/lib/intake-session-cookie.ts`; `session/route.ts` gebruikt ze nu ook |
+| Het nieuwe pad: geen cookie + token → honeypot → Turnstile (`nutrition_check_save`) → sessie (ingelogd: met `account_id` + `account_storage`-toestemming) → toestemming → log → affiliate-lead → cookie. Faalt een stap na het aanmaken, dan wordt de sessie teruggedraaid. Zonder token blijft het antwoord een 401. | `src/app/api/intake/nutrition-log/route.ts` |
+| De vlag bereikt de client via de 401 van `/latest` (`canCreateSession`), niet via een pagina-prop. `/intake` wordt statisch gebouwd; een prop zou de vlag bij de build vastzetten. | `src/app/api/intake/nutrition-log/latest/route.ts` |
+| Turnstile en honeypot op de toestemmingsstap zodra er geen sessie is. Een mislukte verificatie laat de antwoorden staan (de melding staat inline). | `src/components/intake/NutritionCapture.tsx` |
+| F1 eiwitdoel: per veld de nieuwste sessie die het draagt | `src/lib/account-voedingsdoelen-server.ts` |
+| F2 startpunt van de hermeting, F3 resolver, R3 cron: `session_kind in ('initial','remeasure')` | `remeasure/start/route.ts`, `intake-session-resolve.ts`, `remeasure-reminder-cron.ts` |
+| F4 admin: een voedingssessie telt als "Check (voeding)" | `src/app/api/admin/data/route.ts` |
+
+**Meetpunt:** `measurement.checkin_completed` met `session_created: true` en `session_kind: "nutrition"` (in `domain_events`), plus GA4 `nutrition_check_completed` met `new_session`. Daarin lees je af hoeveel bezoekers zonder eerdere sessie hun check nu wel opslaan.
+
+**Aanzetten (Dennis):** `CHECK_SESSION_CREATE_ENABLED=true` in `/root/perfectsupplement/.env`, daarna `sudo systemctl restart perfectsupplement`. Er is geen nieuwe build nodig, want de vlag wordt per verzoek gelezen. Lokaal gaat hetzelfde via `.env.local` en een herstart van `next dev`. De Turnstile-sleutels van de brede check (`NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`) worden hergebruikt; de nieuwe actienaam vraagt geen configuratie bij Cloudflare.
+
+**Nog niet (S3):** "Past bij jou" op `/supplementen` en `nutrition-log/latest` voor ingelogde gebruikers over al hun sessies (§3.4). Tot S3 ziet een bezoeker met alleen een voedingssessie zijn resultaat wel (via de cookie), maar nog geen "Past bij jou".
+
+**Bijvangst, buiten S2 gelaten:** `remeasure/start` stuurt door naar `/intake?hermeting=1`. Sinds §3.9 is `/intake` de check en niet meer de brede check, en de check leest de cookie van de hermeting niet. De hermeting van de brede check loopt dus al sinds 17 sep dood. Omdat de brede check niet meer wordt aangeboden, heb ik dat niet aangepast; wel melden.

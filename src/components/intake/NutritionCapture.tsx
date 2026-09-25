@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { clarityTag } from "@/lib/clarity";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 import {
@@ -48,6 +49,13 @@ import {
 import { buildNutrientRouteStatuses } from "@/lib/nutrition-route-status";
 import type { NutritionAnswers } from "@/lib/nutrition-log-response";
 import { isVitaminDLowSunSeason } from "@/lib/nutrition-season";
+
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+
+async function canCreateSessionFrom(res: Response): Promise<boolean> {
+  const body = (await res.json().catch(() => null)) as { canCreateSession?: unknown } | null;
+  return body?.canCreateSession === true;
+}
 
 type Step =
   | { kind: "coreBeforeDiet"; index: number }
@@ -240,6 +248,11 @@ export default function NutritionCapture() {
   const [isLoadingResult, setIsLoadingResult] = useState(hasResultsParam);
   const [resultsLoadError, setResultsLoadError] = useState<string | null>(null);
   const [isCheckingSession, setIsCheckingSession] = useState(!hasResultsParam);
+  const [needsNewSession, setNeedsNewSession] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance>(undefined);
   const trackedSkipsRef = useRef<Set<string>>(new Set());
 
   const ctx = dietContext(preference, allergies);
@@ -328,6 +341,10 @@ export default function NutritionCapture() {
           return;
         }
         if (res.status === 401) {
+          if (await canCreateSessionFrom(res)) {
+            setResultsLoadError("Je hebt nog geen voedingscheck afgerond.");
+            return;
+          }
           setStep({ kind: "error", message: "401" });
           return;
         }
@@ -388,12 +405,11 @@ export default function NutritionCapture() {
   }, [fromDashboard, hasResultsParam]);
 
   /**
-   * Voorkomt dat iemand zonder Leefstijlcheck-sessie alle 14 vragen invult om
-   * pas bij het opslaan (`/api/intake/nutrition-log`) een 401 te zien. Deze
-   * check hergebruikt hetzelfde endpoint als de resultaten-herlaadflow
-   * hierboven, alleen vóór de eerste vraag i.p.v. bij een `?resultaten=true`
-   * deeplink — dezelfde foutmelding (`step.kind === "error"`, hieronder)
-   * verschijnt dan meteen in plaats van na alle vragen.
+   * Kijkt vóór de eerste vraag of er al een sessie is. Zo niet, dan zegt de
+   * server (`canCreateSession`) of de check er bij het opslaan zelf een mag
+   * aanmaken — dan volgt er een botcheck op de toestemmingsstap. Mag dat niet
+   * (vlag uit), dan verschijnt de doorverwijzing meteen in plaats van pas na
+   * alle vragen. Zie BESLUITDOCUMENT_SESSIE_ARCHITECTUUR_2026-09.md §3.3.
    */
   useEffect(() => {
     if (hasResultsParam) {
@@ -411,7 +427,11 @@ export default function NutritionCapture() {
           return;
         }
         if (res.status === 401) {
-          setStep({ kind: "error", message: "401" });
+          if (await canCreateSessionFrom(res)) {
+            setNeedsNewSession(true);
+          } else {
+            setStep({ kind: "error", message: "401" });
+          }
         }
       } catch {
         // Netwerkfout: laat de vragenflow gewoon starten, opslaan faalt anders vanzelf.
@@ -526,9 +546,16 @@ export default function NutritionCapture() {
     setSliders((current) => ({ ...current, [question.id]: question.defaultIndex }));
   }
 
+  function resetVerification() {
+    setTurnstileToken("");
+    turnstileRef.current?.reset();
+  }
+
   async function handleSubmit() {
     if (!consentChecked || submitting) return;
+    if (needsNewSession && turnstileSiteKey && !turnstileToken) return;
     setSubmitting(true);
+    setSaveError(null);
 
     try {
       const res = await fetch("/api/intake/nutrition-log", {
@@ -538,11 +565,21 @@ export default function NutritionCapture() {
         body: JSON.stringify({
           answers: { sliders, allergies, preference: preference ?? "none" },
           consent: true,
+          ...(needsNewSession ? { turnstileToken, website: honeypot } : {}),
         }),
       });
 
       if (res.status === 401) {
         setStep({ kind: "error", message: "401" });
+        return;
+      }
+
+      // Bij een mislukte verificatie blijven de antwoorden staan: de gebruiker
+      // hoeft alleen opnieuw te verifiëren, niet alle vragen opnieuw te doen.
+      if (!res.ok && needsNewSession && res.status !== 500) {
+        const data = (await res.json().catch(() => null)) as { error?: string } | null;
+        setSaveError(data?.error ?? "Er ging iets mis. Probeer het opnieuw.");
+        resetVerification();
         return;
       }
 
@@ -575,7 +612,9 @@ export default function NutritionCapture() {
         band: data.band?.id ?? "unknown",
         from,
         breadth_skipped: false,
+        new_session: needsNewSession,
       });
+      setNeedsNewSession(false);
       trackEvent("nutrition_log_completed", {
         nutrition_score: data.score,
         from,
@@ -783,6 +822,39 @@ export default function NutritionCapture() {
             </span>
           </label>
 
+          {needsNewSession ? (
+            <>
+              <input
+                type="text"
+                name="website"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden
+                className="hidden"
+              />
+              {turnstileSiteKey ? (
+                <div className="mt-6 flex min-h-[65px] justify-center">
+                  <Turnstile
+                    ref={turnstileRef}
+                    siteKey={turnstileSiteKey}
+                    onSuccess={(token) => setTurnstileToken(token)}
+                    onExpire={resetVerification}
+                    onError={() => setTurnstileToken("")}
+                    options={{ action: "nutrition_check_save" }}
+                  />
+                </div>
+              ) : null}
+            </>
+          ) : null}
+
+          {saveError ? (
+            <p role="alert" className="mt-4 text-center text-sm text-intake-terra">
+              {saveError}
+            </p>
+          ) : null}
+
           <div className="mt-10 flex items-center justify-between">
             <button
               type="button"
@@ -795,7 +867,11 @@ export default function NutritionCapture() {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={!consentChecked || submitting}
+              disabled={
+                !consentChecked ||
+                submitting ||
+                (needsNewSession && Boolean(turnstileSiteKey) && !turnstileToken)
+              }
               className="min-h-[44px] rounded-[12px] bg-intake-sage px-6 py-3 text-sm font-semibold text-[#0f1c10] transition-all duration-200 hover:opacity-90 disabled:cursor-default disabled:opacity-30"
             >
               {submitting ? "Bezig…" : "Bekijk je score →"}

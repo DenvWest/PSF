@@ -27,9 +27,11 @@ import {
 } from "@/lib/intake-remeasure-cookie";
 import {
   INTAKE_SESSION_COOKIE_NAME,
+  intakeSessionCookieOptions,
   signIntakeSessionId,
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
+import { normalizeReferralSource } from "@/lib/intake-session-create";
 import { hasActiveIntakeMarketingEmailConsent } from "@/lib/intake-marketing-consent-server";
 import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
 import { getLatestNutritionLogAt } from "@/lib/nutrition-log-server";
@@ -46,11 +48,10 @@ import { getPrimaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
 import type { StoredIntakeAnswers } from "@/types/intake-answers";
-import type { IntakeSessionInsert } from "@/types/intake-session-insert";
+import type { BroadCheckSessionInsert } from "@/types/intake-session-insert";
 
 const TURNSTILE_ACTION = "intake_submit";
 
-const COOKIE_MAX_AGE_SEC = 60 * 60 * 24 * 90;
 const HONEYPOT_MIN_RESPONSE_MS = 200;
 
 function sleep(ms: number): Promise<void> {
@@ -64,17 +65,6 @@ function logSecurityEvent(
   details: Record<string, unknown> = {},
 ) {
   console.warn("[api/intake/session][security]", { event, ...details });
-}
-
-function normalizeReferralSource(raw: string | undefined): string | null {
-  if (!raw) return null;
-  try {
-    const decoded = decodeURIComponent(raw);
-    const normalized = decoded.replace(/\s+/g, " ").trim().slice(0, 200);
-    return normalized.length > 0 ? normalized : null;
-  } catch {
-    return null;
-  }
 }
 
 function normalizeSingleLine(value: unknown): string {
@@ -421,7 +411,7 @@ export async function POST(request: NextRequest) {
     ? carryOverMovementPlanProfile(carryOverSource, answers)
     : answers;
 
-  const insert: IntakeSessionInsert = {
+  const insert: BroadCheckSessionInsert = {
     organization_id: organizationId,
     symptom_profile: symptoms,
     answers: storedAnswers,
@@ -609,13 +599,7 @@ export async function POST(request: NextRequest) {
   }
 
   const res = NextResponse.json(responseData, { status: 200 });
-  res.cookies.set(INTAKE_SESSION_COOKIE_NAME, signed, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: COOKIE_MAX_AGE_SEC,
-  });
+  res.cookies.set(INTAKE_SESSION_COOKIE_NAME, signed, intakeSessionCookieOptions());
   if (isRemeasure) {
     res.cookies.set(INTAKE_REMEASURE_BASELINE_COOKIE_NAME, "", {
       httpOnly: true,

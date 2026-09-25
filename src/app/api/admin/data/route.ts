@@ -354,6 +354,17 @@ function totalScoreFromDomains(ds: DomainScores | null): number | null {
   return DOMAIN_KEYS.reduce((acc, k) => acc + ds[k], 0);
 }
 
+/** Een check op `/intake` heeft geen profiellabel; die telt als eigen soort, niet als "Onbekend". */
+function sessionProfileLabel(row: {
+  profile_label?: unknown;
+  session_kind?: unknown;
+}): string | null {
+  if (typeof row.profile_label === "string" && row.profile_label.trim() !== "") {
+    return row.profile_label.trim();
+  }
+  return row.session_kind === "nutrition" ? "Check (voeding)" : null;
+}
+
 function startOfDayMs(d: Date): number {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
@@ -392,7 +403,7 @@ export async function GET(request: NextRequest) {
     admin
       .from("intake_sessions")
       .select(
-        "created_at, age_range, profile_label, domain_scores, urgency_level, marketing_email",
+        "created_at, age_range, profile_label, domain_scores, urgency_level, marketing_email, session_kind",
       ),
     admin.from("intake_reminders").select("email, sent"),
     admin
@@ -462,10 +473,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const profile =
-      typeof row.profile_label === "string" && row.profile_label.trim() !== ""
-        ? row.profile_label.trim()
-        : "Onbekend";
+    const profile = sessionProfileLabel(row) ?? "Onbekend";
     profileCounts.set(profile, (profileCounts.get(profile) ?? 0) + 1);
 
     const ds = row.domain_scores;
@@ -540,8 +548,7 @@ export async function GET(request: NextRequest) {
   const recentSessions = sortedSessions.slice(0, 20).map((row) => ({
     createdAt: typeof row.created_at === "string" ? row.created_at : "",
     ageRange: typeof row.age_range === "string" ? row.age_range : null,
-    profileLabel:
-      typeof row.profile_label === "string" ? row.profile_label : null,
+    profileLabel: sessionProfileLabel(row),
     totalScore: isDomainScores(row.domain_scores)
       ? totalScoreFromDomains(row.domain_scores)
       : null,
