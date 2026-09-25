@@ -523,11 +523,21 @@ export type NutritionGate = {
   open: boolean;
   /** Waarom hij dicht is — leeg wanneer hij open staat. */
   reason: string | null;
+  /**
+   * Welke soort "dicht": geen check, een gat dat je met eten dicht, of geen
+   * enkel signaal. Die laatste betekent "je basis zit goed" — het
+   * tegenovergestelde van de middelste, dus niet uit `reason` af te lezen.
+   */
+  closedBy: "no_check" | "eatable_gaps" | "no_signal" | null;
 };
 
 export function resolveNutritionGate(rows: readonly NutritionFactRow[]): NutritionGate {
   if (rows.length === 0) {
-    return { open: false, reason: "Zonder voedingscheck weten we niet of er iets aan te vullen valt." };
+    return {
+      open: false,
+      reason: "Zonder voedingscheck weten we niet of er iets aan te vullen valt.",
+      closedBy: "no_check",
+    };
   }
 
   // §E schrijft laag 1 voor, maar de noordster is breder: elk gat dat je mét
@@ -546,7 +556,7 @@ export function resolveNutritionGate(rows: readonly NutritionFactRow[]): Nutriti
       eatableGaps.length === 1
         ? `Je ${eatableGaps[0].label.toLowerCase()} ligt nog onder de richtlijn. Dat dicht je met je bord, niet met een potje.`
         : `${eatableGaps.length} van je antwoorden liggen nog onder hun richtlijn. Die dicht je met je bord, niet met een potje.`;
-    return { open: false, reason };
+    return { open: false, reason, closedBy: "eatable_gaps" };
   }
 
   // Een opt-out is het schoolvoorbeeld van een gat dat het bord niet dicht
@@ -557,10 +567,11 @@ export function resolveNutritionGate(rows: readonly NutritionFactRow[]): Nutriti
     return {
       open: false,
       reason: "Je check laat geen enkel signaal zien dat er iets aan te vullen valt — dan houden we deze dicht.",
+      closedBy: "no_signal",
     };
   }
 
-  return { open: true, reason: null };
+  return { open: true, reason: null, closedBy: null };
 }
 
 /**

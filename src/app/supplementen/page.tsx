@@ -11,7 +11,8 @@ import { buildHubPersonalization } from "@/lib/supplement-hub/hub-personalizatio
 import { getIntakeSessionFromCookie } from "@/lib/intake-session-server";
 import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBanner";
 import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
-import { hasNutritionLogForSession } from "@/lib/nutrition-log-server";
+import { getLatestNutritionLogRawInputs } from "@/lib/nutrition-log-server";
+import { isVitaminDLowSunSeason } from "@/lib/nutrition-season";
 import {
   buildBreadcrumbSchema,
   buildNamedItemListSchema,
@@ -71,15 +72,16 @@ export default async function SupplementenPage({ searchParams }: SupplementenPag
   const { verifiedSessionId, session } = await getIntakeSessionFromCookie();
   const hasIntakeCookie = verifiedSessionId !== null;
   const hasSession = hasIntakeCookie && session !== null;
-  const nutritionLogCompleted =
+  const latestNutritionLog =
     hasSession && verifiedSessionId
-      ? await hasNutritionLogForSession(verifiedSessionId)
-      : false;
+      ? await getLatestNutritionLogRawInputs(verifiedSessionId)
+      : null;
 
   const personalization = buildHubPersonalization({
     session,
     hasIntakeCookie,
-    nutritionLogCompleted,
+    latestNutritionLog,
+    isDarkSeason: isVitaminDLowSunSeason(),
   });
 
   return (
