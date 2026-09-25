@@ -215,7 +215,7 @@ Stap 3 (gate)       Pas aggregatie/patroonherkenning/training UITSLUITEND toe op
 
 ## F. LLM-faserings-roadmap (gekoppeld aan volume)
 
-Leidend blijft de regel uit [`INTAKE_SYSTEM.md`](../core/INTAKE_SYSTEM.md): **regelgebaseerd, geen AI/ML tot 500+ gebruikers.** Twee parallelle sporen.
+Leidend blijft de regel uit [`INTAKE_SYSTEM.md`](../core/INTAKE_SYSTEM.md): **regelgebaseerd, geen AI/ML tot 500+ gebruikers.** Twee parallelle sporen. *(25 sep 2026: geldt voor de engine en voor aggregatie/training; een LLM die per verzoek de eigen invoer van één gebruiker vertaalt naar bestaande invoervelden valt eronder niet meer — zie `docs/plan/BESLUIT_LLM_CHAT_VOEDING_2026-09.md`.)*
 
 ### Spoor 1 — Persoonsdata-engine (volume-gebonden)
 

@@ -2,6 +2,7 @@
 
 **Datum:** 24 september 2026
 **Status:** voorstel, nog niet besloten — vraagt Dennis' akkoord vóór er schema wijzigt
+**Beoordeeld (25 sep):** `BESLUITDOCUMENT_SESSIE_ARCHITECTUUR_2026-09.md` — GO WITH CHANGES; o.a. stap 1 blijkt al zo te zijn (kolommen zijn al nullable), er is een tweede filter (`intakeSessionRowToPayload`), Turnstile ontbreekt op het nieuwe pad. Lees dat document vóór je dit uitvoert.
 **Aanleiding:** gevonden tijdens het herstellen van de "Voedingcheck"-regressie
 (zie `CORRECTIE_VOEDINGCHECK_NAAMGEVING_2026-09.md`) en Dennis' vraag hoe dit
 zich verhoudt tot een grotere toekomst: affiliate-attributie, nurture-mails,

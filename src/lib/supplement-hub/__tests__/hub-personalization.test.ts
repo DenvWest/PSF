@@ -38,6 +38,16 @@ describe("buildHubPersonalization", () => {
     ).toEqual({ state: "no_intake" });
   });
 
+  it("negeert een check-log zolang er geen payload van de brede check is (huidig gedrag; S3 van het sessie-besluitdocument draait dit om)", () => {
+    expect(
+      buildHubPersonalization({
+        session: null,
+        hasIntakeCookie: true,
+        latestNutritionLog: log({ ...topSliders(), oilyFish: 0 }, "vegan"),
+      }),
+    ).toEqual({ state: "no_intake" });
+  });
+
   it("vraagt de check wanneer er nog geen log is", () => {
     expect(
       buildHubPersonalization({ session: SESSION, hasIntakeCookie: true, latestNutritionLog: null }),

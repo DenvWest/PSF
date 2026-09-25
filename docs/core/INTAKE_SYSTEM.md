@@ -148,7 +148,7 @@ Berekend op **interventiedomeinen** (slaap, stress, voeding, beweging, verbindin
 
 ## Beslislogica
 
-Regelgebaseerd (fase 1). Geen AI/ML tot 500+ gebruikers.
+Regelgebaseerd (fase 1). Geen AI/ML tot 500+ gebruikers. *(25 sep 2026: geldt voor de engine en voor aggregatie/training; een LLM die per verzoek de eigen invoer van één gebruiker vertaalt naar bestaande invoervelden valt eronder niet meer — zie `docs/plan/BESLUIT_LLM_CHAT_VOEDING_2026-09.md`.)*
 
 ### Supplementroute-logica
 - Max 3 supplementen per profiel op resultatenpagina
