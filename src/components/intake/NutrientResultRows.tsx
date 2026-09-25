@@ -91,28 +91,20 @@ export default function NutrientResultRows({
     }
   }
 
-  function handleSupplementClick(row: NutrientResultRow) {
-    trackEvent("nutrition_supplement_vergelijk_click", {
-      surface: "check_rij",
-      nutrient: row.nutrient,
-    });
-    clarityTag("nutrition_supplement_vergelijk", row.nutrient);
-  }
-
-  function handleJijNuClick(row: NutrientResultRow) {
-    trackEvent("nutrition_supplement_vergelijk_click", {
-      surface: "check_rij_jij_nu",
-      nutrient: row.nutrient,
-    });
-    clarityTag("nutrition_supplement_vergelijk", row.nutrient);
-  }
-
-  function handleRichtlijnClick(row: NutrientResultRow) {
+  function handleBekijkVoedingClick(row: NutrientResultRow) {
     trackEvent("nutrition_result_dagboek_click", {
-      surface: "check_rij_richtlijn",
+      surface: "check_rij_actie",
       nutrient: row.nutrient,
     });
     clarityTag("nutrition_result_dagboek", row.nutrient);
+  }
+
+  function handleLieverSupplementClick(row: NutrientResultRow) {
+    trackEvent("nutrition_supplement_vergelijk_click", {
+      surface: "check_rij_actie",
+      nutrient: row.nutrient,
+    });
+    clarityTag("nutrition_supplement_vergelijk", row.nutrient);
   }
 
   return (
@@ -186,40 +178,36 @@ export default function NutrientResultRows({
 
                 <div className="grid gap-4 border-t border-white/10 px-4 pb-4 pt-4 sm:px-5">
                   <dl className="m-0 grid gap-2 text-[13px] sm:grid-cols-2">
-                    {row.doorOpen ? (
-                      <Link
-                        href={row.supplementHref}
-                        onClick={() => handleJijNuClick(row)}
-                        className="group/tegel block rounded-xl bg-black/25 px-3.5 py-2.5 no-underline transition-colors hover:bg-[#C8956C]/10"
-                      >
-                        <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82] transition-colors group-hover/tegel:text-[#C8956C]">
-                          <span className="group-hover/tegel:hidden">Jij nu</span>
-                          <span className="hidden group-hover/tegel:inline">
-                            Bekijk {row.label.toLowerCase()}-supplementen →
-                          </span>
-                        </dt>
-                        <dd className="m-0 mt-0.5 text-[#F1EFE8]">{row.answerLabel ?? "—"}</dd>
-                      </Link>
-                    ) : (
-                      <div className="rounded-xl bg-black/25 px-3.5 py-2.5">
-                        <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
-                          Jij nu
-                        </dt>
-                        <dd className="m-0 mt-0.5 text-[#F1EFE8]">{row.answerLabel ?? "—"}</dd>
-                      </div>
-                    )}
-                    <Link
-                      href={DAGBOEK_HREF}
-                      onClick={() => handleRichtlijnClick(row)}
-                      className="group/tegel block rounded-xl bg-black/25 px-3.5 py-2.5 no-underline transition-colors hover:bg-[#9CC5A9]/10"
-                    >
-                      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82] transition-colors group-hover/tegel:text-[#9CC5A9]">
-                        <span className="group-hover/tegel:hidden">Richtlijn</span>
-                        <span className="hidden group-hover/tegel:inline">Naar je dagboek →</span>
+                    <div className="rounded-xl bg-black/25 px-3.5 py-2.5">
+                      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
+                        Jij nu
+                      </dt>
+                      <dd className="m-0 mt-0.5 text-[#F1EFE8]">{row.answerLabel ?? "—"}</dd>
+                    </div>
+                    <div className="rounded-xl bg-black/25 px-3.5 py-2.5">
+                      <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
+                        Richtlijn
                       </dt>
                       <dd className="m-0 mt-0.5 text-[#C6D1C9]">{row.thresholdNl}</dd>
-                    </Link>
+                    </div>
                   </dl>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link
+                      href={DAGBOEK_HREF}
+                      onClick={() => handleBekijkVoedingClick(row)}
+                      className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#9CC5A9]/35 bg-[#9CC5A9]/10 px-3 text-center text-[13px] font-semibold text-[#9CC5A9] no-underline transition-colors hover:bg-[#9CC5A9]/20"
+                    >
+                      Bekijk jouw voeding →
+                    </Link>
+                    <Link
+                      href={row.supplementHref}
+                      onClick={() => handleLieverSupplementClick(row)}
+                      className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] px-3 text-center text-[13px] font-semibold text-[#C6D1C9] no-underline transition-colors hover:border-[#C8956C]/35 hover:bg-[#C8956C]/10 hover:text-[#C8956C]"
+                    >
+                      Liever een supplement →
+                    </Link>
+                  </div>
 
                   <div>
                     <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9CC5A9]">
@@ -251,15 +239,6 @@ export default function NutrientResultRows({
                     <p className="m-0 mt-1 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
                       {row.doorReasonNl}
                     </p>
-                    {row.doorOpen ? (
-                      <Link
-                        href={row.supplementHref}
-                        onClick={() => handleSupplementClick(row)}
-                        className="mt-2 inline-flex min-h-[44px] items-center rounded-xl border border-[#C8956C]/35 bg-[#C8956C]/10 px-4 text-sm font-semibold text-[#C8956C] no-underline transition-colors hover:bg-[#C8956C]/20"
-                      >
-                        Bekijk {row.label.toLowerCase()}-supplementen →
-                      </Link>
-                    ) : null}
                   </div>
                 </div>
               </details>

@@ -148,17 +148,30 @@ describe("NutritionResultView — de voedingsroute per stof", () => {
     expect(container.textContent).not.toContain("Nog niet opgehaald");
   });
 
-  it("houdt de supplementdeur dicht als de poort dicht is", () => {
-    // resolveNutritionGate zegt: zonder check weten we niet of er iets aan te
-    // vullen valt. Dan hoort er geen enkele /beste/-link te staan.
+  it("toont nooit een /beste/-link, ook niet als de poort dicht is", () => {
+    // /beste/* is de oude, generieke vergelijkingsroute; de rijen linken
+    // altijd naar de eigen categorie in /supplementen.
     const { container } = renderResult({
       routeStatuses: STATUSES,
       nutritionGateOpen: false,
     });
     const besteLinks = [...container.querySelectorAll("a[href^='/beste/']")];
     expect(besteLinks).toHaveLength(0);
+  });
+
+  it("'Liever een supplement' staat altijd naast 'Bekijk jouw voeding', ongeacht de poort", () => {
+    // 25-sep-besluit: voeding eerst, supplement is een altijd beschikbare
+    // tweede optie — geen omweg om de laag-6-poort (die blijft gelden voor
+    // de onderbouwde 'dit kun je niet met eten dichten'-knop eronder), maar
+    // ook geen verborgen deur meer. Zie BESLUIT_SUPPLEMENT_VOORKEUR_PER_STOF_2026-09.md.
+    const { container } = renderResult({
+      routeStatuses: STATUSES,
+      nutritionGateOpen: false,
+    });
     const hubLinks = [...container.querySelectorAll("a[href^='/supplementen']")];
-    expect(hubLinks).toHaveLength(0);
+    expect(hubLinks.length).toBe(STATUSES.length);
+    expect(container.textContent).toContain("Liever een supplement");
+    expect(container.textContent).toContain("Bekijk jouw voeding");
   });
 
   it("noemt geen opgeteld mg-getal en geen percentage van een dagbehoefte", () => {
