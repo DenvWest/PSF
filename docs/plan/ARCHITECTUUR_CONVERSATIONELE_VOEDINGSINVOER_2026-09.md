@@ -2,6 +2,7 @@
 
 **Datum:** 25 september 2026
 **Status:** ontwerp ter beoordeling — **niet besloten, niet te bouwen vóór akkoord.** Dit ontwerp botst op vijf punten met besluiten die al genomen zijn (§0). Die besluiten blijven leidend totdat Dennis ze uitdrukkelijk herziet.
+**Herzien 25 sep:** **C1 is door Dennis heropend** — er komt een chatvenster met LLM op de check én het dagboek (`BESLUIT_LLM_CHAT_VOEDING_2026-09.md`). Daarmee is §6 (de LLM als tolk) het plan geworden en geen optie meer. §6.3 (trigger) en §13 punten 3–4 vervallen; de volgorde staat in het besluit. Nieuw is §6.4 (chat op de check). C2–C5 blijven staan.
 **Aanleiding:** een opdracht (25 sep) voor een "conversational nutrition engine": voeding en leefstijl opbouwen via een chatvenster in plaats van een vragenlijst, met de LLM als tolk en de database plus rekenlaag als bron van waarheid.
 **Bouwt op:** [`BESLUITDOCUMENT_SESSIE_ARCHITECTUUR_2026-09.md`](BESLUITDOCUMENT_SESSIE_ARCHITECTUUR_2026-09.md) — de sessie-ingang moet eerst staan.
 
@@ -285,7 +286,56 @@ Om het toe te staan zijn dus nodig:
 
 ### 6.3 Trigger voor fase 2
 
-Pas bespreken als fase 1 minstens 4–6 weken draait én het aandeel **onopgeloste spans** (uit het event in §8) de grootste bron van uitval in de tekstinvoer blijkt. Als de regelparser 85% oplost, dan voegt een LLM vooral kosten en een DPIA-last toe.
+~~Pas bespreken als fase 1 minstens 4–6 weken draait én het aandeel **onopgeloste spans** (uit het event in §8) de grootste bron van uitval in de tekstinvoer blijkt. Als de regelparser 85% oplost, dan voegt een LLM vooral kosten en een DPIA-last toe.~~ *Vervallen op 25 sep — zie `BESLUIT_LLM_CHAT_VOEDING_2026-09.md`.*
+
+### 6.4 Chat op de check (`/intake`) — eerste LLM-plek
+
+**Uitkomst = precies wat `nutrition-log` nu al accepteert:** `{ sliders, allergies, preference }`. De chat is een andere manier om die 14 antwoorden te verzamelen. De scoring (`nutrition-score.ts` → `nutrition-intake-estimate.ts`), het resultaat en "Past bij jou" blijven hetzelfde.
+
+**Contract per beurt:**
+
+```ts
+// src/lib/check-chat/contract.ts (voorstel)
+export type CheckChatTurn = {
+  contractVersion: "checkchat.v1";
+  /** Korte gesprekstekst (max ±300 tekens). Gefilterd; bij twijfel vervangen door de vaste vraagtekst. */
+  reply: string;
+  /** Alleen bestaande vraag-ids, alleen een stop-index binnen het bereik van die vraag. */
+  updates: { questionId: SliderId; stopIndex: number; zekerheid: "genoemd" | "afgeleid" }[];
+  meta?: { allergies?: AllergyValue[]; preference?: "none" | "pescatarian" | "vegetarian" | "vegan" };
+  /** De volgende open vraag; null = alles beantwoord → samenvatting. */
+  nextQuestionId: SliderId | "allergies" | "preference" | null;
+};
+```
+
+**Wat het model krijgt:** per vraag de id, de vaste vraagtekst, de stops met hun labels en het `help`-blok (bron en benchmark) uit `lifescore-questions.ts`. Dat is geen persoonsgegeven, staat stabiel vooraan en is dus te cachen. Daarna het concept tot nu toe en het laatste bericht van de gebruiker.
+
+**Wat de server na elke beurt controleert:**
+
+- `questionId` staat in de set van schuifjes.
+- `stopIndex` ligt binnen `stops.length` van die vraag.
+- De allergieën horen bij de vaste set.
+- `reply` valt binnen de maximale lengte en komt door `FORBIDDEN_PHRASES_GLOBAL`.
+
+Voldoet iets niet, dan valt dat onderdeel weg, en wordt `reply` vervangen door de vaste vraagtekst van `nextQuestionId`. **De chat loopt dus altijd door, desnoods als gescripte vragenlijst.** Een fout van het model, een weigering (`stop_reason`) of een timeout volgt hetzelfde pad.
+
+**Wat het model niet mag:** iets zeggen over tekorten, dekking, supplementen of gezondheid. Dat staat op de resultaatpagina, uit de deterministische code. Het systeemprompt én het filter dwingen dat af; het contract heeft geen veld voor een oordeel.
+
+**Einde van de chat:** een samenvatting "Zo heb ik je antwoorden begrepen", met de 14 antwoorden als de bestaande schuifjes. Ze zijn al ingevuld en aan te passen, en `afgeleid` is gemarkeerd. Daarna "Klopt — laat mijn resultaat zien" → de bestaande opslag in `nutrition-log` → de bestaande resultaatpagina. **Er wordt niets opgeslagen dat de gebruiker niet zag en bevestigde.**
+
+**Toegang en kosten (V5/V6):**
+
+- Toestemming voor de AI-chat plus Turnstile bij de eerste beurt; op dat moment wordt de sessie aangemaakt (sessiedocument §10).
+- Daarna is de sessiecookie verplicht.
+- Rate limit per sessie en IP, maximaal ±40 beurten en 500 tekens per bericht.
+- De server bewaart geen gesprek: de client stuurt het concept en de laatste berichten mee.
+- Knop **"Liever de schuifjes"** → de huidige flow, met de antwoorden die er al zijn ingevuld.
+
+**Endpoint:** `POST /api/intake/check-chat`, een route handler, zonder streaming in v1 (korte antwoorden plus een typ-indicator).
+
+**Meetpunt:** `nutrition.check_chat_started` en `nutrition.check_chat_completed`, met alleen tellingen: beurten, beantwoord, afgeleid, terugvallen, model en promptversie. Nooit tekst. Registratie op de drie plekken. Hier lees je het effect af: het aandeel voltooide checks via chat tegenover via de schuifjes.
+
+**Nieuwe bestanden (bij de bouw):** `src/lib/check-chat/{contract,validate,prompt,provider}.ts`, `src/app/api/intake/check-chat/route.ts`, `src/components/intake/CheckChat.tsx`, plus een keuze-knop in `NutritionCapture.tsx`. **Nieuwe dependency:** `@anthropic-ai/sdk` of `@anthropic-ai/vertex-sdk`, afhankelijk van V1. Dat is een uitbreiding van de stack, en die komt pas met Dennis' keuze bij V1.
 
 ---
 

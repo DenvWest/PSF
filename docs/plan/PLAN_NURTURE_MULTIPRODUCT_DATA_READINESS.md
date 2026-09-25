@@ -248,7 +248,7 @@ Bij white-label verschuift de **AVG-rol**: per coach/agency kan een aparte verwe
 
 - Geen optimizer / bandit / ranking-model voor productkeuze (échte YAGNI tot volume).
 - Geen dynamische herordening van `candidates[]` op live cijfers.
-- Geen LLM op persoonsdata vóór 500+ én vóór doorlopen anonimiserings-/governance-poort (3C).
+- Geen LLM op persoonsdata vóór 500+ én vóór doorlopen anonimiserings-/governance-poort (3C). *(25 sep 2026: geldt voor de engine en voor aggregatie/training; een LLM die per verzoek de eigen invoer van één gebruiker vertaalt naar bestaande invoervelden valt eronder niet meer — zie `docs/plan/BESLUIT_LLM_CHAT_VOEDING_2026-09.md`.)*
 - Geen LLM-gegenereerde claims — claimgrens blijft deterministisch, EFSA-tekst alleen via `getUsableClaims()`.
 - Geen aanraking van de `affiliate_clicks`-tabel of de basis-15-vragen-intake.
 - Geen multi-tenant-uitrol of cross-tenant aggregatie vóór bewezen B2C-conversie.

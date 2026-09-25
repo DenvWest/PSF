@@ -1,7 +1,7 @@
 # Besluitdocument — sessie-architectuur: de check krijgt een eigen sessie-ingang
 
 **Datum:** 25 september 2026
-**Status:** ter beoordeling — **nog niet besloten.** Er verandert geen schema en geen code in `src/` vóór Dennis akkoord geeft.
+**Status:** **besloten 25 sep** — Dennis akkoord op de richting en de acht wijzigingen (§17). Uitvoering in plakken, S0 afgerond (§18). Wat nog open staat, staat in §17 onder "Stand van de beslispunten".
 **Beoordeelt:** [`VOORSTEL_CHECK_SESSIE_LOSKOPPELEN_2026-09.md`](VOORSTEL_CHECK_SESSIE_LOSKOPPELEN_2026-09.md) (24 sep)
 **Hangt samen met:** [`BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md`](BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md) §3.9 (de check op `/intake` is de enige ingang) · [`BESLUIT_VOEDINGSCHECK_RESULTAAT_PER_STOF_2026-09.md`](BESLUIT_VOEDINGSCHECK_RESULTAAT_PER_STOF_2026-09.md) §B ("Past bij jou" leest de check) · [`ARCHITECTUUR_CONVERSATIONELE_VOEDINGSINVOER_2026-09.md`](ARCHITECTUUR_CONVERSATIONELE_VOEDINGSINVOER_2026-09.md) (de chatlaag die hierop zou voortbouwen)
 
@@ -296,7 +296,19 @@ Geen nieuwe endpoints. Geen server actions: de consumentenkant gebruikt overal r
 
 ## 10. Impact op een toekomstige conversatielaag
 
-Een gesprek is **geen** sessie. Mocht er een chatlaag komen (zie `ARCHITECTUUR_CONVERSATIONELE_VOEDINGSINVOER_2026-09.md`), dan hangt die aan het **account** en maakt ze nooit een rij in `intake_sessions` aan. Bevestigde voeding landt in `account_nutrition_daybook`. Deze migratie hoeft daar dus niets voor klaar te zetten, behalve één ding: `intake_sessions` niet als container voor gesprekken gebruiken.
+Een gesprek is **geen** sessie, en `intake_sessions` wordt nooit een container voor gesprekken.
+
+**Herzien 25 sep** (Dennis wil een chatvenster met LLM óók op de check, zie `BESLUIT_LLM_CHAT_VOEDING_2026-09.md`). Er komen daarmee twee chatplekken, met elk een eigen anker:
+
+| Chat | Anker | Waar het resultaat landt |
+|---|---|---|
+| Op de check (`/intake`, anoniem) | de **sessie** (`session_kind: "nutrition"`) | dezelfde antwoorden die de schuifjes nu opleveren → `intake_intake_log` |
+| In het dagboek (ingelogd) | het **account** | `account_nutrition_daybook` |
+
+Dat heeft twee gevolgen voor S2:
+
+- **`createNutritionCheckSession` moet ook vóór de eerste vraag aangeroepen kunnen worden**, namelijk bij de AI-toestemming, en niet alleen bij de opslag aan het eind. Een toestemmingsrij heeft een anker nodig. De functie staat al los van de route (§3.3), dus dit vraagt geen ander ontwerp, alleen een tweede aanroeper.
+- **Sessies zonder log** (iemand geeft toestemming en haakt af) krijgen een eigen, korte bewaartermijn in `intake-retention.ts`, voorstel 30 dagen in plaats van 24 maanden. Een lege rij met alleen een toestemming hoort niet twee jaar te blijven staan.
 
 ## 11. Impact op het dagboek
 
@@ -379,7 +391,21 @@ Geen. Het 2+2-dagboek staat al op `account_id` + `entry_date`, los van elke sess
 
 **Grote ontkoppeling (visitor-tabel of conversation-tabel): DO NOT MIGRATE YET.** De voorwaarden om het opnieuw te bekijken staan in §4-B.
 
-### Beslispunten voor Dennis
+### Stand van de beslispunten (25 sep)
+
+| # | Punt | Stand |
+|---|---|---|
+| 1 | Richting + acht wijzigingen | **Akkoord** (Dennis, 25 sep) |
+| 2 | Turnstile in de check | **Akkoord**, als onderdeel van wijziging 3 |
+| 3 | Ingelogd zonder cookie → sessie met `account_id` | **Akkoord**, als onderdeel van wijziging 4 |
+| 4 | Affiliate-lead voor voedingssessies | **Ja** — Dennis: *"ja - vooral op aanvulling"*. Hoe "vooral op aanvulling" doorwerkt, is nog open (zie hieronder). `attributeIntakeLead` gaat mee in S2; S6 vervalt als losse plak. |
+| 5 | E-mail en nurture op het resultaat | **Open** — S5 blijft apart |
+| 6 | Niet samenvoegen; het account is het punt waar alles samenkomt | **Akkoord**, als onderdeel van §3.1 |
+| 7 | Omgevingsvlag `CHECK_SESSION_CREATE_ENABLED` | **Akkoord**, als onderdeel van wijziging 7 |
+
+**Open vraag bij punt 4:** betekent "vooral op aanvulling" (a) dat een partner vooral commissie krijgt als de check doorleidt naar een supplement (de route naar `/supplementen` of `/beste/*`), of (b) dat de lead-attributie een aanvulling is en niet de kern van het programma? Bij (a) is dat een commissieregel in `af_*`, geen wijziging aan deze sessie-ingang. De lead wordt in beide gevallen vastgelegd.
+
+### Oorspronkelijke beslispunten (ter referentie)
 
 1. **Akkoord met de richting en de acht wijzigingen?** Daarna begint S0.
 2. **Turnstile in de check:** akkoord met één extra verificatiemoment bij de eerste opslag? (Meestal onzichtbaar; soms een klik.)
@@ -390,3 +416,47 @@ Geen. Het 2+2-dagboek staat al op `account_id` + `entry_date`, los van elke sess
 7. **Omgevingsvlag:** akkoord met `CHECK_SESSION_CREATE_ENABLED` (standaard uit)?
 
 **Bij akkoord:** de migratie loopt via de Supabase Dashboard SQL Editor (nooit `supabase db push`), met een blok in `supabase/migrations/OPENSTAAND.md` in dezelfde commit, conform CLAUDE.md.
+
+---
+
+## 18. S0 — resultaten (25 sep)
+
+### 18.1 Karakteriseringstests (gedrag van nu, vastgelegd)
+
+| Test | Legt vast | Verandert in |
+|---|---|---|
+| `src/lib/__tests__/intake-session-payload.test.ts` | een rij zonder brede check → `null` | **blijft zo** (de payload betekent "brede check") |
+| `src/lib/supplement-hub/__tests__/hub-personalization.test.ts` (nieuwe case) | een check-log zonder payload van de brede check → `no_intake` | **S3** draait dit om |
+| `src/lib/__tests__/remeasure-reminder-cron.test.ts` | één brede check = kandidaat; alleen een voedingssessie = geen kandidaat; brede check + tweede sessie = geen kandidaat | **S2** (R3): de derde case wordt "wel kandidaat" |
+| `src/app/api/intake/__tests__/nutrition-log-route.test.ts` (bestond al) | geen cookie → 401, niets ingevoegd | **S2**: blijft 401 zonder token; een nieuwe case voor mét token |
+
+### 18.2 Consumers nagelopen: wat doen ze met een voedingssessie?
+
+**In orde, geen wijziging nodig:**
+
+| Consumer | Gedrag bij een rij zonder brede check |
+|---|---|
+| `api/intake/plan` | 404 "Sessie niet gevonden" — correct, er is geen plan zonder brede check |
+| `api/intake/feedback` | slaat het event `profile.recognition` over |
+| `api/account/plan`, `api/account/movement-prefs` | kiezen de nieuwste sessie **mét** `profile_label` (uit de laatste 5) en slaan de voedingssessie dus over |
+| `content/nurture-interventions.ts`, `insights/AanpakMode.tsx` | `null`, dus geen interventies en geen aanbevelingen |
+| `intake-reminder-cron.ts` | valt terug op de standaardteksten; wordt bovendien overgeslagen zodra het e-mailadres een actief account heeft (en dat geldt voor elke herinnering uit `request-link`) |
+| `rapport/[sid]` | leest alleen hermetingen van de brede check |
+| `affiliate-analytics.ts` | telt `referral_source`; een check telt mee als intake, en dat is gewenst |
+| `api/account/waitlist` | neemt de nieuwste sessie-id voor attributie; welke soort maakt niet uit |
+
+**Moeten mee in S2 (nieuw ten opzichte van §12):**
+
+| # | Consumer | Wat er misgaat | Fix |
+|---|---|---|---|
+| F1 | `src/lib/account-voedingsdoelen-server.ts:60-66` | Neemt gewicht, leeftijd en antwoorden uit de **nieuwste** sessie (`limit(1)`). Zodra een ingelogde gebruiker een check doet, is dat een voedingssessie zonder `weight_kg`/`age_range`, en valt zijn eiwitdoel terug naar het doel zonder gewicht — tenzij hij zelf een gewicht instelde in `account_voedingsdoelen`. **Dit is de ernstigste vondst: het raakt het voedingsdashboard van bestaande gebruikers.** | Per veld de nieuwste niet-lege waarde over de sessies van het account |
+| F2 | `api/account/remeasure/start/route.ts:49-55` | Neemt de **oudste** account-sessie als baseline. Is die een voedingssessie, dan vindt `loadBaselineSnapshot` niets, en geeft de hermeting een 400 ("startpunt niet gevonden"). | Filter `session_kind in ('initial','remeasure')` |
+| F3 | `src/lib/intake-session-resolve.ts` (alleen gebruikt door `movement-checkin`) | Neemt de nieuwste account-sessie ongefilterd, dus beweeg-check-ins komen op een voedingssessie te staan | Filter op `session_kind`; lage impact (beweging is ontkoppeld uit de UI) |
+| F4 | `api/admin/data/route.ts:465-468` | Telt een voedingssessie als profiel "Onbekend" in de verdeling | Label `session_kind === "nutrition"` als "Check (voeding)"; cosmetisch |
+| — | `remeasure-reminder-cron.ts` | zie R3 | al in wijziging 8 |
+
+**Onderliggend patroon:** profielgegevens (gewicht, leeftijdsband, geslacht, beweegprofiel) staan op meetrijen in plaats van op de persoon. Daardoor moet elke lezer zelf uitzoeken welke rij het juiste veld draagt. Voor nu lost "de nieuwste niet-lege waarde per veld" dat op (F1). Het profiel verhuizen naar het account (of naar de sessie als pseudoniem anker) is dezelfde stap als afgewezen alternatief B in §4, en valt onder dezelfde "opnieuw bekijken"-voorwaarden.
+
+### 18.3 S1 staat klaar
+
+`supabase/migrations/20260925120000_intake_sessions_session_kind_nutrition.sql`, geregistreerd in `OPENSTAAND.md`, met een controlequery erbij. **Blokkeert deploy: nee**, want nog geen code schrijft `'nutrition'`. De migratie zoekt de oude constraint op zijn definitie, dus de naam vooraf opvragen is niet nodig (R5). Dennis draait hem in de SQL Editor; daarna mag de vlag van S2 aan.
