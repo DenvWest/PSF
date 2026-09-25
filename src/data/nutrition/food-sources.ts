@@ -2,11 +2,10 @@
  * Voedingsbronnen per nutriënt — "wat lever ik met één portie".
  * Productkennis, geen persoonsdata.
  *
- * Alle getallen zijn vandaag INDICATIEF (orde van grootte per portie) — te
- * vervangen door NEVO-waarden vóór livegang, net als portion-dictionary.ts.
- * Die stand staat per rij in `source` + `verified` in plaats van alleen in
- * deze comment: geen enkele rij is vandaag geverifieerd, en dat is afleesbaar
- * in plaats van te onthouden.
+ * Of een getal is nagelegd tegen de brondataset, staat per rij in `source` +
+ * `verified` en niet in deze comment — tel die vlag, want een telling hier
+ * veroudert. Een rij zonder `verified: true` is INDICATIEF (orde van grootte
+ * per portie).
  *
  * ## Citeren mag, herrekenen is van ons (v3)
  *
