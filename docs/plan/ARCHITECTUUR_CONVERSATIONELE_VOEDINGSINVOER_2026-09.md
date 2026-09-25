@@ -48,7 +48,7 @@ De opdracht vraagt ook om geen eigen normen te verzinnen en om herkomst traceerb
 
 | Bestand | Rol |
 |---|---|
-| `src/data/nutrition/food-sources.ts` (2.720 regels) | **De gehaltes.** Per bron: `nutrientValue` (per 100 g, **ongewijzigd uit de brondataset**) en `amount` (onze portie-omrekening, expliciet gescheiden vanwege de NEVO-licentie). `SourceRef { origin: "nevo" \| "usda" \| "voedingscentrum" \| "literatuur", ref, edition }` en `verified: boolean`. **Geen enkele rij staat nu op `verified: true`.** |
+| `src/data/nutrition/food-sources.ts` (2.720 regels) | **De gehaltes.** Per bron: `nutrientValue` (per 100 g, **ongewijzigd uit de brondataset**) en `amount` (onze portie-omrekening, expliciet gescheiden vanwege de NEVO-licentie). `SourceRef { origin: "nevo" \| "usda" \| "voedingscentrum" \| "literatuur", ref, edition }` en `verified: boolean`. **Stand 25 sep: 119 rijen over 5 stoffen; 104 `verified: true` (99 USDA, 5 NEVO), 15 niet (literatuur).** *(Gecorrigeerd: een eerdere versie van dit document zei "geen enkele rij geverifieerd"; dat kwam uit een verouderde kopcomment.)* |
 | `src/data/nutrition/food-catalog.ts` (371 regels in de catalogus) | Wat je kunt invoeren: `key`, `labelNl`, categorie, één van **13 vaste voedselgroepen**, bereiding, `porties: {labelNl, grams}[]`, en `bron` = een sleutel in `FOOD_SOURCES` of `null` ("te loggen, gehaltes nog niet opgehaald"). **Geen enkel getal in de catalogus zelf.** |
 | `src/data/nutrition/supplement-catalog.ts` | Supplementen als invoerbare items |
 | `src/data/nutrition/portion-dictionary.ts` | Portiegroep → gram-equivalent |
@@ -233,7 +233,7 @@ De opdracht vraagt om een `NutritionProvider`-abstractie met meerdere bronnen. *
 
 **Wanneer wél naar Postgres (en een provider-laag):** als de catalogus boven een paar duizend regels uitkomt, als gebruikers eigen producten gaan toevoegen, of als gehaltes moeten veranderen zonder deploy. Geen van die drie speelt nu.
 
-**Vóór tekstinvoer echte getallen toont, moet wel dit gebeuren:** `verified: false` geldt voor elke rij. Tekstinvoer maakt het invoeren makkelijker, maar de getallen erachter worden er niet juister van. De USDA- en NEVO-verificatie (plak 1 van het voedingsfocus-besluit) blijft de voorwaarde voor elke uitlezing in milligrammen.
+**Het echte gat zit in de dekking, niet in de verificatie.** Van de 371 catalogusregels hebben er 92 gehaltes, 115 bewust niet (75 verwaarloosbaar, 24 samengesteld, 16 verrijkt), en **164 zijn te loggen zonder enig gehalte**. Er zijn 5 stoffen, 42 regels met zoekwoorden, en 9 supplementen in de dagboekcatalogus. Tekstinvoer maakt het invoeren makkelijker, maar vult die gaten niet: een chat die "nasi" of "rauwe spinazie" goed herkent, levert voor die items nog steeds geen milligram op. De NEVO-import (`BESLUIT_NEVO_BRONVERMELDING.md`, "import nog te doen") en de USDA-run zijn de voorwaarde voor een dagboekchat die iets toevoegt.
 
 ---
 
