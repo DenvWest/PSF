@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { getUsableClaims } from "@/data/approved-claims";
+import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import type { NutritionLadderReport } from "@/lib/nutrition-ladder";
 import {
   buildNutrientResultRows,
@@ -76,6 +78,25 @@ describe("buildNutrientResultRows", () => {
       const status = statuses.find((s) => s.nutrient === row.nutrient)!;
       expect(row.doorOpen).toBe(status.supplementDoorOpen);
     }
+  });
+
+  it("houdt de deur dicht zonder goedgekeurde EFSA-claim, ook als de routestatus open zegt", () => {
+    // Harde guard: een stof zonder bruikbare claim (eiwit: "geen EU-gezond-
+    // heidsclaims op eiwit als zodanig", zie approved-claims.ts) mag nooit
+    // een productroute openen, wat de routestatus ook zegt. Dit dwingt het
+    // af in plaats van het als afspraak te laten staan — een toekomstige
+    // nutriënt zonder claims-entry valt hier automatisch onder.
+    for (const row of build()) {
+      const claimKey = nutrientReferences[row.nutrient].claimKey;
+      const hasClaim = getUsableClaims(claimKey).length > 0;
+      if (!hasClaim) {
+        expect(row.doorOpen).toBe(false);
+      }
+    }
+    expect(build().some((r) => r.nutrient === "protein")).toBe(true);
+    expect(
+      getUsableClaims(nutrientReferences.protein.claimKey).length,
+    ).toBe(0);
   });
 
   it("gebruikt het advies als actie, anders de route-actie, en bij gedekt een vasthoud-zin", () => {

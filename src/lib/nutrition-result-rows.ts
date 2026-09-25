@@ -1,4 +1,5 @@
-import type { NutrientId } from "@/data/nutrition/intake-reference";
+import { getUsableClaims } from "@/data/approved-claims";
+import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import type { DeltaDirection, NutrientDelta } from "@/lib/nutrition-delta";
 import {
   sortRoutesByAttention,
@@ -15,7 +16,17 @@ import type { SupplementCategory } from "@/types/supplement";
  * De status komt uit de routestatus, de geschiedenis uit de estimate-delta.
  * Dat zijn twee meetlatten, dus de geschiedenis draagt alleen een richting en
  * nooit een bandnaam die met de status kan botsen.
+ *
+ * Harde guard: `doorOpen` mag nooit waar zijn voor een stof zonder
+ * goedgekeurde EFSA-claim. De routestatus bepaalt alleen of het gat via eten
+ * te dichten is; die logica weet niets van claims. Zonder deze guard opent
+ * een toekomstige nutriënt (toegevoegd aan `NutrientId` zonder eigen
+ * `approvedClaims`-entry) automatisch een productroute die wetenschappelijk
+ * niet onderbouwd is — zie BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md §8.
  */
+function hasUsableClaim(nutrient: NutrientId): boolean {
+  return getUsableClaims(nutrientReferences[nutrient].claimKey).length > 0;
+}
 
 export const NUTRIENT_HUB_CATEGORY: Record<NutrientId, SupplementCategory> = {
   protein: "eiwitpoeder",
@@ -90,7 +101,7 @@ export function buildNutrientResultRows({
       thresholdNl: status.route.thresholdNl,
       action,
       sourceLabels: status.sources.slice(0, 3).map((bron) => bron.labelNl),
-      doorOpen: gateOpen && status.supplementDoorOpen,
+      doorOpen: gateOpen && status.supplementDoorOpen && hasUsableClaim(status.nutrient),
       doorReasonNl: status.doorReasonNl,
       supplementHref: buildSupplementHubHref(NUTRIENT_HUB_CATEGORY[status.nutrient]),
       history,
