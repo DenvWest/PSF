@@ -65,7 +65,16 @@ export default function ProductCatalogCard({
       }`}
     >
       <div className="flex flex-col gap-3 p-3 @[16rem]:flex-row @[16rem]:gap-4 @[16rem]:p-4 @[26rem]:p-5">
-        <div className="flex h-36 w-full flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-stone-50 @[16rem]:h-24 @[16rem]:w-24 @[26rem]:h-28 @[26rem]:w-28">
+        <Link
+          href={product.href}
+          className="flex h-36 w-full flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-stone-50 transition-colors hover:bg-stone-100 @[16rem]:h-24 @[16rem]:w-24 @[26rem]:h-28 @[26rem]:w-28"
+          onClick={() =>
+            trackEvent(GA4_EVENTS.SUPPLEMENTEN_PRODUCT_UITGAAND, {
+              product: product.key,
+              bestemming: "productpagina",
+            })
+          }
+        >
           {product.imageSrc ? (
             <Image
               src={product.imageSrc}
@@ -81,7 +90,7 @@ export default function ProductCatalogCard({
               {product.categoryIcon}
             </span>
           )}
-        </div>
+        </Link>
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
