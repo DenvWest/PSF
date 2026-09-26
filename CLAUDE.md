@@ -89,6 +89,7 @@ src/
 - Affiliate links: `rel="nofollow sponsored"`, `target="_blank"`
 - Affiliate links NOOIT in blogposts — alleen op vergelijkingspagina's
 - Affiliate slug keys in `src/data/affiliate-links.ts` moeten matchen in `SupplementProduct`, `ChoiceRoute`, en `AffiliateLink` — mismatch = TypeScript build failure
+- Productafbeeldingen zijn altijd klikbaar: op vergelijkingspagina's (`/beste/*`, `ProductCard`) wrapt de afbeelding in `AffiliateLink` (externe affiliate-link, eigen `sourcePage`); op de hub-catalogus (`/supplementen`, `ProductCatalogCard`) wrapt de afbeelding in `Link href={product.href}` naar de eigen productpagina (zelfde bestemming als de titel)
 
 ### Images & data
 - `imageSrc` waarden moeten exact matchen met filenames in `public/images/producten/` (case-sensitive)

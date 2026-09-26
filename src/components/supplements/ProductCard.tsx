@@ -30,24 +30,29 @@ export function ProductCard({
     >
       <div className="flex flex-col gap-6 md:flex-row">
         <div className="flex shrink-0 flex-col items-center gap-4 md:w-1/3">
-          <div
+          <AffiliateLink
+            affiliateSlug={product.affiliateSlug}
+            category={category}
+            sourcePage="product-card-image"
+            position={position}
             className="relative aspect-square w-36 overflow-hidden rounded-xl border border-slate-100 bg-slate-50"
-            style={{ aspectRatio: "1/1" }}
           >
-            {product.imageSrc ? (
-              <Image
-                src={product.imageSrc}
-                alt={product.imageAlt ?? product.name}
-                fill
-                sizes="144px"
-                className="object-contain p-2"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-slate-300 text-4xl">
-                💊
-              </div>
-            )}
-          </div>
+            <div className="relative h-full w-full" style={{ aspectRatio: "1/1" }}>
+              {product.imageSrc ? (
+                <Image
+                  src={product.imageSrc}
+                  alt={product.imageAlt ?? product.name}
+                  fill
+                  sizes="144px"
+                  className="object-contain p-2"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-slate-300 text-4xl">
+                  💊
+                </div>
+              )}
+            </div>
+          </AffiliateLink>
 
           <div className="flex flex-col items-center gap-1">
             <div className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-emerald-500 bg-white text-xl font-bold text-emerald-700">

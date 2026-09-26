@@ -126,3 +126,48 @@ describe("ProductCatalog zoeken en pagineren", () => {
     expect(screen.getAllByRole("article")).toHaveLength(10);
   });
 });
+
+describe("ProductCatalog 'Toon meer'-stand overleeft browser-terugknop", () => {
+  it("zet de stand in de URL en herstelt hem bij een nieuwe mount", () => {
+    window.history.replaceState(null, "", "/supplementen");
+
+    const { unmount } = render(
+      <ProductCatalog products={products} personalization={{ state: "no_intake" }} />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Toon \d+ meer/ }));
+    expect(screen.getAllByRole("article")).toHaveLength(
+      Math.min(20, products.length),
+    );
+    expect(new URLSearchParams(window.location.search).get("toon")).toBe("20");
+
+    // Een browser-terugnavigatie unmount de component en mount hem opnieuw;
+    // de URL is het enige dat die reis overleeft.
+    unmount();
+    render(
+      <ProductCatalog products={products} personalization={{ state: "no_intake" }} />,
+    );
+
+    expect(screen.getAllByRole("article")).toHaveLength(
+      Math.min(20, products.length),
+    );
+  });
+
+  it("wist de URL-stand zodra een filter de paginering weer op 10 zet", () => {
+    window.history.replaceState(null, "", "/supplementen");
+
+    render(
+      <ProductCatalog products={products} personalization={{ state: "no_intake" }} />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Toon \d+ meer/ }));
+    expect(new URLSearchParams(window.location.search).get("toon")).toBe("20");
+
+    const zoekveld = screen.getByRole("searchbox", {
+      name: /Zoek in de supplementen/,
+    });
+    fireEvent.change(zoekveld, { target: { value: products[0].brand } });
+
+    expect(new URLSearchParams(window.location.search).get("toon")).toBeNull();
+  });
+});
