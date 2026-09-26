@@ -22,7 +22,7 @@ import type { SupplementProduct } from "@/types/supplement";
  * (backfill + rendering vergeleken met de statische versie). Uitbreiden is
  * een bewuste, kleine wijziging per categorie — niet alle 7 in één keer.
  */
-const DB_BACKED_CATEGORIES = new Set<string>(["zink"]);
+const DB_BACKED_CATEGORIES = new Set<string>(["zink", "magnesium"]);
 
 export async function loadProductsForPage(
   categorySlug: string,
