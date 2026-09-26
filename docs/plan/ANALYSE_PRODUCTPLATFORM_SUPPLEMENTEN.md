@@ -1,7 +1,8 @@
 # Analyse — van supplementengids naar productvergelijkingsplatform
 
-**Datum:** 15 augustus 2026
-**Status:** voorstel, nog geen implementatie
+**Datum:** 15 augustus 2026, §808 beslist + plak 0 opgeleverd 26 september 2026
+**Status:** architectuur en de vijf openstaande beslissingen (§808) vastgesteld; plak 0
+opgeleverd (`docs/partners/`); plak 1 (schema + scoremotor) nog niet gestart
 **Scope:** `/supplementen`, `/beste/*`, productdatabase, admin-productbeheer, retailerkoppeling, keuzehulp, koppeling Leefstijlcheck
 
 Alles hieronder is gebaseerd op inspectie van de codebase op commit `8b30120`. Wat ik niet
@@ -805,17 +806,84 @@ mogelijk in plaats van nieuwe te verzinnen.
 
 ---
 
-## Openstaande beslissingen
+## Openstaande beslissingen — BESLIST (26 sep 2026)
 
-1. **Wederpartij** — contracteer je met *merken* (Arctic Blue-model: verkoopt alleen eigen
-   producten, hoge commissie, geen prijsvergelijking) of met *webshops* (Vitaminstore-model:
-   breed assortiment, prijsvergelijking mogelijk, lagere commissie)? Dit bepaalt hoeveel
-   `sup_offers` en de "Waar te koop"-module waard zijn. Zie §C4.
-2. **Breedte** — akkoord met 60–80 producten in plaats van een open catalogus? (§L5)
-3. **Scoreschaal 0–100** — akkoord met de conversie van de huidige 0–10?
-4. **Detailpagina vóór modal** — akkoord dat de modal V2 wordt? (§E)
-5. **Niet-partnernorm** — hoeveel producten zonder commerciële relatie moeten er minimaal in
-   elke categorievergelijking staan? Redactionele keuze met juridische weerslag. (§K2)
+Alle vijf zijn nu beantwoord. Zie het wijzigingslog voor de datum en de secties die hierdoor
+zijn herzien.
+
+1. **Wederpartij — allebei, per categorie.** Geen vaste regel merk-vs-webshop; per categorie
+   het model kiezen dat het best past. Gevolg: `sup_offers` kan **niet** overal op N=1 rekenen
+   zoals §C4 als normaalgeval aannam — bij webshop-categorieën is N>1 (meerdere retailers per
+   product) het normale geval, en de "Waar te koop"-module met prijsvergelijking moet vanaf
+   plak 4 volwaardig zijn, niet minimaal. `sup_retailers.relationship` (`'direct'|'network'`)
+   blijft de schakelaar, maar per categorie kan dat overwegend `direct` (merken) of een mix
+   met meerdere `direct`/`network`-retailers naast elkaar zijn (webshops).
+2. **Breedte — 150–200+ producten, 15–20+ categorieën.** Ruim boven het 60–80-advies van §L5.
+   Dit verandert de risico-inschatting in §L5 en §F wezenlijk: bij dit aantal is handmatig
+   onderhoud zonder bewaking niet vol te houden, dus **de publiceerpoort en het
+   versheidsdashboard zijn vanaf plak 1/2 verplicht, niet een latere verfijning.** Zie de
+   toevoeging bij §L5 hieronder.
+3. **Scoreschaal 0–100 — akkoord**, met de voorgestelde gewichten (dosering 30% · vorm 20% ·
+   transparantie 20% · prijs per effectieve dosis 20% · onafhankelijke toetsing 10%). Geen
+   wijziging nodig in §C3.
+4. **Detailpagina vóór modal — akkoord.** `/product/[slug]` in plak 3, quick-view-modal blijft
+   V2 zoals §E al voorstelde. Geen wijziging nodig.
+5. **Niet-partnernorm — minimaal 1 op de 3 à 4 producten zonder commerciële relatie**, per
+   categorievergelijking. Concreet: in een top-3 minstens 1 niet-partnerproduct dat op basis
+   van score alleen kan meedoen en winnen; in een bredere categorielijst van bijv. 8 producten
+   minstens 2. Dit is een harde redactionele norm, niet een streefgetal — zie toevoeging bij
+   §K2 hieronder over hoe dit afgedwongen wordt.
+
+**Gevolg voor de bouwvolgorde:** met wederpartij "allebei per categorie" en 150–200+ producten
+is plak 4 (retailers + aanbiedingen) **groter**, niet kleiner, dan §C4 oorspronkelijk aannam —
+de aanname "N=1 verkoper is het normaalgeval" geldt alleen voor de merk-categorieën, niet voor
+de webshop-categorieën. Zie herziening bij §C4 hieronder.
+
+### Toevoeging bij §C4 — wederpartij per categorie
+
+De aanname "bij een portfolio van directe merkcontracten is er meestal één verkoper per
+product" (oorspronkelijke §C4-tekst) geldt **alleen voor categorieën waar met merken wordt
+gecontracteerd**. Voor categorieën waar met webshops wordt gecontracteerd, is N>1 het
+normaalgeval en moet de "Waar te koop"-tabel met meerdere prijzen naast elkaar (zoals §C4 die
+oorspronkelijk als uitzondering beschreef) vanaf plak 4 de standaardweergave zijn, niet de
+uitzondering. `sup_offers` (N-op-1 tussen product en retailer) hoefde hier al op te rekenen —
+dat blijft ongewijzigd — maar de UI-aanname in plak 4 ("multi-retailer-UI minimaal tot er
+overlap is") vervalt: bouw de multi-retailer-weergave meteen volwaardig, categorie-onafhankelijk.
+
+### Toevoeging bij §L5 — onderhoud bij 150–200+ producten
+
+Het oorspronkelijke advies (21 → 60–80 producten) had als kern dat handmatig onderhoud bij een
+klein aantal nog te overzien is zonder zware tooling. Bij 150–200+ producten over 15–20+
+categorieën geldt dat niet meer. Concreet vanaf plak 1/2 verplicht, niet optioneel:
+
+- De **publiceerpoort** (§F) moet er zijn vóórdat er meer dan een handjevol producten live gaat
+  — niet als latere kwaliteitsslag.
+- Het **versheidsdashboard** (§F, query over `data_checked_at`/`price_checked_at`/
+  `sup_product_images.checked_at`) moet vanaf plak 2 draaien, niet later toegevoegd worden.
+- Overweeg bij deze breedte om de **CSV/feed-import** (`/admin/import`, oorspronkelijk gepland
+  als losse stap na plak 2) eerder te trekken dan de volgorde in §J suggereert — handmatige
+  invoer van 150+ producten één voor één is bij deze schaal zelf al een contentschuld-risico.
+  Dit is geen harde herplanning van §J, wel een aandachtspunt bij de uitvoering van plak 2.
+
+De "wij nemen alleen producten op die de toets doorstaan"-redenering blijft overeind, maar het
+aantal waarbij dat nog geloofwaardig is zonder geautomatiseerde bewaking ligt lager dan 150–200.
+Zonder de bewaking hierboven is dit aantal het contentschuld-risico dat §L5 beschrijft, niet een
+oplossing ervoor.
+
+### Toevoeging bij §K2 — afdwingen van de niet-partnernorm
+
+"Minimaal 1 op de 3 à 4" is een redactionele norm met juridische weerslag (Omnibus-richtlijn,
+art. 6:193b BW) en moet dus **afdwingbaar** zijn, niet alleen afgesproken:
+
+- Leg per `sup_categories`-rij vast hoeveel producten in de huidige samenstelling geen
+  `pd_partner_id`-relatie hebben (afgeleid, niet los ingevoerd).
+- De publiceerpoort (§F) of een aparte categorie-samenstellingscheck in de admin toont een
+  waarschuwing zodra een categorievergelijking onder de norm zakt (bijv. top-3 met 0
+  niet-partnerproducten, of een lijst van 8 met minder dan 2).
+- Dit is een signaal, geen harde blokkade zoals de publiceerpoort dat wel is voor claims/
+  afbeeldingen — het gaat over de *samenstelling* van een lijst, niet over een individueel
+  product, dus een enkel product mag altijd gepubliceerd worden; de waarschuwing gaat over het
+  geheel van een categorie.
 
 ---
 
@@ -827,3 +895,15 @@ kunnen overstappen. Herzien: §C4 (relationship + merk-als-verkoper), nieuw §C6
 (conversie-inname upstream), §G (omzetdashboard wél bouwbaar, in PartnerDesk), plak 0
 (contract-bijlage i.p.v. feed-go/no-go), nieuw plak 4b, §K2/§K3 (scherpere disclosure,
 beeldrecht via contract), §L1 (onderhandelings- i.p.v. feedafhankelijkheid).
+
+**26 sep 2026** — Besluit Dennis: alle vijf openstaande beslissingen beantwoord. Wederpartij:
+allebei, per categorie (niet uitsluitend merken). Breedte: 150–200+ producten over 15–20+
+categorieën (ruim boven het 60–80-advies), met als gevolg dat publiceerpoort en
+versheidsdashboard vanaf plak 1/2 verplicht zijn. Scoreschaal 0–100 met de voorgestelde
+gewichten: akkoord, ongewijzigd. Detailpagina vóór modal: akkoord, ongewijzigd.
+Niet-partnernorm: minimaal 1 op de 3 à 4 producten per categorievergelijking, afdwingbaar via
+een samenstellingscheck. Herzien: §C4 (multi-retailer-UI niet langer "minimaal" maar
+categorie-afhankelijk volwaardig), §L5 (verplichte bewaking bij deze schaal), §K2 (norm nu
+afdwingbaar gespecificeerd). Plak 0 (contract-data-bijlage + click_token-spec) is inmiddels
+opgeleverd, zie `docs/partners/DATA_BIJLAGE_PARTNERCONTRACT.md` en
+`docs/partners/SPEC_CLICK_TOKEN_TRACKING.md`.
