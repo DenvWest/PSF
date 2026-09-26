@@ -58,7 +58,10 @@ export default function DagboekNutrientDetail({
       (rij): rij is { item: DagboekItem; bedrag: NonNullable<typeof rij.bedrag> } =>
         rij.bedrag !== null,
     )
-    .filter((rij) => zichtbaarMoment === "alle" || rij.item.moment === zichtbaarMoment);
+    .filter((rij) => zichtbaarMoment === "alle" || rij.item.moment === zichtbaarMoment)
+    // Grootste bijdrage eerst: wie wil weten "waar zit mijn magnesium in"
+    // vraagt naar de belangrijkste bron, niet naar de volgorde waarin je at.
+    .sort((a, b) => b.bedrag.value - a.bedrag.value);
 
   const label = nutrientReferences[nutrient].label;
   const gedekt = stof && stof.minstens > 0;

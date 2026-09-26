@@ -26,6 +26,7 @@ type ClientEmitType = Extract<
   | "nutrition.dagboek_completed"
   | "nutrition.dagboek_kalibratie_shown"
   | "nutrition.dagboek_nutrient_opened"
+  | "nutrition.dagboek_maaltijd_geopend"
   | "nutrition.dagboek_zoek_item_gekozen"
   | "nutrition.dagboek_portie_bevestigd"
   | "nutrition.dagboek_favoriet_toegevoegd"

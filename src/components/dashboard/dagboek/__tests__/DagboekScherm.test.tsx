@@ -45,64 +45,84 @@ function maaltijdBlok(label: string): HTMLElement {
 }
 
 describe("DagboekScherm — zoeken per maaltijd", () => {
-  it("opent het zoekveld binnen de maaltijd die je aanklikt", async () => {
+  it("opent het volledige zoekscherm voor de maaltijd die je aanklikt", async () => {
     render(<DagboekScherm />);
 
-    const avondeten = maaltijdBlok("Avondeten");
-    fireEvent.click(within(avondeten).getByRole("button", { name: "+ Toevoegen" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Avondeten — product toevoegen" }),
+    );
 
-    // Het veld hoort in het avondeten-blok te staan, niet ergens bovenaan.
+    // De hele balk is de knop, en die opent hetzelfde zoekscherm als een
+    // nutriëntdetail — met titel, momentkeuze en tabbladen, niet een los
+    // inline veld dat alleen voeding kon vinden.
     expect(
-      within(maaltijdBlok("Avondeten")).getByLabelText(
-        "Zoek een product voor avondeten",
-      ),
+      await screen.findByRole("heading", { name: "Voeg toe aan avondeten" }),
     ).toBeTruthy();
+    const momentGroep = screen.getByRole("group", { name: "Eetmoment" });
     expect(
-      within(maaltijdBlok("Ontbijt")).queryByRole("searchbox"),
-    ).toBeNull();
+      within(momentGroep).getByRole("button", { name: "Avondeten" }).getAttribute(
+        "aria-pressed",
+      ),
+    ).toBe("true");
+    expect(screen.getByRole("tab", { name: "Mijn supplementen" })).toBeTruthy();
   });
 
-  it("voegt een gezocht product toe en houdt het veld open voor het volgende", async () => {
+  it("voegt een gezocht product toe en laat je in de zoeklijst voor het volgende", async () => {
     render(<DagboekScherm />);
 
-    const ontbijt = maaltijdBlok("Ontbijt");
-    fireEvent.click(within(ontbijt).getByRole("button", { name: "+ Toevoegen" }));
-
-    const veld = within(maaltijdBlok("Ontbijt")).getByLabelText(
-      "Zoek een product voor ontbijt",
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
     );
-    fireEvent.change(veld, { target: { value: "havermout" } });
-    fireEvent.click(await screen.findByRole("button", { name: /Havermout/ }));
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    );
+    fireEvent.change(zoekveld, { target: { value: "havermout" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    fireEvent.click(await screen.findByRole("button", { name: "Toevoegen" }));
 
+    // Terug in de zoeklijst, klaar voor het volgende product — niet terug
+    // naar het overzicht, want een maaltijd is zelden één product.
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText("Zoek een voedingsmiddel of supplement"),
+      ).toBeTruthy();
+    });
+
+    // Pas via de terugknop is het toegevoegde product in de maaltijdtabel te zien.
+    fireEvent.click(screen.getByRole("button", { name: "Terug" }));
     await waitFor(() => {
       expect(within(maaltijdBlok("Ontbijt")).getByText("Havermout")).toBeTruthy();
     });
-
-    // Klaar voor het volgende product: het veld staat er nog, zonder zoekterm.
-    const naVeld = within(maaltijdBlok("Ontbijt")).getByLabelText(
-      "Zoek een product voor ontbijt",
-    ) as HTMLInputElement;
-    expect(naVeld.value).toBe("");
   });
 
-  it("sluit het zoekveld als je nogmaals op Toevoegen klikt", async () => {
+  it("kan het eetmoment nog wijzigen vlak vóór je een product kiest", async () => {
     render(<DagboekScherm />);
 
-    const lunch = maaltijdBlok("Lunch");
-    fireEvent.click(within(lunch).getByRole("button", { name: "+ Toevoegen" }));
-    expect(
-      within(maaltijdBlok("Lunch")).getByLabelText("Zoek een product voor lunch"),
-    ).toBeTruthy();
-
     fireEvent.click(
-      within(maaltijdBlok("Lunch")).getByRole("button", { name: "+ Toevoegen" }),
+      screen.getByRole("button", { name: "Lunch — product toevoegen" }),
     );
-    expect(
-      within(maaltijdBlok("Lunch")).queryByLabelText("Zoek een product voor lunch"),
-    ).toBeNull();
+    const momentGroep = await screen.findByRole("group", { name: "Eetmoment" });
+    fireEvent.click(within(momentGroep).getByRole("button", { name: "Tussendoor" }));
+
+    fireEvent.change(
+      screen.getByLabelText("Zoek een voedingsmiddel of supplement"),
+      { target: { value: "havermout" } },
+    );
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    fireEvent.click(await screen.findByRole("button", { name: "Toevoegen" }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText("Zoek een voedingsmiddel of supplement"),
+      ).toBeTruthy();
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Terug" }));
+    await waitFor(() => {
+      expect(within(maaltijdBlok("Tussendoor")).getByText("Havermout")).toBeTruthy();
+    });
   });
 
-  it("toont wat je eerder at zodra het veld opengaat, nog voor je typt", async () => {
+  it("toont wat je eerder at zodra het scherm opengaat, nog voor je typt", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn((input: RequestInfo | URL) => {
@@ -131,12 +151,14 @@ describe("DagboekScherm — zoeken per maaltijd", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(
-      within(maaltijdBlok("Ontbijt")).getByRole("button", { name: "+ Toevoegen" }),
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
     );
 
-    expect(await screen.findByText("Eerder gegeten")).toBeTruthy();
-    // Meest recente dag eerst: donderdag (volkorenbrood) vóór woensdag.
-    const knoppen = screen.getAllByRole("button", { name: /Havermout|Volkorenbrood/ });
+    expect(await screen.findByText("Eerder gebruikt")).toBeTruthy();
+    // Meest recente dag eerst: donderdag (volkorenbrood) vóór woensdag. Anker
+    // op het begin van de naam: de ster-knop ernaast heet "Bewaar X als
+    // favoriet" en zou anders ook meetellen.
+    const knoppen = screen.getAllByRole("button", { name: /^(Havermout|Volkorenbrood)/ });
     expect(knoppen[0]!.textContent).toContain("Volkorenbrood");
     expect(knoppen[1]!.textContent).toContain("Havermout");
   });
@@ -145,13 +167,14 @@ describe("DagboekScherm — zoeken per maaltijd", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(
-      within(maaltijdBlok("Ontbijt")).getByRole("button", { name: "+ Toevoegen" }),
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
     );
     fireEvent.change(
-      within(maaltijdBlok("Ontbijt")).getByLabelText("Zoek een product voor ontbijt"),
+      await screen.findByLabelText("Zoek een voedingsmiddel of supplement"),
       { target: { value: "havermout" } },
     );
-    fireEvent.click(await screen.findByRole("button", { name: /Havermout/ }));
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    fireEvent.click(await screen.findByRole("button", { name: "Toevoegen" }));
 
     await waitFor(() => {
       const posts = vi.mocked(fetch).mock.calls.filter(
@@ -183,7 +206,9 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
       await screen.findByRole("heading", { name: "Magnesium" }),
     ).toBeTruthy();
     // De weekstrip en de eetmomenten horen niet meer op dit scherm te staan.
-    expect(screen.queryByRole("button", { name: "+ Toevoegen" })).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Ontbijt — product toevoegen" }),
+    ).toBeNull();
   });
 
   it("gaat van detail naar zoeken naar portie-invoer en schrijft een supplement-item weg", async () => {
@@ -334,20 +359,6 @@ describe("DagboekScherm — favorieten", () => {
   });
 });
 
-/**
- * De regels zoals ze in de maaltijdtabel staan — niet in het zoekveld.
- *
- * De eerste cel draagt naast de productnaam ook het label van het
- * aantal-invoerveld, vandaar dat aanroepers op de naam matchen met
- * `startsWith` in plaats van op gelijkheid.
- */
-function regelsIn(label: string): string[] {
-  return within(maaltijdBlok(label))
-    .queryAllByRole("row")
-    .map((rij) => rij.querySelector("td")?.textContent?.trim() ?? "")
-    .filter(Boolean);
-}
-
 describe("DagboekScherm — opslaan dat misgaat", () => {
   /**
    * De optimistische regel verscheen meteen, maar bleef ook staan als de POST
@@ -370,13 +381,23 @@ describe("DagboekScherm — opslaan dat misgaat", () => {
 
     render(<DagboekScherm />);
 
-    const ontbijt = maaltijdBlok("Ontbijt");
-    fireEvent.click(within(ontbijt).getByRole("button", { name: "+ Toevoegen" }));
-    const veld = within(maaltijdBlok("Ontbijt")).getByLabelText(
-      "Zoek een product voor ontbijt",
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
     );
-    fireEvent.change(veld, { target: { value: "havermout" } });
-    fireEvent.click(await screen.findByRole("button", { name: /Havermout/ }));
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    );
+    fireEvent.change(zoekveld, { target: { value: "havermout" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    fireEvent.click(await screen.findByRole("button", { name: "Toevoegen" }));
+
+    // Terug naar het overzicht: de foutmelding staat daar, niet op het zoekscherm.
+    await waitFor(() => {
+      expect(
+        screen.getByLabelText("Zoek een voedingsmiddel of supplement"),
+      ).toBeTruthy();
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Terug" }));
 
     // De melding komt, en de regel die niet is opgeslagen staat er niet meer.
     expect((await screen.findByRole("status")).textContent).toContain(
@@ -388,10 +409,15 @@ describe("DagboekScherm — opslaan dat misgaat", () => {
   });
 
   /**
-   * Twee snelle toevoegingen op een trage verbinding: als het antwoord op de
-   * eerste ná dat op de tweede binnenkomt, mag het de tweede niet terugdraaien.
+   * De `schrijfTeller`-bescherming in `bewaar()` voorkomt dat een laat
+   * antwoord op een oud verzoek een nieuwer resultaat terugdraait. Sinds het
+   * volledige zoekscherm ook de "Toevoegen"-knop `disabled={busy}` maakt, kan
+   * een gebruiker geen tweede schrijfactie meer starten vóór de eerste klaar
+   * is — de race die deze test eerder forceerde via twee snelle kliks bestaat
+   * dus niet meer op UI-niveau. Dat is een verbetering: deze test legt vast
+   * dat de knop inderdaad geblokkeerd blijft zolang er een schrijving loopt.
    */
-  it("laat een laat antwoord op een oud verzoek de nieuwere lijst niet overschrijven", async () => {
+  it("blokkeert een tweede toevoeging zolang de eerste nog opgeslagen wordt", async () => {
     const wachtenden: Array<(waarde: Response) => void> = [];
 
     vi.stubGlobal(
@@ -411,37 +437,34 @@ describe("DagboekScherm — opslaan dat misgaat", () => {
 
     render(<DagboekScherm />);
 
-    const ontbijt = maaltijdBlok("Ontbijt");
-    fireEvent.click(within(ontbijt).getByRole("button", { name: "+ Toevoegen" }));
-    const veld = within(maaltijdBlok("Ontbijt")).getByLabelText(
-      "Zoek een product voor ontbijt",
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    );
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
     );
 
-    fireEvent.change(veld, { target: { value: "havermout" } });
-    fireEvent.click(await screen.findByRole("button", { name: /Havermout/ }));
+    fireEvent.change(zoekveld, { target: { value: "havermout" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    fireEvent.click(await screen.findByRole("button", { name: "Toevoegen" }));
 
-    fireEvent.change(veld, { target: { value: "walnoten" } });
-    fireEvent.click(await screen.findByRole("button", { name: /Walnoten/ }));
+    await waitFor(() => expect(wachtenden).toHaveLength(1));
 
-    await waitFor(() => expect(wachtenden).toHaveLength(2));
+    // Nog geen tweede kans: de zoekknoppen zijn er weer, maar het toevoegen
+    // zelf ligt stil tot de eerste POST is beantwoord.
+    fireEvent.change(zoekveld, { target: { value: "walnoten" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^Walnoten/ }));
+    expect(
+      (screen.getByRole("button", { name: "Toevoegen" }) as HTMLButtonElement).disabled,
+    ).toBe(true);
 
-    // Het tweede verzoek slaagt, daarna pas het eerste — de omgekeerde
-    // volgorde waarin een trage verbinding ze kan afleveren.
-    wachtenden[1]({ ok: true, json: () => Promise.resolve({}) } as Response);
-    await waitFor(() => expect(regelsIn("Ontbijt").length).toBeGreaterThan(1));
     wachtenden[0]({ ok: true, json: () => Promise.resolve({}) } as Response);
 
-    // Even naar een andere dag en terug: daarmee leest het scherm niet meer uit
-    // de optimistische override maar uit wat de antwoorden hebben neergezet.
-    // Zou het late antwoord op het oude verzoek hebben mogen schrijven, dan
-    // droeg die dag nu alleen nog havermout.
-    fireEvent.click(screen.getByRole("button", { name: /^do 17/ }));
-    fireEvent.click(screen.getByRole("button", { name: /^vr 18/ }));
-
     await waitFor(() => {
-      expect(regelsIn("Ontbijt").some((r) => r.startsWith("Havermout"))).toBe(true);
+      expect(
+        (screen.getByRole("button", { name: "Toevoegen" }) as HTMLButtonElement).disabled,
+      ).toBe(false);
     });
-    expect(regelsIn("Ontbijt").some((r) => r.startsWith("Walnoten"))).toBe(true);
   });
 });
 
