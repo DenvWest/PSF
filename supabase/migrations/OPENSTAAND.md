@@ -7,14 +7,30 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20260925120000_intake_sessions_session_kind_nutrition.sql`
-- **Openstaand:** geen
-- **Laatst bijgewerkt:** 25 september 2026
+- **Openstaand:** 3 migraties (productplatform plak 1, zie hieronder)
+- **Laatst bijgewerkt:** 26 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
 
-Niets — alle migraties t/m de baseline zijn gedraaid.
+### [ ] 20260926065019_sup_catalog.sql
+- **Wat:** productcatalogus-laag (`sup_brands`, `sup_categories`, `sup_products`, `sup_product_actives`, `sup_product_ingredients`, `sup_product_certifications`, `sup_product_claims`, `sup_sources`, `sup_product_images`). RLS deny-all, service-role-only.
+- **Blokkeert deploy:** nee — puur additief, geen bestaande code leest of schrijft deze tabellen. `/beste/*` blijft op de statische `ComparisonPageData`-bestanden draaien tot de DB-loader (latere plak) expliciet overschakelt.
+- **Hoort bij:** PartnerDesk-productplatform plak 1, zie `docs/plan/ANALYSE_PRODUCTPLATFORM_SUPPLEMENTEN.md` §C2 en de §808-beslissingen (26 sep 2026).
+- **Terugdraaien:** `drop table` in omgekeerde afhankelijkheidsvolgorde (eerst `sup_product_images`/`sup_sources`/`sup_product_claims`/`sup_product_certifications`/`sup_product_ingredients`/`sup_product_actives`, dan `sup_products`, dan `sup_categories`/`sup_brands`).
+
+### [ ] 20260926065020_sup_scoring.sql
+- **Wat:** scorelaag (`sup_score_models`, `sup_scores`, `sup_badges`), inclusief seed van scoremodel v1.0.0 met de gewichten uit §C3. Vereist `sup_catalog.sql` (foreign keys naar `sup_products`/`sup_categories`).
+- **Blokkeert deploy:** nee — additief, ongebruikt totdat `computeScore()` en de DB-loader bestaan.
+- **Hoort bij:** zelfde plak als hierboven.
+- **Terugdraaien:** `drop table public.sup_badges, public.sup_scores, public.sup_score_models;`
+
+### [ ] 20260926065021_sup_retail.sql
+- **Wat:** retail- en prijslaag (`sup_retailers`, `sup_offers`, `sup_offer_price_history`, `sup_clicks`). Vereist `sup_catalog.sql`. `relationship` ondersteunt zowel `direct` als `network` naast elkaar (§808: wederpartij per categorie, geen N=1-aanname).
+- **Blokkeert deploy:** nee — additief, `affiliate_clicks` blijft ongewijzigd in gebruik tot de overgang (zie §C4-slot van het analysedoc).
+- **Hoort bij:** zelfde plak als hierboven.
+- **Terugdraaien:** `drop table public.sup_clicks, public.sup_offer_price_history, public.sup_offers, public.sup_retailers;`
 
 ## Runbook bij thuiskomst
 
