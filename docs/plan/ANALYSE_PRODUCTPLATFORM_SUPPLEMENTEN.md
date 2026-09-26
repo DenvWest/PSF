@@ -183,31 +183,80 @@ sup_product_images  (id, product_id, path, alt, position,
 
 ### C3. Scorelaag — bewust gescheiden
 
+> **BIJGEWERKT 26 sep 2026 — dit is inmiddels al gebouwd, met een andere verdeling.**
+> Op 27 augustus 2026 is `src/lib/supplement-score/` (`computeTrustScore()`,
+> `TrustScoreInput`/`TrustScoreResult` in `src/types/supplement-score.ts`) opgeleverd
+> en draait het al op `/supplementen` (zie commit `c5a4c214`, "PS-Score productcatalogus
+> vervangt themagrid"). Dat gebeurde buiten dit analysedocument om en is nooit
+> teruggeschreven naar `docs/plan/` — een fout die deze sectie nu herstelt. **De
+> gewichtentabel hieronder (het oorspronkelijke §C3-voorstel van 15 aug) is
+> vervangen en NIET meer leidend.** `src/data/supplement-hub/score-model.ts` bevat
+> zelf al de opmerking: *"Wijkt hiermee bewust af van de gewichtentabel in
+> ANALYSE_PRODUCTPLATFORM_SUPPLEMENTEN.md §C3, die prijs voor 20% in de score
+> legde."* Zie de originele tekst hieronder als historisch voorstel, en het
+> huidige model in het kader eronder als wat feitelijk draait.
+
+**Wat er nu draait — PS-Score, versie `1.2.0` (3 sep 2026):**
+
+| Component | Gewicht | Bron in data |
+|---|---|---|
+| Dosering t.o.v. onderzoeksdosis | 30% | `EVIDENCE_DOSE` × `DoseringPerDagdosis` |
+| Vorm/opneembaarheid | 25% | `TIER_POINTS` per `BioavailabilityTier`, categorie-specifiek |
+| Claimdekking (erkende EU-claims) | 15% | `approved-claims.ts` × dagdosering |
+| Transparantie etiket | 15% | `LabelFacts` (4 objectieve etiketfeiten) |
+| Onafhankelijke toetsing | 15% | `thirdPartyTested` + categorie-`kwaliteitsmarkers` |
+
+**Prijs zit hier bewust NIET in** — expliciet anders dan het oorspronkelijke §C3-voorstel.
+Reden (uit de moduledoc van `score-model.ts`): prijs in de kwaliteitsscore maakt
+kwaliteitsrang en kostenrang twee metingen van deels hetzelfde, waardoor de lezer ze niet
+meer tegen elkaar kan afwegen. Prijs krijgt een eigen rang (prijs per effectieve dosis,
+zie §C4), niet een aandeel in de score. Dit is dus scherper dan het oorspronkelijke
+voorstel, niet losser.
+
+Ook nieuw t.o.v. het oorspronkelijke voorstel: **`claimStance`** (een toestand, geen
+punten — `voldoet | voldoet_deels | voldoet_niet | geen_erkende_claim | onbepaald`) naast
+de `claimdekking`-punten, en **hernormalisatie**: valt een onderdeel uit (bijv. omdat de
+dagdosis niet uit het etiket is vast te stellen), dan herverdeelt het gewicht zich over de
+overige componenten in plaats van een nul te geven. "Niet weten" en "slecht scoren" zijn
+in dit model twee verschillende dingen.
+
 ```sql
 sup_score_models (id, version, weights jsonb, active_from, changelog, notes)
-sup_scores       (id, product_id, model_version, total_0_100, subscores jsonb,
-                  inputs_hash, computed_at)
+sup_scores       (id, product_id, model_version, total_0_100, components jsonb,
+                  determined_count, total_count, claim_stance, inputs_hash, computed_at)
 sup_badges       (product_id, category_id, badge_key, rank, computed_at)
 ```
 
-Drie eigenschappen die dit anders maken dan nu:
+(`components` vervangt het oorspronkelijke `subscores` — het bewaart de volledige
+`ScoreComponentResult[]`-vorm inclusief `reden` per onderdeel, niet alleen getallen, zodat
+"waarom deze score" reconstrueerbaar blijft uit de opgeslagen rij.)
 
-1. **Berekend, niet ingevoerd.** De admin voert *inputs* in (mg elementair, servings,
-   prijs, additieven, third-party test). `computeScore()` in `src/lib/supplement-score/`
-   is een pure functie. "Waarom deze score" is dan gratis: de subscores zíjn de uitleg.
+Drie eigenschappen die dit anders maken dan de oude handmatige score op `/beste/*`:
+
+1. **Berekend, niet ingevoerd.** `computeTrustScore()` in `src/lib/supplement-score/`
+   is een pure functie op etiketfeiten. "Waarom deze score" is dan gratis: de subscores
+   (met hun `reden`-tekst) zíjn de uitleg.
 2. **Geversioneerd**, zoals `RULES_VERSION` bij de Leefstijlcheck. Een modelwijziging
-   herberekent alles en is publiek na te lezen.
-3. **Structurele affiliate-firewall.** Het inputtype van `computeScore()` bevat geen
-   `retailer_id`, geen `commission`, geen `affiliate_url` — die velden zijn niet
-   *bereikbaar* vanuit de functie. Afdwingen met een test naar het model van
-   `src/lib/connection-profile/__tests__/firewall.test.ts`, die daar al hetzelfde doet
-   voor gezondheidsdata. Dat is §21 van de opdracht als code in plaats van als belofte.
+   herberekent alles en is publiek na te lezen (`PS_SCORE_MODEL_VERSION`).
+3. **Structurele affiliate-firewall.** Het inputtype (`TrustScoreInput`) bevat geen
+   `retailer_id`, geen `commission`, geen `affiliate_url`, geen prijs — die velden zijn
+   niet *bereikbaar* vanuit de functie. Al afgedwongen met een firewall-test naar het
+   model van `src/lib/connection-profile/__tests__/firewall.test.ts`:
+   `src/lib/supplement-score/__tests__/firewall.test.ts` bestaat al en draait.
 
-**Schaal wordt 0–100.** De huidige 0–10 met halve punten suggereert precisie die er niet
-is; 0–100 is de schaal die het dode type al aannam en die badges beter draagt. Eenmalige
-conversie bij backfill.
+**Schaal is al 0–100** (`PS_SCORE_MODEL_VERSION`), zoals dit document voorstelde. Geen
+aparte backfill-conversie nodig voor de score zelf — wel voor de bestaande 21 producten
+om ze door `computeTrustScore()` te laten lopen zodra ze in `sup_products` staan (zie
+plak 1 in §J).
 
-Voorstel gewichten v1 (`sup_score_models.weights`):
+Gebruiksgemak is bewust **geen scorecomponent** maar een filter — het is een voorkeur, geen
+kwaliteit, en het hoort in de keuzehulp (§H), niet in een objectieve ranglijst. Dit gold al
+in het oorspronkelijke voorstel en is ongewijzigd.
+
+<details>
+<summary>Oorspronkelijk §C3-voorstel (15 aug 2026) — vervangen, bewaard voor context</summary>
+
+Voorstel gewichten v1 (`sup_score_models.weights`), nooit geïmplementeerd in deze vorm:
 
 | Component | Gewicht | Bron in data |
 |---|---|---|
@@ -217,8 +266,7 @@ Voorstel gewichten v1 (`sup_score_models.weights`):
 | Prijs per effectieve dosis | 20% | `sup_offers` (goedkoopste actieve) ÷ actives |
 | Onafhankelijke toetsing | 10% | `sup_product_certifications` |
 
-Gebruiksgemak is bewust **geen scorecomponent** maar een filter — het is een voorkeur, geen
-kwaliteit, en het hoort in de keuzehulp (§H), niet in een objectieve ranglijst.
+</details>
 
 ### C4. Retail- en prijslaag
 
@@ -823,9 +871,15 @@ zijn herzien.
    onderhoud zonder bewaking niet vol te houden, dus **de publiceerpoort en het
    versheidsdashboard zijn vanaf plak 1/2 verplicht, niet een latere verfijning.** Zie de
    toevoeging bij §L5 hieronder.
-3. **Scoreschaal 0–100 — akkoord**, met de voorgestelde gewichten (dosering 30% · vorm 20% ·
-   transparantie 20% · prijs per effectieve dosis 20% · onafhankelijke toetsing 10%). Geen
-   wijziging nodig in §C3.
+3. **Scoreschaal 0–100 — akkoord, maar zie correctie hieronder.** Deze beslissing verwees
+   naar de 15-aug-gewichtentabel (dosering 30% · vorm 20% · transparantie 20% · prijs per
+   effectieve dosis 20% · onafhankelijke toetsing 10%), zonder dat op dat moment bekend was
+   dat §C3 al vervangen was door een werkend systeem. **Correctie, zelfde dag:** §C3 is
+   herzien — de PS-Score (versie 1.2.0, sinds 3 sep 2026) draait al, met een andere
+   verdeling (dosering 30% · vorm 25% · claimdekking 15% · transparantie 15% · toetsing
+   15%, bewust **prijsvrij**) en een eigen firewall-test die al bestaat. Schaal 0–100 klopt
+   nog steeds; de gewichten en het prijsvrij-principe uit deze §808-regel zijn achterhaald
+   door wat feitelijk al gebouwd is. Zie de bijgewerkte §C3 voor de volledige toedracht.
 4. **Detailpagina vóór modal — akkoord.** `/product/[slug]` in plak 3, quick-view-modal blijft
    V2 zoals §E al voorstelde. Geen wijziging nodig.
 5. **Niet-partnernorm — minimaal 1 op de 3 à 4 producten zonder commerciële relatie**, per
@@ -899,11 +953,23 @@ beeldrecht via contract), §L1 (onderhandelings- i.p.v. feedafhankelijkheid).
 **26 sep 2026** — Besluit Dennis: alle vijf openstaande beslissingen beantwoord. Wederpartij:
 allebei, per categorie (niet uitsluitend merken). Breedte: 150–200+ producten over 15–20+
 categorieën (ruim boven het 60–80-advies), met als gevolg dat publiceerpoort en
-versheidsdashboard vanaf plak 1/2 verplicht zijn. Scoreschaal 0–100 met de voorgestelde
-gewichten: akkoord, ongewijzigd. Detailpagina vóór modal: akkoord, ongewijzigd.
+versheidsdashboard vanaf plak 1/2 verplicht zijn. Scoreschaal 0–100: akkoord — maar zie de
+correctie verderop deze dag. Detailpagina vóór modal: akkoord, ongewijzigd.
 Niet-partnernorm: minimaal 1 op de 3 à 4 producten per categorievergelijking, afdwingbaar via
 een samenstellingscheck. Herzien: §C4 (multi-retailer-UI niet langer "minimaal" maar
 categorie-afhankelijk volwaardig), §L5 (verplichte bewaking bij deze schaal), §K2 (norm nu
 afdwingbaar gespecificeerd). Plak 0 (contract-data-bijlage + click_token-spec) is inmiddels
 opgeleverd, zie `docs/partners/DATA_BIJLAGE_PARTNERCONTRACT.md` en
 `docs/partners/SPEC_CLICK_TOKEN_TRACKING.md`.
+
+**26 sep 2026 (later dezelfde dag) — correctie tijdens plak 1.** Bij het bouwen van de
+`sup_scoring.sql`-migratie bleek dat §C3 al sinds 27 augustus 2026 geïmplementeerd is als
+`src/lib/supplement-score/` (`computeTrustScore()`, PS-Score, versie 1.2.0 sinds 3 sep) —
+buiten dit document om, en nooit hierin teruggeschreven. Dat systeem week toen al bewust af
+van de 15-aug-gewichtentabel (prijs zit er expliciet niet in; andere verdeling). §C3 is
+herschreven om dit te reflecteren: de oorspronkelijke tabel staat er nog, gemarkeerd als
+vervangen, met het huidige model ernaast. De §808-regel over scoreschaal/gewichten
+(hierboven) is aangevuld met dezelfde correctie in plaats van er stilzwijgend overheen
+geschreven. Les voor het vervolg: bij het starten van plak 1 eerst `src/lib/` en
+`src/data/` controleren op wat er al gebouwd is, niet alleen `docs/plan/` — een bouwslice
+kan geland zijn zonder dat het plan is bijgewerkt.

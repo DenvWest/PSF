@@ -8,9 +8,12 @@ import { describe, expect, it } from "vitest";
  * `alter table ... add column` verschijnt. Faalt op de dag dat tabel 63 het vergeet,
  * niet drie maanden later.
  *
- * pd_* en af_* zijn BEWUST mono — dat zijn jouw administratieve domeinen (PartnerDesk,
- * eigen affiliate-programma), geen tenants. Zie A3 in
- * docs/research/VERDICT_MULTITENANT_VOLGORDE_EU_2026-08-30.md.
+ * pd_-, af_- en sup_-tabellen zijn BEWUST mono — dat zijn jouw administratieve
+ * domeinen (PartnerDesk, eigen affiliate-programma, productcatalogus), geen tenants.
+ * Zie A3 in docs/research/VERDICT_MULTITENANT_VOLGORDE_EU_2026-08-30.md — dat verdict
+ * wijst multi-tenancy als productconcept expliciet af; sup_ (26 sep 2026, zie
+ * docs/plan/ANALYSE_PRODUCTPLATFORM_SUPPLEMENTEN.md) valt onder dezelfde "interne
+ * scheiding"-redenering als de andere twee.
  */
 
 const MIGRATIONS_DIR = path.join(process.cwd(), "supabase", "migrations");
@@ -88,7 +91,7 @@ describe("organization_id drift", () => {
     for (const [table, hasOrgId] of coverage) {
       if (hasOrgId) continue;
       if (MONO_TABLE_ALLOWLIST.has(table)) continue;
-      if (table.startsWith("pd_") || table.startsWith("af_")) continue;
+      if (table.startsWith("pd_") || table.startsWith("af_") || table.startsWith("sup_")) continue;
       missing.push(table);
     }
 
