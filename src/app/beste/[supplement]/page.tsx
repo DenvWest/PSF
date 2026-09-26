@@ -36,6 +36,7 @@ import {
   isSupplementAvailable,
   getSupplementDisabledReason,
 } from "@/lib/supplement-availability";
+import { loadProductsForPage } from "@/lib/supplement-catalog-db/page-products";
 
 interface PageProps {
   params: Promise<{ supplement: string }>;
@@ -92,8 +93,11 @@ export async function generateMetadata({
 
 export default async function Page({ params }: PageProps) {
   const { supplement } = await params;
-  const data = getSupplementComparisonData(supplement);
-  if (!data) notFound();
+  const staticData = getSupplementComparisonData(supplement);
+  if (!staticData) notFound();
+
+  const products = await loadProductsForPage(staticData.category, staticData.products);
+  const data = { ...staticData, products };
 
   const pageUrl = absoluteUrl(`/beste/${supplement}`);
   const topProductLabel = data.topProductLabel ?? "Topkeuze";
