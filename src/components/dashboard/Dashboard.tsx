@@ -2731,10 +2731,11 @@ const KompasHome = ({
         dashboard weer het overzicht dat het niet meer is. De component blijft
         bestaan voor het geval de domeinen terugkeren.
 
-        `NutritionDagboekPaneel` blijft wél op laag 5: daar heeft het zijn
-        context (meetreeks, reflectie) en die drie horen bij elkaar. Twee
-        vormen van hetzelfde dagboek, elk met een eigen `surface`, zodat de
-        meting ze uit elkaar houdt.
+        `NutritionDagboekPaneel` (het paneel op laag 5) wordt sinds deze
+        verhuizing nergens meer gerenderd — `DomeinPaneel`/`MetenTijdLaag`
+        importeren het niet. Bewust laten staan i.p.v. verwijderen: dat raakt
+        het 17-sep-besluit (BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md §Plak
+        3b, "blijft óók op laag 5 staan"), en verwijderen is een apart besluit.
       */}
       <CockpitShell accent="#5A8F6A" ariaLabel="Je dagboek" embedded className="vd-root">
         <DagboekScherm

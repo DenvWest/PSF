@@ -1,13 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  catalogEntry,
-  searchCatalog,
-  type CatalogEntry,
-} from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
-import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
@@ -53,10 +47,10 @@ import DagboekWeekstrip, {
 type NutrientScherm =
   | { scherm: "overzicht" }
   | { scherm: "detail"; nutrient: NutrientId }
-  | { scherm: "zoek"; nutrient: NutrientId; moment: EetmomentId }
+  | { scherm: "zoek"; nutrient: NutrientId | null; moment: EetmomentId }
   | {
       scherm: "portie";
-      nutrient: NutrientId;
+      nutrient: NutrientId | null;
       bron: DagboekItemBron;
       key: string;
       moment: EetmomentId;
@@ -121,8 +115,6 @@ export default function DagboekScherm({
   const schrijfTeller = useRef(0);
   const [laden, setLaden] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [zoekMoment, setZoekMoment] = useState<EetmomentId | null>(null);
-  const [zoek, setZoek] = useState("");
   const [scherm, setScherm] = useState<NutrientScherm>({ scherm: "overzicht" });
   const [favorieten, setFavorieten] = useState<DagboekFavoriet[]>([]);
   const [vergelijkSelectie, setVergelijkSelectie] = useState<VergelijkResultaat[]>([]);
@@ -196,37 +188,6 @@ export default function DagboekScherm({
   );
 
   const ondergrens = useMemo(() => nutrientenGesplitstUitItems(items), [items]);
-
-  /**
-   * Wat je eerder logde, meest recent eerst.
-   *
-   * Een leeg zoekveld gaf eerder een lege lijst: je moest weten hoe een product
-   * heet voor je iets zag. Mensen eten grotendeels hetzelfde, dus het antwoord
-   * op "wat at je" staat meestal al in je eigen dagen — dit maakt herhalen één
-   * tik in plaats van opnieuw typen. Geen nieuwe opslag: `dagen` staat er al.
-   */
-  const recent = useMemo(() => {
-    const gezien = new Set<string>();
-    const uit: CatalogEntry[] = [];
-    for (const dag of [...dagen].sort((a, b) => b.date.localeCompare(a.date))) {
-      for (const item of sanitizeItems(dag.items ?? [])) {
-        if (gezien.has(item.key)) continue;
-        const entry = catalogEntry(item.key);
-        if (!entry) continue;
-        gezien.add(item.key);
-        uit.push(entry);
-        if (uit.length >= MAX_TREFFERS) return uit;
-      }
-    }
-    return uit;
-  }, [dagen]);
-
-  const treffers = useMemo(
-    () => (zoek.trim() ? searchCatalog(zoek, MAX_TREFFERS) : []),
-    [zoek],
-  );
-
-  const suggesties = zoek.trim() ? treffers : recent;
 
   /**
    * Zelfde "eerder gebruikt"-gedachte als `recent`, maar als ruwe items in
@@ -311,20 +272,14 @@ export default function DagboekScherm({
     void bewaar(volgende);
   }
 
-  function voegToe(key: string) {
-    if (!zoekMoment) return;
-    const entry = catalogEntry(key);
-    if (!entry) return;
-    const grams = entry.porties[0]?.grams ?? 100;
-    wijzig([...items, { moment: zoekMoment, bron: "voeding", key, grams }]);
-    // Het veld blijft open: een maaltijd is zelden één product, en de
-    // toegevoegde regel verschijnt er direct onder als bevestiging.
-    setZoek("");
-  }
-
-  /** Sluit de nutriëntdetail-flow (plak C) af: schrijft het item en gaat terug naar het detailscherm. */
+  /**
+   * Sluit de zoek+portie-flow af: schrijft het item en gaat terug naar de
+   * zoeklijst. Werkt zowel vanuit een nutriëntdetail (`nutrient` gezet) als
+   * vanuit een maaltijd (`nutrient` null) — in beide gevallen dezelfde route
+   * terug, zodat een tweede product één tik verder is dan het eerste.
+   */
   function voegNutrientItemToe(
-    nutrient: NutrientId,
+    nutrient: NutrientId | null,
     bron: DagboekItemBron,
     key: string,
     moment: EetmomentId,
@@ -336,10 +291,7 @@ export default function DagboekScherm({
       bron,
       surface: "dagboek_tab",
     });
-    trackEvent("nutrition_dagboek_portie_bevestigd", { nutrient, bron });
-    // Terug naar de zoeklijst, niet naar het detailscherm: een maaltijd is
-    // zelden één product, en het volgende staat meestal in dezelfde lijst.
-    // Wie klaar is, gebruikt de terugknop — die staat er nog.
+    trackEvent("nutrition_dagboek_portie_bevestigd", { nutrient: nutrient ?? "geen", bron });
     setScherm({ scherm: "zoek", nutrient, moment });
   }
 
@@ -422,14 +374,16 @@ export default function DagboekScherm({
           favorieten={favorieten}
           moment={moment}
           onMomentChange={(volgende) => setScherm({ ...scherm, moment: volgende })}
-          onTerug={() => setScherm({ scherm: "detail", nutrient })}
+          onTerug={() =>
+            setScherm(nutrient ? { scherm: "detail", nutrient } : { scherm: "overzicht" })
+          }
           onKies={(bron, key) => {
             emitAccountClientEvent("nutrition.dagboek_zoek_item_gekozen", {
               nutrient,
               bron,
               surface: "dagboek_tab",
             });
-            trackEvent("nutrition_dagboek_zoek_item_gekozen", { nutrient, bron });
+            trackEvent("nutrition_dagboek_zoek_item_gekozen", { nutrient: nutrient ?? "geen", bron });
             setScherm({ scherm: "portie", nutrient, bron, key, moment });
           }}
           onBewaarFavoriet={(bron, key) => void bewaarFavoriet(bron, key)}
@@ -579,58 +533,13 @@ export default function DagboekScherm({
             label={moment.label}
             items={items}
             busy={busy}
-            zoekSlot={
-              zoekMoment === moment.id ? (
-                <div className="relative">
-                  <input
-                    type="search"
-                    autoFocus
-                    value={zoek}
-                    disabled={busy}
-                    onChange={(event) => setZoek(event.target.value)}
-                    placeholder={`Zoek een product voor ${moment.label.toLowerCase()}…`}
-                    aria-label={`Zoek een product voor ${moment.label.toLowerCase()}`}
-                    className="w-full rounded-xl border border-white/15 bg-white/[0.03] px-3 py-2 text-[13px] text-[var(--vd-ink)] outline-none transition-colors placeholder:text-[var(--vd-ink-4)] focus:border-white/40"
-                  />
-                  {suggesties.length > 0 ? (
-                    <div className="absolute z-20 mt-1 max-h-[280px] w-full overflow-y-auto overflow-x-hidden rounded-xl border border-white/15 bg-[var(--vd-surface-2)] shadow-2xl">
-                      {!zoek.trim() ? (
-                        <p className="m-0 border-b border-white/10 px-3 py-1.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[var(--vd-ink-4)]">
-                          Eerder gegeten
-                        </p>
-                      ) : null}
-                      <ul className="m-0 list-none p-0">
-                        {suggesties.map((entry) => (
-                          <li key={entry.key}>
-                            <button
-                              type="button"
-                              onMouseDown={(event) => event.preventDefault()}
-                              onClick={() => voegToe(entry.key)}
-                              className="flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
-                            >
-                              <span className="flex min-w-0 items-center gap-2">
-                                <FoodThumbnail entry={entry} size={40} />
-                                <span className="truncate text-[13px] text-[var(--vd-ink)]">
-                                  {entry.labelNl}
-                                </span>
-                              </span>
-                              <span className="shrink-0 text-[10.5px] text-[var(--vd-ink-4)]">
-                                {entry.porties[0]?.labelNl ?? ""}
-                              </span>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
-                </div>
-              ) : null
-            }
             onToevoegen={(id) => {
-              // Nogmaals op dezelfde knop sluit het veld weer: zonder die
-              // uitgang blijft het open zodra je het per ongeluk opent.
-              setZoekMoment((huidig) => (huidig === id ? null : id));
-              setZoek("");
+              emitAccountClientEvent("nutrition.dagboek_maaltijd_geopend", {
+                moment: id,
+                surface: "dagboek_tab",
+              });
+              trackEvent("nutrition_dagboek_maaltijd_geopend", { moment: id });
+              setScherm({ scherm: "zoek", nutrient: null, moment: id });
             }}
             onGram={(item, grams) =>
               wijzig(

@@ -55,7 +55,7 @@ function resultaatVoor(bron: DagboekItemBron, key: string): Resultaat | null {
  * plaats van de enige manier om iets terug te vinden.
  */
 export default function DagboekCatalogusZoek({
-  nutrient,
+  nutrient = null,
   eerderGebruikt,
   favorieten,
   moment,
@@ -66,7 +66,8 @@ export default function DagboekCatalogusZoek({
   onTerug,
   busyFavoriet = false,
 }: {
-  nutrient: NutrientId;
+  /** De stof waarvandaan je kwam — bepaalt alleen de titel. Null vanuit een maaltijd. */
+  nutrient?: NutrientId | null;
   /** Items uit eerdere dagen, meest recent eerst — voor de "eerder gebruikt"-lijst. */
   eerderGebruikt: readonly DagboekItem[];
   /** Handmatig bewaarde favorieten, ongeacht geschiedenis. */
@@ -82,6 +83,8 @@ export default function DagboekCatalogusZoek({
 }) {
   const [zoek, setZoek] = useState("");
   const [tab, setTab] = useState<TabId>("alle");
+
+  const momentLabel = EETMOMENTEN.find((m) => m.id === moment)?.label.toLowerCase() ?? "je dag";
 
   const isFavoriet = (bron: DagboekItemBron, key: string) =>
     favorieten.some((f) => f.bron === bron && f.key === key);
@@ -165,7 +168,7 @@ export default function DagboekCatalogusZoek({
           <Icons.ChevronLeft s={18} />
         </button>
         <h2 className="m-0 min-w-0 flex-1 truncate font-serif text-[16px] font-normal text-[var(--vd-ink)]">
-          Voeg toe bij {nutrientReferences[nutrient].label.toLowerCase()}
+          {nutrient ? `Voeg toe bij ${nutrientReferences[nutrient].label.toLowerCase()}` : `Voeg toe aan ${momentLabel}`}
         </h2>
       </header>
 

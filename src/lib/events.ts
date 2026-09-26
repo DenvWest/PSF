@@ -112,6 +112,9 @@ export const DOMAIN_EVENT_TYPES = [
   // dat een voedingsmiddel of een supplement is; `portie_bevestigd` sluit de
   // flow — pas dán staat het item echt in het dagboek.
   "nutrition.dagboek_nutrient_opened",
+  // Dezelfde zoek-naar-portie-flow, maar geopend vanuit een maaltijdbalk
+  // in plaats van een nutriëntdetail — `nutrient` is dan null in de payload.
+  "nutrition.dagboek_maaltijd_geopend",
   "nutrition.dagboek_zoek_item_gekozen",
   "nutrition.dagboek_portie_bevestigd",
   // De ster-knop: bewaart een voedingsmiddel/supplement in "Mijn producten"/

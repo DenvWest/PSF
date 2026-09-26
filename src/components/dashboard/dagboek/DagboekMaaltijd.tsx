@@ -1,6 +1,5 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
@@ -78,23 +77,22 @@ export default function DagboekMaaltijd({
   onToevoegen,
   onOpenProduct,
   busy = false,
-  zoekSlot = null,
 }: {
   moment: EetmomentId;
   label: string;
   items: readonly DagboekItem[];
   onVerwijder: (item: DagboekItem) => void;
   onGram: (item: DagboekItem, grams: number) => void;
+  /**
+   * De hele kop is de knop: klikken opent het volledige zoekscherm
+   * (`DagboekCatalogusZoek` + `DagboekPortieInvoer`) met dit moment al
+   * vastgezet, op een apart scherm — net als bij een nutriëntdetail. Eerder
+   * opende dit een inline zoekveld dat alleen voeding kon vinden en geen
+   * portie liet kiezen; twee onvolwaardige zoek-ingangen naast elkaar.
+   */
   onToevoegen: (moment: EetmomentId) => void;
   onOpenProduct: (item: DagboekItem) => void;
   busy?: boolean;
-  /**
-   * Het zoekveld, als deze maaltijd de aangeklikte is. Het stond eerder boven
-   * de maaltijdenlijst: je klikte "+ Toevoegen" bij Tussendoor en het veld
-   * verscheen buiten beeld, bovenaan het scherm. Nu staat het onder de kop
-   * van de maaltijd waar je het opende.
-   */
-  zoekSlot?: ReactNode;
 }) {
   const eigen = itemsVanMoment(items, moment);
   const totalen = nutrientenUitItems(eigen);
@@ -107,7 +105,13 @@ export default function DagboekMaaltijd({
 
   return (
     <section className="overflow-hidden rounded-2xl border border-white/10">
-      <header className="flex items-center justify-between gap-2.5 border-b border-white/10 bg-white/[0.03] px-3 py-2.5">
+      <button
+        type="button"
+        disabled={busy}
+        onClick={() => onToevoegen(moment)}
+        aria-label={`${label} — product toevoegen`}
+        className="flex w-full cursor-pointer items-center justify-between gap-2.5 border-b border-white/10 bg-white/[0.03] px-3 py-2.5 text-left transition-colors hover:bg-white/[0.06] disabled:cursor-wait disabled:opacity-60"
+      >
         <h3 className="m-0 font-sans text-[13.5px] font-bold text-[var(--vd-ink)]">{label}</h3>
         <div className="flex items-center gap-2.5">
           <span className="text-right font-mono text-[10px] leading-tight tabular-nums text-[var(--vd-ink-4)]">
@@ -123,20 +127,14 @@ export default function DagboekMaaltijd({
               <b className="block text-[11px] font-normal text-[var(--vd-ink-4)]">Nog leeg</b>
             )}
           </span>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => onToevoegen(moment)}
-            className="cursor-pointer whitespace-nowrap rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] transition-colors hover:border-[var(--vd-sage)] hover:text-[var(--vd-sage-2)] disabled:opacity-50"
+          <span
+            aria-hidden
+            className="whitespace-nowrap rounded-lg border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)]"
           >
             + Toevoegen
-          </button>
+          </span>
         </div>
-      </header>
-
-      {zoekSlot ? (
-        <div className="border-b border-white/10 px-3 py-2.5">{zoekSlot}</div>
-      ) : null}
+      </button>
 
       {eigen.length === 0 ? (
         <p className="m-0 px-3 py-2.5 text-[11.5px] italic leading-relaxed text-[var(--vd-ink-4)]">

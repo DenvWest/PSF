@@ -8,6 +8,7 @@ import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import { bedragVanItem, type DagboekItemBron } from "@/lib/nutrition-dagboek-items";
+import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 
 /**
@@ -29,11 +30,18 @@ import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
  * porties (capsule, tablet, schep). Beide gebruiken `bedragVanItem` voor de
  * live berekening — dezelfde functie die de opslag ook gebruikt, dus het getal
  * dat je hier ziet is exact wat er na bevestigen bij komt.
+ *
+ * ## Met of zonder stof-context
+ *
+ * Vanuit een nutriëntdetail draagt dit scherm één `nutrient` en toont het
+ * alleen die bijdrage ("Levert 40 mg magnesium"). Vanuit een maaltijd is er
+ * geen stof gekozen — dan toont dit scherm de bijdrage aan alle stoffen die
+ * het dagboek volgt, dezelfde lijst als `DagboekProductDetail`.
  */
 export default function DagboekPortieInvoer({
   bron,
   itemKey,
-  nutrient,
+  nutrient = null,
   moment,
   favorieten,
   onBevestig,
@@ -45,8 +53,8 @@ export default function DagboekPortieInvoer({
 }: {
   bron: DagboekItemBron;
   itemKey: string;
-  /** De stof waarvandaan je kwam — bepaalt welke bijdrage hier getoond wordt. */
-  nutrient: NutrientId;
+  /** De stof waarvandaan je kwam — bepaalt welke bijdrage hier getoond wordt. Null vanuit een maaltijd: dan tonen we alle stoffen. */
+  nutrient?: NutrientId | null;
   /** Waar dit item heen gaat. Gekozen op het zoekscherm; hier alleen ter bevestiging. */
   moment: EetmomentId;
   /** Handmatig bewaarde favorieten — bepaalt of de ster hier al gevuld staat. */
@@ -77,9 +85,21 @@ export default function DagboekPortieInvoer({
   // Geen useMemo: `bedragVanItem` is een opzoeking in twee Maps plus één
   // vermenigvuldiging, en de React Compiler kan deze component alleen
   // optimaliseren als er geen handmatige memoisatie omheen staat.
-  const bijdrage = label
-    ? bedragVanItem({ moment, bron, key: itemKey, grams: effectieveGrams }, nutrient)
-    : null;
+  const bijdrage =
+    label && nutrient
+      ? bedragVanItem({ moment, bron, key: itemKey, grams: effectieveGrams }, nutrient)
+      : null;
+
+  /** Zonder stof-context: de bijdrage aan alle stoffen die dit item raakt. */
+  const alleBijdragen = label
+    ? NUTRIENT_ORDER.map((n) => ({
+        nutrient: n,
+        bedrag: bedragVanItem({ moment, bron, key: itemKey, grams: effectieveGrams }, n),
+      })).filter(
+        (rij): rij is { nutrient: NutrientId; bedrag: NonNullable<typeof rij.bedrag> } =>
+          rij.bedrag !== null,
+      )
+    : [];
 
   // Escape sluit de laag — hij ligt over de lijst heen, dus er moet een
   // uitgang zijn die niet van het vinden van een knop afhangt.
@@ -251,22 +271,49 @@ export default function DagboekPortieInvoer({
           </label>
         )}
 
-        <p className="m-0 flex items-center gap-2 rounded-xl border border-[rgb(var(--vd-sage-rgb)/25%)] bg-[rgb(var(--vd-sage-rgb)/6%)] px-3 py-2 text-[12.5px] leading-relaxed text-[var(--vd-ink-2)]">
-          <span aria-hidden className="shrink-0 text-[var(--vd-sage-2)]">
-            <Icons.TrendUp s={14} />
-          </span>
-          {bijdrage ? (
-            <>
-              Levert{" "}
-              <b className="font-semibold text-[var(--vd-ink)]">
-                {Math.round(bijdrage.value * 10) / 10} {bijdrage.unit}
-              </b>{" "}
-              {nutrientReferences[nutrient].label.toLowerCase()}.
-            </>
-          ) : (
-            "Geen bekend gehalte voor deze stof."
-          )}
-        </p>
+        {nutrient ? (
+          <p className="m-0 flex items-center gap-2 rounded-xl border border-[rgb(var(--vd-sage-rgb)/25%)] bg-[rgb(var(--vd-sage-rgb)/6%)] px-3 py-2 text-[12.5px] leading-relaxed text-[var(--vd-ink-2)]">
+            <span aria-hidden className="shrink-0 text-[var(--vd-sage-2)]">
+              <Icons.TrendUp s={14} />
+            </span>
+            {bijdrage ? (
+              <>
+                Levert{" "}
+                <b className="font-semibold text-[var(--vd-ink)]">
+                  {Math.round(bijdrage.value * 10) / 10} {bijdrage.unit}
+                </b>{" "}
+                {nutrientReferences[nutrient].label.toLowerCase()}.
+              </>
+            ) : (
+              "Geen bekend gehalte voor deze stof."
+            )}
+          </p>
+        ) : (
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+            <p className="m-0 mb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]">
+              Levert
+            </p>
+            {alleBijdragen.length === 0 ? (
+              <p className="m-0 text-[12px] leading-relaxed text-[var(--vd-ink-4)]">
+                Geen bekend gehalte voor de stoffen die dit dagboek volgt.
+              </p>
+            ) : (
+              <ul className="m-0 flex list-none flex-col gap-1 p-0">
+                {alleBijdragen.map((rij) => (
+                  <li
+                    key={rij.nutrient}
+                    className="flex items-center justify-between gap-2 text-[12.5px] text-[var(--vd-ink-2)]"
+                  >
+                    <span>{nutrientReferences[rij.nutrient].label}</span>
+                    <span className="font-mono tabular-nums text-[var(--vd-ink)]">
+                      {Math.round(rij.bedrag.value * 10) / 10} {rij.bedrag.unit}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
 
         <div className="flex gap-2">
           <button
