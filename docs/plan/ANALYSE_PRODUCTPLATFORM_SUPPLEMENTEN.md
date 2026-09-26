@@ -615,6 +615,33 @@ toestaat.
 lezen uit een DB-loader met identieke output. Dode `supplement-comparison.ts` opruimen.
 Nul zichtbare verandering — dat is precies wat het verifieerbaar maakt.
 
+> **Scope-verduidelijking, 26 sep 2026.** Bij het bouwen van de backfill bleek dat
+> `ComparisonPageData` (`src/types/supplement.ts`) twee dingen mengt die het §C2-schema
+> niet allebei dekt: **productfeiten** (specs, dosering, claims, prijs — dit ís `sup_*`) en
+> **paginacontent** (`intro`, `faq`, `seoTitle`/`seoDescription`, `moreAboutLinks`,
+> `readAlsoCards`, `choiceRoutes`-teksten, `guideHref`). Dat gat zat al in het
+> oorspronkelijke §C2-schema, dat nooit kolommen voor paginacontent voorstelde.
+> **Besluit (Dennis, 26 sep):** hybride — alleen `products[]` verhuist naar de DB
+> (`sup_products` + gerelateerde tabellen); de `ComparisonPageData`-bestanden in
+> `src/data/supplements/*.ts` blijven bestaan als bron voor de paginacontent, maar
+> bouwen hun `products`-array voortaan op via de DB-loader in plaats van handmatig
+> getypte objecten. Dit is kleiner dan "de hele pagina naar de DB" en houdt redactionele
+> tekst waar hij hoort — een latere plak kan alsnog paginacontent naar de DB verhuizen
+> als daar reden voor is, maar dat is niet deze plak.
+>
+> **Tweede mapping-vraagstuk, zelfde dag.** `SupplementProduct` draagt ook `specs[]`
+> (label/value zonder vaste sleutels, bijv. "Prijs / dag"), `pros[]`/`cons[]` (vrije
+> redactionele tekst) en `breakdown[]` — dat laatste zijn de OUDE handmatige
+> scorecriteria van vóór de PS-Score (bijv. "Transparantie (20%)"), niet de huidige
+> `computeTrustScore()`-componenten (claimdekking/dosering/vorm/transparantie/toetsing).
+> **Besluit (Dennis, 26 sep):** deze vier velden 1-op-1 bewaren in een nieuwe jsonb-kolom
+> `sup_products.raw_legacy_fields` (migratie `20260926071307_sup_products_legacy_fields.sql`)
+> in plaats van ze te herstructureren naar het genormaliseerde schema. Geen dataverlies bij
+> de backfill, de pagina blijft identiek. `raw_legacy_fields` is geen bron voor nieuwe
+> functionaliteit — een nieuw product (buiten de backfill om) vult
+> `sup_product_actives`/`sup_product_certifications`/`sup_product_claims` rechtstreeks en
+> laat deze kolom leeg.
+
 **Plak 2 — Admin-productbeheer.** CRUD + publiceerpoort + versheidsoverzicht in `DeskShell`.
 Vanaf hier kun je producten toevoegen zonder code te schrijven. Dit is het moment waarop
 het platform schaalbaar wordt.

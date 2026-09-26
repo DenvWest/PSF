@@ -7,7 +7,7 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20260925120000_intake_sessions_session_kind_nutrition.sql`
-- **Openstaand:** 3 migraties (productplatform plak 1, zie hieronder)
+- **Openstaand:** 4 migraties (productplatform plak 1, zie hieronder)
 - **Laatst bijgewerkt:** 26 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
@@ -21,8 +21,8 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 - **Terugdraaien:** `drop table` in omgekeerde afhankelijkheidsvolgorde (eerst `sup_product_images`/`sup_sources`/`sup_product_claims`/`sup_product_certifications`/`sup_product_ingredients`/`sup_product_actives`, dan `sup_products`, dan `sup_categories`/`sup_brands`).
 
 ### [ ] 20260926065020_sup_scoring.sql
-- **Wat:** scorelaag (`sup_score_models`, `sup_scores`, `sup_badges`), inclusief seed van scoremodel v1.0.0 met de gewichten uit §C3. Vereist `sup_catalog.sql` (foreign keys naar `sup_products`/`sup_categories`).
-- **Blokkeert deploy:** nee — additief, ongebruikt totdat `computeScore()` en de DB-loader bestaan.
+- **Wat:** scorelaag (`sup_score_models`, `sup_scores`, `sup_badges`). Sluit aan op de al bestaande PS-Score (`computeTrustScore()`, versie 1.2.0) — geseed met die gewichten, niet met de oorspronkelijke 15-aug-§C3-tabel (die is vervangen, zie de §C3-correctie in het analysedoc). Vereist `sup_catalog.sql` (foreign keys naar `sup_products`/`sup_categories`).
+- **Blokkeert deploy:** nee — additief, ongebruikt totdat de DB-loader bestaat.
 - **Hoort bij:** zelfde plak als hierboven.
 - **Terugdraaien:** `drop table public.sup_badges, public.sup_scores, public.sup_score_models;`
 
@@ -31,6 +31,12 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 - **Blokkeert deploy:** nee — additief, `affiliate_clicks` blijft ongewijzigd in gebruik tot de overgang (zie §C4-slot van het analysedoc).
 - **Hoort bij:** zelfde plak als hierboven.
 - **Terugdraaien:** `drop table public.sup_clicks, public.sup_offer_price_history, public.sup_offers, public.sup_retailers;`
+
+### [ ] 20260926071307_sup_products_legacy_fields.sql
+- **Wat:** voegt `raw_legacy_fields jsonb` toe aan `sup_products` — bewaart `specs[]`/`pros[]`/`cons[]`/`breakdown[]` uit het oude `SupplementProduct`-type 1-op-1 bij de backfill (zie plak 1-scope-verduidelijking in het analysedoc).
+- **Blokkeert deploy:** nee — additieve kolom, `null` totdat de backfill draait.
+- **Hoort bij:** zelfde plak als hierboven.
+- **Terugdraaien:** `alter table public.sup_products drop column raw_legacy_fields;`
 
 ## Runbook bij thuiskomst
 
