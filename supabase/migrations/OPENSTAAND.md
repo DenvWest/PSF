@@ -6,7 +6,7 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Status
 
-- **Baseline toegepast t/m:** `20260926071307_sup_products_legacy_fields.sql`
+- **Baseline toegepast t/m:** `20260926082953_sup_products_display_order.sql`
 - **Openstaand:** 1 migratie (zie hieronder)
 - **Laatst bijgewerkt:** 26 september 2026
 
@@ -14,13 +14,13 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Nog uit te voeren
 
-### [ ] 20260926082953_sup_products_display_order.sql
-- **Wat:** voegt `display_order int not null default 0` toe aan `sup_products` + index op `(category_id, display_order)`. Ontdekt bij het omschakelen van `/beste/magnesium`: zonder deze kolom had de DB-loader geen manier om de redactionele productvolgorde (topkeuze eerst) te bewaren, waardoor Viridian per ongeluk vóór Vitaminstore kwam te staan.
-- **Blokkeert deploy:** nee — additieve kolom met default `0`, bestaande producten (backfilld vóór deze migratie) krijgen pas de juiste waarde na een hernieuwde `POST /api/admin/data/sup-backfill`-aanroep. Tot die tijd sorteert de DB-loader ze allemaal op `0` (stabiele volgorde, geen crash) — alleen categorieën in `DB_BACKED_CATEGORIES` (nu: `zink`) zijn hierdoor geraakt, en die had toevallig al maar 3 producten met een acceptabele volgorde.
-- **Hoort bij:** plak 1, `docs/plan/ANALYSE_PRODUCTPLATFORM_SUPPLEMENTEN.md`.
-- **Terugdraaien:** `alter table public.sup_products drop column display_order; drop index if exists public.sup_products_category_display_order_idx;`
+### [ ] 20260926112517_pd_daisycon_en_retailer_partners.sql
+- **Wat:** her-seedt het Daisycon-netwerk (`pd_networks`, bewust eerder verwijderd/hernoemd door Dennis) en voegt 3 `pd_partners`-dossiers toe (Vitaminstore, VitalNutrition — beide via Daisycon; Arctic Blue — direct). Nodig als brug voor `sup_retailers.pd_partner_id` in plak 4: geen van de drie retailers achter de bestaande affiliate-links had een eigen PartnerDesk-dossier.
+- **Blokkeert deploy:** nee — puur additieve inserts (`on conflict do nothing`), geen bestaande code leest deze rijen totdat de offers-backfill (`POST /api/admin/data/sup-offers-backfill`) draait.
+- **Hoort bij:** plak 4, `docs/plan/ANALYSE_PRODUCTPLATFORM_SUPPLEMENTEN.md` §C4.
+- **Terugdraaien:** `delete from public.pd_partners where slug in ('vitaminstore','vitalnutrition','arctic-blue'); delete from public.pd_networks where name = 'Daisycon';` — let op: dit netwerk/deze partners kunnen inmiddels handmatig bewerkt zijn in PartnerDesk, controleer voor het terugdraaien of dat het geval is.
 
-**Na het draaien van deze migratie: roep opnieuw `POST /api/admin/data/sup-backfill` aan** (zelfde fetch-commando als eerder) zodat alle 25 producten hun `display_order` krijgen — de migratie zelf vult geen bestaande rijen met de juiste waarde, alleen nieuwe/herbackfillde rijen.
+**Na het draaien van deze migratie: roep `POST /api/admin/data/sup-offers-backfill` aan** (zelfde patroon als de productbackfill) om `sup_retailers` + `sup_offers` te vullen uit de bestaande `affiliate-links.ts`.
 
 ## Runbook bij thuiskomst
 
@@ -53,6 +53,7 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 26 september 2026 | `20260926082953_sup_products_display_order.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema` + herbackfill (`POST /api/admin/data/sup-backfill`, 25 producten/0 errors) + tekstvergelijking `/beste/magnesium` (336 regels, 0 diff met de statische versie). |
 | 26 september 2026 | `20260926071307_sup_products_legacy_fields.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: `sup_products,25` kolommen (24 uit sup_catalog.sql + `raw_legacy_fields`). |
 | 26 september 2026 | `20260926065021_sup_retail.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: `sup_retailers`, `sup_offers`, `sup_offer_price_history`, `sup_clicks` alle aanwezig. |
 | 26 september 2026 | `20260926065020_sup_scoring.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: `sup_score_models`, `sup_scores`, `sup_badges` alle aanwezig. |
