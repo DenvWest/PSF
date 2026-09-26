@@ -13,6 +13,7 @@ import {
 import { readMarketingConsentStateClient } from "@/lib/marketing-consent-client";
 import { clarityTag } from "@/lib/clarity";
 import type { SupplementCategory } from "@/types/supplement";
+import { registerSupplementClick } from "@/lib/supplement-catalog-db/register-click-client";
 
 type Props = {
   affiliateSlug: AffiliateSlug;
@@ -89,6 +90,11 @@ export function AffiliateLink({
           pagina:
             typeof window !== "undefined" ? window.location.pathname : "",
           nt: getNurtureToken() ?? undefined,
+        });
+        registerSupplementClick({
+          affiliateSlug,
+          page: typeof window !== "undefined" ? window.location.pathname : "",
+          position,
         });
       }}
     >

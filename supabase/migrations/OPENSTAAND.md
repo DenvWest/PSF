@@ -7,7 +7,7 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20260926082953_sup_products_display_order.sql`
-- **Openstaand:** 1 migratie (zie hieronder)
+- **Openstaand:** 2 migraties (zie hieronder)
 - **Laatst bijgewerkt:** 26 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
@@ -21,6 +21,14 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 - **Terugdraaien:** `delete from public.pd_partners where slug in ('vitaminstore','vitalnutrition','arctic-blue'); delete from public.pd_networks where name = 'Daisycon';` — let op: dit netwerk/deze partners kunnen inmiddels handmatig bewerkt zijn in PartnerDesk, controleer voor het terugdraaien of dat het geval is.
 
 **Na het draaien van deze migratie: roep `POST /api/admin/data/sup-offers-backfill` aan** (zelfde patroon als de productbackfill) om `sup_retailers` + `sup_offers` te vullen uit de bestaande `affiliate-links.ts`.
+
+### [ ] 20260926114550_pd_conversions.sql
+- **Wat:** plak 4b — conversie-inname upstream. Voegt `reporting_method`/`reporting_cadence` toe aan `pd_contracts` en `webhook_secret` aan `pd_partners`; nieuwe tabellen `pd_conversions` (spiegelt `af_conversions`) en `pd_ledger_entries` (spiegelt `af_ledger_entries`). `click_token` verwijst naar `sup_clicks.click_token` voor attributie tot op productniveau bij directe partners.
+- **Blokkeert deploy:** nee — additief. De nieuwe route `POST /api/partner/conversion` faalt gracieus (401/503) zolang er geen `webhook_secret` is ingesteld voor een partner; er is nog geen enkele partner geconfigureerd voor postback.
+- **Hoort bij:** plak 4b, `docs/plan/ANALYSE_PRODUCTPLATFORM_SUPPLEMENTEN.md` §C6.
+- **Terugdraaien:** `drop table public.pd_ledger_entries, public.pd_conversions; alter table public.pd_contracts drop column reporting_method, drop column reporting_cadence; alter table public.pd_partners drop column webhook_secret;`
+
+**Voordat een partner via postback kan rapporteren:** zet `pd_partners.webhook_secret` handmatig (een lang, random geheim, uniek per partner) en deel dat via een beveiligd kanaal — nooit per e-mail in platte tekst. `pd_contracts.reporting_method` op `'postback'` zetten voor die partner.
 
 ## Runbook bij thuiskomst
 
