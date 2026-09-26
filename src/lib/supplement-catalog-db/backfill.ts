@@ -106,6 +106,7 @@ async function upsertProduct(
   product: SupplementProduct,
   brandId: string,
   categoryId: string,
+  displayOrder: number,
 ): Promise<string | null> {
   const { data, error } = await db
     .from("sup_products")
@@ -118,6 +119,7 @@ async function upsertProduct(
         variant: product.variantTag,
         form: product.vorm,
         status: "published",
+        display_order: displayOrder,
         raw_legacy_fields: legacyFieldsFor(product),
       },
       { onConflict: "slug" },
@@ -256,7 +258,7 @@ export async function backfillComparisonPage(
 
   const brandIds = new Map<string, string>();
 
-  for (const product of pageData.products) {
+  for (const [displayOrder, product] of pageData.products.entries()) {
     let brandId = brandIds.get(product.brand);
     if (!brandId) {
       const brand = await upsertBrand(db, product.brand);
@@ -269,7 +271,7 @@ export async function backfillComparisonPage(
       brandsUpserted += 1;
     }
 
-    const productId = await upsertProduct(db, product, brandId, category.id);
+    const productId = await upsertProduct(db, product, brandId, category.id, displayOrder);
     if (!productId) {
       errors.push(`Product ${product.slug} kon niet worden geschreven.`);
       continue;
