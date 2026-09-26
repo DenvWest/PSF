@@ -29,6 +29,19 @@ const PERSOONLIJK = "past-bij-jou";
 /** Aantal producten per stap; de rest komt met "Toon meer". */
 const PAGINA = 10;
 
+/** Querysleutel voor de "Toon meer"-stand, zodat de browser-terugknop vanaf
+ *  een productpagina hier terugkeert met dezelfde lijstlengte in plaats van
+ *  terug te vallen op de eerste 10 (de limiet leefde tot nu toe alleen in
+ *  React state, die een nieuwe mount niet overleeft). */
+const LIMIET_PARAM = "toon";
+
+function leesLimietUitUrl(): number | null {
+  if (typeof window === "undefined") return null;
+  const raw = new URLSearchParams(window.location.search).get(LIMIET_PARAM);
+  const parsed = raw ? Number.parseInt(raw, 10) : NaN;
+  return Number.isFinite(parsed) && parsed > PAGINA ? parsed : null;
+}
+
 /** Lijst = één product per rij met alle cijfers naast elkaar; raster = twee
  *  kaarten naast elkaar om ze sneller te kunnen vergelijken. */
 const WEERGAVEN: ReadonlyArray<{
@@ -129,7 +142,7 @@ export default function ProductCatalog({
   const [alleenGetest, setAlleenGetest] = useState(false);
   const [sort, setSort] = useState<SortKey>("score");
   const [weergave, setWeergave] = useState<Weergave>("lijst");
-  const [limiet, setLimiet] = useState(PAGINA);
+  const [limiet, setLimiet] = useState(() => leesLimietUitUrl() ?? PAGINA);
 
   const categorieen = useMemo<CategorieOptie[]>(() => {
     const seen = new Map<string, CategorieOptie>();
@@ -209,6 +222,19 @@ export default function ProductCatalog({
     [zichtbaar, limiet],
   );
   const restant = zichtbaar.length - getoond.length;
+
+  /** Houdt de "Toon meer"-stand in de URL, niet alleen in React state, zodat
+   *  de browser-terugknop vanaf een productpagina hier terugkeert met
+   *  dezelfde lijstlengte in plaats van terug te vallen op de eerste 10. */
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (limiet > PAGINA) {
+      url.searchParams.set(LIMIET_PARAM, String(limiet));
+    } else {
+      url.searchParams.delete(LIMIET_PARAM);
+    }
+    window.history.replaceState(window.history.state, "", url);
+  }, [limiet]);
 
   /** Hoe vaak landt iemand hier met een categorie uit een andere pagina? Eén
    *  melding per bezoek, los van de klikken op de zijbalk. */
