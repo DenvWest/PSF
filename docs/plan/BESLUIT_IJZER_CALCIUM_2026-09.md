@@ -1,12 +1,21 @@
 # Besluit — ijzer en calcium als gemeten stoffen?
 
-**Datum:** 23 september 2026
-**Status:** verdict geschreven, besluit ligt bij Dennis — §7 is de openstaande vraag
+**Datum:** 23 september 2026, §7 aangevuld 26 september 2026
+**Status:** §7 beslist (optie B) — volgorde uit §8 blijft leidend voor de uitvoering
 **Aanleiding:** doelgroepverbreding van "mannen 40+" naar "mannen en vrouwen 30+" (23 sep).
 De vraag die daaruit volgt: de helft van de nieuwe doelgroep heeft een tekortprofiel dat
 dit product niet meet.
 **Vervolg op:** [`BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md`](./BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md)
 (het tekortsysteem dat hier uitgebreid zou worden)
+
+**Update 26 sep 2026:** naar aanleiding van een extern voorstel ("27-stoffen-dagboek")
+dat de volgorde uit §8 omdraaide (architectuur/data vóór pagina/claim), is expliciet
+bevestigd: **§8 blijft leidend, niet omgedraaid.** Tegelijk is de vraag uit §7 beslist:
+**optie B, geslachtsafhankelijke RI.** Zie §7 hieronder voor de aanvulling. Er is geen
+apart besluit genomen over een lijst van "6 prioriteitsstoffen" of "22/27 nieuwe
+stoffen" — dat voorstel had geen eigen besluitdocument en wordt hier niet als
+vaststaand behandeld. Elke volgende stof volgt hetzelfde traject als ijzer/calcium:
+eigen `/beste/*`-pagina + claim + (indien nodig) normbesluit, vóór architectuur/data.
 
 ---
 
@@ -149,13 +158,49 @@ Drie dingen die geen normbesluit en geen nieuwe data vragen:
 
 ---
 
-## 7. De openstaande vraag
+## 7. De openstaande vraag — BESLIST (26 sep 2026): optie B
 
 > **Welke ijzernorm hanteert PerfectSupplement — A, B of C uit §5?**
 
-Daar hangt alles achter. Zolang die niet beantwoord is, is bouwen aan de meting het verkeerde werk: elke implementatie legt impliciet een antwoord vast.
+**Besluit: optie B, geslachtsafhankelijke RI.** Ijzer krijgt daarmee dezelfde
+status als eiwit: een afwijking van de bijlage-XIII-waarde, expliciet gemarkeerd
+in `reference-intake.ts`, met een gepubliceerde bron erachter — niet een getal
+dat code zelf verzint.
 
-Bijvraag, los te beantwoorden: **mag calcium vooruit zonder ijzer?** Calcium heeft geen normprobleem, dus technisch kan het. Inhoudelijk is het de helft van het verhaal — botbehoud zonder het tekort dat vrouwen 30+ het vaakst hebben.
+**Wat dit besluit concreet vraagt vóór implementatie** (zie ook §9, dat al
+waarschuwde dat de EFSA-onderbouwing hier nog exact gesourced moet worden):
+
+1. Een `ReferenceIntake`-vorm die een geslachtsafhankelijke waarde kan dragen,
+   analoog aan hoe `protein-target.ts` los van `reference-intake.ts` een
+   persoonlijk doel berekent (`personalTarget: true` + externe module). Voor
+   ijzer betekent dat waarschijnlijk: `personalTarget: true` in de RI-tabel
+   (voor het etiketpercentage blijft 14 mg gelden, zoals bij eiwit) plus een
+   nieuwe `iron-target.ts`-achtige module die op basis van geslacht (en evt.
+   leeftijdsband voor postmenopauzaal) de dekkingswaarde bepaalt — niet de RI
+   zelf.
+2. **Een exacte bron**, net zo specifiek als PROT-AGE 2013 / ESPEN 2014 voor
+   eiwit. §5/§9 citeren EFSA's premenopauzale ijzerbehoefte richtinggevend,
+   niet uit een specifieke opinie. Vóór code: de exacte EFSA-opinie (met
+   publicatiejaar en de premenopauzale/postmenopauzale getallen) opzoeken en
+   hier vastleggen, zoals dit document dat voor calcium/ijzer-RI's uit bijlage
+   XIII al deed in §9.
+3. **Postmenopauzale grens.** §5 noemt dat de behoefte na de overgang weer
+   richting het mannenniveau zakt. Dat vraagt een leeftijds- of overgangs-brug
+   die vandaag nergens in de intake zit voor voedingsdoeleinden (alleen
+   `INTAKE_GENDER_OPTIONS` bestaat al, zie §5-slot). Dit wordt onderdeel van
+   de iron-target-module, niet van `reference-intake.ts`.
+4. Dit is een **aparte implementatiestap**, niet iets dat meelift in de
+   `/beste/ijzer`-pagina van §8 stap 1. De pagina en de EFSA-claim hebben geen
+   geslachtsafhankelijke norm nodig (een vergelijkingspagina toont producten,
+   geen persoonlijke dekking) — de norm is pas nodig zodra het tekortsysteem
+   zelf ijzer gaat meten (§8 stap 4).
+
+**Calcium blijft ongewijzigd**: 800 mg, geen geslachtsonderscheid, `personalTarget: false` — dat lag al vast en verandert niet door dit besluit.
+
+Bijvraag uit de vorige versie van dit document (**beantwoord**): **mag calcium
+vooruit zonder ijzer?** Ja — calcium heeft geen normprobleem en kan zijn eigen
+`/beste/calcium` + claim + meting-traject onafhankelijk doorlopen. Ze hoeven
+niet gelijk op te lopen in tempo, al doorlopen beide dezelfde volgorde uit §8.
 
 ---
 
@@ -163,10 +208,17 @@ Bijvraag, los te beantwoorden: **mag calcium vooruit zonder ijzer?** Calcium hee
 
 1. **`/beste/ijzer` + `/beste/calcium`** — verdient zichzelf terug, onafhankelijk van al het andere, en maakt de keten compleet vóórdat de meting hem nodig heeft
 2. **EFSA-claims** voor beide stoffen in `approved-claims.ts` (voorwaarde voor 1)
-3. **Normbesluit ijzer** (§7) — een gesprek, geen bouwslice
-4. **Dan pas** de voedseldata en de uitbreiding van `NutrientId`
+3. ~~Normbesluit ijzer (§7)~~ — **beslist 26 sep: optie B.** De uitwerking (bron opzoeken, `iron-target.ts`-module) is werk, geen open gesprek meer, maar blijft losstaand van stap 1-2: de pagina heeft de norm niet nodig.
+4. **Dan pas** de voedseldata en de uitbreiding van `NutrientId` — inclusief de iron-target-module uit §7
 
-Stap 1 en 2 kunnen nu beginnen. Stap 4 is pas verdedigbaar als 1 t/m 3 er zijn — anders meet je een gat waar geen uitgang bij hoort.
+Stap 1 en 2 kunnen nu beginnen, onafhankelijk van stap 3. Stap 4 is pas verdedigbaar als 1 t/m 3 er zijn (voor ijzer: inclusief de gesourcte bron uit §7.2) — anders meet je een gat waar geen uitgang bij hoort, of leg je een norm vast zonder de onderbouwing die eiwit wél heeft.
+
+**Reikwijdte-opmerking (26 sep):** dit besluit gaat over ijzer en calcium. Een
+bredere uitbreiding naar meer bijlage-XIII-stoffen (vitamine K, foliumzuur,
+B12, vitamine C, of de volledige catalogus) volgt — als en wanneer dat gebeurt
+— hetzelfde patroon: eerst pagina + claim per stof, dan pas architectuur/data,
+en elk normprobleem krijgt zijn eigen besluit zoals ijzer dat hier kreeg. Dat
+is nu geen goedgekeurd vervolgplan, alleen het toe te passen patroon.
 
 ---
 
