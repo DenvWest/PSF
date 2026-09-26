@@ -133,7 +133,8 @@ export async function loadCategoryProducts(
     .from("sup_products")
     .select("id, slug, name, variant, form, raw_legacy_fields, sup_brands(name)")
     .eq("category_id", category.id)
-    .eq("status", "published");
+    .eq("status", "published")
+    .order("display_order", { ascending: true });
 
   if (productsError || !productRows || productRows.length === 0) {
     return [];

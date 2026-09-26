@@ -39,8 +39,14 @@ function createFakeDb() {
         const filtered = currentRows.filter((r) => set.has(r[column]));
         return selectChain(name, filtered);
       },
-      order() {
-        return selectChain(name, currentRows);
+      order(column: string, opts?: { ascending?: boolean }) {
+        const sorted = [...currentRows].sort((a, b) => {
+          const av = a[column] as number;
+          const bv = b[column] as number;
+          const dir = opts?.ascending === false ? -1 : 1;
+          return av < bv ? -dir : av > bv ? dir : 0;
+        });
+        return selectChain(name, sorted);
       },
       then(resolve: (v: { data: Record<string, unknown>[]; error: null }) => void) {
         resolve({ data: currentRows, error: null });
@@ -210,5 +216,22 @@ describe("backfill -> loader round-trip", () => {
     const { db } = createFakeDb();
     const loaded = await loadCategoryProducts(db as never, "onbekend");
     expect(loaded).toEqual([]);
+  });
+
+  it("behoudt de oorspronkelijke array-volgorde (display_order), niet insertievolgorde", async () => {
+    // Regressietest voor de /beste/magnesium-bevinding van 26 sep: zonder
+    // ORDER BY display_order kwam Viridian vóór Vitaminstore te staan.
+    const { db } = createFakeDb();
+    const page = samplePage();
+    page.products = [
+      withClaimFields({ ...page.products[0], slug: "eerste", name: "Eerste product" }),
+      withClaimFields({ ...page.products[0], slug: "tweede", name: "Tweede product" }),
+      withClaimFields({ ...page.products[0], slug: "derde", name: "Derde product" }),
+    ];
+
+    await backfillComparisonPage(db as never, page);
+    const loaded = await loadCategoryProducts(db as never, "zink");
+
+    expect(loaded.map((p) => p.slug)).toEqual(["eerste", "tweede", "derde"]);
   });
 });

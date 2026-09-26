@@ -7,14 +7,20 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20260926071307_sup_products_legacy_fields.sql`
-- **Openstaand:** geen
+- **Openstaand:** 1 migratie (zie hieronder)
 - **Laatst bijgewerkt:** 26 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
 
-Niets — alle migraties t/m de baseline zijn gedraaid.
+### [ ] 20260926082953_sup_products_display_order.sql
+- **Wat:** voegt `display_order int not null default 0` toe aan `sup_products` + index op `(category_id, display_order)`. Ontdekt bij het omschakelen van `/beste/magnesium`: zonder deze kolom had de DB-loader geen manier om de redactionele productvolgorde (topkeuze eerst) te bewaren, waardoor Viridian per ongeluk vóór Vitaminstore kwam te staan.
+- **Blokkeert deploy:** nee — additieve kolom met default `0`, bestaande producten (backfilld vóór deze migratie) krijgen pas de juiste waarde na een hernieuwde `POST /api/admin/data/sup-backfill`-aanroep. Tot die tijd sorteert de DB-loader ze allemaal op `0` (stabiele volgorde, geen crash) — alleen categorieën in `DB_BACKED_CATEGORIES` (nu: `zink`) zijn hierdoor geraakt, en die had toevallig al maar 3 producten met een acceptabele volgorde.
+- **Hoort bij:** plak 1, `docs/plan/ANALYSE_PRODUCTPLATFORM_SUPPLEMENTEN.md`.
+- **Terugdraaien:** `alter table public.sup_products drop column display_order; drop index if exists public.sup_products_category_display_order_idx;`
+
+**Na het draaien van deze migratie: roep opnieuw `POST /api/admin/data/sup-backfill` aan** (zelfde fetch-commando als eerder) zodat alle 25 producten hun `display_order` krijgen — de migratie zelf vult geen bestaande rijen met de juiste waarde, alleen nieuwe/herbackfillde rijen.
 
 ## Runbook bij thuiskomst
 
