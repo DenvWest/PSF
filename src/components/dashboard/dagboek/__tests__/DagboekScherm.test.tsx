@@ -74,6 +74,14 @@ beforeEach(() => {
       if (String(input).includes("/api/account/supermarkt-portie-logs")) {
         return jsonResponse({ items: [] });
       }
+      if (String(input).includes("/api/account/macro-doelen")) {
+        return jsonResponse({
+          calorieenKcal: null,
+          koolhydratenPct: null,
+          vetPct: null,
+          eiwitPct: null,
+        });
+      }
       return jsonResponse({});
     }),
   );
@@ -508,6 +516,59 @@ describe("DagboekScherm — opslaan dat misgaat", () => {
         (screen.getByRole("button", { name: "Toevoegen" }) as HTMLButtonElement).disabled,
       ).toBe(false);
     });
+  });
+});
+
+describe("DagboekScherm — tabbladen (Laag B)", () => {
+  it("toont Vandaag als standaardtabblad, met de eetmomenten", () => {
+    render(<DagboekScherm />);
+
+    expect(screen.getByRole("tab", { name: "Vandaag", selected: true })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    ).toBeTruthy();
+  });
+
+  it("schakelt naar Voedingsstoffen en toont het weekoverzicht met het ingestelde doel", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        if (String(input).includes("/api/account/nutrition-daybook")) {
+          return jsonResponse({ days: [] });
+        }
+        if (String(input).includes("/api/account/supermarkt-portie-logs")) {
+          return jsonResponse({ items: [] });
+        }
+        if (String(input).includes("/api/account/macro-doelen")) {
+          return jsonResponse({
+            calorieenKcal: 2200,
+            koolhydratenPct: null,
+            vetPct: null,
+            eiwitPct: null,
+          });
+        }
+        return jsonResponse({});
+      }),
+    );
+
+    render(<DagboekScherm />);
+
+    fireEvent.click(screen.getByRole("tab", { name: "Voedingsstoffen" }));
+
+    // Het doel komt uit de macro-doelen-fetch, niet uit een berekening.
+    expect(await screen.findByText(/2200 kcal/)).toBeTruthy();
+  });
+
+  it("toont geen berekend of vooringevuld doel zolang er niets is ingesteld", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
+
+    // Zonder ingesteld doel toont de Doel-kolom "—", nooit een berekend
+    // getal (zeker geen NaN, en geen vuistregel als 50/30/20).
+    const cellen = await screen.findAllByText("—");
+    expect(cellen.length).toBeGreaterThanOrEqual(3);
+    expect(screen.queryByText(/NaN/)).toBeNull();
   });
 });
 
