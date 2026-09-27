@@ -7,12 +7,18 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20260926082953_sup_products_display_order.sql`
-- **Openstaand:** 2 migraties (zie hieronder)
-- **Laatst bijgewerkt:** 26 september 2026
+- **Openstaand:** 3 migraties (zie hieronder)
+- **Laatst bijgewerkt:** 27 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
+
+### [ ] 20260927162517_account_supermarkt_portie_logs.sql
+- **Wat:** nieuwe tabel `account_supermarkt_portie_logs` — losse portie-logs van supermarktproducten (calorieën/macro's, Laag A) los van het tekortsysteem. Geen unique-constraint: elk log is een eigen event, geen upsert-sleutel. Zie `docs/plan/BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §0.1 en `docs/plan/VOORBEREIDING_LAAG_A_MACRO_MICRO_2026-09.md`.
+- **Blokkeert deploy:** nee — de API-route (`/api/account/supermarkt-portie-logs`) geeft 503 als de tabel nog niet bestaat, net als de andere `orgScoped()`-routes bij een ontbrekend schema. `SUPERMARKT_CATALOG` zelf is nog leeg (Laag 0b draait nog), dus er is sowieso nog niets te loggen.
+- **Hoort bij:** Laag A, plak 1 (datamodel + opslag).
+- **Terugdraaien:** `drop table public.account_supermarkt_portie_logs;`
 
 ### [ ] 20260926112517_pd_daisycon_en_retailer_partners.sql
 - **Wat:** her-seedt het Daisycon-netwerk (`pd_networks`, bewust eerder verwijderd/hernoemd door Dennis) en voegt 3 `pd_partners`-dossiers toe (Vitaminstore, VitalNutrition — beide via Daisycon; Arctic Blue — direct). Nodig als brug voor `sup_retailers.pd_partner_id` in plak 4: geen van de drie retailers achter de bestaande affiliate-links had een eigen PartnerDesk-dossier.
