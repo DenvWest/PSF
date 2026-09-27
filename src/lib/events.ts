@@ -117,6 +117,13 @@ export const DOMAIN_EVENT_TYPES = [
   "nutrition.dagboek_maaltijd_geopend",
   "nutrition.dagboek_zoek_item_gekozen",
   "nutrition.dagboek_portie_bevestigd",
+  // Laag A (macro/micro-uitbreiding, zie BESLUIT_MACRO_MICRONUTRIENT_
+  // UITBREIDING_2026-09.md): een supermarktproduct-portie bevestigen. Los
+  // event van `dagboek_portie_bevestigd` omdat dit geen DagboekItem/
+  // tekortsysteem-registratie is — een eigen, parallelle opslag
+  // (account_supermarkt_portie_logs). Geen `nutrient`-payload: dit item
+  // draagt geen NutrientId.
+  "nutrition.dagboek_supermarkt_portie_bevestigd",
   // De ster-knop: bewaart een voedingsmiddel/supplement in "Mijn producten"/
   // "Mijn supplementen", los van de automatische geschiedenis. `bron` zegt
   // welk tabblad het raakt.
