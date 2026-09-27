@@ -17,6 +17,46 @@ vi.mock("@/lib/account-events-client", () => ({
   emitAccountClientEvent: vi.fn(),
 }));
 
+/**
+ * Testfixture voor Laag A: SUPERMARKT_CATALOG is in productie leeg (Laag 0b
+ * moet nog beoordeeld worden), dus de zoek-naar-portie-flow heeft hier een
+ * eigen product nodig om te testen.
+ */
+vi.mock("@/data/nutrition/supermarkt-catalog", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@/data/nutrition/supermarkt-catalog")>();
+  const testProduct = {
+    prodId: "test/ah-testproduct",
+    naam: "AH Testproduct",
+    supermarkt: "AH" as const,
+    categorie: "test",
+    energyKcal: 250,
+    fatG: 10,
+    saturatedFatG: 3,
+    carbohydrateG: 30,
+    sugarsG: 5,
+    fiberG: 2,
+    proteinG: 8,
+    saltG: 1,
+    sodiumMg: null,
+    calciumMg: null,
+    ironMg: null,
+    vitaminCMg: null,
+    vitaminDµg: null,
+    bron: "supermarkt" as const,
+  };
+  return {
+    ...actual,
+    SUPERMARKT_CATALOG: [testProduct],
+    supermarktCatalogEntry: (prodId: string) =>
+      prodId === testProduct.prodId ? testProduct : null,
+    searchSupermarktCatalog: (query: string) =>
+      testProduct.naam.toLowerCase().includes(query.trim().toLowerCase())
+        ? [testProduct]
+        : [],
+  };
+});
+
 function jsonResponse(body: unknown): Promise<Response> {
   return Promise.resolve({
     ok: true,
@@ -30,6 +70,9 @@ beforeEach(() => {
     vi.fn((input: RequestInfo | URL) => {
       if (String(input).includes("/api/account/nutrition-daybook")) {
         return jsonResponse({ days: [] });
+      }
+      if (String(input).includes("/api/account/supermarkt-portie-logs")) {
+        return jsonResponse({ items: [] });
       }
       return jsonResponse({});
     }),
@@ -465,6 +508,54 @@ describe("DagboekScherm — opslaan dat misgaat", () => {
         (screen.getByRole("button", { name: "Toevoegen" }) as HTMLButtonElement).disabled,
       ).toBe(false);
     });
+  });
+});
+
+describe("DagboekScherm — supermarkt-portie (Laag A)", () => {
+  it("logt een supermarktproduct los van het tekortsysteem", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    );
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    );
+    fireEvent.change(zoekveld, { target: { value: "testproduct" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^AH Testproduct/ }));
+
+    // De supermarkt-portie-laag toont calorieën/macro's, geen NutrientId-rij.
+    const laag = await screen.findByRole("dialog");
+    expect(within(laag).getByText("Calorieën")).toBeTruthy();
+    expect(within(laag).getByText(/250 kcal/)).toBeTruthy();
+
+    fireEvent.click(within(laag).getByRole("button", { name: "Toevoegen" }));
+
+    await waitFor(() => {
+      const posts = vi.mocked(fetch).mock.calls.filter(
+        ([input, init]) =>
+          String(input).includes("/api/account/supermarkt-portie-logs") &&
+          Boolean(
+            init &&
+              typeof init === "object" &&
+              "method" in init &&
+              init.method === "POST",
+          ),
+      );
+      expect(posts.length).toBeGreaterThan(0);
+      const body = JSON.parse(String((posts[0]![1] as RequestInit).body));
+      expect(body.prodId).toBe("test/ah-testproduct");
+      expect(body.moment).toBe("ontbijt");
+    });
+
+    // Geen enkele POST naar het tekortsysteem — dit is een parallelle, eigen
+    // opslag, geen DagboekItem.
+    const daybookPosts = vi.mocked(fetch).mock.calls.filter(
+      ([input, init]) =>
+        String(input).includes("/api/account/nutrition-daybook") &&
+        Boolean(init && typeof init === "object" && "method" in init && init.method === "POST"),
+    );
+    expect(daybookPosts).toHaveLength(0);
   });
 });
 
