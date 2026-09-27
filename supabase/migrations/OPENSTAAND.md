@@ -7,7 +7,7 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20261001044530_accounts_last_seen_at.sql`
-- **Openstaand:** 2 migraties (zie hieronder)
+- **Openstaand:** 3 migraties (zie hieronder)
 - **Laatst bijgewerkt:** 1 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
@@ -19,6 +19,12 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 - **Blokkeert deploy:** nee (puur additief/idempotent; er is geen code die hier nieuw gedrag op bouwt — dit is alleen reproduceerbaarheid voor een toekomstige DR-restore of staging-omgeving)
 - **Hoort bij:** audit N5
 - **Terugdraaien:** niet nodig — alleen additief op een lege DB; op productie verandert deze migratie niets aan de tabellen zelf
+
+### [ ] 20260927171910_account_macro_doelen.sql
+- **Wat:** nieuwe tabel `account_macro_doelen` — zelf ingesteld macro/calorie-doel (Laag C), 100% gebruikersinvoer, geen formule, geen som-constraint op de percentages. Eigen tabel, geen kolom op `account_voedingsdoelen` (dat draagt de eiwit-formule-overschrijving, een ander soort doel). Zie `docs/plan/BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §1/§4.
+- **Blokkeert deploy:** nee — de API-route (`/api/account/macro-doelen`) geeft 503 als de tabel nog niet bestaat, net als de andere `orgScoped()`-routes bij een ontbrekend schema.
+- **Hoort bij:** Laag A/C, plak 3 (instelbaar doel).
+- **Terugdraaien:** `drop table public.account_macro_doelen;`
 
 ### [ ] 20260927162517_account_supermarkt_portie_logs.sql
 - **Wat:** nieuwe tabel `account_supermarkt_portie_logs` — losse portie-logs van supermarktproducten (calorieën/macro's, Laag A) los van het tekortsysteem. Geen unique-constraint: elk log is een eigen event, geen upsert-sleutel. Zie `docs/plan/BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §0.1 en `docs/plan/VOORBEREIDING_LAAG_A_MACRO_MICRO_2026-09.md`.
