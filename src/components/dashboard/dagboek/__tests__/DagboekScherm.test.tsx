@@ -524,12 +524,14 @@ describe("DagboekScherm — supermarkt-portie (Laag A)", () => {
     fireEvent.change(zoekveld, { target: { value: "testproduct" } });
     fireEvent.click(await screen.findByRole("button", { name: /^AH Testproduct/ }));
 
-    // De supermarkt-portie-laag toont calorieën/macro's, geen NutrientId-rij.
-    const laag = await screen.findByRole("dialog");
-    expect(within(laag).getByText("Calorieën")).toBeTruthy();
-    expect(within(laag).getByText(/250 kcal/)).toBeTruthy();
+    // Het supermarkt-portiescherm toont calorieën/macro's, geen NutrientId-rij.
+    expect(
+      await screen.findByRole("heading", { name: "Voedsel toevoegen" }),
+    ).toBeTruthy();
+    expect(screen.getByText("Calorieën")).toBeTruthy();
+    expect(screen.getByText(/250 kcal/)).toBeTruthy();
 
-    fireEvent.click(within(laag).getByRole("button", { name: "Toevoegen" }));
+    fireEvent.click(screen.getByRole("button", { name: "Toevoegen" }));
 
     await waitFor(() => {
       const posts = vi.mocked(fetch).mock.calls.filter(

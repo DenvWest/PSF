@@ -446,13 +446,27 @@ export default function DagboekScherm({
   // zoeklijst in plaats van ernaast. Een maaltijd is zelden één product, en zo
   // is het tweede product één tik verder dan het eerste in plaats van de hele
   // route terug.
-  if (
-    scherm.scherm === "zoek" ||
-    scherm.scherm === "portie" ||
-    scherm.scherm === "supermarktPortie"
-  ) {
+  // Eigen, volledig scherm — geen laag over de zoeklijst zoals "portie": de
+  // MyFitnessPal-vorm (27 sep) toont rijen (maaltijd/porties/portiegrootte)
+  // vóór de ring, en dat leest beter als eigen pagina dan als overlay.
+  if (scherm.scherm === "supermarktPortie") {
+    return (
+      <SupermarktPortieInvoer
+        prodId={scherm.prodId}
+        moment={scherm.moment}
+        busy={busySupermarkt}
+        onTerug={() => setScherm({ scherm: "zoek", nutrient: null, moment: scherm.moment })}
+        onBevestig={(gekozenMoment, grams) => {
+          void voegSupermarktPortieToe(gekozenMoment, scherm.prodId, grams);
+          setScherm({ scherm: "zoek", nutrient: null, moment: gekozenMoment });
+        }}
+      />
+    );
+  }
+
+  if (scherm.scherm === "zoek" || scherm.scherm === "portie") {
     const moment = scherm.moment;
-    const nutrient = scherm.scherm === "zoek" || scherm.scherm === "portie" ? scherm.nutrient : null;
+    const nutrient = scherm.nutrient;
     return (
       <>
         <DagboekCatalogusZoek
@@ -496,19 +510,6 @@ export default function DagboekScherm({
             onBevestig={(gekozenMoment, grams) =>
               voegNutrientItemToe(nutrient, scherm.bron, scherm.key, gekozenMoment, grams)
             }
-          />
-        ) : null}
-
-        {scherm.scherm === "supermarktPortie" ? (
-          <SupermarktPortieInvoer
-            prodId={scherm.prodId}
-            moment={moment}
-            busy={busySupermarkt}
-            onTerug={() => setScherm({ scherm: "zoek", nutrient: null, moment })}
-            onBevestig={(gekozenMoment, grams) => {
-              void voegSupermarktPortieToe(gekozenMoment, scherm.prodId, grams);
-              setScherm({ scherm: "zoek", nutrient: null, moment: gekozenMoment });
-            }}
           />
         ) : null}
       </>
