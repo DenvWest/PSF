@@ -6,25 +6,13 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Status
 
-- **Baseline toegepast t/m:** `20260926082953_sup_products_display_order.sql`
-- **Openstaand:** 4 migraties (zie hieronder)
+- **Baseline toegepast t/m:** `20260927171910_account_macro_doelen.sql`
+- **Openstaand:** 2 migraties (zie hieronder)
 - **Laatst bijgewerkt:** 27 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
-
-### [ ] 20260927171910_account_macro_doelen.sql
-- **Wat:** nieuwe tabel `account_macro_doelen` — zelf ingesteld macro/calorie-doel (Laag C), 100% gebruikersinvoer, geen formule, geen som-constraint op de percentages. Eigen tabel, geen kolom op `account_voedingsdoelen` (dat draagt de eiwit-formule-overschrijving, een ander soort doel). Zie `docs/plan/BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §1/§4.
-- **Blokkeert deploy:** nee — de API-route (`/api/account/macro-doelen`) geeft 503 als de tabel nog niet bestaat, net als de andere `orgScoped()`-routes bij een ontbrekend schema.
-- **Hoort bij:** Laag A/C, plak 3 (instelbaar doel).
-- **Terugdraaien:** `drop table public.account_macro_doelen;`
-
-### [ ] 20260927162517_account_supermarkt_portie_logs.sql
-- **Wat:** nieuwe tabel `account_supermarkt_portie_logs` — losse portie-logs van supermarktproducten (calorieën/macro's, Laag A) los van het tekortsysteem. Geen unique-constraint: elk log is een eigen event, geen upsert-sleutel. Zie `docs/plan/BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §0.1 en `docs/plan/VOORBEREIDING_LAAG_A_MACRO_MICRO_2026-09.md`.
-- **Blokkeert deploy:** nee — de API-route (`/api/account/supermarkt-portie-logs`) geeft 503 als de tabel nog niet bestaat, net als de andere `orgScoped()`-routes bij een ontbrekend schema. `SUPERMARKT_CATALOG` zelf is nog leeg (Laag 0b draait nog), dus er is sowieso nog niets te loggen.
-- **Hoort bij:** Laag A, plak 1 (datamodel + opslag).
-- **Terugdraaien:** `drop table public.account_supermarkt_portie_logs;`
 
 ### [ ] 20260926112517_pd_daisycon_en_retailer_partners.sql
 - **Wat:** her-seedt het Daisycon-netwerk (`pd_networks`, bewust eerder verwijderd/hernoemd door Dennis) en voegt 3 `pd_partners`-dossiers toe (Vitaminstore, VitalNutrition — beide via Daisycon; Arctic Blue — direct). Nodig als brug voor `sup_retailers.pd_partner_id` in plak 4: geen van de drie retailers achter de bestaande affiliate-links had een eigen PartnerDesk-dossier.
@@ -73,6 +61,8 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 27 september 2026 | `20260927171910_account_macro_doelen.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: tabel aanwezig met 8 kolommen. |
+| 27 september 2026 | `20260927162517_account_supermarkt_portie_logs.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: tabel aanwezig met 8 kolommen. |
 | 26 september 2026 | `20260926082953_sup_products_display_order.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema` + herbackfill (`POST /api/admin/data/sup-backfill`, 25 producten/0 errors) + tekstvergelijking `/beste/magnesium` (336 regels, 0 diff met de statische versie). |
 | 26 september 2026 | `20260926071307_sup_products_legacy_fields.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: `sup_products,25` kolommen (24 uit sup_catalog.sql + `raw_legacy_fields`). |
 | 26 september 2026 | `20260926065021_sup_retail.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: `sup_retailers`, `sup_offers`, `sup_offer_price_history`, `sup_clicks` alle aanwezig. |
