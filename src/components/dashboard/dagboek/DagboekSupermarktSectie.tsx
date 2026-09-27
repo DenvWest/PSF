@@ -3,6 +3,7 @@
 import { supermarktCatalogEntry } from "@/data/nutrition/supermarkt-catalog";
 import {
   bedragVanSupermarktveld,
+  somVanSupermarktveld,
   SUPERMARKT_MACRO_VELDEN,
   type SupermarktPortieLog,
 } from "@/lib/nutrition-supermarkt-items";
@@ -32,19 +33,10 @@ export default function DagboekSupermarktSectie({
 }) {
   if (logs.length === 0) return null;
 
-  const totalen = SUPERMARKT_MACRO_VELDEN.map((veld) => {
-    let som = 0;
-    let heeftBedrag = false;
-    for (const log of logs) {
-      const product = supermarktCatalogEntry(log.prodId);
-      if (!product) continue;
-      const bedrag = bedragVanSupermarktveld(product, veld.veld, log.grams);
-      if (bedrag === null) continue;
-      som += bedrag;
-      heeftBedrag = true;
-    }
-    return { ...veld, waarde: heeftBedrag ? som : null };
-  });
+  const totalen = SUPERMARKT_MACRO_VELDEN.map((veld) => ({
+    ...veld,
+    waarde: somVanSupermarktveld(logs, veld.veld),
+  }));
 
   return (
     <section className="overflow-hidden rounded-2xl border border-white/10">

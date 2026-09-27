@@ -16,7 +16,11 @@ import {
 } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { ProteinTargetRange } from "@/lib/protein-target";
-import type { SupermarktPortieLog, SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
+import {
+  somVanSupermarktveld,
+  type SupermarktPortieLog,
+  type SupermarktVeld,
+} from "@/lib/nutrition-supermarkt-items";
 import { LEGE_MACRO_DOELEN, type MacroDoelen } from "@/lib/account-macro-doelen";
 import { fetchMacroDoelen } from "@/lib/macro-doelen-client";
 import { bouwSupermarktWeekoverzicht } from "@/lib/nutrition-supermarkt-weekoverzicht";
@@ -24,6 +28,9 @@ import { verschuifWeek, weekDatums, weekStart } from "@/lib/nutrition-weekoverzi
 import DagboekCatalogusZoek from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
 import DagboekHero from "@/components/dashboard/dagboek/DagboekHero";
 import DagboekMaaltijd from "@/components/dashboard/dagboek/DagboekMaaltijd";
+import DagboekMacroRing, {
+  MACRO_RING_KLEUREN,
+} from "@/components/dashboard/dagboek/DagboekMacroRing";
 import DagboekNutrientBalken from "@/components/dashboard/dagboek/DagboekNutrientBalken";
 import DagboekNutrientDetail from "@/components/dashboard/dagboek/DagboekNutrientDetail";
 import DagboekPortieInvoer from "@/components/dashboard/dagboek/DagboekPortieInvoer";
@@ -783,25 +790,6 @@ export default function DagboekScherm({
             </p>
           ) : null}
         </div>
-      ) : dagboekSectie === "calorieen" ? (
-        <div
-          id="dagboek-subtab-paneel-calorieen"
-          role="tabpanel"
-          aria-labelledby="dagboek-subtab-calorieen"
-          className="flex flex-col gap-4"
-        >
-          <DagboekWeekstrip
-            dagen={stripDagen}
-            geselecteerd={datum}
-            onSelecteer={setDatum}
-            busy={busy}
-          />
-          <DagboekSupermarktSectie
-            logs={supermarktLogs}
-            busy={busySupermarkt}
-            onVerwijder={(id) => void verwijderSupermarktPortie(id)}
-          />
-        </div>
       ) : dagboekSectie === "voedingsstoffen" ? (
         <div
           id="dagboek-subtab-paneel-voedingsstoffen"
@@ -824,6 +812,46 @@ export default function DagboekScherm({
           aria-labelledby="dagboek-subtab-macros"
           className="flex flex-col gap-4"
         >
+          <DagboekWeekstrip
+            dagen={stripDagen}
+            geselecteerd={datum}
+            onSelecteer={setDatum}
+            busy={busy}
+          />
+
+          <DagboekMacroRing
+            kcal={somVanSupermarktveld(supermarktLogs, "energyKcal")}
+            segmenten={[
+              {
+                key: "koolhydraten",
+                label: "Koolhydraten",
+                gram: somVanSupermarktveld(supermarktLogs, "carbohydrateG"),
+                kcalPerGram: 4,
+                kleur: MACRO_RING_KLEUREN.koolhydraten,
+              },
+              {
+                key: "vet",
+                label: "Vet",
+                gram: somVanSupermarktveld(supermarktLogs, "fatG"),
+                kcalPerGram: 9,
+                kleur: MACRO_RING_KLEUREN.vet,
+              },
+              {
+                key: "eiwit",
+                label: "Eiwit",
+                gram: somVanSupermarktveld(supermarktLogs, "proteinG"),
+                kcalPerGram: 4,
+                kleur: MACRO_RING_KLEUREN.eiwit,
+              },
+            ]}
+          />
+
+          <DagboekSupermarktSectie
+            logs={supermarktLogs}
+            busy={busySupermarkt}
+            onVerwijder={(id) => void verwijderSupermarktPortie(id)}
+          />
+
           <DagboekSupermarktWeektabel
             overzicht={supermarktWeekoverzicht}
             rijen={supermarktWeekoverzicht.rijen.filter((rij) => MACRO_VELDEN.has(rij.veld))}

@@ -2,7 +2,7 @@
 
 /**
  * De horizontaal scrollbare sub-tab-balk boven het dagboek-overzicht — Laag B
- * (calorieën/macro/voedingsstoffen-tabbladen naast de bestaande eetmomenten).
+ * (macro/voedingsstoffen-tabbladen naast de bestaande eetmomenten).
  *
  * Naar `PatroonSubtabs.tsx`, met de a11y-koppeling (`id`/`aria-labelledby`
  * tussen tab en panel) geleend van `DagboekCatalogusZoek.tsx` — die koppeling
@@ -11,13 +11,17 @@
  * "Vandaag" is de bestaande inhoud (hero, nutriëntbalken, weekstrip,
  * eetmomenten, `DagboekSupermarktSectie`) — geen nieuw label ervoor nodig,
  * het is gewoon de eerste tab.
+ *
+ * Geen los "Calorieën"-tabblad (27 sep, herzien): de calorie-ring
+ * (`DagboekMacroRing`) staat op "Macro's" — kcal in het midden, macro's als
+ * segmenten eromheen, zoals de MyFitnessPal-referentie. Een apart tabblad
+ * zonder eigen invoeringang toonde alleen de weekstrip en niets bruikbaars.
  */
 
-export type DagboekSectie = "vandaag" | "calorieen" | "voedingsstoffen" | "macros";
+export type DagboekSectie = "vandaag" | "voedingsstoffen" | "macros";
 
 const SECTIES: { id: DagboekSectie; label: string }[] = [
   { id: "vandaag", label: "Vandaag" },
-  { id: "calorieen", label: "Calorieën" },
   { id: "voedingsstoffen", label: "Voedingsstoffen" },
   { id: "macros", label: "Macro's" },
 ];
