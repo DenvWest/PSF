@@ -529,6 +529,21 @@ describe("DagboekScherm — tabbladen (Laag B)", () => {
     ).toBeTruthy();
   });
 
+  it("heeft geen los Calorieën-tabblad — de ring staat op Macro's", () => {
+    render(<DagboekScherm />);
+
+    expect(screen.queryByRole("tab", { name: "Calorieën" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
+
+    // De ring toont "Cal." in het midden; de drie macro's staan zowel in de
+    // ring-legenda als in de weektabel eronder.
+    expect(screen.getByText("Cal.")).toBeTruthy();
+    expect(screen.getAllByText(/Koolhydraten/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Vet/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Eiwit/).length).toBeGreaterThan(0);
+  });
+
   it("schakelt naar Voedingsstoffen en toont het weekoverzicht met het ingestelde doel", async () => {
     vi.stubGlobal(
       "fetch",

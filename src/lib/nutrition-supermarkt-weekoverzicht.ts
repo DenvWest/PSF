@@ -1,11 +1,10 @@
 import type { MacroDoelen } from "@/lib/account-macro-doelen";
 import {
-  bedragVanSupermarktveld,
+  somVanSupermarktveld,
   SUPERMARKT_MACRO_VELDEN,
   type SupermarktPortieLog,
   type SupermarktVeld,
 } from "@/lib/nutrition-supermarkt-items";
-import { supermarktCatalogEntry } from "@/data/nutrition/supermarkt-catalog";
 
 /**
  * Eén week calorieën/macro's: de tabel gemiddeld / doel / over — de
@@ -99,26 +98,16 @@ export function bouwSupermarktWeekoverzicht(
   const dagenGeregistreerd = datums.filter((d) => (logsPerDag.get(d)?.length ?? 0) > 0).length;
 
   const rijen = SUPERMARKT_MACRO_VELDEN.map((veldDef): SupermarktWeekRij => {
-    let som = 0;
-    let heeftBedrag = false;
-    for (const datum of datums) {
-      for (const log of logsPerDag.get(datum) ?? []) {
-        const product = supermarktCatalogEntry(log.prodId);
-        if (!product) continue;
-        const bedrag = bedragVanSupermarktveld(product, veldDef.veld, log.grams);
-        if (bedrag === null) continue;
-        som += bedrag;
-        heeftBedrag = true;
-      }
-    }
+    const alleLogsVanDeWeek = datums.flatMap((datum) => logsPerDag.get(datum) ?? []);
+    const som = somVanSupermarktveld(alleLogsVanDeWeek, veldDef.veld);
 
     const doel = doelVoorVeld(veldDef.veld, doelen);
     const gemiddeld =
-      heeftBedrag && dagenGeregistreerd > 0
+      som !== null && dagenGeregistreerd > 0
         ? Math.round((som / dagenGeregistreerd) * 10) / 10
         : 0;
     const over =
-      heeftBedrag && doel !== null && doel > gemiddeld
+      som !== null && doel !== null && doel > gemiddeld
         ? Math.round((doel - gemiddeld) * 10) / 10
         : null;
 

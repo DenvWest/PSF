@@ -96,6 +96,29 @@ export function bedragVanSupermarktveld(
   return (per100g * grams) / 100;
 }
 
+/**
+ * Som van één veld over meerdere logs, of `null` als geen enkel log een
+ * bedrag opleverde. Gedeelde helper voor `DagboekSupermarktSectie`,
+ * `DagboekScherm` (de macro-ring) en `nutrition-supermarkt-weekoverzicht.ts`
+ * — dezelfde optelling stond eerder driemaal apart uitgeschreven.
+ */
+export function somVanSupermarktveld(
+  logs: readonly Pick<SupermarktPortieLog, "prodId" | "grams">[],
+  veld: SupermarktVeld,
+): number | null {
+  let som = 0;
+  let heeftBedrag = false;
+  for (const log of logs) {
+    const product = supermarktCatalogEntry(log.prodId);
+    if (!product) continue;
+    const bedrag = bedragVanSupermarktveld(product, veld, log.grams);
+    if (bedrag === null) continue;
+    som += bedrag;
+    heeftBedrag = true;
+  }
+  return heeftBedrag ? som : null;
+}
+
 /** De vier macro-achtige velden die Laag A als ring toont, in vaste volgorde. */
 export const SUPERMARKT_MACRO_VELDEN: readonly {
   veld: SupermarktVeld;
