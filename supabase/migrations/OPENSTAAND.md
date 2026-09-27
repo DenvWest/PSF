@@ -6,9 +6,9 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Status
 
-- **Baseline toegepast t/m:** `20260926082953_sup_products_display_order.sql`
+- **Baseline toegepast t/m:** `20260927171910_account_macro_doelen.sql`
 - **Openstaand:** 2 migraties (zie hieronder)
-- **Laatst bijgewerkt:** 26 september 2026
+- **Laatst bijgewerkt:** 27 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
@@ -61,6 +61,8 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 27 september 2026 | `20260927171910_account_macro_doelen.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: tabel aanwezig met 8 kolommen. |
+| 27 september 2026 | `20260927162517_account_supermarkt_portie_logs.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: tabel aanwezig met 8 kolommen. |
 | 26 september 2026 | `20260926082953_sup_products_display_order.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema` + herbackfill (`POST /api/admin/data/sup-backfill`, 25 producten/0 errors) + tekstvergelijking `/beste/magnesium` (336 regels, 0 diff met de statische versie). |
 | 26 september 2026 | `20260926071307_sup_products_legacy_fields.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: `sup_products,25` kolommen (24 uit sup_catalog.sql + `raw_legacy_fields`). |
 | 26 september 2026 | `20260926065021_sup_retail.sql` | Door Dennis gedraaid in de SQL Editor; bevestigd via `npm run check:db-schema`: `sup_retailers`, `sup_offers`, `sup_offer_price_history`, `sup_clicks` alle aanwezig. |
