@@ -35,12 +35,14 @@ import { fetchVoedingsdoelen, postVoedingsdoelen } from "@/lib/voedingsdoelen-cl
  * de richtlijn", en de richtlijn blijft er altijd naast staan. Wie hem
  * overschrijft ziet dus wat hij overschrijft.
  *
- * ## Waarom hier geen calorieën staan
+ * ## Waarom hier geen calorieën/macro's staan
  *
- * Het dagboek kent de voedingsmiddelen die de vijf gemeten stoffen dragen,
- * niet je hele dag. Een caloriedoel zou een bovengrens-vraag stellen aan data
- * die alleen een ondergrens kan bewijzen — precies omgekeerd aan de
- * asymmetrie-regel waar het hele tekortsysteem op rust.
+ * Sinds `BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` zijn calorieën/
+ * macro's wél instelbaar (zie `MacroDoelenKaart`, ernaast op deze pagina) —
+ * maar als een eigen kaart met een eigen tabel, niet hier. Dit eiwitdoel is
+ * een overschrijving van een gepubliceerde formule (PROT-AGE/ESPEN); een
+ * macro-doel draagt geen enkele formule en is 100% eigen invoer. Twee
+ * verschillende soorten "doel" die niet door elkaar horen te lopen.
  */
 
 const SURFACE = "voedingsdoelen";
