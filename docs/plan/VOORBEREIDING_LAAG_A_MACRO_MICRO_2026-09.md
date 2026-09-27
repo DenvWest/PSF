@@ -126,7 +126,7 @@ In volgorde, met wat elke stap concreet oplevert en wat hij nodig heeft van de v
 | 8 | Laag C — instellingen: nieuwe tabel + UI voor het zelf ingevulde macro/calorie-doel (géén kolom op `account_voedingsdoelen`, zie besluit §0.1 en §1) | **Nog te bouwen** | Onafhankelijk van 3-7, kan parallel |
 | 9 | Migratie voor Laag C's doeltabel + `OPENSTAAND.md`-blok (CLAUDE.md-verplichting bij elke nieuwe migratie) | **Nog te bouwen** | Samen met stap 8 |
 | 10 | Laag B — dagboek-tabbladen (Calorieën · Voedingsstoffen · Macro's) op `DagboekScherm.tsx` | **Nog te bouwen** | Stap 6 (Laag A) en stap 8 (Laag C, voor het instelbare doel in de Macro's-tab) |
-| 11 | Meer-menu: item "Voeding"/"Dagboek" toevoegen aan `DASHBOARD_MORE_ITEMS` (`src/data/dashboard/index.ts`) | **Nog te doen** — kleinste stuk, geen afhankelijkheid | Kan op elk moment, onafhankelijk van 1-10 |
+| 11 | ~~Meer-menu: item "Voeding"/"Dagboek" toevoegen aan `DASHBOARD_MORE_ITEMS`~~ | **Vervallen** (27 sep) — Dagboek is al de eerste hoofdtab (`tab=vandaag`, label "Dagboek"), een extra Meer-menu-item ernaar is dubbelop. Zie `BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §1 "Meer-menu — geschrapt". | — |
 | 12 | Meetpunten (CLAUDE.md-verplichting): nieuwe interacties in Laag A/B/C (portie-invoer met macro-ring, doel instellen) hebben elk een `domain_events`/GA4-event nodig, geregistreerd op de drie plekken (`src/lib/events.ts`, `src/lib/intake-events-client.ts`, allowlist in `src/app/api/intake/events/route.ts`) | **Nog te doen** | Gelijktijdig met stap 6, 8, 10 — niet achteraf |
 
 ### Wat hier bewust nog geen keuze in heeft

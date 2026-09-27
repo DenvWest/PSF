@@ -68,9 +68,13 @@ Het bestaande dagboekscherm (`DagboekScherm.tsx`) krijgt naast de huidige 5-stof
 
 Een profielinstelling waar iemand zijn eigen macro-verdeling en (indien gewenst) calorierichtlijn intypt — myfitnesspal-stijl "Doelen"-scherm, als **nieuwe, eigen tabel** (niet als kolom op `account_voedingsdoelen` — zie §0.1's opmerking over het schema-commentaar). Dit is de plek waarop §4's compliance-redenering rust: het systeem *berekent geen* advies, het *toont* wat iemand zelf invulde naast wat hij at.
 
-### Meer-menu (toegevoegd 27 sep, kleiner dan aanvankelijk gedacht)
+### Meer-menu — geschrapt (herzien 27 sep, na uitzoekwerk)
 
-Er bestaat al een uitklapbaar "Meer"-menu (`CockpitMoreMenu.tsx`, gevoed door `DASHBOARD_MORE_ITEMS` in `src/data/dashboard/index.ts`) dat precies het patroon uit de screenshot volgt: op mobiel een sheet vanaf de onderbalk, vanaf `sm` een popover in de header — **zelfde component, geen aparte web/mobiel-bouw nodig**. "Doelen" staat er al in. Besloten (27 sep): **alleen een item toevoegen** — "Voeding" / "Dagboek" wijzend naar de bestaande dagboek-tab — geen nieuw component, geen accordion-gedrag. Bevestigd met Dennis: het menu zelf klapt uit (sheet/popover), maar tikken op een item navigeert gewoon naar zijn eigen tab/route, zoals nu al met "Doelen" gebeurt.
+Het 27-sep-ochtendbesluit ("alleen een item toevoegen — 'Voeding'/'Dagboek' wijzend naar de bestaande dagboek-tab") ging uit van de aanname dat Dagboek een aparte, minder zichtbare plek was die een snelkoppeling nodig had. Bij het uitzoeken van de aansluitpunten bleek: **Dagboek is al de eerste hoofdtab** van het dashboard (tab-id `vandaag`, label "Dagboek", icon `BookOpen`, bereikbaar via `/dashboard?tab=vandaag` — zie `DASHBOARD_TABS` in `src/data/dashboard/index.ts` en `DagboekScherm.tsx` gerenderd in `Dashboard.tsx`). Het staat dus al prominent in de hoofdnavigatie, op elk scherm zichtbaar.
+
+**Besloten (27 sep, herzien): geen item toevoegen aan `DASHBOARD_MORE_ITEMS`.** Een extra "Voeding"/"Dagboek"-snelkoppeling in het Meer-menu zou dubbelop zijn met een tab die al in de hoofdnav staat — het voegt geen bereikbaarheid toe, alleen ruis. Restlijst-stap 11 uit `VOORBEREIDING_LAAG_A_MACRO_MICRO_2026-09.md` §4 vervalt hiermee.
+
+Dit is geen enkele aanwijzing dat "Doelen" (het bestaande Meer-menu-item, wijzend naar `/dashboard/doelen`) ook zou moeten vervallen — dat item wijst naar een eigen route die geen hoofdtab is, dus dat blijft precies zoals het is.
 
 **Wat NIET gebouwd wordt (bewust buiten scope):** de rest van screenshot 3's menu (Premium, Periodiek vasten, Slaap, Glucose, Weekrapport) — andere features van een ander product. Screenshot 3 dient als **stijlreferentie**, niet als blauwdruk voor de hele navigatie.
 
