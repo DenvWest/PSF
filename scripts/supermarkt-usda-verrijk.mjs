@@ -47,7 +47,21 @@
  *   FDC_API_KEY=<sleutel> node scripts/supermarkt-usda-verrijk.mjs
  *   node scripts/supermarkt-usda-verrijk.mjs --sample=200
  *   node scripts/supermarkt-usda-verrijk.mjs --only=AH,Lidl
- *   node scripts/supermarkt-usda-verrijk.mjs --plan   (geen API — toont alleen vertaaldekking)
+ *   node scripts/supermarkt-usda-verrijk.mjs --plan     (geen API — toont alleen vertaaldekking)
+ *   node scripts/supermarkt-usda-verrijk.mjs --resume   (hervat een eerder rapport, slaat verwerkte prodId's over)
+ *
+ * ## Snelheid en onderbrekingen (herzien 29 sep, na de 27-sep-rate-limit-storing)
+ *
+ * api.data.gov staat 1.000 verzoeken/uur toe, twee per rij (search + detail)
+ * — dus maximaal ~500 rijen/uur (7,2s/rij). Dit script wacht 7,5s tussen
+ * rijen en doet daarnaast exponentiële backoff-retries op een 429/5xx
+ * (`metRetry`). Het rapport wordt elke 25 rijen tussentijds weggeschreven,
+ * niet pas aan het eind — bij ~18.500 rijen duurt een volledige run dus
+ * meerdere uren (ruwweg 37 uur bij 7,5s/rij; gebruik `--only=` om per
+ * supermarkt te draaien als dat beter uitkomt). Raakt de run alsnog een
+ * langdurige quotum-uitputting, stop het proces dan met SIGTERM/SIGINT
+ * (niet SIGKILL, voor het geval een schrijfactie bezig is) en start het
+ * later opnieuw met `--resume`.
  *
  * Uitvoer: scripts/out/supermarkt-usda-rapport.json
  */
@@ -62,9 +76,16 @@ const OUT_FILE = path.join(OUT_DIR, "supermarkt-usda-rapport.json");
 
 const KEY = process.env.FDC_API_KEY;
 const PLAN = process.argv.includes("--plan");
+const RESUME = process.argv.includes("--resume");
 const argOnly = (process.argv.find((a) => a.startsWith("--only=")) ?? "").slice(7);
 const argSample = (process.argv.find((a) => a.startsWith("--sample=")) ?? "").slice(9);
 const SAMPLE = argSample ? Number(argSample) : null;
+
+/** Rapport tussentijds wegschrijven, niet pas aan het eind — anders verliest
+ * een onderbreking (crash, handmatige stop, rate-limit-lock) alles tot dat
+ * moment. Zie de 27-sep-run: 3652 geslaagde matches waren nergens
+ * opgeslagen toen het proces gestopt moest worden. */
+const SCHRIJF_ELKE = 25;
 
 const SUPERMARKTEN = ["AH", "Jumbo", "Lidl", "Plus"];
 const teVerwerken = argOnly ? argOnly.split(",") : SUPERMARKTEN;
@@ -280,6 +301,47 @@ async function zoekAutomatisch(query) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+/**
+ * Retry met exponentiële backoff op een 429 (rate limit) of 5xx (tijdelijke
+ * serverfout) van FDC. Zonder dit blijft een eenmaal geraakte rate-limit de
+ * rest van de run blokkeren: `fdc()` gooit bij elke non-2xx status dezelfde
+ * soort Error, dus zonder onderscheid probeerde de aanroeper hier vroeger
+ * gewoon door — 3726 opeenvolgende mislukkingen in de 27-sep-run, tot het
+ * proces handmatig gestopt moest worden (zie
+ * VOORBEREIDING_LAAG_A_MACRO_MICRO_2026-09.md §0).
+ *
+ * `RETRY_MAX` × de backoff-reeks (2s/4s/8s/16s/32s) dekt een kortstondige
+ * limietoverschrijding; bij aanhoudende 429's (quotum echt op) geeft dit na
+ * `RETRY_MAX` pogingen alsnog op — de rij landt dan als `status: "fout"`,
+ * zoals voorheen, in plaats van de run voor altijd te laten hangen.
+ */
+const RETRY_MAX = 5;
+const RETRY_BASIS_MS = 2000;
+
+function isTijdelijkeFout(err) {
+  const match = /^FDC (\d+) /.exec(String(err.message ?? err));
+  if (!match) return false;
+  const status = Number(match[1]);
+  return status === 429 || status >= 500;
+}
+
+async function metRetry(fn) {
+  let poging = 0;
+  for (;;) {
+    try {
+      return await fn();
+    } catch (err) {
+      poging += 1;
+      if (poging > RETRY_MAX || !isTijdelijkeFout(err)) throw err;
+      const wacht = RETRY_BASIS_MS * 2 ** (poging - 1);
+      process.stderr.write(
+        `[retry ${poging}/${RETRY_MAX} na ${wacht}ms — ${String(err.message ?? err).slice(0, 60)}] `,
+      );
+      await sleep(wacht);
+    }
+  }
+}
+
 function leesSupermarktRapport() {
   if (!fs.existsSync(IN_FILE)) {
     console.error(`${IN_FILE} niet gevonden — draai eerst scripts/supermarkt-extract.mjs`);
@@ -336,7 +398,12 @@ async function main() {
   }
 
   fs.mkdirSync(OUT_DIR, { recursive: true });
-  const rapport = {
+
+  // --resume: bestaand rapport inlezen en al verwerkte prodId's overslaan.
+  // Zonder dit begint een hervatte run na een onderbreking weer bij rij 1 —
+  // precies het probleem dat het tussentijds wegschrijven zou moeten
+  // voorkomen als de aanroeper de vorige voortgang niet meeneemt.
+  let rapport = {
     gedraaid: new Date().toISOString(),
     strategie: "automatisch-matchen-lage-zekerheid",
     besluit: "BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md §0b",
@@ -345,11 +412,23 @@ async function main() {
     onvertaaldeWoorden: topOnvertaald,
     rijen: [],
   };
+  let alVerwerkt = new Set();
+  if (RESUME && fs.existsSync(OUT_FILE)) {
+    const bestaand = JSON.parse(fs.readFileSync(OUT_FILE, "utf8"));
+    rapport = { ...rapport, rijen: bestaand.rijen ?? [] };
+    alVerwerkt = new Set(rapport.rijen.map((r) => r.prodId));
+    console.log(`\n--resume: ${alVerwerkt.size} rijen al in ${OUT_FILE}, worden overgeslagen.`);
+  }
 
-  for (const [i, p] of metVertaling.entries()) {
-    process.stderr.write(`[${i + 1}/${metVertaling.length}] ${p.naam} → "${p.query}" … `);
+  const teDoen = metVertaling.filter((p) => !alVerwerkt.has(p.prodId));
+  if (RESUME) console.log(`Nog te verwerken: ${teDoen.length}/${metVertaling.length}.\n`);
+
+  for (const [i, p] of teDoen.entries()) {
+    process.stderr.write(
+      `[${alVerwerkt.size + i + 1}/${metVertaling.length}] ${p.naam} → "${p.query}" … `,
+    );
     try {
-      const { dataType, foods } = await zoekAutomatisch(p.query);
+      const { dataType, foods } = await metRetry(() => zoekAutomatisch(p.query));
       if (!foods.length) {
         rapport.rijen.push({
           prodId: p.prodId,
@@ -362,7 +441,7 @@ async function main() {
         continue;
       }
       const best = foods[0];
-      const detail = await fdc(`/food/${best.fdcId}`, { format: "full" });
+      const detail = await metRetry(() => fdc(`/food/${best.fdcId}`, { format: "full" }));
       const { infoVelden } = infoVeldenUit(detail);
       const zekerheid = classificeerZekerheid(p.vertaald, best.description);
 
@@ -400,8 +479,17 @@ async function main() {
       });
       process.stderr.write(`FOUT: ${err.message}\n`);
     }
-    // api.data.gov: 1.000 verzoeken/uur; twee per rij (search + detail).
-    await sleep(400);
+    // api.data.gov: 1.000 verzoeken/uur, twee per rij (search + detail) =
+    // max 500 rijen/uur = 7,2s/rij. De oude sleep(400) negeerde dat cijfer
+    // met een factor ~18 en liep binnen ~25 minuten tegen de rate-limit aan
+    // (bevestigd 27 sep: geraakt bij rij ~1820 van de ~9200 met vertaling).
+    // 7500ms geeft ruimte voor de retry-backoff hierboven zonder de limiet
+    // opnieuw te schenden.
+    await sleep(7500);
+
+    if (rapport.rijen.length % SCHRIJF_ELKE === 0) {
+      fs.writeFileSync(OUT_FILE, JSON.stringify(rapport, null, 2));
+    }
   }
 
   fs.writeFileSync(OUT_FILE, JSON.stringify(rapport, null, 2));
