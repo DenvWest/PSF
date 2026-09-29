@@ -1,14 +1,13 @@
 import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 
 export const ABOUT_METADATA = {
-  title:
-    "Over PerfectSupplement — Leefstijl, herstel en supplementen",
+  title: "Over PerfectSupplement — Voeding eerst, supplement als aanvulling",
   description:
-    "Onafhankelijk leefstijlplatform voor mannen en vrouwen vanaf 30: educatie, vergelijking en transparantie rond supplementen. Opgericht door leefstijlcoach Dennis van Westbroek — leefstijl eerst, supplementen alleen waar het zinvol is.",
+    "Onafhankelijk platform voor mannen en vrouwen vanaf 30. Opgericht door leefstijlcoach Dennis van Westbroek, vanuit sport en dagelijkse leefstijl: eerst je voeding, supplementen alleen waar voeding niet volstaat.",
 } as const;
 
 export const ABOUT_TAGLINE =
-  "De rustige gids tussen leefstijl, herstel en supplementen — voor mannen en vrouwen vanaf 30";
+  "Onafhankelijk over voeding en supplementen — eerst je bord, dan pas de pil";
 
 export const ABOUT_SITE_URL = "https://perfectsupplement.nl";
 
@@ -19,7 +18,7 @@ export const ABOUT_FOUNDER = {
     "Leefstijlcoach en oprichter van PerfectSupplement",
   credentialsLine: "Leefstijlcoach · Oprichter PerfectSupplement",
   bioParagraphs: [
-    "PerfectSupplement is opgericht vanuit één vraag: welke supplementen zijn voor mannen en vrouwen vanaf 30 wél een zinvolle aanvulling, en welke niet? Het platform vertaalt literatuur en richtlijnen naar heldere, eerlijke vergelijkingen — zonder verkooppraat.",
+    "PerfectSupplement is opgericht vanuit één vraag: wat kun je met voeding oplossen, en waar is een supplement een eerlijke aanvulling? Het platform vertaalt literatuur en richtlijnen naar heldere vergelijkingen — zonder verkooppraat.",
     "Op dit platform spreek ik als oprichter en redacteur, niet als jouw zorgverlener. Er is geen behandelrelatie via deze site en PerfectSupplement levert geen medische zorg. Voor klachten of behandeling: raadpleeg een arts of zorgverlener in je regio.",
     "Ik claim geen alwetendheid: bij twijfel verwijs ik naar bronnen of naar je arts. Supplementen zijn nooit een vervanging voor professioneel medisch advies.",
   ],
@@ -29,48 +28,68 @@ export const ABOUT_FOUNDER = {
 export const ABOUT_FOUNDER_SAME_AS: string[] = [];
 
 export const ABOUT_HERO = {
-  headline: "Eerst grip op de basis. Dan pas supplementen.",
+  headline: "Eerst je voeding. Dan pas een supplement.",
   paragraphs: [
-    "De rustige gids tussen leefstijl, herstel en supplementen — voor mannen en vrouwen vanaf 30.",
-    "Veel mensen herkennen dit: genoeg uren slaap, maar toch niet uitgerust wakker worden; een hoofd dat 'aan' blijft staan; wisselende energie; minder ruimte om te herstellen na training, werk of drukke periodes. Soms een onrustig gevoel of een buik die niet meewerkt — zonder dat je precies weet waar het vandaan komt. Bij vrouwen komen daar in de overgang vaak nog slaap, stress en gewicht bij die anders aanvoelen dan voorheen.",
-    "Vanaf ongeveer dertig verandert er geleidelijk iets: herstel kost meer tijd, slaap en stress wegen zwaarder, en de basis — voeding, beweging, rust — wordt belangrijker dan toen alles nog vanzelf ging. PerfectSupplement is er voor mannen en vrouwen die dat willen zien vóór ze blind een pil volgen.",
+    "Onafhankelijk over voeding en supplementen — voor mannen en vrouwen vanaf 30.",
+    "Veel mensen herkennen dit: genoeg uren slaap, maar toch niet uitgerust wakker worden; een middagdip die elke dag terugkomt; herstel dat na training of een drukke week langer duurt. En dan volgt de reflex: welk supplement lost dit op?",
+    "Vanaf ongeveer dertig wordt de basis belangrijker dan toen alles nog vanzelf ging. Wat je eet bepaalt veel van hoe je slaapt, herstelt en je energie verdeelt. PerfectSupplement is er voor mannen en vrouwen die eerst willen weten wat er op hun bord ontbreekt, vóór ze een pil kopen.",
   ],
 } as const;
 
 export const ABOUT_STORY = {
   id: "wie",
-  title: "Wie zit hierachter",
+  title: "Waarom ik dit doe",
   paragraphs: [
-    "Dennis van Westbroek weet dat niet alleen vanuit zijn werk als leefstijlcoach — maar ook vanuit eigen ervaring.",
-    "Jarenlang herkende hij in zijn eigen leven het patroon van drukke periodes, minder rust en het gevoel dat herstel en ontspanning steeds meer moeite kostten. Precies daarom zet hij zich hier voor in: zodat anderen niet hoeven te zoeken in een zee van ongefundeerde tips.",
+    "Ik ben Dennis. Sporten en een gezonde dagelijkse leefstijl horen al jaren bij mijn leven — en daarmee ook de vraag wat je lichaam nodig heeft om te blijven presteren en herstellen.",
+    "Wie sport, komt vanzelf in de wereld van supplementen terecht. Ik zag hoe makkelijk je daar verdwaalt: elke week een nieuw product dat 'het verschil maakt', terwijl mijn eigen resultaat vooral kwam van gewone dingen — genoeg eten, genoeg eiwit, slaap, ritme.",
+    "Als leefstijlcoach hoor ik hetzelfde verhaal terug: mensen die al drie potjes in de kast hebben staan, maar nooit hebben gekeken naar wat ze op een gewone dag eten. Daar begint PerfectSupplement.",
   ],
 } as const;
 
 export const ABOUT_INSIGHT = {
-  id: "waarom-leefstijl",
-  title: "Wat er over tijd verandert — en wat online vaak mist",
+  id: "waarom-voeding-eerst",
+  title: "Waarom voeding eerst, en supplement als aanvulling",
   paragraphs: [
-    "Leefstijlfactoren hangen in het dagelijks leven vaak met elkaar samen — slaap, stress, voeding, beweging en (ver)binding. Als één van die onderdelen langere tijd scheef staat, wordt de rest ook lastiger om te overzien. Dat merken mannen én vrouwen, elk op hun eigen manier.",
+    "Een supplement is een aanvulling. Het woord zegt het al: het vult aan wat er al ligt. Ligt er een stevige basis van voeding, slaap en beweging, dan kan een supplement daar iets aan toevoegen. Ligt die basis er niet, dan vult een pil vooral een gat dat je eerst met eten had kunnen dichten.",
   ],
   vicieuzeCirkel:
-    "Dennis hoort vaak hetzelfde verhaal: meer stress, minder rust, minder overzicht — en daardoor weer meer spanning.",
+    "Voeding levert bovendien meer dan losse stoffen: eiwit, vezels, vetzuren, vitamines en mineralen komen samen in gewoon eten, en je lichaam is daar op gebouwd.",
   keyInsightLead:
-    "En precies daar gaat het mis met veel gezondheidsadvies online:",
+    "Toch draait veel online advies om het omgekeerde:",
   keyInsight:
-    "er wordt gezocht naar één supplement of één snelle claim, terwijl de basis in je leefstijl nog niet op orde is — en influencers of platforms zonder stevige onderbouwing (of met vooral oog voor marge) te veel ruimte krijgen.",
+    "één supplement als oplossing, aangeprezen door influencers en webshops die vooral verdienen aan de verkoop — en veel minder aan de vraag of jij dat product wel nodig hebt.",
+  nuanceTitle: "Wat voeding kan oplossen — en wat misschien niet",
+  nuanceIntro:
+    "Eerlijk is ook: voeding lost niet alles op. Dit is de nuance.",
+  solvesTitle: "Meestal eerst met voeding aan te pakken",
+  solves: [
+    "Te weinig eiwit, vezels of groenten op een gewone dag",
+    "Een onregelmatig eetritme dat energie en herstel raakt",
+    "Weinig vette vis, noten of peulvruchten in je week",
+    "Een bord dat door drukte steeds eenzijdiger wordt",
+  ],
+  limitsTitle: "Waar voeding alleen soms niet volstaat",
+  limits: [
+    "Vitamine D, vooral in de Nederlandse winter en voor bepaalde groepen, zoals de Gezondheidsraad aangeeft",
+    "Vitamine B12 als je geen dierlijke producten eet",
+    "Omega-3 als vis niet op je bord komt",
+    "Situaties met een aangetoond tekort, een dieet of medicatie: bespreek dat met je huisarts",
+  ],
+  nuanceOutro:
+    "Dit is algemene informatie, geen persoonlijk advies. Twijfel je, laat dan eerst je huisarts of een diëtist meekijken.",
 } as const;
 
 export const ABOUT_ORIGIN = {
   id: "waarom-perfectsupplement",
   title: "Waarom PerfectSupplement ontstond",
   paragraphs: [
-    "PerfectSupplement is ontstaan vanuit die frustratie. Niet omdat supplementen waardeloos zijn — maar omdat niet-onderbouwde content en margegedreven platforms te veel overhand krijgen, terwijl een stabiele leefstijl bijna altijd eerst komt: slaap, stress, voeding, beweging en herstel.",
-    "Supplementen kunnen daarin een rol spelen — maar alleen als je weet of een product past bij jouw situatie en levensfase, met vaste criteria en bronnen — niet omdat iemand eraan verdient.",
+    "PerfectSupplement is ontstaan vanuit frustratie over hoe supplementen worden verkocht. Niet omdat supplementen waardeloos zijn — maar omdat influencers en aanbieders van voedingssupplementen met een eigen merk of commissie te veel ruimte krijgen, terwijl de vraag wat je eigen voeding al dekt bijna nooit wordt gesteld.",
+    "Een supplement kan een rol spelen, maar alleen als je weet of het bij jouw situatie past, met vaste criteria en bronnen — niet omdat iemand eraan verdient.",
   ],
   positioning: {
     title: "Geen snelle oplossingen — wel richting",
     paragraphs: [
-      "PerfectSupplement is de rustige, onafhankelijke gids tussen leefstijl, herstel en supplementen: eerst overzicht in je leefstijl, daarna pas gericht aanvullen waar het zinvol is.",
+      "PerfectSupplement is de onafhankelijke gids tussen voeding en supplementen: eerst inzicht in wat je eet, daarna pas gericht aanvullen waar dat zinvol is.",
     ],
   },
 } as const;
@@ -78,9 +97,9 @@ export const ABOUT_ORIGIN = {
 export const ABOUT_WHAT_WE_DO = {
   id: "wat-we-doen",
   title: "Wat wij voor je doen",
-  leadPhrase: "Eerst inzicht, dan pas aanvullen.",
+  leadPhrase: "Eerst inzicht in je voeding, dan pas aanvullen.",
   intakeDisclaimer:
-    "De Leefstijlcheck is een korte vragenlijst die helpt bij het ordenen van aandachtspunten — geen medische test en geen vervanging voor zorg.",
+    "De check 'Wat mis je?' is een korte vragenlijst die helpt bij het ordenen van aandachtspunten in je voeding — geen medische test en geen vervanging voor zorg.",
   privacyNoteBefore: "Je antwoorden worden versleuteld opgeslagen. Lees ons ",
   privacyNoteAfter: " voor hoe wij met gegevens omgaan.",
   privacyLink: {
@@ -90,9 +109,9 @@ export const ABOUT_WHAT_WE_DO = {
   evidenceParagraph:
     "Onze vergelijkingen volgen vaste criteria en waar mogelijk EFSA-toegelaten claims. Per product vind je bronnen en toelichting onderaan de vergelijkingspagina — de volledige uitleg staat op onze methodologiepagina.",
   paragraphs: [
-    "Met onze Leefstijlcheck vul je in een paar minuten je antwoorden in over vijf hefbomen: slaap, stress, voeding, beweging en verbinding. Energie en herstel zijn signalen die je merkt — uitkomsten, geen knoppen om direct aan te draaien. Je krijgt een overzicht van aandachtspunten en algemene leefstijltips — geen medisch advies en geen persoonlijk behandelplan.",
+    "Met de check 'Wat mis je?' zie je in een paar minuten welke voedingsstoffen je bord waarschijnlijk tekortkomt, en wat je daar met eten aan kunt doen. Soms is het antwoord een supplement, vaak is het twee keer per week vette vis. Geen medisch advies en geen persoonlijk behandelplan.",
     "Daarnaast vergelijken wij supplementen op vaste criteria: dosering, biobeschikbaarheid, prijs-kwaliteit en transparantie. Elk product doorloopt hetzelfde stramien — ongeacht het merk.",
-    "Dit platform is er niet om je meer te laten kopen. Het is er om je grip te geven: beter begrijpen wat je doet, scherpere keuzes maken en minder afhankelijk te worden van glimmende verpakkingen en halve verhalen.",
+    "Dit platform is er niet om je meer te laten kopen. Het is er om je grip te geven: beter begrijpen wat je eet, scherpere keuzes maken en minder afhankelijk te worden van glimmende verpakkingen en halve verhalen.",
   ],
   methodologieLink: {
     href: "/methodologie",
@@ -100,7 +119,7 @@ export const ABOUT_WHAT_WE_DO = {
   },
   intakeLink: {
     href: "/intake",
-    label: "Doe de Leefstijlcheck",
+    label: "Doe de check 'Wat mis je?'",
   },
   whatWeDontDoTitle: "Onze uitgangspunten",
   whatWeDontDo: [
@@ -132,10 +151,10 @@ export const ABOUT_CREDENTIALS = {
 } as const;
 
 export const ABOUT_CTA = {
-  title: "Krijg overzicht in je leefstijl",
+  title: "Weet wat je bord mist",
   description:
-    "Begin met de Leefstijlcheck: een korte vragenlijst over slaap, stress, energie, voeding, beweging en herstel. Je krijgt een overzicht van aandachtspunten — geen medische test en geen vervanging voor zorg.",
-  buttonLabel: "Doe de Leefstijlcheck",
+    "Begin met 'Wat mis je?': een korte vragenlijst over je voeding en daglicht. Je ziet wat je al dekt, wat tekortschiet en of een supplement daar logisch op aansluit — geen medische test en geen vervanging voor zorg.",
+  buttonLabel: "Doe de check 'Wat mis je?'",
   href: "/intake",
 } as const;
 
