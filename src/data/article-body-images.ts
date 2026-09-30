@@ -557,6 +557,7 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "supplementen-via-influencers-checklist",
     "Vrouw op de bank kijkt glimlachend naar haar smartphone",
     "Achter dat scherm zit een verdienmodel — de glimlach zegt niets over of de claim erachter klopt.",
+    "supplementen-via-influencers-checklist-v2",
   ),
 };
 
