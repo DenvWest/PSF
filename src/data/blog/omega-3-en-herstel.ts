@@ -6,7 +6,7 @@ export const omega3EnHerstelData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Omega-3 en herstel: wat EPA en DHA wél doen na inspanning",
   coverImage: "/images/blog/omega-3-en-herstel.jpg",
-  coverImageAlt: "Zalmfilet op een houten plank als omega-3-bron na training",
+  coverImageAlt: "Gegrilde zalm met spinazie op een bord, een bron van EPA en DHA",
   heroIntro:
     "Omega-3 wordt vaak geassocieerd met hart en hersenen — maar in herstelcontext gaat het vooral om of je genoeg [EPA en DHA](/kennisbank/epa-dha) binnenkrijgt en hoe dat past naast slaap, training en [oxidatieve stress](/kennisbank/oxidatieve-stress)-regulatie. Verbind dit met [herstel verbeteren na 30](/herstel-verbeteren-na-40) en vergelijk producten op [/beste/omega-3-supplement](/beste/omega-3-supplement).",
   leestijd: "10 min",

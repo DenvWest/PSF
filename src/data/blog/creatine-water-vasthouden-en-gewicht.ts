@@ -6,7 +6,7 @@ export const creatineWaterVasthoudenData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Word je dik van creatine? Over water vasthouden en de weegschaal",
   coverImage: "/images/blog/creatine-water-vasthouden-en-gewicht-v2.jpg",
-  coverImageAlt: "Creatinepoeder met maatlepel — water vasthouden kan het gewicht beïnvloeden",
+  coverImageAlt: "Voeten op een digitale weegschaal: creatine kan het gewicht iets laten stijgen door water in de spier",
   heroIntro:
     "Je begint met creatine en binnen een week staat er anderhalve kilo bij. Voor veel mensen is dat het moment waarop de pot weer in de kast verdwijnt. Zonde, want die kilo's zijn geen vet — en waar dat water precies zit, verandert de hele interpretatie. Hier lees je wat er in die eerste weken gebeurt, wat er daarna bij komt, en waarom de weegschaal het slechtste meetinstrument is dat je kunt kiezen. Vergelijken doe je op de [supplementengids](/supplementen).",
   leestijd: "8 min",

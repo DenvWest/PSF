@@ -6,7 +6,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
   categorie: "slaap",
   titel: "Cortisol en slaap: waarom je om 3 uur wakker wordt",
   coverImage: "/images/blog/cortisol-en-slaap-v2.jpg",
-  coverImageAlt: "Slapende kat onder het dekbed — rust versus nachtelijke stress",
+  coverImageAlt: "Kat slaapt onder een wit dekbed",
   heroIntro:
     "Je valt prima in slaap, maar om 3 uur lig je klaarwakker. Hart bonkt, gedachten racen, slaap wil niet meer komen. Dit is geen toeval en geen slechte gewil — dit is [cortisol](/kennisbank/cortisol) dat te vroeg gas geeft. Hier lees je waarom dit patroon na je 30e zo hardnekkig is, en wat je er concreet aan kunt doen.",
   leestijd: "6 min",
