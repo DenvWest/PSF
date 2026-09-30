@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { NUTRIENT_KEYS, isSelectableClaim, listSelectableClaims } from "@/lib/product-admin/catalog-options";
 import {
+  normalizeImagePath,
   validateCertificationKey,
   validateImagePath,
   validateNewActive,
@@ -43,6 +44,20 @@ describe("validateImagePath", () => {
     expect(validateImagePath("/images/andere/x.jpg")).not.toBeNull();
     expect(validateImagePath("/images/producten/../../geheim.jpg")).not.toBeNull();
     expect(validateImagePath("/images/producten/x.gif")).not.toBeNull();
+  });
+});
+
+describe("normalizeImagePath", () => {
+  const expected = "/images/producten/vital-nutrition-whey-proteine.jpg";
+  it("herstelt geplakte varianten", () => {
+    expect(normalizeImagePath("public/images/producten/vital-nutrition-whey-proteine.jpg")).toBe(expected);
+    expect(normalizeImagePath("/images/producten/public/images/producten/vital-nutrition-whey-proteine.jpg")).toBe(expected);
+    expect(normalizeImagePath("images/producten/vital-nutrition-whey-proteine.jpg")).toBe(expected);
+    expect(normalizeImagePath("  vital-nutrition-whey-proteine.jpg ")).toBe(expected);
+  });
+  it("laat vreemde paden staan zodat de validatie ze afwijst", () => {
+    expect(validateImagePath(normalizeImagePath("/images/andere/x.jpg"))).not.toBeNull();
+    expect(validateImagePath(normalizeImagePath("/images/producten/../../geheim.jpg"))).not.toBeNull();
   });
 });
 

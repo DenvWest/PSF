@@ -13,6 +13,7 @@ import type { ActionResult } from "@/lib/partnerdesk/actions";
 import {
   validateActiveInput,
   validateCertificationKey,
+  normalizeImagePath,
   validateImageInput,
   validateImagePath,
   validateNewActive,
@@ -377,11 +378,12 @@ export async function addImageAction(input: {
   licenseNote: string;
   alt: string;
 }): Promise<ActionResult> {
-  const pathError = validateImagePath(input.path);
+  const imagePath = normalizeImagePath(input.path);
+  const pathError = validateImagePath(imagePath);
   if (pathError) return { ok: false, error: pathError };
   const error = validateImageInput(input);
   if (error) return { ok: false, error };
-  if (!existsSync(path.join(process.cwd(), "public", input.path))) {
+  if (!existsSync(path.join(process.cwd(), "public", imagePath))) {
     return { ok: false, error: "Dit bestand staat niet in public/images/producten/ op de server." };
   }
   try {
@@ -392,7 +394,7 @@ export async function addImageAction(input: {
       .eq("product_id", input.productId);
     const { error: insertError } = await db.from("sup_product_images").insert({
       product_id: input.productId,
-      path: input.path,
+      path: imagePath,
       alt: input.alt.trim() || null,
       position: count ?? 0,
       source: input.source,

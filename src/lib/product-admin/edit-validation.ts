@@ -50,6 +50,21 @@ export function validateOfferPrice(priceCents: number | null): string | null {
 
 export const IMAGE_PATH_PREFIX = "/images/producten/";
 
+/**
+ * Maakt van geplakte invoer een geldig pad: "public/images/producten/x.jpg",
+ * "/images/producten/public/images/producten/x.jpg" en alleen "x.jpg" worden
+ * allemaal "/images/producten/x.jpg". Andere paden blijven ongemoeid en falen in de validatie.
+ */
+export function normalizeImagePath(input: string): string {
+  const value = input.trim();
+  const marker = "/images/producten/";
+  const index = value.lastIndexOf(marker);
+  if (index >= 0) return marker + value.slice(index + marker.length);
+  if (value.startsWith("images/producten/")) return "/" + value;
+  if (value !== "" && !value.includes("/")) return marker + value;
+  return value;
+}
+
 /** Naamconventie uit CLAUDE.md: Merk-Product.jpg, geen spaties of speciale tekens; pad moet in public/images/producten/ liggen. */
 export function validateImagePath(path: string): string | null {
   if (!path.startsWith(IMAGE_PATH_PREFIX)) return `Pad moet beginnen met ${IMAGE_PATH_PREFIX}`;
