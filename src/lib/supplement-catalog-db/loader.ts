@@ -71,7 +71,7 @@ interface SupProductImageRow {
   position: number;
 }
 
-function buildDosering(
+export function buildDosering(
   actives: SupProductActiveRow[],
 ): DoseringPerDagdosis {
   const epa = actives.find((a) => a.nutrient_key === "epa");
