@@ -234,6 +234,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "slaapritme-herstellen": { theme: "sleep", planPhase: 1 },
   "stress-werk-grenzen-stellen": { theme: "stress", profile: "Stressdrager" },
   "supplement-kiezen-waar-op-letten": { theme: "nutrition" },
+  "supplementen-via-influencers-checklist": { theme: "nutrition" },
   "testosteron-en-energie-na-40": { theme: "movement" },
   "vitamine-d-en-energie": {
     theme: "nutrition",

@@ -58,7 +58,7 @@ export const vitamineDHogeDosesSocialMediaData: BlogArtikel = {
       type: "opsomming",
       titel: "Vijf signalen dat een post je iets verkoopt",
       inleiding:
-        "Dit patroon herken je terug bij vrijwel elk supplement, niet alleen bij vitamine D.",
+        "Dit patroon herken je terug bij vrijwel elk supplement, niet alleen bij vitamine D — zie de bredere [checklist voor supplementen via influencers](/blog/supplementen-via-influencers-checklist).",
       items: [
         "'De officiële adviezen zijn te laag' zonder te noemen welke trials er zijn gedaan en wat die vonden.",
         "Een echt mechanisme dat wordt uitvergroot tot een uitkomst waar het onderzoek niet over gaat — zie ook [D3 en K2](/blog/vitamine-d-en-k2-samen).",

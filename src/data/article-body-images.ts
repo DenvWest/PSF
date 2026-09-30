@@ -552,6 +552,12 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "Zonnebrand en vitamine D: bescherming van de huid blijft nodig; een tekort los je niet op met verbranden.",
     "zonnebrand-en-vitamine-d-v2",
   ),
+  "supplementen-via-influencers-checklist": img(
+    "blog",
+    "supplementen-via-influencers-checklist",
+    "Zwart supplementpotje met een onbeschreven wit etiket tegen een turquoise achtergrond",
+    "Zonder naam of claim op het etiket blijft er niets over om op te vertrouwen dan de vraag die je zelf stelt.",
+  ),
 };
 
 const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
