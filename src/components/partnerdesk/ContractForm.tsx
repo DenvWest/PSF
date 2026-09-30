@@ -6,7 +6,9 @@ import {
   createContractAction,
   updateContractAction,
 } from "@/lib/partnerdesk/contract-actions";
-import type { PdContract } from "@/types/partnerdesk";
+import { REPORTING_METHOD_LABEL } from "@/lib/partnerdesk/revenue";
+import { REPORTING_METHODS } from "@/lib/partnerdesk/validation";
+import type { PdContract, ReportingMethod } from "@/types/partnerdesk";
 
 function numOrNull(v: string): number | null {
   const t = v.trim();
@@ -43,6 +45,10 @@ export function ContractForm({
   const [approval, setApproval] = useState(existing?.approval_terms ?? "");
   const [autoRenews, setAutoRenews] = useState(existing?.auto_renews ?? false);
   const [notes, setNotes] = useState(existing?.notes ?? "");
+  const [reportingMethod, setReportingMethod] = useState<ReportingMethod | "">(
+    existing?.reporting_method ?? "",
+  );
+  const [reportingCadence, setReportingCadence] = useState(existing?.reporting_cadence ?? "");
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -58,6 +64,8 @@ export function ContractForm({
       exclusivity: exclusivity || null,
       approvalTerms: approval || null,
       autoRenews,
+      reportingMethod: reportingMethod || null,
+      reportingCadence: reportingCadence || null,
       notes: notes || null,
     };
     startTransition(async () => {
@@ -105,6 +113,30 @@ export function ContractForm({
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-[var(--ps-body)]">Exclusiviteit</span>
           <input value={exclusivity} onChange={(e) => setExclusivity(e.target.value)} className={inputCls} placeholder="bijv. categorie slaap" />
+        </label>
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="text-[var(--ps-body)]">Rapportagemethode</span>
+          <select
+            value={reportingMethod}
+            onChange={(e) => setReportingMethod(e.target.value as ReportingMethod | "")}
+            className={inputCls}
+          >
+            <option value="">— nog niet vastgelegd —</option>
+            {REPORTING_METHODS.map((m) => (
+              <option key={m} value={m}>
+                {REPORTING_METHOD_LABEL[m]}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="text-[var(--ps-body)]">Rapportagefrequentie</span>
+          <input
+            value={reportingCadence}
+            onChange={(e) => setReportingCadence(e.target.value)}
+            className={inputCls}
+            placeholder="bijv. realtime of maandelijks"
+          />
         </label>
       </div>
       <label className="flex flex-col gap-1 text-sm">

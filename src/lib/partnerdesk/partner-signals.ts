@@ -34,6 +34,13 @@ export interface PartnerSignalBundle {
   contracts: PdContract[]; // niet-gearchiveerd
   rules: PdCommissionRule[]; // niet-gearchiveerd
   contacts: PdContact[]; // niet-gearchiveerd
+  revenue?: RevenueSignalInput;
+}
+
+export interface RevenueSignalInput {
+  mismatchCount: number;
+  mismatchCents: number;
+  stalePendingCount: number;
 }
 
 function latestContactAt(contacts: PdContact[]): string | null {
@@ -50,7 +57,7 @@ export function computePartnerSignals(
   bundle: PartnerSignalBundle,
   today: string,
 ): DesiredSignal[] {
-  const { partner, contracts, rules, contacts } = bundle;
+  const { partner, contracts, rules, contacts, revenue } = bundle;
   const out: DesiredSignal[] = [];
   const partnerActive = partner.status === "active" && !partner.archived_at;
 
@@ -89,7 +96,31 @@ export function computePartnerSignals(
     }
   }
 
+  if (revenue && revenue.mismatchCount > 0) {
+    out.push({
+      type: "commission_mismatch",
+      severity: "red",
+      subjectType: "partner",
+      subjectId: partner.id,
+      partnerId: partner.id,
+      dedupeKey: `commission_mismatch:${partner.id}`,
+      payload: { count: revenue.mismatchCount, cents: revenue.mismatchCents },
+    });
+  }
+
   if (!partnerActive) return out;
+
+  if (revenue && revenue.stalePendingCount > 0) {
+    out.push({
+      type: "conversions_unreviewed",
+      severity: "amber",
+      subjectType: "partner",
+      subjectId: partner.id,
+      partnerId: partner.id,
+      dedupeKey: `conversions_unreviewed:${partner.id}`,
+      payload: { count: revenue.stalePendingCount },
+    });
+  }
 
   if (contacts.length === 0) {
     out.push({

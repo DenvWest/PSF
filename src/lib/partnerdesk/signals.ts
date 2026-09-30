@@ -2,15 +2,19 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import { todayIso } from "@/lib/partnerdesk/dates";
 import { daysUntil } from "@/lib/partnerdesk/contract-status";
+import { ledgerMismatches, stalePendingConversions } from "@/lib/partnerdesk/revenue";
 import {
   computePartnerSignals,
   taskOverdueSignal,
   type DesiredSignal,
+  type RevenueSignalInput,
 } from "@/lib/partnerdesk/partner-signals";
 import type {
   PdCommissionRule,
   PdContact,
   PdContract,
+  PdConversion,
+  PdLedgerEntry,
   PdPartner,
   PdTask,
 } from "@/types/partnerdesk";
@@ -112,6 +116,32 @@ async function reconcileScope(
   await Promise.all(writes);
 }
 
+/** Omzetsignalen; geeft undefined zolang pd_conversions/pd_ledger_entries niet bestaan. */
+async function loadRevenueSignalInput(
+  db: SupabaseClient,
+  partnerId: string,
+  today: string,
+): Promise<RevenueSignalInput | undefined> {
+  const [conversionsRes, ledgerRes] = await Promise.all([
+    db
+      .from("pd_conversions")
+      .select("id, status, imported_at")
+      .eq("partner_id", partnerId)
+      .eq("status", "pending"),
+    db
+      .from("pd_ledger_entries")
+      .select("id, kind, amount_cents, expected_cents")
+      .eq("partner_id", partnerId),
+  ]);
+  if (conversionsRes.error || ledgerRes.error) return undefined;
+  const mismatches = ledgerMismatches((ledgerRes.data ?? []) as PdLedgerEntry[]);
+  return {
+    mismatchCount: mismatches.length,
+    mismatchCents: mismatches.reduce((sum, e) => sum + ((e.expected_cents ?? 0) - e.amount_cents), 0),
+    stalePendingCount: stalePendingConversions((conversionsRes.data ?? []) as PdConversion[], today).length,
+  };
+}
+
 /** BR-04: automatische opzeg-taak op cancel_by − 14 dgn (idempotent via dedupe_key). */
 async function ensureCancelDeadlineTasks(
   db: SupabaseClient,
@@ -186,7 +216,8 @@ export async function recomputeSignalsForPartner(
     rules = (rulesRes.data ?? []) as PdCommissionRule[];
   }
 
-  const desired = computePartnerSignals({ partner, contracts, rules, contacts }, today);
+  const revenue = await loadRevenueSignalInput(db, partnerId, today);
+  const desired = computePartnerSignals({ partner, contracts, rules, contacts, revenue }, today);
   for (const t of tasks) {
     const s = taskOverdueSignal(t, today);
     if (s) desired.push(s);

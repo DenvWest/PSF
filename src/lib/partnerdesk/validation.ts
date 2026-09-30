@@ -6,6 +6,7 @@ import type {
   CommissionRuleType,
   CommissionScope,
   PartnerStatus,
+  ReportingMethod,
 } from "@/types/partnerdesk";
 
 export const PARTNER_STATUSES: PartnerStatus[] = [
@@ -134,8 +135,12 @@ export interface ContractInput {
   exclusivity: string | null;
   approvalTerms: string | null;
   autoRenews: boolean;
+  reportingMethod?: ReportingMethod | null;
+  reportingCadence?: string | null;
   notes: string | null;
 }
+
+export const REPORTING_METHODS: ReportingMethod[] = ["postback", "import", "manual"];
 
 export function validateContract(input: ContractInput): string | null {
   if (!input.number.trim()) return "Contractnummer is verplicht.";
@@ -148,6 +153,9 @@ export function validateContract(input: ContractInput): string | null {
   }
   if (input.cookieDays !== null && input.cookieDays < 0) {
     return "Cookieduur kan niet negatief zijn.";
+  }
+  if (input.reportingMethod && !REPORTING_METHODS.includes(input.reportingMethod)) {
+    return "Onbekende rapportagemethode.";
   }
   return null;
 }
