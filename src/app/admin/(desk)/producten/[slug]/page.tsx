@@ -18,6 +18,10 @@ import {
 import { ProductStatusControl } from "@/components/product-admin/ProductStatusControl";
 import { todayIso } from "@/lib/partnerdesk/dates";
 import { formatMoney, formatNlDay } from "@/lib/partnerdesk/format";
+import { PRODUCT_SCORE_INPUTS } from "@/data/supplement-hub/score-inputs";
+import { ScoreInputsEditor } from "@/components/product-admin/ScoreInputsEditor";
+import { scoreInputOptions, staticToStored } from "@/lib/product-admin/score-inputs";
+import type { SupplementCategory } from "@/types/supplement";
 import { isFreshPrice } from "@/lib/product-admin/publish-gate";
 import { CERTIFICATION_SUGGESTIONS, NUTRIENT_KEYS, listSelectableClaims } from "@/lib/product-admin/catalog-options";
 import { getProductDossierBySlug, listRetailerOptions } from "@/lib/product-admin/queries";
@@ -67,11 +71,16 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
   const [dossier, retailers] = await Promise.all([getProductDossierBySlug(slug), listRetailerOptions()]);
   if (!dossier) notFound();
 
-  const { product, actives, ingredients, certifications, claims, images, offers, sources, score, gate } = dossier;
+  const { product, actives, ingredients, certifications, claims, images, offers, sources, score, scoreInputState, gate } = dossier;
   const brand = first(product.sup_brands);
   const category = first(product.sup_categories);
   const today = todayIso();
   const failures = gate.filter((c) => !c.ok);
+  const categorySlug = (category?.slug ?? "") as SupplementCategory;
+  const codeInputs = PRODUCT_SCORE_INPUTS[categorySlug]?.[slug];
+  const inputsSource = scoreInputState.inputs ? "database" : codeInputs ? "code" : "leeg";
+  const editorInitial = scoreInputState.inputs ?? (codeInputs ? staticToStored(codeInputs) : null);
+  const editorOptions = scoreInputOptions(categorySlug);
 
   return (
     <div>
@@ -252,9 +261,20 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
                 </ul>
               </>
             )}
-            <p className="mt-3 text-xs text-[var(--ps-muted)]">
-              Prijs telt niet mee in de score. De score-invoer (vorm, etiketfeiten) staat nog in score-inputs.ts.
-            </p>
+            <p className="mt-3 text-xs text-[var(--ps-muted)]">Prijs telt niet mee in de score.</p>
+            <div className="mt-5 border-t border-[var(--ps-border)] pt-4">
+              <h3 className="mb-3 text-sm font-semibold">Score-invoer</h3>
+              <ScoreInputsEditor
+                key={`${product.id}-${inputsSource}-${scoreInputState.inputs?.formKey ?? ""}`}
+                productId={product.id}
+                slug={slug}
+                initial={editorInitial}
+                source={inputsSource}
+                columnAvailable={scoreInputState.columnAvailable}
+                forms={editorOptions.forms}
+                markers={editorOptions.markers}
+              />
+            </div>
           </CollapsibleSection>
 
           <CollapsibleSection id="aanbiedingen" title="Aanbiedingen">

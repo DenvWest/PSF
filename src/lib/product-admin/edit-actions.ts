@@ -8,7 +8,10 @@ import type { EfsaClaimId } from "@/data/approved-claims";
 import { productMeetsClaimThreshold } from "@/lib/claim-condition";
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import { NUTRIENT_KEYS, isSelectableClaim } from "@/lib/product-admin/catalog-options";
+import { validateScoreInputs, type StoredScoreInputs } from "@/lib/product-admin/score-inputs";
 import { buildProductSlug } from "@/lib/product-admin/slug";
+import { PRODUCT_SCORE_INPUTS } from "@/data/supplement-hub/score-inputs";
+import type { SupplementCategory } from "@/types/supplement";
 import type { ActionResult } from "@/lib/partnerdesk/actions";
 import {
   validateActiveInput,
@@ -504,6 +507,54 @@ export async function removeCertificationAction(input: {
       .eq("product_id", input.productId)
       .eq("certification_key", input.key);
     if (error) return { ok: false, error: error.message };
+    revalidateProduct(input.slug);
+    return { ok: true };
+  } catch (err) {
+    return fail(err);
+  }
+}
+
+export async function saveScoreInputsAction(input: {
+  productId: string;
+  slug: string;
+  inputs: StoredScoreInputs;
+}): Promise<ActionResult> {
+  try {
+    const db = getPartnerDeskDb();
+    const { data, error: readError } = await db
+      .from("sup_products")
+      .select("sup_categories(slug)")
+      .eq("id", input.productId)
+      .maybeSingle();
+    if (readError || !data) return { ok: false, error: readError?.message ?? "Product niet gevonden." };
+    const rel = (data as unknown as { sup_categories: { slug: string } | { slug: string }[] | null }).sup_categories;
+    const categorySlug = (Array.isArray(rel) ? rel[0]?.slug : rel?.slug) ?? "";
+    if (!(categorySlug in PRODUCT_SCORE_INPUTS)) {
+      return { ok: false, error: "Deze categorie heeft nog geen scoremodel." };
+    }
+    const cleaned: StoredScoreInputs = {
+      formKey: input.inputs.formKey,
+      label: input.inputs.label,
+      certificeringen: input.inputs.certificeringen.map((c) => c.trim()).filter((c) => c !== ""),
+      kwaliteitsmarkers: input.inputs.kwaliteitsmarkers,
+      dosisOnzekerReden: input.inputs.dosisOnzekerReden?.trim() || null,
+    };
+    const error = validateScoreInputs(categorySlug as SupplementCategory, cleaned);
+    if (error) return { ok: false, error };
+
+    const { error: updateError } = await db
+      .from("sup_products")
+      .update({ score_inputs: cleaned, updated_at: new Date().toISOString() })
+      .eq("id", input.productId);
+    if (updateError) {
+      return {
+        ok: false,
+        error:
+          updateError.code === "42703"
+            ? "De kolom score_inputs bestaat nog niet: draai eerst de migratie (zie supabase/migrations/OPENSTAAND.md)."
+            : updateError.message,
+      };
+    }
     revalidateProduct(input.slug);
     return { ok: true };
   } catch (err) {
