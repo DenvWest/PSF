@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import { updatePartnerFieldAction } from "@/lib/partnerdesk/actions";
 import { updateContactFieldAction } from "@/lib/partnerdesk/contact-actions";
+import { updateRetailerFieldAction } from "@/lib/product-admin/retailer-actions";
+import { updateBrandFieldAction, updateCategoryFieldAction, updateProductFieldAction } from "@/lib/product-admin/actions";
 
 interface Option {
   value: string;
@@ -10,7 +12,7 @@ interface Option {
 }
 
 interface InlineFieldProps {
-  entity: "partner" | "contact";
+  entity: "partner" | "contact" | "product" | "brand" | "category" | "retailer";
   id: string;
   field: string;
   value: string;
@@ -20,6 +22,25 @@ interface InlineFieldProps {
   placeholder?: string;
   /** Toont naast de waarde een "open"-link (bijv. voor website/login-URL). */
   asLink?: boolean;
+}
+
+type SaveTarget = { id: string; field: string; value: string; slug?: string };
+
+function saveField(entity: InlineFieldProps["entity"], t: SaveTarget) {
+  switch (entity) {
+    case "partner":
+      return updatePartnerFieldAction({ partnerId: t.id, field: t.field, value: t.value });
+    case "product":
+      return updateProductFieldAction({ productId: t.id, field: t.field, value: t.value, slug: t.slug });
+    case "brand":
+      return updateBrandFieldAction({ brandId: t.id, field: t.field, value: t.value });
+    case "category":
+      return updateCategoryFieldAction({ categoryId: t.id, field: t.field, value: t.value });
+    case "retailer":
+      return updateRetailerFieldAction({ retailerId: t.id, field: t.field, value: t.value });
+    default:
+      return updateContactFieldAction({ contactId: t.id, field: t.field, value: t.value, slug: t.slug });
+  }
 }
 
 function normalizeUrl(value: string): string {
@@ -66,15 +87,7 @@ export function InlineField({
       return;
     }
     startTransition(async () => {
-      const result =
-        entity === "partner"
-          ? await updatePartnerFieldAction({ partnerId: id, field, value: draft })
-          : await updateContactFieldAction({
-              contactId: id,
-              field,
-              value: draft,
-              slug,
-            });
+      const result = await saveField(entity, { id, field, value: draft, slug });
       if (!result.ok) {
         setError(result.error);
         return;

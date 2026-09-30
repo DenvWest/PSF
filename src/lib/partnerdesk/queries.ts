@@ -8,8 +8,10 @@ import type {
   PdCommissionTier,
   PdContact,
   PdContract,
+  PdConversion,
   PdDocument,
   PdLabel,
+  PdLedgerEntry,
   PdNetwork,
   PdPartner,
   PdSignal,
@@ -431,5 +433,63 @@ export async function getPartnerBySlug(
       : null,
     networks,
     categories,
+  };
+}
+
+export interface PartnerRevenueData {
+  available: boolean;
+  conversions: PdConversion[];
+  ledger: PdLedgerEntry[];
+  clicks30d: number | null;
+}
+
+const REVENUE_LIST_LIMIT = 200;
+
+/**
+ * Conversies, grootboek en kliks van één partner. `available` is false zolang de
+ * migratie pd_conversions nog niet is gedraaid: de sectie toont dan een uitleg
+ * in plaats van de pagina te laten crashen.
+ */
+export async function getPartnerRevenue(partnerId: string): Promise<PartnerRevenueData> {
+  const db = getPartnerDeskDb();
+  const since = new Date(Date.now() - 30 * 86_400_000).toISOString();
+
+  const [conversionsRes, ledgerRes, retailersRes] = await Promise.all([
+    db
+      .from("pd_conversions")
+      .select(
+        "id, created_at, partner_id, contract_id, click_token, external_id, type, occurred_at, order_ref, revenue_cents, commission_cents, currency, status, ingest_method, imported_at",
+      )
+      .eq("partner_id", partnerId)
+      .order("occurred_at", { ascending: false })
+      .limit(REVENUE_LIST_LIMIT),
+    db
+      .from("pd_ledger_entries")
+      .select("id, partner_id, conversion_id, kind, amount_cents, expected_cents, state, period, posted_at")
+      .eq("partner_id", partnerId)
+      .limit(REVENUE_LIST_LIMIT * 5),
+    db.from("sup_retailers").select("id").eq("pd_partner_id", partnerId),
+  ]);
+
+  if (conversionsRes.error || ledgerRes.error) {
+    return { available: false, conversions: [], ledger: [], clicks30d: null };
+  }
+
+  let clicks30d: number | null = null;
+  const retailerIds = (retailersRes.data ?? []).map((r: { id: string }) => r.id);
+  if (!retailersRes.error && retailerIds.length > 0) {
+    const { count, error } = await db
+      .from("sup_clicks")
+      .select("id", { count: "exact", head: true })
+      .in("retailer_id", retailerIds)
+      .gte("created_at", since);
+    clicks30d = error ? null : (count ?? 0);
+  }
+
+  return {
+    available: true,
+    conversions: (conversionsRes.data ?? []) as PdConversion[],
+    ledger: (ledgerRes.data ?? []) as PdLedgerEntry[],
+    clicks30d,
   };
 }

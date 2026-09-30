@@ -32,12 +32,29 @@ function diff(
 ): Record<string, [unknown, unknown]> {
   const out: Record<string, [unknown, unknown]> = {};
   for (const f of fields) {
-    if (before[f] !== after[f]) out[f] = [before[f] ?? null, after[f] ?? null];
+    if ((before[f] ?? null) !== (after[f] ?? null)) out[f] = [before[f] ?? null, after[f] ?? null];
   }
   return out;
 }
 
 // ── Contracten ──────────────────────────────────────────────────────────────
+
+const REPORTING_COLUMNS = ["reporting_method", "reporting_cadence"] as const;
+const UNDEFINED_COLUMN = "42703";
+
+function reportingRow(input: ContractInput) {
+  if (input.reportingMethod === undefined && input.reportingCadence === undefined) return {};
+  return {
+    reporting_method: input.reportingMethod ?? null,
+    reporting_cadence: input.reportingCadence?.trim() || null,
+  };
+}
+
+function withoutReporting<T extends Record<string, unknown>>(row: T): Omit<T, (typeof REPORTING_COLUMNS)[number]> {
+  const rest = { ...row };
+  for (const col of REPORTING_COLUMNS) delete rest[col];
+  return rest;
+}
 
 function contractRow(input: ContractInput) {
   return {
@@ -50,6 +67,7 @@ function contractRow(input: ContractInput) {
     approval_terms: input.approvalTerms?.trim() || null,
     auto_renews: input.autoRenews,
     notes: input.notes?.trim() || null,
+    ...reportingRow(input),
   };
 }
 
@@ -60,12 +78,17 @@ export async function createContractAction(
   if (error) return { ok: false, error };
   try {
     const db = getPartnerDeskDb();
-    const { data, error: insertError } = await db
-      .from("pd_contracts")
-      .insert({ partner_id: input.partnerId, ...contractRow(input) })
-      .select("id, number")
-      .single();
-    if (insertError) return { ok: false, error: insertError.message };
+    const insertRow = (row: Record<string, unknown>) =>
+      db
+        .from("pd_contracts")
+        .insert({ partner_id: input.partnerId, ...row })
+        .select("id, number")
+        .single();
+    let { data, error: insertError } = await insertRow(contractRow(input));
+    if (insertError?.code === UNDEFINED_COLUMN) {
+      ({ data, error: insertError } = await insertRow(withoutReporting(contractRow(input))));
+    }
+    if (insertError || !data) return { ok: false, error: insertError?.message ?? "Opslaan mislukt." };
 
     await recordTimelineEvent(db, {
       partnerId: input.partnerId,
@@ -97,10 +120,15 @@ export async function updateContractAction(
       .maybeSingle();
 
     const row = contractRow(input);
-    const { error: updateError } = await db
-      .from("pd_contracts")
-      .update({ ...row, updated_at: new Date().toISOString() })
-      .eq("id", input.contractId);
+    const updateRow = (r: Record<string, unknown>) =>
+      db
+        .from("pd_contracts")
+        .update({ ...r, updated_at: new Date().toISOString() })
+        .eq("id", input.contractId);
+    let { error: updateError } = await updateRow(row);
+    if (updateError?.code === UNDEFINED_COLUMN) {
+      ({ error: updateError } = await updateRow(withoutReporting(row)));
+    }
     if (updateError) return { ok: false, error: updateError.message };
 
     if (before) {
