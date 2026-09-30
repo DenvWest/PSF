@@ -47,3 +47,53 @@ export function validateOfferPrice(priceCents: number | null): string | null {
   if (priceCents <= 0) return "Prijs moet groter dan 0 zijn.";
   return null;
 }
+
+export const IMAGE_PATH_PREFIX = "/images/producten/";
+
+/** Naamconventie uit CLAUDE.md: Merk-Product.jpg, geen spaties of speciale tekens; pad moet in public/images/producten/ liggen. */
+export function validateImagePath(path: string): string | null {
+  if (!path.startsWith(IMAGE_PATH_PREFIX)) return `Pad moet beginnen met ${IMAGE_PATH_PREFIX}`;
+  const file = path.slice(IMAGE_PATH_PREFIX.length);
+  if (!/^[A-Za-z0-9][A-Za-z0-9._-]*\.(jpg|jpeg|png|webp)$/.test(file)) {
+    return "Bestandsnaam: alleen letters, cijfers, punt, streepje; eindigt op .jpg, .png of .webp (geen spaties).";
+  }
+  return null;
+}
+
+export function validateNewProduct(input: { name: string; brandId: string; categoryId: string }): string | null {
+  if (input.name.trim() === "") return "Naam is verplicht.";
+  if (input.name.trim().length > 120) return "Naam is te lang (max 120 tekens).";
+  if (!input.brandId) return "Kies een merk.";
+  if (!input.categoryId) return "Kies een categorie.";
+  return null;
+}
+
+export function validateNewActive(input: {
+  nutrientKey: string;
+  allowedKeys: readonly string[];
+  amount: number;
+  unit: string;
+}): string | null {
+  if (!input.allowedKeys.includes(input.nutrientKey)) return "Kies een werkzame stof uit de lijst.";
+  return validateActiveInput({ amount: input.amount, unit: input.unit });
+}
+
+export function validateCertificationKey(key: string): string | null {
+  if (!/^[a-z0-9_]{2,40}$/.test(key)) return "Gebruik kleine letters, cijfers en underscores (2-40 tekens).";
+  return null;
+}
+
+export function validateNewOffer(input: { retailerId: string; priceCents: number | null; affiliateUrl: string }): string | null {
+  if (!input.retailerId) return "Kies een retailer.";
+  const priceError = validateOfferPrice(input.priceCents);
+  if (priceError) return priceError;
+  if (input.affiliateUrl.trim() !== "") {
+    try {
+      const url = new URL(input.affiliateUrl.trim());
+      if (url.protocol !== "https:" && url.protocol !== "http:") return "Ongeldige affiliate-URL.";
+    } catch {
+      return "Ongeldige affiliate-URL (begin met https://).";
+    }
+  }
+  return null;
+}
