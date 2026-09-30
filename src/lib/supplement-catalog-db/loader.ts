@@ -118,6 +118,7 @@ function werkzameStofFor(actives: SupProductActiveRow[]): IngredientClaimKey {
 export async function loadCategoryProducts(
   db: SupabaseClient,
   categorySlug: string,
+  options: { includeUnpublished?: boolean } = {},
 ): Promise<SupplementProduct[]> {
   const { data: category, error: categoryError } = await db
     .from("sup_categories")
@@ -129,12 +130,19 @@ export async function loadCategoryProducts(
     return [];
   }
 
-  const { data: productRows, error: productsError } = await db
+  let productsQuery = db
     .from("sup_products")
     .select("id, slug, name, variant, form, raw_legacy_fields, sup_brands(name)")
-    .eq("category_id", category.id)
-    .eq("status", "published")
-    .order("display_order", { ascending: true });
+    .eq("category_id", category.id);
+  if (options.includeUnpublished) {
+    productsQuery = productsQuery.neq("status", "archived");
+  } else {
+    productsQuery = productsQuery.eq("status", "published");
+  }
+  const { data: productRows, error: productsError } = await productsQuery.order(
+    "display_order",
+    { ascending: true },
+  );
 
   if (productsError || !productRows || productRows.length === 0) {
     return [];
@@ -190,14 +198,15 @@ export async function loadCategoryProducts(
     }
   }
 
-  return (productRows as SupProductRow[]).map((row) => {
+  return (productRows as SupProductRow[]).flatMap((row) => {
     const actives = activesByProduct.get(row.id) ?? [];
+    if (actives.length === 0 && options.includeUnpublished) return [];
     const certs = certsByProduct.get(row.id) ?? [];
     const claims = claimsByProduct.get(row.id) ?? [];
     const image = imageByProduct.get(row.id);
     const legacy = row.raw_legacy_fields ?? {};
 
-    return withClaimFields({
+    return [withClaimFields({
       slug: row.slug,
       name: row.name,
       brand: brandNameOf(row),
@@ -217,6 +226,6 @@ export async function loadCategoryProducts(
       doseringPerDagdosis: buildDosering(actives),
       efsaClaimIds: claims.map((c) => c.efsa_claim_id as EfsaClaimId),
       thirdPartyTested: certs.some((c) => c.certification_key === "third_party_tested"),
-    });
+    })];
   });
 }
