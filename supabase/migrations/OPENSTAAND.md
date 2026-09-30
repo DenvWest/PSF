@@ -7,12 +7,20 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20260926082953_sup_products_display_order.sql`
-- **Openstaand:** 2 migraties (zie hieronder)
+- **Openstaand:** 3 migraties (zie hieronder)
 - **Laatst bijgewerkt:** 26 september 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
+
+### [ ] 20260930143532_sup_products_score_inputs.sql
+- **Wat:** voegt één nullable jsonb-kolom `score_inputs` toe aan `sup_products` (vormsleutel, etiketfeiten, kwaliteitsmarkers, certificeringen, dosis-onzeker-reden). Hiermee kan de PS-Score van een product uit de database komen in plaats van uit `score-inputs.ts`, zodat nieuwe producten de publiceerpoort kunnen halen.
+- **Blokkeert deploy:** nee — de admin valt terug op de statische invoer als de kolom ontbreekt of leeg is; het invoerformulier meldt dan dat de migratie nog moet draaien.
+- **Hoort bij:** plak 3 (branch `feat/score-inputs-db`), `docs/plan/ANALYSE_PRODUCTPLATFORM_SUPPLEMENTEN.md` §F (publiceerpoort).
+- **Terugdraaien:** `alter table public.sup_products drop column score_inputs;`
+
+**Na het draaien van deze migratie:** roep `POST /api/admin/data/sup-score-inputs-backfill` aan om de invoer van de 25 bestaande producten uit `score-inputs.ts` in de kolom te zetten (idempotent, overschrijft geen handmatig bewerkte waarden).
 
 ### [ ] 20260926112517_pd_daisycon_en_retailer_partners.sql
 - **Wat:** her-seedt het Daisycon-netwerk (`pd_networks`, bewust eerder verwijderd/hernoemd door Dennis) en voegt 3 `pd_partners`-dossiers toe (Vitaminstore, VitalNutrition — beide via Daisycon; Arctic Blue — direct). Nodig als brug voor `sup_retailers.pd_partner_id` in plak 4: geen van de drie retailers achter de bestaande affiliate-links had een eigen PartnerDesk-dossier.

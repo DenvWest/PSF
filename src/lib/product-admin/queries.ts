@@ -7,7 +7,13 @@ import {
   type GateCriterion,
   type ProductFreshness,
 } from "@/lib/product-admin/publish-gate";
-import { scoreGateState, scoresForCategory, type AdminScore } from "@/lib/product-admin/score";
+import {
+  loadProductScoreInputState,
+  scoreGateState,
+  scoresForCategory,
+  type AdminScore,
+  type ProductScoreInputState,
+} from "@/lib/product-admin/score";
 
 export type ProductStatus = "draft" | "published" | "archived";
 
@@ -186,6 +192,7 @@ export interface ProductDossier {
   offers: ProductOfferRow[];
   sources: ProductSourceRow[];
   score: AdminScore | null;
+  scoreInputState: ProductScoreInputState;
   gate: GateCriterion[];
 }
 
@@ -201,7 +208,11 @@ async function loadProductParts(db: SupabaseClient, product: ProductRecord): Pro
   ]);
 
   const categorySlug = first(product.sup_categories)?.slug ?? "";
-  const score = categorySlug ? ((await scoresForCategory(db, categorySlug)).get(product.slug) ?? null) : null;
+  const [scores, scoreInputState] = await Promise.all([
+    categorySlug ? scoresForCategory(db, categorySlug) : Promise.resolve(new Map<string, AdminScore>()),
+    loadProductScoreInputState(db, product.id),
+  ]);
+  const score = scores.get(product.slug) ?? null;
 
   const dossier: ProductDossier = {
     product,
@@ -213,6 +224,7 @@ async function loadProductParts(db: SupabaseClient, product: ProductRecord): Pro
     offers: (offers.data ?? []) as unknown as ProductOfferRow[],
     sources: (sources.data ?? []) as ProductSourceRow[],
     score,
+    scoreInputState,
     gate: [],
   };
   dossier.gate = evaluatePublishGate({
