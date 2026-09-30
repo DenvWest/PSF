@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 import path from "path";
 
 export default defineConfig({
@@ -9,6 +9,7 @@ export default defineConfig({
   },
   test: {
     globals: true,
+    exclude: [...configDefaults.exclude, ".claude/**"],
     coverage: {
       provider: "v8",
       include: ["src/lib/intake-engine.ts", "src/lib/cron-auth.ts"],
