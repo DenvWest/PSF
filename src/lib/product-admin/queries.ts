@@ -243,3 +243,54 @@ export async function getProductDossierById(db: SupabaseClient, id: string): Pro
   if (!data) return null;
   return loadProductParts(db, data as unknown as ProductRecord);
 }
+
+export interface BrandRow {
+  id: string;
+  slug: string;
+  name: string;
+  manufacturer: string | null;
+  country: string | null;
+  website: string | null;
+  transparency_note: string | null;
+  productCount: number;
+}
+
+export interface CategoryRow {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  ingredient_claim_key: string | null;
+  comparison_path: string | null;
+  productCount: number;
+}
+
+type WithCount<T> = T & { sup_products: { count: number }[] | null };
+
+function countOf(row: { sup_products: { count: number }[] | null }): number {
+  return row.sup_products?.[0]?.count ?? 0;
+}
+
+export async function listBrands(): Promise<BrandRow[]> {
+  const db = getPartnerDeskDb();
+  const { data, error } = await db
+    .from("sup_brands")
+    .select("id, slug, name, manufacturer, country, website, transparency_note, sup_products(count)")
+    .order("name", { ascending: true });
+  if (error) throw new Error(`sup_brands: ${error.message}`);
+  return ((data ?? []) as unknown as WithCount<Omit<BrandRow, "productCount">>[]).map(
+    ({ sup_products, ...row }) => ({ ...row, productCount: countOf({ sup_products }) }),
+  );
+}
+
+export async function listCategories(): Promise<CategoryRow[]> {
+  const db = getPartnerDeskDb();
+  const { data, error } = await db
+    .from("sup_categories")
+    .select("id, slug, name, description, ingredient_claim_key, comparison_path, sup_products(count)")
+    .order("name", { ascending: true });
+  if (error) throw new Error(`sup_categories: ${error.message}`);
+  return ((data ?? []) as unknown as WithCount<Omit<CategoryRow, "productCount">>[]).map(
+    ({ sup_products, ...row }) => ({ ...row, productCount: countOf({ sup_products }) }),
+  );
+}
