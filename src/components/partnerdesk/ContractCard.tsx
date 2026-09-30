@@ -10,6 +10,7 @@ import {
   expirySeverity,
 } from "@/lib/partnerdesk/contract-status";
 import { formatNlDay } from "@/lib/partnerdesk/format";
+import { REPORTING_METHOD_LABEL } from "@/lib/partnerdesk/revenue";
 import {
   archiveContractAction,
   deleteDocumentAction,
@@ -142,6 +143,11 @@ export function ContractCard({
         <Fact label="Exclusiviteit">{contract.exclusivity ?? "—"}</Fact>
         <Fact label="Verlengt">{contract.auto_renews ? "automatisch" : "nee"}</Fact>
         <Fact label="Commissieregels">{ruleCount}</Fact>
+        <Fact label="Rapportage">
+          {contract.reporting_method
+            ? `${REPORTING_METHOD_LABEL[contract.reporting_method]}${contract.reporting_cadence ? ` · ${contract.reporting_cadence}` : ""}`
+            : "—"}
+        </Fact>
       </div>
 
       {documents.length > 0 && (

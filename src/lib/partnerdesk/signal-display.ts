@@ -15,6 +15,10 @@ export function signalLabel(
       return "Actief contract zonder commissieregel";
     case "stale_contact":
       return "Al >90 dgn geen contact";
+    case "commission_mismatch":
+      return `Ontvangen commissie wijkt af (${payload.count ?? "?"}×)`;
+    case "conversions_unreviewed":
+      return `${payload.count ?? "?"} conversie(s) wachten op beoordeling`;
     case "task_overdue":
       return `Taak te laat: ${payload.title ?? ""}`;
     default:
@@ -30,6 +34,9 @@ export function signalAnchor(type: string): string {
       return "contracten";
     case "missing_commission":
       return "commissies";
+    case "commission_mismatch":
+    case "conversions_unreviewed":
+      return "omzet";
     case "partner_no_contact":
       return "contactpersonen";
     case "stale_contact":

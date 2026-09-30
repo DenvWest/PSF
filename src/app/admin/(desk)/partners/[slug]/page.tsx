@@ -7,6 +7,7 @@ import { ContractsSection } from "@/components/partnerdesk/ContractsSection";
 import { DocumentsSection } from "@/components/partnerdesk/DocumentsSection";
 import { InlineField } from "@/components/partnerdesk/InlineField";
 import { PartnerAdminActions } from "@/components/partnerdesk/PartnerAdminActions";
+import { RevenueSection } from "@/components/partnerdesk/RevenueSection";
 import { PartnerLabels } from "@/components/partnerdesk/PartnerLabels";
 import {
   PassportCard,
@@ -24,6 +25,7 @@ import {
 import { TasksSection } from "@/components/partnerdesk/TasksSection";
 import { TimelineSection } from "@/components/partnerdesk/TimelineSection";
 import { resolveCommissions } from "@/lib/partnerdesk/commission-resolution";
+import { reportingCoverage, summarizeRevenue } from "@/lib/partnerdesk/revenue";
 import { contractStatus } from "@/lib/partnerdesk/contract-status";
 import { todayIso } from "@/lib/partnerdesk/dates";
 import { COMMISSION_KIND_LABEL, formatCommissionValue } from "@/lib/partnerdesk/format";
@@ -33,6 +35,7 @@ import {
   getPartnerContacts,
   getPartnerLabels,
   getPartnerOpenCounts,
+  getPartnerRevenue,
   getPartnerTasks,
   getPartnerTimeline,
   listLabels,
@@ -48,6 +51,7 @@ const SECTIONS: DossierSection[] = [
   { id: "contactpersonen", label: "Contactpersonen" },
   { id: "contracten", label: "Contracten" },
   { id: "commissies", label: "Commissies" },
+  { id: "omzet", label: "Omzet" },
   { id: "documenten", label: "Documenten" },
   { id: "tijdlijn", label: "Tijdlijn" },
   { id: "taken", label: "Taken" },
@@ -72,13 +76,14 @@ export default async function PartnerDossierPage({
   if (!dossier) notFound();
 
   const { partner, network, networks, categories } = dossier;
-  const [contacts, timeline, tasks, counts, commercials, partnerLabels, allLabels, logoUrl] =
+  const [contacts, timeline, tasks, counts, commercials, revenue, partnerLabels, allLabels, logoUrl] =
     await Promise.all([
       getPartnerContacts(partner.id),
       getPartnerTimeline(partner.id),
       getPartnerTasks(partner.id),
       getPartnerOpenCounts(partner.id),
       getPartnerCommercials(partner.id),
+      getPartnerRevenue(partner.id),
       getPartnerLabels(partner.id),
       listLabels(),
       signStoragePath(partner.logo_path),
@@ -115,6 +120,13 @@ export default async function PartnerDossierPage({
         cookieDays: activeContract.cookie_days,
       }
     : null;
+
+  const coverage = reportingCoverage({
+    networkKind: network?.kind ?? null,
+    contracts: commercials.contracts,
+    today,
+  });
+  const revenueSummary = summarizeRevenue(revenue.conversions, revenue.ledger);
 
   const statusOptions = PARTNER_STATUSES.map((s) => ({
     value: s,
@@ -261,6 +273,17 @@ export default async function PartnerDossierPage({
               rules={commercials.rules}
               tiers={commercials.tiers}
               categories={categories}
+            />
+          </CollapsibleSection>
+          <CollapsibleSection id="omzet" title="Omzet">
+            <RevenueSection
+              partnerId={partner.id}
+              slug={slug}
+              available={revenue.available}
+              coverage={coverage}
+              summary={revenueSummary}
+              conversions={revenue.conversions}
+              clicks30d={revenue.clicks30d}
             />
           </CollapsibleSection>
           <CollapsibleSection id="documenten" title="Materiaal & documenten" defaultOpen={false}>

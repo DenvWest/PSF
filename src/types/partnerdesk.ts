@@ -17,6 +17,9 @@ export type TimelineActor = "user" | "system" | "ai";
 export type TaskStatus = "open" | "done" | "dismissed";
 export type TaskSource = "manual" | "system" | "signal";
 export type SignalSeverity = "red" | "amber";
+export type ReportingMethod = "postback" | "import" | "manual";
+export type ConversionStatus = "pending" | "approved" | "rejected";
+export type LedgerState = "pending" | "approved" | "paid" | "rejected";
 export type SignalStatus = "open" | "snoozed" | "resolved";
 export type DocumentKind =
   | "contract"
@@ -100,8 +103,40 @@ export interface PdContract {
   approval_terms: string | null;
   exclusivity: string | null;
   auto_renews: boolean;
+  reporting_method?: ReportingMethod | null;
+  reporting_cadence?: string | null;
   notes: string | null;
   archived_at: string | null;
+}
+
+export interface PdConversion {
+  id: string;
+  created_at: string;
+  partner_id: string;
+  contract_id: string | null;
+  click_token: string | null;
+  external_id: string;
+  type: "lead" | "sale";
+  occurred_at: string;
+  order_ref: string | null;
+  revenue_cents: number;
+  commission_cents: number | null;
+  currency: string;
+  status: ConversionStatus;
+  ingest_method: ReportingMethod;
+  imported_at: string;
+}
+
+export interface PdLedgerEntry {
+  id: string;
+  partner_id: string;
+  conversion_id: string | null;
+  kind: "accrual" | "adjustment" | "reversal" | "payment_received";
+  amount_cents: number;
+  expected_cents: number | null;
+  state: LedgerState;
+  period: string;
+  posted_at: string;
 }
 
 export interface PdCommissionRule {
