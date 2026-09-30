@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { CollapsibleSection } from "@/components/partnerdesk/CollapsibleSection";
 import { InlineField } from "@/components/partnerdesk/InlineField";
 import { SectionAnchorNav, type DossierSection } from "@/components/partnerdesk/SectionAnchorNav";
+import { ActiveEditor, ImageEditor, OfferEditor, SourcesEditor } from "@/components/product-admin/ProductEditors";
 import { ProductStatusControl } from "@/components/product-admin/ProductStatusControl";
 import { todayIso } from "@/lib/partnerdesk/dates";
 import { formatMoney, formatNlDay } from "@/lib/partnerdesk/format";
@@ -150,29 +151,15 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
             {actives.length === 0 ? (
               <Empty>Nog geen werkzame stoffen vastgelegd.</Empty>
             ) : (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-xs uppercase tracking-wide text-[var(--ps-muted)]">
-                    <th className="py-1 font-medium">Stof</th>
-                    <th className="py-1 font-medium">Vorm</th>
-                    <th className="py-1 text-right font-medium">Per portie</th>
-                    <th className="py-1 pl-4 font-medium">Elementair</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {actives.map((a) => (
-                    <tr key={a.id} className="border-t border-[var(--ps-border)]">
-                      <td className="py-1.5">{a.nutrient_key}</td>
-                      <td className="py-1.5 text-[var(--ps-body)]">{a.form_key ?? "—"}</td>
-                      <td className="py-1.5 text-right tabular-nums">
-                        {a.amount_per_serving ?? "—"} {a.unit ?? ""}
-                      </td>
-                      <td className="py-1.5 pl-4 text-[var(--ps-body)]">{a.is_elemental ? "ja" : "nee"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <ul>
+                {actives.map((a) => (
+                  <ActiveEditor key={a.id} active={a} productId={product.id} slug={slug} />
+                ))}
+              </ul>
             )}
+            <p className="mt-3 text-xs text-[var(--ps-muted)]">
+              Na opslaan worden de claimdrempels opnieuw berekend.
+            </p>
             {ingredients.length > 0 && (
               <p className="mt-4 text-sm text-[var(--ps-body)]">
                 <span className="font-medium text-[var(--ps-ink)]">Ingrediënten:</span>{" "}
@@ -202,7 +189,7 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
                 {images.map((img) => {
                   const licensed = Boolean(img.source?.trim()) && Boolean(img.license_note?.trim());
                   return (
-                    <li key={img.id} className="flex gap-3 rounded-lg border border-[var(--ps-border)] p-3">
+                    <li key={img.id} className="flex gap-3 rounded-lg border border-[var(--ps-border)] p-3 sm:col-span-2">
                       <Image src={img.path} alt={img.alt ?? product.name} width={72} height={72} className="h-[72px] w-[72px] shrink-0 rounded object-contain" />
                       <div className="min-w-0 text-sm">
                         <p className="truncate text-[var(--ps-body)]" title={img.path}>{img.path}</p>
@@ -210,6 +197,7 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
                         <p className={licensed ? "text-[var(--ps-body)]" : "text-amber-700"}>
                           Licentie: {img.license_note?.trim() ? img.license_note : "niet vastgelegd"}
                         </p>
+                        <ImageEditor image={img} productId={product.id} slug={slug} />
                       </div>
                     </li>
                   );
@@ -266,57 +254,34 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
             {offers.length === 0 ? (
               <Empty>Nog geen aanbiedingen.</Empty>
             ) : (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-xs uppercase tracking-wide text-[var(--ps-muted)]">
-                    <th className="py-1 font-medium">Retailer</th>
-                    <th className="py-1 text-right font-medium">Prijs</th>
-                    <th className="py-1 pl-4 font-medium">Gecontroleerd</th>
-                    <th className="py-1 font-medium">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {offers.map((o) => {
-                    const retailer = first(o.sup_retailers);
-                    const fresh = isFreshPrice(o.price_checked_at, today);
-                    return (
-                      <tr key={o.id} className="border-t border-[var(--ps-border)]">
-                        <td className="py-1.5">
-                          {retailer?.name ?? "—"}
-                          {retailer?.relationship === "network" && <span className="ml-2 text-xs text-[var(--ps-muted)]">netwerk</span>}
-                        </td>
-                        <td className="py-1.5 text-right tabular-nums">{formatMoney(o.price_cents)}</td>
-                        <td className={`py-1.5 pl-4 ${fresh ? "text-[var(--ps-body)]" : "text-amber-700"}`}>
-                          {o.price_checked_at ? formatNlDay(o.price_checked_at) : "nooit"}
-                        </td>
-                        <td className="py-1.5 text-[var(--ps-body)]">{o.active ? "actief" : "inactief"}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <ul className="divide-y divide-[var(--ps-border)]">
+                {offers.map((o) => {
+                  const retailer = first(o.sup_retailers);
+                  const fresh = isFreshPrice(o.price_checked_at, today);
+                  return (
+                    <li key={o.id} className="space-y-2 py-3 first:pt-0 last:pb-0">
+                      <p className="text-sm">
+                        <span className="font-medium">{retailer?.name ?? "—"}</span>
+                        {retailer?.relationship === "network" && <span className="ml-2 text-xs text-[var(--ps-muted)]">netwerk</span>}
+                        <span className="ml-3 text-[var(--ps-body)]">{formatMoney(o.price_cents)}</span>
+                        <span className={`ml-3 text-xs ${fresh ? "text-[var(--ps-muted)]" : "text-amber-700"}`}>
+                          gecontroleerd {o.price_checked_at ? formatNlDay(o.price_checked_at) : "nooit"}
+                        </span>
+                        <span className="ml-3 text-xs text-[var(--ps-muted)]">{o.active ? "actief" : "inactief"}</span>
+                      </p>
+                      <OfferEditor offer={o} productId={product.id} slug={slug} />
+                    </li>
+                  );
+                })}
+              </ul>
             )}
+            <p className="mt-3 text-xs text-[var(--ps-muted)]">
+              &ldquo;Prijs gecontroleerd&rdquo; bewaart de prijs, zet de controledatum op vandaag en logt de prijs in de historie.
+            </p>
           </CollapsibleSection>
 
           <CollapsibleSection id="bronnen" title="Bronnen">
-            {sources.length === 0 ? (
-              <Empty>Nog geen bronnen.</Empty>
-            ) : (
-              <ul className="space-y-1 text-sm">
-                {sources.map((s) => (
-                  <li key={s.id}>
-                    <span className="text-[var(--ps-muted)]">{s.kind}</span>{" "}
-                    {s.url ? (
-                      <a href={s.url} target="_blank" rel="noreferrer" className="hover:underline">
-                        {s.title ?? s.url} ↗
-                      </a>
-                    ) : (
-                      (s.title ?? "—")
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
+            <SourcesEditor sources={sources} productId={product.id} slug={slug} />
           </CollapsibleSection>
         </div>
       </div>
