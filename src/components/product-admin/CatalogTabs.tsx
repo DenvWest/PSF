@@ -7,6 +7,7 @@ const TABS = [
   { href: "/admin/producten", label: "Producten" },
   { href: "/admin/merken", label: "Merken" },
   { href: "/admin/categorieen", label: "Categorieën" },
+  { href: "/admin/retailers", label: "Retailers" },
 ];
 
 export function CatalogTabs() {
