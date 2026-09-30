@@ -6,7 +6,7 @@ export const magnesiumHerstelMannen40Data: BlogArtikel = {
   categorie: "supplementen",
   titel: "Magnesium en herstel: waar het wel en niet bij helpt",
   coverImage: "/images/blog/magnesium-herstel-mannen-40.jpg",
-  coverImageAlt: "Magnesiumcapsules die uit een potje rollen",
+  coverImageAlt: "Halterschijf van 20 kilo op een halterstang in de sportschool",
   heroIntro:
     "Sport je nog even fanatiek als op je twintigste, maar duurt het herstel merkbaar langer? Magnesium wordt dan vaak als eerste genoemd — logisch, want het mineraal is betrokken bij spierfunctie en energieproductie. De vraag is waar dat een aantoonbaar effect oplevert en waar het bij herstel na 30 vooral bijgeloof is.",
   leestijd: "8 min",

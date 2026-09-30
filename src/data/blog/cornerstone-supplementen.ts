@@ -135,7 +135,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     categorie: "supplementen",
     titel: "Beste magnesium supplement",
     coverImage: "/images/blog/beste-magnesium.jpg",
-    coverImageAlt: "Verschillende poeders in glazen schaaltjes: magnesiumvormen naast elkaar",
+    coverImageAlt: "Oranje-witte capsules die uit een doorzichtig potje rollen",
     heroIntro:
       "Welke magnesiumvorm werkt het best voor jouw doel? Een overzicht van de meest relevante varianten.",
     leestijd: "13 min",

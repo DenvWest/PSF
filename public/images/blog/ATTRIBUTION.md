@@ -31,3 +31,11 @@ batches staan in `scripts/download-blog-covers.sh`.
 niet hergebruiken als fallback. De testosteron-gidscover is dezelfde foto als
 `kennisbank/testosteron.jpg` en `pijler-testosteron-na-40.jpg`, zodat de
 bibliotheekkaart het artikelbeeld toont.
+
+## Beeldregels (30 sep 2026)
+
+- Een beeld staat alleen bij een artikel als het onderwerp erin te zien is. Passend beeld ontbreekt: laat de inline weg (optioneel) in plaats van een willekeurige stockfoto.
+- `alt` beschrijft wat er echt op de foto staat; `caption` legt de link met het artikel. Nooit een beschrijving van een eerdere foto laten staan bij een vervangen bestand.
+- Elke cover en inline is uniek (pixels én alt); de test in `src/lib/__tests__/article-body-images.test.ts` bewaakt dat, plus losse bestanden in `inline/`.
+- Geen zichtbare merklogo's (bijv. sportmerken) in beeld.
+- Vervanging voor ontbrekende inlines: zie het overzicht in de PR-beschrijving.

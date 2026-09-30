@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -18,10 +18,9 @@ function fileMd5(src: string): string {
 }
 
 describe("article body images", () => {
-  it("elk blogartikel heeft een inline-beeld met alt, caption en bestand", () => {
+  it("een inline-beeld is optioneel, maar bestaat en heeft alt en caption als het er is", () => {
     for (const artikel of alleArtikelen) {
       const image = blogBodyImage(artikel.slug);
-      expect(image, `geen inline-beeld voor blog ${artikel.slug}`).toBeDefined();
       if (!image) continue;
       expect(image.src).toMatch(
         new RegExp(`^/images/blog/inline/${artikel.slug}(-v\\d+)?\\.jpg$`),
@@ -34,30 +33,38 @@ describe("article body images", () => {
     }
   });
 
-  it("blogcovers en inline-beelden zijn uniek per artikel en verschillen per slug", () => {
-    const coverByHash = new Map<string, string>();
-    const inlineByHash = new Map<string, string>();
+  it("geen blog-inlinebestand staat los van een artikel", () => {
+    const gebruikt = new Set(
+      alleArtikelen.flatMap((a) => {
+        const image = blogBodyImage(a.slug);
+        return image ? [image.src.replace(/^.*\//, "")] : [];
+      }),
+    );
+    const opSchijf = readdirSync(join(process.cwd(), "public/images/blog/inline")).filter(
+      (f) => f.endsWith(".jpg"),
+    );
+    const pijlerPaginas = new Set(["overgang.jpg", "testosteron-na-40.jpg"]);
+    for (const bestand of opSchijf) {
+      if (pijlerPaginas.has(bestand)) continue;
+      expect(gebruikt.has(bestand), `${bestand} wordt nergens gebruikt`).toBe(true);
+    }
+  });
 
+  it("elk blogbeeld (cover en inline) is uniek in pixels en in alt-tekst", () => {
+    const perHash = new Map<string, string>();
+    const perAlt = new Map<string, string>();
+    const registreer = (label: string, src: string, alt: string) => {
+      const hash = fileMd5(src);
+      expect(perHash.get(hash), `${label} deelt bestand met ${perHash.get(hash)}`).toBeUndefined();
+      perHash.set(hash, label);
+      expect(perAlt.get(alt), `${label} deelt alt met ${perAlt.get(alt)}`).toBeUndefined();
+      perAlt.set(alt, label);
+    };
     for (const artikel of alleArtikelen) {
       const cover = blogCover(artikel);
+      registreer(`${artikel.slug} cover`, cover.src, cover.alt);
       const body = blogBodyImage(artikel.slug);
-      expect(body, artikel.slug).toBeDefined();
-      if (!body) continue;
-
-      const coverHash = fileMd5(cover.src);
-      const bodyHash = fileMd5(body.src);
-      expect(coverHash, `${artikel.slug} cover==inline`).not.toBe(bodyHash);
-
-      const earlierCover = coverByHash.get(coverHash);
-      expect(earlierCover, `${artikel.slug} deelt cover met ${earlierCover}`).toBeUndefined();
-      coverByHash.set(coverHash, artikel.slug);
-
-      const earlierInline = inlineByHash.get(bodyHash);
-      expect(
-        earlierInline,
-        `${artikel.slug} deelt inline met ${earlierInline}`,
-      ).toBeUndefined();
-      inlineByHash.set(bodyHash, artikel.slug);
+      if (body) registreer(`${artikel.slug} inline`, body.src, body.alt);
     }
   });
 

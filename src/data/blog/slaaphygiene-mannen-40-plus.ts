@@ -6,7 +6,7 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
   categorie: "slaap",
   titel: "Slaaphygiëne: wat wél werkt",
   coverImage: "/images/blog/slaaphygiene-mannen-40-plus.jpg",
-  coverImageAlt: "Persoon die ontspannen ligt te rusten in een donkere slaapkamer",
+  coverImageAlt: "Verkreukeld wit beddengoed op een bed — slaaphygiëne begint bij een rustig bed",
   heroIntro:
     "Lijstjes met slaaptips zijn er genoeg — maar wat heeft na je dertigste echt prioriteit? Hier focussen we op de interventies met de hoogste impact op je slaaparchitectuur en je [circadiaanse ritme](/kennisbank/circadiaan-ritme).",
   leestijd: "7 min",
