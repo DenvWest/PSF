@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import { updatePartnerFieldAction } from "@/lib/partnerdesk/actions";
 import { updateContactFieldAction } from "@/lib/partnerdesk/contact-actions";
+import { updateProductFieldAction } from "@/lib/product-admin/actions";
 
 interface Option {
   value: string;
@@ -10,7 +11,7 @@ interface Option {
 }
 
 interface InlineFieldProps {
-  entity: "partner" | "contact";
+  entity: "partner" | "contact" | "product";
   id: string;
   field: string;
   value: string;
@@ -69,12 +70,14 @@ export function InlineField({
       const result =
         entity === "partner"
           ? await updatePartnerFieldAction({ partnerId: id, field, value: draft })
-          : await updateContactFieldAction({
-              contactId: id,
-              field,
-              value: draft,
-              slug,
-            });
+          : entity === "product"
+            ? await updateProductFieldAction({ productId: id, field, value: draft, slug })
+            : await updateContactFieldAction({
+                contactId: id,
+                field,
+                value: draft,
+                slug,
+              });
       if (!result.ok) {
         setError(result.error);
         return;

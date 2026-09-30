@@ -8,6 +8,7 @@ export type DeskIconName =
   | "site"
   | "affiliate"
   | "program"
+  | "products"
   | "logout"
   | "chevron"
   | "plus"
@@ -22,6 +23,7 @@ const PATHS: Record<DeskIconName, string> = {
   site: "M3 12a9 9 0 1018 0 9 9 0 00-18 0zM3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18",
   affiliate: "M9 15l6-6M10.5 8.5l1-1a3 3 0 014 4l-1 1M13.5 15.5l-1 1a3 3 0 01-4-4l1-1",
   program: "M4 11a4 4 0 118 0M2 20a6 6 0 0112 0M16 7a3 3 0 110 6M15 20a5 5 0 017-4.6",
+  products: "M4 8l8-4 8 4v8l-8 4-8-4zM4 8l8 4 8-4M12 12v8",
   logout: "M15 12H4m0 0l4-4m-4 4l4 4M14 4h5v16h-5",
   chevron: "M9 6l6 6-6 6",
   plus: "M12 5v14M5 12h14",
