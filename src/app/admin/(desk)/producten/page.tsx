@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { EmptyState } from "@/components/partnerdesk/EmptyState";
+import { CatalogTabs } from "@/components/product-admin/CatalogTabs";
 import { PRODUCT_STATUS_CLASS, PRODUCT_STATUS_LABEL } from "@/components/product-admin/ProductStatusControl";
 import { listAdminProducts, type AdminProductRow, type ProductStatus } from "@/lib/product-admin/queries";
 
@@ -53,27 +54,28 @@ export default async function ProductenPage({
 
   return (
     <div className="mx-auto max-w-6xl px-8 py-8">
-      <header className="mb-6">
+      <header className="mb-2">
         <h1 className="text-2xl font-semibold">Producten</h1>
         <p className="mt-0.5 text-sm text-[var(--ps-body)]">
           {rows.length} {rows.length === 1 ? "product" : "producten"} in de catalogus
         </p>
-        <nav aria-label="Statusfilter" className="mt-3 flex gap-2 text-sm">
-          {FILTERS.map((f) => (
-            <Link
-              key={f.value}
-              href={f.value === "alle" ? "/admin/producten" : `/admin/producten?status=${f.value}`}
-              className={`rounded-full px-3 py-1 ${
-                filter === f.value
-                  ? "bg-[var(--ps-green-light)] font-semibold text-[var(--ps-ink)]"
-                  : "text-[var(--ps-body)] hover:bg-[var(--ps-bg)]"
-              }`}
-            >
-              {f.label}
-            </Link>
-          ))}
-        </nav>
       </header>
+      <CatalogTabs />
+      <nav aria-label="Statusfilter" className="mb-4 flex gap-2 text-sm">
+        {FILTERS.map((f) => (
+          <Link
+            key={f.value}
+            href={f.value === "alle" ? "/admin/producten" : `/admin/producten?status=${f.value}`}
+            className={`rounded-full px-3 py-1 ${
+              filter === f.value
+                ? "bg-[var(--ps-green-light)] font-semibold text-[var(--ps-ink)]"
+                : "text-[var(--ps-body)] hover:bg-[var(--ps-bg)]"
+            }`}
+          >
+            {f.label}
+          </Link>
+        ))}
+      </nav>
 
       {(summary.staleDataProducts > 0 || summary.stalePriceOffers > 0) && (
         <aside className="mb-5 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">

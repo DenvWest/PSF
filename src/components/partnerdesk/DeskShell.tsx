@@ -30,7 +30,9 @@ const SITE_ITEMS: NavItem[] = [
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/admin/partners") return pathname.startsWith("/admin/partners");
-  if (href === "/admin/producten") return pathname.startsWith("/admin/producten");
+  if (href === "/admin/producten") {
+    return ["/admin/producten", "/admin/merken", "/admin/categorieen"].some((p) => pathname.startsWith(p));
+  }
   if (href === "/admin/programma") return pathname.startsWith("/admin/programma");
   return pathname === href;
 }

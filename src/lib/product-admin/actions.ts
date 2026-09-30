@@ -1,11 +1,19 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
+import { getPartnerDeskDb, slugify } from "@/lib/partnerdesk/db";
 import type { ActionResult } from "@/lib/partnerdesk/actions";
 import { gateFailures } from "@/lib/product-admin/publish-gate";
 import { getProductDossierById, type ProductStatus } from "@/lib/product-admin/queries";
-import { isEditableProductField, validateProductField } from "@/lib/product-admin/validation";
+import {
+  isEditableBrandField,
+  isEditableCategoryField,
+  isEditableProductField,
+  validateBrandField,
+  validateCategoryField,
+  validateNewBrandName,
+  validateProductField,
+} from "@/lib/product-admin/validation";
 
 function revalidateProduct(slug: string) {
   revalidatePath("/admin/producten");
@@ -97,6 +105,81 @@ export async function setProductStatusAction(input: {
       .eq("id", input.productId);
     if (error) return { ok: false, error: error.message };
     revalidateProduct(input.slug);
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Onbekende fout." };
+  }
+}
+
+function revalidateCatalog() {
+  revalidatePath("/admin/merken");
+  revalidatePath("/admin/categorieen");
+  revalidatePath("/admin/producten");
+  revalidatePath("/supplementen");
+  revalidatePath("/beste/[supplement]", "page");
+}
+
+export async function updateBrandFieldAction(input: {
+  brandId: string;
+  field: string;
+  value: string;
+}): Promise<ActionResult> {
+  if (!isEditableBrandField(input.field)) return { ok: false, error: "Dit veld is niet bewerkbaar." };
+  const value = input.value.trim();
+  const fieldError = validateBrandField(input.field, value);
+  if (fieldError) return { ok: false, error: fieldError };
+  try {
+    const db = getPartnerDeskDb();
+    const { error } = await db
+      .from("sup_brands")
+      .update({ [input.field]: value === "" ? null : value })
+      .eq("id", input.brandId);
+    if (error) return { ok: false, error: error.message };
+    revalidateCatalog();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Onbekende fout." };
+  }
+}
+
+export async function updateCategoryFieldAction(input: {
+  categoryId: string;
+  field: string;
+  value: string;
+}): Promise<ActionResult> {
+  if (!isEditableCategoryField(input.field)) return { ok: false, error: "Dit veld is niet bewerkbaar." };
+  const value = input.value.trim();
+  const fieldError = validateCategoryField(input.field, value);
+  if (fieldError) return { ok: false, error: fieldError };
+  try {
+    const db = getPartnerDeskDb();
+    const { error } = await db
+      .from("sup_categories")
+      .update({ [input.field]: value === "" ? null : value })
+      .eq("id", input.categoryId);
+    if (error) return { ok: false, error: error.message };
+    revalidateCatalog();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Onbekende fout." };
+  }
+}
+
+export async function createBrandAction(input: { name: string }): Promise<ActionResult> {
+  const nameError = validateNewBrandName(input.name);
+  if (nameError) return { ok: false, error: nameError };
+  try {
+    const db = getPartnerDeskDb();
+    const base = slugify(input.name) || "merk";
+    const { data, error: slugError } = await db.from("sup_brands").select("slug").like("slug", `${base}%`);
+    if (slugError) return { ok: false, error: slugError.message };
+    const taken = new Set((data ?? []).map((r) => r.slug as string));
+    let slug = base;
+    for (let i = 2; taken.has(slug); i += 1) slug = `${base}-${i}`;
+
+    const { error } = await db.from("sup_brands").insert({ slug, name: input.name.trim() });
+    if (error) return { ok: false, error: error.message };
+    revalidateCatalog();
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Onbekende fout." };
