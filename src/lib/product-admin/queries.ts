@@ -323,3 +323,49 @@ export async function listRetailerOptions(): Promise<RetailerOption[]> {
   if (error) throw new Error(`sup_retailers: ${error.message}`);
   return (data ?? []) as RetailerOption[];
 }
+
+export interface RetailerRow {
+  id: string;
+  slug: string;
+  name: string;
+  relationship: "direct" | "network";
+  base_url: string | null;
+  tracking_param: string | null;
+  disclosure_label: string | null;
+  active: boolean;
+  pd_partner_id: string | null;
+  partner: { name: string; slug: string } | null;
+  offerCount: number;
+}
+
+export interface PartnerOption {
+  id: string;
+  name: string;
+}
+
+export async function listRetailers(): Promise<RetailerRow[]> {
+  const db = getPartnerDeskDb();
+  const { data, error } = await db
+    .from("sup_retailers")
+    .select(
+      "id, slug, name, relationship, base_url, tracking_param, disclosure_label, active, pd_partner_id, pd_partners(name, slug), sup_offers(count)",
+    )
+    .order("name", { ascending: true });
+  if (error) throw new Error(`sup_retailers: ${error.message}`);
+  type Raw = Omit<RetailerRow, "partner" | "offerCount"> & {
+    pd_partners: One<{ name: string; slug: string }>;
+    sup_offers: { count: number }[] | null;
+  };
+  return ((data ?? []) as unknown as Raw[]).map(({ pd_partners, sup_offers, ...row }) => ({
+    ...row,
+    partner: first(pd_partners),
+    offerCount: sup_offers?.[0]?.count ?? 0,
+  }));
+}
+
+export async function listPartnerOptions(): Promise<PartnerOption[]> {
+  const db = getPartnerDeskDb();
+  const { data, error } = await db.from("pd_partners").select("id, name").is("archived_at", null).order("name", { ascending: true });
+  if (error) throw new Error(`pd_partners: ${error.message}`);
+  return (data ?? []) as PartnerOption[];
+}
