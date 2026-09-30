@@ -7,9 +7,9 @@ export const supplementenViaInfluencersChecklistData: BlogArtikel = {
   titel: "Supplementen via influencers: waar moet je eigenlijk op letten?",
   coverImage: "/images/blog/supplementen-via-influencers-checklist.jpg",
   coverImageAlt:
-    "Close-up van een glazen supplementpotje met een onbeschreven, blanco etiket tegen een egale bruine achtergrond",
+    "Persoon houdt een smartphone met leeg wit scherm vast, op de achtergrond groene kamerplanten",
   coverCaption:
-    "Zonder etiket, claim of naam is dit gewoon een potje — de vraag is altijd wat erop komt te staan, en of dat klopt.",
+    "Wat er straks op dat scherm verschijnt, is een claim — geen bewijs. Dat onderscheid maak je zelf, niet de post.",
   heroIntro:
     "Een goed verhaal is geen bewijs, en een kortingscode is geen aanbeveling van een expert. Dat klinkt vanzelfsprekend, maar op het moment dat een creator die je al maanden volgt vertelt dat dít poeder zijn energie veranderde, werkt die logica ineens minder goed. Hier lees je hoe het verdienmodel achter die posts in elkaar zit, waarom een before/after-verhaal weinig zegt over werking, en met welke controlepunten je een claim binnen een paar minuten zelf kunt beoordelen.",
   leestijd: "11 min",

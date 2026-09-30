@@ -555,8 +555,8 @@ const BLOG_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "supplementen-via-influencers-checklist": img(
     "blog",
     "supplementen-via-influencers-checklist",
-    "Zwart supplementpotje met een onbeschreven wit etiket tegen een turquoise achtergrond",
-    "Zonder naam of claim op het etiket blijft er niets over om op te vertrouwen dan de vraag die je zelf stelt.",
+    "Vrouw op de bank kijkt glimlachend naar haar smartphone",
+    "Achter dat scherm zit een verdienmodel — de glimlach zegt niets over of de claim erachter klopt.",
   ),
 };
 
