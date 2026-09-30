@@ -4,12 +4,23 @@ import { notFound } from "next/navigation";
 import { CollapsibleSection } from "@/components/partnerdesk/CollapsibleSection";
 import { InlineField } from "@/components/partnerdesk/InlineField";
 import { SectionAnchorNav, type DossierSection } from "@/components/partnerdesk/SectionAnchorNav";
-import { ActiveEditor, ImageEditor, OfferEditor, SourcesEditor } from "@/components/product-admin/ProductEditors";
+import {
+  ActiveAdder,
+  ActiveEditor,
+  CertificationsEditor,
+  ClaimsEditor,
+  ImageAdder,
+  ImageEditor,
+  OfferAdder,
+  OfferEditor,
+  SourcesEditor,
+} from "@/components/product-admin/ProductEditors";
 import { ProductStatusControl } from "@/components/product-admin/ProductStatusControl";
 import { todayIso } from "@/lib/partnerdesk/dates";
 import { formatMoney, formatNlDay } from "@/lib/partnerdesk/format";
 import { isFreshPrice } from "@/lib/product-admin/publish-gate";
-import { getProductDossierBySlug } from "@/lib/product-admin/queries";
+import { CERTIFICATION_SUGGESTIONS, NUTRIENT_KEYS, listSelectableClaims } from "@/lib/product-admin/catalog-options";
+import { getProductDossierBySlug, listRetailerOptions } from "@/lib/product-admin/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +64,7 @@ function first<T>(value: T | T[] | null): T | null {
 
 export default async function ProductDossierPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const dossier = await getProductDossierBySlug(slug);
+  const [dossier, retailers] = await Promise.all([getProductDossierBySlug(slug), listRetailerOptions()]);
   if (!dossier) notFound();
 
   const { product, actives, ingredients, certifications, claims, images, offers, sources, score, gate } = dossier;
@@ -157,6 +168,7 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
                 ))}
               </ul>
             )}
+            <ActiveAdder productId={product.id} slug={slug} nutrientKeys={NUTRIENT_KEYS} />
             <p className="mt-3 text-xs text-[var(--ps-muted)]">
               Na opslaan worden de claimdrempels opnieuw berekend.
             </p>
@@ -177,7 +189,14 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
               <ReadOnlyRow label="Portie">
                 {product.serving_size ? `${product.serving_size} ${product.serving_unit ?? ""}` : "—"}
               </ReadOnlyRow>
-              <ReadOnlyRow label="Certificeringen">{certifications.length > 0 ? certifications.join(", ") : "—"}</ReadOnlyRow>
+              <FieldRow label="Certificeringen">
+                <CertificationsEditor
+                  certifications={certifications}
+                  productId={product.id}
+                  slug={slug}
+                  suggestions={CERTIFICATION_SUGGESTIONS}
+                />
+              </FieldRow>
             </div>
           </CollapsibleSection>
 
@@ -204,23 +223,11 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
                 })}
               </ul>
             )}
+            <ImageAdder productId={product.id} slug={slug} />
           </CollapsibleSection>
 
-          <CollapsibleSection id="claims" title="Claims (berekend)">
-            {claims.length === 0 ? (
-              <Empty>Geen gekoppelde EFSA-claims.</Empty>
-            ) : (
-              <ul className="space-y-1 text-sm">
-                {claims.map((c) => (
-                  <li key={c.efsa_claim_id} className="flex items-center gap-2">
-                    <span className={c.meets_condition ? "text-[var(--ps-green-hover)]" : "text-red-700"}>{c.meets_condition ? "✓" : "✕"}</span>
-                    <span>{c.efsa_claim_id}</span>
-                    <span className="text-[var(--ps-muted)]">{c.meets_condition ? "drempel gehaald" : "drempel niet gehaald"}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <p className="mt-3 text-xs text-[var(--ps-muted)]">Alleen lezen: de claimdrempel volgt uit de gekoppelde werkzame stoffen.</p>
+          <CollapsibleSection id="claims" title="Claims">
+            <ClaimsEditor claims={claims} productId={product.id} slug={slug} selectable={listSelectableClaims()} />
           </CollapsibleSection>
 
           <CollapsibleSection id="score" title="PS-Score (berekend)">
@@ -275,6 +282,7 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
                 })}
               </ul>
             )}
+            <OfferAdder productId={product.id} slug={slug} retailers={retailers} />
             <p className="mt-3 text-xs text-[var(--ps-muted)]">
               &ldquo;Prijs gecontroleerd&rdquo; bewaart de prijs, zet de controledatum op vandaag en logt de prijs in de historie.
             </p>

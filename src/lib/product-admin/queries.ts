@@ -294,3 +294,20 @@ export async function listCategories(): Promise<CategoryRow[]> {
     ({ sup_products, ...row }) => ({ ...row, productCount: countOf({ sup_products }) }),
   );
 }
+
+export interface RetailerOption {
+  id: string;
+  name: string;
+  relationship: string;
+}
+
+export async function listRetailerOptions(): Promise<RetailerOption[]> {
+  const db = getPartnerDeskDb();
+  const { data, error } = await db
+    .from("sup_retailers")
+    .select("id, name, relationship")
+    .eq("active", true)
+    .order("name", { ascending: true });
+  if (error) throw new Error(`sup_retailers: ${error.message}`);
+  return (data ?? []) as RetailerOption[];
+}
