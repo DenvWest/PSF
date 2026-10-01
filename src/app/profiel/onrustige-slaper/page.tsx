@@ -6,6 +6,7 @@ import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
 import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
   title: "Slaapproblemen Na 30? Dit Kun Je Eraan Doen",
@@ -127,7 +128,7 @@ export default function OnrustigeSlaperPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbJsonLd) }}
       />
 
       <main>

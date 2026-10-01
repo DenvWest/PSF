@@ -7,7 +7,7 @@ import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import DomainHubConnector from "@/components/content/DomainHubConnector";
 import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
-import { buildArticleSchema, buildFaqSchema } from "@/lib/seo/structuredData";
+import { buildArticleSchema, buildFaqSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
@@ -57,11 +57,11 @@ export default function VoedingNa40Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
       />
 
       <main className="pb-16 md:pb-20 py-12 md:py-16">

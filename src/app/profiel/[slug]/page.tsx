@@ -10,6 +10,7 @@ import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
 import { renderInlineMarkdownLinks } from "@/components/blog/inlineMarkdownLinks";
 import { PROFILE_PAGES, PROFILE_SLUGS } from "@/data/profiles";
 import type { ProfilePageData, StepCareLayer, SupplementSuggestion } from "@/types/profile-page";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const PROFILE_LINK_CLASS =
   "font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700";
@@ -89,11 +90,11 @@ export default async function ProfielPage({ params }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleJsonLd) }}
       />
 
       <main>

@@ -26,11 +26,7 @@ import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import Container from "@/components/layout/Container";
 import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
 import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBanner";
-import {
-  buildBreadcrumbSchema,
-  buildItemListSchema,
-  buildProductSchema,
-} from "@/lib/seo/structuredData";
+import { buildBreadcrumbSchema, buildItemListSchema, buildProductSchema, jsonLdScript } from "@/lib/seo/structuredData";
 import { absoluteUrl } from "@/lib/public-site-url";
 import {
   isSupplementAvailable,
@@ -126,17 +122,17 @@ export default async function Page({ params }: PageProps) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(itemListSchema) }}
       />
       {productSchemas.map((schema, index) => (
         <script
           key={data.products[index].slug}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(schema) }}
         />
       ))}
 

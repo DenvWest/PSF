@@ -7,6 +7,7 @@ import Container from "@/components/layout/Container";
 import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
 import { renderInlineMarkdownLinks } from "@/components/blog/inlineMarkdownLinks";
 import { overtrainerProfile } from "@/data/profiles/overtrainer";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const profile = overtrainerProfile;
 const PROFILE_LINK_CLASS =
@@ -173,11 +174,11 @@ export default function OvertrainerPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(structuredJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqJsonLd) }}
       />
 
       <main>

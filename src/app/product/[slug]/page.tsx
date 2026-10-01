@@ -11,7 +11,7 @@ import {
   formatScore,
 } from "@/lib/supplement-hub/product-catalog";
 import { absoluteUrl } from "@/lib/public-site-url";
-import { buildBreadcrumbSchema } from "@/lib/seo/structuredData";
+import { buildBreadcrumbSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -90,7 +90,7 @@ export default async function ProductPage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([breadcrumbSchema, productSchema]),
+          __html: jsonLdScript([breadcrumbSchema, productSchema]),
         }}
       />
 

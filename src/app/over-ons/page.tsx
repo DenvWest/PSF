@@ -19,6 +19,7 @@ import {
   ABOUT_WHAT_WE_DO,
 } from "@/data/about";
 import LeefstijlDisclaimerBlock from "@/components/legal/LeefstijlDisclaimerBlock";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
   title: ABOUT_METADATA.title,
@@ -87,7 +88,7 @@ export default function OverOnsPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(structuredData) }}
       />
 
       <main>
