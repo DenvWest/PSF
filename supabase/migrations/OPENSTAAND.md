@@ -6,35 +6,17 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Status
 
-- **Baseline toegepast t/m:** `20260930143532_sup_products_score_inputs.sql`
-- **Openstaand:** 3 migraties (audit N6, AVG-hygiëne domain_events + accounts)
+- **Baseline toegepast t/m:** `20261001044530_accounts_last_seen_at.sql`
+- **Openstaand:** geen
 - **Laatst bijgewerkt:** 1 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
 
-### [ ] 20261001044423_domain_events_drop_email.sql
-- **Wat:** maakt `domain_events.email` leeg en dropt de kolom — de code slaat dit veld al niet meer op (audit C3: register noemt domain_events "geanonimiseerde events", er hoort geen e-mailadres in te staan).
-- **Blokkeert deploy:** nee (de insert in `src/lib/events.ts` laat het veld al weg; als de kolom op prod nog bestaat is dat onschadelijk — nullable, geen constraint die breekt)
-- **Hoort bij:** PR "fix(avg): N6 — domain_events-hygiëne + account-inactiviteitsbeleid" (audit N6)
-- **Terugdraaien:** kolom opnieuw toevoegen: `alter table public.domain_events add column email text;` (data is al weg, niet te herstellen)
+Niets openstaand.
 
-### [ ] 20261001044500_cleanup_intake_session_domain_events.sql
-- **Wat:** `create or replace function cleanup_intake_session_linked_data` — voegt een `delete from domain_events where session_id = ...`-stap toe, zodat sessie-verwijdering ook de bijbehorende events opruimt.
-- **Blokkeert deploy:** nee (vervangt de functie-body; zolang niet gedraaid blijft de oude versie — zonder domain_events-opruiming — gewoon werken, geen crash)
-- **Hoort bij:** PR "fix(avg): N6 — domain_events-hygiëne + account-inactiviteitsbeleid" (audit N6)
-- **Terugdraaien:** de vorige functie-body opnieuw draaien (zie `20260602100000_plan_progress.sql` regel 25-50)
-
-### [ ] 20261001044530_accounts_last_seen_at.sql
-- **Wat:** voegt `accounts.last_seen_at timestamptz` toe + backfill met `created_at` voor bestaande rijen.
-- **Blokkeert deploy:** **ja** (branch `fix/avg-domain-events-retentie`) — `src/lib/account-server.ts` selecteert en update dit veld bij élk geauthenticeerd verzoek (`getAccountFromCookie`). Zonder de kolom faalt die select hard voor alle dashboard/account-routes.
-- **Hoort bij:** PR "fix(avg): N6 — domain_events-hygiëne + account-inactiviteitsbeleid" (audit N6)
-- **Terugdraaien:** `alter table public.accounts drop column if exists last_seen_at;`
-
-**Volgorde:** de 3 migraties zijn onderling onafhankelijk, kunnen in willekeurige volgorde. Draai ze alle 3 vóór je de branch `fix/avg-domain-events-retentie` merget naar `main`.
-
-**Na het draaien, niet vergeten:** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan dan klaar.
+**Nog te doen (geen migratie, geen blocker):** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan al klaar.
 
 ## Runbook bij thuiskomst
 
@@ -67,6 +49,9 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 1 oktober 2026 | `20261001044530_accounts_last_seen_at.sql` | Door Dennis gedraaid; bevestigd via `npm run check:db-schema`: `accounts,6` (was 5 kolommen). |
+| 1 oktober 2026 | `20261001044500_cleanup_intake_session_domain_events.sql` | Door Dennis gedraaid. |
+| 1 oktober 2026 | `20261001044423_domain_events_drop_email.sql` | Door Dennis gedraaid; bevestigd via `npm run check:db-schema`: `domain_events,7` (was 8 kolommen). |
 | 30 september 2026 | `20260930143532_sup_products_score_inputs.sql` | Door Dennis gedraaid; bevestigd via `POST /api/admin/data/sup-score-inputs-backfill` en een testproduct dat via de admin op 6/6 van de publiceerpoort kwam (score 93,7). |
 | 30 september 2026 | `20260926114550_pd_conversions.sql` | Door Dennis gedraaid; bevestigd via handmatig ingevoerde en goedgekeurde testconversies in het partnerdossier (Omzet-sectie, afwijkingssignaal). |
 | 30 september 2026 | `20260926112517_pd_daisycon_en_retailer_partners.sql` | Bevestigd doordat Vitaminstore, VitalNutrition en Arctic Blue als partners in PartnerDesk staan en `sup-offers-backfill` de aanbiedingen vulde (VitalNutrition-aanbieding zichtbaar in het productdossier). |
