@@ -98,7 +98,7 @@ describe("verifyCronRequest", () => {
     const result = verifyCronRequest(
       makeRequest({
         Authorization: `Bearer ${TEST_SECRET}`,
-        "x-forwarded-for": "192.168.1.100",
+        "x-real-ip": "192.168.1.100",
       }),
     );
     expect(result.authorized).toBe(false);
@@ -110,10 +110,26 @@ describe("verifyCronRequest", () => {
     const result = verifyCronRequest(
       makeRequest({
         Authorization: `Bearer ${TEST_SECRET}`,
-        "x-forwarded-for": "192.168.1.100",
+        "x-real-ip": "192.168.1.100",
       }),
     );
     expect(result.authorized).toBe(true);
+  });
+
+  it("vertrouwt x-forwarded-for niet — client kan de allowlist niet spoofen (audit N9)", () => {
+    // perfectsupplement.nl is DNS-only (geen Cloudflare-proxy), dus
+    // x-forwarded-for is door de aanroeper zelf te zetten. Alleen x-real-ip
+    // (door Nginx gezet op basis van $remote_addr) telt mee.
+    vi.stubEnv("CRON_ALLOWED_IPS", "10.0.0.1");
+    const result = verifyCronRequest(
+      makeRequest({
+        Authorization: `Bearer ${TEST_SECRET}`,
+        "x-forwarded-for": "10.0.0.1",
+        "x-real-ip": "203.0.113.5",
+      }),
+    );
+    expect(result.authorized).toBe(false);
+    expect(result.error).toBe("IP niet toegestaan");
   });
 
   it("skips IP check when CRON_ALLOWED_IPS is empty", () => {
