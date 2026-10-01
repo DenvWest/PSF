@@ -5,7 +5,7 @@ import HubSluitCta from "@/components/supplement-hub/HubSluitCta";
 import ProductCatalog from "@/components/supplement-hub/ProductCatalog";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { CATALOG } from "@/data/supplement-hub/catalog";
-import { getHubProducts } from "@/lib/supplement-hub/product-catalog";
+import { loadHubProductsForPage } from "@/lib/supplement-catalog-db/hub-products-for-page";
 import { HUB_CATEGORY_PARAM } from "@/lib/supplement-hub/hub-link";
 import { buildHubPersonalization } from "@/lib/supplement-hub/hub-personalization";
 import { getIntakeSessionFromCookie } from "@/lib/intake-session-server";
@@ -64,7 +64,7 @@ function readCategoryParam(
 }
 
 export default async function SupplementenPage({ searchParams }: SupplementenPageProps) {
-  const products = getHubProducts();
+  const products = await loadHubProductsForPage();
   const initieleCategorie = readCategoryParam(await searchParams);
   const { verifiedSessionId, session } = await getIntakeSessionFromCookie();
   const hasIntakeCookie = verifiedSessionId !== null;
