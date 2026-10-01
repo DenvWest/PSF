@@ -27,6 +27,7 @@ import type {
 import type {
   ClaimStance,
   LabelFacts,
+  ProductScoreInputs,
   TrustScoreResult,
 } from "@/types/supplement-score";
 
@@ -282,20 +283,31 @@ function rankWithin<T>(
   return ranks;
 }
 
-function buildCategory(data: ComparisonPageData): HubProduct[] {
-  const meta = categoryEntry(data.category);
-  const inputsByCategory = PRODUCT_SCORE_INPUTS[data.category] ?? {};
+/**
+ * Bouwt HubProduct[] voor één categorie uit een productlijst + score-invoer
+ * per slug. Databron-agnostisch: zowel de statische ComparisonPageData-pad
+ * (buildCategory hieronder) als de DB-loader (supplement-catalog-db/
+ * hub-loader.ts) roepen dit aan, zodat beide paden exact dezelfde
+ * score-/kosten-/rangschikkingslogica delen — dat is wat het pariteitsbewijs
+ * tussen statisch en DB mogelijk maakt.
+ */
+export function buildHubProductsFromSource(
+  category: SupplementCategory,
+  products: readonly SupplementProduct[],
+  inputsBySlug: ReadonlyMap<string, ProductScoreInputs>,
+): HubProduct[] {
+  const meta = categoryEntry(category);
 
-  const partials = data.products.map((product) => {
-    const inputs = inputsByCategory[product.slug];
+  const partials = products.map((product) => {
+    const inputs = inputsBySlug.get(product.slug);
     if (!inputs) {
       throw new Error(
-        `Score-invoer ontbreekt voor ${data.category}/${product.slug} — vul src/data/supplement-hub/score-inputs.ts aan.`,
+        `Score-invoer ontbreekt voor ${category}/${product.slug} — vul src/data/supplement-hub/score-inputs.ts aan.`,
       );
     }
 
     const score = computeTrustScore({
-      category: data.category,
+      category,
       werkzameStof: product.werkzameStof,
       doseringPerDagdosis: product.doseringPerDagdosis,
       efsaClaimIds: product.efsaClaimIds,
@@ -307,15 +319,15 @@ function buildCategory(data: ComparisonPageData): HubProduct[] {
       dosisOnzekerReden: inputs.dosisOnzekerReden,
     });
 
-    const form = getFormDefinition(data.category, inputs.formKey);
+    const form = getFormDefinition(category, inputs.formKey);
 
-    const evidence = EVIDENCE_DOSE[data.category];
+    const evidence = EVIDENCE_DOSE[category];
 
     return {
-      key: `${data.category}/${product.slug}`,
+      key: `${category}/${product.slug}`,
       slug: product.slug,
       href: `/product/${product.slug}`,
-      category: data.category,
+      category,
       categoryLabel: meta.label,
       categoryIcon: meta.icon,
       name: product.name,
@@ -330,7 +342,7 @@ function buildCategory(data: ComparisonPageData): HubProduct[] {
           product.name,
           product.brand,
           meta.label,
-          data.category,
+          category,
           product.werkzameStof,
           form?.label ?? product.vorm,
           product.variantTag,
@@ -344,7 +356,7 @@ function buildCategory(data: ComparisonPageData): HubProduct[] {
       claims: buildClaims(product),
       doseringLabel: buildDoseringLabel(
         product,
-        data.category,
+        category,
         inputs.dosisOnzekerReden !== null,
       ),
       vormLabel: form?.label ?? product.vorm,
@@ -387,6 +399,15 @@ function buildCategory(data: ComparisonPageData): HubProduct[] {
     kwaliteitsrang: qualityRanks.get(item)!,
     kostenrang: costRanks.get(item)!,
   }));
+}
+
+function buildCategory(data: ComparisonPageData): HubProduct[] {
+  const inputsByCategory = PRODUCT_SCORE_INPUTS[data.category] ?? {};
+  return buildHubProductsFromSource(
+    data.category,
+    data.products,
+    new Map(Object.entries(inputsByCategory)),
+  );
 }
 
 let cached: HubProduct[] | null = null;
