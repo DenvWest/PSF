@@ -91,7 +91,7 @@ export default function VoedingNa40Page() {
                     </Link>
                     <p className="mt-3 text-sm text-gray-600">
                       Of{" "}
-                      <Link href="/intake/voeding" className={LINK}>
+                      <Link href="/intake" className={LINK}>
                         doe eerst de snelle voedingscheck (1 min)
                       </Link>
                     </p>
