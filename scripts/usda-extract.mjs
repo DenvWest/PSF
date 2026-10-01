@@ -70,6 +70,26 @@
  * naampatroon (`namePat`), zodat een editie die een afwijkend nummer voert
  * alsnog aanslaat, en het logt per stof welke sleutel aansloeg — lees die regel
  * bij de eerste echte API-run als extra controle.
+ *
+ * ## Informatieve velden (toegevoegd 26 sep 2026, zie BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md)
+ *
+ * Calorieën, macro's en de bredere micronutriënten hieronder zijn GEEN
+ * uitbreiding van de vijf claim-dragende stoffen hierboven — ze krijgen geen
+ * `NutrientId`, geen `bewijsbaar`-vlag, geen `/beste/*`-uitgang. Ze zijn
+ * productinformatie (zoals een voedingswaarde-etiket), en dragen daarom ook
+ * niet de `verified`/NEVO-bronvermeldingsplicht die de vijf kernstoffen wel
+ * hebben (`BESLUIT_NEVO_BRONVERMELDING.md` gaat over claim-dragende stoffen).
+ *
+ *   Energy (kcal)       208 / 1008
+ *   Carbohydrate, by diff 205 / 1005
+ *   Total lipid (fat)   204 / 1004
+ *   Cholesterol         601 / 1253
+ *   Sodium, Na          307 / 1093
+ *   Potassium, K        306 / 1092
+ *   Vitamin A, RAE      320 / 1106
+ *   Vitamin C           401 / 1162
+ *   Calcium, Ca         301 / 1087
+ *   Iron, Fe            303 / 1089
  */
 
 import fs from "node:fs";
@@ -104,6 +124,23 @@ const NUTRIENTS = {
   vitamin_d: { nbrs: ["328", "1114"], namePat: /^vitamin d \(d2 \+ d3\)$/i,           unit: "µg" },
   epa:       { nbrs: ["629", "1278"], namePat: /20:5\s*n-3/i,                         unit: "mg" },
   dha:       { nbrs: ["621", "1272"], namePat: /22:6\s*n-3/i,                         unit: "mg" },
+};
+
+/**
+ * Informatieve velden — geen claim, geen `/beste/*`-uitgang. Zie het
+ * `NUTRIENTS`-blok-commentaar hierboven voor waarom dit gescheiden blijft.
+ */
+const INFO_FIELDS = {
+  energy:       { nbrs: ["208", "1008"], namePat: /^energy$/i,                   unit: "kcal" },
+  carbohydrate: { nbrs: ["205", "1005"], namePat: /^carbohydrate,\s*by\s*difference$/i, unit: "g" },
+  fat:          { nbrs: ["204", "1004"], namePat: /^total lipid \(fat\)$/i,      unit: "g" },
+  cholesterol:  { nbrs: ["601", "1253"], namePat: /^cholesterol$/i,              unit: "mg" },
+  sodium:       { nbrs: ["307", "1093"], namePat: /^sodium,\s*na$/i,             unit: "mg" },
+  potassium:    { nbrs: ["306", "1092"], namePat: /^potassium,\s*k$/i,           unit: "mg" },
+  vitamin_a:    { nbrs: ["320", "1106"], namePat: /^vitamin a,\s*rae$/i,         unit: "µg" },
+  vitamin_c:    { nbrs: ["401", "1162"], namePat: /^vitamin c,\s*total ascorbic acid$/i, unit: "mg" },
+  calcium:      { nbrs: ["301", "1087"], namePat: /^calcium,\s*ca$/i,            unit: "mg" },
+  iron:         { nbrs: ["303", "1089"], namePat: /^iron,\s*fe$/i,               unit: "mg" },
 };
 
 /**
@@ -499,16 +536,21 @@ async function zoekVoedingsmiddel(query, kern) {
   return { dataType: null, treffers: [], afgewezen };
 }
 
-/** Haal onze vijf stoffen uit een FDC-detailrecord, met spreiding waar aanwezig. */
+/** Zoekt één nutriëntspec op in een FDC-detailrecord, of null. */
+function zoekNutrient(detail, spec) {
+  return (detail.foodNutrients ?? []).find((n) => {
+    const nr = String(n.nutrient?.number ?? n.nutrientNumber ?? "");
+    const nm = String(n.nutrient?.name ?? n.nutrientName ?? "");
+    return spec.nbrs.includes(nr) || spec.namePat.test(nm);
+  });
+}
+
+/** Haal onze vijf claim-dragende stoffen uit een FDC-detailrecord, met spreiding waar aanwezig. */
 function stoffenUit(detail) {
   const out = {};
   const gevonden = [];
   for (const [id, spec] of Object.entries(NUTRIENTS)) {
-    const fn = (detail.foodNutrients ?? []).find((n) => {
-      const nr = String(n.nutrient?.number ?? n.nutrientNumber ?? "");
-      const nm = String(n.nutrient?.name ?? n.nutrientName ?? "");
-      return spec.nbrs.includes(nr) || spec.namePat.test(nm);
-    });
+    const fn = zoekNutrient(detail, spec);
     if (!fn) continue;
     gevonden.push(`${id}=${fn.nutrient?.number ?? fn.nutrientNumber}:${fn.nutrient?.name ?? fn.nutrientName}`);
     out[id] = {
@@ -522,6 +564,27 @@ function stoffenUit(detail) {
     };
   }
   return { stoffen: out, gevonden };
+}
+
+/**
+ * Haal de informatieve velden (calorieën/macro's/brede micronutriënten) uit
+ * hetzelfde detailrecord. Los van `stoffenUit`: deze velden dragen geen claim
+ * en geen spreiding-eis — één amount per veld volstaat, zie
+ * BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md §5.
+ */
+function infoVeldenUit(detail) {
+  const out = {};
+  const gevonden = [];
+  for (const [id, spec] of Object.entries(INFO_FIELDS)) {
+    const fn = zoekNutrient(detail, spec);
+    if (!fn) continue;
+    gevonden.push(`${id}=${fn.nutrient?.number ?? fn.nutrientNumber}:${fn.nutrient?.name ?? fn.nutrientName}`);
+    out[id] = {
+      amount: fn.amount ?? fn.value ?? null,
+      unit: fn.nutrient?.unitName ?? fn.unitName ?? null,
+    };
+  }
+  return { infoVelden: out, gevonden };
 }
 
 async function main() {
@@ -600,10 +663,13 @@ async function main() {
       const best = treffer.treffers[0];
       const detail = await fdc(`/food/${best.fdcId}`, { format: "full" });
       const { stoffen, gevonden } = stoffenUit(detail);
+      const { infoVelden, gevonden: infoGevonden } = infoVeldenUit(detail);
 
       if (!nutriëntsleutelsGelogd && gevonden.length) {
         console.log("\nGevonden nutriëntsleutels (controleer deze regel op de eerste run):");
-        console.log("  " + gevonden.join("\n  ") + "\n");
+        console.log("  " + gevonden.join("\n  "));
+        console.log("Gevonden info-veldsleutels:");
+        console.log("  " + infoGevonden.join("\n  ") + "\n");
         nutriëntsleutelsGelogd = true;
       }
 
@@ -617,6 +683,7 @@ async function main() {
         alternatieven: treffer.treffers.slice(1).map((f) => ({ fdcId: f.fdcId, naam: f.description })),
         afgewezen: treffer.afgewezen.slice(0, 5),
         stoffen,
+        infoVelden,
       });
       process.stderr.write(`${treffer.dataType} #${best.fdcId}\n`);
     } catch (err) {
@@ -632,6 +699,9 @@ async function main() {
   const metSpreiding = rapport.rijen.filter((r) =>
     Object.values(r.stoffen ?? {}).some((s) => s.min != null && s.max != null),
   ).length;
+  const metInfoVelden = rapport.rijen.filter(
+    (r) => Object.keys(r.infoVelden ?? {}).length > 0,
+  ).length;
 
   console.log(`\nRapport: ${OUT_FILE}`);
   console.log(`  rijen:             ${rapport.rijen.length}`);
@@ -640,8 +710,11 @@ async function main() {
   console.log(`  query ontbreekt:   ${rapport.rijen.filter((r) => r.status === "query-ontbreekt").length}`);
   console.log(`  fouten:            ${rapport.rijen.filter((r) => r.status === "fout").length}`);
   console.log(`  mét waargenomen spreiding (min/max): ${metSpreiding}`);
+  console.log(`  mét informatieve velden (calorieën/macro's/etc.): ${metInfoVelden}`);
   console.log("\nNiets is automatisch overgenomen. Elke rij met ★ in `let` vraagt");
   console.log("een expliciet oordeel voordat hij `verified: true` mag dragen.");
+  console.log("`infoVelden` draagt geen claim en geen verified-eis (zie");
+  console.log("BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md §5).");
 }
 
 // Alleen draaien wanneer direct aangeroepen — bij import (test) niet.
