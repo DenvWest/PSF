@@ -9,7 +9,8 @@ Auth-logica: [`src/lib/cron-auth.ts`](../../../lib/cron-auth.ts).
 | Cron | Endpoint | Schedule (cron-job.org) | Doel | Extra env | Response (200) |
 |------|----------|-------------------------|------|-----------|----------------|
 | **Nurture** | `GET`/`POST` `/api/cron/nurture` | Dagelijks (typisch ochtend) | Verstuurt pending `nurture_emails` (intake + gids) | `RESEND_API_KEY`, `CRON_SECRET` | `{ "sent": number, "errors": number }` |
-| **Retention** | `GET`/`POST` `/api/cron/retention` | Dagelijks | Verwijdert oude `intake_sessions` (24m) en `nurture_emails` (12m / verweesde pending) | `CRON_SECRET`, Supabase admin | `{ "deletedSessions": number, "deletedNurture": number, "deletedOrphanPending": number }` |
+| **Retention** | `GET`/`POST` `/api/cron/retention` | Dagelijks | Verwijdert oude `intake_sessions` (24m), `nurture_emails` (12m / verweesde pending) en `domain_events` (24m) | `CRON_SECRET`, Supabase admin | `{ "deletedSessions": number, "deletedNurture": number, "deletedOrphanPending": number, "deletedDomainEvents": number }` |
+| **Account retention** | `GET`/`POST` `/api/cron/account-retention` | Dagelijks | Anonimiseert `accounts.email` bij 24m inactiviteit (`last_seen_at`); rij en gekoppelde data blijven bestaan | `CRON_SECRET`, Supabase admin | `{ "anonymizedAccounts": number }` |
 | **n8n events** | `GET`/`POST` `/api/cron/n8n-events` | Elke 5–15 min (optioneel) | Stuurt onbezorgde `domain_events` naar n8n webhook | `CRON_SECRET`, `N8N_WEBHOOK_URL`, Supabase admin | `{ "forwarded": number, "errors": number }` |
 
 ### Gerelateerd (niet onder `/api/cron/`)
@@ -95,4 +96,5 @@ where status = 'running' and started_at < now() - interval '1 hour';
 
 - Migratie `006_cron_runs.sql` toepassen op Supabase vóór eerste retention-run met healthcheck.
 - Na deploy: handmatig één retention-trigger en check `cron_runs` (query hierboven).
+- **Account retention is nieuw** (audit N6d, 1 okt 2026): vereist eerst de migraties onder "Nog uit te voeren" in `supabase/migrations/OPENSTAAND.md`, en daarna een eigen cron-job.org job voor `/api/cron/account-retention` (nog niet aangemaakt).
 - Nieuwe kritieke kolom/tabel toegevoegd? Voeg 'm toe aan `scripts/check-supabase-schema.sql` (en evt. `CRITICAL_MIGRATIONS` in `check-supabase-schema.sh`) — `deploy.sh` draait `npm run check:db-schema` als harde gate vóór de push.
