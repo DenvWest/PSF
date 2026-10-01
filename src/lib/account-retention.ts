@@ -1,4 +1,5 @@
-import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import { orgScoped } from "@/lib/db/scoped";
+import { getDefaultOrganizationId } from "@/lib/organization";
 import { startCronRun, completeCronRun } from "@/lib/cron-runs";
 
 const INACTIVITY_MONTHS = 24;
@@ -29,18 +30,22 @@ function anonymizedEmail(accountId: string): string {
  * register belooft en is niet terug te draaien als de gebruiker terugkomt.
  */
 export async function runAccountRetention(): Promise<AccountRetentionRunResult> {
-  const admin = createSupabaseAdmin();
-  if (!admin) {
+  const orgId = getDefaultOrganizationId();
+  const db = orgScoped(orgId);
+  if (!db.raw) {
     throw new Error("SUPABASE_CONFIG");
   }
 
   const cutoff = monthsAgoIso(INACTIVITY_MONTHS);
 
-  const { data: inactiveAccounts, error: selectError } = await admin
+  const { data: inactiveAccounts, error: selectError } = (await db
     .from("accounts")
     .select("id")
     .lt("last_seen_at", cutoff)
-    .not("email", "like", "anon-%@deleted.invalid");
+    .not("email", "like", "anon-%@deleted.invalid")) as {
+    data: { id: string }[] | null;
+    error: { message: string } | null;
+  };
 
   if (selectError) {
     console.error("[account-retention] select inactive:", selectError);
@@ -51,10 +56,10 @@ export async function runAccountRetention(): Promise<AccountRetentionRunResult> 
   let anonymized = 0;
 
   for (const row of rows) {
-    const { error: updateError } = await admin
+    const { error: updateError } = (await db
       .from("accounts")
-      .update({ email: anonymizedEmail(row.id as string) })
-      .eq("id", row.id);
+      .update({ email: anonymizedEmail(row.id) })
+      .eq("id", row.id)) as { error: { message: string } | null };
 
     if (updateError) {
       console.error("[account-retention] anonymize failed:", {
