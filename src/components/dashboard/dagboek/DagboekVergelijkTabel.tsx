@@ -3,6 +3,7 @@
 import * as Icons from "@/components/app/icons";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
+import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import { bedragVoorStandaardPortie } from "@/lib/nutrition-dagboek-items";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import type { VergelijkResultaat } from "@/components/dashboard/dagboek/DagboekVergelijkZoek";
@@ -86,12 +87,7 @@ export default function DagboekVergelijkTabel({
             {resultaat.bron === "voeding" ? (
               <FoodThumbnail entry={resultaat.entry} size={40} />
             ) : (
-              <span
-                aria-hidden
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--vd-accent-2-rgb)/25%)] text-[11px] font-semibold text-[var(--vd-accent-2)]"
-              >
-                {resultaat.entry.labelNl.trim().charAt(0).toUpperCase() || "?"}
-              </span>
+              <SupplementThumbnail entry={resultaat.entry} size={24} />
             )}
             {resultaat.entry.labelNl}
             <button
