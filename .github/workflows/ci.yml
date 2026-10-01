@@ -18,6 +18,8 @@ jobs:
 
       - run: npm ci
 
+      - run: npm audit --omit=dev --audit-level=high
+
       - run: pip install --break-system-packages Pillow
 
       - run: npm run check:migraties
