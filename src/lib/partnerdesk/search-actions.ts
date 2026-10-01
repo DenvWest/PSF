@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -34,6 +35,7 @@ async function partnerMap(db: SupabaseClient) {
 }
 
 export async function searchPartnerDesk(rawQuery: string): Promise<SearchGroup[]> {
+  await requireAdmin();
   const db = getPartnerDeskDb();
   const trimmed = rawQuery.trim();
 

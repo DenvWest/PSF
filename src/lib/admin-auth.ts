@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { cookies } from "next/headers";
 import { verifyAdminCookie } from "@/lib/admin-session-cookie";
 
 export const ADMIN_TOKEN_COOKIE_NAME = "admin_token";
@@ -24,4 +25,11 @@ export function verifyAdminPassword(input: string, expectedPlain: string): boole
 
 export function isValidAdminSessionCookie(token: string | undefined): boolean {
   return verifyAdminCookie(token) !== null;
+}
+
+export async function requireAdmin(): Promise<void> {
+  const token = (await cookies()).get(ADMIN_TOKEN_COOKIE_NAME)?.value;
+  if (!isValidAdminSessionCookie(token)) {
+    throw new Error("Niet geautoriseerd.");
+  }
 }

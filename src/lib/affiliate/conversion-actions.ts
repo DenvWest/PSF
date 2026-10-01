@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { getAffiliateDb } from "@/lib/affiliate/db";
@@ -30,6 +31,7 @@ export async function recordManualConversionAction(input: {
   revenueEur: string;
   orderRef: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (!input.occurredOn) return { ok: false, error: "Datum is verplicht." };
   try {
     const db = getAffiliateDb();
@@ -63,6 +65,7 @@ export async function importConversionsCsvAction(input: {
   ref: string;
   csv: string;
 }): Promise<ActionResult<{ imported: number; skipped: number }>> {
+  await requireAdmin();
   try {
     const db = getAffiliateDb();
     const sourceId = await getSourceIdByKind(db, "csv");
@@ -109,6 +112,7 @@ export async function setConversionStatusAction(input: {
   status: "approved" | "rejected";
   ref: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getAffiliateDb();
     const { error } = await db

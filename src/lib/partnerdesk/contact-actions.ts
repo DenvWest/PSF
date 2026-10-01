@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import { recomputeSignalsForPartner } from "@/lib/partnerdesk/signals";
@@ -31,6 +32,7 @@ export async function createContactAction(input: {
   name: string;
   slug?: string;
 }): Promise<ActionResult<{ contactId: string }>> {
+  await requireAdmin();
   const nameError = validateContactName(input.name);
   if (nameError) return { ok: false, error: nameError };
   try {
@@ -68,6 +70,7 @@ export async function updateContactFieldAction(input: {
   value: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const { contactId, field } = input;
   if (!isEditableContactField(field)) {
     return { ok: false, error: "Dit veld is niet bewerkbaar." };
@@ -96,6 +99,7 @@ export async function setPrimaryContactAction(input: {
   contactId: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     // Eerst alle primairen van deze partner uitzetten (partial unique index dwingt
@@ -123,6 +127,7 @@ export async function archiveContactAction(input: {
   partnerId: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -145,6 +150,7 @@ export async function archiveContactAction(input: {
 export async function exportContactAction(input: {
   contactId: string;
 }): Promise<ActionResult<{ filename: string; json: string }>> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { data: contact, error } = await db
@@ -190,6 +196,7 @@ export async function scrubContactAction(input: {
   partnerId: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
 

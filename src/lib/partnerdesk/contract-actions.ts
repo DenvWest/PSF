@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import { recomputeSignalsForPartner } from "@/lib/partnerdesk/signals";
@@ -74,6 +75,7 @@ function contractRow(input: ContractInput) {
 export async function createContractAction(
   input: ContractInput & { partnerId: string; slug?: string },
 ): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateContract(input);
   if (error) return { ok: false, error };
   try {
@@ -109,6 +111,7 @@ export async function createContractAction(
 export async function updateContractAction(
   input: ContractInput & { contractId: string; partnerId: string; slug?: string },
 ): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateContract(input);
   if (error) return { ok: false, error };
   try {
@@ -157,6 +160,7 @@ export async function archiveContractAction(input: {
   partnerId: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -194,6 +198,7 @@ export async function createRuleAction(
     slug?: string;
   },
 ): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateCommissionRule(input);
   if (error) return { ok: false, error };
   try {
@@ -227,6 +232,7 @@ export async function updateRuleAction(
     slug?: string;
   },
 ): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateCommissionRule(input);
   if (error) return { ok: false, error };
   try {
@@ -270,6 +276,7 @@ export async function archiveRuleAction(input: {
   partnerId: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -295,6 +302,7 @@ export async function addTierAction(input: {
   amountCents: number | null;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (input.thresholdCents < 0) return { ok: false, error: "Drempel kan niet negatief zijn." };
   try {
     const db = getPartnerDeskDb();
@@ -316,6 +324,7 @@ export async function removeTierAction(input: {
   tierId: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db.from("pd_commission_tiers").delete().eq("id", input.tierId);
@@ -332,6 +341,7 @@ export async function removeTierAction(input: {
 export async function uploadDocumentAction(
   formData: FormData,
 ): Promise<ActionResult> {
+  await requireAdmin();
   const file = formData.get("file");
   const partnerId = String(formData.get("partnerId") ?? "");
   const contractId = (formData.get("contractId") as string) || null;
@@ -386,6 +396,7 @@ export async function uploadDocumentAction(
 export async function getDocumentUrlAction(input: {
   storagePath: string;
 }): Promise<ActionResult<{ url: string }>> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { data, error } = await db.storage
@@ -405,6 +416,7 @@ export async function deleteDocumentAction(input: {
   storagePath: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     await db.storage.from(BUCKET).remove([input.storagePath]);

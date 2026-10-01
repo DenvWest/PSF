@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { getAffiliateDb } from "@/lib/affiliate/db";
 import { todayIso } from "@/lib/partnerdesk/dates";
@@ -17,6 +18,7 @@ export async function createPayoutAction(input: {
   affiliateId: string;
   ref: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getAffiliateDb();
     const [approvedRes, itemsRes, affiliateRes] = await Promise.all([
@@ -70,6 +72,7 @@ export async function markPayoutPaidAction(input: {
   payoutId: string;
   ref: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getAffiliateDb();
     const { data: payout } = await db

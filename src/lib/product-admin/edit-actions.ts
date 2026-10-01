@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -84,6 +85,7 @@ export async function updateActiveAction(input: {
   amount: number;
   unit: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateActiveInput(input);
   if (error) return { ok: false, error };
   try {
@@ -110,6 +112,7 @@ export async function updateImageAction(input: {
   licenseNote: string;
   alt: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateImageInput(input);
   if (error) return { ok: false, error };
   try {
@@ -139,6 +142,7 @@ export async function updateOfferPriceAction(input: {
   slug: string;
   priceCents: number | null;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateOfferPrice(input.priceCents);
   if (error || input.priceCents === null) return { ok: false, error: error ?? "Ongeldige prijs." };
   try {
@@ -168,6 +172,7 @@ export async function setOfferActiveAction(input: {
   slug: string;
   active: boolean;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -190,6 +195,7 @@ export async function addSourceAction(input: {
   url: string;
   title: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateSourceInput(input);
   if (error) return { ok: false, error };
   try {
@@ -214,6 +220,7 @@ export async function removeSourceAction(input: {
   productId: string;
   slug: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -236,6 +243,7 @@ export async function createProductAction(input: {
   variant: string;
   form: string;
 }): Promise<ActionResult<{ slug: string }>> {
+  await requireAdmin();
   const error = validateNewProduct(input);
   if (error) return { ok: false, error };
   try {
@@ -288,6 +296,7 @@ export async function addActiveAction(input: {
   unit: string;
   isElemental: boolean;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateNewActive({ ...input, allowedKeys: NUTRIENT_KEYS });
   if (error) return { ok: false, error };
   try {
@@ -314,6 +323,7 @@ export async function removeActiveAction(input: {
   productId: string;
   slug: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -335,6 +345,7 @@ export async function linkClaimAction(input: {
   slug: string;
   claimId: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (!isSelectableClaim(input.claimId)) return { ok: false, error: "Alleen goedgekeurde claims zijn te koppelen." };
   try {
     const db = getPartnerDeskDb();
@@ -358,6 +369,7 @@ export async function unlinkClaimAction(input: {
   slug: string;
   claimId: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -381,6 +393,7 @@ export async function addImageAction(input: {
   licenseNote: string;
   alt: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const imagePath = normalizeImagePath(input.path);
   const pathError = validateImagePath(imagePath);
   if (pathError) return { ok: false, error: pathError };
@@ -417,6 +430,7 @@ export async function removeImageAction(input: {
   productId: string;
   slug: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -439,6 +453,7 @@ export async function addOfferAction(input: {
   priceCents: number | null;
   affiliateUrl: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateNewOffer(input);
   if (error || input.priceCents === null) return { ok: false, error: error ?? "Ongeldige prijs." };
   try {
@@ -478,6 +493,7 @@ export async function addCertificationAction(input: {
   slug: string;
   key: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const key = input.key.trim();
   const error = validateCertificationKey(key);
   if (error) return { ok: false, error };
@@ -499,6 +515,7 @@ export async function removeCertificationAction(input: {
   slug: string;
   key: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -519,6 +536,7 @@ export async function saveScoreInputsAction(input: {
   slug: string;
   inputs: StoredScoreInputs;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { data, error: readError } = await db
