@@ -11,7 +11,7 @@ vi.mock("@/lib/supabase-admin", () => ({
   createSupabaseAdmin: () => mockAdmin(),
 }));
 
-import { resolveActiveIntakeSessionId } from "@/lib/intake-session-resolve";
+import { resolveActiveIntakeSessionId, resolveCheckSubject } from "@/lib/intake-session-resolve";
 
 describe("resolveActiveIntakeSessionId", () => {
   beforeEach(() => {
@@ -49,5 +49,65 @@ describe("resolveActiveIntakeSessionId", () => {
       "account-session-latest",
     );
     expect(mockIn).toHaveBeenCalledWith("session_kind", ["initial", "remeasure"]);
+  });
+});
+
+describe("resolveCheckSubject", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("valt terug op de cookie-sessie zonder ingelogd account", async () => {
+    mockGetAccount.mockResolvedValue(null);
+    await expect(resolveCheckSubject("cookie-session")).resolves.toEqual({
+      accountId: null,
+      sessionIds: ["cookie-session"],
+    });
+  });
+
+  it("geeft een lege lijst zonder account en zonder cookie", async () => {
+    mockGetAccount.mockResolvedValue(null);
+    await expect(resolveCheckSubject(null)).resolves.toEqual({
+      accountId: null,
+      sessionIds: [],
+    });
+  });
+
+  it("geeft alle sessies van het account, ongeacht session_kind, bij een ingelogde gebruiker", async () => {
+    mockGetAccount.mockResolvedValue({ id: "account-1" });
+    mockAdmin.mockReturnValue({
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            order: async () => ({
+              data: [{ id: "session-nutrition" }, { id: "session-initial" }],
+            }),
+          }),
+        }),
+      }),
+    });
+
+    await expect(resolveCheckSubject("stale-cookie-session")).resolves.toEqual({
+      accountId: "account-1",
+      sessionIds: ["session-nutrition", "session-initial"],
+    });
+  });
+
+  it("valt terug op de cookie als het account geen eigen sessies heeft", async () => {
+    mockGetAccount.mockResolvedValue({ id: "account-1" });
+    mockAdmin.mockReturnValue({
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            order: async () => ({ data: [] }),
+          }),
+        }),
+      }),
+    });
+
+    await expect(resolveCheckSubject("cookie-session")).resolves.toEqual({
+      accountId: "account-1",
+      sessionIds: ["cookie-session"],
+    });
   });
 });

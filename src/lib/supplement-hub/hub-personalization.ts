@@ -1,4 +1,3 @@
-import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { parseNutritionLadderReport } from "@/lib/nutrition-conclusion";
 import { buildNutritionFactRows, resolveNutritionGate } from "@/lib/nutrition-ladder";
 import { NUTRIENT_HUB_CATEGORY } from "@/lib/nutrition-result-rows";
@@ -22,8 +21,8 @@ export type HubPersonalization =
   | { state: "ready"; matches: HubPersonalMatch[] };
 
 type BuildHubPersonalizationArgs = {
-  session: IntakeSessionPayload | null;
-  hasIntakeCookie: boolean;
+  /** Of er een sessie bestaat, ongeacht `session_kind` (brede check of check). */
+  hasSession: boolean;
   /** `raw_inputs` van de laatste `intake_intake_log`, of null zonder check. */
   latestNutritionLog: unknown | null;
   isDarkSeason?: boolean;
@@ -35,14 +34,17 @@ type BuildHubPersonalizationArgs = {
  * `docs/plan/BESLUIT_VOEDINGSCHECK_RESULTAAT_PER_STOF_2026-09.md` (B). Een stof
  * past alleen als de laag-6-poort open is én de voedingsroute voor die stof
  * aantoonbaar dicht zit; beide pagina's zeggen dan hetzelfde.
+ *
+ * Neemt bewust alleen "is er een sessie" aan, niet de payload van de brede
+ * check: een sessie van de check (`session_kind: "nutrition"`) telt hier ook
+ * mee. Zie BESLUITDOCUMENT_SESSIE_ARCHITECTUUR_2026-09.md §3.4 (P3).
  */
 export function buildHubPersonalization({
-  session,
-  hasIntakeCookie,
+  hasSession,
   latestNutritionLog,
   isDarkSeason = false,
 }: BuildHubPersonalizationArgs): HubPersonalization {
-  if (!hasIntakeCookie || !session) {
+  if (!hasSession) {
     return { state: "no_intake" };
   }
 
