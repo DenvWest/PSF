@@ -1,5 +1,13 @@
 #!/bin/sh
 # Volledige gate vóór de code de remote bereikt: typecheck + testsuite.
+
+while read -r _local_ref _local_sha remote_ref _remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ]; then
+    echo "[pre-push] Push naar main geblokkeerd — werk gaat via een PR." >&2
+    exit 1
+  fi
+done
+
 npx tsc --noEmit || {
   echo "[pre-push] tsc --noEmit faalt — push geblokkeerd." >&2
   exit 1
