@@ -3,6 +3,7 @@ import Link from "next/link";
 import { EmptyState } from "@/components/partnerdesk/EmptyState";
 import { CatalogTabs } from "@/components/product-admin/CatalogTabs";
 import { PRODUCT_STATUS_CLASS, PRODUCT_STATUS_LABEL } from "@/components/product-admin/ProductStatusControl";
+import { scoreCoverageAdvice } from "@/lib/product-admin/publish-gate";
 import { listAdminProducts, type AdminProductRow, type ProductStatus } from "@/lib/product-admin/queries";
 
 export const dynamic = "force-dynamic";
@@ -22,9 +23,12 @@ function ScoreCell({ score }: { score: AdminProductRow["score"] }) {
       </span>
     );
   }
+  const { determinedCount, totalCount } = score.result;
+  const thin = scoreCoverageAdvice(determinedCount, totalCount) !== null;
   return (
-    <span className="tabular-nums" title={`${score.result.determinedCount} van ${score.result.totalCount} onderdelen bepaald`}>
+    <span className="tabular-nums" title={`${determinedCount} van ${totalCount} onderdelen bepaald`}>
       {Math.round(score.result.total)}
+      {thin && <span className="ml-1 text-xs text-amber-700">{determinedCount}/{totalCount}</span>}
     </span>
   );
 }

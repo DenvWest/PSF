@@ -486,6 +486,10 @@ gecontroleerd", "⚠️ 6 prijzen ouder dan 30 dagen". Query over `data_checked_
 
 ---
 
+> **Stand 30 september 2026:** §F is gebouwd (lijst, dossier, publiceerpoort, merken, categorieën,
+> retailers, import). Besluiten en afwegingen: `BESLUIT_PRODUCTPLATFORM_ADMIN_2026-09.md`.
+> §G (omzet in het partnerdossier) is gebouwd in PR #58.
+
 ## G. Affiliate-beheer — in PartnerDesk, niet ernaast
 
 De opdracht vraagt een affiliate-dashboard met kliks, conversies, omzet en commissie per

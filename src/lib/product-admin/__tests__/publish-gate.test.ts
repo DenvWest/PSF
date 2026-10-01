@@ -4,6 +4,7 @@ import {
   gateFailures,
   isFreshPrice,
   productFreshness,
+  scoreCoverageAdvice,
   type GateInput,
 } from "@/lib/product-admin/publish-gate";
 import { isEditableProductField, validateProductField } from "@/lib/product-admin/validation";
@@ -153,5 +154,31 @@ describe("validateProductField", () => {
     expect(validateProductField("product_url", "javascript:alert(1)")).not.toBeNull();
     expect(validateProductField("product_url", "shop.nl/product")).toBeNull();
     expect(validateProductField("product_url", "")).toBeNull();
+  });
+});
+
+describe("scoreCoverageAdvice", () => {
+  it("waarschuwt alleen bij een dunne score, niet bij volledig of bijna volledig", () => {
+    expect(scoreCoverageAdvice(5, 5)).toBeNull();
+    expect(scoreCoverageAdvice(4, 5)).toBeNull();
+    expect(scoreCoverageAdvice(3, 5)).toContain("3 van de 5");
+    expect(scoreCoverageAdvice(1, 5)).not.toBeNull();
+  });
+  it("is relatief en breekt niet bij een ander aantal onderdelen", () => {
+    expect(scoreCoverageAdvice(6, 8)).toBeNull();
+    expect(scoreCoverageAdvice(5, 8)).not.toBeNull();
+    expect(scoreCoverageAdvice(0, 0)).toBeNull();
+  });
+  it("blokkeert de publiceerpoort niet", () => {
+    const criteria = evaluatePublishGate({
+      images: [{ source: "own", license_note: "eigen foto" }],
+      actives: [{ amount_per_serving: 300, unit: "mg" }],
+      claims: [],
+      offers: [{ active: true, price_checked_at: "2026-09-29T00:00:00Z" }],
+      sourceCount: 1,
+      score: { available: true, detail: "94/100 (3 van 5 onderdelen)" },
+      today: "2026-09-30",
+    });
+    expect(gateFailures(criteria)).toEqual([]);
   });
 });

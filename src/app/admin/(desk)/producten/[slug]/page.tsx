@@ -22,7 +22,7 @@ import { PRODUCT_SCORE_INPUTS } from "@/data/supplement-hub/score-inputs";
 import { ScoreInputsEditor } from "@/components/product-admin/ScoreInputsEditor";
 import { scoreInputOptions, staticToStored } from "@/lib/product-admin/score-inputs";
 import type { SupplementCategory } from "@/types/supplement";
-import { isFreshPrice } from "@/lib/product-admin/publish-gate";
+import { isFreshPrice, scoreCoverageAdvice } from "@/lib/product-admin/publish-gate";
 import { CERTIFICATION_SUGGESTIONS, NUTRIENT_KEYS, listSelectableClaims } from "@/lib/product-admin/catalog-options";
 import { getProductDossierBySlug, listRetailerOptions } from "@/lib/product-admin/queries";
 
@@ -76,6 +76,7 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
   const category = first(product.sup_categories);
   const today = todayIso();
   const failures = gate.filter((c) => !c.ok);
+  const scoreAdvice = score?.available ? scoreCoverageAdvice(score.result.determinedCount, score.result.totalCount) : null;
   const categorySlug = (category?.slug ?? "") as SupplementCategory;
   const codeInputs = PRODUCT_SCORE_INPUTS[categorySlug]?.[slug];
   const inputsSource = scoreInputState.inputs ? "database" : codeInputs ? "code" : "leeg";
@@ -125,6 +126,12 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
                 </li>
               ))}
             </ul>
+            {scoreAdvice && (
+              <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+                <span className="font-medium">Let op: </span>
+                {scoreAdvice}
+              </p>
+            )}
             {failures.length > 0 && product.status !== "published" && (
               <p className="mt-3 text-xs text-[var(--ps-muted)]">Publiceren kan pas als alle punten voldaan zijn.</p>
             )}
