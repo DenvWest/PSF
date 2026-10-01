@@ -150,21 +150,21 @@ export const stressdragerProfile: ProfilePageData = {
 
   supplements: [
     {
-      name: "Ashwagandha",
-      efsa_claim:
-        "Geen erkende EU‑gezondheidsclaims; staat op EFSA on‑holdlijst — zie amber waarschuwing op de profielpagina en VWS‑informatie.",
-      why_this_profile:
-        "In publicaties wordt soms geschreven over stressperceptie of stresshormoonmarkers bij gestandaardiseerde extracten — dat is geen vaste claim zoals bij mineralen. Kies op etiketkwaliteit en overleg bij medicatie.",
-      href: "/beste/ashwagandha",
-      hasComparison: true,
-    },
-    {
       name: "Magnesium",
       efsa_claim:
         "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie.",
       why_this_profile:
         "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (EFSA bij voldoende dosis). Chronische stress en slechte voedingspatronen gaan soms samen met een lager magnesiumbereik.",
       href: "/beste/magnesium",
+      hasComparison: true,
+    },
+    {
+      name: "Ashwagandha",
+      efsa_claim:
+        "Geen erkende EU‑gezondheidsclaim; staat bij EFSA op de on‑holdlijst, en Nederland overweegt een verbod op deze stof.",
+      why_this_profile:
+        "In publicaties wordt soms geschreven over stressperceptie of stresshormoonmarkers bij gestandaardiseerde extracten — dat is geen vaste claim zoals bij mineralen. Kies op etiketkwaliteit en overleg bij medicatie.",
+      href: "/beste/ashwagandha",
       hasComparison: true,
     },
   ],
@@ -195,10 +195,6 @@ export const stressdragerProfile: ProfilePageData = {
       href: "/profiel/onrustige-slaper",
       turboSnippet:
         "Word je ook 's nachts wakker met een hoofd vol gedachten? Bekijk het Onrustige Slaper-profiel — veel overlap met dit patroon.",
-    },
-    {
-      href: "/beste/ashwagandha",
-      turboSnippet: "Welke ashwagandha is het meest onderzocht? Objectieve vergelijking op kwaliteit en dosering.",
     },
     {
       href: "/beste/magnesium",
