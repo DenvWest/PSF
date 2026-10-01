@@ -42,6 +42,60 @@ export async function loadIntakeSessionPayloadBySessionId(
   return { ok: true, session: intakeSessionRowToPayload(data) };
 }
 
+export type IntakeSessionMeta = {
+  id: string;
+  kind: "initial" | "remeasure" | "nutrition";
+  accountId: string | null;
+  createdAt: string;
+};
+
+/**
+ * Of er een sessie bestaat, ongeacht `session_kind` — in tegenstelling tot
+ * `loadIntakeSessionPayloadBySessionId`, dat alleen de brede check draagt.
+ * Zie BESLUITDOCUMENT_SESSIE_ARCHITECTUUR_2026-09.md §3.4 (P3).
+ */
+export async function loadIntakeSessionMeta(
+  sessionId: string,
+): Promise<
+  | { ok: true; meta: IntakeSessionMeta | null }
+  | { ok: false; error: "no_admin" | "db" }
+> {
+  const admin = createSupabaseAdmin();
+  if (!admin) {
+    return { ok: false, error: "no_admin" };
+  }
+
+  const { data, error } = await admin
+    .from("intake_sessions")
+    .select("id, session_kind, account_id, created_at")
+    .eq("id", sessionId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[loadIntakeSessionMeta] error:", error);
+    return { ok: false, error: "db" };
+  }
+
+  if (!data || typeof data.id !== "string" || typeof data.created_at !== "string") {
+    return { ok: true, meta: null };
+  }
+
+  const kind =
+    data.session_kind === "remeasure" || data.session_kind === "nutrition"
+      ? data.session_kind
+      : "initial";
+
+  return {
+    ok: true,
+    meta: {
+      id: data.id,
+      kind,
+      accountId: typeof data.account_id === "string" ? data.account_id : null,
+      createdAt: data.created_at,
+    },
+  };
+}
+
 export type IntakeCookieSession = {
   /** Geverifieerde UUID uit `psf_intake_sid`, of `null` (geen/ongeldige cookie). */
   verifiedSessionId: string | null;
