@@ -1,13 +1,13 @@
 /**
- * Best-effort parse van de vrije-tekst "Prijs / dag"-spec uit de statische
- * productdata (bijv. "€ 0,43", "€ 0,42 (eenm.) / € 0,35 (abo)", "€ 0,20 (bij
+ * Best-effort parse van een vrije-tekst prijs-spec uit de statische
+ * productdata (bijv. "€ 17,95", "€ 0,42 (eenm.) / € 0,35 (abo)", "€ 0,20 (bij
  * 5 g/dag)") naar centen. Pakt altijd het EERSTE bedrag — bij een eenmalig/
  * abonnementsprijs-paar is dat de eenmalige (reguliere) prijs, niet de
- * actieprijs. Geeft null terug als er geen "Prijs / dag"-spec is (bijv.
- * eiwitpoeder, dat alleen een maandprijs-indicatie heeft) — nooit een gok op
- * basis van een andere spec.
+ * actieprijs. Geeft null terug als de tekst geen €-bedrag bevat — nooit een
+ * gok op basis van een andere spec. Werkt op elk label ("Prijs", "Prijs /
+ * dag", "Prijs indicatie"); de aanroeper bepaalt wat het bedrag betekent.
  */
-export function parsePricePerDaySpec(value: string): number | null {
+export function parseEuroAmountSpec(value: string): number | null {
   const match = /€\s*([\d.,]+)/.exec(value);
   if (!match) return null;
   const normalized = match[1].replace(/\./g, "").replace(",", ".");

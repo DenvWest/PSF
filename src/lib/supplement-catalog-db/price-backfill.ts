@@ -6,7 +6,7 @@ import { magnesiumData } from "@/data/supplements/magnesium";
 import { omega3Data } from "@/data/supplements/omega-3";
 import { vitamineDData } from "@/data/supplements/vitamine-d";
 import { zinkData } from "@/data/supplements/zink";
-import { parsePricePerDaySpec } from "@/lib/supplement-catalog-db/price-parse";
+import { parseEuroAmountSpec } from "@/lib/supplement-catalog-db/price-parse";
 import type { ComparisonPageData } from "@/types/supplement";
 
 const COMPARISONS: ComparisonPageData[] = [
@@ -28,20 +28,49 @@ export interface PriceBackfillResult {
 }
 
 /**
- * Best-effort parse van de vrije-tekst "Prijs / dag"-spec in de statische
- * productdata naar sup_offers.price_cents + price_checked_at.
+ * Best-effort parse van de vrije-tekst prijs-specs in de statische
+ * productdata naar sup_offers.price_cents (de prijs van de VERPAKKING, niet
+ * van een dag) + price_checked_at.
+ *
+ * Twee bronnen, in volgorde van voorkeur:
+ * 1. De "Prijs"-spec (bijv. "€ 17,95") — staat al op verpakkingsniveau, geen
+ *    omrekening nodig. Alleen aanwezig bij ashwagandha, creatine, vitamine-d
+ *    en zink.
+ * 2. "Prijs / dag" (bijv. "€ 0,18") × sup_products.servings_per_container —
+ *    nodig voor magnesium en omega-3, die geen "Prijs"-spec hebben. Vereist
+ *    dat de verpakkingsbackfill (packaging-backfill.ts, plak A) al gedraaid
+ *    heeft; zonder servings_per_container is dit niet te berekenen.
+ *
+ * Een eerdere versie van dit script schreef "Prijs / dag" rechtstreeks naar
+ * price_cents, alsof het al de verpakkingsprijs was — dat gaf voor
+ * stuksgoed-producten (120 tabletten × €0,43 is geen €0,43 totaal) een veel
+ * te lage prijs-per-dag op de productpagina (hub-loader.ts deelt price_cents
+ * immers zelf nog door servings_per_container). Deze versie rekent dat op.
  *
  * sup_offers bestaat al per product (zie offers-backfill.ts), met price_cents
  * bewust leeg gelaten om dezelfde reden als bij verpakking (§K7: geen prijs
- * tonen is veiliger dan een foutgeparste prijs). Dit script vult die leegte
- * met dezelfde voorzichtigheid als packaging-backfill.ts: niet-destructief,
- * en wat niet met zekerheid te parsen is (eiwitpoeder heeft geen "Prijs /
- * dag"-spec, alleen een maandindicatie) komt terug in `unparsed`.
+ * tonen is veiliger dan een foutgeparste prijs). Niet-destructief: wat niet
+ * met zekerheid te berekenen is (eiwitpoeder heeft geen bruikbare prijs-spec)
+ * komt terug in `unparsed`.
  *
  * price_checked_at wordt gezet op de `lastUpdated` van de vergelijkingspagina
  * — de datum waarop de redactie de prijzen voor het laatst heeft nagelopen.
  */
-export async function backfillPrices(db: SupabaseClient): Promise<PriceBackfillResult> {
+export interface BackfillPricesOptions {
+  /**
+   * Herberekent en overschrijft een bestaande price_cents in plaats van de
+   * rij over te slaan. Nodig na een correctie van de parse-/omrekenlogica
+   * (zie de modulenotitie hierboven) — zonder deze vlag blijft idempotent
+   * gedrag het uitgangspunt: een handmatig in de admin aangepaste prijs mag
+   * nooit stilzwijgend overschreven worden.
+   */
+  force?: boolean;
+}
+
+export async function backfillPrices(
+  db: SupabaseClient,
+  options: BackfillPricesOptions = {},
+): Promise<PriceBackfillResult> {
   const result: PriceBackfillResult = {
     written: [],
     skippedExisting: [],
@@ -53,17 +82,10 @@ export async function backfillPrices(db: SupabaseClient): Promise<PriceBackfillR
   for (const comparison of COMPARISONS) {
     for (const product of comparison.products) {
       const slug = product.slug;
-      const priceSpec = product.specs.find((s) => s.label === "Prijs / dag")?.value;
-      const priceCents = priceSpec ? parsePricePerDaySpec(priceSpec) : null;
-
-      if (priceCents == null) {
-        result.unparsed.push(`${comparison.category}/${slug}`);
-        continue;
-      }
 
       const { data: productRow, error: productError } = await db
         .from("sup_products")
-        .select("id")
+        .select("id, servings_per_container")
         .eq("slug", slug)
         .maybeSingle();
       if (productError) {
@@ -75,9 +97,27 @@ export async function backfillPrices(db: SupabaseClient): Promise<PriceBackfillR
         continue;
       }
 
+      const totalPriceSpec = product.specs.find((s) => s.label === "Prijs")?.value;
+      const totalPriceCents = totalPriceSpec ? parseEuroAmountSpec(totalPriceSpec) : null;
+
+      let priceCents: number | null = totalPriceCents;
+      if (priceCents == null) {
+        const perDaySpec = product.specs.find((s) => s.label === "Prijs / dag")?.value;
+        const perDayCents = perDaySpec ? parseEuroAmountSpec(perDaySpec) : null;
+        const servings = (productRow as { servings_per_container: number | null }).servings_per_container;
+        if (perDayCents != null && servings != null && servings > 0) {
+          priceCents = perDayCents * servings;
+        }
+      }
+
+      if (priceCents == null) {
+        result.unparsed.push(`${comparison.category}/${slug}`);
+        continue;
+      }
+
       const { data: offerRow, error: offerError } = await db
         .from("sup_offers")
-        .select("id, price_cents")
+        .select("id, price_cents, price_checked_at")
         .eq("product_id", productRow.id)
         .maybeSingle();
       if (offerError) {
@@ -88,7 +128,15 @@ export async function backfillPrices(db: SupabaseClient): Promise<PriceBackfillR
         result.missingOffer.push(`${comparison.category}/${slug}`);
         continue;
       }
-      if (offerRow.price_cents !== null) {
+      const row = offerRow as { id: string; price_cents: number | null; price_checked_at: string | null };
+      // Alleen herschrijven als de rij nog exact de vorige backfill-stempel
+      // draagt (lastUpdated van de vergelijkingspagina) — zo blijft een
+      // handmatige correctie in de admin ("Prijs gecontroleerd", die
+      // price_checked_at op vandaag zet) buiten bereik van --force.
+      const isUntouchedBackfillRow =
+        row.price_checked_at !== null &&
+        row.price_checked_at.slice(0, 10) === comparison.lastUpdated;
+      if (row.price_cents !== null && !(options.force && isUntouchedBackfillRow)) {
         result.skippedExisting.push(`${comparison.category}/${slug}`);
         continue;
       }

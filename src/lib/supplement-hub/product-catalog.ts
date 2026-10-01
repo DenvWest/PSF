@@ -448,13 +448,20 @@ export function getHubProductBySlug(slug: string): HubProduct | null {
 }
 
 /** Andere producten in dezelfde categorie, beste PS-Score eerst. */
-export function getCategoryPeers(product: HubProduct): HubProduct[] {
-  return getHubProducts()
+export function peersWithin(
+  allProducts: readonly HubProduct[],
+  product: HubProduct,
+): HubProduct[] {
+  return allProducts
     .filter(
       (other) =>
         other.category === product.category && other.slug !== product.slug,
     )
     .sort((a, b) => a.kwaliteitsrang.position - b.kwaliteitsrang.position);
+}
+
+export function getCategoryPeers(product: HubProduct): HubProduct[] {
+  return peersWithin(getHubProducts(), product);
 }
 
 function rankWoord(

@@ -32,8 +32,8 @@ function publicRoutes(): string[] {
     .sort();
 }
 
-function pathnamesInSitemap(): string[] {
-  return sitemap().map((entry) => new URL(entry.url).pathname);
+async function pathnamesInSitemap(): Promise<string[]> {
+  return (await sitemap()).map((entry) => new URL(entry.url).pathname);
 }
 
 function isExcluded(route: string): boolean {
@@ -43,8 +43,8 @@ function isExcluded(route: string): boolean {
 }
 
 describe("sitemap vergelijkingspagina's", () => {
-  it("gebruikt de eigen lastUpdated-datum per supplement, niet een gedeelde fallback", () => {
-    const entries = sitemap();
+  it("gebruikt de eigen lastUpdated-datum per supplement, niet een gedeelde fallback", async () => {
+    const entries = await sitemap();
     const bySlug = new Map(
       SUPPLEMENT_SLUGS.map((slug) => [slug, getSupplementComparisonData(slug)]),
     );
@@ -58,8 +58,8 @@ describe("sitemap vergelijkingspagina's", () => {
     }
   });
 
-  it("bevat alle supplementgidsen en voedingsstof-pagina's", () => {
-    const entries = sitemap();
+  it("bevat alle supplementgidsen en voedingsstof-pagina's", async () => {
+    const entries = await sitemap();
     const urls = new Set(entries.map((e) => e.url));
 
     for (const slug of ALL_SUPPLEMENT_SLUGS) {
@@ -83,8 +83,8 @@ describe("sitemap vergelijkingspagina's", () => {
 
 describe("sitemap supplementgidsen", () => {
   // Deze laag ontbrak volledig. De test bestaat zodat dat niet nog eens kan.
-  it("bevat alle acht /supplementen/[slug]-gidsen", () => {
-    const pathnames = new Set(pathnamesInSitemap());
+  it("bevat alle acht /supplementen/[slug]-gidsen", async () => {
+    const pathnames = new Set(await pathnamesInSitemap());
     for (const slug of ALL_SUPPLEMENT_SLUGS) {
       expect(
         pathnames.has(`/supplementen/${slug}`),
@@ -95,7 +95,7 @@ describe("sitemap supplementgidsen", () => {
 });
 
 describe("sitemap-integriteit", () => {
-  it("bevat geen URL die robots.txt verbiedt", () => {
+  it("bevat geen URL die robots.txt verbiedt", async () => {
     const rules = robots().rules;
     const ruleList = Array.isArray(rules) ? rules : [rules];
     const disallowed = ruleList
@@ -106,7 +106,7 @@ describe("sitemap-integriteit", () => {
       })
       .filter((p) => p !== "");
 
-    for (const pathname of pathnamesInSitemap()) {
+    for (const pathname of await pathnamesInSitemap()) {
       for (const prefix of disallowed) {
         expect(
           pathname === prefix || pathname.startsWith(`${prefix}/`),
@@ -116,14 +116,14 @@ describe("sitemap-integriteit", () => {
     }
   });
 
-  it("bevat geen dubbele URL's", () => {
-    const pathnames = pathnamesInSitemap();
+  it("bevat geen dubbele URL's", async () => {
+    const pathnames = await pathnamesInSitemap();
     const duplicates = pathnames.filter((p, i) => pathnames.indexOf(p) !== i);
     expect(duplicates, `dubbele sitemap-URL's: ${duplicates.join(", ")}`).toEqual([]);
   });
 
-  it("stempelt niet elke entry met dezelfde datum", () => {
-    const stamps = sitemap()
+  it("stempelt niet elke entry met dezelfde datum", async () => {
+    const stamps = (await sitemap())
       .map((e) => e.lastModified)
       .filter((d): d is Date => d instanceof Date)
       .map((d) => d.toISOString());
@@ -135,8 +135,8 @@ describe("sitemap-integriteit", () => {
 describe("route-dekking", () => {
   // Het gat dat de supplementgidsen liet verdwijnen: een route bestond wel,
   // maar niemand merkte dat hij nergens werd aangeboden.
-  it("elke publieke route staat in de sitemap of op SITEMAP_EXCLUDED met reden", () => {
-    const pathnames = pathnamesInSitemap();
+  it("elke publieke route staat in de sitemap of op SITEMAP_EXCLUDED met reden", async () => {
+    const pathnames = await pathnamesInSitemap();
     const exact = new Set(pathnames);
     const ontbreekt: string[] = [];
 
@@ -164,8 +164,8 @@ describe("route-dekking", () => {
 
   // Zonder deze test kan SITEMAP_EXCLUDED liegen: een pad als "uitgesloten"
   // opvoeren terwijl een andere sectie hem alsnog uitzendt.
-  it("geen enkel uitgesloten pad wordt alsnog uitgezonden", () => {
-    const pathnames = new Set(pathnamesInSitemap());
+  it("geen enkel uitgesloten pad wordt alsnog uitgezonden", async () => {
+    const pathnames = new Set(await pathnamesInSitemap());
     for (const entry of SITEMAP_EXCLUDED) {
       if (entry.pad.includes("[")) continue;
       expect(

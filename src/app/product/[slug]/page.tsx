@@ -3,25 +3,25 @@ import { notFound } from "next/navigation";
 import Container from "@/components/layout/Container";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import ProductDetail from "@/components/supplement-hub/ProductDetail";
+import { buildProductSamenvatting, formatScore } from "@/lib/supplement-hub/product-catalog";
 import {
-  buildProductSamenvatting,
-  getCategoryPeers,
-  getHubProductBySlug,
-  getHubProductSlugs,
-  formatScore,
-} from "@/lib/supplement-hub/product-catalog";
+  loadCategoryPeersForPage,
+  loadHubProductBySlugForPage,
+  loadHubProductSlugsForPage,
+} from "@/lib/supplement-catalog-db/hub-products-for-page";
 import { absoluteUrl } from "@/lib/public-site-url";
 import { buildBreadcrumbSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return getHubProductSlugs().map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  const slugs = await loadHubProductSlugsForPage();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = getHubProductBySlug(slug);
+  const product = await loadHubProductBySlugForPage(slug);
   if (!product) {
     return {};
   }
@@ -48,12 +48,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const product = getHubProductBySlug(slug);
+  const product = await loadHubProductBySlugForPage(slug);
   if (!product) {
     notFound();
   }
 
-  const peers = getCategoryPeers(product);
+  const peers = await loadCategoryPeersForPage(product);
 
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", url: "https://perfectsupplement.nl" },

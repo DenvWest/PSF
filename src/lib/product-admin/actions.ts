@@ -22,6 +22,8 @@ function revalidateProduct(slug: string) {
   revalidatePath(`/admin/producten/${slug}`);
   revalidatePath("/supplementen");
   revalidatePath("/beste/[supplement]", "page");
+  revalidatePath(`/product/${slug}`, "page");
+  revalidatePath("/sitemap.xml");
 }
 
 export async function updateProductFieldAction(input: {
