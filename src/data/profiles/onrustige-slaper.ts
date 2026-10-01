@@ -154,7 +154,7 @@ export const onrustigeSlaper: ProfilePageData = {
     {
       name: "Ashwagandha (KSM-66)",
       efsa_claim:
-        "Geen erkende EU‑gezondheidsclaims; ashwagandha staat bij EFSA op de on‑holdlijst. Nederlandse VWS overweegt aanvullend beleid (communicatie rond medio 2026). Gebruik op eigen risico.",
+        "Geen erkende EU‑gezondheidsclaim; ashwagandha staat bij EFSA op de on‑holdlijst, en Nederland overweegt een verbod op deze stof.",
       why_this_profile:
         "Studies bespreken plantenextracten soms in het licht van beleefde stress of stresshormoonmarkers — dat is iets anders dan een erkende EU‑gezondheidsclaim op het etiket. Vergelijk producten op extract en transparantie; raadpleeg je arts bij medicatie.",
       href: "/beste/ashwagandha",
@@ -173,11 +173,6 @@ export const onrustigeSlaper: ProfilePageData = {
     {
       href: "/beste/magnesium",
       turboSnippet: "Magnesium en slaap: welke vorm werkt het snelst? →",
-    },
-    {
-      href: "/beste/ashwagandha",
-      turboSnippet:
-        "Plantenextracten zijn geen slaap‑labelclaim — vergelijk KSM‑66 vs Sensoril objectief →",
     },
     {
       href: "/intake",

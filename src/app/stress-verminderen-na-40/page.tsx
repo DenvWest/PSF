@@ -375,7 +375,8 @@ export default function StressVerminderenManPage() {
                   medicatie.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Er lopen discussies over regulering in Nederland; de keuze is aan jou.
+                  Let op: er is geen goedgekeurde EU-gezondheidsclaim voor ashwagandha, en
+                  Nederland overweegt een verbod op deze stof. Weeg dat mee bij je keuze.
                 </p>
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700">
