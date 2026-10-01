@@ -4,7 +4,11 @@ import {
   signAdminCookie,
   verifyAdminCookie,
 } from "@/lib/admin-session-cookie";
-import { verifyAdminPassword } from "@/lib/admin-auth";
+import {
+  getAdminTotpSecret,
+  isAdminTotpEnabled,
+  verifyAdminPassword,
+} from "@/lib/admin-auth";
 
 describe("admin-session-cookie", () => {
   beforeEach(() => {
@@ -72,5 +76,29 @@ describe("verifyAdminPassword", () => {
     expect(verifyAdminPassword("much-longer-than-expected", "correct-password")).toBe(
       false,
     );
+  });
+});
+
+describe("admin TOTP-configuratie (audit N8)", () => {
+  afterEach(() => {
+    delete process.env.ADMIN_TOTP_SECRET;
+  });
+
+  it("is uit zolang ADMIN_TOTP_SECRET niet gezet is (geen breaking change)", () => {
+    delete process.env.ADMIN_TOTP_SECRET;
+    expect(getAdminTotpSecret()).toBeUndefined();
+    expect(isAdminTotpEnabled()).toBe(false);
+  });
+
+  it("is aan zodra ADMIN_TOTP_SECRET gezet is", () => {
+    process.env.ADMIN_TOTP_SECRET = "JBSWY3DPEHPK3PXP";
+    expect(getAdminTotpSecret()).toBe("JBSWY3DPEHPK3PXP");
+    expect(isAdminTotpEnabled()).toBe(true);
+  });
+
+  it("behandelt een lege string als niet-geconfigureerd", () => {
+    process.env.ADMIN_TOTP_SECRET = "   ";
+    expect(getAdminTotpSecret()).toBeUndefined();
+    expect(isAdminTotpEnabled()).toBe(false);
   });
 });

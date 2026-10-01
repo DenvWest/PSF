@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   ADMIN_TOKEN_COOKIE_NAME,
   getAdminSecret,
+  getAdminTotpSecret,
   verifyAdminPassword,
 } from "@/lib/admin-auth";
 import { signAdminCookie } from "@/lib/admin-session-cookie";
 import { getClientIp } from "@/lib/client-ip";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
+import { verifyTotpCode } from "@/lib/totp";
 
 /** `path: "/"` zodat het token ook bij `/api/admin/*` wordt meegestuurd. */
 const COOKIE_BASE = {
@@ -58,6 +60,30 @@ export async function POST(request: NextRequest) {
 
   if (!verifyAdminPassword(password, adminPassword)) {
     return NextResponse.json({ error: "Onjuist wachtwoord" }, { status: 401 });
+  }
+
+  const totpSecret = getAdminTotpSecret();
+  if (totpSecret) {
+    const totpCode =
+      body &&
+      typeof body === "object" &&
+      typeof (body as { totpCode?: unknown }).totpCode === "string"
+        ? (body as { totpCode: string }).totpCode.trim()
+        : "";
+
+    if (!totpCode) {
+      return NextResponse.json(
+        { error: "Voer de 6-cijferige code uit je authenticator-app in.", totpRequired: true },
+        { status: 401 },
+      );
+    }
+
+    if (!verifyTotpCode(totpSecret, totpCode)) {
+      return NextResponse.json(
+        { error: "Ongeldige of verlopen code.", totpRequired: true },
+        { status: 401 },
+      );
+    }
   }
 
   const sessionToken = signAdminCookie();
