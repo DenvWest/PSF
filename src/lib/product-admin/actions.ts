@@ -10,6 +10,7 @@ import {
   isEditableBrandField,
   isEditableCategoryField,
   isEditableProductField,
+  normalizeProductFieldValue,
   validateBrandField,
   validateCategoryField,
   validateNewBrandName,
@@ -36,12 +37,13 @@ export async function updateProductFieldAction(input: {
   const value = input.value.trim();
   const fieldError = validateProductField(input.field, value);
   if (fieldError) return { ok: false, error: fieldError };
+  const normalized = normalizeProductFieldValue(input.field, value);
 
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
       .from("sup_products")
-      .update({ [input.field]: value === "" ? null : value, updated_at: new Date().toISOString() })
+      .update({ [input.field]: normalized === "" ? null : normalized, updated_at: new Date().toISOString() })
       .eq("id", input.productId);
     if (error) return { ok: false, error: error.message };
     if (input.slug) revalidateProduct(input.slug);

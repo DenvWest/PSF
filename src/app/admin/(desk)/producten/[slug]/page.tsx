@@ -198,13 +198,54 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
 
           <CollapsibleSection id="etiket" title="Etiket">
             <div className="divide-y divide-[var(--ps-border)]">
-              <ReadOnlyRow label="Verpakking">
-                {product.container_size ? `${product.container_size} ${product.container_unit ?? ""}` : "—"}
-                {product.servings_per_container ? ` · ${product.servings_per_container} porties` : ""}
-              </ReadOnlyRow>
-              <ReadOnlyRow label="Portie">
-                {product.serving_size ? `${product.serving_size} ${product.serving_unit ?? ""}` : "—"}
-              </ReadOnlyRow>
+              <FieldRow label="Verpakking">
+                <div className="flex flex-wrap items-center gap-2">
+                  <InlineField
+                    entity="product"
+                    id={product.id}
+                    slug={slug}
+                    field="container_size"
+                    value={product.container_size != null ? String(product.container_size) : ""}
+                    placeholder="— grootte"
+                  />
+                  <InlineField
+                    entity="product"
+                    id={product.id}
+                    slug={slug}
+                    field="container_unit"
+                    value={product.container_unit ?? ""}
+                    placeholder="— eenheid (g, ml, capsules)"
+                  />
+                  <InlineField
+                    entity="product"
+                    id={product.id}
+                    slug={slug}
+                    field="servings_per_container"
+                    value={product.servings_per_container != null ? String(product.servings_per_container) : ""}
+                    placeholder="— porties per verpakking"
+                  />
+                </div>
+              </FieldRow>
+              <FieldRow label="Portie">
+                <div className="flex flex-wrap items-center gap-2">
+                  <InlineField
+                    entity="product"
+                    id={product.id}
+                    slug={slug}
+                    field="serving_size"
+                    value={product.serving_size != null ? String(product.serving_size) : ""}
+                    placeholder="— portiegrootte"
+                  />
+                  <InlineField
+                    entity="product"
+                    id={product.id}
+                    slug={slug}
+                    field="serving_unit"
+                    value={product.serving_unit ?? ""}
+                    placeholder="— eenheid (g, ml, capsule)"
+                  />
+                </div>
+              </FieldRow>
               <FieldRow label="Certificeringen">
                 <CertificationsEditor
                   certifications={certifications}
