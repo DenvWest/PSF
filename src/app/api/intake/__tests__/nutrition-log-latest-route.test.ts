@@ -24,12 +24,21 @@ vi.mock("@/lib/intake-session-cookie", () => ({
   INTAKE_SESSION_COOKIE_NAME: "psf_intake_sid",
   verifySignedIntakeSessionCookie: mockVerifyCookie,
 }));
+// Anoniem (geen ingelogd account) is het pad dat deze route-tests dekken; het
+// ingelogde, account-brede pad heeft eigen tests in intake-session-resolve.test.ts.
+vi.mock("@/lib/intake-session-resolve", () => ({
+  resolveCheckSubject: async (cookieSessionId: string | null) => ({
+    accountId: null,
+    sessionIds: cookieSessionId ? [cookieSessionId] : [],
+  }),
+}));
 vi.mock("@/lib/supabase-admin", () => ({
   createSupabaseAdmin: () => ({
     from: () => {
       const chain = {
         select: () => chain,
         eq: () => chain,
+        in: () => chain,
         order: () => chain,
         limit: mockLimit,
       };
@@ -135,6 +144,25 @@ describe("GET /api/intake/nutrition-log/latest", () => {
     const res = await GET(makeGet("signed-cookie-value"));
 
     expect(res.status).toBe(404);
+  });
+
+  it("ingelogd zonder cookie maar met account-sessies → geen 401, logs opgehaald", async () => {
+    mockVerifyCookie.mockReturnValue(null);
+    vi.doMock("@/lib/intake-session-resolve", () => ({
+      resolveCheckSubject: async () => ({
+        accountId: "account-1",
+        sessionIds: ["session-a", "session-b"],
+      }),
+    }));
+    mockLimit.mockResolvedValue({
+      data: [{ estimate: [], raw_inputs: VALID_RAW, logged_at: "2026-09-01T00:00:00Z" }],
+      error: null,
+    });
+
+    const { GET } = await import("@/app/api/intake/nutrition-log/latest/route");
+    const res = await GET(makeGet());
+
+    expect(res.status).toBe(200);
   });
 
   it("db-fout bij ophalen → 500", async () => {
