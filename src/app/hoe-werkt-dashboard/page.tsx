@@ -12,10 +12,7 @@ import {
 } from "@/lib/dashboard-unlock-variant";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
-import {
-  buildFaqSchema,
-  buildHowToSchema,
-} from "@/lib/seo/structuredData";
+import { buildFaqSchema, buildHowToSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
   title: DASHBOARD_UNLOCK_METADATA.title,
@@ -49,11 +46,11 @@ export default async function HoeWerktDashboardPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(howToSchema) }}
       />
       <DashboardUnlockSqueeze variant={variant} persistCookie={persistCookie} />
     </>

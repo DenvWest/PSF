@@ -8,6 +8,7 @@ import DomainHubConnector from "@/components/content/DomainHubConnector";
 import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const INLINE_LINK_CLASS =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
@@ -100,7 +101,7 @@ export default function StressVerminderenManPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleSchema) }}
       />
 
       <main className="pb-16 md:pb-20 py-12 md:py-16">
@@ -374,7 +375,8 @@ export default function StressVerminderenManPage() {
                   medicatie.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Er lopen discussies over regulering in Nederland; de keuze is aan jou.
+                  Let op: er is geen goedgekeurde EU-gezondheidsclaim voor ashwagandha, en
+                  Nederland overweegt een verbod op deze stof. Weeg dat mee bij je keuze.
                 </p>
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700">
@@ -663,7 +665,7 @@ export default function StressVerminderenManPage() {
 
               <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+                dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
               />
 
             </article>

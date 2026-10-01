@@ -47,7 +47,7 @@ export const overgangStressCortisolData: BlogArtikel = {
       type: "tekst",
       titel: "Waar ashwagandha wel en niet bij helpt",
       tekst:
-        "Ashwagandha is het meest onderzochte adaptogeen bij stressklachten en heeft in gecontroleerde studies aangetoond cortisol te kunnen verlagen en subjectieve stress te verminderen. Dat onderzoek is grotendeels niet overgangsspecifiek uitgevoerd, dus zie het als een leefstijl-aanvulling naast de bovenstaande basis, niet als vervanging ervan. Zie [adaptogenen](/kennisbank/adaptogens) voor de achtergrond en [beste ashwagandha](/beste/ashwagandha) om producten te vergelijken.",
+        "Ashwagandha is een van de best onderzochte adaptogenen bij stressbelasting: gerandomiseerde, placebogecontroleerde studies beschrijven verschillen in cortisolmarkeringen en zelfgerapporteerde stress bij dagelijks gebruik van een gestandaardiseerd extract. Dat zijn studie-uitkomsten, geen goedgekeurde EU-gezondheidsclaim, en het onderzoek is grotendeels niet overgangsspecifiek uitgevoerd — zie het als een mogelijke aanvulling naast de bovenstaande basis, niet als vervanging ervan. Zie [adaptogenen](/kennisbank/adaptogens) voor de achtergrond en [beste ashwagandha](/beste/ashwagandha) om producten te vergelijken.",
     },
     {
       type: "tekst",

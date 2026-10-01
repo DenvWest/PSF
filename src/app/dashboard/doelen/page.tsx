@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import MacroDoelenKaart from "@/components/account/MacroDoelenKaart";
 import VoedingsdoelenKaart from "@/components/account/VoedingsdoelenKaart";
 import { getAccountFromCookie } from "@/lib/account-server";
 
@@ -48,7 +49,10 @@ export default async function DoelenPage() {
           </p>
         </header>
 
-        <VoedingsdoelenKaart />
+        <div style={{ display: "grid", gap: 24 }}>
+          <VoedingsdoelenKaart />
+          <MacroDoelenKaart />
+        </div>
       </main>
     </div>
   );

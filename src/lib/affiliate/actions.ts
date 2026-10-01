@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { getAffiliateDb, refFromName } from "@/lib/affiliate/db";
 import { recomputeAffiliateAccruals } from "@/lib/affiliate/af-ledger";
@@ -42,6 +43,7 @@ export async function createAffiliateAction(input: {
   displayName: string;
   email: string;
 }): Promise<ActionResult<{ ref: string }>> {
+  await requireAdmin();
   const nameError = validateAffiliateName(input.displayName);
   if (nameError) return { ok: false, error: nameError };
   try {
@@ -63,6 +65,7 @@ export async function createAffiliateAction(input: {
 export async function updateAffiliateAction(
   input: AffiliateInput & { affiliateId: string; ref?: string },
 ): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateAffiliate(input);
   if (error) return { ok: false, error };
   try {
@@ -102,6 +105,7 @@ export async function updateAffiliateAction(
 export async function archiveAffiliateAction(input: {
   affiliateId: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getAffiliateDb();
     const { error } = await db
@@ -133,6 +137,7 @@ function ruleRow(input: AfRuleInput) {
 export async function createAfRuleAction(
   input: AfRuleInput & { affiliateId: string; ref?: string },
 ): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateAfRule(input);
   if (error) return { ok: false, error };
   try {
@@ -153,6 +158,7 @@ export async function createAfRuleAction(
 export async function updateAfRuleAction(
   input: AfRuleInput & { ruleId: string; affiliateId: string; ref?: string },
 ): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateAfRule(input);
   if (error) return { ok: false, error };
   try {
@@ -175,6 +181,7 @@ export async function recomputeAffiliateAction(input: {
   affiliateId: string;
   ref?: string;
 }): Promise<ActionResult<{ created: number }>> {
+  await requireAdmin();
   try {
     const db = getAffiliateDb();
     const created = await recomputeAffiliateAccruals(db, input.affiliateId);
@@ -189,6 +196,7 @@ export async function archiveAfRuleAction(input: {
   ruleId: string;
   ref?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getAffiliateDb();
     const { error } = await db
@@ -212,6 +220,7 @@ export async function createAfLinkAction(input: {
   campaign: string;
   ref?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const target = input.targetUrl.trim();
   if (!target) return { ok: false, error: "Doel-URL is verplicht." };
   try {
@@ -234,6 +243,7 @@ export async function deleteAfLinkAction(input: {
   linkId: string;
   ref?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getAffiliateDb();
     const { error } = await db.from("af_links").delete().eq("id", input.linkId);

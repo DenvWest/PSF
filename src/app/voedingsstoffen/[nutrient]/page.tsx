@@ -18,11 +18,7 @@ import { nutrientRoute } from "@/data/nutrition/nutrient-routes";
 import { nutrientBronnen } from "@/lib/nutrition-nutrient-index";
 import { getUsableClaims } from "@/data/approved-claims";
 import { absoluteUrl } from "@/lib/public-site-url";
-import {
-  buildArticleSchema,
-  buildFaqSchema,
-  buildNamedItemListSchema,
-} from "@/lib/seo/structuredData";
+import { buildArticleSchema, buildFaqSchema, buildNamedItemListSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 /**
  * De voedingsstofpagina — het ontbrekende scharnier.
@@ -119,7 +115,7 @@ export default async function NutrientPage({ params }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <main className="py-10 md:py-14">
         <Container>

@@ -1,0 +1,63 @@
+import { NextRequest, NextResponse } from "next/server";
+import {
+  ADMIN_TOKEN_COOKIE_NAME,
+  isValidAdminSessionCookie,
+} from "@/lib/admin-auth";
+import { consumeRateLimit } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
+import { unscoped } from "@/lib/db/scoped";
+import { backfillPrices } from "@/lib/supplement-catalog-db/price-backfill";
+
+export const dynamic = "force-dynamic";
+
+/**
+ * Eenmalige/herhaalbare admin-actie: best-effort parse van de "Prijs"/
+ * "Prijs / dag"-specs uit de statische productdata naar
+ * sup_offers.price_cents + price_checked_at. Idempotent; overschrijft geen
+ * bestaande waarden. Wat niet met zekerheid te parsen is komt terug in
+ * `unparsed` — dat vul je handmatig in via het productdossier
+ * (Aanbiedingen-sectie).
+ *
+ * ?force=1 herberekent rijen die nog de vorige-backfill-stempel dragen (zie
+ * price-backfill.ts) — nodig na de correctie van de omrekenlogica; raakt
+ * nooit een in de admin handmatig gecontroleerde prijs.
+ */
+export async function POST(request: NextRequest) {
+  const token = request.cookies.get(ADMIN_TOKEN_COOKIE_NAME)?.value;
+  if (!isValidAdminSessionCookie(token)) {
+    return NextResponse.json({ error: "Niet geautoriseerd." }, { status: 401 });
+  }
+
+  const rateLimit = await consumeRateLimit(
+    `admin_sup_price_backfill:${token}`,
+    getRateLimitConfig("admin_data"),
+  );
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Te veel verzoeken. Probeer het later opnieuw." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
+  }
+
+  const admin = unscoped();
+  if (!admin) {
+    return NextResponse.json(
+      { error: "Database is nog niet geconfigureerd op de server." },
+      { status: 503 },
+    );
+  }
+
+  const force = request.nextUrl.searchParams.get("force") === "1";
+  const result = await backfillPrices(admin, { force });
+
+  if (result.errors.length > 0) {
+    console.error("[api/admin/data/sup-price-backfill] fouten:", result.errors);
+  }
+
+  return NextResponse.json(result, {
+    status: result.errors.length > 0 ? 207 : 200,
+  });
+}

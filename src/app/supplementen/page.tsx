@@ -1,22 +1,21 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import HubSluitCta from "@/components/supplement-hub/HubSluitCta";
 import ProductCatalog from "@/components/supplement-hub/ProductCatalog";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { CATALOG } from "@/data/supplement-hub/catalog";
-import { getHubProducts } from "@/lib/supplement-hub/product-catalog";
+import { loadHubProductsForPage } from "@/lib/supplement-catalog-db/hub-products-for-page";
 import { HUB_CATEGORY_PARAM } from "@/lib/supplement-hub/hub-link";
 import { buildHubPersonalization } from "@/lib/supplement-hub/hub-personalization";
-import { getIntakeSessionFromCookie } from "@/lib/intake-session-server";
+import { INTAKE_SESSION_COOKIE_NAME, verifySignedIntakeSessionCookie } from "@/lib/intake-session-cookie";
+import { resolveCheckSubject } from "@/lib/intake-session-resolve";
 import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBanner";
 import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
 import { getLatestNutritionLogRawInputs } from "@/lib/nutrition-log-server";
 import { isVitaminDLowSunSeason } from "@/lib/nutrition-season";
-import {
-  buildBreadcrumbSchema,
-  buildNamedItemListSchema,
-} from "@/lib/seo/structuredData";
+import { buildBreadcrumbSchema, buildNamedItemListSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 export const dynamic = "force-dynamic";
 
@@ -67,19 +66,20 @@ function readCategoryParam(
 }
 
 export default async function SupplementenPage({ searchParams }: SupplementenPageProps) {
-  const products = getHubProducts();
+  const products = await loadHubProductsForPage();
   const initieleCategorie = readCategoryParam(await searchParams);
-  const { verifiedSessionId, session } = await getIntakeSessionFromCookie();
-  const hasIntakeCookie = verifiedSessionId !== null;
-  const hasSession = hasIntakeCookie && session !== null;
-  const latestNutritionLog =
-    hasSession && verifiedSessionId
-      ? await getLatestNutritionLogRawInputs(verifiedSessionId)
-      : null;
+  const cookieStore = await cookies();
+  const cookieSessionId = verifySignedIntakeSessionCookie(
+    cookieStore.get(INTAKE_SESSION_COOKIE_NAME)?.value,
+  );
+  const { sessionIds } = await resolveCheckSubject(cookieSessionId);
+  const hasSession = sessionIds.length > 0;
+  const latestNutritionLog = hasSession
+    ? await getLatestNutritionLogRawInputs(sessionIds)
+    : null;
 
   const personalization = buildHubPersonalization({
-    session,
-    hasIntakeCookie,
+    hasSession,
     latestNutritionLog,
     isDarkSeason: isVitaminDLowSunSeason(),
   });
@@ -88,7 +88,7 @@ export default async function SupplementenPage({ searchParams }: SupplementenPag
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <div>

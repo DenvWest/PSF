@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { getPartnerDeskDb, slugify } from "@/lib/partnerdesk/db";
 import type { ActionResult } from "@/lib/partnerdesk/actions";
@@ -9,6 +10,7 @@ import {
   isEditableBrandField,
   isEditableCategoryField,
   isEditableProductField,
+  normalizeProductFieldValue,
   validateBrandField,
   validateCategoryField,
   validateNewBrandName,
@@ -20,6 +22,8 @@ function revalidateProduct(slug: string) {
   revalidatePath(`/admin/producten/${slug}`);
   revalidatePath("/supplementen");
   revalidatePath("/beste/[supplement]", "page");
+  revalidatePath(`/product/${slug}`, "page");
+  revalidatePath("/sitemap.xml");
 }
 
 export async function updateProductFieldAction(input: {
@@ -28,18 +32,20 @@ export async function updateProductFieldAction(input: {
   field: string;
   value: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (!isEditableProductField(input.field)) {
     return { ok: false, error: "Dit veld is niet bewerkbaar." };
   }
   const value = input.value.trim();
   const fieldError = validateProductField(input.field, value);
   if (fieldError) return { ok: false, error: fieldError };
+  const normalized = normalizeProductFieldValue(input.field, value);
 
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
       .from("sup_products")
-      .update({ [input.field]: value === "" ? null : value, updated_at: new Date().toISOString() })
+      .update({ [input.field]: normalized === "" ? null : normalized, updated_at: new Date().toISOString() })
       .eq("id", input.productId);
     if (error) return { ok: false, error: error.message };
     if (input.slug) revalidateProduct(input.slug);
@@ -53,6 +59,7 @@ export async function markProductCheckedAction(input: {
   productId: string;
   slug: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -79,6 +86,7 @@ export async function setProductStatusAction(input: {
   slug: string;
   status: ProductStatus;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (!STATUSES.includes(input.status)) return { ok: false, error: "Onbekende status." };
   try {
     const db = getPartnerDeskDb();
@@ -124,6 +132,7 @@ export async function updateBrandFieldAction(input: {
   field: string;
   value: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (!isEditableBrandField(input.field)) return { ok: false, error: "Dit veld is niet bewerkbaar." };
   const value = input.value.trim();
   const fieldError = validateBrandField(input.field, value);
@@ -147,6 +156,7 @@ export async function updateCategoryFieldAction(input: {
   field: string;
   value: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (!isEditableCategoryField(input.field)) return { ok: false, error: "Dit veld is niet bewerkbaar." };
   const value = input.value.trim();
   const fieldError = validateCategoryField(input.field, value);
@@ -166,6 +176,7 @@ export async function updateCategoryFieldAction(input: {
 }
 
 export async function createBrandAction(input: { name: string }): Promise<ActionResult> {
+  await requireAdmin();
   const nameError = validateNewBrandName(input.name);
   if (nameError) return { ok: false, error: nameError };
   try {

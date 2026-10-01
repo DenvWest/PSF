@@ -27,6 +27,7 @@ import { canonicalMetadata } from "@/lib/seo/canonical";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
 import type { PillarId } from "@/types/dashboard";
 import type { InsightItem, InsightType } from "@/types/insight";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const TITLE = "Inzichten — Artikelen & Begrippen per Domein";
 const DESCRIPTION =
@@ -169,7 +170,7 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@graph": [
               {

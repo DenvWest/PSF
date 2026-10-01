@@ -2,7 +2,7 @@ import {
   renderInlineMarkdownLinks,
   stripInlineMarkdownLinks,
 } from "@/components/blog/inlineMarkdownLinks";
-import { buildFaqSchema } from "@/lib/seo/structuredData";
+import { buildFaqSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 type Props = {
   items: Array<{ question: string; answer: string }>;
@@ -20,7 +20,7 @@ export function FaqSection({ items }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
       />
       <div className="mx-auto max-w-4xl px-4">
         <div className="space-y-3">

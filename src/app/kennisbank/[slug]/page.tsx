@@ -15,6 +15,7 @@ import { renderInlineMarkdownLinks } from '@/components/blog/inlineMarkdownLinks
 import { buildKennisbankTocItems } from '@/lib/article-toc'
 import {
   buildDefinedTermSchema,
+  jsonLdScript,
 } from '@/lib/seo/structuredData'
 import ArticleSidebar from '@/components/article/ArticleSidebar'
 import ArticleMobileReadingBar from '@/components/article/ArticleMobileReadingBar'
@@ -203,7 +204,7 @@ function ThemaPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             '@context': 'https://schema.org',
             '@graph': [
               {
@@ -299,11 +300,11 @@ async function TermPage({ slug }: { slug: string }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(definedTermSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbSchema) }}
       />
 
       <main>

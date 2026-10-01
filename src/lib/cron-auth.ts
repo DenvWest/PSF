@@ -6,11 +6,11 @@ export interface CronAuthResult {
 }
 
 function getClientIp(request: Request): string | null {
-  return (
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    request.headers.get("x-real-ip") ??
-    null
-  );
+  // Alleen x-real-ip vertrouwen (zie src/lib/client-ip.ts): Nginx zet die op
+  // basis van $remote_addr en de client kan hem niet spoofen. x-forwarded-for
+  // is dat wel — perfectsupplement.nl is DNS-only, dus die header was eerder
+  // vrij door de aanroeper in te vullen en omzeilde zo CRON_ALLOWED_IPS.
+  return request.headers.get("x-real-ip")?.trim() || null;
 }
 
 function isIpAllowed(ip: string | null): boolean {

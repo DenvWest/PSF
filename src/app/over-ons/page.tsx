@@ -19,6 +19,7 @@ import {
   ABOUT_WHAT_WE_DO,
 } from "@/data/about";
 import LeefstijlDisclaimerBlock from "@/components/legal/LeefstijlDisclaimerBlock";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
   title: ABOUT_METADATA.title,
@@ -52,7 +53,7 @@ const structuredData = {
     name: "PerfectSupplement",
     url: ABOUT_SITE_URL,
     description:
-      "Onafhankelijk platform voor mannen en vrouwen vanaf 30 — leefstijl, herstel en transparante supplementvergelijking",
+      "Onafhankelijk platform voor mannen en vrouwen vanaf 30 — voeding eerst, transparante supplementvergelijking als aanvulling",
     founder: {
       "@type": "Person",
       name: ABOUT_FOUNDER.name,
@@ -76,6 +77,36 @@ function StepNode({ number }: { number: string }) {
   );
 }
 
+function NuanceBlock() {
+  return (
+    <div className="space-y-6 pt-4">
+      <h3 className="font-serif text-2xl leading-tight text-stone-900 md:text-3xl">
+        {ABOUT_INSIGHT.nuanceTitle}
+      </h3>
+      <p className={bodyClass}>{ABOUT_INSIGHT.nuanceIntro}</p>
+      <div className="grid gap-8 sm:grid-cols-2">
+        <div>
+          <h4 className="mb-3 font-medium text-stone-800">{ABOUT_INSIGHT.solvesTitle}</h4>
+          <ul className="list-disc space-y-2 pl-5 text-base leading-relaxed text-stone-600">
+            {ABOUT_INSIGHT.solves.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h4 className="mb-3 font-medium text-stone-800">{ABOUT_INSIGHT.limitsTitle}</h4>
+          <ul className="list-disc space-y-2 pl-5 text-base leading-relaxed text-stone-600">
+            {ABOUT_INSIGHT.limits.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <p className="text-sm leading-relaxed text-stone-500">{ABOUT_INSIGHT.nuanceOutro}</p>
+    </div>
+  );
+}
+
 export default function OverOnsPage() {
   const [heroLead, ...heroBody] = ABOUT_HERO.paragraphs;
   const [insightLead] = ABOUT_INSIGHT.paragraphs;
@@ -87,7 +118,7 @@ export default function OverOnsPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(structuredData) }}
       />
 
       <main>
@@ -152,7 +183,7 @@ export default function OverOnsPage() {
                 </div>
               </section>
 
-              {/* ── Step 02: Wat er over tijd verandert — RIGHT ────────── */}
+              {/* ── Step 02: Waarom voeding eerst — RIGHT ────────── */}
               <section id={ABOUT_INSIGHT.id} className="py-14 md:py-16 -mx-6 px-6 bg-white lg:-mx-8 lg:px-8">
                 {/* Mobile */}
                 <div className="lg:hidden space-y-6">
@@ -165,6 +196,7 @@ export default function OverOnsPage() {
                       {ABOUT_INSIGHT.keyInsight}
                     </span>
                   </p>
+                  <NuanceBlock />
                 </div>
                 {/* Desktop */}
                 <div className="hidden lg:grid lg:grid-cols-[1fr_80px_1fr] lg:items-start">
@@ -180,6 +212,7 @@ export default function OverOnsPage() {
                         {ABOUT_INSIGHT.keyInsight}
                       </span>
                     </p>
+                  <NuanceBlock />
                   </div>
                 </div>
               </section>

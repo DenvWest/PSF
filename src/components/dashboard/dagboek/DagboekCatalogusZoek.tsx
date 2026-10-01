@@ -8,7 +8,12 @@ import {
   supplementCatalogEntry,
   type SupplementCatalogEntry,
 } from "@/data/nutrition/supplement-catalog";
+import {
+  searchSupermarktCatalog,
+  type SupermarktProduct,
+} from "@/data/nutrition/supermarkt-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
+import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import type { DagboekItem, DagboekItemBron } from "@/lib/nutrition-dagboek-items";
@@ -18,7 +23,8 @@ const MAX_TREFFERS = 8;
 
 type Resultaat =
   | { bron: "voeding"; entry: CatalogEntry }
-  | { bron: "supplement"; entry: SupplementCatalogEntry };
+  | { bron: "supplement"; entry: SupplementCatalogEntry }
+  | { bron: "supermarkt"; product: SupermarktProduct };
 
 type TabId = "alle" | "producten" | "supplementen";
 
@@ -61,6 +67,7 @@ export default function DagboekCatalogusZoek({
   moment,
   onMomentChange,
   onKies,
+  onKiesSupermarkt,
   onBewaarFavoriet,
   onVerwijderFavoriet,
   onTerug,
@@ -76,6 +83,13 @@ export default function DagboekCatalogusZoek({
   moment: EetmomentId;
   onMomentChange: (moment: EetmomentId) => void;
   onKies: (bron: DagboekItemBron, key: string) => void;
+  /**
+   * Los van `onKies`: een supermarktproduct is geen `DagboekItemBron` (zie
+   * `nutrition-supermarkt-items.ts`) en heeft dus geen plek in die signature.
+   * Alleen relevant vanuit een maaltijd (`nutrient` null) — een
+   * supermarktproduct draagt geen `NutrientId`-bijdrage.
+   */
+  onKiesSupermarkt: (prodId: string) => void;
   onBewaarFavoriet: (bron: DagboekItemBron, key: string) => void;
   onVerwijderFavoriet: (bron: DagboekItemBron, key: string) => void;
   onTerug: () => void;
@@ -113,8 +127,13 @@ export default function DagboekCatalogusZoek({
     const supplementen = searchSupplementCatalog(term, MAX_TREFFERS).map(
       (entry): Resultaat => ({ bron: "supplement", entry }),
     );
-    return [...voeding, ...supplementen].slice(0, MAX_TREFFERS * 2);
-  }, [zoek]);
+    // Supermarktproducten dragen geen NutrientId-bijdrage, dus alleen
+    // doorzoekbaar vanuit een maaltijd, niet vanuit een nutriëntdetail.
+    const supermarkt: Resultaat[] = nutrient
+      ? []
+      : searchSupermarktCatalog(term).map((product): Resultaat => ({ bron: "supermarkt", product }));
+    return [...voeding, ...supplementen, ...supermarkt].slice(0, MAX_TREFFERS * 3);
+  }, [zoek, nutrient]);
 
   /** "Mijn producten"/"Mijn supplementen": favorieten eerst, dan de rest van de geschiedenis van die bron. */
   function mijnLijst(bron: DagboekItemBron): Resultaat[] {
@@ -267,6 +286,36 @@ export default function DagboekCatalogusZoek({
           ) : (
             <ul className="m-0 list-none divide-y divide-white/[0.06] p-0">
               {resultaten.map((resultaat) => {
+                if (resultaat.bron === "supermarkt") {
+                  const product = resultaat.product;
+                  return (
+                    <li key={`supermarkt-${product.prodId}`} className="flex items-center">
+                      <button
+                        type="button"
+                        onClick={() => onKiesSupermarkt(product.prodId)}
+                        className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
+                      >
+                        <span className="flex min-w-0 items-center gap-2">
+                          <span
+                            aria-hidden
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/[0.05] text-[17px] font-medium text-[var(--vd-ink-2)]"
+                          >
+                            {product.naam.trim().charAt(0).toUpperCase() || "?"}
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block truncate text-[13px] text-[var(--vd-ink)]">
+                              {product.naam}
+                            </span>
+                            <span className="block text-[10px] text-[var(--vd-ink-4)]">
+                              {product.supermarkt}
+                            </span>
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  );
+                }
+
                 const key = `${resultaat.bron}-${resultaat.entry.key}`;
                 const label = resultaat.entry.labelNl;
                 const portieLabel = resultaat.entry.porties[0]?.labelNl ?? "";
@@ -282,12 +331,7 @@ export default function DagboekCatalogusZoek({
                         {resultaat.bron === "voeding" ? (
                           <FoodThumbnail entry={resultaat.entry} size={40} />
                         ) : (
-                          <span
-                            aria-hidden
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[rgb(var(--vd-accent-2-rgb)/20%)] text-[17px] font-medium text-[var(--vd-accent-2)]"
-                          >
-                            {label.trim().charAt(0).toUpperCase() || "?"}
-                          </span>
+                          <SupplementThumbnail entry={resultaat.entry} size={40} />
                         )}
                         <span className="min-w-0">
                           <span className="block truncate text-[13px] text-[var(--vd-ink)]">

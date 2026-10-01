@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import type { ActionResult } from "@/lib/partnerdesk/actions";
@@ -16,6 +17,7 @@ export async function createNetworkAction(input: {
   kind: "network" | "direct";
   loginUrl: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (!input.name.trim()) return { ok: false, error: "Naam is verplicht." };
   try {
     const db = getPartnerDeskDb();
@@ -33,6 +35,7 @@ export async function createNetworkAction(input: {
 }
 
 export async function deleteNetworkAction(input: { id: string }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db.from("pd_networks").delete().eq("id", input.id);
@@ -50,6 +53,7 @@ export async function deleteNetworkAction(input: { id: string }): Promise<Action
 // ── Categorieën ─────────────────────────────────────────────────────────────
 
 export async function createCategoryAction(input: { name: string }): Promise<ActionResult> {
+  await requireAdmin();
   if (!input.name.trim()) return { ok: false, error: "Naam is verplicht." };
   try {
     const db = getPartnerDeskDb();
@@ -63,6 +67,7 @@ export async function createCategoryAction(input: { name: string }): Promise<Act
 }
 
 export async function deleteCategoryAction(input: { id: string }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     // Partners/regels verwijzen met on delete set null — verwijderen is veilig.
@@ -81,6 +86,7 @@ export async function createLabelAction(input: {
   name: string;
   color: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (!input.name.trim()) return { ok: false, error: "Naam is verplicht." };
   try {
     const db = getPartnerDeskDb();
@@ -96,6 +102,7 @@ export async function createLabelAction(input: {
 }
 
 export async function deleteLabelAction(input: { id: string }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db.from("pd_labels").delete().eq("id", input.id);

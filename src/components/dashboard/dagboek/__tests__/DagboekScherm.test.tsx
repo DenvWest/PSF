@@ -17,6 +17,46 @@ vi.mock("@/lib/account-events-client", () => ({
   emitAccountClientEvent: vi.fn(),
 }));
 
+/**
+ * Testfixture voor Laag A: SUPERMARKT_CATALOG is in productie leeg (Laag 0b
+ * moet nog beoordeeld worden), dus de zoek-naar-portie-flow heeft hier een
+ * eigen product nodig om te testen.
+ */
+vi.mock("@/data/nutrition/supermarkt-catalog", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@/data/nutrition/supermarkt-catalog")>();
+  const testProduct = {
+    prodId: "test/ah-testproduct",
+    naam: "AH Testproduct",
+    supermarkt: "AH" as const,
+    categorie: "test",
+    energyKcal: 250,
+    fatG: 10,
+    saturatedFatG: 3,
+    carbohydrateG: 30,
+    sugarsG: 5,
+    fiberG: 2,
+    proteinG: 8,
+    saltG: 1,
+    sodiumMg: null,
+    calciumMg: null,
+    ironMg: null,
+    vitaminCMg: null,
+    vitaminDµg: null,
+    bron: "supermarkt" as const,
+  };
+  return {
+    ...actual,
+    SUPERMARKT_CATALOG: [testProduct],
+    supermarktCatalogEntry: (prodId: string) =>
+      prodId === testProduct.prodId ? testProduct : null,
+    searchSupermarktCatalog: (query: string) =>
+      testProduct.naam.toLowerCase().includes(query.trim().toLowerCase())
+        ? [testProduct]
+        : [],
+  };
+});
+
 function jsonResponse(body: unknown): Promise<Response> {
   return Promise.resolve({
     ok: true,
@@ -30,6 +70,17 @@ beforeEach(() => {
     vi.fn((input: RequestInfo | URL) => {
       if (String(input).includes("/api/account/nutrition-daybook")) {
         return jsonResponse({ days: [] });
+      }
+      if (String(input).includes("/api/account/supermarkt-portie-logs")) {
+        return jsonResponse({ items: [] });
+      }
+      if (String(input).includes("/api/account/macro-doelen")) {
+        return jsonResponse({
+          calorieenKcal: null,
+          koolhydratenPct: null,
+          vetPct: null,
+          eiwitPct: null,
+        });
       }
       return jsonResponse({});
     }),
@@ -465,6 +516,124 @@ describe("DagboekScherm — opslaan dat misgaat", () => {
         (screen.getByRole("button", { name: "Toevoegen" }) as HTMLButtonElement).disabled,
       ).toBe(false);
     });
+  });
+});
+
+describe("DagboekScherm — tabbladen (Laag B)", () => {
+  it("toont Vandaag als standaardtabblad, met de eetmomenten", () => {
+    render(<DagboekScherm />);
+
+    expect(screen.getByRole("tab", { name: "Vandaag", selected: true })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    ).toBeTruthy();
+  });
+
+  it("heeft geen los Calorieën-tabblad — de ring staat op Macro's", () => {
+    render(<DagboekScherm />);
+
+    expect(screen.queryByRole("tab", { name: "Calorieën" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
+
+    // De ring toont "Cal." in het midden; de drie macro's staan zowel in de
+    // ring-legenda als in de weektabel eronder.
+    expect(screen.getByText("Cal.")).toBeTruthy();
+    expect(screen.getAllByText(/Koolhydraten/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Vet/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Eiwit/).length).toBeGreaterThan(0);
+  });
+
+  it("schakelt naar Voedingsstoffen en toont het weekoverzicht met het ingestelde doel", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        if (String(input).includes("/api/account/nutrition-daybook")) {
+          return jsonResponse({ days: [] });
+        }
+        if (String(input).includes("/api/account/supermarkt-portie-logs")) {
+          return jsonResponse({ items: [] });
+        }
+        if (String(input).includes("/api/account/macro-doelen")) {
+          return jsonResponse({
+            calorieenKcal: 2200,
+            koolhydratenPct: null,
+            vetPct: null,
+            eiwitPct: null,
+          });
+        }
+        return jsonResponse({});
+      }),
+    );
+
+    render(<DagboekScherm />);
+
+    fireEvent.click(screen.getByRole("tab", { name: "Voedingsstoffen" }));
+
+    // Het doel komt uit de macro-doelen-fetch, niet uit een berekening.
+    expect(await screen.findByText(/2200 kcal/)).toBeTruthy();
+  });
+
+  it("toont geen berekend of vooringevuld doel zolang er niets is ingesteld", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
+
+    // Zonder ingesteld doel toont de Doel-kolom "—", nooit een berekend
+    // getal (zeker geen NaN, en geen vuistregel als 50/30/20).
+    const cellen = await screen.findAllByText("—");
+    expect(cellen.length).toBeGreaterThanOrEqual(3);
+    expect(screen.queryByText(/NaN/)).toBeNull();
+  });
+});
+
+describe("DagboekScherm — supermarkt-portie (Laag A)", () => {
+  it("logt een supermarktproduct los van het tekortsysteem", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    );
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    );
+    fireEvent.change(zoekveld, { target: { value: "testproduct" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^AH Testproduct/ }));
+
+    // Het supermarkt-portiescherm toont calorieën/macro's, geen NutrientId-rij.
+    expect(
+      await screen.findByRole("heading", { name: "Voedsel toevoegen" }),
+    ).toBeTruthy();
+    expect(screen.getByText("Calorieën")).toBeTruthy();
+    expect(screen.getByText(/250 kcal/)).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Toevoegen" }));
+
+    await waitFor(() => {
+      const posts = vi.mocked(fetch).mock.calls.filter(
+        ([input, init]) =>
+          String(input).includes("/api/account/supermarkt-portie-logs") &&
+          Boolean(
+            init &&
+              typeof init === "object" &&
+              "method" in init &&
+              init.method === "POST",
+          ),
+      );
+      expect(posts.length).toBeGreaterThan(0);
+      const body = JSON.parse(String((posts[0]![1] as RequestInit).body));
+      expect(body.prodId).toBe("test/ah-testproduct");
+      expect(body.moment).toBe("ontbijt");
+    });
+
+    // Geen enkele POST naar het tekortsysteem — dit is een parallelle, eigen
+    // opslag, geen DagboekItem.
+    const daybookPosts = vi.mocked(fetch).mock.calls.filter(
+      ([input, init]) =>
+        String(input).includes("/api/account/nutrition-daybook") &&
+        Boolean(init && typeof init === "object" && "method" in init && init.method === "POST"),
+    );
+    expect(daybookPosts).toHaveLength(0);
   });
 });
 

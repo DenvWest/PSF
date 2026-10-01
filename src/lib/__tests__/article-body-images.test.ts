@@ -91,8 +91,8 @@ describe("article body images", () => {
 });
 
 describe("sitemap article images", () => {
-  it("blogartikelen en kennisbanktermen hebben cover plus inline in images", () => {
-    const entries = sitemap();
+  it("blogartikelen en kennisbanktermen hebben cover plus inline in images", async () => {
+    const entries = await sitemap();
     const byUrl = new Map(entries.map((entry) => [entry.url, entry]));
 
     const sampleBlog = alleArtikelen.find((a) => !a.pad);

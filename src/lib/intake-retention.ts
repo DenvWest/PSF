@@ -4,6 +4,7 @@ import { startCronRun, completeCronRun } from "@/lib/cron-runs";
 const SESSION_RETENTION_MONTHS = 24;
 const NURTURE_RETENTION_MONTHS = 12;
 const ORPHAN_PENDING_MONTHS = 3;
+const DOMAIN_EVENTS_RETENTION_MONTHS = 24;
 
 export const RETENTION_CRON_NAME = "retention";
 
@@ -11,6 +12,7 @@ export type RetentionRunResult = {
   deletedSessions: number;
   deletedNurture: number;
   deletedOrphanPending: number;
+  deletedDomainEvents: number;
 };
 
 function monthsAgoIso(months: number): string {
@@ -28,6 +30,7 @@ export async function runIntakeRetention(): Promise<RetentionRunResult> {
   const sessionCutoff = monthsAgoIso(SESSION_RETENTION_MONTHS);
   const nurtureCutoff = monthsAgoIso(NURTURE_RETENTION_MONTHS);
   const orphanCutoff = monthsAgoIso(ORPHAN_PENDING_MONTHS);
+  const domainEventsCutoff = monthsAgoIso(DOMAIN_EVENTS_RETENTION_MONTHS);
 
   const { data: oldSessions, error: sessionsError } = await admin
     .from("intake_sessions")
@@ -64,10 +67,22 @@ export async function runIntakeRetention(): Promise<RetentionRunResult> {
     throw orphanError;
   }
 
+  const { data: oldDomainEvents, error: domainEventsError } = await admin
+    .from("domain_events")
+    .delete()
+    .lt("occurred_at", domainEventsCutoff)
+    .select("id");
+
+  if (domainEventsError) {
+    console.error("[intake-retention] delete domain_events:", domainEventsError);
+    throw domainEventsError;
+  }
+
   return {
     deletedSessions: oldSessions?.length ?? 0,
     deletedNurture: oldNurture?.length ?? 0,
     deletedOrphanPending: orphanPending?.length ?? 0,
+    deletedDomainEvents: oldDomainEvents?.length ?? 0,
   };
 }
 

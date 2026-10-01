@@ -12,7 +12,7 @@ import MovementMoments from "@/components/content/MovementMoments";
 import MovementFuture from "@/components/content/MovementFuture";
 import MovementDashboardPreview from "@/components/content/MovementDashboardPreview";
 import MovementClosingCta from "@/components/content/MovementClosingCta";
-import { buildArticleSchema } from "@/lib/seo/structuredData";
+import { buildArticleSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 const ACCENT = "oklch(0.69 0.095 50)";
 
@@ -43,7 +43,7 @@ export default function BewegingNa40Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleSchema) }}
       />
 
       <main>

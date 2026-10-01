@@ -5,6 +5,7 @@ import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
+import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import { bedragVanItem, type DagboekItemBron } from "@/lib/nutrition-dagboek-items";
@@ -166,6 +167,8 @@ export default function DagboekPortieInvoer({
         <header className="flex items-center gap-3">
           {voedingEntry ? (
             <FoodThumbnail entry={voedingEntry} size={40} />
+          ) : supplementEntry ? (
+            <SupplementThumbnail entry={supplementEntry} size={40} />
           ) : (
             <span
               aria-hidden

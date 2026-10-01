@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import { recomputeSignalsForPartner } from "@/lib/partnerdesk/signals";
@@ -12,6 +13,7 @@ export async function createTaskAction(input: {
   dueOn?: string | null;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (!input.title.trim()) return { ok: false, error: "Titel is verplicht." };
   try {
     const db = getPartnerDeskDb();
@@ -36,6 +38,7 @@ export async function setTaskStatusAction(input: {
   done: boolean;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { data, error } = await db

@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { getPartnerDeskDb, slugify } from "@/lib/partnerdesk/db";
 import { recomputeSignalsForPartner } from "@/lib/partnerdesk/signals";
@@ -37,6 +38,7 @@ export async function createPartnerAction(input: {
   name: string;
   networkId: string;
 }): Promise<ActionResult<{ slug: string }>> {
+  await requireAdmin();
   const nameError = validatePartnerName(input.name);
   if (nameError) return { ok: false, error: nameError };
   if (!input.networkId) return { ok: false, error: "Kies een netwerk." };
@@ -85,6 +87,7 @@ export async function updatePartnerFieldAction(input: {
   field: string;
   value: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const { partnerId, field } = input;
   if (!isEditablePartnerField(field)) {
     return { ok: false, error: "Dit veld is niet bewerkbaar." };
@@ -148,6 +151,7 @@ export async function addPartnerLabelAction(input: {
   labelId: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -169,6 +173,7 @@ export async function removePartnerLabelAction(input: {
   labelId: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -189,6 +194,7 @@ export async function removePartnerLabelAction(input: {
 export async function archivePartnerAction(input: {
   partnerId: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -220,6 +226,7 @@ export async function restorePartnerAction(input: {
   partnerId: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db
@@ -247,6 +254,7 @@ const LOGO_MIME = new Set(["image/png", "image/jpeg", "image/webp", "image/svg+x
 export async function uploadPartnerLogoAction(
   formData: FormData,
 ): Promise<ActionResult> {
+  await requireAdmin();
   const file = formData.get("file");
   const partnerId = String(formData.get("partnerId") ?? "");
   const slug = (formData.get("slug") as string) || undefined;
@@ -294,6 +302,7 @@ export async function removePartnerLogoAction(input: {
   partnerId: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { data: partner } = await db

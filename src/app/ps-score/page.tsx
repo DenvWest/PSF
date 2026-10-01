@@ -8,7 +8,7 @@ import {
   PS_SCORE_MODEL_VERSION,
 } from "@/data/supplement-hub/score-model";
 import { canonicalMetadata } from "@/lib/seo/canonical";
-import { buildBreadcrumbSchema } from "@/lib/seo/structuredData";
+import { buildBreadcrumbSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
   title: "PS-Score — hoe we supplementen beoordelen",
@@ -33,7 +33,7 @@ export default function PsScorePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbSchema) }}
       />
 
       <main className="bg-[#FDFCFA] pb-20">

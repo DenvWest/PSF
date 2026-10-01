@@ -9,6 +9,7 @@ import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import ArticleFigure from "@/components/article/ArticleFigure";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { overgangReferences } from "@/data/references/overgang";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
@@ -105,11 +106,11 @@ export default function OvergangPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
       />
 
       <main className="pb-16 md:pb-20 py-12 md:py-16">

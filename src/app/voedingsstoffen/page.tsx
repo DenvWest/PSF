@@ -8,7 +8,7 @@ import { NUTRIENT_PAGES } from "@/data/nutrition/nutrient-pages";
 import { nutrientRoute } from "@/data/nutrition/nutrient-routes";
 import { NUTRIENT_IDS } from "@/data/nutrition/intake-reference";
 import { canonicalMetadata } from "@/lib/seo/canonical";
-import { buildNamedItemListSchema } from "@/lib/seo/structuredData";
+import { buildNamedItemListSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
   title: "Voedingsstoffen: waar ze in zitten en hoeveel je nodig hebt",
@@ -39,7 +39,7 @@ export default function VoedingsstoffenHub() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <main className="py-10 md:py-14">
         <Container>

@@ -6,6 +6,7 @@ import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
 import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
   title: "Slaapproblemen Na 30? Dit Kun Je Eraan Doen",
@@ -127,7 +128,7 @@ export default function OnrustigeSlaperPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbJsonLd) }}
       />
 
       <main>
@@ -344,14 +345,10 @@ export default function OnrustigeSlaperPage() {
                   <h4 className="font-semibold text-slate-900 text-base">Ashwagandha (KSM-66)</h4>
                   <div className="mt-3 space-y-3">
                     <p className="text-slate-600 leading-relaxed">
-                      Als stress een rol speelt bij onrust &apos;s nachts, bespreken studies soms of
-                      plantenextracten iets doen met hoe je spanning ervaart of met stresshormoonmarkers
-                      — vergelijk producten op extract en withanoliden op het etiket, niet op uitkomstbeloftes.
-                      Gebruik het alleen als je die onzekerheid prima vindt.
-                    </p>
-                    <p className="text-slate-600 leading-relaxed">
-                      Ashwagandha is géén klassiek slaapmiddel met labelclaim; denk in weken, niet in
-                      minuten, en bespreek gebruik bij medicatie of schildklierzorg met je arts.
+                      Als stress een rol speelt bij onrust &apos;s nachts, beschrijven studies soms een
+                      effect op stresshormoonmarkers — geen goedgekeurde EU-gezondheidsclaim, en
+                      Nederland overweegt een verbod op deze stof. Denk in weken, niet in minuten, en
+                      bespreek gebruik bij medicatie of schildklierzorg met je arts.
                     </p>
                   </div>
                   <p className="text-slate-500 text-sm mt-4">

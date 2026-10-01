@@ -17,7 +17,7 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom grenzen op werk zo moeilijk zijn na je 30e",
       tekst:
-        "Rond je dertigste combineer je vaak senioriteit met meer afhankelijkheid van je inkomen: gezin, hypotheek, ouders die zorg nodig hebben. Tegelijk verwacht men van je dat je beschikbaar bent — mail, Teams, telefoon. Chronische beschikbaarheid houdt je cortisol hoog en ondermijnt diepe concentratie. Grenzen zijn dus geen ‘soft skill’; ze zijn een randvoorwaarde voor duurzame werkprestatie. Bij aanhoudende stress kun je [beste ashwagandha-supplementen](/beste/ashwagandha) als gerichte aanvulling overwegen.",
+        "Rond je dertigste combineer je vaak senioriteit met meer afhankelijkheid van je inkomen: gezin, hypotheek, ouders die zorg nodig hebben. Tegelijk verwacht men van je dat je beschikbaar bent — mail, Teams, telefoon. Chronische beschikbaarheid houdt je cortisol hoog en ondermijnt diepe concentratie. Grenzen zijn dus geen ‘soft skill’; ze zijn een randvoorwaarde voor duurzame werkprestatie.",
     },
     {
       type: "opsomming",
@@ -39,7 +39,7 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
       type: "tekst",
       titel: "Supplementen en claimstatus",
       tekst:
-        "Over ashwagandha: in de Europese Unie zijn voor Withania somnifera nog geen definitief goedgekeurde gezondheidsclaims; dossiers staan bij [EFSA](/kennisbank/efsa-claims) in de on-holdprocedure voor botanische stoffen. In Nederland coördineert het ministerie van Volksgezondheid, Welzijn en Sport (VWS) de uitvoering van EU-regels; de NVWA handhaaft op de markt. Zie [ashwagandha: werking en EU-context](/blog/ashwagandha-werking-mannen) voor literatuur en nuancering.",
+        "Bij aanhoudende stress wordt ashwagandha soms als aanvulling genoemd — let op: er is geen goedgekeurde EU-gezondheidsclaim voor deze stof, het dossier staat nog 'on hold' bij [EFSA](/kennisbank/efsa-claims), en Nederland overweegt een verbod. Zie [ashwagandha: werking en EU-context](/blog/ashwagandha-werking-mannen) voor literatuur en nuancering.",
     },
   ],
   samenvatting:

@@ -21,10 +21,7 @@ import {
   renderInlineMarkdownLinks,
   stripInlineMarkdownLinks,
 } from "@/components/blog/inlineMarkdownLinks";
-import {
-  buildBreadcrumbSchema,
-  buildFaqSchema,
-} from "@/lib/seo/structuredData";
+import { buildBreadcrumbSchema, buildFaqSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 const SITE_URL = "https://perfectsupplement.nl";
 
@@ -91,16 +88,16 @@ export default function SupplementPage({ data }: SupplementPageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbJsonLd),
+          __html: jsonLdScript(breadcrumbJsonLd),
         }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqJsonLd) }}
       />
 
       <div className="border-b border-stone-200/80 bg-white">

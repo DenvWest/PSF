@@ -15,6 +15,7 @@ import {
   LIB_PAGE_BG,
 } from "@/components/library/library-tokens";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const TITLE = "Herstelbibliotheek — slaap, stress en herstel";
 const DESCRIPTION =
@@ -45,7 +46,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@graph": [
               {

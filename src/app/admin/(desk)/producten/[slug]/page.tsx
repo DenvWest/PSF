@@ -22,7 +22,7 @@ import { PRODUCT_SCORE_INPUTS } from "@/data/supplement-hub/score-inputs";
 import { ScoreInputsEditor } from "@/components/product-admin/ScoreInputsEditor";
 import { scoreInputOptions, staticToStored } from "@/lib/product-admin/score-inputs";
 import type { SupplementCategory } from "@/types/supplement";
-import { isFreshPrice } from "@/lib/product-admin/publish-gate";
+import { isFreshPrice, scoreCoverageAdvice } from "@/lib/product-admin/publish-gate";
 import { CERTIFICATION_SUGGESTIONS, NUTRIENT_KEYS, listSelectableClaims } from "@/lib/product-admin/catalog-options";
 import { getProductDossierBySlug, listRetailerOptions } from "@/lib/product-admin/queries";
 
@@ -76,6 +76,7 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
   const category = first(product.sup_categories);
   const today = todayIso();
   const failures = gate.filter((c) => !c.ok);
+  const scoreAdvice = score?.available ? scoreCoverageAdvice(score.result.determinedCount, score.result.totalCount) : null;
   const categorySlug = (category?.slug ?? "") as SupplementCategory;
   const codeInputs = PRODUCT_SCORE_INPUTS[categorySlug]?.[slug];
   const inputsSource = scoreInputState.inputs ? "database" : codeInputs ? "code" : "leeg";
@@ -125,6 +126,12 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
                 </li>
               ))}
             </ul>
+            {scoreAdvice && (
+              <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+                <span className="font-medium">Let op: </span>
+                {scoreAdvice}
+              </p>
+            )}
             {failures.length > 0 && product.status !== "published" && (
               <p className="mt-3 text-xs text-[var(--ps-muted)]">Publiceren kan pas als alle punten voldaan zijn.</p>
             )}
@@ -191,13 +198,54 @@ export default async function ProductDossierPage({ params }: { params: Promise<{
 
           <CollapsibleSection id="etiket" title="Etiket">
             <div className="divide-y divide-[var(--ps-border)]">
-              <ReadOnlyRow label="Verpakking">
-                {product.container_size ? `${product.container_size} ${product.container_unit ?? ""}` : "—"}
-                {product.servings_per_container ? ` · ${product.servings_per_container} porties` : ""}
-              </ReadOnlyRow>
-              <ReadOnlyRow label="Portie">
-                {product.serving_size ? `${product.serving_size} ${product.serving_unit ?? ""}` : "—"}
-              </ReadOnlyRow>
+              <FieldRow label="Verpakking">
+                <div className="flex flex-wrap items-center gap-2">
+                  <InlineField
+                    entity="product"
+                    id={product.id}
+                    slug={slug}
+                    field="container_size"
+                    value={product.container_size != null ? String(product.container_size) : ""}
+                    placeholder="— grootte"
+                  />
+                  <InlineField
+                    entity="product"
+                    id={product.id}
+                    slug={slug}
+                    field="container_unit"
+                    value={product.container_unit ?? ""}
+                    placeholder="— eenheid (g, ml, capsules)"
+                  />
+                  <InlineField
+                    entity="product"
+                    id={product.id}
+                    slug={slug}
+                    field="servings_per_container"
+                    value={product.servings_per_container != null ? String(product.servings_per_container) : ""}
+                    placeholder="— porties per verpakking"
+                  />
+                </div>
+              </FieldRow>
+              <FieldRow label="Portie">
+                <div className="flex flex-wrap items-center gap-2">
+                  <InlineField
+                    entity="product"
+                    id={product.id}
+                    slug={slug}
+                    field="serving_size"
+                    value={product.serving_size != null ? String(product.serving_size) : ""}
+                    placeholder="— portiegrootte"
+                  />
+                  <InlineField
+                    entity="product"
+                    id={product.id}
+                    slug={slug}
+                    field="serving_unit"
+                    value={product.serving_unit ?? ""}
+                    placeholder="— eenheid (g, ml, capsule)"
+                  />
+                </div>
+              </FieldRow>
               <FieldRow label="Certificeringen">
                 <CertificationsEditor
                   certifications={certifications}

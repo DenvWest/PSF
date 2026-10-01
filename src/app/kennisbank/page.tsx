@@ -13,6 +13,7 @@ import {
   LIB_PAGE_BG,
 } from "@/components/library/library-tokens";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const TITLE = "Kennisbank — Begrippen en concepten";
 const DESCRIPTION =
@@ -45,7 +46,7 @@ export default async function KennisbankPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@graph": [
               {

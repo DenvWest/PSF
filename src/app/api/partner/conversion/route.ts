@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { unscoped } from "@/lib/db/scoped";
 import { consumeRateLimit } from "@/lib/rate-limit";
@@ -92,11 +93,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Niet geautoriseerd." }, { status: 401 });
   }
 
-  // Constant-time-gevoelige vergelijking is hier bewust achterwege gelaten:
-  // het geheim is een lang, random token (geen wachtwoord met lage entropie),
-  // en het risico van een timing-aanval op een interne, low-traffic postback-
-  // route weegt niet op tegen de complexiteit van een eigen vergelijkingsfunctie.
-  if (providedSecret !== partner.webhook_secret) {
+  const providedBuffer = Buffer.from(providedSecret);
+  const secretBuffer = Buffer.from(partner.webhook_secret);
+  const matches =
+    providedBuffer.length === secretBuffer.length &&
+    timingSafeEqual(providedBuffer, secretBuffer);
+  if (!matches) {
     return NextResponse.json({ error: "Niet geautoriseerd." }, { status: 401 });
   }
 

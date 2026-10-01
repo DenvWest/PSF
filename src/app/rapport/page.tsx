@@ -3,6 +3,7 @@ import Link from "next/link";
 import { DeltaRadar } from "@/components/report/DeltaRadar";
 import { DeltaRow } from "@/components/report/DeltaRow";
 import type { DomainScoreKey } from "@/lib/intake-engine";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
   title: "30-Dagen Hermeting: Zie Jouw Voortgang",
@@ -65,7 +66,7 @@ export default function RapportLandingPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <main className="min-h-screen bg-white">
         <section className="bg-slate-50 border-b border-slate-100 py-16">

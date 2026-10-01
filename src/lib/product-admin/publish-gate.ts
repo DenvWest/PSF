@@ -155,3 +155,12 @@ export function productFreshness(input: FreshnessInput): ProductFreshness {
         : "vers";
   return { state, staleData, stalePrices };
 }
+
+/** Onder deze dekking (bepaalde onderdelen / totaal) waarschuwt de admin; het blokkeert niet. Relatief, zodat een wijziging van het aantal scoreonderdelen niets breekt. */
+export const SCORE_COVERAGE_ADVICE_BELOW = 0.75;
+
+export function scoreCoverageAdvice(determinedCount: number, totalCount: number): string | null {
+  if (totalCount <= 0 || determinedCount >= totalCount) return null;
+  if (determinedCount / totalCount >= SCORE_COVERAGE_ADVICE_BELOW) return null;
+  return `De score gaat over ${determinedCount} van de ${totalCount} onderdelen. Onderdelen die niet te bepalen zijn tellen niet mee, dus de score kan hoger uitvallen dan bij volledig beoordeelde producten. Vul waar mogelijk de score-invoer aan; publiceren mag.`;
+}

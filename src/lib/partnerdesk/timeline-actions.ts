@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import { recomputeSignalsForPartner } from "@/lib/partnerdesk/signals";
@@ -50,6 +51,7 @@ export async function addTimelineEventAction(input: {
   occurredAt?: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const kind = EVENT_KIND[input.eventType];
   if (!kind) return { ok: false, error: "Onbekend type." };
   if (!input.body.trim()) return { ok: false, error: "Tekst is verplicht." };
@@ -88,6 +90,7 @@ export async function logMailToContactAction(input: {
   contactEmail: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const occurredAt = new Date().toISOString();

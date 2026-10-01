@@ -7,6 +7,7 @@ import HomeTrustSection from "@/components/homepage/HomeTrustSection";
 import HomeGuidesPromoSection from "@/components/homepage/HomeGuidesPromoSection";
 import HomeClosingCta from "@/components/homepage/HomeClosingCta";
 import "./homepage.css";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const HOME_TITLE = "Welke supplementen zijn zinvol na je 30e — en welke niet";
 const HOME_DESCRIPTION =
@@ -50,7 +51,7 @@ export default function HomePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(websiteSchema) }}
       />
       <div className="home">
         <Hero />
