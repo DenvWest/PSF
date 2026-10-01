@@ -38,6 +38,17 @@ const MONO_TABLE_ALLOWLIST = new Set([
   "premium_waitlist",
   "guide_opt_ins",
   "nurture_emails",
+  // 1 okt 2026 (audit N5, schema-drift baseline): operationele audit-trail,
+  // geen klantdata — zelfde redenering als pd_*/af_*.
+  "cron_runs",
+  // DEPRECATED legacy /thema/*-flow (mei 2026), vervangen door nurture_emails.
+  // Zelfde categorie als nurture_emails hierboven: eindgebruikers-e-mailadressen,
+  // geen nieuwe inserts meer, kolom toevoegen heeft geen nut meer.
+  "thema_nurture",
+  "thema_downloads",
+  // Hangt aan accounts (FK), org volgt uit de relatie — zelfde redenering als
+  // recovery_tokens/account_login_tokens hierboven.
+  "remeasure_reminders",
 ]);
 
 function readMigrationFiles(): { name: string; sql: string }[] {

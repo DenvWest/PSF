@@ -58,7 +58,7 @@ export const ashwagandhaData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom er geen gezondheidsclaim op het potje staat",
       tekst:
-        "Voor Withania somnifera (ashwagandha) staan er in de Europese Unie op dit moment geen definitief toegelaten gezondheidsclaims op de EU‑lijst voor dit ingrediënt. Dossiers voor botanische stoffen kunnen bij de Europese Autoriteit voor voedselveiligheid ([EFSA](/kennisbank/efsa-claims)) in de on-holdprocedure staan: onderzoek en veiligheid kunnen besproken zijn zonder dat er al een claim voor consumenten op het etiket mag. In Nederland zet het ministerie van Volksgezondheid, Welzijn en Sport (VWS) beleid en wetgeving uit; de Nederlandse Voedsel- en Warenautoriteit (NVWA) handhaaft markt en etikettering. Dit artikel vat literatuur samen en is geen medische aanbeveling of erkende productclaim. Bij klachten, medicatie of zwangerschap: overleg met een arts.",
+        "Voor ashwagandha (Withania somnifera) staat er op dit moment geen goedgekeurde gezondheidsclaim op de EU-lijst. Het dossier staat bij [EFSA](/kennisbank/efsa-claims) nog 'on hold': er is onderzoek en veiligheidsbeoordeling, maar nog geen groen licht om er iets over te claimen op het etiket. Nederland overweegt bovendien een verbod op deze stof. Dit artikel vat literatuur samen en is geen medische aanbeveling of erkende productclaim. Bij klachten, medicatie of zwangerschap: overleg met een arts.",
     },
   ],
   samenvatting:
