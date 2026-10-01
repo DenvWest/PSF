@@ -8,7 +8,15 @@ export const EDITABLE_PRODUCT_FIELDS = [
   "target_audience",
   "country_of_origin",
   "product_url",
+  "container_size",
+  "container_unit",
+  "servings_per_container",
+  "serving_size",
+  "serving_unit",
 ] as const;
+
+const NUMERIC_PRODUCT_FIELDS = new Set(["container_size", "servings_per_container", "serving_size"]);
+const INTEGER_PRODUCT_FIELDS = new Set(["servings_per_container"]);
 
 export type EditableProductField = (typeof EDITABLE_PRODUCT_FIELDS)[number];
 
@@ -29,10 +37,32 @@ export function validateOptionalUrl(value: string): string | null {
   }
 }
 
+/** Komma als decimaalteken toegestaan ("1,5"); Supabase ontvangt uiteindelijk een punt. */
+export function validateOptionalPositiveNumber(value: string, integer: boolean): string | null {
+  if (value === "") return null;
+  const normalized = value.replace(",", ".");
+  if (!/^\d+(\.\d+)?$/.test(normalized)) return "Moet een getal zijn.";
+  const num = Number(normalized);
+  if (num <= 0) return "Moet groter dan 0 zijn.";
+  if (integer && !Number.isInteger(num)) return "Moet een heel getal zijn.";
+  return null;
+}
+
 export function validateProductField(field: EditableProductField, value: string): string | null {
   if (field === "name" && value === "") return "Naam is verplicht.";
   if (field === "product_url") return validateOptionalUrl(value);
+  if (NUMERIC_PRODUCT_FIELDS.has(field)) {
+    return validateOptionalPositiveNumber(value, INTEGER_PRODUCT_FIELDS.has(field));
+  }
   return null;
+}
+
+/** Normaliseert een numeriek productveld naar het format dat Postgres verwacht ("," → "."). */
+export function normalizeProductFieldValue(field: EditableProductField, value: string): string {
+  if (value !== "" && NUMERIC_PRODUCT_FIELDS.has(field)) {
+    return value.replace(",", ".");
+  }
+  return value;
 }
 
 export const EDITABLE_BRAND_FIELDS = ["name", "manufacturer", "country", "website", "transparency_note"] as const;
