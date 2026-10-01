@@ -8,6 +8,7 @@ import {
   type SupplementCatalogEntry,
 } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
+import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekItem, DagboekItemBron } from "@/lib/nutrition-dagboek-items";
 
@@ -110,12 +111,7 @@ export default function DagboekVergelijkZoek({
               {resultaat.bron === "voeding" ? (
                 <FoodThumbnail entry={resultaat.entry} size={40} />
               ) : (
-                <span
-                  aria-hidden
-                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--vd-accent-2-rgb)/25%)] text-[11px] font-semibold text-[var(--vd-accent-2)]"
-                >
-                  {resultaat.entry.labelNl.trim().charAt(0).toUpperCase() || "?"}
-                </span>
+                <SupplementThumbnail entry={resultaat.entry} size={24} />
               )}
               <span className="max-w-[110px] truncate">{resultaat.entry.labelNl}</span>
               <span aria-hidden className="text-[14px] leading-none">
@@ -190,12 +186,7 @@ export default function DagboekVergelijkZoek({
                       {resultaat.bron === "voeding" ? (
                         <FoodThumbnail entry={resultaat.entry} size={40} />
                       ) : (
-                        <span
-                          aria-hidden
-                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[rgb(var(--vd-accent-2-rgb)/20%)] text-[17px] font-medium text-[var(--vd-accent-2)]"
-                        >
-                          {label.trim().charAt(0).toUpperCase() || "?"}
-                        </span>
+                        <SupplementThumbnail entry={resultaat.entry} size={40} />
                       )}
                       <span className="min-w-0">
                         <span className="block truncate text-[13px] text-[var(--vd-ink)]">

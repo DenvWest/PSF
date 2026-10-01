@@ -40,6 +40,12 @@ export interface SupplementCatalogEntry {
   porties: readonly SupplementPortie[];
   /** Extra woorden waarop gezocht wordt — merknamen, spreektaal. */
   zoek?: readonly string[];
+  /**
+   * Bestandsnaam in `public/images/producten/` van een representatief product
+   * voor dit generieke catalogusitem — zelfde foto's als op `/beste/*`.
+   * Ontbreekt zolang er geen passende match is; dan toont de letter-fallback.
+   */
+  imageFile?: string;
 }
 
 function s(
@@ -48,6 +54,7 @@ function s(
   nutrient: NutrientId,
   porties: readonly (readonly [string, number, SupplementPortie["unit"]])[],
   zoek?: readonly string[],
+  imageFile?: string,
 ): SupplementCatalogEntry {
   return {
     key,
@@ -55,31 +62,41 @@ function s(
     nutrient,
     porties: porties.map(([labelNl, amount, unit]) => ({ labelNl, amount, unit })),
     zoek,
+    imageFile,
   };
 }
 
 export const SUPPLEMENT_CATALOG: readonly SupplementCatalogEntry[] = [
   s("magnesiumcitraat-capsule", "Magnesiumcitraat, capsule", "magnesium",
-    [["1 capsule", 200, "mg"]], ["magnesium citraat"]),
+    [["1 capsule", 200, "mg"]], ["magnesium citraat"],
+    "Vitalnutrition-Magnesium-Citraat.jpg"),
   s("magnesiumbisglycinaat-capsule", "Magnesiumbisglycinaat, capsule", "magnesium",
-    [["1 capsule", 150, "mg"]], ["magnesium bisglycinaat", "magnesiumbisglycinaat"]),
+    [["1 capsule", 150, "mg"]], ["magnesium bisglycinaat", "magnesiumbisglycinaat"],
+    "Viridian-Magnesium-Bisglycinate.jpg"),
   s("magnesiumoxide-tablet", "Magnesiumoxide, tablet", "magnesium",
-    [["1 tablet", 250, "mg"]], ["magnesium oxide"]),
+    [["1 tablet", 250, "mg"]], ["magnesium oxide"],
+    "Vitaminstore-Super-Magnesium.jpg"),
 
   s("wei-eiwitpoeder-schep", "Wei-eiwitpoeder, schep", "protein",
-    [["1 schep (30 g)", 24, "g"]], ["whey", "eiwitpoeder", "eiwitshake", "proteine poeder"]),
+    [["1 schep (30 g)", 24, "g"]], ["whey", "eiwitpoeder", "eiwitshake", "proteine poeder"],
+    "vital-nutrition-whey-proteine.jpg"),
   s("plantaardig-eiwitpoeder-schep", "Plantaardig eiwitpoeder, schep", "protein",
-    [["1 schep (30 g)", 21, "g"]], ["vegan eiwitpoeder", "erwteneiwit", "soja eiwit"]),
+    [["1 schep (30 g)", 21, "g"]], ["vegan eiwitpoeder", "erwteneiwit", "soja eiwit"],
+    "Orangefit-Protein.jpg"),
 
   s("zinkcitraat-tablet", "Zinkcitraat, tablet", "zinc",
-    [["1 tablet", 15, "mg"]], ["zink citraat"]),
+    [["1 tablet", 15, "mg"]], ["zink citraat"],
+    "Solgar-vitamins-zink.jpg"),
   s("zinkpicolinaat-capsule", "Zinkpicolinaat, capsule", "zinc",
-    [["1 capsule", 22, "mg"]], ["zink picolinaat"]),
+    [["1 capsule", 22, "mg"]], ["zink picolinaat"],
+    "Bonusan-zink-Methionine.jpg"),
 
   s("visolie-capsule-1000mg", "Visolie, capsule 1000 mg", "omega3",
-    [["1 capsule", 300, "mg"]], ["omega 3 capsule", "fish oil"]),
+    [["1 capsule", 300, "mg"]], ["omega 3 capsule", "fish oil"],
+    "More-EPA-Original.jpg"),
   s("algenolie-capsule", "Algenolie, capsule", "omega3",
-    [["1 capsule", 250, "mg"]], ["omega 3 vegan", "algen olie"]),
+    [["1 capsule", 250, "mg"]], ["omega 3 vegan", "algen olie"],
+    "Arctic-Blue-Algen-Olie.png"),
 ];
 
 const BY_KEY: ReadonlyMap<string, SupplementCatalogEntry> = new Map(
@@ -88,6 +105,11 @@ const BY_KEY: ReadonlyMap<string, SupplementCatalogEntry> = new Map(
 
 export function supplementCatalogEntry(key: string): SupplementCatalogEntry | null {
   return BY_KEY.get(key) ?? null;
+}
+
+/** Zelfde productfoto's als op `/beste/*`, via `imageFile` — niet elk item heeft er een. */
+export function supplementImageSrc(entry: SupplementCatalogEntry): string | null {
+  return entry.imageFile ? `/images/producten/${entry.imageFile}` : null;
 }
 
 /** Zelfde normalisatie als food-catalog.ts, zodat beide catalogi zich hetzelfde gedragen. */

@@ -5,6 +5,7 @@ import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
+import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
 import {
   bedragVanItem,
@@ -165,6 +166,8 @@ export default function DagboekNutrientDetail({
               if (!itemLabel) return null;
               const momentLabel = EETMOMENTEN.find((m) => m.id === item.moment)?.label;
               const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
+              const supplementEntry =
+                item.bron === "supplement" ? supplementCatalogEntry(item.key) : null;
               return (
                 <li
                   key={`${item.key}-${index}`}
@@ -172,6 +175,8 @@ export default function DagboekNutrientDetail({
                 >
                   {voedingEntry ? (
                     <FoodThumbnail entry={voedingEntry} size={40} />
+                  ) : supplementEntry ? (
+                    <SupplementThumbnail entry={supplementEntry} size={40} />
                   ) : (
                     <span
                       aria-hidden
