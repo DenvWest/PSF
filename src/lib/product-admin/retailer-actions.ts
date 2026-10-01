@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { getPartnerDeskDb, slugify } from "@/lib/partnerdesk/db";
 import type { ActionResult } from "@/lib/partnerdesk/actions";
@@ -23,6 +24,7 @@ export async function updateRetailerFieldAction(input: {
   field: string;
   value: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (!isEditableRetailerField(input.field)) return { ok: false, error: "Dit veld is niet bewerkbaar." };
   const value = input.value.trim();
   const fieldError = validateRetailerField(input.field, value);
@@ -46,6 +48,7 @@ export async function updateRetailerFieldAction(input: {
 }
 
 export async function setRetailerActiveAction(input: { retailerId: string; active: boolean }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { error } = await db.from("sup_retailers").update({ active: input.active }).eq("id", input.retailerId);
@@ -62,6 +65,7 @@ export async function createRetailerAction(input: {
   relationship: string;
   pdPartnerId: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const error = validateNewRetailer(input);
   if (error) return { ok: false, error };
   try {

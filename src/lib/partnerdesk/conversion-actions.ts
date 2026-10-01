@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { ingestConversion } from "@/lib/partnerdesk/conversion-ingest";
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
@@ -27,6 +28,7 @@ export interface ManualConversionInput {
 export async function addManualConversionAction(
   input: ManualConversionInput,
 ): Promise<ActionResult> {
+  await requireAdmin();
   if (input.type !== "lead" && input.type !== "sale") {
     return { ok: false, error: "Type moet lead of sale zijn." };
   }
@@ -83,6 +85,7 @@ export async function reviewConversionAction(input: {
   decision: "approve" | "reject";
   receivedCents?: number | null;
 }): Promise<ActionResult> {
+  await requireAdmin();
   if (
     input.receivedCents != null &&
     (!Number.isInteger(input.receivedCents) || input.receivedCents < 0)
@@ -153,6 +156,7 @@ export async function deleteManualConversionAction(input: {
   partnerId: string;
   slug?: string;
 }): Promise<ActionResult> {
+  await requireAdmin();
   try {
     const db = getPartnerDeskDb();
     const { data, error } = await db

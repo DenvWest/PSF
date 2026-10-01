@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { getPartnerDeskDb, slugify } from "@/lib/partnerdesk/db";
@@ -53,6 +54,7 @@ export async function previewImportAction(input: {
   csv: string;
   allowNewBrands: boolean;
 }): Promise<ActionResult<ImportPreview>> {
+  await requireAdmin();
   const parsed = parseCsv(input.csv);
   if (parsed.error) return { ok: false, error: parsed.error };
   try {
@@ -73,6 +75,7 @@ export async function commitImportAction(input: {
   csv: string;
   allowNewBrands: boolean;
 }): Promise<ActionResult<ImportCommitResult>> {
+  await requireAdmin();
   const parsed = parseCsv(input.csv);
   if (parsed.error) return { ok: false, error: parsed.error };
   try {

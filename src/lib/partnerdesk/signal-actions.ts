@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/admin-auth";
 import { revalidatePath } from "next/cache";
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import { recordTimelineEvent } from "@/lib/partnerdesk/timeline";
@@ -18,6 +19,7 @@ export async function snoozeSignalAction(input: {
   reason: string;
   partnerId?: string | null;
 }): Promise<ActionResult> {
+  await requireAdmin();
   const reason = input.reason.trim();
   if (reason.length < 5) {
     return { ok: false, error: "Geef een reden (minstens 5 tekens)." };
