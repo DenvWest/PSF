@@ -16,13 +16,28 @@ import {
 } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { ProteinTargetRange } from "@/lib/protein-target";
+import {
+  somVanSupermarktveld,
+  type SupermarktPortieLog,
+  type SupermarktVeld,
+} from "@/lib/nutrition-supermarkt-items";
+import { LEGE_MACRO_DOELEN, type MacroDoelen } from "@/lib/account-macro-doelen";
+import { fetchMacroDoelen } from "@/lib/macro-doelen-client";
+import { bouwSupermarktWeekoverzicht } from "@/lib/nutrition-supermarkt-weekoverzicht";
+import { verschuifWeek, weekDatums, weekStart } from "@/lib/nutrition-weekoverzicht";
 import DagboekCatalogusZoek from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
 import DagboekHero from "@/components/dashboard/dagboek/DagboekHero";
 import DagboekMaaltijd from "@/components/dashboard/dagboek/DagboekMaaltijd";
+import DagboekMacroRing, {
+  MACRO_RING_KLEUREN,
+} from "@/components/dashboard/dagboek/DagboekMacroRing";
 import DagboekNutrientBalken from "@/components/dashboard/dagboek/DagboekNutrientBalken";
 import DagboekNutrientDetail from "@/components/dashboard/dagboek/DagboekNutrientDetail";
 import DagboekPortieInvoer from "@/components/dashboard/dagboek/DagboekPortieInvoer";
 import DagboekProductDetail from "@/components/dashboard/dagboek/DagboekProductDetail";
+import DagboekSubtabs, { type DagboekSectie } from "@/components/dashboard/dagboek/DagboekSubtabs";
+import DagboekSupermarktSectie from "@/components/dashboard/dagboek/DagboekSupermarktSectie";
+import DagboekSupermarktWeektabel from "@/components/dashboard/dagboek/DagboekSupermarktWeektabel";
 import DagboekVergelijkTabel from "@/components/dashboard/dagboek/DagboekVergelijkTabel";
 import DagboekVergelijkZoek, {
   MAX_VERGELIJK,
@@ -32,6 +47,7 @@ import DagboekWeekstrip, {
   meetdagenUit,
   weekRond,
 } from "@/components/dashboard/dagboek/DagboekWeekstrip";
+import SupermarktPortieInvoer from "@/components/dashboard/dagboek/SupermarktPortieInvoer";
 
 /**
  * De vier toestanden van het scherm-achter-een-balk: overzicht (het bestaande
@@ -53,6 +69,16 @@ type NutrientScherm =
       nutrient: NutrientId | null;
       bron: DagboekItemBron;
       key: string;
+      moment: EetmomentId;
+    }
+  | {
+      /**
+       * Supermarktproduct-portie (Laag A) — eigen tak naast "portie" omdat
+       * een supermarktproduct geen `DagboekItemBron`/`nutrient` draagt, zie
+       * `nutrition-supermarkt-items.ts`.
+       */
+      scherm: "supermarktPortie";
+      prodId: string;
       moment: EetmomentId;
     }
   | { scherm: "product"; item: DagboekItem }
@@ -82,6 +108,9 @@ type NutrientScherm =
  */
 
 const MAX_TREFFERS = 8;
+
+/** De drie macro-velden die het "Macro's"-tabblad toont, uit `SUPERMARKT_MACRO_VELDEN`. */
+const MACRO_VELDEN = new Set<SupermarktVeld>(["carbohydrateG", "fatG", "proteinG"]);
 
 export default function DagboekScherm({
   checkSliders = null,
@@ -119,6 +148,25 @@ export default function DagboekScherm({
   const [favorieten, setFavorieten] = useState<DagboekFavoriet[]>([]);
   const [vergelijkSelectie, setVergelijkSelectie] = useState<VergelijkResultaat[]>([]);
   const [busyFavoriet, setBusyFavoriet] = useState(false);
+  /**
+   * Supermarkt-portie-logs (Laag A) — apart geladen en opgeslagen, net als
+   * `favorieten`. Geen `DagboekItem`, geen deel van `bewerkt`/`bewaar()`: een
+   * eigen tabel (`account_supermarkt_portie_logs`), zie
+   * `nutrition-supermarkt-items.ts`.
+   */
+  const [supermarktLogs, setSupermarktLogs] = useState<SupermarktPortieLog[]>([]);
+  const [busySupermarkt, setBusySupermarkt] = useState(false);
+
+  /** Laag B: welk tabblad van het dagboek-overzicht actief is. */
+  const [dagboekSectie, setDagboekSectie] = useState<DagboekSectie>("vandaag");
+  /** Laag C: het zelf ingestelde macro/calorie-doel, apart geladen. */
+  const [macroDoelen, setMacroDoelen] = useState<MacroDoelen>(LEGE_MACRO_DOELEN);
+  /** Weeknavigatie voor de Voedingsstoffen/Macro's-tabbladen — los van `datum`. */
+  const [weekOffset, setWeekOffset] = useState(0);
+  /** Supermarkt-logs van de bekeken week, per datum — apart van `supermarktLogs` (dat is alleen de geselecteerde dag). */
+  const [weekSupermarktLogs, setWeekSupermarktLogs] = useState<Map<string, SupermarktPortieLog[]>>(
+    new Map(),
+  );
 
   useEffect(() => {
     let afgebroken = false;
@@ -164,6 +212,86 @@ export default function DagboekScherm({
       afgebroken = true;
     };
   }, []);
+
+  useEffect(() => {
+    let afgebroken = false;
+    void (async () => {
+      try {
+        const response = await fetch(
+          `/api/account/supermarkt-portie-logs?date=${encodeURIComponent(datum)}`,
+          { credentials: "include" },
+        );
+        if (!response.ok) throw new Error("laden mislukt");
+        const body = (await response.json()) as { items?: SupermarktPortieLog[] };
+        if (!afgebroken) setSupermarktLogs(body.items ?? []);
+      } catch {
+        if (!afgebroken) setSupermarktLogs([]);
+      }
+    })();
+    return () => {
+      afgebroken = true;
+    };
+  }, [datum]);
+
+  useEffect(() => {
+    let afgebroken = false;
+    void (async () => {
+      try {
+        const doelen = await fetchMacroDoelen();
+        if (!afgebroken) setMacroDoelen(doelen);
+      } catch {
+        // Zonder doel toont het weekoverzicht "geen doel ingesteld" — geen
+        // reden om het hele scherm te laten mislukken.
+        if (!afgebroken) setMacroDoelen(LEGE_MACRO_DOELEN);
+      }
+    })();
+    return () => {
+      afgebroken = true;
+    };
+  }, []);
+
+  const bekekenWeekStart = useMemo(
+    () => verschuifWeek(weekStart(vandaag), weekOffset),
+    [vandaag, weekOffset],
+  );
+  const bekekenWeekDatums = useMemo(() => weekDatums(bekekenWeekStart), [bekekenWeekStart]);
+
+  useEffect(() => {
+    let afgebroken = false;
+    void (async () => {
+      const paren = await Promise.all(
+        bekekenWeekDatums.map(async (dagDatum) => {
+          try {
+            const response = await fetch(
+              `/api/account/supermarkt-portie-logs?date=${encodeURIComponent(dagDatum)}`,
+              { credentials: "include" },
+            );
+            if (!response.ok) throw new Error("laden mislukt");
+            const body = (await response.json()) as { items?: SupermarktPortieLog[] };
+            return [dagDatum, body.items ?? []] as [string, SupermarktPortieLog[]];
+          } catch {
+            return [dagDatum, []] as [string, SupermarktPortieLog[]];
+          }
+        }),
+      );
+      if (!afgebroken) setWeekSupermarktLogs(new Map(paren));
+    })();
+    return () => {
+      afgebroken = true;
+    };
+  }, [bekekenWeekDatums]);
+
+  const supermarktWeekoverzicht = useMemo(
+    () => bouwSupermarktWeekoverzicht(weekSupermarktLogs, bekekenWeekDatums, macroDoelen),
+    [weekSupermarktLogs, bekekenWeekDatums, macroDoelen],
+  );
+  const isHuidigeSupermarktWeek = weekOffset === 0;
+
+  function bladerSupermarktWeek(weken: number) {
+    const volgendeOffset = weekOffset + weken;
+    if (volgendeOffset > 0) return; // nooit de toekomst in
+    setWeekOffset(volgendeOffset);
+  }
 
   const items = useMemo(() => {
     if (bewerkt && bewerkt.datum === datum) return bewerkt.items;
@@ -338,6 +466,48 @@ export default function DagboekScherm({
     }
   }
 
+  /**
+   * Voegt een supermarktproduct-portie toe: optimistisch lokaal, dan de
+   * server-call — zelfde vorm als `bewaarFavoriet`, niet als `bewaar()` (geen
+   * schrijfteller/rollback nodig: een los log-event heeft geen dagbrede
+   * consistentie te bewaken zoals `items`).
+   */
+  async function voegSupermarktPortieToe(moment: EetmomentId, prodId: string, grams: number) {
+    setBusySupermarkt(true);
+    try {
+      const response = await fetch("/api/account/supermarkt-portie-logs", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date: datum, moment, prodId, grams }),
+      });
+      if (!response.ok) throw new Error("Kon portie niet opslaan.");
+      const body = (await response.json()) as { item?: SupermarktPortieLog };
+      if (body.item) {
+        setSupermarktLogs((vorige) => [...vorige, body.item as SupermarktPortieLog]);
+      }
+      emitAccountClientEvent("nutrition.dagboek_supermarkt_portie_bevestigd", {
+        surface: "dagboek_tab",
+      });
+      trackEvent("nutrition_dagboek_supermarkt_portie_bevestigd", {});
+    } finally {
+      setBusySupermarkt(false);
+    }
+  }
+
+  async function verwijderSupermarktPortie(id: string) {
+    setSupermarktLogs((vorige) => vorige.filter((log) => log.id !== id));
+    setBusySupermarkt(true);
+    try {
+      await fetch(`/api/account/supermarkt-portie-logs?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+    } finally {
+      setBusySupermarkt(false);
+    }
+  }
+
   function toggleVergelijk(resultaat: VergelijkResultaat) {
     setVergelijkSelectie((vorige) => {
       const aanwezig = vorige.some(
@@ -363,6 +533,24 @@ export default function DagboekScherm({
   // zoeklijst in plaats van ernaast. Een maaltijd is zelden één product, en zo
   // is het tweede product één tik verder dan het eerste in plaats van de hele
   // route terug.
+  // Eigen, volledig scherm — geen laag over de zoeklijst zoals "portie": de
+  // MyFitnessPal-vorm (27 sep) toont rijen (maaltijd/porties/portiegrootte)
+  // vóór de ring, en dat leest beter als eigen pagina dan als overlay.
+  if (scherm.scherm === "supermarktPortie") {
+    return (
+      <SupermarktPortieInvoer
+        prodId={scherm.prodId}
+        moment={scherm.moment}
+        busy={busySupermarkt}
+        onTerug={() => setScherm({ scherm: "zoek", nutrient: null, moment: scherm.moment })}
+        onBevestig={(gekozenMoment, grams) => {
+          void voegSupermarktPortieToe(gekozenMoment, scherm.prodId, grams);
+          setScherm({ scherm: "zoek", nutrient: null, moment: gekozenMoment });
+        }}
+      />
+    );
+  }
+
   if (scherm.scherm === "zoek" || scherm.scherm === "portie") {
     const moment = scherm.moment;
     const nutrient = scherm.nutrient;
@@ -385,6 +573,9 @@ export default function DagboekScherm({
             });
             trackEvent("nutrition_dagboek_zoek_item_gekozen", { nutrient: nutrient ?? "geen", bron });
             setScherm({ scherm: "portie", nutrient, bron, key, moment });
+          }}
+          onKiesSupermarkt={(prodId) => {
+            setScherm({ scherm: "supermarktPortie", prodId, moment });
           }}
           onBewaarFavoriet={(bron, key) => void bewaarFavoriet(bron, key)}
           onVerwijderFavoriet={(bron, key) => void verwijderFavoriet(bron, key)}
@@ -495,88 +686,181 @@ export default function DagboekScherm({
         </span>
       </header>
 
-      <DagboekHero stoffen={ondergrens} proteinTarget={proteinTarget} />
-
-      <DagboekNutrientBalken
-        stoffen={ondergrens}
-        proteinTarget={proteinTarget}
-        onSelect={(nutrient) => {
-          emitAccountClientEvent("nutrition.dagboek_nutrient_opened", {
-            nutrient,
-            surface: "dagboek_tab",
-          });
-          trackEvent("nutrition_dagboek_nutrient_opened", { nutrient });
-          setScherm({ scherm: "detail", nutrient });
+      <DagboekSubtabs
+        actief={dagboekSectie}
+        onKies={(volgende) => {
+          setDagboekSectie(volgende);
+          trackEvent("nutrition_dagboek_subtab_gekozen", { sectie: volgende });
         }}
       />
 
-      {ondergrens.length === 0 ? (
-        <p className="m-0 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-3 text-[12px] leading-relaxed text-[var(--vd-ink-3)]">
-          {laden
-            ? "Je dagboek wordt geladen…"
-            : "Nog niets geregistreerd voor deze dag. Zodra je een product toevoegt, staat hier wat het minstens levert."}
-        </p>
-      ) : null}
+      {dagboekSectie === "vandaag" ? (
+        <div
+          id="dagboek-subtab-paneel-vandaag"
+          role="tabpanel"
+          aria-labelledby="dagboek-subtab-vandaag"
+          className="flex flex-col gap-4"
+        >
+          <DagboekHero stoffen={ondergrens} proteinTarget={proteinTarget} />
 
-      <DagboekWeekstrip
-        dagen={stripDagen}
-        geselecteerd={datum}
-        onSelecteer={setDatum}
-        busy={busy}
-      />
-
-      <div id="dagboek-eetmomenten" className="flex flex-col gap-2.5">
-        {EETMOMENTEN.map((moment) => (
-          <DagboekMaaltijd
-            key={moment.id}
-            moment={moment.id}
-            label={moment.label}
-            items={items}
-            busy={busy}
-            onToevoegen={(id) => {
-              emitAccountClientEvent("nutrition.dagboek_maaltijd_geopend", {
-                moment: id,
+          <DagboekNutrientBalken
+            stoffen={ondergrens}
+            proteinTarget={proteinTarget}
+            onSelect={(nutrient) => {
+              emitAccountClientEvent("nutrition.dagboek_nutrient_opened", {
+                nutrient,
                 surface: "dagboek_tab",
               });
-              trackEvent("nutrition_dagboek_maaltijd_geopend", { moment: id });
-              setScherm({ scherm: "zoek", nutrient: null, moment: id });
-            }}
-            onGram={(item, grams) =>
-              wijzig(
-                items.map((i) =>
-                  i === item ? { ...i, grams: Math.max(1, Math.trunc(grams) || 1) } : i,
-                ),
-              )
-            }
-            onVerwijder={(item) => wijzig(items.filter((i) => i !== item))}
-            onOpenProduct={(item) => {
-              emitAccountClientEvent("nutrition.dagboek_product_geopend", {
-                bron: item.bron,
-                surface: "dagboek_tab",
-              });
-              trackEvent("nutrition_dagboek_product_geopend", { bron: item.bron });
-              setScherm({ scherm: "product", item });
+              trackEvent("nutrition_dagboek_nutrient_opened", { nutrient });
+              setScherm({ scherm: "detail", nutrient });
             }}
           />
-        ))}
-      </div>
 
-      {error ? (
-        <p role="status" className="m-0 text-[11.5px] leading-relaxed text-[var(--vd-terra)]">
-          {error}
-        </p>
-      ) : null}
+          {ondergrens.length === 0 ? (
+            <p className="m-0 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-3 text-[12px] leading-relaxed text-[var(--vd-ink-3)]">
+              {laden
+                ? "Je dagboek wordt geladen…"
+                : "Nog niets geregistreerd voor deze dag. Zodra je een product toevoegt, staat hier wat het minstens levert."}
+            </p>
+          ) : null}
 
-      {ondergrens.length > 0 ? (
-        <p className="m-0 rounded-xl border-l-2 border-[var(--vd-sage)] bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-[var(--vd-ink-2)]">
-          <strong className="font-bold text-[var(--vd-ink)]">
-            Alles hier is een ondergrens.
-          </strong>{" "}
-          Niemand noemt alles — de koffie, de olijfolie, het broodje dat je
-          vergat. Wat je niet registreerde kan er alleen bij komen, nooit af.
-          Daarom staat er &ldquo;minstens&rdquo; en nooit een tekort.
-        </p>
-      ) : null}
+          <DagboekWeekstrip
+            dagen={stripDagen}
+            geselecteerd={datum}
+            onSelecteer={setDatum}
+            busy={busy}
+          />
+
+          <div id="dagboek-eetmomenten" className="flex flex-col gap-2.5">
+            {EETMOMENTEN.map((moment) => (
+              <DagboekMaaltijd
+                key={moment.id}
+                moment={moment.id}
+                label={moment.label}
+                items={items}
+                busy={busy}
+                onToevoegen={(id) => {
+                  emitAccountClientEvent("nutrition.dagboek_maaltijd_geopend", {
+                    moment: id,
+                    surface: "dagboek_tab",
+                  });
+                  trackEvent("nutrition_dagboek_maaltijd_geopend", { moment: id });
+                  setScherm({ scherm: "zoek", nutrient: null, moment: id });
+                }}
+                onGram={(item, grams) =>
+                  wijzig(
+                    items.map((i) =>
+                      i === item ? { ...i, grams: Math.max(1, Math.trunc(grams) || 1) } : i,
+                    ),
+                  )
+                }
+                onVerwijder={(item) => wijzig(items.filter((i) => i !== item))}
+                onOpenProduct={(item) => {
+                  emitAccountClientEvent("nutrition.dagboek_product_geopend", {
+                    bron: item.bron,
+                    surface: "dagboek_tab",
+                  });
+                  trackEvent("nutrition_dagboek_product_geopend", { bron: item.bron });
+                  setScherm({ scherm: "product", item });
+                }}
+              />
+            ))}
+          </div>
+
+          <DagboekSupermarktSectie
+            logs={supermarktLogs}
+            busy={busySupermarkt}
+            onVerwijder={(id) => void verwijderSupermarktPortie(id)}
+          />
+
+          {error ? (
+            <p role="status" className="m-0 text-[11.5px] leading-relaxed text-[var(--vd-terra)]">
+              {error}
+            </p>
+          ) : null}
+
+          {ondergrens.length > 0 ? (
+            <p className="m-0 rounded-xl border-l-2 border-[var(--vd-sage)] bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-[var(--vd-ink-2)]">
+              <strong className="font-bold text-[var(--vd-ink)]">
+                Alles hier is een ondergrens.
+              </strong>{" "}
+              Niemand noemt alles — de koffie, de olijfolie, het broodje dat je
+              vergat. Wat je niet registreerde kan er alleen bij komen, nooit af.
+              Daarom staat er &ldquo;minstens&rdquo; en nooit een tekort.
+            </p>
+          ) : null}
+        </div>
+      ) : dagboekSectie === "voedingsstoffen" ? (
+        <div
+          id="dagboek-subtab-paneel-voedingsstoffen"
+          role="tabpanel"
+          aria-labelledby="dagboek-subtab-voedingsstoffen"
+          className="flex flex-col gap-4"
+        >
+          <DagboekSupermarktWeektabel
+            overzicht={supermarktWeekoverzicht}
+            rijen={supermarktWeekoverzicht.rijen}
+            onVorigeWeek={() => bladerSupermarktWeek(-1)}
+            onVolgendeWeek={() => bladerSupermarktWeek(1)}
+            isHuidigeWeek={isHuidigeSupermarktWeek}
+          />
+        </div>
+      ) : (
+        <div
+          id="dagboek-subtab-paneel-macros"
+          role="tabpanel"
+          aria-labelledby="dagboek-subtab-macros"
+          className="flex flex-col gap-4"
+        >
+          <DagboekWeekstrip
+            dagen={stripDagen}
+            geselecteerd={datum}
+            onSelecteer={setDatum}
+            busy={busy}
+          />
+
+          <DagboekMacroRing
+            kcal={somVanSupermarktveld(supermarktLogs, "energyKcal")}
+            segmenten={[
+              {
+                key: "koolhydraten",
+                label: "Koolhydraten",
+                gram: somVanSupermarktveld(supermarktLogs, "carbohydrateG"),
+                kcalPerGram: 4,
+                kleur: MACRO_RING_KLEUREN.koolhydraten,
+              },
+              {
+                key: "vet",
+                label: "Vet",
+                gram: somVanSupermarktveld(supermarktLogs, "fatG"),
+                kcalPerGram: 9,
+                kleur: MACRO_RING_KLEUREN.vet,
+              },
+              {
+                key: "eiwit",
+                label: "Eiwit",
+                gram: somVanSupermarktveld(supermarktLogs, "proteinG"),
+                kcalPerGram: 4,
+                kleur: MACRO_RING_KLEUREN.eiwit,
+              },
+            ]}
+          />
+
+          <DagboekSupermarktSectie
+            logs={supermarktLogs}
+            busy={busySupermarkt}
+            onVerwijder={(id) => void verwijderSupermarktPortie(id)}
+          />
+
+          <DagboekSupermarktWeektabel
+            overzicht={supermarktWeekoverzicht}
+            rijen={supermarktWeekoverzicht.rijen.filter((rij) => MACRO_VELDEN.has(rij.veld))}
+            onVorigeWeek={() => bladerSupermarktWeek(-1)}
+            onVolgendeWeek={() => bladerSupermarktWeek(1)}
+            isHuidigeWeek={isHuidigeSupermarktWeek}
+          />
+        </div>
+      )}
     </div>
   );
 }

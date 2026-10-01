@@ -21,12 +21,14 @@ import { toBase } from "@/lib/nutrition-units";
  *
  * ## Waarom hier geen macro's of overige vitamines/mineralen staan
  *
- * Dit systeem trackt bewust maar vijf stoffen (eiwit, omega-3, magnesium,
- * vitamine D, zink) — "laag 5 blijft dicht voor tellen" (zie
- * `nutrition-dagboek-items.ts`). Een volledige voedingswaardetabel zoals op
- * een etiket zou een nieuwe, bredere databron vereisen; die bestaat nog niet.
- * Deze kaart toont daarom alleen wat het systeem al weet, niet wat een
- * etiket zou tonen.
+ * Dit scherm toont alleen `DagboekItem`s: het tekortsysteem, vijf kernstoffen
+ * (eiwit, omega-3, magnesium, vitamine D, zink) met een tekort-oordeel en een
+ * `/beste/*`-uitgang. Calorieën/macro's/brede micronutriënten zijn sinds
+ * `BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` wél te loggen (Laag
+ * A), maar bewust niet hier: een supermarktproduct-portie is geen
+ * `DagboekItem` (geen `NutrientId`, geen oordeel) en wordt apart getoond in
+ * `DagboekSupermarktSectie`. Deze kaart blijft dus het detailscherm van het
+ * tekortsysteem, niet van alles wat het dagboek registreert.
  */
 
 function labelVoor(item: DagboekItem): string | null {
@@ -163,9 +165,9 @@ export default function DagboekProductDetail({
 
       <p className="m-0 rounded-xl border-l-2 border-[var(--vd-sage)] bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-[var(--vd-ink-2)]">
         Dit is wat <b className="font-semibold text-[var(--vd-ink)]">{item.grams} {eenheid}</b>{" "}
-        {label.toLowerCase()} levert — niet je hele dag. Alleen de stoffen die dit dagboek volgt
-        staan hier; andere voedingsstoffen (calorieën, macro&apos;s, overige vitamines) meet dit
-        systeem bewust niet.
+        {label.toLowerCase()} levert — niet je hele dag. Alleen de vijf stoffen met een
+        tekort-oordeel staan hier; calorieën en macro&apos;s van supermarktproducten zie je bij
+        &ldquo;Calorieën &amp; macro&apos;s&rdquo; verderop, zonder oordeel.
       </p>
 
       <button

@@ -34,6 +34,7 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "nutrition.dagboek_maaltijd_geopend",
   "nutrition.dagboek_zoek_item_gekozen",
   "nutrition.dagboek_portie_bevestigd",
+  "nutrition.dagboek_supermarkt_portie_bevestigd",
   "nutrition.dagboek_favoriet_toegevoegd",
   "nutrition.dagboek_favoriet_verwijderd",
   "nutrition.dagboek_product_geopend",
