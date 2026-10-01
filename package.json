@@ -17,6 +17,7 @@
     "check:migraties": "node scripts/check-migraties-openstaand.mjs",
     "check:content-health": "node scripts/content-health.mjs",
     "build:prebuilds": "node scripts/build-prebuild-embeds.mjs",
+    "admin:generate-totp-secret": "node scripts/generate-admin-totp-secret.mjs",
     "prepare": "git config core.hooksPath .githooks",
     "extract:usda": "node scripts/usda-extract.mjs"
   },

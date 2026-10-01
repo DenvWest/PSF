@@ -7,6 +7,8 @@ import type { FormEvent } from "react";
 export default function AdminLoginPage() {
   const router = useRouter();
   const [password, setPassword] = useState("");
+  const [totpCode, setTotpCode] = useState("");
+  const [totpRequired, setTotpRequired] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -18,7 +20,7 @@ export default function AdminLoginPage() {
       const res = await fetch("/api/admin/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ password, totpCode }),
         credentials: "same-origin",
       });
       if (res.ok) {
@@ -28,9 +30,12 @@ export default function AdminLoginPage() {
       }
       let message = "Onjuist wachtwoord";
       try {
-        const data = (await res.json()) as { error?: string };
+        const data = (await res.json()) as { error?: string; totpRequired?: boolean };
         if (typeof data.error === "string" && data.error) {
           message = data.error;
+        }
+        if (data.totpRequired) {
+          setTotpRequired(true);
         }
       } catch {
         /* use default */
@@ -74,6 +79,20 @@ export default function AdminLoginPage() {
             onChange={(ev) => setPassword(ev.target.value)}
             className="w-full rounded-lg border border-[#e8e6e1] bg-white px-4 py-3 text-[#1a1a1a] outline-none ring-0 placeholder:text-[#999] focus:border-[#1a1a1a]"
           />
+          {totpRequired ? (
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="\d{6}"
+              maxLength={6}
+              name="totpCode"
+              autoComplete="one-time-code"
+              placeholder="6-cijferige code uit je authenticator-app"
+              value={totpCode}
+              onChange={(ev) => setTotpCode(ev.target.value.replace(/\D/g, "").slice(0, 6))}
+              className="w-full rounded-lg border border-[#e8e6e1] bg-white px-4 py-3 text-center text-lg tracking-[0.3em] text-[#1a1a1a] outline-none ring-0 placeholder:text-sm placeholder:tracking-normal placeholder:text-[#999] focus:border-[#1a1a1a]"
+            />
+          ) : null}
           {error ? (
             <p className="text-sm text-red-600" role="alert">
               {error}
