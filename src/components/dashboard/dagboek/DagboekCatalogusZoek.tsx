@@ -9,6 +9,7 @@ import {
   type SupplementCatalogEntry,
 } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
+import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import type { DagboekItem, DagboekItemBron } from "@/lib/nutrition-dagboek-items";
@@ -282,12 +283,7 @@ export default function DagboekCatalogusZoek({
                         {resultaat.bron === "voeding" ? (
                           <FoodThumbnail entry={resultaat.entry} size={40} />
                         ) : (
-                          <span
-                            aria-hidden
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[rgb(var(--vd-accent-2-rgb)/20%)] text-[17px] font-medium text-[var(--vd-accent-2)]"
-                          >
-                            {label.trim().charAt(0).toUpperCase() || "?"}
-                          </span>
+                          <SupplementThumbnail entry={resultaat.entry} size={40} />
                         )}
                         <span className="min-w-0">
                           <span className="block truncate text-[13px] text-[var(--vd-ink)]">
