@@ -91,6 +91,7 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   "whey-etiket-lezen": "voeding",
   "is-whey-schadelijk": "voeding",
   "eiwit-en-whey-in-de-overgang": "voeding",
+  "supplementen-via-influencers-checklist": "voeding",
   "wei-eiwit": "voeding",
   leucinedrempel: "voeding",
 };

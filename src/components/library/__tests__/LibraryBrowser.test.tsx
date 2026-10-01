@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import BlogLibrary from "@/components/blog/BlogLibrary";
 import KennisbankLibrary from "@/components/kennisbank/KennisbankLibrary";
@@ -28,6 +28,10 @@ const mannenTitels = new Set(
     .filter((item) => item.audience === "mannen")
     .map((item) => item.title),
 );
+
+beforeEach(() => {
+  window.history.replaceState(null, "", "/");
+});
 
 describe("bibliotheek — publiekslens", () => {
   it("verbergt niets: het totaal blijft gelijk in elke lens", () => {
@@ -117,5 +121,18 @@ describe("bibliotheek — filteren", () => {
     expect(screen.getByRole("button", { name: "Pagina 2" }).getAttribute("aria-current")).toBe(
       "page",
     );
+  });
+
+  it("herstelt pagina en onderwerp uit de URL zodat terug-navigeren de stand behoudt", () => {
+    window.history.replaceState(null, "", "/blog?pagina=2");
+    render(<BlogLibrary items={blogItems} />);
+
+    expect(screen.getByRole("button", { name: "Pagina 2" }).getAttribute("aria-current")).toBe(
+      "page",
+    );
+    expect(window.location.search).toContain("pagina=2");
+
+    fireEvent.click(screen.getByRole("button", { name: "Pagina 1" }));
+    expect(window.location.search).not.toContain("pagina=");
   });
 });

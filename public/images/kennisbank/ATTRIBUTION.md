@@ -77,3 +77,14 @@ Unsplash License. Deze covers zijn niet overschreven.
 | magnesiumvormen.jpg | 1498837167922-ddd27525d352 |
 | vitamine-d.jpg | 1507525428034-b723cf961d3e |
 | oxidatieve-stress.jpg | 1506905925346-21bda4d32df4 |
+
+## Inline-vervangingen (30 sep 2026)
+
+Pexels License, geen credit op de pagina. Bron = `https://www.pexels.com/photo/<id>/`:
+
+- `inline/circadiaan-ritme.jpg` ← 39735207
+- `inline/melatonine.jpg` ← 11922022
+- `inline/sociale-verbinding.jpg` ← 11368667
+- `inline/testosteron.jpg` ← 5327472
+
+Alt-teksten beschrijven wat er op de foto staat; de bron is `src/data/kennisbank-image-seo.ts`.
