@@ -8,6 +8,7 @@ import Container from "@/components/layout/Container";
 import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
 import { renderInlineMarkdownLinks } from "@/components/blog/inlineMarkdownLinks";
 import { stressdragerProfile } from "@/data/profiles/stressdrager";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const profile = stressdragerProfile;
 const PROFILE_LINK_CLASS =
@@ -122,7 +123,7 @@ export default function StressdragerPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbJsonLd) }}
       />
 
       <main>

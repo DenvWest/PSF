@@ -10,6 +10,7 @@ import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import ArticleFigure from "@/components/article/ArticleFigure";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { testosteronNa40References } from "@/data/references/testosteron-na-40";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
@@ -106,11 +107,11 @@ export default function TestosteronNa40Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
       />
 
       <main className="pb-16 md:pb-20 py-12 md:py-16">

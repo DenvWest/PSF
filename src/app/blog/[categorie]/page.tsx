@@ -21,6 +21,7 @@ import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import { blogCover } from "@/lib/blog-cover";
 import { absoluteUrl } from "@/lib/public-site-url";
 import { BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 interface Props {
   params: Promise<{ categorie: string }>;
@@ -98,7 +99,7 @@ export default async function BlogCategoriePage({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+            __html: jsonLdScript({
               "@context": "https://schema.org",
               "@graph": [
                 {

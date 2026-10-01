@@ -46,7 +46,7 @@ import RelatedContentRail from "@/components/content/RelatedContentRail";
 import { relatedContent } from "@/lib/content-graph/related-content";
 import { blogCover } from "@/lib/blog-cover";
 import { blogBodyImage } from "@/data/article-body-images";
-import { buildArticleImageObjects } from "@/lib/seo/structuredData";
+import { buildArticleImageObjects, jsonLdScript } from "@/lib/seo/structuredData";
 
 interface BlogArticlePageProps {
   artikel: BlogArtikel;
@@ -166,7 +166,7 @@ export default function BlogArticlePage({
     <div className="min-h-0 bg-stone-50/80 pb-28 md:bg-stone-50/85 md:pb-32">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleJsonLd) }}
       />
 
       <Container className="pt-11 md:pt-[3.25rem]">

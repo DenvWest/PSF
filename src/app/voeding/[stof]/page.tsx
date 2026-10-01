@@ -10,7 +10,7 @@ import {
   isVoedingStofSlug,
   VOEDING_STOF_SLUGS,
 } from "@/lib/voeding-public";
-import { buildArticleSchema } from "@/lib/seo/structuredData";
+import { buildArticleSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 type Props = { params: Promise<{ stof: string }> };
 
@@ -59,7 +59,7 @@ export default async function VoedingStofPage({ params }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleSchema) }}
       />
       <main className="pb-16 md:pb-20 py-12 md:py-16">
         <Container>

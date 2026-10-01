@@ -13,10 +13,7 @@ import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBan
 import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
 import { getLatestNutritionLogRawInputs } from "@/lib/nutrition-log-server";
 import { isVitaminDLowSunSeason } from "@/lib/nutrition-season";
-import {
-  buildBreadcrumbSchema,
-  buildNamedItemListSchema,
-} from "@/lib/seo/structuredData";
+import { buildBreadcrumbSchema, buildNamedItemListSchema, jsonLdScript } from "@/lib/seo/structuredData";
 
 export const dynamic = "force-dynamic";
 
@@ -88,7 +85,7 @@ export default async function SupplementenPage({ searchParams }: SupplementenPag
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <div>

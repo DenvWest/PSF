@@ -6,6 +6,7 @@ import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
 import { CheckLensBanner } from "@/components/personalization/CheckLensBanner";
 import { GenderAdaptiveText } from "@/components/personalization/GenderAdaptiveText";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
   title: "Altijd Moe Na 30? Dit Is Waarom",
@@ -122,7 +123,7 @@ export default function LageEnergiePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbJsonLd) }}
       />
 
       <main>

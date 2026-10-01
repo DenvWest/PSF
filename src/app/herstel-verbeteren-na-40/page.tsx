@@ -11,6 +11,7 @@ import DomainHubConnector from "@/components/content/DomainHubConnector";
 import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const INLINE_LINK_THEME =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]";
@@ -102,11 +103,11 @@ export default function HerstelVerbeterenNa40Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
       />
 
       <main className="pb-16 md:pb-20 py-12 md:py-16">

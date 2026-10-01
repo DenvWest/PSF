@@ -2,6 +2,15 @@ import type { SupplementProduct } from "@/types/supplement";
 
 const SITE_URL = "https://perfectsupplement.nl";
 
+/**
+ * Serialiseert JSON-LD voor `<script type="application/ld+json">`.
+ * Escapet `<` zodat DB-/feed-gevoede tekst geen `</script>` kan injecteren
+ * (de CSP staat 'unsafe-inline' toe, dus deze escape is de enige muur).
+ */
+export function jsonLdScript(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
 export interface BreadcrumbItem {
   name: string;
   url: string;

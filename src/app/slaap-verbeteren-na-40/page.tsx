@@ -10,6 +10,7 @@ import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
   title: "Slaap Verbeteren Na 30: Oorzaken, Tips & Supplementen",
@@ -98,11 +99,11 @@ export default function SlaapVerbeterenNa40Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
       />
 
       <main className="pb-16 md:pb-20 py-12 md:py-16">
