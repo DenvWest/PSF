@@ -1,6 +1,8 @@
 #!/bin/sh
 # Snelle gates vóór commit (zie CLAUDE.md + docs/core/CODE_CONVENTIONS.md).
 
+"$(dirname "$0")/branch-guard.sh" || exit 1
+
 if grep -rn "console\.log" src/ 2>/dev/null; then
   echo "[pre-commit] console.log gevonden in src/ — commit geblokkeerd." >&2
   exit 1
