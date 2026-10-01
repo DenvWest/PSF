@@ -12,7 +12,7 @@ import {
   getSupplementData,
 } from "@/data/supplement-guides";
 import { VOEDING_STOF_SLUGS } from "@/lib/voeding-public";
-import { getHubProductSlugs } from "@/lib/supplement-hub/product-catalog";
+import { loadHubProductSlugsForPage } from "@/lib/supplement-catalog-db/hub-products-for-page";
 import { blogCover } from "@/lib/blog-cover";
 import { kennisbankCover } from "@/lib/kennisbank-cover";
 import { NUTRIENT_PAGE_SLUGS } from "@/data/nutrition/nutrient-pages";
@@ -207,7 +207,7 @@ type SitemapSectionId =
  * Elke pagina-soort precies één keer. Het `Record` over de gesloten union is
  * de vangrail: een nieuwe `SitemapSectionId` zonder implementatie compileert niet.
  */
-const SITEMAP_SECTIONS: Record<SitemapSectionId, () => Entry[]> = {
+const SITEMAP_SECTIONS: Record<SitemapSectionId, () => Entry[] | Promise<Entry[]>> = {
   vergelijkingen: () =>
     SUPPLEMENT_SLUGS.map((slug) => {
       const data = getSupplementComparisonData(slug);
@@ -265,9 +265,9 @@ const SITEMAP_SECTIONS: Record<SitemapSectionId, () => Entry[]> = {
       "monthly",
     ),
 
-  producten: () =>
+  producten: async () =>
     paths(
-      getHubProductSlugs().map((slug) => `/product/${slug}`),
+      (await loadHubProductSlugsForPage()).map((slug) => `/product/${slug}`),
       0.8,
       "weekly",
     ),
@@ -331,6 +331,9 @@ const SITEMAP_SECTIONS: Record<SitemapSectionId, () => Entry[]> = {
   juridisch: () => paths(JURIDISCHE_PADEN, 0.3, "yearly"),
 };
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return Object.values(SITEMAP_SECTIONS).flatMap((build) => build());
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const sections = await Promise.all(
+    Object.values(SITEMAP_SECTIONS).map((build) => build()),
+  );
+  return sections.flat();
 }

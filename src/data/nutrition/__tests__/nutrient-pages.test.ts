@@ -39,8 +39,8 @@ describe("voedingsstofpagina's — dekking", () => {
     expect(nutrientPageBySlug("bestaat-niet")).toBeUndefined();
   });
 
-  it("staat met hub en al in de sitemap", () => {
-    const paden = new Set(sitemap().map((e) => new URL(e.url).pathname));
+  it("staat met hub en al in de sitemap", async () => {
+    const paden = new Set((await sitemap()).map((e) => new URL(e.url).pathname));
     expect(paden.has("/voedingsstoffen")).toBe(true);
     for (const slug of NUTRIENT_PAGE_SLUGS) {
       expect(paden.has(`/voedingsstoffen/${slug}`), slug).toBe(true);

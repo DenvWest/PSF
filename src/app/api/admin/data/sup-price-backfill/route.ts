@@ -11,11 +11,16 @@ import { backfillPrices } from "@/lib/supplement-catalog-db/price-backfill";
 export const dynamic = "force-dynamic";
 
 /**
- * Eenmalige/herhaalbare admin-actie: best-effort parse van de "Prijs / dag"-
- * specs uit de statische productdata naar sup_offers.price_cents +
- * price_checked_at. Idempotent; overschrijft geen bestaande waarden. Wat niet
- * met zekerheid te parsen is komt terug in `unparsed` — dat vul je handmatig
- * in via het productdossier (Aanbiedingen-sectie).
+ * Eenmalige/herhaalbare admin-actie: best-effort parse van de "Prijs"/
+ * "Prijs / dag"-specs uit de statische productdata naar
+ * sup_offers.price_cents + price_checked_at. Idempotent; overschrijft geen
+ * bestaande waarden. Wat niet met zekerheid te parsen is komt terug in
+ * `unparsed` — dat vul je handmatig in via het productdossier
+ * (Aanbiedingen-sectie).
+ *
+ * ?force=1 herberekent rijen die nog de vorige-backfill-stempel dragen (zie
+ * price-backfill.ts) — nodig na de correctie van de omrekenlogica; raakt
+ * nooit een in de admin handmatig gecontroleerde prijs.
  */
 export async function POST(request: NextRequest) {
   const token = request.cookies.get(ADMIN_TOKEN_COOKIE_NAME)?.value;
@@ -45,7 +50,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const result = await backfillPrices(admin);
+  const force = request.nextUrl.searchParams.get("force") === "1";
+  const result = await backfillPrices(admin, { force });
 
   if (result.errors.length > 0) {
     console.error("[api/admin/data/sup-price-backfill] fouten:", result.errors);
