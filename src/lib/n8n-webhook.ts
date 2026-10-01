@@ -8,7 +8,6 @@ export type DomainEventWebhookPayload = {
   occurred_at: string;
   event_type: string;
   session_id: string | null;
-  email: string | null;
   payload: Record<string, unknown>;
 };
 
@@ -90,7 +89,6 @@ type PendingDomainEventRow = {
   occurred_at: string;
   event_type: string;
   session_id: string | null;
-  email: string | null;
   payload: Record<string, unknown> | null;
   delivered_to: string[] | null;
 };
@@ -114,7 +112,7 @@ export async function runPendingN8nDomainEvents(): Promise<{
   const { data: pending, error } = await admin
     .from("domain_events")
     .select(
-      "id, organization_id, occurred_at, event_type, session_id, email, payload, delivered_to",
+      "id, organization_id, occurred_at, event_type, session_id, payload, delivered_to",
     )
     .not("delivered_to", "cs", `{${N8N_DELIVERY_CHANNEL}}`)
     .order("occurred_at", { ascending: true })
@@ -146,7 +144,6 @@ export async function runPendingN8nDomainEvents(): Promise<{
       occurred_at: row.occurred_at,
       event_type: row.event_type,
       session_id: row.session_id,
-      email: row.email,
       payload,
     });
 

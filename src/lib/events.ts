@@ -179,6 +179,12 @@ export function isDomainEventType(value: string): value is DomainEventType {
 export type EmitEventInput = {
   eventType: DomainEventType;
   sessionId?: string | null;
+  /**
+   * @deprecated domain_events slaat geen e-mailadres meer op (audit C3 /
+   * verwerkingsregister §7: "geanonimiseerde events"). Dit veld wordt
+   * genegeerd; bestaande callers blijven compileren zonder zelf aangepast
+   * te hoeven worden.
+   */
   email?: string | null;
   payload?: Record<string, unknown>;
   organizationId?: string;
@@ -195,11 +201,6 @@ export async function emitEvent(input: EmitEventInput): Promise<void> {
   }
 
   const organizationId = input.organizationId ?? getDefaultOrganizationId();
-  const email =
-    typeof input.email === "string" && input.email.trim()
-      ? input.email.trim().toLowerCase()
-      : null;
-
   const deliveredTo = input.deliveredTo ?? [];
 
   const { data: inserted, error } = await admin
@@ -208,13 +209,10 @@ export async function emitEvent(input: EmitEventInput): Promise<void> {
       organization_id: organizationId,
       event_type: input.eventType,
       session_id: input.sessionId ?? null,
-      email,
       payload: input.payload ?? {},
       delivered_to: deliveredTo,
     })
-    .select(
-      "id, organization_id, occurred_at, event_type, session_id, email, payload",
-    )
+    .select("id, organization_id, occurred_at, event_type, session_id, payload")
     .single();
 
   if (error) {
@@ -242,7 +240,6 @@ export async function emitEvent(input: EmitEventInput): Promise<void> {
       occurred_at: inserted.occurred_at,
       event_type: inserted.event_type,
       session_id: inserted.session_id,
-      email: inserted.email,
       payload,
     }).then((ok) => {
       if (ok) {
