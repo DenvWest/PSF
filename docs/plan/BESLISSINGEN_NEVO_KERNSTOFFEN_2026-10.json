@@ -390,94 +390,69 @@
       "stof": "zinc",
       "key": "kippenlever",
       "code": "475"
-    }
-  ],
-  "voorleggen": [
+    },
     {
       "stof": "protein",
       "key": "griekse-yoghurt",
       "code": "2503",
-      "advies": "NEVO",
-      "opm": "NEVO 3,8 g tegen USDA 8,8 g. 'Griekse yoghurt' in de Nederlandse winkel is meestal Griekse stijl (room), niet gezeefd; skyr dekt de eiwitrijke variant al."
+      "opm": "NEVO 3,8 g tegen USDA 8,8 g. 'Griekse yoghurt' in de Nederlandse winkel is meestal Griekse stijl (room), niet gezeefd; skyr dekt de eiwitrijke variant al. (akkoord Dennis, 3 okt)"
     },
     {
       "stof": "magnesium",
       "key": "tahin",
       "code": "1461",
-      "advies": "NEVO",
-      "opm": "NEVO 353 mg tegen USDA 95 mg. Nederlandse tahin is van het hele sesamzaad (sesamzaad zelf: 335 mg), USDA's record is een ander type."
-    },
-    {
-      "stof": "magnesium",
-      "key": "snijbiet",
-      "code": "48",
-      "advies": "USDA",
-      "opm": "NEVO 11 mg tegen USDA 86 mg. NEVO ligt ver onder spinazie (77 mg), wat niet bij snijbiet past; ik vertrouw dit getal niet."
+      "opm": "NEVO 353 mg tegen USDA 95 mg. Nederlandse tahin is van het hele sesamzaad (sesamzaad zelf: 335 mg), USDA's record is een ander type. (akkoord Dennis, 3 okt)"
     },
     {
       "stof": "magnesium",
       "key": "spinazie-diepvries",
       "code": "1146",
-      "advies": "NEVO",
-      "opm": "NEVO 35 mg tegen USDA 75 mg. NEVO's diepvriesspinazie ligt onder de rauwe (55 mg), wat bij blancheren past."
+      "opm": "NEVO 35 mg tegen USDA 75 mg. NEVO's diepvriesspinazie ligt onder de rauwe (55 mg), wat bij blancheren past. (akkoord Dennis, 3 okt)"
     },
     {
       "stof": "magnesium",
       "key": "tuinbonen-gekookt",
       "code": "962",
-      "advies": "NEVO",
-      "opm": "NEVO 19 mg tegen USDA 43 mg. Voor eiwit neem ik dezelfde NEVO-rij wel over (-34%)."
+      "opm": "NEVO 19 mg tegen USDA 43 mg. Voor eiwit neem ik dezelfde NEVO-rij wel over (-34%). (akkoord Dennis, 3 okt)"
     },
     {
       "stof": "vitamin_d",
       "key": "forel",
       "code": "1611",
-      "advies": "NEVO",
-      "opm": "NEVO 9,4 µg tegen USDA 19 µg (gekweekte regenboogforel)."
+      "opm": "NEVO 9,4 µg tegen USDA 19 µg (gekweekte regenboogforel). (akkoord Dennis, 3 okt)"
     },
     {
       "stof": "zinc",
       "key": "oesters",
       "code": "354",
-      "advies": "NEVO",
-      "opm": "NEVO 59,2 mg tegen USDA 37,9 mg; beide zijn extreem hoog, oester is de zinkrijkste bron."
+      "opm": "NEVO 59,2 mg tegen USDA 37,9 mg; beide zijn extreem hoog, oester is de zinkrijkste bron. (akkoord Dennis, 3 okt)"
     },
     {
       "stof": "zinc",
       "key": "lamsvlees",
       "code": "2057",
-      "advies": "NEVO",
-      "opm": "NEVO 3,2 mg tegen USDA 2,08 mg (Nieuw-Zeelandse lamskotelet)."
+      "opm": "NEVO 3,2 mg tegen USDA 2,08 mg (Nieuw-Zeelandse lamskotelet). (akkoord Dennis, 3 okt)"
     },
     {
       "stof": "zinc",
       "key": "kalfsvlees",
       "code": "5280",
-      "advies": "NEVO",
-      "opm": "NEVO 3,13 mg tegen USDA 2,01 mg."
-    },
-    {
-      "stof": "zinc",
-      "key": "feta",
-      "code": "3362",
-      "advies": "USDA",
-      "opm": "NEVO 0,9 mg tegen USDA 2,35 mg. Feta bevat normaal rond 2,9 mg; NEVO's waarde lijkt een uitschieter."
+      "opm": "NEVO 3,13 mg tegen USDA 2,01 mg. (akkoord Dennis, 3 okt)"
     },
     {
       "stof": "vitamin_d",
       "key": "haring",
       "code": "113",
-      "advies": "NEVO",
-      "opm": "Nu staat er een literatuurwaarde van 25 µg per 100 g; NEVO geeft voor elke haringvariant 6,2 µg. ONDERZOEK §2.8 noemt NEVO ~25 µg, maar dat staat niet in deze NEVO-versie. 6,2 µg ligt in lijn met NEVO's andere vette vis (makreel 8, gekweekte zalm 7,9)."
+      "opm": "Nu staat er een literatuurwaarde van 25 µg per 100 g; NEVO geeft voor elke haringvariant 6,2 µg. ONDERZOEK §2.8 noemt NEVO ~25 µg, maar dat staat niet in deze NEVO-versie. 6,2 µg ligt in lijn met NEVO's andere vette vis (makreel 8, gekweekte zalm 7,9). (akkoord Dennis, 3 okt)"
     },
     {
       "stof": "vitamin_d",
       "key": "leverpastei",
       "code": "335",
-      "advies": "NEVO",
-      "opm": "Nu staat er een literatuurwaarde van 10 µg per 100 g (3 µg per portie); NEVO's 'Pastei lever-' geeft 0,9 µg. Leverpastei is geen vitamine D-bron."
+      "opm": "Nu staat er een literatuurwaarde van 10 µg per 100 g (3 µg per portie); NEVO's 'Pastei lever-' geeft 0,9 µg. Leverpastei is geen vitamine D-bron. (akkoord Dennis, 3 okt)"
     }
   ],
+  "voorleggen": [],
   "blijft": [
     {
       "stof": "protein",
@@ -558,6 +533,16 @@
       "stof": "omega3",
       "key": "*",
       "reden": "EPA en DHA staan in NEVO apart; onze waarde is hun som, en dat is volgens de RIVM-voorwaarden een bewerking van de brondata. Omega-3 blijft op USDA tot het datamodel twee brondwaarden kan dragen."
+    },
+    {
+      "stof": "magnesium",
+      "key": "snijbiet",
+      "reden": "USDA aangehouden na voorleggen: NEVO 11 mg tegen USDA 86 mg. NEVO ligt ver onder spinazie (77 mg), wat niet bij snijbiet past; ik vertrouw dit getal niet."
+    },
+    {
+      "stof": "zinc",
+      "key": "feta",
+      "reden": "USDA aangehouden na voorleggen: NEVO 0,9 mg tegen USDA 2,35 mg. Feta bevat normaal rond 2,9 mg; NEVO's waarde lijkt een uitschieter."
     }
   ]
 }
