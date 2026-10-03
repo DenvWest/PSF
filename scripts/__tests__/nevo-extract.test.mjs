@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import {
   bouwVoedingsmiddelen,
   doelTokens,
@@ -246,8 +246,13 @@ describe("de bestaande code lezen", () => {
 const NEVO_CSV = process.env.NEVO_CSV || path.join(os.homedir(), "Downloads", "NEVO2025_v9.0_Details.csv");
 
 describe.skipIf(!fs.existsSync(NEVO_CSV))("tegen het echte NEVO-bestand", () => {
-  const data = bouwVoedingsmiddelen(parseDelimited(fs.readFileSync(NEVO_CSV, "utf8")));
-  const foodSources = parseFoodSources(fs.readFileSync(path.join("src", "data", "nutrition", "food-sources.ts"), "utf8"));
+  // Pas in beforeAll lezen: de body van een overgeslagen describe draait wel.
+  let data;
+  let foodSources;
+  beforeAll(() => {
+    data = bouwVoedingsmiddelen(parseDelimited(fs.readFileSync(NEVO_CSV, "utf8")));
+    foodSources = parseFoodSources(fs.readFileSync(path.join("src", "data", "nutrition", "food-sources.ts"), "utf8"));
+  });
 
   it("is versie 2025/9.0 en bevat 2.328 voedingsmiddelen zonder onleesbare regels", () => {
     expect(data.versies).toEqual(["NEVO-Online 2025 9.0"]);
