@@ -43,11 +43,84 @@ Voedingsmiddelen met kcal, eiwit, vet, koolhydraten én vezels: **2321 van 2328*
 
 | Stof | Rij | NEVO-code | In de code | In NEVO | Oordeel |
 |---|---|---|---|---|---|
+| protein | tonijn-blik | 1590 | 24,9 g | 24,9 g | klopt |
+| protein | kipfilet | 1634 | 23,3 g | 23,3 g | klopt |
+| protein | rundvlees-mager | 1663 | 22,6 g | 22,6 g | klopt |
+| protein | varkenshaas | 1422 | 22,4 g | 22,4 g | klopt |
+| protein | seitan | 1458 | 28,4 g | 28,4 g | klopt |
+| protein | belegen-kaas | 2758 | 22,5 g | 22,5 g | klopt |
+| protein | tempe | 5573 | 17,6 g | 17,6 g | klopt |
+| protein | kabeljauw | 820 | 17,5 g | 17,5 g | klopt |
+| protein | magere-kwark | 305 | 8,4 g | 8,4 g | klopt |
+| protein | skyr | 5295 | 10,6 g | 10,6 g | klopt |
+| protein | linzen | 970 | 8,8 g | 8,8 g | klopt |
+| protein | tofu | 5519 | 12,4 g | 12,4 g | klopt |
+| protein | kidneybonen | 5173 | 8,3 g | 8,3 g | klopt |
+| protein | eieren | 83 | 12,3 g | 12,3 g | klopt |
+| protein | huttenkase | 654 | 11,2 g | 11,2 g | klopt |
+| protein | volkoren-pasta | 811 | 13,3 g | 13,3 g | klopt |
+| protein | erwten-diepvries | 953 | 6 g | 6 g | klopt |
 | protein | sojadrink-verrijkt | 3180 | 3,4 g | 3,4 g | klopt |
+| protein | havermout | 213 | 12,8 g | 12,8 g | klopt |
+| protein | pinda | 204 | 25,2 g | 25,2 g | klopt |
+| protein | pistachenoten | 5112 | 23,8 g | 23,8 g | klopt |
+| protein | sojabonen-gekookt | 971 | 10,6 g | 10,6 g | klopt |
+| protein | tuinbonen-gekookt | 962 | 5 g | 5 g | klopt |
+| protein | quinoa-droog | 3153 | 14,1 g | 14,1 g | klopt |
+| protein | paling | 1624 | 24,3 g | 24,3 g | klopt |
+| protein | rundergehakt | 1405 | 18,9 g | 18,9 g | klopt |
+| protein | jonge-kaas | 2756 | 22,8 g | 22,8 g | klopt |
+| protein | mosselen | 111 | 17,2 g | 17,2 g | klopt |
+| protein | biefstuk | 1400 | 22,9 g | 22,9 g | klopt |
+| protein | kippenlever | 475 | 19,1 g | 19,1 g | klopt |
+| protein | mozzarella | 1955 | 18,7 g | 18,7 g | klopt |
+| protein | feta | 3362 | 16,6 g | 16,6 g | klopt |
+| protein | melk-vol | 279 | 3,3 g | 3,3 g | klopt |
+| magnesium | pompoenzaden | 2806 | 535 mg | 535 mg | klopt |
+| magnesium | spinazie | 52 | 77 mg | 77 mg | klopt |
+| magnesium | zwarte-bonen | 5176 | 42 mg | 42 mg | klopt |
+| magnesium | quinoa | 3154 | 64 mg | 64 mg | klopt |
+| magnesium | zonnebloempitten | 872 | 363 mg | 363 mg | klopt |
+| magnesium | havermout | 213 | 120 mg | 120 mg | klopt |
+| magnesium | cashewnoten | 199 | 269 mg | 269 mg | klopt |
+| magnesium | amandelen | 5049 | 232 mg | 232 mg | klopt |
+| magnesium | zilvervliesrijst | 1014 | 39 mg | 39 mg | klopt |
+| magnesium | volkorenbrood | 246 | 66 mg | 66 mg | klopt |
+| magnesium | witte-bonen | 5175 | 48 mg | 48 mg | klopt |
+| magnesium | banaan | 151 | 28 mg | 28 mg | klopt |
+| magnesium | gedroogde-vijgen | 193 | 68 mg | 68 mg | klopt |
+| magnesium | avocado | 689 | 26 mg | 26 mg | klopt |
+| magnesium | spinazie-rauw | 51 | 55 mg | 55 mg | klopt |
+| magnesium | broccoli-gekookt | 920 | 19 mg | 19 mg | klopt |
+| magnesium | hazelnoten | 200 | 160 mg | 160 mg | klopt |
+| magnesium | pecannoten | 1895 | 121 mg | 121 mg | klopt |
+| magnesium | pistachenoten | 5112 | 136 mg | 136 mg | klopt |
+| magnesium | macadamia | 2844 | 118 mg | 118 mg | klopt |
+| magnesium | pinda | 204 | 216 mg | 216 mg | klopt |
+| magnesium | sesamzaad | 838 | 335 mg | 335 mg | klopt |
+| magnesium | maanzaad | 2805 | 449 mg | 449 mg | klopt |
+| magnesium | sojabonen-gekookt | 971 | 74 mg | 74 mg | klopt |
+| magnesium | quinoa-droog | 3153 | 197 mg | 197 mg | klopt |
+| vitamin_d | zalm | 1587 | 7,9 µg | 7,9 µg | klopt |
 | vitamin_d | makreel | 353 | 8 µg | 8 µg | klopt |
 | vitamin_d | sardines | 355 | 3,3 µg | 3,3 µg | klopt |
 | vitamin_d | halvarine | 2566 | 7,5 µg | 7,5 µg | klopt |
+| vitamin_d | eieren | 83 | 1,1 µg | 1,1 µg | klopt |
 | zinc | rundvlees | 2336 | 4,17 mg | 4,17 mg | klopt |
+| zinc | hennepzaad | 3446 | 9,9 mg | 9,9 mg | klopt |
+| zinc | linzen | 970 | 1,4 mg | 1,4 mg | klopt |
+| zinc | pompoenzaden | 2806 | 7,94 mg | 7,94 mg | klopt |
+| zinc | quinoa | 3154 | 1,09 mg | 1,09 mg | klopt |
+| zinc | eieren | 83 | 1,56 mg | 1,56 mg | klopt |
+| zinc | havermout | 213 | 2,5 mg | 2,5 mg | klopt |
+| zinc | cashewnoten | 199 | 5,8 mg | 5,8 mg | klopt |
+| zinc | belegen-kaas | 2758 | 3,3 mg | 3,3 mg | klopt |
+| zinc | volkorenbrood | 246 | 1,41 mg | 1,41 mg | klopt |
+| zinc | pecannoten | 1895 | 4,53 mg | 4,53 mg | klopt |
+| zinc | jonge-kaas | 2756 | 3,48 mg | 3,48 mg | klopt |
+| zinc | mosselen | 111 | 2,2 mg | 2,2 mg | klopt |
+| zinc | biefstuk | 1400 | 3,99 mg | 3,99 mg | klopt |
+| zinc | kippenlever | 475 | 3,19 mg | 3,19 mg | klopt |
 
 ## 3. Kandidaten voor rijen zonder NEVO-bron
 
@@ -55,75 +128,18 @@ Per rij de beste NEVO-voedingsmiddelen op naam. **Een kandidaat is een voorstel,
 
 | Stof | Rij | Nu | NEVO-kandidaat (code) | Zekerheid | NEVO-waarde | Δ | Ook |
 |---|---|---|---|---|---|---|---|
-| protein | Tonijn uit blik, op water | 19 g (usda) | Tonijn in water blik (1590) | sterk | 24,9 g | +31% | Tonijn in olie blik; Tonijn m groente en tomatensaus in blik |
-| protein | Kipfilet | 22,5 g (usda) | Kipfilet rauw (1634) | sterk | 23,3 g | +4% | Kipfilet bereid; Kipfilet (vleeswaar) |
-| protein | Rundvlees, mager | 22,8 g (usda) | geen kandidaat | — | — | — |  |
-| protein | Varkenshaas | 20,6 g (usda) | Varkenshaas rauw (1422) | sterk | 22,4 g | +9% | Varkenshaas bereid |
-| protein | Seitan | — | Seitan gekruid (1458) | sterk | 28,4 g | — |  |
-| protein | Belegen kaas | 24,9 g (usda) | Kaas 30+ belegen (3164) | sterk | 31,9 g | +28% | Kaas 30+ jong belegen; Kaas Goudse 48+ belegen |
-| protein | Tempé | 20,3 g (usda) | Tempeh onbereid (5573) | sterk | 17,6 g | -13% |  |
-| protein | Kabeljauw | 16,1 g (usda) | Kabeljauw rauw (820) | sterk | 17,5 g | +9% | Kabeljauw gekookt; Kabeljauw bereid in magnetron z toev |
-| protein | Magere kwark | 11 g (usda) | Kwark magere (305) | sterk | 8,4 g | -24% | Kwark vruchten- magere; Kwark magere lactosevrij |
-| protein | Skyr | 10,3 g (usda) | Skyr naturel magere (5295) | sterk | 10,6 g | +3% | Skyr m vruchten magere |
-| protein | Linzen | 9,02 g (usda) | Linzen rode gekookt (5174) | sterk | 7,7 g | -15% | Linzen bruine blik/glas; Linzen groene en bruine gekookt |
-| protein | Tofu | 17,3 g (usda) | Tofu onbereid (5519) | sterk | 12,4 g | -28% |  |
-| protein | Kidneybonen | 8,67 g (usda) | Bonen kidney- rode gekookt (5173) | sterk | 8,3 g | -4% | Bonen kidney- rode gedroogd; Bonen kidney- rode blik/glas |
 | protein | Griekse yoghurt | 8,78 g (usda) | Yoghurt Griekse volle (2503) | sterk | 3,8 g | -57% | Yoghurt Griekse magere |
-| protein | Eieren | 12,6 g (usda) | Ei kippen- gebakken (1314) | sterk | 14,4 g | +14% | Ei kippen- rauw gem; Ei kippen- mais rauw |
 | protein | Kikkererwten | 8,86 g (usda) | Kikkererwten geroosterd leblebi Turks (1369) | zwak | 21,3 g | +140% |  |
-| protein | Hüttenkäse | 11,1 g (usda) | Kaas huttenkase (654) | sterk | 11,2 g | +1% |  |
-| protein | Volkoren pasta | 13,5 g (usda) | Pasta volkoren rauw (811) | sterk | 13,3 g | -1% | Pasta volkoren gekookt |
-| protein | Doperwten, diepvries | 5,15 g (usda) | Doperwten diepvries gekookt (953) | sterk | 6 g | +17% | Doperwten m wortelen diepvries onbereid |
-| protein | Havermout | 13,5 g (usda) | Vlokken haver- (213) | sterk | 12,8 g | -5% |  |
-| protein | Pinda's | 25,8 g (usda) | Pinda's gezouten (876) | sterk | 24,8 g | -4% | Pinda's ongezouten; Pinda's dry roasted |
-| protein | Pistachenoten | 20,16 g (usda) | Noten pistache- gezouten (1896) | sterk | 23,8 g | +18% | Noten pistache ongezouten |
-| protein | Sojabonen, gekookt | 18,2 g (usda) | Bonen soja- gekookt (971) | sterk | 10,6 g | -42% | Bonen snij- gekookt; Bonen tuin- gekookt |
 | protein | Edamame | 11,9 g (usda) | geen kandidaat | — | — | — |  |
 | protein | Spliterwten, gekookt | 8,34 g (usda) | geen kandidaat | — | — | — |  |
-| protein | Tuinbonen, gekookt | 7,6 g (usda) | Bonen tuin- gekookt (962) | sterk | 5 g | -34% | Bonen tuin- rauw; Bonen snij- gekookt |
-| protein | Quinoa, droog | 14,1 g (usda) | geen kandidaat | — | — | — |  |
-| protein | Paling | 23,65 g (usda) | Paling rauw (112) | sterk | 14 g | -41% | Paling gerookt; Paling bereid in magnetron z toev |
-| protein | Rundergehakt | 18,7 g (usda) | geen kandidaat | — | — | — |  |
-| protein | Jonge kaas | 24,9 g (usda) | Kaas 30+ jong (3155) | sterk | 30,1 g | +21% | Kaas Goudse 48+ jong; Kaas 30+ jong belegen |
-| protein | Mosselen | 23,4 g (usda) | Mosselen rauw (5326) | sterk | 11,1 g | -53% | Mosselen gekookt; Mosselen in zuur glas |
-| protein | Biefstuk | 22,4 g (usda) | Runderbiefstuk rauw (1400) | zwak | 22,9 g | +2% | Runderbiefstuk bereid; Runderbiefstuk v de haas rauw |
-| protein | Kippenlever | 16,9 g (usda) | geen kandidaat | — | — | — |  |
-| protein | Mozzarella | 22,17 g (usda) | Kaas Mozzarella gemaakt v koemelk (1955) | sterk | 18,7 g | -16% |  |
-| protein | Feta | 19,7 g (usda) | Kaas Feta (3362) | sterk | 16,6 g | -16% |  |
-| protein | Volle melk | 3,27 g (usda) | Melk volle (279) | sterk | 3,3 g | +1% | Melk koffie- volle; Melk geiten- volle |
-| magnesium | Pompoenzaden | 592 mg (usda) | geen kandidaat | — | — | — |  |
-| magnesium | Spinazie, gekookt | 87 mg (usda) | Spinazie gekookt (52) | sterk | 77 mg | -11% | Spinazie diepvries gekookt; Spinazie a la creme diepvries gekookt |
-| magnesium | Zwarte bonen | 70 mg (usda) | Bonen zwarte blik/glas (5176) | sterk | 42 mg | -40% |  |
-| magnesium | Quinoa | 64 mg (usda) | Quinoa rauw (3153) | sterk | 197 mg | +208% | Quinoa gekookt |
-| magnesium | Zonnebloempitten | 325 mg (usda) | geen kandidaat | — | — | — |  |
-| magnesium | Havermout | 126 mg (usda) | Vlokken haver- (213) | sterk | 120 mg | -5% |  |
-| magnesium | Cashewnoten | 251 mg (usda) | Noten cashew- gezouten (2886) | sterk | 269 mg | +7% | Noten cashew- ongezouten |
-| magnesium | Amandelen | 258 mg (usda) | Meel amandel- (5579) | sterk | 240 mg | -7% | Broodje amandel- (v bladerdeeg); Noten amandelen z vliesje gezouten |
-| magnesium | Zilvervliesrijst | 39 mg (usda) | Rijst zilvervlies- rauw (712) | sterk | 157 mg | +303% | Rijst zilvervlies- gekookt |
-| magnesium | Volkorenbrood | 75 mg (usda) | Roggebrood volkoren (242) | zwak | 57 mg | -24% | Tarweroggebrood volkoren; Tarwedesembrood volkoren |
 | magnesium | Tahin (sesampasta) | 95 mg (usda) | Pasta sesam- tahin m toegevoegd zout (1461) | sterk | 353 mg | +272% |  |
 | magnesium | Pure chocolade 70% | — | geen kandidaat | — | — | — |  |
-| magnesium | Witte bonen | 63 mg (usda) | Bonen witte gekookt (5175) | sterk | 48 mg | -24% | Bonen witte blik/glas; Bonen witte/bruine gedroogd |
-| magnesium | Banaan | 28 mg (usda) | Banaan (151) | sterk | 28 mg | +0% | Banaan bak- rijp rauw; Beignet banaan- |
-| magnesium | Gedroogde vijgen | 67,6 mg (usda) | Vijgen gedroogd (193) | sterk | 68 mg | +1% |  |
-| magnesium | Avocado | 32,8 mg (usda) | Avocado (689) | sterk | 26 mg | -21% |  |
 | magnesium | Boerenkool, gekookt | 25 mg (usda) | geen kandidaat | — | — | — |  |
 | magnesium | Snijbiet, gekookt | 86 mg (usda) | Snijbiet gekookt (48) | sterk | 11 mg | -87% |  |
-| magnesium | Spinazie, rauw | 79 mg (usda) | Spinazie rauw (51) | sterk | 55 mg | -30% |  |
 | magnesium | Spinazie, diepvries | 75 mg (usda) | Spinazie diepvries gekookt (146) | sterk | 34 mg | -55% | Spinazie gesneden diepvries onbereid; Spinazie a la creme diepvries gekookt |
-| magnesium | Broccoli, gekookt | 21 mg (usda) | Broccoli gekookt (920) | sterk | 19 mg | -10% |  |
-| magnesium | Hazelnoten | 163 mg (usda) | Noten hazel- ongezouten (200) | sterk | 160 mg | -2% |  |
-| magnesium | Pecannoten | 121 mg (usda) | Noten pecan- ongebrand ongezouten (1895) | sterk | 121 mg | +0% | Noten pecan- gebrand m olie gezouten |
-| magnesium | Pistachenoten | 121 mg (usda) | Noten pistache- gezouten (1896) | sterk | 136 mg | +12% | Noten pistache ongezouten |
-| magnesium | Macadamianoten | 130 mg (usda) | Noten macadamia gezouten (5111) | sterk | 118 mg | -9% | Noten macadamia- ongezouten |
-| magnesium | Pinda's | 168 mg (usda) | Pinda's gezouten (876) | sterk | 188 mg | +12% | Pinda's ongezouten; Pinda's dry roasted |
-| magnesium | Sesamzaad | 351 mg (usda) | geen kandidaat | — | — | — |  |
-| magnesium | Maanzaad | 347 mg (usda) | geen kandidaat | — | — | — |  |
-| magnesium | Sojabonen, gekookt | 86 mg (usda) | Bonen soja- gekookt (971) | sterk | 74 mg | -14% | Bonen snij- gekookt; Bonen tuin- gekookt |
 | magnesium | Edamame | 64 mg (usda) | geen kandidaat | — | — | — |  |
 | magnesium | Tuinbonen, gekookt | 43 mg (usda) | Bonen tuin- gekookt (962) | sterk | 19 mg | -56% | Bonen tuin- rauw; Bonen snij- gekookt |
 | magnesium | Spliterwten, gekookt | 36 mg (usda) | geen kandidaat | — | — | — |  |
-| magnesium | Quinoa, droog | 197 mg (usda) | geen kandidaat | — | — | — |  |
 | magnesium | Boekweit, gekookt | 51 mg (usda) | geen kandidaat | — | — | — |  |
 | omega3 | Makreel | 2299 mg (usda) | Makreel rauw (353) | sterk | 2520 mg | +10% | Makreel gestoomd; Makreel in olie blik |
 | omega3 | Wilde zalm | 1436 mg (usda) | geen kandidaat | — | — | — |  |
@@ -137,43 +153,27 @@ Per rij de beste NEVO-voedingsmiddelen op naam. **Een kandidaat is een voorstel,
 | omega3 | Omega-3 verrijkte eieren | — | geen kandidaat | — | — | — |  |
 | omega3 | Tonijn uit blik, op water | 222 mg (usda) | Tonijn in water blik (1590) | sterk | 250 mg | +13% | Tonijn in olie blik; Tonijn m groente en tomatensaus in blik |
 | vitamin_d | Haring | — | Haring gezouten (350) | sterk | 6,2 µg | — | Haring pan- rauw; Haring in (zoet)zuur |
-| vitamin_d | Zalm | — | Zalm blik (602) | sterk | 10,9 µg | — | Zalm gerookt; Zalm kweek- rauw |
 | vitamin_d | Leverpastei | — | geen kandidaat | — | — | — |  |
-| vitamin_d | Eieren | 2 µg (usda) | Ei kippen- gebakken (1314) | sterk | 1,4 µg | -30% | Ei kippen- rauw gem; Ei kippen- mais rauw |
 | vitamin_d | Paddenstoelen, UV-behandeld | 26,2 µg (usda) | geen kandidaat | — | — | — |  |
 | vitamin_d | Plantaardige drank, verrijkt | — | Plantaardig alternatief voor Goudse kaas obv kokosolie verrijkt m Ca en Vit B12 (5466) | zwak | 0 µg | — | Yoghurtdrank verrijkt m calcium |
 | vitamin_d | Zonlicht op je huid | — | geen kandidaat | — | — | — |  |
 | vitamin_d | Forel, gebakken | 19 µg (usda) | geen kandidaat | — | — | — |  |
 | zinc | Oesters | 37,9 mg (usda) | Oesters (354) | sterk | 59,2 mg | +56% | Kalfsoester rauw; Varkensoester rauw |
-| zinc | Lamsvlees | 2,08 mg (usda) | geen kandidaat | — | — | — |  |
-| zinc | Kalfsvlees | 2,01 mg (usda) | geen kandidaat | — | — | — |  |
-| zinc | Hennepzaad, gepeld | 9,9 mg (usda) | geen kandidaat | — | — | — |  |
-| zinc | Linzen | 1,27 mg (usda) | Linzen rode gekookt (5174) | sterk | 1,37 mg | +8% | Linzen bruine blik/glas; Linzen groene en bruine gekookt |
-| zinc | Pompoenzaden | 7,81 mg (usda) | geen kandidaat | — | — | — |  |
+| zinc | Lamsvlees | 2,08 mg (usda) | Lamsvlees >10 g vet rauw gem (1675) | zwak | 3,47 mg | +67% | Lamsvlees <10 g vet rauw gem |
+| zinc | Kalfsvlees | 2,01 mg (usda) | Kalfsvlees gem rauw (5280) | sterk | 3,13 mg | +56% | Kalfsvlees <5 g vet gem rauw; Kalfsvlees >5 g vet gem rauw |
 | zinc | Kikkererwten | 1,53 mg (usda) | Kikkererwten geroosterd leblebi Turks (1369) | zwak | — | — |  |
-| zinc | Quinoa | 1,09 mg (usda) | Quinoa rauw (3153) | sterk | 3,1 mg | +184% | Quinoa gekookt |
-| zinc | Eieren | 1,29 mg (usda) | Ei kippen- gebakken (1314) | sterk | 1,3 mg | +1% | Ei kippen- rauw gem; Ei kippen- mais rauw |
 | zinc | Garnalen | 0,94 mg (usda) | Garnalen gemarineerde (5602) | sterk | 0,79 mg | -16% | Garnalen roze gekookt; Garnalen in water blik |
-| zinc | Havermout | 2,74 mg (usda) | Vlokken haver- (213) | sterk | 2,5 mg | -9% |  |
-| zinc | Cashewnoten | 5,07 mg (usda) | Noten cashew- gezouten (2886) | sterk | 5,8 mg | +14% | Noten cashew- ongezouten |
-| zinc | Belegen kaas | 3,9 mg (usda) | Kaas 30+ belegen (3164) | sterk | 4,47 mg | +15% | Kaas 30+ jong belegen; Kaas Goudse 48+ belegen |
-| zinc | Volkorenbrood | 1,77 mg (usda) | Roggebrood volkoren (242) | zwak | 1,5 mg | -15% | Tarweroggebrood volkoren; Tarwedesembrood volkoren |
-| zinc | Pecannoten | 4,53 mg (usda) | Noten pecan- ongebrand ongezouten (1895) | sterk | 4,53 mg | +0% | Noten pecan- gebrand m olie gezouten |
 | zinc | Edamame | 1,37 mg (usda) | geen kandidaat | — | — | — |  |
-| zinc | Jonge kaas | 3,9 mg (usda) | Kaas 30+ jong (3155) | sterk | 4,15 mg | +6% | Kaas Goudse 48+ jong; Kaas 30+ jong belegen |
 | zinc | Runderlever | 5,3 mg (usda) | geen kandidaat | — | — | — |  |
-| zinc | Mosselen | 2,7 mg (usda) | Mosselen rauw (5326) | sterk | 2,19 mg | -19% | Mosselen gekookt; Mosselen in zuur glas |
-| zinc | Biefstuk | 4 mg (usda) | Runderbiefstuk rauw (1400) | zwak | 3,99 mg | 0% | Runderbiefstuk bereid; Runderbiefstuk v de haas rauw |
-| zinc | Kippenlever | 2,7 mg (usda) | geen kandidaat | — | — | — |  |
 | zinc | Feta | 2,35 mg (usda) | Kaas Feta (3362) | sterk | 0,9 mg | -62% |  |
 
-Rijen met minstens één kandidaat: **79 van 111**, waarvan sterk: **71**.
+Rijen met minstens één kandidaat: **20 van 38**, waarvan sterk: **15**.
 
 ## 4. Generieke dagboekregels (`food-catalog.ts`)
 
 - Regels in de catalogus: 371
-- Met een sterke kandidaat in NEVO (score ≥ 0,9): **223**
-- Zonder enige kandidaat: 113
+- Met een sterke kandidaat in NEVO (score ≥ 0,9): **234**
+- Zonder enige kandidaat: 96
 
 ### De 16 regels die wachtten op de supermarktlaag (`geenBron: "verrijkt"`)
 
@@ -181,7 +181,7 @@ Rijen met minstens één kandidaat: **79 van 111**, waarvan sterk: **71**.
 |---|---|---|---|
 | Halfvolle melk | Melk halfvolle (286) | 45 | Melk koffie- halfvolle; Melk chocolade- halfvolle |
 | Magere melk | Melk magere (294) | 35 | Melk koffie- magere; Melk chocolade- magere |
-| Havermelk | Drink haver- z suiker (5463) | 40 | Drink haver- z suiker verrijkt m calcium en vitamines |
+| Havermelk | Drink haver- z suiker (5463) | 40 | Drink haver- z suiker verrijkt m calcium en vitamines; Drink soja- Groeidrink 1-3+ Alpro |
 | Amandeldrink | Drink amandel- z suiker (5464) | 26 | Drink amandel- m suiker verrijkt m calcium en vitamines; Drink amandel- z suiker verrijkt m calcium en vitamines |
 | Kokosdrink | Drink kokos- z suiker (5543) | 26 | Drink kokos- m suiker verrijkt m calcium en vitamines |
 | Rijstdrink | Drink rijst- z suiker (5101) | 65 | Drink rijst- z suiker verrijkt m calcium en vitamines |

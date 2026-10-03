@@ -137,8 +137,11 @@ describe("de vier vensters", () => {
  */
 describe("de asymmetrie-regel", () => {
   it("zet gedekt op true zodra de ondergrens de RI haalt", () => {
-    // 300 g havermout levert ruim de magnesium-RI.
-    const reeks = bouwTekortsysteem([dag(VANDAAG, [HAVER(300)])], VANDAAG)
+    // 500 g havermout levert ruim de magnesium-RI, óók met de voorzichtige
+    // ondergrens: sinds de NEVO-import (3 okt 2026) staat havermout op 120 mg per
+    // 100 g zonder gemeten spreiding, dus 300 g (360 mg) haalt de RI van 375 mg
+    // niet meer zeker.
+    const reeks = bouwTekortsysteem([dag(VANDAAG, [HAVER(500)])], VANDAAG)
       .find((r) => r.nutrient === "magnesium")!;
 
     expect(reeks.vensters.find((v) => v.dagen_terug === 1)!.gedekt).toBe(true);

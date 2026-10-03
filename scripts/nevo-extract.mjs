@@ -316,25 +316,35 @@ export function tokens(tekst) {
 }
 
 /**
- * Tokens van een zoeklabel, uitgebreid voor het verschil in naamgeving, plus de
- * woorden die de kop van het label zijn (waar NEVO mee begint).
+ * Tokens van een zoeklabel als groepen: elk labelwoord is één groep, en een
+ * groep telt als geraakt als NEVO het woord heel noemt OF alle delen ervan.
+ * NEVO splitst niet overal: "Noten cashew-" maar ook "Zonnebloempitten" en
+ * "Sesamzaad". Daarnaast de woorden die de kop van het label zijn (waar NEVO
+ * mee begint).
  */
 export function doelTokens(label) {
-  const uit = [];
+  const groepen = [];
   const koppen = new Set();
   const woorden = normaliseer(label).split(" ").filter((t) => t && !STOPWOORDEN.has(t));
   woorden.forEach((woord, i) => {
     if (ALIASSEN[woord]) {
-      for (const a of ALIASSEN[woord]) uit.push(stam(a));
+      // Een alias is een vervanging, geen alternatief: alle woorden ervan moeten kloppen.
+      groepen.push({ opties: [{ t: ALIASSEN[woord].map(stam), kop: null }] });
       koppen.add(stam(ALIASSEN[woord][0]));
       return;
     }
     const { delen, kop } = splitSamenstelling(woord);
-    for (const deel of delen) uit.push(stam(deel));
-    if (kop) koppen.add(stam(kop));
-    else if (i === 0) koppen.add(stam(woord));
+    const opties = [{ t: [stam(woord)], kop: null }];
+    if (delen.length > 1) opties.push({ t: delen.map(stam), kop: stam(kop) });
+    groepen.push({ opties });
+    if (kop) {
+      koppen.add(stam(kop));
+    } else if (i === 0) {
+      koppen.add(stam(woord));
+    }
   });
-  return { tokens: [...new Set(uit)], koppen };
+  const tokens = [...new Set(groepen.flatMap((g) => g.opties.flatMap((o) => o.t)))];
+  return { groepen, tokens, koppen };
 }
 
 /**
@@ -344,25 +354,36 @@ export function doelTokens(label) {
  * bonus als NEVO begint met de kop van het label.
  */
 export function scoreKandidaat(doel, nevoTokens) {
-  const labelTokens = Array.isArray(doel) ? doel : doel.tokens;
-  const koppen = Array.isArray(doel) ? new Set([labelTokens[0]]) : doel.koppen;
-  if (labelTokens.length === 0 || nevoTokens.length === 0) return 0;
+  const groepen = Array.isArray(doel) ? doel.map((t) => ({ opties: [{ t: [t], kop: null }] })) : doel.groepen;
+  const koppen = Array.isArray(doel) ? new Set([doel[0]]) : doel.koppen;
+  if (groepen.length === 0 || nevoTokens.length === 0) return 0;
   const set = new Set(nevoTokens);
-  const raak = (t) => {
+  const raakToken = (t) => {
     if (set.has(t)) return 1;
     if (t.length >= 5 && nevoTokens.some((n) => n.length > t.length && n.endsWith(t))) return 0.8;
     return 0;
   };
-  let geraakt = 0;
-  for (const t of labelTokens) geraakt += raak(t);
+  // Per groep het beste alternatief: het woord heel, of de delen ervan. Bij een
+  // samenstelling telt de deelvariant alleen als het onderscheidende deel
+  // klopt: "kokos" in "kokosmelk", niet alleen de kop "melk".
+  const raakOptie = (o) => {
+    const onderscheidend = o.kop ? o.t.filter((t) => t !== o.kop) : o.t;
+    if (o.kop && onderscheidend.some((t) => raakToken(t) === 0)) return 0;
+    return o.t.reduce((som, t) => som + raakToken(t), 0) / o.t.length;
+  };
+  const raakGroep = (g) => Math.max(...g.opties.map(raakOptie));
+  const scores = groepen.map(raakGroep);
+  const geraakt = scores.reduce((a, b) => a + b, 0);
 
   // Een kandidaat die alleen de kop raakt ("melk", "noten") en het onderscheidende
   // woord mist, is een ander product: "Havermelk" is niet "Melk rauwe".
-  const onderscheidend = labelTokens.filter((t) => !koppen.has(t) || labelTokens.length === 1);
-  if (onderscheidend.length > 0 && onderscheidend.every((t) => raak(t) === 0)) return 0;
+  const isKopGroep = (g) => g.opties.length === 1 && g.opties[0].t.length === 1 && koppen.has(g.opties[0].t[0]);
+  const onderscheidend = groepen.filter((g) => !isKopGroep(g) || groepen.length === 1);
+  if (onderscheidend.length > 0 && onderscheidend.every((g) => raakGroep(g) === 0)) return 0;
 
-  const dekking = geraakt / labelTokens.length;
-  const overbodig = nevoTokens.filter((t) => !labelTokens.includes(t));
+  const dekking = geraakt / groepen.length;
+  const gebruikt = new Set(groepen.flatMap((g) => g.opties.flatMap((o) => o.t)));
+  const overbodig = nevoTokens.filter((t) => !gebruikt.has(t));
   const straf = Math.min(0.3, 0.03 * overbodig.length);
   const gerechtStraf = overbodig.some((t) => GERECHTWOORDEN.has(t)) ? 0.35 : 0;
   const kopBonus = koppen.has(nevoTokens[0]) ? 0.2 : 0;
@@ -384,7 +405,7 @@ export function kandidaten(label, voedingsmiddelen, n = 3, minimum = 0.5) {
 
 // ── de bestaande code lezen ─────────────────────────────────────────────
 
-const ARRAY_NAAR_STOF = {
+export const ARRAY_NAAR_STOF = {
   PROTEIN_SOURCES: { nutrient: "protein", nevo: ["PROT"], eenheid: "g" },
   MAGNESIUM_SOURCES: { nutrient: "magnesium", nevo: ["MG"], eenheid: "mg" },
   OMEGA3_SOURCES: { nutrient: "omega3", nevo: ["F20:5CN3", "F22:6CN3"], eenheid: "mg", somVanTwee: true },
@@ -414,17 +435,20 @@ export function parseFoodSources(tekst) {
         const unit = nv.match(/unit:\s*"([^"]+)"/)?.[1];
         const nevoRef = nv.match(/origin:\s*"nevo",\s*ref:\s*"([^"]+)"/)?.[1];
         const usdaRef = nv.match(/usda\("(\d+)"/)?.[1];
+        const bronNaam = nv.match(/sourceNameNl:\s*"([^"]+)"/)?.[1] ?? null;
         huidig = {
           waarde: Number.isFinite(value) ? value : null,
           eenheid: unit ?? null,
           origin: nevoRef ? "nevo" : usdaRef ? "usda" : "onbekend",
           ref: nevoRef ?? usdaRef ?? null,
+          bronNaam,
         };
       }
       rijen.push({
         stof: stof.nutrient,
         key,
         label,
+        portie: entry.match(/portionNl:\s*"([^"]+)"/)?.[1] ?? null,
         omega3Kind: entry.match(/omega3Kind:\s*"(\w+)"/)?.[1] ?? null,
         verified: /verified:\s*true/.test(entry),
         huidig,

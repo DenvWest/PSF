@@ -119,7 +119,8 @@ describe("de huidige stand is eerlijk afleesbaar", () => {
   // teruggedraaid, en dat hoort een bewuste wijziging te zijn, geen sluipende.
   it("geverifieerde rijen zijn nooit minder dan de laatste import opleverde", () => {
     const verified = ALL_SOURCES.filter((s) => s.verified);
-    expect(verified.length).toBeGreaterThanOrEqual(44);
+    // 3 okt 2026: 106 na de tweede NEVO-ronde (73 rijen omgezet, waarvan 2 voorheen leeg).
+    expect(verified.length).toBeGreaterThanOrEqual(106);
   });
 
   it("elke rij zonder brondwaarde staat expliciet op niet-geverifieerd", () => {
@@ -144,19 +145,19 @@ describe("de huidige stand is eerlijk afleesbaar", () => {
     // de rijen waar ook USDA geen antwoord geeft, en dat is per rij een andere
     // reden:
     //
-    //   - seitan, pure chocolade, ansjovis, sprot, gerookte forel: geen bruikbaar
+    //   - pure chocolade, ansjovis, sprot, gerookte forel: geen bruikbaar
     //     FDC-record (ontbrekend product of een bereidingsvorm die te ver afligt).
+    //     Seitan en vitamine D bij zalm zijn op 3 okt 2026 uit NEVO ingevuld.
     //   - algenolie, verrijkte eieren, verrijkte plantaardige drank: verrijking is
     //     een fabrikantkeuze binnen het NL-kader — het etiket is de bron, niet een
     //     voedingstabel (ONDERZOEK §2.2).
-    //   - vitamin_d/haring, vitamin_d/zalm, vitamin_d/leverpastei: USDA's
+    //   - vitamin_d/haring, vitamin_d/leverpastei: USDA's
     //     vitamine D-programma is bij vis en orgaanvlees onvolledig. Beide
     //     zalmrecords dragen géén vitamine D-waarde, en kippenleverpastei staat op
     //     0 µg — dat leest als 'niet geanalyseerd', niet als 'afwezig'. Een 0 die
     //     een literatuurwaarde vervangt is een verslechtering die er als precisie
     //     uitziet. Zie ONDERZOEK §2.8.
     const openTwijfel: readonly [NutrientId, string][] = [
-      ["protein", "seitan"],
       ["magnesium", "pure-chocolade"],
       ["omega3", "ansjovis"],
       ["omega3", "sprot"],
@@ -164,7 +165,6 @@ describe("de huidige stand is eerlijk afleesbaar", () => {
       ["omega3", "algenolie"],
       ["omega3", "verrijkte-eieren"],
       ["vitamin_d", "haring"],
-      ["vitamin_d", "zalm"],
       ["vitamin_d", "leverpastei"],
       ["vitamin_d", "plantaardige-drank-verrijkt"],
     ];

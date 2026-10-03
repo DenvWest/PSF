@@ -1,0 +1,563 @@
+{
+  "nevoVersie": "2025/9.0",
+  "regel": "NEVO wint bij hetzelfde voedingsmiddel en dezelfde bereiding, tot een verschil van 50% met de huidige waarde. Daarboven legt Dennis voor.",
+  "toepassen": [
+    {
+      "stof": "protein",
+      "key": "tonijn-blik",
+      "code": "1590",
+      "opm": "NEVO 24,9 g tegen USDA 19 g: Nederlandse blikvis, NEVO wint"
+    },
+    {
+      "stof": "protein",
+      "key": "kipfilet",
+      "code": "1634"
+    },
+    {
+      "stof": "protein",
+      "key": "rundvlees-mager",
+      "code": "1663",
+      "opm": "'Rundvlees <5 g vet rauw gem' = mager"
+    },
+    {
+      "stof": "protein",
+      "key": "varkenshaas",
+      "code": "1422"
+    },
+    {
+      "stof": "protein",
+      "key": "seitan",
+      "code": "1458",
+      "opm": "voorheen leeg; NEVO kent alleen 'Seitan gekruid'"
+    },
+    {
+      "stof": "protein",
+      "key": "belegen-kaas",
+      "code": "2758",
+      "opm": "Goudse 48+ belegen, de gangbare Nederlandse belegen kaas"
+    },
+    {
+      "stof": "protein",
+      "key": "tempe",
+      "code": "5573"
+    },
+    {
+      "stof": "protein",
+      "key": "kabeljauw",
+      "code": "820"
+    },
+    {
+      "stof": "protein",
+      "key": "magere-kwark",
+      "code": "305",
+      "opm": "USDA-waarde was cottage cheese, geen kwark"
+    },
+    {
+      "stof": "protein",
+      "key": "skyr",
+      "code": "5295"
+    },
+    {
+      "stof": "protein",
+      "key": "linzen",
+      "code": "970",
+      "opm": "groene en bruine, gekookt"
+    },
+    {
+      "stof": "protein",
+      "key": "tofu",
+      "code": "5519"
+    },
+    {
+      "stof": "protein",
+      "key": "kidneybonen",
+      "code": "5173"
+    },
+    {
+      "stof": "protein",
+      "key": "eieren",
+      "code": "83"
+    },
+    {
+      "stof": "protein",
+      "key": "huttenkase",
+      "code": "654"
+    },
+    {
+      "stof": "protein",
+      "key": "volkoren-pasta",
+      "code": "811",
+      "opm": "droge pasta, portie 75 g droog"
+    },
+    {
+      "stof": "protein",
+      "key": "erwten-diepvries",
+      "code": "953"
+    },
+    {
+      "stof": "protein",
+      "key": "havermout",
+      "code": "213",
+      "opm": "'Vlokken haver-' = droge havervlokken"
+    },
+    {
+      "stof": "protein",
+      "key": "pinda",
+      "code": "204",
+      "opm": "ongezouten"
+    },
+    {
+      "stof": "protein",
+      "key": "pistachenoten",
+      "code": "5112",
+      "opm": "ongezouten"
+    },
+    {
+      "stof": "protein",
+      "key": "sojabonen-gekookt",
+      "code": "971",
+      "opm": "NEVO 10,6 g tegen USDA 18,2 g (-42%), onder de 50%-drempel"
+    },
+    {
+      "stof": "protein",
+      "key": "tuinbonen-gekookt",
+      "code": "962"
+    },
+    {
+      "stof": "protein",
+      "key": "quinoa-droog",
+      "code": "3153",
+      "opm": "'Quinoa rauw' = droog"
+    },
+    {
+      "stof": "protein",
+      "key": "paling",
+      "code": "1624"
+    },
+    {
+      "stof": "protein",
+      "key": "rundergehakt",
+      "code": "1405"
+    },
+    {
+      "stof": "protein",
+      "key": "jonge-kaas",
+      "code": "2756",
+      "opm": "Goudse 48+ jong"
+    },
+    {
+      "stof": "protein",
+      "key": "mosselen",
+      "code": "111"
+    },
+    {
+      "stof": "protein",
+      "key": "biefstuk",
+      "code": "1400"
+    },
+    {
+      "stof": "protein",
+      "key": "kippenlever",
+      "code": "475"
+    },
+    {
+      "stof": "protein",
+      "key": "mozzarella",
+      "code": "1955"
+    },
+    {
+      "stof": "protein",
+      "key": "feta",
+      "code": "3362"
+    },
+    {
+      "stof": "protein",
+      "key": "melk-vol",
+      "code": "279"
+    },
+    {
+      "stof": "magnesium",
+      "key": "pompoenzaden",
+      "code": "2806",
+      "opm": "'Pompoenpitten'"
+    },
+    {
+      "stof": "magnesium",
+      "key": "spinazie",
+      "code": "52"
+    },
+    {
+      "stof": "magnesium",
+      "key": "zwarte-bonen",
+      "code": "5176",
+      "opm": "NEVO kent alleen blik/glas (-40%)"
+    },
+    {
+      "stof": "magnesium",
+      "key": "quinoa",
+      "code": "3154"
+    },
+    {
+      "stof": "magnesium",
+      "key": "zonnebloempitten",
+      "code": "872"
+    },
+    {
+      "stof": "magnesium",
+      "key": "havermout",
+      "code": "213"
+    },
+    {
+      "stof": "magnesium",
+      "key": "cashewnoten",
+      "code": "199",
+      "opm": "ongezouten"
+    },
+    {
+      "stof": "magnesium",
+      "key": "amandelen",
+      "code": "5049",
+      "opm": "met vliesje, ongezouten"
+    },
+    {
+      "stof": "magnesium",
+      "key": "zilvervliesrijst",
+      "code": "1014"
+    },
+    {
+      "stof": "magnesium",
+      "key": "volkorenbrood",
+      "code": "246",
+      "opm": "tarwebrood volkoren"
+    },
+    {
+      "stof": "magnesium",
+      "key": "witte-bonen",
+      "code": "5175"
+    },
+    {
+      "stof": "magnesium",
+      "key": "banaan",
+      "code": "151"
+    },
+    {
+      "stof": "magnesium",
+      "key": "gedroogde-vijgen",
+      "code": "193"
+    },
+    {
+      "stof": "magnesium",
+      "key": "avocado",
+      "code": "689"
+    },
+    {
+      "stof": "magnesium",
+      "key": "spinazie-rauw",
+      "code": "51"
+    },
+    {
+      "stof": "magnesium",
+      "key": "broccoli-gekookt",
+      "code": "920"
+    },
+    {
+      "stof": "magnesium",
+      "key": "hazelnoten",
+      "code": "200"
+    },
+    {
+      "stof": "magnesium",
+      "key": "pecannoten",
+      "code": "1895"
+    },
+    {
+      "stof": "magnesium",
+      "key": "pistachenoten",
+      "code": "5112",
+      "opm": "ongezouten"
+    },
+    {
+      "stof": "magnesium",
+      "key": "macadamia",
+      "code": "2844",
+      "opm": "ongezouten"
+    },
+    {
+      "stof": "magnesium",
+      "key": "pinda",
+      "code": "204",
+      "opm": "ongezouten"
+    },
+    {
+      "stof": "magnesium",
+      "key": "sesamzaad",
+      "code": "838",
+      "opm": "NEVO kent alleen 'z schil' (zonder schil)"
+    },
+    {
+      "stof": "magnesium",
+      "key": "maanzaad",
+      "code": "2805"
+    },
+    {
+      "stof": "magnesium",
+      "key": "sojabonen-gekookt",
+      "code": "971"
+    },
+    {
+      "stof": "magnesium",
+      "key": "quinoa-droog",
+      "code": "3153"
+    },
+    {
+      "stof": "vitamin_d",
+      "key": "zalm",
+      "code": "1587",
+      "opm": "voorheen leeg; gekweekte zalm rauw"
+    },
+    {
+      "stof": "vitamin_d",
+      "key": "eieren",
+      "code": "83"
+    },
+    {
+      "stof": "zinc",
+      "key": "hennepzaad",
+      "code": "3446"
+    },
+    {
+      "stof": "zinc",
+      "key": "linzen",
+      "code": "970"
+    },
+    {
+      "stof": "zinc",
+      "key": "pompoenzaden",
+      "code": "2806"
+    },
+    {
+      "stof": "zinc",
+      "key": "quinoa",
+      "code": "3154"
+    },
+    {
+      "stof": "zinc",
+      "key": "eieren",
+      "code": "83"
+    },
+    {
+      "stof": "zinc",
+      "key": "havermout",
+      "code": "213"
+    },
+    {
+      "stof": "zinc",
+      "key": "cashewnoten",
+      "code": "199",
+      "opm": "ongezouten"
+    },
+    {
+      "stof": "zinc",
+      "key": "belegen-kaas",
+      "code": "2758"
+    },
+    {
+      "stof": "zinc",
+      "key": "volkorenbrood",
+      "code": "246"
+    },
+    {
+      "stof": "zinc",
+      "key": "pecannoten",
+      "code": "1895"
+    },
+    {
+      "stof": "zinc",
+      "key": "jonge-kaas",
+      "code": "2756"
+    },
+    {
+      "stof": "zinc",
+      "key": "mosselen",
+      "code": "111"
+    },
+    {
+      "stof": "zinc",
+      "key": "biefstuk",
+      "code": "1400"
+    },
+    {
+      "stof": "zinc",
+      "key": "kippenlever",
+      "code": "475"
+    }
+  ],
+  "voorleggen": [
+    {
+      "stof": "protein",
+      "key": "griekse-yoghurt",
+      "code": "2503",
+      "advies": "NEVO",
+      "opm": "NEVO 3,8 g tegen USDA 8,8 g. 'Griekse yoghurt' in de Nederlandse winkel is meestal Griekse stijl (room), niet gezeefd; skyr dekt de eiwitrijke variant al."
+    },
+    {
+      "stof": "magnesium",
+      "key": "tahin",
+      "code": "1461",
+      "advies": "NEVO",
+      "opm": "NEVO 353 mg tegen USDA 95 mg. Nederlandse tahin is van het hele sesamzaad (sesamzaad zelf: 335 mg), USDA's record is een ander type."
+    },
+    {
+      "stof": "magnesium",
+      "key": "snijbiet",
+      "code": "48",
+      "advies": "USDA",
+      "opm": "NEVO 11 mg tegen USDA 86 mg. NEVO ligt ver onder spinazie (77 mg), wat niet bij snijbiet past; ik vertrouw dit getal niet."
+    },
+    {
+      "stof": "magnesium",
+      "key": "spinazie-diepvries",
+      "code": "1146",
+      "advies": "NEVO",
+      "opm": "NEVO 35 mg tegen USDA 75 mg. NEVO's diepvriesspinazie ligt onder de rauwe (55 mg), wat bij blancheren past."
+    },
+    {
+      "stof": "magnesium",
+      "key": "tuinbonen-gekookt",
+      "code": "962",
+      "advies": "NEVO",
+      "opm": "NEVO 19 mg tegen USDA 43 mg. Voor eiwit neem ik dezelfde NEVO-rij wel over (-34%)."
+    },
+    {
+      "stof": "vitamin_d",
+      "key": "forel",
+      "code": "1611",
+      "advies": "NEVO",
+      "opm": "NEVO 9,4 µg tegen USDA 19 µg (gekweekte regenboogforel)."
+    },
+    {
+      "stof": "zinc",
+      "key": "oesters",
+      "code": "354",
+      "advies": "NEVO",
+      "opm": "NEVO 59,2 mg tegen USDA 37,9 mg; beide zijn extreem hoog, oester is de zinkrijkste bron."
+    },
+    {
+      "stof": "zinc",
+      "key": "lamsvlees",
+      "code": "2057",
+      "advies": "NEVO",
+      "opm": "NEVO 3,2 mg tegen USDA 2,08 mg (Nieuw-Zeelandse lamskotelet)."
+    },
+    {
+      "stof": "zinc",
+      "key": "kalfsvlees",
+      "code": "5280",
+      "advies": "NEVO",
+      "opm": "NEVO 3,13 mg tegen USDA 2,01 mg."
+    },
+    {
+      "stof": "zinc",
+      "key": "feta",
+      "code": "3362",
+      "advies": "USDA",
+      "opm": "NEVO 0,9 mg tegen USDA 2,35 mg. Feta bevat normaal rond 2,9 mg; NEVO's waarde lijkt een uitschieter."
+    },
+    {
+      "stof": "vitamin_d",
+      "key": "haring",
+      "code": "113",
+      "advies": "NEVO",
+      "opm": "Nu staat er een literatuurwaarde van 25 µg per 100 g; NEVO geeft voor elke haringvariant 6,2 µg. ONDERZOEK §2.8 noemt NEVO ~25 µg, maar dat staat niet in deze NEVO-versie. 6,2 µg ligt in lijn met NEVO's andere vette vis (makreel 8, gekweekte zalm 7,9)."
+    },
+    {
+      "stof": "vitamin_d",
+      "key": "leverpastei",
+      "code": "335",
+      "advies": "NEVO",
+      "opm": "Nu staat er een literatuurwaarde van 10 µg per 100 g (3 µg per portie); NEVO's 'Pastei lever-' geeft 0,9 µg. Leverpastei is geen vitamine D-bron."
+    }
+  ],
+  "blijft": [
+    {
+      "stof": "protein",
+      "key": "kikkererwten",
+      "reden": "NEVO kent alleen geroosterde Turkse kikkererwten (leblebi), een ander product"
+    },
+    {
+      "stof": "protein",
+      "key": "edamame",
+      "reden": "niet in NEVO"
+    },
+    {
+      "stof": "protein",
+      "key": "spliterwten-gekookt",
+      "reden": "NEVO kent alleen gedroogde spliterwten"
+    },
+    {
+      "stof": "magnesium",
+      "key": "pure-chocolade",
+      "reden": "NEVO's 'Chocolade puur' geeft geen cacaopercentage; 70% (zoals het label zegt) is niet te herleiden"
+    },
+    {
+      "stof": "magnesium",
+      "key": "boerenkool",
+      "reden": "niet in NEVO, alleen stamppot"
+    },
+    {
+      "stof": "magnesium",
+      "key": "edamame",
+      "reden": "niet in NEVO"
+    },
+    {
+      "stof": "magnesium",
+      "key": "spliterwten-gekookt",
+      "reden": "NEVO kent alleen gedroogde spliterwten"
+    },
+    {
+      "stof": "magnesium",
+      "key": "boekweit-gekookt",
+      "reden": "NEVO kent alleen droge grutten en meel"
+    },
+    {
+      "stof": "vitamin_d",
+      "key": "paddenstoelen-uv",
+      "reden": "niet in NEVO"
+    },
+    {
+      "stof": "vitamin_d",
+      "key": "plantaardige-drank-verrijkt",
+      "reden": "verrijking is een fabrikantkeuze; het etiket is de bron"
+    },
+    {
+      "stof": "vitamin_d",
+      "key": "zonlicht",
+      "reden": "geen voedingsmiddel"
+    },
+    {
+      "stof": "zinc",
+      "key": "kikkererwten",
+      "reden": "NEVO kent alleen geroosterde Turkse kikkererwten"
+    },
+    {
+      "stof": "zinc",
+      "key": "garnalen",
+      "reden": "NEVO kent alleen gekookte garnalen, onze rij is rauw"
+    },
+    {
+      "stof": "zinc",
+      "key": "edamame",
+      "reden": "niet in NEVO"
+    },
+    {
+      "stof": "zinc",
+      "key": "runderlever",
+      "reden": "NEVO's runderlever is een vleeswaar (0,5 mg), geen gekookte lever"
+    },
+    {
+      "stof": "omega3",
+      "key": "*",
+      "reden": "EPA en DHA staan in NEVO apart; onze waarde is hun som, en dat is volgens de RIVM-voorwaarden een bewerking van de brondata. Omega-3 blijft op USDA tot het datamodel twee brondwaarden kan dragen."
+    }
+  ]
+}

@@ -135,3 +135,20 @@ Dennis heeft de voorwaarden (`Voorwaarden-voor-gebruik-NEVO-online-2025-databest
 - **De 16 "verrijkt"-regels.** NEVO heeft er voor de meeste een tegenhanger, alleen onder een andere naam: plantaardige dranken staan als "Drink amandel-/haver-/kokos-/rijst-/soja- … verrijkt m calcium en vitamines", een proteïnereep als "Eiwitreep m pinda", ontbijtgranen als "Ontbijtproduct Cornflakes Kellogg's", en yoghurtalternatieven als "Plantaardig alternatief voor yoghurt obv soja …". Alleen voor de eiwitshake is geen tegenhanger gevonden. Het rapport toont de kandidaten per regel. Of een NEVO-product dat een merk noemt (Kellogg's) past bij een generieke regel als "Ontbijtgranen, verrijkt", is een oordeel per regel: de regel zegt zelf dat verrijking een merkkeuze is.
 
 **Over de kandidaten in het rapport:** de naammatching is een zoekhulp met bekende missers, geen mapping. Bijvoorbeeld "Sojayoghurt" toont als eerste een soja-room en het juiste product ("Plantaardig alternatief voor yoghurt obv soja …") onder "Ook", en "Ontbijtgranen, verrijkt" krijgt geen kandidaat. Gebruik `node scripts/nevo-extract.mjs --zoek=<term>` om een term zelf op te zoeken.
+
+### Tweede ronde, 3 oktober 2026: 73 rijen op NEVO gezet
+
+Dennis keurde de aanpak goed ("zoveel mogelijk NEVO aanhouden"). De beslissingen staan in `BESLISSINGEN_NEVO_KERNSTOFFEN_2026-10.json`, het script `scripts/nevo-toepassen.mjs` past ze toe, en `STEEKPROEF_NEVO_TOEPASSING_2026-10.md` laat per rij zien wat er veranderde.
+
+**De regel:** NEVO wint bij hetzelfde voedingsmiddel en dezelfde bereiding, tot een verschil van 50% met de huidige waarde. Daarboven legt Dennis voor. Tot die keuze staat zo'n rij op USDA.
+
+- **73 rijen omgezet** (eiwit, magnesium, vitamine D en zink), waarvan 71 al geverifieerd waren op USDA en 2 voorheen leeg (seitan en vitamine D bij zalm). Nu zijn 106 rijen geverifieerd (was 104) en 78 daarvan komen uit NEVO. De reproduceerbaarheidstest bevestigt alle 78 exact.
+- **12 rijen voorgelegd:** Griekse yoghurt, tahin, snijbiet, diepvriesspinazie, tuinbonen (magnesium), forel (vitamine D), oesters, lamsvlees, kalfsvlees, feta (zink), en haring en leverpastei voor vitamine D. Bij elk staat mijn advies.
+- **Omega-3 blijft op USDA.** NEVO geeft EPA en DHA los; onze waarde is hun som, en dat is volgens de RIVM-voorwaarden een bewerking van de brondata. Omega-3 kan pas naar NEVO als het datamodel twee brondwaarden per rij kan dragen.
+- **15 rijen blijven zoals ze zijn** omdat NEVO ze niet kent of een andere bereiding heeft (kikkererwten alleen als geroosterde snack, edamame, spliterwten alleen gedroogd, boerenkool alleen als stamppot, e.a.).
+
+**Twee bevindingen**
+
+1. **Haring en vitamine D.** `ONDERZOEK_SPREIDING_EN_USDA_2026-09.md` §2.8 noemt "NEVO ~25 µg" voor haring. Dat staat niet in NEVO 2025/9.0: alle vier de haringrijen geven 6,2 µg, in lijn met NEVO's andere vette vis (makreel 8, gekweekte zalm 7,9). De literatuurwaarde van 25 µg die er nu staat, is dus waarschijnlijk niet uit NEVO afkomstig. Daarom staat haring bij de voorgelegde rijen.
+2. **NEVO geeft geen spreiding.** USDA-rijen konden een gemeten `observed`-bandbreedte dragen; NEVO publiceert die niet. Voor de omgezette rijen valt het tekortsysteem daardoor terug op de voorzichtiger klassenband, en `gedekt` wordt dus iets minder snel `true`. Dat past bij de asymmetrie-regel (een ondergrens bewijst "gehaald", nooit "niet gehaald"), maar het is merkbaar: de test "300 g havermout haalt de magnesium-RI" moest naar 500 g, omdat havermout nu op 120 mg per 100 g staat (was 126 mg) zonder spreiding.
+
