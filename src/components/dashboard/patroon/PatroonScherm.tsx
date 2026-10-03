@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { TEKORT_VOORSTELLEN } from "@/data/agenda/tekort-voorstellen";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import PatroonNutrientTabel from "@/components/dashboard/patroon/PatroonNutrientTabel";
 import PatroonSamenvattingKaart from "@/components/dashboard/patroon/PatroonSamenvattingKaart";
@@ -404,6 +405,24 @@ function PatroonInhoud() {
       ) : sectie === "voedingsstoffen" ? (
         <>
           <PatroonVensterTabel reeksen={reeksen} />
+
+          {bevinding && TEKORT_VOORSTELLEN[bevinding.nutrient] ? (
+            <p className="vd-note">
+              <strong>{bevinding.label} is je hardnekkigste patroon.</strong> Zet er een
+              moment voor in je dag.{" "}
+              <Link
+                href={`/dashboard?tab=agenda&plan=${bevinding.nutrient}`}
+                onClick={() => {
+                  trackEvent("patroon_plan_in_mijn_dag_click", {
+                    nutrient: bevinding.nutrient,
+                  });
+                  clarityTag("nutrition_patroon", `plan_${bevinding.nutrient}`);
+                }}
+              >
+                Plan in Mijn Dag →
+              </Link>
+            </p>
+          ) : null}
 
           <p className="vd-note" data-toon="terra">
             <strong>Vier vensters, geen gemiddelde.</strong> Een stof die in

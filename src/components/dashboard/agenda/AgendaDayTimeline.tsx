@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import * as Icons from "@/components/app/icons";
@@ -9,6 +9,8 @@ import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockShe
 import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
 import MeerHulpBridgeSheet from "@/components/dashboard/agenda/MeerHulpBridgeSheet";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
+import type { TekortVoorstel } from "@/lib/agenda-tekort-voorstellen";
 import { clarityTag } from "@/lib/clarity";
 import { buildDomainHelpBridge } from "@/lib/beweging-help-bridge";
 import { buildDashboardKeuzeHref } from "@/lib/dashboard-url";
@@ -100,6 +102,8 @@ type AgendaDayTimelineProps = {
   onShowAllPlanSteps?: () => Promise<void>;
   onCloseFocus: () => void;
   weekStrip?: ReactNode;
+  voorstellen?: readonly TekortVoorstel[];
+  autoOpenNutrient?: NutrientId | null;
   onRegisterFooterActions?: (actions: {
     openAddSheet: () => void;
     blockBusy: boolean;
@@ -126,10 +130,14 @@ export default function AgendaDayTimeline({
   onShowAllPlanSteps,
   onCloseFocus,
   weekStrip,
+  voorstellen = [],
+  autoOpenNutrient = null,
   onRegisterFooterActions,
 }: AgendaDayTimelineProps) {
   const router = useRouter();
   const [addOpen, setAddOpen] = useState(false);
+  const [preselectNutrient, setPreselectNutrient] = useState<NutrientId | null>(null);
+  const autoOpened = useRef(false);
   const [draftSlot, setDraftSlot] = useState<DraftSlot | null>(null);
   const [helpPreset, setHelpPreset] = useState<HelpPreset | null>(null);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
@@ -213,6 +221,7 @@ export default function AgendaDayTimeline({
     setAddOpen(false);
     setDraftSlot(null);
     setHelpPreset(null);
+    setPreselectNutrient(null);
   };
 
   const closeFocus = onCloseFocus;
@@ -336,6 +345,19 @@ export default function AgendaDayTimeline({
     clarityTag("dashboard_agenda", "quiet_cta");
     openHeaderSheet();
   };
+
+  useEffect(() => {
+    if (
+      autoOpened.current ||
+      !autoOpenNutrient ||
+      !voorstellen.some((voorstel) => voorstel.nutrient === autoOpenNutrient)
+    ) {
+      return;
+    }
+    autoOpened.current = true;
+    setPreselectNutrient(autoOpenNutrient);
+    openHeaderSheet();
+  }, [autoOpenNutrient, openHeaderSheet, voorstellen]);
 
   useEffect(() => {
     onRegisterFooterActions?.({ openAddSheet: openHeaderSheet, blockBusy });
@@ -577,6 +599,8 @@ export default function AgendaDayTimeline({
           initialStartTime={draftSlot?.startTime}
           initialEndTime={draftSlot?.endTime}
           createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
+          voorstellen={voorstellen}
+          preselectNutrient={preselectNutrient}
           hiddenPlanStep={hiddenPlanStep}
           onRestorePlanStep={onRestorePlanStep}
           onShowAllPlanSteps={onShowAllPlanSteps}

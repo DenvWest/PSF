@@ -10,7 +10,7 @@ import AgendaMonthGrid from "@/components/dashboard/agenda/AgendaMonthGrid";
 import { AgendaFocusPanel } from "@/components/dashboard/agenda/AgendaMetaRow";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
-import AgendaTekortVoorstellen from "@/components/dashboard/agenda/AgendaTekortVoorstellen";
+import AgendaPatroonRegel from "@/components/dashboard/agenda/AgendaPatroonRegel";
 import AgendaToolbar from "@/components/dashboard/agenda/AgendaToolbar";
 import AgendaWeekOverview from "@/components/dashboard/agenda/AgendaWeekOverview";
 import AgendaWeekTimeGrid, {
@@ -24,6 +24,8 @@ import AgendaRhythmPanel, {
 import type { AgendaStripDay } from "@/components/dashboard/agenda/AgendaWeekStrip";
 import type { AgendaWeekDayEntry } from "@/components/dashboard/agenda/AgendaWeekOverview";
 import type { RetimeBlockInput } from "@/components/dashboard/agenda/AgendaDayTimeline";
+import { NUTRIENT_IDS } from "@/data/nutrition/intake-reference";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { getAgendaCategory } from "@/data/agenda/categories";
 import {
   createAgendaBlock,
@@ -50,6 +52,7 @@ import { clarityTag } from "@/lib/clarity";
 import { formatFocusLabel } from "@/lib/focus-label";
 import { isPlanStepHidden, resolveScheduledTime } from "@/lib/day-model";
 import { trackAgendaDaySelected, trackAgendaViewSet, trackEvent } from "@/lib/ga4";
+import { useTekortVoorstellen } from "@/lib/use-tekort-voorstellen";
 import { useStickyHeaderOffset } from "@/lib/use-sticky-header-offset";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import {
@@ -171,6 +174,18 @@ export default function AgendaScreen({
   // Mijn Dag blijft (view/dag wisselen remount't dit component niet).
   const [rhythmExpanded, setRhythmExpanded] = useState(false);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
+  const { dagen: tekortDagen, voorstellen } = useTekortVoorstellen(today);
+  const [planNutrient] = useState<NutrientId | null>(() => {
+    if (typeof window === "undefined") return null;
+    const value = new URLSearchParams(window.location.search).get("plan");
+    return value && (NUTRIENT_IDS as string[]).includes(value) ? (value as NutrientId) : null;
+  });
+  useEffect(() => {
+    if (!planNutrient) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("plan");
+    window.history.replaceState(null, "", url.toString());
+  }, [planNutrient]);
   const [weekAddOpen, setWeekAddOpen] = useState(false);
   const [weekDraftSlot, setWeekDraftSlot] = useState<WeekGridEmptySlot | null>(null);
   const footerActionsRef = useRef<{
@@ -721,7 +736,7 @@ export default function AgendaScreen({
     footerActionsRef.current?.openAddSheet();
   };
 
-  const handleVoortgangLink = (surface: "agenda" | "agenda_week_sidebar" = "agenda") => {
+  const handleVoortgangLink = (surface: "agenda" | "agenda_week_sidebar" | "agenda_patroon_regel" = "agenda") => {
     trackEvent("dashboard_agenda_voortgang_link_click", {
       surface,
     });
@@ -846,15 +861,13 @@ export default function AgendaScreen({
         </p>
       ) : null}
 
-      {view === "dag" ? (
-        <AgendaTekortVoorstellen
-          selectedDate={selectedDate}
-          today={today}
+      {view === "dag" && selectedDate >= today ? (
+        <AgendaPatroonRegel
+          focus={voorstellen[0] ?? null}
+          dagen={tekortDagen}
           weekDates={stripWeekDates}
           weekDayLabels={WEEKDAY_LABELS}
-          plannedTitles={(blocksByDate.get(selectedDate) ?? []).map((block) => block.title)}
-          busy={blockBusy}
-          onPlan={handleCreateBlock}
+          onOpenPatroon={() => handleVoortgangLink("agenda_patroon_regel")}
         />
       ) : null}
 
@@ -880,6 +893,8 @@ export default function AgendaScreen({
           onHideAllPlanSteps={handleHideAllPlanSteps}
           onShowAllPlanSteps={handleShowAllPlanSteps}
           onCloseFocus={closeFocus}
+          voorstellen={voorstellen}
+          autoOpenNutrient={planNutrient}
           onRegisterFooterActions={handleRegisterFooterActions}
           weekStrip={
             <AgendaWeekStrip
@@ -954,6 +969,7 @@ export default function AgendaScreen({
               initialStartTime={weekDraftSlot.startTime}
               initialEndTime={weekDraftSlot.endTime}
               createSurface="agenda_week_grid_tap"
+              voorstellen={voorstellen}
               onClose={closeWeekAddSheet}
               onSubmit={handleWeekCreateBlock}
             />

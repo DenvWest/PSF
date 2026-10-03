@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { bouwTekortVoorstellen } from "@/lib/agenda-tekort-voorstellen";
+import { bouwTekortVoorstellen, dekkingPerDag } from "@/lib/agenda-tekort-voorstellen";
+import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 
 function reeks(
@@ -43,5 +44,16 @@ describe("bouwTekortVoorstellen", () => {
       reeks("omega3", null),
     ]);
     expect(uit).toEqual([]);
+  });
+});
+
+describe("dekkingPerDag", () => {
+  it("geeft 'leeg' voor een dag zonder registratie en 'open' voor een dag zonder bewijs", () => {
+    const uit = dekkingPerDag(
+      [{ date: "2026-10-01", soort: "doordeweeks", items: [] } as unknown as DagboekDag],
+      "magnesium",
+      ["2026-10-01", "2026-10-02"],
+    );
+    expect(uit).toEqual({ "2026-10-01": "open", "2026-10-02": "leeg" });
   });
 });
