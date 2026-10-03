@@ -106,3 +106,49 @@ legt is het sluitstuk; die kan pas als het bestand er is.
 - een NEVO-waarde staat altijd per 100 g
 - `amountForPortion()` laat de brondwaarde ongemoeid
 - vandaag claimt geen enkele rij verificatie (verandert bewust bij de eerste import)
+
+---
+
+## Aanvulling 3 oktober 2026 — de volledige voorwaarden gelezen, en het bestand is er
+
+Dennis heeft de voorwaarden (`Voorwaarden-voor-gebruik-NEVO-online-2025-databestand.pdf`, RIVM, versie 2025/9.0) gelezen en bij het downloaden geaccepteerd. Het databestand `NEVO2025_v9.0_Details.csv` (88 MB, 2.328 voedingsmiddelen, 137 stoffen) staat lokaal en niet in git. De eerdere open vraag "ongewijzigd of CC BY 4.0" is hiermee beantwoord: de tekst van het contract zelf zegt *"Gebruik van de informatie van NEVO-online is alleen toegestaan in ongewijzigde vorm en met vermelding van bron en versienummer."* De strengste lezing, waarop de code al gebouwd is, was dus de juiste.
+
+### Wat de voorwaarden zeggen dat hierboven nog niet stond
+
+1. **Aanvullingen mogen, wijzigingen niet.** *"Het is toegestaan aanvullingen te maken op NEVO-online versie 2025/9.0, mits […] direct duidelijk is dat het aanvullingen op de originele NEVO gegevens betreft. Het is de gebruiker niet toegestaan wijzigingen aan te brengen."* Gevolg: een NEVO-waarde en een waarde uit een andere bron (Open Food Facts, eigen invoer) mogen naast elkaar staan, maar elke rij moet laten zien waar zij vandaan komt. Een portie-omrekening is een afgeleide waarde en blijft gescheiden van het brongetal, zoals `nutrientValue` en `amount` al doen.
+2. **Een tweede bronvermelding voor berekende uitvoer.** *"Voor output van Berekeningsprogrammatuur dient de gebruiker de volgende tekst te vermelden: 'Gebaseerd op gegevens van NEVO-online versie 2025/9.0, RIVM, Bilthoven', c.q. 'Gebaseerd op gegevens van NEVO-online versie 2025/9.0, RIVM, Bilthoven en andere gegevens'."* Een dagboek dat NEVO-waarden per portie en per dag optelt, is berekeningsprogrammatuur. Naast `NEVO_CITATION` (voor de ruwe waarde) hoort er dus een tweede constante voor berekende uitvoer, met de "en andere gegevens"-variant zodra een scherm ook andere bronnen gebruikt. Dat komt in de dagboekintegratie.
+3. **Geen kosten voor eindgebruikers.** *"Het is daarom ook niet toegestaan aan (eind)gebruikers om kosten in rekening te brengen voor het gebruik van NEVO-online versie 2025/9.0."* **Dit raakt het verdienmodel.** Het premium-plan en elk toekomstig B2B-aanbod kunnen de NEVO-gegevens niet als betaald onderdeel verkopen. Het dagboek met NEVO-waarden moet voor de gebruiker gratis blijven, en een betaalde API voor partners mag NEVO niet bevatten. Waar de grens ligt (een betaald abonnement met een gratis onderdeel dat NEVO gebruikt) is een vraag voor RIVM: `nevo@rivm.nl`.
+4. **Nieuwe versies vervangen de oude.** *"…vragen we aan gebruikers […] om zodra een nieuwe versie van NEVO-online beschikbaar komt de vorige versie te vervangen door de nieuwe."* Daarom draagt elke NEVO-rij de versie (`edition`), en is een nieuwe versie een herhaalbare import, geen handwerk. Aanmelden voor de RIVM-nieuwsbrief Voeding (abonneren.rivm.nl/voeding) zodat we het horen.
+5. **Fouten melden.** *"…verzoeken u […] dit aan RIVM te melden via nevo@rivm.nl."* Een afwijking die de reproduceerbaarheidstest vindt, gaat dus ook als melding naar RIVM.
+
+### Wat er nu is
+
+- `scripts/nevo-extract.mjs` leest het bestand, valideert het en schrijft een reviewrapport (`STEEKPROEF_NEVO_IMPORT_2026-10.md`). Het patcht niets, zoals `usda-extract.mjs`. `--zoek=<term>` zoekt snel op wat NEVO voor een term heeft.
+- **De reproduceerbaarheidstest uit de sectie "Het importpad" bestaat nu**: `scripts/__tests__/nevo-extract.test.mjs` legt elke `origin: "nevo"`-waarde in `food-sources.ts` tegen het bestand. Alle vijf bestaande NEVO-waarden (sojadrank, makreel, sardines, halvarine, rundvlees) kloppen exact. De test draait alleen waar het bestand lokaal ligt.
+- **Het bestand is schoon.** 10.410 regels herhalen dezelfde stof onder een tweede stofgroep (eiwit staat onder "Energie en macronutriënten" én "Eiwitten") met identieke waarden; geen enkele dubbele regel wijkt af. 1.171 waarden zijn spoor (`TR`, waarde 0 als plaatshouder), 933 verrijkt (`+`). Een ontbrekende regel is iets anders dan een 0: dan heeft NEVO de stof niet gemeten.
+- **Dekking:** 2.321 van 2.328 voedingsmiddelen hebben kcal, eiwit, vet, koolhydraten én vezels. De micro's zijn vrijwel overal gevuld (magnesium 2.238, zink 2.212, vitamine D 2.276, B12 2.289). Dat is veel beter dan supermarktetiketten, waar calcium bij ruim 1.000 van de 36.000 producten staat.
+
+### Wat nog niet is gedaan
+
+- **Niets is overgenomen.** De kandidaten in het rapport zijn voorstellen op naam; de beoordeling (rauw of bereid, soort, verrijking) is aan Dennis. Dat is de afspraak uit het USDA-traject en blijft gelden.
+- **Het opslaan voor het dagboek** (een eigen tabel `nevo_foods`, apart van `sm_products`, omdat NEVO en Open Food Facts niet in één tabel horen: de ODbL eist dat die tabel alleen Open Food Facts-rijen bevat) en de dagboekintegratie zijn de volgende plak.
+- **De 16 "verrijkt"-regels.** NEVO heeft er voor de meeste een tegenhanger, alleen onder een andere naam: plantaardige dranken staan als "Drink amandel-/haver-/kokos-/rijst-/soja- … verrijkt m calcium en vitamines", een proteïnereep als "Eiwitreep m pinda", ontbijtgranen als "Ontbijtproduct Cornflakes Kellogg's", en yoghurtalternatieven als "Plantaardig alternatief voor yoghurt obv soja …". Alleen voor de eiwitshake is geen tegenhanger gevonden. Het rapport toont de kandidaten per regel. Of een NEVO-product dat een merk noemt (Kellogg's) past bij een generieke regel als "Ontbijtgranen, verrijkt", is een oordeel per regel: de regel zegt zelf dat verrijking een merkkeuze is.
+
+**Over de kandidaten in het rapport:** de naammatching is een zoekhulp met bekende missers, geen mapping. Bijvoorbeeld "Sojayoghurt" toont als eerste een soja-room en het juiste product ("Plantaardig alternatief voor yoghurt obv soja …") onder "Ook", en "Ontbijtgranen, verrijkt" krijgt geen kandidaat. Gebruik `node scripts/nevo-extract.mjs --zoek=<term>` om een term zelf op te zoeken.
+
+### Tweede ronde, 3 oktober 2026: 73 rijen op NEVO gezet
+
+Dennis keurde de aanpak goed ("zoveel mogelijk NEVO aanhouden"). De beslissingen staan in `BESLISSINGEN_NEVO_KERNSTOFFEN_2026-10.json`, het script `scripts/nevo-toepassen.mjs` past ze toe, en `STEEKPROEF_NEVO_TOEPASSING_2026-10.md` laat per rij zien wat er veranderde.
+
+**De regel:** NEVO wint bij hetzelfde voedingsmiddel en dezelfde bereiding, tot een verschil van 50% met de huidige waarde. Daarboven legt Dennis voor. Tot die keuze staat zo'n rij op USDA.
+
+- **73 rijen omgezet** (eiwit, magnesium, vitamine D en zink), waarvan 71 al geverifieerd waren op USDA en 2 voorheen leeg (seitan en vitamine D bij zalm). Nu zijn 106 rijen geverifieerd (was 104) en 78 daarvan komen uit NEVO. De reproduceerbaarheidstest bevestigt alle 78 exact.
+- **12 rijen voorgelegd:** Griekse yoghurt, tahin, snijbiet, diepvriesspinazie, tuinbonen (magnesium), forel (vitamine D), oesters, lamsvlees, kalfsvlees, feta (zink), en haring en leverpastei voor vitamine D. Bij elk staat mijn advies.
+- **Omega-3 blijft op USDA.** NEVO geeft EPA en DHA los; onze waarde is hun som, en dat is volgens de RIVM-voorwaarden een bewerking van de brondata. Omega-3 kan pas naar NEVO als het datamodel twee brondwaarden per rij kan dragen.
+- **15 rijen blijven zoals ze zijn** omdat NEVO ze niet kent of een andere bereiding heeft (kikkererwten alleen als geroosterde snack, edamame, spliterwten alleen gedroogd, boerenkool alleen als stamppot, e.a.).
+
+**Twee bevindingen**
+
+1. **Haring en vitamine D.** `ONDERZOEK_SPREIDING_EN_USDA_2026-09.md` §2.8 noemt "NEVO ~25 µg" voor haring. Dat staat niet in NEVO 2025/9.0: alle vier de haringrijen geven 6,2 µg, in lijn met NEVO's andere vette vis (makreel 8, gekweekte zalm 7,9). De literatuurwaarde van 25 µg die er nu staat, is dus waarschijnlijk niet uit NEVO afkomstig. Daarom staat haring bij de voorgelegde rijen.
+2. **NEVO geeft geen spreiding.** USDA-rijen konden een gemeten `observed`-bandbreedte dragen; NEVO publiceert die niet. Voor de omgezette rijen valt het tekortsysteem daardoor terug op de voorzichtiger klassenband, en `gedekt` wordt dus iets minder snel `true`. Dat past bij de asymmetrie-regel (een ondergrens bewijst "gehaald", nooit "niet gehaald"), maar het is merkbaar: de test "300 g havermout haalt de magnesium-RI" moest naar 500 g, omdat havermout nu op 120 mg per 100 g staat (was 126 mg) zonder spreiding.
+
