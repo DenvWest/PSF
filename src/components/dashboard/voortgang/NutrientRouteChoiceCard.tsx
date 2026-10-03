@@ -25,6 +25,8 @@ import {
 } from "@/lib/nutrition-protein-personal";
 import type { ProteinTargetRange } from "@/lib/protein-target";
 import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
+import type { KeuzeMeting } from "@/lib/nutrition-keuze-meting";
+import { RICHTING_LABEL, RICHTING_TEKEN, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 
 /**
@@ -64,8 +66,11 @@ export default function NutrientRouteChoiceCard({
   onToggle,
   proteinTarget = null,
   ageRange = null,
+  meting = null,
 }: {
   status: NutrientRouteStatus;
+  /** Gemeten stand uit het dagboek; zonder meting valt de kop terug op het checkantwoord. */
+  meting?: KeuzeMeting | null;
   gateOpen: boolean;
   surface: string;
   /**
@@ -95,8 +100,16 @@ export default function NutrientRouteChoiceCard({
   // Op Kompas blijven de bronnen dicht tot er een reden is ze te tonen; die
   // reden is zijn keuze, niet ons aandringen.
   const [showSources, setShowSources] = useState(!compact);
-  const statusColor = ROUTE_STATUS_COLOR[status.status];
-  const statusLabel = ROUTE_STATUS_LABEL[status.status];
+  const statusColor = meting
+    ? meting.gedekt
+      ? ROUTE_STATUS_COLOR.covered
+      : ROUTE_STATUS_COLOR.gap
+    : ROUTE_STATUS_COLOR[status.status];
+  const statusLabel = meting
+    ? meting.gedekt
+      ? "Gedekt"
+      : `${percentageADH(meting.aandeel)} van je RI`
+    : ROUTE_STATUS_LABEL[status.status];
   const personalLine = proteinTargetLine(proteinTarget);
   const ageNote = proteinAgeNote(ageRange);
 
@@ -150,12 +163,26 @@ export default function NutrientRouteChoiceCard({
           />
           <span className="min-w-0 text-[13.5px] font-semibold leading-snug text-[#F1EFE8]">
             {status.label}
-            {status.answerLabel ? (
+            {!meting && status.answerLabel ? (
               <span className="font-normal text-[#7E8C82]"> · jij: {status.answerLabel}</span>
             ) : null}
           </span>
         </span>
         <span className="flex shrink-0 items-center gap-2">
+          {meting ? (
+            <span
+              aria-hidden
+              className="h-1 w-12 overflow-hidden rounded-full bg-white/10"
+            >
+              <span
+                className="block h-full rounded-full"
+                style={{
+                  width: `${Math.min(Math.round(meting.aandeel * 100), 100)}%`,
+                  background: statusColor,
+                }}
+              />
+            </span>
+          ) : null}
           <span className="text-[11.5px] font-semibold" style={{ color: statusColor }}>
             {statusLabel}
           </span>
@@ -181,6 +208,24 @@ export default function NutrientRouteChoiceCard({
 
       {open ? (
       <>
+      {meting ? (
+        <p className="m-0 mt-1.5 text-[12px] leading-relaxed text-[#CDD7D0]">
+          {meting.vensters.map((venster) => `${venster.label} ${venster.waarde}`).join(" · ")}
+          <span className="text-[#7E8C82]">
+            {" "}
+            · {RICHTING_TEKEN[meting.richting]} {RICHTING_LABEL[meting.richting]}
+          </span>{" "}
+          <Link
+            href="/dashboard?tab=voortgang"
+            onClick={() =>
+              trackEvent("keuze_logboek_patroon_click", { nutrient: status.nutrient })
+            }
+            className="font-semibold text-[#9CC5A9] no-underline hover:underline"
+          >
+            Je patroon →
+          </Link>
+        </p>
+      ) : null}
       <p className="m-0 mt-1.5 text-[12px] leading-relaxed text-[#9FB0A6] text-pretty">
         {status.route.thresholdNl}
         {status.route.sourceNl ? ` · ${status.route.sourceNl}` : ""}

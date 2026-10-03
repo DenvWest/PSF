@@ -14,6 +14,8 @@ import { SCHAP_DIENST_CARDS } from "@/data/movement/schap-diensten";
 import { getDomainProductStance } from "@/data/domain-product-stance";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
+import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
+import { useTekortVoorstellen } from "@/lib/use-tekort-voorstellen";
 import { buildKeuzeSpiegel } from "@/lib/keuze-spiegel";
 import { parseLadderFavoriteLayer, resolveLadderLayerName } from "@/lib/leefstijl-ladder";
 import { resolveDefaultSchapTab, resolveSchapTabs } from "@/lib/schap-tabs";
@@ -100,6 +102,7 @@ export default function SchapView({
   onSwitchDomain,
 }: SchapViewProps) {
   const { items, isSaved, save } = useVoortgangFavorites();
+  const { reeksen } = useTekortVoorstellen(todayInAgendaTimezone());
   const pillar = PILLAR[domain];
   const tabs = resolveSchapTabs(domain);
   const fallbackTab = resolveDefaultSchapTab(domain);
@@ -326,6 +329,7 @@ export default function SchapView({
             proteinTarget={data?.proteinTarget ?? null}
             ageRange={data?.ageRange ?? null}
             showSearch
+            reeksen={reeksen}
           />
         ) : null}
 

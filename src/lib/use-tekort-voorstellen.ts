@@ -5,10 +5,12 @@ import { bouwTekortVoorstellen } from "@/lib/agenda-tekort-voorstellen";
 import type { TekortVoorstel } from "@/lib/agenda-tekort-voorstellen";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { bouwTekortsysteem } from "@/lib/nutrition-tekortsysteem";
+import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 
 export function useTekortVoorstellen(today: string): {
   dagen: DagboekDag[];
   voorstellen: TekortVoorstel[];
+  reeksen: Vensterreeks[];
 } {
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
 
@@ -31,10 +33,8 @@ export function useTekortVoorstellen(today: string): {
     };
   }, []);
 
-  const voorstellen = useMemo(
-    () => bouwTekortVoorstellen(bouwTekortsysteem(dagen, today)),
-    [dagen, today],
-  );
+  const reeksen = useMemo(() => bouwTekortsysteem(dagen, today), [dagen, today]);
+  const voorstellen = useMemo(() => bouwTekortVoorstellen(reeksen), [reeksen]);
 
-  return { dagen, voorstellen };
+  return { dagen, voorstellen, reeksen };
 }

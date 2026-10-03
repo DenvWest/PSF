@@ -12,6 +12,8 @@ import {
 } from "@/lib/nutrition-route-choice";
 import { sortRoutesByAttention, type NutrientRouteStatus } from "@/lib/nutrition-route-status";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
+import { keuzeMeting } from "@/lib/nutrition-keuze-meting";
+import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 import type { ProteinTargetRange } from "@/lib/protein-target";
 
 /**
@@ -65,6 +67,7 @@ export default function NutrientLogboekPanel({
   proteinTarget = null,
   ageRange = null,
   showSearch = false,
+  reeksen = [],
 }: {
   statuses: readonly NutrientRouteStatus[];
   gateOpen: boolean;
@@ -83,6 +86,8 @@ export default function NutrientLogboekPanel({
    * Op Kompas zou hij nu meubilair zijn boven twee regels.
    */
   showSearch?: boolean;
+  /** Gemeten dekking uit het dagboek; per stof de bron van de kopregel. */
+  reeksen?: readonly Vensterreeks[];
 }) {
   // Alleen wat een keuze openheeft, sterkste signaal eerst. Een stof die je al
   // uit je eten haalt is goed nieuws, maar geen keuze.
@@ -161,9 +166,9 @@ export default function NutrientLogboekPanel({
           Je voedingslogboek
         </p>
         <p className="m-0 mt-1 max-w-[58ch] text-[12px] leading-relaxed text-[#9FB0A6] text-pretty">
-          Per stof: wat je check erover zegt, en hoe je hem binnenkrijgt. Open
-          een stof en kies zelf of dat uit je eten komt, uit een supplement, of
-          allebei.
+          Per stof: hoe ver je dagboek je brengt, en hoe je de rest binnenkrijgt.
+          Open een stof en kies zelf of dat uit je eten komt, uit een
+          supplement, of allebei.
         </p>
       </div>
 
@@ -269,6 +274,7 @@ export default function NutrientLogboekPanel({
             onToggle={() => handleToggle(status.nutrient)}
             proteinTarget={proteinTarget}
             ageRange={ageRange}
+            meting={keuzeMeting(reeksen.find((reeks) => reeks.nutrient === status.nutrient))}
           />
         ))}
       </ul>
