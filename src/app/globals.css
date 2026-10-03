@@ -150,6 +150,13 @@
   --vd-accent-2-rgb: 108 143 201;
   --vd-ink-rgb: 241 239 232;
 
+  /* Identiteitskleur per stof (krans + detail). Zegt welke stof, nooit hoe het ervoor staat. */
+  --vd-stof-magnesium: #5FB3A1;
+  --vd-stof-protein: #D98B6A;
+  --vd-stof-omega3: #6C9BD9;
+  --vd-stof-zinc: #A98BD0;
+  --vd-stof-vitamin_d: #DDBA4E;
+
   /* Editorial / article reading (blog + kennisbank) — sticky TOC + anchors */
   --reading-scroll-margin: 6.75rem;
   --sticky-toc-offset: 6.875rem;
