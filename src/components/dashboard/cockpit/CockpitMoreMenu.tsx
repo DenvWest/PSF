@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
-import { DASHBOARD_MORE_ITEMS } from "@/data/dashboard";
+import { DASHBOARD_MORE_ITEMS, type DashboardMoreItem } from "@/data/dashboard";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 
@@ -24,6 +24,13 @@ import { trackEvent } from "@/lib/ga4";
  * component met een `variant` houdt die twee synchroon: een item toevoegen
  * aan `DASHBOARD_MORE_ITEMS` laat het op beide plekken verschijnen, zonder
  * dat iemand de tweede vergeet.
+ *
+ * ## Eén item = directe link in de header
+ *
+ * Een popover met één bestemming kost een klik zonder iets te verbergen dat
+ * die klik rechtvaardigt, en op brede schermen is er ruimte. Zolang de lijst
+ * één item heeft toont de header dat item direct; bij twee of meer komt het
+ * "Meer"-popover terug. De onderbalk houdt altijd "Meer" (beperkte breedte).
  *
  * ## Waarom de onderbalk een sheet opent en de header een popover
  *
@@ -75,6 +82,26 @@ function MeerItems({ onNavigate }: { onNavigate: () => void }) {
   );
 }
 
+function DirectLink({ item }: { item: DashboardMoreItem }) {
+  const Icon = Icons[item.icon as keyof typeof Icons] as React.ComponentType<{
+    s?: number;
+    style?: React.CSSProperties;
+  }>;
+  return (
+    <Link
+      href={item.href}
+      title={item.hint}
+      onClick={() => trackEvent("dashboard_more_item_click", { item: item.id })}
+      className="relative flex shrink-0 items-center justify-center gap-1.5 rounded-[10px] px-2 py-2 text-[13px] font-medium text-[#9FB0A6] no-underline transition hover:bg-white/[0.05] hover:text-[#F1EFE8] md:justify-start lg:gap-2 lg:px-3 lg:text-[13.5px]"
+    >
+      <span className="flex h-[15px] w-[15px] items-center justify-center">
+        <Icon s={15} style={{ color: "rgba(159,176,166,0.85)" }} />
+      </span>
+      <span className="hidden md:inline">{item.label}</span>
+    </Link>
+  );
+}
+
 export default function CockpitMoreMenu({ variant }: { variant: Variant }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -101,6 +128,10 @@ export default function CockpitMoreMenu({ variant }: { variant: Variant }) {
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open, variant]);
+
+  if (variant === "header" && DASHBOARD_MORE_ITEMS.length === 1) {
+    return <DirectLink item={DASHBOARD_MORE_ITEMS[0]} />;
+  }
 
   const knop =
     variant === "bottom"
