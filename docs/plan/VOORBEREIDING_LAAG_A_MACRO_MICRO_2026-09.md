@@ -205,7 +205,12 @@ De brug die §2.2 voorzag bestaat wel, maar op een andere plek: wie zijn eigen m
 
 ## 6. Vervolg: verificatie en meer data (onderzoek 3 oktober 2026)
 
-Status: **onderzoek en advies, geen besluit.** Elke keuze hieronder is aan Dennis.
+Status: onderzoek en advies, met twee besluiten van Dennis (3 okt):
+
+- **Licentie → jurist.** Akkoord met §6.1. De vragen voor de jurist staan in `JURIDISCHE_VRAAG_SUPERMARKTDATA_2026-10.md`. Tot het antwoord er is, gaat de catalogus niet live; lokaal bouwen gaat door.
+- **Supabase-tabel als stap 5: akkoord** (§6.3 punt 1–2): eigen tabel met trigram-zoeken, herkomst per rij, en bronnen als aparte lagen.
+- **Bronvermelding:** Dennis vroeg of de bron alleen in de footer kan. Voorlopig advies: twee lagen, namelijk een korte bronregel bij elk getoond product plus een pagina "Bronnen en licenties" die vanuit de footer gelinkt is. Een footer-link alleen is waarschijnlijk te zwak voor ODbL §4.3 ("notice associated with the Produced Work") en voor NEVO ("bij elke weergave"). Dit ligt bij de jurist als vraag 9 en 10. De bronregel past al in het datamodel, omdat elke rij zijn herkomst draagt.
+
 
 ### 6.1 Blokkade vóór livegang: de licentie van de basisdataset
 
