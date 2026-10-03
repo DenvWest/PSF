@@ -1,7 +1,7 @@
 # Juridische vraag: mogen we deze supermarktdata gebruiken, en hoe vermelden we de bron?
 
 **Datum:** 3 oktober 2026
-**Status:** voorgelegd aan een jurist (Dennis, 3 okt). Tot het antwoord gaat de supermarktcatalogus niet live (`VOORBEREIDING_LAAG_A_MACRO_MICRO_2026-09.md` §6.1).
+**Status:** voorgelegd aan een jurist (Dennis, 3 okt). Bijgewerkt 3 okt (avond): nieuwe feiten over de herkomst, een nieuw voorstel en vragen 11–14 staan in §7. Tot het antwoord gaat de supermarktcatalogus niet live (`VOORBEREIDING_LAAG_A_MACRO_MICRO_2026-09.md` §6.1).
 **Voor:** een jurist met kennis van IE- en databankenrecht (NL/EU)
 **Van:** PerfectSupplement (perfectsupplement.nl), Dennis van Westbroek
 
@@ -69,9 +69,40 @@ Deze inschatting is bedoeld om het gesprek te versnellen, niet als antwoord.
 
 ## 6. Wat we van de jurist vragen
 
-- Een antwoord op vragen 1–10, met per vraag: mag het, onder welke voorwaarden, en hoe groot is het risico.
-- Een advies: huidige dataset gebruiken of niet; Open Food Facts variant A, B of geen van beide.
+- Een antwoord op vragen 1–14, met per vraag: mag het, onder welke voorwaarden, en hoe groot is het risico.
+- Een advies: de huidige dataset gebruiken of niet (en zo ja, welk deel en in welke vorm: voorstel D, E of F uit §7); Open Food Facts variant A, B of geen van beide.
 - Waar nodig: de exacte tekst van de bronvermelding en de plaats waar die moet staan.
+
+## 7. Bijgewerkt 3 oktober (avond): nieuwe feiten, nieuwe voorstellen, extra vragen
+
+Na het opstellen van §1–§6 is de herkomst van de dataset verder uitgezocht. Dat verandert een deel van de beschrijving in §2.
+
+### 7.1 Wat we nu over de herkomst weten
+
+- **De bronrepo is weg en niet te herstellen.** Het GitHub-account `pljwissink` is aangemaakt op 25 maart 2026 en heeft 0 publieke repo's. Een licentie of README is niet meer te raadplegen; de Wayback Machine konden we niet bereiken.
+- **De voedingswaarden komen van de websites van de supermarkten zelf, niet uit Open Food Facts.** Dat is af te lezen uit de ruwe tekst per keten: bij AH staat AH's eigen veldnaam `product.info.nutrion.sort.daily` (met AH's typfout) in de data, bij Jumbo en Plus staat platgeslagen paginatekst ("Per 100 ml, %ADH…", "Deze waarden gelden voor het niet bereide product…"), en bij Lidl staan Duitse labels met kapotte tekencodering en een vergelijkingskolom ("Verglichen mit…"). De README noemt openfoodfacts.org wel als bron; waarschijnlijk is dat voor iets anders gebruikt, bijvoorbeeld de Lidl-barcodes `[AANNAME]`.
+- **Gevolg voor §2 en vraag 4:** de zorg dat de set per rij vermengd is met Open Food Facts-data (ODbL) is waarschijnlijk niet aan de orde. Het probleem zit bij de websites van de supermarkten.
+- **Alleen Lidl heeft barcodes** (circa 4.000 van de 36.000 producten). AH, Jumbo en Plus hebben ze niet.
+- **Gebruiksvoorwaarden per keten** (uit de eerdere analyse): Jumbo verbiedt scrapen expliciet (art. 9.3) en noemt databankrecht in de definitie van intellectuele eigendom, wat wij zelf hebben gecontroleerd. AH (art. 14) en Plus (art. 19.1) hebben een algemeen verbod op verveelvoudiging buiten persoonlijk gebruik, zonder scrape-clausule. Voor Lidl vonden we geen bepaling `[NIET GEVONDEN]`; dat moet nog geverifieerd worden.
+
+### 7.2 Onderzocht en afgewezen: de producten alsnog in Open Food Facts zetten
+
+Het idee was de producten in Open Food Facts te plaatsen, zodat Open Food Facts de bron wordt. Dat is niet toegestaan. De voorwaarden van Open Food Facts zeggen letterlijk: *"Contributors agree not to add on Open Food Facts information, data and photos from other websites (including other products databases, e-commerce websites, producers sites etc.)"* en *"Information and data added by contributors must come directly from the label and packaging of the product."* Het zou de herkomst bovendien niet wegnemen. We leggen dit alleen voor ter informatie; het is geen vraag.
+
+### 7.3 Nieuwe voorstellen
+
+- **Voorstel D: een "typische waarde" per generiek productgroep, zonder merk, zonder keten en zonder één afzonderlijke rij.** Bijvoorbeeld "Halfvolle melk: 47 kcal per 100 ml, bandbreedte 44–49, gebaseerd op 90 etiketten". We meten dit zo: van de 371 generieke regels die het dagboek heeft, hebben er 175 minstens vijf producten waarvan de naam de regel bevat, en bij 65 daarvan is de waarde stabiel (de middelste 80% van de waarden ligt binnen 35% van de mediaan). Dat is een ruwe meting op naam; een nauwkeuriger indeling geeft waarschijnlijk meer. De gebruiker en een eventuele afnemer zien alleen die gebundelde waarde.
+- **Voorstel E: alleen het Lidl-deel gebruiken** (circa 4.000 producten, met barcodes), omdat daar geen scrape-verbod is gevonden, mits dat is geverifieerd.
+- **Voorstel F: de set alleen intern houden** als meetlat voor Open Food Facts en als lijst van producten die daar ontbreken, zonder waarden over te nemen. Bij een meting van 100 willekeurige Lidl-producten staat 42% in Open Food Facts, en waar beide een calorie-waarde hebben klopt die in 37 van de 39 gevallen.
+
+### 7.4 Extra vragen
+
+11. **Gebundelde waarden (voorstel D).** Is een mediaan met bandbreedte per generiek productgroep, berekend uit de set maar zonder dat één afzonderlijke rij wordt getoond of aangeboden, een "hergebruik van een substantieel deel van de inhoud" (re-utilisation) in de zin van de Databankenwet? Of speelt alleen de eerdere extractie en kopie, die wij als ontvanger in bezit hebben? Ons argument (niet getoetst): de uitvoer maakt niets van de inhoud openbaar, en de schade voor de supermarkten is niet aan te wijzen, omdat een mediaan geen concurrerende database is.
+12. **Onze wetenschap.** Speelt onze kennis van de herkomst (art. 6:162 BW, "bijkomende omstandigheden") ook als we uitsluitend gebundelde waarden gebruiken? Zou een Nederlandse rechter dat anders wegen dan bij het gebruik van afzonderlijke producten? Een Nederlandse rechtbank wees in een zaak over overgenomen webshopgegevens (Tracpartz) een databankclaim af omdat de investering niet was aangetoond; die uitspraak hebben wij alleen uit een zoekresultaat en niet zelf gelezen `[AANNAME]`.
+13. **Het Lidl-deel (voorstel E).** Kan dat, en wat moeten we dan eerst controleren (met name de Lidl-voorwaarden)?
+14. **Bronvermelding bij gebundelde waarden.** Welke vermelding is hier nodig? Wij denken aan "Typische waarde, gebaseerd op N etiketten van producten uit Nederlandse supermarkten (2026)", zonder een keten te noemen. Is dat voldoende, of zegt het recht dat de bron genoemd moet worden?
+
+Aanvullende verwijzingen: HvJ EU 9 november 2004, C-444/02 (Fixtures Marketing: investering in het *creëren* van gegevens telt niet voor het databankenrecht). Voorwaarden Open Food Facts: <https://world.openfoodfacts.org/terms-of-use>.
 
 ## Bijlagen en verwijzingen
 
