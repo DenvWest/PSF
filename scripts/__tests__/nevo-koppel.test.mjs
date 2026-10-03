@@ -115,4 +115,14 @@ describe("beslissingen", () => {
   it("weigert dezelfde regel bij handmatig én bewustNiet", () => {
     expect(() => koppel({ ...basis, beslissingen: { handmatig: { snoep: { code: "2659", opm: "" } }, bewustNiet: { snoep: "x" } } })).toThrow(/zowel/);
   });
+
+  it("koppelt een benadering en markeert hem als zodanig", () => {
+    const [k] = koppel({ ...basis, beslissingen: { handmatig: {}, bewustNiet: {}, benadering: { snoep: { code: "2659", opm: "vergelijkbaar" } } } });
+    expect(k).toMatchObject({ status: "zeker", basis: "benadering", code: "2659" });
+  });
+
+  it("weigert een benadering met een onbekende code of een dubbele beslissing", () => {
+    expect(() => koppel({ ...basis, beslissingen: { handmatig: {}, bewustNiet: {}, benadering: { snoep: { code: "0", opm: "" } } } })).toThrow(/bestaat niet/);
+    expect(() => koppel({ ...basis, beslissingen: { handmatig: {}, bewustNiet: { snoep: "x" }, benadering: { snoep: { code: "2659", opm: "" } } } })).toThrow(/zowel/);
+  });
 });

@@ -6,7 +6,8 @@ Gegenereerd door `scripts/nevo-koppel.mjs` (deterministisch). De regels onder "H
 - Zeker via `bron` (FOOD_SOURCES-rij uit NEVO): 71
 - Zeker via `naam` (één sterke kandidaat): 49
 - Zeker via `handmatig` (beslist door Claude, ter beoordeling): 150
-- Bewust geen koppeling (met reden): 100
+- Benadering (vergelijkbaar NEVO-record, gelabeld): 32
+- Bewust geen koppeling (met reden): 68
 - **Nog open voor Dennis: 1**
 
 ## Nog open voor Dennis
@@ -177,12 +178,49 @@ Kies per regel de code, of laat de regel zonder NEVO-koppeling. Leg de keuze vas
 | chocolademelk | Chocolademelk | 1464 | Melk chocolade- halfvolle | halfvolle |
 | bier | Bier | 390 | Bier pils | pils |
 
+## Benadering (vergelijkbaar record)
+
+Geen eigen NEVO-record; alleen macro's, altijd gelabeld als benadering, nooit in een som als brongetal.
+
+| Sleutel | Label | NEVO-code | NEVO-naam | Opmerking |
+|---|---|---|---|---|
+| broccoli-gestoomd | Broccoli, gestoomd | 920 | Broccoli gekookt | gekookte broccoli |
+| broccoli-diepvries | Broccoli, diepvries | 920 | Broccoli gekookt | gekookte broccoli |
+| basmatirijst-gekookt | Basmatirijst, gekookt | 658 | Rijst witte gekookt | witte rijst gekookt |
+| meergranenbrood | Meergranenbrood | 2784 | Meergranenbrood bruin m zaden  | bruin met zaden |
+| kipdij | Kipdij | 1317 | Kip/bout z vel gegrild | kipbout zonder vel; dij en bout lijken sterk |
+| eend | Eendenborst | 106 | Eend m vel rauw | eend met vel; geen eendenborst in NEVO |
+| worst | Worst | 1909 | Worst excl leverproducten gem | gemiddelde worst zonder leverproducten |
+| rosbief | Rosbief | 3345 | Runderrosbief (vleeswaar) | rosbief als beleg |
+| boter | Roomboter | 879 | Boter gezouten | gezouten boter |
+| blauwe-kaas | Blauwe kaas | 1939 | Kaas blauwschimmel Gorgonzola | Gorgonzola |
+| smeerkaas | Smeerkaas | 516 | Kaas smeer- 40+ | smeerkaas 40+ |
+| havermelk | Havermelk | 5463 | Drink haver- z suiker | onverrijkt; micro's niet gebruiken |
+| amandeldrink | Amandeldrink | 5464 | Drink amandel- z suiker | onverrijkt; micro's niet gebruiken |
+| kokosdrink | Kokosdrink | 5543 | Drink kokos- z suiker | onverrijkt; micro's niet gebruiken |
+| rijstdrink | Rijstdrink | 5101 | Drink rijst- z suiker | onverrijkt; micro's niet gebruiken |
+| vegan-gehakt | Vegetarisch gehakt | 2047 | Gehakt fijn- vegetarisch obv soja onbereid | op basis van soja |
+| vegan-burger | Vegetarische burger | 5552 | Balletjes/burgers vegetarisch obv erwt onbereid | op basis van erwt |
+| vegan-worst | Vegetarische worst | 5478 | Worst boterham- vegetarisch | vegetarische boterhamworst |
+| vleesvervanger-stukjes | Vegetarische stukjes | 5485 | Reepjes/stukjes vegetarisch obv soja/tarwe onbereid | soja/tarwe |
+| margarine | Margarine | 2557 | Margarine 80% vet >24 g verz vetz ongezouten | 80% vet, ongezouten; verrijking niet meegenomen |
+| bakboter | Bak- en braadboter | 2563 | Bak- en braadvet vast 97% vet >17 g verz vetz ongezouten | bak- en braadvet, vast |
+| granola | Granola | 5593 | Muesli krokante naturel | krokante naturel muesli |
+| ontbijtgranen-volkoren | Volkoren ontbijtgranen | 225 | Volkoren graanontbijt | volkoren graanontbijt |
+| proteinereep | Proteïnereep | 5507 | Eiwitreep m pinda | eiwitreep met pinda |
+| groentesoep | Groentesoep | 759 | Soep heldere m soepgroente | heldere soep met soepgroente |
+| kippensoep | Kippensoep | 758 | Soep heldere m vlees (rund/kip) | heldere soep met kip |
+| pizza | Pizza | 5432 | Pizza m mozzarella Margherita | pizza margherita |
+| stamppot | Stamppot | 1483 | Stamppot boerenkool z vlees bereid | boerenkoolstamppot zonder vlees |
+| maaltijdsalade | Maaltijdsalade | 5532 | Salade maaltijd- m kip, pasta en dressing | maaltijdsalade met kip, pasta en dressing |
+| wrap-gevuld | Gevulde wrap | 5363 | Wrap m kip | wrap met kip |
+| groene-thee | Groene thee | 645 | Thee bereid | thee bereid |
+| frisdrank-light | Frisdrank, light / zero | 1522 | Frisdrank light z cafeine | light frisdrank |
+
 ## Bewust geen koppeling
 
 | Sleutel | Label | Reden |
 |---|---|---|
-| broccoli-gestoomd | Broccoli, gestoomd | NEVO heeft alleen gekookte broccoli |
-| broccoli-diepvries | Broccoli, diepvries | NEVO heeft alleen rauw en gekookt |
 | zuurkool | Zuurkool | NEVO heeft alleen zuurkoolsap en stamppot, geen zuurkool zelf |
 | paprika-gebakken | Paprika, gebakken | NEVO heeft geen gebakken paprika |
 | courgette-gebakken | Courgette, gebakken | NEVO heeft geen gebakken courgette |
@@ -190,7 +228,6 @@ Kies per regel de code, of laat de regel zonder NEVO-koppeling. Leg de keuze vas
 | pompoen-geroosterd | Pompoen, geroosterd | NEVO heeft geen geroosterde pompoen |
 | paddenstoelen-uv | Paddenstoelen, UV-behandeld | NEVO heeft geen UV-behandelde paddenstoelen |
 | fruit-diepvries | Rood fruit, diepvries | NEVO heeft geen diepvriesfruit |
-| basmatirijst-gekookt | Basmatirijst, gekookt | NEVO kent geen basmati |
 | wilde-rijst-gekookt | Wilde rijst, gekookt | NEVO kent geen wilde rijst |
 | boekweit-gekookt | Boekweit, gekookt | NEVO heeft alleen boekweitgrutten (droog) |
 | amarant-gekookt | Amarant, gekookt | niet in NEVO |
@@ -198,7 +235,6 @@ Kies per regel de code, of laat de regel zonder NEVO-koppeling. Leg de keuze vas
 | gerst-gekookt | Gerst, gekookt | NEVO heeft alleen rauwe gerst |
 | spelt-gekookt | Spelt, gekookt | NEVO heeft alleen speltmeel en -vlokken |
 | polenta | Polenta | niet in NEVO |
-| meergranenbrood | Meergranenbrood | NEVO onderscheidt wit en bruin; geen gemiddelde |
 | zuurdesembrood | Zuurdesembrood | NEVO heeft alleen een glutenvrije zuurdesem |
 | speltbrood | Speltbrood | niet in NEVO |
 | naan | Naanbrood | niet in NEVO |
@@ -213,13 +249,9 @@ Kies per regel de code, of laat de regel zonder NEVO-koppeling. Leg de keuze vas
 | kikkererwten-gekookt | Kikkererwten, gekookt | NEVO kent kikkererwten alleen als geroosterde snack |
 | kikkererwten-blik | Kikkererwten, uit blik | NEVO kent kikkererwten alleen als geroosterde snack |
 | edamame | Edamame | niet in NEVO |
-| kipdij | Kipdij | NEVO heeft alleen kipbout zonder vel |
 | kippenvleugel | Kippenvleugels | niet in NEVO |
 | schnitzel | Schnitzel | NEVO heeft alleen vegetarische schnitzels met verrijking |
-| eend | Eendenborst | NEVO heeft alleen eend met vel, geen eendenborst |
-| worst | Worst | te generiek: NEVO heeft tientallen worstsoorten |
 | ham | Ham | NEVO onderscheidt ham per stuk van het varken; geen gewone hamplak |
-| rosbief | Rosbief | NEVO heeft rauw, bereid en vleeswaar; welke bedoeld is niet te zeggen |
 | hart | Hart | niet in NEVO |
 | nier | Nier | runder-, varkens- en lamsnier verschillen |
 | pens | Pens | niet in NEVO |
@@ -231,53 +263,29 @@ Kies per regel de code, of laat de regel zonder NEVO-koppeling. Leg de keuze vas
 | octopus | Octopus | niet in NEVO |
 | verrijkte-eieren | Omega-3 verrijkte eieren | verrijking is een fabrikantkeuze; het etiket is de bron |
 | room | Room | kook-, koffie-, zure en slagroom verschillen sterk |
-| boter | Roomboter | gezouten en ongezouten staan los; gebruik niet te raden |
 | geitenkaas | Geitenkaas | verse en harde geitenkaas verschillen sterk |
-| blauwe-kaas | Blauwe kaas | Roquefort, Gorgonzola en Bluefort staan los |
 | roomkaas | Roomkaas | NEVO heeft alleen merken |
-| smeerkaas | Smeerkaas | 20+, 40+ en 45+ staan los |
-| havermelk | Havermelk | verrijking is een fabrikantkeuze; het etiket is de bron |
-| amandeldrink | Amandeldrink | verrijking is een fabrikantkeuze; het etiket is de bron |
-| kokosdrink | Kokosdrink | verrijking is een fabrikantkeuze; het etiket is de bron |
-| rijstdrink | Rijstdrink | verrijking is een fabrikantkeuze; het etiket is de bron |
 | plantaardige-drank-verrijkt | Plantaardige drank, verrijkt | verrijking is een fabrikantkeuze; het etiket is de bron |
 | sojayoghurt | Sojayoghurt | verrijking is een fabrikantkeuze; het etiket is de bron |
 | plantaardige-yoghurt | Plantaardige yoghurt | verrijking is een fabrikantkeuze; het etiket is de bron |
-| vegan-gehakt | Vegetarisch gehakt | verrijking is een fabrikantkeuze; het etiket is de bron |
-| vegan-burger | Vegetarische burger | verrijking is een fabrikantkeuze; het etiket is de bron |
-| vegan-worst | Vegetarische worst | verrijking is een fabrikantkeuze; het etiket is de bron |
-| vleesvervanger-stukjes | Vegetarische stukjes | verrijking is een fabrikantkeuze; het etiket is de bron |
 | avocado-olie | Avocado-olie | niet in NEVO |
 | algenolie | Algenolie | productspecificatie van de fabrikant |
-| margarine | Margarine | verrijking is een fabrikantkeuze; het etiket is de bron |
-| bakboter | Bak- en braadboter | NEVO heeft meerdere bak- en braadvetten |
 | amandelpasta | Amandelpasta | niet in NEVO |
 | currysaus | Currysaus | niet in NEVO |
 | dressing | Slasaus / dressing | NEVO heeft specifieke dressings, geen gemiddelde |
-| granola | Granola | niet in NEVO |
-| ontbijtgranen-volkoren | Volkoren ontbijtgranen | geen herkenbaar equivalent |
 | ontbijtgranen-verrijkt | Ontbijtgranen, verrijkt | verrijking is een fabrikantkeuze; het etiket is de bron |
 | pure-chocolade | Pure chocolade 70 % | NEVO geeft geen cacaopercentage; 70% is niet te herleiden |
 | snoep | Snoep | NEVO heeft alleen specifieke soorten |
-| proteinereep | Proteïnereep | verrijking/merk; het etiket is de bron |
 | gebak | Gebak | te generiek |
-| groentesoep | Groentesoep | NEVO heeft meerdere soepen; geen standaard |
 | linzensoep | Linzensoep | niet in NEVO |
-| kippensoep | Kippensoep | NEVO heeft meerdere soepen; geen standaard |
 | pompoensoep | Pompoensoep | niet in NEVO |
 | champignonsoep | Champignonsoep | niet in NEVO |
 | bouillon | Bouillon | NEVO heeft meerdere bereidingen (blokje, kops, pot) |
-| pizza | Pizza | te veel varianten |
 | curry-maaltijd | Curry met rijst | niet in NEVO |
-| stamppot | Stamppot | te veel varianten |
-| maaltijdsalade | Maaltijdsalade | te generiek |
 | pokebowl | Pokébowl | niet in NEVO |
-| wrap-gevuld | Gevulde wrap | te generiek |
 | friet | Friet | niet in NEVO onder deze naam |
 | ovenaardappel | Ovenaardappel | niet in NEVO |
-| groene-thee | Groene thee | NEVO heeft alleen thee bereid, geen groene |
 | frisdrank | Frisdrank | cola, sinas en light verschillen |
-| frisdrank-light | Frisdrank, light / zero | cola, sinas en light verschillen |
 | sportdrank | Sportdrank | NEVO heeft alleen merken |
 | wijn | Wijn | rood, wit en rosé verschillen |
 | eiwitshake | Eiwitshake | verrijking/merk; het etiket is de bron |
