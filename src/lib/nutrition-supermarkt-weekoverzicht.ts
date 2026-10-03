@@ -2,7 +2,7 @@ import type { MacroDoelen } from "@/lib/account-macro-doelen";
 import {
   somVanSupermarktveld,
   SUPERMARKT_MACRO_VELDEN,
-  type SupermarktPortieLog,
+  type SupermarktPortie,
   type SupermarktVeld,
 } from "@/lib/nutrition-supermarkt-items";
 
@@ -35,7 +35,7 @@ import {
  *
  * ## Waarom een map van datum → logs, geen platte lijst
  *
- * `SupermarktPortieLog` draagt geen datumveld (dat leeft op API-niveau via
+ * `SupermarktPortie` draagt geen datumveld (dat leeft op API-niveau via
  * `/api/account/supermarkt-portie-logs?date=`) — de aanroeper haalt per dag
  * op en geeft hier een map mee, zodat "hoeveel dagen zijn geregistreerd"
  * hier correct te tellen is zonder dat dit bestand iets over de opslag hoeft
@@ -89,7 +89,7 @@ function doelVoorVeld(veld: SupermarktVeld, doelen: MacroDoelen): number | null 
 }
 
 export function bouwSupermarktWeekoverzicht(
-  logsPerDag: ReadonlyMap<string, readonly SupermarktPortieLog[]>,
+  logsPerDag: ReadonlyMap<string, readonly SupermarktPortie[]>,
   datums: readonly string[],
   doelen: MacroDoelen,
 ): SupermarktWeekoverzicht {

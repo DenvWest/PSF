@@ -1,17 +1,42 @@
 import { describe, expect, it } from "vitest";
 import { bouwSupermarktWeekoverzicht } from "@/lib/nutrition-supermarkt-weekoverzicht";
 import { LEGE_MACRO_DOELEN, type MacroDoelen } from "@/lib/account-macro-doelen";
-import type { SupermarktPortieLog } from "@/lib/nutrition-supermarkt-items";
+import type { SupermarktPortie } from "@/lib/nutrition-supermarkt-items";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
 
 const DATUMS = ["2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-19", "2026-09-20"];
 
-function log(overrides: Partial<SupermarktPortieLog> = {}): SupermarktPortieLog {
+const PRODUCT: SupermarktProduct = {
+  prodId: "off:1",
+  bron: "off",
+  bronId: "1",
+  naam: "Testproduct",
+  merk: null,
+  categorie: null,
+  snapshotDatum: "2026-10-01",
+  energyKcal: 200,
+  fatG: 10,
+  saturatedFatG: null,
+  carbohydrateG: 20,
+  sugarsG: null,
+  fiberG: null,
+  proteinG: 5,
+  saltG: null,
+  sodiumMg: null,
+  calciumMg: null,
+  ironMg: null,
+  vitaminCMg: null,
+  vitaminDµg: null,
+};
+
+function log(overrides: Partial<SupermarktPortie> = {}): SupermarktPortie {
   return {
     id: "1",
     moment: "ontbijt",
-    prodId: "test/product",
+    prodId: "off:1",
     grams: 100,
     createdAt: "2026-09-14T08:00:00.000Z",
+    product: PRODUCT,
     ...overrides,
   };
 }
@@ -49,7 +74,7 @@ describe("bouwSupermarktWeekoverzicht", () => {
   });
 
   it("telt alleen dagen met een log mee voor het gemiddelde, niet de hele week", () => {
-    const logsPerDag = new Map<string, SupermarktPortieLog[]>([
+    const logsPerDag = new Map<string, SupermarktPortie[]>([
       ["2026-09-14", [log({ id: "a" })]],
     ]);
 
