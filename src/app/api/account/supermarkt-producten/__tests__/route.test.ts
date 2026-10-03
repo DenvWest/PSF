@@ -15,8 +15,8 @@ vi.mock("@/lib/rate-limit", () => ({
 vi.mock("@/lib/rate-limit-config", () => ({ getRateLimitConfig: vi.fn(() => ({})) }));
 vi.mock("@/lib/turnstile-verify", () => ({ getClientIp: vi.fn(() => "127.0.0.1") }));
 vi.mock("@/lib/db/scoped", () => ({ unscoped: vi.fn(() => ({ eenAdminClient: true })) }));
-vi.mock("@/lib/supermarkt-products", () => ({
-  zoekSupermarktProducten: (...args: unknown[]) => mockZoek(...args),
+vi.mock("@/lib/dagboek-producten", () => ({
+  zoekDagboekProducten: (...args: unknown[]) => mockZoek(...args),
 }));
 
 function verzoek(q: string) {

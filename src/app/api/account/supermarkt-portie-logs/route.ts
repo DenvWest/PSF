@@ -8,7 +8,7 @@ import {
 } from "@/lib/account-supermarkt-portie-logs";
 import { isEetmomentId } from "@/lib/nutrition-eetmomenten";
 import { koppelProducten, type SupermarktPortieLog } from "@/lib/nutrition-supermarkt-items";
-import { haalSupermarktProductenOp } from "@/lib/supermarkt-products";
+import { haalDagboekProductenOp } from "@/lib/dagboek-producten";
 import { unscoped } from "@/lib/db/scoped";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
@@ -25,7 +25,7 @@ import { getClientIp } from "@/lib/turnstile-verify";
  * `docs/plan/BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §0.1.
  *
  * Een log bewaart alleen `prodId` + gram. Bij het uitlezen koppelt deze route
- * het product uit `sm_products` eraan — verwijzen, niet kopiëren (zie
+ * het product uit `sm_products` of `nevo_foods` eraan — verwijzen, niet kopiëren (zie
  * `docs/plan/ONTWERP_SUPERMARKT_PRODUCTTABEL_2026-10.md` §3).
  */
 
@@ -47,7 +47,7 @@ async function logsMetProduct(logs: readonly SupermarktPortieLog[]) {
   const admin = unscoped();
   if (!admin || logs.length === 0) return koppelProducten(logs, new Map());
   try {
-    const producten = await haalSupermarktProductenOp(
+    const producten = await haalDagboekProductenOp(
       admin,
       logs.map((log) => log.prodId),
     );
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const bestaand = await haalSupermarktProductenOp(sm, [log.prodId]);
+    const bestaand = await haalDagboekProductenOp(sm, [log.prodId]);
     if (!bestaand.has(log.prodId)) {
       return NextResponse.json({ error: "Onbekend product." }, { status: 400 });
     }

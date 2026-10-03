@@ -7,12 +7,18 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20261001044530_accounts_last_seen_at.sql`
-- **Openstaand:** 2 migraties (zie hieronder)
+- **Openstaand:** 3 migraties (zie hieronder)
 - **Laatst bijgewerkt:** 3 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
+
+### [ ] 20261003120000_nevo_foods.sql
+- **Wat:** maakt de tabel `nevo_foods` (NEVO-online 2025/9.0, 2.328 voedingsmiddelen, ongewijzigd per 100 g/ml, `nevo_versie` per rij) met een trigram-index op de zoektekst. Eigen tabel naast `sm_products`: NEVO en Open Food Facts hebben verschillende licentievoorwaarden en horen niet in één tabel. RLS aan zonder policies: alleen service role. Geen omega-3-kolommen (onze EPA+DHA-som is een bewerking). Draait `create extension if not exists pg_trgm`, dus ook los van de `sm_products`-migratie te draaien.
+- **Blokkeert deploy:** nee (code vangt het af). Zonder tabel geeft het dagboek-zoeken geen NEVO-resultaten (Open Food Facts werkt door) en komt een NEVO-log terug als "niet meer beschikbaar"; er wordt niets gelogd zolang de tabel leeg is. Daarna: `node scripts/nevo-laden.mjs --schrijf` laadt de data (lokaal, met `.env.local`, bestand staat niet in git).
+- **Hoort bij:** branch `feat/nevo-foods`, NEVO-voedingsmiddelen zoekbaar + koppeling met `FOOD_CATALOG`
+- **Terugdraaien:** `drop table public.nevo_foods;` (de extensie mag blijven staan). Veilig zolang er geen dagboeklogs naar `nevo:`-codes verwijzen; die hebben bewust geen foreign key.
 
 ### [ ] 20261003090000_sm_products.sql
 - **Wat:** maakt de tabel `sm_products` (verpakte voedingsproducten met etiketwaarden per 100 g/ml) met een trigram-index op de zoektekst, plus de extensie `pg_trgm` (in schema `extensions`). RLS aan zonder policies: alleen service role. `bron` staat voorlopig alleen op `off` (Open Food Facts, ODbL); een tweede bron vraagt een nieuwe migratie na een licentiebeoordeling. De tabel is na het draaien leeg: er wordt pas data geladen na het licentiebesluit (`docs/plan/JURIDISCHE_ANALYSE_SUPERMARKTDATA_2026-10.md`).

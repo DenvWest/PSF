@@ -55,6 +55,8 @@ const MONO_TABLE_ALLOWLIST = new Set([
   // bovendien in de ODbL-dump belanden die we bij gebruik van Open Food Facts
   // moeten kunnen aanbieden. Zie ONTWERP_SUPERMARKT_PRODUCTTABEL_2026-10.md §2.
   "sm_products",
+  // Idem: NEVO-referentiedata, gedeeld en identiek voor elke tenant.
+  "nevo_foods",
 ]);
 
 function readMigrationFiles(): { name: string; sql: string }[] {

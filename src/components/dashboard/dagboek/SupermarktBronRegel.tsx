@@ -3,6 +3,7 @@ import {
   SUPERMARKT_BRON_INFO,
   supermarktProductUrl,
 } from "@/lib/supermarkt-bron";
+import { NEVO_CITATION, nevoBerekendeBronRegel, nevoBronRegel } from "@/lib/nevo-bron";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
 
 /**
@@ -15,13 +16,19 @@ import type { SupermarktProduct } from "@/types/supermarkt-product";
  * de bron zelf, zoals Open Food Facts bij productspecifieke gegevens vraagt;
  * bij een lijst naar de bron in het algemeen.
  *
- * Rendert niets zonder producten. Eén regel per voorkomende bron, zodat een
- * toekomstige tweede bron vanzelf zijn eigen vermelding krijgt.
+ * NEVO-online (RIVM) vraagt een eigen tekst: bij weergegeven waarden "NEVO-online
+ * versie 2025/9.0, RIVM, Bilthoven"; bij berekende uitvoer (`berekend`, een som
+ * of dagtotaal) "Gebaseerd op gegevens van NEVO-online versie 2025/9.0, RIVM,
+ * Bilthoven", en "… en andere gegevens" zodra de lijst ook een andere bron bevat.
+ *
+ * Rendert niets zonder producten. Eén regel per voorkomende bron.
  */
 export default function SupermarktBronRegel({
   producten,
+  berekend = false,
 }: {
-  producten: readonly Pick<SupermarktProduct, "bron" | "bronId">[];
+  producten: readonly Pick<SupermarktProduct, "bron" | "bronId" | "snapshotDatum">[];
+  berekend?: boolean;
 }) {
   const bronnen = bronnenVan(producten);
   if (bronnen.length === 0) return null;
@@ -31,6 +38,24 @@ export default function SupermarktBronRegel({
     <p className="m-0 text-[10px] leading-relaxed text-[var(--vd-ink-4)]">
       {bronnen.map((bron, index) => {
         const info = SUPERMARKT_BRON_INFO[bron];
+        if (bron === "nevo") {
+          const versie = producten.find((p) => p.bron === "nevo")?.snapshotDatum ?? "2025/9.0";
+          const tekst = berekend ? nevoBerekendeBronRegel(bronnen.length > 1) : nevoBronRegel({ nevoVersie: versie });
+          return (
+            <span key={bron}>
+              {index > 0 ? " " : null}
+              <a
+                href={info.algemeneUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-[var(--vd-ink-3)]"
+              >
+                {tekst || NEVO_CITATION}
+              </a>
+              .
+            </span>
+          );
+        }
         return (
           <span key={bron}>
             {index > 0 ? " " : null}

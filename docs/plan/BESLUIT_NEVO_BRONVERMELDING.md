@@ -106,3 +106,21 @@ legt is het sluitstuk; die kan pas als het bestand er is.
 - een NEVO-waarde staat altijd per 100 g
 - `amountForPortion()` laat de brondwaarde ongemoeid
 - vandaag claimt geen enkele rij verificatie (verandert bewust bij de eerste import)
+
+---
+
+## Aanvulling 3 oktober 2026 (avond) — `nevo_foods`, en de koppeling met de catalogus
+
+Besluit van Dennis: NEVO verrijkt én vult aan. Eigen tabel, niet `sm_products` (dat blijft alleen Open Food Facts; zie `ONTWERP_SUPERMARKT_PRODUCTTABEL_2026-10.md` §7).
+
+- **Tabel `nevo_foods`** (migratie `20261003120000_nevo_foods.sql`): alle 2.328 voedingsmiddelen, 16 stoffen (kcal, eiwit, vet, verzadigd, koolhydraten, suikers, vezels, natrium, kalium, calcium, magnesium, ijzer, zink, vitamine D, B12, C), ongewijzigd in NEVO's eenheid, `nevo_versie` per rij. `TR` (spoor) wordt `null` met de kolom in `spoor`, want de 0 in het bestand is een plaatshouder; `+` staat in `verrijkt`. **Geen omega-3-kolommen**: EPA+DHA is een bewerking.
+- **Loader** `scripts/nevo-laden.mjs`: droogloop standaard, `--schrijf` laadt. Weigert een stof waarvan de eenheid afwijkt, in plaats van stil om te rekenen. Een nieuwe NEVO-versie is dezelfde import opnieuw.
+- **Lookup/zoek** `src/lib/nevo-foods.ts`; het dagboek bereikt beide bronnen via `src/lib/dagboek-producten.ts` (zoeken: NEVO eerst, daarna Open Food Facts, max. 20 samen; ophalen op `prod_id`-voorvoegsel `nevo:`/`off:`). Een bron die faalt maakt de andere niet onbruikbaar. Een dagboeklog verwijst via `nevo:<code>` en bewaart nooit een waarde (zelfde regel als `sm_products`).
+- **Bronvermelding** `src/lib/nevo-bron.ts`: `NEVO_CITATION` voor ruwe waarden, `NEVO_BEREKEND_CITATION` (en de "en andere gegevens"-variant) voor berekende uitvoer.
+- **Koppeling catalogus** `scripts/nevo-koppel.mjs` → `src/data/nutrition/food-catalog-nevo.ts` (alleen de zekere koppelingen; een code, nooit een waarde) + `STEEKPROEF_NEVO_KOPPELING_2026-10.md` met wat Dennis moet beoordelen. Zeker = de catalogusregel wijst naar een FOOD_SOURCES-rij die al uit NEVO komt, of één sterke naamkandidaat (score ≥ 1,0, hooguit één extra woord in de NEVO-naam, marge ≥ 0,15, bereiding niet in strijd, niet `samengesteld`/`verrijkt`). De eerste versie van de regel (score ≥ 0,9) koppelde "Zuurkool" aan "Sap zuurkool-", "Zuurdesembrood" aan een glutenvrij brood en "Snoep" aan één snoepje; vandaar de strengere regel.
+- **Gratis voor de gebruiker blijft gelden**: de route en alles wat erop leunt komt nooit achter de premium-grens.
+- **Dagboekintegratie (gebouwd)**: `SupermarktBron = "off" | "nevo"` is de gedeelde weergavevorm in het geheugen; `nevoFoodNaarSupermarktProduct` mapt ongewijzigd (`saltG` blijft `null`: zout uit natrium rekenen is een bewerking; `snapshotDatum` draagt de NEVO-versie). `SupermarktBronRegel` toont bij weergegeven waarden `NEVO_CITATION`, bij berekende uitvoer (portiescherm, dagtotaal, ring, weektabel) de "Gebaseerd op gegevens van…"-tekst, met " en andere gegevens" zodra de lijst ook Open Food Facts bevat. Het bestaande portie-event draagt nu `bron` (`off`/`nevo`).
+- **Gratis voor de gebruiker**: het dagboek met NEVO-waarden zit niet achter premium; houd dat zo bij elke wijziging aan de entitlements.
+- **Nog niet gedaan**: de "Bronnen en licenties"-pagina, en de loader draaien (wacht op de migratie).
+
+- **Koppeling afgewerkt (3 okt, avond):** Dennis vroeg terecht waarom hij 159 regels zelf zou doornemen. Claude heeft ze beslist met NEVO-zoekopdrachten erbij: `scripts/nevo-koppel-beslissingen.json` (150 `handmatig`, 100 `bewustNiet` met reden; vlees/vis/groente zonder bereiding in het label krijgen de rauwe variant). Resultaat: 270 gekoppeld (71 via bron, 49 via naam, 150 handmatig), 100 bewust niet (niet in NEVO, te generiek, of verrijkt/merk waar het etiket de bron is), 1 open (kapucijners: gekookt, gedroogd of blik). De handmatige en bewuste keuzes staan ter steekproef in `STEEKPROEF_NEVO_KOPPELING_2026-10.md`.

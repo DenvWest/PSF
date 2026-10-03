@@ -51,8 +51,8 @@ vi.mock("@/lib/account-supermarkt-portie-logs", () => ({
   insertSupermarktPortieLog: (...args: unknown[]) => mockInsert(...args),
   deleteSupermarktPortieLog: vi.fn(),
 }));
-vi.mock("@/lib/supermarkt-products", () => ({
-  haalSupermarktProductenOp: (...args: unknown[]) => mockHaalOp(...args),
+vi.mock("@/lib/dagboek-producten", () => ({
+  haalDagboekProductenOp: (...args: unknown[]) => mockHaalOp(...args),
 }));
 
 const DATUM = todayInAgendaTimezone();
