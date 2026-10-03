@@ -12,6 +12,7 @@
 - **Laag 0** (`scripts/supermarkt-extract.mjs`): klaar, gecommit. 35.517 producten met calorieën/macro's in `scripts/out/supermarkt-rapport.json` (AH/Jumbo/Lidl/Plus).
 - **Laag 0b** (`scripts/supermarkt-usda-verrijk.mjs`): **tweede run loopt (gestart 30 sep 16:20, `--resume`).** De eerste run (27 sep 15:45) stopte op de USDA FDC-rate-limit (HTTP 429 op `/foods/search` vanaf item ~3639/18484, geen retry/backoff, rapport pas aan het eind) en is gekild zonder output. Daarna kreeg het script retry/backoff, tussentijds wegschrijven en `--resume` (commit "fix(scripts): retry/backoff + resume"); de nieuwe run schrijft doorlopend naar `scripts/out/supermarkt-usda-rapport.json` (log: `/tmp/supermarkt-usda-verrijk.log`) en stond op 1 okt 17:00 op item ~10.600/18.484. Automatisch NL→EN-matchen, ~52% dekking (18.484 van 35.383 producten kregen een zoekterm), elke match draagt een `zekerheid`-classificatie (`sterk`/`zwak`/`ongeverifieerd`) — geen enkele match is "geverifieerd" in de zin die `usda-extract.mjs` aan dat woord geeft.
 - **Geen van beide is al in `food-catalog.ts` of enige `src/`-databron opgenomen.** Beide blijven rapporten totdat een beoordelingsstap (nog te doen, zie §4) ze overneemt.
+- **Bijgewerkt 3 okt:** zie §5 (import + besluiten) en §6 (licentieblokkade, verificatie, meer data). Laag 0b is op 2 okt volledig afgerond (18.484/18.484). Het importscript (stap 3) is gebouwd: `scripts/supermarkt-import.mjs`. Daarbij bleek de Jumbo-energieparser in Laag 0 bij ~79% van de Jumbo-producten geen kcal te vinden; gerepareerd (zie §5.1). Bevindingen en open beslissingen: §5.
 
 ---
 
@@ -119,10 +120,10 @@ In volgorde, met wat elke stap concreet oplevert en wat hij nodig heeft van de v
 | # | Stap | Status | Blokkeert op |
 |---|---|---|---|
 | 1 | Laag 0 — supermarkt-extractie | **Klaar**, gecommit | — |
-| 2 | Laag 0b — USDA-aanvulling | **Draait** (achtergrond, ~11-12u) | — |
-| 3 | Importscript: rapporten → `SupermarktProduct[]`, met filtering (§2.4) | **Nog te bouwen** | Laag 0b klaar |
-| 4 | Dennis beoordeelt een steekproef van het geïmporteerde resultaat | **Nog te doen** | Stap 3 |
-| 5 | `SupermarktProduct`-type + databestand definitief in `src/data/nutrition/` | **Nog te bouwen** | Stap 4 (beoordeeld) |
+| 2 | Laag 0b — USDA-aanvulling | **Klaar** (2 okt, 18.484/18.484) | — |
+| 3 | Importscript: rapporten → `SupermarktProduct[]`, met filtering (§2.4) | **Klaar** (3 okt) — `scripts/supermarkt-import.mjs`, zie §5 | — |
+| 4 | Dennis beoordeelt een steekproef van het geïmporteerde resultaat | **Klaar** (3 okt) — sectie A akkoord, zonder USDA (§5.4) | Stap 3 |
+| 5 | `SupermarktProduct`-type + databestand definitief in `src/data/nutrition/` | **Nog te bouwen** — Supabase-tabel + server-side zoekroute (§5.3, §6.3); live pas na licentiebesluit (§6.1) | §6.1 |
 | 6a | Laag A, plak 1 — datamodel + opslag: `SupermarktProduct`-type (`src/data/nutrition/supermarkt-catalog.ts`, leeg tot stap 5), rekenlaag (`src/lib/nutrition-supermarkt-items.ts`), eigen tabel `account_supermarkt_portie_logs` + lib (`src/lib/account-supermarkt-portie-logs.ts`) + API-route (`/api/account/supermarkt-portie-logs`), event `nutrition.dagboek_supermarkt_portie_bevestigd` geregistreerd op de 3 plekken | **Klaar** (27 sep) — migratie staat open in `OPENSTAAND.md`, blokkeert deploy niet | — |
 | 6b | Laag A, plak 2 — UI: nieuwe `SupermarktPortieInvoer.tsx` (calorie/macro-ring, analoog aan maar los van `DagboekPortieInvoer.tsx`), zoekuitbreiding in `DagboekCatalogusZoek.tsx` (derde `Resultaat`-variant, alleen zichtbaar vanuit een maaltijd), nieuwe `DagboekSupermarktSectie.tsx` (weergave in het overzicht, geen kolom in `DagboekMaaltijd.tsx`), client-state in `DagboekScherm.tsx` (`supermarktLogs`, parallel aan `items`/`bewerkt`, naar het `favorieten`-patroon), `DagboekProductDetail.tsx`-docstring bijgewerkt | **Klaar** (27 sep) — getest met een tijdelijke fixture (mock van `SUPERMARKT_CATALOG` in de test, niet in productiecode) omdat de echte catalogus nog leeg is; `SupermarktPortieInvoer`/zoekresultaten tonen "n.o." zolang een veld ontbreekt | — |
 | 6c | Laag A, plak 2b — `SupermarktPortieInvoer` herbouwd van bottom-sheet naar volledig scherm (naar `DagboekProductDetail`/`DagboekNutrientDetail`-idioom): rijen Maaltijd/Aantal porties/Portiegrootte (editable, geen `1,0 stuk` — die portiedata bestaat niet), ring onderaan. Dennis vroeg dit na screenshots van de MyFitnessPal-referentie (§1 Laag A noemde de screenshot al, maar de eerste bouw koos de bestaande bottom-sheet-vorm van `DagboekPortieInvoer`). `DagboekScherm.tsx`'s `"supermarktPortie"` is nu een eigen exclusieve schermtak (niet meer samen met `DagboekCatalogusZoek` gerenderd). | **Klaar** (27 sep) | — |
@@ -145,3 +146,118 @@ In volgorde, met wat elke stap concreet oplevert en wat hij nodig heeft van de v
 - Een systeem-voorgesteld dieet-doel — Laag C's doel is 100% door de gebruiker ingevuld.
 - Een nieuw ontwerp voor het Meer-menu — het bestaande `CockpitMoreMenu`-patroon volstaat.
 - Live prijs-/voorraaddata uit de supermarkt-CSV's — alleen macro/micro-informatie wordt gebruikt, de CSV's prijshistorie wordt genegeerd.
+
+---
+
+## 5. Importstap uitgevoerd — bevindingen (3 oktober 2026)
+
+`node scripts/supermarkt-import.mjs` voegt Laag 0 + Laag 0b samen volgens §2.4 en schrijft `scripts/out/supermarkt-catalog.json` (gitignored) plus een deterministische steekproef naar `docs/plan/STEEKPROEF_SUPERMARKT_IMPORT_2026-10.md`. Er is niets in `src/` gewijzigd. Filterregels zoals §2.4, plus drie die volgen uit "aanvullen, nooit overschrijven": een USDA-waarde vult alleen een `null`-veld, USDA-natrium alleen als het etiket ook geen zout noemt (zout en natrium zijn dezelfde grootheid), en een USDA-waarde met een onverwachte eenheid wordt genegeerd. `bron: "supermarkt+usda"` staat er alleen als er echt een veld uit USDA is ingevuld.
+
+### 5.1 Laag 0-parserfix: Jumbo-calorieën
+
+Bij het tellen bleek dat maar 2.503 van de ~11.400 Jumbo-producten een kcal-waarde hadden (AH/Lidl/Plus: >99%). Jumbo gebruikt minstens zes energienotaties, met kolommen (per 100 g / per portie / %RI) zonder scheiding achter elkaar; de oude regexen vingen er twee, en pakten bij sommige rijen de kJ-waarde als kcal (Bonne Maman confiture: 1023 "kcal" in plaats van 241). Nieuw: `jumboKcal()` in `scripts/supermarkt-extract.mjs`, met een kJ/kcal-controle op hetzelfde etiket (1 kcal = 4,184 kJ, 8% marge): klopt de verhouding niet, dan blijft het veld `null`, geen gok.
+
+| | Vóór | Na |
+|---|---|---|
+| Jumbo-producten met kcal | 2.503 | 11.703 |
+| Laag 0-producten totaal | 35.517 | 36.089 (572 Jumbo-rijen hadden eerst geen enkel geparsed veld) |
+| `verdacht` (alle supermarkten) | 134 (niet 136) | 52 — geplakte kolommen worden nu `null` in plaats van een onmogelijke waarde |
+| In de catalogus na filtering | — | **36.037** |
+
+Het nieuwe `scripts/out/supermarkt-rapport.json` vervangt het oude; het oude staat als `supermarkt-rapport.2026-09-27.json` ernaast. Laag 0b hoeft niet opnieuw: die matcht op productnaam, niet op macro's (de 572 nieuwe Jumbo-rijen hebben geen USDA-match en krijgen alleen etiketwaarden).
+
+### 5.2 De USDA-aanvulling is grotendeels onbruikbaar
+
+Van de 15.051 bruikbare (sterk/zwak) Laag 0b-matches vullen er 13.308 daadwerkelijk een veld (505 sterk, 12.803 zwak). Bij **8.721 daarvan (65%) spreken de macro's van de USDA-match het etiket van hetzelfde product tegen** (kcal, vet of koolhydraten >25% af) — dan is het vrijwel zeker een ander product. De steekproef (sectie B) laat zien dat ook "sterk" en matches die de macro-check doorstaan vaak fout zijn: Melkunie Volle Melk → *ricotta* (sterk), Activia Yoghurt Mango → *rauwe mango* (168 mg vitamine C per 100 g, 2/2 op de macro-check), PLUS Zoete aardappelfriet → *kersen*, Jumbo Kaas Pesto Dip → *cheddar* (707 mg calcium, 3/3).
+
+Wat het etiket zelf levert, zonder USDA: calcium 1.038 producten, natrium 3.591, ijzer 181, vitamine C 333, vitamine D 219. Mét USDA stijgt calcium naar 13.612 en ijzer naar 13.130 — maar dat zijn grotendeels getallen van een ander product. Dat is precies de val uit `usda-extract.mjs` ("een getal dat er precies zo uitziet als een goed getal"), en de UI kan dat met een "ongeverifieerd"-label niet goedmaken: in een optelling over een dag verdwijnt het label.
+
+Sinds Dennis' besluit (§5.4) draait de import standaard zonder USDA; `--met-usda` reproduceert deze meting.
+
+### 5.3 Bouwkeuze: gegenereerd, en niet als TS-module in `src/`
+
+- **Gegenereerd, niet handmatig onderhouden** — besloten bij het bouwen (de open keuze uit §2.4/§4): 36.037 rijen zijn met de hand niet bij te sturen. Bijsturen gebeurt in de scripts (parser/filter), daarna opnieuw genereren.
+- **Niet als `SUPERMARKT_CATALOG`-array in een TS-bestand**: de JSON is 15 MB. `supermarkt-catalog.ts` wordt geïmporteerd door clientcomponenten (`DagboekCatalogusZoek`, `SupermarktPortieInvoer`, `DagboekSupermarktSectie`) — de hele catalogus zou in de JavaScript-bundel van het dagboek belanden. Stap 5 heeft daarom eerst een server-side zoekroute nodig (de client vraagt treffers op, zoals `searchSupermarktCatalog` nu lokaal doet) plus een server-side `supermarktCatalogEntry` voor `sanitizeSupermarktLogs`. Dat is een eigen plak, na Dennis' beoordeling. Dit raakt ook de prestatievraag uit §3.3 (lineaire scan over 36.000 rijen) — server-side is dat geen probleem, in de browser wel.
+
+### 5.4 Beslispunten voor Dennis (stap 4)
+
+**Beantwoord door Dennis (3 okt):**
+1. **Steekproef sectie A: akkoord.** (Beoordeeld op de versie in commit `a705d5d6`. Sindsdien trekt sectie A uit de hele catalogus, omdat er geen USDA-rijen meer zijn om uit te sluiten. Het is hetzelfde soort data.)
+2. **Zonder USDA.** "Onbetrouwbaar niet doen." Dit wijkt bewust af van §2.4. `scripts/supermarkt-import.mjs` draait nu standaard zonder USDA; `--met-usda` bestaat alleen nog om de afgewezen meting te reproduceren. De aanvul-logica (alleen lege velden, nooit overschrijven) blijft staan voor een toekomstige bron die wél over hetzelfde merkproduct gaat (§6.2).
+3. **Akkoord met §5.3** (server-side zoekroute als volgende plak). Let op de blokkade in §6.1 voordat de data live gaat.
+
+Oorspronkelijke vraagstelling:
+
+1. **Steekproef sectie A (alleen etiket)** — kloppen naam en waarden voor deze producten? Dit is de kern van de dataset.
+2. **USDA-aanvulling (§5.2)**: advies is helemaal **zonder USDA** te importeren (`--zonder-usda`). Dat wijkt af van §2.4 ("sterk" en "zwak" overnemen), dus het is Dennis' keuze. Alternatieven: alleen "sterk" én een volledige macro-check (226 producten; de macro-check vangt geen product met vergelijkbare macro's maar andere micronutriënten, zoals Activia Mango → rauwe mango), of alles volgens §2.4 met de bekende foutmarge.
+3. **Akkoord met §5.3** (server-side zoekroute als volgende plak, vóór de data in `src/` komt).
+
+### 5.5 De 16 `geenBron: "verrijkt"`-regels — geen supermarkt-match voor `bron`
+
+Uitgezocht met de nieuwe catalogus. Conclusie: **geen van de 16 kan zinnig een supermarkt-`bron` krijgen**, om twee redenen.
+
+1. **De stoffen ontbreken.** `bron` in `FOOD_CATALOG` levert `NutrientId`-waarden (protein, omega3, magnesium, vitamin_d, zinc). Een `SupermarktProduct` draagt daarvan alleen eiwit en (zelden) vitamine D. Vitamine D staat op het etiket bij 11 van de 38 margarine/halvarine-treffers (mediaan 7,5 µg/100 g), bij 1 van de 92 halfvolle-melktreffers, en bij een handvol plantaardige dranken. Omega-3, magnesium en zink parseert Laag 0 niet. (B12 — de reden waarom plantaardige dranken en vleesvervangers verrijkt worden — staat in ~1.300 etiketteksten, maar is geen veld in Laag 0 en geen `NutrientId`.)
+2. **"Verrijkt" betekent juist: per merk verschillend.** De regels zeggen het zelf: "verrijking is een merkkeuze — het etiket is de bron". Eén merkproduct als `bron` voor de generieke regel "Havermelk" kiest stilzwijgend één merk voor iedereen.
+
+De brug die §2.2 voorzag bestaat wel, maar op een andere plek: wie zijn eigen merk wil registreren, kiest het merkproduct via de supermarkt-zoekfunctie (Laag A) — dáár is het etiket de bron. Advies: de 16 regels laten zoals ze zijn. Mogelijke uitzondering om later te overwegen: eiwit voor `eiwitshake`/`proteinereep`/de vleesvervangers (etiket-eiwit is goed gedekt), maar ook dan blijft het één merk voor een generieke regel.
+
+---
+
+## 6. Vervolg: verificatie en meer data (onderzoek 3 oktober 2026)
+
+Status: onderzoek en advies, met twee besluiten van Dennis (3 okt):
+
+- **Licentie → jurist.** Akkoord met §6.1. **Eerste ronde gedaan:** `JURIDISCHE_ANALYSE_SUPERMARKTDATA_2026-10.md` (analyse door een AI-model, geen juridisch advies) beantwoordt 7 van de 10 vragen; vragen 2, 3 en 8 gaan naar een menselijke jurist. Belangrijkste bijstelling: de beslissende grond om de huidige dataset níét te gebruiken is dat de checkjebon-feed **geen voedingswaarden** bevat (geverifieerd: alleen `n`/`l`/`p`/`s`), waardoor de licentieketen per rij onbewijsbaar is. De bronregel in `BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §5 is daarom **ingetrokken**. Nieuwe harde bouweis: dagboeken slaan bron + barcode + snapshotdatum op en **kopiëren nooit** voedingswaarden. De vragen voor de jurist staan in `JURIDISCHE_VRAAG_SUPERMARKTDATA_2026-10.md`. Tot het antwoord er is, gaat de catalogus niet live; lokaal bouwen gaat door.
+- **Supabase-tabel als stap 5: akkoord** (§6.3 punt 1–2): eigen tabel met trigram-zoeken, herkomst per rij, en bronnen als aparte lagen.
+- **Bronvermelding:** Dennis vroeg of de bron alleen in de footer kan. Voorlopig advies: twee lagen, namelijk een korte bronregel bij elk getoond product plus een pagina "Bronnen en licenties" die vanuit de footer gelinkt is. Een footer-link alleen is waarschijnlijk te zwak voor ODbL §4.3 ("notice associated with the Produced Work") en voor NEVO ("bij elke weergave"). Dit ligt bij de jurist als vraag 9 en 10. De bronregel past al in het datamodel, omdat elke rij zijn herkomst draagt.
+
+
+### 6.1 Blokkade vóór livegang: de licentie van de basisdataset
+
+Bij het nazoeken van verversmogelijkheden bleek:
+- **`github.com/pljwissink/supermarkets` bestaat niet meer** (HTTP 404 op 3 okt). Er komt dus geen nieuwe snapshot van deze bron, en de herkomst is niet meer na te lezen.
+- De lokale kopie heeft **geen licentiebestand**. Zonder licentie geldt standaard "alle rechten voorbehouden".
+- De README zegt letterlijk: *"Data sourced from checkjebon.nl, boodschaapje.nl, openfoodfacts.org, ah.nl, jumbo.nl, plus.nl and lidl.nl."* Een deel van de etiketwaarden komt dus waarschijnlijk uit **Open Food Facts (ODbL, share-alike)**, en een deel is van **retailersites gehaald** (gebruiksvoorwaarden en databankenrecht van AH/Jumbo/Plus/Lidl).
+
+`BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §5 regelt alleen de bronvermelding ("bron: [supermarkt].nl / checkjebon.nl-dataset volstaat") en toetst de licentie niet. De B2B-audit (`AUDIT_ARCHITECTUUR_SCHAAL_B2B_2026-09.md`, licentietabel) zegt over Open Food Facts: *"Niet mengen met de eigen productdatabase zonder licentiebesluit."* **Advies: eerst een licentiebesluit over de basisdataset, dan pas stap 5 live.** Lokaal bouwen en testen kan gewoon door. Een uitweg is §6.3 optie A: dezelfde soort data rechtstreeks uit Open Food Facts halen, met een bekende licentie in plaats van een onbekende.
+
+### 6.2 Vraag: later wél verifiëren tegen andere bronnen?
+
+Ja, maar alleen tegen bronnen die **over hetzelfde merkproduct** gaan. Daarom faalde USDA: het vertaalt "Activia Mango" naar een generiek "mango". Wat er bestaat:
+
+| Bron | Wat | Licentie | Bruikbaar voor |
+|---|---|---|---|
+| **Open Food Facts** | ~111.000 producten getagd voor Nederland (API-telling 3 okt; ~3× onze 36k), etiketwaarden per 100 g, **barcode**, en waar het etiket het noemt ook micro's (steekproef Alpro: calcium, jodium) | ODbL (database) + DbCL (inhoud), share-alike op afgeleide databases | **Verificatie van etiketwaarden** (twee onafhankelijke etiketbronnen die het eens zijn = sterk), aanvulling van micro's die op het etiket staan (B12/D bij verrijkte producten), en later barcodescannen. Vereist een licentiebesluit. |
+| **NEVO-online 2025/9.0** (RIVM) | 2.328 generieke Nederlandse voedingsmiddelen, ~130 stoffen, **Nederlandse namen** | CC BY 4.0 volgens data.overheid.nl, maar RIVM: "alleen ongewijzigd" (strengste lezing, `BESLUIT_NEVO_BRONVERMELDING.md`) | **Plausibiliteitscheck** voor onverpakte en generieke producten (AGF, vlees, vis): ligt het etiket in de NEVO-band? NEVO-waarden overnemen naar een merkproduct niet: dat is dezelfde fout als met USDA. |
+| **USDA FDC** | generiek, Engels | publiek domein | Afgewezen voor supermarktproducten (§5.2). |
+| **GS1 Data Source / merkfeeds** | officiële productdata van fabrikanten | contractueel, betaald | Pas bij B2B, volgens de audit-regel "herkomst per rij, feed-ID vastleggen". |
+
+Concreet verificatiemodel als het zover is: per product een veld `verificatie: "1-bron" | "2-bronnen-eens" | "bronnen-oneens"`. Bij "oneens" (bijv. kcal >10% verschil) toont de UI niets of markeert hij het. Dat is dezelfde aanvul-logica als nu in `naarSupermarktProduct`, met een bron die wél over het product gaat.
+
+### 6.3 Vraag: hoe verder met nog meer data?
+
+Het besluit ligt er al: `ARCHITECTUUR_CONVERSATIONELE_VOEDINGSINVOER_2026-09.md` zegt *"Wanneer wél naar Postgres (en een provider-laag): als de catalogus boven een paar duizend regels uitkomt"*. Met 36.037 regels is dat punt bereikt. Advies voor stap 5:
+
+1. **Eigen tabel in Supabase, geen JSON op de server.** Bijvoorbeeld `sm_products` (RLS deny-all, alleen service-role, zoals `pd_*`/`af_*`), met `pg_trgm`-index op de naam voor zoeken op delen van een woord, en per rij `herkomst` (bron, bron-id, snapshot-datum, licentie). De zoekroute vraagt de tabel op; `supermarktCatalogEntry` wordt een server-lookup. Een nieuwe bron is dan een nieuw importscript, geen codewijziging in de UI.
+2. **Bronnen als lagen, niet als mengsel.** Elke bron in eigen rijen of een eigen tabel. Dat is nodig voor ODbL (een Open Food Facts-afgeleide moet onder ODbL gedeeld kunnen worden zonder de rest mee te nemen) en voor het latere B2B-verhaal.
+3. **Volgorde van bronnen, op waarde per moeite:**
+   - **A. Open Food Facts NL-dump** (Parquet op Hugging Face, ~4 GB wereldwijd, filter op Nederland), na het licentiebesluit. Dit vervangt mogelijk de verdwenen pljwissink-bron: meer producten, een bekende licentie, barcodes, en etiket-micro's.
+   - **B. Kruisverificatie** pljwissink ↔ Open Food Facts voor de overlap (§6.2).
+   - **C. NEVO-plausibiliteitscheck** voor onverpakte producten.
+   - **D.** Merk- en GS1-feeds pas bij B2B.
+
+### 6.4 checkjebon-merkmatch (`PROMPT_SUPERMARKT_CHECKJEBON_MERKMATCH_2026-10.md`): gemeten, advies no-go
+
+Snelle meting op de live feed (één download op 3 okt, de prijzen genegeerd), met een exacte naammatch na normalisatie (kleine letters, eenheden eruit) en zonder huismerken:
+
+| Keten | Producten | Huismerk | A-merk | Exact op een etiket |
+|---|---|---|---|---|
+| Dekamarkt | 10.728 | 1.174 | 9.554 | 1.812 (19%) |
+| Dirk | 7.438 | 1.104 | 6.334 | 1.403 (22%) |
+| Hoogvliet | 7.410 | 1.552 | 5.858 | 1.662 (28%) |
+| Spar | 7.784 | 1.268 | 6.516 | 926 (14%) |
+| Poiesz | 1.679 | 69 | 1.610 | 313 (19%) |
+| Vomar | 887 | 71 | 816 | 113 (14%) |
+
+**Waarom no-go:** een match betekent per definitie dat het product al onder dezelfde naam in de catalogus staat. Het levert dus **nul extra voedingsdata en nul extra vindbare producten** op, alleen "ook verkrijgbaar bij Dirk". Daar heeft de UI zonder prijzen of winkelkeuze niets aan (BESLUIT_MACRO §7). De ~80% zonder match heeft nergens etiketdata, en die vul je met Open Food Facts (§6.3 A), niet met een naamfeed. Het script uit de prompt is daarom niet gebouwd. De meting staat hier, zodat Dennis de go/no-go op cijfers kan nemen.
+
