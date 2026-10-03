@@ -212,7 +212,7 @@ export default function SupermarktPortieInvoer({
         Informatief, geen tekort-oordeel — dit telt niet mee in wat je dagboek verder meet.
       </p>
 
-      <SupermarktBronRegel producten={[product]} />
+      <SupermarktBronRegel producten={[product]} berekend />
 
       <button
         type="button"

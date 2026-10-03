@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   haalNevoFoodsOp,
+  nevoFoodNaarSupermarktProduct,
   nevoCodeUitProdId,
   nevoFoodNaarRij,
   nevoProdId,
@@ -173,5 +174,39 @@ describe("bronvermelding (RIVM-voorwaarden 2025/9.0)", () => {
     expect(nevoBronRegel({ nevoVersie: "2025/9.0" })).toBe(NEVO_CITATION);
     expect(nevoBronRegel({ nevoVersie: "2029/10.0" })).toBe("NEVO-online versie 2029/10.0, RIVM, Bilthoven");
     expect(nevoBronLabel({ nevoVersie: "2025/9.0" })).toBe("NEVO 2025/9.0 (RIVM)");
+  });
+});
+
+describe("nevoFoodNaarSupermarktProduct", () => {
+  it("mapt ongewijzigd, met bron nevo en de NEVO-versie", () => {
+    const product = nevoFoodNaarSupermarktProduct(FOOD);
+    expect(product).toMatchObject({
+      prodId: "nevo:1590",
+      bron: "nevo",
+      bronId: "1590",
+      naam: "Tonijn blik in water",
+      merk: null,
+      categorie: "Vis",
+      snapshotDatum: "2025/9.0",
+      proteinG: 24.9,
+      vitaminDµg: 3.6,
+    });
+  });
+
+  it("laat zout leeg: zout uit natrium rekenen is een bewerking", () => {
+    const product = nevoFoodNaarSupermarktProduct({ ...FOOD, waarden: waarden({ sodium_mg: 400 }) });
+    expect(product.sodiumMg).toBe(400);
+    expect(product.saltG).toBeNull();
+  });
+
+  it("laat een spoor of niet gemeten stof null, nooit 0", () => {
+    expect(nevoFoodNaarSupermarktProduct(FOOD).ironMg).toBeNull();
+  });
+});
+
+describe("NEVO_CITATION", () => {
+  it("is gelijk aan die in food-sources.ts", async () => {
+    const { NEVO_CITATION: bron } = await import("@/data/nutrition/food-sources");
+    expect(NEVO_CITATION).toBe(bron);
   });
 });

@@ -1,4 +1,3 @@
-import { NEVO_CITATION } from "@/data/nutrition/food-sources";
 import type { NevoFood } from "@/types/nevo-food";
 
 /**
@@ -10,7 +9,8 @@ import type { NevoFood } from "@/types/nevo-food";
  *   en de "en andere gegevens"-variant zodra hetzelfde scherm ook andere bronnen
  *   (Open Food Facts, eigen invoer) optelt.
  */
-export { NEVO_CITATION };
+/** Letterlijk zoals de RIVM-voorwaarden het vragen. Een test houdt dit gelijk aan `NEVO_CITATION` in `food-sources.ts`. */
+export const NEVO_CITATION = "NEVO-online versie 2025/9.0, RIVM, Bilthoven";
 
 export const NEVO_BEREKEND_CITATION = "Gebaseerd op gegevens van NEVO-online versie 2025/9.0, RIVM, Bilthoven";
 

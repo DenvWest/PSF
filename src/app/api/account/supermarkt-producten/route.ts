@@ -3,11 +3,12 @@ import { getAccountFromCookie } from "@/lib/account-server";
 import { unscoped } from "@/lib/db/scoped";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
-import { zoekSupermarktProducten } from "@/lib/supermarkt-products";
+import { zoekDagboekProducten } from "@/lib/dagboek-producten";
 import { getClientIp } from "@/lib/turnstile-verify";
 
 /**
- * Zoeken in `sm_products` voor het dagboek (Laag A). Alleen voor ingelogde
+ * Zoeken voor het dagboek (Laag A) in `sm_products` (Open Food Facts) én
+ * `nevo_foods` (NEVO-online, RIVM), via `zoekDagboekProducten`. Alleen voor ingelogde
  * accounts: de catalogus is geen publieke dataset die we aanbieden, maar de
  * achterkant van het dagboek — zie
  * `docs/plan/ONTWERP_SUPERMARKT_PRODUCTTABEL_2026-10.md` §4.
@@ -51,7 +52,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const producten = await zoekSupermarktProducten(admin, q);
+    const producten = await zoekDagboekProducten(admin, q);
     return NextResponse.json({ producten }, { status: 200 });
   } catch {
     return NextResponse.json({ error: "Kon producten niet zoeken." }, { status: 500 });

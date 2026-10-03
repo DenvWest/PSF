@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
 import { NEVO_WAARDE_KOLOMMEN, type NevoFood, type NevoWaardeKolom } from "@/types/nevo-food";
 import {
   MAX_IDS_PER_VERZOEK,
@@ -176,4 +177,35 @@ export async function schrijfNevoFoods(
     if (error) throw new Error(error.message);
   }
   return { geschreven: foods.length };
+}
+
+/**
+ * NEVO-voedingsmiddel → de gedeelde weergavevorm van het dagboek. Waarden gaan
+ * ongewijzigd door; `saltG` blijft `null` (NEVO geeft natrium, en zout daaruit
+ * rekenen is een bewerking). `snapshotDatum` draagt de NEVO-versie.
+ */
+export function nevoFoodNaarSupermarktProduct(food: NevoFood): SupermarktProduct {
+  const w = food.waarden;
+  return {
+    prodId: food.prodId,
+    bron: "nevo",
+    bronId: food.nevoCode,
+    naam: food.naamNl,
+    merk: null,
+    categorie: food.groep,
+    snapshotDatum: food.nevoVersie,
+    energyKcal: w.energy_kcal,
+    fatG: w.fat_g,
+    saturatedFatG: w.saturated_fat_g,
+    carbohydrateG: w.carbohydrate_g,
+    sugarsG: w.sugars_g,
+    fiberG: w.fiber_g,
+    proteinG: w.protein_g,
+    saltG: null,
+    sodiumMg: w.sodium_mg,
+    calciumMg: w.calcium_mg,
+    ironMg: w.iron_mg,
+    vitaminCMg: w.vitamin_c_mg,
+    vitaminDµg: w.vitamin_d_ug,
+  };
 }

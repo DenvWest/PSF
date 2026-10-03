@@ -16,7 +16,7 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ### [ ] 20261003120000_nevo_foods.sql
 - **Wat:** maakt de tabel `nevo_foods` (NEVO-online 2025/9.0, 2.328 voedingsmiddelen, ongewijzigd per 100 g/ml, `nevo_versie` per rij) met een trigram-index op de zoektekst. Eigen tabel naast `sm_products`: NEVO en Open Food Facts hebben verschillende licentievoorwaarden en horen niet in één tabel. RLS aan zonder policies: alleen service role. Geen omega-3-kolommen (onze EPA+DHA-som is een bewerking). Draait `create extension if not exists pg_trgm`, dus ook los van de `sm_products`-migratie te draaien.
-- **Blokkeert deploy:** nee (code vangt het af). Zonder tabel geeft de NEVO-zoekroute een 500 en komt een NEVO-log terug als "niet meer beschikbaar"; er wordt niets gelogd zolang de tabel leeg is. Daarna: `node scripts/nevo-laden.mjs --schrijf` laadt de data (lokaal, met `.env.local`, bestand staat niet in git).
+- **Blokkeert deploy:** nee (code vangt het af). Zonder tabel geeft het dagboek-zoeken geen NEVO-resultaten (Open Food Facts werkt door) en komt een NEVO-log terug als "niet meer beschikbaar"; er wordt niets gelogd zolang de tabel leeg is. Daarna: `node scripts/nevo-laden.mjs --schrijf` laadt de data (lokaal, met `.env.local`, bestand staat niet in git).
 - **Hoort bij:** branch `feat/nevo-foods`, NEVO-voedingsmiddelen zoekbaar + koppeling met `FOOD_CATALOG`
 - **Terugdraaien:** `drop table public.nevo_foods;` (de extensie mag blijven staan). Veilig zolang er geen dagboeklogs naar `nevo:`-codes verwijzen; die hebben bewust geen foreign key.
 

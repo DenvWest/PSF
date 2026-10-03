@@ -20,16 +20,19 @@
  *
  * ## Bronnen als lagen
  *
- * `bron` is bewust een gesloten unie met één waarde. Elke bron heeft eigen
- * licentievoorwaarden (Open Food Facts: ODbL, share-alike) en mag niet met een
- * andere in één tabel vermengd raken (ODbL §4.4.d). Een tweede bron komt er
- * dus pas via een nieuwe migratie, ná een licentiebeoordeling — nooit door een
- * extra waarde in deze unie alleen.
+ * `bron` is een gesloten unie. Elke bron heeft eigen licentievoorwaarden en
+ * staat in een eigen tabel: Open Food Facts (ODbL, share-alike) in `sm_products`,
+ * NEVO-online (RIVM) in `nevo_foods`. Ze mogen niet in één tabel vermengd raken
+ * (ODbL §4.4.d). Dit type is alleen de gedeelde weergavevorm in het geheugen;
+ * een NEVO-voedingsmiddel wordt er ongewijzigd naartoe gemapt
+ * (`nevoFoodNaarSupermarktProduct`). Bij `nevo` is `snapshotDatum` de NEVO-versie
+ * (bijv. `2025/9.0`) en `saltG` altijd `null`: NEVO geeft natrium, en zout
+ * daaruit rekenen is een bewerking.
  *
  * Alle waardevelden zijn `number | null` per 100 g/ml, zoals op het etiket.
  * Nooit een verzonnen 0 voor "onbekend": de UI rendert `null` als "n.o.".
  */
-export type SupermarktBron = "off";
+export type SupermarktBron = "off" | "nevo";
 
 export interface SupermarktProduct {
   /** `<bron>:<bronId>`, bijv. `off:8710400123456`. Dit is wat een dagboeklog opslaat. */

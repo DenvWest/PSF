@@ -48,6 +48,7 @@ import DagboekWeekstrip, {
   meetdagenUit,
   weekRond,
 } from "@/components/dashboard/dagboek/DagboekWeekstrip";
+import SupermarktBronRegel from "@/components/dashboard/dagboek/SupermarktBronRegel";
 import SupermarktPortieInvoer from "@/components/dashboard/dagboek/SupermarktPortieInvoer";
 
 /**
@@ -467,6 +468,10 @@ export default function DagboekScherm({
     }
   }
 
+  const berekendeBronProducten = [...supermarktLogs, ...[...weekSupermarktLogs.values()].flat()].flatMap((log) =>
+    log.product ? [log.product] : [],
+  );
+
   /**
    * Voegt een supermarktproduct-portie toe: optimistisch lokaal, dan de
    * server-call — zelfde vorm als `bewaarFavoriet`, niet als `bewaar()` (geen
@@ -489,8 +494,9 @@ export default function DagboekScherm({
       }
       emitAccountClientEvent("nutrition.dagboek_supermarkt_portie_bevestigd", {
         surface: "dagboek_tab",
+        bron: product.bron,
       });
-      trackEvent("nutrition_dagboek_supermarkt_portie_bevestigd", {});
+      trackEvent("nutrition_dagboek_supermarkt_portie_bevestigd", { bron: product.bron });
     } finally {
       setBusySupermarkt(false);
     }
@@ -805,6 +811,7 @@ export default function DagboekScherm({
             onVolgendeWeek={() => bladerSupermarktWeek(1)}
             isHuidigeWeek={isHuidigeSupermarktWeek}
           />
+          <SupermarktBronRegel producten={berekendeBronProducten} berekend />
         </div>
       ) : (
         <div
@@ -860,6 +867,7 @@ export default function DagboekScherm({
             onVolgendeWeek={() => bladerSupermarktWeek(1)}
             isHuidigeWeek={isHuidigeSupermarktWeek}
           />
+          <SupermarktBronRegel producten={berekendeBronProducten} berekend />
         </div>
       )}
     </div>

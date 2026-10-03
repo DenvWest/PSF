@@ -89,7 +89,7 @@ export default function DagboekSupermarktSectie({
         </li>
       </ul>
       <div className="border-t border-white/[0.06] px-3 py-2">
-        <SupermarktBronRegel producten={bronProducten} />
+        <SupermarktBronRegel producten={bronProducten} berekend />
       </div>
     </section>
   );

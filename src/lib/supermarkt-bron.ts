@@ -34,6 +34,14 @@ export const SUPERMARKT_BRON_INFO: Record<SupermarktBron, BronInfo> = {
     productUrl: (bronId) => `https://nl.openfoodfacts.org/product/${encodeURIComponent(bronId)}`,
     algemeneUrl: "https://nl.openfoodfacts.org",
   },
+  nevo: {
+    naam: "NEVO-online",
+    licentie: "RIVM",
+    licentieNaam: "voorwaarden voor gebruik van NEVO-online",
+    licentieUrl: "https://www.rivm.nl/nevo",
+    productUrl: () => "https://www.rivm.nl/nevo",
+    algemeneUrl: "https://www.rivm.nl/nevo",
+  },
 };
 
 /** URL van het product bij de bron zelf (bij Open Food Facts: de productpagina). */
