@@ -18,11 +18,12 @@ import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { ProteinTargetRange } from "@/lib/protein-target";
 import {
   somVanSupermarktveld,
-  type SupermarktPortieLog,
+  type SupermarktPortie,
   type SupermarktVeld,
 } from "@/lib/nutrition-supermarkt-items";
 import { LEGE_MACRO_DOELEN, type MacroDoelen } from "@/lib/account-macro-doelen";
 import { fetchMacroDoelen } from "@/lib/macro-doelen-client";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
 import { bouwSupermarktWeekoverzicht } from "@/lib/nutrition-supermarkt-weekoverzicht";
 import { verschuifWeek, weekDatums, weekStart } from "@/lib/nutrition-weekoverzicht";
 import DagboekCatalogusZoek from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
@@ -78,7 +79,7 @@ type NutrientScherm =
        * `nutrition-supermarkt-items.ts`.
        */
       scherm: "supermarktPortie";
-      prodId: string;
+      product: SupermarktProduct;
       moment: EetmomentId;
     }
   | { scherm: "product"; item: DagboekItem }
@@ -154,7 +155,7 @@ export default function DagboekScherm({
    * eigen tabel (`account_supermarkt_portie_logs`), zie
    * `nutrition-supermarkt-items.ts`.
    */
-  const [supermarktLogs, setSupermarktLogs] = useState<SupermarktPortieLog[]>([]);
+  const [supermarktLogs, setSupermarktLogs] = useState<SupermarktPortie[]>([]);
   const [busySupermarkt, setBusySupermarkt] = useState(false);
 
   /** Laag B: welk tabblad van het dagboek-overzicht actief is. */
@@ -164,7 +165,7 @@ export default function DagboekScherm({
   /** Weeknavigatie voor de Voedingsstoffen/Macro's-tabbladen — los van `datum`. */
   const [weekOffset, setWeekOffset] = useState(0);
   /** Supermarkt-logs van de bekeken week, per datum — apart van `supermarktLogs` (dat is alleen de geselecteerde dag). */
-  const [weekSupermarktLogs, setWeekSupermarktLogs] = useState<Map<string, SupermarktPortieLog[]>>(
+  const [weekSupermarktLogs, setWeekSupermarktLogs] = useState<Map<string, SupermarktPortie[]>>(
     new Map(),
   );
 
@@ -222,7 +223,7 @@ export default function DagboekScherm({
           { credentials: "include" },
         );
         if (!response.ok) throw new Error("laden mislukt");
-        const body = (await response.json()) as { items?: SupermarktPortieLog[] };
+        const body = (await response.json()) as { items?: SupermarktPortie[] };
         if (!afgebroken) setSupermarktLogs(body.items ?? []);
       } catch {
         if (!afgebroken) setSupermarktLogs([]);
@@ -267,10 +268,10 @@ export default function DagboekScherm({
               { credentials: "include" },
             );
             if (!response.ok) throw new Error("laden mislukt");
-            const body = (await response.json()) as { items?: SupermarktPortieLog[] };
-            return [dagDatum, body.items ?? []] as [string, SupermarktPortieLog[]];
+            const body = (await response.json()) as { items?: SupermarktPortie[] };
+            return [dagDatum, body.items ?? []] as [string, SupermarktPortie[]];
           } catch {
-            return [dagDatum, []] as [string, SupermarktPortieLog[]];
+            return [dagDatum, []] as [string, SupermarktPortie[]];
           }
         }),
       );
@@ -472,19 +473,19 @@ export default function DagboekScherm({
    * schrijfteller/rollback nodig: een los log-event heeft geen dagbrede
    * consistentie te bewaken zoals `items`).
    */
-  async function voegSupermarktPortieToe(moment: EetmomentId, prodId: string, grams: number) {
+  async function voegSupermarktPortieToe(moment: EetmomentId, product: SupermarktProduct, grams: number) {
     setBusySupermarkt(true);
     try {
       const response = await fetch("/api/account/supermarkt-portie-logs", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date: datum, moment, prodId, grams }),
+        body: JSON.stringify({ date: datum, moment, prodId: product.prodId, grams }),
       });
       if (!response.ok) throw new Error("Kon portie niet opslaan.");
-      const body = (await response.json()) as { item?: SupermarktPortieLog };
+      const body = (await response.json()) as { item?: SupermarktPortie };
       if (body.item) {
-        setSupermarktLogs((vorige) => [...vorige, body.item as SupermarktPortieLog]);
+        setSupermarktLogs((vorige) => [...vorige, body.item as SupermarktPortie]);
       }
       emitAccountClientEvent("nutrition.dagboek_supermarkt_portie_bevestigd", {
         surface: "dagboek_tab",
@@ -539,12 +540,12 @@ export default function DagboekScherm({
   if (scherm.scherm === "supermarktPortie") {
     return (
       <SupermarktPortieInvoer
-        prodId={scherm.prodId}
+        product={scherm.product}
         moment={scherm.moment}
         busy={busySupermarkt}
         onTerug={() => setScherm({ scherm: "zoek", nutrient: null, moment: scherm.moment })}
         onBevestig={(gekozenMoment, grams) => {
-          void voegSupermarktPortieToe(gekozenMoment, scherm.prodId, grams);
+          void voegSupermarktPortieToe(gekozenMoment, scherm.product, grams);
           setScherm({ scherm: "zoek", nutrient: null, moment: gekozenMoment });
         }}
       />
@@ -574,8 +575,8 @@ export default function DagboekScherm({
             trackEvent("nutrition_dagboek_zoek_item_gekozen", { nutrient: nutrient ?? "geen", bron });
             setScherm({ scherm: "portie", nutrient, bron, key, moment });
           }}
-          onKiesSupermarkt={(prodId) => {
-            setScherm({ scherm: "supermarktPortie", prodId, moment });
+          onKiesSupermarkt={(product) => {
+            setScherm({ scherm: "supermarktPortie", product, moment });
           }}
           onBewaarFavoriet={(bron, key) => void bewaarFavoriet(bron, key)}
           onVerwijderFavoriet={(bron, key) => void verwijderFavoriet(bron, key)}

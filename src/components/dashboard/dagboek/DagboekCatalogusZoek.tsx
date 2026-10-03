@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { catalogEntry, searchCatalog, type CatalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import {
@@ -8,18 +8,23 @@ import {
   supplementCatalogEntry,
   type SupplementCatalogEntry,
 } from "@/data/nutrition/supplement-catalog";
-import {
-  searchSupermarktCatalog,
-  type SupermarktProduct,
-} from "@/data/nutrition/supermarkt-catalog";
+import SupermarktBronRegel from "@/components/dashboard/dagboek/SupermarktBronRegel";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import type { DagboekItem, DagboekItemBron } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
+import { MIN_ZOEK_LENGTE, zoekSupermarktProductenViaApi } from "@/lib/supermarkt-producten-client";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
 
 const MAX_TREFFERS = 8;
+
+/** Wachttijd na de laatste toetsaanslag voordat de server wordt bevraagd. */
+const ZOEK_DEBOUNCE_MS = 250;
+
+/** Eén stabiele lege lijst, zodat een afgeleide waarde de `useMemo` hieronder niet bij elke render ongeldig maakt. */
+const GEEN_PRODUCTEN: readonly SupermarktProduct[] = [];
 
 type Resultaat =
   | { bron: "voeding"; entry: CatalogEntry }
@@ -87,9 +92,11 @@ export default function DagboekCatalogusZoek({
    * Los van `onKies`: een supermarktproduct is geen `DagboekItemBron` (zie
    * `nutrition-supermarkt-items.ts`) en heeft dus geen plek in die signature.
    * Alleen relevant vanuit een maaltijd (`nutrient` null) — een
-   * supermarktproduct draagt geen `NutrientId`-bijdrage.
+   * supermarktproduct draagt geen `NutrientId`-bijdrage. Krijgt het hele
+   * product mee: de catalogus staat server-side, dus het portiescherm kan het
+   * niet zelf opzoeken.
    */
-  onKiesSupermarkt: (prodId: string) => void;
+  onKiesSupermarkt: (product: SupermarktProduct) => void;
   onBewaarFavoriet: (bron: DagboekItemBron, key: string) => void;
   onVerwijderFavoriet: (bron: DagboekItemBron, key: string) => void;
   onTerug: () => void;
@@ -97,6 +104,39 @@ export default function DagboekCatalogusZoek({
 }) {
   const [zoek, setZoek] = useState("");
   const [tab, setTab] = useState<TabId>("alle");
+  /** De laatst ontvangen supermarkttreffers, en voor welke zoekterm ze gelden. */
+  const [supermarktRespons, setSupermarktRespons] = useState<{
+    term: string;
+    producten: SupermarktProduct[];
+  }>({ term: "", producten: [] });
+
+  // Supermarktproducten staan server-side (`sm_products`); zoeken is dus een
+  // verzoek, met debounce en afbreken zodat een trage vorige zoekopdracht een
+  // nieuwere nooit overschrijft. Niet vanuit een nutriëntdetail: een
+  // supermarktproduct draagt geen `NutrientId`-bijdrage.
+  const supermarktTerm = zoek.trim();
+  const zoektSupermarkt = !nutrient && supermarktTerm.length >= MIN_ZOEK_LENGTE;
+
+  useEffect(() => {
+    if (!zoektSupermarkt) return;
+    const controller = new AbortController();
+    const timer = setTimeout(() => {
+      void zoekSupermarktProductenViaApi(supermarktTerm, controller.signal).then((producten) => {
+        if (controller.signal.aborted) return;
+        setSupermarktRespons({ term: supermarktTerm, producten });
+      });
+    }, ZOEK_DEBOUNCE_MS);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [zoektSupermarkt, supermarktTerm]);
+
+  // Afgeleid, niet gezet: onder de drempel of vanuit een nutriëntdetail zijn er
+  // geen supermarkttreffers, en tot het antwoord op de nieuwste term binnen is
+  // blijven de vorige treffers staan in plaats van bij elke toets te knipperen.
+  const supermarktTreffers = zoektSupermarkt ? supermarktRespons.producten : GEEN_PRODUCTEN;
+  const supermarktBezig = zoektSupermarkt && supermarktRespons.term !== supermarktTerm;
 
   const momentLabel = EETMOMENTEN.find((m) => m.id === moment)?.label.toLowerCase() ?? "je dag";
 
@@ -127,13 +167,11 @@ export default function DagboekCatalogusZoek({
     const supplementen = searchSupplementCatalog(term, MAX_TREFFERS).map(
       (entry): Resultaat => ({ bron: "supplement", entry }),
     );
-    // Supermarktproducten dragen geen NutrientId-bijdrage, dus alleen
-    // doorzoekbaar vanuit een maaltijd, niet vanuit een nutriëntdetail.
-    const supermarkt: Resultaat[] = nutrient
-      ? []
-      : searchSupermarktCatalog(term).map((product): Resultaat => ({ bron: "supermarkt", product }));
+    const supermarkt = supermarktTreffers.map(
+      (product): Resultaat => ({ bron: "supermarkt", product }),
+    );
     return [...voeding, ...supplementen, ...supermarkt].slice(0, MAX_TREFFERS * 3);
-  }, [zoek, nutrient]);
+  }, [zoek, supermarktTreffers]);
 
   /** "Mijn producten"/"Mijn supplementen": favorieten eerst, dan de rest van de geschiedenis van die bron. */
   function mijnLijst(bron: DagboekItemBron): Resultaat[] {
@@ -166,10 +204,15 @@ export default function DagboekCatalogusZoek({
         : mijnLijst("supplement");
 
   const toontEerderGebruikt = tab === "alle" && !zoek.trim();
+  const getoondeSupermarktProducten = resultaten.flatMap((resultaat) =>
+    resultaat.bron === "supermarkt" ? [resultaat.product] : [],
+  );
   const legeMelding =
     tab === "alle"
       ? zoek.trim()
-        ? "Niets gevonden."
+        ? supermarktBezig
+          ? "Zoeken…"
+          : "Niets gevonden."
         : "Nog niets eerder geregistreerd."
       : tab === "producten"
         ? "Nog geen voedingsmiddelen bewaard of gebruikt."
@@ -292,7 +335,7 @@ export default function DagboekCatalogusZoek({
                     <li key={`supermarkt-${product.prodId}`} className="flex items-center">
                       <button
                         type="button"
-                        onClick={() => onKiesSupermarkt(product.prodId)}
+                        onClick={() => onKiesSupermarkt(product)}
                         className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
                       >
                         <span className="flex min-w-0 items-center gap-2">
@@ -307,7 +350,7 @@ export default function DagboekCatalogusZoek({
                               {product.naam}
                             </span>
                             <span className="block text-[10px] text-[var(--vd-ink-4)]">
-                              {product.supermarkt}
+                              {product.merk ?? "Verpakt product"}
                             </span>
                           </span>
                         </span>
@@ -372,6 +415,12 @@ export default function DagboekCatalogusZoek({
               })}
             </ul>
           )}
+
+          {getoondeSupermarktProducten.length > 0 ? (
+            <div className="border-t border-white/[0.06] px-3 py-2">
+              <SupermarktBronRegel producten={getoondeSupermarktProducten} />
+            </div>
+          ) : null}
         </div>
       </section>
     </div>

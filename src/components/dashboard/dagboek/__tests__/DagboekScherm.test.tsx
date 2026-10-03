@@ -1,6 +1,7 @@
 /** @vitest-environment jsdom */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
 import DagboekScherm from "@/components/dashboard/dagboek/DagboekScherm";
 
 vi.mock("@/lib/agenda-week-preview", async (importOriginal) => {
@@ -18,44 +19,32 @@ vi.mock("@/lib/account-events-client", () => ({
 }));
 
 /**
- * Testfixture voor Laag A: SUPERMARKT_CATALOG is in productie leeg (Laag 0b
- * moet nog beoordeeld worden), dus de zoek-naar-portie-flow heeft hier een
- * eigen product nodig om te testen.
+ * Testfixture voor Laag A: de supermarktcatalogus staat server-side
+ * (`sm_products`), dus de zoek-naar-portie-flow krijgt zijn product uit een
+ * gemockte `/api/account/supermarkt-producten`-respons.
  */
-vi.mock("@/data/nutrition/supermarkt-catalog", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@/data/nutrition/supermarkt-catalog")>();
-  const testProduct = {
-    prodId: "test/ah-testproduct",
-    naam: "AH Testproduct",
-    supermarkt: "AH" as const,
-    categorie: "test",
-    energyKcal: 250,
-    fatG: 10,
-    saturatedFatG: 3,
-    carbohydrateG: 30,
-    sugarsG: 5,
-    fiberG: 2,
-    proteinG: 8,
-    saltG: 1,
-    sodiumMg: null,
-    calciumMg: null,
-    ironMg: null,
-    vitaminCMg: null,
-    vitaminDµg: null,
-    bron: "supermarkt" as const,
-  };
-  return {
-    ...actual,
-    SUPERMARKT_CATALOG: [testProduct],
-    supermarktCatalogEntry: (prodId: string) =>
-      prodId === testProduct.prodId ? testProduct : null,
-    searchSupermarktCatalog: (query: string) =>
-      testProduct.naam.toLowerCase().includes(query.trim().toLowerCase())
-        ? [testProduct]
-        : [],
-  };
-});
+const testProduct: SupermarktProduct = {
+  prodId: "off:8710000000001",
+  bron: "off",
+  bronId: "8710000000001",
+  naam: "AH Testproduct",
+  merk: "AH",
+  categorie: "test",
+  snapshotDatum: "2026-10-01",
+  energyKcal: 250,
+  fatG: 10,
+  saturatedFatG: 3,
+  carbohydrateG: 30,
+  sugarsG: 5,
+  fiberG: 2,
+  proteinG: 8,
+  saltG: 1,
+  sodiumMg: null,
+  calciumMg: null,
+  ironMg: null,
+  vitaminCMg: null,
+  vitaminDµg: null,
+};
 
 function jsonResponse(body: unknown): Promise<Response> {
   return Promise.resolve({
@@ -73,6 +62,12 @@ beforeEach(() => {
       }
       if (String(input).includes("/api/account/supermarkt-portie-logs")) {
         return jsonResponse({ items: [] });
+      }
+      if (String(input).includes("/api/account/supermarkt-producten")) {
+        const q = new URL(String(input), "http://localhost").searchParams.get("q") ?? "";
+        return jsonResponse({
+          producten: testProduct.naam.toLowerCase().includes(q.toLowerCase()) ? [testProduct] : [],
+        });
       }
       if (String(input).includes("/api/account/macro-doelen")) {
         return jsonResponse({
@@ -604,6 +599,15 @@ describe("DagboekScherm — supermarkt-portie (Laag A)", () => {
     expect(
       await screen.findByRole("heading", { name: "Voedsel toevoegen" }),
     ).toBeTruthy();
+
+    // Bronvermelding bij de getoonde waarden, met een link naar het product
+    // bij de bron en naar de licentietekst (ODbL §4.3).
+    expect(
+      screen.getByRole("link", { name: "Open Food Facts" }).getAttribute("href"),
+    ).toBe("https://nl.openfoodfacts.org/product/8710000000001");
+    expect(
+      screen.getByRole("link", { name: /Open Database License/ }).getAttribute("href"),
+    ).toBe("https://opendatacommons.org/licenses/odbl/1-0/");
     expect(screen.getByText("Calorieën")).toBeTruthy();
     expect(screen.getByText(/250 kcal/)).toBeTruthy();
 
@@ -622,7 +626,7 @@ describe("DagboekScherm — supermarkt-portie (Laag A)", () => {
       );
       expect(posts.length).toBeGreaterThan(0);
       const body = JSON.parse(String((posts[0]![1] as RequestInit).body));
-      expect(body.prodId).toBe("test/ah-testproduct");
+      expect(body.prodId).toBe("off:8710000000001");
       expect(body.moment).toBe("ontbijt");
     });
 

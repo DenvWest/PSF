@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { supermarktCatalogEntry } from "@/data/nutrition/supermarkt-catalog";
+import SupermarktBronRegel from "@/components/dashboard/dagboek/SupermarktBronRegel";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
 import {
   bedragVanSupermarktveld,
   SUPERMARKT_MACRO_VELDEN,
@@ -41,20 +42,19 @@ import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
  * bijdrage, net als bij elk ander item in dit dagboek.
  */
 export default function SupermarktPortieInvoer({
-  prodId,
+  product,
   moment,
   onBevestig,
   onTerug,
   busy = false,
 }: {
-  prodId: string;
+  /** Het gekozen product, uit het zoekresultaat — het scherm haalt zelf niets op. */
+  product: SupermarktProduct;
   moment: EetmomentId;
   onBevestig: (moment: EetmomentId, grams: number) => void;
   onTerug: () => void;
   busy?: boolean;
 }) {
-  const product = supermarktCatalogEntry(prodId);
-
   const [gekozenMoment, setGekozenMoment] = useState<EetmomentId>(moment);
   const [aantalPorties, setAantalPorties] = useState(1);
   const [portiegrootteGram, setPortiegrootteGram] = useState(100);
@@ -65,29 +65,6 @@ export default function SupermarktPortieInvoer({
 
   const totaalGram = Math.max(1, Math.trunc(aantalPorties * portiegrootteGram));
   const momentLabel = EETMOMENTEN.find((m) => m.id === gekozenMoment)?.label ?? "";
-
-  if (!product) {
-    return (
-      <div className="flex flex-col gap-4">
-        <header className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={onTerug}
-            aria-label="Terug"
-            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-[var(--vd-ink-2)] transition-colors hover:border-white/30 hover:text-[var(--vd-ink)]"
-          >
-            <Icons.ChevronLeft s={18} />
-          </button>
-          <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">
-            Voedsel toevoegen
-          </h2>
-        </header>
-        <p className="m-0 text-[13px] text-[var(--vd-ink-3)]">
-          Dit product bestaat niet (meer).
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -234,6 +211,8 @@ export default function SupermarktPortieInvoer({
       <p className="m-0 text-[10.5px] leading-relaxed text-[var(--vd-ink-4)]">
         Informatief, geen tekort-oordeel — dit telt niet mee in wat je dagboek verder meet.
       </p>
+
+      <SupermarktBronRegel producten={[product]} />
 
       <button
         type="button"

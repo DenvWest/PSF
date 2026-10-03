@@ -1,11 +1,11 @@
 "use client";
 
-import { supermarktCatalogEntry } from "@/data/nutrition/supermarkt-catalog";
+import SupermarktBronRegel from "@/components/dashboard/dagboek/SupermarktBronRegel";
 import {
   bedragVanSupermarktveld,
   somVanSupermarktveld,
   SUPERMARKT_MACRO_VELDEN,
-  type SupermarktPortieLog,
+  type SupermarktPortie,
 } from "@/lib/nutrition-supermarkt-items";
 
 /**
@@ -27,11 +27,13 @@ export default function DagboekSupermarktSectie({
   onVerwijder,
   busy = false,
 }: {
-  logs: readonly SupermarktPortieLog[];
+  logs: readonly SupermarktPortie[];
   onVerwijder: (id: string) => void;
   busy?: boolean;
 }) {
   if (logs.length === 0) return null;
+
+  const bronProducten = logs.flatMap((log) => (log.product ? [log.product] : []));
 
   const totalen = SUPERMARKT_MACRO_VELDEN.map((veld) => ({
     ...veld,
@@ -49,15 +51,13 @@ export default function DagboekSupermarktSectie({
 
       <ul className="m-0 flex list-none flex-col divide-y divide-white/[0.06] p-0">
         {logs.map((log) => {
-          const product = supermarktCatalogEntry(log.prodId);
-          if (!product) return null;
-          const kcal = bedragVanSupermarktveld(product, "energyKcal", log.grams);
+          const { product } = log;
+          const naam = product?.naam ?? "Product niet meer beschikbaar";
+          const kcal = product ? bedragVanSupermarktveld(product, "energyKcal", log.grams) : null;
           return (
             <li key={log.id} className="flex items-center gap-2.5 px-3 py-2">
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[12.5px] text-[var(--vd-ink)]">
-                  {product.naam}
-                </span>
+                <span className="block truncate text-[12.5px] text-[var(--vd-ink)]">{naam}</span>
                 <span className="block text-[10px] text-[var(--vd-ink-4)]">
                   {log.grams} g · {kcal === null ? "n.o." : `${Math.round(kcal)} kcal`}
                 </span>
@@ -66,7 +66,7 @@ export default function DagboekSupermarktSectie({
                 type="button"
                 disabled={busy}
                 onClick={() => onVerwijder(log.id)}
-                aria-label={`Verwijder ${product.naam}`}
+                aria-label={`Verwijder ${naam}`}
                 className="cursor-pointer rounded px-1 text-[13px] leading-none text-[var(--vd-ink-4)] transition-colors hover:text-[var(--vd-ink)] disabled:opacity-40"
               >
                 &times;
@@ -88,6 +88,9 @@ export default function DagboekSupermarktSectie({
           </span>
         </li>
       </ul>
+      <div className="border-t border-white/[0.06] px-3 py-2">
+        <SupermarktBronRegel producten={bronProducten} />
+      </div>
     </section>
   );
 }

@@ -7,12 +7,19 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20261001044530_accounts_last_seen_at.sql`
-- **Openstaand:** 1 migratie (zie hieronder)
-- **Laatst bijgewerkt:** 1 oktober 2026
+- **Openstaand:** 2 migraties (zie hieronder)
+- **Laatst bijgewerkt:** 3 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
+
+### [ ] 20261003090000_sm_products.sql
+- **Wat:** maakt de tabel `sm_products` (verpakte voedingsproducten met etiketwaarden per 100 g/ml) met een trigram-index op de zoektekst, plus de extensie `pg_trgm` (in schema `extensions`). RLS aan zonder policies: alleen service role. `bron` staat voorlopig alleen op `off` (Open Food Facts, ODbL); een tweede bron vraagt een nieuwe migratie na een licentiebeoordeling. De tabel is na het draaien leeg: er wordt pas data geladen na het licentiebesluit (`docs/plan/JURIDISCHE_ANALYSE_SUPERMARKTDATA_2026-10.md`).
+- **Blokkeert deploy:** nee (code vangt het af). Zonder tabel geeft de zoekroute een 500 (de UI toont dan geen supermarktresultaten, de rest van het zoekscherm werkt door) en komen gelogde producten terug als "niet meer beschikbaar"; er kan sowieso niets gelogd worden zolang de tabel leeg is, net als nu met de lege catalogus.
+- **Hoort bij:** branch `feat/supermarkt-tabel`, zoekroute en server-side productlookup voor het dagboek
+- **Terugdraaien:** `drop table public.sm_products;` (de extensie mag blijven staan). Veilig zolang er geen dagboeklogs naar `off:`-producten verwijzen; die hebben bewust geen foreign key.
+- **Let op bij een foutmelding over `gin_trgm_ops`:** zie de toelichting bovenaan het `.sql`-bestand.
 
 ### [ ] 20261001090000_schema_drift_baseline.sql
 - **Wat:** zet `cron_runs`, `thema_nurture`, `thema_downloads`, `remeasure_reminders` in `supabase/migrations/` — deze 4 tabellen bestonden al in productie maar stonden nergens als DDL (`cron_runs`/`thema_nurture` alleen in het oudere `db/migrations/`-pad, `thema_downloads`/`remeasure_reminders` nergens). `create table if not exists`, dus op de bestaande productie-DB doet het create-table-gedeelte niets — alleen de indexen/policies worden idempotent toegepast. Schema van `thema_downloads`/`remeasure_reminders` gereconstrueerd uit `information_schema.columns`-output die Dennis op 1 okt 2026 uit de SQL Editor haalde.

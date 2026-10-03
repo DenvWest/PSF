@@ -1,7 +1,4 @@
-import {
-  supermarktCatalogEntry,
-  type SupermarktProduct,
-} from "@/data/nutrition/supermarkt-catalog";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
 
 /**
  * Portie-rekenlaag voor supermarktproducten (Laag A) — calorieën/macro's,
@@ -24,58 +21,50 @@ import {
  * registratie — zelfde architectuurpatroon als
  * `account-dagboek-favorieten.ts` (eigen tabel, eigen lib, eigen API-route),
  * niet een derde `DagboekItemBron`.
+ *
+ * ## Verwijzen, niet kopiëren
+ *
+ * Een log bewaart alleen `prodId` + gram, nooit een voedingswaarde. De API
+ * koppelt het product bij het uitlezen aan de log ({@link SupermarktPortie})
+ * en alle sommen hieronder rekenen op dat gekoppelde product. Dat houdt de
+ * dagboektabel een onafhankelijke databank naast de ODbL-tabel `sm_products`
+ * en voorkomt dat gezondheidsgegevens aan een share-alike-bron vastzitten. Zie
+ * `docs/plan/ONTWERP_SUPERMARKT_PRODUCTTABEL_2026-10.md` §3.
  */
 
 /** Eén geregistreerde portie van een supermarktproduct, op één eetmoment. */
 export type SupermarktPortieLog = {
   id: string;
   moment: string;
-  /** Sleutel in `SUPERMARKT_CATALOG` (`SupermarktProduct.prodId`). */
+  /** Verwijzing naar `sm_products` (`SupermarktProduct.prodId`). */
   prodId: string;
   /** Gewicht in gram. */
   grams: number;
   createdAt: string;
 };
 
-/** Grootste portie die Laag A accepteert — hoger is bijna altijd een typfout. */
-const MAX_GRAMS = 2000;
-
-/** Hoeveel logs één dag mag dragen. */
-const MAX_LOGS = 60;
-
 /**
- * Maakt van ruwe invoer een geldige logslijst. Zelfde filosofie als
- * `sanitizeItems`: een log met een `prodId` die de catalogus niet (meer)
- * kent, valt eraf zonder de rest weg te gooien.
+ * Een log mét het product waar hij naar verwijst, zoals de API hem uitlevert.
+ * `product` is `null` als het product niet (meer) in `sm_products` staat of de
+ * tabel niet bereikbaar was: de regel blijft dan zichtbaar en verwijderbaar,
+ * maar telt niet mee in een som.
  */
-export function sanitizeSupermarktLogs(raw: unknown): SupermarktPortieLog[] {
-  if (!Array.isArray(raw)) return [];
-  const result: SupermarktPortieLog[] = [];
-  for (const entry of raw) {
-    if (result.length >= MAX_LOGS) break;
-    if (!entry || typeof entry !== "object" || Array.isArray(entry)) continue;
-    const { id, moment, prodId, grams, createdAt } = entry as Record<string, unknown>;
-    if (typeof id !== "string" || !id) continue;
-    if (typeof moment !== "string" || !moment) continue;
-    if (typeof prodId !== "string" || !supermarktCatalogEntry(prodId)) continue;
-    if (typeof grams !== "number" || !Number.isFinite(grams) || grams <= 0) continue;
-    if (typeof createdAt !== "string" || !createdAt) continue;
-    result.push({
-      id,
-      moment,
-      prodId,
-      grams: Math.min(Math.trunc(grams), MAX_GRAMS),
-      createdAt,
-    });
-  }
-  return result;
+export type SupermarktPortie = SupermarktPortieLog & {
+  product: SupermarktProduct | null;
+};
+
+/** Koppelt bij het uitlezen elk log aan zijn product; een onbekend `prodId` geeft `product: null`. */
+export function koppelProducten(
+  logs: readonly SupermarktPortieLog[],
+  producten: ReadonlyMap<string, SupermarktProduct>,
+): SupermarktPortie[] {
+  return logs.map((log) => ({ ...log, product: producten.get(log.prodId) ?? null }));
 }
 
 /** Eén informatief veld op `SupermarktProduct`, per 100 g uitgedrukt. */
-export type SupermarktVeld = Exclude<
-  keyof SupermarktProduct,
-  "prodId" | "naam" | "supermarkt" | "categorie" | "bron" | "usdaZekerheid"
->;
+export type SupermarktVeld = {
+  [K in keyof SupermarktProduct]: SupermarktProduct[K] extends number | null ? K : never;
+}[keyof SupermarktProduct];
 
 /**
  * Wat een gegeven portie van een supermarktproduct oplevert voor één veld —
@@ -103,15 +92,14 @@ export function bedragVanSupermarktveld(
  * — dezelfde optelling stond eerder driemaal apart uitgeschreven.
  */
 export function somVanSupermarktveld(
-  logs: readonly Pick<SupermarktPortieLog, "prodId" | "grams">[],
+  logs: readonly Pick<SupermarktPortie, "product" | "grams">[],
   veld: SupermarktVeld,
 ): number | null {
   let som = 0;
   let heeftBedrag = false;
   for (const log of logs) {
-    const product = supermarktCatalogEntry(log.prodId);
-    if (!product) continue;
-    const bedrag = bedragVanSupermarktveld(product, veld, log.grams);
+    if (!log.product) continue;
+    const bedrag = bedragVanSupermarktveld(log.product, veld, log.grams);
     if (bedrag === null) continue;
     som += bedrag;
     heeftBedrag = true;

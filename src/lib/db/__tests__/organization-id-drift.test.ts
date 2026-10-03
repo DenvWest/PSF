@@ -49,6 +49,12 @@ const MONO_TABLE_ALLOWLIST = new Set([
   // Hangt aan accounts (FK), org volgt uit de relatie — zelfde redenering als
   // recovery_tokens/account_login_tokens hierboven.
   "remeasure_reminders",
+  // 3 okt 2026: gedeelde referentiedata (etiketwaarden van verpakte producten),
+  // identiek voor elke tenant en zonder gebruikersdata — zoals een
+  // voedingsmiddelentabel. Een organization_id is hier betekenisloos en zou
+  // bovendien in de ODbL-dump belanden die we bij gebruik van Open Food Facts
+  // moeten kunnen aanbieden. Zie ONTWERP_SUPERMARKT_PRODUCTTABEL_2026-10.md §2.
+  "sm_products",
 ]);
 
 function readMigrationFiles(): { name: string; sql: string }[] {
