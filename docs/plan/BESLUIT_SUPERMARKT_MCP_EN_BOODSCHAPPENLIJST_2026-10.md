@@ -1,11 +1,23 @@
 # Besluit — nl-supermarkt-mcp als bron afgewezen; boodschappenlijst "voeding eerst, supplement daarna" gaat door
 
 **Datum:** 3 oktober 2026
-**Status:** BESLIST (Dennis, "akkoord" na voorlegging in sessie van 3 okt)
+**Status:** BESLIST (Dennis, "akkoord" na voorlegging in sessie van 3 okt). **Herzien 3 okt (later die dag):** volgorde aangescherpt, zie §0.
 **Raakt:** `BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` (§5 databron, §7), `ANALYSE_NUTRITION_SEO_KENNISPPLATFORM.md` (blok F "Later / niet tenzij productbesluit"), het focusverdict van 15 aug (dashboardwerk alleen als snoei richting de supplementroute).
 **Vervangt:** niets. Dit is het productbesluit dat blok F vraagt voor één afgebakend stuk (de boodschappenlijst). Recepten-DB en food-affiliate blijven in blok F.
 
 ---
+
+## 0. Herziening 3 okt — eerst voedingswaarden kloppend, de rest later
+
+Dennis (3 okt): *"nu eerst alleen voedingswaarde-micronutriënten goed doen van supermarktproducten en supplementen; prijzen, vergelijken en de slimme boodschappenlijst later."*
+
+- **NU:** de kwaliteit van de voedingswaarden, in twee sporen:
+  - (a) supermarktproducten: de import afmaken en de USDA-matches oplossen die het etiket tegenspreken;
+  - (b) supplementen: de dagboekcatalogus laten aansluiten op de kernstoffen en op de etiketdoseringen van de echte `/beste/*`-producten.
+  Uitvoering via `PROMPT_VOEDINGSWAARDE_KWALITEIT_SUPERMARKT_SUPPLEMENTEN_2026-10.md`.
+- **LATER (UITGESTELD, niet afgewezen):** de boodschappenlijst (§3 blijft als ontwerp staan), de checkjebon-merkmatch (§2), elke prijsdatabase, en prijsvergelijking of alerts.
+- **Voorgelegd en niet gekozen (3 okt):** een database waarin AI of een eigen systeem prijzen en folders automatisch bijwerkt. Folders (scrapen of AI-lezen van folder-PDF's) blijft afgewezen vanwege databankenrecht en gebruiksvoorwaarden. Een supermarkt-prijsdatabase uit checkjebon kan pas na hun toestemming. Een prijsdatabase voor supplementen via Daisycon-productfeeds is de kansrijkste prijsroute zodra prijzen aan de beurt zijn: met licentie en gekoppeld aan het verdienmodel.
+- BESLUIT_MACRO §7 ("geen live prijsfeed") blijft dus ongewijzigd.
 
 ## 1. Onderzocht: `github.com/Samvox1/nl-supermarkt-mcp`
 
@@ -27,7 +39,7 @@ Kwaliteit van de code: zoeken via `ILIKE '%x%'`, `test_server.py` importeert kla
 - **Licentie.** De MIT-licentie geldt voor de code, niet voor checkjebon-data of folderz. Folderz-scraping valt af (gebruiksvoorwaarden, en het is onverenigbaar met een later B2B-aanbod).
 - **Het echte gat zit elders.** In de steekproef van de supermarkt-import spreken 8.721 van de 15.051 bruikbare USDA-matches het etiket tegen (>25% op kcal/vet/koolhydraten). Dat oplossen, en de onafgemaakte worktree `supermarkt-import` afmaken, gaat voor extra ketens.
 
-**Wél toegestaan, als afgebakend onderzoek:** checkjebon-live gebruiken om te meten of merkproducten (A-merken, bijv. Alpro of Bertolli) uit de zes extra ketens te koppelen zijn aan bestaande etiketregels uit AH/Jumbo/Lidl/Plus. Alleen namen en ketenbeschikbaarheid. **Geen prijzen in de UI**: BESLUIT_MACRO §7 ("geen live prijs- of voorraadfeed") blijft staan. Uitvoering via `PROMPT_SUPERMARKT_CHECKJEBON_MERKMATCH_2026-10.md`. Het resultaat is een rapport met een go/no-go, geen automatische opname in de catalogus.
+**Wél toegestaan, als afgebakend onderzoek:** checkjebon-live gebruiken om te meten of merkproducten (A-merken, bijv. Alpro of Bertolli) uit de zes extra ketens te koppelen zijn aan bestaande etiketregels uit AH/Jumbo/Lidl/Plus. Alleen namen en ketenbeschikbaarheid. **Geen prijzen in de UI**: BESLUIT_MACRO §7 ("geen live prijs- of voorraadfeed") blijft staan. UITGESTELD (§0). Als dit later opgepakt wordt: alleen een rapport met een go/no-go, geen automatische opname in de catalogus.
 
 ## 3. Besluit B — boodschappenlijst "voeding eerst, supplement daarna" (smalle v1)
 
@@ -61,9 +73,9 @@ Kwaliteit van de code: zoeken via `ILIKE '%x%'`, `test_server.py` importeert kla
 
 **PS als MCP-server** (kennis, geen persoonsdata): PS-Score, supplementbeoordelingen, voedingsbronnen per stof en het advies "voeding eerst, dan supplement", te raadplegen door AI-assistenten en B2B-partners. Dat sluit aan op de open "kennischat zonder persoonsdata" (sessie-architectuur, 25 sep). Er wordt pas een eigen besluit voor gemaakt als B2B concreet wordt.
 
-## 6. Volgorde
+## 6. Volgorde (herzien 3 okt, zie §0)
 
-1. Supermarkt-import afmaken: de worktree, plus het probleem dat de helft van de USDA-matches het etiket tegenspreekt.
-2. (Parallel, alleen onderzoek) checkjebon-merkmatch volgens de prompt → rapport → go/no-go door Dennis.
-3. Boodschappenlijst v1: één stof, berekend, zonder prijzen, met meetpunt.
-4. Pas daarna prijzen of alerts, met supplementprijzen uit affiliate-feeds.
+1. **NU, spoor a:** supermarkt-import afmaken, plus het probleem dat de helft van de USDA-matches het etiket tegenspreekt.
+2. **NU, spoor b:** de supplementcatalogus in het dagboek op orde: kernstoffen compleet en gekoppeld aan de etiketdoseringen van de `/beste/*`-producten.
+3. **LATER:** boodschappenlijst v1 (§3), daarna de checkjebon-merkmatch (§2) als die dan nog nut heeft.
+4. **LATER:** prijzen, met supplementprijzen via Daisycon-feeds als eerste kandidaat.
