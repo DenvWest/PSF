@@ -12,6 +12,7 @@
 - **Laag 0** (`scripts/supermarkt-extract.mjs`): klaar, gecommit. 35.517 producten met calorieën/macro's in `scripts/out/supermarkt-rapport.json` (AH/Jumbo/Lidl/Plus).
 - **Laag 0b** (`scripts/supermarkt-usda-verrijk.mjs`): **tweede run loopt (gestart 30 sep 16:20, `--resume`).** De eerste run (27 sep 15:45) stopte op de USDA FDC-rate-limit (HTTP 429 op `/foods/search` vanaf item ~3639/18484, geen retry/backoff, rapport pas aan het eind) en is gekild zonder output. Daarna kreeg het script retry/backoff, tussentijds wegschrijven en `--resume` (commit "fix(scripts): retry/backoff + resume"); de nieuwe run schrijft doorlopend naar `scripts/out/supermarkt-usda-rapport.json` (log: `/tmp/supermarkt-usda-verrijk.log`) en stond op 1 okt 17:00 op item ~10.600/18.484. Automatisch NL→EN-matchen, ~52% dekking (18.484 van 35.383 producten kregen een zoekterm), elke match draagt een `zekerheid`-classificatie (`sterk`/`zwak`/`ongeverifieerd`) — geen enkele match is "geverifieerd" in de zin die `usda-extract.mjs` aan dat woord geeft.
 - **Geen van beide is al in `food-catalog.ts` of enige `src/`-databron opgenomen.** Beide blijven rapporten totdat een beoordelingsstap (nog te doen, zie §4) ze overneemt.
+- **Bijgewerkt 3 okt:** Laag 0b is op 2 okt volledig afgerond (18.484/18.484). Het importscript (stap 3) is gebouwd: `scripts/supermarkt-import.mjs`. Daarbij bleek de Jumbo-energieparser in Laag 0 bij ~79% van de Jumbo-producten geen kcal te vinden; gerepareerd (zie §5.1). Bevindingen en open beslissingen: §5.
 
 ---
 
@@ -119,10 +120,10 @@ In volgorde, met wat elke stap concreet oplevert en wat hij nodig heeft van de v
 | # | Stap | Status | Blokkeert op |
 |---|---|---|---|
 | 1 | Laag 0 — supermarkt-extractie | **Klaar**, gecommit | — |
-| 2 | Laag 0b — USDA-aanvulling | **Draait** (achtergrond, ~11-12u) | — |
-| 3 | Importscript: rapporten → `SupermarktProduct[]`, met filtering (§2.4) | **Nog te bouwen** | Laag 0b klaar |
-| 4 | Dennis beoordeelt een steekproef van het geïmporteerde resultaat | **Nog te doen** | Stap 3 |
-| 5 | `SupermarktProduct`-type + databestand definitief in `src/data/nutrition/` | **Nog te bouwen** | Stap 4 (beoordeeld) |
+| 2 | Laag 0b — USDA-aanvulling | **Klaar** (2 okt, 18.484/18.484) | — |
+| 3 | Importscript: rapporten → `SupermarktProduct[]`, met filtering (§2.4) | **Klaar** (3 okt) — `scripts/supermarkt-import.mjs`, zie §5 | — |
+| 4 | Dennis beoordeelt een steekproef van het geïmporteerde resultaat | **Wacht op Dennis** — `docs/plan/STEEKPROEF_SUPERMARKT_IMPORT_2026-10.md` + beslispunten §5.4 | Stap 3 |
+| 5 | `SupermarktProduct`-type + databestand definitief in `src/data/nutrition/` | **Nog te bouwen** — type bestaat al; databestand kan niet als TS-module in de clientbundel (§5.3) | Stap 4 + §5.4 |
 | 6a | Laag A, plak 1 — datamodel + opslag: `SupermarktProduct`-type (`src/data/nutrition/supermarkt-catalog.ts`, leeg tot stap 5), rekenlaag (`src/lib/nutrition-supermarkt-items.ts`), eigen tabel `account_supermarkt_portie_logs` + lib (`src/lib/account-supermarkt-portie-logs.ts`) + API-route (`/api/account/supermarkt-portie-logs`), event `nutrition.dagboek_supermarkt_portie_bevestigd` geregistreerd op de 3 plekken | **Klaar** (27 sep) — migratie staat open in `OPENSTAAND.md`, blokkeert deploy niet | — |
 | 6b | Laag A, plak 2 — UI: nieuwe `SupermarktPortieInvoer.tsx` (calorie/macro-ring, analoog aan maar los van `DagboekPortieInvoer.tsx`), zoekuitbreiding in `DagboekCatalogusZoek.tsx` (derde `Resultaat`-variant, alleen zichtbaar vanuit een maaltijd), nieuwe `DagboekSupermarktSectie.tsx` (weergave in het overzicht, geen kolom in `DagboekMaaltijd.tsx`), client-state in `DagboekScherm.tsx` (`supermarktLogs`, parallel aan `items`/`bewerkt`, naar het `favorieten`-patroon), `DagboekProductDetail.tsx`-docstring bijgewerkt | **Klaar** (27 sep) — getest met een tijdelijke fixture (mock van `SUPERMARKT_CATALOG` in de test, niet in productiecode) omdat de echte catalogus nog leeg is; `SupermarktPortieInvoer`/zoekresultaten tonen "n.o." zolang een veld ontbreekt | — |
 | 6c | Laag A, plak 2b — `SupermarktPortieInvoer` herbouwd van bottom-sheet naar volledig scherm (naar `DagboekProductDetail`/`DagboekNutrientDetail`-idioom): rijen Maaltijd/Aantal porties/Portiegrootte (editable, geen `1,0 stuk` — die portiedata bestaat niet), ring onderaan. Dennis vroeg dit na screenshots van de MyFitnessPal-referentie (§1 Laag A noemde de screenshot al, maar de eerste bouw koos de bestaande bottom-sheet-vorm van `DagboekPortieInvoer`). `DagboekScherm.tsx`'s `"supermarktPortie"` is nu een eigen exclusieve schermtak (niet meer samen met `DagboekCatalogusZoek` gerenderd). | **Klaar** (27 sep) | — |
@@ -145,3 +146,51 @@ In volgorde, met wat elke stap concreet oplevert en wat hij nodig heeft van de v
 - Een systeem-voorgesteld dieet-doel — Laag C's doel is 100% door de gebruiker ingevuld.
 - Een nieuw ontwerp voor het Meer-menu — het bestaande `CockpitMoreMenu`-patroon volstaat.
 - Live prijs-/voorraaddata uit de supermarkt-CSV's — alleen macro/micro-informatie wordt gebruikt, de CSV's prijshistorie wordt genegeerd.
+
+---
+
+## 5. Importstap uitgevoerd — bevindingen (3 oktober 2026)
+
+`node scripts/supermarkt-import.mjs` voegt Laag 0 + Laag 0b samen volgens §2.4 en schrijft `scripts/out/supermarkt-catalog.json` (gitignored) plus een deterministische steekproef naar `docs/plan/STEEKPROEF_SUPERMARKT_IMPORT_2026-10.md`. Er is niets in `src/` gewijzigd. Filterregels zoals §2.4, plus drie die volgen uit "aanvullen, nooit overschrijven": een USDA-waarde vult alleen een `null`-veld, USDA-natrium alleen als het etiket ook geen zout noemt (zout en natrium zijn dezelfde grootheid), en een USDA-waarde met een onverwachte eenheid wordt genegeerd. `bron: "supermarkt+usda"` staat er alleen als er echt een veld uit USDA is ingevuld.
+
+### 5.1 Laag 0-parserfix: Jumbo-calorieën
+
+Bij het tellen bleek dat maar 2.503 van de ~11.400 Jumbo-producten een kcal-waarde hadden (AH/Lidl/Plus: >99%). Jumbo gebruikt minstens zes energienotaties, met kolommen (per 100 g / per portie / %RI) zonder scheiding achter elkaar; de oude regexen vingen er twee, en pakten bij sommige rijen de kJ-waarde als kcal (Bonne Maman confiture: 1023 "kcal" in plaats van 241). Nieuw: `jumboKcal()` in `scripts/supermarkt-extract.mjs`, met een kJ/kcal-controle op hetzelfde etiket (1 kcal = 4,184 kJ, 8% marge): klopt de verhouding niet, dan blijft het veld `null`, geen gok.
+
+| | Vóór | Na |
+|---|---|---|
+| Jumbo-producten met kcal | 2.503 | 11.703 |
+| Laag 0-producten totaal | 35.517 | 36.089 (572 Jumbo-rijen hadden eerst geen enkel geparsed veld) |
+| `verdacht` (alle supermarkten) | 134 (niet 136) | 52 — geplakte kolommen worden nu `null` in plaats van een onmogelijke waarde |
+| In de catalogus na filtering | — | **36.037** |
+
+Het nieuwe `scripts/out/supermarkt-rapport.json` vervangt het oude; het oude staat als `supermarkt-rapport.2026-09-27.json` ernaast. Laag 0b hoeft niet opnieuw: die matcht op productnaam, niet op macro's (de 572 nieuwe Jumbo-rijen hebben geen USDA-match en krijgen alleen etiketwaarden).
+
+### 5.2 De USDA-aanvulling is grotendeels onbruikbaar
+
+Van de 15.051 bruikbare (sterk/zwak) Laag 0b-matches vullen er 13.308 daadwerkelijk een veld (505 sterk, 12.803 zwak). Bij **8.721 daarvan (65%) spreken de macro's van de USDA-match het etiket van hetzelfde product tegen** (kcal, vet of koolhydraten >25% af) — dan is het vrijwel zeker een ander product. De steekproef (sectie B) laat zien dat ook "sterk" en matches die de macro-check doorstaan vaak fout zijn: Melkunie Volle Melk → *ricotta* (sterk), Activia Yoghurt Mango → *rauwe mango* (168 mg vitamine C per 100 g, 2/2 op de macro-check), PLUS Zoete aardappelfriet → *kersen*, Jumbo Kaas Pesto Dip → *cheddar* (707 mg calcium, 3/3).
+
+Wat het etiket zelf levert, zonder USDA: calcium 1.038 producten, natrium 3.591, ijzer 181, vitamine C 333, vitamine D 219. Mét USDA stijgt calcium naar 13.612 en ijzer naar 13.130 — maar dat zijn grotendeels getallen van een ander product. Dat is precies de val uit `usda-extract.mjs` ("een getal dat er precies zo uitziet als een goed getal"), en de UI kan dat met een "ongeverifieerd"-label niet goedmaken: in een optelling over een dag verdwijnt het label.
+
+`--zonder-usda` draait de import met alleen etiketwaarden.
+
+### 5.3 Bouwkeuze: gegenereerd, en niet als TS-module in `src/`
+
+- **Gegenereerd, niet handmatig onderhouden** — besloten bij het bouwen (de open keuze uit §2.4/§4): 36.037 rijen zijn met de hand niet bij te sturen. Bijsturen gebeurt in de scripts (parser/filter), daarna opnieuw genereren.
+- **Niet als `SUPERMARKT_CATALOG`-array in een TS-bestand**: de JSON is 15 MB. `supermarkt-catalog.ts` wordt geïmporteerd door clientcomponenten (`DagboekCatalogusZoek`, `SupermarktPortieInvoer`, `DagboekSupermarktSectie`) — de hele catalogus zou in de JavaScript-bundel van het dagboek belanden. Stap 5 heeft daarom eerst een server-side zoekroute nodig (de client vraagt treffers op, zoals `searchSupermarktCatalog` nu lokaal doet) plus een server-side `supermarktCatalogEntry` voor `sanitizeSupermarktLogs`. Dat is een eigen plak, na Dennis' beoordeling. Dit raakt ook de prestatievraag uit §3.3 (lineaire scan over 36.000 rijen) — server-side is dat geen probleem, in de browser wel.
+
+### 5.4 Beslispunten voor Dennis (stap 4)
+
+1. **Steekproef sectie A (alleen etiket)** — kloppen naam en waarden voor deze producten? Dit is de kern van de dataset.
+2. **USDA-aanvulling (§5.2)**: advies is helemaal **zonder USDA** te importeren (`--zonder-usda`). Dat wijkt af van §2.4 ("sterk" en "zwak" overnemen), dus het is Dennis' keuze. Alternatieven: alleen "sterk" én een volledige macro-check (226 producten; de macro-check vangt geen product met vergelijkbare macro's maar andere micronutriënten, zoals Activia Mango → rauwe mango), of alles volgens §2.4 met de bekende foutmarge.
+3. **Akkoord met §5.3** (server-side zoekroute als volgende plak, vóór de data in `src/` komt).
+
+### 5.5 De 16 `geenBron: "verrijkt"`-regels — geen supermarkt-match voor `bron`
+
+Uitgezocht met de nieuwe catalogus. Conclusie: **geen van de 16 kan zinnig een supermarkt-`bron` krijgen**, om twee redenen.
+
+1. **De stoffen ontbreken.** `bron` in `FOOD_CATALOG` levert `NutrientId`-waarden (protein, omega3, magnesium, vitamin_d, zinc). Een `SupermarktProduct` draagt daarvan alleen eiwit en (zelden) vitamine D. Vitamine D staat op het etiket bij 11 van de 38 margarine/halvarine-treffers (mediaan 7,5 µg/100 g), bij 1 van de 92 halfvolle-melktreffers, en bij een handvol plantaardige dranken. Omega-3, magnesium en zink parseert Laag 0 niet. (B12 — de reden waarom plantaardige dranken en vleesvervangers verrijkt worden — staat in ~1.300 etiketteksten, maar is geen veld in Laag 0 en geen `NutrientId`.)
+2. **"Verrijkt" betekent juist: per merk verschillend.** De regels zeggen het zelf: "verrijking is een merkkeuze — het etiket is de bron". Eén merkproduct als `bron` voor de generieke regel "Havermelk" kiest stilzwijgend één merk voor iedereen.
+
+De brug die §2.2 voorzag bestaat wel, maar op een andere plek: wie zijn eigen merk wil registreren, kiest het merkproduct via de supermarkt-zoekfunctie (Laag A) — dáár is het etiket de bron. Advies: de 16 regels laten zoals ze zijn. Mogelijke uitzondering om later te overwegen: eiwit voor `eiwitshake`/`proteinereep`/de vleesvervangers (etiket-eiwit is goed gedekt), maar ook dan blijft het één merk voor een generieke regel.
+
