@@ -106,3 +106,17 @@ legt is het sluitstuk; die kan pas als het bestand er is.
 - een NEVO-waarde staat altijd per 100 g
 - `amountForPortion()` laat de brondwaarde ongemoeid
 - vandaag claimt geen enkele rij verificatie (verandert bewust bij de eerste import)
+
+---
+
+## Aanvulling 3 oktober 2026 (avond) — `nevo_foods`, en de koppeling met de catalogus
+
+Besluit van Dennis: NEVO verrijkt én vult aan. Eigen tabel, niet `sm_products` (dat blijft alleen Open Food Facts; zie `ONTWERP_SUPERMARKT_PRODUCTTABEL_2026-10.md` §7).
+
+- **Tabel `nevo_foods`** (migratie `20261003120000_nevo_foods.sql`): alle 2.328 voedingsmiddelen, 16 stoffen (kcal, eiwit, vet, verzadigd, koolhydraten, suikers, vezels, natrium, kalium, calcium, magnesium, ijzer, zink, vitamine D, B12, C), ongewijzigd in NEVO's eenheid, `nevo_versie` per rij. `TR` (spoor) wordt `null` met de kolom in `spoor`, want de 0 in het bestand is een plaatshouder; `+` staat in `verrijkt`. **Geen omega-3-kolommen**: EPA+DHA is een bewerking.
+- **Loader** `scripts/nevo-laden.mjs`: droogloop standaard, `--schrijf` laadt. Weigert een stof waarvan de eenheid afwijkt, in plaats van stil om te rekenen. Een nieuwe NEVO-versie is dezelfde import opnieuw.
+- **Lookup/zoek** `src/lib/nevo-foods.ts` + `GET /api/account/nevo-voedingsmiddelen?q=` (ingelogd, 20 resultaten, rate limit `supermarkt_zoek`). Het antwoord draagt `NEVO_CITATION` mee. Een dagboeklog verwijst straks via `nevo:<code>` en bewaart nooit een waarde (zelfde regel als `sm_products`).
+- **Bronvermelding** `src/lib/nevo-bron.ts`: `NEVO_CITATION` voor ruwe waarden, `NEVO_BEREKEND_CITATION` (en de "en andere gegevens"-variant) voor berekende uitvoer.
+- **Koppeling catalogus** `scripts/nevo-koppel.mjs` → `src/data/nutrition/food-catalog-nevo.ts` (alleen de zekere koppelingen; een code, nooit een waarde) + `STEEKPROEF_NEVO_KOPPELING_2026-10.md` met wat Dennis moet beoordelen. Zeker = de catalogusregel wijst naar een FOOD_SOURCES-rij die al uit NEVO komt, of één sterke naamkandidaat (score ≥ 1,0, hooguit één extra woord in de NEVO-naam, marge ≥ 0,15, bereiding niet in strijd, niet `samengesteld`/`verrijkt`). De eerste versie van de regel (score ≥ 0,9) koppelde "Zuurkool" aan "Sap zuurkool-", "Zuurdesembrood" aan een glutenvrij brood en "Snoep" aan één snoepje; vandaar de strengere regel.
+- **Gratis voor de gebruiker blijft gelden**: de route en alles wat erop leunt komt nooit achter de premium-grens.
+- **Nog niet gedaan**: dagboek-UI voor NEVO-resultaten (zoekscherm combineert nu alleen OFF), `prod_id`-ondersteuning in `account_supermarkt_portie_logs` voor `nevo:`-ids, de "Bronnen en licenties"-pagina, en de loader draaien (wacht op de migratie).

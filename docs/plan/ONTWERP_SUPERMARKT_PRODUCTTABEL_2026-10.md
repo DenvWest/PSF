@@ -71,6 +71,8 @@ Component `SupermarktBronRegel`, met de teksten uit `supermarkt-bron.ts`: "Voedi
 
 Bij een tweede tabel wordt `haalSupermarktProductenOp` een lookup per bron; dat is dan een kleine aanpassing, geen herontwerp.
 
+**3 okt: NEVO is de eerste tweede bron en volgt deze route.** Eigen tabel `nevo_foods`, eigen lib `src/lib/nevo-foods.ts`, eigen zoekroute; `SupermarktBron` blijft `off`. Zie `BESLUIT_NEVO_BRONVERMELDING.md`, laatste aanvulling.
+
 ---
 
 ## 8. Richting, nog niet gebouwd: ontbrekende producten aanleveren vanaf het etiket
