@@ -10,6 +10,7 @@ import AgendaMonthGrid from "@/components/dashboard/agenda/AgendaMonthGrid";
 import { AgendaFocusPanel } from "@/components/dashboard/agenda/AgendaMetaRow";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
+import AgendaTekortVoorstellen from "@/components/dashboard/agenda/AgendaTekortVoorstellen";
 import AgendaToolbar from "@/components/dashboard/agenda/AgendaToolbar";
 import AgendaWeekOverview from "@/components/dashboard/agenda/AgendaWeekOverview";
 import AgendaWeekTimeGrid, {
@@ -843,6 +844,18 @@ export default function AgendaScreen({
           Deze dag valt buiten je adviesweek. Je eigen momenten staan er wel — je dagstap
           volgt weer in de week van vandaag.
         </p>
+      ) : null}
+
+      {view === "dag" ? (
+        <AgendaTekortVoorstellen
+          selectedDate={selectedDate}
+          today={today}
+          weekDates={stripWeekDates}
+          weekDayLabels={WEEKDAY_LABELS}
+          plannedTitles={(blocksByDate.get(selectedDate) ?? []).map((block) => block.title)}
+          busy={blockBusy}
+          onPlan={handleCreateBlock}
+        />
       ) : null}
 
       {view === "dag" ? (
