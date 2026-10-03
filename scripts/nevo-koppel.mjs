@@ -122,15 +122,20 @@ export function leesCatalogusRegels(tekst) {
 }
 
 /** Bepaalt per catalogusregel de koppeling. Puur: krijgt alles aangeleverd. */
-export function koppel({ regels, foodSources, voedingsmiddelen, beslissingen = { handmatig: {}, bewustNiet: {} } }) {
+export function koppel({ regels, foodSources, voedingsmiddelen, beslissingen = { handmatig: {}, bewustNiet: {}, benadering: {} } }) {
   const perCode = new Map(voedingsmiddelen.map((v) => [v.code, v]));
   const keys = new Set(regels.map((r) => r.key));
-  for (const key of [...Object.keys(beslissingen.handmatig), ...Object.keys(beslissingen.bewustNiet)]) {
+  const benadering = beslissingen.benadering ?? {};
+  for (const key of [...Object.keys(beslissingen.handmatig), ...Object.keys(beslissingen.bewustNiet), ...Object.keys(benadering)]) {
     if (!keys.has(key)) throw new Error(`Beslissing voor onbekende catalogusregel "${key}"`);
   }
   for (const [key, { code }] of Object.entries(beslissingen.handmatig)) {
     if (!perCode.has(code)) throw new Error(`Beslissing ${key}: NEVO-code ${code} bestaat niet`);
-    if (key in beslissingen.bewustNiet) throw new Error(`Beslissing ${key} staat bij zowel handmatig als bewustNiet`);
+    if (key in beslissingen.bewustNiet || key in benadering) throw new Error(`Beslissing ${key} staat bij zowel handmatig als bewustNiet/benadering`);
+  }
+  for (const [key, { code }] of Object.entries(benadering)) {
+    if (!perCode.has(code)) throw new Error(`Benadering ${key}: NEVO-code ${code} bestaat niet`);
+    if (key in beslissingen.bewustNiet) throw new Error(`Beslissing ${key} staat bij zowel bewustNiet als benadering`);
   }
   const nevoCodesPerBron = new Map();
   for (const rij of foodSources) {
@@ -142,6 +147,8 @@ export function koppel({ regels, foodSources, voedingsmiddelen, beslissingen = {
   return regels.map((regel) => {
     const besluit = beslissingen.handmatig[regel.key];
     if (besluit) return { ...regel, status: "zeker", basis: "handmatig", code: besluit.code, opm: besluit.opm };
+    const bena = benadering[regel.key];
+    if (bena) return { ...regel, status: "zeker", basis: "benadering", code: bena.code, opm: bena.opm };
     if (regel.key in beslissingen.bewustNiet) {
       return { ...regel, status: "bewust-niet", reden: beslissingen.bewustNiet[regel.key] };
     }
@@ -197,11 +204,14 @@ export function bouwTs(koppelingen) {
  *   - \`bron\`: de catalogusregel wijst naar een \`FOOD_SOURCES\`-rij die al uit NEVO komt.
  *   - \`naam\`: één sterke naamkandidaat, bereiding niet in strijd (zie het script).
  *   - \`handmatig\`: beslist in \`scripts/nevo-koppel-beslissingen.json\`.
+ *   - \`benadering\`: de regel heeft geen eigen NEVO-record; dit is een vergelijkbaar record.
+ *     Altijd als benadering labelen, alleen macro's tonen en nooit in een som
+ *     meenemen alsof het een brongetal is (zie {@link isNevoBenadering}).
  *
  * Regels die hier ontbreken zijn onzeker of hebben geen tegenhanger in NEVO;
  * ze staan met kandidaten in \`docs/plan/STEEKPROEF_NEVO_KOPPELING_2026-10.md\`.
  */
-export type NevoKoppelingBasis = "bron" | "naam" | "handmatig";
+export type NevoKoppelingBasis = "bron" | "naam" | "handmatig" | "benadering";
 
 export interface NevoKoppeling {
   /** NEVO-code, de sleutel in \`nevo_foods\`. */
@@ -212,6 +222,11 @@ export interface NevoKoppeling {
 export const FOOD_CATALOG_NEVO: Readonly<Record<string, NevoKoppeling>> = {
 ${regels.join("\n")}
 };
+
+/** Een benadering is een vergelijkbaar NEVO-record, niet het voedingsmiddel zelf. */
+export function isNevoBenadering(koppeling: NevoKoppeling): boolean {
+  return koppeling.basis === "benadering";
+}
 
 /** NEVO-koppeling van een catalogusregel, of \`null\` als die (nog) niet zeker is. */
 export function nevoKoppelingVoor(catalogKey: string): NevoKoppeling | null {
@@ -236,6 +251,7 @@ export function bouwRapport(koppelingen, voedingsmiddelen) {
   r.push(`- Zeker via \`bron\` (FOOD_SOURCES-rij uit NEVO): ${tel((k) => k.basis === "bron")}`);
   r.push(`- Zeker via \`naam\` (één sterke kandidaat): ${tel((k) => k.basis === "naam")}`);
   r.push(`- Zeker via \`handmatig\` (beslist door Claude, ter beoordeling): ${tel((k) => k.basis === "handmatig")}`);
+  r.push(`- Benadering (vergelijkbaar NEVO-record, gelabeld): ${tel((k) => k.basis === "benadering")}`);
   r.push(`- Bewust geen koppeling (met reden): ${tel((k) => k.status === "bewust-niet")}`);
   r.push(`- **Nog open voor Dennis: ${tel((k) => k.status === "onzeker" || k.status === "geen")}**`);
   r.push("");
@@ -261,6 +277,16 @@ export function bouwRapport(koppelingen, voedingsmiddelen) {
   r.push("| Sleutel | Label | NEVO-code | NEVO-naam | Opmerking |");
   r.push("|---|---|---|---|---|");
   for (const k of koppelingen.filter((x) => x.basis === "handmatig")) {
+    r.push(`| ${k.key} | ${pijp(k.label)} | ${k.code} | ${pijp(perCode.get(k.code)?.naam ?? "?")} | ${pijp(k.opm || "")} |`);
+  }
+  r.push("");
+  r.push("## Benadering (vergelijkbaar record)");
+  r.push("");
+  r.push("Geen eigen NEVO-record; alleen macro's, altijd gelabeld als benadering, nooit in een som als brongetal.");
+  r.push("");
+  r.push("| Sleutel | Label | NEVO-code | NEVO-naam | Opmerking |");
+  r.push("|---|---|---|---|---|");
+  for (const k of koppelingen.filter((x) => x.basis === "benadering")) {
     r.push(`| ${k.key} | ${pijp(k.label)} | ${k.code} | ${pijp(perCode.get(k.code)?.naam ?? "?")} | ${pijp(k.opm || "")} |`);
   }
   r.push("");

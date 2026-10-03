@@ -9,12 +9,14 @@ import {
   type SupplementCatalogEntry,
 } from "@/data/nutrition/supplement-catalog";
 import SupermarktBronRegel from "@/components/dashboard/dagboek/SupermarktBronRegel";
+import FoodGroupTile from "@/components/dashboard/voortgang/FoodGroupTile";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import type { DagboekItem, DagboekItemBron } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
+import { tegelVoorNevoGroep, VERPAKT_TEGEL } from "@/lib/voedselgroep-tegel";
 import { MIN_ZOEK_LENGTE, zoekSupermarktProductenViaApi } from "@/lib/supermarkt-producten-client";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
 
@@ -331,6 +333,7 @@ export default function DagboekCatalogusZoek({
               {resultaten.map((resultaat) => {
                 if (resultaat.bron === "supermarkt") {
                   const product = resultaat.product;
+                  const tegel = product.bron === "nevo" ? tegelVoorNevoGroep(product.categorie ?? "") : VERPAKT_TEGEL;
                   return (
                     <li key={`supermarkt-${product.prodId}`} className="flex items-center">
                       <button
@@ -339,12 +342,7 @@ export default function DagboekCatalogusZoek({
                         className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
                       >
                         <span className="flex min-w-0 items-center gap-2">
-                          <span
-                            aria-hidden
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/[0.05] text-[17px] font-medium text-[var(--vd-ink-2)]"
-                          >
-                            {product.naam.trim().charAt(0).toUpperCase() || "?"}
-                          </span>
+                          <FoodGroupTile icoon={tegel.icoon} label={tegel.label} size={40} />
                           <span className="min-w-0">
                             <span className="block truncate text-[13px] text-[var(--vd-ink)]">
                               {product.naam}

@@ -1,5 +1,5 @@
 {
-  "toelichting": "Handmatige beslissingen voor scripts/nevo-koppel.mjs. handmatig: catalogussleutel → NEVO-code (+ opmerking). bewustNiet: catalogussleutel → reden waarom er geen koppeling is. Alles wat hier niet staat en niet automatisch zeker is, gaat naar Dennis. Standaard bij vlees/vis/groente zonder bereiding in het label: de rauwe NEVO-variant. Beslist 3 okt 2026 door Claude, ter beoordeling.",
+  "toelichting": "Handmatige beslissingen voor scripts/nevo-koppel.mjs. handmatig: catalogussleutel → NEVO-code (+ opmerking). bewustNiet: catalogussleutel → reden waarom er geen koppeling is. Alles wat hier niet staat en niet automatisch zeker is, gaat naar Dennis. Standaard bij vlees/vis/groente zonder bereiding in het label: de rauwe NEVO-variant. Beslist 3 okt 2026 door Claude, ter beoordeling. benadering: regels zonder eigen NEVO-record die aan een vergelijkbaar record gekoppeld worden; alleen macro's tonen, altijd gelabeld als benadering, nooit in een som alsof het een brongetal is.",
   "handmatig": {
     "rucola": {
       "code": "2736",
@@ -604,35 +604,21 @@
   },
   "bewustNiet": {
     "zuurkool": "NEVO heeft alleen zuurkoolsap en stamppot, geen zuurkool zelf",
-    "basmatirijst-gekookt": "NEVO kent geen basmati",
     "wilde-rijst-gekookt": "NEVO kent geen wilde rijst",
     "zuurdesembrood": "NEVO heeft alleen een glutenvrije zuurdesem",
-    "meergranenbrood": "NEVO onderscheidt wit en bruin; geen gemiddelde",
     "schnitzel": "NEVO heeft alleen vegetarische schnitzels met verrijking",
-    "worst": "te generiek: NEVO heeft tientallen worstsoorten",
     "ham": "NEVO onderscheidt ham per stuk van het varken; geen gewone hamplak",
-    "rosbief": "NEVO heeft rauw, bereid en vleeswaar; welke bedoeld is niet te zeggen",
     "nier": "runder-, varkens- en lamsnier verschillen",
     "room": "kook-, koffie-, zure en slagroom verschillen sterk",
-    "boter": "gezouten en ongezouten staan los; gebruik niet te raden",
     "geitenkaas": "verse en harde geitenkaas verschillen sterk",
     "roomkaas": "NEVO heeft alleen merken",
-    "smeerkaas": "20+, 40+ en 45+ staan los",
-    "blauwe-kaas": "Roquefort, Gorgonzola en Bluefort staan los",
     "dressing": "NEVO heeft specifieke dressings, geen gemiddelde",
-    "ontbijtgranen-volkoren": "geen herkenbaar equivalent",
     "gebak": "te generiek",
     "snoep": "NEVO heeft alleen specifieke soorten",
-    "groentesoep": "NEVO heeft meerdere soepen; geen standaard",
-    "pizza": "te veel varianten",
-    "stamppot": "te veel varianten",
     "bouillon": "NEVO heeft meerdere bereidingen (blokje, kops, pot)",
     "frisdrank": "cola, sinas en light verschillen",
-    "frisdrank-light": "cola, sinas en light verschillen",
     "sportdrank": "NEVO heeft alleen merken",
     "wijn": "rood, wit en rosé verschillen",
-    "broccoli-gestoomd": "NEVO heeft alleen gekookte broccoli",
-    "broccoli-diepvries": "NEVO heeft alleen rauw en gekookt",
     "paprika-gebakken": "NEVO heeft geen gebakken paprika",
     "courgette-gebakken": "NEVO heeft geen gebakken courgette",
     "aubergine-gebakken": "NEVO heeft geen gebakken aubergine",
@@ -658,9 +644,7 @@
     "ramen-noedels": "niet in NEVO",
     "sobanoedels-gekookt": "niet in NEVO",
     "edamame": "niet in NEVO",
-    "kipdij": "NEVO heeft alleen kipbout zonder vel",
     "kippenvleugel": "niet in NEVO",
-    "eend": "NEVO heeft alleen eend met vel, geen eendenborst",
     "hart": "niet in NEVO",
     "pens": "niet in NEVO",
     "zalm-wild": "niet in NEVO",
@@ -672,36 +656,150 @@
     "verrijkte-eieren": "verrijking is een fabrikantkeuze; het etiket is de bron",
     "avocado-olie": "niet in NEVO",
     "algenolie": "productspecificatie van de fabrikant",
-    "bakboter": "NEVO heeft meerdere bak- en braadvetten",
     "amandelpasta": "niet in NEVO",
     "currysaus": "niet in NEVO",
-    "granola": "niet in NEVO",
     "ontbijtgranen-verrijkt": "verrijking is een fabrikantkeuze; het etiket is de bron",
     "pure-chocolade": "NEVO geeft geen cacaopercentage; 70% is niet te herleiden",
     "linzensoep": "niet in NEVO",
-    "kippensoep": "NEVO heeft meerdere soepen; geen standaard",
     "pompoensoep": "niet in NEVO",
     "champignonsoep": "niet in NEVO",
     "curry-maaltijd": "niet in NEVO",
-    "maaltijdsalade": "te generiek",
     "pokebowl": "niet in NEVO",
-    "wrap-gevuld": "te generiek",
     "friet": "niet in NEVO onder deze naam",
     "ovenaardappel": "niet in NEVO",
-    "groene-thee": "NEVO heeft alleen thee bereid, geen groene",
     "eiwitshake": "verrijking/merk; het etiket is de bron",
-    "havermelk": "verrijking is een fabrikantkeuze; het etiket is de bron",
-    "amandeldrink": "verrijking is een fabrikantkeuze; het etiket is de bron",
-    "kokosdrink": "verrijking is een fabrikantkeuze; het etiket is de bron",
-    "rijstdrink": "verrijking is een fabrikantkeuze; het etiket is de bron",
     "plantaardige-drank-verrijkt": "verrijking is een fabrikantkeuze; het etiket is de bron",
     "sojayoghurt": "verrijking is een fabrikantkeuze; het etiket is de bron",
-    "plantaardige-yoghurt": "verrijking is een fabrikantkeuze; het etiket is de bron",
-    "vegan-gehakt": "verrijking is een fabrikantkeuze; het etiket is de bron",
-    "vegan-burger": "verrijking is een fabrikantkeuze; het etiket is de bron",
-    "vegan-worst": "verrijking is een fabrikantkeuze; het etiket is de bron",
-    "vleesvervanger-stukjes": "verrijking is een fabrikantkeuze; het etiket is de bron",
-    "margarine": "verrijking is een fabrikantkeuze; het etiket is de bron",
-    "proteinereep": "verrijking/merk; het etiket is de bron"
+    "plantaardige-yoghurt": "verrijking is een fabrikantkeuze; het etiket is de bron"
+  },
+  "benadering": {
+    "kipdij": {
+      "code": "1317",
+      "opm": "kipbout zonder vel; dij en bout lijken sterk"
+    },
+    "eend": {
+      "code": "106",
+      "opm": "eend met vel; geen eendenborst in NEVO"
+    },
+    "worst": {
+      "code": "1909",
+      "opm": "gemiddelde worst zonder leverproducten"
+    },
+    "rosbief": {
+      "code": "3345",
+      "opm": "rosbief als beleg"
+    },
+    "boter": {
+      "code": "879",
+      "opm": "gezouten boter"
+    },
+    "smeerkaas": {
+      "code": "516",
+      "opm": "smeerkaas 40+"
+    },
+    "havermelk": {
+      "code": "5463",
+      "opm": "onverrijkt; micro's niet gebruiken"
+    },
+    "amandeldrink": {
+      "code": "5464",
+      "opm": "onverrijkt; micro's niet gebruiken"
+    },
+    "kokosdrink": {
+      "code": "5543",
+      "opm": "onverrijkt; micro's niet gebruiken"
+    },
+    "rijstdrink": {
+      "code": "5101",
+      "opm": "onverrijkt; micro's niet gebruiken"
+    },
+    "margarine": {
+      "code": "2557",
+      "opm": "80% vet, ongezouten; verrijking niet meegenomen"
+    },
+    "vegan-gehakt": {
+      "code": "2047",
+      "opm": "op basis van soja"
+    },
+    "vegan-burger": {
+      "code": "5552",
+      "opm": "op basis van erwt"
+    },
+    "vegan-worst": {
+      "code": "5478",
+      "opm": "vegetarische boterhamworst"
+    },
+    "vleesvervanger-stukjes": {
+      "code": "5485",
+      "opm": "soja/tarwe"
+    },
+    "basmatirijst-gekookt": {
+      "code": "658",
+      "opm": "witte rijst gekookt"
+    },
+    "broccoli-gestoomd": {
+      "code": "920",
+      "opm": "gekookte broccoli"
+    },
+    "broccoli-diepvries": {
+      "code": "920",
+      "opm": "gekookte broccoli"
+    },
+    "meergranenbrood": {
+      "code": "2784",
+      "opm": "bruin met zaden"
+    },
+    "ontbijtgranen-volkoren": {
+      "code": "225",
+      "opm": "volkoren graanontbijt"
+    },
+    "granola": {
+      "code": "5593",
+      "opm": "krokante naturel muesli"
+    },
+    "bakboter": {
+      "code": "2563",
+      "opm": "bak- en braadvet, vast"
+    },
+    "proteinereep": {
+      "code": "5507",
+      "opm": "eiwitreep met pinda"
+    },
+    "groentesoep": {
+      "code": "759",
+      "opm": "heldere soep met soepgroente"
+    },
+    "kippensoep": {
+      "code": "758",
+      "opm": "heldere soep met kip"
+    },
+    "pizza": {
+      "code": "5432",
+      "opm": "pizza margherita"
+    },
+    "stamppot": {
+      "code": "1483",
+      "opm": "boerenkoolstamppot zonder vlees"
+    },
+    "maaltijdsalade": {
+      "code": "5532",
+      "opm": "maaltijdsalade met kip, pasta en dressing"
+    },
+    "wrap-gevuld": {
+      "code": "5363",
+      "opm": "wrap met kip"
+    },
+    "groene-thee": {
+      "code": "645",
+      "opm": "thee bereid"
+    },
+    "frisdrank-light": {
+      "code": "1522",
+      "opm": "light frisdrank"
+    },
+    "blauwe-kaas": {
+      "code": "1939",
+      "opm": "Gorgonzola"
+    }
   }
 }
