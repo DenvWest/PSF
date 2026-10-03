@@ -12,8 +12,11 @@
  *
  *   - Laag 0-rijen met een `verdacht`-array worden overgeslagen, niet
  *     gecorrigeerd (fysiek onmogelijke waarden, bijv. kJ/kcal verwisseld).
- *   - USDA-aanvulling alleen bij `zekerheid` "sterk" of "zwak";
- *     "ongeverifieerd", "geen-treffer" en "fout" leveren niets.
+ *   - USDA-aanvulling staat standaard **uit** (Dennis, 3 okt): 65% van de
+ *     matches spreekt het etiket van hetzelfde product tegen, zie
+ *     VOORBEREIDING_LAAG_A_MACRO_MICRO_2026-09.md §5.2/§5.4. Met `--met-usda`
+ *     geldt de oorspronkelijke §2.4-regel (alleen "sterk"/"zwak"). De
+ *     aanvul-logica blijft staan voor een toekomstige betrouwbare bron (§6).
  *   - Aanvullen, nooit overschrijven: een USDA-waarde vult alleen een veld
  *     dat Laag 0 leeg liet (`null`).
  *   - Natrium uit USDA alleen als het etiket óók geen zout noemt — zout en
@@ -36,7 +39,7 @@
  *
  *   node scripts/supermarkt-import.mjs
  *   node scripts/supermarkt-import.mjs --steekproef=60
- *   node scripts/supermarkt-import.mjs --zonder-usda   (alleen etiketwaarden)
+ *   node scripts/supermarkt-import.mjs --met-usda   (alleen om de afgewezen USDA-meting te reproduceren)
  *
  * Uitvoer:
  *   scripts/out/supermarkt-catalog.json                 (SupermarktProduct[], gitignored)
@@ -145,9 +148,9 @@ export function naarSupermarktProduct(laag0, supermarkt, usdaRij) {
 }
 
 /** Voegt beide rapporten samen; geeft catalogus + tellingen terug. */
-export function importeer(laag0Rapport, laag0bRapport, { zonderUsda = false } = {}) {
+export function importeer(laag0Rapport, laag0bRapport, { metUsda = false } = {}) {
   const usdaPerId = new Map();
-  if (!zonderUsda) for (const rij of laag0bRapport.rijen ?? []) usdaPerId.set(rij.prodId, rij);
+  if (metUsda) for (const rij of laag0bRapport.rijen ?? []) usdaPerId.set(rij.prodId, rij);
 
   const catalogus = [];
   const telling = {
@@ -227,6 +230,7 @@ function schrijfSteekproef({ catalogus, telling, usdaPerId }, aantal) {
         `| ${p.supermarkt} | ${p.naam} | ${fmt(p.energyKcal)} | ${fmt(p.fatG)} | ${fmt(p.saturatedFatG)} | ${fmt(p.carbohydrateG)} | ${fmt(p.sugarsG)} | ${fmt(p.fiberG)} | ${fmt(p.proteinG)} | ${fmt(p.saltG)} |`,
     ),
     "",
+    ...(metUsda.length === 0 ? ["_Geen USDA-aanvulling (standaard sinds 3 okt, zie VOORBEREIDING §5.4). Draai met `--met-usda` om de afgewezen meting te reproduceren._", ""] : []),
     `## B. ${aantal} producten mét USDA-aanvulling`,
     "",
     "Macro-check = hoeveel van kcal/vet/koolhydraten de USDA-match met het etiket deelt.",
@@ -249,7 +253,7 @@ function main() {
 
   const laag0 = JSON.parse(fs.readFileSync(LAAG0_FILE, "utf8"));
   const laag0b = JSON.parse(fs.readFileSync(LAAG0B_FILE, "utf8"));
-  const resultaat = importeer(laag0, laag0b, { zonderUsda: process.argv.includes("--zonder-usda") });
+  const resultaat = importeer(laag0, laag0b, { metUsda: process.argv.includes("--met-usda") });
 
   fs.writeFileSync(CATALOG_FILE, JSON.stringify(resultaat.catalogus));
   schrijfSteekproef(resultaat, aantal);

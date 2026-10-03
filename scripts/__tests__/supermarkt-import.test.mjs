@@ -121,7 +121,11 @@ describe("importeer", () => {
         Jumbo: { producten: [etiket({ prodId: "j-1" })] },
       },
     };
-    const { catalogus, telling } = importeer(laag0, { rijen: [usda(), usda({ prodId: "j-1", zekerheid: "sterk" })] });
+    const { catalogus, telling } = importeer(
+      laag0,
+      { rijen: [usda(), usda({ prodId: "j-1", zekerheid: "sterk" })] },
+      { metUsda: true },
+    );
     expect(catalogus.map((p) => p.prodId)).toEqual(["wi1/test", "j-1"]);
     expect(telling.verdachtOvergeslagen).toBe(1);
     expect(telling.usdaAangevuld).toEqual({ sterk: 1, zwak: 1 });
@@ -165,10 +169,10 @@ describe("jumboKcal — de Jumbo-energienotaties", () => {
   });
 });
 
-describe("importeer --zonder-usda", () => {
+describe("importeer zonder --met-usda (standaard)", () => {
   it("laat alle USDA-aanvulling weg", () => {
     const laag0 = { supermarkten: { AH: { producten: [etiket()] } } };
-    const { catalogus, telling } = importeer(laag0, { rijen: [usda()] }, { zonderUsda: true });
+    const { catalogus, telling } = importeer(laag0, { rijen: [usda()] });
     expect(catalogus[0].bron).toBe("supermarkt");
     expect(catalogus[0].ironMg).toBeNull();
     expect(telling.usdaRijen).toBe(0);
