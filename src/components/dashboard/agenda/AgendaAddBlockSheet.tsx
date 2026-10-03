@@ -61,7 +61,7 @@ export default function AgendaAddBlockSheet({
   onSubmit,
 }: AgendaAddBlockSheetProps) {
   const titleId = useId();
-  const [categoryId, setCategoryId] = useState<AgendaCategoryId>("persoonlijke_routine");
+  const [categoryId, setCategoryId] = useState<AgendaCategoryId>("voeding");
   const [title, setTitle] = useState("");
   const [startTime, setStartTime] = useState(initialStartTime ?? "12:00");
   const [durationMinutes, setDurationMinutes] = useState<number>(() => {
@@ -134,7 +134,7 @@ export default function AgendaAddBlockSheet({
   }
 
   return (
-    <AgendaSheetFrame titleId={titleId} title="Nieuw leefstijlmoment" onClose={onClose}>
+    <AgendaSheetFrame titleId={titleId} title="Nieuw moment" onClose={onClose}>
       {hiddenPlanStep ? (
         <div className="mb-5 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5">
           <p className="mb-1 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]">
@@ -243,7 +243,7 @@ export default function AgendaAddBlockSheet({
           value={title}
           disabled={busy}
           maxLength={120}
-          placeholder="Bijv. wandelen na het eten"
+          placeholder="Bijv. vette vis bij het avondeten"
           onChange={(event) => setTitle(event.target.value)}
           className={FIELD_CLASS}
           style={{ fontFamily: "var(--f-sans)" }}
