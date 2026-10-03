@@ -14,7 +14,7 @@ describe("FOOD_CATALOG_NEVO", () => {
   it("draagt per koppeling een numerieke NEVO-code en een bekende basis", () => {
     for (const [key, koppeling] of Object.entries(FOOD_CATALOG_NEVO)) {
       expect(koppeling.code, key).toMatch(/^\d+$/);
-      expect(["bron", "naam"], key).toContain(koppeling.basis);
+      expect(["bron", "naam", "handmatig"], key).toContain(koppeling.basis);
     }
   });
 

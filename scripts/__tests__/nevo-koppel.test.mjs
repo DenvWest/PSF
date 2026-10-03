@@ -89,3 +89,30 @@ describe("leesCatalogusRegels", () => {
     ]);
   });
 });
+
+describe("beslissingen", () => {
+  const regel = (key, label) => ({ key, label, bron: null, geenBron: null, bereiding: null });
+  const basis = { regels: [regel("snoep", "Snoep"), regel("zuurkool", "Zuurkool")], foodSources: [], voedingsmiddelen: VOEDINGSMIDDELEN };
+
+  it("volgt een handmatige keuze, ook als de naammatching twijfelt", () => {
+    const [k] = koppel({ ...basis, beslissingen: { handmatig: { snoep: { code: "2659", opm: "test" } }, bewustNiet: {} } });
+    expect(k).toMatchObject({ status: "zeker", basis: "handmatig", code: "2659" });
+  });
+
+  it("legt een bewuste niet-koppeling vast met reden", () => {
+    const k = koppel({ ...basis, beslissingen: { handmatig: {}, bewustNiet: { zuurkool: "alleen sap" } } })[1];
+    expect(k).toMatchObject({ status: "bewust-niet", reden: "alleen sap" });
+  });
+
+  it("weigert een code die niet in NEVO bestaat", () => {
+    expect(() => koppel({ ...basis, beslissingen: { handmatig: { snoep: { code: "9999999", opm: "" } }, bewustNiet: {} } })).toThrow(/bestaat niet/);
+  });
+
+  it("weigert een beslissing voor een onbekende catalogusregel", () => {
+    expect(() => koppel({ ...basis, beslissingen: { handmatig: {}, bewustNiet: { typfout: "x" } } })).toThrow(/onbekende/);
+  });
+
+  it("weigert dezelfde regel bij handmatig én bewustNiet", () => {
+    expect(() => koppel({ ...basis, beslissingen: { handmatig: { snoep: { code: "2659", opm: "" } }, bewustNiet: { snoep: "x" } } })).toThrow(/zowel/);
+  });
+});

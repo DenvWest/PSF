@@ -17,6 +17,10 @@
  *     bereiding die niet botst met die van de regel, en de regel is niet
  *     `samengesteld` of `verrijkt` (die hebben van nature geen één-op-één-record).
  *
+ *   - `handmatig`: beslist in `scripts/nevo-koppel-beslissingen.json` (met `bewustNiet`
+ *     voor regels die bewust geen koppeling krijgen, met reden). Standaard bij vlees,
+ *     vis en groente zonder bereiding in het label: de rauwe NEVO-variant.
+ *
  * Al het andere is `onzeker` (met de beste kandidaten) of `geen` (geen kandidaat).
  * Dat is de lijst die beoordeeld wordt; zeker-op-`naam` staat ook in het
  * rapport, zodat een steekproef kan.
@@ -43,6 +47,8 @@ import {
 const CATALOG_FILE = path.join("src", "data", "nutrition", "food-catalog.ts");
 const OUT_TS = path.join("src", "data", "nutrition", "food-catalog-nevo.ts");
 const OUT_RAPPORT = path.join("docs", "plan", "STEEKPROEF_NEVO_KOPPELING_2026-10.md");
+
+const BESLISSINGEN_FILE = path.join("scripts", "nevo-koppel-beslissingen.json");
 
 export const MARGE = 0.15;
 export const MIN_SCORE_NAAM = 1.0;
@@ -116,8 +122,16 @@ export function leesCatalogusRegels(tekst) {
 }
 
 /** Bepaalt per catalogusregel de koppeling. Puur: krijgt alles aangeleverd. */
-export function koppel({ regels, foodSources, voedingsmiddelen }) {
+export function koppel({ regels, foodSources, voedingsmiddelen, beslissingen = { handmatig: {}, bewustNiet: {} } }) {
   const perCode = new Map(voedingsmiddelen.map((v) => [v.code, v]));
+  const keys = new Set(regels.map((r) => r.key));
+  for (const key of [...Object.keys(beslissingen.handmatig), ...Object.keys(beslissingen.bewustNiet)]) {
+    if (!keys.has(key)) throw new Error(`Beslissing voor onbekende catalogusregel "${key}"`);
+  }
+  for (const [key, { code }] of Object.entries(beslissingen.handmatig)) {
+    if (!perCode.has(code)) throw new Error(`Beslissing ${key}: NEVO-code ${code} bestaat niet`);
+    if (key in beslissingen.bewustNiet) throw new Error(`Beslissing ${key} staat bij zowel handmatig als bewustNiet`);
+  }
   const nevoCodesPerBron = new Map();
   for (const rij of foodSources) {
     if (rij.huidig?.origin !== "nevo" || !rij.huidig.ref) continue;
@@ -126,6 +140,11 @@ export function koppel({ regels, foodSources, voedingsmiddelen }) {
   }
 
   return regels.map((regel) => {
+    const besluit = beslissingen.handmatig[regel.key];
+    if (besluit) return { ...regel, status: "zeker", basis: "handmatig", code: besluit.code, opm: besluit.opm };
+    if (regel.key in beslissingen.bewustNiet) {
+      return { ...regel, status: "bewust-niet", reden: beslissingen.bewustNiet[regel.key] };
+    }
     const codes = regel.bron ? nevoCodesPerBron.get(regel.bron) : undefined;
     if (codes && codes.size === 1) {
       const code = [...codes][0];
@@ -177,11 +196,12 @@ export function bouwTs(koppelingen) {
  * \`basis\`:
  *   - \`bron\`: de catalogusregel wijst naar een \`FOOD_SOURCES\`-rij die al uit NEVO komt.
  *   - \`naam\`: één sterke naamkandidaat, bereiding niet in strijd (zie het script).
+ *   - \`handmatig\`: beslist in \`scripts/nevo-koppel-beslissingen.json\`.
  *
  * Regels die hier ontbreken zijn onzeker of hebben geen tegenhanger in NEVO;
  * ze staan met kandidaten in \`docs/plan/STEEKPROEF_NEVO_KOPPELING_2026-10.md\`.
  */
-export type NevoKoppelingBasis = "bron" | "naam";
+export type NevoKoppelingBasis = "bron" | "naam" | "handmatig";
 
 export interface NevoKoppeling {
   /** NEVO-code, de sleutel in \`nevo_foods\`. */
@@ -210,17 +230,18 @@ export function bouwRapport(koppelingen, voedingsmiddelen) {
   const r = [];
   r.push("# Steekproef: koppeling FOOD_CATALOG ↔ NEVO 2025/9.0");
   r.push("");
-  r.push("Gegenereerd door `scripts/nevo-koppel.mjs` (deterministisch). Voorstellen op naam; de beoordeling is aan Dennis. Zekere koppelingen staan in `src/data/nutrition/food-catalog-nevo.ts`.");
+  r.push("Gegenereerd door `scripts/nevo-koppel.mjs` (deterministisch). De regels onder \"Handmatig gekoppeld\" en \"Bewust geen koppeling\" zijn door Claude beslist en staan ter controle; alleen \"Nog open\" vraagt een keuze. Zekere koppelingen staan in `src/data/nutrition/food-catalog-nevo.ts`.");
   r.push("");
   r.push(`- Catalogusregels: ${koppelingen.length}`);
   r.push(`- Zeker via \`bron\` (FOOD_SOURCES-rij uit NEVO): ${tel((k) => k.basis === "bron")}`);
   r.push(`- Zeker via \`naam\` (één sterke kandidaat): ${tel((k) => k.basis === "naam")}`);
-  r.push(`- **Onzeker (te beoordelen): ${tel((k) => k.status === "onzeker")}**`);
-  r.push(`- Geen kandidaat: ${tel((k) => k.status === "geen")}`);
+  r.push(`- Zeker via \`handmatig\` (beslist door Claude, ter beoordeling): ${tel((k) => k.basis === "handmatig")}`);
+  r.push(`- Bewust geen koppeling (met reden): ${tel((k) => k.status === "bewust-niet")}`);
+  r.push(`- **Nog open voor Dennis: ${tel((k) => k.status === "onzeker" || k.status === "geen")}**`);
   r.push("");
-  r.push("## Onzeker: beoordelen");
+  r.push("## Nog open voor Dennis");
   r.push("");
-  r.push("Kies per regel de code, of laat de regel zonder NEVO-koppeling. Een goede koppeling kan in `scripts/nevo-koppel.mjs` als handmatige uitzondering of direct in het TS-bestand worden vastgelegd (en overleeft dan niet een nieuwe run: zet hem dan in `HANDMATIG`).");
+  r.push("Kies per regel de code, of laat de regel zonder NEVO-koppeling. Leg de keuze vast in `scripts/nevo-koppel-beslissingen.json` (`handmatig` of `bewustNiet`) en draai het script opnieuw.");
   r.push("");
   r.push("| Sleutel | Label | Reden | Kandidaten (code · naam · score) |");
   r.push("|---|---|---|---|");
@@ -229,11 +250,25 @@ export function bouwRapport(koppelingen, voedingsmiddelen) {
     r.push(`| ${k.key} | ${pijp(k.label)} | ${pijp(k.reden)} | ${lijst || "—"} |`);
   }
   r.push("");
-  r.push("## Geen kandidaat");
+  r.push("### Zonder kandidaat");
   r.push("");
   r.push("| Sleutel | Label |");
   r.push("|---|---|");
   for (const k of koppelingen.filter((x) => x.status === "geen")) r.push(`| ${k.key} | ${pijp(k.label)} |`);
+  r.push("");
+  r.push("## Handmatig gekoppeld (Claude, ter beoordeling)");
+  r.push("");
+  r.push("| Sleutel | Label | NEVO-code | NEVO-naam | Opmerking |");
+  r.push("|---|---|---|---|---|");
+  for (const k of koppelingen.filter((x) => x.basis === "handmatig")) {
+    r.push(`| ${k.key} | ${pijp(k.label)} | ${k.code} | ${pijp(perCode.get(k.code)?.naam ?? "?")} | ${pijp(k.opm || "")} |`);
+  }
+  r.push("");
+  r.push("## Bewust geen koppeling");
+  r.push("");
+  r.push("| Sleutel | Label | Reden |");
+  r.push("|---|---|---|");
+  for (const k of koppelingen.filter((x) => x.status === "bewust-niet")) r.push(`| ${k.key} | ${pijp(k.label)} | ${pijp(k.reden)} |`);
   r.push("");
   r.push("## Zeker op naam (steekproef)");
   r.push("");
@@ -265,6 +300,7 @@ function main() {
   const data = bouwVoedingsmiddelen(parseDelimited(fs.readFileSync(csv, "utf8")));
   for (const v of data.voedingsmiddelen) v._tokens = tokens(v.naam);
   const koppelingen = koppel({
+    beslissingen: JSON.parse(fs.readFileSync(BESLISSINGEN_FILE, "utf8")),
     regels: leesCatalogusRegels(fs.readFileSync(CATALOG_FILE, "utf8")),
     foodSources: parseFoodSources(fs.readFileSync(foodSourcesPad, "utf8")),
     voedingsmiddelen: data.voedingsmiddelen,
@@ -272,7 +308,7 @@ function main() {
   fs.writeFileSync(OUT_TS, bouwTs(koppelingen));
   fs.writeFileSync(OUT_RAPPORT, bouwRapport(koppelingen, data.voedingsmiddelen));
   const tel = (s) => koppelingen.filter((k) => k.status === s).length;
-  console.log(`${koppelingen.length} regels: ${tel("zeker")} zeker, ${tel("onzeker")} onzeker, ${tel("geen")} geen kandidaat`);
+  console.log(`${koppelingen.length} regels: ${tel("zeker")} zeker, ${tel("bewust-niet")} bewust niet, ${tel("onzeker") + tel("geen")} open`);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -1,0 +1,707 @@
+{
+  "toelichting": "Handmatige beslissingen voor scripts/nevo-koppel.mjs. handmatig: catalogussleutel → NEVO-code (+ opmerking). bewustNiet: catalogussleutel → reden waarom er geen koppeling is. Alles wat hier niet staat en niet automatisch zeker is, gaat naar Dennis. Standaard bij vlees/vis/groente zonder bereiding in het label: de rauwe NEVO-variant. Beslist 3 okt 2026 door Claude, ter beoordeling.",
+  "handmatig": {
+    "rucola": {
+      "code": "2736",
+      "opm": "NEVO noemt het 'Sla rucola rauw'"
+    },
+    "spruitjes-gekookt": {
+      "code": "55",
+      "opm": ""
+    },
+    "wortel-rauw": {
+      "code": "71",
+      "opm": "NEVO-gemiddelde"
+    },
+    "wortel-gekookt": {
+      "code": "72",
+      "opm": "NEVO-gemiddelde"
+    },
+    "tomaat": {
+      "code": "60",
+      "opm": "Tomaat gewoon rauw"
+    },
+    "tomaat-blik": {
+      "code": "2293",
+      "opm": ""
+    },
+    "paprika-rauw": {
+      "code": "2742",
+      "opm": "NEVO-gemiddelde"
+    },
+    "komkommer": {
+      "code": "2739",
+      "opm": "met schil"
+    },
+    "ui-rauw": {
+      "code": "63",
+      "opm": ""
+    },
+    "ui-gebakken": {
+      "code": "1393",
+      "opm": "enige gebakken ui in NEVO"
+    },
+    "knoflook": {
+      "code": "830",
+      "opm": ""
+    },
+    "mais-blik": {
+      "code": "2900",
+      "opm": ""
+    },
+    "sperziebonen-gekookt": {
+      "code": "951",
+      "opm": ""
+    },
+    "zeewier-nori": {
+      "code": "3227",
+      "opm": "gedroogd"
+    },
+    "appel": {
+      "code": "875",
+      "opm": "NEVO-gemiddelde met schil"
+    },
+    "peer": {
+      "code": "2748",
+      "opm": "met schil"
+    },
+    "mandarijn": {
+      "code": "165",
+      "opm": ""
+    },
+    "grapefruit": {
+      "code": "162",
+      "opm": ""
+    },
+    "kiwi": {
+      "code": "5120",
+      "opm": "NEVO-gemiddelde"
+    },
+    "ananas": {
+      "code": "150",
+      "opm": ""
+    },
+    "druiven": {
+      "code": "160",
+      "opm": "NEVO-gemiddelde met schil"
+    },
+    "aardbeien": {
+      "code": "148",
+      "opm": ""
+    },
+    "frambozen": {
+      "code": "161",
+      "opm": ""
+    },
+    "kersen": {
+      "code": "163",
+      "opm": "zoete kersen"
+    },
+    "perzik": {
+      "code": "5079",
+      "opm": "met schil"
+    },
+    "pruim": {
+      "code": "170",
+      "opm": ""
+    },
+    "meloen": {
+      "code": "5369",
+      "opm": "NEVO-gemiddelde"
+    },
+    "dadels": {
+      "code": "181",
+      "opm": "catalogusregel is gedroogd"
+    },
+    "rozijnen": {
+      "code": "33",
+      "opm": ""
+    },
+    "abrikoos-gedroogd": {
+      "code": "175",
+      "opm": ""
+    },
+    "pruimen-gedroogd": {
+      "code": "190",
+      "opm": ""
+    },
+    "appelmoes": {
+      "code": "179",
+      "opm": ""
+    },
+    "bulgur-gekookt": {
+      "code": "3200",
+      "opm": ""
+    },
+    "couscous-gekookt": {
+      "code": "2158",
+      "opm": ""
+    },
+    "witbrood": {
+      "code": "248",
+      "opm": "Tarwebrood wit water"
+    },
+    "roggebrood": {
+      "code": "242",
+      "opm": "volkoren; NEVO heeft geen ander roggebrood als gewone naam"
+    },
+    "stokbrood": {
+      "code": "2793",
+      "opm": "Tarwestokbrood wit"
+    },
+    "tortilla-wrap": {
+      "code": "2359",
+      "opm": "naturel"
+    },
+    "crackers-volkoren": {
+      "code": "5567",
+      "opm": ""
+    },
+    "croissant": {
+      "code": "2818",
+      "opm": "NEVO-gemiddelde"
+    },
+    "knackebrod": {
+      "code": "229",
+      "opm": "NEVO-gemiddelde"
+    },
+    "beschuit": {
+      "code": "227",
+      "opm": "naturel"
+    },
+    "pasta-wit-gekookt": {
+      "code": "659",
+      "opm": "NEVO-gemiddelde witte pasta"
+    },
+    "linzen-blik": {
+      "code": "5169",
+      "opm": "bruine linzen"
+    },
+    "kidneybonen-blik": {
+      "code": "3184",
+      "opm": ""
+    },
+    "cannellinibonen-blik": {
+      "code": "5170",
+      "opm": ""
+    },
+    "walnoten": {
+      "code": "206",
+      "opm": "ongezouten"
+    },
+    "paranoten": {
+      "code": "203",
+      "opm": "ongezouten"
+    },
+    "chiazaad": {
+      "code": "3447",
+      "opm": ""
+    },
+    "lijnzaad": {
+      "code": "867",
+      "opm": "NEVO geeft geen onderscheid hele/gemalen"
+    },
+    "kalkoenfilet": {
+      "code": "1936",
+      "opm": "rauw"
+    },
+    "half-om-half-gehakt": {
+      "code": "1434",
+      "opm": "rauw"
+    },
+    "varkenskarbonade": {
+      "code": "1788",
+      "opm": "Varkensribkarbonade rauw"
+    },
+    "konijn": {
+      "code": "109",
+      "opm": "tam, rauw"
+    },
+    "wild": {
+      "code": "339",
+      "opm": "NEVO heeft alleen ree"
+    },
+    "hamburger": {
+      "code": "1435",
+      "opm": "rauw"
+    },
+    "salami": {
+      "code": "1152",
+      "opm": ""
+    },
+    "tong": {
+      "code": "2298",
+      "opm": "rauw"
+    },
+    "zalm-blik": {
+      "code": "602",
+      "opm": ""
+    },
+    "ansjovis": {
+      "code": "1588",
+      "opm": "in olie, blik (gangbare vorm)"
+    },
+    "koolvis": {
+      "code": "2296",
+      "opm": "Atlantisch, rauw"
+    },
+    "schelvis": {
+      "code": "1614",
+      "opm": "enige schelvis zonder blik/lever"
+    },
+    "schol": {
+      "code": "813",
+      "opm": "rauw"
+    },
+    "pangasius": {
+      "code": "3322",
+      "opm": "rauw"
+    },
+    "vissticks": {
+      "code": "815",
+      "opm": "onbereid"
+    },
+    "garnalen": {
+      "code": "3320",
+      "opm": "roze, gekookt (zo verkocht)"
+    },
+    "krab": {
+      "code": "351",
+      "opm": "in water, blik"
+    },
+    "inktvis": {
+      "code": "1098",
+      "opm": "rauw"
+    },
+    "roerei": {
+      "code": "5321",
+      "opm": "NEVO: omelet/roerei"
+    },
+    "omelet": {
+      "code": "5321",
+      "opm": "NEVO: omelet/roerei"
+    },
+    "melk-halfvol": {
+      "code": "286",
+      "opm": ""
+    },
+    "melk-mager": {
+      "code": "294",
+      "opm": ""
+    },
+    "karnemelk": {
+      "code": "289",
+      "opm": ""
+    },
+    "yoghurt-vol": {
+      "code": "278",
+      "opm": ""
+    },
+    "yoghurt-mager": {
+      "code": "301",
+      "opm": ""
+    },
+    "volle-kwark": {
+      "code": "307",
+      "opm": ""
+    },
+    "creme-fraiche": {
+      "code": "1808",
+      "opm": ""
+    },
+    "slagroom": {
+      "code": "299",
+      "opm": "Room slag- onbereid"
+    },
+    "magere-kaas": {
+      "code": "1723",
+      "opm": "Kaas 20+"
+    },
+    "schapenkaas": {
+      "code": "804",
+      "opm": "vers"
+    },
+    "sojadrink-onverrijkt": {
+      "code": "870",
+      "opm": "z suiker, onverrijkt"
+    },
+    "olijfolie-ev": {
+      "code": "601",
+      "opm": "NEVO onderscheidt geen extra vierge"
+    },
+    "pindakaas": {
+      "code": "455",
+      "opm": ""
+    },
+    "hummus": {
+      "code": "3207",
+      "opm": "naturel"
+    },
+    "ketchup": {
+      "code": "462",
+      "opm": "tomatenketchup"
+    },
+    "mosterd": {
+      "code": "824",
+      "opm": ""
+    },
+    "pesto": {
+      "code": "2178",
+      "opm": "groene pesto"
+    },
+    "tomatensaus": {
+      "code": "1524",
+      "opm": ""
+    },
+    "sambal": {
+      "code": "1232",
+      "opm": "sambal oelek"
+    },
+    "muesli": {
+      "code": "2809",
+      "opm": ""
+    },
+    "cornflakes": {
+      "code": "2081",
+      "opm": ""
+    },
+    "ontbijtkoek": {
+      "code": "240",
+      "opm": ""
+    },
+    "jam": {
+      "code": "445",
+      "opm": ""
+    },
+    "hagelslag": {
+      "code": "1311",
+      "opm": "chocolade, gemiddeld"
+    },
+    "popcorn": {
+      "code": "630",
+      "opm": "naturel, gepoft zonder olie"
+    },
+    "chips": {
+      "code": "122",
+      "opm": "NEVO-gemiddelde"
+    },
+    "koek": {
+      "code": "258",
+      "opm": "NEVO-gemiddelde koekje"
+    },
+    "melkchocolade": {
+      "code": "431",
+      "opm": ""
+    },
+    "ijs": {
+      "code": "303",
+      "opm": "room/vanille, gemiddeld"
+    },
+    "mueslireep": {
+      "code": "2239",
+      "opm": ""
+    },
+    "tomatensoep": {
+      "code": "5062",
+      "opm": "met vermicelli"
+    },
+    "erwtensoep": {
+      "code": "5177",
+      "opm": "met vlees"
+    },
+    "nasi": {
+      "code": "471",
+      "opm": "met ei"
+    },
+    "bami": {
+      "code": "470",
+      "opm": "zonder ei"
+    },
+    "burrito": {
+      "code": "5457",
+      "opm": "met gehakt"
+    },
+    "quiche": {
+      "code": "5398",
+      "opm": "Lorraine"
+    },
+    "lasagne": {
+      "code": "1491",
+      "opm": "bolognese, koelverse maaltijd"
+    },
+    "aardappel-gekookt": {
+      "code": "982",
+      "opm": "zonder schil, gemiddeld"
+    },
+    "aardappelpuree": {
+      "code": "737",
+      "opm": "instant, gemiddeld bereid"
+    },
+    "water": {
+      "code": "1885",
+      "opm": "gemiddeld"
+    },
+    "koffie": {
+      "code": "644",
+      "opm": "bereid"
+    },
+    "thee": {
+      "code": "645",
+      "opm": "bereid"
+    },
+    "sinaasappelsap": {
+      "code": "410",
+      "opm": "gepasteuriseerd"
+    },
+    "appelsap": {
+      "code": "383",
+      "opm": ""
+    },
+    "groentesap": {
+      "code": "1132",
+      "opm": "tomatengroentesap"
+    },
+    "chocolademelk": {
+      "code": "1464",
+      "opm": "halfvolle"
+    },
+    "bier": {
+      "code": "390",
+      "opm": "pils"
+    },
+    "boerenkool-gekookt": {
+      "code": "16",
+      "opm": ""
+    },
+    "boerenkool-rauw": {
+      "code": "959",
+      "opm": ""
+    },
+    "sla-kropsla": {
+      "code": "46",
+      "opm": "rauw"
+    },
+    "veldsla": {
+      "code": "65",
+      "opm": "rauw"
+    },
+    "bloemkool-gekookt": {
+      "code": "15",
+      "opm": ""
+    },
+    "bloemkool-rauw": {
+      "code": "14",
+      "opm": ""
+    },
+    "rodekool-gekookt": {
+      "code": "42",
+      "opm": ""
+    },
+    "knolselderij-gekookt": {
+      "code": "26",
+      "opm": ""
+    },
+    "asperges-gekookt": {
+      "code": "957",
+      "opm": "witte asperge"
+    },
+    "mais-kolf": {
+      "code": "57",
+      "opm": "suikermais, gekookt"
+    },
+    "abrikoos-vers": {
+      "code": "149",
+      "opm": "met schil"
+    },
+    "haverzemelen": {
+      "code": "3058",
+      "opm": ""
+    },
+    "pita": {
+      "code": "2790",
+      "opm": "Tarwebrood wit pita"
+    },
+    "rijstwafel": {
+      "code": "1481",
+      "opm": "naturel met zout"
+    },
+    "toast": {
+      "code": "2937",
+      "opm": "Toast Melba naturel"
+    },
+    "pasta-wit-droog": {
+      "code": "4",
+      "opm": "Pasta witte rauw"
+    },
+    "spliterwten-gekookt": {
+      "code": "3216",
+      "opm": "groene spliterwten"
+    },
+    "notenmix": {
+      "code": "207",
+      "opm": "gemengd, ongezouten"
+    },
+    "bacon": {
+      "code": "641",
+      "opm": ""
+    },
+    "kipfilet-vleeswaren": {
+      "code": "2654",
+      "opm": ""
+    },
+    "runderlever": {
+      "code": "1407",
+      "opm": "rauw"
+    },
+    "varkenslever": {
+      "code": "1426",
+      "opm": "rauw"
+    },
+    "zalm-gekweekt": {
+      "code": "1587",
+      "opm": "kweek-, rauw"
+    },
+    "makreel-gerookt": {
+      "code": "1586",
+      "opm": "Makreelfilet gerookt"
+    },
+    "tonijn-vers": {
+      "code": "2297",
+      "opm": "rauw"
+    },
+    "eiwit": {
+      "code": "358",
+      "opm": ""
+    },
+    "eidooier": {
+      "code": "85",
+      "opm": "rauw"
+    },
+    "drinkyoghurt": {
+      "code": "657",
+      "opm": "Yoghurtdrank"
+    },
+    "oude-kaas": {
+      "code": "2759",
+      "opm": "Goudse 48+ oud"
+    },
+    "appelstroop": {
+      "code": "427",
+      "opm": "Stroop appel- rinse"
+    },
+    "tortillachips": {
+      "code": "1937",
+      "opm": "naturel"
+    },
+    "stroopwafel": {
+      "code": "713",
+      "opm": "gemiddeld"
+    },
+    "bruiswater": {
+      "code": "747",
+      "opm": "met en zonder koolzuur, gemiddeld"
+    }
+  },
+  "bewustNiet": {
+    "zuurkool": "NEVO heeft alleen zuurkoolsap en stamppot, geen zuurkool zelf",
+    "basmatirijst-gekookt": "NEVO kent geen basmati",
+    "wilde-rijst-gekookt": "NEVO kent geen wilde rijst",
+    "zuurdesembrood": "NEVO heeft alleen een glutenvrije zuurdesem",
+    "meergranenbrood": "NEVO onderscheidt wit en bruin; geen gemiddelde",
+    "schnitzel": "NEVO heeft alleen vegetarische schnitzels met verrijking",
+    "worst": "te generiek: NEVO heeft tientallen worstsoorten",
+    "ham": "NEVO onderscheidt ham per stuk van het varken; geen gewone hamplak",
+    "rosbief": "NEVO heeft rauw, bereid en vleeswaar; welke bedoeld is niet te zeggen",
+    "nier": "runder-, varkens- en lamsnier verschillen",
+    "room": "kook-, koffie-, zure en slagroom verschillen sterk",
+    "boter": "gezouten en ongezouten staan los; gebruik niet te raden",
+    "geitenkaas": "verse en harde geitenkaas verschillen sterk",
+    "roomkaas": "NEVO heeft alleen merken",
+    "smeerkaas": "20+, 40+ en 45+ staan los",
+    "blauwe-kaas": "Roquefort, Gorgonzola en Bluefort staan los",
+    "dressing": "NEVO heeft specifieke dressings, geen gemiddelde",
+    "ontbijtgranen-volkoren": "geen herkenbaar equivalent",
+    "gebak": "te generiek",
+    "snoep": "NEVO heeft alleen specifieke soorten",
+    "groentesoep": "NEVO heeft meerdere soepen; geen standaard",
+    "pizza": "te veel varianten",
+    "stamppot": "te veel varianten",
+    "bouillon": "NEVO heeft meerdere bereidingen (blokje, kops, pot)",
+    "frisdrank": "cola, sinas en light verschillen",
+    "frisdrank-light": "cola, sinas en light verschillen",
+    "sportdrank": "NEVO heeft alleen merken",
+    "wijn": "rood, wit en rosé verschillen",
+    "broccoli-gestoomd": "NEVO heeft alleen gekookte broccoli",
+    "broccoli-diepvries": "NEVO heeft alleen rauw en gekookt",
+    "paprika-gebakken": "NEVO heeft geen gebakken paprika",
+    "courgette-gebakken": "NEVO heeft geen gebakken courgette",
+    "aubergine-gebakken": "NEVO heeft geen gebakken aubergine",
+    "pompoen-geroosterd": "NEVO heeft geen geroosterde pompoen",
+    "paddenstoelen-uv": "NEVO heeft geen UV-behandelde paddenstoelen",
+    "fruit-diepvries": "NEVO heeft geen diepvriesfruit",
+    "boekweit-gekookt": "NEVO heeft alleen boekweitgrutten (droog)",
+    "amarant-gekookt": "niet in NEVO",
+    "teff": "niet in NEVO",
+    "gerst-gekookt": "NEVO heeft alleen rauwe gerst",
+    "spelt-gekookt": "NEVO heeft alleen speltmeel en -vlokken",
+    "polenta": "niet in NEVO",
+    "speltbrood": "niet in NEVO",
+    "naan": "niet in NEVO",
+    "bagel": "niet in NEVO",
+    "maiswafel": "niet in NEVO",
+    "linzenpasta-droog": "niet in NEVO",
+    "kikkererwtenpasta-droog": "niet in NEVO",
+    "kikkererwten-blik": "NEVO kent kikkererwten alleen als geroosterde snack",
+    "kikkererwten-gekookt": "NEVO kent kikkererwten alleen als geroosterde snack",
+    "rijstnoedels-gekookt": "niet in NEVO",
+    "eiernoedels-gekookt": "niet in NEVO",
+    "ramen-noedels": "niet in NEVO",
+    "sobanoedels-gekookt": "niet in NEVO",
+    "edamame": "niet in NEVO",
+    "kipdij": "NEVO heeft alleen kipbout zonder vel",
+    "kippenvleugel": "niet in NEVO",
+    "eend": "NEVO heeft alleen eend met vel, geen eendenborst",
+    "hart": "niet in NEVO",
+    "pens": "niet in NEVO",
+    "zalm-wild": "niet in NEVO",
+    "sprot": "NEVO heeft alleen gerookte sprotfilet",
+    "gerookte-forel": "NEVO heeft geen gerookte forel",
+    "zeebaars": "niet in NEVO",
+    "dorade": "niet in NEVO",
+    "octopus": "niet in NEVO",
+    "verrijkte-eieren": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "avocado-olie": "niet in NEVO",
+    "algenolie": "productspecificatie van de fabrikant",
+    "bakboter": "NEVO heeft meerdere bak- en braadvetten",
+    "amandelpasta": "niet in NEVO",
+    "currysaus": "niet in NEVO",
+    "granola": "niet in NEVO",
+    "ontbijtgranen-verrijkt": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "pure-chocolade": "NEVO geeft geen cacaopercentage; 70% is niet te herleiden",
+    "linzensoep": "niet in NEVO",
+    "kippensoep": "NEVO heeft meerdere soepen; geen standaard",
+    "pompoensoep": "niet in NEVO",
+    "champignonsoep": "niet in NEVO",
+    "curry-maaltijd": "niet in NEVO",
+    "maaltijdsalade": "te generiek",
+    "pokebowl": "niet in NEVO",
+    "wrap-gevuld": "te generiek",
+    "friet": "niet in NEVO onder deze naam",
+    "ovenaardappel": "niet in NEVO",
+    "groene-thee": "NEVO heeft alleen thee bereid, geen groene",
+    "eiwitshake": "verrijking/merk; het etiket is de bron",
+    "havermelk": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "amandeldrink": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "kokosdrink": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "rijstdrink": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "plantaardige-drank-verrijkt": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "sojayoghurt": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "plantaardige-yoghurt": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "vegan-gehakt": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "vegan-burger": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "vegan-worst": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "vleesvervanger-stukjes": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "margarine": "verrijking is een fabrikantkeuze; het etiket is de bron",
+    "proteinereep": "verrijking/merk; het etiket is de bron"
+  }
+}

@@ -1,275 +1,286 @@
 # Steekproef: koppeling FOOD_CATALOG ↔ NEVO 2025/9.0
 
-Gegenereerd door `scripts/nevo-koppel.mjs` (deterministisch). Voorstellen op naam; de beoordeling is aan Dennis. Zekere koppelingen staan in `src/data/nutrition/food-catalog-nevo.ts`.
+Gegenereerd door `scripts/nevo-koppel.mjs` (deterministisch). De regels onder "Handmatig gekoppeld" en "Bewust geen koppeling" zijn door Claude beslist en staan ter controle; alleen "Nog open" vraagt een keuze. Zekere koppelingen staan in `src/data/nutrition/food-catalog-nevo.ts`.
 
 - Catalogusregels: 371
 - Zeker via `bron` (FOOD_SOURCES-rij uit NEVO): 71
 - Zeker via `naam` (één sterke kandidaat): 49
-- **Onzeker (te beoordelen): 159**
-- Geen kandidaat: 92
+- Zeker via `handmatig` (beslist door Claude, ter beoordeling): 150
+- Bewust geen koppeling (met reden): 100
+- **Nog open voor Dennis: 1**
 
-## Onzeker: beoordelen
+## Nog open voor Dennis
 
-Kies per regel de code, of laat de regel zonder NEVO-koppeling. Een goede koppeling kan in `scripts/nevo-koppel.mjs` als handmatige uitzondering of direct in het TS-bestand worden vastgelegd (en overleeft dan niet een nieuwe run: zet hem dan in `HANDMATIG`).
+Kies per regel de code, of laat de regel zonder NEVO-koppeling. Leg de keuze vast in `scripts/nevo-koppel-beslissingen.json` (`handmatig` of `bewustNiet`) en draai het script opnieuw.
 
 | Sleutel | Label | Reden | Kandidaten (code · naam · score) |
 |---|---|---|---|
-| rucola | Rucola | NEVO-naam draagt extra kenmerken: sla, rauw | 2736 · Sla rucola rauw · 0.94 |
-| spruitjes-gekookt | Spruitjes, gekookt | marge 0.03 < 0.15 | 55 · Spruitjes gekookt · 1.20<br>1147 · Spruitjes diepvries gekookt · 1.17 |
-| zuurkool | Zuurkool | NEVO-naam draagt extra kenmerken: sap | 1657 · Sap zuurkool- · 0.97<br>1486 · Stamppot zuurkool z vlees bereid · 0.56 |
-| wortel-rauw | Wortel, rauw | marge 0.00 < 0.15 | 71 · Wortel rauw gem · 1.17<br>2726 · Wortel bospeen rauw · 1.17<br>2728 · Wortel winterpeen rauw · 1.17 |
-| wortel-gekookt | Wortel, gekookt | marge 0.00 < 0.15 | 72 · Wortel gekookt gem · 1.17<br>2727 · Wortel bospeen gekookt · 1.17<br>2729 · Wortel winterpeen gekookt · 1.17 |
-| tomaat | Tomaat | marge 0.00 < 0.15 | 2293 · Tomaat in blik · 1.17<br>1397 · Tomaat gestoofd · 1.17<br>2378 · Tomaat zongedroogd · 1.17 |
-| tomaat-blik | Tomaten, uit blik | beste score 0.61 < 0.9 | 878 · Croissants uit blik afgebakken · 0.61<br>141 · Puree tomaten- geconcentreerd blik · 0.61 |
-| paprika-rauw | Paprika, rauw | marge 0.00 < 0.15 | 2742 · Paprika rauw gem · 1.17<br>884 · Paprika rode rauw · 1.17<br>2740 · Paprika gele rauw · 1.17 |
-| komkommer | Komkommer | marge 0.03 < 0.15 | 28 · Komkommer gekookt · 1.17<br>27 · Komkommer z schil rauw · 1.14<br>2739 · Komkommer m schil rauw · 1.14 |
-| ui-rauw | Ui, rauw | marge 0.03 < 0.15 | 63 · Ui rauw · 1.20<br>2737 · Ui sla- rauw · 1.17<br>5459 · Ui rode rauw · 1.17 |
-| ui-gebakken | Ui, gebakken | NEVO-naam draagt extra kenmerken: plantaardig, olie | 1393 · Ui gebakken in plantaardige olie · 1.14 |
-| knoflook | Knoflook | marge 0.03 < 0.15 | 830 · Knoflook rauw · 1.17<br>5330 · Knoflook bereid z vet · 1.14<br>2573 · Saus knoflook- 20-<30% olie · 0.53 |
-| mais-blik | Maïs, uit blik | beste score 0.84 < 0.9 | 2900 · Mais blik/glas · 0.84<br>878 · Croissants uit blik afgebakken · 0.61 |
-| sperziebonen-gekookt | Sperziebonen, gekookt | marge 0.03 < 0.15 | 951 · Bonen sperzie- gekookt · 1.20<br>954 · Bonen sperzie- diepvries gekookt · 1.17<br>50 · Bonen sperzie- rauw · 0.67 |
-| zeewier-nori | Nori (zeewier) | NEVO-naam draagt extra kenmerken: gedroogd | 3227 · Zeewier nori gedroogd · 0.97 |
-| appel | Appel | NEVO-naam draagt extra kenmerken: schil, gem | 147 · Appel z schil gem · 1.14<br>875 · Appel m schil gem · 1.14<br>2751 · Appel Elstar m schil · 1.14 |
-| peer | Peer | marge 0.00 < 0.15 | 168 · Peer z schil · 1.17<br>2748 · Peer m schil · 1.17 |
-| mandarijn | Mandarijn | marge 0.09 < 0.15 | 165 · Mandarijn · 1.20<br>186 · Mandarijnen op siroop blik/glas · 1.11 |
-| grapefruit | Grapefruit | marge 0.09 < 0.15 | 162 · Grapefruit · 1.20<br>848 · Grapefruit op siroop blik/glas · 1.11<br>664 · Sap grapefruit- · 0.97 |
-| kiwi | Kiwi | marge 0.00 < 0.15 | 5120 · Kiwi gem · 1.17<br>3219 · Kiwi gele · 1.17<br>1056 · Kiwi groene · 1.17 |
-| ananas | Ananas | marge 0.09 < 0.15 | 150 · Ananas · 1.20<br>177 · Ananas op siroop blik/glas · 1.11<br>2843 · Ananas op eigen sap blik/glas · 1.08 |
-| druiven | Druiven | NEVO-naam draagt extra kenmerken: schil, gem | 160 · Druiven m schil gem · 1.14<br>2750 · Druiven witte m schil · 1.14<br>2749 · Druiven blauwe m schil · 1.14 |
-| aardbeien | Aardbeien | marge 0.09 < 0.15 | 148 · Aardbeien · 1.20<br>174 · Aardbeien op siroop blik/glas · 1.11 |
-| frambozen | Frambozen | marge 0.09 < 0.15 | 161 · Frambozen · 1.20<br>182 · Frambozen op siroop blik/glas · 1.11<br>399 · Vruchtendrank frambozen · 0.97 |
-| kersen | Kersen | marge 0.00 < 0.15 | 167 · Kersen zure · 1.17<br>163 · Kersen zoete · 1.17<br>184 · Kersen op siroop blik/glas · 1.11 |
-| perzik | Perzik | marge 0.00 < 0.15 | 169 · Perzik z schil · 1.17<br>5079 · Perzik m schil · 1.17<br>189 · Perziken op siroop blik/glas · 1.11 |
-| pruim | Pruim | marge 0.00 < 0.15 | 170 · Pruimen m schil · 1.17<br>190 · Pruimen gedroogd · 1.17<br>2956 · Pruimen gedroogd geweekt · 1.14 |
-| meloen | Meloen | marge 0.00 < 0.15 | 5369 · Meloen gem · 1.17<br>166 · Meloen net- · 1.17<br>1105 · Meloen water- · 1.17 |
-| dadels | Dadels | marge 0.00 < 0.15 | 1887 · Dadels vers · 1.17<br>181 · Dadels gedroogd · 1.17 |
-| rozijnen | Rozijnen | marge 0.03 < 0.15 | 33 · Rozijnen gedroogd · 1.17<br>2379 · Rozijnen gedroogd geweekt · 1.14<br>2393 · Cake rozijnen- · 0.97 |
-| abrikoos-gedroogd | Abrikozen, gedroogd | marge 0.03 < 0.15 | 175 · Abrikozen gedroogd · 1.20<br>2685 · Abrikozen gedroogd geweekt · 1.17 |
-| pruimen-gedroogd | Pruimen, gedroogd | marge 0.03 < 0.15 | 190 · Pruimen gedroogd · 1.20<br>2956 · Pruimen gedroogd geweekt · 1.17 |
-| appelmoes | Appelmoes | NEVO-naam draagt extra kenmerken: blik, glas | 179 · Appelmoes blik/glas · 1.14<br>1182 · Appelmoes z suiker blik/glas · 0.76<br>2686 · Appelmoes z suiker m zoetstof blik/glas · 0.73 |
-| basmatirijst-gekookt | Basmatirijst, gekookt | beste score 0.67 < 0.9 | 658 · Rijst witte gekookt · 0.67<br>2682 · Rijst meergranen- gekookt · 0.67<br>1014 · Rijst zilvervlies- gekookt · 0.67 |
-| wilde-rijst-gekookt | Wilde rijst, gekookt | beste score 0.64 < 0.9 | 658 · Rijst witte gekookt · 0.64<br>2682 · Rijst meergranen- gekookt · 0.64<br>1014 · Rijst zilvervlies- gekookt · 0.64 |
-| bulgur-gekookt | Bulgur, gekookt | NEVO-naam draagt extra kenmerken: tarw, gebrok | 3200 · Tarwe gebroken bulgur gekookt · 0.94 |
-| couscous-gekookt | Couscous, gekookt | marge 0.03 < 0.15 | 2158 · Couscous gekookt · 1.20<br>5539 · Couscous volkoren gekookt · 1.17 |
-| witbrood | Witbrood | NEVO-naam draagt extra kenmerken: broodj, gezond, v | 5352 · Broodje gezond v witbrood · 0.91<br>5598 · Bakmix voor brood wit glutenvrij · 0.91<br>2793 · Tarwestokbrood wit · 0.87 |
-| meergranenbrood | Meergranenbrood | NEVO-naam draagt extra kenmerken: wit, zad | 2783 · Meergranenbrood wit m zaden · 0.94<br>2784 · Meergranenbrood bruin m zaden  · 0.94<br>5599 · Bakmix voor brood bruin/meergranen glutenvrij · 0.88 |
-| roggebrood | Roggebrood | NEVO-naam draagt extra kenmerken: volkor | 242 · Roggebrood volkoren · 0.97<br>1011 · Roggebrood volkoren natriumarm · 0.94<br>1395 · Roggebrood volkoren/roggetarwebrood bruin gem · 0.88 |
-| zuurdesembrood | Zuurdesembrood | NEVO-naam draagt extra kenmerken: glutenvrij | 5414 · Glutenvrij brood zuurdesem · 0.97 |
-| stokbrood | Stokbrood | beste score 0.74 < 0.9 | 2793 · Tarwestokbrood wit · 0.74<br>2794 · Tarwestokbrood bruin · 0.74<br>2356 · Tarwestokbrood wit m kaas en uien · 0.68 |
-| tortilla-wrap | Tortilla / wrap | NEVO-naam draagt extra kenmerken: obv, tarw, naturel | 2359 · Wrap/tortilla obv tarwe naturel · 0.91<br>5482 · Wrap/tortilla obv tarwe volkoren · 0.91<br>5591 · Wrap/tortilla obv tarwe en wortel · 0.91 |
-| croissant | Croissant | marge 0.00 < 0.15 | 2818 · Croissant gem · 1.17<br>2830 · Croissant kaas- · 1.17<br>2400 · Croissant chocolade- · 1.17 |
-| crackers-volkoren | Volkoren crackers | NEVO-naam draagt extra kenmerken: luchtig | 5567 · Cracker luchtige volkoren · 0.97 |
-| knackebrod | Knäckebröd | marge 0.00 < 0.15 | 229 · Knackebrod gem · 1.17<br>975 · Knackebrod sesam · 1.17<br>1779 · Knackebrod volkoren · 1.17 |
-| beschuit | Beschuit | marge 0.00 < 0.15 | 227 · Beschuit naturel · 1.17<br>5106 · Beschuit boeren- · 1.17<br>1022 · Beschuit natriumarm · 1.17 |
-| pasta-wit-gekookt | Pasta, gekookt | marge 0.00 < 0.15 | 2157 · Pasta volkoren gekookt · 1.17<br>3250 · Pasta glutenvrij gekookt · 1.17<br>659 · Pasta witte gem gekookt · 1.14 |
-| kikkererwten-blik | Kikkererwten, uit blik | beste score 0.61 < 0.9 | 878 · Croissants uit blik afgebakken · 0.61 |
-| linzen-blik | Linzen, uit blik | beste score 0.81 < 0.9 | 5169 · Linzen bruine blik/glas · 0.81<br>5429 · Linzen blik/glas geen zout toegevoegd · 0.75<br>878 · Croissants uit blik afgebakken · 0.61 |
-| kidneybonen-blik | Kidneybonen, uit blik | beste score 0.81 < 0.9 | 3184 · Bonen kidney- rode blik/glas · 0.81<br>5431 · Bonen kidney- rode blik/glas geen zout toegevoegd · 0.72<br>878 · Croissants uit blik afgebakken · 0.61 |
-| cannellinibonen-blik | Cannellinibonen, uit blik | beste score 0.84 < 0.9 | 5170 · Bonen cannellini blik/glas · 0.84<br>878 · Croissants uit blik afgebakken · 0.61 |
 | kapucijners | Kapucijners | marge 0.00 < 0.15 | 969 · Kapucijners gekookt · 1.17<br>119 · Kapucijners gedroogd · 1.17<br>196 · Kapucijners blik/glas · 1.14 |
-| walnoten | Walnoten | marge 0.00 < 0.15 | 5110 · Noten wal- gezouten · 1.17<br>206 · Noten wal- ongezouten · 1.17 |
-| paranoten | Paranoten | marge 0.00 < 0.15 | 5050 · Noten para- gezouten · 1.17<br>203 · Noten para- ongezouten · 1.17 |
-| chiazaad | Chiazaad | NEVO-naam draagt extra kenmerken: gedroogd | 3447 · Chiazaad gedroogd · 0.97 |
-| lijnzaad | Lijnzaad, gemalen | beste score 0.50 < 0.9 | 867 · Lijnzaad · 0.50 |
-| kalkoenfilet | Kalkoenfilet | marge 0.00 < 0.15 | 1936 · Kalkoenfilet rauw · 1.17<br>3001 · Kalkoenfilet (vleeswaar) · 1.17 |
-| half-om-half-gehakt | Half-om-half gehakt | beste score 0.63 < 0.9 | 2334 · Gehaktbal half-om-half m ei en paneermeel rauw · 0.63 |
-| varkenskarbonade | Karbonade | beste score 0.74 < 0.9 | 1445 · Lamskarbonade rauw · 0.74<br>1577 · Lamskarbonade bereid · 0.74<br>1788 · Varkensribkarbonade rauw · 0.74 |
-| schnitzel | Schnitzel | NEVO-naam draagt extra kenmerken: burger, vegetarisch, obv, melk, onbereid, verrijkt, ijzer | 5565 · Schnitzel/burger vegetarisch obv melk onbereid verrijkt m ijzer · 0.99<br>3040 · Schnitzel vegetarisch obv melk gevuld m kaas onbereid verrijkt m ijzer · 0.96<br>1512 · Schnitzel vegetarisch obv soja/tarwe onbereid verrijkt m ijzer en vit B12  · 0.93 |
-| konijn | Konijn | NEVO-naam draagt extra kenmerken: tam, rauw | 109 · Konijn tam rauw · 1.14<br>110 · Konijn wild rauw · 1.14 |
-| wild | Wild (hert, ree) | beste score 0.64 < 0.9 | 339 · Ree wild rauw · 0.64 |
-| hamburger | Hamburger | marge 0.00 < 0.15 | 1435 · Hamburger rauw · 1.17<br>1569 · Hamburger bereid · 1.17<br>5355 · Broodje hamburger huishoudelijk bereid · 0.91 |
-| worst | Worst | marge 0.03 < 0.15 | 5165 · Worst met- · 1.20<br>782 · Worst thee- · 1.17<br>568 · Worst bloed- · 1.17 |
-| ham | Ham | marge 0.00 < 0.15 | 328 · Ham rauwe · 1.17<br>1777 · Ham been- · 1.17<br>784 · Ham achter- · 1.17 |
-| rosbief | Rosbief | beste score 0.74 < 0.9 | 1410 · Runderrosbief rauw · 0.74<br>1545 · Runderrosbief bereid · 0.74<br>3345 · Runderrosbief (vleeswaar) · 0.74 |
-| salami | Salami | NEVO-naam draagt extra kenmerken: worst | 1152 · Worst salami · 0.97<br>2945 · Pizza salami diepvries onbereid · 0.56 |
-| nier | Nier | NEVO-naam draagt extra kenmerken: lams, rauw | 1903 · Nier lams- rauw · 1.14<br>1902 · Nier runder- rauw · 1.14<br>1901 · Nier varkens- rauw · 1.14 |
-| tong | Tong | NEVO-naam draagt extra kenmerken: rauw, vis | 2298 · Tong rauw (vis) · 1.14<br>1619 · Tong bereid in magnetron z toev · 1.11<br>1774 · Worst tongen- · 0.97 |
-| zalm-blik | Zalm, uit blik | beste score 0.87 < 0.9 | 602 · Zalm blik · 0.87<br>878 · Croissants uit blik afgebakken · 0.61 |
-| ansjovis | Ansjovis | marge 0.03 < 0.15 | 3199 · Ansjovis rauw · 1.17<br>1588 · Ansjovis in olie blik · 1.14 |
-| koolvis | Koolvis | NEVO-naam draagt extra kenmerken: alaska, rauw | 3318 · Koolvis (Alaska) rauw · 1.14<br>2296 · Koolvis (Atlantisch) rauw · 1.14<br>3319 · Koolvis (Alaska) gestoomd · 1.14 |
-| schelvis | Schelvis | NEVO-naam draagt extra kenmerken: bereid, magnetron, toev | 1614 · Schelvis bereid in magnetron z toev · 1.11<br>356 · Lever schelvis- blik · 0.94 |
-| schol | Schol | marge 0.00 < 0.15 | 813 · Schol rauw · 1.17<br>918 · Schol gekookt · 1.17<br>817 · Schol gebakken · 1.17 |
-| pangasius | Pangasius | marge 0.06 < 0.15 | 3322 · Pangasius rauw · 1.17<br>2765 · Pangasius bereid in magnetron z toev · 1.11 |
-| vissticks | Vissticks | marge 0.03 < 0.15 | 815 · Vissticks onbereid · 1.17<br>814 · Vissticks gebakken in zonnebloemolie · 1.14<br>5550 · Vissticks vegetarisch obv rijst/tarwe onbereid · 1.05 |
-| garnalen | Garnalen | marge 0.03 < 0.15 | 5602 · Garnalen gemarineerde · 1.17<br>3320 · Garnalen roze gekookt · 1.14<br>1631 · Garnalen in water blik · 1.14 |
-| krab | Krab | NEVO-naam draagt extra kenmerken: water, blik | 351 · Krab in water blik · 1.14<br>3232 · Salade krab- lunch/borrel · 0.91 |
-| inktvis | Inktvis | marge 0.09 < 0.15 | 1098 · Inktvis rauw · 1.17<br>1632 · Inktvis pijl- bereid in magnetron z toev · 1.08 |
-| roerei | Roerei | geenBron: samengesteld | 5321 · Omelet/roerei · 0.97 |
-| omelet | Omelet | geenBron: samengesteld | 5321 · Omelet/roerei · 1.17<br>5322 · Omelet ham-kaas · 1.14<br>5323 · Omelet m aardappel Spaanse tortilla · 1.11 |
-| melk-halfvol | Halfvolle melk | geenBron: verrijkt | 286 · Melk halfvolle · 1.00<br>285 · Melk koffie- halfvolle · 0.97<br>1464 · Melk chocolade- halfvolle · 0.97 |
-| melk-mager | Magere melk | geenBron: verrijkt | 294 · Melk magere · 1.00<br>292 · Melk koffie- magere · 0.97<br>273 · Melk chocolade- magere · 0.97 |
-| karnemelk | Karnemelk | marge 0.03 < 0.15 | 289 · Melk karne- · 1.20<br>479 · Melk karne- m vruchten · 1.17 |
-| yoghurt-vol | Volle yoghurt | marge 0.03 < 0.15 | 278 · Yoghurt volle · 1.00<br>2503 · Yoghurt Griekse volle · 0.97<br>5339 · Yoghurt geiten- volle · 0.97 |
-| yoghurt-mager | Magere yoghurt | marge 0.03 < 0.15 | 301 · Yoghurt magere · 1.00<br>5271 · Yoghurt Griekse magere · 0.97<br>284 · Yoghurt vruchten- magere · 0.97 |
-| volle-kwark | Volle kwark | marge 0.03 < 0.15 | 307 · Kwark volle · 1.00<br>2504 · Kwark vruchten- volle · 0.97 |
-| creme-fraiche | Crème fraîche | marge 0.03 < 0.15 | 1808 · Creme fraiche · 1.20<br>2268 · Creme fraiche halfvolle · 1.17 |
-| room | Room | marge 0.00 < 0.15 | 812 · Room zure · 1.17<br>2275 · Room kook- · 1.17<br>293 · Room koffie- · 1.17 |
-| slagroom | Slagroom | NEVO-naam draagt extra kenmerken: vla | 1957 · Vla slagroom- · 0.97<br>1475 · Soes slagroom- · 0.97<br>255 · Taart slagroom- · 0.97 |
-| boter | Roomboter | NEVO-naam draagt extra kenmerken: cake | 253 · Cake z roomboter · 0.97<br>1969 · Cake m roomboter · 0.97<br>262 · Sprits m roomboter · 0.97 |
-| magere-kaas | Magere kaas (20+/30+) | beste score 0.50 < 0.9 | 1723 · Kaas 20+ · 0.50 |
-| geitenkaas | Geitenkaas | marge 0.00 < 0.15 | 2518 · Kaas geiten- hard · 1.17<br>1650 · Kaas geiten- verse · 1.17<br>3045 · Kaas schapen-/geiten- Turkse 50+ blik · 1.08 |
-| schapenkaas | Schapenkaas | marge 0.09 < 0.15 | 804 · Kaas schapen- vers · 1.17<br>3045 · Kaas schapen-/geiten- Turkse 50+ blik · 1.08 |
-| roomkaas | Roomkaas | NEVO-naam draagt extra kenmerken: zacht, boursin | 728 · Kaas room- zachte Boursin · 1.14<br>1302 · Kaas room- zachte Paturain · 1.14<br>719 · Kaas room- zachte Mon Chou · 1.11 |
-| smeerkaas | Smeerkaas | marge 0.00 < 0.15 | 516 · Kaas smeer- 40+ · 1.17<br>517 · Kaas smeer- 20+ · 1.17<br>2995 · Kaas smeer- 45+ · 1.17 |
-| sojadrink-onverrijkt | Sojadrink, onverrijkt | beste score 0.58 < 0.9 | 2261 · Drink soja- Groeidrink 1-3+ Alpro · 0.58<br>2858 · Drink soja- light verrijkt m calcium en vitamines Alpro · 0.55 |
-| havermelk | Havermelk | geenBron: verrijkt | 5463 · Drink haver- z suiker · 0.82<br>5427 · Drink haver- z suiker verrijkt m calcium en vitamines · 0.73<br>2261 · Drink soja- Groeidrink 1-3+ Alpro · 0.55 |
-| amandeldrink | Amandeldrink | geenBron: verrijkt | 5464 · Drink amandel- z suiker · 0.82<br>5116 · Drink amandel- m suiker verrijkt m calcium en vitamines · 0.73<br>5119 · Drink amandel- z suiker verrijkt m calcium en vitamines · 0.73 |
-| kokosdrink | Kokosdrink | geenBron: verrijkt | 5543 · Drink kokos- z suiker · 0.82<br>5474 · Drink kokos- m suiker verrijkt m calcium en vitamines · 0.73 |
-| rijstdrink | Rijstdrink | geenBron: verrijkt | 5101 · Drink rijst- z suiker · 0.82<br>2433 · Drink rijst- z suiker verrijkt m calcium en vitamines · 0.73 |
-| plantaardige-drank-verrijkt | Plantaardige drank, verrijkt | beste score 0.60 < 0.9 | 5466 · Plantaardig alternatief voor Goudse kaas obv kokosolie verrijkt m Ca en Vit B12 · 0.60<br>3364 · Yoghurtdrank verrijkt m calcium · 0.54 |
-| sojayoghurt | Sojayoghurt | geenBron: verrijkt | 2262 · Plantaardig alternatief voor room obv soja · 0.86<br>3176 · Plantaardig alternatief voor room obv soja Alpro Cuisine Light · 0.77<br>2888 · Plantaardig alternatief voor yoghurt obv soja m suiker verrijkt m calcium en vitamines · 0.67 |
-| plantaardige-yoghurt | Plantaardige yoghurt | geenBron: verrijkt | 5545 · Plantaardig alternatief voor yoghurt obv kokos z suiker · 0.70<br>2888 · Plantaardig alternatief voor yoghurt obv soja m suiker verrijkt m calcium en vitamines · 0.61<br>5247 · Plantaardig alternatief voor yoghurt obv soja z suiker verrijkt m calcium en vitamines · 0.61 |
-| vegan-gehakt | Vegetarisch gehakt | geenBron: verrijkt | 2047 · Gehakt fijn- vegetarisch obv soja onbereid · 0.88<br>2030 · Gehakt fijn- vegetarisch obv mycoproteine onbereid · 0.88<br>5561 · Gehakt rul vegetarisch obv soja onbereid verrijkt m ijzer en vit B12 · 0.76 |
-| vegan-burger | Vegetarische burger | geenBron: verrijkt | 5552 · Balletjes/burgers vegetarisch obv erwt onbereid · 0.88<br>5566 · Burger vegetarisch gevuld m groente en kaas onbereid · 0.88<br>5553 · Groenteballetjes/-burgers vegetarisch obv soja onbereid · 0.88 |
-| vegan-worst | Vegetarische worst | geenBron: verrijkt | 5478 · Worst boterham- vegetarisch · 0.97<br>5563 · Worst braad- vegetarisch obv erwt onbereid · 0.88<br>2541 · Worst boterham- vegetarisch verrijkt m ijzer en vit B12 · 0.85 |
-| vleesvervanger-stukjes | Vegetarische stukjes | geenBron: verrijkt | 2031 · Stukjes vegetarisch obv mycoproteine onbereid · 0.91<br>5485 · Reepjes/stukjes vegetarisch obv soja/tarwe onbereid · 0.85<br>5554 · Reepjes/stukjes vegetarisch obv soja/tarwe onbereid verrijkt m ijzer en vit B12 · 0.73 |
-| olijfolie-ev | Olijfolie, extra vierge | beste score 0.53 < 0.9 | 601 · Olie olijf- · 0.53 |
-| margarine | Margarine | geenBron: verrijkt | 2063 · Margarine 80% vet >24 g verz vetz gezouten · 0.99<br>2557 · Margarine 80% vet >24 g verz vetz ongezouten · 0.99<br>2565 · Margarine 80% vet <24 g verz vetz ongezouten · 0.99 |
-| pindakaas | Pindakaas | marge 0.03 < 0.15 | 455 · Pindakaas · 1.00<br>2367 · Pindakaas light · 0.97<br>541 · Pindakaas m stukjes pinda · 0.97 |
-| hummus | Hummus | geenBron: samengesteld | 3207 · Hummus naturel · 1.17<br>5467 · Hummus m groente · 1.17 |
-| ketchup | Ketchup | marge 0.00 < 0.15 | 584 · Ketchup curry- · 1.17<br>462 · Ketchup tomaten- · 1.17<br>583 · Ketchup hot chilli · 1.14 |
-| mosterd | Mosterd | marge 0.03 < 0.15 | 824 · Mosterd · 1.20<br>1227 · Mosterd natriumarm · 1.17<br>2468 · Dressing honing/mosterd- · 0.94 |
-| pesto | Pesto | marge 0.00 < 0.15 | 3222 · Pesto rode · 1.17<br>2178 · Pesto groene · 1.17 |
-| tomatensaus | Tomatensaus | NEVO-naam draagt extra kenmerken: kant, klaar, glas | 1524 · Saus tomaten- kant-en-klaar glas · 1.11<br>349 · Haringfilet in tomatensaus blik · 0.94<br>5265 · Tonijn m groente en tomatensaus in blik · 0.91 |
-| sambal | Sambal | marge 0.00 < 0.15 | 1232 · Sambal oelek · 1.17<br>1234 · Sambal gebakken · 1.17<br>1233 · Sambal oelek natriumarm · 1.14 |
-| dressing | Slasaus / dressing | beste score 0.66 < 0.9 | 2667 · Dressing sla- 20% olie m yoghurt · 0.66<br>458 · Saus sla- 25% olie · 0.64 |
-| muesli | Muesli | geenBron: samengesteld | 2809 · Muesli m fruit/naturel · 1.14<br>2675 · Muesli krokante m noten · 1.14<br>5592 · Muesli m fruit en noten · 1.14 |
-| cornflakes | Cornflakes | NEVO-naam draagt extra kenmerken: ontbijtproduct | 2081 · Ontbijtproduct Cornflakes · 0.97<br>209 · Ontbijtproduct Cornflakes Kellogg's · 0.91<br>5126 · Ontbijtproduct Cornflakes Plus/1 de Beste · 0.88 |
-| ontbijtgranen-volkoren | Volkoren ontbijtgranen | beste score 0.67 < 0.9 | 225 · Volkoren graanontbijt · 0.67<br>2081 · Ontbijtproduct Cornflakes · 0.67<br>2877 · Ontbijtproduct Weetabix original · 0.64 |
-| ontbijtkoek | Ontbijtkoek | marge 0.03 < 0.15 | 240 · Koek ontbijt- · 1.20<br>1460 · Koek ontbijt- gember · 1.17<br>2397 · Koek ontbijt- m noten · 1.17 |
-| jam | Jam | marge 0.09 < 0.15 | 445 · Jam · 1.20<br>457 · Jam rozenbottel- m vit C · 1.11 |
-| hagelslag | Hagelslag | marge 0.03 < 0.15 | 442 · Hagelslag vruchten- · 1.17<br>1311 · Hagelslag chocolade- gem · 1.14<br>2424 · Hagelslag chocolade- wit · 1.14 |
-| popcorn | Popcorn | NEVO-naam draagt extra kenmerken: zoet, gepoft, olie | 2387 · Popcorn zoete gepoft z olie · 1.11<br>3235 · Popcorn zoute gepoft z olie · 1.11<br>630 · Popcorn naturel gepoft z olie · 1.11 |
-| chips | Chips | marge 0.00 < 0.15 | 122 · Chips gem · 1.17<br>2529 · Chips oven- · 1.17<br>2923 · Chips naturel · 1.17 |
-| koek | Koekje | marge 0.00 < 0.15 | 258 · Koekje gem · 1.17<br>836 · Koekje zand- · 1.17<br>1699 · Koekje kaas- · 1.17 |
-| melkchocolade | Melkchocolade | beste score 0.56 < 0.9 | 3378 · Pinda's omhuld m melkchocolade · 0.56 |
-| snoep | Snoep | NEVO-naam draagt extra kenmerken: schuim, gum | 2659 · Snoep schuim-/gum- · 1.14 |
-| ijs | IJs | marge 0.00 < 0.15 | 1474 · IJs water- · 1.17<br>2250 · IJs Festini · 1.17<br>3369 · IJs sorbet- · 1.17 |
-| proteinereep | Proteïnereep | geenBron: verrijkt | 5507 · Eiwitreep m pinda · 1.17<br>5508 · Eiwitreep m chocola m zoetstof · 1.14 |
-| mueslireep | Mueslireep | geenBron: samengesteld | 2239 · Mueslireep · 1.20<br>1509 · Mueslireep m chocolade · 1.17<br>5512 · Mueslireep verrijkt m vezel · 1.14 |
-| gebak | Gebak | beste score 0.68 < 0.9 | 2009 · Taart vruchten- v zandgebak · 0.68 |
-| groentesoep | Groentesoep | geenBron: samengesteld | 2488 · Soep op groente- en vleesbasis bereid pakje · 1.11<br>759 · Soep heldere m soepgroente · 1.04<br>763 · Soep gebonden m soepgroente · 1.04 |
-| tomatensoep | Tomatensoep | geenBron: samengesteld | 5062 · Soep tomaten- m vermicelli · 1.17 |
-| erwtensoep | Erwtensoep | geenBron: samengesteld | 5177 · Soep erwten- m vlees · 1.17 |
-| bouillon | Bouillon | NEVO-naam draagt extra kenmerken: 1, kops, bereid | 3192 · Bouillon 1-kops bereid · 1.11<br>1528 · Bouillon v blokje bereid · 1.11<br>5499 · Bouillon geconcentreerd m groente of vlees pot · 1.08 |
-| pizza | Pizza | geenBron: samengesteld | 5437 · Pizza quattro formaggi · 1.14<br>3042 · Pizza Turkse z toevoegingen · 1.14<br>5432 · Pizza m mozzarella Margherita · 1.14 |
-| lasagne | Lasagne | geenBron: samengesteld | 1491 · Lasagne bolognese koelverse maaltijd · 0.76<br>5458 · Lasagne groenten- koelverse maaltijd · 0.76 |
-| nasi | Nasi goreng | geenBron: samengesteld | 471 · Nasi goreng m ei · 1.17 |
-| bami | Bami goreng | geenBron: samengesteld | 470 · Bami goreng z ei · 1.17 |
-| stamppot | Stamppot | geenBron: samengesteld | 1486 · Stamppot zuurkool z vlees bereid · 1.11<br>1483 · Stamppot boerenkool z vlees bereid · 1.11<br>5401 · Stamppot boerenkool m rookworst en spekjes · 1.11 |
-| burrito | Burrito | geenBron: samengesteld | 5457 · Burrito m gehakt · 1.17 |
-| quiche | Quiche | geenBron: samengesteld | 5398 · Quiche Lorraine · 1.17 |
-| aardappel-gekookt | Aardappelen, gekookt | marge 0.03 < 0.15 | 2112 · Aardappel zoete gekookt · 1.17<br>982 · Aardappelen z schil gekookt gem · 1.14<br>2325 · Aardappelen m schil gekookt gem · 1.14 |
-| aardappelpuree | Aardappelpuree | NEVO-naam draagt extra kenmerken: instant, gem, bereid | 737 · Aardappelpuree instant- gem bereid · 1.11<br>2323 · Aardappelpuree instant- bereid m water · 1.11<br>2322 · Aardappelpuree instant- bereid m halfvolle melk · 1.08 |
-| water | Water | marge 0.12 < 0.15 | 1885 · Water gem · 1.17<br>600 · Water >100 mg calcium p liter · 1.05<br>598 · Water 0-50 mg calcium p liter · 1.02 |
-| koffie | Koffie | marge 0.03 < 0.15 | 644 · Koffie bereid · 1.17<br>2633 · Koffie oplos- poeder · 1.14<br>2648 · Koffie automaat- m melk · 1.14 |
-| thee | Thee | marge 0.09 < 0.15 | 645 · Thee bereid · 1.17<br>2444 · Thee kruiden- oplos gezoet bereid · 1.08<br>2649 · Thee kruiden- oplos gezoet poeder · 1.08 |
-| sinaasappelsap | Sinaasappelsap | marge 0.00 < 0.15 | 1932 · Sap sinaasappel- m vruchtvlees · 1.17<br>410 · Sap sinaasappel- gepasteuriseerd · 1.17<br>2755 · Sap sinaasappel- vers geperst · 1.14 |
-| appelsap | Appelsap | marge 0.09 < 0.15 | 383 · Sap appel- · 1.20<br>2144 · Sap appel- verrijkt m vit C · 1.11<br>1932 · Sap sinaasappel- m vruchtvlees · 1.04 |
-| groentesap | Groentesap | marge 0.03 < 0.15 | 1132 · Sap tomatengroenten- · 1.07<br>1156 · Sap tomatengroenten- natriumarm · 1.04<br>1933 · Sap tomatengroenten- Appelsientje Tomatientje · 1.01 |
-| frisdrank | Frisdrank | NEVO-naam draagt extra kenmerken: rivella | 425 · Frisdrank Rivella · 0.97<br>1522 · Frisdrank light z cafeine · 0.94<br>1523 · Frisdrank light m cafeine · 0.94 |
-| frisdrank-light | Frisdrank, light / zero | beste score 0.64 < 0.9 | 1522 · Frisdrank light z cafeine · 0.64<br>1523 · Frisdrank light m cafeine · 0.64 |
-| chocolademelk | Chocolademelk | marge 0.00 < 0.15 | 272 · Melk chocolade- volle · 1.17<br>273 · Melk chocolade- magere · 1.17<br>2760 · Melk chocolade- automaat · 1.17 |
-| sportdrank | Sportdrank | NEVO-naam draagt extra kenmerken: aquariu | 2646 · Sportdrank Aquarius · 0.97<br>2219 · Sportdrank Extran Hydro · 0.94<br>2218 · Sportdrank Extran Energy · 0.94 |
-| bier | Bier | marge 0.00 < 0.15 | 3214 · Bier wit · 1.17<br>390 · Bier pils · 1.17<br>3268 · Bier bok- · 1.17 |
-| wijn | Wijn | marge 0.00 < 0.15 | 422 · Wijn rode · 1.17<br>2610 · Wijn rose · 1.17<br>5246 · Wijn alcoholvrij · 1.17 |
 
-## Geen kandidaat
+### Zonder kandidaat
 
 | Sleutel | Label |
 |---|---|
-| boerenkool-gekookt | Boerenkool, gekookt |
-| boerenkool-rauw | Boerenkool, rauw |
-| sla-kropsla | Kropsla |
-| veldsla | Veldsla |
-| broccoli-gestoomd | Broccoli, gestoomd |
-| broccoli-diepvries | Broccoli, diepvries |
-| bloemkool-gekookt | Bloemkool, gekookt |
-| bloemkool-rauw | Bloemkool, rauw |
-| rodekool-gekookt | Rodekool, gekookt |
-| knolselderij-gekookt | Knolselderij, gekookt |
-| paprika-gebakken | Paprika, gebakken |
-| courgette-gebakken | Courgette, gebakken |
-| aubergine-gebakken | Aubergine, gebakken |
-| pompoen-geroosterd | Pompoen, geroosterd |
-| asperges-gekookt | Asperges, gekookt |
-| mais-kolf | Maïskolf |
-| paddenstoelen-uv | Paddenstoelen, UV-behandeld |
-| abrikoos-vers | Abrikoos, vers |
-| fruit-diepvries | Rood fruit, diepvries |
-| haverzemelen | Haverzemelen |
-| boekweit-gekookt | Boekweit, gekookt |
-| amarant-gekookt | Amarant, gekookt |
-| teff | Teff |
-| gerst-gekookt | Gerst, gekookt |
-| spelt-gekookt | Spelt, gekookt |
-| polenta | Polenta |
-| speltbrood | Speltbrood |
-| pita | Pitabroodje |
-| naan | Naanbrood |
-| bagel | Bagel |
-| rijstwafel | Rijstwafel |
-| maiswafel | Maïswafel |
-| toast | Toast / geroosterd brood |
-| pasta-wit-droog | Pasta, droog |
-| linzenpasta-droog | Linzenpasta, droog |
-| kikkererwtenpasta-droog | Kikkererwtenpasta, droog |
-| rijstnoedels-gekookt | Rijstnoedels, gekookt |
-| eiernoedels-gekookt | Eiernoedels, gekookt |
-| ramen-noedels | Ramennoedels |
-| sobanoedels-gekookt | Sobanoedels, gekookt |
-| kikkererwten-gekookt | Kikkererwten, gekookt |
-| edamame | Edamame |
-| spliterwten-gekookt | Spliterwten, gekookt |
-| notenmix | Notenmix, ongezouten |
-| kipdij | Kipdij |
-| kippenvleugel | Kippenvleugels |
-| eend | Eendenborst |
-| bacon | Bacon / spek |
-| kipfilet-vleeswaren | Kipfilet (vleeswaren) |
-| runderlever | Runderlever |
-| varkenslever | Varkenslever |
-| hart | Hart |
-| pens | Pens |
-| zalm-gekweekt | Zalm, gekweekt |
-| zalm-wild | Zalm, wild |
-| makreel-gerookt | Makreel, gerookt |
-| sprot | Sprot |
-| gerookte-forel | Forel, gerookt |
-| tonijn-vers | Tonijn, vers |
-| zeebaars | Zeebaars |
-| dorade | Dorade |
-| octopus | Octopus |
-| eiwit | Eiwit (los) |
-| eidooier | Eidooier (los) |
-| verrijkte-eieren | Omega-3 verrijkte eieren |
-| drinkyoghurt | Drinkyoghurt |
-| oude-kaas | Oude kaas |
-| blauwe-kaas | Blauwe kaas |
-| avocado-olie | Avocado-olie |
-| algenolie | Algenolie |
-| bakboter | Bak- en braadboter |
-| amandelpasta | Amandelpasta |
-| currysaus | Currysaus |
-| appelstroop | Appelstroop |
-| granola | Granola |
-| ontbijtgranen-verrijkt | Ontbijtgranen, verrijkt |
-| tortillachips | Tortillachips |
-| pure-chocolade | Pure chocolade 70 % |
-| stroopwafel | Stroopwafel |
-| linzensoep | Linzensoep |
-| kippensoep | Kippensoep |
-| pompoensoep | Pompoensoep |
-| champignonsoep | Champignonsoep |
-| curry-maaltijd | Curry met rijst |
-| maaltijdsalade | Maaltijdsalade |
-| pokebowl | Pokébowl |
-| wrap-gevuld | Gevulde wrap |
-| friet | Friet |
-| ovenaardappel | Ovenaardappel |
-| bruiswater | Bruiswater |
-| groene-thee | Groene thee |
-| eiwitshake | Eiwitshake |
+
+## Handmatig gekoppeld (Claude, ter beoordeling)
+
+| Sleutel | Label | NEVO-code | NEVO-naam | Opmerking |
+|---|---|---|---|---|
+| boerenkool-gekookt | Boerenkool, gekookt | 16 | Kool boeren- gekookt |  |
+| boerenkool-rauw | Boerenkool, rauw | 959 | Kool boeren- rauw |  |
+| sla-kropsla | Kropsla | 46 | Sla krop- rauw | rauw |
+| rucola | Rucola | 2736 | Sla rucola rauw | NEVO noemt het 'Sla rucola rauw' |
+| veldsla | Veldsla | 65 | Sla veld- rauw | rauw |
+| bloemkool-gekookt | Bloemkool, gekookt | 15 | Kool bloem- gekookt |  |
+| bloemkool-rauw | Bloemkool, rauw | 14 | Kool bloem- rauw |  |
+| spruitjes-gekookt | Spruitjes, gekookt | 55 | Spruitjes gekookt |  |
+| rodekool-gekookt | Rodekool, gekookt | 42 | Kool rode gekookt |  |
+| wortel-rauw | Wortel, rauw | 71 | Wortel rauw gem | NEVO-gemiddelde |
+| wortel-gekookt | Wortel, gekookt | 72 | Wortel gekookt gem | NEVO-gemiddelde |
+| knolselderij-gekookt | Knolselderij, gekookt | 26 | Selderij knol- gekookt |  |
+| tomaat | Tomaat | 60 | Tomaat gewoon rauw | Tomaat gewoon rauw |
+| tomaat-blik | Tomaten, uit blik | 2293 | Tomaat in blik |  |
+| paprika-rauw | Paprika, rauw | 2742 | Paprika rauw gem | NEVO-gemiddelde |
+| komkommer | Komkommer | 2739 | Komkommer m schil rauw | met schil |
+| ui-rauw | Ui, rauw | 63 | Ui rauw |  |
+| ui-gebakken | Ui, gebakken | 1393 | Ui gebakken in plantaardige olie | enige gebakken ui in NEVO |
+| knoflook | Knoflook | 830 | Knoflook rauw |  |
+| asperges-gekookt | Asperges, gekookt | 957 | Asperge witte gekookt | witte asperge |
+| mais-blik | Maïs, uit blik | 2900 | Mais blik/glas |  |
+| mais-kolf | Maïskolf | 57 | Mais suiker- gekookt | suikermais, gekookt |
+| sperziebonen-gekookt | Sperziebonen, gekookt | 951 | Bonen sperzie- gekookt |  |
+| zeewier-nori | Nori (zeewier) | 3227 | Zeewier nori gedroogd | gedroogd |
+| appel | Appel | 875 | Appel m schil gem | NEVO-gemiddelde met schil |
+| peer | Peer | 2748 | Peer m schil | met schil |
+| mandarijn | Mandarijn | 165 | Mandarijn |  |
+| grapefruit | Grapefruit | 162 | Grapefruit |  |
+| kiwi | Kiwi | 5120 | Kiwi gem | NEVO-gemiddelde |
+| ananas | Ananas | 150 | Ananas |  |
+| druiven | Druiven | 160 | Druiven m schil gem | NEVO-gemiddelde met schil |
+| aardbeien | Aardbeien | 148 | Aardbeien |  |
+| frambozen | Frambozen | 161 | Frambozen |  |
+| kersen | Kersen | 163 | Kersen zoete | zoete kersen |
+| perzik | Perzik | 5079 | Perzik m schil | met schil |
+| pruim | Pruim | 170 | Pruimen m schil |  |
+| abrikoos-vers | Abrikoos, vers | 149 | Abrikozen m schil | met schil |
+| meloen | Meloen | 5369 | Meloen gem | NEVO-gemiddelde |
+| dadels | Dadels | 181 | Dadels gedroogd | catalogusregel is gedroogd |
+| rozijnen | Rozijnen | 33 | Rozijnen gedroogd |  |
+| abrikoos-gedroogd | Abrikozen, gedroogd | 175 | Abrikozen gedroogd |  |
+| pruimen-gedroogd | Pruimen, gedroogd | 190 | Pruimen gedroogd |  |
+| appelmoes | Appelmoes | 179 | Appelmoes blik/glas |  |
+| haverzemelen | Haverzemelen | 3058 | Zemelen haver- |  |
+| bulgur-gekookt | Bulgur, gekookt | 3200 | Tarwe gebroken bulgur gekookt |  |
+| couscous-gekookt | Couscous, gekookt | 2158 | Couscous gekookt |  |
+| witbrood | Witbrood | 248 | Tarwebrood wit water | Tarwebrood wit water |
+| roggebrood | Roggebrood | 242 | Roggebrood volkoren | volkoren; NEVO heeft geen ander roggebrood als gewone naam |
+| stokbrood | Stokbrood | 2793 | Tarwestokbrood wit | Tarwestokbrood wit |
+| pita | Pitabroodje | 2790 | Tarwebrood wit pita | Tarwebrood wit pita |
+| tortilla-wrap | Tortilla / wrap | 2359 | Wrap/tortilla obv tarwe naturel | naturel |
+| croissant | Croissant | 2818 | Croissant gem | NEVO-gemiddelde |
+| crackers-volkoren | Volkoren crackers | 5567 | Cracker luchtige volkoren |  |
+| knackebrod | Knäckebröd | 229 | Knackebrod gem | NEVO-gemiddelde |
+| beschuit | Beschuit | 227 | Beschuit naturel | naturel |
+| rijstwafel | Rijstwafel | 1481 | Wafel rijst- naturel m (zee)zout | naturel met zout |
+| toast | Toast / geroosterd brood | 2937 | Toast Melba naturel | Toast Melba naturel |
+| pasta-wit-droog | Pasta, droog | 4 | Pasta witte rauw | Pasta witte rauw |
+| pasta-wit-gekookt | Pasta, gekookt | 659 | Pasta witte gem gekookt | NEVO-gemiddelde witte pasta |
+| linzen-blik | Linzen, uit blik | 5169 | Linzen bruine blik/glas | bruine linzen |
+| kidneybonen-blik | Kidneybonen, uit blik | 3184 | Bonen kidney- rode blik/glas |  |
+| cannellinibonen-blik | Cannellinibonen, uit blik | 5170 | Bonen cannellini blik/glas |  |
+| spliterwten-gekookt | Spliterwten, gekookt | 3216 | Erwten split- groene gekookt | groene spliterwten |
+| walnoten | Walnoten | 206 | Noten wal- ongezouten | ongezouten |
+| paranoten | Paranoten | 203 | Noten para- ongezouten | ongezouten |
+| notenmix | Notenmix, ongezouten | 207 | Noten gemengd ongezouten | gemengd, ongezouten |
+| chiazaad | Chiazaad | 3447 | Chiazaad gedroogd |  |
+| lijnzaad | Lijnzaad, gemalen | 867 | Lijnzaad | NEVO geeft geen onderscheid hele/gemalen |
+| kalkoenfilet | Kalkoenfilet | 1936 | Kalkoenfilet rauw | rauw |
+| half-om-half-gehakt | Half-om-half gehakt | 1434 | Gehakt hoh rauw | rauw |
+| varkenskarbonade | Karbonade | 1788 | Varkensribkarbonade rauw | Varkensribkarbonade rauw |
+| konijn | Konijn | 109 | Konijn tam rauw | tam, rauw |
+| wild | Wild (hert, ree) | 339 | Ree wild rauw | NEVO heeft alleen ree |
+| hamburger | Hamburger | 1435 | Hamburger rauw | rauw |
+| bacon | Bacon / spek | 641 | Bacon |  |
+| salami | Salami | 1152 | Worst salami |  |
+| kipfilet-vleeswaren | Kipfilet (vleeswaren) | 2654 | Kipfilet (vleeswaar) |  |
+| runderlever | Runderlever | 1407 | Lever runder- rauw | rauw |
+| varkenslever | Varkenslever | 1426 | Lever varkens- rauw | rauw |
+| tong | Tong | 2298 | Tong rauw (vis) | rauw |
+| zalm-gekweekt | Zalm, gekweekt | 1587 | Zalm kweek- rauw | kweek-, rauw |
+| zalm-blik | Zalm, uit blik | 602 | Zalm blik |  |
+| makreel-gerookt | Makreel, gerookt | 1586 | Makreelfilet gerookt | Makreelfilet gerookt |
+| ansjovis | Ansjovis | 1588 | Ansjovis in olie blik | in olie, blik (gangbare vorm) |
+| tonijn-vers | Tonijn, vers | 2297 | Tonijn rauw | rauw |
+| koolvis | Koolvis | 2296 | Koolvis (Atlantisch) rauw | Atlantisch, rauw |
+| schelvis | Schelvis | 1614 | Schelvis bereid in magnetron z toev | enige schelvis zonder blik/lever |
+| schol | Schol | 813 | Schol rauw | rauw |
+| pangasius | Pangasius | 3322 | Pangasius rauw | rauw |
+| vissticks | Vissticks | 815 | Vissticks onbereid | onbereid |
+| garnalen | Garnalen | 3320 | Garnalen roze gekookt | roze, gekookt (zo verkocht) |
+| krab | Krab | 351 | Krab in water blik | in water, blik |
+| inktvis | Inktvis | 1098 | Inktvis rauw | rauw |
+| roerei | Roerei | 5321 | Omelet/roerei | NEVO: omelet/roerei |
+| omelet | Omelet | 5321 | Omelet/roerei | NEVO: omelet/roerei |
+| eiwit | Eiwit (los) | 358 | Eiwit kippenei rauw |  |
+| eidooier | Eidooier (los) | 85 | Eidooier kippen- rauw | rauw |
+| melk-halfvol | Halfvolle melk | 286 | Melk halfvolle |  |
+| melk-mager | Magere melk | 294 | Melk magere |  |
+| karnemelk | Karnemelk | 289 | Melk karne- |  |
+| yoghurt-vol | Volle yoghurt | 278 | Yoghurt volle |  |
+| yoghurt-mager | Magere yoghurt | 301 | Yoghurt magere |  |
+| volle-kwark | Volle kwark | 307 | Kwark volle |  |
+| creme-fraiche | Crème fraîche | 1808 | Creme fraiche |  |
+| slagroom | Slagroom | 299 | Room slag- onbereid | Room slag- onbereid |
+| drinkyoghurt | Drinkyoghurt | 657 | Yoghurtdrank | Yoghurtdrank |
+| oude-kaas | Oude kaas | 2759 | Kaas Goudse 48+ oud | Goudse 48+ oud |
+| magere-kaas | Magere kaas (20+/30+) | 1723 | Kaas 20+ | Kaas 20+ |
+| schapenkaas | Schapenkaas | 804 | Kaas schapen- vers | vers |
+| sojadrink-onverrijkt | Sojadrink, onverrijkt | 870 | Drink soja- z suiker | z suiker, onverrijkt |
+| olijfolie-ev | Olijfolie, extra vierge | 601 | Olie olijf- | NEVO onderscheidt geen extra vierge |
+| pindakaas | Pindakaas | 455 | Pindakaas |  |
+| hummus | Hummus | 3207 | Hummus naturel | naturel |
+| ketchup | Ketchup | 462 | Ketchup tomaten- | tomatenketchup |
+| mosterd | Mosterd | 824 | Mosterd |  |
+| pesto | Pesto | 2178 | Pesto groene | groene pesto |
+| tomatensaus | Tomatensaus | 1524 | Saus tomaten- kant-en-klaar glas |  |
+| sambal | Sambal | 1232 | Sambal oelek | sambal oelek |
+| appelstroop | Appelstroop | 427 | Stroop appel- rinse | Stroop appel- rinse |
+| muesli | Muesli | 2809 | Muesli m fruit/naturel |  |
+| cornflakes | Cornflakes | 2081 | Ontbijtproduct Cornflakes |  |
+| ontbijtkoek | Ontbijtkoek | 240 | Koek ontbijt- |  |
+| jam | Jam | 445 | Jam |  |
+| hagelslag | Hagelslag | 1311 | Hagelslag chocolade- gem | chocolade, gemiddeld |
+| popcorn | Popcorn | 630 | Popcorn naturel gepoft z olie | naturel, gepoft zonder olie |
+| chips | Chips | 122 | Chips gem | NEVO-gemiddelde |
+| tortillachips | Tortillachips | 1937 | Chips tortilla naturel | naturel |
+| koek | Koekje | 258 | Koekje gem | NEVO-gemiddelde koekje |
+| melkchocolade | Melkchocolade | 431 | Chocolade melk- |  |
+| ijs | IJs | 303 | IJs room/vanille- gem | room/vanille, gemiddeld |
+| mueslireep | Mueslireep | 2239 | Mueslireep |  |
+| stroopwafel | Stroopwafel | 713 | Wafel stroop- gem | gemiddeld |
+| tomatensoep | Tomatensoep | 5062 | Soep tomaten- m vermicelli | met vermicelli |
+| erwtensoep | Erwtensoep | 5177 | Soep erwten- m vlees | met vlees |
+| lasagne | Lasagne | 1491 | Lasagne bolognese koelverse maaltijd | bolognese, koelverse maaltijd |
+| nasi | Nasi goreng | 471 | Nasi goreng m ei | met ei |
+| bami | Bami goreng | 470 | Bami goreng z ei | zonder ei |
+| burrito | Burrito | 5457 | Burrito m gehakt | met gehakt |
+| quiche | Quiche | 5398 | Quiche Lorraine | Lorraine |
+| aardappel-gekookt | Aardappelen, gekookt | 982 | Aardappelen z schil gekookt gem | zonder schil, gemiddeld |
+| aardappelpuree | Aardappelpuree | 737 | Aardappelpuree instant- gem bereid | instant, gemiddeld bereid |
+| water | Water | 1885 | Water gem | gemiddeld |
+| bruiswater | Bruiswater | 747 | Mineraalwater m en z koolzuur gem | met en zonder koolzuur, gemiddeld |
+| koffie | Koffie | 644 | Koffie bereid | bereid |
+| thee | Thee | 645 | Thee bereid | bereid |
+| sinaasappelsap | Sinaasappelsap | 410 | Sap sinaasappel- gepasteuriseerd | gepasteuriseerd |
+| appelsap | Appelsap | 383 | Sap appel- |  |
+| groentesap | Groentesap | 1132 | Sap tomatengroenten- | tomatengroentesap |
+| chocolademelk | Chocolademelk | 1464 | Melk chocolade- halfvolle | halfvolle |
+| bier | Bier | 390 | Bier pils | pils |
+
+## Bewust geen koppeling
+
+| Sleutel | Label | Reden |
+|---|---|---|
+| broccoli-gestoomd | Broccoli, gestoomd | NEVO heeft alleen gekookte broccoli |
+| broccoli-diepvries | Broccoli, diepvries | NEVO heeft alleen rauw en gekookt |
+| zuurkool | Zuurkool | NEVO heeft alleen zuurkoolsap en stamppot, geen zuurkool zelf |
+| paprika-gebakken | Paprika, gebakken | NEVO heeft geen gebakken paprika |
+| courgette-gebakken | Courgette, gebakken | NEVO heeft geen gebakken courgette |
+| aubergine-gebakken | Aubergine, gebakken | NEVO heeft geen gebakken aubergine |
+| pompoen-geroosterd | Pompoen, geroosterd | NEVO heeft geen geroosterde pompoen |
+| paddenstoelen-uv | Paddenstoelen, UV-behandeld | NEVO heeft geen UV-behandelde paddenstoelen |
+| fruit-diepvries | Rood fruit, diepvries | NEVO heeft geen diepvriesfruit |
+| basmatirijst-gekookt | Basmatirijst, gekookt | NEVO kent geen basmati |
+| wilde-rijst-gekookt | Wilde rijst, gekookt | NEVO kent geen wilde rijst |
+| boekweit-gekookt | Boekweit, gekookt | NEVO heeft alleen boekweitgrutten (droog) |
+| amarant-gekookt | Amarant, gekookt | niet in NEVO |
+| teff | Teff | niet in NEVO |
+| gerst-gekookt | Gerst, gekookt | NEVO heeft alleen rauwe gerst |
+| spelt-gekookt | Spelt, gekookt | NEVO heeft alleen speltmeel en -vlokken |
+| polenta | Polenta | niet in NEVO |
+| meergranenbrood | Meergranenbrood | NEVO onderscheidt wit en bruin; geen gemiddelde |
+| zuurdesembrood | Zuurdesembrood | NEVO heeft alleen een glutenvrije zuurdesem |
+| speltbrood | Speltbrood | niet in NEVO |
+| naan | Naanbrood | niet in NEVO |
+| bagel | Bagel | niet in NEVO |
+| maiswafel | Maïswafel | niet in NEVO |
+| linzenpasta-droog | Linzenpasta, droog | niet in NEVO |
+| kikkererwtenpasta-droog | Kikkererwtenpasta, droog | niet in NEVO |
+| rijstnoedels-gekookt | Rijstnoedels, gekookt | niet in NEVO |
+| eiernoedels-gekookt | Eiernoedels, gekookt | niet in NEVO |
+| ramen-noedels | Ramennoedels | niet in NEVO |
+| sobanoedels-gekookt | Sobanoedels, gekookt | niet in NEVO |
+| kikkererwten-gekookt | Kikkererwten, gekookt | NEVO kent kikkererwten alleen als geroosterde snack |
+| kikkererwten-blik | Kikkererwten, uit blik | NEVO kent kikkererwten alleen als geroosterde snack |
+| edamame | Edamame | niet in NEVO |
+| kipdij | Kipdij | NEVO heeft alleen kipbout zonder vel |
+| kippenvleugel | Kippenvleugels | niet in NEVO |
+| schnitzel | Schnitzel | NEVO heeft alleen vegetarische schnitzels met verrijking |
+| eend | Eendenborst | NEVO heeft alleen eend met vel, geen eendenborst |
+| worst | Worst | te generiek: NEVO heeft tientallen worstsoorten |
+| ham | Ham | NEVO onderscheidt ham per stuk van het varken; geen gewone hamplak |
+| rosbief | Rosbief | NEVO heeft rauw, bereid en vleeswaar; welke bedoeld is niet te zeggen |
+| hart | Hart | niet in NEVO |
+| nier | Nier | runder-, varkens- en lamsnier verschillen |
+| pens | Pens | niet in NEVO |
+| zalm-wild | Zalm, wild | niet in NEVO |
+| sprot | Sprot | NEVO heeft alleen gerookte sprotfilet |
+| gerookte-forel | Forel, gerookt | NEVO heeft geen gerookte forel |
+| zeebaars | Zeebaars | niet in NEVO |
+| dorade | Dorade | niet in NEVO |
+| octopus | Octopus | niet in NEVO |
+| verrijkte-eieren | Omega-3 verrijkte eieren | verrijking is een fabrikantkeuze; het etiket is de bron |
+| room | Room | kook-, koffie-, zure en slagroom verschillen sterk |
+| boter | Roomboter | gezouten en ongezouten staan los; gebruik niet te raden |
+| geitenkaas | Geitenkaas | verse en harde geitenkaas verschillen sterk |
+| blauwe-kaas | Blauwe kaas | Roquefort, Gorgonzola en Bluefort staan los |
+| roomkaas | Roomkaas | NEVO heeft alleen merken |
+| smeerkaas | Smeerkaas | 20+, 40+ en 45+ staan los |
+| havermelk | Havermelk | verrijking is een fabrikantkeuze; het etiket is de bron |
+| amandeldrink | Amandeldrink | verrijking is een fabrikantkeuze; het etiket is de bron |
+| kokosdrink | Kokosdrink | verrijking is een fabrikantkeuze; het etiket is de bron |
+| rijstdrink | Rijstdrink | verrijking is een fabrikantkeuze; het etiket is de bron |
+| plantaardige-drank-verrijkt | Plantaardige drank, verrijkt | verrijking is een fabrikantkeuze; het etiket is de bron |
+| sojayoghurt | Sojayoghurt | verrijking is een fabrikantkeuze; het etiket is de bron |
+| plantaardige-yoghurt | Plantaardige yoghurt | verrijking is een fabrikantkeuze; het etiket is de bron |
+| vegan-gehakt | Vegetarisch gehakt | verrijking is een fabrikantkeuze; het etiket is de bron |
+| vegan-burger | Vegetarische burger | verrijking is een fabrikantkeuze; het etiket is de bron |
+| vegan-worst | Vegetarische worst | verrijking is een fabrikantkeuze; het etiket is de bron |
+| vleesvervanger-stukjes | Vegetarische stukjes | verrijking is een fabrikantkeuze; het etiket is de bron |
+| avocado-olie | Avocado-olie | niet in NEVO |
+| algenolie | Algenolie | productspecificatie van de fabrikant |
+| margarine | Margarine | verrijking is een fabrikantkeuze; het etiket is de bron |
+| bakboter | Bak- en braadboter | NEVO heeft meerdere bak- en braadvetten |
+| amandelpasta | Amandelpasta | niet in NEVO |
+| currysaus | Currysaus | niet in NEVO |
+| dressing | Slasaus / dressing | NEVO heeft specifieke dressings, geen gemiddelde |
+| granola | Granola | niet in NEVO |
+| ontbijtgranen-volkoren | Volkoren ontbijtgranen | geen herkenbaar equivalent |
+| ontbijtgranen-verrijkt | Ontbijtgranen, verrijkt | verrijking is een fabrikantkeuze; het etiket is de bron |
+| pure-chocolade | Pure chocolade 70 % | NEVO geeft geen cacaopercentage; 70% is niet te herleiden |
+| snoep | Snoep | NEVO heeft alleen specifieke soorten |
+| proteinereep | Proteïnereep | verrijking/merk; het etiket is de bron |
+| gebak | Gebak | te generiek |
+| groentesoep | Groentesoep | NEVO heeft meerdere soepen; geen standaard |
+| linzensoep | Linzensoep | niet in NEVO |
+| kippensoep | Kippensoep | NEVO heeft meerdere soepen; geen standaard |
+| pompoensoep | Pompoensoep | niet in NEVO |
+| champignonsoep | Champignonsoep | niet in NEVO |
+| bouillon | Bouillon | NEVO heeft meerdere bereidingen (blokje, kops, pot) |
+| pizza | Pizza | te veel varianten |
+| curry-maaltijd | Curry met rijst | niet in NEVO |
+| stamppot | Stamppot | te veel varianten |
+| maaltijdsalade | Maaltijdsalade | te generiek |
+| pokebowl | Pokébowl | niet in NEVO |
+| wrap-gevuld | Gevulde wrap | te generiek |
+| friet | Friet | niet in NEVO onder deze naam |
+| ovenaardappel | Ovenaardappel | niet in NEVO |
+| groene-thee | Groene thee | NEVO heeft alleen thee bereid, geen groene |
+| frisdrank | Frisdrank | cola, sinas en light verschillen |
+| frisdrank-light | Frisdrank, light / zero | cola, sinas en light verschillen |
+| sportdrank | Sportdrank | NEVO heeft alleen merken |
+| wijn | Wijn | rood, wit en rosé verschillen |
+| eiwitshake | Eiwitshake | verrijking/merk; het etiket is de bron |
 
 ## Zeker op naam (steekproef)
 
