@@ -7,25 +7,12 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20261001044530_accounts_last_seen_at.sql`
-- **Openstaand:** 3 migraties (zie hieronder)
+- **Openstaand:** 1 migratie (zie hieronder)
 - **Laatst bijgewerkt:** 3 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
-
-### [ ] 20261003120000_nevo_foods.sql
-- **Wat:** maakt de tabel `nevo_foods` (NEVO-online 2025/9.0, 2.328 voedingsmiddelen, ongewijzigd per 100 g/ml, `nevo_versie` per rij) met een trigram-index op de zoektekst. Eigen tabel naast `sm_products`: NEVO en Open Food Facts hebben verschillende licentievoorwaarden en horen niet in één tabel. RLS aan zonder policies: alleen service role. Geen omega-3-kolommen (onze EPA+DHA-som is een bewerking). Draait `create extension if not exists pg_trgm`, dus ook los van de `sm_products`-migratie te draaien.
-- **Blokkeert deploy:** nee (code vangt het af). Zonder tabel geeft het dagboek-zoeken geen NEVO-resultaten (Open Food Facts werkt door) en komt een NEVO-log terug als "niet meer beschikbaar"; er wordt niets gelogd zolang de tabel leeg is. Daarna: `node scripts/nevo-laden.mjs --schrijf` laadt de data (lokaal, met `.env.local`, bestand staat niet in git).
-- **Hoort bij:** branch `feat/nevo-foods`, NEVO-voedingsmiddelen zoekbaar + koppeling met `FOOD_CATALOG`
-- **Terugdraaien:** `drop table public.nevo_foods;` (de extensie mag blijven staan). Veilig zolang er geen dagboeklogs naar `nevo:`-codes verwijzen; die hebben bewust geen foreign key.
-
-### [ ] 20261003090000_sm_products.sql
-- **Wat:** maakt de tabel `sm_products` (verpakte voedingsproducten met etiketwaarden per 100 g/ml) met een trigram-index op de zoektekst, plus de extensie `pg_trgm` (in schema `extensions`). RLS aan zonder policies: alleen service role. `bron` staat voorlopig alleen op `off` (Open Food Facts, ODbL); een tweede bron vraagt een nieuwe migratie na een licentiebeoordeling. De tabel is na het draaien leeg: er wordt pas data geladen na het licentiebesluit (`docs/plan/JURIDISCHE_ANALYSE_SUPERMARKTDATA_2026-10.md`).
-- **Blokkeert deploy:** nee (code vangt het af). Zonder tabel geeft de zoekroute een 500 (de UI toont dan geen supermarktresultaten, de rest van het zoekscherm werkt door) en komen gelogde producten terug als "niet meer beschikbaar"; er kan sowieso niets gelogd worden zolang de tabel leeg is, net als nu met de lege catalogus.
-- **Hoort bij:** branch `feat/supermarkt-tabel`, zoekroute en server-side productlookup voor het dagboek
-- **Terugdraaien:** `drop table public.sm_products;` (de extensie mag blijven staan). Veilig zolang er geen dagboeklogs naar `off:`-producten verwijzen; die hebben bewust geen foreign key.
-- **Let op bij een foutmelding over `gin_trgm_ops`:** zie de toelichting bovenaan het `.sql`-bestand.
 
 ### [ ] 20261001090000_schema_drift_baseline.sql
 - **Wat:** zet `cron_runs`, `thema_nurture`, `thema_downloads`, `remeasure_reminders` in `supabase/migrations/` — deze 4 tabellen bestonden al in productie maar stonden nergens als DDL (`cron_runs`/`thema_nurture` alleen in het oudere `db/migrations/`-pad, `thema_downloads`/`remeasure_reminders` nergens). `create table if not exists`, dus op de bestaande productie-DB doet het create-table-gedeelte niets — alleen de indexen/policies worden idempotent toegepast. Schema van `thema_downloads`/`remeasure_reminders` gereconstrueerd uit `information_schema.columns`-output die Dennis op 1 okt 2026 uit de SQL Editor haalde.
@@ -66,6 +53,8 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 3 oktober 2026 | `20261003120000_nevo_foods.sql` | Door Dennis gedraaid; `node scripts/nevo-laden.mjs --schrijf` meldde "Geschreven: 2328 rijen in nevo_foods". |
+| 3 oktober 2026 | `20261003090000_sm_products.sql` | Door Dennis gedraaid. Tabel is leeg tot het licentiebesluit. |
 | 1 oktober 2026 | `20261001044530_accounts_last_seen_at.sql` | Door Dennis gedraaid; bevestigd via `npm run check:db-schema`: `accounts,6` (was 5 kolommen). |
 | 1 oktober 2026 | `20261001044500_cleanup_intake_session_domain_events.sql` | Door Dennis gedraaid. |
 | 1 oktober 2026 | `20261001044423_domain_events_drop_email.sql` | Door Dennis gedraaid; bevestigd via `npm run check:db-schema`: `domain_events,7` (was 8 kolommen). |
