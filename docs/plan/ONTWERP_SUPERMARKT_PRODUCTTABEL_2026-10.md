@@ -70,3 +70,25 @@ Component `SupermarktBronRegel`, met de teksten uit `supermarkt-bron.ts`: "Voedi
 4. Een eigen importscript. De zoekroute en het koppelen van logs lezen over bronnen heen via `prod_id`.
 
 Bij een tweede tabel wordt `haalSupermarktProductenOp` een lookup per bron; dat is dan een kleine aanpassing, geen herontwerp.
+
+---
+
+## 8. Richting, nog niet gebouwd: ontbrekende producten aanleveren vanaf het etiket
+
+Besproken met Dennis op 3 oktober, na de meting dat 42% van een steekproef Lidl-producten in Open Food Facts staat (waar beide een calorie-waarde hebben klopt die in 37 van 39 gevallen).
+
+- **Idee:** vindt een gebruiker een product niet, dan fotografeert die het etiket. De gegevens gaan naar Open Food Facts en komen van daaruit terug in `sm_products`. De bron blijft zo Open Food Facts en de herkomst is schoon.
+- **Waarom dit de enige route is om producten in Open Food Facts te krijgen:** hun voorwaarden eisen dat gegevens *rechtstreeks van het etiket* komen en foto's door de bijdrager zelf zijn genomen. Gegevens van andere websites, en dus ook van supermarktsites, zijn verboden: *"Contributors agree not to add on Open Food Facts information, data and photos from other websites (including other products databases, e-commerce websites, producers sites etc.)."*
+- **Afgewezen:** de 36.000 producten uit de eerste dataset in Open Food Facts uploaden. Dat schendt hun voorwaarden en wast de herkomst niet schoon.
+- **Voordeel:** de database groeit met wat gebruikers werkelijk zoeken, in plaats van met 36.000 producten die niemand logt.
+- **Open:** hoe de aanlevering technisch en juridisch loopt (een eigen account of dat van de gebruiker, wat onze privacyverklaring daarover zegt, en welke hulpmiddelen Open Food Facts daarvoor biedt). Dat vraagt eerst overleg met hen en valt buiten dit ontwerp.
+
+## 9. Voorstel, nog niet besloten: een generieke laag met "typische waarden"
+
+Voorgesteld door Dennis (3 okt): een kopie van de producten uit de eerste dataset zonder supermarkt, wel met macro's en micro's. Uitgewerkt tot: per generiek productgroep **één gebundelde waarde** (mediaan met bandbreedte en aantal), zonder merk, zonder keten en zonder één afzonderlijke rij.
+
+- **Meting (ruwe naam-match op de 371 generieke dagboekregels):** 175 regels hebben minstens 5 producten, bij 65 daarvan is de waarde stabiel (de middelste 80% binnen 35% van de mediaan). Voorbeelden: halfvolle melk 90 producten, 47 kcal, spreiding 6%; magere melk 14 producten, 35 kcal; chips 324 producten, 494 kcal. Hele voedingsmiddelen als appel of banaan komen er terecht niet door: de naam matcht te veel verschillende producten (appelsap, appeltaart). Daarvoor is NEVO de juiste bron.
+- **Waarom dit juridisch sterker staat dan afzonderlijke rijen, en waarom het geen vrijbrief is:** de uitvoer maakt niets van de inhoud openbaar en is geen concurrerende database. Maar de eerdere kopie en onze kennis van de herkomst blijven bestaan. Dat is vraag 11 en 12 in `JURIDISCHE_VRAAG_SUPERMARKTDATA_2026-10.md` §7.
+- **Wat het niet oplost:** de 16 "verrijkt"-regels. Bij plantaardige drankjes en margarine loopt de spreiding te ver uiteen (een mediaan zegt weinig over verrijking), en bij een derde van die regels zijn er te weinig producten.
+- **Eerst de jurist.** Tot het antwoord er is, wordt hier niets van gebouwd en niets in `src/` gezet.
+
