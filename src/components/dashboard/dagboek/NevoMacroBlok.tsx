@@ -15,7 +15,7 @@ import type { SupermarktProduct } from "@/types/supermarkt-product";
  * niets te tonen is (geen koppeling, nog laden, ophalen mislukt).
  */
 export default function NevoMacroBlok({ entry, grams }: { entry: CatalogEntry; grams: number }) {
-  const doel = macroPortieVoor(entry, { ongeachtKernstof: true });
+  const doel = macroPortieVoor(entry);
   const code = doel?.nevoCode ?? null;
   const [geladen, setGeladen] = useState<{ code: string; product: SupermarktProduct | null } | null>(null);
 
