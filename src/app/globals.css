@@ -3557,6 +3557,23 @@ a.vd-nutrienttabel-rij:focus-visible {
   padding: 0 1.125rem;
 }
 
+.vd-subtabs-rij {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--vd-line);
+  margin: 0 -1.125rem 1rem;
+  padding: 0 1.125rem;
+}
+
+.vd-subtabs-rij > .vd-subtabs {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border-bottom: 0;
+}
+
 .vd-subtabs::-webkit-scrollbar {
   display: none;
 }

@@ -796,37 +796,62 @@ export default function DagboekScherm({
     );
   }
 
+  const vergelijkKnop = (
+    <button
+      type="button"
+      onClick={() => {
+        trackEvent("nutrition_dagboek_vergelijk_geopend", {});
+        setScherm({ scherm: "vergelijkZoek" });
+      }}
+      className="flex-none cursor-pointer whitespace-nowrap rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] transition-colors hover:border-[var(--vd-sage)] hover:text-[var(--vd-sage-2)]"
+    >
+      Vergelijk producten
+    </button>
+  );
+
   return (
     <div className="flex flex-col gap-4">
       <header className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">Je dag</h2>
-        <span className="flex items-center gap-2.5">
-          <span className="text-[11px] capitalize text-[var(--vd-ink-3)]">{dagLabel}</span>
-          <button
-            type="button"
-            onClick={() => {
-              trackEvent("nutrition_dagboek_vergelijk_geopend", {});
-              setScherm({ scherm: "vergelijkZoek" });
-            }}
-            className="cursor-pointer whitespace-nowrap rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] transition-colors hover:border-[var(--vd-sage)] hover:text-[var(--vd-sage-2)]"
-          >
-            Vergelijk producten
-          </button>
-        </span>
+        <span className="text-[11px] capitalize text-[var(--vd-ink-3)]">{dagLabel}</span>
       </header>
 
-      <DagboekSubtabs
-        actief={dagboekSectie}
-        onKies={kiesSectie}
-      />
-
-      {dagboekSectie === "vandaag" ? (
-        <div
-          id="dagboek-subtab-paneel-vandaag"
-          role="tabpanel"
-          aria-labelledby="dagboek-subtab-vandaag"
-          className="flex flex-col gap-4"
-        >
+      {dagboekSectie === "macros" ? (
+        <DagboekMacroRing
+          kcal={dagMacro("energyKcal")}
+          segmenten={[
+            {
+              key: "koolhydraten",
+              label: "Koolhydraten",
+              gram: dagMacro("carbohydrateG"),
+              kcalPerGram: 4,
+              kleur: MACRO_RING_KLEUREN.koolhydraten,
+            },
+            {
+              key: "vet",
+              label: "Vet",
+              gram: dagMacro("fatG"),
+              kcalPerGram: 9,
+              kleur: MACRO_RING_KLEUREN.vet,
+            },
+            {
+              key: "eiwit",
+              label: "Eiwit",
+              gram: dagMacro("proteinG"),
+              kcalPerGram: 4,
+              kleur: MACRO_RING_KLEUREN.eiwit,
+            },
+          ]}
+        />
+      ) : dagboekSectie === "voedingsstoffen" ? (
+        <DagboekKrans
+          stoffen={ondergrens}
+          proteinTarget={proteinTarget}
+          onSelect={kransBijSelect}
+          onBegin={() => setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" })}
+        />
+      ) : (
+        <>
           <DagboekKrans
             stoffen={ondergrens}
             proteinTarget={proteinTarget}
@@ -858,14 +883,25 @@ export default function DagboekScherm({
                 : "Nog niets geregistreerd voor deze dag. Zodra je een product toevoegt, staat hier wat het minstens levert."}
             </p>
           ) : null}
+        </>
+      )}
 
-          <DagboekWeekstrip
-            dagen={stripDagen}
-            geselecteerd={datum}
-            onSelecteer={setDatum}
-            busy={busy}
-          />
+      <DagboekWeekstrip
+        dagen={stripDagen}
+        geselecteerd={datum}
+        onSelecteer={setDatum}
+        busy={busy}
+      />
 
+      <DagboekSubtabs actief={dagboekSectie} onKies={kiesSectie} actie={vergelijkKnop} />
+
+      {dagboekSectie === "vandaag" ? (
+        <div
+          id="dagboek-subtab-paneel-vandaag"
+          role="tabpanel"
+          aria-labelledby="dagboek-subtab-vandaag"
+          className="flex flex-col gap-4"
+        >
           <div id="dagboek-eetmomenten" className="flex flex-col gap-2.5">
             {EETMOMENTEN.map((moment) => (
               <DagboekMaaltijd
@@ -932,18 +968,6 @@ export default function DagboekScherm({
           aria-labelledby="dagboek-subtab-voedingsstoffen"
           className="flex flex-col gap-4"
         >
-          <DagboekWeekstrip
-            dagen={stripDagen}
-            geselecteerd={datum}
-            onSelecteer={setDatum}
-            busy={busy}
-          />
-          <DagboekKrans
-            stoffen={ondergrens}
-            proteinTarget={proteinTarget}
-            onSelect={kransBijSelect}
-            onBegin={() => setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" })}
-          />
           <VoedingswaardeTabel
             titel="Alles wat je at"
             toelichting={dagLabel}
@@ -970,40 +994,6 @@ export default function DagboekScherm({
           aria-labelledby="dagboek-subtab-macros"
           className="flex flex-col gap-4"
         >
-          <DagboekWeekstrip
-            dagen={stripDagen}
-            geselecteerd={datum}
-            onSelecteer={setDatum}
-            busy={busy}
-          />
-
-          <DagboekMacroRing
-            kcal={dagMacro("energyKcal")}
-            segmenten={[
-              {
-                key: "koolhydraten",
-                label: "Koolhydraten",
-                gram: dagMacro("carbohydrateG"),
-                kcalPerGram: 4,
-                kleur: MACRO_RING_KLEUREN.koolhydraten,
-              },
-              {
-                key: "vet",
-                label: "Vet",
-                gram: dagMacro("fatG"),
-                kcalPerGram: 9,
-                kleur: MACRO_RING_KLEUREN.vet,
-              },
-              {
-                key: "eiwit",
-                label: "Eiwit",
-                gram: dagMacro("proteinG"),
-                kcalPerGram: 4,
-                kleur: MACRO_RING_KLEUREN.eiwit,
-              },
-            ]}
-          />
-
           <DagboekSupermarktSectie
             logs={supermarktLogs}
             busy={busySupermarkt}
