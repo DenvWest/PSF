@@ -6,19 +6,13 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Status
 
-- **Baseline toegepast t/m:** `20261001044530_accounts_last_seen_at.sql`
-- **Openstaand:** 1 migratie (zie hieronder)
-- **Laatst bijgewerkt:** 3 oktober 2026
+- **Baseline toegepast t/m:** `20261003120000_nevo_foods.sql`
+- **Openstaand:** geen
+- **Laatst bijgewerkt:** 4 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
-
-### [ ] 20261001090000_schema_drift_baseline.sql
-- **Wat:** zet `cron_runs`, `thema_nurture`, `thema_downloads`, `remeasure_reminders` in `supabase/migrations/` — deze 4 tabellen bestonden al in productie maar stonden nergens als DDL (`cron_runs`/`thema_nurture` alleen in het oudere `db/migrations/`-pad, `thema_downloads`/`remeasure_reminders` nergens). `create table if not exists`, dus op de bestaande productie-DB doet het create-table-gedeelte niets — alleen de indexen/policies worden idempotent toegepast. Schema van `thema_downloads`/`remeasure_reminders` gereconstrueerd uit `information_schema.columns`-output die Dennis op 1 okt 2026 uit de SQL Editor haalde.
-- **Blokkeert deploy:** nee (puur additief/idempotent; er is geen code die hier nieuw gedrag op bouwt — dit is alleen reproduceerbaarheid voor een toekomstige DR-restore of staging-omgeving)
-- **Hoort bij:** audit N5
-- **Terugdraaien:** niet nodig — alleen additief op een lege DB; op productie verandert deze migratie niets aan de tabellen zelf
 
 **Nog te doen (geen migratie, geen blocker):** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan al klaar.
 
@@ -53,6 +47,7 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 4 oktober 2026 | `20261001090000_schema_drift_baseline.sql` | Door Dennis gedraaid in de SQL Editor, zonder fout. |
 | 3 oktober 2026 | `20261003120000_nevo_foods.sql` | Door Dennis gedraaid; `node scripts/nevo-laden.mjs --schrijf` meldde "Geschreven: 2328 rijen in nevo_foods". |
 | 3 oktober 2026 | `20261003090000_sm_products.sql` | Door Dennis gedraaid. Tabel is leeg tot het licentiebesluit. |
 | 1 oktober 2026 | `20261001044530_accounts_last_seen_at.sql` | Door Dennis gedraaid; bevestigd via `npm run check:db-schema`: `accounts,6` (was 5 kolommen). |
