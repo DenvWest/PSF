@@ -1,3 +1,4 @@
+import { STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 import { describe, expect, it } from "vitest";
 import { bouwTekortVoorstellen, dekkingPerDag } from "@/lib/agenda-tekort-voorstellen";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
@@ -52,7 +53,7 @@ describe("dekkingPerDag", () => {
     const uit = dekkingPerDag(
       [{ date: "2026-10-01", soort: "doordeweeks", items: [] } as unknown as DagboekDag],
       "magnesium",
-      ["2026-10-01", "2026-10-02"],
+      ["2026-10-01", "2026-10-02"], STANDAARD_NORMEN
     );
     expect(uit).toEqual({ "2026-10-01": "open", "2026-10-02": "leeg" });
   });
