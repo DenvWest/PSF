@@ -23,7 +23,7 @@ import {
 import { LEGE_MACRO_DOELEN, type MacroDoelen } from "@/lib/account-macro-doelen";
 import { fetchMacroDoelen } from "@/lib/macro-doelen-client";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
-import { bouwSupermarktWeekoverzicht } from "@/lib/nutrition-supermarkt-weekoverzicht";
+import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
 import { verschuifWeek, weekDatums, weekStart } from "@/lib/nutrition-weekoverzicht";
 import DagboekCatalogusZoek from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
 import DagboekKrans from "@/components/dashboard/dagboek/DagboekKrans";
@@ -37,7 +37,7 @@ import DagboekPortieInvoer from "@/components/dashboard/dagboek/DagboekPortieInv
 import DagboekProductDetail from "@/components/dashboard/dagboek/DagboekProductDetail";
 import DagboekSubtabs, { type DagboekSectie } from "@/components/dashboard/dagboek/DagboekSubtabs";
 import DagboekSupermarktSectie from "@/components/dashboard/dagboek/DagboekSupermarktSectie";
-import DagboekSupermarktWeektabel from "@/components/dashboard/dagboek/DagboekSupermarktWeektabel";
+import DagboekVoedingWeektabel from "@/components/dashboard/dagboek/DagboekVoedingWeektabel";
 import DagboekVergelijkTabel from "@/components/dashboard/dagboek/DagboekVergelijkTabel";
 import DagboekVergelijkZoek, {
   MAX_VERGELIJK,
@@ -285,13 +285,9 @@ export default function DagboekScherm({
     };
   }, [bekekenWeekDatums]);
 
-  const supermarktWeekoverzicht = useMemo(
-    () => bouwSupermarktWeekoverzicht(weekSupermarktLogs, bekekenWeekDatums, macroDoelen),
-    [weekSupermarktLogs, bekekenWeekDatums, macroDoelen],
-  );
-  const isHuidigeSupermarktWeek = weekOffset === 0;
+  const isHuidigeBekekenWeek = weekOffset === 0;
 
-  function bladerSupermarktWeek(weken: number) {
+  function bladerWeek(weken: number) {
     const volgendeOffset = weekOffset + weken;
     if (volgendeOffset > 0) return; // nooit de toekomst in
     setWeekOffset(volgendeOffset);
@@ -321,11 +317,40 @@ export default function DagboekScherm({
 
   const ondergrens = useMemo(() => nutrientenGesplitstUitItems(items), [items]);
   const nevoCodes = useMemo(() => nevoCodesVoorItems(items), [items]);
-  const nevoProducten = useNevoProducten(nevoCodes);
+  const weekItemsPerDag = useMemo(
+    () =>
+      new Map(
+        bekekenWeekDatums.map((dagDatum) => [
+          dagDatum,
+          dagDatum === datum
+            ? items
+            : sanitizeItems(dagen.find((dag) => dag.date === dagDatum)?.items ?? []),
+        ]),
+      ),
+    [bekekenWeekDatums, datum, items, dagen],
+  );
+  const alleNevoCodes = useMemo(
+    () => [...new Set([...nevoCodes, ...nevoCodesVoorItems([...weekItemsPerDag.values()].flat())])].sort(),
+    [nevoCodes, weekItemsPerDag],
+  );
+  const nevoProducten = useNevoProducten(alleNevoCodes);
   const dagVoedingswaarde = useMemo(
     () => berekenVoedingswaarde({ items, supermarktLogs, nevoProducten }),
     [items, supermarktLogs, nevoProducten],
   );
+  const weekoverzicht = useMemo(() => {
+    const perDag = new Map(
+      bekekenWeekDatums.map((dagDatum) => [
+        dagDatum,
+        berekenVoedingswaarde({
+          items: weekItemsPerDag.get(dagDatum) ?? [],
+          supermarktLogs: weekSupermarktLogs.get(dagDatum) ?? [],
+          nevoProducten,
+        }),
+      ]),
+    );
+    return bouwVoedingWeekoverzicht(perDag, bekekenWeekDatums, macroDoelen);
+  }, [bekekenWeekDatums, weekItemsPerDag, weekSupermarktLogs, nevoProducten, macroDoelen]);
   const dagMacro = (veld: SupermarktVeld) =>
     dagVoedingswaarde.rijen.find((rij) => rij.veld === veld)?.waarde ?? null;
 
@@ -478,9 +503,12 @@ export default function DagboekScherm({
     }
   }
 
-  const berekendeBronProducten = [...supermarktLogs, ...[...weekSupermarktLogs.values()].flat()].flatMap((log) =>
-    log.product ? [log.product] : [],
-  );
+  const berekendeBronProducten = [
+    ...alleNevoCodes.flatMap((code) => nevoProducten.get(`nevo:${code}`) ?? []),
+    ...[...supermarktLogs, ...[...weekSupermarktLogs.values()].flat()].flatMap((log) =>
+      log.product ? [log.product] : [],
+    ),
+  ];
   const dagBronProducten = [
     ...nevoCodes.flatMap((code) => nevoProducten.get(`nevo:${code}`) ?? []),
     ...supermarktLogs.flatMap((log) => (log.product ? [log.product] : [])),
@@ -877,12 +905,12 @@ export default function DagboekScherm({
             voedingswaarde={dagVoedingswaarde}
             bronProducten={dagBronProducten}
           />
-          <DagboekSupermarktWeektabel
-            overzicht={supermarktWeekoverzicht}
-            rijen={supermarktWeekoverzicht.rijen}
-            onVorigeWeek={() => bladerSupermarktWeek(-1)}
-            onVolgendeWeek={() => bladerSupermarktWeek(1)}
-            isHuidigeWeek={isHuidigeSupermarktWeek}
+          <DagboekVoedingWeektabel
+            overzicht={weekoverzicht}
+            rijen={weekoverzicht.rijen}
+            onVorigeWeek={() => bladerWeek(-1)}
+            onVolgendeWeek={() => bladerWeek(1)}
+            isHuidigeWeek={isHuidigeBekekenWeek}
           />
           <SupermarktBronRegel producten={berekendeBronProducten} berekend />
         </div>
@@ -933,12 +961,12 @@ export default function DagboekScherm({
             onVerwijder={(id) => void verwijderSupermarktPortie(id)}
           />
 
-          <DagboekSupermarktWeektabel
-            overzicht={supermarktWeekoverzicht}
-            rijen={supermarktWeekoverzicht.rijen.filter((rij) => MACRO_VELDEN.has(rij.veld))}
-            onVorigeWeek={() => bladerSupermarktWeek(-1)}
-            onVolgendeWeek={() => bladerSupermarktWeek(1)}
-            isHuidigeWeek={isHuidigeSupermarktWeek}
+          <DagboekVoedingWeektabel
+            overzicht={weekoverzicht}
+            rijen={weekoverzicht.rijen.filter((rij) => MACRO_VELDEN.has(rij.veld))}
+            onVorigeWeek={() => bladerWeek(-1)}
+            onVolgendeWeek={() => bladerWeek(1)}
+            isHuidigeWeek={isHuidigeBekekenWeek}
           />
           <SupermarktBronRegel producten={berekendeBronProducten} berekend />
         </div>
