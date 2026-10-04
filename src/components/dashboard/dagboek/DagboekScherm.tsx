@@ -33,6 +33,7 @@ import DagboekMacroRing, {
   MACRO_RING_KLEUREN,
 } from "@/components/dashboard/dagboek/DagboekMacroRing";
 import DagboekNutrientDetail from "@/components/dashboard/dagboek/DagboekNutrientDetail";
+import DagboekVoedingPortie from "@/components/dashboard/dagboek/DagboekVoedingPortie";
 import DagboekPortieInvoer from "@/components/dashboard/dagboek/DagboekPortieInvoer";
 import DagboekProductDetail from "@/components/dashboard/dagboek/DagboekProductDetail";
 import DagboekSubtabs, { type DagboekSectie } from "@/components/dashboard/dagboek/DagboekSubtabs";
@@ -557,6 +558,28 @@ export default function DagboekScherm({
     );
   }
 
+  // Voeding krijgt dezelfde volledige rijen als een NEVO-product; een supplement
+  // blijft een laag over de zoeklijst (hele porties, geen gram).
+  if (scherm.scherm === "portie" && scherm.bron === "voeding") {
+    const { nutrient, moment: portieMoment, key } = scherm;
+    return (
+      <DagboekVoedingPortie
+        itemKey={key}
+        nutrient={nutrient}
+        moment={portieMoment}
+        favorieten={favorieten}
+        busy={busy}
+        busyFavoriet={busyFavoriet}
+        onBewaarFavoriet={(bron, k) => void bewaarFavoriet(bron, k)}
+        onVerwijderFavoriet={(bron, k) => void verwijderFavoriet(bron, k)}
+        onTerug={() => setScherm({ scherm: "zoek", nutrient, moment: portieMoment })}
+        onBevestig={(gekozenMoment, grams) =>
+          voegNutrientItemToe(nutrient, "voeding", key, gekozenMoment, grams)
+        }
+      />
+    );
+  }
+
   if (scherm.scherm === "zoek" || scherm.scherm === "portie") {
     const moment = scherm.moment;
     const nutrient = scherm.nutrient;
@@ -588,9 +611,8 @@ export default function DagboekScherm({
           busyFavoriet={busyFavoriet}
         />
 
-        {scherm.scherm === "portie" ? (
+        {scherm.scherm === "portie" && scherm.bron === "supplement" ? (
           <DagboekPortieInvoer
-            bron={scherm.bron}
             itemKey={scherm.key}
             nutrient={nutrient}
             moment={moment}
@@ -601,7 +623,7 @@ export default function DagboekScherm({
             onVerwijderFavoriet={(bron, key) => void verwijderFavoriet(bron, key)}
             onTerug={() => setScherm({ scherm: "zoek", nutrient, moment })}
             onBevestig={(gekozenMoment, grams) =>
-              voegNutrientItemToe(nutrient, scherm.bron, scherm.key, gekozenMoment, grams)
+              voegNutrientItemToe(nutrient, "supplement", scherm.key, gekozenMoment, grams)
             }
           />
         ) : null}
