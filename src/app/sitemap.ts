@@ -185,6 +185,7 @@ const JURIDISCHE_PADEN = [
   "/medische-disclaimer",
   "/juridisch",
   "/affiliate-disclosure",
+  "/bronnen",
 ] as const;
 
 type SitemapSectionId =

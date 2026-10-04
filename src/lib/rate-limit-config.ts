@@ -27,7 +27,8 @@ export type RateLimitRoute =
   | "account_verify_code"
   | "account_claim"
   | "account_revoke"
-  | "supermarkt_zoek";
+  | "supermarkt_zoek"
+  | "bronnen_dump";
 
 const ENV_LIMIT_KEYS: Record<RateLimitRoute, string> = {
   contact: "CONTACT_RATE_LIMIT",
@@ -54,6 +55,7 @@ const ENV_LIMIT_KEYS: Record<RateLimitRoute, string> = {
   account_claim: "ACCOUNT_CLAIM_RATE_LIMIT",
   account_revoke: "ACCOUNT_REVOKE_RATE_LIMIT",
   supermarkt_zoek: "SUPERMARKT_ZOEK_RATE_LIMIT",
+  bronnen_dump: "BRONNEN_DUMP_RATE_LIMIT",
 };
 
 const ENV_WINDOW_KEYS: Record<RateLimitRoute, string> = {
@@ -81,6 +83,7 @@ const ENV_WINDOW_KEYS: Record<RateLimitRoute, string> = {
   account_claim: "ACCOUNT_CLAIM_RATE_LIMIT_WINDOW_MS",
   account_revoke: "ACCOUNT_REVOKE_RATE_LIMIT_WINDOW_MS",
   supermarkt_zoek: "SUPERMARKT_ZOEK_RATE_LIMIT_WINDOW_MS",
+  bronnen_dump: "BRONNEN_DUMP_RATE_LIMIT_WINDOW_MS",
 };
 
 const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
@@ -112,6 +115,8 @@ const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   // Zoeken-terwijl-je-typt: de client debounced, maar een sessie van een paar
   // minuten zoeken geeft toch tientallen verzoeken.
   supermarkt_zoek: { limit: 120, windowMs: 60 * 1000 },
+  // Eén download is de hele tabel (tientallen MB): weinig per uur is genoeg.
+  bronnen_dump: { limit: 5, windowMs: 60 * 60 * 1000 },
 };
 
 const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
@@ -139,6 +144,7 @@ const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   account_claim: { limit: 1000, windowMs: 60 * 1000 },
   account_revoke: { limit: 1000, windowMs: 60 * 1000 },
   supermarkt_zoek: { limit: 1000, windowMs: 60 * 1000 },
+  bronnen_dump: { limit: 1000, windowMs: 60 * 1000 },
 };
 
 export function parseEnvRateLimit(
