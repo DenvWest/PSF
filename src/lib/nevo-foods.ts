@@ -207,5 +207,9 @@ export function nevoFoodNaarSupermarktProduct(food: NevoFood): SupermarktProduct
     ironMg: w.iron_mg,
     vitaminCMg: w.vitamin_c_mg,
     vitaminDµg: w.vitamin_d_ug,
+    potassiumMg: w.potassium_mg,
+    magnesiumMg: w.magnesium_mg,
+    zincMg: w.zinc_mg,
+    vitaminB12µg: w.vitamin_b12_ug,
   };
 }

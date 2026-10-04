@@ -66,4 +66,22 @@ describe("GET /api/account/nevo-voedingsmiddel", () => {
     expect(response.status).toBe(500);
     expect(JSON.stringify(await response.json())).not.toContain("nevo_foods");
   });
+
+  it("geeft meerdere producten terug op ?codes=, onbekende codes vallen weg", async () => {
+    mockOphalen.mockResolvedValue(new Map([["nevo:2297", { prodId: "nevo:2297" }]]));
+    const response = await GET(
+      new NextRequest("http://localhost/api/account/nevo-voedingsmiddel?codes=2297,99999,2297"),
+    );
+    expect(response.status).toBe(200);
+    expect((await response.json()).producten).toEqual([{ prodId: "nevo:2297", bron: "nevo" }]);
+    expect(mockOphalen).toHaveBeenCalledWith(expect.anything(), ["2297", "99999"]);
+  });
+
+  it("weigert ?codes= met een ongeldige code", async () => {
+    const response = await GET(
+      new NextRequest("http://localhost/api/account/nevo-voedingsmiddel?codes=2297,abc"),
+    );
+    expect(response.status).toBe(400);
+    expect(mockOphalen).not.toHaveBeenCalled();
+  });
 });

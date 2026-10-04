@@ -25,6 +25,10 @@ const PRODUCT: SupermarktProduct = {
   ironMg: null,
   vitaminCMg: null,
   vitaminDµg: null,
+  potassiumMg: null,
+  magnesiumMg: null,
+  zincMg: null,
+  vitaminB12µg: null,
 };
 
 const LOG = { id: "l1", moment: "ontbijt", prodId: "off:1", grams: 200, createdAt: "2026-10-03T08:00:00Z" };
