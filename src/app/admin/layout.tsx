@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { adminSans, adminSerif } from "@/lib/admin-fonts";
+import { adminSans, adminSerif } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: "Admin — Dashboard — PerfectSupplement",
