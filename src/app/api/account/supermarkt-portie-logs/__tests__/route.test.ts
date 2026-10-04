@@ -118,15 +118,15 @@ describe("/api/account/supermarkt-portie-logs", () => {
 
     it("geeft de porties per datum terug, met product, in één verzoek", async () => {
       mockListPeriode.mockResolvedValue(new Map([[DATUM, [LOG]]]));
-      const response = await GET(verzoek(terug(29), DATUM));
+      const response = await GET(verzoek(terug(41), DATUM));
       const json = await response.json();
       expect(response.status).toBe(200);
       expect(json.perDag[DATUM][0].product).toEqual(PRODUCT);
       expect(mockHaalOp).toHaveBeenCalledTimes(1);
     });
 
-    it("weigert een periode van meer dan 31 dagen of omgekeerd", async () => {
-      expect((await GET(verzoek(terug(31), DATUM))).status).toBe(400);
+    it("weigert een periode van meer dan 42 dagen of omgekeerd", async () => {
+      expect((await GET(verzoek(terug(42), DATUM))).status).toBe(400);
       expect((await GET(verzoek(DATUM, terug(1)))).status).toBe(400);
       expect((await GET(verzoek("gisteren", DATUM))).status).toBe(400);
       expect(mockListPeriode).not.toHaveBeenCalled();

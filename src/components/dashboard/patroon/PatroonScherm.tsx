@@ -12,6 +12,7 @@ import PatroonSubtabs, {
 import PatroonTelcirkels from "@/components/dashboard/patroon/PatroonTelcirkels";
 import PatroonTrend from "@/components/dashboard/patroon/PatroonTrend";
 import PatroonGevolgdTabel from "@/components/dashboard/patroon/PatroonGevolgdTabel";
+import PatroonGevolgdWeek from "@/components/dashboard/patroon/PatroonGevolgdWeek";
 import PatroonVensterTabel from "@/components/dashboard/patroon/PatroonVensterTabel";
 import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
@@ -30,7 +31,9 @@ import {
   bouwTekortsysteem,
 } from "@/lib/nutrition-tekortsysteem";
 import { bouwTrend } from "@/lib/nutrition-trend";
-import { useGevolgdeVensters } from "@/lib/use-gevolgde-vensters";
+import { useGevolgdePerDag } from "@/lib/use-gevolgde-per-dag";
+import { bouwGevolgdeVensters } from "@/lib/nutrition-gevolgde-vensters";
+import { bouwGevolgdeWeken, gevolgdPerDag } from "@/lib/nutrition-gevolgde-weken";
 import { useKernstofNormen } from "@/lib/use-kernstof-normen";
 import {
   bouwWeekoverzicht,
@@ -167,7 +170,41 @@ function PatroonInhoud() {
   const isHuidigeWeek = weekOffset === 0;
 
   const trends = useMemo(() => bouwTrend(dagen, vandaag, normen), [dagen, vandaag, normen]);
-  const { reeksen: gevolgd } = useGevolgdeVensters(dagen, vandaag);
+
+  // Eén periode voor alle gevolgde stoffen: de zes trendweken, en minstens de
+  // 30 dagen van de vensters. Oudere weken in "Deze week" vallen erbuiten.
+  const trendWeken = useMemo(
+    () => Array.from({ length: 6 }, (_, i) => verschuifWeek(huidigeWeek, i - 5)),
+    [huidigeWeek],
+  );
+  const gevolgdVan = useMemo(() => {
+    const dertigTerug = new Date(`${vandaag}T00:00:00Z`);
+    dertigTerug.setUTCDate(dertigTerug.getUTCDate() - 29);
+    const dertig = dertigTerug.toISOString().slice(0, 10);
+    return trendWeken[0]! < dertig ? trendWeken[0]! : dertig;
+  }, [vandaag, trendWeken]);
+  const { stoffen: gevolgdeStoffen, perDag: gevolgdPerDatum } = useGevolgdePerDag(dagen, gevolgdVan, vandaag);
+  const gevolgd = useMemo(
+    () => bouwGevolgdeVensters(gevolgdPerDatum, gevolgdeStoffen, vandaag),
+    [gevolgdPerDatum, gevolgdeStoffen, vandaag],
+  );
+  const gevolgdTrend = useMemo(
+    () => bouwGevolgdeWeken(gevolgdPerDatum, gevolgdeStoffen, trendWeken),
+    [gevolgdPerDatum, gevolgdeStoffen, trendWeken],
+  );
+  const bekekenWeekBinnenPeriode = bekekenWeekStart >= gevolgdVan;
+  const gevolgdWeek = useMemo(
+    () => (bekekenWeekBinnenPeriode ? bouwGevolgdeWeken(gevolgdPerDatum, gevolgdeStoffen, [bekekenWeekStart]) : []),
+    [bekekenWeekBinnenPeriode, gevolgdPerDatum, gevolgdeStoffen, bekekenWeekStart],
+  );
+  const gevolgdHuidigeWeek = useMemo(
+    () => bouwGevolgdeWeken(gevolgdPerDatum, gevolgdeStoffen, [huidigeWeek]),
+    [gevolgdPerDatum, gevolgdeStoffen, huidigeWeek],
+  );
+  const gevolgdDagenHuidigeWeek = useMemo(
+    () => new Map(gevolgdeStoffen.map((stof) => [stof as string, gevolgdPerDag(gevolgdPerDatum, stof, huidigeWeek)])),
+    [gevolgdeStoffen, gevolgdPerDatum, huidigeWeek],
+  );
   const zelfdeVensters = useMemo(
     () => new Set(vensterKolommen(reeksen).filter((k) => k.zelfde).map((k) => k.dagen_terug)),
     [reeksen],
@@ -277,6 +314,20 @@ function PatroonInhoud() {
               />
             ))}
           </ul>
+
+          {gevolgdHuidigeWeek.length > 0 ? (
+            <>
+              <p className="vd-eyebrow" style={{ margin: "1rem 0 0.375rem" }}>
+                Ook gevolgd · zonder oordeel
+              </p>
+              <PatroonGevolgdWeek
+                variant="kaarten"
+                reeksen={gevolgdHuidigeWeek}
+                perDag={gevolgdDagenHuidigeWeek}
+                onOpen={() => kiesSectie("week")}
+              />
+            </>
+          ) : null}
         </>
       ) : sectie === "week" ? (
         <>
@@ -408,6 +459,16 @@ function PatroonInhoud() {
             })}
           </div>
 
+          {gevolgdWeek.length > 0 ? (
+            <div style={{ marginTop: "0.75rem" }}>
+              <PatroonGevolgdWeek variant="tabel" reeksen={gevolgdWeek} />
+            </div>
+          ) : gevolgdeStoffen.length > 0 && !bekekenWeekBinnenPeriode ? (
+            <p className="vd-note">
+              Je gevolgde stoffen tonen we over de laatste zes weken; deze week ligt verder terug.
+            </p>
+          ) : null}
+
           <p className="vd-note">
             <strong>ADH is een ondergrens, geen bewijs van een tekort.</strong>{" "}
             Dat je iets niet registreerde betekent niet dat je het niet
@@ -463,12 +524,15 @@ function PatroonInhoud() {
       ) : (
         <>
           <p className="vd-note" style={{ marginTop: 0 }}>
-            Je weekgemiddelde per stof, de laatste zes weken. Een lege plek
-            betekent dat je die week niets registreerde — geen nul, want dat
-            zou een meting beweren die er niet is.
+            Je weekgemiddelde per stof, de laatste zes weken. Tik op een week
+            voor het getal. Een streepje betekent dat je die week niets
+            registreerde — geen nul, want dat zou een meting beweren die er
+            niet is.
           </p>
           <PatroonTrend
             trends={trends.filter((trend) => !verborgenNutrients.has(trend.nutrient))}
+            gevolgd={gevolgdTrend}
+            huidigeWeek={huidigeWeek}
           />
           {trends.length > 0 &&
           trends.every((trend) => verborgenNutrients.has(trend.nutrient)) ? (
