@@ -1,3 +1,4 @@
+import { STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 import { describe, expect, it } from "vitest";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { bouwTrend, weekKort } from "@/lib/nutrition-trend";
@@ -13,7 +14,7 @@ function dag(date: string, items: { key: string; grams: number }[]): DagboekDag 
 
 describe("bouwTrend", () => {
   it("geeft één punt per week, oudste eerst", () => {
-    const trend = bouwTrend([], "2026-09-17", 4);
+    const trend = bouwTrend([], "2026-09-17", STANDAARD_NORMEN, 4);
     const magnesium = trend.find((t) => t.nutrient === "magnesium")!;
 
     expect(magnesium.punten).toHaveLength(4);
@@ -31,7 +32,7 @@ describe("bouwTrend", () => {
 
   it("geeft null voor een week zonder registratie, geen nul", () => {
     const dagen = [dag("2026-09-14", [{ key: "havermout", grams: 100 }])];
-    const trend = bouwTrend(dagen, "2026-09-17", 3);
+    const trend = bouwTrend(dagen, "2026-09-17", STANDAARD_NORMEN, 3);
     const magnesium = trend.find((t) => t.nutrient === "magnesium")!;
 
     // De twee weken ervoor zijn leeg — dat moet null zijn, geen 0, anders
@@ -42,14 +43,14 @@ describe("bouwTrend", () => {
   });
 
   it("markeert zink en vitamine D als niet bewijsbaar, net als het weekoverzicht", () => {
-    const trend = bouwTrend([], "2026-09-17", 2);
+    const trend = bouwTrend([], "2026-09-17", STANDAARD_NORMEN, 2);
     expect(trend.find((t) => t.nutrient === "zinc")!.bewijsbaar).toBe(false);
     expect(trend.find((t) => t.nutrient === "vitamin_d")!.bewijsbaar).toBe(false);
     expect(trend.find((t) => t.nutrient === "magnesium")!.bewijsbaar).toBe(true);
   });
 
   it("draagt geen referentie voor eiwit — dat doel is persoonlijk", () => {
-    const trend = bouwTrend([], "2026-09-17", 2);
+    const trend = bouwTrend([], "2026-09-17", STANDAARD_NORMEN, 2);
     expect(trend.find((t) => t.nutrient === "protein")!.referentie).toBeNull();
   });
 });

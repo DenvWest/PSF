@@ -1,3 +1,4 @@
+import { STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 import { describe, expect, it } from "vitest";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import {
@@ -54,7 +55,7 @@ describe("bouwWeekoverzicht", () => {
       dag("2026-09-07", [{ key: "havermout", grams: 40 }]),
     ];
 
-    const week = bouwWeekoverzicht(dagen, "2026-09-14");
+    const week = bouwWeekoverzicht(dagen, "2026-09-14", STANDAARD_NORMEN);
     expect(week.dagenGeregistreerd).toBe(2);
     expect(week.start).toBe("2026-09-14");
     expect(week.eind).toBe("2026-09-20");
@@ -69,7 +70,7 @@ describe("bouwWeekoverzicht", () => {
       dag("2026-09-17", [{ key: "meergranenbrood", grams: 100 }]),
     ];
 
-    const week = bouwWeekoverzicht(dagen, "2026-09-14");
+    const week = bouwWeekoverzicht(dagen, "2026-09-14", STANDAARD_NORMEN);
     const magnesium = week.rijen.find((r) => r.nutrient === "magnesium")!;
 
     expect(week.dagenGeregistreerd).toBe(4);
@@ -79,7 +80,7 @@ describe("bouwWeekoverzicht", () => {
   });
 
   it("geeft geen te-gaan zonder meting, en nooit een negatief getal", () => {
-    const leeg = bouwWeekoverzicht([], "2026-09-14");
+    const leeg = bouwWeekoverzicht([], "2026-09-14", STANDAARD_NORMEN);
     for (const rij of leeg.rijen) {
       expect(rij.teGaan).toBeNull();
       expect(rij.gedekt).not.toBe(true);
@@ -88,7 +89,7 @@ describe("bouwWeekoverzicht", () => {
 
   it("markeert zink en vitamine D als niet bewijsbaar en geeft ze geen oordeel", () => {
     const dagen = [dag("2026-09-14", [{ key: "havermout", grams: 100 }])];
-    const week = bouwWeekoverzicht(dagen, "2026-09-14");
+    const week = bouwWeekoverzicht(dagen, "2026-09-14", STANDAARD_NORMEN);
 
     const zink = week.rijen.find((r) => r.nutrient === "zinc")!;
     const vitD = week.rijen.find((r) => r.nutrient === "vitamin_d")!;
@@ -105,7 +106,7 @@ describe("bouwWeekoverzicht", () => {
     // `referentie !== null` let, geeft ze alsnog een afstand. Dat is precies
     // het oordeel dat §3.4 van het besluit verbiedt voor onbewijsbare stoffen.
     const dagen = [dag("2026-09-14", [{ key: "havermout", grams: 100 }])];
-    const week = bouwWeekoverzicht(dagen, "2026-09-14");
+    const week = bouwWeekoverzicht(dagen, "2026-09-14", STANDAARD_NORMEN);
 
     const zink = week.rijen.find((r) => r.nutrient === "zinc")!;
     const vitD = week.rijen.find((r) => r.nutrient === "vitamin_d")!;
@@ -117,7 +118,7 @@ describe("bouwWeekoverzicht", () => {
   it("geeft eiwit geen referentie — dat doel komt uit gewicht en belasting", () => {
     const week = bouwWeekoverzicht(
       [dag("2026-09-14", [{ key: "havermout", grams: 100 }])],
-      "2026-09-14",
+      "2026-09-14", STANDAARD_NORMEN
     );
     const eiwit = week.rijen.find((r) => r.nutrient === "protein")!;
     expect(eiwit.referentie).toBeNull();
@@ -126,7 +127,7 @@ describe("bouwWeekoverzicht", () => {
   });
 
   it("draagt per rij een route naar de vergelijkingspagina", () => {
-    const week = bouwWeekoverzicht([], "2026-09-14");
+    const week = bouwWeekoverzicht([], "2026-09-14", STANDAARD_NORMEN);
     for (const rij of week.rijen) {
       expect(rij.comparisonPath).toMatch(/^\/beste\//);
     }

@@ -1,3 +1,4 @@
+import { STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 import { describe, expect, it } from "vitest";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import {
@@ -77,8 +78,8 @@ describe("bevindingZin", () => {
       dag("2026-09-16", [{ key: "havermout", grams: 40 }]),
       dag("2026-09-15", [{ key: "havermout", grams: 40 }]),
     ];
-    const reeksen = bouwTekortsysteem(dagen, VANDAAG);
-    const bevinding = bepaalBevinding(reeksen, dagen, VANDAAG);
+    const reeksen = bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN);
+    const bevinding = bepaalBevinding(reeksen, dagen, VANDAAG, STANDAARD_NORMEN);
     const zin = bevindingZin(bevinding);
 
     expect(zin).not.toBeNull();
@@ -95,12 +96,12 @@ describe("bevindingZin", () => {
 
 describe("geenBevindingZin", () => {
   it("onderscheidt geen data van alles gedekt", () => {
-    const leeg = bouwTekortsysteem([], VANDAAG);
+    const leeg = bouwTekortsysteem([], VANDAAG, STANDAARD_NORMEN);
     expect(geenBevindingZin(leeg)).toContain("Nog niets geregistreerd");
 
     const metData = bouwTekortsysteem(
       [dag("2026-09-17", [{ key: "havermout", grams: 40 }])],
-      VANDAAG,
+      VANDAAG, STANDAARD_NORMEN
     );
     expect(geenBevindingZin(metData)).toContain("structureel");
   });
@@ -118,7 +119,7 @@ describe("richting bij een dag zonder bron", () => {
       dag("2026-09-17", [{ key: "havermout", grams: 40 }]),
     ];
 
-    const reeksen = bouwTekortsysteem(dagen, "2026-09-17");
+    const reeksen = bouwTekortsysteem(dagen, "2026-09-17", STANDAARD_NORMEN);
     const omega = reeksen.find((r) => r.nutrient === "omega3")!;
 
     expect(omega.vensters[0]!.dagenMetBron).toBe(0);
