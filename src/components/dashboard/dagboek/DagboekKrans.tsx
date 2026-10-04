@@ -104,8 +104,8 @@ export default function DagboekKrans({
   const gedekt = rijen.filter((r) => r.telt && r.gedekt).length;
 
   return (
-    <section aria-label="Dekking vandaag" className="flex flex-col items-center gap-3 py-1">
-      <div className="relative h-[220px] w-[220px]">
+    <section aria-label="Dekking vandaag" className="@container flex w-full flex-col items-center gap-3 py-1">
+      <div className="@container/krans relative aspect-square w-full max-w-[220px]">
         <svg
           viewBox="0 0 240 240"
           aria-hidden
@@ -142,17 +142,17 @@ export default function DagboekKrans({
             );
           })}
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-12 text-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-[18%] text-center">
           {leeg ? (
-            <b className="font-serif text-[19px] font-normal leading-tight text-[var(--vd-ink)]">
+            <b className="font-serif text-[clamp(14px,8.6cqw,19px)] font-normal leading-tight text-[var(--vd-ink)]">
               Wat at je vandaag?
             </b>
           ) : (
             <>
-              <b className="font-serif text-[34px] font-normal leading-none text-[var(--vd-ink)]">
+              <b className="font-serif text-[clamp(22px,15.5cqw,34px)] font-normal leading-none text-[var(--vd-ink)]">
                 {totaal === 0 ? "—" : `${gedekt}/${totaal}`}
               </b>
-              <span className="mt-1.5 text-[11px] leading-tight text-[var(--vd-ink-3)]">
+              <span className="mt-1.5 text-[clamp(9px,5cqw,11px)] leading-tight text-[var(--vd-ink-3)]">
                 stoffen gedekt vandaag
               </span>
             </>
@@ -170,7 +170,7 @@ export default function DagboekKrans({
         </button>
       ) : null}
 
-      <ul className="m-0 grid w-full list-none grid-cols-5 gap-1.5 p-0">
+      <ul className="m-0 grid w-full list-none grid-cols-3 gap-1.5 @[420px]:grid-cols-5 p-0">
         {rijen.map((rij) => (
           <li key={rij.nutrient}>
             <button
