@@ -1,35 +1,64 @@
 "use client";
 
+import { useState } from "react";
 import * as Icons from "@/components/app/icons";
-import { nutrientReferences } from "@/data/nutrition/intake-reference";
+import { catalogEntry } from "@/data/nutrition/food-catalog";
+import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
+import { REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
+import { gehaltePer100g } from "@/lib/nutrition-catalog-gehalte";
 import { bedragVoorStandaardPortie } from "@/lib/nutrition-dagboek-items";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
+import { trackEvent } from "@/lib/ga4";
 import type { VergelijkResultaat } from "@/components/dashboard/dagboek/DagboekVergelijkZoek";
 
 /**
- * De vergelijking zelf: per stof een rij, en binnen die rij een staaf per
- * gekozen product — de hoogste eerst, zodat je in één oogopslag ziet welk
- * product voor déze stof wint. Elk product draagt zijn eigen realistische
- * portie ("1 plakje zalm", "1 schep eiwitpoeder"), niet een gedeelde 100 g,
- * want dat is wat iemand daadwerkelijk zou eten of nemen.
+ * De vergelijking als echte tabel: producten als kolommen, stoffen als rijen,
+ * zodat je per stof horizontaal leest wie wint. Het hoogste gehalte in een
+ * rij krijgt de nadruk, met de verhouding tot de nummer twee erbij.
+ *
+ * Twee standen. "Per portie" is wat je daadwerkelijk binnenkrijgt (1
+ * opscheplepel, 1 schep eiwitpoeder) en de standaard. "Per 100 g" is de
+ * eerlijke etiketvergelijking tussen voedingsmiddelen; een supplement heeft
+ * daar geen zinnige waarde en staat dan op n.v.t.
+ *
+ * Een product zonder gemeten gehalte valt niet weg maar krijgt een streepje:
+ * vroeger verdween het uit elke rij en leek de vergelijking één product te
+ * tonen. Een streepje is "niet gemeten", nooit 0.
  *
  * Bewust beperkt tot de 5 stoffen die dit systeem trackt — zie het docblok
- * bij `DagboekProductDetail.tsx` voor waarom er geen macro's of volledige
- * vitamine/mineralenset bij staan.
+ * bij `DagboekProductDetail.tsx`.
  */
 
-type Rij = {
-  nutrient: (typeof NUTRIENT_ORDER)[number];
-  label: string;
-  waarden: {
-    resultaat: VergelijkResultaat;
-    value: number;
-    unit: string;
-    portieLabel: string;
-  }[];
-};
+type Stand = "portie" | "100g";
+
+type Cel =
+  | { soort: "waarde"; value: number; unit: string }
+  | { soort: "onbekend" }
+  | { soort: "nvt" };
+
+const RI_TONEN: ReadonlySet<NutrientId> = new Set(["magnesium", "zinc", "vitamin_d"]);
+
+function celVoor(resultaat: VergelijkResultaat, nutrient: NutrientId, stand: Stand): Cel {
+  if (stand === "portie") {
+    const bedrag = bedragVoorStandaardPortie(resultaat.bron, resultaat.entry.key, nutrient);
+    return bedrag ? { soort: "waarde", value: bedrag.value, unit: bedrag.unit } : { soort: "onbekend" };
+  }
+  if (resultaat.bron === "supplement") return { soort: "nvt" };
+  const gehalte = gehaltePer100g(catalogEntry(resultaat.entry.key), nutrient);
+  return gehalte ? { soort: "waarde", value: gehalte.value, unit: gehalte.unit } : { soort: "onbekend" };
+}
+
+function getal(value: number): string {
+  return value.toLocaleString("nl-NL", { maximumFractionDigits: value < 10 ? 1 : 0 });
+}
+
+function portieLabel(resultaat: VergelijkResultaat): string | null {
+  if (resultaat.bron === "supplement") return resultaat.entry.porties[0]?.labelNl ?? null;
+  const portie = catalogEntry(resultaat.entry.key)?.porties[0];
+  return portie ? `${portie.labelNl} · ${portie.grams} g` : null;
+}
 
 export default function DagboekVergelijkTabel({
   producten,
@@ -40,30 +69,34 @@ export default function DagboekVergelijkTabel({
   onTerug: () => void;
   onVerwijder: (resultaat: VergelijkResultaat) => void;
 }) {
-  const rijen: Rij[] = NUTRIENT_ORDER.map((nutrient) => {
-    const waarden = producten
-      .map((resultaat) => {
-        const bedrag = bedragVoorStandaardPortie(
-          resultaat.bron,
-          resultaat.entry.key,
-          nutrient,
-        );
-        if (!bedrag) return null;
-        return {
-          resultaat,
-          value: bedrag.value,
-          unit: bedrag.unit,
-          portieLabel: bedrag.portieLabel,
-        };
-      })
-      .filter((rij): rij is NonNullable<typeof rij> => rij !== null)
-      .sort((a, b) => b.value - a.value);
+  const [stand, setStand] = useState<Stand>("portie");
+  const heeftVoeding = producten.some((r) => r.bron === "voeding");
 
-    return { nutrient, label: nutrientReferences[nutrient].label, waarden };
-  }).filter((rij) => rij.waarden.length > 0);
+  const rijen = NUTRIENT_ORDER.map((nutrient) => {
+    const cellen = producten.map((resultaat) => celVoor(resultaat, nutrient, stand));
+    const waarden = cellen.flatMap((cel) => (cel.soort === "waarde" ? [cel.value] : []));
+    const gesorteerd = [...waarden].sort((a, b) => b - a);
+    const hoogste = gesorteerd[0] ?? 0;
+    const tweede = gesorteerd[1];
+    const verhouding =
+      waarden.length >= 2 && tweede !== undefined && tweede > 0 && hoogste / tweede >= 1.1
+        ? hoogste / tweede
+        : null;
+    return { nutrient, label: nutrientReferences[nutrient].label, cellen, hoogste, verhouding, aantal: waarden.length };
+  }).filter((rij) => rij.aantal > 0);
+
+  const zonderGehalte = producten.filter((resultaat) =>
+    NUTRIENT_ORDER.every((nutrient) => celVoor(resultaat, nutrient, "portie").soort !== "waarde"),
+  );
+
+  function kiesStand(nieuw: Stand) {
+    if (nieuw === stand) return;
+    setStand(nieuw);
+    trackEvent("nutrition_dagboek_vergelijk_stand", { stand: nieuw, aantal: producten.length });
+  }
 
   return (
-    <div className="flex flex-col gap-4">
+    <section className="flex flex-col gap-4" aria-labelledby="vergelijk-titel">
       <header className="flex items-center gap-2.5">
         <button
           type="button"
@@ -73,90 +106,155 @@ export default function DagboekVergelijkTabel({
         >
           <Icons.ChevronLeft s={18} />
         </button>
-        <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">
+        <h2 id="vergelijk-titel" className="m-0 min-w-0 flex-1 font-serif text-[19px] font-normal text-[var(--vd-ink)]">
           Vergelijking
         </h2>
+        {heeftVoeding ? (
+          <div role="radiogroup" aria-label="Vergelijk per" className="flex shrink-0 rounded-lg border border-white/10 bg-white/[0.03] p-0.5">
+            {(["portie", "100g"] as const).map((optie) => (
+              <button
+                key={optie}
+                type="button"
+                role="radio"
+                aria-checked={stand === optie}
+                onClick={() => kiesStand(optie)}
+                className={`cursor-pointer rounded-md px-2.5 py-1 text-[11.5px] font-semibold transition-colors ${
+                  stand === optie
+                    ? "bg-[var(--vd-sage)] text-[var(--vd-bg)]"
+                    : "text-[var(--vd-ink-3)] hover:text-[var(--vd-ink)]"
+                }`}
+              >
+                {optie === "portie" ? "Per portie" : "Per 100 g"}
+              </button>
+            ))}
+          </div>
+        ) : null}
       </header>
 
-      <div className="flex flex-wrap gap-2">
-        {producten.map((resultaat) => (
-          <span
-            key={`${resultaat.bron}-${resultaat.entry.key}`}
-            className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] py-1 pl-1 pr-2 text-[11.5px] text-[var(--vd-ink-2)]"
-          >
-            {resultaat.bron === "voeding" ? (
-              <FoodThumbnail entry={resultaat.entry} size={40} />
-            ) : (
-              <SupplementThumbnail entry={resultaat.entry} size={24} />
-            )}
-            {resultaat.entry.labelNl}
-            <button
-              type="button"
-              onClick={() => onVerwijder(resultaat)}
-              aria-label={`Verwijder ${resultaat.entry.labelNl} uit vergelijking`}
-              className="ml-0.5 cursor-pointer text-[14px] leading-none text-[var(--vd-ink-4)] transition-colors hover:text-[var(--vd-ink)]"
-            >
-              &times;
-            </button>
-          </span>
-        ))}
-      </div>
-
-      {rijen.length === 0 ? (
-        <p className="m-0 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-6 text-center text-[12px] leading-relaxed text-[var(--vd-ink-3)]">
-          Van deze producten is nog geen gehalte bekend voor de stoffen die dit
-          dagboek volgt.
-        </p>
-      ) : (
-        <ul className="m-0 flex list-none flex-col gap-4 p-0">
-          {rijen.map((rij) => {
-            const hoogste = Math.max(...rij.waarden.map((w) => w.value), 1);
-            return (
-              <li key={rij.nutrient} className="overflow-hidden rounded-2xl border border-white/10">
-                <header className="border-b border-white/10 bg-white/[0.03] px-4 py-2.5">
-                  <h3 className="m-0 font-sans text-[13px] font-bold text-[var(--vd-ink)]">
-                    {rij.label}
-                  </h3>
-                </header>
-                <ul className="m-0 flex list-none flex-col gap-2 p-3">
-                  {rij.waarden.map(({ resultaat, value, unit, portieLabel }) => {
-                    const breedte = Math.max(6, Math.round((value / hoogste) * 100));
+      <div className="overflow-hidden rounded-2xl border border-white/10">
+        <table className="w-full table-fixed border-collapse">
+          <caption className="sr-only">
+            Gehaltes {stand === "portie" ? "per portie" : "per 100 gram"}, per stof naast elkaar
+          </caption>
+          <thead>
+            <tr className="bg-white/[0.03]">
+              <th scope="col" className="w-[68px] border-b border-white/10 px-2 py-2.5 text-left align-bottom text-[10.5px] font-semibold uppercase tracking-wide text-[var(--vd-ink-4)] sm:w-[110px] sm:px-4">
+                Stof
+              </th>
+              {producten.map((resultaat) => {
+                const portie = stand === "portie" ? portieLabel(resultaat) : "100 g";
+                return (
+                  <th
+                    key={`${resultaat.bron}-${resultaat.entry.key}`}
+                    scope="col"
+                    className="relative border-b border-l border-white/10 px-1.5 pb-2.5 pt-3 text-center align-top font-normal sm:px-3"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => onVerwijder(resultaat)}
+                      aria-label={`Verwijder ${resultaat.entry.labelNl} uit vergelijking`}
+                      className="absolute right-1 top-1 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-[14px] leading-none text-[var(--vd-ink-4)] transition-colors hover:bg-white/10 hover:text-[var(--vd-ink)]"
+                    >
+                      &times;
+                    </button>
+                    <span className="flex flex-col items-center gap-1.5">
+                      {resultaat.bron === "voeding" ? (
+                        <FoodThumbnail entry={resultaat.entry} size={40} />
+                      ) : (
+                        <SupplementThumbnail entry={resultaat.entry} size={40} />
+                      )}
+                      <span className="line-clamp-2 text-[11.5px] font-semibold leading-tight text-[var(--vd-ink)]">
+                        {resultaat.entry.labelNl}
+                      </span>
+                      {portie ? (
+                        <span className="line-clamp-2 text-[10px] leading-tight text-[var(--vd-ink-4)]">{portie}</span>
+                      ) : null}
+                    </span>
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {rijen.map((rij) => (
+              <tr key={rij.nutrient} className="border-b border-white/10 last:border-b-0">
+                <th scope="row" className="px-2 py-3 text-left align-middle text-[12px] font-semibold text-[var(--vd-ink)] sm:px-4 sm:text-[13px]">
+                  {rij.label}
+                </th>
+                {rij.cellen.map((cel, index) => {
+                  const resultaat = producten[index];
+                  const sleutel = `${resultaat.bron}-${resultaat.entry.key}`;
+                  if (cel.soort !== "waarde") {
                     return (
-                      <li
-                        key={`${resultaat.bron}-${resultaat.entry.key}`}
-                        className="flex items-center gap-2.5"
-                      >
-                        <span className="w-[92px] shrink-0 truncate text-[11.5px] text-[var(--vd-ink-2)]">
-                          {resultaat.entry.labelNl}
+                      <td key={sleutel} className="border-l border-white/10 px-1.5 py-3 text-center align-middle text-[11px] text-[var(--vd-ink-4)]">
+                        {cel.soort === "nvt" ? "n.v.t." : <span aria-label="niet gemeten">—</span>}
+                      </td>
+                    );
+                  }
+                  const winnaar = rij.aantal >= 2 && cel.value === rij.hoogste && cel.value > 0;
+                  const breedte = rij.hoogste > 0 ? Math.max(4, Math.round((cel.value / rij.hoogste) * 100)) : 0;
+                  const ri = REFERENCE_INTAKES[rij.nutrient];
+                  const riAandeel =
+                    stand === "portie" && RI_TONEN.has(rij.nutrient) && ri.unit === cel.unit
+                      ? Math.round((cel.value / ri.value) * 100)
+                      : null;
+                  return (
+                    <td
+                      key={sleutel}
+                      className={`border-l border-white/10 px-1.5 py-3 align-middle sm:px-3 ${
+                        winnaar ? "bg-[rgb(var(--vd-sage-rgb)/14%)]" : ""
+                      }`}
+                    >
+                      <span className="flex flex-col items-center gap-1">
+                        <span
+                          className={`font-mono text-[12.5px] tabular-nums sm:text-[13.5px] ${
+                            winnaar ? "font-semibold text-[var(--vd-sage-2)]" : "text-[var(--vd-ink)]"
+                          }`}
+                        >
+                          {getal(cel.value)}
+                          <span className="ml-0.5 text-[10px] font-normal text-[var(--vd-ink-3)]">{cel.unit}</span>
                         </span>
-                        <span className="relative h-[20px] flex-1 overflow-hidden rounded-md bg-[var(--vd-track)]">
+                        <span aria-hidden className="relative block h-1.5 w-full max-w-[96px] overflow-hidden rounded-full bg-[var(--vd-track)]">
                           <span
-                            aria-hidden
-                            className="absolute inset-y-0 left-0 rounded-md bg-[var(--vd-sage)]"
+                            className={`absolute inset-y-0 left-0 rounded-full ${winnaar ? "bg-[var(--vd-sage-2)]" : "bg-[var(--vd-sage)] opacity-60"}`}
                             style={{ width: `${breedte}%` }}
                           />
                         </span>
-                        <span className="w-[76px] shrink-0 text-right font-mono text-[11px] tabular-nums text-[var(--vd-ink)]">
-                          {Math.round(value * 10) / 10} {unit}
-                        </span>
-                        <span className="hidden w-[96px] shrink-0 truncate text-right text-[10px] text-[var(--vd-ink-4)] sm:block">
-                          {portieLabel}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+                        {winnaar && rij.verhouding ? (
+                          <span className="text-[10px] font-semibold text-[var(--vd-sage-2)]">
+                            {getal(rij.verhouding)}× zoveel
+                          </span>
+                        ) : riAandeel !== null ? (
+                          <span className="text-[10px] text-[var(--vd-ink-4)]">{riAandeel}% RI</span>
+                        ) : null}
+                      </span>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {rijen.length === 0 ? (
+          <p className="m-0 px-3.5 py-6 text-center text-[12px] leading-relaxed text-[var(--vd-ink-3)]">
+            Van deze producten is nog geen gehalte bekend voor de stoffen die dit dagboek volgt.
+          </p>
+        ) : null}
+      </div>
+
+      {zonderGehalte.length > 0 && rijen.length > 0 ? (
+        <p className="m-0 rounded-xl border-l-2 border-[var(--vd-amber)] bg-[var(--vd-amber-fill)] px-3 py-2.5 text-[11.5px] leading-relaxed text-[var(--vd-ink-2)]">
+          Van {zonderGehalte.map((r) => r.entry.labelNl).join(" en ")} zijn nog geen gemeten gehaltes
+          bekend. Een streepje betekent &lsquo;niet gemeten&rsquo;, niet &lsquo;bevat niets&rsquo;.
+        </p>
+      ) : null}
 
       <p className="m-0 rounded-xl border-l-2 border-[var(--vd-sage)] bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-[var(--vd-ink-2)]">
-        Elk product staat op zijn eigen realistische portie, niet op 100 g —
-        dit is dus wat je daadwerkelijk zou binnenkrijgen per keer, niet een
-        gehalte om te vergelijken op etiketniveau.
+        {stand === "portie"
+          ? "Per portie: wat je daadwerkelijk binnenkrijgt per keer, op de gebruikelijke portie van elk product. RI = referentie-inname volgens EU 1169/2011."
+          : "Per 100 g: de etiketvergelijking tussen voedingsmiddelen, los van hoeveel je ervan eet. Supplementen staan hier op n.v.t."}
       </p>
-    </div>
+    </section>
   );
 }
