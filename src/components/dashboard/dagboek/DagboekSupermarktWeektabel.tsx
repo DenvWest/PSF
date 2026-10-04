@@ -51,7 +51,7 @@ export default function DagboekSupermarktWeektabel({
 
       <p className="vd-note" style={{ marginTop: 0 }}>
         {overzicht.dagenGeregistreerd === 0 ? (
-          "In deze week staat nog niets geregistreerd. Voeg een supermarktproduct toe — dan rekent dit overzicht mee."
+          "Dit weekoverzicht telt etiketproducten uit de zoeker, en daarvan staat er deze week nog niets. Producten uit de catalogus zie je per dag hierboven."
         ) : (
           <>
             Je registreerde{" "}

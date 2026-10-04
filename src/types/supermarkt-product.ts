@@ -60,4 +60,9 @@ export interface SupermarktProduct {
   ironMg: number | null;
   vitaminCMg: number | null;
   vitaminDµg: number | null;
+  /** Alleen NEVO levert deze vier; Open Food Facts-rijen houden ze `null`. */
+  potassiumMg: number | null;
+  magnesiumMg: number | null;
+  zincMg: number | null;
+  vitaminB12µg: number | null;
 }

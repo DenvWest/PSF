@@ -46,7 +46,7 @@ function offProduct(id: string): SupermarktProduct {
     prodId: `off:${id}`, bron: "off", bronId: id, naam: `Product ${id}`, merk: null, categorie: null,
     snapshotDatum: "2026-10-01", energyKcal: 50, fatG: null, saturatedFatG: null, carbohydrateG: null,
     sugarsG: null, fiberG: null, proteinG: null, saltG: null, sodiumMg: null, calciumMg: null, ironMg: null,
-    vitaminCMg: null, vitaminDµg: null,
+    vitaminCMg: null, vitaminDµg: null, potassiumMg: null, magnesiumMg: null, zincMg: null, vitaminB12µg: null,
   };
 }
 

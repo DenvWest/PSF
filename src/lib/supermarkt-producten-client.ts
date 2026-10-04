@@ -41,3 +41,19 @@ export async function haalNevoProductViaApi(nevoCode: string): Promise<Supermark
     return null;
   }
 }
+
+/** Haalt meerdere NEVO-voedingsmiddelen in één verzoek op. Lege lijst bij een fout. */
+export async function haalNevoProductenViaApi(nevoCodes: readonly string[]): Promise<SupermarktProduct[]> {
+  if (nevoCodes.length === 0) return [];
+  try {
+    const response = await fetch(
+      `/api/account/nevo-voedingsmiddel?codes=${encodeURIComponent(nevoCodes.join(","))}`,
+      { credentials: "include" },
+    );
+    if (!response.ok) return [];
+    const body = (await response.json()) as { producten?: SupermarktProduct[] };
+    return Array.isArray(body.producten) ? body.producten : [];
+  } catch {
+    return [];
+  }
+}

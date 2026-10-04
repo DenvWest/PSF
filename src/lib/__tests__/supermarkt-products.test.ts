@@ -36,6 +36,10 @@ const PRODUCT: SupermarktProduct = {
   ironMg: null,
   vitaminCMg: null,
   vitaminDµg: null,
+  potassiumMg: null,
+  magnesiumMg: null,
+  zincMg: null,
+  vitaminB12µg: null,
 };
 
 type Aanroep = { methode: string; args: unknown[] };
