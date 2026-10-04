@@ -85,7 +85,7 @@ export default function PatroonVensterTabel({
               {reeks.label}
               <i>
                 {eigenDoel
-                  ? "eigen doel"
+                  ? "gem. per dag"
                   : `${referentie.value} ${referentie.unit} ADH`}
               </i>
             </span>
@@ -122,7 +122,11 @@ export default function PatroonVensterTabel({
                     hoeft geen van beide een uitzondering te zijn.
                   */}
                   <b data-gevuld={!leeg && !eigenDoel && vulling > 0 ? "ja" : "nee"}>
-                    {leeg || eigenDoel ? "—" : percentageADH(venster.aandeel)}
+                    {leeg
+                      ? "—"
+                      : eigenDoel
+                        ? `${Math.round(venster.gemiddeld)} ${reeks.unit}`
+                        : percentageADH(venster.aandeel)}
                   </b>
                 </span>
               );
