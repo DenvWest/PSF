@@ -1,5 +1,7 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 /**
  * De horizontaal scrollbare sub-tab-balk boven het dagboek-overzicht — Laag B
  * (macro/voedingsstoffen-tabbladen naast de bestaande eetmomenten).
@@ -16,6 +18,10 @@
  * (`DagboekMacroRing`) staat op "Macro's" — kcal in het midden, macro's als
  * segmenten eromheen, zoals de MyFitnessPal-referentie. Een apart tabblad
  * zonder eigen invoeringang toonde alleen de weekstrip en niets bruikbaars.
+ *
+ * De balk staat direct boven de inhoud van het tabblad (eetmomenten, tabel),
+ * onder ring en weekstrip; `actie` zet een knop rechts in dezelfde rij, buiten
+ * de tablist.
  */
 
 export type DagboekSectie = "vandaag" | "voedingsstoffen" | "macros";
@@ -29,29 +35,30 @@ const SECTIES: { id: DagboekSectie; label: string }[] = [
 export default function DagboekSubtabs({
   actief,
   onKies,
+  actie,
 }: {
   actief: DagboekSectie;
   onKies: (sectie: DagboekSectie) => void;
+  actie?: ReactNode;
 }) {
   return (
-    <div
-      className="vd-subtabs"
-      role="tablist"
-      aria-label="Onderdelen van je dagboek"
-    >
-      {SECTIES.map((sectie) => (
-        <button
-          key={sectie.id}
-          type="button"
-          role="tab"
-          id={`dagboek-subtab-${sectie.id}`}
-          aria-selected={actief === sectie.id}
-          aria-controls={`dagboek-subtab-paneel-${sectie.id}`}
-          onClick={() => onKies(sectie.id)}
-        >
-          {sectie.label}
-        </button>
-      ))}
+    <div className="vd-subtabs-rij">
+      <div className="vd-subtabs" role="tablist" aria-label="Onderdelen van je dagboek">
+        {SECTIES.map((sectie) => (
+          <button
+            key={sectie.id}
+            type="button"
+            role="tab"
+            id={`dagboek-subtab-${sectie.id}`}
+            aria-selected={actief === sectie.id}
+            aria-controls={`dagboek-subtab-paneel-${sectie.id}`}
+            onClick={() => onKies(sectie.id)}
+          >
+            {sectie.label}
+          </button>
+        ))}
+      </div>
+      {actie}
     </div>
   );
 }
