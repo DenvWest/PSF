@@ -16,6 +16,7 @@ import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import type { DagboekItem, DagboekItemBron } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
+import { zonderCatalogusDubbelen } from "@/lib/zoek-dubbelen";
 import { tegelVoorNevoGroep, VERPAKT_TEGEL } from "@/lib/voedselgroep-tegel";
 import { MIN_ZOEK_LENGTE, zoekSupermarktProductenViaApi } from "@/lib/supermarkt-producten-client";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
@@ -163,13 +164,12 @@ export default function DagboekCatalogusZoek({
   const treffers = useMemo((): Resultaat[] => {
     const term = zoek.trim();
     if (!term) return [];
-    const voeding = searchCatalog(term, MAX_TREFFERS).map(
-      (entry): Resultaat => ({ bron: "voeding", entry }),
-    );
+    const catalogusTreffers = searchCatalog(term, MAX_TREFFERS);
+    const voeding = catalogusTreffers.map((entry): Resultaat => ({ bron: "voeding", entry }));
     const supplementen = searchSupplementCatalog(term, MAX_TREFFERS).map(
       (entry): Resultaat => ({ bron: "supplement", entry }),
     );
-    const supermarkt = supermarktTreffers.map(
+    const supermarkt = zonderCatalogusDubbelen(supermarktTreffers, catalogusTreffers).map(
       (product): Resultaat => ({ bron: "supermarkt", product }),
     );
     return [...voeding, ...supplementen, ...supermarkt].slice(0, MAX_TREFFERS * 3);
