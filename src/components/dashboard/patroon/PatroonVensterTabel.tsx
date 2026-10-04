@@ -6,6 +6,8 @@ import {
   RICHTING_TEKEN,
   RICHTING_TOON,
   VENSTER_LABEL,
+  vensterDagenLabel,
+  vensterKolommen,
 } from "@/lib/nutrition-tekortsysteem-copy";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 import { NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
@@ -31,6 +33,14 @@ import { useKernstofNormen } from "@/lib/use-kernstof-normen";
  * staat er overheen, want de staaf stopt bij vol en 760 % zou anders gelijk
  * lijken aan 100 %.
  *
+ * ## Waarom de kop het aantal dagen noemt
+ *
+ * Elk venster middelt over de dagen waarop je iets registreerde, niet over
+ * kalenderdagen: een dag zonder registratie is geen nul (asymmetrie-regel).
+ * Registreerde je deze week alleen vandaag, dan zijn "vandaag" en "7 dagen"
+ * hetzelfde getal. De kop noemt daarom per venster het aantal dagen, en een
+ * venster zonder nieuwe dagen ten opzichte van het vorige staat gedimd.
+ *
  * ## Waarom niet-bewijsbare stoffen amber zijn en geen richting krijgen
  *
  * Zink en vitamine D staan bijna altijd laag omdat een dagboek ze niet kan
@@ -45,13 +55,16 @@ export default function PatroonVensterTabel({
   reeksen: readonly Vensterreeks[];
 }) {
   const normen = useKernstofNormen();
+  const kolommen = vensterKolommen(reeksen);
+  const zelfde = new Set(kolommen.filter((k) => k.zelfde).map((k) => k.dagen_terug));
   return (
     <div className="vd-tabel">
       <div className="vd-tabel-kop vd-venster-kop">
         <span>Stof</span>
-        {reeksen[0]?.vensters.map((venster) => (
-          <span key={venster.dagen_terug}>
-            {VENSTER_LABEL[venster.dagen_terug]}
+        {kolommen.map((kolom) => (
+          <span key={kolom.dagen_terug} data-zelfde={kolom.zelfde ? "ja" : "nee"}>
+            {VENSTER_LABEL[kolom.dagen_terug]}
+            <i>{kolom.zelfde ? "zelfde" : vensterDagenLabel(kolom.dagen)}</i>
           </span>
         ))}
         <span>Richting</span>
@@ -73,7 +86,7 @@ export default function PatroonVensterTabel({
             <span className="vd-naam">
               {reeks.label}
               <i>
-                {norm ? `${normLabel(norm)} ADH` : "eigen doel"}
+                {norm ? `${normLabel(norm)} ADH` : "gem. per dag"}
               </i>
             </span>
 
@@ -86,7 +99,11 @@ export default function PatroonVensterTabel({
               const gedekt = venster.gedekt === true;
 
               return (
-                <span key={venster.dagen_terug} className="vd-cel">
+                <span
+                  key={venster.dagen_terug}
+                  className="vd-cel"
+                  data-zelfde={zelfde.has(venster.dagen_terug) ? "ja" : "nee"}
+                >
                   {!leeg && !eigenDoel ? (
                     <span
                       style={{
@@ -105,7 +122,11 @@ export default function PatroonVensterTabel({
                     hoeft geen van beide een uitzondering te zijn.
                   */}
                   <b data-gevuld={!leeg && !eigenDoel && vulling > 0 ? "ja" : "nee"}>
-                    {leeg || eigenDoel ? "—" : percentageADH(venster.aandeel)}
+                    {leeg
+                      ? "—"
+                      : eigenDoel
+                        ? `${Math.round(venster.gemiddeld)} ${reeks.unit}`
+                        : percentageADH(venster.aandeel)}
                   </b>
                 </span>
               );
