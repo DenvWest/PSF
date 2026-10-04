@@ -3,7 +3,8 @@ import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 import { isEetmomentId, type EetmomentId } from "@/lib/nutrition-eetmomenten";
-import { indexedFood, NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
+import { gehaltePer100g } from "@/lib/nutrition-catalog-gehalte";
+import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import { BASE_UNIT, toBase, type NutrientUnit } from "@/lib/nutrition-units";
 
 /**
@@ -189,12 +190,7 @@ export function bedragVanItem(
     return { value: portie.amount * item.grams, unit: portie.unit };
   }
 
-  const entry = catalogEntry(item.key);
-  const bronKey = entry?.bron;
-  const rij = bronKey
-    ? indexedFood(bronKey)?.nutrients.find((n) => n.nutrient === nutrient)
-    : undefined;
-  const per100g = rij?.source.nutrientValue;
+  const per100g = gehaltePer100g(catalogEntry(item.key), nutrient);
   if (!per100g) return null;
   return { value: (per100g.value * item.grams) / 100, unit: per100g.unit };
 }
@@ -223,11 +219,7 @@ export function bedragVoorStandaardPortie(
 
   const entry = catalogEntry(key);
   const portie = entry?.porties[0];
-  const bronKey = entry?.bron;
-  const rij = bronKey
-    ? indexedFood(bronKey)?.nutrients.find((n) => n.nutrient === nutrient)
-    : undefined;
-  const per100g = rij?.source.nutrientValue;
+  const per100g = gehaltePer100g(entry, nutrient);
   if (!per100g || !portie) return null;
   return {
     value: (per100g.value * portie.grams) / 100,
