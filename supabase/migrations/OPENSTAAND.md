@@ -7,12 +7,18 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20261003120000_nevo_foods.sql`
-- **Openstaand:** geen
+- **Openstaand:** 1
 - **Laatst bijgewerkt:** 4 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
+
+### [ ] 20261004150000_account_gevolgde_stoffen.sql
+- **Wat:** nieuwe tabel `account_gevolgde_stoffen` (één rij per account, lijst met gevolgde informatieve voedingsstoffen).
+- **Blokkeert deploy:** nee (code vangt het af — lezen geeft een lege lijst, opslaan meldt "kan nog niet" met 503)
+- **Hoort bij:** branch `feat/gevolgde-stoffen`, plak 4 van `BESLUIT_DOELEN_VERBONDEN_2026-10.md`
+- **Terugdraaien:** `drop table public.account_gevolgde_stoffen;`
 
 **Nog te doen (geen migratie, geen blocker):** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan al klaar.
 
