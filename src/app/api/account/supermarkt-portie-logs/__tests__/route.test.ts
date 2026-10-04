@@ -34,6 +34,7 @@ const PRODUCT: SupermarktProduct = {
 const LOG = { id: "l1", moment: "ontbijt", prodId: "off:1", grams: 200, createdAt: "2026-10-03T08:00:00Z" };
 
 const mockList = vi.fn();
+const mockListPeriode = vi.fn();
 const mockInsert = vi.fn();
 const mockHaalOp = vi.fn();
 
@@ -52,6 +53,7 @@ vi.mock("@/lib/db/scoped", () => ({
 }));
 vi.mock("@/lib/account-supermarkt-portie-logs", () => ({
   listSupermarktPortieLogs: (...args: unknown[]) => mockList(...args),
+  listSupermarktPortieLogsInPeriode: (...args: unknown[]) => mockListPeriode(...args),
   insertSupermarktPortieLog: (...args: unknown[]) => mockInsert(...args),
   deleteSupermarktPortieLog: vi.fn(),
 }));
@@ -102,6 +104,32 @@ describe("/api/account/supermarkt-portie-logs", () => {
       const response = await GET(verzoek());
       expect((await response.json()).items).toEqual([]);
       expect(mockHaalOp).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("GET met een periode", () => {
+    const verzoek = (van: string, tot: string) =>
+      new NextRequest(`http://localhost/api/account/supermarkt-portie-logs?van=${van}&tot=${tot}`);
+    const terug = (dagen: number) => {
+      const datum = new Date(`${DATUM}T00:00:00Z`);
+      datum.setUTCDate(datum.getUTCDate() - dagen);
+      return datum.toISOString().slice(0, 10);
+    };
+
+    it("geeft de porties per datum terug, met product, in één verzoek", async () => {
+      mockListPeriode.mockResolvedValue(new Map([[DATUM, [LOG]]]));
+      const response = await GET(verzoek(terug(29), DATUM));
+      const json = await response.json();
+      expect(response.status).toBe(200);
+      expect(json.perDag[DATUM][0].product).toEqual(PRODUCT);
+      expect(mockHaalOp).toHaveBeenCalledTimes(1);
+    });
+
+    it("weigert een periode van meer dan 31 dagen of omgekeerd", async () => {
+      expect((await GET(verzoek(terug(31), DATUM))).status).toBe(400);
+      expect((await GET(verzoek(DATUM, terug(1)))).status).toBe(400);
+      expect((await GET(verzoek("gisteren", DATUM))).status).toBe(400);
+      expect(mockListPeriode).not.toHaveBeenCalled();
     });
   });
 

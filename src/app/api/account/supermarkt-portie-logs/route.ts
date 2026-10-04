@@ -5,6 +5,7 @@ import {
   deleteSupermarktPortieLog,
   insertSupermarktPortieLog,
   listSupermarktPortieLogs,
+  listSupermarktPortieLogsInPeriode,
 } from "@/lib/account-supermarkt-portie-logs";
 import { isEetmomentId } from "@/lib/nutrition-eetmomenten";
 import { koppelProducten, type SupermarktPortieLog } from "@/lib/nutrition-supermarkt-items";
@@ -76,13 +77,60 @@ function parseLogBody(
   return { moment, prodId, grams: Math.min(Math.trunc(grams), MAX_GRAMS) };
 }
 
+/** Hoeveel dagen één periode-verzoek mag beslaan: genoeg voor het venster van 30 dagen. */
+const MAX_PERIODE_DAGEN = 31;
+
+function dagenTussen(van: string, tot: string): number {
+  return Math.round((Date.parse(`${tot}T00:00:00Z`) - Date.parse(`${van}T00:00:00Z`)) / 86_400_000) + 1;
+}
+
+async function periodeAntwoord(accountId: string, van: string, tot: string) {
+  const vandaag = todayInAgendaTimezone();
+  if (
+    !isValidEntryDate(van, vandaag) ||
+    !isValidEntryDate(tot, vandaag) ||
+    van > tot ||
+    dagenTussen(van, tot) > MAX_PERIODE_DAGEN
+  ) {
+    return NextResponse.json({ error: "Ongeldige periode." }, { status: 400 });
+  }
+
+  const admin = orgScoped(DEFAULT_ORG_ID);
+  if (!admin.raw) {
+    return NextResponse.json(
+      { error: "Database is nog niet geconfigureerd op de server." },
+      { status: 503 },
+    );
+  }
+
+  try {
+    const perDag = await listSupermarktPortieLogsInPeriode(admin, accountId, van, tot);
+    const gekoppeld = await logsMetProduct([...perDag.values()].flat());
+    const perId = new Map(gekoppeld.map((portie) => [portie.id, portie]));
+    const uit: Record<string, typeof gekoppeld> = {};
+    for (const [datum, logs] of perDag) {
+      uit[datum] = logs.flatMap((log) => perId.get(log.id) ?? []);
+    }
+    return NextResponse.json({ perDag: uit }, { status: 200 });
+  } catch {
+    return NextResponse.json({ error: "Kon portie-logs niet laden." }, { status: 500 });
+  }
+}
+
 export async function GET(request: NextRequest) {
   const account = await getAccountFromCookie();
   if (!account) {
     return NextResponse.json({ error: "Niet ingelogd." }, { status: 401 });
   }
 
-  const date = new URL(request.url).searchParams.get("date") ?? "";
+  const params = new URL(request.url).searchParams;
+  const van = params.get("van");
+  const tot = params.get("tot");
+  if (van !== null || tot !== null) {
+    return periodeAntwoord(account.id, van ?? "", tot ?? "");
+  }
+
+  const date = params.get("date") ?? "";
   if (!isValidEntryDate(date, todayInAgendaTimezone())) {
     return NextResponse.json({ error: "Ongeldige datum." }, { status: 400 });
   }

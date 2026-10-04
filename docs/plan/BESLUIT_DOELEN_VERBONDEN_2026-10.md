@@ -46,6 +46,7 @@ Het Doelen-scherm had twee losse formulieren (eiwit en macro's), en de weektabel
    2b. Weekweergave voor omega-3 en vitamine D in de krans.
 3. Doelen-scherm herontwerpen: blokken "Uit je check", "Jouw energie en macro's", "Wat je volgt"; Tailwind i.p.v. inline styles; één opslaan-knop; live grammen bij percentages.
 4. Migratie: gevolgde stoffen + RI-overschrijvingen (eigen tabel of naast `account_macro_doelen`), chips op het Doelen-scherm, link vanuit het dagboek.
+   **4a gebouwd 4 okt** (PR #129): tabel `account_gevolgde_stoffen`, kiezer, kaart "Wat je volgt". **4b gebouwd 4 okt**: "Ook gevolgd" + "+" onder de venstertabel in Je patroon; etiketporties van 30 dagen in één verzoek (`?van=&tot=`). RI-overschrijving per stof nog niet gebouwd.
 
 ## Herziening 4 okt (Dennis: "Akkoord")
 
