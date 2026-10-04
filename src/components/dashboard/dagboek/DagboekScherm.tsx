@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { catalogEntry } from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
@@ -747,6 +748,18 @@ export default function DagboekScherm({
           setScherm({ scherm: "zoek", nutrient: scherm.nutrient, moment: "ontbijt" })
         }
         onVerwijder={(item) => wijzig(items.filter((i) => i !== item))}
+        onKiesBron={(key) =>
+          setScherm({ scherm: "portie", nutrient: scherm.nutrient, bron: "voeding", key, moment: "ontbijt" })
+        }
+        onVergelijkBronnen={(keys) => {
+          setVergelijkSelectie(
+            keys.flatMap((key): VergelijkResultaat[] => {
+              const entry = catalogEntry(key);
+              return entry ? [{ bron: "voeding", entry }] : [];
+            }),
+          );
+          setScherm({ scherm: "vergelijk" });
+        }}
       />
     );
   }
