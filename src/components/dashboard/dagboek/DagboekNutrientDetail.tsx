@@ -3,6 +3,7 @@
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
+import DagboekRijksteBronnen from "@/components/dashboard/dagboek/DagboekRijksteBronnen";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
@@ -38,6 +39,8 @@ export default function DagboekNutrientDetail({
   stof,
   onVerwijder,
   onVoegToe,
+  onKiesBron,
+  onVergelijkBronnen,
   onTerug,
   busy = false,
 }: {
@@ -47,6 +50,8 @@ export default function DagboekNutrientDetail({
   stof: NutrientOndergrensGesplitst | undefined;
   onVerwijder: (item: DagboekItem) => void;
   onVoegToe: () => void;
+  onKiesBron: (key: string) => void;
+  onVergelijkBronnen: (keys: readonly string[]) => void;
   onTerug: () => void;
   busy?: boolean;
 }) {
@@ -228,6 +233,13 @@ export default function DagboekNutrientDetail({
           </div>
         )}
       </section>
+
+      <DagboekRijksteBronnen
+        stof={nutrient}
+        busy={busy}
+        onKies={onKiesBron}
+        onVergelijk={onVergelijkBronnen}
+      />
     </div>
   );
 }

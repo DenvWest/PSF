@@ -1,10 +1,11 @@
 "use client";
 
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
-import { REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
 import type { NutrientOndergrensGesplitst } from "@/lib/nutrition-dagboek-items";
+import { aandeelVanNorm, type KernstofNormen } from "@/lib/nutrition-normen";
 import { NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
 import type { ProteinTargetRange } from "@/lib/protein-target";
+import { useKernstofNormen } from "@/lib/use-kernstof-normen";
 
 /**
  * De krans boven het dagboek: één ring met een segment per stof.
@@ -24,7 +25,7 @@ import type { ProteinTargetRange } from "@/lib/protein-target";
  * ## Telling blijft telling
  *
  * "2 van 3 gedekt" telt alleen bewijsbare stoffen met een noemer, zoals het
- * tekortsysteem: een gehaalde RI bewijst dekking, een gemiste bewijst niets.
+ * tekortsysteem: een gehaalde norm bewijst dekking, een gemiste bewijst niets.
  * Eiwit rekent tegen het persoonlijke doel; zonder doel telt het niet mee en
  * toont de tegel grammen in plaats van een streep. Tegels die niet meetellen
  * staan gedempt en de regel eronder noemt ze, zodat de noemer in het midden
@@ -41,13 +42,6 @@ const KRANS_NUTRIENTEN: readonly NutrientId[] = [
   "zinc",
   "vitamin_d",
 ];
-
-const REFERENTIE_INNAME: Partial<Record<NutrientId, number>> = {
-  magnesium: REFERENCE_INTAKES.magnesium.value,
-  zinc: REFERENCE_INTAKES.zinc.value,
-  omega3: REFERENCE_INTAKES.omega3.value,
-  vitamin_d: REFERENCE_INTAKES.vitamin_d.value,
-};
 
 const MIDDEN = 120;
 const STRAAL = 92;
@@ -70,15 +64,11 @@ function aandeelVoor(
   nutrient: NutrientId,
   stof: NutrientOndergrensGesplitst | undefined,
   proteinTarget: ProteinTargetRange | null,
+  normen: KernstofNormen,
 ): number | null {
-  const noemer =
-    nutrient === "protein"
-      ? proteinTarget && proteinTarget.gramsLow > 0
-        ? proteinTarget.gramsLow
-        : null
-      : (REFERENTIE_INNAME[nutrient] ?? null);
-  if (noemer === null) return null;
-  return stof ? stof.minstens / noemer : 0;
+  if (nutrient !== "protein") return aandeelVanNorm(normen, nutrient, stof?.minstens ?? 0);
+  if (!proteinTarget || proteinTarget.gramsLow <= 0) return null;
+  return stof ? stof.minstens / proteinTarget.gramsLow : 0;
 }
 
 function lijst(namen: string[]): string {
@@ -120,9 +110,10 @@ export default function DagboekKrans({
   onSelect: (nutrient: NutrientId) => void;
   onBegin: () => void;
 }) {
+  const normen = useKernstofNormen();
   const rijen = KRANS_NUTRIENTEN.map((nutrient) => {
     const stof = stoffen.find((s) => s.nutrient === nutrient);
-    const aandeel = aandeelVoor(nutrient, stof, proteinTarget);
+    const aandeel = aandeelVoor(nutrient, stof, proteinTarget, normen);
     return {
       nutrient,
       minstens: stof?.minstens ?? 0,

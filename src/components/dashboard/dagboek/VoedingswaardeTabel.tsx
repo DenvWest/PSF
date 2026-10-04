@@ -1,4 +1,5 @@
 import SupermarktBronRegel from "@/components/dashboard/dagboek/SupermarktBronRegel";
+import { isInformatieveStof, type InformatieveStof } from "@/lib/nutrition-rijkste-bronnen";
 import { rondVoedingswaarde, type Voedingswaarde } from "@/lib/nutrition-voedingswaarde";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
 
@@ -8,17 +9,22 @@ import type { SupermarktProduct } from "@/types/supermarkt-product";
  * geen kleur als oordeel; dat blijft voorbehouden aan de vijf stoffen in de
  * krans. Eiwit staat in beide en toont hetzelfde getal (zie
  * `nutrition-voedingswaarde.ts`).
+ *
+ * Met `onKiesStof` worden de rijen met een rijkste-bronnenlijst (vezels,
+ * kalium, calcium, ijzer, B12, C) aantikbaar.
  */
 export default function VoedingswaardeTabel({
   titel,
   toelichting,
   voedingswaarde,
   bronProducten,
+  onKiesStof,
 }: {
   titel: string;
   toelichting?: string;
   voedingswaarde: Voedingswaarde;
   bronProducten: readonly SupermarktProduct[];
+  onKiesStof?: (stof: InformatieveStof) => void;
 }) {
   const { rijen, zonderWaarde } = voedingswaarde;
 
@@ -50,7 +56,19 @@ export default function VoedingswaardeTabel({
                     rij.waarvan ? "pl-7 text-[11.5px] text-[var(--vd-ink-3)]" : "text-[var(--vd-ink-2)]"
                   }`}
                 >
-                  {rij.label}
+                  {onKiesStof && isInformatieveStof(rij.veld) ? (
+                    <button
+                      type="button"
+                      onClick={() => onKiesStof(rij.veld as InformatieveStof)}
+                      aria-label={`${rij.label}: rijkste bronnen`}
+                      className="flex cursor-pointer items-center gap-1 text-left underline decoration-white/20 underline-offset-[3px] transition-colors hover:text-[var(--vd-ink)] hover:decoration-white/50"
+                    >
+                      {rij.label}
+                      <span aria-hidden className="text-[11px] text-[var(--vd-ink-4)]">›</span>
+                    </button>
+                  ) : (
+                    rij.label
+                  )}
                 </th>
                 <td className="whitespace-nowrap px-2 py-2 text-right font-mono tabular-nums text-[var(--vd-ink)]">
                   {rij.waarde === null ? (

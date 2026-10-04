@@ -6,6 +6,7 @@ import {
   verschuifWeek,
   type WeekRij,
 } from "@/lib/nutrition-weekoverzicht";
+import type { KernstofNormen } from "@/lib/nutrition-normen";
 
 /**
  * De trend per stof: hetzelfde weekgemiddelde als het weekoverzicht, maar dan
@@ -57,6 +58,7 @@ export type NutrientTrend = {
 export function bouwTrend(
   dagen: readonly DagboekDag[],
   vandaag: string,
+  normen: KernstofNormen,
   aantalWeken = 6,
 ): NutrientTrend[] {
   const huidigeWeekStart = weekStartVan(vandaag);
@@ -65,7 +67,7 @@ export function bouwTrend(
     weekStarts.push(verschuifWeek(huidigeWeekStart, -i));
   }
 
-  const weekOverzichten = weekStarts.map((start) => bouwWeekoverzicht(dagen, start));
+  const weekOverzichten = weekStarts.map((start) => bouwWeekoverzicht(dagen, start, normen));
 
   return NUTRIENT_ORDER.map((nutrient) => {
     const eersteRij = weekOverzichten[0]!.rijen.find((r) => r.nutrient === nutrient)!;

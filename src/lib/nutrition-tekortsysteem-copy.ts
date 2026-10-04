@@ -31,6 +31,37 @@ import type {
  */
 
 /** Wat er onder een venster staat: "vandaag", "7 dagen", … */
+/**
+ * Hoeveel geregistreerde dagen een venster draagt, voor onder de kolomkop.
+ *
+ * De vensters middelen over de dagen waarop je iets registreerde. "7 dagen"
+ * met één geregistreerde dag is dus hetzelfde getal als "vandaag", en zonder
+ * deze regel leest dat als een rekenfout.
+ */
+export function vensterDagenLabel(dagen: number): string {
+  if (dagen === 0) return "geen dag";
+  return dagen === 1 ? "1 dag" : `${dagen} dagen`;
+}
+
+export type VensterKolom = {
+  dagen_terug: VensterLengte;
+  dagen: number;
+  /** Zelfde geregistreerde dagen als het kortere venster ervoor: hetzelfde getal. */
+  zelfde: boolean;
+};
+
+/**
+ * De kolommen van de venstertabel. De vensters zijn genest, dus hetzelfde
+ * aantal geregistreerde dagen als het venster ervoor betekent dezelfde dagen.
+ */
+export function vensterKolommen(reeksen: readonly Vensterreeks[]): VensterKolom[] {
+  return (reeksen[0]?.vensters ?? []).map((venster, index, vensters) => ({
+    dagen_terug: venster.dagen_terug,
+    dagen: venster.dagen,
+    zelfde: index > 0 && venster.dagen > 0 && venster.dagen === vensters[index - 1]!.dagen,
+  }));
+}
+
 export const VENSTER_LABEL: Record<VensterLengte, string> = {
   1: "vandaag",
   7: "7 dagen",

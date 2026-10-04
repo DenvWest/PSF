@@ -1,4 +1,6 @@
 import { DEFAULT_ORG_ID } from "@/config/org";
+import { INTAKE_GENDER_OPTIONS, type IntakeGender } from "@/data/intake-questions";
+import { voedingsnormenVoor } from "@/data/nutrition/voedingsnormen";
 import {
   bepaalEiwitDoel,
   getVoedingsdoelen,
@@ -29,7 +31,12 @@ type CheckRij = {
   weight_kg: number | null;
   age_range: string | null;
   answers: unknown;
+  gender: string | null;
 };
+
+function leesGeslacht(waarde: string | null | undefined): IntakeGender | null {
+  return INTAKE_GENDER_OPTIONS.find((optie) => optie === waarde) ?? null;
+}
 
 function leesAntwoorden(waarde: unknown): Record<string, number> {
   if (!waarde || typeof waarde !== "object") return {};
@@ -60,26 +67,28 @@ async function leesCheck(accountId: string): Promise<{
   gewichtKg: number | null;
   trainingLoad: number | undefined;
   ageRange: string | null;
+  gender: IntakeGender | null;
 }> {
   const admin = orgScoped(DEFAULT_ORG_ID);
   if (!admin.raw) {
-    return { gewichtKg: null, trainingLoad: undefined, ageRange: null };
+    return { gewichtKg: null, trainingLoad: undefined, ageRange: null, gender: null };
   }
 
   const { data, error } = await admin
     .from("intake_sessions")
-    .select("weight_kg,age_range,answers")
+    .select("weight_kg,age_range,answers,gender")
     .eq("account_id", accountId)
     .order("created_at", { ascending: false })
     .limit(SESSIES_TERUG);
 
   if (error || !data) {
-    return { gewichtKg: null, trainingLoad: undefined, ageRange: null };
+    return { gewichtKg: null, trainingLoad: undefined, ageRange: null, gender: null };
   }
 
   const rijen = data as unknown as CheckRij[];
   const metGewicht = rijen.find((rij) => typeof rij.weight_kg === "number");
   const metLeeftijd = rijen.find((rij) => typeof rij.age_range === "string");
+  const metGeslacht = rijen.find((rij) => leesGeslacht(rij.gender) !== null);
   const metAntwoorden = rijen.find(
     (rij) => Object.keys(leesAntwoorden(rij.answers)).length > 0,
   );
@@ -90,6 +99,7 @@ async function leesCheck(accountId: string): Promise<{
       ? deriveTrainingLoadFromAnswers(leesAntwoorden(metAntwoorden.answers))
       : undefined,
     ageRange: metLeeftijd?.age_range ?? null,
+    gender: leesGeslacht(metGeslacht?.gender),
   };
 }
 
@@ -122,5 +132,6 @@ export async function laadVoedingsdoelenWeergave(
     richtlijn: eiwit.range,
     gewichtBron: eiwit.gewichtBron,
     checkHeeftGewicht: isGeldigGewicht(check.gewichtKg),
+    kernstofNormen: voedingsnormenVoor(check.gender),
   };
 }

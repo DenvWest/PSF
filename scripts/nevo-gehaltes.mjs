@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Schrijft de NEVO-gehaltes van de vijf dagboekstoffen per catalogusregel naar
+ * Schrijft de NEVO-gehaltes van de vijf dagboekstoffen, plus energie, vezels en
+ * de informatieve mineralen/vitamines (voor de rijkste-bronnenlijst), per catalogusregel naar
  * `src/data/nutrition/food-catalog-nevo-gehaltes.ts`.
  *
  * Waarom: `FOOD_CATALOG.bron` wijst naar `FOOD_SOURCES`, en dat dekt maar een
@@ -54,6 +55,13 @@ const STOFFEN = [
   ["VITD", "vitamin_d_ug"],
   ["F20:5CN3", "epa_g"],
   ["F22:6CN3", "dha_g"],
+  ["ENERCC", "energy_kcal"],
+  ["FIBT", "fiber_g"],
+  ["K", "potassium_mg"],
+  ["CA", "calcium_mg"],
+  ["FE", "iron_mg"],
+  ["VITB12", "vitamin_b12_ug"],
+  ["VITC", "vitamin_c_mg"],
 ];
 
 /** Leest de koppelingen uit het gegenereerde TypeScript-bestand. */
@@ -116,6 +124,16 @@ export interface NevoGehaltes {
   vitamin_d_ug?: number;
   epa_g?: number;
   dha_g?: number;
+  /** Alleen voor dichtheid en context (rijkste bronnen), geen dagboekstof. */
+  energy_kcal?: number;
+  /** Alleen als neutrale context naast een bron, zonder oordeel. */
+  fiber_g?: number;
+  /** Informatieve stoffen voor de rijkste-bronnenlijst; geen kernstof, geen oordeel. */
+  potassium_mg?: number;
+  calcium_mg?: number;
+  iron_mg?: number;
+  vitamin_b12_ug?: number;
+  vitamin_c_mg?: number;
 }
 
 export const NEVO_GEHALTES_EDITIE = "${NEVO_EDITIE}";
