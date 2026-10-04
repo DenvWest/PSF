@@ -24,8 +24,12 @@ import { weekDatums, weekLabel } from "@/lib/nutrition-weekoverzicht";
  *   zie `PatroonTrend.tsx` waarom geen lijn.
  *
  * Kleur: bij kernstoffen dezelfde drie staten als de rest van Je patroon
- * (sage gehaald, terra niet bewezen); bij gevolgde stoffen één neutrale tint,
- * zonder oordeel.
+ * (sage gehaald, terra niet bewezen); bij gevolgde stoffen, en bij een
+ * kernstof zonder doel (eiwit zonder eiwitdoel), één neutrale tint: zonder
+ * referentie valt er niets te halen.
+ *
+ * Maximaal 560 px breed: op een breed scherm stonden zes staven anders als
+ * losse streepjes over de hele kaart.
  */
 
 export type TrendGrafiekPunt = {
@@ -37,8 +41,8 @@ export type TrendGrafiekPunt = {
 
 const HOOGTE = 128;
 
-function kleurVoor(punt: TrendGrafiekPunt, toon: "oordeel" | "neutraal"): string {
-  if (toon === "neutraal") return "var(--vd-ink-3)";
+function kleurVoor(punt: TrendGrafiekPunt, toon: "oordeel" | "neutraal", referentie: number | null): string {
+  if (toon === "neutraal" || referentie === null) return "var(--vd-ink-3)";
   return punt.aandeel !== null && punt.aandeel >= 1 ? "var(--vd-sage)" : "var(--vd-terra)";
 }
 
@@ -80,7 +84,7 @@ export default function PatroonTrendGrafiek({
     : [];
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex w-full max-w-[560px] flex-col gap-2">
       <p aria-live="polite" className="m-0 min-h-[18px] text-[12px] leading-snug text-[var(--vd-ink-2)]">
         {uitlees.map((deel, i) => (
           <span key={deel}>
@@ -133,7 +137,7 @@ export default function PatroonTrendGrafiek({
                     className="block w-full max-w-[24px] rounded-t-[4px] transition-opacity"
                     style={{
                       height: `${hoogte}%`,
-                      background: kleurVoor(punt, toon),
+                      background: kleurVoor(punt, toon, referentie),
                       opacity: isActief ? 1 : 0.55,
                     }}
                   />
