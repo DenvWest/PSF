@@ -10,7 +10,12 @@
 1. **Rijkste bronnen per stof** (PR #127, uitgebreid in de PR van dit document). Top 10 uit de eigen catalogus, in drie standen: per portie (standaard), per 100 g, per 100 kcal (afgeleid: gehalte ÷ NEVO-energie, gelabeld). Tik = toevoegen, "Vergelijk top 3" opent de vergelijkingstabel.
 2. **Voor welke stoffen.** De vijf kernstoffen (via het stofdetail onder de krans) en de informatieve stoffen **vezels, kalium, calcium, ijzer, vitamine B12, vitamine C** (via een tik op die rij in de tabel Voedingsstoffen). Waarden ongewijzigd uit NEVO 2025/9.0, statisch gegenereerd zoals de kernstoffen.
 3. **Zonder oordeel.** Vezels en kcal per portie staan als context naast elke bron en sturen de volgorde niet. Geen samengestelde score, geen "vezelrijk"-label, geen ✓, geen link naar `/beste/*`. Informatieve stoffen krijgen een neutrale tint; %RI alleen waar een RI bestaat.
-4. **Ringtegels (stap 2, ná plak 4 van `BESLUIT_DOELEN_VERBONDEN_2026-10.md`).** De krans blijft de vijf kernstoffen. Gevolgde stoffen krijgen een eigen rij "Ook gevolgd" eronder: kleine ringtegels in dezelfde vormtaal, ring vult tot RI (referentiestoffen, neutraal, ✓ bij gehaald, nooit ✗) of tot een eigen doel (macro's; zonder doel alleen het getal). Op mobiel horizontaal met snap-scroll, breed als raster; vul-animatie alleen `motion-safe`. Tik → zelfde rijkste-bronnenscherm. Leest gevolgde stoffen en doelen uit de functie die plak 4 bouwt — geen eigen opslag.
+4. **Ringtegels "Ook gevolgd"** (gebouwd 4 okt, na plak 4a #129). De krans blijft de vijf kernstoffen. Gevolgde stoffen krijgen een eigen rij onder de krans (tabbladen Vandaag en Voedingsstoffen): kleine ringen in één neutrale tint, ring vult tot de RI; een stof zonder RI (natrium, verzadigd vet, suikers) toont alleen het getal met een gestippeld spoor. Op mobiel horizontaal met snap-scroll, vanaf 520 px containerbreedte een raster; vul-animatie alleen `motion-safe`. Tik → rijkste-bronnenscherm (alleen stoffen die er een hebben). De "+" klapt dezelfde `GevolgdeStoffenKiezer` open als Je doelen en Je patroon (`surface: "dagboek"`). Getallen uit `berekenVoedingswaarde`, keuze uit `useGevolgdeStoffen`: geen eigen opslag of rekenpad.
+
+### Bijgesteld bij het bouwen (4 okt)
+
+- **Geen ✓ bij gehaald op de ringen.** `BESLUIT_DOELEN_VERBONDEN_2026-10.md` §1 staat een ✓ toe voor referentiestoffen, maar Je patroon ("Ook gevolgd · zonder oordeel", plak 4b) en de voedingswaardetabel tonen er geen. Eén leeswijze op alle plekken weegt zwaarder; een ✓ kan later overal tegelijk komen, samen met de RI-overschrijvingen.
+- **De vijf kerntegels onder de krans blijven kaarten, geen mini-ringen.** Het docblok van `DagboekKrans.tsx` legt vast dat de krans juist "de rij mini-ringen" verving; ze terugzetten zou dubbel tonen wat de krans al toont.
 
 ## Afgewezen
 
@@ -19,8 +24,8 @@
 - **Supplementen in de lijst:** winnen per definitie en maken de rangschikking zinloos; daarbij geen koopaanbod in het dashboard.
 - **Gevolgde stoffen ín de krans:** breekt de telling "x van y gedekt" en de scheiding tekortsysteem / informatielaag.
 - **Een draaiend wiel of carrousel voor de ringtegels:** verstopt stoffen achter een gebaar, op 375 px zie je er twee, en beweging die blijft draaien is slecht voor toegankelijkheid.
-- **Ringtegels nu al bouwen:** zou de opslag voor gevolgde stoffen dubbelen die plak 4 net maakt.
+- **Ringtegels vóór plak 4 bouwen:** zou de opslag voor gevolgde stoffen hebben gedubbeld; daarom pas na #129 gebouwd.
 
 ## Meetpunt
 
-GA4: `nutrition_dagboek_rijkste_geopend` (vanuit de tabel), `nutrition_dagboek_rijkste_stand`, `nutrition_dagboek_rijkste_gekozen` (met positie), `nutrition_dagboek_rijkste_vergelijk`. Param `nutrient` draagt de stof-id (kernstof of veld-id als `calciumMg`).
+GA4: `nutrition_dagboek_rijkste_geopend` (param `surface`: `tabel` of `ring`), `nutrition_dagboek_gevolgd_toevoegen_open`, `voedingsdoel_aangepast` met `surface: dagboek`, `nutrition_dagboek_rijkste_stand`, `nutrition_dagboek_rijkste_gekozen` (met positie), `nutrition_dagboek_rijkste_vergelijk`. Param `nutrient` draagt de stof-id (kernstof of veld-id als `calciumMg`).

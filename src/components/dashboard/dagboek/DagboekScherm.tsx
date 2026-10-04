@@ -36,6 +36,7 @@ import DagboekMacroRing, {
 import DagboekNutrientDetail from "@/components/dashboard/dagboek/DagboekNutrientDetail";
 import DagboekVoedingPortie from "@/components/dashboard/dagboek/DagboekVoedingPortie";
 import DagboekPortieInvoer from "@/components/dashboard/dagboek/DagboekPortieInvoer";
+import DagboekOokGevolgd from "@/components/dashboard/dagboek/DagboekOokGevolgd";
 import DagboekRijksteBronnen from "@/components/dashboard/dagboek/DagboekRijksteBronnen";
 import DagboekProductDetail from "@/components/dashboard/dagboek/DagboekProductDetail";
 import DagboekSubtabs, { type DagboekSectie } from "@/components/dashboard/dagboek/DagboekSubtabs";
@@ -524,6 +525,11 @@ export default function DagboekScherm({
     trackEvent("nutrition_dagboek_subtab_gekozen", { sectie: volgende });
   }
 
+  function openBronnen(stof: InformatieveStof, surface: "tabel" | "ring") {
+    trackEvent("nutrition_dagboek_rijkste_geopend", { nutrient: stof, surface });
+    setScherm({ scherm: "bronnen", stof });
+  }
+
   function vergelijkBronnen(keys: readonly string[]) {
     setVergelijkSelectie(
       keys.flatMap((key): VergelijkResultaat[] => {
@@ -844,12 +850,15 @@ export default function DagboekScherm({
           ]}
         />
       ) : dagboekSectie === "voedingsstoffen" ? (
-        <DagboekKrans
-          stoffen={ondergrens}
-          proteinTarget={proteinTarget}
-          onSelect={kransBijSelect}
-          onBegin={() => setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" })}
-        />
+        <>
+          <DagboekKrans
+            stoffen={ondergrens}
+            proteinTarget={proteinTarget}
+            onSelect={kransBijSelect}
+            onBegin={() => setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" })}
+          />
+          <DagboekOokGevolgd rijen={dagVoedingswaarde.rijen} onKiesStof={(stof) => openBronnen(stof, "ring")} />
+        </>
       ) : (
         <>
           <DagboekKrans
@@ -865,6 +874,7 @@ export default function DagboekScherm({
               setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" });
             }}
           />
+          <DagboekOokGevolgd rijen={dagVoedingswaarde.rijen} onKiesStof={(stof) => openBronnen(stof, "ring")} />
 
           {ondergrens.length > 0 || supermarktLogs.length > 0 ? (
             <button
@@ -973,10 +983,7 @@ export default function DagboekScherm({
             toelichting={dagLabel}
             voedingswaarde={dagVoedingswaarde}
             bronProducten={dagBronProducten}
-            onKiesStof={(stof) => {
-              trackEvent("nutrition_dagboek_rijkste_geopend", { nutrient: stof });
-              setScherm({ scherm: "bronnen", stof });
-            }}
+            onKiesStof={(stof) => openBronnen(stof, "tabel")}
           />
           <DagboekVoedingWeektabel
             overzicht={weekoverzicht}
