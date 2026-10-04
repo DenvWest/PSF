@@ -38,8 +38,8 @@ De 36.000 producten uit de eerste dataset blijven lokaal. Ze zijn onderzoeksmate
 
 ## Wat nog openstaat
 
-1. **De OFF-importer.** De tabel is leeg. De Parquet-dump (~4 GB) lezen vraagt een nieuwe afhankelijkheid (DuckDB of `pyarrow`); dat is een stackkeuze voor Dennis.
-2. **De dekkingsmeting.** Een steekproef van Lidl-producten gaf 42% in OFF. De meting op alle 36.000 producten op barcode kan pas na de importer, of met de dump lokaal. Die meting beslist of NEVO + OFF volstaat of dat de typische-waardenlaag nodig is.
+1. **De OFF-importer: extractor klaar (4 okt, PR #116).** `scripts/off-extract.py` (DuckDB, los van de app, geen afhankelijkheid in `package.json`) leest de Parquet-dump en schrijft 58.690 Nederlandse producten als NDJSON in de vorm van `sm_products`. Nog te doen: de loader naar Supabase (`scripts/off-laden.mjs`, naar het voorbeeld van `nevo-laden.mjs`), pas nadat de migratie is gedraaid.
+2. **De dekkingsmeting: gedaan (4 okt)**, zie `STEEKPROEF_OFF_DEKKING_2026-10.md` (PR #116). Op naam + kcal staat 22–30% van de 36.000 producten in OFF. De typische-waardenlaag blijft dus relevant.
 3. **De typische-waardenlaag (ONTWERP §9).** Blijft op "eerst de jurist". De versie die we nu willen is anders dan die in §9: berekend uit `sm_products`-rijen, niet uit de scrape. Of dat een "produced work" onder de ODbL is (alleen bronvermelding) of een afgeleide database (deelplicht), is een vraag voor de jurist.
 4. **Jurist en Open Food Facts.** De drie vragen uit de analyse en het antwoord van OFF op de mail (vraag 5 daarin dekt het B2B-punt).
 5. **De pagina "Bronnen en licenties"** en de ODbL-dump van `sm_products` (nodig vóór livegang van OFF-data).
