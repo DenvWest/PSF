@@ -42,8 +42,23 @@ export async function haalNevoProductViaApi(nevoCode: string): Promise<Supermark
   }
 }
 
-/** Haalt meerdere NEVO-voedingsmiddelen in één verzoek op. Lege lijst bij een fout. */
+/** Zoveel codes accepteert `/api/account/nevo-voedingsmiddel` per verzoek. */
+const NEVO_CODES_PER_VERZOEK = 60;
+
+/**
+ * Haalt meerdere NEVO-voedingsmiddelen op, in stukken van hoogstens 60 codes.
+ * Een mislukt stuk levert voor die codes niets op (`n.o.`), de rest blijft.
+ */
 export async function haalNevoProductenViaApi(nevoCodes: readonly string[]): Promise<SupermarktProduct[]> {
+  if (nevoCodes.length <= NEVO_CODES_PER_VERZOEK) return haalNevoStuk(nevoCodes);
+  const stukken: string[][] = [];
+  for (let i = 0; i < nevoCodes.length; i += NEVO_CODES_PER_VERZOEK) {
+    stukken.push(nevoCodes.slice(i, i + NEVO_CODES_PER_VERZOEK));
+  }
+  return (await Promise.all(stukken.map(haalNevoStuk))).flat();
+}
+
+async function haalNevoStuk(nevoCodes: readonly string[]): Promise<SupermarktProduct[]> {
   if (nevoCodes.length === 0) return [];
   try {
     const response = await fetch(

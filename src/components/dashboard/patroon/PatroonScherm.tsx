@@ -11,6 +11,7 @@ import PatroonSubtabs, {
 } from "@/components/dashboard/patroon/PatroonSubtabs";
 import PatroonTelcirkels from "@/components/dashboard/patroon/PatroonTelcirkels";
 import PatroonTrend from "@/components/dashboard/patroon/PatroonTrend";
+import PatroonGevolgdTabel from "@/components/dashboard/patroon/PatroonGevolgdTabel";
 import PatroonVensterTabel from "@/components/dashboard/patroon/PatroonVensterTabel";
 import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
@@ -29,6 +30,7 @@ import {
   bouwTekortsysteem,
 } from "@/lib/nutrition-tekortsysteem";
 import { bouwTrend } from "@/lib/nutrition-trend";
+import { useGevolgdeVensters } from "@/lib/use-gevolgde-vensters";
 import { useKernstofNormen } from "@/lib/use-kernstof-normen";
 import {
   bouwWeekoverzicht,
@@ -165,6 +167,11 @@ function PatroonInhoud() {
   const isHuidigeWeek = weekOffset === 0;
 
   const trends = useMemo(() => bouwTrend(dagen, vandaag, normen), [dagen, vandaag, normen]);
+  const { reeksen: gevolgd } = useGevolgdeVensters(dagen, vandaag);
+  const zelfdeVensters = useMemo(
+    () => new Set(vensterKolommen(reeksen).filter((k) => k.zelfde).map((k) => k.dagen_terug)),
+    [reeksen],
+  );
 
   /**
    * Per stof de zeven dagen van de bekeken week, als ondergrens of null.
@@ -411,8 +418,9 @@ function PatroonInhoud() {
       ) : sectie === "voedingsstoffen" ? (
         <>
           <PatroonVensterTabel reeksen={reeksen} />
+          <PatroonGevolgdTabel reeksen={gevolgd} zelfde={zelfdeVensters} />
 
-          {vensterKolommen(reeksen).some((kolom) => kolom.zelfde) ? (
+          {zelfdeVensters.size > 0 ? (
             <p className="vd-note">
               Elk venster middelt over de dagen waarop je iets registreerde.
               Gedimd: geen nieuwe dagen ten opzichte van het venster ervoor,
