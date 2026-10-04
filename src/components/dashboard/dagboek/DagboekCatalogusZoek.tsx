@@ -18,7 +18,8 @@ import type { DagboekItem, DagboekItemBron } from "@/lib/nutrition-dagboek-items
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { zonderCatalogusDubbelen } from "@/lib/zoek-dubbelen";
 import { tegelVoorNevoGroep, VERPAKT_TEGEL } from "@/lib/voedselgroep-tegel";
-import { MIN_ZOEK_LENGTE, zoekSupermarktProductenViaApi } from "@/lib/supermarkt-producten-client";
+import { macroPortieVoor, metCatalogusNaam } from "@/lib/catalogus-macro-portie";
+import { haalNevoProductViaApi, MIN_ZOEK_LENGTE, zoekSupermarktProductenViaApi } from "@/lib/supermarkt-producten-client";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
 
 const MAX_TREFFERS = 8;
@@ -142,6 +143,19 @@ export default function DagboekCatalogusZoek({
   const supermarktBezig = zoektSupermarkt && supermarktRespons.term !== supermarktTerm;
 
   const momentLabel = EETMOMENTEN.find((m) => m.id === moment)?.label.toLowerCase() ?? "je dag";
+
+  /**
+   * Een catalogusregel zonder eigen kernstofwaarde maar met NEVO-koppeling
+   * opent het calorie/macro-scherm van een supermarktproduct. Lukt het ophalen
+   * niet, dan blijft het kernstoffenscherm de terugval.
+   */
+  async function kiesCatalogus(bron: DagboekItemBron, entry: CatalogEntry | SupplementCatalogEntry) {
+    const doel = bron === "voeding" ? macroPortieVoor(entry as CatalogEntry) : null;
+    if (!doel || nutrient) return onKies(bron, entry.key);
+    const product = await haalNevoProductViaApi(doel.nevoCode);
+    if (!product) return onKies(bron, entry.key);
+    onKiesSupermarkt(metCatalogusNaam(product, entry as CatalogEntry, doel));
+  }
 
   const isFavoriet = (bron: DagboekItemBron, key: string) =>
     favorieten.some((f) => f.bron === bron && f.key === key);
@@ -365,7 +379,7 @@ export default function DagboekCatalogusZoek({
                   <li key={key} className="flex items-center">
                     <button
                       type="button"
-                      onClick={() => onKies(resultaat.bron, resultaat.entry.key)}
+                      onClick={() => void kiesCatalogus(resultaat.bron, resultaat.entry)}
                       className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
                     >
                       <span className="flex min-w-0 items-center gap-2">

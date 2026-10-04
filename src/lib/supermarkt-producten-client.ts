@@ -27,3 +27,17 @@ export async function zoekSupermarktProductenViaApi(
     return [];
   }
 }
+
+/** Haalt één NEVO-voedingsmiddel op code op. `null` bij een fout of onbekende code. */
+export async function haalNevoProductViaApi(nevoCode: string): Promise<SupermarktProduct | null> {
+  try {
+    const response = await fetch(`/api/account/nevo-voedingsmiddel?code=${encodeURIComponent(nevoCode)}`, {
+      credentials: "include",
+    });
+    if (!response.ok) return null;
+    const body = (await response.json()) as { product?: SupermarktProduct };
+    return body.product ?? null;
+  } catch {
+    return null;
+  }
+}
