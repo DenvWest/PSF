@@ -65,8 +65,8 @@ describe("bouwWeekoverzicht", () => {
     const dagen = [
       dag("2026-09-14", [{ key: "havermout", grams: 100 }]),
       dag("2026-09-15", [{ key: "havermout", grams: 100 }]),
-      dag("2026-09-16", [{ key: "witbrood", grams: 100 }]),
-      dag("2026-09-17", [{ key: "witbrood", grams: 100 }]),
+      dag("2026-09-16", [{ key: "meergranenbrood", grams: 100 }]),
+      dag("2026-09-17", [{ key: "meergranenbrood", grams: 100 }]),
     ];
 
     const week = bouwWeekoverzicht(dagen, "2026-09-14");
