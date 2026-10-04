@@ -147,7 +147,7 @@ describe("nutrientenUitItems — de ondergrens-regel", () => {
   it("telt de items die zwegen, zodat 'weinig' van 'onbekend' te scheiden is", () => {
     const metOnbekende = nutrientenUitItems([
       { moment: "ontbijt", bron: "voeding", key: "havermout", grams: 60 },
-      { moment: "ontbijt", bron: "voeding", key: "spinazie-rauw", grams: 30 },
+      { moment: "ontbijt", bron: "voeding", key: "kipdij", grams: 30 },
     ]);
     const magnesium = metOnbekende.find((n) => n.nutrient === "magnesium");
 
@@ -205,7 +205,7 @@ describe("nutrientenUitItems — de ondergrens-regel", () => {
   it("blijft voedingsitems zonder gehalte wél tellen", () => {
     const gemengd = nutrientenUitItems([
       { moment: "ontbijt", bron: "voeding", key: "havermout", grams: 60 },
-      { moment: "ontbijt", bron: "voeding", key: "appel", grams: 130 },
+      { moment: "ontbijt", bron: "voeding", key: "kipdij", grams: 130 },
       { moment: "ontbijt", bron: "supplement", key: "magnesiumcitraat-capsule", grams: 1 },
     ]);
     const magnesium = gemengd.find((n) => n.nutrient === "magnesium")!;
