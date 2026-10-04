@@ -51,12 +51,12 @@ Dit is de harde eis uit de juridische analyse. Een dagboeklog (`account_supermar
 
 Component `SupermarktBronRegel`, met de teksten uit `supermarkt-bron.ts`: "Voedingswaarden: **Open Food Facts**, beschikbaar onder de **Open Database License (ODbL)**", beide als link. Op het portiescherm (één product) linkt de bronnaam naar de productpagina bij Open Food Facts, zoals zij bij productspecifieke gegevens vragen. Onder een lijst (zoekresultaten, de dagboeksectie) linkt hij naar de bron in het algemeen.
 
-**Open vraag voor de jurist (vraag 9):** is één bronregel per lijst voldoende, of moet hij bij elk product in de lijst staan? Nu staat hij onder elke lijst en op het portiescherm. Daarnaast ontbreekt nog de pagina "Bronnen en licenties" in de footer, met de downloadlink naar de ODbL-dump (zie §6).
+**Open vraag voor de jurist (vraag 9):** is één bronregel per lijst voldoende, of moet hij bij elk product in de lijst staan? Nu staat hij onder elke lijst en op het portiescherm. De pagina "Bronnen en licenties" staat sinds 4 okt op `/bronnen` (footer, sitemap), met de downloadlink naar de ODbL-dump (zie §6).
 
 ## 6. Wat bewust niet is gebouwd, en wat er nog openstaat
 
 1. **De importer.** Er staat geen data in de tabel. Open Food Facts levert een Parquet-dump (~4 GB wereldwijd). Die lezen vraagt een nieuwe afhankelijkheid (bijvoorbeeld DuckDB of `pyarrow`), en CLAUDE.md zegt de techstack niet zonder overleg te wijzigen. De schrijflaag (`schrijfSupermarktProducten`) en de mapping staan klaar en zijn getest.
-2. **De ODbL-dump van de tabel (§4.6).** Wie de tabel gebruikt en publiek gebruik maakt van een afgeleide database, moet die op verzoek in machineleesbare vorm kunnen aanbieden. Dat is een eigen route of script plus de pagina "Bronnen en licenties". Nodig vóór livegang, niet erna.
+2. **De ODbL-dump van de tabel (§4.6).** Wie de tabel gebruikt en publiek gebruik maakt van een afgeleide database, moet die op verzoek in machineleesbare vorm kunnen aanbieden. Dat is een eigen route plus de pagina "Bronnen en licenties". **Gebouwd 4 okt:** `GET /api/bronnen/open-food-facts` (CSV, streaming, keyset-paginering op `prod_id`, rate limit `bronnen_dump` 5 per uur) en `/bronnen`. De dump bevat alleen `sm_products` (dus geen NEVO) en heeft geen tijdstempels; tekst die met een formuleteken begint krijgt een apostrof. Meetpunt: GA4 `bronnen_dump_download`.
 3. **Het licentiebesluit en de menselijke jurist** (vragen 2, 3 en 8 van de analyse), en het antwoord van Open Food Facts op de mail.
 4. **Prestatie op schaal.** De trigram-zoekopdracht is niet gemeten op 100.000+ rijen: er is geen data en geen lokale Postgres. Doe dit direct na de eerste import, met `explain analyze` op een paar gangbare zoektermen.
 5. **De browser.** De UI is getest met Testing Library en een gemockte API, niet met echte data in een browser. Test op 375 px zodra er producten in de tabel staan.
@@ -93,4 +93,5 @@ Voorgesteld door Dennis (3 okt): een kopie van de producten uit de eerste datase
 - **Waarom dit juridisch sterker staat dan afzonderlijke rijen, en waarom het geen vrijbrief is:** de uitvoer maakt niets van de inhoud openbaar en is geen concurrerende database. Maar de eerdere kopie en onze kennis van de herkomst blijven bestaan. Dat is vraag 11 en 12 in `JURIDISCHE_VRAAG_SUPERMARKTDATA_2026-10.md` §7.
 - **Wat het niet oplost:** de 16 "verrijkt"-regels. Bij plantaardige drankjes en margarine loopt de spreiding te ver uiteen (een mediaan zegt weinig over verrijking), en bij een derde van die regels zijn er te weinig producten.
 - **Eerst de jurist.** Tot het antwoord er is, wordt hier niets van gebouwd en niets in `src/` gezet.
+- **4 okt: herzien.** De waarden worden niet uit de eerste dataset berekend maar uit `sm_products`-rijen (herkomst Open Food Facts), en NEVO telt er nooit in mee. Zie `BESLUIT_VOEDINGSBRONNEN_LAGEN_2026-10.md`.
 

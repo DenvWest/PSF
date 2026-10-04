@@ -43,6 +43,7 @@ const footerColumns = [
 const bottomLegalLinks = [
     { href: "/privacy", label: "Privacy" },
     { href: "/juridisch", label: "Juridisch" },
+    { href: "/bronnen", label: "Bronnen en licenties" },
     { href: "/cookies", label: "Cookies" },
     { href: "/disclaimer", label: "Disclaimer" },
     { href: "/medische-disclaimer", label: "Medische disclaimer" },

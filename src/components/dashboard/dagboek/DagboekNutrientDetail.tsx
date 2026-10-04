@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
@@ -12,7 +11,7 @@ import {
   type DagboekItem,
   type NutrientOndergrensGesplitst,
 } from "@/lib/nutrition-dagboek-items";
-import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
+import { EETMOMENTEN } from "@/lib/nutrition-eetmomenten";
 
 /**
  * Het detailscherm van één nutriënt: status vandaag, wat daaraan bijdroeg, en
@@ -51,18 +50,22 @@ export default function DagboekNutrientDetail({
   onTerug: () => void;
   busy?: boolean;
 }) {
-  const [zichtbaarMoment, setZichtbaarMoment] = useState<EetmomentId | "alle">("alle");
-
   const bijdragend = items
     .map((item) => ({ item, bedrag: bedragVanItem(item, nutrient) }))
     .filter(
       (rij): rij is { item: DagboekItem; bedrag: NonNullable<typeof rij.bedrag> } =>
         rij.bedrag !== null,
     )
-    .filter((rij) => zichtbaarMoment === "alle" || rij.item.moment === zichtbaarMoment)
     // Grootste bijdrage eerst: wie wil weten "waar zit mijn magnesium in"
     // vraagt naar de belangrijkste bron, niet naar de volgorde waarin je at.
     .sort((a, b) => b.bedrag.value - a.bedrag.value);
+
+  const grootste = bijdragend[0]?.bedrag.value ?? 0;
+  const perMoment = EETMOMENTEN.map((moment) => ({
+    moment,
+    rijen: bijdragend.filter((rij) => rij.item.moment === moment.id),
+  })).filter((groep) => groep.rijen.length > 0);
+  const stofKleur = `var(--vd-stof-${nutrient})`;
 
   const label = nutrientReferences[nutrient].label;
   const gedekt = stof && stof.minstens > 0;
@@ -78,6 +81,11 @@ export default function DagboekNutrientDetail({
         >
           <Icons.ChevronLeft s={18} />
         </button>
+        <span
+          aria-hidden
+          className="block h-3 w-3 rounded-full"
+          style={{ background: stofKleur }}
+        />
         <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">{label}</h2>
       </header>
 
@@ -111,6 +119,12 @@ export default function DagboekNutrientDetail({
                 </>
               ) : null}
               .
+              {bijdragend[0] && labelVoorItem(bijdragend[0].item) ? (
+                <>
+                  {" "}
+                  Grootste bron: {labelVoorItem(bijdragend[0].item)?.toLowerCase()}.
+                </>
+              ) : null}
             </p>
           ) : (
             <p className="m-0 text-[13px] leading-relaxed text-[var(--vd-ink-3)]">
@@ -121,20 +135,7 @@ export default function DagboekNutrientDetail({
         </div>
       </section>
 
-      <div className="flex flex-wrap items-center justify-between gap-2.5">
-        <select
-          value={zichtbaarMoment}
-          onChange={(event) => setZichtbaarMoment(event.target.value as EetmomentId | "alle")}
-          aria-label="Filter op eetmoment"
-          className="rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1.5 text-[12px] text-[var(--vd-ink-2)] outline-none transition-colors focus:border-white/40"
-        >
-          <option value="alle">Alle momenten</option>
-          {EETMOMENTEN.map((moment) => (
-            <option key={moment.id} value={moment.id}>
-              {moment.label}
-            </option>
-          ))}
-        </select>
+      <div className="flex justify-end">
         <button
           type="button"
           disabled={busy}
@@ -157,59 +158,74 @@ export default function DagboekNutrientDetail({
 
         {bijdragend.length === 0 ? (
           <p className="m-0 px-4 py-6 text-center text-[12px] leading-relaxed text-[var(--vd-ink-4)]">
-            Nog niets dat {label.toLowerCase()} levert voor dit filter.
+            Nog niets dat {label.toLowerCase()} levert. Voeg je eerste product of supplement toe.
           </p>
         ) : (
-          <ul className="m-0 list-none divide-y divide-white/[0.06] p-0">
-            {bijdragend.map(({ item, bedrag }, index) => {
-              const itemLabel = labelVoorItem(item);
-              if (!itemLabel) return null;
-              const momentLabel = EETMOMENTEN.find((m) => m.id === item.moment)?.label;
-              const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
-              const supplementEntry =
-                item.bron === "supplement" ? supplementCatalogEntry(item.key) : null;
-              return (
-                <li
-                  key={`${item.key}-${index}`}
-                  className="flex items-center gap-3 px-4 py-2.5"
-                >
-                  {voedingEntry ? (
-                    <FoodThumbnail entry={voedingEntry} size={40} />
-                  ) : supplementEntry ? (
-                    <SupplementThumbnail entry={supplementEntry} size={40} />
-                  ) : (
-                    <span
-                      aria-hidden
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[rgb(var(--vd-accent-2-rgb)/20%)] text-[16px] font-medium text-[var(--vd-accent-2)]"
-                    >
-                      {itemLabel.trim().charAt(0).toUpperCase() || "?"}
-                    </span>
-                  )}
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[13px] text-[var(--vd-ink)]">
-                      {itemLabel}
-                    </span>
-                    <span className="block text-[10.5px] text-[var(--vd-ink-4)]">
-                      {momentLabel}
-                      {item.bron === "supplement" ? " · supplement" : null}
-                    </span>
-                  </span>
-                  <span className="shrink-0 font-mono text-[12px] tabular-nums text-[var(--vd-ink-2)]">
-                    {Math.round(bedrag.value * 10) / 10} {bedrag.unit}
-                  </span>
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={() => onVerwijder(item)}
-                    aria-label={`Verwijder ${itemLabel}`}
-                    className="shrink-0 cursor-pointer rounded px-1.5 py-1 text-[14px] leading-none text-[var(--vd-ink-4)] transition-colors hover:text-[var(--vd-ink)] disabled:opacity-40"
-                  >
-                    &times;
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="flex flex-col">
+            {perMoment.map(({ moment, rijen }) => (
+              <div key={moment.id} className="border-b border-white/[0.06] last:border-b-0">
+                <h4 className="m-0 px-4 pb-1 pt-3 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[var(--vd-ink-4)]">
+                  {moment.label}
+                </h4>
+                <ul className="m-0 list-none p-0">
+                  {rijen.map(({ item, bedrag }, index) => {
+                    const itemLabel = labelVoorItem(item);
+                    if (!itemLabel) return null;
+                    const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
+                    const supplementEntry =
+                      item.bron === "supplement" ? supplementCatalogEntry(item.key) : null;
+                    const breedte = grootste > 0 ? Math.max(4, (bedrag.value / grootste) * 100) : 0;
+                    return (
+                      <li
+                        key={`${item.key}-${index}`}
+                        className="flex items-center gap-3 px-4 py-2.5"
+                      >
+                        {voedingEntry ? (
+                          <FoodThumbnail entry={voedingEntry} size={40} />
+                        ) : supplementEntry ? (
+                          <SupplementThumbnail entry={supplementEntry} size={40} />
+                        ) : (
+                          <span
+                            aria-hidden
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[rgb(var(--vd-accent-2-rgb)/20%)] text-[16px] font-medium text-[var(--vd-accent-2)]"
+                          >
+                            {itemLabel.trim().charAt(0).toUpperCase() || "?"}
+                          </span>
+                        )}
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[13px] text-[var(--vd-ink)]">
+                            {itemLabel}
+                          </span>
+                          <span className="mt-1 flex items-center gap-2">
+                            <span
+                              aria-hidden
+                              className="block h-1.5 rounded-full"
+                              style={{ width: `${breedte}%`, background: stofKleur, opacity: 0.85 }}
+                            />
+                            <span className="shrink-0 text-[10.5px] text-[var(--vd-ink-4)]">
+                              {item.bron === "supplement" ? "supplement" : "voeding"}
+                            </span>
+                          </span>
+                        </span>
+                        <span className="shrink-0 font-mono text-[12px] tabular-nums text-[var(--vd-ink-2)]">
+                          {Math.round(bedrag.value * 10) / 10} {bedrag.unit}
+                        </span>
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => onVerwijder(item)}
+                          aria-label={`Verwijder ${itemLabel}`}
+                          className="shrink-0 cursor-pointer rounded px-1.5 py-1 text-[14px] leading-none text-[var(--vd-ink-4)] transition-colors hover:text-[var(--vd-ink)] disabled:opacity-40"
+                        >
+                          &times;
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
         )}
       </section>
     </div>

@@ -27,12 +27,11 @@ import type { SupermarktProduct } from "@/types/supermarkt-product";
 import { bouwSupermarktWeekoverzicht } from "@/lib/nutrition-supermarkt-weekoverzicht";
 import { verschuifWeek, weekDatums, weekStart } from "@/lib/nutrition-weekoverzicht";
 import DagboekCatalogusZoek from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
-import DagboekHero from "@/components/dashboard/dagboek/DagboekHero";
+import DagboekKrans from "@/components/dashboard/dagboek/DagboekKrans";
 import DagboekMaaltijd from "@/components/dashboard/dagboek/DagboekMaaltijd";
 import DagboekMacroRing, {
   MACRO_RING_KLEUREN,
 } from "@/components/dashboard/dagboek/DagboekMacroRing";
-import DagboekNutrientBalken from "@/components/dashboard/dagboek/DagboekNutrientBalken";
 import DagboekNutrientDetail from "@/components/dashboard/dagboek/DagboekNutrientDetail";
 import DagboekPortieInvoer from "@/components/dashboard/dagboek/DagboekPortieInvoer";
 import DagboekProductDetail from "@/components/dashboard/dagboek/DagboekProductDetail";
@@ -708,9 +707,7 @@ export default function DagboekScherm({
           aria-labelledby="dagboek-subtab-vandaag"
           className="flex flex-col gap-4"
         >
-          <DagboekHero stoffen={ondergrens} proteinTarget={proteinTarget} />
-
-          <DagboekNutrientBalken
+          <DagboekKrans
             stoffen={ondergrens}
             proteinTarget={proteinTarget}
             onSelect={(nutrient) => {
@@ -720,6 +717,14 @@ export default function DagboekScherm({
               });
               trackEvent("nutrition_dagboek_nutrient_opened", { nutrient });
               setScherm({ scherm: "detail", nutrient });
+            }}
+            onBegin={() => {
+              emitAccountClientEvent("nutrition.dagboek_maaltijd_geopend", {
+                moment: "ontbijt",
+                surface: "dagboek_tab",
+              });
+              trackEvent("nutrition_dagboek_maaltijd_geopend", { moment: "ontbijt" });
+              setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" });
             }}
           />
 

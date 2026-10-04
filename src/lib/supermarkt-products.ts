@@ -13,7 +13,8 @@ import type { SupermarktBron, SupermarktProduct } from "@/types/supermarkt-produ
 
 const TABLE = "sm_products";
 
-const COLUMNS = [
+/** Alle kolommen die de zoek- en dumproute teruggeven; de tijdstempels blijven intern. */
+export const SM_PRODUCTS_KOLOMMEN = [
   "prod_id",
   "bron",
   "bron_id",
@@ -35,7 +36,9 @@ const COLUMNS = [
   "iron_mg",
   "vitamin_c_mg",
   "vitamin_d_ug",
-].join(",");
+] as const;
+
+const COLUMNS = SM_PRODUCTS_KOLOMMEN.join(",");
 
 /** Kortste zoekterm waarmee de trigram-index nog helpt; korter geeft bijna alles terug. */
 export const MIN_ZOEKTERM_LENGTE = 3;
