@@ -33,3 +33,11 @@ describe("metCatalogusNaam", () => {
     expect(naam).toBe(`${entry.labelNl} (benadering)`);
   });
 });
+
+describe("macroPortieVoor ongeachtKernstof", () => {
+  it("geeft ook de NEVO-code voor een regel mét kernstofwaarde", () => {
+    const entry = catalogEntry("tonijn-blik");
+    if (!entry) throw new Error("tonijn-blik ontbreekt");
+    expect(macroPortieVoor(entry, { ongeachtKernstof: true })).toEqual({ nevoCode: "1590", benadering: false });
+  });
+});

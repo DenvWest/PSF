@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
+import NevoMacroBlok from "@/components/dashboard/dagboek/NevoMacroBlok";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
@@ -317,6 +318,8 @@ export default function DagboekPortieInvoer({
             )}
           </div>
         )}
+
+        {voedingEntry ? <NevoMacroBlok entry={voedingEntry} grams={grams} /> : null}
 
         <div className="flex gap-2">
           <button

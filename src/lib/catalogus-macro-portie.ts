@@ -14,10 +14,14 @@ export interface MacroPortieDoel {
  *
  * Een regel zonder eigen kernstofwaarde zou daar alleen "geen bekend gehalte"
  * tonen, terwijl NEVO hem wel kent. Heeft de regel wél een kernstofwaarde, dan
- * blijft het bestaande scherm: dat draagt de tekortbijdrage.
+ * blijft het bestaande scherm: dat draagt de tekortbijdrage, en toont de NEVO-
+ * macro's er met `ongeachtKernstof` naast.
  */
-export function macroPortieVoor(entry: CatalogEntry): MacroPortieDoel | null {
-  if (entry.bron && indexedFood(entry.bron)) return null;
+export function macroPortieVoor(
+  entry: CatalogEntry,
+  opties: { ongeachtKernstof?: boolean } = {},
+): MacroPortieDoel | null {
+  if (!opties.ongeachtKernstof && entry.bron && indexedFood(entry.bron)) return null;
   const koppeling = nevoKoppelingVoor(entry.key);
   if (!koppeling) return null;
   return { nevoCode: koppeling.code, benadering: koppeling.basis === "benadering" };
