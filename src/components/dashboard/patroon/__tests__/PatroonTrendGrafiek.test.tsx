@@ -49,3 +49,22 @@ describe("PatroonTrendGrafiek", () => {
     expect(screen.getAllByText(/norm/).length).toBeGreaterThan(0);
   });
 });
+
+describe("PatroonTrendGrafiek zonder referentie", () => {
+  it("kleurt neutraal als er geen doel is", () => {
+    const { container } = render(
+      <PatroonTrendGrafiek
+        label="Eiwit"
+        punten={punten}
+        unit="g"
+        referentie={null}
+        referentieNaam="norm"
+        toon="oordeel"
+        huidigeWeek="2026-09-28"
+      />,
+    );
+    const staven = [...container.querySelectorAll<HTMLElement>("span[style*='background']")];
+    expect(staven.length).toBeGreaterThan(0);
+    for (const staaf of staven) expect(staaf.style.background).toBe("var(--vd-ink-3)");
+  });
+});
