@@ -75,6 +75,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const OUT_DIR = path.join("scripts", "out");
 const OUT_FILE = path.join(OUT_DIR, "supermarkt-rapport.json");
@@ -286,20 +287,65 @@ function parseAh(tekst) {
 }
 
 /**
+ * Jumbo-energie komt in minstens zes notaties, vaak met meerdere kolommen
+ * (per 100 g, per portie, %RI) achter elkaar geplakt:
+ *
+ *   getal-vóór-eenheid:  "Energie102 kJ / 25 kcal", "Energie61.0 kJ15.0 kCal",
+ *                        "Energie1434.0 kJ143.0 kJ2.0%349.0 kCal35.0 kCal"
+ *   eenheid-vóór-getal:  "EnergiekJ 272 / kcal 65",
+ *                        "EnergiekJ 1545kJ 309kcal 372kcal 744%"
+ *
+ * In beide gevallen is de eerste kcal-waarde de per-100-kolom. Welke kant
+ * het getal staat, verraadt het begin: "EnergiekJ" (eenheid direct na het
+ * label) is eenheid-vóór-getal. De twee eerdere regexen vingen alleen de
+ * eerste twee voorbeelden; ~79% van de Jumbo-rijen kreeg zo geen kcal.
+ */
+export function jumboKcal(tekst) {
+  const start = tekst.search(/Energie/i);
+  if (start === -1) return null;
+  const blok = tekst.slice(start, start + 120).split(/Vet/i)[0];
+
+  const paar = blok.match(/kJ\s*\/\s*kcal\s*([\d.,]+)\s*\/\s*([\d.,]+)/i);
+  if (paar) return kcalAlsHetKlopt(num(paar[1]), num(paar[2]));
+
+  const eenheidEerst = /^Energie\s*kJ/i.test(blok);
+  const kj = eenheidEerst ? blok.match(/kJ\s*([\d.,]+)/i) : blok.match(/([\d.,]+)\s*kJ/i);
+  const kcal = eenheidEerst
+    ? blok.match(/kcal\s*([\d.,]+)(?!\s*%)/i)
+    : blok.match(/([\d.,]+)\s*kcal/i);
+  if (!kcal) return null;
+  return kcalAlsHetKlopt(kj ? num(kj[1]) : null, num(kcal[1]));
+}
+
+/**
+ * Kolommen staan in de Jumbo-tekst soms zonder scheiding tegen elkaar
+ * ("645 kJ8514 kcal" = 514 kcal na een %RI-kolom "8"; "kcal 1598%" = 159
+ * kcal + 8%). De lookahead `(?!\s*%)` laat de regex bij dat laatste geval
+ * één cijfer terugvallen, maar in het algemeen is het in de tekst zelf niet
+ * te ontwarren. kJ en kcal op
+ * hetzelfde etiket liggen fysiek vast (1 kcal = 4,184 kJ): klopt de
+ * verhouding niet, dan is het veld onbekend (`null`), geen gok. De marge van
+ * 8% vangt de legitieme spreiding: de EU-omrekenfactoren per macro verschillen
+ * (koolhydraten 17 kJ/4 kcal, vet 37/9), dus de etiketverhouding schommelt
+ * tussen ~4,1 en ~4,25.
+ */
+function kcalAlsHetKlopt(kj, kcal) {
+  if (kcal === null) return null;
+  if (kj === null) return kcal;
+  return Math.abs(kj / 4.184 - kcal) <= Math.max(2, kcal * 0.08) ? kcal : null;
+}
+
+/**
  * Jumbo: doorlopende tekst, labels los van hun getal ("Vetten1.1 g" of
  * "Vetten 2,8 g"). Geen vast scheidingsteken — matcht op label direct
  * gevolgd door een getal, met optionele spatie ertussen.
  */
-function parseJumbo(tekst) {
+export function parseJumbo(tekst) {
   const out = leegResultaat();
   if (!tekst) return out;
   const t = tekst;
   let m;
-  if ((m = t.match(/Energie\s*[\d.,]+\s*k[JC]?al?\s*\/?\s*([\d.,]+)\s*k?[Cc]al/i))) {
-    out.energyKcal = num(m[1]);
-  } else if ((m = t.match(/Energie[\s\d.,]*kJ\s*([\d.,]+)\s*k[Cc]al/i))) {
-    out.energyKcal = num(m[1]);
-  }
+  out.energyKcal = jumboKcal(t);
   if ((m = t.match(/Vetten\s*([\d.,]+)\s*g/i))) out.fatG = num(m[1]);
   if ((m = t.match(/verzadigde\s*vetzuren\s*([\d.,]+)\s*g/i))) out.saturatedFatG = num(m[1]);
   if ((m = t.match(/Koolhydraten\s*([\d.,]+)\s*g/i))) out.carbohydrateG = num(m[1]);
@@ -501,4 +547,6 @@ function main() {
   console.log("producten naar food-catalog.ts overgaan.");
 }
 
-main();
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main();
+}
