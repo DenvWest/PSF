@@ -168,7 +168,7 @@ Besluit van Dennis: NEVO verrijkt én vult aan. Eigen tabel, niet `sm_products` 
 - **Gratis voor de gebruiker blijft gelden**: de route en alles wat erop leunt komt nooit achter de premium-grens.
 - **Dagboekintegratie (gebouwd)**: `SupermarktBron = "off" | "nevo"` is de gedeelde weergavevorm in het geheugen; `nevoFoodNaarSupermarktProduct` mapt ongewijzigd (`saltG` blijft `null`: zout uit natrium rekenen is een bewerking; `snapshotDatum` draagt de NEVO-versie). `SupermarktBronRegel` toont bij weergegeven waarden `NEVO_CITATION`, bij berekende uitvoer (portiescherm, dagtotaal, ring, weektabel) de "Gebaseerd op gegevens van…"-tekst, met " en andere gegevens" zodra de lijst ook Open Food Facts bevat. Het bestaande portie-event draagt nu `bron` (`off`/`nevo`).
 - **Gratis voor de gebruiker**: het dagboek met NEVO-waarden zit niet achter premium; houd dat zo bij elke wijziging aan de entitlements.
-- **Nog niet gedaan**: de "Bronnen en licenties"-pagina, en de loader draaien (wacht op de migratie).
+- **Bronnenpagina (4 okt)**: `/bronnen` noemt `NEVO_CITATION` en dat NEVO niet in de OFF-download zit. De loader is gedraaid (2.328 rijen).
 
 - **Koppeling afgewerkt (3 okt, avond):** Dennis vroeg terecht waarom hij 159 regels zelf zou doornemen. Claude heeft ze beslist met NEVO-zoekopdrachten erbij: `scripts/nevo-koppel-beslissingen.json` (150 `handmatig`, 100 `bewustNiet` met reden; vlees/vis/groente zonder bereiding in het label krijgen de rauwe variant). Resultaat: 270 gekoppeld (71 via bron, 49 via naam, 150 handmatig), 100 bewust niet (niet in NEVO, te generiek, of verrijkt/merk waar het etiket de bron is), 1 open (kapucijners: gekookt, gedroogd of blik). De handmatige en bewuste keuzes staan ter steekproef in `STEEKPROEF_NEVO_KOPPELING_2026-10.md`.
 

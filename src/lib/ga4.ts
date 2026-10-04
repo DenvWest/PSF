@@ -42,6 +42,7 @@ export const GA4_EVENTS = {
   VOEDING_BRONNEN_VIEWED: 'voeding_bronnen_viewed',
   VOEDING_BRONNEN_EXPANDED: 'voeding_bronnen_expanded',
   VOEDING_CHECK_CLICKED: 'voeding_check_clicked',
+  BRONNEN_DUMP_DOWNLOAD: 'bronnen_dump_download',
 } as const;
 
 export function trackEvent(
