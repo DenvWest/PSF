@@ -1,27 +1,28 @@
 "use client";
 
 import { weekLabel } from "@/lib/nutrition-weekoverzicht";
-import type { SupermarktWeekoverzicht, SupermarktWeekRij } from "@/lib/nutrition-supermarkt-weekoverzicht";
+import type { VoedingWeekoverzicht, VoedingWeekRij } from "@/lib/nutrition-voeding-weekoverzicht";
 
 /**
  * De Gem./Doel/Over-tabel met week-navigatie voor Laag B (Voedingsstoffen- en
- * Macro's-tabblad) — naar `PatroonScherm.tsx`'s `.vd-weekbalk`/`.vd-tabel--los`
- * (regels 267-403 op 27 sep), toegepast op `SupermarktWeekoverzicht` in
- * plaats van het tekortsysteem. Zelfde CSS-klassen, geen nieuwe styling.
+ * Macro's-tabblad) — naar `PatroonScherm.tsx`'s `.vd-weekbalk`/`.vd-tabel--los`,
+ * toegepast op `VoedingWeekoverzicht` in plaats van het tekortsysteem. Zelfde
+ * CSS-klassen, geen nieuwe styling. Telt catalogus- en etiketproducten, net
+ * als de dagtabel erboven.
  *
  * `rijen` wordt meegegeven (niet het hele overzicht doorgerekend hier) zodat
  * "Voedingsstoffen" en "Macro's" dezelfde tabelvorm delen met een andere
  * rij-selectie (bijv. Macro's toont alleen koolhydraten/vet/eiwit).
  */
-export default function DagboekSupermarktWeektabel({
+export default function DagboekVoedingWeektabel({
   overzicht,
   rijen,
   onVorigeWeek,
   onVolgendeWeek,
   isHuidigeWeek,
 }: {
-  overzicht: SupermarktWeekoverzicht;
-  rijen: readonly SupermarktWeekRij[];
+  overzicht: VoedingWeekoverzicht;
+  rijen: readonly VoedingWeekRij[];
   onVorigeWeek: () => void;
   onVolgendeWeek: () => void;
   isHuidigeWeek: boolean;
@@ -51,7 +52,7 @@ export default function DagboekSupermarktWeektabel({
 
       <p className="vd-note" style={{ marginTop: 0 }}>
         {overzicht.dagenGeregistreerd === 0 ? (
-          "Dit weekoverzicht telt etiketproducten uit de zoeker, en daarvan staat er deze week nog niets. Producten uit de catalogus zie je per dag hierboven."
+          "In deze week staat nog niets in je dagboek."
         ) : (
           <>
             Je registreerde{" "}
@@ -60,6 +61,9 @@ export default function DagboekSupermarktWeektabel({
               {overzicht.dagenGeregistreerd === 1 ? "dag" : "dagen"}
             </strong>{" "}
             in deze week. Alles hieronder is het gemiddelde daarover.
+            {overzicht.zonderWaarde > 0
+              ? ` ${overzicht.zonderWaarde === 1 ? "1 product had" : `${overzicht.zonderWaarde} producten hadden`} geen waarden, dus dit is minstens wat je binnenkreeg.`
+              : null}
           </>
         )}
       </p>

@@ -35,4 +35,4 @@ Op één dag liet het dagboek drie beelden zien die niet op elkaar aansloten:
 
 ## Open
 
-- De weektabel (Voedingsstoffen en Macro's) telt nog alleen supermarktporties. Catalogusproducten meetellen vraagt NEVO-records voor de hele week. Dat is een volgende plak.
+- ~~De weektabel (Voedingsstoffen en Macro's) telt nog alleen supermarktporties.~~ Gesloten 4 okt: zie `BESLUIT_DOELEN_VERBONDEN_2026-10.md` §5.
