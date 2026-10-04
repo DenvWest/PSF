@@ -8,14 +8,14 @@ import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
 
 /**
  * De ene kiezer voor "welke stoffen volg ik", op elke plek waar je dat kunt
- * kiezen (Je doelen, de "+" in Je patroon). Zelfde component en zelfde
+ * kiezen (Je doelen, de "+" in Je patroon en onder de krans in het dagboek). Zelfde component en zelfde
  * opslag, zodat de plekken niet uit elkaar lopen
  * (`BESLUIT_DOELEN_VERBONDEN_2026-10.md`, "Herziening").
  *
  * Kleuren komen uit `currentColor`, zodat hij zowel in het donkere
  * account-thema als in het patroon-thema leesbaar is.
  */
-export default function GevolgdeStoffenKiezer({ surface }: { surface: "doelen" | "patroon" }) {
+export default function GevolgdeStoffenKiezer({ surface }: { surface: "doelen" | "patroon" | "dagboek" }) {
   const { stoffen, geladen, zetGevolgd } = useGevolgdeStoffen();
   const [fout, setFout] = useState<string | null>(null);
   const [bezig, setBezig] = useState<SupermarktVeld | null>(null);
