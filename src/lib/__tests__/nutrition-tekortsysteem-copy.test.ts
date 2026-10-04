@@ -8,6 +8,8 @@ import {
   bevindingZin,
   geenBevindingZin,
   teGaan,
+  vensterDagenLabel,
+  vensterKolommen,
 } from "@/lib/nutrition-tekortsysteem-copy";
 
 const VANDAAG = "2026-09-17";
@@ -124,5 +126,32 @@ describe("richting bij een dag zonder bron", () => {
     expect(omega.vensters[0]!.dagenMetBron).toBe(0);
     expect(omega.vensters[3]!.dagenMetBron).toBeGreaterThan(0);
     expect(omega.richting).not.toBe("verslechtert");
+  });
+});
+
+describe("vensterKolommen", () => {
+  it("dimt een venster zonder nieuwe dagen ten opzichte van het vorige", () => {
+    // Alleen vandaag en tien dagen terug geregistreerd: 7 dagen = vandaag, 30 dagen = 14 dagen.
+    const dagen = [dag(VANDAAG, [{ key: "havermout", grams: 60 }]), dag("2026-09-07", [{ key: "havermout", grams: 60 }])];
+    const kolommen = vensterKolommen(bouwTekortsysteem(dagen, VANDAAG));
+
+    expect(kolommen.map((k) => [k.dagen_terug, k.dagen, k.zelfde])).toEqual([
+      [1, 1, false],
+      [7, 1, true],
+      [14, 2, false],
+      [30, 2, true],
+    ]);
+  });
+
+  it("dimt niets als er geen enkele dag is", () => {
+    expect(vensterKolommen(bouwTekortsysteem([], VANDAAG)).some((k) => k.zelfde)).toBe(false);
+  });
+});
+
+describe("vensterDagenLabel", () => {
+  it("noemt het aantal geregistreerde dagen", () => {
+    expect(vensterDagenLabel(0)).toBe("geen dag");
+    expect(vensterDagenLabel(1)).toBe("1 dag");
+    expect(vensterDagenLabel(6)).toBe("6 dagen");
   });
 });

@@ -16,7 +16,11 @@ import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThem
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
-import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
+import {
+  hoeveelheid,
+  percentageADH,
+  vensterKolommen,
+} from "@/lib/nutrition-tekortsysteem-copy";
 import { clarityTag } from "@/lib/clarity";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { nutrientenUitItems, sanitizeItems } from "@/lib/nutrition-dagboek-items";
@@ -405,6 +409,14 @@ function PatroonInhoud() {
       ) : sectie === "voedingsstoffen" ? (
         <>
           <PatroonVensterTabel reeksen={reeksen} />
+
+          {vensterKolommen(reeksen).some((kolom) => kolom.zelfde) ? (
+            <p className="vd-note">
+              Elk venster middelt over de dagen waarop je iets registreerde.
+              Gedimd: geen nieuwe dagen ten opzichte van het venster ervoor,
+              dus hetzelfde getal.
+            </p>
+          ) : null}
 
           {bevinding && TEKORT_VOORSTELLEN[bevinding.nutrient] ? (
             <p className="vd-note">
