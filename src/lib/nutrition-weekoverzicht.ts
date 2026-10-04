@@ -1,9 +1,10 @@
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
-import { aandeelVanRi, REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
+import { REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { nutrientenUitItems, sanitizeItems } from "@/lib/nutrition-dagboek-items";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
+import { aandeelVanNorm, normVoor, type KernstofNormen } from "@/lib/nutrition-normen";
 import { NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
 
 /**
@@ -100,6 +101,7 @@ export function weekDatums(start: string): string[] {
 export function bouwWeekoverzicht(
   dagen: readonly DagboekDag[],
   start: string,
+  normen: KernstofNormen,
 ): Weekoverzicht {
   const datums = weekDatums(start);
   const eind = datums[6]!;
@@ -128,11 +130,11 @@ export function bouwWeekoverzicht(
     // 500 %" terwijl het op zes van de zeven dagen nul was.
     const gemiddeld =
       inWeek.length > 0 ? Math.round((som / inWeek.length) * 10) / 10 : 0;
-    const aandeel = inWeek.length > 0 ? aandeelVanRi(nutrient, gemiddeld) : null;
-    const referentie = referentieRij.personalTarget ? null : referentieRij.value;
+    const aandeel = inWeek.length > 0 ? aandeelVanNorm(normen, nutrient, gemiddeld) : null;
+    const referentie = normVoor(normen, nutrient)?.waarde ?? null;
 
     // Alleen een bewijsbare stof mag een afstand tonen. Zink en vitamine D
-    // hebben wel een wettelijke RI (referentie is dus niet null), maar §3.4
+    // hebben wel een norm (referentie is dus niet null), maar §3.4
     // van het besluit zegt: die twee krijgen geen oordeel, alleen hun
     // bronnentelling — een "te gaan"-getal zou hier alsnog een oordeel zijn,
     // verpakt als afstand in plaats van als tekort.
