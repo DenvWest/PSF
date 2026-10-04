@@ -93,4 +93,5 @@ Voorgesteld door Dennis (3 okt): een kopie van de producten uit de eerste datase
 - **Waarom dit juridisch sterker staat dan afzonderlijke rijen, en waarom het geen vrijbrief is:** de uitvoer maakt niets van de inhoud openbaar en is geen concurrerende database. Maar de eerdere kopie en onze kennis van de herkomst blijven bestaan. Dat is vraag 11 en 12 in `JURIDISCHE_VRAAG_SUPERMARKTDATA_2026-10.md` §7.
 - **Wat het niet oplost:** de 16 "verrijkt"-regels. Bij plantaardige drankjes en margarine loopt de spreiding te ver uiteen (een mediaan zegt weinig over verrijking), en bij een derde van die regels zijn er te weinig producten.
 - **Eerst de jurist.** Tot het antwoord er is, wordt hier niets van gebouwd en niets in `src/` gezet.
+- **4 okt: herzien.** De waarden worden niet uit de eerste dataset berekend maar uit `sm_products`-rijen (herkomst Open Food Facts), en NEVO telt er nooit in mee. Zie `BESLUIT_VOEDINGSBRONNEN_LAGEN_2026-10.md`.
 
