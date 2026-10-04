@@ -77,8 +77,8 @@ function parseLogBody(
   return { moment, prodId, grams: Math.min(Math.trunc(grams), MAX_GRAMS) };
 }
 
-/** Hoeveel dagen één periode-verzoek mag beslaan: genoeg voor het venster van 30 dagen. */
-const MAX_PERIODE_DAGEN = 31;
+/** Hoeveel dagen één periode-verzoek mag beslaan: zes weken, genoeg voor het 30-dagenvenster én de trend in Je patroon. */
+const MAX_PERIODE_DAGEN = 42;
 
 function dagenTussen(van: string, tot: string): number {
   return Math.round((Date.parse(`${tot}T00:00:00Z`) - Date.parse(`${van}T00:00:00Z`)) / 86_400_000) + 1;

@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
+import PatroonTrendGrafiek from "@/components/dashboard/patroon/PatroonTrendGrafiek";
+import type { GevolgdeWeekReeks } from "@/lib/nutrition-gevolgde-weken";
 import { hoeveelheid } from "@/lib/nutrition-tekortsysteem-copy";
 import type { NutrientTrend } from "@/lib/nutrition-trend";
-import { weekKort } from "@/lib/nutrition-trend";
 
 /**
  * De trend per stof: hetzelfde weekgemiddelde als het weekoverzicht, nu over
@@ -23,103 +24,108 @@ import { weekKort } from "@/lib/nutrition-trend";
  * Zoals overal in dit scherm: de referentie is een marker om tegen af te
  * zetten, geen vak dat "vol" moet raken. Een staaf die eroverheen komt (een
  * zalmweek) mag gewoon hoger zijn dan de lijn.
+ *
+ * De grafiek zelf staat in `PatroonTrendGrafiek.tsx`. Hier per stof de kop
+ * met een telling ("gehaald in 3 van 5 gemeten weken") en, onder de
+ * kernstoffen, de gevolgde stoffen zonder oordeel.
  */
 
-export default function PatroonTrend({ trends }: { trends: readonly NutrientTrend[] }) {
-  return (
-    <ul className="m-0 flex list-none flex-col gap-4 p-0">
-      {trends.map((trend) => (
-        <li key={trend.nutrient} className="vd-tabel" style={{ padding: "0.875rem" }}>
-          <div className="flex items-baseline justify-between gap-2">
-            <Link
-              href={nutrientReferences[trend.nutrient].comparisonPath}
-              className="vd-naam"
-              style={{ textDecoration: "none" }}
-            >
-              <b style={{ color: "var(--vd-ink)" }}>{trend.label}</b>
-            </Link>
-            <span className="vd-getal" data-toon="stil">
-              {trend.referentie === null
-                ? "eigen doel"
-                : `referentie ${trend.referentie} ${trend.unit}`}
-            </span>
-          </div>
-
-          {!trend.bewijsbaar ? (
-            <p className="vd-note" data-toon="amber" style={{ marginTop: "0.5rem" }}>
-              Met een dagboek niet aan te tonen — geen trend, alleen je bronnen.
-            </p>
-          ) : (
-            <TrendStaafjes trend={trend} />
-          )}
-        </li>
-      ))}
-    </ul>
-  );
+function telRegel(trend: NutrientTrend): string | null {
+  const gemeten = trend.punten.filter((p) => p.waarde !== null);
+  if (gemeten.length === 0) return "nog geen gemeten weken";
+  if (trend.referentie === null) return `${gemeten.length} ${gemeten.length === 1 ? "week" : "weken"} gemeten`;
+  const gehaald = gemeten.filter((p) => p.aandeel !== null && p.aandeel >= 1).length;
+  return `norm gehaald in ${gehaald} van ${gemeten.length} gemeten ${gemeten.length === 1 ? "week" : "weken"}`;
 }
 
-function TrendStaafjes({ trend }: { trend: NutrientTrend }) {
-  const waarden = trend.punten.map((p) => p.waarde ?? 0);
-  const hoogsteWaarde = Math.max(...waarden, trend.referentie ?? 0, 1);
+function hoofdletter(label: string): string {
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
 
-  // De referentielijn staat als percentage van de hoogte van de grafiek —
-  // dat werkt ook als een piekweek er ver bovenuit steekt.
-  const referentiePct =
-    trend.referentie !== null
-      ? Math.min((trend.referentie / hoogsteWaarde) * 100, 100)
-      : null;
-
+export default function PatroonTrend({
+  trends,
+  gevolgd,
+  huidigeWeek,
+}: {
+  trends: readonly NutrientTrend[];
+  gevolgd: readonly GevolgdeWeekReeks[];
+  huidigeWeek: string;
+}) {
   return (
-    <div
-      className="vd-trendgrafiek vd-trendlijn-doel"
-      style={
-        referentiePct !== null
-          ? ({ ["--vd-trend-doel-top" as string]: `${100 - referentiePct}%` } as React.CSSProperties)
-          : undefined
-      }
-    >
-      {referentiePct !== null ? (
-        <span
-          aria-hidden
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            top: `${100 - referentiePct}%`,
-            borderTop: "1px dashed var(--vd-line-2)",
-          }}
-        />
+    <div className="flex flex-col gap-4">
+      <ul className="m-0 flex list-none flex-col gap-4 p-0">
+        {trends.map((trend) => (
+          <li key={trend.nutrient} className="vd-tabel" style={{ padding: "0.875rem" }}>
+            <div className="mb-2 flex items-baseline justify-between gap-2">
+              <Link
+                href={nutrientReferences[trend.nutrient].comparisonPath}
+                className="vd-naam"
+                style={{ textDecoration: "none" }}
+              >
+                <b style={{ color: "var(--vd-ink)" }}>{trend.label}</b>
+              </Link>
+              <span className="vd-getal" data-toon="stil">
+                {trend.bewijsbaar ? telRegel(trend) : "geen oordeel"}
+              </span>
+            </div>
+
+            {!trend.bewijsbaar ? (
+              <p className="vd-note" data-toon="amber" style={{ marginTop: "0.5rem" }}>
+                Met een dagboek niet aan te tonen — geen trend, alleen je bronnen.
+              </p>
+            ) : (
+              <PatroonTrendGrafiek
+                label={trend.label}
+                punten={trend.punten.map((p) => ({
+                  weekStart: p.weekStart,
+                  waarde: p.waarde,
+                  aandeel: p.aandeel,
+                  dagen: p.dagenGeregistreerd,
+                }))}
+                unit={trend.unit}
+                referentie={trend.referentie}
+                referentieNaam="norm"
+                toon="oordeel"
+                huidigeWeek={huidigeWeek}
+              />
+            )}
+          </li>
+        ))}
+      </ul>
+
+      {gevolgd.length > 0 ? (
+        <section aria-labelledby="patroon-trend-gevolgd" className="flex flex-col gap-3">
+          <p id="patroon-trend-gevolgd" className="vd-eyebrow" style={{ margin: "0.5rem 0 0" }}>
+            Ook gevolgd · zonder oordeel
+          </p>
+          <ul className="m-0 flex list-none flex-col gap-4 p-0">
+            {gevolgd.map((reeks) => (
+              <li key={reeks.veld} className="vd-tabel" style={{ padding: "0.875rem" }}>
+                <div className="mb-2 flex items-baseline justify-between gap-2">
+                  <b className="text-[var(--vd-ink)]">{hoofdletter(reeks.label)}</b>
+                  <span className="vd-getal" data-toon="stil">
+                    {reeks.ri !== null ? `RI ${hoeveelheid(reeks.ri)} ${reeks.unit}` : "gem. per dag"}
+                  </span>
+                </div>
+                <PatroonTrendGrafiek
+                  label={hoofdletter(reeks.label)}
+                  punten={reeks.punten.map((p) => ({
+                    weekStart: p.weekStart,
+                    waarde: p.gemiddeld,
+                    aandeel: p.aandeel,
+                    dagen: p.dagen,
+                  }))}
+                  unit={reeks.unit}
+                  referentie={reeks.ri}
+                  referentieNaam="RI"
+                  toon="neutraal"
+                  huidigeWeek={huidigeWeek}
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
       ) : null}
-
-      {trend.punten.map((punt) => {
-        const hoogte =
-          punt.waarde === null ? 0 : Math.max(3, (punt.waarde / hoogsteWaarde) * 100);
-        const gedekt = punt.aandeel !== null && punt.aandeel >= 1;
-
-        return (
-          <div key={punt.weekStart} className="vd-trendpunt">
-            <span
-              aria-hidden
-              className="vd-trendpunt-staaf"
-              title={
-                punt.waarde === null
-                  ? "Niet geregistreerd"
-                  : `${hoeveelheid(punt.waarde)} ${trend.unit}`
-              }
-              style={{
-                height: `${hoogte}%`,
-                background:
-                  punt.waarde === null
-                    ? "var(--vd-track)"
-                    : gedekt
-                      ? "var(--vd-sage)"
-                      : "var(--vd-terra)",
-              }}
-            />
-            <span className="vd-trendpunt-label">{weekKort(punt.weekStart)}</span>
-          </div>
-        );
-      })}
     </div>
   );
 }

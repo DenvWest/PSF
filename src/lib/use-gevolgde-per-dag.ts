@@ -3,32 +3,30 @@
 import { useEffect, useMemo, useState } from "react";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { sanitizeItems } from "@/lib/nutrition-dagboek-items";
-import { bouwGevolgdeVensters, type GevolgdeReeks } from "@/lib/nutrition-gevolgde-vensters";
-import type { SupermarktPortie } from "@/lib/nutrition-supermarkt-items";
-import { berekenVoedingswaarde, nevoCodesVoorItems } from "@/lib/nutrition-voedingswaarde";
+import type { SupermarktPortie, SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
+import {
+  berekenVoedingswaarde,
+  nevoCodesVoorItems,
+  type Voedingswaarde,
+} from "@/lib/nutrition-voedingswaarde";
 import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
 import { useNevoProducten } from "@/lib/use-nevo-producten";
 
-const PERIODE = 30;
-
-function datumTerug(vandaag: string, dagen: number): string {
-  const datum = new Date(`${vandaag}T00:00:00Z`);
-  datum.setUTCDate(datum.getUTCDate() - dagen);
-  return datum.toISOString().slice(0, 10);
-}
-
 /**
- * De gevolgde stoffen per venster voor Je patroon. Haalt pas iets op als er
- * een stof gevolgd wordt: de etiketproducten van 30 dagen in één verzoek, de
- * NEVO-records van alle catalogusregels in die periode.
+ * De volledige voedingswaarde per geregistreerde dag van `van` tot `vandaag`,
+ * voor de gevolgde stoffen in Je patroon. Vensters (`nutrition-gevolgde-vensters`),
+ * weken en trend (`nutrition-gevolgde-weken`) rekenen hier alle drie uit, met
+ * één ophaalronde. Haalt pas iets op als er een stof gevolgd wordt: de
+ * etiketproducten van de periode in één verzoek (max. 42 dagen, zie de route),
+ * de NEVO-records van alle catalogusregels in die periode.
  */
-export function useGevolgdeVensters(
+export function useGevolgdePerDag(
   dagen: readonly DagboekDag[],
+  van: string,
   vandaag: string,
-): { reeksen: GevolgdeReeks[]; stoffenGeladen: boolean } {
+): { stoffen: readonly SupermarktVeld[]; perDag: ReadonlyMap<string, Voedingswaarde>; stoffenGeladen: boolean } {
   const { stoffen, geladen } = useGevolgdeStoffen();
   const volgtIets = stoffen.length > 0;
-  const van = datumTerug(vandaag, PERIODE - 1);
   const [etiket, setEtiket] = useState<Record<string, SupermarktPortie[]>>({});
 
   useEffect(() => {
@@ -67,10 +65,10 @@ export function useGevolgdeVensters(
   );
   const nevoProducten = useNevoProducten(codes);
 
-  const reeksen = useMemo(() => {
-    if (!volgtIets) return [];
+  const perDag = useMemo(() => {
+    if (!volgtIets) return new Map<string, Voedingswaarde>();
     const datums = new Set([...itemsPerDag.keys(), ...Object.keys(etiket)]);
-    const perDag = new Map(
+    return new Map(
       [...datums].map((datum) => [
         datum,
         berekenVoedingswaarde({
@@ -80,8 +78,7 @@ export function useGevolgdeVensters(
         }),
       ]),
     );
-    return bouwGevolgdeVensters(perDag, stoffen, vandaag);
-  }, [volgtIets, itemsPerDag, etiket, nevoProducten, stoffen, vandaag]);
+  }, [volgtIets, itemsPerDag, etiket, nevoProducten]);
 
-  return { reeksen, stoffenGeladen: geladen };
+  return { stoffen, perDag, stoffenGeladen: geladen };
 }
