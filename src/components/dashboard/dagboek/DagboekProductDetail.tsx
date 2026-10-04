@@ -6,6 +6,8 @@ import { aandeelVanRi } from "@/data/nutrition/reference-intake";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import * as Icons from "@/components/app/icons";
+import { NEVO_GEHALTES_EDITIE } from "@/data/nutrition/food-catalog-nevo-gehaltes";
+import { gehaltePer100g, nevoOmega3Delen } from "@/lib/nutrition-catalog-gehalte";
 import { bedragVanItem, type DagboekItem } from "@/lib/nutrition-dagboek-items";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import { toBase } from "@/lib/nutrition-units";
@@ -57,6 +59,13 @@ export default function DagboekProductDetail({
   const label = labelVoor(item);
   const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
   const eenheid = eenheidVoor(item);
+  const nevoStoffen = voedingEntry
+    ? NUTRIENT_ORDER.filter((nutrient) => gehaltePer100g(voedingEntry, nutrient)?.bron === "nevo")
+    : [];
+  const omega3Delen =
+    voedingEntry && nevoStoffen.includes("omega3") ? nevoOmega3Delen(voedingEntry.key) : null;
+  const naarPortie = (mgPer100g: number | null) =>
+    mgPer100g === null ? null : Math.round(((mgPer100g * item.grams) / 100) * 10) / 10;
 
   const rijen = NUTRIENT_ORDER.map((nutrient) => {
     const bedrag = bedragVanItem(item, nutrient);
@@ -161,6 +170,21 @@ export default function DagboekProductDetail({
             })}
           </ul>
         )}
+
+        {nevoStoffen.length > 0 ? (
+          <footer className="flex flex-col gap-1 border-t border-white/10 px-4 py-3 text-[11px] leading-relaxed text-[var(--vd-ink-4)]">
+            {omega3Delen ? (
+              <p className="m-0">
+                Omega-3: EPA {naarPortie(omega3Delen.epaMg) ?? "n.o."} mg + DHA{" "}
+                {naarPortie(omega3Delen.dhaMg) ?? "n.o."} mg. De som is door ons berekend
+                (afgeleid), NEVO geeft EPA en DHA los.
+              </p>
+            ) : null}
+            <p className="m-0">
+              Gehaltes uit NEVO-online versie {NEVO_GEHALTES_EDITIE}, RIVM, Bilthoven.
+            </p>
+          </footer>
+        ) : null}
       </section>
 
       <p className="m-0 rounded-xl border-l-2 border-[var(--vd-sage)] bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-[var(--vd-ink-2)]">
