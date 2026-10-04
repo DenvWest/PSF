@@ -3,6 +3,7 @@ import {
   computeProteinTarget,
   type ProteinTargetRange,
 } from "@/lib/protein-target";
+import type { KernstofNormen } from "@/lib/nutrition-normen";
 
 /**
  * Eigen voedingsdoelen: gewicht, trainingsbelasting en een eventueel
@@ -220,4 +221,9 @@ export type VoedingsdoelenWeergave = {
   gewichtBron: EiwitDoel["gewichtBron"];
   /** Of de check een bruikbaar gewicht draagt — voor de uitleg, zonder het getal. */
   checkHeeftGewicht: boolean;
+  /**
+   * De norm per kernstof voor deze persoon (`nutrition-normen.ts`). Server-side
+   * afgeleid uit het geslacht in de check; het geslacht zelf gaat niet mee.
+   */
+  kernstofNormen: KernstofNormen;
 };

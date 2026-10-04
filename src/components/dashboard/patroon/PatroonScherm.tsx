@@ -29,6 +29,7 @@ import {
   bouwTekortsysteem,
 } from "@/lib/nutrition-tekortsysteem";
 import { bouwTrend } from "@/lib/nutrition-trend";
+import { useKernstofNormen } from "@/lib/use-kernstof-normen";
 import {
   bouwWeekoverzicht,
   verschuifWeek,
@@ -61,6 +62,7 @@ import {
 
 function PatroonInhoud() {
   const vandaag = todayInAgendaTimezone();
+  const normen = useKernstofNormen();
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
   const [laden, setLaden] = useState(true);
   const [sectie, setSectie] = useState<PatroonSectie>("samenvatting");
@@ -143,12 +145,12 @@ function PatroonInhoud() {
   };
 
   const reeksen = useMemo(
-    () => bouwTekortsysteem(dagen, vandaag),
-    [dagen, vandaag],
+    () => bouwTekortsysteem(dagen, vandaag, normen),
+    [dagen, vandaag, normen],
   );
   const bevinding = useMemo(
-    () => bepaalBevinding(reeksen, dagen, vandaag),
-    [reeksen, dagen, vandaag],
+    () => bepaalBevinding(reeksen, dagen, vandaag, normen),
+    [reeksen, dagen, vandaag, normen],
   );
 
   const huidigeWeek = useMemo(() => weekStart(vandaag), [vandaag]);
@@ -157,12 +159,12 @@ function PatroonInhoud() {
     [huidigeWeek, weekOffset],
   );
   const week = useMemo(
-    () => bouwWeekoverzicht(dagen, bekekenWeekStart),
-    [dagen, bekekenWeekStart],
+    () => bouwWeekoverzicht(dagen, bekekenWeekStart, normen),
+    [dagen, bekekenWeekStart, normen],
   );
   const isHuidigeWeek = weekOffset === 0;
 
-  const trends = useMemo(() => bouwTrend(dagen, vandaag), [dagen, vandaag]);
+  const trends = useMemo(() => bouwTrend(dagen, vandaag, normen), [dagen, vandaag, normen]);
 
   /**
    * Per stof de zeven dagen van de bekeken week, als ondergrens of null.
@@ -445,7 +447,7 @@ function PatroonInhoud() {
 
           <p className="vd-note" data-toon="amber">
             <strong>Zink en vitamine D krijgen geen oordeel.</strong> Bronnen
-            leveren 1–4 mg zink per portie tegen 10 mg RI; vitamine D komt uit
+            leveren 1–4 mg zink per portie tegen een norm van 7–9 mg; vitamine D komt uit
             zon en verrijking, niet uit voeding. Meer dagen meten maakt een
             onmeetbare stof niet meetbaar.
           </p>

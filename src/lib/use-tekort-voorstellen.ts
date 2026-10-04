@@ -6,6 +6,7 @@ import type { TekortVoorstel } from "@/lib/agenda-tekort-voorstellen";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { bouwTekortsysteem } from "@/lib/nutrition-tekortsysteem";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
+import { useKernstofNormen } from "@/lib/use-kernstof-normen";
 
 export function useTekortVoorstellen(today: string): {
   dagen: DagboekDag[];
@@ -13,6 +14,7 @@ export function useTekortVoorstellen(today: string): {
   reeksen: Vensterreeks[];
 } {
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
+  const normen = useKernstofNormen();
 
   useEffect(() => {
     let cancelled = false;
@@ -33,7 +35,7 @@ export function useTekortVoorstellen(today: string): {
     };
   }, []);
 
-  const reeksen = useMemo(() => bouwTekortsysteem(dagen, today), [dagen, today]);
+  const reeksen = useMemo(() => bouwTekortsysteem(dagen, today, normen), [dagen, today, normen]);
   const voorstellen = useMemo(() => bouwTekortVoorstellen(reeksen), [reeksen]);
 
   return { dagen, voorstellen, reeksen };

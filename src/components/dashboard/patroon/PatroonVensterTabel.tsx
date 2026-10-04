@@ -1,6 +1,5 @@
 "use client";
 
-import { REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
 import {
   percentageADH,
   RICHTING_LABEL,
@@ -12,6 +11,8 @@ import {
 } from "@/lib/nutrition-tekortsysteem-copy";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 import { NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
+import { normLabel, normVoor } from "@/lib/nutrition-normen";
+import { useKernstofNormen } from "@/lib/use-kernstof-normen";
 
 /**
  * De vier vensters als één tabel: stof, 1 / 7 / 14 / 30 dagen, richting.
@@ -53,6 +54,7 @@ export default function PatroonVensterTabel({
 }: {
   reeksen: readonly Vensterreeks[];
 }) {
+  const normen = useKernstofNormen();
   const kolommen = vensterKolommen(reeksen);
   const zelfde = new Set(kolommen.filter((k) => k.zelfde).map((k) => k.dagen_terug));
   return (
@@ -69,8 +71,8 @@ export default function PatroonVensterTabel({
       </div>
 
       {reeksen.map((reeks) => {
-        const referentie = REFERENCE_INTAKES[reeks.nutrient];
-        const eigenDoel = referentie.personalTarget;
+        const norm = normVoor(normen, reeks.nutrient);
+        const eigenDoel = norm === null;
         const onbewijsbaar = reeks.nutrient in NIET_BEWIJSBAAR;
 
         const kleur = onbewijsbaar
@@ -84,9 +86,7 @@ export default function PatroonVensterTabel({
             <span className="vd-naam">
               {reeks.label}
               <i>
-                {eigenDoel
-                  ? "gem. per dag"
-                  : `${referentie.value} ${referentie.unit} ADH`}
+                {norm ? `${normLabel(norm)} ADH` : "gem. per dag"}
               </i>
             </span>
 
