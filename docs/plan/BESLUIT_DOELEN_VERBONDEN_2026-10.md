@@ -26,7 +26,7 @@ Het Doelen-scherm had twee losse formulieren (eiwit en macro's), en de weektabel
    - Alleen velden die NEVO en het etiket al leveren; geen nieuwe stoffen via deze route.
    - Gevolgde stoffen en eigen doelen leiden nooit naar `/beste/*` (macro-besluit §0.1).
 
-3. **Eén plek om in te stellen: Je doelen.** Twee ingangen: het bestaande item "Doelen" in Meer, en een link "Stoffen kiezen →" op de tabbladen Voedingsstoffen en Macro's die naar het blok "Wat je volgt" springt en terugbrengt naar het dagboek.
+3. **Eén opslag en één kiezer, meerdere ingangen.** De gevolgde stoffen staan in één tabel (`account_gevolgde_stoffen`) en worden overal gekozen met hetzelfde component (`GevolgdeStoffenKiezer`). Ingangen: het blok "Wat je volgt" op Je doelen (via Meer), en een rij "+ stof toevoegen" onder de venstertabel in Je patroon. *Herzien 4 okt, zie "Herziening" hieronder.*
 
 4. **Eén bron voor doelen.** Krans, beide tabbladen, weektabel en productdetail lezen hun doel uit één functie in `src/lib/`, zodat geen scherm een ander getal toont.
 
@@ -34,7 +34,7 @@ Het Doelen-scherm had twee losse formulieren (eiwit en macro's), en de weektabel
 
 ## Afgewezen
 
-- **Een tweede bewerkscherm in het dagboek** (stoffen aan/uit naast de tabel). Twee plekken voor dezelfde instelling lopen uit elkaar; dat is het "niet verbonden"-probleem dat dit besluit oplost. De link uit punt 3 legt het kiezen wel bij de tabel.
+- **Een tweede, eigen bewerkscherm** met een eigen opslag of eigen kiezer. Twee plekken die elk iets eigens bewaren lopen uit elkaar; dat is het "niet verbonden"-probleem dat dit besluit oplost. (Een tweede *ingang* naar dezelfde kiezer en dezelfde opslag mag wel, zie "Herziening".)
 - **Een nieuw item in het Meer-menu** naast "Doelen". Dubbelop.
 - **Een vooringestelde macro-verdeling of calorierichtlijn.** Blijft afgewezen (macro-besluit §4).
 - **Gevolgde stoffen als nieuwe gemeten stof met tekortoordeel.** Dat loopt via `BESLUIT_IJZER_CALCIUM_2026-09.md` §8, niet via dit besluit.
@@ -45,6 +45,22 @@ Het Doelen-scherm had twee losse formulieren (eiwit en macro's), en de weektabel
 2. Eén bron voor doelen in `src/lib/`.
 3. Doelen-scherm herontwerpen: blokken "Uit je check", "Jouw energie en macro's", "Wat je volgt"; Tailwind i.p.v. inline styles; één opslaan-knop; live grammen bij percentages.
 4. Migratie: gevolgde stoffen + RI-overschrijvingen (eigen tabel of naast `account_macro_doelen`), chips op het Doelen-scherm, link vanuit het dagboek.
+
+## Herziening 4 okt (Dennis: "Akkoord")
+
+Dennis wilde een "+"-knop onder de tabel in Je patroon om een stof toe te voegen. Dat leek te botsen met de afwijzing van "een tweede bewerkscherm". Het bezwaar daar was dat twee plekken *uit elkaar lopen*. Dat kan niet als beide ingangen hetzelfde component gebruiken en naar dezelfde tabel schrijven. Daarom:
+
+- De "+" opent `GevolgdeStoffenKiezer`, hetzelfde component als op Je doelen.
+- Toegevoegde stoffen staan in Patroon onder een eigen kopje "Ook gevolgd": gemiddelde per venster in mg/µg/g, %RI in neutrale tint. Geen ✓, geen richtingpijl, geen link naar `/beste/*` (scheiding tekortsysteem ↔ informatielaag, macro-besluit §0.1).
+- Te kiezen: de informatieve velden die het dagboek al heeft (vezels, verzadigd vet, suikers, natrium, kalium, calcium, ijzer, vitamine B12, vitamine C). Kernstoffen staan er al vast in; energie en macro's staan op het tabblad Macro's. Extra NEVO-stoffen (folaat, jodium, selenium, …) vragen een uitbreiding van de import en komen later.
+
+### Afspraak met de parallelle sessie (dagboek + micronutriëntringen)
+
+Een andere sessie breidt het dagboek en de micronutriëntringen uit. Om dubbel werk en uiteenlopende opslag te voorkomen:
+
+- **Deze sessie levert:** tabel `account_gevolgde_stoffen`, `src/lib/account-gevolgde-stoffen.ts` (welke velden volgbaar zijn + lezen/schrijven), `GET/POST /api/account/gevolgde-stoffen`, de hook `useGevolgdeStoffen()` en het component `GevolgdeStoffenKiezer`.
+- **De dagboeksessie gebruikt die**, en maakt geen eigen lijst of eigen opslag van "welke stoffen toon ik". Wil het dagboek meer of andere velden volgbaar maken, dan gaat dat via `VOLGBARE_VELDEN` in diezelfde module.
+- **Doelen per stof** (RI-overschrijving) komen in een volgende stap in dezelfde tabel; nog niet gebouwd.
 
 ## Meetpunt
 
