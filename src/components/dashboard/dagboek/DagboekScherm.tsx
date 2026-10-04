@@ -17,7 +17,6 @@ import {
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { ProteinTargetRange } from "@/lib/protein-target";
 import {
-  somVanSupermarktveld,
   type SupermarktPortie,
   type SupermarktVeld,
 } from "@/lib/nutrition-supermarkt-items";
@@ -50,6 +49,9 @@ import DagboekWeekstrip, {
 } from "@/components/dashboard/dagboek/DagboekWeekstrip";
 import SupermarktBronRegel from "@/components/dashboard/dagboek/SupermarktBronRegel";
 import SupermarktPortieInvoer from "@/components/dashboard/dagboek/SupermarktPortieInvoer";
+import VoedingswaardeTabel from "@/components/dashboard/dagboek/VoedingswaardeTabel";
+import { berekenVoedingswaarde, nevoCodesVoorItems } from "@/lib/nutrition-voedingswaarde";
+import { useNevoProducten } from "@/lib/use-nevo-producten";
 
 /**
  * De vier toestanden van het scherm-achter-een-balk: overzicht (het bestaande
@@ -318,6 +320,14 @@ export default function DagboekScherm({
   );
 
   const ondergrens = useMemo(() => nutrientenGesplitstUitItems(items), [items]);
+  const nevoCodes = useMemo(() => nevoCodesVoorItems(items), [items]);
+  const nevoProducten = useNevoProducten(nevoCodes);
+  const dagVoedingswaarde = useMemo(
+    () => berekenVoedingswaarde({ items, supermarktLogs, nevoProducten }),
+    [items, supermarktLogs, nevoProducten],
+  );
+  const dagMacro = (veld: SupermarktVeld) =>
+    dagVoedingswaarde.rijen.find((rij) => rij.veld === veld)?.waarde ?? null;
 
   /**
    * Zelfde "eerder gebruikt"-gedachte als `recent`, maar als ruwe items in
@@ -471,6 +481,24 @@ export default function DagboekScherm({
   const berekendeBronProducten = [...supermarktLogs, ...[...weekSupermarktLogs.values()].flat()].flatMap((log) =>
     log.product ? [log.product] : [],
   );
+  const dagBronProducten = [
+    ...nevoCodes.flatMap((code) => nevoProducten.get(`nevo:${code}`) ?? []),
+    ...supermarktLogs.flatMap((log) => (log.product ? [log.product] : [])),
+  ];
+
+  function kiesSectie(volgende: DagboekSectie) {
+    setDagboekSectie(volgende);
+    trackEvent("nutrition_dagboek_subtab_gekozen", { sectie: volgende });
+  }
+
+  const kransBijSelect = (nutrient: NutrientId) => {
+    emitAccountClientEvent("nutrition.dagboek_nutrient_opened", {
+      nutrient,
+      surface: "dagboek_tab",
+    });
+    trackEvent("nutrition_dagboek_nutrient_opened", { nutrient });
+    setScherm({ scherm: "detail", nutrient });
+  };
 
   /**
    * Voegt een supermarktproduct-portie toe: optimistisch lokaal, dan de
@@ -716,10 +744,7 @@ export default function DagboekScherm({
 
       <DagboekSubtabs
         actief={dagboekSectie}
-        onKies={(volgende) => {
-          setDagboekSectie(volgende);
-          trackEvent("nutrition_dagboek_subtab_gekozen", { sectie: volgende });
-        }}
+        onKies={kiesSectie}
       />
 
       {dagboekSectie === "vandaag" ? (
@@ -732,14 +757,7 @@ export default function DagboekScherm({
           <DagboekKrans
             stoffen={ondergrens}
             proteinTarget={proteinTarget}
-            onSelect={(nutrient) => {
-              emitAccountClientEvent("nutrition.dagboek_nutrient_opened", {
-                nutrient,
-                surface: "dagboek_tab",
-              });
-              trackEvent("nutrition_dagboek_nutrient_opened", { nutrient });
-              setScherm({ scherm: "detail", nutrient });
-            }}
+            onSelect={kransBijSelect}
             onBegin={() => {
               emitAccountClientEvent("nutrition.dagboek_maaltijd_geopend", {
                 moment: "ontbijt",
@@ -749,6 +767,16 @@ export default function DagboekScherm({
               setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" });
             }}
           />
+
+          {ondergrens.length > 0 || supermarktLogs.length > 0 ? (
+            <button
+              type="button"
+              onClick={() => kiesSectie("voedingsstoffen")}
+              className="cursor-pointer self-center text-[12px] font-semibold text-[var(--vd-sage-2)] underline-offset-2 hover:underline"
+            >
+              Alle voedingsstoffen van deze dag →
+            </button>
+          ) : null}
 
           {ondergrens.length === 0 ? (
             <p className="m-0 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-3 text-[12px] leading-relaxed text-[var(--vd-ink-3)]">
@@ -831,6 +859,24 @@ export default function DagboekScherm({
           aria-labelledby="dagboek-subtab-voedingsstoffen"
           className="flex flex-col gap-4"
         >
+          <DagboekWeekstrip
+            dagen={stripDagen}
+            geselecteerd={datum}
+            onSelecteer={setDatum}
+            busy={busy}
+          />
+          <DagboekKrans
+            stoffen={ondergrens}
+            proteinTarget={proteinTarget}
+            onSelect={kransBijSelect}
+            onBegin={() => setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" })}
+          />
+          <VoedingswaardeTabel
+            titel="Alles wat je at"
+            toelichting={dagLabel}
+            voedingswaarde={dagVoedingswaarde}
+            bronProducten={dagBronProducten}
+          />
           <DagboekSupermarktWeektabel
             overzicht={supermarktWeekoverzicht}
             rijen={supermarktWeekoverzicht.rijen}
@@ -855,26 +901,26 @@ export default function DagboekScherm({
           />
 
           <DagboekMacroRing
-            kcal={somVanSupermarktveld(supermarktLogs, "energyKcal")}
+            kcal={dagMacro("energyKcal")}
             segmenten={[
               {
                 key: "koolhydraten",
                 label: "Koolhydraten",
-                gram: somVanSupermarktveld(supermarktLogs, "carbohydrateG"),
+                gram: dagMacro("carbohydrateG"),
                 kcalPerGram: 4,
                 kleur: MACRO_RING_KLEUREN.koolhydraten,
               },
               {
                 key: "vet",
                 label: "Vet",
-                gram: somVanSupermarktveld(supermarktLogs, "fatG"),
+                gram: dagMacro("fatG"),
                 kcalPerGram: 9,
                 kleur: MACRO_RING_KLEUREN.vet,
               },
               {
                 key: "eiwit",
                 label: "Eiwit",
-                gram: somVanSupermarktveld(supermarktLogs, "proteinG"),
+                gram: dagMacro("proteinG"),
                 kcalPerGram: 4,
                 kleur: MACRO_RING_KLEUREN.eiwit,
               },

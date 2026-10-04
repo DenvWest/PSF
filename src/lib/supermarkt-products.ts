@@ -132,6 +132,10 @@ export function rijNaarProduct(rij: Rij): SupermarktProduct | null {
     ironMg: getal(rij.iron_mg),
     vitaminCMg: getal(rij.vitamin_c_mg),
     vitaminDµg: getal(rij.vitamin_d_ug),
+    potassiumMg: null,
+    magnesiumMg: null,
+    zincMg: null,
+    vitaminB12µg: null,
   };
 }
 

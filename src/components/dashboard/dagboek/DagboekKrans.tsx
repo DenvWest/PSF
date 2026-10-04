@@ -23,9 +23,15 @@ import type { ProteinTargetRange } from "@/lib/protein-target";
  *
  * ## Telling blijft telling
  *
- * "2/3 stoffen gedekt" telt alleen bewijsbare stoffen met een noemer, zoals het
+ * "2 van 3 gedekt" telt alleen bewijsbare stoffen met een noemer, zoals het
  * tekortsysteem: een gehaalde RI bewijst dekking, een gemiste bewijst niets.
- * Eiwit rekent tegen het persoonlijke doel; zonder doel telt het niet mee.
+ * Eiwit rekent tegen het persoonlijke doel; zonder doel telt het niet mee en
+ * toont de tegel grammen in plaats van een streep. Tegels die niet meetellen
+ * staan gedempt en de regel eronder noemt ze, zodat de noemer in het midden
+ * te herleiden is tot wat je ziet.
+ *
+ * Een segment zonder vulling tekent niets: met een afgerond lijnuiteinde wordt
+ * een boog van lengte nul een stip, en die leest als voortgang.
  */
 
 const KRANS_NUTRIENTEN: readonly NutrientId[] = [
@@ -75,6 +81,34 @@ function aandeelVoor(
   return stof ? stof.minstens / noemer : 0;
 }
 
+function lijst(namen: string[]): string {
+  if (namen.length <= 1) return namen.join("");
+  return `${namen.slice(0, -1).join(", ")} en ${namen[namen.length - 1]}`;
+}
+
+function telRegel(
+  rijen: readonly { nutrient: NutrientId; telt: boolean; nietBewijsbaar: boolean }[],
+): string {
+  const naam = (nutrient: NutrientId) => {
+    const label = nutrientReferences[nutrient].label;
+    return label.charAt(0).toLowerCase() + label.slice(1);
+  };
+  const tellend = rijen.filter((r) => r.telt).map((r) => naam(r.nutrient));
+  const delen = [
+    tellend.length > 0
+      ? `Een ondergrens, geen dagtotaal. De telling gaat over ${lijst(tellend)}.`
+      : "Een ondergrens, geen dagtotaal.",
+  ];
+  if (rijen.some((r) => r.nutrient === "protein" && !r.telt)) {
+    delen.push("Eiwit telt mee zodra je een eiwitdoel hebt.");
+  }
+  const gestippeld = rijen.filter((r) => r.nietBewijsbaar).map((r) => naam(r.nutrient));
+  if (gestippeld.length > 0) {
+    delen.push(`Gestippeld: ${lijst(gestippeld)} laten zich met een dagboek niet meten.`);
+  }
+  return delen.join(" ");
+}
+
 export default function DagboekKrans({
   stoffen,
   proteinTarget,
@@ -91,6 +125,8 @@ export default function DagboekKrans({
     const aandeel = aandeelVoor(nutrient, stof, proteinTarget);
     return {
       nutrient,
+      minstens: stof?.minstens ?? 0,
+      unit: stof?.unit ?? null,
       aandeel,
       vol: aandeel === null ? 0 : Math.min(aandeel, 1),
       gedekt: aandeel !== null && aandeel >= 1,
@@ -127,17 +163,19 @@ export default function DagboekKrans({
                   strokeLinecap="round"
                   strokeDasharray={rij.nietBewijsbaar ? "2 7" : undefined}
                 />
-                <path
-                  d={boog(index)}
-                  pathLength={100}
-                  fill="none"
-                  stroke={kleur}
-                  strokeWidth={DIKTE}
-                  strokeLinecap="round"
-                  strokeDasharray={`${rij.vol * 100} 100`}
-                  opacity={rij.nietBewijsbaar ? 0.6 : 1}
-                  className="transition-all duration-500"
-                />
+                {rij.vol > 0 ? (
+                  <path
+                    d={boog(index)}
+                    pathLength={100}
+                    fill="none"
+                    stroke={kleur}
+                    strokeWidth={DIKTE}
+                    strokeLinecap="round"
+                    strokeDasharray={`${rij.vol * 100} 100`}
+                    opacity={rij.nietBewijsbaar ? 0.6 : 1}
+                    className="transition-all duration-500"
+                  />
+                ) : null}
               </g>
             );
           })}
@@ -150,10 +188,10 @@ export default function DagboekKrans({
           ) : (
             <>
               <b className="font-serif text-[clamp(22px,15.5cqw,34px)] font-normal leading-none text-[var(--vd-ink)]">
-                {totaal === 0 ? "—" : `${gedekt}/${totaal}`}
+                {totaal === 0 ? "—" : `${gedekt} van ${totaal}`}
               </b>
               <span className="mt-1.5 text-[clamp(9px,5cqw,11px)] leading-tight text-[var(--vd-ink-3)]">
-                stoffen gedekt vandaag
+                {totaal === 0 ? "nog niets te tellen" : "meetbare stoffen gedekt"}
               </span>
             </>
           )}
@@ -176,7 +214,10 @@ export default function DagboekKrans({
             <button
               type="button"
               onClick={() => onSelect(rij.nutrient)}
-              className="flex w-full cursor-pointer flex-col items-center gap-1 rounded-2xl border border-white/8 bg-white/[0.02] px-1 py-2.5 text-center transition-colors hover:border-white/20 hover:bg-white/[0.05]"
+              aria-label={`${nutrientReferences[rij.nutrient].label}${rij.telt ? "" : ", telt niet mee in de telling"}`}
+              className={`flex w-full cursor-pointer flex-col items-center gap-1 rounded-2xl border px-1 py-2.5 text-center transition-colors hover:border-white/20 hover:bg-white/[0.05] ${
+                rij.telt ? "border-white/12 bg-white/[0.03]" : "border-dashed border-white/8 bg-transparent opacity-70"
+              }`}
             >
               <span
                 aria-hidden
@@ -188,7 +229,11 @@ export default function DagboekKrans({
                 }
               />
               <span className="font-serif text-[15px] leading-none text-[var(--vd-ink)]">
-                {rij.aandeel === null ? "—" : `${Math.round(rij.aandeel * 100)}%`}
+                {rij.aandeel !== null
+                  ? `${Math.round(rij.aandeel * 100)}%`
+                  : rij.unit
+                    ? `${Math.round(rij.minstens)} ${rij.unit}`
+                    : "—"}
                 {rij.gedekt ? (
                   <span aria-label="gedekt" className="ml-0.5 text-[11px] text-[var(--vd-sage-2)]">
                     ✓
@@ -203,10 +248,8 @@ export default function DagboekKrans({
         ))}
       </ul>
 
-      <p className="m-0 max-w-[280px] text-center text-[11px] leading-relaxed text-[var(--vd-ink-3)]">
-        {leeg
-          ? "Elk stukje telt mee. Begin met wat je vanochtend at."
-          : "Een ondergrens, geen dagtotaal. Gestippeld: zink en vitamine D laten zich met een dagboek niet meten."}
+      <p className="m-0 max-w-[320px] text-center text-[11px] leading-relaxed text-[var(--vd-ink-3)]">
+        {leeg ? "Elk stukje telt mee. Begin met wat je vanochtend at." : telRegel(rijen)}
       </p>
     </section>
   );

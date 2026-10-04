@@ -11,6 +11,11 @@ import { gehaltePer100g, nevoOmega3Delen } from "@/lib/nutrition-catalog-gehalte
 import { bedragVanItem, type DagboekItem } from "@/lib/nutrition-dagboek-items";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import { toBase } from "@/lib/nutrition-units";
+import NevoMacroBlok from "@/components/dashboard/dagboek/NevoMacroBlok";
+import VoedingswaardeTabel from "@/components/dashboard/dagboek/VoedingswaardeTabel";
+import { macroPortieVoor } from "@/lib/catalogus-macro-portie";
+import { berekenVoedingswaarde, nevoCodeVoorItem } from "@/lib/nutrition-voedingswaarde";
+import { useNevoProducten } from "@/lib/use-nevo-producten";
 
 /**
  * Het detailscherm van één gelogd product: wat dít item levert, per stof.
@@ -21,16 +26,13 @@ import { toBase } from "@/lib/nutrition-units";
  * balkvorm als de premium nutriëntentabel op Je patroon (`vd-cel`), nu in
  * Tailwind omdat de rest van dit scherm dat idioom gebruikt.
  *
- * ## Waarom hier geen macro's of overige vitamines/mineralen staan
+ * ## Twee lagen onder elkaar
  *
- * Dit scherm toont alleen `DagboekItem`s: het tekortsysteem, vijf kernstoffen
- * (eiwit, omega-3, magnesium, vitamine D, zink) met een tekort-oordeel en een
- * `/beste/*`-uitgang. Calorieën/macro's/brede micronutriënten zijn sinds
- * `BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` wél te loggen (Laag
- * A), maar bewust niet hier: een supermarktproduct-portie is geen
- * `DagboekItem` (geen `NutrientId`, geen oordeel) en wordt apart getoond in
- * `DagboekSupermarktSectie`. Deze kaart blijft dus het detailscherm van het
- * tekortsysteem, niet van alles wat het dagboek registreert.
+ * Bovenaan de vijf kernstoffen met ADH-balk, dezelfde getallen als de krans.
+ * Daaronder de rest van het etiket uit NEVO (`VoedingswaardeTabel`), zonder
+ * oordeel (`BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §0.1). Eiwit
+ * staat in allebei en komt in allebei uit {@link bedragVanItem}. Een
+ * benaderingskoppeling toont alleen calorieën en macro's, als benadering.
  */
 
 function labelVoor(item: DagboekItem): string | null {
@@ -59,6 +61,10 @@ export default function DagboekProductDetail({
   const label = labelVoor(item);
   const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
   const eenheid = eenheidVoor(item);
+  const nevoCode = nevoCodeVoorItem(item);
+  const nevoProducten = useNevoProducten(nevoCode ? [nevoCode] : []);
+  const nevoProduct = nevoCode ? (nevoProducten.get(`nevo:${nevoCode}`) ?? null) : null;
+  const isBenadering = voedingEntry ? macroPortieVoor(voedingEntry)?.benadering === true : false;
   const nevoStoffen = voedingEntry
     ? NUTRIENT_ORDER.filter((nutrient) => gehaltePer100g(voedingEntry, nutrient)?.bron === "nevo")
     : [];
@@ -187,11 +193,22 @@ export default function DagboekProductDetail({
         ) : null}
       </section>
 
+      {nevoProduct ? (
+        <VoedingswaardeTabel
+          titel="Voedingswaarde"
+          toelichting={`${item.grams} ${eenheid}`}
+          voedingswaarde={berekenVoedingswaarde({ items: [item], nevoProducten })}
+          bronProducten={[nevoProduct]}
+        />
+      ) : isBenadering && voedingEntry ? (
+        <NevoMacroBlok entry={voedingEntry} grams={item.grams} />
+      ) : null}
+
       <p className="m-0 rounded-xl border-l-2 border-[var(--vd-sage)] bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-[var(--vd-ink-2)]">
         Dit is wat <b className="font-semibold text-[var(--vd-ink)]">{item.grams} {eenheid}</b>{" "}
-        {label.toLowerCase()} levert — niet je hele dag. Alleen de vijf stoffen met een
-        tekort-oordeel staan hier; calorieën en macro&apos;s van supermarktproducten zie je bij
-        &ldquo;Calorieën &amp; macro&apos;s&rdquo; verderop, zonder oordeel.
+        {label.toLowerCase()} levert — niet je hele dag. Bovenaan de vijf stoffen uit je krans,
+        met dezelfde percentages; daaronder de rest van het etiket, zonder oordeel. Je hele dag
+        staat onder &ldquo;Voedingsstoffen&rdquo;.
       </p>
 
       <button

@@ -44,6 +44,10 @@ const testProduct: SupermarktProduct = {
   ironMg: null,
   vitaminCMg: null,
   vitaminDµg: null,
+  potassiumMg: null,
+  magnesiumMg: null,
+  zincMg: null,
+  vitaminB12µg: null,
 };
 
 function jsonResponse(body: unknown): Promise<Response> {

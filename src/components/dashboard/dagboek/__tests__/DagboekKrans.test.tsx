@@ -36,7 +36,25 @@ describe("DagboekKrans", () => {
         onBegin={vi.fn()}
       />,
     );
-    expect(screen.getByText("1/2")).toBeTruthy();
+    expect(screen.getByText("1 van 2")).toBeTruthy();
+    expect(screen.getByText(/De telling gaat over magnesium en omega-3\./)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Zink, telt niet mee/ })).toBeTruthy();
+  });
+
+  it("toont eiwit zonder doel in grammen, niet als streep", () => {
+    const eiwit: NutrientOndergrensGesplitst = { ...magnesiumVol, nutrient: "protein", minstens: 23.4, unit: "g" };
+    render(
+      <DagboekKrans stoffen={[eiwit]} proteinTarget={null} onSelect={vi.fn()} onBegin={vi.fn()} />,
+    );
+    expect(screen.getByText("23 g")).toBeTruthy();
+    expect(screen.getByText(/Eiwit telt mee zodra je een eiwitdoel hebt/)).toBeTruthy();
+  });
+
+  it("tekent geen stip voor een stof zonder vulling", () => {
+    const { container } = render(
+      <DagboekKrans stoffen={[magnesiumVol]} proteinTarget={null} onSelect={vi.fn()} onBegin={vi.fn()} />,
+    );
+    expect(container.querySelectorAll("path[pathLength]")).toHaveLength(1);
   });
 
   it("opent het logboek van de gekozen stof", () => {
