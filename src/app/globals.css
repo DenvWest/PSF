@@ -3098,6 +3098,21 @@ html.floating-cta-active footer {
   place-items: center;
 }
 
+.vd-cel[data-zelfde="ja"],
+.vd-venster-kop > span[data-zelfde="ja"] {
+  opacity: 0.45;
+}
+
+.vd-venster-kop i {
+  display: block;
+  font-style: normal;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.5625rem;
+  color: var(--vd-ink-3);
+}
+
 .vd-cel > span {
   position: absolute;
   inset: 0 auto 0 0;
