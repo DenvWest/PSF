@@ -235,7 +235,7 @@ export default function DagboekNutrientDetail({
       </section>
 
       <DagboekRijksteBronnen
-        nutrient={nutrient}
+        stof={nutrient}
         busy={busy}
         onKies={onKiesBron}
         onVergelijk={onVergelijkBronnen}

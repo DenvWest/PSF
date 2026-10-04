@@ -1,6 +1,6 @@
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
-import { aandeelVanRi, REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
+import { REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import {
   nutrientenUitItems,
@@ -8,6 +8,7 @@ import {
   type DagboekItem,
 } from "@/lib/nutrition-dagboek-items";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
+import { aandeelVanNorm, type KernstofNormen } from "@/lib/nutrition-normen";
 
 /**
  * Het tekortsysteem: hoe hardnekkig is een tekort, gemeten over vier vensters.
@@ -50,14 +51,14 @@ import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
  *
  * > Een ondergrens kan "gehaald" bewijzen, en "niet gehaald" nooit.
  *
- * Een venster dat de RI haalt, bewijst dekking; wat je vergat te noemen kan er
+ * Een venster dat de norm haalt, bewijst dekking; wat je vergat te noemen kan er
  * alleen bij komen. Een venster dat hem niet haalt, bewijst niets — daarom
  * heet het veld `gedekt` en niet `tekort`, en daarom draagt
  * {@link Vensterreeks} een `bewijsbaar`-vlag.
  *
  * ## Niet elke stof is bewijsbaar
  *
- * Zink levert 1–4 mg per portie tegen een RI van 10 mg; alleen oesters halen
+ * Zink levert 1–4 mg per portie tegen een norm van 7 tot 9 mg; alleen oesters halen
  * dat in één portie. Vitamine D komt bij vrijwel iedereen uit zonlicht en
  * verrijking, niet uit voeding. Een dagboek dat niet álles vangt, komt daar
  * nooit aan — en meer dagen meten maakt een onmeetbare stof niet meetbaar.
@@ -76,7 +77,7 @@ export type Venster = {
   dagen_terug: VensterLengte;
   /** Gemiddelde ondergrens per dag over de dagen die er zijn. */
   gemiddeld: number;
-  /** Deel van de RI dat dat dekt, of null wanneer het doel elders vandaan komt. */
+  /** Deel van de norm dat dat dekt, of null wanneer het doel elders vandaan komt. */
   aandeel: number | null;
   /** Hoeveel geregistreerde dagen in dit venster vielen — de noemer. */
   dagen: number;
@@ -89,7 +90,7 @@ export type Venster = {
    */
   dagenMetBron: number;
   /**
-   * Of de ondergrens de RI haalt.
+   * Of de ondergrens de norm haalt.
    *
    * True bewijst dekking. False bewijst *niets* — zie de asymmetrie-regel in
    * de moduledoc. Null wanneer de stof niet bewijsbaar is.
@@ -108,7 +109,7 @@ export type Vensterreeks = {
    * Of een dagboek deze stof überhaupt kan aantonen.
    *
    * False bij zink en vitamine D: de bronnen leveren te weinig per portie om
-   * de RI met een onvolledige registratie te halen. Dan toont de UI de
+   * de norm met een onvolledige registratie te halen. Dan toont de UI de
    * bronnentelling en geen oordeel.
    */
   bewijsbaar: boolean;
@@ -122,7 +123,7 @@ export type Vensterreeks = {
  */
 export const NIET_BEWIJSBAAR: Partial<Record<NutrientId, string>> = {
   zinc:
-    "Bronnen leveren 1 tot 4 mg per portie tegen een referentie-inname van 10 mg. Alleen oesters halen dat in één keer, dus een dagboek dat niet alles vangt komt er nooit aan.",
+    "Bronnen leveren 1 tot 4 mg per portie tegen een norm van 7 tot 9 mg. Alleen oesters halen dat in één keer, dus een dagboek dat niet alles vangt komt er nooit aan.",
   vitamin_d:
     "Komt bij vrijwel iedereen uit zonlicht en verrijkte producten, niet uit gewone voeding. Alleen vette vis tilt een dag erboven.",
 };
@@ -173,6 +174,7 @@ function bouwVenster(
   dagen: readonly DagboekDag[],
   lengte: VensterLengte,
   vandaag: string,
+  normen: KernstofNormen,
 ): Venster {
   const grens = new Date(vandaag);
   grens.setDate(grens.getDate() - (lengte - 1));
@@ -201,7 +203,7 @@ function bouwVenster(
   const geregistreerd = inVenster.length;
   const gemiddeld =
     geregistreerd > 0 ? Math.round((som / geregistreerd) * 10) / 10 : 0;
-  const aandeel = geregistreerd > 0 ? aandeelVanRi(nutrient, gemiddeld) : null;
+  const aandeel = geregistreerd > 0 ? aandeelVanNorm(normen, nutrient, gemiddeld) : null;
   const bewijsbaar = !(nutrient in NIET_BEWIJSBAAR);
 
   return {
@@ -210,7 +212,7 @@ function bouwVenster(
     aandeel,
     dagen: geregistreerd,
     dagenMetBron: metBron,
-    // Alleen een gehaalde RI is een bewijs. Niet gehaald blijft null noch
+    // Alleen een gehaalde norm is een bewijs. Niet gehaald blijft null noch
     // false-als-oordeel: het veld zegt "wel bewezen" of "niet bewezen", en de
     // UI vertaalt dat nooit naar "je komt tekort".
     gedekt:
@@ -222,15 +224,17 @@ function bouwVenster(
  * De vier vensters per nutriënt, op volgorde van `NUTRIENT_ORDER`.
  *
  * `vandaag` wordt meegegeven in plaats van hier bepaald, zodat dit puur blijft
- * en een test een vaste dag kan kiezen.
+ * en een test een vaste dag kan kiezen. `normen` komen uit
+ * `nutrition-normen.ts`, per persoon.
  */
 export function bouwTekortsysteem(
   dagen: readonly DagboekDag[],
   vandaag: string,
+  normen: KernstofNormen,
 ): Vensterreeks[] {
   return NUTRIENT_ORDER.map((nutrient) => {
     const vensters = VENSTERS.map((lengte) =>
-      bouwVenster(nutrient, dagen, lengte, vandaag),
+      bouwVenster(nutrient, dagen, lengte, vandaag, normen),
     );
     return {
       nutrient,
@@ -246,7 +250,7 @@ export function bouwTekortsysteem(
 export type Bevinding = {
   nutrient: NutrientId;
   label: string;
-  /** Op hoeveel van de geregistreerde dagen in 30 dagen de RI niet bewezen werd. */
+  /** Op hoeveel van de geregistreerde dagen in 30 dagen de norm niet bewezen werd. */
   dagenOnder: number;
   dagenGemeten: number;
   /** Het aandeel op het langste gevulde venster, als fractie. */
@@ -270,6 +274,7 @@ export function bepaalBevinding(
   reeksen: readonly Vensterreeks[],
   dagen: readonly DagboekDag[],
   vandaag: string,
+  normen: KernstofNormen,
 ): Bevinding | null {
   const grens = new Date(vandaag);
   grens.setDate(grens.getDate() - 29);
@@ -296,7 +301,7 @@ export function bepaalBevinding(
     for (const dag of maand) {
       dagenGemeten += 1;
       const stof = nutrientenUitItems(itemsVan(dag)).find((n) => n.nutrient === reeks.nutrient);
-      const aandeel = aandeelVanRi(reeks.nutrient, stof?.minstens ?? 0);
+      const aandeel = aandeelVanNorm(normen, reeks.nutrient, stof?.minstens ?? 0);
       if (aandeel !== null && aandeel < 1) dagenOnder += 1;
     }
 

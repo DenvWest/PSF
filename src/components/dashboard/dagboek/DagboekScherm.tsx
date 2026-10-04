@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import * as Icons from "@/components/app/icons";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
@@ -35,6 +36,7 @@ import DagboekMacroRing, {
 import DagboekNutrientDetail from "@/components/dashboard/dagboek/DagboekNutrientDetail";
 import DagboekVoedingPortie from "@/components/dashboard/dagboek/DagboekVoedingPortie";
 import DagboekPortieInvoer from "@/components/dashboard/dagboek/DagboekPortieInvoer";
+import DagboekRijksteBronnen from "@/components/dashboard/dagboek/DagboekRijksteBronnen";
 import DagboekProductDetail from "@/components/dashboard/dagboek/DagboekProductDetail";
 import DagboekSubtabs, { type DagboekSectie } from "@/components/dashboard/dagboek/DagboekSubtabs";
 import DagboekSupermarktSectie from "@/components/dashboard/dagboek/DagboekSupermarktSectie";
@@ -51,6 +53,7 @@ import DagboekWeekstrip, {
 import SupermarktBronRegel from "@/components/dashboard/dagboek/SupermarktBronRegel";
 import SupermarktPortieInvoer from "@/components/dashboard/dagboek/SupermarktPortieInvoer";
 import VoedingswaardeTabel from "@/components/dashboard/dagboek/VoedingswaardeTabel";
+import { stofInfo, type InformatieveStof } from "@/lib/nutrition-rijkste-bronnen";
 import { berekenVoedingswaarde, nevoCodesVoorItems } from "@/lib/nutrition-voedingswaarde";
 import { useNevoProducten } from "@/lib/use-nevo-producten";
 
@@ -88,7 +91,8 @@ type NutrientScherm =
     }
   | { scherm: "product"; item: DagboekItem }
   | { scherm: "vergelijkZoek" }
-  | { scherm: "vergelijk" };
+  | { scherm: "vergelijk" }
+  | { scherm: "bronnen"; stof: InformatieveStof };
 
 /**
  * Het dagboek als eigen scherm: je week, je stand, je maaltijden.
@@ -520,6 +524,16 @@ export default function DagboekScherm({
     trackEvent("nutrition_dagboek_subtab_gekozen", { sectie: volgende });
   }
 
+  function vergelijkBronnen(keys: readonly string[]) {
+    setVergelijkSelectie(
+      keys.flatMap((key): VergelijkResultaat[] => {
+        const entry = catalogEntry(key);
+        return entry ? [{ bron: "voeding", entry }] : [];
+      }),
+    );
+    setScherm({ scherm: "vergelijk" });
+  }
+
   const kransBijSelect = (nutrient: NutrientId) => {
     emitAccountClientEvent("nutrition.dagboek_nutrient_opened", {
       nutrient,
@@ -723,6 +737,32 @@ export default function DagboekScherm({
     );
   }
 
+  if (scherm.scherm === "bronnen") {
+    return (
+      <div className="flex flex-col gap-4">
+        <header className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => setScherm({ scherm: "overzicht" })}
+            aria-label="Terug naar je dag"
+            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-[var(--vd-ink-2)] transition-colors hover:border-white/30 hover:text-[var(--vd-ink)]"
+          >
+            <Icons.ChevronLeft s={18} />
+          </button>
+          <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">
+            {stofInfo(scherm.stof).label}
+          </h2>
+        </header>
+        <DagboekRijksteBronnen
+          stof={scherm.stof}
+          busy={busy}
+          onKies={(key) => setScherm({ scherm: "portie", nutrient: null, bron: "voeding", key, moment: "ontbijt" })}
+          onVergelijk={vergelijkBronnen}
+        />
+      </div>
+    );
+  }
+
   if (scherm.scherm === "vergelijk") {
     return (
       <DagboekVergelijkTabel
@@ -751,15 +791,7 @@ export default function DagboekScherm({
         onKiesBron={(key) =>
           setScherm({ scherm: "portie", nutrient: scherm.nutrient, bron: "voeding", key, moment: "ontbijt" })
         }
-        onVergelijkBronnen={(keys) => {
-          setVergelijkSelectie(
-            keys.flatMap((key): VergelijkResultaat[] => {
-              const entry = catalogEntry(key);
-              return entry ? [{ bron: "voeding", entry }] : [];
-            }),
-          );
-          setScherm({ scherm: "vergelijk" });
-        }}
+        onVergelijkBronnen={vergelijkBronnen}
       />
     );
   }
@@ -941,6 +973,10 @@ export default function DagboekScherm({
             toelichting={dagLabel}
             voedingswaarde={dagVoedingswaarde}
             bronProducten={dagBronProducten}
+            onKiesStof={(stof) => {
+              trackEvent("nutrition_dagboek_rijkste_geopend", { nutrient: stof });
+              setScherm({ scherm: "bronnen", stof });
+            }}
           />
           <DagboekVoedingWeektabel
             overzicht={weekoverzicht}

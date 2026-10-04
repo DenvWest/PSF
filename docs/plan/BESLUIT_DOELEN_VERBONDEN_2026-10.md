@@ -42,7 +42,8 @@ Het Doelen-scherm had twee losse formulieren (eiwit en macro's), en de weektabel
 ## Volgorde
 
 1. Weektabel telt catalogusproducten mee (geen migratie). **Gebouwd 4 okt.**
-2. Eén bron voor doelen in `src/lib/`.
+2. Eén bron voor doelen in `src/lib/`. **Gebouwd 4 okt**, samen met de Nederlandse norm per persoon: zie `BESLUIT_KERNSTOF_NORMEN_2026-10.md`.
+   2b. Weekweergave voor omega-3 en vitamine D in de krans.
 3. Doelen-scherm herontwerpen: blokken "Uit je check", "Jouw energie en macro's", "Wat je volgt"; Tailwind i.p.v. inline styles; één opslaan-knop; live grammen bij percentages.
 4. Migratie: gevolgde stoffen + RI-overschrijvingen (eigen tabel of naast `account_macro_doelen`), chips op het Doelen-scherm, link vanuit het dagboek.
 

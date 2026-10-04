@@ -6,6 +6,7 @@ import { dekkingPerDag } from "@/lib/agenda-tekort-voorstellen";
 import type { TekortVoorstel } from "@/lib/agenda-tekort-voorstellen";
 import { trackEvent } from "@/lib/ga4";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
+import { useKernstofNormen } from "@/lib/use-kernstof-normen";
 
 type AgendaPatroonRegelProps = {
   focus: TekortVoorstel | null;
@@ -22,9 +23,10 @@ export default function AgendaPatroonRegel({
   weekDayLabels,
   onOpenPatroon,
 }: AgendaPatroonRegelProps) {
+  const normen = useKernstofNormen();
   const dekking = useMemo(
-    () => (focus ? dekkingPerDag(dagen, focus.nutrient, weekDates) : null),
-    [dagen, focus, weekDates],
+    () => (focus ? dekkingPerDag(dagen, focus.nutrient, weekDates, normen) : null),
+    [dagen, focus, weekDates, normen],
   );
 
   useEffect(() => {

@@ -1,3 +1,4 @@
+import { STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 import { describe, expect, it } from "vitest";
 import {
   claimNiveauVoor,
@@ -52,7 +53,7 @@ describe("de wettelijke referentie-innames", () => {
 
 describe("de vier vensters", () => {
   it("levert per nutriënt precies de vier vensters, in vaste volgorde", () => {
-    const reeksen = bouwTekortsysteem([dag(VANDAAG, [HAVER(60)])], VANDAAG);
+    const reeksen = bouwTekortsysteem([dag(VANDAAG, [HAVER(60)])], VANDAAG, STANDAARD_NORMEN);
     const magnesium = reeksen.find((r) => r.nutrient === "magnesium")!;
 
     expect(magnesium.vensters.map((v) => v.dagen_terug)).toEqual([...VENSTERS]);
@@ -60,14 +61,14 @@ describe("de vier vensters", () => {
 
   it("middelt over de dagen die er zijn, niet over de lengte van het venster", () => {
     const dagen = [dag(VANDAAG, [HAVER(60)]), dag("2026-09-16", [HAVER(60)])];
-    const maand = bouwTekortsysteem(dagen, VANDAAG)
+    const maand = bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN)
       .find((r) => r.nutrient === "magnesium")!
       .vensters.find((v) => v.dagen_terug === 30)!;
 
     // Twee gelijke dagen: het gemiddelde is die dag, niet twee dertigsten ervan.
     expect(maand.dagen).toBe(2);
     expect(maand.gemiddeld).toBeCloseTo(
-      bouwTekortsysteem([dag(VANDAAG, [HAVER(60)])], VANDAAG)
+      bouwTekortsysteem([dag(VANDAAG, [HAVER(60)])], VANDAAG, STANDAARD_NORMEN)
         .find((r) => r.nutrient === "magnesium")!
         .vensters.find((v) => v.dagen_terug === 1)!.gemiddeld,
       0,
@@ -86,7 +87,7 @@ describe("de vier vensters", () => {
       dag("2026-09-15", [HAVER(60)]),
       dag("2026-09-14", [HAVER(60)]),
     ];
-    const week = bouwTekortsysteem(dagen, VANDAAG)
+    const week = bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN)
       .find((r) => r.nutrient === "omega3")!
       .vensters.find((v) => v.dagen_terug === 7)!;
 
@@ -94,7 +95,7 @@ describe("de vier vensters", () => {
     expect(week.dagen).toBe(4);
     expect(week.dagenMetBron).toBe(1);
     // Het gemiddelde is dus een kwart van die ene dag, niet die dag zelf.
-    const dagZelf = bouwTekortsysteem([dagen[0]!], VANDAAG)
+    const dagZelf = bouwTekortsysteem([dagen[0]!], VANDAAG, STANDAARD_NORMEN)
       .find((r) => r.nutrient === "omega3")!
       .vensters.find((v) => v.dagen_terug === 1)!;
     expect(week.gemiddeld).toBeCloseTo(dagZelf.gemiddeld / 4, 0);
@@ -109,20 +110,20 @@ describe("de vier vensters", () => {
     ];
 
     expect(
-      bouwTekortsysteem(dagen, VANDAAG).find((r) => r.nutrient === "omega3")!.richting,
+      bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN).find((r) => r.nutrient === "omega3")!.richting,
     ).toBe("piekt");
   });
 
   it("telt een dag buiten het venster niet mee", () => {
     const dagen = [dag(VANDAAG, [HAVER(60)]), dag("2026-08-01", [HAVER(60)])];
-    const reeks = bouwTekortsysteem(dagen, VANDAAG).find((r) => r.nutrient === "magnesium")!;
+    const reeks = bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN).find((r) => r.nutrient === "magnesium")!;
 
     expect(reeks.vensters.find((v) => v.dagen_terug === 1)!.dagen).toBe(1);
     expect(reeks.vensters.find((v) => v.dagen_terug === 30)!.dagen).toBe(1);
   });
 
   it("geeft lege vensters zonder dagen, niet zonder nutriënt", () => {
-    const reeksen = bouwTekortsysteem([], VANDAAG);
+    const reeksen = bouwTekortsysteem([], VANDAAG, STANDAARD_NORMEN);
 
     expect(reeksen.length).toBeGreaterThan(0);
     expect(reeksen.every((r) => r.vensters.every((v) => v.dagen === 0))).toBe(true);
@@ -141,14 +142,14 @@ describe("de asymmetrie-regel", () => {
     // ondergrens: sinds de NEVO-import (3 okt 2026) staat havermout op 120 mg per
     // 100 g zonder gemeten spreiding, dus 300 g (360 mg) haalt de RI van 375 mg
     // niet meer zeker.
-    const reeks = bouwTekortsysteem([dag(VANDAAG, [HAVER(500)])], VANDAAG)
+    const reeks = bouwTekortsysteem([dag(VANDAAG, [HAVER(500)])], VANDAAG, STANDAARD_NORMEN)
       .find((r) => r.nutrient === "magnesium")!;
 
     expect(reeks.vensters.find((v) => v.dagen_terug === 1)!.gedekt).toBe(true);
   });
 
   it("zet gedekt op false — nooit op een tekort-oordeel — als de RI niet gehaald wordt", () => {
-    const venster = bouwTekortsysteem([dag(VANDAAG, [HAVER(30)])], VANDAAG)
+    const venster = bouwTekortsysteem([dag(VANDAAG, [HAVER(30)])], VANDAAG, STANDAARD_NORMEN)
       .find((r) => r.nutrient === "magnesium")!
       .vensters.find((v) => v.dagen_terug === 1)!;
 
@@ -160,7 +161,7 @@ describe("de asymmetrie-regel", () => {
   });
 
   it("geeft geen oordeel voor stoffen die een dagboek niet kan aantonen", () => {
-    const reeksen = bouwTekortsysteem([dag(VANDAAG, [HAVER(300)])], VANDAAG);
+    const reeksen = bouwTekortsysteem([dag(VANDAAG, [HAVER(300)])], VANDAAG, STANDAARD_NORMEN);
 
     for (const nutrient of Object.keys(NIET_BEWIJSBAAR)) {
       const reeks = reeksen.find((r) => r.nutrient === nutrient)!;
@@ -181,7 +182,7 @@ describe("de richting", () => {
       dag(VANDAAG, [HAVER(300)]),
       ...["2026-09-10", "2026-09-05", "2026-08-28"].map((d) => dag(d, [HAVER(30)])),
     ];
-    const reeks = bouwTekortsysteem(dagen, VANDAAG).find((r) => r.nutrient === "magnesium")!;
+    const reeks = bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN).find((r) => r.nutrient === "magnesium")!;
 
     expect(reeks.richting).toBe("piekt");
   });
@@ -192,13 +193,13 @@ describe("de richting", () => {
     );
 
     expect(
-      bouwTekortsysteem(dagen, VANDAAG).find((r) => r.nutrient === "magnesium")!.richting,
+      bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN).find((r) => r.nutrient === "magnesium")!.richting,
     ).toBe("vlak");
   });
 
   it("weet de richting niet met minder dan twee gevulde vensters", () => {
     expect(
-      bouwTekortsysteem([], VANDAAG).find((r) => r.nutrient === "magnesium")!.richting,
+      bouwTekortsysteem([], VANDAAG, STANDAARD_NORMEN).find((r) => r.nutrient === "magnesium")!.richting,
     ).toBe("onbekend");
   });
 });
@@ -206,7 +207,7 @@ describe("de richting", () => {
 describe("de bevinding", () => {
   it("kiest de stof met de meeste dagen onder de RI", () => {
     const dagen = ["2026-09-17", "2026-09-15", "2026-09-12"].map((d) => dag(d, [HAVER(40)]));
-    const bevinding = bepaalBevinding(bouwTekortsysteem(dagen, VANDAAG), dagen, VANDAAG);
+    const bevinding = bepaalBevinding(bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN), dagen, VANDAAG, STANDAARD_NORMEN);
 
     expect(bevinding).not.toBeNull();
     expect(bevinding!.dagenOnder).toBe(3);
@@ -225,7 +226,7 @@ describe("de bevinding", () => {
       dag("2026-09-15", [HAVER(40)]),
       dag("2026-09-14", [KIP(150)]),
     ];
-    const bevinding = bepaalBevinding(bouwTekortsysteem(dagen, VANDAAG), dagen, VANDAAG);
+    const bevinding = bepaalBevinding(bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN), dagen, VANDAAG, STANDAARD_NORMEN);
 
     expect(bevinding).not.toBeNull();
     expect(bevinding!.dagenGemeten).toBe(4);
@@ -241,8 +242,8 @@ describe("de bevinding", () => {
       dag("2026-09-16", [KIP(150)]),
       dag("2026-09-15", [KIP(150)]),
     ];
-    const reeksen = bouwTekortsysteem(dagen, VANDAAG);
-    const bevinding = bepaalBevinding(reeksen, dagen, VANDAAG);
+    const reeksen = bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN);
+    const bevinding = bepaalBevinding(reeksen, dagen, VANDAAG, STANDAARD_NORMEN);
     const maandVenster = reeksen
       .find((r) => r.nutrient === bevinding!.nutrient)!
       .vensters.find((v) => v.dagen_terug === 30)!;
@@ -252,19 +253,19 @@ describe("de bevinding", () => {
 
   it("kiest nooit een stof die een dagboek niet kan aantonen", () => {
     const dagen = ["2026-09-17", "2026-09-15"].map((d) => dag(d, [HAVER(40)]));
-    const bevinding = bepaalBevinding(bouwTekortsysteem(dagen, VANDAAG), dagen, VANDAAG);
+    const bevinding = bepaalBevinding(bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN), dagen, VANDAAG, STANDAARD_NORMEN);
 
     expect(bevinding).not.toBeNull();
     expect(Object.keys(NIET_BEWIJSBAAR)).not.toContain(bevinding!.nutrient);
   });
 
   it("geeft geen bevinding zonder dagen, in plaats van de minst goede stof aan te wijzen", () => {
-    expect(bepaalBevinding(bouwTekortsysteem([], VANDAAG), [], VANDAAG)).toBeNull();
+    expect(bepaalBevinding(bouwTekortsysteem([], VANDAAG, STANDAARD_NORMEN), [], VANDAAG, STANDAARD_NORMEN)).toBeNull();
   });
 
   it("geeft geen bevinding wanneer alles gedekt is", () => {
     const dagen = ["2026-09-17", "2026-09-15"].map((d) => dag(d, [HAVER(400)]));
-    const bevinding = bepaalBevinding(bouwTekortsysteem(dagen, VANDAAG), dagen, VANDAAG);
+    const bevinding = bepaalBevinding(bouwTekortsysteem(dagen, VANDAAG, STANDAARD_NORMEN), dagen, VANDAAG, STANDAARD_NORMEN);
 
     if (bevinding) {
       expect(bevinding.aandeelLang).toBeLessThan(1);
