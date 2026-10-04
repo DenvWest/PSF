@@ -35,3 +35,6 @@ scripts/out/
 # Python bytecode-cache — machine-/versiespecifiek, geen broncode
 __pycache__/
 *.pyc
+
+# Assets van eerdere builds (scripts/deploy-remote.sh)
+/.next-static-archive
