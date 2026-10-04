@@ -1,11 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
-import { REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { trackEvent } from "@/lib/ga4";
-import { rijksteBronnen, type RijksteStand } from "@/lib/nutrition-rijkste-bronnen";
+import { rijksteBronnen, stofInfo, type RijksteStand, type RijksteStof } from "@/lib/nutrition-rijkste-bronnen";
 
 /**
  * De top 10 voedingsbronnen van één stof, onder "Wat hieraan bijdroeg" in het
@@ -24,42 +22,40 @@ const STANDEN: readonly { id: RijksteStand; label: string; uitleg: string }[] = 
   },
 ];
 
-const RI_TONEN: ReadonlySet<NutrientId> = new Set(["magnesium", "zinc", "vitamin_d"]);
-
 function getal(value: number): string {
   return value.toLocaleString("nl-NL", { maximumFractionDigits: value < 10 ? 1 : 0 });
 }
 
 export default function DagboekRijksteBronnen({
-  nutrient,
+  stof,
   busy = false,
   onKies,
   onVergelijk,
 }: {
-  nutrient: NutrientId;
+  stof: RijksteStof;
   busy?: boolean;
   onKies: (key: string) => void;
   onVergelijk: (keys: readonly string[]) => void;
 }) {
   const [stand, setStand] = useState<RijksteStand>("portie");
-  const bronnen = useMemo(() => rijksteBronnen(nutrient, stand), [nutrient, stand]);
+  const bronnen = useMemo(() => rijksteBronnen(stof, stand), [stof, stand]);
   const hoogste = bronnen[0]?.waarde ?? 0;
-  const label = nutrientReferences[nutrient].label;
+  const { label, ri, kern } = stofInfo(stof);
+  const kleur = kern ? `var(--vd-stof-${stof})` : "var(--vd-ink-3)";
   const actief = STANDEN.find((s) => s.id === stand) ?? STANDEN[0];
-  const ri = REFERENCE_INTAKES[nutrient];
 
   function kiesStand(nieuw: RijksteStand) {
     if (nieuw === stand) return;
     setStand(nieuw);
-    trackEvent("nutrition_dagboek_rijkste_stand", { nutrient, stand: nieuw });
+    trackEvent("nutrition_dagboek_rijkste_stand", { nutrient: stof, stand: nieuw });
   }
 
   if (bronnen.length === 0) return null;
 
   return (
-    <section aria-labelledby={`rijkste-${nutrient}`} className="overflow-hidden rounded-2xl border border-white/10">
+    <section aria-labelledby={`rijkste-${stof}`} className="overflow-hidden rounded-2xl border border-white/10">
       <header className="flex flex-col gap-2.5 border-b border-white/10 bg-white/[0.03] px-4 py-3">
-        <h3 id={`rijkste-${nutrient}`} className="m-0 font-sans text-[13.5px] font-bold text-[var(--vd-ink)]">
+        <h3 id={`rijkste-${stof}`} className="m-0 font-sans text-[13.5px] font-bold text-[var(--vd-ink)]">
           Rijkste bronnen van {label.toLowerCase()}
         </h3>
         <div role="radiogroup" aria-label="Rangschik" className="flex w-full rounded-lg border border-white/10 bg-white/[0.03] p-0.5">
@@ -87,12 +83,11 @@ export default function DagboekRijksteBronnen({
         {bronnen.map((bron, index) => {
           const breedte = hoogste > 0 ? Math.max(4, Math.round((bron.waarde / hoogste) * 100)) : 0;
           const riAandeel =
-            stand === "portie" && RI_TONEN.has(nutrient) && ri.unit === bron.unit
-              ? Math.round((bron.perPortie / ri.value) * 100)
+            stand === "portie" && ri !== null ? Math.round((bron.perPortie / ri) * 100)
               : null;
           const context = [
             `${bron.portieLabel} · ${bron.portieGram} g`,
-            bron.vezelsPerPortie !== null && bron.vezelsPerPortie >= 0.1 ? `${getal(bron.vezelsPerPortie)} g vezels` : null,
+            stof !== "fiberG" && bron.vezelsPerPortie !== null && bron.vezelsPerPortie >= 0.1 ? `${getal(bron.vezelsPerPortie)} g vezels` : null,
             bron.kcalPerPortie !== null ? `${Math.round(bron.kcalPerPortie)} kcal` : null,
           ].filter((deel): deel is string => deel !== null);
 
@@ -102,7 +97,7 @@ export default function DagboekRijksteBronnen({
                 type="button"
                 disabled={busy}
                 onClick={() => {
-                  trackEvent("nutrition_dagboek_rijkste_gekozen", { nutrient, stand, positie: index + 1 });
+                  trackEvent("nutrition_dagboek_rijkste_gekozen", { nutrient: stof, stand, positie: index + 1 });
                   onKies(bron.entry.key);
                 }}
                 aria-label={`Voeg ${bron.entry.labelNl} toe`}
@@ -118,7 +113,7 @@ export default function DagboekRijksteBronnen({
                     <span
                       aria-hidden
                       className="block h-full rounded-full"
-                      style={{ width: `${breedte}%`, background: `var(--vd-stof-${nutrient})`, opacity: 0.85 }}
+                      style={{ width: `${breedte}%`, background: kleur, opacity: 0.85 }}
                     />
                   </span>
                   <span className="mt-1 block truncate text-[10.5px] text-[var(--vd-ink-4)]">{context.join(" · ")}</span>
@@ -149,7 +144,7 @@ export default function DagboekRijksteBronnen({
             type="button"
             onClick={() => {
               const keys = bronnen.slice(0, 3).map((b) => b.entry.key);
-              trackEvent("nutrition_dagboek_rijkste_vergelijk", { nutrient, stand, aantal: keys.length });
+              trackEvent("nutrition_dagboek_rijkste_vergelijk", { nutrient: stof, stand, aantal: keys.length });
               onVergelijk(keys);
             }}
             className="shrink-0 cursor-pointer whitespace-nowrap rounded-lg border border-[rgb(var(--vd-sage-rgb)/40%)] bg-[rgb(var(--vd-sage-rgb)/10%)] px-3 py-1.5 text-[12px] font-semibold text-[var(--vd-sage-2)] transition-colors hover:border-[var(--vd-sage)] hover:bg-[rgb(var(--vd-sage-rgb)/20%)]"
