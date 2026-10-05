@@ -251,6 +251,7 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
 
     expect(
       await screen.findByRole("heading", { name: "Magnesium" }),
@@ -265,6 +266,7 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
 
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
@@ -313,6 +315,7 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
 
@@ -358,6 +361,7 @@ describe("DagboekScherm — favorieten", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
 
@@ -398,6 +402,7 @@ describe("DagboekScherm — favorieten", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
 
@@ -653,6 +658,7 @@ describe("DagboekScherm — portiescherm voor voeding", () => {
   async function openPortiescherm() {
     render(<DagboekScherm />);
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
     const zoekveld = await screen.findByLabelText(

@@ -36,7 +36,6 @@ import DagboekMacroRing, {
 import DagboekNutrientDetail from "@/components/dashboard/dagboek/DagboekNutrientDetail";
 import DagboekVoedingPortie from "@/components/dashboard/dagboek/DagboekVoedingPortie";
 import DagboekPortieInvoer from "@/components/dashboard/dagboek/DagboekPortieInvoer";
-import DagboekOokGevolgd from "@/components/dashboard/dagboek/DagboekOokGevolgd";
 import DagboekRijksteBronnen from "@/components/dashboard/dagboek/DagboekRijksteBronnen";
 import DagboekProductDetail from "@/components/dashboard/dagboek/DagboekProductDetail";
 import DagboekSubtabs, { type DagboekSectie } from "@/components/dashboard/dagboek/DagboekSubtabs";
@@ -854,17 +853,20 @@ export default function DagboekScherm({
           <DagboekKrans
             stoffen={ondergrens}
             proteinTarget={proteinTarget}
+            voedingswaarde={dagVoedingswaarde.rijen}
             onSelect={kransBijSelect}
+            onKiesStof={(stof) => openBronnen(stof, "ring")}
             onBegin={() => setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" })}
           />
-          <DagboekOokGevolgd rijen={dagVoedingswaarde.rijen} onKiesStof={(stof) => openBronnen(stof, "ring")} />
         </>
       ) : (
         <>
           <DagboekKrans
             stoffen={ondergrens}
             proteinTarget={proteinTarget}
+            voedingswaarde={dagVoedingswaarde.rijen}
             onSelect={kransBijSelect}
+            onKiesStof={(stof) => openBronnen(stof, "ring")}
             onBegin={() => {
               emitAccountClientEvent("nutrition.dagboek_maaltijd_geopend", {
                 moment: "ontbijt",
@@ -874,7 +876,6 @@ export default function DagboekScherm({
               setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" });
             }}
           />
-          <DagboekOokGevolgd rijen={dagVoedingswaarde.rijen} onKiesStof={(stof) => openBronnen(stof, "ring")} />
 
           {ondergrens.length > 0 || supermarktLogs.length > 0 ? (
             <button
