@@ -3,7 +3,7 @@
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import CockpitMoreMenu from "@/components/dashboard/cockpit/CockpitMoreMenu";
-import { DASHBOARD_TABS } from "@/data/dashboard";
+import { DASHBOARD_NAV_TABS } from "@/data/dashboard";
 import type { DashboardTabId } from "@/types/dashboard";
 
 type IconComp = ComponentType<{ s?: number; sw?: number; style?: CSSProperties }>;
@@ -26,10 +26,12 @@ export default function CockpitBottomNav({
       {/*
         Meer staat naast de tablist en niet erin: hij opent een lijst en toont
         geen paneel, dus `role="tab"` zou liegen over wat er gebeurt.
+        Het grid geeft Meer dezelfde breedte als elke tab; met twee flex-1
+        containers kreeg Meer in z'n eentje de halve balk.
       */}
-      <div className="flex">
-        <div className="flex flex-1" role="tablist">
-        {DASHBOARD_TABS.map((tab) => {
+      <div className="grid grid-cols-4">
+        <div className="col-span-3 grid grid-cols-3" role="tablist">
+        {DASHBOARD_NAV_TABS.map((tab) => {
           const Icon = Icons[tab.icon as keyof typeof Icons] as IconComp;
           const active = tab.id === activeTab;
           return (
@@ -39,7 +41,7 @@ export default function CockpitBottomNav({
               role="tab"
               aria-selected={active}
               onClick={() => onSelectTab(tab.id)}
-              className={`flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 py-2.5 text-[10px] font-medium transition ${
+              className={`flex min-w-0 flex-col items-center gap-1 px-1 py-2.5 text-[11px] font-medium transition ${
                 active ? "text-[#F1EFE8]" : "text-[#9FB0A6]"
               }`}
             >
@@ -52,7 +54,10 @@ export default function CockpitBottomNav({
           );
         })}
         </div>
-        <CockpitMoreMenu variant="bottom" />
+        <CockpitMoreMenu
+          variant="bottom"
+          active={!DASHBOARD_NAV_TABS.some((tab) => tab.id === activeTab)}
+        />
       </div>
     </nav>
   );

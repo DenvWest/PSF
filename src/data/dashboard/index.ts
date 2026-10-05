@@ -315,7 +315,7 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
 ];
 
 /**
- * De vier tabs houden hun ids, en dragen sinds 17 september 2026 andere
+ * De tabs houden hun ids, en dragen sinds 17 september 2026 andere
  * labels: het dashboard gaat van zeven domeinen naar één, en dan beschrijft
  * "Kompas" niets meer — een kompas heeft meerdere richtingen nodig.
  *
@@ -323,27 +323,28 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
  * events; een hernoeming daar zou oude links breken en meetreeksen splitsen
  * zonder dat er iets aan de betekenis verandert.
  *
- * Zie BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md §3.1.
+ * Sinds 5 oktober 2026 staan er drie in de navigatie, in de volgorde van de
+ * lus (meten → wegen → kiezen). Mijn Dag blijft een volwaardig scherm onder
+ * `?tab=agenda`, maar opent via Meer: vier labels plus Meer pasten op 375px
+ * niet zonder afkappen.
+ *
+ * Zie BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md §3.1 en
+ * BESLUIT_ONDERBALK_DRIE_TABS_2026-10.md.
  */
 export const DASHBOARD_TABS: DashboardTab[] = [
   {
     id: "vandaag",
     label: "Dagboek",
+    placement: "tab",
     icon: "BookOpen",
     title: "Je dagboek",
     subtitle: "Wat je at, en wat dat minstens levert.",
     emptyHint: "Vul je eerste dag in — dan zie je wat eruit komt.",
   },
   {
-    id: "agenda",
-    label: "Mijn Dag",
-    icon: "RouteMap",
-    title: "Mijn Dag",
-    emptyHint: "Doe je eerste check — dan staat hier je dagoverzicht.",
-  },
-  {
     id: "voortgang",
-    label: "Je patroon",
+    label: "Patroon",
+    placement: "tab",
     icon: "BarChart",
     title: "Je patroon",
     subtitle: "Wat zich opstapelt sinds je check.",
@@ -352,13 +353,26 @@ export const DASHBOARD_TABS: DashboardTab[] = [
   {
     id: "keuze",
     label: "Keuze",
+    placement: "tab",
     icon: "Pill",
     title: "Keuze",
     subtitle: "Wat er te kiezen valt — en wat jij koos.",
     emptyHint:
       "Doe eerst je check — daarna weten we welk aanbod bij je past en welk niet.",
   },
+  {
+    id: "agenda",
+    label: "Mijn Dag",
+    placement: "meer",
+    icon: "RouteMap",
+    title: "Mijn Dag",
+    emptyHint: "Doe je eerste check — dan staat hier je dagoverzicht.",
+  },
 ];
+
+export const DASHBOARD_NAV_TABS: DashboardTab[] = DASHBOARD_TABS.filter(
+  (tab) => tab.placement === "tab",
+);
 
 /**
  * Hermeting staat hier niet meer als eigen tab: die sectie-lijst leeft binnen
@@ -374,16 +388,13 @@ export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
 };
 
 /**
- * Het "Meer"-menu naast de vier tabs.
+ * Het "Meer"-menu naast de drie tabs.
  *
- * ## Waarom dit geen vijfde tab is
+ * ## Waarom dit geen extra tab is
  *
- * De vier tabs vormen één lus: Dagboek meet, Je patroon weegt, Keuze dicht,
- * Mijn Dag plant. Wat hier staat zit niet ín die lus maar eronder — je doelen
- * zijn de meetlat waar alle vier tegen aflezen, niet een vijfde stap.
- *
- * Een tab erbij zou die lus ook letterlijk verzwakken: vijf items delen
- * dezelfde breedte die nu vier labels net aankan.
+ * De tabs volgen de lus: Dagboek meet, Patroon weegt, Keuze dicht. Mijn Dag
+ * plant de keuze in, en je doelen zijn de meetlat waar alles tegen afleest —
+ * allebei plekken waar je naartoe gaat, geen stap die je elke dag zet.
  *
  * ## Waarom een eigen lijst en geen accountinstelling
  *
@@ -402,6 +413,13 @@ export type DashboardMoreItem = {
 };
 
 export const DASHBOARD_MORE_ITEMS: DashboardMoreItem[] = [
+  {
+    id: "mijn_dag",
+    label: "Mijn Dag",
+    icon: "RouteMap",
+    href: "/dashboard?tab=agenda",
+    hint: "Je keuzes als blokken op een moment van de dag.",
+  },
   {
     id: "doelen",
     label: "Doelen",

@@ -8,7 +8,7 @@ import {
   DASHBOARD_UNLOCK_LOCKED_FEATURES,
   DASHBOARD_UNLOCK_PREVIEW,
 } from "@/data/dashboard-unlock";
-import { DASHBOARD_TABS, PILLARS } from "@/data/dashboard";
+import { DASHBOARD_NAV_TABS, PILLARS } from "@/data/dashboard";
 import { REVEAL_CARD_SHADOW } from "@/lib/results-reveal-copy";
 
 const previewLadder = [...PILLARS].sort(
@@ -88,10 +88,10 @@ export default function DashboardUnlockPreview() {
           {/* Mobiel: één actieve tab */}
           <div className="md:hidden">
             <span className="inline-flex rounded-lg bg-[rgba(255,255,255,0.08)] px-3 py-1.5 text-xs font-medium text-[var(--text)]">
-              {DASHBOARD_TABS[0]?.label}
+              {DASHBOARD_NAV_TABS[0]?.label}
             </span>
             <span className="ml-2 text-[11px] text-[var(--text-subtle)]">
-              + {DASHBOARD_TABS.length - 1} tabbladen na login
+              + {DASHBOARD_NAV_TABS.length - 1} tabbladen na login
             </span>
           </div>
 
@@ -101,7 +101,7 @@ export default function DashboardUnlockPreview() {
               aria-label="Dashboard tabbladen"
               className="flex min-w-max gap-1"
             >
-              {DASHBOARD_TABS.map((tab, index) => (
+              {DASHBOARD_NAV_TABS.map((tab, index) => (
                 <span
                   key={tab.id}
                   className={`rounded-t-lg px-3 py-2 text-xs font-medium ${

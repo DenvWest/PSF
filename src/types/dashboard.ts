@@ -178,6 +178,8 @@ export type StatistiekenBlik = "stand" | "advies" | "tijd";
 export type DashboardTab = {
   id: DashboardTabId;
   label: string;
+  /** "tab" staat in de navigatie; "meer" is bereikbaar via het Meer-menu en `?tab=`. */
+  placement: "tab" | "meer";
   icon: DashboardIconName;
   title: string;
   /** Optioneel: alleen waar een ondertitel iets toevoegt dat de pagina zelf niet toont. */

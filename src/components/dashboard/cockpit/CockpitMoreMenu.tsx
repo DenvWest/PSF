@@ -9,14 +9,15 @@ import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 
 /**
- * Het "Meer"-menu naast de vier tabs.
+ * Het "Meer"-menu naast de drie tabs.
  *
  * ## Waarom dit naast de tabs staat en niet erin
  *
- * De vier tabs zijn één lus — Dagboek meet, Je patroon weegt, Keuze dicht,
- * Mijn Dag plant. Wat hier onder valt zit niet ín die lus: je doelen zijn de
- * meetlat waar alle vier tegen aflezen. Een vijfde tab zou dat gelijkstellen
- * aan een vijfde stap, en de vier labels delen nu al krap de breedte.
+ * De tabs volgen de lus — Dagboek meet, Patroon weegt, Keuze dicht. Mijn Dag
+ * en je doelen zijn plekken waar je naartoe gaat, geen dagelijkse stap; ze
+ * staan hier zodat de vier vakken van de onderbalk hun label voluit houden.
+ * Staat een scherm uit deze lijst open, dan licht Meer op (`active`), zodat
+ * de balk nooit zonder actief item is.
  *
  * ## Waarom één component voor twee navigaties
  *
@@ -102,7 +103,13 @@ function DirectLink({ item }: { item: DashboardMoreItem }) {
   );
 }
 
-export default function CockpitMoreMenu({ variant }: { variant: Variant }) {
+export default function CockpitMoreMenu({
+  variant,
+  active = false,
+}: {
+  variant: Variant;
+  active?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
@@ -135,13 +142,17 @@ export default function CockpitMoreMenu({ variant }: { variant: Variant }) {
 
   const knop =
     variant === "bottom"
-      ? `flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 py-2.5 text-[10px] font-medium transition ${
-          open ? "text-[#F1EFE8]" : "text-[#9FB0A6]"
+      ? `flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[11px] font-medium transition ${
+          open || active ? "text-[#F1EFE8]" : "text-[#9FB0A6]"
         }`
       : `relative flex shrink-0 items-center justify-center gap-1.5 rounded-[10px] px-2 py-2 text-[13px] font-medium transition md:justify-start lg:gap-2 lg:px-3 lg:text-[13.5px] ${
-          open
+          open || active
             ? "text-[#F1EFE8]"
             : "text-[#9FB0A6] hover:bg-white/[0.05] hover:text-[#F1EFE8]"
+        } ${
+          active
+            ? "after:absolute after:inset-x-2 after:bottom-0.5 after:h-0.5 after:rounded-full after:bg-[#5A8F6A] lg:after:inset-x-3"
+            : ""
         }`;
 
   return (
@@ -165,7 +176,7 @@ export default function CockpitMoreMenu({ variant }: { variant: Variant }) {
           <>
             <Icons.MoreHorizontal
               s={20}
-              style={{ color: open ? "#5A8F6A" : "rgba(159,176,166,0.85)" }}
+              style={{ color: open || active ? "#5A8F6A" : "rgba(159,176,166,0.85)" }}
             />
             Meer
           </>
@@ -174,7 +185,7 @@ export default function CockpitMoreMenu({ variant }: { variant: Variant }) {
             <span className="flex h-[15px] w-[15px] items-center justify-center">
               <Icons.MoreHorizontal
                 s={15}
-                style={{ color: open ? "#5A8F6A" : "rgba(159,176,166,0.85)" }}
+                style={{ color: open || active ? "#5A8F6A" : "rgba(159,176,166,0.85)" }}
               />
             </span>
             <span className="hidden md:inline">Meer</span>
