@@ -4,7 +4,15 @@ import { useEffect, useState, type ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import DoelInvoerSheet, { type DoelInvoerInhoud } from "@/components/dashboard/doelen/DoelInvoerSheet";
 import GevolgdeStoffenKiezer from "@/components/dashboard/doelen/GevolgdeStoffenKiezer";
+import { nutrientReferences } from "@/data/nutrition/intake-reference";
+import type { KernstofMetNorm } from "@/data/nutrition/voedingsnormen";
 import { trackEvent } from "@/lib/ga4";
+import {
+  isGeldigeStreefwaarde,
+  LEEG_KERNSTOF_PROFIEL,
+  STREEFWAARDE_GRENS,
+  type KernstofProfiel,
+} from "@/lib/account-kernstof-profiel";
 import {
   isGeldigPercentage,
   isGeldigeCalorieen,
@@ -17,7 +25,13 @@ import {
   type VoedingsdoelenWeergave,
 } from "@/lib/account-voedingsdoelen";
 import { fetchMacroDoelen, postMacroDoelen } from "@/lib/macro-doelen-client";
-import { fetchVoedingsdoelen, postVoedingsdoelen } from "@/lib/voedingsdoelen-client";
+import { normLabel, STANDAARD_NORMEN } from "@/lib/nutrition-normen";
+import { zetKernstofWeergave } from "@/lib/use-kernstof-normen";
+import {
+  fetchVoedingsdoelen,
+  postKernstofProfiel,
+  postVoedingsdoelen,
+} from "@/lib/voedingsdoelen-client";
 
 /**
  * Je doelen als lijst: label links, waarde rechts, tikken opent één veld in
@@ -38,6 +52,27 @@ const BELASTING_OPTIES: ReadonlyArray<{ waarde: number; label: string; uitleg: s
   { waarde: 2, label: "Licht", uitleg: "Af en toe, één of twee keer per week" },
   { waarde: 3, label: "Actief", uitleg: "Regelmatig, drie tot vier keer per week" },
   { waarde: 4, label: "Zwaar", uitleg: "Bijna dagelijks of gericht op opbouw" },
+];
+
+const GESLACHT_OPTIES = [
+  { waarde: 1, label: "Man", uitleg: "Magnesium 350 mg, zink 9 mg per dag" },
+  { waarde: 2, label: "Vrouw", uitleg: "Magnesium 300 mg, zink 7 mg per dag" },
+] as const;
+
+const LEEFTIJD_OPTIES = [
+  { waarde: 1, label: "70 jaar of ouder", uitleg: "Vitamine D 20 µg per dag in plaats van 10 µg" },
+] as const;
+
+const VOEDINGSWIJZE_OPTIES = [
+  { waarde: 1, label: "Vegetarisch", uitleg: "Geen vlees of vis bij de voedingsbronnen" },
+  { waarde: 2, label: "Veganistisch", uitleg: "Ook geen zuivel, kaas of eieren" },
+] as const;
+
+const KERNSTOFFEN_MET_NORM: ReadonlyArray<{ stof: KernstofMetNorm; stap: number }> = [
+  { stof: "magnesium", stap: 10 },
+  { stof: "zinc", stap: 1 },
+  { stof: "omega3", stap: 50 },
+  { stof: "vitamin_d", stap: 5 },
 ];
 
 type Status =
@@ -135,11 +170,24 @@ export default function DoelenLijst() {
 
   const { voeding, macro } = status;
   const { doelen, richtlijn, gewichtBron } = voeding;
+  const kernstofNormen = voeding.kernstofNormen ?? STANDAARD_NORMEN;
+  const profiel: KernstofProfiel = voeding.kernstofProfiel ?? LEEG_KERNSTOF_PROFIEL;
+  const geslachtCode = profiel.geslacht === "man" ? 1 : profiel.geslacht === "vrouw" ? 2 : null;
+  const voedingswijzeCode =
+    profiel.voedingswijze === "vegetarisch" ? 1 : profiel.voedingswijze === "veganistisch" ? 2 : null;
 
   async function bewaarVoeding(patch: Partial<Voedingsdoelen>, setting: string) {
     const bijgewerkt = await postVoedingsdoelen(patch);
     setStatus((huidig) => (huidig.fase === "klaar" ? { ...huidig, voeding: bijgewerkt } : huidig));
+    zetKernstofWeergave(bijgewerkt);
     trackEvent("voedingsdoel_aangepast", { setting, surface: "voedingsdoelen" });
+  }
+
+  async function bewaarKernstof(patch: Parameters<typeof postKernstofProfiel>[0], setting: string) {
+    const bijgewerkt = await postKernstofProfiel(patch);
+    setStatus((huidig) => (huidig.fase === "klaar" ? { ...huidig, voeding: bijgewerkt } : huidig));
+    zetKernstofWeergave(bijgewerkt);
+    trackEvent("kernstof_profiel_aangepast", { setting, surface: "doelen" });
   }
 
   async function bewaarMacro(patch: Partial<MacroDoelen>, setting: string) {
@@ -250,6 +298,94 @@ export default function DoelenLijst() {
             })
           }
         />
+      </Sectie>
+
+      <Sectie
+        titel="Kernstoffen"
+        uitleg="De norm komt van de Gezondheidsraad en hangt af van wie je bent. Een eigen streefwaarde staat er in Je patroon naast; 'gehaald' blijft tegen de norm rekenen."
+      >
+        <Regel
+          label="Norm voor"
+          waarde={geslachtCode === 1 ? "Man" : geslachtCode === 2 ? "Vrouw" : "Uit je check"}
+          gedempt={geslachtCode === null}
+          onKies={() =>
+            open("norm_geslacht", {
+              soort: "keuze",
+              titel: "Voor wie geldt de norm?",
+              waarde: geslachtCode,
+              opties: GESLACHT_OPTIES,
+              leegLabel: "Uit je check",
+              leegUitleg: "Reken met wat je in je laatste check opgaf. Zonder geslacht: de hogere norm.",
+              onBewaar: (waarde) =>
+                bewaarKernstof({ geslacht: waarde === 1 ? "man" : waarde === 2 ? "vrouw" : null }, "norm_geslacht"),
+            })
+          }
+        />
+        <Regel
+          label="Leeftijd"
+          waarde={profiel.zeventigPlus ? "70 of ouder" : "Jonger dan 70"}
+          gedempt={!profiel.zeventigPlus}
+          onKies={() =>
+            open("norm_zeventig_plus", {
+              soort: "keuze",
+              titel: "Ben je 70 jaar of ouder?",
+              waarde: profiel.zeventigPlus ? 1 : null,
+              opties: LEEFTIJD_OPTIES,
+              leegLabel: "Jonger dan 70",
+              leegUitleg: "Vitamine D 10 µg per dag (Gezondheidsraad 2012).",
+              onBewaar: (waarde) => bewaarKernstof({ zeventigPlus: waarde === 1 }, "norm_zeventig_plus"),
+            })
+          }
+        />
+        <Regel
+          label="Voedingswijze"
+          waarde={voedingswijzeCode === 1 ? "Vegetarisch" : voedingswijzeCode === 2 ? "Veganistisch" : "Alles"}
+          gedempt={voedingswijzeCode === null}
+          onKies={() =>
+            open("voedingswijze", {
+              soort: "keuze",
+              titel: "Hoe eet je?",
+              waarde: voedingswijzeCode,
+              opties: VOEDINGSWIJZE_OPTIES,
+              leegLabel: "Alles",
+              leegUitleg: "De norm verandert niet; wel welke voedingsbronnen we je laten zien.",
+              onBewaar: (waarde) =>
+                bewaarKernstof(
+                  { voedingswijze: waarde === 1 ? "vegetarisch" : waarde === 2 ? "veganistisch" : null },
+                  "voedingswijze",
+                ),
+            })
+          }
+        />
+        {KERNSTOFFEN_MET_NORM.map(({ stof, stap }) => {
+          const norm = kernstofNormen[stof];
+          const eigen = profiel.streefwaarden[stof] ?? null;
+          const label = nutrientReferences[stof].label;
+          return (
+            <Regel
+              key={stof}
+              label={label}
+              waarde={eigen !== null ? `${String(eigen).replace(".", ",")} ${norm.unit} eigen` : `norm ${normLabel(norm)}`}
+              gedempt={eigen === null}
+              onKies={() =>
+                open(`streefwaarde_${stof}`, {
+                  soort: "getal",
+                  titel: `Eigen streefwaarde ${label.toLowerCase()}`,
+                  eenheid: norm.unit,
+                  waarde: eigen,
+                  stap,
+                  decimalen: stof === "vitamin_d" ? 1 : 0,
+                  start: norm.waarde,
+                  isGeldig: (waarde) => waarde === null || isGeldigeStreefwaarde(stof, waarde),
+                  foutTekst: `Vul een waarde tussen 0 en ${STREEFWAARDE_GRENS[stof].max} ${norm.unit} in. ${STREEFWAARDE_GRENS[stof].uitleg}`,
+                  uitleg: `Norm: ${normLabel(norm)} per dag voor ${norm.geldtVoor} (${norm.bron}). Je streefwaarde staat ernaast; 'gehaald' blijft tegen de norm.`,
+                  leegUitleg: "Leeg betekent: alleen de norm.",
+                  onBewaar: (waarde) => bewaarKernstof({ streefwaarden: { [stof]: waarde } }, `streefwaarde_${stof}`),
+                })
+              }
+            />
+          );
+        })}
       </Sectie>
 
       <Sectie titel="Calorieën en macro's" uitleg="Jouw eigen doel — wij rekenen hier niets voor uit.">

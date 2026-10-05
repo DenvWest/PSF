@@ -8,9 +8,23 @@ import { bouwPeriodeOverzicht, weekDatums } from "@/lib/nutrition-weekoverzicht"
 vi.mock("@/lib/ga4", () => ({ trackEvent: vi.fn() }));
 vi.mock("@/lib/clarity", () => ({ clarityTag: vi.fn() }));
 vi.mock("@/lib/account-events-client", () => ({ emitAccountClientEvent: vi.fn() }));
-vi.mock("@/lib/use-kernstof-normen", () => ({ useKernstofNormen: () => STANDAARD_NORMEN }));
+const profiel = vi.hoisted(() => ({
+  huidig: {
+    geslacht: null,
+    zeventigPlus: false,
+    voedingswijze: null as "vegetarisch" | "veganistisch" | null,
+    streefwaarden: {} as Record<string, number>,
+  },
+}));
+vi.mock("@/lib/use-kernstof-normen", () => ({
+  useKernstofNormen: () => STANDAARD_NORMEN,
+  useKernstofProfiel: () => profiel.huidig,
+}));
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  profiel.huidig = { geslacht: null, zeventigPlus: false, voedingswijze: null, streefwaarden: {} };
+});
 
 const MAGNESIUM = bouwPeriodeOverzicht([], weekDatums("2026-09-28"), STANDAARD_NORMEN).rijen.find(
   (rij) => rij.nutrient === "magnesium",
@@ -46,5 +60,22 @@ describe("PatroonStofDetail", () => {
     const supplement = screen.getByRole("link", { name: /Supplementen met Magnesium vergelijken/ });
     expect(voeding.compareDocumentPosition(supplement) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(supplement.getAttribute("href")).toBe(MAGNESIUM.comparisonPath);
+  });
+
+  it("toont je streefwaarde naast de norm, en bij vegan geen vis of vlees", () => {
+    profiel.huidig = { ...profiel.huidig, voedingswijze: "veganistisch", streefwaarden: { magnesium: 400 } };
+    render(
+      <PatroonStofDetail
+        rij={MAGNESIUM}
+        periode={{ van: "2026-09-28", tot: "2026-10-04" }}
+        dagenGeregistreerd={0}
+        bronnen={[]}
+        onTerug={() => {}}
+      />,
+    );
+    expect(screen.getByText(/400 mg per dag — "gehaald" blijft tegen de norm/)).toBeTruthy();
+    expect(screen.getByText(/Alleen veganistische bronnen/)).toBeTruthy();
+    const bronnen = screen.getByText(/Rijkste voedingsbronnen/).closest(".vd-tabel")!.textContent ?? "";
+    expect(bronnen).not.toMatch(/zalm|makreel|vlees|kaas|yoghurt|ei\b/i);
   });
 });

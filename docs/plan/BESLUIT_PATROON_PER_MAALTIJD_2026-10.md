@@ -67,7 +67,7 @@ Dennis' feedback op de eerste versie:
    Pas daaronder staat "Supplementen met X vergelijken". De monetisatie-uitgang blijft, met hetzelfde meetpunt `nutrition_week_nutrient_clicked`, maar komt als tweede stap (voeding eerst; asymmetrie-regel: het systeem bewijst nooit een tekort).
 6. **Opgeruimd:** `PatroonNutrientTabel`, `PatroonVensterTabel`, `PatroonGevolgdTabel`, `nutrition-gevolgde-vensters`. De vier vensters naast elkaar dubbelden met de periodekiezer. De bevinding ("staat de laatste 30 dagen het vaakst onder je norm") blijft, met "Plan in Mijn Dag".
 
-### Plak 2 — besloten, nog niet gebouwd: eigen invloed op de norm
+### Plak 2 — eigen invloed op de norm (gebouwd 5 okt, zie "Plak 2: uitvoering" onderaan)
 
 Dennis koos **profielchips + een eigen streefwaarde**. Dit herziet punt 5 van `BESLUIT_KERNSTOF_NORMEN_2026-10.md` ("de norm van de kernstoffen is niet zelf bij te stellen"):
 
@@ -93,3 +93,32 @@ Een inname onder de norm is geen tekort. Een tekort stelt een arts vast, met kla
 
 - Omega-3 als periodetotaal ook in Trend en in de dagboek-krans (plak 2b van `BESLUIT_DOELEN_VERBONDEN_2026-10.md`).
 - Vitamine D 20 µg vanaf 70: komt mee met de chip "70+" in plak 2.
+
+---
+
+## Plak 2: uitvoering (5 oktober)
+
+Dennis gaf akkoord ("akkoord met mergen, ook met plak 2").
+
+**Gebouwd:**
+- Tabel `account_kernstof_profiel` (migratie `20261005120000`, blokkeert deploy niet).
+- `src/lib/account-kernstof-profiel.ts` met validatie, en de route `POST /api/account/kernstof-profiel`. Die geeft de hele voedingsdoelen-weergave terug, met de herberekende normen.
+- **Je doelen** heeft een sectie "Kernstoffen" in de lijstvorm van #138:
+  - Norm voor (Uit je check · Man · Vrouw);
+  - Leeftijd (jonger dan 70 · 70 of ouder);
+  - Voedingswijze (Alles · Vegetarisch · Veganistisch);
+  - per kernstof de norm en een eigen streefwaarde.
+- **Je patroon:** de stoffentabel toont onder de norm "eigen streefwaarde X/dag · Y%". Het stof-detail noemt de streefwaarde, linkt naar "aanpassen" en filtert de rijkste bronnen op voedingswijze.
+- Normen en profiel staan in één gedeelde store (`use-kernstof-normen.ts`). Een wijziging op Je doelen werkt zonder herladen door in krans, patroon en agenda.
+
+**Afgebakend:**
+- **70+** zet de vitamine D-norm op 20 µg (Gezondheidsraad 2012). De bron van vitamine D in de normen is gecorrigeerd van "Gezondheidsraad 2018" naar 2012.
+- **Voedingswijze verandert geen norm.** De Gezondheidsraad heeft geen aparte vegetarische norm voor deze stoffen. De keuze bepaalt alleen welke voedingsbronnen we tonen, en bij omega-3 de zin "zonder vis komt dat vooral uit algen(olie)". Het filter werkt op voedselgroep (vis, vlees; bij veganistisch ook eieren en zuivel).
+- **Seizoen: niet gebouwd.** De norm verandert niet met het seizoen. Wat in de winter wel verandert, is de aanmaak van vitamine D in de huid, en die meet een dagboek niet; vitamine D blijft daarom "n.t.b.". Een seizoenchip zou dus niets doen of iets beweren wat het systeem niet weet.
+- **Bovengrens voor streefwaarden:** zink ≤ 25 mg en vitamine D ≤ 100 µg (EFSA-bovengrens), omega-3 ≤ 5000 mg (EFSA: geen veiligheidsbezwaar tot 5 g). Magnesium ≤ 1000 mg als typfoutgrens; de EFSA-bovengrens van 250 mg geldt alleen voor supplementen.
+- **"Gehaald" en de route naar `/beste/*` rekenen altijd tegen de norm, nooit tegen de streefwaarde.** De streefwaarde krijgt een percentage, geen vinkje en geen kleur.
+
+**Meting:**
+- `kernstof_profiel_aangepast` {setting, surface}
+- `doelen_regel_geopend` (bestaand) met de settings `norm_geslacht`, `norm_zeventig_plus`, `voedingswijze`, `streefwaarde_<stof>`
+- `nutrition_patroon_norm_aanpassen_click` {nutrient}

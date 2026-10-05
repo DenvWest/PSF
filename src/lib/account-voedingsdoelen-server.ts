@@ -2,6 +2,11 @@ import { DEFAULT_ORG_ID } from "@/config/org";
 import { INTAKE_GENDER_OPTIONS, type IntakeGender } from "@/data/intake-questions";
 import { voedingsnormenVoor } from "@/data/nutrition/voedingsnormen";
 import {
+  getKernstofProfiel,
+  LEEG_KERNSTOF_PROFIEL,
+  type KernstofProfiel,
+} from "@/lib/account-kernstof-profiel";
+import {
   bepaalEiwitDoel,
   getVoedingsdoelen,
   isGeldigGewicht,
@@ -120,6 +125,16 @@ export async function laadVoedingsdoelenWeergave(
     }
   }
 
+  let kernstofProfiel: KernstofProfiel = LEEG_KERNSTOF_PROFIEL;
+  if (admin.raw) {
+    try {
+      kernstofProfiel = await getKernstofProfiel(admin, accountId);
+    } catch {
+      // Zonder profiel gelden de normen uit de check; de pagina blijft werken.
+      kernstofProfiel = LEEG_KERNSTOF_PROFIEL;
+    }
+  }
+
   const eiwit = bepaalEiwitDoel({
     doelen,
     checkGewichtKg: check.gewichtKg,
@@ -132,6 +147,9 @@ export async function laadVoedingsdoelenWeergave(
     richtlijn: eiwit.range,
     gewichtBron: eiwit.gewichtBron,
     checkHeeftGewicht: isGeldigGewicht(check.gewichtKg),
-    kernstofNormen: voedingsnormenVoor(check.gender),
+    kernstofNormen: voedingsnormenVoor(kernstofProfiel.geslacht ?? check.gender, {
+      zeventigPlus: kernstofProfiel.zeventigPlus,
+    }),
+    kernstofProfiel,
   };
 }

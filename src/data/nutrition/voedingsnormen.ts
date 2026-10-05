@@ -24,8 +24,9 @@ import type { IntakeGender } from "@/data/intake-questions";
  * ## Leeftijd
  *
  * Voor deze vier stoffen verschilt de norm pas vanaf 70 jaar (vitamine D:
- * 20 µg). De leeftijdsvraag in de check stopt bij "55+", dus dat onderscheid
- * is niet te maken. Iedereen rekent met 10 µg.
+ * 20 µg, Gezondheidsraad 2012). De leeftijdsvraag in de check stopt bij
+ * "55+", dus dat onderscheid komt alleen uit de keuze "70 jaar of ouder" op
+ * Je doelen (`account_kernstof_profiel`). Zonder die keuze: 10 µg.
  */
 
 export type KernstofMetNorm = "magnesium" | "zinc" | "vitamin_d" | "omega3";
@@ -59,11 +60,16 @@ function perGeslacht(stof: "magnesium" | "zinc", gender: IntakeGender | null): V
   return { waarde: norm.man, unit: norm.unit, bron: GR_2018, geldtVoor: "volwassenen 18+" };
 }
 
-export function voedingsnormenVoor(gender: IntakeGender | null): Record<KernstofMetNorm, Voedingsnorm> {
+export function voedingsnormenVoor(
+  gender: IntakeGender | null,
+  { zeventigPlus = false }: { zeventigPlus?: boolean } = {},
+): Record<KernstofMetNorm, Voedingsnorm> {
   return {
     magnesium: perGeslacht("magnesium", gender),
     zinc: perGeslacht("zinc", gender),
-    vitamin_d: { waarde: 10, unit: "µg", bron: GR_2018, geldtVoor: "volwassenen tot 70" },
+    vitamin_d: zeventigPlus
+      ? { waarde: 20, unit: "µg", bron: "Gezondheidsraad 2012", geldtVoor: "volwassenen vanaf 70" }
+      : { waarde: 10, unit: "µg", bron: "Gezondheidsraad 2012", geldtVoor: "volwassenen tot 70" },
     omega3: {
       waarde: 200,
       unit: "mg",

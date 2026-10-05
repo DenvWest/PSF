@@ -10,7 +10,8 @@ import {
   RICHTING_TOON,
 } from "@/lib/nutrition-tekortsysteem-copy";
 import type { WeekRij } from "@/lib/nutrition-weekoverzicht";
-import { useKernstofNormen } from "@/lib/use-kernstof-normen";
+import { isKernstofMetNorm } from "@/lib/account-kernstof-profiel";
+import { useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 
 /**
  * De kernstoffen over de gekozen periode, elk tegen de norm die voor jou
@@ -42,6 +43,7 @@ export default function PatroonStofTabel({
   onOpen: (nutrient: NutrientId) => void;
 }) {
   const normen = useKernstofNormen();
+  const { streefwaarden } = useKernstofProfiel();
 
   return (
     <div className="vd-tabel vd-tabel--los">
@@ -58,6 +60,13 @@ export default function PatroonStofTabel({
         const vulling = rij.aandeel === null ? 0 : Math.min(Math.round(rij.aandeel * 100), 100);
         const heeftBalk = rij.bewijsbaar && rij.aandeel !== null && !leeg;
         const r = richting.get(rij.nutrient);
+        const streef = isKernstofMetNorm(rij.nutrient) ? (streefwaarden[rij.nutrient] ?? null) : null;
+        const streefAandeel =
+          streef === null || leeg
+            ? null
+            : rij.lezing === "periodetotaal"
+              ? rij.totaal / (streef * dagenInPeriode)
+              : rij.gemiddeld / streef;
 
         const ondertitel = !norm
           ? "doel op Je doelen (gewicht en activiteit)"
@@ -86,6 +95,12 @@ export default function PatroonStofTabel({
                 ) : null}
               </span>
               <i>{ondertitel}</i>
+              {streef !== null ? (
+                <i>
+                  eigen streefwaarde {hoeveelheid(streef)} {rij.unit}/dag
+                  {streefAandeel !== null ? ` · ${percentageADH(streefAandeel)}` : ""}
+                </i>
+              ) : null}
               {!rij.bewijsbaar ? <i>met een dagboek niet aan te tonen</i> : null}
             </span>
 

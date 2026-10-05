@@ -2,6 +2,8 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import DoelenLijst from "@/components/dashboard/doelen/DoelenLijst";
+import { voedingsnormenVoor } from "@/data/nutrition/voedingsnormen";
+import { LEEG_KERNSTOF_PROFIEL } from "@/lib/account-kernstof-profiel";
 
 vi.mock("@/lib/ga4", () => ({ trackEvent: vi.fn() }));
 
@@ -10,7 +12,8 @@ const VOEDING = {
   richtlijn: { gramsLow: 100, gramsHigh: 120 },
   gewichtBron: "eigen",
   checkHeeftGewicht: true,
-  kernstofNormen: {},
+  kernstofNormen: voedingsnormenVoor(null),
+  kernstofProfiel: LEEG_KERNSTOF_PROFIEL,
 };
 
 const MACRO_LEEG = { calorieenKcal: null, koolhydratenPct: null, vetPct: null, eiwitPct: null };
@@ -24,6 +27,18 @@ beforeEach(() => {
     "fetch",
     vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
+      if (url.includes("/api/account/kernstof-profiel")) {
+        const patch = JSON.parse(String(init?.body)) as { zeventigPlus?: boolean; streefwaarden?: Record<string, number> };
+        return antwoord({
+          ...VOEDING,
+          kernstofNormen: voedingsnormenVoor(null, { zeventigPlus: patch.zeventigPlus === true }),
+          kernstofProfiel: {
+            ...LEEG_KERNSTOF_PROFIEL,
+            zeventigPlus: patch.zeventigPlus === true,
+            streefwaarden: patch.streefwaarden ?? {},
+          },
+        });
+      }
       if (url.includes("/api/account/voedingsdoelen")) {
         if (init?.method === "POST") {
           const patch = JSON.parse(String(init.body)) as Record<string, unknown>;
@@ -105,5 +120,32 @@ describe("DoelenLijst", () => {
     await waitFor(() =>
       expect(screen.getByRole("button", { name: /Hoe zwaar je traint\s*Uit je check/ })).toBeTruthy(),
     );
+  });
+
+  it("toont per kernstof de norm, en 70+ verhoogt de vitamine D-norm", async () => {
+    render(<DoelenLijst />);
+
+    expect(await screen.findByRole("button", { name: /Vitamine D\s*norm 10 µg/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Norm voor\s*Uit je check/ })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /Leeftijd/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /70 jaar of ouder/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Opslaan" }));
+
+    await waitFor(() => expect(screen.getByRole("button", { name: /Vitamine D\s*norm 20 µg/ })).toBeTruthy());
+    const post = vi
+      .mocked(fetch)
+      .mock.calls.find(([url]) => String(url).includes("/api/account/kernstof-profiel"));
+    expect(JSON.parse(String((post![1] as RequestInit).body))).toEqual({ zeventigPlus: true });
+  });
+
+  it("weigert een zink-streefwaarde boven de EFSA-bovengrens", async () => {
+    render(<DoelenLijst />);
+
+    fireEvent.click(await screen.findByRole("button", { name: /^Zink/ }));
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "40" } });
+
+    expect(screen.getByText(/veilige bovengrens op 25 mg/)).toBeTruthy();
+    expect((screen.getByRole("button", { name: "Opslaan" }) as HTMLButtonElement).disabled).toBe(true);
   });
 });

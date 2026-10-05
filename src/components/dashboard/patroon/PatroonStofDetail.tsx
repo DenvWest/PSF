@@ -6,11 +6,12 @@ import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { normLabel, normVoor } from "@/lib/nutrition-normen";
 import { periodeLabel, type Periode } from "@/lib/nutrition-periode";
-import { rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
+import { pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
+import { isKernstofMetNorm } from "@/lib/account-kernstof-profiel";
 import type { StofBron } from "@/lib/nutrition-stof-bronnen";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 import type { WeekRij } from "@/lib/nutrition-weekoverzicht";
-import { useKernstofNormen } from "@/lib/use-kernstof-normen";
+import { useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 
 /**
  * Eén kernstof uitgeklapt in Per stof: de norm met bron en voor wie hij
@@ -35,6 +36,7 @@ import { useKernstofNormen } from "@/lib/use-kernstof-normen";
 const NORM_BRON_VOLUIT: Record<string, string> = {
   "Gezondheidsraad 2018": "Gezondheidsraad (2018), Voedingsnormen vitamines en mineralen voor volwassenen",
   "Gezondheidsraad 2001": "Gezondheidsraad (2001), Voedingsnormen: energie, eiwitten, vetten en verteerbare koolhydraten",
+  "Gezondheidsraad 2012": "Gezondheidsraad (2012), Evaluatie van de voedingsnormen voor vitamine D",
 };
 
 export default function PatroonStofDetail({
@@ -52,7 +54,11 @@ export default function PatroonStofDetail({
 }) {
   const normen = useKernstofNormen();
   const norm = normVoor(normen, rij.nutrient);
-  const rijkste = rijksteBronnen(rij.nutrient, "portie", 5);
+  const profiel = useKernstofProfiel();
+  const streef = isKernstofMetNorm(rij.nutrient) ? (profiel.streefwaarden[rij.nutrient] ?? null) : null;
+  const rijkste = rijksteBronnen(rij.nutrient, "portie", 40)
+    .filter((bron) => pastBijVoedingswijze(bron.entry, profiel.voedingswijze))
+    .slice(0, 5);
   const totaal = bronnen.reduce((som, bron) => som + bron.totaal, 0);
   const uitSupplement = bronnen.filter((b) => b.supplement).reduce((som, b) => som + b.totaal, 0);
 
@@ -97,12 +103,27 @@ export default function PatroonStofDetail({
             <dt className="text-[var(--vd-ink-3)]">Norm</dt>
             <dd className="m-0 text-[var(--vd-ink)]">
               {normLabel(norm)} per dag
-              {rij.nutrient === "omega3" ? " EPA+DHA — in de richtlijn: 1× per week vis, bij voorkeur vette vis" : ""}
+              {rij.nutrient === "omega3"
+                ? profiel.voedingswijze
+                  ? " EPA+DHA — zonder vis komt dat vooral uit algen(olie)"
+                  : " EPA+DHA — in de richtlijn: 1× per week vis, bij voorkeur vette vis"
+                : ""}
             </dd>
             <dt className="text-[var(--vd-ink-3)]">Geldt voor</dt>
             <dd className="m-0 text-[var(--vd-ink)]">{norm.geldtVoor}</dd>
             <dt className="text-[var(--vd-ink-3)]">Bron</dt>
             <dd className="m-0 text-[var(--vd-ink)]">{NORM_BRON_VOLUIT[norm.bron] ?? norm.bron}</dd>
+            <dt className="text-[var(--vd-ink-3)]">Jouw streefwaarde</dt>
+            <dd className="m-0 text-[var(--vd-ink)]">
+              {streef !== null ? `${hoeveelheid(streef)} ${norm.unit} per dag — "gehaald" blijft tegen de norm` : "niet ingesteld"}
+              {" · "}
+              <Link
+                href="/dashboard/doelen"
+                onClick={() => trackEvent("nutrition_patroon_norm_aanpassen_click", { nutrient: rij.nutrient })}
+              >
+                aanpassen
+              </Link>
+            </dd>
           </dl>
         ) : (
           <p className="vd-note mb-0">
@@ -157,6 +178,13 @@ export default function PatroonStofDetail({
           <div className="vd-tabel-kop">
             <span className="!text-left">Rijkste voedingsbronnen · per portie</span>
           </div>
+          {profiel.voedingswijze ? (
+            <div className="vd-tabel-rij">
+              <span className="vd-naam">
+                <i>Alleen {profiel.voedingswijze}e bronnen, volgens je keuze op Je doelen.</i>
+              </span>
+            </div>
+          ) : null}
           {rijkste.map((bron) => (
             <div key={bron.entry.key} className="vd-tabel-rij grid-cols-[1fr_auto]">
               <span className="vd-naam">

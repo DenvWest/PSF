@@ -1,3 +1,4 @@
+import type { KernstofProfiel } from "@/lib/account-kernstof-profiel";
 import type {
   Voedingsdoelen,
   VoedingsdoelenWeergave,
@@ -44,6 +45,29 @@ export async function postVoedingsdoelen(
   });
   if (!response.ok) {
     throw new Error(await readApiError(response, "Kon je doelen niet opslaan."));
+  }
+  return (await response.json()) as VoedingsdoelenWeergave;
+}
+
+/**
+ * Past het kernstofprofiel aan (`/api/account/kernstof-profiel`). Zelfde
+ * afspraak: weggelaten blijft staan, `null` wist. Geeft de hele weergave terug,
+ * met de herberekende normen.
+ */
+export async function postKernstofProfiel(patch: {
+  geslacht?: KernstofProfiel["geslacht"];
+  zeventigPlus?: boolean;
+  voedingswijze?: KernstofProfiel["voedingswijze"];
+  streefwaarden?: Partial<Record<keyof KernstofProfiel["streefwaarden"], number | null>>;
+}): Promise<VoedingsdoelenWeergave> {
+  const response = await fetch("/api/account/kernstof-profiel", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(patch),
+  });
+  if (!response.ok) {
+    throw new Error(await readApiError(response, "Kon je keuze niet opslaan."));
   }
   return (await response.json()) as VoedingsdoelenWeergave;
 }
