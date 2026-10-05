@@ -59,6 +59,8 @@ Na het kiezen van een product in het dagboek-zoekscherm: een rijk invoerscherm m
 
 ### Laag B — dagboek-overzicht met 3 tabbladen
 
+> **Herzien 5 okt 2026:** de tabbladen Voedingsstoffen en Macro's staan niet meer op het dagboekscherm maar op `/dashboard/voeding`, bereikbaar via Meer. Daarmee vervalt ook "geen Voeding-item in Meer" (§1, 27 sep): de reden (dubbelop met het dagboek) geldt niet meer. Zie `BESLUIT_VOEDING_EN_DOELEN_IN_MEER_2026-10.md`.
+
 Het bestaande dagboekscherm (`DagboekScherm.tsx`) krijgt naast de huidige 5-stoffen-ringen een tabbladstructuur **Calorieën · Voedingsstoffen · Macro's**, analoog aan screenshot 2/3:
 - **Calorieën**: dagtotaal, geen weekscore-in-%-oordeel — een getal, geen "dat kan beter".
 - **Voedingsstoffen**: tabel met alle micronutriënten die de databron levert (cholesterol, natrium, kalium, vitamine A/C, calcium, ijzer, en de bestaande 5), als **informatieve %-weergave van een instelbare referentiewaarde** — zie §4 voor hoe dit geen advies wordt.

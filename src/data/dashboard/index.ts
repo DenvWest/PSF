@@ -393,8 +393,9 @@ export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
  * ## Waarom dit geen extra tab is
  *
  * De tabs volgen de lus: Dagboek meet, Patroon weegt, Keuze dicht. Mijn Dag
- * plant de keuze in, en je doelen zijn de meetlat waar alles tegen afleest —
- * allebei plekken waar je naartoe gaat, geen stap die je elke dag zet.
+ * plant de keuze in, Voeding laat zien wat het dagboek opleverde, en je
+ * doelen zijn de meetlat waar alles tegen afleest — plekken waar je naartoe
+ * gaat, geen stap die je elke dag zet.
  *
  * ## Waarom een eigen lijst en geen accountinstelling
  *
@@ -419,6 +420,13 @@ export const DASHBOARD_MORE_ITEMS: DashboardMoreItem[] = [
     icon: "RouteMap",
     href: "/dashboard?tab=agenda",
     hint: "Je keuzes als blokken op een moment van de dag.",
+  },
+  {
+    id: "voeding",
+    label: "Voeding",
+    icon: "Utensils",
+    href: "/dashboard/voeding",
+    hint: "Voedingsstoffen en macro's, per dag of per week.",
   },
   {
     id: "doelen",

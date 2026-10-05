@@ -109,7 +109,7 @@ export default function VoedingswaardeTabel({
           </p>
         ) : null}
         <p className="m-0 text-[10.5px] leading-relaxed text-[var(--vd-ink-4)]">
-          Magnesium, zink, vitamine D en omega-3 staan in je vijf stoffen hierboven. RI = referentie-inname
+          Magnesium, zink, vitamine D en omega-3 staan in de krans van je dagboek. RI = referentie-inname
           (EU 1169/2011); energie en macro&apos;s krijgen geen percentage.
         </p>
         <SupermarktBronRegel producten={bronProducten} berekend />

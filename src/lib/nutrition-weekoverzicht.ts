@@ -89,6 +89,13 @@ export function verschuifWeek(start: string, weken: number): string {
   return dag.toISOString().slice(0, 10);
 }
 
+/** De dag `n` dagen verschoven — negatief is terug. */
+export function verschuifDag(datum: string, dagen: number): string {
+  const dag = new Date(datum);
+  dag.setDate(dag.getDate() + dagen);
+  return dag.toISOString().slice(0, 10);
+}
+
 /** De zeven ISO-datums van de week die op `start` begint. */
 export function weekDatums(start: string): string[] {
   return Array.from({ length: 7 }, (_, i) => {
