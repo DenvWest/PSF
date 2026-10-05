@@ -2,6 +2,7 @@ import { STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 import { describe, expect, it } from "vitest";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import {
+  bouwPeriodeOverzicht,
   bouwWeekoverzicht,
   verschuifWeek,
   weekDatums,
@@ -131,5 +132,44 @@ describe("bouwWeekoverzicht", () => {
     for (const rij of week.rijen) {
       expect(rij.comparisonPath).toMatch(/^\/beste\//);
     }
+  });
+});
+
+describe("bouwPeriodeOverzicht", () => {
+  const visolie = (date: string, capsules: number): DagboekDag => ({
+    date,
+    soort: "doordeweeks",
+    porties: {},
+    items: [
+      { moment: "ontbijt", bron: "supplement", key: "visolie-capsule-1000mg", grams: capsules },
+    ] as unknown as DagboekDag["items"],
+  });
+  const datums = weekDatums("2026-09-14");
+
+  it("leest omega-3 als periodetotaal tegen de norm × kalenderdagen", () => {
+    // 2 × 300 mg op één dag, plus een dag zonder omega-3: 600 mg in 7 dagen.
+    const dagen = [visolie("2026-09-14", 2), dag("2026-09-15", [{ key: "havermout", grams: 50 }])];
+    const omega = bouwPeriodeOverzicht(dagen, datums, STANDAARD_NORMEN, { omega3AlsPeriodetotaal: true })
+      .rijen.find((rij) => rij.nutrient === "omega3")!;
+
+    expect(omega).toMatchObject({ lezing: "periodetotaal", totaal: 600, normPeriode: 1400, gedekt: false });
+    expect(omega.aandeel).toBeCloseTo(600 / 1400);
+    expect(omega.teGaan).toBe(800);
+  });
+
+  it("geeft één visdag op twee geregistreerde dagen geen honderden procenten meer", () => {
+    const dagen = [visolie("2026-09-14", 5), dag("2026-09-15", [{ key: "havermout", grams: 50 }])];
+    const perDag = bouwPeriodeOverzicht(dagen, datums, STANDAARD_NORMEN).rijen.find((r) => r.nutrient === "omega3")!;
+    const totaal = bouwPeriodeOverzicht(dagen, datums, STANDAARD_NORMEN, { omega3AlsPeriodetotaal: true })
+      .rijen.find((r) => r.nutrient === "omega3")!;
+
+    expect(perDag.aandeel).toBeCloseTo(3.75);
+    expect(totaal.aandeel).toBeCloseTo(1500 / 1400);
+    expect(totaal.gedekt).toBe(true);
+  });
+
+  it("laat de andere stoffen per dag lezen", () => {
+    const rijen = bouwPeriodeOverzicht([], datums, STANDAARD_NORMEN, { omega3AlsPeriodetotaal: true }).rijen;
+    expect(rijen.filter((rij) => rij.lezing === "periodetotaal").map((rij) => rij.nutrient)).toEqual(["omega3"]);
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bouwGevolgdeWeken, gevolgdPerDag } from "@/lib/nutrition-gevolgde-weken";
+import { bouwGevolgdePeriode, bouwGevolgdeWeken } from "@/lib/nutrition-gevolgde-weken";
 import { VOEDINGSWAARDE_VELDEN, type Voedingswaarde } from "@/lib/nutrition-voedingswaarde";
 
 function dag(waarden: Record<string, number>, zonderWaarde = 0): Voedingswaarde {
@@ -37,16 +37,17 @@ describe("bouwGevolgdeWeken", () => {
   });
 });
 
-describe("gevolgdPerDag", () => {
-  it("geeft zeven dagen, null waar niets geregistreerd is of geen waarde bestaat", () => {
-    const dagen = gevolgdPerDag(
+describe("bouwGevolgdePeriode", () => {
+  it("middelt over de geregistreerde dagen van een willekeurige periode", () => {
+    const [calcium] = bouwGevolgdePeriode(
       new Map([
         ["2026-09-28", dag({ calciumMg: 400 })],
-        ["2026-09-29", dag({}, 1)],
+        ["2026-09-30", dag({ calciumMg: 800 })],
+        ["2026-10-09", dag({ calciumMg: 9999 })],
       ]),
-      "calciumMg",
-      MAANDAG,
+      ["calciumMg"],
+      ["2026-09-28", "2026-09-29", "2026-09-30"],
     );
-    expect(dagen).toEqual([400, null, null, null, null, null, null]);
+    expect(calcium!.punten).toEqual([{ weekStart: "2026-09-28", gemiddeld: 600, aandeel: 0.75, dagen: 2 }]);
   });
 });
