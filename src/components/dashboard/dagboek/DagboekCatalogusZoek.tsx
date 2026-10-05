@@ -79,6 +79,7 @@ export default function DagboekCatalogusZoek({
   onBewaarFavoriet,
   onVerwijderFavoriet,
   onTerug,
+  onVergelijk,
   busyFavoriet = false,
 }: {
   /** De stof waarvandaan je kwam — bepaalt alleen de titel. Null vanuit een maaltijd. */
@@ -103,6 +104,8 @@ export default function DagboekCatalogusZoek({
   onBewaarFavoriet: (bron: DagboekItemBron, key: string) => void;
   onVerwijderFavoriet: (bron: DagboekItemBron, key: string) => void;
   onTerug: () => void;
+  /** Opent "Vergelijk producten": je vergelijkt op het moment dat je kiest wat je toevoegt. */
+  onVergelijk?: () => void;
   busyFavoriet?: boolean;
 }) {
   const [zoek, setZoek] = useState("");
@@ -234,6 +237,15 @@ export default function DagboekCatalogusZoek({
         <h2 className="m-0 min-w-0 flex-1 truncate font-serif text-[16px] font-normal text-[var(--vd-ink)]">
           {nutrient ? `Voeg toe bij ${nutrientReferences[nutrient].label.toLowerCase()}` : `Voeg toe aan ${momentLabel}`}
         </h2>
+        {onVergelijk ? (
+          <button
+            type="button"
+            onClick={onVergelijk}
+            className="flex-none cursor-pointer whitespace-nowrap rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] transition-colors hover:border-[var(--vd-sage)] hover:text-[var(--vd-sage-2)]"
+          >
+            Vergelijk producten
+          </button>
+        ) : null}
       </header>
 
       <section className="overflow-hidden rounded-2xl border border-white/10">
