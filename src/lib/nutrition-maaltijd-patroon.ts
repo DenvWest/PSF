@@ -1,0 +1,172 @@
+import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
+import { itemsVanMoment, nutrientenGesplitstUitItems, type DagboekItem } from "@/lib/nutrition-dagboek-items";
+import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
+import type { SupermarktPortie } from "@/lib/nutrition-supermarkt-items";
+import { BASE_UNIT } from "@/lib/nutrition-units";
+import {
+  berekenVoedingswaarde,
+  VOEDINGSWAARDE_VELDEN,
+  type VoedingswaardeRij,
+} from "@/lib/nutrition-voedingswaarde";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
+
+/**
+ * Wat er gemiddeld op één eetmoment op je bord ligt: energie, macro's,
+ * micronutriënten en de kernstoffen, over de keren dat je dat moment
+ * registreerde.
+ *
+ * ## Waarom gemiddeld per keer en niet per kalenderdag
+ *
+ * Een ontbijt dat je niet registreerde is geen leeg ontbijt maar een onbekend
+ * ontbijt (asymmetrie-regel). De noemer is daarom het aantal dagen waarop het
+ * moment minstens één product droeg; `keer` zegt hoeveel dat er waren.
+ *
+ * ## Dezelfde som als de dag
+ *
+ * Elke keer wordt doorgerekend met `berekenVoedingswaarde` en
+ * `nutrientenGesplitstUitItems` — dezelfde functies als de dagtabel en de
+ * krans. Een maaltijd kan dus nooit iets anders tellen dan de dag waar hij
+ * in staat.
+ *
+ * ## Rijkdom per 100 kcal
+ *
+ * "Hoe rijk is deze maaltijd" is een dichtheid: hoeveel van een stof per
+ * 100 kcal. Een grote lunch levert in absolute zin meer dan een klein ontbijt;
+ * per 100 kcal zie je welke maaltijd zijn calorieën het best besteedt. Geen
+ * prijs: die is uitgesteld (`BESLUIT_PATROON_PER_MAALTIJD_2026-10.md`).
+ */
+
+/** De drie maaltijden plus tussendoor, in de volgorde van de dag. */
+export const MAALTIJD_MOMENTEN: readonly EetmomentId[] = EETMOMENTEN.map((m) => m.id);
+
+/** Eiwit staat al bij de macro's; de kernstoffen-rij toont de andere vier. */
+const KERNSTOFFEN_PER_MAALTIJD: readonly NutrientId[] = ["magnesium", "zinc", "omega3", "vitamin_d"];
+
+export type MaaltijdKernstof = {
+  nutrient: NutrientId;
+  label: string;
+  unit: string;
+  /** Gemiddelde per keer, of null als op geen enkele keer een bron met gehalte stond. */
+  gemiddeld: number | null;
+  /** Het deel van {@link gemiddeld} dat uit supplementen kwam. */
+  uitSupplement: number | null;
+};
+
+export type MaaltijdRij = VoedingswaardeRij & {
+  /** {@link VoedingswaardeRij.waarde} per 100 kcal, of null zonder energie of waarde. */
+  per100kcal: number | null;
+};
+
+export type MaaltijdPatroon = {
+  moment: EetmomentId;
+  label: string;
+  /** Aantal dagen waarop dit moment minstens één product droeg. */
+  keer: number;
+  rijen: MaaltijdRij[];
+  kernstoffen: MaaltijdKernstof[];
+  /** Producten in deze keren die niets bijdroegen aan de voedingswaarde. */
+  zonderWaarde: number;
+  /** Supplementregels op dit moment, opgeteld over alle keren. */
+  supplementen: number;
+};
+
+type Invoer = {
+  /** Items per datum (gesanitized). */
+  itemsPerDag: ReadonlyMap<string, readonly DagboekItem[]>;
+  /** Etiketporties per datum. */
+  etiketPerDag: Readonly<Record<string, readonly SupermarktPortie[]>>;
+  nevoProducten: ReadonlyMap<string, SupermarktProduct>;
+  /** Eerste en laatste datum (inclusief), `YYYY-MM-DD`. */
+  van: string;
+  tot: string;
+};
+
+function afgerond(waarde: number): number {
+  return Math.round(waarde * 10) / 10;
+}
+
+export function bouwMaaltijdPatroon({ itemsPerDag, etiketPerDag, nevoProducten, van, tot }: Invoer): MaaltijdPatroon[] {
+  const datums = [...new Set([...itemsPerDag.keys(), ...Object.keys(etiketPerDag)])]
+    .filter((datum) => datum >= van && datum <= tot)
+    .sort();
+
+  return EETMOMENTEN.map(({ id: moment, label }): MaaltijdPatroon => {
+    const keren = datums.flatMap((datum) => {
+      const items = itemsVanMoment(itemsPerDag.get(datum) ?? [], moment);
+      const etiket = (etiketPerDag[datum] ?? []).filter((log) => log.moment === moment);
+      return items.length + etiket.length > 0 ? [{ items, etiket }] : [];
+    });
+    const keer = keren.length;
+
+    const waarden = keren.map(({ items, etiket }) =>
+      berekenVoedingswaarde({
+        items,
+        supermarktLogs: etiket,
+        nevoProducten,
+      }),
+    );
+
+    const gemiddeldeRijen = VOEDINGSWAARDE_VELDEN.map((veld) => {
+      let som = 0;
+      let heeftWaarde = false;
+      for (const waarde of waarden) {
+        const bedrag = waarde.rijen.find((rij) => rij.veld === veld.veld)?.waarde;
+        if (bedrag === null || bedrag === undefined) continue;
+        som += bedrag;
+        heeftWaarde = true;
+      }
+      const gemiddeld = heeftWaarde && keer > 0 ? som / keer : null;
+      return {
+        ...veld,
+        waarde: gemiddeld,
+        aandeel: gemiddeld !== null && veld.ri !== null ? gemiddeld / veld.ri : null,
+      };
+    });
+
+    const kcal = gemiddeldeRijen.find((rij) => rij.veld === "energyKcal")?.waarde ?? null;
+    const rijen = gemiddeldeRijen.map(
+      (rij): MaaltijdRij => ({
+        ...rij,
+        waarde: rij.waarde === null ? null : afgerond(rij.waarde),
+        per100kcal:
+          rij.veld === "energyKcal" || rij.waarde === null || kcal === null || kcal <= 0
+            ? null
+            : (rij.waarde / kcal) * 100,
+      }),
+    );
+
+    const perKeer = keren.map(({ items }) => nutrientenGesplitstUitItems(items));
+    const kernstoffen = KERNSTOFFEN_PER_MAALTIJD.map((nutrient): MaaltijdKernstof => {
+      let totaal = 0;
+      let supplement = 0;
+      let heeftBron = false;
+      for (const stoffen of perKeer) {
+        const stof = stoffen.find((s) => s.nutrient === nutrient);
+        if (!stof) continue;
+        totaal += stof.minstens;
+        supplement += stof.uitSupplement;
+        heeftBron = true;
+      }
+      return {
+        nutrient,
+        label: nutrientReferences[nutrient].label,
+        unit: BASE_UNIT[nutrient],
+        gemiddeld: heeftBron ? afgerond(totaal / keer) : null,
+        uitSupplement: heeftBron ? afgerond(supplement / keer) : null,
+      };
+    });
+
+    return {
+      moment,
+      label,
+      keer,
+      rijen,
+      kernstoffen,
+      zonderWaarde: waarden.reduce((som, waarde) => som + waarde.zonderWaarde, 0),
+      supplementen: keren.reduce(
+        (som, { items }) => som + items.filter((item) => item.bron === "supplement").length,
+        0,
+      ),
+    };
+  });
+}

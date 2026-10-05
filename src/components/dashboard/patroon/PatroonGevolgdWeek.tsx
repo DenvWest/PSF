@@ -7,10 +7,9 @@ import { rondVoedingswaarde } from "@/lib/nutrition-voedingswaarde";
 /**
  * De gevolgde stoffen in de bekeken week, op twee plekken in Je patroon:
  *
- * - `variant="kaarten"` op Samenvatting: dezelfde kaartvorm als
- *   `PatroonSamenvattingKaart` (gemiddelde links, zeven dagen als staafjes
- *   rechts), in één neutrale tint en zonder "gedekt".
- * - `variant="tabel"` op Deze week: dezelfde kolommen als de kernstoffentabel
+ * - `variant="kaarten"` op Samenvatting: gemiddelde links, zeven dagen als
+ *   staafjes rechts, in één neutrale tint en zonder "gedekt".
+ * - `variant="tabel"` op Per stof: dezelfde kolommen als de kernstoffentabel
  *   erboven (stof, gemiddelde, % RI), zonder link naar `/beste/*`.
  *
  * Informatief, zoals "Ook gevolgd" in het dagboek en onder de venstertabel.

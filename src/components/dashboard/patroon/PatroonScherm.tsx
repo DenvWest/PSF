@@ -4,18 +4,22 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { TEKORT_VOORSTELLEN } from "@/data/agenda/tekort-voorstellen";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
+import PatroonDoelenKaart, {
+  type SupplementWeek,
+} from "@/components/dashboard/patroon/PatroonDoelenKaart";
+import PatroonMaaltijden from "@/components/dashboard/patroon/PatroonMaaltijden";
 import PatroonNutrientTabel from "@/components/dashboard/patroon/PatroonNutrientTabel";
-import PatroonSamenvattingKaart from "@/components/dashboard/patroon/PatroonSamenvattingKaart";
 import PatroonSubtabs, {
   type PatroonSectie,
 } from "@/components/dashboard/patroon/PatroonSubtabs";
-import PatroonTelcirkels from "@/components/dashboard/patroon/PatroonTelcirkels";
 import PatroonTrend from "@/components/dashboard/patroon/PatroonTrend";
 import PatroonGevolgdTabel from "@/components/dashboard/patroon/PatroonGevolgdTabel";
 import PatroonGevolgdWeek from "@/components/dashboard/patroon/PatroonGevolgdWeek";
 import PatroonVensterTabel from "@/components/dashboard/patroon/PatroonVensterTabel";
 import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
+import { LEGE_MACRO_DOELEN, type MacroDoelen } from "@/lib/account-macro-doelen";
+import { fetchMacroDoelen } from "@/lib/macro-doelen-client";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
 import {
@@ -25,13 +29,19 @@ import {
 } from "@/lib/nutrition-tekortsysteem-copy";
 import { clarityTag } from "@/lib/clarity";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
-import { nutrientenUitItems, sanitizeItems } from "@/lib/nutrition-dagboek-items";
+import {
+  nutrientenGesplitstUitItems,
+  sanitizeItems,
+} from "@/lib/nutrition-dagboek-items";
+import { bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
+import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
 import {
   bepaalBevinding,
   bouwTekortsysteem,
 } from "@/lib/nutrition-tekortsysteem";
 import { bouwTrend } from "@/lib/nutrition-trend";
-import { useGevolgdePerDag } from "@/lib/use-gevolgde-per-dag";
+import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
+import { useVoedingsdataPeriode } from "@/lib/use-voedingsdata-periode";
 import { bouwGevolgdeVensters } from "@/lib/nutrition-gevolgde-vensters";
 import { bouwGevolgdeWeken, gevolgdPerDag } from "@/lib/nutrition-gevolgde-weken";
 import { useKernstofNormen } from "@/lib/use-kernstof-normen";
@@ -49,13 +59,11 @@ import {
  * ## Eén scherm, vier secties via een sub-tab-balk
  *
  * Vorm komt uit de MyFitnessPal Voortgang-header: een titelbalk met een
- * horizontaal scrollbare rij secties eronder (Samenvatting · Calorieën ·
- * Voedingsstoffen · ...). Bij ons: **Samenvatting · Deze week ·
- * Voedingsstoffen · Trend**. Dat verving een eerdere opzet met twee losse
- * uitklap-knoppen ("Wekelijks overzicht", "Hoe hardnekkig is dit?") — die
- * opzet verstopte de vensters en het weekoverzicht achter een label dat je
- * eerst moest lezen en dan nog moest openklappen. Een tab-balk laat in één
- * blik zien wát er allemaal is, en je kiest.
+ * horizontaal scrollbare rij secties eronder. Bij ons: **Per maaltijd ·
+ * Samenvatting · Per stof · Trend** (`BESLUIT_PATROON_PER_MAALTIJD_2026-10.md`).
+ * Per maaltijd staat voorop omdat mensen hun dag per moment terughalen; de
+ * oude tabs "Deze week" en "Voedingsstoffen" zijn samen "Per stof" geworden,
+ * omdat ze dezelfde stoffen twee keer naast een ander tijdvenster zetten.
  *
  * ## Eén gedeeld thema
  *
@@ -65,12 +73,15 @@ import {
  * geen licht/donker-keuze meer.
  */
 
+const MAALTIJD_PERIODE_DAGEN = 30;
+
 function PatroonInhoud() {
   const vandaag = todayInAgendaTimezone();
   const normen = useKernstofNormen();
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
   const [laden, setLaden] = useState(true);
-  const [sectie, setSectie] = useState<PatroonSectie>("samenvatting");
+  const [sectie, setSectie] = useState<PatroonSectie>("maaltijden");
+  const [macroDoelen, setMacroDoelen] = useState<MacroDoelen>(LEGE_MACRO_DOELEN);
   const [weekOffset, setWeekOffset] = useState(0);
   const [verborgenNutrients, setVerborgenNutrients] = useState<Set<NutrientId>>(
     () => new Set(),
@@ -112,6 +123,20 @@ function PatroonInhoud() {
         /* stoffen blijven gewoon allemaal aan */
       }
     })();
+    return () => {
+      afgebroken = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let afgebroken = false;
+    fetchMacroDoelen()
+      .then((doelen) => {
+        if (!afgebroken) setMacroDoelen(doelen);
+      })
+      .catch(() => {
+        /* zonder doel toont de samenvatting "geen doel" */
+      });
     return () => {
       afgebroken = true;
     };
@@ -177,13 +202,68 @@ function PatroonInhoud() {
     () => Array.from({ length: 6 }, (_, i) => verschuifWeek(huidigeWeek, i - 5)),
     [huidigeWeek],
   );
-  const gevolgdVan = useMemo(() => {
+  const dertigDagenTerug = useMemo(() => {
     const dertigTerug = new Date(`${vandaag}T00:00:00Z`);
-    dertigTerug.setUTCDate(dertigTerug.getUTCDate() - 29);
-    const dertig = dertigTerug.toISOString().slice(0, 10);
-    return trendWeken[0]! < dertig ? trendWeken[0]! : dertig;
-  }, [vandaag, trendWeken]);
-  const { stoffen: gevolgdeStoffen, perDag: gevolgdPerDatum } = useGevolgdePerDag(dagen, gevolgdVan, vandaag);
+    dertigTerug.setUTCDate(dertigTerug.getUTCDate() - (MAALTIJD_PERIODE_DAGEN - 1));
+    return dertigTerug.toISOString().slice(0, 10);
+  }, [vandaag]);
+  const gevolgdVan = trendWeken[0]! < dertigDagenTerug ? trendWeken[0]! : dertigDagenTerug;
+  const { stoffen: gevolgdeStoffen } = useGevolgdeStoffen();
+  const {
+    itemsPerDag,
+    etiketPerDag,
+    nevoProducten,
+    perDag: gevolgdPerDatum,
+  } = useVoedingsdataPeriode(dagen, gevolgdVan, vandaag);
+
+  const maaltijdPatroon = useMemo(
+    () =>
+      bouwMaaltijdPatroon({
+        itemsPerDag,
+        etiketPerDag,
+        nevoProducten,
+        van: dertigDagenTerug,
+        tot: vandaag,
+      }),
+    [itemsPerDag, etiketPerDag, nevoProducten, dertigDagenTerug, vandaag],
+  );
+
+  const macroWeek = useMemo(
+    () => bouwVoedingWeekoverzicht(gevolgdPerDatum, weekDatums(huidigeWeek), macroDoelen),
+    [gevolgdPerDatum, huidigeWeek, macroDoelen],
+  );
+  const huidigeWeekKernstoffen = useMemo(
+    () => bouwWeekoverzicht(dagen, huidigeWeek, normen),
+    [dagen, huidigeWeek, normen],
+  );
+
+  const supplementWeek = useMemo((): SupplementWeek => {
+    const datums = new Set(weekDatums(huidigeWeek));
+    const weekDagen = dagen
+      .filter((dag) => datums.has(dag.date))
+      .map((dag) => sanitizeItems(dag.items ?? []))
+      .filter((items) => items.length > 0);
+    const totaal = new Map<string, { label: string; minstens: number; uitSupplement: number }>();
+    for (const items of weekDagen) {
+      for (const stof of nutrientenGesplitstUitItems(items)) {
+        const huidig = totaal.get(stof.nutrient) ?? {
+          label: huidigeWeekKernstoffen.rijen.find((rij) => rij.nutrient === stof.nutrient)?.label ?? stof.nutrient,
+          minstens: 0,
+          uitSupplement: 0,
+        };
+        huidig.minstens += stof.minstens;
+        huidig.uitSupplement += stof.uitSupplement;
+        totaal.set(stof.nutrient, huidig);
+      }
+    }
+    return {
+      dagenMetSupplement: weekDagen.filter((items) => items.some((item) => item.bron === "supplement")).length,
+      dagenGeregistreerd: weekDagen.length,
+      aandeelPerStof: [...totaal.entries()]
+        .filter(([, stof]) => stof.uitSupplement > 0 && stof.minstens > 0)
+        .map(([nutrient, stof]) => ({ nutrient, label: stof.label, aandeel: stof.uitSupplement / stof.minstens })),
+    };
+  }, [dagen, huidigeWeek, huidigeWeekKernstoffen]);
   const gevolgd = useMemo(
     () => bouwGevolgdeVensters(gevolgdPerDatum, gevolgdeStoffen, vandaag),
     [gevolgdPerDatum, gevolgdeStoffen, vandaag],
@@ -209,33 +289,6 @@ function PatroonInhoud() {
     () => new Set(vensterKolommen(reeksen).filter((k) => k.zelfde).map((k) => k.dagen_terug)),
     [reeksen],
   );
-
-  /**
-   * Per stof de zeven dagen van de bekeken week, als ondergrens of null.
-   *
-   * Null en nul zijn hier verschillende dingen: null betekent "die dag staat
-   * niets geregistreerd", nul betekent "je noemde die dag bronnen en geen
-   * ervan droeg deze stof". De staafjes tonen dat onderscheid.
-   */
-  const weekPerStof = useMemo(() => {
-    const datums = weekDatums(bekekenWeekStart);
-    const perStof = new Map<string, (number | null)[]>();
-
-    for (const rij of week.rijen) {
-      perStof.set(
-        rij.nutrient,
-        datums.map((datum) => {
-          const dag = dagen.find((d) => d.date === datum);
-          if (!dag || (dag.items?.length ?? 0) === 0) return null;
-          const stof = nutrientenUitItems(sanitizeItems(dag.items ?? [])).find(
-            (n) => n.nutrient === rij.nutrient,
-          );
-          return stof?.minstens ?? 0;
-        }),
-      );
-    }
-    return perStof;
-  }, [dagen, bekekenWeekStart, week.rijen]);
 
   const gevuldeDagen = useMemo(
     () => dagen.filter((dag) => (dag.items?.length ?? 0) > 0).length,
@@ -282,38 +335,21 @@ function PatroonInhoud() {
 
       {laden ? (
         <p className="vd-note">Je patroon wordt berekend…</p>
+      ) : sectie === "maaltijden" ? (
+        <PatroonMaaltijden patroon={maaltijdPatroon} periodeDagen={MAALTIJD_PERIODE_DAGEN} />
       ) : sectie === "samenvatting" ? (
         <>
+          <PatroonDoelenKaart
+            macro={macroWeek}
+            kernstoffen={huidigeWeekKernstoffen.rijen}
+            supplementen={supplementWeek}
+          />
+
           <PatroonNutrientTabel
             reeksen={reeksen}
             verborgen={verborgenNutrients}
             onToggle={toggleNutrient}
           />
-
-          <div className="vd-kop" style={{ marginTop: "1rem" }}>
-            <p className="vd-eyebrow" style={{ margin: 0 }}>
-              Deze week
-            </p>
-            <span className="vd-tag">
-              {gevuldeDagen === 0
-                ? "nog geen dagen"
-                : `${gevuldeDagen} ${gevuldeDagen === 1 ? "dag" : "dagen"} geregistreerd`}
-            </span>
-          </div>
-
-          <ul
-            className="m-0 flex list-none flex-col gap-2 p-0"
-            aria-label="Voedingsstoffen deze week"
-          >
-            {week.rijen.map((rij) => (
-              <PatroonSamenvattingKaart
-                key={rij.nutrient}
-                rij={rij}
-                dagen={weekPerStof.get(rij.nutrient) ?? []}
-                onOpen={() => kiesSectie("week")}
-              />
-            ))}
-          </ul>
 
           {gevolgdHuidigeWeek.length > 0 ? (
             <>
@@ -324,12 +360,12 @@ function PatroonInhoud() {
                 variant="kaarten"
                 reeksen={gevolgdHuidigeWeek}
                 perDag={gevolgdDagenHuidigeWeek}
-                onOpen={() => kiesSectie("week")}
+                onOpen={() => kiesSectie("stof")}
               />
             </>
           ) : null}
         </>
-      ) : sectie === "week" ? (
+      ) : sectie === "stof" ? (
         <>
           <div className="vd-weekbalk">
             <button
@@ -352,33 +388,12 @@ function PatroonInhoud() {
             </button>
           </div>
 
-          <p className="vd-note" style={{ marginTop: 0 }}>
-            {week.dagenGeregistreerd === 0 ? (
-              "In deze week staat nog niets geregistreerd. Vul een dag in je dagboek in — dan rekent dit overzicht mee."
-            ) : (
-              <>
-                Je registreerde{" "}
-                <strong>
-                  {week.dagenGeregistreerd}{" "}
-                  {week.dagenGeregistreerd === 1 ? "dag" : "dagen"}
-                </strong>{" "}
-                in deze week. Alles hieronder is het gemiddelde daarover — en
-                een ondergrens, want wat je niet noemde kan er alleen bij komen.
-              </>
-            )}
+          <p className="vd-tag" style={{ margin: "0 0 0.5rem" }}>
+            {week.dagenGeregistreerd === 0
+              ? "In deze week staat nog niets geregistreerd."
+              : `Gemiddelde over ${week.dagenGeregistreerd} geregistreerde ${week.dagenGeregistreerd === 1 ? "dag" : "dagen"} — een ondergrens.`}
           </p>
 
-          <p className="vd-eyebrow" style={{ margin: "1rem 0 0.375rem" }}>
-            Deze week logde je
-          </p>
-          <PatroonTelcirkels
-            rijen={week.rijen}
-            dagenGeregistreerd={week.dagenGeregistreerd}
-          />
-
-          <p className="vd-eyebrow" style={{ margin: "1.25rem 0 0.5rem" }}>
-            Per stof
-          </p>
           <div className="vd-tabel vd-tabel--los">
             <div className="vd-tabel-kop vd-week-kop">
               <span>Stof</span>
@@ -463,31 +478,13 @@ function PatroonInhoud() {
             <div style={{ marginTop: "0.75rem" }}>
               <PatroonGevolgdWeek variant="tabel" reeksen={gevolgdWeek} />
             </div>
-          ) : gevolgdeStoffen.length > 0 && !bekekenWeekBinnenPeriode ? (
-            <p className="vd-note">
-              Je gevolgde stoffen tonen we over de laatste zes weken; deze week ligt verder terug.
-            </p>
           ) : null}
 
-          <p className="vd-note">
-            <strong>ADH is een ondergrens, geen bewijs van een tekort.</strong>{" "}
-            Dat je iets niet registreerde betekent niet dat je het niet
-            binnenkreeg — daarom staat er nooit een kruis, en bij een gehaalde
-            ADH &ldquo;gedekt&rdquo;.
+          <p className="vd-eyebrow" style={{ margin: "1.5rem 0 0.375rem" }}>
+            Hoe hardnekkig · vandaag tot 30 dagen
           </p>
-        </>
-      ) : sectie === "voedingsstoffen" ? (
-        <>
           <PatroonVensterTabel reeksen={reeksen} />
           <PatroonGevolgdTabel reeksen={gevolgd} zelfde={zelfdeVensters} />
-
-          {zelfdeVensters.size > 0 ? (
-            <p className="vd-note">
-              Elk venster middelt over de dagen waarop je iets registreerde.
-              Gedimd: geen nieuwe dagen ten opzichte van het venster ervoor,
-              dus hetzelfde getal.
-            </p>
-          ) : null}
 
           {bevinding && TEKORT_VOORSTELLEN[bevinding.nutrient] ? (
             <p className="vd-note">
@@ -507,18 +504,10 @@ function PatroonInhoud() {
             </p>
           ) : null}
 
-          <p className="vd-note" data-toon="terra">
-            <strong>Vier vensters, geen gemiddelde.</strong> Een stof die in
-            alle vier laag staat is een patroon; een stof die alleen vandaag
-            laag staat is een dag. Daarom staan ze naast elkaar en maken we er
-            geen cijfer van.
-          </p>
-
-          <p className="vd-note" data-toon="amber">
-            <strong>Zink en vitamine D krijgen geen oordeel.</strong> Bronnen
-            leveren 1–4 mg zink per portie tegen een norm van 7–9 mg; vitamine D komt uit
-            zon en verrijking, niet uit voeding. Meer dagen meten maakt een
-            onmeetbare stof niet meetbaar.
+          <p className="vd-note">
+            Een stof die in alle vensters laag staat is een patroon; alleen vandaag laag is een dag.
+            ADH is een ondergrens, geen bewijs van een tekort. Zink en vitamine D krijgen geen
+            oordeel: een dagboek kan ze niet aantonen.
           </p>
         </>
       ) : (
