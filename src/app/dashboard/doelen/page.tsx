@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import GevolgdeStoffenKaart from "@/components/account/GevolgdeStoffenKaart";
-import MacroDoelenKaart from "@/components/account/MacroDoelenKaart";
-import VoedingsdoelenKaart from "@/components/account/VoedingsdoelenKaart";
+import DoelenLijst from "@/components/dashboard/doelen/DoelenLijst";
 import { getAccountFromCookie } from "@/lib/account-server";
 
 export const metadata = {
@@ -14,12 +12,11 @@ export const metadata = {
 };
 
 /**
- * Je doelen: een eigen scherm, geen vijfde tab.
+ * Je doelen: een eigen scherm via "Meer", geen tab.
  *
- * De vier tabs vormen één lus (Dagboek meet, Je patroon weegt, Keuze dicht,
- * Mijn Dag plant). Wat hier staat is de meetlat waar alle vier tegen aflezen
- * — dat hoort ernaast, bereikbaar via "Meer", en niet als vijfde stap in een
- * lus waar het niet in zit.
+ * De tabs vormen de lus (Dagboek meet, Patroon weegt, Keuze dicht). Wat hier
+ * staat is de meetlat waar die lus tegen afleest — dat hoort ernaast, en niet
+ * als extra stap in een lus waar het niet in zit.
  *
  * Eigen header en geen cockpit-chrome: dit is een zijpad waar je vandaan
  * terugkeert, niet een plek waar je blijft. De terugweg staat daarom bovenaan
@@ -45,16 +42,12 @@ export default async function DoelenPage() {
             Je doelen
           </h1>
           <p className="m-0 text-[14px] leading-relaxed text-[var(--text-muted)]">
-            Waar je dagboek, je patroon en je keuzes tegen afgelezen worden. Wat
-            je hier niet invult, komt uit je laatste check.
+            Waar je dagboek, je patroon en je keuzes tegen afgelezen worden. Tik
+            op een regel om hem aan te passen.
           </p>
         </header>
 
-        <div style={{ display: "grid", gap: 24 }}>
-          <VoedingsdoelenKaart />
-          <MacroDoelenKaart />
-          <GevolgdeStoffenKaart />
-        </div>
+        <DoelenLijst />
       </main>
     </div>
   );
