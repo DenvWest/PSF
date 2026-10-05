@@ -39,11 +39,12 @@ function weekPunt(
   perDag: ReadonlyMap<string, Voedingswaarde>,
   veld: VoedingswaardeVeld,
   start: string,
+  datums: readonly string[] = weekDatums(start),
 ): GevolgdWeekPunt {
   let som = 0;
   let heeftWaarde = false;
   let dagen = 0;
-  for (const datum of weekDatums(start)) {
+  for (const datum of datums) {
     const waarde = perDag.get(datum);
     if (!geregistreerd(waarde)) continue;
     dagen += 1;
@@ -74,14 +75,15 @@ export function bouwGevolgdeWeken(
 }
 
 /** Per dag van de week de waarde; null waar niets geregistreerd is of geen product een waarde had. */
-export function gevolgdPerDag(
+/** Eén punt per stof over een willekeurige reeks datums (de periode in Je patroon). */
+export function bouwGevolgdePeriode(
   perDag: ReadonlyMap<string, Voedingswaarde>,
-  stof: SupermarktVeld,
-  start: string,
-): (number | null)[] {
-  return weekDatums(start).map((datum) => {
-    const waarde = perDag.get(datum);
-    if (!geregistreerd(waarde)) return null;
-    return waarde.rijen.find((rij) => rij.veld === stof)?.waarde ?? null;
+  stoffen: readonly SupermarktVeld[],
+  datums: readonly string[],
+): GevolgdeWeekReeks[] {
+  return stoffen.flatMap((stof) => {
+    const veld = veldVoor(stof);
+    if (!veld || datums.length === 0) return [];
+    return [{ ...veld, punten: [weekPunt(perDag, veld, datums[0]!, datums)] }];
   });
 }

@@ -1,4 +1,6 @@
+import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
+import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import { itemsVanMoment, nutrientenGesplitstUitItems, type DagboekItem } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { SupermarktPortie } from "@/lib/nutrition-supermarkt-items";
@@ -57,6 +59,16 @@ export type MaaltijdRij = VoedingswaardeRij & {
   per100kcal: number | null;
 };
 
+export type MaaltijdProduct = {
+  naam: string;
+  /** Op hoeveel keren dit product op deze maaltijd stond. */
+  keer: number;
+  /** Gemiddelde hoeveelheid per keer dat het er stond. */
+  hoeveelheid: number;
+  eenheid: "g" | "portie";
+  supplement: boolean;
+};
+
 export type MaaltijdPatroon = {
   moment: EetmomentId;
   label: string;
@@ -68,6 +80,8 @@ export type MaaltijdPatroon = {
   zonderWaarde: number;
   /** Supplementregels op dit moment, opgeteld over alle keren. */
   supplementen: number;
+  /** Wat er op deze maaltijd stond, vaakst eerst. */
+  producten: MaaltijdProduct[];
 };
 
 type Invoer = {
@@ -80,6 +94,42 @@ type Invoer = {
   van: string;
   tot: string;
 };
+
+function productenVan(keren: readonly { items: readonly DagboekItem[]; etiket: readonly SupermarktPortie[] }[]): MaaltijdProduct[] {
+  const perNaam = new Map<string, { keer: number; som: number; eenheid: "g" | "portie"; supplement: boolean }>();
+  const tel = (naam: string, hoeveelheid: number, eenheid: "g" | "portie", supplement: boolean) => {
+    const huidig = perNaam.get(naam) ?? { keer: 0, som: 0, eenheid, supplement };
+    huidig.keer += 1;
+    huidig.som += hoeveelheid;
+    perNaam.set(naam, huidig);
+  };
+
+  for (const { items, etiket } of keren) {
+    for (const item of items) {
+      if (item.bron === "supplement") {
+        const entry = supplementCatalogEntry(item.key);
+        if (entry) tel(entry.labelNl, item.grams, "portie", true);
+      } else {
+        const entry = catalogEntry(item.key);
+        if (entry) tel(entry.labelNl, item.grams, "g", false);
+      }
+    }
+    for (const log of etiket) {
+      const naam = log.product ? [log.product.merk, log.product.naam].filter(Boolean).join(" ") : null;
+      if (naam) tel(naam, log.grams, "g", false);
+    }
+  }
+
+  return [...perNaam.entries()]
+    .map(([naam, { keer, som, eenheid, supplement }]) => ({
+      naam,
+      keer,
+      hoeveelheid: Math.round(som / keer),
+      eenheid,
+      supplement,
+    }))
+    .sort((a, b) => b.keer - a.keer || a.naam.localeCompare(b.naam, "nl"));
+}
 
 function afgerond(waarde: number): number {
   return Math.round(waarde * 10) / 10;
@@ -167,6 +217,7 @@ export function bouwMaaltijdPatroon({ itemsPerDag, etiketPerDag, nevoProducten, 
         (som, { items }) => som + items.filter((item) => item.bron === "supplement").length,
         0,
       ),
+      producten: productenVan(keren),
     };
   });
 }

@@ -5,8 +5,7 @@
  *
  * Vorm komt letterlijk uit de MyFitnessPal Voortgang-header: "Samenvatting ·
  * Calorieën · Voedingsstoffen · ..." met een underline op de actieve tab en
- * de rest afgekapt tot je scrollt. Bij ons: Per maaltijd · Samenvatting · Per
- * stof · Trend (`BESLUIT_PATROON_PER_MAALTIJD_2026-10.md`). Het mechanisme — vier+ secties die niet allemaal
+ * de rest afgekapt tot je scrollt. Bij ons: Per maaltijd · Per stof · Trend (`BESLUIT_PATROON_PER_MAALTIJD_2026-10.md`). Het mechanisme — vier+ secties die niet allemaal
  * tegelijk passen, dus een rij die zijdelings scrollt in plaats van wrapt —
  * is hetzelfde probleem en dezelfde oplossing.
  *
@@ -14,11 +13,10 @@
  * navigatie tussen volwaardige secties, geen instelling met een paar opties.
  */
 
-export type PatroonSectie = "maaltijden" | "samenvatting" | "stof" | "trend";
+export type PatroonSectie = "maaltijden" | "stof" | "trend";
 
 const SECTIES: { id: PatroonSectie; label: string }[] = [
   { id: "maaltijden", label: "Per maaltijd" },
-  { id: "samenvatting", label: "Samenvatting" },
   { id: "stof", label: "Per stof" },
   { id: "trend", label: "Trend" },
 ];

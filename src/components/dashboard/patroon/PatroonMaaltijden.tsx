@@ -5,6 +5,7 @@ import { clarityTag } from "@/lib/clarity";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { MaaltijdPatroon, MaaltijdRij } from "@/lib/nutrition-maaltijd-patroon";
 import { aandeelVanNorm } from "@/lib/nutrition-normen";
+import { datumsTussen, periodeLabel, type Periode } from "@/lib/nutrition-periode";
 import { percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 import { rondVoedingswaarde } from "@/lib/nutrition-voedingswaarde";
 import { trackEvent } from "@/lib/ga4";
@@ -36,10 +37,10 @@ function getal(waarde: number | null | undefined): string {
 
 export default function PatroonMaaltijden({
   patroon,
-  periodeDagen,
+  periode,
 }: {
   patroon: readonly MaaltijdPatroon[];
-  periodeDagen: number;
+  periode: Periode;
 }) {
   const normen = useKernstofNormen();
   const [moment, setMoment] = useState<EetmomentId>(
@@ -57,6 +58,10 @@ export default function PatroonMaaltijden({
   const kcal = rij(maaltijd, "energyKcal")?.waarde ?? null;
   const tabelRijen = maaltijd.rijen.filter((r) => r.veld !== "energyKcal");
   const metKeer = patroon.filter((m) => m.keer > 0);
+  const eenDag = periode.van === periode.tot;
+  const periodeTekst = eenDag
+    ? `op ${periodeLabel(periode)}`
+    : `in ${datumsTussen(periode).length} dagen (${periodeLabel(periode)})`;
 
   return (
     <section aria-label="Gemiddeld per maaltijd">
@@ -76,13 +81,15 @@ export default function PatroonMaaltijden({
 
       {maaltijd.keer === 0 ? (
         <p className="vd-note" style={{ marginTop: 0 }}>
-          De laatste {periodeDagen} dagen staat er bij {maaltijd.label.toLowerCase()} nog niets
+          {eenDag ? "Op" : "In"} {periodeLabel(periode)} staat er bij {maaltijd.label.toLowerCase()} nog niets
           geregistreerd. Vul het in je dagboek in — dan zie je hier wat er gemiddeld op je bord ligt.
         </p>
       ) : (
         <>
           <p className="vd-eyebrow" style={{ margin: "0 0 0.5rem" }}>
-            Gemiddeld per {maaltijd.label.toLowerCase()} · {maaltijd.keer} keer in {periodeDagen} dagen
+            {eenDag
+              ? `${maaltijd.label} ${periodeTekst}`
+              : `Gemiddeld per ${maaltijd.label.toLowerCase()} · ${maaltijd.keer} keer ${periodeTekst}`}
           </p>
 
           <div className="mb-3 grid grid-cols-4 gap-2">
@@ -104,6 +111,26 @@ export default function PatroonMaaltijden({
               );
             })}
           </div>
+
+          {maaltijd.producten.length > 0 ? (
+            <section aria-label="Wat je at" className="vd-tabel">
+              <div className="vd-tabel-kop">
+                <span className="!text-left">{eenDag ? "Wat je at" : "Wat je meestal at"}</span>
+              </div>
+              {maaltijd.producten.slice(0, 8).map((product) => (
+                <div key={product.naam} className="vd-tabel-rij grid-cols-[1fr_auto]">
+                  <span className="vd-naam">
+                    {product.naam}
+                    {product.supplement ? <i>supplement</i> : null}
+                  </span>
+                  <span className="vd-getal">
+                    {product.eenheid === "g" ? `${product.hoeveelheid} g` : `${product.hoeveelheid}×`}
+                    {!eenDag && product.keer > 1 ? ` · ${product.keer} keer` : ""}
+                  </span>
+                </div>
+              ))}
+            </section>
+          ) : null}
 
           <div className="vd-tabel">
             <div className="vd-tabel-kop grid-cols-[1fr_58px_58px_52px]">

@@ -37,7 +37,7 @@ afterEach(cleanup);
 
 describe("PatroonMaaltijden", () => {
   it("opent op de eerste maaltijd met registraties en toont macro's en dichtheid", () => {
-    render(<PatroonMaaltijden patroon={PATROON} periodeDagen={30} />);
+    render(<PatroonMaaltijden patroon={PATROON} periode={{ van: "2026-09-06", tot: "2026-10-05" }} />);
     expect(screen.getByRole("button", { name: "Lunch", pressed: true })).toBeTruthy();
     expect(screen.getByText(/Gemiddeld per lunch · 1 keer in 30 dagen/)).toBeTruthy();
     expect(screen.getByText("Hoe rijk is elke maaltijd · per 100 kcal")).toBeTruthy();
@@ -45,7 +45,7 @@ describe("PatroonMaaltijden", () => {
   });
 
   it("toont een lege maaltijd als niet geregistreerd en meet de keuze", () => {
-    render(<PatroonMaaltijden patroon={PATROON} periodeDagen={30} />);
+    render(<PatroonMaaltijden patroon={PATROON} periode={{ van: "2026-09-06", tot: "2026-10-05" }} />);
     fireEvent.click(screen.getByRole("button", { name: "Ontbijt" }));
     expect(screen.getByText(/bij ontbijt nog niets/)).toBeTruthy();
     expect(trackEvent).toHaveBeenCalledWith("nutrition_patroon_maaltijd_gekozen", { moment: "ontbijt" });

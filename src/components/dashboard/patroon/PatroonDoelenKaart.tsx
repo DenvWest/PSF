@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { trackEvent } from "@/lib/ga4";
-import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
+import { hoeveelheid } from "@/lib/nutrition-tekortsysteem-copy";
 import type { VoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
 import type { WeekRij } from "@/lib/nutrition-weekoverzicht";
 
 /**
- * Bovenaan Samenvatting: wat haal je deze week van je doelen, en hoeveel komt
- * uit supplementen.
+ * Bovenaan Per stof: wat haal je in de gekozen periode van je doelen, en
+ * hoeveel komt uit supplementen. De kernstoffen zelf staan in de tabel
+ * eronder; hier alleen de telling, zodat geen getal twee keer staat.
  *
  * Drie regels, drie leeswijzen:
  * - **Macro's** tegen je eigen doel, als neutraal restgetal ("nog 300 kcal").
@@ -33,7 +34,9 @@ export default function PatroonDoelenKaart({
   macro,
   kernstoffen,
   supplementen,
+  periodeTekst,
 }: {
+  periodeTekst: string;
   macro: VoedingWeekoverzicht;
   kernstoffen: readonly WeekRij[];
   supplementen: SupplementWeek;
@@ -45,19 +48,19 @@ export default function PatroonDoelenKaart({
 
   return (
     <section
-      aria-label="Je doelen deze week"
+      aria-label="Je doelen"
       className="mb-4 rounded-xl border border-[var(--vd-line)] bg-[var(--vd-surface)] p-3"
     >
       <div className="vd-kop" style={{ marginBottom: "0.5rem" }}>
         <p className="vd-eyebrow" style={{ margin: 0 }}>
-          Je doelen deze week
+          Je doelen · {periodeTekst}
         </p>
         <span className="vd-tag">gemiddeld per geregistreerde dag</span>
       </div>
 
       {leeg ? (
         <p className="vd-note" style={{ margin: 0 }}>
-          Deze week staat nog niets geregistreerd.
+          In deze periode staat nog niets geregistreerd.
         </p>
       ) : (
         <>
@@ -95,22 +98,15 @@ export default function PatroonDoelenKaart({
               <b>
                 {gehaald.length} van {meetbaar.length}
               </b>{" "}
-              meetbare kernstoffen gemiddeld op je norm
+              meetbare kernstoffen op je norm
               {gehaald.length > 0 ? ` (${gehaald.map((rij) => rij.label.toLowerCase()).join(", ")})` : ""}.
             </p>
-            <ul className="m-0 mt-1.5 flex list-none flex-wrap gap-1.5 p-0">
-              {meetbaar.map((rij) => (
-                <li key={rij.nutrient} className="vd-pil" data-toon={rij.gedekt ? "sage" : "terra"}>
-                  {rij.label} {rij.dagenMetBron === 0 ? "n.o." : percentageADH(rij.aandeel)}
-                </li>
-              ))}
-            </ul>
           </div>
 
           <div className="mt-3 border-t border-[var(--vd-line)] pt-3">
             <p className="m-0 text-[0.8125rem] text-[var(--vd-ink)]">
               {supplementen.dagenMetSupplement === 0 ? (
-                "Geen supplementen geregistreerd deze week — alles hierboven komt uit voeding."
+                "Geen supplementen geregistreerd in deze periode — alles komt uit voeding."
               ) : (
                 <>
                   Supplementen op{" "}
@@ -124,7 +120,7 @@ export default function PatroonDoelenKaart({
             {supplementen.aandeelPerStof.length > 0 ? (
               <ul className="m-0 mt-1.5 flex list-none flex-wrap gap-1.5 p-0">
                 {supplementen.aandeelPerStof.map((stof) => (
-                  <li key={stof.nutrient} className="vd-pil">
+                  <li key={stof.nutrient} className="vd-pil" data-toon="stil">
                     {stof.label}: {Math.round(stof.aandeel * 100)}% uit supplement
                   </li>
                 ))}
