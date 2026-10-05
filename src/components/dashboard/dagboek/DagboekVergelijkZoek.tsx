@@ -41,12 +41,14 @@ export default function DagboekVergelijkZoek({
   onToggle,
   onVergelijk,
   onTerug,
+  terugLabel = "Terug naar je dag",
 }: {
   eerderGebruikt: readonly DagboekItem[];
   geselecteerd: readonly VergelijkResultaat[];
   onToggle: (resultaat: VergelijkResultaat) => void;
   onVergelijk: () => void;
   onTerug: () => void;
+  terugLabel?: string;
 }) {
   const [zoek, setZoek] = useState("");
 
@@ -89,7 +91,7 @@ export default function DagboekVergelijkZoek({
         <button
           type="button"
           onClick={onTerug}
-          aria-label="Terug naar je dag"
+          aria-label={terugLabel}
           className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-[var(--vd-ink-2)] transition-colors hover:border-white/30 hover:text-[var(--vd-ink)]"
         >
           <Icons.ChevronLeft s={18} />

@@ -1,7 +1,5 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 /**
  * De horizontaal scrollbare sub-tab-balk boven het dagboek-overzicht — Laag B
  * (macro/voedingsstoffen-tabbladen naast de bestaande eetmomenten).
@@ -20,8 +18,8 @@ import type { ReactNode } from "react";
  * zonder eigen invoeringang toonde alleen de weekstrip en niets bruikbaars.
  *
  * De balk staat direct boven de inhoud van het tabblad (eetmomenten, tabel),
- * onder ring en weekstrip; `actie` zet een knop rechts in dezelfde rij, buiten
- * de tablist.
+ * onder ring en weekstrip. "Vergelijk producten" stond tot 5 okt 2026 rechts in
+ * deze rij; die zit nu in het zoekscherm, waar je kiest wat je toevoegt.
  */
 
 export type DagboekSectie = "vandaag" | "voedingsstoffen" | "macros";
@@ -35,11 +33,9 @@ const SECTIES: { id: DagboekSectie; label: string }[] = [
 export default function DagboekSubtabs({
   actief,
   onKies,
-  actie,
 }: {
   actief: DagboekSectie;
   onKies: (sectie: DagboekSectie) => void;
-  actie?: ReactNode;
 }) {
   return (
     <div className="vd-subtabs-rij">
@@ -58,7 +54,6 @@ export default function DagboekSubtabs({
           </button>
         ))}
       </div>
-      {actie}
     </div>
   );
 }
