@@ -96,5 +96,5 @@ where status = 'running' and started_at < now() - interval '1 hour';
 
 - Migratie `006_cron_runs.sql` toepassen op Supabase vóór eerste retention-run met healthcheck.
 - Na deploy: handmatig één retention-trigger en check `cron_runs` (query hierboven).
-- **Account retention is nieuw** (audit N6d, 1 okt 2026): vereist eerst de migraties onder "Nog uit te voeren" in `supabase/migrations/OPENSTAAND.md`, en daarna een eigen cron-job.org job voor `/api/cron/account-retention` (nog niet aangemaakt).
+- **Account retention** (audit N6d, 1 okt 2026): cron-job.org-job actief sinds 5 okt 2026 (dagelijks, Bearer `CRON_SECRET`). Accounts zonder `last_seen_at` vallen buiten de selectie; de eerste anonimisering kan pas ~okt 2028.
 - Nieuwe kritieke kolom/tabel toegevoegd? Voeg 'm toe aan `scripts/check-supabase-schema.sql` (en evt. `CRITICAL_MIGRATIONS` in `check-supabase-schema.sh`) — `deploy.sh` draait `npm run check:db-schema` als harde gate vóór de push.

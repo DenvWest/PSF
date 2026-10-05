@@ -20,7 +20,7 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 - **Hoort bij:** branch `feat/kernstof-profiel`, plak 2 van `BESLUIT_PATROON_PER_MAALTIJD_2026-10.md`
 - **Terugdraaien:** `drop table public.account_kernstof_profiel;`
 
-**Nog te doen (geen migratie, geen blocker):** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan al klaar.
+**Cron-job.org:** `/api/cron/account-retention` draait sinds 5 oktober 2026 dagelijks (job aangemaakt door Dennis, Bearer `CRON_SECRET`).
 
 ## Runbook bij thuiskomst
 
