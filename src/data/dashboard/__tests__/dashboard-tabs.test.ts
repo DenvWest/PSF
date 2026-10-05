@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   DASHBOARD_MORE_ITEMS,
+  DASHBOARD_NAV_TABS,
   DASHBOARD_TABS,
   TAB_SECTIONS,
 } from "@/data/dashboard";
@@ -12,20 +13,27 @@ import {
  *
  * Deze tests bewaken dat onderscheid — labels mogen veranderen, ids niet.
  */
-describe("de vier dashboardtabs", () => {
+describe("de dashboardtabs", () => {
   it("houdt de ids die in URL's en events staan", () => {
-    expect(DASHBOARD_TABS.map((tab) => tab.id)).toEqual([
+    expect(new Set(DASHBOARD_TABS.map((tab) => tab.id))).toEqual(
+      new Set(["vandaag", "agenda", "voortgang", "keuze"]),
+    );
+  });
+
+  it("zet drie tabs in de navigatie, in de volgorde van de lus", () => {
+    // Meten → wegen → kiezen. Mijn Dag opent via Meer: vier labels plus Meer
+    // pasten op 375px niet zonder afkappen. Zie BESLUIT_ONDERBALK_DRIE_TABS_2026-10.
+    expect(DASHBOARD_NAV_TABS.map((tab) => tab.id)).toEqual([
       "vandaag",
-      "agenda",
       "voortgang",
       "keuze",
     ]);
   });
 
   it("draagt de labels van het voedingsdashboard, niet die van het domeinenkompas", () => {
-    const labels = DASHBOARD_TABS.map((tab) => tab.label);
+    const labels = DASHBOARD_NAV_TABS.map((tab) => tab.label);
 
-    expect(labels).toEqual(["Dagboek", "Mijn Dag", "Je patroon", "Keuze"]);
+    expect(labels).toEqual(["Dagboek", "Patroon", "Keuze"]);
     // "Kompas" is een metafoor die meerdere richtingen nodig heeft; met één
     // domein is hij loos. Zie BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09 §3.1.
     expect(labels).not.toContain("Kompas");
@@ -45,17 +53,25 @@ describe("de vier dashboardtabs", () => {
 });
 
 /**
- * Het "Meer"-menu staat náást de tabs, niet erin: de vier tabs zijn één lus
- * (meten, wegen, kiezen, plannen) en wat onder Meer valt is de meetlat waar
- * die lus tegen afleest.
+ * Het "Meer"-menu staat náást de tabs, niet erin: de tabs zijn de lus (meten,
+ * wegen, kiezen); Mijn Dag en je doelen zijn plekken waar je naartoe gaat.
  */
 describe("het Meer-menu", () => {
-  it("is geen vijfde tab", () => {
+  it("is geen extra tab", () => {
     const tabIds = DASHBOARD_TABS.map((tab) => tab.id);
     for (const item of DASHBOARD_MORE_ITEMS) {
       expect(tabIds).not.toContain(item.id);
     }
-    expect(DASHBOARD_TABS).toHaveLength(4);
+    expect(DASHBOARD_NAV_TABS).toHaveLength(3);
+  });
+
+  it("bereikt elke tab die niet in de navigatie staat", () => {
+    for (const tab of DASHBOARD_TABS.filter((t) => t.placement === "meer")) {
+      expect(
+        DASHBOARD_MORE_ITEMS.some((item) => item.href.includes(`tab=${tab.id}`)),
+        tab.id,
+      ).toBe(true);
+    }
   });
 
   it("geeft elk item een route en een regel uitleg", () => {

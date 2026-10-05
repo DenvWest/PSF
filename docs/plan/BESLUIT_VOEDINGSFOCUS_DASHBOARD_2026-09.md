@@ -84,6 +84,8 @@ Dit is daarnaast geen nieuwe afweging: het longevity-home-besluit van 25 juli ve
 
 Niet "dagboek wordt Kompas" — Kompas wordt opgeheven. Een kompas is een metafoor die alleen betekenis heeft bij meerdere richtingen; met één domein is hij loos.
 
+> **Herzien 5 okt 2026:** in de navigatie staan nu drie tabs (Dagboek · Patroon · Keuze) + Meer; Mijn Dag opent via Meer. Zie `BESLUIT_ONDERBALK_DRIE_TABS_2026-10.md`.
+
 De vier tabs houden hun bestaande ids (`vandaag · agenda · voortgang · keuze` in `DASHBOARD_TABS`) en krijgen nieuwe labels: **Dagboek · Mijn Dag · Je patroon · Keuze**. Geen URL-breuk, geen migratie.
 
 Weg: `KompasContextSpine`, `KompasKeuzeSectie`, `KompasDoelIjkpunt`, `KompasOndersteuningTile`, `KompasHomeCard`, `KompasVoortgangFocusBlock`, `FocusVoortgangPanel` (7 bestanden, 2.646 regels), plus `KompasDomainGauge` en de `kompas=`-parameter met zijn `VALID_KOMPAS_VIEWS`-set van 7 domeinen.
