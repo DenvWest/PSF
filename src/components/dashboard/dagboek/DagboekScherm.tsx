@@ -69,6 +69,9 @@ import { useNevoProducten } from "@/lib/use-nevo-producten";
  * en een sub-route zou de rail-conditie uit een later plak nodeloos
  * compliceren.
  */
+/** Waar "Vergelijk" vandaan kwam, zodat terug je in hetzelfde zoekscherm brengt. */
+type ZoekContext = { nutrient: NutrientId | null; moment: EetmomentId };
+
 type NutrientScherm =
   | { scherm: "overzicht" }
   | { scherm: "detail"; nutrient: NutrientId }
@@ -91,8 +94,8 @@ type NutrientScherm =
       moment: EetmomentId;
     }
   | { scherm: "product"; item: DagboekItem }
-  | { scherm: "vergelijkZoek" }
-  | { scherm: "vergelijk" }
+  | { scherm: "vergelijkZoek"; terugNaar?: ZoekContext }
+  | { scherm: "vergelijk"; terugNaar?: ZoekContext }
   | { scherm: "bronnen"; stof: InformatieveStof };
 
 /**
@@ -668,6 +671,10 @@ export default function DagboekScherm({
           favorieten={favorieten}
           moment={moment}
           onMomentChange={(volgende) => setScherm({ ...scherm, moment: volgende })}
+          onVergelijk={() => {
+            trackEvent("nutrition_dagboek_vergelijk_geopend", { surface: "zoekscherm" });
+            setScherm({ scherm: "vergelijkZoek", terugNaar: { nutrient, moment } });
+          }}
           onTerug={() =>
             setScherm(nutrient ? { scherm: "detail", nutrient } : { scherm: "overzicht" })
           }
@@ -723,12 +730,16 @@ export default function DagboekScherm({
   }
 
   if (scherm.scherm === "vergelijkZoek") {
+    const { terugNaar } = scherm;
     return (
       <DagboekVergelijkZoek
         eerderGebruikt={recenteItems}
         geselecteerd={vergelijkSelectie}
         onToggle={toggleVergelijk}
-        onTerug={() => setScherm({ scherm: "overzicht" })}
+        onTerug={() =>
+          setScherm(terugNaar ? { scherm: "zoek", ...terugNaar } : { scherm: "overzicht" })
+        }
+        terugLabel={terugNaar ? "Terug naar zoeken" : undefined}
         onVergelijk={() => {
           trackEvent("nutrition_dagboek_vergelijk_gestart", {
             aantal: vergelijkSelectie.length,
@@ -737,7 +748,7 @@ export default function DagboekScherm({
             aantal: vergelijkSelectie.length,
             surface: "dagboek_tab",
           });
-          setScherm({ scherm: "vergelijk" });
+          setScherm({ scherm: "vergelijk", terugNaar });
         }}
       />
     );
@@ -770,13 +781,14 @@ export default function DagboekScherm({
   }
 
   if (scherm.scherm === "vergelijk") {
+    const { terugNaar } = scherm;
     return (
       <DagboekVergelijkTabel
         producten={vergelijkSelectie}
-        onTerug={() => setScherm({ scherm: "vergelijkZoek" })}
+        onTerug={() => setScherm({ scherm: "vergelijkZoek", terugNaar })}
         onVerwijder={(resultaat) => {
           toggleVergelijk(resultaat);
-          if (vergelijkSelectie.length <= 2) setScherm({ scherm: "vergelijkZoek" });
+          if (vergelijkSelectie.length <= 2) setScherm({ scherm: "vergelijkZoek", terugNaar });
         }}
       />
     );
@@ -801,19 +813,6 @@ export default function DagboekScherm({
       />
     );
   }
-
-  const vergelijkKnop = (
-    <button
-      type="button"
-      onClick={() => {
-        trackEvent("nutrition_dagboek_vergelijk_geopend", {});
-        setScherm({ scherm: "vergelijkZoek" });
-      }}
-      className="flex-none cursor-pointer whitespace-nowrap rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] transition-colors hover:border-[var(--vd-sage)] hover:text-[var(--vd-sage-2)]"
-    >
-      Vergelijk producten
-    </button>
-  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -903,7 +902,7 @@ export default function DagboekScherm({
         busy={busy}
       />
 
-      <DagboekSubtabs actief={dagboekSectie} onKies={kiesSectie} actie={vergelijkKnop} />
+      <DagboekSubtabs actief={dagboekSectie} onKies={kiesSectie} />
 
       {dagboekSectie === "vandaag" ? (
         <div
