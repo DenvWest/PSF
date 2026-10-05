@@ -148,3 +148,19 @@ export function rijksteBronnen(stof: RijksteStof, stand: RijksteStand, limiet = 
 
   return [...besteperGroep.values()].sort((a, b) => b.waarde - a.waarde).slice(0, limiet);
 }
+
+const NIET_VEGETARISCH: ReadonlySet<string> = new Set(["vis", "vlees", "vlees-vis"]);
+const NIET_VEGANISTISCH: ReadonlySet<string> = new Set([...NIET_VEGETARISCH, "eieren", "zuivel"]);
+
+/**
+ * Of een catalogusregel past bij een voedingswijze, op de voedselgroep. Grof
+ * maar eerlijk: een gerecht telt in de groep van zijn hoofdbestanddeel.
+ */
+export function pastBijVoedingswijze(
+  entry: Pick<CatalogEntry, "groep">,
+  voedingswijze: "vegetarisch" | "veganistisch" | null,
+): boolean {
+  if (voedingswijze === null) return true;
+  const uitgesloten = voedingswijze === "veganistisch" ? NIET_VEGANISTISCH : NIET_VEGETARISCH;
+  return !uitgesloten.has(entry.groep);
+}

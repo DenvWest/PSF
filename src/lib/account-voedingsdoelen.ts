@@ -1,3 +1,4 @@
+import type { KernstofProfiel } from "@/lib/account-kernstof-profiel";
 import type { OrgScopedClient } from "@/lib/db/scoped";
 import {
   computeProteinTarget,
@@ -226,4 +227,10 @@ export type VoedingsdoelenWeergave = {
    * afgeleid uit het geslacht in de check; het geslacht zelf gaat niet mee.
    */
   kernstofNormen: KernstofNormen;
+  /**
+   * Wat iemand zelf koos voor de normen en zijn streefwaarden
+   * (`account-kernstof-profiel.ts`). `geslacht: null` betekent "uit de check";
+   * het check-geslacht zelf gaat niet mee.
+   */
+  kernstofProfiel: KernstofProfiel;
 };

@@ -6,19 +6,19 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Status
 
-- **Baseline toegepast t/m:** `20261003120000_nevo_foods.sql`
+- **Baseline toegepast t/m:** `20261004150000_account_gevolgde_stoffen.sql`
 - **Openstaand:** 1
-- **Laatst bijgewerkt:** 4 oktober 2026
+- **Laatst bijgewerkt:** 5 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
 
-### [ ] 20261004150000_account_gevolgde_stoffen.sql
-- **Wat:** nieuwe tabel `account_gevolgde_stoffen` (één rij per account, lijst met gevolgde informatieve voedingsstoffen).
-- **Blokkeert deploy:** nee (code vangt het af — lezen geeft een lege lijst, opslaan meldt "kan nog niet" met 503)
-- **Hoort bij:** branch `feat/gevolgde-stoffen`, plak 4 van `BESLUIT_DOELEN_VERBONDEN_2026-10.md`
-- **Terugdraaien:** `drop table public.account_gevolgde_stoffen;`
+### [ ] 20261005120000_account_kernstof_profiel.sql
+- **Wat:** nieuwe tabel `account_kernstof_profiel` (één rij per account): geslacht voor de norm, 70+, voedingswijze, eigen streefwaarden per kernstof.
+- **Blokkeert deploy:** nee (code vangt het af — zonder tabel gelden de normen uit de check en blijft Je doelen werken; opslaan meldt "kan nog niet" met 503)
+- **Hoort bij:** branch `feat/kernstof-profiel`, plak 2 van `BESLUIT_PATROON_PER_MAALTIJD_2026-10.md`
+- **Terugdraaien:** `drop table public.account_kernstof_profiel;`
 
 **Nog te doen (geen migratie, geen blocker):** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan al klaar.
 
@@ -53,6 +53,7 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 5 oktober 2026 | `20261004150000_account_gevolgde_stoffen.sql` | Door Dennis gedraaid in de SQL Editor en opgeslagen. |
 | 4 oktober 2026 | `20261001090000_schema_drift_baseline.sql` | Door Dennis gedraaid in de SQL Editor, zonder fout. |
 | 3 oktober 2026 | `20261003120000_nevo_foods.sql` | Door Dennis gedraaid; `node scripts/nevo-laden.mjs --schrijf` meldde "Geschreven: 2328 rijen in nevo_foods". |
 | 3 oktober 2026 | `20261003090000_sm_products.sql` | Door Dennis gedraaid. Tabel is leeg tot het licentiebesluit. |
