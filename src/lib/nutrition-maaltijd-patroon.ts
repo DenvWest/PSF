@@ -1,3 +1,5 @@
+import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
+import { normVoorVeld, STANDAARD_GEVOLGDE_NORMEN } from "@/lib/nutrition-normen";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
@@ -93,6 +95,7 @@ type Invoer = {
   /** Eerste en laatste datum (inclusief), `YYYY-MM-DD`. */
   van: string;
   tot: string;
+  normen?: GevolgdeNormen;
 };
 
 function productenVan(keren: readonly { items: readonly DagboekItem[]; etiket: readonly SupermarktPortie[] }[]): MaaltijdProduct[] {
@@ -135,7 +138,14 @@ function afgerond(waarde: number): number {
   return Math.round(waarde * 10) / 10;
 }
 
-export function bouwMaaltijdPatroon({ itemsPerDag, etiketPerDag, nevoProducten, van, tot }: Invoer): MaaltijdPatroon[] {
+export function bouwMaaltijdPatroon({
+  itemsPerDag,
+  etiketPerDag,
+  nevoProducten,
+  van,
+  tot,
+  normen = STANDAARD_GEVOLGDE_NORMEN,
+}: Invoer): MaaltijdPatroon[] {
   const datums = [...new Set([...itemsPerDag.keys(), ...Object.keys(etiketPerDag)])]
     .filter((datum) => datum >= van && datum <= tot)
     .sort();
@@ -153,6 +163,7 @@ export function bouwMaaltijdPatroon({ itemsPerDag, etiketPerDag, nevoProducten, 
         items,
         supermarktLogs: etiket,
         nevoProducten,
+        normen,
       }),
     );
 
@@ -166,10 +177,13 @@ export function bouwMaaltijdPatroon({ itemsPerDag, etiketPerDag, nevoProducten, 
         heeftWaarde = true;
       }
       const gemiddeld = heeftWaarde && keer > 0 ? som / keer : null;
+      const norm = normVoorVeld(normen, veld.veld)?.waarde ?? null;
       return {
         ...veld,
         waarde: gemiddeld,
-        aandeel: gemiddeld !== null && veld.ri !== null ? gemiddeld / veld.ri : null,
+        norm,
+        aandeel: gemiddeld !== null && norm !== null ? gemiddeld / norm : null,
+        aandeelRi: gemiddeld !== null && veld.ri !== null ? gemiddeld / veld.ri : null,
       };
     });
 

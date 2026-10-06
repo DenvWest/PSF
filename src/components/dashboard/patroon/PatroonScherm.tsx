@@ -43,7 +43,7 @@ import { bouwTrend } from "@/lib/nutrition-trend";
 import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
 import { bouwPeriodeOverzicht, verschuifWeek, weekStart } from "@/lib/nutrition-weekoverzicht";
 import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
-import { useKernstofNormen } from "@/lib/use-kernstof-normen";
+import { useGevolgdeNormen, useKernstofNormen } from "@/lib/use-kernstof-normen";
 import { useVoedingsdataPeriode } from "@/lib/use-voedingsdata-periode";
 
 /**
@@ -76,6 +76,7 @@ import { useVoedingsdataPeriode } from "@/lib/use-voedingsdata-periode";
 function PatroonInhoud() {
   const vandaag = todayInAgendaTimezone();
   const normen = useKernstofNormen();
+  const gevolgdeNormen = useGevolgdeNormen();
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
   const [laden, setLaden] = useState(true);
   const [sectie, setSectie] = useState<PatroonSectie>("maaltijden");
@@ -210,8 +211,16 @@ function PatroonInhoud() {
   );
 
   const maaltijdPatroon = useMemo(
-    () => bouwMaaltijdPatroon({ itemsPerDag, etiketPerDag, nevoProducten, van: periode.van, tot: periode.tot }),
-    [itemsPerDag, etiketPerDag, nevoProducten, periode],
+    () =>
+      bouwMaaltijdPatroon({
+        itemsPerDag,
+        etiketPerDag,
+        nevoProducten,
+        van: periode.van,
+        tot: periode.tot,
+        normen: gevolgdeNormen,
+      }),
+    [itemsPerDag, etiketPerDag, nevoProducten, periode, gevolgdeNormen],
   );
 
   const stoffen = useMemo(
@@ -224,12 +233,12 @@ function PatroonInhoud() {
     [perDag, datums, macroDoelen],
   );
   const gevolgdPeriode = useMemo(
-    () => bouwGevolgdePeriode(perDag, gevolgdeStoffen, datums),
-    [perDag, gevolgdeStoffen, datums],
+    () => bouwGevolgdePeriode(perDag, gevolgdeStoffen, datums, gevolgdeNormen),
+    [perDag, gevolgdeStoffen, datums, gevolgdeNormen],
   );
   const gevolgdTrend = useMemo(
-    () => bouwGevolgdeWeken(perDag, gevolgdeStoffen, trendWeken),
-    [perDag, gevolgdeStoffen, trendWeken],
+    () => bouwGevolgdeWeken(perDag, gevolgdeStoffen, trendWeken, gevolgdeNormen),
+    [perDag, gevolgdeStoffen, trendWeken, gevolgdeNormen],
   );
 
   const supplementen = useMemo((): SupplementWeek => {

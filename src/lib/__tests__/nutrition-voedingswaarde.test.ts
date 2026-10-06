@@ -81,7 +81,8 @@ describe("berekenVoedingswaarde", () => {
     });
     expect(rij(uitkomst, "energyKcal")?.waarde).toBeCloseTo(135);
     expect(rij(uitkomst, "sodiumMg")?.waarde).toBeCloseTo(900);
-    expect(rij(uitkomst, "vitaminB12µg")?.aandeel).toBeCloseTo(3 / 2.5);
+    expect(rij(uitkomst, "vitaminB12µg")?.aandeel).toBeCloseTo(3 / 4);
+    expect(rij(uitkomst, "vitaminB12µg")?.aandeelRi).toBeCloseTo(3 / 2.5);
     expect(rij(uitkomst, "calciumMg")?.waarde).toBeNull();
   });
 
