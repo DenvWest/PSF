@@ -1,7 +1,7 @@
 # Besluit: Keuze blijft Keuze — Vergelijken (voeding naast supplement, met PS-Score) en Favorieten
 
 **Datum:** 6 oktober 2026
-**Status:** Besloten (Dennis: "akkoord met voorstel bij keuze"), nog te bouwen.
+**Status:** Besloten (Dennis: "akkoord met voorstel bij keuze"), gebouwd 6 okt op `feat/keuze-vergelijken`.
 **Raakt:** `src/lib/schap-tabs.ts`, `src/components/dashboard/voortgang/SchapView.tsx`, `NutrientLogboekPanel`
 **Laat staan:** `BESLUIT_ONDERBALK_DRIE_TABS_2026-10.md` (Dagboek · Patroon · Keuze, ids ongewijzigd)
 
@@ -28,7 +28,16 @@ Op de vraag wat "PSF-score" betekent: **de PS-Score van supplementen** (0–100,
 3. **De PS-Score is een productscore, geen persoonsscore.** Geen "PSF-score" voor iemands voeding: die is eerder afgewezen (geen tweede score; een "hoe gezond"-cijfer verbergt welke stof het verschil maakt — `BESLUIT_PATROON_PER_MAALTIJD_2026-10.md`).
 4. De poort van het voedingslogboek blijft gelden in Vergelijken: staat je voedingsbasis niet, dan blijven de supplementknoppen dicht, met de reden erbij.
 
-## Open bij het bouwen
+## Uitvoering (6 oktober)
 
-- Hoe de PS-Score per stof uit `src/lib/supplement-hub/product-catalog.ts` in het dashboard komt (top-product per stof of een korte lijst), zonder affiliate-links in het dashboard zelf.
-- Meetpunten: tabwissel (bestaand), klik naar de catalogus vanuit Vergelijken (nieuw).
+- **Tabs op voeding:** Vergelijken · Favorieten. Vergelijken houdt de id `logboek` (oude links en meetreeksen blijven werken) en is het standaardtabblad op voeding. Een oude link naar `producten` op voeding landt op Vergelijken (`resolveSchapTabForDomain`). Slaap en beweging houden Producten.
+- **Per stof** (routekaart, alleen op Keuze, niet op Kompas): na de voedingsbronnen het blok "Of een supplement · hoogste PS-Score": de top 3 producten van die stof met score en band, elk naar de eigen productpagina (`/product/<slug>`), plus "Alle N …-supplementen met PS-Score →" naar `/supplementen?categorie=<stof>`. Met de zin "De PS-Score beoordeelt het product (…), niet jouw voeding." Bron: `src/lib/supplement-hub/ps-score-per-stof.ts`.
+- **Poort:** het PS-Score-blok staat er onder dezelfde voorwaarde als de vergelijklink: poort open, deur open voor die stof, en niet "alleen bord" gekozen.
+- **Afwijking van besluit 2:** het vroegere tabblad Producten (oordeel per supplement uit je check: signaal, zekerheid, EU-claim, met bewaarknop) is niet verdwenen maar staat onder de vergelijking als "Oordeel per supplement · uit je check". Reden: anders gaan die oordelen en de "aanbevolen"-bewaarknop verloren, en zonder voedingscheck zou Vergelijken leeg zijn; nu toont dat blok dan zijn dichte poort met reden.
+- **Geen affiliate-link in het dashboard:** de koopknop staat pas op de productpagina.
+
+**Meting:** `keuze_vergelijken_ps_score_click` {surface, nutrient, doel: product|catalogus, product?} (GA4). Bestaand: `nutrition_route_compare_click` (link naar `/beste/*`), tabwissel van het schap.
+
+## Open
+
+- Een korte uitleg van de PS-Score-opbouw in het dashboard (nu alleen de zin en de link naar de catalogus).

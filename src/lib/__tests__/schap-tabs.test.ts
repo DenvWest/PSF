@@ -19,14 +19,13 @@ describe("resolveSchapTabs", () => {
     expect(resolveSchapTabs("slaap").map((tab) => tab.id)).toEqual(["producten", "favorieten"]);
   });
 
-  it("geeft voeding een eigen logboek-tab tussen producten en favorieten", () => {
-    // De vijf nutriëntroutes stonden tot 1 september als vast blok bóven de
-    // tabs, waar ze alles wat je kwam doen een scherm naar beneden duwden.
-    // Als tab staan ze náást het aanbod dat ze verantwoorden.
-    expect(resolveSchapTabs("voeding").map((tab) => tab.id)).toEqual([
-      "producten",
-      "logboek",
-      "favorieten",
+  it("geeft voeding Vergelijken en Favorieten — Producten gaat op in Vergelijken", () => {
+    // Sinds 6 oktober: per stof voeding naast supplement (met PS-Score) op één
+    // tab. Producten droeg dezelfde vijf stoffen en dubbelde
+    // (BESLUIT_KEUZE_VERGELIJKEN_2026-10.md). De id blijft `logboek`.
+    expect(resolveSchapTabs("voeding")).toEqual([
+      { id: "logboek", label: "Vergelijken" },
+      { id: "favorieten", label: "Favorieten" },
     ]);
   });
 
@@ -72,10 +71,10 @@ describe("resolveSchapTabs", () => {
 });
 
 describe("resolveDefaultSchapTab", () => {
-  it("opent altijd op producten — een schap bestaat exact waar aanbod bestaat", () => {
+  it("opent op het aanbod: producten, en op voeding Vergelijken", () => {
     expect(resolveDefaultSchapTab("beweging")).toBe("producten");
     expect(resolveDefaultSchapTab("slaap")).toBe("producten");
-    expect(resolveDefaultSchapTab("voeding")).toBe("producten");
+    expect(resolveDefaultSchapTab("voeding")).toBe("logboek");
   });
 });
 
@@ -89,7 +88,9 @@ describe("resolveSchapTabForDomain — je onderdeel reist mee bij een domeinwiss
   it("valt terug op de default waar het doeldomein die tab niet heeft", () => {
     // Diensten bestaat alleen op beweging — slaap krijgt zijn default.
     expect(resolveSchapTabForDomain("slaap", "diensten")).toBe("producten");
-    expect(resolveSchapTabForDomain("voeding", "diensten")).toBe("producten");
+    expect(resolveSchapTabForDomain("voeding", "diensten")).toBe("logboek");
+    // Een oude link naar Producten op voeding landt op Vergelijken.
+    expect(resolveSchapTabForDomain("voeding", "producten")).toBe("logboek");
   });
 
   it("valt terug zonder gekozen tab", () => {

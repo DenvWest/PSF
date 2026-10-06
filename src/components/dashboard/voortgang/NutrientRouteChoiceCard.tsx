@@ -5,6 +5,11 @@ import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { clarityTag } from "@/lib/clarity";
 import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
+import {
+  psScoreAantalVoorStof,
+  psScoreCatalogusHref,
+  psScoreTopVoorStof,
+} from "@/lib/supplement-hub/ps-score-per-stof";
 import { trackEvent } from "@/lib/ga4";
 import { nutritionSourceFavoriteId } from "@/lib/nutrition-favorite-source";
 import {
@@ -359,6 +364,9 @@ export default function NutrientRouteChoiceCard({
 
       {/* De vergelijk-deur blijft achteraan staan, ook nu er een keuzeknop
           boven hangt: eerst wat je bord kan, dan pas wat een potje kan. */}
+      {gateOpen && status.supplementDoorOpen && chosen !== "bord" && !compact ? (
+        <PsScoreBlok nutrient={status.nutrient} label={status.label} surface={surface} />
+      ) : null}
       {gateOpen && status.supplementDoorOpen && chosen !== "bord" ? (
         <Link
           href={status.comparisonPath}
@@ -425,5 +433,69 @@ function FavoriteBronKnop({
     >
       {saved ? "Staat op je lijst" : "Zet op je lijst"}
     </button>
+  );
+}
+
+/**
+ * De hoogst scorende supplementen van deze stof, naast de voedingsbronnen
+ * erboven: zo vergelijk je bord en potje op één plek. De PS-Score is een
+ * productscore, geen oordeel over je voeding. De links gaan naar de eigen
+ * productpagina en de catalogus, niet naar een winkel.
+ */
+function PsScoreBlok({
+  nutrient,
+  label,
+  surface,
+}: {
+  nutrient: NutrientRouteStatus["nutrient"];
+  label: string;
+  surface: string;
+}) {
+  const top = psScoreTopVoorStof(nutrient);
+  if (top.length === 0) return null;
+  const aantal = psScoreAantalVoorStof(nutrient);
+  const klik = (doel: "product" | "catalogus", slug?: string) =>
+    trackEvent("keuze_vergelijken_ps_score_click", {
+      surface,
+      nutrient,
+      doel,
+      ...(slug ? { product: slug } : {}),
+    });
+
+  return (
+    <div className="mt-3">
+      <p className="m-0 mb-2 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+        Of een supplement · hoogste PS-Score
+      </p>
+      <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
+        {top.map((product) => (
+          <li key={product.slug} className="flex items-baseline justify-between gap-3">
+            <Link
+              href={product.href}
+              onClick={() => klik("product", product.slug)}
+              className="min-w-0 text-[12.5px] leading-snug text-[#F1EFE8] no-underline hover:underline"
+            >
+              {product.naam}
+              <span className="text-[#7E8C82]"> · {product.vorm}</span>
+            </Link>
+            <span className="shrink-0 font-mono text-[12px] tabular-nums text-[#9CC5A9]">
+              {product.score}
+              <span className="ml-1 font-sans text-[10.5px] text-[#7E8C82]">{product.bandLabel}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+      <Link
+        href={psScoreCatalogusHref(nutrient)}
+        onClick={() => klik("catalogus")}
+        className="mt-2 inline-flex items-center gap-1 text-[12px] font-semibold text-[#9CC5A9] no-underline hover:underline"
+      >
+        Alle {aantal} {label.charAt(0).toLowerCase() + label.slice(1)}-supplementen met PS-Score
+        <Icons.ArrowRight s={12} />
+      </Link>
+      <p className="m-0 mt-1 text-[10.5px] leading-relaxed text-[#7E8C82]">
+        De PS-Score beoordeelt het product (dosering, vorm, zuiverheid, EU-claim), niet jouw voeding.
+      </p>
+    </div>
   );
 }

@@ -333,6 +333,29 @@ export default function SchapView({
           />
         ) : null}
 
+        {/* Voorheen het tabblad Producten: het oordeel per supplement uit je
+            check. Op voeding zijn dat dezelfde vijf stoffen als hierboven, dus
+            het staat nu onder de vergelijking in plaats van ernaast
+            (`BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`). Zonder voedingscheck
+            toont het zijn dichte poort met reden, zodat dit tabblad nooit leeg is. */}
+        {currentTab === "logboek" && stanceDomain ? (
+          <div className={nutritionRoutes.length > 0 ? "mt-6" : ""}>
+            <p className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.14em] text-[var(--text-subtle)]">
+              Oordeel per supplement · uit je check
+            </p>
+            <DomainSupplementStance
+              domain={stanceDomain}
+              verdicts={data?.supplementVerdicts ?? []}
+              nutritionLogCompleted={nutritionLogCompleted}
+              surface={SCHAP_SURFACE[domain] ?? "favorieten_schap_producten"}
+              ladderDomain={domain}
+              openByDefault
+              showFavoriteSave
+              favoriteSource="aanbevolen"
+            />
+          </div>
+        ) : null}
+
         {currentTab === "favorieten" ? (
           <div className="flex flex-col gap-3.5">
             {domainFavorites.length === 0 ? (
