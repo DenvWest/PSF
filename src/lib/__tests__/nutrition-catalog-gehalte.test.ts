@@ -1,9 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { catalogEntry, FOOD_CATALOG } from "@/data/nutrition/food-catalog";
 import { FOOD_CATALOG_NEVO } from "@/data/nutrition/food-catalog-nevo";
-import { FOOD_CATALOG_NEVO_GEHALTES } from "@/data/nutrition/food-catalog-nevo-gehaltes";
-import { gehaltePer100g, nevoOmega3Delen } from "@/lib/nutrition-catalog-gehalte";
-import { bedragVanItem, nutrientenUitItems } from "@/lib/nutrition-dagboek-items";
+import {
+  FOOD_CATALOG_NEVO_BENADERINGEN,
+  FOOD_CATALOG_NEVO_GEHALTES,
+} from "@/data/nutrition/food-catalog-nevo-gehaltes";
+import { gehaltePer100g, gehalteWeergavePer100g, nevoOmega3Delen } from "@/lib/nutrition-catalog-gehalte";
+import { bedragVanItem, nutrientenUitItems, weergaveVanItem } from "@/lib/nutrition-dagboek-items";
+import benaderingMicros from "../../../scripts/nevo-benadering-micros.json";
 
 describe("NEVO-gehaltes in de catalogus", () => {
   it("kent elke sleutel in de catalogus en dezelfde NEVO-code als de koppeling", () => {
@@ -22,10 +26,30 @@ describe("NEVO-gehaltes in de catalogus", () => {
 
   it("schrijft alleen positieve getallen", () => {
     for (const [key, gehaltes] of Object.entries(FOOD_CATALOG_NEVO_GEHALTES)) {
-      const { code: _code, ...waarden } = gehaltes;
+      const { code: _code, nul: _nul, spoor: _spoor, ...waarden } = gehaltes;
       for (const [veld, waarde] of Object.entries(waarden)) {
         expect(waarde, `${key}.${veld}`).toBeGreaterThan(0);
       }
+    }
+  });
+
+  it("noemt een stof nooit tegelijk als getal en als 0 of spoor", () => {
+    for (const [key, gehaltes] of Object.entries(FOOD_CATALOG_NEVO_GEHALTES)) {
+      for (const veld of [...(gehaltes.nul ?? []), ...(gehaltes.spoor ?? [])]) {
+        expect(gehaltes[veld], `${key}.${veld}`).toBeUndefined();
+      }
+    }
+  });
+
+  it("toont alleen benaderingen die daarvoor zijn vrijgegeven", () => {
+    const vrijgegeven = new Set(Object.keys(benaderingMicros.toon));
+    for (const [key, gehaltes] of Object.entries(FOOD_CATALOG_NEVO_BENADERINGEN)) {
+      expect(vrijgegeven.has(key), key).toBe(true);
+      expect(FOOD_CATALOG_NEVO[key]).toEqual({ code: gehaltes.code, basis: "benadering" });
+      expect(gehaltes.naam.length).toBeGreaterThan(0);
+    }
+    for (const key of Object.keys(benaderingMicros.niet)) {
+      expect(FOOD_CATALOG_NEVO_BENADERINGEN[key], key).toBeUndefined();
     }
   });
 });
@@ -68,5 +92,67 @@ describe("dagboekitems met NEVO-gehaltes", () => {
   it("telt de nieuwe stoffen mee in de ondergrens van de dag", () => {
     const stoffen = nutrientenUitItems([{ bron: "voeding", key: "zalm-gerookt", grams: 75, moment: "ontbijt" }]);
     expect(stoffen.map((s) => s.nutrient).sort()).toEqual(["magnesium", "omega3", "protein", "vitamin_d", "zinc"]);
+  });
+});
+
+describe("gehalteWeergavePer100g", () => {
+  it("toont een gemeten 0 als nul, niet als onbekend", () => {
+    expect(gehalteWeergavePer100g(catalogEntry("spinazie-diepvries"), "vitamin_d")).toEqual({
+      soort: "nul",
+      unit: "µg",
+      benadering: null,
+    });
+    expect(gehalteWeergavePer100g(catalogEntry("spinazie-diepvries"), "omega3")).toEqual({
+      soort: "nul",
+      unit: "mg",
+      benadering: null,
+    });
+  });
+
+  it("geeft het rekengetal als dat er is", () => {
+    expect(gehalteWeergavePer100g(catalogEntry("spinazie-diepvries"), "magnesium")).toEqual({
+      soort: "waarde",
+      value: 35,
+      unit: "mg",
+      benadering: null,
+    });
+  });
+
+  it("toont een vrijgegeven benadering met de NEVO-naam", () => {
+    const broccoli = catalogEntry("broccoli-diepvries");
+    expect(gehaltePer100g(broccoli, "magnesium")).toBeNull();
+    expect(gehalteWeergavePer100g(broccoli, "magnesium")).toEqual({
+      soort: "waarde",
+      value: 19,
+      unit: "mg",
+      benadering: "Broccoli gekookt",
+    });
+  });
+
+  it("toont niets voor een benadering die niet is vrijgegeven", () => {
+    expect(gehalteWeergavePer100g(catalogEntry("margarine"), "vitamin_d")).toEqual({ soort: "onbekend" });
+  });
+});
+
+describe("0, spoor en benadering tellen nooit mee", () => {
+  const spinazie = { bron: "voeding", key: "spinazie-diepvries", grams: 80, moment: "lunch" } as const;
+  const broccoli = { bron: "voeding", key: "broccoli-diepvries", grams: 80, moment: "lunch" } as const;
+  const zalm = { bron: "voeding", key: "zalm-gerookt", grams: 75, moment: "lunch" } as const;
+
+  it("laat een stof met alleen nullen weg uit de dag", () => {
+    const stoffen = nutrientenUitItems([spinazie]);
+    expect(stoffen.find((s) => s.nutrient === "vitamin_d")).toBeUndefined();
+    expect(weergaveVanItem(spinazie, "vitamin_d").soort).toBe("nul");
+  });
+
+  it("telt een gemeten 0 niet als product zonder gehalte", () => {
+    const vitD = nutrientenUitItems([spinazie, zalm]).find((s) => s.nutrient === "vitamin_d");
+    expect(vitD).toMatchObject({ minstens: 3, bronnen: 1, zonderGehalte: 0 });
+  });
+
+  it("telt een benadering niet op, en blijft hem als zwijgend tellen", () => {
+    const magnesium = nutrientenUitItems([broccoli, zalm]).find((s) => s.nutrient === "magnesium");
+    expect(magnesium).toMatchObject({ minstens: 24, bronnen: 1, zonderGehalte: 1 });
+    expect(weergaveVanItem(broccoli, "magnesium")).toMatchObject({ soort: "waarde", benadering: "Broccoli gekookt" });
   });
 });

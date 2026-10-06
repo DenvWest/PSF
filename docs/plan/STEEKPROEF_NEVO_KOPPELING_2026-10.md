@@ -180,7 +180,7 @@ Kies per regel de code, of laat de regel zonder NEVO-koppeling. Leg de keuze vas
 
 ## Benadering (vergelijkbaar record)
 
-Geen eigen NEVO-record; alleen macro's, altijd gelabeld als benadering, nooit in een som als brongetal.
+Geen eigen NEVO-record; macro's (en kernstoffen als vrijgegeven in scripts/nevo-benadering-micros.json), altijd gelabeld als benadering, nooit in een som als brongetal.
 
 | Sleutel | Label | NEVO-code | NEVO-naam | Opmerking |
 |---|---|---|---|---|
