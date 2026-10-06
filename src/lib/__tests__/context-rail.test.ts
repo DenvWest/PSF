@@ -91,11 +91,8 @@ describe("buildDomainRailTools", () => {
 });
 
 describe("VOORTGANG_RAIL_ITEMS", () => {
-  it("toont Je patroon en Hermeting — het schap is de Keuze-tab, Leefstijlprofiel is opgeheven", () => {
-    expect(VOORTGANG_RAIL_ITEMS.map((item) => item.id)).toEqual(["hub", "hermeting"]);
-    expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "hermeting")?.icon).toBe(
-      "Calendar",
-    );
+  it("toont alleen Je patroon — Hermeting staat sinds 6 okt niet meer in de navigatie", () => {
+    expect(VOORTGANG_RAIL_ITEMS.map((item) => item.id)).toEqual(["hub"]);
   });
 });
 

@@ -1,8 +1,8 @@
 /** @vitest-environment jsdom */
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import PatroonStofDetail from "@/components/dashboard/patroon/PatroonStofDetail";
-import { STANDAARD_NORMEN } from "@/lib/nutrition-normen";
+import PatroonStofDetail, { type StofDetailGegevens } from "@/components/dashboard/patroon/PatroonStofDetail";
+import { normVoor, normVoorVeld, STANDAARD_GEVOLGDE_NORMEN, STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 import { bouwPeriodeOverzicht, weekDatums } from "@/lib/nutrition-weekoverzicht";
 
 vi.mock("@/lib/ga4", () => ({ trackEvent: vi.fn() }));
@@ -26,15 +26,43 @@ afterEach(() => {
   profiel.huidig = { geslacht: null, zeventigPlus: false, voedingswijze: null, streefwaarden: {} };
 });
 
-const MAGNESIUM = bouwPeriodeOverzicht([], weekDatums("2026-09-28"), STANDAARD_NORMEN).rijen.find(
+const MAGNESIUM_RIJ = bouwPeriodeOverzicht([], weekDatums("2026-09-28"), STANDAARD_NORMEN).rijen.find(
   (rij) => rij.nutrient === "magnesium",
 )!;
+
+function magnesium(streef: number | null = null): StofDetailGegevens {
+  return {
+    ...MAGNESIUM_RIJ,
+    stof: "magnesium",
+    norm: normVoor(STANDAARD_NORMEN, "magnesium"),
+    streef,
+    vergelijkingPad: MAGNESIUM_RIJ.comparisonPath,
+    zonderNormUitleg: "",
+  };
+}
+
+const CALCIUM: StofDetailGegevens = {
+  stof: "calciumMg",
+  label: "Calcium",
+  unit: "mg",
+  lezing: "per_dag",
+  gemiddeld: 400,
+  totaal: 800,
+  aandeel: 0.4,
+  normPeriode: null,
+  bewijsbaar: true,
+  gedekt: null,
+  norm: normVoorVeld(STANDAARD_GEVOLGDE_NORMEN, "calciumMg"),
+  streef: null,
+  vergelijkingPad: null,
+  zonderNormUitleg: "",
+};
 
 describe("PatroonStofDetail", () => {
   it("noemt norm, doelgroep en bron voluit, en zegt dat het geen diagnose is", () => {
     render(
       <PatroonStofDetail
-        rij={MAGNESIUM}
+        rij={magnesium()}
         periode={{ van: "2026-09-28", tot: "2026-10-04" }}
         dagenGeregistreerd={0}
         bronnen={[]}
@@ -49,7 +77,7 @@ describe("PatroonStofDetail", () => {
   it("toont per maaltijd het deel, wanneer je een bron at, en waar de ruimte zit", () => {
     render(
       <PatroonStofDetail
-        rij={MAGNESIUM}
+        rij={magnesium()}
         periode={{ van: "2026-09-28", tot: "2026-10-04" }}
         dagenGeregistreerd={2}
         bronnen={[
@@ -83,7 +111,7 @@ describe("PatroonStofDetail", () => {
   it("toont voedingsbronnen vóór de supplementvergelijking", () => {
     render(
       <PatroonStofDetail
-        rij={MAGNESIUM}
+        rij={magnesium()}
         periode={{ van: "2026-09-28", tot: "2026-10-04" }}
         dagenGeregistreerd={0}
         bronnen={[]}
@@ -93,14 +121,14 @@ describe("PatroonStofDetail", () => {
     const voeding = screen.getByText(/Rijkste voedingsbronnen/);
     const supplement = screen.getByRole("link", { name: /Supplementen met Magnesium vergelijken/ });
     expect(voeding.compareDocumentPosition(supplement) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(supplement.getAttribute("href")).toBe(MAGNESIUM.comparisonPath);
+    expect(supplement.getAttribute("href")).toBe(MAGNESIUM_RIJ.comparisonPath);
   });
 
   it("toont je streefwaarde naast de norm, en bij vegan geen vis of vlees", () => {
     profiel.huidig = { ...profiel.huidig, voedingswijze: "veganistisch", streefwaarden: { magnesium: 400 } };
     render(
       <PatroonStofDetail
-        rij={MAGNESIUM}
+        rij={magnesium(400)}
         periode={{ van: "2026-09-28", tot: "2026-10-04" }}
         dagenGeregistreerd={0}
         bronnen={[]}
@@ -111,5 +139,22 @@ describe("PatroonStofDetail", () => {
     expect(screen.getByText(/Alleen veganistische bronnen/)).toBeTruthy();
     const bronnen = screen.getByText(/Rijkste voedingsbronnen/).closest(".vd-tabel")!.textContent ?? "";
     expect(bronnen).not.toMatch(/zalm|makreel|vlees|kaas|yoghurt|ei\b/i);
+  });
+
+  it("geeft een gevolgde stof hetzelfde detail: norm met bron, rijkste bronnen, geen supplementlink", () => {
+    render(
+      <PatroonStofDetail
+        rij={CALCIUM}
+        periode={{ van: "2026-09-28", tot: "2026-10-04" }}
+        dagenGeregistreerd={2}
+        bronnen={[]}
+        onTerug={() => {}}
+      />,
+    );
+    expect(screen.getByRole("heading", { name: "Calcium" })).toBeTruthy();
+    expect(screen.getByText(/Rijkste voedingsbronnen/)).toBeTruthy();
+    expect(screen.getByPlaceholderText("Zoek een product")).toBeTruthy();
+    expect(screen.queryByRole("link", { name: /Supplementen met/ })).toBeNull();
+    expect(screen.getByText(/geen supplementvergelijking/)).toBeTruthy();
   });
 });

@@ -2,20 +2,46 @@
 
 import Link from "next/link";
 import PatroonBronZoek from "@/components/dashboard/patroon/PatroonBronZoek";
+import { isInformatieveStof } from "@/lib/nutrition-rijkste-bronnen";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
-import { normLabel, normVoor } from "@/lib/nutrition-normen";
+import type { Voedingsnorm } from "@/data/nutrition/voedingsnormen";
+import { normLabel } from "@/lib/nutrition-normen";
 import { periodeLabel, type Periode } from "@/lib/nutrition-periode";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
-import { isKernstofMetNorm } from "@/lib/account-kernstof-profiel";
+import { isKernstof, type PatroonStof } from "@/lib/nutrition-stof-meting";
 import type { StofBron, StofPerMoment } from "@/lib/nutrition-stof-bronnen";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
-import type { WeekRij } from "@/lib/nutrition-weekoverzicht";
-import { useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
+import { useKernstofProfiel } from "@/lib/use-kernstof-normen";
 
 /**
- * Eén kernstof uitgeklapt in Per stof: de norm met bron en voor wie hij
+ * Wat het stof-detail over één stof in de gekozen periode weet. Kernstoffen en
+ * gevolgde stoffen vullen dezelfde vorm (`PatroonScherm`), zodat calcium of
+ * ijzer hetzelfde detail krijgt als magnesium: norm met bron, jouw bronnen,
+ * per maaltijd, rijkste bronnen en, waar die bestaat, de supplementvergelijking.
+ */
+export type StofDetailGegevens = {
+  stof: PatroonStof;
+  label: string;
+  unit: string;
+  lezing: "per_dag" | "periodetotaal";
+  gemiddeld: number;
+  totaal: number;
+  aandeel: number | null;
+  normPeriode: number | null;
+  bewijsbaar: boolean;
+  gedekt: boolean | null;
+  norm: Voedingsnorm | null;
+  streef: number | null;
+  /** `/beste/*` van deze stof, of null zolang er geen vergelijking is. */
+  vergelijkingPad: string | null;
+  /** Uitleg als er geen vaste norm is (eiwit, vezels zonder gewicht). */
+  zonderNormUitleg: string;
+};
+
+/**
+ * Eén stof uitgeklapt in Per stof: de norm met bron en voor wie hij
  * geldt, waar je hem deze periode vandaan haalde, en de rijkste
  * voedingsbronnen. Pas daaronder de supplementvergelijking.
  *
@@ -38,6 +64,9 @@ const NORM_BRON_VOLUIT: Record<string, string> = {
   "Gezondheidsraad 2018": "Gezondheidsraad (2018), Voedingsnormen vitamines en mineralen voor volwassenen",
   "Gezondheidsraad 2001": "Gezondheidsraad (2001), Voedingsnormen: energie, eiwitten, vetten en verteerbare koolhydraten",
   "Gezondheidsraad 2012": "Gezondheidsraad (2012), Evaluatie van de voedingsnormen voor vitamine D",
+  "EFSA 2013": "EFSA (2013), Scientific Opinion on Dietary Reference Values for vitamin C",
+  "EFSA 2015": "EFSA (2015), Scientific Opinion on Dietary Reference Values for cobalamin (vitamin B12)",
+  "NNR 2023": "Nordic Nutrition Recommendations 2023",
 };
 
 const MAX_MOMENTEN = 3;
@@ -83,7 +112,7 @@ export default function PatroonStofDetail({
   startZoek = "",
   onTerug,
 }: {
-  rij: WeekRij;
+  rij: StofDetailGegevens;
   periode: Periode;
   dagenGeregistreerd: number;
   bronnen: readonly StofBron[];
@@ -91,10 +120,9 @@ export default function PatroonStofDetail({
   startZoek?: string;
   onTerug: () => void;
 }) {
-  const normen = useKernstofNormen();
-  const norm = normVoor(normen, rij.nutrient);
+  const { norm, streef } = rij;
   const profiel = useKernstofProfiel();
-  const streef = isKernstofMetNorm(rij.nutrient) ? (profiel.streefwaarden[rij.nutrient] ?? null) : null;
+  const nutrient = rij.stof;
   const totaal = bronnen.reduce((som, bron) => som + bron.totaal, 0);
   const eenDag = periode.van === periode.tot;
   const momentLabels = Object.fromEntries(perMoment.map((m) => [m.moment, m.label])) as Record<EetmomentId, string>;
@@ -132,7 +160,7 @@ export default function PatroonStofDetail({
           ) : (
             <>
               Gemiddeld minstens <b>{hoeveelheid(rij.gemiddeld)} {rij.unit}</b> per geregistreerde dag
-              {rij.referentie !== null && rij.bewijsbaar ? <> ({percentageADH(rij.aandeel)} van de norm)</> : null}
+              {norm !== null && rij.bewijsbaar ? <> ({percentageADH(rij.aandeel)} van de norm)</> : null}
               , over {dagenGeregistreerd} {dagenGeregistreerd === 1 ? "dag" : "dagen"}.
             </>
           )}
@@ -143,7 +171,7 @@ export default function PatroonStofDetail({
             <dt className="text-[var(--vd-ink-3)]">Norm</dt>
             <dd className="m-0 text-[var(--vd-ink)]">
               {normLabel(norm)} per dag
-              {rij.nutrient === "omega3"
+              {nutrient === "omega3"
                 ? profiel.voedingswijze
                   ? " EPA+DHA — zonder vis komt dat vooral uit algen(olie)"
                   : " EPA+DHA — in de richtlijn: 1× per week vis, bij voorkeur vette vis"
@@ -159,7 +187,7 @@ export default function PatroonStofDetail({
               {" · "}
               <Link
                 href="/dashboard/doelen"
-                onClick={() => trackEvent("nutrition_patroon_norm_aanpassen_click", { nutrient: rij.nutrient })}
+                onClick={() => trackEvent("nutrition_patroon_norm_aanpassen_click", { nutrient })}
               >
                 aanpassen
               </Link>
@@ -167,8 +195,7 @@ export default function PatroonStofDetail({
           </dl>
         ) : (
           <p className="vd-note mb-0">
-            Eiwit rekent met je gewicht en activiteit, niet met één vaste norm. Je doel staat op{" "}
-            <Link href="/dashboard/doelen">Je doelen</Link>.
+            {rij.zonderNormUitleg} Zie <Link href="/dashboard/doelen">Je doelen</Link>.
           </p>
         )}
 
@@ -249,38 +276,46 @@ export default function PatroonStofDetail({
         <p className="vd-tag m-0">{Math.round((uitSupplement / totaal) * 100)}% hiervan kwam uit supplementen.</p>
       ) : null}
 
-      <PatroonBronZoek
-        nutrient={rij.nutrient}
-        label={rij.label}
-        unit={rij.unit}
-        norm={norm?.waarde ?? null}
-        voedingswijze={profiel.voedingswijze}
-        startZoek={startZoek}
-        standaardMoment={ruimte?.moment ?? "ontbijt"}
-      />
+      {isKernstof(nutrient) || isInformatieveStof(nutrient) ? (
+        <PatroonBronZoek
+          nutrient={nutrient}
+          label={rij.label}
+          unit={rij.unit}
+          norm={norm?.waarde ?? null}
+          voedingswijze={profiel.voedingswijze}
+          startZoek={startZoek}
+          standaardMoment={ruimte?.moment ?? "ontbijt"}
+        />
+      ) : null}
 
-      <p className="m-0 text-[0.75rem] text-[var(--vd-ink-3)]">
-        Lukt het niet via voeding?{" "}
-        <Link
-          href={rij.comparisonPath}
-          onClick={() => {
-            trackEvent("nutrition_week_nutrient_clicked", {
-              nutrient: rij.nutrient,
-              gedekt: rij.gedekt === true,
-              destination: rij.comparisonPath,
-            });
-            emitAccountClientEvent("nutrition.week_nutrient_clicked", {
-              nutrient: rij.nutrient,
-              covered: rij.gedekt === true,
-              days_logged: dagenGeregistreerd,
-            });
-            clarityTag("nutrition_weekoverzicht", `stof_${rij.nutrient}`);
-          }}
-          className="text-[var(--vd-ink-2)] underline"
-        >
-          Supplementen met {rij.label} vergelijken
-        </Link>
-      </p>
+      {rij.vergelijkingPad ? (
+        <p className="m-0 text-[0.75rem] text-[var(--vd-ink-3)]">
+          Lukt het niet via voeding?{" "}
+          <Link
+            href={rij.vergelijkingPad}
+            onClick={() => {
+              trackEvent("nutrition_week_nutrient_clicked", {
+                nutrient,
+                gedekt: rij.gedekt === true,
+                destination: rij.vergelijkingPad ?? "",
+              });
+              emitAccountClientEvent("nutrition.week_nutrient_clicked", {
+                nutrient,
+                covered: rij.gedekt === true,
+                days_logged: dagenGeregistreerd,
+              });
+              clarityTag("nutrition_weekoverzicht", `stof_${nutrient}`);
+            }}
+            className="text-[var(--vd-ink-2)] underline"
+          >
+            Supplementen met {rij.label} vergelijken
+          </Link>
+        </p>
+      ) : (
+        <p className="m-0 text-[0.75rem] text-[var(--vd-ink-3)]">
+          Voor {rij.label.toLowerCase()} hebben we (nog) geen supplementvergelijking: hier gaat het via voeding.
+        </p>
+      )}
     </section>
   );
 }

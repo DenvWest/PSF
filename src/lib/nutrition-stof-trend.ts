@@ -1,0 +1,338 @@
+import { EETMOMENTEN } from "@/lib/nutrition-eetmomenten";
+import type { DagMeting, PatroonStof } from "@/lib/nutrition-stof-meting";
+import { productenZonderGehalte } from "@/lib/nutrition-stof-meting";
+import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
+
+/**
+ * De trend van één stof over de gekozen periode, met per stof de feiten
+ * waarom hij (nog) niet aan de norm voldoet.
+ *
+ * ## De schaal volgt de periode
+ *
+ * - **Eén dag:** per maaltijd. Een maaltijd haalt geen dagnorm, dus geen
+ *   kleur; wel welk deel van de dagnorm hij leverde.
+ * - **Tot 14 dagen:** per dag.
+ * - **Langer:** per week, het gemiddelde per geregistreerde dag.
+ *
+ * ## Drie staten, nooit rood
+ *
+ * Gehaald (bewezen, zonder benaderingen) · niet gehaald op een volledige dag
+ * · onvolledig. Een onvolledige dag onder de norm zegt niets: de ontbrekende
+ * maaltijd kan het verschil zijn. Gevolgde stoffen krijgen geen oordeel-kleur
+ * (`BESLUIT_DOELEN_VERBONDEN_2026-10.md`); omega-3 per dag ook niet, want de
+ * norm is in de praktijk een weeknorm en telt als periodetotaal.
+ */
+
+export type TrendSchaal = "maaltijd" | "dag" | "week";
+
+export type StofTrendStaat = "gehaald" | "onder" | "onvolledig" | "neutraal" | "leeg";
+
+export type StofTrendPunt = {
+  sleutel: string;
+  label: string;
+  /** Tweede regel onder het label: "3/3" maaltijden, "2 d", … */
+  sublabel: string;
+  waarde: number | null;
+  aandeel: number | null;
+  staat: StofTrendStaat;
+  benaderd: boolean;
+  /** Uitleesregel bij een tik: wat dit punt precies is. */
+  uitleg: string;
+};
+
+export type StofTrend = {
+  stof: PatroonStof;
+  label: string;
+  unit: string;
+  soort: "kern" | "gevolgd";
+  norm: number | null;
+  /** False bij zink en vitamine D: geen grafiek, alleen de reden. */
+  bewijsbaar: boolean;
+  schaal: TrendSchaal;
+  punten: StofTrendPunt[];
+  /** Eén telregel naast de naam. */
+  kop: string;
+  /**
+   * Of de norm over de periode aantoonbaar gehaald is (zonder benaderingen).
+   * Bij een gevolgde stof alleen om de "waarom"-regels weg te laten; hij
+   * krijgt geen ✓ of kleur.
+   */
+  gehaald: boolean;
+  /** Feiten waarom niet, of wat er wél te zeggen valt. Leeg als hij gehaald is. */
+  redenen: string[];
+};
+
+export type StofTrendInvoer = {
+  stof: PatroonStof;
+  label: string;
+  unit: string;
+  soort: "kern" | "gevolgd";
+  norm: number | null;
+  /** Null als een dagboek de stof kan aantonen, anders de reden. */
+  nietBewijsbaar: string | null;
+  /** Omega-3: de som over de periode tegen norm × kalenderdagen. */
+  periodetotaal: boolean;
+  /** Eén meting per kalenderdag van de periode, oudste eerst. */
+  dagen: readonly DagMeting[];
+  /** Zonder vaste norm: waar het doel dan vandaan komt. */
+  zonderNormUitleg?: string;
+};
+
+const MAX_DAGEN_PER_DAG = 14;
+
+export function schaalVoor(aantalDagen: number): TrendSchaal {
+  if (aantalDagen <= 1) return "maaltijd";
+  return aantalDagen <= MAX_DAGEN_PER_DAG ? "dag" : "week";
+}
+
+function opmaak(datum: string, opties: Intl.DateTimeFormatOptions): string {
+  return new Date(`${datum}T00:00:00Z`).toLocaleDateString("nl-NL", { timeZone: "UTC", ...opties });
+}
+
+function maandagVan(datum: string): string {
+  const dag = new Date(`${datum}T00:00:00Z`);
+  dag.setUTCDate(dag.getUTCDate() - ((dag.getUTCDay() + 6) % 7));
+  return dag.toISOString().slice(0, 10);
+}
+
+function bedrag(waarde: number, unit: string, benaderd = false): string {
+  return `${benaderd ? "≈ " : ""}${hoeveelheid(waarde)} ${unit}`;
+}
+
+function meervoud(aantal: number, enkel: string, meer: string): string {
+  return `${aantal} ${aantal === 1 ? enkel : meer}`;
+}
+
+function oordeelt(invoer: StofTrendInvoer): boolean {
+  return invoer.soort === "kern" && invoer.nietBewijsbaar === null && invoer.norm !== null && !invoer.periodetotaal;
+}
+
+function dagStaat(invoer: StofTrendInvoer, dag: DagMeting): StofTrendStaat {
+  if (!dag.geregistreerd) return "leeg";
+  if (!oordeelt(invoer)) return dag.volledig ? "neutraal" : "onvolledig";
+  if (dag.somStreng >= invoer.norm!) return "gehaald";
+  return dag.volledig ? "onder" : "onvolledig";
+}
+
+function puntenPerMaaltijd(invoer: StofTrendInvoer): StofTrendPunt[] {
+  const dag = invoer.dagen[0];
+  return EETMOMENTEN.map(({ id, label }) => {
+    const meting = dag?.momenten.find((m) => m.moment === id);
+    const geregistreerd = meting?.geregistreerd === true;
+    const waarde = geregistreerd ? meting!.som : null;
+    const aandeel = waarde !== null && invoer.norm ? waarde / invoer.norm : null;
+    const benaderd = geregistreerd && meting!.som > meting!.somStreng;
+    return {
+      sleutel: id,
+      label,
+      sublabel: geregistreerd ? "" : "—",
+      waarde,
+      aandeel,
+      staat: geregistreerd ? "neutraal" : "leeg",
+      benaderd,
+      uitleg:
+        waarde === null
+          ? `${label}: niet geregistreerd`
+          : `${label}: ${bedrag(waarde, invoer.unit, benaderd)}${aandeel !== null ? ` · ${percentageADH(aandeel)} van de dagnorm` : ""}`,
+    };
+  });
+}
+
+function puntenPerDag(invoer: StofTrendInvoer): StofTrendPunt[] {
+  return invoer.dagen.map((dag) => {
+    const hoofd = dag.momenten.filter((m) => m.moment !== "tussendoor" && m.geregistreerd).length;
+    const waarde = dag.geregistreerd ? dag.som : null;
+    const aandeel = waarde !== null && invoer.norm ? waarde / invoer.norm : null;
+    const staat = dagStaat(invoer, dag);
+    const datum = opmaak(dag.datum, { weekday: "short", day: "numeric", month: "short" });
+    return {
+      sleutel: dag.datum,
+      label: opmaak(dag.datum, { weekday: "short" }).slice(0, 2),
+      sublabel: dag.geregistreerd ? `${hoofd}/3` : "—",
+      waarde,
+      aandeel,
+      staat,
+      benaderd: dag.benaderd,
+      uitleg:
+        waarde === null
+          ? `${datum}: niets geregistreerd`
+          : [
+              `${datum}: ${bedrag(waarde, invoer.unit, dag.benaderd)}`,
+              aandeel !== null ? `${percentageADH(aandeel)} van de norm` : null,
+              dag.volledig ? "alle hoofdmaaltijden" : `${hoofd} van 3 hoofdmaaltijden — geen dagoordeel`,
+            ]
+              .filter(Boolean)
+              .join(" · "),
+    };
+  });
+}
+
+function puntenPerWeek(invoer: StofTrendInvoer): StofTrendPunt[] {
+  const perWeek = new Map<string, DagMeting[]>();
+  for (const dag of invoer.dagen) {
+    const week = maandagVan(dag.datum);
+    perWeek.set(week, [...(perWeek.get(week) ?? []), dag]);
+  }
+  return [...perWeek.entries()].map(([week, dagen]) => {
+    const gemeten = dagen.filter((d) => d.geregistreerd);
+    const volledig = gemeten.filter((d) => d.volledig).length;
+    const waarde = gemeten.length > 0 ? gemeten.reduce((s, d) => s + d.som, 0) / gemeten.length : null;
+    const streng = gemeten.length > 0 ? gemeten.reduce((s, d) => s + d.somStreng, 0) / gemeten.length : 0;
+    const aandeel = waarde !== null && invoer.norm ? waarde / invoer.norm : null;
+    const benaderd = gemeten.some((d) => d.benaderd);
+    const staat: StofTrendStaat =
+      gemeten.length === 0
+        ? "leeg"
+        : !oordeelt(invoer)
+          ? volledig === gemeten.length
+            ? "neutraal"
+            : "onvolledig"
+          : streng >= invoer.norm!
+            ? "gehaald"
+            : volledig === gemeten.length
+              ? "onder"
+              : "onvolledig";
+    const van = dagen[0]!.datum;
+    const tot = dagen[dagen.length - 1]!.datum;
+    return {
+      sleutel: week,
+      label: opmaak(van, { day: "numeric", month: "short" }),
+      sublabel: gemeten.length > 0 ? `${volledig}/${gemeten.length} vol.` : "—",
+      waarde,
+      aandeel,
+      staat,
+      benaderd,
+      uitleg:
+        waarde === null
+          ? `${opmaak(van, { day: "numeric", month: "short" })} – ${opmaak(tot, { day: "numeric", month: "short" })}: niets geregistreerd`
+          : [
+              `${opmaak(van, { day: "numeric", month: "short" })} – ${opmaak(tot, { day: "numeric", month: "short" })}: ${bedrag(waarde, invoer.unit, benaderd)} per dag`,
+              aandeel !== null ? `${percentageADH(aandeel)} van de norm` : null,
+              `${volledig} van ${meervoud(gemeten.length, "gemeten dag", "gemeten dagen")} volledig`,
+            ]
+              .filter(Boolean)
+              .join(" · "),
+    };
+  });
+}
+
+/** Wat er per maaltijd te zeggen valt, ook als geen enkele dag volledig is. */
+function perMaaltijdZin(invoer: StofTrendInvoer): string | null {
+  const delen = EETMOMENTEN.flatMap(({ id, label }) => {
+    const metingen = invoer.dagen.flatMap((d) => d.momenten.filter((m) => m.moment === id && m.geregistreerd));
+    if (metingen.length === 0) return [];
+    const gemiddeld = metingen.reduce((s, m) => s + m.som, 0) / metingen.length;
+    const deel = invoer.norm ? ` (${percentageADH(gemiddeld / invoer.norm)} van de dagnorm)` : "";
+    return [`${label.toLowerCase()} ${bedrag(gemiddeld, invoer.unit)}${deel}, ${metingen.length}×`];
+  });
+  return delen.length > 0 ? `Per maaltijd gemiddeld: ${delen.join(" · ")}.` : null;
+}
+
+function redenenVoor(invoer: StofTrendInvoer, gehaald: boolean): string[] {
+  const gemeten = invoer.dagen.filter((d) => d.geregistreerd);
+  if (gemeten.length === 0) return ["Niets geregistreerd in deze periode."];
+  if (invoer.nietBewijsbaar) return [invoer.nietBewijsbaar];
+  if (invoer.norm === null) {
+    return [invoer.zonderNormUitleg ?? "Geen norm voor jou bekend.", perMaaltijdZin(invoer)].filter(
+      (zin): zin is string => zin !== null,
+    );
+  }
+  if (gehaald) return [];
+
+  const redenen: string[] = [];
+  const zonderGehalte = productenZonderGehalte(invoer.dagen);
+
+  if (invoer.periodetotaal) {
+    const totaal = invoer.dagen.reduce((s, d) => s + d.som, 0);
+    const normPeriode = invoer.norm * invoer.dagen.length;
+    redenen.push(
+      `Minstens ${bedrag(totaal, invoer.unit)} in ${meervoud(invoer.dagen.length, "dag", "dagen")}; de norm over die periode is ${bedrag(normPeriode, invoer.unit)} (${percentageADH(totaal / normPeriode)}).`,
+    );
+  } else {
+    const volledig = gemeten.filter((d) => d.volledig);
+    const onvolledig = gemeten.length - volledig.length;
+    if (volledig.length === 0) {
+      redenen.push(
+        `Op geen van je ${meervoud(gemeten.length, "gemeten dag", "gemeten dagen")} staan ontbijt, lunch én avondeten. Een dagtotaal is dan een ondergrens zonder oordeel.`,
+      );
+    } else {
+      const gemiddeld = volledig.reduce((s, d) => s + d.som, 0) / volledig.length;
+      redenen.push(
+        `Op je ${meervoud(volledig.length, "volledige dag", "volledige dagen")} gemiddeld ${bedrag(gemiddeld, invoer.unit)}: ${percentageADH(gemiddeld / invoer.norm)} van de norm (${hoeveelheid(invoer.norm)} ${invoer.unit}).`,
+      );
+      if (onvolledig > 0) {
+        redenen.push(
+          `${meervoud(onvolledig, "dag mist", "dagen missen")} een hoofdmaaltijd; daar is onder de norm geen antwoord.`,
+        );
+      }
+    }
+    if (volledig.length < gemeten.length) {
+      const zin = perMaaltijdZin(invoer);
+      if (zin) redenen.push(zin);
+    }
+  }
+
+  if (zonderGehalte.length > 0) {
+    const voorbeelden = zonderGehalte.slice(0, 2).join(", ");
+    redenen.push(
+      `${meervoud(zonderGehalte.length, "product", "producten")} zonder gehalte voor ${invoer.label.toLowerCase()} ${zonderGehalte.length === 1 ? "telt" : "tellen"} niet mee (${voorbeelden}${zonderGehalte.length > 2 ? ", …" : ""}).`,
+    );
+  }
+  return redenen;
+}
+
+function kopVoor(invoer: StofTrendInvoer, schaal: TrendSchaal, punten: readonly StofTrendPunt[], gehaald: boolean): string {
+  const gemeten = invoer.dagen.filter((d) => d.geregistreerd);
+  if (gemeten.length === 0) return "niets geregistreerd";
+  if (invoer.nietBewijsbaar) return "geen oordeel";
+  if (invoer.periodetotaal && invoer.norm !== null) {
+    const totaal = invoer.dagen.reduce((s, d) => s + d.som, 0);
+    return `≥${hoeveelheid(totaal)} ${invoer.unit} totaal · ${gehaald ? "norm gehaald" : percentageADH(totaal / (invoer.norm * invoer.dagen.length))}`;
+  }
+  if (schaal === "maaltijd") {
+    const dag = invoer.dagen[0]!;
+    return invoer.norm
+      ? `${bedrag(dag.som, invoer.unit, dag.benaderd)} · ${percentageADH(dag.som / invoer.norm)} van de norm`
+      : bedrag(dag.som, invoer.unit, dag.benaderd);
+  }
+  if (!oordeelt(invoer)) {
+    const gemiddeld = gemeten.reduce((s, d) => s + d.som, 0) / gemeten.length;
+    const benaderd = gemeten.some((d) => d.benaderd);
+    return invoer.norm
+      ? `gem. ${bedrag(gemiddeld, invoer.unit, benaderd)} per dag · ${percentageADH(gemiddeld / invoer.norm)} van de norm`
+      : `gem. ${bedrag(gemiddeld, invoer.unit, benaderd)} per dag`;
+  }
+  const eenheid = schaal === "dag" ? ["dag", "dagen"] : ["week", "weken"];
+  const metWaarde = punten.filter((p) => p.staat !== "leeg");
+  const keer = metWaarde.filter((p) => p.staat === "gehaald").length;
+  return `norm gehaald op ${keer} van ${meervoud(metWaarde.length, `gemeten ${eenheid[0]}`, `gemeten ${eenheid[1]}`)}`;
+}
+
+export function bouwStofTrend(invoer: StofTrendInvoer): StofTrend {
+  const schaal = schaalVoor(invoer.dagen.length);
+  const punten =
+    schaal === "maaltijd" ? puntenPerMaaltijd(invoer) : schaal === "dag" ? puntenPerDag(invoer) : puntenPerWeek(invoer);
+
+  const gemeten = invoer.dagen.filter((d) => d.geregistreerd);
+  const gehaald =
+    invoer.nietBewijsbaar === null &&
+    invoer.norm !== null &&
+    gemeten.length > 0 &&
+    (invoer.periodetotaal
+      ? invoer.dagen.reduce((s, d) => s + d.somStreng, 0) >= invoer.norm * invoer.dagen.length
+      : gemeten.reduce((s, d) => s + d.somStreng, 0) / gemeten.length >= invoer.norm);
+
+  return {
+    stof: invoer.stof,
+    label: invoer.label,
+    unit: invoer.unit,
+    soort: invoer.soort,
+    norm: invoer.norm,
+    bewijsbaar: invoer.nietBewijsbaar === null,
+    schaal,
+    punten,
+    kop: kopVoor(invoer, schaal, punten, gehaald),
+    gehaald,
+    redenen: redenenVoor(invoer, gehaald),
+  };
+}
