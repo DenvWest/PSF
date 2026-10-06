@@ -146,4 +146,14 @@ describe("DagboekKrans", () => {
     expect(knop.getAttribute("aria-expanded")).toBe("true");
     expect(screen.getByText(/de stoffen die jij volgt/)).toBeTruthy();
   });
+
+  it("klapt de stoffenlijst op een smal scherm in tot je hem opent", async () => {
+    const DagboekKrans = await laad();
+    render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} inklapbaar />);
+    expect(screen.queryByRole("list", { name: "Kernstoffen" })).toBeNull();
+    const knop = screen.getByRole("button", { name: /Alle stoffen/ });
+    fireEvent.click(knop);
+    expect(knop.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByRole("list", { name: "Kernstoffen" })).toBeTruthy();
+  });
 });
