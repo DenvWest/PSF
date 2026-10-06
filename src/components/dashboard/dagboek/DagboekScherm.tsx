@@ -59,6 +59,7 @@ import { stofInfo, type InformatieveStof } from "@/lib/nutrition-rijkste-bronnen
 import { berekenVoedingswaarde, nevoCodesVoorItems } from "@/lib/nutrition-voedingswaarde";
 import { useNevoProducten } from "@/lib/use-nevo-producten";
 import { useGevolgdeNormen } from "@/lib/use-kernstof-normen";
+import { useBlokBreedte } from "@/lib/use-blok-breedte";
 
 /**
  * De vier toestanden van het scherm-achter-een-balk: overzicht (het bestaande
@@ -138,6 +139,8 @@ export default function DagboekScherm({
 
   const vandaag = todayInAgendaTimezone();
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
+  const blokRef = useRef<HTMLDivElement>(null);
+  const breed = useBlokBreedte(blokRef) >= 900;
   const [datum, setDatum] = useState(vandaag);
   /**
    * Wat je op déze dag hebt staan, als afgeleide van `dagen` — met een lokale
@@ -757,7 +760,7 @@ export default function DagboekScherm({
     );
   }
 
-  if (scherm.scherm === "bronnen") {
+  if (scherm.scherm === "bronnen" && !breed) {
     return (
       <div className="flex flex-col gap-4">
         <header className="flex items-center gap-2.5">
@@ -797,7 +800,7 @@ export default function DagboekScherm({
     );
   }
 
-  if (scherm.scherm === "detail") {
+  if (scherm.scherm === "detail" && !breed) {
     return (
       <DagboekNutrientDetail
         nutrient={scherm.nutrient}
@@ -818,12 +821,14 @@ export default function DagboekScherm({
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <header className="flex flex-wrap items-baseline justify-between gap-2">
+    <div ref={blokRef} className="@container">
+    <div className="grid gap-4 [grid-template-areas:'kop'_'ring'_'strip'_'tabs'_'inhoud'] @[900px]:grid-cols-[minmax(320px,400px)_minmax(0,1fr)] @[900px]:gap-x-8 @[900px]:[grid-template-areas:'kop_kop'_'strip_strip'_'tabs_tabs'_'ring_inhoud']">
+      <header className="flex flex-wrap items-baseline justify-between gap-2 [grid-area:kop]">
         <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">Je dag</h2>
         <span className="text-[11px] capitalize text-[var(--vd-ink-3)]">{dagLabel}</span>
       </header>
 
+      <div className="flex min-w-0 flex-col gap-4 [grid-area:ring] @[900px]:sticky @[900px]:top-4 @[900px]:self-start">
       {dagboekSectie === "macros" ? (
         <DagboekMacroRing
           kcal={dagMacro("energyKcal")}
@@ -900,6 +905,9 @@ export default function DagboekScherm({
         </>
       )}
 
+      </div>
+
+      <div className="[grid-area:strip]">
       <DagboekWeekstrip
         dagen={stripDagen}
         geselecteerd={datum}
@@ -909,9 +917,48 @@ export default function DagboekScherm({
         busy={busy}
       />
 
-      <DagboekSubtabs actief={dagboekSectie} onKies={kiesSectie} />
+      </div>
 
-      {dagboekSectie === "vandaag" ? (
+      <div className="[grid-area:tabs]">
+        <DagboekSubtabs actief={dagboekSectie} onKies={kiesSectie} />
+      </div>
+
+      <div className="min-w-0 [grid-area:inhoud]">
+      {breed && scherm.scherm === "detail" ? (
+        <DagboekNutrientDetail
+          nutrient={scherm.nutrient}
+          items={items}
+          stof={ondergrens.find((s) => s.nutrient === scherm.nutrient)}
+          busy={busy}
+          onTerug={() => setScherm({ scherm: "overzicht" })}
+          onVoegToe={() => setScherm({ scherm: "zoek", nutrient: scherm.nutrient, moment: "ontbijt" })}
+          onVerwijder={(item) => wijzig(items.filter((i) => i !== item))}
+          onKiesBron={(key) =>
+            setScherm({ scherm: "portie", nutrient: scherm.nutrient, bron: "voeding", key, moment: "ontbijt" })
+          }
+          onVergelijkBronnen={vergelijkBronnen}
+        />
+      ) : breed && scherm.scherm === "bronnen" ? (
+        <div className="flex flex-col gap-4">
+          <header className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => setScherm({ scherm: "overzicht" })}
+              aria-label="Sluit"
+              className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-[var(--vd-ink-2)] transition-colors hover:border-white/30 hover:text-[var(--vd-ink)]"
+            >
+              <Icons.ChevronLeft s={18} />
+            </button>
+            <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">{stofInfo(scherm.stof).label}</h2>
+          </header>
+          <DagboekRijksteBronnen
+            stof={scherm.stof}
+            busy={busy}
+            onKies={(key) => setScherm({ scherm: "portie", nutrient: null, bron: "voeding", key, moment: "ontbijt" })}
+            onVergelijk={vergelijkBronnen}
+          />
+        </div>
+      ) : dagboekSectie === "vandaag" ? (
         <div
           id="dagboek-subtab-paneel-vandaag"
           role="tabpanel"
@@ -1027,6 +1074,8 @@ export default function DagboekScherm({
           <SupermarktBronRegel producten={berekendeBronProducten} berekend />
         </div>
       )}
+      </div>
+    </div>
     </div>
   );
 }

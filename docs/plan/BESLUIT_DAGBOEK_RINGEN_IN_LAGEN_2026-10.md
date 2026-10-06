@@ -63,3 +63,19 @@ GA4: `nutrition_dagboek_krans_gekozen` (nieuw; params `ring`: `kern` | `gevolgd`
 2. **Legenda in rijen in plaats van pillen.** Per stof een rij: kleurstip, naam en waarde in 13 px met tabulaire cijfers, en een dun balkje dat dezelfde vulling toont als de ring. Twee kolommen vanaf 400 px containerbreedte. "Ook gevolgd" toont er standaard vier; daarna "Toon alle n", zodat meer gevolgde stoffen het beeld niet vol maken.
 3. **i-knop rechtsboven de krans.** Die klapt uit wat de binnenring, de buitenring, het midden en het gestippelde spoor betekenen, en dat alles een ondergrens is. Meetpunt: `nutrition_dagboek_krans_uitleg`.
 4. **Dagen kiezen.** De dagenbalk krijgt ‹ / › (een week terug of vooruit, nooit voorbij vandaag), "Vandaag" en "Kies". Kies opent dezelfde maandkalender als Je patroon, nu gedeeld als `src/components/dashboard/shared/MaandKalender.tsx`. Meetpunt: `nutrition_dagboek_dag_gekozen` (`via`: strip / pijl / vandaag / kalender, `dagen_terug`).
+
+## Aanvulling 6 oktober 2026 (3) — brede schermen, bijdrage per maaltijd, wat níét
+
+**Status:** besloten (Dennis, 6 okt: "Doe A, B, C").
+
+- **A · Weektabel.** De weektabel bevat alleen calorieën en macro's. Op Voedingsstoffen vervalt hij (dubbel met Macro's), op Macro's volgt hij de week van de dagenbalk (geen tweede set weekpijlen meer). Zonder ingesteld macrodoel staat er geen tabel vol streepjes, maar één regel met "Stel een doel in →". Meetpunt: `nutrition_dagboek_macrodoel_cta`.
+- **B · Brede schermen.** Mobile-first blijft: onder 900 px blokbreedte is alles ongewijzigd. Daarboven staan dagenbalk en tabs over de volle breedte, met daaronder links de krans of de macroring (blijft staan bij scrollen) en rechts de inhoud. Gemeten op de blokbreedte (`@container` en `useBlokBreedte`), niet op het scherm, zoals de cockpitregel voorschrijft. Een tik op "Logboek van …" of "Rijkste bronnen" opent het detail **rechts** in plaats van op een nieuw scherm; de krans blijft links staan. De ring wordt bewust niet groter: groter is leger, niet leesbaarder.
+- **C · Bijdrage per maaltijd** in het stof-detail: per eetmoment welk deel van wat je vandaag van die stof binnenkreeg. Geen % van de norm per maaltijd: dat leest als een oordeel over je ontbijt (`BESLUIT_PATROON_PER_MAALTIJD_2026-10.md`, dichtheidsscore afgewezen). Bij één eetmoment geen verdeling.
+- **Transvet:** zit in de NEVO-bron ("Vetzuren trans totaal"), maar niet in `nevo_foods`. Wordt een aparte PR: extractor, migratie en nieuwe laadronde door Dennis. Weergave zonder norm (GR 2026: "zo weinig mogelijk"), als "waarvan trans" in de voedingswaardetabel.
+
+### Afgewezen (6 okt)
+
+- **Ingrediënten per merk (product en supplement) nu tonen.** Er is geen bron die het mag leveren. NEVO heeft geen ingrediënten. De supermarktdata heeft een ongetoetste licentie (die blokkeert al livegang). Open Food Facts heeft wel ingrediënten, maar wisselende kwaliteit en een licentie met naamsvermelding en share-alike. Eerst een bronbesluit.
+- **"Slechte E-nummers" markeren.** Alle E-nummers zijn door EFSA beoordeeld en in de EU toegelaten. "Slecht" is een oordeel dat we niet onderbouwen, en het past niet bij een platform waarvan de waarde in onderbouwing zit.
+- **Koppeling aan laaggradige ontsteking.** Dat is een medische claim (CLAUDE.md: geen medische claims). Het onderzoek naar emulgatoren en ontsteking is vooral dierstudies en kleine proeven bij mensen, dus het haalt de poort niet (alleen sterk bewijs bij gezonde mensen, zie `BESLUIT_KERNSTOF_NORMEN_2026-10.md`).
+- **Palmolie als waarschuwing.** Het gezondheidsdeel zit al in verzadigd vet. "Bevat palmolie" kan later als neutrale ingrediëntinformatie, maar pas na het bronbesluit en zonder gezondheidsframing.
