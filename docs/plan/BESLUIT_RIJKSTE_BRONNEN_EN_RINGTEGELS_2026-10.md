@@ -1,7 +1,7 @@
 # Besluit: rijkste bronnen per stof, en "Ook gevolgd" als ringtegels naast de krans
 
 **Datum:** 4 oktober 2026
-**Status:** besloten (Dennis, 4 okt: "akkoord, ga door")
+**Status:** besloten (Dennis, 4 okt: "akkoord, ga door") — §4 en twee afgewezen opties herzien op 5 okt, zie `BESLUIT_DAGBOEK_RINGEN_IN_LAGEN_2026-10.md`
 **Raakt:** dagboek (stofdetail, tabel Voedingsstoffen, krans), `scripts/nevo-gehaltes.mjs`, `src/lib/nutrition-rijkste-bronnen.ts`
 **Bouwt voort op:** `BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` (§0.1), `BESLUIT_NEVO_GEHALTES_DAGBOEK_2026-10.md`, `BESLUIT_DOELEN_VERBONDEN_2026-10.md`
 

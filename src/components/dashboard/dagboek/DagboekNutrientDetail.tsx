@@ -70,6 +70,14 @@ export default function DagboekNutrientDetail({
     moment,
     rijen: bijdragend.filter((rij) => rij.item.moment === moment.id),
   })).filter((groep) => groep.rijen.length > 0);
+  const totaalBijdrage = bijdragend.reduce((som, rij) => som + rij.bedrag.value, 0);
+  // Bijdrage per eetmoment: welk deel van wat je vandaag binnenkreeg uit welke
+  // maaltijd kwam. Geen % van een norm per maaltijd: dat leest als een oordeel
+  // over je ontbijt (BESLUIT_PATROON_PER_MAALTIJD_2026-10.md).
+  const aandeelPerMoment = perMoment.map(({ moment, rijen }) => ({
+    moment,
+    aandeel: totaalBijdrage > 0 ? rijen.reduce((som, rij) => som + rij.bedrag.value, 0) / totaalBijdrage : 0,
+  }));
   const stofKleur = `var(--vd-stof-${nutrient})`;
 
   const label = nutrientReferences[nutrient].label;
@@ -137,6 +145,26 @@ export default function DagboekNutrientDetail({
               product of supplement toe.
             </p>
           )}
+          {stof && aandeelPerMoment.length > 1 ? (
+            <div className="mt-3" aria-label="Bijdrage per eetmoment">
+              <div aria-hidden className="flex h-2 overflow-hidden rounded-full bg-white/[0.06]">
+                {aandeelPerMoment.map(({ moment, aandeel }, index) => (
+                  <span
+                    key={moment.id}
+                    className="block h-full"
+                    style={{ width: `${aandeel * 100}%`, background: stofKleur, opacity: 1 - index * 0.22 }}
+                  />
+                ))}
+              </div>
+              <ul className="m-0 mt-1.5 flex list-none flex-wrap gap-x-3 gap-y-0.5 p-0 text-[11.5px] text-[var(--vd-ink-3)]">
+                {aandeelPerMoment.map(({ moment, aandeel }) => (
+                  <li key={moment.id}>
+                    {moment.label} <span className="tabular-nums text-[var(--vd-ink-2)]">{Math.round(aandeel * 100)}%</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
       </section>
 

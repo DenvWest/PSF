@@ -251,6 +251,7 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
 
     expect(
       await screen.findByRole("heading", { name: "Magnesium" }),
@@ -265,6 +266,7 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
 
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
@@ -313,6 +315,7 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
 
@@ -358,6 +361,7 @@ describe("DagboekScherm — favorieten", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
 
@@ -398,6 +402,7 @@ describe("DagboekScherm — favorieten", () => {
     render(<DagboekScherm />);
 
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
 
@@ -538,15 +543,16 @@ describe("DagboekScherm — tabbladen (Laag B)", () => {
 
     fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
 
-    // De ring toont "Cal." in het midden; de drie macro's staan zowel in de
-    // ring-legenda als in de weektabel eronder.
-    expect(screen.getByText("Cal.")).toBeTruthy();
+    // Zonder registratie vraagt de ring wat je at; de drie macro's staan in
+    // de legenda en de tabel per maaltijd eronder.
+    expect(screen.getByRole("region", { name: "Calorieën en macro's vandaag" })).toBeTruthy();
+    expect(screen.getByRole("table")).toBeTruthy();
     expect(screen.getAllByText(/Koolhydraten/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Vet/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Eiwit/).length).toBeGreaterThan(0);
   });
 
-  it("schakelt naar Voedingsstoffen en toont het weekoverzicht met het ingestelde doel", async () => {
+  it("toont op Macro's het weekoverzicht met het ingestelde doel", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn((input: RequestInfo | URL) => {
@@ -570,7 +576,7 @@ describe("DagboekScherm — tabbladen (Laag B)", () => {
 
     render(<DagboekScherm />);
 
-    fireEvent.click(screen.getByRole("tab", { name: "Voedingsstoffen" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
 
     // Het doel komt uit de macro-doelen-fetch, niet uit een berekening.
     expect(await screen.findByText(/2200 kcal/)).toBeTruthy();
@@ -581,10 +587,11 @@ describe("DagboekScherm — tabbladen (Laag B)", () => {
 
     fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
 
-    // Zonder ingesteld doel toont de Doel-kolom "—", nooit een berekend
-    // getal (zeker geen NaN, en geen vuistregel als 50/30/20).
-    const cellen = await screen.findAllByText("—");
-    expect(cellen.length).toBeGreaterThanOrEqual(3);
+    // Zonder ingesteld doel geen weektabel vol streepjes en nooit een
+    // berekend getal (geen NaN, geen vuistregel als 50/30/20), wel de weg
+    // naar Je doelen.
+    expect(await screen.findByText(/verschijnt zodra je zelf een doel instelt/)).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Stel een doel in/ })).toBeTruthy();
     expect(screen.queryByText(/NaN/)).toBeNull();
   });
 });
@@ -671,6 +678,7 @@ describe("DagboekScherm — portiescherm voor voeding", () => {
   async function openPortiescherm() {
     render(<DagboekScherm />);
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
     const zoekveld = await screen.findByLabelText(
@@ -726,3 +734,14 @@ describe("DagboekScherm — portiescherm voor voeding", () => {
     expect(posts).toHaveLength(0);
   });
 });
+
+describe("DagboekScherm — dag wisselen", () => {
+  it("toont een andere dag zodra je die in de balk aantikt", async () => {
+    render(<DagboekScherm />);
+    const knoppen = await screen.findAllByRole("button", { name: /^(ma|di|wo|do|vr|za|zo) \d+/ });
+    const nietGekozen = knoppen.find((knop) => knop.getAttribute("aria-pressed") === "false")!;
+    fireEvent.click(nietGekozen);
+    expect(nietGekozen.getAttribute("aria-pressed")).toBe("true");
+  });
+});
+

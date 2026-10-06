@@ -3363,11 +3363,6 @@ function DashboardContent({
     onContextRailApi: setContextRailApi,
   };
 
-  const surfaceClass =
-    tab === "vandaag" || tab === "agenda" || tab === "voortgang"
-      ? "ps-dash-surface-kompas"
-      : "";
-
   const sectionsNode = (
     <div
       style={{
@@ -3579,7 +3574,7 @@ function DashboardContent({
   const collapsibleTopNav = voortgangTopNav;
 
   return (
-    <div className={`min-h-dvh ${surfaceClass}`}>
+    <div className="ps-dash-surface-kompas min-h-dvh">
       <CockpitFrame
         activeTab={tab}
         onSelectTab={selectTab}
