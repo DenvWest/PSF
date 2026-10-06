@@ -6,19 +6,13 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Status
 
-- **Baseline toegepast t/m:** `20261006120000_kernstof_profiel_menstruatie.sql`
-- **Openstaand:** 1
+- **Baseline toegepast t/m:** `20261006150000_kernstof_profiel_leeftijd_activiteit.sql`
+- **Openstaand:** 0
 - **Laatst bijgewerkt:** 6 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
-
-### [ ] 20261006150000_kernstof_profiel_leeftijd_activiteit.sql
-- **Wat:** kolommen `leeftijd` (jaren) en `activiteit` (1–4) op `account_kernstof_profiel`, voor calcium, vitamine D 70+, eiwit 65+ en de vezelnorm per MJ.
-- **Blokkeert deploy:** nee (code vangt het af — zonder kolommen gelden de leeftijdsband uit de check en activiteit 1,6; alleen het opslaan van leeftijd of activiteit meldt "kan nog niet" met 503)
-- **Hoort bij:** branch `feat/normen-een-bron`, herziening 6 okt in `BESLUIT_KERNSTOF_NORMEN_2026-10.md`
-- **Terugdraaien:** `alter table public.account_kernstof_profiel drop column leeftijd, drop column activiteit;`
 
 **Nog te doen (geen migratie, geen blocker):** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan al klaar.
 
@@ -53,6 +47,7 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 6 oktober 2026 | `20261006150000_kernstof_profiel_leeftijd_activiteit.sql` | Door Dennis gedraaid in de SQL Editor. |
 | 6 oktober 2026 | `20261006120000_kernstof_profiel_menstruatie.sql` | Door Dennis gedraaid in de SQL Editor (na de tabel hieronder). |
 | 6 oktober 2026 | `20261005120000_account_kernstof_profiel.sql` | Door Dennis gedraaid in de SQL Editor. |
 | 5 oktober 2026 | `20261004150000_account_gevolgde_stoffen.sql` | Door Dennis gedraaid in de SQL Editor en opgeslagen. |
