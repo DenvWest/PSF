@@ -5,9 +5,11 @@ import * as Icons from "@/components/app/icons";
 import DoelInvoerSheet, { type DoelInvoerInhoud } from "@/components/dashboard/doelen/DoelInvoerSheet";
 import GevolgdeStoffenKiezer from "@/components/dashboard/doelen/GevolgdeStoffenKiezer";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
-import type { KernstofMetNorm } from "@/data/nutrition/voedingsnormen";
+import { onderzoekKort, onderzoekLang } from "@/data/nutrition/onderzoek-per-stof";
+import type { Activiteit, KernstofMetNorm } from "@/data/nutrition/voedingsnormen";
 import { trackEvent } from "@/lib/ga4";
 import {
+  isGeldigeLeeftijd,
   isGeldigeStreefwaarde,
   LEEG_KERNSTOF_PROFIEL,
   STREEFWAARDE_GRENS,
@@ -25,7 +27,9 @@ import {
   type VoedingsdoelenWeergave,
 } from "@/lib/account-voedingsdoelen";
 import { fetchMacroDoelen, postMacroDoelen } from "@/lib/macro-doelen-client";
-import { normLabel, STANDAARD_NORMEN } from "@/lib/nutrition-normen";
+import { normLabel, normVoorVeld, STANDAARD_GEVOLGDE_NORMEN, STANDAARD_NORMEN } from "@/lib/nutrition-normen";
+import { VOEDINGSWAARDE_VELDEN } from "@/lib/nutrition-voedingswaarde";
+import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
 import { zetKernstofWeergave } from "@/lib/use-kernstof-normen";
 import {
   fetchVoedingsdoelen,
@@ -55,17 +59,26 @@ const BELASTING_OPTIES: ReadonlyArray<{ waarde: number; label: string; uitleg: s
 ];
 
 const GESLACHT_OPTIES = [
-  { waarde: 1, label: "Man", uitleg: "Magnesium 350 mg, zink 9 mg per dag" },
-  { waarde: 2, label: "Vrouw", uitleg: "Magnesium 300 mg, zink 7 mg per dag" },
+  { waarde: 1, label: "Man", uitleg: "Magnesium 350 mg, zink 13 mg, ijzer 11 mg per dag" },
+  { waarde: 2, label: "Vrouw", uitleg: "Magnesium 300 mg, zink 10 mg, ijzer 16 mg per dag" },
 ] as const;
 
-const LEEFTIJD_OPTIES = [
-  { waarde: 1, label: "70 jaar of ouder", uitleg: "Vitamine D 20 µg per dag in plaats van 10 µg" },
+const ACTIVITEIT_OPTIES = [
+  { waarde: 1, label: "Zittend", uitleg: "Het grootste deel van de dag zittend, bijvoorbeeld kantoorwerk" },
+  { waarde: 2, label: "Licht actief", uitleg: "Een groot deel van de dag staand, bijvoorbeeld leerkracht of winkel" },
+  { waarde: 3, label: "Actief", uitleg: "Een groot deel van de dag licht fysiek bezig, bijvoorbeeld horeca of postbode" },
+  { waarde: 4, label: "Zeer actief", uitleg: "Een groot deel van de dag zwaar fysiek werk, bijvoorbeeld bouw of fietskoerier" },
 ] as const;
 
 const VOEDINGSWIJZE_OPTIES = [
-  { waarde: 1, label: "Vegetarisch", uitleg: "Geen vlees of vis bij de voedingsbronnen" },
-  { waarde: 2, label: "Veganistisch", uitleg: "Ook geen zuivel, kaas of eieren" },
+  { waarde: 1, label: "Vegetarisch", uitleg: "Zink 14 / 11 mg (meer fytaat); geen vlees of vis bij de bronnen" },
+  { waarde: 2, label: "Veganistisch", uitleg: "Zink 16,3 / 12,7 mg (veel fytaat); ook geen zuivel of eieren" },
+] as const;
+
+const MENSTRUATIE_OPTIES = [
+  { waarde: 1, label: "Ja", uitleg: "IJzer 16 mg per dag" },
+  { waarde: 2, label: "Onregelmatig", uitleg: "IJzer 16 mg per dag: zolang er menstruaties zijn, geldt de hogere norm" },
+  { waarde: 3, label: "Nee, niet meer", uitleg: "IJzer 11 mg per dag" },
 ] as const;
 
 const KERNSTOFFEN_MET_NORM: ReadonlyArray<{ stof: KernstofMetNorm; stap: number }> = [
@@ -101,17 +114,23 @@ function Sectie({ titel, uitleg, children }: { titel: string; uitleg?: string; c
 function Regel({
   label,
   waarde,
+  onder,
   gedempt = false,
   onKies,
 }: {
   label: string;
   waarde: string;
+  /** Tweede regel onder het label: onderzochte zone en bovengrens. */
+  onder?: string | null;
   gedempt?: boolean;
   onKies?: () => void;
 }) {
   const inhoud = (
     <>
-      <span className="text-[15px] text-[var(--text)]">{label}</span>
+      <span className="grid gap-0.5">
+        <span className="text-[15px] text-[var(--text)]">{label}</span>
+        {onder ? <span className="text-[12px] leading-snug text-[var(--text-subtle)]">{onder}</span> : null}
+      </span>
       <span className="flex items-center gap-1.5">
         <span
           className={`text-right text-[15px] ${
@@ -142,6 +161,7 @@ function Regel({
 export default function DoelenLijst() {
   const [status, setStatus] = useState<Status>({ fase: "laden" });
   const [sheet, setSheet] = useState<OpenSheet>(null);
+  const { stoffen: gevolgdeVelden } = useGevolgdeStoffen();
 
   useEffect(() => {
     let actief = true;
@@ -171,10 +191,13 @@ export default function DoelenLijst() {
   const { voeding, macro } = status;
   const { doelen, richtlijn, gewichtBron } = voeding;
   const kernstofNormen = voeding.kernstofNormen ?? STANDAARD_NORMEN;
+  const gevolgdeNormen = voeding.gevolgdeNormen ?? STANDAARD_GEVOLGDE_NORMEN;
   const profiel: KernstofProfiel = voeding.kernstofProfiel ?? LEEG_KERNSTOF_PROFIEL;
   const geslachtCode = profiel.geslacht === "man" ? 1 : profiel.geslacht === "vrouw" ? 2 : null;
   const voedingswijzeCode =
     profiel.voedingswijze === "vegetarisch" ? 1 : profiel.voedingswijze === "veganistisch" ? 2 : null;
+  const menstruatieCode =
+    profiel.menstruatie === "ja" ? 1 : profiel.menstruatie === "onregelmatig" ? 2 : profiel.menstruatie === "nee" ? 3 : null;
 
   async function bewaarVoeding(patch: Partial<Voedingsdoelen>, setting: string) {
     const bijgewerkt = await postVoedingsdoelen(patch);
@@ -265,6 +288,54 @@ export default function DoelenLijst() {
             })
           }
         />
+        <Regel
+          label="Leeftijd"
+          waarde={
+            profiel.leeftijd !== null
+              ? `${profiel.leeftijd} jaar`
+              : profiel.zeventigPlus
+                ? "70 of ouder"
+                : voeding.checkLeeftijdsband
+                  ? `Uit je check: ${voeding.checkLeeftijdsband}`
+                  : "Niet ingevuld"
+          }
+          gedempt={profiel.leeftijd === null}
+          onKies={() =>
+            open("leeftijd", {
+              soort: "getal",
+              titel: "Leeftijd",
+              eenheid: "jaar",
+              waarde: profiel.leeftijd,
+              stap: 1,
+              decimalen: 0,
+              start: 40,
+              isGeldig: (waarde) => waarde === null || isGeldigeLeeftijd(waarde),
+              foutTekst: "Vul een leeftijd tussen 18 en 110 jaar in.",
+              uitleg:
+                "Leeftijd verandert calcium (1000 mg tot 25, 1100 mg voor vrouwen vanaf 51, 1200 mg vanaf 70), vitamine D (20 µg vanaf 70), de eiwitondergrens (1,2 g/kg vanaf 65) en je vezelnorm.",
+              leegUitleg: voeding.checkLeeftijdsband
+                ? `Leeg betekent: je leeftijdsband uit de check (${voeding.checkLeeftijdsband}).`
+                : "Leeg betekent: zonder leeftijd rekenen we met de hogere waarden.",
+              onBewaar: (waarde) => bewaarKernstof({ leeftijd: waarde }, "leeftijd"),
+            })
+          }
+        />
+        <Regel
+          label="Hoe actief je dag is"
+          waarde={ACTIVITEIT_OPTIES.find((optie) => optie.waarde === profiel.activiteit)?.label ?? "Niet ingevuld"}
+          gedempt={profiel.activiteit === null}
+          onKies={() =>
+            open("activiteit", {
+              soort: "keuze",
+              titel: "Hoe actief is je dag?",
+              waarde: profiel.activiteit,
+              opties: ACTIVITEIT_OPTIES,
+              leegLabel: "Niet ingevuld",
+              leegUitleg: "We rekenen met licht actief. Dit bepaalt je vezelnorm (per MJ energie); sport zelf staat hierboven.",
+              onBewaar: (waarde) => bewaarKernstof({ activiteit: (waarde ?? null) as Activiteit | null }, "activiteit"),
+            })
+          }
+        />
       </Sectie>
 
       <Sectie
@@ -273,6 +344,7 @@ export default function DoelenLijst() {
       >
         <Regel
           label="Richtlijn voor jou"
+          onder={onderzoekKort("protein")}
           waarde={richtlijn ? `${richtlijn.gramsLow}–${richtlijn.gramsHigh} g` : "Nog geen richtlijn"}
           gedempt={!richtlijn}
         />
@@ -302,7 +374,7 @@ export default function DoelenLijst() {
 
       <Sectie
         titel="Kernstoffen"
-        uitleg="De norm komt van de Gezondheidsraad en hangt af van wie je bent. Een eigen streefwaarde staat er in Je patroon naast; 'gehaald' blijft tegen de norm rekenen."
+        uitleg="De norm komt van de Gezondheidsraad, EFSA of de Noordse aanbevelingen (bij verschil de hoogste) en hangt af van wie je bent. Een eigen streefwaarde staat er in Je patroon naast; 'gehaald' blijft tegen de norm rekenen."
       >
         <Regel
           label="Norm voor"
@@ -322,22 +394,6 @@ export default function DoelenLijst() {
           }
         />
         <Regel
-          label="Leeftijd"
-          waarde={profiel.zeventigPlus ? "70 of ouder" : "Jonger dan 70"}
-          gedempt={!profiel.zeventigPlus}
-          onKies={() =>
-            open("norm_zeventig_plus", {
-              soort: "keuze",
-              titel: "Ben je 70 jaar of ouder?",
-              waarde: profiel.zeventigPlus ? 1 : null,
-              opties: LEEFTIJD_OPTIES,
-              leegLabel: "Jonger dan 70",
-              leegUitleg: "Vitamine D 10 µg per dag (Gezondheidsraad 2012).",
-              onBewaar: (waarde) => bewaarKernstof({ zeventigPlus: waarde === 1 }, "norm_zeventig_plus"),
-            })
-          }
-        />
-        <Regel
           label="Voedingswijze"
           waarde={voedingswijzeCode === 1 ? "Vegetarisch" : voedingswijzeCode === 2 ? "Veganistisch" : "Alles"}
           gedempt={voedingswijzeCode === null}
@@ -348,7 +404,7 @@ export default function DoelenLijst() {
               waarde: voedingswijzeCode,
               opties: VOEDINGSWIJZE_OPTIES,
               leegLabel: "Alles",
-              leegUitleg: "De norm verandert niet; wel welke voedingsbronnen we je laten zien.",
+              leegUitleg: "Zink 13 / 10 mg (NNR 2023). Plantaardig eten bevat meer fytaat, dat zink minder opneembaar maakt.",
               onBewaar: (waarde) =>
                 bewaarKernstof(
                   { voedingswijze: waarde === 1 ? "vegetarisch" : waarde === 2 ? "veganistisch" : null },
@@ -357,6 +413,29 @@ export default function DoelenLijst() {
             })
           }
         />
+        {voeding.vraagtMenstruatie ? (
+          <Regel
+            label="Menstruatie"
+            waarde={menstruatieCode === 1 ? "Ja" : menstruatieCode === 2 ? "Onregelmatig" : menstruatieCode === 3 ? "Nee" : "Niet ingevuld"}
+            gedempt={menstruatieCode === null}
+            onKies={() =>
+              open("menstruatie", {
+                soort: "keuze",
+                titel: "Menstrueer je?",
+                waarde: menstruatieCode,
+                opties: MENSTRUATIE_OPTIES,
+                leegLabel: "Liever niet zeggen",
+                leegUitleg:
+                  "Alleen voor je ijzernorm (Gezondheidsraad 2018). We bewaren het bij je account, niet in de check, en delen het met niemand. Zonder antwoord: 16 mg.",
+                onBewaar: (waarde) =>
+                  bewaarKernstof(
+                    { menstruatie: waarde === 1 ? "ja" : waarde === 2 ? "onregelmatig" : waarde === 3 ? "nee" : null },
+                    "menstruatie",
+                  ),
+              })
+            }
+          />
+        ) : null}
         {KERNSTOFFEN_MET_NORM.map(({ stof, stap }) => {
           const norm = kernstofNormen[stof];
           const eigen = profiel.streefwaarden[stof] ?? null;
@@ -365,6 +444,7 @@ export default function DoelenLijst() {
             <Regel
               key={stof}
               label={label}
+              onder={onderzoekKort(stof)}
               waarde={eigen !== null ? `${String(eigen).replace(".", ",")} ${norm.unit} eigen` : `norm ${normLabel(norm)}`}
               gedempt={eigen === null}
               onKies={() =>
@@ -378,7 +458,7 @@ export default function DoelenLijst() {
                   start: norm.waarde,
                   isGeldig: (waarde) => waarde === null || isGeldigeStreefwaarde(stof, waarde),
                   foutTekst: `Vul een waarde tussen 0 en ${STREEFWAARDE_GRENS[stof].max} ${norm.unit} in. ${STREEFWAARDE_GRENS[stof].uitleg}`,
-                  uitleg: `Norm: ${normLabel(norm)} per dag voor ${norm.geldtVoor} (${norm.bron}). Je streefwaarde staat ernaast; 'gehaald' blijft tegen de norm.`,
+                  uitleg: `Norm: ${normLabel(norm)} per dag voor ${norm.geldtVoor} (${norm.bron}). ${onderzoekLang(stof) ?? ""} Je streefwaarde staat ernaast; 'gehaald' blijft tegen de norm.`,
                   leegUitleg: "Leeg betekent: alleen de norm.",
                   onBewaar: (waarde) => bewaarKernstof({ streefwaarden: { [stof]: waarde } }, `streefwaarde_${stof}`),
                 })
@@ -437,12 +517,37 @@ export default function DoelenLijst() {
           </h2>
           <p className="m-0 text-[12.5px] leading-relaxed text-[var(--text-subtle)]">
             Naast magnesium, eiwit, omega-3, zink en vitamine D. Gekozen stoffen staan in Je patroon
-            met hun gemiddelde en het deel van de referentie-inname, zonder oordeel.
+            met hun gemiddelde en het deel van je norm, zonder oordeel.
           </p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
           <GevolgdeStoffenKiezer surface="doelen" />
         </div>
+        {gevolgdeVelden.length > 0 ? (
+          <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+            {gevolgdeVelden.map((veld) => {
+              const definitie = VOEDINGSWAARDE_VELDEN.find((v) => v.veld === veld);
+              if (!definitie) return null;
+              const norm = normVoorVeld(gevolgdeNormen, veld);
+              const naam = definitie.label.charAt(0).toUpperCase() + definitie.label.slice(1);
+              return (
+                <Regel
+                  key={veld}
+                  label={naam}
+                  onder={onderzoekKort(veld)}
+                  waarde={
+                    norm
+                      ? `norm ${normLabel(norm)}`
+                      : veld === "fiberG"
+                        ? "vul je gewicht in"
+                        : "geen norm"
+                  }
+                  gedempt={!norm}
+                />
+              );
+            })}
+          </div>
+        ) : null}
       </section>
 
       {sheet ? <DoelInvoerSheet {...sheet} onSluit={() => setSheet(null)} /> : null}

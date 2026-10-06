@@ -47,7 +47,7 @@ export default function VoedingswaardeTabel({
         </thead>
         <tbody>
           {rijen.map((rij) => {
-            const vulling = rij.aandeel === null ? 0 : Math.min(rij.aandeel, 1) * 100;
+            const vulling = rij.aandeelRi === null ? 0 : Math.min(rij.aandeelRi, 1) * 100;
             return (
               <tr key={rij.veld} className="border-b border-white/[0.06] last:border-b-0">
                 <th
@@ -78,7 +78,7 @@ export default function VoedingswaardeTabel({
                   )}
                 </td>
                 <td className="w-[38%] py-2 pr-4">
-                  {rij.aandeel !== null ? (
+                  {rij.aandeelRi !== null ? (
                     <span className="flex items-center gap-2">
                       <span className="relative h-[6px] flex-1 overflow-hidden rounded-full bg-[var(--vd-track)]">
                         <span
@@ -88,7 +88,7 @@ export default function VoedingswaardeTabel({
                         />
                       </span>
                       <span className="w-[52px] text-right font-mono text-[10.5px] tabular-nums text-[var(--vd-ink-3)]">
-                        {Math.round(rij.aandeel * 100)}% RI
+                        {Math.round(rij.aandeelRi * 100)}% RI
                       </span>
                     </span>
                   ) : null}

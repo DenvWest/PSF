@@ -6,7 +6,7 @@ import { rondVoedingswaarde } from "@/lib/nutrition-voedingswaarde";
 
 /**
  * De gevolgde stoffen over de gekozen periode, onder de kernstoffentabel in
- * Per stof: stof, gemiddelde, % RI, zonder link naar `/beste/*`. Informatief,
+ * Per stof: stof, gemiddelde, % van je norm, zonder link naar `/beste/*`. Informatief,
  * zoals "Ook gevolgd" in het dagboek.
  */
 
@@ -26,7 +26,7 @@ export default function PatroonGevolgdWeek({
       <div className="vd-tabel-kop vd-week-kop">
         <span>Ook gevolgd</span>
         <span>Gem.</span>
-        <span>RI</span>
+        <span>norm</span>
       </div>
       {reeksen.map((reeks) => {
         const punt = reeks.punten[0];
@@ -38,8 +38,8 @@ export default function PatroonGevolgdWeek({
               <i>
                 {punt === undefined || punt.dagen === 0
                   ? "nog niets geregistreerd"
-                  : reeks.ri !== null
-                    ? `RI ${rondVoedingswaarde(reeks.ri)} ${reeks.unit} — zonder oordeel`
+                  : reeks.norm !== null
+                    ? `norm ${rondVoedingswaarde(reeks.norm)} ${reeks.unit} — zonder oordeel`
                     : "gem. per geregistreerde dag"}
               </i>
             </span>

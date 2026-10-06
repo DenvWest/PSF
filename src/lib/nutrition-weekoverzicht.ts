@@ -122,7 +122,7 @@ export function bouwWeekoverzicht(
  *
  * ## Omega-3 als periodetotaal
  *
- * De omega-3-norm (200 mg EPA+DHA per dag) is in de praktijk een weeknorm:
+ * De omega-3-norm (250 mg EPA+DHA per dag) is in de praktijk een weeknorm:
  * de Gezondheidsraad vertaalt hem naar één keer per week vette vis. Een
  * gemiddelde per geregistreerde dag blaast één visdag op tot honderden
  * procenten. Met `omega3AlsPeriodetotaal` telt omega-3 als som over de

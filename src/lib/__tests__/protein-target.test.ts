@@ -79,4 +79,10 @@ describe("leeftijdsvloer (55+)", () => {
     const result = computeProteinTarget({ weightKg: 80, ageRange: "onzin" });
     expect(result?.perKgLow).toBe(1.0);
   });
+
+  it("laat een leeftijd in jaren winnen van de band: de ondergrens 1,2 pas vanaf 65", () => {
+    expect(computeProteinTarget({ weightKg: 80, ageRange: "55+", leeftijd: 58 })?.perKgLow).toBe(1.0);
+    expect(computeProteinTarget({ weightKg: 80, ageRange: "55+", leeftijd: 66 })?.perKgLow).toBe(1.2);
+    expect(computeProteinTarget({ weightKg: 80, leeftijd: 70, trainingLoad: 4 })?.perKgLow).toBe(1.6);
+  });
 });

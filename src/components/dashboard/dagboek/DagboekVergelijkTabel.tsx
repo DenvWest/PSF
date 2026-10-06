@@ -7,9 +7,14 @@ import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-ref
 import { REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
-import { gehaltePer100g } from "@/lib/nutrition-catalog-gehalte";
-import { bedragVoorStandaardPortie } from "@/lib/nutrition-dagboek-items";
+import { gehalteWeergavePer100g, type GehalteWeergave } from "@/lib/nutrition-catalog-gehalte";
+import { weergaveVoorStandaardPortie } from "@/lib/nutrition-dagboek-items";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
+import { etiketBronVoor, type EtiketBron } from "@/lib/nutrition-etiket";
+import { bedragVanSupermarktveld } from "@/lib/nutrition-supermarkt-items";
+import { VOEDINGSWAARDE_VELDEN } from "@/lib/nutrition-voedingswaarde";
+import { useNevoProducten } from "@/lib/use-nevo-producten";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
 import { trackEvent } from "@/lib/ga4";
 import type { VergelijkResultaat } from "@/components/dashboard/dagboek/DagboekVergelijkZoek";
 
@@ -25,29 +30,58 @@ import type { VergelijkResultaat } from "@/components/dashboard/dagboek/DagboekV
  *
  * Een product zonder gemeten gehalte valt niet weg maar krijgt een streepje:
  * vroeger verdween het uit elke rij en leek de vergelijking één product te
- * tonen. Een streepje is "niet gemeten", nooit 0.
+ * tonen. Een streepje is "niet gemeten"; meldt NEVO een 0 of spoor, dan staat
+ * er "0" of "spoor". Een rij waarin geen enkel product een getal heeft,
+ * verdwijnt. Een benadering (vergelijkbaar NEVO-record) staat er met "≈" en de
+ * NEVO-naam bij — vergelijken mag, optellen in je dag niet
+ * (`docs/plan/BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`).
  *
- * Bewust beperkt tot de 5 stoffen die dit systeem trackt — zie het docblok
- * bij `DagboekProductDetail.tsx`.
+ * Bovenaan de 5 stoffen die dit systeem trackt, met winnaar en verhouding.
+ * Daaronder het etiket uit NEVO (energie, macro's, brede micronutriënten),
+ * zoals in het productdetail: alleen getallen, geen winnaar, geen balk —
+ * informatief, zonder oordeel (`BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md`
+ * §0.1). Eiwit staat al bovenaan en komt daar niet nog eens.
  */
 
 type Stand = "portie" | "100g";
 
-type Cel =
-  | { soort: "waarde"; value: number; unit: string }
-  | { soort: "onbekend" }
-  | { soort: "nvt" };
+type Cel = GehalteWeergave | { soort: "nvt" };
 
 const RI_TONEN: ReadonlySet<NutrientId> = new Set(["magnesium", "zinc", "vitamin_d"]);
 
 function celVoor(resultaat: VergelijkResultaat, nutrient: NutrientId, stand: Stand): Cel {
-  if (stand === "portie") {
-    const bedrag = bedragVoorStandaardPortie(resultaat.bron, resultaat.entry.key, nutrient);
-    return bedrag ? { soort: "waarde", value: bedrag.value, unit: bedrag.unit } : { soort: "onbekend" };
-  }
+  if (stand === "portie") return weergaveVoorStandaardPortie(resultaat.bron, resultaat.entry.key, nutrient);
   if (resultaat.bron === "supplement") return { soort: "nvt" };
-  const gehalte = gehaltePer100g(catalogEntry(resultaat.entry.key), nutrient);
-  return gehalte ? { soort: "waarde", value: gehalte.value, unit: gehalte.unit } : { soort: "onbekend" };
+  return gehalteWeergavePer100g(catalogEntry(resultaat.entry.key), nutrient);
+}
+
+type EtiketCel = { soort: "waarde"; value: number; benadering: boolean } | { soort: "onbekend" } | { soort: "nvt" };
+
+const ETIKET_VELDEN = VOEDINGSWAARDE_VELDEN.filter((veld) => veld.veld !== "proteinG");
+
+function etiketCelVoor(
+  resultaat: VergelijkResultaat,
+  bron: EtiketBron | null,
+  product: SupermarktProduct | null,
+  veld: (typeof ETIKET_VELDEN)[number],
+  stand: Stand,
+): EtiketCel {
+  if (resultaat.bron === "supplement") return { soort: "nvt" };
+  if (!bron || !product || !bron.velden.some((v) => v.veld === veld.veld)) return { soort: "onbekend" };
+  const grams = stand === "portie" ? resultaat.entry.porties[0]?.grams : 100;
+  if (!grams) return { soort: "onbekend" };
+  const value = bedragVanSupermarktveld(product, veld.veld, grams);
+  return value === null ? { soort: "onbekend" } : { soort: "waarde", value, benadering: bron.benadering };
+}
+
+/** De NEVO-naam waarvan dit product zijn waarden leent, of null als het eigen waarden heeft. */
+function benaderingVan(resultaat: VergelijkResultaat): string | null {
+  if (resultaat.bron === "supplement") return null;
+  for (const nutrient of NUTRIENT_ORDER) {
+    const cel = gehalteWeergavePer100g(catalogEntry(resultaat.entry.key), nutrient);
+    if (cel.soort !== "onbekend" && cel.benadering) return cel.benadering;
+  }
+  return null;
 }
 
 function getal(value: number): string {
@@ -86,8 +120,32 @@ export default function DagboekVergelijkTabel({
   }).filter((rij) => rij.aantal > 0);
 
   const zonderGehalte = producten.filter((resultaat) =>
-    NUTRIENT_ORDER.every((nutrient) => celVoor(resultaat, nutrient, "portie").soort !== "waarde"),
+    NUTRIENT_ORDER.every((nutrient) => celVoor(resultaat, nutrient, "portie").soort === "onbekend"),
   );
+  const etiketBronnen = producten.map((resultaat) =>
+    resultaat.bron === "voeding" ? etiketBronVoor(resultaat.entry) : null,
+  );
+  const nevoProducten = useNevoProducten(
+    [...new Set(etiketBronnen.flatMap((bron) => (bron ? [bron.code] : [])))].sort(),
+  );
+  const etiketRijen = ETIKET_VELDEN.map((veld) => ({
+    ...veld,
+    cellen: producten.map((resultaat, index) => {
+      const bron = etiketBronnen[index];
+      const product = bron ? (nevoProducten.get(`nevo:${bron.code}`) ?? null) : null;
+      return etiketCelVoor(resultaat, bron, product, veld, stand);
+    }),
+  })).filter((rij) => rij.cellen.some((cel) => cel.soort === "waarde"));
+
+  const benaderingen = producten.flatMap((resultaat, index): { label: string; naam: string | null }[] => {
+    const naam = benaderingVan(resultaat);
+    if (naam) return [{ label: resultaat.entry.labelNl, naam }];
+    const bron = etiketBronnen[index];
+    const getoond = etiketRijen.some((rij) => rij.cellen[index]?.soort === "waarde");
+    return bron?.benadering && getoond ? [{ label: resultaat.entry.labelNl, naam: null }] : [];
+  });
+  const heeftNul = rijen.some((rij) => rij.cellen.some((cel) => cel.soort === "nul" || cel.soort === "spoor"));
+  const heeftStreepje = rijen.some((rij) => rij.cellen.some((cel) => cel.soort === "onbekend"));
 
   function kiesStand(nieuw: Stand) {
     if (nieuw === stand) return;
@@ -184,6 +242,22 @@ export default function DagboekVergelijkTabel({
                 {rij.cellen.map((cel, index) => {
                   const resultaat = producten[index];
                   const sleutel = `${resultaat.bron}-${resultaat.entry.key}`;
+                  if (cel.soort === "nul" || cel.soort === "spoor") {
+                    return (
+                      <td key={sleutel} className="border-l border-white/10 px-1.5 py-3 text-center align-middle">
+                        <span
+                          aria-label={cel.soort === "nul" ? "gemeten: niets" : "gemeten: een spoor"}
+                          className="font-mono text-[12px] tabular-nums text-[var(--vd-ink-3)]"
+                        >
+                          {cel.benadering ? "≈ " : ""}
+                          {cel.soort === "nul" ? "0" : "spoor"}
+                          {cel.soort === "nul" ? (
+                            <span className="ml-0.5 text-[10px] text-[var(--vd-ink-4)]">{cel.unit}</span>
+                          ) : null}
+                        </span>
+                      </td>
+                    );
+                  }
                   if (cel.soort !== "waarde") {
                     return (
                       <td key={sleutel} className="border-l border-white/10 px-1.5 py-3 text-center align-middle text-[11px] text-[var(--vd-ink-4)]">
@@ -211,6 +285,7 @@ export default function DagboekVergelijkTabel({
                             winnaar ? "font-semibold text-[var(--vd-sage-2)]" : "text-[var(--vd-ink)]"
                           }`}
                         >
+                          {cel.benadering ? <span aria-label="benadering">≈ </span> : null}
                           {getal(cel.value)}
                           <span className="ml-0.5 text-[10px] font-normal text-[var(--vd-ink-3)]">{cel.unit}</span>
                         </span>
@@ -234,6 +309,55 @@ export default function DagboekVergelijkTabel({
               </tr>
             ))}
           </tbody>
+          {etiketRijen.length > 0 ? (
+            <tbody>
+              <tr className="border-y border-white/10 bg-white/[0.03]">
+                <th
+                  scope="colgroup"
+                  colSpan={producten.length + 1}
+                  className="px-2 py-2 text-left text-[10.5px] font-semibold uppercase tracking-wide text-[var(--vd-ink-4)] sm:px-4"
+                >
+                  Etiket · ter informatie
+                </th>
+              </tr>
+              {etiketRijen.map((rij) => (
+                <tr key={rij.veld} className="border-b border-white/[0.06] last:border-b-0">
+                  <th
+                    scope="row"
+                    className={`px-2 py-2 text-left align-middle font-normal sm:px-4 ${
+                      rij.waarvan ? "pl-4 text-[11px] text-[var(--vd-ink-3)] sm:pl-7" : "text-[12px] text-[var(--vd-ink-2)]"
+                    }`}
+                  >
+                    {rij.label}
+                  </th>
+                  {rij.cellen.map((cel, index) => {
+                    const resultaat = producten[index];
+                    const sleutel = `${resultaat.bron}-${resultaat.entry.key}`;
+                    if (cel.soort !== "waarde") {
+                      return (
+                        <td key={sleutel} className="border-l border-white/10 px-1.5 py-2 text-center align-middle text-[11px] text-[var(--vd-ink-4)]">
+                          {cel.soort === "nvt" ? "n.v.t." : <span aria-label="niet gemeten">—</span>}
+                        </td>
+                      );
+                    }
+                    const riAandeel = stand === "portie" && rij.ri !== null ? Math.round((cel.value / rij.ri) * 100) : null;
+                    return (
+                      <td key={sleutel} className="border-l border-white/10 px-1.5 py-2 text-center align-middle">
+                        <span className="font-mono text-[11.5px] tabular-nums text-[var(--vd-ink-2)]">
+                          {cel.benadering ? <span aria-label="benadering">≈ </span> : null}
+                          {getal(cel.value)}
+                          <span className="ml-0.5 text-[10px] text-[var(--vd-ink-4)]">{rij.unit}</span>
+                        </span>
+                        {riAandeel !== null ? (
+                          <span className="block text-[10px] text-[var(--vd-ink-4)]">{riAandeel}% RI</span>
+                        ) : null}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          ) : null}
         </table>
 
         {rijen.length === 0 ? (
@@ -246,7 +370,30 @@ export default function DagboekVergelijkTabel({
       {zonderGehalte.length > 0 && rijen.length > 0 ? (
         <p className="m-0 rounded-xl border-l-2 border-[var(--vd-amber)] bg-[var(--vd-amber-fill)] px-3 py-2.5 text-[11.5px] leading-relaxed text-[var(--vd-ink-2)]">
           Van {zonderGehalte.map((r) => r.entry.labelNl).join(" en ")} zijn nog geen gemeten gehaltes
-          bekend. Een streepje betekent &lsquo;niet gemeten&rsquo;, niet &lsquo;bevat niets&rsquo;.
+          bekend.
+        </p>
+      ) : null}
+
+      {benaderingen.length > 0 && rijen.length > 0 ? (
+        <p className="m-0 rounded-xl border-l-2 border-[var(--vd-amber)] bg-[var(--vd-amber-fill)] px-3 py-2.5 text-[11.5px] leading-relaxed text-[var(--vd-ink-2)]">
+          {benaderingen.map((b, index) => (
+            <span key={b.label}>
+              {index > 0 ? " " : null}≈ {b.label}: NEVO heeft geen eigen record,{" "}
+              {b.naam ? (
+                <>dit zijn de waarden van &lsquo;{b.naam}&rsquo;.</>
+              ) : (
+                "dit zijn calorieën en macro's van een vergelijkbaar product."
+              )}
+            </span>
+          ))}{" "}
+          Een benadering om te vergelijken; in je dagboek telt hij niet mee.
+        </p>
+      ) : null}
+
+      {heeftNul || heeftStreepje ? (
+        <p className="m-0 px-1 text-[11px] leading-relaxed text-[var(--vd-ink-4)]">
+          {heeftNul ? "0 of spoor: gemeten, en er zit (vrijwel) niets in. " : null}
+          {heeftStreepje ? "Een streepje: niet gemeten." : null}
         </p>
       ) : null}
 

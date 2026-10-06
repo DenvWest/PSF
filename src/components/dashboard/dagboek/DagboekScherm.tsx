@@ -57,6 +57,7 @@ import VoedingswaardeTabel from "@/components/dashboard/dagboek/VoedingswaardeTa
 import { stofInfo, type InformatieveStof } from "@/lib/nutrition-rijkste-bronnen";
 import { berekenVoedingswaarde, nevoCodesVoorItems } from "@/lib/nutrition-voedingswaarde";
 import { useNevoProducten } from "@/lib/use-nevo-producten";
+import { useGevolgdeNormen } from "@/lib/use-kernstof-normen";
 
 /**
  * De vier toestanden van het scherm-achter-een-balk: overzicht (het bestaande
@@ -343,9 +344,10 @@ export default function DagboekScherm({
     [nevoCodes, weekItemsPerDag],
   );
   const nevoProducten = useNevoProducten(alleNevoCodes);
+  const gevolgdeNormen = useGevolgdeNormen();
   const dagVoedingswaarde = useMemo(
-    () => berekenVoedingswaarde({ items, supermarktLogs, nevoProducten }),
-    [items, supermarktLogs, nevoProducten],
+    () => berekenVoedingswaarde({ items, supermarktLogs, nevoProducten, normen: gevolgdeNormen }),
+    [items, supermarktLogs, nevoProducten, gevolgdeNormen],
   );
   const weekoverzicht = useMemo(() => {
     const perDag = new Map(
@@ -645,7 +647,6 @@ export default function DagboekScherm({
     return (
       <DagboekVoedingPortie
         itemKey={key}
-        nutrient={nutrient}
         moment={portieMoment}
         favorieten={favorieten}
         busy={busy}

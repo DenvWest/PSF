@@ -66,7 +66,7 @@ describe("bouwMaaltijdPatroon", () => {
     const ontbijt = patroon.find((m) => m.moment === "ontbijt")!;
     expect(ontbijt.keer).toBe(2);
     expect(ontbijt.rijen.find((r) => r.veld === "energyKcal")!.waarde).toBe(300);
-    expect(ontbijt.rijen.find((r) => r.veld === "ironMg")).toMatchObject({ waarde: 3, aandeel: 3 / 14 });
+    expect(ontbijt.rijen.find((r) => r.veld === "ironMg")).toMatchObject({ waarde: 3, aandeel: 3 / 16, aandeelRi: 3 / 14 });
     expect(patroon.find((m) => m.moment === "avondeten")!.keer).toBe(0);
   });
 

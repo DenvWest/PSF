@@ -1,12 +1,17 @@
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import {
+  gevolgdeNormenVoor,
+  isGevolgdeStofMetNorm,
   voedingsnormenVoor,
+  type GevolgdeNormen,
   type KernstofMetNorm,
   type Voedingsnorm,
 } from "@/data/nutrition/voedingsnormen";
+import type { SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
 
 /**
- * De ene bron voor het dekkingsdoel van de kernstoffen. Krans, patroon,
+ * De ene bron voor het dekkingsdoel van de kernstoffen én de gevolgde stoffen
+ * met een norm (binnen- en buitenring). Krans, patroon,
  * weekoverzicht, trend en agenda-voorstellen rekenen allemaal hiertegen, zodat
  * geen scherm een ander percentage toont dan een ander
  * (`BESLUIT_DOELEN_VERBONDEN_2026-10.md` §4).
@@ -23,6 +28,13 @@ import {
 export type KernstofNormen = Record<KernstofMetNorm, Voedingsnorm>;
 
 export const STANDAARD_NORMEN: KernstofNormen = voedingsnormenVoor(null);
+
+export const STANDAARD_GEVOLGDE_NORMEN: GevolgdeNormen = gevolgdeNormenVoor({ gender: null });
+
+/** De norm voor een gevolgde stof, of null voor een stof zonder norm (natrium, vezels, macro's). */
+export function normVoorVeld(normen: GevolgdeNormen, veld: SupermarktVeld): Voedingsnorm | null {
+  return isGevolgdeStofMetNorm(veld) ? normen[veld] : null;
+}
 
 export function normVoor(normen: KernstofNormen, nutrient: NutrientId): Voedingsnorm | null {
   return nutrient === "protein" ? null : normen[nutrient];

@@ -6,9 +6,9 @@ import type { VoedingswaardeRij } from "@/lib/nutrition-voedingswaarde";
 vi.mock("@/lib/ga4", () => ({ trackEvent: vi.fn() }));
 
 const rijen: VoedingswaardeRij[] = [
-  { veld: "calciumMg", label: "Calcium", unit: "mg", ri: 800, waarde: 400, aandeel: 0.5 },
-  { veld: "sodiumMg", label: "Natrium", unit: "mg", ri: null, waarde: 1200, aandeel: null },
-  { veld: "ironMg", label: "IJzer", unit: "mg", ri: 14, waarde: null, aandeel: null },
+  { veld: "calciumMg", label: "Calcium", unit: "mg", ri: 800, norm: null, waarde: 400, aandeel: 0.5, aandeelRi: null },
+  { veld: "sodiumMg", label: "Natrium", unit: "mg", ri: null, norm: null, waarde: 1200, aandeel: null, aandeelRi: null },
+  { veld: "ironMg", label: "IJzer", unit: "mg", ri: 14, norm: null, waarde: null, aandeel: null, aandeelRi: null },
 ];
 
 async function laad(stoffen: string[]) {

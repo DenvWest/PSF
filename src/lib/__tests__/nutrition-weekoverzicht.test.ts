@@ -152,19 +152,19 @@ describe("bouwPeriodeOverzicht", () => {
     const omega = bouwPeriodeOverzicht(dagen, datums, STANDAARD_NORMEN, { omega3AlsPeriodetotaal: true })
       .rijen.find((rij) => rij.nutrient === "omega3")!;
 
-    expect(omega).toMatchObject({ lezing: "periodetotaal", totaal: 600, normPeriode: 1400, gedekt: false });
-    expect(omega.aandeel).toBeCloseTo(600 / 1400);
-    expect(omega.teGaan).toBe(800);
+    expect(omega).toMatchObject({ lezing: "periodetotaal", totaal: 600, normPeriode: 1750, gedekt: false });
+    expect(omega.aandeel).toBeCloseTo(600 / 1750);
+    expect(omega.teGaan).toBe(1150);
   });
 
   it("geeft één visdag op twee geregistreerde dagen geen honderden procenten meer", () => {
-    const dagen = [visolie("2026-09-14", 5), dag("2026-09-15", [{ key: "havermout", grams: 50 }])];
+    const dagen = [visolie("2026-09-14", 6), dag("2026-09-15", [{ key: "havermout", grams: 50 }])];
     const perDag = bouwPeriodeOverzicht(dagen, datums, STANDAARD_NORMEN).rijen.find((r) => r.nutrient === "omega3")!;
     const totaal = bouwPeriodeOverzicht(dagen, datums, STANDAARD_NORMEN, { omega3AlsPeriodetotaal: true })
       .rijen.find((r) => r.nutrient === "omega3")!;
 
-    expect(perDag.aandeel).toBeCloseTo(3.75);
-    expect(totaal.aandeel).toBeCloseTo(1500 / 1400);
+    expect(perDag.aandeel).toBeCloseTo(3.6);
+    expect(totaal.aandeel).toBeCloseTo(1800 / 1750);
     expect(totaal.gedekt).toBe(true);
   });
 
