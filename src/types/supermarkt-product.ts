@@ -49,6 +49,8 @@ export interface SupermarktProduct {
   energyKcal: number | null;
   fatG: number | null;
   saturatedFatG: number | null;
+  /** Transvet; alleen uit NEVO ("Vetzuren trans totaal"), niet verplicht op het EU-etiket. */
+  transFatG: number | null;
   carbohydrateG: number | null;
   sugarsG: number | null;
   fiberG: number | null;

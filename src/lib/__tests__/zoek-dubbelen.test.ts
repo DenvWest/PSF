@@ -6,7 +6,7 @@ import type { SupermarktProduct } from "@/types/supermarkt-product";
 function product(bron: "off" | "nevo", bronId: string): SupermarktProduct {
   return {
     prodId: `${bron}:${bronId}`, bron, bronId, naam: "x", merk: null, categorie: null, snapshotDatum: "2025-01-01",
-    energyKcal: null, fatG: null, saturatedFatG: null, carbohydrateG: null, sugarsG: null, fiberG: null,
+    energyKcal: null, fatG: null, saturatedFatG: null, transFatG: null, carbohydrateG: null, sugarsG: null, fiberG: null,
     proteinG: null, saltG: null, sodiumMg: null, calciumMg: null, ironMg: null, vitaminCMg: null, vitaminDµg: null, potassiumMg: null, magnesiumMg: null, zincMg: null, vitaminB12µg: null,
   };
 }

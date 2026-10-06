@@ -103,3 +103,9 @@ GA4: `nutrition_dagboek_krans_gekozen` (nieuw; params `ring`: `kern` | `gevolgd`
 - **Vandaag en Kies sluiten aan op de datum** (‹ datum › Vandaag Kies) in plaats van rechts in de hoek. Op smalle schermen lopen ze door naar een tweede regel.
 - **Eén bronvermelding** onder "Alles wat je at": de tabel draagt de NEVO-vermelding zelf; de tweede regel eronder vervalt.
 - **Productdetail: verwijderen rechtsboven**, als knop met prullenbak. Een tik vraagt "Verwijderen?" met ✓ (ja) en × (laten staan), zodat niemand per ongeluk een product kwijtraakt. De losse knop onderaan vervalt.
+
+## Aanvulling 6 oktober 2026 (7) — transvet gebouwd
+
+- **Bron:** NEVO "Vetzuren trans totaal" (FATRS, g/100 g), voor 2248 van de 2328 NEVO-producten. Supermarktproducten (`sm_products`) hebben geen transvet: het EU-etiket vraagt er niet om.
+- **Weergave:** "waarvan trans" onder vet in de voedingswaardetabel, zonder norm en zonder vulling. In Je doelen staat de richtlijn: "Zo weinig mogelijk; de WHO houdt minder dan 1% van je energie aan." Ook als gevolgde stof te kiezen, en als kolom per maaltijd.
+- **Migratie** `20261006180000_nevo_foods_transvet.sql` plus een nieuwe NEVO-laadronde. Dit blokkeert de deploy: de code selecteert de kolom expliciet.

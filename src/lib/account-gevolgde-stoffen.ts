@@ -18,6 +18,7 @@ import type { SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
 const VOLGBAAR = new Set<SupermarktVeld>([
   "fiberG",
   "saturatedFatG",
+  "transFatG",
   "sugarsG",
   "sodiumMg",
   "potassiumMg",

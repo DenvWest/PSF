@@ -26,6 +26,7 @@ const PRODUCT: SupermarktProduct = {
   energyKcal: 292,
   fatG: 30,
   saturatedFatG: 20,
+  transFatG: null,
   carbohydrateG: 3,
   sugarsG: 3,
   fiberG: null,

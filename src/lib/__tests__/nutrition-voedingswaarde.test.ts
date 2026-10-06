@@ -21,6 +21,7 @@ function product(prodId: string, waarden: Partial<SupermarktProduct>): Supermark
     energyKcal: null,
     fatG: null,
     saturatedFatG: null,
+    transFatG: null,
     carbohydrateG: null,
     sugarsG: null,
     fiberG: null,

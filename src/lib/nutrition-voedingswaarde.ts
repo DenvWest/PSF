@@ -48,6 +48,7 @@ export const VOEDINGSWAARDE_VELDEN: readonly VoedingswaardeVeld[] = [
   { veld: "energyKcal", label: "Energie", unit: "kcal", ri: null },
   { veld: "fatG", label: "Vet", unit: "g", ri: null },
   { veld: "saturatedFatG", label: "waarvan verzadigd", unit: "g", ri: null, waarvan: true },
+  { veld: "transFatG", label: "waarvan trans", unit: "g", ri: null, waarvan: true },
   { veld: "carbohydrateG", label: "Koolhydraten", unit: "g", ri: null },
   { veld: "sugarsG", label: "waarvan suikers", unit: "g", ri: null, waarvan: true },
   { veld: "fiberG", label: "Vezels", unit: "g", ri: null },

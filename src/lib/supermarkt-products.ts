@@ -122,6 +122,8 @@ export function rijNaarProduct(rij: Rij): SupermarktProduct | null {
     energyKcal: getal(rij.energy_kcal),
     fatG: getal(rij.fat_g),
     saturatedFatG: getal(rij.saturated_fat_g),
+    // sm_products heeft geen transvet: het EU-etiket vraagt er niet om.
+    transFatG: null,
     carbohydrateG: getal(rij.carbohydrate_g),
     sugarsG: getal(rij.sugars_g),
     fiberG: getal(rij.fiber_g),

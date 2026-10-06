@@ -39,6 +39,7 @@ export const KOLOM_NAAR_NEVO = {
   protein_g: { code: "PROT", eenheid: "g" },
   fat_g: { code: "FAT", eenheid: "g" },
   saturated_fat_g: { code: "FASAT", eenheid: "g" },
+  trans_fat_g: { code: "FATRS", eenheid: "g" },
   carbohydrate_g: { code: "CHO", eenheid: "g" },
   sugars_g: { code: "SUGAR", eenheid: "g" },
   fiber_g: { code: "FIBT", eenheid: "g" },

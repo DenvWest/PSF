@@ -17,6 +17,7 @@ export const NEVO_WAARDE_KOLOMMEN = [
   "protein_g",
   "fat_g",
   "saturated_fat_g",
+  "trans_fat_g",
   "carbohydrate_g",
   "sugars_g",
   "fiber_g",
