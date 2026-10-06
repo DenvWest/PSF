@@ -55,6 +55,8 @@ export type MaaltijdKernstof = {
   gemiddeld: number | null;
   /** Het deel van {@link gemiddeld} dat uit supplementen kwam. */
   uitSupplement: number | null;
+  /** Of een benadering aan {@link gemiddeld} bijdroeg: toon met ≈. */
+  benaderd: boolean;
 };
 
 export type MaaltijdRij = VoedingswaardeRij & {
@@ -81,7 +83,7 @@ export type MaaltijdPatroon = {
   kernstoffen: MaaltijdKernstof[];
   /** Producten in deze keren die niets bijdroegen aan de voedingswaarde. */
   zonderWaarde: number;
-  /** Producten die als benadering meetelden (energie en macro's, ≈). */
+  /** Producten die als benadering meetelden (≈). */
   benaderd: number;
   /** Namen van die producten, voor de toelichting onder de tegels. */
   benaderdeProducten: string[];
@@ -211,12 +213,14 @@ export function bouwMaaltijdPatroon({
     const kernstoffen = KERNSTOFFEN_PER_MAALTIJD.map((nutrient): MaaltijdKernstof => {
       let totaal = 0;
       let supplement = 0;
+      let benaderd = false;
       let heeftBron = false;
       for (const stoffen of perKeer) {
         const stof = stoffen.find((s) => s.nutrient === nutrient);
         if (!stof) continue;
         totaal += stof.minstens;
         supplement += stof.uitSupplement;
+        if (stof.uitBenadering > 0) benaderd = true;
         heeftBron = true;
       }
       return {
@@ -225,6 +229,7 @@ export function bouwMaaltijdPatroon({
         unit: BASE_UNIT[nutrient],
         gemiddeld: heeftBron ? afgerond(totaal / keer) : null,
         uitSupplement: heeftBron ? afgerond(supplement / keer) : null,
+        benaderd,
       };
     });
 

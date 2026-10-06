@@ -6,12 +6,12 @@ import * as Icons from "@/components/app/icons";
 import GevolgdeStoffenKiezer from "@/components/dashboard/doelen/GevolgdeStoffenKiezer";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { trackEvent } from "@/lib/ga4";
-import type { NutrientOndergrensGesplitst } from "@/lib/nutrition-dagboek-items";
+import { zonderBenadering, type NutrientOndergrensGesplitst } from "@/lib/nutrition-dagboek-items";
 import { aandeelVanNorm, normVoor, type KernstofNormen } from "@/lib/nutrition-normen";
 import { isInformatieveStof, type InformatieveStof } from "@/lib/nutrition-rijkste-bronnen";
 import type { SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
 import { NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
-import { rondVoedingswaarde, type VoedingswaardeRij } from "@/lib/nutrition-voedingswaarde";
+import { rijGehaald, rondVoedingswaarde, type VoedingswaardeRij } from "@/lib/nutrition-voedingswaarde";
 import type { ProteinTargetRange } from "@/lib/protein-target";
 import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
 import { useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
@@ -228,13 +228,17 @@ export default function DagboekKrans({
   const rijen = KRANS_NUTRIENTEN.map((nutrient) => {
     const stof = stoffen.find((s) => s.nutrient === nutrient);
     const aandeel = aandeelVoor(nutrient, stof, proteinTarget, normen);
+    const benaderd = (stof?.uitBenadering ?? 0) > 0;
+    const aandeelStreng =
+      benaderd && stof ? aandeelVoor(nutrient, { ...stof, minstens: zonderBenadering(stof) }, proteinTarget, normen) : aandeel;
     return {
       nutrient,
       minstens: stof?.minstens ?? 0,
       unit: stof?.unit ?? null,
       aandeel,
+      benaderd,
       vol: aandeel === null ? 0 : Math.min(aandeel, 1),
-      gedekt: aandeel !== null && aandeel >= 1,
+      gedekt: aandeelStreng !== null && aandeelStreng >= 1,
       telt: !(nutrient in NIET_BEWIJSBAAR) && aandeel !== null,
       nietBewijsbaar: nutrient in NIET_BEWIJSBAAR,
     };
@@ -299,33 +303,38 @@ export default function DagboekKrans({
   }
 
   // Boven 100% een hoeveelheid in plaats van "378%": dat leest niemand.
-  const kernWaarde = (rij: (typeof rijen)[number]) =>
-    rij.aandeel !== null && rij.aandeel < 1
-      ? `${Math.round(rij.aandeel * 100)}%`
+  const kernWaarde = (rij: (typeof rijen)[number]) => {
+    const ca = rij.benaderd ? "≈ " : "";
+    return rij.aandeel !== null && rij.aandeel < 1
+      ? `${ca}${Math.round(rij.aandeel * 100)}%`
       : rij.unit
-        ? hoeveelheid(rij.minstens, rij.unit)
+        ? `${ca}${hoeveelheid(rij.minstens, rij.unit)}`
         : "—";
+  };
 
-  const gevolgdWaarde = (rij: VoedingswaardeRij) =>
-    rij.aandeel !== null && rij.aandeel < 1
-      ? `${Math.round(rij.aandeel * 100)}%`
+  const gevolgdWaarde = (rij: VoedingswaardeRij) => {
+    const ca = rij.benaderd ? "≈ " : "";
+    return rij.aandeel !== null && rij.aandeel < 1
+      ? `${ca}${Math.round(rij.aandeel * 100)}%`
       : rij.waarde !== null
-        ? `${rondVoedingswaarde(rij.waarde)} ${rij.unit}`
+        ? `${ca}${rondVoedingswaarde(rij.waarde)} ${rij.unit}`
         : "n.o.";
+  };
 
   function middenRegel(rij: (typeof rijen)[number]): string {
     if (rij.nietBewijsbaar) return "een dagboek kan dit niet aantonen";
     if (rij.nutrient === "protein") {
       if (!proteinTarget || rij.aandeel === null) return "zonder eiwitdoel";
       const rest = proteinTarget.gramsLow - rij.minstens;
-      return rest > 0
-        ? `nog ${hoeveelheid(rest, "g")} tot je doel vandaag`
-        : `je doel van ${hoeveelheid(proteinTarget.gramsLow, "g")} gehaald`;
+      if (rest > 0) return `nog ${rij.benaderd ? "≈ " : ""}${hoeveelheid(rest, "g")} tot je doel vandaag`;
+      if (!rij.gedekt) return `≈ je doel van ${hoeveelheid(proteinTarget.gramsLow, "g")} · deels uit een benadering`;
+      return `je doel van ${hoeveelheid(proteinTarget.gramsLow, "g")} gehaald`;
     }
     const norm = normVoor(normen, rij.nutrient);
     if (!norm) return "";
     const rest = norm.waarde - rij.minstens;
-    if (rest > 0) return `nog ${hoeveelheid(rest, norm.unit)} tot je norm vandaag`;
+    if (rest > 0) return `nog ${rij.benaderd ? "≈ " : ""}${hoeveelheid(rest, norm.unit)} tot je norm vandaag`;
+    if (!rij.gedekt) return `≈ je norm van ${hoeveelheid(norm.waarde, norm.unit)} · deels uit een benadering`;
     return rij.nutrient === "omega3"
       ? `norm ${hoeveelheid(norm.waarde, norm.unit)} gehaald · omega-3 telt per week`
       : `norm ${hoeveelheid(norm.waarde, norm.unit)} gehaald vandaag`;
@@ -471,8 +480,10 @@ export default function DagboekKrans({
               <span className="mt-1 text-[clamp(9px,3.5cqw,11px)] leading-tight text-[var(--vd-ink-3)]">
                 {gekozenGevolgd.aandeel !== null && gekozenGevolgd.waarde !== null
                   ? gekozenGevolgd.aandeel < 1
-                    ? `van je norm · ${rondVoedingswaarde(gekozenGevolgd.waarde)} ${gekozenGevolgd.unit}`
-                    : `norm ${rondVoedingswaarde(gekozenGevolgd.norm ?? 0)} ${gekozenGevolgd.unit} gehaald · zonder oordeel`
+                    ? `van je norm · ${gekozenGevolgd.benaderd ? "≈ " : ""}${rondVoedingswaarde(gekozenGevolgd.waarde)} ${gekozenGevolgd.unit}`
+                    : rijGehaald(gekozenGevolgd)
+                      ? `norm ${rondVoedingswaarde(gekozenGevolgd.norm ?? 0)} ${gekozenGevolgd.unit} gehaald · zonder oordeel`
+                      : `≈ norm ${rondVoedingswaarde(gekozenGevolgd.norm ?? 0)} ${gekozenGevolgd.unit} · deels uit een benadering`
                   : gekozenGevolgd.waarde !== null
                     ? "zonder norm · zonder oordeel"
                     : "niet opgehaald"}

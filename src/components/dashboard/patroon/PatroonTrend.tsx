@@ -34,7 +34,7 @@ function telRegel(trend: NutrientTrend): string | null {
   const gemeten = trend.punten.filter((p) => p.waarde !== null);
   if (gemeten.length === 0) return "nog geen gemeten weken";
   if (trend.referentie === null) return `${gemeten.length} ${gemeten.length === 1 ? "week" : "weken"} gemeten`;
-  const gehaald = gemeten.filter((p) => p.aandeel !== null && p.aandeel >= 1).length;
+  const gehaald = gemeten.filter((p) => p.gehaald).length;
   return `norm gehaald in ${gehaald} van ${gemeten.length} gemeten ${gemeten.length === 1 ? "week" : "weken"}`;
 }
 
@@ -80,6 +80,8 @@ export default function PatroonTrend({
                   weekStart: p.weekStart,
                   waarde: p.waarde,
                   aandeel: p.aandeel,
+                  gehaald: p.gehaald,
+                  benaderd: p.benaderd,
                   dagen: p.dagenGeregistreerd,
                 }))}
                 unit={trend.unit}

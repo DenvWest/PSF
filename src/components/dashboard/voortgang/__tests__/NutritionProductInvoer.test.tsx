@@ -75,7 +75,7 @@ describe("NutritionProductInvoer", () => {
         <NutritionProductInvoer
           items={[
             HAVERMOUT,
-            { moment: "ontbijt", bron: "voeding", key: "kipdij", grams: 30 },
+            { moment: "ontbijt", bron: "voeding", key: "pizza", grams: 30 },
           ]}
           onChange={vi.fn()}
         />,

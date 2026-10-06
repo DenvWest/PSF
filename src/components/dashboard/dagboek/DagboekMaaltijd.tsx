@@ -1,6 +1,7 @@
 "use client";
 
 import { catalogEntry } from "@/data/nutrition/food-catalog";
+import { FOOD_CATALOG_NEVO_BENADERINGEN } from "@/data/nutrition/food-catalog-nevo-gehaltes";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
@@ -37,8 +38,9 @@ import type { SupermarktProduct } from "@/types/supermarkt-product";
  * geen streepje of nul. Die regel telt wél mee voor je voedselgroep en je
  * breedte — hij mist alleen zijn milligrammen. Een nul zou beweren dat er
  * niets in zit — die staat er dus alleen als NEVO zelf 0 of spoor meldt. Een
- * benadering blijft hier `n.o.` voor de micro's; alleen haar eiwit telt mee
- * (`docs/plan/BESLUIT_MICRO_IN_BEELD_2026-10.md`).
+ * vrijgegeven benadering telt voor elke stof mee, met "≈" in de rij en in het
+ * totaal, en een regel onder de tabel zegt welk NEVO-product het is
+ * (`docs/plan/BESLUIT_MICRO_IN_BEELD_2026-10.md` §1b).
  *
  * ## Gevolgde stoffen als extra kolommen
  *
@@ -69,16 +71,21 @@ const GEVOLGD_KOP: Partial<Record<SupermarktVeld, string>> = {
 const GEEN_NEVO: ReadonlyMap<string, SupermarktProduct> = new Map();
 
 /** Wat één item van één stof levert, of null als het gehalte ontbreekt. */
-function bedragVoor(item: DagboekItem, nutrient: NutrientId): number | null {
+function bedragVoor(item: DagboekItem, nutrient: NutrientId): { waarde: number; benaderd: boolean } | null {
   const enkel = nutrientenUitItems([item]).find((n) => n.nutrient === nutrient);
-  return enkel ? enkel.minstens : null;
+  return enkel ? { waarde: enkel.minstens, benaderd: enkel.uitBenadering > 0 } : null;
 }
 
-/** "0" of "spoor" als NEVO dat voor dit item meldt, anders null. */
+/** "0" of "spoor" als NEVO dat voor dit item meldt (met ≈ bij een benadering), anders null. */
 function bekendeNul(item: DagboekItem, nutrient: NutrientId): string | null {
   const weergave = weergaveVanItem(item, nutrient);
-  if ((weergave.soort !== "nul" && weergave.soort !== "spoor") || weergave.benadering) return null;
-  return weergave.soort === "nul" ? "0" : "spoor";
+  if (weergave.soort !== "nul" && weergave.soort !== "spoor") return null;
+  return `${weergave.benadering ? "≈ " : ""}${weergave.soort === "nul" ? "0" : "spoor"}`;
+}
+
+/** De NEVO-naam als dit item een vrijgegeven benadering is. */
+function benaderingVan(item: DagboekItem): string | null {
+  return item.bron === "voeding" ? (FOOD_CATALOG_NEVO_BENADERINGEN[item.key]?.naam ?? null) : null;
 }
 
 /** Het label voor een item — voeding uit FOOD_CATALOG, supplement uit SUPPLEMENT_CATALOG. */
@@ -95,11 +102,12 @@ function eenheidVoor(item: DagboekItem): string {
   return "g";
 }
 
-/** De eenheid staat in de kolomkop, dus hier alleen het getal. */
-function toon(waarde: number | null): string {
+/** De eenheid staat in de kolomkop, dus hier alleen het getal; "≈" bij een benadering. */
+function toon(waarde: number | null, benaderd = false): string {
   if (waarde === null) return "n.o.";
-  if (waarde >= 100) return `${Math.round(waarde)}`;
-  return `${Math.round(waarde * 10) / 10}`;
+  const ca = benaderd ? "≈ " : "";
+  if (waarde >= 100) return `${ca}${Math.round(waarde)}`;
+  return `${ca}${Math.round(waarde * 10) / 10}`;
 }
 
 export default function DagboekMaaltijd({
@@ -136,9 +144,18 @@ export default function DagboekMaaltijd({
   const gevolgd = VOEDINGSWAARDE_VELDEN.filter((veld) => stoffen.includes(veld.veld));
   const gevolgdVan = (lijst: readonly DagboekItem[]) => {
     const rijen = berekenVoedingswaarde({ items: lijst, nevoProducten }).rijen;
-    return (veld: SupermarktVeld) => rijen.find((rij) => rij.veld === veld)?.waarde ?? null;
+    return (veld: SupermarktVeld) => rijen.find((rij) => rij.veld === veld) ?? null;
   };
   const gevolgdTotaal = gevolgdVan(eigen);
+  const benaderingen = [
+    ...new Map(
+      eigen.flatMap((item) => {
+        const naam = benaderingVan(item);
+        const product = labelVoor(item);
+        return naam && product ? [[product, naam] as const] : [];
+      }),
+    ),
+  ];
 
   /** De opvallendste bijdrage, voor de kop. */
   const grootste = [...totalen].sort((a, b) => {
@@ -161,6 +178,7 @@ export default function DagboekMaaltijd({
             {grootste ? (
               <>
                 <b className="block text-[11px] font-normal text-[var(--vd-ink-2)]">
+                  {grootste.uitBenadering > 0 ? "≈ " : ""}
                   {grootste.minstens} {grootste.unit}{" "}
                   {nutrientReferences[grootste.nutrient].label.toLowerCase()}
                 </b>
@@ -266,12 +284,13 @@ export default function DagboekMaaltijd({
                                 : "text-[var(--vd-ink-2)]"
                           }`}
                         >
-                          {nul ?? toon(bedrag)}
+                          {nul ?? toon(bedrag?.waarde ?? null, bedrag?.benaderd)}
                         </td>
                       );
                     })}
                     {gevolgd.map((veld) => {
-                      const bedrag = gevolgdItem(veld.veld);
+                      const rij = gevolgdItem(veld.veld);
+                      const bedrag = rij?.waarde ?? null;
                       return (
                         <td
                           key={veld.veld}
@@ -279,7 +298,7 @@ export default function DagboekMaaltijd({
                             bedrag === null ? "italic text-[var(--vd-ink-4)]" : "text-[var(--vd-ink-3)]"
                           }`}
                         >
-                          {toon(bedrag)}
+                          {toon(bedrag, rij?.benaderd)}
                         </td>
                       );
                     })}
@@ -309,7 +328,7 @@ export default function DagboekMaaltijd({
                       className="px-1 py-2 text-right font-mono text-[11px] font-bold tabular-nums text-[var(--vd-ink)]"
                     >
                       {totaal
-                        ? toon(totaal.minstens)
+                        ? toon(totaal.minstens, totaal.uitBenadering > 0)
                         : eigen.length > 0 && eigen.every((item) => bekendeNul(item, kolom.id) !== null)
                           ? "0"
                           : "—"}
@@ -317,13 +336,13 @@ export default function DagboekMaaltijd({
                   );
                 })}
                 {gevolgd.map((veld) => {
-                  const totaal = gevolgdTotaal(veld.veld);
+                  const rij = gevolgdTotaal(veld.veld);
                   return (
                     <td
                       key={veld.veld}
                       className="px-1 py-2 text-right font-mono text-[11px] font-bold tabular-nums text-[var(--vd-ink-2)]"
                     >
-                      {totaal === null ? "—" : toon(totaal)}
+                      {rij?.waarde === null || rij?.waarde === undefined ? "—" : toon(rij.waarde, rij.benaderd)}
                     </td>
                   );
                 })}
@@ -331,6 +350,12 @@ export default function DagboekMaaltijd({
               </tr>
             </tbody>
           </table>
+          {benaderingen.length > 0 ? (
+            <p className="m-0 border-t border-white/[0.06] px-3 py-2 text-[11px] leading-relaxed text-[var(--vd-ink-3)]">
+              {benaderingen.map(([product, naam]) => `≈ ${product}: waarden van ‘${naam}’ (NEVO).`).join(" ")} Ze tellen
+              mee in je dag; &lsquo;gehaald&rsquo; rekent zonder.
+            </p>
+          ) : null}
         </div>
       )}
     </section>

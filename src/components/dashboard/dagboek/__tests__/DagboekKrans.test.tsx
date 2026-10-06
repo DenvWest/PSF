@@ -12,6 +12,7 @@ const magnesiumVol: NutrientOndergrensGesplitst = {
   unit: "mg",
   bronnen: 2,
   zonderGehalte: 0,
+  uitBenadering: 0,
   uitVoeding: 250,
   uitSupplement: 150,
 };

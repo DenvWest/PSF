@@ -205,7 +205,7 @@ describe("nutrientenUitItems — de ondergrens-regel", () => {
   it("blijft voedingsitems zonder gehalte wél tellen", () => {
     const gemengd = nutrientenUitItems([
       { moment: "ontbijt", bron: "voeding", key: "havermout", grams: 60 },
-      { moment: "ontbijt", bron: "voeding", key: "kipdij", grams: 130 },
+      { moment: "ontbijt", bron: "voeding", key: "pizza", grams: 130 },
       { moment: "ontbijt", bron: "supplement", key: "magnesiumcitraat-capsule", grams: 1 },
     ]);
     const magnesium = gemengd.find((n) => n.nutrient === "magnesium")!;

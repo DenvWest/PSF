@@ -4,7 +4,7 @@ import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 import { isEetmomentId, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import {
-  eiwitBenaderingPer100g,
+  gehalteBenaderingPer100g,
   gehaltePer100g,
   gehalteWeergavePer100g,
   type GehalteWeergave,
@@ -180,13 +180,28 @@ export type NutrientOndergrens = {
    * zou de zin erboven onwaar maken.
    */
   zonderGehalte: number;
+  /**
+   * Het deel van `minstens` dat uit een vrijgegeven benadering komt (≈), in
+   * {@link unit}. Toon de som met "≈" als dit groter dan 0 is, en reken een
+   * "gehaald" met {@link zonderBenadering}
+   * (`BESLUIT_MICRO_IN_BEELD_2026-10.md` §1b).
+   */
+  uitBenadering: number;
 };
 
-/** Wat één item van één nutriënt levert, of null als het gehalte ontbreekt. */
+/** De som zonder benaderingen: waar een "gehaald" / ✓ mee rekent. */
+export function zonderBenadering(stof: Pick<NutrientOndergrens, "minstens" | "uitBenadering"> | undefined): number {
+  return stof ? afgerond(stof.minstens - stof.uitBenadering) : 0;
+}
+
+/**
+ * Wat één item van één nutriënt levert, of null als het gehalte ontbreekt.
+ * `benaderd` als het uit een vrijgegeven benadering komt (≈).
+ */
 export function bedragVanItem(
   item: DagboekItem,
   nutrient: NutrientId,
-): { value: number; unit: NutrientUnit } | null {
+): { value: number; unit: NutrientUnit; benaderd?: true } | null {
   if (item.bron === "supplement") {
     const entry = supplementCatalogEntry(item.key);
     if (!entry || entry.nutrient !== nutrient) return null;
@@ -198,9 +213,11 @@ export function bedragVanItem(
   }
 
   const entry = catalogEntry(item.key);
-  const per100g = gehaltePer100g(entry, nutrient) ?? (nutrient === "protein" ? eiwitBenaderingPer100g(entry) : null);
-  if (!per100g) return null;
-  return { value: (per100g.value * item.grams) / 100, unit: per100g.unit };
+  const echt = gehaltePer100g(entry, nutrient);
+  if (echt) return { value: (echt.value * item.grams) / 100, unit: echt.unit };
+  const benaderd = gehalteBenaderingPer100g(entry, nutrient);
+  if (!benaderd) return null;
+  return { value: (benaderd.value * item.grams) / 100, unit: benaderd.unit, benaderd: true };
 }
 
 /**
@@ -306,6 +323,7 @@ function telOp(
   const unit = BASE_UNIT[nutrient];
   let uitVoeding = 0;
   let uitSupplement = 0;
+  let uitBenadering = 0;
   let bronnen = 0;
   let zonderGehalte = 0;
 
@@ -332,6 +350,7 @@ function telOp(
 
     if (item.bron === "supplement") uitSupplement += inBasis;
     else uitVoeding += inBasis;
+    if (bedrag.benaderd) uitBenadering += inBasis;
     bronnen += 1;
   }
 
@@ -346,6 +365,7 @@ function telOp(
     unit,
     bronnen,
     zonderGehalte,
+    uitBenadering: afgerond(uitBenadering),
     uitVoeding: afgerond(uitVoeding),
     uitSupplement: afgerond(uitSupplement),
   };
@@ -354,11 +374,12 @@ function telOp(
 /**
  * Een gemeten 0 of spoor zwijgt niet: we weten dat er (vrijwel) niets in zit.
  * Het telt niet als bron — de som en het wel/niet tonen van een stof blijven
- * gelijk — maar ook niet als "geen gehalte bekend".
+ * gelijk — maar ook niet als "geen gehalte bekend". Dat geldt ook voor de 0 van
+ * een vrijgegeven benadering (§1b): ook die telt verder overal mee.
  */
 function isBekendeNul(item: DagboekItem, nutrient: NutrientId): boolean {
   const weergave = weergaveVanItem(item, nutrient);
-  return (weergave.soort === "nul" || weergave.soort === "spoor") && weergave.benadering === null;
+  return weergave.soort === "nul" || weergave.soort === "spoor";
 }
 
 function afgerond(waarde: number): number {

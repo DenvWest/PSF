@@ -22,7 +22,7 @@ export function keuzeMeting(reeks: Vensterreeks | undefined): KeuzeMeting | null
   if (!langste || langste.aandeel === null) return null;
   return {
     aandeel: langste.aandeel,
-    gedekt: langste.aandeel >= 1,
+    gedekt: langste.gedekt === true,
     richting: reeks.richting,
     vensters: gevuld.map((venster) => ({
       label: VENSTER_LABEL[venster.dagen_terug],

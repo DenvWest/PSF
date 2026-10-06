@@ -6,7 +6,7 @@ import {
   FOOD_CATALOG_NEVO_GEHALTES,
 } from "@/data/nutrition/food-catalog-nevo-gehaltes";
 import { gehaltePer100g, gehalteWeergavePer100g, nevoOmega3Delen } from "@/lib/nutrition-catalog-gehalte";
-import { bedragVanItem, nutrientenUitItems, weergaveVanItem } from "@/lib/nutrition-dagboek-items";
+import { bedragVanItem, nutrientenUitItems, weergaveVanItem, zonderBenadering } from "@/lib/nutrition-dagboek-items";
 import benaderingMicros from "../../../scripts/nevo-benadering-micros.json";
 
 describe("NEVO-gehaltes in de catalogus", () => {
@@ -134,7 +134,7 @@ describe("gehalteWeergavePer100g", () => {
   });
 });
 
-describe("0, spoor en benadering tellen nooit mee", () => {
+describe("0 en spoor tellen nooit mee, een vrijgegeven benadering als ≈", () => {
   const spinazie = { bron: "voeding", key: "spinazie-diepvries", grams: 80, moment: "lunch" } as const;
   const broccoli = { bron: "voeding", key: "broccoli-diepvries", grams: 80, moment: "lunch" } as const;
   const zalm = { bron: "voeding", key: "zalm-gerookt", grams: 75, moment: "lunch" } as const;
@@ -150,9 +150,10 @@ describe("0, spoor en benadering tellen nooit mee", () => {
     expect(vitD).toMatchObject({ minstens: 3, bronnen: 1, zonderGehalte: 0 });
   });
 
-  it("telt een benadering niet op, en blijft hem als zwijgend tellen", () => {
+  it("telt een vrijgegeven benadering op als ≈ en houdt haar deel apart (§1b)", () => {
     const magnesium = nutrientenUitItems([broccoli, zalm]).find((s) => s.nutrient === "magnesium");
-    expect(magnesium).toMatchObject({ minstens: 24, bronnen: 1, zonderGehalte: 1 });
+    expect(magnesium).toMatchObject({ minstens: 39.2, bronnen: 2, zonderGehalte: 0, uitBenadering: 15.2 });
+    expect(zonderBenadering(magnesium)).toBe(24);
     expect(weergaveVanItem(broccoli, "magnesium")).toMatchObject({ soort: "waarde", benadering: "Broccoli gekookt" });
   });
 });

@@ -103,7 +103,7 @@ export default function VoedingswaardeTabel({
         {benaderd > 0 ? (
           <p className="m-0 text-[10.5px] leading-relaxed text-[var(--vd-ink-4)]">
             ≈ {benaderd === 1 ? "1 product telt" : `${benaderd} producten tellen`} mee met de waarden van een
-            vergelijkbaar NEVO-product: energie, macro&rsquo;s en eiwit wel, vitamines en mineralen niet.
+            vergelijkbaar NEVO-product, voor elke stof; &lsquo;gehaald&rsquo; rekent zonder.
           </p>
         ) : null}
         {zonderWaarde > 0 ? (

@@ -67,8 +67,8 @@ describe("bouwWeekoverzicht", () => {
     const dagen = [
       dag("2026-09-14", [{ key: "havermout", grams: 100 }]),
       dag("2026-09-15", [{ key: "havermout", grams: 100 }]),
-      dag("2026-09-16", [{ key: "meergranenbrood", grams: 100 }]),
-      dag("2026-09-17", [{ key: "meergranenbrood", grams: 100 }]),
+      dag("2026-09-16", [{ key: "pizza", grams: 100 }]),
+      dag("2026-09-17", [{ key: "pizza", grams: 100 }]),
     ];
 
     const week = bouwWeekoverzicht(dagen, "2026-09-14", STANDAARD_NORMEN);
@@ -78,6 +78,18 @@ describe("bouwWeekoverzicht", () => {
     // De bron stond op minder dagen dan er geregistreerd zijn, en dat verschil
     // blijft zichtbaar in plaats van weggemiddeld.
     expect(magnesium.dagenMetBron).toBeLessThan(week.dagenGeregistreerd);
+  });
+
+  it("telt een benadering mee als ≈, maar geeft er geen 'gehaald' op (§1b)", () => {
+    const dagen = [dag("2026-09-14", [{ key: "kipdij", grams: 2000 }])];
+    const magnesium = bouwWeekoverzicht(dagen, "2026-09-14", STANDAARD_NORMEN).rijen.find(
+      (r) => r.nutrient === "magnesium",
+    )!;
+
+    expect(magnesium.gemiddeld).toBe(520);
+    expect(magnesium.aandeel).toBeGreaterThanOrEqual(1);
+    expect(magnesium.benaderd).toBe(true);
+    expect(magnesium.gedekt).toBe(false);
   });
 
   it("geeft geen te-gaan zonder meting, en nooit een negatief getal", () => {

@@ -2,7 +2,7 @@
 
 **Datum:** 6 oktober 2026
 **Status:** Besloten (Dennis: "akkoord"). Stap 1 gebouwd op `feat/patroon-benadering-macros`; stap 2–4 volgen elk als eigen PR.
-**Herziet:** `BESLUIT_NUL_SPOOR_BENADERING_2026-10.md` §5 en "Afgewezen" (benaderingen in de dagsom), alleen voor energie, macro's en eiwit.
+**Herziet:** `BESLUIT_NUL_SPOOR_BENADERING_2026-10.md` §5 en "Afgewezen" (benaderingen in de dagsom). Eerst alleen voor energie, macro's en eiwit; sinds §1b (zelfde dag) ook voor vitamines en mineralen.
 **Laat staan:** de asymmetrie-regel, "nooit een ✗ of rood", het ✓ tegen de norm (niet tegen de streefwaarde) voor de kernstoffen, geen oordeel per maaltijd.
 
 ## Aanleiding
@@ -24,7 +24,27 @@ Dennis' feedback op Je patroon → Per maaltijd:
 - Elke som waaraan een benadering bijdroeg, staat er met "≈". Onder de tegels staat welk product het is.
 - Niet-vrijgegeven benaderingen (plantdranken, vleesvervangers, proteïnereep, …) blijven buiten elke som: daar verschilt juist de samenstelling per merk.
 
+*Herzien dezelfde dag door §1b: de uitsluiting van vitamines en mineralen vervalt.*
+
 **Waarom:** het bezwaar tegen benaderingen in een som was het ✓ dat het systeem niet kan onderbouwen. Bij energie en macro's is er geen ✓ en geen norm. Bij eiwit is kipbout voor kipdij een kleinere fout dan 0 g: 200 g kip als 0 g tellen gaf de helft van je eiwit.
+
+### 1b. Ook vitamines en mineralen van een vrijgegeven benadering tellen mee (≈) — de ✓ blijft streng
+
+*Besloten 6 okt 2026, later op de dag (Dennis: "akkoord"). Vervangt de uitsluiting van micro's in §1.*
+
+**Aanleiding.** Op Vandaag stond kipdij met `n.o.` voor magnesium, zink en de gevolgde stoffen, en de krans bleef op 0 %. Klik je op hetzelfde product, dan toonde het productdetail die stoffen wél, als "≈ X % ADH" met een gevulde balk. Dennis: "in het model zie je toch ook een norm en een eigen doel? Waarom dan niet overal volledigheid?" Het systeem zette het getal bij één product dus al tegen een norm, maar liet het in de dagsom weg. Dat is niet consequent.
+
+**Besluit.**
+- De tien vrijgegeven benaderingen tellen overal mee voor álle stoffen: de productrij en "Samen minstens" op Vandaag, de krans, de ringen, het tekortsysteem, Patroon, de agenda en de voedingswaardetabel (kalium, calcium, ijzer, B12, C).
+- Elke som waaraan een benadering bijdroeg, staat er met "≈".
+- **De ✓ blijft streng.** Een stof krijgt alleen "gehaald" / ✓ / een groene stip als de norm (of het eigen doel bij een referentiestof) óók zonder benaderingen gehaald is. Haal je hem alleen dankzij een benadering, dan staat er "≈ 104 %" of "≈ gehaald" zonder ✓. De asymmetrie-regel blijft: geen ✓ die het systeem niet met echte brongetallen kan onderbouwen.
+- Niet-vrijgegeven benaderingen (plantdranken, vleesvervangers, margarine, …) blijven buiten elke som. Daar verschilt het gehalte juist door verrijking per merk.
+
+**Afgewezen:**
+- *Micro's van een benadering alleen in het productdetail tonen (de stand van §1):* inconsequent. Hetzelfde getal stond bij één product tegen de norm en telde in de dag voor niets. Op Vandaag las dat als een fout ("n.o." naast een product waarvan het detail alles kent).
+- *Ook de ✓ op het totaal mét benaderingen:* dan krijg je een ✓ die rust op het magnesium van kipbout voor kipdij. Die kan het systeem niet onderbouwen.
+
+**Techniek.** `bedragVanItem` valt per stof terug op de vrijgegeven benadering en markeert het bedrag als `benaderd`. `NutrientOndergrens.uitBenadering` draagt het deel van de som dat uit benaderingen komt; elke "gedekt"-beslissing rekent met `minstens − uitBenadering`. In de voedingswaardetabel draagt elke rij `zonderBenadering` voor hetzelfde doel.
 
 ### 2. Kleur: groen ✓ waar gehaald, anders neutraal — nooit rood
 

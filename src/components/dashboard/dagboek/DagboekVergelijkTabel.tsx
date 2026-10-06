@@ -380,13 +380,12 @@ export default function DagboekVergelijkTabel({
             <span key={b.label}>
               {index > 0 ? " " : null}≈ {b.label}: NEVO heeft geen eigen record,{" "}
               {b.naam ? (
-                <>dit zijn de waarden van &lsquo;{b.naam}&rsquo;.</>
+                <>dit zijn de waarden van &lsquo;{b.naam}&rsquo;; in je dagboek telt hij mee met &ldquo;≈&rdquo;.</>
               ) : (
-                "dit zijn calorieën en macro's van een vergelijkbaar product."
+                "dit zijn calorieën en macro's van een vergelijkbaar product, om te vergelijken; in je dagboek telt hij niet mee."
               )}
             </span>
-          ))}{" "}
-          Een benadering om te vergelijken; in je dagboek telt hij niet mee.
+          ))}
         </p>
       ) : null}
 

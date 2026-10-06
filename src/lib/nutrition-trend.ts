@@ -36,6 +36,10 @@ export type TrendPunt = {
   waarde: number | null;
   /** Deel van de referentie, of null zonder meting of bij een eigen doel. */
   aandeel: number | null;
+  /** Of de norm deze week gehaald is, zonder benaderingen (`BESLUIT_MICRO_IN_BEELD_2026-10.md` §1b). */
+  gehaald: boolean;
+  /** Of een benadering aan `waarde` bijdroeg: toon met ≈. */
+  benaderd: boolean;
   dagenGeregistreerd: number;
 };
 
@@ -78,6 +82,8 @@ export function bouwTrend(
         weekStart: weekStarts[index]!,
         waarde: rij.dagenMetBron === 0 ? null : rij.gemiddeld,
         aandeel: rij.aandeel,
+        gehaald: (rij.aandeelZonderBenadering ?? null) !== null && (rij.aandeelZonderBenadering ?? 0) >= 1,
+        benaderd: rij.benaderd === true,
         dagenGeregistreerd: overzicht.dagenGeregistreerd,
       };
     });
