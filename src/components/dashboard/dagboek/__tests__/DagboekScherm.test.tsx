@@ -594,6 +594,24 @@ describe("DagboekScherm — tabbladen (Laag B)", () => {
   });
 });
 
+describe("DagboekScherm — vergelijken vanuit het zoekscherm", () => {
+  it("staat niet meer in de tabrij maar in het zoekscherm, en terug brengt je daar weer", async () => {
+    render(<DagboekScherm />);
+
+    expect(screen.queryByRole("button", { name: "Vergelijk producten" })).toBeNull();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Lunch — product toevoegen" }),
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Vergelijk producten" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Terug naar zoeken" }));
+
+    expect(
+      await screen.findByRole("heading", { name: "Voeg toe aan lunch" }),
+    ).toBeTruthy();
+  });
+});
+
 describe("DagboekScherm — supermarkt-portie (Laag A)", () => {
   it("logt een supermarktproduct los van het tekortsysteem", async () => {
     render(<DagboekScherm />);

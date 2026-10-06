@@ -1,8 +1,10 @@
+import type { KernstofProfiel } from "@/lib/account-kernstof-profiel";
 import type { OrgScopedClient } from "@/lib/db/scoped";
 import {
   computeProteinTarget,
   type ProteinTargetRange,
 } from "@/lib/protein-target";
+import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
 import type { KernstofNormen } from "@/lib/nutrition-normen";
 
 /**
@@ -175,8 +177,9 @@ export function bepaalEiwitDoel(input: {
   checkGewichtKg: number | null;
   checkTrainingLoad: number | undefined;
   ageRange: string | null;
+  leeftijd?: number | null;
 }): EiwitDoel {
-  const { doelen, checkGewichtKg, checkTrainingLoad, ageRange } = input;
+  const { doelen, checkGewichtKg, checkTrainingLoad, ageRange, leeftijd } = input;
 
   const eigenGewicht = isGeldigGewicht(doelen.gewichtKg) ? doelen.gewichtKg : null;
   const checkGewicht = isGeldigGewicht(checkGewichtKg) ? checkGewichtKg : null;
@@ -193,6 +196,7 @@ export function bepaalEiwitDoel(input: {
           weightKg: gewicht,
           ...(belasting === undefined ? {} : { trainingLoad: belasting }),
           ...(ageRange ? { ageRange } : {}),
+          ...(leeftijd != null ? { leeftijd } : {}),
         });
 
   return {
@@ -221,9 +225,24 @@ export type VoedingsdoelenWeergave = {
   gewichtBron: EiwitDoel["gewichtBron"];
   /** Of de check een bruikbaar gewicht draagt — voor de uitleg, zonder het getal. */
   checkHeeftGewicht: boolean;
+  /** De leeftijdsband uit de check ("45–49"), voor de regel Leeftijd zolang je zelf niets invulde. */
+  checkLeeftijdsband: string | null;
   /**
    * De norm per kernstof voor deze persoon (`nutrition-normen.ts`). Server-side
    * afgeleid uit het geslacht in de check; het geslacht zelf gaat niet mee.
    */
   kernstofNormen: KernstofNormen;
+  /** De norm per gevolgde stof (buitenring), op dezelfde manier server-side afgeleid. */
+  gevolgdeNormen: GevolgdeNormen;
+  /**
+   * Of Je doelen naar menstruatie vraagt: alleen bij vrouw of anders. Het
+   * geslacht zelf gaat niet mee.
+   */
+  vraagtMenstruatie: boolean;
+  /**
+   * Wat iemand zelf koos voor de normen en zijn streefwaarden
+   * (`account-kernstof-profiel.ts`). `geslacht: null` betekent "uit de check";
+   * het check-geslacht zelf gaat niet mee.
+   */
+  kernstofProfiel: KernstofProfiel;
 };

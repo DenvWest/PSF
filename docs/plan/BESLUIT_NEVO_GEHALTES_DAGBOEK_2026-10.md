@@ -1,7 +1,7 @@
 # Besluit: NEVO-gehaltes als vaste data in de dagboekcatalogus, omega-3 via EPA en DHA
 
 **Datum:** 4 oktober 2026
-**Status:** besloten (Dennis, 4 okt, twee keuzes na voorlegging)
+**Status:** besloten (Dennis, 4 okt, twee keuzes na voorlegging) — §4 gewijzigd op 6 okt door `BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`
 **Raakt:** `food-catalog.ts`, `food-catalog-nevo.ts`, het dagboek (tabel per eetmoment, productdetail, krans)
 **Volgt uit:** `BESLUIT_NEVO_BRONVERMELDING.md`, `BESLUIT_VOEDINGSBRONNEN_LAGEN_2026-10.md`
 
@@ -14,7 +14,7 @@ Het dagboek toonde `n.o.` voor stoffen die een product wel heeft: "Zalm, gerookt
 1. **Statisch genereren, niet live ophalen.** `scripts/nevo-gehaltes.mjs` schrijft eiwit, magnesium, zink, vitamine D, EPA en DHA per catalogusregel naar `src/data/nutrition/food-catalog-nevo-gehaltes.ts`. Het dagboek blijft synchroon.
 2. **Eén plek per gehalte.** `FOOD_SOURCES` (via `bron`) gaat voor; NEVO vult alleen aan waar een stof daar ontbreekt (`src/lib/nutrition-catalog-gehalte.ts`). Een beoordeelde rij wordt nooit overschreven.
 3. **Alleen ongewijzigd en met bron.** Waarden staan zoals NEVO ze geeft. Productdetail toont "NEVO-online versie 2025/9.0, RIVM, Bilthoven" zodra een stof uit NEVO komt.
-4. **Weggelaten, niet nul.** Een spoor (TR), een 0 en alles per 100 ml blijven `n.o.`. Koppelingen met `basis: "benadering"` (32 stuks) krijgen geen micronutriënten. Na deze stap hebben nog 100 van de 371 regels geen enkel gehalte (benaderingen en regels zonder koppeling): dat blijft `n.o.`.
+4. **Weggelaten, niet nul.** *(Gewijzigd 6 okt, zie `BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`: een 0 of spoor van een kernstof wordt nu apart bewaard en als "0"/"spoor" getoond, nooit opgeteld; vrijgegeven benaderingen tonen hun kernstoffen met label, nooit in een som.)* Een spoor (TR), een 0 en alles per 100 ml blijven `n.o.`. Koppelingen met `basis: "benadering"` (32 stuks) krijgen geen micronutriënten. Na deze stap hebben nog 100 van de 371 regels geen enkel gehalte (benaderingen en regels zonder koppeling): dat blijft `n.o.`.
 
 ## Wijkt af van een eerder besluit
 

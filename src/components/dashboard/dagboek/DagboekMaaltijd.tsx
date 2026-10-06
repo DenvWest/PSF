@@ -8,9 +8,14 @@ import type { NutrientId } from "@/data/nutrition/intake-reference";
 import {
   itemsVanMoment,
   nutrientenUitItems,
+  weergaveVanItem,
   type DagboekItem,
 } from "@/lib/nutrition-dagboek-items";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
+import type { SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
+import { berekenVoedingswaarde, VOEDINGSWAARDE_VELDEN } from "@/lib/nutrition-voedingswaarde";
+import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
 
 /**
  * Eén eetmoment als tabel: de stoffen staan boven de rijen, niet per item.
@@ -31,7 +36,15 @@ import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
  * Een product waarvan de gehaltes nog niet zijn opgehaald, toont `n.o.` en
  * geen streepje of nul. Die regel telt wél mee voor je voedselgroep en je
  * breedte — hij mist alleen zijn milligrammen. Een nul zou beweren dat er
- * niets in zit.
+ * niets in zit — die staat er dus alleen als NEVO zelf 0 of spoor meldt. Een
+ * benadering blijft hier `n.o.`: deze tabel telt op, en een benadering telt
+ * niet mee (`docs/plan/BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`).
+ *
+ * ## Gevolgde stoffen als extra kolommen
+ *
+ * Wat je op Je doelen volgt (`useGevolgdeStoffen`), staat na de kernstoffen
+ * als eigen kolom, in een neutrale tint. De getallen komen uit dezelfde
+ * `berekenVoedingswaarde` als "Ook gevolgd" en de voedingswaardetabel.
  */
 
 const KOLOMMEN: readonly { id: NutrientId; kop: string }[] = [
@@ -41,10 +54,31 @@ const KOLOMMEN: readonly { id: NutrientId; kop: string }[] = [
   { id: "omega3", kop: "Ω-3 mg" },
 ];
 
+const GEVOLGD_KOP: Partial<Record<SupermarktVeld, string>> = {
+  fiberG: "Vezels",
+  saturatedFatG: "Verz. vet",
+  sugarsG: "Suikers",
+  sodiumMg: "Natrium",
+  potassiumMg: "Kalium",
+  calciumMg: "Calcium",
+  ironMg: "IJzer",
+  "vitaminB12µg": "B12",
+  vitaminCMg: "Vit. C",
+};
+
+const GEEN_NEVO: ReadonlyMap<string, SupermarktProduct> = new Map();
+
 /** Wat één item van één stof levert, of null als het gehalte ontbreekt. */
 function bedragVoor(item: DagboekItem, nutrient: NutrientId): number | null {
   const enkel = nutrientenUitItems([item]).find((n) => n.nutrient === nutrient);
   return enkel ? enkel.minstens : null;
+}
+
+/** "0" of "spoor" als NEVO dat voor dit item meldt, anders null. */
+function bekendeNul(item: DagboekItem, nutrient: NutrientId): string | null {
+  const weergave = weergaveVanItem(item, nutrient);
+  if ((weergave.soort !== "nul" && weergave.soort !== "spoor") || weergave.benadering) return null;
+  return weergave.soort === "nul" ? "0" : "spoor";
 }
 
 /** Het label voor een item — voeding uit FOOD_CATALOG, supplement uit SUPPLEMENT_CATALOG. */
@@ -76,6 +110,7 @@ export default function DagboekMaaltijd({
   onGram,
   onToevoegen,
   onOpenProduct,
+  nevoProducten = GEEN_NEVO,
   busy = false,
 }: {
   moment: EetmomentId;
@@ -92,10 +127,18 @@ export default function DagboekMaaltijd({
    */
   onToevoegen: (moment: EetmomentId) => void;
   onOpenProduct: (item: DagboekItem) => void;
+  nevoProducten?: ReadonlyMap<string, SupermarktProduct>;
   busy?: boolean;
 }) {
   const eigen = itemsVanMoment(items, moment);
   const totalen = nutrientenUitItems(eigen);
+  const { stoffen } = useGevolgdeStoffen();
+  const gevolgd = VOEDINGSWAARDE_VELDEN.filter((veld) => stoffen.includes(veld.veld));
+  const gevolgdVan = (lijst: readonly DagboekItem[]) => {
+    const rijen = berekenVoedingswaarde({ items: lijst, nevoProducten }).rijen;
+    return (veld: SupermarktVeld) => rijen.find((rij) => rij.veld === veld)?.waarde ?? null;
+  };
+  const gevolgdTotaal = gevolgdVan(eigen);
 
   /** De opvallendste bijdrage, voor de kop. */
   const grootste = [...totalen].sort((a, b) => {
@@ -145,7 +188,7 @@ export default function DagboekMaaltijd({
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="px-3 py-1.5 text-left text-[9.5px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]">
+                <th className="min-w-[140px] px-3 py-1.5 text-left text-[9.5px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]">
                   Product
                 </th>
                 {KOLOMMEN.map((kolom) => (
@@ -154,6 +197,14 @@ export default function DagboekMaaltijd({
                     className="w-[52px] px-1 py-1.5 text-right text-[9.5px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]"
                   >
                     {kolom.kop}
+                  </th>
+                ))}
+                {gevolgd.map((veld) => (
+                  <th
+                    key={veld.veld}
+                    className="w-[52px] px-1 py-1.5 text-right text-[9.5px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]"
+                  >
+                    {GEVOLGD_KOP[veld.veld] ?? veld.label} {veld.unit}
                   </th>
                 ))}
                 <th className="w-8 px-1 py-1.5">
@@ -167,6 +218,7 @@ export default function DagboekMaaltijd({
                 if (!label) return null;
                 const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
                 const eenheid = eenheidVoor(item);
+                const gevolgdItem = gevolgdVan([item]);
                 return (
                   <tr
                     key={`${item.key}-${index}`}
@@ -202,11 +254,29 @@ export default function DagboekMaaltijd({
                     </td>
                     {KOLOMMEN.map((kolom) => {
                       const bedrag = bedragVoor(item, kolom.id);
+                      const nul = bedrag === null ? bekendeNul(item, kolom.id) : null;
                       return (
                         <td
                           key={kolom.id}
                           className={`px-1 py-2 text-right font-mono text-[11px] tabular-nums ${
-                            bedrag === null ? "italic text-[var(--vd-ink-4)]" : "text-[var(--vd-ink-2)]"
+                            bedrag === null && nul === null
+                              ? "italic text-[var(--vd-ink-4)]"
+                              : nul !== null
+                                ? "text-[var(--vd-ink-3)]"
+                                : "text-[var(--vd-ink-2)]"
+                          }`}
+                        >
+                          {nul ?? toon(bedrag)}
+                        </td>
+                      );
+                    })}
+                    {gevolgd.map((veld) => {
+                      const bedrag = gevolgdItem(veld.veld);
+                      return (
+                        <td
+                          key={veld.veld}
+                          className={`px-1 py-2 text-right font-mono text-[11px] tabular-nums ${
+                            bedrag === null ? "italic text-[var(--vd-ink-4)]" : "text-[var(--vd-ink-3)]"
                           }`}
                         >
                           {toon(bedrag)}
@@ -238,7 +308,22 @@ export default function DagboekMaaltijd({
                       key={kolom.id}
                       className="px-1 py-2 text-right font-mono text-[11px] font-bold tabular-nums text-[var(--vd-ink)]"
                     >
-                      {totaal ? toon(totaal.minstens) : "—"}
+                      {totaal
+                        ? toon(totaal.minstens)
+                        : eigen.length > 0 && eigen.every((item) => bekendeNul(item, kolom.id) !== null)
+                          ? "0"
+                          : "—"}
+                    </td>
+                  );
+                })}
+                {gevolgd.map((veld) => {
+                  const totaal = gevolgdTotaal(veld.veld);
+                  return (
+                    <td
+                      key={veld.veld}
+                      className="px-1 py-2 text-right font-mono text-[11px] font-bold tabular-nums text-[var(--vd-ink-2)]"
+                    >
+                      {totaal === null ? "—" : toon(totaal)}
                     </td>
                   );
                 })}

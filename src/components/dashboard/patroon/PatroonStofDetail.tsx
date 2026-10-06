@@ -1,0 +1,236 @@
+"use client";
+
+import Link from "next/link";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
+import { clarityTag } from "@/lib/clarity";
+import { trackEvent } from "@/lib/ga4";
+import { normLabel, normVoor } from "@/lib/nutrition-normen";
+import { periodeLabel, type Periode } from "@/lib/nutrition-periode";
+import { pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
+import { isKernstofMetNorm } from "@/lib/account-kernstof-profiel";
+import type { StofBron } from "@/lib/nutrition-stof-bronnen";
+import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
+import type { WeekRij } from "@/lib/nutrition-weekoverzicht";
+import { useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
+
+/**
+ * Eén kernstof uitgeklapt in Per stof: de norm met bron en voor wie hij
+ * geldt, waar je hem deze periode vandaan haalde, en de rijkste
+ * voedingsbronnen. Pas daaronder de supplementvergelijking.
+ *
+ * ## Voeding eerst, supplement als laatste stap
+ *
+ * Tot 5 oktober linkte elke rij in de stoffentabel direct naar `/beste/*`.
+ * Dat las als "je hebt een supplement nodig", terwijl het tekortsysteem
+ * nooit een tekort kan bewijzen. Nu zie je eerst wat voeding levert; de
+ * vergelijking blijft bereikbaar en houdt zijn meetpunt
+ * (`nutrition_week_nutrient_clicked`).
+ *
+ * ## Geen diagnose
+ *
+ * Een norm is gemaakt voor een groep. Onder de norm zitten is geen tekort;
+ * dat stelt een arts vast, met klachten en bloedonderzoek. Dat staat
+ * letterlijk op het scherm.
+ */
+
+const NORM_BRON_VOLUIT: Record<string, string> = {
+  "Gezondheidsraad 2018": "Gezondheidsraad (2018), Voedingsnormen vitamines en mineralen voor volwassenen",
+  "Gezondheidsraad 2001": "Gezondheidsraad (2001), Voedingsnormen: energie, eiwitten, vetten en verteerbare koolhydraten",
+  "Gezondheidsraad 2012": "Gezondheidsraad (2012), Evaluatie van de voedingsnormen voor vitamine D",
+};
+
+export default function PatroonStofDetail({
+  rij,
+  periode,
+  dagenGeregistreerd,
+  bronnen,
+  onTerug,
+}: {
+  rij: WeekRij;
+  periode: Periode;
+  dagenGeregistreerd: number;
+  bronnen: readonly StofBron[];
+  onTerug: () => void;
+}) {
+  const normen = useKernstofNormen();
+  const norm = normVoor(normen, rij.nutrient);
+  const profiel = useKernstofProfiel();
+  const streef = isKernstofMetNorm(rij.nutrient) ? (profiel.streefwaarden[rij.nutrient] ?? null) : null;
+  const rijkste = rijksteBronnen(rij.nutrient, "portie", 40)
+    .filter((bron) => pastBijVoedingswijze(bron.entry, profiel.voedingswijze))
+    .slice(0, 5);
+  const totaal = bronnen.reduce((som, bron) => som + bron.totaal, 0);
+  const uitSupplement = bronnen.filter((b) => b.supplement).reduce((som, b) => som + b.totaal, 0);
+
+  return (
+    <section aria-labelledby="patroon-stof-titel" className="flex flex-col gap-3">
+      <div className="flex items-center gap-2">
+        <button type="button" onClick={onTerug} className="vd-blader" aria-label="Terug naar alle stoffen">
+          ‹
+        </button>
+        <h3 id="patroon-stof-titel" className="text-[1.0625rem] text-[var(--vd-ink)]">
+          {rij.label}
+        </h3>
+        <span className="vd-tag ml-auto">{periodeLabel(periode)}</span>
+      </div>
+
+      <div className="rounded-xl border border-[var(--vd-line)] bg-[var(--vd-surface)] p-3">
+        <p className="m-0 text-[0.8125rem] text-[var(--vd-ink)]">
+          {dagenGeregistreerd === 0 ? (
+            "In deze periode staat niets geregistreerd."
+          ) : rij.lezing === "periodetotaal" ? (
+            <>
+              Minstens <b>{hoeveelheid(rij.totaal)} {rij.unit}</b> in deze periode
+              {rij.normPeriode !== null ? (
+                <>
+                  {" "}
+                  — de norm over {periodeLabel(periode)} is {hoeveelheid(rij.normPeriode)} {rij.unit} (
+                  {percentageADH(rij.aandeel)}).
+                </>
+              ) : null}
+            </>
+          ) : (
+            <>
+              Gemiddeld minstens <b>{hoeveelheid(rij.gemiddeld)} {rij.unit}</b> per geregistreerde dag
+              {rij.referentie !== null && rij.bewijsbaar ? <> ({percentageADH(rij.aandeel)} van de norm)</> : null}
+              , over {dagenGeregistreerd} {dagenGeregistreerd === 1 ? "dag" : "dagen"}.
+            </>
+          )}
+        </p>
+
+        {norm ? (
+          <dl className="m-0 mt-2.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[0.75rem]">
+            <dt className="text-[var(--vd-ink-3)]">Norm</dt>
+            <dd className="m-0 text-[var(--vd-ink)]">
+              {normLabel(norm)} per dag
+              {rij.nutrient === "omega3"
+                ? profiel.voedingswijze
+                  ? " EPA+DHA — zonder vis komt dat vooral uit algen(olie)"
+                  : " EPA+DHA — in de richtlijn: 1× per week vis, bij voorkeur vette vis"
+                : ""}
+            </dd>
+            <dt className="text-[var(--vd-ink-3)]">Geldt voor</dt>
+            <dd className="m-0 text-[var(--vd-ink)]">{norm.geldtVoor}</dd>
+            <dt className="text-[var(--vd-ink-3)]">Bron</dt>
+            <dd className="m-0 text-[var(--vd-ink)]">{NORM_BRON_VOLUIT[norm.bron] ?? norm.bron}</dd>
+            <dt className="text-[var(--vd-ink-3)]">Jouw streefwaarde</dt>
+            <dd className="m-0 text-[var(--vd-ink)]">
+              {streef !== null ? `${hoeveelheid(streef)} ${norm.unit} per dag — "gehaald" blijft tegen de norm` : "niet ingesteld"}
+              {" · "}
+              <Link
+                href="/dashboard/doelen"
+                onClick={() => trackEvent("nutrition_patroon_norm_aanpassen_click", { nutrient: rij.nutrient })}
+              >
+                aanpassen
+              </Link>
+            </dd>
+          </dl>
+        ) : (
+          <p className="vd-note mb-0">
+            Eiwit rekent met je gewicht en activiteit, niet met één vaste norm. Je doel staat op{" "}
+            <Link href="/dashboard/doelen">Je doelen</Link>.
+          </p>
+        )}
+
+        <p className="vd-note mb-0">
+          {!rij.bewijsbaar
+            ? "Een dagboek kan deze stof niet aantonen: de belangrijkste bron is niet je bord (zon, verrijking) of het gehalte per portie ligt ver onder de norm. Daarom geen oordeel. "
+            : ""}
+          Een norm is gemaakt voor een groep. Wat je registreert is een ondergrens, en eronder zitten is geen
+          tekort — dat stelt alleen een arts vast, met klachten en bloedonderzoek.
+        </p>
+      </div>
+
+      <div className="vd-tabel">
+        <div className="vd-tabel-kop">
+          <span className="!text-left">Jouw bronnen in deze periode</span>
+        </div>
+        {bronnen.length === 0 ? (
+          <div className="vd-tabel-rij">
+            <span className="vd-naam">
+              <i>Geen geregistreerd product leverde {rij.label.toLowerCase()}.</i>
+            </span>
+          </div>
+        ) : (
+          bronnen.slice(0, 8).map((bron) => (
+            <div key={bron.naam} className="vd-tabel-rij grid-cols-[1fr_auto]">
+              <span className="vd-naam">
+                {bron.naam}
+                <i>
+                  {bron.supplement ? "supplement · " : ""}
+                  {bron.dagen} {bron.dagen === 1 ? "dag" : "dagen"}
+                </i>
+              </span>
+              <span className="vd-getal">
+                {hoeveelheid(bron.totaal)} {bron.unit}
+                {totaal > 0 ? ` · ${Math.round((bron.totaal / totaal) * 100)}%` : ""}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+      {uitSupplement > 0 && totaal > 0 ? (
+        <p className="vd-tag m-0">{Math.round((uitSupplement / totaal) * 100)}% hiervan kwam uit supplementen.</p>
+      ) : null}
+
+      {rijkste.length > 0 ? (
+        <div className="vd-tabel">
+          <div className="vd-tabel-kop">
+            <span className="!text-left">Rijkste voedingsbronnen · per portie</span>
+          </div>
+          {profiel.voedingswijze ? (
+            <div className="vd-tabel-rij">
+              <span className="vd-naam">
+                <i>Alleen {profiel.voedingswijze}e bronnen, volgens je keuze op Je doelen.</i>
+              </span>
+            </div>
+          ) : null}
+          {rijkste.map((bron) => (
+            <div key={bron.entry.key} className="vd-tabel-rij grid-cols-[1fr_auto]">
+              <span className="vd-naam">
+                {bron.entry.labelNl}
+                <i>{bron.portieLabel}</i>
+              </span>
+              <span className="vd-getal">
+                {hoeveelheid(bron.perPortie)} {bron.unit}
+                {norm ? ` · ${percentageADH(bron.perPortie / norm.waarde)}` : ""}
+              </span>
+            </div>
+          ))}
+          <div className="vd-tabel-rij">
+            <Link
+              href="/dashboard?tab=vandaag"
+              onClick={() => trackEvent("nutrition_patroon_stof_naar_dagboek", { nutrient: rij.nutrient })}
+              className="text-[12.5px] font-semibold text-[var(--vd-sage-2)]"
+            >
+              Voeg toe in je dagboek →
+            </Link>
+          </div>
+        </div>
+      ) : null}
+
+      <p className="m-0 text-[0.75rem] text-[var(--vd-ink-3)]">
+        Lukt het niet via voeding?{" "}
+        <Link
+          href={rij.comparisonPath}
+          onClick={() => {
+            trackEvent("nutrition_week_nutrient_clicked", {
+              nutrient: rij.nutrient,
+              gedekt: rij.gedekt === true,
+              destination: rij.comparisonPath,
+            });
+            emitAccountClientEvent("nutrition.week_nutrient_clicked", {
+              nutrient: rij.nutrient,
+              covered: rij.gedekt === true,
+              days_logged: dagenGeregistreerd,
+            });
+            clarityTag("nutrition_weekoverzicht", `stof_${rij.nutrient}`);
+          }}
+          className="text-[var(--vd-ink-2)] underline"
+        >
+          Supplementen met {rij.label} vergelijken
+        </Link>
+      </p>
+    </section>
+  );
+}

@@ -62,6 +62,17 @@ export type WeekRij = {
   bewijsbaar: boolean;
   /** Pad naar de vergelijkingspagina van deze stof. */
   comparisonPath: string;
+  /** Som over alle geregistreerde dagen: een ondergrens voor de hele periode. */
+  totaal: number;
+  /**
+   * Hoe `aandeel` en `gedekt` gelezen worden. `per_dag`: gemiddelde per
+   * geregistreerde dag tegen de dagnorm. `periodetotaal`: het totaal tegen
+   * de norm × kalenderdagen — alleen voor omega-3 bij
+   * {@link bouwPeriodeOverzicht} met `omega3AlsPeriodetotaal`.
+   */
+  lezing: "per_dag" | "periodetotaal";
+  /** Bij `periodetotaal`: de norm over de hele periode. */
+  normPeriode: number | null;
 };
 
 export type Weekoverzicht = {
@@ -103,8 +114,30 @@ export function bouwWeekoverzicht(
   start: string,
   normen: KernstofNormen,
 ): Weekoverzicht {
-  const datums = weekDatums(start);
-  const eind = datums[6]!;
+  return bouwPeriodeOverzicht(dagen, weekDatums(start), normen);
+}
+
+/**
+ * Hetzelfde overzicht over een willekeurige reeks aaneengesloten datums.
+ *
+ * ## Omega-3 als periodetotaal
+ *
+ * De omega-3-norm (250 mg EPA+DHA per dag) is in de praktijk een weeknorm:
+ * de Gezondheidsraad vertaalt hem naar één keer per week vette vis. Een
+ * gemiddelde per geregistreerde dag blaast één visdag op tot honderden
+ * procenten. Met `omega3AlsPeriodetotaal` telt omega-3 als som over de
+ * periode tegen de norm × het aantal kalenderdagen. Die som is een harde
+ * ondergrens (niet-geregistreerde dagen kunnen er alleen bij), dus een ✓ is
+ * dan echt bewezen.
+ */
+export function bouwPeriodeOverzicht(
+  dagen: readonly DagboekDag[],
+  datums: readonly string[],
+  normen: KernstofNormen,
+  { omega3AlsPeriodetotaal = false }: { omega3AlsPeriodetotaal?: boolean } = {},
+): Weekoverzicht {
+  const start = datums[0] ?? "";
+  const eind = datums[datums.length - 1] ?? "";
   const inWeek = dagen.filter(
     (dag) => dag.date >= start && dag.date <= eind && (dag.items?.length ?? 0) > 0,
   );
@@ -130,8 +163,15 @@ export function bouwWeekoverzicht(
     // 500 %" terwijl het op zes van de zeven dagen nul was.
     const gemiddeld =
       inWeek.length > 0 ? Math.round((som / inWeek.length) * 10) / 10 : 0;
-    const aandeel = inWeek.length > 0 ? aandeelVanNorm(normen, nutrient, gemiddeld) : null;
     const referentie = normVoor(normen, nutrient)?.waarde ?? null;
+    const periodetotaal = omega3AlsPeriodetotaal && nutrient === "omega3" && referentie !== null;
+    const normPeriode = periodetotaal ? referentie * datums.length : null;
+    const aandeel =
+      inWeek.length === 0
+        ? null
+        : normPeriode !== null
+          ? som / normPeriode
+          : aandeelVanNorm(normen, nutrient, gemiddeld);
 
     // Alleen een bewijsbare stof mag een afstand tonen. Zink en vitamine D
     // hebben wel een norm (referentie is dus niet null), maar §3.4
@@ -140,7 +180,9 @@ export function bouwWeekoverzicht(
     // verpakt als afstand in plaats van als tekort.
     const teGaan =
       bewijsbaar && referentie !== null && aandeel !== null && aandeel < 1
-        ? Math.round((referentie - gemiddeld) * 10) / 10
+        ? normPeriode !== null
+          ? Math.round((normPeriode - som) * 10) / 10
+          : Math.round((referentie - gemiddeld) * 10) / 10
         : null;
 
     return {
@@ -156,6 +198,9 @@ export function bouwWeekoverzicht(
         !bewijsbaar || aandeel === null ? null : aandeel >= 1,
       bewijsbaar,
       comparisonPath: nutrientReferences[nutrient].comparisonPath,
+      totaal: Math.round(som * 10) / 10,
+      lezing: normPeriode !== null ? "periodetotaal" : "per_dag",
+      normPeriode,
     };
   });
 

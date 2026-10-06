@@ -1,6 +1,11 @@
 import { DEFAULT_ORG_ID } from "@/config/org";
 import { INTAKE_GENDER_OPTIONS, type IntakeGender } from "@/data/intake-questions";
-import { voedingsnormenVoor } from "@/data/nutrition/voedingsnormen";
+import { gevolgdeNormenVoor, voedingsnormenVoor, vraagtMenstruatie } from "@/data/nutrition/voedingsnormen";
+import {
+  getKernstofProfiel,
+  LEEG_KERNSTOF_PROFIEL,
+  type KernstofProfiel,
+} from "@/lib/account-kernstof-profiel";
 import {
   bepaalEiwitDoel,
   getVoedingsdoelen,
@@ -120,11 +125,24 @@ export async function laadVoedingsdoelenWeergave(
     }
   }
 
+  let kernstofProfiel: KernstofProfiel = LEEG_KERNSTOF_PROFIEL;
+  if (admin.raw) {
+    try {
+      kernstofProfiel = await getKernstofProfiel(admin, accountId);
+    } catch {
+      // Zonder profiel gelden de normen uit de check; de pagina blijft werken.
+      kernstofProfiel = LEEG_KERNSTOF_PROFIEL;
+    }
+  }
+
+  const gender = kernstofProfiel.geslacht ?? check.gender;
+
   const eiwit = bepaalEiwitDoel({
     doelen,
     checkGewichtKg: check.gewichtKg,
     checkTrainingLoad: check.trainingLoad,
     ageRange: check.ageRange,
+    leeftijd: kernstofProfiel.leeftijd,
   });
 
   return {
@@ -132,6 +150,23 @@ export async function laadVoedingsdoelenWeergave(
     richtlijn: eiwit.range,
     gewichtBron: eiwit.gewichtBron,
     checkHeeftGewicht: isGeldigGewicht(check.gewichtKg),
-    kernstofNormen: voedingsnormenVoor(check.gender),
+    checkLeeftijdsband: check.ageRange,
+    kernstofNormen: voedingsnormenVoor(gender, {
+      leeftijd: kernstofProfiel.leeftijd,
+      zeventigPlus: kernstofProfiel.zeventigPlus,
+      voedingswijze: kernstofProfiel.voedingswijze,
+    }),
+    gevolgdeNormen: gevolgdeNormenVoor({
+      gender,
+      leeftijd: kernstofProfiel.leeftijd,
+      ageRange: check.ageRange,
+      zeventigPlus: kernstofProfiel.zeventigPlus,
+      voedingswijze: kernstofProfiel.voedingswijze,
+      menstruatie: kernstofProfiel.menstruatie,
+      gewichtKg: isGeldigGewicht(doelen.gewichtKg) ? doelen.gewichtKg : check.gewichtKg,
+      activiteit: kernstofProfiel.activiteit,
+    }),
+    vraagtMenstruatie: vraagtMenstruatie(gender),
+    kernstofProfiel,
   };
 }

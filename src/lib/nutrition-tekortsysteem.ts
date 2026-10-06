@@ -58,7 +58,7 @@ import { aandeelVanNorm, type KernstofNormen } from "@/lib/nutrition-normen";
  *
  * ## Niet elke stof is bewijsbaar
  *
- * Zink levert 1–4 mg per portie tegen een norm van 7 tot 9 mg; alleen oesters halen
+ * Zink levert 1–4 mg per portie tegen een norm van 10 tot 16 mg; alleen oesters halen
  * dat in één portie. Vitamine D komt bij vrijwel iedereen uit zonlicht en
  * verrijking, niet uit voeding. Een dagboek dat niet álles vangt, komt daar
  * nooit aan — en meer dagen meten maakt een onmeetbare stof niet meetbaar.
@@ -123,7 +123,7 @@ export type Vensterreeks = {
  */
 export const NIET_BEWIJSBAAR: Partial<Record<NutrientId, string>> = {
   zinc:
-    "Bronnen leveren 1 tot 4 mg per portie tegen een norm van 7 tot 9 mg. Alleen oesters halen dat in één keer, dus een dagboek dat niet alles vangt komt er nooit aan.",
+    "Bronnen leveren 1 tot 4 mg per portie tegen een norm van 10 tot 16 mg. Alleen oesters halen dat in één keer, dus een dagboek dat niet alles vangt komt er nooit aan.",
   vitamin_d:
     "Komt bij vrijwel iedereen uit zonlicht en verrijkte producten, niet uit gewone voeding. Alleen vette vis tilt een dag erboven.",
 };

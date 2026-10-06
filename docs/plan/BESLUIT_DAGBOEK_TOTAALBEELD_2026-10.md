@@ -26,7 +26,7 @@ Op één dag liet het dagboek drie beelden zien die niet op elkaar aansloten:
    - Zichtbaar in het productdetail en per dag op het tabblad Voedingsstoffen.
 4. **Eén gehalte per plek.** Eiwit komt in de tabel uit `bedragVanItem`, dezelfde bron als de krans. Magnesium, zink, vitamine D en omega-3 staan alleen in de krans en worden niet herhaald.
 5. **De macro-ring telt catalogusproducten mee**, via dezelfde berekening (`berekenVoedingswaarde`).
-6. **Benaderingen tellen nooit mee in een som.** Het productdetail toont dan alleen macro's met het label "benadering". De tabel meldt hoeveel producten geen waarden hebben, want het totaal is een ondergrens.
+6. **Benaderingen tellen nooit mee in een som.** Het productdetail toont dan alleen macro's met het label "benadering". *(Aanvulling 6 okt, `BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`: vrijgegeven benaderingen tonen ook hun kernstoffen, met "≈" en de NEVO-naam; de som blijft ongemoeid.)* De tabel meldt hoeveel producten geen waarden hebben, want het totaal is een ondergrens.
 
 ## Afgewezen
 

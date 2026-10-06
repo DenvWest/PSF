@@ -1,39 +1,78 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { STANDAARD_NORMEN, type KernstofNormen } from "@/lib/nutrition-normen";
+import { useEffect, useSyncExternalStore } from "react";
+import {
+  LEEG_KERNSTOF_PROFIEL,
+  type KernstofProfiel,
+} from "@/lib/account-kernstof-profiel";
+import type { VoedingsdoelenWeergave } from "@/lib/account-voedingsdoelen";
+import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
+import { STANDAARD_GEVOLGDE_NORMEN, STANDAARD_NORMEN, type KernstofNormen } from "@/lib/nutrition-normen";
 import { fetchVoedingsdoelen } from "@/lib/voedingsdoelen-client";
 
-let gedeeld: Promise<KernstofNormen> | null = null;
+/**
+ * De normen per kernstof en het eigen kernstofprofiel van wie ingelogd is.
+ * Eén verzoek, gedeeld door krans, patroon, agenda en Je doelen. Tot het
+ * antwoord er is, en als het mislukt, gelden de {@link STANDAARD_NORMEN}: de
+ * hogere waarden, zodat er nooit een vinkje verschijnt dat de persoonlijke
+ * norm niet zou geven.
+ *
+ * Past iemand zijn profiel aan (geslacht, 70+, streefwaarde), dan zet
+ * {@link zetKernstofWeergave} het nieuwe antwoord hier neer en werkt elk
+ * scherm dat deze hooks gebruikt meteen bij.
+ */
 
-function laadNormen(): Promise<KernstofNormen> {
-  gedeeld ??= fetchVoedingsdoelen()
-    .then((weergave) => weergave.kernstofNormen ?? STANDAARD_NORMEN)
-    .catch(() => {
-      gedeeld = null;
-      return STANDAARD_NORMEN;
-    });
-  return gedeeld;
+type Toestand = { normen: KernstofNormen; gevolgd: GevolgdeNormen; profiel: KernstofProfiel };
+
+const BEGIN: Toestand = { normen: STANDAARD_NORMEN, gevolgd: STANDAARD_GEVOLGDE_NORMEN, profiel: LEEG_KERNSTOF_PROFIEL };
+
+let toestand: Toestand = BEGIN;
+let geladen: Promise<void> | null = null;
+const luisteraars = new Set<() => void>();
+
+function abonneer(luisteraar: () => void) {
+  luisteraars.add(luisteraar);
+  return () => {
+    luisteraars.delete(luisteraar);
+  };
 }
 
-/**
- * De normen per kernstof voor wie ingelogd is. Eén verzoek, gedeeld door krans,
- * patroon en agenda. Tot het antwoord er is, en als het mislukt, gelden de
- * {@link STANDAARD_NORMEN}: de hogere waarden, zodat er nooit een vinkje
- * verschijnt dat de persoonlijke norm niet zou geven.
- */
-export function useKernstofNormen(): KernstofNormen {
-  const [normen, setNormen] = useState<KernstofNormen>(STANDAARD_NORMEN);
+export function zetKernstofWeergave(
+  weergave: Pick<VoedingsdoelenWeergave, "kernstofNormen" | "kernstofProfiel"> & Partial<Pick<VoedingsdoelenWeergave, "gevolgdeNormen">>,
+) {
+  toestand = {
+    normen: weergave.kernstofNormen ?? STANDAARD_NORMEN,
+    gevolgd: weergave.gevolgdeNormen ?? STANDAARD_GEVOLGDE_NORMEN,
+    profiel: weergave.kernstofProfiel ?? LEEG_KERNSTOF_PROFIEL,
+  };
+  for (const luisteraar of luisteraars) luisteraar();
+}
 
-  useEffect(() => {
-    let actief = true;
-    void laadNormen().then((geladen) => {
-      if (actief) setNormen(geladen);
+function laadEenmaal() {
+  geladen ??= fetchVoedingsdoelen()
+    .then(zetKernstofWeergave)
+    .catch(() => {
+      geladen = null;
     });
-    return () => {
-      actief = false;
-    };
-  }, []);
+}
 
-  return normen;
+function useKernstofToestand(): Toestand {
+  const huidig = useSyncExternalStore(abonneer, () => toestand, () => BEGIN);
+  useEffect(() => {
+    laadEenmaal();
+  }, []);
+  return huidig;
+}
+
+export function useKernstofNormen(): KernstofNormen {
+  return useKernstofToestand().normen;
+}
+
+export function useKernstofProfiel(): KernstofProfiel {
+  return useKernstofToestand().profiel;
+}
+
+/** De normen voor de gevolgde stoffen (buitenring, Patroon), uit dezelfde gedeelde toestand. */
+export function useGevolgdeNormen(): GevolgdeNormen {
+  return useKernstofToestand().gevolgd;
 }
