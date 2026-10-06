@@ -11,8 +11,9 @@
  *   - `naam`: één sterke naamkandidaat, bereiding niet in strijd (zie het script).
  *   - `handmatig`: beslist in `scripts/nevo-koppel-beslissingen.json`.
  *   - `benadering`: de regel heeft geen eigen NEVO-record; dit is een vergelijkbaar record.
- *     Altijd als benadering labelen, alleen macro's tonen en nooit in een som
- *     meenemen alsof het een brongetal is (zie {@link isNevoBenadering}).
+ *     Altijd als benadering labelen en nooit in een som meenemen alsof het een
+ *     brongetal is (zie {@link isNevoBenadering}). Macro's altijd; kernstoffen alleen
+ *     als de regel in `scripts/nevo-benadering-micros.json` is vrijgegeven.
  *
  * Regels die hier ontbreken zijn onzeker of hebben geen tegenhanger in NEVO;
  * ze staan met kandidaten in `docs/plan/STEEKPROEF_NEVO_KOPPELING_2026-10.md`.

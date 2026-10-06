@@ -8,6 +8,7 @@ import type { NutrientId } from "@/data/nutrition/intake-reference";
 import {
   itemsVanMoment,
   nutrientenUitItems,
+  weergaveVanItem,
   type DagboekItem,
 } from "@/lib/nutrition-dagboek-items";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
@@ -31,7 +32,9 @@ import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
  * Een product waarvan de gehaltes nog niet zijn opgehaald, toont `n.o.` en
  * geen streepje of nul. Die regel telt wél mee voor je voedselgroep en je
  * breedte — hij mist alleen zijn milligrammen. Een nul zou beweren dat er
- * niets in zit.
+ * niets in zit — die staat er dus alleen als NEVO zelf 0 of spoor meldt. Een
+ * benadering blijft hier `n.o.`: deze tabel telt op, en een benadering telt
+ * niet mee (`docs/plan/BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`).
  */
 
 const KOLOMMEN: readonly { id: NutrientId; kop: string }[] = [
@@ -45,6 +48,13 @@ const KOLOMMEN: readonly { id: NutrientId; kop: string }[] = [
 function bedragVoor(item: DagboekItem, nutrient: NutrientId): number | null {
   const enkel = nutrientenUitItems([item]).find((n) => n.nutrient === nutrient);
   return enkel ? enkel.minstens : null;
+}
+
+/** "0" of "spoor" als NEVO dat voor dit item meldt, anders null. */
+function bekendeNul(item: DagboekItem, nutrient: NutrientId): string | null {
+  const weergave = weergaveVanItem(item, nutrient);
+  if ((weergave.soort !== "nul" && weergave.soort !== "spoor") || weergave.benadering) return null;
+  return weergave.soort === "nul" ? "0" : "spoor";
 }
 
 /** Het label voor een item — voeding uit FOOD_CATALOG, supplement uit SUPPLEMENT_CATALOG. */
@@ -202,14 +212,19 @@ export default function DagboekMaaltijd({
                     </td>
                     {KOLOMMEN.map((kolom) => {
                       const bedrag = bedragVoor(item, kolom.id);
+                      const nul = bedrag === null ? bekendeNul(item, kolom.id) : null;
                       return (
                         <td
                           key={kolom.id}
                           className={`px-1 py-2 text-right font-mono text-[11px] tabular-nums ${
-                            bedrag === null ? "italic text-[var(--vd-ink-4)]" : "text-[var(--vd-ink-2)]"
+                            bedrag === null && nul === null
+                              ? "italic text-[var(--vd-ink-4)]"
+                              : nul !== null
+                                ? "text-[var(--vd-ink-3)]"
+                                : "text-[var(--vd-ink-2)]"
                           }`}
                         >
-                          {toon(bedrag)}
+                          {nul ?? toon(bedrag)}
                         </td>
                       );
                     })}
@@ -238,7 +253,11 @@ export default function DagboekMaaltijd({
                       key={kolom.id}
                       className="px-1 py-2 text-right font-mono text-[11px] font-bold tabular-nums text-[var(--vd-ink)]"
                     >
-                      {totaal ? toon(totaal.minstens) : "—"}
+                      {totaal
+                        ? toon(totaal.minstens)
+                        : eigen.length > 0 && eigen.every((item) => bekendeNul(item, kolom.id) !== null)
+                          ? "0"
+                          : "—"}
                     </td>
                   );
                 })}

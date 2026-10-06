@@ -3,7 +3,7 @@ import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 import { isEetmomentId, type EetmomentId } from "@/lib/nutrition-eetmomenten";
-import { gehaltePer100g } from "@/lib/nutrition-catalog-gehalte";
+import { gehaltePer100g, gehalteWeergavePer100g, type GehalteWeergave } from "@/lib/nutrition-catalog-gehalte";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import { BASE_UNIT, toBase, type NutrientUnit } from "@/lib/nutrition-units";
 
@@ -168,6 +168,8 @@ export type NutrientOndergrens = {
    * weinig magnesium" en "we weten van drie dingen die je at niet hoeveel
    * magnesium erin zit".
    *
+   * Een gemeten 0 of spoor telt hier niet: dan weten we het wél.
+   *
    * Telt alleen voeding. Een supplement dat een ándere stof draagt, zwijgt
    * niet over deze stof — het gaat er niet over, en het als zwijgend tellen
    * zou de zin erboven onwaar maken.
@@ -229,6 +231,39 @@ export function bedragVoorStandaardPortie(
 }
 
 /**
+ * Wat een scherm voor één item toont: als {@link bedragVanItem}, plus een
+ * gemeten 0, een spoor of een benadering. Alleen voor weergave; de som loopt
+ * via {@link bedragVanItem}. Een supplement kent alleen zijn eigen stof.
+ */
+export function weergaveVanItem(item: DagboekItem, nutrient: NutrientId): GehalteWeergave {
+  if (item.bron === "supplement") {
+    const bedrag = bedragVanItem(item, nutrient);
+    return bedrag ? { soort: "waarde", ...bedrag, benadering: null } : { soort: "onbekend" };
+  }
+  return naarGram(gehalteWeergavePer100g(catalogEntry(item.key), nutrient), item.grams);
+}
+
+/** Als {@link bedragVoorStandaardPortie}, maar voor weergave (zie {@link weergaveVanItem}). */
+export function weergaveVoorStandaardPortie(
+  bron: DagboekItemBron,
+  key: string,
+  nutrient: NutrientId,
+): GehalteWeergave {
+  if (bron === "supplement") {
+    const bedrag = bedragVoorStandaardPortie(bron, key, nutrient);
+    return bedrag ? { soort: "waarde", value: bedrag.value, unit: bedrag.unit, benadering: null } : { soort: "onbekend" };
+  }
+  const entry = catalogEntry(key);
+  const portie = entry?.porties[0];
+  if (!portie) return { soort: "onbekend" };
+  return naarGram(gehalteWeergavePer100g(entry, nutrient), portie.grams);
+}
+
+function naarGram(per100g: GehalteWeergave, grams: number): GehalteWeergave {
+  return per100g.soort === "waarde" ? { ...per100g, value: (per100g.value * grams) / 100 } : per100g;
+}
+
+/**
  * De ondergrens per nutriënt over één dag, elk in zijn eigen basiseenheid
  * (`BASE_UNIT`): eiwit in g, magnesium/zink/omega-3 in mg, vitamine D in µg.
  *
@@ -276,7 +311,7 @@ function telOp(
       // "drie producten waarvan we het eiwitgehalte niet kennen" gaan tellen:
       // dat getal draagt in de UI de zin "van sommige producten kennen we het
       // gehalte nog niet", en die slaat op voeding met een open `bron`.
-      if (item.bron !== "supplement") zonderGehalte += 1;
+      if (item.bron !== "supplement" && !isBekendeNul(item, nutrient)) zonderGehalte += 1;
       continue;
     }
 
@@ -308,6 +343,16 @@ function telOp(
     uitVoeding: afgerond(uitVoeding),
     uitSupplement: afgerond(uitSupplement),
   };
+}
+
+/**
+ * Een gemeten 0 of spoor zwijgt niet: we weten dat er (vrijwel) niets in zit.
+ * Het telt niet als bron — de som en het wel/niet tonen van een stof blijven
+ * gelijk — maar ook niet als "geen gehalte bekend".
+ */
+function isBekendeNul(item: DagboekItem, nutrient: NutrientId): boolean {
+  const weergave = weergaveVanItem(item, nutrient);
+  return (weergave.soort === "nul" || weergave.soort === "spoor") && weergave.benadering === null;
 }
 
 function afgerond(waarde: number): number {

@@ -15,14 +15,20 @@
  *     Geen afronding, geen omrekening. EPA en DHA blijven twee losse getallen;
  *     de som voor de omega-3-uitlezing wordt pas in de app gemaakt en daar als
  *     afgeleid gelabeld.
- *   - Alleen koppelingen met `basis` ongelijk aan `benadering`: een benadering
- *     is een vergelijkbaar record, geen brongetal, en mag niet in een som.
+ *   - `FOOD_CATALOG_NEVO_GEHALTES` bevat alleen koppelingen met `basis` ongelijk
+ *     aan `benadering`: een benadering is een vergelijkbaar record, geen
+ *     brongetal, en mag niet in een som.
  *   - Alleen voedingsmiddelen per 100 g (de dagboekportie rekent in gram).
  *   - EPA en DHA alleen voor vis en zeevruchten ({@link OMEGA3_CATEGORIEEN}). NEVO
  *     meldt bij o.a. havermout, koek en pindakaas een DHA-waarde (laboratoriumruis
  *     van de vetzuuranalyse); die als omega-3-bron presenteren zou verkeerd lezen.
- *   - Een spoor (TR) of een 0 wordt weggelaten, niet als 0 geschreven: "niet
- *     gemeten" en "niets erin" zijn niet te onderscheiden in het bestand.
+ *   - Een spoor (TR) of een gemeten 0 van een kernstof wordt niet als getal
+ *     geschreven maar in `nul` of `spoor` vermeld: "niets erin" is iets anders
+ *     dan "niet gemeten" (een stof die NEVO niet kent, staat nergens). Ze tellen
+ *     nooit mee in een som; ze zijn er alleen voor de weergave.
+ *   - Benaderingen die in `nevo-benadering-micros.json` onder `toon` staan,
+ *     krijgen hun gehaltes in een apart blok (`FOOD_CATALOG_NEVO_BENADERINGEN`),
+ *     met de NEVO-naam erbij. Alleen ter weergave, met label; nooit in een som.
  *
  * ## Gebruik
  *
@@ -38,6 +44,7 @@ import { bouwVoedingsmiddelen, parseDelimited } from "./nevo-extract.mjs";
 
 const CATALOG_FILE = path.join("src", "data", "nutrition", "food-catalog.ts");
 const KOPPELING_FILE = path.join("src", "data", "nutrition", "food-catalog-nevo.ts");
+const BENADERING_FILE = path.join("scripts", "nevo-benadering-micros.json");
 const OUT_FILE = path.join("src", "data", "nutrition", "food-catalog-nevo-gehaltes.ts");
 const NEVO_EDITIE = "2025/9.0";
 
@@ -81,27 +88,42 @@ export function leesCategorieen(tekst) {
   return categorieen;
 }
 
+/** Kernstoffen waarvoor een gemeten 0 of spoor apart wordt bewaard (zie de kop). */
+export const KERN_VELDEN = new Set(["protein_g", "magnesium_mg", "zinc_mg", "vitamin_d_ug", "epa_g", "dha_g"]);
+
 /** Eén catalogusregel → zijn gehaltes, of `null` als er niets te schrijven valt. */
 export function gehaltesVoor(voedingsmiddel, categorie) {
   if (voedingsmiddel.per !== "100g") return null;
   const gehaltes = {};
+  const nul = [];
+  const spoor = [];
   for (const [stofCode, veld] of STOFFEN) {
-    if ((veld === "epa_g" || veld === "dha_g") && !OMEGA3_CATEGORIEEN.has(categorie)) continue;
     const stof = voedingsmiddel.stoffen[stofCode];
-    if (!stof || stof.spoor || !(stof.w > 0)) continue;
+    if (!stof) continue;
+    if (stof.spoor || !(stof.w > 0)) {
+      if (!KERN_VELDEN.has(veld)) continue;
+      (stof.spoor ? spoor : nul).push(veld);
+      continue;
+    }
+    if ((veld === "epa_g" || veld === "dha_g") && !OMEGA3_CATEGORIEEN.has(categorie)) continue;
     gehaltes[veld] = stof.w;
   }
+  if (nul.length > 0) gehaltes.nul = nul;
+  if (spoor.length > 0) gehaltes.spoor = spoor;
   return Object.keys(gehaltes).length > 0 ? gehaltes : null;
 }
 
-export function bouwBestand(regels) {
-  const body = regels
-    .map(([key, code, gehaltes]) => {
-      const velden = Object.entries(gehaltes)
-        .map(([veld, waarde]) => `${veld}: ${waarde}`)
-        .join(", ");
-      return `  ${JSON.stringify(key)}: { code: ${JSON.stringify(code)}, ${velden} },`;
-    })
+function regelVoor(key, code, gehaltes, extra = "") {
+  const velden = Object.entries(gehaltes)
+    .map(([veld, waarde]) => `${veld}: ${Array.isArray(waarde) ? JSON.stringify(waarde) : waarde}`)
+    .join(", ");
+  return `  ${JSON.stringify(key)}: { code: ${JSON.stringify(code)}, ${extra}${velden} },`;
+}
+
+export function bouwBestand(regels, benaderingen = []) {
+  const body = regels.map(([key, code, gehaltes]) => regelVoor(key, code, gehaltes)).join("\n");
+  const benaderingBody = benaderingen
+    .map(([key, code, naam, gehaltes]) => regelVoor(key, code, gehaltes, `naam: ${JSON.stringify(naam)}, `))
     .join("\n");
   return `/**
  * NEVO-gehaltes per 100 g voor de dagboekstoffen, per catalogusregel.
@@ -112,9 +134,14 @@ export function bouwBestand(regels) {
  * omega-3-som is een bewerking en wordt in \`nutrition-catalog-gehalte.ts\`
  * gemaakt en als afgeleid gelabeld.
  *
- * Een stof die hier ontbreekt is niet gemeten, spoor of nul in NEVO: dat is
- * \`n.o.\`, nooit 0. Regels met \`basis: "benadering"\` staan hier niet.
+ * Een kernstof die NEVO als 0 of spoor (TR) meldt, staat in \`nul\` of \`spoor\`
+ * en nooit als getal: alleen voor de weergave, nooit in een som. Een stof die
+ * nergens staat, is niet gemeten (\`n.o.\`). Regels met \`basis: "benadering"\`
+ * staan niet in \`FOOD_CATALOG_NEVO_GEHALTES\` maar, als ze getoond mogen worden
+ * (\`scripts/nevo-benadering-micros.json\`), in \`FOOD_CATALOG_NEVO_BENADERINGEN\`.
  */
+export type NevoKernVeld = "protein_g" | "magnesium_mg" | "zinc_mg" | "vitamin_d_ug" | "epa_g" | "dha_g";
+
 export interface NevoGehaltes {
   /** NEVO-code, gelijk aan die in \`food-catalog-nevo.ts\`. */
   code: string;
@@ -134,12 +161,26 @@ export interface NevoGehaltes {
   iron_mg?: number;
   vitamin_b12_ug?: number;
   vitamin_c_mg?: number;
+  /** Kernstoffen die NEVO als 0 meldt: gemeten, niets erin. */
+  nul?: readonly NevoKernVeld[];
+  /** Kernstoffen die NEVO als spoor (TR) meldt. */
+  spoor?: readonly NevoKernVeld[];
+}
+
+/** Gehaltes van een vergelijkbaar NEVO-record, alleen ter weergave en altijd met {@link naam} erbij. */
+export interface NevoBenaderingGehaltes extends NevoGehaltes {
+  /** De NEVO-naam van het record waarvan de waarden komen. */
+  naam: string;
 }
 
 export const NEVO_GEHALTES_EDITIE = "${NEVO_EDITIE}";
 
 export const FOOD_CATALOG_NEVO_GEHALTES: Readonly<Record<string, NevoGehaltes>> = {
 ${body}
+};
+
+export const FOOD_CATALOG_NEVO_BENADERINGEN: Readonly<Record<string, NevoBenaderingGehaltes>> = {
+${benaderingBody}
 };
 `;
 }
@@ -157,15 +198,20 @@ function main() {
   const nevo = bouwVoedingsmiddelen(parseDelimited(fs.readFileSync(CSV_PAD, "utf8")));
   const perCode = new Map(nevo.voedingsmiddelen.map((v) => [v.code, v]));
 
+  const tonen = JSON.parse(fs.readFileSync(BENADERING_FILE, "utf8")).toon ?? {};
+
   const regels = [];
+  const benaderingen = [];
   const zonder = [];
   let benadering = 0;
   for (const [key, { code, basis }] of Object.entries(koppelingen).sort(([a], [b]) => a.localeCompare(b))) {
+    const voedingsmiddel = perCode.get(code);
     if (basis === "benadering") {
       benadering++;
+      const gehaltes = key in tonen && voedingsmiddel ? gehaltesVoor(voedingsmiddel, categorieen[key]) : null;
+      if (gehaltes) benaderingen.push([key, code, voedingsmiddel.naam.trim(), gehaltes]);
       continue;
     }
-    const voedingsmiddel = perCode.get(code);
     const gehaltes = voedingsmiddel ? gehaltesVoor(voedingsmiddel, categorieen[key]) : null;
     if (!gehaltes) {
       zonder.push(key);
@@ -176,10 +222,12 @@ function main() {
 
   console.log(`Koppelingen: ${Object.keys(koppelingen).length}`);
   console.log(`Geschreven: ${regels.length}`);
-  console.log(`Overgeslagen als benadering: ${benadering}`);
+  console.log(`Benaderingen: ${benadering}, waarvan getoond: ${benaderingen.length}`);
+  const onbekend = Object.keys(tonen).filter((key) => koppelingen[key]?.basis !== "benadering");
+  if (onbekend.length) console.warn(`Let op: geen benadering in de koppeling: ${onbekend.join(", ")}`);
   console.log(`Zonder bruikbaar gehalte (of per 100 ml): ${zonder.length}${zonder.length ? ` — ${zonder.join(", ")}` : ""}`);
   if (droog) return;
-  fs.writeFileSync(OUT_FILE, bouwBestand(regels));
+  fs.writeFileSync(OUT_FILE, bouwBestand(regels, benaderingen));
   console.log(`Geschreven naar ${OUT_FILE}`);
 }
 

@@ -6,7 +6,7 @@ import NevoMacroBlok from "@/components/dashboard/dagboek/NevoMacroBlok";
 import PortieRijenScherm from "@/components/dashboard/dagboek/PortieRijenScherm";
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
-import { bedragVanItem } from "@/lib/nutrition-dagboek-items";
+import { weergaveVanItem } from "@/lib/nutrition-dagboek-items";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 
@@ -89,9 +89,12 @@ export default function DagboekVoedingPortie({
       {(totaalGram) => {
         const bijdragen = NUTRIENT_ORDER.flatMap((n) => {
           if (nutrient && n !== nutrient) return [];
-          const bedrag = bedragVanItem({ moment, bron: "voeding", key: itemKey, grams: totaalGram }, n);
-          return bedrag ? [{ nutrient: n, bedrag }] : [];
+          const weergave = weergaveVanItem({ moment, bron: "voeding", key: itemKey, grams: totaalGram }, n);
+          if (weergave.soort === "onbekend") return [];
+          if (weergave.soort !== "waarde" && !nutrient) return [];
+          return [{ nutrient: n, weergave }];
         });
+        const benadering = bijdragen.find((rij) => rij.weergave.benadering)?.weergave.benadering ?? null;
         return (
           <>
             <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
@@ -113,12 +116,22 @@ export default function DagboekVoedingPortie({
                     >
                       <span>{nutrientReferences[rij.nutrient].label}</span>
                       <span className="font-mono tabular-nums text-[var(--vd-ink)]">
-                        {Math.round(rij.bedrag.value * 10) / 10} {rij.bedrag.unit}
+                        {rij.weergave.benadering ? "≈ " : null}
+                        {rij.weergave.soort === "waarde"
+                          ? `${Math.round(rij.weergave.value * 10) / 10} ${rij.weergave.unit}`
+                          : rij.weergave.soort === "spoor"
+                            ? "spoor"
+                            : `0 ${rij.weergave.unit}`}
                       </span>
                     </li>
                   ))}
                 </ul>
               )}
+              {benadering ? (
+                <p className="m-0 mt-1.5 text-[11px] leading-relaxed text-[var(--vd-ink-4)]">
+                  ≈ Benadering: waarden van &lsquo;{benadering}&rsquo; (NEVO). Telt niet mee in je dag.
+                </p>
+              ) : null}
             </div>
 
             <NevoMacroBlok entry={entry} grams={totaalGram} />

@@ -8,7 +8,7 @@ import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import * as Icons from "@/components/app/icons";
 import { NEVO_GEHALTES_EDITIE } from "@/data/nutrition/food-catalog-nevo-gehaltes";
 import { gehaltePer100g, nevoOmega3Delen } from "@/lib/nutrition-catalog-gehalte";
-import { bedragVanItem, type DagboekItem } from "@/lib/nutrition-dagboek-items";
+import { weergaveVanItem, type DagboekItem } from "@/lib/nutrition-dagboek-items";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import { toBase } from "@/lib/nutrition-units";
 import NevoMacroBlok from "@/components/dashboard/dagboek/NevoMacroBlok";
@@ -31,8 +31,11 @@ import { useNevoProducten } from "@/lib/use-nevo-producten";
  * Bovenaan de vijf kernstoffen met ADH-balk, dezelfde getallen als de krans.
  * Daaronder de rest van het etiket uit NEVO (`VoedingswaardeTabel`), zonder
  * oordeel (`BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §0.1). Eiwit
- * staat in allebei en komt in allebei uit {@link bedragVanItem}. Een
- * benaderingskoppeling toont alleen calorieën en macro's, als benadering.
+ * staat in allebei en komt in allebei uit `bedragVanItem`. Een gemeten 0 of
+ * spoor staat er als "0"/"spoor". Een benadering die getoond mag worden
+ * (`scripts/nevo-benadering-micros.json`) toont de kernstoffen van het
+ * vergelijkbare NEVO-record met "≈" en de NEVO-naam; die tellen niet mee in je
+ * dag (`docs/plan/BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`).
  */
 
 function labelVoor(item: DagboekItem): string | null {
@@ -74,19 +77,26 @@ export default function DagboekProductDetail({
     mgPer100g === null ? null : Math.round(((mgPer100g * item.grams) / 100) * 10) / 10;
 
   const rijen = NUTRIENT_ORDER.map((nutrient) => {
-    const bedrag = bedragVanItem(item, nutrient);
-    if (!bedrag) return null;
-    const inBasis = toBase(bedrag.value, bedrag.unit, nutrient);
+    const weergave = weergaveVanItem(item, nutrient);
+    if (weergave.soort === "onbekend") return null;
+    const label = nutrientReferences[nutrient].label;
+    if (weergave.soort !== "waarde") {
+      return { nutrient, label, soort: weergave.soort, waarde: 0, unit: weergave.unit, aandeel: 0, benadering: weergave.benadering };
+    }
+    const inBasis = toBase(weergave.value, weergave.unit, nutrient);
     if (inBasis === null) return null;
-    const aandeel = aandeelVanRi(nutrient, inBasis);
     return {
       nutrient,
-      label: nutrientReferences[nutrient].label,
+      label,
+      soort: weergave.soort,
       waarde: inBasis,
-      unit: bedrag.unit,
-      aandeel,
+      unit: weergave.unit,
+      aandeel: aandeelVanRi(nutrient, inBasis),
+      benadering: weergave.benadering,
     };
   }).filter((rij): rij is NonNullable<typeof rij> => rij !== null);
+  const benadering = rijen.find((rij) => rij.benadering)?.benadering ?? null;
+  const heeftGetal = rijen.some((rij) => rij.soort === "waarde");
 
   if (!label) {
     return (
@@ -139,7 +149,7 @@ export default function DagboekProductDetail({
           </h3>
         </header>
 
-        {rijen.length === 0 ? (
+        {!heeftGetal ? (
           <p className="m-0 px-4 py-6 text-center text-[12px] leading-relaxed text-[var(--vd-ink-4)]">
             Van dit product is nog geen gehalte bekend voor de stoffen die dit dagboek volgt.
           </p>
@@ -165,17 +175,30 @@ export default function DagboekProductDetail({
                       />
                     ) : null}
                     <span className="relative flex h-full items-center justify-end px-2 font-mono text-[10.5px] font-bold tabular-nums text-[var(--vd-ink)]">
-                      {rij.aandeel === null ? "eigen doel" : `${vulling}% ADH`}
+                      {rij.soort === "spoor"
+                        ? "spoor"
+                        : rij.aandeel === null
+                          ? "eigen doel"
+                          : `${rij.benadering ? "≈ " : ""}${vulling}% ADH`}
                     </span>
                   </span>
                   <span className="w-[64px] shrink-0 text-right font-mono text-[11px] tabular-nums text-[var(--vd-ink-3)]">
-                    {Math.round(rij.waarde * 10) / 10} {rij.unit}
+                    {rij.benadering ? "≈ " : null}
+                    {rij.soort === "spoor" ? "spoor" : `${Math.round(rij.waarde * 10) / 10} ${rij.unit}`}
                   </span>
                 </li>
               );
             })}
           </ul>
         )}
+
+        {benadering && heeftGetal ? (
+          <p className="m-0 border-t border-white/10 bg-[var(--vd-amber-fill)] px-4 py-3 text-[11px] leading-relaxed text-[var(--vd-ink-2)]">
+            ≈ Benadering: NEVO heeft geen eigen record voor dit product. Dit zijn de waarden van
+            &lsquo;{benadering}&rsquo; (NEVO-online versie {NEVO_GEHALTES_EDITIE}, RIVM, Bilthoven). Ze tellen
+            niet mee in je dag.
+          </p>
+        ) : null}
 
         {nevoStoffen.length > 0 ? (
           <footer className="flex flex-col gap-1 border-t border-white/10 px-4 py-3 text-[11px] leading-relaxed text-[var(--vd-ink-4)]">
