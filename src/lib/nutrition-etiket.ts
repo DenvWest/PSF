@@ -54,7 +54,9 @@ export function etiketVanProduct(
 ): Voedingswaarde {
   const rijen = bron.velden.map((veld) => {
     const waarde = bedragVanSupermarktveld(product, veld.veld, grams);
-    return { ...veld, waarde, aandeel: waarde !== null && veld.ri !== null ? waarde / veld.ri : null };
+    // Een etiket per product rekent tegen de RI (wettelijke vermelding), niet tegen een persoonlijke norm.
+    const aandeelRi = waarde !== null && veld.ri !== null ? waarde / veld.ri : null;
+    return { ...veld, waarde, norm: null, aandeel: aandeelRi, aandeelRi };
   });
   const metWaarde = rijen.some((rij) => rij.waarde !== null) ? 1 : 0;
   return { rijen, metWaarde, zonderWaarde: 1 - metWaarde };
