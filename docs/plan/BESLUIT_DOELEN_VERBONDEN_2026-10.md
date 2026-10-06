@@ -67,3 +67,12 @@ Een andere sessie breidt het dagboek en de micronutriëntringen uit. Om dubbel w
 ## Meetpunt
 
 `voedingsdoel_aangepast` (bestaand), met nieuwe `setting`-waarden `gevolgde_stof_aan`, `gevolgde_stof_uit`, `ri_override`. Voor de dagboek-link: `nutrition_dagboek_stoffen_kiezen_klik` (nieuw, in plak 4).
+
+### Aanvulling 6 okt: gevolgde stoffen per maaltijd en per product
+
+Dennis merkte dat ijzer na het kiezen op Je doelen niet terugkwam in het dagboek per eetmoment. De maaltijdtabel had vaste kolommen (magnesium, eiwit, zink, omega-3).
+
+- **Maaltijdtabel (`DagboekMaaltijd`):** elke gevolgde stof krijgt een eigen kolom na de kernstoffen, met het getal in mg/µg/g, neutrale tint, subtotaal per maaltijd. Geen percentage, geen oordeel. Bron: `berekenVoedingswaarde`, dezelfde als "Ook gevolgd".
+- **"Wat dit levert" (`DagboekProductLevert`):** gevolgde stoffen staan onder de kernstoffen als "Ook gevolgd" met %ADH in neutrale tint. Dit breidt de "vijf kernstoffen" uit `BESLUIT_NUL_SPOOR_BENADERING_2026-10.md` §7 uit; vóór en na toevoegen blijft het hetzelfde blok.
+- **Eiwit per product** rekent tegen je eiwitdoel ("% van je doel"): eiwit heeft geen RI, dus dit raakt `BESLUIT_KERNSTOF_NORMEN_2026-10.md` §4 niet.
+- **Bewust niet:** de andere kernstoffen per product tegen je persoonlijke norm. §4 blijft staan (per product %RI, de etiketvermelding); Dennis koos 6 okt voor alleen bovenstaande.

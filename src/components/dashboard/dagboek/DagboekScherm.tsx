@@ -647,6 +647,7 @@ export default function DagboekScherm({
     return (
       <DagboekVoedingPortie
         itemKey={key}
+        proteinTarget={proteinTarget}
         moment={portieMoment}
         favorieten={favorieten}
         busy={busy}
@@ -720,6 +721,7 @@ export default function DagboekScherm({
     return (
       <DagboekProductDetail
         item={scherm.item}
+        proteinTarget={proteinTarget}
         busy={busy}
         onTerug={() => setScherm({ scherm: "overzicht" })}
         onVerwijder={(item) => {
@@ -919,6 +921,7 @@ export default function DagboekScherm({
                 moment={moment.id}
                 label={moment.label}
                 items={items}
+                nevoProducten={nevoProducten}
                 busy={busy}
                 onToevoegen={(id) => {
                   emitAccountClientEvent("nutrition.dagboek_maaltijd_geopend", {

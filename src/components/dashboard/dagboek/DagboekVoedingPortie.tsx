@@ -6,6 +6,7 @@ import PortieRijenScherm from "@/components/dashboard/dagboek/PortieRijenScherm"
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
+import type { ProteinTargetRange } from "@/lib/protein-target";
 
 /**
  * De portie-invoer voor een voedingsmiddel uit de catalogus: dezelfde rijen als
@@ -24,6 +25,7 @@ export default function DagboekVoedingPortie({
   onTerug,
   busy = false,
   busyFavoriet = false,
+  proteinTarget = null,
 }: {
   itemKey: string;
   moment: EetmomentId;
@@ -34,6 +36,7 @@ export default function DagboekVoedingPortie({
   onTerug: () => void;
   busy?: boolean;
   busyFavoriet?: boolean;
+  proteinTarget?: ProteinTargetRange | null;
 }) {
   const entry = catalogEntry(itemKey);
 
@@ -78,7 +81,12 @@ export default function DagboekVoedingPortie({
         </button>
       }
     >
-      {(totaalGram) => <DagboekProductLevert item={{ moment, bron: "voeding", key: itemKey, grams: totaalGram }} />}
+      {(totaalGram) => (
+        <DagboekProductLevert
+          item={{ moment, bron: "voeding", key: itemKey, grams: totaalGram }}
+          proteinTarget={proteinTarget}
+        />
+      )}
     </PortieRijenScherm>
   );
 }
