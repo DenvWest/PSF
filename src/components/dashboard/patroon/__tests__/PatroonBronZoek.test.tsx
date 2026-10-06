@@ -57,11 +57,50 @@ describe("PatroonBronZoek", () => {
     await waitFor(() =>
       expect(screen.getByRole("button", { name: /Magnesiumcitraat, capsule uit je favorieten halen/ })).toBeTruthy(),
     );
-    const post = fetchMock.mock.calls.find(([, init]) => (init as RequestInit | undefined)?.method === "POST");
-    expect(post?.[0]).toBe("/api/account/dagboek-favorieten");
-    expect(JSON.parse(String((post?.[1] as RequestInit).body))).toEqual({
-      bron: "supplement",
-      key: "magnesiumcitraat-capsule",
+    const posts = fetchMock.mock.calls.filter(([, init]) => (init as RequestInit | undefined)?.method === "POST");
+    const body = (url: string) =>
+      JSON.parse(String((posts.find(([u]) => u === url)?.[1] as RequestInit).body)) as Record<string, string>;
+    expect(body("/api/account/dagboek-favorieten")).toEqual({ bron: "supplement", key: "magnesiumcitraat-capsule" });
+    expect(body("/api/account/favorites")).toMatchObject({
+      item_id: "dagboek-supplement-magnesiumcitraat-capsule",
+      kind: "supplement",
+      domain: "voeding",
     });
+    expect(screen.getByRole("button", { name: /Bewaard bij Mijn supplementen/ })).toBeTruthy();
+  });
+
+  it("zet een voedingsproduct niet in Keuze → Favorieten, alleen in het dagboek", async () => {
+    renderZoek();
+    const ster = screen.getAllByRole("button", { name: /bewaren in je favorieten/ })[0]!;
+    fireEvent.click(ster);
+    await waitFor(() => expect(screen.getByRole("button", { name: /Bewaard bij Mijn producten/ })).toBeTruthy());
+    expect(fetchMock.mock.calls.some(([u]) => String(u).startsWith("/api/account/favorites"))).toBe(false);
+  });
+
+  it("＋ opent het dagboek met het product en de maaltijd met de meeste ruimte", () => {
+    window.history.replaceState(null, "", "/dashboard?tab=voortgang");
+    const popstate = vi.fn();
+    window.addEventListener("popstate", popstate);
+    render(
+      <PatroonBronZoek
+        nutrient="magnesium"
+        label="Magnesium"
+        unit="mg"
+        norm={350}
+        voedingswijze={null}
+        standaardMoment="lunch"
+      />,
+    );
+    fireEvent.click(screen.getAllByRole("button", { name: /in je dagboek zetten/ })[0]!);
+    expect(window.location.search).toMatch(/tab=vandaag&voeg=voeding%3A[a-z-]+&moment=lunch/);
+    expect(popstate).toHaveBeenCalled();
+    window.removeEventListener("popstate", popstate);
+  });
+
+  it("begint met de zoekterm uit de URL", () => {
+    render(
+      <PatroonBronZoek nutrient="magnesium" label="Magnesium" unit="mg" norm={350} voedingswijze={null} startZoek="magnesiumcitraat" />,
+    );
+    expect(screen.getByText("Magnesiumcitraat, capsule")).toBeTruthy();
   });
 });

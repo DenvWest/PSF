@@ -7,6 +7,7 @@ import { catalogEntry } from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
+import { leesDagboekFavorieten, leesDagboekVoeg, wisDagboekVoeg } from "@/lib/dagboek-deeplink";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
 import { dagSoortVoor, type DagboekDag } from "@/lib/nutrition-dagboek";
@@ -28,7 +29,7 @@ import { fetchMacroDoelen } from "@/lib/macro-doelen-client";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
 import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
 import { weekDatums, weekStart } from "@/lib/nutrition-weekoverzicht";
-import DagboekCatalogusZoek from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
+import DagboekCatalogusZoek, { type DagboekZoekTab } from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
 import DagboekKrans from "@/components/dashboard/dagboek/DagboekKrans";
 import DagboekMaaltijd from "@/components/dashboard/dagboek/DagboekMaaltijd";
 import DagboekMacroRing, {
@@ -78,7 +79,7 @@ type ZoekContext = { nutrient: NutrientId | null; moment: EetmomentId };
 type NutrientScherm =
   | { scherm: "overzicht" }
   | { scherm: "detail"; nutrient: NutrientId }
-  | { scherm: "zoek"; nutrient: NutrientId | null; moment: EetmomentId }
+  | { scherm: "zoek"; nutrient: NutrientId | null; moment: EetmomentId; startTab?: DagboekZoekTab }
   | {
       scherm: "portie";
       nutrient: NutrientId | null;
@@ -184,6 +185,26 @@ export default function DagboekScherm({
   const [weekSupermarktLogs, setWeekSupermarktLogs] = useState<Map<string, SupermarktPortie[]>>(
     new Map(),
   );
+
+  useEffect(() => {
+    // Vanuit een ander scherm (bijv. ＋ bij een bron in Je patroon): open direct
+    // het portiescherm van dat product. Ook bij een tabwissel, want dan blijft
+    // dit scherm soms staan en komt alleen een popstate binnen.
+    const openGevraagd = () => {
+      const voeg = leesDagboekVoeg(window.location.search);
+      const favorietenTab = leesDagboekFavorieten(window.location.search);
+      if (!voeg && !favorietenTab) return;
+      wisDagboekVoeg();
+      if (voeg) {
+        setScherm({ scherm: "portie", nutrient: null, bron: voeg.bron, key: voeg.key, moment: voeg.moment });
+      } else if (favorietenTab) {
+        setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt", startTab: favorietenTab });
+      }
+    };
+    openGevraagd();
+    window.addEventListener("popstate", openGevraagd);
+    return () => window.removeEventListener("popstate", openGevraagd);
+  }, []);
 
   useEffect(() => {
     let afgebroken = false;
@@ -690,6 +711,7 @@ export default function DagboekScherm({
       <>
         <DagboekCatalogusZoek
           nutrient={nutrient}
+          startTab={scherm.scherm === "zoek" ? scherm.startTab : undefined}
           eerderGebruikt={recenteItems}
           favorieten={favorieten}
           moment={moment}

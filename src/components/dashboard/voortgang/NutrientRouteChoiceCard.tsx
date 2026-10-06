@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { clarityTag } from "@/lib/clarity";
+import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
 import { trackEvent } from "@/lib/ga4";
 import { nutritionSourceFavoriteId } from "@/lib/nutrition-favorite-source";
 import {
@@ -217,9 +218,12 @@ export default function NutrientRouteChoiceCard({
           </span>{" "}
           <Link
             href="/dashboard?tab=voortgang"
-            onClick={() =>
-              trackEvent("keuze_logboek_patroon_click", { nutrient: status.nutrient })
-            }
+            onClick={(event) => {
+              trackEvent("keuze_logboek_patroon_click", { nutrient: status.nutrient });
+              // Zelfde pad als de tabs: een gewone Link doet niets als Next denkt dat je al op deze URL staat.
+              event.preventDefault();
+              gaNaarDashboard("/dashboard?tab=voortgang");
+            }}
             className="font-semibold text-[#9CC5A9] no-underline hover:underline"
           >
             Je patroon →
