@@ -12,7 +12,9 @@ import NevoMacroBlok from "@/components/dashboard/dagboek/NevoMacroBlok";
 import VoedingswaardeTabel from "@/components/dashboard/dagboek/VoedingswaardeTabel";
 import { macroPortieVoor } from "@/lib/catalogus-macro-portie";
 import { etiketBronVoor, etiketVanProduct } from "@/lib/nutrition-etiket";
-import { berekenVoedingswaarde, nevoCodeVoorItem } from "@/lib/nutrition-voedingswaarde";
+import { berekenVoedingswaarde, nevoCodeVoorItem, rondVoedingswaarde } from "@/lib/nutrition-voedingswaarde";
+import type { ProteinTargetRange } from "@/lib/protein-target";
+import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
 import { useNevoProducten } from "@/lib/use-nevo-producten";
 
 /**
@@ -31,8 +33,19 @@ import { useNevoProducten } from "@/lib/use-nevo-producten";
  * dag (`docs/plan/BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`). Het etiket van een
  * vrijgegeven benadering komt van hetzelfde record, als benadering gelabeld;
  * van een andere benadering alleen calorieën en macro's (`NevoMacroBlok`).
+ *
+ * Eiwit heeft geen RI en rekent daarom tegen je eiwitdoel. Daaronder staan de
+ * stoffen die je zelf volgt (`useGevolgdeStoffen`) met %RI in een neutrale
+ * tint; de andere stoffen blijven %RI, de etiketvermelding
+ * (`BESLUIT_KERNSTOF_NORMEN_2026-10.md` §4).
  */
-export default function DagboekProductLevert({ item }: { item: DagboekItem }) {
+export default function DagboekProductLevert({
+  item,
+  proteinTarget = null,
+}: {
+  item: DagboekItem;
+  proteinTarget?: ProteinTargetRange | null;
+}) {
   const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
   const nevoCode = nevoCodeVoorItem(item);
   const etiketBron = etiketBronVoor(voedingEntry);
@@ -46,6 +59,14 @@ export default function DagboekProductLevert({ item }: { item: DagboekItem }) {
     : [];
   const omega3Delen =
     voedingEntry && nevoStoffen.includes("omega3") ? nevoOmega3Delen(voedingEntry.key) : null;
+  const { stoffen: gevolgdeStoffen } = useGevolgdeStoffen();
+  const etiketRijen =
+    nevoProduct && nevoCode ? berekenVoedingswaarde({ items: [item], nevoProducten }).rijen : [];
+  const gevolgd = gevolgdeStoffen.flatMap((veld) => {
+    const rij = etiketRijen.find((r) => r.veld === veld);
+    return rij && rij.waarde !== null ? [rij] : [];
+  });
+  const eiwitDoel = proteinTarget && proteinTarget.gramsLow > 0 ? proteinTarget.gramsLow : null;
   const naarPortie = (mgPer100g: number | null) =>
     mgPer100g === null ? null : Math.round(((mgPer100g * item.grams) / 100) * 10) / 10;
 
@@ -64,12 +85,13 @@ export default function DagboekProductLevert({ item }: { item: DagboekItem }) {
       soort: weergave.soort,
       waarde: inBasis,
       unit: weergave.unit,
-      aandeel: aandeelVanRi(nutrient, inBasis),
+      aandeel:
+        nutrient === "protein" ? (eiwitDoel === null ? null : inBasis / eiwitDoel) : aandeelVanRi(nutrient, inBasis),
       benadering: weergave.benadering,
     };
   }).filter((rij): rij is NonNullable<typeof rij> => rij !== null);
   const benadering = rijen.find((rij) => rij.benadering)?.benadering ?? null;
-  const heeftGetal = rijen.some((rij) => rij.soort === "waarde");
+  const heeftGetal = rijen.some((rij) => rij.soort === "waarde") || gevolgd.length > 0;
 
 
   return (
@@ -111,12 +133,40 @@ export default function DagboekProductLevert({ item }: { item: DagboekItem }) {
                         ? "spoor"
                         : rij.aandeel === null
                           ? "eigen doel"
-                          : `${rij.benadering ? "≈ " : ""}${vulling}% ADH`}
+                          : `${rij.benadering ? "≈ " : ""}${vulling}% ${rij.nutrient === "protein" ? "van je doel" : "ADH"}`}
                     </span>
                   </span>
                   <span className="w-[64px] shrink-0 text-right font-mono text-[11px] tabular-nums text-[var(--vd-ink-3)]">
                     {rij.benadering ? "≈ " : null}
                     {rij.soort === "spoor" ? "spoor" : `${Math.round(rij.waarde * 10) / 10} ${rij.unit}`}
+                  </span>
+                </li>
+              );
+            })}
+            {gevolgd.length > 0 ? (
+              <li className="pt-1 text-[10.5px] font-semibold text-[var(--vd-ink-4)]">Ook gevolgd</li>
+            ) : null}
+            {gevolgd.map((rij) => {
+              const vulling = rij.aandeelRi === null ? 0 : Math.min(Math.round(rij.aandeelRi * 100), 100);
+              return (
+                <li key={rij.veld} className="flex items-center gap-3">
+                  <span className="w-[72px] shrink-0 text-[12px] font-medium text-[var(--vd-ink-2)]">
+                    {rij.label}
+                  </span>
+                  <span className="relative h-[22px] flex-1 overflow-hidden rounded-md bg-[var(--vd-track)]">
+                    {rij.aandeelRi !== null ? (
+                      <span
+                        aria-hidden
+                        className="absolute inset-y-0 left-0 rounded-md"
+                        style={{ width: `${vulling}%`, background: "var(--vd-ink-4)" }}
+                      />
+                    ) : null}
+                    <span className="relative flex h-full items-center justify-end px-2 font-mono text-[10.5px] font-bold tabular-nums text-[var(--vd-ink)]">
+                      {rij.aandeelRi === null ? "geen ADH" : `${vulling}% ADH`}
+                    </span>
+                  </span>
+                  <span className="w-[64px] shrink-0 text-right font-mono text-[11px] tabular-nums text-[var(--vd-ink-3)]">
+                    {rondVoedingswaarde(rij.waarde ?? 0)} {rij.unit}
                   </span>
                 </li>
               );
