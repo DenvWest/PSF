@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import * as Icons from "@/components/app/icons";
 import GevolgdeStoffenKiezer from "@/components/dashboard/doelen/GevolgdeStoffenKiezer";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { trackEvent } from "@/lib/ga4";
@@ -198,6 +199,7 @@ export default function DagboekKrans({
   onSelect,
   onKiesStof,
   onBegin,
+  inklapbaar = false,
 }: {
   stoffen: readonly NutrientOndergrensGesplitst[];
   proteinTarget: ProteinTargetRange | null;
@@ -205,6 +207,7 @@ export default function DagboekKrans({
   onSelect: (nutrient: NutrientId) => void;
   onKiesStof: (stof: InformatieveStof) => void;
   onBegin: () => void;
+  inklapbaar?: boolean;
 }) {
   const normen = useKernstofNormen();
   const profiel = useKernstofProfiel();
@@ -215,6 +218,7 @@ export default function DagboekKrans({
   const [kiezen, setKiezen] = useState(false);
   const [uitleg, setUitleg] = useState(false);
   const [getekend, setGetekend] = useState(false);
+  const [lijstOpen, setLijstOpen] = useState(false);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setGetekend(true));
@@ -282,6 +286,11 @@ export default function DagboekKrans({
     setKeuze({ ring: "gevolgd", veld });
     setDraaiBuiten((huidig) => kortsteDraai(huidig, -(index + 0.5) * spanBuiten));
     trackEvent("nutrition_dagboek_krans_gekozen", { ring: "gevolgd", nutrient: veld });
+  }
+
+  function wisselLijst() {
+    if (!lijstOpen) trackEvent("nutrition_dagboek_krans_lijst_open", { gevolgd: gevolgd.length });
+    setLijstOpen(!lijstOpen);
   }
 
   function wisselKiezer() {
@@ -562,6 +571,23 @@ export default function DagboekKrans({
         </div>
       ) : null}
 
+      {inklapbaar ? (
+        <button
+          type="button"
+          onClick={wisselLijst}
+          aria-expanded={lijstOpen}
+          aria-controls="krans-stoffenlijst"
+          className="flex w-full max-w-[420px] cursor-pointer items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2 text-[12.5px] font-semibold text-[var(--vd-ink-2)] transition-colors hover:border-white/20 hover:text-[var(--vd-ink)]"
+        >
+          <span>{lijstOpen ? "Verberg stoffen" : `Alle stoffen (${rijen.length + gevolgd.length})`}</span>
+          <span aria-hidden className={`flex transition-transform ${lijstOpen ? "rotate-180" : ""}`}>
+            <Icons.ChevronDown s={16} />
+          </span>
+        </button>
+      ) : null}
+
+      {!inklapbaar || lijstOpen ? (
+      <div id="krans-stoffenlijst" className="flex w-full flex-col items-center gap-3">
       <ul aria-label="Kernstoffen" className="m-0 grid w-full max-w-[420px] list-none grid-cols-1 gap-x-5 gap-y-0.5 p-0 @[400px]:grid-cols-2">
         {rijen.map((rij, index) => {
           const actief = gekozenKern?.nutrient === rij.nutrient;
@@ -662,6 +688,8 @@ export default function DagboekKrans({
         <div className="w-full rounded-2xl border border-white/10 bg-white/[0.02] px-3 py-3 text-[var(--vd-ink-2)]">
           <GevolgdeStoffenKiezer surface="dagboek" />
         </div>
+      ) : null}
+      </div>
       ) : null}
     </section>
   );
