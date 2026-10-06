@@ -3024,7 +3024,7 @@ html.floating-cta-active footer {
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 0.875rem;
-  background: var(--vd-surface);
+  background: transparent;
 }
 
 .vd-tabel-kop,
@@ -3036,7 +3036,7 @@ html.floating-cta-active footer {
 
 .vd-tabel-kop {
   padding: 0.5rem 0.75rem;
-  background: var(--vd-surface-2);
+  background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid var(--vd-line);
 }
 
@@ -3259,7 +3259,7 @@ a.vd-nutrienttabel-rij:focus-visible {
   gap: 0.75rem;
   border: 1px solid var(--vd-line);
   border-radius: 13px;
-  background: var(--vd-surface);
+  background: transparent;
   padding: 0.875rem;
   text-align: left;
   cursor: pointer;
@@ -3377,7 +3377,7 @@ a.vd-nutrienttabel-rij:focus-visible {
   font-size: 0.75rem;
   line-height: 1.55;
   color: var(--vd-ink-2);
-  background: var(--vd-surface-2);
+  background: rgba(255, 255, 255, 0.03);
   border-left: 2px solid var(--vd-sage);
   border-radius: 0 8px 8px 0;
   padding: 0.625rem 0.75rem;
@@ -3401,7 +3401,7 @@ a.vd-nutrienttabel-rij:focus-visible {
   gap: 0.75rem;
   border: 1px solid var(--vd-line);
   border-radius: 13px;
-  background: var(--vd-surface);
+  background: transparent;
   padding: 0.875rem;
   text-align: left;
   font: inherit;
@@ -3450,10 +3450,9 @@ a.vd-nutrienttabel-rij:focus-visible {
 }
 
 .vd-paneel {
-  background: var(--vd-surface);
+  background: transparent;
   border: 1px solid var(--vd-line);
   border-radius: 16px;
-  box-shadow: var(--vd-shadow);
   padding: 1.125rem;
 }
 
