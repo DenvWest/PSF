@@ -64,8 +64,15 @@ describe("kolommen", () => {
     const ts = fs.readFileSync("src/types/nevo-food.ts", "utf8");
     const uitTs = [...ts.slice(ts.indexOf("NEVO_WAARDE_KOLOMMEN"), ts.indexOf("] as const")).matchAll(/"([a-z0-9_]+)"/g)].map((m) => m[1]).sort();
     expect(uitTs).toEqual(kolommen);
-    const sql = fs.readFileSync("supabase/migrations/20261003120000_nevo_foods.sql", "utf8");
-    for (const kolom of kolommen) expect(sql, kolom).toMatch(new RegExp(`^\\s+${kolom} numeric`, "m"));
+    const sql = [
+      "supabase/migrations/20261003120000_nevo_foods.sql",
+      "supabase/migrations/20261006180000_nevo_foods_transvet.sql",
+    ]
+      .map((pad) => fs.readFileSync(pad, "utf8"))
+      .join("\n");
+    for (const kolom of kolommen) {
+      expect(sql, kolom).toMatch(new RegExp(`^\\s+(add column if not exists )?${kolom} numeric`, "m"));
+    }
   });
 
   it("neemt geen omega-3 mee", () => {

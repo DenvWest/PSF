@@ -197,6 +197,7 @@ export function nevoFoodNaarSupermarktProduct(food: NevoFood): SupermarktProduct
     energyKcal: w.energy_kcal,
     fatG: w.fat_g,
     saturatedFatG: w.saturated_fat_g,
+    transFatG: w.trans_fat_g,
     carbohydrateG: w.carbohydrate_g,
     sugarsG: w.sugars_g,
     fiberG: w.fiber_g,

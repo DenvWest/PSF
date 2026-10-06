@@ -57,6 +57,7 @@ const KOLOMMEN: readonly { id: NutrientId; kop: string }[] = [
 const GEVOLGD_KOP: Partial<Record<SupermarktVeld, string>> = {
   fiberG: "Vezels",
   saturatedFatG: "Verz. vet",
+  transFatG: "Transvet",
   sugarsG: "Suikers",
   sodiumMg: "Natrium",
   potassiumMg: "Kalium",

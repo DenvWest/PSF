@@ -16,6 +16,7 @@ function product(waarden: Partial<SupermarktProduct>): SupermarktProduct {
     energyKcal: null,
     fatG: null,
     saturatedFatG: null,
+    transFatG: null,
     carbohydrateG: null,
     sugarsG: null,
     fiberG: null,

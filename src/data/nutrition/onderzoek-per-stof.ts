@@ -132,6 +132,11 @@ const ONDERZOEK: Partial<Record<StofMetOnderzoek, StofOnderzoek>> = {
     bovengrens: null,
     richtlijn: "Zo weinig mogelijk; minder dan 10% van je energie als tussenstap (Gezondheidsraad 2026).",
   },
+  transFatG: {
+    zone: null,
+    bovengrens: null,
+    richtlijn: "Zo weinig mogelijk; de WHO houdt minder dan 1% van je energie aan.",
+  },
   sugarsG: {
     zone: null,
     bovengrens: null,

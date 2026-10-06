@@ -32,7 +32,7 @@ function nevoFood(code: string): NevoFood {
     naamEn: null,
     per: "100g",
     waarden: {
-      energy_kcal: 100, protein_g: 20, fat_g: 1, saturated_fat_g: null, carbohydrate_g: 0, sugars_g: null,
+      energy_kcal: 100, protein_g: 20, fat_g: 1, saturated_fat_g: null, trans_fat_g: null, carbohydrate_g: 0, sugars_g: null,
       fiber_g: null, sodium_mg: null, potassium_mg: null, calcium_mg: null, magnesium_mg: null, iron_mg: null,
       zinc_mg: null, vitamin_d_ug: null, vitamin_b12_ug: null, vitamin_c_mg: null,
     },
@@ -44,7 +44,7 @@ function nevoFood(code: string): NevoFood {
 function offProduct(id: string): SupermarktProduct {
   return {
     prodId: `off:${id}`, bron: "off", bronId: id, naam: `Product ${id}`, merk: null, categorie: null,
-    snapshotDatum: "2026-10-01", energyKcal: 50, fatG: null, saturatedFatG: null, carbohydrateG: null,
+    snapshotDatum: "2026-10-01", energyKcal: 50, fatG: null, saturatedFatG: null, transFatG: null, carbohydrateG: null,
     sugarsG: null, fiberG: null, proteinG: null, saltG: null, sodiumMg: null, calciumMg: null, ironMg: null,
     vitaminCMg: null, vitaminDµg: null, potassiumMg: null, magnesiumMg: null, zincMg: null, vitaminB12µg: null,
   };

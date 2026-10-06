@@ -7,12 +7,18 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20261006150000_kernstof_profiel_leeftijd_activiteit.sql`
-- **Openstaand:** 0
+- **Openstaand:** 1
 - **Laatst bijgewerkt:** 6 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
+
+### [ ] 20261006180000_nevo_foods_transvet.sql
+- **Wat:** kolom `trans_fat_g` op `nevo_foods` (NEVO "Vetzuren trans totaal", FATRS). **Daarna `node scripts/nevo-laden.mjs --schrijf` opnieuw draaien** (upsert, 2328 rijen; 2248 krijgen een waarde).
+- **Blokkeert deploy:** ja (branch `feat/transvet`) — `nevo-foods.ts` selecteert de kolom expliciet; zonder migratie faalt het ophalen van NEVO-producten. Merge pas nadat de migratie gedraaid is.
+- **Hoort bij:** branch `feat/transvet`, aanvulling 3 van `BESLUIT_DAGBOEK_RINGEN_IN_LAGEN_2026-10.md`
+- **Terugdraaien:** `alter table public.nevo_foods drop column trans_fat_g;`
 
 **Nog te doen (geen migratie, geen blocker):** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan al klaar.
 
