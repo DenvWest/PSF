@@ -10,7 +10,16 @@
     "boter": "Gezouten boter; zout verandert deze stoffen niet.",
     "blauwe-kaas": "Gorgonzola is een blauwschimmelkaas.",
     "smeerkaas": "Smeerkaas 40+; zelfde producttype.",
-    "groene-thee": "Thee bereid; levert geen van de kernstoffen van betekenis."
+    "groene-thee": "Thee bereid; levert geen van de kernstoffen van betekenis.",
+    "eend": "Eend met vel, rauw: NEVO heeft geen eendenborst of bereide eend. Per 100 g rauw; gebakken ligt het gehalte iets hoger door vochtverlies.",
+    "worst": "Gemiddelde van alle worst zonder leverproducten; braad- en rookworst vallen daarbinnen.",
+    "granola": "Krokante muesli naturel: net als granola met toegevoegd vet en suiker.",
+    "ontbijtgranen-volkoren": "Volkoren graanontbijt, onverrijkt. Een verrijkt merk bevat meer ijzer, B12 en vitamine D dan hier staat.",
+    "pizza": "Pizza margherita: de basisvorm; met vlees, vis of extra kaas ligt het eiwit hoger.",
+    "groentesoep": "Heldere soep met soepgroente.",
+    "kippensoep": "Heldere soep met vlees (rund/kip).",
+    "maaltijdsalade": "Maaltijdsalade met kip, pasta en dressing.",
+    "wrap-gevuld": "Wrap met kip."
   },
   "niet": {
     "havermelk": "Plantendrank: verrijking per merk, NEVO-record is onverrijkt.",
@@ -25,15 +34,6 @@
     "vleesvervanger-stukjes": "Vleesvervanger: samenstelling en verrijking verschillen sterk per merk.",
     "proteinereep": "Eiwitgehalte verschilt sterk per reep.",
     "stamppot": "Boerenkoolstamppot staat niet voor stamppot in het algemeen.",
-    "frisdrank-light": "Per 100 ml; het dagboek rekent in gram.",
-    "eend": "NEVO heeft alleen rauwe eend met vel; geen eendenborst, ander vocht- en vetgehalte. Voorgelegd.",
-    "worst": "Gemiddelde van alle worst; spreiding te groot. Voorgelegd.",
-    "granola": "Krokante muesli; suiker/noten-aandeel verschilt per merk. Voorgelegd.",
-    "ontbijtgranen-volkoren": "Ontbijtgranen zijn vaak verrijkt. Voorgelegd.",
-    "pizza": "Margherita staat niet voor elke pizza. Voorgelegd.",
-    "groentesoep": "Heldere soep; recept verschilt sterk. Voorgelegd.",
-    "kippensoep": "Heldere soep met vlees; recept verschilt sterk. Voorgelegd.",
-    "maaltijdsalade": "Samengesteld gerecht; recept verschilt sterk. Voorgelegd.",
-    "wrap-gevuld": "Samengesteld gerecht; vulling verschilt sterk. Voorgelegd."
+    "frisdrank-light": "Per 100 ml; het dagboek rekent in gram."
   }
 }
