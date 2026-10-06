@@ -39,6 +39,7 @@ Dennis' feedback op Je patroon → Per maaltijd:
 - In het stof-detail: het aandeel per maaltijd (ontbijt · lunch · avondeten · tussendoor) van de stof in de gekozen periode.
 - Eén zin over **waar de ruimte zit** ("je lunch leverde 6% — daar zit de meeste ruimte"), met een concrete toevoeging. Niet: "deze maaltijd schiet tekort".
 - Per product wat het bijdroeg; "onbekend" apart van een gemeten 0.
+- **Gebouwd 6 okt (PR #154, tweede commit):** blok "Per maaltijd" (totaal + deel per maaltijd; "niet geregistreerd" apart van 0), de ruimte-zin (alleen tussen geregistreerde maaltijden, ≥ 2, kleinste deel < 15%), en bij "Jouw bronnen" per product wanneer: "ma 29 sep avondeten · wo 1 okt lunch +2". De groene kalenderstip volgt nog.
 
 ### 4. Route om de afstand dicht te maken: eerst voeding, dan supplement — stap 3
 
