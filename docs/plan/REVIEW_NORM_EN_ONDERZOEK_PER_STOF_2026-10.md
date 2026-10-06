@@ -194,3 +194,9 @@ Dennis: geen medische termen en risicofactoren; alleen het sterkste bewijs bij g
 - Haider e.a. 2018, [Vegetarian diets and iron status](https://www.semanticscholar.org/paper/The-effect-of-vegetarian-diets-on-iron-status-in-A-Haider-Schwingshackl/8376ebf7fb44f6f5ee2f08596b08fc324f43ffba)
 - NNR2023, [ijzer](https://pub.norden.org/nord2023-003/iron.html)
 - Magnesium en slaap, [systematische review 2026 (PubMed 42661485)](https://pubmed.ncbi.nlm.nih.gov/42661485/)
+
+### 6.6 Correctie (6 okt): omega-3 en vezels — GR-advies juli 2026
+
+- In §3 en §6.2 staat omega-3 "verouderd, naar 450 mg (GR 2006)". **Dat klopt niet.** De 450 mg uit 2006 was een richtlijn voor visconsumptie (2× per week vis), geen voedingsnorm. Het advies *Voedingsnormen voor vetten, vetzuren, verteerbare koolhydraten en voedingsvezels* (Gezondheidsraad, 7 juli 2026) **bevestigt 200 mg EPA+DHA** als adequate inname voor volwassenen. EFSA (2010) zegt 250 mg. Volgens de regel "hoogste" staat in PR #144 nu 250 mg. Open voor Dennis: 250 (regel) of 200 (recentste Nederlandse norm).
+- Vezels: hetzelfde advies zet de norm op **3,0–3,5 g per MJ**. Zonder de energiebehoefte is dat niet om te rekenen naar gram per dag, dus voorlopig geen norm voor vezels.
+- Bronnen: [GR-advies 7 juli 2026](https://www.gezondheidsraad.nl/documenten/2026/07/07/advies-voedingsnormen-voor-vetten-vetzuren-verteerbare-koolhydraten-en-voedingsvezels), [Nieuws voor diëtisten](https://www.nieuwsvoordietisten.nl/herziene-voedingsnormen-voor-vetten-koolhydraten-en-vezels/), [Voedingscentrum](https://www.voedingscentrum.nl/nl/nieuws/nieuwe-aanbevelingen-vetten-koolhydraten-vezels.aspx).
