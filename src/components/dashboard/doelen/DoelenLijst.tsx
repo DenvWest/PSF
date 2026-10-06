@@ -468,7 +468,7 @@ export default function DoelenLijst() {
           </h2>
           <p className="m-0 text-[12.5px] leading-relaxed text-[var(--text-subtle)]">
             Naast magnesium, eiwit, omega-3, zink en vitamine D. Gekozen stoffen staan in Je patroon
-            met hun gemiddelde en het deel van de referentie-inname, zonder oordeel.
+            met hun gemiddelde en het deel van je norm, zonder oordeel.
           </p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
