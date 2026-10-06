@@ -28,11 +28,9 @@ In de vergelijking in het dagboek (spinazie diepvries · zalm gerookt · broccol
 
 ## Benaderingen: vrijgegeven en niet
 
-**Vrijgegeven (10):** broccoli gestoomd en diepvries (→ broccoli gekookt), basmatirijst, meergranenbrood, kipdij, rosbief, roomboter, blauwe kaas, smeerkaas, groene thee.
+**Vrijgegeven (19):** broccoli gestoomd en diepvries (→ broccoli gekookt), basmatirijst, meergranenbrood, kipdij, rosbief, roomboter, blauwe kaas, smeerkaas, groene thee — en sinds 6 okt (Dennis: "volledige voedingswaarde zoals de rest") ook eendenborst (→ eend met vel rauw), worst (→ gemiddelde excl. leverproducten), granola (→ krokante muesli naturel), volkoren ontbijtgranen (→ onverrijkt graanontbijt), pizza (→ margherita), groentesoep, kippensoep, maaltijdsalade, gevulde wrap. NEVO heeft voor deze negen geen beter passend record (nagelopen in NEVO 2025/9.0); de reden per regel staat in `scripts/nevo-benadering-micros.json` en het scherm noemt altijd de NEVO-naam.
 
 **Niet, met reden:** plantendranken (verrijking per merk), margarine en bak- en braadboter (vitamine D-verrijking niet in het record), vleesvervangers (samenstelling/verrijking per merk), proteïnereep, stamppot (boerenkool ≠ stamppot), frisdrank light (per 100 ml).
-
-**Voorgelegd, voorlopig niet:** eendenborst (alleen rauwe eend met vel), worst (gemiddelde), granola, volkoren ontbijtgranen (vaak verrijkt), pizza (margherita), groentesoep, kippensoep, maaltijdsalade, gevulde wrap. Vrijgeven = de sleutel naar `toon` verplaatsen en `node scripts/nevo-gehaltes.mjs` draaien.
 
 ## Afgewezen
 
