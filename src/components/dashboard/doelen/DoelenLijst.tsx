@@ -55,17 +55,23 @@ const BELASTING_OPTIES: ReadonlyArray<{ waarde: number; label: string; uitleg: s
 ];
 
 const GESLACHT_OPTIES = [
-  { waarde: 1, label: "Man", uitleg: "Magnesium 350 mg, zink 9 mg per dag" },
-  { waarde: 2, label: "Vrouw", uitleg: "Magnesium 300 mg, zink 7 mg per dag" },
+  { waarde: 1, label: "Man", uitleg: "Magnesium 350 mg, zink 13 mg, ijzer 11 mg per dag" },
+  { waarde: 2, label: "Vrouw", uitleg: "Magnesium 300 mg, zink 10 mg, ijzer 16 mg per dag" },
 ] as const;
 
 const LEEFTIJD_OPTIES = [
-  { waarde: 1, label: "70 jaar of ouder", uitleg: "Vitamine D 20 µg per dag in plaats van 10 µg" },
+  { waarde: 1, label: "70 jaar of ouder", uitleg: "Vitamine D 20 µg en calcium 1200 mg per dag" },
 ] as const;
 
 const VOEDINGSWIJZE_OPTIES = [
-  { waarde: 1, label: "Vegetarisch", uitleg: "Geen vlees of vis bij de voedingsbronnen" },
-  { waarde: 2, label: "Veganistisch", uitleg: "Ook geen zuivel, kaas of eieren" },
+  { waarde: 1, label: "Vegetarisch", uitleg: "Zink 14 / 11 mg (meer fytaat); geen vlees of vis bij de bronnen" },
+  { waarde: 2, label: "Veganistisch", uitleg: "Zink 16,3 / 12,7 mg (veel fytaat); ook geen zuivel of eieren" },
+] as const;
+
+const MENSTRUATIE_OPTIES = [
+  { waarde: 1, label: "Ja", uitleg: "IJzer 16 mg per dag" },
+  { waarde: 2, label: "Onregelmatig", uitleg: "IJzer 16 mg per dag: zolang er menstruaties zijn, geldt de hogere norm" },
+  { waarde: 3, label: "Nee, niet meer", uitleg: "IJzer 11 mg per dag" },
 ] as const;
 
 const KERNSTOFFEN_MET_NORM: ReadonlyArray<{ stof: KernstofMetNorm; stap: number }> = [
@@ -175,6 +181,8 @@ export default function DoelenLijst() {
   const geslachtCode = profiel.geslacht === "man" ? 1 : profiel.geslacht === "vrouw" ? 2 : null;
   const voedingswijzeCode =
     profiel.voedingswijze === "vegetarisch" ? 1 : profiel.voedingswijze === "veganistisch" ? 2 : null;
+  const menstruatieCode =
+    profiel.menstruatie === "ja" ? 1 : profiel.menstruatie === "onregelmatig" ? 2 : profiel.menstruatie === "nee" ? 3 : null;
 
   async function bewaarVoeding(patch: Partial<Voedingsdoelen>, setting: string) {
     const bijgewerkt = await postVoedingsdoelen(patch);
@@ -302,7 +310,7 @@ export default function DoelenLijst() {
 
       <Sectie
         titel="Kernstoffen"
-        uitleg="De norm komt van de Gezondheidsraad en hangt af van wie je bent. Een eigen streefwaarde staat er in Je patroon naast; 'gehaald' blijft tegen de norm rekenen."
+        uitleg="De norm komt van de Gezondheidsraad, EFSA of de Noordse aanbevelingen (bij verschil de hoogste) en hangt af van wie je bent. Een eigen streefwaarde staat er in Je patroon naast; 'gehaald' blijft tegen de norm rekenen."
       >
         <Regel
           label="Norm voor"
@@ -332,7 +340,7 @@ export default function DoelenLijst() {
               waarde: profiel.zeventigPlus ? 1 : null,
               opties: LEEFTIJD_OPTIES,
               leegLabel: "Jonger dan 70",
-              leegUitleg: "Vitamine D 10 µg per dag (Gezondheidsraad 2012).",
+              leegUitleg: "Vitamine D 15 µg per dag (EFSA 2016).",
               onBewaar: (waarde) => bewaarKernstof({ zeventigPlus: waarde === 1 }, "norm_zeventig_plus"),
             })
           }
@@ -348,7 +356,7 @@ export default function DoelenLijst() {
               waarde: voedingswijzeCode,
               opties: VOEDINGSWIJZE_OPTIES,
               leegLabel: "Alles",
-              leegUitleg: "De norm verandert niet; wel welke voedingsbronnen we je laten zien.",
+              leegUitleg: "Zink 13 / 10 mg (NNR 2023). Plantaardig eten bevat meer fytaat, dat zink minder opneembaar maakt.",
               onBewaar: (waarde) =>
                 bewaarKernstof(
                   { voedingswijze: waarde === 1 ? "vegetarisch" : waarde === 2 ? "veganistisch" : null },
@@ -357,6 +365,29 @@ export default function DoelenLijst() {
             })
           }
         />
+        {voeding.vraagtMenstruatie ? (
+          <Regel
+            label="Menstruatie"
+            waarde={menstruatieCode === 1 ? "Ja" : menstruatieCode === 2 ? "Onregelmatig" : menstruatieCode === 3 ? "Nee" : "Niet ingevuld"}
+            gedempt={menstruatieCode === null}
+            onKies={() =>
+              open("menstruatie", {
+                soort: "keuze",
+                titel: "Menstrueer je?",
+                waarde: menstruatieCode,
+                opties: MENSTRUATIE_OPTIES,
+                leegLabel: "Liever niet zeggen",
+                leegUitleg:
+                  "Alleen voor je ijzernorm (Gezondheidsraad 2018). We bewaren het bij je account, niet in de check, en delen het met niemand. Zonder antwoord: 16 mg.",
+                onBewaar: (waarde) =>
+                  bewaarKernstof(
+                    { menstruatie: waarde === 1 ? "ja" : waarde === 2 ? "onregelmatig" : waarde === 3 ? "nee" : null },
+                    "menstruatie",
+                  ),
+              })
+            }
+          />
+        ) : null}
         {KERNSTOFFEN_MET_NORM.map(({ stof, stap }) => {
           const norm = kernstofNormen[stof];
           const eigen = profiel.streefwaarden[stof] ?? null;

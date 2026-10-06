@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import DoelenLijst from "@/components/dashboard/doelen/DoelenLijst";
-import { voedingsnormenVoor } from "@/data/nutrition/voedingsnormen";
+import { gevolgdeNormenVoor, voedingsnormenVoor } from "@/data/nutrition/voedingsnormen";
 import { LEEG_KERNSTOF_PROFIEL } from "@/lib/account-kernstof-profiel";
 
 vi.mock("@/lib/ga4", () => ({ trackEvent: vi.fn() }));
@@ -13,6 +13,8 @@ const VOEDING = {
   gewichtBron: "eigen",
   checkHeeftGewicht: true,
   kernstofNormen: voedingsnormenVoor(null),
+  gevolgdeNormen: gevolgdeNormenVoor({ gender: null }),
+  vraagtMenstruatie: false,
   kernstofProfiel: LEEG_KERNSTOF_PROFIEL,
 };
 
@@ -28,13 +30,19 @@ beforeEach(() => {
     vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
       if (url.includes("/api/account/kernstof-profiel")) {
-        const patch = JSON.parse(String(init?.body)) as { zeventigPlus?: boolean; streefwaarden?: Record<string, number> };
+        const patch = JSON.parse(String(init?.body)) as {
+          zeventigPlus?: boolean;
+          menstruatie?: "ja" | "onregelmatig" | "nee" | null;
+          streefwaarden?: Record<string, number>;
+        };
         return antwoord({
           ...VOEDING,
           kernstofNormen: voedingsnormenVoor(null, { zeventigPlus: patch.zeventigPlus === true }),
+          vraagtMenstruatie: true,
           kernstofProfiel: {
             ...LEEG_KERNSTOF_PROFIEL,
             zeventigPlus: patch.zeventigPlus === true,
+            menstruatie: patch.menstruatie ?? null,
             streefwaarden: patch.streefwaarden ?? {},
           },
         });
@@ -125,7 +133,7 @@ describe("DoelenLijst", () => {
   it("toont per kernstof de norm, en 70+ verhoogt de vitamine D-norm", async () => {
     render(<DoelenLijst />);
 
-    expect(await screen.findByRole("button", { name: /Vitamine D\s*norm 10 µg/ })).toBeTruthy();
+    expect(await screen.findByRole("button", { name: /Vitamine D\s*norm 15 µg/ })).toBeTruthy();
     expect(screen.getByRole("button", { name: /Norm voor\s*Uit je check/ })).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: /Leeftijd/ }));
@@ -147,5 +155,26 @@ describe("DoelenLijst", () => {
 
     expect(screen.getByText(/veilige bovengrens op 25 mg/)).toBeTruthy();
     expect((screen.getByRole("button", { name: "Opslaan" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("vraagt alleen naar menstruatie als de server dat aangeeft (vrouw of anders)", async () => {
+    render(<DoelenLijst />);
+    await screen.findByRole("button", { name: /Vitamine D/ });
+    expect(screen.queryByRole("button", { name: /Menstruatie/ })).toBeNull();
+  });
+
+  it("bewaart de menstruatiekeuze bij vrouw of anders", async () => {
+    vi.mocked(fetch).mockImplementationOnce(() => antwoord({ ...VOEDING, vraagtMenstruatie: true }));
+    render(<DoelenLijst />);
+
+    fireEvent.click(await screen.findByRole("button", { name: /Menstruatie\s*Niet ingevuld/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Nee, niet meer/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Opslaan" }));
+
+    await waitFor(() => expect(screen.getByRole("button", { name: /Menstruatie\s*Nee/ })).toBeTruthy());
+    const post = vi
+      .mocked(fetch)
+      .mock.calls.find(([url]) => String(url).includes("/api/account/kernstof-profiel"));
+    expect(JSON.parse(String((post![1] as RequestInit).body))).toEqual({ menstruatie: "nee" });
   });
 });

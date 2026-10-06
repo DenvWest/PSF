@@ -21,7 +21,7 @@ import { useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen
  * ## Waarom "norm" en niet "ADH"
  *
  * Sinds `BESLUIT_KERNSTOF_NORMEN_2026-10.md` rekent dit tegen de
- * Gezondheidsraad-norm per geslacht, niet tegen de etiket-ADH (RI). Het label
+ * persoonlijke norm (voedingsnormen.ts), niet tegen de etiket-ADH (RI). Het label
  * zegt dat nu ook, en elke rij noemt de bron en voor wie de norm geldt.
  *
  * ## Wat een tik doet

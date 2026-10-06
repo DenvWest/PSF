@@ -6,7 +6,8 @@ import {
   type KernstofProfiel,
 } from "@/lib/account-kernstof-profiel";
 import type { VoedingsdoelenWeergave } from "@/lib/account-voedingsdoelen";
-import { STANDAARD_NORMEN, type KernstofNormen } from "@/lib/nutrition-normen";
+import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
+import { STANDAARD_GEVOLGDE_NORMEN, STANDAARD_NORMEN, type KernstofNormen } from "@/lib/nutrition-normen";
 import { fetchVoedingsdoelen } from "@/lib/voedingsdoelen-client";
 
 /**
@@ -21,9 +22,9 @@ import { fetchVoedingsdoelen } from "@/lib/voedingsdoelen-client";
  * scherm dat deze hooks gebruikt meteen bij.
  */
 
-type Toestand = { normen: KernstofNormen; profiel: KernstofProfiel };
+type Toestand = { normen: KernstofNormen; gevolgd: GevolgdeNormen; profiel: KernstofProfiel };
 
-const BEGIN: Toestand = { normen: STANDAARD_NORMEN, profiel: LEEG_KERNSTOF_PROFIEL };
+const BEGIN: Toestand = { normen: STANDAARD_NORMEN, gevolgd: STANDAARD_GEVOLGDE_NORMEN, profiel: LEEG_KERNSTOF_PROFIEL };
 
 let toestand: Toestand = BEGIN;
 let geladen: Promise<void> | null = null;
@@ -36,9 +37,12 @@ function abonneer(luisteraar: () => void) {
   };
 }
 
-export function zetKernstofWeergave(weergave: Pick<VoedingsdoelenWeergave, "kernstofNormen" | "kernstofProfiel">) {
+export function zetKernstofWeergave(
+  weergave: Pick<VoedingsdoelenWeergave, "kernstofNormen" | "kernstofProfiel"> & Partial<Pick<VoedingsdoelenWeergave, "gevolgdeNormen">>,
+) {
   toestand = {
     normen: weergave.kernstofNormen ?? STANDAARD_NORMEN,
+    gevolgd: weergave.gevolgdeNormen ?? STANDAARD_GEVOLGDE_NORMEN,
     profiel: weergave.kernstofProfiel ?? LEEG_KERNSTOF_PROFIEL,
   };
   for (const luisteraar of luisteraars) luisteraar();
@@ -66,4 +70,9 @@ export function useKernstofNormen(): KernstofNormen {
 
 export function useKernstofProfiel(): KernstofProfiel {
   return useKernstofToestand().profiel;
+}
+
+/** De normen voor de gevolgde stoffen (buitenring, Patroon), uit dezelfde gedeelde toestand. */
+export function useGevolgdeNormen(): GevolgdeNormen {
+  return useKernstofToestand().gevolgd;
 }

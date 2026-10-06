@@ -58,6 +58,7 @@ export async function postKernstofProfiel(patch: {
   geslacht?: KernstofProfiel["geslacht"];
   zeventigPlus?: boolean;
   voedingswijze?: KernstofProfiel["voedingswijze"];
+  menstruatie?: KernstofProfiel["menstruatie"];
   streefwaarden?: Partial<Record<keyof KernstofProfiel["streefwaarden"], number | null>>;
 }): Promise<VoedingsdoelenWeergave> {
   const response = await fetch("/api/account/kernstof-profiel", {

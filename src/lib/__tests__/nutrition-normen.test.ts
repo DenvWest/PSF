@@ -1,26 +1,83 @@
 import { describe, expect, it } from "vitest";
-import { voedingsnormenVoor } from "@/data/nutrition/voedingsnormen";
+import {
+  gevolgdeNormenVoor,
+  NORMEN_GETOETST,
+  voedingsnormenVoor,
+  vraagtMenstruatie,
+} from "@/data/nutrition/voedingsnormen";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
-import { aandeelVanNorm, normLabel, STANDAARD_NORMEN } from "@/lib/nutrition-normen";
+import { aandeelVanNorm, normLabel, normVoorVeld, STANDAARD_GEVOLGDE_NORMEN, STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 import { bouwTekortsysteem } from "@/lib/nutrition-tekortsysteem";
 
 describe("voedingsnormenVoor", () => {
   it("geeft vrouwen en mannen hun eigen norm voor magnesium en zink", () => {
     expect(voedingsnormenVoor("vrouw").magnesium.waarde).toBe(300);
     expect(voedingsnormenVoor("man").magnesium.waarde).toBe(350);
-    expect(voedingsnormenVoor("vrouw").zinc.waarde).toBe(7);
-    expect(voedingsnormenVoor("man").zinc.waarde).toBe(9);
+    expect(voedingsnormenVoor("vrouw").zinc.waarde).toBe(10);
+    expect(voedingsnormenVoor("man").zinc.waarde).toBe(13);
   });
 
   it("rekent zonder geslacht met de hogere waarde, zodat er nooit een vinkje te veel komt", () => {
     expect(voedingsnormenVoor(null).magnesium.waarde).toBe(350);
-    expect(voedingsnormenVoor("anders").zinc.waarde).toBe(9);
+    expect(voedingsnormenVoor("anders").zinc.waarde).toBe(13);
     expect(STANDAARD_NORMEN).toEqual(voedingsnormenVoor(null));
   });
 
-  it("gebruikt de Nederlandse norm en niet de etiket-RI voor vitamine D en omega-3", () => {
-    expect(STANDAARD_NORMEN.vitamin_d.waarde).toBe(10);
-    expect(STANDAARD_NORMEN.omega3.waarde).toBe(200);
+  it("neemt bij verschil tussen GR, EFSA en NNR de hoogste, niet de etiket-RI", () => {
+    expect(STANDAARD_NORMEN.vitamin_d).toMatchObject({ waarde: 15, bron: "EFSA 2016" });
+    expect(STANDAARD_NORMEN.omega3).toMatchObject({ waarde: 250, bron: "EFSA 2010" });
+  });
+
+  it("verhoogt de zinknorm bij plantaardig eten (fytaat)", () => {
+    expect(voedingsnormenVoor("vrouw", { voedingswijze: "vegetarisch" }).zinc.waarde).toBe(11);
+    expect(voedingsnormenVoor("man", { voedingswijze: "veganistisch" }).zinc.waarde).toBe(16.3);
+  });
+});
+
+describe("gevolgdeNormenVoor", () => {
+  it("rekent tegen de norm, niet tegen de etiket-RI", () => {
+    expect(STANDAARD_GEVOLGDE_NORMEN.potassiumMg.waarde).toBe(3500);
+    expect(STANDAARD_GEVOLGDE_NORMEN.vitaminB12µg.waarde).toBe(4);
+    expect(gevolgdeNormenVoor({ gender: "vrouw" }).vitaminCMg.waarde).toBe(95);
+    expect(STANDAARD_GEVOLGDE_NORMEN.vitaminCMg.waarde).toBe(110);
+  });
+
+  it("kiest de ijzernorm op menstruatie, niet op leeftijd", () => {
+    expect(gevolgdeNormenVoor({ gender: "man" }).ironMg.waarde).toBe(11);
+    expect(gevolgdeNormenVoor({ gender: "vrouw" }).ironMg.waarde).toBe(16);
+    expect(gevolgdeNormenVoor({ gender: "vrouw", menstruatie: "onregelmatig" }).ironMg.waarde).toBe(16);
+    expect(gevolgdeNormenVoor({ gender: "vrouw", menstruatie: "nee" }).ironMg.waarde).toBe(11);
+    expect(gevolgdeNormenVoor({ gender: "anders", menstruatie: "nee" }).ironMg.waarde).toBe(11);
+    expect(gevolgdeNormenVoor({ gender: null, menstruatie: "nee" }).ironMg.waarde).toBe(16);
+  });
+
+  it("vraagt alleen bij vrouw of anders naar menstruatie", () => {
+    expect(vraagtMenstruatie("vrouw")).toBe(true);
+    expect(vraagtMenstruatie("anders")).toBe(true);
+    expect(vraagtMenstruatie("man")).toBe(false);
+    expect(vraagtMenstruatie(null)).toBe(false);
+  });
+
+  it("geeft calcium per leeftijd, met de hogere waarde als die onbekend is", () => {
+    expect(gevolgdeNormenVoor({ gender: "vrouw", ageRange: "40–44" }).calciumMg.waarde).toBe(950);
+    expect(gevolgdeNormenVoor({ gender: "vrouw", ageRange: "50–54" }).calciumMg.waarde).toBe(1100);
+    expect(gevolgdeNormenVoor({ gender: "man", ageRange: "55+" }).calciumMg.waarde).toBe(950);
+    expect(gevolgdeNormenVoor({ gender: null }).calciumMg.waarde).toBe(1100);
+    expect(gevolgdeNormenVoor({ gender: "man", zeventigPlus: true }).calciumMg.waarde).toBe(1200);
+  });
+
+  it("geeft geen norm voor stoffen zonder norm", () => {
+    expect(normVoorVeld(STANDAARD_GEVOLGDE_NORMEN, "sodiumMg")).toBeNull();
+    expect(normVoorVeld(STANDAARD_GEVOLGDE_NORMEN, "fiberG")).toBeNull();
+  });
+});
+
+describe("toetsing van de normen", () => {
+  it("is niet langer dan twaalf maanden geleden naast de bronnen gelegd", () => {
+    const [jaar, maand] = NORMEN_GETOETST.split("-").map(Number);
+    const nu = new Date();
+    const maandenGeleden = (nu.getFullYear() - jaar!) * 12 + (nu.getMonth() + 1 - maand!);
+    expect(maandenGeleden).toBeLessThanOrEqual(12);
   });
 });
 
@@ -31,11 +88,11 @@ describe("aandeelVanNorm", () => {
 
   it("deelt door de norm van deze persoon", () => {
     expect(aandeelVanNorm(voedingsnormenVoor("vrouw"), "magnesium", 300)).toBe(1);
-    expect(aandeelVanNorm(STANDAARD_NORMEN, "vitamin_d", 5)).toBe(0.5);
+    expect(aandeelVanNorm(STANDAARD_NORMEN, "vitamin_d", 7.5)).toBe(0.5);
   });
 
   it("toont de norm met eenheid", () => {
-    expect(normLabel(STANDAARD_NORMEN.vitamin_d)).toBe("10 µg");
+    expect(normLabel(STANDAARD_NORMEN.vitamin_d)).toBe("15 µg");
   });
 });
 

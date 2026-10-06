@@ -13,8 +13,8 @@ import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
  *
  * Bewust níét in de krans: die draagt de telling van de vijf kernstoffen. Hier
  * geen telling, geen ✓ en geen stofkleur — één neutrale tint, zoals de
- * voedingswaardetabel en "Ook gevolgd" op Je patroon. De ring vult tot de RI;
- * een stof zonder RI (natrium, verzadigd vet, suikers) toont alleen het getal.
+ * voedingswaardetabel en "Ook gevolgd" op Je patroon. De ring vult tot je norm (`voedingsnormen.ts`);
+ * een stof zonder norm (vezels, natrium, verzadigd vet, suikers) toont alleen het getal.
  *
  * Getallen komen uit dezelfde `berekenVoedingswaarde`-rijen als de tabel, en
  * de keuze uit `useGevolgdeStoffen`: geen tweede rekenpad, geen tweede opslag.
@@ -90,7 +90,7 @@ export default function DagboekOokGevolgd({
         <h3 id="dagboek-ook-gevolgd" className="m-0 font-sans text-[12px] font-semibold text-[var(--vd-ink-2)]">
           Ook gevolgd
         </h3>
-        <span className="text-[10.5px] text-[var(--vd-ink-4)]">zonder oordeel · % van de RI</span>
+        <span className="text-[10.5px] text-[var(--vd-ink-4)]">zonder oordeel · % van je norm</span>
       </div>
 
       <ul className="m-0 flex list-none snap-x snap-mandatory gap-2 overflow-x-auto p-0 pb-1 [scrollbar-width:none] @[520px]:grid @[520px]:grid-cols-5 @[520px]:overflow-visible">

@@ -1,35 +1,43 @@
 import type { IntakeGender } from "@/data/intake-questions";
+import type { SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
 
 /**
- * De Nederlandse voedingsnormen voor de vier kernstoffen met een vaste norm.
- * Eiwit staat er niet in: dat doel rekent met gewicht en belasting
+ * De voedingsnormen per persoon: de vier kernstoffen met een vaste norm en de
+ * gevolgde stoffen met een norm (`REVIEW_NORM_EN_ONDERZOEK_PER_STOF_2026-10.md`
+ * §6). Eiwit staat er niet in: dat doel rekent met gewicht en belasting
  * (`protein-target.ts`).
  *
- * ## Waarom niet de RI uit `reference-intake.ts`
+ * ## Welke bron
  *
- * De RI (EU 1169/2011, bijlage XIII) is een etiketwaarde: één getal voor een
- * gemiddelde volwassene, bedoeld om producten te vergelijken. Voor vitamine D
- * is hij 5 µg, de helft van wat de Gezondheidsraad iedere volwassene
- * aanbeveelt. Een dekkingsoordeel over een persoon hoort tegen de norm voor
- * die persoon te rekenen. Het etiket blijft de RI gebruiken
- * (`BESLUIT_KERNSTOF_NORMEN_2026-10.md`).
+ * Per stof de normen van de Gezondheidsraad, EFSA en de Noordse aanbevelingen
+ * (NNR2023) naast elkaar; bij verschil de hoogste. Een hogere norm geeft
+ * minder vinkjes, en een vinkje is het enige wat het tekortsysteem mag
+ * bewijzen (asymmetrie-regel). Om dezelfde reden krijgt wie geen geslacht
+ * opgaf of "anders" koos de hogere waarde.
  *
- * ## Onbekend geslacht
+ * ## Waarom niet de RI
  *
- * Wie geen geslacht opgaf of "anders" koos, krijgt de hogere waarde. Een
- * hogere norm geeft minder vinkjes, en een vinkje is het enige wat het
- * tekortsysteem mag bewijzen (asymmetrie-regel). Zo zegt het systeem nooit
- * "gedekt" op grond van een norm die voor iemand te laag kan zijn.
+ * De RI (EU 1169/2011, bijlage XIII) is een etiketwaarde voor een gemiddelde
+ * volwassene. Voor kalium is hij 2000 mg, tegen een norm van 3500. Een ring
+ * die tot de RI vult, loopt vol terwijl de norm nog niet gehaald is. Het
+ * etiket en de voedingswaardetabel blijven de RI tonen.
  *
- * ## Leeftijd
+ * ## Toetsing
  *
- * Voor deze vier stoffen verschilt de norm pas vanaf 70 jaar (vitamine D:
- * 20 µg, Gezondheidsraad 2012). De leeftijdsvraag in de check stopt bij
- * "55+", dus dat onderscheid komt alleen uit de keuze "70 jaar of ouder" op
- * Je doelen (`account_kernstof_profiel`). Zonder die keuze: 10 µg.
+ * {@link NORMEN_GETOETST} is de maand waarin alle waarden voor het laatst naast
+ * de bronnen zijn gelegd. Een test faalt als dat langer dan twaalf maanden
+ * geleden is.
  */
 
+export const NORMEN_GETOETST = "2026-10";
+
 export type KernstofMetNorm = "magnesium" | "zinc" | "vitamin_d" | "omega3";
+
+export type GevolgdeStofMetNorm = "potassiumMg" | "calciumMg" | "ironMg" | "vitaminB12µg" | "vitaminCMg";
+
+export type Menstruatie = "ja" | "onregelmatig" | "nee";
+
+export type Voedingswijze = "vegetarisch" | "veganistisch";
 
 export type Voedingsnorm = {
   waarde: number;
@@ -40,41 +48,108 @@ export type Voedingsnorm = {
   geldtVoor: string;
 };
 
-const GR_2018 = "Gezondheidsraad 2018";
-
-type NormPerGeslacht = { man: number; vrouw: number };
-
-const PER_GESLACHT: Record<"magnesium" | "zinc", NormPerGeslacht & { unit: "mg" }> = {
-  magnesium: { man: 350, vrouw: 300, unit: "mg" },
-  zinc: { man: 9, vrouw: 7, unit: "mg" },
+export type NormProfiel = {
+  gender: IntakeGender | null;
+  ageRange?: string | null;
+  zeventigPlus?: boolean;
+  voedingswijze?: Voedingswijze | null;
+  menstruatie?: Menstruatie | null;
 };
 
-function perGeslacht(stof: "magnesium" | "zinc", gender: IntakeGender | null): Voedingsnorm {
-  const norm = PER_GESLACHT[stof];
-  if (gender === "vrouw") {
-    return { waarde: norm.vrouw, unit: norm.unit, bron: GR_2018, geldtVoor: "vrouwen 18+" };
+export type GevolgdeNormen = Record<GevolgdeStofMetNorm, Voedingsnorm>;
+
+const GR_2018 = "Gezondheidsraad 2018";
+const NNR_2023 = "NNR 2023";
+
+function voorWie(gender: IntakeGender | null): string {
+  return gender === "vrouw" ? "vrouwen" : gender === "man" ? "mannen" : "volwassenen";
+}
+
+/** Alleen bij "vrouw" of "anders"; bij een onbekend geslacht geldt zonder vraag de hogere ijzernorm. */
+export function vraagtMenstruatie(gender: IntakeGender | null): boolean {
+  return gender === "vrouw" || gender === "anders";
+}
+
+function vijftigPlus(ageRange: string | null | undefined): boolean {
+  return ageRange === null || ageRange === undefined || ageRange === "50–54" || ageRange === "55+";
+}
+
+function zink(gender: IntakeGender | null, voedingswijze: Voedingswijze | null | undefined): Voedingsnorm {
+  const vrouw = gender === "vrouw";
+  if (voedingswijze === "veganistisch") {
+    return {
+      waarde: vrouw ? 12.7 : 16.3,
+      unit: "mg",
+      bron: "EFSA 2014",
+      geldtVoor: `${voorWie(gender)}, veganistisch (veel fytaat)`,
+    };
   }
-  if (gender === "man") {
-    return { waarde: norm.man, unit: norm.unit, bron: GR_2018, geldtVoor: "mannen 18+" };
+  if (voedingswijze === "vegetarisch") {
+    return {
+      waarde: vrouw ? 11 : 14,
+      unit: "mg",
+      bron: "EFSA 2014",
+      geldtVoor: `${voorWie(gender)}, vegetarisch (meer fytaat)`,
+    };
   }
-  return { waarde: norm.man, unit: norm.unit, bron: GR_2018, geldtVoor: "volwassenen 18+" };
+  return { waarde: vrouw ? 10 : 13, unit: "mg", bron: NNR_2023, geldtVoor: voorWie(gender) };
 }
 
 export function voedingsnormenVoor(
   gender: IntakeGender | null,
-  { zeventigPlus = false }: { zeventigPlus?: boolean } = {},
+  { zeventigPlus = false, voedingswijze = null }: Omit<NormProfiel, "gender"> = {},
 ): Record<KernstofMetNorm, Voedingsnorm> {
   return {
-    magnesium: perGeslacht("magnesium", gender),
-    zinc: perGeslacht("zinc", gender),
+    magnesium: {
+      waarde: gender === "vrouw" ? 300 : 350,
+      unit: "mg",
+      bron: GR_2018,
+      geldtVoor: `${voorWie(gender)} 18+`,
+    },
+    zinc: zink(gender, voedingswijze),
     vitamin_d: zeventigPlus
       ? { waarde: 20, unit: "µg", bron: "Gezondheidsraad 2012", geldtVoor: "volwassenen vanaf 70" }
-      : { waarde: 10, unit: "µg", bron: "Gezondheidsraad 2012", geldtVoor: "volwassenen tot 70" },
+      : { waarde: 15, unit: "µg", bron: "EFSA 2016", geldtVoor: "volwassenen tot 70" },
     omega3: {
-      waarde: 200,
+      waarde: 250,
       unit: "mg",
-      bron: "Gezondheidsraad 2001",
-      geldtVoor: "volwassenen, EPA+DHA uit vis",
+      bron: "EFSA 2010",
+      geldtVoor: "volwassenen, EPA+DHA",
     },
   };
+}
+
+function calcium(profiel: NormProfiel): Voedingsnorm {
+  if (profiel.zeventigPlus) {
+    return { waarde: 1200, unit: "mg", bron: GR_2018, geldtVoor: "volwassenen vanaf 70" };
+  }
+  if (profiel.gender !== "man" && vijftigPlus(profiel.ageRange)) {
+    return { waarde: 1100, unit: "mg", bron: GR_2018, geldtVoor: "vrouwen 51–69" };
+  }
+  return { waarde: 950, unit: "mg", bron: GR_2018, geldtVoor: `${voorWie(profiel.gender)} 25–69` };
+}
+
+function ijzer(profiel: NormProfiel): Voedingsnorm {
+  if (profiel.gender === "man") {
+    return { waarde: 11, unit: "mg", bron: GR_2018, geldtVoor: "mannen" };
+  }
+  if (vraagtMenstruatie(profiel.gender) && profiel.menstruatie === "nee") {
+    return { waarde: 11, unit: "mg", bron: GR_2018, geldtVoor: "na de menopauze" };
+  }
+  return { waarde: 16, unit: "mg", bron: GR_2018, geldtVoor: "zolang je menstrueert" };
+}
+
+export function gevolgdeNormenVoor(profiel: NormProfiel): GevolgdeNormen {
+  const vrouw = profiel.gender === "vrouw";
+  return {
+    potassiumMg: { waarde: 3500, unit: "mg", bron: GR_2018, geldtVoor: "volwassenen" },
+    calciumMg: calcium(profiel),
+    ironMg: ijzer(profiel),
+    vitaminB12µg: { waarde: 4, unit: "µg", bron: "EFSA 2015", geldtVoor: "volwassenen" },
+    vitaminCMg: { waarde: vrouw ? 95 : 110, unit: "mg", bron: "EFSA 2013", geldtVoor: voorWie(profiel.gender) },
+  };
+}
+
+export function isGevolgdeStofMetNorm(veld: SupermarktVeld): veld is GevolgdeStofMetNorm {
+  return veld === "potassiumMg" || veld === "calciumMg" || veld === "ironMg" || veld === "vitaminB12µg" || veld === "vitaminCMg";
 }

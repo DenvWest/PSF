@@ -1,3 +1,5 @@
+import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
+import { normVoorVeld, STANDAARD_GEVOLGDE_NORMEN } from "@/lib/nutrition-normen";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nevoKoppelingVoor } from "@/data/nutrition/food-catalog-nevo";
 import { bedragVanItem, type DagboekItem } from "@/lib/nutrition-dagboek-items";
@@ -61,8 +63,12 @@ export const VOEDINGSWAARDE_VELDEN: readonly VoedingswaardeVeld[] = [
 export type VoedingswaardeRij = VoedingswaardeVeld & {
   /** Som in {@link VoedingswaardeVeld.unit}, of `null` als geen enkel product een waarde had. */
   waarde: number | null;
-  /** Aandeel van de RI (0–∞), alleen als er een RI en een waarde is. */
+  /** De persoonlijke norm (`voedingsnormen.ts`), of null voor een stof zonder norm. */
+  norm: number | null;
+  /** Aandeel van de norm (0–∞): wat de ringen en Je patroon tonen. */
   aandeel: number | null;
+  /** Aandeel van de RI (0–∞): alleen voor de etiketvermelding in de voedingswaardetabel. */
+  aandeelRi: number | null;
 };
 
 export type Voedingswaarde = {
@@ -130,10 +136,12 @@ export function berekenVoedingswaarde({
   items,
   supermarktLogs = [],
   nevoProducten,
+  normen = STANDAARD_GEVOLGDE_NORMEN,
 }: {
   items: readonly DagboekItem[];
   supermarktLogs?: readonly Pick<SupermarktPortie, "product" | "grams">[];
   nevoProducten: ReadonlyMap<string, SupermarktProduct>;
+  normen?: GevolgdeNormen;
 }): Voedingswaarde {
   const bijdragen = [
     ...items.map((item) => waardenVanItem(item, nevoProducten)),
@@ -150,10 +158,13 @@ export function berekenVoedingswaarde({
       heeftWaarde = true;
     }
     const waarde = heeftWaarde ? som : null;
+    const norm = normVoorVeld(normen, veld.veld)?.waarde ?? null;
     return {
       ...veld,
       waarde,
-      aandeel: waarde !== null && veld.ri !== null ? waarde / veld.ri : null,
+      norm,
+      aandeel: waarde !== null && norm !== null ? waarde / norm : null,
+      aandeelRi: waarde !== null && veld.ri !== null ? waarde / veld.ri : null,
     };
   });
 

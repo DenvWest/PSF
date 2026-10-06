@@ -104,7 +104,7 @@ export default function PatroonTrend({
                 <div className="mb-2 flex items-baseline justify-between gap-2">
                   <b className="text-[var(--vd-ink)]">{hoofdletter(reeks.label)}</b>
                   <span className="vd-getal" data-toon="stil">
-                    {reeks.ri !== null ? `RI ${hoeveelheid(reeks.ri)} ${reeks.unit}` : "gem. per dag"}
+                    {reeks.norm !== null ? `norm ${hoeveelheid(reeks.norm)} ${reeks.unit}` : "gem. per dag"}
                   </span>
                 </div>
                 <PatroonTrendGrafiek
@@ -116,8 +116,8 @@ export default function PatroonTrend({
                     dagen: p.dagen,
                   }))}
                   unit={reeks.unit}
-                  referentie={reeks.ri}
-                  referentieNaam="RI"
+                  referentie={reeks.norm}
+                  referentieNaam="norm"
                   toon="neutraal"
                   huidigeWeek={huidigeWeek}
                 />

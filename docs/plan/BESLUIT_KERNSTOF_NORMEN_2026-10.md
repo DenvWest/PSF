@@ -42,3 +42,35 @@ Dennis vroeg waar de percentages in de krans op gebaseerd zijn (omega-3 378%, zi
 
 - **Weekweergave voor omega-3 en vitamine D in de krans** (plak 2b van `BESLUIT_DOELEN_VERBONDEN_2026-10.md`): één visdag geeft een dag-% van honderden procenten.
 - **Leeftijd 70+** herkennen vraagt een fijnere leeftijdsband in de check.
+
+## Herziening 6 oktober 2026 — hoogste officiële norm, één bron voor beide ringen
+
+**Status:** besloten (Dennis, 6 okt: "Akkoord" op §6 van `REVIEW_NORM_EN_ONDERZOEK_PER_STOF_2026-10.md`). Omega-3 staat als open punt hieronder.
+
+**Regel:** per stof de normen van Gezondheidsraad, EFSA en NNR2023 naast elkaar, bij verschil de hoogste (asymmetrie-regel). Peer-reviewed onderzoek bij gezonde mensen komt als aparte "onderzochte zone" in het stof-detail en verandert de norm niet.
+
+| Stof | Was | Nu | Bron |
+|---|---|---|---|
+| Vitamine D | 10 µg | **15 µg**; 70+ 20 µg | EFSA 2016 (meerderheid gezonde volwassenen ≥ 50 nmol/L); GR 2012 voor 70+ |
+| Omega-3 | 200 mg | **250 mg** ⚠ open | EFSA 2010 (GR 2026 bevestigde 200 mg, zie hieronder) |
+| Zink | 9 / 7 mg | **13 / 10**; vegetarisch 14 / 11; veganistisch 16,3 / 12,7 | NNR2023; EFSA 2014 per fytaat (900 / 1200 mg) |
+| Magnesium | 350 / 300 | ongewijzigd | GR 2018 = EFSA = NNR |
+| IJzer (nieuw, buitenring) | RI 14 | **16 mg** zolang er menstruaties zijn of onbekend; 11 mg (man, of "nee") | GR 2018; NNR2023: kies op status, niet leeftijd |
+| Calcium (buitenring) | RI 800 | **950–1200 mg** per leeftijd en geslacht | GR 2018 |
+| Kalium (buitenring) | RI 2000 | **3500 mg** | GR 2018 / EFSA 2016 |
+| Vitamine B12 (buitenring) | RI 2,5 | **4 µg** | EFSA 2015 / NNR2023 |
+| Vitamine C (buitenring) | RI 80 | **110 / 95 mg** | EFSA 2013 / NNR2023 |
+
+- **Punt 3 (leeftijd) herzien:** calcium gebruikt de leeftijdsband uit de check (onbekend → de hogere waarde); 70+ blijft de keuze in Je doelen.
+- **Voedingswijze verandert nu wél een norm** (zink). Dat herziet de uitleg bij plak 2 van `BESLUIT_PATROON_PER_MAALTIJD_2026-10.md`.
+- **Menstruatie** wordt alleen gevraagd als het geslacht voor de norm "vrouw" of "anders" is (Dennis, 6 okt). Zonder antwoord, of zonder geslacht: 16 mg. Opt-in in Je doelen, niet in de check: gezondheidsgegeven (AVG art. 9), DPIA-aanvulling volgt vóór het in de check komt. Migratie `20261006120000_kernstof_profiel_menstruatie.sql`.
+- **Eén bron:** `voedingsnormen.ts` → `nutrition-normen.ts` (`STANDAARD_GEVOLGDE_NORMEN`, `normVoorVeld`) → server (`gevolgdeNormen`, `vraagtMenstruatie` in de weergave) → `useGevolgdeNormen()`. Binnenring, buitenring, Je doelen, Patroon (tabel, maaltijden, week, trend) en Agenda rekenen hiermee. De voedingswaardetabel toont de RI als etiketvermelding (`aandeelRi`).
+- **Toetsing:** `NORMEN_GETOETST = "2026-10"`; een test faalt na twaalf maanden zonder herziening.
+
+### Open: omega-3 (200 of 250 mg)
+
+De Gezondheidsraad bevestigde in het advies *Voedingsnormen voor vetten, vetzuren, verteerbare koolhydraten en voedingsvezels* (7 juli 2026) een adequate inname van **200 mg** EPA+DHA voor volwassenen. EFSA (2010) zegt 250 mg. De regel "hoogste" geeft 250 mg en zo staat het nu in de code. Eerder in deze sessie werd 450 mg (GR 2006) genoemd. Dat was een richtlijn voor visconsumptie, geen voedingsnorm, en vervalt. Dennis beslist: 250 (regel) of 200 (recentste Nederlandse norm).
+
+### Open: vezels
+
+Het GR-advies van juli 2026 zet vezels op 3,0–3,5 g per MJ. Omrekenen naar gram per dag vraagt de energiebehoefte, en die kennen we niet. Daarom tot nader besluit geen norm voor vezels: het getal staat er, zonder vulling.

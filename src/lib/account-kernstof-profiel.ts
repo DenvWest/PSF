@@ -1,4 +1,4 @@
-import type { KernstofMetNorm } from "@/data/nutrition/voedingsnormen";
+import type { KernstofMetNorm, Menstruatie, Voedingswijze } from "@/data/nutrition/voedingsnormen";
 import type { OrgScopedClient } from "@/lib/db/scoped";
 
 /**
@@ -22,13 +22,15 @@ import type { OrgScopedClient } from "@/lib/db/scoped";
  */
 
 export type NormGeslacht = "man" | "vrouw";
-export type Voedingswijze = "vegetarisch" | "veganistisch";
+export type { Menstruatie, Voedingswijze };
 
 export type KernstofProfiel = {
   /** Null = het geslacht uit de check (dat de client nooit ziet). */
   geslacht: NormGeslacht | null;
   zeventigPlus: boolean;
   voedingswijze: Voedingswijze | null;
+  /** Alleen gevraagd bij vrouw of anders. Null = niet ingevuld: de hogere ijzernorm. */
+  menstruatie: Menstruatie | null;
   streefwaarden: Partial<Record<KernstofMetNorm, number>>;
 };
 
@@ -36,6 +38,7 @@ export const LEEG_KERNSTOF_PROFIEL: KernstofProfiel = {
   geslacht: null,
   zeventigPlus: false,
   voedingswijze: null,
+  menstruatie: null,
   streefwaarden: {},
 };
 
@@ -68,6 +71,10 @@ function leesVoedingswijze(waarde: unknown): Voedingswijze | null {
   return waarde === "vegetarisch" || waarde === "veganistisch" ? waarde : null;
 }
 
+function leesMenstruatie(waarde: unknown): Menstruatie | null {
+  return waarde === "ja" || waarde === "onregelmatig" || waarde === "nee" ? waarde : null;
+}
+
 function leesStreefwaarden(waarde: unknown): KernstofProfiel["streefwaarden"] {
   if (!waarde || typeof waarde !== "object" || Array.isArray(waarde)) return {};
   const uit: KernstofProfiel["streefwaarden"] = {};
@@ -85,6 +92,7 @@ export function leesKernstofProfiel(rij: unknown): KernstofProfiel {
     geslacht: leesGeslacht(r.geslacht),
     zeventigPlus: r.zeventig_plus === true,
     voedingswijze: leesVoedingswijze(r.voedingswijze),
+    menstruatie: leesMenstruatie(r.menstruatie),
     streefwaarden: leesStreefwaarden(r.streefwaarden),
   };
 }
@@ -116,6 +124,10 @@ export function pasKernstofPatchToe(
     }
     volgende.voedingswijze = leesVoedingswijze(p.voedingswijze);
   }
+  if ("menstruatie" in p) {
+    if (p.menstruatie !== null && leesMenstruatie(p.menstruatie) === null) return { fout: "Onbekende keuze." };
+    volgende.menstruatie = leesMenstruatie(p.menstruatie);
+  }
   if ("streefwaarden" in p) {
     const ruw = p.streefwaarden;
     if (!ruw || typeof ruw !== "object" || Array.isArray(ruw)) return { fout: "Ongeldige streefwaarden." };
@@ -138,10 +150,14 @@ function tabelOntbreekt(error: { code?: string } | null): boolean {
   return error?.code === "42P01";
 }
 
+function kolomOntbreekt(error: { code?: string } | null): boolean {
+  return error?.code === "42703" || error?.code === "PGRST204";
+}
+
 export async function getKernstofProfiel(supabase: OrgScopedClient, accountId: string): Promise<KernstofProfiel> {
   const { data, error } = await supabase
     .from("account_kernstof_profiel")
-    .select("geslacht,zeventig_plus,voedingswijze,streefwaarden")
+    .select("*")
     .eq("account_id", accountId)
     .maybeSingle();
 
@@ -157,18 +173,25 @@ export async function setKernstofProfiel(
   accountId: string,
   profiel: KernstofProfiel,
 ): Promise<void> {
-  const { error } = await supabase.from("account_kernstof_profiel").upsert(
-    {
-      account_id: accountId,
-      geslacht: profiel.geslacht,
-      zeventig_plus: profiel.zeventigPlus,
-      voedingswijze: profiel.voedingswijze,
-      streefwaarden: profiel.streefwaarden,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "account_id" },
-  );
+  const rij = {
+    account_id: accountId,
+    geslacht: profiel.geslacht,
+    zeventig_plus: profiel.zeventigPlus,
+    voedingswijze: profiel.voedingswijze,
+    menstruatie: profiel.menstruatie,
+    streefwaarden: profiel.streefwaarden,
+    updated_at: new Date().toISOString(),
+  };
+  let { error } = await supabase.from("account_kernstof_profiel").upsert(rij, { onConflict: "account_id" });
 
-  if (tabelOntbreekt(error)) throw new KernstofProfielNietBeschikbaar();
+  // Zolang de migratie voor `menstruatie` niet gedraaid is: de rest bewaren,
+  // en alleen een keuze voor menstruatie zelf als "kan nog niet" melden.
+  if (kolomOntbreekt(error) && profiel.menstruatie === null) {
+    const { menstruatie: _weg, ...zonder } = rij;
+    void _weg;
+    ({ error } = await supabase.from("account_kernstof_profiel").upsert(zonder, { onConflict: "account_id" }));
+  }
+
+  if (tabelOntbreekt(error) || kolomOntbreekt(error)) throw new KernstofProfielNietBeschikbaar();
   if (error) throw new Error(error.message);
 }

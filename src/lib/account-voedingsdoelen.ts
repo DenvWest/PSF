@@ -4,6 +4,7 @@ import {
   computeProteinTarget,
   type ProteinTargetRange,
 } from "@/lib/protein-target";
+import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
 import type { KernstofNormen } from "@/lib/nutrition-normen";
 
 /**
@@ -227,6 +228,13 @@ export type VoedingsdoelenWeergave = {
    * afgeleid uit het geslacht in de check; het geslacht zelf gaat niet mee.
    */
   kernstofNormen: KernstofNormen;
+  /** De norm per gevolgde stof (buitenring), op dezelfde manier server-side afgeleid. */
+  gevolgdeNormen: GevolgdeNormen;
+  /**
+   * Of Je doelen naar menstruatie vraagt: alleen bij vrouw of anders. Het
+   * geslacht zelf gaat niet mee.
+   */
+  vraagtMenstruatie: boolean;
   /**
    * Wat iemand zelf koos voor de normen en zijn streefwaarden
    * (`account-kernstof-profiel.ts`). `geslacht: null` betekent "uit de check";
