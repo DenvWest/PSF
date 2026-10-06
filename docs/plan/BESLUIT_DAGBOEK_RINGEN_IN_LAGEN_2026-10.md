@@ -36,3 +36,21 @@ De krans, de vijf kerntegels eronder en de rij ringtegels "Ook gevolgd" lazen al
 ## Meetpunt
 
 GA4: `nutrition_dagboek_krans_gekozen` (nieuw; params `ring`: `kern` | `gevolgd`, `nutrient`). Daarna lees je de doorstroom af aan `nutrition_dagboek_nutrient_opened` (logboek) en `nutrition_dagboek_rijkste_geopend` met `surface: ring`. `nutrition_dagboek_gevolgd_toevoegen_open` blijft voor de "+".
+
+## Herziening 6 oktober 2026 — het midden toont één stof
+
+**Status:** besloten (Dennis, 5–6 okt: "1 van 2 meetbare stoffen gedekt zegt ook niet zoveel", "zeg nooit tekort", "akkoord met alles").
+**Herziet:** `BESLUIT_DAGBOEK_TOTAALBEELD_2026-10.md` §2 ("het midden toont '1 van 2 meetbare stoffen gedekt'").
+
+1. **Standaard staat de meetbare kernstof met het grootste open stuk bovenaan**, bij de wijzer. Het midden toont de naam (in de stofkleur), groot het percentage, en daaronder **"nog X tot je norm vandaag"**. Bij eiwit is dat "nog X g tot je doel vandaag". Is alles wat meetbaar is gedekt, dan staat er "Alles wat meetbaar is, is gedekt".
+2. **Een tik op een stof zet die in het midden.**
+   - Zink of vitamine D: "een dagboek kan dit niet aantonen", zonder "nog X".
+   - Eiwit zonder doel: grammen, plus "Stel een eiwitdoel in →" naar Je doelen.
+   - Gevolgde stof: "% van je norm · hoeveelheid", zonder "nog X". Dat zou een oordeel zijn op de informatielaag.
+   - Heb je een eigen streefwaarde ingesteld (PR #141): een tweede regel "je streefwaarde X · Y%", zonder ✓. Het percentage en "gehaald" rekenen tegen de norm.
+3. **Nooit "tekort".** Eén dag is een ondergrens; het tekortsysteem oordeelt pas over vier vensters. Een test bewaakt dat het woord niet verschijnt.
+4. **De telling krijgt namen in plaats van een breuk:** "Gedekt: … Open: … Niet meetbaar met een dagboek: … Eiwit telt mee met een eiwitdoel." Zelfde regels als het tekortsysteem: alleen bewijsbare kernstoffen met een noemer.
+5. **Normen** komen uit `nutrition-normen.ts` (PR #144): binnenring tegen de kernstofnorm, buitenring tegen de norm van de gevolgde stof (niet meer de etiket-RI).
+6. **Buitenring met meer contrast** (vulling `--vd-ink-2`, lichter spoor, dikte 9). De "+" staat op een vaste plek direct achter het laatste segment in plaats van in een eigen, gelijke sector.
+
+**Meetpunt:** ongewijzigd: `nutrition_dagboek_krans_gekozen`, met de doorstroom naar `nutrition_dagboek_nutrient_opened` en `nutrition_dagboek_rijkste_geopend`. Nieuw: `nutrition_dagboek_eiwitdoel_cta` (`surface: krans`) bij een tik op "Stel een eiwitdoel in"; het effect lees je af aan `voedingsdoel_aangepast` met `setting: eiwitdoel`.

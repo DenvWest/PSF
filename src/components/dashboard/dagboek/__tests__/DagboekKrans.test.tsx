@@ -52,12 +52,21 @@ describe("DagboekKrans", () => {
     expect(onBegin).toHaveBeenCalledOnce();
   });
 
-  it("telt alleen bewijsbare stoffen met een noemer", async () => {
+  it("zet de meetbare stof met het grootste open stuk in het midden, met 'nog X tot je norm'", async () => {
     const DagboekKrans = await laad();
     render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} />);
-    expect(screen.getByText("1 van 2")).toBeTruthy();
-    expect(screen.getByText(/De telling gaat over magnesium en omega-3\./)).toBeTruthy();
+    expect(screen.getByText("nog 250 mg tot je norm vandaag")).toBeTruthy();
+    expect(screen.getByText(/Gedekt: magnesium\. Open: omega-3\./)).toBeTruthy();
+    expect(screen.getByText(/Niet meetbaar met een dagboek: zink en vitamine D\./)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Zink, telt niet mee/ })).toBeTruthy();
+    expect(screen.queryByText(/tekort/i)).toBeNull();
+  });
+
+  it("zegt bij zink dat een dagboek het niet kan aantonen, zonder 'nog X'", async () => {
+    const DagboekKrans = await laad();
+    render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} />);
+    fireEvent.click(screen.getByRole("button", { name: /Zink/ }));
+    expect(screen.getByText("een dagboek kan dit niet aantonen")).toBeTruthy();
   });
 
   it("toont eiwit zonder doel in grammen, niet als streep", async () => {
@@ -65,7 +74,10 @@ describe("DagboekKrans", () => {
     const eiwit: NutrientOndergrensGesplitst = { ...magnesiumVol, nutrient: "protein", minstens: 23.4, unit: "g" };
     render(<DagboekKrans {...basis} stoffen={[eiwit]} />);
     expect(screen.getByText("23 g")).toBeTruthy();
-    expect(screen.getByText(/Eiwit telt mee zodra je een eiwitdoel hebt/)).toBeTruthy();
+    expect(screen.getByText(/Eiwit telt mee met een eiwitdoel\./)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /^Eiwit/ }));
+    expect(screen.getByText("zonder eiwitdoel")).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Stel een eiwitdoel in/ })).toBeTruthy();
   });
 
   it("tekent geen stip voor een stof zonder vulling", async () => {
@@ -95,7 +107,7 @@ describe("DagboekKrans", () => {
     expect(knoppen[0]).toContain("50%");
     expect(knoppen[1]).toContain("Natrium");
     expect(screen.queryByText("IJzer")).toBeNull();
-    expect(screen.getByText("1 van 2")).toBeTruthy();
+    expect(screen.getByText(/Gedekt: magnesium\./)).toBeTruthy();
   });
 
   it("opent rijkste bronnen voor een gevolgde stof die er een lijst voor heeft", async () => {

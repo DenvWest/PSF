@@ -1,24 +1,28 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import GevolgdeStoffenKiezer from "@/components/dashboard/doelen/GevolgdeStoffenKiezer";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { trackEvent } from "@/lib/ga4";
 import type { NutrientOndergrensGesplitst } from "@/lib/nutrition-dagboek-items";
-import { aandeelVanNorm, type KernstofNormen } from "@/lib/nutrition-normen";
+import { aandeelVanNorm, normVoor, type KernstofNormen } from "@/lib/nutrition-normen";
 import { isInformatieveStof, type InformatieveStof } from "@/lib/nutrition-rijkste-bronnen";
 import type { SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
 import { NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
 import { rondVoedingswaarde, type VoedingswaardeRij } from "@/lib/nutrition-voedingswaarde";
 import type { ProteinTargetRange } from "@/lib/protein-target";
 import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
-import { useKernstofNormen } from "@/lib/use-kernstof-normen";
+import { useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 
 /**
  * De krans boven het dagboek: drie lagen in één beeld
  * (`BESLUIT_DAGBOEK_RINGEN_IN_LAGEN_2026-10.md`).
  *
- * 1. **Midden** — de vraag van de dag, daarna "x van y gedekt".
+ * 1. **Midden** — de vraag van de dag; daarna één stof: standaard de meetbare
+ *    kernstof met het grootste open stuk, of de stof die je aantikt. Groot het
+ *    percentage, eronder "nog X tot je norm vandaag". Nooit "tekort": één dag
+ *    is een ondergrens, het tekortsysteem oordeelt pas over vier vensters.
  * 2. **Binnenring** — de vijf kernstoffen, elk in de eigen kleur. Draagt de
  *    telling en het tekortsysteem; niet aanpasbaar.
  * 3. **Buitenring** — de stoffen die iemand zelf volgt, dunner en in één
@@ -31,10 +35,12 @@ import { useKernstofNormen } from "@/lib/use-kernstof-normen";
  * in {@link NIET_BEWIJSBAAR}, een stof zonder RI vult niet. De buitenring krijgt
  * nooit een stofkleur, zodat de informatielaag niet als tekort leest.
  *
- * ## Telling blijft telling
+ * ## Telling met namen
  *
- * "2 van 3 gedekt" telt alleen bewijsbare kernstoffen met een noemer, zoals
- * het tekortsysteem. Gevolgde stoffen tellen nooit mee.
+ * Onder de krans staat de telling met namen in plaats van een breuk ("Gedekt:
+ * omega-3. Open: magnesium."): alleen bewijsbare kernstoffen met een noemer,
+ * zoals het tekortsysteem. Gevolgde stoffen tellen nooit mee en krijgen in het
+ * midden geen "nog X": dat zou een oordeel zijn.
  *
  * ## Meedraaien
  *
@@ -57,7 +63,9 @@ const KRANS_NUTRIENTEN: readonly NutrientId[] = [
 
 const MIDDEN = 150;
 const BINNEN = { straal: 84, dikte: 16, gat: 7 };
-const BUITEN = { straal: 122, dikte: 8, gat: 6 };
+const BUITEN = { straal: 122, dikte: 9, gat: 6 };
+/** Vaste ruimte voor de "+" direct achter het laatste segment, in graden. */
+const PLUS_PLEK = 26;
 const RAAKVLAK = 24;
 
 type Keuze = { ring: "kern"; nutrient: NutrientId } | { ring: "gevolgd"; veld: SupermarktVeld } | null;
@@ -100,33 +108,36 @@ function hoofdletter(label: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 
+function naamKlein(nutrient: NutrientId): string {
+  const label = nutrientReferences[nutrient].label;
+  return label.charAt(0).toLowerCase() + label.slice(1);
+}
+
 function telRegel(
-  rijen: readonly { nutrient: NutrientId; telt: boolean; nietBewijsbaar: boolean }[],
+  rijen: readonly { nutrient: NutrientId; telt: boolean; gedekt: boolean; nietBewijsbaar: boolean }[],
 ): string {
-  const naam = (nutrient: NutrientId) => {
-    const label = nutrientReferences[nutrient].label;
-    return label.charAt(0).toLowerCase() + label.slice(1);
-  };
-  const tellend = rijen.filter((r) => r.telt).map((r) => naam(r.nutrient));
-  const delen = [
-    tellend.length > 0
-      ? `Een ondergrens, geen dagtotaal. De telling gaat over ${lijst(tellend)}.`
-      : "Een ondergrens, geen dagtotaal.",
-  ];
-  if (rijen.some((r) => r.nutrient === "protein" && !r.telt)) {
-    delen.push("Eiwit telt mee zodra je een eiwitdoel hebt.");
-  }
-  const gestippeld = rijen.filter((r) => r.nietBewijsbaar).map((r) => naam(r.nutrient));
-  if (gestippeld.length > 0) {
-    delen.push(`Gestippeld: ${lijst(gestippeld)} laten zich met een dagboek niet meten.`);
-  }
+  const gedekt = rijen.filter((r) => r.telt && r.gedekt).map((r) => naamKlein(r.nutrient));
+  const open = rijen.filter((r) => r.telt && !r.gedekt).map((r) => naamKlein(r.nutrient));
+  const delen: string[] = [];
+  if (gedekt.length > 0) delen.push(`Gedekt: ${lijst(gedekt)}.`);
+  if (open.length > 0) delen.push(`Open: ${lijst(open)}.`);
+  const gestippeld = rijen.filter((r) => r.nietBewijsbaar).map((r) => naamKlein(r.nutrient));
+  if (gestippeld.length > 0) delen.push(`Niet meetbaar met een dagboek: ${lijst(gestippeld)}.`);
+  if (rijen.some((r) => r.nutrient === "protein" && !r.telt)) delen.push("Eiwit telt mee met een eiwitdoel.");
+  delen.push("Een ondergrens, geen dagtotaal.");
   return delen.join(" ");
+}
+
+function hoeveelheid(waarde: number, unit: string): string {
+  const afgerond = unit === "µg" ? Math.round(waarde * 10) / 10 : Math.round(waarde);
+  return `${afgerond.toLocaleString("nl-NL")} ${unit}`;
 }
 
 function Segment({
   d,
   dikte,
   kleur,
+  spoor = "var(--vd-track)",
   vol,
   gestippeld,
   gedimd,
@@ -137,6 +148,7 @@ function Segment({
   d: string;
   dikte: number;
   kleur: string;
+  spoor?: string;
   vol: number;
   gestippeld: boolean;
   gedimd: boolean;
@@ -154,7 +166,7 @@ function Segment({
       <path
         d={d}
         fill="none"
-        stroke="var(--vd-track)"
+        stroke={spoor}
         strokeWidth={dikte}
         strokeLinecap="round"
         strokeDasharray={gestippeld ? "2 7" : undefined}
@@ -195,6 +207,7 @@ export default function DagboekKrans({
   onBegin: () => void;
 }) {
   const normen = useKernstofNormen();
+  const profiel = useKernstofProfiel();
   const { stoffen: gevolgdeVelden, geladen } = useGevolgdeStoffen();
   const [keuze, setKeuze] = useState<Keuze>(null);
   const [draaiBinnen, setDraaiBinnen] = useState(0);
@@ -228,15 +241,24 @@ export default function DagboekKrans({
 
   const leeg = stoffen.length === 0;
   const totaal = rijen.filter((r) => r.telt).length;
-  const gedekt = rijen.filter((r) => r.telt && r.gedekt).length;
 
   const spanBinnen = 360 / rijen.length;
-  const plekkenBuiten = gevolgd.length + 1;
-  const spanBuiten = 360 / plekkenBuiten;
-  const plusHoek = gevolgd.length * spanBuiten + spanBuiten / 2;
+  const spanBuiten = gevolgd.length > 0 ? (360 - PLUS_PLEK) / gevolgd.length : 0;
+  const plusHoek = gevolgd.length > 0 ? 360 - PLUS_PLEK / 2 : 0;
   const plus = punt(BUITEN.straal, plusHoek);
 
-  const gekozenKern = keuze?.ring === "kern" ? rijen.find((r) => r.nutrient === keuze.nutrient) : undefined;
+  // Zonder eigen keuze staat de meetbare kernstof met het grootste open stuk
+  // bovenaan; is alles gedekt, dan geen focus.
+  const standaard = leeg
+    ? undefined
+    : rijen
+        .filter((r) => r.telt && !r.gedekt)
+        .sort((a, b) => (a.aandeel ?? 0) - (b.aandeel ?? 0))[0];
+  const standaardDraai = standaard ? -(rijen.indexOf(standaard) + 0.5) * spanBinnen : 0;
+  const draaiBinnenNu = keuze ? draaiBinnen : standaardDraai;
+
+  const gekozenKern =
+    keuze?.ring === "kern" ? rijen.find((r) => r.nutrient === keuze.nutrient) : keuze ? undefined : standaard;
   const gekozenGevolgd = keuze?.ring === "gevolgd" ? gevolgd.find((r) => r.veld === keuze.veld) : undefined;
 
   function kiesKern(index: number) {
@@ -246,7 +268,7 @@ export default function DagboekKrans({
       return;
     }
     setKeuze({ ring: "kern", nutrient });
-    setDraaiBinnen((huidig) => kortsteDraai(huidig, -(index + 0.5) * spanBinnen));
+    setDraaiBinnen(kortsteDraai(draaiBinnenNu, -(index + 0.5) * spanBinnen));
     trackEvent("nutrition_dagboek_krans_gekozen", { ring: "kern", nutrient });
   }
 
@@ -280,6 +302,27 @@ export default function DagboekKrans({
         ? `${rondVoedingswaarde(rij.waarde)} ${rij.unit}`
         : "n.o.";
 
+  function middenRegel(rij: (typeof rijen)[number]): string {
+    if (rij.nietBewijsbaar) return "een dagboek kan dit niet aantonen";
+    if (rij.nutrient === "protein") {
+      if (!proteinTarget || rij.aandeel === null) return "zonder eiwitdoel";
+      const rest = proteinTarget.gramsLow - rij.minstens;
+      return rest > 0 ? `nog ${hoeveelheid(rest, "g")} tot je doel vandaag` : "je doel gehaald vandaag";
+    }
+    const norm = normVoor(normen, rij.nutrient);
+    if (!norm) return "";
+    const rest = norm.waarde - rij.minstens;
+    return rest > 0 ? `nog ${hoeveelheid(rest, norm.unit)} tot je norm vandaag` : "je norm gehaald vandaag";
+  }
+
+  function streefwaardeRegel(rij: (typeof rijen)[number]): string | null {
+    if (rij.nutrient === "protein") return null;
+    const eigen = profiel.streefwaarden[rij.nutrient as keyof typeof profiel.streefwaarden];
+    const norm = normVoor(normen, rij.nutrient);
+    if (eigen === undefined || !norm) return null;
+    return `je streefwaarde ${hoeveelheid(eigen, norm.unit)} · ${Math.round((rij.minstens / eigen) * 100)}%`;
+  }
+
   const chip =
     "inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] leading-none transition-colors";
 
@@ -289,7 +332,7 @@ export default function DagboekKrans({
         <svg viewBox="0 0 300 300" aria-hidden className="block h-full w-full overflow-visible">
           <path
             d={`M ${MIDDEN - 5} 14 L ${MIDDEN + 5} 14 L ${MIDDEN} 21 Z`}
-            fill={keuze ? "var(--vd-ink-2)" : "var(--vd-track)"}
+            fill={gekozenKern || gekozenGevolgd ? "var(--vd-ink-2)" : "var(--vd-track)"}
             className="motion-safe:transition-[fill] motion-safe:duration-300"
           />
 
@@ -311,7 +354,8 @@ export default function DagboekKrans({
                   key={rij.veld}
                   d={boog(BUITEN.straal, index, spanBuiten, BUITEN.gat)}
                   dikte={BUITEN.dikte}
-                  kleur="var(--vd-ink-3)"
+                  kleur="var(--vd-ink-2)"
+                  spoor="rgba(255,255,255,0.12)"
                   vol={rij.aandeel === null ? 0 : Math.min(rij.aandeel, 1)}
                   gestippeld={rij.aandeel === null}
                   gedimd={keuze !== null && !(keuze.ring === "gevolgd" && keuze.veld === rij.veld)}
@@ -348,7 +392,7 @@ export default function DagboekKrans({
             </g>
           ) : null}
 
-          <g className={DRAAI} style={{ transform: `rotate(${draaiBinnen}deg)` }}>
+          <g className={DRAAI} style={{ transform: `rotate(${draaiBinnenNu}deg)` }}>
             {rijen.map((rij, index) => (
               <Segment
                 key={rij.nutrient}
@@ -366,82 +410,94 @@ export default function DagboekKrans({
           </g>
         </svg>
 
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-[29%] text-center">
-          {leeg ? (
+        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-[27%] text-center">
+          {gekozenKern ? (
+            <>
+              <span className="flex items-center gap-1 text-[clamp(9px,3.6cqw,11.5px)] font-semibold text-[var(--vd-ink-2)]">
+                <span
+                  aria-hidden
+                  className="inline-block h-2 w-2 rounded-full"
+                  style={{ background: `var(--vd-stof-${gekozenKern.nutrient})` }}
+                />
+                {nutrientReferences[gekozenKern.nutrient].label}
+              </span>
+              <b className="mt-0.5 font-serif text-[clamp(22px,11.5cqw,36px)] font-normal leading-none text-[var(--vd-ink)]">
+                {kernWaarde(gekozenKern)}
+              </b>
+              <span className="mt-1 text-[clamp(9px,3.5cqw,11px)] leading-tight text-[var(--vd-ink-3)]">
+                {middenRegel(gekozenKern)}
+              </span>
+              {streefwaardeRegel(gekozenKern) ? (
+                <span className="mt-0.5 text-[clamp(8.5px,3.2cqw,10px)] leading-tight text-[var(--vd-ink-4)]">
+                  {streefwaardeRegel(gekozenKern)}
+                </span>
+              ) : null}
+            </>
+          ) : gekozenGevolgd ? (
+            <>
+              <span className="text-[clamp(9px,3.6cqw,11.5px)] font-semibold text-[var(--vd-ink-2)]">
+                {hoofdletter(gekozenGevolgd.label)}
+              </span>
+              <b className="mt-0.5 font-serif text-[clamp(22px,11.5cqw,36px)] font-normal leading-none text-[var(--vd-ink)]">
+                {gevolgdWaarde(gekozenGevolgd)}
+              </b>
+              <span className="mt-1 text-[clamp(9px,3.5cqw,11px)] leading-tight text-[var(--vd-ink-3)]">
+                {gekozenGevolgd.aandeel !== null && gekozenGevolgd.waarde !== null
+                  ? `van je norm · ${rondVoedingswaarde(gekozenGevolgd.waarde)} ${gekozenGevolgd.unit}`
+                  : gekozenGevolgd.waarde !== null
+                    ? "zonder norm · zonder oordeel"
+                    : "niet opgehaald"}
+              </span>
+            </>
+          ) : leeg ? (
             <b className="font-serif text-[clamp(14px,6.4cqw,20px)] font-normal leading-tight text-[var(--vd-ink)]">
               Wat at je vandaag?
             </b>
           ) : (
             <>
-              <b className="font-serif text-[clamp(20px,10.5cqw,32px)] font-normal leading-none text-[var(--vd-ink)]">
-                {totaal === 0 ? "—" : `${gedekt} van ${totaal}`}
+              <b className="font-serif text-[clamp(16px,7.5cqw,24px)] font-normal leading-tight text-[var(--vd-ink)]">
+                {totaal === 0 ? "Nog niets te tellen" : "Alles wat meetbaar is, is gedekt"}
               </b>
-              <span className="mt-1.5 text-[clamp(9px,3.6cqw,11px)] leading-tight text-[var(--vd-ink-3)]">
-                {totaal === 0 ? "nog niets te tellen" : "meetbare stoffen gedekt"}
+              <span className="mt-1 text-[clamp(9px,3.5cqw,11px)] leading-tight text-[var(--vd-ink-3)]">
+                {totaal === 0 ? "voeg toe wat je at" : "vandaag, als ondergrens"}
               </span>
             </>
           )}
         </div>
       </div>
 
-      <div aria-live="polite" className="flex min-h-[44px] w-full max-w-[340px] flex-col items-center gap-2 text-center">
+      <div aria-live="polite" className="flex min-h-[44px] w-full max-w-[340px] flex-col items-center gap-1.5 text-center">
         {gekozenKern ? (
-          <>
-            <p className="m-0 text-[13px] text-[var(--vd-ink)]">
-              <span
-                aria-hidden
-                className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full align-middle"
-                style={{ background: `var(--vd-stof-${gekozenKern.nutrient})` }}
-              />
-              <b className="font-semibold">{nutrientReferences[gekozenKern.nutrient].label}</b>
-              <span className="text-[var(--vd-ink-2)]">
-                {" · "}
-                {kernWaarde(gekozenKern)}
-                {gekozenKern.aandeel !== null
-                  ? gekozenKern.nutrient === "protein"
-                    ? " van je doel"
-                    : " van je norm"
-                  : ""}
-                {gekozenKern.gedekt ? " ✓" : ""}
-              </span>
-            </p>
-            {gekozenKern.nietBewijsbaar ? (
-              <p className="m-0 text-[11px] text-[var(--vd-ink-3)]">Laat zich met een dagboek niet meten.</p>
-            ) : null}
+          <span className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
             <button
               type="button"
               onClick={() => onSelect(gekozenKern.nutrient)}
               className="cursor-pointer text-[12px] font-semibold text-[var(--vd-sage-2)] underline-offset-2 hover:underline"
             >
-              Logboek van {nutrientReferences[gekozenKern.nutrient].label.toLowerCase()} →
+              Logboek van {naamKlein(gekozenKern.nutrient)} →
             </button>
-          </>
-        ) : gekozenGevolgd ? (
-          <>
-            <p className="m-0 text-[13px] text-[var(--vd-ink)]">
-              <b className="font-semibold">{hoofdletter(gekozenGevolgd.label)}</b>
-              <span className="text-[var(--vd-ink-2)]">
-                {" · "}
-                {gevolgdWaarde(gekozenGevolgd)}
-                {gekozenGevolgd.aandeel !== null && gekozenGevolgd.waarde !== null
-                  ? ` van de RI · ${rondVoedingswaarde(gekozenGevolgd.waarde)} ${gekozenGevolgd.unit}`
-                  : gekozenGevolgd.waarde !== null
-                    ? " · geen RI"
-                    : ""}
-              </span>
-            </p>
-            {isInformatieveStof(gekozenGevolgd.veld) ? (
-              <button
-                type="button"
-                onClick={() => onKiesStof(gekozenGevolgd.veld as InformatieveStof)}
-                className="cursor-pointer text-[12px] font-semibold text-[var(--vd-sage-2)] underline-offset-2 hover:underline"
+            {gekozenKern.nutrient === "protein" && gekozenKern.aandeel === null ? (
+              <Link
+                href="/dashboard/doelen"
+                onClick={() => trackEvent("nutrition_dagboek_eiwitdoel_cta", { surface: "krans" })}
+                className="text-[12px] font-semibold text-[var(--vd-sage-2)] underline-offset-2 hover:underline"
               >
-                Rijkste bronnen →
-              </button>
-            ) : (
-              <p className="m-0 text-[11px] text-[var(--vd-ink-3)]">Zonder oordeel.</p>
-            )}
-          </>
+                Stel een eiwitdoel in →
+              </Link>
+            ) : null}
+          </span>
+        ) : gekozenGevolgd ? (
+          isInformatieveStof(gekozenGevolgd.veld) ? (
+            <button
+              type="button"
+              onClick={() => onKiesStof(gekozenGevolgd.veld as InformatieveStof)}
+              className="cursor-pointer text-[12px] font-semibold text-[var(--vd-sage-2)] underline-offset-2 hover:underline"
+            >
+              Rijkste bronnen →
+            </button>
+          ) : (
+            <p className="m-0 text-[11px] text-[var(--vd-ink-3)]">Zonder oordeel.</p>
+          )
         ) : leeg ? (
           <button
             type="button"
@@ -450,9 +506,10 @@ export default function DagboekKrans({
           >
             Voeg je ontbijt toe
           </button>
-        ) : (
+        ) : null}
+        {!leeg && !keuze ? (
           <p className="m-0 text-[11px] leading-relaxed text-[var(--vd-ink-3)]">{telRegel(rijen)}</p>
-        )}
+        ) : null}
       </div>
 
       <ul aria-label="Kernstoffen" className="m-0 flex w-full list-none flex-wrap justify-center gap-1.5 p-0">
