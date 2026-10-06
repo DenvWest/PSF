@@ -751,3 +751,22 @@ describe("DagboekScherm — dag wisselen", () => {
   });
 });
 
+
+describe("DagboekScherm — openen vanuit een ander scherm", () => {
+  it("opent het portiescherm van het gevraagde product op de gevraagde maaltijd, en wist de vraag", async () => {
+    window.history.replaceState(null, "", "/dashboard?tab=vandaag&voeg=voeding%3Ahavermout&moment=lunch");
+    render(<DagboekScherm />);
+    expect(await screen.findByRole("button", { name: "Toevoegen" })).toBeTruthy();
+    expect(screen.getByText("Havermout")).toBeTruthy();
+    expect(screen.getByText("Lunch")).toBeTruthy();
+    expect(window.location.search).toBe("?tab=vandaag");
+  });
+
+  it("opent het zoekscherm op Mijn supplementen", async () => {
+    window.history.replaceState(null, "", "/dashboard?tab=vandaag&favorieten=supplementen");
+    render(<DagboekScherm />);
+    const tab = await screen.findByRole("tab", { name: "Mijn supplementen" });
+    expect(tab.getAttribute("aria-selected")).toBe("true");
+    window.history.replaceState(null, "", "/");
+  });
+});

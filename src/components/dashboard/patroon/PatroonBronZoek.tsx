@@ -8,7 +8,10 @@ import { searchSupplementCatalog } from "@/data/nutrition/supplement-catalog";
 import type { Voedingswijze } from "@/lib/account-kernstof-profiel";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
+import { buildDagboekFavorietenHref, buildDagboekVoegHref, gaNaarDashboard } from "@/lib/dagboek-deeplink";
 import { trackEvent } from "@/lib/ga4";
+import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
+import { bewaarPatroonStand } from "@/lib/patroon-url";
 import { weergaveVoorStandaardPortie, type DagboekItemBron } from "@/lib/nutrition-dagboek-items";
 import { pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
 import { NUTRIENT_HUB_CATEGORY } from "@/lib/nutrition-result-rows";
@@ -24,9 +27,12 @@ import { buildSupplementHubHref } from "@/lib/supplement-hub/hub-link";
  * supplementen uit de dagboekcatalogus, met wat één portie van deze stof
  * levert.
  *
- * De ster bewaart in dezelfde dagboek-favorieten als het dagboek zelf, zodat
- * wat je hier kiest morgen bovenaan staat bij "Mijn producten" / "Mijn
- * supplementen". Een supplement linkt naar de catalogus met PS-Score van die
+ * Per rij twee tekens. **＋** opent het Dagboek in het portiescherm van dat
+ * product, met de maaltijd waar de meeste ruimte zit al gekozen. **☆** bewaart
+ * in dezelfde dagboek-favorieten als het dagboek zelf, zodat het bovenaan staat
+ * bij "Mijn producten" / "Mijn supplementen"; een supplement komt daarnaast in
+ * Keuze → Favorieten (`account_favorites`, domein voeding). Een tweede tik haalt
+ * hem op beide plekken weg. Een supplement linkt naar de catalogus met PS-Score van die
  * stof (`/supplementen?categorie=…`), niet direct naar `/beste/*`: voeding
  * eerst, de aanbeveling als tweede stap
  * (`docs/plan/BESLUIT_MICRO_IN_BEELD_2026-10.md` §5).
@@ -86,14 +92,25 @@ export default function PatroonBronZoek({
   unit,
   norm,
   voedingswijze,
+  startZoek = "",
+  standaardMoment = "ontbijt",
 }: {
   nutrient: NutrientId;
   label: string;
   unit: string;
   norm: number | null;
   voedingswijze: Voedingswijze | null;
+  /** Zoekterm uit de URL, als je via de terugknop terugkomt. */
+  startZoek?: string;
+  /** De maaltijd waarop ＋ het product zet. */
+  standaardMoment?: EetmomentId;
 }) {
-  const [zoekterm, setZoekterm] = useState("");
+  const [zoekterm, setZoektermState] = useState(startZoek);
+  const [bevestiging, setBevestiging] = useState<DagboekItemBron | null>(null);
+  const setZoekterm = (waarde: string) => {
+    setZoektermState(waarde);
+    bewaarPatroonStand({ zoek: waarde });
+  };
   const [lang, setLang] = useState(false);
   const [favorieten, setFavorieten] = useState<ReadonlySet<string>>(new Set());
   const [bezig, setBezig] = useState<string | null>(null);
@@ -156,6 +173,37 @@ export default function PatroonBronZoek({
 
   const rijen = term ? treffers : rijkste.slice(0, lang ? TOP_LANG : TOP_KORT);
 
+  /** Een supplement staat ook in Keuze → Favorieten; mislukt dat, dan blijft de dagboekster gewoon staan. */
+  const wisselKeuzeFavoriet = async (rij: Rij, bewaard: boolean) => {
+    const itemId = `dagboek-supplement-${rij.key}`;
+    try {
+      await fetch(
+        bewaard ? `/api/account/favorites?item_id=${encodeURIComponent(itemId)}` : "/api/account/favorites",
+        bewaard
+          ? { method: "DELETE", credentials: "include" }
+          : {
+              method: "POST",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                item_id: itemId,
+                title: rij.naam,
+                kind: "supplement",
+                domain: "voeding",
+                source: "mijn_keuze",
+              }),
+            },
+      );
+    } catch {
+      // Zie de doc hierboven: de dagboekster is de hoofdzaak.
+    }
+  };
+
+  const zetInDagboek = (rij: Rij) => {
+    trackEvent("nutrition_patroon_bron_naar_dagboek", { bron: rij.bron, nutrient, moment: standaardMoment });
+    gaNaarDashboard(buildDagboekVoegHref({ bron: rij.bron, key: rij.key, moment: standaardMoment }));
+  };
+
   const wisselFavoriet = async (rij: Rij) => {
     const id = sleutel(rij.bron, rij.key);
     const bewaard = favorieten.has(id);
@@ -175,6 +223,8 @@ export default function PatroonBronZoek({
             },
       );
       if (!response.ok) return;
+      if (rij.bron === "supplement") await wisselKeuzeFavoriet(rij, bewaard);
+      setBevestiging(bewaard ? null : rij.bron);
       setFavorieten((huidig) => {
         const volgende = new Set(huidig);
         if (bewaard) volgende.delete(id);
@@ -237,7 +287,7 @@ export default function PatroonBronZoek({
         const id = sleutel(rij.bron, rij.key);
         const bewaard = favorieten.has(id);
         return (
-          <div key={id} className="vd-tabel-rij grid-cols-[1fr_auto_32px]">
+          <div key={id} className="vd-tabel-rij grid-cols-[1fr_auto_28px_28px]">
             <span className="vd-naam">
               {rij.naam}
               <i>
@@ -263,6 +313,14 @@ export default function PatroonBronZoek({
               {rij.levert}
               {rij.aandeel !== null ? ` · ${percentageADH(rij.aandeel)}` : ""}
             </span>
+            <button
+              type="button"
+              aria-label={`${rij.naam} in je dagboek zetten`}
+              onClick={() => zetInDagboek(rij)}
+              className="cursor-pointer border-0 bg-transparent text-[17px] font-semibold leading-none text-[var(--vd-sage-2)]"
+            >
+              ＋
+            </button>
             <button
               type="button"
               aria-pressed={bewaard}
@@ -294,9 +352,24 @@ export default function PatroonBronZoek({
         </div>
       ) : null}
 
+      {bevestiging ? (
+        <div className="vd-tabel-rij">
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("nutrition_patroon_favoriet_bekijken", { bron: bevestiging });
+              gaNaarDashboard(buildDagboekFavorietenHref(bevestiging === "supplement" ? "supplementen" : "producten"));
+            }}
+            className="cursor-pointer border-0 bg-transparent p-0 text-left text-[12.5px] font-semibold text-[var(--vd-sage-2)]"
+          >
+            Bewaard bij {bevestiging === "supplement" ? "Mijn supplementen (en Keuze → Favorieten)" : "Mijn producten"} →
+          </button>
+        </div>
+      ) : null}
+
       <div className="vd-tabel-rij">
         <span className="vd-naam">
-          <i>☆ bewaart in je dagboek-favorieten: dan staat het bovenaan als je een maaltijd invult.</i>
+          <i>＋ zet het in je dagboek · ☆ bewaart het bij je favorieten</i>
         </span>
       </div>
     </div>
