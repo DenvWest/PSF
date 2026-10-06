@@ -108,7 +108,7 @@ export default function NutrientRouteChoiceCard({
   const statusLabel = meting
     ? meting.gedekt
       ? "Gedekt"
-      : `${percentageADH(meting.aandeel)} van je RI`
+      : `${percentageADH(meting.aandeel)} van je norm`
     : ROUTE_STATUS_LABEL[status.status];
   const personalLine = proteinTargetLine(proteinTarget);
   const ageNote = proteinAgeNote(ageRange);

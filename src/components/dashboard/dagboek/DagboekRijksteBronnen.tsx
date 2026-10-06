@@ -123,7 +123,7 @@ export default function DagboekRijksteBronnen({
                     {getal(bron.waarde)} <span className="text-[10px] text-[var(--vd-ink-3)]">{bron.unit}</span>
                   </span>
                   <span className="text-[10px] text-[var(--vd-ink-4)]">
-                    {stand === "portie" ? (riAandeel !== null ? `${riAandeel}% RI` : "per portie") : stand === "100g" ? "per 100 g" : "per 100 kcal"}
+                    {stand === "portie" ? (riAandeel !== null ? `${riAandeel}% ADH` : "per portie") : stand === "100g" ? "per 100 g" : "per 100 kcal"}
                   </span>
                 </span>
                 <span aria-hidden className="shrink-0 text-[16px] leading-none text-[var(--vd-sage-2)]">

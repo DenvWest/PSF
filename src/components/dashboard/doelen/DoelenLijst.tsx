@@ -11,6 +11,7 @@ import { trackEvent } from "@/lib/ga4";
 import {
   isGeldigeLeeftijd,
   isGeldigeStreefwaarde,
+  isStreefStof,
   LEEG_KERNSTOF_PROFIEL,
   STREEFWAARDE_GRENS,
   type KernstofProfiel,
@@ -50,6 +51,14 @@ import {
  * - Het check-gewicht bereikt de browser niet; zonder eigen gewicht staat er
  *   "uit je check" in plaats van het getal.
  */
+
+const GEVOLGD_STAP: Record<string, { stap: number; decimalen: 0 | 1 }> = {
+  potassiumMg: { stap: 50, decimalen: 0 },
+  calciumMg: { stap: 50, decimalen: 0 },
+  ironMg: { stap: 0.5, decimalen: 1 },
+  vitaminB12µg: { stap: 0.5, decimalen: 1 },
+  vitaminCMg: { stap: 5, decimalen: 0 },
+};
 
 const BELASTING_OPTIES: ReadonlyArray<{ waarde: number; label: string; uitleg: string }> = [
   { waarde: 1, label: "Weinig", uitleg: "Nauwelijks kracht- of duurtraining" },
@@ -530,19 +539,44 @@ export default function DoelenLijst() {
               if (!definitie) return null;
               const norm = normVoorVeld(gevolgdeNormen, veld);
               const naam = definitie.label.charAt(0).toUpperCase() + definitie.label.slice(1);
+              const streefStof = norm && isStreefStof(veld) ? veld : null;
+              const eigen = streefStof ? (profiel.streefwaarden[streefStof] ?? null) : null;
+              const stap = GEVOLGD_STAP[veld] ?? { stap: 1, decimalen: 0 as const };
               return (
                 <Regel
                   key={veld}
                   label={naam}
                   onder={onderzoekKort(veld)}
                   waarde={
-                    norm
-                      ? `norm ${normLabel(norm)}`
-                      : veld === "fiberG"
-                        ? "vul je gewicht in"
-                        : "geen norm"
+                    eigen !== null && norm
+                      ? `${String(eigen).replace(".", ",")} ${norm.unit} eigen`
+                      : norm
+                        ? `norm ${normLabel(norm)}`
+                        : veld === "fiberG"
+                          ? "vul je gewicht in"
+                          : "geen norm"
                   }
-                  gedempt={!norm}
+                  gedempt={!norm || eigen === null}
+                  onKies={
+                    streefStof && norm
+                      ? () =>
+                          open(`streefwaarde_${streefStof}`, {
+                            soort: "getal",
+                            titel: `Eigen streefwaarde ${definitie.label.toLowerCase()}`,
+                            eenheid: norm.unit,
+                            waarde: eigen,
+                            stap: stap.stap,
+                            decimalen: stap.decimalen,
+                            start: norm.waarde,
+                            isGeldig: (waarde) => waarde === null || isGeldigeStreefwaarde(streefStof, waarde),
+                            foutTekst: `Vul een waarde tussen 0 en ${STREEFWAARDE_GRENS[streefStof].max.toLocaleString("nl-NL")} ${norm.unit} in. ${STREEFWAARDE_GRENS[streefStof].uitleg}`,
+                            uitleg: `Norm: ${normLabel(norm)} per dag voor ${norm.geldtVoor} (${norm.bron}). ${onderzoekLang(veld) ?? ""} Je streefwaarde staat ernaast in Je patroon, zonder oordeel.`,
+                            leegUitleg: "Leeg betekent: alleen de norm.",
+                            onBewaar: (waarde) =>
+                              bewaarKernstof({ streefwaarden: { [streefStof]: waarde } }, `streefwaarde_${streefStof}`),
+                          })
+                      : undefined
+                  }
                 />
               );
             })}

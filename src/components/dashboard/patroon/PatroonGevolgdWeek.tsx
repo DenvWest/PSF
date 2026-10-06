@@ -1,13 +1,16 @@
 "use client";
 
+import { isStreefStof } from "@/lib/account-kernstof-profiel";
 import type { GevolgdeWeekReeks } from "@/lib/nutrition-gevolgde-weken";
 import { percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 import { rondVoedingswaarde } from "@/lib/nutrition-voedingswaarde";
+import { useKernstofProfiel } from "@/lib/use-kernstof-normen";
 
 /**
  * De gevolgde stoffen over de gekozen periode, onder de kernstoffentabel in
  * Per stof: stof, gemiddelde, % van je norm, zonder link naar `/beste/*`. Informatief,
- * zoals "Ook gevolgd" in het dagboek.
+ * zoals "Ook gevolgd" in het dagboek. Een eigen streefwaarde (Je doelen)
+ * staat als tweede regel, net als bij de kernstoffen; de balk blijft de norm.
  */
 
 function hoofdletter(label: string): string {
@@ -19,6 +22,7 @@ export default function PatroonGevolgdWeek({
 }: {
   reeksen: readonly GevolgdeWeekReeks[];
 }) {
+  const { streefwaarden } = useKernstofProfiel();
   if (reeksen.length === 0) return null;
 
   return (
@@ -31,6 +35,7 @@ export default function PatroonGevolgdWeek({
       {reeksen.map((reeks) => {
         const punt = reeks.punten[0];
         const vulling = punt?.aandeel == null ? 0 : Math.min(Math.round(punt.aandeel * 100), 100);
+        const streef = isStreefStof(reeks.veld) ? (streefwaarden[reeks.veld] ?? null) : null;
         return (
           <div key={reeks.veld} className="vd-tabel-rij vd-week-rij">
             <span className="vd-naam">
@@ -42,6 +47,12 @@ export default function PatroonGevolgdWeek({
                     ? `norm ${rondVoedingswaarde(reeks.norm)} ${reeks.unit} — zonder oordeel`
                     : "gem. per geregistreerde dag"}
               </i>
+              {streef !== null ? (
+                <i>
+                  eigen streefwaarde {rondVoedingswaarde(streef)} {reeks.unit}/dag
+                  {punt?.gemiddeld != null && punt.dagen > 0 ? ` · ${percentageADH(punt.gemiddeld / streef)}` : ""}
+                </i>
+              ) : null}
             </span>
             <span className="vd-getal">
               {punt?.gemiddeld == null ? "n.o." : `${rondVoedingswaarde(punt.gemiddeld)} ${reeks.unit}`}

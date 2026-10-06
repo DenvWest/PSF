@@ -1,4 +1,10 @@
-import type { Activiteit, KernstofMetNorm, Menstruatie, Voedingswijze } from "@/data/nutrition/voedingsnormen";
+import type {
+  Activiteit,
+  GevolgdeStofMetNorm,
+  KernstofMetNorm,
+  Menstruatie,
+  Voedingswijze,
+} from "@/data/nutrition/voedingsnormen";
 import type { OrgScopedClient } from "@/lib/db/scoped";
 
 /**
@@ -19,9 +25,17 @@ import type { OrgScopedClient } from "@/lib/db/scoped";
  * wie 40 mg zink als doel invult, zou het scherm laten aanmoedigen wat de
  * EFSA afraadt. Magnesium heeft alleen een bovengrens voor supplementen
  * (250 mg); voor voeding plus supplement houden we 1000 mg als typfoutgrens.
+ *
+ * ## Ook voor gevolgde stoffen
+ *
+ * Kalium, calcium, ijzer, B12 en vitamine C krijgen dezelfde streefwaarde,
+ * in dezelfde kolom (`BESLUIT_DOELEN_VERBONDEN_2026-10.md`, aanvulling 6 okt).
+ * Vezels niet: die norm hangt van gewicht en activiteit af.
  */
 
 export type NormGeslacht = "man" | "vrouw";
+
+export type StreefStof = KernstofMetNorm | Exclude<GevolgdeStofMetNorm, "fiberG">;
 export type { Activiteit, Menstruatie, Voedingswijze };
 
 export type KernstofProfiel = {
@@ -36,7 +50,7 @@ export type KernstofProfiel = {
   voedingswijze: Voedingswijze | null;
   /** Alleen gevraagd bij vrouw of anders. Null = niet ingevuld: de hogere ijzernorm. */
   menstruatie: Menstruatie | null;
-  streefwaarden: Partial<Record<KernstofMetNorm, number>>;
+  streefwaarden: Partial<Record<StreefStof, number>>;
 };
 
 export const LEEG_KERNSTOF_PROFIEL: KernstofProfiel = {
@@ -49,7 +63,7 @@ export const LEEG_KERNSTOF_PROFIEL: KernstofProfiel = {
   streefwaarden: {},
 };
 
-export const STREEFWAARDE_GRENS: Record<KernstofMetNorm, { max: number; unit: string; uitleg: string }> = {
+export const STREEFWAARDE_GRENS: Record<StreefStof, { max: number; unit: string; uitleg: string }> = {
   magnesium: { max: 1000, unit: "mg", uitleg: "Boven 1000 mg is bijna altijd een typfout." },
   zinc: { max: 25, unit: "mg", uitleg: "De EFSA zet de veilige bovengrens op 25 mg per dag." },
   omega3: {
@@ -58,15 +72,25 @@ export const STREEFWAARDE_GRENS: Record<KernstofMetNorm, { max: number; unit: st
     uitleg: "Tot 5000 mg EPA+DHA per dag ziet de EFSA geen veiligheidsbezwaar.",
   },
   vitamin_d: { max: 100, unit: "µg", uitleg: "De EFSA zet de veilige bovengrens op 100 µg per dag." },
+  potassiumMg: { max: 10000, unit: "mg", uitleg: "Boven 10.000 mg is bijna altijd een typfout." },
+  calciumMg: { max: 2500, unit: "mg", uitleg: "De EFSA zet de veilige bovengrens op 2500 mg per dag." },
+  ironMg: { max: 40, unit: "mg", uitleg: "De EFSA zet de veilige inname op 40 mg per dag." },
+  vitaminB12µg: { max: 1000, unit: "µg", uitleg: "Boven 1000 µg is bijna altijd een typfout." },
+  vitaminCMg: { max: 2000, unit: "mg", uitleg: "Boven 2000 mg is bijna altijd een typfout." },
 };
 
-const KERNSTOFFEN = Object.keys(STREEFWAARDE_GRENS) as KernstofMetNorm[];
+const KERNSTOFFEN: readonly KernstofMetNorm[] = ["magnesium", "zinc", "omega3", "vitamin_d"];
+const STREEFSTOFFEN = Object.keys(STREEFWAARDE_GRENS) as StreefStof[];
 
 export function isKernstofMetNorm(waarde: unknown): waarde is KernstofMetNorm {
-  return typeof waarde === "string" && (KERNSTOFFEN as string[]).includes(waarde);
+  return typeof waarde === "string" && (KERNSTOFFEN as readonly string[]).includes(waarde);
 }
 
-export function isGeldigeStreefwaarde(stof: KernstofMetNorm, waarde: unknown): waarde is number {
+export function isStreefStof(waarde: unknown): waarde is StreefStof {
+  return typeof waarde === "string" && (STREEFSTOFFEN as string[]).includes(waarde);
+}
+
+export function isGeldigeStreefwaarde(stof: StreefStof, waarde: unknown): waarde is number {
   return typeof waarde === "number" && Number.isFinite(waarde) && waarde > 0 && waarde <= STREEFWAARDE_GRENS[stof].max;
 }
 
@@ -98,7 +122,7 @@ function leesStreefwaarden(waarde: unknown): KernstofProfiel["streefwaarden"] {
   if (!waarde || typeof waarde !== "object" || Array.isArray(waarde)) return {};
   const uit: KernstofProfiel["streefwaarden"] = {};
   for (const [stof, getal] of Object.entries(waarde as Record<string, unknown>)) {
-    if (isKernstofMetNorm(stof) && isGeldigeStreefwaarde(stof, getal)) uit[stof] = getal;
+    if (isStreefStof(stof) && isGeldigeStreefwaarde(stof, getal)) uit[stof] = getal;
   }
   return uit;
 }
@@ -161,7 +185,7 @@ export function pasKernstofPatchToe(
     const ruw = p.streefwaarden;
     if (!ruw || typeof ruw !== "object" || Array.isArray(ruw)) return { fout: "Ongeldige streefwaarden." };
     for (const [stof, waarde] of Object.entries(ruw as Record<string, unknown>)) {
-      if (!isKernstofMetNorm(stof)) return { fout: "Onbekende stof." };
+      if (!isStreefStof(stof)) return { fout: "Onbekende stof." };
       if (waarde === null) {
         delete volgende.streefwaarden[stof];
       } else if (isGeldigeStreefwaarde(stof, waarde)) {
