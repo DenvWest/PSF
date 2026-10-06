@@ -645,7 +645,6 @@ export default function DagboekScherm({
     return (
       <DagboekVoedingPortie
         itemKey={key}
-        nutrient={nutrient}
         moment={portieMoment}
         favorieten={favorieten}
         busy={busy}

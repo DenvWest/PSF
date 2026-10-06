@@ -22,6 +22,10 @@ In de vergelijking in het dagboek (spinazie diepvries · zalm gerookt · broccol
 5. **Benaderingen tonen, alleen als vrijgegeven, nooit in een som.** `scripts/nevo-benadering-micros.json` zegt per benaderingskoppeling of de kernstoffen van het vergelijkbare record getoond mogen worden, met reden. Ze staan in een apart blok (`FOOD_CATALOG_NEVO_BENADERINGEN`) met de NEVO-naam, en verschijnen alleen via `gehalteWeergavePer100g` / `weergaveVanItem`: altijd met "≈" en "waarden van '<NEVO-naam>' … telt niet mee in je dag". De maaltijdtabel telt op en houdt een benadering daarom op `n.o.`.
 6. **Rekenen en tonen zijn twee functies.** `gehaltePer100g`/`bedragVanItem` = het getal voor sommen. `gehalteWeergavePer100g`/`weergaveVanItem`/`weergaveVoorStandaardPortie` = wat een scherm toont. Een nieuw scherm dat optelt, gebruikt nooit de weergavefuncties.
 
+7. **Eén productbeeld vóór en na het toevoegen.** "Voedsel toevoegen" toonde de kernstoffen zonder nullen en alleen calorieën en macro's; het productdetail toonde alle kernstoffen en het volledige etiket. Beide gebruiken nu hetzelfde blok (`DagboekProductLevert`): vijf kernstoffen (met 0/spoor/≈) en het volledige NEVO-etiket, meeschalend met de portie. Het filter op één stof vanuit een nutriëntdetail vervalt in dat scherm.
+8. **De vergelijking krijgt het etiket als tweede blok** ("Etiket · ter informatie"): energie, vet/verzadigd, koolhydraten/suikers, vezels, natrium, kalium, calcium, ijzer, B12, C. Alleen getallen (en %RI per portie bij vitamines/mineralen), **geen winnaar, geen balk, geen "× zoveel"**: deze stoffen zijn informatief, zonder oordeel (`BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md` §0.1). Eiwit staat alleen bovenaan.
+9. **Etiket van een benadering** (`src/lib/nutrition-etiket.ts`): vrijgegeven → het volledige etiket van het vergelijkbare record, met "≈" en de NEVO-naam; niet vrijgegeven → alleen energie en macro's, met "≈" (verrijking van calcium/B12/vitamine D verschilt per merk).
+
 ## Benaderingen: vrijgegeven en niet
 
 **Vrijgegeven (10):** broccoli gestoomd en diepvries (→ broccoli gekookt), basmatirijst, meergranenbrood, kipdij, rosbief, roomboter, blauwe kaas, smeerkaas, groene thee.
@@ -39,4 +43,4 @@ In de vergelijking in het dagboek (spinazie diepvries · zalm gerookt · broccol
 
 ## Buiten deze stap
 
-De etikettabel onderaan het productdetail (`VoedingswaardeTabel`, uit `nevo_foods`) heeft een eigen laadpad en toont nog `n.o.` waar NEVO 0 meldt. Gelijktrekken kan later.
+Het etiket (`nevo_foods`, via de API) toont een gemeten 0 al als 0. Alleen een **spoor** komt daar als `null` binnen en staat er als `n.o.`: `nevo_foods.spoor` wordt niet door de API meegegeven. Gelijktrekken vraagt een API-wijziging en kan later.
