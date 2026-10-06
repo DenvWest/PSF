@@ -4,8 +4,9 @@ import { weekLabel } from "@/lib/nutrition-weekoverzicht";
 import type { VoedingWeekoverzicht, VoedingWeekRij } from "@/lib/nutrition-voeding-weekoverzicht";
 
 /**
- * De Gem./Doel/Over-tabel met week-navigatie voor Laag B (Voedingsstoffen- en
- * Macro's-tabblad) — naar `PatroonScherm.tsx`'s `.vd-weekbalk`/`.vd-tabel--los`,
+ * De Gem./Doel/Over-tabel voor het Macro's-tabblad. De week volgt de dagenbalk
+ * erboven (geen eigen navigatie meer: twee weekpijlen op één scherm deden
+ * hetzelfde) — naar `PatroonScherm.tsx`'s `.vd-weekbalk`/`.vd-tabel--los`,
  * toegepast op `VoedingWeekoverzicht` in plaats van het tekortsysteem. Zelfde
  * CSS-klassen, geen nieuwe styling. Telt catalogus- en etiketproducten, net
  * als de dagtabel erboven.
@@ -17,37 +18,14 @@ import type { VoedingWeekoverzicht, VoedingWeekRij } from "@/lib/nutrition-voedi
 export default function DagboekVoedingWeektabel({
   overzicht,
   rijen,
-  onVorigeWeek,
-  onVolgendeWeek,
-  isHuidigeWeek,
 }: {
   overzicht: VoedingWeekoverzicht;
   rijen: readonly VoedingWeekRij[];
-  onVorigeWeek: () => void;
-  onVolgendeWeek: () => void;
-  isHuidigeWeek: boolean;
 }) {
   return (
     <>
       <div className="vd-weekbalk">
-        <button
-          type="button"
-          onClick={onVorigeWeek}
-          aria-label="Vorige week"
-          className="vd-blader"
-        >
-          ‹
-        </button>
         <h3 className="vd-weektitel">{weekLabel(overzicht.start, overzicht.eind)}</h3>
-        <button
-          type="button"
-          onClick={onVolgendeWeek}
-          disabled={isHuidigeWeek}
-          aria-label="Volgende week"
-          className="vd-blader"
-        >
-          ›
-        </button>
       </div>
 
       <p className="vd-note" style={{ marginTop: 0 }}>

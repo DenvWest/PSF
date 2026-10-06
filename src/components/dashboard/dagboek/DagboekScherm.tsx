@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
@@ -26,7 +27,7 @@ import { LEGE_MACRO_DOELEN, type MacroDoelen } from "@/lib/account-macro-doelen"
 import { fetchMacroDoelen } from "@/lib/macro-doelen-client";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
 import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
-import { verschuifWeek, weekDatums, weekStart } from "@/lib/nutrition-weekoverzicht";
+import { weekDatums, weekStart } from "@/lib/nutrition-weekoverzicht";
 import DagboekCatalogusZoek from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
 import DagboekKrans from "@/components/dashboard/dagboek/DagboekKrans";
 import DagboekMaaltijd from "@/components/dashboard/dagboek/DagboekMaaltijd";
@@ -176,7 +177,6 @@ export default function DagboekScherm({
   /** Laag C: het zelf ingestelde macro/calorie-doel, apart geladen. */
   const [macroDoelen, setMacroDoelen] = useState<MacroDoelen>(LEGE_MACRO_DOELEN);
   /** Weeknavigatie voor de Voedingsstoffen/Macro's-tabbladen — los van `datum`. */
-  const [weekOffset, setWeekOffset] = useState(0);
   /** Supermarkt-logs van de bekeken week, per datum — apart van `supermarktLogs` (dat is alleen de geselecteerde dag). */
   const [weekSupermarktLogs, setWeekSupermarktLogs] = useState<Map<string, SupermarktPortie[]>>(
     new Map(),
@@ -265,8 +265,8 @@ export default function DagboekScherm({
   }, []);
 
   const bekekenWeekStart = useMemo(
-    () => verschuifWeek(weekStart(vandaag), weekOffset),
-    [vandaag, weekOffset],
+    () => weekStart(datum),
+    [datum],
   );
   const bekekenWeekDatums = useMemo(() => weekDatums(bekekenWeekStart), [bekekenWeekStart]);
 
@@ -294,14 +294,6 @@ export default function DagboekScherm({
       afgebroken = true;
     };
   }, [bekekenWeekDatums]);
-
-  const isHuidigeBekekenWeek = weekOffset === 0;
-
-  function bladerWeek(weken: number) {
-    const volgendeOffset = weekOffset + weken;
-    if (volgendeOffset > 0) return; // nooit de toekomst in
-    setWeekOffset(volgendeOffset);
-  }
 
   const items = useMemo(() => {
     if (bewerkt && bewerkt.datum === datum) return bewerkt.items;
@@ -1000,13 +992,6 @@ export default function DagboekScherm({
             bronProducten={dagBronProducten}
             onKiesStof={(stof) => openBronnen(stof, "tabel")}
           />
-          <DagboekVoedingWeektabel
-            overzicht={weekoverzicht}
-            rijen={weekoverzicht.rijen}
-            onVorigeWeek={() => bladerWeek(-1)}
-            onVolgendeWeek={() => bladerWeek(1)}
-            isHuidigeWeek={isHuidigeBekekenWeek}
-          />
           <SupermarktBronRegel producten={berekendeBronProducten} berekend />
         </div>
       ) : (
@@ -1022,13 +1007,23 @@ export default function DagboekScherm({
             onVerwijder={(id) => void verwijderSupermarktPortie(id)}
           />
 
-          <DagboekVoedingWeektabel
-            overzicht={weekoverzicht}
-            rijen={weekoverzicht.rijen.filter((rij) => MACRO_VELDEN.has(rij.veld))}
-            onVorigeWeek={() => bladerWeek(-1)}
-            onVolgendeWeek={() => bladerWeek(1)}
-            isHuidigeWeek={isHuidigeBekekenWeek}
-          />
+          {weekoverzicht.rijen.some((rij) => rij.doel !== null) ? (
+            <DagboekVoedingWeektabel
+              overzicht={weekoverzicht}
+              rijen={weekoverzicht.rijen.filter((rij) => MACRO_VELDEN.has(rij.veld) || rij.veld === "energyKcal")}
+            />
+          ) : (
+            <p className="m-0 rounded-2xl border border-white/8 bg-white/[0.02] px-3.5 py-3 text-[12px] leading-relaxed text-[var(--vd-ink-3)]">
+              Een weekoverzicht van je calorieën en macro&rsquo;s verschijnt zodra je zelf een doel instelt.{" "}
+              <Link
+                href="/dashboard/doelen"
+                onClick={() => trackEvent("nutrition_dagboek_macrodoel_cta", { surface: "macros" })}
+                className="font-semibold text-[var(--vd-sage-2)] underline-offset-2 hover:underline"
+              >
+                Stel een doel in →
+              </Link>
+            </p>
+          )}
           <SupermarktBronRegel producten={berekendeBronProducten} berekend />
         </div>
       )}

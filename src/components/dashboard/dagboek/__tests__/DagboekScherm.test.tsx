@@ -551,7 +551,7 @@ describe("DagboekScherm — tabbladen (Laag B)", () => {
     expect(screen.getAllByText(/Eiwit/).length).toBeGreaterThan(0);
   });
 
-  it("schakelt naar Voedingsstoffen en toont het weekoverzicht met het ingestelde doel", async () => {
+  it("toont op Macro's het weekoverzicht met het ingestelde doel", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn((input: RequestInfo | URL) => {
@@ -575,7 +575,7 @@ describe("DagboekScherm — tabbladen (Laag B)", () => {
 
     render(<DagboekScherm />);
 
-    fireEvent.click(screen.getByRole("tab", { name: "Voedingsstoffen" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
 
     // Het doel komt uit de macro-doelen-fetch, niet uit een berekening.
     expect(await screen.findByText(/2200 kcal/)).toBeTruthy();
@@ -586,10 +586,11 @@ describe("DagboekScherm — tabbladen (Laag B)", () => {
 
     fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
 
-    // Zonder ingesteld doel toont de Doel-kolom "—", nooit een berekend
-    // getal (zeker geen NaN, en geen vuistregel als 50/30/20).
-    const cellen = await screen.findAllByText("—");
-    expect(cellen.length).toBeGreaterThanOrEqual(3);
+    // Zonder ingesteld doel geen weektabel vol streepjes en nooit een
+    // berekend getal (geen NaN, geen vuistregel als 50/30/20), wel de weg
+    // naar Je doelen.
+    expect(await screen.findByText(/verschijnt zodra je zelf een doel instelt/)).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Stel een doel in/ })).toBeTruthy();
     expect(screen.queryByText(/NaN/)).toBeNull();
   });
 });
