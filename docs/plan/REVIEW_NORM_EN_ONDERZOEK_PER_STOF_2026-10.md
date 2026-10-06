@@ -1,7 +1,7 @@
 # Review: norm én peer-reviewed onderzoek per stof — van één getal naar een bandbreedte
 
 **Datum:** 6 oktober 2026
-**Status:** concept, wacht op review van Dennis. Er verandert niets in `src/` voordat dit is goedgekeurd.
+**Status:** concept, herzien na review van Dennis (6 okt, §6). Wacht op akkoord met §6 voordat `src/` verandert.
 **Raakt:** `src/data/nutrition/voedingsnormen.ts`, `src/lib/protein-target.ts`, `VOEDINGSWAARDE_VELDEN` (RI van de buitenring), het stof-detail in dagboek en Patroon, het midden van de krans (PR #139)
 **Bouwt voort op:** `BESLUIT_KERNSTOF_NORMEN_2026-10.md`, PR #141 (eigen streefwaarde), `BESLUIT_DAGBOEK_RINGEN_IN_LAGEN_2026-10.md`
 **Aanleiding:** Dennis, 5 okt: "kijk naar peer review voor elke voedingsstof". Hij gaf als voorbeeld Shahinfar e.a., *Sci Rep* 2025 (omega-3 en cognitie).
@@ -134,3 +134,63 @@ Legenda: **Norm nu** = wat de code gebruikt. **Voorstel** = de hoogste recente o
 - Filippini e.a. 2020, [JAHA (PMC7429027)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7429027/)
 - Bolland e.a. 2015, [BMJ (PubMed 26420387)](https://pubmed.ncbi.nlm.nih.gov/26420387/)
 - WHO, [Sodium reduction](https://www.who.int/news-room/fact-sheets/detail/sodium-reduction)
+
+---
+
+## 6. Herziening na review (Dennis, 6 okt)
+
+Dennis: geen medische termen en risicofactoren; alleen het sterkste bewijs bij gezonde mensen; vitamine D 15 µg als dat goed onderbouwd is bij gezonde mensen; zink afhankelijk van de voedingswijze; ijzer met cyclus en (peri)menopauze; nieuwe waarden in beide ringen én in Doelen, check en Patroon.
+
+### 6.1 De poort wordt strenger: alleen gezonde mensen
+
+- **De onderzochte zone komt alleen uit onderzoek bij gezonde volwassenen.** Studies bij patiënten of risicogroepen (hoge bloeddruk, lage magnesiumspiegel, cognitieve achteruitgang, diabetes) tellen niet mee, ook niet "met de doelgroep erbij". Dat vervangt niveau 2 uit §1.
+- **Een zone vraagt GRADE matig of hoger bij gezonde mensen.** Lager: alleen in de bronnenlijst.
+- **Geen medische termen in de app.** Uitkomsten in gewone taal ("verwerkingssnelheid", "vitamine D-spiegel in het bloed"), geen ziektenamen, geen risicoreductie-percentages.
+- **Normen zelf** (GR/EFSA/NNR) gaan over gezonde mensen en blijven de ondergrens.
+
+### 6.2 Per stof, opnieuw door de strengere poort
+
+| Stof | Norm (nieuw) | Sterkste bewijs bij gezonde mensen | Zone |
+|---|---|---|---|
+| **Vitamine D** | **15 µg** (EFSA 2016); 70+: 20 µg (GR 2012) | EFSA 2016, meta-regressie bij gezonde volwassenen: bij 15 µg haalt de meerderheid een bloedspiegel van ≥ 50 nmol/L. Cashman e.a. 2008, Ierse winter (breedte vergelijkbaar met NL): 10 µg → 50%, 20 µg → 90–95% boven 50 nmol/L. Dit bewijs gaat over de **spiegel**, niet over ziekte-uitkomsten. Voldoet aan Dennis' voorwaarde | Geen zone erboven: VITAL (gezonde 50+, 50 µg/d) liet op de hoofduitkomsten geen effect zien |
+| **Omega-3** | **450 mg** (GR 2006) | Shahinfar 2025, subgroep van 32 RCT's bij cognitief gezonden: verwerkingssnelheid SMD 0,49 (**GRADE matig**), plateau rond 1500 mg; algemene cognitie niet significant. Suh e.a. 2024, *BMC Med*: 24 RCT's, n = 9.660, 40+ zonder dementie: alleen executieve functie, vanaf > 500 mg/d; ongunstige curve boven 420 mg EPA of na 12 maanden. VITAL (1 g/d, gezond): geen effect op de hoofduitkomsten | **500–1500 mg**, zekerheid matig voor één uitkomst (verwerkingssnelheid). Met de kanttekening uit Suh 2024 erbij |
+| **Magnesium** | 350 / 300 mg (ongewijzigd) | Hypertension 2025: bij mensen met normale bloeddruk geen significant effect. Slaap: review 2026, zekerheid laag tot zeer laag | **Geen zone** (vervalt t.o.v. §3) |
+| **Zink** | Alles: **13 / 10 mg** (NNR2023). Vegetarisch/veganistisch: EFSA bij hoog fytaat ⚠ waarde aflezen | Foster e.a. 2013, *J Sci Food Agric*: 34 studies; vegetariërs eten 0,9 mg/d minder zink en hebben een lagere serumzinkspiegel. Het effect is groter bij veganisten en bij vrouwen. Dit gaat over de **behoefte**, precies waar een norm over gaat | Geen zone |
+| **IJzer** | Menstrueert: **16 mg** (GR 2018; NNR2023: 15). Niet meer: **11 mg** (GR 2018; NNR2023: 9). Hoogste genomen | NNR2023: kies op **status, niet leeftijd**. Op 51 jaar menstrueert de helft nog, op 70 niemand meer. Perimenopauze: geen enkele bron heeft een aparte norm, dus "onregelmatig" = 16 mg (asymmetrie-regel). Haider e.a. 2018: vegetariërs hebben lagere ferritine (−29,7 µg/L; premenopauzaal −17,7) | Geen zone. Meer is niet beter. Voor vegetariërs geen aparte norm: de 1,8×-factor komt uit IOM 2001 en niet uit GR/EFSA/NNR ⚠. Wel een informatieregel |
+| **Eiwit** | Ongewijzigd (`protein-target.ts`); 65+: ondergrens 1,2 g/kg (NNR2023) | Morton 2018: gezonde volwassenen met krachttraining, plateau rond 1,6 g/kg | 1,2–1,6 g/kg bij krachttraining (doel dekt dit al) |
+| **Vitamine B12** | **4 µg** (EFSA 2015 / NNR2023) | — | — |
+| **Vitamine C** | **110 / 95 mg** (EFSA 2013 / NNR2023) | — | — |
+| **Kalium** | **3500 mg** (GR 2018 / EFSA 2016) | Filippini 2020 gaat over bloeddruk en valt dus af | Geen zone |
+| **Calcium** | GR 2018 per leeftijd en geslacht (950–1200 mg) | — | Geen zone |
+| **Vezels** | 30–40 g ⚠ (GR) | Reynolds 2019: cohorten en trials in de algemene bevolking; de uitkomsten zijn ziekte-uitkomsten en vallen dus af | Geen zone |
+
+### 6.3 Waar iemand dit invult
+
+- **Je doelen (sectie Kernstoffen, PR #141)** krijgt er één keuze bij: **"Menstrueer je?" — ja / onregelmatig / nee**. Alleen zichtbaar bij Vrouw. Daarnaast blijven geslacht, 70+ en voedingswijze. Zink volgt de voedingswijze die er al is.
+- **Privacy:** menstruatie is een gezondheidsgegeven (AVG art. 9). Dat vraagt uitdrukkelijke toestemming, een uitleg waarom we het vragen, en een aanvulling op de DPIA (die wacht al op de jurist, zie compliance-status). Daarom **eerst opt-in in Je doelen** en **nog niet in de voedingscheck**. Zonder antwoord geldt 16 mg (hoogste, asymmetrie-regel).
+- **Later in de voedingscheck**, zodat het resultaat-dashboard vanaf het begin klopt: pas na akkoord van de jurist op de DPIA-aanvulling. Dan schrijft de check hetzelfde profielveld (`account_kernstof_profiel`) en is er geen tweede opslag.
+
+### 6.4 Eén bron voor alle schermen
+
+- `nutrition-normen.ts` wordt de enige bron voor **beide** ringen. Nieuw: `normVoorVeld(veld, profiel)` voor de gevolgde stoffen (B12, C, kalium, calcium, ijzer, zink, vezels) naast de bestaande kernstofnormen.
+- Consumenten die nu de etiket-RI (`.ri`) gebruiken, gaan over op die norm: krans (buitenring), `nutrition-voedingswaarde`, `nutrition-gevolgde-weken`, `nutrition-maaltijd-patroon`, `PatroonGevolgdWeek`, `PatroonTrend`. Kernstof-consumenten (krans binnen, Doelen, Patroon-tabel/-detail/-maaltijden, Agenda, tekortsysteem) lopen al via `nutrition-normen` en krijgen de nieuwe waarden vanzelf.
+- **De etiket-RI blijft alleen in de voedingswaardetabel**, als "% RI (etiket)". Dat is de wettelijke context.
+- **Gevolgde stoffen blijven zonder oordeel**: geen ✓, geen telling. Alleen de noemer verandert van RI naar norm.
+
+### 6.5 Volgorde van bouwen (na akkoord)
+
+1. **Normen + één bron** (`voedingsnormen.ts`, `nutrition-normen.ts`, `getoetst`-test); alle schermen rekenen mee. Besluit `BESLUIT_KERNSTOF_NORMEN_2026-10.md` herzien.
+2. **Je doelen:** menstruatie-keuze + uitleg + toestemming; migratie op `account_kernstof_profiel` (in `OPENSTAAND.md`, blokkeert de deploy niet: zonder antwoord 16 mg).
+3. **Krans (#139):** midden "nog X tot je norm vandaag" en de buitenring tegen de norm.
+4. **Stof-detail:** balk met norm · zone · bovengrens · eigen streefwaarde + `onderzoek-per-stof.ts`.
+5. **Voedingscheck:** pas na de DPIA-aanvulling.
+
+### Extra bronnen bij §6
+
+- EFSA 2016, [DRV vitamine D](https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4547)
+- Suh e.a. 2024, [BMC Med (PMC10929146)](https://pmc.ncbi.nlm.nih.gov/articles/PMC10929146/)
+- Manson e.a. 2019, VITAL — [Circ Res-overzicht](https://www.ahajournals.org/doi/10.1161/CIRCRESAHA.119.314541)
+- Foster e.a. 2013, [Effect of vegetarian diets on zinc status](https://www.researchgate.net/publication/236225258_Effect_of_vegetarian_diets_on_zinc_status_A_systematic_review_and_meta-analysis_of_studies_in_humans)
+- Haider e.a. 2018, [Vegetarian diets and iron status](https://www.semanticscholar.org/paper/The-effect-of-vegetarian-diets-on-iron-status-in-A-Haider-Schwingshackl/8376ebf7fb44f6f5ee2f08596b08fc324f43ffba)
+- NNR2023, [ijzer](https://pub.norden.org/nord2023-003/iron.html)
+- Magnesium en slaap, [systematische review 2026 (PubMed 42661485)](https://pubmed.ncbi.nlm.nih.gov/42661485/)
