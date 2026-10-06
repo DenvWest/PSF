@@ -22,7 +22,11 @@ export function resolveSchapTabs(domain: PillarId): SchapTabDescriptor[] {
   // Alleen waar domain-product-stance kandidaten kent. Stress staat daar op
   // `lifestyle_first` en heeft daarom sowieso geen schap; verbinding komt er
   // niet in voor.
-  if (toProductStanceDomain(domain) !== null) {
+  //
+  // Niet op voeding: daar draagt Vergelijken hetzelfde aanbod (dezelfde vijf
+  // stoffen), naast de voeding die hetzelfde doet
+  // (`BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`).
+  if (toProductStanceDomain(domain) !== null && domain !== "voeding") {
     tabs.push({ id: "producten", label: "Producten" });
   }
 
@@ -41,8 +45,12 @@ export function resolveSchapTabs(domain: PillarId): SchapTabDescriptor[] {
   //
   // De voorwaarde is dezelfde als bij Diensten: geen tab zonder inhoud. Buiten
   // voeding bestaan er geen nutriëntroutes, dus daar komt hij niet.
+  //
+  // Sinds 6 oktober heet hij Vergelijken en draagt hij ook de supplementen met
+  // hun PS-Score: per stof voeding naast supplement. De id blijft `logboek`,
+  // zodat oude links en meetreeksen niet breken.
   if (domain === "voeding") {
-    tabs.push({ id: "logboek", label: "Voedingslogboek" });
+    tabs.push({ id: "logboek", label: "Vergelijken" });
   }
 
   // Favorieten van dit domein — snelle beheer.
@@ -58,11 +66,12 @@ export function resolveSchapTabs(domain: PillarId): SchapTabDescriptor[] {
 /**
  * Een schap bestaat exact waar `domain-product-stance` kandidaten kent
  * (`SCHAP_DOMAINS` === de domeinen met een stance), dus Producten is er altijd
- * en is altijd de opening. Sinds W4a is er geen Leefstijl-tab meer om op terug
- * te vallen — het schap gaat over aanbod, en dat is wat je als eerste ziet.
+ * en is altijd de opening — behalve op voeding, waar Vergelijken (`logboek`)
+ * dat aanbod draagt. Sinds W4a is er geen Leefstijl-tab meer om op terug te
+ * vallen — het schap gaat over aanbod, en dat is wat je als eerste ziet.
  */
-export function resolveDefaultSchapTab(_domain: PillarId): SchapTabId {
-  return "producten";
+export function resolveDefaultSchapTab(domain: PillarId): SchapTabId {
+  return domain === "voeding" ? "logboek" : "producten";
 }
 
 /**

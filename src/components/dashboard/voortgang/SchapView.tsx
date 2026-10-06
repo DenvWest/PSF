@@ -4,7 +4,7 @@ import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
 import KeuzeSpiegel from "@/components/dashboard/voortgang/KeuzeSpiegel";
-import NutrientLogboekPanel from "@/components/dashboard/voortgang/NutrientLogboekPanel";
+import KeuzeVergelijken from "@/components/dashboard/keuze/KeuzeVergelijken";
 import MovementSchapBasisCard from "@/components/dashboard/beweging/MovementSchapBasisCard";
 import FavoriteReminderControl from "@/components/dashboard/voortgang/FavoriteReminderControl";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
@@ -102,7 +102,8 @@ export default function SchapView({
   onSwitchDomain,
 }: SchapViewProps) {
   const { items, isSaved, save } = useVoortgangFavorites();
-  const { reeksen } = useTekortVoorstellen(todayInAgendaTimezone());
+  const vandaag = todayInAgendaTimezone();
+  const { reeksen, dagen: dagboekDagen } = useTekortVoorstellen(vandaag);
   const pillar = PILLAR[domain];
   const tabs = resolveSchapTabs(domain);
   const fallbackTab = resolveDefaultSchapTab(domain);
@@ -222,15 +223,23 @@ export default function SchapView({
 
       {/* Dezelfde rol als de keuzekolom-kop op /supplementen: eerst wat de
           meetlat is, dan pas de lijst. */}
-      <div className="mb-4 rounded-2xl border border-[var(--divider)] bg-black/20 px-3.5 py-3.5">
-        <p className="max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--text-muted)] text-pretty">
-          Hier staat het aanbod, en alleen hier. Vandaag en Mijn Dag dragen de deur.
-          Elk oordeel hieronder komt uit je leefstijl- en voedingscheck, langs
-          dezelfde feiten: signaal, zekerheid en EU-claim.
-        </p>
-      </div>
+      {/* Op voeding draagt Vergelijken zijn eigen kop, uit je dagboek. De
+          intro en de spiegel ("gratis laag 1–5" tegenover kopen) kwamen uit
+          de check-ladder en zijn daar vervallen
+          (`BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`, herziening 6 okt). */}
+      {domain !== "voeding" ? (
+        <>
+          <div className="mb-4 rounded-2xl border border-[var(--divider)] bg-black/20 px-3.5 py-3.5">
+            <p className="max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--text-muted)] text-pretty">
+              Hier staat het aanbod, en alleen hier. Vandaag en Mijn Dag dragen de deur.
+              Elk oordeel hieronder komt uit je leefstijl- en voedingscheck, langs
+              dezelfde feiten: signaal, zekerheid en EU-claim.
+            </p>
+          </div>
 
-      {spiegel ? <KeuzeSpiegel spiegel={spiegel} verdicts={domainVerdicts} /> : null}
+          {spiegel ? <KeuzeSpiegel spiegel={spiegel} verdicts={domainVerdicts} /> : null}
+        </>
+      ) : null}
 
       <nav
         role="tablist"
@@ -322,15 +331,36 @@ export default function SchapView({
             staat je voedingsbasis niet, dan blijven de supplement-knoppen dicht met
             hun reden erbij. */}
         {currentTab === "logboek" && nutritionRoutes.length > 0 ? (
-          <NutrientLogboekPanel
+          <KeuzeVergelijken
             statuses={nutritionRoutes}
-            gateOpen={data?.nutritionCheckinReadout?.gate.open === true}
-            surface={SCHAP_SURFACE[domain] ?? "favorieten_schap_producten"}
-            proteinTarget={data?.proteinTarget ?? null}
-            ageRange={data?.ageRange ?? null}
-            showSearch
             reeksen={reeksen}
+            dagen={dagboekDagen}
+            vandaag={vandaag}
+            surface={SCHAP_SURFACE[domain] ?? "favorieten_schap_producten"}
           />
+        ) : null}
+
+        {/* Voorheen het tabblad Producten: het oordeel per supplement uit je
+            check. Op voeding zijn dat dezelfde vijf stoffen als hierboven, dus
+            het staat nu onder de vergelijking in plaats van ernaast
+            (`BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`). Zonder voedingscheck
+            toont het zijn dichte poort met reden, zodat dit tabblad nooit leeg is. */}
+        {currentTab === "logboek" && stanceDomain ? (
+          <div className={nutritionRoutes.length > 0 ? "mt-6" : ""}>
+            <p className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.14em] text-[var(--text-subtle)]">
+              Oordeel per supplement · uit je check
+            </p>
+            <DomainSupplementStance
+              domain={stanceDomain}
+              verdicts={data?.supplementVerdicts ?? []}
+              nutritionLogCompleted={nutritionLogCompleted}
+              surface={SCHAP_SURFACE[domain] ?? "favorieten_schap_producten"}
+              ladderDomain={domain}
+              openByDefault
+              showFavoriteSave
+              favoriteSource="aanbevolen"
+            />
+          </div>
         ) : null}
 
         {currentTab === "favorieten" ? (

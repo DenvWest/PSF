@@ -128,3 +128,15 @@ export function stofPerMoment(
     keer: keer.get(id)?.size ?? 0,
   }));
 }
+
+/**
+ * De maaltijd met het kleinste aandeel, als daar ruimte zit: alleen tussen
+ * maaltijden die je registreerde, en alleen als er minstens twee zijn. Een
+ * niet-geregistreerde maaltijd is onbekend, geen lege maaltijd.
+ */
+export function ruimteBij(perMoment: readonly StofPerMoment[], totaal: number): StofPerMoment | null {
+  const geregistreerd = perMoment.filter((m) => m.keer > 0);
+  if (totaal <= 0 || geregistreerd.length < 2) return null;
+  const kleinste = geregistreerd.reduce((min, m) => (m.totaal < min.totaal ? m : min));
+  return kleinste.totaal / totaal < 0.15 ? kleinste : null;
+}

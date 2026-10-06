@@ -69,9 +69,10 @@ describe("SchapView — welke tabs een domein draagt", () => {
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 
-  it("toont op voeding Producten, Voedingslogboek en Favorieten", () => {
+  it("toont op voeding Vergelijken en Favorieten, met het oordeel per supplement onder Vergelijken", () => {
     renderSchap("voeding");
-    expect(tabLabels()).toEqual(["Producten", "Voedingslogboek", "Favorieten"]);
+    expect(tabLabels()).toEqual(["Vergelijken", "Favorieten"]);
+    expect(screen.getByText(/Oordeel per supplement/)).toBeTruthy();
     expect(screen.queryByRole("tab", { name: "Diensten" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
@@ -183,38 +184,14 @@ describe("SchapView — de domeinschakelaar", () => {
 });
 
 describe("SchapView — de spiegel leefstijl ↔ aanbod", () => {
-  const spiegel = () =>
-    screen.getByRole("region", { name: "Wat eerst komt, en wat je kunt kopen" });
-
-  it("staat bóven de tabs, zodat de volgorde vóór het aanbod komt", () => {
-    renderSchap("voeding", "producten");
-
-    const blok = spiegel();
-    const tablist = screen.getByRole("tablist");
-    // Node.compareDocumentPosition: 4 = de tablist volgt op de spiegel.
-    expect(blok.compareDocumentPosition(tablist) & 4).toBeTruthy();
-  });
-
-  it("blijft staan op elk onderdeel — het is geen tab die je moet aanklikken", () => {
+  it("staat niet meer op voeding: daar draagt Vergelijken een kop uit je dagboek", () => {
+    // BESLUIT_KEUZE_VERGELIJKEN_2026-10.md, herziening 6 okt: "gratis laag 1–5"
+    // kwam uit de check-ladder; op voeding is de stand nu je dagboek.
     renderSchap("voeding", "favorieten");
-    expect(spiegel()).toBeTruthy();
-  });
-
-  it("zet de gratis lagen links en de betaalde laag rechts, met hun nummers", () => {
-    renderSchap("voeding", "producten");
-
-    expect(within(spiegel()).getByText("Gratis · laag 1–5")).toBeTruthy();
-    expect(within(spiegel()).getByText("Betaald · laag 6 van 6")).toBeTruthy();
-    expect(within(spiegel()).getByText("Voedingsbasis")).toBeTruthy();
-  });
-
-  it("draagt de doorstroom naar de gids, met de terugweg naar het dashboard", () => {
-    renderSchap("voeding", "producten");
-
-    const link = within(spiegel())
-      .getByText("Open de supplementengids")
-      .closest("a");
-    expect(link?.getAttribute("href")).toBe("/supplementen?from=voortgang");
+    expect(
+      screen.queryByRole("region", { name: "Wat eerst komt, en wat je kunt kopen" }),
+    ).toBeNull();
+    expect(screen.queryByText("Gratis · laag 1–5")).toBeNull();
   });
 
   it("staat er niet op een domein zonder ladder", () => {
