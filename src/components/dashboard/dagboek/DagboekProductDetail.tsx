@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
@@ -46,6 +47,7 @@ export default function DagboekProductDetail({
   busy?: boolean;
   proteinTarget?: ProteinTargetRange | null;
 }) {
+  const [bevestig, setBevestig] = useState(false);
   const label = labelVoor(item);
   const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
   const eenheid = eenheidVoor(item);
@@ -83,7 +85,7 @@ export default function DagboekProductDetail({
           <Icons.ChevronLeft s={18} />
         </button>
         {voedingEntry ? <FoodThumbnail entry={voedingEntry} size={40} /> : null}
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <h2 className="m-0 truncate font-serif text-[19px] font-normal text-[var(--vd-ink)]">
             {label}
           </h2>
@@ -92,6 +94,42 @@ export default function DagboekProductDetail({
             {item.bron === "supplement" ? " · supplement" : null}
           </span>
         </div>
+        {bevestig ? (
+          <div className="flex shrink-0 items-center gap-1.5" role="group" aria-label="Verwijderen bevestigen">
+            <span className="text-[12px] text-[var(--vd-ink-3)]">Verwijderen?</span>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => onVerwijder(item)}
+              aria-label="Ja, verwijder uit dagboek"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-[var(--vd-terra)] text-[var(--vd-terra)] transition-colors hover:bg-white/[0.05] disabled:opacity-50"
+            >
+              ✓
+            </button>
+            <button
+              type="button"
+              onClick={() => setBevestig(false)}
+              aria-label="Nee, laten staan"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/15 text-[var(--vd-ink-2)] transition-colors hover:border-white/30"
+            >
+              ×
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => setBevestig(true)}
+            aria-label="Verwijder uit dagboek"
+            title="Verwijder uit dagboek"
+            className="flex h-8 shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-white/12 bg-white/[0.03] px-3 text-[12px] font-semibold text-[var(--vd-ink-3)] transition-colors hover:border-[var(--vd-terra)] hover:text-[var(--vd-terra)] disabled:opacity-50"
+          >
+            <svg aria-hidden viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M2.5 4.5h11M6 4.5V3h4v1.5M4 4.5l.7 9h6.6l.7-9" />
+            </svg>
+            Verwijder
+          </button>
+        )}
       </header>
 
       <DagboekProductLevert item={item} proteinTarget={proteinTarget} />
@@ -103,14 +141,6 @@ export default function DagboekProductDetail({
         staat onder &ldquo;Voedingsstoffen&rdquo;.
       </p>
 
-      <button
-        type="button"
-        disabled={busy}
-        onClick={() => onVerwijder(item)}
-        className="self-start rounded-lg border border-white/15 bg-white/[0.03] px-3.5 py-1.5 text-[12px] font-semibold text-[var(--vd-ink-3)] transition-colors hover:border-[var(--vd-terra)] hover:text-[var(--vd-terra)] disabled:opacity-50"
-      >
-        Verwijder uit dagboek
-      </button>
     </div>
   );
 }

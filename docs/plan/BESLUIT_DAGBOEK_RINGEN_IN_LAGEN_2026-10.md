@@ -97,3 +97,9 @@ GA4: `nutrition_dagboek_krans_gekozen` (nieuw; params `ring`: `kern` | `gevolgd`
   - op smalle schermen (blok < 460 px) een korte datum ("Ma 5 okt") in plaats van twee regels; Nederlandse maandnamen zonder hoofdletter;
   - de buitenring tekent een gevolgde stof zonder registratie als egaal leeg spoor; **gestippeld blijft alleen voor stoffen zonder norm** (en voor zink en vitamine D in de binnenring), nu als dunne stippellijn in plaats van dikke kralen;
   - de laatste kolom van de tabel per maaltijd krijgt ruimte tot de rand.
+
+## Aanvulling 6 oktober 2026 (6) — kop als één groep, één bronregel, verwijderen rechtsboven
+
+- **Vandaag en Kies sluiten aan op de datum** (‹ datum › Vandaag Kies) in plaats van rechts in de hoek. Op smalle schermen lopen ze door naar een tweede regel.
+- **Eén bronvermelding** onder "Alles wat je at": de tabel draagt de NEVO-vermelding zelf; de tweede regel eronder vervalt.
+- **Productdetail: verwijderen rechtsboven**, als knop met prullenbak. Een tik vraagt "Verwijderen?" met ✓ (ja) en × (laten staan), zodat niemand per ongeluk een product kwijtraakt. De losse knop onderaan vervalt.

@@ -94,8 +94,8 @@ export default function DagboekWeekstrip({
 
   return (
     <div className="@container flex flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <div className="flex min-w-0 items-center gap-2">
           <button type="button" className={PIJL} onClick={() => stap(-1)} disabled={busy} aria-label="Vorige dag">
             ‹
           </button>

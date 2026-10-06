@@ -1056,7 +1056,6 @@ export default function DagboekScherm({
             bronProducten={dagBronProducten}
             onKiesStof={(stof) => openBronnen(stof, "tabel")}
           />
-          <SupermarktBronRegel producten={berekendeBronProducten} berekend />
         </div>
       ) : (
         <div
