@@ -11,7 +11,15 @@ describe("pasKernstofPatchToe", () => {
     const start = { ...LEEG_KERNSTOF_PROFIEL, geslacht: "vrouw" as const, streefwaarden: { zinc: 9, magnesium: 400 } };
     const uit = pasKernstofPatchToe(start, { zeventigPlus: true, streefwaarden: { magnesium: null } });
     expect(uit).toEqual({
-      profiel: { geslacht: "vrouw", zeventigPlus: true, voedingswijze: null, menstruatie: null, streefwaarden: { zinc: 9 } },
+      profiel: {
+        geslacht: "vrouw",
+        leeftijd: null,
+        zeventigPlus: true,
+        activiteit: null,
+        voedingswijze: null,
+        menstruatie: null,
+        streefwaarden: { zinc: 9 },
+      },
     });
   });
 
@@ -41,12 +49,27 @@ describe("leesKernstofProfiel", () => {
       }),
     ).toEqual({
       geslacht: null,
+      leeftijd: null,
       zeventigPlus: true,
+      activiteit: null,
       voedingswijze: "veganistisch",
       menstruatie: null,
       streefwaarden: { vitamin_d: 20 },
     });
     expect(leesKernstofProfiel(null)).toEqual(LEEG_KERNSTOF_PROFIEL);
+  });
+});
+
+describe("leeftijd en activiteit", () => {
+  it("bewaart een geldige leeftijd en activiteit en weigert onzin", () => {
+    expect(pasKernstofPatchToe(LEEG_KERNSTOF_PROFIEL, { leeftijd: 47, activiteit: 3 })).toMatchObject({
+      profiel: { leeftijd: 47, activiteit: 3 },
+    });
+    expect(pasKernstofPatchToe(LEEG_KERNSTOF_PROFIEL, { leeftijd: 12 })).toEqual({
+      fout: "Vul een leeftijd tussen 18 en 110 jaar in.",
+    });
+    expect(pasKernstofPatchToe(LEEG_KERNSTOF_PROFIEL, { activiteit: 7 })).toEqual({ fout: "Onbekend activiteitsniveau." });
+    expect(leesKernstofProfiel({ leeftijd: 47.5, activiteit: "2" })).toMatchObject({ leeftijd: null, activiteit: null });
   });
 });
 

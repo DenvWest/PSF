@@ -12,6 +12,7 @@ const VOEDING = {
   richtlijn: { gramsLow: 100, gramsHigh: 120 },
   gewichtBron: "eigen",
   checkHeeftGewicht: true,
+  checkLeeftijdsband: "45–49",
   kernstofNormen: voedingsnormenVoor(null),
   gevolgdeNormen: gevolgdeNormenVoor({ gender: null }),
   vraagtMenstruatie: false,
@@ -32,16 +33,18 @@ beforeEach(() => {
       if (url.includes("/api/account/kernstof-profiel")) {
         const patch = JSON.parse(String(init?.body)) as {
           zeventigPlus?: boolean;
+          leeftijd?: number | null;
           menstruatie?: "ja" | "onregelmatig" | "nee" | null;
           streefwaarden?: Record<string, number>;
         };
         return antwoord({
           ...VOEDING,
-          kernstofNormen: voedingsnormenVoor(null, { zeventigPlus: patch.zeventigPlus === true }),
+          kernstofNormen: voedingsnormenVoor(null, { zeventigPlus: patch.zeventigPlus === true, leeftijd: patch.leeftijd ?? null }),
           vraagtMenstruatie: true,
           kernstofProfiel: {
             ...LEEG_KERNSTOF_PROFIEL,
             zeventigPlus: patch.zeventigPlus === true,
+            leeftijd: patch.leeftijd ?? null,
             menstruatie: patch.menstruatie ?? null,
             streefwaarden: patch.streefwaarden ?? {},
           },
@@ -130,21 +133,23 @@ describe("DoelenLijst", () => {
     );
   });
 
-  it("toont per kernstof de norm, en 70+ verhoogt de vitamine D-norm", async () => {
+  it("toont per kernstof de norm met de onderzochte zone, en leeftijd 72 verhoogt de vitamine D-norm", async () => {
     render(<DoelenLijst />);
 
-    expect(await screen.findByRole("button", { name: /Vitamine D\s*norm 15 µg/ })).toBeTruthy();
+    expect(await screen.findByRole("button", { name: /Vitamine D.*norm 15 µg/ })).toBeTruthy();
+    expect(screen.getByText(/onderzocht 500–1\.500 mg · max 5\.000 mg uit supplementen/)).toBeTruthy();
+    expect(screen.getByText(/geen onderzochte zone · max 25 mg/)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Norm voor\s*Uit je check/ })).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: /Leeftijd/ }));
-    fireEvent.click(screen.getByRole("radio", { name: /70 jaar of ouder/ }));
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "72" } });
     fireEvent.click(screen.getByRole("button", { name: "Opslaan" }));
 
-    await waitFor(() => expect(screen.getByRole("button", { name: /Vitamine D\s*norm 20 µg/ })).toBeTruthy());
+    await waitFor(() => expect(screen.getByRole("button", { name: /Vitamine D.*norm 20 µg/ })).toBeTruthy());
     const post = vi
       .mocked(fetch)
       .mock.calls.find(([url]) => String(url).includes("/api/account/kernstof-profiel"));
-    expect(JSON.parse(String((post![1] as RequestInit).body))).toEqual({ zeventigPlus: true });
+    expect(JSON.parse(String((post![1] as RequestInit).body))).toEqual({ leeftijd: 72 });
   });
 
   it("weigert een zink-streefwaarde boven de EFSA-bovengrens", async () => {

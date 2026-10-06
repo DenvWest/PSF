@@ -142,6 +142,7 @@ export async function laadVoedingsdoelenWeergave(
     checkGewichtKg: check.gewichtKg,
     checkTrainingLoad: check.trainingLoad,
     ageRange: check.ageRange,
+    leeftijd: kernstofProfiel.leeftijd,
   });
 
   return {
@@ -149,16 +150,21 @@ export async function laadVoedingsdoelenWeergave(
     richtlijn: eiwit.range,
     gewichtBron: eiwit.gewichtBron,
     checkHeeftGewicht: isGeldigGewicht(check.gewichtKg),
+    checkLeeftijdsband: check.ageRange,
     kernstofNormen: voedingsnormenVoor(gender, {
+      leeftijd: kernstofProfiel.leeftijd,
       zeventigPlus: kernstofProfiel.zeventigPlus,
       voedingswijze: kernstofProfiel.voedingswijze,
     }),
     gevolgdeNormen: gevolgdeNormenVoor({
       gender,
+      leeftijd: kernstofProfiel.leeftijd,
       ageRange: check.ageRange,
       zeventigPlus: kernstofProfiel.zeventigPlus,
       voedingswijze: kernstofProfiel.voedingswijze,
       menstruatie: kernstofProfiel.menstruatie,
+      gewichtKg: isGeldigGewicht(doelen.gewichtKg) ? doelen.gewichtKg : check.gewichtKg,
+      activiteit: kernstofProfiel.activiteit,
     }),
     vraagtMenstruatie: vraagtMenstruatie(gender),
     kernstofProfiel,

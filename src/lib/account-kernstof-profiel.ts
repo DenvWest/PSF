@@ -1,4 +1,4 @@
-import type { KernstofMetNorm, Menstruatie, Voedingswijze } from "@/data/nutrition/voedingsnormen";
+import type { Activiteit, KernstofMetNorm, Menstruatie, Voedingswijze } from "@/data/nutrition/voedingsnormen";
 import type { OrgScopedClient } from "@/lib/db/scoped";
 
 /**
@@ -22,12 +22,17 @@ import type { OrgScopedClient } from "@/lib/db/scoped";
  */
 
 export type NormGeslacht = "man" | "vrouw";
-export type { Menstruatie, Voedingswijze };
+export type { Activiteit, Menstruatie, Voedingswijze };
 
 export type KernstofProfiel = {
   /** Null = het geslacht uit de check (dat de client nooit ziet). */
   geslacht: NormGeslacht | null;
+  /** Leeftijd in jaren; null = de band uit de check. */
+  leeftijd: number | null;
+  /** Oude keuze "70 jaar of ouder"; telt alleen zolang `leeftijd` leeg is. */
   zeventigPlus: boolean;
+  /** Dagactiviteit 1–4 (PAL 1,4–2,0); null = niet ingevuld (1,6). */
+  activiteit: Activiteit | null;
   voedingswijze: Voedingswijze | null;
   /** Alleen gevraagd bij vrouw of anders. Null = niet ingevuld: de hogere ijzernorm. */
   menstruatie: Menstruatie | null;
@@ -36,7 +41,9 @@ export type KernstofProfiel = {
 
 export const LEEG_KERNSTOF_PROFIEL: KernstofProfiel = {
   geslacht: null,
+  leeftijd: null,
   zeventigPlus: false,
+  activiteit: null,
   voedingswijze: null,
   menstruatie: null,
   streefwaarden: {},
@@ -71,6 +78,18 @@ function leesVoedingswijze(waarde: unknown): Voedingswijze | null {
   return waarde === "vegetarisch" || waarde === "veganistisch" ? waarde : null;
 }
 
+export function isGeldigeLeeftijd(waarde: unknown): waarde is number {
+  return typeof waarde === "number" && Number.isInteger(waarde) && waarde >= 18 && waarde <= 110;
+}
+
+function leesLeeftijd(waarde: unknown): number | null {
+  return isGeldigeLeeftijd(waarde) ? waarde : null;
+}
+
+function leesActiviteit(waarde: unknown): Activiteit | null {
+  return waarde === 1 || waarde === 2 || waarde === 3 || waarde === 4 ? waarde : null;
+}
+
 function leesMenstruatie(waarde: unknown): Menstruatie | null {
   return waarde === "ja" || waarde === "onregelmatig" || waarde === "nee" ? waarde : null;
 }
@@ -90,7 +109,9 @@ export function leesKernstofProfiel(rij: unknown): KernstofProfiel {
   const r = rij as Record<string, unknown>;
   return {
     geslacht: leesGeslacht(r.geslacht),
+    leeftijd: leesLeeftijd(r.leeftijd),
     zeventigPlus: r.zeventig_plus === true,
+    activiteit: leesActiviteit(r.activiteit),
     voedingswijze: leesVoedingswijze(r.voedingswijze),
     menstruatie: leesMenstruatie(r.menstruatie),
     streefwaarden: leesStreefwaarden(r.streefwaarden),
@@ -123,6 +144,14 @@ export function pasKernstofPatchToe(
       return { fout: "Onbekende voedingswijze." };
     }
     volgende.voedingswijze = leesVoedingswijze(p.voedingswijze);
+  }
+  if ("leeftijd" in p) {
+    if (p.leeftijd !== null && !isGeldigeLeeftijd(p.leeftijd)) return { fout: "Vul een leeftijd tussen 18 en 110 jaar in." };
+    volgende.leeftijd = leesLeeftijd(p.leeftijd);
+  }
+  if ("activiteit" in p) {
+    if (p.activiteit !== null && leesActiviteit(p.activiteit) === null) return { fout: "Onbekend activiteitsniveau." };
+    volgende.activiteit = leesActiviteit(p.activiteit);
   }
   if ("menstruatie" in p) {
     if (p.menstruatie !== null && leesMenstruatie(p.menstruatie) === null) return { fout: "Onbekende keuze." };
@@ -179,16 +208,19 @@ export async function setKernstofProfiel(
     zeventig_plus: profiel.zeventigPlus,
     voedingswijze: profiel.voedingswijze,
     menstruatie: profiel.menstruatie,
+    leeftijd: profiel.leeftijd,
+    activiteit: profiel.activiteit,
     streefwaarden: profiel.streefwaarden,
     updated_at: new Date().toISOString(),
   };
   let { error } = await supabase.from("account_kernstof_profiel").upsert(rij, { onConflict: "account_id" });
 
-  // Zolang de migratie voor `menstruatie` niet gedraaid is: de rest bewaren,
-  // en alleen een keuze voor menstruatie zelf als "kan nog niet" melden.
-  if (kolomOntbreekt(error) && profiel.menstruatie === null) {
-    const { menstruatie: _weg, ...zonder } = rij;
-    void _weg;
+  // Zolang de migratie voor leeftijd/activiteit niet gedraaid is: de rest
+  // bewaren, en alleen een keuze in die nieuwe velden als "kan nog niet" melden.
+  if (kolomOntbreekt(error) && profiel.leeftijd === null && profiel.activiteit === null) {
+    const { leeftijd: _l, activiteit: _a, ...zonder } = rij;
+    void _l;
+    void _a;
     ({ error } = await supabase.from("account_kernstof_profiel").upsert(zonder, { onConflict: "account_id" }));
   }
 
