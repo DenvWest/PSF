@@ -543,9 +543,10 @@ describe("DagboekScherm — tabbladen (Laag B)", () => {
 
     fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
 
-    // De ring toont "Cal." in het midden; de drie macro's staan zowel in de
-    // ring-legenda als in de weektabel eronder.
-    expect(screen.getByText("Cal.")).toBeTruthy();
+    // Zonder registratie vraagt de ring wat je at; de drie macro's staan in
+    // de legenda en de tabel per maaltijd eronder.
+    expect(screen.getByRole("region", { name: "Calorieën en macro's vandaag" })).toBeTruthy();
+    expect(screen.getByRole("table")).toBeTruthy();
     expect(screen.getAllByText(/Koolhydraten/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Vet/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Eiwit/).length).toBeGreaterThan(0);
@@ -733,3 +734,14 @@ describe("DagboekScherm — portiescherm voor voeding", () => {
     expect(posts).toHaveLength(0);
   });
 });
+
+describe("DagboekScherm — dag wisselen", () => {
+  it("toont een andere dag zodra je die in de balk aantikt", async () => {
+    render(<DagboekScherm />);
+    const knoppen = await screen.findAllByRole("button", { name: /^(ma|di|wo|do|vr|za|zo) \d+/ });
+    const nietGekozen = knoppen.find((knop) => knop.getAttribute("aria-pressed") === "false")!;
+    fireEvent.click(nietGekozen);
+    expect(nietGekozen.getAttribute("aria-pressed")).toBe("true");
+  });
+});
+

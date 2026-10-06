@@ -367,6 +367,24 @@ export default function DagboekScherm({
   }, [bekekenWeekDatums, weekItemsPerDag, weekSupermarktLogs, nevoProducten, macroDoelen]);
   const dagMacro = (veld: SupermarktVeld) =>
     dagVoedingswaarde.rijen.find((rij) => rij.veld === veld)?.waarde ?? null;
+  const macroPerMaaltijd = useMemo(
+    () =>
+      EETMOMENTEN.map((moment) => {
+        const waarde = berekenVoedingswaarde({
+          items: items.filter((item) => item.moment === moment.id),
+          supermarktLogs: supermarktLogs.filter((log) => log.moment === moment.id),
+          nevoProducten,
+        });
+        const veld = (v: SupermarktVeld) => waarde.rijen.find((rij) => rij.veld === v)?.waarde ?? null;
+        return {
+          id: moment.id,
+          label: moment.label,
+          kcal: veld("energyKcal"),
+          grammen: [veld("carbohydrateG"), veld("fatG"), veld("proteinG")],
+        };
+      }),
+    [items, supermarktLogs, nevoProducten],
+  );
 
   /**
    * Zelfde "eerder gebruikt"-gedachte als `recent`, maar als ruwe items in
@@ -822,16 +840,15 @@ export default function DagboekScherm({
 
   return (
     <div ref={blokRef} className="@container">
-    <div className="grid gap-4 [grid-template-areas:'kop'_'ring'_'strip'_'tabs'_'inhoud'] @[900px]:grid-cols-[minmax(320px,400px)_minmax(0,1fr)] @[900px]:gap-x-8 @[900px]:[grid-template-areas:'kop_kop'_'strip_strip'_'tabs_tabs'_'ring_inhoud']">
-      <header className="flex flex-wrap items-baseline justify-between gap-2 [grid-area:kop]">
-        <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">Je dag</h2>
-        <span className="text-[11px] capitalize text-[var(--vd-ink-3)]">{dagLabel}</span>
-      </header>
+    <div className="grid gap-4 [grid-template-areas:'strip'_'tabs'_'ring'_'inhoud'] @[900px]:grid-cols-[minmax(320px,400px)_minmax(0,1fr)] @[900px]:gap-x-10 @[900px]:[grid-template-areas:'strip_strip'_'tabs_tabs'_'ring_inhoud']">
 
       <div className="flex min-w-0 flex-col gap-4 [grid-area:ring] @[900px]:sticky @[900px]:top-4 @[900px]:self-start">
       {dagboekSectie === "macros" ? (
         <DagboekMacroRing
           kcal={dagMacro("energyKcal")}
+          kcalDoel={macroDoelen.calorieenKcal}
+          maaltijden={macroPerMaaltijd}
+          onBegin={() => setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" })}
           segmenten={[
             {
               key: "koolhydraten",

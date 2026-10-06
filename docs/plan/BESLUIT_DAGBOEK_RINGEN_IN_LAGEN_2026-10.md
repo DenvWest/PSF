@@ -79,3 +79,13 @@ GA4: `nutrition_dagboek_krans_gekozen` (nieuw; params `ring`: `kern` | `gevolgd`
 - **"Slechte E-nummers" markeren.** Alle E-nummers zijn door EFSA beoordeeld en in de EU toegelaten. "Slecht" is een oordeel dat we niet onderbouwen, en het past niet bij een platform waarvan de waarde in onderbouwing zit.
 - **Koppeling aan laaggradige ontsteking.** Dat is een medische claim (CLAUDE.md: geen medische claims). Het onderzoek naar emulgatoren en ontsteking is vooral dierstudies en kleine proeven bij mensen, dus het haalt de poort niet (alleen sterk bewijs bij gezonde mensen, zie `BESLUIT_KERNSTOF_NORMEN_2026-10.md`).
 - **Palmolie als waarschuwing.** Het gezondheidsdeel zit al in verzadigd vet. "Bevat palmolie" kan later als neutrale ingrediëntinformatie, maar pas na het bronbesluit en zonder gezondheidsframing.
+
+## Aanvulling 6 oktober 2026 (4) — Macro's als de krans, premium datumkop
+
+**Status:** gebouwd na Dennis' feedback op web en iPad ("heel kaal", "macro's dezelfde UI als voedingsstoffen", "ontbijt-lunch-avondeten-tussendoor onder het model", "dagen en Vandaag/Kies meer premium").
+
+1. **Macro's in dezelfde vorm als Voedingsstoffen.** Een ring van 300 px met de calorieën in het midden ("van je doel …" als je een caloriedoel instelde), een legenda in rijen (gram plus aandeel van de calorieën, met balkje) en daaronder **Per maaltijd**: ontbijt, lunch, avondeten en tussendoor met kcal en de grammen koolhydraten, vet en eiwit, plus het deel van de calorieën van die dag. Zonder registratie: "Wat at je vandaag?" met "Voeg je ontbijt toe", net als de krans.
+   - **Geen advies over timing.** Dennis noemde "de meeste eiwitten bij het ontbijt" en "de grootste maaltijd bij de lunch". Het bewijs bij gezonde mensen ondersteunt hooguit eiwit verdelen over de maaltijden, geen vaste volgorde. De tabel toont daarom wat er was, zonder oordeel.
+2. **Alle gevolgde stoffen onder de krans.** De beperking tot vier ("Toon alle n") vervalt: de rijen zijn compact genoeg.
+3. **Datumkop in plaats van "Je dag".** Bovenaan staat de dag zelf ("Vandaag · dinsdag 6 oktober" of "maandag 5 oktober"), met ‹ › per **dag** (nooit voorbij vandaag), "Vandaag" en "Kies" (met kalendericoon) als rustige randknoppen. De week staat eronder als zeven rondjes: gekozen = gevuld, vandaag = rand, stip = ingevuld, oranje stip = meetdag. Toekomstige dagen zijn niet te kiezen. De lange meetdag-uitleg wordt een korte legenda (met de volledige tekst als tooltip).
+4. **Volgorde op mobiel:** datum, tabs, ring, inhoud. Tabs staan nu boven de ring omdat ze bepalen welke ring je ziet; op brede schermen staat de ring links naast de inhoud.

@@ -21,12 +21,13 @@ function strip(geselecteerd: string, onSelecteer = vi.fn()) {
 }
 
 describe("DagboekWeekstrip", () => {
-  it("bladert een week terug, maar niet voorbij vandaag", () => {
+  it("gaat een dag terug, niet voorbij vandaag, en laat toekomstige dagen dicht", () => {
     const onSelecteer = strip(VANDAAG);
-    expect(screen.getByText("Deze week")).toBeTruthy();
-    expect((screen.getByRole("button", { name: "Volgende week" }) as HTMLButtonElement).disabled).toBe(true);
-    fireEvent.click(screen.getByRole("button", { name: "Vorige week" }));
-    expect(onSelecteer).toHaveBeenCalledWith("2026-09-29", "pijl");
+    expect(screen.getByRole("heading", { name: /Vandaag/ })).toBeTruthy();
+    expect((screen.getByRole("button", { name: "Volgende dag" }) as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByRole("button", { name: /^wo 7/ }) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Vorige dag" }));
+    expect(onSelecteer).toHaveBeenCalledWith("2026-10-05", "pijl");
   });
 
   it("springt terug naar vandaag en kiest een dag in de kalender", () => {

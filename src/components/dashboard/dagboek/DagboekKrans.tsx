@@ -214,7 +214,6 @@ export default function DagboekKrans({
   const [draaiBuiten, setDraaiBuiten] = useState(0);
   const [kiezen, setKiezen] = useState(false);
   const [uitleg, setUitleg] = useState(false);
-  const [alleGevolgd, setAlleGevolgd] = useState(false);
   const [getekend, setGetekend] = useState(false);
 
   useEffect(() => {
@@ -620,7 +619,7 @@ export default function DagboekKrans({
             <span className="text-[10.5px] text-[var(--vd-ink-4)]">buitenring · zonder oordeel</span>
           </div>
           <ul aria-label="Ook gevolgd" className="m-0 grid list-none grid-cols-1 gap-x-5 gap-y-0.5 p-0 @[400px]:grid-cols-2">
-            {(alleGevolgd ? gevolgd : gevolgd.slice(0, 4)).map((rij) => {
+            {gevolgd.map((rij) => {
               const index = gevolgd.indexOf(rij);
               const actief = gekozenGevolgd?.veld === rij.veld;
               return (
@@ -647,16 +646,6 @@ export default function DagboekKrans({
             })}
           </ul>
           <div className="flex flex-wrap items-center gap-3 px-2">
-            {gevolgd.length > 4 ? (
-              <button
-                type="button"
-                onClick={() => setAlleGevolgd(!alleGevolgd)}
-                aria-expanded={alleGevolgd}
-                className="cursor-pointer text-[12px] font-semibold text-[var(--vd-ink-2)] underline-offset-2 hover:underline"
-              >
-                {alleGevolgd ? "Minder tonen" : `Toon alle ${gevolgd.length}`}
-              </button>
-            ) : null}
             <button
               type="button"
               onClick={wisselKiezer}

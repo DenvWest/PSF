@@ -23,9 +23,9 @@ import { verschuifDag } from "@/lib/nutrition-periode";
  *
  * ## Bladeren en kiezen
  *
- * Met ‹ en › spring je een week terug of vooruit (nooit voorbij vandaag),
- * "Vandaag" brengt je terug, en "Kies" opent dezelfde maandkalender als Je
- * patroon om meteen naar een dag te gaan.
+ * De datum is de kop. Met ‹ en › ga je een dag terug of vooruit (nooit voorbij
+ * vandaag), de zeven rondjes tonen de week van die dag, "Vandaag" brengt je
+ * terug, en "Kies" opent dezelfde maandkalender als Je patroon.
  */
 
 export type DagKeuzeVia = "strip" | "pijl" | "vandaag" | "kalender";
@@ -40,9 +40,20 @@ export type WeekstripDag = {
   meetdag: boolean;
 };
 
-function kortDatum(datum: string): string {
-  return new Date(`${datum}T00:00:00Z`).toLocaleDateString("nl-NL", { timeZone: "UTC", day: "numeric", month: "short" });
+function langeDatum(datum: string): string {
+  return new Date(`${datum}T00:00:00Z`).toLocaleDateString("nl-NL", {
+    timeZone: "UTC",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 }
+
+const RANDKNOP =
+  "flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-white/12 bg-white/[0.03] px-3 text-[12px] font-semibold text-[var(--vd-ink-2)] transition-colors hover:border-white/30 hover:text-[var(--vd-ink)] disabled:cursor-default disabled:opacity-40";
+
+const PIJL =
+  "flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-[15px] text-[var(--vd-ink-2)] transition-colors hover:border-white/30 hover:text-[var(--vd-ink)] disabled:cursor-default disabled:opacity-30";
 
 export default function DagboekWeekstrip({
   dagen,
@@ -61,61 +72,62 @@ export default function DagboekWeekstrip({
 }) {
   const [kalender, setKalender] = useState(false);
   const [maand, setMaand] = useState(() => maandVan(geselecteerd));
-  const eerste = dagen[0]?.datum ?? geselecteerd;
-  const laatste = dagen[dagen.length - 1]?.datum ?? geselecteerd;
-  const dezeWeek = vandaag >= eerste && vandaag <= laatste;
+  const isVandaag = geselecteerd === vandaag;
 
-  function blader(weken: number) {
-    const doel = verschuifDag(geselecteerd, weken * 7);
+  function stap(dagenVerder: number) {
+    const doel = verschuifDag(geselecteerd, dagenVerder);
     onSelecteer(doel > vandaag ? vandaag : doel, "pijl");
   }
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex items-center gap-1.5">
-        <button
-          type="button"
-          className="vd-blader"
-          onClick={() => blader(-1)}
-          disabled={busy}
-          aria-label="Vorige week"
-        >
-          ‹
-        </button>
-        <b className="min-w-0 flex-1 text-center text-[12px] font-semibold text-[var(--vd-ink-2)]" aria-live="polite">
-          {dezeWeek ? "Deze week" : `${kortDatum(eerste)} – ${kortDatum(laatste)}`}
-        </b>
-        <button
-          type="button"
-          className="vd-blader"
-          onClick={() => blader(1)}
-          disabled={busy || dezeWeek}
-          aria-label="Volgende week"
-        >
-          ›
-        </button>
-        {geselecteerd !== vandaag ? (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <button type="button" className={PIJL} onClick={() => stap(-1)} disabled={busy} aria-label="Vorige dag">
+            ‹
+          </button>
+          <h2
+            className="m-0 min-w-0 truncate font-serif text-[clamp(17px,2.2vw,21px)] font-normal capitalize leading-tight text-[var(--vd-ink)]"
+            aria-live="polite"
+          >
+            {isVandaag ? "Vandaag" : langeDatum(geselecteerd)}
+            {isVandaag ? (
+              <span className="ml-2 font-sans text-[12px] normal-case text-[var(--vd-ink-3)]">{langeDatum(geselecteerd)}</span>
+            ) : null}
+          </h2>
           <button
             type="button"
-            onClick={() => onSelecteer(vandaag, "vandaag")}
-            disabled={busy}
-            className="cursor-pointer rounded-full border border-white/12 px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] hover:border-white/25"
+            className={PIJL}
+            onClick={() => stap(1)}
+            disabled={busy || isVandaag}
+            aria-label="Volgende dag"
           >
-            Vandaag
+            ›
           </button>
-        ) : null}
-        <button
-          type="button"
-          onClick={() => {
-            setMaand(maandVan(geselecteerd));
-            setKalender(!kalender);
-          }}
-          aria-expanded={kalender}
-          disabled={busy}
-          className="cursor-pointer rounded-full border border-white/12 px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] hover:border-white/25"
-        >
-          Kies
-        </button>
+        </div>
+        <div className="flex items-center gap-1.5">
+          {!isVandaag ? (
+            <button type="button" className={RANDKNOP} onClick={() => onSelecteer(vandaag, "vandaag")} disabled={busy}>
+              Vandaag
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className={`${RANDKNOP} ${kalender ? "border-white/30 text-[var(--vd-ink)]" : ""}`}
+            onClick={() => {
+              setMaand(maandVan(geselecteerd));
+              setKalender(!kalender);
+            }}
+            aria-expanded={kalender}
+            disabled={busy}
+          >
+            <svg aria-hidden viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <rect x="2" y="3" width="12" height="11" rx="2" />
+              <path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" strokeLinecap="round" />
+            </svg>
+            Kies
+          </button>
+        </div>
       </div>
 
       {kalender ? (
@@ -135,57 +147,62 @@ export default function DagboekWeekstrip({
         />
       ) : null}
 
-      <ul className="m-0 grid list-none grid-cols-7 gap-1 p-0">
+      <ul className="m-0 grid w-full max-w-[460px] list-none grid-cols-7 gap-1 p-0">
         {dagen.map((dag) => {
-          const datum = new Date(dag.datum);
-          const dagNaam = WEEKDAG[(datum.getDay() + 6) % 7];
+          const datum = new Date(`${dag.datum}T00:00:00Z`);
+          const dagNaam = WEEKDAG[(datum.getUTCDay() + 6) % 7];
           const actief = dag.datum === geselecteerd;
+          const toekomst = dag.datum > vandaag;
 
           return (
             <li key={dag.datum}>
               <button
                 type="button"
-                disabled={busy}
+                disabled={busy || toekomst}
                 onClick={() => onSelecteer(dag.datum, "strip")}
                 aria-pressed={actief}
-                aria-label={`${dagNaam} ${datum.getDate()}${
-                  dag.gevuld ? ", ingevuld" : ""
-                }${dag.meetdag ? ", meetdag" : ""}`}
-                className={`relative w-full cursor-pointer rounded-[10px] border px-0.5 py-1.5 text-center transition-colors disabled:opacity-50 ${
-                  actief
-                    ? "border-2 border-[var(--vd-ink)] py-[5px]"
-                    : dag.gevuld
-                      ? "border-[rgb(var(--vd-sage-rgb)/70%)] bg-[rgb(var(--vd-sage-rgb)/15%)]"
-                      : "border-white/10 bg-white/[0.02] hover:border-white/25"
-                }`}
+                aria-label={`${dagNaam} ${datum.getUTCDate()}${dag.gevuld ? ", ingevuld" : ""}${dag.meetdag ? ", meetdag" : ""}`}
+                className="group flex w-full cursor-pointer flex-col items-center gap-1 rounded-xl py-1 disabled:cursor-default disabled:opacity-35"
               >
-                <b
-                  className={`block text-[11px] font-bold ${
-                    dag.gevuld ? "text-[var(--vd-sage-2)]" : "text-[var(--vd-ink-2)]"
+                <span className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-3)]">
+                  {dagNaam}
+                </span>
+                <span
+                  className={`relative flex h-9 w-9 items-center justify-center rounded-full text-[13.5px] tabular-nums transition-colors ${
+                    actief
+                      ? "bg-[var(--vd-sage)] font-bold text-[var(--vd-bg)]"
+                      : dag.datum === vandaag
+                        ? "border border-white/30 text-[var(--vd-ink)] group-hover:bg-white/[0.06]"
+                        : "text-[var(--vd-ink-2)] group-hover:bg-white/[0.06]"
                   }`}
                 >
-                  {dagNaam}
-                </b>
-                <i className="block text-[9.5px] not-italic tabular-nums text-[var(--vd-ink-4)]">
-                  {datum.getDate()}
-                </i>
-                {dag.meetdag ? (
-                  <span
-                    aria-hidden
-                    className="absolute right-1 top-1 block h-[5px] w-[5px] rounded-full bg-[var(--vd-terra)]"
-                  />
-                ) : null}
+                  {datum.getUTCDate()}
+                  {dag.meetdag ? (
+                    <span
+                      aria-hidden
+                      className="absolute -right-0.5 -top-0.5 block h-[7px] w-[7px] rounded-full border border-[var(--vd-bg)] bg-[var(--vd-terra)]"
+                    />
+                  ) : null}
+                </span>
+                <span
+                  aria-hidden
+                  className={`block h-1 w-1 rounded-full ${dag.gevuld ? "bg-[var(--vd-sage)]" : "bg-transparent"}`}
+                />
               </button>
             </li>
           );
         })}
       </ul>
 
-      <p className="m-0 flex flex-wrap items-center gap-1.5 text-[10.5px] leading-relaxed text-[var(--vd-ink-4)]">
-        <span aria-hidden className="block h-[5px] w-[5px] rounded-full bg-[var(--vd-terra)]" />
-        Meetdag — deze vier dragen je patroon. Extra dagen invullen mag en
-        verbetert je dekking, maar de vergelijking draait op twee doordeweekse
-        en twee weekenddagen.
+      <p className="m-0 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10.5px] leading-relaxed text-[var(--vd-ink-4)]">
+        <span className="flex items-center gap-1.5">
+          <span aria-hidden className="block h-1 w-1 rounded-full bg-[var(--vd-sage)]" />
+          ingevuld
+        </span>
+        <span className="flex items-center gap-1.5" title="Twee doordeweekse en twee weekenddagen dragen je patroon. Extra dagen invullen mag en verbetert je dekking.">
+          <span aria-hidden className="block h-[6px] w-[6px] rounded-full bg-[var(--vd-terra)]" />
+          meetdag · telt mee in je patroon
+        </span>
       </p>
     </div>
   );
