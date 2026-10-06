@@ -1,11 +1,24 @@
 #!/bin/sh
-# Waarschuwt als de hoofdmap van main af wordt gehaald (zie branch-guard.sh).
+# 1. Nieuwe worktree: kopieer .env.local uit de hoofdmap (zie BESLUIT_WORKTREE_PER_SESSIE).
+# 2. Waarschuwt als de hoofdmap van main af wordt gehaald (zie branch-guard.sh).
 [ "$3" = "1" ] || exit 0
-[ "$PSF_ALLOW_MAIN_CHECKOUT" = "1" ] && exit 0
 
 git_dir=$(cd "$(git rev-parse --git-dir)" && pwd)
 common_dir=$(cd "$(git rev-parse --git-common-dir)" && pwd)
-[ "$git_dir" = "$common_dir" ] || exit 0
+
+if [ "$git_dir" != "$common_dir" ]; then
+  # Git kopieert, niet een agent: de inhoud komt nooit in een sessie terecht.
+  # Alleen bij ontbreken — een eigen .env.local in de worktree blijft staan.
+  main_root=$(dirname "$common_dir")
+  worktree_root=$(git rev-parse --show-toplevel)
+  if [ -f "$main_root/.env.local" ] && [ ! -e "$worktree_root/.env.local" ]; then
+    cp -p "$main_root/.env.local" "$worktree_root/.env.local" &&
+      echo "[worktree] .env.local gekopieerd uit de hoofdmap." >&2
+  fi
+  exit 0
+fi
+
+[ "$PSF_ALLOW_MAIN_CHECKOUT" = "1" ] && exit 0
 
 branch=$(git symbolic-ref --short -q HEAD)
 if [ "$branch" != "main" ]; then

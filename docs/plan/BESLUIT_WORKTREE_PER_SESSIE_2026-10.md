@@ -35,6 +35,7 @@ De oorzaak: de hoofdmap was tegelijk localhost (main) en werkplek voor elke sess
 
 ## Gevolgen
 
-- Een worktree heeft eigen `node_modules` nodig (of een symlink naar die van de hoofdmap) en een eigen dev-poort (`-p 3001`, …).
+- Een worktree heeft eigen `node_modules` nodig (`npm ci`; een symlink naar die van de hoofdmap weigert Turbopack, want hij wijst buiten de projectroot) en een eigen dev-poort (`-p 3001`, …).
+- **`.env.local` (aanvulling 6 okt 2026, Dennis akkoord):** de `post-checkout`-hook kopieert `~/psf/.env.local` naar elke nieuwe worktree, alleen als die er nog geen heeft. Git kopieert, niet de agent: de leesblokkade op `.env*` in `.claude/settings.json` blijft staan, zodat geheimen nooit in een sessie terechtkomen. Afgewezen: die leesblokkade versoepelen zodat de agent zelf kan kopiëren — dat zou de inhoud in de chatcontext brengen.
 - `deploy.sh` blijft ongewijzigd: het draait in de hoofdmap op `main` en commit/pusht niet.
 - Stashes zijn gedeeld tussen alle worktrees: gebruik geen kale `git stash pop`, maar liever een WIP-commit op je eigen branch.
