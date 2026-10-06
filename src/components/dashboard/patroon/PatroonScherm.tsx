@@ -45,6 +45,8 @@ import { bouwPeriodeOverzicht, verschuifWeek, weekStart } from "@/lib/nutrition-
 import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
 import { useGevolgdeNormen, useKernstofNormen } from "@/lib/use-kernstof-normen";
 import { useVoedingsdataPeriode } from "@/lib/use-voedingsdata-periode";
+import { bewaarPatroonStand, leesPatroonUrl } from "@/lib/patroon-url";
+import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
 
 /**
  * Je patroon: waar zit je gat, en hoe hardnekkig is het.
@@ -79,16 +81,27 @@ function PatroonInhoud() {
   const gevolgdeNormen = useGevolgdeNormen();
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
   const [laden, setLaden] = useState(true);
-  const [sectie, setSectie] = useState<PatroonSectie>("maaltijden");
+  // Terugkomen via de terugknop: begin in de stand die in de URL staat
+  // (`src/lib/patroon-url.ts`). Patroon rendert alleen in de browser
+  // (`VoortgangHub` is `ssr: false`), dus lezen in de initiële state is veilig.
+  const [startStand] = useState(() =>
+    typeof window === "undefined" ? null : leesPatroonUrl(window.location.search),
+  );
+  const [startZoek, setStartZoek] = useState(startStand?.zoek ?? "");
+  const [sectie, setSectie] = useState<PatroonSectie>(startStand?.sectie ?? "maaltijden");
   const [macroDoelen, setMacroDoelen] = useState<MacroDoelen>(LEGE_MACRO_DOELEN);
-  const [periodeKeuze, setPeriodeKeuze] = useState<PeriodeKeuze>("7");
-  const [periode, setPeriode] = useState<Periode>(() => periodeVoorKeuze("7", vandaag));
-  const [openStof, setOpenStof] = useState<NutrientId | null>(null);
+  const [periodeKeuze, setPeriodeKeuze] = useState<PeriodeKeuze>(startStand?.periode ?? "7");
+  const [periode, setPeriode] = useState<Periode>(() => periodeVoorKeuze(startStand?.periode ?? "7", vandaag));
+  const [openStof, setOpenStof] = useState<NutrientId | null>(
+    startStand?.sectie === "stof" ? startStand.stof : null,
+  );
   const [kiezerOpen, setKiezerOpen] = useState(false);
   const [verborgenNutrients, setVerborgenNutrients] = useState<Set<NutrientId>>(
     () => new Set(),
   );
   const gemeld = useRef(false);
+
+
 
   useEffect(() => {
     let afgebroken = false;
@@ -303,12 +316,14 @@ function PatroonInhoud() {
   const kiesSectie = (volgende: PatroonSectie) => {
     setSectie(volgende);
     setOpenStof(null);
+    bewaarPatroonStand({ sectie: volgende, stof: null, zoek: "" });
     trackEvent("nutrition_patroon_sectie_gekozen", { sectie: volgende });
   };
 
   const kiesPeriode = (keuze: PeriodeKeuze, volgende: Periode) => {
     setPeriodeKeuze(keuze);
     setPeriode(volgende);
+    bewaarPatroonStand({ periode: keuze === "eigen" ? null : keuze });
     trackEvent("nutrition_patroon_periode_gekozen", {
       periode: keuze,
       dagen: datumsTussen(volgende).length,
@@ -318,6 +333,7 @@ function PatroonInhoud() {
 
   const openStofDetail = (nutrient: NutrientId) => {
     setOpenStof(nutrient);
+    bewaarPatroonStand({ sectie, stof: nutrient });
     trackEvent("nutrition_patroon_stof_geopend", { nutrient });
     clarityTag("nutrition_patroon_stof", nutrient);
   };
@@ -357,7 +373,12 @@ function PatroonInhoud() {
               dagenGeregistreerd={stoffen.dagenGeregistreerd}
               bronnen={openBronnen}
               perMoment={openPerMoment}
-              onTerug={() => setOpenStof(null)}
+              startZoek={startZoek}
+              onTerug={() => {
+                setOpenStof(null);
+                setStartZoek("");
+                bewaarPatroonStand({ stof: null, zoek: "" });
+              }}
             />
           ) : (
             <>
@@ -410,11 +431,13 @@ function PatroonInhoud() {
                   Zet er een moment voor in je dag.{" "}
                   <Link
                     href={`/dashboard?tab=agenda&plan=${bevinding.nutrient}`}
-                    onClick={() => {
+                    onClick={(event) => {
                       trackEvent("patroon_plan_in_mijn_dag_click", {
                         nutrient: bevinding.nutrient,
                       });
                       clarityTag("nutrition_patroon", `plan_${bevinding.nutrient}`);
+                      event.preventDefault();
+                      gaNaarDashboard(`/dashboard?tab=agenda&plan=${bevinding.nutrient}`);
                     }}
                   >
                     Plan in Mijn Dag →

@@ -34,7 +34,8 @@ type Resultaat =
   | { bron: "supplement"; entry: SupplementCatalogEntry }
   | { bron: "supermarkt"; product: SupermarktProduct };
 
-type TabId = "alle" | "producten" | "supplementen";
+export type DagboekZoekTab = "alle" | "producten" | "supplementen";
+type TabId = DagboekZoekTab;
 
 const TABS: readonly { id: TabId; label: string }[] = [
   { id: "alle", label: "Alle" },
@@ -70,6 +71,7 @@ function resultaatVoor(bron: DagboekItemBron, key: string): Resultaat | null {
  */
 export default function DagboekCatalogusZoek({
   nutrient = null,
+  startTab = "alle",
   eerderGebruikt,
   favorieten,
   moment,
@@ -84,6 +86,8 @@ export default function DagboekCatalogusZoek({
 }: {
   /** De stof waarvandaan je kwam — bepaalt alleen de titel. Null vanuit een maaltijd. */
   nutrient?: NutrientId | null;
+  /** Het tabblad waarop het scherm opent, bijv. "supplementen" na een ster in Je patroon. */
+  startTab?: DagboekZoekTab;
   /** Items uit eerdere dagen, meest recent eerst — voor de "eerder gebruikt"-lijst. */
   eerderGebruikt: readonly DagboekItem[];
   /** Handmatig bewaarde favorieten, ongeacht geschiedenis. */
@@ -109,7 +113,7 @@ export default function DagboekCatalogusZoek({
   busyFavoriet?: boolean;
 }) {
   const [zoek, setZoek] = useState("");
-  const [tab, setTab] = useState<TabId>("alle");
+  const [tab, setTab] = useState<TabId>(startTab);
   /** De laatst ontvangen supermarkttreffers, en voor welke zoekterm ze gelden. */
   const [supermarktRespons, setSupermarktRespons] = useState<{
     term: string;

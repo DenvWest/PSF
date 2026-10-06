@@ -59,6 +59,17 @@ Dennis' feedback op Je patroon → Per maaltijd:
 
 **Meting:** `nutrition_patroon_bron_gezocht` {nutrient, treffers}, `nutrition_patroon_rijkste_meer` {nutrient}, `nutrition_patroon_supplement_hub_click` {nutrient, categorie} (GA4); de ster hergebruikt `nutrition.dagboek_favoriet_toegevoegd` / `_verwijderd` met `surface: "patroon_stof"` (domain event + GA4).
 
+### 6. ＋ naar het dagboek, ster op twee plekken, terug naar de zoekbalk — gebouwd 6 okt (PR volgt)
+
+Dennis' feedback na #154: "Voeg toe in je dagboek →" ging niet naar het dagboek; ← vanaf `/supplementen?categorie=eiwitpoeder` landde op Per maaltijd in plaats van op de zoekbalk bij eiwit; een supplement met ☆ moest ook in Favorieten staan.
+
+- **＋ per rij** opent het Dagboek in het portiescherm van dat product (`?tab=vandaag&voeg=<bron>:<key>&moment=…`, `src/lib/dagboek-deeplink.ts`). De maaltijd staat vooraf op de maaltijd met de meeste ruimte (§3), anders ontbijt. De losse link "Voeg toe in je dagboek →" is weg.
+- **Oorzaak van de dode link:** tabwissels lopen via `pushState` + popstate, buiten Next om. Kwam je binnen op `?tab=vandaag` en ging je via de tab naar Patroon, dan was een `<Link href="/dashboard?tab=vandaag">` voor Next dezelfde URL en gebeurde er niets. Opgelost met `gaNaarDashboard` (zelfde pad als de tabs); ook toegepast op "Je patroon →" (Keuze → logboek) en "Plan in Mijn Dag →" (Patroon).
+- **☆ op een supplement** schrijft naar de dagboek-favorieten én naar Keuze → Favorieten (`account_favorites`, `item_id = dagboek-supplement-<key>`, domein voeding). Een tweede tik haalt hem op beide plekken weg. Voedingsproducten gaan alleen naar het dagboek. Na de ster: "Bewaard bij Mijn supplementen →", die het Dagboek opent op het tabblad Mijn supplementen (`?favorieten=supplementen`).
+- **Terug naar de zoekbalk:** Patroon schrijft sectie, stof, zoekterm en periode in de URL (`src/lib/patroon-url.ts`, `replaceState`, alleen bij een echte keuze) en begint daar bij binnenkomst. Eén mechanisme voor alle stoffen.
+
+**Meting:** `nutrition_patroon_bron_naar_dagboek` {bron, nutrient, moment}, `nutrition_patroon_favoriet_bekijken` {bron}; de ster houdt `nutrition_dagboek_favoriet_*` met `surface: "patroon_stof"`.
+
 ## Volgorde
 
 1. Benaderingen in de som (dit besluit §1) — eerst, omdat elke dekking hierop rust.

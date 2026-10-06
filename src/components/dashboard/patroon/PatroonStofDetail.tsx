@@ -80,6 +80,7 @@ export default function PatroonStofDetail({
   dagenGeregistreerd,
   bronnen,
   perMoment = [],
+  startZoek = "",
   onTerug,
 }: {
   rij: WeekRij;
@@ -87,6 +88,7 @@ export default function PatroonStofDetail({
   dagenGeregistreerd: number;
   bronnen: readonly StofBron[];
   perMoment?: readonly StofPerMoment[];
+  startZoek?: string;
   onTerug: () => void;
 }) {
   const normen = useKernstofNormen();
@@ -253,14 +255,9 @@ export default function PatroonStofDetail({
         unit={rij.unit}
         norm={norm?.waarde ?? null}
         voedingswijze={profiel.voedingswijze}
+        startZoek={startZoek}
+        standaardMoment={ruimte?.moment ?? "ontbijt"}
       />
-      <Link
-        href="/dashboard?tab=vandaag"
-        onClick={() => trackEvent("nutrition_patroon_stof_naar_dagboek", { nutrient: rij.nutrient })}
-        className="text-[12.5px] font-semibold text-[var(--vd-sage-2)]"
-      >
-        Voeg toe in je dagboek →
-      </Link>
 
       <p className="m-0 text-[0.75rem] text-[var(--vd-ink-3)]">
         Lukt het niet via voeding?{" "}
