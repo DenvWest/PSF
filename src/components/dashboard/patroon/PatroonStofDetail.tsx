@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import PatroonBronZoek from "@/components/dashboard/patroon/PatroonBronZoek";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { normLabel, normVoor } from "@/lib/nutrition-normen";
 import { periodeLabel, type Periode } from "@/lib/nutrition-periode";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
-import { pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
 import { isKernstofMetNorm } from "@/lib/account-kernstof-profiel";
 import type { StofBron, StofPerMoment } from "@/lib/nutrition-stof-bronnen";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
@@ -93,9 +93,6 @@ export default function PatroonStofDetail({
   const norm = normVoor(normen, rij.nutrient);
   const profiel = useKernstofProfiel();
   const streef = isKernstofMetNorm(rij.nutrient) ? (profiel.streefwaarden[rij.nutrient] ?? null) : null;
-  const rijkste = rijksteBronnen(rij.nutrient, "portie", 40)
-    .filter((bron) => pastBijVoedingswijze(bron.entry, profiel.voedingswijze))
-    .slice(0, 5);
   const totaal = bronnen.reduce((som, bron) => som + bron.totaal, 0);
   const eenDag = periode.van === periode.tot;
   const momentLabels = Object.fromEntries(perMoment.map((m) => [m.moment, m.label])) as Record<EetmomentId, string>;
@@ -250,41 +247,20 @@ export default function PatroonStofDetail({
         <p className="vd-tag m-0">{Math.round((uitSupplement / totaal) * 100)}% hiervan kwam uit supplementen.</p>
       ) : null}
 
-      {rijkste.length > 0 ? (
-        <div className="vd-tabel">
-          <div className="vd-tabel-kop">
-            <span className="!text-left">Rijkste voedingsbronnen · per portie</span>
-          </div>
-          {profiel.voedingswijze ? (
-            <div className="vd-tabel-rij">
-              <span className="vd-naam">
-                <i>Alleen {profiel.voedingswijze}e bronnen, volgens je keuze op Je doelen.</i>
-              </span>
-            </div>
-          ) : null}
-          {rijkste.map((bron) => (
-            <div key={bron.entry.key} className="vd-tabel-rij grid-cols-[1fr_auto]">
-              <span className="vd-naam">
-                {bron.entry.labelNl}
-                <i>{bron.portieLabel}</i>
-              </span>
-              <span className="vd-getal">
-                {hoeveelheid(bron.perPortie)} {bron.unit}
-                {norm ? ` · ${percentageADH(bron.perPortie / norm.waarde)}` : ""}
-              </span>
-            </div>
-          ))}
-          <div className="vd-tabel-rij">
-            <Link
-              href="/dashboard?tab=vandaag"
-              onClick={() => trackEvent("nutrition_patroon_stof_naar_dagboek", { nutrient: rij.nutrient })}
-              className="text-[12.5px] font-semibold text-[var(--vd-sage-2)]"
-            >
-              Voeg toe in je dagboek →
-            </Link>
-          </div>
-        </div>
-      ) : null}
+      <PatroonBronZoek
+        nutrient={rij.nutrient}
+        label={rij.label}
+        unit={rij.unit}
+        norm={norm?.waarde ?? null}
+        voedingswijze={profiel.voedingswijze}
+      />
+      <Link
+        href="/dashboard?tab=vandaag"
+        onClick={() => trackEvent("nutrition_patroon_stof_naar_dagboek", { nutrient: rij.nutrient })}
+        className="text-[12.5px] font-semibold text-[var(--vd-sage-2)]"
+      >
+        Voeg toe in je dagboek →
+      </Link>
 
       <p className="m-0 text-[0.75rem] text-[var(--vd-ink-3)]">
         Lukt het niet via voeding?{" "}

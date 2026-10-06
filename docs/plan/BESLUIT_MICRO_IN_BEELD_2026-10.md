@@ -47,19 +47,24 @@ Dennis' feedback op Je patroon → Per maaltijd:
 - **Met voeding:** de afstand vertaald naar een portie uit de rijkste bronnen ("≈ 30 g pompoenpitten"), gefilterd op voedingswijze, met "Voeg toe in je dagboek".
 - **Of:** supplementvergelijking, alleen bij kernstoffen, als tweede stap. Nooit "je hebt een supplement nodig".
 
-### 5. Rijkste voedingsbronnen: top 20 + voedselgroepchips, geen zoekveld — stap 4
+### 5. Bronnen zoeken en kiezen in het stof-detail — gebouwd 6 okt (PR #154)
 
-- Top 5 blijft, met "Toon top 20".
-- Chips per voedselgroep (groente, noten, vis, granen, …).
-- Per bron: welk deel van je afstand één portie dicht.
-- **Afgewezen: zoekveld.** Zoeken op product bestaat al in het dagboek; een tweede zoekveld dubbelt dat.
+*Herzien dezelfde dag.* Eerst stond hier "top 20 + chips, geen zoekveld". Dennis vond dat de lijst geen functie had en koos een zoekfunctie met favorieten, ook voor supplementen.
+
+- Zonder zoekterm: de rijkste voedingsbronnen per portie, top 5, met **"Toon top 20"**, gefilterd op voedingswijze.
+- Met zoekterm: voeding én supplementen uit de dagboekcatalogus, met wat één portie van déze stof levert (+ % van de norm). Ook producten zonder deze stof verschijnen, met 0, spoor of n.o.
+- **☆ bewaart in de dagboek-favorieten** (`account_dagboek_favorieten`, keuze Dennis), niet in de Keuze-tab. Reden: daar gebruik je het, namelijk bovenaan bij "Mijn producten" / "Mijn supplementen" als je een maaltijd invult. Geen migratie.
+- **Een supplement linkt naar `/supplementen?categorie=<stof>`**, de catalogus met PS-Score (keuze Dennis), niet direct naar `/beste/*`. De link "Supplementen met X vergelijken" onderaan blijft naar `/beste/*` gaan.
+- Niet gebouwd: chips per voedselgroep (de zoekfunctie dekt de vraag "waar zit het in bij groente" grotendeels).
+
+**Meting:** `nutrition_patroon_bron_gezocht` {nutrient, treffers}, `nutrition_patroon_rijkste_meer` {nutrient}, `nutrition_patroon_supplement_hub_click` {nutrient, categorie} (GA4); de ster hergebruikt `nutrition.dagboek_favoriet_toegevoegd` / `_verwijderd` met `surface: "patroon_stof"` (domain event + GA4).
 
 ## Volgorde
 
 1. Benaderingen in de som (dit besluit §1) — eerst, omdat elke dekking hierop rust.
 2. Per maaltijd in Per stof + groene kalenderstip (§2, §3).
 3. Route via voeding (§4).
-4. Top 20 + chips (§5).
+4. Zoeken en kiezen (§5) — naar voren gehaald, gebouwd.
 
 ## Uit de eerdere brainstorm, nog niet besloten
 
