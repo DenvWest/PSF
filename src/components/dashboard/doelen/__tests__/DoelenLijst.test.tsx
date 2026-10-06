@@ -138,7 +138,8 @@ describe("DoelenLijst", () => {
 
     expect(await screen.findByRole("button", { name: /Vitamine D.*norm 15 µg/ })).toBeTruthy();
     expect(screen.getByText(/onderzocht 500–1\.500 mg · max 5\.000 mg uit supplementen/)).toBeTruthy();
-    expect(screen.getByText(/geen onderzochte zone · max 25 mg/)).toBeTruthy();
+    expect(screen.getByText(/^max 25 mg$/)).toBeTruthy();
+    expect(screen.queryByText(/geen onderzochte zone/)).toBeNull();
     expect(screen.getByRole("button", { name: /Norm voor\s*Uit je check/ })).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: /Leeftijd/ }));

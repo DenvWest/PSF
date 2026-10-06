@@ -147,18 +147,20 @@ function getal(waarde: number): string {
   return waarde.toLocaleString("nl-NL");
 }
 
-/** Korte regel onder de norm: "onderzocht 500–1500 mg · max 5000 mg". */
+/**
+ * Korte regel onder de norm: "onderzocht 500–1500 mg · max 5000 mg". Zonder
+ * zone en bovengrens geen regel; waarom er geen zone is, staat in het paneel.
+ */
 export function onderzoekKort(stof: StofMetOnderzoek): string | null {
   const o = onderzoekVoor(stof);
   if (!o) return null;
   if (o.richtlijn && !o.zone) return o.richtlijn;
-  const delen = [
-    o.zone ? `onderzocht ${getal(o.zone.van)}–${getal(o.zone.tot)} ${o.zone.unit}` : "geen onderzochte zone",
-  ];
+  const delen: string[] = [];
+  if (o.zone) delen.push(`onderzocht ${getal(o.zone.van)}–${getal(o.zone.tot)} ${o.zone.unit}`);
   if (o.bovengrens) {
     delen.push(`max ${getal(o.bovengrens.waarde)} ${o.bovengrens.unit}${o.bovengrens.alleenSupplement ? " uit supplementen" : ""}`);
   }
-  return delen.join(" · ");
+  return delen.length > 0 ? delen.join(" · ") : null;
 }
 
 /** De volledige uitleg voor het invoerpaneel. */
