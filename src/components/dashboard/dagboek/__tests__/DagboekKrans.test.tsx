@@ -130,4 +130,20 @@ describe("DagboekKrans", () => {
     fireEvent.click(await screen.findByRole("button", { name: /Volg ook vezels/ }));
     expect(screen.getByRole("list", { name: "Stoffen om te volgen" })).toBeTruthy();
   });
+
+  it("toont boven de norm een hoeveelheid in plaats van een percentage boven 100", async () => {
+    const DagboekKrans = await laad();
+    render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} />);
+    expect(screen.getByRole("button", { name: "Magnesium" }).textContent).toContain("400 mg");
+    expect(screen.queryByText(/114%/)).toBeNull();
+  });
+
+  it("legt met de i-knop uit waar de ringen voor staan", async () => {
+    const DagboekKrans = await laad();
+    render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} />);
+    const knop = screen.getByRole("button", { name: "Wat laat de krans zien?" });
+    fireEvent.click(knop);
+    expect(knop.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByText(/de stoffen die jij volgt/)).toBeTruthy();
+  });
 });

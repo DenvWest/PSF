@@ -213,6 +213,8 @@ export default function DagboekKrans({
   const [draaiBinnen, setDraaiBinnen] = useState(0);
   const [draaiBuiten, setDraaiBuiten] = useState(0);
   const [kiezen, setKiezen] = useState(false);
+  const [uitleg, setUitleg] = useState(false);
+  const [alleGevolgd, setAlleGevolgd] = useState(false);
   const [getekend, setGetekend] = useState(false);
 
   useEffect(() => {
@@ -288,15 +290,16 @@ export default function DagboekKrans({
     setKiezen(!kiezen);
   }
 
+  // Boven 100% een hoeveelheid in plaats van "378%": dat leest niemand.
   const kernWaarde = (rij: (typeof rijen)[number]) =>
-    rij.aandeel !== null
+    rij.aandeel !== null && rij.aandeel < 1
       ? `${Math.round(rij.aandeel * 100)}%`
       : rij.unit
-        ? `${Math.round(rij.minstens)} ${rij.unit}`
+        ? hoeveelheid(rij.minstens, rij.unit)
         : "—";
 
   const gevolgdWaarde = (rij: VoedingswaardeRij) =>
-    rij.aandeel !== null
+    rij.aandeel !== null && rij.aandeel < 1
       ? `${Math.round(rij.aandeel * 100)}%`
       : rij.waarde !== null
         ? `${rondVoedingswaarde(rij.waarde)} ${rij.unit}`
@@ -307,12 +310,17 @@ export default function DagboekKrans({
     if (rij.nutrient === "protein") {
       if (!proteinTarget || rij.aandeel === null) return "zonder eiwitdoel";
       const rest = proteinTarget.gramsLow - rij.minstens;
-      return rest > 0 ? `nog ${hoeveelheid(rest, "g")} tot je doel vandaag` : "je doel gehaald vandaag";
+      return rest > 0
+        ? `nog ${hoeveelheid(rest, "g")} tot je doel vandaag`
+        : `je doel van ${hoeveelheid(proteinTarget.gramsLow, "g")} gehaald`;
     }
     const norm = normVoor(normen, rij.nutrient);
     if (!norm) return "";
     const rest = norm.waarde - rij.minstens;
-    return rest > 0 ? `nog ${hoeveelheid(rest, norm.unit)} tot je norm vandaag` : "je norm gehaald vandaag";
+    if (rest > 0) return `nog ${hoeveelheid(rest, norm.unit)} tot je norm vandaag`;
+    return rij.nutrient === "omega3"
+      ? `norm ${hoeveelheid(norm.waarde, norm.unit)} gehaald · omega-3 telt per week`
+      : `norm ${hoeveelheid(norm.waarde, norm.unit)} gehaald vandaag`;
   }
 
   function streefwaardeRegel(rij: (typeof rijen)[number]): string | null {
@@ -323,12 +331,23 @@ export default function DagboekKrans({
     return `je streefwaarde ${hoeveelheid(eigen, norm.unit)} · ${Math.round((rij.minstens / eigen) * 100)}%`;
   }
 
-  const chip =
-    "inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] leading-none transition-colors";
 
   return (
     <section aria-label="Dekking vandaag" className="@container flex w-full flex-col items-center gap-3 py-1">
       <div className="@container/krans relative aspect-square w-full max-w-[300px]">
+        <button
+          type="button"
+          onClick={() => {
+            if (!uitleg) trackEvent("nutrition_dagboek_krans_uitleg", { surface: "krans" });
+            setUitleg(!uitleg);
+          }}
+          aria-expanded={uitleg}
+          aria-controls="krans-uitleg"
+          aria-label="Wat laat de krans zien?"
+          className="absolute right-0 top-0 z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-[var(--vd-bg)] font-serif text-[13px] italic text-[var(--vd-ink-2)] transition-colors hover:border-white/30 hover:text-[var(--vd-ink)]"
+        >
+          i
+        </button>
         <svg viewBox="0 0 300 300" aria-hidden className="block h-full w-full overflow-visible">
           <path
             d={`M ${MIDDEN - 5} 14 L ${MIDDEN + 5} 14 L ${MIDDEN} 21 Z`}
@@ -443,7 +462,9 @@ export default function DagboekKrans({
               </b>
               <span className="mt-1 text-[clamp(9px,3.5cqw,11px)] leading-tight text-[var(--vd-ink-3)]">
                 {gekozenGevolgd.aandeel !== null && gekozenGevolgd.waarde !== null
-                  ? `van je norm · ${rondVoedingswaarde(gekozenGevolgd.waarde)} ${gekozenGevolgd.unit}`
+                  ? gekozenGevolgd.aandeel < 1
+                    ? `van je norm · ${rondVoedingswaarde(gekozenGevolgd.waarde)} ${gekozenGevolgd.unit}`
+                    : `norm ${rondVoedingswaarde(gekozenGevolgd.norm ?? 0)} ${gekozenGevolgd.unit} gehaald · zonder oordeel`
                   : gekozenGevolgd.waarde !== null
                     ? "zonder norm · zonder oordeel"
                     : "niet opgehaald"}
@@ -512,9 +533,39 @@ export default function DagboekKrans({
         ) : null}
       </div>
 
-      <ul aria-label="Kernstoffen" className="m-0 flex w-full list-none flex-wrap justify-center gap-1.5 p-0">
+      {uitleg ? (
+        <div
+          id="krans-uitleg"
+          className="w-full max-w-[420px] rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-[12.5px] leading-relaxed text-[var(--vd-ink-2)]"
+        >
+          <ul className="m-0 grid list-none gap-1.5 p-0">
+            <li>
+              <b className="text-[var(--vd-ink)]">Binnenring</b> · de vijf kernstoffen, elk in een eigen kleur. Vol = je
+              norm voor vandaag gehaald.
+            </li>
+            <li>
+              <b className="text-[var(--vd-ink)]">Buitenring</b> · de stoffen die jij volgt, in één tint en zonder oordeel.
+              Met + kies je er meer.
+            </li>
+            <li>
+              <b className="text-[var(--vd-ink)]">Midden</b> · de stof met het grootste open stuk, of de stof die je
+              aantikt. De ring draait hem naar boven.
+            </li>
+            <li>
+              <b className="text-[var(--vd-ink)]">Gestippeld</b> · zink en vitamine D kan een dagboek niet aantonen; een
+              stof zonder norm vult niet.
+            </li>
+          </ul>
+          <p className="m-0 mt-2 text-[11.5px] text-[var(--vd-ink-3)]">
+            Alles is een ondergrens van wat je registreerde, geen dagtotaal. De normen en waar ze vandaan komen staan in
+            Je doelen.
+          </p>
+        </div>
+      ) : null}
+
+      <ul aria-label="Kernstoffen" className="m-0 grid w-full max-w-[420px] list-none grid-cols-1 gap-x-5 gap-y-0.5 p-0 @[400px]:grid-cols-2">
         {rijen.map((rij, index) => {
-          const actief = keuze?.ring === "kern" && keuze.nutrient === rij.nutrient;
+          const actief = gekozenKern?.nutrient === rij.nutrient;
           return (
             <li key={rij.nutrient}>
               <button
@@ -522,31 +573,39 @@ export default function DagboekKrans({
                 onClick={() => kiesKern(index)}
                 aria-pressed={actief}
                 aria-label={`${nutrientReferences[rij.nutrient].label}${rij.telt ? "" : ", telt niet mee in de telling"}`}
-                className={`${chip} ${
-                  actief
-                    ? "border-white/30 bg-white/[0.08] text-[var(--vd-ink)]"
-                    : rij.telt
-                      ? "border-white/10 bg-white/[0.03] text-[var(--vd-ink-2)] hover:border-white/20"
-                      : "border-dashed border-white/10 text-[var(--vd-ink-3)] hover:border-white/20"
+                className={`grid w-full cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-x-2 rounded-lg px-2 py-1.5 text-left transition-colors ${
+                  actief ? "bg-white/[0.07]" : "hover:bg-white/[0.04]"
                 }`}
               >
                 <span
                   aria-hidden
-                  className={`block h-2 w-2 rounded-full ${rij.nietBewijsbaar ? "border-[1.5px] border-dashed bg-transparent" : ""}`}
+                  className={`block h-2.5 w-2.5 rounded-full ${rij.nietBewijsbaar ? "border-[1.5px] border-dashed bg-transparent" : ""}`}
                   style={
                     rij.nietBewijsbaar
                       ? { borderColor: `var(--vd-stof-${rij.nutrient})` }
                       : { background: `var(--vd-stof-${rij.nutrient})` }
                   }
                 />
-                <span className="font-semibold">{nutrientReferences[rij.nutrient].label}</span>
-                <span className="font-mono tabular-nums text-[var(--vd-ink-3)]">
+                <span className={`text-[13px] ${rij.telt ? "text-[var(--vd-ink)]" : "text-[var(--vd-ink-2)]"}`}>
+                  {nutrientReferences[rij.nutrient].label}
+                </span>
+                <span className="text-[13px] tabular-nums text-[var(--vd-ink-2)]">
                   {kernWaarde(rij)}
                   {rij.gedekt ? (
-                    <span aria-label="gedekt" className="ml-0.5 text-[var(--vd-sage-2)]">
+                    <span aria-label="gedekt" className="ml-1 text-[var(--vd-sage-2)]">
                       ✓
                     </span>
                   ) : null}
+                </span>
+                <span aria-hidden className="col-span-3 mt-1 block h-[3px] overflow-hidden rounded-full bg-white/[0.06]">
+                  <span
+                    className="block h-full rounded-full"
+                    style={{
+                      width: `${Math.round(rij.vol * 100)}%`,
+                      background: `var(--vd-stof-${rij.nutrient})`,
+                      opacity: rij.nietBewijsbaar ? 0.55 : 1,
+                    }}
+                  />
                 </span>
               </button>
             </li>
@@ -555,45 +614,58 @@ export default function DagboekKrans({
       </ul>
 
       {geladen ? (
-        <div className="flex w-full flex-col items-center gap-1.5">
-          <h3 className="m-0 font-sans text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[var(--vd-ink-4)]">
-            Buitenring · ook gevolgd · zonder oordeel
-          </h3>
-          <ul aria-label="Ook gevolgd" className="m-0 flex w-full list-none flex-wrap justify-center gap-1.5 p-0">
-            {gevolgd.map((rij, index) => {
-              const actief = keuze?.ring === "gevolgd" && keuze.veld === rij.veld;
+        <div className="flex w-full max-w-[420px] flex-col gap-1">
+          <div className="flex items-baseline justify-between px-2">
+            <h3 className="m-0 font-sans text-[11.5px] font-semibold text-[var(--vd-ink-2)]">Ook gevolgd</h3>
+            <span className="text-[10.5px] text-[var(--vd-ink-4)]">buitenring · zonder oordeel</span>
+          </div>
+          <ul aria-label="Ook gevolgd" className="m-0 grid list-none grid-cols-1 gap-x-5 gap-y-0.5 p-0 @[400px]:grid-cols-2">
+            {(alleGevolgd ? gevolgd : gevolgd.slice(0, 4)).map((rij) => {
+              const index = gevolgd.indexOf(rij);
+              const actief = gekozenGevolgd?.veld === rij.veld;
               return (
                 <li key={rij.veld}>
                   <button
                     type="button"
                     onClick={() => kiesGevolgd(index)}
                     aria-pressed={actief}
-                    className={`${chip} ${
-                      actief
-                        ? "border-white/30 bg-white/[0.08] text-[var(--vd-ink)]"
-                        : "border-white/8 text-[var(--vd-ink-3)] hover:border-white/20"
+                    className={`grid w-full cursor-pointer grid-cols-[1fr_auto] items-center gap-x-2 rounded-lg px-2 py-1.5 text-left transition-colors ${
+                      actief ? "bg-white/[0.07]" : "hover:bg-white/[0.04]"
                     }`}
                   >
-                    <span className="font-semibold">{hoofdletter(rij.label)}</span>
-                    <span className="font-mono tabular-nums text-[var(--vd-ink-4)]">{gevolgdWaarde(rij)}</span>
+                    <span className="text-[13px] text-[var(--vd-ink-2)]">{hoofdletter(rij.label)}</span>
+                    <span className="text-[13px] tabular-nums text-[var(--vd-ink-3)]">{gevolgdWaarde(rij)}</span>
+                    <span aria-hidden className="col-span-2 mt-1 block h-[3px] overflow-hidden rounded-full bg-white/[0.06]">
+                      <span
+                        className="block h-full rounded-full bg-[var(--vd-ink-3)]"
+                        style={{ width: `${Math.round(Math.min(rij.aandeel ?? 0, 1) * 100)}%` }}
+                      />
+                    </span>
                   </button>
                 </li>
               );
             })}
-            <li>
+          </ul>
+          <div className="flex flex-wrap items-center gap-3 px-2">
+            {gevolgd.length > 4 ? (
               <button
                 type="button"
-                onClick={wisselKiezer}
-                aria-expanded={kiezen}
-                className={`${chip} border-dashed border-white/15 text-[var(--vd-ink-3)] hover:border-white/30 hover:text-[var(--vd-ink)]`}
+                onClick={() => setAlleGevolgd(!alleGevolgd)}
+                aria-expanded={alleGevolgd}
+                className="cursor-pointer text-[12px] font-semibold text-[var(--vd-ink-2)] underline-offset-2 hover:underline"
               >
-                <span aria-hidden>{kiezen ? "×" : "+"}</span>
-                <span className="font-semibold">
-                  {kiezen ? "Klaar" : gevolgd.length > 0 ? "Stoffen kiezen" : "Volg ook vezels, calcium…"}
-                </span>
+                {alleGevolgd ? "Minder tonen" : `Toon alle ${gevolgd.length}`}
               </button>
-            </li>
-          </ul>
+            ) : null}
+            <button
+              type="button"
+              onClick={wisselKiezer}
+              aria-expanded={kiezen}
+              className="cursor-pointer text-[12px] font-semibold text-[var(--vd-sage-2)] underline-offset-2 hover:underline"
+            >
+              {kiezen ? "Klaar" : gevolgd.length > 0 ? "+ Stoffen kiezen" : "+ Volg ook vezels, calcium…"}
+            </button>
+          </div>
         </div>
       ) : null}
 

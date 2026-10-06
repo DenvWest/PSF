@@ -1,6 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import MaandKalender, { maandVan } from "@/components/dashboard/shared/MaandKalender";
 import { dagSoortVoor } from "@/lib/nutrition-dagboek";
+import { verschuifDag } from "@/lib/nutrition-periode";
 
 /**
  * De week als zeven knoppen, met de meetdagen gemarkeerd.
@@ -17,7 +20,15 @@ import { dagSoortVoor } from "@/lib/nutrition-dagboek";
  * zeggen niets over je weekend. Daarom staat de hele week er, met een stip op
  * de dagen die het patroon dragen — je ziet wat telt zonder dat de rest
  * verboden is.
+ *
+ * ## Bladeren en kiezen
+ *
+ * Met ‹ en › spring je een week terug of vooruit (nooit voorbij vandaag),
+ * "Vandaag" brengt je terug, en "Kies" opent dezelfde maandkalender als Je
+ * patroon om meteen naar een dag te gaan.
  */
+
+export type DagKeuzeVia = "strip" | "pijl" | "vandaag" | "kalender";
 
 const WEEKDAG = ["ma", "di", "wo", "do", "vr", "za", "zo"] as const;
 
@@ -29,19 +40,101 @@ export type WeekstripDag = {
   meetdag: boolean;
 };
 
+function kortDatum(datum: string): string {
+  return new Date(`${datum}T00:00:00Z`).toLocaleDateString("nl-NL", { timeZone: "UTC", day: "numeric", month: "short" });
+}
+
 export default function DagboekWeekstrip({
   dagen,
   geselecteerd,
   onSelecteer,
+  vandaag,
+  geregistreerd,
   busy = false,
 }: {
   dagen: readonly WeekstripDag[];
   geselecteerd: string;
-  onSelecteer: (datum: string) => void;
+  onSelecteer: (datum: string, via: DagKeuzeVia) => void;
+  vandaag: string;
+  geregistreerd: ReadonlySet<string>;
   busy?: boolean;
 }) {
+  const [kalender, setKalender] = useState(false);
+  const [maand, setMaand] = useState(() => maandVan(geselecteerd));
+  const eerste = dagen[0]?.datum ?? geselecteerd;
+  const laatste = dagen[dagen.length - 1]?.datum ?? geselecteerd;
+  const dezeWeek = vandaag >= eerste && vandaag <= laatste;
+
+  function blader(weken: number) {
+    const doel = verschuifDag(geselecteerd, weken * 7);
+    onSelecteer(doel > vandaag ? vandaag : doel, "pijl");
+  }
+
   return (
     <div className="flex flex-col gap-1.5">
+      <div className="flex items-center gap-1.5">
+        <button
+          type="button"
+          className="vd-blader"
+          onClick={() => blader(-1)}
+          disabled={busy}
+          aria-label="Vorige week"
+        >
+          ‹
+        </button>
+        <b className="min-w-0 flex-1 text-center text-[12px] font-semibold text-[var(--vd-ink-2)]" aria-live="polite">
+          {dezeWeek ? "Deze week" : `${kortDatum(eerste)} – ${kortDatum(laatste)}`}
+        </b>
+        <button
+          type="button"
+          className="vd-blader"
+          onClick={() => blader(1)}
+          disabled={busy || dezeWeek}
+          aria-label="Volgende week"
+        >
+          ›
+        </button>
+        {geselecteerd !== vandaag ? (
+          <button
+            type="button"
+            onClick={() => onSelecteer(vandaag, "vandaag")}
+            disabled={busy}
+            className="cursor-pointer rounded-full border border-white/12 px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] hover:border-white/25"
+          >
+            Vandaag
+          </button>
+        ) : null}
+        <button
+          type="button"
+          onClick={() => {
+            setMaand(maandVan(geselecteerd));
+            setKalender(!kalender);
+          }}
+          aria-expanded={kalender}
+          disabled={busy}
+          className="cursor-pointer rounded-full border border-white/12 px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] hover:border-white/25"
+        >
+          Kies
+        </button>
+      </div>
+
+      {kalender ? (
+        <MaandKalender
+          maand={maand}
+          onMaand={setMaand}
+          vroegste={null}
+          vandaag={vandaag}
+          geregistreerd={geregistreerd}
+          isRand={(datum) => datum === geselecteerd}
+          isGekozen={(datum) => datum === geselecteerd}
+          onTik={(datum) => {
+            setKalender(false);
+            onSelecteer(datum, "kalender");
+          }}
+          voetnoot="● = dag met registratie"
+        />
+      ) : null}
+
       <ul className="m-0 grid list-none grid-cols-7 gap-1 p-0">
         {dagen.map((dag) => {
           const datum = new Date(dag.datum);
@@ -53,7 +146,7 @@ export default function DagboekWeekstrip({
               <button
                 type="button"
                 disabled={busy}
-                onClick={() => onSelecteer(dag.datum)}
+                onClick={() => onSelecteer(dag.datum, "strip")}
                 aria-pressed={actief}
                 aria-label={`${dagNaam} ${datum.getDate()}${
                   dag.gevuld ? ", ingevuld" : ""

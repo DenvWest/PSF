@@ -47,6 +47,7 @@ import DagboekVergelijkZoek, {
   type VergelijkResultaat,
 } from "@/components/dashboard/dagboek/DagboekVergelijkZoek";
 import DagboekWeekstrip, {
+  type DagKeuzeVia,
   meetdagenUit,
   weekRond,
 } from "@/components/dashboard/dagboek/DagboekWeekstrip";
@@ -313,6 +314,14 @@ export default function DagboekScherm({
     [dagen],
   );
   const meetdagen = useMemo(() => meetdagenUit(gevuldeDatums), [gevuldeDatums]);
+  const gevuldeSet = useMemo(() => new Set(gevuldeDatums), [gevuldeDatums]);
+
+  function kiesDatum(nieuw: string, via: DagKeuzeVia) {
+    if (nieuw === datum) return;
+    setDatum(nieuw);
+    const dagenTerug = Math.round((Date.parse(`${vandaag}T00:00:00Z`) - Date.parse(`${nieuw}T00:00:00Z`)) / 86_400_000);
+    trackEvent("nutrition_dagboek_dag_gekozen", { via, dagen_terug: dagenTerug });
+  }
 
   const stripDagen = useMemo(
     () =>
@@ -902,7 +911,9 @@ export default function DagboekScherm({
       <DagboekWeekstrip
         dagen={stripDagen}
         geselecteerd={datum}
-        onSelecteer={setDatum}
+        onSelecteer={kiesDatum}
+        vandaag={vandaag}
+        geregistreerd={gevuldeSet}
         busy={busy}
       />
 

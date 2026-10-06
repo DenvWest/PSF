@@ -54,3 +54,12 @@ GA4: `nutrition_dagboek_krans_gekozen` (nieuw; params `ring`: `kern` | `gevolgd`
 6. **Buitenring met meer contrast** (vulling `--vd-ink-2`, lichter spoor, dikte 9). De "+" staat op een vaste plek direct achter het laatste segment in plaats van in een eigen, gelijke sector.
 
 **Meetpunt:** ongewijzigd: `nutrition_dagboek_krans_gekozen`, met de doorstroom naar `nutrition_dagboek_nutrient_opened` en `nutrition_dagboek_rijkste_geopend`. Nieuw: `nutrition_dagboek_eiwitdoel_cta` (`surface: krans`) bij een tik op "Stel een eiwitdoel in"; het effect lees je af aan `voedingsdoel_aangepast` met `setting: eiwitdoel`.
+
+## Aanvulling 6 oktober 2026 (2) — leesbaarheid, uitleg, dagen kiezen
+
+**Status:** gebouwd na Dennis' feedback op :3004 ("378% begrijpt iemand niet", "tekst beter leesbaar", "I van informatie", "dagen eerder of later, kies-button zoals bij patroon").
+
+1. **Geen percentages boven 100%.** Boven de norm staat de hoeveelheid ("945 mg ✓"), in het midden met "norm 250 mg gehaald". Bij omega-3 staat daar ook "omega-3 telt per week" (Je patroon leest omega-3 als periodetotaal). Gevolgde stoffen boven de norm: hoeveelheid, plus "norm … gehaald · zonder oordeel".
+2. **Legenda in rijen in plaats van pillen.** Per stof een rij: kleurstip, naam en waarde in 13 px met tabulaire cijfers, en een dun balkje dat dezelfde vulling toont als de ring. Twee kolommen vanaf 400 px containerbreedte. "Ook gevolgd" toont er standaard vier; daarna "Toon alle n", zodat meer gevolgde stoffen het beeld niet vol maken.
+3. **i-knop rechtsboven de krans.** Die klapt uit wat de binnenring, de buitenring, het midden en het gestippelde spoor betekenen, en dat alles een ondergrens is. Meetpunt: `nutrition_dagboek_krans_uitleg`.
+4. **Dagen kiezen.** De dagenbalk krijgt ‹ / › (een week terug of vooruit, nooit voorbij vandaag), "Vandaag" en "Kies". Kies opent dezelfde maandkalender als Je patroon, nu gedeeld als `src/components/dashboard/shared/MaandKalender.tsx`. Meetpunt: `nutrition_dagboek_dag_gekozen` (`via`: strip / pijl / vandaag / kalender, `dagen_terug`).
