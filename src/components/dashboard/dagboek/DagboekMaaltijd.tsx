@@ -37,8 +37,8 @@ import type { SupermarktProduct } from "@/types/supermarkt-product";
  * geen streepje of nul. Die regel telt wél mee voor je voedselgroep en je
  * breedte — hij mist alleen zijn milligrammen. Een nul zou beweren dat er
  * niets in zit — die staat er dus alleen als NEVO zelf 0 of spoor meldt. Een
- * benadering blijft hier `n.o.`: deze tabel telt op, en een benadering telt
- * niet mee (`docs/plan/BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`).
+ * benadering blijft hier `n.o.` voor de micro's; alleen haar eiwit telt mee
+ * (`docs/plan/BESLUIT_MICRO_IN_BEELD_2026-10.md`).
  *
  * ## Gevolgde stoffen als extra kolommen
  *

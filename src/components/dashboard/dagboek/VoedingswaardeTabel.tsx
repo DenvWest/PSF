@@ -26,7 +26,7 @@ export default function VoedingswaardeTabel({
   bronProducten: readonly SupermarktProduct[];
   onKiesStof?: (stof: InformatieveStof) => void;
 }) {
-  const { rijen, zonderWaarde } = voedingswaarde;
+  const { rijen, zonderWaarde, benaderd } = voedingswaarde;
 
   return (
     <section className="overflow-hidden rounded-2xl border border-white/10">
@@ -74,7 +74,7 @@ export default function VoedingswaardeTabel({
                   {rij.waarde === null ? (
                     <span className="italic text-[var(--vd-ink-4)]">n.o.</span>
                   ) : (
-                    `${rondVoedingswaarde(rij.waarde)} ${rij.unit}`
+                    `${rij.benaderd ? "≈ " : ""}${rondVoedingswaarde(rij.waarde)} ${rij.unit}`
                   )}
                 </td>
                 <td className="w-[38%] py-2 pr-4">
@@ -100,6 +100,12 @@ export default function VoedingswaardeTabel({
       </table>
 
       <footer className="flex flex-col gap-1 border-t border-white/10 px-4 py-2.5">
+        {benaderd > 0 ? (
+          <p className="m-0 text-[10.5px] leading-relaxed text-[var(--vd-ink-4)]">
+            ≈ {benaderd === 1 ? "1 product telt" : `${benaderd} producten tellen`} mee met de waarden van een
+            vergelijkbaar NEVO-product: energie, macro&rsquo;s en eiwit wel, vitamines en mineralen niet.
+          </p>
+        ) : null}
         {zonderWaarde > 0 ? (
           <p className="m-0 text-[10.5px] leading-relaxed text-[var(--vd-ink-4)]">
             {zonderWaarde === 1

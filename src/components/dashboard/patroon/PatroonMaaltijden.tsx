@@ -30,8 +30,9 @@ function rij(maaltijd: MaaltijdPatroon, veld: string): MaaltijdRij | undefined {
   return maaltijd.rijen.find((r) => r.veld === veld);
 }
 
-function getal(waarde: number | null | undefined): string {
-  return waarde === null || waarde === undefined ? "—" : rondVoedingswaarde(waarde);
+function getal(waarde: number | null | undefined, benaderd = false): string {
+  if (waarde === null || waarde === undefined) return "—";
+  return `${benaderd ? "≈ " : ""}${rondVoedingswaarde(waarde)}`;
 }
 
 export default function PatroonMaaltijden({
@@ -103,13 +104,21 @@ export default function PatroonMaaltijden({
                     {veld === "energyKcal" ? "Energie" : r?.label}
                   </span>
                   <b className="block font-mono text-[0.9375rem] text-[var(--vd-ink)]">
-                    {getal(r?.waarde)}
+                    {getal(r?.waarde, r?.benaderd)}
                   </b>
                   <span className="block text-[0.625rem] text-[var(--vd-ink-3)]">{r?.unit}</span>
                 </div>
               );
             })}
           </div>
+
+          {maaltijd.benaderdeProducten.length > 0 ? (
+            <p className="vd-note" style={{ margin: "-0.25rem 0 0.75rem" }}>
+              ≈ {maaltijd.benaderdeProducten.join(", ")}{" "}
+              {maaltijd.benaderdeProducten.length === 1 ? "telt" : "tellen"} mee met de waarden van een
+              vergelijkbaar NEVO-product: energie, macro&rsquo;s en eiwit wel, vitamines en mineralen niet.
+            </p>
+          ) : null}
 
           {maaltijd.producten.length > 0 ? (
             <section aria-label="Wat je at" className="vd-tabel">
@@ -145,7 +154,7 @@ export default function PatroonMaaltijden({
                   {r.label}
                 </span>
                 <span className="vd-getal">
-                  {getal(r.waarde)} {r.waarde === null ? "" : r.unit}
+                  {getal(r.waarde, r.benaderd)} {r.waarde === null ? "" : r.unit}
                 </span>
                 <span className="vd-getal">{getal(r.per100kcal)}</span>
                 <span className="vd-getal">{r.aandeel === null ? "—" : percentageADH(r.aandeel)}</span>

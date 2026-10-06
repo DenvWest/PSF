@@ -3,7 +3,12 @@ import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 import { isEetmomentId, type EetmomentId } from "@/lib/nutrition-eetmomenten";
-import { gehaltePer100g, gehalteWeergavePer100g, type GehalteWeergave } from "@/lib/nutrition-catalog-gehalte";
+import {
+  eiwitBenaderingPer100g,
+  gehaltePer100g,
+  gehalteWeergavePer100g,
+  type GehalteWeergave,
+} from "@/lib/nutrition-catalog-gehalte";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import { BASE_UNIT, toBase, type NutrientUnit } from "@/lib/nutrition-units";
 
@@ -192,7 +197,8 @@ export function bedragVanItem(
     return { value: portie.amount * item.grams, unit: portie.unit };
   }
 
-  const per100g = gehaltePer100g(catalogEntry(item.key), nutrient);
+  const entry = catalogEntry(item.key);
+  const per100g = gehaltePer100g(entry, nutrient) ?? (nutrient === "protein" ? eiwitBenaderingPer100g(entry) : null);
   if (!per100g) return null;
   return { value: (per100g.value * item.grams) / 100, unit: per100g.unit };
 }

@@ -14,7 +14,7 @@ function dag(waarden: Record<string, number>, zonderWaarde = 0): Voedingswaarde 
     return { ...veld, waarde, norm: null, aandeel: null, aandeelRi: null };
   });
   const metWaarde = Object.keys(waarden).length > 0 ? 1 : 0;
-  return { rijen, metWaarde, zonderWaarde };
+  return { rijen, metWaarde, zonderWaarde, benaderd: 0 };
 }
 
 const MAANDAG = "2026-09-28";
