@@ -106,3 +106,12 @@ Bronnen: [Henry 2005, Public Health Nutr 8:1133](https://doi.org/10.1079/PHN2005
 ### Nog open
 
 - **Omega-3-norm 250 mg (EFSA, regel "hoogste") of 200 mg (GR 2026).** Staat nu op 250.
+
+### Aanvulling 6 okt: twee termen in de UI
+
+Er stonden drie namen voor min of meer hetzelfde door elkaar: "ADH" (Wat dit levert, Patroon per maaltijd), "RI" (voedingswaardetabel, vergelijken, rijkste bronnen, routekaart) en "norm" (Je patroon). Besluit met Dennis:
+
+- **"norm" / "van je norm"** overal waar tegen de persoonlijke norm (`voedingsnormen.ts`) gerekend wordt. Patroon per maaltijd (kolom heette "ADH") en de routekaart ("van je RI") rekenden al tegen de norm en heten nu zo.
+- **"% ADH"** alleen bij een productweergave, als naam voor de etiketwaarde (RI uit 1169/2011, §4 blijft). "ADH" kennen mensen van de verpakking, "RI" niet. De voedingswaardetabel legt uit: vaste etiketwaarde, niet jouw persoonlijke norm.
+- **Eiwit** heet "van je doel" (geen RI, eigen berekening).
+- Afgewezen: overal "ADH", ook voor de persoonlijke norm — dan lijkt het één getal.

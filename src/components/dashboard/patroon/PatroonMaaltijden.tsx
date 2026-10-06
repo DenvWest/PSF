@@ -18,11 +18,10 @@ import { useKernstofNormen } from "@/lib/use-kernstof-normen";
  * dag per moment terughalen en niet per stof (zie `nutrition-eetmomenten.ts`).
  * Daaronder: energie en macro's als tegels, dan alle micronutriënten en
  * kernstoffen in één tabel met het gemiddelde, de dichtheid per 100 kcal en
- * het aandeel van de dagelijkse referentie. Onderaan de maaltijden naast
+ * het aandeel van je persoonlijke dagnorm. Onderaan de maaltijden naast
  * elkaar, zodat je ziet welke zijn calorieën het rijkst besteedt.
  *
- * Geen oordeel per maaltijd: %RI is een etiketvermelding, geen doel per
- * maaltijd. Macro's krijgen geen percentage (macro-besluit §0.1).
+ * Geen oordeel per maaltijd: de norm is een dagnorm, geen doel per maaltijd. Macro's krijgen geen percentage (macro-besluit §0.1).
  */
 
 const MACRO_TEGELS = ["energyKcal", "proteinG", "carbohydrateG", "fatG"] as const;
@@ -137,7 +136,7 @@ export default function PatroonMaaltijden({
               <span>Stof</span>
               <span>Gem.</span>
               <span>/100 kcal</span>
-              <span>ADH</span>
+              <span>Norm</span>
             </div>
 
             {tabelRijen.map((r) => (

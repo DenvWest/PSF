@@ -92,3 +92,18 @@ describe("voedingsnormenVoor met 70+", () => {
     expect(jong.vitamin_d.waarde).toBe(15);
   });
 });
+
+describe("streefwaarden voor gevolgde stoffen", () => {
+  it("bewaart ijzer en vitamine C, weigert ijzer boven 40 mg en vezels", () => {
+    const uit = pasKernstofPatchToe(LEEG_KERNSTOF_PROFIEL, { streefwaarden: { ironMg: 18, vitaminCMg: 200 } });
+    expect("profiel" in uit && uit.profiel.streefwaarden).toEqual({ ironMg: 18, vitaminCMg: 200 });
+    expect(pasKernstofPatchToe(LEEG_KERNSTOF_PROFIEL, { streefwaarden: { ironMg: 60 } })).toHaveProperty("fout");
+    expect(pasKernstofPatchToe(LEEG_KERNSTOF_PROFIEL, { streefwaarden: { fiberG: 30 } })).toEqual({ fout: "Onbekende stof." });
+  });
+
+  it("leest gevolgde streefwaarden uit de database", () => {
+    expect(leesKernstofProfiel({ streefwaarden: { calciumMg: 1200, sodiumMg: 1500 } }).streefwaarden).toEqual({
+      calciumMg: 1200,
+    });
+  });
+});

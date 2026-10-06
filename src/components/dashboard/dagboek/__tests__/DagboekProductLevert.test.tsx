@@ -54,7 +54,7 @@ describe("DagboekProductLevert", () => {
     haalNevo.mockResolvedValue([nevo("1146", { energyKcal: 20, ironMg: 2.8 })]);
     render(<DagboekProductLevert item={{ moment: "lunch", bron: "voeding", key: "spinazie-diepvries", grams: 100 }} />);
     await waitFor(() => expect(screen.getByText("Ook gevolgd")).toBeTruthy());
-    expect(screen.getByText("20% ADH")).toBeTruthy();
+    expect(screen.getAllByText("20% ADH")).toHaveLength(2);
   });
 
   it("rekent eiwit tegen je eiwitdoel", () => {

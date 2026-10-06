@@ -28,9 +28,9 @@ describe("DagboekRijksteBronnen", () => {
 });
 
 describe("DagboekRijksteBronnen voor een informatieve stof", () => {
-  it("toont calcium met %RI per portie", () => {
+  it("toont calcium met %ADH per portie", () => {
     render(<DagboekRijksteBronnen stof="calciumMg" onKies={vi.fn()} onVergelijk={vi.fn()} />);
     expect(screen.getByRole("heading", { name: "Rijkste bronnen van calcium" })).toBeTruthy();
-    expect(screen.getAllByText(/% RI$/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/% ADH$/).length).toBeGreaterThan(0);
   });
 });

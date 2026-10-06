@@ -76,3 +76,13 @@ Dennis merkte dat ijzer na het kiezen op Je doelen niet terugkwam in het dagboek
 - **"Wat dit levert" (`DagboekProductLevert`):** gevolgde stoffen staan onder de kernstoffen als "Ook gevolgd" met %ADH in neutrale tint. Dit breidt de "vijf kernstoffen" uit `BESLUIT_NUL_SPOOR_BENADERING_2026-10.md` §7 uit; vóór en na toevoegen blijft het hetzelfde blok.
 - **Eiwit per product** rekent tegen je eiwitdoel ("% van je doel"): eiwit heeft geen RI, dus dit raakt `BESLUIT_KERNSTOF_NORMEN_2026-10.md` §4 niet.
 - **Bewust niet:** de andere kernstoffen per product tegen je persoonlijke norm. §4 blijft staan (per product %RI, de etiketvermelding); Dennis koos 6 okt voor alleen bovenstaande.
+
+### Aanvulling 6 okt (2): eigen streefwaarde voor gevolgde stoffen
+
+Dennis: "Akkoord" op een aanpasbaar doel voor kalium, calcium, ijzer, B12 en vitamine C. Dit vult het open punt "RI-overschrijving per stof" in, maar dan volgens de lijn die sinds `BESLUIT_KERNSTOF_NORMEN_2026-10.md` geldt: de norm is de hoogste officiële norm, niet de RI, en een eigen waarde **vervangt de norm niet**.
+
+- Zelfde opslag als de streefwaarden van de kernstoffen: kolom `streefwaarden` (jsonb) in `account_kernstof_profiel`. Geen migratie, geen tweede tabel.
+- Op Je doelen, onder "Wat je volgt", is elke stof met een norm aan te tikken; leeg = alleen de norm. Vezels niet (norm hangt van gewicht en activiteit af).
+- In Je patroon ("Ook gevolgd") staat de streefwaarde als tweede regel met het % ervan; balk en % blijven tegen de norm. Geen ✓, geen oordeel (de stoffen blijven informatief).
+- Bovengrens: calcium 2500 mg en ijzer 40 mg (EFSA); kalium, B12 en C hebben geen EFSA-bovengrens, daar geldt een typfoutgrens (10.000 mg, 1000 µg, 2000 mg).
+- Meetpunt: `kernstof_profiel_aangepast` met `setting: streefwaarde_<veld>` (bestaand event).
