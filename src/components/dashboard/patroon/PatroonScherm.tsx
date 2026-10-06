@@ -11,7 +11,7 @@ import PatroonDoelenKaart, {
 import PatroonGevolgdWeek from "@/components/dashboard/patroon/PatroonGevolgdWeek";
 import PatroonMaaltijden from "@/components/dashboard/patroon/PatroonMaaltijden";
 import PatroonPeriodeKiezer from "@/components/dashboard/patroon/PatroonPeriodeKiezer";
-import PatroonStofDetail from "@/components/dashboard/patroon/PatroonStofDetail";
+import PatroonStofDetail, { type StofDetailGegevens } from "@/components/dashboard/patroon/PatroonStofDetail";
 import PatroonStofTabel from "@/components/dashboard/patroon/PatroonStofTabel";
 import PatroonSubtabs, {
   type PatroonSectie,
@@ -26,7 +26,19 @@ import { trackEvent } from "@/lib/ga4";
 import { fetchMacroDoelen } from "@/lib/macro-doelen-client";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { nutrientenGesplitstUitItems, sanitizeItems } from "@/lib/nutrition-dagboek-items";
-import { bouwGevolgdePeriode, bouwGevolgdeWeken } from "@/lib/nutrition-gevolgde-weken";
+import { bouwGevolgdePeriode } from "@/lib/nutrition-gevolgde-weken";
+import { normVoor, normVoorVeld } from "@/lib/nutrition-normen";
+import {
+  bronnenUitMeting,
+  isKernstof,
+  meetPeriode,
+  perMomentUitMeting,
+  supplementVergelijkingVoor,
+  type PatroonStof,
+} from "@/lib/nutrition-stof-meting";
+import { bouwStofTrend } from "@/lib/nutrition-stof-trend";
+import { VOEDINGSWAARDE_VELDEN } from "@/lib/nutrition-voedingswaarde";
+import { isKernstofMetNorm, isStreefStof } from "@/lib/account-kernstof-profiel";
 import { bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
 import {
   datumsTussen,
@@ -38,12 +50,11 @@ import {
   type PeriodeKeuze,
 } from "@/lib/nutrition-periode";
 import { bronnenVanStof, stofPerMoment } from "@/lib/nutrition-stof-bronnen";
-import { bepaalBevinding, bouwTekortsysteem } from "@/lib/nutrition-tekortsysteem";
-import { bouwTrend } from "@/lib/nutrition-trend";
+import { bepaalBevinding, bouwTekortsysteem, NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
 import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
-import { bouwPeriodeOverzicht, verschuifWeek, weekStart } from "@/lib/nutrition-weekoverzicht";
+import { bouwPeriodeOverzicht } from "@/lib/nutrition-weekoverzicht";
 import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
-import { useGevolgdeNormen, useKernstofNormen } from "@/lib/use-kernstof-normen";
+import { useGevolgdeNormen, useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 import { useVoedingsdataPeriode } from "@/lib/use-voedingsdata-periode";
 import { bewaarPatroonStand, leesPatroonUrl } from "@/lib/patroon-url";
 import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
@@ -75,10 +86,22 @@ import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
  */
 
 
+const ZONDER_NORM_EIWIT = "Eiwit rekent met je gewicht en activiteit, niet met één vaste norm.";
+function zonderNormGevolgd(stof: PatroonStof): string {
+  return stof === "fiberG"
+    ? "De vezelnorm rekent met je energiebehoefte en vraagt je gewicht."
+    : "Voor deze stof gebruiken we geen norm, alleen je gemiddelde.";
+}
+
+function hoofdletter(label: string): string {
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
 function PatroonInhoud() {
   const vandaag = todayInAgendaTimezone();
   const normen = useKernstofNormen();
   const gevolgdeNormen = useGevolgdeNormen();
+  const { streefwaarden } = useKernstofProfiel();
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
   const [laden, setLaden] = useState(true);
   // Terugkomen via de terugknop: begin in de stand die in de URL staat
@@ -92,7 +115,7 @@ function PatroonInhoud() {
   const [macroDoelen, setMacroDoelen] = useState<MacroDoelen>(LEGE_MACRO_DOELEN);
   const [periodeKeuze, setPeriodeKeuze] = useState<PeriodeKeuze>(startStand?.periode ?? "7");
   const [periode, setPeriode] = useState<Periode>(() => periodeVoorKeuze(startStand?.periode ?? "7", vandaag));
-  const [openStof, setOpenStof] = useState<NutrientId | null>(
+  const [openStof, setOpenStof] = useState<PatroonStof | null>(
     startStand?.sectie === "stof" ? startStand.stof : null,
   );
   const [kiezerOpen, setKiezerOpen] = useState(false);
@@ -201,21 +224,13 @@ function PatroonInhoud() {
   const datums = useMemo(() => datumsTussen(periode), [periode]);
   const periodeTekst = periodeLabel(periode);
 
-  const huidigeWeek = useMemo(() => weekStart(vandaag), [vandaag]);
-  const trends = useMemo(() => bouwTrend(dagen, vandaag, normen), [dagen, vandaag, normen]);
-  const trendWeken = useMemo(
-    () => Array.from({ length: 6 }, (_, i) => verschuifWeek(huidigeWeek, i - 5)),
-    [huidigeWeek],
-  );
-
-  // Eén ophaalronde voor alles: de kalender gaat maximaal 42 dagen terug, en
-  // de zes trendweken vallen daar binnen.
+  // Eén ophaalronde voor alles: de kalender gaat maximaal 42 dagen terug.
   const dataVan = verschuifDag(vandaag, -(MAX_PERIODE_DAGEN - 1));
   const { stoffen: gevolgdeStoffen } = useGevolgdeStoffen();
-  const { itemsPerDag, etiketPerDag, nevoProducten, perDag } = useVoedingsdataPeriode(
-    dagen,
-    trendWeken[0]! < dataVan ? trendWeken[0]! : dataVan,
-    vandaag,
+  const { itemsPerDag, etiketPerDag, nevoProducten, perDag } = useVoedingsdataPeriode(dagen, dataVan, vandaag);
+  const bron = useMemo(
+    () => ({ itemsPerDag, etiketPerDag, nevoProducten }),
+    [itemsPerDag, etiketPerDag, nevoProducten],
   );
 
   const geregistreerd = useMemo(
@@ -249,10 +264,39 @@ function PatroonInhoud() {
     () => bouwGevolgdePeriode(perDag, gevolgdeStoffen, datums, gevolgdeNormen),
     [perDag, gevolgdeStoffen, datums, gevolgdeNormen],
   );
-  const gevolgdTrend = useMemo(
-    () => bouwGevolgdeWeken(perDag, gevolgdeStoffen, trendWeken, gevolgdeNormen),
-    [perDag, gevolgdeStoffen, trendWeken, gevolgdeNormen],
-  );
+
+  const trends = useMemo(() => {
+    if (sectie !== "trend") return { kern: [], gevolgd: [] };
+    const kern = stoffen.rijen
+      .filter((rij) => !verborgenNutrients.has(rij.nutrient))
+      .map((rij) =>
+        bouwStofTrend({
+          stof: rij.nutrient,
+          label: rij.label,
+          unit: rij.unit,
+          soort: "kern",
+          norm: normVoor(normen, rij.nutrient)?.waarde ?? null,
+          nietBewijsbaar: NIET_BEWIJSBAAR[rij.nutrient] ?? null,
+          periodetotaal: rij.nutrient === "omega3",
+          dagen: meetPeriode(rij.nutrient, bron, datums),
+          zonderNormUitleg: ZONDER_NORM_EIWIT,
+        }),
+      );
+    const gevolgd = gevolgdPeriode.map((reeks) =>
+      bouwStofTrend({
+        stof: reeks.veld,
+        label: reeks.label,
+        unit: reeks.unit,
+        soort: "gevolgd",
+        norm: reeks.norm,
+        nietBewijsbaar: null,
+        periodetotaal: false,
+        dagen: meetPeriode(reeks.veld, bron, datums),
+        zonderNormUitleg: zonderNormGevolgd(reeks.veld),
+      }),
+    );
+    return { kern, gevolgd };
+  }, [sectie, stoffen, verborgenNutrients, normen, bron, datums, gevolgdPeriode]);
 
   const supplementen = useMemo((): SupplementWeek => {
     const binnen = new Set(datums);
@@ -282,15 +326,64 @@ function PatroonInhoud() {
     };
   }, [dagen, datums, stoffen]);
 
-  const openRij = openStof ? stoffen.rijen.find((rij) => rij.nutrient === openStof) : undefined;
-  const openBronnen = useMemo(
-    () => (openStof ? bronnenVanStof(dagen, datums, openStof) : []),
-    [dagen, datums, openStof],
+  const openRij = useMemo((): StofDetailGegevens | undefined => {
+    if (!openStof) return undefined;
+    if (isKernstof(openStof)) {
+      const rij = stoffen.rijen.find((r) => r.nutrient === openStof);
+      if (!rij) return undefined;
+      return {
+        stof: rij.nutrient,
+        label: rij.label,
+        unit: rij.unit,
+        lezing: rij.lezing,
+        gemiddeld: rij.gemiddeld,
+        totaal: rij.totaal,
+        aandeel: rij.aandeel,
+        normPeriode: rij.normPeriode,
+        bewijsbaar: rij.bewijsbaar,
+        gedekt: rij.gedekt,
+        norm: normVoor(normen, rij.nutrient),
+        streef: isKernstofMetNorm(rij.nutrient) ? (streefwaarden[rij.nutrient] ?? null) : null,
+        vergelijkingPad: supplementVergelijkingVoor(rij.nutrient),
+        zonderNormUitleg: ZONDER_NORM_EIWIT,
+      };
+    }
+    const veld = VOEDINGSWAARDE_VELDEN.find((v) => v.veld === openStof);
+    if (!veld) return undefined;
+    const punt = bouwGevolgdePeriode(perDag, [openStof], datums, gevolgdeNormen)[0]?.punten[0];
+    const norm = normVoorVeld(gevolgdeNormen, openStof);
+    const gemiddeld = punt?.gemiddeld ?? 0;
+    return {
+      stof: openStof,
+      label: hoofdletter(veld.label),
+      unit: veld.unit,
+      lezing: "per_dag",
+      gemiddeld,
+      totaal: gemiddeld * (punt?.dagen ?? 0),
+      aandeel: punt?.aandeel ?? null,
+      normPeriode: null,
+      bewijsbaar: true,
+      gedekt: null,
+      norm,
+      streef: isStreefStof(openStof) ? (streefwaarden[openStof] ?? null) : null,
+      vergelijkingPad: supplementVergelijkingVoor(openStof),
+      zonderNormUitleg: zonderNormGevolgd(openStof),
+    };
+  }, [openStof, stoffen, normen, streefwaarden, perDag, datums, gevolgdeNormen]);
+  const openMeting = useMemo(
+    () => (openStof && !isKernstof(openStof) ? meetPeriode(openStof, bron, datums) : null),
+    [openStof, bron, datums],
   );
-  const openPerMoment = useMemo(
-    () => (openStof ? stofPerMoment(dagen, datums, openStof) : []),
-    [dagen, datums, openStof],
-  );
+  const openBronnen = useMemo(() => {
+    if (!openStof) return [];
+    if (isKernstof(openStof)) return bronnenVanStof(dagen, datums, openStof);
+    return openMeting ? bronnenUitMeting(openMeting, openRij?.unit ?? "") : [];
+  }, [dagen, datums, openStof, openMeting, openRij?.unit]);
+  const openPerMoment = useMemo(() => {
+    if (!openStof) return [];
+    if (isKernstof(openStof)) return stofPerMoment(dagen, datums, openStof);
+    return openMeting ? perMomentUitMeting(openMeting) : [];
+  }, [dagen, datums, openStof, openMeting]);
 
   const gevuldeDagen = useMemo(
     () => dagen.filter((dag) => (dag.items?.length ?? 0) > 0).length,
@@ -331,10 +424,11 @@ function PatroonInhoud() {
     });
   };
 
-  const openStofDetail = (nutrient: NutrientId) => {
+  const openStofDetail = (nutrient: PatroonStof, bronSectie: PatroonSectie = sectie) => {
+    setSectie("stof");
     setOpenStof(nutrient);
-    bewaarPatroonStand({ sectie, stof: nutrient });
-    trackEvent("nutrition_patroon_stof_geopend", { nutrient });
+    bewaarPatroonStand({ sectie: "stof", stof: nutrient });
+    trackEvent("nutrition_patroon_stof_geopend", { nutrient, soort: isKernstof(nutrient) ? "kern" : "gevolgd", sectie: bronSectie });
     clarityTag("nutrition_patroon_stof", nutrient);
   };
 
@@ -400,7 +494,7 @@ function PatroonInhoud() {
               />
 
               <div className="mt-3">
-                <PatroonGevolgdWeek reeksen={gevolgdPeriode} />
+                <PatroonGevolgdWeek reeksen={gevolgdPeriode} onOpen={(stof) => openStofDetail(stof)} />
                 <button
                   type="button"
                   aria-expanded={kiezerOpen}
@@ -455,34 +549,28 @@ function PatroonInhoud() {
         </>
       ) : (
         <>
+          {periodeKiezer}
           <div className="vd-chiprij" role="group" aria-label="Voedingsstoffen tonen of verbergen">
-            {reeksen.map((reeks) => (
+            {stoffen.rijen.map((rij) => (
               <button
-                key={reeks.nutrient}
+                key={rij.nutrient}
                 type="button"
                 className="vd-chip"
-                aria-pressed={!verborgenNutrients.has(reeks.nutrient)}
-                onClick={() => toggleNutrient(reeks.nutrient)}
+                aria-pressed={!verborgenNutrients.has(rij.nutrient)}
+                onClick={() => toggleNutrient(rij.nutrient)}
               >
-                {reeks.label}
+                {rij.label}
               </button>
             ))}
           </div>
-          <p className="vd-note">
-            Je weekgemiddelde per stof, de laatste zes weken. Tik op een week
-            voor het getal. Een streepje betekent dat je die week niets
-            registreerde — geen nul, want dat zou een meting beweren die er
-            niet is.
-          </p>
           <PatroonTrend
-            trends={trends.filter((trend) => !verborgenNutrients.has(trend.nutrient))}
-            gevolgd={gevolgdTrend}
-            huidigeWeek={huidigeWeek}
+            kernstoffen={trends.kern}
+            gevolgd={trends.gevolgd}
+            onOpen={(stof) => openStofDetail(stof, "trend")}
           />
-          {trends.length > 0 &&
-          trends.every((trend) => verborgenNutrients.has(trend.nutrient)) ? (
+          {stoffen.rijen.length > 0 && stoffen.rijen.every((rij) => verborgenNutrients.has(rij.nutrient)) ? (
             <p className="vd-note">
-              Alle stoffen staan uit. Zet er hierboven minstens één aan om een trend te zien.
+              Alle kernstoffen staan uit. Zet er hierboven minstens één aan om een trend te zien.
             </p>
           ) : null}
         </>

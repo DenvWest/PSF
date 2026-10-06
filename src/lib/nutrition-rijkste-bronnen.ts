@@ -117,6 +117,14 @@ function waardeIn(stand: RijksteStand, per100g: number, portieGram: number, kcal
   return (per100g / kcal) * 100;
 }
 
+/** Wat de standaardportie van een catalogusregel van deze stof levert, of null zonder gehalte. */
+export function gehaltePerPortie(entry: CatalogEntry, stof: RijksteStof): { value: number; unit: string } | null {
+  const gehalte = gehalteVoor(entry, stof);
+  const portie = entry.porties[0];
+  if (!gehalte || !portie) return null;
+  return { value: (gehalte.value * portie.grams) / 100, unit: gehalte.unit };
+}
+
 export function rijksteBronnen(stof: RijksteStof, stand: RijksteStand, limiet = 10): RijksteBron[] {
   const besteperGroep = new Map<string, RijksteBron>();
 

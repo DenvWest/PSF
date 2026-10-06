@@ -1,4 +1,6 @@
-import type { NutrientId } from "@/data/nutrition/intake-reference";
+import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
+import type { PatroonStof } from "@/lib/nutrition-stof-meting";
+import { VOEDINGSWAARDE_VELDEN } from "@/lib/nutrition-voedingswaarde";
 
 /**
  * Waar je in Je patroon stond, in de URL: sectie, open stof, zoekterm en
@@ -16,13 +18,14 @@ export type PatroonUrlPeriode = "vandaag" | "7" | "30";
 
 export type PatroonUrlStand = {
   sectie: PatroonUrlSectie | null;
-  stof: NutrientId | null;
+  stof: PatroonStof | null;
   zoek: string;
   periode: PatroonUrlPeriode | null;
 };
 
 const SECTIES: ReadonlySet<string> = new Set(["maaltijden", "stof", "trend"]);
-const STOFFEN: ReadonlySet<string> = new Set(["protein", "magnesium", "zinc", "omega3", "vitamin_d"]);
+/** Kernstoffen en de stoffen van de voedingswaardetabel: alles wat een stof-detail kan openen. */
+const STOFFEN: ReadonlySet<string> = new Set<string>([...NUTRIENT_ORDER, ...VOEDINGSWAARDE_VELDEN.map((v) => v.veld)]);
 const PERIODES: ReadonlySet<string> = new Set(["vandaag", "7", "30"]);
 const MAX_ZOEK = 60;
 
@@ -33,7 +36,7 @@ export function leesPatroonUrl(search: string): PatroonUrlStand {
   const periode = params.get("periode");
   return {
     sectie: sectie && SECTIES.has(sectie) ? (sectie as PatroonUrlSectie) : null,
-    stof: stof && STOFFEN.has(stof) ? (stof as NutrientId) : null,
+    stof: stof && STOFFEN.has(stof) ? (stof as PatroonStof) : null,
     zoek: (params.get("zoek") ?? "").slice(0, MAX_ZOEK),
     periode: periode && PERIODES.has(periode) ? (periode as PatroonUrlPeriode) : null,
   };

@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { searchCatalog } from "@/data/nutrition/food-catalog";
-import type { NutrientId } from "@/data/nutrition/intake-reference";
+import { catalogEntry, searchCatalog } from "@/data/nutrition/food-catalog";
 import { searchSupplementCatalog } from "@/data/nutrition/supplement-catalog";
 import type { Voedingswijze } from "@/lib/account-kernstof-profiel";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
@@ -13,7 +12,13 @@ import { trackEvent } from "@/lib/ga4";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { bewaarPatroonStand } from "@/lib/patroon-url";
 import { weergaveVoorStandaardPortie, type DagboekItemBron } from "@/lib/nutrition-dagboek-items";
-import { pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
+import {
+  gehaltePerPortie,
+  isInformatieveStof,
+  pastBijVoedingswijze,
+  rijksteBronnen,
+  type RijksteStof,
+} from "@/lib/nutrition-rijkste-bronnen";
 import { NUTRIENT_HUB_CATEGORY } from "@/lib/nutrition-result-rows";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 import { toBase } from "@/lib/nutrition-units";
@@ -65,10 +70,19 @@ function rijVoor(
   bron: DagboekItemBron,
   key: string,
   naam: string,
-  nutrient: NutrientId,
+  nutrient: RijksteStof,
   unit: string,
   norm: number | null,
 ): Rij {
+  const leeg = { bron, key, naam, portie: "", hubHref: null, hubLabel: null };
+  if (isInformatieveStof(nutrient)) {
+    // Gevolgde stoffen: alleen voeding draagt ze, gelezen uit NEVO.
+    const entry = bron === "voeding" ? catalogEntry(key) : undefined;
+    const gehalte = entry ? gehaltePerPortie(entry, nutrient) : null;
+    if (!gehalte) return { ...leeg, levert: "n.o.", aandeel: null };
+    if (gehalte.value === 0) return { ...leeg, levert: "0", aandeel: 0 };
+    return { ...leeg, levert: `${hoeveelheid(gehalte.value)} ${unit}`, aandeel: norm ? gehalte.value / norm : null };
+  }
   const weergave = weergaveVoorStandaardPortie(bron, key, nutrient);
   let levert = "n.o.";
   let aandeel: number | null = null;
@@ -83,7 +97,7 @@ function rijVoor(
   } else if (weergave.soort === "spoor") {
     levert = "spoor";
   }
-  return { bron, key, naam, portie: "", levert, aandeel, hubHref: null, hubLabel: null };
+  return { ...leeg, levert, aandeel };
 }
 
 export default function PatroonBronZoek({
@@ -95,7 +109,8 @@ export default function PatroonBronZoek({
   startZoek = "",
   standaardMoment = "ontbijt",
 }: {
-  nutrient: NutrientId;
+  /** Een kernstof of een gevolgde stof met NEVO-gehalte. */
+  nutrient: RijksteStof;
   label: string;
   unit: string;
   norm: number | null;
@@ -159,7 +174,8 @@ export default function PatroonBronZoek({
       ...rijVoor("voeding", entry.key, entry.labelNl, nutrient, unit, norm),
       portie: entry.porties[0]?.labelNl ?? "",
     }));
-    const supplementen = searchSupplementCatalog(term, MAX_SUPPLEMENT).map((entry) => {
+    // Supplementen in de catalogus dragen alleen kernstoffen.
+    const supplementen = (isInformatieveStof(nutrient) ? [] : searchSupplementCatalog(term, MAX_SUPPLEMENT)).map((entry) => {
       const hub = NUTRIENT_HUB_CATEGORY[entry.nutrient];
       return {
         ...rijVoor("supplement", entry.key, entry.labelNl, nutrient, unit, norm),
@@ -261,7 +277,7 @@ export default function PatroonBronZoek({
             onBlur={() => {
               if (term) trackEvent("nutrition_patroon_bron_gezocht", { nutrient, treffers: treffers.length });
             }}
-            placeholder="Zoek een product of supplement"
+            placeholder={isInformatieveStof(nutrient) ? "Zoek een product" : "Zoek een product of supplement"}
             className="w-full rounded-lg border border-[var(--vd-line)] bg-[var(--vd-surface)] px-3 py-2 text-[13px] text-[var(--vd-ink)] placeholder:text-[var(--vd-ink-4)]"
           />
         </label>

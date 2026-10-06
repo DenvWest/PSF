@@ -15,9 +15,10 @@ import type { WeekRij } from "@/lib/nutrition-weekoverzicht";
  * - **Macro's** tegen je eigen doel, als neutraal restgetal ("nog 300 kcal").
  *   Geen percentage en geen kleur: het macro-besluit (§1 Laag B) verbiedt een
  *   weekscore op macro's, en het doel is van jou, niet van het systeem.
- * - **Kernstoffen** tegen je norm: hoeveel van de meetbare stoffen gemiddeld
- *   gehaald zijn. Zink en vitamine D tellen niet mee in de noemer; een dagboek
- *   kan ze niet aantonen.
+ * - **Kernstoffen** tegen je norm: hoeveel van álle kernstoffen gehaald zijn,
+ *   en per groep waarom de rest niet: nog niet gehaald, met een dagboek niet
+ *   aan te tonen (zink, vitamine D), of zonder vaste norm (eiwit). Tot 6 okt
+ *   stond hier "1 van 2 meetbare", wat las alsof er twee kernstoffen waren.
  * - **Supplementen**: op hoeveel dagen, en welk deel van elke kernstof eruit
  *   kwam. Een supplement dekt een tekort net zo goed als voeding; dit maakt
  *   alleen zichtbaar waar je dekking vandaan komt.
@@ -30,6 +31,10 @@ export type SupplementWeek = {
   aandeelPerStof: { nutrient: string; label: string; aandeel: number }[];
 };
 
+function lijst(rijen: readonly WeekRij[]): string {
+  return rijen.map((rij) => rij.label.toLowerCase()).join(", ");
+}
+
 export default function PatroonDoelenKaart({
   macro,
   kernstoffen,
@@ -41,8 +46,10 @@ export default function PatroonDoelenKaart({
   kernstoffen: readonly WeekRij[];
   supplementen: SupplementWeek;
 }) {
-  const meetbaar = kernstoffen.filter((rij) => rij.bewijsbaar && rij.referentie !== null);
-  const gehaald = meetbaar.filter((rij) => rij.gedekt === true);
+  const gehaald = kernstoffen.filter((rij) => rij.bewijsbaar && rij.referentie !== null && rij.gedekt === true);
+  const nogNiet = kernstoffen.filter((rij) => rij.bewijsbaar && rij.referentie !== null && rij.gedekt !== true);
+  const nietAanTeTonen = kernstoffen.filter((rij) => !rij.bewijsbaar);
+  const zonderNorm = kernstoffen.filter((rij) => rij.bewijsbaar && rij.referentie === null);
   const heeftMacroDoel = macro.rijen.some((rij) => rij.doel !== null);
   const leeg = macro.dagenGeregistreerd === 0;
 
@@ -96,11 +103,19 @@ export default function PatroonDoelenKaart({
           <div className="mt-3 border-t border-[var(--vd-line)] pt-3">
             <p className="m-0 text-[0.8125rem] text-[var(--vd-ink)]">
               <b>
-                {gehaald.length} van {meetbaar.length}
+                {gehaald.length} van {kernstoffen.length}
               </b>{" "}
-              meetbare kernstoffen op je norm
-              {gehaald.length > 0 ? ` (${gehaald.map((rij) => rij.label.toLowerCase()).join(", ")})` : ""}.
+              kernstoffen op je norm{gehaald.length > 0 ? ` (${lijst(gehaald)})` : ""}.
             </p>
+            <ul className="m-0 mt-1 flex list-none flex-col gap-0.5 p-0 text-[0.75rem] text-[var(--vd-ink-3)]">
+              {nogNiet.length > 0 ? <li>Nog niet: {lijst(nogNiet)}.</li> : null}
+              {nietAanTeTonen.length > 0 ? (
+                <li>Met een dagboek niet aan te tonen: {lijst(nietAanTeTonen)}.</li>
+              ) : null}
+              {zonderNorm.length > 0 ? (
+                <li>Zonder vaste norm: {lijst(zonderNorm)} rekent met je eigen doel.</li>
+              ) : null}
+            </ul>
           </div>
 
           <div className="mt-3 border-t border-[var(--vd-line)] pt-3">
