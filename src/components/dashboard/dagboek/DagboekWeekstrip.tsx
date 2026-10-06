@@ -49,6 +49,19 @@ function langeDatum(datum: string): string {
   });
 }
 
+function korteDatum(datum: string): string {
+  return new Date(`${datum}T00:00:00Z`).toLocaleDateString("nl-NL", {
+    timeZone: "UTC",
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+}
+
+function hoofdletter(tekst: string): string {
+  return tekst.charAt(0).toUpperCase() + tekst.slice(1);
+}
+
 const RANDKNOP =
   "flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-white/12 bg-white/[0.03] px-3 text-[12px] font-semibold text-[var(--vd-ink-2)] transition-colors hover:border-white/30 hover:text-[var(--vd-ink)] disabled:cursor-default disabled:opacity-40";
 
@@ -80,20 +93,29 @@ export default function DagboekWeekstrip({
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-center gap-2">
+    <div className="@container flex flex-col gap-3">
+      <div className="flex items-center gap-2">
         <div className="flex min-w-0 flex-1 items-center gap-2">
           <button type="button" className={PIJL} onClick={() => stap(-1)} disabled={busy} aria-label="Vorige dag">
             ‹
           </button>
           <h2
-            className="m-0 min-w-0 truncate font-serif text-[clamp(17px,2.2vw,21px)] font-normal capitalize leading-tight text-[var(--vd-ink)]"
+            className="m-0 min-w-0 truncate font-serif text-[18px] font-normal leading-tight text-[var(--vd-ink)] @[460px]:text-[21px]"
             aria-live="polite"
           >
-            {isVandaag ? "Vandaag" : langeDatum(geselecteerd)}
             {isVandaag ? (
-              <span className="ml-2 font-sans text-[12px] normal-case text-[var(--vd-ink-3)]">{langeDatum(geselecteerd)}</span>
-            ) : null}
+              <>
+                Vandaag
+                <span className="ml-2 hidden font-sans text-[12px] text-[var(--vd-ink-3)] @[460px]:inline">
+                  {langeDatum(geselecteerd)}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="@[460px]:hidden">{hoofdletter(korteDatum(geselecteerd))}</span>
+                <span className="hidden @[460px]:inline">{hoofdletter(langeDatum(geselecteerd))}</span>
+              </>
+            )}
           </h2>
           <button
             type="button"
@@ -105,7 +127,7 @@ export default function DagboekWeekstrip({
             ›
           </button>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1.5">
           {!isVandaag ? (
             <button type="button" className={RANDKNOP} onClick={() => onSelecteer(vandaag, "vandaag")} disabled={busy}>
               Vandaag

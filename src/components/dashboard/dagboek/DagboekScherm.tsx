@@ -840,7 +840,7 @@ export default function DagboekScherm({
 
   return (
     <div ref={blokRef} className="@container">
-    <div className="grid gap-4 [grid-template-areas:'strip'_'tabs'_'ring'_'inhoud'] @[900px]:grid-cols-[minmax(320px,400px)_minmax(0,1fr)] @[900px]:gap-x-10 @[900px]:[grid-template-areas:'strip_strip'_'tabs_tabs'_'ring_inhoud']">
+    <div className="grid gap-4 [grid-template-areas:'strip'_'tabs'_'ring'_'inhoud'] @[900px]:grid-cols-[minmax(320px,400px)_minmax(0,1fr)] @[900px]:grid-rows-[auto_auto_1fr] @[900px]:gap-x-10 @[900px]:[grid-template-areas:'tabs_tabs'_'ring_strip'_'ring_inhoud']">
 
       <div className="flex min-w-0 flex-col gap-4 [grid-area:ring] @[900px]:sticky @[900px]:top-4 @[900px]:self-start">
       {dagboekSectie === "macros" ? (

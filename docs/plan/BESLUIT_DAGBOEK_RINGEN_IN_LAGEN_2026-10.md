@@ -89,3 +89,11 @@ GA4: `nutrition_dagboek_krans_gekozen` (nieuw; params `ring`: `kern` | `gevolgd`
 2. **Alle gevolgde stoffen onder de krans.** De beperking tot vier ("Toon alle n") vervalt: de rijen zijn compact genoeg.
 3. **Datumkop in plaats van "Je dag".** Bovenaan staat de dag zelf ("Vandaag · dinsdag 6 oktober" of "maandag 5 oktober"), met ‹ › per **dag** (nooit voorbij vandaag), "Vandaag" en "Kies" (met kalendericoon) als rustige randknoppen. De week staat eronder als zeven rondjes: gekozen = gevuld, vandaag = rand, stip = ingevuld, oranje stip = meetdag. Toekomstige dagen zijn niet te kiezen. De lange meetdag-uitleg wordt een korte legenda (met de volledige tekst als tooltip).
 4. **Volgorde op mobiel:** datum, tabs, ring, inhoud. Tabs staan nu boven de ring omdat ze bepalen welke ring je ziet; op brede schermen staat de ring links naast de inhoud.
+
+## Aanvulling 6 oktober 2026 (5) — dagen boven de inhoud, mobiel nagelopen
+
+- **Op brede schermen staan datum en dagen bovenaan de rechterkolom**, direct boven wat erover gaat (eetmomenten, "Alles wat je at", de weektabel of het stof-detail). De tabs staan over de volle breedte, de ring links over twee rijen. Op mobiel blijft de datum bovenaan: datum, tabs, ring, inhoud.
+- **Op 375 px in de browser nagelopen** (Chrome-emulatie): datumkop, rondjes, tabs, krans, legenda en de tabel per maaltijd passen. Daarbij aangepast:
+  - op smalle schermen (blok < 460 px) een korte datum ("Ma 5 okt") in plaats van twee regels; Nederlandse maandnamen zonder hoofdletter;
+  - de buitenring tekent een gevolgde stof zonder registratie als egaal leeg spoor; **gestippeld blijft alleen voor stoffen zonder norm** (en voor zink en vitamine D in de binnenring), nu als dunne stippellijn in plaats van dikke kralen;
+  - de laatste kolom van de tabel per maaltijd krijgt ruimte tot de rand.

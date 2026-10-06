@@ -32,7 +32,7 @@ import { useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen
  * ## Kleur is identiteit, geen oordeel
  *
  * Status zit in de vulling en het gestippelde spoor: zink en vitamine D staan
- * in {@link NIET_BEWIJSBAAR}, een stof zonder RI vult niet. De buitenring krijgt
+ * in {@link NIET_BEWIJSBAAR}, een stof zonder norm vult niet en krijgt een gestippeld spoor. De buitenring krijgt
  * nooit een stofkleur, zodat de informatielaag niet als tekort leest.
  *
  * ## Telling met namen
@@ -166,10 +166,10 @@ function Segment({
       <path
         d={d}
         fill="none"
-        stroke={spoor}
-        strokeWidth={dikte}
+        stroke={gestippeld ? "rgba(255,255,255,0.22)" : spoor}
+        strokeWidth={gestippeld ? 2.5 : dikte}
         strokeLinecap="round"
-        strokeDasharray={gestippeld ? "2 7" : undefined}
+        strokeDasharray={gestippeld ? "0.1 6" : undefined}
       />
       {vol > 0 ? (
         <path
@@ -375,7 +375,7 @@ export default function DagboekKrans({
                   kleur="var(--vd-ink-2)"
                   spoor="rgba(255,255,255,0.12)"
                   vol={rij.aandeel === null ? 0 : Math.min(rij.aandeel, 1)}
-                  gestippeld={rij.aandeel === null}
+                  gestippeld={rij.norm === null}
                   gedimd={keuze !== null && !(keuze.ring === "gevolgd" && keuze.veld === rij.veld)}
                   dekking={1}
                   getekend={getekend}

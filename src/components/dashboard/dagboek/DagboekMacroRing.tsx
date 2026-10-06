@@ -173,9 +173,9 @@ export default function DagboekMacroRing({
                 <th scope="col" className="px-2 py-1 text-left font-semibold">
                   <span className="sr-only">Maaltijd</span>
                 </th>
-                <th scope="col" className="px-1 py-1 text-right font-semibold">kcal</th>
+                <th scope="col" className="px-1 py-1 text-right font-semibold last:pr-2">kcal</th>
                 {segmenten.map((segment) => (
-                  <th key={segment.key} scope="col" className="px-1 py-1 text-right font-semibold">
+                  <th key={segment.key} scope="col" className="px-1 py-1 text-right font-semibold last:pr-2">
                     <span aria-hidden className="mr-1 inline-block h-1.5 w-1.5 rounded-full align-middle" style={{ background: segment.kleur }} />
                     {segment.label.slice(0, 1)}
                     <span className="sr-only">{segment.label.slice(1)}</span>
@@ -198,7 +198,7 @@ export default function DagboekMacroRing({
                     </th>
                     <td className="px-1 py-1.5 text-right tabular-nums">{leeg ? "—" : Math.round(maaltijd.kcal ?? 0)}</td>
                     {maaltijd.grammen.map((g, index) => (
-                      <td key={segmenten[index]?.key ?? index} className="px-1 py-1.5 text-right tabular-nums">
+                      <td key={segmenten[index]?.key ?? index} className="px-1 py-1.5 text-right tabular-nums last:pr-2">
                         {leeg ? "—" : gram(g)}
                       </td>
                     ))}
