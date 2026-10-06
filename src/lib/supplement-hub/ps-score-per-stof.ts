@@ -5,7 +5,7 @@ import { formatScore, getHubProducts } from "@/lib/supplement-hub/product-catalo
 import { getScoreBand } from "@/lib/supplement-hub/score-presentation";
 
 /**
- * De hoogst scorende supplementen van één stof, compact genoeg voor Keuze →
+ * De supplementen van één stof met hun PS-Score, compact genoeg voor Keuze →
  * Vergelijken. De PS-Score is een productscore (0–100, kwaliteit van het
  * product), nooit een score voor iemands voeding
  * (`docs/plan/BESLUIT_KEUZE_VERGELIJKEN_2026-10.md` §3).
@@ -24,10 +24,31 @@ export type PsScoreProduct = {
   href: string;
 };
 
-export function psScoreTopVoorStof(nutrient: NutrientId, limiet = 3): PsScoreProduct[] {
+/** De catalogus op `/supplementen`, gefilterd op deze stof. */
+export function psScoreCatalogusHref(nutrient: NutrientId): string {
+  return buildSupplementHubHref(NUTRIENT_HUB_CATEGORY[nutrient]);
+}
+
+/** Hoeveel producten de catalogus voor deze stof heeft. */
+export function psScoreAantalVoorStof(nutrient: NutrientId): number {
   const categorie = NUTRIENT_HUB_CATEGORY[nutrient];
-  return getHubProducts()
-    .filter((product) => product.category === categorie)
+  return getHubProducts().filter((product) => product.category === categorie).length;
+}
+
+/**
+ * Per vorm (bisglycinaat, citraat, whey isolaat, …) het product met de hoogste
+ * PS-Score, hoogste vorm eerst. Zo zie je in één oogopslag welke vormen er
+ * zijn, zonder de vergelijking op `/beste/*` of de catalogus te herhalen.
+ */
+export function psScoreBestePerVorm(nutrient: NutrientId, limiet = 4): PsScoreProduct[] {
+  const categorie = NUTRIENT_HUB_CATEGORY[nutrient];
+  const besteVanVorm = new Map<string, ReturnType<typeof getHubProducts>[number]>();
+  for (const product of getHubProducts()) {
+    if (product.category !== categorie) continue;
+    const huidige = besteVanVorm.get(product.vormLabel);
+    if (!huidige || product.score.total > huidige.score.total) besteVanVorm.set(product.vormLabel, product);
+  }
+  return [...besteVanVorm.values()]
     .sort((a, b) => b.score.total - a.score.total)
     .slice(0, limiet)
     .map((product) => ({
@@ -38,15 +59,4 @@ export function psScoreTopVoorStof(nutrient: NutrientId, limiet = 3): PsScorePro
       vorm: product.vormLabel,
       href: product.href,
     }));
-}
-
-/** De catalogus op `/supplementen`, gefilterd op deze stof. */
-export function psScoreCatalogusHref(nutrient: NutrientId): string {
-  return buildSupplementHubHref(NUTRIENT_HUB_CATEGORY[nutrient]);
-}
-
-/** Hoeveel producten de catalogus voor deze stof heeft. */
-export function psScoreAantalVoorStof(nutrient: NutrientId): number {
-  const categorie = NUTRIENT_HUB_CATEGORY[nutrient];
-  return getHubProducts().filter((product) => product.category === categorie).length;
 }

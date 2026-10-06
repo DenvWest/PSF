@@ -4,17 +4,14 @@ import {
   NUTRITION_ROUTE_CHOICES,
   ROUTE_STATUS_COLOR,
   ROUTE_STATUS_LABEL,
-  isRouteChoiceAllowed,
   nutritionRouteChoiceId,
   parseNutritionRouteChoice,
   resolveNutritionRouteChoice,
-  routeChoiceBlockedReason,
   routeChoiceConfirmation,
   routeChoiceFavoriteContext,
   routeChoiceFavoriteTitle,
   routeMatchesQuery,
   routeNeedsChoice,
-  routesWithOpenChoice,
 } from "@/lib/nutrition-route-choice";
 import {
   buildNutrientRouteStatus,
@@ -80,49 +77,7 @@ describe("id-vorm", () => {
   });
 });
 
-describe("wat mag hij kiezen", () => {
-  it("laat het bord altijd toe, ook met een dichte poort", () => {
-    // Je bord meer laten doen is nooit een verkeerd antwoord — en het is de
-    // enige keuze die zonder poort al iets oplevert.
-    const status = buildNutrientRouteStatus("protein", report({ proteinMeals: 1 }));
-    expect(isRouteChoiceAllowed("bord", status, false)).toBe(true);
-    expect(isRouteChoiceAllowed("bord", status, true)).toBe(true);
-  });
-
-  it("houdt het potje dicht zolang de laag-6-poort dicht is", () => {
-    // Zonder deze regel is de keuzeknop een omweg om de poort heen: precies
-    // de omkering die "eerst je tafel, dan het potje" moet voorkomen.
-    const status = buildNutrientRouteStatus("omega3", report({}, { preference: "vegan" }));
-    expect(status.supplementDoorOpen).toBe(true);
-    expect(isRouteChoiceAllowed("potje", status, false)).toBe(false);
-    expect(isRouteChoiceAllowed("beide", status, false)).toBe(false);
-    expect(isRouteChoiceAllowed("potje", status, true)).toBe(true);
-  });
-
-  it("houdt het potje dicht op een gat dat je met eten dicht, ook met open poort", () => {
-    const status = buildNutrientRouteStatus("protein", report({ proteinMeals: 1 }));
-    expect(status.supplementDoorOpen).toBe(false);
-    expect(isRouteChoiceAllowed("potje", status, true)).toBe(false);
-  });
-
-  it("noemt de poort als reden zolang die dicht is, daarna de stof zelf", () => {
-    const status = buildNutrientRouteStatus("protein", report({ proteinMeals: 1 }));
-    expect(routeChoiceBlockedReason(status, false)).toContain("voedingsbasis");
-    expect(routeChoiceBlockedReason(status, true)).toBe(status.doorReasonNl);
-  });
-});
-
 describe("wat er te kiezen valt", () => {
-  it("laat een route met dekking en een ongemeten route buiten de lijst", () => {
-    const covered = buildNutrientRouteStatus("protein", report({ proteinMeals: 3 }));
-    const gap = buildNutrientRouteStatus("protein", report({ proteinMeals: 0 }));
-    const unmeasured = buildNutrientRouteStatus("zinc", {
-      ...report(),
-      sliders: { ...report().sliders, meatLegumes: Number.NaN },
-    });
-    expect(routesWithOpenChoice([covered, gap, unmeasured])).toEqual([gap]);
-  });
-
   it("zegt dat een stof nog een keuze open heeft tot hij er een maakte", () => {
     const gap = buildNutrientRouteStatus("protein", report({ proteinMeals: 0 }));
     expect(routeNeedsChoice(gap, [])).toBe(true);

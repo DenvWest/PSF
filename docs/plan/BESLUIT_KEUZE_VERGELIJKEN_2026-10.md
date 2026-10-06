@@ -41,3 +41,27 @@ Op de vraag wat "PSF-score" betekent: **de PS-Score van supplementen** (0–100,
 ## Open
 
 - Een korte uitleg van de PS-Score-opbouw in het dashboard (nu alleen de zin en de link naar de catalogus).
+
+---
+
+## Herziening 6 oktober (tweede ronde, na Dennis' review)
+
+Dennis: "erg lelijk, geen goed verband zoals dagboek en patroon hebben". De hero was nog de oude vorm (intro + spiegel "Gratis · laag 1–5"), de keuze was een rij pillen met slotjes ("Uit een supplement" en "Allebei" dicht), en de stand kwam uit check-antwoorden ("jij: 1× per dag") in plaats van uit het dagboek.
+
+### Besluiten (keuze Dennis)
+
+1. **De poort komt uit je dagboek, niet meer uit de check-ladder (laag 6).** `src/lib/keuze-stof-stand.ts` leest per stof het 7-dagenvenster van het tekortsysteem (terugval 30 dagen, minimaal 3 geregistreerde dagen):
+   - `op_koers` (ondergrens haalt de norm): de supplementkant blijft rustig en ingeklapt ("Je eten haalt je norm. Een supplement voegt hier weinig toe."), maar is te openen en te kiezen;
+   - `ruimte`: de supplementkant staat open;
+   - `niet_meetbaar` (zink, vitamine D) en `onbekend`: beide kanten open, met de reden.
+   **Geen slotjes meer.** Dit herziet besluit 4 hierboven ("de poort van het voedingslogboek blijft gelden") voor Keuze. De asymmetrie-regel blijft: nooit "tekort", altijd "minstens wat je binnenkreeg".
+2. **Twee kolommen per stof:** links "Uit je eten" (sage), rechts "Uit een supplement" (blauw, `--vd-accent-2`) — dezelfde twee accenten als de dekkingscirkels in het dagboek.
+   - Eten: jouw bronnen van de laatste 7 dagen (aandeel), de maaltijd met de meeste ruimte, drie rijkste bronnen met ＋ naar het dagboek (op die maaltijd), "Meer in Je patroon →".
+   - Supplement: per vorm (bisglycinaat, citraat, whey-isolaat, …) het product met de hoogste PS-Score, met band; "Alle N met PS-Score →" (`/supplementen?categorie=`) en "Vergelijk op prijs →" (`/beste/*`).
+3. **"Allebei" is geen aparte knop meer:** elke kaart heeft "Kies eten" / "Kies supplement"; beide gekozen = allebei. Opslag ongewijzigd (`voeding-route-<stof>-<bord|potje|beide>` in `account_favorites`).
+4. **Weg op voeding:** de oude intro en de spiegel ("Gratis · laag 1–5"). Daarvoor: een kop "Laatste 7 dagen · uit je dagboek — Je eten naast een supplement" met "x van y meetbare kernstoffen op je norm · … heeft ruimte".
+5. **Blijft (keuze Dennis):** het zoekveld + stofchips (stip = stand: sage op koers, amber ruimte, grijs niet te meten), en "Oordeel per supplement · uit je check" onder de vergelijking.
+
+Opgeruimd: het PS-Score-blok in `NutrientRouteChoiceCard` (eerste ronde) en `psScoreTopVoorStof`; de routekaart blijft voor Kompas.
+
+**Meting:** `keuze_stof_geopend` {surface, nutrient, stand}, `keuze_bron_naar_dagboek` {nutrient, moment}, `keuze_naar_patroon_stof` {nutrient}, `keuze_vergelijken_ps_score_click` {…, doel: product|catalogus|vergelijking, stand}; bestaand: `nutrition_route_choice` (nu ook `geen` bij uitzetten), `nutrition_logboek_search`.

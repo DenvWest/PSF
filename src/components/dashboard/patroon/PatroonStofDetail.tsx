@@ -9,7 +9,7 @@ import { normLabel, normVoor } from "@/lib/nutrition-normen";
 import { periodeLabel, type Periode } from "@/lib/nutrition-periode";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { isKernstofMetNorm } from "@/lib/account-kernstof-profiel";
-import type { StofBron, StofPerMoment } from "@/lib/nutrition-stof-bronnen";
+import { ruimteBij, type StofBron, type StofPerMoment } from "@/lib/nutrition-stof-bronnen";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 import type { WeekRij } from "@/lib/nutrition-weekoverzicht";
 import { useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
@@ -60,18 +60,6 @@ function wanneerTekst(momenten: StofBron["momenten"], eenDag: boolean, labels: R
     );
   const rest = momenten.length - MAX_MOMENTEN;
   return `${delen.join(" · ")}${rest > 0 ? ` +${rest}` : ""}`;
-}
-
-/**
- * De maaltijd met het kleinste aandeel, als daar ruimte zit: alleen tussen
- * maaltijden die je registreerde, en alleen als er minstens twee zijn. Een
- * niet-geregistreerde maaltijd is onbekend, geen lege maaltijd.
- */
-function ruimteBij(perMoment: readonly StofPerMoment[], totaal: number): StofPerMoment | null {
-  const geregistreerd = perMoment.filter((m) => m.keer > 0);
-  if (totaal <= 0 || geregistreerd.length < 2) return null;
-  const kleinste = geregistreerd.reduce((min, m) => (m.totaal < min.totaal ? m : min));
-  return kleinste.totaal / totaal < 0.15 ? kleinste : null;
 }
 
 export default function PatroonStofDetail({

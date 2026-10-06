@@ -83,42 +83,6 @@ export function resolveNutritionRouteChoice(
   return null;
 }
 
-/**
- * Mag hij deze route kiezen?
- *
- * `bord` mag altijd — je bord meer laten doen is nooit een verkeerd antwoord,
- * ook niet als de route al staat. `potje` en `beide` hangen aan dezelfde deur
- * als de vergelijk-link: alleen waar het bord de stof
- * aantoonbaar niet meer kan leveren. Dat is geen dubbele regel maar dezelfde,
- * en hij hóórt hier te staan — anders is de keuzeknop een omweg om de
- * laag-6-poort heen.
- */
-export function isRouteChoiceAllowed(
-  choice: NutritionRouteChoice,
-  status: NutrientRouteStatus,
-  gateOpen: boolean,
-): boolean {
-  if (choice === "bord") {
-    return true;
-  }
-  return gateOpen && status.supplementDoorOpen;
-}
-
-/**
- * Waarom een dichte keuze dicht is, in de bewoording van de stof zelf. Een
- * uitgegrijsde knop zonder reden leest als een storing; met reden leest hij
- * als een oordeel — en dat is het ook.
- */
-export function routeChoiceBlockedReason(
-  status: NutrientRouteStatus,
-  gateOpen: boolean,
-): string {
-  if (!gateOpen) {
-    return "Eerst je voedingsbasis. Zolang die niet staat, vergelijken we nog niets.";
-  }
-  return status.doorReasonNl;
-}
-
 const CHOICE_LABEL: Record<NutritionRouteChoice, string> = {
   bord: "Uit mijn eten",
   potje: "Uit een supplement",
@@ -187,15 +151,6 @@ export function routeNeedsChoice(
     return false;
   }
   return resolveNutritionRouteChoice(status.nutrient, items) === null;
-}
-
-const UNSET: readonly RouteStatus[] = ["covered", "unmeasured"];
-
-/** Alleen de stoffen waar een keuze te maken valt, in de volgorde die binnenkomt. */
-export function routesWithOpenChoice(
-  statuses: readonly NutrientRouteStatus[],
-): NutrientRouteStatus[] {
-  return statuses.filter((status) => !UNSET.includes(status.status));
 }
 
 /**
