@@ -6,6 +6,7 @@ import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import * as Icons from "@/components/app/icons";
 import DagboekProductLevert from "@/components/dashboard/dagboek/DagboekProductLevert";
 import type { DagboekItem } from "@/lib/nutrition-dagboek-items";
+import type { ProteinTargetRange } from "@/lib/protein-target";
 
 /**
  * Het detailscherm van één gelogd product: wat dít item levert, per stof.
@@ -37,11 +38,13 @@ export default function DagboekProductDetail({
   onTerug,
   onVerwijder,
   busy = false,
+  proteinTarget = null,
 }: {
   item: DagboekItem;
   onTerug: () => void;
   onVerwijder: (item: DagboekItem) => void;
   busy?: boolean;
+  proteinTarget?: ProteinTargetRange | null;
 }) {
   const label = labelVoor(item);
   const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
@@ -91,7 +94,7 @@ export default function DagboekProductDetail({
         </div>
       </header>
 
-      <DagboekProductLevert item={item} />
+      <DagboekProductLevert item={item} proteinTarget={proteinTarget} />
 
       <p className="m-0 rounded-xl border-l-2 border-[var(--vd-sage)] bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-[var(--vd-ink-2)]">
         Dit is wat <b className="font-semibold text-[var(--vd-ink)]">{item.grams} {eenheid}</b>{" "}

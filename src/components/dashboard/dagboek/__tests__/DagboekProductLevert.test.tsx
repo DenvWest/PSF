@@ -10,6 +10,10 @@ vi.mock("@/lib/supermarkt-producten-client", () => ({
   haalNevoProductViaApi: vi.fn(async () => null),
 }));
 
+vi.mock("@/lib/use-gevolgde-stoffen", () => ({
+  useGevolgdeStoffen: () => ({ stoffen: ["ironMg"], geladen: true, zetGevolgd: vi.fn() }),
+}));
+
 function nevo(code: string, waarden: Partial<SupermarktProduct>): SupermarktProduct {
   return {
     prodId: `nevo:${code}`,
@@ -44,5 +48,23 @@ describe("DagboekProductLevert", () => {
     render(<DagboekProductLevert item={{ moment: "lunch", bron: "voeding", key: "broccoli-diepvries", grams: 80 }} />);
     expect(screen.getByText(/Dit zijn de waarden van/)).toBeTruthy();
     await waitFor(() => expect(screen.getByRole("heading", { name: "Voedingswaarde · benadering" })).toBeTruthy());
+  });
+
+  it("toont een gevolgde stof met %ADH onder de kernstoffen", async () => {
+    haalNevo.mockResolvedValue([nevo("1146", { energyKcal: 20, ironMg: 2.8 })]);
+    render(<DagboekProductLevert item={{ moment: "lunch", bron: "voeding", key: "spinazie-diepvries", grams: 100 }} />);
+    await waitFor(() => expect(screen.getByText("Ook gevolgd")).toBeTruthy());
+    expect(screen.getByText("20% ADH")).toBeTruthy();
+  });
+
+  it("rekent eiwit tegen je eiwitdoel", () => {
+    render(
+      <DagboekProductLevert
+        item={{ moment: "lunch", bron: "voeding", key: "spinazie-diepvries", grams: 100 }}
+        proteinTarget={{ gramsLow: 60, gramsHigh: 90 }}
+      />,
+    );
+    expect(screen.getByText(/% van je doel$/)).toBeTruthy();
+    expect(screen.queryByText("eigen doel")).toBeNull();
   });
 });
