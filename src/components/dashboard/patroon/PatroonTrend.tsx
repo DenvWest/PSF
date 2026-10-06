@@ -1,129 +1,118 @@
 "use client";
 
-import Link from "next/link";
-import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import PatroonTrendGrafiek from "@/components/dashboard/patroon/PatroonTrendGrafiek";
-import type { GevolgdeWeekReeks } from "@/lib/nutrition-gevolgde-weken";
-import { hoeveelheid } from "@/lib/nutrition-tekortsysteem-copy";
-import type { NutrientTrend } from "@/lib/nutrition-trend";
+import type { PatroonStof } from "@/lib/nutrition-stof-meting";
+import type { StofTrend } from "@/lib/nutrition-stof-trend";
 
 /**
- * De trend per stof: hetzelfde weekgemiddelde als het weekoverzicht, nu over
- * meerdere weken als staafjes op een rij.
+ * De trend per stof over de gekozen periode, met per stof de feiten waarom
+ * hij (nog) niet aan de norm voldoet.
  *
  * ## Waarom staafjes en geen lijngrafiek
  *
- * Een lijn suggereert een continue meting tussen de punten in — als je twee
- * weken niet registreerde, tekent een lijn er dwars doorheen een waarde bij
- * die er niet is. Staafjes met een lege plek voor een niet-gemeten week zijn
- * eerlijker: je ziet letterlijk het gat in je registratie, niet een
- * geïnterpoleerd getal.
+ * Een lijn suggereert een continue meting tussen de punten in: als je een dag
+ * niet registreerde, tekent een lijn er dwars doorheen een waarde bij die er
+ * niet is. Staafjes met een lege plek zijn eerlijker.
  *
- * ## De stippellijn is de referentie, geen doelbalk
+ * ## "Waarom niet" in feiten
  *
- * Zoals overal in dit scherm: de referentie is een marker om tegen af te
- * zetten, geen vak dat "vol" moet raken. Een staaf die eroverheen komt (een
- * zalmweek) mag gewoon hoger zijn dan de lijn.
+ * Onder elke stof staat wat het systeem echt weet: op hoeveel volledige dagen
+ * je gemiddeld wat haalde, welke dagen een hoofdmaaltijd missen (daar is onder
+ * de norm geen antwoord), wat er per maaltijd wél te zeggen is, en welke
+ * producten geen gehalte hebben. Geen "je hebt een tekort": een norm geldt
+ * voor een groep, en een tekort stelt een arts vast.
  *
- * De grafiek zelf staat in `PatroonTrendGrafiek.tsx`. Hier per stof de kop
- * met een telling ("gehaald in 3 van 5 gemeten weken") en, onder de
- * kernstoffen, de gevolgde stoffen zonder oordeel.
+ * Een tik op de naam opent het stof-detail in Per stof (bronnen, norm,
+ * rijkste bronnen), dezelfde plek voor kernstoffen en gevolgde stoffen.
  */
-
-function telRegel(trend: NutrientTrend): string | null {
-  const gemeten = trend.punten.filter((p) => p.waarde !== null);
-  if (gemeten.length === 0) return "nog geen gemeten weken";
-  if (trend.referentie === null) return `${gemeten.length} ${gemeten.length === 1 ? "week" : "weken"} gemeten`;
-  const gehaald = gemeten.filter((p) => p.gehaald).length;
-  return `norm gehaald in ${gehaald} van ${gemeten.length} gemeten ${gemeten.length === 1 ? "week" : "weken"}`;
-}
 
 function hoofdletter(label: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 
+function StofKaart({ trend, onOpen }: { trend: StofTrend; onOpen: (stof: PatroonStof) => void }) {
+  return (
+    <li className="vd-tabel" style={{ padding: "0.875rem" }}>
+      <div className="mb-2 flex items-baseline justify-between gap-2">
+        <button
+          type="button"
+          onClick={() => onOpen(trend.stof)}
+          className="vd-naam cursor-pointer border-0 bg-transparent p-0 text-left font-[inherit]"
+        >
+          <b className="text-[var(--vd-ink)]">{hoofdletter(trend.label)}</b>
+          <span className="ml-1 text-[var(--vd-ink-4)]">›</span>
+        </button>
+        <span className="vd-getal text-right" data-toon="stil">
+          {trend.kop}
+        </span>
+      </div>
+
+      {trend.bewijsbaar ? <PatroonTrendGrafiek trend={trend} /> : null}
+
+      {trend.redenen.length > 0 ? (
+        <ul
+          aria-label={`Waarom ${trend.label.toLowerCase()} niet aan de norm voldoet`}
+          className="m-0 mt-2.5 flex list-none flex-col gap-1 border-t border-[var(--vd-line)] p-0 pt-2 text-[12px] leading-snug text-[var(--vd-ink-2)]"
+        >
+          {trend.redenen.map((reden) => (
+            <li key={reden}>{reden}</li>
+          ))}
+        </ul>
+      ) : null}
+    </li>
+  );
+}
+
 export default function PatroonTrend({
-  trends,
+  kernstoffen,
   gevolgd,
-  huidigeWeek,
+  onOpen,
 }: {
-  trends: readonly NutrientTrend[];
-  gevolgd: readonly GevolgdeWeekReeks[];
-  huidigeWeek: string;
+  kernstoffen: readonly StofTrend[];
+  gevolgd: readonly StofTrend[];
+  onOpen: (stof: PatroonStof) => void;
 }) {
+  const schaal = kernstoffen[0]?.schaal ?? gevolgd[0]?.schaal;
   return (
     <div className="flex flex-col gap-4">
-      <ul className="m-0 flex list-none flex-col gap-4 p-0">
-        {trends.map((trend) => (
-          <li key={trend.nutrient} className="vd-tabel" style={{ padding: "0.875rem" }}>
-            <div className="mb-2 flex items-baseline justify-between gap-2">
-              <Link
-                href={nutrientReferences[trend.nutrient].comparisonPath}
-                className="vd-naam"
-                style={{ textDecoration: "none" }}
-              >
-                <b style={{ color: "var(--vd-ink)" }}>{trend.label}</b>
-              </Link>
-              <span className="vd-getal" data-toon="stil">
-                {trend.bewijsbaar ? telRegel(trend) : "geen oordeel"}
-              </span>
-            </div>
+      <p className="vd-note" style={{ margin: 0 }}>
+        {schaal === "maaltijd"
+          ? "Per maaltijd: wat elke maaltijd van de dagnorm leverde. Een maaltijd haalt geen dagnorm, dus geen kleur."
+          : schaal === "dag"
+            ? "Per dag. Onder elke dag staat hoeveel van de drie hoofdmaaltijden je registreerde."
+            : "Per week: gemiddeld per geregistreerde dag, met hoeveel dagen volledig waren."}{" "}
+        <span className="inline-flex items-center gap-1">
+          <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm bg-[var(--vd-sage)]" /> gehaald
+        </span>{" "}
+        ·{" "}
+        <span className="inline-flex items-center gap-1">
+          <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm bg-[var(--vd-terra)]" /> onder de norm
+        </span>{" "}
+        ·{" "}
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden
+            className="inline-block h-2.5 w-2.5 rounded-sm border border-[var(--vd-ink-4)]"
+            style={{ background: "repeating-linear-gradient(135deg, var(--vd-ink-4) 0 2px, transparent 2px 4px)" }}
+          />{" "}
+          onvolledig: geen dagoordeel
+        </span>
+      </p>
 
-            {!trend.bewijsbaar ? (
-              <p className="vd-note" data-toon="amber" style={{ marginTop: "0.5rem" }}>
-                Met een dagboek niet aan te tonen — geen trend, alleen je bronnen.
-              </p>
-            ) : (
-              <PatroonTrendGrafiek
-                label={trend.label}
-                punten={trend.punten.map((p) => ({
-                  weekStart: p.weekStart,
-                  waarde: p.waarde,
-                  aandeel: p.aandeel,
-                  gehaald: p.gehaald,
-                  benaderd: p.benaderd,
-                  dagen: p.dagenGeregistreerd,
-                }))}
-                unit={trend.unit}
-                referentie={trend.referentie}
-                referentieNaam="norm"
-                toon="oordeel"
-                huidigeWeek={huidigeWeek}
-              />
-            )}
-          </li>
+      <ul className="m-0 flex list-none flex-col gap-4 p-0">
+        {kernstoffen.map((trend) => (
+          <StofKaart key={trend.stof} trend={trend} onOpen={onOpen} />
         ))}
       </ul>
 
       {gevolgd.length > 0 ? (
         <section aria-labelledby="patroon-trend-gevolgd" className="flex flex-col gap-3">
           <p id="patroon-trend-gevolgd" className="vd-eyebrow" style={{ margin: "0.5rem 0 0" }}>
-            Ook gevolgd · zonder oordeel
+            Ook gevolgd · tegen de norm, zonder kleur
           </p>
           <ul className="m-0 flex list-none flex-col gap-4 p-0">
-            {gevolgd.map((reeks) => (
-              <li key={reeks.veld} className="vd-tabel" style={{ padding: "0.875rem" }}>
-                <div className="mb-2 flex items-baseline justify-between gap-2">
-                  <b className="text-[var(--vd-ink)]">{hoofdletter(reeks.label)}</b>
-                  <span className="vd-getal" data-toon="stil">
-                    {reeks.norm !== null ? `norm ${hoeveelheid(reeks.norm)} ${reeks.unit}` : "gem. per dag"}
-                  </span>
-                </div>
-                <PatroonTrendGrafiek
-                  label={hoofdletter(reeks.label)}
-                  punten={reeks.punten.map((p) => ({
-                    weekStart: p.weekStart,
-                    waarde: p.gemiddeld,
-                    aandeel: p.aandeel,
-                    dagen: p.dagen,
-                  }))}
-                  unit={reeks.unit}
-                  referentie={reeks.norm}
-                  referentieNaam="norm"
-                  toon="neutraal"
-                  huidigeWeek={huidigeWeek}
-                />
-              </li>
+            {gevolgd.map((trend) => (
+              <StofKaart key={trend.stof} trend={trend} onOpen={onOpen} />
             ))}
           </ul>
         </section>

@@ -9,10 +9,8 @@ import {
 import { weekDatums } from "@/lib/nutrition-weekoverzicht";
 
 /**
- * De gevolgde stoffen per week, voor Samenvatting, Deze week en Trend in Je
- * patroon. De tegenhanger van `nutrition-gevolgde-vensters.ts` (die middelt
- * over 1/3/7/30 dagen terug); dit middelt per kalenderweek, zoals het
- * weekoverzicht en de trend van de kernstoffen.
+ * De gevolgde stoffen over een periode, voor Per stof in Je patroon. Trend
+ * rekent sinds 6 okt per dag of maaltijd via `nutrition-stof-meting.ts`.
  *
  * Zelfde noemer: de dagen waarop je iets registreerde, niet zeven. Een dag
  * zonder registratie is onbekend, geen nul. Informatief: geen `gedekt`, geen
@@ -65,21 +63,6 @@ function weekPunt(
   };
 }
 
-export function bouwGevolgdeWeken(
-  perDag: ReadonlyMap<string, Voedingswaarde>,
-  stoffen: readonly SupermarktVeld[],
-  weekStarts: readonly string[],
-  normen: GevolgdeNormen = STANDAARD_GEVOLGDE_NORMEN,
-): GevolgdeWeekReeks[] {
-  return stoffen.flatMap((stof) => {
-    const veld = veldVoor(stof);
-    if (!veld) return [];
-    const norm = normVoorVeld(normen, stof)?.waarde ?? null;
-    return [{ ...veld, norm, punten: weekStarts.map((start) => weekPunt(perDag, veld, norm, start)) }];
-  });
-}
-
-/** Per dag van de week de waarde; null waar niets geregistreerd is of geen product een waarde had. */
 /** Eén punt per stof over een willekeurige reeks datums (de periode in Je patroon). */
 export function bouwGevolgdePeriode(
   perDag: ReadonlyMap<string, Voedingswaarde>,

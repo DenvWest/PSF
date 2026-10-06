@@ -141,14 +141,14 @@ export type ContextRailVoortgangItem = {
 };
 
 /**
- * Sinds 23 september nog maar twee bestemmingen. Leefstijlprofiel (de
- * domeinhub) is opgeheven toen voeding het enige domein werd — "Je patroon"
- * draagt voeding nu rechtstreeks. Hermeting bleef staan: dat was een eigen
- * tab, en hoort bij de meetreeksen die hij voedt.
+ * Sinds 6 oktober één bestemming: Je patroon. Hermeting hoorde bij de brede
+ * check, die niet meer wordt aangeboden; het scherm blijft bereikbaar via de
+ * hermeting-herinnering, maar staat niet meer in de navigatie. Met één item
+ * valt er niets te kiezen, dus verdwijnen rail en ingeklapte balk
+ * (`BESLUIT_PATROON_STOF_EN_TREND_2026-10.md` §1).
  */
 export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
   { id: "hub", label: "Je patroon", icon: "BarChart" },
-  { id: "hermeting", label: "Hermeting", icon: "Calendar" },
 ];
 
 export function resolveVoortgangRailActiveItem(screen: VoortgangScreen): VoortgangRailItemId {

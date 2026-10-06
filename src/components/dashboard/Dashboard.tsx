@@ -121,6 +121,7 @@ import {
   buildKeuzeRailDomains,
   buildKompasRailDomains,
   resolveVoortgangRailActiveItem,
+  VOORTGANG_RAIL_ITEMS,
   type ContextRailApi,
   type ContextRailMode,
   type ContextRailToolId,
@@ -3536,7 +3537,7 @@ function DashboardContent({
    * hem los daarvan: daar zit het profiel al in de header.
    */
   const railHeeftKeuze =
-    contextRailMode === "voortgang" ||
+    (contextRailMode === "voortgang" && VOORTGANG_RAIL_ITEMS.length > 1) ||
     contextRailMode === "profile" ||
     (contextRailMode === "keuze" ? keuzeRailDomains.length > 1 : railDomainItems.length > 1);
   const hideRail = tab === "agenda" || !railHeeftKeuze;
@@ -3558,7 +3559,7 @@ function DashboardContent({
    * hydration, en de rail blijft de enige drager op desktop.
    */
   const voortgangTopNav =
-    tab === "voortgang" ? (
+    tab === "voortgang" && VOORTGANG_RAIL_ITEMS.length > 1 ? (
       <VoortgangTopNav
         activeItem={resolveVoortgangRailActiveItem(voortgangScreen)}
         onOpenItem={handleTopNavVoortgangOpen}
