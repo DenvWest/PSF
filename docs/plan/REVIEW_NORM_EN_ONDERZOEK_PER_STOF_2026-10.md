@@ -1,7 +1,7 @@
 # Review: norm én peer-reviewed onderzoek per stof — van één getal naar een bandbreedte
 
 **Datum:** 6 oktober 2026
-**Status:** concept, herzien na review van Dennis (6 okt, §6). Wacht op akkoord met §6 voordat `src/` verandert.
+**Status:** besloten (Dennis, 6 okt: "akkoord met alles"). Gebouwd in PR #144; de geldende waarden staan in `BESLUIT_KERNSTOF_NORMEN_2026-10.md`.
 **Raakt:** `src/data/nutrition/voedingsnormen.ts`, `src/lib/protein-target.ts`, `VOEDINGSWAARDE_VELDEN` (RI van de buitenring), het stof-detail in dagboek en Patroon, het midden van de krans (PR #139)
 **Bouwt voort op:** `BESLUIT_KERNSTOF_NORMEN_2026-10.md`, PR #141 (eigen streefwaarde), `BESLUIT_DAGBOEK_RINGEN_IN_LAGEN_2026-10.md`
 **Aanleiding:** Dennis, 5 okt: "kijk naar peer review voor elke voedingsstof". Hij gaf als voorbeeld Shahinfar e.a., *Sci Rep* 2025 (omega-3 en cognitie).
@@ -42,6 +42,8 @@ Officiële normen en peer-reviewed onderzoek staan niet tegenover elkaar. Een no
 - **Compliance:** de zone beschrijft onderzoek en geeft geen advies. Geen "goed voor je hersenen". Formulering: "In N studies naar [uitkomst] bij [groep] werden doses van X–Y onderzocht. Zekerheid: [GRADE]." Gezondheidsclaims blijven beperkt tot `approved-claims.ts`.
 
 ## 3. Per stof
+
+> **Achterhaald door §6 en §6.6.** Deze paragraaf is de eerste versie, van vóór Dennis' beslissingen van 6 okt. Wat geldt, staat in §6 en in `BESLUIT_KERNSTOF_NORMEN_2026-10.md`. Belangrijkste verschillen: omega-3 is níét 450 mg (GR 2026 bevestigt 200 mg; in de code staat 250 mg, EFSA), magnesium heeft geen zone (alleen onderzoek bij gezonde mensen telt), en vitamine D is 15 µg.
 
 Legenda: **Norm nu** = wat de code gebruikt. **Voorstel** = de hoogste recente officiële waarde (asymmetrie-regel). ⚠ = nog naast de primaire bron leggen voordat het in `src/` komt.
 
