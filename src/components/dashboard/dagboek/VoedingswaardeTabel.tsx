@@ -88,7 +88,7 @@ export default function VoedingswaardeTabel({
                         />
                       </span>
                       <span className="w-[52px] text-right font-mono text-[10.5px] tabular-nums text-[var(--vd-ink-3)]">
-                        {Math.round(rij.aandeelRi * 100)}% RI
+                        {Math.round(rij.aandeelRi * 100)}% ADH
                       </span>
                     </span>
                   ) : null}
@@ -109,8 +109,9 @@ export default function VoedingswaardeTabel({
           </p>
         ) : null}
         <p className="m-0 text-[10.5px] leading-relaxed text-[var(--vd-ink-4)]">
-          Magnesium, zink, vitamine D en omega-3 staan in je vijf stoffen hierboven. RI = referentie-inname
-          (EU 1169/2011); energie en macro&apos;s krijgen geen percentage.
+          Magnesium, zink, vitamine D en omega-3 staan in je vijf stoffen hierboven. ADH = de vaste
+          etiketwaarde (referentie-inname, EU 1169/2011), niet jouw persoonlijke norm; energie en macro&apos;s
+          krijgen geen percentage.
         </p>
         <SupermarktBronRegel producten={bronProducten} berekend />
       </footer>

@@ -300,7 +300,7 @@ export default function DagboekVergelijkTabel({
                             {getal(rij.verhouding)}× zoveel
                           </span>
                         ) : riAandeel !== null ? (
-                          <span className="text-[10px] text-[var(--vd-ink-4)]">{riAandeel}% RI</span>
+                          <span className="text-[10px] text-[var(--vd-ink-4)]">{riAandeel}% ADH</span>
                         ) : null}
                       </span>
                     </td>
@@ -349,7 +349,7 @@ export default function DagboekVergelijkTabel({
                           <span className="ml-0.5 text-[10px] text-[var(--vd-ink-4)]">{rij.unit}</span>
                         </span>
                         {riAandeel !== null ? (
-                          <span className="block text-[10px] text-[var(--vd-ink-4)]">{riAandeel}% RI</span>
+                          <span className="block text-[10px] text-[var(--vd-ink-4)]">{riAandeel}% ADH</span>
                         ) : null}
                       </td>
                     );
