@@ -2,7 +2,7 @@ import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import { REFERENCE_INTAKES } from "@/data/nutrition/reference-intake";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
-import { nutrientenUitItems, sanitizeItems } from "@/lib/nutrition-dagboek-items";
+import { nutrientenUitItems, sanitizeItems, zonderBenadering } from "@/lib/nutrition-dagboek-items";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import { aandeelVanNorm, normVoor, type KernstofNormen } from "@/lib/nutrition-normen";
 import { NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
@@ -56,8 +56,15 @@ export type WeekRij = {
   teGaan: number | null;
   /** Op hoeveel van de geregistreerde dagen een bron voor deze stof stond. */
   dagenMetBron: number;
-  /** Of de referentie bewezen gehaald is. Null bij onbewijsbare stoffen. */
+  /**
+   * Of de referentie bewezen gehaald is: zonder benaderingen
+   * (`BESLUIT_MICRO_IN_BEELD_2026-10.md` §1b). Null bij onbewijsbare stoffen.
+   */
   gedekt: boolean | null;
+  /** Of een benadering aan het gemiddelde bijdroeg: toon met ≈. */
+  benaderd?: boolean;
+  /** `aandeel` zonder benaderingen: alleen hiermee mag "gehaald". */
+  aandeelZonderBenadering?: number | null;
   /** Of een dagboek deze stof kan aantonen. */
   bewijsbaar: boolean;
   /** Pad naar de vergelijkingspagina van deze stof. */
@@ -147,6 +154,7 @@ export function bouwPeriodeOverzicht(
     const bewijsbaar = !(nutrient in NIET_BEWIJSBAAR);
 
     let som = 0;
+    let somStreng = 0;
     let dagenMetBron = 0;
     for (const dag of inWeek) {
       const stof = nutrientenUitItems(sanitizeItems(dag.items ?? [])).find(
@@ -154,6 +162,7 @@ export function bouwPeriodeOverzicht(
       );
       if (!stof) continue;
       som += stof.minstens;
+      somStreng += zonderBenadering(stof);
       dagenMetBron += 1;
     }
 
@@ -172,6 +181,12 @@ export function bouwPeriodeOverzicht(
         : normPeriode !== null
           ? som / normPeriode
           : aandeelVanNorm(normen, nutrient, gemiddeld);
+    const aandeelStreng =
+      inWeek.length === 0
+        ? null
+        : normPeriode !== null
+          ? somStreng / normPeriode
+          : aandeelVanNorm(normen, nutrient, Math.round((somStreng / inWeek.length) * 10) / 10);
 
     // Alleen een bewijsbare stof mag een afstand tonen. Zink en vitamine D
     // hebben wel een norm (referentie is dus niet null), maar §3.4
@@ -195,7 +210,9 @@ export function bouwPeriodeOverzicht(
       teGaan: teGaan !== null && teGaan > 0 ? teGaan : null,
       dagenMetBron,
       gedekt:
-        !bewijsbaar || aandeel === null ? null : aandeel >= 1,
+        !bewijsbaar || aandeelStreng === null ? null : aandeelStreng >= 1,
+      benaderd: somStreng < som,
+      aandeelZonderBenadering: aandeelStreng,
       bewijsbaar,
       comparisonPath: nutrientReferences[nutrient].comparisonPath,
       totaal: Math.round(som * 10) / 10,

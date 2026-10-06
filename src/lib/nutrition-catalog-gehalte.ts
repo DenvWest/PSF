@@ -35,8 +35,8 @@ import type { NutrientUnit } from "@/lib/nutrition-units";
  * meer: een gemeten 0 of spoor, en een benadering (vergelijkbaar NEVO-record).
  * Een 0 of spoor telt nooit mee in een som
  * (`docs/plan/BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`). Een vrijgegeven
- * benadering telt alleen mee voor energie, macro's en eiwit, als ≈
- * ({@link eiwitBenaderingPer100g}, `BESLUIT_MICRO_IN_BEELD_2026-10.md`).
+ * benadering telt mee voor elke stof, als ≈ ({@link gehalteBenaderingPer100g});
+ * een "gehaald" rekent zonder haar (`BESLUIT_MICRO_IN_BEELD_2026-10.md` §1b).
  */
 export interface CatalogGehalte {
   value: number;
@@ -143,18 +143,23 @@ export function gehaltePer100g(entry: CatalogEntry | null | undefined, nutrient:
 }
 
 /**
- * Het eiwit van een vrijgegeven benadering (`FOOD_CATALOG_NEVO_BENADERINGEN`),
- * per 100 g. Eiwit is een macro: 200 g kipdij als 0 g eiwit tellen is een
- * grotere fout dan kipbout als ≈. Magnesium, zink, vitamine D en omega-3 van
- * een benadering tellen nog steeds niet mee.
+ * Het gehalte van een vrijgegeven benadering (`FOOD_CATALOG_NEVO_BENADERINGEN`)
+ * voor één stof, per 100 g. Telt mee in elke som als ≈; een "gehaald" rekent
+ * zonder (`BESLUIT_MICRO_IN_BEELD_2026-10.md` §1b). Een 0 of spoor levert null.
  */
-export function eiwitBenaderingPer100g(entry: CatalogEntry | null | undefined): CatalogGehalte | null {
+export function gehalteBenaderingPer100g(
+  entry: CatalogEntry | null | undefined,
+  nutrient: NutrientId,
+): CatalogGehalte | null {
   if (!entry) return null;
-  const waarde = FOOD_CATALOG_NEVO_BENADERINGEN[entry.key]?.protein_g;
-  return typeof waarde === "number" ? { value: waarde, unit: "g", bron: "nevo", afgeleid: false } : null;
+  const benadering = FOOD_CATALOG_NEVO_BENADERINGEN[entry.key];
+  if (!benadering) return null;
+  const weergave = nevoWeergave(benadering, nutrient, benadering.naam);
+  if (weergave.soort !== "waarde") return null;
+  return { value: weergave.value, unit: weergave.unit, bron: "nevo", afgeleid: nutrient === "omega3" };
 }
 
-/** Of deze catalogusregel een vrijgegeven benadering is (energie, macro's en eiwit tellen als ≈). */
+/** Of deze catalogusregel een vrijgegeven benadering is (telt mee als ≈). */
 export function isVrijgegevenBenadering(catalogKey: string): boolean {
   return FOOD_CATALOG_NEVO_BENADERINGEN[catalogKey] !== undefined;
 }

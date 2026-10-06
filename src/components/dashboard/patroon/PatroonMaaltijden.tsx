@@ -116,7 +116,7 @@ export default function PatroonMaaltijden({
             <p className="vd-note" style={{ margin: "-0.25rem 0 0.75rem" }}>
               ≈ {maaltijd.benaderdeProducten.join(", ")}{" "}
               {maaltijd.benaderdeProducten.length === 1 ? "telt" : "tellen"} mee met de waarden van een
-              vergelijkbaar NEVO-product: energie, macro&rsquo;s en eiwit wel, vitamines en mineralen niet.
+              vergelijkbaar NEVO-product.
             </p>
           ) : null}
 
@@ -157,7 +157,9 @@ export default function PatroonMaaltijden({
                   {getal(r.waarde, r.benaderd)} {r.waarde === null ? "" : r.unit}
                 </span>
                 <span className="vd-getal">{getal(r.per100kcal)}</span>
-                <span className="vd-getal">{r.aandeel === null ? "—" : percentageADH(r.aandeel)}</span>
+                <span className="vd-getal">
+                  {r.aandeel === null ? "—" : `${r.benaderd ? "≈ " : ""}${percentageADH(r.aandeel)}`}
+                </span>
               </div>
             ))}
 
@@ -177,14 +179,17 @@ export default function PatroonMaaltijden({
                     ) : null}
                   </span>
                   <span className="vd-getal">
-                    {k.gemiddeld === null ? "n.o." : `${rondVoedingswaarde(k.gemiddeld)} ${k.unit}`}
+                    {k.gemiddeld === null ? "n.o." : `${getal(k.gemiddeld, k.benaderd)} ${k.unit}`}
                   </span>
                   <span className="vd-getal">
                     {k.gemiddeld === null || kcal === null || kcal <= 0
                       ? "—"
                       : rondVoedingswaarde((k.gemiddeld / kcal) * 100)}
                   </span>
-                  <span className="vd-getal">{percentageADH(aandeel)}</span>
+                  <span className="vd-getal">
+                    {k.benaderd && aandeel !== null ? "≈ " : ""}
+                    {percentageADH(aandeel)}
+                  </span>
                 </div>
               );
             })}

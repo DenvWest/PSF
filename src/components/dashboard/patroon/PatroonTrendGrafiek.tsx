@@ -36,6 +36,13 @@ export type TrendGrafiekPunt = {
   weekStart: string;
   waarde: number | null;
   aandeel: number | null;
+  /**
+   * Of de norm gehaald is zonder benaderingen. Ontbreekt het, dan telt
+   * `aandeel >= 1` (`BESLUIT_MICRO_IN_BEELD_2026-10.md` §1b).
+   */
+  gehaald?: boolean;
+  /** Of een benadering aan `waarde` bijdroeg: toon met ≈. */
+  benaderd?: boolean;
   dagen: number;
 };
 
@@ -43,7 +50,8 @@ const HOOGTE = 128;
 
 function kleurVoor(punt: TrendGrafiekPunt, toon: "oordeel" | "neutraal", referentie: number | null): string {
   if (toon === "neutraal" || referentie === null) return "var(--vd-ink-3)";
-  return punt.aandeel !== null && punt.aandeel >= 1 ? "var(--vd-sage)" : "var(--vd-terra)";
+  const gehaald = punt.gehaald ?? (punt.aandeel !== null && punt.aandeel >= 1);
+  return gehaald ? "var(--vd-sage)" : "var(--vd-terra)";
 }
 
 export default function PatroonTrendGrafiek({
@@ -77,8 +85,10 @@ export default function PatroonTrendGrafiek({
         gekozen.weekStart === huidigeWeek ? "Deze week" : weekKort(gekozen.weekStart),
         gekozen.waarde === null
           ? "niets geregistreerd"
-          : `${hoeveelheid(gekozen.waarde)} ${unit} per dag`,
-        gekozen.aandeel !== null ? `${Math.round(gekozen.aandeel * 100)}% van de ${referentieNaam}` : null,
+          : `${gekozen.benaderd ? "≈ " : ""}${hoeveelheid(gekozen.waarde)} ${unit} per dag`,
+        gekozen.aandeel !== null
+          ? `${gekozen.benaderd ? "≈ " : ""}${Math.round(gekozen.aandeel * 100)}% van de ${referentieNaam}`
+          : null,
         gekozen.dagen > 0 ? `${gekozen.dagen} ${gekozen.dagen === 1 ? "dag" : "dagen"} gemeten` : null,
       ].filter((deel): deel is string => deel !== null)
     : [];

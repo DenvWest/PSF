@@ -108,8 +108,8 @@ export default function PatroonStofTabel({
               {leeg
                 ? "n.o."
                 : rij.lezing === "periodetotaal"
-                  ? `≥${hoeveelheid(rij.totaal)} ${rij.unit} totaal`
-                  : `${hoeveelheid(rij.gemiddeld)} ${rij.unit}`}
+                  ? `${rij.benaderd ? "≈ " : "≥"}${hoeveelheid(rij.totaal)} ${rij.unit} totaal`
+                  : `${rij.benaderd ? "≈ " : ""}${hoeveelheid(rij.gemiddeld)} ${rij.unit}`}
             </span>
 
             <span className="vd-cel">
@@ -122,7 +122,7 @@ export default function PatroonStofTabel({
                 />
               ) : null}
               <b data-gevuld={heeftBalk && vulling > 0 ? "ja" : "nee"}>
-                {heeftBalk ? percentageADH(rij.aandeel) : "—"}
+                {heeftBalk ? `${rij.benaderd ? "≈ " : ""}${percentageADH(rij.aandeel)}` : "—"}
               </b>
             </span>
 

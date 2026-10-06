@@ -5,6 +5,7 @@ import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import {
   nutrientenUitItems,
   sanitizeItems,
+  zonderBenadering,
   type DagboekItem,
 } from "@/lib/nutrition-dagboek-items";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
@@ -93,9 +94,12 @@ export type Venster = {
    * Of de ondergrens de norm haalt.
    *
    * True bewijst dekking. False bewijst *niets* — zie de asymmetrie-regel in
-   * de moduledoc. Null wanneer de stof niet bewijsbaar is.
+   * de moduledoc. Null wanneer de stof niet bewijsbaar is. Rekent zonder
+   * benaderingen (`BESLUIT_MICRO_IN_BEELD_2026-10.md` §1b).
    */
   gedekt: boolean | null;
+  /** Of een benadering aan `gemiddeld` bijdroeg: toon met ≈. */
+  benaderd?: boolean;
 };
 
 export type Richting = "verbetert" | "verslechtert" | "vlak" | "piekt" | "onbekend";
@@ -183,11 +187,13 @@ function bouwVenster(
   const inVenster = dagen.filter((dag) => dag.date >= grensIso && dag.date <= vandaag);
 
   let som = 0;
+  let somStreng = 0;
   let metBron = 0;
   for (const dag of inVenster) {
     const stof = nutrientenUitItems(itemsVan(dag)).find((n) => n.nutrient === nutrient);
     if (!stof) continue;
     som += stof.minstens;
+    somStreng += zonderBenadering(stof);
     metBron += 1;
   }
 
@@ -204,6 +210,8 @@ function bouwVenster(
   const gemiddeld =
     geregistreerd > 0 ? Math.round((som / geregistreerd) * 10) / 10 : 0;
   const aandeel = geregistreerd > 0 ? aandeelVanNorm(normen, nutrient, gemiddeld) : null;
+  const aandeelStreng =
+    geregistreerd > 0 ? aandeelVanNorm(normen, nutrient, Math.round((somStreng / geregistreerd) * 10) / 10) : null;
   const bewijsbaar = !(nutrient in NIET_BEWIJSBAAR);
 
   return {
@@ -216,7 +224,8 @@ function bouwVenster(
     // false-als-oordeel: het veld zegt "wel bewezen" of "niet bewezen", en de
     // UI vertaalt dat nooit naar "je komt tekort".
     gedekt:
-      !bewijsbaar || geregistreerd === 0 || aandeel === null ? null : aandeel >= 1,
+      !bewijsbaar || geregistreerd === 0 || aandeelStreng === null ? null : aandeelStreng >= 1,
+    benaderd: somStreng < som,
   };
 }
 

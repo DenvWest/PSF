@@ -28,9 +28,10 @@ import type { SupermarktProduct } from "@/types/supermarkt-product";
  *
  * Een benaderingskoppeling (`basis: "benadering"`) is een vergelijkbaar
  * voedingsmiddel, geen brongetal. Is hij vrijgegeven
- * (`FOOD_CATALOG_NEVO_BENADERINGEN`), dan tellen zijn energie en macro's mee,
- * gemarkeerd als `benaderd` (≈); zijn micro's niet
- * (`BESLUIT_MICRO_IN_BEELD_2026-10.md`). Een niet-vrijgegeven benadering en een
+ * (`FOOD_CATALOG_NEVO_BENADERINGEN`), dan telt hij voor elk veld mee,
+ * gemarkeerd als `benaderd` (≈). Een "gehaald" rekent met
+ * `aandeelZonderBenadering` (`BESLUIT_MICRO_IN_BEELD_2026-10.md` §1b). Een
+ * niet-vrijgegeven benadering en een
  * supplement tellen als `zonderWaarde`, zodat de UI kan zeggen dat het totaal
  * onvolledig is.
  *
@@ -75,7 +76,19 @@ export type VoedingswaardeRij = VoedingswaardeVeld & {
   aandeelRi: number | null;
   /** Of een benadering aan deze som bijdroeg: toon de waarde met ≈. */
   benaderd?: boolean;
+  /**
+   * Aandeel van de norm zonder benaderingen. Alleen hiermee mag een ✓ of
+   * "gehaald" (`BESLUIT_MICRO_IN_BEELD_2026-10.md` §1b). Ontbreekt het, dan is
+   * het gelijk aan `aandeel`.
+   */
+  aandeelZonderBenadering?: number | null;
 };
+
+/** Of een rij zijn norm haalt zonder benaderingen: de enige grond voor een ✓. */
+export function rijGehaald(rij: Pick<VoedingswaardeRij, "aandeel" | "aandeelZonderBenadering">): boolean {
+  const aandeel = rij.aandeelZonderBenadering === undefined ? rij.aandeel : rij.aandeelZonderBenadering;
+  return aandeel !== null && aandeel >= 1;
+}
 
 export type Voedingswaarde = {
   rijen: VoedingswaardeRij[];
@@ -83,20 +96,9 @@ export type Voedingswaarde = {
   metWaarde: number;
   /** Producten die niets bijdroegen (geen koppeling, niet-vrijgegeven benadering, supplement, onbekend product). */
   zonderWaarde: number;
-  /** Producten die als benadering meetelden: alleen energie en macro's, met ≈. */
+  /** Producten die als benadering meetelden, met ≈. */
   benaderd: number;
 };
-
-/** Wat een vrijgegeven benadering mag bijdragen: energie en macro's, geen micro's. */
-const BENADERING_VELDEN: ReadonlySet<SupermarktVeld> = new Set<SupermarktVeld>([
-  "energyKcal",
-  "fatG",
-  "saturatedFatG",
-  "carbohydrateG",
-  "sugarsG",
-  "fiberG",
-  "proteinG",
-]);
 
 /** De NEVO-code waaruit een dagboekregel zijn voedingswaarde haalt, of `null`. Nooit een benadering. */
 export function nevoCodeVoorItem(item: DagboekItem): string | null {
@@ -106,7 +108,7 @@ export function nevoCodeVoorItem(item: DagboekItem): string | null {
   return koppeling.code;
 }
 
-/** De NEVO-code van een vrijgegeven benadering, waarvan alleen energie en macro's meetellen. */
+/** De NEVO-code van een vrijgegeven benadering: telt mee als ≈. */
 function benaderingCodeVoorItem(item: DagboekItem): string | null {
   if (item.bron !== "voeding" || !isVrijgegevenBenadering(item.key)) return null;
   const koppeling = nevoKoppelingVoor(item.key);
@@ -139,7 +141,6 @@ function waardenVanItem(item: DagboekItem, nevoProducten: ReadonlyMap<string, Su
   if (product) {
     for (const { veld } of VOEDINGSWAARDE_VELDEN) {
       if (veld === "proteinG") continue;
-      if (benaderingCode && !BENADERING_VELDEN.has(veld)) continue;
       const bedrag = bedragVanSupermarktveld(product, veld, item.grams);
       if (bedrag !== null) waarden.set(veld, bedrag);
     }
@@ -179,6 +180,7 @@ export function berekenVoedingswaarde({
 
   const rijen = VOEDINGSWAARDE_VELDEN.map((veld): VoedingswaardeRij => {
     let som = 0;
+    let uitBenadering = 0;
     let heeftWaarde = false;
     let benaderd = false;
     for (const bijdrage of bijdragen) {
@@ -186,7 +188,10 @@ export function berekenVoedingswaarde({
       if (bedrag === undefined) continue;
       som += bedrag;
       heeftWaarde = true;
-      if (bijdrage?.benaderd) benaderd = true;
+      if (bijdrage?.benaderd) {
+        benaderd = true;
+        uitBenadering += bedrag;
+      }
     }
     const waarde = heeftWaarde ? som : null;
     const norm = normVoorVeld(normen, veld.veld)?.waarde ?? null;
@@ -197,6 +202,7 @@ export function berekenVoedingswaarde({
       aandeel: waarde !== null && norm !== null ? waarde / norm : null,
       aandeelRi: waarde !== null && veld.ri !== null ? waarde / veld.ri : null,
       benaderd,
+      aandeelZonderBenadering: waarde !== null && norm !== null ? (waarde - uitBenadering) / norm : null,
     };
   });
 

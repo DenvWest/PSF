@@ -5,6 +5,7 @@ import {
   berekenVoedingswaarde,
   nevoCodeVoorItem,
   nevoCodesVoorItems,
+  rijGehaald,
   rondVoedingswaarde,
 } from "@/lib/nutrition-voedingswaarde";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
@@ -161,18 +162,28 @@ describe("rondVoedingswaarde", () => {
       expect(uitkomst.zonderWaarde).toBe(0);
     });
 
-    it("telt geen vitamines en mineralen van een benadering", () => {
+    it("telt ook vitamines en mineralen van een benadering mee als ≈, maar 'gehaald' rekent zonder (§1b)", () => {
       const uitkomst = berekenVoedingswaarde({
         items: [KIPDIJ],
         nevoProducten: new Map([[KIPDIJ_NEVO.prodId, KIPDIJ_NEVO]]),
       });
-      expect(rij(uitkomst, "ironMg")?.waarde).toBeNull();
-      expect(rij(uitkomst, "vitaminB12µg")?.waarde).toBeNull();
+      const ijzer = rij(uitkomst, "ironMg");
+      expect(ijzer?.waarde).toBeCloseTo(0.8);
+      expect(ijzer?.benaderd).toBe(true);
+      expect(ijzer?.aandeelZonderBenadering).toBe(0);
+      expect(rij(uitkomst, "vitaminB12µg")?.waarde).toBeCloseTo(0.29);
     });
 
-    it("telt het eiwit ook in de krans, maar geen andere kernstof", () => {
-      expect(bedragVanItem(KIPDIJ, "protein")?.value).toBeCloseTo(28.5);
-      expect(bedragVanItem(KIPDIJ, "magnesium")).toBeNull();
+    it("geeft geen 'gehaald' op een norm die alleen dankzij een benadering vol is", () => {
+      expect(rijGehaald({ aandeel: 1.2, aandeelZonderBenadering: 0.4 })).toBe(false);
+      expect(rijGehaald({ aandeel: 1.2, aandeelZonderBenadering: 1.05 })).toBe(true);
+      expect(rijGehaald({ aandeel: 1.2 })).toBe(true);
+    });
+
+    it("telt elke kernstof van een benadering mee in de krans, gemarkeerd als benaderd", () => {
+      expect(bedragVanItem(KIPDIJ, "protein")).toMatchObject({ value: 28.5, benaderd: true });
+      expect(bedragVanItem(KIPDIJ, "magnesium")).toMatchObject({ value: 26, benaderd: true });
+      expect(bedragVanItem(ZALM, "magnesium")?.benaderd).toBeUndefined();
     });
 
     it("laat een niet-vrijgegeven benadering buiten de som", () => {

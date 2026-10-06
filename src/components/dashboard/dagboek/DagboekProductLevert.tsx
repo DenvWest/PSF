@@ -29,8 +29,9 @@ import { useNevoProducten } from "@/lib/use-nevo-producten";
  * Eiwit staat in allebei en komt in allebei uit `bedragVanItem`. Een gemeten 0
  * of spoor staat er als "0"/"spoor". Een benadering die getoond mag worden
  * (`scripts/nevo-benadering-micros.json`) toont de kernstoffen van het
- * vergelijkbare NEVO-record met "≈" en de NEVO-naam; die tellen niet mee in je
- * dag (`docs/plan/BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`). Het etiket van een
+ * vergelijkbare NEVO-record met "≈" en de NEVO-naam; die tellen als ≈ mee in je
+ * dag, maar kleuren nooit "gehaald" (`docs/plan/BESLUIT_MICRO_IN_BEELD_2026-10.md`
+ * §1b). Het etiket van een
  * vrijgegeven benadering komt van hetzelfde record, als benadering gelabeld;
  * van een andere benadering alleen calorieën en macro's (`NevoMacroBlok`).
  *
@@ -111,7 +112,7 @@ export default function DagboekProductLevert({
           <ul className="m-0 flex list-none flex-col gap-3 p-4">
             {rijen.map((rij) => {
               const vulling = rij.aandeel === null ? 0 : Math.min(Math.round(rij.aandeel * 100), 100);
-              const gedekt = rij.aandeel !== null && rij.aandeel >= 1;
+              const gedekt = !rij.benadering && rij.aandeel !== null && rij.aandeel >= 1;
               return (
                 <li key={rij.nutrient} className="flex items-center gap-3">
                   <span className="w-[72px] shrink-0 text-[12px] font-medium text-[var(--vd-ink-2)]">
@@ -177,8 +178,8 @@ export default function DagboekProductLevert({
         {benadering && heeftGetal ? (
           <p className="m-0 border-t border-white/10 bg-[var(--vd-amber-fill)] px-4 py-3 text-[11px] leading-relaxed text-[var(--vd-ink-2)]">
             ≈ Benadering: NEVO heeft geen eigen record voor dit product. Dit zijn de waarden van
-            &lsquo;{benadering}&rsquo; (NEVO-online versie {NEVO_GEHALTES_EDITIE}, RIVM, Bilthoven). Energie,
-            macro&rsquo;s en eiwit tellen als benadering mee in je dag; vitamines en mineralen niet.
+            &lsquo;{benadering}&rsquo; (NEVO-online versie {NEVO_GEHALTES_EDITIE}, RIVM, Bilthoven). Ze tellen
+            met &ldquo;≈&rdquo; mee in je dag; &lsquo;gehaald&rsquo; rekent zonder.
           </p>
         ) : null}
 

@@ -2,7 +2,7 @@ import { TEKORT_VOORSTELLEN } from "@/data/agenda/tekort-voorstellen";
 import type { TekortVoorstelDef } from "@/data/agenda/tekort-voorstellen";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
-import { nutrientenUitItems, sanitizeItems } from "@/lib/nutrition-dagboek-items";
+import { nutrientenUitItems, sanitizeItems, zonderBenadering } from "@/lib/nutrition-dagboek-items";
 import { aandeelVanNorm, type KernstofNormen } from "@/lib/nutrition-normen";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 
@@ -58,7 +58,7 @@ export function dekkingPerDag(
     const stof = nutrientenUitItems(sanitizeItems(dag.items ?? [])).find(
       (entry) => entry.nutrient === nutrient,
     );
-    const aandeel = aandeelVanNorm(normen, nutrient, stof?.minstens ?? 0);
+    const aandeel = aandeelVanNorm(normen, nutrient, zonderBenadering(stof));
     resultaat[datum] = aandeel !== null && aandeel >= 1 ? "gedekt" : "open";
   }
   return resultaat;
