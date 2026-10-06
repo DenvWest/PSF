@@ -83,7 +83,7 @@ const CONTEXT_ASIDE_SIDEBAR_CLASSES =
   "xl:static xl:z-auto xl:h-auto xl:w-auto xl:max-w-none xl:translate-x-0 xl:translate-y-0 xl:overflow-visible xl:border-l xl:border-white/10 xl:bg-black/[0.12] xl:px-4 xl:py-4 min-[1440px]:px-6";
 
 const CONTEXT_ASIDE_OVERLAY_CLASSES =
-  "max-xl:fixed max-xl:z-40 max-xl:overflow-y-auto max-xl:bg-[#101a1b] max-xl:transition-transform max-xl:duration-300";
+  "max-xl:fixed max-xl:z-40 max-xl:overflow-y-auto max-xl:bg-[var(--vd-surface)] max-xl:transition-transform max-xl:duration-300";
 
 const CONTEXT_ASIDE_SHEET_OVERLAY_CLASSES =
   "max-xl:inset-x-0 max-xl:bottom-0 max-xl:max-h-[min(85vh,720px)] max-xl:rounded-t-[20px] max-xl:border-t max-xl:border-white/10 max-xl:p-3 max-xl:pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]";
