@@ -37,7 +37,7 @@ import {
   type Periode,
   type PeriodeKeuze,
 } from "@/lib/nutrition-periode";
-import { bronnenVanStof } from "@/lib/nutrition-stof-bronnen";
+import { bronnenVanStof, stofPerMoment } from "@/lib/nutrition-stof-bronnen";
 import { bepaalBevinding, bouwTekortsysteem } from "@/lib/nutrition-tekortsysteem";
 import { bouwTrend } from "@/lib/nutrition-trend";
 import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
@@ -274,6 +274,10 @@ function PatroonInhoud() {
     () => (openStof ? bronnenVanStof(dagen, datums, openStof) : []),
     [dagen, datums, openStof],
   );
+  const openPerMoment = useMemo(
+    () => (openStof ? stofPerMoment(dagen, datums, openStof) : []),
+    [dagen, datums, openStof],
+  );
 
   const gevuldeDagen = useMemo(
     () => dagen.filter((dag) => (dag.items?.length ?? 0) > 0).length,
@@ -352,6 +356,7 @@ function PatroonInhoud() {
               periode={periode}
               dagenGeregistreerd={stoffen.dagenGeregistreerd}
               bronnen={openBronnen}
+              perMoment={openPerMoment}
               onTerug={() => setOpenStof(null)}
             />
           ) : (

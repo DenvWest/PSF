@@ -46,6 +46,40 @@ describe("PatroonStofDetail", () => {
     expect(screen.getByText(/eronder zitten is geen\s+tekort/)).toBeTruthy();
   });
 
+  it("toont per maaltijd het deel, wanneer je een bron at, en waar de ruimte zit", () => {
+    render(
+      <PatroonStofDetail
+        rij={MAGNESIUM}
+        periode={{ van: "2026-09-28", tot: "2026-10-04" }}
+        dagenGeregistreerd={2}
+        bronnen={[
+          {
+            naam: "Pompoenpitten",
+            totaal: 300,
+            unit: "mg",
+            dagen: 2,
+            momenten: [
+              { datum: "2026-09-28", moment: "avondeten" },
+              { datum: "2026-09-30", moment: "ontbijt" },
+            ],
+            supplement: false,
+          },
+        ]}
+        perMoment={[
+          { moment: "ontbijt", label: "Ontbijt", totaal: 150, keer: 2 },
+          { moment: "lunch", label: "Lunch", totaal: 10, keer: 2 },
+          { moment: "avondeten", label: "Avondeten", totaal: 140, keer: 2 },
+          { moment: "tussendoor", label: "Tussendoor", totaal: 0, keer: 0 },
+        ]}
+        onTerug={() => {}}
+      />,
+    );
+    expect(screen.getByText("50%")).toBeTruthy();
+    expect(screen.getByText("niet geregistreerd")).toBeTruthy();
+    expect(screen.getByText(/ma 28 sep avondeten · wo 30 sep ontbijt/)).toBeTruthy();
+    expect(screen.getByText(/Je lunch leverde 3% van je magnesium/)).toBeTruthy();
+  });
+
   it("toont voedingsbronnen vóór de supplementvergelijking", () => {
     render(
       <PatroonStofDetail

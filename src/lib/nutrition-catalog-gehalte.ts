@@ -33,8 +33,10 @@ import type { NutrientUnit } from "@/lib/nutrition-units";
  * {@link gehaltePer100g} is het getal waarmee gerekend wordt (dagsom, krans,
  * tekorten). {@link gehalteWeergavePer100g} is wat een scherm toont en weet
  * meer: een gemeten 0 of spoor, en een benadering (vergelijkbaar NEVO-record).
- * Die twee extra's tellen nooit mee in een som
- * (`docs/plan/BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`).
+ * Een 0 of spoor telt nooit mee in een som
+ * (`docs/plan/BESLUIT_NUL_SPOOR_BENADERING_2026-10.md`). Een vrijgegeven
+ * benadering telt alleen mee voor energie, macro's en eiwit, als ≈
+ * ({@link eiwitBenaderingPer100g}, `BESLUIT_MICRO_IN_BEELD_2026-10.md`).
  */
 export interface CatalogGehalte {
   value: number;
@@ -138,4 +140,21 @@ export function gehaltePer100g(entry: CatalogEntry | null | undefined, nutrient:
   const waarde = veld ? nevo[veld.veld] : undefined;
   if (veld === undefined || typeof waarde !== "number") return null;
   return { value: waarde, unit: veld.unit, bron: "nevo", afgeleid: false };
+}
+
+/**
+ * Het eiwit van een vrijgegeven benadering (`FOOD_CATALOG_NEVO_BENADERINGEN`),
+ * per 100 g. Eiwit is een macro: 200 g kipdij als 0 g eiwit tellen is een
+ * grotere fout dan kipbout als ≈. Magnesium, zink, vitamine D en omega-3 van
+ * een benadering tellen nog steeds niet mee.
+ */
+export function eiwitBenaderingPer100g(entry: CatalogEntry | null | undefined): CatalogGehalte | null {
+  if (!entry) return null;
+  const waarde = FOOD_CATALOG_NEVO_BENADERINGEN[entry.key]?.protein_g;
+  return typeof waarde === "number" ? { value: waarde, unit: "g", bron: "nevo", afgeleid: false } : null;
+}
+
+/** Of deze catalogusregel een vrijgegeven benadering is (energie, macro's en eiwit tellen als ≈). */
+export function isVrijgegevenBenadering(catalogKey: string): boolean {
+  return FOOD_CATALOG_NEVO_BENADERINGEN[catalogKey] !== undefined;
 }

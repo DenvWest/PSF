@@ -68,6 +68,12 @@ describe("nevoCodeVoorItem", () => {
     expect(nevoCodeVoorItem({ ...ZALM, bron: "supplement" })).toBeNull();
   });
 
+  it("laadt wel het record van een vrijgegeven benadering, niet van een andere", () => {
+    const kipdijCode = nevoKoppelingVoor("kipdij")?.code;
+    expect(nevoCodesVoorItems([{ ...ZALM, key: "kipdij" }])).toEqual([kipdijCode]);
+    expect(nevoCodesVoorItems([{ ...ZALM, key: "amandeldrink" }])).toEqual([]);
+  });
+
   it("dedupliceert codes", () => {
     expect(nevoCodesVoorItems([ZALM, { ...ZALM, moment: "lunch" }])).toEqual([ZALM_CODE]);
   });
@@ -128,5 +134,49 @@ describe("rondVoedingswaarde", () => {
     expect(rondVoedingswaarde(134.6)).toBe("135");
     expect(rondVoedingswaarde(16.43)).toBe("16,4");
     expect(rondVoedingswaarde(2.46)).toBe("2,5");
+  });
+
+  describe("vrijgegeven benadering (kipdij ≈ kipbout)", () => {
+    const KIPDIJ: DagboekItem = { moment: "avondeten", bron: "voeding", key: "kipdij", grams: 100 };
+    const KIPDIJ_NEVO = product(`nevo:${nevoKoppelingVoor("kipdij")?.code ?? ""}`, {
+      energyKcal: 188,
+      fatG: 9,
+      carbohydrateG: 0,
+      ironMg: 0.8,
+      vitaminB12µg: 0.29,
+    });
+
+    it("telt energie, macro's en eiwit mee, gemarkeerd als benaderd", () => {
+      const uitkomst = berekenVoedingswaarde({
+        items: [KIPDIJ, ZALM],
+        nevoProducten: new Map([
+          [KIPDIJ_NEVO.prodId, KIPDIJ_NEVO],
+          [ZALM_NEVO.prodId, ZALM_NEVO],
+        ]),
+      });
+      expect(rij(uitkomst, "energyKcal")?.waarde).toBeCloseTo(188 + 135);
+      expect(rij(uitkomst, "energyKcal")?.benaderd).toBe(true);
+      expect(rij(uitkomst, "proteinG")?.waarde).toBeCloseTo(28.5 + (bedragVanItem(ZALM, "protein")?.value ?? NaN));
+      expect(uitkomst.benaderd).toBe(1);
+      expect(uitkomst.zonderWaarde).toBe(0);
+    });
+
+    it("telt geen vitamines en mineralen van een benadering", () => {
+      const uitkomst = berekenVoedingswaarde({
+        items: [KIPDIJ],
+        nevoProducten: new Map([[KIPDIJ_NEVO.prodId, KIPDIJ_NEVO]]),
+      });
+      expect(rij(uitkomst, "ironMg")?.waarde).toBeNull();
+      expect(rij(uitkomst, "vitaminB12µg")?.waarde).toBeNull();
+    });
+
+    it("telt het eiwit ook in de krans, maar geen andere kernstof", () => {
+      expect(bedragVanItem(KIPDIJ, "protein")?.value).toBeCloseTo(28.5);
+      expect(bedragVanItem(KIPDIJ, "magnesium")).toBeNull();
+    });
+
+    it("laat een niet-vrijgegeven benadering buiten de som", () => {
+      expect(bedragVanItem({ ...KIPDIJ, key: "proteinereep" }, "protein")).toBeNull();
+    });
   });
 });

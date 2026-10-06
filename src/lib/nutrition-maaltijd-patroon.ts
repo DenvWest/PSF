@@ -1,6 +1,7 @@
 import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
 import { normVoorVeld, STANDAARD_GEVOLGDE_NORMEN } from "@/lib/nutrition-normen";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
+import { isVrijgegevenBenadering } from "@/lib/nutrition-catalog-gehalte";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import { itemsVanMoment, nutrientenGesplitstUitItems, type DagboekItem } from "@/lib/nutrition-dagboek-items";
@@ -80,6 +81,10 @@ export type MaaltijdPatroon = {
   kernstoffen: MaaltijdKernstof[];
   /** Producten in deze keren die niets bijdroegen aan de voedingswaarde. */
   zonderWaarde: number;
+  /** Producten die als benadering meetelden (energie en macro's, ≈). */
+  benaderd: number;
+  /** Namen van die producten, voor de toelichting onder de tegels. */
+  benaderdeProducten: string[];
   /** Supplementregels op dit moment, opgeteld over alle keren. */
   supplementen: number;
   /** Wat er op deze maaltijd stond, vaakst eerst. */
@@ -170,11 +175,13 @@ export function bouwMaaltijdPatroon({
     const gemiddeldeRijen = VOEDINGSWAARDE_VELDEN.map((veld) => {
       let som = 0;
       let heeftWaarde = false;
+      let benaderd = false;
       for (const waarde of waarden) {
-        const bedrag = waarde.rijen.find((rij) => rij.veld === veld.veld)?.waarde;
-        if (bedrag === null || bedrag === undefined) continue;
-        som += bedrag;
+        const rij = waarde.rijen.find((r) => r.veld === veld.veld);
+        if (rij?.waarde === null || rij?.waarde === undefined) continue;
+        som += rij.waarde;
         heeftWaarde = true;
+        if (rij.benaderd) benaderd = true;
       }
       const gemiddeld = heeftWaarde && keer > 0 ? som / keer : null;
       const norm = normVoorVeld(normen, veld.veld)?.waarde ?? null;
@@ -184,6 +191,7 @@ export function bouwMaaltijdPatroon({
         norm,
         aandeel: gemiddeld !== null && norm !== null ? gemiddeld / norm : null,
         aandeelRi: gemiddeld !== null && veld.ri !== null ? gemiddeld / veld.ri : null,
+        benaderd,
       };
     });
 
@@ -227,6 +235,16 @@ export function bouwMaaltijdPatroon({
       rijen,
       kernstoffen,
       zonderWaarde: waarden.reduce((som, waarde) => som + waarde.zonderWaarde, 0),
+      benaderd: waarden.reduce((som, waarde) => som + waarde.benaderd, 0),
+      benaderdeProducten: [
+        ...new Set(
+          keren.flatMap(({ items }) =>
+            items.flatMap((item) =>
+              item.bron === "voeding" && isVrijgegevenBenadering(item.key) ? (catalogEntry(item.key)?.labelNl ?? []) : [],
+            ),
+          ),
+        ),
+      ],
       supplementen: keren.reduce(
         (som, { items }) => som + items.filter((item) => item.bron === "supplement").length,
         0,

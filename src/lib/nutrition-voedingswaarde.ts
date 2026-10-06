@@ -2,6 +2,7 @@ import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
 import { normVoorVeld, STANDAARD_GEVOLGDE_NORMEN } from "@/lib/nutrition-normen";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nevoKoppelingVoor } from "@/data/nutrition/food-catalog-nevo";
+import { isVrijgegevenBenadering } from "@/lib/nutrition-catalog-gehalte";
 import { bedragVanItem, type DagboekItem } from "@/lib/nutrition-dagboek-items";
 import {
   bedragVanSupermarktveld,
@@ -26,9 +27,12 @@ import type { SupermarktProduct } from "@/types/supermarkt-product";
  * ## Wat niet meetelt
  *
  * Een benaderingskoppeling (`basis: "benadering"`) is een vergelijkbaar
- * voedingsmiddel, geen brongetal, en gaat nooit in een som. Een supplement
- * levert alleen zijn kernstof. Beide tellen als `zonderWaarde`, zodat de UI
- * kan zeggen dat het totaal onvolledig is.
+ * voedingsmiddel, geen brongetal. Is hij vrijgegeven
+ * (`FOOD_CATALOG_NEVO_BENADERINGEN`), dan tellen zijn energie en macro's mee,
+ * gemarkeerd als `benaderd` (≈); zijn micro's niet
+ * (`BESLUIT_MICRO_IN_BEELD_2026-10.md`). Een niet-vrijgegeven benadering en een
+ * supplement tellen als `zonderWaarde`, zodat de UI kan zeggen dat het totaal
+ * onvolledig is.
  *
  * %RI alleen voor vitamines en mineralen (bijlage XIII, 1169/2011). Energie
  * en macro's krijgen geen percentage: het systeem legt daar geen doel op.
@@ -69,15 +73,30 @@ export type VoedingswaardeRij = VoedingswaardeVeld & {
   aandeel: number | null;
   /** Aandeel van de RI (0–∞): alleen voor de etiketvermelding in de voedingswaardetabel. */
   aandeelRi: number | null;
+  /** Of een benadering aan deze som bijdroeg: toon de waarde met ≈. */
+  benaderd?: boolean;
 };
 
 export type Voedingswaarde = {
   rijen: VoedingswaardeRij[];
   /** Producten met een waarde in minstens één rij. */
   metWaarde: number;
-  /** Producten die niets bijdroegen (geen koppeling, benadering, supplement, onbekend product). */
+  /** Producten die niets bijdroegen (geen koppeling, niet-vrijgegeven benadering, supplement, onbekend product). */
   zonderWaarde: number;
+  /** Producten die als benadering meetelden: alleen energie en macro's, met ≈. */
+  benaderd: number;
 };
+
+/** Wat een vrijgegeven benadering mag bijdragen: energie en macro's, geen micro's. */
+const BENADERING_VELDEN: ReadonlySet<SupermarktVeld> = new Set<SupermarktVeld>([
+  "energyKcal",
+  "fatG",
+  "saturatedFatG",
+  "carbohydrateG",
+  "sugarsG",
+  "fiberG",
+  "proteinG",
+]);
 
 /** De NEVO-code waaruit een dagboekregel zijn voedingswaarde haalt, of `null`. Nooit een benadering. */
 export function nevoCodeVoorItem(item: DagboekItem): string | null {
@@ -87,9 +106,18 @@ export function nevoCodeVoorItem(item: DagboekItem): string | null {
   return koppeling.code;
 }
 
+/** De NEVO-code van een vrijgegeven benadering, waarvan alleen energie en macro's meetellen. */
+function benaderingCodeVoorItem(item: DagboekItem): string | null {
+  if (item.bron !== "voeding" || !isVrijgegevenBenadering(item.key)) return null;
+  const koppeling = nevoKoppelingVoor(item.key);
+  return koppeling?.basis === "benadering" ? koppeling.code : null;
+}
+
 /** Alle NEVO-codes die nodig zijn om deze items door te rekenen, uniek en gesorteerd. */
 export function nevoCodesVoorItems(items: readonly DagboekItem[]): string[] {
-  return [...new Set(items.flatMap((item) => nevoCodeVoorItem(item) ?? []))].sort();
+  return [
+    ...new Set(items.flatMap((item) => nevoCodeVoorItem(item) ?? benaderingCodeVoorItem(item) ?? [])),
+  ].sort();
 }
 
 function eiwitVanItem(item: DagboekItem): number | null {
@@ -98,34 +126,35 @@ function eiwitVanItem(item: DagboekItem): number | null {
   return toBase(bedrag.value, bedrag.unit, "protein");
 }
 
-function waardenVanItem(
-  item: DagboekItem,
-  nevoProducten: ReadonlyMap<string, SupermarktProduct>,
-): Map<SupermarktVeld, number> | null {
+type Bijdrage = { waarden: Map<SupermarktVeld, number>; benaderd: boolean };
+
+function waardenVanItem(item: DagboekItem, nevoProducten: ReadonlyMap<string, SupermarktProduct>): Bijdrage | null {
   const waarden = new Map<SupermarktVeld, number>();
   const eiwit = eiwitVanItem(item);
   if (eiwit !== null) waarden.set("proteinG", eiwit);
 
-  const code = nevoCodeVoorItem(item);
+  const benaderingCode = nevoCodeVoorItem(item) === null ? benaderingCodeVoorItem(item) : null;
+  const code = nevoCodeVoorItem(item) ?? benaderingCode;
   const product = code && catalogEntry(item.key) ? nevoProducten.get(`nevo:${code}`) : undefined;
   if (product) {
     for (const { veld } of VOEDINGSWAARDE_VELDEN) {
       if (veld === "proteinG") continue;
+      if (benaderingCode && !BENADERING_VELDEN.has(veld)) continue;
       const bedrag = bedragVanSupermarktveld(product, veld, item.grams);
       if (bedrag !== null) waarden.set(veld, bedrag);
     }
   }
-  return waarden.size > 0 ? waarden : null;
+  return waarden.size > 0 ? { waarden, benaderd: benaderingCode !== null } : null;
 }
 
-function waardenVanLog(log: Pick<SupermarktPortie, "product" | "grams">): Map<SupermarktVeld, number> | null {
+function waardenVanLog(log: Pick<SupermarktPortie, "product" | "grams">): Bijdrage | null {
   if (!log.product) return null;
   const waarden = new Map<SupermarktVeld, number>();
   for (const { veld } of VOEDINGSWAARDE_VELDEN) {
     const bedrag = bedragVanSupermarktveld(log.product, veld, log.grams);
     if (bedrag !== null) waarden.set(veld, bedrag);
   }
-  return waarden.size > 0 ? waarden : null;
+  return waarden.size > 0 ? { waarden, benaderd: false } : null;
 }
 
 /**
@@ -151,11 +180,13 @@ export function berekenVoedingswaarde({
   const rijen = VOEDINGSWAARDE_VELDEN.map((veld): VoedingswaardeRij => {
     let som = 0;
     let heeftWaarde = false;
-    for (const waarden of bijdragen) {
-      const bedrag = waarden?.get(veld.veld);
+    let benaderd = false;
+    for (const bijdrage of bijdragen) {
+      const bedrag = bijdrage?.waarden.get(veld.veld);
       if (bedrag === undefined) continue;
       som += bedrag;
       heeftWaarde = true;
+      if (bijdrage?.benaderd) benaderd = true;
     }
     const waarde = heeftWaarde ? som : null;
     const norm = normVoorVeld(normen, veld.veld)?.waarde ?? null;
@@ -165,11 +196,13 @@ export function berekenVoedingswaarde({
       norm,
       aandeel: waarde !== null && norm !== null ? waarde / norm : null,
       aandeelRi: waarde !== null && veld.ri !== null ? waarde / veld.ri : null,
+      benaderd,
     };
   });
 
-  const metWaarde = bijdragen.filter((waarden) => waarden !== null).length;
-  return { rijen, metWaarde, zonderWaarde: bijdragen.length - metWaarde };
+  const metWaarde = bijdragen.filter((bijdrage) => bijdrage !== null).length;
+  const benaderdAantal = bijdragen.filter((bijdrage) => bijdrage?.benaderd).length;
+  return { rijen, metWaarde, zonderWaarde: bijdragen.length - metWaarde, benaderd: benaderdAantal };
 }
 
 /** Eén decimaal onder 100, zoals de kernstoffen erboven; daarboven hele getallen. */

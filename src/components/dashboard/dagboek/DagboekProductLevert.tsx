@@ -177,8 +177,8 @@ export default function DagboekProductLevert({
         {benadering && heeftGetal ? (
           <p className="m-0 border-t border-white/10 bg-[var(--vd-amber-fill)] px-4 py-3 text-[11px] leading-relaxed text-[var(--vd-ink-2)]">
             ≈ Benadering: NEVO heeft geen eigen record voor dit product. Dit zijn de waarden van
-            &lsquo;{benadering}&rsquo; (NEVO-online versie {NEVO_GEHALTES_EDITIE}, RIVM, Bilthoven). Ze tellen
-            niet mee in je dag.
+            &lsquo;{benadering}&rsquo; (NEVO-online versie {NEVO_GEHALTES_EDITIE}, RIVM, Bilthoven). Energie,
+            macro&rsquo;s en eiwit tellen als benadering mee in je dag; vitamines en mineralen niet.
           </p>
         ) : null}
 

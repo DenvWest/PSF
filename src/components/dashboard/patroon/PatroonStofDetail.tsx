@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import PatroonBronZoek from "@/components/dashboard/patroon/PatroonBronZoek";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { normLabel, normVoor } from "@/lib/nutrition-normen";
 import { periodeLabel, type Periode } from "@/lib/nutrition-periode";
-import { pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
+import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { isKernstofMetNorm } from "@/lib/account-kernstof-profiel";
-import type { StofBron } from "@/lib/nutrition-stof-bronnen";
+import type { StofBron, StofPerMoment } from "@/lib/nutrition-stof-bronnen";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 import type { WeekRij } from "@/lib/nutrition-weekoverzicht";
 import { useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
@@ -39,27 +40,64 @@ const NORM_BRON_VOLUIT: Record<string, string> = {
   "Gezondheidsraad 2012": "Gezondheidsraad (2012), Evaluatie van de voedingsnormen voor vitamine D",
 };
 
+const MAX_MOMENTEN = 3;
+
+function dagLabel(datum: string): string {
+  return new Date(`${datum}T00:00:00Z`).toLocaleDateString("nl-NL", {
+    timeZone: "UTC",
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+}
+
+/** "ma 29 sep avondeten · wo 1 okt lunch +2", of alleen de maaltijd bij één dag. */
+function wanneerTekst(momenten: StofBron["momenten"], eenDag: boolean, labels: Record<EetmomentId, string>): string {
+  const delen = momenten
+    .slice(0, MAX_MOMENTEN)
+    .map(({ datum, moment }) =>
+      eenDag ? labels[moment].toLowerCase() : `${dagLabel(datum)} ${labels[moment].toLowerCase()}`,
+    );
+  const rest = momenten.length - MAX_MOMENTEN;
+  return `${delen.join(" · ")}${rest > 0 ? ` +${rest}` : ""}`;
+}
+
+/**
+ * De maaltijd met het kleinste aandeel, als daar ruimte zit: alleen tussen
+ * maaltijden die je registreerde, en alleen als er minstens twee zijn. Een
+ * niet-geregistreerde maaltijd is onbekend, geen lege maaltijd.
+ */
+function ruimteBij(perMoment: readonly StofPerMoment[], totaal: number): StofPerMoment | null {
+  const geregistreerd = perMoment.filter((m) => m.keer > 0);
+  if (totaal <= 0 || geregistreerd.length < 2) return null;
+  const kleinste = geregistreerd.reduce((min, m) => (m.totaal < min.totaal ? m : min));
+  return kleinste.totaal / totaal < 0.15 ? kleinste : null;
+}
+
 export default function PatroonStofDetail({
   rij,
   periode,
   dagenGeregistreerd,
   bronnen,
+  perMoment = [],
   onTerug,
 }: {
   rij: WeekRij;
   periode: Periode;
   dagenGeregistreerd: number;
   bronnen: readonly StofBron[];
+  perMoment?: readonly StofPerMoment[];
   onTerug: () => void;
 }) {
   const normen = useKernstofNormen();
   const norm = normVoor(normen, rij.nutrient);
   const profiel = useKernstofProfiel();
   const streef = isKernstofMetNorm(rij.nutrient) ? (profiel.streefwaarden[rij.nutrient] ?? null) : null;
-  const rijkste = rijksteBronnen(rij.nutrient, "portie", 40)
-    .filter((bron) => pastBijVoedingswijze(bron.entry, profiel.voedingswijze))
-    .slice(0, 5);
   const totaal = bronnen.reduce((som, bron) => som + bron.totaal, 0);
+  const eenDag = periode.van === periode.tot;
+  const momentLabels = Object.fromEntries(perMoment.map((m) => [m.moment, m.label])) as Record<EetmomentId, string>;
+  const momentTotaal = perMoment.reduce((som, m) => som + m.totaal, 0);
+  const ruimte = ruimteBij(perMoment, momentTotaal);
   const uitSupplement = bronnen.filter((b) => b.supplement).reduce((som, b) => som + b.totaal, 0);
 
   return (
@@ -141,6 +179,40 @@ export default function PatroonStofDetail({
         </p>
       </div>
 
+      {momentTotaal > 0 ? (
+        <div className="vd-tabel">
+          <div className="vd-tabel-kop grid-cols-[1fr_auto_44px]">
+            <span className="!text-left">Per maaltijd</span>
+            <span>{eenDag ? "" : "Totaal"}</span>
+            <span>Deel</span>
+          </div>
+          {perMoment.map((m) => (
+            <div key={m.moment} className="vd-tabel-rij grid-cols-[1fr_auto_44px]">
+              <span className="vd-naam">
+                {m.label}
+                {!eenDag && m.keer > 0 ? <i>{m.keer} keer geregistreerd</i> : null}
+              </span>
+              <span className="vd-getal">
+                {m.keer === 0 ? (
+                  <i className="text-[var(--vd-ink-4)]">niet geregistreerd</i>
+                ) : (
+                  `${hoeveelheid(m.totaal)} ${rij.unit}`
+                )}
+              </span>
+              <span className="vd-getal">
+                {m.keer === 0 ? "—" : `${Math.round((m.totaal / momentTotaal) * 100)}%`}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : null}
+      {ruimte ? (
+        <p className="vd-tag m-0">
+          Je {ruimte.label.toLowerCase()} leverde {Math.round((ruimte.totaal / momentTotaal) * 100)}% van je{" "}
+          {rij.label.toLowerCase()} — daar zit de meeste ruimte.
+        </p>
+      ) : null}
+
       <div className="vd-tabel">
         <div className="vd-tabel-kop">
           <span className="!text-left">Jouw bronnen in deze periode</span>
@@ -158,7 +230,9 @@ export default function PatroonStofDetail({
                 {bron.naam}
                 <i>
                   {bron.supplement ? "supplement · " : ""}
-                  {bron.dagen} {bron.dagen === 1 ? "dag" : "dagen"}
+                  {perMoment.length > 0
+                    ? wanneerTekst(bron.momenten, eenDag, momentLabels)
+                    : `${bron.dagen} ${bron.dagen === 1 ? "dag" : "dagen"}`}
                 </i>
               </span>
               <span className="vd-getal">
@@ -173,41 +247,20 @@ export default function PatroonStofDetail({
         <p className="vd-tag m-0">{Math.round((uitSupplement / totaal) * 100)}% hiervan kwam uit supplementen.</p>
       ) : null}
 
-      {rijkste.length > 0 ? (
-        <div className="vd-tabel">
-          <div className="vd-tabel-kop">
-            <span className="!text-left">Rijkste voedingsbronnen · per portie</span>
-          </div>
-          {profiel.voedingswijze ? (
-            <div className="vd-tabel-rij">
-              <span className="vd-naam">
-                <i>Alleen {profiel.voedingswijze}e bronnen, volgens je keuze op Je doelen.</i>
-              </span>
-            </div>
-          ) : null}
-          {rijkste.map((bron) => (
-            <div key={bron.entry.key} className="vd-tabel-rij grid-cols-[1fr_auto]">
-              <span className="vd-naam">
-                {bron.entry.labelNl}
-                <i>{bron.portieLabel}</i>
-              </span>
-              <span className="vd-getal">
-                {hoeveelheid(bron.perPortie)} {bron.unit}
-                {norm ? ` · ${percentageADH(bron.perPortie / norm.waarde)}` : ""}
-              </span>
-            </div>
-          ))}
-          <div className="vd-tabel-rij">
-            <Link
-              href="/dashboard?tab=vandaag"
-              onClick={() => trackEvent("nutrition_patroon_stof_naar_dagboek", { nutrient: rij.nutrient })}
-              className="text-[12.5px] font-semibold text-[var(--vd-sage-2)]"
-            >
-              Voeg toe in je dagboek →
-            </Link>
-          </div>
-        </div>
-      ) : null}
+      <PatroonBronZoek
+        nutrient={rij.nutrient}
+        label={rij.label}
+        unit={rij.unit}
+        norm={norm?.waarde ?? null}
+        voedingswijze={profiel.voedingswijze}
+      />
+      <Link
+        href="/dashboard?tab=vandaag"
+        onClick={() => trackEvent("nutrition_patroon_stof_naar_dagboek", { nutrient: rij.nutrient })}
+        className="text-[12.5px] font-semibold text-[var(--vd-sage-2)]"
+      >
+        Voeg toe in je dagboek →
+      </Link>
 
       <p className="m-0 text-[0.75rem] text-[var(--vd-ink-3)]">
         Lukt het niet via voeding?{" "}

@@ -59,5 +59,5 @@ export function etiketVanProduct(
     return { ...veld, waarde, norm: null, aandeel: aandeelRi, aandeelRi };
   });
   const metWaarde = rijen.some((rij) => rij.waarde !== null) ? 1 : 0;
-  return { rijen, metWaarde, zonderWaarde: 1 - metWaarde };
+  return { rijen, metWaarde, zonderWaarde: 1 - metWaarde, benaderd: 0 };
 }

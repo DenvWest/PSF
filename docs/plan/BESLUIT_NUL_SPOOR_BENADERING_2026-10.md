@@ -37,7 +37,7 @@ In de vergelijking in het dagboek (spinazie diepvries · zalm gerookt · broccol
 ## Afgewezen
 
 - **Een 0 helemaal weglaten (cel leeg):** rustiger, maar dan valt het verschil tussen "niets erin" en "niet gemeten" weg, en in een vergelijking is "spinazie 0, zalm 3 µg" juist de informatie.
-- **Benaderingen laten meetellen in de dagsom:** het dagtotaal is bewust een ondergrens uit echte brongetallen (TOTAALBEELD §6).
+- **Benaderingen laten meetellen in de dagsom:** het dagtotaal is bewust een ondergrens uit echte brongetallen (TOTAALBEELD §6). *Herzien 6 okt: vrijgegeven benaderingen tellen mee voor energie, macro's en eiwit (≈), niet voor micro's — zie `BESLUIT_MICRO_IN_BEELD_2026-10.md` §1.*
 - **Alle 32 benaderingen in één keer vrijgeven:** bij verrijkte producten (margarine, plantendranken) zou de benadering de vitamine D structureel te laag tonen.
 - **0 als getal in `FOOD_CATALOG_NEVO_GEHALTES` schrijven:** dan krijgt elke som-consument een 0 binnen en moet elke plek zelf weten dat die niet als bron telt. Een aparte lijst houdt de rekenkant ongewijzigd.
 
