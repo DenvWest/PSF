@@ -44,6 +44,24 @@ function dag(datum: string, ontbijt: number, volledig: boolean): DagMeting {
   return { datum, geregistreerd: true, volledig, som: ontbijt, somStreng: ontbijt, benaderd: false, momenten, bijdragen: [] };
 }
 
+function dagMet(datum: string, per: Partial<Record<"ontbijt" | "lunch" | "avondeten", number>>): DagMeting {
+  const momenten = (["ontbijt", "lunch", "avondeten", "tussendoor"] as const).map((moment) => {
+    const som = moment === "tussendoor" ? undefined : per[moment];
+    return { moment, geregistreerd: som !== undefined, som: som ?? 0, somStreng: som ?? 0 };
+  });
+  const som = momenten.reduce((t, m) => t + m.som, 0);
+  return {
+    datum,
+    geregistreerd: true,
+    volledig: per.ontbijt !== undefined && per.lunch !== undefined && per.avondeten !== undefined,
+    som,
+    somStreng: som,
+    benaderd: false,
+    momenten,
+    bijdragen: [],
+  };
+}
+
 const LEGE_DAG: DagMeting = { ...dag("2026-10-03", 0, false), geregistreerd: false, momenten: [] };
 
 function invoer(dagen: DagMeting[], extra: Partial<StofTrendInvoer> = {}): StofTrendInvoer {
@@ -110,6 +128,35 @@ describe("bouwStofTrend", () => {
     const trend = bouwStofTrend(invoer([dag("2026-10-01", 175, true)], { stof: "calciumMg", soort: "gevolgd" }));
     expect(trend.punten[0]!.staat).toBe("neutraal");
     expect(trend.redenen[0]).toMatch(/50% van de norm/);
+  });
+
+  it("schat een onvolledige dag met je eigen gemiddelde van de ontbrekende maaltijd, pas vanaf 3 keer", () => {
+    const dagen = [
+      dagMet("2026-09-28", { ontbijt: 100, lunch: 50, avondeten: 100 }),
+      dagMet("2026-09-29", { ontbijt: 100, lunch: 50, avondeten: 120 }),
+      dagMet("2026-09-30", { ontbijt: 100, lunch: 50, avondeten: 140 }),
+      dagMet("2026-10-01", { ontbijt: 100, lunch: 50 }),
+    ];
+    const trend = bouwStofTrend(invoer(dagen));
+    const laatste = trend.punten[3]!;
+    expect(laatste.staat).toBe("onvolledig");
+    expect(laatste.aanvulling).toBe(120);
+    expect(laatste.detail?.schatting).toBe("≈ 77% met je gebruikelijke avondeten (gem. 120 mg, 3×).");
+    expect(laatste.detail?.momenten.find((m) => m.moment === "avondeten")).toMatchObject({ waarde: null, geschat: 120 });
+  });
+
+  it("zegt bij te weinig registraties alleen wat de maaltijd nog moet leveren", () => {
+    const dagen = [dagMet("2026-09-30", { ontbijt: 100, lunch: 50, avondeten: 140 }), dagMet("2026-10-01", { ontbijt: 100 })];
+    const punt = bouwStofTrend(invoer(dagen)).punten[1]!;
+    expect(punt.aanvulling).toBeNull();
+    expect(punt.detail?.schatting).toBe("Je lunch en avondeten moeten samen nog 250 mg leveren voor de norm.");
+  });
+
+  it("schat niets als de dag de norm al haalt of bij een periodetotaal", () => {
+    const gehaald = bouwStofTrend(invoer([dagMet("2026-10-01", { ontbijt: 400 }), dagMet("2026-10-02", { ontbijt: 10 })]));
+    expect(gehaald.punten[0]!.detail?.schatting).toBeNull();
+    const omega = bouwStofTrend(invoer([dagMet("2026-10-01", { ontbijt: 10 }), dagMet("2026-10-02", { ontbijt: 10 })], { periodetotaal: true }));
+    expect(omega.punten.every((p) => p.detail?.schatting === null)).toBe(true);
   });
 
   it("toont per maaltijd bij één dag", () => {

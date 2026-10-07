@@ -57,6 +57,14 @@ Dennis' feedback op Je patroon:
   Geen "je hebt een tekort", geen supplementadvies in deze regels.
 - Een tik op de stofnaam in Trend opent het stof-detail in Per stof.
 
+### 5. Trend als box van 0–100%, schatting voor de ontbrekende maaltijd, paneel ernaast (7 okt 2026, akkoord Dennis)
+
+- **Box van 0 tot 100% van de norm.** De bovenrand is de norm; hulplijn op 50%. Boven de norm vult de staaf de box en staat er een label ("140%"). Het losse normlabel rechts vervalt. Zonder norm (eiwit zonder doel) blijft de schaal in de eenheid.
+- **Onvolledige dag: had je het alsnog gehaald?** Gestippeld bovenop de staaf: het gemiddelde van je **eigen** registraties van de ontbrekende hoofdmaaltijd(en) in de periode, alleen vanaf 3×. Minder vaak: alleen "je avondeten moet nog X leveren voor de norm". De dag blijft "onvolledig" — een schatting kleurt nooit groen. Niet bij omega-3 (periodetotaal) en niet als de dag de norm al haalt; per week geen schatting.
+- **Paneel naast de grafiek** (eronder onder 560 px tegelbreedte, via `@container`): uitleesregel, schatting, verdeling per maaltijd (per week: gemiddelde en aantal keer), top 3 bronnen, en de "waarom"-regels van de periode.
+
+Volgt nog, apart: eetpatroon ("welke maaltijden eet je meestal?") in Je doelen met migratie, zodat wie periodiek vast 2/2 volledig kan zijn; daarna `NUT_DOEL`/`NUT_CONTEXT` in de voedingscheck (met "periodiek vasten" als context-optie).
+
 ## Afgewezen
 
 - **Hermeting naar Meer verplaatsen:** de brede check wordt niet meer aangeboden en de hermeting loopt dood. Een menu-ingang naar een dood scherm helpt niemand. De herinnering blijft als enige ingang voor wie nog een brede check heeft.

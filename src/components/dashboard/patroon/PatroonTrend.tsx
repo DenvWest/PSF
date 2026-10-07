@@ -16,7 +16,7 @@ import type { StofTrend } from "@/lib/nutrition-stof-trend";
  *
  * ## "Waarom niet" in feiten
  *
- * Onder elke stof staat wat het systeem echt weet: op hoeveel volledige dagen
+ * Naast elke grafiek staat wat het systeem echt weet: op hoeveel volledige dagen
  * je gemiddeld wat haalde, welke dagen een hoofdmaaltijd missen (daar is onder
  * de norm geen antwoord), wat er per maaltijd wél te zeggen is, en welke
  * producten geen gehalte hebben. Geen "je hebt een tekort": een norm geldt
@@ -47,12 +47,12 @@ function StofKaart({ trend, onOpen }: { trend: StofTrend; onOpen: (stof: Patroon
         </span>
       </div>
 
-      {trend.bewijsbaar ? <PatroonTrendGrafiek trend={trend} /> : null}
-
-      {trend.redenen.length > 0 ? (
+      {trend.bewijsbaar ? (
+        <PatroonTrendGrafiek trend={trend} redenen={trend.redenen} />
+      ) : trend.redenen.length > 0 ? (
         <ul
           aria-label={`Waarom ${trend.label.toLowerCase()} niet aan de norm voldoet`}
-          className="m-0 mt-2.5 flex list-none flex-col gap-1 border-t border-[var(--vd-line)] p-0 pt-2 text-[12px] leading-snug text-[var(--vd-ink-2)]"
+          className="m-0 flex list-none flex-col gap-1 p-0 text-[12px] leading-snug text-[var(--vd-ink-2)]"
         >
           {trend.redenen.map((reden) => (
             <li key={reden}>{reden}</li>
@@ -79,7 +79,7 @@ export default function PatroonTrend({
         {schaal === "maaltijd"
           ? "Per maaltijd: wat elke maaltijd van de dagnorm leverde. Een maaltijd haalt geen dagnorm, dus geen kleur."
           : schaal === "dag"
-            ? "Per dag. Onder elke dag staat hoeveel van de drie hoofdmaaltijden je registreerde."
+            ? "Per dag, als deel van de norm (bovenrand = 100%). Onder elke dag staat hoeveel van de drie hoofdmaaltijden je registreerde."
             : "Per week: gemiddeld per geregistreerde dag, met hoeveel dagen volledig waren."}{" "}
         <span className="inline-flex items-center gap-1">
           <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm bg-[var(--vd-sage)]" /> gehaald
@@ -96,6 +96,11 @@ export default function PatroonTrend({
             style={{ background: "repeating-linear-gradient(135deg, var(--vd-ink-4) 0 2px, transparent 2px 4px)" }}
           />{" "}
           onvolledig: geen dagoordeel
+        </span>{" "}
+        ·{" "}
+        <span className="inline-flex items-center gap-1">
+          <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm border border-dashed border-[var(--vd-ink-3)]" />{" "}
+          gestippeld: je gebruikelijke ontbrekende maaltijd (schatting)
         </span>
       </p>
 
