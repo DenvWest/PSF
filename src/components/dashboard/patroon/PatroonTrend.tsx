@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import PatroonTrendGrafiek, { type TrendWeergave } from "@/components/dashboard/patroon/PatroonTrendGrafiek";
+import PatroonTrendGrafiek from "@/components/dashboard/patroon/PatroonTrendGrafiek";
 import PatroonTrendTabel from "@/components/dashboard/patroon/PatroonTrendTabel";
 import { trackEvent } from "@/lib/ga4";
 import type { PatroonStof } from "@/lib/nutrition-stof-meting";
@@ -11,12 +10,12 @@ import type { StofTrend } from "@/lib/nutrition-stof-trend";
  * De trend per stof over de gekozen periode, met per stof de feiten waarom
  * hij (nog) niet aan de norm voldoet.
  *
- * ## Staaf of lijn
+ * ## Waarom staafjes en geen lijngrafiek
  *
- * Staaf is de standaard. De lijn mag sinds 7 okt 2026 (besluit §6), op één
- * voorwaarde: hij breekt bij een dag zonder registratie. Een lijn die dwars
- * over een lege dag loopt, tekent een waarde die er niet is. Eén schakelaar
- * geldt voor alle grafieken tegelijk.
+ * Een lijn suggereert een continue meting tussen de punten in: als je een dag
+ * niet registreerde, tekent een lijn er dwars doorheen een waarde bij die er
+ * niet is. Staafjes met een lege plek zijn eerlijker. Een lijn die breekt bij
+ * een lege dag is op 7 okt 2026 geprobeerd en weer weggehaald: niet mooi.
  *
  * ## Alles samen
  *
@@ -46,11 +45,9 @@ function kaartId(stof: PatroonStof): string {
 function StofKaart({
   trend,
   onOpen,
-  weergave,
 }: {
   trend: StofTrend;
   onOpen: (stof: PatroonStof) => void;
-  weergave: TrendWeergave;
 }) {
   return (
     <li id={kaartId(trend.stof)} className="vd-tabel scroll-mt-4" style={{ padding: "0.875rem" }}>
@@ -69,7 +66,7 @@ function StofKaart({
       </div>
 
       {trend.bewijsbaar ? (
-        <PatroonTrendGrafiek trend={trend} redenen={trend.redenen} weergave={weergave} />
+        <PatroonTrendGrafiek trend={trend} redenen={trend.redenen} />
       ) : trend.redenen.length > 0 ? (
         <ul
           aria-label={`Waarom ${trend.label.toLowerCase()} niet aan de norm voldoet`}
@@ -94,14 +91,6 @@ export default function PatroonTrend({
   onOpen: (stof: PatroonStof) => void;
 }) {
   const schaal = kernstoffen[0]?.schaal ?? gevolgd[0]?.schaal;
-  const [weergave, setWeergave] = useState<TrendWeergave>("staaf");
-
-  const kiesWeergave = (volgende: TrendWeergave) => {
-    if (volgende === weergave) return;
-    setWeergave(volgende);
-    trackEvent("nutrition_patroon_trend_weergave", { weergave: volgende });
-  };
-
   const springNaar = (stof: PatroonStof) => {
     document.getElementById(kaartId(stof))?.scrollIntoView({ behavior: "smooth", block: "start" });
     trackEvent("nutrition_patroon_trend_tabel_rij", { nutrient: stof });
@@ -111,21 +100,6 @@ export default function PatroonTrend({
     <div className="flex flex-col gap-4">
       <PatroonTrendTabel trends={[...kernstoffen, ...gevolgd]} onKies={springNaar} />
 
-      <div role="group" aria-label="Weergave van de grafieken" className="inline-flex self-start rounded-full border border-[var(--vd-line-2)] p-0.5 text-[12px]">
-        {(["staaf", "lijn"] as const).map((optie) => (
-          <button
-            key={optie}
-            type="button"
-            aria-pressed={weergave === optie}
-            onClick={() => kiesWeergave(optie)}
-            className={`cursor-pointer rounded-full border-0 px-3 py-1 font-[inherit] ${
-              weergave === optie ? "bg-[var(--vd-surface-3)] text-[var(--vd-ink)]" : "bg-transparent text-[var(--vd-ink-3)]"
-            }`}
-          >
-            {optie === "staaf" ? "Staaf" : "Lijn"}
-          </button>
-        ))}
-      </div>
 
       <p className="vd-note" style={{ margin: 0 }}>
         {schaal === "maaltijd"
@@ -152,13 +126,13 @@ export default function PatroonTrend({
         ·{" "}
         <span className="inline-flex items-center gap-1">
           <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm border border-dashed border-[var(--vd-ink-3)]" />{" "}
-          gestippeld: je gebruikelijke ontbrekende maaltijd (schatting){weergave === "lijn" ? " · open rondje: onvolledig, de lijn breekt bij een lege dag" : ""}
+          gestippeld: je gebruikelijke ontbrekende maaltijd (schatting)
         </span>
       </p>
 
       <ul className="m-0 flex list-none flex-col gap-4 p-0">
         {kernstoffen.map((trend) => (
-          <StofKaart key={trend.stof} trend={trend} onOpen={onOpen} weergave={weergave} />
+          <StofKaart key={trend.stof} trend={trend} onOpen={onOpen} />
         ))}
       </ul>
 
@@ -169,7 +143,7 @@ export default function PatroonTrend({
           </p>
           <ul className="m-0 flex list-none flex-col gap-4 p-0">
             {gevolgd.map((trend) => (
-              <StofKaart key={trend.stof} trend={trend} onOpen={onOpen} weergave={weergave} />
+              <StofKaart key={trend.stof} trend={trend} onOpen={onOpen} />
             ))}
           </ul>
         </section>

@@ -100,30 +100,12 @@ function Paneel({
   );
 }
 
-export type TrendWeergave = "staaf" | "lijn";
-
-function Punt({ staat, actief }: { staat: StofTrendStaat; actief: boolean }) {
-  const open = staat === "onvolledig";
-  return (
-    <span
-      aria-hidden
-      data-staat={staat}
-      className={`absolute left-1/2 block h-2.5 w-2.5 -translate-x-1/2 translate-y-1/2 rounded-full border ${
-        open ? "border-[var(--vd-ink-3)] bg-[var(--vd-surface)]" : "border-transparent"
-      }`}
-      style={{ background: open ? undefined : achtergrond(staat), opacity: actief ? 1 : 0.7 }}
-    />
-  );
-}
-
 export default function PatroonTrendGrafiek({
   trend,
   redenen = [],
-  weergave = "staaf",
 }: {
   trend: StofTrend;
   redenen?: readonly string[];
-  weergave?: TrendWeergave;
 }) {
   const { punten } = trend;
   const norm = trend.norm;
@@ -137,18 +119,7 @@ export default function PatroonTrendGrafiek({
   const fractie = (waarde: number) => (procent ? Math.min(waarde / norm!, 1) : waarde / hoogsteWaarde);
   const kolommen = { gridTemplateColumns: `repeat(${punten.length}, minmax(0, 1fr))` };
   const smal = punten.length > 8;
-  const lijn = weergave === "lijn";
-  // Lijn: geen tussenruimte, zodat het midden van elke kolom exact op (i + ½) / n ligt.
-  const tussenruimte = lijn ? "gap-0" : smal ? "gap-0.5" : "gap-1.5";
-  const hoogteVan = (punt: StofTrendPunt) => (punt.waarde === null ? null : fractie(punt.waarde));
-  // Een lijn alleen tussen twee buren die allebei gemeten zijn: over een lege dag tekenen we niets.
-  const segmenten = punten.flatMap((punt, i) => {
-    const volgende = punten[i + 1];
-    const y1 = hoogteVan(punt);
-    const y2 = volgende ? hoogteVan(volgende) : null;
-    if (y1 === null || y2 === null) return [];
-    return [{ x1: ((i + 0.5) / punten.length) * 100, y1: (1 - y1) * 100, x2: ((i + 1.5) / punten.length) * 100, y2: (1 - y2) * 100 }];
-  });
+  const tussenruimte = smal ? "gap-0.5" : "gap-1.5";
 
   return (
     <div className="@container w-full">
@@ -190,25 +161,6 @@ export default function PatroonTrendGrafiek({
                 />
               ) : null}
 
-              {lijn ? (
-                <svg
-                  aria-hidden
-                  data-testid="trend-lijn"
-                  className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                >
-                  {segmenten.map((seg) => (
-                    <line
-                      key={`${seg.x1}`}
-                      {...seg}
-                      stroke="var(--vd-ink-3)"
-                      strokeWidth={1.5}
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  ))}
-                </svg>
-              ) : null}
 
               {punten.map((punt, i) => {
                 const isActief = i === index;
@@ -229,20 +181,6 @@ export default function PatroonTrendGrafiek({
                   >
                     {punt.waarde === null ? (
                       <span aria-hidden className="mb-0.5 block w-full max-w-[24px] border-t border-dashed border-[var(--vd-ink-4)]" />
-                    ) : lijn ? (
-                      <>
-                        {geschat > 0 ? (
-                          <span
-                            aria-hidden
-                            data-schatting
-                            className="absolute left-1/2 block -translate-x-1/2 border-l border-dashed border-[var(--vd-ink-3)]"
-                            style={{ bottom: `${gemeten * 100}%`, height: `${geschat * 100}%` }}
-                          />
-                        ) : null}
-                        <span className="absolute inset-x-0" style={{ bottom: `${gemeten * 100}%` }}>
-                          <Punt staat={punt.staat} actief={isActief} />
-                        </span>
-                      </>
                     ) : (
                       <>
                         {geschat > 0 ? (

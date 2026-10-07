@@ -65,13 +65,13 @@ Dennis' feedback op Je patroon:
 
 Volgt nog, apart: eetpatroon ("welke maaltijden eet je meestal?") in Je doelen met migratie, zodat wie periodiek vast 2/2 volledig kan zijn; daarna `NUT_DOEL`/`NUT_CONTEXT` in de voedingscheck (met "periodiek vasten" als context-optie).
 
-### 6. Alles samen, staaf of lijn, eiwit tegen je doel (7 okt 2026, akkoord Dennis)
+### 6. Alles samen en eiwit tegen je doel (7 okt 2026, akkoord Dennis)
 
 - **"Alles samen"-tabel bovenaan Trend:** per stof een rij, per dag/week/maaltijd een kolom, in de cel het % van de lat. ✓ alleen bij aantoonbaar gehaald (zonder benaderingen): kernstof sage, gevolgde stof neutrale tint (`BESLUIT_DOELEN_VERBONDEN_2026-10.md` §1, "✓ bij gehaald"). Onvolledig gearceerd met "≥", leeg "—", laatste kolom "gehaald x/y". Omega-3 krijgt geen ✓ per dag (periodetotaal). Tik op een rij = naar die grafiek.
-- **Staaf | Lijn**, één schakelaar voor alle grafieken, staaf blijft standaard. **Herziet** de eerdere regel "staafjes, geen lijngrafiek" (in `PatroonTrend.tsx`): de lijn mag, maar breekt bij een dag zonder registratie; punten in de staat-kleur, onvolledig = open rondje, schatting = gestippeld stukje omhoog.
+- **Lijngrafiek afgewezen (zelfde dag):** een Staaf | Lijn-schakelaar met een lijn die breekt bij een lege dag is gebouwd en bekeken, en weer weggehaald: niet mooi. De regel "staafjes, geen lijngrafiek" blijft staan.
 - **Eiwit tegen je eiwitdoel** (handmatig, anders de ondergrens van de richtlijn uit Je doelen), met "je eiwitdoel" in plaats van "de norm" in alle zinnen. Zonder gewicht/doel: schaal in g en "Vul je gewicht in bij Je doelen". Lost het open punt "Eiwit zonder vaste norm in Trend" op.
 - **Afgewezen:** één gecombineerde grafiek met alle stoffen: vijf tot zeven lijnen over 14 dagen op 375 px is onleesbaar; de tabel is de plek waar alles samenkomt.
-- **Meting (GA4):** `nutrition_patroon_trend_weergave` {weergave}, `nutrition_patroon_trend_tabel_rij` {nutrient}.
+- **Meting (GA4):** `nutrition_patroon_trend_tabel_rij` {nutrient}.
 
 ## Afgewezen
 

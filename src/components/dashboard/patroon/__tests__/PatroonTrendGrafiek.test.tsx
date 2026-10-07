@@ -97,12 +97,4 @@ describe("PatroonTrendGrafiek", () => {
     expect(screen.getByText(/Havermout \(80 mg\)/)).toBeTruthy();
     expect(screen.getByText("1 dag mist een hoofdmaaltijd.")).toBeTruthy();
   });
-
-  it("tekent als lijn met een breuk bij een lege dag en open rondjes voor onvolledig", () => {
-    const { container } = render(<PatroonTrendGrafiek trend={trend} weergave="lijn" />);
-    // ma–di en di–wo zijn leeg resp. gemeten: alleen wo–do heeft twee gemeten buren.
-    expect(container.querySelectorAll('[data-testid="trend-lijn"] line')).toHaveLength(1);
-    expect(container.querySelector('[data-staat="onvolledig"]')).toBeTruthy();
-    expect(container.querySelector("[data-schatting]")).toBeTruthy();
-  });
 });
