@@ -1,7 +1,7 @@
 "use client";
 
+import type { ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
-import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
 import KeuzeSpiegel from "@/components/dashboard/voortgang/KeuzeSpiegel";
 import KeuzeVergelijken from "@/components/dashboard/keuze/KeuzeVergelijken";
@@ -90,6 +90,15 @@ const SCHAP_SURFACE: Partial<Record<PillarId, VerdictPanelSurface>> = {
  * 23 september droeg dit blok ook de terugweg naar het leefstijlprofiel — de
  * domeinhub die is opgeheven toen voeding het enige domein werd.
  */
+/** Een bewaarde keuze, in dezelfde tegelvorm als de stofkaarten van Vergelijken. */
+function KeuzeTegel({ children }: { children: ReactNode }) {
+  return (
+    <article className="rounded-[13px] border border-[var(--vd-line)] bg-[var(--vd-surface)] px-3.5 py-3">
+      {children}
+    </article>
+  );
+}
+
 /** Dezelfde vijf domeinen als de linker rail — één bron, twee dragers. */
 const KEUZE_CHIP_DOMAINS = buildKeuzeRailDomains();
 
@@ -154,15 +163,11 @@ export default function SchapView({
   }
 
   return (
-    <section aria-label={`Keuze — ${pillar.label}`} className="pt-4">
+    <section aria-label={`Keuze — ${pillar.label}`} className="vd-root pt-4">
       <div className="mb-4">
         {onBack ? <VoortgangTerugLink onBack={onBack} /> : null}
-        <p className="text-[9.5px] font-bold uppercase tracking-[0.14em] text-[var(--text-subtle)]">
-          Keuze
-        </p>
-        <h2 className="mt-1 font-[family-name:var(--f-serif)] text-[22px] font-normal leading-tight text-[var(--text)]">
-          {pillar.label}
-        </h2>
+        <p className="vd-eyebrow m-0">Keuze</p>
+        <h2 className="mt-1 text-[1.375rem] leading-tight text-[var(--vd-ink)]">{pillar.label}</h2>
       </div>
 
       {/* Onder md is dit de domeinschakelaar; vanaf md neemt de linker rail hem
@@ -184,7 +189,7 @@ export default function SchapView({
                   key={id}
                   aria-disabled
                   title={disabledHint}
-                  className="inline-flex min-h-[36px] shrink-0 cursor-not-allowed items-center gap-1.5 rounded-full border border-[var(--divider)] bg-transparent px-3 text-[12.5px] font-semibold text-[var(--text-subtle)]"
+                  className="inline-flex min-h-[36px] shrink-0 cursor-not-allowed items-center gap-1.5 rounded-full border border-[var(--vd-line)] bg-transparent px-3 text-[12.5px] font-semibold text-[var(--vd-ink-3)]"
                 >
                   <span
                     aria-hidden
@@ -192,7 +197,7 @@ export default function SchapView({
                     style={{ background: color }}
                   />
                   {label}
-                  <Icons.Lock s={11} style={{ color: "var(--text-subtle)" }} />
+                  <Icons.Lock s={11} style={{ color: "var(--vd-ink-3)" }} />
                 </span>
               );
             }
@@ -205,8 +210,8 @@ export default function SchapView({
                 aria-current={active ? "page" : undefined}
                 className={`inline-flex min-h-[36px] shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3 text-[12.5px] font-semibold ${
                   active
-                    ? "border-[var(--sage)] bg-[rgba(90,143,106,0.14)] text-[var(--sage)]"
-                    : "border-[var(--divider)] bg-transparent text-[var(--text-muted)]"
+                    ? "border-[var(--vd-sage)] bg-[var(--vd-sage-fill)] text-[var(--vd-sage-2)]"
+                    : "border-[var(--vd-line)] bg-transparent text-[var(--vd-ink-2)]"
                 }`}
               >
                 <span
@@ -229,8 +234,8 @@ export default function SchapView({
           (`BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`, herziening 6 okt). */}
       {domain !== "voeding" ? (
         <>
-          <div className="mb-4 rounded-2xl border border-[var(--divider)] bg-black/20 px-3.5 py-3.5">
-            <p className="max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--text-muted)] text-pretty">
+          <div className="mb-4 rounded-2xl border border-[var(--vd-line)] bg-[var(--vd-surface)] px-3.5 py-3.5">
+            <p className="max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--vd-ink-2)] text-pretty">
               Hier staat het aanbod, en alleen hier. Vandaag en Mijn Dag dragen de deur.
               Elk oordeel hieronder komt uit je leefstijl- en voedingscheck, langs
               dezelfde feiten: signaal, zekerheid en EU-claim.
@@ -244,7 +249,7 @@ export default function SchapView({
       <nav
         role="tablist"
         aria-label="Onderdelen van je keuze"
-        className="mb-4 inline-flex flex-wrap gap-1 rounded-xl border border-white/10 bg-black/20 p-1"
+        className="mb-4 inline-flex flex-wrap gap-1 rounded-xl border border-[var(--vd-line)] bg-[var(--vd-surface)] p-1"
       >
         {tabs.map((tab) => {
           const selected = tab.id === currentTab;
@@ -259,8 +264,8 @@ export default function SchapView({
               onClick={() => onTabChange(tab.id)}
               className={`flex min-h-[38px] cursor-pointer items-center rounded-lg px-3.5 text-[13px] transition-colors ${
                 selected
-                  ? "bg-[rgba(90,143,106,0.18)] font-semibold text-[#9CC5A9]"
-                  : "font-medium text-[var(--text-muted)] hover:text-[var(--text)]"
+                  ? "bg-[var(--vd-sage-fill)] font-semibold text-[var(--vd-sage-2)]"
+                  : "font-medium text-[var(--vd-ink-3)] hover:text-[var(--vd-ink)]"
               }`}
             >
               {tab.label}
@@ -289,10 +294,10 @@ export default function SchapView({
 
         {currentTab === "diensten" ? (
           <div className="flex flex-col gap-2.5">
-            <p className="m-0 max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--text-subtle)] text-pretty">
+            <p className="m-0 max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--vd-ink-3)] text-pretty">
               Categorieën, geen specifieke aanbieders. We beoordelen de aanpak.
             </p>
-            <p className="m-0 max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--text-subtle)] text-pretty">
+            <p className="m-0 max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--vd-ink-3)] text-pretty">
               Partneraanbod volgt — deze categorieën zijn alvast zichtbaar, nog niet te bewaren.
             </p>
             {SCHAP_DIENST_CARDS.map((card) => {
@@ -337,19 +342,20 @@ export default function SchapView({
             dagen={dagboekDagen}
             vandaag={vandaag}
             surface={SCHAP_SURFACE[domain] ?? "favorieten_schap_producten"}
+            verdicts={data?.supplementVerdicts ?? []}
+            products={data?.keuzeProducten}
           />
         ) : null}
 
-        {/* Voorheen het tabblad Producten: het oordeel per supplement uit je
-            check. Op voeding zijn dat dezelfde vijf stoffen als hierboven, dus
-            het staat nu onder de vergelijking in plaats van ernaast
-            (`BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`). Zonder voedingscheck
-            toont het zijn dichte poort met reden, zodat dit tabblad nooit leeg is. */}
-        {currentTab === "logboek" && stanceDomain ? (
-          <div className={nutritionRoutes.length > 0 ? "mt-6" : ""}>
-            <p className="mb-2 text-[9.5px] font-bold uppercase tracking-[0.14em] text-[var(--text-subtle)]">
-              Oordeel per supplement · uit je check
-            </p>
+        {/* Het oordeel per supplement uit je check staat sinds 7 oktober in de
+            stofkaart zelf, als context bij de stand uit je dagboek
+            (`BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`, herziening 7 okt). Alleen
+            zonder voedingscheck — dan zijn er geen stofkaarten — staat het hier
+            nog los, met zijn dichte poort en reden, zodat dit tabblad nooit
+            leeg is. */}
+        {currentTab === "logboek" && stanceDomain && nutritionRoutes.length === 0 ? (
+          <div>
+            <p className="vd-eyebrow mb-2">Oordeel per supplement · uit je check</p>
             <DomainSupplementStance
               domain={stanceDomain}
               verdicts={data?.supplementVerdicts ?? []}
@@ -366,11 +372,11 @@ export default function SchapView({
         {currentTab === "favorieten" ? (
           <div className="flex flex-col gap-3.5">
             {domainFavorites.length === 0 ? (
-              <CockpitTile>
-                <p className="m-0 text-[14px] leading-relaxed text-[var(--text-subtle)] text-pretty">
+              <KeuzeTegel>
+                <p className="m-0 text-[14px] leading-relaxed text-[var(--vd-ink-3)] text-pretty">
                   Je hebt hier nog niets bewaard. Kies iets op een van de andere tabs.
                 </p>
-              </CockpitTile>
+              </KeuzeTegel>
             ) : (
               <>
                 <div className="flex flex-col gap-2">
@@ -393,19 +399,19 @@ export default function SchapView({
                       nutritionRoutes,
                     );
                     return (
-                      <CockpitTile key={item.id}>
+                      <KeuzeTegel key={item.id}>
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                           <span className="min-w-0 flex-1">
-                            <span className="block text-[14px] text-[var(--text)] text-pretty">
+                            <span className="block text-[14px] text-[var(--vd-ink)] text-pretty">
                               {item.title}
                             </span>
                             {laagNaam ? (
-                              <span className="mt-1 block text-[11.5px] text-[var(--text-subtle)]">
+                              <span className="mt-1 block text-[11.5px] text-[var(--vd-ink-3)]">
                                 Prioriteit {laag} · {laagNaam}
                               </span>
                             ) : null}
                             {bronContext ? (
-                              <span className="mt-1 block text-[11.5px] text-[var(--text-subtle)] text-pretty">
+                              <span className="mt-1 block text-[11.5px] text-[var(--vd-ink-3)] text-pretty">
                                 {bronContext}
                               </span>
                             ) : null}
@@ -421,7 +427,7 @@ export default function SchapView({
                               </span>
                             ) : null}
                             {item.kind && item.kind !== "activiteit" ? (
-                              <span className="mt-1 block text-[11.5px] text-[var(--text-subtle)] capitalize">
+                              <span className="mt-1 block text-[11.5px] text-[var(--vd-ink-3)] capitalize">
                                 {item.kind}
                               </span>
                             ) : null}
@@ -434,7 +440,7 @@ export default function SchapView({
                           />
                         </div>
                         {laag != null ? (
-                          <div className="mt-2.5 border-t border-white/[0.06] pt-2.5">
+                          <div className="mt-2.5 border-t border-[var(--vd-line)] pt-2.5">
                             <FavoriteReminderControl
                               item={item}
                               surface={`schap_favorieten_${domain}`}
@@ -442,7 +448,7 @@ export default function SchapView({
                             />
                           </div>
                         ) : null}
-                      </CockpitTile>
+                      </KeuzeTegel>
                     );
                   })}
                 </div>
