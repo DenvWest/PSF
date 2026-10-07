@@ -88,13 +88,13 @@ export default function CockpitPlusMenu() {
             <button
               type="button"
               onClick={() => {
-                trackEvent("dashboard_plus_item_click", { item: "supplement_kiezen" });
+                trackEvent("dashboard_plus_item_click", { item: "kiezen" });
                 setOpen(false);
                 gaNaarDashboard("/dashboard?tab=keuze");
               }}
               className="cursor-pointer self-start px-2.5 py-1.5 text-[12.5px] text-[#9FB0A6] underline decoration-white/20 underline-offset-2 transition hover:text-[#F1EFE8]"
             >
-              Supplement kiezen
+              Voeding of supplement kiezen
             </button>
           </div>
         </AgendaSheetFrame>

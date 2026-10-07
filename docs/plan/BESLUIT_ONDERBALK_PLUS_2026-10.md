@@ -17,7 +17,7 @@ Dennis vroeg of Patroon naar Meer kon, met alleen Dagboek en Keuze als tabs, en 
    - **Voedingsproduct toevoegen**: zoekt in alles.
    - **Supplement toevoegen**: opent op "Mijn supplementen".
    Zonder uitlegregels en zonder "komt bij lunch": niet suggestief (Dennis, 7 okt). Op de achtergrond kiest het zoekscherm het eetmoment dat bij de klok past; je wijzigt het daar.
-   Daaronder één kale link **Supplement kiezen** → Keuze, voor wie nog niets neemt. Supplement toevoegen zelf gaat níet naar Keuze: ＋ betekent "toevoegen wat je nam", geen vergelijking.
+   Daaronder één kale link **Voeding of supplement kiezen** → Keuze (7 okt: eerst "Supplement kiezen"; aangepast omdat Keuze voeding naast supplement zet en "voeding eerst" geldt). Supplement toevoegen zelf gaat níet naar Keuze: ＋ betekent "toevoegen wat je nam", geen vergelijking.
 4. **Werkt vanaf elk tabblad** via de bestaande dagboek-deeplink (`?tab=vandaag&zoek=…&moment=…`), zoals ＋ bij een bron in Je patroon al deed.
 5. **Alleen de mobiele onderbalk.** In de header (vanaf `sm`) staan de knoppen per maaltijd al in beeld; daar komt ＋ pas als het meetpunt erom vraagt.
 
@@ -29,4 +29,4 @@ Dennis vroeg of Patroon naar Meer kon, met alleen Dagboek en Keuze als tabs, en 
 
 ## Meetpunt
 
-`dashboard_plus_item_click` met `item: maaltijd | voedingsproduct | supplement | supplement_kiezen` (en `moment` bij de eerste drie), plus Clarity-tag `dashboard_plus_menu=open`. Vergelijk met `nutrition_dagboek_maaltijd_geopend` (de knoppen per maaltijd): neemt ＋ het loggen over, of komt het erbij?
+`dashboard_plus_item_click` met `item: maaltijd | voedingsproduct | supplement | kiezen` (en `moment` bij de eerste drie), plus Clarity-tag `dashboard_plus_menu=open`. Vergelijk met `nutrition_dagboek_maaltijd_geopend` (de knoppen per maaltijd): neemt ＋ het loggen over, of komt het erbij?
