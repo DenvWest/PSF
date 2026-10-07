@@ -3563,6 +3563,14 @@ a.vd-nutrienttabel-rij:focus-visible {
   padding: 0 1.125rem;
 }
 
+/* Het dagboek heeft op mobiel 0.75rem rand; een diepere uitloop maakt de pagina breder dan het scherm. */
+@media (max-width: 639px) {
+  .vd-subtabs-rij {
+    margin-inline: -0.75rem;
+    padding-inline: 0.75rem;
+  }
+}
+
 .vd-subtabs-rij > .vd-subtabs {
   flex: 1;
   min-width: 0;
