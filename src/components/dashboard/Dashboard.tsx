@@ -3415,7 +3415,7 @@ function DashboardContent({
         </Link>
         <span aria-hidden> · </span>
         <Link
-          href="/onderbouwing"
+          href="/onderbouwing/voeding?from=dashboard"
           onClick={() => {
             trackOnderbouwingLinkClick({
               surface: "dashboard_footer",
