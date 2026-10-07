@@ -10,6 +10,7 @@ import {
   DASHBOARD_UNLOCK_VARIANT_COOKIE,
   resolveDashboardUnlockVariant,
 } from "@/lib/dashboard-unlock-variant";
+import { getAccountIdFromCookie } from "@/lib/account-session-cookie";
 import { parseDashboardReturnHref } from "@/lib/dashboard-url";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
@@ -40,6 +41,9 @@ export default async function HoeWerktDashboardPage({
     cookieVariant: cookieStore.get(DASHBOARD_UNLOCK_VARIANT_COOKIE)?.value ?? null,
   });
 
+  const accountId = await getAccountIdFromCookie();
+  const returnHref = parseDashboardReturnHref(terug) ?? (accountId ? "/dashboard" : null);
+
   const faqSchema = buildFaqSchema([...DASHBOARD_UNLOCK_FAQ]);
   const howToSchema = buildHowToSchema(DASHBOARD_UNLOCK_HOWTO);
 
@@ -56,7 +60,7 @@ export default async function HoeWerktDashboardPage({
       <DashboardUnlockSqueeze
         variant={variant}
         persistCookie={persistCookie}
-        returnHref={parseDashboardReturnHref(terug)}
+        returnHref={returnHref}
       />
     </>
   );

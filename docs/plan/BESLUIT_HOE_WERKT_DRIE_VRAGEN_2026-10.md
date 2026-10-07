@@ -34,4 +34,5 @@ Plus één disclaimer: we kijken naar wat je eet, niet naar je bloed; een tekort
 ## Aanvulling 7 oktober — terug naar hetzelfde dashboardscherm
 
 De link "Hoe werkt dit dashboard?" in het Context-paneel neemt de huidige dashboard-URL mee als `?terug=` (`buildHoeWerktDashboardHref`). Op `/hoe-werkt-dashboard` vervangt dan een knop "← Dashboard" het kruisje (dat naar de homepage ging) en brengt je naar precies dat scherm terug. `parseDashboardReturnHref` laat alleen `/dashboard`-paden toe (geen open redirect). De browser-terugknop werkte al: tab, scherm, domein, onderdeel, dag en Patroon-stand staan in de URL.
+Zonder `?terug=` (bookmark, inlogscherm, /methodologie) krijgt een ingelogde bezoeker (geldige `psf_account`-cookie) ook "← Dashboard", naar `/dashboard`; alleen een anonieme bezoeker houdt het kruisje naar de homepage.
 Meetpunt: `dashboard_back_click` met `surface: "hoe_werkt_dashboard"` + Clarity `dashboard_back`.
