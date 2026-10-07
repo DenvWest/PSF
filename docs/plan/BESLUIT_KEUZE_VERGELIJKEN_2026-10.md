@@ -95,3 +95,40 @@ Opgeruimd: het PS-Score-blok in `NutrientRouteChoiceCard` (eerste ronde) en `psS
 Richting, eens met Dennis: **we verdienen aan de beslissing, niet aan de informatie.** Alles per stof blijft gratis: stand, bronnen, producten, PS-Score, wat een product toevoegt, de bovengrens en de prijs. Premium wordt iets wat nog niet bestaat: **"Jouw stack"**, één advies over al je gekozen routes samen (dubbelingen, de bovengrens over alle bronnen samen, de goedkoopste combinatie, wanneer je wat inneemt). **Afgewezen:** iets wat nu gratis is achter een betaalmuur zetten. De les uit MyFitnessPal: kernfunctie achter Premium jaagt mensen weg, en een gratis versie die "goed genoeg" is converteert niet. Dat los je op met een betaalde laag die meer doet, niet met een gratis laag die minder doet.
 
 **Meting:** bestaand `dashboard_afleiding_open` / `dashboard.afleiding_opened` (nu ook vanuit de stofkaart, surface `schap_voeding`), `keuze_stof_geopend`, `keuze_vergelijken_ps_score_click`, `nutrition_route_choice`.
+
+---
+
+## Herziening 7 oktober (vierde ronde): de knoppen doen iets
+
+**Aanleiding.** Dennis: "Kies eten" en "Kies supplement" deden weinig. Dat klopte: ze bewaarden alleen de route als favoriet, met één bevestigingszin. Dennis ging akkoord met de voorgestelde volgorde.
+
+### Besluiten
+
+1. **"Kies eten" opent het kiezen van bronnen.**
+   - Na de keuze krijgt elke "kan erbij"-bron een ☆. Die schrijft naar **Mijn producten** in het dagboek: dezelfde opslag (`/api/account/dagboek-favorieten`) en dezelfde meting als de ster in Je patroon, met `surface: "keuze_stof"`. Wat je stert, staat bovenaan als je eten toevoegt; "Naar Mijn producten →" opent die lijst.
+   - De link heet nu "Alle rijkste bronnen in Je patroon →" (de top 10 met ster en ＋ bestond daar al).
+   - **De voedingswijze staat erbij.** De lijst filterde al op vegetarisch/veganistisch uit Je doelen, maar dat was nergens te zien. Nu staat er "Afgestemd op: …" of "Eet je vegetarisch of veganistisch?", met een link naar Je doelen.
+2. **"Kies supplement" is nu "Kies dit supplement", per product.**
+   - Eén product per stof, bewaard als `voeding-product-<stof>-<slug>` in `account_favorites`. Een product kiezen zet de supplementroute aan; opnieuw tikken wist beide.
+   - Daarna is de hoofdknop **"Naar de productpagina →"** (`/product/<slug>`). Daar staan winkels, prijzen en de koopknop, met de commissie-zin erbij. In het dashboard zelf blijft geen affiliate-link staan.
+   - Keuze → Favorieten toont het gekozen product met dezelfde link.
+   - **Afgewezen:** de knop naar `/supplementen` laten wijzen. Die link stond er al ("Alle N met PS-Score →"), en zo ging verloren wat iemand koos.
+3. **Volgorde daarna:**
+   - **(a) Het gekozen product loggen in Dagboek → Mijn supplementen.** Dat vraagt eerst een uitbreiding van de supplementcatalogus van het dagboek: die heeft nu 9 algemene regels, geen merkproducten en geen vitamine D.
+   - **(b) Premium "Jouw week":** maaltijdbouwstenen die meerdere stoffen tegelijk aanvullen, binnen voedingswijze en allergieën, met vaste regels en zonder taalmodel (art. 9).
+   - **(c) Premium "Jouw stack".**
+
+**Meting:** `keuze_product_gekozen` {surface, nutrient, product, actie: gekozen|gewist, stand} (GA4 + Clarity `keuze_product`); `keuze_vergelijken_ps_score_click` met `doel: productpagina` (ook vanuit Favorieten); `nutrition_dagboek_favoriet_*` met `surface: keuze_stof`; `keuze_naar_mijn_producten`; `keuze_voedingswijze_wijzig`.
+
+### Vijfde ronde (7 oktober, zelfde PR): eiwit, scrollen, de weg terug
+
+Na Dennis' review op :3004:
+
+1. **Eiwit stond altijd op "te weinig dagen", ook met een vol dagboek.** Het tekortsysteem rekent eiwit nooit als aandeel (`aandeelVanNorm` geeft null: het doel rekent met gewicht en trainingsbelasting). Keuze rekent nu met je eiwitdoel uit Je doelen (`useEiwitDoel`). Zonder eiwitdoel geldt de nieuwe stand `geen_doel`: je gemiddelde zonder percentage, met "Stel je eiwitdoel in →". De tests rekenden met een aandeel voor eiwit dat het echte systeem nooit levert; ze zijn bijgesteld.
+2. **Een stof openen schuift die stof in beeld.** Het openen klapte de vorige stof erboven dicht, waardoor je op mobiel midden in de kaart terechtkwam. Dit gebeurt alleen na een eigen tik, met `prefers-reduced-motion` gerespecteerd.
+3. **De weg van product terug.** Productlinks vanuit Keuze dragen `?van=keuze&stof=…`. De productpagina toont dan "← Terug naar je keuze · Eiwit" (terug naar die stof, open) en "Alle eiwitpoeder-producten met PS-Score →". Voor alle bezoekers staat die cataloguslink nu ook onderaan de productpagina; de broodkruimel "Eiwitpoeder" wees naar de gids, niet naar de producten.
+
+4. **"Hoe we hier komen" bij eiwit noemt de beweegcheck niet meer** (Dennis akkoord met de tekst). De beweegcheck staat sinds 5 september niet meer in de navigatie, en beweging zit inmiddels in Je doelen (trainingsbelasting → eiwitdoel). Nieuwe regel: "Je eiwitsignaal kwam uit je check: weinig eiwit, samen met trainen of traag herstel. Je eiwitdoel rekent nu met je gewicht en trainingsbelasting uit Je doelen.", met "Naar Je doelen →". **Afgewezen:** de beweegcheck terughalen, omdat dat ingaat tegen het besluit "voeding eerst" van 5 september.
+5. **Overal een weg terug.** Ook "Alle N met PS-Score →" (`/supplementen`) en "Vergelijk op prijs →" (`/beste/*`) dragen nu de herkomst. `TerugNaarKeuze` staat op alle drie de bestemmingen: bovenaan als knop, en op mobiel als zwevende "← Je keuze" zodra die knop uit beeld is. Op `/beste/*` zweeft hij boven de vaste koopbalk.
+
+**Meting:** `keuze_eiwitdoel_instellen` {surface, plek?}, `keuze_terug_van_product` {nutrient, surface: product|supplementen|beste, plek: boven|zwevend, product?}, `keuze_product_naar_catalogus` {nutrient, product}.

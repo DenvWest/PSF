@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Container from "@/components/layout/Container";
+import { Suspense } from "react";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import TerugNaarKeuze from "@/components/supplement-hub/TerugNaarKeuze";
+import { buildSupplementHubHref } from "@/lib/supplement-hub/hub-link";
 import ProductDetail from "@/components/supplement-hub/ProductDetail";
 import { buildProductSamenvatting, formatScore } from "@/lib/supplement-hub/product-catalog";
 import {
@@ -96,6 +99,14 @@ export default async function ProductPage({ params }: Props) {
 
       <main className="bg-[#FDFCFA] pb-20">
         <Container className="pt-10 md:pt-12">
+          <Suspense fallback={null}>
+            <TerugNaarKeuze
+              surface="product"
+              slug={product.slug}
+              catalogusHref={buildSupplementHubHref(product.category)}
+              categorieLabel={product.categoryLabel}
+            />
+          </Suspense>
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },

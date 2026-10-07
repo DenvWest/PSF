@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import TerugNaarKeuze from "@/components/supplement-hub/TerugNaarKeuze";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { canonicalMetadata } from "@/lib/seo/canonical";
@@ -102,6 +104,9 @@ export default async function SupplementenPage({ searchParams }: SupplementenPag
         >
           <Container>
             <VoortgangReturnBanner surface="supplementen" />
+            <Suspense fallback={null}>
+              <TerugNaarKeuze surface="supplementen" />
+            </Suspense>
             <IntakeResultsReturnBanner />
             <h1 className="font-display text-2xl font-bold tracking-tight text-stone-900 md:text-3xl">
               Supplementen
