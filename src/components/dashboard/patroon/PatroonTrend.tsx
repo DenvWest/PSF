@@ -1,6 +1,6 @@
 "use client";
 
-import PatroonTrendGrafiek from "@/components/dashboard/patroon/PatroonTrendGrafiek";
+import PatroonTrendGrafiek, { gearceerd, getint, stofKleur } from "@/components/dashboard/patroon/PatroonTrendGrafiek";
 import PatroonTrendTabel from "@/components/dashboard/patroon/PatroonTrendTabel";
 import { trackEvent } from "@/lib/ga4";
 import type { PatroonStof } from "@/lib/nutrition-stof-meting";
@@ -34,6 +34,9 @@ import type { StofTrend } from "@/lib/nutrition-stof-trend";
  * rijkste bronnen), dezelfde plek voor kernstoffen en gevolgde stoffen.
  */
 
+/** De legenda in de kleur van de eerste kernstof zou één stof voortrekken; neutraal dus. */
+const LEGENDA = "var(--vd-ink-2)";
+
 function hoofdletter(label: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
@@ -57,6 +60,7 @@ function StofKaart({
           onClick={() => onOpen(trend.stof)}
           className="vd-naam cursor-pointer border-0 bg-transparent p-0 text-left font-[inherit]"
         >
+          <span aria-hidden className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: stofKleur(trend) }} />
           <b className="text-[var(--vd-ink)]">{hoofdletter(trend.label)}</b>
           <span className="ml-1 text-[var(--vd-ink-4)]">›</span>
         </button>
@@ -103,30 +107,37 @@ export default function PatroonTrend({
 
       <p className="vd-note" style={{ margin: 0 }}>
         {schaal === "maaltijd"
-          ? "Per maaltijd: wat elke maaltijd van de dagnorm leverde. Een maaltijd haalt geen dagnorm, dus geen kleur."
+          ? "Per maaltijd: wat elke maaltijd van de dagnorm leverde. Een maaltijd haalt geen dagnorm, dus geen oordeel."
           : schaal === "dag"
             ? "Per dag, als deel van de norm (bovenrand = 100%). Onder elke dag staat hoeveel van de drie hoofdmaaltijden je registreerde."
             : "Per week: gemiddeld per geregistreerde dag, met hoeveel dagen volledig waren."}{" "}
-        <span className="inline-flex items-center gap-1">
-          <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm bg-[var(--vd-sage)]" /> gehaald
-        </span>{" "}
-        ·{" "}
-        <span className="inline-flex items-center gap-1">
-          <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm bg-[var(--vd-terra)]" /> onder de norm
-        </span>{" "}
-        ·{" "}
-        <span className="inline-flex items-center gap-1">
-          <span
-            aria-hidden
-            className="inline-block h-2.5 w-2.5 rounded-sm border border-[var(--vd-ink-4)]"
-            style={{ background: "repeating-linear-gradient(135deg, var(--vd-ink-4) 0 2px, transparent 2px 4px)" }}
-          />{" "}
-          onvolledig: geen dagoordeel
-        </span>{" "}
-        ·{" "}
-        <span className="inline-flex items-center gap-1">
-          <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm border border-dashed border-[var(--vd-ink-3)]" />{" "}
-          gestippeld: je gebruikelijke ontbrekende maaltijd (schatting)
+<span className="block pt-1">
+          Elke stof heeft zijn eigen kleur; de vulling zegt hoe het ervoor staat:{" "}
+          <span className="inline-flex items-center gap-1">
+            <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: LEGENDA }} /> vol met ✓ = gehaald
+          </span>{" "}
+          ·{" "}
+          <span className="inline-flex items-center gap-1">
+            <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: getint(LEGENDA, 40) }} /> licht = eronder
+          </span>{" "}
+          ·{" "}
+          <span className="inline-flex items-center gap-1">
+            <span
+              aria-hidden
+              className="inline-block h-2.5 w-2.5 rounded-sm border"
+              style={{ background: gearceerd(LEGENDA), borderColor: getint(LEGENDA, 60) }}
+            />{" "}
+            gearceerd = onvolledig, geen dagoordeel
+          </span>{" "}
+          ·{" "}
+          <span className="inline-flex items-center gap-1">
+            <span
+              aria-hidden
+              className="inline-block h-2.5 w-2.5 rounded-sm border border-dashed"
+              style={{ borderColor: getint(LEGENDA, 70) }}
+            />{" "}
+            gestippeld = je gebruikelijke ontbrekende maaltijd (schatting)
+          </span>
         </span>
       </p>
 

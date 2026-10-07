@@ -81,7 +81,7 @@ describe("PatroonTrendGrafiek", () => {
   it("schaalt van 0 tot 100% van de norm en labelt wat erboven zit", () => {
     render(<PatroonTrendGrafiek trend={trend} />);
     expect(screen.getByText("100%")).toBeTruthy();
-    expect(screen.getByText("114%")).toBeTruthy();
+    expect(screen.getByText("✓ 114%")).toBeTruthy();
     expect(screen.getByText("100% = de norm 350 mg")).toBeTruthy();
   });
 

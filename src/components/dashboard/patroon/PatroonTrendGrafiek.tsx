@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import type { StofTrend, StofTrendPunt, StofTrendStaat, TrendDetail } from "@/lib/nutrition-stof-trend";
+import { useEffect, useState } from "react";
+import type { StofTrend, StofTrendPunt, TrendDetail } from "@/lib/nutrition-stof-trend";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 
 /**
@@ -14,27 +14,47 @@ import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
  *   schaal in de eenheid van de stof.
  * - **Gestippeld bovenop een onvolledige dag:** wat je gebruikelijke
  *   ontbrekende maaltijd levert, uit je eigen registraties. Een schatting,
- *   dus geen kleur.
+ *   dus geen vulling.
  * - **Een paneel naast de grafiek** (eronder op een smalle tegel) met het
  *   gekozen punt: verdeling per maaltijd, top 3 bronnen en de feiten over de
  *   periode. Staat standaard op het laatste gemeten punt; hover of tik
  *   wisselt het, ook op een telefoon.
  * - **Een leeg punt blijft een gat** met een streepje, geen staaf van nul.
  *
- * Kleur: sage gehaald, terra onder de norm op een volledige dag, gearceerd
- * onvolledig, één neutrale tint waar geen oordeel hoort. Nooit rood.
+ * ## Kleur is identiteit, het oordeel zit in de vulling
+ *
+ * Elke kernstof tekent in zijn eigen kleur (`--vd-stof-*`), dezelfde als in
+ * de krans: magnesium herken je overal aan dezelfde tint. Hoe het ervoor
+ * staat zit in de vulling, niet in de tint: vol met ✓ = gehaald, licht =
+ * eronder of geen oordeel, gearceerd = onvolledig. Gevolgde stoffen houden
+ * zoals in de krans een neutrale tint, zodat de informatielaag niet als
+ * tekort leest. Nooit rood.
+ *
+ * Bij het openen groeien de staven op (ook bij een andere periode); wie
+ * minder beweging wil (`prefers-reduced-motion`) krijgt ze meteen.
  */
 
 const HOOGTE = 128;
 
-const ARCERING =
-  "repeating-linear-gradient(135deg, var(--vd-ink-4) 0 3px, transparent 3px 6px)";
+/** De identiteitskleur van een stof; gevolgde stoffen neutraal, zoals de buitenring van de krans. */
+export function stofKleur(trend: Pick<StofTrend, "stof" | "soort">): string {
+  return trend.soort === "kern" ? `var(--vd-stof-${trend.stof})` : "var(--vd-ink-2)";
+}
 
-function achtergrond(staat: StofTrendStaat): string {
-  if (staat === "gehaald") return "var(--vd-sage)";
-  if (staat === "onder") return "var(--vd-terra)";
-  if (staat === "onvolledig") return ARCERING;
-  return "var(--vd-ink-3)";
+export function getint(kleur: string, procent: number): string {
+  return `color-mix(in srgb, ${kleur} ${procent}%, transparent)`;
+}
+
+export function gearceerd(kleur: string): string {
+  return `repeating-linear-gradient(135deg, ${getint(kleur, 70)} 0 3px, transparent 3px 6px)`;
+}
+
+function vulling(trend: StofTrend, punt: StofTrendPunt, kleur: string): string {
+  if (punt.staat === "onvolledig" && !punt.normGehaald) return gearceerd(kleur);
+  if (punt.normGehaald || punt.staat === "gehaald") return kleur;
+  // Per maaltijd en omega-3 per dag oordelen niet: middentint, geen "eronder".
+  if (trend.schaal === "maaltijd" || trend.periodetotaal) return getint(kleur, 75);
+  return getint(kleur, 40);
 }
 
 function Paneel({
@@ -49,7 +69,10 @@ function Paneel({
   const detail: TrendDetail | null = punt?.detail ?? null;
   const momenten = trend.schaal === "maaltijd" ? [] : (detail?.momenten ?? []);
   return (
-    <aside className="flex min-w-0 flex-col gap-2 text-[12px] leading-snug text-[var(--vd-ink-2)] @[560px]:w-[260px] @[560px]:shrink-0 @[560px]:border-l @[560px]:border-[var(--vd-line)] @[560px]:pl-4">
+    <aside
+      key={punt?.sleutel}
+      className="flex min-w-0 motion-safe:animate-[fadeIn_200ms_ease-out] flex-col gap-2 text-[12px] leading-snug text-[var(--vd-ink-2)] @[560px]:w-[260px] @[560px]:shrink-0 @[560px]:border-l @[560px]:border-[var(--vd-line)] @[560px]:pl-4"
+    >
       <p aria-live="polite" className="m-0 min-h-[18px] text-[var(--vd-ink)]">
         {punt?.uitleg ?? ""}
       </p>
@@ -120,6 +143,13 @@ export default function PatroonTrendGrafiek({
   const kolommen = { gridTemplateColumns: `repeat(${punten.length}, minmax(0, 1fr))` };
   const smal = punten.length > 8;
   const tussenruimte = smal ? "gap-0.5" : "gap-1.5";
+  const kleur = stofKleur(trend);
+  const [getekend, setGetekend] = useState(false);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setGetekend(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   return (
     <div className="@container w-full">
@@ -130,8 +160,14 @@ export default function PatroonTrendGrafiek({
               <span className="w-8 shrink-0" />
               <div className={`grid flex-1 ${tussenruimte}`} style={kolommen}>
                 {punten.map((punt) => (
-                  <span key={punt.sleutel} className="h-3 text-center text-[9px] leading-3 text-[var(--vd-ink-3)]">
-                    {punt.aandeel !== null && punt.aandeel > 1 ? percentageADH(punt.aandeel) : ""}
+                  <span
+                    key={punt.sleutel}
+                    className="h-3 truncate text-center text-[9px] leading-3"
+                    style={{ color: punt.normGehaald ? kleur : "var(--vd-ink-3)" }}
+                  >
+                    {[punt.normGehaald ? "✓" : null, punt.aandeel !== null && punt.aandeel > 1 && !smal ? percentageADH(punt.aandeel) : null]
+                      .filter(Boolean)
+                      .join(" ")}
                   </span>
                 ))}
               </div>
@@ -164,9 +200,11 @@ export default function PatroonTrendGrafiek({
 
               {punten.map((punt, i) => {
                 const isActief = i === index;
-                const gemeten = punt.waarde === null ? 0 : Math.max(0.02, fractie(punt.waarde));
+                const gemeten = punt.waarde === null || !getekend ? 0 : Math.max(0.02, fractie(punt.waarde));
                 const metSchatting =
-                  punt.waarde !== null && punt.aanvulling !== null ? fractie(punt.waarde + punt.aanvulling) : gemeten;
+                  getekend && punt.waarde !== null && punt.aanvulling !== null ? fractie(punt.waarde + punt.aanvulling) : gemeten;
+                const heeftSchatting = punt.waarde !== null && punt.aanvulling !== null && fractie(punt.waarde) < 1;
+                const groei = { transitionDelay: `${Math.min(i, 14) * 20}ms` };
                 const geschat = Math.max(0, metSchatting - gemeten);
                 return (
                   <button
@@ -183,24 +221,26 @@ export default function PatroonTrendGrafiek({
                       <span aria-hidden className="mb-0.5 block w-full max-w-[24px] border-t border-dashed border-[var(--vd-ink-4)]" />
                     ) : (
                       <>
-                        {geschat > 0 ? (
+                        {heeftSchatting ? (
                           <span
                             aria-hidden
                             data-schatting
-                            className="block w-full max-w-[24px] rounded-t-[4px] border border-b-0 border-dashed border-[var(--vd-ink-3)]"
-                            style={{ height: `${geschat * 100}%`, opacity: isActief ? 1 : 0.55 }}
+                            className="block w-full max-w-[24px] rounded-t-[4px] border border-b-0 border-dashed motion-safe:transition-[height] motion-safe:duration-500 motion-safe:ease-out"
+                            style={{ height: `${geschat * 100}%`, borderColor: getint(kleur, 70), opacity: isActief ? 1 : 0.8, ...groei }}
                           />
                         ) : null}
                         <span
                           aria-hidden
                           data-staat={punt.staat}
-                          className={`block w-full max-w-[24px] transition-opacity ${geschat > 0 ? "" : "rounded-t-[4px]"} ${
-                            punt.staat === "onvolledig" ? "border border-b-0 border-[var(--vd-ink-4)]" : ""
+                          className={`block w-full max-w-[24px] motion-safe:transition-[height,opacity] motion-safe:duration-500 motion-safe:ease-out ${heeftSchatting ? "" : "rounded-t-[4px]"} ${
+                            punt.staat === "onvolledig" ? "border border-b-0" : ""
                           }`}
                           style={{
                             height: `${gemeten * 100}%`,
-                            background: achtergrond(punt.staat),
-                            opacity: isActief ? 1 : 0.55,
+                            background: vulling(trend, punt, kleur),
+                            borderColor: getint(kleur, 60),
+                            opacity: isActief ? 1 : 0.8,
+                            ...groei,
                           }}
                         />
                       </>

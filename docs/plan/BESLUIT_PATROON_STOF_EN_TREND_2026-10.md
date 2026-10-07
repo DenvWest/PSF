@@ -73,6 +73,15 @@ Volgt nog, apart: eetpatroon ("welke maaltijden eet je meestal?") in Je doelen m
 - **Afgewezen:** één gecombineerde grafiek met alle stoffen: vijf tot zeven lijnen over 14 dagen op 375 px is onleesbaar; de tabel is de plek waar alles samenkomt.
 - **Meting (GA4):** `nutrition_patroon_trend_tabel_rij` {nutrient}.
 
+### 7. Kleur per stof in Trend, oordeel in de vulling (7 okt 2026, akkoord Dennis)
+
+Aanleiding: Trend voelde statisch: elke kaart dezelfde sage/terra/grijs, veel grijs (gevolgd, per maaltijd, omega-3, inactieve staven op 55%), geen beweging.
+
+- **Elke kernstof tekent in zijn identiteitskleur** (`--vd-stof-*`, dezelfde als de krans): bolletje bij de naam, staven, arcering, schatting-stippel, tabelrij. Gevolgde stoffen blijven neutraal (`--vd-ink-2`), zoals de buitenring van de krans ("informatielaag leest niet als tekort").
+- **Het oordeel zit in de vulling, niet in de tint** — de krans-regel "kleur is identiteit, geen oordeel" geldt nu ook in Trend: vol met ✓ = gehaald · licht (40%) = eronder · gearceerd = onvolledig · middentint (75%) waar geen oordeel hoort (per maaltijd, omega-3 per dag). **Vervangt** sage = gehaald / terra = onder in Trend.
+- **Beweging:** staven groeien op bij openen en bij een andere periode (500 ms, licht verspringend), paneel vloeit over bij een tik; uit bij `prefers-reduced-motion`. Inactieve staven 80% i.p.v. 55%.
+- **Afgewezen (voor nu):** kleurpaneel/kleurkiezer voor het hele dashboard. Haalbaar als één tint-schuif met afgeleide tokens, maar pas na het omzetten van ~935 vaste kleurcodes in het dashboard naar tokens; botst deels met het besluit van 23 sep 2026 (één donker thema). Apart traject als Dennis het wil.
+
 ## Afgewezen
 
 - **Hermeting naar Meer verplaatsen:** de brede check wordt niet meer aangeboden en de hermeting loopt dood. Een menu-ingang naar een dood scherm helpt niemand. De herinnering blijft als enige ingang voor wie nog een brede check heeft.

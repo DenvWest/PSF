@@ -1,5 +1,6 @@
 "use client";
 
+import { gearceerd, getint, stofKleur } from "@/components/dashboard/patroon/PatroonTrendGrafiek";
 import type { PatroonStof } from "@/lib/nutrition-stof-meting";
 import type { StofTrend, StofTrendPunt } from "@/lib/nutrition-stof-trend";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
@@ -14,14 +15,13 @@ import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
  * - ✓ alleen waar de lat aantoonbaar gehaald is (zonder benaderingen). Een
  *   kernstof krijgt dan sage, een gevolgde stof een neutrale tint
  *   (`BESLUIT_DOELEN_VERBONDEN_2026-10.md` §1). Nooit een ✗.
+ * - Elke kernstof in zijn eigen kleur (bolletje + gehaald-tint), net als in
+ *   de grafiek en de krans; gevolgde stoffen neutraal.
  * - Onvolledig is gearceerd, net als in de grafiek; "—" is niets geregistreerd.
  * - De laatste kolom telt op hoeveel gemeten punten de lat gehaald is.
  *
  * Op een telefoon blijft de stofnaam staan en scrollen de kolommen mee.
  */
-
-const ARCERING =
-  "repeating-linear-gradient(135deg, rgb(var(--vd-ink-rgb) / 0.12) 0 3px, transparent 3px 6px)";
 
 function hoofdletter(label: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1);
@@ -36,12 +36,9 @@ function celTekst(punt: StofTrendPunt): string {
 
 function celStijl(trend: StofTrend, punt: StofTrendPunt): { className: string; background?: string } {
   if (punt.waarde === null) return { className: "text-[var(--vd-ink-4)]" };
-  if (punt.normGehaald) {
-    return trend.soort === "kern"
-      ? { className: "font-medium text-[var(--vd-ink)] bg-[var(--vd-sage-fill)]" }
-      : { className: "font-medium text-[var(--vd-ink)] bg-[var(--vd-surface-3)]" };
-  }
-  if (punt.staat === "onvolledig") return { className: "text-[var(--vd-ink-3)]", background: ARCERING };
+  const kleur = stofKleur(trend);
+  if (punt.normGehaald) return { className: "font-medium text-[var(--vd-ink)]", background: getint(kleur, 28) };
+  if (punt.staat === "onvolledig") return { className: "text-[var(--vd-ink-3)]", background: gearceerd(getint(kleur, 30)) };
   return { className: "text-[var(--vd-ink-2)]" };
 }
 
@@ -65,6 +62,7 @@ function Rij({ trend, onKies }: { trend: StofTrend; onKies: (stof: PatroonStof) 
         onClick={() => onKies(trend.stof)}
         className="cursor-pointer border-0 bg-transparent p-0 text-left font-[inherit] text-[var(--vd-ink)]"
       >
+        <span aria-hidden className="mr-1.5 inline-block h-2 w-2 rounded-full align-middle" style={{ background: stofKleur(trend) }} />
         {hoofdletter(trend.label)}
         {trend.soort === "gevolgd" ? <span className="ml-1 text-[var(--vd-ink-4)]">gev.</span> : null}
       </button>
