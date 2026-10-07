@@ -65,3 +65,33 @@ Dennis: "erg lelijk, geen goed verband zoals dagboek en patroon hebben". De hero
 Opgeruimd: het PS-Score-blok in `NutrientRouteChoiceCard` (eerste ronde) en `psScoreTopVoorStof`; de routekaart blijft voor Kompas.
 
 **Meting:** `keuze_stof_geopend` {surface, nutrient, stand}, `keuze_bron_naar_dagboek` {nutrient, moment}, `keuze_naar_patroon_stof` {nutrient}, `keuze_vergelijken_ps_score_click` {…, doel: product|catalogus|vergelijking, stand}; bestaand: `nutrition_route_choice` (nu ook `geen` bij uitzetten), `nutrition_logboek_search`.
+
+---
+
+## Herziening 7 oktober (derde ronde): één kaart per stof
+
+**Aanleiding.** Dennis: Keuze had niet dezelfde kleur als de rest van het dashboard, niet alle supplementen leken erin te staan, en "Je eten naast een supplement" en "Oordeel per supplement" vormden geen geheel. Bij het nalopen bleek het tweede blok het eerste tegen te spreken: omega-3 "630 / 250 mg · op je norm" uit het dagboek, met daaronder "Aanvullen" uit de check. Elke oordeelkaart had dezelfde zin en dezelfde "Prioriteit 6 van 6", dus niets daarvan was persoonlijk. Dennis koos het aanbevolen voorstel ("akkoord, en doe aanbevolen").
+
+### Besluiten
+
+1. **Eén kaart per stof; het losse blok "Oordeel per supplement · uit je check" vervalt op voeding.** Het oordeel uit de check staat in de stofkaart als blok "Uit je check": signaal, zekerheid, bloedwaarde, EU-claim, de datum, en "Hoe we hier komen" (dezelfde afleiding als voorheen).
+   - **Het dagboek beslist, de check is context.** Meet het dagboek de stof (op koers of ruimte), dan zegt de kaart: "Je check zei '…'. Je dagboek weegt hier zwaarder: dat is wat je at, de check schatte het uit vragen."
+   - Alleen waar het dagboek niets kan zeggen (te weinig dagen, zink, vitamine D) is het oordeel van de check het antwoord, met de reden erbij.
+   - Zonder voedingscheck zijn er geen stofkaarten; dan staat het oude blok er nog, met de dichte poort, zodat het tabblad nooit leeg is.
+   - **Afgewezen:** "Plek in je plan · Prioriteit 6 van 6". Die stond bij elke stof hetzelfde en zegt dus niets.
+2. **Per product wat het toevoegt.**
+   - Het etiket per dag en de prijs per dag.
+   - "Samen met je eten minstens X van je norm Y (Z % van je norm)".
+   - De veilige bovengrens uit `onderzoek-per-stof.ts`: bij magnesium en omega-3 alleen het etiket tegen de grens voor supplementen. Bij zink en vitamine D geldt de grens voor alles samen; omdat het dagboek die stoffen niet kan meten, zegt de regel dat.
+   - Of het product de dagdosis van de EU-claim haalt (art. 10 1924/2006: de claim hoort bij de stof).
+   - **Dit wijkt bewust af van de regel van 21 augustus** ("nooit optellen tot een dagtotaal"). Die regel gold voor de schatting uit de frequentievragen van de check, en daar blijft hij gelden. Het dagboek is gemeten inname, dus een ondergrens. Ondergrens + etiket blijft een ondergrens, en zo heet het ook: "minstens". Nooit "tekort".
+3. **Wat eten nog meer meebrengt.** Bij elke "kan erbij"-bron staat "ook: …": de andere stoffen waarvan één portie minstens 15 % van de referentie levert. Dat is de "bron van"-drempel uit 1924/2006, hier per portie gelezen en alleen als feitelijke samenstelling getoond. Referenties: de RI uit 1169/2011; omega-3 250 mg (EFSA); vezels 3 g per portie.
+4. **Prijs alleen aan de supplementkant.** We hebben geen prijzen van voeding, en die blijven uitgesteld (`BESLUIT_SUPERMARKT_MCP_EN_BOODSCHAPPENLIJST_2026-10.md`, 3 okt).
+5. **Dezelfde productbron als `/supplementen`.** Het dashboard laadt de producten op de server uit de database (`loadHubProductsForPage` → `keuzeProducten`). Tot nu toe las Keuze alleen de statische catalogus, waardoor een product uit de admin wel op `/supplementen` kwam en niet in Keuze. Op 7 oktober stonden er in beide dezelfde 25 producten (in de database geteld). Per vorm blijft alleen het beste product staan, met "Alle N met PS-Score →" voor de rest. Creatine en ashwagandha horen niet bij de vijf kernstoffen en staan dus niet in Keuze voeding.
+6. **Eén palet.** Kop, tabs, domeinchips en Favorieten gebruiken de `--vd-*`-tokens van Dagboek en Patroon.
+
+### Premium: volgende stap, niet in deze ronde
+
+Richting, eens met Dennis: **we verdienen aan de beslissing, niet aan de informatie.** Alles per stof blijft gratis: stand, bronnen, producten, PS-Score, wat een product toevoegt, de bovengrens en de prijs. Premium wordt iets wat nog niet bestaat: **"Jouw stack"**, één advies over al je gekozen routes samen (dubbelingen, de bovengrens over alle bronnen samen, de goedkoopste combinatie, wanneer je wat inneemt). **Afgewezen:** iets wat nu gratis is achter een betaalmuur zetten. De les uit MyFitnessPal: kernfunctie achter Premium jaagt mensen weg, en een gratis versie die "goed genoeg" is converteert niet. Dat los je op met een betaalde laag die meer doet, niet met een gratis laag die minder doet.
+
+**Meting:** bestaand `dashboard_afleiding_open` / `dashboard.afleiding_opened` (nu ook vanuit de stofkaart, surface `schap_voeding`), `keuze_stof_geopend`, `keuze_vergelijken_ps_score_click`, `nutrition_route_choice`.

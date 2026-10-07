@@ -6,6 +6,8 @@ import { getAccountFromCookie } from "@/lib/account-server";
 import { hasFeature } from "@/lib/db/entitlements";
 import { buildDevDashboardData } from "@/lib/dashboard-dev-data";
 import { parseSleepFocus, SLEEP_FOCUS_COOKIE_NAME } from "@/lib/sleep-focus";
+import { loadHubProductsForPage } from "@/lib/supplement-catalog-db/hub-products-for-page";
+import { keuzeProducten } from "@/lib/supplement-hub/ps-score-per-stof";
 import {
   loadSupplementVerdicts,
   syncSupplementVerdicts,
@@ -156,11 +158,12 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   // De oordelen hangen alleen aan het account, niet aan `data` — dus lezen we
   // ze hier mee in plaats van erna. `syncSupplementVerdicts` doet daarna geen
   // enkele query zolang er niets omslaat, en dat is het normale geval.
-  const [data, hasTrendsFeature, storedVerdicts, cookieStore] = await Promise.all([
+  const [data, hasTrendsFeature, storedVerdicts, cookieStore, hubProducts] = await Promise.all([
     loadAccountDashboardData(account.id),
     hasFeature(account.id, "trends"),
     loadSupplementVerdicts(account.id),
     cookies(),
+    loadHubProductsForPage(),
   ]);
 
   const sleepFocus = data.empty
@@ -177,7 +180,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     <div className="ps-dark">
       <Dashboard
         empty={data.empty}
-        data={{ ...data, supplementVerdicts }}
+        data={{ ...data, supplementVerdicts, keuzeProducten: keuzeProducten(hubProducts) }}
         hasTrendsFeature={hasTrendsFeature}
         sleepFocus={sleepFocus}
         {...dashboardProps}
