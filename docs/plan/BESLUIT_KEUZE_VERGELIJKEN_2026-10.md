@@ -175,3 +175,21 @@ Dennis: "overal staat alleen forel". Eén gesterde forel is een bron van eiwit, 
 - Heeft een stof met de route eten nog geen eigen bron, dan toont de kaart de twee rijkste bronnen van die stof met ☆ ("Kies een bron met ☆:"), binnen je voedingswijze.
 
 **Prijs van de voedingsoptie:** Dennis akkoord met het voorstel (tabel met een indicatieve prijs per portie). Bouwvolgorde en prijsbron staan in het antwoord van 7 oktober; nog niet gebouwd.
+
+### Negende ronde (7 oktober, zelfde PR): één knop per keuze, zoeken per kolom
+
+Dennis: twee knoppen per voedingsmiddel (☆ en ＋) waren verwarrend, en de ster kwam pas na "Kies eten".
+
+1. **In Vergelijken één knop per voedingsmiddel en per product: "Kies".**
+   - Bij eten bewaart "Kies" het in Mijn keuzes (☆ in het dagboek) en zet het de route eten aan.
+   - Bij een supplement: "Kies dit supplement" (ongewijzigd).
+   - De grote knop "Kies eten" en de ＋ naar het dagboek zijn uit Vergelijken verdwenen. Onderaan elke kolom staat de stand: "… staat in Mijn keuzes · Naar Mijn keuzes →", met "Zet … uit".
+   - **Loggen in het dagboek gebeurt vanuit Mijn keuzes** ("＋ Dagboek", op het gekozen moment). De taakverdeling: Vergelijken = kiezen, Mijn keuzes = doen.
+2. **Een zoekveld per kolom.**
+   - Eten: zoekt in de eigen catalogus en toont alleen wat per portie iets van die stof levert, rijkste eerst.
+   - Supplement: zoekt op naam en vorm in de producten van die stof (dezelfde bron als `/supplementen`), hoogste PS-Score eerst.
+   - Het zoekveld bovenaan Vergelijken (stof of voedingsmiddel) blijft.
+3. **Mijn keuzes → product of alle supplementen van die stof**, met de herkomst `deel=favorieten`. De terugknop zegt dan "← Terug naar Mijn keuzes" en zet je daar neer.
+4. **Supplement loggen in het dagboek: nog niet.** Het dagboek kent geen merkproducten. Mijn keuzes zegt dat er nu bij; dit is de volgende stap (a).
+
+**Meting:** `keuze_eten_gekozen` {nutrient, product, actie, via: voorstel|zoek}, `keuze_eten_zoek` {nutrient, treffers}, `keuze_supplement_zoek` {nutrient, treffers}; `keuze_terug_van_product` nu ook vanuit Mijn keuzes.

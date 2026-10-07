@@ -63,10 +63,18 @@ export function productKeuzeHref(id: string): string | null {
  * Herkomst op een productlink vanuit Keuze: de productpagina toont dan
  * "← Terug naar je keuze", en die link opent in het dashboard dezelfde stof.
  */
-export function metKeuzeHerkomst(href: string, nutrient: NutrientId): string {
+export type KeuzeDeel = "logboek" | "favorieten";
+
+/**
+ * @param deel het onderdeel van Keuze waar je vandaan kwam — Vergelijken
+ *   (`logboek`, standaard) of Mijn keuzes (`favorieten`) — zodat de terugknop
+ *   je daar weer neerzet.
+ */
+export function metKeuzeHerkomst(href: string, nutrient: NutrientId, deel: KeuzeDeel = "logboek"): string {
   const url = new URL(href, "https://www.perfectsupplement.nl");
   url.searchParams.set("van", "keuze");
   url.searchParams.set("stof", nutrient);
+  if (deel !== "logboek") url.searchParams.set("deel", deel);
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
@@ -77,8 +85,14 @@ export function leesKeuzeHerkomst(search: URLSearchParams): NutrientId | null {
   return STOFFEN.find((kandidaat) => kandidaat === stof) ?? null;
 }
 
-export function keuzeTerugHref(nutrient: NutrientId): string {
-  return `/dashboard?${new URLSearchParams({ tab: "keuze", stof: nutrient }).toString()}`;
+export function leesKeuzeDeel(search: URLSearchParams): KeuzeDeel {
+  return search.get("deel") === "favorieten" ? "favorieten" : "logboek";
+}
+
+export function keuzeTerugHref(nutrient: NutrientId, deel: KeuzeDeel = "logboek"): string {
+  const params = new URLSearchParams({ tab: "keuze", stof: nutrient });
+  if (deel !== "logboek") params.set("deel", deel);
+  return `/dashboard?${params.toString()}`;
 }
 
 export function stofLabel(nutrient: NutrientId): string {

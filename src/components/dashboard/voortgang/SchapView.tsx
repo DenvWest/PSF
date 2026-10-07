@@ -369,6 +369,7 @@ export default function SchapView({
             surface={SCHAP_SURFACE[domain] ?? "favorieten_schap_producten"}
             verdicts={data?.supplementVerdicts ?? []}
             products={data?.keuzeProducten}
+            onNaarMijnKeuzes={() => onTabChange("favorieten")}
           />
         ) : null}
 

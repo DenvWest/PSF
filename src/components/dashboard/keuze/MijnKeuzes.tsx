@@ -25,7 +25,7 @@ import { resolveNutritionRouteChoice, type NutritionRouteChoice } from "@/lib/nu
 import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 import { hoeveelheid } from "@/lib/nutrition-tekortsysteem-copy";
-import { keuzeProductVoorSlug, type KeuzeProduct } from "@/lib/supplement-hub/ps-score-per-stof";
+import { keuzeProductVoorSlug, psScoreCatalogusHref, type KeuzeProduct } from "@/lib/supplement-hub/ps-score-per-stof";
 import { useDagboekVoedingsfavorieten } from "@/lib/use-dagboek-voedingsfavorieten";
 import { useEiwitDoel, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
@@ -360,9 +360,9 @@ function EtenKant({
                         trackEvent("keuze_bron_naar_dagboek", { nutrient: status.nutrient, moment, surface: SURFACE });
                         gaNaarDashboard(buildDagboekVoegHref({ bron: "voeding", key: entry.key, moment }));
                       }}
-                      className="cursor-pointer border-0 bg-transparent p-0 text-[1rem] font-semibold leading-none text-[var(--vd-sage-2)]"
+                      className="inline-flex min-h-[28px] cursor-pointer items-center rounded-full border border-[var(--vd-sage)] bg-transparent px-2 text-[0.6875rem] font-semibold text-[var(--vd-sage-2)]"
                     >
-                      ＋
+                      ＋ Dagboek
                     </button>
                   </span>
                 </li>
@@ -444,15 +444,27 @@ function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () =>
         </p>
       ) : null}
       <MomentKiezer nutrient={nutrient} kant="supplement" vraag="Wanneer neem je het?" titel={product.naam} />
-      <Link
-        href={metKeuzeHerkomst(product.href, nutrient)}
-        onClick={() =>
-          trackEvent("keuze_vergelijken_ps_score_click", { surface: SURFACE, nutrient, doel: "productpagina", product: product.slug })
-        }
-        className="mt-2 inline-block text-[0.6875rem] font-semibold text-[var(--vd-accent-2)] no-underline hover:underline"
-      >
-        Naar de productpagina →
-      </Link>
+      <span className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+        <Link
+          href={metKeuzeHerkomst(product.href, nutrient, "favorieten")}
+          onClick={() =>
+            trackEvent("keuze_vergelijken_ps_score_click", { surface: SURFACE, nutrient, doel: "productpagina", product: product.slug })
+          }
+          className="text-[0.6875rem] font-semibold text-[var(--vd-accent-2)] no-underline hover:underline"
+        >
+          Naar de productpagina →
+        </Link>
+        <Link
+          href={metKeuzeHerkomst(psScoreCatalogusHref(nutrient), nutrient, "favorieten")}
+          onClick={() => trackEvent("keuze_vergelijken_ps_score_click", { surface: SURFACE, nutrient, doel: "catalogus" })}
+          className="text-[0.6875rem] font-semibold text-[var(--vd-ink-2)] no-underline hover:underline"
+        >
+          Vergelijk met andere →
+        </Link>
+      </span>
+      <p className="m-0 mt-2 text-[0.65625rem] leading-relaxed text-[var(--vd-ink-4)]">
+        Loggen in je dagboek volgt: het dagboek kent nog geen merkproducten.
+      </p>
     </Kant>
   );
 }
