@@ -2,7 +2,7 @@ import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { EVIDENCE_DOSE } from "@/data/supplement-hub/score-model";
 import { NUTRIENT_HUB_CATEGORY } from "@/lib/nutrition-result-rows";
 import { buildSupplementHubHref } from "@/lib/supplement-hub/hub-link";
-import { formatScore, getHubProducts, type HubProduct } from "@/lib/supplement-hub/product-catalog";
+import { formatScore, getHubProducts, normalizeZoek, type HubProduct } from "@/lib/supplement-hub/product-catalog";
 import { getScoreBand } from "@/lib/supplement-hub/score-presentation";
 import type { SupplementCategory } from "@/types/supplement";
 import type { ClaimStance } from "@/types/supplement-score";
@@ -121,4 +121,25 @@ export function keuzeProductVoorSlug(
 ): KeuzeProduct | null {
   const categorie = NUTRIENT_HUB_CATEGORY[nutrient];
   return bron(products).find((product) => product.slug === slug && product.category === categorie) ?? null;
+}
+
+/**
+ * Zoeken in de producten van één stof, op naam en vorm — voor het zoekveld in
+ * de supplementkolom van Keuze. Hoogste PS-Score eerst.
+ */
+export function zoekKeuzeProducten(
+  nutrient: NutrientId,
+  term: string,
+  products?: readonly KeuzeProduct[],
+): KeuzeProduct[] {
+  const categorie = NUTRIENT_HUB_CATEGORY[nutrient];
+  const woorden = normalizeZoek(term).split(/\s+/).filter(Boolean);
+  if (woorden.length === 0) return [];
+  return bron(products)
+    .filter((product) => product.category === categorie)
+    .filter((product) => {
+      const tekst = normalizeZoek(`${product.naam} ${product.vorm}`);
+      return woorden.every((woord) => tekst.includes(woord));
+    })
+    .sort((a, b) => b.scoreTotaal - a.scoreTotaal);
 }

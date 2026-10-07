@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "@/lib/ga4";
-import { keuzeTerugHref, leesKeuzeHerkomst, stofLabel } from "@/lib/keuze-product-keuze";
+import { keuzeTerugHref, leesKeuzeDeel, leesKeuzeHerkomst, stofLabel } from "@/lib/keuze-product-keuze";
 import { categorieInZin } from "@/lib/supplement-hub/hub-link";
 
 /**
@@ -31,7 +31,9 @@ export default function TerugNaarKeuze({
   categorieLabel?: string;
   boven?: boolean;
 }) {
-  const stof = leesKeuzeHerkomst(useSearchParams());
+  const zoek = useSearchParams();
+  const stof = leesKeuzeHerkomst(zoek);
+  const deel = leesKeuzeDeel(zoek);
   const anker = useRef<HTMLElement>(null);
   const [uitBeeld, setUitBeeld] = useState(false);
 
@@ -45,7 +47,7 @@ export default function TerugNaarKeuze({
 
   if (!stof) return null;
 
-  const href = keuzeTerugHref(stof);
+  const href = keuzeTerugHref(stof, deel);
   const klik = (plek: "boven" | "zwevend") =>
     trackEvent("keuze_terug_van_product", { nutrient: stof, surface, plek, ...(slug ? { product: slug } : {}) });
 
@@ -57,7 +59,7 @@ export default function TerugNaarKeuze({
           onClick={() => klik("boven")}
           className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-stone-900 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-stone-800"
         >
-          ← Terug naar je keuze · {stofLabel(stof)}
+          ← Terug naar {deel === "favorieten" ? "Mijn keuzes" : "je keuze"} · {stofLabel(stof)}
         </Link>
         {catalogusHref && categorieLabel ? (
           <Link
@@ -74,7 +76,7 @@ export default function TerugNaarKeuze({
         <Link
           href={href}
           onClick={() => klik("zwevend")}
-          aria-label={`Terug naar je keuze · ${stofLabel(stof)}`}
+          aria-label={`Terug naar ${deel === "favorieten" ? "Mijn keuzes" : "je keuze"} · ${stofLabel(stof)}`}
           className={`fixed left-4 z-40 inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-stone-900 px-4 text-sm font-semibold text-white no-underline shadow-lg md:hidden ${
             boven
               ? "bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px))]"

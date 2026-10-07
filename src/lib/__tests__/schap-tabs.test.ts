@@ -19,13 +19,13 @@ describe("resolveSchapTabs", () => {
     expect(resolveSchapTabs("slaap").map((tab) => tab.id)).toEqual(["producten", "favorieten"]);
   });
 
-  it("geeft voeding Vergelijken en Favorieten — Producten gaat op in Vergelijken", () => {
+  it("geeft voeding Vergelijken en Mijn keuzes — Producten gaat op in Vergelijken", () => {
     // Sinds 6 oktober: per stof voeding naast supplement (met PS-Score) op één
     // tab. Producten droeg dezelfde vijf stoffen en dubbelde
     // (BESLUIT_KEUZE_VERGELIJKEN_2026-10.md). De id blijft `logboek`.
     expect(resolveSchapTabs("voeding")).toEqual([
       { id: "logboek", label: "Vergelijken" },
-      { id: "favorieten", label: "Favorieten" },
+      { id: "favorieten", label: "Mijn keuzes" },
     ]);
   });
 
@@ -65,7 +65,7 @@ describe("resolveSchapTabs", () => {
     expect(resolveSchapTabs("beweging").map((tab) => tab.label)).toEqual([
       "Producten",
       "Diensten",
-      "Favorieten",
+      "Mijn keuzes",
     ]);
   });
 });

@@ -117,51 +117,71 @@ describe("KeuzeVergelijken", () => {
     expect(within(supplement).getByRole("link", { name: /Vergelijk op prijs/ }).getAttribute("href")).toBe(
       "/beste/magnesium?van=keuze&stof=magnesium",
     );
-    expect(within(eten).getByRole("button", { name: "Kies eten" })).toBeTruthy();
+    expect(within(eten).getAllByRole("button", { name: / kiezen$/ }).length).toBeGreaterThan(0);
     expect(screen.queryByText(/Eerst je voedingsbasis/)).toBeNull();
   });
 
-  it("allebei = eten kiezen én een supplement kiezen", () => {
+  it("allebei = een voedingsmiddel kiezen én een supplement kiezen", async () => {
     const { rerender } = renderKeuze();
-    fireEvent.click(screen.getByRole("button", { name: "Kies eten" }));
-    expect(favorieten.items.map((i) => i.id)).toEqual(["voeding-route-magnesium-bord"]);
+    const eten = () => screen.getByRole("region", { name: "Uit je eten" });
+    fireEvent.click(within(eten()).getAllByRole("button", { name: / kiezen$/ })[0]);
+    await waitFor(() => expect(favorieten.items.map((i) => i.id)).toContain("voeding-route-magnesium-bord"));
     rerender(keuze());
     const supplement = screen.getByRole("region", { name: "Uit een supplement" });
-    fireEvent.click(within(supplement).getAllByRole("button", { name: "Kies dit supplement" })[0]);
+    fireEvent.click(within(supplement).getAllByRole("button", { name: / kiezen$/ })[0]);
     const ids = favorieten.items.map((i) => i.id);
     expect(ids).toContain("voeding-route-magnesium-beide");
     expect(ids.some((id) => id.startsWith("voeding-product-magnesium-"))).toBe(true);
   });
 
-  it("een supplement kiezen leidt naar de productpagina, en opnieuw tikken wist de keuze", () => {
-    const { rerender } = renderKeuze();
+  it("een supplement kiezen zet het in Mijn keuzes, met de productpagina, en opnieuw tikken wist de keuze", () => {
+    const naarMijnKeuzes = vi.fn();
+    const { rerender } = render(
+      <KeuzeVergelijken
+        statuses={[status("magnesium", "Magnesium"), status("protein", "Eiwit")]}
+        reeksen={[reeks("magnesium", false), reeks("protein", true)]}
+        dagen={[]}
+        vandaag="2026-10-06"
+        surface="test"
+        verdicts={[]}
+        onNaarMijnKeuzes={naarMijnKeuzes}
+      />,
+    );
     let supplement = screen.getByRole("region", { name: "Uit een supplement" });
     expect(within(supplement).getByText(/Kies hierboven het supplement/)).toBeTruthy();
-    fireEvent.click(within(supplement).getAllByRole("button", { name: "Kies dit supplement" })[0]);
+    fireEvent.click(within(supplement).getAllByRole("button", { name: / kiezen$/ })[0]);
     const productId = favorieten.items.find((i) => i.id.startsWith("voeding-product-"))!.id;
     const slug = productId.replace("voeding-product-magnesium-", "");
     expect(favorieten.items.map((i) => i.id)).toContain("voeding-route-magnesium-potje");
 
-    rerender(keuze());
+    rerender(
+      <KeuzeVergelijken
+        statuses={[status("magnesium", "Magnesium"), status("protein", "Eiwit")]}
+        reeksen={[reeks("magnesium", false), reeks("protein", true)]}
+        dagen={[]}
+        vandaag="2026-10-06"
+        surface="test"
+        verdicts={[]}
+        onNaarMijnKeuzes={naarMijnKeuzes}
+      />,
+    );
     supplement = screen.getByRole("region", { name: "Uit een supplement" });
+    expect(within(supplement).getByText(/staat in Mijn keuzes/)).toBeTruthy();
     expect(within(supplement).getByRole("link", { name: /Naar de productpagina/ }).getAttribute("href")).toBe(
       `/product/${slug}?van=keuze&stof=magnesium`,
     );
-    fireEvent.click(within(supplement).getByRole("button", { name: "Mijn supplement" }));
+    fireEvent.click(within(supplement).getByRole("button", { name: "Naar Mijn keuzes →" }));
+    expect(naarMijnKeuzes).toHaveBeenCalled();
+    fireEvent.click(within(supplement).getByRole("button", { name: /gekozen, tik om te wissen/ }));
     expect(favorieten.items).toEqual([]);
   });
 
-  it("na Kies eten krijgt elke bron een ster naar Mijn producten, en de voedingswijze staat erbij", async () => {
-    const { rerender } = renderKeuze();
+  it("één knop per voedingsmiddel: kiezen bewaart het in Mijn keuzes en kiest de route eten", async () => {
+    renderKeuze();
     const eten = () => screen.getByRole("region", { name: "Uit je eten" });
     expect(within(eten()).getByText(/Eet je vegetarisch of veganistisch\?/)).toBeTruthy();
-    expect(within(eten()).queryByRole("button", { name: /bewaren in Mijn producten/ })).toBeNull();
-
-    fireEvent.click(within(eten()).getByRole("button", { name: "Kies eten" }));
-    rerender(keuze());
-    expect(within(eten()).getByText(/Zet een ☆ bij wat je wilt eten/)).toBeTruthy();
-    const ster = within(eten()).getAllByRole("button", { name: /bewaren in Mijn producten/ })[0];
-    fireEvent.click(ster);
+    expect(within(eten()).queryByRole("button", { name: /in je dagboek zetten/ })).toBeNull();
+    fireEvent.click(within(eten()).getAllByRole("button", { name: / kiezen$/ })[0]);
     await waitFor(() =>
       expect(
         fetchMock.mock.calls.some(
@@ -169,7 +189,26 @@ describe("KeuzeVergelijken", () => {
         ),
       ).toBe(true),
     );
-    await waitFor(() => expect(within(eten()).getByText(/1 bron staat bovenaan in je dagboek/)).toBeTruthy());
+    expect(favorieten.items.map((i) => i.id)).toContain("voeding-route-magnesium-bord");
+  });
+
+  it("het zoekveld in de eetkolom vindt voedingsmiddelen met deze stof", () => {
+    renderKeuze();
+    const eten = screen.getByRole("region", { name: "Uit je eten" });
+    fireEvent.change(within(eten).getByRole("searchbox", { name: /Zoek eten met magnesium/ }), {
+      target: { value: "pompoen" },
+    });
+    expect(within(eten).getByText(/Gevonden · rijkste eerst/)).toBeTruthy();
+    expect(within(eten).getAllByText(/Pompoen/).length).toBeGreaterThan(0);
+  });
+
+  it("het zoekveld in de supplementkolom zoekt in de producten van deze stof", () => {
+    renderKeuze();
+    const supplement = screen.getByRole("region", { name: "Uit een supplement" });
+    fireEvent.change(within(supplement).getByRole("searchbox", { name: /Zoek een magnesium-supplement/ }), {
+      target: { value: "bisglycinaat" },
+    });
+    expect(within(supplement).getByText(/Viridian/)).toBeTruthy();
   });
 
   it("houdt de supplementkant rustig en ingeklapt als je eten de norm haalt", () => {
@@ -204,5 +243,19 @@ describe("KeuzeVergelijken", () => {
     renderKeuze();
     await waitFor(() => expect(screen.getByRole("button", { name: /Eiwit/, expanded: true })).toBeTruthy());
     expect(window.location.search).toBe("?tab=keuze");
+  });
+
+  it("een gebakken ei gekozen bij eiwit blijft bij eiwit staan, ook onder de bron-drempel", () => {
+    const { rerender } = renderKeuze();
+    fireEvent.click(screen.getByRole("button", { name: /^Eiwit/, expanded: false }));
+    const eiwit = () => screen.getAllByRole("region", { name: "Uit je eten" }).at(-1)!;
+    fireEvent.change(within(eiwit()).getByRole("searchbox", { name: /Zoek eten met eiwit/ }), { target: { value: "ei gebakken" } });
+    fireEvent.click(within(eiwit()).getByRole("button", { name: "Ei, gebakken kiezen" }));
+    expect(favorieten.items.map((i) => i.id)).toContain("voeding-eten-protein-ei-gebakken");
+
+    rerender(keuze());
+    fireEvent.change(within(eiwit()).getByRole("searchbox", { name: /Zoek eten met eiwit/ }), { target: { value: "" } });
+    expect(within(eiwit()).getByText("Jouw keuze")).toBeTruthy();
+    expect(within(eiwit()).getByRole("button", { name: /Ei, gebakken: gekozen/ })).toBeTruthy();
   });
 });

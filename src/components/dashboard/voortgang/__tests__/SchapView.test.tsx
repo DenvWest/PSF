@@ -64,14 +64,14 @@ beforeEach(() => {
 describe("SchapView — welke tabs een domein draagt", () => {
   it("toont op slaap Leefstijl, Producten en Favorieten", () => {
     renderSchap("slaap");
-    expect(tabLabels()).toEqual(["Producten", "Favorieten"]);
+    expect(tabLabels()).toEqual(["Producten", "Mijn keuzes"]);
     expect(screen.queryByRole("tab", { name: "Diensten" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 
   it("toont op voeding Vergelijken en Favorieten, met het oordeel per supplement onder Vergelijken", () => {
     renderSchap("voeding");
-    expect(tabLabels()).toEqual(["Vergelijken", "Favorieten"]);
+    expect(tabLabels()).toEqual(["Vergelijken", "Mijn keuzes"]);
     expect(screen.getByText(/Oordeel per supplement/)).toBeTruthy();
     expect(screen.queryByRole("tab", { name: "Diensten" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
@@ -79,7 +79,7 @@ describe("SchapView — welke tabs een domein draagt", () => {
 
   it("toont op beweging Producten, Diensten en Favorieten, nooit Begeleiding", () => {
     renderSchap("beweging");
-    expect(tabLabels()).toEqual(["Producten", "Diensten", "Favorieten"]);
+    expect(tabLabels()).toEqual(["Producten", "Diensten", "Mijn keuzes"]);
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 

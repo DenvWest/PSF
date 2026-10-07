@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
+import { catalogEntry, searchCatalog, type CatalogEntry } from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { IngredientClaimKey } from "@/data/approved-claims";
 import type { Voedingswijze } from "@/lib/account-kernstof-profiel";
 import { clarityTag } from "@/lib/clarity";
-import { buildDagboekFavorietenHref, buildDagboekVoegHref, gaNaarDashboard } from "@/lib/dagboek-deeplink";
+import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import {
@@ -19,7 +20,10 @@ import {
   supplementErbij,
 } from "@/lib/keuze-stofkaart";
 import {
+  etenKeuzeId,
+  etenKeuzesVoorStof,
   metKeuzeHerkomst,
+  parseEtenKeuze,
   productKeuzeId,
   productKeuzeIdsVoorStof,
   productKeuzeTitel,
@@ -28,7 +32,7 @@ import {
 import { keuzeStofStand, type KeuzeStand, type KeuzeStofStand } from "@/lib/keuze-stof-stand";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { verschuifDag } from "@/lib/nutrition-periode";
-import { pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
+import { gehaltePerPortie, pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
 import {
   NUTRITION_ROUTE_CHOICES,
   routeMatchesQuery,
@@ -48,6 +52,7 @@ import {
   psScoreBestePerVorm,
   psScoreCatalogusHref,
   keuzeProductVoorSlug,
+  zoekKeuzeProducten,
   type KeuzeProduct,
 } from "@/lib/supplement-hub/ps-score-per-stof";
 import { toVerdictCardCopy } from "@/lib/supplement-verdict-copy";
@@ -96,7 +101,7 @@ import type { StoredSupplementVerdict } from "@/types/verdict";
  * de prijs per dag. Aan de eetkant wat een portie nog meer meebrengt.
  */
 
-const STAND_KLEUR: Record<KeuzeStand, string> = {
+export const STAND_KLEUR: Record<KeuzeStand, string> = {
   op_koers: "var(--vd-sage)",
   ruimte: "var(--vd-amber)",
   niet_meetbaar: "var(--vd-ink-4)",
@@ -104,7 +109,7 @@ const STAND_KLEUR: Record<KeuzeStand, string> = {
   geen_doel: "var(--vd-ink-4)",
 };
 
-const STAND_KORT: Record<KeuzeStand, string> = {
+export const STAND_KORT: Record<KeuzeStand, string> = {
   op_koers: "op je norm",
   ruimte: "ruimte",
   niet_meetbaar: "niet te meten",
@@ -112,7 +117,7 @@ const STAND_KORT: Record<KeuzeStand, string> = {
   geen_doel: "geen eiwitdoel",
 };
 
-function kortGetal(stand: KeuzeStofStand): string {
+export function kortGetal(stand: KeuzeStofStand): string {
   if (stand.gemiddeld === null) return STAND_KORT[stand.stand];
   const norm = stand.norm ? ` / ${hoeveelheid(stand.norm)}` : "";
   return `${stand.benaderd ? "≈ " : ""}${hoeveelheid(stand.gemiddeld)}${norm} ${stand.unit}`;
@@ -141,6 +146,7 @@ export default function KeuzeVergelijken({
   surface,
   verdicts,
   products,
+  onNaarMijnKeuzes,
 }: {
   statuses: readonly NutrientRouteStatus[];
   reeksen: readonly Vensterreeks[];
@@ -149,6 +155,8 @@ export default function KeuzeVergelijken({
   surface: string;
   verdicts: readonly StoredSupplementVerdict[];
   products?: readonly KeuzeProduct[];
+  /** Naar het tabblad Mijn keuzes; zonder deze prop staat de link er niet. */
+  onNaarMijnKeuzes?: () => void;
 }) {
   const eiwitDoelG = useEiwitDoel();
   const standen = useMemo(
@@ -312,6 +320,7 @@ export default function KeuzeVergelijken({
                 verdict={checkOordeelVoorStof(status.nutrient, verdicts)}
                 products={products}
                 voedingsfavorieten={voedingsfavorieten}
+                onNaarMijnKeuzes={onNaarMijnKeuzes}
               />
             );
           })}
@@ -338,6 +347,7 @@ function StofRij({
   verdict,
   products,
   voedingsfavorieten,
+  onNaarMijnKeuzes,
 }: {
   status: NutrientRouteStatus;
   stand: KeuzeStofStand;
@@ -349,6 +359,7 @@ function StofRij({
   verdict: StoredSupplementVerdict | null;
   products?: readonly KeuzeProduct[];
   voedingsfavorieten: DagboekVoedingsfavorieten;
+  onNaarMijnKeuzes?: () => void;
 }) {
   const { items, save, remove } = useVoortgangFavorites();
   const keuze = resolveNutritionRouteChoice(status.nutrient, items);
@@ -512,8 +523,9 @@ function StofRij({
                 status={status}
                 dagen={dagen}
                 datums={datums}
-                gekozen={heeftVoeding(keuze)}
-                onKies={() => kies(samen(!heeftVoeding(keuze), heeftSupplement(keuze)))}
+                routeGekozen={heeftVoeding(keuze)}
+                onZetEten={(aan) => kies(samen(aan, heeftSupplement(keuze)))}
+                onNaarMijnKeuzes={onNaarMijnKeuzes}
                 voedingsfavorieten={voedingsfavorieten}
               />
               <SupplementKant
@@ -525,6 +537,7 @@ function StofRij({
                 gekozenProduct={gekozenProduct}
                 onKiesProduct={kiesProduct}
                 onZetUit={zetSupplementUit}
+                onNaarMijnKeuzes={onNaarMijnKeuzes}
               />
             </div>
           </div>
@@ -654,36 +667,6 @@ function CheckContext({
   );
 }
 
-function RouteKnop({
-  gekozen,
-  onKies,
-  kleur,
-  label,
-}: {
-  gekozen: boolean;
-  onKies: () => void;
-  kleur: "sage" | "accent-2";
-  label: string;
-}) {
-  const vol = kleur === "sage" ? "var(--vd-sage)" : "var(--vd-accent-2)";
-  return (
-    <button
-      type="button"
-      aria-pressed={gekozen}
-      onClick={onKies}
-      className="mt-3 inline-flex min-h-[36px] w-full cursor-pointer items-center justify-center gap-1.5 rounded-[10px] border px-3 text-[0.75rem] font-semibold transition-colors"
-      style={
-        gekozen
-          ? { background: vol, borderColor: vol, color: "#0D190B" }
-          : { background: "transparent", borderColor: "var(--vd-line-2)", color: "var(--vd-ink)" }
-      }
-    >
-      {gekozen ? <Icons.Check s={12} /> : null}
-      {gekozen ? `Mijn route · ${label}` : `Kies ${label}`}
-    </button>
-  );
-}
-
 function Kant({
   kleur,
   titel,
@@ -714,33 +697,96 @@ function VoedingKant({
   status,
   dagen,
   datums,
-  gekozen,
-  onKies,
+  routeGekozen,
+  onZetEten,
+  onNaarMijnKeuzes,
   voedingsfavorieten,
 }: {
   status: NutrientRouteStatus;
   dagen: readonly DagboekDag[];
   datums: readonly string[];
-  gekozen: boolean;
-  onKies: () => void;
+  routeGekozen: boolean;
+  onZetEten: (aan: boolean) => void;
+  onNaarMijnKeuzes?: () => void;
   voedingsfavorieten: DagboekVoedingsfavorieten;
 }) {
   const profiel = useKernstofProfiel();
+  const [zoek, setZoek] = useState("");
   const bronnen = useMemo(() => bronnenVanStof(dagen, datums, status.nutrient), [dagen, datums, status.nutrient]);
   const perMoment = useMemo(() => stofPerMoment(dagen, datums, status.nutrient), [dagen, datums, status.nutrient]);
   const totaal = bronnen.reduce((som, b) => som + b.totaal, 0);
   const momentTotaal = perMoment.reduce((som, m) => som + m.totaal, 0);
   const ruimte = ruimteBij(perMoment, momentTotaal);
+  const term = zoek.trim();
   const voorstellen = useMemo(
     () =>
       rijksteBronnen(status.nutrient, "portie", 30)
         .filter((bron) => pastBijVoedingswijze(bron.entry, profiel.voedingswijze))
         .slice(0, 3)
-        .map((bron) => ({ ...bron, ook: brengtOokMee(bron.entry, status.nutrient) })),
+        .map((bron) => ({
+          entry: bron.entry,
+          portie: bron.portieLabel,
+          levert: `${hoeveelheid(bron.perPortie)} ${bron.unit}`,
+          ook: brengtOokMee(bron.entry, status.nutrient),
+        })),
     [status.nutrient, profiel.voedingswijze],
   );
-  const voorMoment = ruimte?.moment ?? "ontbijt";
-  const aantalBewaard = voorstellen.filter((bron) => voedingsfavorieten.isBewaard(bron.entry.key)).length;
+  // Zoeken binnen deze stof: alleen wat er per portie iets van levert, rijkste eerst.
+  const treffers = useMemo(() => {
+    if (!term) return [];
+    return searchCatalog(term, 40)
+      .map((entry) => ({ entry, levert: gehaltePerPortie(entry, status.nutrient) }))
+      .filter((rij): rij is { entry: CatalogEntry; levert: { value: number; unit: string } } => (rij.levert?.value ?? 0) > 0)
+      .sort((x, y) => y.levert.value - x.levert.value)
+      .slice(0, 5)
+      .map(({ entry, levert }) => ({
+        entry,
+        portie: entry.porties[0]?.labelNl ?? "",
+        levert: `${hoeveelheid(levert.value)} ${levert.unit}`,
+        ook: brengtOokMee(entry, status.nutrient),
+      }));
+  }, [term, status.nutrient]);
+  const rijen = term ? treffers : voorstellen;
+  const { items, save, remove } = useVoortgangFavorites();
+  const etenKeuzes = etenKeuzesVoorStof(status.nutrient, items);
+  const gekozenHier = etenKeuzes.length;
+
+  /**
+   * Eén actie per voedingsmiddel. Kiezen bewaart het bij déze stof in Mijn
+   * keuzes (`voeding-eten-<stof>-<key>`), zet de ☆ in het dagboek zodat het
+   * bovenaan staat bij toevoegen, en kiest de route eten. Wissen haalt de
+   * ster alleen weg als je het bij geen andere stof koos.
+   */
+  const kies = (key: string, naam: string) => {
+    const wasGekozen = etenKeuzes.includes(key);
+    if (wasGekozen) {
+      remove(etenKeuzeId(status.nutrient, key));
+      const elders = items.some((item) => {
+        const keuze = parseEtenKeuze(item.id);
+        return keuze?.key === key && keuze.nutrient !== status.nutrient;
+      });
+      if (!elders && voedingsfavorieten.isBewaard(key)) void voedingsfavorieten.wissel(key, status.nutrient);
+    } else {
+      save(
+        {
+          id: etenKeuzeId(status.nutrient, key),
+          title: `${status.label}: ${naam}`,
+          kind: "activiteit",
+          domain: "voeding",
+          source: "mijn_keuze",
+        },
+        "keuze_stof",
+      );
+      if (!voedingsfavorieten.isBewaard(key)) void voedingsfavorieten.wissel(key, status.nutrient);
+      if (!routeGekozen) onZetEten(true);
+    }
+    trackEvent("keuze_eten_gekozen", {
+      nutrient: status.nutrient,
+      product: key,
+      actie: wasGekozen ? "gewist" : "gekozen",
+      via: term ? "zoek" : "voorstel",
+    });
+  };
 
   return (
     <Kant kleur="sage" titel="Uit je eten">
@@ -770,59 +816,75 @@ function VoedingKant({
         </p>
       ) : null}
 
-      {voorstellen.length > 0 ? (
+      {etenKeuzes.length > 0 ? (
         <>
-          <p className="m-0 mt-2.5 text-[0.6875rem] text-[var(--vd-ink-3)]">
-            Kan erbij{ruimte ? ` · bij je ${ruimte.label.toLowerCase()}` : ""}
-          </p>
-          <Voedingswijze voedingswijze={profiel.voedingswijze} nutrient={status.nutrient} />
-          <ul className="m-0 mt-1 flex list-none flex-col gap-1 p-0">
-            {voorstellen.map((bron) => (
-              <li key={bron.entry.key} className="flex items-center justify-between gap-2 text-[0.78125rem]">
-                <span className="min-w-0">
-                  <span className="text-[var(--vd-ink)]">{bron.entry.labelNl}</span>
-                  <span className="text-[var(--vd-ink-3)]">
-                    {" "}
-                    · {bron.portieLabel} · {hoeveelheid(bron.perPortie)} {bron.unit}
+          <p className="m-0 mt-2.5 text-[0.6875rem] text-[var(--vd-ink-3)]">Jouw keuze</p>
+          <ul className="m-0 mt-1 flex list-none flex-col gap-1.5 p-0">
+            {etenKeuzes.map((key) => {
+              const entry = catalogEntry(key);
+              if (!entry) return null;
+              const levert = gehaltePerPortie(entry, status.nutrient);
+              return (
+                <li key={key} className="flex items-center justify-between gap-2 text-[0.78125rem]">
+                  <span className="min-w-0">
+                    <span className="text-[var(--vd-ink)]">{entry.labelNl}</span>
+                    {levert ? (
+                      <span className="text-[var(--vd-ink-3)]">
+                        {" "}
+                        · {entry.porties[0]?.labelNl} · {hoeveelheid(levert.value)} {levert.unit}
+                      </span>
+                    ) : null}
                   </span>
-                  {bron.ook.length > 0 ? (
-                    <span className="block text-[0.6875rem] text-[var(--vd-sage-2)]">ook: {bron.ook.join(", ")}</span>
-                  ) : null}
-                </span>
-                <span className="flex shrink-0 items-center gap-2.5">
-                  {gekozen ? (
-                    <button
-                      type="button"
-                      aria-pressed={voedingsfavorieten.isBewaard(bron.entry.key)}
-                      aria-label={
-                        voedingsfavorieten.isBewaard(bron.entry.key)
-                          ? `${bron.entry.labelNl} weghalen uit Mijn producten`
-                          : `${bron.entry.labelNl} bewaren in Mijn producten`
-                      }
-                      disabled={voedingsfavorieten.bezig === bron.entry.key}
-                      onClick={() => void voedingsfavorieten.wissel(bron.entry.key, status.nutrient)}
-                      className="cursor-pointer border-0 bg-transparent p-0 text-[1rem] leading-none text-[var(--vd-sage-2)] disabled:opacity-50"
-                    >
-                      {voedingsfavorieten.isBewaard(bron.entry.key) ? "★" : "☆"}
-                    </button>
-                  ) : null}
-                  <button
-                    type="button"
-                    aria-label={`${bron.entry.labelNl} in je dagboek zetten`}
-                    onClick={() => {
-                      trackEvent("keuze_bron_naar_dagboek", { nutrient: status.nutrient, moment: voorMoment });
-                      gaNaarDashboard(buildDagboekVoegHref({ bron: "voeding", key: bron.entry.key, moment: voorMoment }));
-                    }}
-                    className="cursor-pointer border-0 bg-transparent p-0 text-[1rem] font-semibold leading-none text-[var(--vd-sage-2)]"
-                  >
-                    ＋
-                  </button>
-                </span>
-              </li>
-            ))}
+                  <KiesPil gekozen kleur="sage" onClick={() => kies(key, entry.labelNl)} label={entry.labelNl} />
+                </li>
+              );
+            })}
           </ul>
         </>
       ) : null}
+
+      <KolomZoek
+        waarde={zoek}
+        onChange={setZoek}
+        label={`Zoek eten met ${status.label.toLowerCase()}`}
+        onZoek={() => trackEvent("keuze_eten_zoek", { nutrient: status.nutrient, treffers: treffers.length })}
+      />
+
+      <p className="m-0 mt-2 text-[0.6875rem] text-[var(--vd-ink-3)]">
+        {term ? `Gevonden · rijkste eerst` : `Kan erbij${ruimte ? ` · bij je ${ruimte.label.toLowerCase()}` : ""}`}
+      </p>
+      {!term ? <Voedingswijze voedingswijze={profiel.voedingswijze} nutrient={status.nutrient} /> : null}
+      {term && rijen.length === 0 ? (
+        <p className="m-0 mt-1 text-[0.75rem] text-[var(--vd-ink-3)]">
+          Niets gevonden met {status.label.toLowerCase()} voor &ldquo;{term}&rdquo;.
+        </p>
+      ) : null}
+      <ul className="m-0 mt-1 flex list-none flex-col gap-1.5 p-0">
+        {rijen.map((rij) => {
+          const gekozen = etenKeuzes.includes(rij.entry.key);
+          return (
+            <li key={rij.entry.key} className="flex items-center justify-between gap-2 text-[0.78125rem]">
+              <span className="min-w-0">
+                <span className="text-[var(--vd-ink)]">{rij.entry.labelNl}</span>
+                <span className="text-[var(--vd-ink-3)]">
+                  {" "}
+                  · {rij.portie} · {rij.levert}
+                </span>
+                {rij.ook.length > 0 ? (
+                  <span className="block text-[0.6875rem] text-[var(--vd-sage-2)]">ook: {rij.ook.join(", ")}</span>
+                ) : null}
+              </span>
+              <KiesPil
+                gekozen={gekozen}
+                bezig={voedingsfavorieten.bezig === rij.entry.key}
+                kleur="sage"
+                onClick={() => kies(rij.entry.key, rij.entry.labelNl)}
+                label={rij.entry.labelNl}
+              />
+            </li>
+          );
+        })}
+      </ul>
       <Link
         href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`}
         onClick={(event) => {
@@ -834,35 +896,155 @@ function VoedingKant({
       >
         Alle rijkste bronnen in Je patroon →
       </Link>
-      {voorstellen.some((bron) => bron.ook.length > 0) ? (
+      {rijen.some((rij) => rij.ook.length > 0) ? (
         <p className="m-0 mt-2 text-[0.6875rem] leading-relaxed text-[var(--vd-ink-3)]">
           Eten brengt meer mee dan deze ene stof; &ldquo;ook&rdquo; noemt wat één portie minstens 15&nbsp;% van de
           referentie levert.
         </p>
       ) : null}
-      <RouteKnop gekozen={gekozen} onKies={onKies} kleur="sage" label="eten" />
-      {gekozen ? (
-        <p className="m-0 mt-2 text-[0.6875rem] leading-relaxed text-[var(--vd-ink-2)]">
-          {aantalBewaard > 0 ? (
-            <>
-              {aantalBewaard === 1 ? "1 bron staat" : `${aantalBewaard} bronnen staan`} bovenaan in je dagboek.{" "}
-              <button
-                type="button"
-                onClick={() => {
-                  trackEvent("keuze_naar_mijn_producten", { nutrient: status.nutrient });
-                  gaNaarDashboard(buildDagboekFavorietenHref("producten"));
-                }}
-                className="cursor-pointer border-0 bg-transparent p-0 font-semibold text-[var(--vd-sage-2)] hover:underline"
-              >
-                Naar Mijn producten →
-              </button>
-            </>
-          ) : (
-            "Zet een ☆ bij wat je wilt eten: dat staat dan bovenaan als je iets aan je dagboek toevoegt."
-          )}
-        </p>
-      ) : null}
+
+      <RouteStand
+        kleur="sage"
+        gekozen={routeGekozen}
+        hint="Kies hierboven wat je wilt eten. Het komt in Mijn keuzes, en daar zet je het in je dagboek."
+        bevestiging={
+          gekozenHier > 0 || routeGekozen ? "Eten staat in Mijn keuzes. Daar zet je het met één tik in je dagboek." : null
+        }
+        onNaarMijnKeuzes={onNaarMijnKeuzes}
+        onZetUit={() => onZetEten(false)}
+        zetUitLabel="Zet eten uit"
+      />
     </Kant>
+  );
+}
+
+function KolomZoek({
+  waarde,
+  onChange,
+  label,
+  onZoek,
+}: {
+  waarde: string;
+  onChange: (waarde: string) => void;
+  label: string;
+  onZoek: () => void;
+}) {
+  return (
+    <div className="relative mt-2.5">
+      <span aria-hidden className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[var(--vd-ink-3)]">
+        <Icons.Search s={12} />
+      </span>
+      <input
+        type="search"
+        value={waarde}
+        onChange={(event) => onChange(event.target.value)}
+        onBlur={() => {
+          if (waarde.trim()) onZoek();
+        }}
+        placeholder={label}
+        aria-label={label}
+        className="min-h-[34px] w-full rounded-[9px] border border-[var(--vd-line)] bg-[var(--vd-surface)] pl-7 pr-2 text-[0.75rem] text-[var(--vd-ink)] placeholder:text-[var(--vd-ink-4)] focus:border-[var(--vd-sage)] focus:outline-none"
+      />
+    </div>
+  );
+}
+
+const KIES_KLEUR = {
+  sage: {
+    aan: "border-[var(--vd-sage)] bg-[var(--vd-sage)] text-[#0D190B]",
+    uit: "border-[var(--vd-line-2)] bg-transparent text-[var(--vd-ink)] hover:border-[var(--vd-sage)]",
+  },
+  "accent-2": {
+    aan: "border-[var(--vd-accent-2)] bg-[var(--vd-accent-2)] text-[#0D190B]",
+    uit: "border-[var(--vd-line-2)] bg-transparent text-[var(--vd-ink)] hover:border-[var(--vd-accent-2)]",
+  },
+} as const;
+
+function KiesPil({
+  gekozen,
+  bezig = false,
+  kleur,
+  onClick,
+  label,
+  tekst = { aan: "Gekozen", uit: "Kies" },
+}: {
+  gekozen: boolean;
+  bezig?: boolean;
+  kleur: "sage" | "accent-2";
+  onClick: () => void;
+  label: string;
+  tekst?: { aan: string; uit: string };
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={gekozen}
+      aria-label={gekozen ? `${label}: gekozen, tik om te wissen` : `${label} kiezen`}
+      disabled={bezig}
+      onClick={onClick}
+      className={`inline-flex min-h-[30px] shrink-0 cursor-pointer items-center gap-1 rounded-full border px-2.5 text-[0.6875rem] font-semibold transition-colors disabled:opacity-50 ${
+        gekozen ? KIES_KLEUR[kleur].aan : KIES_KLEUR[kleur].uit
+      }`}
+    >
+      {gekozen ? <Icons.Check s={11} /> : null}
+      {gekozen ? tekst.aan : tekst.uit}
+    </button>
+  );
+}
+
+/**
+ * Onderaan een kolom: wat er met je keuze gebeurt. Geen grote kiesknop meer —
+ * je kiest per voedingsmiddel of per product — wel de weg naar Mijn keuzes en
+ * een manier om de route weer uit te zetten.
+ */
+function RouteStand({
+  kleur,
+  gekozen,
+  hint,
+  bevestiging,
+  onNaarMijnKeuzes,
+  onZetUit,
+  zetUitLabel,
+}: {
+  kleur: "sage" | "accent-2";
+  gekozen: boolean;
+  hint: string;
+  bevestiging: string | null;
+  onNaarMijnKeuzes?: () => void;
+  onZetUit: () => void;
+  zetUitLabel: string;
+}) {
+  const accent = kleur === "sage" ? "var(--vd-sage-2)" : "var(--vd-accent-2)";
+  if (!bevestiging) {
+    return hint ? <p className="m-0 mt-3 text-[0.6875rem] leading-relaxed text-[var(--vd-ink-3)]">{hint}</p> : null;
+  }
+  return (
+    <div className="mt-3 rounded-[9px] border border-[var(--vd-line)] px-2.5 py-2 text-[0.6875rem] leading-relaxed">
+      <p className="m-0 text-[var(--vd-ink-2)]">
+        <Icons.Check s={11} style={{ color: accent, display: "inline", verticalAlign: "-1px" }} /> {bevestiging}
+      </p>
+      <p className="m-0 mt-1 flex flex-wrap gap-x-3">
+        {onNaarMijnKeuzes ? (
+          <button
+            type="button"
+            onClick={onNaarMijnKeuzes}
+            className="cursor-pointer border-0 bg-transparent p-0 font-semibold hover:underline"
+            style={{ color: accent }}
+          >
+            Naar Mijn keuzes →
+          </button>
+        ) : null}
+        {gekozen ? (
+          <button
+            type="button"
+            onClick={onZetUit}
+            className="cursor-pointer border-0 bg-transparent p-0 font-semibold text-[var(--vd-ink-3)] hover:underline"
+          >
+            {zetUitLabel}
+          </button>
+        ) : null}
+      </p>
+    </div>
   );
 }
 
@@ -973,6 +1155,7 @@ function SupplementKant({
   gekozenProduct,
   onKiesProduct,
   onZetUit,
+  onNaarMijnKeuzes,
 }: {
   status: NutrientRouteStatus;
   stand: KeuzeStofStand;
@@ -982,9 +1165,16 @@ function SupplementKant({
   gekozenProduct: string | null;
   onKiesProduct: (product: KeuzeProduct) => void;
   onZetUit: () => void;
+  onNaarMijnKeuzes?: () => void;
 }) {
   const rustig = stand.stand === "op_koers";
   const [toon, setToon] = useState(!rustig || gekozenProduct !== null);
+  const [zoek, setZoek] = useState("");
+  const term = zoek.trim();
+  const treffers = useMemo(
+    () => (term ? zoekKeuzeProducten(status.nutrient, term, products) : []),
+    [term, status.nutrient, products],
+  );
   const vormen = useMemo(() => {
     const top = psScoreBestePerVorm(status.nutrient, products);
     // Een eerder gekozen product blijft zichtbaar, ook als het niet (meer) de beste van zijn vorm is.
@@ -1015,9 +1205,20 @@ function SupplementKant({
 
       {toon ? (
         <>
-          <p className="m-0 mt-1 text-[0.6875rem] text-[var(--vd-ink-3)]">Per vorm de hoogste PS-Score</p>
+          <KolomZoek
+            waarde={zoek}
+            onChange={setZoek}
+            label={`Zoek een ${status.label.toLowerCase()}-supplement`}
+            onZoek={() => trackEvent("keuze_supplement_zoek", { nutrient: status.nutrient, treffers: treffers.length })}
+          />
+          <p className="m-0 mt-2 text-[0.6875rem] text-[var(--vd-ink-3)]">
+            {term ? "Gevonden · hoogste PS-Score eerst" : "Per vorm de hoogste PS-Score"}
+          </p>
+          {term && treffers.length === 0 ? (
+            <p className="m-0 mt-1 text-[0.75rem] text-[var(--vd-ink-3)]">Geen product gevonden voor &ldquo;{term}&rdquo;.</p>
+          ) : null}
           <ul className="m-0 mt-1 flex list-none flex-col gap-1.5 p-0">
-            {vormen.map((product) => (
+            {(term ? treffers : vormen).map((product) => (
               <li
                 key={product.slug}
                 className="rounded-lg border border-[var(--vd-line)] transition-colors hover:border-[var(--vd-line-2)]"
@@ -1040,19 +1241,13 @@ function SupplementKant({
                 </Link>
                 <ProductErbij nutrient={status.nutrient} stand={stand} product={product} />
                 <div className="border-t border-[var(--vd-line)] px-2.5 py-1.5">
-                  <button
-                    type="button"
-                    aria-pressed={product.slug === gekozenProduct}
+                  <KiesPil
+                    gekozen={product.slug === gekozenProduct}
+                    kleur="accent-2"
                     onClick={() => onKiesProduct(product)}
-                    className={`inline-flex min-h-[30px] cursor-pointer items-center gap-1.5 rounded-full border px-2.5 text-[0.6875rem] font-semibold transition-colors ${
-                      product.slug === gekozenProduct
-                        ? "border-[var(--vd-accent-2)] bg-[var(--vd-accent-2)] text-[#0D190B]"
-                        : "border-[var(--vd-line-2)] bg-transparent text-[var(--vd-ink)] hover:border-[var(--vd-accent-2)]"
-                    }`}
-                  >
-                    {product.slug === gekozenProduct ? <Icons.Check s={11} /> : null}
-                    {product.slug === gekozenProduct ? "Mijn supplement" : "Kies dit supplement"}
-                  </button>
+                    label={product.naam}
+                    tekst={{ aan: "Mijn supplement", uit: "Kies dit supplement" }}
+                  />
                 </div>
               </li>
             ))}
@@ -1083,12 +1278,27 @@ function SupplementKant({
           Toon de vormen met PS-Score
         </button>
       )}
+      <RouteStand
+        kleur="accent-2"
+        gekozen={routeGekozen}
+        hint={toon && vormen.length > 0 ? "Kies hierboven het supplement dat je wilt nemen. Het komt in Mijn keuzes." : ""}
+        bevestiging={
+          gekozen
+            ? `${gekozen.naam} staat in Mijn keuzes.`
+            : routeGekozen
+              ? "Je koos een supplement, maar nog niet welk. Kies er hierboven een."
+              : null
+        }
+        onNaarMijnKeuzes={gekozen ? onNaarMijnKeuzes : undefined}
+        onZetUit={onZetUit}
+        zetUitLabel="Zet supplement uit"
+      />
       {gekozen ? (
         <>
           <Link
             href={metKeuzeHerkomst(gekozen.href, status.nutrient)}
             onClick={() => klik("productpagina", gekozen.slug)}
-            className="mt-3 inline-flex min-h-[36px] w-full items-center justify-center gap-1.5 rounded-[10px] border border-[var(--vd-accent-2)] bg-[var(--vd-accent-2)] px-3 text-center text-[0.75rem] font-semibold text-[#0D190B] no-underline"
+            className="mt-2 inline-flex min-h-[36px] w-full items-center justify-center gap-1.5 rounded-[10px] border border-[var(--vd-accent-2)] bg-[var(--vd-accent-2)] px-3 text-center text-[0.75rem] font-semibold text-[#0D190B] no-underline"
           >
             Naar de productpagina →
           </Link>
@@ -1097,23 +1307,6 @@ function SupplementKant({
             staan daar los van.
           </p>
         </>
-      ) : routeGekozen ? (
-        <>
-          <p className="m-0 mt-3 text-[0.6875rem] leading-relaxed text-[var(--vd-ink-2)]">
-            Je koos een supplement. Kies hierboven welk, dan staat het ook bij je favorieten.
-          </p>
-          <button
-            type="button"
-            onClick={onZetUit}
-            className="mt-1 cursor-pointer border-0 bg-transparent p-0 text-left text-[0.6875rem] font-semibold text-[var(--vd-ink-3)] hover:underline"
-          >
-            Zet supplement uit
-          </button>
-        </>
-      ) : toon && vormen.length > 0 ? (
-        <p className="m-0 mt-3 text-[0.6875rem] leading-relaxed text-[var(--vd-ink-3)]">
-          Kies hierboven het supplement dat je wilt nemen.
-        </p>
       ) : null}
     </Kant>
   );
