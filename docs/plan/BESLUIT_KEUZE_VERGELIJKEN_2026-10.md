@@ -153,3 +153,16 @@ Na Dennis' review op :3004:
 **Premium (volgende stap, niet gebouwd):** "Jouw stack" over alle keuzes samen (dubbelingen, de bovengrens over alle bronnen, timing per moment, een goedkopere combinatie van gelijke kwaliteit) en "Jouw week". Gratis blijft alles hierboven.
 
 **Meting:** `mijn_keuzes_moment` {nutrient, moment|geen} (GA4 + Clarity), `mijn_keuzes_naar_vergelijken` {nutrient}, `keuze_vergelijken_ps_score_click` {surface: mijn_keuzes, doel: productpagina}, `nutrition_dagboek_favoriet_*` {surface: mijn_keuzes}, `keuze_bron_naar_dagboek` {surface: mijn_keuzes}.
+
+### Zevende ronde (7 oktober, zelfde PR): naast elkaar, moment ook bij eten
+
+Na Dennis' review:
+
+1. **Eten en supplement naast elkaar** in elke stofkaart, in dezelfde twee kolommen en kleuren als Vergelijken. Vanaf 30rem containerbreedte staan ze naast elkaar; op een smalle telefoon onder elkaar, omdat twee kolommen van ±160 px de productnaam, prijs en vier momentknoppen niet dragen. Een kant zonder keuze toont "Geen … gekozen · Kies in Vergelijken →", zodat de vergelijking altijd twee kanten heeft.
+2. **"Wanneer eet je het?"** Per stof een moment voor je eten: `voeding-eetmoment-<stof>-<moment>`, naast het supplementmoment `voeding-moment-…`. De ＋ zet een bron meteen op dat moment in het dagboek.
+
+**Open, ter beslissing bij Dennis: de prijs van de voedingsoptie naast die van het supplement.** Dat botst met twee eerdere besluiten:
+- 3 oktober: "eerst voedingswaarden kloppend, prijzen/boodschappenlijst later" (commit 9dc6c8fd);
+- `BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md`: de supermarktsnapshot is "niet voor prijzen", met een onduidelijke licentie.
+
+Daarom niet gebouwd. Voorstel: een kleine, handmatig bijgehouden tabel met een indicatieve prijs per portie, alleen voor de rijkste bronnen van de vijf kernstoffen (± 30 regels), met prijspeil en bron erbij. Vergelijken per portie, nooit "prijs per mg", omdat eten meer meebrengt dan die ene stof.

@@ -107,4 +107,21 @@ describe("MijnKeuzes", () => {
     fireEvent.click(screen.getByRole("button", { name: "Wijzig" }));
     expect(onNaar).toHaveBeenCalledWith("magnesium");
   });
+
+  it("zet eten en supplement naast elkaar, met een eigen moment voor je eten dat de ＋ gebruikt", async () => {
+    favorieten.items = [{ id: "voeding-route-omega3-bord", title: "", kind: "activiteit" }];
+    const { rerender, onNaar } = renderMijn();
+    const eten = () => screen.getByRole("region", { name: "Uit je eten" });
+    expect(screen.getByRole("region", { name: "Uit een supplement" })).toBeTruthy();
+    expect(screen.getByText("Geen supplement gekozen.")).toBeTruthy();
+
+    await waitFor(() => expect(within(eten()).getByText("Haring")).toBeTruthy());
+    fireEvent.click(within(eten()).getByRole("button", { name: "Lunch" }));
+    expect(favorieten.items.map((i) => i.id)).toContain("voeding-eetmoment-omega3-lunch");
+
+    rerender(<MijnKeuzes statuses={statuses} reeksen={[]} onNaarVergelijken={onNaar} />);
+    await waitFor(() =>
+      expect(within(eten()).getByRole("button", { name: "Haring in je dagboek zetten bij lunch" })).toBeTruthy(),
+    );
+  });
 });

@@ -86,39 +86,62 @@ export function stofLabel(nutrient: NutrientId): string {
 }
 
 /**
- * Wanneer je het gekozen supplement inneemt: ontbijt, lunch, avondeten of
- * tussendoor — dezelfde vier momenten als het dagboek. Bewaard zoals de
- * routekeuze (`voeding-route-…`): als eigen favoriet met het moment in het
- * id, zodat er geen migratie nodig is. Eén moment per stof.
+ * Wanneer je het gekozen supplement inneemt, of wanneer je je gekozen eten
+ * eet: ontbijt, lunch, avondeten of tussendoor — dezelfde vier momenten als
+ * het dagboek. Per stof en per kant één moment. Bewaard zoals de routekeuze
+ * (`voeding-route-…`): als eigen favoriet met het moment in het id, zodat er
+ * geen migratie nodig is.
  *
- * Wordt straks gebruikt om het supplement met één tik op dat moment te loggen
- * en voor timing in "Jouw stack" (premium); nu is het je eigen geheugensteun.
+ * Eten: de ＋ in Mijn keuzes zet een bron meteen op dat moment in het
+ * dagboek. Supplement: straks met één tik loggen, en timing in "Jouw stack"
+ * (premium).
  */
-const MOMENT_PREFIX = "voeding-moment-";
+export type MomentKant = "supplement" | "eten";
 
-export function momentKeuzeId(nutrient: NutrientId, moment: EetmomentId): string {
-  return `${MOMENT_PREFIX}${nutrient}-${moment}`;
+const MOMENT_PREFIX: Record<MomentKant, string> = {
+  supplement: "voeding-moment-",
+  eten: "voeding-eetmoment-",
+};
+
+export function momentKeuzeId(nutrient: NutrientId, moment: EetmomentId, kant: MomentKant = "supplement"): string {
+  return `${MOMENT_PREFIX[kant]}${nutrient}-${moment}`;
 }
 
-export function parseMomentKeuze(id: string): { nutrient: NutrientId; moment: EetmomentId } | null {
-  if (!id.startsWith(MOMENT_PREFIX)) return null;
-  const rest = id.slice(MOMENT_PREFIX.length);
+export function parseMomentKeuze(
+  id: string,
+): { nutrient: NutrientId; moment: EetmomentId; kant: MomentKant } | null {
+  const kant = (Object.keys(MOMENT_PREFIX) as MomentKant[]).find((k) => id.startsWith(MOMENT_PREFIX[k]));
+  if (!kant) return null;
+  const rest = id.slice(MOMENT_PREFIX[kant].length);
   const nutrient = STOFFEN.find((stof) => rest.startsWith(`${stof}-`));
   if (!nutrient) return null;
   const moment = rest.slice(nutrient.length + 1);
-  return isEetmomentId(moment) ? { nutrient, moment } : null;
+  return isEetmomentId(moment) ? { nutrient, moment, kant } : null;
 }
 
-export function momentVoorStof(nutrient: NutrientId, items: readonly { id: string }[]): EetmomentId | null {
+export function momentVoorStof(
+  nutrient: NutrientId,
+  items: readonly { id: string }[],
+  kant: MomentKant = "supplement",
+): EetmomentId | null {
   for (const item of items) {
     const keuze = parseMomentKeuze(item.id);
-    if (keuze?.nutrient === nutrient) return keuze.moment;
+    if (keuze?.nutrient === nutrient && keuze.kant === kant) return keuze.moment;
   }
   return null;
 }
 
-export function momentKeuzeIdsVoorStof(nutrient: NutrientId, items: readonly { id: string }[]): string[] {
-  return items.filter((item) => parseMomentKeuze(item.id)?.nutrient === nutrient).map((item) => item.id);
+export function momentKeuzeIdsVoorStof(
+  nutrient: NutrientId,
+  items: readonly { id: string }[],
+  kant: MomentKant = "supplement",
+): string[] {
+  return items
+    .filter((item) => {
+      const keuze = parseMomentKeuze(item.id);
+      return keuze?.nutrient === nutrient && keuze.kant === kant;
+    })
+    .map((item) => item.id);
 }
 
 /** Of een favoriet bij de stofkeuzes hoort (route, product of moment) en dus in de stofkaart van Mijn keuzes staat. */

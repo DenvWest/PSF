@@ -49,7 +49,11 @@ describe("productkeuze per stof", () => {
 
   it("leest het moment per stof terug en herkent stofkeuzes", () => {
     const id = momentKeuzeId("vitamin_d", "avondeten");
-    expect(parseMomentKeuze(id)).toEqual({ nutrient: "vitamin_d", moment: "avondeten" });
+    expect(parseMomentKeuze(id)).toEqual({ nutrient: "vitamin_d", moment: "avondeten", kant: "supplement" });
+    const eten = momentKeuzeId("vitamin_d", "lunch", "eten");
+    expect(eten).toBe("voeding-eetmoment-vitamin_d-lunch");
+    expect(momentVoorStof("vitamin_d", [{ id }, { id: eten }], "eten")).toBe("lunch");
+    expect(isStofKeuzeFavoriet(eten)).toBe(true);
     expect(parseMomentKeuze("voeding-moment-omega3-middernacht")).toBeNull();
     expect(momentVoorStof("vitamin_d", [{ id }])).toBe("avondeten");
     expect(isStofKeuzeFavoriet(id)).toBe(true);
