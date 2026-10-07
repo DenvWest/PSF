@@ -42,14 +42,14 @@ export function leesDagboekVoeg(search: string): DagboekVoeg | null {
   return { bron: bron as DagboekItemBron, key, moment };
 }
 
-/** Haalt `voeg`, `moment` en `favorieten` uit de URL, zodat herladen het portiescherm niet opnieuw opent. */
+const DEEPLINK_PARAMS = ["voeg", "moment", "favorieten", "zoek"] as const;
+
+/** Haalt de deeplink-parameters uit de URL, zodat herladen het scherm niet opnieuw opent. */
 export function wisDagboekVoeg(): void {
   if (typeof window === "undefined") return;
   const url = new URL(window.location.href);
-  if (!["voeg", "moment", "favorieten"].some((naam) => url.searchParams.has(naam))) return;
-  url.searchParams.delete("voeg");
-  url.searchParams.delete("moment");
-  url.searchParams.delete("favorieten");
+  if (!DEEPLINK_PARAMS.some((naam) => url.searchParams.has(naam))) return;
+  for (const naam of DEEPLINK_PARAMS) url.searchParams.delete(naam);
   window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
 }
 
@@ -74,4 +74,23 @@ export function buildDagboekFavorietenHref(tab: DagboekFavorietenTab): string {
 export function leesDagboekFavorieten(search: string): DagboekFavorietenTab | null {
   const waarde = new URLSearchParams(search).get("favorieten");
   return waarde === "producten" || waarde === "supplementen" ? waarde : null;
+}
+
+/**
+ * Het zoekscherm van het dagboek, al bij een maaltijd: de ＋ in de onderbalk.
+ * "alle" zoekt in voeding en supplementen tegelijk, "supplementen" opent op
+ * "Mijn supplementen".
+ */
+export type DagboekZoekStart = "alle" | "supplementen";
+
+export function buildDagboekZoekHref(start: DagboekZoekStart, moment: EetmomentId): string {
+  return `/dashboard?${new URLSearchParams({ tab: "vandaag", zoek: start, moment }).toString()}`;
+}
+
+export function leesDagboekZoek(search: string): { start: DagboekZoekStart; moment: EetmomentId } | null {
+  const params = new URLSearchParams(search);
+  const start = params.get("zoek");
+  if (start !== "alle" && start !== "supplementen") return null;
+  const momentParam = params.get("moment") ?? "";
+  return { start, moment: isEetmomentId(momentParam) ? momentParam : "ontbijt" };
 }

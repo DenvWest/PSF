@@ -36,7 +36,7 @@ import {
   supplementVergelijkingVoor,
   type PatroonStof,
 } from "@/lib/nutrition-stof-meting";
-import { bouwStofTrend } from "@/lib/nutrition-stof-trend";
+import { bouwStofTrend, EIWITDOEL } from "@/lib/nutrition-stof-trend";
 import { VOEDINGSWAARDE_VELDEN } from "@/lib/nutrition-voedingswaarde";
 import { isKernstofMetNorm, isStreefStof } from "@/lib/account-kernstof-profiel";
 import { bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
@@ -54,7 +54,7 @@ import { bepaalBevinding, bouwTekortsysteem, NIET_BEWIJSBAAR } from "@/lib/nutri
 import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
 import { bouwPeriodeOverzicht } from "@/lib/nutrition-weekoverzicht";
 import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
-import { useGevolgdeNormen, useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
+import { useEiwitDoel, useGevolgdeNormen, useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 import { useVoedingsdataPeriode } from "@/lib/use-voedingsdata-periode";
 import { bewaarPatroonStand, leesPatroonUrl } from "@/lib/patroon-url";
 import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
@@ -86,6 +86,7 @@ import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
  */
 
 
+const ZONDER_EIWITDOEL = "Vul je gewicht in bij Je doelen om eiwit tegen je doel te zien.";
 const ZONDER_NORM_EIWIT = "Eiwit rekent met je gewicht en activiteit, niet met één vaste norm.";
 function zonderNormGevolgd(stof: PatroonStof): string {
   return stof === "fiberG"
@@ -102,6 +103,7 @@ function PatroonInhoud() {
   const normen = useKernstofNormen();
   const gevolgdeNormen = useGevolgdeNormen();
   const { streefwaarden } = useKernstofProfiel();
+  const eiwitDoel = useEiwitDoel();
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
   const [laden, setLaden] = useState(true);
   // Terugkomen via de terugknop: begin in de stand die in de URL staat
@@ -275,11 +277,12 @@ function PatroonInhoud() {
           label: rij.label,
           unit: rij.unit,
           soort: "kern",
-          norm: normVoor(normen, rij.nutrient)?.waarde ?? null,
+          norm: rij.nutrient === "protein" ? eiwitDoel : (normVoor(normen, rij.nutrient)?.waarde ?? null),
           nietBewijsbaar: NIET_BEWIJSBAAR[rij.nutrient] ?? null,
           periodetotaal: rij.nutrient === "omega3",
           dagen: meetPeriode(rij.nutrient, bron, datums),
-          zonderNormUitleg: ZONDER_NORM_EIWIT,
+          zonderNormUitleg: ZONDER_EIWITDOEL,
+          ...(rij.nutrient === "protein" ? { normNaam: EIWITDOEL } : {}),
         }),
       );
     const gevolgd = gevolgdPeriode.map((reeks) =>
@@ -296,7 +299,7 @@ function PatroonInhoud() {
       }),
     );
     return { kern, gevolgd };
-  }, [sectie, stoffen, verborgenNutrients, normen, bron, datums, gevolgdPeriode]);
+  }, [sectie, stoffen, verborgenNutrients, normen, eiwitDoel, bron, datums, gevolgdPeriode]);
 
   const supplementen = useMemo((): SupplementWeek => {
     const binnen = new Set(datums);
