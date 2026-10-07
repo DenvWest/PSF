@@ -132,3 +132,79 @@ Na Dennis' review op :3004:
 5. **Overal een weg terug.** Ook "Alle N met PS-Score →" (`/supplementen`) en "Vergelijk op prijs →" (`/beste/*`) dragen nu de herkomst. `TerugNaarKeuze` staat op alle drie de bestemmingen: bovenaan als knop, en op mobiel als zwevende "← Je keuze" zodra die knop uit beeld is. Op `/beste/*` zweeft hij boven de vaste koopbalk.
 
 **Meting:** `keuze_eiwitdoel_instellen` {surface, plek?}, `keuze_terug_van_product` {nutrient, surface: product|supplementen|beste, plek: boven|zwevend, product?}, `keuze_product_naar_catalogus` {nutrient, product}.
+
+---
+
+## Herziening 7 oktober (zesde ronde): Favorieten wordt "Mijn keuzes"
+
+**Aanleiding.** Dennis vond Favorieten "slap": een losse lijst titels zonder waarom en zonder iets om mee te doen. Hij ging akkoord met het voorstel en met de naam "Mijn keuzes" (dat wijzigt besluit 2 van 6 okt, "Favorieten blijft", alleen in naam; de id `favorieten` blijft voor oude links en meetreeksen). Zijn vraag om het moment (ontbijt, lunch, avondeten, tussendoor) erbij te zetten is meegenomen.
+
+### Besluiten
+
+1. **Op voeding toont de tab een overzicht per stof, in dezelfde volgorde als Vergelijken.**
+   - Bovenaan: "x van y stoffen gekozen · n supplementen · € per dag (± € per maand)".
+   - Per stof met een keuze één kaart: de stand uit je dagboek, je gesterde voedingsmiddelen die echt een bron van die stof zijn (≥ 15 % van de referentie per portie, met ★ om weg te halen en ＋ naar het dagboek), en je gekozen supplement (vorm, etiket per dag, prijs per dag, PS-Score, productpagina).
+   - "Wijzig" opent Vergelijken op die stof.
+   - Stoffen zonder keuze staan in één regel eronder.
+2. **"Wanneer neem je het?"** Per gekozen supplement één moment: ontbijt, lunch, avondeten of tussendoor. Dat zijn dezelfde vier momenten als het dagboek. Opgeslagen als favoriet `voeding-moment-<stof>-<moment>`, net als de routekeuze. **Bewust zonder migratie:** `account_favorites` heeft geen momentkolom, en een migratie zou de deploy blokkeren voor een veld dat nu alleen geheugensteun is. Straks gebruikt voor (a) het supplement met één tik op dat moment loggen en (b) timing in "Jouw stack".
+3. **Niets verdwijnt.** Wat niet bij een stofkeuze hoort (supplementen met een ster uit Je patroon, ladderkeuzes) staat eronder onder "Ook bewaard".
+4. **Geen herinnering met tijd in deze ronde.** `alert_enabled` verstuurt nog niets (voorbereidend veld), en het moment dekt de vraag "wanneer".
+
+**Premium (volgende stap, niet gebouwd):** "Jouw stack" over alle keuzes samen (dubbelingen, de bovengrens over alle bronnen, timing per moment, een goedkopere combinatie van gelijke kwaliteit) en "Jouw week". Gratis blijft alles hierboven.
+
+**Meting:** `mijn_keuzes_moment` {nutrient, moment|geen} (GA4 + Clarity), `mijn_keuzes_naar_vergelijken` {nutrient}, `keuze_vergelijken_ps_score_click` {surface: mijn_keuzes, doel: productpagina}, `nutrition_dagboek_favoriet_*` {surface: mijn_keuzes}, `keuze_bron_naar_dagboek` {surface: mijn_keuzes}.
+
+### Zevende ronde (7 oktober, zelfde PR): naast elkaar, moment ook bij eten
+
+Na Dennis' review:
+
+1. **Eten en supplement naast elkaar** in elke stofkaart, in dezelfde twee kolommen en kleuren als Vergelijken. Vanaf 30rem containerbreedte staan ze naast elkaar; op een smalle telefoon onder elkaar, omdat twee kolommen van ±160 px de productnaam, prijs en vier momentknoppen niet dragen. Een kant zonder keuze toont "Geen … gekozen · Kies in Vergelijken →", zodat de vergelijking altijd twee kanten heeft.
+2. **"Wanneer eet je het?"** Per stof een moment voor je eten: `voeding-eetmoment-<stof>-<moment>`, naast het supplementmoment `voeding-moment-…`. De ＋ zet een bron meteen op dat moment in het dagboek.
+
+**Open, ter beslissing bij Dennis: de prijs van de voedingsoptie naast die van het supplement.** Dat botst met twee eerdere besluiten:
+- 3 oktober: "eerst voedingswaarden kloppend, prijzen/boodschappenlijst later" (commit 9dc6c8fd);
+- `BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md`: de supermarktsnapshot is "niet voor prijzen", met een onduidelijke licentie.
+
+Daarom niet gebouwd. Voorstel: een kleine, handmatig bijgehouden tabel met een indicatieve prijs per portie, alleen voor de rijkste bronnen van de vijf kernstoffen (± 30 regels), met prijspeil en bron erbij. Vergelijken per portie, nooit "prijs per mg", omdat eten meer meebrengt dan die ene stof.
+
+### Achtste ronde (7 oktober, zelfde PR): één ster, één plek
+
+Dennis: "overal staat alleen forel". Eén gesterde forel is een bron van eiwit, omega-3 en vitamine D (≥ 15 % per portie), en stond dus op drie kaarten. Nu:
+- Een gesterd voedingsmiddel staat alleen bij de stof waar één portie het meest aan bijdraagt, gemeten als aandeel van de referentie (`hoofdStof`). Forel staat dus bij omega-3.
+- Andere stoffen waarvan het ook een bron is, zeggen "Telt ook mee: Forel (bij omega-3)".
+- Heeft een stof met de route eten nog geen eigen bron, dan toont de kaart de twee rijkste bronnen van die stof met ☆ ("Kies een bron met ☆:"), binnen je voedingswijze.
+
+**Prijs van de voedingsoptie:** Dennis akkoord met het voorstel (tabel met een indicatieve prijs per portie). Bouwvolgorde en prijsbron staan in het antwoord van 7 oktober; nog niet gebouwd.
+
+### Negende ronde (7 oktober, zelfde PR): één knop per keuze, zoeken per kolom
+
+Dennis: twee knoppen per voedingsmiddel (☆ en ＋) waren verwarrend, en de ster kwam pas na "Kies eten".
+
+1. **In Vergelijken één knop per voedingsmiddel en per product: "Kies".**
+   - Bij eten bewaart "Kies" het in Mijn keuzes (☆ in het dagboek) en zet het de route eten aan.
+   - Bij een supplement: "Kies dit supplement" (ongewijzigd).
+   - De grote knop "Kies eten" en de ＋ naar het dagboek zijn uit Vergelijken verdwenen. Onderaan elke kolom staat de stand: "… staat in Mijn keuzes · Naar Mijn keuzes →", met "Zet … uit".
+   - **Loggen in het dagboek gebeurt vanuit Mijn keuzes** ("＋ Dagboek", op het gekozen moment). De taakverdeling: Vergelijken = kiezen, Mijn keuzes = doen.
+2. **Een zoekveld per kolom.**
+   - Eten: zoekt in de eigen catalogus en toont alleen wat per portie iets van die stof levert, rijkste eerst.
+   - Supplement: zoekt op naam en vorm in de producten van die stof (dezelfde bron als `/supplementen`), hoogste PS-Score eerst.
+   - Het zoekveld bovenaan Vergelijken (stof of voedingsmiddel) blijft.
+3. **Mijn keuzes → product of alle supplementen van die stof**, met de herkomst `deel=favorieten`. De terugknop zegt dan "← Terug naar Mijn keuzes" en zet je daar neer.
+4. **Supplement loggen in het dagboek: nog niet.** Het dagboek kent geen merkproducten. Mijn keuzes zegt dat er nu bij; dit is de volgende stap (a).
+
+**Meting:** `keuze_eten_gekozen` {nutrient, product, actie, via: voorstel|zoek}, `keuze_eten_zoek` {nutrient, treffers}, `keuze_supplement_zoek` {nutrient, treffers}; `keuze_terug_van_product` nu ook vanuit Mijn keuzes.
+
+### Tiende ronde (7 oktober, zelfde PR): wat je kiest, staat waar je het koos
+
+Dennis koos bij eiwit "Ei, gebakken" en zag het niet terug in Mijn keuzes, wel "heel wat andere keuzes". **Oorzaak:**
+- Mijn keuzes plaatste een gesterd voedingsmiddel alleen bij een stof waarvan één portie ≥ 15 % van de referentie levert.
+- Eén ei levert 13,5 % van de eiwitreferentie en stond dus nergens.
+- De eiwitkaart dacht dat er nog niets gekozen was en toonde de voorstellen.
+
+**Fix:**
+- Een keuze in Vergelijken (of vanuit de voorstellen in Mijn keuzes) wordt bewaard bij de stof waar je hem maakte, als `voeding-eten-<stof>-<voedingsmiddel>`, naast de ☆ in het dagboek.
+- Mijn keuzes toont wat je bij een stof koos altijd bij die stof. De drempel (`hoofdStof`) geldt alleen nog voor oudere sterren zonder stof.
+- In Vergelijken staat je keuze bovenaan de eetkolom ("Jouw keuze"), ook als je hem via het zoekveld vond.
+- Wissen haalt de dagboekster alleen weg als je het voedingsmiddel bij geen andere stof koos.
+
+**Zoeken op meer woorden:** de catalogus vond "ei gebakken" niet bij "Ei, gebakken", omdat hij als één stuk tekst zocht en botste op de komma. Nu tellen alle woorden in elke volgorde (laagste rang, onder de bestaande treffers). Dat geldt ook voor het dagboek.

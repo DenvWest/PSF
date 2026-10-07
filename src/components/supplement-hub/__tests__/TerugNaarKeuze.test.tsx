@@ -32,4 +32,12 @@ describe("TerugNaarKeuze", () => {
     const { container } = renderTerug();
     expect(container.innerHTML).toBe("");
   });
+
+  it("brengt je terug naar Mijn keuzes als je daar vandaan kwam", () => {
+    zoek.waarde = "van=keuze&stof=omega3&deel=favorieten";
+    renderTerug();
+    expect(screen.getByRole("link", { name: /Terug naar Mijn keuzes · Omega-3/ }).getAttribute("href")).toBe(
+      "/dashboard?tab=keuze&stof=omega3&deel=favorieten",
+    );
+  });
 });

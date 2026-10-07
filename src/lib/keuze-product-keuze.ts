@@ -1,4 +1,5 @@
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
+import { isEetmomentId, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 
 /**
  * Het supplement dat je in Keuze → Vergelijken voor één stof koos — één
@@ -62,10 +63,18 @@ export function productKeuzeHref(id: string): string | null {
  * Herkomst op een productlink vanuit Keuze: de productpagina toont dan
  * "← Terug naar je keuze", en die link opent in het dashboard dezelfde stof.
  */
-export function metKeuzeHerkomst(href: string, nutrient: NutrientId): string {
+export type KeuzeDeel = "logboek" | "favorieten";
+
+/**
+ * @param deel het onderdeel van Keuze waar je vandaan kwam — Vergelijken
+ *   (`logboek`, standaard) of Mijn keuzes (`favorieten`) — zodat de terugknop
+ *   je daar weer neerzet.
+ */
+export function metKeuzeHerkomst(href: string, nutrient: NutrientId, deel: KeuzeDeel = "logboek"): string {
   const url = new URL(href, "https://www.perfectsupplement.nl");
   url.searchParams.set("van", "keuze");
   url.searchParams.set("stof", nutrient);
+  if (deel !== "logboek") url.searchParams.set("deel", deel);
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
@@ -76,10 +85,115 @@ export function leesKeuzeHerkomst(search: URLSearchParams): NutrientId | null {
   return STOFFEN.find((kandidaat) => kandidaat === stof) ?? null;
 }
 
-export function keuzeTerugHref(nutrient: NutrientId): string {
-  return `/dashboard?${new URLSearchParams({ tab: "keuze", stof: nutrient }).toString()}`;
+export function leesKeuzeDeel(search: URLSearchParams): KeuzeDeel {
+  return search.get("deel") === "favorieten" ? "favorieten" : "logboek";
+}
+
+export function keuzeTerugHref(nutrient: NutrientId, deel: KeuzeDeel = "logboek"): string {
+  const params = new URLSearchParams({ tab: "keuze", stof: nutrient });
+  if (deel !== "logboek") params.set("deel", deel);
+  return `/dashboard?${params.toString()}`;
 }
 
 export function stofLabel(nutrient: NutrientId): string {
   return nutrientReferences[nutrient].label;
+}
+
+/**
+ * Wanneer je het gekozen supplement inneemt, of wanneer je je gekozen eten
+ * eet: ontbijt, lunch, avondeten of tussendoor — dezelfde vier momenten als
+ * het dagboek. Per stof en per kant één moment. Bewaard zoals de routekeuze
+ * (`voeding-route-…`): als eigen favoriet met het moment in het id, zodat er
+ * geen migratie nodig is.
+ *
+ * Eten: de ＋ in Mijn keuzes zet een bron meteen op dat moment in het
+ * dagboek. Supplement: straks met één tik loggen, en timing in "Jouw stack"
+ * (premium).
+ */
+export type MomentKant = "supplement" | "eten";
+
+const MOMENT_PREFIX: Record<MomentKant, string> = {
+  supplement: "voeding-moment-",
+  eten: "voeding-eetmoment-",
+};
+
+export function momentKeuzeId(nutrient: NutrientId, moment: EetmomentId, kant: MomentKant = "supplement"): string {
+  return `${MOMENT_PREFIX[kant]}${nutrient}-${moment}`;
+}
+
+export function parseMomentKeuze(
+  id: string,
+): { nutrient: NutrientId; moment: EetmomentId; kant: MomentKant } | null {
+  const kant = (Object.keys(MOMENT_PREFIX) as MomentKant[]).find((k) => id.startsWith(MOMENT_PREFIX[k]));
+  if (!kant) return null;
+  const rest = id.slice(MOMENT_PREFIX[kant].length);
+  const nutrient = STOFFEN.find((stof) => rest.startsWith(`${stof}-`));
+  if (!nutrient) return null;
+  const moment = rest.slice(nutrient.length + 1);
+  return isEetmomentId(moment) ? { nutrient, moment, kant } : null;
+}
+
+export function momentVoorStof(
+  nutrient: NutrientId,
+  items: readonly { id: string }[],
+  kant: MomentKant = "supplement",
+): EetmomentId | null {
+  for (const item of items) {
+    const keuze = parseMomentKeuze(item.id);
+    if (keuze?.nutrient === nutrient && keuze.kant === kant) return keuze.moment;
+  }
+  return null;
+}
+
+export function momentKeuzeIdsVoorStof(
+  nutrient: NutrientId,
+  items: readonly { id: string }[],
+  kant: MomentKant = "supplement",
+): string[] {
+  return items
+    .filter((item) => {
+      const keuze = parseMomentKeuze(item.id);
+      return keuze?.nutrient === nutrient && keuze.kant === kant;
+    })
+    .map((item) => item.id);
+}
+
+/**
+ * Een voedingsmiddel dat je in Vergelijken bij één stof koos. Naast de ☆ in
+ * het dagboek (die bovenaan zet bij het toevoegen) onthoudt dit bij wélke
+ * stof je hem koos: een gebakken ei levert per stuk 13,5 % van de
+ * eiwitreferentie en haalt de "bron van"-drempel niet, maar wie het bij eiwit
+ * kiest, wil het in Mijn keuzes bij eiwit zien.
+ */
+const ETEN_PREFIX = "voeding-eten-";
+
+export function etenKeuzeId(nutrient: NutrientId, key: string): string {
+  return `${ETEN_PREFIX}${nutrient}-${key}`;
+}
+
+export function parseEtenKeuze(id: string): { nutrient: NutrientId; key: string } | null {
+  if (!id.startsWith(ETEN_PREFIX)) return null;
+  const rest = id.slice(ETEN_PREFIX.length);
+  const nutrient = STOFFEN.find((stof) => rest.startsWith(`${stof}-`));
+  if (!nutrient) return null;
+  const key = rest.slice(nutrient.length + 1);
+  return key ? { nutrient, key } : null;
+}
+
+/** De voedingsmiddelen die je bij deze stof koos, in de volgorde waarin ze bewaard zijn. */
+export function etenKeuzesVoorStof(nutrient: NutrientId, items: readonly { id: string }[]): string[] {
+  return items.flatMap((item) => {
+    const keuze = parseEtenKeuze(item.id);
+    return keuze?.nutrient === nutrient ? [keuze.key] : [];
+  });
+}
+
+/** Of een favoriet bij de stofkeuzes hoort (route, product of moment) en dus in de stofkaart van Mijn keuzes staat. */
+export function isStofKeuzeFavoriet(id: string): boolean {
+  return (
+    id.startsWith("voeding-route-") ||
+    parseProductKeuze(id) !== null ||
+    parseMomentKeuze(id) !== null ||
+    parseEtenKeuze(id) !== null
+  );
 }

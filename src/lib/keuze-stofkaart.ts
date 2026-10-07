@@ -155,3 +155,38 @@ export function brengtOokMee(entry: CatalogEntry, stof: NutrientId, limiet = 3):
 export function euroPerDag(centen: number): string {
   return `€ ${(centen / 100).toFixed(2).replace(".", ",")}`;
 }
+
+/**
+ * Of een voedingsmiddel een echte bron is van deze stof: één portie levert
+ * minstens 15 % van de referentie — dezelfde drempel als {@link brengtOokMee}.
+ * Zo komt een gesterde haring in Mijn keuzes bij omega-3 en vitamine D, en
+ * niet bij magnesium.
+ */
+export function isBronVan(entry: CatalogEntry, stof: NutrientId): boolean {
+  const ref = referentie(stof);
+  const portie = gehaltePerPortie(entry, stof);
+  return Boolean(ref && portie && portie.value / ref >= DREMPEL);
+}
+
+/** Hoeveel van de referentie één portie van deze stof levert (1 = 100 %), of null. */
+export function bronAandeel(entry: CatalogEntry, stof: NutrientId): number | null {
+  const ref = referentie(stof);
+  const portie = gehaltePerPortie(entry, stof);
+  return ref && portie ? portie.value / ref : null;
+}
+
+/**
+ * De stof waar een voedingsmiddel het meest aan bijdraagt, onder de stoffen
+ * waarvan het een bron is. Zo staat een gesterde forel in Mijn keuzes één keer
+ * (bij omega-3) in plaats van op drie kaarten; de andere kaarten zeggen dat
+ * hij daar ook meetelt.
+ */
+export function hoofdStof(entry: CatalogEntry, stoffen: readonly NutrientId[]): NutrientId | null {
+  let beste: { stof: NutrientId; aandeel: number } | null = null;
+  for (const stof of stoffen) {
+    const aandeel = bronAandeel(entry, stof);
+    if (aandeel === null || aandeel < DREMPEL) continue;
+    if (!beste || aandeel > beste.aandeel) beste = { stof, aandeel };
+  }
+  return beste?.stof ?? null;
+}
