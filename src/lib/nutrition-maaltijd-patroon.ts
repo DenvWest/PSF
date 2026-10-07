@@ -72,6 +72,9 @@ export type MaaltijdProduct = {
   hoeveelheid: number;
   eenheid: "g" | "portie";
   supplement: boolean;
+  /** Wat dit product gemiddeld per keer leverde: zelfde rekenpad als de maaltijd. */
+  rijen: MaaltijdRij[];
+  kernstoffen: MaaltijdKernstof[];
 };
 
 export type MaaltijdPatroon = {
@@ -105,12 +108,101 @@ type Invoer = {
   normen?: GevolgdeNormen;
 };
 
-function productenVan(keren: readonly { items: readonly DagboekItem[]; etiket: readonly SupermarktPortie[] }[]): MaaltijdProduct[] {
-  const perNaam = new Map<string, { keer: number; som: number; eenheid: "g" | "portie"; supplement: boolean }>();
-  const tel = (naam: string, hoeveelheid: number, eenheid: "g" | "portie", supplement: boolean) => {
-    const huidig = perNaam.get(naam) ?? { keer: 0, som: 0, eenheid, supplement };
+type Keer = { items: readonly DagboekItem[]; etiket: readonly SupermarktPortie[] };
+
+function gemiddeldeVan(keren: readonly Keer[], nevoProducten: ReadonlyMap<string, SupermarktProduct>, normen: GevolgdeNormen) {
+  const keer = keren.length;
+  const waarden = keren.map(({ items, etiket }) =>
+    berekenVoedingswaarde({
+      items,
+      supermarktLogs: etiket,
+      nevoProducten,
+      normen,
+    }),
+  );
+
+  const gemiddeldeRijen = VOEDINGSWAARDE_VELDEN.map((veld) => {
+    let som = 0;
+    let heeftWaarde = false;
+    let benaderd = false;
+    for (const waarde of waarden) {
+      const rij = waarde.rijen.find((r) => r.veld === veld.veld);
+      if (rij?.waarde === null || rij?.waarde === undefined) continue;
+      som += rij.waarde;
+      heeftWaarde = true;
+      if (rij.benaderd) benaderd = true;
+    }
+    const gemiddeld = heeftWaarde && keer > 0 ? som / keer : null;
+    const norm = normVoorVeld(normen, veld.veld)?.waarde ?? null;
+    return {
+      ...veld,
+      waarde: gemiddeld,
+      norm,
+      aandeel: gemiddeld !== null && norm !== null ? gemiddeld / norm : null,
+      aandeelRi: gemiddeld !== null && veld.ri !== null ? gemiddeld / veld.ri : null,
+      benaderd,
+    };
+  });
+
+  const kcal = gemiddeldeRijen.find((rij) => rij.veld === "energyKcal")?.waarde ?? null;
+  const rijen = gemiddeldeRijen.map(
+    (rij): MaaltijdRij => ({
+      ...rij,
+      waarde: rij.waarde === null ? null : afgerond(rij.waarde),
+      per100kcal:
+        rij.veld === "energyKcal" || rij.waarde === null || kcal === null || kcal <= 0
+          ? null
+          : (rij.waarde / kcal) * 100,
+    }),
+  );
+
+  const perKeer = keren.map(({ items }) => nutrientenGesplitstUitItems(items));
+  const kernstoffen = KERNSTOFFEN_PER_MAALTIJD.map((nutrient): MaaltijdKernstof => {
+    let totaal = 0;
+    let supplement = 0;
+    let benaderd = false;
+    let heeftBron = false;
+    for (const stoffen of perKeer) {
+      const stof = stoffen.find((s) => s.nutrient === nutrient);
+      if (!stof) continue;
+      totaal += stof.minstens;
+      supplement += stof.uitSupplement;
+      if (stof.uitBenadering > 0) benaderd = true;
+      heeftBron = true;
+    }
+    return {
+      nutrient,
+      label: nutrientReferences[nutrient].label,
+      unit: BASE_UNIT[nutrient],
+      gemiddeld: heeftBron ? afgerond(totaal / keer) : null,
+      uitSupplement: heeftBron ? afgerond(supplement / keer) : null,
+      benaderd,
+    };
+  });
+
+  return { waarden, rijen, kernstoffen };
+}
+
+/**
+ * Wat er op deze maaltijd stond, vaakst eerst, met per product wat het
+ * gemiddeld per keer leverde. De noemer is het aantal keren dat het product er
+ * stond, niet het aantal keren dat de maaltijd geregistreerd is: "wat levert
+ * mijn havermout" gaat over de havermout die je at.
+ */
+function productenVan(
+  keren: readonly Keer[],
+  nevoProducten: ReadonlyMap<string, SupermarktProduct>,
+  normen: GevolgdeNormen,
+): MaaltijdProduct[] {
+  const perNaam = new Map<
+    string,
+    { keer: number; som: number; eenheid: "g" | "portie"; supplement: boolean; voorkomens: Keer[] }
+  >();
+  const tel = (naam: string, hoeveelheid: number, eenheid: "g" | "portie", supplement: boolean, voorkomen: Keer) => {
+    const huidig = perNaam.get(naam) ?? { keer: 0, som: 0, eenheid, supplement, voorkomens: [] };
     huidig.keer += 1;
     huidig.som += hoeveelheid;
+    huidig.voorkomens.push(voorkomen);
     perNaam.set(naam, huidig);
   };
 
@@ -118,26 +210,31 @@ function productenVan(keren: readonly { items: readonly DagboekItem[]; etiket: r
     for (const item of items) {
       if (item.bron === "supplement") {
         const entry = supplementCatalogEntry(item.key);
-        if (entry) tel(entry.labelNl, item.grams, "portie", true);
+        if (entry) tel(entry.labelNl, item.grams, "portie", true, { items: [item], etiket: [] });
       } else {
         const entry = catalogEntry(item.key);
-        if (entry) tel(entry.labelNl, item.grams, "g", false);
+        if (entry) tel(entry.labelNl, item.grams, "g", false, { items: [item], etiket: [] });
       }
     }
     for (const log of etiket) {
       const naam = log.product ? [log.product.merk, log.product.naam].filter(Boolean).join(" ") : null;
-      if (naam) tel(naam, log.grams, "g", false);
+      if (naam) tel(naam, log.grams, "g", false, { items: [], etiket: [log] });
     }
   }
 
   return [...perNaam.entries()]
-    .map(([naam, { keer, som, eenheid, supplement }]) => ({
-      naam,
-      keer,
-      hoeveelheid: Math.round(som / keer),
-      eenheid,
-      supplement,
-    }))
+    .map(([naam, { keer, som, eenheid, supplement, voorkomens }]) => {
+      const { rijen, kernstoffen } = gemiddeldeVan(voorkomens, nevoProducten, normen);
+      return {
+        naam,
+        keer,
+        hoeveelheid: Math.round(som / keer),
+        eenheid,
+        supplement,
+        rijen,
+        kernstoffen,
+      };
+    })
     .sort((a, b) => b.keer - a.keer || a.naam.localeCompare(b.naam, "nl"));
 }
 
@@ -165,73 +262,7 @@ export function bouwMaaltijdPatroon({
     });
     const keer = keren.length;
 
-    const waarden = keren.map(({ items, etiket }) =>
-      berekenVoedingswaarde({
-        items,
-        supermarktLogs: etiket,
-        nevoProducten,
-        normen,
-      }),
-    );
-
-    const gemiddeldeRijen = VOEDINGSWAARDE_VELDEN.map((veld) => {
-      let som = 0;
-      let heeftWaarde = false;
-      let benaderd = false;
-      for (const waarde of waarden) {
-        const rij = waarde.rijen.find((r) => r.veld === veld.veld);
-        if (rij?.waarde === null || rij?.waarde === undefined) continue;
-        som += rij.waarde;
-        heeftWaarde = true;
-        if (rij.benaderd) benaderd = true;
-      }
-      const gemiddeld = heeftWaarde && keer > 0 ? som / keer : null;
-      const norm = normVoorVeld(normen, veld.veld)?.waarde ?? null;
-      return {
-        ...veld,
-        waarde: gemiddeld,
-        norm,
-        aandeel: gemiddeld !== null && norm !== null ? gemiddeld / norm : null,
-        aandeelRi: gemiddeld !== null && veld.ri !== null ? gemiddeld / veld.ri : null,
-        benaderd,
-      };
-    });
-
-    const kcal = gemiddeldeRijen.find((rij) => rij.veld === "energyKcal")?.waarde ?? null;
-    const rijen = gemiddeldeRijen.map(
-      (rij): MaaltijdRij => ({
-        ...rij,
-        waarde: rij.waarde === null ? null : afgerond(rij.waarde),
-        per100kcal:
-          rij.veld === "energyKcal" || rij.waarde === null || kcal === null || kcal <= 0
-            ? null
-            : (rij.waarde / kcal) * 100,
-      }),
-    );
-
-    const perKeer = keren.map(({ items }) => nutrientenGesplitstUitItems(items));
-    const kernstoffen = KERNSTOFFEN_PER_MAALTIJD.map((nutrient): MaaltijdKernstof => {
-      let totaal = 0;
-      let supplement = 0;
-      let benaderd = false;
-      let heeftBron = false;
-      for (const stoffen of perKeer) {
-        const stof = stoffen.find((s) => s.nutrient === nutrient);
-        if (!stof) continue;
-        totaal += stof.minstens;
-        supplement += stof.uitSupplement;
-        if (stof.uitBenadering > 0) benaderd = true;
-        heeftBron = true;
-      }
-      return {
-        nutrient,
-        label: nutrientReferences[nutrient].label,
-        unit: BASE_UNIT[nutrient],
-        gemiddeld: heeftBron ? afgerond(totaal / keer) : null,
-        uitSupplement: heeftBron ? afgerond(supplement / keer) : null,
-        benaderd,
-      };
-    });
+    const { waarden, rijen, kernstoffen } = gemiddeldeVan(keren, nevoProducten, normen);
 
     return {
       moment,
@@ -254,7 +285,7 @@ export function bouwMaaltijdPatroon({
         (som, { items }) => som + items.filter((item) => item.bron === "supplement").length,
         0,
       ),
-      producten: productenVan(keren),
+      producten: productenVan(keren, nevoProducten, normen),
     };
   });
 }
