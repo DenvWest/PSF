@@ -54,8 +54,9 @@ import { bepaalBevinding, bouwTekortsysteem, NIET_BEWIJSBAAR } from "@/lib/nutri
 import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
 import { bouwPeriodeOverzicht } from "@/lib/nutrition-weekoverzicht";
 import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
-import { useEiwitDoel, useGevolgdeNormen, useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
+import { useEiwitDoel, useGevolgdeNormen, useGewoneMaaltijden, useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 import { useVoedingsdataPeriode } from "@/lib/use-voedingsdata-periode";
+import { sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
 import { bewaarPatroonStand, leesPatroonUrl } from "@/lib/patroon-url";
 import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
 
@@ -230,9 +231,19 @@ function PatroonInhoud() {
   const dataVan = verschuifDag(vandaag, -(MAX_PERIODE_DAGEN - 1));
   const { stoffen: gevolgdeStoffen } = useGevolgdeStoffen();
   const { itemsPerDag, etiketPerDag, nevoProducten, perDag } = useVoedingsdataPeriode(dagen, dataVan, vandaag);
+  const gewoneMaaltijden = useGewoneMaaltijden();
+  const overgeslagenPerDag = useMemo(
+    () =>
+      new Map(
+        dagen
+          .filter((dag) => (dag.overgeslagen?.length ?? 0) > 0)
+          .map((dag) => [dag.date, sanitizeHoofdmaaltijden(dag.overgeslagen)] as const),
+      ),
+    [dagen],
+  );
   const bron = useMemo(
-    () => ({ itemsPerDag, etiketPerDag, nevoProducten }),
-    [itemsPerDag, etiketPerDag, nevoProducten],
+    () => ({ itemsPerDag, etiketPerDag, nevoProducten, overgeslagenPerDag, gewoneMaaltijden }),
+    [itemsPerDag, etiketPerDag, nevoProducten, overgeslagenPerDag, gewoneMaaltijden],
   );
 
   const geregistreerd = useMemo(

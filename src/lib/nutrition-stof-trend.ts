@@ -1,6 +1,6 @@
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { DagMeting, PatroonStof } from "@/lib/nutrition-stof-meting";
-import { bronnenUitMeting, HOOFDMAALTIJDEN, productenZonderGehalte } from "@/lib/nutrition-stof-meting";
+import { bronnenUitMeting, productenZonderGehalte } from "@/lib/nutrition-stof-meting";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 
 /**
@@ -43,6 +43,8 @@ export type TrendMomentRegel = {
   keer: number;
   /** Je eigen gemiddelde voor een ontbrekende hoofdmaaltijd, als dat er (≥3×) is. */
   geschat: number | null;
+  /** Bewust niet gegeten die dag. */
+  overgeslagen: boolean;
 };
 
 export type TrendDetail = {
@@ -174,7 +176,8 @@ type MomentGemiddelde = { gemiddeld: number; keer: number };
 function gemiddeldenPerMoment(dagen: readonly DagMeting[]): Map<EetmomentId, MomentGemiddelde> {
   const uitkomst = new Map<EetmomentId, MomentGemiddelde>();
   for (const { id } of EETMOMENTEN) {
-    const metingen = dagen.flatMap((d) => d.momenten.filter((m) => m.moment === id && m.geregistreerd));
+    // Alleen de keren dat je hem at: een overgeslagen lunch is geen lunch van 0 mg.
+    const metingen = dagen.flatMap((d) => d.momenten.filter((m) => m.moment === id && m.geregistreerd && !m.overgeslagen));
     if (metingen.length === 0) continue;
     uitkomst.set(id, { gemiddeld: metingen.reduce((s, m) => s + m.som, 0) / metingen.length, keer: metingen.length });
   }
@@ -204,7 +207,7 @@ function schattingVoor(
   const norm = invoer.norm;
   if (norm === null || invoer.periodetotaal || invoer.nietBewijsbaar !== null) return null;
   if (!dag.geregistreerd || dag.volledig || dag.som >= norm) return null;
-  const ontbrekend = HOOFDMAALTIJDEN.filter((moment) => !dag.momenten.some((m) => m.moment === moment && m.geregistreerd));
+  const ontbrekend = dag.verwacht.filter((moment) => !dag.momenten.some((m) => m.moment === moment && m.geregistreerd));
   if (ontbrekend.length === 0) return null;
   const namen = opsomming(ontbrekend.map((m) => labelVan(m).toLowerCase()));
 
@@ -252,6 +255,7 @@ function dagDetail(invoer: StofTrendInvoer, dag: DagMeting, schatting: Schatting
           waarde: geregistreerd ? meting!.som : null,
           keer: geregistreerd ? 1 : 0,
           geschat: schatting?.perMoment.get(id) ?? null,
+          overgeslagen: meting?.overgeslagen === true,
         },
       ];
     }),
@@ -272,7 +276,7 @@ function puntenPerMaaltijd(invoer: StofTrendInvoer): StofTrendPunt[] {
     return {
       sleutel: id,
       label,
-      sublabel: geregistreerd ? "" : "—",
+      sublabel: meting?.overgeslagen ? "niet gegeten" : geregistreerd ? "" : "—",
       waarde,
       aandeel,
       staat: geregistreerd ? "neutraal" : "leeg",
@@ -281,7 +285,9 @@ function puntenPerMaaltijd(invoer: StofTrendInvoer): StofTrendPunt[] {
       uitleg:
         waarde === null
           ? `${label}: niet geregistreerd`
-          : `${label}: ${bedrag(waarde, invoer.unit, benaderd)}${aandeel !== null ? ` · ${percentageADH(aandeel)} van ${naamVan(invoer).dag}` : ""}`,
+          : meting?.overgeslagen
+            ? `${label}: niet gegeten`
+            : `${label}: ${bedrag(waarde, invoer.unit, benaderd)}${aandeel !== null ? ` · ${percentageADH(aandeel)} van ${naamVan(invoer).dag}` : ""}`,
       aanvulling: null,
       detail,
     };
@@ -292,7 +298,8 @@ function puntenPerDag(invoer: StofTrendInvoer): StofTrendPunt[] {
   const gemiddelden = gemiddeldenPerMoment(invoer.dagen);
   return invoer.dagen.map((dag) => {
     const schatting = schattingVoor(invoer, dag, gemiddelden);
-    const hoofd = dag.momenten.filter((m) => m.moment !== "tussendoor" && m.geregistreerd).length;
+    const hoofd = dag.verwacht.filter((moment) => dag.momenten.some((m) => m.moment === moment && m.geregistreerd)).length;
+    const nodig = dag.verwacht.length;
     const waarde = dag.geregistreerd ? dag.som : null;
     const aandeel = waarde !== null && invoer.norm ? waarde / invoer.norm : null;
     const staat = dagStaat(invoer, dag);
@@ -300,7 +307,7 @@ function puntenPerDag(invoer: StofTrendInvoer): StofTrendPunt[] {
     return {
       sleutel: dag.datum,
       label: opmaak(dag.datum, { weekday: "short" }).slice(0, 2),
-      sublabel: dag.geregistreerd ? `${hoofd}/3` : "—",
+      sublabel: dag.geregistreerd ? `${hoofd}/${nodig}` : "—",
       waarde,
       aandeel,
       staat,
@@ -312,7 +319,11 @@ function puntenPerDag(invoer: StofTrendInvoer): StofTrendPunt[] {
           : [
               `${datum}: ${bedrag(waarde, invoer.unit, dag.benaderd)}`,
               aandeel !== null ? `${percentageADH(aandeel)} van ${naamVan(invoer).de}` : null,
-              dag.volledig ? "alle hoofdmaaltijden" : `${hoofd} van 3 hoofdmaaltijden — geen dagoordeel`,
+              dag.volledig
+                ? nodig === 3
+                  ? "alle hoofdmaaltijden"
+                  : `al je ${nodig === 1 ? "gewone maaltijd" : `${nodig} gewone maaltijden`}`
+                : `${hoofd} van ${nodig} ${nodig === 1 ? "maaltijd" : "hoofdmaaltijden"} — geen dagoordeel`,
             ]
               .filter(Boolean)
               .join(" · "),
@@ -328,7 +339,9 @@ function weekDetail(invoer: StofTrendInvoer, gemeten: readonly DagMeting[]): Tre
     momenten: EETMOMENTEN.flatMap(({ id, label }): TrendMomentRegel[] => {
       const gemiddelde = gemiddelden.get(id);
       if (id === "tussendoor" && !gemiddelde) return [];
-      return [{ moment: id, label, waarde: gemiddelde?.gemiddeld ?? null, keer: gemiddelde?.keer ?? 0, geschat: null }];
+      return [
+        { moment: id, label, waarde: gemiddelde?.gemiddeld ?? null, keer: gemiddelde?.keer ?? 0, geschat: null, overgeslagen: false },
+      ];
     }),
     bronnen: topBronnen(gemeten, invoer.unit),
     schatting: null,
@@ -390,7 +403,7 @@ function puntenPerWeek(invoer: StofTrendInvoer): StofTrendPunt[] {
 /** Wat er per maaltijd te zeggen valt, ook als geen enkele dag volledig is. */
 function perMaaltijdZin(invoer: StofTrendInvoer): string | null {
   const delen = EETMOMENTEN.flatMap(({ id, label }) => {
-    const metingen = invoer.dagen.flatMap((d) => d.momenten.filter((m) => m.moment === id && m.geregistreerd));
+    const metingen = invoer.dagen.flatMap((d) => d.momenten.filter((m) => m.moment === id && m.geregistreerd && !m.overgeslagen));
     if (metingen.length === 0) return [];
     const gemiddeld = metingen.reduce((s, m) => s + m.som, 0) / metingen.length;
     const deel = invoer.norm ? ` (${percentageADH(gemiddeld / invoer.norm)} van ${naamVan(invoer).dag})` : "";
@@ -423,8 +436,10 @@ function redenenVoor(invoer: StofTrendInvoer, gehaald: boolean): string[] {
     const volledig = gemeten.filter((d) => d.volledig);
     const onvolledig = gemeten.length - volledig.length;
     if (volledig.length === 0) {
+      const verwacht = gemeten[0]!.verwacht.map(labelVan).map((l) => l.toLowerCase());
+      const namen = verwacht.length <= 1 ? (verwacht[0] ?? "") : `${verwacht.slice(0, -1).join(", ")} én ${verwacht[verwacht.length - 1]}`;
       redenen.push(
-        `Op geen van je ${meervoud(gemeten.length, "gemeten dag", "gemeten dagen")} staan ontbijt, lunch én avondeten. Een dagtotaal is dan een ondergrens zonder oordeel.`,
+        `Op geen van je ${meervoud(gemeten.length, "gemeten dag", "gemeten dagen")} ${verwacht.length === 1 ? "staat" : "staan"} ${namen}. Een dagtotaal is dan een ondergrens zonder oordeel.`,
       );
     } else {
       const gemiddeld = volledig.reduce((s, d) => s + d.som, 0) / volledig.length;

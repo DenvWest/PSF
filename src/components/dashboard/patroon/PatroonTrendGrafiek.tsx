@@ -84,7 +84,9 @@ function Paneel({
             <div key={regel.moment} className="contents">
               <dt className="text-[var(--vd-ink-3)]">{regel.label}</dt>
               <dd className="m-0 text-right tabular-nums">
-                {regel.waarde !== null ? (
+                {regel.overgeslagen ? (
+                  <span className="text-[var(--vd-ink-3)]">niet gegeten</span>
+                ) : regel.waarde !== null ? (
                   <>
                     {hoeveelheid(regel.waarde)} {trend.unit}
                     {trend.schaal === "week" ? <span className="text-[var(--vd-ink-4)]"> · {regel.keer}×</span> : null}

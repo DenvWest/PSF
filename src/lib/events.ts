@@ -115,6 +115,9 @@ export const DOMAIN_EVENT_TYPES = [
   // Dezelfde zoek-naar-portie-flow, maar geopend vanuit een maaltijdbalk
   // in plaats van een nutriëntdetail — `nutrient` is dan null in de payload.
   "nutrition.dagboek_maaltijd_geopend",
+  // "Niet gegeten" op een lege hoofdmaaltijd (aan/uit), zie
+  // BESLUIT_EETPATROON_OVERGESLAGEN_2026-10.md. Payload: moment, aan.
+  "nutrition.dagboek_maaltijd_overgeslagen",
   "nutrition.dagboek_zoek_item_gekozen",
   "nutrition.dagboek_portie_bevestigd",
   // Laag A (macro/micro-uitbreiding, zie BESLUIT_MACRO_MICRONUTRIENT_

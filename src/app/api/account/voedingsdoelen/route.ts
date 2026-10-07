@@ -9,6 +9,7 @@ import {
   setVoedingsdoelen,
   type Voedingsdoelen,
 } from "@/lib/account-voedingsdoelen";
+import { isGeldigEetpatroon, sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
 import { laadVoedingsdoelenWeergave } from "@/lib/account-voedingsdoelen-server";
 import { orgScoped } from "@/lib/db/scoped";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
@@ -123,10 +124,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Lijst in plaats van getal: ontbreekt = laten staan, null = terug naar alle drie.
+  let gewoneMaaltijden = huidig.gewoneMaaltijden;
+  if ("gewoneMaaltijden" in record) {
+    if (!isGeldigEetpatroon(record.gewoneMaaltijden)) {
+      return NextResponse.json({ error: "Kies minstens één maaltijd." }, { status: 400 });
+    }
+    gewoneMaaltijden = record.gewoneMaaltijden === null ? null : sanitizeHoofdmaaltijden(record.gewoneMaaltijden);
+  }
+
   const doelen: Voedingsdoelen = {
     gewichtKg: gewicht.waarde,
     trainingsbelasting: belasting.waarde,
     eiwitDoelG: eiwit.waarde,
+    gewoneMaaltijden,
   };
 
   try {

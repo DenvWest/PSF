@@ -46,8 +46,8 @@ const trend: StofTrend = {
       aanvulling: 140,
       detail: {
         momenten: [
-          { moment: "ontbijt", label: "Ontbijt", waarde: 120, keer: 1, geschat: null },
-          { moment: "lunch", label: "Lunch", waarde: null, keer: 0, geschat: 140 },
+          { moment: "ontbijt", label: "Ontbijt", waarde: 120, keer: 1, geschat: null, overgeslagen: false },
+          { moment: "lunch", label: "Lunch", waarde: null, keer: 0, geschat: 140, overgeslagen: false },
         ],
         bronnen: [{ naam: "Havermout", bedrag: 80 }],
         schatting: "≈ 74% met je gebruikelijke lunch (gem. 140 mg, 4×).",

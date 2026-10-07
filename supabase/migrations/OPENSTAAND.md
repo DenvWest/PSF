@@ -7,12 +7,18 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20261006150000_kernstof_profiel_leeftijd_activiteit.sql`
-- **Openstaand:** 0
-- **Laatst bijgewerkt:** 6 oktober 2026
+- **Openstaand:** 1
+- **Laatst bijgewerkt:** 7 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
+
+### [ ] 20261007120000_eetpatroon_overgeslagen.sql
+- **Wat:** `account_voedingsdoelen.gewone_maaltijden` (eetpatroon in Je doelen) en `account_nutrition_daybook.overgeslagen` ("niet gegeten" per maaltijd).
+- **Blokkeert deploy:** ja (branch `feat/eetpatroon`) — het dagboek leest en schrijft de kolom `overgeslagen`; zonder de kolom faalt het laden van het dagboek.
+- **Hoort bij:** feat/eetpatroon — eetpatroon + niet gegeten
+- **Terugdraaien:** `alter table public.account_voedingsdoelen drop column gewone_maaltijden; alter table public.account_nutrition_daybook drop column overgeslagen;`
 
 **Nog te doen (geen migratie, geen blocker):** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan al klaar.
 
