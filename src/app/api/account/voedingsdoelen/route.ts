@@ -10,6 +10,7 @@ import {
   type Voedingsdoelen,
 } from "@/lib/account-voedingsdoelen";
 import { isGeldigEetpatroon, sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
+import { isVoedingsrichting } from "@/lib/nutrition-voedingsrichting";
 import { laadVoedingsdoelenWeergave } from "@/lib/account-voedingsdoelen-server";
 import { orgScoped } from "@/lib/db/scoped";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
@@ -133,11 +134,20 @@ export async function POST(request: NextRequest) {
     gewoneMaaltijden = record.gewoneMaaltijden === null ? null : sanitizeHoofdmaaltijden(record.gewoneMaaltijden);
   }
 
+  let voedingsrichting = huidig.voedingsrichting;
+  if ("voedingsrichting" in record) {
+    if (record.voedingsrichting !== null && !isVoedingsrichting(record.voedingsrichting)) {
+      return NextResponse.json({ error: "Ongeldige richting." }, { status: 400 });
+    }
+    voedingsrichting = record.voedingsrichting;
+  }
+
   const doelen: Voedingsdoelen = {
     gewichtKg: gewicht.waarde,
     trainingsbelasting: belasting.waarde,
     eiwitDoelG: eiwit.waarde,
     gewoneMaaltijden,
+    voedingsrichting,
   };
 
   try {

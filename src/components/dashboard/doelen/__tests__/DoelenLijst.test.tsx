@@ -163,6 +163,19 @@ describe("DoelenLijst", () => {
     expect((screen.getByRole("button", { name: "Opslaan" }) as HTMLButtonElement).disabled).toBe(true);
   });
 
+  it("bewaart de richting en toont de doorverwijzing bij klachten", async () => {
+    render(<DoelenLijst />);
+    fireEvent.click(await screen.findByRole("button", { name: /Waar je tegenaan loopt\s*Nog niet gekozen/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Ik heb klachten/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Opslaan" }));
+
+    await waitFor(() => expect(screen.getByText(/Dit dashboard beoordeelt geen klachten/)).toBeTruthy());
+    const post = vi
+      .mocked(fetch)
+      .mock.calls.find(([url, init]) => String(url).includes("/api/account/voedingsdoelen") && (init as RequestInit)?.method === "POST");
+    expect(JSON.parse(String((post![1] as RequestInit).body))).toEqual({ voedingsrichting: "klachten" });
+  });
+
   it("vraagt alleen naar menstruatie als de server dat aangeeft (vrouw of anders)", async () => {
     render(<DoelenLijst />);
     await screen.findByRole("button", { name: /Vitamine D/ });
@@ -170,7 +183,16 @@ describe("DoelenLijst", () => {
   });
 
   it("bewaart de menstruatiekeuze bij vrouw of anders", async () => {
-    vi.mocked(fetch).mockImplementationOnce(() => antwoord({ ...VOEDING, vraagtMenstruatie: true }));
+    // Op URL, niet op volgorde: Je doelen laadt ook het concrete doel (domain-goal).
+    const basis = vi.mocked(fetch).getMockImplementation()!;
+    let eersteDoelen = true;
+    vi.mocked(fetch).mockImplementation((input, init) => {
+      if (eersteDoelen && String(input).includes("/api/account/voedingsdoelen") && !init?.method) {
+        eersteDoelen = false;
+        return antwoord({ ...VOEDING, vraagtMenstruatie: true });
+      }
+      return basis(input, init);
+    });
     render(<DoelenLijst />);
 
     fireEvent.click(await screen.findByRole("button", { name: /Menstruatie\s*Niet ingevuld/ }));

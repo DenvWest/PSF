@@ -54,9 +54,10 @@ import { bepaalBevinding, bouwTekortsysteem, NIET_BEWIJSBAAR } from "@/lib/nutri
 import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
 import { bouwPeriodeOverzicht } from "@/lib/nutrition-weekoverzicht";
 import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
-import { useEiwitDoel, useGevolgdeNormen, useGewoneMaaltijden, useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
+import { useEiwitDoel, useGevolgdeNormen, useGewoneMaaltijden, useVoedingsrichting, useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 import { useVoedingsdataPeriode } from "@/lib/use-voedingsdata-periode";
 import { sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
+import { ordenVoorRichting, richtingZin } from "@/lib/nutrition-voedingsrichting";
 import { bewaarPatroonStand, leesPatroonUrl } from "@/lib/patroon-url";
 import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
 
@@ -264,10 +265,13 @@ function PatroonInhoud() {
     [itemsPerDag, etiketPerDag, nevoProducten, periode, gevolgdeNormen],
   );
 
-  const stoffen = useMemo(
-    () => bouwPeriodeOverzicht(dagen, datums, normen, { omega3AlsPeriodetotaal: true }),
-    [dagen, datums, normen],
-  );
+  const voedingsrichting = useVoedingsrichting();
+  const stoffen = useMemo(() => {
+    const overzicht = bouwPeriodeOverzicht(dagen, datums, normen, { omega3AlsPeriodetotaal: true });
+    // De richting kiest alleen de volgorde; de rijen zelf blijven gelijk.
+    return { ...overzicht, rijen: ordenVoorRichting(overzicht.rijen, (rij) => rij.nutrient, voedingsrichting) };
+  }, [dagen, datums, normen, voedingsrichting]);
+  const waaromVolgorde = richtingZin(voedingsrichting);
   const richting = useMemo(() => new Map(reeksen.map((r) => [r.nutrient, r.richting])), [reeksen]);
   const macro = useMemo(
     () => bouwVoedingWeekoverzicht(perDag, datums, macroDoelen),
@@ -500,6 +504,11 @@ function PatroonInhoud() {
               <p className="vd-eyebrow" style={{ margin: "0 0 0.375rem" }}>
                 Kernstoffen · tik voor bronnen en norm
               </p>
+              {waaromVolgorde ? (
+                <p className="vd-note" style={{ margin: "0 0 0.5rem" }}>
+                  {waaromVolgorde}
+                </p>
+              ) : null}
               <PatroonStofTabel
                 rijen={stoffen.rijen}
                 richting={richting}
@@ -577,6 +586,11 @@ function PatroonInhoud() {
               </button>
             ))}
           </div>
+          {waaromVolgorde ? (
+            <p className="vd-note" style={{ margin: 0 }}>
+              {waaromVolgorde}
+            </p>
+          ) : null}
           <PatroonTrend
             kernstoffen={trends.kern}
             gevolgd={trends.gevolgd}

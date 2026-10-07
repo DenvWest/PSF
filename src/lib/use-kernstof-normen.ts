@@ -7,6 +7,7 @@ import {
 } from "@/lib/account-kernstof-profiel";
 import type { VoedingsdoelenWeergave } from "@/lib/account-voedingsdoelen";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
+import type { Voedingsrichting } from "@/lib/nutrition-voedingsrichting";
 import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
 import { STANDAARD_GEVOLGDE_NORMEN, STANDAARD_NORMEN, type KernstofNormen } from "@/lib/nutrition-normen";
 import { fetchVoedingsdoelen } from "@/lib/voedingsdoelen-client";
@@ -31,6 +32,8 @@ type Toestand = {
   eiwitDoelG: number | null;
   /** Je gewone maaltijden uit Je doelen; null = alle drie. */
   gewoneMaaltijden: EetmomentId[] | null;
+  /** Je richting uit Je doelen (`NUT_DOEL`); kiest alleen volgorde en tekst. */
+  voedingsrichting: Voedingsrichting | null;
 };
 
 const BEGIN: Toestand = {
@@ -39,6 +42,7 @@ const BEGIN: Toestand = {
   profiel: LEEG_KERNSTOF_PROFIEL,
   eiwitDoelG: null,
   gewoneMaaltijden: null,
+  voedingsrichting: null,
 };
 
 function eiwitDoelUit(weergave: Partial<Pick<VoedingsdoelenWeergave, "doelen" | "richtlijn">>): number | null | undefined {
@@ -66,6 +70,7 @@ export function zetKernstofWeergave(
   toestand = {
     eiwitDoelG: eiwitDoelG === undefined ? toestand.eiwitDoelG : eiwitDoelG,
     gewoneMaaltijden: weergave.doelen ? weergave.doelen.gewoneMaaltijden : toestand.gewoneMaaltijden,
+    voedingsrichting: weergave.doelen ? (weergave.doelen.voedingsrichting ?? null) : toestand.voedingsrichting,
     normen: weergave.kernstofNormen ?? STANDAARD_NORMEN,
     gevolgd: weergave.gevolgdeNormen ?? STANDAARD_GEVOLGDE_NORMEN,
     profiel: weergave.kernstofProfiel ?? LEEG_KERNSTOF_PROFIEL,
@@ -110,4 +115,9 @@ export function useEiwitDoel(): number | null {
 /** Je gewone maaltijden (eetpatroon), uit dezelfde gedeelde toestand; null = alle drie. */
 export function useGewoneMaaltijden(): EetmomentId[] | null {
   return useKernstofToestand().gewoneMaaltijden;
+}
+
+/** Je richting (`NUT_DOEL`), uit dezelfde gedeelde toestand; null = niet gekozen. */
+export function useVoedingsrichting(): Voedingsrichting | null {
+  return useKernstofToestand().voedingsrichting;
 }

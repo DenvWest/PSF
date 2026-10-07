@@ -6,7 +6,7 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Status
 
-- **Baseline toegepast t/m:** `20261007120000_eetpatroon_overgeslagen.sql`
+- **Baseline toegepast t/m:** `20261007150000_voedingsrichting.sql`
 - **Openstaand:** 0
 - **Laatst bijgewerkt:** 7 oktober 2026
 
@@ -47,6 +47,7 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 7 oktober 2026 | `20261007150000_voedingsrichting.sql` | Door Dennis gedraaid in de SQL Editor. |
 | 7 oktober 2026 | `20261007120000_eetpatroon_overgeslagen.sql` | Door Dennis gedraaid in de SQL Editor en opgeslagen. |
 | 6 oktober 2026 | `20261006150000_kernstof_profiel_leeftijd_activiteit.sql` | Door Dennis gedraaid in de SQL Editor. |
 | 6 oktober 2026 | `20261006120000_kernstof_profiel_menstruatie.sql` | Door Dennis gedraaid in de SQL Editor (na de tabel hieronder). |
