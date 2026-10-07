@@ -1,6 +1,6 @@
-import { EETMOMENTEN } from "@/lib/nutrition-eetmomenten";
+import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { DagMeting, PatroonStof } from "@/lib/nutrition-stof-meting";
-import { productenZonderGehalte } from "@/lib/nutrition-stof-meting";
+import { bronnenUitMeting, HOOFDMAALTIJDEN, productenZonderGehalte } from "@/lib/nutrition-stof-meting";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 
 /**
@@ -21,11 +21,37 @@ import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
  * maaltijd kan het verschil zijn. Gevolgde stoffen krijgen geen oordeel-kleur
  * (`BESLUIT_DOELEN_VERBONDEN_2026-10.md`); omega-3 per dag ook niet, want de
  * norm is in de praktijk een weeknorm en telt als periodetotaal.
+ *
+ * ## Had je de norm alsnog gehaald?
+ *
+ * Op een onvolledige dag schatten we wat de ontbrekende hoofdmaaltijd had
+ * kunnen leveren: het gemiddelde van je **eigen** registraties van die
+ * maaltijd in de periode, pas vanaf drie keer. Minder vaak geregistreerd: dan
+ * alleen wat die maaltijd nog moet leveren. De schatting kleurt nooit: de dag
+ * blijft onvolledig, groen blijft voor wat bewezen is.
  */
 
 export type TrendSchaal = "maaltijd" | "dag" | "week";
 
 export type StofTrendStaat = "gehaald" | "onder" | "onvolledig" | "neutraal" | "leeg";
+
+export type TrendMomentRegel = {
+  moment: EetmomentId;
+  label: string;
+  /** Null: niet geregistreerd. Per week het gemiddelde over de keren dat hij er was. */
+  waarde: number | null;
+  keer: number;
+  /** Je eigen gemiddelde voor een ontbrekende hoofdmaaltijd, als dat er (≥3×) is. */
+  geschat: number | null;
+};
+
+export type TrendDetail = {
+  momenten: TrendMomentRegel[];
+  /** Top 3 bronnen van dit punt: die dag, of opgeteld over die week. */
+  bronnen: { naam: string; bedrag: number }[];
+  /** Wat de ontbrekende maaltijd(en) hadden kunnen doen. */
+  schatting: string | null;
+};
 
 export type StofTrendPunt = {
   sleutel: string;
@@ -35,9 +61,18 @@ export type StofTrendPunt = {
   waarde: number | null;
   aandeel: number | null;
   staat: StofTrendStaat;
+  /**
+   * De lat aantoonbaar gehaald (zonder benaderingen), los van de kleur: ook
+   * een gevolgde stof krijgt een ✓ bij gehaald (`BESLUIT_DOELEN_VERBONDEN` §1),
+   * alleen geen oordeel-kleur. Nooit per maaltijd en nooit bij een periodetotaal.
+   */
+  normGehaald: boolean;
   benaderd: boolean;
   /** Uitleesregel bij een tik: wat dit punt precies is. */
   uitleg: string;
+  /** Geschatte aanvulling uit je gebruikelijke ontbrekende maaltijd(en), in de eenheid van de stof. */
+  aanvulling: number | null;
+  detail: TrendDetail | null;
 };
 
 export type StofTrend = {
@@ -46,6 +81,9 @@ export type StofTrend = {
   unit: string;
   soort: "kern" | "gevolgd";
   norm: number | null;
+  normNaam: NormNaam;
+  /** Omega-3: geen ✓ per dag, alleen over de periode. */
+  periodetotaal: boolean;
   /** False bij zink en vitamine D: geen grafiek, alleen de reden. */
   bewijsbaar: boolean;
   schaal: TrendSchaal;
@@ -76,9 +114,22 @@ export type StofTrendInvoer = {
   dagen: readonly DagMeting[];
   /** Zonder vaste norm: waar het doel dan vandaan komt. */
   zonderNormUitleg?: string;
+  /** Hoe de lat heet. Eiwit heeft geen norm maar je eigen eiwitdoel. */
+  normNaam?: NormNaam;
 };
 
+export type NormNaam = { de: string; dag: string; kort: string };
+
+export const NORM: NormNaam = { de: "de norm", dag: "de dagnorm", kort: "norm" };
+export const EIWITDOEL: NormNaam = { de: "je eiwitdoel", dag: "je eiwitdoel", kort: "eiwitdoel" };
+
+function naamVan(invoer: StofTrendInvoer): NormNaam {
+  return invoer.normNaam ?? NORM;
+}
+
 const MAX_DAGEN_PER_DAG = 14;
+/** Zo vaak moet je een maaltijd geregistreerd hebben voor een schatting uit je eigen gemiddelde. */
+export const MIN_KEER_VOOR_SCHATTING = 3;
 
 export function schaalVoor(aantalDagen: number): TrendSchaal {
   if (aantalDagen <= 1) return "maaltijd";
@@ -103,6 +154,10 @@ function meervoud(aantal: number, enkel: string, meer: string): string {
   return `${aantal} ${aantal === 1 ? enkel : meer}`;
 }
 
+function latGehaald(invoer: StofTrendInvoer, somStreng: number): boolean {
+  return invoer.norm !== null && invoer.nietBewijsbaar === null && !invoer.periodetotaal && somStreng >= invoer.norm;
+}
+
 function oordeelt(invoer: StofTrendInvoer): boolean {
   return invoer.soort === "kern" && invoer.nietBewijsbaar === null && invoer.norm !== null && !invoer.periodetotaal;
 }
@@ -114,8 +169,100 @@ function dagStaat(invoer: StofTrendInvoer, dag: DagMeting): StofTrendStaat {
   return dag.volledig ? "onder" : "onvolledig";
 }
 
+type MomentGemiddelde = { gemiddeld: number; keer: number };
+
+function gemiddeldenPerMoment(dagen: readonly DagMeting[]): Map<EetmomentId, MomentGemiddelde> {
+  const uitkomst = new Map<EetmomentId, MomentGemiddelde>();
+  for (const { id } of EETMOMENTEN) {
+    const metingen = dagen.flatMap((d) => d.momenten.filter((m) => m.moment === id && m.geregistreerd));
+    if (metingen.length === 0) continue;
+    uitkomst.set(id, { gemiddeld: metingen.reduce((s, m) => s + m.som, 0) / metingen.length, keer: metingen.length });
+  }
+  return uitkomst;
+}
+
+function labelVan(moment: EetmomentId): string {
+  return EETMOMENTEN.find((m) => m.id === moment)?.label ?? moment;
+}
+
+function opsomming(delen: readonly string[]): string {
+  return delen.length <= 1 ? (delen[0] ?? "") : `${delen.slice(0, -1).join(", ")} en ${delen[delen.length - 1]}`;
+}
+
+type Schatting = { aanvulling: number | null; zin: string; perMoment: Map<EetmomentId, number> };
+
+/**
+ * Wat de ontbrekende hoofdmaaltijden van een onvolledige dag hadden kunnen
+ * leveren. Alleen als er een norm is om tegen te houden en de dag er nog
+ * onder zit; omega-3 telt als periodetotaal en krijgt geen dagschatting.
+ */
+function schattingVoor(
+  invoer: StofTrendInvoer,
+  dag: DagMeting,
+  gemiddelden: ReadonlyMap<EetmomentId, MomentGemiddelde>,
+): Schatting | null {
+  const norm = invoer.norm;
+  if (norm === null || invoer.periodetotaal || invoer.nietBewijsbaar !== null) return null;
+  if (!dag.geregistreerd || dag.volledig || dag.som >= norm) return null;
+  const ontbrekend = HOOFDMAALTIJDEN.filter((moment) => !dag.momenten.some((m) => m.moment === moment && m.geregistreerd));
+  if (ontbrekend.length === 0) return null;
+  const namen = opsomming(ontbrekend.map((m) => labelVan(m).toLowerCase()));
+
+  const bekend = ontbrekend.every((m) => (gemiddelden.get(m)?.keer ?? 0) >= MIN_KEER_VOOR_SCHATTING);
+  if (!bekend) {
+    const nodig = norm - dag.som;
+    return {
+      aanvulling: null,
+      zin: `Je ${namen} ${ontbrekend.length === 1 ? "moet" : "moeten"} samen nog ${bedrag(nodig, invoer.unit)} leveren voor ${naamVan(invoer).de}.`,
+      perMoment: new Map(),
+    };
+  }
+  const perMoment = new Map(ontbrekend.map((m) => [m, gemiddelden.get(m)!.gemiddeld] as const));
+  const aanvulling = [...perMoment.values()].reduce((s, w) => s + w, 0);
+  const onderbouwing = ontbrekend
+    .map((m) => {
+      const { gemiddeld, keer } = gemiddelden.get(m)!;
+      return `${ontbrekend.length > 1 ? `${labelVan(m).toLowerCase()} ` : ""}gem. ${bedrag(gemiddeld, invoer.unit)}, ${keer}×`;
+    })
+    .join("; ");
+  return {
+    aanvulling,
+    zin: `≈ ${percentageADH((dag.som + aanvulling) / norm)} met je gebruikelijke ${namen} (${onderbouwing}).`,
+    perMoment,
+  };
+}
+
+function topBronnen(dagen: readonly DagMeting[], unit: string): TrendDetail["bronnen"] {
+  return bronnenUitMeting(dagen, unit)
+    .slice(0, 3)
+    .map(({ naam, totaal }) => ({ naam, bedrag: totaal }));
+}
+
+function dagDetail(invoer: StofTrendInvoer, dag: DagMeting, schatting: Schatting | null): TrendDetail {
+  return {
+    momenten: EETMOMENTEN.flatMap(({ id, label }): TrendMomentRegel[] => {
+      const meting = dag.momenten.find((m) => m.moment === id);
+      const geregistreerd = meting?.geregistreerd === true;
+      // Tussendoor is geen hoofdmaaltijd: alleen tonen als hij er was.
+      if (id === "tussendoor" && !geregistreerd) return [];
+      return [
+        {
+          moment: id,
+          label,
+          waarde: geregistreerd ? meting!.som : null,
+          keer: geregistreerd ? 1 : 0,
+          geschat: schatting?.perMoment.get(id) ?? null,
+        },
+      ];
+    }),
+    bronnen: topBronnen([dag], invoer.unit),
+    schatting: schatting?.zin ?? null,
+  };
+}
+
 function puntenPerMaaltijd(invoer: StofTrendInvoer): StofTrendPunt[] {
   const dag = invoer.dagen[0];
+  const detail = dag?.geregistreerd ? dagDetail(invoer, dag, schattingVoor(invoer, dag, gemiddeldenPerMoment(invoer.dagen))) : null;
   return EETMOMENTEN.map(({ id, label }) => {
     const meting = dag?.momenten.find((m) => m.moment === id);
     const geregistreerd = meting?.geregistreerd === true;
@@ -129,17 +276,22 @@ function puntenPerMaaltijd(invoer: StofTrendInvoer): StofTrendPunt[] {
       waarde,
       aandeel,
       staat: geregistreerd ? "neutraal" : "leeg",
+      normGehaald: false,
       benaderd,
       uitleg:
         waarde === null
           ? `${label}: niet geregistreerd`
-          : `${label}: ${bedrag(waarde, invoer.unit, benaderd)}${aandeel !== null ? ` · ${percentageADH(aandeel)} van de dagnorm` : ""}`,
+          : `${label}: ${bedrag(waarde, invoer.unit, benaderd)}${aandeel !== null ? ` · ${percentageADH(aandeel)} van ${naamVan(invoer).dag}` : ""}`,
+      aanvulling: null,
+      detail,
     };
   });
 }
 
 function puntenPerDag(invoer: StofTrendInvoer): StofTrendPunt[] {
+  const gemiddelden = gemiddeldenPerMoment(invoer.dagen);
   return invoer.dagen.map((dag) => {
+    const schatting = schattingVoor(invoer, dag, gemiddelden);
     const hoofd = dag.momenten.filter((m) => m.moment !== "tussendoor" && m.geregistreerd).length;
     const waarde = dag.geregistreerd ? dag.som : null;
     const aandeel = waarde !== null && invoer.norm ? waarde / invoer.norm : null;
@@ -152,19 +304,35 @@ function puntenPerDag(invoer: StofTrendInvoer): StofTrendPunt[] {
       waarde,
       aandeel,
       staat,
+      normGehaald: dag.geregistreerd && latGehaald(invoer, dag.somStreng),
       benaderd: dag.benaderd,
       uitleg:
         waarde === null
           ? `${datum}: niets geregistreerd`
           : [
               `${datum}: ${bedrag(waarde, invoer.unit, dag.benaderd)}`,
-              aandeel !== null ? `${percentageADH(aandeel)} van de norm` : null,
+              aandeel !== null ? `${percentageADH(aandeel)} van ${naamVan(invoer).de}` : null,
               dag.volledig ? "alle hoofdmaaltijden" : `${hoofd} van 3 hoofdmaaltijden — geen dagoordeel`,
             ]
               .filter(Boolean)
               .join(" · "),
+      aanvulling: schatting?.aanvulling ?? null,
+      detail: dag.geregistreerd ? dagDetail(invoer, dag, schatting) : null,
     };
   });
+}
+
+function weekDetail(invoer: StofTrendInvoer, gemeten: readonly DagMeting[]): TrendDetail {
+  const gemiddelden = gemiddeldenPerMoment(gemeten);
+  return {
+    momenten: EETMOMENTEN.flatMap(({ id, label }): TrendMomentRegel[] => {
+      const gemiddelde = gemiddelden.get(id);
+      if (id === "tussendoor" && !gemiddelde) return [];
+      return [{ moment: id, label, waarde: gemiddelde?.gemiddeld ?? null, keer: gemiddelde?.keer ?? 0, geschat: null }];
+    }),
+    bronnen: topBronnen(gemeten, invoer.unit),
+    schatting: null,
+  };
 }
 
 function puntenPerWeek(invoer: StofTrendInvoer): StofTrendPunt[] {
@@ -201,17 +369,20 @@ function puntenPerWeek(invoer: StofTrendInvoer): StofTrendPunt[] {
       waarde,
       aandeel,
       staat,
+      normGehaald: gemeten.length > 0 && latGehaald(invoer, streng),
       benaderd,
       uitleg:
         waarde === null
           ? `${opmaak(van, { day: "numeric", month: "short" })} – ${opmaak(tot, { day: "numeric", month: "short" })}: niets geregistreerd`
           : [
               `${opmaak(van, { day: "numeric", month: "short" })} – ${opmaak(tot, { day: "numeric", month: "short" })}: ${bedrag(waarde, invoer.unit, benaderd)} per dag`,
-              aandeel !== null ? `${percentageADH(aandeel)} van de norm` : null,
+              aandeel !== null ? `${percentageADH(aandeel)} van ${naamVan(invoer).de}` : null,
               `${volledig} van ${meervoud(gemeten.length, "gemeten dag", "gemeten dagen")} volledig`,
             ]
               .filter(Boolean)
               .join(" · "),
+      aanvulling: null,
+      detail: gemeten.length > 0 ? weekDetail(invoer, gemeten) : null,
     };
   });
 }
@@ -222,7 +393,7 @@ function perMaaltijdZin(invoer: StofTrendInvoer): string | null {
     const metingen = invoer.dagen.flatMap((d) => d.momenten.filter((m) => m.moment === id && m.geregistreerd));
     if (metingen.length === 0) return [];
     const gemiddeld = metingen.reduce((s, m) => s + m.som, 0) / metingen.length;
-    const deel = invoer.norm ? ` (${percentageADH(gemiddeld / invoer.norm)} van de dagnorm)` : "";
+    const deel = invoer.norm ? ` (${percentageADH(gemiddeld / invoer.norm)} van ${naamVan(invoer).dag})` : "";
     return [`${label.toLowerCase()} ${bedrag(gemiddeld, invoer.unit)}${deel}, ${metingen.length}×`];
   });
   return delen.length > 0 ? `Per maaltijd gemiddeld: ${delen.join(" · ")}.` : null;
@@ -258,11 +429,11 @@ function redenenVoor(invoer: StofTrendInvoer, gehaald: boolean): string[] {
     } else {
       const gemiddeld = volledig.reduce((s, d) => s + d.som, 0) / volledig.length;
       redenen.push(
-        `Op je ${meervoud(volledig.length, "volledige dag", "volledige dagen")} gemiddeld ${bedrag(gemiddeld, invoer.unit)}: ${percentageADH(gemiddeld / invoer.norm)} van de norm (${hoeveelheid(invoer.norm)} ${invoer.unit}).`,
+        `Op je ${meervoud(volledig.length, "volledige dag", "volledige dagen")} gemiddeld ${bedrag(gemiddeld, invoer.unit)}: ${percentageADH(gemiddeld / invoer.norm)} van ${naamVan(invoer).de} (${hoeveelheid(invoer.norm)} ${invoer.unit}).`,
       );
       if (onvolledig > 0) {
         redenen.push(
-          `${meervoud(onvolledig, "dag mist", "dagen missen")} een hoofdmaaltijd; daar is onder de norm geen antwoord.`,
+          `${meervoud(onvolledig, "dag mist", "dagen missen")} een hoofdmaaltijd; daar is onder ${naamVan(invoer).de} geen antwoord.`,
         );
       }
     }
@@ -292,20 +463,20 @@ function kopVoor(invoer: StofTrendInvoer, schaal: TrendSchaal, punten: readonly 
   if (schaal === "maaltijd") {
     const dag = invoer.dagen[0]!;
     return invoer.norm
-      ? `${bedrag(dag.som, invoer.unit, dag.benaderd)} · ${percentageADH(dag.som / invoer.norm)} van de norm`
+      ? `${bedrag(dag.som, invoer.unit, dag.benaderd)} · ${percentageADH(dag.som / invoer.norm)} van ${naamVan(invoer).de}`
       : bedrag(dag.som, invoer.unit, dag.benaderd);
   }
   if (!oordeelt(invoer)) {
     const gemiddeld = gemeten.reduce((s, d) => s + d.som, 0) / gemeten.length;
     const benaderd = gemeten.some((d) => d.benaderd);
     return invoer.norm
-      ? `gem. ${bedrag(gemiddeld, invoer.unit, benaderd)} per dag · ${percentageADH(gemiddeld / invoer.norm)} van de norm`
+      ? `gem. ${bedrag(gemiddeld, invoer.unit, benaderd)} per dag · ${percentageADH(gemiddeld / invoer.norm)} van ${naamVan(invoer).de}`
       : `gem. ${bedrag(gemiddeld, invoer.unit, benaderd)} per dag`;
   }
   const eenheid = schaal === "dag" ? ["dag", "dagen"] : ["week", "weken"];
   const metWaarde = punten.filter((p) => p.staat !== "leeg");
   const keer = metWaarde.filter((p) => p.staat === "gehaald").length;
-  return `norm gehaald op ${keer} van ${meervoud(metWaarde.length, `gemeten ${eenheid[0]}`, `gemeten ${eenheid[1]}`)}`;
+  return `${naamVan(invoer).kort} gehaald op ${keer} van ${meervoud(metWaarde.length, `gemeten ${eenheid[0]}`, `gemeten ${eenheid[1]}`)}`;
 }
 
 export function bouwStofTrend(invoer: StofTrendInvoer): StofTrend {
@@ -328,6 +499,8 @@ export function bouwStofTrend(invoer: StofTrendInvoer): StofTrend {
     unit: invoer.unit,
     soort: invoer.soort,
     norm: invoer.norm,
+    normNaam: naamVan(invoer),
+    periodetotaal: invoer.periodetotaal,
     bewijsbaar: invoer.nietBewijsbaar === null,
     schaal,
     punten,

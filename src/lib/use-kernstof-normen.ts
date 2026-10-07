@@ -22,9 +22,26 @@ import { fetchVoedingsdoelen } from "@/lib/voedingsdoelen-client";
  * scherm dat deze hooks gebruikt meteen bij.
  */
 
-type Toestand = { normen: KernstofNormen; gevolgd: GevolgdeNormen; profiel: KernstofProfiel };
+type Toestand = {
+  normen: KernstofNormen;
+  gevolgd: GevolgdeNormen;
+  profiel: KernstofProfiel;
+  /** Je eiwitdoel in gram: handmatig, anders de ondergrens van de richtlijn. Null zonder gewicht. */
+  eiwitDoelG: number | null;
+};
 
-const BEGIN: Toestand = { normen: STANDAARD_NORMEN, gevolgd: STANDAARD_GEVOLGDE_NORMEN, profiel: LEEG_KERNSTOF_PROFIEL };
+const BEGIN: Toestand = {
+  normen: STANDAARD_NORMEN,
+  gevolgd: STANDAARD_GEVOLGDE_NORMEN,
+  profiel: LEEG_KERNSTOF_PROFIEL,
+  eiwitDoelG: null,
+};
+
+function eiwitDoelUit(weergave: Partial<Pick<VoedingsdoelenWeergave, "doelen" | "richtlijn">>): number | null | undefined {
+  if (!("doelen" in weergave) && !("richtlijn" in weergave)) return undefined;
+  const doel = weergave.doelen?.eiwitDoelG ?? weergave.richtlijn?.gramsLow ?? null;
+  return doel !== null && doel > 0 ? doel : null;
+}
 
 let toestand: Toestand = BEGIN;
 let geladen: Promise<void> | null = null;
@@ -38,9 +55,12 @@ function abonneer(luisteraar: () => void) {
 }
 
 export function zetKernstofWeergave(
-  weergave: Pick<VoedingsdoelenWeergave, "kernstofNormen" | "kernstofProfiel"> & Partial<Pick<VoedingsdoelenWeergave, "gevolgdeNormen">>,
+  weergave: Pick<VoedingsdoelenWeergave, "kernstofNormen" | "kernstofProfiel"> &
+    Partial<Pick<VoedingsdoelenWeergave, "gevolgdeNormen" | "doelen" | "richtlijn">>,
 ) {
+  const eiwitDoelG = eiwitDoelUit(weergave);
   toestand = {
+    eiwitDoelG: eiwitDoelG === undefined ? toestand.eiwitDoelG : eiwitDoelG,
     normen: weergave.kernstofNormen ?? STANDAARD_NORMEN,
     gevolgd: weergave.gevolgdeNormen ?? STANDAARD_GEVOLGDE_NORMEN,
     profiel: weergave.kernstofProfiel ?? LEEG_KERNSTOF_PROFIEL,
@@ -75,4 +95,9 @@ export function useKernstofProfiel(): KernstofProfiel {
 /** De normen voor de gevolgde stoffen (buitenring, Patroon), uit dezelfde gedeelde toestand. */
 export function useGevolgdeNormen(): GevolgdeNormen {
   return useKernstofToestand().gevolgd;
+}
+
+/** Je eiwitdoel in gram (handmatig, anders de richtlijn), uit dezelfde gedeelde toestand. */
+export function useEiwitDoel(): number | null {
+  return useKernstofToestand().eiwitDoelG;
 }

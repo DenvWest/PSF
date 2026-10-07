@@ -3,6 +3,7 @@
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import CockpitMoreMenu from "@/components/dashboard/cockpit/CockpitMoreMenu";
+import CockpitPlusMenu from "@/components/dashboard/cockpit/CockpitPlusMenu";
 import { DASHBOARD_NAV_TABS } from "@/data/dashboard";
 import type { DashboardTabId } from "@/types/dashboard";
 
@@ -26,10 +27,10 @@ export default function CockpitBottomNav({
       {/*
         Meer staat naast de tablist en niet erin: hij opent een lijst en toont
         geen paneel, dus `role="tab"` zou liegen over wat er gebeurt.
-        Het grid geeft Meer dezelfde breedte als elke tab; met twee flex-1
+        Het grid geeft Meer en ＋ dezelfde breedte als elke tab; met twee flex-1
         containers kreeg Meer in z'n eentje de halve balk.
       */}
-      <div className="grid grid-cols-4">
+      <div className="grid grid-cols-5">
         <div className="col-span-3 grid grid-cols-3" role="tablist">
         {DASHBOARD_NAV_TABS.map((tab) => {
           const Icon = Icons[tab.icon as keyof typeof Icons] as IconComp;
@@ -58,6 +59,7 @@ export default function CockpitBottomNav({
           variant="bottom"
           active={!DASHBOARD_NAV_TABS.some((tab) => tab.id === activeTab)}
         />
+        <CockpitPlusMenu />
       </div>
     </nav>
   );

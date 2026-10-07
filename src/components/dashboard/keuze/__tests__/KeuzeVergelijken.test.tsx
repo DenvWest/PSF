@@ -5,9 +5,11 @@ import KeuzeVergelijken from "@/components/dashboard/keuze/KeuzeVergelijken";
 import { nutrientRoute } from "@/data/nutrition/nutrient-routes";
 import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
+import type { StoredSupplementVerdict } from "@/types/verdict";
 
 vi.mock("@/lib/ga4", () => ({ trackEvent: vi.fn() }));
 vi.mock("@/lib/clarity", () => ({ clarityTag: vi.fn() }));
+vi.mock("@/lib/intake-events-client", () => ({ emitIntakeClientEvent: vi.fn() }));
 vi.mock("@/lib/use-kernstof-normen", () => ({
   useKernstofProfiel: () => ({ geslacht: null, zeventigPlus: false, voedingswijze: null, streefwaarden: {} }),
 }));
@@ -57,7 +59,25 @@ function reeks(nutrient: "protein" | "magnesium", gedekt: boolean): Vensterreeks
   return { nutrient, label: nutrient, unit: "mg", vensters: [v(1), v(7), v(14), v(30)], bewijsbaar: true, richting: "vlak" };
 }
 
-function renderKeuze(magnesiumGedekt = false) {
+const magnesiumOordeel: StoredSupplementVerdict = {
+  id: "v1",
+  ingredientKey: "magnesium",
+  verdict: "kopen",
+  reasonKey: "trigger_matched",
+  rulesVersion: "test",
+  nextReviewAt: null,
+  createdAt: "2026-09-05T10:00:00Z",
+  supersededAt: null,
+  basedOn: {
+    scores: {} as never,
+    signals: {} as never,
+    profileLabel: "Lage Batterij" as never,
+    triggeredBy: [{ type: "signal", signal: "magnesium_signal" }],
+    nutritionLogCompleted: true,
+  },
+};
+
+function renderKeuze(magnesiumGedekt = false, verdicts: StoredSupplementVerdict[] = []) {
   return render(
     <KeuzeVergelijken
       statuses={[status("magnesium", "Magnesium"), status("protein", "Eiwit")]}
@@ -65,6 +85,7 @@ function renderKeuze(magnesiumGedekt = false) {
       dagen={[]}
       vandaag="2026-10-06"
       surface="test"
+      verdicts={verdicts}
     />,
   );
 }
@@ -94,6 +115,7 @@ describe("KeuzeVergelijken", () => {
         dagen={[]}
         vandaag="2026-10-06"
         surface="test"
+        verdicts={[]}
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: "Kies supplement" }));
@@ -107,5 +129,23 @@ describe("KeuzeVergelijken", () => {
     expect(within(supplement).queryByText("Per vorm de hoogste PS-Score")).toBeNull();
     fireEvent.click(within(supplement).getByRole("button", { name: /Toon de vormen/ }));
     expect(within(supplement).getByText("Per vorm de hoogste PS-Score")).toBeTruthy();
+  });
+
+  it("draagt het oordeel uit je check in de stofkaart, met het dagboek als zwaarste stem", () => {
+    renderKeuze(false, [magnesiumOordeel]);
+    const check = screen.getByRole("region", { name: "Uit je check" });
+    expect(within(check).getByText(/Je check zei .aanvullen.\. Je dagboek weegt hier zwaarder/)).toBeTruthy();
+    expect(within(check).getByText("Signaal")).toBeTruthy();
+    expect(within(check).getByText("EU-claim")).toBeTruthy();
+    fireEvent.click(within(check).getByRole("button", { name: /Hoe we hier komen/ }));
+    expect(within(check).getByText(/magnesiumsignaal/)).toBeTruthy();
+  });
+
+  it("toont per product wat het toevoegt, de bovengrens en de prijs per dag", () => {
+    renderKeuze();
+    const supplement = screen.getByRole("region", { name: "Uit een supplement" });
+    expect(within(supplement).getAllByText(/Samen met je eten minstens/).length).toBeGreaterThan(0);
+    expect(within(supplement).getAllByText(/veilige bovengrens van 250 mg per dag uit supplementen/).length).toBeGreaterThan(0);
+    expect(within(supplement).getAllByText(/€ \d+,\d{2} per dag/).length).toBeGreaterThan(0);
   });
 });

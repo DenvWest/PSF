@@ -1,6 +1,9 @@
 /** @vitest-environment jsdom */
 import { describe, expect, it, vi } from "vitest";
 import {
+  DASHBOARD_RETURN_PARAM,
+  buildHoeWerktDashboardHref,
+  parseDashboardReturnHref,
   buildDashboardAgendaHref,
   buildDashboardKeuzeHref,
   buildDashboardPlanHref,
@@ -638,5 +641,26 @@ describe("syncDashboardTabParam", () => {
     expect(nextUrl).not.toContain("screen=");
 
     window.history.pushState = originalPush;
+  });
+});
+
+describe("parseDashboardReturnHref", () => {
+  it("accepts dashboard paths with their screen state", () => {
+    expect(parseDashboardReturnHref("/dashboard")).toBe("/dashboard");
+    expect(parseDashboardReturnHref("/dashboard?tab=voortgang&sectie=stof")).toBe(
+      "/dashboard?tab=voortgang&sectie=stof",
+    );
+  });
+
+  it("rejects anything outside the dashboard", () => {
+    for (const raw of [null, "", "/", "/dashboardx", "//evil.com/dashboard", "https://evil.com", "/\\evil.com"]) {
+      expect(parseDashboardReturnHref(raw)).toBeNull();
+    }
+  });
+
+  it("round-trips through the hoe-werkt link", () => {
+    const href = buildHoeWerktDashboardHref("/dashboard?tab=keuze&deel=logboek");
+    const terug = new URL(href, "https://x.nl").searchParams.get(DASHBOARD_RETURN_PARAM);
+    expect(parseDashboardReturnHref(terug)).toBe("/dashboard?tab=keuze&deel=logboek");
   });
 });

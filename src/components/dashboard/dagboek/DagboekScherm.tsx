@@ -7,7 +7,12 @@ import { catalogEntry } from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
-import { leesDagboekFavorieten, leesDagboekVoeg, wisDagboekVoeg } from "@/lib/dagboek-deeplink";
+import {
+  leesDagboekFavorieten,
+  leesDagboekVoeg,
+  leesDagboekZoek,
+  wisDagboekVoeg,
+} from "@/lib/dagboek-deeplink";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
 import { dagSoortVoor, type DagboekDag } from "@/lib/nutrition-dagboek";
@@ -193,12 +198,15 @@ export default function DagboekScherm({
     const openGevraagd = () => {
       const voeg = leesDagboekVoeg(window.location.search);
       const favorietenTab = leesDagboekFavorieten(window.location.search);
-      if (!voeg && !favorietenTab) return;
+      const zoek = leesDagboekZoek(window.location.search);
+      if (!voeg && !favorietenTab && !zoek) return;
       wisDagboekVoeg();
       if (voeg) {
         setScherm({ scherm: "portie", nutrient: null, bron: voeg.bron, key: voeg.key, moment: voeg.moment });
       } else if (favorietenTab) {
         setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt", startTab: favorietenTab });
+      } else if (zoek) {
+        setScherm({ scherm: "zoek", nutrient: null, moment: zoek.moment, startTab: zoek.start });
       }
     };
     openGevraagd();

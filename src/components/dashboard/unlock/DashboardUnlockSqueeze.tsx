@@ -4,32 +4,74 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import ExitButton from "@/components/app/ExitButton";
 import Wordmark from "@/components/app/Wordmark";
-import DashboardUnlockPreview from "@/components/dashboard/unlock/DashboardUnlockPreview";
+import HowItWorksQuestions from "@/components/common/HowItWorksQuestions";
+import { HOW_IT_WORKS_DISCLAIMER } from "@/data/how-it-works";
 import {
   DASHBOARD_UNLOCK_CTA,
   DASHBOARD_UNLOCK_FAQ,
   DASHBOARD_UNLOCK_GAINS,
   DASHBOARD_UNLOCK_HERO,
   DASHBOARD_UNLOCK_LOSSES,
+  DASHBOARD_UNLOCK_PRINCIPLE,
+  DASHBOARD_UNLOCK_QUESTIONS_SECTION,
   DASHBOARD_UNLOCK_RECOGNITION,
   DASHBOARD_UNLOCK_ROUTE_ACCORDION,
-  DASHBOARD_UNLOCK_SOCIAL_PROOF,
   DASHBOARD_UNLOCK_STEPS,
 } from "@/data/dashboard-unlock";
 import {
   DASHBOARD_UNLOCK_VARIANT_COOKIE,
   type DashboardUnlockVariant,
 } from "@/lib/dashboard-unlock-variant";
+import { clarityTag } from "@/lib/clarity";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 
 type DashboardUnlockSqueezeProps = {
   variant: DashboardUnlockVariant;
   persistCookie: boolean;
+  returnHref: string | null;
 };
+
+function BackToDashboardLink({ href }: { href: string }) {
+  return (
+    <Link
+      href={href}
+      onClick={() => {
+        clarityTag("dashboard_back", "hoe_werkt_dashboard");
+        trackEvent("dashboard_back_click", {
+          surface: "hoe_werkt_dashboard",
+          origin_domain: "none",
+        });
+      }}
+      aria-label="Terug naar je dashboard"
+      className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3.5 text-[13px] font-medium text-white/75 no-underline transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+    >
+      <span aria-hidden>←</span>
+      Dashboard
+    </Link>
+  );
+}
 
 function persistVariantCookie(variant: DashboardUnlockVariant) {
   const maxAge = 60 * 60 * 24 * 30;
   document.cookie = `${DASHBOARD_UNLOCK_VARIANT_COOKIE}=${variant}; path=/; max-age=${maxAge}; samesite=lax`;
+}
+
+function QuestionsSection() {
+  return (
+    <section
+      aria-labelledby="questions-heading"
+      className="rounded-2xl border border-[var(--panel-border)] bg-[rgba(255,255,255,0.03)] p-4 text-[var(--text)] sm:p-5 lg:p-6"
+    >
+      <h2
+        id="questions-heading"
+        className="mb-4 text-xl text-[var(--text)]"
+        style={{ fontFamily: "var(--f-serif)", fontWeight: 400 }}
+      >
+        {DASHBOARD_UNLOCK_QUESTIONS_SECTION.title}
+      </h2>
+      <HowItWorksQuestions />
+    </section>
+  );
 }
 
 function GainLossContrast() {
@@ -197,8 +239,10 @@ function RecognitionSection() {
 
 function SqueezeContent({
   variant,
+  returnHref,
 }: {
   variant: DashboardUnlockVariant;
+  returnHref: string | null;
 }) {
   const [primaryCtaVisible, setPrimaryCtaVisible] = useState(true);
 
@@ -206,7 +250,7 @@ function SqueezeContent({
     <>
       <div className="mb-6 flex items-center justify-between gap-3">
         <Wordmark size={0.92} />
-        <ExitButton href="/" />
+        {returnHref ? <BackToDashboardLink href={returnHref} /> : <ExitButton href="/" />}
       </div>
 
       <header className="mt-5 max-w-2xl sm:mt-8 lg:max-w-3xl">
@@ -228,26 +272,22 @@ function SqueezeContent({
       </header>
 
       <div className="mt-6 space-y-5 sm:mt-8 sm:space-y-8 lg:mt-10 lg:space-y-10">
-        <GainLossContrast />
-
         <div className="flex flex-col gap-5 sm:gap-6 xl:grid xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] xl:items-start xl:gap-10">
-          <div className="order-1 xl:order-2">
-            <div className="flex flex-col gap-5 sm:gap-6">
-              <UnlockSqueezeZone
-                variant={variant}
-                onCtaVisibleChange={setPrimaryCtaVisible}
-              />
-              <RecognitionSection />
-            </div>
-          </div>
-          <div className="order-2 xl:order-1">
-            <DashboardUnlockPreview />
+          <QuestionsSection />
+          <div className="flex flex-col gap-5 sm:gap-6">
+            <UnlockSqueezeZone
+              variant={variant}
+              onCtaVisibleChange={setPrimaryCtaVisible}
+            />
+            <RecognitionSection />
           </div>
         </div>
+
+        <GainLossContrast />
       </div>
 
       <p className="mt-6 text-center text-sm text-[var(--text-subtle)] sm:mt-8 lg:mt-10">
-        {DASHBOARD_UNLOCK_SOCIAL_PROOF.line}
+        {DASHBOARD_UNLOCK_PRINCIPLE.line}
       </p>
 
       <details className="group mt-8 rounded-2xl border border-[var(--panel-border)] bg-[rgba(255,255,255,0.03)]">
@@ -322,9 +362,7 @@ function SqueezeContent({
           className="mx-auto max-w-lg text-xs leading-relaxed"
           style={{ color: "rgba(255,255,255,0.22)" }}
         >
-          PerfectSupplement geeft adviezen op basis van leefstijl, geen medische
-          diagnoses. Je gegevens zijn van jou — exporteer of verwijder ze wanneer
-          je wilt.
+          {HOW_IT_WORKS_DISCLAIMER}
         </p>
         <p className="mt-3 text-xs leading-relaxed text-[var(--text-subtle)]">
           <Link
@@ -358,6 +396,7 @@ function SqueezeContent({
 export default function DashboardUnlockSqueeze({
   variant,
   persistCookie,
+  returnHref,
 }: DashboardUnlockSqueezeProps) {
   useEffect(() => {
     if (persistCookie) {
@@ -371,7 +410,7 @@ export default function DashboardUnlockSqueeze({
       <div className="min-h-dvh overflow-x-hidden bg-[#f8f7f4] sm:px-6 sm:py-8">
         <div className="ps-dark mx-auto w-full max-w-6xl overflow-hidden shadow-[0_24px_64px_rgba(15,28,16,0.18)] sm:rounded-3xl">
           <main className="box-border w-full min-w-0 px-4 pb-28 pt-4 sm:px-8 sm:pb-10 sm:pt-6 lg:px-10">
-            <SqueezeContent variant={variant} />
+            <SqueezeContent variant={variant} returnHref={returnHref} />
           </main>
         </div>
       </div>
@@ -381,7 +420,7 @@ export default function DashboardUnlockSqueeze({
   return (
     <div className="ps-dark min-h-dvh w-full overflow-x-hidden">
       <main className="mx-auto box-border w-full min-w-0 max-w-6xl px-4 pb-28 pt-4 sm:px-8 sm:pb-10 sm:pt-6 lg:px-10">
-        <SqueezeContent variant={variant} />
+        <SqueezeContent variant={variant} returnHref={returnHref} />
       </main>
     </div>
   );
