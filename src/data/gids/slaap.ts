@@ -37,5 +37,5 @@ export const slaapGuide: GuideOptInData = {
     successMessage: "Check je inbox — de Slaapgids is onderweg.",
   },
   pdfPath: "/downloads/slaapgids-perfectsupplement.pdf",
-  pillarHref: "/slaap-verbeteren-na-40",
+  pillarHref: "/slaap-en-voeding",
 };

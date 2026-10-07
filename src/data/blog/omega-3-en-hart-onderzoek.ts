@@ -57,7 +57,7 @@ export const omega3EnHartOnderzoekData: BlogArtikel = {
         "Heb je een normaal risicoprofiel? Verwacht van omega-3 geen bescherming tegen hart- en vaatziekten; VITAL en ASCEND zeggen daar duidelijk nee op.",
         "Heb je verhoogde triglyceriden of bekende hart- en vaatziekte? Dat is een gesprek met je arts, waar receptmatige preparaten en dosering thuishoren — niet het drogisterijschap.",
         "Doseer niet zelf naar grammen. Het extra effect is onbewezen, het boezemfibrilleren-signaal niet.",
-        "Stoppen met roken, bloeddruk, beweging en gewicht doen op dit terrein aantoonbaar meer dan welk supplement ook — zie [energie na 40](/energie-na-40).",
+        "Stoppen met roken, bloeddruk, beweging en gewicht doen op dit terrein aantoonbaar meer dan welk supplement ook — zie [energie na 40](/energie-en-voeding).",
       ],
     },
     {

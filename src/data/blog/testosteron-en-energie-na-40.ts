@@ -43,7 +43,7 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
     "Energie na 30 heeft zelden één hormonale oorzaak. Bij klachten die passen bij laag testosteron hoort een zorgvuldige meting en uitsluiting van andere factoren — geen zelftherapie op basis van een internettest.",
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 30",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   gerelateerdeSluggen: [
     "cortisol-en-testosteron",

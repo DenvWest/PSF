@@ -9,7 +9,7 @@ export const magnesiumInDeOvergangData: BlogArtikel = {
   coverImage: "/images/blog/magnesium-in-de-overgang.jpg",
   coverImageAlt: "Supplementpot, capsules en een glas water op een licht blad",
   heroIntro:
-    "Magnesium wordt bij zowat elke overgangsklacht genoemd — slaap, stemming, opvliegers, spierkrampen. Die veelzijdigheid is precies waarom het onderscheid tussen 'plausibel' en 'bewezen' er hier toe doet. Dit artikel zet op een rij waar magnesium wél onderbouwing heeft in deze levensfase en waar de claim harder is dan het bewijs. Bredere achtergrond staat in [de overgangsgids](/overgang).",
+    "Magnesium wordt bij zowat elke overgangsklacht genoemd — slaap, stemming, opvliegers, spierkrampen. Die veelzijdigheid is precies waarom het onderscheid tussen 'plausibel' en 'bewezen' er hier toe doet. Dit artikel zet op een rij waar magnesium wél onderbouwing heeft in deze levensfase en waar de claim harder is dan het bewijs. Bredere achtergrond staat in [de overgangsgids](/overgang-en-voeding).",
   leestijd: "8 min",
   gepubliceerdOp: "2026-09-05",
   laatstBijgewerktOp: "2026-09-05",

@@ -13,15 +13,15 @@ const INLINE_LINK_CLASS =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
-  title: "Energie Na 30: Waarom Je Moe Bent en Wat Je Eraan Doet",
+  title: "Energie en voeding na 30: eet je genoeg van wat telt?",
   description:
-    "Structureel moe na 30? Herkenning, oorzaken in begrijpelijke taal (slaap, ritme, eten, beweging) en wat je stap voor stap kunt doen.",
-  ...canonicalMetadata("/energie-na-40"),
+    "Structureel moe na 30? Zie hoe eiwit, ijzer, B12, vitamine D en eetritme meespelen naast slaap en beweging. Praktisch en onderbouwd.",
+  ...canonicalMetadata("/energie-en-voeding"),
   openGraph: {
-    title: "Energie Na 30: Waarom Je Anders Bent (en Wat Je Eraan Doet)",
+    title: "Energie en voeding na 30: eet je genoeg van wat telt?",
     description:
       "Structureel moe na 30? Praktische stappen rond slaap, ritme, eten en beweging.",
-    url: "/energie-na-40",
+    url: "/energie-en-voeding",
     type: "article",
   },
 };
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Energie Na 30: Waarom Je Moe Bent en Wat Je Eraan Doet",
+  headline: "Energie en voeding na 30: eet je genoeg van wat telt?",
   description:
     "Structureel moe na 30? Herkenning, oorzaken in begrijpelijke taal en wat je stap voor stap kunt doen.",
   author: {
@@ -44,7 +44,7 @@ const articleSchema = {
   },
   datePublished: "2026-05-07",
   dateModified: "2026-05-07",
-  mainEntityOfPage: "https://perfectsupplement.nl/energie-na-40",
+  mainEntityOfPage: "https://perfectsupplement.nl/energie-en-voeding",
 };
 
 const faqSchema = {
@@ -117,7 +117,7 @@ export default function EnergieNa40Page() {
                   Complete Gids
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                  Energie Na 30: Waarom Je Moe Bent en Wat Je Eraan Doet
+                  Energie en voeding na 30: eet je genoeg van wat telt?
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 12 min
@@ -385,7 +385,7 @@ export default function EnergieNa40Page() {
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   <strong className="text-gray-900">Speelt stress ook een rol bij je vermoeidheid?</strong>{" "}
                   Lees de complete gids:{" "}
-                  <Link href="/stress-verminderen-na-40" className={INLINE_LINK_CLASS}>
+                  <Link href="/stress-en-voeding" className={INLINE_LINK_CLASS}>
                     Stress verminderen na 30
                   </Link>
                 </p>
@@ -569,7 +569,7 @@ export default function EnergieNa40Page() {
                     testosteron en verstoort je slaap — een dubbele aanslag op je energie.
                   </p>
                   <Link
-                    href="/stress-verminderen-na-40"
+                    href="/stress-en-voeding"
                     className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
                   >
                     Lees de gids: Stress Verminderen na 30 →
@@ -584,7 +584,7 @@ export default function EnergieNa40Page() {
                     slaap niet op orde is, helpt geen enkel supplement.
                   </p>
                   <Link
-                    href="/slaap-verbeteren-na-40"
+                    href="/slaap-en-voeding"
                     className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
                   >
                     Lees de gids: Slaap Verbeteren na 30 →
@@ -604,7 +604,7 @@ export default function EnergieNa40Page() {
                     </span>
                   </Link>
                   <Link
-                    href="/testosteron-na-40"
+                    href="/testosteron-en-voeding"
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">

@@ -11,7 +11,7 @@ export const slaapkwaliteitTestosteronHerstelData: BlogArtikel = {
   coverCaption:
     "De hoogste testosteronaanmaak zit in de vroege diepe slaap — kwaliteit weegt zwaarder dan het aantal uren.",
   heroIntro:
-    "Testosteronaanmaak gebeurt grotendeels tijdens slaap, geconcentreerd in de eerste diepe-slaapcycli van de nacht. Dat maakt slaap geen zijthema bij het gesprek over testosteron na 30, maar een van de meest directe hefbomen die je zelf in de hand hebt. Achtergrond over de bredere daling staat in de pillar [testosteron na 30](/testosteron-na-40).",
+    "Testosteronaanmaak gebeurt grotendeels tijdens slaap, geconcentreerd in de eerste diepe-slaapcycli van de nacht. Dat maakt slaap geen zijthema bij het gesprek over testosteron na 30, maar een van de meest directe hefbomen die je zelf in de hand hebt. Achtergrond over de bredere daling staat in de pillar [testosteron na 30](/testosteron-en-voeding).",
   leestijd: "9 min",
   gepubliceerdOp: "2026-09-05",
   laatstBijgewerktOp: "2026-09-05",
@@ -68,7 +68,7 @@ export const slaapkwaliteitTestosteronHerstelData: BlogArtikel = {
     "Testosteronaanmaak gebeurt grotendeels tijdens de eerste diepe-slaapcycli van de nacht, wat slaap tot een directe hefboom maakt naast de geleidelijke daling met leeftijd. Onderzoek laat na een week van vijf uur slaap een daling van 10-15% zien — vergelijkbaar met tien tot vijftien jaar veroudering. Slaapapneu is een specifieke, onderschatte oorzaak bij mannen met overgewicht. Vast ritme, voldoende uren en minder avondalcohol zijn de eerste stappen.",
   cornerstoneLink: {
     label: "Testosteron na 30: wat verandert en wat je zelf kunt doen",
-    href: "/testosteron-na-40",
+    href: "/testosteron-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste magnesium supplementen",

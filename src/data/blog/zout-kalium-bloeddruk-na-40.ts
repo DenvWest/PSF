@@ -8,7 +8,7 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
   coverImage: "/images/blog/zout-kalium-bloeddruk-na-40.jpg",
   coverImageAlt: "Kom met avocado, kikkererwten en groenten, rijk aan kalium",
   heroIntro:
-    "In Nederland zit de zoutinname structureel boven de aanbevolen 6 gram per dag — mannen gemiddeld hoger dan vrouwen, blijkt uit RIVM-onderzoek. Tegelijk krijgt bijna niemand genoeg kalium binnen. Dat is geen toeval: het zijn twee kanten van dezelfde [kalium-natriumbalans](/kennisbank/kalium-natrium-balans), en die stuurt mee op je bloeddruk. Dit artikel legt uit waar het misgaat, waarom het antwoord in je voeding zit en niet in een supplement, en hoe dat aansluit bij [energie na 30](/energie-na-40).",
+    "In Nederland zit de zoutinname structureel boven de aanbevolen 6 gram per dag — mannen gemiddeld hoger dan vrouwen, blijkt uit RIVM-onderzoek. Tegelijk krijgt bijna niemand genoeg kalium binnen. Dat is geen toeval: het zijn twee kanten van dezelfde [kalium-natriumbalans](/kennisbank/kalium-natrium-balans), en die stuurt mee op je bloeddruk. Dit artikel legt uit waar het misgaat, waarom het antwoord in je voeding zit en niet in een supplement, en hoe dat aansluit bij [energie na 30](/energie-en-voeding).",
   leestijd: "8 min",
   gepubliceerdOp: "2026-09-02",
   laatstBijgewerktOp: "2026-09-02",
@@ -58,7 +58,7 @@ export const zoutKaliumBloeddrukNa40Data: BlogArtikel = {
     "In Nederland zit de zoutinname structureel boven de aanbeveling en de kaliuminname eronder — twee kanten van dezelfde balans die meespeelt in je bloeddruk. De oplossing zit in minder bewerkt en meer plantaardig eten, niet in een supplement.",
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 30",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   gerelateerdeSluggen: [
     "middagdip-bloedsuiker-na-40",

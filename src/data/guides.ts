@@ -117,7 +117,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Slaap & herstel",
         sub: "De volledige kennisbank over nachtrust en herstel.",
-        href: "/slaap-verbeteren-na-40",
+        href: "/slaap-en-voeding",
       },
       {
         label: "Jouw profiel",
@@ -164,7 +164,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Mentale balans",
         sub: "Alles over stress, focus en herstel.",
-        href: "/stress-verminderen-na-40",
+        href: "/stress-en-voeding",
       },
       {
         label: "Jouw profiel",
@@ -211,7 +211,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Energie & vitaliteit",
         sub: "De volledige kennisbank over energie.",
-        href: "/energie-na-40",
+        href: "/energie-en-voeding",
       },
       {
         label: "Jouw profiel",
@@ -258,7 +258,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Slaap & herstel",
         sub: "De volledige kennisbank over herstel.",
-        href: "/herstel-verbeteren-na-40",
+        href: "/herstel-en-voeding",
       },
       {
         label: "Jouw profiel",
@@ -279,7 +279,7 @@ export const GUIDES: Guide[] = [
     tag: "Kracht & conditie",
     focusCategories: ["energie-vitaliteit"],
     comingSoon: true,
-    contentHref: "/beweging-na-40",
+    contentHref: "/beweging-en-voeding",
     promise: "Sterk en soepel blijven — ook als je al 'best actief' bent.",
     heroTitle: "Sterk blijven. Soepel bewegen. Zelfstandig ouder worden.",
     heroSub:
@@ -307,7 +307,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Beweging na 30",
         sub: "Kracht, ritme en herstel — nuchter uitgelegd.",
-        href: "/beweging-na-40",
+        href: "/beweging-en-voeding",
       },
       {
         label: "Jouw profiel",
@@ -329,7 +329,7 @@ export const GUIDES: Guide[] = [
     focusCategories: ["hormonaal", "slaap-herstel"],
     audience: "vrouwen",
     comingSoon: true,
-    contentHref: "/overgang",
+    contentHref: "/overgang-en-voeding",
     comingSoonNote:
       "We werken aan de PDF. De volledige gids staat al op onze website — inclusief bronnen.",
     comingSoonCta: "Lees de webgids →",
@@ -363,7 +363,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Overgang",
         sub: "De volledige webgids, met bronnen.",
-        href: "/overgang",
+        href: "/overgang-en-voeding",
       },
       {
         label: "Vergelijking: vitamine D",
@@ -384,7 +384,7 @@ export const GUIDES: Guide[] = [
     tag: "Hormonale balans",
     focusCategories: ["hormonaal", "energie-vitaliteit"],
     comingSoon: true,
-    contentHref: "/testosteron-na-40",
+    contentHref: "/testosteron-en-voeding",
     comingSoonNote:
       "De volledige webgids over leefstijl en vitaliteit na 30 staat al op onze website, voor mannen en vrouwen. Met een voedingszoom en bronnen.",
     comingSoonCta: "Lees de testosteron-webgids →",

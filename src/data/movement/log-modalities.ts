@@ -19,9 +19,9 @@ export type MovementLogModality = {
 
 export const MOVEMENT_LOG_MODALITIES: MovementLogModality[] = [
   { id: "krachttraining", label: "Krachttraining", icon: "💪", href: "/blog/krachttraining-na-40" },
-  { id: "wandelen", label: "Stevig wandelen", icon: "🚶", href: "/beweging-na-40" },
+  { id: "wandelen", label: "Stevig wandelen", icon: "🚶", href: "/beweging-en-voeding" },
   { id: "zone2", label: "Zone 2 cardio", icon: "❤️", href: "/onderbouwing#MOV_CARD" },
-  { id: "active_recovery", label: "Rustmoment", icon: "🛌", href: "/herstel-verbeteren-na-40" },
+  { id: "active_recovery", label: "Rustmoment", icon: "🛌", href: "/herstel-en-voeding" },
 ];
 
 const MODALITY_ID_SET = new Set<string>(

@@ -13,15 +13,15 @@ import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
-  title: "Slaap Verbeteren Na 30: Oorzaken, Tips & Supplementen",
+  title: "Slaap en voeding na 30: wat eten met je nachten doet",
   description:
-    "Slecht slapen na 30? Ontdek waarom je slaap verandert en wat je er nu aan doet. Van leefstijl tot supplementen — onderbouwd en praktisch.",
-  ...canonicalMetadata("/slaap-verbeteren-na-40"),
+    "Slecht slapen na 30? Zie hoe voeding, magnesium, cafeïne en ritme meespelen en wat je zelf kunt aanpassen. Onderbouwd, zonder diagnoses.",
+  ...canonicalMetadata("/slaap-en-voeding"),
   openGraph: {
-    title: "Slaap Verbeteren Na 30: De Complete Gids",
+    title: "Slaap en voeding na 30: wat eten met je nachten doet",
     description:
       "Slecht slapen na 30? Ontdek waarom je slaap verandert en wat je er nu aan doet.",
-    url: "/slaap-verbeteren-na-40",
+    url: "/slaap-en-voeding",
     type: "article",
   },
 };
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Slaap Verbeteren Na 30: De Complete Gids",
+  headline: "Slaap en voeding na 30: wat eten met je nachten doet",
   description:
     "Slecht slapen na 30? Ontdek waarom je slaap verandert en wat je er nu aan doet.",
   author: {
@@ -44,7 +44,7 @@ const articleSchema = {
   },
   datePublished: "2026-05-02",
   dateModified: "2026-05-02",
-  mainEntityOfPage: "https://perfectsupplement.nl/slaap-verbeteren-na-40",
+  mainEntityOfPage: "https://perfectsupplement.nl/slaap-en-voeding",
 };
 
 const faqSchema = {
@@ -118,7 +118,7 @@ export default function SlaapVerbeterenNa40Page() {
                   Complete Gids
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                  Slaap Verbeteren Na 30: De Complete Gids
+                  Slaap en voeding na 30: wat eten met je nachten doet
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 12 min
@@ -608,7 +608,7 @@ export default function SlaapVerbeterenNa40Page() {
                     Chronische stress en slaap zijn nauw verbonden. Als je merkt dat je &apos;s nachts wakker wordt met een hoofd vol gedachten, kan stress de onderliggende oorzaak zijn.
                   </p>
                   <Link
-                    href="/stress-verminderen-na-40"
+                    href="/stress-en-voeding"
                     className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] text-sm"
                   >
                     Lees de gids: Stress Verminderen na 30 →
@@ -623,7 +623,7 @@ export default function SlaapVerbeterenNa40Page() {
                     beweging samenspelen — bespreek aanhoudende klachten met je huisarts.
                   </p>
                   <Link
-                    href="/energie-na-40"
+                    href="/energie-en-voeding"
                     className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] text-sm"
                   >
                     Lees de gids: Energie Na 30 →

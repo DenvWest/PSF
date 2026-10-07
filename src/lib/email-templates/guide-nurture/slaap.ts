@@ -107,7 +107,7 @@ ${ctaButton(absoluteUrl("/supplementen/magnesium"), "Lees de magnesiumgids →")
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   Slaap verbetert zelden in één nacht. De mensen die het grootste verschil merken, zijn consequent met ritme en avondafsluiting — niet perfect, wel structureel.
 </p>
-${ctaButton(absoluteUrl("/slaap-verbeteren-na-40"), "Terug naar het complete slaapprotocol →")}`,
+${ctaButton(absoluteUrl("/slaap-en-voeding"), "Terug naar het complete slaapprotocol →")}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),

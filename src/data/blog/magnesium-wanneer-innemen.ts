@@ -105,7 +105,7 @@ export const magnesiumWanneerInnemenData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: beter slapen na 40",
-    href: "/slaap-verbeteren-na-40",
+    href: "/slaap-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Alle supplementen in de supplementengids",

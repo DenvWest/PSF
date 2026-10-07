@@ -67,19 +67,19 @@ describe("nurture selection snapshot", () => {
       {
         "In Balans|14": "supplement:/beste/omega-3-supplement",
         "In Balans|21": "supplement:/beste/omega-3-supplement",
-        "In Balans|7": "pillar:/slaap-verbeteren-na-40",
+        "In Balans|7": "pillar:/slaap-en-voeding",
         "Lage Energie|14": "supplement:/beste/omega-3-supplement",
         "Lage Energie|21": "supplement:/beste/omega-3-supplement",
-        "Lage Energie|7": "pillar:/slaap-verbeteren-na-40",
+        "Lage Energie|7": "pillar:/slaap-en-voeding",
         "Onrustige Slaper|14": "supplement:/beste/magnesium",
         "Onrustige Slaper|21": "supplement:/beste/magnesium",
-        "Onrustige Slaper|7": "pillar:/slaap-verbeteren-na-40",
+        "Onrustige Slaper|7": "pillar:/slaap-en-voeding",
         "Overtrainer|14": "supplement:/beste/magnesium",
         "Overtrainer|21": "supplement:/beste/magnesium",
-        "Overtrainer|7": "pillar:/slaap-verbeteren-na-40",
+        "Overtrainer|7": "pillar:/slaap-en-voeding",
         "Stressdrager|14": "supplement:/beste/magnesium",
         "Stressdrager|21": "supplement:/beste/magnesium",
-        "Stressdrager|7": "pillar:/slaap-verbeteren-na-40",
+        "Stressdrager|7": "pillar:/slaap-en-voeding",
       }
     `);
   });
@@ -92,12 +92,12 @@ describe("nurture selection snapshot", () => {
     }
     expect(map).toMatchInlineSnapshot(`
       {
-        "energy_score": "Leefstijlstappen|/energie-na-40",
+        "energy_score": "Leefstijlstappen|/energie-en-voeding",
         "movement_score": "Magnesium|/beste/magnesium",
         "nutrition_score": "Omega-3|/beste/omega-3-supplement",
         "recovery_score": "Magnesium|/beste/magnesium",
         "sleep_score": "Magnesium|/beste/magnesium",
-        "stress_score": "Leefstijlstappen|/stress-verminderen-na-40",
+        "stress_score": "Leefstijlstappen|/stress-en-voeding",
       }
     `);
   });

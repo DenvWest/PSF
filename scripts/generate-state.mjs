@@ -4,12 +4,12 @@ import { join } from "node:path";
 const ROOT = process.cwd();
 
 const PILLAR_ROUTES = [
-  "/beweging-na-40",
-  "/energie-na-40",
-  "/herstel-verbeteren-na-40",
-  "/slaap-verbeteren-na-40",
+  "/beweging-en-voeding",
+  "/energie-en-voeding",
+  "/herstel-en-voeding",
+  "/slaap-en-voeding",
   "/stress-verminderen-man",
-  "/testosteron-na-40",
+  "/testosteron-en-voeding",
   "/voeding-na-40",
 ];
 

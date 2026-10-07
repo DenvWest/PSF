@@ -186,7 +186,7 @@ export default function OnderbouwingPage() {
             references={LEEFSTIJLCHECK_LIFELINE_REFERENCES}
           />
           <Link
-            href="/beweging-na-40#levenslijn"
+            href="/beweging-en-voeding#levenslijn"
             className="mt-4 inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-stone-800 transition hover:bg-stone-50"
           >
             Bekijk de levenslijn →

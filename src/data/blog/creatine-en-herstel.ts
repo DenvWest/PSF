@@ -9,7 +9,7 @@ export const creatineEnHerstelData: BlogArtikel = {
   coverImage: "/images/blog/creatine-en-herstel.jpg",
   coverImageAlt: "Halterstang die van de vloer wordt getild na een set",
   heroIntro:
-    "Creatine wordt vaak geassocieerd met zware sets in de sportschool — maar achter de schermen gaat het om een kleine energiebuffer in spieren en hersenen. In dit artikel koppel je creatine aan [herstel na 30](/herstel-verbeteren-na-40): wat onderzoek redelijkerwijs suggereert, wat je eerst zelf moet regelen, en hoe je producten eerlijk vergelijkt via onze [creatine-vergelijking](/beste/creatine).",
+    "Creatine wordt vaak geassocieerd met zware sets in de sportschool — maar achter de schermen gaat het om een kleine energiebuffer in spieren en hersenen. In dit artikel koppel je creatine aan [herstel na 30](/herstel-en-voeding): wat onderzoek redelijkerwijs suggereert, wat je eerst zelf moet regelen, en hoe je producten eerlijk vergelijkt via onze [creatine-vergelijking](/beste/creatine).",
   leestijd: "11 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-05-14",
@@ -48,7 +48,7 @@ export const creatineEnHerstelData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: vergelijk creatine inhoudelijk",
       tekst:
-        "Wil je geen marketingfolder maar een eerlijke score op zuiverheid, dosering en prijs? Onze [beste creatine supplementen](/beste/creatine) pagina zet drie monohydraat-opties naast elkaar — inclusief praktische FAQ. Combineer dat met de brede context van [herstel verbeteren na 30](/herstel-verbeteren-na-40) voor slaap, omega-3 en magnesium als tweede lijn.",
+        "Wil je geen marketingfolder maar een eerlijke score op zuiverheid, dosering en prijs? Onze [beste creatine supplementen](/beste/creatine) pagina zet drie monohydraat-opties naast elkaar — inclusief praktische FAQ. Combineer dat met de brede context van [herstel verbeteren na 30](/herstel-en-voeding) voor slaap, omega-3 en magnesium als tweede lijn.",
     },
   ],
   samenvatting:
@@ -61,7 +61,7 @@ export const creatineEnHerstelData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Pillar: herstel verbeteren na 30",
-    href: "/herstel-verbeteren-na-40",
+    href: "/herstel-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Alle supplementen op één meetlat",

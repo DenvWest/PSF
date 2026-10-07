@@ -8,7 +8,7 @@ export const vitamineDSeizoenenJaarritmeData: BlogArtikel = {
   coverImage: "/images/blog/vitamine-d-seizoenen-jaarritme-v2.jpg",
   coverImageAlt: "Donker winterlandschap zonder zon — het seizoen van lage vitamine D",
   heroIntro:
-    "De meeste mensen denken dat hun vitamine D-status meebeweegt met het weer: zon is hoog, dus status is hoog. In werkelijkheid loopt je waarde maanden achter op de zon. Je piek valt in de nazomer, je dal in het vroege voorjaar — en dat verschil verklaart waarom februari en maart de maanden zijn waarin een tekort zich meldt. Hier lees je hoe dat jaarritme werkt, wat het onderzoek erover laat zien en wat het betekent voor [vitamine D](/kennisbank/vitamine-d) en [energie na 30](/energie-na-40).",
+    "De meeste mensen denken dat hun vitamine D-status meebeweegt met het weer: zon is hoog, dus status is hoog. In werkelijkheid loopt je waarde maanden achter op de zon. Je piek valt in de nazomer, je dal in het vroege voorjaar — en dat verschil verklaart waarom februari en maart de maanden zijn waarin een tekort zich meldt. Hier lees je hoe dat jaarritme werkt, wat het onderzoek erover laat zien en wat het betekent voor [vitamine D](/kennisbank/vitamine-d) en [energie na 30](/energie-en-voeding).",
   leestijd: "10 min",
   gepubliceerdOp: "2026-09-01",
   laatstBijgewerktOp: "2026-09-01",
@@ -99,7 +99,7 @@ export const vitamineDSeizoenenJaarritmeData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: wat er nog meer met de seizoenen meebeweegt",
       tekst:
-        "Daglicht stuurt niet alleen vitamine D-aanmaak maar ook je slaap-waakritme, en in de winter verschuiven allebei. In de [check](/intake) zie je of je voeding in de wintermaanden genoeg vitamine D-bronnen bevat, zodat je weet of een supplement zin heeft. De bredere gids: [energie na 30](/energie-na-40).",
+        "Daglicht stuurt niet alleen vitamine D-aanmaak maar ook je slaap-waakritme, en in de winter verschuiven allebei. In de [check](/intake) zie je of je voeding in de wintermaanden genoeg vitamine D-bronnen bevat, zodat je weet of een supplement zin heeft. De bredere gids: [energie na 30](/energie-en-voeding).",
     },
   ],
   kernpunten: [
@@ -119,7 +119,7 @@ export const vitamineDSeizoenenJaarritmeData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 30",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vitamine D supplementen vergelijken",

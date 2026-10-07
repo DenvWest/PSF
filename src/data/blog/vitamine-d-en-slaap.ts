@@ -8,7 +8,7 @@ export const vitamineDEnSlaapData: BlogArtikel = {
   coverImage: "/images/blog/vitamine-d-en-slaap.jpg",
   coverImageAlt: "Berglandschap bij helder daglicht",
   heroIntro:
-    "Dat een laag vitamine D samenhangt met slechter slapen, lees je overal. Wat er zelden bij staat: het daglicht dat je vitamine D maakt, zet óók je biologische klok gelijk — en dat tweede effect op je slaap is veel beter onderbouwd dan het eerste. Hier lees je hoe [vitamine D](/kennisbank/vitamine-d) en [slaap na 30](/slaap-verbeteren-na-40) zich werkelijk tot elkaar verhouden, inclusief de vraag of je het 's avonds moet vermijden.",
+    "Dat een laag vitamine D samenhangt met slechter slapen, lees je overal. Wat er zelden bij staat: het daglicht dat je vitamine D maakt, zet óók je biologische klok gelijk — en dat tweede effect op je slaap is veel beter onderbouwd dan het eerste. Hier lees je hoe [vitamine D](/kennisbank/vitamine-d) en [slaap na 30](/slaap-en-voeding) zich werkelijk tot elkaar verhouden, inclusief de vraag of je het 's avonds moet vermijden.",
   leestijd: "9 min",
   gepubliceerdOp: "2026-09-01",
   laatstBijgewerktOp: "2026-09-01",
@@ -90,7 +90,7 @@ export const vitamineDEnSlaapData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: slaap verbeteren na 30",
-    href: "/slaap-verbeteren-na-40",
+    href: "/slaap-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vitamine D supplementen vergelijken",

@@ -60,7 +60,7 @@ describe("NextStepBlock", () => {
 
   it("laat de secundaire regel weg als die er niet is", () => {
     const alleen = nextStepForMetadata({ checkOverride: "leefstijl" });
-    render(<NextStepBlock step={alleen} node="energie-na-40" nodeType="pillar" />);
+    render(<NextStepBlock step={alleen} node="energie-en-voeding" nodeType="pillar" />);
     expect(screen.getAllByRole("link")).toHaveLength(1);
   });
 

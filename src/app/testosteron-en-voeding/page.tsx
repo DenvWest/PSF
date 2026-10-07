@@ -28,15 +28,15 @@ const BODY_IMAGE = {
 };
 
 export const metadata: Metadata = {
-  title: "Testosteron na 30: wat verandert en wat je zelf kunt doen",
+  title: "Testosteron en voeding na 30: leefstijl, zink en eiwit",
   description:
-    "Testosteron na 30 in begrijpelijke taal: leeftijdstrend, slaap, stress en training — zonder diagnoses. Links naar vergelijkingen en cluster-artikelen.",
-  ...canonicalMetadata("/testosteron-na-40"),
+    "Hormoonbalans na 30 voor mannen en vrouwen: slaap, stress, training en voeding (eiwit, zink, vitamine D). Zonder diagnoses of beloftes.",
+  ...canonicalMetadata("/testosteron-en-voeding"),
   openGraph: {
-    title: "Testosteron na 30: complete gids",
+    title: "Testosteron en voeding na 30: leefstijl, zink en eiwit",
     description:
       "Wat verandert na 30, wat onderzoek redelijkerwijs zegt en welke stappen je veilig eerst zet.",
-    url: "/testosteron-na-40",
+    url: "/testosteron-en-voeding",
     type: "article",
     images: [{ url: COVER.src, alt: COVER.alt }],
   },
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Testosteron na 30: wat verandert en wat je zelf kunt doen",
+  headline: "Testosteron en voeding na 30: leefstijl, zink en eiwit",
   description:
     "Testosteron na 30: leefstijl, verwachtingen en wanneer medische hulp past.",
   image: [`https://perfectsupplement.nl${COVER.src}`],
@@ -61,7 +61,7 @@ const articleSchema = {
   },
   datePublished: "2026-05-14",
   dateModified: "2026-05-20",
-  mainEntityOfPage: "https://perfectsupplement.nl/testosteron-na-40",
+  mainEntityOfPage: "https://perfectsupplement.nl/testosteron-en-voeding",
 };
 
 const faqItems = [
@@ -122,7 +122,7 @@ export default function TestosteronNa40Page() {
                   Complete gids
                 </p>
                 <h1 className="mt-2 font-serif text-4xl font-bold text-gray-900 md:text-5xl">
-                  Testosteron na 30: wat verandert en wat je zelf kunt doen
+                  Testosteron en voeding na 30: wat je zelf kunt doen
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 14 min
@@ -300,7 +300,7 @@ export default function TestosteronNa40Page() {
                     cortisol en testosteron
                   </Link>{" "}
                   en de gids{" "}
-                  <Link href="/stress-verminderen-na-40" className={LINK}>
+                  <Link href="/stress-en-voeding" className={LINK}>
                     stress verminderen
                   </Link>{" "}
                   voor wat je met je gedrag kunt doen — vóór je aan supplementen denkt.
@@ -322,7 +322,7 @@ export default function TestosteronNa40Page() {
                     slaapschuld
                   </Link>{" "}
                   en de gids{" "}
-                  <Link href="/slaap-verbeteren-na-40" className={LINK}>
+                  <Link href="/slaap-en-voeding" className={LINK}>
                     slaap verbeteren na 30
                   </Link>
                   .
@@ -335,7 +335,7 @@ export default function TestosteronNa40Page() {
                   2–3× per week krachttraining met progressieve belasting ondersteunt spierbehoud —
                   relevant naast hormoonverhalen, geen vervanging van medische beoordeling. Eiwit
                   (≈1,6–2 g/kg lichaamsgewicht als richtlijn met je diëtist/arts) en herstel: zie{" "}
-                  <Link href="/herstel-verbeteren-na-40" className={LINK}>
+                  <Link href="/herstel-en-voeding" className={LINK}>
                     herstel verbeteren na 30
                   </Link>{" "}
                   en{" "}
@@ -437,7 +437,7 @@ export default function TestosteronNa40Page() {
                   vooral bij{" "}
                   <strong className="text-gray-900">spierbehoud en krachttraining na 30</strong>,
                   naast slaap, eiwit via voeding en stressmanagement. Meer diepgang:{" "}
-                  <Link href="/herstel-verbeteren-na-40" className={LINK}>
+                  <Link href="/herstel-en-voeding" className={LINK}>
                     herstel verbeteren na 30
                   </Link>{" "}
                   en{" "}

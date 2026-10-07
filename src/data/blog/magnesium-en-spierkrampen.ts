@@ -38,7 +38,7 @@ export const magnesiumEnSpierkrampenData: BlogArtikel = {
       titel: "Waar krampen dan wél vandaan komen",
       bewijsNiveau: "redelijk",
       tekst:
-        "De oude verklaring — kramp is een tekort aan vocht of zouten — houdt bij inspanningsgebonden krampen slecht stand. Sportonderzoek wijst eerder richting neuromusculaire vermoeidheid: bij oververmoeide spieren raakt de balans verstoord tussen de spierspoeltjes die aanspanning stimuleren en de peesorgaantjes die dat juist remmen. Het resultaat is een spier die spontaan blijft vuren. Dat verklaart waarom kramp typisch optreedt aan het eind van een zware inspanning, in een verkorte spierpositie, en waarom rekken bijna onmiddellijk helpt terwijl een elektrolytendrankje dat niet doet.\n\nBij nachtkrampen zonder sport speelt iets anders. Daar komen leeftijd, langdurig staan, bepaalde medicatie en de slaaphouding — voeten in strekstand onder een strak dekbed — vaker terug als factor. En een aanzienlijk deel van wat mensen 's nachts als kramp beleven, is bij navraag rustelozebenensyndroom, een ander probleem met een andere aanpak.\n\nDat maakt de nuttigste eerste stap niet het kiezen van een supplement, maar het bepalen van het type kramp. Zit hij bij inspanning, dan wijst het naar belasting en herstel — daarover gaat [krachttraining na 40](/blog/krachttraining-na-40) en de gids [herstel verbeteren na 40](/herstel-verbeteren-na-40). Zit hij 's nachts en in rust, dan is de route via je huisarts korter dan die via een potje.",
+        "De oude verklaring — kramp is een tekort aan vocht of zouten — houdt bij inspanningsgebonden krampen slecht stand. Sportonderzoek wijst eerder richting neuromusculaire vermoeidheid: bij oververmoeide spieren raakt de balans verstoord tussen de spierspoeltjes die aanspanning stimuleren en de peesorgaantjes die dat juist remmen. Het resultaat is een spier die spontaan blijft vuren. Dat verklaart waarom kramp typisch optreedt aan het eind van een zware inspanning, in een verkorte spierpositie, en waarom rekken bijna onmiddellijk helpt terwijl een elektrolytendrankje dat niet doet.\n\nBij nachtkrampen zonder sport speelt iets anders. Daar komen leeftijd, langdurig staan, bepaalde medicatie en de slaaphouding — voeten in strekstand onder een strak dekbed — vaker terug als factor. En een aanzienlijk deel van wat mensen 's nachts als kramp beleven, is bij navraag rustelozebenensyndroom, een ander probleem met een andere aanpak.\n\nDat maakt de nuttigste eerste stap niet het kiezen van een supplement, maar het bepalen van het type kramp. Zit hij bij inspanning, dan wijst het naar belasting en herstel — daarover gaat [krachttraining na 40](/blog/krachttraining-na-40) en de gids [herstel verbeteren na 40](/herstel-en-voeding). Zit hij 's nachts en in rust, dan is de route via je huisarts korter dan die via een potje.",
       bewijsKanttekening:
         "De neuromusculaire verklaring voor inspanningskramp heeft de sterkste steun, maar is niet definitief bewezen; bij nachtkrampen zonder duidelijke oorzaak blijft de onderliggende mechaniek grotendeels onbekend.",
     },
@@ -106,7 +106,7 @@ export const magnesiumEnSpierkrampenData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: herstel verbeteren na 40",
-    href: "/herstel-verbeteren-na-40",
+    href: "/herstel-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Alle supplementen in de supplementengids",

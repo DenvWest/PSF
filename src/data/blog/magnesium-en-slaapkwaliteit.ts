@@ -107,7 +107,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Complete gids: slaap verbeteren na je 30e",
-    href: "/slaap-verbeteren-na-40",
+    href: "/slaap-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Bekijk onze top 3 magnesium (productvergelijking)",

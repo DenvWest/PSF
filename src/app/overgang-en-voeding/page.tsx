@@ -28,15 +28,15 @@ const BODY_IMAGE = {
 };
 
 export const metadata: Metadata = {
-  title: "Overgang: wat verandert en wat helpt",
+  title: "Overgang en voeding: eiwit, calcium en leefstijl",
   description:
-    "De overgang in begrijpelijke taal: wat perimenopauze met je slaap, botten en spieren doet — en welke leefstijlkeuzes daar volgens onderzoek het meeste aan doen. Geen hormoonadvies, geen wondermiddelen.",
-  ...canonicalMetadata("/overgang"),
+    "De overgang in begrijpelijke taal: wat eiwit, calcium, vitamine D en magnesium betekenen naast slaap en beweging. Geen hormoonadvies.",
+  ...canonicalMetadata("/overgang-en-voeding"),
   openGraph: {
-    title: "Overgang: Complete Gids",
+    title: "Overgang en voeding: eiwit, calcium en leefstijl",
     description:
       "Wat er verandert, wat onderzoek redelijkerwijs zegt en welke stappen je veilig eerst zet.",
-    url: "/overgang",
+    url: "/overgang-en-voeding",
     type: "article",
     images: [{ url: COVER.src, alt: COVER.alt }],
   },
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Overgang: Wat Verandert en Wat Je Zelf Kunt Doen",
+  headline: "Overgang en voeding: eiwit, calcium en leefstijl",
   description:
     "De overgang: leefstijl, verwachtingen en wanneer medische hulp past.",
   image: [`https://perfectsupplement.nl${COVER.src}`],
@@ -61,7 +61,7 @@ const articleSchema = {
   },
   datePublished: "2026-08-29",
   dateModified: "2026-08-29",
-  mainEntityOfPage: "https://perfectsupplement.nl/overgang",
+  mainEntityOfPage: "https://perfectsupplement.nl/overgang-en-voeding",
 };
 
 const faqItems = [
@@ -122,7 +122,7 @@ export default function OvergangPage() {
                   Complete gids
                 </p>
                 <h1 className="mt-2 font-serif text-4xl font-bold text-gray-900 md:text-5xl">
-                  Overgang: wat verandert en wat je zelf kunt doen
+                  Overgang en voeding: wat je zelf kunt doen
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: augustus 2026 · Leestijd: 12 min
@@ -289,7 +289,7 @@ export default function OvergangPage() {
                   voldoen<sup>[3]</sup>. Nachtelijke opvliegers zijn een deel van de verklaring, maar
                   niet de hele: de onderliggende hormonale verschuiving beïnvloedt ook rechtstreeks
                   hoe je slaapcyclus verloopt. Praktischer: lees de gids{" "}
-                  <Link href="/slaap-verbeteren-na-40" className={LINK}>
+                  <Link href="/slaap-en-voeding" className={LINK}>
                     slaap verbeteren na 30
                   </Link>{" "}
                   voor wat je aan ritme en avondgewoontes kunt doen — vóór je aan supplementen
@@ -325,7 +325,7 @@ export default function OvergangPage() {
                   g/kg bij wie regelmatig traint — verspreid over de dag, met 25–30 g per
                   maaltijd<sup>[5]</sup>. Dat is meer dan de meeste mensen gewend zijn en meer dan de
                   algemene aanbeveling van 0,8 g/kg. Zie ook{" "}
-                  <Link href="/herstel-verbeteren-na-40" className={LINK}>
+                  <Link href="/herstel-en-voeding" className={LINK}>
                     herstel verbeteren na 30
                   </Link>{" "}
                   voor hoe je dat praktisch invult.
@@ -353,7 +353,7 @@ export default function OvergangPage() {
                 <p className="mt-3 leading-relaxed text-gray-700">
                   Vast bed- en wakker-tijdstip, een koelere slaapkamer (helpt bij nachtelijk
                   zweten), minder alcohol als slaapmiddel. Zie{" "}
-                  <Link href="/slaap-verbeteren-na-40" className={LINK}>
+                  <Link href="/slaap-en-voeding" className={LINK}>
                     slaap verbeteren na 30
                   </Link>{" "}
                   voor de volledige aanpak.
@@ -461,7 +461,7 @@ export default function OvergangPage() {
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   <Link
-                    href="/slaap-verbeteren-na-40"
+                    href="/slaap-en-voeding"
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
@@ -473,7 +473,7 @@ export default function OvergangPage() {
                     </span>
                   </Link>
                   <Link
-                    href="/herstel-verbeteren-na-40"
+                    href="/herstel-en-voeding"
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">

@@ -48,7 +48,7 @@ export const eiwitinnameTimingMannen40Data: BlogArtikel = {
       type: "tekst",
       titel: "Eiwit, herstel en beweging — de koppeling",
       tekst:
-        "Meer eiwit zonder beweging helpt beperkt; meer training zonder eiwit remt herstel. Rustig duursport en krachttraining verhogen je behoefte — lees [krachttraining na 30](/blog/krachttraining-na-40) en de pillar [herstel verbeteren na 30](/herstel-verbeteren-na-40). Train je regelmatig terwijl je ontbijt en lunch eiwitarm blijven? Begin daar — niet met poeder. In de [check](/intake) zie je of je eiwitinname over de dag verdeeld al op peil is.",
+        "Meer eiwit zonder beweging helpt beperkt; meer training zonder eiwit remt herstel. Rustig duursport en krachttraining verhogen je behoefte — lees [krachttraining na 30](/blog/krachttraining-na-40) en de pillar [herstel verbeteren na 30](/herstel-en-voeding). Train je regelmatig terwijl je ontbijt en lunch eiwitarm blijven? Begin daar — niet met poeder. In de [check](/intake) zie je of je eiwitinname over de dag verdeeld al op peil is.",
     },
     {
       type: "tekst",

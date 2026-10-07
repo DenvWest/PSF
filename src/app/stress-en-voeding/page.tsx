@@ -14,15 +14,15 @@ const INLINE_LINK_CLASS =
 
 export const metadata: Metadata = {
   title:
-    "Stress Verminderen na 30: Van Altijd 'Aan' Naar Meer Rust",
+    "Stress en voeding na 30: eten onder druk",
   description:
-    "Langdurige stress voelt zwaarder na 30: slaap, energie en rust. Praktische stappen — zonder diagnoses of vage adviezen.",
-  ...canonicalMetadata("/stress-verminderen-na-40"),
+    "Langdurige stress verandert wat en wanneer je eet. Zie welke voedingsgewoonten meespelen en wat je stap voor stap kunt aanpassen, zonder diagnoses.",
+  ...canonicalMetadata("/stress-en-voeding"),
   openGraph: {
-    title: "Stress Verminderen na 30: Van Altijd 'Aan' Naar Meer Rust",
+    title: "Stress en voeding na 30: eten onder druk",
     description:
       "Langdurige stress voelt zwaarder na 30: slaap, energie en rust. Hier lees je wat je zelf kunt doen.",
-    url: "/stress-verminderen-na-40",
+    url: "/stress-en-voeding",
     type: "article",
   },
 };
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Stress Verminderen na 30: Van Altijd 'Aan' Naar Meer Rust",
+  headline: "Stress en voeding na 30: eten onder druk",
   description:
     "Langdurige stress voelt zwaarder na 30: slaap, energie en rust. Praktische stappen — zonder diagnoses.",
   author: {
@@ -45,7 +45,7 @@ const articleSchema = {
   },
   datePublished: "2026-05-07",
   dateModified: "2026-05-07",
-  mainEntityOfPage: "https://perfectsupplement.nl/stress-verminderen-na-40",
+  mainEntityOfPage: "https://perfectsupplement.nl/stress-en-voeding",
 };
 
 const faqSchema = {
@@ -114,7 +114,7 @@ export default function StressVerminderenManPage() {
                   Complete Gids
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                  Stress Verminderen na 30: Van Altijd &apos;Aan&apos; Naar Meer Rust
+                  Stress en voeding na 30: wat je eet onder druk
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 12 min
@@ -325,7 +325,7 @@ export default function StressVerminderenManPage() {
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   → Worstel je ook met je slaap? Lees de complete gids:{" "}
-                  <Link href="/slaap-verbeteren-na-40" className={INLINE_LINK_CLASS}>
+                  <Link href="/slaap-en-voeding" className={INLINE_LINK_CLASS}>
                     Slaap verbeteren na 30
                   </Link>
                 </p>
@@ -465,7 +465,7 @@ export default function StressVerminderenManPage() {
                     kan het helpen om beide kanten te bekijken.
                   </p>
                   <a
-                    href="/energie-na-40"
+                    href="/energie-en-voeding"
                     className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] mt-2 inline-block text-sm"
                   >
                     Lees de gids: Energie Na 30 →
@@ -527,7 +527,7 @@ export default function StressVerminderenManPage() {
                   </Link>
 
                   <Link
-                    href="/testosteron-na-40"
+                    href="/testosteron-en-voeding"
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
