@@ -19,7 +19,7 @@ const ACCENT = "oklch(0.69 0.095 50)";
 export const metadata: Metadata = {
   title: "Beweging en voeding na 30: kracht, ritme en brandstof",
   description:
-    "Krachttraining en herstel na 30 vragen om de juiste brandstof. Zie wat eiwit, koolhydraten en calcium doen, vóór je aan supplementen denkt.",
+    "Krachttraining en herstel na je dertigste hebben de juiste brandstof nodig. Zie wat eiwit, koolhydraten en calcium doen, vóór je aan supplementen denkt.",
   ...canonicalMetadata("/beweging-en-voeding"),
   openGraph: {
     title: "Beweging en voeding na 30: kracht, ritme en brandstof",
