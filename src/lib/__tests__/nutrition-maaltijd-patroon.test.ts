@@ -98,3 +98,21 @@ describe("bouwMaaltijdPatroon", () => {
     expect(ontbijt!.rijen.every((r) => r.waarde === null)).toBe(true);
   });
 });
+
+describe("bouwMaaltijdPatroon · per product", () => {
+  it("geeft per product wat het gemiddeld per keer leverde, over de keren dat het er stond", () => {
+    const patroon = bouw(new Map([["2026-10-02", [MAGNESIUM]]]), {
+      "2026-10-01": [portie("ontbijt", 100)],
+      "2026-10-03": [portie("ontbijt", 50)],
+    });
+    const ontbijt = patroon.find((m) => m.moment === "ontbijt")!;
+    const haver = ontbijt.producten.find((p) => p.naam === "Havermout")!;
+    expect(haver.keer).toBe(2);
+    expect(haver.rijen.find((r) => r.veld === "ironMg")).toMatchObject({ waarde: 3, aandeelRi: 3 / 14 });
+    expect(haver.kernstoffen.find((k) => k.nutrient === "magnesium")!.gemiddeld).toBeNull();
+
+    const supplement = ontbijt.producten.find((p) => p.supplement)!;
+    expect(supplement.kernstoffen.find((k) => k.nutrient === "magnesium")).toMatchObject({ gemiddeld: 200, uitSupplement: 200 });
+    expect(ontbijt.keer).toBe(3);
+  });
+});

@@ -122,3 +122,34 @@ Dennis gaf akkoord ("akkoord met mergen, ook met plak 2").
 - `kernstof_profiel_aangepast` {setting, surface}
 - `doelen_regel_geopend` (bestaand) met de settings `norm_geslacht`, `norm_zeventig_plus`, `voedingswijze`, `streefwaarde_<stof>`
 - `nutrition_patroon_norm_aanpassen_click` {nutrient}
+
+---
+
+## Herziening 7 oktober: waartegen rekent elke rij, en wat levert één product
+
+**Status:** gebouwd op `feat/maaltijd-norm-product`, wacht op Dennis' akkoord.
+
+Dennis' feedback:
+1. De kolom "Norm" zei weinig. Bij 7 dagen moet duidelijk zijn wat de maaltijd gemiddeld deed tegen de norm, en of dat de norm, de ADH of je eigen doel is.
+2. Een product in "Wat je at" moet je kunnen aantikken om te zien wat alleen dat product levert.
+
+### Besluiten
+
+1. **Elke rij noemt zijn referentie.** Onder de stofnaam staat "norm X/dag · bron". Heb je op Je doelen een streefwaarde gezet, dan staat er een tweede regel "jouw doel X/dag · Y%". Stoffen zonder norm zeggen waarom: "geen dagnorm", eiwit "doel op Je doelen", vezels "norm volgt uit je gewicht". De kolom heet "Van norm". Het percentage blijft tegen de norm, het doel krijgt een eigen percentage zonder kleur (plak 2 hierboven).
+2. **De noemer staat in de kop:** "Gemiddeld per lunch · 5 van 7 dagen geregistreerd". Een korte noot zegt dat het percentage het deel van je dagnorm is dat een gemiddelde lunch dekt, en dat dagen zonder lunch niet meetellen (asymmetrie-regel blijft: gemiddeld per keer, niet per kalenderdag).
+3. **"Waar je lunch het meest aan bijdraagt":** de drie stoffen met het hoogste deel van je dagnorm. Alleen de sterkste, geen "het minst": een lage bijdrage van één maaltijd zegt niets over je dag. Omega-3 doet niet mee, omdat die als weektotaal rekent ("telt per week" in de normregel).
+4. **Tik op een product → wat het per keer leverde.** Hetzelfde rekenpad als de maaltijd (`gemiddeldeVan` in `nutrition-maaltijd-patroon.ts`), gemiddeld over de keren dat het product er stond. Per stof: hoeveelheid, % van je norm, je eigen doel, en "etiket: X% ADH". Hier staat de ADH wel, omdat het een productweergave is (`BESLUIT_KERNSTOF_NORMEN_2026-10.md` §4). Er staat bij dat de ADH een vaste wettelijke waarde voor iedereen is en je norm persoonlijk. Geen kleur en geen vinkje: één product haalt geen dagnorm.
+
+### Meting
+
+- `nutrition_patroon_product_geopend` {moment, soort: voeding|supplement} (GA4).
+
+### Bijgesteld 7 oktober (tweede ronde, na Dennis' review op :3001)
+
+Dennis: "nieuwe tabel niet mooi en teveel". Een regel met norm en bron onder elke stof maakte de tabel twee keer zo hoog.
+
+- **Compacte tabel terug.** Eén regel per stof, met de kolommen Stof · Gem. · /100 kcal · Norm.
+- **Eigen doel in de Norm-kolom:** onder het percentage staat klein "doel 17%". Zonder doel staat er alleen het percentage.
+- **Tik op een stof** klapt open met de norm, de bron, je eigen doel en welke producten de stof leverden: per product het deel van een gemiddelde maaltijd en het % van je norm. Vervangt de vaste regels onder de stofnaam.
+- De lange uitleg erboven is één korte noot eronder geworden. "Waar je … het meest aan bijdraagt" en de klikbare producten in "Wat je at" blijven.
+- Meting: hergebruikt `nutrition_patroon_stof_geopend` met `sectie: "maaltijd"`.
