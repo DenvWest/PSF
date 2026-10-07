@@ -14,6 +14,7 @@ vi.mock("@/lib/account-events-client", () => ({ emitAccountClientEvent: vi.fn() 
 const fetchMock = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/use-kernstof-normen", () => ({
   useKernstofProfiel: () => ({ geslacht: null, zeventigPlus: false, voedingswijze: null, streefwaarden: {} }),
+  useEiwitDoel: () => null,
 }));
 const favorieten = vi.hoisted(() => ({
   items: [] as { id: string; title: string; kind: string }[],
@@ -141,7 +142,7 @@ describe("KeuzeVergelijken", () => {
     rerender(keuze());
     supplement = screen.getByRole("region", { name: "Uit een supplement" });
     expect(within(supplement).getByRole("link", { name: /Naar de productpagina/ }).getAttribute("href")).toBe(
-      `/product/${slug}`,
+      `/product/${slug}?van=keuze&stof=magnesium`,
     );
     fireEvent.click(within(supplement).getByRole("button", { name: "Mijn supplement" }));
     expect(favorieten.items).toEqual([]);
@@ -193,5 +194,12 @@ describe("KeuzeVergelijken", () => {
     expect(within(supplement).getAllByText(/Samen met je eten minstens/).length).toBeGreaterThan(0);
     expect(within(supplement).getAllByText(/veilige bovengrens van 250 mg per dag uit supplementen/).length).toBeGreaterThan(0);
     expect(within(supplement).getAllByText(/€ \d+,\d{2} per dag/).length).toBeGreaterThan(0);
+  });
+
+  it("terug van een productpagina opent dezelfde stof en haalt de parameter uit de URL", async () => {
+    window.history.replaceState(null, "", "/dashboard?tab=keuze&stof=protein");
+    renderKeuze();
+    await waitFor(() => expect(screen.getByRole("button", { name: /Eiwit/, expanded: true })).toBeTruthy());
+    expect(window.location.search).toBe("?tab=keuze");
   });
 });

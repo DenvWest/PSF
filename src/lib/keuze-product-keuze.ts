@@ -57,3 +57,26 @@ export function productKeuzeHref(id: string): string | null {
   const keuze = parseProductKeuze(id);
   return keuze ? `/product/${keuze.slug}` : null;
 }
+
+/**
+ * Herkomst op een productlink vanuit Keuze: de productpagina toont dan
+ * "← Terug naar je keuze", en die link opent in het dashboard dezelfde stof.
+ */
+export function metKeuzeHerkomst(href: string, nutrient: NutrientId): string {
+  return `${href}?${new URLSearchParams({ van: "keuze", stof: nutrient }).toString()}`;
+}
+
+/** De stof uit een herkomst-query, of null als die niet uit Keuze komt of onbekend is. */
+export function leesKeuzeHerkomst(search: URLSearchParams): NutrientId | null {
+  if (search.get("van") !== "keuze") return null;
+  const stof = search.get("stof");
+  return STOFFEN.find((kandidaat) => kandidaat === stof) ?? null;
+}
+
+export function keuzeTerugHref(nutrient: NutrientId): string {
+  return `/dashboard?${new URLSearchParams({ tab: "keuze", stof: nutrient }).toString()}`;
+}
+
+export function stofLabel(nutrient: NutrientId): string {
+  return nutrientReferences[nutrient].label;
+}

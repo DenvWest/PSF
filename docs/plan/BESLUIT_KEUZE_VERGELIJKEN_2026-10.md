@@ -119,3 +119,15 @@ Richting, eens met Dennis: **we verdienen aan de beslissing, niet aan de informa
    - **(c) Premium "Jouw stack".**
 
 **Meting:** `keuze_product_gekozen` {surface, nutrient, product, actie: gekozen|gewist, stand} (GA4 + Clarity `keuze_product`); `keuze_vergelijken_ps_score_click` met `doel: productpagina` (ook vanuit Favorieten); `nutrition_dagboek_favoriet_*` met `surface: keuze_stof`; `keuze_naar_mijn_producten`; `keuze_voedingswijze_wijzig`.
+
+### Vijfde ronde (7 oktober, zelfde PR): eiwit, scrollen, de weg terug
+
+Na Dennis' review op :3004:
+
+1. **Eiwit stond altijd op "te weinig dagen", ook met een vol dagboek.** Het tekortsysteem rekent eiwit nooit als aandeel (`aandeelVanNorm` geeft null: het doel rekent met gewicht en trainingsbelasting). Keuze rekent nu met je eiwitdoel uit Je doelen (`useEiwitDoel`). Zonder eiwitdoel geldt de nieuwe stand `geen_doel`: je gemiddelde zonder percentage, met "Stel je eiwitdoel in →". De tests rekenden met een aandeel voor eiwit dat het echte systeem nooit levert; ze zijn bijgesteld.
+2. **Een stof openen schuift die stof in beeld.** Het openen klapte de vorige stof erboven dicht, waardoor je op mobiel midden in de kaart terechtkwam. Dit gebeurt alleen na een eigen tik, met `prefers-reduced-motion` gerespecteerd.
+3. **De weg van product terug.** Productlinks vanuit Keuze dragen `?van=keuze&stof=…`. De productpagina toont dan "← Terug naar je keuze · Eiwit" (terug naar die stof, open) en "Alle eiwitpoeder-producten met PS-Score →". Voor alle bezoekers staat die cataloguslink nu ook onderaan de productpagina; de broodkruimel "Eiwitpoeder" wees naar de gids, niet naar de producten.
+
+**Open: "Hoe we hier komen" bij eiwit noemt nog de beweegcheck.** Die staat sinds 5 september niet meer in de navigatie (voeding eerst). Beweging zit inmiddels wel in Je doelen (trainingsbelasting → eiwitdoel). Ligt ter beslissing bij Dennis.
+
+**Meting:** `keuze_eiwitdoel_instellen`, `keuze_terug_van_product` {nutrient, product}, `keuze_product_naar_catalogus` {nutrient, product}.

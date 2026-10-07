@@ -35,6 +35,7 @@ import {
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import { trackEvent } from "@/lib/ga4";
 import {
+  metKeuzeHerkomst,
   parseProductKeuze,
   productKeuzeContext,
   productKeuzeHref,
@@ -400,7 +401,10 @@ export default function SchapView({
                       nutritionSourceFavoriteContext(item.id) ??
                       routeChoiceFavoriteContext(item.id) ??
                       productKeuzeContext(item.id);
-                    const productHref = productKeuzeHref(item.id);
+                    const productKeuze = parseProductKeuze(item.id);
+                    const productHref = productKeuze
+                      ? metKeuzeHerkomst(productKeuzeHref(item.id) ?? "", productKeuze.nutrient)
+                      : null;
                     // Waar hij staat op die route. Bewust geen hoeveelheid —
                     // zie `nutritionSourceFavoriteStatus`.
                     const bronStatus = nutritionSourceFavoriteStatus(
@@ -441,7 +445,7 @@ export default function SchapView({
                                 onClick={() =>
                                   trackEvent("keuze_vergelijken_ps_score_click", {
                                     surface: `schap_favorieten_${domain}`,
-                                    nutrient: parseProductKeuze(item.id)?.nutrient ?? "",
+                                    nutrient: productKeuze?.nutrient ?? "",
                                     doel: "productpagina",
                                   })
                                 }

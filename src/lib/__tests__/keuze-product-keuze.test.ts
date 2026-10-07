@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  keuzeTerugHref,
+  leesKeuzeHerkomst,
+  metKeuzeHerkomst,
   parseProductKeuze,
   productKeuzeContext,
   productKeuzeHref,
@@ -26,5 +29,14 @@ describe("productkeuze per stof", () => {
     expect(productKeuzeVoorStof("magnesium", items)).toBe("a-b");
     expect(productKeuzeVoorStof("omega3", items)).toBeNull();
     expect(productKeuzeIdsVoorStof("zinc", items)).toEqual(["voeding-product-zinc-c"]);
+  });
+
+  it("draagt de herkomst heen en terug, en negeert andere bezoekers", () => {
+    const href = metKeuzeHerkomst("/product/royal-green-whey", "protein");
+    expect(href).toBe("/product/royal-green-whey?van=keuze&stof=protein");
+    expect(leesKeuzeHerkomst(new URL(href, "https://x.nl").searchParams)).toBe("protein");
+    expect(leesKeuzeHerkomst(new URLSearchParams("stof=protein"))).toBeNull();
+    expect(leesKeuzeHerkomst(new URLSearchParams("van=keuze&stof=onzin"))).toBeNull();
+    expect(keuzeTerugHref("protein")).toBe("/dashboard?tab=keuze&stof=protein");
   });
 });
