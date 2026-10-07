@@ -134,16 +134,18 @@ export default function PatroonTrendGrafiek({ trend }: { trend: StofTrend }) {
         <span className="w-12 shrink-0" />
       </div>
 
-      <table className="sr-only">
-        <caption>{trend.label}</caption>
-        <tbody>
-          {punten.map((punt) => (
-            <tr key={punt.sleutel}>
-              <td>{punt.uitleg}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="sr-only">
+        <table>
+          <caption>{trend.label}</caption>
+          <tbody>
+            {punten.map((punt) => (
+              <tr key={punt.sleutel}>
+                <td>{punt.uitleg}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
