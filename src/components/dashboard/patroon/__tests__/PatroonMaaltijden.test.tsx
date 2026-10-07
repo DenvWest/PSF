@@ -58,13 +58,21 @@ describe("PatroonMaaltijden", () => {
     expect(trackEvent).toHaveBeenCalledWith("nutrition_patroon_maaltijd_gekozen", { moment: "ontbijt" });
   });
 
-  it("noemt per stof de norm met bron en je eigen doel", () => {
+  it("zet je eigen doel in de normkolom en toont bij een tik op een stof de bron en de producten", () => {
     render(<PatroonMaaltijden patroon={PATROON} periode={{ van: "2026-09-06", tot: "2026-10-05" }} />);
     const ijzer = STANDAARD_GEVOLGDE_NORMEN.ironMg;
+    expect(screen.getByText("doel 50%")).toBeTruthy();
+    expect(screen.queryByText(`norm ${ijzer.waarde} mg/dag · ${ijzer.bron}`)).toBeNull();
+    expect(screen.getByText(/Waar je lunch het meest aan bijdraagt:/)).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /^IJzer/, expanded: false }));
     expect(screen.getByText(`norm ${ijzer.waarde} mg/dag · ${ijzer.bron}`)).toBeTruthy();
     expect(screen.getByText("jouw doel 8 mg/dag · 50%")).toBeTruthy();
-    expect(screen.getByText(/Dagen zonder lunch tellen niet mee/)).toBeTruthy();
-    expect(screen.getByText(/Waar je lunch het meest aan bijdraagt:/)).toBeTruthy();
+    expect(trackEvent).toHaveBeenCalledWith("nutrition_patroon_stof_geopend", {
+      nutrient: "ironMg",
+      soort: "gevolgd",
+      sectie: "maaltijd",
+    });
   });
 
   it("opent bij een tik op een product wat dat product leverde en meet het", () => {

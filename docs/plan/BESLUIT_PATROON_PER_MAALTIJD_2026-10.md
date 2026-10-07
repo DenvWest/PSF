@@ -143,3 +143,13 @@ Dennis' feedback:
 ### Meting
 
 - `nutrition_patroon_product_geopend` {moment, soort: voeding|supplement} (GA4).
+
+### Bijgesteld 7 oktober (tweede ronde, na Dennis' review op :3001)
+
+Dennis: "nieuwe tabel niet mooi en teveel". Een regel met norm en bron onder elke stof maakte de tabel twee keer zo hoog.
+
+- **Compacte tabel terug.** Eén regel per stof, met de kolommen Stof · Gem. · /100 kcal · Norm.
+- **Eigen doel in de Norm-kolom:** onder het percentage staat klein "doel 17%". Zonder doel staat er alleen het percentage.
+- **Tik op een stof** klapt open met de norm, de bron, je eigen doel en welke producten de stof leverden: per product het deel van een gemiddelde maaltijd en het % van je norm. Vervangt de vaste regels onder de stofnaam.
+- De lange uitleg erboven is één korte noot eronder geworden. "Waar je … het meest aan bijdraagt" en de klikbare producten in "Wat je at" blijven.
+- Meting: hergebruikt `nutrition_patroon_stof_geopend` met `sectie: "maaltijd"`.
