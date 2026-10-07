@@ -139,4 +139,14 @@ describe("MijnKeuzes", () => {
     expect(screen.getByText("Telt ook mee: Haring (bij omega-3)")).toBeTruthy();
     expect(screen.getByText("Kies een bron met ☆:")).toBeTruthy();
   });
+
+  it("toont een bij eiwit gekozen gebakken ei bij eiwit, ook al haalt het de bron-drempel niet", async () => {
+    fetchMock.mockImplementation(
+      async () => new Response(JSON.stringify({ items: [{ bron: "voeding", key: "ei-gebakken" }] }), { status: 200 }),
+    );
+    favorieten.items = [{ id: "voeding-eten-protein-ei-gebakken", title: "", kind: "activiteit" }];
+    render(<MijnKeuzes statuses={[status("protein", "Eiwit")]} reeksen={[]} onNaarVergelijken={vi.fn()} />);
+    expect(screen.getByText("Ei, gebakken")).toBeTruthy();
+    expect(screen.queryByText("Kies een bron met ☆:")).toBeNull();
+  });
 });

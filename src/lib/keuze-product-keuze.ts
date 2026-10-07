@@ -158,7 +158,42 @@ export function momentKeuzeIdsVoorStof(
     .map((item) => item.id);
 }
 
+/**
+ * Een voedingsmiddel dat je in Vergelijken bij één stof koos. Naast de ☆ in
+ * het dagboek (die bovenaan zet bij het toevoegen) onthoudt dit bij wélke
+ * stof je hem koos: een gebakken ei levert per stuk 13,5 % van de
+ * eiwitreferentie en haalt de "bron van"-drempel niet, maar wie het bij eiwit
+ * kiest, wil het in Mijn keuzes bij eiwit zien.
+ */
+const ETEN_PREFIX = "voeding-eten-";
+
+export function etenKeuzeId(nutrient: NutrientId, key: string): string {
+  return `${ETEN_PREFIX}${nutrient}-${key}`;
+}
+
+export function parseEtenKeuze(id: string): { nutrient: NutrientId; key: string } | null {
+  if (!id.startsWith(ETEN_PREFIX)) return null;
+  const rest = id.slice(ETEN_PREFIX.length);
+  const nutrient = STOFFEN.find((stof) => rest.startsWith(`${stof}-`));
+  if (!nutrient) return null;
+  const key = rest.slice(nutrient.length + 1);
+  return key ? { nutrient, key } : null;
+}
+
+/** De voedingsmiddelen die je bij deze stof koos, in de volgorde waarin ze bewaard zijn. */
+export function etenKeuzesVoorStof(nutrient: NutrientId, items: readonly { id: string }[]): string[] {
+  return items.flatMap((item) => {
+    const keuze = parseEtenKeuze(item.id);
+    return keuze?.nutrient === nutrient ? [keuze.key] : [];
+  });
+}
+
 /** Of een favoriet bij de stofkeuzes hoort (route, product of moment) en dus in de stofkaart van Mijn keuzes staat. */
 export function isStofKeuzeFavoriet(id: string): boolean {
-  return id.startsWith("voeding-route-") || parseProductKeuze(id) !== null || parseMomentKeuze(id) !== null;
+  return (
+    id.startsWith("voeding-route-") ||
+    parseProductKeuze(id) !== null ||
+    parseMomentKeuze(id) !== null ||
+    parseEtenKeuze(id) !== null
+  );
 }

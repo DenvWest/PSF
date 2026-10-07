@@ -10,8 +10,11 @@ import { clarityTag } from "@/lib/clarity";
 import { buildDagboekVoegHref, gaNaarDashboard } from "@/lib/dagboek-deeplink";
 import { trackEvent } from "@/lib/ga4";
 import {
+  etenKeuzeId,
+  etenKeuzesVoorStof,
   metKeuzeHerkomst,
   momentKeuzeId,
+  parseEtenKeuze,
   momentKeuzeIdsVoorStof,
   momentVoorStof,
   productKeuzeVoorStof,
@@ -75,10 +78,24 @@ export default function MijnKeuzes({
   const gesterd = voedingsfavorieten.keys;
 
   const keuzes = useMemo((): StofKeuze[] => {
-    const entries = gesterd.map((key) => catalogEntry(key)).filter((entry): entry is CatalogEntry => entry !== null);
     const stoffen = statuses.map((status) => status.nutrient);
-    const hoofd = new Map(entries.map((entry) => [entry.key, hoofdStof(entry, stoffen)]));
     const label = new Map(statuses.map((status) => [status.nutrient, status.label]));
+    // Waar een voedingsmiddel staat: bij de stof(fen) waar je het in
+    // Vergelijken koos; een oudere ster zonder stof bij de stof waar het het
+    // meest aan bijdraagt (`hoofdStof`).
+    const plek = new Map<string, NutrientId[]>();
+    for (const stof of stoffen) {
+      for (const key of etenKeuzesVoorStof(stof, items)) plek.set(key, [...(plek.get(key) ?? []), stof]);
+    }
+    for (const key of gesterd) {
+      if (plek.has(key)) continue;
+      const entry = catalogEntry(key);
+      const stof = entry ? hoofdStof(entry, stoffen) : null;
+      if (stof) plek.set(key, [stof]);
+    }
+    const entries = [...new Set([...plek.keys(), ...gesterd])]
+      .map((key) => catalogEntry(key))
+      .filter((entry): entry is CatalogEntry => entry !== null);
     return statuses.map((status) => {
       const slug = productKeuzeVoorStof(status.nutrient, items);
       return {
@@ -86,10 +103,13 @@ export default function MijnKeuzes({
         stand: keuzeStofStand(status.nutrient, reeksen.find((r) => r.nutrient === status.nutrient), eiwitDoelG),
         route: resolveNutritionRouteChoice(status.nutrient, items),
         product: slug ? keuzeProductVoorSlug(status.nutrient, slug, products) : null,
-        bronnen: entries.filter((entry) => hoofd.get(entry.key) === status.nutrient),
+        bronnen: entries.filter((entry) => plek.get(entry.key)?.includes(status.nutrient)),
         ookVia: entries
-          .filter((entry) => hoofd.get(entry.key) !== status.nutrient && isBronVan(entry, status.nutrient))
-          .map((entry) => ({ entry, bij: (label.get(hoofd.get(entry.key) ?? status.nutrient) ?? "").toLowerCase() })),
+          .filter((entry) => {
+            const stoffenVan = plek.get(entry.key);
+            return stoffenVan && !stoffenVan.includes(status.nutrient) && isBronVan(entry, status.nutrient);
+          })
+          .map((entry) => ({ entry, bij: (label.get(plek.get(entry.key)?.[0] ?? status.nutrient) ?? "").toLowerCase() })),
       };
     });
   }, [statuses, reeksen, eiwitDoelG, items, products, gesterd]);
@@ -309,7 +329,27 @@ function EtenKant({
   onWijzig: () => void;
 }) {
   const { status, route, bronnen, ookVia } = keuze;
-  const { items } = useVoortgangFavorites();
+  const { items, save, remove } = useVoortgangFavorites();
+
+  const kiesHier = (key: string, naam: string) => {
+    save(
+      { id: etenKeuzeId(status.nutrient, key), title: `${status.label}: ${naam}`, kind: "activiteit", domain: "voeding", source: "mijn_keuze" },
+      SURFACE,
+    );
+    if (!voedingsfavorieten.isBewaard(key)) void voedingsfavorieten.wissel(key, status.nutrient);
+    trackEvent("keuze_eten_gekozen", { nutrient: status.nutrient, product: key, actie: "gekozen", via: "mijn_keuzes" });
+  };
+
+  /** Weg uit Mijn keuzes bij deze stof; de dagboekster alleen als hij bij geen andere stof gekozen is. */
+  const haalWeg = (key: string) => {
+    remove(etenKeuzeId(status.nutrient, key));
+    const elders = items.some((item) => {
+      const keuze = parseEtenKeuze(item.id);
+      return keuze?.key === key && keuze.nutrient !== status.nutrient;
+    });
+    if (!elders && voedingsfavorieten.isBewaard(key)) void voedingsfavorieten.wissel(key, status.nutrient);
+    trackEvent("keuze_eten_gekozen", { nutrient: status.nutrient, product: key, actie: "gewist", via: "mijn_keuzes" });
+  };
   const profiel = useKernstofProfiel();
   const moment = momentVoorStof(status.nutrient, items, "eten") ?? "ontbijt";
   const gekozen = route === "bord" || route === "beide" || bronnen.length > 0;
@@ -319,9 +359,9 @@ function EtenKant({
         ? []
         : rijksteBronnen(status.nutrient, "portie", 30)
             .filter((bron) => pastBijVoedingswijze(bron.entry, profiel.voedingswijze))
-            .filter((bron) => !voedingsfavorieten.isBewaard(bron.entry.key))
+            .filter((bron) => !etenKeuzesVoorStof(status.nutrient, items).includes(bron.entry.key))
             .slice(0, 2),
-    [bronnen.length, status.nutrient, profiel.voedingswijze, voedingsfavorieten],
+    [bronnen.length, status.nutrient, profiel.voedingswijze, items],
   );
 
   return (
@@ -346,9 +386,9 @@ function EtenKant({
                   <span className="flex shrink-0 items-center gap-2.5">
                     <button
                       type="button"
-                      aria-label={`${entry.labelNl} weghalen uit Mijn producten`}
+                      aria-label={`${entry.labelNl} weghalen uit Mijn keuzes`}
                       disabled={voedingsfavorieten.bezig === entry.key}
-                      onClick={() => void voedingsfavorieten.wissel(entry.key, status.nutrient)}
+                      onClick={() => haalWeg(entry.key)}
                       className="cursor-pointer border-0 bg-transparent p-0 text-[1rem] leading-none text-[var(--vd-sage-2)] disabled:opacity-50"
                     >
                       ★
@@ -387,7 +427,7 @@ function EtenKant({
                   type="button"
                   aria-label={`${bron.entry.labelNl} bewaren in Mijn producten`}
                   disabled={voedingsfavorieten.bezig === bron.entry.key}
-                  onClick={() => void voedingsfavorieten.wissel(bron.entry.key, status.nutrient)}
+                  onClick={() => kiesHier(bron.entry.key, bron.entry.labelNl)}
                   className="shrink-0 cursor-pointer border-0 bg-transparent p-0 text-[1rem] leading-none text-[var(--vd-sage-2)] disabled:opacity-50"
                 >
                   ☆

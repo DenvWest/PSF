@@ -125,7 +125,7 @@ describe("KeuzeVergelijken", () => {
     const { rerender } = renderKeuze();
     const eten = () => screen.getByRole("region", { name: "Uit je eten" });
     fireEvent.click(within(eten()).getAllByRole("button", { name: / kiezen$/ })[0]);
-    await waitFor(() => expect(favorieten.items.map((i) => i.id)).toEqual(["voeding-route-magnesium-bord"]));
+    await waitFor(() => expect(favorieten.items.map((i) => i.id)).toContain("voeding-route-magnesium-bord"));
     rerender(keuze());
     const supplement = screen.getByRole("region", { name: "Uit een supplement" });
     fireEvent.click(within(supplement).getAllByRole("button", { name: / kiezen$/ })[0]);
@@ -243,5 +243,19 @@ describe("KeuzeVergelijken", () => {
     renderKeuze();
     await waitFor(() => expect(screen.getByRole("button", { name: /Eiwit/, expanded: true })).toBeTruthy());
     expect(window.location.search).toBe("?tab=keuze");
+  });
+
+  it("een gebakken ei gekozen bij eiwit blijft bij eiwit staan, ook onder de bron-drempel", () => {
+    const { rerender } = renderKeuze();
+    fireEvent.click(screen.getByRole("button", { name: /^Eiwit/, expanded: false }));
+    const eiwit = () => screen.getAllByRole("region", { name: "Uit je eten" }).at(-1)!;
+    fireEvent.change(within(eiwit()).getByRole("searchbox", { name: /Zoek eten met eiwit/ }), { target: { value: "ei gebakken" } });
+    fireEvent.click(within(eiwit()).getByRole("button", { name: "Ei, gebakken kiezen" }));
+    expect(favorieten.items.map((i) => i.id)).toContain("voeding-eten-protein-ei-gebakken");
+
+    rerender(keuze());
+    fireEvent.change(within(eiwit()).getByRole("searchbox", { name: /Zoek eten met eiwit/ }), { target: { value: "" } });
+    expect(within(eiwit()).getByText("Jouw keuze")).toBeTruthy();
+    expect(within(eiwit()).getByRole("button", { name: /Ei, gebakken: gekozen/ })).toBeTruthy();
   });
 });

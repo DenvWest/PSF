@@ -193,3 +193,18 @@ Dennis: twee knoppen per voedingsmiddel (☆ en ＋) waren verwarrend, en de ste
 4. **Supplement loggen in het dagboek: nog niet.** Het dagboek kent geen merkproducten. Mijn keuzes zegt dat er nu bij; dit is de volgende stap (a).
 
 **Meting:** `keuze_eten_gekozen` {nutrient, product, actie, via: voorstel|zoek}, `keuze_eten_zoek` {nutrient, treffers}, `keuze_supplement_zoek` {nutrient, treffers}; `keuze_terug_van_product` nu ook vanuit Mijn keuzes.
+
+### Tiende ronde (7 oktober, zelfde PR): wat je kiest, staat waar je het koos
+
+Dennis koos bij eiwit "Ei, gebakken" en zag het niet terug in Mijn keuzes, wel "heel wat andere keuzes". **Oorzaak:**
+- Mijn keuzes plaatste een gesterd voedingsmiddel alleen bij een stof waarvan één portie ≥ 15 % van de referentie levert.
+- Eén ei levert 13,5 % van de eiwitreferentie en stond dus nergens.
+- De eiwitkaart dacht dat er nog niets gekozen was en toonde de voorstellen.
+
+**Fix:**
+- Een keuze in Vergelijken (of vanuit de voorstellen in Mijn keuzes) wordt bewaard bij de stof waar je hem maakte, als `voeding-eten-<stof>-<voedingsmiddel>`, naast de ☆ in het dagboek.
+- Mijn keuzes toont wat je bij een stof koos altijd bij die stof. De drempel (`hoofdStof`) geldt alleen nog voor oudere sterren zonder stof.
+- In Vergelijken staat je keuze bovenaan de eetkolom ("Jouw keuze"), ook als je hem via het zoekveld vond.
+- Wissen haalt de dagboekster alleen weg als je het voedingsmiddel bij geen andere stof koos.
+
+**Zoeken op meer woorden:** de catalogus vond "ei gebakken" niet bij "Ei, gebakken", omdat hij als één stuk tekst zocht en botste op de komma. Nu tellen alle woorden in elke volgorde (laagste rang, onder de bestaande treffers). Dat geldt ook voor het dagboek.

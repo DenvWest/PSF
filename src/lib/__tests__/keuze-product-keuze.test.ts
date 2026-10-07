@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+  etenKeuzeId,
+  etenKeuzesVoorStof,
   isStofKeuzeFavoriet,
+  parseEtenKeuze,
   keuzeTerugHref,
   momentKeuzeId,
   momentVoorStof,
@@ -59,5 +62,12 @@ describe("productkeuze per stof", () => {
     expect(isStofKeuzeFavoriet(id)).toBe(true);
     expect(isStofKeuzeFavoriet("voeding-route-zinc-bord")).toBe(true);
     expect(isStofKeuzeFavoriet("dagboek-supplement-visolie-capsule-1000mg")).toBe(false);
+  });
+
+  it("onthoudt bij welke stof je een voedingsmiddel koos", () => {
+    const id = etenKeuzeId("vitamin_d", "ei-gebakken");
+    expect(parseEtenKeuze(id)).toEqual({ nutrient: "vitamin_d", key: "ei-gebakken" });
+    expect(etenKeuzesVoorStof("vitamin_d", [{ id }, { id: etenKeuzeId("protein", "kipdij") }])).toEqual(["ei-gebakken"]);
+    expect(isStofKeuzeFavoriet(id)).toBe(true);
   });
 });

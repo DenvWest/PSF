@@ -197,3 +197,10 @@ describe("catalogusfoto's delen een eigenaar per grondstof", () => {
     expect(kapot.map((e) => `${e.key} → ${e.imageOwner}`)).toEqual([]);
   });
 });
+
+describe("searchCatalog — meer woorden", () => {
+  it("vindt 'Ei, gebakken' met 'ei gebakken' en 'gebakken ei'", () => {
+    expect(searchCatalog("ei gebakken").map((e) => e.key)).toContain("ei-gebakken");
+    expect(searchCatalog("gebakken ei").map((e) => e.key)).toContain("ei-gebakken");
+  });
+});

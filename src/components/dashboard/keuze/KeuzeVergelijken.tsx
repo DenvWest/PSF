@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
-import { searchCatalog, type CatalogEntry } from "@/data/nutrition/food-catalog";
+import { catalogEntry, searchCatalog, type CatalogEntry } from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { IngredientClaimKey } from "@/data/approved-claims";
 import type { Voedingswijze } from "@/lib/account-kernstof-profiel";
@@ -20,7 +20,10 @@ import {
   supplementErbij,
 } from "@/lib/keuze-stofkaart";
 import {
+  etenKeuzeId,
+  etenKeuzesVoorStof,
   metKeuzeHerkomst,
+  parseEtenKeuze,
   productKeuzeId,
   productKeuzeIdsVoorStof,
   productKeuzeTitel,
@@ -744,13 +747,39 @@ function VoedingKant({
       }));
   }, [term, status.nutrient]);
   const rijen = term ? treffers : voorstellen;
-  const gekozenHier = rijen.filter((rij) => voedingsfavorieten.isBewaard(rij.entry.key)).length;
+  const { items, save, remove } = useVoortgangFavorites();
+  const etenKeuzes = etenKeuzesVoorStof(status.nutrient, items);
+  const gekozenHier = etenKeuzes.length;
 
-  /** Eén actie per voedingsmiddel: kiezen zet het in Mijn keuzes (☆ in het dagboek) en kiest de route eten. */
-  const kies = (key: string) => {
-    const wasGekozen = voedingsfavorieten.isBewaard(key);
-    void voedingsfavorieten.wissel(key, status.nutrient);
-    if (!wasGekozen && !routeGekozen) onZetEten(true);
+  /**
+   * Eén actie per voedingsmiddel. Kiezen bewaart het bij déze stof in Mijn
+   * keuzes (`voeding-eten-<stof>-<key>`), zet de ☆ in het dagboek zodat het
+   * bovenaan staat bij toevoegen, en kiest de route eten. Wissen haalt de
+   * ster alleen weg als je het bij geen andere stof koos.
+   */
+  const kies = (key: string, naam: string) => {
+    const wasGekozen = etenKeuzes.includes(key);
+    if (wasGekozen) {
+      remove(etenKeuzeId(status.nutrient, key));
+      const elders = items.some((item) => {
+        const keuze = parseEtenKeuze(item.id);
+        return keuze?.key === key && keuze.nutrient !== status.nutrient;
+      });
+      if (!elders && voedingsfavorieten.isBewaard(key)) void voedingsfavorieten.wissel(key, status.nutrient);
+    } else {
+      save(
+        {
+          id: etenKeuzeId(status.nutrient, key),
+          title: `${status.label}: ${naam}`,
+          kind: "activiteit",
+          domain: "voeding",
+          source: "mijn_keuze",
+        },
+        "keuze_stof",
+      );
+      if (!voedingsfavorieten.isBewaard(key)) void voedingsfavorieten.wissel(key, status.nutrient);
+      if (!routeGekozen) onZetEten(true);
+    }
     trackEvent("keuze_eten_gekozen", {
       nutrient: status.nutrient,
       product: key,
@@ -787,6 +816,33 @@ function VoedingKant({
         </p>
       ) : null}
 
+      {etenKeuzes.length > 0 ? (
+        <>
+          <p className="m-0 mt-2.5 text-[0.6875rem] text-[var(--vd-ink-3)]">Jouw keuze</p>
+          <ul className="m-0 mt-1 flex list-none flex-col gap-1.5 p-0">
+            {etenKeuzes.map((key) => {
+              const entry = catalogEntry(key);
+              if (!entry) return null;
+              const levert = gehaltePerPortie(entry, status.nutrient);
+              return (
+                <li key={key} className="flex items-center justify-between gap-2 text-[0.78125rem]">
+                  <span className="min-w-0">
+                    <span className="text-[var(--vd-ink)]">{entry.labelNl}</span>
+                    {levert ? (
+                      <span className="text-[var(--vd-ink-3)]">
+                        {" "}
+                        · {entry.porties[0]?.labelNl} · {hoeveelheid(levert.value)} {levert.unit}
+                      </span>
+                    ) : null}
+                  </span>
+                  <KiesPil gekozen kleur="sage" onClick={() => kies(key, entry.labelNl)} label={entry.labelNl} />
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      ) : null}
+
       <KolomZoek
         waarde={zoek}
         onChange={setZoek}
@@ -805,7 +861,7 @@ function VoedingKant({
       ) : null}
       <ul className="m-0 mt-1 flex list-none flex-col gap-1.5 p-0">
         {rijen.map((rij) => {
-          const gekozen = voedingsfavorieten.isBewaard(rij.entry.key);
+          const gekozen = etenKeuzes.includes(rij.entry.key);
           return (
             <li key={rij.entry.key} className="flex items-center justify-between gap-2 text-[0.78125rem]">
               <span className="min-w-0">
@@ -822,7 +878,7 @@ function VoedingKant({
                 gekozen={gekozen}
                 bezig={voedingsfavorieten.bezig === rij.entry.key}
                 kleur="sage"
-                onClick={() => kies(rij.entry.key)}
+                onClick={() => kies(rij.entry.key, rij.entry.labelNl)}
                 label={rij.entry.labelNl}
               />
             </li>
