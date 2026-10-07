@@ -112,3 +112,13 @@ export function psScoreBestePerVorm(
   }
   return [...besteVanVorm.values()].sort((a, b) => b.scoreTotaal - a.scoreTotaal).slice(0, limiet);
 }
+
+/** Eén product van deze stof op slug, of het nu de beste van zijn vorm is of niet. */
+export function keuzeProductVoorSlug(
+  nutrient: NutrientId,
+  slug: string,
+  products?: readonly KeuzeProduct[],
+): KeuzeProduct | null {
+  const categorie = NUTRIENT_HUB_CATEGORY[nutrient];
+  return bron(products).find((product) => product.slug === slug && product.category === categorie) ?? null;
+}

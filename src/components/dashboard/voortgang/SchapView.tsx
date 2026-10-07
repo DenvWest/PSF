@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
 import KeuzeSpiegel from "@/components/dashboard/voortgang/KeuzeSpiegel";
@@ -32,6 +33,12 @@ import {
   routeChoiceFavoriteContext,
 } from "@/lib/nutrition-route-choice";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
+import { trackEvent } from "@/lib/ga4";
+import {
+  parseProductKeuze,
+  productKeuzeContext,
+  productKeuzeHref,
+} from "@/lib/keuze-product-keuze";
 import type { DashboardData, DashboardModel, PillarId, SchapTabId } from "@/types/dashboard";
 
 type SchapViewProps = {
@@ -391,7 +398,9 @@ export default function SchapView({
                     // eten" zegt zonder deze regel niet waarop die keuze rust.
                     const bronContext =
                       nutritionSourceFavoriteContext(item.id) ??
-                      routeChoiceFavoriteContext(item.id);
+                      routeChoiceFavoriteContext(item.id) ??
+                      productKeuzeContext(item.id);
+                    const productHref = productKeuzeHref(item.id);
                     // Waar hij staat op die route. Bewust geen hoeveelheid —
                     // zie `nutritionSourceFavoriteStatus`.
                     const bronStatus = nutritionSourceFavoriteStatus(
@@ -425,6 +434,21 @@ export default function SchapView({
                                   ? ` · jij: ${bronStatus.answerLabel}`
                                   : ""}
                               </span>
+                            ) : null}
+                            {productHref ? (
+                              <Link
+                                href={productHref}
+                                onClick={() =>
+                                  trackEvent("keuze_vergelijken_ps_score_click", {
+                                    surface: `schap_favorieten_${domain}`,
+                                    nutrient: parseProductKeuze(item.id)?.nutrient ?? "",
+                                    doel: "productpagina",
+                                  })
+                                }
+                                className="mt-1 inline-block text-[11.5px] font-semibold text-[var(--vd-accent-2)] no-underline hover:underline"
+                              >
+                                Naar de productpagina →
+                              </Link>
                             ) : null}
                             {item.kind && item.kind !== "activiteit" ? (
                               <span className="mt-1 block text-[11.5px] text-[var(--vd-ink-3)] capitalize">

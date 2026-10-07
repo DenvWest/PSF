@@ -95,3 +95,27 @@ Opgeruimd: het PS-Score-blok in `NutrientRouteChoiceCard` (eerste ronde) en `psS
 Richting, eens met Dennis: **we verdienen aan de beslissing, niet aan de informatie.** Alles per stof blijft gratis: stand, bronnen, producten, PS-Score, wat een product toevoegt, de bovengrens en de prijs. Premium wordt iets wat nog niet bestaat: **"Jouw stack"**, één advies over al je gekozen routes samen (dubbelingen, de bovengrens over alle bronnen samen, de goedkoopste combinatie, wanneer je wat inneemt). **Afgewezen:** iets wat nu gratis is achter een betaalmuur zetten. De les uit MyFitnessPal: kernfunctie achter Premium jaagt mensen weg, en een gratis versie die "goed genoeg" is converteert niet. Dat los je op met een betaalde laag die meer doet, niet met een gratis laag die minder doet.
 
 **Meting:** bestaand `dashboard_afleiding_open` / `dashboard.afleiding_opened` (nu ook vanuit de stofkaart, surface `schap_voeding`), `keuze_stof_geopend`, `keuze_vergelijken_ps_score_click`, `nutrition_route_choice`.
+
+---
+
+## Herziening 7 oktober (vierde ronde): de knoppen doen iets
+
+**Aanleiding.** Dennis: "Kies eten" en "Kies supplement" deden weinig. Dat klopte: ze bewaarden alleen de route als favoriet, met één bevestigingszin. Dennis ging akkoord met de voorgestelde volgorde.
+
+### Besluiten
+
+1. **"Kies eten" opent het kiezen van bronnen.**
+   - Na de keuze krijgt elke "kan erbij"-bron een ☆. Die schrijft naar **Mijn producten** in het dagboek: dezelfde opslag (`/api/account/dagboek-favorieten`) en dezelfde meting als de ster in Je patroon, met `surface: "keuze_stof"`. Wat je stert, staat bovenaan als je eten toevoegt; "Naar Mijn producten →" opent die lijst.
+   - De link heet nu "Alle rijkste bronnen in Je patroon →" (de top 10 met ster en ＋ bestond daar al).
+   - **De voedingswijze staat erbij.** De lijst filterde al op vegetarisch/veganistisch uit Je doelen, maar dat was nergens te zien. Nu staat er "Afgestemd op: …" of "Eet je vegetarisch of veganistisch?", met een link naar Je doelen.
+2. **"Kies supplement" is nu "Kies dit supplement", per product.**
+   - Eén product per stof, bewaard als `voeding-product-<stof>-<slug>` in `account_favorites`. Een product kiezen zet de supplementroute aan; opnieuw tikken wist beide.
+   - Daarna is de hoofdknop **"Naar de productpagina →"** (`/product/<slug>`). Daar staan winkels, prijzen en de koopknop, met de commissie-zin erbij. In het dashboard zelf blijft geen affiliate-link staan.
+   - Keuze → Favorieten toont het gekozen product met dezelfde link.
+   - **Afgewezen:** de knop naar `/supplementen` laten wijzen. Die link stond er al ("Alle N met PS-Score →"), en zo ging verloren wat iemand koos.
+3. **Volgorde daarna:**
+   - **(a) Het gekozen product loggen in Dagboek → Mijn supplementen.** Dat vraagt eerst een uitbreiding van de supplementcatalogus van het dagboek: die heeft nu 9 algemene regels, geen merkproducten en geen vitamine D.
+   - **(b) Premium "Jouw week":** maaltijdbouwstenen die meerdere stoffen tegelijk aanvullen, binnen voedingswijze en allergieën, met vaste regels en zonder taalmodel (art. 9).
+   - **(c) Premium "Jouw stack".**
+
+**Meting:** `keuze_product_gekozen` {surface, nutrient, product, actie: gekozen|gewist, stand} (GA4 + Clarity `keuze_product`); `keuze_vergelijken_ps_score_click` met `doel: productpagina` (ook vanuit Favorieten); `nutrition_dagboek_favoriet_*` met `surface: keuze_stof`; `keuze_naar_mijn_producten`; `keuze_voedingswijze_wijzig`.
