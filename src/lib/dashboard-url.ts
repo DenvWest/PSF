@@ -569,3 +569,21 @@ export function syncDashboardTabParam(
   }
   window.history.pushState(null, "", url.toString());
 }
+
+export const DASHBOARD_RETURN_PARAM = "terug";
+
+/** Alleen een eigen dashboardpad mag terugkeerdoel zijn — nooit een externe of protocol-relatieve URL. */
+export function parseDashboardReturnHref(raw: string | null | undefined): string | null {
+  if (!raw || raw.startsWith("//") || raw.includes("\\")) {
+    return null;
+  }
+  if (raw !== "/dashboard" && !raw.startsWith("/dashboard?") && !raw.startsWith("/dashboard/")) {
+    return null;
+  }
+  return raw;
+}
+
+export function buildHoeWerktDashboardHref(returnHref: string): string {
+  const params = new URLSearchParams({ [DASHBOARD_RETURN_PARAM]: returnHref });
+  return `/hoe-werkt-dashboard?${params.toString()}`;
+}

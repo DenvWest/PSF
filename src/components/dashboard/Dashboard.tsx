@@ -4,6 +4,8 @@ import type { ReactElement, ReactNode } from "react";
 import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import HowItWorksQuestions from "@/components/common/HowItWorksQuestions";
+import { HOW_IT_WORKS_DISCLAIMER, HOW_IT_WORKS_INTRO } from "@/data/how-it-works";
 import { useRouter, useSearchParams } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
@@ -146,6 +148,7 @@ import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { resolveMovementDayChoiceForToday } from "@/lib/account-priority-pref";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import {
+  buildHoeWerktDashboardHref,
   isPillarId,
   isSchapTabId,
   isValidAgendaDate,
@@ -3391,8 +3394,23 @@ function DashboardContent({
       <span className="mb-2 inline-flex items-center text-[10px] font-bold uppercase tracking-[0.1em] text-[#9FB0A6]">
         Hoe dit werkt
       </span>
-      <p className="text-[12.5px] leading-relaxed text-[#CDD7D0]">
-        <Link href="/hoe-werkt-dashboard" className="underline underline-offset-2">
+      <p className="mb-2.5 text-[12px] leading-relaxed text-[#9FB0A6]">
+        {HOW_IT_WORKS_INTRO}
+      </p>
+      <HowItWorksQuestions size="sm" className="text-[#CDD7D0]" />
+      <p className="mt-3 text-[12.5px] leading-relaxed text-[#CDD7D0]">
+        <Link
+          href="/hoe-werkt-dashboard"
+          onClick={(event) => {
+            event.preventDefault();
+            router.push(
+              buildHoeWerktDashboardHref(
+                `${window.location.pathname}${window.location.search}`,
+              ),
+            );
+          }}
+          className="underline underline-offset-2"
+        >
           Hoe werkt dit dashboard?
         </Link>
         <span aria-hidden> · </span>
@@ -3412,10 +3430,7 @@ function DashboardContent({
         </Link>
       </p>
       <p className="mt-2 text-[11px] leading-relaxed text-[#7E8C82] text-pretty">
-        PerfectSupplement geeft adviezen op basis van leefstijl, geen medische
-        diagnoses. Je scores zijn een reflectie van je eigen antwoorden — geen
-        medische meetwaarden. Je gegevens zijn van jou — exporteer of
-        verwijder ze wanneer je wilt.
+        {HOW_IT_WORKS_DISCLAIMER}
       </p>
     </div>
   );
