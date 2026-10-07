@@ -13,9 +13,11 @@ Dennis vroeg of Patroon naar Meer kon, met alleen Dagboek en Keuze als tabs, en 
 1. **Onderbalk (mobiel): Dagboek · Patroon · Keuze · Meer · ＋.** Vijf even brede vakken; ＋ helemaal rechts (keuze Dennis), als gevulde ronde knop zonder label, zodat hij leest als actie en niet als bestemming.
 2. **Patroon en Keuze blijven tabs.** De lus meten → wegen → kiezen blijft zichtbaar. Patroon is waar het waarom staat; bij MyFitnessPal zit de voortgang in Meer omdat die daar een gewichtsgrafiek is, hier is het patroon de kern.
 3. **＋ opent een sheet met drie ingangen**, allemaal naar het bestaande zoekscherm van het dagboek (geen tweede invoerflow):
-   - **Maaltijd** — kies ontbijt, lunch, avondeten of tussendoor; zoekt in alles.
-   - **Voedingsproduct** — zoekt in alles, bij het eetmoment dat bij de klok past.
-   - **Supplement** — opent op "Mijn supplementen", bij het eetmoment dat bij de klok past.
+   - **Maaltijd**: kies ontbijt, lunch, avondeten of tussendoor; zoekt in alles.
+   - **Voedingsproduct toevoegen**: zoekt in alles.
+   - **Supplement toevoegen**: opent op "Mijn supplementen".
+   Zonder uitlegregels en zonder "komt bij lunch": niet suggestief (Dennis, 7 okt). Op de achtergrond kiest het zoekscherm het eetmoment dat bij de klok past; je wijzigt het daar.
+   Daaronder één kale link **Supplement kiezen** → Keuze, voor wie nog niets neemt. Supplement toevoegen zelf gaat níet naar Keuze: ＋ betekent "toevoegen wat je nam", geen vergelijking.
 4. **Werkt vanaf elk tabblad** via de bestaande dagboek-deeplink (`?tab=vandaag&zoek=…&moment=…`), zoals ＋ bij een bron in Je patroon al deed.
 5. **Alleen de mobiele onderbalk.** In de header (vanaf `sm`) staan de knoppen per maaltijd al in beeld; daar komt ＋ pas als het meetpunt erom vraagt.
 
@@ -27,4 +29,4 @@ Dennis vroeg of Patroon naar Meer kon, met alleen Dagboek en Keuze als tabs, en 
 
 ## Meetpunt
 
-`dashboard_plus_item_click` met `item: maaltijd | voedingsproduct | supplement` (en `moment`), plus Clarity-tag `dashboard_plus_menu=open`. Vergelijk met `nutrition_dagboek_maaltijd_geopend` (de knoppen per maaltijd): neemt ＋ het loggen over, of komt het erbij?
+`dashboard_plus_item_click` met `item: maaltijd | voedingsproduct | supplement | supplement_kiezen` (en `moment` bij de eerste drie), plus Clarity-tag `dashboard_plus_menu=open`. Vergelijk met `nutrition_dagboek_maaltijd_geopend` (de knoppen per maaltijd): neemt ＋ het loggen over, of komt het erbij?

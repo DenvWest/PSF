@@ -21,7 +21,7 @@ import { EETMOMENTEN, eetmomentVoorUur, type EetmomentId } from "@/lib/nutrition
 type PlusItem = "maaltijd" | "voedingsproduct" | "supplement";
 
 const RIJ =
-  "flex w-full cursor-pointer items-start gap-2.5 rounded-[10px] px-2.5 py-2.5 text-left transition hover:bg-white/[0.06]";
+  "flex w-full cursor-pointer items-center gap-2.5 rounded-[10px] px-2.5 py-2.5 text-left text-[13.5px] text-[#F1EFE8] transition hover:bg-white/[0.06]";
 
 export default function CockpitPlusMenu() {
   const [open, setOpen] = useState(false);
@@ -34,7 +34,6 @@ export default function CockpitPlusMenu() {
   };
 
   const nuMoment = () => eetmomentVoorUur(new Date().getHours());
-  const nuLabel = EETMOMENTEN.find((m) => m.id === nuMoment())?.label.toLowerCase();
 
   return (
     <div className="relative flex flex-1 items-center justify-center">
@@ -56,13 +55,13 @@ export default function CockpitPlusMenu() {
       {open ? (
         <AgendaSheetFrame titleId={titleId} title="Toevoegen" onClose={() => setOpen(false)}>
           <section aria-labelledby={`${titleId}-maaltijd`} className="flex flex-col gap-2 px-2.5 pb-2">
-            <h3
+            <p
               id={`${titleId}-maaltijd`}
               className="m-0 flex items-center gap-2 font-sans text-[13.5px] font-medium text-[#F1EFE8]"
             >
               <Icons.Utensils s={15} style={{ color: "#9FB0A6" }} />
               Maaltijd
-            </h3>
+            </p>
             <div className="grid grid-cols-2 gap-2">
               {EETMOMENTEN.map((moment) => (
                 <button
@@ -79,26 +78,23 @@ export default function CockpitPlusMenu() {
 
           <div className="mt-1 flex flex-col gap-1 border-t border-white/10 pt-2">
             <button type="button" onClick={() => ga("voedingsproduct", "alle", nuMoment())} className={RIJ}>
-              <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center text-[#9FB0A6]">
-                <Icons.Leaf s={15} />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-[13.5px] text-[#F1EFE8]">Voedingsproduct</span>
-                <span className="block text-[12px] leading-snug text-[#9FB0A6]">
-                  Zoek een product; het komt bij {nuLabel}.
-                </span>
-              </span>
+              <Icons.Leaf s={15} style={{ color: "#9FB0A6" }} />
+              Voedingsproduct toevoegen
             </button>
             <button type="button" onClick={() => ga("supplement", "supplementen", nuMoment())} className={RIJ}>
-              <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center text-[#9FB0A6]">
-                <Icons.Pill s={15} />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-[13.5px] text-[#F1EFE8]">Supplement</span>
-                <span className="block text-[12px] leading-snug text-[#9FB0A6]">
-                  Begint bij je eigen supplementen; het komt bij {nuLabel}.
-                </span>
-              </span>
+              <Icons.Pill s={15} style={{ color: "#9FB0A6" }} />
+              Supplement toevoegen
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                trackEvent("dashboard_plus_item_click", { item: "supplement_kiezen" });
+                setOpen(false);
+                gaNaarDashboard("/dashboard?tab=keuze");
+              }}
+              className="cursor-pointer self-start px-2.5 py-1.5 text-[12.5px] text-[#9FB0A6] underline decoration-white/20 underline-offset-2 transition hover:text-[#F1EFE8]"
+            >
+              Supplement kiezen
             </button>
           </div>
         </AgendaSheetFrame>
