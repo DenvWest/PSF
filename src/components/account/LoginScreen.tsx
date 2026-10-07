@@ -614,7 +614,7 @@ export default function LoginScreen({
                 </Link>
                 {" · "}
                 <Link
-                  href="/onderbouwing"
+                  href="/onderbouwing/voeding"
                   onClick={() => {
                     trackOnderbouwingLinkClick({ surface: "login_help" });
                     clarityTag("onderbouwing_link", "login_help");
