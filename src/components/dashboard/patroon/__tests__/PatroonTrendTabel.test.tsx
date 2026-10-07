@@ -1,0 +1,73 @@
+/** @vitest-environment jsdom */
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import PatroonTrendTabel from "@/components/dashboard/patroon/PatroonTrendTabel";
+import { NORM, type StofTrend, type StofTrendPunt } from "@/lib/nutrition-stof-trend";
+
+afterEach(cleanup);
+
+function punt(sleutel: string, aandeel: number | null, staat: StofTrendPunt["staat"], normGehaald = false): StofTrendPunt {
+  return {
+    sleutel,
+    label: sleutel,
+    sublabel: "",
+    waarde: aandeel === null ? null : aandeel * 100,
+    aandeel,
+    staat,
+    normGehaald,
+    benaderd: false,
+    uitleg: sleutel,
+    aanvulling: null,
+    detail: null,
+  };
+}
+
+function trend(extra: Partial<StofTrend>): StofTrend {
+  return {
+    stof: "magnesium",
+    label: "magnesium",
+    unit: "mg",
+    soort: "kern",
+    norm: 100,
+    normNaam: NORM,
+    periodetotaal: false,
+    bewijsbaar: true,
+    schaal: "dag",
+    punten: [punt("ma", 1.12, "gehaald", true), punt("di", 0.84, "onder"), punt("wo", 0.62, "onvolledig"), punt("do", null, "leeg")],
+    kop: "",
+    gehaald: false,
+    redenen: [],
+    ...extra,
+  };
+}
+
+describe("PatroonTrendTabel", () => {
+  it("zet een ✓ waar de lat gehaald is, ≥ bij onvolledig en telt gehaald per stof", () => {
+    render(<PatroonTrendTabel trends={[trend({})]} onKies={() => {}} />);
+    expect(screen.getByText("✓112")).toBeTruthy();
+    expect(screen.getByText("84")).toBeTruthy();
+    expect(screen.getByText("≥62")).toBeTruthy();
+    expect(screen.getByText("1/3")).toBeTruthy();
+  });
+
+  it("geeft een gevolgde stof ook een ✓, en een niet aan te tonen stof alleen zijn kop", () => {
+    render(
+      <PatroonTrendTabel
+        trends={[
+          trend({ stof: "calciumMg", label: "calcium", soort: "gevolgd" }),
+          trend({ stof: "zinc", label: "zink", bewijsbaar: false, kop: "geen oordeel" }),
+        ]}
+        onKies={() => {}}
+      />,
+    );
+    expect(screen.getByText("✓112")).toBeTruthy();
+    expect(screen.getByText("geen oordeel")).toBeTruthy();
+  });
+
+  it("springt naar de stof bij een tik op de naam", () => {
+    const onKies = vi.fn();
+    render(<PatroonTrendTabel trends={[trend({})]} onKies={onKies} />);
+    fireEvent.click(screen.getByRole("button", { name: "Magnesium" }));
+    expect(onKies).toHaveBeenCalledWith("magnesium");
+  });
+});

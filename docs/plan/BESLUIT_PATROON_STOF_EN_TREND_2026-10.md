@@ -57,6 +57,31 @@ Dennis' feedback op Je patroon:
   Geen "je hebt een tekort", geen supplementadvies in deze regels.
 - Een tik op de stofnaam in Trend opent het stof-detail in Per stof.
 
+### 5. Trend als box van 0–100%, schatting voor de ontbrekende maaltijd, paneel ernaast (7 okt 2026, akkoord Dennis)
+
+- **Box van 0 tot 100% van de norm.** De bovenrand is de norm; hulplijn op 50%. Boven de norm vult de staaf de box en staat er een label ("140%"). Het losse normlabel rechts vervalt. Zonder norm (eiwit zonder doel) blijft de schaal in de eenheid.
+- **Onvolledige dag: had je het alsnog gehaald?** Gestippeld bovenop de staaf: het gemiddelde van je **eigen** registraties van de ontbrekende hoofdmaaltijd(en) in de periode, alleen vanaf 3×. Minder vaak: alleen "je avondeten moet nog X leveren voor de norm". De dag blijft "onvolledig" — een schatting kleurt nooit groen. Niet bij omega-3 (periodetotaal) en niet als de dag de norm al haalt; per week geen schatting.
+- **Paneel naast de grafiek** (eronder onder 560 px tegelbreedte, via `@container`): uitleesregel, schatting, verdeling per maaltijd (per week: gemiddelde en aantal keer), top 3 bronnen, en de "waarom"-regels van de periode.
+
+Volgt nog, apart: eetpatroon ("welke maaltijden eet je meestal?") in Je doelen met migratie, zodat wie periodiek vast 2/2 volledig kan zijn; daarna `NUT_DOEL`/`NUT_CONTEXT` in de voedingscheck (met "periodiek vasten" als context-optie).
+
+### 6. Alles samen en eiwit tegen je doel (7 okt 2026, akkoord Dennis)
+
+- **"Alles samen"-tabel bovenaan Trend:** per stof een rij, per dag/week/maaltijd een kolom, in de cel het % van de lat. ✓ alleen bij aantoonbaar gehaald (zonder benaderingen): kernstof sage, gevolgde stof neutrale tint (`BESLUIT_DOELEN_VERBONDEN_2026-10.md` §1, "✓ bij gehaald"). Onvolledig gearceerd met "≥", leeg "—", laatste kolom "gehaald x/y". Omega-3 krijgt geen ✓ per dag (periodetotaal). Tik op een rij = naar die grafiek.
+- **Lijngrafiek afgewezen (zelfde dag):** een Staaf | Lijn-schakelaar met een lijn die breekt bij een lege dag is gebouwd en bekeken, en weer weggehaald: niet mooi. De regel "staafjes, geen lijngrafiek" blijft staan.
+- **Eiwit tegen je eiwitdoel** (handmatig, anders de ondergrens van de richtlijn uit Je doelen), met "je eiwitdoel" in plaats van "de norm" in alle zinnen. Zonder gewicht/doel: schaal in g en "Vul je gewicht in bij Je doelen". Lost het open punt "Eiwit zonder vaste norm in Trend" op.
+- **Afgewezen:** één gecombineerde grafiek met alle stoffen: vijf tot zeven lijnen over 14 dagen op 375 px is onleesbaar; de tabel is de plek waar alles samenkomt.
+- **Meting (GA4):** `nutrition_patroon_trend_tabel_rij` {nutrient}.
+
+### 7. Kleur per stof in Trend, oordeel in de vulling (7 okt 2026, akkoord Dennis)
+
+Aanleiding: Trend voelde statisch: elke kaart dezelfde sage/terra/grijs, veel grijs (gevolgd, per maaltijd, omega-3, inactieve staven op 55%), geen beweging.
+
+- **Elke kernstof tekent in zijn identiteitskleur** (`--vd-stof-*`, dezelfde als de krans): bolletje bij de naam, staven, arcering, schatting-stippel, tabelrij. Gevolgde stoffen blijven neutraal (`--vd-ink-2`), zoals de buitenring van de krans ("informatielaag leest niet als tekort").
+- **Het oordeel zit in de vulling, niet in de tint** — de krans-regel "kleur is identiteit, geen oordeel" geldt nu ook in Trend: vol met ✓ = gehaald · licht (40%) = eronder · gearceerd = onvolledig · middentint (75%) waar geen oordeel hoort (per maaltijd, omega-3 per dag). **Vervangt** sage = gehaald / terra = onder in Trend.
+- **Beweging:** staven groeien op bij openen en bij een andere periode (500 ms, licht verspringend), paneel vloeit over bij een tik; uit bij `prefers-reduced-motion`. Inactieve staven 80% i.p.v. 55%.
+- **Afgewezen (voor nu):** kleurpaneel/kleurkiezer voor het hele dashboard. Haalbaar als één tint-schuif met afgeleide tokens, maar pas na het omzetten van ~935 vaste kleurcodes in het dashboard naar tokens; botst deels met het besluit van 23 sep 2026 (één donker thema). Apart traject als Dennis het wil.
+
 ## Afgewezen
 
 - **Hermeting naar Meer verplaatsen:** de brede check wordt niet meer aangeboden en de hermeting loopt dood. Een menu-ingang naar een dood scherm helpt niemand. De herinnering blijft als enige ingang voor wie nog een brede check heeft.
@@ -78,4 +103,4 @@ Geen nieuwe events; bestaande uitgebreid:
 ## Open
 
 - **Wie structureel geen ontbijt eet**, krijgt nooit een volledige dag. Optie later: "ik sla ontbijt bewust over" in Je doelen, waarna twee hoofdmaaltijden volledig zijn.
-- **Eiwit zonder vaste norm** in Trend toont geen lijn, terwijl Je doelen een eiwitdoel kan hebben (zie memory "eiwitdoel zonder check-gewicht").
+- ~~**Eiwit zonder vaste norm** in Trend~~ — opgelost in §6.
