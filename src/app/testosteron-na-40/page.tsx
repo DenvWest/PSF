@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
-import { INTAKE_CTA } from "@/lib/intake-product-copy";
+import GuideNutritionZoom from "@/components/content/GuideNutritionZoom";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
-import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import ArticleFigure from "@/components/article/ArticleFigure";
-import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { testosteronNa40References } from "@/data/references/testosteron-na-40";
 import { jsonLdScript } from "@/lib/seo/structuredData";
 
@@ -186,8 +184,8 @@ export default function TestosteronNa40Page() {
                     </a>
                   </li>
                   <li>
-                    <a href="#leefstijlcheck" className="hover:underline">
-                      Leefstijlcheck
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Wat mis je? Zoom in op voeding
                     </a>
                   </li>
                   <li>
@@ -207,7 +205,7 @@ export default function TestosteronNa40Page() {
               </p>
 
               <p className="mt-6 text-sm text-gray-500">
-                {INTAKE_CTA.testosteronTeaser}
+                Benieuwd wat jouw voeding mist? Scroll naar beneden voor de gratis check Wat mis je?.
               </p>
 
               <section id="herkenning" className="mt-12 scroll-mt-24">
@@ -521,11 +519,11 @@ export default function TestosteronNa40Page() {
                 <div className="mt-4 rounded-xl border border-stone-200 bg-stone-50 p-6">
                   <p className="text-lg font-semibold text-gray-900">Week 4 — Meten</p>
                   <p className="mt-3 leading-relaxed text-gray-700">
-                    Doe de{" "}
+                    Doe de check{" "}
                     <Link href="/intake" className={LINK}>
-                      Leefstijlcheck
+                      Wat mis je?
                     </Link>{" "}
-                    opnieuw. Vergelijk slaap-, stress- en energie-scores. Blijven klachten? Bespreek
+                    opnieuw en kijk of je voeding meebeweegt. Vergelijk met je vorige uitkomst. Blijven klachten? Bespreek
                     bloedonderzoek met je huisarts — niet zelf supplementen stapelen.
                   </p>
                 </div>
@@ -579,24 +577,7 @@ export default function TestosteronNa40Page() {
                 </p>
               </section>
 
-              <section id="leefstijlcheck" className="mt-14 scroll-mt-24" {...{ [INBODY_LEEFSTIJLCHECK_CTA_ATTR]: "" }}>
-                <div className="rounded-2xl border border-green-200 bg-green-50 p-8 text-center">
-                  <h2 className="font-serif text-2xl font-bold text-gray-900 md:text-3xl">
-                    Ontdek Waar Jij Staat
-                  </h2>
-                  <p className="mx-auto mt-3 max-w-lg leading-relaxed text-gray-600">
-                    Testosteron speelt mee in een groter plaatje. In 3 minuten zie je hoe je scoort
-                    op slaap, stress, energie, herstel, voeding en beweging — en welk profiel past.
-                  </p>
-                  <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
-                  <Link
-                    href="/intake"
-                    className="mt-5 inline-block rounded-lg bg-green-700 px-8 py-3 font-semibold text-white transition-colors hover:bg-green-800"
-                  >
-                    Zie waar jouw slaap, stress en energie scoren — gratis →
-                  </Link>
-                </div>
-              </section>
+              <GuideNutritionZoom guide="testosteron" />
 
               <section id="veelgestelde-vragen" className="mt-14 scroll-mt-24">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">

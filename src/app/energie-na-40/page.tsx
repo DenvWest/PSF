@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import GuideNutritionZoom from "@/components/content/GuideNutritionZoom";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
-import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import DomainHubConnector from "@/components/content/DomainHubConnector";
 import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
-import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const INLINE_LINK_CLASS =
@@ -178,8 +177,8 @@ export default function EnergieNa40Page() {
                     </a>
                   </li>
                   <li>
-                    <a href="#leefstijlcheck" className="hover:underline">
-                      Ontdek waar jij staat
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Wat mis je? Zoom in op voeding
                     </a>
                   </li>
                   <li>
@@ -518,11 +517,11 @@ export default function EnergieNa40Page() {
                 <div className="mt-4 p-6 bg-stone-50 rounded-xl border border-stone-200">
                   <p className="font-semibold text-gray-900 text-lg">Week 4 — Meten en bijstellen</p>
                   <p className="mt-3 text-gray-700 leading-relaxed">
-                    Doe de{" "}
+                    Doe de check{" "}
                     <Link href="/intake" className={INLINE_LINK_CLASS}>
-                      Leefstijlcheck
+                      Wat mis je?
                     </Link>{" "}
-                    opnieuw. Vergelijk je energiescore met 4 weken geleden. Waar is verbetering? Waar
+                    opnieuw en kijk of je voeding meebeweegt. Vergelijk met 4 weken geleden. Waar is verbetering? Waar
                     niet? Overweeg bloedonderzoek als de vermoeidheid aanhoudt ondanks
                     leefstijlveranderingen.
                   </p>
@@ -619,25 +618,7 @@ export default function EnergieNa40Page() {
               </section>
 
               {/* 12. CTA */}
-              <section id="leefstijlcheck" className="mt-14" {...{ [INBODY_LEEFSTIJLCHECK_CTA_ATTR]: "" }}>
-                <div className="text-center p-8 bg-green-50 rounded-2xl border border-green-200">
-                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-gray-900">
-                    Ontdek Waar Jij Staat
-                  </h2>
-                  <p className="mt-3 text-gray-600 max-w-lg mx-auto leading-relaxed">
-                    Energie is de uitkomst die de Leefstijlcheck meet. In 3 minuten weet je hoe je
-                    scoort op de vijf leefstijldomeinen eronder — slaap, stress, voeding, beweging
-                    en verbinding — en welk profiel bij jou past.
-                  </p>
-                  <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
-                  <Link
-                    href="/intake"
-                    className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
-                  >
-                    Zie waar jouw energie, slaap en stress scoren — gratis →
-                  </Link>
-                </div>
-              </section>
+              <GuideNutritionZoom guide="energie" />
 
               {/* 13. FAQ */}
               <section id="veelgestelde-vragen" className="mt-14">

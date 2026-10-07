@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
-import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
+import GuideNutritionZoom from "@/components/content/GuideNutritionZoom";
 import MovementLifeline from "@/components/content/MovementLifeline";
 import MovementRecognition from "@/components/content/MovementRecognition";
 import MovementMechanism from "@/components/content/MovementMechanism";
@@ -92,18 +92,11 @@ export default function BewegingNa40Page() {
                   className="inline-flex min-h-[44px] items-center justify-center rounded-lg px-8 py-3 text-sm font-bold text-[#102018] no-underline transition hover:opacity-90"
                   style={{ background: "var(--ac)" }}
                 >
-                  Doe de gratis Leefstijlcheck →
+                  Zie wat jij mist — gratis →
                 </Link>
-                <p className="mt-3 text-sm text-[#9FB0A6]">
-                  Of{" "}
-                  <Link
-                    href="/intake/beweging"
-                    className="font-medium text-[#F1EFE8] underline decoration-white/30 underline-offset-[3px] transition hover:decoration-white/70"
-                  >
-                    start met alleen de beweegcheck (1 min)
-                  </Link>
+                <p className="mt-4 max-w-lg text-sm text-[#7E8C82]">
+                  Een paar korte vragen · 3 minuten · gratis · geen medische test.
                 </p>
-                <IntakeCtaMicro className="mt-4 max-w-lg text-sm text-[#7E8C82]" />
               </div>
             </div>
           </Container>
@@ -116,6 +109,9 @@ export default function BewegingNa40Page() {
         <MovementMoments />
         <MovementFuture />
         <MovementDashboardPreview />
+        <Container className="py-4">
+          <GuideNutritionZoom guide="beweging" />
+        </Container>
         <MovementClosingCta />
       </main>
     </>

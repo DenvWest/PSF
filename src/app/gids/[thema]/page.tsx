@@ -9,19 +9,6 @@ import { GUIDE_SLUGS, getGuideData } from "@/data/gids";
 import { absoluteUrl } from "@/lib/public-site-url";
 import type { GuideThema } from "@/types/guide-opt-in";
 
-const GUIDE_MICRO_CHECK: Partial<
-  Record<GuideThema, { href: string; label: string }>
-> = {
-  voeding: {
-    href: "/intake/voeding",
-    label: "Doe de snelle voedingscheck (1 min)",
-  },
-  beweging: {
-    href: "/intake/beweging",
-    label: "Doe de beweegcheck (1 min)",
-  },
-};
-
 interface Props {
   params: Promise<{ thema: string }>;
 }
@@ -52,7 +39,6 @@ export default async function GidsOptInPage({ params }: Props) {
   if (!data) notFound();
 
   const themaSlug = data.slug as GuideThema;
-  const microCheck = GUIDE_MICRO_CHECK[themaSlug];
 
   return (
     <main className="py-12 md:py-16">
@@ -119,17 +105,7 @@ export default async function GidsOptInPage({ params }: Props) {
                 </li>
               ))}
             </ul>
-            {microCheck ? (
-              <div className="mt-8">
-                <Link
-                  href={microCheck.href}
-                  className="inline-flex min-h-[48px] w-full items-center justify-center rounded-xl bg-ps-green px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-ps-green/90"
-                >
-                  {microCheck.label}
-                </Link>
-              </div>
-            ) : null}
-            <div className={microCheck ? "mt-6" : "mt-8"}>
+            <div className="mt-8">
               <GuideOptInForm
                 themaSlug={themaSlug}
                 ctaText={data.optIn.ctaText}
@@ -149,21 +125,12 @@ export default async function GidsOptInPage({ params }: Props) {
                 Lees de complete gids op de website →
               </Link>
             </p>
-            {microCheck ? (
-              <p className="mt-4">
-                Of{" "}
-                <Link href={microCheck.href} className="font-semibold text-ps-green hover:underline">
-                  {microCheck.label}
-                </Link>
-                .
-              </p>
-            ) : null}
             <p className="mt-4">
-              Wil je het hele plaatje?{" "}
+              Wil je weten wat je voeding mist?{" "}
               <Link href="/intake" className="font-semibold text-ps-green hover:underline">
-                Doe de gratis Leefstijlcheck
+                Doe de gratis check Wat mis je?
               </Link>{" "}
-              voor een persoonlijk leefstijloverzicht op basis van jouw antwoorden.
+              voor een persoonlijk overzicht op basis van jouw antwoorden.
             </p>
           </section>
 

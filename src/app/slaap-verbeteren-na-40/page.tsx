@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import GuideNutritionZoom from "@/components/content/GuideNutritionZoom";
 import Container from "@/components/layout/Container";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import { RefNote } from "@/components/references/RefNote";
@@ -8,7 +9,6 @@ import { magnesiumReferences } from "@/data/references/magnesium";
 import DomainHubConnector from "@/components/content/DomainHubConnector";
 import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
-import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { jsonLdScript } from "@/lib/seo/structuredData";
 
@@ -165,6 +165,11 @@ export default function SlaapVerbeterenNa40Page() {
                   <li>
                     <a href="#verder-lezen" className="hover:underline">
                       Verder lezen
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Wat mis je? Zoom in op voeding
                     </a>
                   </li>
                   <li>
@@ -583,8 +588,8 @@ export default function SlaapVerbeterenNa40Page() {
 
                 <div className="mt-10 text-center p-8 bg-green-50 rounded-2xl border border-green-200">
                   <p className="text-gray-600 max-w-lg mx-auto">
-                    Benieuwd hoe jouw slaapprofiel scoort? Scroll naar beneden voor de gratis
-                    Leefstijlcheck.
+                    Benieuwd wat jouw voeding voor je slaap mist? Scroll naar beneden voor de
+                    gratis check Wat mis je?.
                   </p>
                 </div>
               </section>
@@ -756,24 +761,7 @@ export default function SlaapVerbeterenNa40Page() {
                 </div>
               </section>
 
-              {/* 11. Eind-CTA */}
-              <section className="mt-14" {...{ [INBODY_LEEFSTIJLCHECK_CTA_ATTR]: "" }}>
-                <div className="text-center p-8 bg-green-50 rounded-2xl border border-green-200">
-                  <h3 className="font-serif text-2xl font-bold text-gray-900">
-                    Klaar om je slaap structureel aan te pakken?
-                  </h3>
-                  <p className="mt-3 text-gray-600 max-w-lg mx-auto">
-                    De Leefstijlcheck brengt in 3 minuten jouw slaap-, stress- en energieprofiel in
-                    kaart. Je krijgt een persoonlijk leefstijloverzicht — gratis, zonder registratie.
-                  </p>
-                  <Link
-                    href="/intake"
-                    className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
-                  >
-                    Zie waar jouw slaap, stress en energie scoren — gratis →
-                  </Link>
-                </div>
-              </section>
+              <GuideNutritionZoom guide="slaap" />
 
               <ReferenceList references={magnesiumReferences} />
 
