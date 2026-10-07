@@ -102,5 +102,5 @@ Geen nieuwe events; bestaande uitgebreid:
 
 ## Open
 
-- **Wie structureel geen ontbijt eet**, krijgt nooit een volledige dag. Optie later: "ik sla ontbijt bewust over" in Je doelen, waarna twee hoofdmaaltijden volledig zijn.
+- ~~**Wie structureel geen ontbijt eet**~~ — opgelost in `BESLUIT_EETPATROON_OVERGESLAGEN_2026-10.md`.
 - ~~**Eiwit zonder vaste norm** in Trend~~ — opgelost in §6.

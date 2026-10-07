@@ -5,6 +5,8 @@ import {
   type ProteinTargetRange,
 } from "@/lib/protein-target";
 import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
+import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
+import { sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
 import type { KernstofNormen } from "@/lib/nutrition-normen";
 
 /**
@@ -40,12 +42,15 @@ export type Voedingsdoelen = {
   trainingsbelasting: number | null;
   /** Handmatig eiwitdoel in gram; null = gebruik de afleiding. */
   eiwitDoelG: number | null;
+  /** Hoofdmaaltijden die je meestal eet; null = alle drie (`nutrition-eetpatroon.ts`). */
+  gewoneMaaltijden: EetmomentId[] | null;
 };
 
 export const LEGE_VOEDINGSDOELEN: Voedingsdoelen = {
   gewichtKg: null,
   trainingsbelasting: null,
   eiwitDoelG: null,
+  gewoneMaaltijden: null,
 };
 
 /** Gelijk aan MIN_WEIGHT_KG/MAX_WEIGHT_KG in `protein-target.ts`. */
@@ -92,6 +97,7 @@ type Rij = {
   gewicht_kg: number | string | null;
   trainingsbelasting: number | null;
   eiwit_doel_g: number | null;
+  gewone_maaltijden?: unknown;
 };
 
 /**
@@ -104,13 +110,19 @@ function leesGetal(value: number | string | null): number | null {
   return Number.isFinite(nummer) ? nummer : null;
 }
 
+function leesEetpatroon(value: unknown): EetmomentId[] | null {
+  const schoon = sanitizeHoofdmaaltijden(value);
+  // Alle drie aangevinkt is hetzelfde als de standaard: bewaar het als null.
+  return schoon.length === 0 || schoon.length === 3 ? null : schoon;
+}
+
 export async function getVoedingsdoelen(
   supabase: OrgScopedClient,
   accountId: string,
 ): Promise<Voedingsdoelen> {
   const { data, error } = await supabase
     .from("account_voedingsdoelen")
-    .select("gewicht_kg,trainingsbelasting,eiwit_doel_g")
+    .select("gewicht_kg,trainingsbelasting,eiwit_doel_g,gewone_maaltijden")
     .eq("account_id", accountId)
     .maybeSingle();
 
@@ -126,6 +138,7 @@ export async function getVoedingsdoelen(
     gewichtKg: leesGetal(rij.gewicht_kg),
     trainingsbelasting: rij.trainingsbelasting ?? null,
     eiwitDoelG: rij.eiwit_doel_g ?? null,
+    gewoneMaaltijden: leesEetpatroon(rij.gewone_maaltijden),
   };
 }
 
@@ -145,6 +158,7 @@ export async function setVoedingsdoelen(
       gewicht_kg: doelen.gewichtKg,
       trainingsbelasting: doelen.trainingsbelasting,
       eiwit_doel_g: doelen.eiwitDoelG,
+      gewone_maaltijden: leesEetpatroon(doelen.gewoneMaaltijden),
       updated_at: new Date().toISOString(),
     },
     { onConflict: "account_id" },

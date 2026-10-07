@@ -154,9 +154,22 @@ describe("upsertDaybookDay", () => {
       "entry_date",
       "items",
       "meals",
+      "overgeslagen",
       "portions",
       "water_ml",
     ]);
+  });
+
+  it("laat 'niet gegeten' vervallen voor een maaltijd waar items op staan", async () => {
+    const { supabase, rows } = daybookClient(null);
+
+    await upsertDaybookDay(supabase, "acc", {
+      date: "2026-09-01",
+      items: [{ moment: "lunch", bron: "voeding", key: "havermout", grams: 60 }],
+      overgeslagen: ["ontbijt", "lunch", "tussendoor"],
+    });
+
+    expect(rows[0]!.overgeslagen).toEqual(["ontbijt"]);
   });
 
   it("leidt porties af uit de items, en die winnen van de momenten", async () => {
