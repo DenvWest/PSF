@@ -8,6 +8,7 @@ import {
 } from "@/lib/account-nutrition-daybook";
 import { normaliseerWaterMl } from "@/lib/nutrition-eetmomenten";
 import { sanitizeItems } from "@/lib/nutrition-dagboek-items";
+import { sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
 import { getAccountFromCookie } from "@/lib/account-server";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
@@ -100,6 +101,7 @@ export async function POST(request: NextRequest) {
   const momenten = record.meals !== undefined ? sanitizeMeals(record.meals) : undefined;
   const porties = record.portions !== undefined ? sanitizePortions(record.portions) : undefined;
   const waterMl = record.water_ml !== undefined ? normaliseerWaterMl(record.water_ml) : undefined;
+  const overgeslagen = record.overgeslagen !== undefined ? sanitizeHoofdmaaltijden(record.overgeslagen) : undefined;
 
   // Een verzoek moet érgens over gaan: noemt het geen enkele vorm, dan is er
   // niets te registreren en niets te wissen.
@@ -113,7 +115,8 @@ export async function POST(request: NextRequest) {
     items !== undefined ||
     momenten !== undefined ||
     porties !== undefined ||
-    waterMl !== undefined;
+    waterMl !== undefined ||
+    overgeslagen !== undefined;
 
   if (!noemtEenVorm) {
     return NextResponse.json(
@@ -136,6 +139,7 @@ export async function POST(request: NextRequest) {
     momenten,
     items,
     waterMl,
+    overgeslagen,
   });
   if (!ok) {
     return NextResponse.json({ error: "Kon je dag niet opslaan." }, { status: 500 });

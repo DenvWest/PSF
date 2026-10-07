@@ -202,6 +202,8 @@ export type DagboekDag = {
   items?: readonly { moment: string; key: string; grams: number }[];
   /** Water in milliliters; null wanneer niet geregistreerd. */
   waterMl?: number | null;
+  /** Hoofdmaaltijden die op deze dag bewust niet gegeten zijn ("niet gegeten"). */
+  overgeslagen?: readonly string[];
 };
 
 export type DagboekVoortgang = {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { DagboekItem } from "@/lib/nutrition-dagboek-items";
+import { HOOFDMAALTIJDEN } from "@/lib/nutrition-eetpatroon";
 import { bronnenUitMeting, meetDag, meetPeriode, perMomentUitMeting, type DagMeting } from "@/lib/nutrition-stof-meting";
 import { bouwStofTrend, EIWITDOEL, schaalVoor, type StofTrendInvoer } from "@/lib/nutrition-stof-trend";
 
@@ -27,6 +28,19 @@ describe("meetDag", () => {
     expect(hele.volledig).toBe(true);
   });
 
+  it("een dag is volledig met je gewone maaltijden, en een overgeslagen maaltijd telt als 0", () => {
+    const tweeKeer = { ...bron({ "2026-10-01": [mg("lunch"), zink("avondeten")] }), gewoneMaaltijden: ["lunch", "avondeten"] as const };
+    expect(meetDag("magnesium", tweeKeer, "2026-10-01").volledig).toBe(true);
+
+    const metOvergeslagen = {
+      ...bron({ "2026-10-01": [mg("ontbijt"), zink("avondeten")] }),
+      overgeslagenPerDag: new Map([["2026-10-01", ["lunch" as const]]]),
+    };
+    const dag = meetDag("magnesium", metOvergeslagen, "2026-10-01");
+    expect(dag.volledig).toBe(true);
+    expect(dag.momenten.find((m) => m.moment === "lunch")).toMatchObject({ geregistreerd: true, overgeslagen: true, som: 0 });
+  });
+
   it("laat een supplement van een andere stof buiten de bronnen", () => {
     const meting = meetPeriode("magnesium", bron({ "2026-10-01": [mg("ontbijt"), zink("ontbijt")] }), ["2026-10-01"]);
     expect(bronnenUitMeting(meting, "mg").map((b) => b.naam)).toEqual(["Magnesiumcitraat, capsule"]);
@@ -38,22 +52,34 @@ function dag(datum: string, ontbijt: number, volledig: boolean): DagMeting {
   const momenten = (["ontbijt", "lunch", "avondeten", "tussendoor"] as const).map((moment) => ({
     moment,
     geregistreerd: moment === "ontbijt" || (volledig && moment !== "tussendoor"),
+    overgeslagen: false,
     som: moment === "ontbijt" ? ontbijt : 0,
     somStreng: moment === "ontbijt" ? ontbijt : 0,
   }));
-  return { datum, geregistreerd: true, volledig, som: ontbijt, somStreng: ontbijt, benaderd: false, momenten, bijdragen: [] };
+  return {
+    datum,
+    geregistreerd: true,
+    volledig,
+    verwacht: HOOFDMAALTIJDEN,
+    som: ontbijt,
+    somStreng: ontbijt,
+    benaderd: false,
+    momenten,
+    bijdragen: [],
+  };
 }
 
 function dagMet(datum: string, per: Partial<Record<"ontbijt" | "lunch" | "avondeten", number>>): DagMeting {
   const momenten = (["ontbijt", "lunch", "avondeten", "tussendoor"] as const).map((moment) => {
     const som = moment === "tussendoor" ? undefined : per[moment];
-    return { moment, geregistreerd: som !== undefined, som: som ?? 0, somStreng: som ?? 0 };
+    return { moment, geregistreerd: som !== undefined, overgeslagen: false, som: som ?? 0, somStreng: som ?? 0 };
   });
   const som = momenten.reduce((t, m) => t + m.som, 0);
   return {
     datum,
     geregistreerd: true,
     volledig: per.ontbijt !== undefined && per.lunch !== undefined && per.avondeten !== undefined,
+    verwacht: HOOFDMAALTIJDEN,
     som,
     somStreng: som,
     benaderd: false,
@@ -179,6 +205,32 @@ describe("bouwStofTrend", () => {
     );
     expect(trend.punten.map((p) => p.normGehaald)).toEqual([true, false]);
     expect(trend.punten[0]!.staat).toBe("onvolledig");
+  });
+
+  it("telt bij twee gewone maaltijden 2/2 en laat overgeslagen maaltijden buiten het gebruikelijke gemiddelde", () => {
+    const tweeKeer = (datum: string, lunch: number, avond?: number): DagMeting => {
+      const basis = dagMet(datum, avond === undefined ? { lunch } : { lunch, avondeten: avond });
+      return { ...basis, verwacht: ["lunch", "avondeten"], volledig: avond !== undefined };
+    };
+    const overgeslagenAvond = (datum: string): DagMeting => {
+      const basis = tweeKeer(datum, 100);
+      return {
+        ...basis,
+        momenten: basis.momenten.map((m) => (m.moment === "avondeten" ? { ...m, geregistreerd: true, overgeslagen: true } : m)),
+      };
+    };
+    const dagen = [
+      tweeKeer("2026-09-27", 100, 100),
+      tweeKeer("2026-09-28", 100, 100),
+      tweeKeer("2026-09-29", 100, 100),
+      overgeslagenAvond("2026-09-30"),
+      tweeKeer("2026-10-01", 100),
+    ];
+    const trend = bouwStofTrend(invoer(dagen));
+    expect(trend.punten[0]!.sublabel).toBe("2/2");
+    expect(trend.punten[0]!.uitleg).toMatch(/al je 2 gewone maaltijden/);
+    // Gemiddelde avondeten = 100 uit drie keer gegeten, niet 75 met de overgeslagen 0 erbij.
+    expect(trend.punten[4]!.aanvulling).toBe(100);
   });
 
   it("toont per maaltijd bij één dag", () => {

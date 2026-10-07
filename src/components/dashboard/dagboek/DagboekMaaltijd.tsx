@@ -120,6 +120,8 @@ export default function DagboekMaaltijd({
   onOpenProduct,
   nevoProducten = GEEN_NEVO,
   busy = false,
+  overgeslagen = false,
+  onOvergeslagen,
 }: {
   moment: EetmomentId;
   label: string;
@@ -137,6 +139,10 @@ export default function DagboekMaaltijd({
   onOpenProduct: (item: DagboekItem) => void;
   nevoProducten?: ReadonlyMap<string, SupermarktProduct>;
   busy?: boolean;
+  /** Bewust niet gegeten die dag: telt als 0 en maakt de dag volledig. */
+  overgeslagen?: boolean;
+  /** Alleen bij hoofdmaaltijden: "Niet gegeten" aan of uit. */
+  onOvergeslagen?: (aan: boolean) => void;
 }) {
   const eigen = itemsVanMoment(items, moment);
   const totalen = nutrientenUitItems(eigen);
@@ -185,7 +191,9 @@ export default function DagboekMaaltijd({
                 {eigen.length} {eigen.length === 1 ? "item" : "items"}
               </>
             ) : (
-              <b className="block text-[11px] font-normal text-[var(--vd-ink-4)]">Nog leeg</b>
+              <b className="block text-[11px] font-normal text-[var(--vd-ink-4)]">
+                {overgeslagen ? "Niet gegeten" : "Nog leeg"}
+              </b>
             )}
           </span>
           <span
@@ -198,9 +206,24 @@ export default function DagboekMaaltijd({
       </button>
 
       {eigen.length === 0 ? (
-        <p className="m-0 px-3 py-2.5 text-[11.5px] italic leading-relaxed text-[var(--vd-ink-4)]">
-          Nog niets geregistreerd voor {label.toLowerCase()}.
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5">
+          <p className="m-0 text-[11.5px] italic leading-relaxed text-[var(--vd-ink-4)]">
+            {overgeslagen
+              ? "Niet gegeten op deze dag. Telt als 0, en de dag kan zo toch volledig zijn."
+              : `Nog niets geregistreerd voor ${label.toLowerCase()}.`}
+          </p>
+          {onOvergeslagen ? (
+            <button
+              type="button"
+              disabled={busy}
+              aria-pressed={overgeslagen}
+              onClick={() => onOvergeslagen(!overgeslagen)}
+              className="cursor-pointer whitespace-nowrap rounded-lg border border-white/15 bg-transparent px-2.5 py-1 text-[11px] text-[var(--vd-ink-3)] transition-colors hover:text-[var(--vd-ink)] disabled:cursor-wait disabled:opacity-60"
+            >
+              {overgeslagen ? "Toch gegeten" : "Niet gegeten"}
+            </button>
+          ) : null}
+        </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">

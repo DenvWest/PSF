@@ -6,6 +6,7 @@ import {
   type KernstofProfiel,
 } from "@/lib/account-kernstof-profiel";
 import type { VoedingsdoelenWeergave } from "@/lib/account-voedingsdoelen";
+import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
 import { STANDAARD_GEVOLGDE_NORMEN, STANDAARD_NORMEN, type KernstofNormen } from "@/lib/nutrition-normen";
 import { fetchVoedingsdoelen } from "@/lib/voedingsdoelen-client";
@@ -28,6 +29,8 @@ type Toestand = {
   profiel: KernstofProfiel;
   /** Je eiwitdoel in gram: handmatig, anders de ondergrens van de richtlijn. Null zonder gewicht. */
   eiwitDoelG: number | null;
+  /** Je gewone maaltijden uit Je doelen; null = alle drie. */
+  gewoneMaaltijden: EetmomentId[] | null;
 };
 
 const BEGIN: Toestand = {
@@ -35,6 +38,7 @@ const BEGIN: Toestand = {
   gevolgd: STANDAARD_GEVOLGDE_NORMEN,
   profiel: LEEG_KERNSTOF_PROFIEL,
   eiwitDoelG: null,
+  gewoneMaaltijden: null,
 };
 
 function eiwitDoelUit(weergave: Partial<Pick<VoedingsdoelenWeergave, "doelen" | "richtlijn">>): number | null | undefined {
@@ -61,6 +65,7 @@ export function zetKernstofWeergave(
   const eiwitDoelG = eiwitDoelUit(weergave);
   toestand = {
     eiwitDoelG: eiwitDoelG === undefined ? toestand.eiwitDoelG : eiwitDoelG,
+    gewoneMaaltijden: weergave.doelen ? weergave.doelen.gewoneMaaltijden : toestand.gewoneMaaltijden,
     normen: weergave.kernstofNormen ?? STANDAARD_NORMEN,
     gevolgd: weergave.gevolgdeNormen ?? STANDAARD_GEVOLGDE_NORMEN,
     profiel: weergave.kernstofProfiel ?? LEEG_KERNSTOF_PROFIEL,
@@ -100,4 +105,9 @@ export function useGevolgdeNormen(): GevolgdeNormen {
 /** Je eiwitdoel in gram (handmatig, anders de richtlijn), uit dezelfde gedeelde toestand. */
 export function useEiwitDoel(): number | null {
   return useKernstofToestand().eiwitDoelG;
+}
+
+/** Je gewone maaltijden (eetpatroon), uit dezelfde gedeelde toestand; null = alle drie. */
+export function useGewoneMaaltijden(): EetmomentId[] | null {
+  return useKernstofToestand().gewoneMaaltijden;
 }
