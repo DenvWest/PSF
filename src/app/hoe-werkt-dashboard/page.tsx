@@ -10,6 +10,8 @@ import {
   DASHBOARD_UNLOCK_VARIANT_COOKIE,
   resolveDashboardUnlockVariant,
 } from "@/lib/dashboard-unlock-variant";
+import { getAccountIdFromCookie } from "@/lib/account-session-cookie";
+import { parseDashboardReturnHref } from "@/lib/dashboard-url";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
 import { buildFaqSchema, buildHowToSchema, jsonLdScript } from "@/lib/seo/structuredData";
@@ -26,18 +28,21 @@ export const metadata: Metadata = {
 };
 
 type HoeWerktDashboardPageProps = {
-  searchParams: Promise<{ variant?: string }>;
+  searchParams: Promise<{ variant?: string; terug?: string }>;
 };
 
 export default async function HoeWerktDashboardPage({
   searchParams,
 }: HoeWerktDashboardPageProps) {
-  const { variant: queryVariant } = await searchParams;
+  const { variant: queryVariant, terug } = await searchParams;
   const cookieStore = await cookies();
   const { variant, persistCookie } = resolveDashboardUnlockVariant({
     queryVariant: queryVariant ?? null,
     cookieVariant: cookieStore.get(DASHBOARD_UNLOCK_VARIANT_COOKIE)?.value ?? null,
   });
+
+  const accountId = await getAccountIdFromCookie();
+  const returnHref = parseDashboardReturnHref(terug) ?? (accountId ? "/dashboard" : null);
 
   const faqSchema = buildFaqSchema([...DASHBOARD_UNLOCK_FAQ]);
   const howToSchema = buildHowToSchema(DASHBOARD_UNLOCK_HOWTO);
@@ -52,7 +57,11 @@ export default async function HoeWerktDashboardPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(howToSchema) }}
       />
-      <DashboardUnlockSqueeze variant={variant} persistCookie={persistCookie} />
+      <DashboardUnlockSqueeze
+        variant={variant}
+        persistCookie={persistCookie}
+        returnHref={returnHref}
+      />
     </>
   );
 }
