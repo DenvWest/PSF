@@ -118,6 +118,9 @@ export const DOMAIN_EVENT_TYPES = [
   // "Niet gegeten" op een lege hoofdmaaltijd (aan/uit), zie
   // BESLUIT_EETPATROON_OVERGESLAGEN_2026-10.md. Payload: moment, aan.
   "nutrition.dagboek_maaltijd_overgeslagen",
+  // Richting (NUT_DOEL) gekozen in Je doelen, zie BESLUIT_VOEDINGSRICHTING_2026-10.md.
+  // Payload: richting (enum of "geen"), surface. Nooit vrije tekst.
+  "nutrition.voedingsrichting_gekozen",
   "nutrition.dagboek_zoek_item_gekozen",
   "nutrition.dagboek_portie_bevestigd",
   // Laag A (macro/micro-uitbreiding, zie BESLUIT_MACRO_MICRONUTRIENT_

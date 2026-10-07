@@ -7,7 +7,11 @@ import GevolgdeStoffenKiezer from "@/components/dashboard/doelen/GevolgdeStoffen
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import { onderzoekKort, onderzoekLang } from "@/data/nutrition/onderzoek-per-stof";
 import type { Activiteit, KernstofMetNorm } from "@/data/nutrition/voedingsnormen";
+import DomeinDoelZetten from "@/components/dashboard/voortgang/DomeinDoelZetten";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { trackEvent } from "@/lib/ga4";
+import { KLACHTEN_DOORVERWIJZING, RICHTINGEN, VOEDINGSRICHTINGEN } from "@/lib/nutrition-voedingsrichting";
+import { useDomainGoalEditor } from "@/lib/use-domain-goal-editor";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import {
   isGeldigeLeeftijd,
@@ -87,6 +91,12 @@ function eetpatroonLabel(gewone: readonly EetmomentId[] | null): string {
   const tekst = namen.length === 1 ? namen[0]! : `${namen.slice(0, -1).join(", ")} en ${namen[namen.length - 1]}`;
   return tekst.charAt(0).toUpperCase() + tekst.slice(1);
 }
+
+const RICHTING_OPTIES = VOEDINGSRICHTINGEN.map((id, index) => ({
+  waarde: index + 1,
+  label: RICHTINGEN[id].label,
+  uitleg: RICHTINGEN[id].uitleg,
+}));
 
 const GESLACHT_OPTIES = [
   { waarde: 1, label: "Man", uitleg: "Magnesium 350 mg, zink 13 mg, ijzer 11 mg per dag" },
@@ -190,6 +200,8 @@ function Regel({
 
 export default function DoelenLijst() {
   const [status, setStatus] = useState<Status>({ fase: "laden" });
+  // Het concrete doel uit de check (ijkpunt 0–10): dezelfde editor als op Kompas, hier met surface "doelen".
+  const concreet = useDomainGoalEditor("voeding", "doelen");
   const [sheet, setSheet] = useState<OpenSheet>(null);
   const { stoffen: gevolgdeVelden } = useGevolgdeStoffen();
 
@@ -369,9 +381,41 @@ export default function DoelenLijst() {
       </Sectie>
 
       <Sectie
-        titel="Eetpatroon"
-        uitleg="Bepaalt wanneer een dag in Je patroon volledig is. Een losse dag zonder lunch zet je in het dagboek op 'Niet gegeten'."
+        titel="Voeding"
+        uitleg="Je richting kiest alleen de volgorde in Je patroon, nooit je score. Je eetpatroon bepaalt wanneer een dag volledig is; een losse dag zonder lunch zet je in het dagboek op 'Niet gegeten'."
       >
+        <Regel
+          label="Richting"
+          onder={doelen.voedingsrichting === "klachten" ? KLACHTEN_DOORVERWIJZING : null}
+          waarde={doelen.voedingsrichting ? RICHTINGEN[doelen.voedingsrichting].label : "Nog niet gekozen"}
+          gedempt={doelen.voedingsrichting === null}
+          onKies={() =>
+            open("voedingsrichting", {
+              soort: "keuze",
+              titel: "Waar wil je met je voeding naartoe?",
+              waarde: doelen.voedingsrichting ? VOEDINGSRICHTINGEN.indexOf(doelen.voedingsrichting) + 1 : null,
+              opties: RICHTING_OPTIES,
+              leegLabel: "Nog niet gekozen",
+              leegUitleg: "Zonder richting blijft de volgorde in Je patroon neutraal.",
+              onBewaar: async (waarde) => {
+                const richting = waarde === null ? null : (VOEDINGSRICHTINGEN[waarde - 1] ?? null);
+                await bewaarVoeding({ voedingsrichting: richting }, "voedingsrichting");
+                emitAccountClientEvent("nutrition.voedingsrichting_gekozen", { richting: richting ?? "geen", surface: "doelen" });
+              },
+            })
+          }
+        />
+        <Regel
+          label="Concreet doel"
+          onder={
+            concreet.latestScore !== null
+              ? `Je ijkpunt: ${concreet.latestScore}/10. Tik om opnieuw te scoren of een ander doel te kiezen.`
+              : "Eén zin uit je voedingscheck, met een cijfer van 0 tot 10."
+          }
+          waarde={concreet.goalLine ?? "Nog niet gekozen"}
+          gedempt={concreet.goalLine === null}
+          onKies={concreet.goals == null ? undefined : concreet.openReformulate}
+        />
         <Regel
           label="Je eet meestal"
           waarde={eetpatroonLabel(doelen.gewoneMaaltijden)}
@@ -393,6 +437,23 @@ export default function DoelenLijst() {
           }
         />
       </Sectie>
+
+      {concreet.panelOpen ? (
+        <DomeinDoelZetten
+          open
+          domain="voeding"
+          domainLabel="Voeding"
+          anchor={concreet.anchor}
+          existingGoal={concreet.existing}
+          onClose={concreet.closePanel}
+          onSaved={(result) =>
+            concreet.applySaved(result.score, result.reformulated, {
+              situationId: result.situationId,
+              ownWords: result.ownWords,
+            })
+          }
+        />
+      ) : null}
 
       <Sectie
         titel="Eiwit"

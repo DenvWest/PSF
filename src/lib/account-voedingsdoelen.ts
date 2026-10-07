@@ -7,6 +7,7 @@ import {
 import type { GevolgdeNormen } from "@/data/nutrition/voedingsnormen";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
+import { isVoedingsrichting, type Voedingsrichting } from "@/lib/nutrition-voedingsrichting";
 import type { KernstofNormen } from "@/lib/nutrition-normen";
 
 /**
@@ -44,6 +45,8 @@ export type Voedingsdoelen = {
   eiwitDoelG: number | null;
   /** Hoofdmaaltijden die je meestal eet; null = alle drie (`nutrition-eetpatroon.ts`). */
   gewoneMaaltijden: EetmomentId[] | null;
+  /** Waar je met je voeding naartoe wilt (`NUT_DOEL`); null = nog niet gekozen. */
+  voedingsrichting: Voedingsrichting | null;
 };
 
 export const LEGE_VOEDINGSDOELEN: Voedingsdoelen = {
@@ -51,6 +54,7 @@ export const LEGE_VOEDINGSDOELEN: Voedingsdoelen = {
   trainingsbelasting: null,
   eiwitDoelG: null,
   gewoneMaaltijden: null,
+  voedingsrichting: null,
 };
 
 /** Gelijk aan MIN_WEIGHT_KG/MAX_WEIGHT_KG in `protein-target.ts`. */
@@ -98,6 +102,7 @@ type Rij = {
   trainingsbelasting: number | null;
   eiwit_doel_g: number | null;
   gewone_maaltijden?: unknown;
+  voedingsrichting?: unknown;
 };
 
 /**
@@ -122,7 +127,7 @@ export async function getVoedingsdoelen(
 ): Promise<Voedingsdoelen> {
   const { data, error } = await supabase
     .from("account_voedingsdoelen")
-    .select("gewicht_kg,trainingsbelasting,eiwit_doel_g,gewone_maaltijden")
+    .select("gewicht_kg,trainingsbelasting,eiwit_doel_g,gewone_maaltijden,voedingsrichting")
     .eq("account_id", accountId)
     .maybeSingle();
 
@@ -139,6 +144,7 @@ export async function getVoedingsdoelen(
     trainingsbelasting: rij.trainingsbelasting ?? null,
     eiwitDoelG: rij.eiwit_doel_g ?? null,
     gewoneMaaltijden: leesEetpatroon(rij.gewone_maaltijden),
+    voedingsrichting: isVoedingsrichting(rij.voedingsrichting) ? rij.voedingsrichting : null,
   };
 }
 
@@ -159,6 +165,7 @@ export async function setVoedingsdoelen(
       trainingsbelasting: doelen.trainingsbelasting,
       eiwit_doel_g: doelen.eiwitDoelG,
       gewone_maaltijden: leesEetpatroon(doelen.gewoneMaaltijden),
+      voedingsrichting: doelen.voedingsrichting,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "account_id" },
