@@ -61,6 +61,12 @@ export type StofTrendPunt = {
   waarde: number | null;
   aandeel: number | null;
   staat: StofTrendStaat;
+  /**
+   * De lat aantoonbaar gehaald (zonder benaderingen), los van de kleur: ook
+   * een gevolgde stof krijgt een ✓ bij gehaald (`BESLUIT_DOELEN_VERBONDEN` §1),
+   * alleen geen oordeel-kleur. Nooit per maaltijd en nooit bij een periodetotaal.
+   */
+  normGehaald: boolean;
   benaderd: boolean;
   /** Uitleesregel bij een tik: wat dit punt precies is. */
   uitleg: string;
@@ -75,6 +81,9 @@ export type StofTrend = {
   unit: string;
   soort: "kern" | "gevolgd";
   norm: number | null;
+  normNaam: NormNaam;
+  /** Omega-3: geen ✓ per dag, alleen over de periode. */
+  periodetotaal: boolean;
   /** False bij zink en vitamine D: geen grafiek, alleen de reden. */
   bewijsbaar: boolean;
   schaal: TrendSchaal;
@@ -105,7 +114,18 @@ export type StofTrendInvoer = {
   dagen: readonly DagMeting[];
   /** Zonder vaste norm: waar het doel dan vandaan komt. */
   zonderNormUitleg?: string;
+  /** Hoe de lat heet. Eiwit heeft geen norm maar je eigen eiwitdoel. */
+  normNaam?: NormNaam;
 };
+
+export type NormNaam = { de: string; dag: string; kort: string };
+
+export const NORM: NormNaam = { de: "de norm", dag: "de dagnorm", kort: "norm" };
+export const EIWITDOEL: NormNaam = { de: "je eiwitdoel", dag: "je eiwitdoel", kort: "eiwitdoel" };
+
+function naamVan(invoer: StofTrendInvoer): NormNaam {
+  return invoer.normNaam ?? NORM;
+}
 
 const MAX_DAGEN_PER_DAG = 14;
 /** Zo vaak moet je een maaltijd geregistreerd hebben voor een schatting uit je eigen gemiddelde. */
@@ -132,6 +152,10 @@ function bedrag(waarde: number, unit: string, benaderd = false): string {
 
 function meervoud(aantal: number, enkel: string, meer: string): string {
   return `${aantal} ${aantal === 1 ? enkel : meer}`;
+}
+
+function latGehaald(invoer: StofTrendInvoer, somStreng: number): boolean {
+  return invoer.norm !== null && invoer.nietBewijsbaar === null && !invoer.periodetotaal && somStreng >= invoer.norm;
 }
 
 function oordeelt(invoer: StofTrendInvoer): boolean {
@@ -189,7 +213,7 @@ function schattingVoor(
     const nodig = norm - dag.som;
     return {
       aanvulling: null,
-      zin: `Je ${namen} ${ontbrekend.length === 1 ? "moet" : "moeten"} samen nog ${bedrag(nodig, invoer.unit)} leveren voor de norm.`,
+      zin: `Je ${namen} ${ontbrekend.length === 1 ? "moet" : "moeten"} samen nog ${bedrag(nodig, invoer.unit)} leveren voor ${naamVan(invoer).de}.`,
       perMoment: new Map(),
     };
   }
@@ -252,11 +276,12 @@ function puntenPerMaaltijd(invoer: StofTrendInvoer): StofTrendPunt[] {
       waarde,
       aandeel,
       staat: geregistreerd ? "neutraal" : "leeg",
+      normGehaald: false,
       benaderd,
       uitleg:
         waarde === null
           ? `${label}: niet geregistreerd`
-          : `${label}: ${bedrag(waarde, invoer.unit, benaderd)}${aandeel !== null ? ` · ${percentageADH(aandeel)} van de dagnorm` : ""}`,
+          : `${label}: ${bedrag(waarde, invoer.unit, benaderd)}${aandeel !== null ? ` · ${percentageADH(aandeel)} van ${naamVan(invoer).dag}` : ""}`,
       aanvulling: null,
       detail,
     };
@@ -279,13 +304,14 @@ function puntenPerDag(invoer: StofTrendInvoer): StofTrendPunt[] {
       waarde,
       aandeel,
       staat,
+      normGehaald: dag.geregistreerd && latGehaald(invoer, dag.somStreng),
       benaderd: dag.benaderd,
       uitleg:
         waarde === null
           ? `${datum}: niets geregistreerd`
           : [
               `${datum}: ${bedrag(waarde, invoer.unit, dag.benaderd)}`,
-              aandeel !== null ? `${percentageADH(aandeel)} van de norm` : null,
+              aandeel !== null ? `${percentageADH(aandeel)} van ${naamVan(invoer).de}` : null,
               dag.volledig ? "alle hoofdmaaltijden" : `${hoofd} van 3 hoofdmaaltijden — geen dagoordeel`,
             ]
               .filter(Boolean)
@@ -343,13 +369,14 @@ function puntenPerWeek(invoer: StofTrendInvoer): StofTrendPunt[] {
       waarde,
       aandeel,
       staat,
+      normGehaald: gemeten.length > 0 && latGehaald(invoer, streng),
       benaderd,
       uitleg:
         waarde === null
           ? `${opmaak(van, { day: "numeric", month: "short" })} – ${opmaak(tot, { day: "numeric", month: "short" })}: niets geregistreerd`
           : [
               `${opmaak(van, { day: "numeric", month: "short" })} – ${opmaak(tot, { day: "numeric", month: "short" })}: ${bedrag(waarde, invoer.unit, benaderd)} per dag`,
-              aandeel !== null ? `${percentageADH(aandeel)} van de norm` : null,
+              aandeel !== null ? `${percentageADH(aandeel)} van ${naamVan(invoer).de}` : null,
               `${volledig} van ${meervoud(gemeten.length, "gemeten dag", "gemeten dagen")} volledig`,
             ]
               .filter(Boolean)
@@ -366,7 +393,7 @@ function perMaaltijdZin(invoer: StofTrendInvoer): string | null {
     const metingen = invoer.dagen.flatMap((d) => d.momenten.filter((m) => m.moment === id && m.geregistreerd));
     if (metingen.length === 0) return [];
     const gemiddeld = metingen.reduce((s, m) => s + m.som, 0) / metingen.length;
-    const deel = invoer.norm ? ` (${percentageADH(gemiddeld / invoer.norm)} van de dagnorm)` : "";
+    const deel = invoer.norm ? ` (${percentageADH(gemiddeld / invoer.norm)} van ${naamVan(invoer).dag})` : "";
     return [`${label.toLowerCase()} ${bedrag(gemiddeld, invoer.unit)}${deel}, ${metingen.length}×`];
   });
   return delen.length > 0 ? `Per maaltijd gemiddeld: ${delen.join(" · ")}.` : null;
@@ -402,11 +429,11 @@ function redenenVoor(invoer: StofTrendInvoer, gehaald: boolean): string[] {
     } else {
       const gemiddeld = volledig.reduce((s, d) => s + d.som, 0) / volledig.length;
       redenen.push(
-        `Op je ${meervoud(volledig.length, "volledige dag", "volledige dagen")} gemiddeld ${bedrag(gemiddeld, invoer.unit)}: ${percentageADH(gemiddeld / invoer.norm)} van de norm (${hoeveelheid(invoer.norm)} ${invoer.unit}).`,
+        `Op je ${meervoud(volledig.length, "volledige dag", "volledige dagen")} gemiddeld ${bedrag(gemiddeld, invoer.unit)}: ${percentageADH(gemiddeld / invoer.norm)} van ${naamVan(invoer).de} (${hoeveelheid(invoer.norm)} ${invoer.unit}).`,
       );
       if (onvolledig > 0) {
         redenen.push(
-          `${meervoud(onvolledig, "dag mist", "dagen missen")} een hoofdmaaltijd; daar is onder de norm geen antwoord.`,
+          `${meervoud(onvolledig, "dag mist", "dagen missen")} een hoofdmaaltijd; daar is onder ${naamVan(invoer).de} geen antwoord.`,
         );
       }
     }
@@ -436,20 +463,20 @@ function kopVoor(invoer: StofTrendInvoer, schaal: TrendSchaal, punten: readonly 
   if (schaal === "maaltijd") {
     const dag = invoer.dagen[0]!;
     return invoer.norm
-      ? `${bedrag(dag.som, invoer.unit, dag.benaderd)} · ${percentageADH(dag.som / invoer.norm)} van de norm`
+      ? `${bedrag(dag.som, invoer.unit, dag.benaderd)} · ${percentageADH(dag.som / invoer.norm)} van ${naamVan(invoer).de}`
       : bedrag(dag.som, invoer.unit, dag.benaderd);
   }
   if (!oordeelt(invoer)) {
     const gemiddeld = gemeten.reduce((s, d) => s + d.som, 0) / gemeten.length;
     const benaderd = gemeten.some((d) => d.benaderd);
     return invoer.norm
-      ? `gem. ${bedrag(gemiddeld, invoer.unit, benaderd)} per dag · ${percentageADH(gemiddeld / invoer.norm)} van de norm`
+      ? `gem. ${bedrag(gemiddeld, invoer.unit, benaderd)} per dag · ${percentageADH(gemiddeld / invoer.norm)} van ${naamVan(invoer).de}`
       : `gem. ${bedrag(gemiddeld, invoer.unit, benaderd)} per dag`;
   }
   const eenheid = schaal === "dag" ? ["dag", "dagen"] : ["week", "weken"];
   const metWaarde = punten.filter((p) => p.staat !== "leeg");
   const keer = metWaarde.filter((p) => p.staat === "gehaald").length;
-  return `norm gehaald op ${keer} van ${meervoud(metWaarde.length, `gemeten ${eenheid[0]}`, `gemeten ${eenheid[1]}`)}`;
+  return `${naamVan(invoer).kort} gehaald op ${keer} van ${meervoud(metWaarde.length, `gemeten ${eenheid[0]}`, `gemeten ${eenheid[1]}`)}`;
 }
 
 export function bouwStofTrend(invoer: StofTrendInvoer): StofTrend {
@@ -472,6 +499,8 @@ export function bouwStofTrend(invoer: StofTrendInvoer): StofTrend {
     unit: invoer.unit,
     soort: invoer.soort,
     norm: invoer.norm,
+    normNaam: naamVan(invoer),
+    periodetotaal: invoer.periodetotaal,
     bewijsbaar: invoer.nietBewijsbaar === null,
     schaal,
     punten,

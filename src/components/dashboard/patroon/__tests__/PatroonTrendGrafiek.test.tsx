@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import PatroonTrendGrafiek from "@/components/dashboard/patroon/PatroonTrendGrafiek";
-import type { StofTrend, StofTrendPunt } from "@/lib/nutrition-stof-trend";
+import { NORM, type StofTrend, type StofTrendPunt } from "@/lib/nutrition-stof-trend";
 
 afterEach(cleanup);
 
@@ -19,6 +19,7 @@ function punt(
     waarde,
     aandeel: waarde === null ? null : waarde / 350,
     staat,
+    normGehaald: staat === "gehaald",
     benaderd: false,
     uitleg: `${sleutel}: ${waarde === null ? "niets geregistreerd" : `${waarde} mg`}`,
     aanvulling: null,
@@ -33,6 +34,8 @@ const trend: StofTrend = {
   unit: "mg",
   soort: "kern",
   norm: 350,
+  normNaam: NORM,
+  periodetotaal: false,
   bewijsbaar: true,
   schaal: "dag",
   punten: [
@@ -79,7 +82,7 @@ describe("PatroonTrendGrafiek", () => {
     render(<PatroonTrendGrafiek trend={trend} />);
     expect(screen.getByText("100%")).toBeTruthy();
     expect(screen.getByText("114%")).toBeTruthy();
-    expect(screen.getByText("100% = norm 350 mg")).toBeTruthy();
+    expect(screen.getByText("100% = de norm 350 mg")).toBeTruthy();
   });
 
   it("zonder norm blijft de schaal in de eenheid, zonder procentas", () => {
@@ -93,5 +96,13 @@ describe("PatroonTrendGrafiek", () => {
     expect(screen.getByText(/≈ 140 mg/)).toBeTruthy();
     expect(screen.getByText(/Havermout \(80 mg\)/)).toBeTruthy();
     expect(screen.getByText("1 dag mist een hoofdmaaltijd.")).toBeTruthy();
+  });
+
+  it("tekent als lijn met een breuk bij een lege dag en open rondjes voor onvolledig", () => {
+    const { container } = render(<PatroonTrendGrafiek trend={trend} weergave="lijn" />);
+    // ma–di en di–wo zijn leeg resp. gemeten: alleen wo–do heeft twee gemeten buren.
+    expect(container.querySelectorAll('[data-testid="trend-lijn"] line')).toHaveLength(1);
+    expect(container.querySelector('[data-staat="onvolledig"]')).toBeTruthy();
+    expect(container.querySelector("[data-schatting]")).toBeTruthy();
   });
 });

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { DagboekItem } from "@/lib/nutrition-dagboek-items";
 import { bronnenUitMeting, meetDag, meetPeriode, perMomentUitMeting, type DagMeting } from "@/lib/nutrition-stof-meting";
-import { bouwStofTrend, schaalVoor, type StofTrendInvoer } from "@/lib/nutrition-stof-trend";
+import { bouwStofTrend, EIWITDOEL, schaalVoor, type StofTrendInvoer } from "@/lib/nutrition-stof-trend";
 
 const mg = (moment: DagboekItem["moment"], capsules = 1) =>
   ({ moment, bron: "supplement", key: "magnesiumcitraat-capsule", grams: capsules }) as DagboekItem;
@@ -157,6 +157,28 @@ describe("bouwStofTrend", () => {
     expect(gehaald.punten[0]!.detail?.schatting).toBeNull();
     const omega = bouwStofTrend(invoer([dagMet("2026-10-01", { ontbijt: 10 }), dagMet("2026-10-02", { ontbijt: 10 })], { periodetotaal: true }));
     expect(omega.punten.every((p) => p.detail?.schatting === null)).toBe(true);
+  });
+
+  it("eiwit rekent tegen je eiwitdoel en heet ook zo", () => {
+    const trend = bouwStofTrend(
+      invoer([dagMet("2026-10-01", { ontbijt: 30, lunch: 30, avondeten: 40 }), dagMet("2026-10-02", { ontbijt: 20, lunch: 20, avondeten: 20 })], {
+        stof: "protein",
+        unit: "g",
+        norm: 96,
+        normNaam: EIWITDOEL,
+      }),
+    );
+    expect(trend.punten.map((p) => p.staat)).toEqual(["gehaald", "onder"]);
+    expect(trend.kop).toBe("eiwitdoel gehaald op 1 van 2 gemeten dagen");
+    expect(trend.punten[1]!.uitleg).toMatch(/63% van je eiwitdoel/);
+  });
+
+  it("een gevolgde stof krijgt een ✓ per gehaalde dag, zonder oordeel-kleur", () => {
+    const trend = bouwStofTrend(
+      invoer([dagMet("2026-10-01", { ontbijt: 400 }), dagMet("2026-10-02", { ontbijt: 100 })], { stof: "calciumMg", soort: "gevolgd" }),
+    );
+    expect(trend.punten.map((p) => p.normGehaald)).toEqual([true, false]);
+    expect(trend.punten[0]!.staat).toBe("onvolledig");
   });
 
   it("toont per maaltijd bij één dag", () => {
