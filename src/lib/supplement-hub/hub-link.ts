@@ -18,3 +18,8 @@ export function buildSupplementHubHref(category?: string | null): string {
   const params = new URLSearchParams({ [HUB_CATEGORY_PARAM]: category });
   return `${SUPPLEMENT_HUB_PATH}?${params.toString()}`;
 }
+
+/** "Vitamine D" → "vitamine D": alleen de eerste letter klein, zodat een afkorting blijft staan. */
+export function categorieInZin(label: string): string {
+  return label.charAt(0).toLowerCase() + label.slice(1);
+}

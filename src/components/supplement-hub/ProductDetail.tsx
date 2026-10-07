@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AffiliateLink } from "@/components/supplements/AffiliateLink";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { buildSupplementHubHref, categorieInZin } from "@/lib/supplement-hub/hub-link";
 import { ON_HOLD_DISCLAIMER } from "@/data/approved-claims";
 import {
   LABEL_POINTS,
@@ -477,6 +478,12 @@ export default function ProductDetail({ product, peers }: ProductDetailProps) {
           </div>
         </div>
         <div className="mt-5 flex flex-wrap gap-4">
+          <Link
+            href={buildSupplementHubHref(product.category)}
+            className="text-sm font-semibold text-ps-green transition-colors hover:text-ps-green-hover"
+          >
+            Alle {categorieInZin(product.categoryLabel)}-producten met PS-Score →
+          </Link>
           <Link
             href={product.guideHref}
             className="text-sm font-semibold text-ps-green transition-colors hover:text-ps-green-hover"
