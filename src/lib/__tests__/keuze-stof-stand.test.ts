@@ -47,4 +47,21 @@ describe("keuzeStofStand", () => {
     expect(keuzeStofStand("zinc", reeks({ nutrient: "zinc", bewijsbaar: false })).stand).toBe("niet_meetbaar");
     expect(keuzeStofStand("vitamin_d", undefined).stand).toBe("niet_meetbaar");
   });
+
+  it("eiwit: het tekortsysteem levert geen aandeel, dus rekent Keuze met je eiwitdoel", () => {
+    const zonderAandeel = reeks({ zeven: { gemiddeld: 72, aandeel: null, dagen: 3, gedekt: null } });
+    const metDoel = keuzeStofStand("protein", zonderAandeel, 90);
+    expect(metDoel.stand).toBe("ruimte");
+    expect(metDoel.aandeel).toBeCloseTo(0.8);
+    expect(metDoel.norm).toBeCloseTo(90);
+    expect(keuzeStofStand("protein", zonderAandeel, 70).stand).toBe("op_koers");
+  });
+
+  it("eiwit zonder doel: geen 'te weinig dagen' meer, wel je gemiddelde", () => {
+    const stand = keuzeStofStand("protein", reeks({ zeven: { gemiddeld: 72, aandeel: null, dagen: 3, gedekt: null } }));
+    expect(stand.stand).toBe("geen_doel");
+    expect(stand.gemiddeld).toBe(72);
+    expect(stand.zin).toMatch(/72 g per dag/);
+    expect(stand.zin).not.toMatch(/te weinig dagen/i);
+  });
 });

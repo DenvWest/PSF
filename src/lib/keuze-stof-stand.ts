@@ -14,9 +14,14 @@ import { NIET_BEWIJSBAAR, type Venster, type Vensterreeks } from "@/lib/nutritio
  *   wel de plek waar een keuze iets uitmaakt.
  * - `niet_meetbaar`: een dagboek kan deze stof niet aantonen (zink, vitamine D).
  * - `onbekend`: minder dan {@link MIN_DAGEN} geregistreerde dagen.
+ * - `geen_doel`: genoeg dagen, maar geen norm om tegen te leggen. Alleen eiwit:
+ *   dat doel rekent met gewicht en trainingsbelasting uit Je doelen, en het
+ *   tekortsysteem rekent eiwit daarom nooit zelf als aandeel (`aandeelVanNorm`).
+ *   Tot 7 oktober viel eiwit hier op `onbekend` ("te weinig dagen"), ook met
+ *   een vol dagboek.
  */
 
-export type KeuzeStand = "op_koers" | "ruimte" | "niet_meetbaar" | "onbekend";
+export type KeuzeStand = "op_koers" | "ruimte" | "niet_meetbaar" | "onbekend" | "geen_doel";
 
 export type KeuzeStofStand = {
   nutrient: NutrientId;
@@ -43,7 +48,15 @@ function bruikbaarVenster(reeks: Vensterreeks): Venster | null {
   return null;
 }
 
-export function keuzeStofStand(nutrient: NutrientId, reeks: Vensterreeks | undefined): KeuzeStofStand {
+/**
+ * @param eiwitDoelG je eiwitdoel uit Je doelen (`useEiwitDoel`), alleen gebruikt
+ *   voor eiwit, waar het venster zelf geen aandeel draagt.
+ */
+export function keuzeStofStand(
+  nutrient: NutrientId,
+  reeks: Vensterreeks | undefined,
+  eiwitDoelG: number | null = null,
+): KeuzeStofStand {
   const unit = reeks?.unit ?? "";
   const leeg = { venster: null, gemiddeld: null, norm: null, aandeel: null, unit, benaderd: false };
 
@@ -52,7 +65,27 @@ export function keuzeStofStand(nutrient: NutrientId, reeks: Vensterreeks | undef
     return { nutrient, stand: "niet_meetbaar", ...leeg, zin: nietMeetbaar ?? "Een dagboek kan deze stof niet aantonen." };
   }
 
-  const venster = reeks ? bruikbaarVenster(reeks) : null;
+  const gevonden = reeks ? bruikbaarVenster(reeks) : null;
+  const venster =
+    gevonden && gevonden.aandeel === null && nutrient === "protein" && eiwitDoelG
+      ? { ...gevonden, aandeel: gevonden.gemiddeld / eiwitDoelG, gedekt: gevonden.gemiddeld >= eiwitDoelG }
+      : gevonden;
+
+  if (reeks && venster && venster.aandeel === null) {
+    const periode = venster.dagen_terug === 7 ? "de laatste 7 dagen" : "de laatste 30 dagen";
+    return {
+      nutrient,
+      stand: "geen_doel",
+      venster: { dagen_terug: venster.dagen_terug, dagen: venster.dagen, dagenMetBron: venster.dagenMetBron },
+      gemiddeld: venster.gemiddeld,
+      norm: null,
+      aandeel: null,
+      unit,
+      benaderd: venster.benaderd === true,
+      zin: `Je dagboek komt op gemiddeld ${venster.benaderd ? "≈ " : ""}${hoeveelheid(venster.gemiddeld)} ${unit} per dag, ${periode}. Zonder eiwitdoel geen percentage: dat rekent met je gewicht en trainingsbelasting uit Je doelen.`,
+    };
+  }
+
   if (!reeks || !venster || venster.aandeel === null) {
     return {
       nutrient,
