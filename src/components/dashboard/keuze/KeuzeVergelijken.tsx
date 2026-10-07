@@ -5,9 +5,18 @@ import { useMemo, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
+import type { IngredientClaimKey } from "@/data/approved-claims";
 import { clarityTag } from "@/lib/clarity";
 import { buildDagboekVoegHref, gaNaarDashboard } from "@/lib/dagboek-deeplink";
 import { trackEvent } from "@/lib/ga4";
+import { emitIntakeClientEvent } from "@/lib/intake-events-client";
+import {
+  brengtOokMee,
+  checkOordeelVoorStof,
+  euroPerDag,
+  ingredientVanStof,
+  supplementErbij,
+} from "@/lib/keuze-stofkaart";
 import { keuzeStofStand, type KeuzeStand, type KeuzeStofStand } from "@/lib/keuze-stof-stand";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { verschuifDag } from "@/lib/nutrition-periode";
@@ -24,14 +33,18 @@ import {
 import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 import { bronnenVanStof, ruimteBij, stofPerMoment } from "@/lib/nutrition-stof-bronnen";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
-import { hoeveelheid } from "@/lib/nutrition-tekortsysteem-copy";
+import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
+import { buildAfleiding, buildVerdictFacts } from "@/lib/supplement-afleiding";
 import {
   psScoreAantalVoorStof,
   psScoreBestePerVorm,
   psScoreCatalogusHref,
+  type KeuzeProduct,
 } from "@/lib/supplement-hub/ps-score-per-stof";
+import { toVerdictCardCopy } from "@/lib/supplement-verdict-copy";
 import { useKernstofProfiel } from "@/lib/use-kernstof-normen";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
+import type { StoredSupplementVerdict } from "@/types/verdict";
 
 /**
  * Keuze → Vergelijken: per stof je eten naast een supplement, gevoed door je
@@ -54,6 +67,20 @@ import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
  *
  * Per vorm alleen het product met de hoogste PS-Score. De volledige lijst staat
  * op `/supplementen`, de prijsvergelijking op `/beste/*`; hier staat de keuze.
+ *
+ * ## Eén kaart per stof (herziening 7 okt)
+ *
+ * Het oordeel uit je check stond tot 7 oktober als los blok onder de
+ * vergelijking, en sprak die tegen: omega-3 "op je norm" uit het dagboek
+ * boven "Aanvullen" uit de check. Nu draagt elke stofkaart één stand — die
+ * van het dagboek — en de check staat erin als context (signaal, zekerheid,
+ * bloedwaarde, EU-claim, hoe we hier komen). Alleen waar het dagboek niets
+ * kan zeggen (te weinig dagen, of een stof die een dagboek niet meet) leest
+ * het oordeel van de check als het antwoord.
+ *
+ * Aan de supplementkant per product wat het etiket per dag levert, waar je
+ * daarmee op uitkomt (minstens: dagboek + etiket), de veilige bovengrens en
+ * de prijs per dag. Aan de eetkant wat een portie nog meer meebrengt.
  */
 
 const STAND_KLEUR: Record<KeuzeStand, string> = {
@@ -97,12 +124,16 @@ export default function KeuzeVergelijken({
   dagen,
   vandaag,
   surface,
+  verdicts,
+  products,
 }: {
   statuses: readonly NutrientRouteStatus[];
   reeksen: readonly Vensterreeks[];
   dagen: readonly DagboekDag[];
   vandaag: string;
   surface: string;
+  verdicts: readonly StoredSupplementVerdict[];
+  products?: readonly KeuzeProduct[];
 }) {
   const standen = useMemo(
     () =>
@@ -242,6 +273,8 @@ export default function KeuzeVergelijken({
                 dagen={dagen}
                 datums={datums}
                 surface={surface}
+                verdict={checkOordeelVoorStof(status.nutrient, verdicts)}
+                products={products}
               />
             );
           })}
@@ -249,7 +282,8 @@ export default function KeuzeVergelijken({
 
         <p className="vd-note">
           Wat je dagboek laat zien is minstens wat je binnenkreeg. Onder je norm zitten is geen tekort — dat
-          stelt alleen een arts vast. De PS-Score beoordeelt het product, niet jouw voeding.
+          stelt alleen een arts vast. De PS-Score beoordeelt het product, niet jouw voeding. Via de
+          productpagina&apos;s ontvangen we commissie als je koopt; de score en dit overzicht staan daar los van.
         </p>
       </div>
     </VoedingThemaProvider>
@@ -264,6 +298,8 @@ function StofRij({
   dagen,
   datums,
   surface,
+  verdict,
+  products,
 }: {
   status: NutrientRouteStatus;
   stand: KeuzeStofStand;
@@ -272,6 +308,8 @@ function StofRij({
   dagen: readonly DagboekDag[];
   datums: readonly string[];
   surface: string;
+  verdict: StoredSupplementVerdict | null;
+  products?: readonly KeuzeProduct[];
 }) {
   const { items, save, remove } = useVoortgangFavorites();
   const keuze = resolveNutritionRouteChoice(status.nutrient, items);
@@ -347,6 +385,10 @@ function StofRij({
           ) : null}
           <p className="m-0 mb-3 max-w-[62ch] text-[0.78125rem] leading-relaxed text-[var(--vd-ink-2)]">{stand.zin}</p>
 
+          {verdict ? (
+            <CheckContext nutrient={status.nutrient} stand={stand} verdict={verdict} surface={surface} />
+          ) : null}
+
           <div className="@container">
             <div className="grid grid-cols-1 gap-2.5 @[34rem]:grid-cols-2">
               <VoedingKant
@@ -360,6 +402,7 @@ function StofRij({
                 status={status}
                 stand={stand}
                 surface={surface}
+                products={products}
                 gekozen={heeftSupplement(keuze)}
                 onKies={() => kies(samen(heeftVoeding(keuze), !heeftSupplement(keuze)))}
               />
@@ -375,6 +418,108 @@ function StofRij({
         </div>
       ) : null}
     </article>
+  );
+}
+
+function oordeelDatum(iso: string): string | null {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat("nl-NL", { day: "numeric", month: "short" }).format(date);
+}
+
+/**
+ * Het oordeel uit je check, binnen de stofkaart. Meet het dagboek de stof
+ * (op koers of ruimte), dan is dit context en zegt de kaart dat het dagboek
+ * zwaarder weegt; anders is het oordeel van de check het enige antwoord.
+ */
+function CheckContext({
+  nutrient,
+  stand,
+  verdict,
+  surface,
+}: {
+  nutrient: NutrientId;
+  stand: KeuzeStofStand;
+  verdict: StoredSupplementVerdict;
+  surface: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ingredient: IngredientClaimKey = ingredientVanStof(nutrient);
+  const kaart = toVerdictCardCopy(verdict);
+  const feiten = buildVerdictFacts(ingredient, verdict);
+  const afleiding = buildAfleiding(ingredient, verdict);
+  const datum = oordeelDatum(verdict.createdAt);
+  const dagboekWeegtZwaarder = stand.stand === "op_koers" || stand.stand === "ruimte";
+  const regels = afleiding
+    ? [afleiding.signaalLine, afleiding.zekerheidLine, afleiding.bloedLine, afleiding.claimLine].filter(
+        (regel): regel is string => Boolean(regel),
+      )
+    : [];
+
+  const toggle = () => {
+    const volgende = !open;
+    setOpen(volgende);
+    if (volgende) {
+      trackEvent("dashboard_afleiding_open", { ingredient, verdict: verdict.verdict, surface });
+      clarityTag("dashboard_afleiding", ingredient);
+      emitIntakeClientEvent("dashboard.afleiding_opened", {
+        ingredient_key: ingredient,
+        verdict: verdict.verdict,
+        surface,
+      });
+    }
+  };
+
+  return (
+    <section
+      aria-label="Uit je check"
+      className="@container mb-3 rounded-[11px] border border-[var(--vd-line)] bg-[var(--vd-bg)] px-3 py-2.5"
+    >
+      <p className="m-0 flex flex-wrap items-baseline justify-between gap-x-3 text-[0.625rem] font-bold uppercase tracking-[0.14em] text-[var(--vd-ink-3)]">
+        <span>Uit je check</span>
+        {datum ? <span className="font-medium normal-case tracking-normal text-[var(--vd-ink-4)]">{datum}</span> : null}
+      </p>
+      <p className="m-0 mt-1 max-w-[62ch] text-[0.75rem] leading-relaxed text-[var(--vd-ink-2)]">
+        {dagboekWeegtZwaarder ? (
+          <>
+            Je check zei &ldquo;{kaart.label.toLowerCase()}&rdquo;. Je dagboek weegt hier zwaarder: dat is wat je at,
+            de check schatte het uit vragen.
+          </>
+        ) : (
+          <>
+            <span className="font-semibold text-[var(--vd-ink)]">{kaart.label}.</span> {kaart.reason}
+          </>
+        )}
+      </p>
+      <dl className="m-0 mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5 @[34rem]:grid-cols-4">
+        {feiten.map((feit) => (
+          <div key={feit.label} className="min-w-0">
+            <dt className="text-[0.5625rem] uppercase tracking-[0.1em] text-[var(--vd-ink-4)]">{feit.label}</dt>
+            <dd className="m-0 text-[0.75rem] font-semibold text-[var(--vd-ink)]">{feit.value}</dd>
+          </div>
+        ))}
+      </dl>
+      {regels.length > 0 ? (
+        <>
+          <button
+            type="button"
+            aria-expanded={open}
+            onClick={toggle}
+            className="mt-2 inline-flex cursor-pointer items-center gap-1 border-0 bg-transparent p-0 text-[0.6875rem] font-semibold text-[var(--vd-sage-2)]"
+          >
+            Hoe we hier komen
+            <Icons.ChevronDown s={11} style={{ transform: open ? "rotate(180deg)" : undefined }} />
+          </button>
+          {open ? (
+            <ul className="m-0 mt-1.5 flex max-w-[62ch] list-none flex-col gap-1 p-0 text-[0.71875rem] leading-relaxed text-[var(--vd-ink-2)]">
+              {regels.map((regel) => (
+                <li key={regel}>{regel}</li>
+              ))}
+            </ul>
+          ) : null}
+        </>
+      ) : null}
+    </section>
   );
 }
 
@@ -457,7 +602,8 @@ function VoedingKant({
     () =>
       rijksteBronnen(status.nutrient, "portie", 30)
         .filter((bron) => pastBijVoedingswijze(bron.entry, profiel.voedingswijze))
-        .slice(0, 3),
+        .slice(0, 3)
+        .map((bron) => ({ ...bron, ook: brengtOokMee(bron.entry, status.nutrient) })),
     [status.nutrient, profiel.voedingswijze],
   );
   const voorMoment = ruimte?.moment ?? "ontbijt";
@@ -504,6 +650,9 @@ function VoedingKant({
                     {" "}
                     · {bron.portieLabel} · {hoeveelheid(bron.perPortie)} {bron.unit}
                   </span>
+                  {bron.ook.length > 0 ? (
+                    <span className="block text-[0.6875rem] text-[var(--vd-sage-2)]">ook: {bron.ook.join(", ")}</span>
+                  ) : null}
                 </span>
                 <button
                   type="button"
@@ -532,28 +681,107 @@ function VoedingKant({
       >
         Meer in Je patroon →
       </Link>
+      {voorstellen.some((bron) => bron.ook.length > 0) ? (
+        <p className="m-0 mt-2 text-[0.6875rem] leading-relaxed text-[var(--vd-ink-3)]">
+          Eten brengt meer mee dan deze ene stof; &ldquo;ook&rdquo; noemt wat één portie minstens 15&nbsp;% van de
+          referentie levert.
+        </p>
+      ) : null}
       <RouteKnop gekozen={gekozen} onKies={onKies} kleur="sage" label="eten" />
     </Kant>
   );
+}
+
+const CLAIM_REGEL: Partial<Record<KeuzeProduct["claimStance"], string>> = {
+  voldoet: "Haalt de dagdosis van de EU-claim",
+  voldoet_deels: "Haalt de dagdosis van de EU-claim deels",
+  voldoet_niet: "Onder de dagdosis van de EU-claim",
+};
+
+/**
+ * Wat dit product aan je dag toevoegt: etiket per dag en prijs, waar je
+ * daarmee minstens op uitkomt, de veilige bovengrens en of het de dagdosis
+ * van de EU-claim haalt (art. 10 1924/2006: de claim hoort bij de stof en
+ * geldt alleen boven die dosis).
+ */
+function ProductErbij({
+  nutrient,
+  stand,
+  product,
+}: {
+  nutrient: NutrientId;
+  stand: KeuzeStofStand;
+  product: KeuzeProduct;
+}) {
+  const erbij = supplementErbij(nutrient, stand, product);
+  const grens = erbij.bovengrens;
+  const claim = CLAIM_REGEL[product.claimStance];
+  const etiket =
+    product.dosisPerDag !== null && product.eenheid
+      ? `${hoeveelheid(product.dosisPerDag)} ${product.eenheid} per dag (etiket)`
+      : null;
+  const prijs = product.centenPerDag !== null ? `${euroPerDag(product.centenPerDag)} per dag` : null;
+  const kop = [etiket, prijs].filter(Boolean).join(" · ");
+
+  if (!kop && erbij.samen === null && !grens && !claim) return null;
+
+  return (
+    <div className="flex flex-col gap-0.5 border-t border-[var(--vd-line)] px-2.5 pb-1.5 pt-1 text-[0.6875rem] leading-snug">
+      {kop ? <span className="text-[var(--vd-ink-2)]">{kop}</span> : null}
+      {erbij.samen !== null ? (
+        <span className="text-[var(--vd-accent-2)]">
+          Samen met je eten minstens {stand.benaderd ? "≈ " : ""}
+          {hoeveelheid(erbij.samen)}
+          {stand.norm ? ` van ${hoeveelheid(stand.norm)}` : ""} {stand.unit}
+          {erbij.aandeelNorm !== null ? ` (${percentageADH(erbij.aandeelNorm)} van je norm)` : ""}
+        </span>
+      ) : null}
+      {grens ? (
+        <span className={grens.boven ? "font-semibold text-[var(--vd-amber)]" : "text-[var(--vd-ink-3)]"}>
+          {bovengrensRegel(grens)}
+        </span>
+      ) : null}
+      {claim ? <span className="text-[var(--vd-ink-3)]">{claim}</span> : null}
+    </div>
+  );
+}
+
+function bovengrensRegel(grens: NonNullable<ReturnType<typeof supplementErbij>["bovengrens"]>): string {
+  const waarde = `${hoeveelheid(grens.waarde)} ${grens.unit} per dag`;
+  if (grens.basis === "etiket") {
+    return grens.boven
+      ? `Boven de veilige bovengrens van ${waarde} uit supplementen (${grens.bron})`
+      : `Binnen de veilige bovengrens van ${waarde} uit supplementen`;
+  }
+  if (grens.basis === "samen") {
+    return grens.boven
+      ? `Samen met je eten boven de veilige bovengrens van ${waarde} (${grens.bron})`
+      : `Samen met je eten binnen de veilige bovengrens van ${waarde}`;
+  }
+  return grens.boven
+    ? `Het etiket alleen zit al boven de veilige bovengrens van ${waarde} (${grens.bron})`
+    : `Veilige bovengrens: ${waarde}, eten en supplementen samen — je dagboek kan deze stof niet meten`;
 }
 
 function SupplementKant({
   status,
   stand,
   surface,
+  products,
   gekozen,
   onKies,
 }: {
   status: NutrientRouteStatus;
   stand: KeuzeStofStand;
   surface: string;
+  products?: readonly KeuzeProduct[];
   gekozen: boolean;
   onKies: () => void;
 }) {
   const rustig = stand.stand === "op_koers";
   const [toon, setToon] = useState(!rustig);
-  const vormen = useMemo(() => psScoreBestePerVorm(status.nutrient), [status.nutrient]);
-  const aantal = useMemo(() => psScoreAantalVoorStof(status.nutrient), [status.nutrient]);
+  const vormen = useMemo(() => psScoreBestePerVorm(status.nutrient, products), [status.nutrient, products]);
+  const aantal = useMemo(() => psScoreAantalVoorStof(status.nutrient, products), [status.nutrient, products]);
   const klik = (doel: "product" | "catalogus" | "vergelijking", slug?: string) =>
     trackEvent("keuze_vergelijken_ps_score_click", {
       surface,
@@ -576,11 +804,14 @@ function SupplementKant({
           <p className="m-0 mt-1 text-[0.6875rem] text-[var(--vd-ink-3)]">Per vorm de hoogste PS-Score</p>
           <ul className="m-0 mt-1 flex list-none flex-col gap-1.5 p-0">
             {vormen.map((product) => (
-              <li key={product.slug}>
+              <li
+                key={product.slug}
+                className="rounded-lg border border-[var(--vd-line)] transition-colors hover:border-[var(--vd-line-2)]"
+              >
                 <Link
                   href={product.href}
                   onClick={() => klik("product", product.slug)}
-                  className="flex items-center justify-between gap-2 rounded-lg border border-[var(--vd-line)] px-2.5 py-1.5 no-underline transition-colors hover:border-[var(--vd-line-2)]"
+                  className="flex items-center justify-between gap-2 px-2.5 pb-1 pt-1.5 no-underline"
                 >
                   <span className="min-w-0">
                     <span className="block text-[0.6875rem] font-semibold text-[var(--vd-accent-2)]">{product.vorm}</span>
@@ -593,6 +824,7 @@ function SupplementKant({
                     </span>
                   </span>
                 </Link>
+                <ProductErbij nutrient={status.nutrient} stand={stand} product={product} />
               </li>
             ))}
           </ul>
