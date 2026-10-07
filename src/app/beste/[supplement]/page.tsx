@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import TerugNaarKeuze from "@/components/supplement-hub/TerugNaarKeuze";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -144,6 +146,9 @@ export default async function Page({ params }: PageProps) {
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 pt-6">
           <IntakeResultsReturnBanner />
           <VoortgangReturnBanner surface="beste" />
+          <Suspense fallback={null}>
+            <TerugNaarKeuze surface="beste" boven />
+          </Suspense>
         </div>
         {!available && disabledReason && (
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8 mx-auto max-w-7xl px-6 lg:px-8">

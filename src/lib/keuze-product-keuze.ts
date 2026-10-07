@@ -63,7 +63,10 @@ export function productKeuzeHref(id: string): string | null {
  * "← Terug naar je keuze", en die link opent in het dashboard dezelfde stof.
  */
 export function metKeuzeHerkomst(href: string, nutrient: NutrientId): string {
-  return `${href}?${new URLSearchParams({ van: "keuze", stof: nutrient }).toString()}`;
+  const url = new URL(href, "https://www.perfectsupplement.nl");
+  url.searchParams.set("van", "keuze");
+  url.searchParams.set("stof", nutrient);
+  return `${url.pathname}${url.search}${url.hash}`;
 }
 
 /** De stof uit een herkomst-query, of null als die niet uit Keuze komt of onbekend is. */

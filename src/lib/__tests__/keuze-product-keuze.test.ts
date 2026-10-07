@@ -38,5 +38,8 @@ describe("productkeuze per stof", () => {
     expect(leesKeuzeHerkomst(new URLSearchParams("stof=protein"))).toBeNull();
     expect(leesKeuzeHerkomst(new URLSearchParams("van=keuze&stof=onzin"))).toBeNull();
     expect(keuzeTerugHref("protein")).toBe("/dashboard?tab=keuze&stof=protein");
+    expect(metKeuzeHerkomst("/supplementen?categorie=magnesium", "magnesium")).toBe(
+      "/supplementen?categorie=magnesium&van=keuze&stof=magnesium",
+    );
   });
 });

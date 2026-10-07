@@ -54,13 +54,14 @@ describe("buildAfleiding", () => {
     expect(buildAfleiding("magnesium", row("magnesium", null))).toBeNull();
   });
 
-  it("combineert inname en beweegprofiel voor eiwit — niet inname alleen", () => {
+  it("eiwit: inname samen met trainen of herstel, en wijst naar Je doelen in plaats van de beweegcheck", () => {
     const view = buildAfleiding(
       "eiwitpoeder",
       row("eiwitpoeder", evidence([{ type: "signal", signal: "protein_gap_signal" }])),
     );
-    expect(view?.signaalLine).toContain("beweegcheck");
-    expect(view?.signaalLine).toContain("samen zijn het signaal, niet de inname alleen");
+    expect(view?.signaalLine).toContain("weinig eiwit, samen met trainen of traag herstel");
+    expect(view?.signaalLine).toContain("Je doelen");
+    expect(view?.signaalLine).not.toContain("beweegcheck");
   });
 
   it("combineert belasting en herstel voor creatine via de custom matcher", () => {

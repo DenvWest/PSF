@@ -101,6 +101,7 @@ export default async function ProductPage({ params }: Props) {
         <Container className="pt-10 md:pt-12">
           <Suspense fallback={null}>
             <TerugNaarKeuze
+              surface="product"
               slug={product.slug}
               catalogusHref={buildSupplementHubHref(product.category)}
               categorieLabel={product.categoryLabel}

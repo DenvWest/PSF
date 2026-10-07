@@ -112,7 +112,10 @@ describe("KeuzeVergelijken", () => {
     const supplement = screen.getByRole("region", { name: "Uit een supplement" });
     expect(within(supplement).getByText("Per vorm de hoogste PS-Score")).toBeTruthy();
     expect(within(supplement).getByRole("link", { name: /Alle \d+ met PS-Score/ }).getAttribute("href")).toBe(
-      "/supplementen?categorie=magnesium",
+      "/supplementen?categorie=magnesium&van=keuze&stof=magnesium",
+    );
+    expect(within(supplement).getByRole("link", { name: /Vergelijk op prijs/ }).getAttribute("href")).toBe(
+      "/beste/magnesium?van=keuze&stof=magnesium",
     );
     expect(within(eten).getByRole("button", { name: "Kies eten" })).toBeTruthy();
     expect(screen.queryByText(/Eerst je voedingsbasis/)).toBeNull();

@@ -635,6 +635,17 @@ function CheckContext({
               {regels.map((regel) => (
                 <li key={regel}>{regel}</li>
               ))}
+              {ingredient === "eiwitpoeder" ? (
+                <li>
+                  <Link
+                    href="/dashboard/doelen"
+                    onClick={() => trackEvent("keuze_eiwitdoel_instellen", { surface, plek: "afleiding" })}
+                    className="font-semibold text-[var(--vd-sage-2)] no-underline hover:underline"
+                  >
+                    Naar Je doelen →
+                  </Link>
+                </li>
+              ) : null}
             </ul>
           ) : null}
         </>
@@ -1048,14 +1059,14 @@ function SupplementKant({
           </ul>
           <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
             <Link
-              href={psScoreCatalogusHref(status.nutrient)}
+              href={metKeuzeHerkomst(psScoreCatalogusHref(status.nutrient), status.nutrient)}
               onClick={() => klik("catalogus")}
               className="text-[0.6875rem] font-semibold text-[var(--vd-accent-2)] no-underline hover:underline"
             >
               Alle {aantal} met PS-Score →
             </Link>
             <Link
-              href={status.comparisonPath}
+              href={metKeuzeHerkomst(status.comparisonPath, status.nutrient)}
               onClick={() => klik("vergelijking")}
               className="text-[0.6875rem] font-semibold text-[var(--vd-ink-2)] no-underline hover:underline"
             >

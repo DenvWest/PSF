@@ -11,7 +11,7 @@ afterEach(cleanup);
 
 function renderTerug() {
   return render(
-    <TerugNaarKeuze slug="royal-green-whey" catalogusHref="/supplementen?categorie=eiwitpoeder" categorieLabel="Eiwitpoeder" />,
+    <TerugNaarKeuze surface="product" slug="royal-green-whey" catalogusHref="/supplementen?categorie=eiwitpoeder" categorieLabel="Eiwitpoeder" />,
   );
 }
 
