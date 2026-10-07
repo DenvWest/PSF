@@ -18,16 +18,16 @@ import {
   type MomentKant,
 } from "@/lib/keuze-product-keuze";
 import { keuzeStofStand, type KeuzeStofStand } from "@/lib/keuze-stof-stand";
-import { euroPerDag, isBronVan } from "@/lib/keuze-stofkaart";
+import { euroPerDag, hoofdStof, isBronVan } from "@/lib/keuze-stofkaart";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
-import { gehaltePerPortie } from "@/lib/nutrition-rijkste-bronnen";
+import { gehaltePerPortie, pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
 import { resolveNutritionRouteChoice, type NutritionRouteChoice } from "@/lib/nutrition-route-choice";
 import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 import { hoeveelheid } from "@/lib/nutrition-tekortsysteem-copy";
 import { keuzeProductVoorSlug, type KeuzeProduct } from "@/lib/supplement-hub/ps-score-per-stof";
 import { useDagboekVoedingsfavorieten } from "@/lib/use-dagboek-voedingsfavorieten";
-import { useEiwitDoel } from "@/lib/use-kernstof-normen";
+import { useEiwitDoel, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 
 /**
@@ -52,7 +52,10 @@ type StofKeuze = {
   stand: KeuzeStofStand;
   route: NutritionRouteChoice | null;
   product: KeuzeProduct | null;
+  /** Gesterde voedingsmiddelen die het meest aan déze stof bijdragen. */
   bronnen: CatalogEntry[];
+  /** Gesterd, ook een bron van deze stof, maar met hun hoofdplek bij een andere stof. */
+  ookVia: { entry: CatalogEntry; bij: string }[];
 };
 
 export default function MijnKeuzes({
@@ -73,6 +76,9 @@ export default function MijnKeuzes({
 
   const keuzes = useMemo((): StofKeuze[] => {
     const entries = gesterd.map((key) => catalogEntry(key)).filter((entry): entry is CatalogEntry => entry !== null);
+    const stoffen = statuses.map((status) => status.nutrient);
+    const hoofd = new Map(entries.map((entry) => [entry.key, hoofdStof(entry, stoffen)]));
+    const label = new Map(statuses.map((status) => [status.nutrient, status.label]));
     return statuses.map((status) => {
       const slug = productKeuzeVoorStof(status.nutrient, items);
       return {
@@ -80,7 +86,10 @@ export default function MijnKeuzes({
         stand: keuzeStofStand(status.nutrient, reeksen.find((r) => r.nutrient === status.nutrient), eiwitDoelG),
         route: resolveNutritionRouteChoice(status.nutrient, items),
         product: slug ? keuzeProductVoorSlug(status.nutrient, slug, products) : null,
-        bronnen: entries.filter((entry) => isBronVan(entry, status.nutrient)),
+        bronnen: entries.filter((entry) => hoofd.get(entry.key) === status.nutrient),
+        ookVia: entries
+          .filter((entry) => hoofd.get(entry.key) !== status.nutrient && isBronVan(entry, status.nutrient))
+          .map((entry) => ({ entry, bij: (label.get(hoofd.get(entry.key) ?? status.nutrient) ?? "").toLowerCase() })),
       };
     });
   }, [statuses, reeksen, eiwitDoelG, items, products, gesterd]);
@@ -299,10 +308,21 @@ function EtenKant({
   voedingsfavorieten: ReturnType<typeof useDagboekVoedingsfavorieten>;
   onWijzig: () => void;
 }) {
-  const { status, route, bronnen } = keuze;
+  const { status, route, bronnen, ookVia } = keuze;
   const { items } = useVoortgangFavorites();
+  const profiel = useKernstofProfiel();
   const moment = momentVoorStof(status.nutrient, items, "eten") ?? "ontbijt";
   const gekozen = route === "bord" || route === "beide" || bronnen.length > 0;
+  const voorstellen = useMemo(
+    () =>
+      bronnen.length > 0
+        ? []
+        : rijksteBronnen(status.nutrient, "portie", 30)
+            .filter((bron) => pastBijVoedingswijze(bron.entry, profiel.voedingswijze))
+            .filter((bron) => !voedingsfavorieten.isBewaard(bron.entry.key))
+            .slice(0, 2),
+    [bronnen.length, status.nutrient, profiel.voedingswijze, voedingsfavorieten],
+  );
 
   return (
     <Kant kleur="sage" titel="Uit je eten">
@@ -352,8 +372,43 @@ function EtenKant({
           <MomentKiezer nutrient={status.nutrient} kant="eten" vraag="Wanneer eet je het?" titel={`${status.label} uit eten`} />
         </>
       ) : (
-        <Leeg tekst="Je koos je eten, maar zette nog geen ☆ bij een bron." knop="Kies je bronnen →" kleur="sage" onClick={onWijzig} />
+        <>
+          <p className="m-0 text-[0.6875rem] text-[var(--vd-ink-3)]">Kies een bron met ☆:</p>
+          <ul className="m-0 mt-1 flex list-none flex-col gap-1 p-0">
+            {voorstellen.map((bron) => (
+              <li key={bron.entry.key} className="flex items-center justify-between gap-2 text-[0.78125rem]">
+                <span className="min-w-0">
+                  <span className="text-[var(--vd-ink)]">{bron.entry.labelNl}</span>
+                  <span className="block text-[0.6875rem] text-[var(--vd-ink-3)]">
+                    {bron.portieLabel} · {hoeveelheid(bron.perPortie)} {bron.unit}
+                  </span>
+                </span>
+                <button
+                  type="button"
+                  aria-label={`${bron.entry.labelNl} bewaren in Mijn producten`}
+                  disabled={voedingsfavorieten.bezig === bron.entry.key}
+                  onClick={() => void voedingsfavorieten.wissel(bron.entry.key, status.nutrient)}
+                  className="shrink-0 cursor-pointer border-0 bg-transparent p-0 text-[1rem] leading-none text-[var(--vd-sage-2)] disabled:opacity-50"
+                >
+                  ☆
+                </button>
+              </li>
+            ))}
+          </ul>
+          <button
+            type="button"
+            onClick={onWijzig}
+            className="mt-1.5 cursor-pointer self-start border-0 bg-transparent p-0 text-[0.6875rem] font-semibold text-[var(--vd-sage-2)] hover:underline"
+          >
+            Meer bronnen in Vergelijken →
+          </button>
+        </>
       )}
+      {gekozen && ookVia.length > 0 ? (
+        <p className="m-0 mt-2 text-[0.6875rem] leading-relaxed text-[var(--vd-ink-3)]">
+          Telt ook mee: {ookVia.map(({ entry, bij }) => `${entry.labelNl} (bij ${bij})`).join(", ")}
+        </p>
+      ) : null}
     </Kant>
   );
 }

@@ -166,3 +166,12 @@ Na Dennis' review:
 - `BESLUIT_MACRO_MICRONUTRIENT_UITBREIDING_2026-09.md`: de supermarktsnapshot is "niet voor prijzen", met een onduidelijke licentie.
 
 Daarom niet gebouwd. Voorstel: een kleine, handmatig bijgehouden tabel met een indicatieve prijs per portie, alleen voor de rijkste bronnen van de vijf kernstoffen (± 30 regels), met prijspeil en bron erbij. Vergelijken per portie, nooit "prijs per mg", omdat eten meer meebrengt dan die ene stof.
+
+### Achtste ronde (7 oktober, zelfde PR): één ster, één plek
+
+Dennis: "overal staat alleen forel". Eén gesterde forel is een bron van eiwit, omega-3 en vitamine D (≥ 15 % per portie), en stond dus op drie kaarten. Nu:
+- Een gesterd voedingsmiddel staat alleen bij de stof waar één portie het meest aan bijdraagt, gemeten als aandeel van de referentie (`hoofdStof`). Forel staat dus bij omega-3.
+- Andere stoffen waarvan het ook een bron is, zeggen "Telt ook mee: Forel (bij omega-3)".
+- Heeft een stof met de route eten nog geen eigen bron, dan toont de kaart de twee rijkste bronnen van die stof met ☆ ("Kies een bron met ☆:"), binnen je voedingswijze.
+
+**Prijs van de voedingsoptie:** Dennis akkoord met het voorstel (tabel met een indicatieve prijs per portie). Bouwvolgorde en prijsbron staan in het antwoord van 7 oktober; nog niet gebouwd.

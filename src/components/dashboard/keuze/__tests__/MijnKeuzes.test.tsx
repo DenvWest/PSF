@@ -9,7 +9,10 @@ import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 vi.mock("@/lib/ga4", () => ({ trackEvent: vi.fn() }));
 vi.mock("@/lib/clarity", () => ({ clarityTag: vi.fn() }));
 vi.mock("@/lib/account-events-client", () => ({ emitAccountClientEvent: vi.fn() }));
-vi.mock("@/lib/use-kernstof-normen", () => ({ useEiwitDoel: () => null }));
+vi.mock("@/lib/use-kernstof-normen", () => ({
+  useEiwitDoel: () => null,
+  useKernstofProfiel: () => ({ geslacht: null, zeventigPlus: false, voedingswijze: null, streefwaarden: {} }),
+}));
 const fetchMock = vi.hoisted(() => vi.fn());
 const favorieten = vi.hoisted(() => ({
   items: [] as { id: string; title: string; kind: string }[],
@@ -123,5 +126,17 @@ describe("MijnKeuzes", () => {
     await waitFor(() =>
       expect(within(eten()).getByRole("button", { name: "Haring in je dagboek zetten bij lunch" })).toBeTruthy(),
     );
+  });
+
+  it("zet een gesterd voedingsmiddel één keer neer, bij de stof waar het het meest aan bijdraagt", async () => {
+    const metD = [...statuses, status("vitamin_d", "Vitamine D")];
+    favorieten.items = [
+      { id: "voeding-route-omega3-bord", title: "", kind: "activiteit" },
+      { id: "voeding-route-vitamin_d-bord", title: "", kind: "activiteit" },
+    ];
+    render(<MijnKeuzes statuses={metD} reeksen={[]} onNaarVergelijken={vi.fn()} />);
+    await waitFor(() => expect(screen.getAllByText("Haring")).toHaveLength(1));
+    expect(screen.getByText("Telt ook mee: Haring (bij omega-3)")).toBeTruthy();
+    expect(screen.getByText("Kies een bron met ☆:")).toBeTruthy();
   });
 });

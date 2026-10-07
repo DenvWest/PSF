@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { FOOD_CATALOG } from "@/data/nutrition/food-catalog";
 import type { KeuzeStofStand } from "@/lib/keuze-stof-stand";
-import { brengtOokMee, checkOordeelVoorStof, euroPerDag, isBronVan, supplementErbij } from "@/lib/keuze-stofkaart";
+import { brengtOokMee, checkOordeelVoorStof, euroPerDag, hoofdStof, isBronVan, supplementErbij } from "@/lib/keuze-stofkaart";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 
 function stand(overrides: Partial<KeuzeStofStand>): KeuzeStofStand {
@@ -109,5 +109,13 @@ describe("isBronVan", () => {
     const haring = FOOD_CATALOG.find((entry) => entry.key === "haring")!;
     expect(isBronVan(haring, "omega3")).toBe(true);
     expect(isBronVan(haring, "magnesium")).toBe(false);
+  });
+});
+
+describe("hoofdStof", () => {
+  it("forel hoort bij omega-3, ook al is hij ook een bron van eiwit en vitamine D", () => {
+    const forel = FOOD_CATALOG.find((entry) => entry.key === "forel")!;
+    expect(hoofdStof(forel, ["protein", "omega3", "magnesium", "zinc", "vitamin_d"])).toBe("omega3");
+    expect(hoofdStof(forel, ["magnesium", "zinc"])).toBeNull();
   });
 });
