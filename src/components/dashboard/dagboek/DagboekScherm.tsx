@@ -24,6 +24,7 @@ import {
   type DagboekItemBron,
 } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
+import { sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
 import type { ProteinTargetRange } from "@/lib/protein-target";
 import {
   type SupermarktPortie,
@@ -458,23 +459,31 @@ export default function DagboekScherm({
         if (!response.ok) throw new Error("Kon je dag niet opslaan.");
         if (!isNieuwste()) return;
 
-        const nieuweDag: DagboekDag = {
-          date: datum,
-          soort: dagSoortVoor(datum),
-          porties: portiesUitItems(volgende),
-          items: volgende,
-        };
-        setDagen((vorige) => [nieuweDag, ...vorige.filter((d) => d.date !== datum)]);
+        const metItems = new Set(volgende.map((item) => item.moment));
+        setDagen((vorige) => {
+          // Een maaltijd met items is gegeten: "niet gegeten" vervalt, net als op de server.
+          const overgeslagen = (vorige.find((d) => d.date === datum)?.overgeslagen ?? []).filter(
+            (moment) => !metItems.has(moment as DagboekItem["moment"]),
+          );
+          const nieuweDag: DagboekDag = {
+            date: datum,
+            soort: dagSoortVoor(datum),
+            porties: portiesUitItems(volgende),
+            items: volgende,
+            overgeslagen,
+          };
+          return [nieuweDag, ...vorige.filter((d) => d.date !== datum)];
+        });
         // De server heeft deze lijst nu; de lokale override mag weg. Laten
         // staan zou hem bij een volgende dagwissel alsnog kunnen terugzetten.
         setBewerkt((huidig) => (huidig?.datum === datum ? null : huidig));
 
         trackEvent("nutrition_dagboek_day_saved", {
           surface: "dagboek_tab",
-          soort: nieuweDag.soort,
+          soort: dagSoortVoor(datum),
         });
         emitAccountClientEvent("nutrition.dagboek_day_saved", {
-          day_kind: nieuweDag.soort,
+          day_kind: dagSoortVoor(datum),
           filled_days: gevuldeDatums.length,
           surface: "dagboek_tab",
         });
@@ -492,6 +501,40 @@ export default function DagboekScherm({
     },
     [datum, gevuldeDatums.length],
   );
+
+  const overgeslagenVandaag = useMemo(
+    () => new Set(sanitizeHoofdmaaltijden(dagen.find((dag) => dag.date === datum)?.overgeslagen ?? [])),
+    [dagen, datum],
+  );
+
+  async function zetOvergeslagen(moment: EetmomentId, aan: boolean) {
+    const vorige = [...overgeslagenVandaag];
+    const volgende = sanitizeHoofdmaaltijden(aan ? [...vorige, moment] : vorige.filter((m) => m !== moment));
+    const zet = (lijst: EetmomentId[]) =>
+      setDagen((dagenNu) => {
+        const bestaand = dagenNu.find((d) => d.date === datum);
+        const dag: DagboekDag = bestaand
+          ? { ...bestaand, overgeslagen: lijst }
+          : { date: datum, soort: dagSoortVoor(datum), porties: {}, items: [], overgeslagen: lijst };
+        return [dag, ...dagenNu.filter((d) => d.date !== datum)];
+      });
+    zet(volgende);
+    setError(null);
+    try {
+      const response = await fetch("/api/account/nutrition-daybook", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date: datum, overgeslagen: volgende }),
+      });
+      if (!response.ok) throw new Error("Kon je dag niet opslaan.");
+      trackEvent("nutrition_dagboek_maaltijd_overgeslagen", { moment, aan });
+      emitAccountClientEvent("nutrition.dagboek_maaltijd_overgeslagen", { moment, aan, surface: "dagboek_tab" });
+    } catch (cause) {
+      zet(vorige);
+      setError(cause instanceof Error ? cause.message : "Kon je dag niet opslaan.");
+    }
+  }
 
   function wijzig(volgende: DagboekItem[]) {
     setBewerkt({ datum, items: volgende });
@@ -1023,6 +1066,10 @@ export default function DagboekScherm({
                 items={items}
                 nevoProducten={nevoProducten}
                 busy={busy}
+                overgeslagen={overgeslagenVandaag.has(moment.id)}
+                onOvergeslagen={
+                  moment.id === "tussendoor" ? undefined : (aan) => void zetOvergeslagen(moment.id, aan)
+                }
                 onToevoegen={(id) => {
                   emitAccountClientEvent("nutrition.dagboek_maaltijd_geopend", {
                     moment: id,

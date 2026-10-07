@@ -2,13 +2,13 @@
 
 Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties gaan bij PerfectSupplement altijd handmatig via **Supabase Dashboard → SQL Editor** (nooit `supabase db push`), en dat lukt niet vanaf mobiel. Daarom houdt Claude deze lijst bij: wat hier staat, moet jij thuis nog draaien.
 
-**Regel voor Claude:** elke nieuwe `supabase/migrations/*.sql` krijgt in **dezelfde commit** een blok onder "Nog uit te voeren". `npm run check:migraties` en CI blokkeren als dat niet gebeurt.
+**Regel voor Claude:** elke nieuwe `supabase/migrations/*.sql` krijgt in **dezelfde commit** een blok onder "Nog uit te voeren". `npm run check:migraties` en CI blokkeren als dat niet gebeurt. Een additieve migratie gaat bovendien **meteen als eigen PR naar `main`** (alleen `.sql` + dit blok), zodat hij hier in de hoofdmap staat; de code die hem nodig heeft wacht op de feature-branch.
 
 ## Status
 
-- **Baseline toegepast t/m:** `20261006150000_kernstof_profiel_leeftijd_activiteit.sql`
+- **Baseline toegepast t/m:** `20261007120000_eetpatroon_overgeslagen.sql`
 - **Openstaand:** 0
-- **Laatst bijgewerkt:** 6 oktober 2026
+- **Laatst bijgewerkt:** 7 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
@@ -47,6 +47,7 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 7 oktober 2026 | `20261007120000_eetpatroon_overgeslagen.sql` | Door Dennis gedraaid in de SQL Editor en opgeslagen. |
 | 6 oktober 2026 | `20261006150000_kernstof_profiel_leeftijd_activiteit.sql` | Door Dennis gedraaid in de SQL Editor. |
 | 6 oktober 2026 | `20261006120000_kernstof_profiel_menstruatie.sql` | Door Dennis gedraaid in de SQL Editor (na de tabel hieronder). |
 | 6 oktober 2026 | `20261005120000_account_kernstof_profiel.sql` | Door Dennis gedraaid in de SQL Editor. |

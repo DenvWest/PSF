@@ -4,6 +4,7 @@ import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import { gehalteWeergavePer100g } from "@/lib/nutrition-catalog-gehalte";
 import { bedragVanItem, type DagboekItem } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
+import { HOOFDMAALTIJDEN, verwachteMaaltijden } from "@/lib/nutrition-eetpatroon";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import type { StofBron, StofPerMoment } from "@/lib/nutrition-stof-bronnen";
 import type { SupermarktPortie, SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
@@ -53,12 +54,16 @@ export function supplementVergelijkingVoor(stof: PatroonStof): string | null {
   return isKernstof(stof) ? nutrientReferences[stof].comparisonPath : (VERGELIJKING_GEVOLGD[stof] ?? null);
 }
 
-export const HOOFDMAALTIJDEN: readonly EetmomentId[] = ["ontbijt", "lunch", "avondeten"];
+export { HOOFDMAALTIJDEN };
 
 export type VoedingsdataBron = {
   itemsPerDag: ReadonlyMap<string, readonly DagboekItem[]>;
   etiketPerDag: Readonly<Record<string, readonly SupermarktPortie[]>>;
   nevoProducten: ReadonlyMap<string, SupermarktProduct>;
+  /** Hoofdmaaltijden die op die dag bewust niet gegeten zijn ("niet gegeten" in het dagboek). */
+  overgeslagenPerDag?: ReadonlyMap<string, readonly EetmomentId[]>;
+  /** Je gewone maaltijden uit Je doelen; leeg of weggelaten = alle drie. */
+  gewoneMaaltijden?: readonly EetmomentId[] | null;
 };
 
 /** Wat één product op één maaltijd van deze stof leverde. `bedrag` null = geen gehalte bekend. */
@@ -72,8 +77,10 @@ export type StofBijdrage = {
 
 export type MomentMeting = {
   moment: EetmomentId;
-  /** Of er op dit moment iets in het dagboek stond (ook zonder deze stof). */
+  /** Of er op dit moment iets in het dagboek stond (ook zonder deze stof), of hij als "niet gegeten" staat. */
   geregistreerd: boolean;
+  /** Bewust niet gegeten: geregistreerd met 0, niet in het gebruikelijke gemiddelde. */
+  overgeslagen: boolean;
   som: number;
   /** De som zonder benaderingen: alleen hiermee mag "gehaald". */
   somStreng: number;
@@ -82,8 +89,10 @@ export type MomentMeting = {
 export type DagMeting = {
   datum: string;
   geregistreerd: boolean;
-  /** Ontbijt, lunch én avondeten geregistreerd. */
+  /** Al je gewone maaltijden geregistreerd (of als niet gegeten gemarkeerd). */
   volledig: boolean;
+  /** Je gewone maaltijden: wat deze dag nodig had om volledig te zijn. */
+  verwacht: readonly EetmomentId[];
   som: number;
   somStreng: number;
   benaderd: boolean;
@@ -163,7 +172,13 @@ function geregistreerdeMomenten(bron: VoedingsdataBron, datum: string): Set<Eetm
 
 export function meetDag(stof: PatroonStof, bron: VoedingsdataBron, datum: string): DagMeting {
   const bijdragen = bijdragenVanDag(stof, bron, datum);
-  const geregistreerd = geregistreerdeMomenten(bron, datum);
+  const gegeten = geregistreerdeMomenten(bron, datum);
+  // Wat je toch at, telt als gegeten: een maaltijd met items is niet overgeslagen.
+  const overgeslagen = new Set(
+    (bron.overgeslagenPerDag?.get(datum) ?? []).filter((moment) => !gegeten.has(moment)),
+  );
+  const geregistreerd = new Set([...gegeten, ...overgeslagen]);
+  const verwacht = verwachteMaaltijden(bron.gewoneMaaltijden);
 
   const momenten = EETMOMENTEN.map(({ id }): MomentMeting => {
     let som = 0;
@@ -173,13 +188,20 @@ export function meetDag(stof: PatroonStof, bron: VoedingsdataBron, datum: string
       som += bijdrage.bedrag;
       if (!bijdrage.benaderd) somStreng += bijdrage.bedrag;
     }
-    return { moment: id, geregistreerd: geregistreerd.has(id), som: afgerond(som), somStreng: afgerond(somStreng) };
+    return {
+      moment: id,
+      geregistreerd: geregistreerd.has(id),
+      overgeslagen: overgeslagen.has(id),
+      som: afgerond(som),
+      somStreng: afgerond(somStreng),
+    };
   });
 
   return {
     datum,
     geregistreerd: geregistreerd.size > 0,
-    volledig: HOOFDMAALTIJDEN.every((moment) => geregistreerd.has(moment)),
+    volledig: verwacht.every((moment) => geregistreerd.has(moment)),
+    verwacht,
     som: afgerond(momenten.reduce((totaal, m) => totaal + m.som, 0)),
     somStreng: afgerond(momenten.reduce((totaal, m) => totaal + m.somStreng, 0)),
     benaderd: bijdragen.some((b) => b.benaderd && b.bedrag !== null && b.bedrag > 0),

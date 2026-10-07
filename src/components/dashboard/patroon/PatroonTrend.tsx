@@ -109,7 +109,7 @@ export default function PatroonTrend({
         {schaal === "maaltijd"
           ? "Per maaltijd: wat elke maaltijd van de dagnorm leverde. Een maaltijd haalt geen dagnorm, dus geen oordeel."
           : schaal === "dag"
-            ? "Per dag, als deel van de norm (bovenrand = 100%). Onder elke dag staat hoeveel van de drie hoofdmaaltijden je registreerde."
+            ? "Per dag, als deel van de norm (bovenrand = 100%). Onder elke dag staat hoeveel van je gewone maaltijden je registreerde (in te stellen bij Je doelen)."
             : "Per week: gemiddeld per geregistreerde dag, met hoeveel dagen volledig waren."}{" "}
 <span className="block pt-1">
           Elke stof heeft zijn eigen kleur; de vulling zegt hoe het ervoor staat:{" "}

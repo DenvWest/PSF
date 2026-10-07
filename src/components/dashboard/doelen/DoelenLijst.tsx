@@ -8,6 +8,7 @@ import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import { onderzoekKort, onderzoekLang } from "@/data/nutrition/onderzoek-per-stof";
 import type { Activiteit, KernstofMetNorm } from "@/data/nutrition/voedingsnormen";
 import { trackEvent } from "@/lib/ga4";
+import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import {
   isGeldigeLeeftijd,
   isGeldigeStreefwaarde,
@@ -66,6 +67,26 @@ const BELASTING_OPTIES: ReadonlyArray<{ waarde: number; label: string; uitleg: s
   { waarde: 3, label: "Actief", uitleg: "Regelmatig, drie tot vier keer per week" },
   { waarde: 4, label: "Zwaar", uitleg: "Bijna dagelijks of gericht op opbouw" },
 ];
+
+/** Eetpatroon als vaste combinaties: één tik in plaats van drie vinkjes. Leeg = alle drie. */
+const EETPATROON_OPTIES: ReadonlyArray<{ waarde: number; label: string; uitleg: string; maaltijden: EetmomentId[] }> = [
+  { waarde: 1, label: "Lunch en avondeten", uitleg: "Je slaat ontbijt meestal over, bijvoorbeeld bij periodiek vasten", maaltijden: ["lunch", "avondeten"] },
+  { waarde: 2, label: "Ontbijt en avondeten", uitleg: "Je slaat lunch meestal over", maaltijden: ["ontbijt", "avondeten"] },
+  { waarde: 3, label: "Ontbijt en lunch", uitleg: "Je slaat avondeten meestal over", maaltijden: ["ontbijt", "lunch"] },
+  { waarde: 4, label: "Eén maaltijd: avondeten", uitleg: "Je eet één keer per dag", maaltijden: ["avondeten"] },
+];
+
+function eetpatroonCode(gewone: readonly EetmomentId[] | null): number | null {
+  if (!gewone) return null;
+  return EETPATROON_OPTIES.find((optie) => optie.maaltijden.join() === gewone.join())?.waarde ?? null;
+}
+
+function eetpatroonLabel(gewone: readonly EetmomentId[] | null): string {
+  if (!gewone) return "Ontbijt, lunch en avondeten";
+  const namen = [...gewone];
+  const tekst = namen.length === 1 ? namen[0]! : `${namen.slice(0, -1).join(", ")} en ${namen[namen.length - 1]}`;
+  return tekst.charAt(0).toUpperCase() + tekst.slice(1);
+}
 
 const GESLACHT_OPTIES = [
   { waarde: 1, label: "Man", uitleg: "Magnesium 350 mg, zink 13 mg, ijzer 11 mg per dag" },
@@ -342,6 +363,32 @@ export default function DoelenLijst() {
               leegLabel: "Niet ingevuld",
               leegUitleg: "We rekenen met licht actief. Dit bepaalt je vezelnorm (per MJ energie); sport zelf staat hierboven.",
               onBewaar: (waarde) => bewaarKernstof({ activiteit: (waarde ?? null) as Activiteit | null }, "activiteit"),
+            })
+          }
+        />
+      </Sectie>
+
+      <Sectie
+        titel="Eetpatroon"
+        uitleg="Bepaalt wanneer een dag in Je patroon volledig is. Een losse dag zonder lunch zet je in het dagboek op 'Niet gegeten'."
+      >
+        <Regel
+          label="Je eet meestal"
+          waarde={eetpatroonLabel(doelen.gewoneMaaltijden)}
+          gedempt={doelen.gewoneMaaltijden === null}
+          onKies={() =>
+            open("gewone_maaltijden", {
+              soort: "keuze",
+              titel: "Welke maaltijden eet je meestal?",
+              waarde: eetpatroonCode(doelen.gewoneMaaltijden),
+              opties: EETPATROON_OPTIES,
+              leegLabel: "Ontbijt, lunch en avondeten",
+              leegUitleg: "De standaard: een dag is volledig met alle drie.",
+              onBewaar: (waarde) =>
+                bewaarVoeding(
+                  { gewoneMaaltijden: EETPATROON_OPTIES.find((optie) => optie.waarde === waarde)?.maaltijden ?? null },
+                  "gewone_maaltijden",
+                ),
             })
           }
         />
