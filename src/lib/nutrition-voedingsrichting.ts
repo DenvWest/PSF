@@ -1,7 +1,8 @@
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 
 /**
- * De richting van je voeding (`NUT_DOEL`): waar je naartoe wilt. Staat in Je
+ * De richting van je voeding (`NUT_DOEL`), gevraagd als herkenning: "Waar
+ * loop je het meest tegenaan?" (ik-vorm, niet als formulierdoel). Staat in Je
  * doelen boven het concrete doel uit de check (ijkpunt 0–10, `domain-goal`).
  * Besluit: `BESLUIT_VOEDINGSRICHTING_2026-10.md`.
  *
@@ -26,12 +27,16 @@ import type { NutrientId } from "@/data/nutrition/intake-reference";
  * geen klachten, de volgorde blijft neutraal en de copy zegt waarom.
  */
 
-export const VOEDINGSRICHTINGEN = ["energie", "gewicht", "spier", "gezonder", "klachten", "weet_niet"] as const;
+export const VOEDINGSRICHTINGEN = ["energie", "gewicht", "spier", "structuur", "weet_niet", "klachten"] as const;
 
 export type Voedingsrichting = (typeof VOEDINGSRICHTINGEN)[number];
 
 type Richting = {
+  /** De optie in de herkenningsvraag "Waar loop je het meest tegenaan?" (ik-vorm). */
   label: string;
+  /** Kort, voor de waarde rechts in Je doelen. */
+  kort: string;
+  /** Wat de keuze in Je patroon doet. */
   uitleg: string;
   /** Kernstoffen die naar boven gaan, in deze volgorde. Leeg = neutrale volgorde. */
   eerst: readonly NutrientId[];
@@ -41,38 +46,45 @@ type Richting = {
 
 export const RICHTINGEN: Record<Voedingsrichting, Richting> = {
   energie: {
-    label: "Energie overdag",
-    uitleg: "Minder inzakken in de middag",
+    label: "Ik zak 's middags in, ben vaak moe",
+    kort: "Vaak moe",
+    uitleg: "Magnesium komt bovenaan in Je patroon",
     eerst: ["magnesium"],
     waarom: "Magnesium staat bovenaan: het draagt bij tot de vermindering van vermoeidheid (EU-claim).",
   },
   gewicht: {
-    label: "Gewicht omlaag",
-    uitleg: "Afvallen zonder spier te verliezen",
+    label: "Ik wil afvallen, zonder spier te verliezen",
+    kort: "Afvallen",
+    uitleg: "Eiwit komt bovenaan in Je patroon",
     eerst: ["protein"],
     waarom: "Eiwit staat bovenaan: het draagt bij tot het behoud van spiermassa, ook als je afvalt (EU-claim).",
   },
   spier: {
-    label: "Spier en kracht behouden",
-    uitleg: "Sterk blijven, ook met de jaren",
+    label: "Ik merk dat ik minder sterk word",
+    kort: "Sterk blijven",
+    uitleg: "Eiwit en vitamine D komen bovenaan in Je patroon",
     eerst: ["protein", "vitamin_d"],
     waarom: "Eiwit en vitamine D staan bovenaan: ze dragen bij tot het behoud van spiermassa en de normale spierfunctie (EU-claims).",
   },
-  gezonder: {
-    label: "Algemeen gezonder",
-    uitleg: "Geen specifiek doel, wel beter eten",
+  structuur: {
+    label: "Ik heb weinig structuur in mijn eten",
+    kort: "Meer structuur",
+    uitleg: "Je patroon wijst je naar je maaltijdverdeling",
+    eerst: [],
+    waarom:
+      "Voor structuur: Per maaltijd laat zien welke maaltijd wat levert, en bij Je doelen → Eetpatroon zet je welke maaltijden je meestal eet.",
+  },
+  weet_niet: {
+    label: "Ik weet niet meer wat gezond is",
+    kort: "Overzicht krijgen",
+    uitleg: "De volgorde blijft neutraal: eerst wat het verst onder de norm zit",
     eerst: [],
     waarom: null,
   },
   klachten: {
-    label: "Klachten verminderen",
-    uitleg: "Er speelt iets waar je last van hebt",
-    eerst: [],
-    waarom: null,
-  },
-  weet_niet: {
-    label: "Weet ik nog niet",
-    uitleg: "Prima: dan blijft de volgorde neutraal",
+    label: "Ik heb klachten (buik, darmen, …)",
+    kort: "Klachten",
+    uitleg: "We verwijzen je door; de volgorde blijft neutraal",
     eerst: [],
     waarom: null,
   },

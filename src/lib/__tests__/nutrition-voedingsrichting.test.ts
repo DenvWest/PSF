@@ -33,7 +33,8 @@ describe("voedingsrichting", () => {
   it("legt de volgorde uit, en verwijst bij klachten door", () => {
     expect(richtingZin("spier")).toMatch(/Eiwit en vitamine D staan bovenaan/);
     expect(richtingZin("klachten")).toBe(KLACHTEN_DOORVERWIJZING);
-    expect(richtingZin("gezonder")).toBeNull();
+    expect(richtingZin("structuur")).toMatch(/Per maaltijd/);
+    expect(richtingZin("weet_niet")).toBeNull();
     expect(richtingZin(null)).toBeNull();
   });
 

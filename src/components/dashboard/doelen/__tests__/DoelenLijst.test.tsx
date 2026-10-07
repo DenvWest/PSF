@@ -165,8 +165,8 @@ describe("DoelenLijst", () => {
 
   it("bewaart de richting en toont de doorverwijzing bij klachten", async () => {
     render(<DoelenLijst />);
-    fireEvent.click(await screen.findByRole("button", { name: /Richting\s*Nog niet gekozen/ }));
-    fireEvent.click(screen.getByRole("radio", { name: /Klachten verminderen/ }));
+    fireEvent.click(await screen.findByRole("button", { name: /Waar je tegenaan loopt\s*Nog niet gekozen/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Ik heb klachten/ }));
     fireEvent.click(screen.getByRole("button", { name: "Opslaan" }));
 
     await waitFor(() => expect(screen.getByText(/Dit dashboard beoordeelt geen klachten/)).toBeTruthy());

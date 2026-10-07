@@ -382,17 +382,17 @@ export default function DoelenLijst() {
 
       <Sectie
         titel="Voeding"
-        uitleg="Je richting kiest alleen de volgorde in Je patroon, nooit je score. Je eetpatroon bepaalt wanneer een dag volledig is; een losse dag zonder lunch zet je in het dagboek op 'Niet gegeten'."
+        uitleg="Waar je tegenaan loopt kiest alleen de volgorde in Je patroon, nooit je score. Je eetpatroon bepaalt wanneer een dag volledig is; een losse dag zonder lunch zet je in het dagboek op 'Niet gegeten'."
       >
         <Regel
-          label="Richting"
+          label="Waar je tegenaan loopt"
           onder={doelen.voedingsrichting === "klachten" ? KLACHTEN_DOORVERWIJZING : null}
-          waarde={doelen.voedingsrichting ? RICHTINGEN[doelen.voedingsrichting].label : "Nog niet gekozen"}
+          waarde={doelen.voedingsrichting ? RICHTINGEN[doelen.voedingsrichting].kort : "Nog niet gekozen"}
           gedempt={doelen.voedingsrichting === null}
           onKies={() =>
             open("voedingsrichting", {
               soort: "keuze",
-              titel: "Waar wil je met je voeding naartoe?",
+              titel: "Waar loop je het meest tegenaan?",
               waarde: doelen.voedingsrichting ? VOEDINGSRICHTINGEN.indexOf(doelen.voedingsrichting) + 1 : null,
               opties: RICHTING_OPTIES,
               leegLabel: "Nog niet gekozen",
