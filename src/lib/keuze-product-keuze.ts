@@ -1,4 +1,5 @@
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
+import { isEetmomentId, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 
 /**
  * Het supplement dat je in Keuze → Vergelijken voor één stof koos — één
@@ -82,4 +83,45 @@ export function keuzeTerugHref(nutrient: NutrientId): string {
 
 export function stofLabel(nutrient: NutrientId): string {
   return nutrientReferences[nutrient].label;
+}
+
+/**
+ * Wanneer je het gekozen supplement inneemt: ontbijt, lunch, avondeten of
+ * tussendoor — dezelfde vier momenten als het dagboek. Bewaard zoals de
+ * routekeuze (`voeding-route-…`): als eigen favoriet met het moment in het
+ * id, zodat er geen migratie nodig is. Eén moment per stof.
+ *
+ * Wordt straks gebruikt om het supplement met één tik op dat moment te loggen
+ * en voor timing in "Jouw stack" (premium); nu is het je eigen geheugensteun.
+ */
+const MOMENT_PREFIX = "voeding-moment-";
+
+export function momentKeuzeId(nutrient: NutrientId, moment: EetmomentId): string {
+  return `${MOMENT_PREFIX}${nutrient}-${moment}`;
+}
+
+export function parseMomentKeuze(id: string): { nutrient: NutrientId; moment: EetmomentId } | null {
+  if (!id.startsWith(MOMENT_PREFIX)) return null;
+  const rest = id.slice(MOMENT_PREFIX.length);
+  const nutrient = STOFFEN.find((stof) => rest.startsWith(`${stof}-`));
+  if (!nutrient) return null;
+  const moment = rest.slice(nutrient.length + 1);
+  return isEetmomentId(moment) ? { nutrient, moment } : null;
+}
+
+export function momentVoorStof(nutrient: NutrientId, items: readonly { id: string }[]): EetmomentId | null {
+  for (const item of items) {
+    const keuze = parseMomentKeuze(item.id);
+    if (keuze?.nutrient === nutrient) return keuze.moment;
+  }
+  return null;
+}
+
+export function momentKeuzeIdsVoorStof(nutrient: NutrientId, items: readonly { id: string }[]): string[] {
+  return items.filter((item) => parseMomentKeuze(item.id)?.nutrient === nutrient).map((item) => item.id);
+}
+
+/** Of een favoriet bij de stofkeuzes hoort (route, product of moment) en dus in de stofkaart van Mijn keuzes staat. */
+export function isStofKeuzeFavoriet(id: string): boolean {
+  return id.startsWith("voeding-route-") || parseProductKeuze(id) !== null || parseMomentKeuze(id) !== null;
 }

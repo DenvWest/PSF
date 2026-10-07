@@ -378,7 +378,7 @@ export default function PatroonBronZoek({
             }}
             className="cursor-pointer border-0 bg-transparent p-0 text-left text-[12.5px] font-semibold text-[var(--vd-sage-2)]"
           >
-            Bewaard bij {bevestiging === "supplement" ? "Mijn supplementen (en Keuze → Favorieten)" : "Mijn producten"} →
+            Bewaard bij {bevestiging === "supplement" ? "Mijn supplementen (en Keuze → Mijn keuzes)" : "Mijn producten"} →
           </button>
         </div>
       ) : null}

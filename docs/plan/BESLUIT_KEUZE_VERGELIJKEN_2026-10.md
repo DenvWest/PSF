@@ -132,3 +132,24 @@ Na Dennis' review op :3004:
 5. **Overal een weg terug.** Ook "Alle N met PS-Score →" (`/supplementen`) en "Vergelijk op prijs →" (`/beste/*`) dragen nu de herkomst. `TerugNaarKeuze` staat op alle drie de bestemmingen: bovenaan als knop, en op mobiel als zwevende "← Je keuze" zodra die knop uit beeld is. Op `/beste/*` zweeft hij boven de vaste koopbalk.
 
 **Meting:** `keuze_eiwitdoel_instellen` {surface, plek?}, `keuze_terug_van_product` {nutrient, surface: product|supplementen|beste, plek: boven|zwevend, product?}, `keuze_product_naar_catalogus` {nutrient, product}.
+
+---
+
+## Herziening 7 oktober (zesde ronde): Favorieten wordt "Mijn keuzes"
+
+**Aanleiding.** Dennis vond Favorieten "slap": een losse lijst titels zonder waarom en zonder iets om mee te doen. Hij ging akkoord met het voorstel en met de naam "Mijn keuzes" (dat wijzigt besluit 2 van 6 okt, "Favorieten blijft", alleen in naam; de id `favorieten` blijft voor oude links en meetreeksen). Zijn vraag om het moment (ontbijt, lunch, avondeten, tussendoor) erbij te zetten is meegenomen.
+
+### Besluiten
+
+1. **Op voeding toont de tab een overzicht per stof, in dezelfde volgorde als Vergelijken.**
+   - Bovenaan: "x van y stoffen gekozen · n supplementen · € per dag (± € per maand)".
+   - Per stof met een keuze één kaart: de stand uit je dagboek, je gesterde voedingsmiddelen die echt een bron van die stof zijn (≥ 15 % van de referentie per portie, met ★ om weg te halen en ＋ naar het dagboek), en je gekozen supplement (vorm, etiket per dag, prijs per dag, PS-Score, productpagina).
+   - "Wijzig" opent Vergelijken op die stof.
+   - Stoffen zonder keuze staan in één regel eronder.
+2. **"Wanneer neem je het?"** Per gekozen supplement één moment: ontbijt, lunch, avondeten of tussendoor. Dat zijn dezelfde vier momenten als het dagboek. Opgeslagen als favoriet `voeding-moment-<stof>-<moment>`, net als de routekeuze. **Bewust zonder migratie:** `account_favorites` heeft geen momentkolom, en een migratie zou de deploy blokkeren voor een veld dat nu alleen geheugensteun is. Straks gebruikt voor (a) het supplement met één tik op dat moment loggen en (b) timing in "Jouw stack".
+3. **Niets verdwijnt.** Wat niet bij een stofkeuze hoort (supplementen met een ster uit Je patroon, ladderkeuzes) staat eronder onder "Ook bewaard".
+4. **Geen herinnering met tijd in deze ronde.** `alert_enabled` verstuurt nog niets (voorbereidend veld), en het moment dekt de vraag "wanneer".
+
+**Premium (volgende stap, niet gebouwd):** "Jouw stack" over alle keuzes samen (dubbelingen, de bovengrens over alle bronnen, timing per moment, een goedkopere combinatie van gelijke kwaliteit) en "Jouw week". Gratis blijft alles hierboven.
+
+**Meting:** `mijn_keuzes_moment` {nutrient, moment|geen} (GA4 + Clarity), `mijn_keuzes_naar_vergelijken` {nutrient}, `keuze_vergelijken_ps_score_click` {surface: mijn_keuzes, doel: productpagina}, `nutrition_dagboek_favoriet_*` {surface: mijn_keuzes}, `keuze_bron_naar_dagboek` {surface: mijn_keuzes}.

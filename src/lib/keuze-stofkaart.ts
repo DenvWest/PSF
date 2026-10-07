@@ -155,3 +155,15 @@ export function brengtOokMee(entry: CatalogEntry, stof: NutrientId, limiet = 3):
 export function euroPerDag(centen: number): string {
   return `€ ${(centen / 100).toFixed(2).replace(".", ",")}`;
 }
+
+/**
+ * Of een voedingsmiddel een echte bron is van deze stof: één portie levert
+ * minstens 15 % van de referentie — dezelfde drempel als {@link brengtOokMee}.
+ * Zo komt een gesterde haring in Mijn keuzes bij omega-3 en vitamine D, en
+ * niet bij magnesium.
+ */
+export function isBronVan(entry: CatalogEntry, stof: NutrientId): boolean {
+  const ref = referentie(stof);
+  const portie = gehaltePerPortie(entry, stof);
+  return Boolean(ref && portie && portie.value / ref >= DREMPEL);
+}

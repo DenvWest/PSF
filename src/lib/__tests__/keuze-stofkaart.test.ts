@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { FOOD_CATALOG } from "@/data/nutrition/food-catalog";
 import type { KeuzeStofStand } from "@/lib/keuze-stof-stand";
-import { brengtOokMee, checkOordeelVoorStof, euroPerDag, supplementErbij } from "@/lib/keuze-stofkaart";
+import { brengtOokMee, checkOordeelVoorStof, euroPerDag, isBronVan, supplementErbij } from "@/lib/keuze-stofkaart";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 
 function stand(overrides: Partial<KeuzeStofStand>): KeuzeStofStand {
@@ -101,5 +101,13 @@ describe("checkOordeelVoorStof", () => {
 describe("euroPerDag", () => {
   it("schrijft centen als euro met komma", () => {
     expect(euroPerDag(14)).toBe("€ 0,14");
+  });
+});
+
+describe("isBronVan", () => {
+  it("haring is een bron van omega-3, niet van magnesium", () => {
+    const haring = FOOD_CATALOG.find((entry) => entry.key === "haring")!;
+    expect(isBronVan(haring, "omega3")).toBe(true);
+    expect(isBronVan(haring, "magnesium")).toBe(false);
   });
 });

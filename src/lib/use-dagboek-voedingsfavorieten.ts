@@ -75,7 +75,7 @@ export function useDagboekVoedingsfavorieten(surface: string) {
     [keys, surface],
   );
 
-  return { isBewaard: (key: string) => keys.has(key), wissel, bezig };
+  return { isBewaard: (key: string) => keys.has(key), wissel, bezig, keys: [...keys] as readonly string[] };
 }
 
 export type DagboekVoedingsfavorieten = ReturnType<typeof useDagboekVoedingsfavorieten>;

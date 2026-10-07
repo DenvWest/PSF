@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  isStofKeuzeFavoriet,
   keuzeTerugHref,
+  momentKeuzeId,
+  momentVoorStof,
+  parseMomentKeuze,
   leesKeuzeHerkomst,
   metKeuzeHerkomst,
   parseProductKeuze,
@@ -41,5 +45,15 @@ describe("productkeuze per stof", () => {
     expect(metKeuzeHerkomst("/supplementen?categorie=magnesium", "magnesium")).toBe(
       "/supplementen?categorie=magnesium&van=keuze&stof=magnesium",
     );
+  });
+
+  it("leest het moment per stof terug en herkent stofkeuzes", () => {
+    const id = momentKeuzeId("vitamin_d", "avondeten");
+    expect(parseMomentKeuze(id)).toEqual({ nutrient: "vitamin_d", moment: "avondeten" });
+    expect(parseMomentKeuze("voeding-moment-omega3-middernacht")).toBeNull();
+    expect(momentVoorStof("vitamin_d", [{ id }])).toBe("avondeten");
+    expect(isStofKeuzeFavoriet(id)).toBe(true);
+    expect(isStofKeuzeFavoriet("voeding-route-zinc-bord")).toBe(true);
+    expect(isStofKeuzeFavoriet("dagboek-supplement-visolie-capsule-1000mg")).toBe(false);
   });
 });

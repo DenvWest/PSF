@@ -53,8 +53,8 @@ export function resolveSchapTabs(domain: PillarId): SchapTabDescriptor[] {
     tabs.push({ id: "logboek", label: "Vergelijken" });
   }
 
-  // Favorieten van dit domein — snelle beheer.
-  tabs.push({ id: "favorieten", label: "Favorieten" });
+  // Wat je in dit domein koos (sinds 7 okt "Mijn keuzes"; id blijft `favorieten` voor oude links en meetreeksen).
+  tabs.push({ id: "favorieten", label: "Mijn keuzes" });
 
   // "begeleiding" rendert nooit vandaag: er is geen product om op te wachten
   // (docs/design/voortgang-plan-later.md §8). De tab komt terug samen met dat

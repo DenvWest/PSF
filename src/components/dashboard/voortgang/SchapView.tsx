@@ -34,7 +34,9 @@ import {
 } from "@/lib/nutrition-route-choice";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import { trackEvent } from "@/lib/ga4";
+import MijnKeuzes from "@/components/dashboard/keuze/MijnKeuzes";
 import {
+  isStofKeuzeFavoriet,
   metKeuzeHerkomst,
   parseProductKeuze,
   productKeuzeContext,
@@ -135,6 +137,21 @@ export default function SchapView({
   // dragers. Buiten voeding leeg: daar bestaan geen nutriëntroutes.
   const nutritionRoutes =
     domain === "voeding" ? (data?.nutritionCheckinReadout?.routes ?? []) : [];
+
+  const mijnKeuzesActief = domain === "voeding" && nutritionRoutes.length > 0;
+  const losseFavorieten = mijnKeuzesActief
+    ? domainFavorites.filter((item) => !isStofKeuzeFavoriet(item.id))
+    : domainFavorites;
+
+  /** Van Mijn keuzes naar Vergelijken, met die stof open (leest `?stof=` bij binnenkomst). */
+  function naarVergelijken(nutrient: string | null) {
+    if (nutrient && typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("stof", nutrient);
+      window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+    }
+    onTabChange("logboek");
+  }
 
   const nutritionLogCompleted =
     buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true;
@@ -377,9 +394,23 @@ export default function SchapView({
           </div>
         ) : null}
 
-        {currentTab === "favorieten" ? (
-          <div className="flex flex-col gap-3.5">
-            {domainFavorites.length === 0 ? (
+        {/* Op voeding: Mijn keuzes per stof (`BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`,
+            zesde ronde). Wat niet bij een stofkeuze hoort — een supplement met
+            een ster uit Je patroon, een ladderkeuze — staat eronder onder
+            "Ook bewaard", zodat niets verdwijnt. */}
+        {currentTab === "favorieten" && mijnKeuzesActief ? (
+          <MijnKeuzes
+            statuses={nutritionRoutes}
+            reeksen={reeksen}
+            products={data?.keuzeProducten}
+            onNaarVergelijken={naarVergelijken}
+          />
+        ) : null}
+
+        {currentTab === "favorieten" && (!mijnKeuzesActief || losseFavorieten.length > 0) ? (
+          <div className={`flex flex-col gap-3.5 ${mijnKeuzesActief ? "mt-6" : ""}`}>
+            {mijnKeuzesActief ? <p className="vd-eyebrow m-0">Ook bewaard</p> : null}
+            {losseFavorieten.length === 0 ? (
               <KeuzeTegel>
                 <p className="m-0 text-[14px] leading-relaxed text-[var(--vd-ink-3)] text-pretty">
                   Je hebt hier nog niets bewaard. Kies iets op een van de andere tabs.
@@ -388,7 +419,7 @@ export default function SchapView({
             ) : (
               <>
                 <div className="flex flex-col gap-2">
-                  {domainFavorites.map((item) => {
+                  {losseFavorieten.map((item) => {
                     const laag = parseLadderFavoriteLayer(item.id);
                     const laagNaam =
                       laag != null ? resolveLadderLayerName(domain, laag) : null;

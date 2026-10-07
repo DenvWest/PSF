@@ -96,7 +96,7 @@ import type { StoredSupplementVerdict } from "@/types/verdict";
  * de prijs per dag. Aan de eetkant wat een portie nog meer meebrengt.
  */
 
-const STAND_KLEUR: Record<KeuzeStand, string> = {
+export const STAND_KLEUR: Record<KeuzeStand, string> = {
   op_koers: "var(--vd-sage)",
   ruimte: "var(--vd-amber)",
   niet_meetbaar: "var(--vd-ink-4)",
@@ -104,7 +104,7 @@ const STAND_KLEUR: Record<KeuzeStand, string> = {
   geen_doel: "var(--vd-ink-4)",
 };
 
-const STAND_KORT: Record<KeuzeStand, string> = {
+export const STAND_KORT: Record<KeuzeStand, string> = {
   op_koers: "op je norm",
   ruimte: "ruimte",
   niet_meetbaar: "niet te meten",
@@ -112,7 +112,7 @@ const STAND_KORT: Record<KeuzeStand, string> = {
   geen_doel: "geen eiwitdoel",
 };
 
-function kortGetal(stand: KeuzeStofStand): string {
+export function kortGetal(stand: KeuzeStofStand): string {
   if (stand.gemiddeld === null) return STAND_KORT[stand.stand];
   const norm = stand.norm ? ` / ${hoeveelheid(stand.norm)}` : "";
   return `${stand.benaderd ? "≈ " : ""}${hoeveelheid(stand.gemiddeld)}${norm} ${stand.unit}`;
