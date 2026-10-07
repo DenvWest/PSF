@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
+import PatroonMaaltijdProduct from "@/components/dashboard/patroon/PatroonMaaltijdProduct";
 import { clarityTag } from "@/lib/clarity";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { MaaltijdPatroon, MaaltijdRij } from "@/lib/nutrition-maaltijd-patroon";
-import { aandeelVanNorm } from "@/lib/nutrition-normen";
+import {
+  aandeelVan,
+  doelRegel,
+  normRegel,
+  referentieVoorKernstof,
+  referentieVoorVeld,
+  sterksteBijdragen,
+} from "@/lib/nutrition-maaltijd-referentie";
 import { datumsTussen, periodeLabel, type Periode } from "@/lib/nutrition-periode";
 import { percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 import { rondVoedingswaarde } from "@/lib/nutrition-voedingswaarde";
 import { trackEvent } from "@/lib/ga4";
-import { useKernstofNormen } from "@/lib/use-kernstof-normen";
+import { useGevolgdeNormen, useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 
 /**
  * Per maaltijd: wat ligt er gemiddeld op je ontbijt, je lunch, je avondeten.
@@ -22,7 +30,16 @@ import { useKernstofNormen } from "@/lib/use-kernstof-normen";
  * elkaar, zodat je ziet welke zijn calorieën het rijkst besteedt.
  *
  * Geen oordeel per maaltijd: de norm is een dagnorm, geen doel per maaltijd. Macro's krijgen geen percentage (macro-besluit §0.1).
+ *
+ * Elke rij zegt waartegen hij rekent: de norm met bron, en je eigen doel als
+ * je er een zette (`nutrition-maaltijd-referentie.ts`). Een tik op een product
+ * in "Wat je at" toont wat dat product alleen leverde.
  */
+
+const GEEN_NORM: Partial<Record<string, string>> = {
+  proteinG: "doel op Je doelen (gewicht en activiteit)",
+  fiberG: "norm volgt uit je gewicht op Je doelen",
+};
 
 const MACRO_TEGELS = ["energyKcal", "proteinG", "carbohydrateG", "fatG"] as const;
 
@@ -43,6 +60,9 @@ export default function PatroonMaaltijden({
   periode: Periode;
 }) {
   const normen = useKernstofNormen();
+  const gevolgd = useGevolgdeNormen();
+  const profiel = useKernstofProfiel();
+  const [openProduct, setOpenProduct] = useState<string | null>(null);
   const [moment, setMoment] = useState<EetmomentId>(
     () => patroon.find((m) => m.keer > 0)?.moment ?? "ontbijt",
   );
@@ -51,6 +71,7 @@ export default function PatroonMaaltijden({
 
   const kies = (volgende: EetmomentId) => {
     setMoment(volgende);
+    setOpenProduct(null);
     trackEvent("nutrition_patroon_maaltijd_gekozen", { moment: volgende });
     clarityTag("nutrition_patroon_maaltijd", volgende);
   };
@@ -59,9 +80,35 @@ export default function PatroonMaaltijden({
   const tabelRijen = maaltijd.rijen.filter((r) => r.veld !== "energyKcal");
   const metKeer = patroon.filter((m) => m.keer > 0);
   const eenDag = periode.van === periode.tot;
-  const periodeTekst = eenDag
-    ? `op ${periodeLabel(periode)}`
-    : `in ${datumsTussen(periode).length} dagen (${periodeLabel(periode)})`;
+  const dagen = datumsTussen(periode).length;
+  const periodeTekst = eenDag ? `op ${periodeLabel(periode)}` : `(${periodeLabel(periode)})`;
+  const naam = maaltijd.label.toLowerCase();
+
+  const stofRijen = tabelRijen.map((r) => {
+    const ref = referentieVoorVeld(r.veld, gevolgd, profiel);
+    return { r, ref, aandeel: aandeelVan(ref, r.waarde) };
+  });
+  const kernRijen = maaltijd.kernstoffen.map((k) => {
+    const ref = referentieVoorKernstof(k.nutrient, normen, profiel);
+    return { k, ref, aandeel: aandeelVan(ref, k.gemiddeld) };
+  });
+  const sterkst = sterksteBijdragen([
+    ...stofRijen.flatMap(({ r, aandeel }) => (aandeel === null || r.waarvan ? [] : [{ label: r.label, aandeel }])),
+    ...kernRijen.flatMap(({ k, ref, aandeel }) =>
+      aandeel === null || ref.weektotaal ? [] : [{ label: k.label, aandeel }],
+    ),
+  ]);
+
+  const toggleProduct = (product: { naam: string; supplement: boolean }) => {
+    const open = openProduct === product.naam ? null : product.naam;
+    setOpenProduct(open);
+    if (open) {
+      trackEvent("nutrition_patroon_product_geopend", {
+        moment,
+        soort: product.supplement ? "supplement" : "voeding",
+      });
+    }
+  };
 
   return (
     <section aria-label="Gemiddeld per maaltijd">
@@ -89,7 +136,7 @@ export default function PatroonMaaltijden({
           <p className="vd-eyebrow" style={{ margin: "0 0 0.5rem" }}>
             {eenDag
               ? `${maaltijd.label} ${periodeTekst}`
-              : `Gemiddeld per ${maaltijd.label.toLowerCase()} · ${maaltijd.keer} keer ${periodeTekst}`}
+              : `Gemiddeld per ${naam} · ${maaltijd.keer} van ${dagen} dagen geregistreerd ${periodeTekst}`}
           </p>
 
           <div className="mb-3 grid grid-cols-4 gap-2">
@@ -125,53 +172,93 @@ export default function PatroonMaaltijden({
               <div className="vd-tabel-kop">
                 <span className="!text-left">{eenDag ? "Wat je at" : "Wat je meestal at"}</span>
               </div>
-              {maaltijd.producten.slice(0, 8).map((product) => (
-                <div key={product.naam} className="vd-tabel-rij grid-cols-[1fr_auto]">
-                  <span className="vd-naam">
-                    {product.naam}
-                    {product.supplement ? <i>supplement</i> : null}
-                  </span>
-                  <span className="vd-getal">
-                    {product.eenheid === "g" ? `${product.hoeveelheid} g` : `${product.hoeveelheid}×`}
-                    {!eenDag && product.keer > 1 ? ` · ${product.keer} keer` : ""}
-                  </span>
-                </div>
-              ))}
+              {maaltijd.producten.slice(0, 8).map((product) => {
+                const open = openProduct === product.naam;
+                return (
+                  <Fragment key={product.naam}>
+                    <button
+                      type="button"
+                      aria-expanded={open}
+                      onClick={() => toggleProduct(product)}
+                      className="vd-tabel-rij w-full cursor-pointer grid-cols-[1fr_auto_14px] border-x-0 border-t-0 bg-transparent text-left font-[inherit] text-inherit hover:bg-[var(--vd-surface-2)]"
+                    >
+                      <span className="vd-naam">
+                        {product.naam}
+                        {product.supplement ? <i>supplement</i> : null}
+                      </span>
+                      <span className="vd-getal">
+                        {product.eenheid === "g" ? `${product.hoeveelheid} g` : `${product.hoeveelheid}×`}
+                        {!eenDag && product.keer > 1 ? ` · ${product.keer} keer` : ""}
+                      </span>
+                      <span aria-hidden className="text-[var(--vd-ink-3)]">
+                        {open ? "▾" : "›"}
+                      </span>
+                    </button>
+                    {open ? <PatroonMaaltijdProduct product={product} /> : null}
+                  </Fragment>
+                );
+              })}
             </section>
+          ) : null}
+
+          <p className="vd-note" style={{ margin: "0.75rem 0 0.375rem" }}>
+            &lsquo;Van norm&rsquo; is het deel van je dagnorm dat {eenDag ? `deze ${naam}` : `een gemiddelde ${naam}`}{" "}
+            dekt. Onder elke stof staat welke norm dat is en waar hij vandaan komt; een eigen doel uit Je doelen
+            staat er apart onder.
+            {!eenDag && maaltijd.keer < dagen
+              ? ` Dagen zonder ${naam} tellen niet mee: niet ingevuld is geen lege ${naam}.`
+              : ""}
+          </p>
+
+          {sterkst.length > 0 ? (
+            <p className="vd-note" style={{ margin: "0 0 0.5rem" }}>
+              <b className="text-[var(--vd-ink)]">Waar je {naam} het meest aan bijdraagt:</b>{" "}
+              {sterkst.map((b) => `${b.label.toLowerCase()} ${percentageADH(b.aandeel)}`).join(", ")} van je
+              dagnorm.
+            </p>
           ) : null}
 
           <div className="vd-tabel">
             <div className="vd-tabel-kop grid-cols-[1fr_58px_58px_52px]">
-              <span>Stof</span>
+              <span>Stof · dagnorm</span>
               <span>Gem.</span>
               <span>/100 kcal</span>
-              <span>Norm</span>
+              <span>Van norm</span>
             </div>
 
-            {tabelRijen.map((r) => (
-              <div key={r.veld} className="vd-tabel-rij grid-cols-[1fr_58px_58px_52px]">
-                <span className={`vd-naam ${r.waarvan ? "pl-3 !font-normal !text-[var(--vd-ink-2)]" : ""}`}>
-                  {r.label}
-                </span>
-                <span className="vd-getal">
-                  {getal(r.waarde, r.benaderd)} {r.waarde === null ? "" : r.unit}
-                </span>
-                <span className="vd-getal">{getal(r.per100kcal)}</span>
-                <span className="vd-getal">
-                  {r.aandeel === null ? "—" : `${r.benaderd ? "≈ " : ""}${percentageADH(r.aandeel)}`}
-                </span>
-              </div>
-            ))}
+            {stofRijen.map(({ r, ref, aandeel }) => {
+              const onder = r.waarvan ? null : (normRegel(ref) ?? GEEN_NORM[r.veld] ?? "geen dagnorm");
+              const doel = r.waarvan ? null : doelRegel(ref, r.waarde, r.unit);
+              return (
+                <div key={r.veld} className="vd-tabel-rij grid-cols-[1fr_58px_58px_52px]">
+                  <span className={`vd-naam ${r.waarvan ? "pl-3 !font-normal !text-[var(--vd-ink-2)]" : ""}`}>
+                    {r.label}
+                    {onder ? <i>{onder}</i> : null}
+                    {doel ? <i>{doel}</i> : null}
+                  </span>
+                  <span className="vd-getal">
+                    {getal(r.waarde, r.benaderd)} {r.waarde === null ? "" : r.unit}
+                  </span>
+                  <span className="vd-getal">{getal(r.per100kcal)}</span>
+                  <span className="vd-getal">
+                    {aandeel === null ? "—" : `${r.benaderd ? "≈ " : ""}${percentageADH(aandeel)}`}
+                  </span>
+                </div>
+              );
+            })}
 
             <div className="vd-tabel-kop">
               <span className="!text-left">Kernstoffen · tegen je dagnorm</span>
             </div>
-            {maaltijd.kernstoffen.map((k) => {
-              const aandeel = k.gemiddeld === null ? null : aandeelVanNorm(normen, k.nutrient, k.gemiddeld);
+            {kernRijen.map(({ k, ref, aandeel }) => {
+              const onder = normRegel(ref);
+              const doel = doelRegel(ref, k.gemiddeld, k.unit);
               return (
                 <div key={k.nutrient} className="vd-tabel-rij grid-cols-[1fr_58px_58px_52px]">
                   <span className="vd-naam">
                     {k.label}
+                    {onder ? <i>{onder}</i> : null}
+                    {doel ? <i>{doel}</i> : null}
                     {k.uitSupplement ? (
                       <i>
                         waarvan {rondVoedingswaarde(k.uitSupplement)} {k.unit} uit supplement
