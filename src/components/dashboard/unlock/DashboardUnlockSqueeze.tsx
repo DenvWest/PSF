@@ -4,16 +4,18 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import ExitButton from "@/components/app/ExitButton";
 import Wordmark from "@/components/app/Wordmark";
-import DashboardUnlockPreview from "@/components/dashboard/unlock/DashboardUnlockPreview";
+import HowItWorksQuestions from "@/components/common/HowItWorksQuestions";
+import { HOW_IT_WORKS_DISCLAIMER } from "@/data/how-it-works";
 import {
   DASHBOARD_UNLOCK_CTA,
   DASHBOARD_UNLOCK_FAQ,
   DASHBOARD_UNLOCK_GAINS,
   DASHBOARD_UNLOCK_HERO,
   DASHBOARD_UNLOCK_LOSSES,
+  DASHBOARD_UNLOCK_PRINCIPLE,
+  DASHBOARD_UNLOCK_QUESTIONS_SECTION,
   DASHBOARD_UNLOCK_RECOGNITION,
   DASHBOARD_UNLOCK_ROUTE_ACCORDION,
-  DASHBOARD_UNLOCK_SOCIAL_PROOF,
   DASHBOARD_UNLOCK_STEPS,
 } from "@/data/dashboard-unlock";
 import {
@@ -30,6 +32,24 @@ type DashboardUnlockSqueezeProps = {
 function persistVariantCookie(variant: DashboardUnlockVariant) {
   const maxAge = 60 * 60 * 24 * 30;
   document.cookie = `${DASHBOARD_UNLOCK_VARIANT_COOKIE}=${variant}; path=/; max-age=${maxAge}; samesite=lax`;
+}
+
+function QuestionsSection() {
+  return (
+    <section
+      aria-labelledby="questions-heading"
+      className="rounded-2xl border border-[var(--panel-border)] bg-[rgba(255,255,255,0.03)] p-4 text-[var(--text)] sm:p-5 lg:p-6"
+    >
+      <h2
+        id="questions-heading"
+        className="mb-4 text-xl text-[var(--text)]"
+        style={{ fontFamily: "var(--f-serif)", fontWeight: 400 }}
+      >
+        {DASHBOARD_UNLOCK_QUESTIONS_SECTION.title}
+      </h2>
+      <HowItWorksQuestions />
+    </section>
+  );
 }
 
 function GainLossContrast() {
@@ -228,26 +248,22 @@ function SqueezeContent({
       </header>
 
       <div className="mt-6 space-y-5 sm:mt-8 sm:space-y-8 lg:mt-10 lg:space-y-10">
-        <GainLossContrast />
-
         <div className="flex flex-col gap-5 sm:gap-6 xl:grid xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] xl:items-start xl:gap-10">
-          <div className="order-1 xl:order-2">
-            <div className="flex flex-col gap-5 sm:gap-6">
-              <UnlockSqueezeZone
-                variant={variant}
-                onCtaVisibleChange={setPrimaryCtaVisible}
-              />
-              <RecognitionSection />
-            </div>
-          </div>
-          <div className="order-2 xl:order-1">
-            <DashboardUnlockPreview />
+          <QuestionsSection />
+          <div className="flex flex-col gap-5 sm:gap-6">
+            <UnlockSqueezeZone
+              variant={variant}
+              onCtaVisibleChange={setPrimaryCtaVisible}
+            />
+            <RecognitionSection />
           </div>
         </div>
+
+        <GainLossContrast />
       </div>
 
       <p className="mt-6 text-center text-sm text-[var(--text-subtle)] sm:mt-8 lg:mt-10">
-        {DASHBOARD_UNLOCK_SOCIAL_PROOF.line}
+        {DASHBOARD_UNLOCK_PRINCIPLE.line}
       </p>
 
       <details className="group mt-8 rounded-2xl border border-[var(--panel-border)] bg-[rgba(255,255,255,0.03)]">
@@ -322,9 +338,7 @@ function SqueezeContent({
           className="mx-auto max-w-lg text-xs leading-relaxed"
           style={{ color: "rgba(255,255,255,0.22)" }}
         >
-          PerfectSupplement geeft adviezen op basis van leefstijl, geen medische
-          diagnoses. Je gegevens zijn van jou — exporteer of verwijder ze wanneer
-          je wilt.
+          {HOW_IT_WORKS_DISCLAIMER}
         </p>
         <p className="mt-3 text-xs leading-relaxed text-[var(--text-subtle)]">
           <Link

@@ -18,7 +18,7 @@ export const INTAKE_DELIVERABLE = {
 export const INTAKE_CTA = {
   primaryButton: "Doe de Leefstijlcheck — gratis →",
   gratisButton: "Doe de Leefstijlcheck — gratis",
-  startCheck: "Start de Leefstijlcheck →",
+  startCheck: "Start de check →",
   discoverOverview: "Ontdek jouw leefstijloverzicht — gratis →",
   discoverOverviewShort: "Ontdek jouw leefstijloverzicht — gratis",
   blogHeadline: "Wil jij zien waar jij de meeste winst pakt?",
