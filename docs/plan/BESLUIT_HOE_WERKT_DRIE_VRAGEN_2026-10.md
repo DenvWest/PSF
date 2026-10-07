@@ -30,3 +30,8 @@ Plus één disclaimer: we kijken naar wat je eet, niet naar je bloed; een tekort
 
 - Footer en de standaard meta-description van de site noemen nog "Gratis Leefstijlcheck"; `INTAKE_CTA`/`INTAKE_DELIVERABLE` dragen nog leefstijloverzicht-taal. Aparte, site-brede opruimronde.
 - `/methodologie` (sectie Voortgang: "Kompas · Voortgang · Hermeting") is nog de oude uitleg.
+
+## Aanvulling 7 oktober — terug naar hetzelfde dashboardscherm
+
+De link "Hoe werkt dit dashboard?" in het Context-paneel neemt de huidige dashboard-URL mee als `?terug=` (`buildHoeWerktDashboardHref`). Op `/hoe-werkt-dashboard` vervangt dan een knop "← Dashboard" het kruisje (dat naar de homepage ging) en brengt je naar precies dat scherm terug. `parseDashboardReturnHref` laat alleen `/dashboard`-paden toe (geen open redirect). De browser-terugknop werkte al: tab, scherm, domein, onderdeel, dag en Patroon-stand staan in de URL.
+Meetpunt: `dashboard_back_click` met `surface: "hoe_werkt_dashboard"` + Clarity `dashboard_back`.

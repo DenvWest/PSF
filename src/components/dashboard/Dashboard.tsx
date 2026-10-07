@@ -148,6 +148,7 @@ import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { resolveMovementDayChoiceForToday } from "@/lib/account-priority-pref";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import {
+  buildHoeWerktDashboardHref,
   isPillarId,
   isSchapTabId,
   isValidAgendaDate,
@@ -3398,7 +3399,18 @@ function DashboardContent({
       </p>
       <HowItWorksQuestions size="sm" className="text-[#CDD7D0]" />
       <p className="mt-3 text-[12.5px] leading-relaxed text-[#CDD7D0]">
-        <Link href="/hoe-werkt-dashboard" className="underline underline-offset-2">
+        <Link
+          href="/hoe-werkt-dashboard"
+          onClick={(event) => {
+            event.preventDefault();
+            router.push(
+              buildHoeWerktDashboardHref(
+                `${window.location.pathname}${window.location.search}`,
+              ),
+            );
+          }}
+          className="underline underline-offset-2"
+        >
           Hoe werkt dit dashboard?
         </Link>
         <span aria-hidden> · </span>

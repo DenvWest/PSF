@@ -22,12 +22,34 @@ import {
   DASHBOARD_UNLOCK_VARIANT_COOKIE,
   type DashboardUnlockVariant,
 } from "@/lib/dashboard-unlock-variant";
+import { clarityTag } from "@/lib/clarity";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 
 type DashboardUnlockSqueezeProps = {
   variant: DashboardUnlockVariant;
   persistCookie: boolean;
+  returnHref: string | null;
 };
+
+function BackToDashboardLink({ href }: { href: string }) {
+  return (
+    <Link
+      href={href}
+      onClick={() => {
+        clarityTag("dashboard_back", "hoe_werkt_dashboard");
+        trackEvent("dashboard_back_click", {
+          surface: "hoe_werkt_dashboard",
+          origin_domain: "none",
+        });
+      }}
+      aria-label="Terug naar je dashboard"
+      className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3.5 text-[13px] font-medium text-white/75 no-underline transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+    >
+      <span aria-hidden>←</span>
+      Dashboard
+    </Link>
+  );
+}
 
 function persistVariantCookie(variant: DashboardUnlockVariant) {
   const maxAge = 60 * 60 * 24 * 30;
@@ -217,8 +239,10 @@ function RecognitionSection() {
 
 function SqueezeContent({
   variant,
+  returnHref,
 }: {
   variant: DashboardUnlockVariant;
+  returnHref: string | null;
 }) {
   const [primaryCtaVisible, setPrimaryCtaVisible] = useState(true);
 
@@ -226,7 +250,7 @@ function SqueezeContent({
     <>
       <div className="mb-6 flex items-center justify-between gap-3">
         <Wordmark size={0.92} />
-        <ExitButton href="/" />
+        {returnHref ? <BackToDashboardLink href={returnHref} /> : <ExitButton href="/" />}
       </div>
 
       <header className="mt-5 max-w-2xl sm:mt-8 lg:max-w-3xl">
@@ -372,6 +396,7 @@ function SqueezeContent({
 export default function DashboardUnlockSqueeze({
   variant,
   persistCookie,
+  returnHref,
 }: DashboardUnlockSqueezeProps) {
   useEffect(() => {
     if (persistCookie) {
@@ -385,7 +410,7 @@ export default function DashboardUnlockSqueeze({
       <div className="min-h-dvh overflow-x-hidden bg-[#f8f7f4] sm:px-6 sm:py-8">
         <div className="ps-dark mx-auto w-full max-w-6xl overflow-hidden shadow-[0_24px_64px_rgba(15,28,16,0.18)] sm:rounded-3xl">
           <main className="box-border w-full min-w-0 px-4 pb-28 pt-4 sm:px-8 sm:pb-10 sm:pt-6 lg:px-10">
-            <SqueezeContent variant={variant} />
+            <SqueezeContent variant={variant} returnHref={returnHref} />
           </main>
         </div>
       </div>
@@ -395,7 +420,7 @@ export default function DashboardUnlockSqueeze({
   return (
     <div className="ps-dark min-h-dvh w-full overflow-x-hidden">
       <main className="mx-auto box-border w-full min-w-0 max-w-6xl px-4 pb-28 pt-4 sm:px-8 sm:pb-10 sm:pt-6 lg:px-10">
-        <SqueezeContent variant={variant} />
+        <SqueezeContent variant={variant} returnHref={returnHref} />
       </main>
     </div>
   );
