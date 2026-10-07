@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   buildDagboekFavorietenHref,
   buildDagboekVoegHref,
+  buildDagboekZoekHref,
   leesDagboekFavorieten,
   leesDagboekVoeg,
+  leesDagboekZoek,
 } from "@/lib/dagboek-deeplink";
 
 describe("dagboek-deeplink", () => {
@@ -27,5 +29,16 @@ describe("dagboek-deeplink", () => {
     const href = buildDagboekFavorietenHref("supplementen");
     expect(leesDagboekFavorieten(href.split("?")[1] ?? "")).toBe("supplementen");
     expect(leesDagboekFavorieten("?favorieten=alles")).toBeNull();
+  });
+
+  it("bouwt en leest het zoekscherm van de ＋ terug", () => {
+    const href = buildDagboekZoekHref("supplementen", "avondeten");
+    expect(href).toBe("/dashboard?tab=vandaag&zoek=supplementen&moment=avondeten");
+    expect(leesDagboekZoek(href.split("?")[1] ?? "")).toEqual({ start: "supplementen", moment: "avondeten" });
+  });
+
+  it("negeert een onbekende zoekstart en valt terug op ontbijt bij een onbekend moment", () => {
+    expect(leesDagboekZoek("zoek=producten&moment=lunch")).toBeNull();
+    expect(leesDagboekZoek("zoek=alle&moment=brunch")).toEqual({ start: "alle", moment: "ontbijt" });
   });
 });

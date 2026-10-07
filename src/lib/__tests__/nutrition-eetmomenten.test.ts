@@ -12,6 +12,7 @@ import {
   waterRegel,
   WATER_MAX_ML,
   type DagMomenten,
+  eetmomentVoorUur,
 } from "@/lib/nutrition-eetmomenten";
 import { DAGBOEK_GROEPEN } from "@/lib/nutrition-dagboek";
 
@@ -175,5 +176,16 @@ describe("water", () => {
   it("zwijgt zonder water", () => {
     expect(waterRegel(null)).toBeNull();
     expect(waterRegel(0)).toBeNull();
+  });
+});
+
+describe("eetmomentVoorUur", () => {
+  it("volgt de klok, met tussendoor voor de randen van de dag", () => {
+    expect(eetmomentVoorUur(7)).toBe("ontbijt");
+    expect(eetmomentVoorUur(12)).toBe("lunch");
+    expect(eetmomentVoorUur(16)).toBe("tussendoor");
+    expect(eetmomentVoorUur(18)).toBe("avondeten");
+    expect(eetmomentVoorUur(23)).toBe("tussendoor");
+    expect(eetmomentVoorUur(2)).toBe("tussendoor");
   });
 });
