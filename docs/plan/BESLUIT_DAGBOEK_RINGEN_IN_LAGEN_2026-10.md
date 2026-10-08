@@ -103,3 +103,16 @@ GA4: `nutrition_dagboek_krans_gekozen` (nieuw; params `ring`: `kern` | `gevolgd`
 - **Vandaag en Kies sluiten aan op de datum** (‹ datum › Vandaag Kies) in plaats van rechts in de hoek. Op smalle schermen lopen ze door naar een tweede regel.
 - **Eén bronvermelding** onder "Alles wat je at": de tabel draagt de NEVO-vermelding zelf; de tweede regel eronder vervalt.
 - **Productdetail: verwijderen rechtsboven**, als knop met prullenbak. Een tik vraagt "Verwijderen?" met ✓ (ja) en × (laten staan), zodat niemand per ongeluk een product kwijtraakt. De losse knop onderaan vervalt.
+
+## Herziening 8 oktober 2026 — de ring staat stil, het midden geeft overzicht
+
+**Status:** besloten (Dennis, 8 okt: "ring verandert raar mee als je op één klikt", "geen optie van alle nutriënten tegelijk zien", "chip niet echt duidelijk", "kan niet meer naar de beste voedingsproducten"; gekozen: alles uit het voorstel).
+**Herziet:** §3 hierboven ("meedraaien = één draai op een tik") en punt 1 van de herziening van 6 okt ("standaard staat de meetbare kernstof met het grootste open stuk bovenaan").
+
+1. **Niet meer draaien.** Een tik licht de stof op en dimt de rest; de ring zelf blijft staan, en de wijzer bovenaan vervalt. De reden voor het draaien (de stof bij een vaste plek brengen) woog niet op tegen het gevoel dat de ring "raar meebeweegt".
+2. **Standaard een overzicht in het midden:** de vijf kernstoffen onder elkaar, met kleurstip, naam, waarde (zelfde notatie als de lijst: % onder de norm, hoeveelheid erboven, ✓ als gedekt; "—" voor zink of vitamine D zonder registratie). Een tik op een stof toont die stof zoals sinds 6 okt ("nog X tot je norm vandaag"); nog een tik terug naar het overzicht. De telling met namen onder de krans blijft. "Nooit tekort" blijft.
+3. **De lijst onder de krans staat ook op een smal scherm standaard open** ("Verberg stoffen" klapt hem in). Dat herziet de inklapbare lijst uit #155 alleen in de beginstand.
+4. **De gekozen rij is duidelijk:** een rand en een lichte vulling in de stofkleur (gevolgde stoffen: neutrale rand), in plaats van een bijna onzichtbaar grijs vlak.
+5. **Rijkste bronnen ook bij een kernstof.** Onder de krans staan bij een kernstof twee vervolgstappen naast elkaar: "Logboek van … →" en "Rijkste bronnen →" (hetzelfde scherm als bij een gevolgde stof, dat kernstoffen al kende). Een tik op een segment opent nog steeds niet direct een ander scherm (afgewezen op 5 okt, blijft zo).
+
+**Meetpunt:** ongewijzigd `nutrition_dagboek_krans_gekozen`; de nieuwe link telt in `nutrition_dagboek_rijkste_geopend` met `surface: ring` en een kernstof als `nutrient`. Lees het effect af aan het aandeel kernstoffen in dat event.

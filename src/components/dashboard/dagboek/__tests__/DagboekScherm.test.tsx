@@ -250,7 +250,6 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
   it("opent het detailscherm van een stof als je op de balk klikt", async () => {
     render(<DagboekScherm />);
 
-    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
     fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
 
@@ -266,7 +265,6 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
   it("gaat van detail naar zoeken naar portie-invoer en schrijft een supplement-item weg", async () => {
     render(<DagboekScherm />);
 
-    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
     fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
@@ -316,7 +314,6 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
   it("neemt het eetmoment dat je op het zoekscherm koos mee naar wat je opslaat", async () => {
     render(<DagboekScherm />);
 
-    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
     fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
@@ -363,7 +360,6 @@ describe("DagboekScherm — favorieten", () => {
   it("bewaart een zoekresultaat als favoriet via de ster-knop, zonder het te kiezen", async () => {
     render(<DagboekScherm />);
 
-    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
     fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
@@ -405,7 +401,6 @@ describe("DagboekScherm — favorieten", () => {
   it("toont het tabblad Mijn supplementen als je erop klikt", async () => {
     render(<DagboekScherm />);
 
-    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
     fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
@@ -682,7 +677,6 @@ describe("DagboekScherm — portiescherm voor voeding", () => {
   /** Opent het portiescherm voor havermout, vanuit een stofdetail. */
   async function openPortiescherm() {
     render(<DagboekScherm />);
-    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
     fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
