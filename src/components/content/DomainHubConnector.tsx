@@ -58,7 +58,7 @@ export default function DomainHubConnector({ pillarId }: DomainHubConnectorProps
           }
           className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-ps-green px-6 py-3 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
         >
-          Doe de leefstijlcheck — zie waar jij staat op {pillar.label}
+          Wat mis je? Doe de gratis check →
         </Link>
         <Link
           href={`/inzichten?pijler=${pillarId}`}

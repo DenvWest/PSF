@@ -30,7 +30,7 @@ export const GUIDE_NUTRITION_ZOOM: Record<GuideNutritionZoomKey, GuideNutritionZ
       },
       {
         title: "Timing van de laatste maaltijd",
-        body: "Een zware maaltijd of alcohol vlak voor het slapen maakt de nacht voor veel mensen onrustiger. Probeer een paar uur marge.",
+        body: "Eet drie à vier uur voor het slapen: lig je rond 23:00 in bed, dan tussen 18:00 en 19:00. Wie binnen drie uur voor bedtijd eet, wordt vaker 's nachts wakker.",
       },
       {
         title: "Cafeïne",
