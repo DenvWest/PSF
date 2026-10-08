@@ -50,20 +50,22 @@ function ChipContent({
     >
       <div className="flex min-h-0 flex-1 items-start justify-between gap-1">
         <div className="min-w-0 flex-1">
-          <div className="mb-0.5 flex items-center gap-1">
-            {!isAnalysis ? (
-              <CategoryIcon iconName={category.icon} color={accentColor} />
-            ) : (
-              <span
-                className="h-1.5 w-1.5 shrink-0 rounded-full"
-                style={{ background: accentColor }}
-                aria-hidden
-              />
-            )}
-            <span className="truncate text-[9.5px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]">
-              {eyebrow}
-            </span>
-          </div>
+          {eyebrow ? (
+            <div className="mb-0.5 flex items-center gap-1">
+              {!isAnalysis ? (
+                <CategoryIcon iconName={category.icon} color={accentColor} />
+              ) : (
+                <span
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ background: accentColor }}
+                  aria-hidden
+                />
+              )}
+              <span className="truncate text-[9.5px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]">
+                {eyebrow}
+              </span>
+            </div>
+          ) : null}
           <p
             className={`m-0 text-[13px] font-medium leading-snug text-[#F1EFE8] ${
               compact ? "line-clamp-1" : "line-clamp-2"
@@ -105,7 +107,7 @@ export default function AgendaTimelineChip({
   const category = getAgendaCategory(block.categoryId);
   const isBasis = resolveBlockRole(block) === "basis";
   const accentColor = isAnalysis && block.domain ? PILLAR[block.domain].color : category.color;
-  const eyebrow = getBlockRoleLabel(block);
+  const eyebrow = block.kind === "analysis" ? "" : getBlockRoleLabel(block);
 
   const shellClassName = `flex h-full w-full overflow-hidden rounded-xl border bg-[#1d3120] ${
     isBasis ? "border-white/15" : "border-white/10"

@@ -1,5 +1,6 @@
 "use client";
 
+import type { EiwitMaaltijd } from "@/lib/agenda-eiwit-per-maaltijd";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import { useRouter } from "next/navigation";
@@ -96,11 +97,13 @@ type AgendaDayTimelineProps = {
   onPurgeBlock: (blockId: string) => Promise<void>;
   onRetimeBlock?: (blockId: string, input: RetimeBlockInput) => Promise<void>;
   hiddenPlanStep?: HiddenPlanStep | null;
+  eiwitMaaltijden?: readonly EiwitMaaltijd[] | null;
   onDismissPlanStep?: (date: string) => Promise<void>;
   onRestorePlanStep?: () => Promise<void>;
   onHideAllPlanSteps?: () => Promise<void>;
   onShowAllPlanSteps?: () => Promise<void>;
   weekStrip?: ReactNode;
+  aboveBlocks?: ReactNode;
   voorstellen?: readonly TekortVoorstel[];
   autoOpenNutrient?: NutrientId | null;
   onRegisterFooterActions?: (actions: {
@@ -123,11 +126,13 @@ export default function AgendaDayTimeline({
   onPurgeBlock,
   onRetimeBlock,
   hiddenPlanStep = null,
+  eiwitMaaltijden = null,
   onDismissPlanStep,
   onRestorePlanStep,
   onHideAllPlanSteps,
   onShowAllPlanSteps,
   weekStrip,
+  aboveBlocks,
   voorstellen = [],
   autoOpenNutrient = null,
   onRegisterFooterActions,
@@ -411,6 +416,8 @@ export default function AgendaDayTimeline({
 
       {weekStrip ? <div className="mb-4">{weekStrip}</div> : null}
 
+      {aboveBlocks}
+
       <div
         className="flex max-h-[var(--agenda-rail-max-h)] gap-2 overflow-y-auto sm:max-h-none sm:gap-3 sm:overflow-visible"
         style={{ "--agenda-rail-max-h": railMaxHeight } as CSSProperties}
@@ -617,6 +624,7 @@ export default function AgendaDayTimeline({
         onDismissPlanStep={onDismissPlanStep}
         onHideAllPlanSteps={onHideAllPlanSteps}
         onOpenHelpSheet={openHelpSheet}
+        eiwitMaaltijden={eiwitMaaltijden}
       />
     </section>
   );
