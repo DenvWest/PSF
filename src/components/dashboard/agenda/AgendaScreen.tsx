@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
 import AgendaContextSidebar from "@/components/dashboard/agenda/AgendaContextSidebar";
 import AgendaDayTimeline from "@/components/dashboard/agenda/AgendaDayTimeline";
 import AgendaMonthGrid from "@/components/dashboard/agenda/AgendaMonthGrid";
-import { AgendaFocusPanel } from "@/components/dashboard/agenda/AgendaMetaRow";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
 import AgendaPatroonRegel from "@/components/dashboard/agenda/AgendaPatroonRegel";
@@ -49,16 +49,11 @@ import { syncDashboardAgendaViewParam, syncDashboardDagParam } from "@/lib/dashb
 import type { AgendaViewId } from "@/lib/dashboard-url";
 import { deriveDefaultTimeBucket } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
-import { formatFocusLabel } from "@/lib/focus-label";
 import { isPlanStepHidden, resolveScheduledTime } from "@/lib/day-model";
 import { trackAgendaDaySelected, trackAgendaViewSet, trackEvent } from "@/lib/ga4";
 import { useTekortVoorstellen } from "@/lib/use-tekort-voorstellen";
 import { useStickyHeaderOffset } from "@/lib/use-sticky-header-offset";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
-import {
-  resetDashboardPriorityFocus,
-  saveDashboardPrioritySelection,
-} from "@/lib/dashboard-priority-selection";
 import {
   postDismissPlanStep,
   postRestorePlanStep,
@@ -71,7 +66,6 @@ import type {
   AccountPriorityPrefData,
   DashboardData,
   DashboardModel,
-  PillarId,
 } from "@/types/dashboard";
 
 type ScheduledTimeSurface = "agenda_day_schedule" | "agenda_timeline_drag";
@@ -165,7 +159,6 @@ export default function AgendaScreen({
   const [monthOverride, setMonthOverride] = useState<string | null>(null);
   const monthAnchor = monthOverride ?? selectedDate;
   const [monthSheetOpen, setMonthSheetOpen] = useState(false);
-  const [focusExpanded, setFocusExpanded] = useState(false);
   // Standaard ingeklapt: elk binnenkomen op het "dag"-scherm is een nieuwe
   // mount van AgendaScreen (tab-wissel unmount't de vorige sectie), dus een
   // vaste `true` hier opent het paneel bij ELK bezoek vanuit een ander
@@ -439,9 +432,6 @@ export default function AgendaScreen({
       if (nextWeekStart !== stripWeekDates[0]) {
         setSelectedBlockId(null);
       }
-      if (date !== today) {
-        setFocusExpanded(false);
-      }
       setMonthOverride(null);
       onSelectedDateChange(date);
       syncDashboardDagParam(date);
@@ -471,9 +461,6 @@ export default function AgendaScreen({
   const handleViewChange = useCallback(
     (nextView: AgendaViewId) => {
       setSelectedBlockId(null);
-      if (nextView !== "dag") {
-        setFocusExpanded(false);
-      }
       onViewChange(nextView);
       syncDashboardAgendaViewParam(nextView);
       trackAgendaViewSet({ view: nextView, surface: "agenda" });
@@ -633,46 +620,6 @@ export default function AgendaScreen({
     }
   };
 
-  const saveAgendaPriority = async (
-    pillarId: PillarId,
-    source: "user_selected" | "accept_engine",
-  ) => {
-    setPrefBusy(true);
-    try {
-      await saveDashboardPrioritySelection({
-        pillarId,
-        source,
-        surface: "agenda",
-        timeBucket: model.timeBucket ?? null,
-        scheduledTime: model.scheduledTime ?? null,
-        onPrefUpdated,
-      });
-    } finally {
-      setPrefBusy(false);
-    }
-  };
-
-  const handleResetFocus = async () => {
-    setPrefBusy(true);
-    try {
-      await resetDashboardPriorityFocus({ surface: "agenda", onPrefUpdated });
-    } finally {
-      setPrefBusy(false);
-    }
-  };
-
-  const closeFocus = useCallback(() => {
-    setFocusExpanded(false);
-  }, []);
-
-  const handleToggleFocus = useCallback(() => {
-    if (focusExpanded) {
-      closeFocus();
-      return;
-    }
-    setFocusExpanded(true);
-  }, [closeFocus, focusExpanded]);
-
   const handleToggleRhythm = useCallback(() => {
     setRhythmExpanded((prev) => {
       const next = !prev;
@@ -682,10 +629,9 @@ export default function AgendaScreen({
   }, []);
 
   const planHref = model.activeHabit?.planHref ?? null;
-  const focusLabel = focusExpanded ? "Sluit" : formatFocusLabel(model.priority.label);
 
   const handlePlanLinkClick = () => {
-    trackEvent("dashboard_agenda_plan_click", { surface: "agenda_header" });
+    trackEvent("dashboard_agenda_plan_click", { surface: "agenda_dag_link" });
     clarityTag("dashboard_agenda", "plan_link");
   };
 
@@ -804,20 +750,6 @@ export default function AgendaScreen({
         rhythmCount={view === "dag" && selectedDate === today ? rhythmCount : 0}
         rhythmExpanded={rhythmExpanded}
         onToggleRhythm={handleToggleRhythm}
-        actions={
-          view === "dag"
-            ? {
-                planHref,
-                showFocus: selectedDate === today,
-                focusLabel,
-                focusExpanded,
-                priorityColor: model.priority.color,
-                prefBusy,
-                onToggleFocus: handleToggleFocus,
-                onPlanClick: handlePlanLinkClick,
-              }
-            : undefined
-        }
       />
 
       {agendaError ? (
@@ -838,20 +770,6 @@ export default function AgendaScreen({
         </div>
       ) : null}
 
-      {view === "dag" && selectedDate === today && focusExpanded ? (
-        <div className="mb-3">
-          <AgendaFocusPanel
-            model={model}
-            busy={prefBusy}
-            onSelectPillar={(pillarId) => void saveAgendaPriority(pillarId, "user_selected")}
-            onAcceptEngine={() =>
-              void saveAgendaPriority(model.enginePriority.id, "accept_engine")
-            }
-            onReset={() => void handleResetFocus()}
-          />
-        </div>
-      ) : null}
-
       {view === "dag" && selectedDate === today && rhythmExpanded ? <AgendaRhythmPanel /> : null}
 
       {view === "dag" && dayContext.kind === "orphan" ? (
@@ -859,6 +777,17 @@ export default function AgendaScreen({
           Deze dag valt buiten je adviesweek. Je eigen momenten staan er wel — je dagstap
           volgt weer in de week van vandaag.
         </p>
+      ) : null}
+
+      {view === "dag" && planHref ? (
+        <Link
+          href={planHref}
+          onClick={handlePlanLinkClick}
+          className="mb-3 inline-flex min-h-11 items-center gap-1.5 text-[13px] font-medium text-[#CDD7D0] no-underline transition-colors hover:text-[#F1EFE8]"
+        >
+          Bekijk je plan
+          <Icons.ArrowRight s={12} />
+        </Link>
       ) : null}
 
       {view === "dag" && selectedDate >= today ? (
@@ -892,7 +821,6 @@ export default function AgendaScreen({
           onRestorePlanStep={handleRestorePlanStep}
           onHideAllPlanSteps={handleHideAllPlanSteps}
           onShowAllPlanSteps={handleShowAllPlanSteps}
-          onCloseFocus={closeFocus}
           voorstellen={voorstellen}
           autoOpenNutrient={planNutrient}
           onRegisterFooterActions={handleRegisterFooterActions}
