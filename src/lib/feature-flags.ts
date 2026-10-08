@@ -48,3 +48,12 @@ export function isContentRelatedEnabled(hasNutrients: boolean): boolean {
   if (raw === "nutrients") return hasNutrients;
   return false;
 }
+
+/**
+ * Chatvenster met LLM (BESLUIT_LLM_CHAT_VOEDING_2026-09.md). Bewust zonder
+ * `NEXT_PUBLIC_`: de server beslist; de UI krijgt de stand via de API. Standaard uit.
+ */
+export function isNutritionAiChatEnabled(): boolean {
+  return process.env.NUTRITION_AI_CHAT_ENABLED === "true";
+}
+
