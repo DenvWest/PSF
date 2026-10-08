@@ -1,7 +1,7 @@
 # Review — OFF-import, bronnenpagina en ODbL-dump (PR #114, #116, #117)
 
 **Datum:** 4 oktober 2026
-**Status:** review afgerond, door Dennis akkoord bevonden (4 okt: "akkoord, leg vast"). #1 (stap 1), #2, #7 en #8 (natrium-grens, niet-eindige getallen) gebouwd en op 8 okt door Dennis geladen (live gecontroleerd); #3, #4, #5 en #9 (grotendeels) als zip met licentie, zie "Uitvoering 8 oktober, vervolg". Open: #6 (script), de rest van #8 (polyolen/alcohol, massabalans-vlag), #10, jurist-vraag 9 en de 6 oude rijen.
+**Status:** review afgerond, door Dennis akkoord bevonden (4 okt: "akkoord, leg vast"). #1 (stap 1), #2, #7 en #8 (natrium-grens, niet-eindige getallen) gebouwd en op 8 okt door Dennis geladen (live gecontroleerd); #3, #4, #5 en #9 (grotendeels) als zip met licentie, zie "Uitvoering 8 oktober, vervolg". Daarna per punt besloten, zie "Besluiten 8 oktober"; wat resteert is niet gepland.
 **Toetst:** commits `695d8d4d`, `4aced706`, `dee08f11`
 **Tegen:** `BESLUIT_VOEDINGSBRONNEN_LAGEN_2026-10.md`, `ONTWERP_SUPERMARKT_PRODUCTTABEL_2026-10.md`, `BESLUIT_NEVO_BRONVERMELDING.md`, `STEEKPROEF_OFF_DEKKING_2026-10.md`
 
@@ -320,9 +320,9 @@ Vaste barcodes om de fixes en de herkomsttest mee te toetsen. Waarden per 100 g,
 - Meetpunt: GA4 `bronnen_dump_download`, ongewijzigd.
 - Geen migratie, geen nieuwe afhankelijkheid (de zip-writer staat in `src/lib/zip-archive.ts`).
 
-**Nog open:**
-- #6: `scripts/off-dekking.py` corrigeren (gelijke kandidaten als één match, uitvoer naar `scripts/out/`). De getallen zelf zijn gecorrigeerd in `STEEKPROEF_OFF_DEKKING_2026-10.md` en `BESLUIT_VOEDINGSBRONNEN_LAGEN_2026-10.md`.
-- #8 rest: polyolen en alcohol in de energiecontrole, en de massabalans-vlag. Vraagt opnieuw extraheren en laden.
-- #10: een test die de grenzen op vier plekken gelijk houdt.
-- Jurist-vraag 9: licentie-URI of volledige tekst in het bestand.
-- De 6 rijen van 4 okt (Mineral water, Ristorante Mozzarella glutenfrei, Ultrapure Creatine, Pannenkoeken extra eiwit mix, Mayonaise Truffel Saus, Soupe jardinière) staan nog in tabel en dump. Verwijderen kan zodra geen dagboekregel naar die `prod_id`'s verwijst; er is bewust geen foreign key.
+**Besluiten 8 oktober (Dennis akkoord op het advies):**
+- **#6, dekkingsscript:** alleen het uitvoerpad is aangepast (`scripts/out/off-dekking-rapport.md`), want een herhaalrun overschreef de handgeschreven Lezing in `docs/plan/`. De koppeling zelf (gelijke kandidaten als één match) wordt niet verbeterd: de dataset heeft geen barcodes en elke uitkomst tussen 22% en 45% leidt tot dezelfde conclusie (typische-waardenlaag en aanlever-route blijven relevant).
+- **#8 rest, polyolen/alcohol/massabalans:** niet nu. Gemeten op de dump van 8 okt vallen 429 rijen op de energiecontrole. Een fix met polyolen (2,4 kcal/g) en alcohol (%vol × 0,789 × 7 kcal) redt er 115 (92 polyolenproducten, vooral suikervrije mintjes en kauwgom, en 23 wijnen en champagnes), op 58.973 rijen is dat 0,2%. De overige 314 vallen terecht; veel wijnen hebben 653 of 660 "kcal", dat is kJ in het kcal-veld. Alleen meenemen bij een herlading die toch gebeurt. De massabalans-vlag vervalt: er is geen kolom en geen UI die hem gebruikt.
+- **#10, grenzen-test:** niet doen. Een afwijking is bijna altijd hoorbaar (de database weigert een hele batch, of de loader telt de afgewezen rijen), de grenzen zijn natuurkundig en veranderen zelden, en de test vraagt een regex op SQL. Raak je ze ooit aan, schrap dan liever de kopie in `off-laden.mjs`; het Python-script dwingt ze al af.
+- **Jurist-vraag 9:** staat in de notulen. Wordt de volledige licentietekst gevraagd, dan past dat in `licentieTekst()` in `src/lib/sm-products-dump.ts`.
+- **De 6 rijen van 4 okt:** blijven staan; ze maken de dump niet onbruikbaar (6 van 58.979 rijen, de leesmij toont het aantal per snapshot). Ze zijn door OFF zelf teruggetrokken of aangepast: Mineral water, Mayonaise Truffel Saus en Soupe jardinière staan niet meer in de OFF-dump, Ristorante Mozzarella heeft de Nederland-tag verloren, Ultrapure Creatine en Pannenkoeken extra eiwit mix hebben geen energiewaarde meer. Opruimen pas als de restanten zich opstapelen (bijvoorbeeld meer dan 1% van de rijen), met een loader-optie die alleen rijen verwijdert waar geen dagboekregel naar verwijst.
