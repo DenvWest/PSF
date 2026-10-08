@@ -14,14 +14,17 @@ naam, en wordt bevestigd met de calorie-waarde. Het resultaat is een bandbreedte
                 binnen max(10 kcal, 10%). Bovengrens van wat naam + kcal samen
                 kunnen bevestigen; valse matches zijn mogelijk (zie steekproef).
 
-Schrijft een markdown-rapport naar `docs/plan/STEEKPROEF_OFF_DEKKING_2026-10.md`.
-De dataset zelf blijft lokaal; het rapport bevat per keten alleen aantallen en
-een kleine steekproef met namen.
+Schrijft een markdown-rapport naar `scripts/out/off-dekking-rapport.md` (niet in
+git). Het rapport in `docs/plan/STEEKPROEF_OFF_DEKKING_2026-10.md` is met de hand
+aangevuld (Lezing, correctie na de review) en wordt nooit door dit script
+overschreven; neem over wat je wilt vastleggen. De dataset zelf blijft lokaal;
+het rapport bevat per keten alleen aantallen en een kleine steekproef met namen.
 
 Gebruik:  python3 scripts/off-dekking.py
 """
 
 import json
+import os
 import random
 import re
 import unicodedata
@@ -29,7 +32,7 @@ from collections import defaultdict
 
 RAPPORT = "scripts/out/supermarkt-rapport.json"
 OFF = "scripts/out/off-nl.ndjson"
-UIT = "docs/plan/STEEKPROEF_OFF_DEKKING_2026-10.md"
+UIT = "scripts/out/off-dekking-rapport.md"
 
 STOP = {"de", "het", "een", "en", "van", "met", "voor", "in", "op", "bio", "a", "la", "le"}
 MAAT = re.compile(r"\b\d+([.,]\d+)?\s*(g|gr|gram|kg|ml|cl|l|liter|st|stuks?|x|pak|pakken)\b")
@@ -139,6 +142,7 @@ def main():
         for soort, scrape, offnaam, merk in lijst:
             regels.append(f"- {scrape}  →  {offnaam}" + (f" ({merk})" if merk else ""))
         regels.append("")
+    os.makedirs(os.path.dirname(UIT), exist_ok=True)
     open(UIT, "w", encoding="utf-8").write("\n".join(regels) + "\n")
     print("\n".join(regels[:16]))
 
