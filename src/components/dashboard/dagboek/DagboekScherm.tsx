@@ -209,6 +209,30 @@ export default function DagboekScherm({
   const [laden, setLaden] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [scherm, setScherm] = useState<NutrientScherm>({ scherm: "overzicht" });
+  const terugStapel = useRef<{ scherm: NutrientScherm; href: string }[]>([]);
+  const negeerPopstate = useRef(false);
+  const vorigScherm = useRef<NutrientScherm>(scherm);
+
+  useEffect(() => {
+    const vorig = vorigScherm.current;
+    vorigScherm.current = scherm;
+    if (vorig.scherm === scherm.scherm) return;
+    const top = terugStapel.current[terugStapel.current.length - 1];
+    if (top && top.scherm.scherm === scherm.scherm) {
+      terugStapel.current.pop();
+      if (window.location.href === top.href) {
+        negeerPopstate.current = true;
+        window.history.back();
+      }
+      return;
+    }
+    if (scherm.scherm === "overzicht") {
+      terugStapel.current = [];
+      return;
+    }
+    terugStapel.current.push({ scherm: vorig, href: window.location.href });
+    window.history.pushState(window.history.state, "", window.location.href);
+  }, [scherm]);
   const [favorieten, setFavorieten] = useState<DagboekFavoriet[]>([]);
   const [vergelijkSelectie, setVergelijkSelectie] = useState<VergelijkResultaat[]>([]);
   const [busyFavoriet, setBusyFavoriet] = useState(false);
@@ -239,7 +263,21 @@ export default function DagboekScherm({
       const voeg = leesDagboekVoeg(window.location.search);
       const favorietenTab = leesDagboekFavorieten(window.location.search);
       const zoek = leesDagboekZoek(window.location.search);
-      if (!voeg && !favorietenTab && !zoek) return;
+      if (!voeg && !favorietenTab && !zoek) {
+        if (negeerPopstate.current) {
+          negeerPopstate.current = false;
+          return;
+        }
+        const top = terugStapel.current[terugStapel.current.length - 1];
+        if (top && top.href === window.location.href) {
+          terugStapel.current.pop();
+          const terug =
+            top.scherm.scherm === "zoek" ? { ...top.scherm, staat: zoekStaatRef.current } : top.scherm;
+          vorigScherm.current = terug;
+          setScherm(terug);
+        }
+        return;
+      }
       wisDagboekVoeg();
       if (voeg?.bron === "product") {
         const product = actueleProducten.get(voeg.key);
