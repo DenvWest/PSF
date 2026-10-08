@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import BronnenPage, { metadata } from "@/app/bronnen/page";
+import { OFF_WIJZIGINGEN } from "@/lib/supermarkt-bron";
 
 describe("/bronnen", () => {
   const html = renderToStaticMarkup(<BronnenPage />);
@@ -19,5 +20,10 @@ describe("/bronnen", () => {
   it("biedt de dump aan en legt de wijzigingen ten opzichte van de bron uit", () => {
     expect(html).toContain('href="/api/bronnen/open-food-facts"');
     expect(html).toContain("Wat wij hebben aangepast");
+    expect(html).toContain("LICENTIE.txt");
+  });
+
+  it("noemt elke wijziging uit de gedeelde lijst", () => {
+    for (const wijziging of OFF_WIJZIGINGEN) expect(html).toContain(wijziging.replace(/'/g, "&#x27;"));
   });
 });
