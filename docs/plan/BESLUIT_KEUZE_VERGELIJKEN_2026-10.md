@@ -229,3 +229,14 @@ Stap 3 uit `PROMPT_VERVOLG_KEUZE_2026-10-08.md`; maakt punt 4 van de negende ron
 - **Geen aantal bij een merkproduct** (Dennis, 8 okt): het portiescherm vraagt alleen "Zet in dagboek" en logt één dagdosis volgens het etiket; in de maaltijd staat "dagdosis" zonder invoerveld. Wie het twee keer neemt, logt het twee keer.
 
 **Meting:** `keuze_bron_naar_dagboek` {nutrient, moment, surface: mijn_keuzes, kant: supplement}, hetzelfde event als ＋ bij eten. In het dagboek zijn het de bestaande `nutrition_dagboek_zoek_item_gekozen` en `nutrition_dagboek_portie_bevestigd` met `bron: supplement`.
+
+## Herziening 8 oktober (twaalfde ronde): prijstabel voor eten (stap 4)
+
+Stap 4 uit `PROMPT_VERVOLG_KEUZE_2026-10-08.md`. Dennis akkoord (7 en 8 okt). Dit herziet het besluit van 3 okt ("prijzen later") **alleen** voor dit onderdeel; prijzen van supermarktproducten (boodschappenlijst, alerts) blijven uitgesteld.
+
+- **Data:** `src/data/nutrition/eten-prijzen.ts` (`ETEN_PRIJZEN`): per catalogussleutel een product, winkel, verpakkingsgewicht, verpakkingsprijs in centen, bronlink en controledatum. `etenPrijsPerPortie()` in `src/lib/eten-prijs.ts` rekent om naar de eerste portie van de catalogusregel.
+- **UI:** in Mijn keuzes, kant "Uit je eten": "± € x,xx per portie, indicatief · winkel, datum" met de bronlink. Alleen als er een prijs is; zonder prijs verandert er niets. Altijd per portie, nooit per mg.
+- **Bewaakt door een test:** elke regel moet een bestaande catalogussleutel, een https-bronlink en een datum hebben, en een sleutel staat hooguit één keer in de tabel.
+- **Niet gescrapet.** Jumbo verbiedt het en het databankrecht beschermt tegen stelselmatig overnemen; de supermarktsnapshot is "niet voor prijzen".
+- **Stand bij oplevering:** de tabel is nog **leeg**. ah.nl geeft een 403 op automatische opvraging en de zoekresultaten bevatten geen betrouwbare verpakkingsprijs, dus er zijn geen prijzen verzonnen. De regels moeten met de hand uit de winkel worden ingevuld.
+- **Meetpunt:** GA4 `keuze_eten_prijs_bron_click` {nutrient, product}.

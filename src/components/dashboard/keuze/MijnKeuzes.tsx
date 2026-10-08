@@ -20,6 +20,7 @@ import {
   productKeuzeVoorStof,
   type MomentKant,
 } from "@/lib/keuze-product-keuze";
+import { etenPrijsPerPortie } from "@/lib/eten-prijs";
 import { dagboekProductVan } from "@/lib/keuze-dagboek-product";
 import { keuzeStofStand, type KeuzeStofStand } from "@/lib/keuze-stof-stand";
 import { euroPerDag, hoofdStof, isBronVan } from "@/lib/keuze-stofkaart";
@@ -383,6 +384,7 @@ function EtenKant({
                         {entry.porties[0]?.labelNl} · {hoeveelheid(levert.value)} {levert.unit}
                       </span>
                     ) : null}
+                    <EtenPrijsRegel entry={entry} nutrient={status.nutrient} />
                   </span>
                   <span className="flex shrink-0 items-center gap-2.5">
                     <button
@@ -451,6 +453,26 @@ function EtenKant({
         </p>
       ) : null}
     </Kant>
+  );
+}
+
+function EtenPrijsRegel({ entry, nutrient }: { entry: CatalogEntry; nutrient: string }) {
+  const portie = entry.porties[0];
+  const prijs = portie ? etenPrijsPerPortie(entry.key, portie.grams) : null;
+  if (!prijs) return null;
+  return (
+    <span className="block text-[0.6875rem] text-[var(--vd-ink-3)]">
+      ± {euroPerDag(prijs.centen)} per portie, indicatief ·{" "}
+      <a
+        href={prijs.bronUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackEvent("keuze_eten_prijs_bron_click", { nutrient, product: entry.key })}
+        className="text-[var(--vd-ink-3)] underline"
+      >
+        {prijs.winkel}, {prijs.gecontroleerd}
+      </a>
+    </span>
   );
 }
 
