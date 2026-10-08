@@ -1,7 +1,7 @@
 # Prompt voor een volgende sessie: gratis nu, premium als onweerstaanbare volgende stap
 
 **Datum:** 8 oktober 2026
-**Status:** Open. Dennis wil dit in een eigen sessie oppakken (gesprek over PR #181, de webgidsen `<thema>-en-voeding`).
+**Status:** Opgepakt 8 okt: zie `BESLUIT_GRATIS_NU_PREMIUM_AANBOD_2026-10.md`. (Oorsprong: gesprek over PR #181, de webgidsen `<thema>-en-voeding`.)
 **Lees eerst:** `BESLUIT_PATROON_PREMIUM_EN_WEEKMAIL_2026-10.md` (wat gratis is en wat premium), `BESLUIT_GIDS_SLUGS_EN_VOEDING_2026-10.md`, `CORRECTIE_VOEDINGCHECK_NAAMGEVING_2026-09.md` (de check heet "Wat mis je?"), `docs/core/STEPPED_CARE_MODEL.md`, en `grep -rli "premium\|betaal\|prijs" docs/plan/` voor eerdere besluiten over prijs en gating.
 
 ## Vraag van Dennis
