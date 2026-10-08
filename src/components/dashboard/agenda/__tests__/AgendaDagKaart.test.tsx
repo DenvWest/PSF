@@ -23,23 +23,22 @@ const dag: DagboekDag = {
 
 describe("AgendaDagKaart", () => {
   it("toont eiwit per maaltijd met vinkje alleen bij bewezen, en leeg zonder 'gemist'", () => {
-    render(<AgendaDagKaart dag={dag} normen={STANDAARD_NORMEN} stapTitel="Begin elke maaltijd met 20–30 g eiwit" handleidingHref="/intake/plan/voeding" />);
+    render(<AgendaDagKaart dag={dag} normen={STANDAARD_NORMEN} />);
 
     expect(screen.getByText("minimaal 20 gram eiwit")).toBeTruthy();
     expect(screen.getByText("nog niet aangetoond")).toBeTruthy();
     expect(screen.getByText("niet ingevuld")).toBeTruthy();
     expect(screen.queryByText(/gemist$/i)).toBeNull();
-    expect(screen.getByRole("link", { name: /Handleiding/ }).getAttribute("href")).toBe("/intake/plan/voeding");
+    expect(screen.queryByRole("link")).toBeNull();
   });
 
   it("wisselt naar een andere stof en meet de keuze", () => {
-    render(<AgendaDagKaart dag={dag} normen={STANDAARD_NORMEN} stapTitel={null} handleidingHref={null} />);
+    render(<AgendaDagKaart dag={dag} normen={STANDAARD_NORMEN} />);
 
     fireEvent.click(screen.getByRole("tab", { name: "Magnesium" }));
 
     expect(screen.getByRole("tab", { name: "Magnesium" }).getAttribute("aria-selected")).toBe("true");
     expect(screen.getByText(/van je norm/)).toBeTruthy();
     expect(mockTrackEvent).toHaveBeenCalledWith("agenda_dagkaart_stof_gekozen", { stof: "magnesium" });
-    expect(screen.queryByRole("link", { name: /Handleiding/ })).toBeNull();
   });
 });

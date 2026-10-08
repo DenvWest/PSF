@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { clarityTag } from "@/lib/clarity";
@@ -15,8 +14,6 @@ import { nutrientReferences } from "@/data/nutrition/intake-reference";
 type AgendaDagKaartProps = {
   dag: DagboekDag | null;
   normen: KernstofNormen;
-  stapTitel: string | null;
-  handleidingHref: string | null;
 };
 
 const CHIP =
@@ -26,7 +23,7 @@ function percentage(aandeel: number): number {
   return Math.round(Math.min(aandeel, 1) * 100);
 }
 
-export default function AgendaDagKaart({ dag, normen, stapTitel, handleidingHref }: AgendaDagKaartProps) {
+export default function AgendaDagKaart({ dag, normen }: AgendaDagKaartProps) {
   const [actief, setActief] = useState<NutrientId>("protein");
 
   useEffect(() => {
@@ -45,19 +42,6 @@ export default function AgendaDagKaart({ dag, normen, stapTitel, handleidingHref
         <h3 className="m-0 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
           Je dag in stoffen
         </h3>
-        {handleidingHref ? (
-          <Link
-            href={handleidingHref}
-            onClick={() => {
-              trackEvent("dashboard_agenda_plan_click", { surface: "agenda_dagkaart" });
-              clarityTag("dashboard_agenda", "plan_link");
-            }}
-            className="inline-flex min-h-9 items-center gap-1 text-[12px] font-medium text-[#9FB0A6] no-underline transition-colors hover:text-[#F1EFE8]"
-          >
-            Handleiding
-            <Icons.ArrowRight s={12} />
-          </Link>
-        ) : null}
       </div>
 
       <div
@@ -92,10 +76,8 @@ export default function AgendaDagKaart({ dag, normen, stapTitel, handleidingHref
 
       {actief === "protein" ? (
         <div role="tabpanel" className="mt-3">
-          <p className="m-0 text-[13px] leading-snug text-[#CDD7D0] text-pretty">
-            {stapTitel ?? "Begin elke maaltijd met 20–30 g eiwit."}
-          </p>
-          <ul className="m-0 mt-3 grid list-none grid-cols-3 gap-2 p-0">
+          <p className="m-0 text-[12px] text-[#9FB0A6]">Per maaltijd · vanaf 20 g telt als gehaald</p>
+          <ul className="m-0 mt-2.5 grid list-none grid-cols-3 gap-2 p-0">
             {maaltijden.map((maaltijd) => (
               <li
                 key={maaltijd.id}

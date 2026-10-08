@@ -97,6 +97,7 @@ import {
 } from "@/data/measurement-config";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
+import InspectorHandleidingKaart from "@/components/dashboard/cockpit/InspectorHandleidingKaart";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import KompasContextSpine from "@/components/dashboard/kompas/KompasContextSpine";
 import DagboekScherm from "@/components/dashboard/dagboek/DagboekScherm";
@@ -3480,7 +3481,15 @@ function DashboardContent({
   const remeasureAction = data?.remeasure
     ? { due: data.remeasure.daysUntil <= 0, onClick: onRemeasure }
     : undefined;
-  const inspectorExtra = dashboardInfoCard;
+  const handleidingHref = tab === "agenda" ? (activeHabit?.planHref ?? null) : null;
+  const inspectorExtra = handleidingHref ? (
+    <>
+      <InspectorHandleidingKaart href={handleidingHref} />
+      {dashboardInfoCard}
+    </>
+  ) : (
+    dashboardInfoCard
+  );
   // De contextkolom op het Kompas — home én domeinscherm, want de vraag
   // ("waar zit mijn winst, waar koers ik op, wat is hier het aanbod, houd ik
   // het vol") verandert daar niet, alleen het domein. `spineLayerId` is null

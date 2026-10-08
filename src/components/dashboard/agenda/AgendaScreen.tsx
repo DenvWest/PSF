@@ -9,7 +9,6 @@ import AgendaDayTimeline from "@/components/dashboard/agenda/AgendaDayTimeline";
 import AgendaMonthGrid from "@/components/dashboard/agenda/AgendaMonthGrid";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
-import AgendaPatroonRegel from "@/components/dashboard/agenda/AgendaPatroonRegel";
 import AgendaToolbar from "@/components/dashboard/agenda/AgendaToolbar";
 import AgendaWeekOverview from "@/components/dashboard/agenda/AgendaWeekOverview";
 import AgendaWeekTimeGrid, {
@@ -646,7 +645,6 @@ export default function AgendaScreen({
     });
   }, []);
 
-  const planHref = model.activeHabit?.planHref ?? null;
 
   const periodLabel =
     view === "dag"
@@ -794,15 +792,6 @@ export default function AgendaScreen({
         </p>
       ) : null}
 
-      {view === "dag" && selectedDate >= today ? (
-        <AgendaPatroonRegel
-          focus={voorstellen[0] ?? null}
-          dagen={tekortDagen}
-          weekDates={stripWeekDates}
-          weekDayLabels={WEEKDAY_LABELS}
-        />
-      ) : null}
-
       {view === "dag" ? (
         <AgendaDayTimeline
           model={model}
@@ -833,8 +822,6 @@ export default function AgendaScreen({
               <AgendaDagKaart
                 dag={vandaagDag}
                 normen={kernstofNormen}
-                stapTitel={eiwitStapTitel}
-                handleidingHref={planHref}
               />
             ) : null
           }
