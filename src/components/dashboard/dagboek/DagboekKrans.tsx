@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import GevolgdeStoffenKiezer from "@/components/dashboard/doelen/GevolgdeStoffenKiezer";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
@@ -80,6 +80,29 @@ function boog(straal: number, index: number, span: number, gat: number): string 
   const tot = punt(straal, (index + 1) * span - gat / 2);
   const groot = span - gat > 180 ? 1 : 0;
   return `M ${van.x} ${van.y} A ${straal} ${straal} 0 ${groot} 1 ${tot.x} ${tot.y}`;
+}
+
+/** Korte naam langs de boog van een kernsegment; de volledige naam staat in het midden en in de lijst. */
+const RINGLABEL: Record<NutrientId, string> = {
+  magnesium: "Mg",
+  protein: "Eiwit",
+  omega3: "Ω-3",
+  zinc: "Zn",
+  vitamin_d: "Vit. D",
+};
+
+/**
+ * Het pad waar een ringlabel langs loopt. Op de onderste helft loopt het pad
+ * tegen de klok in, zodat de tekst rechtop blijft staan.
+ */
+function tekstBoog(straal: number, index: number, span: number): string {
+  const midden = (index + 0.5) * span;
+  const omgekeerd = midden > 90 && midden < 270;
+  const van = punt(straal, index * span);
+  const tot = punt(straal, (index + 1) * span);
+  return omgekeerd
+    ? `M ${tot.x} ${tot.y} A ${straal} ${straal} 0 0 0 ${van.x} ${van.y}`
+    : `M ${van.x} ${van.y} A ${straal} ${straal} 0 0 1 ${tot.x} ${tot.y}`;
 }
 
 function aandeelVoor(
@@ -202,6 +225,7 @@ export default function DagboekKrans({
   const normen = useKernstofNormen();
   const profiel = useKernstofProfiel();
   const { stoffen: gevolgdeVelden, geladen } = useGevolgdeStoffen();
+  const padId = useId();
   const [keuze, setKeuze] = useState<Keuze>(null);
   const [kiezen, setKiezen] = useState(false);
   const [uitleg, setUitleg] = useState(false);
@@ -394,6 +418,9 @@ export default function DagboekKrans({
 
           <g>
             {rijen.map((rij, index) => (
+              <path key={`pad-${rij.nutrient}`} id={`${padId}-ringlabel-${rij.nutrient}`} d={tekstBoog(BINNEN.straal, index, spanBinnen)} fill="none" />
+            ))}
+            {rijen.map((rij, index) => (
               <Segment
                 key={rij.nutrient}
                 d={boog(BINNEN.straal, index, spanBinnen, BINNEN.gat)}
@@ -406,6 +433,22 @@ export default function DagboekKrans({
                 getekend={getekend}
                 onClick={() => kiesKern(index)}
               />
+            ))}
+            {rijen.map((rij) => (
+              <text
+                key={`label-${rij.nutrient}`}
+                className="pointer-events-none select-none motion-safe:transition-opacity motion-safe:duration-300"
+                fontSize={8.5}
+                fontWeight={600}
+                letterSpacing={0.3}
+                dominantBaseline="central"
+                fill="var(--vd-ink)"
+                opacity={keuze !== null && !(keuze.ring === "kern" && keuze.nutrient === rij.nutrient) ? 0.35 : 0.9}
+              >
+                <textPath href={`#${padId}-ringlabel-${rij.nutrient}`} startOffset="50%" textAnchor="middle">
+                  {RINGLABEL[rij.nutrient]}
+                </textPath>
+              </text>
             ))}
           </g>
         </svg>
@@ -475,7 +518,7 @@ export default function DagboekKrans({
                     type="button"
                     onClick={() => kiesKern(index)}
                     aria-label={`Toon ${nutrientReferences[rij.nutrient].label}`}
-                    className="flex w-full cursor-pointer items-center justify-between gap-2 rounded-md px-1 py-[0.2em] leading-none transition-colors hover:bg-white/[0.06]"
+                    className="flex w-full cursor-pointer items-center justify-between gap-2 rounded-md border-0 bg-transparent px-1 py-[0.2em] leading-none transition-colors hover:bg-white/[0.06]"
                   >
                   <span className="flex min-w-0 items-center gap-1.5 text-[var(--vd-ink-2)]">
                     <span

@@ -126,3 +126,11 @@ Dennis, 8 okt, op mobiel na #189: "erg vol; micronutriënten klikbaar maken in h
 - **De telregel** ("Gedekt: … Open: … Niet meetbaar …") staat op mobiel niet meer onder de krans, maar in de i-uitleg. Op brede schermen staat hij er nog onder.
 
 Meetpunt: ongewijzigd (`nutrition_dagboek_krans_gekozen`, `nutrition_dagboek_rijkste_geopend` met `surface: ring`, `nutrition_dagboek_krans_lijst_open`, `nutrition_dagboek_krans_uitleg`).
+
+### Aanvulling 8 oktober 2026 (3) — korte namen in de binnenring
+
+Dennis, 8 okt: "kan elke balk de micronutriënt in de balk te zien krijgen, misschien met 0–100?" Gekozen: korte labels in de binnenring, zonder getallen.
+
+- **Binnenring:** per kernsegment een korte naam langs de boog (Mg · Eiwit · Ω-3 · Zn · Vit. D), 8,5 px, op de onderste helft omgekeerd zodat hij rechtop staat. Hij dimt mee als een andere stof gekozen is. Dit herziet "Labels permanent rond de ring" (afgewezen 5 okt) alleen voor de binnenring: vijf segmenten van 72° en een dikte van 16 bieden er ruimte voor.
+- **Buitenring blijft zonder labels.** Hij is 9 dik en heeft tot negen segmenten, dus tekst zou op 375 px onleesbaar worden. De namen staan in "Alle stoffen".
+- **Geen 0–100 in de ring (afgewezen).** De vulling ís al de 0–100, en boven de norm tonen we een hoeveelheid in plaats van "378%". Getallen met ≈ of "—" worden in een boog rommelig. De getallen staan leesbaar in het midden.
