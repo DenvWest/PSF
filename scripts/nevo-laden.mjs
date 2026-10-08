@@ -23,6 +23,7 @@
  *   node scripts/nevo-laden.mjs
  *   node scripts/nevo-laden.mjs --csv=/pad/naar/NEVO2025_v9.0_Details.csv
  *   node scripts/nevo-laden.mjs --schrijf        (vereist NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY, bv. uit .env.local)
+ *   node scripts/nevo-laden.mjs --schrijf --vanaf=1000   (hervatten na een afgebroken load)
  */
 
 import fs from "node:fs";
@@ -30,6 +31,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { bouwVoedingsmiddelen, parseDelimited } from "./nevo-extract.mjs";
+import { leesVanaf, maakSupabaseClient, upsertInBatches } from "./laad-supabase.mjs";
 
 export const NEVO_EDITIE = "2025/9.0";
 
@@ -109,15 +111,6 @@ export function leesNevoFoods(csvPad) {
   return data.voedingsmiddelen.map((v) => naarNevoFood(v));
 }
 
-function laadEnv() {
-  const pad = path.join(process.cwd(), ".env.local");
-  if (!fs.existsSync(pad)) return;
-  for (const regel of fs.readFileSync(pad, "utf8").split("\n")) {
-    const m = regel.match(/^([A-Z0-9_]+)=(.*)$/);
-    if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-}
-
 async function main() {
   const argCsv = (process.argv.find((a) => a.startsWith("--csv=")) ?? "").slice(6);
   const csv = argCsv || process.env.NEVO_CSV || path.join(os.homedir(), "Downloads", "NEVO2025_v9.0_Details.csv");
@@ -133,31 +126,22 @@ async function main() {
     return;
   }
 
-  laadEnv();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error("NEXT_PUBLIC_SUPABASE_URL en SUPABASE_SERVICE_ROLE_KEY zijn nodig voor --schrijf.");
-  const { createClient } = await import("@supabase/supabase-js");
-  const supabase = createClient(url, key, { auth: { persistSession: false } });
-
-  const BATCH = 500;
-  for (let start = 0; start < foods.length; start += BATCH) {
-    const batch = foods.slice(start, start + BATCH).map((f) => ({
-      nevo_code: f.nevoCode,
-      nevo_versie: f.nevoVersie,
-      groep: f.groep,
-      naam_nl: f.naamNl,
-      naam_en: f.naamEn,
-      per: f.per,
-      zoek_tekst: f.naamNl.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/\s+/g, " ").trim(),
-      ...f.waarden,
-      spoor: f.spoor,
-      verrijkt: f.verrijkt,
-      updated_at: new Date().toISOString(),
-    }));
-    const { error } = await supabase.from("nevo_foods").upsert(batch, { onConflict: "nevo_code" });
-    if (error) throw new Error(`Batch vanaf ${start}: ${error.message}`);
-  }
+  const supabase = await maakSupabaseClient();
+  const nu = new Date().toISOString();
+  const rijen = foods.map((f) => ({
+    nevo_code: f.nevoCode,
+    nevo_versie: f.nevoVersie,
+    groep: f.groep,
+    naam_nl: f.naamNl,
+    naam_en: f.naamEn,
+    per: f.per,
+    zoek_tekst: f.naamNl.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/\s+/g, " ").trim(),
+    ...f.waarden,
+    spoor: f.spoor,
+    verrijkt: f.verrijkt,
+    updated_at: nu,
+  }));
+  await upsertInBatches({ supabase, tabel: "nevo_foods", rijen, onConflict: "nevo_code", vanaf: leesVanaf() });
   console.error(`Geschreven: ${foods.length} rijen in nevo_foods.`);
 }
 

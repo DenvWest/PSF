@@ -1,7 +1,7 @@
 # Review — OFF-import, bronnenpagina en ODbL-dump (PR #114, #116, #117)
 
 **Datum:** 4 oktober 2026
-**Status:** review afgerond, door Dennis akkoord bevonden (4 okt: "akkoord, leg vast"). #1 (stap 1) en #2 gebouwd op 8 okt, zie "Uitvoering 8 oktober"; de data is pas goed nadat Dennis opnieuw heeft geëxtraheerd en geladen. #3 en verder staan nog open.
+**Status:** review afgerond, door Dennis akkoord bevonden (4 okt: "akkoord, leg vast"). #1 (stap 1), #2, #7 en #8 (natrium-grens, niet-eindige getallen) gebouwd op 8 okt, zie "Uitvoering 8 oktober"; de data is pas goed nadat Dennis opnieuw heeft geëxtraheerd en geladen. Open: #3/#4 (statische zip, eigen PR), daarna #5, #6, de rest van #8 (polyolen/alcohol, massabalans-vlag), #9, #10.
 **Toetst:** commits `695d8d4d`, `4aced706`, `dee08f11`
 **Tegen:** `BESLUIT_VOEDINGSBRONNEN_LAGEN_2026-10.md`, `ONTWERP_SUPERMARKT_PRODUCTTABEL_2026-10.md`, `BESLUIT_NEVO_BRONVERMELDING.md`, `STEEKPROEF_OFF_DEKKING_2026-10.md`
 
@@ -269,6 +269,10 @@ Vaste barcodes om de fixes en de herkomsttest mee te toetsen. Waarden per 100 g,
 - `/bronnen`, "Wat wij hebben aangepast": natrium omgerekend, en de vier micro's leeggelaten met de reden. Bij de kolommen: "De vier laatste kolommen zijn voorlopig leeg."
 - Geen migratie: de kolommen blijven bestaan, ze worden leeg.
 
+**Tweede PR (branch `fix/off-loader-retry-natrium`), op Dennis' akkoord dezelfde dag:**
+- #7: `scripts/laad-supabase.mjs`, gedeeld door `off-laden.mjs` en `nevo-laden.mjs`: `laadEnv`, opnieuw proberen per batch (1 s × poging, tot 6 keer) bij fetch failed/429/5xx, `--vanaf=<n>` om te hervatten, en een foutmelding die de hervat-index noemt. `off-laden.mjs` noemt bij kapotte JSON het regelnummer en telt aan het eind de rijen met een andere snapshot.
+- #8, deels: `sodium_mg` ≤ 40.000 in `MICRO_MAX` (daarboven `null`), en niet-eindige getallen worden overgeslagen; `json.dumps(..., allow_nan=False)`. Polyolen/alcohol in de energiecontrole en de massabalans-vlag nog niet.
+
 **Volgorde voor Dennis:** eerst de data, dan pas deployen. Anders zegt `/bronnen` al "leeg" terwijl de dump de oude waarden nog geeft.
 
 1. De micro's direct leegmaken (Supabase Dashboard → SQL Editor). Dit dekt ook rijen die in een nieuwere dump niet meer voorkomen; de upsert verwijdert of overschrijft die nooit (#7):
@@ -289,7 +293,7 @@ Vaste barcodes om de fixes en de herkomsttest mee te toetsen. Waarden per 100 g,
    node scripts/off-laden.mjs
    node scripts/off-laden.mjs --schrijf
    ```
-   Bij "fetch failed" halverwege: gewoon opnieuw draaien, de upsert is idempotent (#7).
+   Een tijdelijke fout (fetch failed, 429, 5xx) probeert de loader per batch tot 6 keer opnieuw. Stopt hij toch, dan noemt de foutmelding de `--vanaf=<n>` om mee te hervatten: `node scripts/off-laden.mjs --schrijf --vanaf=<n>`. Aan het eind telt hij de tabel en meldt hoeveel rijen een oudere snapshot hebben (niet meer in de dump).
 4. Controleren met de testgevallen:
    ```sql
    select prod_id, sodium_mg, salt_g, calcium_mg, iron_mg, vitamin_c_mg, vitamin_d_ug, snapshot_datum
