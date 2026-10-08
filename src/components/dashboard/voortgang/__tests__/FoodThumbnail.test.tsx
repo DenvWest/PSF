@@ -21,10 +21,10 @@ describe("FoodThumbnail", () => {
     expect(screen.getByAltText("Kipdij")).toBeTruthy();
   });
 
-  it("valt terug op de tegel van de voedselgroep als de foto ontbreekt", () => {
+  it("valt terug op een illustratie van de categorie als de foto ontbreekt", () => {
     render(<FoodThumbnail entry={ENTRY} />);
     fireEvent.error(screen.getByAltText("Kipdij"));
     expect(screen.queryByAltText("Kipdij")).toBeNull();
-    expect(screen.getByTitle("Vlees").textContent).toBe("🥩");
+    expect(screen.getByTitle("Vlees").querySelector("svg")).not.toBeNull();
   });
 });
