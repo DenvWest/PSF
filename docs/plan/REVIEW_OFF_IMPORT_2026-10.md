@@ -1,7 +1,7 @@
 # Review — OFF-import, bronnenpagina en ODbL-dump (PR #114, #116, #117)
 
 **Datum:** 4 oktober 2026
-**Status:** review afgerond, door Dennis akkoord bevonden (4 okt: "akkoord, leg vast"). #1 (stap 1), #2, #7 en #8 (natrium-grens, niet-eindige getallen) gebouwd op 8 okt, zie "Uitvoering 8 oktober"; de data is pas goed nadat Dennis opnieuw heeft geëxtraheerd en geladen. Open: #3/#4 (statische zip, eigen PR), daarna #5, #6, de rest van #8 (polyolen/alcohol, massabalans-vlag), #9, #10.
+**Status:** review afgerond, door Dennis akkoord bevonden (4 okt: "akkoord, leg vast"). #1 (stap 1), #2, #7 en #8 (natrium-grens, niet-eindige getallen) gebouwd en op 8 okt door Dennis geladen (live gecontroleerd); #3, #4, #5 en #9 (grotendeels) als zip met licentie, zie "Uitvoering 8 oktober, vervolg". Open: #6 (script), de rest van #8 (polyolen/alcohol, massabalans-vlag), #10, jurist-vraag 9 en de 6 oude rijen.
 **Toetst:** commits `695d8d4d`, `4aced706`, `dee08f11`
 **Tegen:** `BESLUIT_VOEDINGSBRONNEN_LAGEN_2026-10.md`, `ONTWERP_SUPERMARKT_PRODUCTTABEL_2026-10.md`, `BESLUIT_NEVO_BRONVERMELDING.md`, `STEEKPROEF_OFF_DEKKING_2026-10.md`
 
@@ -307,3 +307,22 @@ Vaste barcodes om de fixes en de herkomsttest mee te toetsen. Waarden per 100 g,
    ```
    Verwacht: `met_micro` = 0, alle micro-kolommen bij de vijf barcodes leeg, en minder rijen met natrium 0 dan vóór de fix.
 5. Daarna `bash deploy.sh`, zodat `/bronnen` de nieuwe tekst toont, en de dump één keer downloaden en nakijken.
+
+## Uitvoering 8 oktober, vervolg: de dump als zip
+
+**Controle van de live data (8 okt, na Dennis' herlading).** De dump telt 58.979 rijen: 58.973 met snapshot 2026-10-08 en 6 met 2026-10-04. Geen enkele rij heeft een waarde in calcium, ijzer, vitamine C of vitamine D, geen natrium boven 40.000 mg, en de vijf testgevallen hebben lege micro's met natrium en zout in de goede eenheid. De "Verwacht"-kolom van de micro's in "Testgevallen" is dus achterhaald: sinds het besluit van 8 okt zijn die velden leeg, ook voor Blue Band (7,5 µg vitamine D, 603 mg calcium) en McDonald's (51 mg vitamine C).
+
+**Gebouwd (branch `feat/off-dump-zip`), #3, #4, #5 en #9:**
+- `GET /api/bronnen/open-food-facts` geeft een zip met `perfectsupplement-open-food-facts.csv`, `LICENTIE.txt` (naam en URI van de ODbL 1.0 voor de database en de DbCL 1.0 voor de inhoud, in het Nederlands en Engels, met de bronvermelding "© Open Food Facts contributors") en `LEESMIJ.txt` (samenstellingsdatum, aantal rijen per snapshotdatum, alle wijzigingen ten opzichte van de bron, de kolommen). De volledige licentietekst staat er niet in, alleen de URI; of dat volstaat is jurist-vraag 9. De zip is ~2,5 MB tegen 9 MB voor de losse CSV.
+- **Afwijking van het voorstel bij #3:** niet een bestand dat de loader maakt en ergens neerzet, maar een cache in de app. De route bouwt de zip met dezelfde ~60 query's als voorheen, hooguit één keer per uur; gelijktijdige downloads delen één poging, en mislukt een verversing dan blijft de oude zip in omloop. Reden: geen nieuwe opslag (bucket of server-bestand), geen extra stap voor Dennis na elke herlading, en een zip die niet kan verouderen doordat iemand de stap vergat. De databaselast is daarmee begrensd op ~60 query's per uur, onafhankelijk van het aantal downloads of adressen. Prijs: de eerste download na een uur duurt ~22 s (59 opeenvolgende query's), de rest ~50 ms. Een build tijdens een herlading kan rijen van twee snapshots mengen; dat staat per rij in `snapshot_datum` en in de leesmij.
+- `OFF_WIJZIGINGEN` in `src/lib/supermarkt-bron.ts` is de ene lijst van wijzigingen voor `/bronnen` en de leesmij (#5). Nieuw erin: afronding, naamkeuze en 300 tekens, één merk en de laatste categorie, ontdubbeling per barcode, de apostrof, producten met alleen kJ, het selectiecriterium. Verwijderd: "onmogelijk hoog vitamine-gehalte", want de vitamines zijn leeg. Sectie 5 zegt nu dat de waarden uit onze eigen kopie komen.
+- #9: de dump stopt bij een lege pagina in plaats van een korte; een mislukte bouw wordt gelogd en geeft 503 met `Retry-After`; het `download`-attribuut is van de link, zodat een 429 als tekst in beeld komt in plaats van een stille mislukte download. GA4 `bronnen_dump_download` telt nog steeds klikken, ook bij een 429.
+- Meetpunt: GA4 `bronnen_dump_download`, ongewijzigd.
+- Geen migratie, geen nieuwe afhankelijkheid (de zip-writer staat in `src/lib/zip-archive.ts`).
+
+**Nog open:**
+- #6: `scripts/off-dekking.py` corrigeren (gelijke kandidaten als één match, uitvoer naar `scripts/out/`). De getallen zelf zijn gecorrigeerd in `STEEKPROEF_OFF_DEKKING_2026-10.md` en `BESLUIT_VOEDINGSBRONNEN_LAGEN_2026-10.md`.
+- #8 rest: polyolen en alcohol in de energiecontrole, en de massabalans-vlag. Vraagt opnieuw extraheren en laden.
+- #10: een test die de grenzen op vier plekken gelijk houdt.
+- Jurist-vraag 9: licentie-URI of volledige tekst in het bestand.
+- De 6 rijen van 4 okt (Mineral water, Ristorante Mozzarella glutenfrei, Ultrapure Creatine, Pannenkoeken extra eiwit mix, Mayonaise Truffel Saus, Soupe jardinière) staan nog in tabel en dump. Verwijderen kan zodra geen dagboekregel naar die `prod_id`'s verwijst; er is bewust geen foreign key.

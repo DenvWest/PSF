@@ -4,7 +4,7 @@ import DumpDownloadLink from "@/components/bronnen/DumpDownloadLink";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
 import { NEVO_CITATION } from "@/lib/nevo-bron";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
-import { ODBL_URL, SUPERMARKT_BRON_INFO } from "@/lib/supermarkt-bron";
+import { ODBL_URL, OFF_WIJZIGINGEN, SUPERMARKT_BRON_INFO } from "@/lib/supermarkt-bron";
 
 const TITLE = "Bronnen en licenties";
 const DESCRIPTION =
@@ -68,18 +68,9 @@ export default function BronnenPage() {
           beschikbaar. Ten opzichte van de bron hebben we:
         </p>
         <ul className="mt-3 list-disc space-y-1.5 pl-5">
-          <li>alleen producten behouden die in Nederland worden verkocht en een energiewaarde hebben;</li>
-          <li>natrium omgerekend van gram naar milligram per 100 g of ml;</li>
-          <li>
-            calcium, ijzer, vitamine C en vitamine D leeggelaten: in de bron staan schattingen die Open
-            Food Facts uit de ingrediëntenlijst berekent tussen de etiketwaarden, zonder dat ze van
-            elkaar te onderscheiden zijn;
-          </li>
-          <li>
-            waarden die niet kunnen kloppen, zoals een energiewaarde die niet bij de macro&apos;s past of
-            een onmogelijk hoog vitamine-gehalte, leeggelaten of de hele rij overgeslagen;
-          </li>
-          <li>één merk en één categorie per product bewaard en een zoektekst toegevoegd.</li>
+          {OFF_WIJZIGINGEN.map((wijziging) => (
+            <li key={wijziging}>{wijziging}</li>
+          ))}
         </ul>
         <p className="mt-3">
           Staat er een fout in een product? Verbeter het bij de bron op Open Food Facts; bij een
@@ -92,9 +83,12 @@ export default function BronnenPage() {
           3. Download de database
         </h2>
         <p className="mt-3">
-          De volledige afgeleide database als CSV, onder dezelfde licentie (ODbL 1.0). Elke rij heeft
-          een <code className="text-sm">snapshot_datum</code>: de datum van de Open Food
-          Facts-dump waaruit de rij komt. Een lege cel betekent onbekend, nooit nul.
+          De volledige afgeleide database, onder dezelfde licentie (ODbL 1.0), als zip met de CSV, de
+          licentie (<code className="text-sm">LICENTIE.txt</code>) en een leesmij (
+          <code className="text-sm">LEESMIJ.txt</code>) met de bronvermelding en bovenstaande
+          wijzigingen. Elke rij heeft een <code className="text-sm">snapshot_datum</code>: de datum
+          van de Open Food Facts-dump waaruit de rij komt. Een lege cel betekent onbekend, nooit nul.
+          De zip wordt hooguit één keer per uur opnieuw samengesteld.
         </p>
         <div className="mt-4">
           <DumpDownloadLink />
@@ -129,7 +123,8 @@ export default function BronnenPage() {
         </h2>
         <p className="mt-3">
           Je dagboek bewaart alleen welk product je koos en hoeveel gram. De voedingswaarden halen we
-          bij het tonen uit de bron op; ze worden niet bij jouw gegevens opgeslagen. Meer daarover
+          bij het tonen uit onze eigen kopie van de bron (Open Food Facts of NEVO) op; ze worden niet
+          bij jouw gegevens opgeslagen. Meer daarover
           lees je in ons{" "}
           <Link href="/privacy" className={linkKlasse}>
             privacybeleid
