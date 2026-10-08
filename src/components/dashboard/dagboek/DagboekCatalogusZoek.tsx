@@ -401,7 +401,7 @@ export default function DagboekCatalogusZoek({
                         className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
                       >
                         <span className="flex min-w-0 items-center gap-2">
-                          <FoodGroupTile icoon={tegel.icoon} label={tegel.label} size={40} />
+                          <FoodGroupTile motief={tegel.motief} label={tegel.label} size={40} />
                           <span className="min-w-0">
                             <span className="block truncate text-[13px] text-[var(--vd-ink)]">
                               {product.naam}

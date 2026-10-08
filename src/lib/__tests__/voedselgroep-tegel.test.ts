@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { FOOD_CATALOG } from "@/data/nutrition/food-catalog";
-import { tegelVoorNevoGroep, VOEDSELGROEP_TEGEL } from "@/lib/voedselgroep-tegel";
+import { CATEGORIE_MOTIEF, tegelVoorNevoGroep, VOEDSELGROEP_TEGEL } from "@/lib/voedselgroep-tegel";
 
 describe("voedselgroep-tegel", () => {
   it("heeft een tegel voor elke voedselgroep die de catalogus gebruikt", () => {
@@ -9,16 +9,23 @@ describe("voedselgroep-tegel", () => {
     }
   });
 
-  it("geeft elke tegel een icoon en een label", () => {
+  it("geeft elke tegel een motief en een label", () => {
     for (const tegel of Object.values(VOEDSELGROEP_TEGEL)) {
-      expect(tegel.icoon.length).toBeGreaterThan(0);
+      expect(tegel.motief.length).toBeGreaterThan(0);
       expect(tegel.label.length).toBeGreaterThan(0);
     }
   });
 
   it("vertaalt een NEVO-groep naar onze tegel", () => {
     expect(tegelVoorNevoGroep("Vis, schaal- en schelpdieren")).toBe(VOEDSELGROEP_TEGEL.vis);
-    expect(tegelVoorNevoGroep("Kaas")).toBe(VOEDSELGROEP_TEGEL.zuivel);
+    expect(tegelVoorNevoGroep("Kaas")).toEqual({ motief: "kaas", label: VOEDSELGROEP_TEGEL.zuivel.label });
+    expect(tegelVoorNevoGroep("Brood").motief).toBe("brood");
+  });
+
+  it("heeft een motief voor elke categorie die de catalogus gebruikt", () => {
+    for (const entry of FOOD_CATALOG) {
+      expect(CATEGORIE_MOTIEF[entry.category], `${entry.key} (${entry.category})`).toBeDefined();
+    }
   });
 
   it("valt terug op een neutrale tegel voor een groep zonder eigen icoon", () => {
