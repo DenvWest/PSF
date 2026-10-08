@@ -86,7 +86,6 @@ describe("contentgraaf", () => {
         "supplementgids",
         "vergelijking",
         "pillar",
-        "profiel",
         "gezondheidsgids",
         "voedingsstof",
       ]),
@@ -163,7 +162,6 @@ describe("weespagina's", () => {
     "/gids/testosteron",
     "/gids/voeding",
     "/kennisbank/sociale-verbinding",
-    "/profiel/stressdrager",
     "/supplementen/zink",
     "/wat-is-omega-3",
   ];

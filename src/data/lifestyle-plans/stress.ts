@@ -120,7 +120,7 @@ export const stressPlanTemplate: LifestylePlanTemplate = {
           },
           showWhen: { type: "signal", signal: "cortisol_risk" },
           link: {
-            label: "Doe de voedingscheck",
+            label: "Wat mis je? Doe de check",
             href: "/intake/voeding",
             kind: "article",
           },

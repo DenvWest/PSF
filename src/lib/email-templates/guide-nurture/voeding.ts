@@ -19,7 +19,7 @@ export const voedingGuideTemplates: Record<GuideNurtureDay, GuideNurtureTemplate
 </p>
 <ul style="font-size: 15px; color: #555; line-height: 1.8; margin-bottom: 24px; padding-left: 20px;">
   <li>Deze week: eiwit bij elke maaltijd — concreet en haalbaar</li>
-  <li>Week 2–4: korte voedingscheck voor inzicht in je patroon</li>
+  <li>Week 2–4: korte check voor inzicht in je patroon</li>
   <li>Supplementen pas als laatste stap</li>
 </ul>
 ${ctaButton(absoluteUrl("/voeding-na-40"), "Start met je stappenplan →")}
@@ -98,7 +98,7 @@ ${ctaButton(absoluteUrl("/supplementen/omega-3"), "Lees de omega-3 gids →")}
   Krachttraining geeft de prikkel; eiwit levert het bouwmateriaal. Check hoe je beweging en voeding samen staan — dat bepaalt of je vooruitgang ziet.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Herhaal over twee weken de voedingscheck — dan zie je of je inname beweegt sinds je startpunt.
+  Herhaal over twee weken de check — dan zie je of je inname beweegt sinds je startpunt.
 </p>
 ${ctaButton(absoluteUrl("/intake/beweging"), "Doe de beweegcheck (1 min) →")}
 <p style="margin-top: 12px;">

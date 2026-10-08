@@ -176,13 +176,13 @@ export default async function AanpakMode() {
                 ) : (
                   <>
                     <p className="text-base text-stone-600">
-                      Supplementadvies tonen we pas na je voedingscheck — eerst je bord, dan gericht vergelijken.
+                      Supplementadvies tonen we pas na je check — eerst je bord, dan gericht vergelijken.
                     </p>
                     <Link
                       href="/intake/voeding"
                       className="mt-5 inline-flex min-h-[44px] items-center rounded-full bg-[#5A8F6A] px-[22px] py-2.5 text-sm font-semibold text-white transition hover:bg-[#4A7F5A]"
                     >
-                      Start voedingscheck →
+                      Start de check →
                     </Link>
                   </>
                 )}

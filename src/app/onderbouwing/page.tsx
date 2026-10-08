@@ -197,14 +197,14 @@ export default function OnderbouwingPage() {
         <section className="mt-14 max-w-4xl">
           <h2 className={sectionTitleClass}>Onderbouwing per product</h2>
           <p className="mt-4 text-base leading-relaxed text-stone-600">
-            Naast de Leefstijlcheck hebben we aparte onderbouwing voor de snelle
-            voedingscheck — andere vragen, andere frequentie-proxy&apos;s.
+            Naast de Leefstijlcheck hebben we aparte onderbouwing voor de check
+            Wat mis je? — andere vragen, andere frequentie-proxy&apos;s.
           </p>
           <Link
             href="/onderbouwing/voeding"
             className="mt-4 inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-stone-800 transition hover:bg-stone-50"
           >
-            Voedingscheck onderbouwing →
+            Onderbouwing van Wat mis je? →
           </Link>
         </section>
 

@@ -535,7 +535,7 @@ export function resolveNutritionGate(rows: readonly NutritionFactRow[]): Nutriti
   if (rows.length === 0) {
     return {
       open: false,
-      reason: "Zonder voedingscheck weten we niet of er iets aan te vullen valt.",
+      reason: "Zonder de check weten we niet of er iets aan te vullen valt.",
       closedBy: "no_check",
     };
   }

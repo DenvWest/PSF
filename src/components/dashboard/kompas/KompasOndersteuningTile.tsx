@@ -39,7 +39,7 @@ export default function KompasOndersteuningTile({
           Supplementen
         </h2>
         <p className="mt-2 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
-          Leefstijl eerst. Na je voedingscheck zeggen we per supplement of het
+          Leefstijl eerst. Na je check zeggen we per supplement of het
           iets toevoegt — of juist niet.
         </p>
         <Link
@@ -50,7 +50,7 @@ export default function KompasOndersteuningTile({
           }}
           className="mt-3 inline-flex min-h-11 items-center text-[13px] font-semibold text-[#5A8F6A] no-underline"
         >
-          Doe je voedingscheck →
+          Wat mis je? Doe de check →
         </Link>
       </CockpitTile>
     );

@@ -854,7 +854,7 @@ Het verschilt van een normale dip na zware week: het houdt aan en verbetert niet
       howItWorks: `Belasting = training + werkstress + slaaptekort. Herstel = slaap, voeding (eiwit), rustdagen en soms minder volume. Zonder die balans blijft het sympathische “aan”-gevoel langer hangen; herstelmarkers en subjectief welzijn kunnen achterblijven.
 
 Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; online checklists zijn geen vervanging.`,
-      whyItMatters: `Supplementen zoals creatine of magnesium ondersteunen delen van het plaatje, maar vervangen geen deload. Zie profiel [Overtrainer](/profiel/overtrainer), pillar [herstel na 30](/herstel-en-voeding) en blog [creatine en herstel](/blog/creatine-en-herstel).`,
+      whyItMatters: `Supplementen zoals creatine of magnesium ondersteunen delen van het plaatje, maar vervangen geen deload. Zie [herstel en voeding](/herstel-en-voeding) en blog [creatine en herstel](/blog/creatine-en-herstel).`,
     },
     relatedSlugs: ['mitochondrien', 'cortisol'],
     relatedComparisons: ['/beste/creatine', '/beste/magnesium'],

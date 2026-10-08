@@ -149,11 +149,7 @@ export default function VoedingNa40Page() {
                     <li>Je avondmaaltijd is laat of eenzijdig (veel koolhydraten, weinig eiwit).</li>
                   </ul>
                   <p className="mt-4 text-gray-700 leading-relaxed">
-                    Herken je een patroon?{" "}
-                    <Link href="/profiel/lage-energie" className={LINK}>
-                      Lees het patroon Lage Energie
-                    </Link>{" "}
-                    of zie met de{" "}
+                    Herken je een patroon? Zie met de{" "}
                     <Link href="/intake" className={LINK}>
                       gratis check Wat mis je?
                     </Link>{" "}

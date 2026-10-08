@@ -17,7 +17,6 @@ const footerColumns = [
         title: "Informatie",
         links: [
             { href: "/gidsen", label: "Gezondheidsgidsen" },
-            { href: "/profiel", label: "Profielen" },
             { href: "/blog", label: "Blog" },
             { href: "/kennisbank", label: "Kennisbank" },
         ],

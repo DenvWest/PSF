@@ -133,7 +133,7 @@ describe("buildContextSpine — urgentie", () => {
       throw new Error("verwacht geen_winstlaag");
     }
     // Geen laag 1 als schijnprecisie — wel de weg vooruit.
-    expect(spine.urgency.line).toContain("voedingscheck");
+    expect(spine.urgency.line).toContain("Je check");
     expect(spine.urgency.cta?.href).toBe("/intake/voeding?from=dashboard&kompas=voeding");
   });
 

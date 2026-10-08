@@ -119,7 +119,7 @@ describe("staten per prioriteit", () => {
       "Opbouwen begint pas als je krachtdagen vier weken staan.",
     );
     expect(movementLayerWhyWait(6, 2)).toBe(
-      "Eerst je voedingscheck en je hertest, dan pas aanvullen.",
+      "Eerst de check en je hertest, dan pas aanvullen.",
     );
   });
 });

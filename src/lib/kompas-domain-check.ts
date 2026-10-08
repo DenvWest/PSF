@@ -34,7 +34,7 @@ export const DOMAIN_CHECK_PILLAR_IDS: PillarId[] = zichtbareDomeinen([
 export const CHECK_NAME: Partial<Record<PillarId, string>> = {
   slaap: "slaapcheck",
   beweging: "beweegcheck",
-  voeding: "voedingscheck",
+  voeding: "check 'Wat mis je?'",
   stress: "stresscheck",
 };
 

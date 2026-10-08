@@ -59,7 +59,7 @@ export const eiwitNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Zie of je eiwit al op peil is",
       tekst:
-        "In de [check](/intake) zie je of je eiwitinname over de dag al op peil is — handig als je niet weet waar je moet beginnen. Herken je veel trainen met weinig herstel? Bekijk ook het profiel [Overtrainer](/profiel/overtrainer).",
+        "In de [check](/intake) zie je of je eiwitinname over de dag al op peil is — handig als je niet weet waar je moet beginnen. Herken je veel trainen met weinig herstel? Lees ook [herstel en voeding](/herstel-en-voeding).",
     },
   ],
   samenvatting:

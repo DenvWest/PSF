@@ -125,7 +125,7 @@ export const eiwitpoederGidsData: SupplementData = {
         symptoom: "Lage Energie",
         tekst:
           "Als snacks, alcohol of te weinig volwaardige maaltijden je herstel ondermijnen, begint winst vaak bij voeding.",
-        href: "/profiel/lage-energie",
+        href: "/energie-en-voeding",
       },
     ],
   },

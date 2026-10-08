@@ -299,27 +299,7 @@ export default function SlaapVerbeterenNa40Page() {
                   werk te pakken. Wat je overdag met je hoofd doet, beïnvloedt vaak hoe rustig je
                   &apos;s avonds wordt.
                 </p>
-                <p className="mt-4 text-gray-700 leading-relaxed">
-                  Word je vroeg wakker met piekeren? Dat herkennen veel mensen. Het patroon
-                  Onrustige Slaper beschrijft wat erachter kan zitten, met een stappenplan — geen
-                  diagnose.
-                </p>
 
-                <div className="mt-8 p-6 bg-amber-50 border border-amber-200 rounded-xl">
-                  <p className="text-gray-800 font-medium">
-                    Wakker om 3 uur, niet terug in slaap? Je bent niet alleen.
-                  </p>
-                  <p className="mt-2 text-gray-600">
-                    Wat er bij dit patroon speelt en wat je zelf kunt doen, lees je bij Onrustige
-                    Slaper — een herkenningspagina, geen test.
-                  </p>
-                  <Link
-                    href="/profiel/onrustige-slaper"
-                    className="mt-3 inline-block text-green-700 font-semibold hover:text-green-800"
-                  >
-                    Lees het patroon Onrustige Slaper →
-                  </Link>
-                </div>
               </section>
 
               {/* 6. Leefstijl */}

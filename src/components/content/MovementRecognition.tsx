@@ -98,13 +98,9 @@ export default function MovementRecognition() {
               : `Je herkent er ${count}. Zie het niet als “ik word oud”, maar als een lijst die je grotendeels kunt terugdraaien — en daar begint deze gids.`}
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-[#9FB0A6]">
-            Past dit bij jou? Bekijk{" "}
-            <Link href="/profiel/overtrainer" className={LINK}>
-              Overtrainer
-            </Link>{" "}
-            of{" "}
-            <Link href="/profiel/lage-energie" className={LINK}>
-              Lage Energie
+            Past dit bij jou? Lees{" "}
+            <Link href="/herstel-en-voeding" className={LINK}>
+              herstel en voeding
             </Link>{" "}
             — of start de{" "}
             <Link href="/intake" className={LINK}>

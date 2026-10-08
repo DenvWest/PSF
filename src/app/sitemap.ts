@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { PROFILE_SLUGS } from "@/data/profiles";
 import { GUIDE_SLUGS } from "@/data/gids";
 import { kennisbankTerms } from "@/data/kennisbank";
 import { alleArtikelen } from "@/data/blog";
@@ -156,7 +155,6 @@ const HUB_PADEN = [
   "/contact",
   "/methodologie",
   "/ps-score",
-  "/profiel",
 ] as const;
 
 /**
@@ -192,7 +190,6 @@ type SitemapSectionId =
   | "vergelijkingen"
   | "supplementgidsen"
   | "pillars"
-  | "profielen"
   | "gezondheidsgidsen"
   | "voedingsstoffen"
   | "voedingRoute"
@@ -245,12 +242,6 @@ const SITEMAP_SECTIONS: Record<SitemapSectionId, () => Entry[] | Promise<Entry[]
       "monthly",
     ),
 
-  profielen: () =>
-    paths(
-      PROFILE_SLUGS.map((s) => `/profiel/${s}`),
-      0.8,
-      "monthly",
-    ),
 
   gezondheidsgidsen: () =>
     paths(

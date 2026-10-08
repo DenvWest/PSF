@@ -53,7 +53,7 @@ export default function VoedingHubPage() {
               href="/intake/voeding"
               className="inline-flex min-h-11 items-center justify-center rounded-xl bg-ps-green px-6 py-3 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
             >
-              Doe de voedingscheck (1 min) →
+              Wat mis je? Doe de check →
             </Link>
             <Link href="/voeding-na-40" className={`inline-flex min-h-11 items-center px-1 py-3 text-sm ${LINK}`}>
               Lees de voedingspijler →

@@ -208,7 +208,7 @@ export default function NutritionResultView({
         <div className="grid gap-6 lg:gap-8">
           <header>
             <p className="m-0 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#7E8C82]">
-              Je voedingscheck
+              Wat mis je?
             </p>
           </header>
 
@@ -387,7 +387,7 @@ export default function NutritionResultView({
                 )}
                 className={FOOTNOTE_LINK}
               >
-                Wetenschappelijke onderbouwing van de voedingscheck
+                Wetenschappelijke onderbouwing van de check
               </Link>
             </p>
           </div>

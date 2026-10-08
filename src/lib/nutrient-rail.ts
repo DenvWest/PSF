@@ -145,7 +145,7 @@ export function railGroepen(
  */
 export function railBronregel(rijen: readonly NutrientRailRij[]): string {
   if (rijen.length === 0) {
-    return "Doe de voedingscheck om je stoffen te zien.";
+    return "Doe de check om je stoffen te zien.";
   }
   const ruimte = rijen.filter((rij) => rij.band === "below").length;
   if (ruimte === 0) {

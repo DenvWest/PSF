@@ -93,12 +93,12 @@ export default function VoedingsstoffenHub() {
           )}
 
           <p className="mt-12 max-w-[68ch] text-[0.9375rem] leading-relaxed text-stone-600">
-            Wil je weten of jíj hieraan komt? De{" "}
+            Wil je weten of jíj hieraan komt? De check{" "}
             <Link
               href="/intake/voeding"
               className="font-medium text-emerald-800 underline decoration-emerald-700/35 underline-offset-[3px] hover:decoration-emerald-800"
             >
-              voedingscheck
+              Wat mis je?
             </Link>{" "}
             leest in een minuut uit wat je bord voor deze vijf stoffen doet.
           </p>

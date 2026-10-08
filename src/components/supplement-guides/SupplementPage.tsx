@@ -12,8 +12,6 @@ import { CHECK_CTA, CHECK_DURATION_LABEL, CHECK_QUESTIONS_LABEL } from "@/lib/ch
 import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBanner";
-import { ComparisonProfileFits } from "@/components/supplements/ComparisonProfileFits";
-import { getProfileFitsForGuideSlug } from "@/data/supplement-profile-fits";
 import GuideSidebar, {
   type GuideTocItem,
 } from "@/components/supplement-guides/GuideSidebar";
@@ -33,7 +31,6 @@ interface SupplementPageProps {
 export default function SupplementPage({ data }: SupplementPageProps) {
   const pageUrl = `${SITE_URL}/supplementen/${data.slug}`;
   const modified = data.dateModified ?? data.datePublished;
-  const profileFits = getProfileFitsForGuideSlug(data.slug);
   const nadrukThemas =
     CATALOG.find((entry) => entry.slug === data.slug)?.themas ?? [];
 
@@ -43,9 +40,6 @@ export default function SupplementPage({ data }: SupplementPageProps) {
     { id: "vormen", label: data.vormenDosering.titel },
     { id: "waar-op-letten", label: data.waarOpLetten.titel },
     { id: "bij-jouw-klachten", label: data.gerelateerdeSymptomen.titel },
-    ...(profileFits.length > 0
-      ? [{ id: "past-bij-profiel-sectie", label: "Past bij dit profiel" }]
-      : []),
     { id: "faq", label: "Veelgestelde vragen" },
     ...(data.blogLinks.length > 0
       ? [{ id: "verdieping", label: "Verdieping" }]
@@ -273,8 +267,6 @@ export default function SupplementPage({ data }: SupplementPageProps) {
                 ))}
               </div>
             </section>
-
-            <ComparisonProfileFits fits={profileFits} bare />
 
             <section
               id="faq"

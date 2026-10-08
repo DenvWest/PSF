@@ -29,7 +29,7 @@ describe("buildDomainCheckStates", () => {
     const state = build().get("voeding")!;
     expect(state.status).toBe("never");
     expect(state.actionable).toBe(true);
-    expect(state.ctaLabel).toBe("Doe de voedingscheck");
+    expect(state.ctaLabel).toBe("Doe de check 'Wat mis je?'");
     expect(state.href).toBe("/intake/voeding?from=dashboard&kompas=voeding");
     expect(state.progress).toBe(1);
   });
@@ -39,13 +39,13 @@ describe("buildDomainCheckStates", () => {
     expect(state.status).toBe("counting");
     expect(state.actionable).toBe(false);
     expect(state.daysUntil).toBe(DOMAIN_CHECK_INTERVAL_DAYS - 5);
-    expect(state.label).toBe("Nieuwe voedingscheck over 9 dagen");
+    expect(state.label).toBe("Nieuwe check 'Wat mis je?' over 9 dagen");
     expect(state.progress).toBeCloseTo(5 / DOMAIN_CHECK_INTERVAL_DAYS);
   });
 
   it("zegt morgen bij nog één dag", () => {
     const state = build({ voeding: DOMAIN_CHECK_INTERVAL_DAYS - 1 }).get("voeding")!;
-    expect(state.label).toBe("Nieuwe voedingscheck morgen");
+    expect(state.label).toBe("Nieuwe check 'Wat mis je?' morgen");
   });
 
   it("toont een verse check als net gedaan", () => {
