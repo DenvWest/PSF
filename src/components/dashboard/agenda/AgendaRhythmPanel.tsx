@@ -2,9 +2,6 @@
 
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
-import AgendaEiwitMaaltijdKaart, {
-  type EiwitKaartData,
-} from "@/components/dashboard/agenda/AgendaEiwitMaaltijdKaart";
 import FavoriteReminderControl from "@/components/dashboard/voortgang/FavoriteReminderControl";
 import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
 import { PILLAR } from "@/data/dashboard";
@@ -65,11 +62,11 @@ export function selectRhythmItems(items: VoortgangFavoriteItem[]): VoortgangFavo
  * in de header (`AgendaToolbar`) regelt de rest — dit component rendert zelf
  * niets in- of uitklapbaars, `AgendaScreen` mount het alleen wanneer open.
  */
-export default function AgendaRhythmPanel({ eiwitKaart = null }: { eiwitKaart?: EiwitKaartData | null }) {
+export default function AgendaRhythmPanel() {
   const { items } = useVoortgangFavorites();
   const rhythmItems = selectRhythmItems(items);
 
-  if (rhythmItems.length === 0 && !eiwitKaart) {
+  if (rhythmItems.length === 0) {
     return null;
   }
 
@@ -79,7 +76,6 @@ export default function AgendaRhythmPanel({ eiwitKaart = null }: { eiwitKaart?: 
         Doorlopend vandaag
       </p>
       <ul className="m-0 flex list-none flex-col gap-2 p-0">
-        {eiwitKaart ? <AgendaEiwitMaaltijdKaart {...eiwitKaart} /> : null}
         {rhythmItems.map((item) => {
           const pillar = item.domain ? PILLAR[item.domain] : null;
           const Icon = pillar ? iconOf(pillar.icon) : null;
@@ -114,11 +110,9 @@ export default function AgendaRhythmPanel({ eiwitKaart = null }: { eiwitKaart?: 
           );
         })}
       </ul>
-      {rhythmItems.length > 0 ? (
-        <p className="mt-2.5 text-[11px] leading-relaxed text-[#7E8C82]">
-          Geen vast moment — een ritme door je dag heen. Verwijderen kan met het hartje hierboven.
-        </p>
-      ) : null}
+      <p className="mt-2.5 text-[11px] leading-relaxed text-[#7E8C82]">
+        Geen vast moment — een ritme door je dag heen. Verwijderen kan met het hartje hierboven.
+      </p>
     </div>
   );
 }

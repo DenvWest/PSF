@@ -13,7 +13,6 @@ type AgendaPatroonRegelProps = {
   dagen: readonly DagboekDag[];
   weekDates: readonly string[];
   weekDayLabels: readonly string[];
-  onOpenPatroon: () => void;
 };
 
 export default function AgendaPatroonRegel({
@@ -21,7 +20,6 @@ export default function AgendaPatroonRegel({
   dagen,
   weekDates,
   weekDayLabels,
-  onOpenPatroon,
 }: AgendaPatroonRegelProps) {
   const normen = useKernstofNormen();
   const dekking = useMemo(
@@ -74,17 +72,6 @@ export default function AgendaPatroonRegel({
           })}
         </ol>
       </div>
-      <button
-        type="button"
-        onClick={() => {
-          trackEvent("agenda_patroon_regel_click", { nutrient: focus.nutrient });
-          onOpenPatroon();
-        }}
-        className="inline-flex shrink-0 cursor-pointer items-center gap-0.5 border-none bg-transparent p-0 text-[12px] font-semibold text-[var(--sage)]"
-      >
-        Je patroon
-        <Icons.ChevronRight s={13} />
-      </button>
     </div>
   );
 }

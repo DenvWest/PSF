@@ -103,6 +103,7 @@ type AgendaDayTimelineProps = {
   onHideAllPlanSteps?: () => Promise<void>;
   onShowAllPlanSteps?: () => Promise<void>;
   weekStrip?: ReactNode;
+  aboveBlocks?: ReactNode;
   voorstellen?: readonly TekortVoorstel[];
   autoOpenNutrient?: NutrientId | null;
   onRegisterFooterActions?: (actions: {
@@ -131,6 +132,7 @@ export default function AgendaDayTimeline({
   onHideAllPlanSteps,
   onShowAllPlanSteps,
   weekStrip,
+  aboveBlocks,
   voorstellen = [],
   autoOpenNutrient = null,
   onRegisterFooterActions,
@@ -413,6 +415,8 @@ export default function AgendaDayTimeline({
       ) : null}
 
       {weekStrip ? <div className="mb-4">{weekStrip}</div> : null}
+
+      {aboveBlocks}
 
       <div
         className="flex max-h-[var(--agenda-rail-max-h)] gap-2 overflow-y-auto sm:max-h-none sm:gap-3 sm:overflow-visible"
