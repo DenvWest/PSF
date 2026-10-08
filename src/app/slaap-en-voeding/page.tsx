@@ -5,7 +5,7 @@ import GuideNutritionZoom from "@/components/content/GuideNutritionZoom";
 import Container from "@/components/layout/Container";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import { RefNote } from "@/components/references/RefNote";
-import { magnesiumReferences } from "@/data/references/magnesium";
+import { slaapReferences } from "@/data/references/slaap";
 import DomainHubConnector from "@/components/content/DomainHubConnector";
 import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
@@ -138,6 +138,11 @@ export default function SlaapVerbeterenNa40Page() {
                     </a>
                   </li>
                   <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Zoom in op voeding
+                    </a>
+                  </li>
+                  <li>
                     <a href="#wat-er-verandert" className="hover:underline">
                       Wat er verandert na 30
                     </a>
@@ -202,10 +207,12 @@ export default function SlaapVerbeterenNa40Page() {
                     Waarom je slaap na 30 anders kan voelen (en waarom &ldquo;gewoon eerder naar bed&rdquo; niet altijd werkt)
                   </li>
                   <li>Hoe overdag stress en schermen je nacht beïnvloeden — in begrijpelijke taal</li>
-                  <li>5 concrete aanpassingen die je vanavond nog kunt starten</li>
+                  <li>6 concrete aanpassingen die je vanavond nog kunt starten</li>
                   <li>Welke supplementen je kunt overwegen — en wat je beter eerst met je huisarts bespreekt</li>
                 </ul>
               </section>
+
+              <GuideNutritionZoom guide="slaap" />
 
               {/* 4. Mechanisme */}
               <section id="wat-er-verandert" className="mt-14">
@@ -362,8 +369,18 @@ export default function SlaapVerbeterenNa40Page() {
                   .
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Concreet: zet schermen uit om 22:00 als je om 23:00 in bed wil liggen.
-                  Gebruik oranje/rode verlichting in de avond — die voelt voor veel mensen rustiger dan fel wit licht.
+                  Concreet: tot 19:00–20:00 kun je je scherm gewoon gebruiken, daarna bouw je af. Lig je om
+                  23:00 in bed, dan gaat het scherm om 22:00 uit. In een laboratoriumstudie lazen mensen vijf
+                  avonden op een verlicht scherm in plaats van uit een papieren boek: hun melatonine kwam
+                  anderhalf uur later op gang en inslapen duurde langer
+                  <RefNote number={7} />. Dim ook het licht in huis; oranje of rood licht voelt voor veel
+                  mensen rustiger dan fel wit licht.
+                </p>
+                <p className="mt-3 text-gray-700 leading-relaxed">
+                  En een blauwlichtfilterbril? Het grootste overzicht tot nu toe, 17 gerandomiseerde studies,
+                  vond geen aantoonbaar effect op je slaap
+                  <RefNote number={8} />. Die studies waren klein en kort, dus het laatste woord is er niet
+                  over. Je scherm eerder wegleggen werkt via hetzelfde mechanisme en kost niets.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
@@ -395,7 +412,26 @@ export default function SlaapVerbeterenNa40Page() {
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  5. Verlaag je kamertemperatuur
+                  5. Eet je avondeten drie à vier uur voor bedtijd
+                </h3>
+                <p className="mt-3 text-gray-700 leading-relaxed">
+                  Je spijsvertering werkt &apos;s avonds trager, en een volle maag ligt slecht. In een
+                  onderzoek onder bijna 800 jongvolwassenen werden mensen die binnen drie uur voor
+                  bedtijd aten vaker &apos;s nachts wakker
+                  <RefNote number={9} />. In een kleine studie vielen mannen sneller in slaap na een
+                  avondmaaltijd vier uur voor bedtijd dan na dezelfde maaltijd één uur ervoor
+                  <RefNote number={10} />.
+                </p>
+                <p className="mt-3 text-gray-700 leading-relaxed">
+                  Concreet: lig je rond 23:00 in bed, eet dan tussen 18:00 en 19:00. Het gaat niet alleen
+                  om wanneer, maar ook om wat je over langere tijd eet. In een kleine studie ging meer vezel
+                  samen met meer diepe slaap, meer verzadigd vet met minder diepe slaap, en meer suiker
+                  met vaker kort wakker worden
+                  <RefNote number={11} />. Dat zie je niet aan één avond, wel aan wat je over weken binnenkrijgt.
+                </p>
+
+                <h3 className="font-semibold text-xl text-gray-900 mt-8">
+                  6. Verlaag je kamertemperatuur
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Je lichaamstemperatuur van binnen moet 1-2°C dalen om in slaap te vallen en diepe
@@ -761,9 +797,7 @@ export default function SlaapVerbeterenNa40Page() {
                 </div>
               </section>
 
-              <GuideNutritionZoom guide="slaap" />
-
-              <ReferenceList references={magnesiumReferences} />
+              <ReferenceList references={slaapReferences} />
 
             </article>
             <DomainHubConnector pillarId="slaap" />

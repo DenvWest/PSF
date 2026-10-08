@@ -137,6 +137,11 @@ export default function EnergieNa40Page() {
                     </a>
                   </li>
                   <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Zoom in op voeding
+                    </a>
+                  </li>
+                  <li>
                     <a href="#wat-er-verandert" className="hover:underline">
                       Waarom energie na 30 anders voelt
                     </a>
@@ -214,6 +219,8 @@ export default function EnergieNa40Page() {
                   worden&rdquo; — het is een signaal om je weekritme, slaap en voeding scherper te bekijken.
                 </p>
               </section>
+
+              <GuideNutritionZoom guide="energie" />
 
               {/* 4. Wat er verandert */}
               <section id="wat-er-verandert" className="mt-14">
@@ -618,7 +625,6 @@ export default function EnergieNa40Page() {
               </section>
 
               {/* 12. CTA */}
-              <GuideNutritionZoom guide="energie" />
 
               {/* 13. FAQ */}
               <section id="veelgestelde-vragen" className="mt-14">

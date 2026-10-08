@@ -103,15 +103,15 @@ export default function BewegingNa40Page() {
         </section>
 
         <MovementRecognition />
+        <Container className="py-4">
+          <GuideNutritionZoom guide="beweging" />
+        </Container>
         <MovementLifeline />
         <MovementMechanism />
         <MovementVersus />
         <MovementMoments />
         <MovementFuture />
         <MovementDashboardPreview />
-        <Container className="py-4">
-          <GuideNutritionZoom guide="beweging" />
-        </Container>
         <MovementClosingCta />
       </main>
     </>
