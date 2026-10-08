@@ -39,3 +39,12 @@ export function verwachteMaaltijden(gewone: readonly EetmomentId[] | null | unde
   const schoon = sanitizeHoofdmaaltijden(gewone ?? []);
   return schoon.length > 0 ? schoon : HOOFDMAALTIJDEN;
 }
+
+/**
+ * Hoort dit moment bij je eetpatroon? Tussendoor altijd. Een maaltijd buiten
+ * je patroon blijft toevoegbaar, maar staat in dagboek en Patroon op de
+ * achtergrond zolang er niets op staat.
+ */
+export function inEetpatroon(moment: EetmomentId, gewone: readonly EetmomentId[] | null | undefined): boolean {
+  return moment === "tussendoor" || verwachteMaaltijden(gewone).includes(moment);
+}

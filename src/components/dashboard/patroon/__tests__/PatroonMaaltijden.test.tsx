@@ -82,4 +82,31 @@ describe("PatroonMaaltijden", () => {
     expect(screen.getByText("etiket: 29% ADH")).toBeTruthy();
     expect(trackEvent).toHaveBeenCalledWith("nutrition_patroon_product_geopend", { moment: "lunch", soort: "voeding" });
   });
+
+  it("toont in de rijkdomtabel ook een gewone maaltijd zonder registratie", () => {
+    render(<PatroonMaaltijden patroon={PATROON} periode={{ van: "2026-09-06", tot: "2026-10-05" }} />);
+    expect(screen.getByText("nog niets geregistreerd")).toBeTruthy();
+  });
+
+  it("laat een lege maaltijd buiten je eetpatroon weg, maar niet een met registraties", () => {
+    render(
+      <PatroonMaaltijden
+        patroon={PATROON}
+        periode={{ van: "2026-09-06", tot: "2026-10-05" }}
+        gewoneMaaltijden={["ontbijt", "avondeten"]}
+      />,
+    );
+    expect(screen.queryByRole("button", { name: "Ontbijt" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Lunch", pressed: true })).toBeTruthy();
+    cleanup();
+    render(
+      <PatroonMaaltijden
+        patroon={PATROON}
+        periode={{ van: "2026-09-06", tot: "2026-10-05" }}
+        gewoneMaaltijden={["lunch", "avondeten"]}
+      />,
+    );
+    expect(screen.queryByText("Ontbijt")).toBeNull();
+    expect(screen.queryByText("nog niets geregistreerd")).toBeNull();
+  });
 });

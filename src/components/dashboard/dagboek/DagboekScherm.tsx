@@ -30,7 +30,7 @@ import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import { keuzeProductVoorSlug, type KeuzeProduct } from "@/lib/supplement-hub/ps-score-per-stof";
 import { useOptionalVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
-import { sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
+import { inEetpatroon, sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
 import type { ProteinTargetRange } from "@/lib/protein-target";
 import {
   type SupermarktPortie,
@@ -74,7 +74,7 @@ import VoedingswaardeTabel from "@/components/dashboard/dagboek/VoedingswaardeTa
 import { stofInfo, type RijksteStof } from "@/lib/nutrition-rijkste-bronnen";
 import { berekenVoedingswaarde, nevoCodesVoorItems } from "@/lib/nutrition-voedingswaarde";
 import { useNevoProducten } from "@/lib/use-nevo-producten";
-import { useGevolgdeNormen } from "@/lib/use-kernstof-normen";
+import { useGevolgdeNormen, useGewoneMaaltijden } from "@/lib/use-kernstof-normen";
 import { useBlokBreedte } from "@/lib/use-blok-breedte";
 
 /**
@@ -535,6 +535,7 @@ export default function DagboekScherm({
     [datum, gevuldeDatums.length],
   );
 
+  const gewoneMaaltijden = useGewoneMaaltijden();
   const overgeslagenVandaag = useMemo(
     () => new Set(sanitizeHoofdmaaltijden(dagen.find((dag) => dag.date === datum)?.overgeslagen ?? [])),
     [dagen, datum],
@@ -1097,7 +1098,9 @@ export default function DagboekScherm({
           className="flex flex-col gap-4"
         >
           <div id="dagboek-eetmomenten" className="flex flex-col gap-2.5">
-            {EETMOMENTEN.map((moment) => (
+            {EETMOMENTEN.map((moment) => {
+              const buitenPatroon = !inEetpatroon(moment.id, gewoneMaaltijden);
+              return (
               <DagboekMaaltijd
                 key={moment.id}
                 moment={moment.id}
@@ -1105,6 +1108,7 @@ export default function DagboekScherm({
                 items={items}
                 nevoProducten={nevoProducten}
                 busy={busy}
+                buitenPatroon={buitenPatroon}
                 overgeslagen={overgeslagenVandaag.has(moment.id)}
                 onOvergeslagen={
                   moment.id === "tussendoor" ? undefined : (aan) => void zetOvergeslagen(moment.id, aan)
@@ -1114,7 +1118,7 @@ export default function DagboekScherm({
                     moment: id,
                     surface: "dagboek_tab",
                   });
-                  trackEvent("nutrition_dagboek_maaltijd_geopend", { moment: id });
+                  trackEvent("nutrition_dagboek_maaltijd_geopend", { moment: id, buiten_patroon: buitenPatroon });
                   setScherm({ scherm: "zoek", nutrient: null, moment: id });
                 }}
                 onGram={(item, grams) =>
@@ -1134,7 +1138,8 @@ export default function DagboekScherm({
                   setScherm({ scherm: "product", item });
                 }}
               />
-            ))}
+              );
+            })}
           </div>
 
           <DagboekSupermarktSectie

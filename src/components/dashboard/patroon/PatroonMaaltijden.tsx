@@ -4,6 +4,7 @@ import { Fragment, useState } from "react";
 import PatroonMaaltijdProduct from "@/components/dashboard/patroon/PatroonMaaltijdProduct";
 import { clarityTag } from "@/lib/clarity";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
+import { inEetpatroon } from "@/lib/nutrition-eetpatroon";
 import type { MaaltijdPatroon, MaaltijdProduct, MaaltijdRij } from "@/lib/nutrition-maaltijd-patroon";
 import {
   aandeelVan,
@@ -36,6 +37,9 @@ import { useGevolgdeNormen, useKernstofNormen, useKernstofProfiel } from "@/lib/
  * tik op een stof toont de norm met bron en welke producten hem leverden; een
  * tik op een product in "Wat je at" toont wat dat product alleen leverde
  * (`nutrition-maaltijd-referentie.ts`).
+ *
+ * Je eetpatroon (Je doelen) kiest welke maaltijden er staan: je gewone
+ * maaltijden altijd, een andere alleen als er in de periode iets op stond.
  */
 
 const GEEN_NORM: Partial<Record<string, string>> = {
@@ -70,23 +74,31 @@ function getal(waarde: number | null | undefined, benaderd = false): string {
   return `${benaderd ? "≈ " : ""}${rondVoedingswaarde(waarde)}`;
 }
 
+function metEenheid(waarde: number | null | undefined): string {
+  return waarde === null || waarde === undefined ? "—" : `${getal(waarde)} g`;
+}
+
 export default function PatroonMaaltijden({
-  patroon,
+  patroon: alle,
   periode,
+  gewoneMaaltijden = null,
 }: {
   patroon: readonly MaaltijdPatroon[];
   periode: Periode;
+  /** Je eetpatroon; null = alle drie. */
+  gewoneMaaltijden?: readonly EetmomentId[] | null;
 }) {
+  const patroon = alle.filter((m) => m.keer > 0 || inEetpatroon(m.moment, gewoneMaaltijden));
   const normen = useKernstofNormen();
   const gevolgd = useGevolgdeNormen();
   const profiel = useKernstofProfiel();
   const [openProduct, setOpenProduct] = useState<string | null>(null);
   const [openStof, setOpenStof] = useState<string | null>(null);
-  const [moment, setMoment] = useState<EetmomentId>(
-    () => patroon.find((m) => m.keer > 0)?.moment ?? "ontbijt",
-  );
-  const maaltijd = patroon.find((m) => m.moment === moment) ?? patroon[0];
+  const [gekozen, setMoment] = useState<EetmomentId | null>(null);
+  const maaltijd =
+    patroon.find((m) => m.moment === gekozen) ?? patroon.find((m) => m.keer > 0) ?? patroon[0];
   if (!maaltijd) return null;
+  const moment = maaltijd.moment;
 
   const kies = (volgende: EetmomentId) => {
     setMoment(volgende);
@@ -99,6 +111,12 @@ export default function PatroonMaaltijden({
   const kcal = rij(maaltijd, "energyKcal")?.waarde ?? null;
   const tabelRijen = maaltijd.rijen.filter((r) => r.veld !== "energyKcal");
   const metKeer = patroon.filter((m) => m.keer > 0);
+  const rijkdomRijen = patroon.filter((m) => m.keer > 0 || m.moment !== "tussendoor");
+  const rijkdomRegel = (m: MaaltijdPatroon) => {
+    if (m.keer === 0) return "nog niets geregistreerd";
+    const kcalVan = rij(m, "energyKcal")?.waarde ?? null;
+    return kcalVan === null || kcalVan <= 0 ? "geen voedingswaarde bekend" : null;
+  };
   const eenDag = periode.van === periode.tot;
   const dagen = datumsTussen(periode).length;
   const periodeTekst = eenDag ? `op ${periodeLabel(periode)}` : `(${periodeLabel(periode)})`;
@@ -383,7 +401,7 @@ export default function PatroonMaaltijden({
         </>
       )}
 
-      {metKeer.length > 1 ? (
+      {metKeer.length > 0 && rijkdomRijen.length > 1 ? (
         <>
           <p className="vd-eyebrow" style={{ margin: "1.25rem 0 0.375rem" }}>
             Hoe rijk is elke maaltijd · per 100 kcal
@@ -395,7 +413,9 @@ export default function PatroonMaaltijden({
               <span>Eiwit</span>
               <span>Vezels</span>
             </div>
-            {metKeer.map((m) => (
+            {rijkdomRijen.map((m) => {
+              const regel = rijkdomRegel(m);
+              return (
               <button
                 key={m.moment}
                 type="button"
@@ -404,11 +424,18 @@ export default function PatroonMaaltijden({
                 className="vd-tabel-rij w-full cursor-pointer grid-cols-[1fr_56px_52px_52px] border-x-0 border-t-0 bg-transparent text-left font-[inherit] text-inherit aria-pressed:bg-[var(--vd-surface-2)]"
               >
                 <span className="vd-naam">{m.label}</span>
-                <span className="vd-getal">{getal(rij(m, "energyKcal")?.waarde)}</span>
-                <span className="vd-getal">{getal(rij(m, "proteinG")?.per100kcal)} g</span>
-                <span className="vd-getal">{getal(rij(m, "fiberG")?.per100kcal)} g</span>
+                {regel ? (
+                  <span className="col-span-3 text-right text-[0.6875rem] italic text-[var(--vd-ink-3)]">{regel}</span>
+                ) : (
+                  <>
+                    <span className="vd-getal">{getal(rij(m, "energyKcal")?.waarde)}</span>
+                    <span className="vd-getal">{metEenheid(rij(m, "proteinG")?.per100kcal)}</span>
+                    <span className="vd-getal">{metEenheid(rij(m, "fiberG")?.per100kcal)}</span>
+                  </>
+                )}
               </button>
-            ))}
+              );
+            })}
           </div>
           <p className="vd-note">
             Per 100 kcal zie je welke maaltijd zijn calorieën het meest laat opleveren, los van hoe groot hij
