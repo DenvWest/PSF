@@ -2745,6 +2745,7 @@ const KompasHome = ({
         <DagboekScherm
           checkSliders={data?.nutritionCheckinReadout?.ladderReport?.sliders ?? null}
           proteinTarget={data?.proteinTarget ?? null}
+          keuzeProducten={data?.keuzeProducten}
         />
       </CockpitShell>
     </section>

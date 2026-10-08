@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import { catalogEntry } from "@/data/nutrition/food-catalog";
-import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import * as Icons from "@/components/app/icons";
 import DagboekProductLevert from "@/components/dashboard/dagboek/DagboekProductLevert";
-import type { DagboekItem } from "@/lib/nutrition-dagboek-items";
+import { supplementVanItem, type DagboekItem } from "@/lib/nutrition-dagboek-items";
 import type { ProteinTargetRange } from "@/lib/protein-target";
 
 /**
@@ -23,13 +22,13 @@ import type { ProteinTargetRange } from "@/lib/protein-target";
  */
 
 function labelVoor(item: DagboekItem): string | null {
-  if (item.bron === "supplement") return supplementCatalogEntry(item.key)?.labelNl ?? null;
+  if (item.bron === "supplement") return supplementVanItem(item)?.labelNl ?? null;
   return catalogEntry(item.key)?.labelNl ?? null;
 }
 
 function eenheidVoor(item: DagboekItem): string {
   if (item.bron === "supplement") {
-    return supplementCatalogEntry(item.key)?.porties[0]?.labelNl ?? "portie";
+    return supplementVanItem(item)?.porties[0]?.labelNl ?? "portie";
   }
   return "g";
 }

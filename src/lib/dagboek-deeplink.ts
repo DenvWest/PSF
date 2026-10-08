@@ -18,7 +18,13 @@ import { isEetmomentId, type EetmomentId } from "@/lib/nutrition-eetmomenten";
  * hetzelfde pad als de tabs.
  */
 
-export type DagboekVoeg = { bron: DagboekItemBron; key: string; moment: EetmomentId };
+/**
+ * `bron: "product"` is een merkproduct uit Keuze, op slug. Het etiket staat
+ * niet in de URL: het dagboek zoekt het op in de hubproducten die het meekrijgt.
+ */
+export type DagboekVoeg = { bron: DagboekItemBron | "product"; key: string; moment: EetmomentId };
+
+const SLUG = /^[a-z0-9][a-z0-9-]{0,119}$/;
 
 export function buildDagboekVoegHref({ bron, key, moment }: DagboekVoeg): string {
   const params = new URLSearchParams({ tab: "vandaag", voeg: `${bron}:${key}`, moment });
@@ -34,12 +40,16 @@ export function leesDagboekVoeg(search: string): DagboekVoeg | null {
   if (scheiding < 0) return null;
   const bron = voeg.slice(0, scheiding);
   const key = voeg.slice(scheiding + 1);
-  if (bron === "voeding" ? !catalogEntry(key) : bron === "supplement" ? !supplementCatalogEntry(key) : true) {
-    return null;
-  }
+  const bestaat =
+    bron === "voeding"
+      ? Boolean(catalogEntry(key))
+      : bron === "supplement"
+        ? Boolean(supplementCatalogEntry(key))
+        : bron === "product" && SLUG.test(key);
+  if (!bestaat) return null;
   const momentParam = params.get("moment") ?? "";
   const moment: EetmomentId = isEetmomentId(momentParam) ? momentParam : "ontbijt";
-  return { bron: bron as DagboekItemBron, key, moment };
+  return { bron: bron as DagboekVoeg["bron"], key, moment };
 }
 
 const DEEPLINK_PARAMS = ["voeg", "moment", "favorieten", "zoek"] as const;

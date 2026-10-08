@@ -20,6 +20,7 @@ import {
   productKeuzeVoorStof,
   type MomentKant,
 } from "@/lib/keuze-product-keuze";
+import { dagboekProductVan } from "@/lib/keuze-dagboek-product";
 import { keuzeStofStand, type KeuzeStofStand } from "@/lib/keuze-stof-stand";
 import { euroPerDag, hoofdStof, isBronVan } from "@/lib/keuze-stofkaart";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
@@ -456,6 +457,7 @@ function EtenKant({
 function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () => void }) {
   const { status, route, product } = keuze;
   const nutrient = status.nutrient;
+  const { items } = useVoortgangFavorites();
 
   if (!product) {
     return (
@@ -471,6 +473,8 @@ function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () =>
 
   const etiket =
     product.dosisPerDag !== null && product.eenheid ? `${hoeveelheid(product.dosisPerDag)} ${product.eenheid} per dag` : null;
+  const moment = momentVoorStof(nutrient, items, "supplement") ?? "ontbijt";
+  const logbaar = dagboekProductVan(product) !== null;
 
   return (
     <Kant kleur="accent-2" titel="Uit een supplement">
@@ -484,6 +488,23 @@ function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () =>
         </p>
       ) : null}
       <MomentKiezer nutrient={nutrient} kant="supplement" vraag="Wanneer neem je het?" titel={product.naam} />
+      {logbaar ? (
+        <button
+          type="button"
+          aria-label={`${product.naam} in je dagboek zetten bij ${moment}`}
+          onClick={() => {
+            trackEvent("keuze_bron_naar_dagboek", { nutrient, moment, surface: SURFACE, kant: "supplement" });
+            gaNaarDashboard(buildDagboekVoegHref({ bron: "product", key: product.slug, moment }));
+          }}
+          className="mt-2 inline-flex min-h-[28px] cursor-pointer items-center self-start rounded-full border border-[var(--vd-accent-2)] bg-transparent px-2 text-[0.6875rem] font-semibold text-[var(--vd-accent-2)]"
+        >
+          ＋ Dagboek
+        </button>
+      ) : (
+        <p className="m-0 mt-2 text-[0.65625rem] leading-relaxed text-[var(--vd-ink-4)]">
+          Het etiket geeft geen dosis per dag, dus loggen in je dagboek kan nog niet.
+        </p>
+      )}
       <span className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
         <Link
           href={metKeuzeHerkomst(product.href, nutrient, "favorieten")}
@@ -502,9 +523,6 @@ function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () =>
           Vergelijk met andere →
         </Link>
       </span>
-      <p className="m-0 mt-2 text-[0.65625rem] leading-relaxed text-[var(--vd-ink-4)]">
-        Loggen in je dagboek volgt: het dagboek kent nog geen merkproducten.
-      </p>
     </Kant>
   );
 }

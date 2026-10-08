@@ -1,8 +1,10 @@
 import type { OrgScopedClient } from "@/lib/db/scoped";
 import {
+  behoudBekendeProducten,
   portiesUitItems,
   sanitizeItems,
   type DagboekItem,
+  type DagboekSupplementProduct,
 } from "@/lib/nutrition-dagboek-items";
 import {
   isEetmomentId,
@@ -179,6 +181,12 @@ export async function upsertDaybookDay(
     items?: readonly DagboekItem[];
     waterMl?: number | null;
     overgeslagen?: readonly string[];
+    /**
+     * Het etiket per hubproduct zoals het nu is. Een merkproduct-regel in
+     * `items` blijft alleen staan als hij daarmee klopt, of met wat er die dag
+     * al stond ({@link behoudBekendeProducten}).
+     */
+    producten?: ReadonlyMap<string, DagboekSupplementProduct>;
   },
 ): Promise<boolean> {
   const bestaand = await leesDag(supabase, accountId, input.date);
@@ -186,7 +194,9 @@ export async function upsertDaybookDay(
   // Niet genoemd = laten staan. Zie de doc hierboven: dit is het verschil
   // tussen "ik zeg hier niets over" en "maak dit leeg".
   const momenten = input.momenten ?? bestaand?.momenten ?? {};
-  const items = input.items ?? bestaand?.items ?? [];
+  const items = input.items
+    ? behoudBekendeProducten(input.items, bestaand?.items ?? [], input.producten ?? new Map())
+    : (bestaand?.items ?? []);
   const waterMl = input.waterMl !== undefined ? input.waterMl : (bestaand?.waterMl ?? null);
   // Een maaltijd met items is gegeten: "niet gegeten" vervalt zodra er iets op staat.
   const metItems = new Set(items.map((item) => item.moment));

@@ -208,3 +208,24 @@ Dennis koos bij eiwit "Ei, gebakken" en zag het niet terug in Mijn keuzes, wel "
 - Wissen haalt de dagboekster alleen weg als je het voedingsmiddel bij geen andere stof koos.
 
 **Zoeken op meer woorden:** de catalogus vond "ei gebakken" niet bij "Ei, gebakken", omdat hij als één stuk tekst zocht en botste op de komma. Nu tellen alle woorden in elke volgorde (laagste rang, onder de bestaande treffers). Dat geldt ook voor het dagboek.
+
+## Herziening 8 oktober (elfde ronde): het gekozen supplement in het dagboek
+
+Stap 3 uit `PROMPT_VERVOLG_KEUZE_2026-10-08.md`; maakt punt 4 van de negende ronde af.
+
+**Ontwerpvraag:** hoe verwijst een dagboekregel naar een hubproduct? De producten komen uit de database, maar de dagboekregel (`DagboekItem` in de jsonb van `account_nutrition_daybook`) werd tegen de statische catalogus gecontroleerd, en de ring rekent synchroon.
+
+**Besloten (Dennis, 8 okt): slug plus het etiket vastleggen.**
+- Een supplementregel kan een `product` dragen: `{ naam, nutrient, dosis, unit }`, zoals het etiket per dag was op het moment van loggen. `key` is dan de slug. `bron` blijft `"supplement"`, dus alles wat supplementen telt of kleurt (blauwe ring "uit een supplement", Patroon, bronnen per stof) doet vanzelf mee.
+- `grams` telt bij een merkproduct dagdoses ("1 dagdosis").
+- **Afgewezen: alleen de slug en de dosis bij het uitlezen opzoeken.** Dan wordt de hele uitlezing (ring, Patroon, weekoverzicht) async, en een product dat uit de hub verdwijnt laat de regel zwijgen.
+- **Afgewezen: koppelen aan een van de 9 algemene supplementen.** Daarmee gaat de etiketdosis verloren, en voor vitamine D bestaat er geen catalogusregel.
+- **De server neemt een etiket alleen aan als het klopt:** gelijk aan het hubproduct van nu, of aan wat er die dag al stond (`behoudBekendeProducten`). Een client kan dus geen dosis verzinnen, en een oude dag blijft staan als het etiket later verandert. Geen migratie: het is dezelfde jsonb-kolom.
+
+**In de UI:**
+- Mijn keuzes → supplementkant: "＋ Dagboek" op het gekozen moment (`voeding-moment-<stof>-<moment>`, anders ontbijt). Het opent het portiescherm in het dagboek, net als ＋ bij eten (`voeg=product:<slug>`). De zin "Loggen in je dagboek volgt…" is weg. Zonder vaste dosis per dag op het etiket staat er dat loggen nog niet kan.
+- Dagboek → "Mijn supplementen": je Keuze-supplementen staan bovenaan ("supplement · jouw keuze"), zonder ster, want ze staan al in Mijn keuzes. Daarna favorieten en eerder gebruikt; een eerder gelogd merkproduct staat er ook in.
+- Wie een oudere regel opnieuw kiest, logt met het etiket van nu.
+- **Geen aantal bij een merkproduct** (Dennis, 8 okt): het portiescherm vraagt alleen "Zet in dagboek" en logt één dagdosis volgens het etiket; in de maaltijd staat "dagdosis" zonder invoerveld. Wie het twee keer neemt, logt het twee keer.
+
+**Meting:** `keuze_bron_naar_dagboek` {nutrient, moment, surface: mijn_keuzes, kant: supplement}, hetzelfde event als ＋ bij eten. In het dagboek zijn het de bestaande `nutrition_dagboek_zoek_item_gekozen` en `nutrition_dagboek_portie_bevestigd` met `bron: supplement`.

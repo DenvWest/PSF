@@ -2,7 +2,6 @@
 
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { FOOD_CATALOG_NEVO_BENADERINGEN } from "@/data/nutrition/food-catalog-nevo-gehaltes";
-import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
@@ -11,6 +10,7 @@ import {
   nutrientenUitItems,
   weergaveVanItem,
   type DagboekItem,
+  supplementVanItem,
 } from "@/lib/nutrition-dagboek-items";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
@@ -90,14 +90,14 @@ function benaderingVan(item: DagboekItem): string | null {
 
 /** Het label voor een item — voeding uit FOOD_CATALOG, supplement uit SUPPLEMENT_CATALOG. */
 function labelVoor(item: DagboekItem): string | null {
-  if (item.bron === "supplement") return supplementCatalogEntry(item.key)?.labelNl ?? null;
+  if (item.bron === "supplement") return supplementVanItem(item)?.labelNl ?? null;
   return catalogEntry(item.key)?.labelNl ?? null;
 }
 
 /** De portie-eenheid onder de invoer: gram bij voeding, de eigen portienaam bij een supplement. */
 function eenheidVoor(item: DagboekItem): string {
   if (item.bron === "supplement") {
-    return supplementCatalogEntry(item.key)?.porties[0]?.labelNl ?? "portie";
+    return supplementVanItem(item)?.porties[0]?.labelNl ?? "portie";
   }
   return "g";
 }
@@ -278,20 +278,24 @@ export default function DagboekMaaltijd({
                           {label}
                         </span>
                       </button>
-                      <label className="mt-0.5 flex items-center gap-1">
-                        <span className="sr-only">Aantal voor {label}</span>
-                        <input
-                          type="number"
-                          inputMode="numeric"
-                          min={1}
-                          max={item.bron === "supplement" ? 20 : 2000}
-                          value={item.grams}
-                          disabled={busy}
-                          onChange={(event) => onGram(item, Number(event.target.value))}
-                          className="w-14 rounded-md border border-white/12 bg-black/25 px-1.5 py-0.5 text-right font-mono text-[10.5px] tabular-nums text-[var(--vd-ink-2)] outline-none transition-colors focus:border-white/40"
-                        />
-                        <span className="font-mono text-[10px] text-[var(--vd-ink-4)]">{eenheid}</span>
-                      </label>
+                      {item.product ? (
+                        <span className="mt-0.5 block font-mono text-[10px] text-[var(--vd-ink-4)]">{eenheid}</span>
+                      ) : (
+                        <label className="mt-0.5 flex items-center gap-1">
+                          <span className="sr-only">Aantal voor {label}</span>
+                          <input
+                            type="number"
+                            inputMode="numeric"
+                            min={1}
+                            max={item.bron === "supplement" ? 20 : 2000}
+                            value={item.grams}
+                            disabled={busy}
+                            onChange={(event) => onGram(item, Number(event.target.value))}
+                            className="w-14 rounded-md border border-white/12 bg-black/25 px-1.5 py-0.5 text-right font-mono text-[10.5px] tabular-nums text-[var(--vd-ink-2)] outline-none transition-colors focus:border-white/40"
+                          />
+                          <span className="font-mono text-[10px] text-[var(--vd-ink-4)]">{eenheid}</span>
+                        </label>
+                      )}
                     </td>
                     {KOLOMMEN.map((kolom) => {
                       const bedrag = bedragVoor(item, kolom.id);

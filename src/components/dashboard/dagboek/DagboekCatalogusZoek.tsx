@@ -14,7 +14,12 @@ import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
-import type { DagboekItem, DagboekItemBron } from "@/lib/nutrition-dagboek-items";
+import {
+  supplementVanItem,
+  type DagboekItem,
+  type DagboekItemBron,
+  type DagboekSupplementProduct,
+} from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { zonderCatalogusDubbelen } from "@/lib/zoek-dubbelen";
 import { tegelVoorNevoGroep, VERPAKT_TEGEL } from "@/lib/voedselgroep-tegel";
@@ -28,11 +33,15 @@ const ZOEK_DEBOUNCE_MS = 250;
 
 /** Eén stabiele lege lijst, zodat een afgeleide waarde de `useMemo` hieronder niet bij elke render ongeldig maakt. */
 const GEEN_PRODUCTEN: readonly SupermarktProduct[] = [];
+const GEEN_GEKOZEN: readonly GekozenSupplement[] = [];
 
 type Resultaat =
   | { bron: "voeding"; entry: CatalogEntry }
-  | { bron: "supplement"; entry: SupplementCatalogEntry }
+  | { bron: "supplement"; entry: SupplementCatalogEntry; product?: DagboekSupplementProduct }
   | { bron: "supermarkt"; product: SupermarktProduct };
+
+/** Een merkproduct dat je in Keuze koos, met zijn etiket per dag. */
+export type GekozenSupplement = { key: string; product: DagboekSupplementProduct };
 
 export type DagboekZoekTab = "alle" | "producten" | "supplementen";
 type TabId = DagboekZoekTab;
@@ -50,6 +59,12 @@ function resultaatVoor(bron: DagboekItemBron, key: string): Resultaat | null {
   }
   const entry = supplementCatalogEntry(key);
   return entry ? { bron: "supplement", entry } : null;
+}
+
+function resultaatVanItem(item: Pick<DagboekItem, "bron" | "key" | "product">): Resultaat | null {
+  if (!item.product) return resultaatVoor(item.bron, item.key);
+  const entry = supplementVanItem(item);
+  return entry ? { bron: "supplement", entry, product: item.product } : null;
 }
 
 /**
@@ -74,6 +89,7 @@ export default function DagboekCatalogusZoek({
   startTab = "alle",
   eerderGebruikt,
   favorieten,
+  gekozenSupplementen = GEEN_GEKOZEN,
   moment,
   onMomentChange,
   onKies,
@@ -92,10 +108,13 @@ export default function DagboekCatalogusZoek({
   eerderGebruikt: readonly DagboekItem[];
   /** Handmatig bewaarde favorieten, ongeacht geschiedenis. */
   favorieten: readonly DagboekFavoriet[];
+  /** De supplementen die je in Keuze koos: bovenaan "Mijn supplementen". */
+  gekozenSupplementen?: readonly GekozenSupplement[];
   /** Het eetmoment waar de keuze straks aan toegevoegd wordt — hier al te kiezen, zoals MyFitnessPal's dropdown. */
   moment: EetmomentId;
   onMomentChange: (moment: EetmomentId) => void;
-  onKies: (bron: DagboekItemBron, key: string) => void;
+  /** `product` alleen bij een merkproduct uit Keuze. */
+  onKies: (bron: DagboekItemBron, key: string, product?: DagboekSupplementProduct) => void;
   /**
    * Los van `onKies`: een supermarktproduct is geen `DagboekItemBron` (zie
    * `nutrition-supermarkt-items.ts`) en heeft dus geen plek in die signature.
@@ -159,7 +178,7 @@ export default function DagboekCatalogusZoek({
     for (const item of eerderGebruikt) {
       const dedupSleutel = `${item.bron}:${item.key}`;
       if (gezien.has(dedupSleutel)) continue;
-      const resultaat = resultaatVoor(item.bron, item.key);
+      const resultaat = resultaatVanItem(item);
       if (!resultaat) continue;
       gezien.add(dedupSleutel);
       uit.push(resultaat);
@@ -182,10 +201,21 @@ export default function DagboekCatalogusZoek({
     return [...voeding, ...supplementen, ...supermarkt].slice(0, MAX_TREFFERS * 3);
   }, [zoek, supermarktTreffers]);
 
-  /** "Mijn producten"/"Mijn supplementen": favorieten eerst, dan de rest van de geschiedenis van die bron. */
+  /**
+   * "Mijn producten"/"Mijn supplementen": bij supplementen eerst wat je in
+   * Keuze koos, dan favorieten, dan de rest van de geschiedenis van die bron.
+   */
   function mijnLijst(bron: DagboekItemBron): Resultaat[] {
     const gezien = new Set<string>();
     const uit: Resultaat[] = [];
+    if (bron === "supplement") {
+      for (const gekozen of gekozenSupplementen) {
+        const resultaat = resultaatVanItem({ bron, ...gekozen });
+        if (!resultaat || gezien.has(gekozen.key)) continue;
+        gezien.add(gekozen.key);
+        uit.push(resultaat);
+      }
+    }
     for (const favoriet of favorieten) {
       if (favoriet.bron !== bron || gezien.has(favoriet.key)) continue;
       const resultaat = resultaatVoor(favoriet.bron, favoriet.key);
@@ -195,7 +225,7 @@ export default function DagboekCatalogusZoek({
     }
     for (const item of eerderGebruikt) {
       if (item.bron !== bron || gezien.has(item.key)) continue;
-      const resultaat = resultaatVoor(item.bron, item.key);
+      const resultaat = resultaatVanItem(item);
       if (!resultaat) continue;
       gezien.add(item.key);
       uit.push(resultaat);
@@ -381,7 +411,9 @@ export default function DagboekCatalogusZoek({
                   <li key={key} className="flex items-center">
                     <button
                       type="button"
-                      onClick={() => onKies(resultaat.bron, resultaat.entry.key)}
+                      onClick={() =>
+                        onKies(resultaat.bron, resultaat.entry.key, resultaat.bron === "supplement" ? resultaat.product : undefined)
+                      }
                       className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
                     >
                       <span className="flex min-w-0 items-center gap-2">
@@ -395,35 +427,39 @@ export default function DagboekCatalogusZoek({
                             {label}
                           </span>
                           {resultaat.bron === "supplement" ? (
-                            <span className="block text-[10px] text-[var(--vd-ink-4)]">supplement</span>
+                            <span className="block text-[10px] text-[var(--vd-ink-4)]">
+                              {resultaat.product ? "supplement · jouw keuze" : "supplement"}
+                            </span>
                           ) : null}
                         </span>
                       </span>
                       <span className="shrink-0 text-[10.5px] text-[var(--vd-ink-4)]">{portieLabel}</span>
                     </button>
-                    <button
-                      type="button"
-                      disabled={busyFavoriet}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        if (bewaard) {
-                          onVerwijderFavoriet(resultaat.bron, resultaat.entry.key);
-                        } else {
-                          onBewaarFavoriet(resultaat.bron, resultaat.entry.key);
+                    {resultaat.bron === "supplement" && resultaat.product ? null : (
+                      <button
+                        type="button"
+                        disabled={busyFavoriet}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          if (bewaard) {
+                            onVerwijderFavoriet(resultaat.bron, resultaat.entry.key);
+                          } else {
+                            onBewaarFavoriet(resultaat.bron, resultaat.entry.key);
+                          }
+                        }}
+                        aria-label={
+                          bewaard
+                            ? `Verwijder ${label} uit favorieten`
+                            : `Bewaar ${label} als favoriet`
                         }
-                      }}
-                      aria-label={
-                        bewaard
-                          ? `Verwijder ${label} uit favorieten`
-                          : `Bewaar ${label} als favoriet`
-                      }
-                      aria-pressed={bewaard}
-                      className={`mr-3 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
-                        bewaard ? "text-[var(--vd-amber)]" : "text-[var(--vd-ink-4)] hover:text-[var(--vd-amber)]"
-                      }`}
-                    >
-                      <Icons.Star s={16} filled={bewaard} />
-                    </button>
+                        aria-pressed={bewaard}
+                        className={`mr-3 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
+                          bewaard ? "text-[var(--vd-amber)]" : "text-[var(--vd-ink-4)] hover:text-[var(--vd-amber)]"
+                        }`}
+                      >
+                        <Icons.Star s={16} filled={bewaard} />
+                      </button>
+                    )}
                   </li>
                 );
               })}

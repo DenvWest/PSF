@@ -1,8 +1,7 @@
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
-import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import { gehalteWeergavePer100g } from "@/lib/nutrition-catalog-gehalte";
-import { bedragVanItem, type DagboekItem } from "@/lib/nutrition-dagboek-items";
+import { bedragVanItem, supplementVanItem, type DagboekItem } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { HOOFDMAALTIJDEN, verwachteMaaltijden } from "@/lib/nutrition-eetpatroon";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
@@ -114,7 +113,7 @@ function naamVanLog(log: SupermarktPortie): string | null {
 
 function kernBijdrage(item: DagboekItem, stof: NutrientId): StofBijdrage | null {
   const supplement = item.bron === "supplement";
-  const naam = supplement ? supplementCatalogEntry(item.key)?.labelNl : catalogEntry(item.key)?.labelNl;
+  const naam = supplement ? supplementVanItem(item)?.labelNl : catalogEntry(item.key)?.labelNl;
   if (!naam) return null;
   const bedrag = bedragVanItem(item, stof);
   if (bedrag) {

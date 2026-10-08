@@ -1,8 +1,7 @@
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
-import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
-import { bedragVanItem, sanitizeItems } from "@/lib/nutrition-dagboek-items";
+import { bedragVanItem, sanitizeItems, supplementVanItem } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { BASE_UNIT, toBase } from "@/lib/nutrition-units";
 
@@ -55,7 +54,7 @@ export function bronnenVanStof(
       if (inBasis === null || inBasis <= 0) continue;
       const supplement = item.bron === "supplement";
       const naam = supplement
-        ? supplementCatalogEntry(item.key)?.labelNl
+        ? supplementVanItem(item)?.labelNl
         : catalogEntry(item.key)?.labelNl;
       if (!naam) continue;
       const huidig = perNaam.get(naam) ?? {

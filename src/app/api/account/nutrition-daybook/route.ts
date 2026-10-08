@@ -16,6 +16,9 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { DEFAULT_ORG_ID } from "@/config/org";
 import { orgScoped } from "@/lib/db/scoped";
 import { getClientIp } from "@/lib/turnstile-verify";
+import { actueleDagboekProducten } from "@/lib/keuze-dagboek-product";
+import { loadHubProductsForPage } from "@/lib/supplement-catalog-db/hub-products-for-page";
+import { keuzeProducten } from "@/lib/supplement-hub/ps-score-per-stof";
 
 /**
  * Het 2+2-dagboek: registreren en teruglezen.
@@ -133,6 +136,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Een merkproduct uit Keuze draagt zijn etiket mee; dat toetsen we aan de
+  // hub (en aan wat er die dag al stond), zodat geen client een dosis verzint.
+  const producten = items?.some((item) => item.product)
+    ? actueleDagboekProducten(keuzeProducten(await loadHubProductsForPage()))
+    : undefined;
+
   const ok = await upsertDaybookDay(admin, account.id, {
     date,
     porties,
@@ -140,6 +149,7 @@ export async function POST(request: NextRequest) {
     items,
     waterMl,
     overgeslagen,
+    producten,
   });
   if (!ok) {
     return NextResponse.json({ error: "Kon je dag niet opslaan." }, { status: 500 });
