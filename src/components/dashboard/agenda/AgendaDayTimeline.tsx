@@ -1,5 +1,6 @@
 "use client";
 
+import type { EiwitMaaltijd } from "@/lib/agenda-eiwit-per-maaltijd";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import { useRouter } from "next/navigation";
@@ -96,6 +97,7 @@ type AgendaDayTimelineProps = {
   onPurgeBlock: (blockId: string) => Promise<void>;
   onRetimeBlock?: (blockId: string, input: RetimeBlockInput) => Promise<void>;
   hiddenPlanStep?: HiddenPlanStep | null;
+  eiwitMaaltijden?: readonly EiwitMaaltijd[] | null;
   onDismissPlanStep?: (date: string) => Promise<void>;
   onRestorePlanStep?: () => Promise<void>;
   onHideAllPlanSteps?: () => Promise<void>;
@@ -123,6 +125,7 @@ export default function AgendaDayTimeline({
   onPurgeBlock,
   onRetimeBlock,
   hiddenPlanStep = null,
+  eiwitMaaltijden = null,
   onDismissPlanStep,
   onRestorePlanStep,
   onHideAllPlanSteps,
@@ -617,6 +620,7 @@ export default function AgendaDayTimeline({
         onDismissPlanStep={onDismissPlanStep}
         onHideAllPlanSteps={onHideAllPlanSteps}
         onOpenHelpSheet={openHelpSheet}
+        eiwitMaaltijden={eiwitMaaltijden}
       />
     </section>
   );

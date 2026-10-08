@@ -18,6 +18,7 @@ import AgendaWeekTimeGrid, {
 } from "@/components/dashboard/agenda/AgendaWeekTimeGrid";
 import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
 import AgendaPriorityTestPanel from "@/components/dashboard/agenda/AgendaPriorityTestPanel";
+import type { EiwitKaartData } from "@/components/dashboard/agenda/AgendaEiwitMaaltijdKaart";
 import AgendaRhythmPanel, {
   selectRhythmItems,
 } from "@/components/dashboard/agenda/AgendaRhythmPanel";
@@ -51,6 +52,7 @@ import { deriveDefaultTimeBucket } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import { isPlanStepHidden, resolveScheduledTime } from "@/lib/day-model";
 import { trackAgendaDaySelected, trackAgendaViewSet, trackEvent } from "@/lib/ga4";
+import { EIWIT_STAP_ID, eiwitPerMaaltijd } from "@/lib/agenda-eiwit-per-maaltijd";
 import { useTekortVoorstellen } from "@/lib/use-tekort-voorstellen";
 import { useStickyHeaderOffset } from "@/lib/use-sticky-header-offset";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
@@ -187,7 +189,24 @@ export default function AgendaScreen({
   } | null>(null);
   const stickyOffset = useStickyHeaderOffset();
   const { items: favoriteItems } = useVoortgangFavorites();
-  const rhythmCount = selectRhythmItems(favoriteItems).length;
+  const eiwitKaart = useMemo<EiwitKaartData | null>(() => {
+    const habit = model.activeHabit;
+    if (!habit || habit.stepId !== EIWIT_STAP_ID || isPlanStepHidden(model, { date: today })) {
+      return null;
+    }
+    return {
+      title: habit.title,
+      maaltijden: eiwitPerMaaltijd(tekortDagen.find((dag) => dag.date === today)),
+    };
+  }, [model, tekortDagen, today]);
+  const rhythmCount = selectRhythmItems(favoriteItems).length + (eiwitKaart ? 1 : 0);
+  const rhythmAutoOpenedRef = useRef(false);
+  useEffect(() => {
+    if (eiwitKaart && !rhythmAutoOpenedRef.current) {
+      rhythmAutoOpenedRef.current = true;
+      setRhythmExpanded(true);
+    }
+  }, [eiwitKaart]);
 
   const reportAgendaError = useCallback((error: unknown, fallback: string) => {
     setAgendaError(error instanceof Error ? error.message : fallback);
@@ -770,7 +789,9 @@ export default function AgendaScreen({
         </div>
       ) : null}
 
-      {view === "dag" && selectedDate === today && rhythmExpanded ? <AgendaRhythmPanel /> : null}
+      {view === "dag" && selectedDate === today && rhythmExpanded ? (
+        <AgendaRhythmPanel eiwitKaart={eiwitKaart} />
+      ) : null}
 
       {view === "dag" && dayContext.kind === "orphan" ? (
         <p className="mb-3 text-[12.5px] leading-normal text-[#9FB0A6]">
@@ -817,6 +838,7 @@ export default function AgendaScreen({
           onPurgeBlock={handlePurgeBlock}
           onRetimeBlock={handleRetimeBlock}
           hiddenPlanStep={hiddenPlanStep}
+          eiwitMaaltijden={selectedDate === today ? (eiwitKaart?.maaltijden ?? null) : null}
           onDismissPlanStep={handleDismissPlanStep}
           onRestorePlanStep={handleRestorePlanStep}
           onHideAllPlanSteps={handleHideAllPlanSteps}
