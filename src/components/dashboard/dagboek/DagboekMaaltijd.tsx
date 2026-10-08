@@ -225,7 +225,7 @@ export default function DagboekMaaltijd({
           ) : null}
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="relative overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b border-white/10">
