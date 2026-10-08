@@ -3,6 +3,7 @@
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import DomainLadderContextPanel from "@/components/dashboard/domain/DomainLadderContextPanel";
+import KompasDagboekRegel from "@/components/dashboard/kompas/KompasDagboekRegel";
 import DomeinDoelZetten from "@/components/dashboard/voortgang/DomeinDoelZetten";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
@@ -200,6 +201,8 @@ export default function KompasContextSpine({
             </ul>
           </div>
         ) : null}
+
+        {domain === "voeding" ? <KompasDagboekRegel /> : null}
       </section>
     );
   } else if (urgency?.kind === "geen_winstlaag") {
