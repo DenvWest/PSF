@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
@@ -10,7 +9,6 @@ import AgendaDayTimeline from "@/components/dashboard/agenda/AgendaDayTimeline";
 import AgendaMonthGrid from "@/components/dashboard/agenda/AgendaMonthGrid";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
-import AgendaPatroonRegel from "@/components/dashboard/agenda/AgendaPatroonRegel";
 import AgendaToolbar from "@/components/dashboard/agenda/AgendaToolbar";
 import AgendaWeekOverview from "@/components/dashboard/agenda/AgendaWeekOverview";
 import AgendaWeekTimeGrid, {
@@ -18,6 +16,7 @@ import AgendaWeekTimeGrid, {
 } from "@/components/dashboard/agenda/AgendaWeekTimeGrid";
 import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
 import AgendaPriorityTestPanel from "@/components/dashboard/agenda/AgendaPriorityTestPanel";
+import AgendaDagKaart from "@/components/dashboard/agenda/AgendaDagKaart";
 import AgendaRhythmPanel, {
   selectRhythmItems,
 } from "@/components/dashboard/agenda/AgendaRhythmPanel";
@@ -51,6 +50,8 @@ import { deriveDefaultTimeBucket } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import { isPlanStepHidden, resolveScheduledTime } from "@/lib/day-model";
 import { trackAgendaDaySelected, trackAgendaViewSet, trackEvent } from "@/lib/ga4";
+import { EIWIT_STAP_ID, eiwitPerMaaltijd } from "@/lib/agenda-eiwit-per-maaltijd";
+import { useKernstofNormen } from "@/lib/use-kernstof-normen";
 import { useTekortVoorstellen } from "@/lib/use-tekort-voorstellen";
 import { useStickyHeaderOffset } from "@/lib/use-sticky-header-offset";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
@@ -187,6 +188,22 @@ export default function AgendaScreen({
   } | null>(null);
   const stickyOffset = useStickyHeaderOffset();
   const { items: favoriteItems } = useVoortgangFavorites();
+  const kernstofNormen = useKernstofNormen();
+  const vandaagDag = useMemo(
+    () => tekortDagen.find((dag) => dag.date === today) ?? null,
+    [tekortDagen, today],
+  );
+  const eiwitStapTitel = useMemo(() => {
+    const habit = model.activeHabit;
+    if (!habit || habit.stepId !== EIWIT_STAP_ID || isPlanStepHidden(model, { date: today })) {
+      return null;
+    }
+    return habit.title;
+  }, [model, today]);
+  const eiwitMaaltijden = useMemo(
+    () => (eiwitStapTitel ? eiwitPerMaaltijd(vandaagDag) : null),
+    [eiwitStapTitel, vandaagDag],
+  );
   const rhythmCount = selectRhythmItems(favoriteItems).length;
 
   const reportAgendaError = useCallback((error: unknown, fallback: string) => {
@@ -628,12 +645,6 @@ export default function AgendaScreen({
     });
   }, []);
 
-  const planHref = model.activeHabit?.planHref ?? null;
-
-  const handlePlanLinkClick = () => {
-    trackEvent("dashboard_agenda_plan_click", { surface: "agenda_dag_link" });
-    clarityTag("dashboard_agenda", "plan_link");
-  };
 
   const periodLabel =
     view === "dag"
@@ -770,34 +781,15 @@ export default function AgendaScreen({
         </div>
       ) : null}
 
-      {view === "dag" && selectedDate === today && rhythmExpanded ? <AgendaRhythmPanel /> : null}
+      {view === "dag" && selectedDate === today && rhythmExpanded ? (
+        <AgendaRhythmPanel />
+      ) : null}
 
       {view === "dag" && dayContext.kind === "orphan" ? (
         <p className="mb-3 text-[12.5px] leading-normal text-[#9FB0A6]">
           Deze dag valt buiten je adviesweek. Je eigen momenten staan er wel — je dagstap
           volgt weer in de week van vandaag.
         </p>
-      ) : null}
-
-      {view === "dag" && planHref ? (
-        <Link
-          href={planHref}
-          onClick={handlePlanLinkClick}
-          className="mb-3 inline-flex min-h-11 items-center gap-1.5 text-[13px] font-medium text-[#CDD7D0] no-underline transition-colors hover:text-[#F1EFE8]"
-        >
-          Bekijk je plan
-          <Icons.ArrowRight s={12} />
-        </Link>
-      ) : null}
-
-      {view === "dag" && selectedDate >= today ? (
-        <AgendaPatroonRegel
-          focus={voorstellen[0] ?? null}
-          dagen={tekortDagen}
-          weekDates={stripWeekDates}
-          weekDayLabels={WEEKDAY_LABELS}
-          onOpenPatroon={() => handleVoortgangLink("agenda_patroon_regel")}
-        />
       ) : null}
 
       {view === "dag" ? (
@@ -817,6 +809,7 @@ export default function AgendaScreen({
           onPurgeBlock={handlePurgeBlock}
           onRetimeBlock={handleRetimeBlock}
           hiddenPlanStep={hiddenPlanStep}
+          eiwitMaaltijden={selectedDate === today ? eiwitMaaltijden : null}
           onDismissPlanStep={handleDismissPlanStep}
           onRestorePlanStep={handleRestorePlanStep}
           onHideAllPlanSteps={handleHideAllPlanSteps}
@@ -824,6 +817,14 @@ export default function AgendaScreen({
           voorstellen={voorstellen}
           autoOpenNutrient={planNutrient}
           onRegisterFooterActions={handleRegisterFooterActions}
+          aboveBlocks={
+            selectedDate === today ? (
+              <AgendaDagKaart
+                dag={vandaagDag}
+                normen={kernstofNormen}
+              />
+            ) : null
+          }
           weekStrip={
             <AgendaWeekStrip
               days={stripDays}

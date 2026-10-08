@@ -1,5 +1,6 @@
 "use client";
 
+import { EIWIT_STAP_ID, type EiwitMaaltijd } from "@/lib/agenda-eiwit-per-maaltijd";
 import { useEffect, useId, useState } from "react";
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
@@ -37,6 +38,7 @@ type AgendaBlockDetailSheetProps = {
   onDismissPlanStep?: (date: string) => Promise<void>;
   onHideAllPlanSteps?: () => Promise<void>;
   onOpenHelpSheet?: (input: { domain: PillarId }) => void;
+  eiwitMaaltijden?: readonly EiwitMaaltijd[] | null;
 };
 
 const LABEL_CLASS =
@@ -70,8 +72,10 @@ export default function AgendaBlockDetailSheet({
   onDismissPlanStep,
   onHideAllPlanSteps,
   onOpenHelpSheet,
+  eiwitMaaltijden = null,
 }: AgendaBlockDetailSheetProps) {
   const titleId = useId();
+  const eiwitIngevuld = (eiwitMaaltijden ?? []).filter((maaltijd) => maaltijd.gram !== null);
   const [retimeOpen, setRetimeOpen] = useState(false);
   const [retimeDate, setRetimeDate] = useState(date);
   const [retimeStart, setRetimeStart] = useState(block?.startTime ?? "12:00");
@@ -275,6 +279,13 @@ export default function AgendaBlockDetailSheet({
           />
 
           {/* Brug naar Keuze: beweging en slaap dragen eigen bridge-data. */}
+          {block.slot?.stepId === EIWIT_STAP_ID && eiwitIngevuld.length > 0 ? (
+            <p className="mt-3 text-[13px] leading-relaxed text-[#CDD7D0]">
+              Vandaag ingevuld:{" "}
+              {eiwitIngevuld.map((maaltijd) => `${maaltijd.label.toLowerCase()} ${maaltijd.gram} g`).join(" · ")}
+            </p>
+          ) : null}
+
           {block.slot && onOpenHelpSheet && hasHelpBridge(block.slot.domain) ? (
             <button
               type="button"
