@@ -206,7 +206,7 @@ export default function DagboekKrans({
   const [kiezen, setKiezen] = useState(false);
   const [uitleg, setUitleg] = useState(false);
   const [getekend, setGetekend] = useState(false);
-  const [lijstOpen, setLijstOpen] = useState(true);
+  const [lijstOpen, setLijstOpen] = useState(false);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setGetekend(true));
@@ -412,7 +412,12 @@ export default function DagboekKrans({
 
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-[27%] text-center">
           {gekozenKern ? (
-            <>
+            <button
+              type="button"
+              onClick={() => setKeuze(null)}
+              aria-label="Terug naar het overzicht"
+              className="pointer-events-auto flex cursor-pointer flex-col items-center border-0 bg-transparent p-0 text-center"
+            >
               <span className="flex items-center gap-1 text-[clamp(9px,3.6cqw,11.5px)] font-semibold text-[var(--vd-ink-2)]">
                 <span
                   aria-hidden
@@ -432,9 +437,14 @@ export default function DagboekKrans({
                   {streefwaardeRegel(gekozenKern)}
                 </span>
               ) : null}
-            </>
+            </button>
           ) : gekozenGevolgd ? (
-            <>
+            <button
+              type="button"
+              onClick={() => setKeuze(null)}
+              aria-label="Terug naar het overzicht"
+              className="pointer-events-auto flex cursor-pointer flex-col items-center border-0 bg-transparent p-0 text-center"
+            >
               <span className="text-[clamp(9px,3.6cqw,11.5px)] font-semibold text-[var(--vd-ink-2)]">
                 {hoofdletter(gekozenGevolgd.label)}
               </span>
@@ -452,15 +462,21 @@ export default function DagboekKrans({
                     ? "zonder norm · zonder oordeel"
                     : "niet opgehaald"}
               </span>
-            </>
+            </button>
           ) : leeg ? (
             <b className="font-serif text-[clamp(14px,6.4cqw,20px)] font-normal leading-tight text-[var(--vd-ink)]">
               Wat at je vandaag?
             </b>
           ) : (
-            <ul aria-label="Overzicht kernstoffen" className="m-0 grid w-full list-none gap-[0.35em] p-0 text-[clamp(9px,4cqw,12.5px)]">
-              {rijen.map((rij) => (
-                <li key={rij.nutrient} className="flex items-center justify-between gap-2 leading-none">
+            <ul aria-label="Overzicht kernstoffen" className="pointer-events-auto m-0 grid w-full list-none gap-0 p-0 text-[clamp(9px,4cqw,12.5px)]">
+              {rijen.map((rij, index) => (
+                <li key={rij.nutrient}>
+                  <button
+                    type="button"
+                    onClick={() => kiesKern(index)}
+                    aria-label={`Toon ${nutrientReferences[rij.nutrient].label}`}
+                    className="flex w-full cursor-pointer items-center justify-between gap-2 rounded-md px-1 py-[0.2em] leading-none transition-colors hover:bg-white/[0.06]"
+                  >
                   <span className="flex min-w-0 items-center gap-1.5 text-[var(--vd-ink-2)]">
                     <span
                       aria-hidden
@@ -477,6 +493,7 @@ export default function DagboekKrans({
                     {rij.nietBewijsbaar && rij.minstens === 0 ? "—" : kernWaarde(rij)}
                     {rij.gedekt ? <span className="ml-0.5 text-[var(--vd-sage-2)]">✓</span> : null}
                   </span>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -532,7 +549,7 @@ export default function DagboekKrans({
             Voeg je ontbijt toe
           </button>
         ) : null}
-        {!leeg && !keuze ? (
+        {!leeg && !keuze && !inklapbaar ? (
           <p className="m-0 text-[11px] leading-relaxed text-[var(--vd-ink-3)]">{telRegel(rijen)}</p>
         ) : null}
       </div>
@@ -553,13 +570,14 @@ export default function DagboekKrans({
             </li>
             <li>
               <b className="text-[var(--vd-ink)]">Midden</b> · een overzicht van de vijf kernstoffen; tik een stof aan
-              voor de details en de rijkste bronnen.
+              voor de details en de rijkste bronnen, en tik het midden weer aan voor het overzicht.
             </li>
             <li>
               <b className="text-[var(--vd-ink)]">Gestippeld</b> · zink en vitamine D kan een dagboek niet aantonen; een
               stof zonder norm vult niet.
             </li>
           </ul>
+          {!leeg ? <p className="m-0 mt-2 text-[11.5px] text-[var(--vd-ink-2)]">{telRegel(rijen)}</p> : null}
           <p className="m-0 mt-2 text-[11.5px] text-[var(--vd-ink-3)]">
             Alles is een ondergrens van wat je registreerde, geen dagtotaal. De normen en waar ze vandaan komen staan in
             Je doelen.

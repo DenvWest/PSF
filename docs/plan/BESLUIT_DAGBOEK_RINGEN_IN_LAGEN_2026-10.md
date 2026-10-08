@@ -116,3 +116,13 @@ GA4: `nutrition_dagboek_krans_gekozen` (nieuw; params `ring`: `kern` | `gevolgd`
 5. **Rijkste bronnen ook bij een kernstof.** Onder de krans staan bij een kernstof twee vervolgstappen naast elkaar: "Logboek van … →" en "Rijkste bronnen →" (hetzelfde scherm als bij een gevolgde stof, dat kernstoffen al kende). Een tik op een segment opent nog steeds niet direct een ander scherm (afgewezen op 5 okt, blijft zo).
 
 **Meetpunt:** ongewijzigd `nutrition_dagboek_krans_gekozen`; de nieuwe link telt in `nutrition_dagboek_rijkste_geopend` met `surface: ring` en een kernstof als `nutrient`. Lees het effect af aan het aandeel kernstoffen in dat event.
+
+### Aanvulling 8 oktober 2026 (2) — mobiel rustiger
+
+Dennis, 8 okt, op mobiel na #189: "erg vol; micronutriënten klikbaar maken in het model, tekst eronder weg".
+
+- **Het overzicht in het midden is klikbaar.** Een tik op een stof toont die stof met "Logboek van … →" en "Rijkste bronnen →" eronder. Een tik op het midden brengt je terug naar het overzicht.
+- **Op een smal scherm (`inklapbaar`) is de lijst onder de krans weer standaard ingeklapt** ("Alle stoffen (n)"). Dat herziet punt 3 van de herziening van vanochtend, alleen voor mobiel. Op brede schermen blijft de lijst staan.
+- **De telregel** ("Gedekt: … Open: … Niet meetbaar …") staat op mobiel niet meer onder de krans, maar in de i-uitleg. Op brede schermen staat hij er nog onder.
+
+Meetpunt: ongewijzigd (`nutrition_dagboek_krans_gekozen`, `nutrition_dagboek_rijkste_geopend` met `surface: ring`, `nutrition_dagboek_krans_lijst_open`, `nutrition_dagboek_krans_uitleg`).
