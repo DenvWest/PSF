@@ -463,15 +463,19 @@ function EtenPrijsRegel({ entry, nutrient }: { entry: CatalogEntry; nutrient: st
   return (
     <span className="block text-[0.6875rem] text-[var(--vd-ink-3)]">
       ± {euroPerDag(prijs.centen)} per portie, indicatief ·{" "}
-      <a
-        href={prijs.bronUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => trackEvent("keuze_eten_prijs_bron_click", { nutrient, product: entry.key })}
-        className="text-[var(--vd-ink-3)] underline"
-      >
-        {prijs.winkel}, {prijs.gecontroleerd}
-      </a>
+      {prijs.bronUrl ? (
+        <a
+          href={prijs.bronUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackEvent("keuze_eten_prijs_bron_click", { nutrient, product: entry.key })}
+          className="text-[var(--vd-ink-3)] underline"
+        >
+          {prijs.bron}
+        </a>
+      ) : (
+        prijs.bron
+      )}
     </span>
   );
 }

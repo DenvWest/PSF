@@ -234,9 +234,10 @@ Stap 3 uit `PROMPT_VERVOLG_KEUZE_2026-10-08.md`; maakt punt 4 van de negende ron
 
 Stap 4 uit `PROMPT_VERVOLG_KEUZE_2026-10-08.md`. Dennis akkoord (7 en 8 okt). Dit herziet het besluit van 3 okt ("prijzen later") **alleen** voor dit onderdeel; prijzen van supermarktproducten (boodschappenlijst, alerts) blijven uitgesteld.
 
-- **Data:** `src/data/nutrition/eten-prijzen.ts` (`ETEN_PRIJZEN`): per catalogussleutel een product, winkel, verpakkingsgewicht, verpakkingsprijs in centen, bronlink en controledatum. `etenPrijsPerPortie()` in `src/lib/eten-prijs.ts` rekent om naar de eerste portie van de catalogusregel.
+- **Data:** `src/data/nutrition/eten-prijzen.ts` (`ETEN_PRIJZEN`): per catalogussleutel een product, winkel, verpakkingsgewicht, verpakkingsprijs in centen, bronomschrijving (bijvoorbeeld "kassabon AH, 8 okt 2026"), optionele bronlink en controledatum. `etenPrijsPerPortie()` in `src/lib/eten-prijs.ts` rekent om naar de eerste portie van de catalogusregel.
 - **UI:** in Mijn keuzes, kant "Uit je eten": "± € x,xx per portie, indicatief · winkel, datum" met de bronlink. Alleen als er een prijs is; zonder prijs verandert er niets. Altijd per portie, nooit per mg.
 - **Bewaakt door een test:** elke regel moet een bestaande catalogussleutel, een https-bronlink en een datum hebben, en een sleutel staat hooguit één keer in de tabel.
+- **Bron: kassabon (Dennis, 8 okt).** Dennis koopt de producten bij één winkel (start: AH) en stuurt foto's van de bon; Claude zet alleen over wat er op staat. Afgewezen: checkjebon via GitHub als prijsbron nu (komt zelf uit scrapen, licentie ongetoetst, Jumbo verbiedt het); blijft kandidaat voor de boodschappenlijst na juridische toets.
 - **Niet gescrapet.** Jumbo verbiedt het en het databankrecht beschermt tegen stelselmatig overnemen; de supermarktsnapshot is "niet voor prijzen".
-- **Stand bij oplevering:** de tabel is nog **leeg**. ah.nl geeft een 403 op automatische opvraging en de zoekresultaten bevatten geen betrouwbare verpakkingsprijs, dus er zijn geen prijzen verzonnen. De regels moeten met de hand uit de winkel worden ingevuld.
+- **Stand bij oplevering:** de tabel is nog **leeg**. ah.nl geeft een 403 op automatische opvraging en de zoekresultaten bevatten geen betrouwbare verpakkingsprijs, dus er zijn geen prijzen verzonnen. De regels komen uit Dennis' kassabonnen.
 - **Meetpunt:** GA4 `keuze_eten_prijs_bron_click` {nutrient, product}.

@@ -4,7 +4,8 @@ export interface EtenPrijsPerPortie {
   centen: number;
   winkel: string;
   product: string;
-  bronUrl: string;
+  bron: string;
+  bronUrl: string | null;
   gecontroleerd: string;
 }
 
@@ -19,7 +20,8 @@ export function etenPrijsPerPortie(
     centen: Math.round((regel.verpakkingCenten * portieGram) / regel.verpakkingGram),
     winkel: regel.winkel,
     product: regel.product,
-    bronUrl: regel.bronUrl,
+    bron: regel.bron,
+    bronUrl: regel.bronUrl ?? null,
     gecontroleerd: regel.gecontroleerd,
   };
 }
