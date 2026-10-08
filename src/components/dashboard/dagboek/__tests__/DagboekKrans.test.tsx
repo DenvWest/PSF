@@ -53,14 +53,27 @@ describe("DagboekKrans", () => {
     expect(onBegin).toHaveBeenCalledOnce();
   });
 
-  it("zet de meetbare stof met het grootste open stuk in het midden, met 'nog X tot je norm'", async () => {
+  it("toont standaard alle vijf kernstoffen in het midden, en een stof met 'nog X tot je norm' na een tik", async () => {
     const DagboekKrans = await laad();
-    render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} />);
-    expect(screen.getByText("nog 250 mg tot je norm vandaag")).toBeTruthy();
+    const { container } = render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} />);
+    const overzicht = screen.getByRole("list", { name: "Overzicht kernstoffen" });
+    expect(overzicht.querySelectorAll("li")).toHaveLength(5);
+    expect(container.querySelector("[style*='rotate']")).toBeNull();
     expect(screen.getByText(/Gedekt: magnesium\. Open: omega-3\./)).toBeTruthy();
     expect(screen.getByText(/Niet meetbaar met een dagboek: zink en vitamine D\./)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Zink, telt niet mee/ })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Omega-3" }));
+    expect(screen.getByText("nog 250 mg tot je norm vandaag")).toBeTruthy();
     expect(screen.queryByText(/tekort/i)).toBeNull();
+  });
+
+  it("biedt bij een kernstof ook de rijkste bronnen", async () => {
+    const DagboekKrans = await laad();
+    const onKiesStof = vi.fn();
+    render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} onKiesStof={onKiesStof} />);
+    fireEvent.click(screen.getByRole("button", { name: "Omega-3" }));
+    fireEvent.click(screen.getByRole("button", { name: "Rijkste bronnen →" }));
+    expect(onKiesStof).toHaveBeenCalledWith("omega3");
   });
 
   it("zegt bij zink dat een dagboek het niet kan aantonen, zonder 'nog X'", async () => {
@@ -74,7 +87,7 @@ describe("DagboekKrans", () => {
     const DagboekKrans = await laad();
     const eiwit: NutrientOndergrensGesplitst = { ...magnesiumVol, nutrient: "protein", minstens: 23.4, unit: "g" };
     render(<DagboekKrans {...basis} stoffen={[eiwit]} />);
-    expect(screen.getByText("23 g")).toBeTruthy();
+    expect(screen.getAllByText("23 g").length).toBeGreaterThan(0);
     expect(screen.getByText(/Eiwit telt mee met een eiwitdoel\./)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /^Eiwit/ }));
     expect(screen.getByText("zonder eiwitdoel")).toBeTruthy();
@@ -148,13 +161,13 @@ describe("DagboekKrans", () => {
     expect(screen.getByText(/de stoffen die jij volgt/)).toBeTruthy();
   });
 
-  it("klapt de stoffenlijst op een smal scherm in tot je hem opent", async () => {
+  it("toont de stoffenlijst op een smal scherm standaard, en klapt hem in op verzoek", async () => {
     const DagboekKrans = await laad();
     render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} inklapbaar />);
-    expect(screen.queryByRole("list", { name: "Kernstoffen" })).toBeNull();
-    const knop = screen.getByRole("button", { name: /Alle stoffen/ });
-    fireEvent.click(knop);
-    expect(knop.getAttribute("aria-expanded")).toBe("true");
     expect(screen.getByRole("list", { name: "Kernstoffen" })).toBeTruthy();
+    const knop = screen.getByRole("button", { name: /Verberg stoffen/ });
+    expect(knop.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.click(knop);
+    expect(screen.queryByRole("list", { name: "Kernstoffen" })).toBeNull();
   });
 });

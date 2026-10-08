@@ -62,7 +62,7 @@ import DagboekWeekstrip, {
 import SupermarktBronRegel from "@/components/dashboard/dagboek/SupermarktBronRegel";
 import SupermarktPortieInvoer from "@/components/dashboard/dagboek/SupermarktPortieInvoer";
 import VoedingswaardeTabel from "@/components/dashboard/dagboek/VoedingswaardeTabel";
-import { stofInfo, type InformatieveStof } from "@/lib/nutrition-rijkste-bronnen";
+import { stofInfo, type RijksteStof } from "@/lib/nutrition-rijkste-bronnen";
 import { berekenVoedingswaarde, nevoCodesVoorItems } from "@/lib/nutrition-voedingswaarde";
 import { useNevoProducten } from "@/lib/use-nevo-producten";
 import { useGevolgdeNormen } from "@/lib/use-kernstof-normen";
@@ -106,7 +106,7 @@ type NutrientScherm =
   | { scherm: "product"; item: DagboekItem }
   | { scherm: "vergelijkZoek"; terugNaar?: ZoekContext }
   | { scherm: "vergelijk"; terugNaar?: ZoekContext }
-  | { scherm: "bronnen"; stof: InformatieveStof };
+  | { scherm: "bronnen"; stof: RijksteStof };
 
 /**
  * Het dagboek als eigen scherm: je week, je stand, je maaltijden.
@@ -623,7 +623,7 @@ export default function DagboekScherm({
     trackEvent("nutrition_dagboek_subtab_gekozen", { sectie: volgende });
   }
 
-  function openBronnen(stof: InformatieveStof, surface: "tabel" | "ring") {
+  function openBronnen(stof: RijksteStof, surface: "tabel" | "ring") {
     trackEvent("nutrition_dagboek_rijkste_geopend", { nutrient: stof, surface });
     setScherm({ scherm: "bronnen", stof });
   }
