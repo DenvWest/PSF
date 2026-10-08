@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   HOOFDMAALTIJDEN,
+  inEetpatroon,
   isGeldigEetpatroon,
   sanitizeHoofdmaaltijden,
   verwachteMaaltijden,
@@ -23,5 +24,17 @@ describe("eetpatroon", () => {
     expect(isGeldigEetpatroon(["avondeten"])).toBe(true);
     expect(isGeldigEetpatroon([])).toBe(false);
     expect(isGeldigEetpatroon(["tussendoor"])).toBe(false);
+  });
+});
+
+describe("inEetpatroon", () => {
+  it("tussendoor hoort er altijd bij, null betekent alle drie", () => {
+    expect(inEetpatroon("tussendoor", ["avondeten"])).toBe(true);
+    expect(inEetpatroon("ontbijt", null)).toBe(true);
+  });
+
+  it("een maaltijd buiten je patroon hoort er niet bij", () => {
+    expect(inEetpatroon("ontbijt", ["lunch", "avondeten"])).toBe(false);
+    expect(inEetpatroon("lunch", ["lunch", "avondeten"])).toBe(true);
   });
 });

@@ -473,7 +473,7 @@ function PatroonInhoud() {
       ) : sectie === "maaltijden" ? (
         <>
           {periodeKiezer}
-          <PatroonMaaltijden patroon={maaltijdPatroon} periode={periode} />
+          <PatroonMaaltijden patroon={maaltijdPatroon} periode={periode} gewoneMaaltijden={gewoneMaaltijden} />
         </>
       ) : sectie === "stof" ? (
         <>

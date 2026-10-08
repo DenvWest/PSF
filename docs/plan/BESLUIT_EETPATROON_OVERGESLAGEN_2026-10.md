@@ -35,6 +35,19 @@ Validatie in `src/lib/nutrition-eetpatroon.ts`; geen check-constraints.
 
 `NUT_DOEL` ("Waar wil je met je voeding naartoe?") en het voedingswijze-/periodiek-vasten-deel van `NUT_CONTEXT` naar **Je doelen** in plaats van de leefstijlcheck. **Wijkt af van** `ROADMAP_LEEFSTIJLCHECK_NAAR_DASHBOARD_VOEDING.md` §10 (3 sep), dat beide in de check zette. Reden: nieuwe check-items vragen een `RULES_VERSION`-ophoging en een andere schaal voor de voedingsscore, de duurste stap uit die roadmap; als doel in Je doelen raakt het de score niet en kiest het alleen volgorde en copy. **Blijft in de check:** de medicatie-optie van `NUT_CONTEXT`, omdat die een doorverwijzing triggert.
 
+## Aanvulling 8 oktober 2026: eetpatroon stuurt dagboek en Patroon
+
+Akkoord Dennis. Tot nu toe telde het eetpatroon alleen mee voor "volledige dag"; het dagboek toonde altijd alle vier de momenten en Patroon liet een maaltijd zonder registratie stil weg uit "Hoe rijk is elke maaltijd".
+
+1. **Dagboek:** gewone maaltijden en tussendoor als volle kaart. Een maaltijd buiten je patroon is, zolang hij leeg is, één regel "+ Ontbijt toevoegen · niet in je eetpatroon" (geen "Niet gegeten", die telt toch niet mee). Staat er iets op, dan is het weer een volle kaart (items winnen).
+2. **Patroon per maaltijd:** de segmentrij toont je gewone maaltijden, tussendoor en elke maaltijd die in de periode iets droeg.
+3. **Hoe rijk is elke maaltijd:** een gewone maaltijd zonder registratie blijft als rij staan met "nog niets geregistreerd" in plaats van weg te vallen; een maaltijd met alleen producten zonder kcal toont "geen voedingswaarde bekend" in plaats van streepjes. Lege tussendoor staat er niet in.
+4. Helper `inEetpatroon` in `src/lib/nutrition-eetpatroon.ts`. Geen migratie.
+
+**Meting:** bestaand GA4 `nutrition_dagboek_maaltijd_geopend` krijgt `buiten_patroon` (boolean): hoe vaak iemand toch een maaltijd buiten het patroon invult. Hoog = het patroon klopt niet of mensen wisselen; dan de compacte regel heroverwegen.
+
+**Afgewezen:** de maaltijd buiten je patroon helemaal verbergen in het dagboek. Dan kun je een uitzonderingsontbijt niet meer kwijt.
+
 ## Afgewezen
 
 - **Alleen "niet gegeten" per dag**: flexibel, maar wie periodiek vast moet dan elke dag tikken.

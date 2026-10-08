@@ -122,6 +122,7 @@ export default function DagboekMaaltijd({
   busy = false,
   overgeslagen = false,
   onOvergeslagen,
+  buitenPatroon = false,
 }: {
   moment: EetmomentId;
   label: string;
@@ -143,6 +144,8 @@ export default function DagboekMaaltijd({
   overgeslagen?: boolean;
   /** Alleen bij hoofdmaaltijden: "Niet gegeten" aan of uit. */
   onOvergeslagen?: (aan: boolean) => void;
+  /** Niet in je eetpatroon (Je doelen): leeg is dit één regel om toch iets toe te voegen. */
+  buitenPatroon?: boolean;
 }) {
   const eigen = itemsVanMoment(items, moment);
   const totalen = nutrientenUitItems(eigen);
@@ -168,6 +171,23 @@ export default function DagboekMaaltijd({
     const rel = (n: typeof a) => (n.unit === "g" ? n.minstens * 10 : n.minstens);
     return rel(b) - rel(a);
   })[0];
+
+  if (buitenPatroon && eigen.length === 0) {
+    return (
+      <section>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => onToevoegen(moment)}
+          aria-label={`${label} — product toevoegen`}
+          className="flex w-full cursor-pointer items-center justify-between gap-2.5 rounded-2xl border border-dashed border-white/10 bg-transparent px-3 py-2 text-left transition-colors hover:bg-white/[0.04] disabled:cursor-wait disabled:opacity-60"
+        >
+          <span className="text-[12px] font-semibold text-[var(--vd-ink-3)]">+ {label} toevoegen</span>
+          <span className="text-[10.5px] text-[var(--vd-ink-4)]">niet in je eetpatroon</span>
+        </button>
+      </section>
+    );
+  }
 
   return (
     <section className="overflow-hidden rounded-2xl border border-white/10">
