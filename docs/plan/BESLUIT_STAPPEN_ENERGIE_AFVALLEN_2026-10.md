@@ -54,3 +54,15 @@ Stand uit de code op `origin/main` van 8 okt.
 - Valt het zelf ingevulde stappengemiddelde onder gezondheidsgegevens in het verwerkingsregister? Waarschijnlijk ja (zoals het activiteitsniveau); vastleggen bij bouw van stap 1.
 - Meetpunt voor stap 1: bij de bouw kiezen en registreren op de drie plekken uit CLAUDE.md.
 - Keuze Agenda-plak (§5) wacht op Dennis.
+
+## 7. Agenda als gratis/premium-drager (besloten 8 okt, Dennis: akkoord)
+
+Dit is plak 6 ("de keten sluiten") en plak 8 (ontkoppeling) uit `BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md` §3.7/§6, geen nieuw idee. Volgorde:
+
+| Plak | Wat | Opmerking |
+|---|---|---|
+| A | "Focus: Voeding" uit het ⋯-menu (één focusdomein, plak 8); "Plan" zichtbaar i.p.v. verstopt; blockers B1–B4 uit de augustus-audit opnieuw toetsen | Dagstap blijft werken: volgt uit de prioriteit |
+| B | Agenda leidt read-only af wat het dagboek die dag heeft (per eetmoment, niet per kloktijd); feitelijke feedback in de stapkaart ("Gisteren ingevuld: ontbijt 12 g · lunch 31 g · diner 28 g"); afvinken blijft de keuze van de gebruiker | Geen migratie. Asymmetrie-regel: nooit "niet gehaald" afleiden uit een dagboek. Meetpunt in dezelfde wijziging |
+| C | Dagstappen per doel (`NUT_DOEL`): selectie uit de bestaande bibliotheek, geen nieuwe adviesmotor | Eerst copy en bronnen per doel laten toetsen (`WRITING_VOICE.md`); "afvallen zonder spierverlies" = bestaande eiwit-per-maaltijd-stap. Geen kcal-plan per doel |
+
+Gratis: dagstap, match met het dagboek van vandaag en gisteren, feiten van gisteren. Premium: verband over 30–90 dagen en doelspecifieke reeks.
