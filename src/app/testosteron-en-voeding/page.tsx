@@ -149,6 +149,11 @@ export default function TestosteronNa40Page() {
                     </a>
                   </li>
                   <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Zoom in op voeding
+                    </a>
+                  </li>
+                  <li>
                     <a href="#wat-verandert" className="hover:underline">
                       Wat gemiddeld verandert na 30
                     </a>
@@ -229,6 +234,8 @@ export default function TestosteronNa40Page() {
                   huisarts te bespreken.
                 </p>
               </section>
+
+              <GuideNutritionZoom guide="testosteron" />
 
               <ArticleFigure
                 src={BODY_IMAGE.src}
@@ -576,8 +583,6 @@ export default function TestosteronNa40Page() {
                   .
                 </p>
               </section>
-
-              <GuideNutritionZoom guide="testosteron" />
 
               <section id="veelgestelde-vragen" className="mt-14 scroll-mt-24">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">

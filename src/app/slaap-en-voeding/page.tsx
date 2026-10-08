@@ -138,6 +138,11 @@ export default function SlaapVerbeterenNa40Page() {
                     </a>
                   </li>
                   <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Zoom in op voeding
+                    </a>
+                  </li>
+                  <li>
                     <a href="#wat-er-verandert" className="hover:underline">
                       Wat er verandert na 30
                     </a>
@@ -206,6 +211,8 @@ export default function SlaapVerbeterenNa40Page() {
                   <li>Welke supplementen je kunt overwegen — en wat je beter eerst met je huisarts bespreekt</li>
                 </ul>
               </section>
+
+              <GuideNutritionZoom guide="slaap" />
 
               {/* 4. Mechanisme */}
               <section id="wat-er-verandert" className="mt-14">
@@ -760,8 +767,6 @@ export default function SlaapVerbeterenNa40Page() {
                   </details>
                 </div>
               </section>
-
-              <GuideNutritionZoom guide="slaap" />
 
               <ReferenceList references={magnesiumReferences} />
 

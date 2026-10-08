@@ -149,6 +149,11 @@ export default function OvergangPage() {
                     </a>
                   </li>
                   <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Zoom in op voeding
+                    </a>
+                  </li>
+                  <li>
                     <a href="#wat-verandert" className="hover:underline">
                       Wat gemiddeld verandert
                     </a>
@@ -225,6 +230,8 @@ export default function OvergangPage() {
                   te bespreken.
                 </p>
               </section>
+
+              <GuideNutritionZoom guide="overgang" />
 
               <ArticleFigure
                 src={BODY_IMAGE.src}
@@ -493,8 +500,6 @@ export default function OvergangPage() {
                   .
                 </p>
               </section>
-
-              <GuideNutritionZoom guide="overgang" />
 
               <section id="veelgestelde-vragen" className="mt-14 scroll-mt-24">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">

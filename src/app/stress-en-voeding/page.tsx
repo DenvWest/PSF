@@ -134,6 +134,11 @@ export default function StressVerminderenManPage() {
                     </a>
                   </li>
                   <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Zoom in op voeding
+                    </a>
+                  </li>
+                  <li>
                     <a href="#wat-er-gebeurt" className="hover:underline">
                       Waarom stress na 30 vaak zwaarder voelt
                     </a>
@@ -210,6 +215,8 @@ export default function StressVerminderenManPage() {
                   echte rustmomenten, niet dat wij weten wat er in je bloed zit.
                 </p>
               </section>
+
+              <GuideNutritionZoom guide="stress" />
 
               {/* 4–6. Stress na 30, HPA, cortisol/testosteron */}
               <section id="wat-er-gebeurt" className="mt-14">
@@ -555,7 +562,6 @@ export default function StressVerminderenManPage() {
               </section>
 
               {/* 11. CTA */}
-              <GuideNutritionZoom guide="stress" />
 
               {/* 12. FAQ */}
               <section id="veelgestelde-vragen" className="mt-14">

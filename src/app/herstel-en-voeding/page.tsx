@@ -138,6 +138,11 @@ export default function HerstelVerbeterenNa40Page() {
                     </a>
                   </li>
                   <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Zoom in op voeding
+                    </a>
+                  </li>
+                  <li>
                     <a href="#wat-er-verandert" className="hover:underline">
                       Wat er verandert na 30
                     </a>
@@ -227,6 +232,8 @@ export default function HerstelVerbeterenNa40Page() {
                   <li>Welke supplementen onderbouwd zijn — en hoe je ze slim inzet</li>
                 </ul>
               </section>
+
+              <GuideNutritionZoom guide="herstel" />
 
               <section id="wat-er-verandert" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
@@ -739,8 +746,6 @@ export default function HerstelVerbeterenNa40Page() {
                   </div>
                 </div>
               </section>
-
-              <GuideNutritionZoom guide="herstel" />
 
               <section id="veelgestelde-vragen" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">Veelgestelde Vragen</h2>
