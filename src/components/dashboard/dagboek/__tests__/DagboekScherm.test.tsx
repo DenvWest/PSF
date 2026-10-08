@@ -165,6 +165,51 @@ describe("DagboekScherm — zoeken per maaltijd", () => {
     expect(await screen.findByRole("button", { name: /^Havermout/ })).toBeTruthy();
   });
 
+  it("loopt de terugknop van de browser stap voor stap terug: portie, zoeken, overzicht", async () => {
+    render(<DagboekScherm />);
+    const zoekLabel = "Zoek een voedingsmiddel of supplement";
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    );
+    fireEvent.change(await screen.findByLabelText(zoekLabel), {
+      target: { value: "havermout" },
+    });
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    await waitFor(() => expect(screen.queryByLabelText(zoekLabel)).toBeNull());
+
+    window.history.back();
+    await screen.findByLabelText(zoekLabel);
+    expect((screen.getByLabelText(zoekLabel) as HTMLInputElement).value).toBe("havermout");
+
+    window.history.back();
+    await waitFor(() => expect(screen.queryByLabelText(zoekLabel)).toBeNull());
+  });
+
+  it("zet de browsergeschiedenis recht als je met de app-knop terug gaat", async () => {
+    render(<DagboekScherm />);
+    const zoekLabel = "Zoek een voedingsmiddel of supplement";
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    );
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    );
+    fireEvent.change(zoekveld, { target: { value: "havermout" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    await waitFor(() => expect(screen.queryByLabelText(zoekLabel)).toBeNull());
+    fireEvent.click(screen.getByRole("button", { name: "Terug" }));
+    await screen.findByLabelText(zoekLabel);
+
+    window.history.back();
+    await waitFor(() =>
+      expect(
+        screen.queryByLabelText("Zoek een voedingsmiddel of supplement"),
+      ).toBeNull(),
+    );
+  });
+
   it("kan het eetmoment nog wijzigen vlak vóór je een product kiest", async () => {
     render(<DagboekScherm />);
 
