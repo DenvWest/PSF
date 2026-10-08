@@ -1243,7 +1243,7 @@ const NutritionIntakeSection = ({ data }: SharedSectionProps) => {
                 lineHeight: 1.5,
               }}
             >
-              Antwoorden uit je voedingscheck — een frequentie-inschatting, geen
+              Antwoorden uit je check — een frequentie-inschatting, geen
               meting, status of diagnose.
             </div>
           </>
@@ -1257,14 +1257,14 @@ const NutritionIntakeSection = ({ data }: SharedSectionProps) => {
                 margin: 0,
               }}
             >
-              Doe een voedingscheck om je inname te zien.
+              Doe de check om je inname te zien.
             </p>
             <div>
               <Button
                 variant="secondary"
                 onClick={() => router.push("/intake/voeding")}
               >
-                Start voedingscheck
+                Start de check
               </Button>
             </div>
           </div>
@@ -2256,10 +2256,10 @@ const RecommendationsSection = ({ model, data }: SharedSectionProps) => {
   if (!nutritionLogCompleted) {
     return (
       <section aria-label="Wat mis je?">
-        <SectionHeader eyebrow="Eerst je bord" title="Doe de voedingscheck" />
+        <SectionHeader eyebrow="Eerst je bord" title="Wat mis je? Doe de check" />
         <Card pad={16}>
           <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: 0, textWrap: "pretty" }}>
-            Supplementadvies tonen we pas na je voedingscheck — leefstijl eerst, in die volgorde.
+            Supplementadvies tonen we pas na je check — leefstijl eerst, in die volgorde.
           </p>
           <Link
             href="/intake/voeding?from=dashboard"
@@ -2278,7 +2278,7 @@ const RecommendationsSection = ({ model, data }: SharedSectionProps) => {
               textDecoration: "none",
             }}
           >
-            Start voedingscheck (1 min) <Icons.ChevronRight s={16} />
+            Start de check <Icons.ChevronRight s={16} />
           </Link>
         </Card>
       </section>

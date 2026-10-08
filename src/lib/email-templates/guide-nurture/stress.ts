@@ -1,4 +1,5 @@
 import { absoluteUrl } from "@/lib/public-site-url";
+import { CHECK_CTA } from "@/lib/check-facts";
 import { ctaButton, emailWrapper } from "@/lib/email-templates/guide-nurture/shared";
 import type { GuideNurtureDay, GuideNurtureTemplate } from "@/lib/email-templates/guide-nurture/types";
 
@@ -102,9 +103,9 @@ ${ctaButton(absoluteUrl("/stress-en-voeding"), "Terug naar het stressprotocol �
   Tijd voor een nieuwe meting
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Na een maand is het zinvol om opnieuw te kijken naar stress, slaap en energie. De Leefstijlcheck geeft je een actueel beeld — zonder diagnose, wel met concrete stappen.
+  Na een maand is het zinvol om opnieuw te kijken. Onder druk schiet eten er vaak bij in. De check 'Wat mis je?' laat zien welke voedingsstoffen je bord waarschijnlijk mist — zonder diagnose, wel met wat je eraan kunt doen.
 </p>
-${ctaButton(absoluteUrl("/intake"), "Doe de gratis Leefstijlcheck →")}`,
+${ctaButton(absoluteUrl("/intake"), CHECK_CTA.discoverButton)}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),

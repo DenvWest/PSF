@@ -85,13 +85,13 @@ export const nutritionPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "nut-intake-voeding",
-          title: "Doe de snelle voedingscheck — 1 minuut, direct inzicht.",
+          title: "Doe de check Wat mis je? — direct inzicht.",
           rationale: {
             body:
               "Zelf-gerapporteerd, geen diagnose — wel een eerlijk beeld van gisteren. Herhaal over twee weken om verschil te zien.",
           },
           link: {
-            label: "Start voedingscheck",
+            label: "Start de check",
             href: "/intake/voeding",
             kind: "article",
           },

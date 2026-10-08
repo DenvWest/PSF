@@ -34,7 +34,7 @@ function buildRelogEmailHtml(
     <div style="font-family: system-ui, sans-serif; line-height: 1.5; color: #1a1a1a;">
       <p>${greeting}</p>
       <p>
-        Twee weken geleden deed je de voedingscheck. Log opnieuw in één minuut —
+        Twee weken geleden deed je de check. Log opnieuw in één minuut —
         dan zie je of je eiwit, groente en vette vis de goede kant op bewogen.
       </p>
       <p>

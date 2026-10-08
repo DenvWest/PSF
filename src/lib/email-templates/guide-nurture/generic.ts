@@ -1,4 +1,5 @@
 import { absoluteUrl } from "@/lib/public-site-url";
+import { CHECK_CTA } from "@/lib/check-facts";
 import { GUIDE_DATA } from "@/data/gids";
 import { ctaButton, emailWrapper } from "@/lib/email-templates/guide-nurture/shared";
 import type { GuideNurtureDay, GuideNurtureTemplate } from "@/lib/email-templates/guide-nurture/types";
@@ -53,9 +54,13 @@ function followUpTemplate(
   ${body}
 </p>
 ${ctaButton(absoluteUrl(ctaHref), ctaText)}
-<p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
-  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">Doe de gratis Leefstijlcheck</a> — 18 vragen, 3 minuten.
-</p>`,
+${
+  ctaHref === "/intake"
+    ? ""
+    : `<p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
+  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">${CHECK_CTA.discoverButtonShort}</a> — ${CHECK_CTA.subline}
+</p>`
+}`,
         unsubscribeUrl,
         data.guideName,
       ),
@@ -109,9 +114,9 @@ export function buildGenericGuideTemplates(
       30,
       "Meet je voortgang na 30 dagen",
       "Tijd voor een nieuwe meting",
-      "Na een maand is het zinvol om opnieuw te kijken. De Leefstijlcheck geeft je een actueel beeld van slaap, stress, energie en herstel.",
+      "Na een maand is het zinvol om opnieuw te kijken. De check 'Wat mis je?' laat zien welke voedingsstoffen je bord waarschijnlijk mist — zonder diagnose, wel met wat je eraan kunt doen.",
       "/intake",
-      "Doe de gratis Leefstijlcheck →",
+      CHECK_CTA.discoverButton,
     ),
   };
 }

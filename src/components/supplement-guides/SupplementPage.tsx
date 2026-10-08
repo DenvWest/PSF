@@ -8,11 +8,10 @@ import SymptoomLinkCard from "./SymptoomLinkCard";
 import FAQItem from "./FAQItem";
 import { IntakeCtaLink } from "@/components/common/IntakeCtaLink";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
-import { INTAKE_CTA, INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
+import { CHECK_CTA, CHECK_DURATION_LABEL, CHECK_QUESTIONS_LABEL } from "@/lib/check-facts";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBanner";
-import { ComparisonProfileFits } from "@/components/supplements/ComparisonProfileFits";
-import { getProfileFitsForGuideSlug } from "@/data/supplement-profile-fits";
 import GuideSidebar, {
   type GuideTocItem,
 } from "@/components/supplement-guides/GuideSidebar";
@@ -32,7 +31,6 @@ interface SupplementPageProps {
 export default function SupplementPage({ data }: SupplementPageProps) {
   const pageUrl = `${SITE_URL}/supplementen/${data.slug}`;
   const modified = data.dateModified ?? data.datePublished;
-  const profileFits = getProfileFitsForGuideSlug(data.slug);
   const nadrukThemas =
     CATALOG.find((entry) => entry.slug === data.slug)?.themas ?? [];
 
@@ -42,9 +40,6 @@ export default function SupplementPage({ data }: SupplementPageProps) {
     { id: "vormen", label: data.vormenDosering.titel },
     { id: "waar-op-letten", label: data.waarOpLetten.titel },
     { id: "bij-jouw-klachten", label: data.gerelateerdeSymptomen.titel },
-    ...(profileFits.length > 0
-      ? [{ id: "past-bij-profiel-sectie", label: "Past bij dit profiel" }]
-      : []),
     { id: "faq", label: "Veelgestelde vragen" },
     ...(data.blogLinks.length > 0
       ? [{ id: "verdieping", label: "Verdieping" }]
@@ -273,8 +268,6 @@ export default function SupplementPage({ data }: SupplementPageProps) {
               </div>
             </section>
 
-            <ComparisonProfileFits fits={profileFits} bare />
-
             <section
               id="faq"
               aria-labelledby="faq-heading"
@@ -377,17 +370,14 @@ export default function SupplementPage({ data }: SupplementPageProps) {
                   iets voor jou is?
                 </h2>
                 <p className="mx-auto mt-4 max-w-lg text-base text-white/80">
-                  {INTAKE_CTA.guideClosingSubline}
+                  {CHECK_CTA.guideClosingSubline}
                 </p>
                 <div className="mx-auto mt-6 flex max-w-md flex-wrap justify-center gap-x-6 gap-y-2">
                   <span className="text-sm text-white/70">
-                    ✓ 18 vragen, 3 minuten
+                    ✓ {CHECK_QUESTIONS_LABEL}, {CHECK_DURATION_LABEL}
                   </span>
                   <span className="text-sm text-white/70">
-                    ✓ Scores op 5 leefstijldomeinen
-                  </span>
-                  <span className="text-sm text-white/70">
-                    ✓ {INTAKE_DELIVERABLE.premiumFeatureBullet}
+                    ✓ Welke voedingsstoffen je waarschijnlijk mist
                   </span>
                   <span className="text-sm text-white/70">
                     ✓ {INTAKE_CTA.supplementFeature}
@@ -399,7 +389,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
                     locatie={`gids_afsluiter_${data.slug}`}
                     className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-white px-8 py-3.5 text-base font-semibold text-ps-green shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
                   >
-                    {INTAKE_CTA.gratisButton}
+                    {CHECK_CTA.discoverButtonShort}
                     <span aria-hidden>→</span>
                   </IntakeCtaLink>
                 </div>

@@ -97,28 +97,53 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/profiel",
+        destination: "/gidsen",
+        permanent: true,
+      },
+      {
+        source: "/profiel/onrustige-slaper",
+        destination: "/slaap-en-voeding",
+        permanent: true,
+      },
+      {
+        source: "/profiel/stressdrager",
+        destination: "/stress-en-voeding",
+        permanent: true,
+      },
+      {
+        source: "/profiel/lage-energie",
+        destination: "/energie-en-voeding",
+        permanent: true,
+      },
+      {
+        source: "/profiel/overtrainer",
+        destination: "/herstel-en-voeding",
+        permanent: true,
+      },
+      {
         source: "/profiel/basis-mist",
-        destination: "/profiel",
+        destination: "/gidsen",
         permanent: true,
       },
       {
         source: "/profiel/stille-tekorten",
-        destination: "/profiel",
+        destination: "/gidsen",
         permanent: true,
       },
       {
         source: "/profiel/stille-slijter",
-        destination: "/profiel/lage-energie",
+        destination: "/energie-en-voeding",
         permanent: true,
       },
       {
         source: "/profiel/stilzitter",
-        destination: "/profiel/lage-energie",
+        destination: "/energie-en-voeding",
         permanent: true,
       },
       {
         source: "/profiel/lage-batterij",
-        destination: "/profiel/lage-energie",
+        destination: "/energie-en-voeding",
         permanent: true,
       },
       {
@@ -193,7 +218,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/profiel/herstel",
-        destination: "/profiel/overtrainer",
+        destination: "/herstel-en-voeding",
         permanent: true,
       },
       {

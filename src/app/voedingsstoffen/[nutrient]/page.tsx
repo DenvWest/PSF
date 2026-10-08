@@ -234,7 +234,7 @@ export default async function NutrientPage({ params }: Props) {
               <p className={PROSE}>{route.boardCannotCoverNl}</p>
               <p className={PROSE}>
                 Of dat voor jou geldt, hangt af van wat er nu op je bord ligt.
-                Dat is precies wat de voedingscheck uitleest — en pas als daar
+                Dat is precies wat de check uitleest — en pas als daar
                 een gat zit, gaat de vergelijking ergens over.
               </p>
 

@@ -410,7 +410,7 @@ export default function DoelenLijst() {
           onder={
             concreet.latestScore !== null
               ? `Je ijkpunt: ${concreet.latestScore}/10. Tik om opnieuw te scoren of een ander doel te kiezen.`
-              : "Eén zin uit je voedingscheck, met een cijfer van 0 tot 10."
+              : "Eén zin uit je check, met een cijfer van 0 tot 10."
           }
           waarde={concreet.goalLine ?? "Nog niet gekozen"}
           gedempt={concreet.goalLine === null}

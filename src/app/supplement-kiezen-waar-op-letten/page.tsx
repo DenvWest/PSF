@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { INTAKE_CTA } from "@/lib/intake-product-copy";
+import { CHECK_CTA } from "@/lib/check-facts";
 import Container from "@/components/layout/Container";
 import {
     BlogArticleExcerpt,
@@ -405,14 +405,14 @@ export default function SupplementKiezenWaarOpLettenPage() {
                         Weet jij welk supplement bij jou past?
                     </p>
                     <p className="mt-2 text-sm text-stone-500">
-                        18 vragen, 3 minuten — direct een persoonlijk leefstijloverzicht.
+                        {CHECK_CTA.subline}
                     </p>
                     <IntakeCtaMicro className="mt-4 text-sm text-stone-500" />
                     <Link
                         href="/intake"
                         className="mt-6 inline-block rounded-full bg-stone-900 px-6 py-3 text-sm font-medium text-white hover:bg-stone-700"
                     >
-                        {INTAKE_CTA.discoverOverview}
+                        {CHECK_CTA.discoverButton}
                     </Link>
                 </div>
             </Container>

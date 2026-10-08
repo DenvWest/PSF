@@ -72,7 +72,7 @@ export default function BlogControleerVerbeterPad({
               clarityTag("blog_voedingscheck", `${artikelSlug}:${categorie}`);
             }}
           >
-            Doe de voedingscheck →
+            Wat mis je? Doe de check →
           </Link>
         </div>
         <div className="rounded-lg border border-stone-200/80 bg-stone-50/70 px-4 py-4">

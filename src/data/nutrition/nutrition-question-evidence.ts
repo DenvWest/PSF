@@ -37,7 +37,7 @@ export type NutritionQuestionEvidence = {
 };
 
 export const NUTRITION_EVIDENCE_DISCLAIMER =
-  "De voedingscheck is een frequentie-inschatting op basis van zelf-gerapporteerd eetgedrag — geen medische uitspraak, geen bloedwaarde en geen individuele norm. Drempels zijn vuistregels t.o.v. algemene richtlijnen.";
+  "De check is een frequentie-inschatting op basis van zelf-gerapporteerd eetgedrag — geen medische uitspraak, geen bloedwaarde en geen individuele norm. Drempels zijn vuistregels t.o.v. algemene richtlijnen.";
 
 export const NUTRITION_EVIDENCE_STRENGTH_DISCLAIMER =
   "Sterren meten signaalsterkte: hoe goed onderbouwd is het dat deze vraag een relevant voedingspatroon weerspiegelt? Dit is geen beoordeling van jouw gezondheid.";

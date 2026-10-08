@@ -20,7 +20,7 @@ export default function NutritionResultsReturnLink() {
   const origin = params.from === "dashboard" ? "dashboard" : undefined;
 
   return (
-    <nav aria-label="Terug naar voedingscheck-resultaat" className="mb-6">
+    <nav aria-label="Terug naar je uitslag" className="mb-6">
       <Link
         href={nutritionResultsHref(origin)}
         onClick={() => {
@@ -31,7 +31,7 @@ export default function NutritionResultsReturnLink() {
         }}
         className="inline-flex items-center gap-1 text-sm font-medium text-emerald-700 underline decoration-emerald-700/35 underline-offset-[3px] hover:decoration-emerald-700"
       >
-        ← Terug naar je voedingscheck-resultaat
+        ← Terug naar je uitslag
       </Link>
     </nav>
   );

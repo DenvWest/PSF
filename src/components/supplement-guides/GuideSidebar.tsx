@@ -89,9 +89,9 @@ export default function GuideSidebar({
           Past {naamKlein} bij jou?
         </h2>
         <p className="mt-1.5 text-sm leading-relaxed text-stone-600">
-          De meeste klachten beginnen niet bij een tekort, maar bij leefstijl.
-          De gratis check laat zien wat er speelt — en of een supplement zinvol
-          is.
+          Vaak zit het antwoord eerst op je bord. De gratis check laat zien
+          welke voedingsstoffen je waarschijnlijk mist — en of een supplement
+          zinvol is.
         </p>
         <Link
           href="/intake"
@@ -102,7 +102,7 @@ export default function GuideSidebar({
           }
           className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ps-green px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-ps-green-hover hover:shadow-md"
         >
-          Doe de Leefstijlcheck →
+          Wat mis je? Doe de gratis check →
         </Link>
         <IntakeCtaMicro className="mt-2 text-xs text-stone-500" />
 

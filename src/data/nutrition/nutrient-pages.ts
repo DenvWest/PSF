@@ -105,7 +105,7 @@ export const NUTRIENT_PAGES: Record<NutrientId, NutrientPageCopy> = {
       {
         vraag: "Hoeveel eiwit heb ik per dag nodig?",
         antwoord:
-          "Dat hangt af van je gewicht en hoeveel je beweegt. Wij rekenen niet met één getal voor iedereen; de voedingscheck rekent een persoonlijke band uit op basis van je gewicht en je beweegdagen.",
+          "Dat hangt af van je gewicht en hoeveel je beweegt. Wij rekenen niet met één getal voor iedereen; de check rekent een persoonlijke band uit op basis van je gewicht en je beweegdagen.",
       },
       {
         vraag: "Heb ik eiwitpoeder nodig?",

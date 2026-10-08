@@ -3,7 +3,6 @@ import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import { kennisbankTerms } from "@/data/kennisbank";
 import { ALL_SUPPLEMENT_SLUGS, getSupplementData } from "@/data/supplement-guides";
 import { SUPPLEMENT_SLUGS, getSupplementComparisonData } from "@/data/supplements";
-import { PROFILE_PAGES, PROFILE_SLUGS } from "@/data/profiles";
 import { GUIDE_SLUGS, getGuideData } from "@/data/gids";
 import { NUTRIENT_PAGES } from "@/data/nutrition/nutrient-pages";
 import { NUTRIENT_IDS } from "@/data/nutrition/intake-reference";
@@ -40,7 +39,6 @@ export type GraphNodeType =
   | "supplementgids"
   | "vergelijking"
   | "pillar"
-  | "profiel"
   | "gezondheidsgids"
   | "voedingsstof";
 
@@ -155,17 +153,6 @@ export function allGraphNodes(): GraphNode[] {
     });
   }
 
-  for (const slug of PROFILE_SLUGS) {
-    const data = PROFILE_PAGES[slug];
-    if (!data) continue;
-    push({
-      path: `/profiel/${slug}`,
-      type: "profiel",
-      slug,
-      title: data.label,
-      source: data,
-    });
-  }
 
   for (const nutrient of NUTRIENT_IDS) {
     const copy = NUTRIENT_PAGES[nutrient];

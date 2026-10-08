@@ -262,7 +262,7 @@ export default function SchapView({
           <div className="mb-4 rounded-2xl border border-[var(--vd-line)] bg-[var(--vd-surface)] px-3.5 py-3.5">
             <p className="max-w-[62ch] text-[12.5px] leading-relaxed text-[var(--vd-ink-2)] text-pretty">
               Hier staat het aanbod, en alleen hier. Vandaag en Mijn Dag dragen de deur.
-              Elk oordeel hieronder komt uit je leefstijl- en voedingscheck, langs
+              Elk oordeel hieronder komt uit je checks, langs
               dezelfde feiten: signaal, zekerheid en EU-claim.
             </p>
           </div>
@@ -376,7 +376,7 @@ export default function SchapView({
         {/* Het oordeel per supplement uit je check staat sinds 7 oktober in de
             stofkaart zelf, als context bij de stand uit je dagboek
             (`BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`, herziening 7 okt). Alleen
-            zonder voedingscheck — dan zijn er geen stofkaarten — staat het hier
+            zonder de check — dan zijn er geen stofkaarten — staat het hier
             nog los, met zijn dichte poort en reden, zodat dit tabblad nooit
             leeg is. */}
         {currentTab === "logboek" && stanceDomain && nutritionRoutes.length === 0 ? (

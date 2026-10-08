@@ -116,7 +116,7 @@ export const sleepPlanTemplate: LifestylePlanTemplate = {
           },
           showWhen: { type: "signal", signal: "magnesium_signal" },
           link: {
-            label: "Doe de voedingscheck",
+            label: "Wat mis je? Doe de check",
             href: "/intake/voeding",
             kind: "article",
           },

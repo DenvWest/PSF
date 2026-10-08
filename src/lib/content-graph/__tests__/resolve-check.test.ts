@@ -210,14 +210,11 @@ describe("metadataForNode", () => {
     }
   });
 
-  it("stuurt pillars en profielpagina's naar de brede leefstijlcheck", () => {
-    // Een pillar zegt zelf dat een klacht meerdere oorzaken heeft, en een
-    // profielpagina ís de uitkomst van de brede check. Een micro-check van één
-    // minuut zou hun eigen boodschap tegenspreken.
-    const breed = allGraphNodes().filter(
-      (n) => n.type === "pillar" || n.type === "profiel",
-    );
-    expect(breed.length).toBeGreaterThan(10);
+  it("stuurt pillars naar de brede leefstijlcheck", () => {
+    // Een pillar zegt zelf dat een klacht meerdere oorzaken heeft. Een
+    // micro-check van één minuut zou die boodschap tegenspreken.
+    const breed = allGraphNodes().filter((n) => n.type === "pillar");
+    expect(breed.length).toBeGreaterThan(5);
     for (const node of breed) {
       expect(resolveCheck(metadataForNode(node)), node.path).toBe("leefstijl");
     }

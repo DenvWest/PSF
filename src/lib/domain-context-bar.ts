@@ -83,8 +83,8 @@ const DOMAIN_CONTEXT_COPY: Record<PillarId, DomainContextCopy> = {
     // innamebanden, geen staat per laag. Dat is de eerlijke stand — niet doen
     // alsof er een winst-laag ligt.
     noReadoutLine:
-      "Je voedingscheck schat je inname per nutriënt, maar wijst nog geen winst-laag aan. Je prioriteiten lees je hier zonder oordeel.",
-    schapLine: "De vijf nutriënten die je voedingscheck schat — met ons oordeel per stof.",
+      "Je check schat je inname per nutriënt, maar wijst nog geen winst-laag aan. Je prioriteiten lees je hier zonder oordeel.",
+    schapLine: "De vijf nutriënten die je check schat — met ons oordeel per stof.",
   },
   stress: {
     noReadoutLine:

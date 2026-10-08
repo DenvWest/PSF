@@ -263,8 +263,8 @@ export default function FavorietenBewegingSection({
           title="Deze deur staat dicht"
           body={
             nutritionLogCompleted
-              ? "Eerst voedingscheck en hertest, dan pas aanvullen. Creatine, eiwit en wearables zijn optimalisatie ná leefstijl — geen vervanging van je basis."
-              : "Eerst voedingscheck en hertest, dan pas aanvullen. Supplementen en wearables komen pas aan bod als je leefstijl-basis staat."
+              ? "Eerst de check en hertest, dan pas aanvullen. Creatine, eiwit en wearables zijn optimalisatie ná leefstijl — geen vervanging van je basis."
+              : "Eerst de check en hertest, dan pas aanvullen. Supplementen en wearables komen pas aan bod als je leefstijl-basis staat."
           }
           footnote="Geen kaarten, geen teaser. Een dichte deur die toch iets laat zien is geen dichte deur."
         />

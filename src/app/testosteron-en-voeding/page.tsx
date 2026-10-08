@@ -169,11 +169,6 @@ export default function TestosteronNa40Page() {
                     </a>
                   </li>
                   <li>
-                    <a href="#profielen" className="hover:underline">
-                      Herken je dit patroon?
-                    </a>
-                  </li>
-                  <li>
                     <a href="#supplementen" className="hover:underline">
                       Supplementen in context
                     </a>
@@ -368,9 +363,9 @@ export default function TestosteronNa40Page() {
                 <p className="mt-3 leading-relaxed text-gray-700">
                   Buikvet en weinig beweging op een dag hangen in onderzoek samen met minder gunstige
                   hormoonwaarden. Dagelijks wandelen na het eten en bewust lichtere trainingsweken
-                  passen bij mannen die te veel trainen — zie profiel{" "}
-                  <Link href="/profiel/overtrainer" className={LINK}>
-                    Overtrainer
+                  passen bij mannen die te veel trainen — zie{" "}
+                  <Link href="/herstel-en-voeding" className={LINK}>
+                    herstel en voeding
                   </Link>
                   .
                 </p>
@@ -383,55 +378,6 @@ export default function TestosteronNa40Page() {
                   bloedonderzoek (totaal en eventueel vrij testosteron, schildklier, vitamine D,
                   bloedbeeld) — niet zelf interpreteren via marketing.
                 </p>
-              </section>
-
-              <section id="profielen" className="mt-14 scroll-mt-24">
-                <h2 className="font-serif text-3xl font-bold text-gray-900">
-                  Herken Je Dit Patroon?
-                </h2>
-                <p className="mt-4 leading-relaxed text-gray-700">
-                  Testosteron-thema&apos;s overlappen met bestaande profielen — geen diagnose, wel
-                  herkenning:
-                </p>
-
-                <div className="mt-6 rounded-xl border border-stone-200 bg-stone-50 p-5">
-                  <p className="text-sm leading-relaxed text-gray-700">
-                    <strong className="text-gray-900">Stressdrager:</strong> piekeren, slecht
-                    landen &apos;s nachts, kort lontje — stress en slaap als eerste hefboom.
-                  </p>
-                  <Link
-                    href="/profiel/stressdrager"
-                    className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
-                  >
-                    Bekijk het Stressdrager-profiel →
-                  </Link>
-                </div>
-
-                <div className="mt-4 rounded-xl border border-stone-200 bg-stone-50 p-5">
-                  <p className="text-sm leading-relaxed text-gray-700">
-                    <strong className="text-gray-900">Lage energie:</strong> structurele
-                    vermoeidheid, middagdips — energie breder dan één hormoon.
-                  </p>
-                  <Link
-                    href="/profiel/lage-energie"
-                    className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
-                  >
-                    Bekijk het Lage Energie-profiel →
-                  </Link>
-                </div>
-
-                <div className="mt-4 rounded-xl border border-stone-200 bg-stone-50 p-5">
-                  <p className="text-sm leading-relaxed text-gray-700">
-                    <strong className="text-gray-900">Overtrainer:</strong> veel volume, weinig
-                    buffer — herstel vóór extra supplementen.
-                  </p>
-                  <Link
-                    href="/profiel/overtrainer"
-                    className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
-                  >
-                    Bekijk het Overtrainer-profiel →
-                  </Link>
-                </div>
               </section>
 
               <section id="supplementen" className="mt-14 scroll-mt-24">

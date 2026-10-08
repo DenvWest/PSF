@@ -196,7 +196,7 @@ describe("DomainKompasScreen — slaap draagt hetzelfde scherm als beweging", ()
   it("voeding heeft nog geen check-uitlezing: ladder zonder oordeel, eigen copy", () => {
     renderScreen("voeding", data({ sleepCheckinSnapshot: null, domainCheckDaysAgo: {} }));
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Voeding");
-    expect(screen.queryByText(/nog geen voedingscheck/)).not.toBeNull();
+    expect(screen.queryByText(/nog geen check 'Wat mis je\?'/)).not.toBeNull();
     expect(screen.queryByText(/Van onder naar boven/)).not.toBeNull();
     const ladder = screen.getByRole("group", { name: "Je prioriteiten" });
     expect(within(ladder).queryByText("Grootste winst")).toBeNull();

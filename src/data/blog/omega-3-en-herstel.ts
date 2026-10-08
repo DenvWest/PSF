@@ -29,7 +29,7 @@ export const omega3EnHerstelData: BlogArtikel = {
       type: "tekst",
       titel: "Profiel en pillar",
       tekst:
-        "Herken je veel trainen met weinig buffer? Het profiel [Overtrainer](/profiel/overtrainer) en het artikel [creatine en herstel](/blog/creatine-en-herstel) vullen dit thema aan — elk met eigen focus.",
+        "Herken je veel trainen met weinig buffer? [Herstel en voeding](/herstel-en-voeding) en het artikel [creatine en herstel](/blog/creatine-en-herstel) vullen dit thema aan — elk met eigen focus.",
     },
     {
       type: "opsomming",

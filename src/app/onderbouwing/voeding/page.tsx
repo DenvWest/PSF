@@ -22,9 +22,9 @@ import { normLabel } from "@/lib/nutrition-normen";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
 
-const TITLE = "Onderbouwing Voedingscheck";
+const TITLE = "Onderbouwing Wat mis je?";
 const DESCRIPTION =
-  "Hoe PerfectSupplement rekent: waarom de voedingscheck elke vraag stelt, welke norm we gebruiken (Gezondheidsraad, EFSA, NNR), waar de gehaltes vandaan komen (NEVO) en wat de PS-Score beoordeelt.";
+  "Hoe PerfectSupplement rekent: waarom de check elke vraag stelt, welke norm we gebruiken (Gezondheidsraad, EFSA, NNR), waar de gehaltes vandaan komen (NEVO) en wat de PS-Score beoordeelt.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -97,7 +97,7 @@ export default function OnderbouwingVoedingPage() {
 
         <header className="max-w-4xl">
           <h1 className="font-display text-4xl font-bold tracking-tight text-stone-900 md:text-5xl">
-            Onderbouwing van de voedingscheck
+            Onderbouwing van Wat mis je?
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-stone-600">
             We beantwoorden drie vragen, in deze volgorde. Per vraag lees je hier waar we
@@ -123,7 +123,7 @@ export default function OnderbouwingVoedingPage() {
         <section id="nodig" className="mt-16 scroll-mt-28">
           <QuestionHeader id="nodig" index={0} />
           <div className="mt-8 max-w-4xl">
-            <h3 className={subTitleClass}>Wat de voedingscheck meet</h3>
+            <h3 className={subTitleClass}>Wat de check meet</h3>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-base leading-relaxed text-stone-600">
               <li>
                 {NUTRITION_CORE_SLIDER_IDS.length} vragen over hoe vaak je iets eet, plus je
@@ -304,7 +304,7 @@ export default function OnderbouwingVoedingPage() {
               locatie="onderbouwing_voeding"
               className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100"
             >
-              Doe de voedingscheck
+              Wat mis je? Doe de check
             </IntakeCtaLink>
             <Link
               href="/voeding-na-40"
