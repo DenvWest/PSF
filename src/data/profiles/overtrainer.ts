@@ -137,8 +137,8 @@ export const overtrainerProfile: ProfilePageData = {
         {
           title: "Week 3–4: voorzichtig opbouwen en deload",
           description:
-            "Week 3: maximaal 10–15% volume boven week 2, alleen als je signalen rustig blijven. Week 4: plan een deload met ongeveer halve trainingsspanning. Doe daarna de Leefstijlcheck opnieuw op hetzelfde tijdstip: je zoekt trends, niet één \"perfect\" cijfer.",
-          actionable: "Maak nu al een reminder in je agenda in week 4 voor de Leefstijlcheck.",
+            "Week 3: maximaal 10–15% volume boven week 2, alleen als je signalen rustig blijven. Week 4: plan een deload met ongeveer halve trainingsspanning. Leg daarna je weeklog naast die van week 1: je zoekt trends, niet één \"perfect\" cijfer.",
+          actionable: "Maak nu al een reminder in je agenda in week 4 om je weeklog te vergelijken.",
           timeframe: "Week 3–4",
         },
       ],
@@ -203,8 +203,8 @@ export const overtrainerProfile: ProfilePageData = {
   ],
 
   guidanceCta: {
-    title: "Veel sterker word je niet door harder te trainen",
-    text: "Veel sterker word je niet door harder te trainen — maar door beter te herstellen. Doe de Leefstijlcheck om te zien waar belasting en herstel nu uit balans liggen.",
+    title: "Herstel begint ook op je bord",
+    text: "Veel sterker word je niet door harder te trainen — maar door beter te herstellen. De check laat zien of je eiwit en andere voedingsstoffen je herstel al dragen.",
   },
 
   relatedPillar: {
@@ -256,8 +256,8 @@ export const overtrainerProfile: ProfilePageData = {
     },
     {
       href: "/intake",
-      turboSnippet: "Zie waar herstel en belasting niet op één lijn zitten in jouw eigen scores.",
-      linkText: "Doe de Leefstijlcheck",
+      turboSnippet: "Draagt je bord je herstel al? Zie het in de gratis check.",
+      linkText: "Wat mis je? Doe de gratis check",
     },
   ],
 

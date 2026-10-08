@@ -1,4 +1,5 @@
 import { absoluteUrl } from "@/lib/public-site-url";
+import { CHECK_CTA } from "@/lib/check-facts";
 import { ctaButton, emailWrapper } from "@/lib/email-templates/guide-nurture/shared";
 import type { GuideNurtureDay, GuideNurtureTemplate } from "@/lib/email-templates/guide-nurture/types";
 
@@ -113,9 +114,9 @@ ${ctaButton(absoluteUrl("/beste/creatine"), "Vergelijk creatine supplementen →
   Tijd voor een nieuwe meting
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Na een maand is het zinvol om opnieuw te kijken: beweging, herstel, voeding en slaap hangen samen. De Leefstijlcheck geeft je een actueel beeld in 3 minuten.
+  Na een maand is het zinvol om opnieuw te kijken: herstel begint ook op je bord. De check 'Wat mis je?' laat zien welke voedingsstoffen je bord waarschijnlijk mist — zonder diagnose, wel met wat je eraan kunt doen.
 </p>
-${ctaButton(absoluteUrl("/intake"), "Doe de gratis Leefstijlcheck →")}`,
+${ctaButton(absoluteUrl("/intake"), CHECK_CTA.discoverButton)}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),

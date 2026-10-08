@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { intakeCtaMatchProfile } from "@/lib/intake-product-copy";
+import { CHECK_CTA } from "@/lib/check-facts";
+import { onrustigeSlaper } from "@/data/profiles/onrustige-slaper";
+import { IntakeCtaLink } from "@/components/common/IntakeCtaLink";
 import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
@@ -112,7 +114,7 @@ const weekPlan = [
     week: "Week 4",
     title: "Meten",
     description:
-      "Doe de Leefstijlcheck opnieuw. Vergelijk je slaapscore met 4 weken geleden. Is er verbetering? Dan weet je dat de aanpak werkt. Geen verbetering? Dan is het misschien tijd om een arts te raadplegen — niet als falen, maar als logische volgende stap.",
+      "Leg je ochtendscores van week 4 naast die van week 1. Is er verbetering? Dan weet je dat de aanpak werkt. Geen verbetering? Dan is het misschien tijd om een arts te raadplegen — niet als falen, maar als logische volgende stap.",
   },
 ];
 
@@ -169,12 +171,12 @@ export default function OnrustigeSlaperPage() {
                 met een hoofd vol watten.
               </p>
               <div className="mt-8">
-                <Link
-                  href="/intake"
+                <IntakeCtaLink
+                  locatie="profiel_hero_onrustige-slaper"
                   className="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-xl transition-colors text-base"
                 >
-                  Ontdek wat jouw slaap verstoort →
-                </Link>
+                  Zie wat je bord mist →
+                </IntakeCtaLink>
               </div>
             </section>
 
@@ -441,19 +443,18 @@ export default function OnrustigeSlaperPage() {
             <section className="py-16">
               <div className="bg-emerald-50 rounded-2xl p-8 md:p-12 text-center">
                 <h2 className="font-[var(--font-heading)] text-2xl md:text-3xl text-slate-900">
-                  Twijfel je of dit profiel bij jou past?
+                  {onrustigeSlaper.guidanceCta.title}
                 </h2>
                 <p className="text-slate-600 mt-4 leading-relaxed max-w-xl mx-auto">
-                  Ontdek in 3 minuten hoe je scoort op slaap, stress en 4 andere domeinen — en of
-                  Onrustige Slaper bij jouw situatie past.
+                  {onrustigeSlaper.guidanceCta.text}
                 </p>
                 <IntakeCtaMicro className="mt-4 max-w-xl mx-auto text-sm text-slate-500" />
-                <Link
-                  href="/intake"
+                <IntakeCtaLink
+                  locatie="profiel_afsluiter_onrustige-slaper"
                   className="inline-flex items-center mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl transition-colors text-base"
                 >
-                  {intakeCtaMatchProfile("Onrustige Slaper")}
-                </Link>
+                  {CHECK_CTA.discoverButton}
+                </IntakeCtaLink>
               </div>
             </section>
 
@@ -495,7 +496,7 @@ export default function OnrustigeSlaperPage() {
                     href="/profiel/lage-energie"
                     className="text-emerald-600 hover:underline font-medium"
                   >
-                    Ben jij een Lage Energie? →
+                    Lees het patroon Lage Energie →
                   </Link>
                 </div>
               </div>

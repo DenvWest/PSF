@@ -555,16 +555,16 @@ export default function EnergieNa40Page() {
 
                 <div className="mt-6 p-5 rounded-xl border border-stone-200 bg-stone-50">
                   <p className="text-gray-700 text-sm leading-relaxed">
-                    <strong className="text-gray-900">Herken je het Lage Energie-profiel?</strong>
+                    <strong className="text-gray-900">Herken je het patroon Lage Energie?</strong>
                     <br />
-                    Als chronische vermoeidheid je primaire patroon is, past het Lage Energie-profiel
-                    bij jou. Met concrete stappen en supplementadvies afgestemd op jouw situatie.
+                    Is aanhoudende vermoeidheid wat je het meest merkt? Het patroon Lage Energie
+                    beschrijft wat erachter kan zitten, met concrete stappen.
                   </p>
                   <Link
                     href="/profiel/lage-energie"
                     className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
                   >
-                    Lees meer over het Lage Energie-profiel →
+                    Lees het patroon Lage Energie →
                   </Link>
                 </div>
 

@@ -92,13 +92,13 @@ export default function VoedingNa40Page() {
                     <p className="mt-3 text-sm text-gray-600">
                       Of{" "}
                       <Link href="/intake" className={LINK}>
-                        doe eerst de snelle voedingscheck (1 min)
+                        zie eerst wat je bord mist in de gratis check
                       </Link>
                     </p>
                     <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
                     <p className="mt-3 text-sm text-gray-600">
                       <Link href="/onderbouwing/voeding" className={LINK}>
-                        Hoe we de voedingscheck meten →
+                        Hoe de check meet →
                       </Link>
                     </p>
                   </div>
@@ -151,13 +151,13 @@ export default function VoedingNa40Page() {
                   <p className="mt-4 text-gray-700 leading-relaxed">
                     Herken je een patroon?{" "}
                     <Link href="/profiel/lage-energie" className={LINK}>
-                      Lees het profiel Lage Energie
+                      Lees het patroon Lage Energie
                     </Link>{" "}
-                    of start de{" "}
+                    of zie met de{" "}
                     <Link href="/intake" className={LINK}>
-                      gratis Leefstijlcheck
-                    </Link>
-                    .
+                      gratis check Wat mis je?
+                    </Link>{" "}
+                    welke voedingsstoffen je bord waarschijnlijk mist.
                   </p>
                 </section>
 
@@ -292,7 +292,7 @@ export default function VoedingNa40Page() {
                   <p className="mt-4 text-sm text-gray-600">
                     Of{" "}
                     <Link href="/intake" className={LINK}>
-                      doe de volledige Leefstijlcheck
+                      zie eerst wat je bord mist in de gratis check Wat mis je?
                     </Link>
                   </p>
                 </div>

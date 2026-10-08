@@ -422,7 +422,7 @@ De standaard ADH voor eiwit (0,8 gram per kilogram lichaamsgewicht) is vastgeste
       howItWorks: `Na 30 treedt anabole resistentie op: je spieren reageren minder sterk op dezelfde hoeveelheid eiwit. Waar een 20-jarige met 20 gram eiwit per maaltijd een volledige spierproteïnesynthese-respons krijgt, heeft een 50-jarige daar 35-40 gram voor nodig.
 
 Dit betekent dat het niet alleen gaat om hoeveel eiwit je per dag eet, maar ook om de verdeling over de dag. Drie maaltijden met elk 30-40 gram eiwit is effectiever dan één maaltijd met 90 gram en twee met 15 gram.`,
-      whyItMatters: `Eiwitinname is een van de eerste dingen die wij controleren via de Leefstijlcheck. Veel mensen 30+ eten een ontbijt van brood met jam (5g eiwit) en een lunch van een broodje kaas (12g eiwit) — ruim onder wat hun lichaam nodig heeft. Dit is een leefstijlaanpassing die meer impact heeft dan welk supplement dan ook. Quick win: begin de dag met een eiwitrijk ontbijt (eieren, kwark, noten).`,
+      whyItMatters: `Eiwitinname is een van de eerste dingen die wij controleren in de check 'Wat mis je?'. Veel mensen 30+ eten een ontbijt van brood met jam (5g eiwit) en een lunch van een broodje kaas (12g eiwit) — ruim onder wat hun lichaam nodig heeft. Dit is een leefstijlaanpassing die meer impact heeft dan welk supplement dan ook. Quick win: begin de dag met een eiwitrijk ontbijt (eieren, kwark, noten).`,
     },
     relatedSlugs: ['wei-eiwit', 'leucinedrempel', 'slaaphygiene', 'kalium-natrium-balans'],
     relatedComparisons: ['/beste/eiwitpoeder', '/beste/creatine'],

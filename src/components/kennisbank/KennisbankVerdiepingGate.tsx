@@ -37,7 +37,7 @@ export default function KennisbankVerdiepingGate({
             Hier gaat {termName} verder: hoe het werkt, waarom het ertoe doet voor jouw keuze, en
             de volledige wetenschappelijke referenties.
           </strong>{" "}
-          Je leest het na je gratis Leefstijlcheck, ingelogd met je account — zo koppelen we de
+          Je leest het na de gratis check &apos;Wat mis je?&apos;, ingelogd met je account — zo koppelen we de
           uitleg aan jouw situatie in plaats van aan iedereen tegelijk.
         </p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">

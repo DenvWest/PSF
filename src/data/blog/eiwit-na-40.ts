@@ -1,5 +1,4 @@
 import type { BlogArtikel } from "@/types/blog";
-import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { toRefs } from "@/lib/referentie-bewijs";
 
 export const eiwitNa40Data: BlogArtikel = {
@@ -58,7 +57,7 @@ export const eiwitNa40Data: BlogArtikel = {
     },
     {
       type: "tekst",
-      titel: INTAKE_CTA.blogTurboProfile,
+      titel: "Zie of je eiwit al op peil is",
       tekst:
         "In de [check](/intake) zie je of je eiwitinname over de dag al op peil is — handig als je niet weet waar je moet beginnen. Herken je veel trainen met weinig herstel? Bekijk ook het profiel [Overtrainer](/profiel/overtrainer).",
     },

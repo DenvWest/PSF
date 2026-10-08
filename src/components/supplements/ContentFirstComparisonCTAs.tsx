@@ -1,9 +1,9 @@
-import Link from "next/link";
+import { IntakeCtaLink } from "@/components/common/IntakeCtaLink";
+import { CHECK_CTA } from "@/lib/check-facts";
 import type { ReactNode } from "react";
 import Container from "@/components/layout/Container";
 import type { SupplementCategory } from "@/types/supplement";
 
-const LEEFSTIJLCHECK_CTA_BUTTON = "Doe de Leefstijlcheck — gratis →";
 
 const CHOOSER_LABEL: Record<SupplementCategory, string> = {
   magnesium: "magnesium",
@@ -45,26 +45,30 @@ export function ComparisonChooserIntro({
   );
 }
 
-export function ComparisonIntakeFallbackCta() {
+export function ComparisonIntakeFallbackCta({
+  category,
+}: {
+  category: SupplementCategory;
+}) {
   return (
     <Container>
       <section
-        aria-label="Leefstijlcheck"
+        aria-label="Wat mis je?"
         className="my-16 rounded-lg border border-stone-200 bg-stone-50 p-8"
       >
         <h2 className="font-display mb-2 text-lg text-stone-900">
           Niet zeker waar jij zou moeten beginnen?
         </h2>
         <p className="mb-6 text-stone-600">
-          De Leefstijlcheck geeft je in 3 min inzicht op 5 leefstijl-domeinen — zodat je weet waar
-          je aandacht het meeste oplevert.
+          {CHECK_CTA.subline} Zo weet je of je dit eerst met eten oplost, of dat een supplement
+          past.
         </p>
-        <Link
-          href="/intake"
+        <IntakeCtaLink
+          locatie={`vergelijking_fallback_${category}`}
           className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-ps-green px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover"
         >
-          {LEEFSTIJLCHECK_CTA_BUTTON}
-        </Link>
+          {CHECK_CTA.discoverButton}
+        </IntakeCtaLink>
       </section>
     </Container>
   );

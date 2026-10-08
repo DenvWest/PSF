@@ -2,7 +2,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
-import { INTAKE_CTA } from "@/lib/intake-product-copy";
+import { CHECK_CTA } from "@/lib/check-facts";
+import { IntakeCtaLink } from "@/components/common/IntakeCtaLink";
 import { PROFILE_PAGES } from "@/data/profiles";
 import { basicOpenGraph } from "@/lib/seo/open-graph";
 
@@ -29,15 +30,8 @@ export default function ProfielOverzichtPage() {
               Welk profiel herken jij?
             </h1>
             <p className="text-lg text-slate-600">
-              Vier veelvoorkomende patronen bij mannen 30+. Herken jezelf en ontdek wat je kunt doen —
-              of doe de{" "}
-              <Link
-                href="/intake"
-                className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
-              >
-                Leefstijlcheck
-              </Link>{" "}
-              als je niet weet welk profiel bij je past.
+              Vier veelvoorkomende patronen bij mannen 30+. Herken jezelf en ontdek wat je kunt
+              doen — geen label, geen diagnose.
             </p>
           </div>
 
@@ -56,18 +50,19 @@ export default function ProfielOverzichtPage() {
 
           <div className="mt-16 bg-emerald-50 rounded-2xl p-8 md:p-12 text-center">
             <h2 className="font-serif text-2xl md:text-3xl text-slate-900 mb-3">
-              Weet je niet welk profiel bij je past?
+              Wat mist jouw bord?
             </h2>
             <p className="text-slate-600 mb-2">
-              De Leefstijlcheck bepaalt het voor je in 3 minuten.
+              Het patroon herken je zelf. De check laat zien welke voedingsstoffen je waarschijnlijk
+              mist — één knop onder slaap, energie en herstel.
             </p>
             <IntakeCtaMicro className="mb-6 text-sm text-slate-500" />
-            <Link
-              href="/intake"
+            <IntakeCtaLink
+              locatie="profiel_overzicht"
               className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-xl transition-colors"
             >
-              {INTAKE_CTA.discoverOverviewShort}
-            </Link>
+              {CHECK_CTA.discoverButtonShort}
+            </IntakeCtaLink>
           </div>
         </div>
       </Container>

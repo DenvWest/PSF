@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { intakeCtaMatchProfile } from "@/lib/intake-product-copy";
+import { CHECK_CTA } from "@/lib/check-facts";
+import { lageEnergieProfile } from "@/data/profiles/lage-energie";
+import { IntakeCtaLink } from "@/components/common/IntakeCtaLink";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
@@ -114,7 +116,7 @@ const weekPlan = [
     week: "Week 4",
     title: "Meten",
     description:
-      "Doe de Leefstijlcheck opnieuw. Vergelijk je energiescore met 4 weken geleden. Waar is verbetering? Waar niet? Op basis daarvan stel je je aanpak bij.",
+      "Geef je energie elke middag een cijfer van 1 tot 10 en leg week 4 naast week 1. Waar is verbetering? Waar niet? Op basis daarvan stel je je aanpak bij.",
   },
 ];
 
@@ -164,12 +166,12 @@ export default function LageEnergiePage() {
                 &lsquo;normaal bij je leeftijd&rsquo;.
               </p>
               <div className="mt-8">
-                <Link
-                  href="/intake"
+                <IntakeCtaLink
+                  locatie="profiel_hero_lage-energie"
                   className="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-xl transition-colors text-base"
                 >
-                  Ontdek waar jouw energie lekt →
-                </Link>
+                  Zie wat je bord mist →
+                </IntakeCtaLink>
               </div>
             </section>
 
@@ -431,19 +433,18 @@ export default function LageEnergiePage() {
             <section className="py-16">
               <div className="bg-emerald-50 rounded-2xl p-8 md:p-12 text-center">
                 <h2 className="font-[var(--font-heading)] text-2xl md:text-3xl text-slate-900">
-                  Ontdek Waar Jouw Energie Lekt
+                  {lageEnergieProfile.guidanceCta.title}
                 </h2>
                 <p className="text-slate-600 mt-4 leading-relaxed max-w-xl mx-auto">
-                  In 3 minuten weet je waar je staat op 6 gezondheidsdomeinen — en krijg je een
-                  persoonlijk leefstijloverzicht met concrete stappen.
+                  {lageEnergieProfile.guidanceCta.text}
                 </p>
                 <IntakeCtaMicro className="mt-4 max-w-xl mx-auto text-sm text-slate-500" />
-                <Link
-                  href="/intake"
+                <IntakeCtaLink
+                  locatie="profiel_afsluiter_lage-energie"
                   className="inline-flex items-center mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl transition-colors text-base"
                 >
-                  {intakeCtaMatchProfile("Lage Energie")}
-                </Link>
+                  {CHECK_CTA.discoverButton}
+                </IntakeCtaLink>
               </div>
             </section>
 
@@ -498,7 +499,7 @@ export default function LageEnergiePage() {
                     href="/profiel/stressdrager"
                     className="text-emerald-600 hover:underline font-medium"
                   >
-                    Ben jij een Stressdrager? →
+                    Lees het patroon Stressdrager →
                   </Link>
                 </div>
               </div>

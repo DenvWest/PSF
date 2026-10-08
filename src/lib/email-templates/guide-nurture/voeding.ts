@@ -1,4 +1,5 @@
 import { absoluteUrl } from "@/lib/public-site-url";
+import { CHECK_CTA } from "@/lib/check-facts";
 import { ctaButton, emailWrapper } from "@/lib/email-templates/guide-nurture/shared";
 import type { GuideNurtureDay, GuideNurtureTemplate } from "@/lib/email-templates/guide-nurture/types";
 
@@ -59,10 +60,7 @@ ${ctaButton(absoluteUrl("/voeding-na-40"), "Lees het complete voedingsprotocol �
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   In 1 minuut schat je je inname van gisteren. Geen calorie-app nodig — wel een eerlijk beeld voordat je supplementeert.
 </p>
-${ctaButton(absoluteUrl("/intake/voeding"), "Doe de snelle voedingscheck →")}
-<p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
-  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">Doe de volledige Leefstijlcheck</a> als je alle pijlers wilt vergelijken.
-</p>`,
+${ctaButton(absoluteUrl("/intake"), CHECK_CTA.discoverButton)}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),
@@ -104,7 +102,7 @@ ${ctaButton(absoluteUrl("/supplementen/omega-3"), "Lees de omega-3 gids →")}
 </p>
 ${ctaButton(absoluteUrl("/intake/beweging"), "Doe de beweegcheck (1 min) →")}
 <p style="margin-top: 12px;">
-  <a href="${absoluteUrl("/intake/voeding")}" style="color: #3C7A56; font-weight: 600; font-size: 15px; text-decoration: underline;">
+  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; font-weight: 600; font-size: 15px; text-decoration: underline;">
     Log opnieuw je voeding →
   </a>
 </p>`,
@@ -121,9 +119,9 @@ ${ctaButton(absoluteUrl("/intake/beweging"), "Doe de beweegcheck (1 min) →")}
   Tijd voor een nieuwe meting
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Na een maand is het zinvol om opnieuw te kijken: voeding, slaap, stress en beweging hangen samen. De Leefstijlcheck geeft je een actueel beeld in 3 minuten.
+  Na een maand is het zinvol om opnieuw te kijken: wat je eet, verschuift vaak ongemerkt. De check 'Wat mis je?' laat zien welke voedingsstoffen je bord waarschijnlijk mist — zonder diagnose, wel met wat je eraan kunt doen.
 </p>
-${ctaButton(absoluteUrl("/intake"), "Doe de gratis Leefstijlcheck →")}`,
+${ctaButton(absoluteUrl("/intake"), CHECK_CTA.discoverButton)}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),

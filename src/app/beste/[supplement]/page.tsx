@@ -268,7 +268,7 @@ export default async function Page({ params }: PageProps) {
           </section>
         )}
 
-        {data.showIntakeFallbackCta !== false && <ComparisonIntakeFallbackCta />}
+        {data.showIntakeFallbackCta !== false && <ComparisonIntakeFallbackCta category={data.category} />}
 
         <Container>
           <MedicalDisclaimer />

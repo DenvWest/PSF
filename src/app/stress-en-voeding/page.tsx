@@ -550,12 +550,11 @@ export default function StressVerminderenManPage() {
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
-                      Herken je het Stressdrager-profiel? Als chronische stress je primaire patroon
-                      is, past dit profiel bij jou. Met concrete stappen en supplementadvies
-                      afgestemd op jouw situatie.
+                      Herken je het patroon Stressdrager? Is aanhoudende stress wat je het meest
+                      merkt? De pagina beschrijft wat erachter kan zitten, met concrete stappen.
                     </p>
                     <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
-                      Lees meer over het Stressdrager-profiel →
+                      Lees het patroon Stressdrager →
                     </span>
                   </Link>
                 </div>

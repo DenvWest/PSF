@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { intakeCtaMatchProfile } from "@/lib/intake-product-copy";
+import { CHECK_CTA } from "@/lib/check-facts";
+import { IntakeCtaLink } from "@/components/common/IntakeCtaLink";
 import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
@@ -161,12 +162,12 @@ export default function StressdragerPage() {
               </h1>
               <p className="mt-5 text-xl text-slate-600 max-w-2xl leading-relaxed">{profile.hero.subline}</p>
               <div className="mt-8">
-                <Link
-                  href="/intake"
+                <IntakeCtaLink
+                  locatie="profiel_hero_stressdrager"
                   className="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-xl transition-colors text-base"
                 >
-                  Ontdek hoe stress jouw lichaam beïnvloedt →
-                </Link>
+                  Zie wat je bord mist →
+                </IntakeCtaLink>
               </div>
             </section>
 
@@ -333,12 +334,12 @@ export default function StressdragerPage() {
                   {profile.guidanceCta.text}
                 </p>
                 <IntakeCtaMicro className="mt-4 max-w-xl mx-auto text-sm text-slate-500" />
-                <Link
-                  href="/intake"
+                <IntakeCtaLink
+                  locatie="profiel_afsluiter_stressdrager"
                   className="inline-flex items-center mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl transition-colors text-base"
                 >
-                  {intakeCtaMatchProfile("Stressdrager")}
-                </Link>
+                  {CHECK_CTA.discoverButton}
+                </IntakeCtaLink>
               </div>
             </section>
 

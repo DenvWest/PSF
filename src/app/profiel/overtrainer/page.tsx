@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { intakeCtaMatchProfile } from "@/lib/intake-product-copy";
+import { CHECK_CTA } from "@/lib/check-facts";
+import { IntakeCtaLink } from "@/components/common/IntakeCtaLink";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
@@ -67,7 +68,7 @@ const faqItems = [
   },
   {
     q: "Hoe snel kan ik verschil verwachten?",
-    a: "Dat verschilt: trainingsgeschiedenis, werkstress en slapen sturen elk mee. Sommige mannen merken binnen enkele weken verschil; anderen hebben langer stabiele grenzen nodig. Houd kleine eigen metingen bij en herhaal de Leefstijlcheck voor het grotere plaatje.",
+    a: "Dat verschilt: trainingsgeschiedenis, werkstress en slapen sturen elk mee. Sommige mannen merken binnen enkele weken verschil; anderen hebben langer stabiele grenzen nodig. Houd kleine eigen metingen bij — een weeklog zegt meer dan één losse meting.",
   },
   {
     q: "Met welk supplement begin ik?",
@@ -229,12 +230,12 @@ export default function OvertrainerPage() {
                 .
               </p>
               <div className="mt-8">
-                <Link
-                  href="/intake"
+                <IntakeCtaLink
+                  locatie="profiel_hero_overtrainer"
                   className="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-xl transition-colors text-base"
                 >
-                  Check je balans tussen trainen en herstel →
-                </Link>
+                  Zie wat je bord mist →
+                </IntakeCtaLink>
               </div>
             </section>
 
@@ -396,12 +397,12 @@ export default function OvertrainerPage() {
                   {profile.guidanceCta.text}
                 </p>
                 <IntakeCtaMicro className="mt-4 max-w-xl mx-auto text-sm text-slate-500" />
-                <Link
-                  href="/intake"
+                <IntakeCtaLink
+                  locatie="profiel_afsluiter_overtrainer"
                   className="inline-flex items-center mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl transition-colors text-base"
                 >
-                  {intakeCtaMatchProfile("Overtrainer")}
-                </Link>
+                  {CHECK_CTA.discoverButton}
+                </IntakeCtaLink>
               </div>
             </section>
 

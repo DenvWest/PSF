@@ -163,8 +163,8 @@ export const onrustigeSlaper: ProfilePageData = {
   ],
 
   guidanceCta: {
-    title: "Hoe staat het met jouw slaap?",
-    text: "In 3 minuten weet je welke supplementen bij jouw slaappatroon passen — en wat je stressniveau met je slaap doet.",
+    title: "Wat doet je bord met je slaap?",
+    text: "Dit patroon herken je zelf — daar is geen test voor nodig. De check laat zien welke voedingsstoffen je waarschijnlijk mist, zodat je weet of er ook op je bord winst ligt.",
   },
 
   relatedPillar: null,
@@ -176,8 +176,8 @@ export const onrustigeSlaper: ProfilePageData = {
     },
     {
       href: "/intake",
-      turboSnippet: "Hoe staat het met jouw slaap? Check het in 3 minuten →",
-      linkText: "Doe de gratis check",
+      turboSnippet: "Wat mist je bord? Zie het in de gratis check →",
+      linkText: "Wat mis je? Doe de gratis check",
     },
   ],
 

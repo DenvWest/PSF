@@ -173,8 +173,8 @@ export const lageEnergieProfile: ProfilePageData = {
   ],
 
   guidanceCta: {
-    title: "Ontdek waar jouw energie weglekt",
-    text: "In 3 minuten weet je welke supplementen bij jouw situatie passen en welke bouwstenen je mist.",
+    title: "Lekt je energie via je bord?",
+    text: "Dit patroon herken je zelf — daar is geen test voor nodig. De check laat zien welke voedingsstoffen je waarschijnlijk mist, en of je dat eerst met eten oplost of met een supplement.",
   },
 
   relatedPillar: {
@@ -216,8 +216,8 @@ export const lageEnergieProfile: ProfilePageData = {
     },
     {
       href: "/intake",
-      turboSnippet: "Waar lekt jouw energie weg? Ontdek het gratis →",
-      linkText: "Doe de gratis check",
+      turboSnippet: "Wat mist je bord? Zie het in de gratis check →",
+      linkText: "Wat mis je? Doe de gratis check",
     },
   ],
 

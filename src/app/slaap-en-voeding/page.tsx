@@ -300,9 +300,9 @@ export default function SlaapVerbeterenNa40Page() {
                   &apos;s avonds wordt.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Word je vroeg wakker met piekeren? Dat herkennen veel mensen. Zie ook het profiel
-                  Onrustige Slaper voor stappenplan en supplementen die je met je situatie wilt
-                  matchen — geen diagnose.
+                  Word je vroeg wakker met piekeren? Dat herkennen veel mensen. Het patroon
+                  Onrustige Slaper beschrijft wat erachter kan zitten, met een stappenplan — geen
+                  diagnose.
                 </p>
 
                 <div className="mt-8 p-6 bg-amber-50 border border-amber-200 rounded-xl">
@@ -310,13 +310,14 @@ export default function SlaapVerbeterenNa40Page() {
                     Wakker om 3 uur, niet terug in slaap? Je bent niet alleen.
                   </p>
                   <p className="mt-2 text-gray-600">
-                    Herken je dit patroon? Misschien ben je een Onrustige Slaper.
+                    Wat er bij dit patroon speelt en wat je zelf kunt doen, lees je bij Onrustige
+                    Slaper — een herkenningspagina, geen test.
                   </p>
                   <Link
                     href="/profiel/onrustige-slaper"
                     className="mt-3 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
-                    Ben jij een Onrustige Slaper? →
+                    Lees het patroon Onrustige Slaper →
                   </Link>
                 </div>
               </section>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { IntakeCtaLink } from "@/components/common/IntakeCtaLink";
 import Container from "@/components/layout/Container";
 import { QUESTIONS } from "@/data/intake-questions";
 import {
@@ -396,12 +397,12 @@ export default function OnderbouwingPage() {
             evalueer je voortgang periodiek.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              href="/intake"
+            <IntakeCtaLink
+              locatie="onderbouwing_leefstijl"
               className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100"
             >
-              Start de Leefstijlcheck
-            </Link>
+              Wat mis je? Doe de gratis check
+            </IntakeCtaLink>
             <Link
               href="/methodologie"
               className="rounded-lg border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-800"

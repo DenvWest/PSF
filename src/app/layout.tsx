@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | PerfectSupplement",
   },
   description:
-    "Onafhankelijk leefstijladvies voor mannen 30+. Gratis Leefstijlcheck, onderbouwde gidsen en transparante supplementvergelijking — leefstijl eerst.",
+    "Onafhankelijk leefstijladvies voor mannen 30+. Gratis check 'Wat mis je?', onderbouwde gidsen en transparante supplementvergelijking — leefstijl eerst.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",

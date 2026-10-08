@@ -1,7 +1,7 @@
 # Prompt voor een volgende sessie: oude Leefstijlcheck-copy en profielen afstemmen op "Wat mis je?"
 
 **Datum:** 8 oktober 2026
-**Status:** Open. Dennis: in een eigen sessie oppakken, als nieuwe PR (gesprek over PR #181 en #186).
+**Status:** Uitgevoerd 8 okt 2026 (branch `feat/wat-mis-je-copy`). Profielbesluit: `BESLUIT_PROFIELEN_HERKENNING_2026-10.md` — daar ook wat nog open staat.
 **Lees eerst:** `CORRECTIE_VOEDINGCHECK_NAAMGEVING_2026-09.md` (de check heet "Wat mis je?", niet "Voedingcheck"; één ingang: `/intake`), `BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md` §3.9 (de brede check staat op `/intake/leefstijl` en wordt niet meer aangeboden), `ARCHITECTUUR_ECOSYSTEEM_CONTENTGRAAF_2026-09.md` (nooit twee checks als gelijkwaardige CTA), `docs/core/WRITING_VOICE.md`, en `grep -rli "profiel" docs/plan/` voor eerdere besluiten over de profielen.
 
 ## Wat al gedaan is

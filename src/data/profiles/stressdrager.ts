@@ -139,9 +139,9 @@ export const stressdragerProfile: ProfilePageData = {
         {
           title: "Week 3–4: ondersteuning en herhaalmeting",
           description:
-            "Als de basis er staat, kun je gericht kijken naar supplementen die passen bij dit profiel (zie hieronder). Doe de Leefstijlcheck opnieuw om je stressscore te vergelijken.",
+            "Als de basis er staat, kun je gericht kijken naar supplementen die passen bij dit profiel (zie hieronder). Vergelijk daarna met week 1: hoe vaak word je nog klaarwakker, en hoe snel kom je na werk tot rust?",
           actionable:
-            "Zet in week 4 een herinnering om de Leefstijlcheck opnieuw te doen — zelfde tijdstip, rustige omgeving.",
+            "Zet in week 4 een herinnering om je lijstje naast dat van week 1 te leggen — zelfde tijdstip, rustige omgeving.",
           timeframe: "Week 3–4",
         },
       ],
@@ -170,8 +170,8 @@ export const stressdragerProfile: ProfilePageData = {
   ],
 
   guidanceCta: {
-    title: "Ontdek jouw volledige profiel in 3 minuten",
-    text: "De Leefstijlcheck koppelt stress aan slaap, energie en herstel — zodat je weet waar je het snelst winst behaalt.",
+    title: "Wat mist je bord als stress de boventoon voert?",
+    text: "Dit patroon herken je zelf — daar is geen test voor nodig. Onder druk schiet eten er vaak bij in. De check laat zien welke voedingsstoffen je waarschijnlijk mist.",
   },
 
   relatedPillar: {
@@ -202,8 +202,8 @@ export const stressdragerProfile: ProfilePageData = {
     },
     {
       href: "/intake",
-      turboSnippet: "Ontdek jouw volledige profiel in 3 minuten — met scores op alle domeinen.",
-      linkText: "Naar de Leefstijlcheck",
+      turboSnippet: "Wat mist je bord als stress de boventoon voert? Zie het in de gratis check.",
+      linkText: "Wat mis je? Doe de gratis check",
     },
   ],
 
