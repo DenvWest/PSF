@@ -258,27 +258,13 @@ export default function OnderbouwingVoedingPage() {
           </div>
 
           <div className="mt-10 max-w-4xl">
-            <h3 className={subTitleClass}>&ldquo;≈&rdquo;, 0 en &ldquo;spoor&rdquo;</h3>
-            <ul className="mt-3 list-disc space-y-3 pl-5 text-base leading-relaxed text-stone-600">
-              <li>
-                <strong className="font-semibold text-stone-800">≈ is een benadering.</strong>{" "}
-                Heeft NEVO geen eigen record, bijvoorbeeld voor diepvriesbroccoli, dan gebruiken
-                we een vergelijkbaar record (gekookte broccoli) en zetten er ≈ voor. We doen dat
-                alleen waar de samenstelling echt vergelijkbaar is, dus niet bij producten die
-                per merk anders verrijkt worden, zoals plantendranken en vleesvervangers. Een
-                benadering telt mee in je dag, maar een vinkje voor &ldquo;norm gehaald&rdquo;
-                krijg je alleen op echte brongetallen.
-              </li>
-              <li>
-                <strong className="font-semibold text-stone-800">0 en spoor zijn gemeten.</strong>{" "}
-                Meldt NEVO een 0 of &ldquo;spoor&rdquo; (een hoeveelheid te klein om te meten),
-                dan tonen we dat zo. Een spoor tellen we niet op.
-              </li>
-              <li>
-                <strong className="font-semibold text-stone-800">Een streepje is onbekend.</strong>{" "}
-                Dan is de stof niet gemeten. Dat betekent niet dat er niets in zit.
-              </li>
-            </ul>
+            <h3 className={subTitleClass}>Wat &ldquo;≈&rdquo; en een streepje betekenen</h3>
+            <p className={bodyClass}>
+              Staat er ≈ bij een getal, dan is het een schatting: NEVO heeft dat product niet,
+              dus rekenen we met een vergelijkbaar product (diepvriesbroccoli met gekookte
+              broccoli). Een vinkje voor je norm krijg je alleen op echte meetwaarden. Een
+              streepje betekent dat de stof niet gemeten is, niet dat er niets in zit.
+            </p>
           </div>
         </section>
 
