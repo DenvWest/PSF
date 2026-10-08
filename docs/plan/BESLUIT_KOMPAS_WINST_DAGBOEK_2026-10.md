@@ -1,0 +1,31 @@
+# Besluit: "Grootste winst" in de contextkolom krijgt een dagboekregel
+
+**Datum:** 8 oktober 2026
+**Status:** Besloten (Dennis, 8 okt: "akkoord") en gebouwd, stap 1 en 2. Stap 3 (teaser) hoort bij de premium-plak.
+**Bouwt voort op:** `BESLUIT_PATROON_PREMIUM_EN_WEEKMAIL_2026-10.md` §2 (wat gratis en premium is), `BESLUIT_GRATIS_NU_PREMIUM_AANBOD_2026-10.md`, `ROADMAP_LEEFSTIJLCHECK_NAAR_DASHBOARD_VOEDING.md` §4/§10.3 (invariant: nooit "Grootste winst" op een laag die dat niet zei)
+**Raakt:** `src/lib/kompas-winst-dagboek.ts`, `src/components/dashboard/kompas/KompasDagboekRegel.tsx`, `KompasContextSpine.tsx`
+
+## Aanleiding
+
+De winst-laag in "Context bij vandaag" komt uit de check (hoe vaak je iets eet) en wist niets van wat iemand daarna in het dagboek invulde. Naast "je voedinglog is 53 dagen oud" leest een winst op die oude basis als stilstand.
+
+## Besloten
+
+1. **"Grootste winst" blijft de uitkomst van de check.** De winst-laag wijzigt niet door het dagboek.
+2. **Een tweede regel met een eigen label: "Uit je dagboek · 7 dagen"**, binnen de winstkaart van voeding. Per stof: "minstens N% van je norm (norm)". De norm is de persoonlijke norm uit Je doelen (`useKernstofNormen`).
+3. **Drempel: 5 van de laatste 7 dagen** met iets ingevuld. Daaronder geen stofuitspraak, alleen "N van 7 dagen ingevuld" met een link naar het dagboek.
+4. **Hoogstens twee stoffen**, laagste eerst, alleen stoffen die een dagboek kan aantonen (`NIET_BEWIJSBAAR`: geen zink, geen vitamine D) en alleen stoffen met minstens één bron (onbekend is geen nul). Een dagboek meet een ondergrens, dus "minstens"; een benadering krijgt ≈.
+5. **"Op of boven je norm"** alleen als elke meetbare stof `gedekt` is (zonder benaderingen).
+6. **Gratis.** Eigen getallen over 7 dagen zijn nooit gegated.
+
+## Afgewezen
+
+- **De winst-laag laten meebewegen met het dagboek:** de kolom zou het middenscherm (check-uitslag) tegenspreken en breekt de invariant uit de roadmap. Eén bron per label.
+- **Een weekscore of totaalpercentage:** een tweede score is verboden.
+- **Het verband per maaltijd ("je ontbijt draagt je magnesium niet") in de kolom:** dat is premium (§2 van het patroon-besluit). Stap 3: een teaser bij de premium-plak.
+
+## Meetpunt
+
+- GA4 `dashboard_kompas_context_view` {zone: dagboek, staat: te_weinig|stoffen|op_norm}: hoe vaak de regel in beeld komt en in welke staat.
+- GA4 + Clarity `dashboard_kompas_context_click` {zone: dagboek, staat}: doorklik naar Je patroon (bij genoeg dagen) of het dagboek (te weinig dagen).
+- Effect: aandeel `te_weinig` dat daarna het dagboek aanvult (`dagboek`-klik, dan meer dagen ingevuld).
