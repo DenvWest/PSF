@@ -1,7 +1,7 @@
 # Besluit: gratis nu, premium als volgende stap (opbouw per product, premiumactie, meetpunten)
 
 **Datum:** 8 oktober 2026
-**Status:** Besloten (Dennis, 8 okt: §1–3 akkoord; §4 akkoord in principe, de prijs mag nog bijgesteld worden). Plak 1 gebouwd (#186 plaatsing, #187 inhoud van het blok). **De betaalprovider is nog open** (valt bij plak 6, zie §4).
+**Status:** Besloten (Dennis, 8 okt: §1–3 akkoord; §4 akkoord, de prijs mag nog bijgesteld worden; betaalprovider **Stripe**). Plak 1 gebouwd (#186 plaatsing, #187 inhoud van het blok).
 **Antwoord op:** `PROMPT_GRATIS_NU_PREMIUM_AANBOD_2026-10.md`
 **Bouwt voort op:** `BESLUIT_PATROON_PREMIUM_EN_WEEKMAIL_2026-10.md` (wat gratis en premium is: niet opnieuw besproken), `BESLUIT_GIDS_SLUGS_EN_VOEDING_2026-10.md`, `CORRECTIE_VOEDINGCHECK_NAAMGEVING_2026-09.md` (de check heet "Wat mis je?"), `docs/core/STEPPED_CARE_MODEL.md`, `ARCHITECTUUR_ECOSYSTEEM_CONTENTGRAAF_2026-09.md` (nooit twee checks als gelijkwaardige primaire CTA)
 
@@ -51,7 +51,7 @@ Waarom mensen het dagelijks willen doen: niet om het weekgetal, maar omdat het d
   - **Waarom 30 dagen:** het verband per maaltijd en de supplementuitgang vragen 30 dagen data. Aan het einde van de proef staat iemands *eerste eigen 30-dagenpatroon* er. Het betaalmoment valt dan op het moment van de grootste waarde, niet op dag 1.
   - **Na de proef wordt niets weggenomen wat iemand zelf invoerde.** Je ziet weer 7 dagen, met een teaser die zegt wat er in je 30-dagenpatroon klaarstaat (aantal bevindingen, geen inhoud).
 - **Prijs (startpunt, bij te stellen op de prijsvraag van plak 6):** **€49 per jaar** (sluit aan op "Plus €49" uit de juli-lijn) of **€5,95 per maand**. Wie tijdens de proef kiest, betaalt het eerste jaar **€39**. De natuurlijke deadline is het einde van de eigen proef; geen afteltimers.
-- **Betalen:** er is nog geen betaalsysteem (`entitlement-access.ts`, `DARK_LAUNCH`). Mollie of Stripe; de keuze valt bij plak 6 (zie "Open"). iDEAL gaat op in Wero; dat is een betaalmethode, geen provider, en beide providers ondersteunen het. **Tot die tijd** eindigt de proef in een prijsvraag via de bestaande route `/api/account/waitlist` (`premium.price_indicated`, `premium.waitlist_joined`). Zo valideren we de prijs voordat we betaling bouwen.
+- **Betalen: Stripe** (Dennis, 8 okt). Er is nog geen betaalsysteem (`entitlement-access.ts`, `DARK_LAUNCH`). Stripe Billing levert een proef zonder kaart, een klantportaal (opzeggen en wisselen) en facturen standaard; Mollie zou die zelf bouwen vragen (abonnement via een eerste betaling met SEPA-machtiging). iDEAL gaat op in Wero; dat is een betaalmethode, geen provider. **Tot de bouw van plak 6** eindigt de proef in een prijsvraag via de bestaande route `/api/account/waitlist` (`premium.price_indicated`, `premium.waitlist_joined`). Zo valideren we de prijs voordat we betaling bouwen.
 
 ## 5. Meetpunten per stap
 
@@ -86,5 +86,5 @@ Waarom mensen het dagelijks willen doen: niet om het weekgetal, maar omdat het d
 
 ## Open
 
-- **Betaalprovider, Mollie of Stripe (plak 6).** De vraag is welke provider abonnementen het best ondersteunt, niet welke betaalmethode. Wero (de opvolger van iDEAL) draait via beide providers. De eerste neiging is Stripe: proefperiodes zonder kaart, een klantportaal (opzeggen en wisselen) en facturen zitten standaard in Stripe Billing. Daar staat een opslag op het abonnementsvolume tegenover. Bij Mollie loopt een abonnement via een eerste betaling die een SEPA-machtiging afgeeft; de proef, het portaal en de facturen bouwen we dan zelf. Vóór de keuze de actuele tarieven voor iDEAL/Wero, SEPA en Billing naast elkaar zetten.
-- **Een klachtenanalyse van de concurrenten** (wens van Dennis, 8 okt): wat gebruikers van Mijn Eetmeter, Cronometer en MyFitnessPal missen of storend vinden. Laat zien waar het gratis deel al beter is en waar premium op aansluit. Dit is input voor de copy van plak 2 en 5.
+- **Stripe inrichten (plak 6):** account, btw en voorwaarden (Dennis), en vóór de bouw de actuele tarieven voor iDEAL/Wero, SEPA en Billing vastleggen. Afgewezen: Mollie, omdat de proef zonder kaart, het portaal en de facturen dan eigen bouw worden.
+- **Een klachtenanalyse van de concurrenten** (wens van Dennis, 8 okt; in een eigen sessie): zie `PROMPT_CONCURRENTIE_KLACHTEN_2026-10.md`.
