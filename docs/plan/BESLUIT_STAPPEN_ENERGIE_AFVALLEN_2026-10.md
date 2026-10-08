@@ -66,3 +66,17 @@ Dit is plak 6 ("de keten sluiten") en plak 8 (ontkoppeling) uit `BESLUIT_VOEDING
 | C | Dagstappen per doel (`NUT_DOEL`): selectie uit de bestaande bibliotheek, geen nieuwe adviesmotor | Eerst copy en bronnen per doel laten toetsen (`WRITING_VOICE.md`); "afvallen zonder spierverlies" = bestaande eiwit-per-maaltijd-stap. Geen kcal-plan per doel |
 
 Gratis: dagstap, match met het dagboek van vandaag en gisteren, feiten van gisteren. Premium: verband over 30–90 dagen en doelspecifieke reeks.
+
+## 8. Dagkaart, handleiding en chat (besloten 8 okt, Dennis)
+
+Volgt op plak B (PR #200). De eiwit-kaart in "Doorlopend vandaag" was niet mooi; vervangen door:
+
+- **Dagkaart boven de dagblokken** ("Je dag in stoffen") met chips voor eiwit, omega-3, magnesium, vitamine D en zink. Eiwit toont per maaltijd (ontbijt/lunch/avondeten), de andere stoffen het dagaandeel van je norm. Vinkje alleen als het dagboek het bewijst; leeg is neutraal. Alleen kernstoffen met een norm: de informatieve gevolgde stoffen (vezels, natrium, enz.) hebben geen ✓-regel en staan er niet in.
+- **"Bekijk je plan" wordt "Handleiding"** (voedingshandleiding), in de kaartkop. De Agenda-dagweergave heeft geen context-paneel; het zijpaneel `AgendaContextSidebar` bestaat alleen in de weekweergave.
+- **Weg uit de Agenda:** de "Je patroon"-knop, de "Naar je dagboek"-link en het label "Voeding · Basis" bij de plan-stap. Dagboek en Patroon staan in de onderbalk.
+- **Notulen: later, samen met de chat.** Notulen van een gesprek betekent het gesprek bewaren; dat botst met het voorstel in `CONCEPT_V1_V6_LLM_CHAT_2026-10.md` §4 ("gesprek niet bewaren") en vraagt eerst V1–V3. Zonder gesprek kan een printbaar plan-overzicht later apart.
+- **Chatbot-optie vervangt "Handleiding" pas als `NUTRITION_AI_CHAT_ENABLED` aan staat.** Geen "Binnenkort"-knop zonder functie.
+- **Afgewezen voor nu:** een stoffenkiezer op basis van de informatieve gevolgde stoffen (geen norm, dus geen ✓).
+- **Idee voor later, niet besloten:** klikken op een uur in de Agenda opent menu, product of supplement bestellen. Raakt `BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md` §3.7: een echte bestelfunctie is daar bewust niet gebouwd (affiliate is uitgaand). Eerst een eigen besluit.
+- **Meetpunten:** `agenda_dagkaart_shown`, `agenda_dagkaart_stof_gekozen`, `dashboard_agenda_plan_click` (surface `agenda_dagkaart`).
+
