@@ -175,7 +175,7 @@ export const stressdragerProfile: ProfilePageData = {
   },
 
   relatedPillar: {
-    href: "/stress-verminderen-na-40",
+    href: "/stress-en-voeding",
     turboSnippet:
       "Stress na 30: herkenning, slaap, energie en een concreet weekplan — zonder medisch jargon als diagnose.",
   },
@@ -187,7 +187,7 @@ export const stressdragerProfile: ProfilePageData = {
         "Cortisol en testosteron na 30: stress-as zonder mythes — brug tussen stress- en hormooncluster.",
     },
     {
-      href: "/testosteron-na-40",
+      href: "/testosteron-en-voeding",
       turboSnippet:
         "Testosteron na 30 in voorzichtige taal — leefstijl eerst, geen zelf-diagnose via internet.",
     },

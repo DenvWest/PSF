@@ -37,5 +37,5 @@ export const herstelGuide: GuideOptInData = {
     successMessage: "Check je inbox — de Herstelgids is onderweg.",
   },
   pdfPath: "/downloads/herstelgids-perfectsupplement.pdf",
-  pillarHref: "/herstel-verbeteren-na-40",
+  pillarHref: "/herstel-en-voeding",
 };

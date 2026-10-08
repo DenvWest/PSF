@@ -51,6 +51,15 @@ class BouwRij(unittest.TestCase):
             self.assertIn(kolom, uit)
             self.assertIsNone(uit[kolom])
 
+    def test_natrium_boven_puur_zout_wordt_null(self):
+        self.assertIsNone(rij(nutriment("sodium", 45.0, "g"))["sodium_mg"])
+        self.assertEqual(rij(nutriment("sodium", 39.3, "g"))["sodium_mg"], 39300)
+
+    def test_niet_eindige_waarde_wordt_overgeslagen(self):
+        uit = rij(nutriment("sodium", float("nan"), "g"), nutriment("salt", float("inf"), "g"))
+        self.assertIsNone(uit["sodium_mg"])
+        self.assertIsNone(uit["salt_g"])
+
     def test_ontbrekende_stof_blijft_null(self):
         self.assertIsNone(rij()["sodium_mg"])
 

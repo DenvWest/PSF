@@ -9,7 +9,7 @@ export const eiwitNa40Data: BlogArtikel = {
   coverImage: "/images/blog/eiwit-na-40.jpg",
   coverImageAlt: "Gekookte eieren op een bord als praktische eiwitbron na 30",
   heroIntro:
-    "Je eet \"gezond genoeg\", maar je spieren voelen minder responsief. Na je 30e is dat geen verbeelding: je lichaam heeft meer [eiwit](/kennisbank/eiwitbehoefte-na-40) nodig per maaltijd — en de meeste Nederlanders halen de ondergrens niet. Hier lees je hoeveel, wanneer en waarom, gekoppeld aan [herstel na 30](/herstel-verbeteren-na-40) en [voeding na 30](/voeding-na-40) — zonder bodybuilding-hype.",
+    "Je eet \"gezond genoeg\", maar je spieren voelen minder responsief. Na je 30e is dat geen verbeelding: je lichaam heeft meer [eiwit](/kennisbank/eiwitbehoefte-na-40) nodig per maaltijd — en de meeste Nederlanders halen de ondergrens niet. Hier lees je hoeveel, wanneer en waarom, gekoppeld aan [herstel na 30](/herstel-en-voeding) en [voeding na 30](/voeding-na-40) — zonder bodybuilding-hype.",
   leestijd: "9 min",
   gepubliceerdOp: "2026-05-23",
   laatstBijgewerktOp: "2026-05-23",
@@ -48,7 +48,7 @@ export const eiwitNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Eiwit en herstel — wat wél en niet geldt",
       tekst:
-        "Eiwit is bouwmateriaal voor spieren en ondersteunt herstel na inspanning. Het is geen hormoonvervanger: herstel hangt samen met slaap, stress en leeftijd. Wel: zonder voldoende eiwit merk je krachttraining en herstel minder, ongeacht supplementen. Combineer dit artikel met [herstel verbeteren na 30](/herstel-verbeteren-na-40) voor slaap, rustdagen en eventueel creatine als tweede lijn.",
+        "Eiwit is bouwmateriaal voor spieren en ondersteunt herstel na inspanning. Het is geen hormoonvervanger: herstel hangt samen met slaap, stress en leeftijd. Wel: zonder voldoende eiwit merk je krachttraining en herstel minder, ongeacht supplementen. Combineer dit artikel met [herstel verbeteren na 30](/herstel-en-voeding) voor slaap, rustdagen en eventueel creatine als tweede lijn.",
     },
     {
       type: "tekst",
@@ -73,7 +73,7 @@ export const eiwitNa40Data: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: herstel verbeteren na 30",
-    href: "/herstel-verbeteren-na-40",
+    href: "/herstel-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Eiwitpoeder supplementen vergelijken",

@@ -184,8 +184,8 @@ function isKnownRoute(rawHref) {
 
 const LINK_PREFIXES =
   "blog|kennisbank|beste|supplementen|gids|gidsen|profiel|inzichten|intake|dashboard|" +
-  "voeding-na-40|beweging-na-40|slaap-verbeteren-na-40|stress-verminderen-na-40|" +
-  "energie-na-40|herstel-verbeteren-na-40|testosteron-na-40|overgang|onderbouwing|" +
+  "voeding-na-40|beweging-en-voeding|slaap-en-voeding|stress-en-voeding|" +
+  "energie-en-voeding|herstel-en-voeding|testosteron-en-voeding|overgang-en-voeding|onderbouwing|" +
   "methodologie|ps-score|rapport|product|account";
 
 // Geen '[' / ']' als grensteken: markdown-labels zoals "[/beste](/beste/x)"

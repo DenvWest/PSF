@@ -53,7 +53,7 @@ export const creatineVoorVrouwenData: BlogArtikel = {
       type: "tekst",
       titel: "De overgang: waar creatine past en waar niet",
       tekst:
-        "Rond de overgang veranderen spiermassa, botdichtheid, slaap en energie tegelijk, en dat maakt de verleiding groot om één middel als antwoord te zien. Creatine is dat niet. Het heeft in Europa twee toegestane claims — fysieke prestatie bij zeer korte, intensieve inspanning vanaf 3 gram per dag, en spierkracht in combinatie met krachttraining bij volwassenen boven de 55 jaar. Beide gaan over spieren, en de tweede werkt alleen samen met training.\n\nOpvliegers, slaapproblemen of stemmingswisselingen vallen daar nadrukkelijk buiten. Wat daar wél helpt en welke opties er zijn, staat in onze gids over [de overgang](/overgang). Krachttraining is in deze levensfase de interventie met het breedste effect — creatine is daar een kleine versterker van, geen alternatief voor.",
+        "Rond de overgang veranderen spiermassa, botdichtheid, slaap en energie tegelijk, en dat maakt de verleiding groot om één middel als antwoord te zien. Creatine is dat niet. Het heeft in Europa twee toegestane claims — fysieke prestatie bij zeer korte, intensieve inspanning vanaf 3 gram per dag, en spierkracht in combinatie met krachttraining bij volwassenen boven de 55 jaar. Beide gaan over spieren, en de tweede werkt alleen samen met training.\n\nOpvliegers, slaapproblemen of stemmingswisselingen vallen daar nadrukkelijk buiten. Wat daar wél helpt en welke opties er zijn, staat in onze gids over [de overgang](/overgang-en-voeding). Krachttraining is in deze levensfase de interventie met het breedste effect — creatine is daar een kleine versterker van, geen alternatief voor.",
     },
     {
       type: "opsomming",

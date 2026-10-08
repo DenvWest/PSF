@@ -8,7 +8,7 @@ export const krachttrainingNa40Data: BlogArtikel = {
   coverImage: "/images/blog/krachttraining-na-40.jpg",
   coverImageAlt: "Man die krachttraining doet in een sportschool",
   heroIntro:
-    "Je hoeft geen bodybuilder te worden. Twee keer per week weerstandstraining is na 30 vaak de sterkste hefboom voor spierbehoud, metabole gezondheid en het gevoel dat je lichaam nog meewerkt — gekoppeld aan [eiwit na 30](/blog/eiwit-na-40) en [herstel na 30](/herstel-verbeteren-na-40).",
+    "Je hoeft geen bodybuilder te worden. Twee keer per week weerstandstraining is na 30 vaak de sterkste hefboom voor spierbehoud, metabole gezondheid en het gevoel dat je lichaam nog meewerkt — gekoppeld aan [eiwit na 30](/blog/eiwit-na-40) en [herstel na 30](/herstel-en-voeding).",
   leestijd: "10 min",
   gepubliceerdOp: "2026-05-23",
   laatstBijgewerktOp: "2026-05-23",
@@ -61,7 +61,7 @@ export const krachttrainingNa40Data: BlogArtikel = {
     "Krachttraining 2–3× per week is na 30 de belangrijkste hefboom voor spierbehoud en metabole gezondheid. Combineer met eiwit, cardio en herstel — geen maximalisme zonder rustdagen.",
   cornerstoneLink: {
     label: "Hoofdstuk-gids: herstel verbeteren na 30",
-    href: "/herstel-verbeteren-na-40",
+    href: "/herstel-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Eiwitpoeder supplementen vergelijken",

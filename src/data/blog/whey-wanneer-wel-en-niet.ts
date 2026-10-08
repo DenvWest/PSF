@@ -88,8 +88,8 @@ export const wheyWanneerWelEnNietData: BlogArtikel = {
         "Hier is een shake geen fout, maar wel geld dat niets oplevert. Dit is het deel dat in advertenties ontbreekt.",
       items: [
         "Je haalt je eiwit al uit voeding: dagelijks zuivel, ei, vlees, vis of peulvruchten verdeeld over drie maaltijden — dan verandert extra poeder niets aan je herstel.",
-        "Je traint (nog) niet: zonder trainingsprikkel is extra eiwit vooral extra energie. Begin dan bij [beweging na 40](/beweging-na-40).",
-        "Je wilt er energie van: eiwit levert bouwstenen, geen energieboost. Zakt je energie structureel weg, kijk dan eerst naar slaap, stress en bloedsuiker — zie [energie na 40](/energie-na-40).",
+        "Je traint (nog) niet: zonder trainingsprikkel is extra eiwit vooral extra energie. Begin dan bij [beweging na 40](/beweging-en-voeding).",
+        "Je wilt er energie van: eiwit levert bouwstenen, geen energieboost. Zakt je energie structureel weg, kijk dan eerst naar slaap, stress en bloedsuiker — zie [energie na 40](/energie-en-voeding).",
         "Je koopt het voor je hormonen: er is geen erkende claim die eiwitpoeder aan testosteron of andere hormoonwaarden koppelt, en het bewijs daarvoor ontbreekt.",
         "Je verdraagt het slecht: een product dat je darmen niet aankunnen, houd je niet vol. Wat je dan wél kunt doen staat in [whey en darmklachten](/blog/whey-en-darmklachten).",
         "Je gebruikt het als maaltijdvervanger: een shake bevat geen vezels, nauwelijks micronutriënten en verzadigt minder dan een bord eten.",

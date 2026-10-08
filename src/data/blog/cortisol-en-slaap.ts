@@ -37,7 +37,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
       type: "opsomming",
       titel: "Wat je hieraan kunt doen",
       inleiding:
-        "Het goede nieuws: dit patroon is beïnvloedbaar. Het vraagt aanpak op twee niveaus — leefstijl en eventueel gerichte supplementen. [Lees de complete aanpak voor betere slaap na je 30e.](/slaap-verbeteren-na-40)",
+        "Het goede nieuws: dit patroon is beïnvloedbaar. Het vraagt aanpak op twee niveaus — leefstijl en eventueel gerichte supplementen. [Lees de complete aanpak voor betere slaap na je 30e.](/slaap-en-voeding)",
       items: [
         "Avondroutine: cortisol heeft een afbouwsignaal nodig. Een vaste avondroutine — zelfde tijd, dezelfde volgorde — traint je [HPA-as](/kennisbank/hpa-as) om eerder te remmen. Dim het licht na 21:00. Blauw licht van schermen blokkeert melatonineaanmaak en houdt cortisol actief.",
         "Geen schermen 60 minuten voor bed: dit is het meest onderbouwde advies in slaaponderzoek. Niet vanwege de content, maar vanwege het lichtspectrum. Gebruik een e-reader met warm licht, een boek, of luister naar iets rustigs.",
@@ -67,7 +67,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Complete gids: slaap verbeteren na je 30e",
-    href: "/slaap-verbeteren-na-40",
+    href: "/slaap-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste ashwagandha supplementen",

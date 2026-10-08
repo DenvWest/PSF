@@ -20,15 +20,15 @@ export type ResolvedNurtureCta = {
 const PILLAR_BY_DOMAIN: Record<DomainKey, { text: string; url: string }> = {
   sleep_score: {
     text: "Lees de slaapgids voor mannen 30+",
-    url: "/slaap-verbeteren-na-40",
+    url: "/slaap-en-voeding",
   },
   stress_score: {
     text: "Lees de praktische stressgids",
-    url: "/stress-verminderen-na-40",
+    url: "/stress-en-voeding",
   },
   energy_score: {
     text: "Lees over energie na 30",
-    url: "/energie-na-40",
+    url: "/energie-en-voeding",
   },
   nutrition_score: {
     text: "Ontvang je voedings-stappenplan",
@@ -54,7 +54,7 @@ const LIFESTYLE_BY_PROFILE: Record<
 > = {
   Stressdrager: {
     text: "Lees de praktische stressgids",
-    url: "/stress-verminderen-na-40",
+    url: "/stress-en-voeding",
   },
   "Onrustige Slaper": {
     text: "Bekijk je slaap-overzicht",

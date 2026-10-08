@@ -9,7 +9,7 @@ export const overgangBuikvetGewichtstoenameData: BlogArtikel = {
   coverImage: "/images/blog/overgang-buikvet-gewichtstoename.jpg",
   coverImageAlt: "Vrouw die krachttraining doet met een barbell",
   heroIntro:
-    "Hetzelfde eten, dezelfde beweging, en toch verschuift er iets — vaak rond het middel. Dat is geen inbeelding en ook geen kwestie van 'minder discipline'. De verschuiving in vetverdeling tijdens de overgang heeft een aanwijsbare hormonale basis, met een paar leefstijlfactoren die het verschil versterken of juist afremmen. Meer over de bredere fase in [de overgangsgids](/overgang).",
+    "Hetzelfde eten, dezelfde beweging, en toch verschuift er iets — vaak rond het middel. Dat is geen inbeelding en ook geen kwestie van 'minder discipline'. De verschuiving in vetverdeling tijdens de overgang heeft een aanwijsbare hormonale basis, met een paar leefstijlfactoren die het verschil versterken of juist afremmen. Meer over de bredere fase in [de overgangsgids](/overgang-en-voeding).",
   leestijd: "8 min",
   gepubliceerdOp: "2026-09-05",
   laatstBijgewerktOp: "2026-09-05",
@@ -66,7 +66,7 @@ export const overgangBuikvetGewichtstoenameData: BlogArtikel = {
     "Gewichtstoename en buikvet in de overgang komen door twee dingen tegelijk: dalend oestrogeen verschuift vetopslag naar de buik, en de basisstofwisseling daalt geleidelijk mee. Slaapproblemen en stress versterken dit via cortisol. Krachttraining, voldoende eiwit en aandacht voor slaap zijn de interventies met het meeste bewijs — niet een nog strenger dieet.",
   cornerstoneLink: {
     label: "Overgang: wat verandert en wat helpt",
-    href: "/overgang",
+    href: "/overgang-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste eiwitpoeders",

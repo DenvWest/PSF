@@ -246,7 +246,7 @@ export default function VoedingNa40Page() {
                       </Link>
                     </li>
                     <li>
-                      <Link href="/energie-na-40" className={LINK}>
+                      <Link href="/energie-en-voeding" className={LINK}>
                         Energie-pillar — als vermoeidheid je hoofdthema is →
                       </Link>
                     </li>

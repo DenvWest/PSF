@@ -178,7 +178,7 @@ export const lageEnergieProfile: ProfilePageData = {
   },
 
   relatedPillar: {
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
     turboSnippet:
       "Energie na 30: ritme, voeding, slaap en supplementen — één gids met een concreet weekplan.",
   },

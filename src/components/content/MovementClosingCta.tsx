@@ -10,17 +10,17 @@ const TRUST = [
   {
     n: "01",
     label: "Van jou",
-    body: "Je krijgt jouw levenslijn en beweegscore — geen algemeen verhaal meer.",
+    body: "Je ziet waar jouw voeding tekortschiet — geen algemeen verhaal meer.",
   },
   {
     n: "02",
     label: "Laagdrempelig",
-    body: "Je begint klein. Geen sportschool nodig, geen zwaar schema.",
+    body: "Je begint klein. Een paar korte vragen, geen dieet en geen zwaar schema.",
   },
   {
     n: "03",
     label: "Het groeit mee",
-    body: "In je dashboard zie je je Future You Score, je streak en je weekdoelen groeien.",
+    body: "In je dashboard volg je je voeding en kies je pas daarna of een supplement past.",
   },
 ];
 
@@ -41,15 +41,15 @@ export default function MovementClosingCta() {
           className="text-xs font-semibold uppercase tracking-[0.16em]"
           style={{ color: "var(--ac)" }}
         >
-          Hoe ziet jóuw levenslijn eruit?
+          Wat mis jij om vol te houden?
         </p>
         <h2 className="mx-auto mt-3 max-w-xl font-serif text-[clamp(27px,4.4vw,46px)] font-normal leading-[1.06] text-[#F4F1E9]">
           Je zag het algemene beeld. Nu de versie die over jóu gaat.
         </h2>
         <p className="mx-auto mt-4 max-w-lg text-[15.5px] leading-relaxed text-[#9FB0A6]">
-          Doe de gratis Leefstijlcheck. Op basis van jouw antwoorden maken we
-          je persoonlijke levenslijn, een beweegscore, en een route die past
-          bij waar je nu staat — stap voor stap, geen sprong in het diepe.
+          Beweging houd je vol met herstel en brandstof. De gratis check Wat
+          mis je? laat zien welke voedingsstoffen je waarschijnlijk tekortkomt,
+          en wat je eraan kunt doen — stap voor stap, geen sprong in het diepe.
         </p>
 
         <div className="mx-auto mt-9 grid max-w-3xl gap-3.5 text-left sm:grid-cols-3">
@@ -81,10 +81,10 @@ export default function MovementClosingCta() {
                 "0 10px 32px -8px color-mix(in srgb, var(--ac) 60%, transparent)",
             }}
           >
-            Maak mijn persoonlijke levenslijn →
+            Zie wat jij mist →
           </Link>
           <p className="mt-3 text-[13px] text-[#7E8C82]">
-            Gratis Leefstijlcheck · ~2 minuten · daarna je eigen dashboard
+            Gratis check Wat mis je? · ~3 minuten · daarna je eigen dashboard
           </p>
         </div>
 

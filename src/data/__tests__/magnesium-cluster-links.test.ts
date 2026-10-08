@@ -15,12 +15,12 @@ const MAGNESIUM_CLUSTER = [
 
 const STATISCHE_PADEN = new Set([
   "/beste/magnesium",
-  "/energie-na-40",
-  "/herstel-verbeteren-na-40",
+  "/energie-en-voeding",
+  "/herstel-en-voeding",
   "/intake",
-  "/overgang",
-  "/slaap-verbeteren-na-40",
-  "/stress-verminderen-na-40",
+  "/overgang-en-voeding",
+  "/slaap-en-voeding",
+  "/stress-en-voeding",
   "/supplementen",
   "/voeding-na-40",
 ]);

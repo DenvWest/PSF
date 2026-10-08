@@ -45,7 +45,7 @@ export const melatonineWanneerWelNietData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Complete gids: slaap verbeteren na je 30e",
-    href: "/slaap-verbeteren-na-40",
+    href: "/slaap-en-voeding",
   },
   gerelateerdeSluggen: [
     "melatonine-na-40",

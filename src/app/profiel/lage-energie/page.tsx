@@ -265,7 +265,7 @@ export default function LageEnergiePage() {
                       <>
                         Tegelijk speelt er nog iets: rond de perimenopauze schommelen en dalen je{" "}
                         <Link
-                          href="/overgang"
+                          href="/overgang-en-voeding"
                           className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
                         >
                           hormoonspiegels
@@ -279,7 +279,7 @@ export default function LageEnergiePage() {
                         Tegelijk verandert vanaf je 30e ook je hormoonhuishouding geleidelijk —
                         bij mannen speelt dalend testosteron een rol, bij vrouwen de{" "}
                         <Link
-                          href="/overgang"
+                          href="/overgang-en-voeding"
                           className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
                         >
                           perimenopauze

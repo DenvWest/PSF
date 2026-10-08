@@ -64,7 +64,7 @@ export const vermoeidheidBloedwaardenCheckenMannenData: BlogArtikel = {
     "Structurele vermoeidheid na 30 kan meerdere aantoonbare oorzaken hebben: een lage vitamine D-, B12- of ijzerwaarde, een trage schildklier of schommelende bloedsuiker geven allemaal dit symptoom. Een bloedtest via de huisarts maakt onderscheid tussen 'aantoonbaar tekort' en 'leefstijlfactor' — en voorkomt dat je blind gaat suppleren zonder dat daar een tekort tegenover staat.",
   cornerstoneLink: {
     label: "Energie na 30 — complete gids",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste vitamine D supplementen",

@@ -46,7 +46,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       { label: "Grenzen stellen op werk", slug: "stress-werk-grenzen-stellen" },
       { label: "Ashwagandha bij mannen", slug: "ashwagandha-werking-mannen" },
     ],
-    themaHref: "/stress-verminderen-na-40",
+    themaHref: "/stress-en-voeding",
     kleur: {
       bg: "from-amber-700 to-amber-800",
       accent: "bg-amber-500/20 ring-amber-400/20",
@@ -75,7 +75,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       { label: "Vitamine D en slaap", slug: "vitamine-d-en-slaap" },
       { label: "Magnesium en slaap", slug: "magnesium-en-slaap" },
     ],
-    themaHref: "/slaap-verbeteren-na-40",
+    themaHref: "/slaap-en-voeding",
     kleur: {
       bg: "from-slate-600 to-slate-700",
       accent: "bg-sky-500/20 ring-sky-400/20",
@@ -105,7 +105,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       { label: "Vitamine D meten", slug: "vitamine-d-meten-wanneer-zinvol" },
       { label: "Schildklier, diabetes, duizeligheid", slug: "vitamine-d-aandoeningen-onderzoek" },
     ],
-    themaHref: "/energie-na-40",
+    themaHref: "/energie-en-voeding",
     kleur: {
       bg: "from-emerald-700 to-emerald-800",
       accent: "bg-emerald-500/20 ring-emerald-400/20",

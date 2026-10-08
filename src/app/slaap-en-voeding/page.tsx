@@ -1,27 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import GuideNutritionZoom from "@/components/content/GuideNutritionZoom";
 import Container from "@/components/layout/Container";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import { RefNote } from "@/components/references/RefNote";
-import { magnesiumReferences } from "@/data/references/magnesium";
+import { slaapReferences } from "@/data/references/slaap";
 import DomainHubConnector from "@/components/content/DomainHubConnector";
 import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
-import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { jsonLdScript } from "@/lib/seo/structuredData";
 
 export const metadata: Metadata = {
-  title: "Slaap Verbeteren Na 30: Oorzaken, Tips & Supplementen",
+  title: "Slaap en voeding na 30: wat eten met je nachten doet",
   description:
-    "Slecht slapen na 30? Ontdek waarom je slaap verandert en wat je er nu aan doet. Van leefstijl tot supplementen — onderbouwd en praktisch.",
-  ...canonicalMetadata("/slaap-verbeteren-na-40"),
+    "Slecht slapen na 30? Zie hoe voeding, magnesium, cafeïne en ritme meespelen en wat je zelf kunt aanpassen. Onderbouwd, zonder diagnoses.",
+  ...canonicalMetadata("/slaap-en-voeding"),
   openGraph: {
-    title: "Slaap Verbeteren Na 30: De Complete Gids",
+    title: "Slaap en voeding na 30: wat eten met je nachten doet",
     description:
       "Slecht slapen na 30? Ontdek waarom je slaap verandert en wat je er nu aan doet.",
-    url: "/slaap-verbeteren-na-40",
+    url: "/slaap-en-voeding",
     type: "article",
   },
 };
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Slaap Verbeteren Na 30: De Complete Gids",
+  headline: "Slaap en voeding na 30: wat eten met je nachten doet",
   description:
     "Slecht slapen na 30? Ontdek waarom je slaap verandert en wat je er nu aan doet.",
   author: {
@@ -44,7 +44,7 @@ const articleSchema = {
   },
   datePublished: "2026-05-02",
   dateModified: "2026-05-02",
-  mainEntityOfPage: "https://perfectsupplement.nl/slaap-verbeteren-na-40",
+  mainEntityOfPage: "https://perfectsupplement.nl/slaap-en-voeding",
 };
 
 const faqSchema = {
@@ -118,7 +118,7 @@ export default function SlaapVerbeterenNa40Page() {
                   Complete Gids
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                  Slaap Verbeteren Na 30: De Complete Gids
+                  Slaap en voeding na 30: wat eten met je nachten doet
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 12 min
@@ -135,6 +135,11 @@ export default function SlaapVerbeterenNa40Page() {
                   <li>
                     <a href="#herkenbaar" className="hover:underline">
                       Herkenbaar?
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Zoom in op voeding
                     </a>
                   </li>
                   <li>
@@ -168,6 +173,11 @@ export default function SlaapVerbeterenNa40Page() {
                     </a>
                   </li>
                   <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Wat mis je? Zoom in op voeding
+                    </a>
+                  </li>
+                  <li>
                     <a href="#faq" className="hover:underline">
                       Veelgestelde vragen
                     </a>
@@ -197,10 +207,12 @@ export default function SlaapVerbeterenNa40Page() {
                     Waarom je slaap na 30 anders kan voelen (en waarom &ldquo;gewoon eerder naar bed&rdquo; niet altijd werkt)
                   </li>
                   <li>Hoe overdag stress en schermen je nacht beïnvloeden — in begrijpelijke taal</li>
-                  <li>5 concrete aanpassingen die je vanavond nog kunt starten</li>
+                  <li>6 concrete aanpassingen die je vanavond nog kunt starten</li>
                   <li>Welke supplementen je kunt overwegen — en wat je beter eerst met je huisarts bespreekt</li>
                 </ul>
               </section>
+
+              <GuideNutritionZoom guide="slaap" />
 
               {/* 4. Mechanisme */}
               <section id="wat-er-verandert" className="mt-14">
@@ -357,8 +369,18 @@ export default function SlaapVerbeterenNa40Page() {
                   .
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Concreet: zet schermen uit om 22:00 als je om 23:00 in bed wil liggen.
-                  Gebruik oranje/rode verlichting in de avond — die voelt voor veel mensen rustiger dan fel wit licht.
+                  Concreet: tot 19:00–20:00 kun je je scherm gewoon gebruiken, daarna bouw je af. Lig je om
+                  23:00 in bed, dan gaat het scherm om 22:00 uit. In een laboratoriumstudie lazen mensen vijf
+                  avonden op een verlicht scherm in plaats van uit een papieren boek: hun melatonine kwam
+                  anderhalf uur later op gang en inslapen duurde langer
+                  <RefNote number={7} />. Dim ook het licht in huis; oranje of rood licht voelt voor veel
+                  mensen rustiger dan fel wit licht.
+                </p>
+                <p className="mt-3 text-gray-700 leading-relaxed">
+                  En een blauwlichtfilterbril? Het grootste overzicht tot nu toe, 17 gerandomiseerde studies,
+                  vond geen aantoonbaar effect op je slaap
+                  <RefNote number={8} />. Die studies waren klein en kort, dus het laatste woord is er niet
+                  over. Je scherm eerder wegleggen werkt via hetzelfde mechanisme en kost niets.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
@@ -390,7 +412,26 @@ export default function SlaapVerbeterenNa40Page() {
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  5. Verlaag je kamertemperatuur
+                  5. Eet je avondeten drie à vier uur voor bedtijd
+                </h3>
+                <p className="mt-3 text-gray-700 leading-relaxed">
+                  Je spijsvertering werkt &apos;s avonds trager, en een volle maag ligt slecht. In een
+                  onderzoek onder bijna 800 jongvolwassenen werden mensen die binnen drie uur voor
+                  bedtijd aten vaker &apos;s nachts wakker
+                  <RefNote number={9} />. In een kleine studie vielen mannen sneller in slaap na een
+                  avondmaaltijd vier uur voor bedtijd dan na dezelfde maaltijd één uur ervoor
+                  <RefNote number={10} />.
+                </p>
+                <p className="mt-3 text-gray-700 leading-relaxed">
+                  Concreet: lig je rond 23:00 in bed, eet dan tussen 18:00 en 19:00. Het gaat niet alleen
+                  om wanneer, maar ook om wat je over langere tijd eet. In een kleine studie ging meer vezel
+                  samen met meer diepe slaap, meer verzadigd vet met minder diepe slaap, en meer suiker
+                  met vaker kort wakker worden
+                  <RefNote number={11} />. Dat zie je niet aan één avond, wel aan wat je over weken binnenkrijgt.
+                </p>
+
+                <h3 className="font-semibold text-xl text-gray-900 mt-8">
+                  6. Verlaag je kamertemperatuur
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Je lichaamstemperatuur van binnen moet 1-2°C dalen om in slaap te vallen en diepe
@@ -583,8 +624,8 @@ export default function SlaapVerbeterenNa40Page() {
 
                 <div className="mt-10 text-center p-8 bg-green-50 rounded-2xl border border-green-200">
                   <p className="text-gray-600 max-w-lg mx-auto">
-                    Benieuwd hoe jouw slaapprofiel scoort? Scroll naar beneden voor de gratis
-                    Leefstijlcheck.
+                    Benieuwd wat jouw voeding voor je slaap mist? Scroll naar beneden voor de
+                    gratis check Wat mis je?.
                   </p>
                 </div>
               </section>
@@ -603,7 +644,7 @@ export default function SlaapVerbeterenNa40Page() {
                     Chronische stress en slaap zijn nauw verbonden. Als je merkt dat je &apos;s nachts wakker wordt met een hoofd vol gedachten, kan stress de onderliggende oorzaak zijn.
                   </p>
                   <Link
-                    href="/stress-verminderen-na-40"
+                    href="/stress-en-voeding"
                     className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] text-sm"
                   >
                     Lees de gids: Stress Verminderen na 30 →
@@ -618,7 +659,7 @@ export default function SlaapVerbeterenNa40Page() {
                     beweging samenspelen — bespreek aanhoudende klachten met je huisarts.
                   </p>
                   <Link
-                    href="/energie-na-40"
+                    href="/energie-en-voeding"
                     className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] text-sm"
                   >
                     Lees de gids: Energie Na 30 →
@@ -756,26 +797,7 @@ export default function SlaapVerbeterenNa40Page() {
                 </div>
               </section>
 
-              {/* 11. Eind-CTA */}
-              <section className="mt-14" {...{ [INBODY_LEEFSTIJLCHECK_CTA_ATTR]: "" }}>
-                <div className="text-center p-8 bg-green-50 rounded-2xl border border-green-200">
-                  <h3 className="font-serif text-2xl font-bold text-gray-900">
-                    Klaar om je slaap structureel aan te pakken?
-                  </h3>
-                  <p className="mt-3 text-gray-600 max-w-lg mx-auto">
-                    De Leefstijlcheck brengt in 3 minuten jouw slaap-, stress- en energieprofiel in
-                    kaart. Je krijgt een persoonlijk leefstijloverzicht — gratis, zonder registratie.
-                  </p>
-                  <Link
-                    href="/intake"
-                    className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
-                  >
-                    Zie waar jouw slaap, stress en energie scoren — gratis →
-                  </Link>
-                </div>
-              </section>
-
-              <ReferenceList references={magnesiumReferences} />
+              <ReferenceList references={slaapReferences} />
 
             </article>
             <DomainHubConnector pillarId="slaap" />

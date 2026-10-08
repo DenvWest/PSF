@@ -278,7 +278,7 @@ describe("nurture-cron: P1 — email_sent payload bevat CTA-velden", () => {
     mockGetNurtureEmailContent.mockReturnValue({
       subject: "Dag 3 test",
       html: "<p>lifestyle</p>",
-      resolvedCta: makeResolvedCta("lifestyle", "/stress-verminderen-na-40"),
+      resolvedCta: makeResolvedCta("lifestyle", "/stress-en-voeding"),
     });
 
     const mail3 = { ...INTAKE_MAIL, id: "mail-3", sequence_day: 3 };
@@ -307,7 +307,7 @@ describe("nurture-cron: P1 — email_sent payload bevat CTA-velden", () => {
     mockGetNurtureEmailContent.mockReturnValue({
       subject: "Dag 7 test",
       html: "<p>test</p>",
-      resolvedCta: makeResolvedCta("pillar", "/slaap-verbeteren-na-40"),
+      resolvedCta: makeResolvedCta("pillar", "/slaap-en-voeding"),
     });
 
     const mail7 = { ...INTAKE_MAIL, id: "mail-7", sequence_day: 7 };

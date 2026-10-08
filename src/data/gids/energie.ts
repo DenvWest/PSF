@@ -37,5 +37,5 @@ export const energieGuide: GuideOptInData = {
     successMessage: "Check je inbox — de Energiegids is onderweg.",
   },
   pdfPath: "/downloads/energiegids-perfectsupplement.pdf",
-  pillarHref: "/energie-na-40",
+  pillarHref: "/energie-en-voeding",
 };

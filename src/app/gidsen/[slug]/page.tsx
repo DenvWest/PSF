@@ -138,7 +138,7 @@ export default async function GuideLandingPage({ params }: GuideLandingPageProps
                 <GuideOptIn
                   variant="hero"
                   comingSoon={guide.comingSoon}
-                  comingSoonHref={guide.contentHref}
+                  comingSoonHref={guide.webgidsHref}
                   comingSoonNote={guide.comingSoonNote}
                   comingSoonCta={guide.comingSoonCta}
                 />
@@ -330,7 +330,7 @@ export default async function GuideLandingPage({ params }: GuideLandingPageProps
             <GuideOptIn
               variant="dark"
               comingSoon={guide.comingSoon}
-              comingSoonHref={guide.contentHref}
+              comingSoonHref={guide.webgidsHref}
               comingSoonNote={guide.comingSoonNote}
               comingSoonCta={guide.comingSoonCta}
             />

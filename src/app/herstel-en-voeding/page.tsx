@@ -1,31 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import GuideNutritionZoom from "@/components/content/GuideNutritionZoom";
 import Container from "@/components/layout/Container";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import { RefNote } from "@/components/references/RefNote";
 import { herstelVerbeterenNa40References } from "@/data/references/herstel-verbeteren-na-40";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
-import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import DomainHubConnector from "@/components/content/DomainHubConnector";
 import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
-import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const INLINE_LINK_THEME =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]";
 
 export const metadata: Metadata = {
-  title: "Herstel Verbeteren Na 30: Training, Voeding & Supplementen",
+  title: "Herstel en voeding na 30: eiwit, rust en meer",
   description:
-    "Trager herstel na 30? Lees waarom spierherstel verandert en wat werkt: slaap, eiwit, rust, magnesium, omega-3, vitamine D, creatine en meer — onderbouwd en stap voor stap.",
-  ...canonicalMetadata("/herstel-verbeteren-na-40"),
+    "Trager herstel na 30? Zie wat eiwit, omega-3, magnesium en vocht uitmaken naast slaap en rust, en wanneer een supplement past.",
+  ...canonicalMetadata("/herstel-en-voeding"),
   openGraph: {
-    title: "Herstel Verbeteren Na 30: De Complete Gids",
+    title: "Herstel en voeding na 30: eiwit, rust en meer",
     description:
       "Trager herstel na je 30e? Training, slaap en voeding in balans brengen — plus welke supplementen het meeste onderbouwing hebben.",
-    url: "/herstel-verbeteren-na-40",
+    url: "/herstel-en-voeding",
     type: "article",
   },
 };
@@ -33,7 +32,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Herstel Verbeteren Na 30: De Complete Gids",
+  headline: "Herstel en voeding na 30: eiwit, rust en meer",
   description:
     "Waarom spierherstel na 30 verandert — en een praktisch protocol met voeding en supplementen.",
   author: {
@@ -48,7 +47,7 @@ const articleSchema = {
   },
   datePublished: "2026-05-09",
   dateModified: "2026-05-09",
-  mainEntityOfPage: "https://perfectsupplement.nl/herstel-verbeteren-na-40",
+  mainEntityOfPage: "https://perfectsupplement.nl/herstel-en-voeding",
 };
 
 const faqSchema = {
@@ -120,7 +119,7 @@ export default function HerstelVerbeterenNa40Page() {
                   Complete Gids
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                  Herstel Verbeteren Na 30: De Complete Gids
+                  Herstel en voeding na 30: eiwit, rust en meer
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 12 min
@@ -136,6 +135,11 @@ export default function HerstelVerbeterenNa40Page() {
                   <li>
                     <a href="#herkenbaar" className="hover:underline">
                       Herkenbaar?
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Zoom in op voeding
                     </a>
                   </li>
                   <li>
@@ -174,8 +178,8 @@ export default function HerstelVerbeterenNa40Page() {
                     </a>
                   </li>
                   <li>
-                    <a href="#leefstijlcheck" className="hover:underline">
-                      Ontdek waar jij staat
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Wat mis je? Zoom in op voeding
                     </a>
                   </li>
                   <li>
@@ -228,6 +232,8 @@ export default function HerstelVerbeterenNa40Page() {
                   <li>Welke supplementen onderbouwd zijn — en hoe je ze slim inzet</li>
                 </ul>
               </section>
+
+              <GuideNutritionZoom guide="herstel" />
 
               <section id="wat-er-verandert" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
@@ -392,7 +398,7 @@ export default function HerstelVerbeterenNa40Page() {
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Slaapproblemen als basis? Lees ook:{" "}
-                  <Link href="/slaap-verbeteren-na-40" className={INLINE_LINK_THEME}>
+                  <Link href="/slaap-en-voeding" className={INLINE_LINK_THEME}>
                     Slaap verbeteren na 30
                   </Link>
                 </p>
@@ -422,7 +428,7 @@ export default function HerstelVerbeterenNa40Page() {
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Veel mentale onrust naast fysieke belasting?{" "}
-                  <Link href="/stress-verminderen-na-40" className={INLINE_LINK_THEME}>
+                  <Link href="/stress-en-voeding" className={INLINE_LINK_THEME}>
                     Lees de stressgids
                   </Link>
                 </p>
@@ -619,7 +625,7 @@ export default function HerstelVerbeterenNa40Page() {
                     trainingsschema.
                   </p>
                   <Link
-                    href="/slaap-verbeteren-na-40"
+                    href="/slaap-en-voeding"
                     className={`mt-2 inline-block ${INLINE_LINK_THEME} text-sm`}
                   >
                     Complete gids: Slaap verbeteren na 30 →
@@ -636,7 +642,7 @@ export default function HerstelVerbeterenNa40Page() {
                     herstelstand.
                   </p>
                   <Link
-                    href="/stress-verminderen-na-40"
+                    href="/stress-en-voeding"
                     className={`mt-2 inline-block ${INLINE_LINK_THEME} text-sm`}
                   >
                     Stress verminderen (man 30+) →
@@ -652,7 +658,7 @@ export default function HerstelVerbeterenNa40Page() {
                     Als je energie overdag laag is, wordt je herstelcapaciteit tussen trainingen kleiner.
                   </p>
                   <Link
-                    href="/energie-na-40"
+                    href="/energie-en-voeding"
                     className={`mt-2 inline-block ${INLINE_LINK_THEME} text-sm`}
                   >
                     Energie na 30 gids →
@@ -738,26 +744,6 @@ export default function HerstelVerbeterenNa40Page() {
                       Naar het profiel →
                     </Link>
                   </div>
-                </div>
-              </section>
-
-              <section id="leefstijlcheck" className="mt-14" {...{ [INBODY_LEEFSTIJLCHECK_CTA_ATTR]: "" }}>
-                <div className="text-center p-8 bg-green-50 rounded-2xl border border-green-200">
-                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-gray-900">
-                    Ontdek Waar Jij Staat
-                  </h2>
-                  <p className="mt-3 text-gray-600 max-w-lg mx-auto">
-                    Herstel is een van de uitkomsten die de Leefstijlcheck meet. In 3 minuten zie je
-                    hoe je herstel eruitziet en op welk van de vijf leefstijldomeinen je het snelst
-                    winst pakt.
-                  </p>
-                  <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
-                  <Link
-                    href="/intake"
-                    className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
-                  >
-                    Zie waar jouw herstel, slaap en energie scoren — gratis →
-                  </Link>
                 </div>
               </section>
 

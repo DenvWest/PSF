@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import GuideNutritionZoom from "@/components/content/GuideNutritionZoom";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
-import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import DomainHubConnector from "@/components/content/DomainHubConnector";
 import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
-import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const INLINE_LINK_CLASS =
@@ -15,15 +14,15 @@ const INLINE_LINK_CLASS =
 
 export const metadata: Metadata = {
   title:
-    "Stress Verminderen na 30: Van Altijd 'Aan' Naar Meer Rust",
+    "Stress en voeding na 30: eten onder druk",
   description:
-    "Langdurige stress voelt zwaarder na 30: slaap, energie en rust. Praktische stappen — zonder diagnoses of vage adviezen.",
-  ...canonicalMetadata("/stress-verminderen-na-40"),
+    "Langdurige stress verandert wat en wanneer je eet. Zie welke voedingsgewoonten meespelen en wat je stap voor stap kunt aanpassen, zonder diagnoses.",
+  ...canonicalMetadata("/stress-en-voeding"),
   openGraph: {
-    title: "Stress Verminderen na 30: Van Altijd 'Aan' Naar Meer Rust",
+    title: "Stress en voeding na 30: eten onder druk",
     description:
       "Langdurige stress voelt zwaarder na 30: slaap, energie en rust. Hier lees je wat je zelf kunt doen.",
-    url: "/stress-verminderen-na-40",
+    url: "/stress-en-voeding",
     type: "article",
   },
 };
@@ -31,7 +30,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Stress Verminderen na 30: Van Altijd 'Aan' Naar Meer Rust",
+  headline: "Stress en voeding na 30: eten onder druk",
   description:
     "Langdurige stress voelt zwaarder na 30: slaap, energie en rust. Praktische stappen — zonder diagnoses.",
   author: {
@@ -46,7 +45,7 @@ const articleSchema = {
   },
   datePublished: "2026-05-07",
   dateModified: "2026-05-07",
-  mainEntityOfPage: "https://perfectsupplement.nl/stress-verminderen-na-40",
+  mainEntityOfPage: "https://perfectsupplement.nl/stress-en-voeding",
 };
 
 const faqSchema = {
@@ -115,7 +114,7 @@ export default function StressVerminderenManPage() {
                   Complete Gids
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                  Stress Verminderen na 30: Van Altijd &apos;Aan&apos; Naar Meer Rust
+                  Stress en voeding na 30: wat je eet onder druk
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 12 min
@@ -132,6 +131,11 @@ export default function StressVerminderenManPage() {
                   <li>
                     <a href="#herkenning" className="hover:underline">
                       Ken je dit?
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Zoom in op voeding
                     </a>
                   </li>
                   <li>
@@ -165,8 +169,8 @@ export default function StressVerminderenManPage() {
                     </a>
                   </li>
                   <li>
-                    <a href="#leefstijlcheck" className="hover:underline">
-                      Ontdek waar jij staat
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Wat mis je? Zoom in op voeding
                     </a>
                   </li>
                   <li>
@@ -211,6 +215,8 @@ export default function StressVerminderenManPage() {
                   echte rustmomenten, niet dat wij weten wat er in je bloed zit.
                 </p>
               </section>
+
+              <GuideNutritionZoom guide="stress" />
 
               {/* 4–6. Stress na 30, HPA, cortisol/testosteron */}
               <section id="wat-er-gebeurt" className="mt-14">
@@ -326,7 +332,7 @@ export default function StressVerminderenManPage() {
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   → Worstel je ook met je slaap? Lees de complete gids:{" "}
-                  <Link href="/slaap-verbeteren-na-40" className={INLINE_LINK_CLASS}>
+                  <Link href="/slaap-en-voeding" className={INLINE_LINK_CLASS}>
                     Slaap verbeteren na 30
                   </Link>
                 </p>
@@ -444,11 +450,11 @@ export default function StressVerminderenManPage() {
                 <div className="mt-4 p-6 bg-stone-50 rounded-xl border border-stone-200">
                   <p className="font-semibold text-gray-900 text-lg">Week 4 — Meten en bijstellen</p>
                   <p className="mt-3 text-gray-700 leading-relaxed">
-                    Doe de{" "}
+                    Doe de check{" "}
                     <Link href="/intake" className={INLINE_LINK_CLASS}>
-                      Leefstijlcheck
+                      Wat mis je?
                     </Link>{" "}
-                    opnieuw. Vergelijk je stressscore met 4 weken geleden. Waar is verbetering?
+                    opnieuw en kijk of je voeding meebeweegt. Vergelijk met 4 weken geleden. Waar is verbetering?
                     Waar niet? Op basis daarvan stel je je aanpak bij.
                   </p>
                 </div>
@@ -466,7 +472,7 @@ export default function StressVerminderenManPage() {
                     kan het helpen om beide kanten te bekijken.
                   </p>
                   <a
-                    href="/energie-na-40"
+                    href="/energie-en-voeding"
                     className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] mt-2 inline-block text-sm"
                   >
                     Lees de gids: Energie Na 30 →
@@ -528,7 +534,7 @@ export default function StressVerminderenManPage() {
                   </Link>
 
                   <Link
-                    href="/testosteron-na-40"
+                    href="/testosteron-en-voeding"
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
@@ -556,25 +562,6 @@ export default function StressVerminderenManPage() {
               </section>
 
               {/* 11. CTA */}
-              <section id="leefstijlcheck" className="mt-14" {...{ [INBODY_LEEFSTIJLCHECK_CTA_ATTR]: "" }}>
-                <div className="text-center p-8 bg-green-50 rounded-2xl border border-green-200">
-                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-gray-900">
-                    Ontdek Waar Jij Staat
-                  </h2>
-                  <p className="mt-3 text-gray-600 max-w-lg mx-auto leading-relaxed">
-                    Stress is één van de vijf leefstijldomeinen die we meten in de Leefstijlcheck.
-                    In 3 minuten weet je hoe je scoort op stress, slaap, voeding, beweging en
-                    verbinding — en welk profiel bij jou past.
-                  </p>
-                  <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
-                  <Link
-                    href="/intake"
-                    className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
-                  >
-                    Zie waar jouw stress, slaap en energie scoren — gratis →
-                  </Link>
-                </div>
-              </section>
 
               {/* 12. FAQ */}
               <section id="veelgestelde-vragen" className="mt-14">

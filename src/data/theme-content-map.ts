@@ -8,12 +8,12 @@ export interface ThemeContentLinks {
 
 export const THEME_CONTENT_MAP: Record<ThemeSlug, ThemeContentLinks> = {
   sleep: {
-    pillarHref: "/slaap-verbeteren-na-40",
+    pillarHref: "/slaap-en-voeding",
     profileSlug: "onrustige-slaper",
     knowledgeSlugs: ["melatonine", "cortisol", "magnesiumvormen"],
   },
   stress: {
-    pillarHref: "/stress-verminderen-na-40",
+    pillarHref: "/stress-en-voeding",
     profileSlug: "stressdrager",
     knowledgeSlugs: ["cortisol", "hpa-as", "nervus-vagus"],
   },
@@ -23,7 +23,7 @@ export const THEME_CONTENT_MAP: Record<ThemeSlug, ThemeContentLinks> = {
     knowledgeSlugs: ["eiwitbehoefte-na-40", "insulineresistentie"],
   },
   movement: {
-    pillarHref: "/beweging-na-40",
+    pillarHref: "/beweging-en-voeding",
     profileSlug: "overtrainer",
     knowledgeSlugs: ["eiwitbehoefte-na-40", "overtrainingssyndroom"],
   },

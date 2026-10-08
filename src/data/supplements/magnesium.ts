@@ -36,7 +36,7 @@ export const magnesiumData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/slaap-verbeteren-na-40",
+      href: "/slaap-en-voeding",
       text: "Slaap na 30 in context — ritme, licht en supplementen in één pillar.",
       cta: "Naar slaap-pillar →",
     },

@@ -104,7 +104,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
           showWhen: { type: "answerAtLeast", question: "MOV_CARD", value: 3 },
           link: {
             label: "Beweging na 30 — kracht & conditie",
-            href: "/beweging-na-40",
+            href: "/beweging-en-voeding",
             kind: "article",
           },
           tags: ["conditie", "onderhoud"],

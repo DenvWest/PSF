@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
-import { INTAKE_CTA } from "@/lib/intake-product-copy";
+import GuideNutritionZoom from "@/components/content/GuideNutritionZoom";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
-import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import ArticleFigure from "@/components/article/ArticleFigure";
-import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { testosteronNa40References } from "@/data/references/testosteron-na-40";
 import { jsonLdScript } from "@/lib/seo/structuredData";
 
@@ -30,15 +28,15 @@ const BODY_IMAGE = {
 };
 
 export const metadata: Metadata = {
-  title: "Testosteron na 30: wat verandert en wat je zelf kunt doen",
+  title: "Testosteron en voeding na 30: leefstijl, zink en eiwit",
   description:
-    "Testosteron na 30 in begrijpelijke taal: leeftijdstrend, slaap, stress en training — zonder diagnoses. Links naar vergelijkingen en cluster-artikelen.",
-  ...canonicalMetadata("/testosteron-na-40"),
+    "Hormoonbalans na 30 voor mannen en vrouwen: slaap, stress, training en voeding (eiwit, zink, vitamine D). Zonder diagnoses of beloftes.",
+  ...canonicalMetadata("/testosteron-en-voeding"),
   openGraph: {
-    title: "Testosteron na 30: complete gids",
+    title: "Testosteron en voeding na 30: leefstijl, zink en eiwit",
     description:
       "Wat verandert na 30, wat onderzoek redelijkerwijs zegt en welke stappen je veilig eerst zet.",
-    url: "/testosteron-na-40",
+    url: "/testosteron-en-voeding",
     type: "article",
     images: [{ url: COVER.src, alt: COVER.alt }],
   },
@@ -47,7 +45,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Testosteron na 30: wat verandert en wat je zelf kunt doen",
+  headline: "Testosteron en voeding na 30: leefstijl, zink en eiwit",
   description:
     "Testosteron na 30: leefstijl, verwachtingen en wanneer medische hulp past.",
   image: [`https://perfectsupplement.nl${COVER.src}`],
@@ -63,7 +61,7 @@ const articleSchema = {
   },
   datePublished: "2026-05-14",
   dateModified: "2026-05-20",
-  mainEntityOfPage: "https://perfectsupplement.nl/testosteron-na-40",
+  mainEntityOfPage: "https://perfectsupplement.nl/testosteron-en-voeding",
 };
 
 const faqItems = [
@@ -124,7 +122,7 @@ export default function TestosteronNa40Page() {
                   Complete gids
                 </p>
                 <h1 className="mt-2 font-serif text-4xl font-bold text-gray-900 md:text-5xl">
-                  Testosteron na 30: wat verandert en wat je zelf kunt doen
+                  Testosteron en voeding na 30: wat je zelf kunt doen
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 14 min
@@ -148,6 +146,11 @@ export default function TestosteronNa40Page() {
                   <li>
                     <a href="#herkenning" className="hover:underline">
                       Ken je dit?
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Zoom in op voeding
                     </a>
                   </li>
                   <li>
@@ -186,8 +189,8 @@ export default function TestosteronNa40Page() {
                     </a>
                   </li>
                   <li>
-                    <a href="#leefstijlcheck" className="hover:underline">
-                      Leefstijlcheck
+                    <a href="#wat-mis-je" className="hover:underline">
+                      Wat mis je? Zoom in op voeding
                     </a>
                   </li>
                   <li>
@@ -207,7 +210,7 @@ export default function TestosteronNa40Page() {
               </p>
 
               <p className="mt-6 text-sm text-gray-500">
-                {INTAKE_CTA.testosteronTeaser}
+                Benieuwd wat jouw voeding mist? Scroll naar beneden voor de gratis check Wat mis je?.
               </p>
 
               <section id="herkenning" className="mt-12 scroll-mt-24">
@@ -231,6 +234,8 @@ export default function TestosteronNa40Page() {
                   huisarts te bespreken.
                 </p>
               </section>
+
+              <GuideNutritionZoom guide="testosteron" />
 
               <ArticleFigure
                 src={BODY_IMAGE.src}
@@ -302,7 +307,7 @@ export default function TestosteronNa40Page() {
                     cortisol en testosteron
                   </Link>{" "}
                   en de gids{" "}
-                  <Link href="/stress-verminderen-na-40" className={LINK}>
+                  <Link href="/stress-en-voeding" className={LINK}>
                     stress verminderen
                   </Link>{" "}
                   voor wat je met je gedrag kunt doen — vóór je aan supplementen denkt.
@@ -324,7 +329,7 @@ export default function TestosteronNa40Page() {
                     slaapschuld
                   </Link>{" "}
                   en de gids{" "}
-                  <Link href="/slaap-verbeteren-na-40" className={LINK}>
+                  <Link href="/slaap-en-voeding" className={LINK}>
                     slaap verbeteren na 30
                   </Link>
                   .
@@ -337,7 +342,7 @@ export default function TestosteronNa40Page() {
                   2–3× per week krachttraining met progressieve belasting ondersteunt spierbehoud —
                   relevant naast hormoonverhalen, geen vervanging van medische beoordeling. Eiwit
                   (≈1,6–2 g/kg lichaamsgewicht als richtlijn met je diëtist/arts) en herstel: zie{" "}
-                  <Link href="/herstel-verbeteren-na-40" className={LINK}>
+                  <Link href="/herstel-en-voeding" className={LINK}>
                     herstel verbeteren na 30
                   </Link>{" "}
                   en{" "}
@@ -439,7 +444,7 @@ export default function TestosteronNa40Page() {
                   vooral bij{" "}
                   <strong className="text-gray-900">spierbehoud en krachttraining na 30</strong>,
                   naast slaap, eiwit via voeding en stressmanagement. Meer diepgang:{" "}
-                  <Link href="/herstel-verbeteren-na-40" className={LINK}>
+                  <Link href="/herstel-en-voeding" className={LINK}>
                     herstel verbeteren na 30
                   </Link>{" "}
                   en{" "}
@@ -521,11 +526,11 @@ export default function TestosteronNa40Page() {
                 <div className="mt-4 rounded-xl border border-stone-200 bg-stone-50 p-6">
                   <p className="text-lg font-semibold text-gray-900">Week 4 — Meten</p>
                   <p className="mt-3 leading-relaxed text-gray-700">
-                    Doe de{" "}
+                    Doe de check{" "}
                     <Link href="/intake" className={LINK}>
-                      Leefstijlcheck
+                      Wat mis je?
                     </Link>{" "}
-                    opnieuw. Vergelijk slaap-, stress- en energie-scores. Blijven klachten? Bespreek
+                    opnieuw en kijk of je voeding meebeweegt. Vergelijk met je vorige uitkomst. Blijven klachten? Bespreek
                     bloedonderzoek met je huisarts — niet zelf supplementen stapelen.
                   </p>
                 </div>
@@ -577,25 +582,6 @@ export default function TestosteronNa40Page() {
                   </Link>
                   .
                 </p>
-              </section>
-
-              <section id="leefstijlcheck" className="mt-14 scroll-mt-24" {...{ [INBODY_LEEFSTIJLCHECK_CTA_ATTR]: "" }}>
-                <div className="rounded-2xl border border-green-200 bg-green-50 p-8 text-center">
-                  <h2 className="font-serif text-2xl font-bold text-gray-900 md:text-3xl">
-                    Ontdek Waar Jij Staat
-                  </h2>
-                  <p className="mx-auto mt-3 max-w-lg leading-relaxed text-gray-600">
-                    Testosteron speelt mee in een groter plaatje. In 3 minuten zie je hoe je scoort
-                    op slaap, stress, energie, herstel, voeding en beweging — en welk profiel past.
-                  </p>
-                  <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
-                  <Link
-                    href="/intake"
-                    className="mt-5 inline-block rounded-lg bg-green-700 px-8 py-3 font-semibold text-white transition-colors hover:bg-green-800"
-                  >
-                    Zie waar jouw slaap, stress en energie scoren — gratis →
-                  </Link>
-                </div>
               </section>
 
               <section id="veelgestelde-vragen" className="mt-14 scroll-mt-24">

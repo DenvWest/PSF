@@ -199,7 +199,7 @@ export const eiwitpoederGidsData: SupplementData = {
       titel: "Beste creatine: herstel en kracht ondersteunen",
     },
     {
-      href: "/slaap-verbeteren-na-40",
+      href: "/slaap-en-voeding",
       titel: "Slaap verbeteren na 30: herstel begint 's nachts",
     },
   ],

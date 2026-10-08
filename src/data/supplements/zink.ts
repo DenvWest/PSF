@@ -38,7 +38,7 @@ export const zinkData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/testosteron-na-40",
+      href: "/testosteron-en-voeding",
       text: "Testosteron na 30 in voorzichtige taal: leefstijl eerst, labwaarden met zorgverlener.",
       cta: "Naar testosteron-pillar →",
     },

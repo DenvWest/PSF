@@ -46,7 +46,7 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
     "Grenzen zijn afspraken over beschikbaarheid en prioriteit — geen zwakte. Werk met duidelijke scope, tijdslots en nee met alternatief; bij structurele miskenning is de oorzaak vaak breder dan jouw assertiviteit.",
   cornerstoneLink: {
     label: "Hoofdstuk-gids: stress verminderen na 30",
-    href: "/stress-verminderen-na-40",
+    href: "/stress-en-voeding",
   },
   gerelateerdeSluggen: [
     "ademhaling-tegen-stress",
