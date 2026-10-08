@@ -23,8 +23,8 @@ export type Guide = {
   promise: string;
   /** PDF-download nog niet live — toon coming-soon i.p.v. download-CTA */
   comingSoon?: boolean;
-  /** Webgids-URL wanneer comingSoon (bijv. pillar-pagina) */
-  contentHref?: string;
+  /** Webgids-URL (pillar-pagina); bij comingSoon ook het doel van de opt-in */
+  webgidsHref: string;
   /** Vervangt de standaard coming-soon-tekst wanneer er geen pijlerpagina is */
   comingSoonNote?: string;
   /** Vervangt het label "Lees de webgids →" */
@@ -84,6 +84,7 @@ export const GUIDE_TRUST_ITEMS: GuideTrustItem[] = [
 export const GUIDES: Guide[] = [
   {
     key: "slaap",
+    webgidsHref: "/slaap-en-voeding",
     title: "Slaap",
     accent: "oklch(0.70 0.05 205)",
     tag: "Herstel & ritme",
@@ -133,6 +134,7 @@ export const GUIDES: Guide[] = [
   },
   {
     key: "stress",
+    webgidsHref: "/stress-en-voeding",
     title: "Stress",
     accent: "oklch(0.69 0.055 172)",
     tag: "Mentale balans",
@@ -180,6 +182,7 @@ export const GUIDES: Guide[] = [
   },
   {
     key: "energie",
+    webgidsHref: "/energie-en-voeding",
     title: "Energie",
     accent: "oklch(0.73 0.085 128)",
     tag: "Vitaliteit",
@@ -227,6 +230,7 @@ export const GUIDES: Guide[] = [
   },
   {
     key: "herstel",
+    webgidsHref: "/herstel-en-voeding",
     title: "Herstel",
     accent: "oklch(0.70 0.065 150)",
     tag: "Veerkracht",
@@ -279,7 +283,7 @@ export const GUIDES: Guide[] = [
     tag: "Kracht & conditie",
     focusCategories: ["energie-vitaliteit"],
     comingSoon: true,
-    contentHref: "/beweging-en-voeding",
+    webgidsHref: "/beweging-en-voeding",
     promise: "Sterk en soepel blijven — ook als je al 'best actief' bent.",
     heroTitle: "Sterk blijven. Soepel bewegen. Zelfstandig ouder worden.",
     heroSub:
@@ -329,7 +333,7 @@ export const GUIDES: Guide[] = [
     focusCategories: ["hormonaal", "slaap-herstel"],
     audience: "vrouwen",
     comingSoon: true,
-    contentHref: "/overgang-en-voeding",
+    webgidsHref: "/overgang-en-voeding",
     comingSoonNote:
       "We werken aan de PDF. De volledige gids staat al op onze website — inclusief bronnen.",
     comingSoonCta: "Lees de webgids →",
@@ -384,7 +388,7 @@ export const GUIDES: Guide[] = [
     tag: "Hormonale balans",
     focusCategories: ["hormonaal", "energie-vitaliteit"],
     comingSoon: true,
-    contentHref: "/testosteron-en-voeding",
+    webgidsHref: "/testosteron-en-voeding",
     comingSoonNote:
       "De volledige webgids over leefstijl en vitaliteit na 30 staat al op onze website, voor mannen en vrouwen. Met een voedingszoom en bronnen.",
     comingSoonCta: "Lees de testosteron-webgids →",
