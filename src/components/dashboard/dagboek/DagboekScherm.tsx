@@ -43,6 +43,7 @@ import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht"
 import { weekDatums, weekStart } from "@/lib/nutrition-weekoverzicht";
 import DagboekCatalogusZoek, {
   type DagboekZoekTab,
+  type ZoekStaat,
   type GekozenSupplement,
 } from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
 import DagboekKrans from "@/components/dashboard/dagboek/DagboekKrans";
@@ -94,7 +95,7 @@ type ZoekContext = { nutrient: NutrientId | null; moment: EetmomentId };
 type NutrientScherm =
   | { scherm: "overzicht" }
   | { scherm: "detail"; nutrient: NutrientId }
-  | { scherm: "zoek"; nutrient: NutrientId | null; moment: EetmomentId; startTab?: DagboekZoekTab }
+  | { scherm: "zoek"; nutrient: NutrientId | null; moment: EetmomentId; startTab?: DagboekZoekTab; staat?: ZoekStaat }
   | {
       scherm: "portie";
       nutrient: NutrientId | null;
@@ -195,6 +196,16 @@ export default function DagboekScherm({
    * nummer mag nog state zetten — zie `bewaar`.
    */
   const schrijfTeller = useRef(0);
+  const zoekStaatRef = useRef<ZoekStaat>({ zoek: "", tab: "alle" });
+  const onZoekStaat = useCallback((staat: ZoekStaat) => {
+    zoekStaatRef.current = staat;
+  }, []);
+  const terugNaarZoek = (nutrient: NutrientId | null, moment: EetmomentId): NutrientScherm => ({
+    scherm: "zoek",
+    nutrient,
+    moment,
+    staat: zoekStaatRef.current,
+  });
   const [laden, setLaden] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [scherm, setScherm] = useState<NutrientScherm>({ scherm: "overzicht" });
@@ -596,7 +607,7 @@ export default function DagboekScherm({
       surface: "dagboek_tab",
     });
     trackEvent("nutrition_dagboek_portie_bevestigd", { nutrient: nutrient ?? "geen", bron });
-    setScherm({ scherm: "zoek", nutrient, moment });
+    setScherm(terugNaarZoek(nutrient, moment));
   }
 
   /** De ster-knop: optimistisch bijwerken, dan pas de server-call. */
@@ -759,10 +770,10 @@ export default function DagboekScherm({
         product={scherm.product}
         moment={scherm.moment}
         busy={busySupermarkt}
-        onTerug={() => setScherm({ scherm: "zoek", nutrient: null, moment: scherm.moment })}
+        onTerug={() => setScherm(terugNaarZoek(null, scherm.moment))}
         onBevestig={(gekozenMoment, grams) => {
           void voegSupermarktPortieToe(gekozenMoment, scherm.product, grams);
-          setScherm({ scherm: "zoek", nutrient: null, moment: gekozenMoment });
+          setScherm(terugNaarZoek(null, gekozenMoment));
         }}
       />
     );
@@ -782,7 +793,7 @@ export default function DagboekScherm({
         busyFavoriet={busyFavoriet}
         onBewaarFavoriet={(bron, k) => void bewaarFavoriet(bron, k)}
         onVerwijderFavoriet={(bron, k) => void verwijderFavoriet(bron, k)}
-        onTerug={() => setScherm({ scherm: "zoek", nutrient, moment: portieMoment })}
+        onTerug={() => setScherm(terugNaarZoek(nutrient, portieMoment))}
         onBevestig={(gekozenMoment, grams) =>
           voegNutrientItemToe(nutrient, "voeding", key, gekozenMoment, grams)
         }
@@ -797,7 +808,9 @@ export default function DagboekScherm({
       <>
         <DagboekCatalogusZoek
           nutrient={nutrient}
-          startTab={scherm.scherm === "zoek" ? scherm.startTab : undefined}
+          startTab={scherm.scherm === "zoek" ? (scherm.staat?.tab ?? scherm.startTab) : undefined}
+          startZoek={scherm.scherm === "zoek" ? scherm.staat?.zoek : undefined}
+          onStaatChange={onZoekStaat}
           eerderGebruikt={recenteItems}
           favorieten={favorieten}
           moment={moment}
@@ -841,7 +854,7 @@ export default function DagboekScherm({
             busyFavoriet={busyFavoriet}
             onBewaarFavoriet={(bron, key) => void bewaarFavoriet(bron, key)}
             onVerwijderFavoriet={(bron, key) => void verwijderFavoriet(bron, key)}
-            onTerug={() => setScherm({ scherm: "zoek", nutrient, moment })}
+            onTerug={() => setScherm(terugNaarZoek(nutrient, moment))}
             onBevestig={(gekozenMoment, grams) =>
               voegNutrientItemToe(nutrient, "supplement", scherm.key, gekozenMoment, grams, scherm.product)
             }
@@ -874,7 +887,7 @@ export default function DagboekScherm({
         geselecteerd={vergelijkSelectie}
         onToggle={toggleVergelijk}
         onTerug={() =>
-          setScherm(terugNaar ? { scherm: "zoek", ...terugNaar } : { scherm: "overzicht" })
+          setScherm(terugNaar ? terugNaarZoek(terugNaar.nutrient, terugNaar.moment) : { scherm: "overzicht" })
         }
         terugLabel={terugNaar ? "Terug naar zoeken" : undefined}
         onVergelijk={() => {
