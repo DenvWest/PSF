@@ -2,11 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
-import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
-import { bedragVanItem } from "@/lib/nutrition-dagboek-items";
+import {
+  bedragVanItem,
+  supplementVanItem,
+  type DagboekSupplementProduct,
+} from "@/lib/nutrition-dagboek-items";
 import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 
@@ -25,6 +28,7 @@ import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
  */
 export default function DagboekPortieInvoer({
   itemKey,
+  product,
   nutrient = null,
   moment,
   favorieten,
@@ -36,6 +40,8 @@ export default function DagboekPortieInvoer({
   busyFavoriet = false,
 }: {
   itemKey: string;
+  /** Een merkproduct uit Keuze: telt in dagdoses volgens het etiket, zonder ster (het staat al in Mijn keuzes). */
+  product?: DagboekSupplementProduct;
   /** De stof waarvandaan je kwam — bepaalt welke bijdrage hier getoond wordt. Null vanuit een maaltijd: dan tonen we alle stoffen. */
   nutrient?: NutrientId | null;
   /** Waar dit item heen gaat. Gekozen op het zoekscherm; hier alleen ter bevestiging. */
@@ -49,7 +55,7 @@ export default function DagboekPortieInvoer({
   busy?: boolean;
   busyFavoriet?: boolean;
 }) {
-  const entry = supplementCatalogEntry(itemKey);
+  const entry = supplementVanItem({ bron: "supplement", key: itemKey, product });
   const label = entry?.labelNl ?? null;
   const bewaard = favorieten.some((f) => f.bron === "supplement" && f.key === itemKey);
   const momentLabel = EETMOMENTEN.find((m) => m.id === moment)?.label.toLowerCase() ?? "je dag";
@@ -61,14 +67,14 @@ export default function DagboekPortieInvoer({
   // optimaliseren als er geen handmatige memoisatie omheen staat.
   const bijdrage =
     label && nutrient
-      ? bedragVanItem({ moment, bron: "supplement", key: itemKey, grams: aantalPorties }, nutrient)
+      ? bedragVanItem({ moment, bron: "supplement", key: itemKey, product, grams: aantalPorties }, nutrient)
       : null;
 
   /** Zonder stof-context: de bijdrage aan alle stoffen die dit item raakt. */
   const alleBijdragen = label
     ? NUTRIENT_ORDER.map((n) => ({
         nutrient: n,
-        bedrag: bedragVanItem({ moment, bron: "supplement", key: itemKey, grams: aantalPorties }, n),
+        bedrag: bedragVanItem({ moment, bron: "supplement", key: itemKey, product, grams: aantalPorties }, n),
       })).filter(
         (rij): rij is { nutrient: NutrientId; bedrag: NonNullable<typeof rij.bedrag> } =>
           rij.bedrag !== null,
@@ -141,27 +147,29 @@ export default function DagboekPortieInvoer({
               {label}
             </span>
             <span className="block text-[10.5px] text-[var(--vd-ink-4)]">
-              supplement · naar {momentLabel}
+              {product ? "jouw keuze · etiket per dag" : "supplement"} · naar {momentLabel}
             </span>
           </span>
-          <button
-            type="button"
-            disabled={busyFavoriet}
-            onClick={() =>
-              bewaard
-                ? onVerwijderFavoriet("supplement", itemKey)
-                : onBewaarFavoriet("supplement", itemKey)
-            }
-            aria-label={
-              bewaard ? `Verwijder ${label} uit favorieten` : `Bewaar ${label} als favoriet`
-            }
-            aria-pressed={bewaard}
-            className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
-              bewaard ? "text-[var(--vd-amber)]" : "text-[var(--vd-ink-4)] hover:text-[var(--vd-amber)]"
-            }`}
-          >
-            <Icons.Star s={18} filled={bewaard} />
-          </button>
+          {product ? null : (
+            <button
+              type="button"
+              disabled={busyFavoriet}
+              onClick={() =>
+                bewaard
+                  ? onVerwijderFavoriet("supplement", itemKey)
+                  : onBewaarFavoriet("supplement", itemKey)
+              }
+              aria-label={
+                bewaard ? `Verwijder ${label} uit favorieten` : `Bewaar ${label} als favoriet`
+              }
+              aria-pressed={bewaard}
+              className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
+                bewaard ? "text-[var(--vd-amber)]" : "text-[var(--vd-ink-4)] hover:text-[var(--vd-amber)]"
+              }`}
+            >
+              <Icons.Star s={18} filled={bewaard} />
+            </button>
+          )}
         </header>
 
         <label className="flex items-center gap-2.5">

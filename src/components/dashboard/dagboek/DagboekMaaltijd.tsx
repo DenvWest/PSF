@@ -2,7 +2,6 @@
 
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { FOOD_CATALOG_NEVO_BENADERINGEN } from "@/data/nutrition/food-catalog-nevo-gehaltes";
-import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
@@ -11,6 +10,7 @@ import {
   nutrientenUitItems,
   weergaveVanItem,
   type DagboekItem,
+  supplementVanItem,
 } from "@/lib/nutrition-dagboek-items";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
@@ -90,14 +90,14 @@ function benaderingVan(item: DagboekItem): string | null {
 
 /** Het label voor een item — voeding uit FOOD_CATALOG, supplement uit SUPPLEMENT_CATALOG. */
 function labelVoor(item: DagboekItem): string | null {
-  if (item.bron === "supplement") return supplementCatalogEntry(item.key)?.labelNl ?? null;
+  if (item.bron === "supplement") return supplementVanItem(item)?.labelNl ?? null;
   return catalogEntry(item.key)?.labelNl ?? null;
 }
 
 /** De portie-eenheid onder de invoer: gram bij voeding, de eigen portienaam bij een supplement. */
 function eenheidVoor(item: DagboekItem): string {
   if (item.bron === "supplement") {
-    return supplementCatalogEntry(item.key)?.porties[0]?.labelNl ?? "portie";
+    return supplementVanItem(item)?.porties[0]?.labelNl ?? "portie";
   }
   return "g";
 }

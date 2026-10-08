@@ -3,8 +3,12 @@ import { normVoorVeld, STANDAARD_GEVOLGDE_NORMEN } from "@/lib/nutrition-normen"
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { isVrijgegevenBenadering } from "@/lib/nutrition-catalog-gehalte";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
-import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
-import { itemsVanMoment, nutrientenGesplitstUitItems, type DagboekItem } from "@/lib/nutrition-dagboek-items";
+import {
+  itemsVanMoment,
+  nutrientenGesplitstUitItems,
+  supplementVanItem,
+  type DagboekItem,
+} from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import type { SupermarktPortie } from "@/lib/nutrition-supermarkt-items";
 import { BASE_UNIT } from "@/lib/nutrition-units";
@@ -209,7 +213,7 @@ function productenVan(
   for (const { items, etiket } of keren) {
     for (const item of items) {
       if (item.bron === "supplement") {
-        const entry = supplementCatalogEntry(item.key);
+        const entry = supplementVanItem(item);
         if (entry) tel(entry.labelNl, item.grams, "portie", true, { items: [item], etiket: [] });
       } else {
         const entry = catalogEntry(item.key);

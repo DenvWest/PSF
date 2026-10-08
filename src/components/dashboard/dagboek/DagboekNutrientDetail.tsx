@@ -2,7 +2,6 @@
 
 import { catalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
-import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import DagboekRijksteBronnen from "@/components/dashboard/dagboek/DagboekRijksteBronnen";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
@@ -11,6 +10,7 @@ import {
   bedragVanItem,
   type DagboekItem,
   type NutrientOndergrensGesplitst,
+  supplementVanItem,
 } from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN } from "@/lib/nutrition-eetmomenten";
 
@@ -29,7 +29,7 @@ import { EETMOMENTEN } from "@/lib/nutrition-eetmomenten";
  */
 
 function labelVoorItem(item: DagboekItem): string | null {
-  if (item.bron === "supplement") return supplementCatalogEntry(item.key)?.labelNl ?? null;
+  if (item.bron === "supplement") return supplementVanItem(item)?.labelNl ?? null;
   return catalogEntry(item.key)?.labelNl ?? null;
 }
 
@@ -206,7 +206,7 @@ export default function DagboekNutrientDetail({
                     if (!itemLabel) return null;
                     const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
                     const supplementEntry =
-                      item.bron === "supplement" ? supplementCatalogEntry(item.key) : null;
+                      item.bron === "supplement" ? supplementVanItem(item) : null;
                     const breedte = grootste > 0 ? Math.max(4, (bedrag.value / grootste) * 100) : 0;
                     return (
                       <li

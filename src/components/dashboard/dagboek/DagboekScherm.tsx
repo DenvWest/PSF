@@ -22,7 +22,13 @@ import {
   portiesUitItems,
   type DagboekItem,
   type DagboekItemBron,
+  type DagboekSupplementProduct,
 } from "@/lib/nutrition-dagboek-items";
+import { actueleDagboekProducten, dagboekProductVan } from "@/lib/keuze-dagboek-product";
+import { productKeuzeVoorStof } from "@/lib/keuze-product-keuze";
+import { NUTRIENT_ORDER } from "@/lib/nutrition-food-index";
+import { keuzeProductVoorSlug, type KeuzeProduct } from "@/lib/supplement-hub/ps-score-per-stof";
+import { useOptionalVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
 import type { ProteinTargetRange } from "@/lib/protein-target";
@@ -35,7 +41,10 @@ import { fetchMacroDoelen } from "@/lib/macro-doelen-client";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
 import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
 import { weekDatums, weekStart } from "@/lib/nutrition-weekoverzicht";
-import DagboekCatalogusZoek, { type DagboekZoekTab } from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
+import DagboekCatalogusZoek, {
+  type DagboekZoekTab,
+  type GekozenSupplement,
+} from "@/components/dashboard/dagboek/DagboekCatalogusZoek";
 import DagboekKrans from "@/components/dashboard/dagboek/DagboekKrans";
 import DagboekMaaltijd from "@/components/dashboard/dagboek/DagboekMaaltijd";
 import DagboekMacroRing, {
@@ -92,6 +101,8 @@ type NutrientScherm =
       bron: DagboekItemBron;
       key: string;
       moment: EetmomentId;
+      /** Een merkproduct uit Keuze, met zijn etiket per dag. */
+      product?: DagboekSupplementProduct;
     }
   | {
       /**
@@ -132,17 +143,34 @@ type NutrientScherm =
 
 const MAX_TREFFERS = 8;
 
+const GEEN_KEUZE_PRODUCTEN: readonly KeuzeProduct[] = [];
+
 /** De drie macro-velden die het "Macro's"-tabblad toont, uit `SUPERMARKT_MACRO_VELDEN`. */
 const MACRO_VELDEN = new Set<SupermarktVeld>(["carbohydrateG", "fatG", "proteinG"]);
 
 export default function DagboekScherm({
   checkSliders = null,
   proteinTarget = null,
+  keuzeProducten = GEEN_KEUZE_PRODUCTEN,
 }: {
   checkSliders?: Record<string, number> | null;
   proteinTarget?: ProteinTargetRange | null;
+  /** De hubproducten van de vijf kernstoffen: wat je in Keuze koos, kun je hier loggen. */
+  keuzeProducten?: readonly KeuzeProduct[];
 }) {
   void checkSliders;
+
+  const keuzeFavorieten = useOptionalVoortgangFavorites()?.items;
+  const actueleProducten = useMemo(() => actueleDagboekProducten(keuzeProducten), [keuzeProducten]);
+  const gekozenSupplementen = useMemo((): GekozenSupplement[] => {
+    if (!keuzeFavorieten) return [];
+    return NUTRIENT_ORDER.flatMap((stof) => {
+      const slug = productKeuzeVoorStof(stof, keuzeFavorieten);
+      const keuze = slug ? keuzeProductVoorSlug(stof, slug, keuzeProducten) : null;
+      const product = keuze ? dagboekProductVan(keuze) : null;
+      return keuze && product ? [{ key: keuze.slug, product }] : [];
+    });
+  }, [keuzeFavorieten, keuzeProducten]);
 
   const vandaag = todayInAgendaTimezone();
   const [dagen, setDagen] = useState<DagboekDag[]>([]);
@@ -202,7 +230,12 @@ export default function DagboekScherm({
       const zoek = leesDagboekZoek(window.location.search);
       if (!voeg && !favorietenTab && !zoek) return;
       wisDagboekVoeg();
-      if (voeg) {
+      if (voeg?.bron === "product") {
+        const product = actueleProducten.get(voeg.key);
+        if (product) {
+          setScherm({ scherm: "portie", nutrient: null, bron: "supplement", key: voeg.key, moment: voeg.moment, product });
+        }
+      } else if (voeg) {
         setScherm({ scherm: "portie", nutrient: null, bron: voeg.bron, key: voeg.key, moment: voeg.moment });
       } else if (favorietenTab) {
         setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt", startTab: favorietenTab });
@@ -213,7 +246,7 @@ export default function DagboekScherm({
     openGevraagd();
     window.addEventListener("popstate", openGevraagd);
     return () => window.removeEventListener("popstate", openGevraagd);
-  }, []);
+  }, [actueleProducten]);
 
   useEffect(() => {
     let afgebroken = false;
@@ -553,8 +586,9 @@ export default function DagboekScherm({
     key: string,
     moment: EetmomentId,
     grams: number,
+    product?: DagboekSupplementProduct,
   ) {
-    wijzig([...items, { moment, bron, key, grams }]);
+    wijzig([...items, { moment, bron, key, grams, ...(product ? { product } : {}) }]);
     emitAccountClientEvent("nutrition.dagboek_portie_bevestigd", {
       nutrient,
       bron,
@@ -774,14 +808,18 @@ export default function DagboekScherm({
           onTerug={() =>
             setScherm(nutrient ? { scherm: "detail", nutrient } : { scherm: "overzicht" })
           }
-          onKies={(bron, key) => {
+          gekozenSupplementen={gekozenSupplementen}
+          onKies={(bron, key, product) => {
             emitAccountClientEvent("nutrition.dagboek_zoek_item_gekozen", {
               nutrient,
               bron,
               surface: "dagboek_tab",
             });
             trackEvent("nutrition_dagboek_zoek_item_gekozen", { nutrient: nutrient ?? "geen", bron });
-            setScherm({ scherm: "portie", nutrient, bron, key, moment });
+            // Een merkproduct logt met het etiket van nu; een oudere regel uit je
+            // geschiedenis kan een etiket dragen dat de server niet meer aanneemt.
+            const actueel = product ? (actueleProducten.get(key) ?? product) : undefined;
+            setScherm({ scherm: "portie", nutrient, bron, key, moment, ...(actueel ? { product: actueel } : {}) });
           }}
           onKiesSupermarkt={(product) => {
             setScherm({ scherm: "supermarktPortie", product, moment });
@@ -794,6 +832,7 @@ export default function DagboekScherm({
         {scherm.scherm === "portie" && scherm.bron === "supplement" ? (
           <DagboekPortieInvoer
             itemKey={scherm.key}
+            product={scherm.product}
             nutrient={nutrient}
             moment={moment}
             favorieten={favorieten}
@@ -803,7 +842,7 @@ export default function DagboekScherm({
             onVerwijderFavoriet={(bron, key) => void verwijderFavoriet(bron, key)}
             onTerug={() => setScherm({ scherm: "zoek", nutrient, moment })}
             onBevestig={(gekozenMoment, grams) =>
-              voegNutrientItemToe(nutrient, "supplement", scherm.key, gekozenMoment, grams)
+              voegNutrientItemToe(nutrient, "supplement", scherm.key, gekozenMoment, grams, scherm.product)
             }
           />
         ) : null}
