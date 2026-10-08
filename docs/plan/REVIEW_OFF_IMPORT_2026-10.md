@@ -1,7 +1,7 @@
 # Review — OFF-import, bronnenpagina en ODbL-dump (PR #114, #116, #117)
 
 **Datum:** 4 oktober 2026
-**Status:** review afgerond, door Dennis akkoord bevonden (4 okt: "akkoord, leg vast"). Er is niets in code of database gewijzigd; de fixes zijn nog niet gebouwd.
+**Status:** review afgerond, door Dennis akkoord bevonden (4 okt: "akkoord, leg vast"). #1 (stap 1) en #2 gebouwd op 8 okt, zie "Uitvoering 8 oktober"; de data is pas goed nadat Dennis opnieuw heeft geëxtraheerd en geladen. #3 en verder staan nog open.
 **Toetst:** commits `695d8d4d`, `4aced706`, `dee08f11`
 **Tegen:** `BESLUIT_VOEDINGSBRONNEN_LAGEN_2026-10.md`, `ONTWERP_SUPERMARKT_PRODUCTTABEL_2026-10.md`, `BESLUIT_NEVO_BRONVERMELDING.md`, `STEEKPROEF_OFF_DEKKING_2026-10.md`
 
@@ -258,3 +258,48 @@ Vaste barcodes om de fixes en de herkomsttest mee te toetsen. Waarden per 100 g,
 
 - **Voor de jurist (bij vraag 9):** moet de licentie-URI in het bestand zelf staan (#4)?
 - **Voor Dennis:** micro's leeg laten tot er een bron is die etiket en schatting scheidt, of de geschatte waarden houden met een eigen label ("geschat door Open Food Facts")? Advies: leeg laten. Een schatting per product past niet in de laag "merkproducten per barcode", en de typische-waardenlaag is nog niet besloten.
+
+## Uitvoering 8 oktober
+
+**Besloten:** de micro's leeg laten (het advies hierboven), niet markeren. Markeren vraagt een extra kolom per stof en een label in de UI, voor waarden waarvan we per product niet weten of ze van het etiket komen. De typische-waardenlaag is nog niet besloten.
+
+**Gebouwd (branch `fix/off-eenheid-micros`):**
+- `scripts/off-extract.py`: het `100g`-veld wordt als gram gelezen, `unit` telt alleen nog bij energie (#2). Calcium, ijzer, vitamine C en vitamine D worden niet meer overgenomen en komen als `null` in het bestand (#1, stap 1). `MICRO_MAX` blijft staan voor als de micro's terugkomen.
+- `scripts/__tests__/off_extract_test.py` (via `off-extract.test.mjs` in vitest): zout en natrium ingevoerd in mg, het `100g`-veld in gram, en geen micro's in de uitvoer.
+- `/bronnen`, "Wat wij hebben aangepast": natrium omgerekend, en de vier micro's leeggelaten met de reden. Bij de kolommen: "De vier laatste kolommen zijn voorlopig leeg."
+- Geen migratie: de kolommen blijven bestaan, ze worden leeg.
+
+**Volgorde voor Dennis:** eerst de data, dan pas deployen. Anders zegt `/bronnen` al "leeg" terwijl de dump de oude waarden nog geeft.
+
+1. De micro's direct leegmaken (Supabase Dashboard → SQL Editor). Dit dekt ook rijen die in een nieuwere dump niet meer voorkomen; de upsert verwijdert of overschrijft die nooit (#7):
+   ```sql
+   update sm_products
+      set calcium_mg = null, iron_mg = null, vitamin_c_mg = null, vitamin_d_ug = null
+    where bron = 'off';
+   ```
+2. Na de merge, in `~/psf`, de dump ophalen en opnieuw extraheren (± 8 GB; venv buiten het project):
+   ```bash
+   mkdir -p ~/off && curl -L -o ~/off/food.parquet https://huggingface.co/datasets/openfoodfacts/product-database/resolve/main/food.parquet
+   python3 -m venv ~/offenv && ~/offenv/bin/pip install duckdb
+   cd ~/psf && ~/offenv/bin/python scripts/off-extract.py --parquet="$HOME/off/food.parquet" --snapshot=$(date +%F)
+   ```
+   `--snapshot` is de downloaddatum. De tellers op stderr horen in de buurt van 4 okt te liggen (58.690 geschreven); bij een nieuwere dump mag dat iets afwijken.
+3. Droogloop, dan laden:
+   ```bash
+   node scripts/off-laden.mjs
+   node scripts/off-laden.mjs --schrijf
+   ```
+   Bij "fetch failed" halverwege: gewoon opnieuw draaien, de upsert is idempotent (#7).
+4. Controleren met de testgevallen:
+   ```sql
+   select prod_id, sodium_mg, salt_g, calcium_mg, iron_mg, vitamin_c_mg, vitamin_d_ug, snapshot_datum
+     from sm_products
+    where prod_id in ('off:8718452520671','off:8710400097259','off:8719200054196','off:8713245168016','off:8722100047755');
+   select count(*) filter (where calcium_mg is not null or iron_mg is not null
+                             or vitamin_c_mg is not null or vitamin_d_ug is not null) as met_micro,
+          count(*) filter (where sodium_mg = 0) as natrium_nul,
+          count(*) as totaal
+     from sm_products;
+   ```
+   Verwacht: `met_micro` = 0, alle micro-kolommen bij de vijf barcodes leeg, en minder rijen met natrium 0 dan vóór de fix.
+5. Daarna `bash deploy.sh`, zodat `/bronnen` de nieuwe tekst toont, en de dump één keer downloaden en nakijken.

@@ -24,10 +24,15 @@ https://huggingface.co/datasets/openfoodfacts/product-database (food.parquet).
 
 ## Regels
 
-  - Alleen waarden zoals OFF ze per 100 g/ml geeft (`100g`-veld). OFF publiceert
-    sodium/calcium/ijzer/vitamine C in gram en vitamine D in gram; die gaan met
-    de eenheid uit de dump naar mg/µg. Dat is een eenheidsomrekening, geen
+  - Alleen waarden zoals OFF ze per 100 g/ml geeft (`100g`-veld). Dat veld staat
+    altijd in gram (energie in kcal), welke eenheid de bijdrager ook invoerde
+    (`unit`). Natrium gaat van gram naar mg. Dat is een eenheidsomrekening, geen
     bewerking van de inhoud.
+  - Calcium, ijzer, vitamine C en vitamine D worden niet overgenomen. De
+    Parquet-dump zet de schattingen die OFF uit de ingrediëntenlijst berekent
+    (`nutriments_estimated` in de API) zonder vlag tussen de etiketwaarden; ± drie
+    kwart van die micro's is zo'n schatting. De kolommen blijven `null` tot er
+    een bron is die etiket en schatting scheidt (REVIEW_OFF_IMPORT_2026-10.md #1).
   - Een rij zonder energy-kcal wordt overgeslagen. Onmogelijke waarden (zelfde
     grenzen als de check-constraints in `20261003090000_sm_products.sql` en
     `isPlausibelSupermarktProduct`) laten de hele rij vallen, zoals de TS-schrijver.
@@ -42,8 +47,6 @@ import os
 import sys
 import unicodedata
 
-import duckdb
-
 OFF_NAAR_KOLOM = {
     "energy-kcal": ("energy_kcal", "kcal"),
     "fat": ("fat_g", "g"),
@@ -54,10 +57,6 @@ OFF_NAAR_KOLOM = {
     "proteins": ("protein_g", "g"),
     "salt": ("salt_g", "g"),
     "sodium": ("sodium_mg", "mg"),
-    "calcium": ("calcium_mg", "mg"),
-    "iron": ("iron_mg", "mg"),
-    "vitamin-c": ("vitamin_c_mg", "mg"),
-    "vitamin-d": ("vitamin_d_ug", "µg"),
 }
 
 NAAR_GRAM = {"g": 1.0, "mg": 1e-3, "µg": 1e-6, "ug": 1e-6, "mcg": 1e-6, "kg": 1e3}
@@ -107,15 +106,15 @@ def normaliseer_zoektekst(tekst):
     return " ".join(zonder.lower().split())
 
 
-def omrekenen(waarde, van_eenheid, doel_eenheid):
-    """Eenheid uit de dump → doeleenheid van de kolom, of None als de eenheid onbekend is."""
+def omrekenen(waarde_100g, invoer_eenheid, doel_eenheid):
+    """`100g`-veld (gram, energie in kcal) → doeleenheid van de kolom.
+
+    `invoer_eenheid` is de eenheid waarin de bijdrager `value` invoerde; die zegt
+    niets over het `100g`-veld en telt alleen bij energie.
+    """
     if doel_eenheid == "kcal":
-        return waarde if van_eenheid in (None, "", "kcal") else None
-    van = NAAR_GRAM.get((van_eenheid or "g").lower())
-    naar = NAAR_GRAM.get(doel_eenheid)
-    if van is None or naar is None:
-        return None
-    return waarde * van / naar
+        return waarde_100g if invoer_eenheid in (None, "", "kcal") else None
+    return waarde_100g / NAAR_GRAM[doel_eenheid]
 
 
 def kies_naam(product_name):
@@ -196,6 +195,8 @@ def main():
     ap.add_argument("--snapshot", required=True, help="YYYY-MM-DD van de dump")
     ap.add_argument("--uit", default="scripts/out/off-nl.ndjson")
     args = ap.parse_args()
+
+    import duckdb
 
     os.makedirs(os.path.dirname(args.uit) or ".", exist_ok=True)
     con = duckdb.connect()
