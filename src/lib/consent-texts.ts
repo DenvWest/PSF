@@ -108,3 +108,15 @@ export const CONTACT_CONSENT_TEXT: Record<
   marketing_email:
     INTAKE_DELIVERABLE.consentLabel,
 };
+
+export type NutritionAiChatConsentType = "nutrition_ai_chat";
+
+/**
+ * CONCEPT — nog niet juridisch getoetst (V3 in BESLUIT_LLM_CHAT_VOEDING_2026-09.md).
+ * Mag pas getoond worden nadat verwerker, regio en deze tekst zijn vastgesteld.
+ */
+export const NUTRITION_AI_CHAT_CONSENT_TEXT: Record<NutritionAiChatConsentType, string> = {
+  nutrition_ai_chat:
+    "Ik geef toestemming dat de tekst die ik in het chatvenster typ wordt verwerkt door een externe verwerker, om mijn dagboek in te vullen en uitleg te krijgen. Dit is geen medisch advies en geen diagnose. Mijn gesprek wordt niet gebruikt om een model te trainen. Ik kan mijn toestemming altijd intrekken en blijf dan gewoon het dagboek zonder chat gebruiken.",
+};
+
