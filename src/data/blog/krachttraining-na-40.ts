@@ -48,7 +48,7 @@ export const krachttrainingNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Herstel — verwachtingen kalibreren",
       tekst:
-        "Krachttraining wordt in literatuur genoemd naast hormonale gezondheid, maar het is geen hormoontherapie. Herstel — slaap, rustdagen, eiwit — bepaalt of je vooruitgang ziet. Train te veel zonder buffer? Bekijk het profiel [Overtrainer](/profiel/overtrainer).",
+        "Krachttraining wordt in literatuur genoemd naast hormonale gezondheid, maar het is geen hormoontherapie. Herstel — slaap, rustdagen, eiwit — bepaalt of je vooruitgang ziet. Train te veel zonder buffer? Lees [herstel en voeding](/herstel-en-voeding).",
     },
     {
       type: "tekst",

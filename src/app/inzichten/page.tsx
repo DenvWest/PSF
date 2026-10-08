@@ -31,7 +31,7 @@ import { jsonLdScript } from "@/lib/seo/structuredData";
 
 const TITLE = "Inzichten — Artikelen & Begrippen per Domein";
 const DESCRIPTION =
-  "Artikelen, deep dives en begrippen over slaap, stress, energie en herstel — gefilterd op wat voor jou relevant is. Start met je domein of doe de Leefstijlcheck.";
+  "Artikelen, deep dives en begrippen over slaap, stress, energie en herstel — gefilterd op wat voor jou relevant is. Start met je domein of doe de check 'Wat mis je?'.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -449,19 +449,14 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
               <Container>
                 <aside className="mx-auto max-w-2xl border-t border-[#E7E5E4] pt-10">
                   <p className="text-sm leading-relaxed text-stone-600">
-                    Wil je weten waar jij staat op{" "}
-                    {activePijler
-                      ? hubLabel.toLowerCase()
-                      : "slaap, stress en energie"}
-                    ? De{" "}
+                    Wil je weten wat jouw voeding mist? De check{" "}
                     <Link
                       href="/intake"
                       className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A]"
                     >
-                      Leefstijlcheck
+                      Wat mis je?
                     </Link>{" "}
-                    geeft je zes scores en een persoonlijk profiel — in
-                    ongeveer vijf minuten.
+                    laat zien welke voedingsstoffen je bord waarschijnlijk mist.
                   </p>
                   <p className="mt-4 text-sm leading-relaxed text-stone-600">
                     Meer context per domein vind je in onze{" "}

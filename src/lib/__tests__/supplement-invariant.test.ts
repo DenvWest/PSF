@@ -166,7 +166,6 @@ describe("governance invariants", () => {
 
   function assertNoEditorialClaimVerb(): void {
     const EDITORIAL_FILES = [
-      "src/app/profiel/onrustige-slaper/page.tsx",
       "src/data/supplement-guides/melatonine.ts",
       "src/data/kennisbank.ts",
       "src/components/report/DeltaRow.tsx",

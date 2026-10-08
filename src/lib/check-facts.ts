@@ -13,6 +13,12 @@ export const CHECK_DURATION_LABEL = getContentCheck("voeding").duurLabel;
 
 export const CHECK_CTA = {
   gratisButton: "Doe de gratis check",
+  discoverButton: "Wat mis je? Doe de gratis check →",
+  discoverButtonShort: "Wat mis je? Doe de gratis check",
+  subline: `${CHECK_QUESTIONS_LABEL} over wat je eet — je ziet welke voedingsstoffen je waarschijnlijk mist.`,
+  micro: `${CHECK_QUESTIONS_LABEL} · ${CHECK_DURATION_LABEL} · gratis · anoniem — geen medische test, wel zicht op wat je voeding mist.`,
+  guideClosingSubline:
+    "Vaak zit het antwoord eerst op je bord. De check laat zien welke voedingsstoffen je waarschijnlijk mist — en pas daarna of een supplement zinvol is.",
   blogHeadline: "Wil jij zien wat je mist in je voeding?",
   blogSubline: `${CHECK_QUESTIONS_LABEL} · ${CHECK_DURATION_LABEL} · gratis en anoniem`,
   blogClosingHeadline: "Wil jij weten wat jij nodig hebt?",

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { INTAKE_CTA } from "@/lib/intake-product-copy";
+import { CHECK_CTA } from "@/lib/check-facts";
 import Container from "@/components/layout/Container";
 import {
     BlogArticleExcerpt,
@@ -398,13 +398,13 @@ export default function WaarLetJeOpBijOmega3Page() {
                             Weet jij welk supplement bij jou past?
                         </p>
                         <p className="text-base text-stone-500 leading-relaxed mb-6 max-w-md mx-auto">
-                            18 vragen, 3 minuten — direct een persoonlijk leefstijloverzicht.
+                            {CHECK_CTA.subline}
                         </p>
                         <Link
                             href="/intake"
                             className="inline-block bg-ps-green text-white rounded-xl px-8 py-4 text-base font-semibold hover:bg-ps-green-hover transition-colors"
                         >
-                            {INTAKE_CTA.discoverOverview}
+                            {CHECK_CTA.discoverButton}
                         </Link>
                     </div>
                 </Container>

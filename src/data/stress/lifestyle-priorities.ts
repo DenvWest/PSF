@@ -65,7 +65,7 @@ export const STRESS_PRIORITY_LAYERS: readonly StressPriorityLayer[] = [
     summary:
       "Wat je eet ondersteunt herstel — het vervangt geen grenzen. Voeding is de basis; die komt eerst, een supplement pas daarna.",
     actions: [
-      "Doe de voedingscheck als je stress en voeding nog niet gekoppeld hebt.",
+      "Doe de check als je stress en voeding nog niet gekoppeld hebt.",
       "Eet op vaste tijden op drukke dagen — geen extra willpower 's avonds.",
       "Kies één eiwitrijke lunch die je niet overslaat.",
     ],

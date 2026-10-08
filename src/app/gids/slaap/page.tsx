@@ -92,7 +92,7 @@ export default function SlaapGidsPage() {
               </Link>
               {" · "}
               <Link href="/intake" className="font-semibold text-ps-green hover:underline">
-                Gratis Leefstijlcheck
+                Wat mis je? Gratis check
               </Link>
             </p>
           </section>

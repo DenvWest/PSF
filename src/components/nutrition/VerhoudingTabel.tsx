@@ -222,7 +222,7 @@ function Rij({
           <dl className="m-0 flex flex-col gap-2">
             <div>
               <dt className={`m-0 text-[10px] font-semibold uppercase tracking-[0.12em] ${s.kop}`}>
-                Uit je voedingscheck
+                Uit je check
               </dt>
               <dd className={`m-0 mt-0.5 text-[12px] leading-relaxed ${s.tekst} text-pretty`}>
                 Je antwoordde: {rij.answerLabel}
@@ -360,7 +360,7 @@ export default function VerhoudingTabel({
               {gesorteerd.length === 0 ? (
                 <tr>
                   <td colSpan={3} className={`px-3.5 py-3 text-[12.5px] ${s.zacht}`}>
-                    Nog geen voedingscheck — dan blijven de rijen leeg.
+                    Nog geen check gedaan — dan blijven de rijen leeg.
                   </td>
                 </tr>
               ) : (
@@ -432,8 +432,8 @@ export default function VerhoudingTabel({
         </p>
         <p className={`mt-1 m-0 text-[11.5px] leading-relaxed ${s.zacht}`}>
           {checkDatum
-            ? `Uit je voedingscheck van ${checkDatum}.`
-            : "Uit je voedingscheck."}
+            ? `Uit je check van ${checkDatum}.`
+            : "Uit je check."}
         </p>
       </div>
 

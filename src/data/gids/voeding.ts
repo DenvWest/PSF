@@ -30,7 +30,7 @@ export const voedingGuide: GuideOptInData = {
       "Stappen per e-mail: eerst leefstijl, daarna pas vergelijken. Geen dieet-hype, wel haalbare gewoonten.",
     bulletPoints: [
       "Deze week: eiwit bij elke maaltijd — concreet en zonder tellen",
-      "Week 2–4: inzicht in je patroon via een korte voedingscheck",
+      "Week 2–4: inzicht in je patroon via een korte check",
       "Pas daarna: omega-3 of eiwitpoeder alleen als aanvulling",
     ],
     ctaText: "Stuur mij het stappenplan",

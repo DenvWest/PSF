@@ -64,7 +64,7 @@ export default function ProteinTargetCard({
       if (!res.ok) {
         setError(
           res.status === 401
-            ? "Doe eerst de Leefstijlcheck om je eiwitdoel te berekenen."
+            ? "Doe eerst de check 'Wat mis je?' om je eiwitdoel te berekenen."
             : "Er ging iets mis. Probeer het opnieuw.",
         );
         return;

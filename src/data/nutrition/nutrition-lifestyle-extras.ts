@@ -31,8 +31,7 @@ export const LIFESTYLE_EXTRA_COPY: Record<LifestyleExtraId, string> = {
     "Als veganist komt B12 vooral uit verrijkte producten — denk aan plantaardige drinks met toegevoegde B12 of nutritional yeast. " +
     "Twijfel je over je inname? Bespreek bloedonderzoek met je huisarts.",
   sugar_high_signal:
-    "Veel suiker of snelle koolhydraten kunnen je energie-ondersteuning ondermijnen — stabiel eten met eiwit en vezels helpt je energie-as rustiger schakelen. " +
-    "Doe de volledige Leefstijlcheck voor inzicht in je energie-patroon.",
+    "Veel suiker of snelle koolhydraten kunnen je energie-ondersteuning ondermijnen — stabiel eten met eiwit en vezels helpt je energie-as rustiger schakelen.",
 };
 
 export function lifestyleExtraDefinition(id: LifestyleExtraId): LifestyleExtraDefinition {

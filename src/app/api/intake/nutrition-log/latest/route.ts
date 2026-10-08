@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (!rows || rows.length === 0) {
-    return NextResponse.json({ error: "Geen voedingscheck gevonden." }, { status: 404 });
+    return NextResponse.json({ error: "Geen check gevonden." }, { status: 404 });
   }
 
   const latest = rows[0];

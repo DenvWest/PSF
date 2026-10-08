@@ -210,20 +210,6 @@ export default function HerstelVerbeterenNa40Page() {
                   <li>Na drukke werkdagen voelt trainen &ldquo;zwaarder&rdquo; dan normaal</li>
                   <li>Je voelt je vaak moe, ondanks dat je &ldquo;alles goed doet&rdquo;</li>
                 </ul>
-                <div className="mt-8 p-6 bg-amber-50 border border-amber-200 rounded-xl">
-                  <p className="text-gray-800 font-medium">
-                    Train je hard, maar blijf je achter de feiten aanlopen?
-                  </p>
-                  <p className="mt-2 text-gray-600">
-                    Dan past mogelijk het leefstijlpatroon Overtrainer bij jou: hoge belasting, te weinig buffers.
-                  </p>
-                  <Link
-                    href="/profiel/overtrainer"
-                    className="mt-3 inline-block text-green-700 font-semibold hover:text-green-800"
-                  >
-                    Bekijk het profiel Overtrainer →
-                  </Link>
-                </div>
                 <p className="mt-6 text-gray-700 leading-relaxed">In deze gids leer je:</p>
                 <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside">
                   <li>Wat er biologisch verandert in herstel na je 30e</li>
@@ -731,17 +717,6 @@ export default function HerstelVerbeterenNa40Page() {
                       className="mt-2 inline-block text-green-700 text-sm font-semibold hover:text-green-800"
                     >
                       Omega-3 en herstel →
-                    </Link>
-                  </div>
-                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200 sm:col-span-2">
-                    <p className="text-gray-700 text-sm leading-relaxed">
-                      Veel trainen, weinig buffer? Bekijk profiel Overtrainer.
-                    </p>
-                    <Link
-                      href="/profiel/overtrainer"
-                      className="mt-2 inline-block text-green-700 text-sm font-semibold hover:text-green-800"
-                    >
-                      Naar het profiel →
                     </Link>
                   </div>
                 </div>

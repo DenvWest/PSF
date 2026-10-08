@@ -171,7 +171,7 @@ export async function POST(request: NextRequest) {
   // nog steeds zijn doorverwijzing in plaats van een onbekende fout.
   if (!cookieSessionId && (!isCheckSessionCreateEnabled() || !turnstileToken)) {
     return NextResponse.json(
-      { error: "Doe eerst de Leefstijlcheck via /intake." },
+      { error: "Doe eerst de check via /intake." },
       { status: 401 },
     );
   }

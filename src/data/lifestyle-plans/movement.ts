@@ -202,7 +202,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
           },
           showWhen: { type: "signal", signal: "protein_gap_signal" },
           link: {
-            label: "Doe de voedingscheck",
+            label: "Wat mis je? Doe de check",
             href: "/intake/voeding",
             kind: "article",
           },

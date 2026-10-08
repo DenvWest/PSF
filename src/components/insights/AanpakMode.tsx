@@ -112,13 +112,14 @@ export default async function AanpakMode() {
         {!hasContext ? (
           <div className="rounded-[20px] bg-[#0E1A14] p-6 md:p-8">
             <p className="max-w-[50ch] text-[15px] leading-relaxed text-[#F7F5F0]">
-              Doe de Leefstijlcheck om je persoonlijke aanpak te zien — geordend op prioriteit en moeite.
+              Je persoonlijke aanpak ordenen we op basis van je check — op prioriteit en moeite. Nog
+              geen check gedaan? Begin met &apos;Wat mis je?&apos;.
             </p>
             <Link
               href="/intake"
               className="mt-5 inline-flex min-h-[44px] items-center rounded-full bg-[#5A8F6A] px-[22px] py-2.5 text-sm font-semibold text-white transition hover:bg-[#4A7F5A]"
             >
-              Start de Leefstijlcheck →
+              Wat mis je? Doe de gratis check →
             </Link>
           </div>
         ) : (
@@ -175,13 +176,13 @@ export default async function AanpakMode() {
                 ) : (
                   <>
                     <p className="text-base text-stone-600">
-                      Supplementadvies tonen we pas na je voedingscheck — eerst je bord, dan gericht vergelijken.
+                      Supplementadvies tonen we pas na je check — eerst je bord, dan gericht vergelijken.
                     </p>
                     <Link
                       href="/intake/voeding"
                       className="mt-5 inline-flex min-h-[44px] items-center rounded-full bg-[#5A8F6A] px-[22px] py-2.5 text-sm font-semibold text-white transition hover:bg-[#4A7F5A]"
                     >
-                      Start voedingscheck →
+                      Start de check →
                     </Link>
                   </>
                 )}

@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
   const sessionId = verifySignedIntakeSessionCookie(rawCookie);
   if (!sessionId) {
     return NextResponse.json(
-      { error: "Doe eerst de Leefstijlcheck via /intake." },
+      { error: "Doe eerst de check via /intake." },
       { status: 401 },
     );
   }

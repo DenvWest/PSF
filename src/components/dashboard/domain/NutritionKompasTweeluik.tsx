@@ -77,7 +77,7 @@ export default function NutritionKompasTweeluik({
           {nutritionStatusRegel(samenvatting)}
         </span>
         <span className="text-[11.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-          Uit je voedingscheck — je ladder, je feitenrijen en je meetreeks.
+          Uit je check — je ladder, je feitenrijen en je meetreeks.
         </span>
       </button>
 

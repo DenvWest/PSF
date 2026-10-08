@@ -64,7 +64,7 @@ export const NUTRITION_LAYERS: readonly NutritionLayer[] = [
     id: "aanvullen",
     layer: 6,
     name: "Aanvullen & vergelijken",
-    stateRule: "Dicht of open — poort op voedingscheck én signaal",
+    stateRule: "Dicht of open — poort op de check én signaal",
   },
 ] as const;
 

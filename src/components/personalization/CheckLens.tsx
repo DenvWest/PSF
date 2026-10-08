@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { PROFILE_SLUG_BY_LABEL } from "@/data/profiles";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import {
@@ -12,7 +11,6 @@ import {
   type CheckLensModel,
   type CheckLensTarget,
 } from "@/lib/check-lens";
-import { getProfileLabel } from "@/lib/intake-engine";
 import {
   hasIntakeReturnParam,
   INTAKE_RESULTS_HREF,
@@ -24,7 +22,7 @@ type CheckLensProps = {
 };
 
 function surfaceOf(target: CheckLensTarget): string {
-  return target.kind === "guide" ? `gids:${target.thema}` : `profiel:${target.slug}`;
+  return `gids:${target.thema}`;
 }
 
 function ReturnLink() {
@@ -57,14 +55,7 @@ export default function CheckLens({ target }: CheckLensProps) {
           return;
         }
         const { scores, answers } = loaded.session;
-        const profile = getProfileLabel(scores);
-        setLens(
-          buildCheckLens(target, {
-            scores,
-            answers,
-            ownProfileSlug: PROFILE_SLUG_BY_LABEL[profile.name] ?? null,
-          }),
-        );
+        setLens(buildCheckLens(target, { scores, answers }));
       } catch {
         /* zonder sessie blijft alleen de terugkeerlink staan */
       }
@@ -103,11 +94,7 @@ export default function CheckLens({ target }: CheckLensProps) {
   return (
     <aside
       aria-label="Wat je leefstijlcheck hierover zegt"
-      className={`mb-8 rounded-2xl border px-5 py-5 ${
-        lens.tone === "off"
-          ? "border-stone-200 bg-stone-50"
-          : "border-emerald-200 bg-emerald-50/60"
-      }`}
+      className="mb-8 rounded-2xl border border-emerald-200 bg-emerald-50/60 px-5 py-5"
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <p className="m-0 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-stone-500">
@@ -115,11 +102,7 @@ export default function CheckLens({ target }: CheckLensProps) {
         </p>
         {lens.badge ? (
           <span
-            className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] ${
-              lens.tone === "off"
-                ? "border-stone-300 text-stone-500"
-                : "border-emerald-300 text-emerald-700"
-            }`}
+            className="rounded-full border border-emerald-300 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-emerald-700"
           >
             {lens.badge}
           </span>

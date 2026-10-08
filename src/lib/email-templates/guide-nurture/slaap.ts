@@ -1,4 +1,5 @@
 import { absoluteUrl } from "@/lib/public-site-url";
+import { CHECK_CTA } from "@/lib/check-facts";
 import { ctaButton, emailWrapper } from "@/lib/email-templates/guide-nurture/shared";
 import type { GuideNurtureDay, GuideNurtureTemplate } from "@/lib/email-templates/guide-nurture/types";
 
@@ -69,7 +70,7 @@ ${ctaButton(absoluteUrl("/beste/magnesium"), "Bekijk de magnesium vergelijking �
   </a>
 </p>
 <p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
-  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">Doe de gratis Leefstijlcheck</a> — in 3 minuten weet je waar je staat.
+  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">${CHECK_CTA.discoverButtonShort}</a> — ${CHECK_CTA.subline}
 </p>`,
         unsubscribeUrl,
         GUIDE_NAME,
@@ -121,11 +122,11 @@ ${ctaButton(absoluteUrl("/slaap-en-voeding"), "Terug naar het complete slaapprot
   Tijd om te meten wat er veranderd is
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Na een maand is het zinvol om opnieuw te kijken: slaap, stress, energie en herstel hangen samen. De Leefstijlcheck geeft je een actueel beeld in 3 minuten.
+  Na een maand is het zinvol om opnieuw te kijken: hoe slaap je nu, vergeleken met de start?
 </p>
 ${ctaButton(absoluteUrl("/gids/slaap"), "Meet je slaap opnieuw in de Slaapgids →")}
 <p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 12px;">
-  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">Of doe de volledige Leefstijlcheck →</a>
+  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">Of zie in de check wat je bord nog mist →</a>
 </p>`,
         unsubscribeUrl,
         GUIDE_NAME,

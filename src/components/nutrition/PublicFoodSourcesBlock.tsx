@@ -166,7 +166,7 @@ export default function PublicFoodSourcesBlock({ page }: PublicFoodSourcesBlockP
             clarityTag("voeding_check_click", `${page.slug}:bronnenblok`);
           }}
         >
-          Doe de voedingscheck (1 min) →
+          Wat mis je? Doe de check →
         </Link>
         <Link href={page.comparisonPath} className={`inline-flex min-h-11 items-center px-1 py-3 text-sm ${LINK}`}>
           {page.comparisonLabel} →
