@@ -79,7 +79,7 @@ describe("DagboekKrans", () => {
   it("zegt bij zink dat een dagboek het niet kan aantonen, zonder 'nog X'", async () => {
     const DagboekKrans = await laad();
     render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} />);
-    fireEvent.click(screen.getByRole("button", { name: /Zink/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Toon Zink" }));
     expect(screen.getByText("een dagboek kan dit niet aantonen")).toBeTruthy();
   });
 
@@ -161,13 +161,20 @@ describe("DagboekKrans", () => {
     expect(screen.getByText(/de stoffen die jij volgt/)).toBeTruthy();
   });
 
-  it("toont de stoffenlijst op een smal scherm standaard, en klapt hem in op verzoek", async () => {
+  it("op een smal scherm: lijst en telregel ingeklapt, het midden is klikbaar", async () => {
     const DagboekKrans = await laad();
-    render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} inklapbaar />);
-    expect(screen.getByRole("list", { name: "Kernstoffen" })).toBeTruthy();
-    const knop = screen.getByRole("button", { name: /Verberg stoffen/ });
-    expect(knop.getAttribute("aria-expanded")).toBe("true");
-    fireEvent.click(knop);
+    const onKiesStof = vi.fn();
+    render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} inklapbaar onKiesStof={onKiesStof} />);
     expect(screen.queryByRole("list", { name: "Kernstoffen" })).toBeNull();
+    expect(screen.queryByText(/Gedekt: magnesium/)).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Toon Omega-3" }));
+    expect(screen.getByText("nog 250 mg tot je norm vandaag")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Rijkste bronnen →" }));
+    expect(onKiesStof).toHaveBeenCalledWith("omega3");
+    fireEvent.click(screen.getByRole("button", { name: "Terug naar het overzicht" }));
+    expect(screen.getByRole("list", { name: "Overzicht kernstoffen" })).toBeTruthy();
+    const knop = screen.getByRole("button", { name: /Alle stoffen/ });
+    fireEvent.click(knop);
+    expect(screen.getByRole("list", { name: "Kernstoffen" })).toBeTruthy();
   });
 });

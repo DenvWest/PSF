@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import GevolgdeStoffenKiezer from "@/components/dashboard/doelen/GevolgdeStoffenKiezer";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
@@ -80,6 +80,29 @@ function boog(straal: number, index: number, span: number, gat: number): string 
   const tot = punt(straal, (index + 1) * span - gat / 2);
   const groot = span - gat > 180 ? 1 : 0;
   return `M ${van.x} ${van.y} A ${straal} ${straal} 0 ${groot} 1 ${tot.x} ${tot.y}`;
+}
+
+/** Korte naam langs de boog van een kernsegment; de volledige naam staat in het midden en in de lijst. */
+const RINGLABEL: Record<NutrientId, string> = {
+  magnesium: "Mg",
+  protein: "Eiwit",
+  omega3: "Ω-3",
+  zinc: "Zn",
+  vitamin_d: "Vit. D",
+};
+
+/**
+ * Het pad waar een ringlabel langs loopt. Op de onderste helft loopt het pad
+ * tegen de klok in, zodat de tekst rechtop blijft staan.
+ */
+function tekstBoog(straal: number, index: number, span: number): string {
+  const midden = (index + 0.5) * span;
+  const omgekeerd = midden > 90 && midden < 270;
+  const van = punt(straal, index * span);
+  const tot = punt(straal, (index + 1) * span);
+  return omgekeerd
+    ? `M ${tot.x} ${tot.y} A ${straal} ${straal} 0 0 0 ${van.x} ${van.y}`
+    : `M ${van.x} ${van.y} A ${straal} ${straal} 0 0 1 ${tot.x} ${tot.y}`;
 }
 
 function aandeelVoor(
@@ -202,11 +225,12 @@ export default function DagboekKrans({
   const normen = useKernstofNormen();
   const profiel = useKernstofProfiel();
   const { stoffen: gevolgdeVelden, geladen } = useGevolgdeStoffen();
+  const padId = useId();
   const [keuze, setKeuze] = useState<Keuze>(null);
   const [kiezen, setKiezen] = useState(false);
   const [uitleg, setUitleg] = useState(false);
   const [getekend, setGetekend] = useState(false);
-  const [lijstOpen, setLijstOpen] = useState(true);
+  const [lijstOpen, setLijstOpen] = useState(false);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setGetekend(true));
@@ -394,6 +418,9 @@ export default function DagboekKrans({
 
           <g>
             {rijen.map((rij, index) => (
+              <path key={`pad-${rij.nutrient}`} id={`${padId}-ringlabel-${rij.nutrient}`} d={tekstBoog(BINNEN.straal, index, spanBinnen)} fill="none" />
+            ))}
+            {rijen.map((rij, index) => (
               <Segment
                 key={rij.nutrient}
                 d={boog(BINNEN.straal, index, spanBinnen, BINNEN.gat)}
@@ -407,12 +434,33 @@ export default function DagboekKrans({
                 onClick={() => kiesKern(index)}
               />
             ))}
+            {rijen.map((rij) => (
+              <text
+                key={`label-${rij.nutrient}`}
+                className="pointer-events-none select-none motion-safe:transition-opacity motion-safe:duration-300"
+                fontSize={8.5}
+                fontWeight={600}
+                letterSpacing={0.3}
+                dominantBaseline="central"
+                fill="var(--vd-ink)"
+                opacity={keuze !== null && !(keuze.ring === "kern" && keuze.nutrient === rij.nutrient) ? 0.35 : 0.9}
+              >
+                <textPath href={`#${padId}-ringlabel-${rij.nutrient}`} startOffset="50%" textAnchor="middle">
+                  {RINGLABEL[rij.nutrient]}
+                </textPath>
+              </text>
+            ))}
           </g>
         </svg>
 
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-[27%] text-center">
           {gekozenKern ? (
-            <>
+            <button
+              type="button"
+              onClick={() => setKeuze(null)}
+              aria-label="Terug naar het overzicht"
+              className="pointer-events-auto flex cursor-pointer flex-col items-center border-0 bg-transparent p-0 text-center"
+            >
               <span className="flex items-center gap-1 text-[clamp(9px,3.6cqw,11.5px)] font-semibold text-[var(--vd-ink-2)]">
                 <span
                   aria-hidden
@@ -432,9 +480,14 @@ export default function DagboekKrans({
                   {streefwaardeRegel(gekozenKern)}
                 </span>
               ) : null}
-            </>
+            </button>
           ) : gekozenGevolgd ? (
-            <>
+            <button
+              type="button"
+              onClick={() => setKeuze(null)}
+              aria-label="Terug naar het overzicht"
+              className="pointer-events-auto flex cursor-pointer flex-col items-center border-0 bg-transparent p-0 text-center"
+            >
               <span className="text-[clamp(9px,3.6cqw,11.5px)] font-semibold text-[var(--vd-ink-2)]">
                 {hoofdletter(gekozenGevolgd.label)}
               </span>
@@ -452,15 +505,21 @@ export default function DagboekKrans({
                     ? "zonder norm · zonder oordeel"
                     : "niet opgehaald"}
               </span>
-            </>
+            </button>
           ) : leeg ? (
             <b className="font-serif text-[clamp(14px,6.4cqw,20px)] font-normal leading-tight text-[var(--vd-ink)]">
               Wat at je vandaag?
             </b>
           ) : (
-            <ul aria-label="Overzicht kernstoffen" className="m-0 grid w-full list-none gap-[0.35em] p-0 text-[clamp(9px,4cqw,12.5px)]">
-              {rijen.map((rij) => (
-                <li key={rij.nutrient} className="flex items-center justify-between gap-2 leading-none">
+            <ul aria-label="Overzicht kernstoffen" className="pointer-events-auto m-0 grid w-full list-none gap-0 p-0 text-[clamp(9px,4cqw,12.5px)]">
+              {rijen.map((rij, index) => (
+                <li key={rij.nutrient}>
+                  <button
+                    type="button"
+                    onClick={() => kiesKern(index)}
+                    aria-label={`Toon ${nutrientReferences[rij.nutrient].label}`}
+                    className="flex w-full cursor-pointer items-center justify-between gap-2 rounded-md border-0 bg-transparent px-1 py-[0.2em] leading-none transition-colors hover:bg-white/[0.06]"
+                  >
                   <span className="flex min-w-0 items-center gap-1.5 text-[var(--vd-ink-2)]">
                     <span
                       aria-hidden
@@ -477,6 +536,7 @@ export default function DagboekKrans({
                     {rij.nietBewijsbaar && rij.minstens === 0 ? "—" : kernWaarde(rij)}
                     {rij.gedekt ? <span className="ml-0.5 text-[var(--vd-sage-2)]">✓</span> : null}
                   </span>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -532,7 +592,7 @@ export default function DagboekKrans({
             Voeg je ontbijt toe
           </button>
         ) : null}
-        {!leeg && !keuze ? (
+        {!leeg && !keuze && !inklapbaar ? (
           <p className="m-0 text-[11px] leading-relaxed text-[var(--vd-ink-3)]">{telRegel(rijen)}</p>
         ) : null}
       </div>
@@ -553,13 +613,14 @@ export default function DagboekKrans({
             </li>
             <li>
               <b className="text-[var(--vd-ink)]">Midden</b> · een overzicht van de vijf kernstoffen; tik een stof aan
-              voor de details en de rijkste bronnen.
+              voor de details en de rijkste bronnen, en tik het midden weer aan voor het overzicht.
             </li>
             <li>
               <b className="text-[var(--vd-ink)]">Gestippeld</b> · zink en vitamine D kan een dagboek niet aantonen; een
               stof zonder norm vult niet.
             </li>
           </ul>
+          {!leeg ? <p className="m-0 mt-2 text-[11.5px] text-[var(--vd-ink-2)]">{telRegel(rijen)}</p> : null}
           <p className="m-0 mt-2 text-[11.5px] text-[var(--vd-ink-3)]">
             Alles is een ondergrens van wat je registreerde, geen dagtotaal. De normen en waar ze vandaan komen staan in
             Je doelen.

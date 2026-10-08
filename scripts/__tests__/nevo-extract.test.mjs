@@ -252,7 +252,8 @@ describe.skipIf(!fs.existsSync(NEVO_CSV))("tegen het echte NEVO-bestand", () => 
   beforeAll(() => {
     data = bouwVoedingsmiddelen(parseDelimited(fs.readFileSync(NEVO_CSV, "utf8")));
     foodSources = parseFoodSources(fs.readFileSync(path.join("src", "data", "nutrition", "food-sources.ts"), "utf8"));
-  });
+    // Het hele NEVO-bestand inlezen duurt naast een draaiende dev-server soms langer dan de standaard 10 s.
+  }, 60_000);
 
   it("is versie 2025/9.0 en bevat 2.328 voedingsmiddelen zonder onleesbare regels", () => {
     expect(data.versies).toEqual(["NEVO-Online 2025 9.0"]);
