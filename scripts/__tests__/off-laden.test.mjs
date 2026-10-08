@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { afwijzing, naarTabelRij } from "../off-laden.mjs";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { afwijzing, leesRijen, naarTabelRij } from "../off-laden.mjs";
 
 const GOED = {
   prod_id: "off:8710400123456",
@@ -47,5 +50,13 @@ describe("naarTabelRij", () => {
     expect(rij.iron_mg).toBeNull();
     expect(rij.energy_kcal).toBe(47);
     expect(rij.updated_at).toBe("2026-10-04T00:00:00.000Z");
+  });
+});
+
+describe("leesRijen", () => {
+  it("noemt het regelnummer van een kapotte regel", () => {
+    const bestand = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "off-laden-")), "off.ndjson");
+    fs.writeFileSync(bestand, `${JSON.stringify(GOED)}\n{"energy_kcal": NaN}\n`);
+    expect(() => leesRijen(bestand)).toThrow("regel 2");
   });
 });

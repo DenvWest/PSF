@@ -16,6 +16,11 @@
  *   node scripts/off-laden.mjs
  *   node scripts/off-laden.mjs --bestand=/pad/off-nl.ndjson
  *   node scripts/off-laden.mjs --schrijf     (vereist NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY, bv. uit .env.local)
+ *   node scripts/off-laden.mjs --schrijf --vanaf=30000   (hervatten na een afgebroken load)
+ *
+ * Tijdelijke fouten (fetch failed, 429, 5xx) worden per batch opnieuw geprobeerd.
+ * Aan het eind telt het script de tabel: rijen die niet in het bestand staan,
+ * houden hun oude `snapshot_datum` (de upsert verwijdert niets).
  *
  * Laad pas productiedata nadat de bronnenpagina en de ODbL-dump-route er zijn
  * (ONTWERP §6): dit script zet de producten direct in de zoekfunctie van het dagboek.
@@ -24,6 +29,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { leesVanaf, maakSupabaseClient, upsertInBatches } from "./laad-supabase.mjs";
 
 const STANDAARD_BESTAND = "scripts/out/off-nl.ndjson";
 
@@ -66,9 +72,15 @@ export function afwijzing(rij) {
 export function leesRijen(bestand) {
   const rijen = [];
   const afgewezen = {};
-  for (const regel of fs.readFileSync(bestand, "utf8").split("\n")) {
+  const regels = fs.readFileSync(bestand, "utf8").split("\n");
+  for (const [index, regel] of regels.entries()) {
     if (!regel.trim()) continue;
-    const rij = JSON.parse(regel);
+    let rij;
+    try {
+      rij = JSON.parse(regel);
+    } catch (fout) {
+      throw new Error(`${bestand}, regel ${index + 1}: geen geldige JSON (${fout.message}).`);
+    }
     const reden = afwijzing(rij);
     if (reden) afgewezen[reden] = (afgewezen[reden] ?? 0) + 1;
     else rijen.push(rij);
@@ -83,19 +95,11 @@ export function naarTabelRij(rij, nu = new Date().toISOString()) {
   return uit;
 }
 
-function laadEnv() {
-  const pad = path.join(process.cwd(), ".env.local");
-  if (!fs.existsSync(pad)) return;
-  for (const regel of fs.readFileSync(pad, "utf8").split("\n")) {
-    const m = regel.match(/^([A-Z0-9_]+)=(.*)$/);
-    if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-}
-
 async function main() {
   const argBestand = (process.argv.find((a) => a.startsWith("--bestand=")) ?? "").slice(10);
   const bestand = argBestand || STANDAARD_BESTAND;
   const schrijf = process.argv.includes("--schrijf");
+  const vanaf = leesVanaf();
 
   const { rijen, afgewezen } = leesRijen(bestand);
   const ids = new Set(rijen.map((r) => r.prod_id));
@@ -107,21 +111,29 @@ async function main() {
     return;
   }
 
-  laadEnv();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error("NEXT_PUBLIC_SUPABASE_URL en SUPABASE_SERVICE_ROLE_KEY zijn nodig voor --schrijf.");
-  const { createClient } = await import("@supabase/supabase-js");
-  const supabase = createClient(url, key, { auth: { persistSession: false } });
-
-  const BATCH = 500;
+  const supabase = await maakSupabaseClient();
   const nu = new Date().toISOString();
-  for (let start = 0; start < rijen.length; start += BATCH) {
-    const batch = rijen.slice(start, start + BATCH).map((r) => naarTabelRij(r, nu));
-    const { error } = await supabase.from("sm_products").upsert(batch, { onConflict: "prod_id" });
-    if (error) throw new Error(`Batch vanaf ${start}: ${error.message}`);
-  }
-  console.error(`Geschreven: ${rijen.length} rijen in sm_products.`);
+  const geschreven = await upsertInBatches({
+    supabase,
+    tabel: "sm_products",
+    rijen: rijen.map((r) => naarTabelRij(r, nu)),
+    onConflict: "prod_id",
+    vanaf,
+  });
+  console.error(`Geschreven: ${geschreven} rijen in sm_products (vanaf ${vanaf}).`);
+
+  const snapshots = [...new Set(rijen.map((r) => r.snapshot_datum))];
+  const totaal = await tel(supabase.from("sm_products").select("prod_id", { count: "exact", head: true }).eq("bron", "off"));
+  const ouder = await tel(
+    supabase.from("sm_products").select("prod_id", { count: "exact", head: true }).eq("bron", "off").not("snapshot_datum", "in", `(${snapshots.join(",")})`),
+  );
+  console.error(`In sm_products: ${totaal} rijen; ${ouder} met een andere snapshot dan ${snapshots.join(", ")} (niet meer in dit bestand).`);
+}
+
+async function tel(query) {
+  const { count, error } = await query;
+  if (error) throw new Error(`Tellen mislukt: ${error.message}`);
+  return count;
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

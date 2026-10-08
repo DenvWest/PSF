@@ -43,6 +43,7 @@ https://huggingface.co/datasets/openfoodfacts/product-database (food.parquet).
 
 import argparse
 import json
+import math
 import os
 import sys
 import unicodedata
@@ -78,9 +79,10 @@ GRENZEN = {
 }
 
 # Fysiek haalbare bovengrens per 100 g voor micro's. Daarboven is het een
-# invoerfout in OFF (bijv. 9.010 mg vitamine C in koekjes): de waarde gaat
-# naar null, de rest van de rij blijft.
+# invoerfout in OFF (bijv. 9.010 mg vitamine C in koekjes; puur zout bevat
+# ± 39.300 mg natrium): de waarde gaat naar null, de rest van de rij blijft.
 MICRO_MAX = {
+    "sodium_mg": 40000,
     "calcium_mg": 3000,
     "iron_mg": 100,
     "vitamin_c_mg": 2000,
@@ -141,7 +143,7 @@ def bouw_rij(code, product_name, brands, categories, nutriments, snapshot):
             continue
         kolom, eenheid = doel
         waarde = omrekenen(float(n["100g"]), n.get("unit"), eenheid)
-        if waarde is None:
+        if waarde is None or not math.isfinite(waarde):
             continue
         waarden[kolom] = round(waarde, AFRONDING.get(kolom, 2))
 
@@ -229,7 +231,7 @@ def main():
                     overgeslagen["dubbel"] = overgeslagen.get("dubbel", 0) + 1
                     continue
                 gezien.add(rij["prod_id"])
-                uit.write(json.dumps(rij, ensure_ascii=False) + "\n")
+                uit.write(json.dumps(rij, ensure_ascii=False, allow_nan=False) + "\n")
                 tellers["geschreven"] += 1
 
     print(json.dumps({**tellers, "overgeslagen": overgeslagen, "micro_op_null": tellers_micro}, indent=2), file=sys.stderr)
