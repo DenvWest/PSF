@@ -100,7 +100,6 @@ type AgendaDayTimelineProps = {
   onRestorePlanStep?: () => Promise<void>;
   onHideAllPlanSteps?: () => Promise<void>;
   onShowAllPlanSteps?: () => Promise<void>;
-  onCloseFocus: () => void;
   weekStrip?: ReactNode;
   voorstellen?: readonly TekortVoorstel[];
   autoOpenNutrient?: NutrientId | null;
@@ -128,7 +127,6 @@ export default function AgendaDayTimeline({
   onRestorePlanStep,
   onHideAllPlanSteps,
   onShowAllPlanSteps,
-  onCloseFocus,
   weekStrip,
   voorstellen = [],
   autoOpenNutrient = null,
@@ -224,15 +222,12 @@ export default function AgendaDayTimeline({
     setPreselectNutrient(null);
   };
 
-  const closeFocus = onCloseFocus;
-
   const closeDetail = () => {
     setSelectedBlockId(null);
   };
 
   const openDetail = (blockId: string) => {
     closeSheet();
-    closeFocus();
     setSelectedBlockId(blockId);
   };
 
@@ -322,15 +317,13 @@ export default function AgendaDayTimeline({
       : null;
 
   const openHeaderSheet = useCallback(() => {
-    closeFocus();
     setSelectedBlockId(null);
     setDraftSlot(null);
     setHelpPreset(null);
     setAddOpen(true);
-  }, [closeFocus]);
+  }, []);
 
   const openHelpSheet = (preset: HelpPreset) => {
-    closeFocus();
     setSelectedBlockId(null);
     setDraftSlot(null);
     setHelpPreset(preset);
@@ -368,7 +361,6 @@ export default function AgendaDayTimeline({
       return;
     }
 
-    closeFocus();
     const rect = event.currentTarget.getBoundingClientRect();
     const offsetY = event.clientY - rect.top;
     const nextDraft = positionToTimelineTime(offsetY, rect.height);

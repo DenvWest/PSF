@@ -74,17 +74,9 @@ describe("AgendaToolbar", () => {
     expect(mockClarityTag).toHaveBeenCalledWith("dashboard_agenda", "period_picker_open");
   });
 
-  it("zonder actions geen overflow-knop, met actions wel — zelfde rij, geen hoogtesprong", () => {
-    const { rerender } = render(<AgendaToolbar {...baseProps()} actions={undefined} />);
+  it("heeft geen overflow-menu meer: Focus is weg en Plan staat zichtbaar in de Agenda zelf", () => {
+    render(<AgendaToolbar {...baseProps()} />);
     expect(screen.queryByRole("button", { name: "Meer acties" })).toBeNull();
-
-    rerender(
-      <AgendaToolbar
-        {...baseProps()}
-        actions={{ planHref: "/intake/plan/movement", showFocus: true, focusLabel: "Focus: Beweging" }}
-      />,
-    );
-    expect(screen.getByRole("button", { name: "Meer acties" })).toBeTruthy();
   });
 
   it("Vandaag staat buiten de periode-pil — chevrons verschuiven nooit als je over de vandaag-grens navigeert (regressie bug 2+3)", () => {
@@ -145,22 +137,5 @@ describe("AgendaToolbar", () => {
     expect(chip.getAttribute("aria-expanded")).toBe("false");
     fireEvent.click(chip);
     expect(onToggleRhythm).toHaveBeenCalledOnce();
-  });
-
-  it("overflow-menu: Focus-item sluit het menu en roept onToggleFocus aan", () => {
-    const onToggleFocus = vi.fn();
-    render(
-      <AgendaToolbar
-        {...baseProps()}
-        actions={{ showFocus: true, focusLabel: "Focus: Beweging", onToggleFocus }}
-      />,
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: "Meer acties" }));
-    expect(screen.getByRole("menu")).toBeTruthy();
-
-    fireEvent.click(screen.getByRole("menuitem", { name: "Focus: Beweging" }));
-    expect(onToggleFocus).toHaveBeenCalledOnce();
-    expect(screen.queryByRole("menu")).toBeNull();
   });
 });

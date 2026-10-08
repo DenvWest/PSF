@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import AgendaViewSwitcher from "@/components/dashboard/agenda/AgendaViewSwitcher";
 import { clarityTag } from "@/lib/clarity";
@@ -10,20 +8,6 @@ import type { AgendaViewId } from "@/lib/dashboard-url";
 
 const PERIOD_NAV_BUTTON =
   "inline-flex min-h-9 min-w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border-none bg-transparent text-[#9FB0A6] transition-colors hover:bg-white/[0.06] hover:text-[#F1EFE8] sm:min-h-10 sm:min-w-10";
-
-const MENU_ITEM =
-  "flex w-full items-center gap-2 rounded-[10px] px-2.5 py-2 text-left text-[13px] font-medium text-[#CDD7D0] no-underline transition hover:bg-white/[0.06] hover:text-[#F1EFE8] disabled:cursor-not-allowed disabled:opacity-60";
-
-export type AgendaToolbarActions = {
-  planHref?: string | null;
-  showFocus?: boolean;
-  focusLabel?: string;
-  focusExpanded?: boolean;
-  priorityColor?: string;
-  prefBusy?: boolean;
-  onToggleFocus?: () => void;
-  onPlanClick?: () => void;
-};
 
 type AgendaToolbarProps = {
   view: AgendaViewId;
@@ -37,7 +21,6 @@ type AgendaToolbarProps = {
    * losse "Kalender"-actie die er voorheen alleen op dag-view stond. */
   onOpenCalendar: () => void;
   stickyTop: number;
-  actions?: AgendaToolbarActions;
   /** 0 (of niet meegegeven) toont de chip niet — zelfde regel als het paneel. */
   rhythmCount?: number;
   rhythmExpanded?: boolean;
@@ -176,99 +159,6 @@ function PeriodStepper({
   );
 }
 
-/**
- * Plan en Focus staan achter één vast-brede knop i.p.v. een los blok dat
- * alleen op dag-view verscheen — dat liet de balk vroeger van hoogte
- * verspringen bij het wisselen van view.
- */
-function AgendaOverflowMenu({ actions }: { actions: AgendaToolbarActions }) {
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const hasPlan = Boolean(actions.planHref);
-  const hasFocus = Boolean(actions.showFocus);
-
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-    const onPointerDown = (event: MouseEvent) => {
-      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [open]);
-
-  if (!hasPlan && !hasFocus) {
-    return null;
-  }
-
-  return (
-    <div ref={rootRef} className="relative shrink-0">
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label="Meer acties"
-        className="inline-flex min-h-9 min-w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-[#9FB0A6] transition-colors hover:border-white/25 hover:text-[#F1EFE8] sm:min-h-10 sm:min-w-10"
-      >
-        <Icons.MoreHorizontal s={16} />
-      </button>
-
-      {open ? (
-        <div
-          role="menu"
-          className="absolute right-0 top-[calc(100%+6px)] z-50 w-52 rounded-[14px] border border-white/10 bg-[#101a1b] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
-        >
-          {hasFocus ? (
-            <button
-              type="button"
-              role="menuitem"
-              disabled={actions.prefBusy}
-              aria-expanded={actions.focusExpanded}
-              onClick={() => {
-                setOpen(false);
-                actions.onToggleFocus?.();
-              }}
-              className={MENU_ITEM}
-              style={{
-                color: actions.focusExpanded ? actions.priorityColor : undefined,
-              }}
-            >
-              <span className="truncate">{actions.focusLabel ?? "Focus"}</span>
-            </button>
-          ) : null}
-          {hasPlan && actions.planHref ? (
-            <Link
-              role="menuitem"
-              href={actions.planHref}
-              onClick={() => {
-                setOpen(false);
-                actions.onPlanClick?.();
-              }}
-              className={MENU_ITEM}
-            >
-              Plan
-              <Icons.ArrowRight s={12} />
-            </Link>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 export default function AgendaToolbar({
   view,
   onViewChange,
@@ -279,7 +169,6 @@ export default function AgendaToolbar({
   onGoToday,
   onOpenCalendar,
   stickyTop,
-  actions,
   rhythmCount,
   rhythmExpanded,
   onToggleRhythm,
@@ -306,7 +195,6 @@ export default function AgendaToolbar({
             onToggle={onToggleRhythm}
           />
         ) : null}
-        {actions ? <AgendaOverflowMenu actions={actions} /> : null}
       </div>
     </header>
   );
