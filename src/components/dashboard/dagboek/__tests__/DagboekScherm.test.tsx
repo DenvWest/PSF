@@ -145,6 +145,26 @@ describe("DagboekScherm — zoeken per maaltijd", () => {
     });
   });
 
+  it("brengt je met terug uit een portie bij dezelfde zoekterm en lijst", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    );
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    );
+    fireEvent.change(zoekveld, { target: { value: "havermout" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    fireEvent.click(await screen.findByRole("button", { name: "Terug" }));
+
+    const terug = (await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    )) as HTMLInputElement;
+    expect(terug.value).toBe("havermout");
+    expect(await screen.findByRole("button", { name: /^Havermout/ })).toBeTruthy();
+  });
+
   it("kan het eetmoment nog wijzigen vlak vóór je een product kiest", async () => {
     render(<DagboekScherm />);
 

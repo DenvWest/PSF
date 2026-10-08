@@ -46,6 +46,9 @@ export type GekozenSupplement = { key: string; product: DagboekSupplementProduct
 export type DagboekZoekTab = "alle" | "producten" | "supplementen";
 type TabId = DagboekZoekTab;
 
+/** Wat er in het zoekveld stond, zodat terug uit een portie je bij dezelfde lijst brengt. */
+export type ZoekStaat = { zoek: string; tab: DagboekZoekTab };
+
 const TABS: readonly { id: TabId; label: string }[] = [
   { id: "alle", label: "Alle" },
   { id: "producten", label: "Mijn producten" },
@@ -87,6 +90,8 @@ function resultaatVanItem(item: Pick<DagboekItem, "bron" | "key" | "product">): 
 export default function DagboekCatalogusZoek({
   nutrient = null,
   startTab = "alle",
+  startZoek = "",
+  onStaatChange,
   eerderGebruikt,
   favorieten,
   gekozenSupplementen = GEEN_GEKOZEN,
@@ -104,6 +109,10 @@ export default function DagboekCatalogusZoek({
   nutrient?: NutrientId | null;
   /** Het tabblad waarop het scherm opent, bijv. "supplementen" na een ster in Je patroon. */
   startTab?: DagboekZoekTab;
+  /** De zoekterm waarmee het scherm opent, bijv. bij terug uit een portie. */
+  startZoek?: string;
+  /** Meldt zoekterm en tab bij elke wijziging (en bij openen), voor het terugkeerpunt. */
+  onStaatChange?: (staat: ZoekStaat) => void;
   /** Items uit eerdere dagen, meest recent eerst — voor de "eerder gebruikt"-lijst. */
   eerderGebruikt: readonly DagboekItem[];
   /** Handmatig bewaarde favorieten, ongeacht geschiedenis. */
@@ -131,8 +140,12 @@ export default function DagboekCatalogusZoek({
   onVergelijk?: () => void;
   busyFavoriet?: boolean;
 }) {
-  const [zoek, setZoek] = useState("");
+  const [zoek, setZoek] = useState(startZoek);
   const [tab, setTab] = useState<TabId>(startTab);
+  useEffect(() => {
+    onStaatChange?.({ zoek, tab });
+  }, [zoek, tab, onStaatChange]);
+
   /** De laatst ontvangen supermarkttreffers, en voor welke zoekterm ze gelden. */
   const [supermarktRespons, setSupermarktRespons] = useState<{
     term: string;
