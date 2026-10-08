@@ -36,7 +36,7 @@ export const creatineData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/herstel-verbeteren-na-40",
+      href: "/herstel-en-voeding",
       text: "Creatine is één stukje; lees de volledige herstelroute na 30 met slaap, eiwit en vergelijkingen.",
       cta: "Naar herstel-pillar →",
     },

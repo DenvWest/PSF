@@ -17,6 +17,41 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/slaap-verbeteren-na-40",
+        destination: "/slaap-en-voeding",
+        permanent: true,
+      },
+      {
+        source: "/stress-verminderen-na-40",
+        destination: "/stress-en-voeding",
+        permanent: true,
+      },
+      {
+        source: "/energie-na-40",
+        destination: "/energie-en-voeding",
+        permanent: true,
+      },
+      {
+        source: "/herstel-verbeteren-na-40",
+        destination: "/herstel-en-voeding",
+        permanent: true,
+      },
+      {
+        source: "/beweging-na-40",
+        destination: "/beweging-en-voeding",
+        permanent: true,
+      },
+      {
+        source: "/testosteron-na-40",
+        destination: "/testosteron-en-voeding",
+        permanent: true,
+      },
+      {
+        source: "/overgang",
+        destination: "/overgang-en-voeding",
+        permanent: true,
+      },
+      {
         source: "/beste-magnesium",
         destination: "/beste/magnesium",
         permanent: true,
@@ -93,12 +128,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/thema/herstel",
-        destination: "/herstel-verbeteren-na-40",
+        destination: "/herstel-en-voeding",
         permanent: true,
       },
       {
         source: "/stress-verminderen-man",
-        destination: "/stress-verminderen-na-40",
+        destination: "/stress-en-voeding",
         permanent: true,
       },
       {

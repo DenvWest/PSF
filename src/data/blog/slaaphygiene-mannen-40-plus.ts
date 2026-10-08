@@ -22,7 +22,7 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
       type: "opsomming",
       titel: "De vier pijlers met het meeste effect",
       inleiding:
-        "Deze gewoontes verankeren je [circadiaanse ritme](/kennisbank/circadiaan-ritme) en leveren vaak het meeste op vóór supplementen. [Lees de complete aanpak voor betere slaap na je 30e.](/slaap-verbeteren-na-40)",
+        "Deze gewoontes verankeren je [circadiaanse ritme](/kennisbank/circadiaan-ritme) en leveren vaak het meeste op vóór supplementen. [Lees de complete aanpak voor betere slaap na je 30e.](/slaap-en-voeding)",
       items: [
         "Vast ritme: zelfde opsta- en bedtijd, ook in het weekend — dit verankert je interne klok sterker dan elke app.",
         "Licht: minimaal tien minuten buitenlicht ’s ochtends; ’s avonds dimmen en schermen beperken 60-90 min voor slapen.",
@@ -41,7 +41,7 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
     "Na je 30e win je het meeste slaapkwaliteit met een vast ritme, ochtendlicht, koele kamer en striktere cafeïne- en alcoholregels. Voeg een shutdown-routine toe als je hoofd blijft malen.",
   cornerstoneLink: {
     label: "Complete gids: slaap verbeteren na je 30e",
-    href: "/slaap-verbeteren-na-40",
+    href: "/slaap-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste magnesium supplementen",

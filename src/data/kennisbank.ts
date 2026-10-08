@@ -723,7 +723,7 @@ Na je 30e dalen gemiddelde waarden geleidelijk; hoe snel en hoe merkbaar dat is,
       howItWorks: `Testosteron volgt een dagritme en reageert op slaap, inspanning en stressbelasting. Langdurige stress en slechte slaap kunnen samenhangen met minder gunstige hormonale patronen — dat is populatie-onderzoek, geen voorspelling voor jouw bloedwaarde.
 
 Labtesten (totaal en soms vrij testosteron) horen in medische context: interpretatie hangt af van tijdstip, klachten en andere markers. Zelf-diagnose via marketing is riskant.`,
-      whyItMatters: `Supplementen zoals zink of creatine worden soms besproken rond mannelijke gezondheid, maar vervangen geen medische beoordeling bij aanhoudende klachten. Lees onze pillar [testosteron na 30](/testosteron-na-40) en vergelijk zink inhoudelijk op [/beste/zink](/beste/zink) — altijd naast leefstijl (slaap, krachttraining, stress).`,
+      whyItMatters: `Supplementen zoals zink of creatine worden soms besproken rond mannelijke gezondheid, maar vervangen geen medische beoordeling bij aanhoudende klachten. Lees onze pillar [testosteron na 30](/testosteron-en-voeding) en vergelijk zink inhoudelijk op [/beste/zink](/beste/zink) — altijd naast leefstijl (slaap, krachttraining, stress).`,
     },
     relatedSlugs: ['cortisol', 'hpa-as'],
     relatedComparisons: ['/beste/zink', '/beste/creatine'],
@@ -755,7 +755,7 @@ Het is geen officiële diagnose op zich; wel een bruikbaar begrip om te zien waa
       howItWorks: `Slaap bestaat uit cycli (licht, diep, REM). Tekort raakt vooral diepe slaap en REM — fases die belangrijk zijn voor herstel en geheugen. Je kunt “genoeg uren” hebben en toch niet uitgerust zijn als het ritme verstoord is (laat naar bed, schermlicht, alcohol).
 
 Inhalen van slaap in het weekend helpt deels, maar lost een verstoord weekritme niet volledig op.`,
-      whyItMatters: `Voor supplementen is slaap de basis: melatonine ondersteunt vooral timing, magnesium past bij ontspanning — geen vervanging van structurele slaapschuld. Lees [slaap verbeteren na 30](/slaap-verbeteren-na-40) en blogs over [slaapritme](/blog/slaapritme-herstellen).`,
+      whyItMatters: `Voor supplementen is slaap de basis: melatonine ondersteunt vooral timing, magnesium past bij ontspanning — geen vervanging van structurele slaapschuld. Lees [slaap verbeteren na 30](/slaap-en-voeding) en blogs over [slaapritme](/blog/slaapritme-herstellen).`,
     },
     relatedSlugs: ['melatonine', 'cortisol', 'slaaphygiene'],
     relatedComparisons: ['/beste/magnesium'],
@@ -854,7 +854,7 @@ Het verschilt van een normale dip na zware week: het houdt aan en verbetert niet
       howItWorks: `Belasting = training + werkstress + slaaptekort. Herstel = slaap, voeding (eiwit), rustdagen en soms minder volume. Zonder die balans blijft het sympathische “aan”-gevoel langer hangen; herstelmarkers en subjectief welzijn kunnen achterblijven.
 
 Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; online checklists zijn geen vervanging.`,
-      whyItMatters: `Supplementen zoals creatine of magnesium ondersteunen delen van het plaatje, maar vervangen geen deload. Zie profiel [Overtrainer](/profiel/overtrainer), pillar [herstel na 30](/herstel-verbeteren-na-40) en blog [creatine en herstel](/blog/creatine-en-herstel).`,
+      whyItMatters: `Supplementen zoals creatine of magnesium ondersteunen delen van het plaatje, maar vervangen geen deload. Zie profiel [Overtrainer](/profiel/overtrainer), pillar [herstel na 30](/herstel-en-voeding) en blog [creatine en herstel](/blog/creatine-en-herstel).`,
     },
     relatedSlugs: ['mitochondrien', 'cortisol'],
     relatedComparisons: ['/beste/creatine', '/beste/magnesium'],
@@ -993,7 +993,7 @@ Belangrijker dan het innamemoment is de vraag of je het überhaupt nodig hebt: z
     content: {
       whatIsIt: `Insuline helpt glucose uit je bloed naar cellen te brengen. Bij insulineresistentie reageert het lichaam minder goed: de alvleesklier maakt meer insuline aan om hetzelfde effect te halen. Dat patroon wordt vaak genoemd in de context van type 2-diabetes-risico en “energiedips” na maaltijden — maar individuele klachten zijn niet specifiek genoeg om zelf te diagnosticeren.`,
       howItWorks: `Factoren die in onderzoek terugkomen: buikvet, weinig beweging, slaaptekort en hoge inname van ultra-bewerkte koolhydraten. Krachttraining en eiwitrijke maaltijden ondersteunen vaak stabilere bloedsuikerspiegels — geen wondermiddel, wel een praktische hefboom naast medische begeleiding.`,
-      whyItMatters: `Na 30 hangt energie vaak samen met metabole gezondheid. Lees [energie na 30](/energie-na-40) voor voorzichtige koppelingen — altijd met huisarts bij aanhoudende klachten of risicofactoren.`,
+      whyItMatters: `Na 30 hangt energie vaak samen met metabole gezondheid. Lees [energie na 30](/energie-en-voeding) voor voorzichtige koppelingen — altijd met huisarts bij aanhoudende klachten of risicofactoren.`,
     },
     relatedSlugs: ['mitochondrien', 'atp'],
     relatedComparisons: [],
@@ -1021,7 +1021,7 @@ Belangrijker dan het innamemoment is de vraag of je het überhaupt nodig hebt: z
     content: {
       whatIsIt: `Je lichaam produceert continu reactieve zuurstofsoorten als bijproduct van energieproductie en afweer. Antioxidanten (eigen enzymen én uit voeding) neutraliseren het overschot. Als de balans scheef staat, spreken onderzoekers van oxidatieve stress — een concept, geen diagnose die je thuis meet.`,
       howItWorks: `Intensieve training verhoogt tijdelijk oxidatieve signalen; dat hoort bij adaptatie als herstel en voeding meekomen. Chronische ontsteking, roken, slaaptekort en ongezonde voeding worden vaker genoemd als aanhoudende belasting.`,
-      whyItMatters: `Omega-3, vitamine D en beweging worden in verschillende lijnen onderzoek besproken in bredere gezondheidscontext — geen reden om mega-doses antioxidanten te stapelen zonder reden. Verbind met [EPA en DHA](/kennisbank/epa-dha) en pillars [herstel](/herstel-verbeteren-na-40) / [energie](/energie-na-40).`,
+      whyItMatters: `Omega-3, vitamine D en beweging worden in verschillende lijnen onderzoek besproken in bredere gezondheidscontext — geen reden om mega-doses antioxidanten te stapelen zonder reden. Verbind met [EPA en DHA](/kennisbank/epa-dha) en pillars [herstel](/herstel-en-voeding) / [energie](/energie-en-voeding).`,
     },
     relatedSlugs: ['mitochondrien', 'epa-dha'],
     relatedComparisons: ['/beste/omega-3-supplement'],

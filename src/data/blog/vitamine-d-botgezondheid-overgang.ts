@@ -9,7 +9,7 @@ export const vitamineDBotgezondheidOvergangData: BlogArtikel = {
   coverImage: "/images/blog/vitamine-d-botgezondheid-overgang.jpg",
   coverImageAlt: "Groen landschap in warm zonlicht tussen heuvels",
   heroIntro:
-    "Botdichtheid is niet iets waar je op je vijfenveertigste al aan denkt — tot je leest dat het versnelde botverlies precies rond de overgang begint. Oestrogeen beschermt namelijk actief tegen botafbraak, en die bescherming valt weg op het moment dat je hem het hardst nodig hebt. Vitamine D speelt hierin een ondersteunende, niet-vervangende rol. Achtergrond over de bredere fase staat in [de overgangsgids](/overgang).",
+    "Botdichtheid is niet iets waar je op je vijfenveertigste al aan denkt — tot je leest dat het versnelde botverlies precies rond de overgang begint. Oestrogeen beschermt namelijk actief tegen botafbraak, en die bescherming valt weg op het moment dat je hem het hardst nodig hebt. Vitamine D speelt hierin een ondersteunende, niet-vervangende rol. Achtergrond over de bredere fase staat in [de overgangsgids](/overgang-en-voeding).",
   leestijd: "8 min",
   gepubliceerdOp: "2026-09-05",
   laatstBijgewerktOp: "2026-09-05",

@@ -34,7 +34,7 @@ export const PILLARS: Pillar[] = [
       signal: "Je valt laat in en slaapt onrustig",
       claim: "draagt bij aan een normale werking van het zenuwstelsel",
     },
-    hubRoute: "/slaap-verbeteren-na-40",
+    hubRoute: "/slaap-en-voeding",
   },
   {
     id: "energie",
@@ -49,7 +49,7 @@ export const PILLARS: Pillar[] = [
         "10 minuten buiten binnen een half uur na opstaan zet je bioklok gelijk. Dat stabiliseert je cortisolritme — en daarmee je energiecurve overdag.",
     },
     supplement: null,
-    hubRoute: "/energie-na-40",
+    hubRoute: "/energie-en-voeding",
   },
   {
     id: "stress",
@@ -64,7 +64,7 @@ export const PILLARS: Pillar[] = [
         "4 tellen in, 4 vast, 4 uit — herhaal 4 minuten. Verlaagt je hartslag meetbaar binnen één sessie. Doe het vóór je telefoon pakt na het werk.",
     },
     supplement: null,
-    hubRoute: "/stress-verminderen-na-40",
+    hubRoute: "/stress-en-voeding",
   },
   {
     id: "voeding",
@@ -100,7 +100,7 @@ export const PILLARS: Pillar[] = [
         "Een korte wandeling direct na het eten verlaagt je bloedsuikerrespons en helpt je ontspannen richting de avond. Geen sportkleding nodig — alleen schoenen.",
     },
     supplement: null,
-    hubRoute: "/beweging-na-40",
+    hubRoute: "/beweging-en-voeding",
   },
   {
     id: "herstel",
@@ -115,7 +115,7 @@ export const PILLARS: Pillar[] = [
         "Alcohol verlaagt je REM-slaap en remt spierherstel. Kies één vaste avond per week zonder drank — en merk het verschil in hoe je de volgende ochtend aanvoelt.",
     },
     supplement: null,
-    hubRoute: "/herstel-verbeteren-na-40",
+    hubRoute: "/herstel-en-voeding",
   },
   {
     id: "verbinding",

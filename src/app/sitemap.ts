@@ -135,14 +135,14 @@ function reviewDate(laatstBijgewerktOp: string | undefined): Date {
 }
 
 const PILLAR_PADEN = [
-  "/slaap-verbeteren-na-40",
-  "/stress-verminderen-na-40",
-  "/energie-na-40",
-  "/herstel-verbeteren-na-40",
+  "/slaap-en-voeding",
+  "/stress-en-voeding",
+  "/energie-en-voeding",
+  "/herstel-en-voeding",
   "/voeding-na-40",
-  "/beweging-na-40",
-  "/testosteron-na-40",
-  "/overgang",
+  "/beweging-en-voeding",
+  "/testosteron-en-voeding",
+  "/overgang-en-voeding",
 ] as const;
 
 /** Hubs en vaste pagina's zonder eigen wijzigingsdatum. */

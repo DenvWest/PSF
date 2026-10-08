@@ -108,7 +108,7 @@ export default function MovementRecognition() {
             </Link>{" "}
             — of start de{" "}
             <Link href="/intake" className={LINK}>
-              gratis Leefstijlcheck
+              gratis check Wat mis je?
             </Link>
             .
           </p>

@@ -8,7 +8,7 @@ export const zonnebrandEnVitamineDData: BlogArtikel = {
   coverImage: "/images/blog/zonnebrand-en-vitamine-d.jpg",
   coverImageAlt: "Rustig strand met zacht zonlicht en milde bewolking",
   heroIntro:
-    "Op social media is het een vast refrein: zonnebrandcrème blokkeert 97% van je vitamine D-aanmaak, dus smeer je jezelf een tekort aan. Het eerste deel van die zin klopt in een laboratorium. Het tweede deel houdt in veldonderzoek geen stand — en het verschil tussen die twee is het hele verhaal. Hier lees je waarom, en wat het betekent voor [vitamine D](/kennisbank/vitamine-d) en [energie na 30](/energie-na-40).",
+    "Op social media is het een vast refrein: zonnebrandcrème blokkeert 97% van je vitamine D-aanmaak, dus smeer je jezelf een tekort aan. Het eerste deel van die zin klopt in een laboratorium. Het tweede deel houdt in veldonderzoek geen stand — en het verschil tussen die twee is het hele verhaal. Hier lees je waarom, en wat het betekent voor [vitamine D](/kennisbank/vitamine-d) en [energie na 30](/energie-en-voeding).",
   leestijd: "9 min",
   gepubliceerdOp: "2026-09-01",
   laatstBijgewerktOp: "2026-09-01",
@@ -84,7 +84,7 @@ export const zonnebrandEnVitamineDData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: ordenen in plaats van stapelen",
       tekst:
-        "Vermoeidheid heeft zelden één oorzaak, en vitamine D is er hooguit één van. In de [check](/intake) zie je of je voeding al genoeg vitamine D en andere energie-gerelateerde voedingsstoffen levert — zodat je weet waar je winst zit voordat je iets koopt. De brede context staat in [energie na 30](/energie-na-40).",
+        "Vermoeidheid heeft zelden één oorzaak, en vitamine D is er hooguit één van. In de [check](/intake) zie je of je voeding al genoeg vitamine D en andere energie-gerelateerde voedingsstoffen levert — zodat je weet waar je winst zit voordat je iets koopt. De brede context staat in [energie na 30](/energie-en-voeding).",
     },
   ],
   kernpunten: [
@@ -104,7 +104,7 @@ export const zonnebrandEnVitamineDData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 30",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vitamine D supplementen vergelijken",

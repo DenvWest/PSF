@@ -115,7 +115,7 @@ export const wheyHoeveelEnWanneerData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: herstel verbeteren na 40",
-    href: "/herstel-verbeteren-na-40",
+    href: "/herstel-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Alle eiwitpoeders in de supplementengids",

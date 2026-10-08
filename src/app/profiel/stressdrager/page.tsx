@@ -63,7 +63,7 @@ function relatedLinkLabel(item: { href: string; linkText?: string }): string {
   if (item.href === "/beste/ashwagandha") return "Bekijk de ashwagandha vergelijking";
   if (item.href === "/beste/magnesium") return "Bekijk de magnesium vergelijking";
   if (item.href === "/blog/cortisol-en-testosteron") return "Lees: cortisol en testosteron na 30";
-  if (item.href === "/testosteron-na-40") return "Naar de testosteron-pillar";
+  if (item.href === "/testosteron-en-voeding") return "Naar de testosteron-pillar";
   return "Lees meer";
 }
 

@@ -45,7 +45,7 @@ const LIFESTYLE_FALLBACK_BY_DOMAIN: Record<DomainKey, DomainSupplementTip> = {
       name: "Leefstijlstappen",
       reason:
         "Slaap vraagt eerst aandacht voor vast ritme, licht en rustmomenten — dat zijn de hefbomen met het meeste bewijs vóór je aan supplementen denkt.",
-      url: "/slaap-verbeteren-na-40",
+      url: "/slaap-en-voeding",
     },
   },
   energy_score: {
@@ -54,7 +54,7 @@ const LIFESTYLE_FALLBACK_BY_DOMAIN: Record<DomainKey, DomainSupplementTip> = {
       name: "Leefstijlstappen",
       reason:
         "Energie na 30 vraagt eerst aandacht voor slaap, voeding en beweging — geen supplementclaim op ‘direct meer energie’.",
-      url: "/energie-na-40",
+      url: "/energie-en-voeding",
     },
   },
   stress_score: {
@@ -63,7 +63,7 @@ const LIFESTYLE_FALLBACK_BY_DOMAIN: Record<DomainKey, DomainSupplementTip> = {
       name: "Leefstijlstappen",
       reason:
         "Chronische stress vraagt eerst aandacht voor slaapritme, voorspelbare routines en korte herstelmomenten — dat zijn de hefbomen met het meeste bewijs vóór je aan supplementen denkt.",
-      url: "/stress-verminderen-na-40",
+      url: "/stress-en-voeding",
     },
   },
   nutrition_score: {
@@ -81,7 +81,7 @@ const LIFESTYLE_FALLBACK_BY_DOMAIN: Record<DomainKey, DomainSupplementTip> = {
       name: "Leefstijlstappen",
       reason:
         "Beweging opbouwen begint met haalbare stappen en herstel — supplementen zijn context, geen vervanging voor consistente activiteit.",
-      url: "/beweging-na-40",
+      url: "/beweging-en-voeding",
     },
   },
   recovery_score: {

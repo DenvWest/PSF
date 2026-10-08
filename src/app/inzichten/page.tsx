@@ -147,7 +147,7 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
 
   const hubRoute = activePijler
     ? PILLAR[activePijler].hubRoute
-    : "/slaap-verbeteren-na-40";
+    : "/slaap-en-voeding";
   const hubLabel = activePijler ? PILLAR[activePijler].label : "Slaap";
 
   const premiumFeedCount =

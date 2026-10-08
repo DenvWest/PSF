@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
-import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
+import GuideNutritionZoom from "@/components/content/GuideNutritionZoom";
 import MovementLifeline from "@/components/content/MovementLifeline";
 import MovementRecognition from "@/components/content/MovementRecognition";
 import MovementMechanism from "@/components/content/MovementMechanism";
@@ -17,24 +17,24 @@ import { buildArticleSchema, jsonLdScript } from "@/lib/seo/structuredData";
 const ACCENT = "oklch(0.69 0.095 50)";
 
 export const metadata: Metadata = {
-  title: "Beweging Na 30: Kracht, Ritme en Herstel",
+  title: "Beweging en voeding na 30: kracht, ritme en brandstof",
   description:
-    "Krachttraining, cardio en herstel na 30 — zonder sportschool-hype. Praktische stappen vóór supplementen, met links naar blogs en kennisbank.",
-  ...canonicalMetadata("/beweging-na-40"),
+    "Krachttraining en herstel na je dertigste hebben de juiste brandstof nodig. Zie wat eiwit, koolhydraten en calcium doen, vóór je aan supplementen denkt.",
+  ...canonicalMetadata("/beweging-en-voeding"),
   openGraph: {
-    title: "Beweging Na 30 — eerst belasting en rust, dan pas supplementen",
+    title: "Beweging en voeding na 30: kracht, ritme en brandstof",
     description:
       "Herkenning, trainingsritme en wanneer creatine of eiwit zinvol zijn — voor 30-plussers.",
-    url: "/beweging-na-40",
+    url: "/beweging-en-voeding",
     type: "article",
   },
 };
 
 const articleSchema = buildArticleSchema({
-  headline: "Beweging Na 30: Kracht, Ritme en Herstel",
+  headline: "Beweging en voeding na 30: kracht, ritme en brandstof",
   description:
     "Krachttraining, cardio en herstel na 30 — praktische stappen vóór supplementen.",
-  path: "/beweging-na-40",
+  path: "/beweging-en-voeding",
   datePublished: "2026-06-04",
 });
 
@@ -78,7 +78,7 @@ export default function BewegingNa40Page() {
                 Leefstijl eerst
               </p>
               <h1 className="mt-4 font-serif text-[clamp(36px,6vw,64px)] font-normal leading-[1.04] text-[#F4F1E9]">
-                Beweging Na 30: Kracht, Ritme en Herstel
+                Beweging en voeding na 30: kracht, ritme en brandstof
               </h1>
               <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-[#9FB0A6] md:text-[19px]">
                 Ken je dit: je traint nog “genoeg”, maar herstel duurt langer,
@@ -92,18 +92,11 @@ export default function BewegingNa40Page() {
                   className="inline-flex min-h-[44px] items-center justify-center rounded-lg px-8 py-3 text-sm font-bold text-[#102018] no-underline transition hover:opacity-90"
                   style={{ background: "var(--ac)" }}
                 >
-                  Doe de gratis Leefstijlcheck →
+                  Zie wat jij mist — gratis →
                 </Link>
-                <p className="mt-3 text-sm text-[#9FB0A6]">
-                  Of{" "}
-                  <Link
-                    href="/intake/beweging"
-                    className="font-medium text-[#F1EFE8] underline decoration-white/30 underline-offset-[3px] transition hover:decoration-white/70"
-                  >
-                    start met alleen de beweegcheck (1 min)
-                  </Link>
+                <p className="mt-4 max-w-lg text-sm text-[#7E8C82]">
+                  Een paar korte vragen · 3 minuten · gratis · geen medische test.
                 </p>
-                <IntakeCtaMicro className="mt-4 max-w-lg text-sm text-[#7E8C82]" />
               </div>
             </div>
           </Container>
@@ -116,6 +109,9 @@ export default function BewegingNa40Page() {
         <MovementMoments />
         <MovementFuture />
         <MovementDashboardPreview />
+        <Container className="py-4">
+          <GuideNutritionZoom guide="beweging" />
+        </Container>
         <MovementClosingCta />
       </main>
     </>

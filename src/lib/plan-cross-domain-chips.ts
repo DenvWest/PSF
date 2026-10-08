@@ -36,7 +36,7 @@ function chipHref(pillarId: PillarId): string {
     case "beweging":
       return "/intake/beweging?from=plan&kompas=beweging";
     case "herstel":
-      return "/herstel-verbeteren-na-40";
+      return "/herstel-en-voeding";
     case "energie":
       return "/dashboard?tab=vandaag&kompas=energie";
     default:

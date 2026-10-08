@@ -283,8 +283,8 @@ export default function GuideOptIn({
               {personalizedInboxLine(displayName, guideTitle)}
             </p>
             <div className="mt-[18px] border-t border-[#F0ECE2] pt-[18px] text-[13.5px] text-[#8A9189]">
-              Volgende stap: de gratis Leefstijlcheck — meet je startpunt in 3
-              minuten.
+              Volgende stap: de gratis check Wat mis je? — zie in 3 minuten wat je
+              voeding tekortkomt.
             </div>
           </div>
         ) : (

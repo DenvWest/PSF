@@ -37,5 +37,5 @@ export const stressGuide: GuideOptInData = {
     successMessage: "Check je inbox — de Stressgids is onderweg.",
   },
   pdfPath: "/downloads/stressgids-perfectsupplement.pdf",
-  pillarHref: "/stress-verminderen-na-40",
+  pillarHref: "/stress-en-voeding",
 };

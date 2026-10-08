@@ -16,11 +16,11 @@ const AUDIENCE_CONTEXT: Record<ContentAudience, AudienceContext> = {
   },
   mannen: {
     toelichting: "Artikelen voor mannen 30+ staan nu bovenaan.",
-    link: { label: "Naar de pijler Testosteron na 30", href: "/testosteron-na-40" },
+    link: { label: "Naar de pijler Testosteron na 30", href: "/testosteron-en-voeding" },
   },
   vrouwen: {
     toelichting: "Artikelen over de overgang staan nu bovenaan.",
-    link: { label: "Naar de pijler Overgang", href: "/overgang" },
+    link: { label: "Naar de pijler Overgang", href: "/overgang-en-voeding" },
   },
 };
 

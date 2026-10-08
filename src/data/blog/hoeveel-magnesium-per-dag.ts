@@ -106,7 +106,7 @@ export const hoeveelMagnesiumPerDagData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 40",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Alle supplementen in de supplementengids",

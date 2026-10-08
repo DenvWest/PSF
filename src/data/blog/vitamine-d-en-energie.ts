@@ -8,7 +8,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
   coverImage: "/images/blog/vitamine-d-en-energie.jpg",
   coverImageAlt: "Zonnig strand met helder blauwe lucht",
   heroIntro:
-    "In Nederland is een lage vitamine D-status in de winter geen uitzondering — maar “meer energie” staat niet op de lijst met erkende gezondheidsclaims. Dit artikel scheidt feiten van wensen: wanneer meten zinvol is, hoe [energie na 30](/energie-na-40) breder werkt dan één capsule, en hoe je [vitamine D supplementen](/beste/vitamine-d) eerlijk vergelijkt.",
+    "In Nederland is een lage vitamine D-status in de winter geen uitzondering — maar “meer energie” staat niet op de lijst met erkende gezondheidsclaims. Dit artikel scheidt feiten van wensen: wanneer meten zinvol is, hoe [energie na 30](/energie-en-voeding) breder werkt dan één capsule, en hoe je [vitamine D supplementen](/beste/vitamine-d) eerlijk vergelijkt.",
   leestijd: "10 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-09-01",
@@ -39,7 +39,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: vergelijk vitamine D op kwaliteit en prijs per dag",
       tekst:
-        "Op het etiket telt niet alleen IE of µg, maar ook vorm (vaak D3), olie-oplossing vs tablet en prijs per dag. Onze [beste vitamine D](/beste/vitamine-d) vergelijking bundelt dat voor drie gangbare keuzes — handig naast de bredere [energie-pillar](/energie-na-40) en blogs zoals [energie verhogen natuurlijk](/blog/energie-verhogen-natuurlijk).",
+        "Op het etiket telt niet alleen IE of µg, maar ook vorm (vaak D3), olie-oplossing vs tablet en prijs per dag. Onze [beste vitamine D](/beste/vitamine-d) vergelijking bundelt dat voor drie gangbare keuzes — handig naast de bredere [energie-pillar](/energie-en-voeding) en blogs zoals [energie verhogen natuurlijk](/blog/energie-verhogen-natuurlijk).",
     },
   ],
   samenvatting:
@@ -52,7 +52,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 30",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vitamine D supplementen vergelijken",

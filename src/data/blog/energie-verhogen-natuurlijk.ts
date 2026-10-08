@@ -53,7 +53,7 @@ export const energieVerhogenData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 30",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   gerelateerdeSluggen: [
     "vitamine-d-en-energie",

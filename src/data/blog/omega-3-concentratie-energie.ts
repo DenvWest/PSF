@@ -45,7 +45,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 30",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   supplementenHubLink: {
     label: "Alle supplementen langs dezelfde meetlat",

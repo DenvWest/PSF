@@ -208,7 +208,7 @@ export const overtrainerProfile: ProfilePageData = {
   },
 
   relatedPillar: {
-    href: "/herstel-verbeteren-na-40",
+    href: "/herstel-en-voeding",
     turboSnippet:
       "Herstel na 30: waarom volume en slaap samenhangen — met bronnen en een concreet weekplan.",
   },
@@ -235,12 +235,12 @@ export const overtrainerProfile: ProfilePageData = {
         "Overtrainingssyndroom uitgelegd: wanneer belasting structureel wint van herstel — geen ‘lui zijn’.",
     },
     {
-      href: "/energie-na-40",
+      href: "/energie-en-voeding",
       turboSnippet:
         "Trainingsvolume en energiehuishouding lopen vast in elkaar over — zo lees je voeding en dagritme na 30.",
     },
     {
-      href: "/slaap-verbeteren-na-40",
+      href: "/slaap-en-voeding",
       turboSnippet:
         "Zonder stabiele slaap blijft herstel krap — het slaapthema legt gedrag en omgeving naast supplementen uit.",
     },

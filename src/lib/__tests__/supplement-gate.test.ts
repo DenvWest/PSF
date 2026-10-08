@@ -38,7 +38,7 @@ describe("isGatedComparisonPathAllowed", () => {
 
   it("onbekend of niet-/beste pad → false", () => {
     expect(isGatedComparisonPathAllowed("/beste/onbekend")).toBe(false);
-    expect(isGatedComparisonPathAllowed("/energie-na-40")).toBe(false);
+    expect(isGatedComparisonPathAllowed("/energie-en-voeding")).toBe(false);
   });
 });
 

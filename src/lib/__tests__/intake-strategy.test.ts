@@ -10,7 +10,7 @@ describe("gateAdviceSupplements", () => {
       supplements: [
         { name: "Magnesium glycinaat", reason: "reden", link: "/beste/magnesium" },
         { name: "Ashwagandha", reason: "reden", link: "/beste/ashwagandha" },
-        { name: "Losse tip", reason: "reden", link: "/energie-na-40" },
+        { name: "Losse tip", reason: "reden", link: "/energie-en-voeding" },
       ],
     };
 
