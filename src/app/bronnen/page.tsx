@@ -69,7 +69,12 @@ export default function BronnenPage() {
         </p>
         <ul className="mt-3 list-disc space-y-1.5 pl-5">
           <li>alleen producten behouden die in Nederland worden verkocht en een energiewaarde hebben;</li>
-          <li>eenheden omgerekend naar milligram of microgram per 100 g of ml;</li>
+          <li>natrium omgerekend van gram naar milligram per 100 g of ml;</li>
+          <li>
+            calcium, ijzer, vitamine C en vitamine D leeggelaten: in de bron staan schattingen die Open
+            Food Facts uit de ingrediëntenlijst berekent tussen de etiketwaarden, zonder dat ze van
+            elkaar te onderscheiden zijn;
+          </li>
           <li>
             waarden die niet kunnen kloppen, zoals een energiewaarde die niet bij de macro&apos;s past of
             een onmogelijk hoog vitamine-gehalte, leeggelaten of de hele rij overgeslagen;
@@ -98,7 +103,7 @@ export default function BronnenPage() {
           Kolommen: prod_id, bron, bron_id (de barcode), snapshot_datum, naam, merk, categorie,
           zoek_tekst, energy_kcal, fat_g, saturated_fat_g, carbohydrate_g, sugars_g, fiber_g,
           protein_g, salt_g, sodium_mg, calcium_mg, iron_mg, vitamin_c_mg en vitamin_d_ug. Alle
-          waarden zijn per 100 g of ml.
+          waarden zijn per 100 g of ml. De vier laatste kolommen zijn voorlopig leeg.
         </p>
       </section>
 
