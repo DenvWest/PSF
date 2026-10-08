@@ -172,26 +172,28 @@ export default function DagboekPortieInvoer({
           )}
         </header>
 
-        <label className="flex items-center gap-2.5">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]">
-            Aantal
-          </span>
-          <input
-            type="number"
-            inputMode="numeric"
-            min={1}
-            max={20}
-            value={aantalPorties}
-            disabled={busy}
-            onChange={(event) =>
-              setAantalPorties(Math.max(1, Math.trunc(Number(event.target.value)) || 1))
-            }
-            className="w-20 rounded-lg border border-white/15 bg-black/20 px-2.5 py-2 text-right font-mono text-[13px] tabular-nums text-[var(--vd-ink)] outline-none transition-colors focus:border-white/40"
-          />
-          <span className="text-[12px] text-[var(--vd-ink-4)]">
-            × {entry.porties[0]?.labelNl ?? "portie"}
-          </span>
-        </label>
+        {product ? null : (
+          <label className="flex items-center gap-2.5">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--vd-ink-4)]">
+              Aantal
+            </span>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={20}
+              value={aantalPorties}
+              disabled={busy}
+              onChange={(event) =>
+                setAantalPorties(Math.max(1, Math.trunc(Number(event.target.value)) || 1))
+              }
+              className="w-20 rounded-lg border border-white/15 bg-black/20 px-2.5 py-2 text-right font-mono text-[13px] tabular-nums text-[var(--vd-ink)] outline-none transition-colors focus:border-white/40"
+            />
+            <span className="text-[12px] text-[var(--vd-ink-4)]">
+              × {entry.porties[0]?.labelNl ?? "portie"}
+            </span>
+          </label>
+        )}
 
         {nutrient ? (
           <p className="m-0 flex items-center gap-2 rounded-xl border border-[rgb(var(--vd-sage-rgb)/25%)] bg-[rgb(var(--vd-sage-rgb)/6%)] px-3 py-2 text-[12.5px] leading-relaxed text-[var(--vd-ink-2)]">
@@ -251,7 +253,7 @@ export default function DagboekPortieInvoer({
             onClick={() => onBevestig(moment, aantalPorties)}
             className="min-h-[44px] flex-1 cursor-pointer rounded-xl bg-[var(--vd-sage)] px-4 text-[13px] font-semibold text-[var(--vd-bg)] transition-opacity hover:opacity-90 disabled:opacity-50"
           >
-            Toevoegen
+            {product ? "Zet in dagboek" : "Toevoegen"}
           </button>
         </div>
       </div>

@@ -226,5 +226,6 @@ Stap 3 uit `PROMPT_VERVOLG_KEUZE_2026-10-08.md`; maakt punt 4 van de negende ron
 - Mijn keuzes → supplementkant: "＋ Dagboek" op het gekozen moment (`voeding-moment-<stof>-<moment>`, anders ontbijt). Het opent het portiescherm in het dagboek, net als ＋ bij eten (`voeg=product:<slug>`). De zin "Loggen in je dagboek volgt…" is weg. Zonder vaste dosis per dag op het etiket staat er dat loggen nog niet kan.
 - Dagboek → "Mijn supplementen": je Keuze-supplementen staan bovenaan ("supplement · jouw keuze"), zonder ster, want ze staan al in Mijn keuzes. Daarna favorieten en eerder gebruikt; een eerder gelogd merkproduct staat er ook in.
 - Wie een oudere regel opnieuw kiest, logt met het etiket van nu.
+- **Geen aantal bij een merkproduct** (Dennis, 8 okt): het portiescherm vraagt alleen "Zet in dagboek" en logt één dagdosis volgens het etiket; in de maaltijd staat "dagdosis" zonder invoerveld. Wie het twee keer neemt, logt het twee keer.
 
 **Meting:** `keuze_bron_naar_dagboek` {nutrient, moment, surface: mijn_keuzes, kant: supplement}, hetzelfde event als ＋ bij eten. In het dagboek zijn het de bestaande `nutrition_dagboek_zoek_item_gekozen` en `nutrition_dagboek_portie_bevestigd` met `bron: supplement`.

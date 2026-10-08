@@ -134,7 +134,7 @@ export function supplementVanItem(
     key: item.key,
     labelNl: naam,
     nutrient,
-    porties: [{ labelNl: `1 ${PRODUCT_PORTIE_LABEL}`, amount: dosis, unit }],
+    porties: [{ labelNl: PRODUCT_PORTIE_LABEL, amount: dosis, unit }],
   };
 }
 

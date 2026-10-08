@@ -60,7 +60,7 @@ describe("merkproduct in het dagboek", () => {
       key: "merk-vitamine-d3",
       labelNl: "Merk Vitamine D3 25 µg",
       nutrient: "vitamin_d",
-      porties: [{ labelNl: "1 dagdosis", amount: 25, unit: "µg" }],
+      porties: [{ labelNl: "dagdosis", amount: 25, unit: "µg" }],
     });
   });
 });

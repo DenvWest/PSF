@@ -278,20 +278,24 @@ export default function DagboekMaaltijd({
                           {label}
                         </span>
                       </button>
-                      <label className="mt-0.5 flex items-center gap-1">
-                        <span className="sr-only">Aantal voor {label}</span>
-                        <input
-                          type="number"
-                          inputMode="numeric"
-                          min={1}
-                          max={item.bron === "supplement" ? 20 : 2000}
-                          value={item.grams}
-                          disabled={busy}
-                          onChange={(event) => onGram(item, Number(event.target.value))}
-                          className="w-14 rounded-md border border-white/12 bg-black/25 px-1.5 py-0.5 text-right font-mono text-[10.5px] tabular-nums text-[var(--vd-ink-2)] outline-none transition-colors focus:border-white/40"
-                        />
-                        <span className="font-mono text-[10px] text-[var(--vd-ink-4)]">{eenheid}</span>
-                      </label>
+                      {item.product ? (
+                        <span className="mt-0.5 block font-mono text-[10px] text-[var(--vd-ink-4)]">{eenheid}</span>
+                      ) : (
+                        <label className="mt-0.5 flex items-center gap-1">
+                          <span className="sr-only">Aantal voor {label}</span>
+                          <input
+                            type="number"
+                            inputMode="numeric"
+                            min={1}
+                            max={item.bron === "supplement" ? 20 : 2000}
+                            value={item.grams}
+                            disabled={busy}
+                            onChange={(event) => onGram(item, Number(event.target.value))}
+                            className="w-14 rounded-md border border-white/12 bg-black/25 px-1.5 py-0.5 text-right font-mono text-[10.5px] tabular-nums text-[var(--vd-ink-2)] outline-none transition-colors focus:border-white/40"
+                          />
+                          <span className="font-mono text-[10px] text-[var(--vd-ink-4)]">{eenheid}</span>
+                        </label>
+                      )}
                     </td>
                     {KOLOMMEN.map((kolom) => {
                       const bedrag = bedragVoor(item, kolom.id);
