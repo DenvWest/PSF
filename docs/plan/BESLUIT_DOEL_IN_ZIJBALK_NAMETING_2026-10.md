@@ -1,7 +1,7 @@
 # Besluit: het doel in de contextkolom krijgt een stand, een nameting en een volgende stap
 
 **Datum:** 9 oktober 2026
-**Status:** Voorstel, wacht op Dennis' akkoord. Niet gebouwd.
+**Status:** Voorstel. Dennis (9 okt): goede gedachte, §4 akkoord; de grens gratis/premium (venster in dagen, premium-trappen) gaat naar een aparte sessie en is hier nog **open**. Niet gebouwd.
 **Bouwt voort op:** `BESLUIT_KOMPAS_WINST_DAGBOEK_2026-10.md` (dagboekregel, #203), `BESLUIT_VOEDINGSRICHTING_2026-10.md` (richting kadert en meet niet), `PLAN_EIGEN_IJKPUNT_DOEL_PER_DOMEIN.md` (ijkpunt = PSFS, eigen as), `BESLUIT_DOELEN_VERBONDEN_2026-10.md` (normen, gevolgde stoffen), `BESLUIT_PATROON_PREMIUM_EN_WEEKMAIL_2026-10.md` §2–4 en `BESLUIT_GRATIS_NU_PREMIUM_AANBOD_2026-10.md` (wat gratis en premium is, n8n-mail zonder gegevens)
 **Raakt:** `KompasContextSpine.tsx` (zone "Waar je naartoe werkt"), `src/lib/kompas-winst-dagboek.ts`, `account_voedingsdoelen`
 
@@ -51,6 +51,16 @@ Reden: eigen getallen inzien en registreren zijn nooit gegated (patroon-besluit 
 - Trigger: de nameting is klaar én er is een 30-dagenpatroon. Pas dan de premium-teaser ("je patroon per maaltijd staat klaar"), conform het 5-van-7-dagen-moment uit het premium-besluit.
 - **n8n:** een domain event `doel.nameting_klaar` zet de bestaande weekoverzicht-mail in gang, **zonder voedingsgegevens in de mail** ("Je nameting staat klaar", link naar het dashboard). Geen aparte nurture: er geldt één hoofd-nurture per adres (`EMAIL_SYSTEM.md`), en de weekoverzicht-opt-in blijft de enige toestemming.
 - Een supplementvergelijking blijft de 30-dagenvoorwaarde houden en komt nooit uit de doel-zone zelf.
+
+## Open voor de aparte gratis/premium-sessie (9 okt)
+
+Dennis' ideeën, nog niet besloten en botsend met de akkoorden van 7 en 8 okt (gratis = vandaag en 7 dagen, drempel 5 van 7 dagen, supplementuitgang pas bij 30 dagen):
+
+- Gratis venster van 1 tot 4 dagen in plaats van 7, met een sterke vergelijking en analyse.
+- Premium in trappen 14, 30 en 90 dagen, met personalisatie en voorstellen met effect.
+- Een supplementvergelijking al vanaf 1 dag.
+
+Tot die sessie zijn alle venster- en drempelwaarden in dit voorstel parameters, geen besluit. Deze sessie moet de eerdere besluiten expliciet herzien of bevestigen (`BESLUIT_PATROON_PREMIUM_EN_WEEKMAIL_2026-10.md` §2–3, `BESLUIT_GRATIS_NU_PREMIUM_AANBOD_2026-10.md` §4).
 
 ## Afgewezen
 
