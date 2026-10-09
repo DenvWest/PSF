@@ -41,10 +41,7 @@ ${ctaButton(absoluteUrl("/voeding-na-40"), "Start met je stappenplan →")}
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   Veel mensen eten wel eiwit, maar niet verspreid over de dag. Richt op 20–30 g per maaltijd — dat ondersteunt herstel en spiermassa beter dan één grote portie 's avonds.
 </p>
-${ctaButton(absoluteUrl("/voeding-na-40"), "Lees het complete voedingsprotocol →")}
-<p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
-  <a href="${absoluteUrl("/intake/plan/nutrition")}" style="color: #3C7A56; text-decoration: underline;">Wil je stappen afvinken? Open je voedingsplan →</a>
-</p>`,
+${ctaButton(absoluteUrl("/voeding-na-40"), "Lees het complete voedingsprotocol →")}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),
