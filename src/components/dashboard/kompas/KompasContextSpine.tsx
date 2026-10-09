@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import DomainLadderContextPanel from "@/components/dashboard/domain/DomainLadderContextPanel";
 import KompasWinstKnop from "@/components/dashboard/kompas/KompasWinstKnop";
 import KompasDagboekRegel from "@/components/dashboard/kompas/KompasDagboekRegel";
+import KompasDoelEvaluatie from "@/components/dashboard/kompas/KompasDoelEvaluatie";
 import KompasDoelRichting from "@/components/dashboard/kompas/KompasDoelRichting";
 import KompasDoelStand from "@/components/dashboard/kompas/KompasDoelStand";
 import DomeinDoelZetten from "@/components/dashboard/voortgang/DomeinDoelZetten";
@@ -79,6 +81,7 @@ export default function KompasContextSpine({
   onRemeasure,
   compact = false,
 }: KompasContextSpineProps) {
+  const [richtingKiezen, setRichtingKiezen] = useState(false);
   const goalDomain = isDomainGoalDomain(domain) ? domain : null;
   const {
     goals,
@@ -100,6 +103,11 @@ export default function KompasContextSpine({
     applySaved: applyGoalSaved,
     closePanel: closeGoalPanel,
   } = useDomainGoalEditor(goalDomain, "kompas_context");
+  const ijkpuntScores = goal?.scores ?? [];
+  const ijkpunt =
+    ijkpuntScores.length >= 2
+      ? { toen: ijkpuntScores[0].score, nu: ijkpuntScores[ijkpuntScores.length - 1].score }
+      : null;
 
   const spine: ContextSpine = buildContextSpine({
     domain,
@@ -304,7 +312,9 @@ export default function KompasContextSpine({
           ) : null}
         </div>
 
-        {domain === "voeding" && !goalEditing ? <KompasDoelRichting /> : null}
+        {domain === "voeding" && !goalEditing ? (
+          <KompasDoelRichting kiezen={richtingKiezen} onKiezenChange={setRichtingKiezen} />
+        ) : null}
 
         {domain === "voeding" && !goalEditing ? (
           <span className="mb-1 mt-3 block border-t border-white/10 pt-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82]">
@@ -393,6 +403,9 @@ export default function KompasContextSpine({
         )}
 
         {domain === "voeding" && !goalEditing ? <KompasDoelStand /> : null}
+        {domain === "voeding" && !goalEditing ? (
+          <KompasDoelEvaluatie ijkpunt={ijkpunt} onVeranderen={() => setRichtingKiezen(true)} />
+        ) : null}
       </section>
     ) : null;
 

@@ -101,7 +101,7 @@ describe("POST", () => {
       gewichtKg: 90,
       trainingsbelasting: 3,
       eiwitDoelG: 140,
-    });
+    }, { richtingGewijzigd: false });
   });
 
   it("wist een veld op een expliciete null", async () => {
@@ -111,7 +111,18 @@ describe("POST", () => {
       gewichtKg: 82,
       trainingsbelasting: 3,
       eiwitDoelG: null,
-    });
+    }, { richtingGewijzigd: false });
+  });
+
+  it("meldt een gewijzigde richting, zodat de evaluatie een nieuwe ronde begint", async () => {
+    await POST(makeRequest({ voedingsrichting: "energie" }));
+
+    expect(mockSetVoedingsdoelen).toHaveBeenCalledWith(
+      expect.anything(),
+      ACCOUNT.id,
+      expect.objectContaining({ voedingsrichting: "energie" }),
+      { richtingGewijzigd: true },
+    );
   });
 
   it("weigert een gewicht buiten de grenzen van de formule", async () => {

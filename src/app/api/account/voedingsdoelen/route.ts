@@ -151,7 +151,9 @@ export async function POST(request: NextRequest) {
   };
 
   try {
-    await setVoedingsdoelen(admin, account.id, doelen);
+    await setVoedingsdoelen(admin, account.id, doelen, {
+      richtingGewijzigd: doelen.voedingsrichting !== huidig.voedingsrichting,
+    });
     // Opnieuw laden in plaats van `doelen` terugsturen: de richtlijn hangt
     // ook van de check af, dus alleen de server weet wat er nu geldt.
     return NextResponse.json(await laadVoedingsdoelenWeergave(account.id), { status: 200 });
