@@ -286,3 +286,10 @@ Gebouwd in `KeuzeVergelijken.tsx` volgens de schets, variant B:
 **Meting:** nieuw `keuze_naar_mijn_keuzes` {surface, plek: zijkolom|lade, aantal} (GA4; een GA4-event heeft geen registratie op drie plekken nodig, alleen `domain_events` wel). Bestaand: `keuze_stof_geopend` (nu per chip), `keuze_product_gekozen`, `keuze_eten_gekozen`, `keuze_vergelijken_ps_score_click`.
 
 **Plak 2 (volgt):** Mijn keuzes netter (compacte dagtegels, twee kolommen per stof) en de domeinrail in Keuze weg (open: bevestiging Dennis).
+
+### Twaalfde ronde — uitvoering plak 2 (9 oktober): Mijn keuzes + domeinchip
+
+- **Mijn keuzes** volgt de schets: bovenaan drie tegels (stoffen gekozen, supplementen, per dag + per maand), dan **"Je dag"** (de vier momenten van het dagboek met je keuzes erop, met foto en één ＋ Dagboek per regel), dan **per stof** een balk (je eten + je supplement tegenover je norm) met "Wijzig". Moment kiezen, weghalen (★) en de productpagina staan per stof onder **"Beheer"** (ingeklapt). De ＋ Dagboek is uit de stofkaart weg: loggen gebeurt op één plek, in "Je dag".
+- **Afgewezen / niet gebouwd:** de "Jouw stack"-teaser uit de schets. Die voorziening bestaat niet; een teaser voor iets wat er niet is, misleidt. Komt pas met de premium-bouw.
+- **Domeinrail:** de rail in Keuze was al weg (`zichtbare-domeinen.ts`: alleen voeding zichtbaar; `Dashboard.tsx` verbergt de rail bij ≤ 1 domein). Wat restte was één losse chip "Voeding" op mobiel in `SchapView`; die staat nu alleen nog bij meer dan één zichtbaar domein. Slaap en Beweging blijven in de code en komen terug zodra ze uit `VERBORGEN_DOMEINEN` gaan.
+- **Meting:** `keuze_bron_naar_dagboek` (bestaand, nu vanuit "Je dag"), `mijn_keuzes_moment`, `mijn_keuzes_naar_vergelijken` ongewijzigd. Geen nieuw event.
