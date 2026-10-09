@@ -27,6 +27,38 @@ describe("DagboekRijksteBronnen", () => {
   });
 });
 
+describe("DagboekRijksteBronnen verder kijken", () => {
+  const rijen = () => screen.getAllByRole("button", { name: /^Voeg .* toe$/ }).length;
+
+  it("toont eerst 10 en breidt uit met Toon meer", () => {
+    render(<DagboekRijksteBronnen stof="magnesium" onKies={vi.fn()} onVergelijk={vi.fn()} />);
+    expect(rijen()).toBe(10);
+    fireEvent.click(screen.getByRole("button", { name: /Toon \d+ meer/ }));
+    expect(rijen()).toBeGreaterThan(10);
+  });
+
+  it("zoekt binnen alle bronnen, ook buiten de top 10", () => {
+    render(<DagboekRijksteBronnen stof="magnesium" onKies={vi.fn()} onVergelijk={vi.fn()} />);
+    fireEvent.change(screen.getByRole("searchbox", { name: /Zoek een voedingsmiddel met magnesium/ }), {
+      target: { value: "pompoen" },
+    });
+    expect(rijen()).toBeGreaterThan(0);
+    expect(rijen()).toBeLessThan(10);
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "zzzzqq" } });
+    expect(screen.getByText(/Niets gevonden/)).toBeTruthy();
+  });
+
+  it("filtert op voedselgroep en wist het filter bij nogmaals tikken", () => {
+    render(<DagboekRijksteBronnen stof="magnesium" onKies={vi.fn()} onVergelijk={vi.fn()} />);
+    const chip = screen.getByRole("button", { name: "Noten & zaden" });
+    fireEvent.click(chip);
+    expect(chip.getAttribute("aria-pressed")).toBe("true");
+    expect(rijen()).toBeGreaterThan(0);
+    fireEvent.click(chip);
+    expect(chip.getAttribute("aria-pressed")).toBe("false");
+  });
+});
+
 describe("DagboekRijksteBronnen voor een informatieve stof", () => {
   it("toont calcium met %ADH per portie", () => {
     render(<DagboekRijksteBronnen stof="calciumMg" onKies={vi.fn()} onVergelijk={vi.fn()} />);

@@ -2,11 +2,12 @@
 
 import { useMemo, useState } from "react";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
+import { searchCatalog } from "@/data/nutrition/food-catalog";
 import { trackEvent } from "@/lib/ga4";
 import { rijksteBronnen, stofInfo, type RijksteStand, type RijksteStof } from "@/lib/nutrition-rijkste-bronnen";
 
 /**
- * De top 10 voedingsbronnen van één stof, onder "Wat hieraan bijdroeg" in het
+ * De rijkste voedingsbronnen van één stof (start op 10, "Toon meer" tot de hele lijst, zoeken en filteren op voedselgroep), onder "Wat hieraan bijdroeg" in het
  * stofdetail. Logica en keuzes staan in `nutrition-rijkste-bronnen.ts`; dit
  * is alleen de weergave met de drie standen, een tik om toe te voegen en een
  * sprong naar de vergelijkingstabel met de top 3.
@@ -21,6 +22,19 @@ const STANDEN: readonly { id: RijksteStand; label: string; uitleg: string }[] = 
     uitleg: "Veel stof voor weinig calorieën. Afgeleid: NEVO-gehalte gedeeld door NEVO-energie.",
   },
 ];
+
+const START = 10;
+const STAP = 10;
+
+const GROEPEN = [
+  { id: "vis", label: "Vis & schaaldieren", categorieen: ["vis", "zeevruchten"] },
+  { id: "noten", label: "Noten & zaden", categorieen: ["noten", "zaden"] },
+  { id: "peulvruchten", label: "Peulvruchten", categorieen: ["peulvruchten", "plantaardig"] },
+  { id: "groente", label: "Groente & fruit", categorieen: ["groenten", "fruit"] },
+  { id: "granen", label: "Granen & brood", categorieen: ["granen", "brood", "pasta", "ontbijt"] },
+  { id: "zuivel", label: "Zuivel & ei", categorieen: ["zuivel", "kaas", "eieren"] },
+  { id: "vlees", label: "Vlees", categorieen: ["vlees", "orgaanvlees"] },
+] as const;
 
 function getal(value: number): string {
   return value.toLocaleString("nl-NL", { maximumFractionDigits: value < 10 ? 1 : 0 });
@@ -38,8 +52,26 @@ export default function DagboekRijksteBronnen({
   onVergelijk: (keys: readonly string[]) => void;
 }) {
   const [stand, setStand] = useState<RijksteStand>("portie");
-  const bronnen = useMemo(() => rijksteBronnen(stof, stand), [stof, stand]);
-  const hoogste = bronnen[0]?.waarde ?? 0;
+  const [zoek, setZoek] = useState("");
+  const [groep, setGroep] = useState<string | null>(null);
+  const [zichtbaar, setZichtbaar] = useState(START);
+  const alle = useMemo(() => rijksteBronnen(stof, stand, Number.MAX_SAFE_INTEGER), [stof, stand]);
+  const term = zoek.trim();
+  const actieveGroep = GROEPEN.find((g) => g.id === groep) ?? null;
+  const beschikbareGroepen = useMemo(
+    () => GROEPEN.filter((g) => alle.some((b) => (g.categorieen as readonly string[]).includes(b.entry.category))),
+    [alle],
+  );
+  const gevonden = useMemo(() => {
+    const treffers = term ? new Set(searchCatalog(term, 200).map((entry) => entry.key)) : null;
+    return alle
+      .map((bron, index) => ({ bron, rang: index + 1 }))
+      .filter(({ bron }) => !treffers || treffers.has(bron.entry.key))
+      .filter(({ bron }) => !actieveGroep || (actieveGroep.categorieen as readonly string[]).includes(bron.entry.category));
+  }, [alle, term, actieveGroep]);
+  const bronnen = gevonden.slice(0, zichtbaar);
+  const nogMeer = gevonden.length - bronnen.length;
+  const hoogste = alle[0]?.waarde ?? 0;
   const { label, ri, kern } = stofInfo(stof);
   const kleur = kern ? `var(--vd-stof-${stof})` : "var(--vd-ink-3)";
   const actief = STANDEN.find((s) => s.id === stand) ?? STANDEN[0];
@@ -50,7 +82,7 @@ export default function DagboekRijksteBronnen({
     trackEvent("nutrition_dagboek_rijkste_stand", { nutrient: stof, stand: nieuw });
   }
 
-  if (bronnen.length === 0) return null;
+  if (alle.length === 0) return null;
 
   return (
     <section aria-labelledby={`rijkste-${stof}`} className="overflow-hidden rounded-2xl border border-white/10">
@@ -77,10 +109,56 @@ export default function DagboekRijksteBronnen({
           ))}
         </div>
         <p className="m-0 text-[11px] leading-relaxed text-[var(--vd-ink-3)]">{actief.uitleg}</p>
+        <input
+          type="search"
+          value={zoek}
+          onChange={(event) => {
+            setZoek(event.target.value);
+            setZichtbaar(START);
+          }}
+          onBlur={() => {
+            if (term) trackEvent("nutrition_dagboek_rijkste_zoek", { nutrient: stof, treffers: gevonden.length });
+          }}
+          placeholder={`Zoek een voedingsmiddel met ${label.toLowerCase()}`}
+          aria-label={`Zoek een voedingsmiddel met ${label.toLowerCase()}`}
+          className="min-h-[36px] w-full rounded-lg border border-white/10 bg-white/[0.03] px-3 text-[12px] text-[var(--vd-ink)] placeholder:text-[var(--vd-ink-4)] focus:border-[var(--vd-sage)] focus:outline-none"
+        />
+        {beschikbareGroepen.length > 1 ? (
+          <div role="group" aria-label="Filter op voedselgroep" className="flex flex-wrap gap-1.5">
+            {beschikbareGroepen.map((g) => {
+              const aan = g.id === groep;
+              return (
+                <button
+                  key={g.id}
+                  type="button"
+                  aria-pressed={aan}
+                  onClick={() => {
+                    setGroep(aan ? null : g.id);
+                    setZichtbaar(START);
+                    if (!aan) trackEvent("nutrition_dagboek_rijkste_groep", { nutrient: stof, groep: g.id });
+                  }}
+                  className={`min-h-[30px] cursor-pointer rounded-full border px-2.5 text-[11px] font-semibold transition-colors ${
+                    aan
+                      ? "border-[var(--vd-sage)] bg-[var(--vd-sage)] text-[var(--vd-bg)]"
+                      : "border-white/10 text-[var(--vd-ink-3)] hover:text-[var(--vd-ink)]"
+                  }`}
+                >
+                  {g.label}
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
       </header>
 
+      {bronnen.length === 0 ? (
+        <p className="m-0 px-4 py-3 text-[12px] text-[var(--vd-ink-3)]">
+          Niets gevonden met {label.toLowerCase()}{term ? <> voor &ldquo;{term}&rdquo;</> : null}.
+        </p>
+      ) : null}
+
       <ol className="m-0 list-none p-0">
-        {bronnen.map((bron, index) => {
+        {bronnen.map(({ bron, rang }) => {
           const breedte = hoogste > 0 ? Math.max(4, Math.round((bron.waarde / hoogste) * 100)) : 0;
           const riAandeel =
             stand === "portie" && ri !== null ? Math.round((bron.perPortie / ri) * 100)
@@ -97,14 +175,14 @@ export default function DagboekRijksteBronnen({
                 type="button"
                 disabled={busy}
                 onClick={() => {
-                  trackEvent("nutrition_dagboek_rijkste_gekozen", { nutrient: stof, stand, positie: index + 1 });
+                  trackEvent("nutrition_dagboek_rijkste_gekozen", { nutrient: stof, stand, positie: rang });
                   onKies(bron.entry.key);
                 }}
                 aria-label={`Voeg ${bron.entry.labelNl} toe`}
                 className="flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-white/[0.03] disabled:opacity-50"
               >
                 <span className="w-4 shrink-0 text-right font-mono text-[11px] tabular-nums text-[var(--vd-ink-4)]">
-                  {index + 1}
+                  {rang}
                 </span>
                 <FoodThumbnail entry={bron.entry} size={40} />
                 <span className="min-w-0 flex-1">
@@ -135,7 +213,20 @@ export default function DagboekRijksteBronnen({
         })}
       </ol>
 
-      {bronnen.length >= 2 ? (
+      {nogMeer > 0 ? (
+        <button
+          type="button"
+          onClick={() => {
+            setZichtbaar(zichtbaar + STAP);
+            trackEvent("nutrition_dagboek_rijkste_meer", { nutrient: stof, aantal: bronnen.length + Math.min(STAP, nogMeer) });
+          }}
+          className="w-full cursor-pointer border-t border-white/10 bg-white/[0.02] px-4 py-2.5 text-[12px] font-semibold text-[var(--vd-sage-2)] transition-colors hover:bg-white/[0.04]"
+        >
+          Toon {Math.min(STAP, nogMeer)} meer <span className="font-normal text-[var(--vd-ink-3)]">· nog {nogMeer}</span>
+        </button>
+      ) : null}
+
+      {alle.length >= 2 ? (
         <footer className="flex items-center justify-between gap-3 border-t border-white/10 bg-white/[0.02] px-4 py-2.5">
           <span className="text-[10.5px] leading-snug text-[var(--vd-ink-4)]">
             Alleen gemeten waarden: NEVO-online 2025/9.0 (RIVM) en beoordeelde bronnen. Supplementen staan hier niet tussen.
@@ -143,7 +234,7 @@ export default function DagboekRijksteBronnen({
           <button
             type="button"
             onClick={() => {
-              const keys = bronnen.slice(0, 3).map((b) => b.entry.key);
+              const keys = alle.slice(0, 3).map((b) => b.entry.key);
               trackEvent("nutrition_dagboek_rijkste_vergelijk", { nutrient: stof, stand, aantal: keys.length });
               onVergelijk(keys);
             }}
