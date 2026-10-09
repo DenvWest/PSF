@@ -246,3 +246,15 @@ Stap 3 uit `PROMPT_VERVOLG_KEUZE_2026-10-08.md`; maakt punt 4 van de negende ron
 **Volgende (nog niet gebouwd):** schets met varianten voor een hero per stof, kaartjes naast elkaar en een zijkolom "Je keuzes" (`@container`, 375 px).
 
 **Meting:** geen nieuwe knop of CTA; bestaand `keuze_vergelijken_ps_score_click` dekt de klik op de productfoto/-link.
+
+---
+
+## Twaalfde ronde (9 oktober): schets herindeling — nog niet gekozen
+
+**Status:** voorstel, wacht op keuze van Dennis. Schets: `docs/design/keuze-ronde12-schets-2026-10.html` (open in de browser; schakelaars voor 375 / 768 / 1280, variant A/B, Vergelijken/Mijn keuzes, stand Ruimte/Op je norm).
+
+- **A, hero + kaartjes:** hero per stof met balk eten + supplement vs norm, eten als scrollrij met icoontegels, supplementen als foto-kaartjes, vaste onderbalk "Je keuzes · € per dag".
+- **B, met zijkolom:** A, plus op brede tab-inhoud (≥ 900 px container) een sticky zijkolom "Je keuzes vandaag" in plaats van de onderbalk. **Aanbeveling: B.**
+- **Mijn keuzes** wordt "je dag" in vier momenten, met per stof een balk onder de dagtegels. "Jouw stack" staat als teaser; niet gebouwd.
+- Alles reageert op de breedte van de tab-inhoud (`@container`), niet op het scherm. Tokens ongewijzigd (`--vd-*`); geen reviews/sterren/korting; geen affiliate-link in het dashboard.
+- Nieuw meetpunt bij bouw: `keuze_naar_mijn_keuzes` (registreren op de drie plekken); de rest hergebruikt bestaande events.
