@@ -241,14 +241,14 @@ describe("KeuzeVergelijken", () => {
   it("terug van een productpagina opent dezelfde stof en haalt de parameter uit de URL", async () => {
     window.history.replaceState(null, "", "/dashboard?tab=keuze&stof=protein");
     renderKeuze();
-    await waitFor(() => expect(screen.getByRole("button", { name: /Eiwit/, expanded: true })).toBeTruthy());
+    await waitFor(() => expect(screen.getByRole("button", { name: /Eiwit/, pressed: true })).toBeTruthy());
     expect(window.location.search).toBe("?tab=keuze");
   });
 
   it("een gebakken ei gekozen bij eiwit blijft bij eiwit staan, ook onder de bron-drempel", () => {
     const { rerender } = renderKeuze();
-    fireEvent.click(screen.getByRole("button", { name: /^Eiwit/, expanded: false }));
-    const eiwit = () => screen.getAllByRole("region", { name: "Uit je eten" }).at(-1)!;
+    fireEvent.click(screen.getByRole("button", { name: /^Eiwit/, pressed: false }));
+    const eiwit = () => screen.getByRole("region", { name: "Uit je eten" });
     fireEvent.change(within(eiwit()).getByRole("searchbox", { name: /Zoek eten met eiwit/ }), { target: { value: "ei gebakken" } });
     fireEvent.click(within(eiwit()).getByRole("button", { name: "Ei, gebakken kiezen" }));
     expect(favorieten.items.map((i) => i.id)).toContain("voeding-eten-protein-ei-gebakken");
@@ -257,5 +257,52 @@ describe("KeuzeVergelijken", () => {
     fireEvent.change(within(eiwit()).getByRole("searchbox", { name: /Zoek eten met eiwit/ }), { target: { value: "" } });
     expect(within(eiwit()).getByText("Jouw keuze")).toBeTruthy();
     expect(within(eiwit()).getByRole("button", { name: /Ei, gebakken: gekozen/ })).toBeTruthy();
+  });
+
+  it("toont één stof tegelijk: de hero met stand en balk, en wisselt met de stofchips", () => {
+    renderKeuze();
+    expect(screen.getByRole("article", { name: "Magnesium" })).toBeTruthy();
+    expect(screen.queryByRole("article", { name: "Eiwit" })).toBeNull();
+    expect(screen.getByRole("img", { name: /Je eten .* norm / })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /^Eiwit/ }));
+    expect(screen.getByRole("article", { name: "Eiwit" })).toBeTruthy();
+    expect(screen.queryByRole("article", { name: "Magnesium" })).toBeNull();
+  });
+
+  it("zet het beste supplement groot en laat een keuze in de balk en de lade verschijnen", () => {
+    const { rerender } = renderKeuze();
+    const supplement = screen.getByRole("region", { name: "Uit een supplement" });
+    expect(within(supplement).getByText("Hoogste PS-Score")).toBeTruthy();
+    expect(screen.queryByRole("region", { name: "Je keuzes" })).toBeNull();
+    expect(screen.getByRole("img", { name: /Je eten/ }).getAttribute("aria-label")).not.toMatch(/plus supplement/);
+    fireEvent.click(within(supplement).getAllByRole("button", { name: / kiezen$/ })[0]);
+    rerender(keuze());
+    expect(screen.getByRole("img", { name: /plus supplement/ })).toBeTruthy();
+    expect(screen.getByText(/Jouw keuze:/)).toBeTruthy();
+  });
+
+  it("de lade telt je keuzes over alle stoffen en brengt je naar Mijn keuzes", () => {
+    favorieten.items = [
+      { id: "voeding-eten-protein-ei-gebakken", title: "Eiwit: Ei, gebakken", kind: "activiteit" },
+      { id: "voeding-eten-magnesium-pompoenzaden", title: "Magnesium: Pompoenpitten", kind: "activiteit" },
+    ];
+    const naarMijnKeuzes = vi.fn();
+    render(
+      <KeuzeVergelijken
+        statuses={[status("magnesium", "Magnesium"), status("protein", "Eiwit")]}
+        reeksen={[reeks("magnesium", false), reeks("protein", true)]}
+        dagen={[]}
+        vandaag="2026-10-06"
+        surface="test"
+        verdicts={[]}
+        onNaarMijnKeuzes={naarMijnKeuzes}
+      />,
+    );
+    const lades = screen.getAllByRole("region", { name: "Je keuzes" });
+    expect(within(lades[0]).getByText(/2 keuzes/)).toBeTruthy();
+    fireEvent.click(within(lades[0]).getByRole("button", { name: /2 keuzes/ }));
+    expect(within(lades[0]).getByText("Eiwit")).toBeTruthy();
+    fireEvent.click(within(lades[0]).getByRole("button", { name: "Naar Mijn keuzes →" }));
+    expect(naarMijnKeuzes).toHaveBeenCalled();
   });
 });

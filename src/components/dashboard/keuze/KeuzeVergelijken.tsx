@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
+import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { catalogEntry, searchCatalog, type CatalogEntry } from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { IngredientClaimKey } from "@/data/approved-claims";
@@ -24,6 +25,7 @@ import {
   etenKeuzeId,
   etenKeuzesVoorStof,
   metKeuzeHerkomst,
+  momentVoorStof,
   parseEtenKeuze,
   productKeuzeId,
   productKeuzeIdsVoorStof,
@@ -66,40 +68,33 @@ import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 
 /**
- * Keuze → Vergelijken: per stof je eten naast een supplement, gevoed door je
- * dagboek (`BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`, herziening 6 okt).
+ * Keuze → Vergelijken: één stof tegelijk, je eten naast een supplement, gevoed
+ * door je dagboek (`BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`, ronde 12, variant B).
  *
- * ## Twee kolommen, dezelfde kleuren als het dagboek
+ * ## Opbouw
  *
- * Sage is voeding, blauw (`--vd-accent-2`) is supplement — dezelfde twee
- * accenten als de dekkingscirkels in het dagboek. Wie van Dagboek via Patroon
- * naar Keuze gaat, ziet steeds dezelfde twee kanten.
+ * Een stofkeuze (chips) bepaalt het werkblad. Bovenaan de hero: je stand uit
+ * het dagboek en één balk, eten + supplement tegenover je norm, zodat de
+ * keuze zichtbaar effect heeft vóór je klikt. Daaronder twee kolommen in de
+ * dezelfde twee accenten als de dekkingscirkels van het dagboek (sage = eten,
+ * blauw = supplement): per kolom de beste keuze groot, de rest als compacte
+ * rijen. Rechts (brede inhoud) een zijkolom met al je keuzes; daaronder een
+ * uitklapbare lade.
  *
  * ## Geen slot, wel nadruk
  *
  * De laag-6-poort uit de check-ladder is vervangen door wat je dagboek laat
  * zien ({@link keuzeStofStand}). Haalt je eten de norm, dan blijft de
  * supplementkant rustig en ingeklapt; laat je dagboek ruimte zien, dan staat hij
- * open. Kiezen kan altijd: één kaart is die route, beide kaarten is "allebei".
+ * open. Kiezen kan altijd.
  *
- * ## Geen dubbele dingen
+ * ## Eén kaart per stof
  *
- * Per vorm alleen het product met de hoogste PS-Score. De volledige lijst staat
- * op `/supplementen`, de prijsvergelijking op `/beste/*`; hier staat de keuze.
- *
- * ## Eén kaart per stof (herziening 7 okt)
- *
- * Het oordeel uit je check stond tot 7 oktober als los blok onder de
- * vergelijking, en sprak die tegen: omega-3 "op je norm" uit het dagboek
- * boven "Aanvullen" uit de check. Nu draagt elke stofkaart één stand — die
- * van het dagboek — en de check staat erin als context (signaal, zekerheid,
- * bloedwaarde, EU-claim, hoe we hier komen). Alleen waar het dagboek niets
- * kan zeggen (te weinig dagen, of een stof die een dagboek niet meet) leest
- * het oordeel van de check als het antwoord.
- *
- * Aan de supplementkant per product wat het etiket per dag levert, waar je
- * daarmee op uitkomt (minstens: dagboek + etiket), de veilige bovengrens en
- * de prijs per dag. Aan de eetkant wat een portie nog meer meebrengt.
+ * Het oordeel uit je check staat erin als context; het dagboek weegt zwaarder
+ * (herziening 7 okt). Aan de supplementkant per product wat het etiket per dag
+ * levert, waar je daarmee op uitkomt (minstens: dagboek + etiket), de veilige
+ * bovengrens en de prijs per dag. Geen affiliate-link in het dashboard: de
+ * koopknop staat op de productpagina.
  */
 
 export const STAND_KLEUR: Record<KeuzeStand, string> = {
@@ -172,13 +167,13 @@ export default function KeuzeVergelijken({
   );
 
   const eersteMetRuimte = statuses.find((s) => standen.get(s.nutrient)?.stand === "ruimte")?.nutrient ?? null;
-  const [open, setOpen] = useState<NutrientId | null>(eersteMetRuimte ?? statuses[0]?.nutrient ?? null);
-  const [filter, setFilter] = useState<NutrientId | null>(null);
+  const [gekozenStof, setGekozenStof] = useState<NutrientId | null>(eersteMetRuimte ?? statuses[0]?.nutrient ?? null);
   const [zoek, setZoek] = useState("");
   const voedingsfavorieten = useDagboekVoedingsfavorieten("keuze_stof");
+  const overzicht = useKeuzesOverzicht(statuses, products);
 
-  // Terug van een productpagina (`?tab=keuze&stof=…`): die stof open en in
-  // beeld, daarna de parameter uit de URL zodat herladen niet opnieuw springt.
+  // Terug van een productpagina (`?tab=keuze&stof=…`): die stof open, daarna de
+  // parameter uit de URL zodat herladen niet opnieuw springt.
   useEffect(() => {
     const url = new URL(window.location.href);
     const stof = url.searchParams.get("stof");
@@ -187,10 +182,8 @@ export default function KeuzeVergelijken({
     url.searchParams.delete("stof");
     window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
     requestAnimationFrame(() => {
-      setOpen(gevonden.nutrient);
-      requestAnimationFrame(() =>
-        document.getElementById(`keuze-stof-${gevonden.nutrient}`)?.scrollIntoView?.({ block: "start" }),
-      );
+      setGekozenStof(gevonden.nutrient);
+      requestAnimationFrame(() => document.getElementById("keuze-werkblad")?.scrollIntoView?.({ block: "start" }));
     });
     // Alleen bij binnenkomst.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -210,121 +203,93 @@ export default function KeuzeVergelijken({
   );
 
   const zoekterm = zoek.trim();
-  const getoond = zoekterm
-    ? statuses.filter((s) => routeMatchesQuery(s, zoekterm))
-    : filter
-      ? statuses.filter((s) => s.nutrient === filter)
-      : statuses;
+  const getoond = zoekterm ? statuses.filter((s) => routeMatchesQuery(s, zoekterm)) : statuses;
+  const actief = getoond.find((s) => s.nutrient === gekozenStof) ?? getoond[0] ?? null;
+  const actiefStand = actief ? standen.get(actief.nutrient) : undefined;
 
-  const toggle = (nutrient: NutrientId) => {
-    const volgende = open === nutrient ? null : nutrient;
-    setOpen(volgende);
-    if (volgende) {
-      trackEvent("keuze_stof_geopend", { surface, nutrient, stand: standen.get(nutrient)?.stand ?? "onbekend" });
-      clarityTag("keuze_stof", nutrient);
-    }
+  const kiesStof = (nutrient: NutrientId) => {
+    setGekozenStof(nutrient);
+    trackEvent("keuze_stof_geopend", { surface, nutrient, stand: standen.get(nutrient)?.stand ?? "onbekend" });
+    clarityTag("keuze_stof", nutrient);
   };
 
   return (
     <VoedingThemaProvider>
       <div className="vd-paneel">
-        <header className="mb-3">
-          <p className="vd-eyebrow m-0">Laatste 7 dagen · uit je dagboek</p>
-          <h2 className="mt-1 text-[1.375rem] text-[var(--vd-ink)]">Je eten naast een supplement</h2>
-          <p className="m-0 mt-1.5 max-w-[60ch] text-[0.8125rem] leading-relaxed text-[var(--vd-ink-2)]">
+        <div className="@container">
+          <p className="m-0 mb-2.5 max-w-[62ch] text-[0.75rem] leading-relaxed text-[var(--vd-ink-3)]">
             {meetbaar > 0
               ? `${telling.op_koers} van ${meetbaar} meetbare kernstoffen op je norm${
                   metRuimte.length > 0 ? ` · ${metRuimte.join(" en ")} ${metRuimte.length === 1 ? "heeft" : "hebben"} ruimte` : ""
                 }.`
-              : "Vul een paar dagen je dagboek in, dan zie je hier per stof waar je staat."}{" "}
-            Kies per stof je route: uit je eten, uit een supplement, of allebei.
+              : "Vul een paar dagen je dagboek in, dan zie je hier per stof waar je staat."}
           </p>
-          <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 text-[0.6875rem] text-[var(--vd-ink-3)]">
-            <span className="inline-flex items-center gap-1.5">
-              <span aria-hidden className="h-2 w-2 rounded-full bg-[var(--vd-sage)]" /> Uit je eten
+
+          <div className="relative mb-2.5">
+            <span aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--vd-ink-3)]">
+              <Icons.Search s={13} />
             </span>
-            <span className="inline-flex items-center gap-1.5">
-              <span aria-hidden className="h-2 w-2 rounded-full bg-[var(--vd-accent-2)]" /> Uit een supplement
-            </span>
+            <input
+              type="search"
+              value={zoek}
+              onChange={(event) => setZoek(event.target.value)}
+              onBlur={() => {
+                if (zoekterm) trackEvent("nutrition_logboek_search", { surface, results: getoond.length });
+              }}
+              placeholder="Zoek een stof of voedingsmiddel — bijvoorbeeld haring"
+              aria-label="Zoek een stof of voedingsmiddel"
+              className="min-h-[40px] w-full rounded-[10px] border border-[var(--vd-line)] bg-[var(--vd-bg)] pl-8 pr-2.5 text-[0.8125rem] text-[var(--vd-ink)] placeholder:text-[var(--vd-ink-4)] focus:border-[var(--vd-sage)] focus:outline-none"
+            />
           </div>
-        </header>
 
-        <div className="relative mb-2.5">
-          <span aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--vd-ink-3)]">
-            <Icons.Search s={13} />
-          </span>
-          <input
-            type="search"
-            value={zoek}
-            onChange={(event) => setZoek(event.target.value)}
-            onBlur={() => {
-              if (zoekterm) trackEvent("nutrition_logboek_search", { surface, results: getoond.length });
-            }}
-            placeholder="Zoek een stof of voedingsmiddel — bijvoorbeeld haring"
-            aria-label="Zoek een stof of voedingsmiddel"
-            className="min-h-[36px] w-full rounded-[10px] border border-[var(--vd-line)] bg-[var(--vd-bg)] pl-8 pr-2.5 text-[0.75rem] text-[var(--vd-ink)] placeholder:text-[var(--vd-ink-4)] focus:border-[var(--vd-sage)] focus:outline-none"
-          />
-        </div>
+          {zoekterm && getoond.length === 0 ? (
+            <p className="vd-note mt-0">Niets gevonden voor &ldquo;{zoekterm}&rdquo;.</p>
+          ) : null}
 
-        {zoekterm && getoond.length === 0 ? (
-          <p className="vd-note mt-0">Niets gevonden voor &ldquo;{zoekterm}&rdquo;.</p>
-        ) : null}
+          <nav aria-label="Kies een stof" className="mb-3.5 flex flex-wrap gap-1.5">
+            {getoond.map((status) => {
+              const stand = standen.get(status.nutrient);
+              const aan = actief?.nutrient === status.nutrient;
+              return (
+                <button
+                  key={status.nutrient}
+                  type="button"
+                  aria-pressed={aan}
+                  onClick={() => kiesStof(status.nutrient)}
+                  className={`vd-chip inline-flex min-h-[40px] items-center gap-1.5 ${aan ? "!border-[var(--vd-sage)] !text-[var(--vd-sage-2)]" : ""}`}
+                >
+                  <span
+                    aria-hidden
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={{ background: stand ? STAND_KLEUR[stand.stand] : "var(--vd-ink-4)" }}
+                  />
+                  {status.label}
+                </button>
+              );
+            })}
+          </nav>
 
-        <nav aria-label="Kies een stof" className="mb-3 flex flex-wrap gap-1.5">
-          <button
-            type="button"
-            aria-pressed={filter === null}
-            onClick={() => setFilter(null)}
-            className={`vd-chip ${filter === null ? "!border-[var(--vd-sage)] !text-[var(--vd-sage-2)]" : ""}`}
-          >
-            Alles
-          </button>
-          {statuses.map((status) => {
-            const stand = standen.get(status.nutrient);
-            const actief = filter === status.nutrient;
-            return (
-              <button
-                key={status.nutrient}
-                type="button"
-                aria-pressed={actief}
-                onClick={() => {
-                  setFilter(actief ? null : status.nutrient);
-                  if (!actief) setOpen(status.nutrient);
-                }}
-                className={`vd-chip inline-flex items-center gap-1.5 ${actief ? "!border-[var(--vd-sage)] !text-[var(--vd-sage-2)]" : ""}`}
-              >
-                <span
-                  aria-hidden
-                  className="h-1.5 w-1.5 rounded-full"
-                  style={{ background: stand ? STAND_KLEUR[stand.stand] : "var(--vd-ink-4)" }}
+          <div className="grid gap-4 @[56rem]:grid-cols-[minmax(0,1fr)_18.5rem] @[56rem]:items-start">
+            <div id="keuze-werkblad" className="min-w-0 scroll-mt-20">
+              {actief && actiefStand ? (
+                <StofWerkblad
+                  key={actief.nutrient}
+                  status={actief}
+                  stand={actiefStand}
+                  dagen={dagen}
+                  datums={datums}
+                  surface={surface}
+                  verdict={checkOordeelVoorStof(actief.nutrient, verdicts)}
+                  products={products}
+                  voedingsfavorieten={voedingsfavorieten}
+                  onNaarMijnKeuzes={onNaarMijnKeuzes}
                 />
-                {status.label}
-              </button>
-            );
-          })}
-        </nav>
+              ) : null}
+            </div>
+            <KeuzesZijkolom overzicht={overzicht} surface={surface} onNaarMijnKeuzes={onNaarMijnKeuzes} />
+          </div>
 
-        <div className="flex flex-col gap-2.5">
-          {getoond.map((status) => {
-            const stand = standen.get(status.nutrient);
-            if (!stand) return null;
-            return (
-              <StofRij
-                key={status.nutrient}
-                status={status}
-                stand={stand}
-                open={open === status.nutrient}
-                onToggle={() => toggle(status.nutrient)}
-                dagen={dagen}
-                datums={datums}
-                surface={surface}
-                verdict={checkOordeelVoorStof(status.nutrient, verdicts)}
-                products={products}
-                voedingsfavorieten={voedingsfavorieten}
-                onNaarMijnKeuzes={onNaarMijnKeuzes}
-              />
-            );
-          })}
+          <KeuzesLade overzicht={overzicht} surface={surface} onNaarMijnKeuzes={onNaarMijnKeuzes} />
         </div>
 
         <p className="vd-note">
@@ -337,11 +302,231 @@ export default function KeuzeVergelijken({
   );
 }
 
-function StofRij({
+type KeuzeRij = {
+  id: string;
+  soort: "eten" | "supplement";
+  titel: string;
+  context: string;
+  entry: CatalogEntry | null;
+  product: KeuzeProduct | null;
+  centenPerDag: number | null;
+};
+
+type KeuzesOverzicht = { rijen: KeuzeRij[]; centenPerDag: number };
+
+/**
+ * Alles wat je in Vergelijken koos, over alle stoffen heen: de voedingsmiddelen
+ * (`voeding-eten-…`) en het supplement per stof (`voeding-product-…`). Bron voor
+ * de zijkolom en de lade; Mijn keuzes blijft de plek om ze te beheren.
+ */
+function useKeuzesOverzicht(statuses: readonly NutrientRouteStatus[], products?: readonly KeuzeProduct[]): KeuzesOverzicht {
+  const { items } = useVoortgangFavorites();
+  return useMemo(() => {
+    const rijen: KeuzeRij[] = [];
+    let centenPerDag = 0;
+    for (const status of statuses) {
+      const etenMoment = momentVoorStof(status.nutrient, items, "eten");
+      for (const key of etenKeuzesVoorStof(status.nutrient, items)) {
+        const entry = catalogEntry(key);
+        if (!entry) continue;
+        rijen.push({
+          id: `eten-${status.nutrient}-${key}`,
+          soort: "eten",
+          titel: entry.labelNl,
+          context: [status.label, etenMoment].filter(Boolean).join(" · "),
+          entry,
+          product: null,
+          centenPerDag: null,
+        });
+      }
+      const slug = productKeuzeVoorStof(status.nutrient, items);
+      const product = slug ? keuzeProductVoorSlug(status.nutrient, slug, products) : null;
+      if (product) {
+        const supplementMoment = momentVoorStof(status.nutrient, items, "supplement");
+        rijen.push({
+          id: `supplement-${status.nutrient}-${product.slug}`,
+          soort: "supplement",
+          titel: product.naam,
+          context: [status.label, supplementMoment].filter(Boolean).join(" · "),
+          entry: null,
+          product,
+          centenPerDag: product.centenPerDag,
+        });
+        centenPerDag += product.centenPerDag ?? 0;
+      }
+    }
+    return { rijen, centenPerDag };
+  }, [statuses, items, products]);
+}
+
+function KeuzesLijst({ overzicht }: { overzicht: KeuzesOverzicht }) {
+  return (
+    <ul className="m-0 flex list-none flex-col gap-2 p-0">
+      {overzicht.rijen.map((rij) => (
+        <li
+          key={rij.id}
+          className="flex items-center gap-2.5 rounded-[12px] border border-[var(--vd-line)] bg-[var(--vd-bg)] p-2"
+        >
+          {rij.entry ? (
+            <FoodThumbnail entry={rij.entry} size={40} />
+          ) : rij.product?.imageSrc ? (
+            <Image
+              src={rij.product.imageSrc}
+              alt={rij.product.imageAlt}
+              width={80}
+              height={80}
+              loading="lazy"
+              className="h-10 w-10 shrink-0 rounded-lg bg-white object-contain p-0.5"
+            />
+          ) : (
+            <span aria-hidden className="h-10 w-10 shrink-0 rounded-lg bg-[var(--vd-accent-2-fill)]" />
+          )}
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[0.8125rem] font-semibold text-[var(--vd-ink)]">{rij.titel}</span>
+            <span className="block truncate text-[0.6875rem] text-[var(--vd-ink-3)]">{rij.context}</span>
+          </span>
+          {rij.centenPerDag !== null ? (
+            <span className="shrink-0 font-mono text-[0.75rem] tabular-nums text-[var(--vd-ink-2)]">
+              {euroPerDag(rij.centenPerDag)}
+            </span>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function KeuzesTotaal({ overzicht }: { overzicht: KeuzesOverzicht }) {
+  const supplementen = overzicht.rijen.filter((rij) => rij.soort === "supplement").length;
+  if (supplementen === 0) return null;
+  return (
+    <div className="flex items-baseline justify-between gap-2 border-t border-[var(--vd-line)] pt-3 text-[0.75rem] text-[var(--vd-ink-2)]">
+      <span>
+        Supplementen per dag
+        <span className="block text-[0.65625rem] text-[var(--vd-ink-3)]">
+          ± {euroPerDag(overzicht.centenPerDag * 30)} per maand
+        </span>
+      </span>
+      <b className="font-mono text-[1.0625rem] font-medium tabular-nums text-[var(--vd-ink)]">
+        {euroPerDag(overzicht.centenPerDag)}
+      </b>
+    </div>
+  );
+}
+
+function NaarMijnKeuzesKnop({
+  overzicht,
+  surface,
+  plek,
+  onNaarMijnKeuzes,
+}: {
+  overzicht: KeuzesOverzicht;
+  surface: string;
+  plek: "zijkolom" | "lade";
+  onNaarMijnKeuzes?: () => void;
+}) {
+  if (!onNaarMijnKeuzes) return null;
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        trackEvent("keuze_naar_mijn_keuzes", { surface, plek, aantal: overzicht.rijen.length });
+        onNaarMijnKeuzes();
+      }}
+      className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[12px] border border-[var(--vd-sage)] bg-[var(--vd-sage)] px-4 text-[0.8125rem] font-bold text-[#0D190B]"
+    >
+      Naar Mijn keuzes →
+    </button>
+  );
+}
+
+/** Brede inhoud: al je keuzes naast het werkblad. Smaller: zie {@link KeuzesLade}. */
+function KeuzesZijkolom({
+  overzicht,
+  surface,
+  onNaarMijnKeuzes,
+}: {
+  overzicht: KeuzesOverzicht;
+  surface: string;
+  onNaarMijnKeuzes?: () => void;
+}) {
+  return (
+    <aside
+      aria-label="Je keuzes"
+      className="hidden rounded-[16px] border border-[var(--vd-line)] bg-[var(--vd-surface)] p-4 @[56rem]:sticky @[56rem]:top-20 @[56rem]:block"
+    >
+      <p className="vd-eyebrow m-0">Mijn keuzes</p>
+      <h3 className="mb-3 mt-1 text-[1.125rem] text-[var(--vd-ink)]">Je keuzes</h3>
+      {overzicht.rijen.length === 0 ? (
+        <p className="m-0 text-[0.78125rem] leading-relaxed text-[var(--vd-ink-3)]">
+          Nog niets gekozen. Kies een bron uit je eten of een supplement, dan staat het hier.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          <KeuzesLijst overzicht={overzicht} />
+          <KeuzesTotaal overzicht={overzicht} />
+          <NaarMijnKeuzesKnop overzicht={overzicht} surface={surface} plek="zijkolom" onNaarMijnKeuzes={onNaarMijnKeuzes} />
+        </div>
+      )}
+    </aside>
+  );
+}
+
+/**
+ * Smallere inhoud: een vaste lade onderaan met de teller, uit te klappen tot
+ * de lijst. Op mobiel boven de hoofdnavigatie (`CockpitBottomNav`, alleen < sm).
+ * Verschijnt pas bij de eerste keuze, zodat de teller zelf het bewijs is dat
+ * de tik gelukt is.
+ */
+function KeuzesLade({
+  overzicht,
+  surface,
+  onNaarMijnKeuzes,
+}: {
+  overzicht: KeuzesOverzicht;
+  surface: string;
+  onNaarMijnKeuzes?: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  if (overzicht.rijen.length === 0) return null;
+  const aantal = overzicht.rijen.length;
+  const supplementen = overzicht.rijen.some((rij) => rij.soort === "supplement");
+
+  return (
+    <section
+      aria-label="Je keuzes"
+      className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-10 mt-4 rounded-[14px] border border-[var(--vd-line-2)] bg-[rgba(13,25,11,0.95)] shadow-[0_-8px_24px_rgba(0,0,0,0.35)] backdrop-blur-md sm:bottom-3 @[56rem]:hidden"
+    >
+      {open ? (
+        <div className="max-h-[40vh] overflow-y-auto border-b border-[var(--vd-line)] p-3">
+          <KeuzesLijst overzicht={overzicht} />
+        </div>
+      ) : null}
+      <div className="flex items-center gap-3 p-2.5 pl-3.5">
+        <button
+          type="button"
+          aria-expanded={open}
+          onClick={() => setOpen((huidig) => !huidig)}
+          className="flex min-h-[44px] min-w-0 flex-1 cursor-pointer flex-col justify-center border-0 bg-transparent p-0 text-left font-[inherit] text-inherit"
+        >
+          <span className="text-[0.6875rem] text-[var(--vd-ink-3)]">
+            {aantal} {aantal === 1 ? "keuze" : "keuzes"} · {open ? "verberg" : "bekijk"}
+          </span>
+          <span className="font-mono text-[0.9375rem] tabular-nums text-[var(--vd-ink)]">
+            {supplementen ? `${euroPerDag(overzicht.centenPerDag)} per dag` : "Eten gekozen"}
+          </span>
+        </button>
+        <div className="shrink-0">
+          <NaarMijnKeuzesKnop overzicht={overzicht} surface={surface} plek="lade" onNaarMijnKeuzes={onNaarMijnKeuzes} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StofWerkblad({
   status,
   stand,
-  open,
-  onToggle,
   dagen,
   datums,
   surface,
@@ -352,8 +537,6 @@ function StofRij({
 }: {
   status: NutrientRouteStatus;
   stand: KeuzeStofStand;
-  open: boolean;
-  onToggle: () => void;
   dagen: readonly DagboekDag[];
   datums: readonly string[];
   surface: string;
@@ -365,25 +548,7 @@ function StofRij({
   const { items, save, remove } = useVoortgangFavorites();
   const keuze = resolveNutritionRouteChoice(status.nutrient, items);
   const gekozenProduct = productKeuzeVoorStof(status.nutrient, items);
-
-  // Openen klapt de vorige stof boven deze dicht; zonder dit schuift de pagina
-  // omhoog en land je op mobiel midden in de kaart in plaats van bij de balk.
-  // Alleen na een eigen tik, niet bij de eerste weergave.
-  const kaart = useRef<HTMLElement>(null);
-  const doorTik = useRef(false);
-  useEffect(() => {
-    if (!open || !doorTik.current) return;
-    doorTik.current = false;
-    const element = kaart.current;
-    if (!element) return;
-    requestAnimationFrame(() => {
-      const top = element.getBoundingClientRect().top;
-      if (top >= 0 && top <= window.innerHeight * 0.35) return;
-      const rustig = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-      element.scrollIntoView?.({ block: "start", behavior: rustig ? "auto" : "smooth" });
-    });
-  }, [open]);
-  const vulling = stand.aandeel === null ? 0 : Math.min(stand.aandeel, 1) * 100;
+  const [voorbeeldSlug, setVoorbeeldSlug] = useState<string | null>(null);
 
   const kies = (volgende: NutritionRouteChoice | null) => {
     for (const optie of NUTRITION_ROUTE_CHOICES) {
@@ -448,57 +613,173 @@ function StofRij({
     kies(samen(heeftVoeding(keuze), false));
   };
 
-  return (
-    <article
-      ref={kaart}
-      id={`keuze-stof-${status.nutrient}`}
-      className="scroll-mt-20 overflow-hidden rounded-[13px] border border-[var(--vd-line)] bg-[var(--vd-surface)]"
-    >
-      <button
-        type="button"
-        onClick={() => {
-          doorTik.current = !open;
-          onToggle();
-        }}
-        aria-expanded={open}
-        className="flex w-full cursor-pointer items-center gap-3 border-0 bg-transparent px-3.5 py-3 text-left font-[inherit] text-inherit"
-      >
-        <span aria-hidden className="h-2 w-2 shrink-0 rounded-full" style={{ background: STAND_KLEUR[stand.stand] }} />
-        <span className="min-w-0 flex-1">
-          <span className="block text-[0.875rem] font-bold text-[var(--vd-ink)]">{status.label}</span>
-          <span className="block text-[0.6875rem] text-[var(--vd-ink-3)]">
-            {kortGetal(stand)}
-            {stand.gemiddeld !== null ? ` · ${STAND_KORT[stand.stand]}` : ""}
-          </span>
-        </span>
-        {keuze ? (
-          <span className="flex shrink-0 gap-1" aria-label="Jouw route">
-            {heeftVoeding(keuze) ? (
-              <span className="rounded-full bg-[var(--vd-sage-fill)] px-2 py-0.5 text-[0.625rem] font-semibold text-[var(--vd-sage-2)]">
-                eten
-              </span>
-            ) : null}
-            {heeftSupplement(keuze) ? (
-              <span className="rounded-full bg-[var(--vd-accent-2-fill)] px-2 py-0.5 text-[0.625rem] font-semibold text-[var(--vd-accent-2)]">
-                supplement
-              </span>
-            ) : null}
-          </span>
-        ) : null}
-        <Icons.ChevronDown s={14} style={{ transform: open ? "rotate(180deg)" : undefined, color: "var(--vd-ink-3)" }} />
-      </button>
+  const gekozenProductData = gekozenProduct ? keuzeProductVoorSlug(status.nutrient, gekozenProduct, products) : null;
+  const voorbeeld = voorbeeldSlug && !gekozenProductData ? keuzeProductVoorSlug(status.nutrient, voorbeeldSlug, products) : null;
+  const etenNamen = etenKeuzesVoorStof(status.nutrient, items).flatMap((key) => {
+    const entry = catalogEntry(key);
+    return entry ? [entry.labelNl] : [];
+  });
 
-      {open ? (
-        <div className="border-t border-[var(--vd-line)] px-3.5 pb-3.5 pt-3">
-          {stand.aandeel !== null ? (
-            <div className="mb-2 h-[6px] overflow-hidden rounded-full bg-[var(--vd-track)]">
-              <div
-                className="h-full rounded-full"
-                style={{ width: `${vulling}%`, background: stand.stand === "op_koers" ? "var(--vd-sage)" : "var(--vd-ink-3)" }}
-              />
-            </div>
+  return (
+    <article aria-label={status.label} className="flex flex-col gap-3">
+      <StofHero
+        status={status}
+        stand={stand}
+        surface={surface}
+        gekozenProduct={gekozenProductData}
+        voorbeeld={voorbeeld}
+        etenNamen={etenNamen}
+      />
+
+      {verdict ? <CheckContext nutrient={status.nutrient} stand={stand} verdict={verdict} surface={surface} /> : null}
+
+      <div className="@container">
+        <div className="grid grid-cols-1 gap-3 @[34rem]:grid-cols-2 @[34rem]:items-start">
+          <VoedingKant
+            status={status}
+            stand={stand}
+            dagen={dagen}
+            datums={datums}
+            routeGekozen={heeftVoeding(keuze)}
+            onZetEten={(aan) => kies(samen(aan, heeftSupplement(keuze)))}
+            onNaarMijnKeuzes={onNaarMijnKeuzes}
+            voedingsfavorieten={voedingsfavorieten}
+          />
+          <SupplementKant
+            status={status}
+            stand={stand}
+            surface={surface}
+            products={products}
+            routeGekozen={heeftSupplement(keuze)}
+            gekozenProduct={gekozenProduct}
+            onKiesProduct={kiesProduct}
+            onVoorbeeld={setVoorbeeldSlug}
+            onZetUit={zetSupplementUit}
+            onNaarMijnKeuzes={onNaarMijnKeuzes}
+          />
+        </div>
+      </div>
+
+      {keuze ? (
+        <p className="m-0 max-w-[62ch] text-[0.71875rem] leading-relaxed text-[var(--vd-ink-2)]">
+          {keuze === "beide" ? "Allebei: " : ""}
+          {routeChoiceConfirmation(keuze, status)}
+        </p>
+      ) : null}
+    </article>
+  );
+}
+
+/**
+ * De stand uit je dagboek en één balk: je eten, wat een supplement erbij zou
+ * doen (gestreept bij hover of focus, vol zodra je kiest) en je norm. Het
+ * getal is "minstens": het dagboek is gemeten inname, geen totaal.
+ */
+function StofHero({
+  status,
+  stand,
+  surface,
+  gekozenProduct,
+  voorbeeld,
+  etenNamen,
+}: {
+  status: NutrientRouteStatus;
+  stand: KeuzeStofStand;
+  surface: string;
+  gekozenProduct: KeuzeProduct | null;
+  voorbeeld: KeuzeProduct | null;
+  etenNamen: string[];
+}) {
+  const eten = stand.gemiddeld;
+  const norm = stand.norm;
+  const kanBalk = eten !== null && norm !== null && norm > 0;
+  const bijdrage = (product: KeuzeProduct | null): number =>
+    product && product.dosisPerDag !== null && product.eenheid === stand.unit ? product.dosisPerDag : 0;
+  const erbij = bijdrage(gekozenProduct);
+  const erbijVoorbeeld = gekozenProduct ? 0 : bijdrage(voorbeeld);
+  const grens = gekozenProduct ? supplementErbij(status.nutrient, stand, gekozenProduct).bovengrens : null;
+  const venster = stand.venster?.dagen_terug ?? 7;
+  const keuzeNamen = [...etenNamen, ...(gekozenProduct ? [gekozenProduct.naam] : [])];
+
+  let balk: React.ReactNode = null;
+  if (kanBalk) {
+    const schaal = Math.max(norm * 1.3, (eten + erbij + erbijVoorbeeld) * 1.05);
+    const pct = (waarde: number) => `${Math.min(100, (waarde / schaal) * 100)}%`;
+    balk = (
+      <div>
+        <div className="mb-6 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+          <span className="font-mono text-[1.75rem] leading-none tabular-nums text-[var(--vd-ink)]">
+            {stand.benaderd ? "≈ " : ""}
+            {hoeveelheid(eten + erbij)}
+            <small className="ml-1 text-[0.75rem] text-[var(--vd-ink-3)]">
+              / {hoeveelheid(norm)} {stand.unit}
+            </small>
+          </span>
+          <span className="vd-eyebrow m-0 text-right">minstens{erbij > 0 ? ", met supplement" : ""}</span>
+        </div>
+        <div
+          role="img"
+          aria-label={`Je eten ${hoeveelheid(eten)} ${stand.unit}${erbij > 0 ? `, plus supplement ${hoeveelheid(erbij)} ${stand.unit}` : ""}, norm ${hoeveelheid(norm)} ${stand.unit}`}
+          className="relative h-4 rounded-full bg-[var(--vd-track)]"
+        >
+          <div
+            className="absolute inset-y-0 left-0 rounded-l-full bg-[var(--vd-sage)] transition-[width] duration-300 motion-reduce:transition-none"
+            style={{ width: pct(eten) }}
+          />
+          {erbij > 0 ? (
+            <div
+              className="absolute inset-y-0 rounded-r-full bg-[var(--vd-accent-2)] transition-all duration-300 motion-reduce:transition-none"
+              style={{ left: pct(eten), width: pct(erbij) }}
+            />
           ) : null}
-          <p className="m-0 mb-3 max-w-[62ch] text-[0.78125rem] leading-relaxed text-[var(--vd-ink-2)]">
+          {erbijVoorbeeld > 0 ? (
+            <div
+              className="absolute inset-y-0 rounded-r-full bg-[repeating-linear-gradient(135deg,var(--vd-accent-2-fill)_0_6px,transparent_6px_12px)] outline-dashed outline-1 -outline-offset-1 outline-[var(--vd-accent-2)]"
+              style={{ left: pct(eten), width: pct(erbijVoorbeeld) }}
+            />
+          ) : null}
+          <div className="absolute -bottom-1.5 -top-1.5 w-0.5 rounded bg-[var(--vd-ink)]" style={{ left: pct(norm) }}>
+            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[0.5625rem] uppercase tracking-[0.08em] text-[var(--vd-ink-3)]">
+              norm
+            </span>
+          </div>
+        </div>
+        <p className="m-0 mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[0.71875rem] text-[var(--vd-ink-2)]">
+          <span className="inline-flex items-center gap-1.5">
+            <span aria-hidden className="h-2 w-2 rounded-[3px] bg-[var(--vd-sage)]" /> Uit je eten
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span aria-hidden className="h-2 w-2 rounded-[3px] bg-[var(--vd-accent-2)]" /> Uit een supplement
+          </span>
+        </p>
+        {grens ? (
+          <p className={`m-0 mt-2 text-[0.6875rem] ${grens.boven ? "font-semibold text-[var(--vd-amber)]" : "text-[var(--vd-ink-3)]"}`}>
+            {bovengrensRegel(grens)}
+          </p>
+        ) : null}
+      </div>
+    );
+  } else if (stand.gemiddeld !== null) {
+    balk = <p className="m-0 font-mono text-[1.25rem] tabular-nums text-[var(--vd-ink)]">{kortGetal(stand)}</p>;
+  }
+
+  return (
+    <section
+      aria-label={`${status.label}, stand uit je dagboek`}
+      className="@container rounded-[16px] border border-[var(--vd-line)] bg-gradient-to-br from-[var(--vd-surface-2)] to-[var(--vd-surface)] p-4 @[34rem]:p-5"
+    >
+      <div className={`grid gap-4 ${balk ? "@[34rem]:grid-cols-[1.15fr_1fr] @[34rem]:items-center @[34rem]:gap-6" : ""}`}>
+        <div className="min-w-0">
+          <p className="vd-eyebrow m-0">Laatste {venster} dagen · uit je dagboek</p>
+          <h3 className="mb-2 mt-1 text-[1.625rem] leading-none text-[var(--vd-ink)]">{status.label}</h3>
+          <span
+            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.6875rem] font-bold"
+            style={{ color: STAND_KLEUR[stand.stand], background: "rgba(255,255,255,0.06)" }}
+          >
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
+            {STAND_KORT[stand.stand].charAt(0).toUpperCase() + STAND_KORT[stand.stand].slice(1)}
+          </span>
+          <p className="m-0 mt-2.5 max-w-[56ch] text-[0.8125rem] leading-relaxed text-[var(--vd-ink-2)]">
             {stand.zin}
             {stand.stand === "geen_doel" ? (
               <>
@@ -513,45 +794,22 @@ function StofRij({
               </>
             ) : null}
           </p>
-
-          {verdict ? (
-            <CheckContext nutrient={status.nutrient} stand={stand} verdict={verdict} surface={surface} />
-          ) : null}
-
-          <div className="@container">
-            <div className="grid grid-cols-1 gap-2.5 @[34rem]:grid-cols-2">
-              <VoedingKant
-                status={status}
-                dagen={dagen}
-                datums={datums}
-                routeGekozen={heeftVoeding(keuze)}
-                onZetEten={(aan) => kies(samen(aan, heeftSupplement(keuze)))}
-                onNaarMijnKeuzes={onNaarMijnKeuzes}
-                voedingsfavorieten={voedingsfavorieten}
-              />
-              <SupplementKant
-                status={status}
-                stand={stand}
-                surface={surface}
-                products={products}
-                routeGekozen={heeftSupplement(keuze)}
-                gekozenProduct={gekozenProduct}
-                onKiesProduct={kiesProduct}
-                onZetUit={zetSupplementUit}
-                onNaarMijnKeuzes={onNaarMijnKeuzes}
-              />
-            </div>
-          </div>
-
-          {keuze ? (
-            <p className="m-0 mt-2.5 max-w-[62ch] text-[0.71875rem] leading-relaxed text-[var(--vd-ink-2)]">
-              {keuze === "beide" ? "Allebei: " : ""}
-              {routeChoiceConfirmation(keuze, status)}
-            </p>
-          ) : null}
         </div>
-      ) : null}
-    </article>
+        {balk}
+      </div>
+      <p
+        aria-live="polite"
+        className="m-0 mt-3.5 rounded-[11px] border border-dashed border-[var(--vd-line-2)] px-3 py-2 text-[0.75rem] text-[var(--vd-ink-2)]"
+      >
+        {keuzeNamen.length > 0 ? (
+          <>
+            Jouw keuze: <b className="font-semibold text-[var(--vd-ink)]">{keuzeNamen.join(" + ")}</b>
+          </>
+        ) : (
+          "Nog niets gekozen. Kies hieronder een bron of een supplement."
+        )}
+      </p>
+    </section>
   );
 }
 
@@ -683,7 +941,7 @@ function Kant({
   return (
     <section
       aria-label={titel}
-      className={`flex flex-col rounded-[11px] border border-[var(--vd-line)] bg-[var(--vd-bg)] p-3 ${gedempt ? "opacity-80" : ""}`}
+      className={`flex min-w-0 flex-col rounded-[14px] border border-[var(--vd-line)] bg-[var(--vd-bg)] p-3 ${gedempt ? "opacity-80" : ""}`}
       style={{ borderTop: `3px solid ${accent}` }}
     >
       <p className="m-0 mb-2 text-[0.625rem] font-bold uppercase tracking-[0.14em]" style={{ color: accent }}>
@@ -694,8 +952,23 @@ function Kant({
   );
 }
 
+type EtenRij = {
+  entry: CatalogEntry;
+  portie: string;
+  levert: string;
+  waarde: number;
+  unit: string;
+  ook: string[];
+};
+
+function aandeelVanNorm(rij: Pick<EtenRij, "waarde" | "unit">, stand: KeuzeStofStand): number | null {
+  if (!stand.norm || rij.unit !== stand.unit) return null;
+  return Math.round((rij.waarde / stand.norm) * 100);
+}
+
 function VoedingKant({
   status,
+  stand,
   dagen,
   datums,
   routeGekozen,
@@ -704,6 +977,7 @@ function VoedingKant({
   voedingsfavorieten,
 }: {
   status: NutrientRouteStatus;
+  stand: KeuzeStofStand;
   dagen: readonly DagboekDag[];
   datums: readonly string[];
   routeGekozen: boolean;
@@ -719,21 +993,23 @@ function VoedingKant({
   const momentTotaal = perMoment.reduce((som, m) => som + m.totaal, 0);
   const ruimte = ruimteBij(perMoment, momentTotaal);
   const term = zoek.trim();
-  const voorstellen = useMemo(
+  const voorstellen = useMemo<EtenRij[]>(
     () =>
       rijksteBronnen(status.nutrient, "portie", 30)
         .filter((bron) => pastBijVoedingswijze(bron.entry, profiel.voedingswijze))
-        .slice(0, 3)
+        .slice(0, 5)
         .map((bron) => ({
           entry: bron.entry,
           portie: bron.portieLabel,
           levert: `${hoeveelheid(bron.perPortie)} ${bron.unit}`,
+          waarde: bron.perPortie,
+          unit: bron.unit,
           ook: brengtOokMee(bron.entry, status.nutrient),
         })),
     [status.nutrient, profiel.voedingswijze],
   );
   // Zoeken binnen deze stof: alleen wat er per portie iets van levert, rijkste eerst.
-  const treffers = useMemo(() => {
+  const treffers = useMemo<EtenRij[]>(() => {
     if (!term) return [];
     return searchCatalog(term, 40)
       .map((entry) => ({ entry, levert: gehaltePerPortie(entry, status.nutrient) }))
@@ -744,13 +1020,18 @@ function VoedingKant({
         entry,
         portie: entry.porties[0]?.labelNl ?? "",
         levert: `${hoeveelheid(levert.value)} ${levert.unit}`,
+        waarde: levert.value,
+        unit: levert.unit,
         ook: brengtOokMee(entry, status.nutrient),
       }));
   }, [term, status.nutrient]);
-  const rijen = term ? treffers : voorstellen;
+  const beste = voorstellen[0] ?? null;
+  const rijen = term ? treffers : voorstellen.slice(1);
   const { items, save, remove } = useVoortgangFavorites();
   const etenKeuzes = etenKeuzesVoorStof(status.nutrient, items);
   const gekozenHier = etenKeuzes.length;
+  const getoond = new Set([...(beste ? [beste.entry.key] : []), ...rijen.map((rij) => rij.entry.key)]);
+  const elders = etenKeuzes.filter((key) => !getoond.has(key));
 
   /**
    * Eén actie per voedingsmiddel. Kiezen bewaart het bij déze stof in Mijn
@@ -762,11 +1043,11 @@ function VoedingKant({
     const wasGekozen = etenKeuzes.includes(key);
     if (wasGekozen) {
       remove(etenKeuzeId(status.nutrient, key));
-      const elders = items.some((item) => {
+      const bijAnder = items.some((item) => {
         const keuze = parseEtenKeuze(item.id);
         return keuze?.key === key && keuze.nutrient !== status.nutrient;
       });
-      if (!elders && voedingsfavorieten.isBewaard(key)) void voedingsfavorieten.wissel(key, status.nutrient);
+      if (!bijAnder && voedingsfavorieten.isBewaard(key)) void voedingsfavorieten.wissel(key, status.nutrient);
     } else {
       save(
         {
@@ -791,37 +1072,51 @@ function VoedingKant({
 
   return (
     <Kant kleur="sage" titel="Uit je eten">
-      {bronnen.length > 0 ? (
-        <>
-          <p className="m-0 text-[0.6875rem] text-[var(--vd-ink-3)]">Jouw bronnen, 7 dagen</p>
-          <ul className="m-0 mt-1 flex list-none flex-col gap-1 p-0">
-            {bronnen
-              .filter((b) => !b.supplement)
-              .slice(0, 3)
-              .map((bron) => (
-                <li key={bron.naam} className="flex items-baseline justify-between gap-2 text-[0.78125rem]">
-                  <span className="min-w-0 truncate text-[var(--vd-ink)]">{bron.naam}</span>
-                  <span className="shrink-0 font-mono text-[0.6875rem] tabular-nums text-[var(--vd-ink-3)]">
-                    {totaal > 0 ? `${Math.round((bron.totaal / totaal) * 100)}%` : ""}
-                  </span>
-                </li>
-              ))}
-          </ul>
-        </>
+      {beste ? (
+        <article
+          className={`grid grid-cols-[72px_minmax(0,1fr)] gap-x-3 gap-y-2.5 rounded-[12px] border bg-[var(--vd-surface)] p-2.5 ${
+            etenKeuzes.includes(beste.entry.key)
+              ? "border-[var(--vd-sage)] ring-1 ring-[var(--vd-sage)]"
+              : "border-[var(--vd-line)]"
+          }`}
+        >
+          <FoodThumbnail entry={beste.entry} size={72} />
+          <div className="min-w-0">
+            <p className="m-0 text-[0.625rem] font-bold uppercase tracking-[0.12em] text-[var(--vd-sage-2)]">
+              Beste uit je eten
+            </p>
+            <h4 className="m-0 mt-0.5 text-[0.9375rem] font-semibold leading-tight text-[var(--vd-ink)]">
+              {beste.entry.labelNl}
+            </h4>
+            <p className="m-0 mt-1 text-[0.75rem] leading-snug text-[var(--vd-ink-2)]">
+              {beste.portie} levert {beste.levert}
+              {aandeelVanNorm(beste, stand) !== null ? ` · ${aandeelVanNorm(beste, stand)}% van je norm` : ""}.
+            </p>
+            {beste.ook.length > 0 ? (
+              <p className="m-0 mt-0.5 text-[0.6875rem] text-[var(--vd-sage-2)]">ook: {beste.ook.join(", ")}</p>
+            ) : null}
+          </div>
+          <div className="col-span-2">
+            <KiesPil
+              groot
+              gekozen={etenKeuzes.includes(beste.entry.key)}
+              bezig={voedingsfavorieten.bezig === beste.entry.key}
+              kleur="sage"
+              onClick={() => kies(beste.entry.key, beste.entry.labelNl)}
+              label={beste.entry.labelNl}
+              tekst={{ aan: "In Mijn keuzes", uit: "Kies deze bron" }}
+            />
+          </div>
+        </article>
       ) : (
-        <p className="m-0 text-[0.75rem] text-[var(--vd-ink-3)]">Nog geen bron voor deze stof in je dagboek.</p>
+        <p className="m-0 text-[0.75rem] text-[var(--vd-ink-3)]">Geen bron gevonden binnen je voedingswijze.</p>
       )}
-      {ruimte ? (
-        <p className="m-0 mt-2 text-[0.6875rem] text-[var(--vd-ink-2)]">
-          Meeste ruimte bij je {ruimte.label.toLowerCase()}.
-        </p>
-      ) : null}
 
-      {etenKeuzes.length > 0 ? (
+      {elders.length > 0 ? (
         <>
-          <p className="m-0 mt-2.5 text-[0.6875rem] text-[var(--vd-ink-3)]">Jouw keuze</p>
+          <p className="m-0 mt-3 text-[0.6875rem] text-[var(--vd-ink-3)]">Jouw keuze</p>
           <ul className="m-0 mt-1 flex list-none flex-col gap-1.5 p-0">
-            {etenKeuzes.map((key) => {
+            {elders.map((key) => {
               const entry = catalogEntry(key);
               if (!entry) return null;
               const levert = gehaltePerPortie(entry, status.nutrient);
@@ -851,8 +1146,8 @@ function VoedingKant({
         onZoek={() => trackEvent("keuze_eten_zoek", { nutrient: status.nutrient, treffers: treffers.length })}
       />
 
-      <p className="m-0 mt-2 text-[0.6875rem] text-[var(--vd-ink-3)]">
-        {term ? `Gevonden · rijkste eerst` : `Kan erbij${ruimte ? ` · bij je ${ruimte.label.toLowerCase()}` : ""}`}
+      <p className="m-0 mt-2.5 text-[0.6875rem] text-[var(--vd-ink-3)]">
+        {term ? "Gevonden · rijkste eerst" : `Meer bronnen${ruimte ? ` · bij je ${ruimte.label.toLowerCase()}` : ""}`}
       </p>
       {!term ? <Voedingswijze voedingswijze={profiel.voedingswijze} nutrient={status.nutrient} /> : null}
       {term && rijen.length === 0 ? (
@@ -860,19 +1155,31 @@ function VoedingKant({
           Niets gevonden met {status.label.toLowerCase()} voor &ldquo;{term}&rdquo;.
         </p>
       ) : null}
-      <ul className="m-0 mt-1 flex list-none flex-col gap-1.5 p-0">
+      <ul className="m-0 mt-1.5 flex list-none flex-col gap-1.5 p-0">
         {rijen.map((rij) => {
           const gekozen = etenKeuzes.includes(rij.entry.key);
+          const aandeel = aandeelVanNorm(rij, stand);
           return (
-            <li key={rij.entry.key} className="flex items-center justify-between gap-2 text-[0.78125rem]">
-              <span className="min-w-0">
-                <span className="text-[var(--vd-ink)]">{rij.entry.labelNl}</span>
-                <span className="text-[var(--vd-ink-3)]">
-                  {" "}
-                  · {rij.portie} · {rij.levert}
+            <li
+              key={rij.entry.key}
+              className={`flex items-center gap-2.5 rounded-[12px] border bg-[var(--vd-surface)] p-1.5 pr-2 transition-colors ${
+                gekozen ? "border-[var(--vd-sage)]" : "border-[var(--vd-line)] hover:border-[var(--vd-line-2)]"
+              }`}
+            >
+              <FoodThumbnail entry={rij.entry} size={48} />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[0.8125rem] font-semibold text-[var(--vd-ink)]">
+                  {rij.entry.labelNl}
                 </span>
+                <span className="block truncate text-[0.6875rem] text-[var(--vd-ink-3)]">{rij.portie}</span>
                 {rij.ook.length > 0 ? (
-                  <span className="block text-[0.6875rem] text-[var(--vd-sage-2)]">ook: {rij.ook.join(", ")}</span>
+                  <span className="block truncate text-[0.6875rem] text-[var(--vd-sage-2)]">ook: {rij.ook.join(", ")}</span>
+                ) : null}
+              </span>
+              <span className="shrink-0 text-right font-mono text-[0.8125rem] tabular-nums text-[var(--vd-ink)]">
+                {rij.levert}
+                {aandeel !== null ? (
+                  <small className="block font-sans text-[0.625rem] text-[var(--vd-ink-3)]">{aandeel}% norm</small>
                 ) : null}
               </span>
               <KiesPil
@@ -886,6 +1193,28 @@ function VoedingKant({
           );
         })}
       </ul>
+
+      {bronnen.length > 0 ? (
+        <details className="mt-3 text-[0.75rem]">
+          <summary className="cursor-pointer text-[0.6875rem] text-[var(--vd-ink-3)]">Jouw bronnen, 7 dagen</summary>
+          <ul className="m-0 mt-1 flex list-none flex-col gap-1 p-0">
+            {bronnen
+              .filter((b) => !b.supplement)
+              .slice(0, 3)
+              .map((bron) => (
+                <li key={bron.naam} className="flex items-baseline justify-between gap-2 text-[0.78125rem]">
+                  <span className="min-w-0 truncate text-[var(--vd-ink)]">{bron.naam}</span>
+                  <span className="shrink-0 font-mono text-[0.6875rem] tabular-nums text-[var(--vd-ink-3)]">
+                    {totaal > 0 ? `${Math.round((bron.totaal / totaal) * 100)}%` : ""}
+                  </span>
+                </li>
+              ))}
+          </ul>
+        </details>
+      ) : (
+        <p className="m-0 mt-3 text-[0.6875rem] text-[var(--vd-ink-3)]">Nog geen bron voor deze stof in je dagboek.</p>
+      )}
+
       <Link
         href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`}
         onClick={(event) => {
@@ -897,7 +1226,7 @@ function VoedingKant({
       >
         Alle rijkste bronnen in Je patroon →
       </Link>
-      {rijen.some((rij) => rij.ook.length > 0) ? (
+      {beste?.ook.length || rijen.some((rij) => rij.ook.length > 0) ? (
         <p className="m-0 mt-2 text-[0.6875rem] leading-relaxed text-[var(--vd-ink-3)]">
           Eten brengt meer mee dan deze ene stof; &ldquo;ook&rdquo; noemt wat één portie minstens 15&nbsp;% van de
           referentie levert.
@@ -919,37 +1248,6 @@ function VoedingKant({
   );
 }
 
-function KolomZoek({
-  waarde,
-  onChange,
-  label,
-  onZoek,
-}: {
-  waarde: string;
-  onChange: (waarde: string) => void;
-  label: string;
-  onZoek: () => void;
-}) {
-  return (
-    <div className="relative mt-2.5">
-      <span aria-hidden className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[var(--vd-ink-3)]">
-        <Icons.Search s={12} />
-      </span>
-      <input
-        type="search"
-        value={waarde}
-        onChange={(event) => onChange(event.target.value)}
-        onBlur={() => {
-          if (waarde.trim()) onZoek();
-        }}
-        placeholder={label}
-        aria-label={label}
-        className="min-h-[34px] w-full rounded-[9px] border border-[var(--vd-line)] bg-[var(--vd-surface)] pl-7 pr-2 text-[0.75rem] text-[var(--vd-ink)] placeholder:text-[var(--vd-ink-4)] focus:border-[var(--vd-sage)] focus:outline-none"
-      />
-    </div>
-  );
-}
-
 const KIES_KLEUR = {
   sage: {
     aan: "border-[var(--vd-sage)] bg-[var(--vd-sage)] text-[#0D190B]",
@@ -967,6 +1265,7 @@ function KiesPil({
   kleur,
   onClick,
   label,
+  groot = false,
   tekst = { aan: "Gekozen", uit: "Kies" },
 }: {
   gekozen: boolean;
@@ -974,6 +1273,7 @@ function KiesPil({
   kleur: "sage" | "accent-2";
   onClick: () => void;
   label: string;
+  groot?: boolean;
   tekst?: { aan: string; uit: string };
 }) {
   return (
@@ -983,11 +1283,11 @@ function KiesPil({
       aria-label={gekozen ? `${label}: gekozen, tik om te wissen` : `${label} kiezen`}
       disabled={bezig}
       onClick={onClick}
-      className={`inline-flex min-h-[30px] shrink-0 cursor-pointer items-center gap-1 rounded-full border px-2.5 text-[0.6875rem] font-semibold transition-colors disabled:opacity-50 ${
-        gekozen ? KIES_KLEUR[kleur].aan : KIES_KLEUR[kleur].uit
-      }`}
+      className={`inline-flex min-h-[44px] shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-[12px] border text-[0.8125rem] font-bold transition-colors disabled:opacity-50 ${
+        groot ? "w-full px-4" : "min-w-[76px] px-3"
+      } ${gekozen ? KIES_KLEUR[kleur].aan : KIES_KLEUR[kleur].uit}`}
     >
-      {gekozen ? <Icons.Check s={11} /> : null}
+      {gekozen ? <Icons.Check s={12} /> : null}
       {gekozen ? tekst.aan : tekst.uit}
     </button>
   );
@@ -1029,7 +1329,7 @@ function RouteStand({
           <button
             type="button"
             onClick={onNaarMijnKeuzes}
-            className="cursor-pointer border-0 bg-transparent p-0 font-semibold hover:underline"
+            className="min-h-[32px] cursor-pointer border-0 bg-transparent p-0 font-semibold hover:underline"
             style={{ color: accent }}
           >
             Naar Mijn keuzes →
@@ -1039,12 +1339,303 @@ function RouteStand({
           <button
             type="button"
             onClick={onZetUit}
-            className="cursor-pointer border-0 bg-transparent p-0 font-semibold text-[var(--vd-ink-3)] hover:underline"
+            className="min-h-[32px] cursor-pointer border-0 bg-transparent p-0 font-semibold text-[var(--vd-ink-3)] hover:underline"
           >
             {zetUitLabel}
           </button>
         ) : null}
       </p>
+    </div>
+  );
+}
+
+function SupplementKant({
+  status,
+  stand,
+  surface,
+  products,
+  routeGekozen,
+  gekozenProduct,
+  onKiesProduct,
+  onVoorbeeld,
+  onZetUit,
+  onNaarMijnKeuzes,
+}: {
+  status: NutrientRouteStatus;
+  stand: KeuzeStofStand;
+  surface: string;
+  products?: readonly KeuzeProduct[];
+  routeGekozen: boolean;
+  gekozenProduct: string | null;
+  onKiesProduct: (product: KeuzeProduct) => void;
+  onVoorbeeld: (slug: string | null) => void;
+  onZetUit: () => void;
+  onNaarMijnKeuzes?: () => void;
+}) {
+  const rustig = stand.stand === "op_koers";
+  const [toon, setToon] = useState(!rustig || gekozenProduct !== null);
+  const [zoek, setZoek] = useState("");
+  const term = zoek.trim();
+  const treffers = useMemo(
+    () => (term ? zoekKeuzeProducten(status.nutrient, term, products) : []),
+    [term, status.nutrient, products],
+  );
+  const vormen = useMemo(() => {
+    const top = psScoreBestePerVorm(status.nutrient, products);
+    // Een eerder gekozen product blijft zichtbaar, ook als het niet (meer) de beste van zijn vorm is.
+    const gekozen =
+      gekozenProduct && !top.some((p) => p.slug === gekozenProduct)
+        ? keuzeProductVoorSlug(status.nutrient, gekozenProduct, products)
+        : null;
+    return gekozen ? [gekozen, ...top] : top;
+  }, [status.nutrient, products, gekozenProduct]);
+  const aantal = useMemo(() => psScoreAantalVoorStof(status.nutrient, products), [status.nutrient, products]);
+  const gekozen = vormen.find((product) => product.slug === gekozenProduct) ?? null;
+  const hoogste = useMemo(() => [...vormen].sort((a, b) => b.scoreTotaal - a.scoreTotaal)[0] ?? null, [vormen]);
+  const rijen = term ? treffers : vormen.filter((product) => product.slug !== hoogste?.slug);
+  const klik = (doel: "product" | "catalogus" | "vergelijking" | "productpagina", slug?: string) =>
+    trackEvent("keuze_vergelijken_ps_score_click", {
+      surface,
+      nutrient: status.nutrient,
+      doel,
+      stand: stand.stand,
+      ...(slug ? { product: slug } : {}),
+    });
+  const voorbeeldHandlers = (slug: string) => ({
+    onPointerEnter: () => onVoorbeeld(slug),
+    onPointerLeave: () => onVoorbeeld(null),
+    onFocus: () => onVoorbeeld(slug),
+    onBlur: () => onVoorbeeld(null),
+  });
+
+  return (
+    <Kant kleur="accent-2" titel="Uit een supplement" gedempt={rustig && !routeGekozen}>
+      {rustig ? (
+        <p className="m-0 mb-2 text-[0.75rem] leading-relaxed text-[var(--vd-ink-2)]">
+          Je eten haalt je norm. Een supplement voegt hier weinig toe.
+        </p>
+      ) : null}
+
+      {toon ? (
+        <>
+          {hoogste ? (
+            <article
+              {...voorbeeldHandlers(hoogste.slug)}
+              className={`grid grid-cols-[72px_minmax(0,1fr)] gap-x-3 gap-y-2.5 rounded-[12px] border bg-[var(--vd-surface)] p-2.5 ${
+                hoogste.slug === gekozenProduct
+                  ? "border-[var(--vd-accent-2)] ring-1 ring-[var(--vd-accent-2)]"
+                  : "border-[var(--vd-line)]"
+              }`}
+            >
+              <Link
+                href={metKeuzeHerkomst(hoogste.href, status.nutrient)}
+                onClick={() => klik("product", hoogste.slug)}
+                aria-label={`Productpagina ${hoogste.naam}`}
+                className="block h-[72px] w-[72px] overflow-hidden rounded-[10px] bg-white"
+              >
+                {hoogste.imageSrc ? (
+                  <Image
+                    src={hoogste.imageSrc}
+                    alt={hoogste.imageAlt}
+                    width={144}
+                    height={144}
+                    loading="lazy"
+                    className="h-full w-full object-contain p-1"
+                  />
+                ) : null}
+              </Link>
+              <div className="min-w-0">
+                <p className="m-0 text-[0.625rem] font-bold uppercase tracking-[0.12em] text-[var(--vd-accent-2)]">
+                  Hoogste PS-Score
+                </p>
+                <h4 className="m-0 mt-0.5 text-[0.9375rem] font-semibold leading-tight text-[var(--vd-ink)]">
+                  {hoogste.naam}
+                </h4>
+                <p className="m-0 mt-1 flex flex-wrap items-baseline gap-x-3 text-[var(--vd-ink-3)]">
+                  <span className="text-[0.6875rem] font-semibold text-[var(--vd-accent-2)]">{hoogste.vorm}</span>
+                  <span className="font-mono text-[1rem] tabular-nums text-[var(--vd-ink)]">
+                    {hoogste.score}
+                    <small className="ml-1 font-sans text-[0.625rem] uppercase tracking-[0.08em] text-[var(--vd-ink-3)]">
+                      {hoogste.bandLabel}
+                    </small>
+                  </span>
+                </p>
+              </div>
+              <div className="col-span-2 -mx-2.5 -mt-1">
+                <ProductErbij nutrient={status.nutrient} stand={stand} product={hoogste} />
+              </div>
+              <div className="col-span-2">
+                <KiesPil
+                  groot
+                  gekozen={hoogste.slug === gekozenProduct}
+                  kleur="accent-2"
+                  onClick={() => onKiesProduct(hoogste)}
+                  label={hoogste.naam}
+                  tekst={{ aan: "Mijn supplement", uit: "Kies dit supplement" }}
+                />
+              </div>
+            </article>
+          ) : null}
+
+          <KolomZoek
+            waarde={zoek}
+            onChange={setZoek}
+            label={`Zoek een ${status.label.toLowerCase()}-supplement`}
+            onZoek={() => trackEvent("keuze_supplement_zoek", { nutrient: status.nutrient, treffers: treffers.length })}
+          />
+          <p className="m-0 mt-2.5 text-[0.6875rem] text-[var(--vd-ink-3)]">
+            {term ? "Gevonden · hoogste PS-Score eerst" : "Per vorm de hoogste PS-Score"}
+          </p>
+          {term && treffers.length === 0 ? (
+            <p className="m-0 mt-1 text-[0.75rem] text-[var(--vd-ink-3)]">Geen product gevonden voor &ldquo;{term}&rdquo;.</p>
+          ) : null}
+          <ul className="m-0 mt-1.5 flex list-none flex-col gap-1.5 p-0">
+            {rijen.map((product) => {
+              const aan = product.slug === gekozenProduct;
+              const erbij = supplementErbij(status.nutrient, stand, product);
+              return (
+                <li
+                  key={product.slug}
+                  {...voorbeeldHandlers(product.slug)}
+                  className={`rounded-[12px] border bg-[var(--vd-surface)] p-1.5 pr-2 transition-colors ${
+                    aan ? "border-[var(--vd-accent-2)]" : "border-[var(--vd-line)] hover:border-[var(--vd-line-2)]"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Link
+                      href={metKeuzeHerkomst(product.href, status.nutrient)}
+                      onClick={() => klik("product", product.slug)}
+                      aria-label={`Productpagina ${product.naam}`}
+                      className="block h-12 w-12 shrink-0 overflow-hidden rounded-[9px] bg-white"
+                    >
+                      {product.imageSrc ? (
+                        <Image
+                          src={product.imageSrc}
+                          alt={product.imageAlt}
+                          width={96}
+                          height={96}
+                          loading="lazy"
+                          className="h-full w-full object-contain p-0.5"
+                        />
+                      ) : null}
+                    </Link>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[0.8125rem] font-semibold text-[var(--vd-ink)]">{product.naam}</span>
+                      <span className="block truncate text-[0.6875rem] text-[var(--vd-ink-3)]">
+                        {product.vorm} · PS-Score {product.score}
+                      </span>
+                    </span>
+                    {product.centenPerDag !== null ? (
+                      <span className="shrink-0 text-right font-mono text-[0.8125rem] tabular-nums text-[var(--vd-ink)]">
+                        {euroPerDag(product.centenPerDag)}
+                        <small className="block font-sans text-[0.625rem] text-[var(--vd-ink-3)]">per dag</small>
+                      </span>
+                    ) : null}
+                    <KiesPil
+                      gekozen={aan}
+                      kleur="accent-2"
+                      onClick={() => onKiesProduct(product)}
+                      label={product.naam}
+                    />
+                  </div>
+                  {erbij.samen !== null ? (
+                    <p className="m-0 mt-1 pl-[3.625rem] text-[0.6875rem] text-[var(--vd-accent-2)]">
+                      Samen met je eten minstens {stand.benaderd ? "≈ " : ""}
+                      {hoeveelheid(erbij.samen)}
+                      {stand.norm ? ` van ${hoeveelheid(stand.norm)}` : ""} {stand.unit}
+                    </p>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
+          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+            <Link
+              href={metKeuzeHerkomst(psScoreCatalogusHref(status.nutrient), status.nutrient)}
+              onClick={() => klik("catalogus")}
+              className="inline-flex min-h-[32px] items-center text-[0.6875rem] font-semibold text-[var(--vd-accent-2)] no-underline hover:underline"
+            >
+              Alle {aantal} met PS-Score →
+            </Link>
+            <Link
+              href={metKeuzeHerkomst(status.comparisonPath, status.nutrient)}
+              onClick={() => klik("vergelijking")}
+              className="inline-flex min-h-[32px] items-center text-[0.6875rem] font-semibold text-[var(--vd-ink-2)] no-underline hover:underline"
+            >
+              Vergelijk op prijs →
+            </Link>
+          </div>
+        </>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setToon(true)}
+          className="mt-1 min-h-[44px] cursor-pointer border-0 bg-transparent p-0 text-left text-[0.75rem] font-semibold text-[var(--vd-accent-2)]"
+        >
+          Toon de vormen met PS-Score
+        </button>
+      )}
+      <RouteStand
+        kleur="accent-2"
+        gekozen={routeGekozen}
+        hint={toon && vormen.length > 0 ? "Kies hierboven het supplement dat je wilt nemen. Het komt in Mijn keuzes." : ""}
+        bevestiging={
+          gekozen
+            ? `${gekozen.naam} staat in Mijn keuzes.`
+            : routeGekozen
+              ? "Je koos een supplement, maar nog niet welk. Kies er hierboven een."
+              : null
+        }
+        onNaarMijnKeuzes={gekozen ? onNaarMijnKeuzes : undefined}
+        onZetUit={onZetUit}
+        zetUitLabel="Zet supplement uit"
+      />
+      {gekozen ? (
+        <>
+          <Link
+            href={metKeuzeHerkomst(gekozen.href, status.nutrient)}
+            onClick={() => klik("productpagina", gekozen.slug)}
+            className="mt-2 inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-[12px] border border-[var(--vd-accent-2)] bg-[var(--vd-accent-2)] px-3 text-center text-[0.8125rem] font-bold text-[#0D190B] no-underline"
+          >
+            Naar de productpagina →
+          </Link>
+          <p className="m-0 mt-1.5 text-[0.65625rem] leading-relaxed text-[var(--vd-ink-3)]">
+            Daar staan de winkels en prijzen. Koop je via ons, dan ontvangen we commissie; je keuze en de PS-Score
+            staan daar los van.
+          </p>
+        </>
+      ) : null}
+    </Kant>
+  );
+}
+
+function KolomZoek({
+  waarde,
+  onChange,
+  label,
+  onZoek,
+}: {
+  waarde: string;
+  onChange: (waarde: string) => void;
+  label: string;
+  onZoek: () => void;
+}) {
+  return (
+    <div className="relative mt-2.5">
+      <span aria-hidden className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[var(--vd-ink-3)]">
+        <Icons.Search s={12} />
+      </span>
+      <input
+        type="search"
+        value={waarde}
+        onChange={(event) => onChange(event.target.value)}
+        onBlur={() => {
+          if (waarde.trim()) onZoek();
+        }}
+        placeholder={label}
+        aria-label={label}
+        className="min-h-[34px] w-full rounded-[9px] border border-[var(--vd-line)] bg-[var(--vd-surface)] pl-7 pr-2 text-[0.75rem] text-[var(--vd-ink)] placeholder:text-[var(--vd-ink-4)] focus:border-[var(--vd-sage)] focus:outline-none"
+      />
     </div>
   );
 }
@@ -1145,180 +1736,4 @@ function bovengrensRegel(grens: NonNullable<ReturnType<typeof supplementErbij>["
   return grens.boven
     ? `Het etiket alleen zit al boven de veilige bovengrens van ${waarde} (${grens.bron})`
     : `Veilige bovengrens: ${waarde}, eten en supplementen samen — je dagboek kan deze stof niet meten`;
-}
-
-function SupplementKant({
-  status,
-  stand,
-  surface,
-  products,
-  routeGekozen,
-  gekozenProduct,
-  onKiesProduct,
-  onZetUit,
-  onNaarMijnKeuzes,
-}: {
-  status: NutrientRouteStatus;
-  stand: KeuzeStofStand;
-  surface: string;
-  products?: readonly KeuzeProduct[];
-  routeGekozen: boolean;
-  gekozenProduct: string | null;
-  onKiesProduct: (product: KeuzeProduct) => void;
-  onZetUit: () => void;
-  onNaarMijnKeuzes?: () => void;
-}) {
-  const rustig = stand.stand === "op_koers";
-  const [toon, setToon] = useState(!rustig || gekozenProduct !== null);
-  const [zoek, setZoek] = useState("");
-  const term = zoek.trim();
-  const treffers = useMemo(
-    () => (term ? zoekKeuzeProducten(status.nutrient, term, products) : []),
-    [term, status.nutrient, products],
-  );
-  const vormen = useMemo(() => {
-    const top = psScoreBestePerVorm(status.nutrient, products);
-    // Een eerder gekozen product blijft zichtbaar, ook als het niet (meer) de beste van zijn vorm is.
-    const gekozen =
-      gekozenProduct && !top.some((p) => p.slug === gekozenProduct)
-        ? keuzeProductVoorSlug(status.nutrient, gekozenProduct, products)
-        : null;
-    return gekozen ? [gekozen, ...top] : top;
-  }, [status.nutrient, products, gekozenProduct]);
-  const aantal = useMemo(() => psScoreAantalVoorStof(status.nutrient, products), [status.nutrient, products]);
-  const gekozen = vormen.find((product) => product.slug === gekozenProduct) ?? null;
-  const klik = (doel: "product" | "catalogus" | "vergelijking" | "productpagina", slug?: string) =>
-    trackEvent("keuze_vergelijken_ps_score_click", {
-      surface,
-      nutrient: status.nutrient,
-      doel,
-      stand: stand.stand,
-      ...(slug ? { product: slug } : {}),
-    });
-
-  return (
-    <Kant kleur="accent-2" titel="Uit een supplement" gedempt={rustig && !routeGekozen}>
-      {rustig ? (
-        <p className="m-0 text-[0.75rem] leading-relaxed text-[var(--vd-ink-2)]">
-          Je eten haalt je norm. Een supplement voegt hier weinig toe.
-        </p>
-      ) : null}
-
-      {toon ? (
-        <>
-          <KolomZoek
-            waarde={zoek}
-            onChange={setZoek}
-            label={`Zoek een ${status.label.toLowerCase()}-supplement`}
-            onZoek={() => trackEvent("keuze_supplement_zoek", { nutrient: status.nutrient, treffers: treffers.length })}
-          />
-          <p className="m-0 mt-2 text-[0.6875rem] text-[var(--vd-ink-3)]">
-            {term ? "Gevonden · hoogste PS-Score eerst" : "Per vorm de hoogste PS-Score"}
-          </p>
-          {term && treffers.length === 0 ? (
-            <p className="m-0 mt-1 text-[0.75rem] text-[var(--vd-ink-3)]">Geen product gevonden voor &ldquo;{term}&rdquo;.</p>
-          ) : null}
-          <ul className="m-0 mt-1 flex list-none flex-col gap-1.5 p-0">
-            {(term ? treffers : vormen).map((product) => (
-              <li
-                key={product.slug}
-                className="rounded-lg border border-[var(--vd-line)] transition-colors hover:border-[var(--vd-line-2)]"
-              >
-                <Link
-                  href={metKeuzeHerkomst(product.href, status.nutrient)}
-                  onClick={() => klik("product", product.slug)}
-                  className="flex items-center justify-between gap-2 px-2.5 pb-1 pt-1.5 no-underline"
-                >
-                  {product.imageSrc ? (
-                    <Image
-                      src={product.imageSrc}
-                      alt={product.imageAlt}
-                      width={96}
-                      height={96}
-                      loading="lazy"
-                      className="h-12 w-12 shrink-0 rounded-md bg-white object-contain p-0.5"
-                    />
-                  ) : null}
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[0.6875rem] font-semibold text-[var(--vd-accent-2)]">{product.vorm}</span>
-                    <span className="block truncate text-[0.75rem] text-[var(--vd-ink)]">{product.naam}</span>
-                  </span>
-                  <span className="shrink-0 text-right">
-                    <span className="block font-mono text-[0.875rem] tabular-nums text-[var(--vd-ink)]">{product.score}</span>
-                    <span className="block text-[0.5625rem] uppercase tracking-[0.08em] text-[var(--vd-ink-3)]">
-                      {product.bandLabel}
-                    </span>
-                  </span>
-                </Link>
-                <ProductErbij nutrient={status.nutrient} stand={stand} product={product} />
-                <div className="border-t border-[var(--vd-line)] px-2.5 py-1.5">
-                  <KiesPil
-                    gekozen={product.slug === gekozenProduct}
-                    kleur="accent-2"
-                    onClick={() => onKiesProduct(product)}
-                    label={product.naam}
-                    tekst={{ aan: "Mijn supplement", uit: "Kies dit supplement" }}
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
-            <Link
-              href={metKeuzeHerkomst(psScoreCatalogusHref(status.nutrient), status.nutrient)}
-              onClick={() => klik("catalogus")}
-              className="text-[0.6875rem] font-semibold text-[var(--vd-accent-2)] no-underline hover:underline"
-            >
-              Alle {aantal} met PS-Score →
-            </Link>
-            <Link
-              href={metKeuzeHerkomst(status.comparisonPath, status.nutrient)}
-              onClick={() => klik("vergelijking")}
-              className="text-[0.6875rem] font-semibold text-[var(--vd-ink-2)] no-underline hover:underline"
-            >
-              Vergelijk op prijs →
-            </Link>
-          </div>
-        </>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setToon(true)}
-          className="mt-1 cursor-pointer border-0 bg-transparent p-0 text-left text-[0.6875rem] font-semibold text-[var(--vd-accent-2)]"
-        >
-          Toon de vormen met PS-Score
-        </button>
-      )}
-      <RouteStand
-        kleur="accent-2"
-        gekozen={routeGekozen}
-        hint={toon && vormen.length > 0 ? "Kies hierboven het supplement dat je wilt nemen. Het komt in Mijn keuzes." : ""}
-        bevestiging={
-          gekozen
-            ? `${gekozen.naam} staat in Mijn keuzes.`
-            : routeGekozen
-              ? "Je koos een supplement, maar nog niet welk. Kies er hierboven een."
-              : null
-        }
-        onNaarMijnKeuzes={gekozen ? onNaarMijnKeuzes : undefined}
-        onZetUit={onZetUit}
-        zetUitLabel="Zet supplement uit"
-      />
-      {gekozen ? (
-        <>
-          <Link
-            href={metKeuzeHerkomst(gekozen.href, status.nutrient)}
-            onClick={() => klik("productpagina", gekozen.slug)}
-            className="mt-2 inline-flex min-h-[36px] w-full items-center justify-center gap-1.5 rounded-[10px] border border-[var(--vd-accent-2)] bg-[var(--vd-accent-2)] px-3 text-center text-[0.75rem] font-semibold text-[#0D190B] no-underline"
-          >
-            Naar de productpagina →
-          </Link>
-          <p className="m-0 mt-1.5 text-[0.65625rem] leading-relaxed text-[var(--vd-ink-3)]">
-            Daar staan de winkels en prijzen. Koop je via ons, dan ontvangen we commissie; je keuze en de PS-Score
-            staan daar los van.
-          </p>
-        </>
-      ) : null}
-    </Kant>
-  );
 }
