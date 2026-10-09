@@ -92,6 +92,18 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "De ADH op een potje is vaak lager dan wat studies gebruiken; voor effect kijk je naar onderzoeksdoses en status.",
     searchPhrases: ["adh supplement", "aanbevolen dagelijkse hoeveelheid", "adh vitamine d"],
   },
+  uitgangsstatus: {
+    coverAlt:
+      "Schematische S-curve: het effect van een stof is groot bij een tekort en vlakt af bij voldoende inname",
+    coverCaption:
+      "Schematisch: bij een tekort levert extra inname veel op, bij voldoende inname nauwelijks nog iets.",
+    coverTitle: "Uitgangsstatus: waarom een supplement niet bij iedereen even goed werkt",
+    inlineAlt:
+      "Schematisch: twee balken, bij een lage startstand is er veel ruimte om aan te vullen en bij een hoge startstand weinig",
+    inlineCaption:
+      "Dezelfde extra dosis heeft meer te winnen als je laag begint dan als je al voldoende binnenkrijgt.",
+    searchPhrases: ["werkt supplement niet", "supplement bij tekort", "waarom werkt mijn supplement niet"],
+  },
   "opbouwtijd-supplement": {
     coverAlt:
       "Staafgrafiek van de opbouwtijd in dagen: creatine 6 dagen bij 20 g en 28 dagen bij 3 g, EPA in serum 4 tot 8 weken, EPA in rode bloedcellen circa 180 dagen",

@@ -1394,9 +1394,9 @@ Dit zijn gemiddelden uit kleine onderzoeken, alle onder mannen. Hoe snel het bij
 
 Opbouw is bovendien een voorwaarde en geen bewijs van effect. In de grote VITAL-studie (25.871 mensen, 2.000 IE vitamine D en 1 gram omega-3 per dag, ongeveer vijf jaar) verlaagde geen van beide het aantal gevallen van kanker of grote hart- en vaatziekten. Alleen het aantal hartinfarcten was bij omega-3 lager, een secundaire uitkomst, vooral bij mensen die weinig vis aten.
 
-Dat laatste raakt de kern: wat je al binnenkrijgt bepaalt hoe ver je al bent. Daarom begint de keuze voor een supplement bij je bord.`,
+Dat laatste raakt de kern: wat je al binnenkrijgt bepaalt hoe ver je al bent. Daarom begint de keuze voor een supplement bij je bord. Hoe groot de winst nog kan zijn, hangt af van je [uitgangsstatus](/kennisbank/uitgangsstatus).`,
     },
-    relatedSlugs: ['biobeschikbaarheid', 'epa-dha', 'vitamine-d', 'onderzoeksdosis'],
+    relatedSlugs: ['uitgangsstatus', 'biobeschikbaarheid', 'epa-dha', 'vitamine-d', 'onderzoeksdosis'],
     relatedComparisons: ['/beste/creatine', '/beste/omega-3-supplement', '/beste/vitamine-d'],
     metaTitle: 'Opbouwtijd van een supplement: waarom het weken duurt',
     metaDescription:
@@ -1409,6 +1409,45 @@ Dat laatste raakt de kern: wat je al binnenkrijgt bepaalt hoe ver je al bent. Da
       'Heaney RP, Davies KM, Chen TC, Holick MF, Barger-Lux MJ. Human serum 25-hydroxycholecalciferol response to extended oral dosing with cholecalciferol. Am J Clin Nutr. 2003;77(1):204-210.',
       'Manson JE, Cook NR, Lee IM, et al. Vitamin D supplements and prevention of cancer and cardiovascular disease. N Engl J Med. 2019;380(1):33-44.',
       'Manson JE, Cook NR, Lee IM, et al. Marine n-3 fatty acids and prevention of cardiovascular disease and cancer. N Engl J Med. 2019;380(1):23-32.',
+    ]),
+  },
+  {
+    slug: 'uitgangsstatus',
+    insightTier: 1,
+    term: 'Uitgangsstatus',
+    theme: 'supplementwetenschap',
+    shortDefinition:
+      'Wat je lichaam al heeft of binnenkrijgt voordat je een supplement begint — en daarmee hoeveel een supplement nog kan toevoegen.',
+    coverImage: '/images/kennisbank/uitgangsstatus-curve.jpg',
+    coverImageAlt: "Schematische S-curve: het effect van een stof is groot bij een tekort en vlakt af bij voldoende inname",
+    content: {
+      whatIsIt: `Je uitgangsstatus is waar je mee begint: hoeveel van een stof je lichaam al heeft, grotendeels door wat je eet. Dat bepaalt hoeveel een supplement nog kan toevoegen.
+
+De respons op een voedingsstof volgt meestal een S-vormige curve. Zit je in het tekort, dan levert extra inname veel op. Zit je in het voldoende bereik, dan levert meer nauwelijks nog iets op (Heaney 2014). Hetzelfde supplement kan dus bij de één veel doen en bij de ander weinig, zonder dat het product verschilt.`,
+      howItWorks: `Drie voorbeelden uit onderzoek:
+
+Creatine. In een onderzoek met 18 vegetariërs en 24 niet-vegetariërs, allen acht weken krachttraining, lag het creatinegehalte in de spier bij vegetariërs lager (117 tegen 130 mmol/kg). Vegetariërs die creatine namen, kregen een grotere stijging van creatine in de spier, van magere massa en van werkprestatie dan niet-vegetariërs die creatine namen (Burke 2003).
+
+Omega-3. In de VITAL-studie (25.871 mensen, 1 gram omega-3 per dag, gemiddeld 5,3 jaar) was het aantal hartinfarcten lager (HR 0,72), een secundaire uitkomst. Bij mensen die weinig vis aten leek dat effect groter, al zijn dit subgroepanalyses en dus voorzichtiger te lezen (Manson 2019).
+
+IJzer. In onderzoek bij vrouwen zonder bloedarmoede maar met onverklaarde vermoeidheid nam de vermoeidheid na ijzer af, maar dat effect lijkt beperkt tot vrouwen met een lage of grenswaarde ferritine (Verdon 2003, Vaucher 2012). Of dat bij jou speelt, weet je alleen door te meten.`,
+      whyItMatters: `Daarom is "werkt het?" geen ja-of-nee-vraag. Een grote studie onder mensen zonder bekende ziekte (VITAL) vond voor vitamine D en omega-3 geen effect op de hoofduitkomsten. Dat zegt iets over die groep als geheel, niet over iedereen daarin.
+
+Voor jou betekent het: weet eerst wat je binnenkrijgt. Dat is wat de check doet. Voor sommige stoffen, zoals ijzer en vitamine D, bestaat een bloedtest; die laat je met je huisarts doen. Hoe lang een stof daarna nodig heeft om op niveau te komen, staat onder [opbouwtijd van een supplement](/kennisbank/opbouwtijd-supplement). Wat een etiket bedoelt met de ADH lees je onder [ADH](/kennisbank/adh).`,
+    },
+    relatedSlugs: ['opbouwtijd-supplement', 'biobeschikbaarheid', 'adh', 'onderzoeksdosis'],
+    relatedComparisons: ['/beste/creatine', '/beste/omega-3-supplement', '/beste/vitamine-d'],
+    metaTitle: 'Uitgangsstatus: waarom een supplement niet bij iedereen werkt',
+    metaDescription:
+      'Waarom hetzelfde supplement bij de één veel doet en bij de ander weinig: de rol van wat je al binnenkrijgt, met voorbeelden bij creatine, omega-3 en ijzer.',
+    laatstBijgewerktOp: '2026-10-09',
+    referenties: toRefs([
+      'Heaney RP. Guidelines for optimizing design and analysis of clinical studies of nutrient effects. Nutr Rev. 2014;72(1):48-54.',
+      'Burke DG, Chilibeck PD, Parise G, Candow DG, Mahoney D, Tarnopolsky M. Effect of creatine and weight training on muscle creatine and performance in vegetarians. Med Sci Sports Exerc. 2003;35(11):1946-1955.',
+      'Manson JE, Cook NR, Lee IM, et al. Marine n-3 fatty acids and prevention of cardiovascular disease and cancer. N Engl J Med. 2019;380(1):23-32.',
+      'Manson JE, Cook NR, Lee IM, et al. Vitamin D supplements and prevention of cancer and cardiovascular disease. N Engl J Med. 2019;380(1):33-44.',
+      'Verdon F, Burnand B, Stubi CL, et al. Iron supplementation for unexplained fatigue in non-anaemic women: double blind randomised placebo controlled trial. BMJ. 2003;326(7399):1124.',
+      'Vaucher P, Druais PL, Waldvogel S, Favrat B. Effect of iron supplementation on fatigue in nonanemic menstruating women with low ferritin: a randomized controlled trial. CMAJ. 2012;184(11):1247-1254.',
     ]),
   },
 ]
