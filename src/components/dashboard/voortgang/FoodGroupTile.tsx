@@ -11,9 +11,9 @@ export default function FoodGroupTile({
 }: {
   icoon: string;
   label: string;
-  size?: 40 | 48;
+  size?: 40 | 48 | 72;
 }) {
-  const box = size === 48 ? "h-12 w-12 text-[22px]" : "h-10 w-10 text-[19px]";
+  const box = size === 72 ? "h-[72px] w-[72px] text-[32px]" : size === 48 ? "h-12 w-12 text-[22px]" : "h-10 w-10 text-[19px]";
   return (
     <span
       aria-hidden="true"

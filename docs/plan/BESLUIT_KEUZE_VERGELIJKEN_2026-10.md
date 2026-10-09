@@ -271,3 +271,18 @@ Dennis: idee goed; (1) de domeinbalk Slaap/Stress/Beweging/Verbinding stond er o
 ### Twaalfde ronde — keuze Dennis (9 oktober): variant B
 
 Dennis kiest **B (met zijkolom)** ("heel mooi") en wil Mijn keuzes nog net wat netter (gedaan in de schets: compacte dagtegels, rijen met één knop rechts, stoffen in twee kolommen). **Bouw: later** (zelfde dag of de volgende). Voor de bouw: de zijkolom staat alleen op brede tab-inhoud (≥ 900 px container), daaronder de lade/onderbalk; de domeinrail in Keuze vervalt (aanbeveling, nog te bevestigen); meetpunt `keuze_naar_mijn_keuzes` nieuw.
+
+### Twaalfde ronde — uitvoering plak 1 (9 oktober): Vergelijken
+
+Gebouwd in `KeuzeVergelijken.tsx` volgens de schets, variant B:
+
+- **Eén stof tegelijk** via de stofchips (de accordeon en "Alles" zijn weg). Eerste stof = die met ruimte.
+- **Hero** met stand, getal en balk (eten + supplement vs norm; gestreept bij hover/focus op een product, vol zodra je kiest; veilige bovengrens onder de balk bij een gekozen product) en een regel "Jouw keuze".
+- **Twee kolommen** (sage = eten, blauw = supplement), elk met de beste keuze groot ("Beste uit je eten" = rijkste bron per portie binnen je voedingswijze; "Hoogste PS-Score") en daaronder compacte rijen met foto, waarde en één Kies-knop. Afwijking van de schets: de twee beste keuzes staan per kolom bovenaan in plaats van als losse duo-rij — dat houdt de regio's "Uit je eten" / "Uit een supplement" heel (toegankelijkheid, tests).
+- **Voedselfoto's** uit de catalogus (`FoodThumbnail`, 267 foto's, valt terug op de voedselgroep-tegel) in plaats van de icoontegels uit de schets; maat 72 toegevoegd.
+- **Zijkolom "Je keuzes"** vanaf 56 rem container-breedte, daaronder een **lade** onderaan (boven de mobiele hoofdnavigatie) die pas na de eerste keuze verschijnt. Beide tonen alle keuzes over alle stoffen, het bedrag per dag en "Naar Mijn keuzes →". **Nog niet:** × per keuze in de zijkolom/lade — verwijderen gaat via de knop op de kaart of in Mijn keuzes.
+- Knoppen ≥ 44 px. Geen nieuwe opslag, geen migratie.
+
+**Meting:** nieuw `keuze_naar_mijn_keuzes` {surface, plek: zijkolom|lade, aantal} (GA4; een GA4-event heeft geen registratie op drie plekken nodig, alleen `domain_events` wel). Bestaand: `keuze_stof_geopend` (nu per chip), `keuze_product_gekozen`, `keuze_eten_gekozen`, `keuze_vergelijken_ps_score_click`.
+
+**Plak 2 (volgt):** Mijn keuzes netter (compacte dagtegels, twee kolommen per stof) en de domeinrail in Keuze weg (open: bevestiging Dennis).

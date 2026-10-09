@@ -17,7 +17,7 @@ export default function FoodThumbnail({
   size = 40,
 }: {
   entry: CatalogEntry;
-  size?: 40 | 48;
+  size?: 40 | 48 | 72;
 }) {
   const [failed, setFailed] = useState(false);
   const src = catalogImageSrc(entry);
@@ -33,7 +33,7 @@ export default function FoodThumbnail({
       alt={entry.labelNl}
       width={size}
       height={size}
-      className={`shrink-0 rounded-lg object-cover ${size === 48 ? "h-12 w-12" : "h-10 w-10"}`}
+      className={`shrink-0 rounded-lg object-cover ${size === 72 ? "h-[72px] w-[72px]" : size === 48 ? "h-12 w-12" : "h-10 w-10"}`}
       onError={() => setFailed(true)}
     />
   );
