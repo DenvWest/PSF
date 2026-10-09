@@ -97,7 +97,7 @@ describe("buildContextSpine — urgentie", () => {
     expect(spine.urgency.layerId).toBe(2);
     expect(spine.urgency.isFocusLayer).toBe(true);
     expect(spine.urgency.stateLabel).toBe("Grootste winst");
-    expect(spine.urgency.reason).toEqual({
+    expect(spine.urgency.reason).toMatchObject({
       kind: "bewijs",
       label: "Kracht",
       answerLabel: "1× per week",
@@ -316,5 +316,63 @@ describe("buildContextSpine — ritme", () => {
     expect(spine.ritmeFirst).toBe(true);
     // Geen dag-teller die tegen de hermeting in praat.
     expect(spine.ritme.cycleLine).toBeNull();
+  });
+});
+
+describe("buildContextSpine — de ene stap op voeding", () => {
+  const voedingData = {
+    nutritionCheckinReadout: {
+      date: "2026-08-21",
+      headline: "Je voedingsbasis staat er half.",
+      focusLayer: 1,
+      layerStates: { 1: "winst", 2: "wacht", 3: "wacht", 4: "wacht", 5: "wacht", 6: "wacht" },
+      factRows: [
+        {
+          key: "plantbasis",
+          layer: 1,
+          label: "Groente en fruit",
+          answerLabel: "Groente 1× per dag · fruit 2× per week",
+          benchmarkLabel: "Richtlijn: ≥400 g per dag",
+          benchmarkSource: "WHO 2020",
+          status: "below",
+          whyLine: "Eén bron voor je vezels, kalium en magnesium.",
+          footnote: null,
+          exemption: null,
+        },
+      ],
+    },
+  } as unknown as DashboardData;
+
+  const build = (openLayerId: number | null) =>
+    buildContextSpine({
+      domain: "voeding",
+      openLayerId,
+      data: voedingData,
+      model: null,
+      todayActionDone: false,
+    });
+
+  it("geeft op de winst-laag een stap per feitenrij", () => {
+    const { urgency } = build(null);
+    if (urgency?.kind !== "laag") throw new Error("verwacht een laag");
+    expect(urgency.stap).toBe("Groente of fruit erbij bij je volgende maaltijd");
+  });
+
+  it("geeft geen stap op een laag die de check niet als winst aanwees", () => {
+    const { urgency } = build(2);
+    if (urgency?.kind !== "laag") throw new Error("verwacht een laag");
+    expect(urgency.stap).toBeNull();
+  });
+
+  it("geeft op andere domeinen geen stap", () => {
+    const spine = buildContextSpine({
+      domain: "beweging",
+      openLayerId: null,
+      data: data(),
+      model: model(null),
+      todayActionDone: false,
+    });
+    if (spine.urgency?.kind !== "laag") throw new Error("verwacht een laag");
+    expect(spine.urgency.stap).toBeNull();
   });
 });

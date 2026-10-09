@@ -67,11 +67,11 @@ export type NutritionPriorities = {
  * De richting per feitenrij.
  *
  * Bewust niet afgeleid van `row.label`: dat is een zelfstandig naamwoord
- * ("Plantbasis") en een prioriteit is een beweging. Ook bewust niet uit
+ * ("Groente en fruit") en een prioriteit is een beweging. Ook bewust niet uit
  * `whyLine` — die verklaart waarom het telt, niet wat je doet.
  */
 const PRIORITY_LABEL: Record<NutritionFactRowKey, string> = {
-  plantbasis: "Je plantbasis uitbreiden",
+  plantbasis: "Meer groente en fruit",
   eiwitbronnen: "Je eiwitbronnen aanvullen",
   vezelbasis: "Je vezelbasis versterken",
   visbron: "Je omega-3-bron regelen",

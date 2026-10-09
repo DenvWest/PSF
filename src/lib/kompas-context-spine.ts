@@ -12,6 +12,7 @@ import {
 } from "@/lib/domain-ladder-readout";
 import { buildCycleLine } from "@/lib/kompas-home";
 import { buildNutritionPriorities } from "@/lib/nutrition-prioriteiten";
+import { winstStapVoor } from "@/lib/nutrition-winst-stap";
 import { getLeefstijlLadder } from "@/lib/leefstijl-ladder";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
@@ -67,6 +68,11 @@ export type ContextSpineUrgency =
        * voeding heeft er een) of zodra deze laag de enige is die telt.
        */
       vervolg: readonly string[];
+      /**
+       * De ene stap voor vandaag, alleen op voeding en alleen op de winst-laag
+       * uit de check; anders null en blijft de kaart bij de laagnaam.
+       */
+      stap: string | null;
     }
   | {
       /** Er is een ladder, maar de check wijst er geen winst-laag in aan. */
@@ -156,6 +162,7 @@ function buildUrgency(
   }
 
   const state = readout?.layerStates[layer.id] ?? null;
+  const reason = resolveLadderLayerReason(readout, layer.id);
 
   return {
     kind: "laag",
@@ -163,8 +170,12 @@ function buildUrgency(
     layerName: layer.name,
     stateLabel: state && readout ? readout.stateLabels[state] : null,
     isFocusLayer: readout != null && layer.id === readout.focusLayer,
-    reason: resolveLadderLayerReason(readout, layer.id),
+    reason,
     vervolg: resolveVervolg(bar.domain, layer.id, data),
+    stap:
+      bar.domain === "voeding" && readout != null && layer.id === readout.focusLayer && reason?.kind === "bewijs"
+        ? winstStapVoor(reason.rowKey)
+        : null,
   };
 }
 

@@ -23,10 +23,13 @@ const DAGBOEK_HREF = "/dashboard?tab=vandaag";
  * winst" — dat blijft de uitkomst van de check
  * (`src/lib/kompas-winst-dagboek.ts`).
  *
+ * Met `zonderTeWeinigLink` laat het de link weg zolang de dagen nog tekortschieten:
+ * de winstkaart heeft dan zelf al een knop naar hetzelfde dagboek.
+ *
  * Zonder antwoord van het dagboek (niet ingelogd, netwerkfout) toont dit niets:
  * "0 van 7 dagen" zou een uitspraak zijn over iemand wiens data we niet kennen.
  */
-export default function KompasDagboekRegel() {
+export default function KompasDagboekRegel({ zonderTeWeinigLink = false }: { zonderTeWeinigLink?: boolean }) {
   const normen = useKernstofNormen();
   const richting = useVoedingsrichting();
   const eiwitDoelG = useEiwitDoel();
@@ -89,22 +92,24 @@ export default function KompasDagboekRegel() {
         </div>
       ) : null}
 
-      <Link
-        href={href}
-        onClick={(event) => {
-          event.preventDefault();
-          trackEvent("dashboard_kompas_context_click", {
-            zone: "dagboek",
-            domain: "voeding",
-            staat: regel.kind,
-          });
-          clarityTag("dashboard_kompas_context", `dagboek_${regel.kind}`);
-          gaNaarDashboard(href);
-        }}
-        className="mt-1.5 inline-flex min-h-9 items-center text-[12px] font-semibold text-[#5A8F6A] no-underline"
-      >
-        {naarDagboek ? "Vul je dagboek aan →" : "Bekijk in Je patroon →"}
-      </Link>
+      {regel.kind === "te_weinig" && zonderTeWeinigLink ? null : (
+        <Link
+          href={href}
+          onClick={(event) => {
+            event.preventDefault();
+            trackEvent("dashboard_kompas_context_click", {
+              zone: "dagboek",
+              domain: "voeding",
+              staat: regel.kind,
+            });
+            clarityTag("dashboard_kompas_context", `dagboek_${regel.kind}`);
+            gaNaarDashboard(href);
+          }}
+          className="mt-1.5 inline-flex min-h-9 items-center text-[12px] font-semibold text-[#5A8F6A] no-underline"
+        >
+          {naarDagboek ? "Vul je dagboek aan →" : "Bekijk in Je patroon →"}
+        </Link>
+      )}
     </div>
   );
 }

@@ -120,7 +120,7 @@ describe("resolveLadderLayerReason — de vanwege, en alleen waar hij bestaat", 
   it("draagt op de winst-laag de feitenrij die hem verklaart", () => {
     const readout = resolveDomainLadderReadout("slaap", dataWithSleep());
     const reason = resolveLadderLayerReason(readout, 1);
-    expect(reason).toEqual({
+    expect(reason).toMatchObject({
       kind: "bewijs",
       label: "Slaapduur",
       answerLabel: "6 uur",
