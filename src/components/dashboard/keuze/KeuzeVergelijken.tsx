@@ -952,6 +952,20 @@ function Kant({
   );
 }
 
+const ETEN_START = 4;
+const ETEN_STAP = 5;
+const ETEN_POOL = 60;
+
+const ETEN_GROEPEN = [
+  { id: "vis", label: "Vis & schaaldieren", categorieen: ["vis", "zeevruchten"] },
+  { id: "noten", label: "Noten & zaden", categorieen: ["noten", "zaden"] },
+  { id: "peulvruchten", label: "Peulvruchten", categorieen: ["peulvruchten", "plantaardig"] },
+  { id: "groente", label: "Groente & fruit", categorieen: ["groenten", "fruit"] },
+  { id: "granen", label: "Granen & brood", categorieen: ["granen", "brood", "pasta", "ontbijt"] },
+  { id: "zuivel", label: "Zuivel & ei", categorieen: ["zuivel", "kaas", "eieren"] },
+  { id: "vlees", label: "Vlees", categorieen: ["vlees", "orgaanvlees"] },
+] as const;
+
 type EtenRij = {
   entry: CatalogEntry;
   portie: string;
@@ -992,12 +1006,13 @@ function VoedingKant({
   const totaal = bronnen.reduce((som, b) => som + b.totaal, 0);
   const momentTotaal = perMoment.reduce((som, m) => som + m.totaal, 0);
   const ruimte = ruimteBij(perMoment, momentTotaal);
+  const [groep, setGroep] = useState<string | null>(null);
+  const [zichtbaar, setZichtbaar] = useState(ETEN_START);
   const term = zoek.trim();
   const voorstellen = useMemo<EtenRij[]>(
     () =>
-      rijksteBronnen(status.nutrient, "portie", 30)
+      rijksteBronnen(status.nutrient, "portie", ETEN_POOL)
         .filter((bron) => pastBijVoedingswijze(bron.entry, profiel.voedingswijze))
-        .slice(0, 5)
         .map((bron) => ({
           entry: bron.entry,
           portie: bron.portieLabel,
@@ -1015,7 +1030,6 @@ function VoedingKant({
       .map((entry) => ({ entry, levert: gehaltePerPortie(entry, status.nutrient) }))
       .filter((rij): rij is { entry: CatalogEntry; levert: { value: number; unit: string } } => (rij.levert?.value ?? 0) > 0)
       .sort((x, y) => y.levert.value - x.levert.value)
-      .slice(0, 5)
       .map(({ entry, levert }) => ({
         entry,
         portie: entry.porties[0]?.labelNl ?? "",
@@ -1026,7 +1040,21 @@ function VoedingKant({
       }));
   }, [term, status.nutrient]);
   const beste = voorstellen[0] ?? null;
-  const rijen = term ? treffers : voorstellen.slice(1);
+  const beschikbareGroepen = useMemo(
+    () =>
+      ETEN_GROEPEN.filter((g) =>
+        voorstellen.slice(1).some((rij) => (g.categorieen as readonly string[]).includes(rij.entry.category)),
+      ),
+    [voorstellen],
+  );
+  const actieveGroep = ETEN_GROEPEN.find((g) => g.id === groep) ?? null;
+  const alleRijen = term
+    ? treffers
+    : voorstellen
+        .slice(1)
+        .filter((rij) => !actieveGroep || (actieveGroep.categorieen as readonly string[]).includes(rij.entry.category));
+  const rijen = alleRijen.slice(0, zichtbaar);
+  const nogMeer = alleRijen.length - rijen.length;
   const { items, save, remove } = useVoortgangFavorites();
   const etenKeuzes = etenKeuzesVoorStof(status.nutrient, items);
   const gekozenHier = etenKeuzes.length;
@@ -1141,7 +1169,10 @@ function VoedingKant({
 
       <KolomZoek
         waarde={zoek}
-        onChange={setZoek}
+        onChange={(waarde) => {
+          setZoek(waarde);
+          setZichtbaar(ETEN_START);
+        }}
         label={`Zoek eten met ${status.label.toLowerCase()}`}
         onZoek={() => trackEvent("keuze_eten_zoek", { nutrient: status.nutrient, treffers: treffers.length })}
       />
@@ -1149,6 +1180,32 @@ function VoedingKant({
       <p className="m-0 mt-2.5 text-[0.6875rem] text-[var(--vd-ink-3)]">
         {term ? "Gevonden · rijkste eerst" : `Meer bronnen${ruimte ? ` · bij je ${ruimte.label.toLowerCase()}` : ""}`}
       </p>
+      {!term && beschikbareGroepen.length > 1 ? (
+        <div role="group" aria-label="Filter op voedselgroep" className="mt-1.5 flex flex-wrap gap-1">
+          {beschikbareGroepen.map((g) => {
+            const actief = g.id === groep;
+            return (
+              <button
+                key={g.id}
+                type="button"
+                aria-pressed={actief}
+                onClick={() => {
+                  setGroep(actief ? null : g.id);
+                  setZichtbaar(ETEN_START);
+                  if (!actief) trackEvent("keuze_eten_filter", { nutrient: status.nutrient, groep: g.id });
+                }}
+                className={`min-h-[30px] rounded-full border px-2.5 text-[0.6875rem] transition-colors ${
+                  actief
+                    ? "border-[var(--vd-sage)] bg-[var(--vd-sage)] text-white"
+                    : "border-[var(--vd-line)] bg-[var(--vd-surface)] text-[var(--vd-ink-2)] hover:border-[var(--vd-line-2)]"
+                }`}
+              >
+                {g.label}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
       {!term ? <Voedingswijze voedingswijze={profiel.voedingswijze} nutrient={status.nutrient} /> : null}
       {term && rijen.length === 0 ? (
         <p className="m-0 mt-1 text-[0.75rem] text-[var(--vd-ink-3)]">
@@ -1193,6 +1250,19 @@ function VoedingKant({
           );
         })}
       </ul>
+      {nogMeer > 0 ? (
+        <button
+          type="button"
+          onClick={() => {
+            setZichtbaar(zichtbaar + ETEN_STAP);
+            trackEvent("keuze_eten_meer", { nutrient: status.nutrient, aantal: rijen.length + Math.min(ETEN_STAP, nogMeer) });
+          }}
+          className="mt-2 min-h-[34px] w-full rounded-[9px] border border-[var(--vd-line)] bg-[var(--vd-surface)] text-[0.75rem] text-[var(--vd-ink-2)] hover:border-[var(--vd-line-2)]"
+        >
+          Toon {Math.min(ETEN_STAP, nogMeer)} meer
+          <span className="text-[var(--vd-ink-3)]"> · nog {nogMeer}</span>
+        </button>
+      ) : null}
 
       {bronnen.length > 0 ? (
         <details className="mt-3 text-[0.75rem]">
