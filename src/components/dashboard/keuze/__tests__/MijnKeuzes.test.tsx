@@ -102,7 +102,7 @@ describe("MijnKeuzes", () => {
     expect(screen.getByText("Per dag").nextElementSibling?.textContent).toMatch(/€ \d+,\d{2}/);
     expect(screen.getByText(/± € \d+,\d{2} per maand/)).toBeTruthy();
     expect(screen.getAllByText(/Vitals Liquid EPA\/DHA/).length).toBeGreaterThan(0);
-    expect(screen.getByRole("link", { name: /Naar de productpagina/ }).getAttribute("href")).toBe(
+    expect(screen.getByRole("link", { name: /Prijs en winkels/ }).getAttribute("href")).toBe(
       "/product/vitals-liquid-epadha?van=keuze&stof=omega3&deel=favorieten",
     );
     expect(screen.getByText(/Nog geen keuze: magnesium, zink/)).toBeTruthy();

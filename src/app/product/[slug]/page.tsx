@@ -5,8 +5,9 @@ import { Suspense } from "react";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import TerugNaarKeuze from "@/components/supplement-hub/TerugNaarKeuze";
 import { buildSupplementHubHref } from "@/lib/supplement-hub/hub-link";
+import KeuzeKoopKaart from "@/components/supplement-hub/KeuzeKoopKaart";
 import ProductDetail from "@/components/supplement-hub/ProductDetail";
-import { buildProductSamenvatting, formatScore } from "@/lib/supplement-hub/product-catalog";
+import { buildProductSamenvatting, formatCents, formatScore } from "@/lib/supplement-hub/product-catalog";
 import {
   loadCategoryPeersForPage,
   loadHubProductBySlugForPage,
@@ -105,6 +106,15 @@ export default async function ProductPage({ params }: Props) {
               slug={product.slug}
               catalogusHref={buildSupplementHubHref(product.category)}
               categorieLabel={product.categoryLabel}
+            />
+          </Suspense>
+          <Suspense fallback={null}>
+            <KeuzeKoopKaart
+              naam={product.volledigeNaam}
+              prijsPerDag={formatCents(product.cost.centenPerDag)}
+              score={formatScore(product.score.total)}
+              affiliateSlug={product.affiliateSlug}
+              category={product.category}
             />
           </Suspense>
           <Breadcrumbs
