@@ -1376,7 +1376,7 @@ Wat het níet betekent: dat je leucine of BCAA's los moet bijkopen. Een eiwitrij
     shortDefinition:
       'De tijd die een stof nodig heeft om in je lichaam een stabiel niveau te bereiken — bij sommige supplementen weken, bij andere maanden.',
     coverImage: '/images/kennisbank/opbouwtijd-supplement.jpg',
-    coverImageAlt: "Water dat in een glas stroomt — het niveau van een supplement bouwt zich geleidelijk op",
+    coverImageAlt: "Groene staafjes die stap voor stap hoger worden — het niveau van een supplement bouwt zich geleidelijk op",
     content: {
       whatIsIt: `Veel supplementen doen weinig zolang hun niveau in je lichaam nog niet is opgebouwd. Elke dosis komt bovenop wat er nog over is van de vorige. Het niveau stijgt tot wat je binnenkrijgt gelijk is aan wat je lichaam afvoert, of tot het weefsel vol is. Dat kost vaak weken, geen dagen.
 
