@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildDagboekWinstRegel, buildDoelStand } from "@/lib/kompas-winst-dagboek";
+import { buildDagboekWinstRegel, buildDagStatus, buildDoelStand } from "@/lib/kompas-winst-dagboek";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 
@@ -164,5 +164,58 @@ describe("buildDoelStand", () => {
     expect(stand.nutrient).toBe("protein");
     expect(stand.doelLabel).toContain("eiwitdoel");
     expect(stand.gedekt).toBe(false);
+  });
+});
+
+describe("buildDagboekWinstRegel — uitsluiten", () => {
+  it("noemt de stof niet die de doel-zone al draagt", () => {
+    const week = dagen(5, "havermout", 100);
+    const zonder = buildDagboekWinstRegel(week, VANDAAG, STANDAARD_NORMEN, { uitsluiten: "magnesium" });
+    if (zonder?.kind === "stoffen") {
+      expect(zonder.stoffen.map((s) => s.nutrient)).not.toContain("magnesium");
+    } else {
+      expect(zonder === null || zonder.kind === "op_norm").toBe(true);
+    }
+  });
+
+  it("zegt niet 'op je norm' als de uitgesloten stof zelf onder de norm zit", () => {
+    const week = dagen(5, "havermout", 100);
+    const alle = buildDagboekWinstRegel(week, VANDAAG, STANDAARD_NORMEN);
+    if (alle?.kind !== "stoffen") throw new Error("verwacht stoffen");
+    const regel = buildDagboekWinstRegel(week, VANDAAG, STANDAARD_NORMEN, {
+      uitsluiten: alle.stoffen[0].nutrient,
+    });
+    expect(regel?.kind).not.toBe("op_norm");
+  });
+});
+
+describe("buildDagStatus", () => {
+  it("noemt wat gelogd en wat open is, in vaste volgorde", () => {
+    const status = buildDagStatus([halveDag(VANDAAG, "havermout", 60)], VANDAAG);
+    expect(status.gelogd).toEqual(["ontbijt"]);
+    expect(status.open).toEqual(["lunch", "avondeten"]);
+    expect(status.compleet).toBe(false);
+  });
+
+  it("is compleet als alle maaltijden erop staan", () => {
+    expect(buildDagStatus([dag(VANDAAG, "havermout", 60)], VANDAAG).compleet).toBe(true);
+  });
+
+  it("telt een overgeslagen maaltijd als gelogd", () => {
+    const status = buildDagStatus(
+      [{ ...halveDag(VANDAAG, "havermout", 60), overgeslagen: ["lunch", "avondeten"] }],
+      VANDAAG,
+    );
+    expect(status.compleet).toBe(true);
+  });
+
+  it("volgt je eetpatroon", () => {
+    expect(buildDagStatus([halveDag(VANDAAG, "havermout", 60)], VANDAAG, ["ontbijt"]).compleet).toBe(true);
+  });
+
+  it("zegt dat alles open staat als er vandaag niets is", () => {
+    const status = buildDagStatus([], VANDAAG);
+    expect(status.gelogd).toEqual([]);
+    expect(status.open).toEqual(["ontbijt", "lunch", "avondeten"]);
   });
 });
