@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { kortGetal, STAND_KLEUR, STAND_KORT } from "@/components/dashboard/keuze/KeuzeVergelijken";
+import MomentChips, { useMomentOpslag } from "@/components/dashboard/keuze/MomentChips";
 import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { catalogEntry, type CatalogEntry } from "@/data/nutrition/food-catalog";
@@ -14,14 +15,14 @@ import { trackEvent } from "@/lib/ga4";
 import {
   etenKeuzeId,
   etenKeuzesVoorStof,
+  etenMomentVoor,
+  itemMomentIdsVoor,
   metKeuzeHerkomst,
-  momentKeuzeId,
-  parseEtenKeuze,
   momentKeuzeIdsVoorStof,
+  parseEtenKeuze,
   momentVoorStof,
   productKeuzeIdsVoorStof,
   productKeuzeVoorStof,
-  type MomentKant,
 } from "@/lib/keuze-product-keuze";
 import { dagboekProductVan } from "@/lib/keuze-dagboek-product";
 import { keuzeStofStand, type KeuzeStofStand } from "@/lib/keuze-stof-stand";
@@ -143,14 +144,13 @@ export default function MijnKeuzes({
     const gezien = new Set<string>();
     for (const k of gekozen) {
       const nutrient = k.status.nutrient;
-      const etenMoment = momentVoorStof(nutrient, items, "eten") ?? "ontbijt";
       for (const entry of k.bronnen) {
         if (gezien.has(entry.key)) continue;
         gezien.add(entry.key);
         const levert = gehaltePerPortie(entry, nutrient);
         rijen.push({
           id: `eten-${entry.key}`,
-          moment: etenMoment,
+          moment: etenMomentVoor(nutrient, entry.key, items),
           titel: entry.labelNl,
           sub: [entry.porties[0]?.labelNl, levert ? `${hoeveelheid(levert.value)} ${levert.unit} ${k.status.label.toLowerCase()}` : null]
             .filter(Boolean)
@@ -307,51 +307,77 @@ function JeDag({ rijen }: { rijen: readonly DagRij[] }) {
 
 function DagRegel({ rij, moment }: { rij: DagRij; moment: EetmomentId }) {
   const logbaar = rij.entry !== null || (rij.product !== null && dagboekProductVan(rij.product) !== null);
+  const [verplaats, setVerplaats] = useState(false);
+  const { zetEten, zetSupplement } = useMomentOpslag(SURFACE);
+  const kies = (nieuw: EetmomentId) => {
+    if (rij.entry) zetEten(rij.nutrient, rij.entry.key, rij.titel, nieuw);
+    else zetSupplement(rij.nutrient, rij.titel, nieuw);
+    setVerplaats(false);
+  };
   return (
-    <div className="flex items-center gap-2.5 border-t border-[var(--vd-line)] pt-2 first-of-type:border-t-0 first-of-type:pt-0">
-      {rij.entry ? (
-        <FoodThumbnail entry={rij.entry} size={48} />
-      ) : rij.product?.imageSrc ? (
-        <Image
-          src={rij.product.imageSrc}
-          alt={rij.product.imageAlt}
-          width={96}
-          height={96}
-          loading="lazy"
-          className="h-12 w-12 shrink-0 rounded-lg bg-white object-contain p-0.5"
-        />
-      ) : null}
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-[0.8125rem] font-semibold text-[var(--vd-ink)]">{rij.titel}</span>
-        <span className="block truncate text-[0.6875rem] text-[var(--vd-ink-3)]">
-          {logbaar ? rij.sub : `${rij.sub} · loggen kan nog niet`}
+    <div className="border-t border-[var(--vd-line)] pt-2 first-of-type:border-t-0 first-of-type:pt-0">
+      <div className="flex items-center gap-2.5">
+        {rij.entry ? (
+          <FoodThumbnail entry={rij.entry} size={48} />
+        ) : rij.product?.imageSrc ? (
+          <Image
+            src={rij.product.imageSrc}
+            alt={rij.product.imageAlt}
+            width={96}
+            height={96}
+            loading="lazy"
+            className="h-12 w-12 shrink-0 rounded-lg bg-white object-contain p-0.5"
+          />
+        ) : null}
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[0.8125rem] font-semibold text-[var(--vd-ink)]">{rij.titel}</span>
+          <span className="block truncate text-[0.6875rem] text-[var(--vd-ink-3)]">
+            {logbaar ? rij.sub : `${rij.sub} · loggen kan nog niet`}
+          </span>
         </span>
-      </span>
-      {logbaar ? (
-        <button
-          type="button"
-          aria-label={`${rij.titel} in je dagboek zetten bij ${moment}`}
-          onClick={() => {
-            trackEvent("keuze_bron_naar_dagboek", {
-              nutrient: rij.nutrient,
-              moment,
-              surface: SURFACE,
-              ...(rij.product ? { kant: "supplement" } : {}),
-            });
-            gaNaarDashboard(
-              buildDagboekVoegHref(
-                rij.entry
-                  ? { bron: "voeding", key: rij.entry.key, moment }
-                  : { bron: "product", key: rij.product?.slug ?? "", moment },
-              ),
-            );
-          }}
-          className={`inline-flex min-h-[44px] shrink-0 cursor-pointer items-center rounded-[12px] border bg-transparent px-3 text-[0.75rem] font-semibold text-[var(--vd-ink)] hover:border-[var(--vd-ink-3)] ${
-            rij.entry ? "border-[var(--vd-sage)]" : "border-[var(--vd-accent-2)]"
-          }`}
-        >
-          ＋ Dagboek
-        </button>
+        {logbaar ? (
+          <button
+            type="button"
+            aria-label={`${rij.titel} in je dagboek zetten bij ${moment}`}
+            onClick={() => {
+              trackEvent("keuze_bron_naar_dagboek", {
+                nutrient: rij.nutrient,
+                moment,
+                surface: SURFACE,
+                ...(rij.product ? { kant: "supplement" } : {}),
+              });
+              gaNaarDashboard(
+                buildDagboekVoegHref(
+                  rij.entry
+                    ? { bron: "voeding", key: rij.entry.key, moment }
+                    : { bron: "product", key: rij.product?.slug ?? "", moment },
+                ),
+              );
+            }}
+            className={`inline-flex min-h-[44px] shrink-0 cursor-pointer items-center rounded-[12px] border bg-transparent px-3 text-[0.75rem] font-semibold text-[var(--vd-ink)] hover:border-[var(--vd-ink-3)] ${
+              rij.entry ? "border-[var(--vd-sage)]" : "border-[var(--vd-accent-2)]"
+            }`}
+          >
+            ＋ Dagboek
+          </button>
+        ) : null}
+      </div>
+      <button
+        type="button"
+        aria-expanded={verplaats}
+        aria-label={`Moment van ${rij.titel} wijzigen`}
+        onClick={() => setVerplaats((open) => !open)}
+        className="mt-0.5 inline-flex min-h-[36px] cursor-pointer items-center border-0 bg-transparent p-0 text-[0.6875rem] font-semibold text-[var(--vd-ink-3)] hover:text-[var(--vd-ink)] hover:underline"
+      >
+        Ander moment {verplaats ? "▴" : "▾"}
+      </button>
+      {verplaats ? (
+        <MomentChips
+          kant={rij.entry ? "eten" : "supplement"}
+          vraag="Verplaats naar"
+          moment={moment}
+          onKies={kies}
+        />
       ) : null}
     </div>
   );
@@ -469,68 +495,6 @@ function Kant({
   );
 }
 
-const MOMENT_ACTIEF: Record<MomentKant, string> = {
-  eten: "!border-[var(--vd-sage)] !bg-[var(--vd-sage-fill)] !text-[var(--vd-sage-2)]",
-  supplement: "!border-[var(--vd-accent-2)] !bg-[var(--vd-accent-2-fill)] !text-[var(--vd-accent-2)]",
-};
-
-/**
- * Eén moment per stof en per kant. Een tweede tik op hetzelfde moment wist
- * het. Dezelfde vier momenten als het dagboek.
- */
-function MomentKiezer({
-  nutrient,
-  kant,
-  vraag,
-  titel,
-}: {
-  nutrient: NutrientId;
-  kant: MomentKant;
-  vraag: string;
-  titel: string;
-}) {
-  const { items, save, remove } = useVoortgangFavorites();
-  const moment = momentVoorStof(nutrient, items, kant);
-
-  const kies = (volgende: EetmomentId) => {
-    const wissen = moment === volgende;
-    for (const id of momentKeuzeIdsVoorStof(nutrient, items, kant)) remove(id);
-    if (!wissen) {
-      save(
-        {
-          id: momentKeuzeId(nutrient, volgende, kant),
-          title: `${titel}: bij ${EETMOMENTEN.find((m) => m.id === volgende)?.label.toLowerCase() ?? volgende}`,
-          kind: kant === "eten" ? "activiteit" : "supplement",
-          domain: "voeding",
-          source: "mijn_keuze",
-        },
-        SURFACE,
-      );
-    }
-    trackEvent("mijn_keuzes_moment", { nutrient, kant, moment: wissen ? "geen" : volgende });
-    clarityTag("mijn_keuzes_moment", `${nutrient}_${kant}_${wissen ? "geen" : volgende}`);
-  };
-
-  return (
-    <fieldset className="m-0 mt-2.5 border-0 p-0">
-      <legend className="mb-1 p-0 text-[0.6875rem] text-[var(--vd-ink-3)]">{vraag}</legend>
-      <div className="flex flex-wrap gap-1.5">
-        {EETMOMENTEN.map((optie) => (
-          <button
-            key={optie.id}
-            type="button"
-            aria-pressed={moment === optie.id}
-            onClick={() => kies(optie.id)}
-            className={`vd-chip ${moment === optie.id ? MOMENT_ACTIEF[kant] : ""}`}
-          >
-            {optie.label}
-          </button>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
-
 function EtenKant({
   keuze,
   voedingsfavorieten,
@@ -555,6 +519,7 @@ function EtenKant({
   /** Weg uit Mijn keuzes bij deze stof; de dagboekster alleen als hij bij geen andere stof gekozen is. */
   const haalWeg = (key: string) => {
     remove(etenKeuzeId(status.nutrient, key));
+    for (const id of itemMomentIdsVoor(status.nutrient, key, items)) remove(id);
     const elders = items.some((item) => {
       const keuze = parseEtenKeuze(item.id);
       return keuze?.key === key && keuze.nutrient !== status.nutrient;
@@ -609,7 +574,6 @@ function EtenKant({
               );
             })}
           </ul>
-          <MomentKiezer nutrient={status.nutrient} kant="eten" vraag="Wanneer eet je het?" titel={`${status.label} uit eten`} />
         </>
       ) : (
         <>
@@ -657,6 +621,7 @@ function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () =>
   const { status, route, product, stand } = keuze;
   const nutrient = status.nutrient;
   const { items, save, remove } = useVoortgangFavorites();
+  const { zetSupplement } = useMomentOpslag(SURFACE);
 
   /**
    * Het supplement uit Mijn keuzes: het product, zijn moment en de
@@ -732,7 +697,12 @@ function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () =>
           {euroPerDag(product.centenPerDag)} per dag
         </p>
       ) : null}
-      <MomentKiezer nutrient={nutrient} kant="supplement" vraag="Wanneer neem je het?" titel={product.naam} />
+      <MomentChips
+        kant="supplement"
+        vraag="Wanneer neem je het?"
+        moment={momentVoorStof(nutrient, items, "supplement")}
+        onKies={(moment) => zetSupplement(nutrient, product.naam, moment)}
+      />
       <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
         <Link
           href={metKeuzeHerkomst(product.href, nutrient, "favorieten")}
