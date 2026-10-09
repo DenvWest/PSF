@@ -1,7 +1,7 @@
 # Besluit: de zone "Waar je naartoe werkt" wordt "Doel", met richting, stand en evaluatie
 
 **Datum:** 9 oktober 2026
-**Status:** Voorstel, Dennis akkoord op de aanpak (besluitdoc eerst, daarna bouwen). Niet gebouwd.
+**Status:** Besloten (Dennis, 9 okt: akkoord; Agenda en Keuze buiten deze reeks). Niet gebouwd.
 **Bouwt voort op:** `BESLUIT_VOEDINGSRICHTING_2026-10.md` (richting kadert en meet niet, klachten = doorverwijzing), `PLAN_EIGEN_IJKPUNT_DOEL_PER_DOMEIN.md` (ijkpunt = eigen as), `BESLUIT_DOEL_IN_ZIJBALK_NAMETING_2026-10.md` (stand gebouwd; nameting), `BESLUIT_KOMPAS_WINST_DAGBOEK_2026-10.md` (winstkaart)
 **Raakt:** `KompasContextSpine.tsx` (doel-zone), `KompasDoelStand.tsx`, `KompasDagboekRegel.tsx`, `account_voedingsdoelen`
 
