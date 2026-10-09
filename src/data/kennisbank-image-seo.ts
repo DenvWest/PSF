@@ -92,9 +92,33 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "De ADH op een potje is vaak lager dan wat studies gebruiken; voor effect kijk je naar onderzoeksdoses en status.",
     searchPhrases: ["adh supplement", "aanbevolen dagelijkse hoeveelheid", "adh vitamine d"],
   },
+  "voeding-versus-capsule": {
+    coverAlt:
+      "Gegrilde zalm met broccoli op een bord aan een houten tafel — voeding levert meer dan één stof tegelijk",
+    coverCaption:
+      "Een bord levert meerdere stoffen tegelijk; een capsule vult aan wat je mist.",
+    coverTitle: "Voeding of capsule: wat is het verschil?",
+    inlineAlt:
+      "Saladekom van boven met sla, paprika en tomaat — een bord levert meerdere voedingsstoffen tegelijk",
+    inlineCaption:
+      "Eerst weten wat je bord al levert, dan pas kiezen of een capsule iets toevoegt.",
+    searchPhrases: ["voeding of supplement", "supplement of eten", "vitamines uit eten of capsule"],
+  },
+  uitgangsstatus: {
+    coverAlt:
+      "Houten keukentafel met sla, paprika, tomaten en avocado in zacht daglicht — wat je al binnenkrijgt bepaalt je uitgangsstatus",
+    coverCaption:
+      "Wat je al eet en drinkt bepaalt hoeveel een supplement nog kan toevoegen.",
+    coverTitle: "Uitgangsstatus: waarom een supplement niet bij iedereen even goed werkt",
+    inlineAlt:
+      "Schematisch: twee balken, bij een lage startstand is er veel ruimte om aan te vullen en bij een hoge startstand weinig",
+    inlineCaption:
+      "Dezelfde extra dosis heeft meer te winnen als je laag begint dan als je al voldoende binnenkrijgt.",
+    searchPhrases: ["werkt supplement niet", "supplement bij tekort", "waarom werkt mijn supplement niet"],
+  },
   "opbouwtijd-supplement": {
     coverAlt:
-      "Staafgrafiek van de opbouwtijd in dagen: creatine 6 dagen bij 20 g en 28 dagen bij 3 g, EPA in serum 4 tot 8 weken, EPA in rode bloedcellen circa 180 dagen",
+      "Jong groen kiemplantje in donkere grond — een supplement bouwt zijn niveau stap voor stap op",
     coverCaption:
       "Creatine, omega-3 en vitamine D hebben elk een eigen opbouwtijd: van dagen tot maanden, afhankelijk van waar je meet.",
     coverTitle: "Waarom een supplement weken duurt",

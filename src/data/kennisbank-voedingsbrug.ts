@@ -26,6 +26,14 @@ const VOEDING_BRUGGEN: Record<string, VoedingBrug> = {
     hook: 'Die verhouding zit zelden in één product, maar in wat je elke dag eet. Zie waar jij uitkomt.',
     bronnen: ['peulvruchten', 'groente', 'banaan', 'avocado', 'aardappel'],
   },
+  'voeding-versus-capsule': {
+    groep: 'A',
+    hook: 'Een capsule vult aan, ze vervangt je bord niet. De check laat zien wat jouw bord al levert.',
+  },
+  uitgangsstatus: {
+    groep: 'A',
+    hook: 'Je uitgangsstatus is wat je bord al levert. De check laat zien waar jij staat.',
+  },
   'opbouwtijd-supplement': {
     groep: 'A',
     hook: 'Hoe ver je al bent, hangt af van wat je al binnenkrijgt. De check laat zien wat jouw bord levert.',

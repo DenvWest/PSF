@@ -1375,8 +1375,8 @@ Wat het níet betekent: dat je leucine of BCAA's los moet bijkopen. Een eiwitrij
     theme: 'supplementwetenschap',
     shortDefinition:
       'De tijd die een stof nodig heeft om in je lichaam een stabiel niveau te bereiken — bij sommige supplementen weken, bij andere maanden.',
-    coverImage: '/images/kennisbank/opbouwtijd-supplement-grafiek.jpg',
-    coverImageAlt: "Staafgrafiek van de opbouwtijd in dagen: creatine 6 dagen bij 20 g en 28 dagen bij 3 g, EPA in serum 4 tot 8 weken, EPA in rode bloedcellen circa 180 dagen",
+    coverImage: '/images/kennisbank/opbouwtijd-supplement-foto.jpg',
+    coverImageAlt: "Jong groen kiemplantje in donkere grond — een supplement bouwt zijn niveau stap voor stap op",
     content: {
       whatIsIt: `Veel supplementen doen weinig zolang hun niveau in je lichaam nog niet is opgebouwd. Elke dosis komt bovenop wat er nog over is van de vorige. Het niveau stijgt tot wat je binnenkrijgt gelijk is aan wat je lichaam afvoert, of tot het weefsel vol is. Dat kost vaak weken, geen dagen.
 
@@ -1394,9 +1394,9 @@ Dit zijn gemiddelden uit kleine onderzoeken, alle onder mannen. Hoe snel het bij
 
 Opbouw is bovendien een voorwaarde en geen bewijs van effect. In de grote VITAL-studie (25.871 mensen, 2.000 IE vitamine D en 1 gram omega-3 per dag, ongeveer vijf jaar) verlaagde geen van beide het aantal gevallen van kanker of grote hart- en vaatziekten. Alleen het aantal hartinfarcten was bij omega-3 lager, een secundaire uitkomst, vooral bij mensen die weinig vis aten.
 
-Dat laatste raakt de kern: wat je al binnenkrijgt bepaalt hoe ver je al bent. Daarom begint de keuze voor een supplement bij je bord.`,
+Dat laatste raakt de kern: wat je al binnenkrijgt bepaalt hoe ver je al bent. Daarom begint de keuze voor een supplement bij je bord. Hoe groot de winst nog kan zijn, hangt af van je [uitgangsstatus](/kennisbank/uitgangsstatus).`,
     },
-    relatedSlugs: ['biobeschikbaarheid', 'epa-dha', 'vitamine-d', 'onderzoeksdosis'],
+    relatedSlugs: ['uitgangsstatus', 'biobeschikbaarheid', 'epa-dha', 'vitamine-d', 'onderzoeksdosis'],
     relatedComparisons: ['/beste/creatine', '/beste/omega-3-supplement', '/beste/vitamine-d'],
     metaTitle: 'Opbouwtijd van een supplement: waarom het weken duurt',
     metaDescription:
@@ -1409,6 +1409,81 @@ Dat laatste raakt de kern: wat je al binnenkrijgt bepaalt hoe ver je al bent. Da
       'Heaney RP, Davies KM, Chen TC, Holick MF, Barger-Lux MJ. Human serum 25-hydroxycholecalciferol response to extended oral dosing with cholecalciferol. Am J Clin Nutr. 2003;77(1):204-210.',
       'Manson JE, Cook NR, Lee IM, et al. Vitamin D supplements and prevention of cancer and cardiovascular disease. N Engl J Med. 2019;380(1):33-44.',
       'Manson JE, Cook NR, Lee IM, et al. Marine n-3 fatty acids and prevention of cardiovascular disease and cancer. N Engl J Med. 2019;380(1):23-32.',
+    ]),
+  },
+  {
+    slug: 'uitgangsstatus',
+    insightTier: 1,
+    term: 'Uitgangsstatus',
+    theme: 'supplementwetenschap',
+    shortDefinition:
+      'Wat je lichaam al heeft of binnenkrijgt voordat je een supplement begint — en daarmee hoeveel een supplement nog kan toevoegen.',
+    coverImage: '/images/kennisbank/uitgangsstatus-foto.jpg',
+    coverImageAlt: "Houten keukentafel met sla, paprika, tomaten en avocado in zacht daglicht — wat je al binnenkrijgt bepaalt je uitgangsstatus",
+    content: {
+      whatIsIt: `Je uitgangsstatus is waar je mee begint: hoeveel van een stof je lichaam al heeft, grotendeels door wat je eet. Dat bepaalt hoeveel een supplement nog kan toevoegen.
+
+De respons op een voedingsstof volgt meestal een S-vormige curve. Zit je in het tekort, dan levert extra inname veel op. Zit je in het voldoende bereik, dan levert meer nauwelijks nog iets op (Heaney 2014). Hetzelfde supplement kan dus bij de één veel doen en bij de ander weinig, zonder dat het product verschilt.`,
+      howItWorks: `Drie voorbeelden uit onderzoek:
+
+Creatine. In een onderzoek met 18 vegetariërs en 24 niet-vegetariërs, allen acht weken krachttraining, lag het creatinegehalte in de spier bij vegetariërs lager (117 tegen 130 mmol/kg). Vegetariërs die creatine namen, kregen een grotere stijging van creatine in de spier, van magere massa en van werkprestatie dan niet-vegetariërs die creatine namen (Burke 2003).
+
+Omega-3. In de VITAL-studie (25.871 mensen, 1 gram omega-3 per dag, gemiddeld 5,3 jaar) was het aantal hartinfarcten lager (HR 0,72), een secundaire uitkomst. Bij mensen die weinig vis aten leek dat effect groter, al zijn dit subgroepanalyses en dus voorzichtiger te lezen (Manson 2019).
+
+IJzer. In onderzoek bij vrouwen zonder bloedarmoede maar met onverklaarde vermoeidheid nam de vermoeidheid na ijzer af, maar dat effect lijkt beperkt tot vrouwen met een lage of grenswaarde ferritine (Verdon 2003, Vaucher 2012). Of dat bij jou speelt, weet je alleen door te meten.`,
+      whyItMatters: `Daarom is "werkt het?" geen ja-of-nee-vraag. Een grote studie onder mensen zonder bekende ziekte (VITAL) vond voor vitamine D en omega-3 geen effect op de hoofduitkomsten. Dat zegt iets over die groep als geheel, niet over iedereen daarin.
+
+Voor jou betekent het: weet eerst wat je binnenkrijgt. Dat is wat de check doet. Voor sommige stoffen, zoals ijzer en vitamine D, bestaat een bloedtest; die laat je met je huisarts doen. Hoe lang een stof daarna nodig heeft om op niveau te komen, staat onder [opbouwtijd van een supplement](/kennisbank/opbouwtijd-supplement). Wat een etiket bedoelt met de ADH lees je onder [ADH](/kennisbank/adh). Of je een tekort beter met eten of met een capsule aanvult, staat onder [voeding of capsule](/kennisbank/voeding-versus-capsule).`,
+    },
+    relatedSlugs: ['opbouwtijd-supplement', 'biobeschikbaarheid', 'adh', 'onderzoeksdosis'],
+    relatedComparisons: ['/beste/creatine', '/beste/omega-3-supplement', '/beste/vitamine-d'],
+    metaTitle: 'Uitgangsstatus: waarom een supplement niet bij iedereen werkt',
+    metaDescription:
+      'Waarom hetzelfde supplement bij de één veel doet en bij de ander weinig: de rol van wat je al binnenkrijgt, met voorbeelden bij creatine, omega-3 en ijzer.',
+    laatstBijgewerktOp: '2026-10-09',
+    referenties: toRefs([
+      'Heaney RP. Guidelines for optimizing design and analysis of clinical studies of nutrient effects. Nutr Rev. 2014;72(1):48-54.',
+      'Burke DG, Chilibeck PD, Parise G, Candow DG, Mahoney D, Tarnopolsky M. Effect of creatine and weight training on muscle creatine and performance in vegetarians. Med Sci Sports Exerc. 2003;35(11):1946-1955.',
+      'Manson JE, Cook NR, Lee IM, et al. Marine n-3 fatty acids and prevention of cardiovascular disease and cancer. N Engl J Med. 2019;380(1):23-32.',
+      'Manson JE, Cook NR, Lee IM, et al. Vitamin D supplements and prevention of cancer and cardiovascular disease. N Engl J Med. 2019;380(1):33-44.',
+      'Verdon F, Burnand B, Stubi CL, et al. Iron supplementation for unexplained fatigue in non-anaemic women: double blind randomised placebo controlled trial. BMJ. 2003;326(7399):1124.',
+      'Vaucher P, Druais PL, Waldvogel S, Favrat B. Effect of iron supplementation on fatigue in nonanemic menstruating women with low ferritin: a randomized controlled trial. CMAJ. 2012;184(11):1247-1254.',
+    ]),
+  },
+  {
+    slug: 'voeding-versus-capsule',
+    insightTier: 1,
+    term: 'Voeding of capsule',
+    theme: 'supplementwetenschap',
+    shortDefinition:
+      'Eten en een capsule leveren niet hetzelfde: een bord levert veel stoffen tegelijk, een capsule meestal één of een paar in een vaste dosis.',
+    coverImage: '/images/kennisbank/voeding-versus-capsule-foto.jpg',
+    coverImageAlt: "Gegrilde zalm met broccoli op een bord aan een houten tafel — voeding levert meer dan één stof tegelijk",
+    content: {
+      whatIsIt: `Een bord eten levert veel stoffen tegelijk, in een vorm die je lichaam kent. Een capsule levert meestal één of een paar stoffen, in een afgemeten dosis.
+
+De vraag is daarom niet "wat is beter?", maar "wat mis ik, en waarmee vul ik dat het best aan?". Soms is dat een ander bord. Soms is een capsule logisch.`,
+      howItWorks: `Drie dingen om te weten:
+
+Dezelfde stof kan in een andere vorm anders werken. In een onderzoek met 150 mensen kreeg de ene groep omega-3 in triglyceridevorm en de andere in ethylestervorm. Na 6 maanden was de omega-3-index (het omega-3-gehalte in je rode bloedcellen) 197% hoger met de triglyceridevorm en 171% hoger met de ethylestervorm (Neubronner 2011). Wat op het etiket staat, zegt dus niet alles.
+
+Eten levert meer dan één stof. Een stuk vette vis geeft eiwit, vitamine D en omega-3 tegelijk. Een capsule geeft alleen wat erop staat. Bij eiwit maakt het weinig uit waar het vandaan komt: dezelfde gram uit kwark, ei of vis levert dezelfde bouwstenen, zie [wei-eiwit](/kennisbank/wei-eiwit).
+
+Soms is eten niet genoeg. Voor vitamine D levert voeding meestal te weinig, en de huid maakt het in Nederland maar een deel van het jaar aan (zie [vitamine D](/kennisbank/vitamine-d)). Daarom adviseren de Gezondheidsraad en het Voedingscentrum een supplement voor bepaalde groepen, zoals kinderen tot 4 jaar, vrouwen vanaf 50, mensen vanaf 70 en mensen met een donkere huid.`,
+      whyItMatters: `Een capsule vult aan, ze vervangt je bord niet. Daarom begint de keuze bij wat je al eet: dat is je [uitgangsstatus](/kennisbank/uitgangsstatus). De check laat zien welke voedingsstoffen je waarschijnlijk mist. Pas daarna kun je kiezen: iets anders eten, of een supplement.`,
+    },
+    relatedSlugs: ['uitgangsstatus', 'opbouwtijd-supplement', 'biobeschikbaarheid', 'wei-eiwit'],
+    relatedComparisons: ['/beste/omega-3-supplement', '/beste/vitamine-d'],
+    metaTitle: 'Voeding of capsule: wat is het verschil?',
+    metaDescription:
+      'Eten en een capsule leveren niet hetzelfde. Wat het verschil is, wanneer een supplement zin heeft en waarom je bij je bord begint.',
+    laatstBijgewerktOp: '2026-10-09',
+    referenties: toRefs([
+      'Neubronner J, Schuchardt JP, Kressel G, Merkel M, von Schacky C, Hahn A. Enhanced increase of omega-3 index in response to long-term n-3 fatty acid supplementation from triacylglycerides versus ethyl esters. Eur J Clin Nutr. 2011;65(2):247-254.',
+      'Gezondheidsraad. Evaluatie van de voedingsnormen voor vitamine D. Den Haag: Gezondheidsraad; 2012. Publicatienr. 2012/15.',
+      'Voedingscentrum. Vitamine D: voedingsnormen en suppletieadviezen (basisartikel voor professionals).',
+      'Wolfe RR. Branched-chain amino acids and muscle protein synthesis in humans: myth or reality? J Int Soc Sports Nutr. 2017;14:30.',
+      'Khanna T, Shraim R, Zarkovic M, van Weele M, van Geffen J, Zgaga L. Comprehensive analysis of seasonal and geographical variation in UVB radiation relevant for vitamin D production in Europe. Nutrients. 2022;14(23):5189.',
     ]),
   },
 ]

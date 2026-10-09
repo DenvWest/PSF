@@ -599,6 +599,20 @@ const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "Water en hydratatie — ADH als referentie voor vitamines en mineralen",
     "ADH (antidiuretisch hormoon) regelt hoeveel water de nieren vasthouden — relevant bij dorst en nachtelijke toiletbezoeken.",
   ),
+  "voeding-versus-capsule": img(
+    "kennisbank",
+    "voeding-versus-capsule",
+    "Saladekom van boven met sla, paprika en tomaat — een bord levert meerdere voedingsstoffen tegelijk",
+    "Eerst weten wat je bord al levert, dan pas kiezen of een capsule iets toevoegt.",
+    "voeding-versus-capsule-v1",
+  ),
+  uitgangsstatus: img(
+    "kennisbank",
+    "uitgangsstatus",
+    "Schematisch: twee balken, bij een lage startstand is er veel ruimte om aan te vullen en bij een hoge startstand weinig",
+    "Dezelfde extra dosis heeft meer te winnen als je laag begint dan als je al voldoende binnenkrijgt.",
+    "uitgangsstatus-v1",
+  ),
   "opbouwtijd-supplement": img(
     "kennisbank",
     "opbouwtijd-supplement",

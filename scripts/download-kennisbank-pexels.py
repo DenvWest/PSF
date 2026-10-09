@@ -43,6 +43,9 @@ COVERS: dict[str, int] = {
     "scoregewichten": 8329286,  # measured herbs on wooden spoons
     "wei-eiwit": 8963368,  # milk and eggs
     "leucinedrempel": 1211887,  # feta salad (protein meal)
+    "opbouwtijd-supplement-foto": 1251026,  # seedling in dark soil
+    "uitgangsstatus-foto": 6653621,  # kitchen table with vegetables
+    "voeding-versus-capsule-foto": 39193006,  # grilled salmon plate
     "mitochondrien": 371589,  # alpine lake, no person
     "efsa-claims": 590493,  # library lights, spines unreadable
     "biobeschikbaarheid": 1327838,  # tomatoes
@@ -60,6 +63,7 @@ COVERS: dict[str, int] = {
 }
 
 INLINES: dict[str, int] = {
+    "voeding-versus-capsule-v1": 17303318,  # salad bowl from above
     "biobeschikbaarheid": 1028599,  # citrus
     "chelaatvorm": 4033325,  # almonds (mineral-rich food)
     "adaptogens": 6694167,  # chamomile + lavender spoons
