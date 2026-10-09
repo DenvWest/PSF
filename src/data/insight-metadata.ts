@@ -352,6 +352,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   adh: { theme: "nutrition" },
   "opbouwtijd-supplement": { theme: "nutrition" },
   uitgangsstatus: { theme: "nutrition" },
+  "voeding-versus-capsule": { theme: "nutrition" },
   atp: { theme: "movement" },
   biobeschikbaarheid: { theme: "nutrition" },
   chelaatvorm: { theme: "nutrition", nutrients: ["magnesium", "zinc"] },

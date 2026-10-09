@@ -92,6 +92,18 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "De ADH op een potje is vaak lager dan wat studies gebruiken; voor effect kijk je naar onderzoeksdoses en status.",
     searchPhrases: ["adh supplement", "aanbevolen dagelijkse hoeveelheid", "adh vitamine d"],
   },
+  "voeding-versus-capsule": {
+    coverAlt:
+      "Gegrilde zalm met broccoli op een bord aan een houten tafel — voeding levert meer dan één stof tegelijk",
+    coverCaption:
+      "Een bord levert meerdere stoffen tegelijk; een capsule vult aan wat je mist.",
+    coverTitle: "Voeding of capsule: wat is het verschil?",
+    inlineAlt:
+      "Saladekom van boven met sla, paprika en tomaat — een bord levert meerdere voedingsstoffen tegelijk",
+    inlineCaption:
+      "Eerst weten wat je bord al levert, dan pas kiezen of een capsule iets toevoegt.",
+    searchPhrases: ["voeding of supplement", "supplement of eten", "vitamines uit eten of capsule"],
+  },
   uitgangsstatus: {
     coverAlt:
       "Houten keukentafel met sla, paprika, tomaten en avocado in zacht daglicht — wat je al binnenkrijgt bepaalt je uitgangsstatus",

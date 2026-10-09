@@ -60,6 +60,7 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   "eiwitbehoefte-na-40": "voeding",
   "opbouwtijd-supplement": "voeding",
   uitgangsstatus: "voeding",
+  "voeding-versus-capsule": "voeding",
   "nervus-vagus": "stress",
   slaapschuld: "slaap",
   adaptogens: "stress",

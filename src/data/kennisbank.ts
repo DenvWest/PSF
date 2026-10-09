@@ -1433,7 +1433,7 @@ Omega-3. In de VITAL-studie (25.871 mensen, 1 gram omega-3 per dag, gemiddeld 5,
 IJzer. In onderzoek bij vrouwen zonder bloedarmoede maar met onverklaarde vermoeidheid nam de vermoeidheid na ijzer af, maar dat effect lijkt beperkt tot vrouwen met een lage of grenswaarde ferritine (Verdon 2003, Vaucher 2012). Of dat bij jou speelt, weet je alleen door te meten.`,
       whyItMatters: `Daarom is "werkt het?" geen ja-of-nee-vraag. Een grote studie onder mensen zonder bekende ziekte (VITAL) vond voor vitamine D en omega-3 geen effect op de hoofduitkomsten. Dat zegt iets over die groep als geheel, niet over iedereen daarin.
 
-Voor jou betekent het: weet eerst wat je binnenkrijgt. Dat is wat de check doet. Voor sommige stoffen, zoals ijzer en vitamine D, bestaat een bloedtest; die laat je met je huisarts doen. Hoe lang een stof daarna nodig heeft om op niveau te komen, staat onder [opbouwtijd van een supplement](/kennisbank/opbouwtijd-supplement). Wat een etiket bedoelt met de ADH lees je onder [ADH](/kennisbank/adh).`,
+Voor jou betekent het: weet eerst wat je binnenkrijgt. Dat is wat de check doet. Voor sommige stoffen, zoals ijzer en vitamine D, bestaat een bloedtest; die laat je met je huisarts doen. Hoe lang een stof daarna nodig heeft om op niveau te komen, staat onder [opbouwtijd van een supplement](/kennisbank/opbouwtijd-supplement). Wat een etiket bedoelt met de ADH lees je onder [ADH](/kennisbank/adh). Of je een tekort beter met eten of met een capsule aanvult, staat onder [voeding of capsule](/kennisbank/voeding-versus-capsule).`,
     },
     relatedSlugs: ['opbouwtijd-supplement', 'biobeschikbaarheid', 'adh', 'onderzoeksdosis'],
     relatedComparisons: ['/beste/creatine', '/beste/omega-3-supplement', '/beste/vitamine-d'],
@@ -1448,6 +1448,42 @@ Voor jou betekent het: weet eerst wat je binnenkrijgt. Dat is wat de check doet.
       'Manson JE, Cook NR, Lee IM, et al. Vitamin D supplements and prevention of cancer and cardiovascular disease. N Engl J Med. 2019;380(1):33-44.',
       'Verdon F, Burnand B, Stubi CL, et al. Iron supplementation for unexplained fatigue in non-anaemic women: double blind randomised placebo controlled trial. BMJ. 2003;326(7399):1124.',
       'Vaucher P, Druais PL, Waldvogel S, Favrat B. Effect of iron supplementation on fatigue in nonanemic menstruating women with low ferritin: a randomized controlled trial. CMAJ. 2012;184(11):1247-1254.',
+    ]),
+  },
+  {
+    slug: 'voeding-versus-capsule',
+    insightTier: 1,
+    term: 'Voeding of capsule',
+    theme: 'supplementwetenschap',
+    shortDefinition:
+      'Eten en een capsule leveren niet hetzelfde: een bord levert veel stoffen tegelijk, een capsule meestal één of een paar in een vaste dosis.',
+    coverImage: '/images/kennisbank/voeding-versus-capsule-foto.jpg',
+    coverImageAlt: "Gegrilde zalm met broccoli op een bord aan een houten tafel — voeding levert meer dan één stof tegelijk",
+    content: {
+      whatIsIt: `Een bord eten levert veel stoffen tegelijk, in een vorm die je lichaam kent. Een capsule levert meestal één of een paar stoffen, in een afgemeten dosis.
+
+De vraag is daarom niet "wat is beter?", maar "wat mis ik, en waarmee vul ik dat het best aan?". Soms is dat een ander bord. Soms is een capsule logisch.`,
+      howItWorks: `Drie dingen om te weten:
+
+Dezelfde stof kan in een andere vorm anders werken. In een onderzoek met 150 mensen kreeg de ene groep omega-3 in triglyceridevorm en de andere in ethylestervorm. Na 6 maanden was de omega-3-index (het omega-3-gehalte in je rode bloedcellen) 197% hoger met de triglyceridevorm en 171% hoger met de ethylestervorm (Neubronner 2011). Wat op het etiket staat, zegt dus niet alles.
+
+Eten levert meer dan één stof. Een stuk vette vis geeft eiwit, vitamine D en omega-3 tegelijk. Een capsule geeft alleen wat erop staat. Bij eiwit maakt het weinig uit waar het vandaan komt: dezelfde gram uit kwark, ei of vis levert dezelfde bouwstenen, zie [wei-eiwit](/kennisbank/wei-eiwit).
+
+Soms is eten niet genoeg. Voor vitamine D levert voeding meestal te weinig, en de huid maakt het in Nederland maar een deel van het jaar aan (zie [vitamine D](/kennisbank/vitamine-d)). Daarom adviseren de Gezondheidsraad en het Voedingscentrum een supplement voor bepaalde groepen, zoals kinderen tot 4 jaar, vrouwen vanaf 50, mensen vanaf 70 en mensen met een donkere huid.`,
+      whyItMatters: `Een capsule vult aan, ze vervangt je bord niet. Daarom begint de keuze bij wat je al eet: dat is je [uitgangsstatus](/kennisbank/uitgangsstatus). De check laat zien welke voedingsstoffen je waarschijnlijk mist. Pas daarna kun je kiezen: iets anders eten, of een supplement.`,
+    },
+    relatedSlugs: ['uitgangsstatus', 'opbouwtijd-supplement', 'biobeschikbaarheid', 'wei-eiwit'],
+    relatedComparisons: ['/beste/omega-3-supplement', '/beste/vitamine-d'],
+    metaTitle: 'Voeding of capsule: wat is het verschil?',
+    metaDescription:
+      'Eten en een capsule leveren niet hetzelfde. Wat het verschil is, wanneer een supplement zin heeft en waarom je bij je bord begint.',
+    laatstBijgewerktOp: '2026-10-09',
+    referenties: toRefs([
+      'Neubronner J, Schuchardt JP, Kressel G, Merkel M, von Schacky C, Hahn A. Enhanced increase of omega-3 index in response to long-term n-3 fatty acid supplementation from triacylglycerides versus ethyl esters. Eur J Clin Nutr. 2011;65(2):247-254.',
+      'Gezondheidsraad. Evaluatie van de voedingsnormen voor vitamine D. Den Haag: Gezondheidsraad; 2012. Publicatienr. 2012/15.',
+      'Voedingscentrum. Vitamine D: voedingsnormen en suppletieadviezen (basisartikel voor professionals).',
+      'Wolfe RR. Branched-chain amino acids and muscle protein synthesis in humans: myth or reality? J Int Soc Sports Nutr. 2017;14:30.',
+      'Khanna T, Shraim R, Zarkovic M, van Weele M, van Geffen J, Zgaga L. Comprehensive analysis of seasonal and geographical variation in UVB radiation relevant for vitamin D production in Europe. Nutrients. 2022;14(23):5189.',
     ]),
   },
 ]

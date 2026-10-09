@@ -58,6 +58,8 @@ Pexels License (vrij commercieel gebruik). ID = `pexels-photo-{id}`.
 | vitamine-k2.jpg | 4109944 | kazen |
 | opbouwtijd-supplement-foto.jpg | 1251026 | kiemplantje in donkere grond |
 | uitgangsstatus-foto.jpg | 6653621 | keukentafel met groenten |
+| voeding-versus-capsule-foto.jpg | 39193006 | zalmschotel met broccoli |
+| inline/voeding-versus-capsule-v1.jpg | 17303318 | saladekom van boven |
 | thema-lichaam-veroudering.jpg | 414171 | berglandschap |
 | thema-leefstijl-herstel.jpg | 8017404 | onopgemaakt bed |
 | thema-ps-score.jpg | 6690217 | thee en notitieboek |
