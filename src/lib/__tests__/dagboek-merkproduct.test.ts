@@ -32,6 +32,8 @@ function keuzeProduct(over: Partial<KeuzeProduct> = {}): KeuzeProduct {
     eenheid: "µg",
     centenPerDag: 5,
     claimStance: "toegestaan" as KeuzeProduct["claimStance"],
+    imageSrc: null,
+    imageAlt: "",
     ...over,
   };
 }

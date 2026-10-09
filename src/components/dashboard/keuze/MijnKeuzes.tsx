@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 import { kortGetal, STAND_KLEUR, STAND_KORT } from "@/components/dashboard/keuze/KeuzeVergelijken";
@@ -478,10 +479,24 @@ function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () =>
 
   return (
     <Kant kleur="accent-2" titel="Uit een supplement">
-      <p className="m-0 text-[0.8125rem] font-semibold text-[var(--vd-ink)]">{product.naam}</p>
-      <p className="m-0 text-[0.6875rem] text-[var(--vd-ink-3)]">
-        {[product.vorm, etiket, `PS-Score ${product.score}`].filter(Boolean).join(" · ")}
-      </p>
+      <div className="flex items-center gap-2.5">
+        {product.imageSrc ? (
+          <Image
+            src={product.imageSrc}
+            alt={product.imageAlt}
+            width={112}
+            height={112}
+            loading="lazy"
+            className="h-14 w-14 shrink-0 rounded-md bg-white object-contain p-0.5"
+          />
+        ) : null}
+        <div className="min-w-0">
+          <p className="m-0 text-[0.8125rem] font-semibold text-[var(--vd-ink)]">{product.naam}</p>
+          <p className="m-0 text-[0.6875rem] text-[var(--vd-ink-3)]">
+            {[product.vorm, etiket, `PS-Score ${product.score}`].filter(Boolean).join(" · ")}
+          </p>
+        </div>
+      </div>
       {product.centenPerDag !== null ? (
         <p className="m-0 mt-1 text-[0.75rem] font-semibold text-[var(--vd-ink)]">
           {euroPerDag(product.centenPerDag)} per dag
