@@ -54,15 +54,7 @@ a{color:inherit}
 .domchips span,.domchips b{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--vd-line);font-size:.78rem;font-weight:600;color:var(--vd-ink-2)}
 .domchips b{border-color:var(--vd-sage);background:var(--vd-sage-fill);color:var(--vd-sage-2)}
 .dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block;flex:none}
-@container frame (min-width:720px){
-  .body{grid-template-columns:96px minmax(0,1fr)}
-  .rail{display:flex;flex-direction:column;gap:6px;padding:16px 10px;border-right:1px solid var(--vd-line)}
-  .rail span,.rail b{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border-radius:12px;font-size:.68rem;font-weight:600;color:var(--vd-ink-3);text-align:center}
-  .rail b{background:var(--vd-sage-fill);color:var(--vd-sage-2)}
-  .rail i{width:8px;height:8px;border-radius:50%;background:currentColor}
-  .domchips{display:none}
-}
-.main{padding:14px 16px 112px;min-width:0}
+.main{padding:14px 16px 24px;min-width:0}
 @container frame (min-width:720px){.main{padding:22px 28px 40px}}
 
 /* Binnen de tab: alles op de breedte van de tab-inhoud */
@@ -90,7 +82,7 @@ a{color:inherit}
 .lead{margin:0;color:var(--vd-ink-2);font-size:.9rem;text-wrap:pretty}
 .lead b{color:var(--vd-ink);font-weight:600}
 .meter{margin-top:2px}
-.meter .row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px}
+.meter .row{gap:4px 12px;flex-wrap:wrap;display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px}
 .big{font:500 1.9rem/1 var(--f-mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .big small{font-size:.8rem;color:var(--vd-ink-3);font-weight:400}
 .bar{position:relative;height:16px;border-radius:999px;background:var(--vd-track);overflow:visible}
@@ -218,6 +210,58 @@ details.quiet summary::-webkit-details-marker{display:none}
 .teaser h3{font:400 1.2rem var(--f-serif);margin:0}.teaser p{margin:0;font-size:.84rem;color:var(--vd-ink-2)}
 .tag{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid var(--vd-line-2);color:var(--vd-ink-3);width:max-content}
 
+
+/* v2: beste-voor-jou + compacte rijen + lade */
+.picks{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+@container keuze (min-width:640px){.picks{grid-template-columns:1fr 1fr}}
+.pick{border:1px solid var(--vd-line);border-radius:18px;background:var(--vd-surface);padding:14px;display:grid;grid-template-columns:84px minmax(0,1fr);gap:4px 14px;align-items:start;transition:border-color .2s,box-shadow .2s}
+.pick.e{border-top:3px solid var(--vd-sage)}.pick.s{border-top:3px solid var(--vd-accent-2)}
+.pick[data-on=true]{box-shadow:0 0 0 1px currentColor}
+.pick.e[data-on=true]{border-color:var(--vd-sage);box-shadow:0 0 0 1px var(--vd-sage)}.pick.s[data-on=true]{border-color:var(--vd-accent-2);box-shadow:0 0 0 1px var(--vd-accent-2)}
+.pick .media{width:84px;height:84px;border-radius:14px;background:#fff;display:grid;place-items:center;overflow:hidden;grid-row:1/3}
+.pick .media img{width:100%;height:100%;object-fit:contain;padding:4px}
+.pick .media.f{background:var(--vd-sage-fill);color:var(--vd-sage-2)}
+.pick .pk{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.pick.e .pk{color:var(--vd-sage-2)}.pick.s .pk{color:var(--vd-accent-2)}
+.pick h4{margin:2px 0 0;font-size:1rem;font-weight:600;line-height:1.25}
+.pick .why{margin:4px 0 0;font-size:.76rem;color:var(--vd-ink-2)}
+.pick .nums{display:flex;gap:14px;align-items:baseline;margin-top:6px;font:500 1.05rem var(--f-mono);font-variant-numeric:tabular-nums}
+.pick .nums small{font:400 .68rem var(--f-sans);color:var(--vd-ink-3);margin-left:3px}
+.pick .btn{grid-column:1/-1;margin-top:10px}
+.sub-h{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--vd-ink-3);font-weight:700;margin:22px 0 8px}
+.items{display:grid;gap:8px;grid-template-columns:minmax(0,1fr)}
+@container keuze (min-width:760px){.items.two{grid-template-columns:1fr 1fr}}
+.it{display:flex;align-items:center;gap:12px;padding:8px 8px 8px 10px;border:1px solid var(--vd-line);border-radius:14px;background:var(--vd-surface);transition:border-color .2s,background .2s}
+.it:hover{border-color:var(--vd-line-2)}
+.it[data-on=true]{background:var(--vd-surface-2)}
+.it.e[data-on=true]{border-color:var(--vd-sage)}.it.s[data-on=true]{border-color:var(--vd-accent-2)}
+.it .th{width:44px;height:44px;border-radius:11px;flex:none;background:#fff center/contain no-repeat;display:grid;place-items:center}
+.it .th.f{background:var(--vd-sage-fill);color:var(--vd-sage-2)}
+.it .t{min-width:0;flex:1}.it .t b{display:block;font-size:.86rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.it .t span{font-size:.7rem;color:var(--vd-ink-3)}
+.it .t .mini{margin-top:5px;max-width:120px}
+.it .num{font:500 .85rem var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;flex:none}
+.it .num small{display:block;font:400 .62rem var(--f-sans);color:var(--vd-ink-3)}
+.it .btn{min-height:44px;min-width:84px;padding:0 14px;font-size:.8rem;flex:none}
+.chosen{margin:12px 0 0;padding:10px 12px;border-radius:12px;background:var(--vd-bg);border:1px dashed var(--vd-line-2);font-size:.78rem;color:var(--vd-ink-2);min-height:40px}
+.chosen b{color:var(--vd-ink);font-weight:600}
+.dock{position:sticky;bottom:0;z-index:30;margin:18px -16px 0;background:#0D190Bf2;backdrop-filter:blur(10px);border-top:1px solid var(--vd-line-2)}
+@container frame (min-width:720px){.dock{margin:18px -28px 0}}
+.dock .bar2{display:flex;align-items:center;gap:12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+@container frame (min-width:720px){.dock .bar2{padding-left:28px;padding-right:28px}}
+.dock .tg{flex:1;min-width:0;text-align:left;background:transparent;border:0;padding:0;min-height:44px;display:flex;flex-direction:column;justify-content:center}
+.dock .tg span{font-size:.72rem;color:var(--vd-ink-3)}.dock .tg b{font:500 1rem var(--f-mono)}
+.dock .go{flex:none;padding:0 18px;border-color:var(--vd-sage);background:var(--vd-sage);color:#07130a}
+.panel{padding:6px 16px 4px;max-height:320px;overflow:auto;border-bottom:1px solid var(--vd-line)}
+@container frame (min-width:720px){.panel{padding:6px 28px 4px}}
+.panel .menu li{position:relative}
+.x{flex:none;width:44px;height:44px;border-radius:10px;border:0;background:transparent;color:var(--vd-ink-3);font-size:1.1rem}
+.x:hover{color:var(--vd-ink);background:var(--vd-surface-3)}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:var(--vd-surface-3);border:1px solid var(--vd-line-2);color:var(--vd-ink);padding:10px 16px;border-radius:12px;font-size:.82rem;z-index:99;transition:all .25s}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.bar .f{transition:width .35s}
+.pulse{animation:pulse .5s}@keyframes pulse{50%{transform:scale(1.04)}}
+
 /* ── Toelichting onder de schets ── */
 .notes{max-width:1100px;margin:0 auto;padding:10px 16px 80px;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
 .notes section{border:1px solid var(--vd-line);border-radius:16px;background:var(--vd-surface);padding:18px}
@@ -238,8 +282,8 @@ details.quiet summary::-webkit-details-marker{display:none}
     </div></div>
   <div class="grp"><span>Variant</span>
     <div class="seg" id="c-var" role="group" aria-label="Variant">
-      <button data-v="A" aria-pressed="false">A · hero + kaartjes</button>
-      <button data-v="B" aria-pressed="true">B · met zijkolom</button>
+      <button data-v="A" aria-pressed="true">A · keuzes-lade</button>
+      <button data-v="B" aria-pressed="false">B · met zijkolom</button>
     </div></div>
   <div class="grp"><span>Scherm</span>
     <div class="seg" id="c-scr" role="group" aria-label="Scherm">
@@ -254,16 +298,17 @@ details.quiet summary::-webkit-details-marker{display:none}
 </header>
 <p class="banner">Voorbeeldcijfers, geen echte gebruiker. Productnamen, scores, prijzen en foto's komen uit de echte catalogus (magnesium). Klik op "Kies" om de balk en de keuzes te zien meebewegen.</p>
 
+<div class="toast" id="toast" role="status"></div>
 <div class="stagewrap"><div class="stage" id="stage"><div class="frame" id="frame"><div class="app" id="app"></div></div></div></div>
 
 <div class="notes">
   <section>
     <h2>Wat verandert t.o.v. nu</h2>
     <ul>
-      <li><b>Eén hero per stof</b> met de stand en een balk <i>eten + supplement vs norm</i>: de keuze heeft meteen zichtbaar effect (gestreept = voorbeeld bij hover/keuze, vol = gekozen).</li>
+      <li><b>Eén hero per stof</b>, daaronder “Beste voor jou” (beste bron + hoogste PS-Score naast elkaar) en pas dan compacte rijen. Hero met de stand en een balk <i>eten + supplement vs norm</i>: de keuze heeft meteen zichtbaar effect (gestreept = voorbeeld bij hover/keuze, vol = gekozen).</li>
       <li><b>Productfoto groot, tekst klein</b>: score, etiket per dag en prijs per dag als vier feiten in plaats van drie alinea's.</li>
       <li><b>Eén primaire knop per kaart</b> (“Kies dit supplement”). Productpagina en winkels zijn secundair; geen affiliate-link in het dashboard.</li>
-      <li><b>Eten als scrollrij</b> met icoontegels per voedselgroep (geen stockfoto's), met het aandeel van je norm per portie.</li>
+      <li><b>Eten als compacte rijen</b> (geen hoge kaarten meer) met icoontegels per voedselgroep, aandeel van je norm per portie en één “Kies”-knop; de beste bron staat bovenaan in “Beste voor jou”.</li>
       <li><b>Mijn keuzes = je dag</b> in vier momenten (ontbijt/lunch/avond/tussendoor), zoals “Today's Menu”, met per stof een balk onder de dagtegels.</li>
     </ul>
   </section>
@@ -271,9 +316,9 @@ details.quiet summary::-webkit-details-marker{display:none}
     <h2>Drie breedtes, één bron</h2>
     <ul>
       <li>Alles reageert op de <b>breedte van de tab-inhoud</b> (<code>@container</code>), niet op het scherm — precies de regel uit CLAUDE.md.</li>
-      <li><b>375:</b> één kolom, chips + eten scrollen horizontaal, vaste onderbalk “Je keuzes · € / dag”, knoppen ≥ 44 px.</li>
-      <li><b>768:</b> rail links, hero in twee kolommen, 2 kaartjes naast elkaar, zijkolom nog niet (de onderbalk blijft).</li>
-      <li><b>1280:</b> variant B toont de zijkolom “Je keuzes vandaag” (sticky); de onderbalk verdwijnt. Variant A houdt de onderbalk.</li>
+      <li><b>375:</b> één kolom, alleen de stofchips scrollen horizontaal, vaste keuzes-lade onderaan (tik om uit te klappen, × om te verwijderen), knoppen ≥ 44 px.</li>
+      <li><b>768:</b> hero in twee kolommen, “beste voor jou” naast elkaar, compacte rijen in twee kolommen.</li>
+      <li><b>1280:</b> variant A (standaard) houdt de keuzes-lade onderaan; variant B toont de zijkolom. Er is geen domeinbalk meer: Keuze is één domein (voeding).</li>
     </ul>
   </section>
   <section>
@@ -322,88 +367,95 @@ const icon=(g,s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="
 const MOM=["ontbijt","lunch","avondeten","tussendoor"];
 const eur=c=>"€ "+(c/100).toFixed(2).replace(".",",");
 
-const S={dev:375,variant:"B",screen:"vergelijken",stand:"ruimte",
+const S={dev:375,variant:"A",lade:false,open:false,logged:{},screen:"vergelijken",stand:"ruimte",
   eten:{haver:"ontbijt"}, supp:null, suppMoment:"avondeten", hover:null};
 
 const HEIGHT={375:780,768:980,1280:820};
 
+const FOODV=()=>S.stand==="koers"?380:FOOD;
 function bar(preview){
   const sup = S.supp ? SUPP.find(x=>x.id===S.supp) : null;
   const pv = preview ? SUPP.find(x=>x.id===preview) : null;
-  const add = sup?.dos ?? 0, addP = (!sup && pv?.dos) ? pv.dos : 0;
+  const add = sup?.dos ?? 0, addP = (!sup && pv?.dos) ? pv.dos : 0, f=FOODV();
   const pct=v=>Math.min(100,v/MAX*100);
   return {sup,add,addP,html:`
-    <div class="bar" role="img" aria-label="Je eten ${FOOD} mg${add?`, plus supplement ${add} mg`:""}, norm ${NORM} mg">
-      <div class="f" style="width:${pct(FOOD)}%"></div>
-      ${add?`<div class="s" style="left:${pct(FOOD)}%;width:${pct(add)}%"></div>`:""}
-      ${addP?`<div class="s prev" style="left:${pct(FOOD)}%;width:${pct(addP)}%"></div>`:""}
+    <div class="bar" role="img" aria-label="Je eten ${f} mg${add?`, plus supplement ${add} mg`:""}, norm ${NORM} mg">
+      <div class="f" style="width:${pct(f)}%"></div>
+      ${add?`<div class="s" style="left:${pct(f)}%;width:${pct(add)}%"></div>`:""}
+      ${addP?`<div class="s prev" style="left:${pct(f)}%;width:${pct(addP)}%"></div>`:""}
       <div class="norm" style="left:${pct(NORM)}%"></div>
     </div>`};
 }
 
 function hero(){
-  const koers=S.stand==="koers";
-  const food = koers?380:FOOD;
-  const b=bar();
-  const tot=food+(koers?0:b.add);
+  const koers=S.stand==="koers", f=FOODV(), b=bar();
+  const tot=f+b.add;
+  const eten=Object.keys(S.eten).map(id=>FOODS.find(x=>x.id===id).n);
+  const gekozen=[...eten,...(b.sup?[b.sup.naam]:[])];
   return `<section class="hero" aria-label="Magnesium, stand">
     <div>
       <p class="eyebrow">Laatste 7 dagen · uit je dagboek</p>
       <h2>Magnesium</h2>
       <span class="chip ${koers?"koers":"ruimte"}"><span class="dot"></span>${koers?"Op je norm":"Ruimte"}</span>
       <p class="lead" style="margin-top:10px">${koers
-        ?`Je eten leverde gemiddeld <b>≈ 380 van je ${NORM} mg</b> per dag. Een supplement voegt hier weinig toe.`
-        :`Je eten leverde gemiddeld <b>≈ ${FOOD} van je ${NORM} mg</b> per dag. Er is ruimte: je kunt het met eten of met een supplement aanvullen.`}</p>
+        ?`Je eten leverde gemiddeld <b>≈ ${f} van je ${NORM} mg</b> per dag. Een supplement voegt hier weinig toe.`
+        :`Je eten leverde gemiddeld <b>≈ ${f} van je ${NORM} mg</b> per dag. Er is ruimte: vul aan met eten of met een supplement.`}</p>
     </div>
     <div class="meter">
-      <div class="row"><span class="big">${koers?380:tot}<small> / ${NORM} mg</small></span><span class="eyebrow" style="text-align:right">${b.add&&!koers?"minstens, met supplement":"minstens"}</span></div>
-      ${koers?`<div class="bar"><div class="f" style="width:${380/MAX*100}%"></div><div class="norm" style="left:${NORM/MAX*100}%"></div></div>`:b.html}
+      <div class="row"><span class="big">${tot}<small> / ${NORM} mg</small></span><span class="eyebrow" style="text-align:right">minstens${b.add?", met supplement":""}</span></div>
+      ${b.html}
       <p class="legend"><span><i style="background:var(--vd-sage)"></i>Uit je eten</span><span><i style="background:var(--vd-accent-2)"></i>Uit een supplement</span></p>
-      ${!koers&&b.add?`<p class="safe">Binnen de veilige bovengrens voor supplementen (250 mg).</p>`:""}
+      ${b.add?`<p class="safe">Binnen de veilige bovengrens voor supplementen (250 mg).</p>`:""}
+      <p class="chosen" aria-live="polite">${gekozen.length?`Jouw keuze: <b>${gekozen.join("</b> + <b>")}</b>`:"Nog niets gekozen. Kies hieronder een bron of een supplement."}</p>
     </div>
   </section>`;
 }
 
-function foods(){
-  return `<section class="sec e" aria-label="Uit je eten">
-    <div class="sechead"><div><p class="eyebrow">Uit je eten</p><h3>Rijkste bronnen per portie</h3></div><a href="#" onclick="return false">Meer in Je patroon →</a></div>
-    <div class="rail-h" tabindex="0" aria-label="Voedingsmiddelen, scroll horizontaal">
-      ${FOODS.map(f=>{const on=f.id in S.eten;return `<article class="food">
-        <span class="ic">${icon(f.g)}</span>
-        <div><h4>${f.n}</h4><p>${f.p}</p></div>
-        <div><span class="v">${f.mg}<small> mg · ${Math.round(f.mg/NORM*100)}% norm</small></span><div class="mini" style="margin-top:6px"><i style="width:${Math.min(100,f.mg/NORM*100)}%"></i></div></div>
-        <button class="btn sage sm" aria-pressed="${on}" data-act="eten" data-id="${f.id}">${on?"✓ In Mijn keuzes":"Kies"}</button>
-      </article>`}).join("")}
-    </div>
-  </section>`;
+const pctN=mg=>Math.round(mg/NORM*100);
+function picks(){
+  const f=FOODS[0], p=SUPP[0], fon=f.id in S.eten, pon=S.supp===p.id;
+  return `<section class="sec" aria-label="Beste voor jou">
+    <div class="sechead"><div><p class="eyebrow">Beste voor jou · magnesium</p><h3>Eén bron, één supplement</h3></div><a href="#" data-act="stub" data-msg="Opent /beste/magnesium met prijzen">Vergelijk op prijs →</a></div>
+    <div class="picks">
+      <article class="pick e" data-on="${fon}">
+        <span class="media f">${icon(f.g,34)}</span>
+        <div><span class="pk">Beste uit je eten</span><h4>${f.n}</h4>
+          <p class="why">${f.p} levert ${pctN(f.mg)}% van je norm. Past bij je voedingswijze.</p>
+          <div class="nums"><span>${f.mg}<small>mg</small></span><span>${pctN(f.mg)}%<small>norm</small></span></div></div>
+        <button class="btn sage" aria-pressed="${fon}" data-act="eten" data-id="${f.id}">${fon?"✓ In Mijn keuzes":"Kies deze bron"}</button>
+      </article>
+      <article class="pick s" data-on="${pon}" data-prev="${p.id}">
+        <a class="media" href="#" data-act="stub" data-msg="Opent de productpagina" aria-label="Productpagina ${p.naam}"><img src="${BASE}${p.img}" alt="${p.naam}" width="168" height="168"></a>
+        <div><span class="pk">Hoogste PS-Score</span><h4>${p.naam}</h4>
+          <p class="why">${p.vorm} · samen met je eten minstens <b style="color:var(--vd-ink)">${FOODV()+p.dos} van ${NORM} mg</b>.</p>
+          <div class="nums"><span>${p.score}<small>${p.band}</small></span><span>${eur(p.cent)}<small>per dag</small></span></div></div>
+        <button class="btn" aria-pressed="${pon}" data-act="supp" data-id="${p.id}">${pon?"✓ Mijn supplement":"Kies dit supplement"}</button>
+      </article>
+    </div></section>`;
 }
 
-function supps(){
+function lists(){
   const koers=S.stand==="koers";
-  const cards=`<div class="cards">${SUPP.map(p=>{const on=S.supp===p.id;
-    const sam = p.dos?`Samen met je eten minstens <b>${FOOD+p.dos} van ${NORM} mg</b>`:`Dosis per dag niet vast te stellen`;
-    return `<article class="card" data-on="${on}" data-prev="${p.id}">
-      <a class="ph" href="#" onclick="return false" aria-label="Productpagina ${p.naam}">
-        <img src="${BASE}${p.img}" alt="${p.naam}" width="320" height="240" loading="lazy">
-        ${p.top?'<span class="badge">Hoogste PS-Score</span>':""}
-      </a>
-      <div class="sc"><div>${p.top?'<span class="badge-in">Hoogste PS-Score</span>':""}<span class="vorm">${p.vorm}</span><h4>${p.naam}</h4></div><div class="score"><b>${p.score}</b><span>${p.band}</span></div></div>
-      <div class="in">
-        <dl class="facts"><div><dt>Per dag</dt><dd>${p.dos?p.dos+" mg":"—"}</dd></div><div><dt>Prijs per dag</dt><dd>${eur(p.cent)}</dd></div></dl>
-        <p class="sam">${sam}</p>
-        ${p.dos?`<p class="claim">EU-claim op stofniveau · dagdosis gehaald</p>`:""}
-        <div class="cta"><button class="btn" aria-pressed="${on}" data-act="supp" data-id="${p.id}">${on?"✓ Mijn supplement":"Kies dit supplement"}</button>
-        <a class="lnk" href="#" onclick="return false">Bekijk productpagina →</a></div>
-      </div></article>`}).join("")}</div>`;
-  const head=`<div class="sechead"><div><p class="eyebrow">Uit een supplement</p><h3>Per vorm de hoogste PS-Score</h3></div><a href="#" onclick="return false">Alle 3 met PS-Score →</a></div>`;
-  if(koers) return `<section class="sec s" aria-label="Uit een supplement">${head}<details class="quiet"><summary>Een supplement voegt hier weinig toe · toch bekijken <span aria-hidden="true">▾</span></summary><div style="margin-top:12px">${cards}</div></details></section>`;
-  return `<section class="sec s" aria-label="Uit een supplement">${head}${cards}</section>`;
+  const fl=`<div class="items two">${FOODS.slice(1).map(f=>{const on=f.id in S.eten;return `<div class="it e" data-on="${on}">
+      <span class="th f">${icon(f.g,22)}</span>
+      <span class="t"><b>${f.n}</b><span>${f.p}</span><div class="mini"><i style="width:${Math.min(100,pctN(f.mg))}%"></i></div></span>
+      <span class="num">${f.mg} mg<small>${pctN(f.mg)}% norm</small></span>
+      <button class="btn sage" aria-pressed="${on}" data-act="eten" data-id="${f.id}">${on?"✓ Gekozen":"Kies"}</button></div>`}).join("")}</div>`;
+  const sl=`<div class="items two">${SUPP.slice(1).map(p=>{const on=S.supp===p.id;return `<div class="it s" data-on="${on}" data-prev="${p.id}">
+      <a class="th" style="background-image:url(${BASE}${p.img})" href="#" data-act="stub" data-msg="Opent de productpagina" aria-label="${p.naam}"></a>
+      <span class="t"><b>${p.naam}</b><span>${p.vorm} · PS-Score ${p.score}</span></span>
+      <span class="num">${eur(p.cent)}<small>per dag</small></span>
+      <button class="btn" aria-pressed="${on}" data-act="supp" data-id="${p.id}">${on?"✓ Gekozen":"Kies"}</button></div>`}).join("")}</div>`;
+  const sup=`<p class="sub-h">Meer supplementen · hoogste PS-Score eerst</p>${sl}<p class="foot" style="margin-top:10px"><a href="#" data-act="stub" data-msg="Opent /supplementen?categorie=magnesium" style="color:var(--vd-accent-2);font-weight:600;text-decoration:none">Alle 3 met PS-Score →</a></p>`;
+  return `<section class="sec" aria-label="Meer opties"><p class="sub-h" style="margin-top:0">Meer uit je eten · rijkste bronnen per portie</p>${fl}
+    ${koers?`<details class="quiet" style="margin-top:18px" ${S.open?"open":""} data-det><summary>Een supplement voegt hier weinig toe · toch bekijken <span aria-hidden="true">▾</span></summary>${sup}</details>`:sup}</section>`;
 }
 
-function menuItems(){
+function menuItems(rm){
+  const x=(k,id)=>rm?`<button class="x" aria-label="Verwijder uit Mijn keuzes" data-act="rm" data-kind="${k}" data-id="${id}">×</button>`:"";
   const items=[];
-  for(const [id,m] of Object.entries(S.eten)){const f=FOODS.find(x=>x.id===id);items.push(`<li><span class="th f">${icon(f.g,20)}</span><span class="t"><b>${f.n}</b><span>Magnesium · ${m}</span></span><span class="p">${f.mg} mg</span></li>`)}
-  if(S.supp){const p=SUPP.find(x=>x.id===S.supp);items.push(`<li><span class="th" style="background-image:url(${BASE}${p.img})"></span><span class="t"><b>${p.naam}</b><span>Magnesium · ${S.suppMoment}</span></span><span class="p">${eur(p.cent)}</span></li>`)}
+  for(const [id,m] of Object.entries(S.eten)){const f=FOODS.find(y=>y.id===id);items.push(`<li><span class="th f">${icon(f.g,20)}</span><span class="t"><b>${f.n}</b><span>Magnesium · ${m}</span></span><span class="p">${f.mg} mg</span>${x("eten",id)}</li>`)}
+  if(S.supp){const p=SUPP.find(y=>y.id===S.supp);items.push(`<li><span class="th" style="background-image:url(${BASE}${p.img})"></span><span class="t"><b>${p.naam}</b><span>Magnesium · ${S.suppMoment}</span></span><span class="p">${eur(p.cent)}</span>${x("supp",p.id)}</li>`)}
   items.push(`<li><span class="th" style="background-image:url(${BASE}Mollers-Omega-3-Citroen.jpg)"></span><span class="t"><b>Möllers Omega-3</b><span>Omega-3 · ontbijt</span></span><span class="p">€ 0,41</span></li>`);
   return items.join("");
 }
@@ -412,28 +464,29 @@ const nKeuzes=()=>Object.keys(S.eten).length+(S.supp?1:0)+1;
 
 function side(){return `<aside class="side only-zij" aria-label="Je keuzes vandaag">
   <p class="eyebrow">Mijn keuzes</p><h3>Je keuzes vandaag</h3>
-  <ul class="menu">${menuItems()}</ul>
+  <ul class="menu">${menuItems(true)}</ul>
   <div class="tot"><span>Supplementen per dag<small>± ${eur(dayCents()*30)} per maand</small></span><b>${eur(dayCents())}</b></div>
   <button class="btn sage" data-act="naar" style="width:100%;background:var(--vd-sage);color:#07130a">Naar Mijn keuzes →</button>
 </aside>`}
-function bottom(){return `<div class="bottombar ${S.variant==="B"?"hide-wide":""}" role="region" aria-label="Je keuzes">
-  <span class="t">${nKeuzes()} keuzes<b>${eur(dayCents())} per dag</b></span>
-  <button class="btn" data-act="naar">Mijn keuzes →</button></div>`}
+function dock(){return `<div class="dock ${S.variant==="B"?"hide-wide":""}" role="region" aria-label="Je keuzes">
+  ${S.lade?`<div class="panel"><ul class="menu">${menuItems(true)}</ul></div>`:""}
+  <div class="bar2"><button class="tg" data-act="lade" aria-expanded="${S.lade}"><span>${nKeuzes()} keuzes · ${S.lade?"verberg ▾":"bekijk ▴"}</span><b id="dayc">${eur(dayCents())} per dag</b></button>
+  <button class="btn go" data-act="naar">Mijn keuzes →</button></div></div>`}
 
 function vergelijken(){
   const chips=[["Magnesium",S.stand==="koers"?"s-koers":"s-ruimte",true],["Omega-3","s-koers"],["Eiwit","s-ruimte"],["Zink","s-nm"],["Vitamine D","s-nm"]];
-  return `<div class="stofchips" role="group" aria-label="Kies een stof">${chips.map(c=>`<button aria-pressed="${!!c[2]}"><span class="dot ${c[1]}"></span>${c[0]}</button>`).join("")}</div>
-  <div class="layout ${S.variant==="B"?"zij":""}"><div>${hero()}${foods()}${supps()}
-  <p class="foot">De PS-Score beoordeelt het product, niet jouw voeding. Adviezen op basis van leefstijl — geen medische diagnoses.</p></div>${S.variant==="B"?side():""}</div>${bottom()}`;
+  return `<div class="stofchips" role="group" aria-label="Kies een stof">${chips.map(c=>`<button aria-pressed="${!!c[2]}" ${c[2]?"":'data-act="stub" data-msg="In de echte versie opent dit die stof"'}><span class="dot ${c[1]}"></span>${c[0]}</button>`).join("")}</div>
+  <div class="layout ${S.variant==="B"?"zij":""}"><div>${hero()}${picks()}${lists()}
+  <p class="foot">De PS-Score beoordeelt het product, niet jouw voeding. Adviezen op basis van leefstijl — geen medische diagnoses.</p></div>${S.variant==="B"?side():""}</div>${dock()}`;
 }
 
 function keuzes(){
   const sup=S.supp?SUPP.find(x=>x.id===S.supp):null;
   const b=bar();
   const per={ontbijt:[],lunch:[],avondeten:[],tussendoor:[]};
-  for(const [id,m] of Object.entries(S.eten)){const f=FOODS.find(x=>x.id===id);per[m].push(`<div class="row2"><span class="th f">${icon(f.g,22)}</span><div><b>${f.n}</b><span>${f.p} · ${f.mg} mg magnesium</span></div><button class="btn sage sm">＋ Dagboek</button></div>`)}
-  if(sup)per[S.suppMoment].push(`<div class="row2"><span class="th" style="background-image:url(${BASE}${sup.img})"></span><div><b>${sup.naam}</b><span>${sup.dos?sup.dos+" mg":"Dosis n.v.t."} · ${eur(sup.cent)}</span></div><button class="btn sm">＋ Dagboek</button></div>`);
-  per.ontbijt.push(`<div class="row2"><span class="th" style="background-image:url(${BASE}Mollers-Omega-3-Citroen.jpg)"></span><div><b>Möllers Omega-3</b><span>Omega-3 · € 0,41</span></div><button class="btn sm">＋ Dagboek</button></div>`);
+  for(const [id,m] of Object.entries(S.eten)){const f=FOODS.find(x=>x.id===id);per[m].push(`<div class="row2"><span class="th f">${icon(f.g,22)}</span><div><b>${f.n}</b><span>${f.p} · ${f.mg} mg magnesium</span></div><button class="btn sage sm" data-act="log" data-id="${id}" aria-pressed="${!!S.logged[id]}">${S.logged[id]?"✓ In dagboek":"＋ Dagboek"}</button></div>`)}
+  if(sup)per[S.suppMoment].push(`<div class="row2"><span class="th" style="background-image:url(${BASE}${sup.img})"></span><div><b>${sup.naam}</b><span>${sup.dos?sup.dos+" mg":"Dosis n.v.t."} · ${eur(sup.cent)}</span></div><button class="btn sm" data-act="log" data-id="${sup.id}" aria-pressed="${!!S.logged[sup.id]}">${S.logged[sup.id]?"✓ In dagboek":"＋ Dagboek"}</button></div>`);
+  per.ontbijt.push(`<div class="row2"><span class="th" style="background-image:url(${BASE}Mollers-Omega-3-Citroen.jpg)"></span><div><b>Möllers Omega-3</b><span>Omega-3 · € 0,41</span></div><button class="btn sm" data-act="log" data-id="omega" aria-pressed="${!!S.logged.omega}">${S.logged.omega?"✓ In dagboek":"＋ Dagboek"}</button></div>`);
   const mom=MOM.map(m=>`<section class="mom" aria-label="${m}"><h4>${m}</h4>${per[m].join("")||'<div class="empty">Nog niets gekozen</div>'}</section>`).join("");
   const stoffen=[["Magnesium",true],["Omega-3",false]];
   return `<div class="layout"><div>
@@ -450,12 +503,10 @@ function keuzes(){
 function render(){
   const nav=`<div class="top"><span class="brand">PerfectSupplement</span><nav class="sub" aria-label="Voeding"><span>Dagboek</span><span>Patroon</span><span class="on" aria-current="page">Keuze</span></nav></div>
   <p class="compl">Adviezen op basis van leefstijl — geen medische diagnoses.</p>`;
-  const dom=`<nav class="domchips" aria-label="Domein"><span>Slaap</span><b>Voeding</b><span>Stress</span><span>Beweging</span><span>Verbinding</span></nav>`;
-  const rail=`<nav class="rail" aria-label="Domein"><span><i></i>Slaap</span><b><i></i>Voeding</b><span><i></i>Stress</span><span><i></i>Beweging</span><span><i></i>Verbinding</span></nav>`;
   const tabs=`<div class="schaptabs" role="group" aria-label="Onderdeel"><button aria-pressed="${S.screen==="vergelijken"}" data-act="scr" data-id="vergelijken">Vergelijken</button><button aria-pressed="${S.screen==="keuzes"}" data-act="scr" data-id="keuzes">Mijn keuzes</button></div>`;
   const app=document.getElementById("app");
   const scroll=document.getElementById("frame").scrollTop;
-  app.innerHTML=`${nav}<div class="body">${rail}<div>${dom}<main class="main"><div class="keuze ${S.variant==='B'&&S.screen==='vergelijken'?'zij':''}"><h1 class="eyebrow" style="position:absolute;left:-9999px">Keuze — Voeding</h1>${tabs}${S.screen==="vergelijken"?vergelijken():keuzes()}</div></main></div></div>`;
+  app.innerHTML=`${nav}<div class="body"><div><main class="main"><div class="keuze ${S.variant==='B'&&S.screen==='vergelijken'?'zij':''}"><h1 class="eyebrow" style="position:absolute;left:-9999px">Keuze — Voeding</h1>${tabs}${S.screen==="vergelijken"?vergelijken():keuzes()}</div></main></div></div>`;
   document.getElementById("frame").scrollTop=scroll;
   fit();
 }
@@ -469,15 +520,25 @@ function fit(){
   st.style.width=W*sc+"px";st.style.height=H*sc+"px";
 }
 
+let toastT;
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),1800)}
 document.addEventListener("click",e=>{
   const t=e.target.closest("[data-act]");if(!t)return;
   const a=t.dataset.act,id=t.dataset.id;
-  if(a==="eten"){ if(id in S.eten) delete S.eten[id]; else S.eten[id]="ontbijt"; }
-  if(a==="supp"){ S.supp = S.supp===id?null:id; }
-  if(a==="scr"){ S.screen=id; document.getElementById("frame").scrollTop=0; }
-  if(a==="naar"){ S.screen="keuzes"; document.getElementById("frame").scrollTop=0; }
+  if(a==="stub"){e.preventDefault();toast(t.dataset.msg||"Niet in deze schets");return}
+  const det=document.querySelector("[data-det]"); if(det) S.open=det.open;
+  const fr=document.getElementById("frame"),keep=fr.scrollTop;
+  if(a==="eten"){ if(id in S.eten){delete S.eten[id];toast("Uit Mijn keuzes gehaald")} else {S.eten[id]="ontbijt";toast("Toegevoegd aan Mijn keuzes")} }
+  if(a==="supp"){ if(S.supp===id){S.supp=null;toast("Uit Mijn keuzes gehaald")} else {S.supp=id;toast("Toegevoegd aan Mijn keuzes")} }
+  if(a==="rm"){ if(t.dataset.kind==="eten") delete S.eten[id]; else S.supp=null; }
+  if(a==="lade"){ S.lade=!S.lade; }
+  if(a==="log"){ S.logged[id]=!S.logged[id]; toast(S.logged[id]?"In je dagboek gezet":"Uit je dagboek gehaald") }
+  if(a==="scr"){ S.screen=id; S.lade=false; }
+  if(a==="naar"){ S.screen="keuzes"; S.lade=false; }
   if(a==="wijzig"){ S.screen="vergelijken"; }
   syncCtl();render();
+  fr.scrollTop=(a==="scr"||a==="naar"||a==="wijzig")?0:keep;
+  const d=document.getElementById("dayc"); if(d){d.classList.remove("pulse");void d.offsetWidth;d.classList.add("pulse")}
 });
 document.addEventListener("pointerover",e=>{
   const c=e.target.closest("[data-prev]");const id=c?c.dataset.prev:null;

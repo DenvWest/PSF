@@ -258,3 +258,12 @@ Stap 3 uit `PROMPT_VERVOLG_KEUZE_2026-10-08.md`; maakt punt 4 van de negende ron
 - **Mijn keuzes** wordt "je dag" in vier momenten, met per stof een balk onder de dagtegels. "Jouw stack" staat als teaser; niet gebouwd.
 - Alles reageert op de breedte van de tab-inhoud (`@container`), niet op het scherm. Tokens ongewijzigd (`--vd-*`); geen reviews/sterren/korting; geen affiliate-link in het dashboard.
 - Nieuw meetpunt bij bouw: `keuze_naar_mijn_keuzes` (registreren op de drie plekken); de rest hergebruikt bestaande events.
+
+### Twaalfde ronde, herziening na review (9 oktober)
+
+Dennis: idee goed; (1) de domeinbalk Slaap/Stress/Beweging/Verbinding stond er ook in, (2) de zijkolom oogt rommelig, (3) de voedselkaarten zijn te groot en knoppen reageren onduidelijk, (4) Ruimte/Op je norm is mooi; model heeft potentie.
+
+1. **Domeinbalk weg uit de schets.** Die kwam 1-op-1 uit de live app (`buildKeuzeRailDomains` in `src/lib/context-rail.ts`, vijf domeinen, twee dicht), maar het besluit van 17 sep (`BESLUIT_VOEDINGSFOCUS_DASHBOARD_2026-09.md`) maakte het dashboard één domein. **Open voor de bouw:** de rail/chips in Keuze (SchapView, `KEUZE_CHIP_DOMAINS`) ook verwijderen, of bewust laten staan? Aanbeveling: verwijderen.
+2. **Standaard geen zijkolom meer**: variant A = één "keuzes-lade" onderaan (uitklapbaar, met × per keuze). Zijkolom blijft als variant B ter vergelijking.
+3. **"Beste voor jou"** onder de hero: de beste bron uit je eten (hoogste aandeel van je norm per portie, binnen je voedingswijze) naast het supplement met de hoogste PS-Score. Daaronder compacte rijen voor de rest. Link naar `/beste/<stof>` voor prijsvergelijking.
+4. **Feedback op knoppen:** in de schets bleken bugs (scrollpositie en uitklap sprongen terug bij elke klik, balk reageerde niet bij "Op je norm"); opgelost. Voor de echte bouw geldt: staat blijft behouden, bevestiging via korte melding, teller in de lade pulseert.
