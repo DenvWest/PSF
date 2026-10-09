@@ -301,8 +301,29 @@ describe("KeuzeVergelijken", () => {
     const lades = screen.getAllByRole("region", { name: "Je keuzes" });
     expect(within(lades[0]).getByText(/2 keuzes/)).toBeTruthy();
     fireEvent.click(within(lades[0]).getByRole("button", { name: /2 keuzes/ }));
-    expect(within(lades[0]).getByText("Eiwit")).toBeTruthy();
+    expect(within(lades[0]).getByText("Eiwit · ontbijt")).toBeTruthy();
     fireEvent.click(within(lades[0]).getByRole("button", { name: "Naar Mijn keuzes →" }));
     expect(naarMijnKeuzes).toHaveBeenCalled();
+  });
+
+  it("na Kies vraagt Vergelijken wanneer je het eet of neemt, per voedingsmiddel en per supplement", async () => {
+    const { rerender } = renderKeuze();
+    const eten = () => screen.getByRole("region", { name: "Uit je eten" });
+    expect(within(eten()).queryByText("Wanneer eet je het?")).toBeNull();
+    const eerste = within(eten()).getAllByRole("button", { name: / kiezen$/ })[0];
+    const key = eerste.getAttribute("aria-label")!.replace(/ kiezen$/, "");
+    fireEvent.click(eerste);
+    await waitFor(() => expect(favorieten.items.some((i) => i.id.startsWith("voeding-eten-magnesium-"))).toBe(true));
+    rerender(keuze());
+    expect(within(eten()).getByText("Wanneer eet je het?")).toBeTruthy();
+    fireEvent.click(within(eten()).getByRole("button", { name: "Lunch" }));
+    expect(favorieten.items.some((i) => /^voeding-itemmoment-magnesium-lunch-/.test(i.id))).toBe(true);
+    expect(key.length).toBeGreaterThan(0);
+
+    const supplement = () => screen.getByRole("region", { name: "Uit een supplement" });
+    fireEvent.click(within(supplement()).getAllByRole("button", { name: / kiezen$/ })[0]);
+    rerender(keuze());
+    fireEvent.click(within(supplement()).getByRole("button", { name: "Avondeten" }));
+    expect(favorieten.items.map((i) => i.id)).toContain("voeding-moment-magnesium-avondeten");
   });
 });

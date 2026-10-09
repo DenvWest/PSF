@@ -293,3 +293,16 @@ Gebouwd in `KeuzeVergelijken.tsx` volgens de schets, variant B:
 - **Afgewezen / niet gebouwd:** de "Jouw stack"-teaser uit de schets. Die voorziening bestaat niet; een teaser voor iets wat er niet is, misleidt. Komt pas met de premium-bouw.
 - **Domeinrail:** de rail in Keuze was al weg (`zichtbare-domeinen.ts`: alleen voeding zichtbaar; `Dashboard.tsx` verbergt de rail bij ≤ 1 domein). Wat restte was één losse chip "Voeding" op mobiel in `SchapView`; die staat nu alleen nog bij meer dan één zichtbaar domein. Slaap en Beweging blijven in de code en komen terug zodra ze uit `VERBORGEN_DOMEINEN` gaan.
 - **Meting:** `keuze_bron_naar_dagboek` (bestaand, nu vanuit "Je dag"), `mijn_keuzes_moment`, `mijn_keuzes_naar_vergelijken` ongewijzigd. Geen nieuw event.
+
+### Twaalfde ronde — uitvoering plak 3 (9 oktober): het moment per voedingsmiddel
+
+Dennis' vragen na plak 2 en het antwoord (akkoord op de aanbeveling):
+
+1. **Slepen in "Je dag"?** Niet gebouwd. Slepen op touch vraagt een extra bibliotheek (eerst overleg), en het moment stond per stof, niet per voedingsmiddel. In plaats daarvan: per regel **"Ander moment"** met de vier momenten.
+2. **Moment al in Vergelijken:** direct na "Kies" verschijnt "Wanneer eet je het?" / "Wanneer neem je het?" met de vier momenten, bij de gekozen bron en het gekozen supplement. Eén gedeelde kiezer (`MomentChips`) in Vergelijken en Mijn keuzes.
+3. **Moment per voedingsmiddel:** nieuw id `voeding-itemmoment-<stof>-<moment>-<key>` (geen migratie). Volgorde: eigen moment, dan het moment van de stof (`voeding-eetmoment-…`, bestaande data blijft werken), dan ontbijt. Het supplement houdt één moment per stof (één product per stof). De per-stof-kiezer voor eten onder "Beheer" is vervallen; weghalen ruimt het item-moment mee op.
+4. **Eiwitdosis Orangefit (25 g) nagekeken:** het scoremodel definieert de eiwitdosis als "eiwit per portie" (`EVIDENCE_DOSE.eiwitpoeder`, g eiwit), dus de 25 g is gram eiwit, geen poedergewicht. De "71,7 van 116 g" klopt als minstens-getal.
+
+**Nog te doen (plak 4):** ＋ Dagboek logt direct op het gekozen moment met de standaardportie (blijft in Mijn keuzes, met ongedaan maken en "portie wijzigen"), en Mijn keuzes toont "✓ vandaag gelogd". Vaststelling: nu opent ＋ Dagboek het portiescherm en gaat "terug" naar `?tab=vandaag` in plaats van naar Mijn keuzes. Het dagboek schrijft een hele dag per keer: de directe log moet de dag vers ophalen vóór het schrijven.
+
+**Meting:** `mijn_keuzes_moment` {nutrient, kant, moment, surface: keuze_vergelijken | mijn_keuzes}, bestaand event, nu ook vanuit Vergelijken en per voedingsmiddel.

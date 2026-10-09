@@ -159,6 +159,59 @@ export function momentKeuzeIdsVoorStof(
 }
 
 /**
+ * Het moment van één voedingsmiddel bij één stof (`voeding-itemmoment-<stof>-<moment>-<key>`).
+ * Het moment per stof (`voeding-eetmoment-…`) bleek te grof: kies je twee
+ * bronnen bij dezelfde stof, dan wil je ze op verschillende momenten kunnen
+ * zetten. Zonder item-moment geldt het moment van de stof, en daarna ontbijt.
+ * Een moment heeft geen koppelteken, dus de sleutel (kebab-case) is de rest.
+ */
+const ITEM_MOMENT_PREFIX = "voeding-itemmoment-";
+
+export function itemMomentId(nutrient: NutrientId, key: string, moment: EetmomentId): string {
+  return `${ITEM_MOMENT_PREFIX}${nutrient}-${moment}-${key}`;
+}
+
+export function parseItemMoment(id: string): { nutrient: NutrientId; moment: EetmomentId; key: string } | null {
+  if (!id.startsWith(ITEM_MOMENT_PREFIX)) return null;
+  const rest = id.slice(ITEM_MOMENT_PREFIX.length);
+  const nutrient = STOFFEN.find((stof) => rest.startsWith(`${stof}-`));
+  if (!nutrient) return null;
+  const naStof = rest.slice(nutrient.length + 1);
+  const scheiding = naStof.indexOf("-");
+  if (scheiding < 0) return null;
+  const moment = naStof.slice(0, scheiding);
+  const key = naStof.slice(scheiding + 1);
+  return isEetmomentId(moment) && key ? { nutrient, moment, key } : null;
+}
+
+/** Het eigen moment van dit voedingsmiddel bij deze stof, of null. */
+export function itemMomentVoor(
+  nutrient: NutrientId,
+  key: string,
+  items: readonly { id: string }[],
+): EetmomentId | null {
+  for (const item of items) {
+    const moment = parseItemMoment(item.id);
+    if (moment?.nutrient === nutrient && moment.key === key) return moment.moment;
+  }
+  return null;
+}
+
+export function itemMomentIdsVoor(nutrient: NutrientId, key: string, items: readonly { id: string }[]): string[] {
+  return items
+    .filter((item) => {
+      const moment = parseItemMoment(item.id);
+      return moment?.nutrient === nutrient && moment.key === key;
+    })
+    .map((item) => item.id);
+}
+
+/** Het moment waarop een gekozen voedingsmiddel in je dag staat: eigen moment, dat van de stof, ontbijt. */
+export function etenMomentVoor(nutrient: NutrientId, key: string, items: readonly { id: string }[]): EetmomentId {
+  return itemMomentVoor(nutrient, key, items) ?? momentVoorStof(nutrient, items, "eten") ?? "ontbijt";
+}
+
+/**
  * Een voedingsmiddel dat je in Vergelijken bij één stof koos. Naast de ☆ in
  * het dagboek (die bovenaan zet bij het toevoegen) onthoudt dit bij wélke
  * stof je hem koos: een gebakken ei levert per stuk 13,5 % van de
@@ -194,6 +247,7 @@ export function isStofKeuzeFavoriet(id: string): boolean {
     id.startsWith("voeding-route-") ||
     parseProductKeuze(id) !== null ||
     parseMomentKeuze(id) !== null ||
+    parseItemMoment(id) !== null ||
     parseEtenKeuze(id) !== null
   );
 }

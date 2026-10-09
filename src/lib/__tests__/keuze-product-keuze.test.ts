@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   etenKeuzeId,
+  etenMomentVoor,
+  itemMomentId,
+  itemMomentIdsVoor,
+  parseItemMoment,
   etenKeuzesVoorStof,
   isStofKeuzeFavoriet,
   parseEtenKeuze,
@@ -69,5 +73,27 @@ describe("productkeuze per stof", () => {
     expect(parseEtenKeuze(id)).toEqual({ nutrient: "vitamin_d", key: "ei-gebakken" });
     expect(etenKeuzesVoorStof("vitamin_d", [{ id }, { id: etenKeuzeId("protein", "kipdij") }])).toEqual(["ei-gebakken"]);
     expect(isStofKeuzeFavoriet(id)).toBe(true);
+  });
+});
+
+describe("moment per voedingsmiddel", () => {
+  it("leest stof, moment en sleutel terug, ook met een underscore in de stof en streepjes in de sleutel", () => {
+    const id = itemMomentId("vitamin_d", "ei-gebakken", "avondeten");
+    expect(id).toBe("voeding-itemmoment-vitamin_d-avondeten-ei-gebakken");
+    expect(parseItemMoment(id)).toEqual({ nutrient: "vitamin_d", moment: "avondeten", key: "ei-gebakken" });
+    expect(parseItemMoment("voeding-itemmoment-magnesium-nacht-pompoenzaden")).toBeNull();
+    expect(parseItemMoment("voeding-eetmoment-magnesium-lunch")).toBeNull();
+  });
+
+  it("valt terug van eigen moment naar het moment van de stof en dan naar ontbijt", () => {
+    const eigen = [{ id: itemMomentId("magnesium", "amandelen", "lunch") }, { id: momentKeuzeId("magnesium", "avondeten", "eten") }];
+    expect(etenMomentVoor("magnesium", "amandelen", eigen)).toBe("lunch");
+    expect(etenMomentVoor("magnesium", "pompoenzaden", eigen)).toBe("avondeten");
+    expect(etenMomentVoor("zinc", "pompoenzaden", eigen)).toBe("ontbijt");
+    expect(itemMomentIdsVoor("magnesium", "amandelen", eigen)).toEqual(["voeding-itemmoment-magnesium-lunch-amandelen"]);
+  });
+
+  it("hoort bij de stofkeuzes, dus niet bij 'Ook bewaard'", () => {
+    expect(isStofKeuzeFavoriet(itemMomentId("zinc", "kaas", "lunch"))).toBe(true);
   });
 });
