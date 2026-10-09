@@ -82,6 +82,8 @@ export type DagboekOpties = {
   gewone?: readonly EetmomentId[] | null;
   richting?: Voedingsrichting | null;
   eiwitDoelG?: number | null;
+  /** Een stof die de winstkaart niet noemt, omdat de doel-zone hem al draagt. */
+  uitsluiten?: NutrientId | null;
 };
 
 export type DagboekWinstRegel =
@@ -210,9 +212,10 @@ export function buildDagboekWinstRegel(
     return bouwTeWeinig(meting, normen, opties);
   }
 
-  const meetbaar = overzicht.rijen.filter(
+  const meetbaarAlle = overzicht.rijen.filter(
     (rij) => rij.bewijsbaar && rij.referentie !== null && rij.aandeel !== null && rij.dagenMetBron > 0,
   );
+  const meetbaar = meetbaarAlle.filter((rij) => rij.nutrient !== opties.uitsluiten);
 
   const onder = meetbaar
     .filter((rij) => (rij.aandeel ?? 1) < 1)
@@ -232,11 +235,38 @@ export function buildDagboekWinstRegel(
     return { kind: "stoffen", dagen: overzicht.dagenGeregistreerd, stoffen: onder };
   }
 
-  if (meetbaar.length > 0 && meetbaar.every((rij) => rij.gedekt === true)) {
+  if (meetbaarAlle.length > 0 && meetbaarAlle.every((rij) => rij.gedekt === true)) {
     return { kind: "op_norm", dagen: overzicht.dagenGeregistreerd };
   }
 
   return null;
+}
+
+/**
+ * Wat er vandaag in het dagboek staat, voor de kolom naast het Dagboek: welke
+ * van je gewone maaltijden gelogd zijn (of bewust overgeslagen) en welke nog
+ * open staan. Een feit over vandaag, geen oordeel.
+ */
+export type DagStatus = {
+  gelogd: readonly EetmomentId[];
+  open: readonly EetmomentId[];
+  compleet: boolean;
+};
+
+export function buildDagStatus(
+  dagen: readonly DagboekDag[],
+  vandaag: string,
+  gewone?: readonly EetmomentId[] | null,
+): DagStatus {
+  const verwacht = verwachteMaaltijden(gewone);
+  const dag = dagen.find((kandidaat) => kandidaat.date === vandaag);
+  const gelogdSet = new Set<EetmomentId>([
+    ...sanitizeItems(dag?.items ?? []).map((item) => item.moment),
+    ...sanitizeHoofdmaaltijden(dag?.overgeslagen),
+  ]);
+  const gelogd = verwacht.filter((moment) => gelogdSet.has(moment));
+  const open = verwacht.filter((moment) => !gelogdSet.has(moment));
+  return { gelogd, open, compleet: open.length === 0 };
 }
 
 export type DoelStand =

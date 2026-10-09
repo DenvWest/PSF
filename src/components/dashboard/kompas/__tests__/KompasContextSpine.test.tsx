@@ -196,12 +196,12 @@ describe("Contextkolom — geen spiegel van het midden", () => {
   });
 });
 
-describe("Contextkolom — zone: waar je naartoe werkt (doel)", () => {
+describe("Contextkolom — zone: doel", () => {
   it("opent het volledige zetmoment als er nog geen ijkpunt is", async () => {
     renderBoth();
     // Goals komen async binnen (gedeelde `useDomainGoals`-bron); de zone
     // verschijnt pas zodra die fetch — hier zonder resultaat — is afgerond.
-    const zone = await screen.findByRole("region", { name: "Waar je naartoe werkt" });
+    const zone = await screen.findByRole("region", { name: "Doel" });
     expect(zone.textContent).toContain("Nog geen ijkpunt");
 
     fireEvent.click(within(zone).getByRole("button", { name: /Zetten/ }));
@@ -217,7 +217,7 @@ describe("Contextkolom — zone: waar je naartoe werkt (doel)", () => {
       mode: "verwerven",
     });
     renderBoth();
-    const zone = screen.getByRole("region", { name: "Waar je naartoe werkt" });
+    const zone = screen.getByRole("region", { name: "Doel" });
     expect(zone.textContent).toContain("Nu 4 van 10");
 
     fireEvent.click(within(zone).getByRole("button", { name: /Bijwerken/ }));
@@ -238,7 +238,7 @@ describe("Contextkolom — zone: waar je naartoe werkt (doel)", () => {
       mode: "verwerven",
     });
     renderBoth();
-    const zone = screen.getByRole("region", { name: "Waar je naartoe werkt" });
+    const zone = screen.getByRole("region", { name: "Doel" });
     fireEvent.click(within(zone).getByRole("button", { name: /Bijwerken/ }));
     fireEvent.click(within(zone).getByRole("button", { name: /Ander doel kiezen/ }));
 

@@ -8,6 +8,7 @@ import { trackEvent } from "@/lib/ga4";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import {
   buildDagboekWinstRegel,
+  buildDoelStand,
   DAGBOEKREGEL_MIN_DAGEN,
   DAGBOEKREGEL_VENSTER_DAGEN,
 } from "@/lib/kompas-winst-dagboek";
@@ -37,10 +38,14 @@ export default function KompasDagboekRegel({ zonderTeWeinigLink = false }: { zon
   const dagen = useDagboekDagen();
   const vandaag = todayInAgendaTimezone();
 
-  const regel = useMemo(
-    () => (dagen ? buildDagboekWinstRegel(dagen, vandaag, normen, { gewone, richting, eiwitDoelG }) : null),
-    [dagen, vandaag, normen, gewone, richting, eiwitDoelG],
-  );
+  const regel = useMemo(() => {
+    if (!dagen) return null;
+    const opties = { gewone, richting, eiwitDoelG };
+    // De doel-zone draagt zijn eigen stof; die staat hier niet nog een keer.
+    const doelStand = buildDoelStand(dagen, vandaag, normen, opties);
+    const uitsluiten = doelStand?.kind === "stof" ? doelStand.nutrient : null;
+    return buildDagboekWinstRegel(dagen, vandaag, normen, { ...opties, uitsluiten });
+  }, [dagen, vandaag, normen, gewone, richting, eiwitDoelG]);
 
   useEffect(() => {
     if (!regel) return;
