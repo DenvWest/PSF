@@ -5,7 +5,7 @@ import * as Icons from "@/components/app/icons";
 import Wordmark from "@/components/app/Wordmark";
 import CockpitProfileMenu from "@/components/dashboard/cockpit/CockpitProfileMenu";
 import CockpitMoreMenu from "@/components/dashboard/cockpit/CockpitMoreMenu";
-import { DASHBOARD_TABS } from "@/data/dashboard";
+import { DASHBOARD_NAV_TABS } from "@/data/dashboard";
 import type { CockpitContextPresentation } from "@/lib/cockpit-context-layout";
 import type { DashboardTabId } from "@/types/dashboard";
 
@@ -165,7 +165,7 @@ export default function CockpitHeader({
             role="tablist"
             aria-label="Hoofdnavigatie"
           >
-          {DASHBOARD_TABS.map((tab) => {
+          {DASHBOARD_NAV_TABS.map((tab) => {
             const Icon = Icons[tab.icon as keyof typeof Icons] as IconComp;
             const active = tab.id === activeTab;
             return (
@@ -175,7 +175,7 @@ export default function CockpitHeader({
                 role="tab"
                 aria-selected={active}
                 onClick={() => onSelectTab(tab.id)}
-                /* Op tablet (sm t/m md) staan de vier labels naast de
+                /* Op tablet (sm t/m md) staan de tablabels naast de
                    wordmark, de context-bel én het profielmenu in één rij die
                    ~640px breed is. Dan wint elk label ruimte van de volgende
                    en breekt de rij. Daar dragen de iconen de navigatie —
@@ -200,7 +200,10 @@ export default function CockpitHeader({
             );
           })}
           </div>
-          <CockpitMoreMenu variant="header" />
+          <CockpitMoreMenu
+            variant="header"
+            active={!DASHBOARD_NAV_TABS.some((tab) => tab.id === activeTab)}
+          />
         </div>
 
         <div className="hidden items-center gap-2 sm:flex">

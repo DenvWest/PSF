@@ -195,7 +195,7 @@ const WHY_WAIT: Partial<Record<MovementPriorityId, string>> = {
   3: "Opbouwen begint pas als je krachtdagen vier weken staan.",
   4: "Een sport kiezen mag altijd. Hij duidt je plan, hij verandert het niet.",
   5: "Marginale winst — pas bovenop een basis die acht weken staat.",
-  6: "Eerst je voedingscheck en je hertest, dan pas aanvullen.",
+  6: "Eerst de check en je hertest, dan pas aanvullen.",
 };
 
 export function movementLayerWhyWait(

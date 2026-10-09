@@ -44,7 +44,7 @@ describe("KompasOndersteuningTile — geen product op de dagelijkse surface", ()
         onGoVoortgang={() => {}}
       />,
     );
-    expect(screen.getByText("Doe je voedingscheck →")).toBeTruthy();
+    expect(screen.getByText("Wat mis je? Doe de check →")).toBeTruthy();
     expect(screen.queryByText("Maak een keuze")).toBeNull();
   });
 });

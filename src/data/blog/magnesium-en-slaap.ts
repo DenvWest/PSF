@@ -21,7 +21,7 @@ export const magnesiumEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Hoe magnesium je slaap beïnvloedt",
-      tekst: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot normale psychologische functie — dat zijn EU‑geautoriseerde gezondheidsclaims bij voldoende inname. In biochemische modellen is magnesium betrokken bij GABAerge signalering; GABA is een belangrijke remmende neurotransmitter. Tegelijk draagt magnesium bij tot normale spierfunctie en tot elektrolytenbalans — relevant voor de balans tussen calcium (contractie) en ontspanning: gespannen spieren in bed kunnen duiden op onvoldoende rust in dat systeem. Ook speelt magnesium een rol in het melatonine‑metaboliek traject; melatonine is het hormoon dat je circadiaanse slaapsignaal mede stuurt. Veel magnesium uit voeding komt uit bladgroenten, noten en peulvruchten — eerst die basis, supplement alleen als aanvulling. Na je 30e kan opname via de darm afnemen, terwijl behoefte door stress en herstel gelijk blijft of stijgt. Wakker worden om 3 uur en niet meer in slaap komen? Dat patroon heeft een naam. [Wakker om 3 uur, niet terug in slaap? Je bent niet alleen.](/profiel/onrustige-slaper)",
+      tekst: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot normale psychologische functie — dat zijn EU‑geautoriseerde gezondheidsclaims bij voldoende inname. In biochemische modellen is magnesium betrokken bij GABAerge signalering; GABA is een belangrijke remmende neurotransmitter. Tegelijk draagt magnesium bij tot normale spierfunctie en tot elektrolytenbalans — relevant voor de balans tussen calcium (contractie) en ontspanning: gespannen spieren in bed kunnen duiden op onvoldoende rust in dat systeem. Ook speelt magnesium een rol in het melatonine‑metaboliek traject; melatonine is het hormoon dat je circadiaanse slaapsignaal mede stuurt. Veel magnesium uit voeding komt uit bladgroenten, noten en peulvruchten — eerst die basis, supplement alleen als aanvulling. Na je 30e kan opname via de darm afnemen, terwijl behoefte door stress en herstel gelijk blijft of stijgt. Wakker worden om 3 uur en niet meer in slaap komen? Lees wat je bord daarmee te maken heeft in [slaap en voeding](/slaap-en-voeding).",
     },
     {
       type: "opsomming",
@@ -42,7 +42,7 @@ export const magnesiumEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Wat je nu kunt doen",
-      tekst: "Drie praktische stappen: controleer of je supplement magnesium glycinaat of bisglycinaat bevat — niet oxide als hoofdvorm. Controleer het elementaire magnesiumgehalte per dagdosering en mik op 200–400 mg. Neem het consequent in, elke avond 30–60 minuten voor bed. Magnesium is één stuk van een groter plaatje. Slecht slapen na 30 heeft meerdere oorzaken — circadiaan ritme, cortisol, slaaphygiëne — die samen het verschil maken. Wil je alle vormen en doseringen in één overzicht? Lees de [complete magnesiumgids](/blog/magnesium-en-slaapkwaliteit). Slecht slapen na 30? Het is niet wat je denkt. Lees de complete gids van oorzaak tot oplossing: [de volledige aanpak voor betere slaap na je 30e.](/slaap-verbeteren-na-40) Wil je weten of je voeding al genoeg magnesium levert? [Doe de gratis check](/intake) — 14 vragen, 1 minuut, direct zicht op mogelijke tekorten in je voeding.",
+      tekst: "Drie praktische stappen: controleer of je supplement magnesium glycinaat of bisglycinaat bevat — niet oxide als hoofdvorm. Controleer het elementaire magnesiumgehalte per dagdosering en mik op 200–400 mg. Neem het consequent in, elke avond 30–60 minuten voor bed. Magnesium is één stuk van een groter plaatje. Slecht slapen na 30 heeft meerdere oorzaken — circadiaan ritme, cortisol, slaaphygiëne — die samen het verschil maken. Wil je alle vormen en doseringen in één overzicht? Lees de [complete magnesiumgids](/blog/magnesium-en-slaapkwaliteit). Slecht slapen na 30? Het is niet wat je denkt. Lees de complete gids van oorzaak tot oplossing: [de volledige aanpak voor betere slaap na je 30e.](/slaap-en-voeding) Wil je weten of je voeding al genoeg magnesium levert? [Doe de gratis check](/intake) — 14 vragen, 1 minuut, direct zicht op mogelijke tekorten in je voeding.",
     },
     {
       type: "tekst",
@@ -60,7 +60,7 @@ export const magnesiumEnSlaapData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Complete gids: slaap verbeteren na je 30e",
-    href: "/slaap-verbeteren-na-40",
+    href: "/slaap-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste magnesium supplementen",

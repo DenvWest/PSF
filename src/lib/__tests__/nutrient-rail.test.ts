@@ -94,6 +94,6 @@ describe("railBronregel", () => {
   });
 
   it("vraagt om de check als er niets is", () => {
-    expect(railBronregel([])).toContain("voedingscheck");
+    expect(railBronregel([])).toContain("Doe de check");
   });
 });

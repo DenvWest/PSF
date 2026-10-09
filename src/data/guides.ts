@@ -23,8 +23,8 @@ export type Guide = {
   promise: string;
   /** PDF-download nog niet live — toon coming-soon i.p.v. download-CTA */
   comingSoon?: boolean;
-  /** Webgids-URL wanneer comingSoon (bijv. pillar-pagina) */
-  contentHref?: string;
+  /** Webgids-URL (pillar-pagina); bij comingSoon ook het doel van de opt-in */
+  webgidsHref: string;
   /** Vervangt de standaard coming-soon-tekst wanneer er geen pijlerpagina is */
   comingSoonNote?: string;
   /** Vervangt het label "Lees de webgids →" */
@@ -84,6 +84,7 @@ export const GUIDE_TRUST_ITEMS: GuideTrustItem[] = [
 export const GUIDES: Guide[] = [
   {
     key: "slaap",
+    webgidsHref: "/slaap-en-voeding",
     title: "Slaap",
     accent: "oklch(0.70 0.05 205)",
     tag: "Herstel & ritme",
@@ -117,7 +118,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Slaap & herstel",
         sub: "De volledige kennisbank over nachtrust en herstel.",
-        href: "/slaap-verbeteren-na-40",
+        href: "/slaap-en-voeding",
       },
       {
         label: "Jouw profiel",
@@ -125,14 +126,15 @@ export const GUIDES: Guide[] = [
         href: "/intake",
       },
       {
-        label: "Gratis Leefstijlcheck",
-        sub: "Meet je startpunt in 3 minuten.",
+        label: "Gratis check: Wat mis je?",
+        sub: "Zie in 3 minuten wat je voeding tekortkomt.",
         href: "/intake",
       },
     ],
   },
   {
     key: "stress",
+    webgidsHref: "/stress-en-voeding",
     title: "Stress",
     accent: "oklch(0.69 0.055 172)",
     tag: "Mentale balans",
@@ -164,7 +166,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Mentale balans",
         sub: "Alles over stress, focus en herstel.",
-        href: "/stress-verminderen-na-40",
+        href: "/stress-en-voeding",
       },
       {
         label: "Jouw profiel",
@@ -172,14 +174,15 @@ export const GUIDES: Guide[] = [
         href: "/intake",
       },
       {
-        label: "Gratis Leefstijlcheck",
-        sub: "Meet je startpunt in 3 minuten.",
+        label: "Gratis check: Wat mis je?",
+        sub: "Zie in 3 minuten wat je voeding tekortkomt.",
         href: "/intake",
       },
     ],
   },
   {
     key: "energie",
+    webgidsHref: "/energie-en-voeding",
     title: "Energie",
     accent: "oklch(0.73 0.085 128)",
     tag: "Vitaliteit",
@@ -211,7 +214,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Energie & vitaliteit",
         sub: "De volledige kennisbank over energie.",
-        href: "/energie-na-40",
+        href: "/energie-en-voeding",
       },
       {
         label: "Jouw profiel",
@@ -219,14 +222,15 @@ export const GUIDES: Guide[] = [
         href: "/intake",
       },
       {
-        label: "Gratis Leefstijlcheck",
-        sub: "Meet je startpunt in 3 minuten.",
+        label: "Gratis check: Wat mis je?",
+        sub: "Zie in 3 minuten wat je voeding tekortkomt.",
         href: "/intake",
       },
     ],
   },
   {
     key: "herstel",
+    webgidsHref: "/herstel-en-voeding",
     title: "Herstel",
     accent: "oklch(0.70 0.065 150)",
     tag: "Veerkracht",
@@ -258,7 +262,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Slaap & herstel",
         sub: "De volledige kennisbank over herstel.",
-        href: "/herstel-verbeteren-na-40",
+        href: "/herstel-en-voeding",
       },
       {
         label: "Jouw profiel",
@@ -266,8 +270,8 @@ export const GUIDES: Guide[] = [
         href: "/intake",
       },
       {
-        label: "Gratis Leefstijlcheck",
-        sub: "Meet je startpunt in 3 minuten.",
+        label: "Gratis check: Wat mis je?",
+        sub: "Zie in 3 minuten wat je voeding tekortkomt.",
         href: "/intake",
       },
     ],
@@ -279,7 +283,7 @@ export const GUIDES: Guide[] = [
     tag: "Kracht & conditie",
     focusCategories: ["energie-vitaliteit"],
     comingSoon: true,
-    contentHref: "/beweging-na-40",
+    webgidsHref: "/beweging-en-voeding",
     promise: "Sterk en soepel blijven — ook als je al 'best actief' bent.",
     heroTitle: "Sterk blijven. Soepel bewegen. Zelfstandig ouder worden.",
     heroSub:
@@ -307,7 +311,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Beweging na 30",
         sub: "Kracht, ritme en herstel — nuchter uitgelegd.",
-        href: "/beweging-na-40",
+        href: "/beweging-en-voeding",
       },
       {
         label: "Jouw profiel",
@@ -315,8 +319,8 @@ export const GUIDES: Guide[] = [
         href: "/intake",
       },
       {
-        label: "Gratis Leefstijlcheck",
-        sub: "Meet je startpunt in 3 minuten.",
+        label: "Gratis check: Wat mis je?",
+        sub: "Zie in 3 minuten wat je voeding tekortkomt.",
         href: "/intake",
       },
     ],
@@ -329,7 +333,7 @@ export const GUIDES: Guide[] = [
     focusCategories: ["hormonaal", "slaap-herstel"],
     audience: "vrouwen",
     comingSoon: true,
-    contentHref: "/overgang",
+    webgidsHref: "/overgang-en-voeding",
     comingSoonNote:
       "We werken aan de PDF. De volledige gids staat al op onze website — inclusief bronnen.",
     comingSoonCta: "Lees de webgids →",
@@ -363,7 +367,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Overgang",
         sub: "De volledige webgids, met bronnen.",
-        href: "/overgang",
+        href: "/overgang-en-voeding",
       },
       {
         label: "Vergelijking: vitamine D",
@@ -371,8 +375,8 @@ export const GUIDES: Guide[] = [
         href: "/beste/vitamine-d",
       },
       {
-        label: "Gratis Leefstijlcheck",
-        sub: "Meet je startpunt in 3 minuten.",
+        label: "Gratis check: Wat mis je?",
+        sub: "Zie in 3 minuten wat je voeding tekortkomt.",
         href: "/intake",
       },
     ],
@@ -383,9 +387,11 @@ export const GUIDES: Guide[] = [
     accent: "oklch(0.71 0.095 82)",
     tag: "Hormonale balans",
     focusCategories: ["hormonaal", "energie-vitaliteit"],
-    audience: "mannen",
     comingSoon: true,
-    contentHref: "/testosteron-na-40",
+    webgidsHref: "/testosteron-en-voeding",
+    comingSoonNote:
+      "De volledige webgids over leefstijl en vitaliteit na 30 staat al op onze website, voor mannen en vrouwen. Met een voedingszoom en bronnen.",
+    comingSoonCta: "Lees de testosteron-webgids →",
     promise:
       "Leefstijlfactoren die je vitaliteit en veerkracht ondersteunen.",
     heroTitle: "De leefstijl achter je vitaliteit.",
@@ -422,8 +428,8 @@ export const GUIDES: Guide[] = [
         href: "/gidsen?filter=slaap-herstel",
       },
       {
-        label: "Gratis Leefstijlcheck",
-        sub: "Meet je startpunt in 3 minuten.",
+        label: "Gratis check: Wat mis je?",
+        sub: "Zie in 3 minuten wat je voeding tekortkomt.",
         href: "/intake",
       },
     ],

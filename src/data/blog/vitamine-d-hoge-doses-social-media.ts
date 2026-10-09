@@ -58,7 +58,7 @@ export const vitamineDHogeDosesSocialMediaData: BlogArtikel = {
       type: "opsomming",
       titel: "Vijf signalen dat een post je iets verkoopt",
       inleiding:
-        "Dit patroon herken je terug bij vrijwel elk supplement, niet alleen bij vitamine D.",
+        "Dit patroon herken je terug bij vrijwel elk supplement, niet alleen bij vitamine D — zie de bredere [checklist voor supplementen via influencers](/blog/supplementen-via-influencers-checklist).",
       items: [
         "'De officiële adviezen zijn te laag' zonder te noemen welke trials er zijn gedaan en wat die vonden.",
         "Een echt mechanisme dat wordt uitvergroot tot een uitkomst waar het onderzoek niet over gaat — zie ook [D3 en K2](/blog/vitamine-d-en-k2-samen).",
@@ -77,7 +77,7 @@ export const vitamineDHogeDosesSocialMediaData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: check of dit überhaupt jouw knop is",
       tekst:
-        "Als vermoeidheid je aanleiding is om vitamine D te overwegen, is de kans groot dat slaap, stress of eiwitinname meer opleveren. De [check](/intake) laat zien of je eiwitinname en andere voeding al op peil zijn, zodat je gericht kiest in plaats van stapelt. Bredere context: [energie na 30](/energie-na-40).",
+        "Als vermoeidheid je aanleiding is om vitamine D te overwegen, is de kans groot dat slaap, stress of eiwitinname meer opleveren. De [check](/intake) laat zien of je eiwitinname en andere voeding al op peil zijn, zodat je gericht kiest in plaats van stapelt. Bredere context: [energie na 30](/energie-en-voeding).",
     },
   ],
   kernpunten: [

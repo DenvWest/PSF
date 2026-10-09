@@ -739,6 +739,13 @@ export function searchCatalog(query: string, limiet = 20): CatalogEntry[] {
     if (label.includes(term)) return { entry, score: 2 };
     if (synoniemen.some((s) => s.includes(term))) return { entry, score: 3 };
     if (normaliseer(entry.key).includes(term)) return { entry, score: 4 };
+    // Meer woorden, in elke volgorde: "ei gebakken" vindt "Ei, gebakken" —
+    // als één stuk tekst botst het op de komma.
+    const woorden = term.split(/[\s,]+/).filter(Boolean);
+    if (woorden.length > 1) {
+      const tekst = [label, ...synoniemen, normaliseer(entry.key)].join(" ");
+      if (woorden.every((woord) => tekst.includes(woord))) return { entry, score: 5 };
+    }
     return null;
   }).filter((hit): hit is { entry: CatalogEntry; score: number } => hit !== null);
 

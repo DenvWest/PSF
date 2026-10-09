@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
-import { INTAKE_CTA } from "@/lib/intake-product-copy";
+import { CHECK_CTA } from "@/lib/check-facts";
 
 export const metadata: Metadata = {
   title: "Pagina niet gevonden",
   description:
-    "Deze pagina bestaat niet (meer). Ga naar de homepage, de supplementgidsen of doe de Leefstijlcheck.",
+    "Deze pagina bestaat niet (meer). Ga naar de homepage, de supplementgidsen of doe de check 'Wat mis je?'.",
   robots: { index: false, follow: true },
 };
 
@@ -23,8 +23,8 @@ const suggestions = [
   },
   {
     href: "/intake",
-    title: "Leefstijlcheck",
-    description: "18 vragen, 3 minuten — een persoonlijk overzicht van slaap, stress, energie en herstel.",
+    title: "Wat mis je?",
+    description: CHECK_CTA.subline,
   },
 ];
 
@@ -55,7 +55,7 @@ export default function NotFound() {
                 href="/intake"
                 className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
               >
-                {INTAKE_CTA.discoverOverview}
+                {CHECK_CTA.discoverButton}
               </Link>
             </div>
           </div>

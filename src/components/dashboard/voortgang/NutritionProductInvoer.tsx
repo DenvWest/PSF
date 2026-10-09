@@ -2,13 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { catalogEntry, searchCatalog } from "@/data/nutrition/food-catalog";
-import { supplementCatalogEntry } from "@/data/nutrition/supplement-catalog";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import {
   itemsVanMoment,
   nutrientenUitItems,
   type DagboekItem,
+  supplementVanItem,
 } from "@/lib/nutrition-dagboek-items";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 
@@ -153,12 +153,12 @@ export default function NutritionProductInvoer({
             const voedingEntry = item.bron === "voeding" ? catalogEntry(item.key) : null;
             const label =
               item.bron === "supplement"
-                ? (supplementCatalogEntry(item.key)?.labelNl ?? null)
+                ? (supplementVanItem(item)?.labelNl ?? null)
                 : (voedingEntry?.labelNl ?? null);
             if (!label) return null;
             const eenheid =
               item.bron === "supplement"
-                ? (supplementCatalogEntry(item.key)?.porties[0]?.labelNl ?? "portie")
+                ? (supplementVanItem(item)?.porties[0]?.labelNl ?? "portie")
                 : "g";
             return (
               <li

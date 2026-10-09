@@ -91,14 +91,14 @@ export default function VoedingNa40Page() {
                     </Link>
                     <p className="mt-3 text-sm text-gray-600">
                       Of{" "}
-                      <Link href="/intake/voeding" className={LINK}>
-                        doe eerst de snelle voedingscheck (1 min)
+                      <Link href="/intake" className={LINK}>
+                        zie eerst wat je bord mist in de gratis check
                       </Link>
                     </p>
                     <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
                     <p className="mt-3 text-sm text-gray-600">
                       <Link href="/onderbouwing/voeding" className={LINK}>
-                        Hoe we de voedingscheck meten →
+                        Hoe de check meet →
                       </Link>
                     </p>
                   </div>
@@ -149,15 +149,11 @@ export default function VoedingNa40Page() {
                     <li>Je avondmaaltijd is laat of eenzijdig (veel koolhydraten, weinig eiwit).</li>
                   </ul>
                   <p className="mt-4 text-gray-700 leading-relaxed">
-                    Herken je een patroon?{" "}
-                    <Link href="/profiel/lage-energie" className={LINK}>
-                      Lees het profiel Lage Energie
-                    </Link>{" "}
-                    of start de{" "}
+                    Herken je een patroon? Zie met de{" "}
                     <Link href="/intake" className={LINK}>
-                      gratis Leefstijlcheck
-                    </Link>
-                    .
+                      gratis check Wat mis je?
+                    </Link>{" "}
+                    welke voedingsstoffen je bord waarschijnlijk mist.
                   </p>
                 </section>
 
@@ -246,7 +242,7 @@ export default function VoedingNa40Page() {
                       </Link>
                     </li>
                     <li>
-                      <Link href="/energie-na-40" className={LINK}>
+                      <Link href="/energie-en-voeding" className={LINK}>
                         Energie-pillar — als vermoeidheid je hoofdthema is →
                       </Link>
                     </li>
@@ -292,7 +288,7 @@ export default function VoedingNa40Page() {
                   <p className="mt-4 text-sm text-gray-600">
                     Of{" "}
                     <Link href="/intake" className={LINK}>
-                      doe de volledige Leefstijlcheck
+                      zie eerst wat je bord mist in de gratis check Wat mis je?
                     </Link>
                   </p>
                 </div>

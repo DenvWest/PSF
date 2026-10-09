@@ -75,7 +75,7 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "Je circadiaan ritme koppelt slaap, hormonen en energie aan licht; avondlicht kan melatonine onderdrukken.",
     coverTitle: "Circadiaan ritme en slaap uitgelegd",
     inlineAlt:
-      "Zonsondergang en het dag-nachtritme — circadiaan ritme en melatonine",
+      "Ochtendzon achter een gordijn — licht zet je biologische klok en het circadiaan ritme",
     inlineCaption:
       "Een vast slaap-wakkeritme en ochtendlicht helpen je biologische klok; supplementen vervangen dat niet.",
     searchPhrases: ["circadiaan ritme", "biologische klok slaap", "ritme verstoren avondlicht"],
@@ -91,6 +91,18 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
     inlineCaption:
       "De ADH op een potje is vaak lager dan wat studies gebruiken; voor effect kijk je naar onderzoeksdoses en status.",
     searchPhrases: ["adh supplement", "aanbevolen dagelijkse hoeveelheid", "adh vitamine d"],
+  },
+  "opbouwtijd-supplement": {
+    coverAlt:
+      "Staafgrafiek van de opbouwtijd in dagen: creatine 6 dagen bij 20 g en 28 dagen bij 3 g, EPA in serum 4 tot 8 weken, EPA in rode bloedcellen circa 180 dagen",
+    coverCaption:
+      "Creatine, omega-3 en vitamine D hebben elk een eigen opbouwtijd: van dagen tot maanden, afhankelijk van waar je meet.",
+    coverTitle: "Waarom een supplement weken duurt",
+    inlineAlt:
+      "Groene staafjes die stap voor stap hoger worden — het niveau van een supplement bouwt zich geleidelijk op",
+    inlineCaption:
+      "Een supplement werkt vaak pas als het niveau is opgebouwd; dat duurt bij sommige stoffen weken.",
+    searchPhrases: ["supplement hoe lang duurt het", "opbouwtijd supplement", "wanneer werkt omega-3"],
   },
   "efsa-claims": {
     coverAlt:
@@ -134,12 +146,12 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
   },
   "eiwitbehoefte-na-40": {
     coverAlt:
-      "Eiwitbehoefte na 40 — eiwitrijke maaltijd met vis, groenten en peulvruchten",
+      "Eiwitrijke kom met tofu, ei, mais en groenten — eiwitbehoefte na 40",
     coverCaption:
       "Na je veertigste stijgt de eiwitbehoefte voor spierbehoud; verdeel eiwit over de dag in plaats van één grote portie.",
     coverTitle: "Hoeveel eiwit na 40 per dag?",
     inlineAlt:
-      "Eiwitrijke lunch met vis en groenten — eiwitbehoefte voor mannen en vrouwen na 40",
+      "Mealprep-bakjes met falafel, rijst en groenten — eiwit verdeeld over de dag",
     inlineCaption:
       "Richtlijn: ongeveer 1,2–1,6 g eiwit per kilo lichaamsgewicht per dag, met 25–40 g per maaltijd bij krachttraining.",
     searchPhrases: [
@@ -150,12 +162,12 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
   },
   "kalium-natrium-balans": {
     coverAlt:
-      "Kalium-natrium balans — verse groenten en fruit op een snijplank",
+      "Kom met avocado, kikkererwten, zoete aardappel en radijs — kaliumrijke voeding",
     coverCaption:
       "Meer kalium uit groenten en fruit helpt de natrium-kaliumbalans; bloeddruk reageert op het geheel, niet op één snuf zout.",
     coverTitle: "Kalium en natrium: verhouding en bloeddruk",
     inlineAlt:
-      "Tomaat, avocado en bladgroen — kaliumrijke voeding voor de natrium-balans",
+      "Groenten, mais en komkommer op een houten tafel — kaliumrijke voeding voor de natrium-balans",
     inlineCaption:
       "Minder zout alleen is zelden genoeg; extra groenten leveren kalium dat de balans ten goede kan keren.",
     searchPhrases: ["kalium natrium balans", "zout kalium bloeddruk", "kalium tekort voeding"],
@@ -191,7 +203,7 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "Cortisol piekt normaal in de ochtend; chronisch hoge waarden passen bij stress, slaaptekort of overtraining.",
     coverTitle: "Cortisol: stresshormoon en dagritme",
     inlineAlt:
-      "Thee bij het raam — cortisol verlagen met rust en slaaphygiëne",
+      "Kop thee met verse muntblaadjes — cortisol verlagen met rust en slaaphygiëne",
     inlineCaption:
       "Cortisol verlagen lukt niet met één supplement; slaap, grenzen en herstel zijn de eerste stappen.",
     searchPhrases: ["cortisol verlagen", "cortisol hoog symptomen", "cortisol slaap"],
@@ -203,7 +215,7 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "Melatonine signaleert duisternis aan je brein; fel avondlicht en schermen verstoren die aanmaak.",
     coverTitle: "Melatonine: wanneer wel en niet innemen?",
     inlineAlt:
-      "Nachtelijke hemel — natuurlijke melatonine en het licht-donkerritme",
+      "Maansikkel aan de nachthemel — melatonine volgt het donker",
     inlineCaption:
       "Melatonine helpt soms bij jetlag of ritmeverstoring; voor chronische slaapproblemen is gedrag vaak effectiever.",
     searchPhrases: ["melatonine innemen", "melatonine slaap", "melatonine bijwerkingen"],
@@ -215,7 +227,7 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "Mitochondriën maken ATP uit voeding en zuurstof — de energiecentrales van vrijwel elke cel.",
     coverTitle: "Mitochondriën: wat doen ze in je lichaam?",
     inlineAlt:
-      "Zonlicht door bomen — mitochondriale functie en zuurstofgebruik",
+      "Bergmeer met spiegelbeeld — rust en herstel voor mitochondriale functie",
     inlineCaption:
       "Beweging en slaap ondersteunen mitochondriale gezondheid; supplementclaims lopen vaak voor op het bewijs uit.",
     searchPhrases: ["mitochondriën functie", "mitochondriën energie", "cellulaire energie"],
@@ -227,7 +239,7 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "De nervus vagus is de grote rem van je stresssysteem; trage uitademing kan hem activeren.",
     coverTitle: "Nervus vagus stimuleren met ademhaling",
     inlineAlt:
-      "Besneeuwde bergen bij nacht — kalmeren via de nervus vagus",
+      "Besneeuwde bergtop in roze avondlicht met maan — kalmeren via de nervus vagus",
     inlineCaption:
       "Ademhaling, sociale verbinding en slaap activeren de vagusbundel effectiever dan de meeste supplementen.",
     searchPhrases: ["nervus vagus", "vagus zenuw ontspanning", "vagus ademhaling"],
@@ -251,7 +263,7 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "Testosteron ondersteunt spier, libido en herstel; slaap en overgewicht wegen zwaarder dan de meeste pillen.",
     coverTitle: "Testosteron na 30: wat verandert?",
     inlineAlt:
-      "Berglandschap — vitaliteit en hormoonbalans bij testosteron",
+      "Man tilt een halterstang — krachttraining en testosteron",
     inlineCaption:
       "Krachttraining en voldoende slaap ondersteunen testosteron; supplementen met grote claims zijn zelden bewezen.",
     searchPhrases: ["testosteron laag man", "testosteron verhogen natuurlijk", "testosteron na 40"],
@@ -275,14 +287,14 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "Sociale verbinding is een van de sterkste voorspellers van herstel en levensduur, naast slaap en beweging.",
     coverTitle: "Sociale verbinding en longevity",
     inlineAlt:
-      "Cappuccino op hout — ontmoeting en sociale steun voor herstel",
+      "Vrienden lachen samen aan tafel — ontmoeting en sociale steun voor herstel",
     inlineCaption:
       "Eenzaamheid verhoogt stress en verlaagt herstel; relaties zijn geen luxe maar onderdeel van gezondheid.",
     searchPhrases: ["sociale verbinding gezondheid", "eenzaamheid stress", "sociaal netwerk longevity"],
   },
   magnesiumvormen: {
     coverAlt:
-      "Magnesiumvormen vergeleken — bladgroenten en zaden op een werkblad",
+      "Saladebar met schaaltjes groenten, bonen en kaas — magnesiumvormen vergeleken",
     coverCaption:
       "Magnesiumoxide, citraat en bisglycinaat verschillen in opname en darmtolerantie — niet inwisselbaar op het etiket.",
     coverTitle: "Magnesiumvormen: oxide, citraat of bisglycinaat?",
@@ -362,7 +374,7 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
   },
   "oxidatieve-stress": {
     coverAlt:
-      "Oxidatieve stress — berglandschap in helder daglicht",
+      "Bergtoppen boven een wolkendek bij zonsondergang — oxidatieve stress",
     coverCaption:
       "Oxidatieve stress is een disbalans tussen vrije radicalen en antioxidanten — training maakt hem tijdelijk, ziekte langer.",
     coverTitle: "Oxidatieve stress: wat betekent het?",
@@ -379,7 +391,7 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "Een multivitamine vult micronutriëntgaten; de basis blijft een gevarieerd voedingspatroon met groenten en vis.",
     coverTitle: "Multivitamine zinvol na 40?",
     inlineAlt:
-      "Gevarieerd bord met groenten en vis — voeding vóór een multivitamine",
+      "Fruit en bessen op een witte ondergrond — voeding vóór een multivitamine",
     inlineCaption:
       "Voor de meeste gezonde volwassenen is een multi geen vervanging van tekorten die je beter gericht aanpakt.",
     searchPhrases: ["multivitamine zinvol", "multivitamine na 40", "multi supplement nodig"],
@@ -398,7 +410,7 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
   },
   scoregewichten: {
     coverAlt:
-      "Scoregewichten PS-Score — afgemeten kruiden op een houten lepel",
+      "Gedroogde theebladeren op een houten lepel — scoregewichten PS-Score",
     coverCaption:
       "Dosering weegt 30%, vorm 25%, claimdekking, transparantie en toetsing elk 15% — bewuste redactionele keuzes.",
     coverTitle: "Scoregewichten in de PS-Score uitgelegd",

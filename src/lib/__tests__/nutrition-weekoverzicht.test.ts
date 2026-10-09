@@ -1,6 +1,8 @@
+import { STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 import { describe, expect, it } from "vitest";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import {
+  bouwPeriodeOverzicht,
   bouwWeekoverzicht,
   verschuifWeek,
   weekDatums,
@@ -54,7 +56,7 @@ describe("bouwWeekoverzicht", () => {
       dag("2026-09-07", [{ key: "havermout", grams: 40 }]),
     ];
 
-    const week = bouwWeekoverzicht(dagen, "2026-09-14");
+    const week = bouwWeekoverzicht(dagen, "2026-09-14", STANDAARD_NORMEN);
     expect(week.dagenGeregistreerd).toBe(2);
     expect(week.start).toBe("2026-09-14");
     expect(week.eind).toBe("2026-09-20");
@@ -65,11 +67,11 @@ describe("bouwWeekoverzicht", () => {
     const dagen = [
       dag("2026-09-14", [{ key: "havermout", grams: 100 }]),
       dag("2026-09-15", [{ key: "havermout", grams: 100 }]),
-      dag("2026-09-16", [{ key: "witbrood", grams: 100 }]),
-      dag("2026-09-17", [{ key: "witbrood", grams: 100 }]),
+      dag("2026-09-16", [{ key: "pizza", grams: 100 }]),
+      dag("2026-09-17", [{ key: "pizza", grams: 100 }]),
     ];
 
-    const week = bouwWeekoverzicht(dagen, "2026-09-14");
+    const week = bouwWeekoverzicht(dagen, "2026-09-14", STANDAARD_NORMEN);
     const magnesium = week.rijen.find((r) => r.nutrient === "magnesium")!;
 
     expect(week.dagenGeregistreerd).toBe(4);
@@ -78,8 +80,20 @@ describe("bouwWeekoverzicht", () => {
     expect(magnesium.dagenMetBron).toBeLessThan(week.dagenGeregistreerd);
   });
 
+  it("telt een benadering mee als ≈, maar geeft er geen 'gehaald' op (§1b)", () => {
+    const dagen = [dag("2026-09-14", [{ key: "kipdij", grams: 2000 }])];
+    const magnesium = bouwWeekoverzicht(dagen, "2026-09-14", STANDAARD_NORMEN).rijen.find(
+      (r) => r.nutrient === "magnesium",
+    )!;
+
+    expect(magnesium.gemiddeld).toBe(520);
+    expect(magnesium.aandeel).toBeGreaterThanOrEqual(1);
+    expect(magnesium.benaderd).toBe(true);
+    expect(magnesium.gedekt).toBe(false);
+  });
+
   it("geeft geen te-gaan zonder meting, en nooit een negatief getal", () => {
-    const leeg = bouwWeekoverzicht([], "2026-09-14");
+    const leeg = bouwWeekoverzicht([], "2026-09-14", STANDAARD_NORMEN);
     for (const rij of leeg.rijen) {
       expect(rij.teGaan).toBeNull();
       expect(rij.gedekt).not.toBe(true);
@@ -88,7 +102,7 @@ describe("bouwWeekoverzicht", () => {
 
   it("markeert zink en vitamine D als niet bewijsbaar en geeft ze geen oordeel", () => {
     const dagen = [dag("2026-09-14", [{ key: "havermout", grams: 100 }])];
-    const week = bouwWeekoverzicht(dagen, "2026-09-14");
+    const week = bouwWeekoverzicht(dagen, "2026-09-14", STANDAARD_NORMEN);
 
     const zink = week.rijen.find((r) => r.nutrient === "zinc")!;
     const vitD = week.rijen.find((r) => r.nutrient === "vitamin_d")!;
@@ -105,7 +119,7 @@ describe("bouwWeekoverzicht", () => {
     // `referentie !== null` let, geeft ze alsnog een afstand. Dat is precies
     // het oordeel dat §3.4 van het besluit verbiedt voor onbewijsbare stoffen.
     const dagen = [dag("2026-09-14", [{ key: "havermout", grams: 100 }])];
-    const week = bouwWeekoverzicht(dagen, "2026-09-14");
+    const week = bouwWeekoverzicht(dagen, "2026-09-14", STANDAARD_NORMEN);
 
     const zink = week.rijen.find((r) => r.nutrient === "zinc")!;
     const vitD = week.rijen.find((r) => r.nutrient === "vitamin_d")!;
@@ -117,7 +131,7 @@ describe("bouwWeekoverzicht", () => {
   it("geeft eiwit geen referentie — dat doel komt uit gewicht en belasting", () => {
     const week = bouwWeekoverzicht(
       [dag("2026-09-14", [{ key: "havermout", grams: 100 }])],
-      "2026-09-14",
+      "2026-09-14", STANDAARD_NORMEN
     );
     const eiwit = week.rijen.find((r) => r.nutrient === "protein")!;
     expect(eiwit.referentie).toBeNull();
@@ -126,9 +140,48 @@ describe("bouwWeekoverzicht", () => {
   });
 
   it("draagt per rij een route naar de vergelijkingspagina", () => {
-    const week = bouwWeekoverzicht([], "2026-09-14");
+    const week = bouwWeekoverzicht([], "2026-09-14", STANDAARD_NORMEN);
     for (const rij of week.rijen) {
       expect(rij.comparisonPath).toMatch(/^\/beste\//);
     }
+  });
+});
+
+describe("bouwPeriodeOverzicht", () => {
+  const visolie = (date: string, capsules: number): DagboekDag => ({
+    date,
+    soort: "doordeweeks",
+    porties: {},
+    items: [
+      { moment: "ontbijt", bron: "supplement", key: "visolie-capsule-1000mg", grams: capsules },
+    ] as unknown as DagboekDag["items"],
+  });
+  const datums = weekDatums("2026-09-14");
+
+  it("leest omega-3 als periodetotaal tegen de norm × kalenderdagen", () => {
+    // 2 × 300 mg op één dag, plus een dag zonder omega-3: 600 mg in 7 dagen.
+    const dagen = [visolie("2026-09-14", 2), dag("2026-09-15", [{ key: "havermout", grams: 50 }])];
+    const omega = bouwPeriodeOverzicht(dagen, datums, STANDAARD_NORMEN, { omega3AlsPeriodetotaal: true })
+      .rijen.find((rij) => rij.nutrient === "omega3")!;
+
+    expect(omega).toMatchObject({ lezing: "periodetotaal", totaal: 600, normPeriode: 1750, gedekt: false });
+    expect(omega.aandeel).toBeCloseTo(600 / 1750);
+    expect(omega.teGaan).toBe(1150);
+  });
+
+  it("geeft één visdag op twee geregistreerde dagen geen honderden procenten meer", () => {
+    const dagen = [visolie("2026-09-14", 6), dag("2026-09-15", [{ key: "havermout", grams: 50 }])];
+    const perDag = bouwPeriodeOverzicht(dagen, datums, STANDAARD_NORMEN).rijen.find((r) => r.nutrient === "omega3")!;
+    const totaal = bouwPeriodeOverzicht(dagen, datums, STANDAARD_NORMEN, { omega3AlsPeriodetotaal: true })
+      .rijen.find((r) => r.nutrient === "omega3")!;
+
+    expect(perDag.aandeel).toBeCloseTo(3.6);
+    expect(totaal.aandeel).toBeCloseTo(1800 / 1750);
+    expect(totaal.gedekt).toBe(true);
+  });
+
+  it("laat de andere stoffen per dag lezen", () => {
+    const rijen = bouwPeriodeOverzicht([], datums, STANDAARD_NORMEN, { omega3AlsPeriodetotaal: true }).rijen;
+    expect(rijen.filter((rij) => rij.lezing === "periodetotaal").map((rij) => rij.nutrient)).toEqual(["omega3"]);
   });
 });

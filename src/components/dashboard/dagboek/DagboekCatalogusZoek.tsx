@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { catalogEntry, searchCatalog, type CatalogEntry } from "@/data/nutrition/food-catalog";
 import { nutrientReferences, type NutrientId } from "@/data/nutrition/intake-reference";
 import {
@@ -8,20 +8,46 @@ import {
   supplementCatalogEntry,
   type SupplementCatalogEntry,
 } from "@/data/nutrition/supplement-catalog";
+import SupermarktBronRegel from "@/components/dashboard/dagboek/SupermarktBronRegel";
+import FoodGroupTile from "@/components/dashboard/voortgang/FoodGroupTile";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import SupplementThumbnail from "@/components/dashboard/voortgang/SupplementThumbnail";
 import * as Icons from "@/components/app/icons";
 import type { DagboekFavoriet } from "@/lib/account-dagboek-favorieten";
-import type { DagboekItem, DagboekItemBron } from "@/lib/nutrition-dagboek-items";
+import {
+  supplementVanItem,
+  type DagboekItem,
+  type DagboekItemBron,
+  type DagboekSupplementProduct,
+} from "@/lib/nutrition-dagboek-items";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
+import { zonderCatalogusDubbelen } from "@/lib/zoek-dubbelen";
+import { tegelVoorNevoGroep, VERPAKT_TEGEL } from "@/lib/voedselgroep-tegel";
+import { MIN_ZOEK_LENGTE, zoekSupermarktProductenViaApi } from "@/lib/supermarkt-producten-client";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
 
 const MAX_TREFFERS = 8;
 
+/** Wachttijd na de laatste toetsaanslag voordat de server wordt bevraagd. */
+const ZOEK_DEBOUNCE_MS = 250;
+
+/** Eén stabiele lege lijst, zodat een afgeleide waarde de `useMemo` hieronder niet bij elke render ongeldig maakt. */
+const GEEN_PRODUCTEN: readonly SupermarktProduct[] = [];
+const GEEN_GEKOZEN: readonly GekozenSupplement[] = [];
+
 type Resultaat =
   | { bron: "voeding"; entry: CatalogEntry }
-  | { bron: "supplement"; entry: SupplementCatalogEntry };
+  | { bron: "supplement"; entry: SupplementCatalogEntry; product?: DagboekSupplementProduct }
+  | { bron: "supermarkt"; product: SupermarktProduct };
 
-type TabId = "alle" | "producten" | "supplementen";
+/** Een merkproduct dat je in Keuze koos, met zijn etiket per dag. */
+export type GekozenSupplement = { key: string; product: DagboekSupplementProduct };
+
+export type DagboekZoekTab = "alle" | "producten" | "supplementen";
+type TabId = DagboekZoekTab;
+
+/** Wat er in het zoekveld stond, zodat terug uit een portie je bij dezelfde lijst brengt. */
+export type ZoekStaat = { zoek: string; tab: DagboekZoekTab };
 
 const TABS: readonly { id: TabId; label: string }[] = [
   { id: "alle", label: "Alle" },
@@ -36,6 +62,12 @@ function resultaatVoor(bron: DagboekItemBron, key: string): Resultaat | null {
   }
   const entry = supplementCatalogEntry(key);
   return entry ? { bron: "supplement", entry } : null;
+}
+
+function resultaatVanItem(item: Pick<DagboekItem, "bron" | "key" | "product">): Resultaat | null {
+  if (!item.product) return resultaatVoor(item.bron, item.key);
+  const entry = supplementVanItem(item);
+  return entry ? { bron: "supplement", entry, product: item.product } : null;
 }
 
 /**
@@ -57,33 +89,96 @@ function resultaatVoor(bron: DagboekItemBron, key: string): Resultaat | null {
  */
 export default function DagboekCatalogusZoek({
   nutrient = null,
+  startTab = "alle",
+  startZoek = "",
+  onStaatChange,
   eerderGebruikt,
   favorieten,
+  gekozenSupplementen = GEEN_GEKOZEN,
   moment,
   onMomentChange,
   onKies,
+  onKiesSupermarkt,
   onBewaarFavoriet,
   onVerwijderFavoriet,
   onTerug,
+  onVergelijk,
   busyFavoriet = false,
 }: {
   /** De stof waarvandaan je kwam — bepaalt alleen de titel. Null vanuit een maaltijd. */
   nutrient?: NutrientId | null;
+  /** Het tabblad waarop het scherm opent, bijv. "supplementen" na een ster in Je patroon. */
+  startTab?: DagboekZoekTab;
+  /** De zoekterm waarmee het scherm opent, bijv. bij terug uit een portie. */
+  startZoek?: string;
+  /** Meldt zoekterm en tab bij elke wijziging (en bij openen), voor het terugkeerpunt. */
+  onStaatChange?: (staat: ZoekStaat) => void;
   /** Items uit eerdere dagen, meest recent eerst — voor de "eerder gebruikt"-lijst. */
   eerderGebruikt: readonly DagboekItem[];
   /** Handmatig bewaarde favorieten, ongeacht geschiedenis. */
   favorieten: readonly DagboekFavoriet[];
+  /** De supplementen die je in Keuze koos: bovenaan "Mijn supplementen". */
+  gekozenSupplementen?: readonly GekozenSupplement[];
   /** Het eetmoment waar de keuze straks aan toegevoegd wordt — hier al te kiezen, zoals MyFitnessPal's dropdown. */
   moment: EetmomentId;
   onMomentChange: (moment: EetmomentId) => void;
-  onKies: (bron: DagboekItemBron, key: string) => void;
+  /** `product` alleen bij een merkproduct uit Keuze. */
+  onKies: (bron: DagboekItemBron, key: string, product?: DagboekSupplementProduct) => void;
+  /**
+   * Los van `onKies`: een supermarktproduct is geen `DagboekItemBron` (zie
+   * `nutrition-supermarkt-items.ts`) en heeft dus geen plek in die signature.
+   * Alleen relevant vanuit een maaltijd (`nutrient` null) — een
+   * supermarktproduct draagt geen `NutrientId`-bijdrage. Krijgt het hele
+   * product mee: de catalogus staat server-side, dus het portiescherm kan het
+   * niet zelf opzoeken.
+   */
+  onKiesSupermarkt: (product: SupermarktProduct) => void;
   onBewaarFavoriet: (bron: DagboekItemBron, key: string) => void;
   onVerwijderFavoriet: (bron: DagboekItemBron, key: string) => void;
   onTerug: () => void;
+  /** Opent "Vergelijk producten": je vergelijkt op het moment dat je kiest wat je toevoegt. */
+  onVergelijk?: () => void;
   busyFavoriet?: boolean;
 }) {
-  const [zoek, setZoek] = useState("");
-  const [tab, setTab] = useState<TabId>("alle");
+  const [zoek, setZoek] = useState(startZoek);
+  const [tab, setTab] = useState<TabId>(startTab);
+  useEffect(() => {
+    onStaatChange?.({ zoek, tab });
+  }, [zoek, tab, onStaatChange]);
+
+  /** De laatst ontvangen supermarkttreffers, en voor welke zoekterm ze gelden. */
+  const [supermarktRespons, setSupermarktRespons] = useState<{
+    term: string;
+    producten: SupermarktProduct[];
+  }>({ term: "", producten: [] });
+
+  // Supermarktproducten staan server-side (`sm_products`); zoeken is dus een
+  // verzoek, met debounce en afbreken zodat een trage vorige zoekopdracht een
+  // nieuwere nooit overschrijft. Niet vanuit een nutriëntdetail: een
+  // supermarktproduct draagt geen `NutrientId`-bijdrage.
+  const supermarktTerm = zoek.trim();
+  const zoektSupermarkt = !nutrient && supermarktTerm.length >= MIN_ZOEK_LENGTE;
+
+  useEffect(() => {
+    if (!zoektSupermarkt) return;
+    const controller = new AbortController();
+    const timer = setTimeout(() => {
+      void zoekSupermarktProductenViaApi(supermarktTerm, controller.signal).then((producten) => {
+        if (controller.signal.aborted) return;
+        setSupermarktRespons({ term: supermarktTerm, producten });
+      });
+    }, ZOEK_DEBOUNCE_MS);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [zoektSupermarkt, supermarktTerm]);
+
+  // Afgeleid, niet gezet: onder de drempel of vanuit een nutriëntdetail zijn er
+  // geen supermarkttreffers, en tot het antwoord op de nieuwste term binnen is
+  // blijven de vorige treffers staan in plaats van bij elke toets te knipperen.
+  const supermarktTreffers = zoektSupermarkt ? supermarktRespons.producten : GEEN_PRODUCTEN;
+  const supermarktBezig = zoektSupermarkt && supermarktRespons.term !== supermarktTerm;
 
   const momentLabel = EETMOMENTEN.find((m) => m.id === moment)?.label.toLowerCase() ?? "je dag";
 
@@ -96,7 +191,7 @@ export default function DagboekCatalogusZoek({
     for (const item of eerderGebruikt) {
       const dedupSleutel = `${item.bron}:${item.key}`;
       if (gezien.has(dedupSleutel)) continue;
-      const resultaat = resultaatVoor(item.bron, item.key);
+      const resultaat = resultaatVanItem(item);
       if (!resultaat) continue;
       gezien.add(dedupSleutel);
       uit.push(resultaat);
@@ -108,19 +203,32 @@ export default function DagboekCatalogusZoek({
   const treffers = useMemo((): Resultaat[] => {
     const term = zoek.trim();
     if (!term) return [];
-    const voeding = searchCatalog(term, MAX_TREFFERS).map(
-      (entry): Resultaat => ({ bron: "voeding", entry }),
-    );
+    const catalogusTreffers = searchCatalog(term, MAX_TREFFERS);
+    const voeding = catalogusTreffers.map((entry): Resultaat => ({ bron: "voeding", entry }));
     const supplementen = searchSupplementCatalog(term, MAX_TREFFERS).map(
       (entry): Resultaat => ({ bron: "supplement", entry }),
     );
-    return [...voeding, ...supplementen].slice(0, MAX_TREFFERS * 2);
-  }, [zoek]);
+    const supermarkt = zonderCatalogusDubbelen(supermarktTreffers, catalogusTreffers).map(
+      (product): Resultaat => ({ bron: "supermarkt", product }),
+    );
+    return [...voeding, ...supplementen, ...supermarkt].slice(0, MAX_TREFFERS * 3);
+  }, [zoek, supermarktTreffers]);
 
-  /** "Mijn producten"/"Mijn supplementen": favorieten eerst, dan de rest van de geschiedenis van die bron. */
+  /**
+   * "Mijn producten"/"Mijn supplementen": bij supplementen eerst wat je in
+   * Keuze koos, dan favorieten, dan de rest van de geschiedenis van die bron.
+   */
   function mijnLijst(bron: DagboekItemBron): Resultaat[] {
     const gezien = new Set<string>();
     const uit: Resultaat[] = [];
+    if (bron === "supplement") {
+      for (const gekozen of gekozenSupplementen) {
+        const resultaat = resultaatVanItem({ bron, ...gekozen });
+        if (!resultaat || gezien.has(gekozen.key)) continue;
+        gezien.add(gekozen.key);
+        uit.push(resultaat);
+      }
+    }
     for (const favoriet of favorieten) {
       if (favoriet.bron !== bron || gezien.has(favoriet.key)) continue;
       const resultaat = resultaatVoor(favoriet.bron, favoriet.key);
@@ -130,7 +238,7 @@ export default function DagboekCatalogusZoek({
     }
     for (const item of eerderGebruikt) {
       if (item.bron !== bron || gezien.has(item.key)) continue;
-      const resultaat = resultaatVoor(item.bron, item.key);
+      const resultaat = resultaatVanItem(item);
       if (!resultaat) continue;
       gezien.add(item.key);
       uit.push(resultaat);
@@ -148,10 +256,15 @@ export default function DagboekCatalogusZoek({
         : mijnLijst("supplement");
 
   const toontEerderGebruikt = tab === "alle" && !zoek.trim();
+  const getoondeSupermarktProducten = resultaten.flatMap((resultaat) =>
+    resultaat.bron === "supermarkt" ? [resultaat.product] : [],
+  );
   const legeMelding =
     tab === "alle"
       ? zoek.trim()
-        ? "Niets gevonden."
+        ? supermarktBezig
+          ? "Zoeken…"
+          : "Niets gevonden."
         : "Nog niets eerder geregistreerd."
       : tab === "producten"
         ? "Nog geen voedingsmiddelen bewaard of gebruikt."
@@ -171,6 +284,15 @@ export default function DagboekCatalogusZoek({
         <h2 className="m-0 min-w-0 flex-1 truncate font-serif text-[16px] font-normal text-[var(--vd-ink)]">
           {nutrient ? `Voeg toe bij ${nutrientReferences[nutrient].label.toLowerCase()}` : `Voeg toe aan ${momentLabel}`}
         </h2>
+        {onVergelijk ? (
+          <button
+            type="button"
+            onClick={onVergelijk}
+            className="flex-none cursor-pointer whitespace-nowrap rounded-lg border border-white/15 bg-white/[0.03] px-2.5 py-1 text-[11px] font-semibold text-[var(--vd-ink-2)] transition-colors hover:border-[var(--vd-sage)] hover:text-[var(--vd-sage-2)]"
+          >
+            Vergelijk producten
+          </button>
+        ) : null}
       </header>
 
       <section className="overflow-hidden rounded-2xl border border-white/10">
@@ -268,6 +390,32 @@ export default function DagboekCatalogusZoek({
           ) : (
             <ul className="m-0 list-none divide-y divide-white/[0.06] p-0">
               {resultaten.map((resultaat) => {
+                if (resultaat.bron === "supermarkt") {
+                  const product = resultaat.product;
+                  const tegel = product.bron === "nevo" ? tegelVoorNevoGroep(product.categorie ?? "") : VERPAKT_TEGEL;
+                  return (
+                    <li key={`supermarkt-${product.prodId}`} className="flex items-center">
+                      <button
+                        type="button"
+                        onClick={() => onKiesSupermarkt(product)}
+                        className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
+                      >
+                        <span className="flex min-w-0 items-center gap-2">
+                          <FoodGroupTile icoon={tegel.icoon} label={tegel.label} size={40} />
+                          <span className="min-w-0">
+                            <span className="block truncate text-[13px] text-[var(--vd-ink)]">
+                              {product.naam}
+                            </span>
+                            <span className="block text-[10px] text-[var(--vd-ink-4)]">
+                              {product.merk ?? "Verpakt product"}
+                            </span>
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  );
+                }
+
                 const key = `${resultaat.bron}-${resultaat.entry.key}`;
                 const label = resultaat.entry.labelNl;
                 const portieLabel = resultaat.entry.porties[0]?.labelNl ?? "";
@@ -276,7 +424,9 @@ export default function DagboekCatalogusZoek({
                   <li key={key} className="flex items-center">
                     <button
                       type="button"
-                      onClick={() => onKies(resultaat.bron, resultaat.entry.key)}
+                      onClick={() =>
+                        onKies(resultaat.bron, resultaat.entry.key, resultaat.bron === "supplement" ? resultaat.product : undefined)
+                      }
                       className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-white/[0.06]"
                     >
                       <span className="flex min-w-0 items-center gap-2">
@@ -290,40 +440,50 @@ export default function DagboekCatalogusZoek({
                             {label}
                           </span>
                           {resultaat.bron === "supplement" ? (
-                            <span className="block text-[10px] text-[var(--vd-ink-4)]">supplement</span>
+                            <span className="block text-[10px] text-[var(--vd-ink-4)]">
+                              {resultaat.product ? "supplement · jouw keuze" : "supplement"}
+                            </span>
                           ) : null}
                         </span>
                       </span>
                       <span className="shrink-0 text-[10.5px] text-[var(--vd-ink-4)]">{portieLabel}</span>
                     </button>
-                    <button
-                      type="button"
-                      disabled={busyFavoriet}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        if (bewaard) {
-                          onVerwijderFavoriet(resultaat.bron, resultaat.entry.key);
-                        } else {
-                          onBewaarFavoriet(resultaat.bron, resultaat.entry.key);
+                    {resultaat.bron === "supplement" && resultaat.product ? null : (
+                      <button
+                        type="button"
+                        disabled={busyFavoriet}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          if (bewaard) {
+                            onVerwijderFavoriet(resultaat.bron, resultaat.entry.key);
+                          } else {
+                            onBewaarFavoriet(resultaat.bron, resultaat.entry.key);
+                          }
+                        }}
+                        aria-label={
+                          bewaard
+                            ? `Verwijder ${label} uit favorieten`
+                            : `Bewaar ${label} als favoriet`
                         }
-                      }}
-                      aria-label={
-                        bewaard
-                          ? `Verwijder ${label} uit favorieten`
-                          : `Bewaar ${label} als favoriet`
-                      }
-                      aria-pressed={bewaard}
-                      className={`mr-3 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
-                        bewaard ? "text-[var(--vd-amber)]" : "text-[var(--vd-ink-4)] hover:text-[var(--vd-amber)]"
-                      }`}
-                    >
-                      <Icons.Star s={16} filled={bewaard} />
-                    </button>
+                        aria-pressed={bewaard}
+                        className={`mr-3 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
+                          bewaard ? "text-[var(--vd-amber)]" : "text-[var(--vd-ink-4)] hover:text-[var(--vd-amber)]"
+                        }`}
+                      >
+                        <Icons.Star s={16} filled={bewaard} />
+                      </button>
+                    )}
                   </li>
                 );
               })}
             </ul>
           )}
+
+          {getoondeSupermarktProducten.length > 0 ? (
+            <div className="border-t border-white/[0.06] px-3 py-2">
+              <SupermarktBronRegel producten={getoondeSupermarktProducten} />
+            </div>
+          ) : null}
         </div>
       </section>
     </div>

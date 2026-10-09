@@ -10,7 +10,7 @@ const INTERVENTION_CATEGORIES: AgendaCategoryDef[] = (
     label: pillar.label,
     color: pillar.color,
     icon: pillar.icon,
-    selectable: true,
+    selectable: pillarId === "voeding",
     pillarId,
   };
 });
@@ -35,14 +35,14 @@ const ROUTINE_CATEGORIES: AgendaCategoryDef[] = [
     label: "Werk",
     color: "#78716c",
     icon: "Briefcase",
-    selectable: true,
+    selectable: false,
   },
   {
     id: "ontspanning",
     label: "Ontspanning",
     color: "#5B6EAE",
     icon: "Spark",
-    selectable: true,
+    selectable: false,
   },
   {
     id: "persoonlijke_routine",

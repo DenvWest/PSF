@@ -48,7 +48,7 @@ export const CONTENT_CHECKS: Record<ContentCheckId, ContentCheck> = {
   voeding: {
     id: "voeding",
     href: "/intake",
-    label: "voedingscheck",
+    label: "check 'Wat mis je?'",
     duurLabel: "1 minuut",
     pillarId: "voeding",
   },

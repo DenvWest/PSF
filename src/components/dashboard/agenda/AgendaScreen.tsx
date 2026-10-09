@@ -7,7 +7,6 @@ import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockShe
 import AgendaContextSidebar from "@/components/dashboard/agenda/AgendaContextSidebar";
 import AgendaDayTimeline from "@/components/dashboard/agenda/AgendaDayTimeline";
 import AgendaMonthGrid from "@/components/dashboard/agenda/AgendaMonthGrid";
-import { AgendaFocusPanel } from "@/components/dashboard/agenda/AgendaMetaRow";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
 import AgendaToolbar from "@/components/dashboard/agenda/AgendaToolbar";
@@ -17,12 +16,15 @@ import AgendaWeekTimeGrid, {
 } from "@/components/dashboard/agenda/AgendaWeekTimeGrid";
 import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
 import AgendaPriorityTestPanel from "@/components/dashboard/agenda/AgendaPriorityTestPanel";
+import AgendaDagKaart from "@/components/dashboard/agenda/AgendaDagKaart";
 import AgendaRhythmPanel, {
   selectRhythmItems,
 } from "@/components/dashboard/agenda/AgendaRhythmPanel";
 import type { AgendaStripDay } from "@/components/dashboard/agenda/AgendaWeekStrip";
 import type { AgendaWeekDayEntry } from "@/components/dashboard/agenda/AgendaWeekOverview";
 import type { RetimeBlockInput } from "@/components/dashboard/agenda/AgendaDayTimeline";
+import { NUTRIENT_IDS } from "@/data/nutrition/intake-reference";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { getAgendaCategory } from "@/data/agenda/categories";
 import {
   createAgendaBlock,
@@ -46,15 +48,13 @@ import { syncDashboardAgendaViewParam, syncDashboardDagParam } from "@/lib/dashb
 import type { AgendaViewId } from "@/lib/dashboard-url";
 import { deriveDefaultTimeBucket } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
-import { formatFocusLabel } from "@/lib/focus-label";
 import { isPlanStepHidden, resolveScheduledTime } from "@/lib/day-model";
 import { trackAgendaDaySelected, trackAgendaViewSet, trackEvent } from "@/lib/ga4";
+import { EIWIT_STAP_ID, eiwitPerMaaltijd } from "@/lib/agenda-eiwit-per-maaltijd";
+import { useKernstofNormen } from "@/lib/use-kernstof-normen";
+import { useTekortVoorstellen } from "@/lib/use-tekort-voorstellen";
 import { useStickyHeaderOffset } from "@/lib/use-sticky-header-offset";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
-import {
-  resetDashboardPriorityFocus,
-  saveDashboardPrioritySelection,
-} from "@/lib/dashboard-priority-selection";
 import {
   postDismissPlanStep,
   postRestorePlanStep,
@@ -67,7 +67,6 @@ import type {
   AccountPriorityPrefData,
   DashboardData,
   DashboardModel,
-  PillarId,
 } from "@/types/dashboard";
 
 type ScheduledTimeSurface = "agenda_day_schedule" | "agenda_timeline_drag";
@@ -161,7 +160,6 @@ export default function AgendaScreen({
   const [monthOverride, setMonthOverride] = useState<string | null>(null);
   const monthAnchor = monthOverride ?? selectedDate;
   const [monthSheetOpen, setMonthSheetOpen] = useState(false);
-  const [focusExpanded, setFocusExpanded] = useState(false);
   // Standaard ingeklapt: elk binnenkomen op het "dag"-scherm is een nieuwe
   // mount van AgendaScreen (tab-wissel unmount't de vorige sectie), dus een
   // vaste `true` hier opent het paneel bij ELK bezoek vanuit een ander
@@ -170,6 +168,18 @@ export default function AgendaScreen({
   // Mijn Dag blijft (view/dag wisselen remount't dit component niet).
   const [rhythmExpanded, setRhythmExpanded] = useState(false);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
+  const { dagen: tekortDagen, voorstellen } = useTekortVoorstellen(today);
+  const [planNutrient] = useState<NutrientId | null>(() => {
+    if (typeof window === "undefined") return null;
+    const value = new URLSearchParams(window.location.search).get("plan");
+    return value && (NUTRIENT_IDS as string[]).includes(value) ? (value as NutrientId) : null;
+  });
+  useEffect(() => {
+    if (!planNutrient) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("plan");
+    window.history.replaceState(null, "", url.toString());
+  }, [planNutrient]);
   const [weekAddOpen, setWeekAddOpen] = useState(false);
   const [weekDraftSlot, setWeekDraftSlot] = useState<WeekGridEmptySlot | null>(null);
   const footerActionsRef = useRef<{
@@ -178,6 +188,22 @@ export default function AgendaScreen({
   } | null>(null);
   const stickyOffset = useStickyHeaderOffset();
   const { items: favoriteItems } = useVoortgangFavorites();
+  const kernstofNormen = useKernstofNormen();
+  const vandaagDag = useMemo(
+    () => tekortDagen.find((dag) => dag.date === today) ?? null,
+    [tekortDagen, today],
+  );
+  const eiwitStapTitel = useMemo(() => {
+    const habit = model.activeHabit;
+    if (!habit || habit.stepId !== EIWIT_STAP_ID || isPlanStepHidden(model, { date: today })) {
+      return null;
+    }
+    return habit.title;
+  }, [model, today]);
+  const eiwitMaaltijden = useMemo(
+    () => (eiwitStapTitel ? eiwitPerMaaltijd(vandaagDag) : null),
+    [eiwitStapTitel, vandaagDag],
+  );
   const rhythmCount = selectRhythmItems(favoriteItems).length;
 
   const reportAgendaError = useCallback((error: unknown, fallback: string) => {
@@ -423,9 +449,6 @@ export default function AgendaScreen({
       if (nextWeekStart !== stripWeekDates[0]) {
         setSelectedBlockId(null);
       }
-      if (date !== today) {
-        setFocusExpanded(false);
-      }
       setMonthOverride(null);
       onSelectedDateChange(date);
       syncDashboardDagParam(date);
@@ -455,9 +478,6 @@ export default function AgendaScreen({
   const handleViewChange = useCallback(
     (nextView: AgendaViewId) => {
       setSelectedBlockId(null);
-      if (nextView !== "dag") {
-        setFocusExpanded(false);
-      }
       onViewChange(nextView);
       syncDashboardAgendaViewParam(nextView);
       trackAgendaViewSet({ view: nextView, surface: "agenda" });
@@ -617,46 +637,6 @@ export default function AgendaScreen({
     }
   };
 
-  const saveAgendaPriority = async (
-    pillarId: PillarId,
-    source: "user_selected" | "accept_engine",
-  ) => {
-    setPrefBusy(true);
-    try {
-      await saveDashboardPrioritySelection({
-        pillarId,
-        source,
-        surface: "agenda",
-        timeBucket: model.timeBucket ?? null,
-        scheduledTime: model.scheduledTime ?? null,
-        onPrefUpdated,
-      });
-    } finally {
-      setPrefBusy(false);
-    }
-  };
-
-  const handleResetFocus = async () => {
-    setPrefBusy(true);
-    try {
-      await resetDashboardPriorityFocus({ surface: "agenda", onPrefUpdated });
-    } finally {
-      setPrefBusy(false);
-    }
-  };
-
-  const closeFocus = useCallback(() => {
-    setFocusExpanded(false);
-  }, []);
-
-  const handleToggleFocus = useCallback(() => {
-    if (focusExpanded) {
-      closeFocus();
-      return;
-    }
-    setFocusExpanded(true);
-  }, [closeFocus, focusExpanded]);
-
   const handleToggleRhythm = useCallback(() => {
     setRhythmExpanded((prev) => {
       const next = !prev;
@@ -665,13 +645,6 @@ export default function AgendaScreen({
     });
   }, []);
 
-  const planHref = model.activeHabit?.planHref ?? null;
-  const focusLabel = focusExpanded ? "Sluit" : formatFocusLabel(model.priority.label);
-
-  const handlePlanLinkClick = () => {
-    trackEvent("dashboard_agenda_plan_click", { surface: "agenda_header" });
-    clarityTag("dashboard_agenda", "plan_link");
-  };
 
   const periodLabel =
     view === "dag"
@@ -720,7 +693,7 @@ export default function AgendaScreen({
     footerActionsRef.current?.openAddSheet();
   };
 
-  const handleVoortgangLink = (surface: "agenda" | "agenda_week_sidebar" = "agenda") => {
+  const handleVoortgangLink = (surface: "agenda" | "agenda_week_sidebar" | "agenda_patroon_regel" = "agenda") => {
     trackEvent("dashboard_agenda_voortgang_link_click", {
       surface,
     });
@@ -788,20 +761,6 @@ export default function AgendaScreen({
         rhythmCount={view === "dag" && selectedDate === today ? rhythmCount : 0}
         rhythmExpanded={rhythmExpanded}
         onToggleRhythm={handleToggleRhythm}
-        actions={
-          view === "dag"
-            ? {
-                planHref,
-                showFocus: selectedDate === today,
-                focusLabel,
-                focusExpanded,
-                priorityColor: model.priority.color,
-                prefBusy,
-                onToggleFocus: handleToggleFocus,
-                onPlanClick: handlePlanLinkClick,
-              }
-            : undefined
-        }
       />
 
       {agendaError ? (
@@ -822,21 +781,9 @@ export default function AgendaScreen({
         </div>
       ) : null}
 
-      {view === "dag" && selectedDate === today && focusExpanded ? (
-        <div className="mb-3">
-          <AgendaFocusPanel
-            model={model}
-            busy={prefBusy}
-            onSelectPillar={(pillarId) => void saveAgendaPriority(pillarId, "user_selected")}
-            onAcceptEngine={() =>
-              void saveAgendaPriority(model.enginePriority.id, "accept_engine")
-            }
-            onReset={() => void handleResetFocus()}
-          />
-        </div>
+      {view === "dag" && selectedDate === today && rhythmExpanded ? (
+        <AgendaRhythmPanel />
       ) : null}
-
-      {view === "dag" && selectedDate === today && rhythmExpanded ? <AgendaRhythmPanel /> : null}
 
       {view === "dag" && dayContext.kind === "orphan" ? (
         <p className="mb-3 text-[12.5px] leading-normal text-[#9FB0A6]">
@@ -862,12 +809,22 @@ export default function AgendaScreen({
           onPurgeBlock={handlePurgeBlock}
           onRetimeBlock={handleRetimeBlock}
           hiddenPlanStep={hiddenPlanStep}
+          eiwitMaaltijden={selectedDate === today ? eiwitMaaltijden : null}
           onDismissPlanStep={handleDismissPlanStep}
           onRestorePlanStep={handleRestorePlanStep}
           onHideAllPlanSteps={handleHideAllPlanSteps}
           onShowAllPlanSteps={handleShowAllPlanSteps}
-          onCloseFocus={closeFocus}
+          voorstellen={voorstellen}
+          autoOpenNutrient={planNutrient}
           onRegisterFooterActions={handleRegisterFooterActions}
+          aboveBlocks={
+            selectedDate === today ? (
+              <AgendaDagKaart
+                dag={vandaagDag}
+                normen={kernstofNormen}
+              />
+            ) : null
+          }
           weekStrip={
             <AgendaWeekStrip
               days={stripDays}
@@ -941,6 +898,7 @@ export default function AgendaScreen({
               initialStartTime={weekDraftSlot.startTime}
               initialEndTime={weekDraftSlot.endTime}
               createSurface="agenda_week_grid_tap"
+              voorstellen={voorstellen}
               onClose={closeWeekAddSheet}
               onSubmit={handleWeekCreateBlock}
             />

@@ -8,7 +8,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
   coverImage: "/images/blog/middagdip-bloedsuiker-na-40.jpg",
   coverImageAlt: "Kop koffie met stoom in zacht middaglicht",
   heroIntro:
-    "Half drie: je ogen vallen dicht achter je scherm. Nog één koffie, nog één koek — en een uur later voel je je alsnog leeg. Na je 30e is die middagdip vaker een signaal van schommelende bloedsuiker en [insulineresistentie](/kennisbank/insulineresistentie) op de achtergrond — geen karakterfout. Hier lees je wat er speelt en wat je praktisch kunt aanpassen, gekoppeld aan [energie na 30](/energie-na-40).",
+    "Half drie: je ogen vallen dicht achter je scherm. Nog één koffie, nog één koek — en een uur later voel je je alsnog leeg. Na je 30e is die middagdip vaker een signaal van schommelende bloedsuiker en [insulineresistentie](/kennisbank/insulineresistentie) op de achtergrond — geen karakterfout. Hier lees je wat er speelt en wat je praktisch kunt aanpassen, gekoppeld aan [energie na 30](/energie-en-voeding).",
   leestijd: "9 min",
   gepubliceerdOp: "2026-05-23",
   laatstBijgewerktOp: "2026-05-23",
@@ -48,13 +48,13 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "ATP, mitochondriën en de grotere energiefoto",
       tekst:
-        "Stabiele bloedsuiker is één laag; je cellen moeten glucose ook omzetten in bruikbare energie via [ATP](/kennisbank/atp) en [mitochondriën](/kennisbank/mitochondrien). Daarom werkt middagdip-aanpak het best samen met slaap, beweging en stress — lees de pillar [energie na 30](/energie-na-40) voor het weekplan.",
+        "Stabiele bloedsuiker is één laag; je cellen moeten glucose ook omzetten in bruikbare energie via [ATP](/kennisbank/atp) en [mitochondriën](/kennisbank/mitochondrien). Daarom werkt middagdip-aanpak het best samen met slaap, beweging en stress — lees de pillar [energie na 30](/energie-en-voeding) voor het weekplan.",
     },
     {
       type: "tekst",
       titel: "Turbo: ontdek jouw energieprofiel",
       tekst:
-        "In de [check](/intake) zie je of je voedingspatroon je bloedsuiker stabiel houdt — inclusief vragen over koffie, suiker en alcohol als energiebron. Herken je vooral leegte en weinig veerkracht? Bekijk het profiel [Lage energie](/profiel/lage-energie).",
+        "In de [check](/intake) zie je of je voedingspatroon je bloedsuiker stabiel houdt — inclusief vragen over koffie, suiker en alcohol als energiebron. Herken je vooral leegte en weinig veerkracht? Lees [energie en voeding](/energie-en-voeding).",
     },
   ],
   samenvatting:
@@ -67,7 +67,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 30",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Eiwitpoeder supplementen vergelijken",

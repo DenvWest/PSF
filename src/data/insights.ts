@@ -58,6 +58,7 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   insulineresistentie: "voeding",
   slaaphygiene: "slaap",
   "eiwitbehoefte-na-40": "voeding",
+  "opbouwtijd-supplement": "voeding",
   "nervus-vagus": "stress",
   slaapschuld: "slaap",
   adaptogens: "stress",
@@ -91,6 +92,7 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   "whey-etiket-lezen": "voeding",
   "is-whey-schadelijk": "voeding",
   "eiwit-en-whey-in-de-overgang": "voeding",
+  "supplementen-via-influencers-checklist": "voeding",
   "wei-eiwit": "voeding",
   leucinedrempel: "voeding",
 };

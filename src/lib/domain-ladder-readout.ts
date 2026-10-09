@@ -96,6 +96,8 @@ export type DomainLadderReadout = {
 export type LadderLayerReason =
   | {
       kind: "bewijs";
+      /** De sleutel van de feitenrij ("plantbasis", …), voor wat er per rij te doen is. */
+      rowKey: string;
       label: string;
       answerLabel: string;
       benchmarkLabel: string | null;
@@ -121,6 +123,7 @@ export function resolveLadderLayerReason(
     const row = rows.find((candidate) => candidate.status === "below") ?? rows[0];
     return {
       kind: "bewijs",
+      rowKey: row.key,
       label: row.label,
       answerLabel: row.answerLabel,
       benchmarkLabel: row.benchmarkLabel ?? null,

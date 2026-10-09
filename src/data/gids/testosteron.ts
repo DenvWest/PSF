@@ -37,5 +37,5 @@ export const testosteronGuide: GuideOptInData = {
     successMessage: "Check je inbox — je ontvangt de link naar de gids.",
   },
   pdfPath: null,
-  pillarHref: "/testosteron-na-40",
+  pillarHref: "/testosteron-en-voeding",
 };

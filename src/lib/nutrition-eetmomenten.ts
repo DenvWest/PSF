@@ -70,6 +70,14 @@ export type MomentInhoud = Partial<Record<VoedselgroepId, number>>;
  */
 export type DagMomenten = Partial<Record<EetmomentId, MomentInhoud>>;
 
+/** Het eetmoment dat bij de klok past: waar een nieuw product zonder gekozen maaltijd terechtkomt. */
+export function eetmomentVoorUur(uur: number): EetmomentId {
+  if (uur >= 5 && uur < 11) return "ontbijt";
+  if (uur >= 11 && uur < 15) return "lunch";
+  if (uur >= 17 && uur < 21) return "avondeten";
+  return "tussendoor";
+}
+
 export function isEetmomentId(value: string): value is EetmomentId {
   return EETMOMENTEN.some((moment) => moment.id === value);
 }

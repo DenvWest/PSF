@@ -143,7 +143,7 @@ describe("poort op laag 6", () => {
     );
     const gate = resolveNutritionGate(rows);
     expect(gate.open).toBe(false);
-    expect(gate.reason).toContain("plantbasis");
+    expect(gate.reason).toContain("groente en fruit");
   });
 
   it("blijft dicht op een frequentiegat op laag 2, dat je ook met eten dicht", () => {
@@ -195,7 +195,7 @@ describe("conclusiezin", () => {
   it("noemt de rij die de winst draagt, zonder cijfer of laagnummer", () => {
     const rows = buildNutritionFactRows(report({ vegetables: 0, fruit: 0, berries: 0 }));
     const headline = buildNutritionHeadline(rows);
-    expect(headline).toContain("plantbasis");
+    expect(headline).toContain("groente en fruit");
     expect(headline).not.toMatch(/\d/);
   });
 

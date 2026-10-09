@@ -115,8 +115,26 @@ export const DOMAIN_EVENT_TYPES = [
   // Dezelfde zoek-naar-portie-flow, maar geopend vanuit een maaltijdbalk
   // in plaats van een nutriëntdetail — `nutrient` is dan null in de payload.
   "nutrition.dagboek_maaltijd_geopend",
+  // "Niet gegeten" op een lege hoofdmaaltijd (aan/uit), zie
+  // BESLUIT_EETPATROON_OVERGESLAGEN_2026-10.md. Payload: moment, aan.
+  "nutrition.dagboek_maaltijd_overgeslagen",
+  // Richting (NUT_DOEL) gekozen in Je doelen, zie BESLUIT_VOEDINGSRICHTING_2026-10.md.
+  // Payload: richting (enum of "geen"), surface. Nooit vrije tekst.
+  "nutrition.voedingsrichting_gekozen",
+  // Doel-evaluatie in de contextkolom, zie BESLUIT_DOEL_ZONE_RICHTING_EVALUATIE_2026-10.md.
+  // Payload: stof (startstand) of keuze ("houden" | "veranderen"), nooit percentages of vrije tekst.
+  "doel.startstand_gelegd",
+  "doel.evaluatie_getoond",
+  "doel.evaluatie_keuze",
   "nutrition.dagboek_zoek_item_gekozen",
   "nutrition.dagboek_portie_bevestigd",
+  // Laag A (macro/micro-uitbreiding, zie BESLUIT_MACRO_MICRONUTRIENT_
+  // UITBREIDING_2026-09.md): een supermarktproduct-portie bevestigen. Los
+  // event van `dagboek_portie_bevestigd` omdat dit geen DagboekItem/
+  // tekortsysteem-registratie is — een eigen, parallelle opslag
+  // (account_supermarkt_portie_logs). Geen `nutrient`-payload: dit item
+  // draagt geen NutrientId.
+  "nutrition.dagboek_supermarkt_portie_bevestigd",
   // De ster-knop: bewaart een voedingsmiddel/supplement in "Mijn producten"/
   // "Mijn supplementen", los van de automatische geschiedenis. `bron` zegt
   // welk tabblad het raakt.

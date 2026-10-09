@@ -189,7 +189,7 @@ export async function PATCH(request: NextRequest) {
 
   if (!sessionId) {
     return NextResponse.json(
-      { error: "Doe eerst de Leefstijlcheck via /intake." },
+      { error: "Doe eerst de check via /intake." },
       { status: 401 },
     );
   }
@@ -292,7 +292,7 @@ export async function POST(request: NextRequest) {
 
   if (!sessionId) {
     return NextResponse.json(
-      { error: "Doe eerst de Leefstijlcheck via /intake." },
+      { error: "Doe eerst de check via /intake." },
       { status: 401 },
     );
   }

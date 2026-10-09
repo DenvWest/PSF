@@ -11,7 +11,7 @@ export const zinkEnTestosteronData: BlogArtikel = {
   coverCaption:
     "Zink houdt een normaal testosterongehalte in stand bij een tekort — extra bovenop voldoende inname is geen boost.",
   heroIntro:
-    "Zink staat op etiketten vaak in één adem met testosteron. Wat er werkelijk onderbouwd is, klinkt een stuk kalmer: bij voldoende inname draagt zink bij tot instandhouding van een normaal testosterongehalte in het bloed. Aanvullen wat ontbreekt, dus — geen boost bovenop normaal. Dit artikel verbindt [testosteron na 30](/testosteron-na-40) met onze [zink-vergelijking](/beste/zink) en het cluster [cortisol en testosteron](/blog/cortisol-en-testosteron).",
+    "Zink staat op etiketten vaak in één adem met testosteron. Wat er werkelijk onderbouwd is, klinkt een stuk kalmer: bij voldoende inname draagt zink bij tot instandhouding van een normaal testosterongehalte in het bloed. Aanvullen wat ontbreekt, dus — geen boost bovenop normaal. Dit artikel verbindt [testosteron na 30](/testosteron-en-voeding) met onze [zink-vergelijking](/beste/zink) en het cluster [cortisol en testosteron](/blog/cortisol-en-testosteron).",
   leestijd: "9 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-05-14",
@@ -32,7 +32,7 @@ export const zinkEnTestosteronData: BlogArtikel = {
       type: "opsomming",
       titel: "Praktische volgorde",
       items: [
-        "Slaap, krachttraining en stress eerst — zie [stress-pillar](/stress-verminderen-na-40).",
+        "Slaap, krachttraining en stress eerst — zie [stress-pillar](/stress-en-voeding).",
         "Laat hormoonwaarden meten bij aanhoudende klachten; geen zelf-diagnose.",
         "Vergelijk zink op vorm (picolinaat, methionine) en elementaire mg op [/beste/zink](/beste/zink).",
         "Gebruik de [check](/intake) om te zien of je voeding al genoeg zink levert.",
@@ -48,7 +48,7 @@ export const zinkEnTestosteronData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Pillar: testosteron na 30",
-    href: "/testosteron-na-40",
+    href: "/testosteron-en-voeding",
   },
   gerelateerdeSluggen: [
     "cortisol-en-testosteron",

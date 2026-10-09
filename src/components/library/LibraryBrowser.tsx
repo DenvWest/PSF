@@ -3,6 +3,7 @@
 import {
   useMemo,
   useRef,
+  useEffect,
   useState,
   type ReactNode,
 } from "react";
@@ -74,6 +75,12 @@ type LibraryBrowserProps = {
   footerSlot?: ReactNode;
 };
 
+const GROUP_PARAM = "onderwerp";
+const SEARCH_PARAM = "q";
+const FILTER_PARAM = "filter";
+const SORT_PARAM = "sorteer";
+const PAGE_PARAM = "pagina";
+
 /**
  * De bibliotheek-browser: één keuzekolom plus één lijst, gedeeld door de blog
  * en de kennisbank. De publiekslens herordent, de rest snijdt.
@@ -105,6 +112,47 @@ export default function LibraryBrowser({
   const lijstRef = useRef<HTMLDivElement | null>(null);
 
   const zoekTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [hersteld, setHersteld] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const gekozenGroep = params.get(GROUP_PARAM);
+    const gekozenPagina = Number(params.get(PAGE_PARAM));
+    const gekozenSort = params.get(SORT_PARAM);
+    const gekozenFilters = (params.get(FILTER_PARAM) ?? "")
+      .split(",")
+      .filter((key) => filters.some((filter) => filter.key === key));
+    /* eslint-disable react-hooks/set-state-in-effect -- eenmalig herstel uit de URL na hydratie */
+    if (gekozenGroep && groups.some((entry) => entry.key === gekozenGroep)) {
+      setGroup(gekozenGroep);
+    }
+    if (gekozenSort && sorts.some((entry) => entry.key === gekozenSort)) {
+      setSort(gekozenSort as LibrarySort);
+    }
+    setZoek(params.get(SEARCH_PARAM) ?? "");
+    setActieveFilters(gekozenFilters);
+    if (Number.isInteger(gekozenPagina) && gekozenPagina > 1) {
+      setPagina(gekozenPagina);
+    }
+    setHersteld(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!hersteld) return;
+    const url = new URL(window.location.href);
+    const zet = (key: string, waarde: string | null) => {
+      if (waarde) url.searchParams.set(key, waarde);
+      else url.searchParams.delete(key);
+    };
+    zet(GROUP_PARAM, group !== initialGroup ? group : null);
+    zet(SEARCH_PARAM, zoek.trim() || null);
+    zet(FILTER_PARAM, actieveFilters.join(",") || null);
+    zet(SORT_PARAM, sort !== (sorts[0]?.key ?? "nieuwste") ? sort : null);
+    zet(PAGE_PARAM, pagina > 1 ? String(pagina) : null);
+    window.history.replaceState(null, "", url.toString());
+  }, [hersteld, group, zoek, actieveFilters, sort, pagina, initialGroup, sorts]);
 
   const groupCounts = useMemo(() => countByGroup(items), [items]);
 

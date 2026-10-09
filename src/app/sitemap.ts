@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { PROFILE_SLUGS } from "@/data/profiles";
 import { GUIDE_SLUGS } from "@/data/gids";
 import { kennisbankTerms } from "@/data/kennisbank";
 import { alleArtikelen } from "@/data/blog";
@@ -135,14 +134,14 @@ function reviewDate(laatstBijgewerktOp: string | undefined): Date {
 }
 
 const PILLAR_PADEN = [
-  "/slaap-verbeteren-na-40",
-  "/stress-verminderen-na-40",
-  "/energie-na-40",
-  "/herstel-verbeteren-na-40",
+  "/slaap-en-voeding",
+  "/stress-en-voeding",
+  "/energie-en-voeding",
+  "/herstel-en-voeding",
   "/voeding-na-40",
-  "/beweging-na-40",
-  "/testosteron-na-40",
-  "/overgang",
+  "/beweging-en-voeding",
+  "/testosteron-en-voeding",
+  "/overgang-en-voeding",
 ] as const;
 
 /** Hubs en vaste pagina's zonder eigen wijzigingsdatum. */
@@ -156,7 +155,6 @@ const HUB_PADEN = [
   "/contact",
   "/methodologie",
   "/ps-score",
-  "/profiel",
 ] as const;
 
 /**
@@ -185,13 +183,13 @@ const JURIDISCHE_PADEN = [
   "/medische-disclaimer",
   "/juridisch",
   "/affiliate-disclosure",
+  "/bronnen",
 ] as const;
 
 type SitemapSectionId =
   | "vergelijkingen"
   | "supplementgidsen"
   | "pillars"
-  | "profielen"
   | "gezondheidsgidsen"
   | "voedingsstoffen"
   | "voedingRoute"
@@ -244,12 +242,6 @@ const SITEMAP_SECTIONS: Record<SitemapSectionId, () => Entry[] | Promise<Entry[]
       "monthly",
     ),
 
-  profielen: () =>
-    paths(
-      PROFILE_SLUGS.map((s) => `/profiel/${s}`),
-      0.8,
-      "monthly",
-    ),
 
   gezondheidsgidsen: () =>
     paths(

@@ -28,6 +28,7 @@ import type {
   NutritionLadderLayerId,
 } from "@/lib/nutrition-ladder";
 import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
+import type { KeuzeProduct } from "@/lib/supplement-hub/ps-score-per-stof";
 import type { LeefstijlLayerState } from "@/lib/leefstijl-ladder";
 import type { NutrientContribution } from "@/lib/nutrition-contribution";
 import type {
@@ -178,6 +179,8 @@ export type StatistiekenBlik = "stand" | "advies" | "tijd";
 export type DashboardTab = {
   id: DashboardTabId;
   label: string;
+  /** "tab" staat in de navigatie; "meer" is bereikbaar via het Meer-menu en `?tab=`. */
+  placement: "tab" | "meer";
   icon: DashboardIconName;
   title: string;
   /** Optioneel: alleen waar een ondertitel iets toevoegt dat de pagina zelf niet toont. */
@@ -461,6 +464,12 @@ export type DashboardData = {
   movementPrefs: MovementPrefs;
   /** Geldige supplementoordelen — ook de ingrediënten die op "nee" uitkomen. */
   supplementVerdicts: StoredSupplementVerdict[];
+  /**
+   * De producten van de vijf kernstoffen met PS-Score, uit dezelfde bron als
+   * `/supplementen` (database, statische terugval). Ontbreekt in dev-data;
+   * Keuze valt dan terug op de statische catalogus.
+   */
+  keuzeProducten?: KeuzeProduct[];
   /**
    * Gepersonaliseerde eiwit-dagrange (g/kg × gewicht), server-side berekend.
    * Nooit het ruwe gewicht — alleen de afgeleide range bereikt de client.

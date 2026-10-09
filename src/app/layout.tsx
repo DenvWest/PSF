@@ -1,26 +1,12 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { DM_Serif_Display, DM_Sans } from "next/font/google";
 import Script from "next/script";
 import AnalyticsLoader from "@/components/analytics/AnalyticsLoader";
 import CookieConsentBanner from "@/components/analytics/CookieConsentBanner";
 import WebVitalsReporter from "@/components/analytics/WebVitalsReporter";
 import AppShell from "@/components/layout/AppShell";
 import "./globals.css";
-
-const dmSerifDisplay = DM_Serif_Display({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-heading",
-  display: "swap",
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-body",
-  weight: ["300", "400", "500", "600"],
-  display: "swap",
-});
+import { siteSans, siteSerif } from "@/lib/fonts";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
@@ -33,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | PerfectSupplement",
   },
   description:
-    "Onafhankelijk leefstijladvies voor mannen 30+. Gratis Leefstijlcheck, onderbouwde gidsen en transparante supplementvergelijking — leefstijl eerst.",
+    "Onafhankelijk leefstijladvies voor mannen 30+. Gratis check 'Wat mis je?', onderbouwde gidsen en transparante supplementvergelijking — leefstijl eerst.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
@@ -50,7 +36,7 @@ export default function RootLayout({
     <html
       lang="nl"
       data-scroll-behavior="smooth"
-      className={`${dmSerifDisplay.variable} ${dmSans.variable}`}
+      className={`${siteSerif.variable} ${siteSans.variable}`}
     >
       <head>
         <meta

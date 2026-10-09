@@ -179,7 +179,7 @@ export const nurtureContent: Record<
         "Stress verminderen hoeft niet ingewikkeld te zijn. Het gaat niet om grote veranderingen, maar om kleine momenten van herstel verspreid over de dag.",
       ],
       tip: "Quick win #1: 4-7-8 ademhaling (3 minuten, 2× per dag). Quick win #2: Wandel 15 minuten na de lunch — het verlaagt cortisol meetbaar. Quick win #3: Schrijf 's avonds 3 dingen op die goed gingen vandaag.",
-      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-na-40" },
+      cta: { text: "Lees de praktische stressgids", url: "/stress-en-voeding" },
     },
     "In Balans": {
       subject: "3 optimalisaties voor wie al goed scoort",
@@ -215,7 +215,7 @@ export const nurtureContent: Record<
       ],
       // Overschreven op dag 7 door resolveLifestyleTipForDay (DAY_TIP_INDEX).
       tip: "Deze week: check je vispatroon en eiwitrijke maaltijden — voeding is de eerste hefboom voor energie.",
-      cta: { text: "Lees over energie na 30", url: "/energie-na-40" },
+      cta: { text: "Lees over energie na 30", url: "/energie-en-voeding" },
     },
     "Onrustige Slaper": {
       subject: "Slaap en brein: wat onderzoek laat zien",
@@ -227,7 +227,7 @@ export const nurtureContent: Record<
       ],
       // Overschreven op dag 7 door resolveLifestyleTipForDay (DAY_TIP_INDEX).
       tip: "Vaste bedtijd en gedimd licht het laatste halfuur — je zenuwstelsel heeft dat signaal nodig om af te schakelen.",
-      cta: { text: "Lees de slaapgids voor mannen 30+", url: "/slaap-verbeteren-na-40" },
+      cta: { text: "Lees de slaapgids voor mannen 30+", url: "/slaap-en-voeding" },
     },
     "Stressdrager": {
       subject: "Hoe chronische stress je lichaam beïnvloedt — en wat je kunt doen",
@@ -239,7 +239,7 @@ export const nurtureContent: Record<
       ],
       tip:
         "Focus deze week op één vaste routine: dezelfde bedtijd, 10 minuten wandelen na de lunch, en 3 minuten ademhaling voor het slapen.",
-      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-na-40" },
+      cta: { text: "Lees de praktische stressgids", url: "/stress-en-voeding" },
     },
     "In Balans": {
       subject: "Hoe je een goede basis vasthoudt na 30",
@@ -299,7 +299,7 @@ export const nurtureContent: Record<
         "Het effect van leefstijlveranderingen op cortisol is meetbaar na 2-4 weken. Je zit nu precies in die fase.",
       ],
       tip: "Voeg deze week iets toe: 5 minuten journaling voor het slapengaan. Schrijf op wat je bezighoudt — het 'legen' van je hoofd helpt je brein om los te laten.",
-      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-na-40" },
+      cta: { text: "Lees de praktische stressgids", url: "/stress-en-voeding" },
     },
     "In Balans": {
       subject: "Halverwege: hoe houd je dit vol?",
@@ -333,7 +333,7 @@ export const nurtureContent: Record<
       greeting: "Drie weken geleden startte je met je leefstijl-overzicht.",
       bodyParagraphs: [
         "Na drie weken begin je de grens te bereiken waar gewoontes makkelijker worden. De inspanning om je ochtendroutine vol te houden voelt minder — dat is je brein dat een nieuw patroon aanleert.",
-        "Over 9 dagen ontvang je een herinnering om de Leefstijlcheck opnieuw te doen. Dan kun je meten wat er veranderd is.",
+        "Over 9 dagen sturen we je een herinnering voor de check 'Wat mis je?'. Dan zie je welke voedingsstoffen je bord nog mist.",
       ],
       tip: "Houd vol wat werkt. Voeg deze week niets nieuws toe — consolideer wat je hebt.",
       cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
@@ -344,7 +344,7 @@ export const nurtureContent: Record<
       greeting: "Drie weken geleden startte je met je leefstijl-overzicht.",
       bodyParagraphs: [
         "Na drie weken consistent slaapritme begint je lichaam zich aan te passen. Je circadiaan ritme wordt sterker, je melatonineproductie komt op gang op het juiste moment.",
-        "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Dan zie je zwart-op-wit of je slaapscore is verbeterd.",
+        "Over 9 dagen sturen we je een herinnering voor de check 'Wat mis je?'. Dan zie je welke voedingsstoffen je bord nog mist.",
       ],
       tip: "Houd je slaapritme vast — ook in het weekend. Dat is het moeilijkste, maar ook het belangrijkste.",
       cta: { text: "Vergelijk magnesium supplementen", url: "/beste/magnesium" },
@@ -355,7 +355,7 @@ export const nurtureContent: Record<
       greeting: "Drie weken geleden startte je met je leefstijl-overzicht.",
       bodyParagraphs: [
         "Stressmanagement is als spiertraining: het wordt sterker door herhaling. Na drie weken ademhalingsoefeningen en bewuste rustmomenten, is je cortisolrespons aan het veranderen.",
-        "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Dan meet je of je stressscore is verbeterd.",
+        "Over 9 dagen sturen we je een herinnering voor de check 'Wat mis je?'. Dan zie je welke voedingsstoffen je bord nog mist.",
       ],
       tip: "Houd deze week vast wat werkt. Consistentie verslaat intensiteit.",
       cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
@@ -366,7 +366,7 @@ export const nurtureContent: Record<
       greeting: "Drie weken geleden startte je met je leefstijl-overzicht.",
       bodyParagraphs: [
         "Na drie weken consistent goede gewoontes zijn ze steviger verankerd. Dit is het moment om te kijken of er een supplement is dat je basis versterkt.",
-        "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Wees benieuwd of je scores nog beter zijn geworden.",
+        "Over 9 dagen sturen we je een herinnering voor de check 'Wat mis je?'. Dan zie je welke voedingsstoffen je bord nog mist.",
       ],
       tip: "Overweeg omega‑3 als je weinig vis eet: EU‑claims gaan over hart en (DHA) hersenen — geen etiketclaim op ‘meer energie’.",
       cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
@@ -387,56 +387,59 @@ export const nurtureContent: Record<
   // ── DAG 30: HERHAALMETING ────────────────────────────────
   day30_herhaalmeting: {
     "Lage Energie": {
-      subject: "30 dagen: tijd om te meten waar je staat",
-      preheader: "Je Leefstijlcheck opnieuw doen duurt 3 minuten",
+      subject: "30 dagen: wat mist je bord nog?",
+      preheader: "In de check zie je welke voedingsstoffen je waarschijnlijk mist",
       greeting: "Een maand geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
-        "Je hebt een maand aan je energie gewerkt. Nu is het tijd om te meten: zijn je scores verbeterd? Welke domeinen zijn vooruitgegaan? Waar is nog winst te halen?",
-        "De herhaalmeting geeft je een nieuw leefstijl-overzicht met geüpdatete aanbevelingen op basis van je huidige situatie.",
+        "Je hebt een maand aan je energie gewerkt. Hoe je je nu voelt, weet je zelf het best — leg het naast hoe het een maand geleden was.",
+        "Wat je daarnaast kunt checken, is je bord. De check 'Wat mis je?' laat zien welke voedingsstoffen je waarschijnlijk mist, en of je dat eerst met eten oplost.",
       ],
-      tip: "Doe de Leefstijlcheck opnieuw — het duurt 3 minuten en je ziet direct je voortgang.",
-      cta: { text: "Doe de herhaalmeting", url: "/intake" },
+      tip: "Leg je energie van deze week naast die van een maand geleden: waar merk je verschil, waar niet?",
+      cta: { text: "Doe de check 'Wat mis je?'", url: "/intake" },
     },
     "Onrustige Slaper": {
       subject: "30 dagen: hoe staat je slaap er nu voor?",
-      preheader: "Meet je voortgang in 3 minuten",
+      preheader: "En wat mist je bord nog?",
       greeting: "Een maand geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
-        "Je hebt een maand aan je slaap gewerkt. De herhaalmeting laat je zien of je slaapscore is verbeterd — en welke volgende stap het meest impact heeft.",
+        "Je hebt een maand aan je slaap gewerkt. Hoe vaak word je nog wakker, hoe fit sta je op? Leg het naast hoe het een maand geleden was.",
+        "De check 'Wat mis je?' laat daarnaast zien welke voedingsstoffen je bord waarschijnlijk mist.",
       ],
-      tip: "Doe de Leefstijlcheck opnieuw en vergelijk je resultaten met een maand geleden.",
-      cta: { text: "Doe de herhaalmeting", url: "/intake" },
+      tip: "Vergelijk je nachten van deze week met die van een maand geleden — niet één nacht, maar het patroon.",
+      cta: { text: "Doe de check 'Wat mis je?'", url: "/intake" },
     },
     "Stressdrager": {
       subject: "30 dagen: is je stress veranderd?",
-      preheader: "Meet het verschil in 3 minuten",
+      preheader: "En wat mist je bord nog?",
       greeting: "Een maand geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
-        "Een maand stressmanagement. De herhaalmeting laat je zien wat er veranderd is — in je stressscore, maar ook in je slaap en energie (die worden vaak meegezogen).",
+        "Een maand stressmanagement. Hoe snel kom je nu tot rust, en hoe slaap je? Leg het naast hoe het een maand geleden was.",
+        "Onder druk schiet eten er vaak bij in. De check 'Wat mis je?' laat zien welke voedingsstoffen je bord waarschijnlijk mist.",
       ],
-      tip: "Doe de Leefstijlcheck opnieuw. Je resultaten worden vergeleken met een maand geleden.",
-      cta: { text: "Doe de herhaalmeting", url: "/intake" },
+      tip: "Vergelijk deze week met een maand geleden: hoe vaak voelde je je opgejaagd, en hoe vaak kwam je tot rust?",
+      cta: { text: "Doe de check 'Wat mis je?'", url: "/intake" },
     },
     "In Balans": {
       subject: "30 dagen: ben je nog steeds in balans?",
-      preheader: "Meet je voortgang in 3 minuten",
+      preheader: "Check wat je bord nog mist",
       greeting: "Een maand geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
-        "Je scoorde een maand geleden al goed. De vraag is: heb je dat vastgehouden — of is er een domein dat aandacht nodig heeft?",
-        "De herhaalmeting laat je zien waar je nu staat en wat de slimste volgende stap is.",
+        "Je scoorde een maand geleden al goed. De vraag is: heb je dat vastgehouden?",
+        "De check 'Wat mis je?' laat zien welke voedingsstoffen je bord waarschijnlijk mist — de volgende laag onder een goede basis.",
       ],
-      tip: "Doe de Leefstijlcheck opnieuw. Drie minuten, direct inzicht in je huidige staat.",
-      cta: { text: "Doe de herhaalmeting", url: "/intake" },
+      tip: "Kijk eerlijk naar deze week: welke gewoonte hield stand, en welke liet je los?",
+      cta: { text: "Doe de check 'Wat mis je?'", url: "/intake" },
     },
     Overtrainer: {
-      subject: "30 dagen: vergelijk je recovery-score",
-      preheader: "Hermeting laat zien of volume en slaap hebben gewerkt",
+      subject: "30 dagen: draagt je bord je herstel?",
+      preheader: "Leg je weeklog naast de start — en check wat je bord mist",
       greeting: "Een maand geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
-        "Je hebt een maand gericht op volume terug en slaap eerst. De herhaalmeting laat je zien of je recovery-score is verbeterd — en waar nog winst zit.",
+        "Je hebt een maand gericht op volume terug en slaap eerst. Leg je weeklog van nu naast die van de start: rusthartslag, vermoeidheid, harde minuten.",
+        "Herstel begint ook op je bord. De check 'Wat mis je?' laat zien of je eiwit en andere voedingsstoffen je herstel al dragen.",
       ],
-      tip: "Doe de Leefstijlcheck opnieuw en vergelijk je recovery-score met de start.",
-      cta: { text: "Doe de herhaalmeting", url: "/intake" },
+      tip: "Vergelijk je weeklog met de start — je zoekt trends, niet één perfect cijfer.",
+      cta: { text: "Doe de check 'Wat mis je?'", url: "/intake" },
     },
   },
 };

@@ -27,7 +27,11 @@ import {
 } from '@/lib/redactie-standaarden'
 import KennisbankThemaPageContent from '@/components/kennisbank/KennisbankThemaPageContent'
 import KennisbankVerdiepingGate from '@/components/kennisbank/KennisbankVerdiepingGate'
+import { IntakeCtaLink } from '@/components/common/IntakeCtaLink'
 import KennisbankTier1FooterCta from '@/components/kennisbank/KennisbankTier1FooterCta'
+import KennisbankVoedingBrug from '@/components/kennisbank/KennisbankVoedingBrug'
+import OpbouwtijdGrafiek from '@/components/kennisbank/OpbouwtijdGrafiek'
+import { getVoedingBrug } from '@/data/kennisbank-voedingsbrug'
 import InsightPhaseNote from '@/components/insights/InsightPhaseNote'
 import { KENNISBANK_THEME_TO_PIJLER } from '@/data/insights'
 import { getContentMetadata } from '@/data/insight-metadata'
@@ -249,6 +253,8 @@ async function TermPage({ slug }: { slug: string }) {
   const showTier1Footer =
     !isGated && (term.insightTier === 1 || Boolean(term.publicFullContent))
 
+  const voedingBrug = getVoedingBrug(term.slug)
+
   const relatedTerms = term.relatedSlugs
     .map((s) => getTermBySlug(s))
     .filter((t): t is NonNullable<typeof t> => t !== undefined)
@@ -384,6 +390,9 @@ async function TermPage({ slug }: { slug: string }) {
 
                     {isGated ? (
                       <div className={`${KB_SECTION_CLASS} border-b-0`}>
+                        {voedingBrug ? (
+                          <KennisbankVoedingBrug termSlug={term.slug} brug={voedingBrug} />
+                        ) : null}
                         <KennisbankVerdiepingGate termSlug={term.slug} termName={term.term} />
                       </div>
                     ) : (
@@ -393,6 +402,7 @@ async function TermPage({ slug }: { slug: string }) {
                             Hoe werkt het?
                           </h2>
                           {renderParagraphs(term.content.howItWorks)}
+                          {term.slug === 'opbouwtijd-supplement' ? <OpbouwtijdGrafiek /> : null}
                         </section>
 
                         <section className={KB_SECTION_CLASS} aria-labelledby="waarom-dit-ertoe-doet">
@@ -401,6 +411,10 @@ async function TermPage({ slug }: { slug: string }) {
                           </h2>
                           {renderParagraphs(term.content.whyItMatters)}
                         </section>
+
+                        {voedingBrug ? (
+                          <KennisbankVoedingBrug termSlug={term.slug} brug={voedingBrug} />
+                        ) : null}
 
                         {term.domeinMetBeperktCausaalBewijs ? (
                           <aside
@@ -481,24 +495,24 @@ async function TermPage({ slug }: { slug: string }) {
               ) : (
                 <section
                   className="mx-auto mt-20 max-w-[min(38rem,100%)] border border-stone-200/90 bg-white px-7 py-10 text-center md:mt-24 md:px-10 md:py-12"
-                  aria-label="Leefstijlcheck"
+                  aria-label="Wat mis je?"
                 >
                   <h2 className="font-display text-[1.375rem] font-semibold leading-snug text-stone-900 md:text-2xl">
-                    Leefstijl en supplementen structureren
+                    Eerst je bord, dan pas een supplement
                   </h2>
                   <p className="mx-auto mt-4 max-w-[36ch] text-[0.9375rem] leading-[1.75] text-stone-600">
-                    De Leefstijlcheck is een korte vragenlijst. Het overzicht helpt bij het ordenen van aandachtspunten —
+                    De check &apos;Wat mis je?&apos; is een korte vragenlijst over wat je eet. Hij laat zien welke voedingsstoffen je waarschijnlijk mist —
                     géén medische test en geen vervanging voor zorg.
                   </p>
-                  <Link
-                    href="/intake"
+                  <IntakeCtaLink
+                    locatie={`kennisbank_${term.slug}`}
                     className="group mt-8 inline-flex min-h-12 items-center justify-center gap-1.5 rounded-xl bg-ps-green px-7 text-[0.875rem] font-semibold text-white shadow-[0_2px_8px_rgba(90,143,106,0.28)] transition-[background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:bg-ps-green-hover hover:shadow-[0_6px_18px_rgba(90,143,106,0.36)] active:translate-y-0"
                   >
-                    Start de Leefstijlcheck
+                    Start de check
                     <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5">
                       →
                     </span>
-                  </Link>
+                  </IntakeCtaLink>
                 </section>
               )}
           </div>

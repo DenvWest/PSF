@@ -1,0 +1,119 @@
+import type { Metadata } from "next";
+import type { CSSProperties } from "react";
+import Link from "next/link";
+import { canonicalMetadata } from "@/lib/seo/canonical";
+import Container from "@/components/layout/Container";
+import GuideNutritionZoom from "@/components/content/GuideNutritionZoom";
+import MovementLifeline from "@/components/content/MovementLifeline";
+import MovementRecognition from "@/components/content/MovementRecognition";
+import MovementMechanism from "@/components/content/MovementMechanism";
+import MovementVersus from "@/components/content/MovementVersus";
+import MovementMoments from "@/components/content/MovementMoments";
+import MovementFuture from "@/components/content/MovementFuture";
+import MovementDashboardPreview from "@/components/content/MovementDashboardPreview";
+import MovementClosingCta from "@/components/content/MovementClosingCta";
+import { buildArticleSchema, jsonLdScript } from "@/lib/seo/structuredData";
+
+const ACCENT = "oklch(0.69 0.095 50)";
+
+export const metadata: Metadata = {
+  title: "Beweging en voeding na 30: kracht, ritme en brandstof",
+  description:
+    "Krachttraining en herstel na je dertigste hebben de juiste brandstof nodig. Zie wat eiwit, koolhydraten en calcium doen, vóór je aan supplementen denkt.",
+  ...canonicalMetadata("/beweging-en-voeding"),
+  openGraph: {
+    title: "Beweging en voeding na 30: kracht, ritme en brandstof",
+    description:
+      "Herkenning, trainingsritme en wanneer creatine of eiwit zinvol zijn — voor 30-plussers.",
+    url: "/beweging-en-voeding",
+    type: "article",
+  },
+};
+
+const articleSchema = buildArticleSchema({
+  headline: "Beweging en voeding na 30: kracht, ritme en brandstof",
+  description:
+    "Krachttraining, cardio en herstel na 30 — praktische stappen vóór supplementen.",
+  path: "/beweging-en-voeding",
+  datePublished: "2026-06-04",
+});
+
+export default function BewegingNa40Page() {
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleSchema) }}
+      />
+
+      <main>
+        <section
+          className="relative overflow-hidden border-b border-white/10 bg-[#102018] text-[#E7EDE8]"
+          style={{ "--ac": ACCENT } as CSSProperties}
+        >
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.14]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
+              backgroundSize: "64px 64px",
+              maskImage:
+                "radial-gradient(760px 460px at 62% 28%, #000, transparent 76%)",
+              WebkitMaskImage:
+                "radial-gradient(760px 460px at 62% 28%, #000, transparent 76%)",
+            }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-24 -top-24 h-[440px] w-[440px] rounded-full opacity-[0.28] blur-[100px]"
+            style={{ background: "var(--ac)" }}
+          />
+          <Container className="relative py-16 md:py-24">
+            <div className="max-w-3xl">
+              <p
+                className="text-xs font-semibold uppercase tracking-[0.16em]"
+                style={{ color: "var(--ac)" }}
+              >
+                Leefstijl eerst
+              </p>
+              <h1 className="mt-4 font-serif text-[clamp(36px,6vw,64px)] font-normal leading-[1.04] text-[#F4F1E9]">
+                Beweging en voeding na 30: kracht, ritme en brandstof
+              </h1>
+              <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-[#9FB0A6] md:text-[19px]">
+                Ken je dit: je traint nog “genoeg”, maar herstel duurt langer,
+                spieren voelen trager terug en je bent vaker stijf? Na 30
+                verandert hoe snel je belastbaar bent — niet omdat bewegen
+                niet meer werkt, maar omdat ritme en rust zwaarder meetellen.
+              </p>
+              <div className="mt-8">
+                <Link
+                  href="/intake"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-lg px-8 py-3 text-sm font-bold text-[#102018] no-underline transition hover:opacity-90"
+                  style={{ background: "var(--ac)" }}
+                >
+                  Zie wat jij mist — gratis →
+                </Link>
+                <p className="mt-4 max-w-lg text-sm text-[#7E8C82]">
+                  Een paar korte vragen · 3 minuten · gratis · geen medische test.
+                </p>
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        <MovementRecognition />
+        <Container className="py-4">
+          <GuideNutritionZoom guide="beweging" />
+        </Container>
+        <MovementLifeline />
+        <MovementMechanism />
+        <MovementVersus />
+        <MovementMoments />
+        <MovementFuture />
+        <MovementDashboardPreview />
+        <MovementClosingCta />
+      </main>
+    </>
+  );
+}

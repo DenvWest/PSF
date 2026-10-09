@@ -185,7 +185,7 @@ describe("VoedingsstatusTabel", () => {
 
   it("valt terug op een uitnodiging als er geen check is", () => {
     render(<VoedingsstatusTabel rijen={[]} report={null} surface="test" />);
-    expect(screen.getByText(/Doe de voedingscheck/)).toBeTruthy();
+    expect(screen.getByText(/Doe de check/)).toBeTruthy();
     expect(screen.queryByRole("group", { name: "Filter op status" })).toBeNull();
   });
 });

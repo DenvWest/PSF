@@ -117,7 +117,7 @@ export default function VoedingVsSupplementTabel({
           <tbody>
             <tr>
               <td colSpan={3} className="px-3.5 py-3 text-[12.5px] text-[#9FB0A6]">
-                Nog geen voedingscheck — dan blijft vergelijken leeg.
+                Nog geen check gedaan — dan blijft vergelijken leeg.
               </td>
             </tr>
           </tbody>

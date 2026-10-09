@@ -37,5 +37,5 @@ export const bewegingGuide: GuideOptInData = {
     successMessage: "Check je inbox — je eerste stap staat klaar.",
   },
   pdfPath: null,
-  pillarHref: "/beweging-na-40",
+  pillarHref: "/beweging-en-voeding",
 };

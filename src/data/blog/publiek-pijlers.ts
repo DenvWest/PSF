@@ -26,7 +26,7 @@ export type PubliekPijler = {
 export const PUBLIEK_PIJLERS: PubliekPijler[] = [
   {
     slug: "pijler-testosteron-na-40",
-    href: "/testosteron-na-40",
+    href: "/testosteron-en-voeding",
     titel: "Testosteron na 30: wat verandert en wat je zelf kunt doen",
     samenvatting:
       "Testosteron zakt na je dertigste met ongeveer een procent per jaar. Wat dat merkbaar doet met energie, herstel en spiermassa — en welke leefstijlknoppen er volgens onderzoek toe doen.",
@@ -47,7 +47,7 @@ export const PUBLIEK_PIJLERS: PubliekPijler[] = [
   },
   {
     slug: "pijler-overgang",
-    href: "/overgang",
+    href: "/overgang-en-voeding",
     titel: "Overgang: wat verandert en wat helpt",
     samenvatting:
       "Perimenopauze in begrijpelijke taal: wat dalend oestrogeen doet met je slaap, botten en spieren — en welke leefstijlkeuzes daar volgens onderzoek het meeste aan doen.",

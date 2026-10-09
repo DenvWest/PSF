@@ -362,7 +362,7 @@ export default function VoedingsstatusTabel({
       <div className={`${surfaceStyles("dashboard").kaart} px-4 py-3.5`}>
         {onBack ? <Kruimelpad onBack={onBack} /> : null}
         <p className="m-0 text-[13.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-          Doe de voedingscheck om per categorie te zien waar je staat ten
+          Doe de check om per categorie te zien waar je staat ten
           opzichte van de richtlijn.
         </p>
       </div>

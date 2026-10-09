@@ -70,7 +70,7 @@ export const eiwitEnWheyInDeOvergangData: BlogArtikel = {
         "Opvliegers, nachtzweten en stemmingswisselingen: eiwit heeft daar geen aangetoond effect op, en geen enkele erkende claim wijst die kant op.",
         "Je hormoonbalans: eiwitpoeder is een voedingsmiddel, geen hormoonpreparaat — het grijpt niet in op je oestrogeenspiegel.",
         "Je eet al eiwitrijk: zuivel, ei, vis, peulvruchten bij elke maaltijd? Dan verandert extra poeder niets.",
-        "Je traint niet: eiwit levert bouwmateriaal, de prikkel om het te gebruiken komt van belasting — zie [beweging na 40](/beweging-na-40).",
+        "Je traint niet: eiwit levert bouwmateriaal, de prikkel om het te gebruiken komt van belasting — zie [beweging na 40](/beweging-en-voeding).",
       ],
     },
     {
@@ -90,7 +90,7 @@ export const eiwitEnWheyInDeOvergangData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: zet het naast de rest van je herstel",
       tekst:
-        "Eiwit is één schuif; slaap, stress en beweging zijn de andere — en in de overgang schuiven ze vaak tegelijk. De bredere context staat in de [overgangsgids](/overgang); of je eiwitinname in de overgang al op peil is, zie je in de [check](/intake). Wil je producten zien: de [supplementengids](/supplementen) zet alle stoffen op dezelfde meetlat, met [alle eiwitpoeders](/supplementen?categorie=eiwitpoeder) naast elkaar.",
+        "Eiwit is één schuif; slaap, stress en beweging zijn de andere — en in de overgang schuiven ze vaak tegelijk. De bredere context staat in de [overgangsgids](/overgang-en-voeding); of je eiwitinname in de overgang al op peil is, zie je in de [check](/intake). Wil je producten zien: de [supplementengids](/supplementen) zet alle stoffen op dezelfde meetlat, met [alle eiwitpoeders](/supplementen?categorie=eiwitpoeder) naast elkaar.",
     },
   ],
   kernpunten: [
@@ -110,7 +110,7 @@ export const eiwitEnWheyInDeOvergangData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: de overgang",
-    href: "/overgang",
+    href: "/overgang-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Alle eiwitpoeders in de supplementengids",

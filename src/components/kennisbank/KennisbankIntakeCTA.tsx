@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { KB_CARD_SHELL } from "@/components/kennisbank/kennisbank-layout";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
-import { INTAKE_CTA, INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
+import { CHECK_CTA } from "@/lib/check-facts";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 
 interface KennisbankIntakeCTAProps {
   className?: string;
@@ -15,14 +16,14 @@ export default function KennisbankIntakeCTA({ className = "" }: KennisbankIntake
         {INTAKE_CTA.kennisbankHeadline}
       </p>
       <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-stone-500">
-        {INTAKE_DELIVERABLE.subline}
+        {CHECK_CTA.subline}
       </p>
       <IntakeCtaMicro className="mx-auto mt-4 max-w-md text-sm text-stone-500" />
       <Link
         href="/intake"
         className="mt-8 inline-flex min-h-[44px] items-center justify-center rounded-lg bg-ps-green px-8 py-3.5 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
       >
-        {INTAKE_CTA.discoverOverview}
+        {CHECK_CTA.discoverButton}
       </Link>
     </div>
   );

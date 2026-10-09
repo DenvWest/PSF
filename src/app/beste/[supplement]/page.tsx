@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import TerugNaarKeuze from "@/components/supplement-hub/TerugNaarKeuze";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -17,11 +19,9 @@ import {
   ComparisonChooserIntro,
   ComparisonIntakeFallbackCta,
 } from "@/components/supplements/ContentFirstComparisonCTAs";
-import { ComparisonProfileFits } from "@/components/supplements/ComparisonProfileFits";
 import { ComparisonViewBeacon } from "@/components/supplements/ComparisonViewBeacon";
 import { PrePurchaseLadder } from "@/components/supplements/PrePurchaseLadder";
 import { getPrePurchaseLadder } from "@/data/supplements/pre-purchase-ladder";
-import { getProfileFitsForCategory } from "@/data/supplement-profile-fits";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import Container from "@/components/layout/Container";
 import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
@@ -115,7 +115,6 @@ export default async function Page({ params }: PageProps) {
 
   const available = isSupplementAvailable(data.category);
   const disabledReason = getSupplementDisabledReason(data.category);
-  const profileFits = getProfileFitsForCategory(data.category);
   const ladder = getPrePurchaseLadder(data.category);
 
   return (
@@ -144,6 +143,9 @@ export default async function Page({ params }: PageProps) {
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 pt-6">
           <IntakeResultsReturnBanner />
           <VoortgangReturnBanner surface="beste" />
+          <Suspense fallback={null}>
+            <TerugNaarKeuze surface="beste" boven />
+          </Suspense>
         </div>
         {!available && disabledReason && (
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8 mx-auto max-w-7xl px-6 lg:px-8">
@@ -177,8 +179,6 @@ export default async function Page({ params }: PageProps) {
             doseringColumnLabel={data.tableDoseringColumnLabel}
           />
         </ComparisonChooserIntro>
-
-        <ComparisonProfileFits fits={profileFits} />
 
         {data.readAlsoCards && data.readAlsoCards.length > 0 && (
           <section className="mt-16 border-t border-stone-100 pt-12">
@@ -263,7 +263,7 @@ export default async function Page({ params }: PageProps) {
           </section>
         )}
 
-        {data.showIntakeFallbackCta !== false && <ComparisonIntakeFallbackCta />}
+        {data.showIntakeFallbackCta !== false && <ComparisonIntakeFallbackCta category={data.category} />}
 
         <Container>
           <MedicalDisclaimer />

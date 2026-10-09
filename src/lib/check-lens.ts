@@ -1,6 +1,5 @@
 import { PILLAR } from "@/data/dashboard";
 import type { DomainScores } from "@/lib/intake-engine";
-import { getProfileLabel, type ProfileLabel } from "@/lib/intake-engine";
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import { MEASURED_DOMAIN_TO_PILLAR } from "@/lib/measured-pillar-map";
 import type { GuideThema } from "@/types/guide-opt-in";
@@ -9,9 +8,7 @@ import type { PillarId } from "@/types/dashboard";
 export const CHECK_LENS_COPY = {
   eyebrow: "UIT JOUW LEEFSTIJLCHECK",
   resultsLabel: "Terug naar je overzicht",
-  ownProfileLabel: "Naar jouw profiel",
   matchBadge: "Past bij jou",
-  offBadge: "Niet jouw profiel",
 } as const;
 
 /** Welk gemeten domein een gezondheidsgids uitleest. `null` = de check meet dit thema niet. */
@@ -25,11 +22,9 @@ const GUIDE_DOMAIN: Record<GuideThema, { key: keyof DomainScores; pillar: Pillar
   testosteron: null,
 };
 
-export type CheckLensTarget =
-  | { kind: "guide"; thema: GuideThema }
-  | { kind: "profile"; slug: string; label: string };
+export type CheckLensTarget = { kind: "guide"; thema: GuideThema };
 
-export type CheckLensTone = "focus" | "pressure" | "watch" | "strength" | "off";
+export type CheckLensTone = "focus" | "pressure" | "watch" | "strength";
 
 export type CheckLensModel = {
   tone: CheckLensTone;
@@ -42,11 +37,9 @@ export type CheckLensModel = {
 export type CheckLensInput = {
   scores: DomainScores;
   answers: Record<string, number>;
-  /** Slug van de profielpagina die bij het gemeten profiel hoort, als die bestaat. */
-  ownProfileSlug: string | null;
 };
 
-function toneForScore(score: number): Exclude<CheckLensTone, "focus" | "off"> {
+function toneForScore(score: number): Exclude<CheckLensTone, "focus"> {
   if (score < 40) return "pressure";
   if (score < 60) return "watch";
   return "strength";
@@ -126,50 +119,6 @@ function buildGuideLens(thema: GuideThema, input: CheckLensInput): CheckLensMode
   };
 }
 
-function buildProfileLens(
-  target: Extract<CheckLensTarget, { kind: "profile" }>,
-  input: CheckLensInput,
-  profile: ProfileLabel,
-): CheckLensModel {
-  const focus = focusPillar(input);
-  const matches = profile.name === target.label;
-
-  if (matches) {
-    return {
-      tone: "focus",
-      badge: CHECK_LENS_COPY.matchBadge,
-      score: {
-        label: focus.label,
-        value: focus.score,
-        color: PILLAR[focus.id].color,
-      },
-      lines: [
-        `Je check kwam uit op dit profiel. Je startpunt is ${focus.label.toLowerCase()} (${focus.score}/100) — lees de stappen hieronder met die volgorde in gedachten.`,
-      ],
-      cta: null,
-    };
-  }
-
-  return {
-    tone: "off",
-    badge: CHECK_LENS_COPY.offBadge,
-    score: {
-      label: focus.label,
-      value: focus.score,
-      color: PILLAR[focus.id].color,
-    },
-    lines: [
-      `Je check kwam uit op ${profile.name}, niet op ${target.label}. Je kunt hier gerust lezen, maar je eigen route begint bij ${focus.label.toLowerCase()} (${focus.score}/100).`,
-    ],
-    cta: input.ownProfileSlug
-      ? {
-          href: `/profiel/${input.ownProfileSlug}?from=intake`,
-          label: `${CHECK_LENS_COPY.ownProfileLabel}: ${profile.name}`,
-        }
-      : null,
-  };
-}
-
 /**
  * Vertaalt een afgeronde leefstijlcheck naar één alinea die uitlegt hoe déze
  * pagina zich verhoudt tot wat er gemeten is. Nooit een diagnose: alleen de
@@ -179,8 +128,5 @@ export function buildCheckLens(
   target: CheckLensTarget,
   input: CheckLensInput,
 ): CheckLensModel {
-  if (target.kind === "guide") {
-    return buildGuideLens(target.thema, input);
-  }
-  return buildProfileLens(target, input, getProfileLabel(input.scores));
+  return buildGuideLens(target.thema, input);
 }

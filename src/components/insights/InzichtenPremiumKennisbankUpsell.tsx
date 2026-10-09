@@ -15,7 +15,7 @@ export default function InzichtenPremiumKennisbankUpsell() {
         </h1>
         <p className="mt-4 max-w-[60ch] text-lg leading-relaxed text-stone-600">
           <strong>Gratis — geen abonnement nodig.</strong> Verdiepende begrippen
-          uit de kennisbank lees je na je gratis Leefstijlcheck, ingelogd met je
+          uit de kennisbank lees je na de gratis check, ingelogd met je
           account. Zo koppelen we achtergrondkennis aan wat je in je dashboard
           ziet.
         </p>
@@ -25,7 +25,7 @@ export default function InzichtenPremiumKennisbankUpsell() {
       <Container>
         <div className="mx-auto max-w-xl rounded-[20px] border border-[#E7E5E4] bg-white px-6 py-10 text-center">
           <p className="text-base leading-relaxed text-stone-600">
-            Maak eerst je gratis Leefstijlcheck en log in om de verdieping te
+            Doe eerst de gratis check &apos;Wat mis je?&apos; en log in om de verdieping te
             lezen — of log direct in als je al een account hebt. Dit is geen
             betaalde functie.
           </p>
@@ -34,7 +34,7 @@ export default function InzichtenPremiumKennisbankUpsell() {
               href="/intake"
               className="inline-flex min-h-[44px] items-center rounded-full bg-[#0E1A14] px-[22px] py-2.5 text-sm font-semibold text-[#F7F5F0] transition hover:bg-[#0E1A14]/90"
             >
-              Start Leefstijlcheck →
+              Start de check →
             </Link>
             <Link
               href="/account/login"

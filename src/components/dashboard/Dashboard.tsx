@@ -4,6 +4,8 @@ import type { ReactElement, ReactNode } from "react";
 import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import HowItWorksQuestions from "@/components/common/HowItWorksQuestions";
+import { HOW_IT_WORKS_DISCLAIMER, HOW_IT_WORKS_INTRO } from "@/data/how-it-works";
 import { useRouter, useSearchParams } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
@@ -121,6 +123,7 @@ import {
   buildKeuzeRailDomains,
   buildKompasRailDomains,
   resolveVoortgangRailActiveItem,
+  VOORTGANG_RAIL_ITEMS,
   type ContextRailApi,
   type ContextRailMode,
   type ContextRailToolId,
@@ -145,6 +148,7 @@ import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { resolveMovementDayChoiceForToday } from "@/lib/account-priority-pref";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import {
+  buildHoeWerktDashboardHref,
   isPillarId,
   isSchapTabId,
   isValidAgendaDate,
@@ -1239,7 +1243,7 @@ const NutritionIntakeSection = ({ data }: SharedSectionProps) => {
                 lineHeight: 1.5,
               }}
             >
-              Antwoorden uit je voedingscheck — een frequentie-inschatting, geen
+              Antwoorden uit je check — een frequentie-inschatting, geen
               meting, status of diagnose.
             </div>
           </>
@@ -1253,14 +1257,14 @@ const NutritionIntakeSection = ({ data }: SharedSectionProps) => {
                 margin: 0,
               }}
             >
-              Doe een voedingscheck om je inname te zien.
+              Doe de check om je inname te zien.
             </p>
             <div>
               <Button
                 variant="secondary"
                 onClick={() => router.push("/intake/voeding")}
               >
-                Start voedingscheck
+                Start de check
               </Button>
             </div>
           </div>
@@ -2252,10 +2256,10 @@ const RecommendationsSection = ({ model, data }: SharedSectionProps) => {
   if (!nutritionLogCompleted) {
     return (
       <section aria-label="Wat mis je?">
-        <SectionHeader eyebrow="Eerst je bord" title="Doe de voedingscheck" />
+        <SectionHeader eyebrow="Eerst je bord" title="Wat mis je? Doe de check" />
         <Card pad={16}>
           <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: 0, textWrap: "pretty" }}>
-            Supplementadvies tonen we pas na je voedingscheck — leefstijl eerst, in die volgorde.
+            Supplementadvies tonen we pas na je check — leefstijl eerst, in die volgorde.
           </p>
           <Link
             href="/intake/voeding?from=dashboard"
@@ -2274,7 +2278,7 @@ const RecommendationsSection = ({ model, data }: SharedSectionProps) => {
               textDecoration: "none",
             }}
           >
-            Start voedingscheck (1 min) <Icons.ChevronRight s={16} />
+            Start de check <Icons.ChevronRight s={16} />
           </Link>
         </Card>
       </section>
@@ -2741,6 +2745,7 @@ const KompasHome = ({
         <DagboekScherm
           checkSliders={data?.nutritionCheckinReadout?.ladderReport?.sliders ?? null}
           proteinTarget={data?.proteinTarget ?? null}
+          keuzeProducten={data?.keuzeProducten}
         />
       </CockpitShell>
     </section>
@@ -3363,11 +3368,6 @@ function DashboardContent({
     onContextRailApi: setContextRailApi,
   };
 
-  const surfaceClass =
-    tab === "vandaag" || tab === "agenda" || tab === "voortgang"
-      ? "ps-dash-surface-kompas"
-      : "";
-
   const sectionsNode = (
     <div
       style={{
@@ -3395,13 +3395,28 @@ function DashboardContent({
       <span className="mb-2 inline-flex items-center text-[10px] font-bold uppercase tracking-[0.1em] text-[#9FB0A6]">
         Hoe dit werkt
       </span>
-      <p className="text-[12.5px] leading-relaxed text-[#CDD7D0]">
-        <Link href="/hoe-werkt-dashboard" className="underline underline-offset-2">
+      <p className="mb-2.5 text-[12px] leading-relaxed text-[#9FB0A6]">
+        {HOW_IT_WORKS_INTRO}
+      </p>
+      <HowItWorksQuestions size="sm" className="text-[#CDD7D0]" />
+      <p className="mt-3 text-[12.5px] leading-relaxed text-[#CDD7D0]">
+        <Link
+          href="/hoe-werkt-dashboard"
+          onClick={(event) => {
+            event.preventDefault();
+            router.push(
+              buildHoeWerktDashboardHref(
+                `${window.location.pathname}${window.location.search}`,
+              ),
+            );
+          }}
+          className="underline underline-offset-2"
+        >
           Hoe werkt dit dashboard?
         </Link>
         <span aria-hidden> · </span>
         <Link
-          href="/onderbouwing"
+          href="/onderbouwing/voeding?from=dashboard"
           onClick={() => {
             trackOnderbouwingLinkClick({
               surface: "dashboard_footer",
@@ -3416,10 +3431,7 @@ function DashboardContent({
         </Link>
       </p>
       <p className="mt-2 text-[11px] leading-relaxed text-[#7E8C82] text-pretty">
-        PerfectSupplement geeft adviezen op basis van leefstijl, geen medische
-        diagnoses. Je scores zijn een reflectie van je eigen antwoorden — geen
-        medische meetwaarden. Je gegevens zijn van jou — exporteer of
-        verwijder ze wanneer je wilt.
+        {HOW_IT_WORKS_DISCLAIMER}
       </p>
     </div>
   );
@@ -3541,7 +3553,7 @@ function DashboardContent({
    * hem los daarvan: daar zit het profiel al in de header.
    */
   const railHeeftKeuze =
-    contextRailMode === "voortgang" ||
+    (contextRailMode === "voortgang" && VOORTGANG_RAIL_ITEMS.length > 1) ||
     contextRailMode === "profile" ||
     (contextRailMode === "keuze" ? keuzeRailDomains.length > 1 : railDomainItems.length > 1);
   const hideRail = tab === "agenda" || !railHeeftKeuze;
@@ -3563,7 +3575,7 @@ function DashboardContent({
    * hydration, en de rail blijft de enige drager op desktop.
    */
   const voortgangTopNav =
-    tab === "voortgang" ? (
+    tab === "voortgang" && VOORTGANG_RAIL_ITEMS.length > 1 ? (
       <VoortgangTopNav
         activeItem={resolveVoortgangRailActiveItem(voortgangScreen)}
         onOpenItem={handleTopNavVoortgangOpen}
@@ -3579,7 +3591,7 @@ function DashboardContent({
   const collapsibleTopNav = voortgangTopNav;
 
   return (
-    <div className={`min-h-dvh ${surfaceClass}`}>
+    <div className="ps-dash-surface-kompas min-h-dvh">
       <CockpitFrame
         activeTab={tab}
         onSelectTab={selectTab}

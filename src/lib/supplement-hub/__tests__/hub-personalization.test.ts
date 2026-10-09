@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { nutritionSliderQuestion } from "@/data/nutrition/lifescore-questions";
-import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { buildHubPersonalization } from "@/lib/supplement-hub/hub-personalization";
-
-const SESSION = {} as IntakeSessionPayload;
 
 const SLIDER_IDS = [
   "vegetables",
@@ -34,30 +31,30 @@ function log(sliders: Record<string, number>, preference = "none") {
 describe("buildHubPersonalization", () => {
   it("vraagt de check zonder sessie", () => {
     expect(
-      buildHubPersonalization({ session: null, hasIntakeCookie: false, latestNutritionLog: null }),
+      buildHubPersonalization({ hasSession: false, latestNutritionLog: null }),
     ).toEqual({ state: "no_intake" });
   });
 
-  it("negeert een check-log zolang er geen payload van de brede check is (huidig gedrag; S3 van het sessie-besluitdocument draait dit om)", () => {
-    expect(
-      buildHubPersonalization({
-        session: null,
-        hasIntakeCookie: true,
-        latestNutritionLog: log({ ...topSliders(), oilyFish: 0 }, "vegan"),
-      }),
-    ).toEqual({ state: "no_intake" });
+  it("telt een sessie van de check (session_kind nutrition) ook mee, zonder payload van de brede check (S3 van het sessie-besluitdocument)", () => {
+    const result = buildHubPersonalization({
+      hasSession: true,
+      latestNutritionLog: log({ ...topSliders(), oilyFish: 0 }, "vegan"),
+    });
+    expect(result.state).toBe("ready");
+    if (result.state === "ready") {
+      expect(result.matches.map((m) => m.category)).toContain("omega-3");
+    }
   });
 
   it("vraagt de check wanneer er nog geen log is", () => {
     expect(
-      buildHubPersonalization({ session: SESSION, hasIntakeCookie: true, latestNutritionLog: null }),
+      buildHubPersonalization({ hasSession: true, latestNutritionLog: null }),
     ).toEqual({ state: "needs_nutrition" });
   });
 
   it("zegt 'eerst je bord' met de reden als er nog eetbare gaten zijn", () => {
     const result = buildHubPersonalization({
-      session: SESSION,
-      hasIntakeCookie: true,
+      hasSession: true,
       latestNutritionLog: log({ ...topSliders(), vegetables: 0, fruit: 0 }),
     });
     expect(result.state).toBe("basis_eerst");
@@ -66,10 +63,9 @@ describe("buildHubPersonalization", () => {
     }
   });
 
-  it("markeert omega-3 voor wie geen vis eet, uit de check en niet uit de brede check", () => {
+  it("markeert omega-3 voor wie geen vis eet", () => {
     const result = buildHubPersonalization({
-      session: SESSION,
-      hasIntakeCookie: true,
+      hasSession: true,
       latestNutritionLog: log({ ...topSliders(), oilyFish: 0 }, "vegan"),
     });
     expect(result.state).toBe("ready");
@@ -81,8 +77,7 @@ describe("buildHubPersonalization", () => {
 
   it("markeert niets als het bord alles dekt", () => {
     const result = buildHubPersonalization({
-      session: SESSION,
-      hasIntakeCookie: true,
+      hasSession: true,
       latestNutritionLog: log(topSliders()),
       isDarkSeason: false,
     });

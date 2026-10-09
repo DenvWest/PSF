@@ -22,7 +22,7 @@ export const slaapVerbeterenData: BlogArtikel = {
       type: "opsomming",
       titel: "Wat slaaponderzoek veel steunt",
       inleiding:
-        "Deze interventies zijn onderbouwd met slaaponderzoek en specifiek relevant na 30. [Lees de complete aanpak voor betere slaap na je 30e.](/slaap-verbeteren-na-40)",
+        "Deze interventies zijn onderbouwd met slaaponderzoek en specifiek relevant na 30. [Lees de complete aanpak voor betere slaap na je 30e.](/slaap-en-voeding)",
       items: [
         "Vast slaapritme: Hetzelfde slaap- en waaktijd, ook in het weekend. Consistentie is de sterkste enkelvoudige interventie voor slaapkwaliteit.",
         "Blootstelling aan daglicht in de ochtend: Tien minuten buiten in de eerste twee uur na het opstaan resynchroniseert je circadiaanse klok.",
@@ -54,7 +54,7 @@ export const slaapVerbeterenData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Complete gids: slaap verbeteren na je 30e",
-    href: "/slaap-verbeteren-na-40",
+    href: "/slaap-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste magnesium supplementen",

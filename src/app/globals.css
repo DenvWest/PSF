@@ -150,6 +150,13 @@
   --vd-accent-2-rgb: 108 143 201;
   --vd-ink-rgb: 241 239 232;
 
+  /* Identiteitskleur per stof (krans + detail). Zegt welke stof, nooit hoe het ervoor staat. */
+  --vd-stof-magnesium: #5FB3A1;
+  --vd-stof-protein: #D98B6A;
+  --vd-stof-omega3: #6C9BD9;
+  --vd-stof-zinc: #A98BD0;
+  --vd-stof-vitamin_d: #DDBA4E;
+
   /* Editorial / article reading (blog + kennisbank) — sticky TOC + anchors */
   --reading-scroll-margin: 6.75rem;
   --sticky-toc-offset: 6.875rem;
@@ -605,17 +612,15 @@ html.floating-cta-active footer {
 
 /* ── Dashboard tab surfaces ──────────────────────────────────── */
 
+/*
+ * Eén vlakke achtergrond voor elke tab (Dagboek, Patroon, Keuze, Mijn Dag),
+ * gelijk aan het dagboekpaneel (`--vd-bg`). Tot 6 oktober 2026 lag hier een
+ * groene gradient onder kop en rail, waardoor het dagboek als een donkerder
+ * blok in een lichter kader stond en Keuze/Mijn Dag een andere grond hadden.
+ */
 .ps-dash-surface-kompas {
-  background-color: #1a2e1a;
-  background-image:
-    radial-gradient(ellipse 130% 70% at 50% -8%, rgba(127, 178, 142, 0.42) 0%, rgba(33, 56, 31, 0.75) 38%, transparent 68%),
-    radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%);
-}
-
-@media (min-width: 768px) {
-  .ps-dash-surface-kompas {
-    background-attachment: fixed;
-  }
+  background-color: var(--vd-bg);
+  background-image: none;
 }
 
 .kompas-loose-stack {
@@ -3019,7 +3024,7 @@ html.floating-cta-active footer {
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 0.875rem;
-  background: var(--vd-surface);
+  background: transparent;
 }
 
 .vd-tabel-kop,
@@ -3031,7 +3036,7 @@ html.floating-cta-active footer {
 
 .vd-tabel-kop {
   padding: 0.5rem 0.75rem;
-  background: var(--vd-surface-2);
+  background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid var(--vd-line);
 }
 
@@ -3089,6 +3094,21 @@ html.floating-cta-active footer {
   overflow: hidden;
   display: grid;
   place-items: center;
+}
+
+.vd-cel[data-zelfde="ja"],
+.vd-venster-kop > span[data-zelfde="ja"] {
+  opacity: 0.45;
+}
+
+.vd-venster-kop i {
+  display: block;
+  font-style: normal;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.5625rem;
+  color: var(--vd-ink-3);
 }
 
 .vd-cel > span {
@@ -3239,7 +3259,7 @@ a.vd-nutrienttabel-rij:focus-visible {
   gap: 0.75rem;
   border: 1px solid var(--vd-line);
   border-radius: 13px;
-  background: var(--vd-surface);
+  background: transparent;
   padding: 0.875rem;
   text-align: left;
   cursor: pointer;
@@ -3357,7 +3377,7 @@ a.vd-nutrienttabel-rij:focus-visible {
   font-size: 0.75rem;
   line-height: 1.55;
   color: var(--vd-ink-2);
-  background: var(--vd-surface-2);
+  background: rgba(255, 255, 255, 0.03);
   border-left: 2px solid var(--vd-sage);
   border-radius: 0 8px 8px 0;
   padding: 0.625rem 0.75rem;
@@ -3381,7 +3401,7 @@ a.vd-nutrienttabel-rij:focus-visible {
   gap: 0.75rem;
   border: 1px solid var(--vd-line);
   border-radius: 13px;
-  background: var(--vd-surface);
+  background: transparent;
   padding: 0.875rem;
   text-align: left;
   font: inherit;
@@ -3430,10 +3450,9 @@ a.vd-nutrienttabel-rij:focus-visible {
 }
 
 .vd-paneel {
-  background: var(--vd-surface);
+  background: transparent;
   border: 1px solid var(--vd-line);
   border-radius: 16px;
-  box-shadow: var(--vd-shadow);
   padding: 1.125rem;
 }
 
@@ -3533,6 +3552,31 @@ a.vd-nutrienttabel-rij:focus-visible {
   border-bottom: 1px solid var(--vd-line);
   margin: 0 -1.125rem 1rem;
   padding: 0 1.125rem;
+}
+
+.vd-subtabs-rij {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--vd-line);
+  margin: 0 -1.125rem 1rem;
+  padding: 0 1.125rem;
+}
+
+/* Het dagboek heeft op mobiel 0.75rem rand; een diepere uitloop maakt de pagina breder dan het scherm. */
+@media (max-width: 639px) {
+  .vd-subtabs-rij {
+    margin-inline: -0.75rem;
+    padding-inline: 0.75rem;
+  }
+}
+
+.vd-subtabs-rij > .vd-subtabs {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border-bottom: 0;
 }
 
 .vd-subtabs::-webkit-scrollbar {

@@ -125,7 +125,7 @@ export const eiwitpoederGidsData: SupplementData = {
         symptoom: "Lage Energie",
         tekst:
           "Als snacks, alcohol of te weinig volwaardige maaltijden je herstel ondermijnen, begint winst vaak bij voeding.",
-        href: "/profiel/lage-energie",
+        href: "/energie-en-voeding",
       },
     ],
   },
@@ -199,7 +199,7 @@ export const eiwitpoederGidsData: SupplementData = {
       titel: "Beste creatine: herstel en kracht ondersteunen",
     },
     {
-      href: "/slaap-verbeteren-na-40",
+      href: "/slaap-en-voeding",
       titel: "Slaap verbeteren na 30: herstel begint 's nachts",
     },
   ],

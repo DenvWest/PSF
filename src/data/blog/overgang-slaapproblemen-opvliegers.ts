@@ -9,7 +9,7 @@ export const overgangSlaapproblemenOpvliegersData: BlogArtikel = {
   coverImage: "/images/blog/overgang-slaapproblemen-opvliegers.jpg",
   coverImageAlt: "Opgemaakt bed in een rustige slaapkamer",
   heroIntro:
-    "Wakker schieten van een hittegolf, het dekbed eraf, drijfnat weer onder — en dan een uur wakker liggen voor je weer wegzakt. Ongeveer de helft van de vrouwen in de overgang heeft hier last van, en het is geen toeval dat het uitgerekend nu begint. Dit artikel legt uit wat er hormonaal verandert en welke aanpassingen volgens onderzoek het meeste verschil maken. Achtergrond over de hele overgangsfase staat in [de overgangsgids](/overgang).",
+    "Wakker schieten van een hittegolf, het dekbed eraf, drijfnat weer onder — en dan een uur wakker liggen voor je weer wegzakt. Ongeveer de helft van de vrouwen in de overgang heeft hier last van, en het is geen toeval dat het uitgerekend nu begint. Dit artikel legt uit wat er hormonaal verandert en welke aanpassingen volgens onderzoek het meeste verschil maken. Achtergrond over de hele overgangsfase staat in [de overgangsgids](/overgang-en-voeding).",
   leestijd: "9 min",
   gepubliceerdOp: "2026-09-05",
   laatstBijgewerktOp: "2026-09-05",
@@ -66,7 +66,7 @@ export const overgangSlaapproblemenOpvliegersData: BlogArtikel = {
     "Slaapproblemen in de overgang ontstaan doordat oestrogeen en progesteron tegelijk wegzakken — dat raakt zowel inslapen als temperatuurregulatie. Nachtelijke opvliegers zijn zelf kort, maar fragmenteren de slaap erna. Een koele slaapkamer, laag-voor-laag beddengoed en minder avondalcohol hebben het meeste bewijs; magnesium kan ondersteunen maar is geen bewezen middel tegen opvliegers zelf.",
   cornerstoneLink: {
     label: "Overgang: wat verandert en wat helpt",
-    href: "/overgang",
+    href: "/overgang-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste magnesium supplementen",

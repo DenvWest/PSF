@@ -167,6 +167,11 @@ export function resolvePlantPortionsPerDay(report: NutritionLadderReport): numbe
   return Math.min(Math.max(Math.trunc(vegetables), 0), 4) + fruit + berries;
 }
 
+/** "Groente 1× per dag": zonder het onderwerp zijn drie antwoorden achter elkaar onleesbaar. */
+function labelled(subject: string, answer: string | null): string | null {
+  return answer ? `${subject} ${answer}` : null;
+}
+
 function joinAnswers(parts: (string | null)[]): string {
   return parts.filter((part): part is string => Boolean(part)).join(" · ");
 }
@@ -223,15 +228,15 @@ const ROW_SPECS: readonly RowSpec[] = [
   {
     key: "plantbasis",
     cluster: "C4",
-    label: "Plantbasis",
-    whyLine: "Vezels, kalium en magnesium komen hier in één keer vandaan.",
+    label: "Groente en fruit",
+    whyLine: "Eén bron voor je vezels, kalium en magnesium.",
     build: (report) => {
       const portions = resolvePlantPortionsPerDay(report);
       if (portions === null) return null;
       const answerLabel = joinAnswers([
-        stopLabel(nutritionSliderQuestion("vegetables"), sliderIndex(report, "vegetables")),
-        stopLabel(nutritionSliderQuestion("fruit"), sliderIndex(report, "fruit")),
-        stopLabel(nutritionSliderQuestion("berries"), sliderIndex(report, "berries")),
+        labelled("Groente", stopLabel(nutritionSliderQuestion("vegetables"), sliderIndex(report, "vegetables"))),
+        labelled("fruit", stopLabel(nutritionSliderQuestion("fruit"), sliderIndex(report, "fruit"))),
+        labelled("bessen", stopLabel(nutritionSliderQuestion("berries"), sliderIndex(report, "berries"))),
       ]);
       const benchmark = benchmarkOf("vegetables");
       return {
@@ -535,7 +540,7 @@ export function resolveNutritionGate(rows: readonly NutritionFactRow[]): Nutriti
   if (rows.length === 0) {
     return {
       open: false,
-      reason: "Zonder voedingscheck weten we niet of er iets aan te vullen valt.",
+      reason: "Zonder de check weten we niet of er iets aan te vullen valt.",
       closedBy: "no_check",
     };
   }

@@ -104,7 +104,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
           showWhen: { type: "answerAtLeast", question: "MOV_CARD", value: 3 },
           link: {
             label: "Beweging na 30 — kracht & conditie",
-            href: "/beweging-na-40",
+            href: "/beweging-en-voeding",
             kind: "article",
           },
           tags: ["conditie", "onderhoud"],
@@ -202,7 +202,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
           },
           showWhen: { type: "signal", signal: "protein_gap_signal" },
           link: {
-            label: "Doe de voedingscheck",
+            label: "Wat mis je? Doe de check",
             href: "/intake/voeding",
             kind: "article",
           },

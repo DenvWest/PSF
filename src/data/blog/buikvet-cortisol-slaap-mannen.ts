@@ -8,7 +8,7 @@ export const buikvetCortisolSlaapMannenData: BlogArtikel = {
   coverImage: "/images/blog/buikvet-cortisol-slaap-mannen.jpg",
   coverImageAlt: "Wandelpad door het bos — beweging, slaap en minder buikvet horen bij elkaar",
   heroIntro:
-    "Zelfde eetpatroon als een paar jaar geleden, toch een taille die langzaam meegroeit. Voedingsvragen zijn dan het eerste waar je aan denkt, maar na 30 is de combinatie van chronische stress en slaaptekort minstens zo bepalend voor waar dat vet zich ophoopt. Zie ook de bredere pillar [testosteron na 30](/testosteron-na-40) voor hoe dit bij mannen samenhangt met hormonen.",
+    "Zelfde eetpatroon als een paar jaar geleden, toch een taille die langzaam meegroeit. Voedingsvragen zijn dan het eerste waar je aan denkt, maar na 30 is de combinatie van chronische stress en slaaptekort minstens zo bepalend voor waar dat vet zich ophoopt. Zie ook de bredere pillar [testosteron na 30](/testosteron-en-voeding) voor hoe dit bij mannen samenhangt met hormonen.",
   leestijd: "8 min",
   gepubliceerdOp: "2026-09-05",
   laatstBijgewerktOp: "2026-09-05",
@@ -59,7 +59,7 @@ export const buikvetCortisolSlaapMannenData: BlogArtikel = {
     "Buikvet na 30 hangt sterker samen met slaap en stress dan vaak gedacht: chronisch cortisol stuurt vetopslag specifiek naar de buik, en slaaptekort verhoogt cortisol verder terwijl het de insulinegevoeligheid verlaagt. Voldoende slaap, krachttraining en minder alcohol zijn de interventies met het meeste bewijs — vóór je verder aan je voeding sleutelt.",
   cornerstoneLink: {
     label: "Stress verminderen na 30",
-    href: "/stress-verminderen-na-40",
+    href: "/stress-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste magnesium supplementen",

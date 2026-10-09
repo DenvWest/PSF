@@ -66,7 +66,7 @@ const SIGNAL_SENTENCE: Partial<Record<string, string>> = {
   creatine_signal:
     "Je beweegcheck laat trainingsbelasting zien terwijl je herstel achterblijft — die combinatie is het signaal, niet de belasting alleen.",
   protein_gap_signal:
-    "Je eiwitinname is laag, en je beweegcheck laat trainen of traag fysiek herstel zien — die twee samen zijn het signaal, niet de inname alleen.",
+    "Je eiwitsignaal kwam uit je check: weinig eiwit, samen met trainen of traag herstel. Je eiwitdoel rekent nu met je gewicht en trainingsbelasting uit Je doelen.",
   cortisol_risk: "Je check laat een patroon van aanhoudende spanning zien.",
   melatonine_signal: "Je check laat een inslaappatroon zien dat met je stressniveau samenhangt.",
 };
@@ -75,7 +75,7 @@ const HUB_RULE_SENTENCE: Partial<Record<string, string>> = {
   creatine_custom_matcher:
     "Je beweegcheck laat trainingsbelasting zien terwijl je herstel achterblijft — die combinatie is het signaal, niet de belasting alleen.",
   protein_gap_signal:
-    "Je eiwitinname is laag, en je beweegcheck laat trainen of traag fysiek herstel zien — die twee samen zijn het signaal, niet de inname alleen.",
+    "Je eiwitsignaal kwam uit je check: weinig eiwit, samen met trainen of traag herstel. Je eiwitdoel rekent nu met je gewicht en trainingsbelasting uit Je doelen.",
   vitamin_d_fallback: "Vitamine D staat los van een specifiek signaal — in Nederland is de aanmaak sowieso beperkt.",
 };
 

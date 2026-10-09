@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import HowItWorksQuestions from "@/components/common/HowItWorksQuestions";
 import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import NutritionIntakeHero from "@/components/intake/NutritionIntakeHero";
 import ProteinTargetCard from "@/components/intake/ProteinTargetCard";
@@ -20,6 +21,7 @@ import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import type { NutrientDelta } from "@/lib/nutrition-delta";
 import { getVitalityBandMessage } from "@/lib/vitality-gauge";
 import NutritionEvidenceDisclosure from "@/components/evidence/NutritionEvidenceDisclosure";
+import { HOW_IT_WORKS_INTRO } from "@/data/how-it-works";
 import { evidenceForExtra } from "@/data/nutrition/nutrient-evidence-map";
 import { withNutritionReturn } from "@/lib/nutrition-return-link";
 import VerhoudingTabel from "@/components/nutrition/VerhoudingTabel";
@@ -206,7 +208,7 @@ export default function NutritionResultView({
         <div className="grid gap-6 lg:gap-8">
           <header>
             <p className="m-0 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#7E8C82]">
-              Je voedingscheck
+              Wat mis je?
             </p>
           </header>
 
@@ -281,10 +283,13 @@ export default function NutritionResultView({
           <details className={`group ${PANEL}`}>
             <summary className={DETAILS_SUMMARY}>Hoe werkt PerfectSupplement?</summary>
             <div className="grid gap-3 border-t border-white/10 px-5 pb-4 pt-3 text-[13px] leading-relaxed text-[#C6D1C9]">
+              <p className="m-0 text-pretty">{HOW_IT_WORKS_INTRO}</p>
+              <HowItWorksQuestions size="sm" className="text-[#F1EFE8]" />
               <p className="m-0 text-pretty">
-                Je check meet hoe vaak je iets eet, per stof vergeleken met een
-                richtlijn. Hieronder staat elke stof als eigen rij: wat je nu
-                doet, wat de richtlijn is, en wat er te doen valt.
+                Deze check is de eerste stap: hij meet hoe vaak je iets eet, per
+                stof vergeleken met een richtlijn. Hieronder staat elke stof als
+                eigen rij: wat je nu doet, wat de richtlijn is, en wat er te doen
+                valt.
               </p>
               <p className="m-0 text-pretty">
                 Elke rij geeft twee opties. <strong className="text-[#F1EFE8]">Bekijk jouw voeding</strong>{" "}
@@ -374,15 +379,6 @@ export default function NutritionResultView({
                 Sluiten
               </Link>
             )}
-            {!fromDashboard ? (
-              <p className="text-xs leading-relaxed text-[#7E8C82]">
-                Of{" "}
-                <Link href="/intake" className={FOOTNOTE_LINK}>
-                  doe de volledige Leefstijlcheck
-                </Link>{" "}
-                voor jouw volgorde over alle pijlers.
-              </p>
-            ) : null}
             <p className="text-xs leading-relaxed text-[#7E8C82]">
               <Link
                 href={withNutritionReturn(
@@ -391,7 +387,7 @@ export default function NutritionResultView({
                 )}
                 className={FOOTNOTE_LINK}
               >
-                Wetenschappelijke onderbouwing van de voedingscheck
+                Wetenschappelijke onderbouwing van de check
               </Link>
             </p>
           </div>

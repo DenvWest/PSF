@@ -1,8 +1,10 @@
 import type { OrgScopedClient } from "@/lib/db/scoped";
 import {
+  behoudBekendeProducten,
   portiesUitItems,
   sanitizeItems,
   type DagboekItem,
+  type DagboekSupplementProduct,
 } from "@/lib/nutrition-dagboek-items";
 import {
   isEetmomentId,
@@ -17,6 +19,7 @@ import {
   type DagboekDag,
   type DagSoort,
 } from "@/lib/nutrition-dagboek";
+import { sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
 import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 
 /**
@@ -107,7 +110,7 @@ export async function listDaybookDays(
 ): Promise<DagboekDag[]> {
   const { data, error } = await supabase
     .from("account_nutrition_daybook")
-    .select("entry_date, day_kind, portions, meals, water_ml, items")
+    .select("entry_date, day_kind, portions, meals, water_ml, items, overgeslagen")
     .eq("account_id", accountId)
     .order("entry_date", { ascending: false })
     .limit(limit);
@@ -131,6 +134,7 @@ export async function listDaybookDays(
       // dag uit de groepenperiode: een lege lijst, geen fout.
       items: sanitizeItems(row.items),
       waterMl: normaliseerWaterMl(row.water_ml),
+      overgeslagen: sanitizeHoofdmaaltijden(row.overgeslagen),
     };
   });
 }
@@ -176,6 +180,13 @@ export async function upsertDaybookDay(
     momenten?: DagMomenten;
     items?: readonly DagboekItem[];
     waterMl?: number | null;
+    overgeslagen?: readonly string[];
+    /**
+     * Het etiket per hubproduct zoals het nu is. Een merkproduct-regel in
+     * `items` blijft alleen staan als hij daarmee klopt, of met wat er die dag
+     * al stond ({@link behoudBekendeProducten}).
+     */
+    producten?: ReadonlyMap<string, DagboekSupplementProduct>;
   },
 ): Promise<boolean> {
   const bestaand = await leesDag(supabase, accountId, input.date);
@@ -183,8 +194,15 @@ export async function upsertDaybookDay(
   // Niet genoemd = laten staan. Zie de doc hierboven: dit is het verschil
   // tussen "ik zeg hier niets over" en "maak dit leeg".
   const momenten = input.momenten ?? bestaand?.momenten ?? {};
-  const items = input.items ?? bestaand?.items ?? [];
+  const items = input.items
+    ? behoudBekendeProducten(input.items, bestaand?.items ?? [], input.producten ?? new Map())
+    : (bestaand?.items ?? []);
   const waterMl = input.waterMl !== undefined ? input.waterMl : (bestaand?.waterMl ?? null);
+  // Een maaltijd met items is gegeten: "niet gegeten" vervalt zodra er iets op staat.
+  const metItems = new Set(items.map((item) => item.moment));
+  const overgeslagen = sanitizeHoofdmaaltijden(input.overgeslagen ?? bestaand?.overgeslagen ?? []).filter(
+    (moment) => !metItems.has(moment),
+  );
 
   // De momenten zijn de invoervorm; `portions` blijft de bron waar alle
   // analyse op rekent. Afleiden in plaats van allebei laten aanleveren, zodat
@@ -206,6 +224,7 @@ export async function upsertDaybookDay(
       meals: momenten,
       items,
       water_ml: waterMl,
+      overgeslagen,
     },
     { onConflict: "account_id,entry_date" },
   );
@@ -226,6 +245,7 @@ type BestaandeDag = {
   momenten: DagMomenten;
   items: DagboekItem[];
   waterMl: number | null;
+  overgeslagen: string[];
 };
 
 /**
@@ -248,7 +268,7 @@ async function leesDag(
   try {
     const query = supabase
       .from("account_nutrition_daybook")
-      .select("portions, meals, water_ml, items") as unknown as DagQuery;
+      .select("portions, meals, water_ml, items, overgeslagen") as unknown as DagQuery;
 
     const { data, error } = await query
       .eq("account_id", accountId)
@@ -263,6 +283,7 @@ async function leesDag(
       momenten: sanitizeMeals(row.meals),
       items: sanitizeItems(row.items),
       waterMl: normaliseerWaterMl(row.water_ml),
+      overgeslagen: sanitizeHoofdmaaltijden(row.overgeslagen),
     };
   } catch {
     return null;

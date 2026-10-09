@@ -26,6 +26,12 @@ export interface ProteinTargetInput {
    * {@link ageFloor} voor waarom de andere drie banden niets doen.
    */
   ageRange?: string;
+  /**
+   * Leeftijd in jaren uit Je doelen. Wint van de band: vanaf 65 geldt de
+   * ondergrens van 1,2 g/kg (NNR2023: 1,2–1,5 g/kg voor 65+; PROT-AGE),
+   * daaronder niet.
+   */
+  leeftijd?: number;
 }
 
 export interface ProteinTarget {
@@ -69,7 +75,8 @@ export type ProteinTargetRange = Pick<ProteinTarget, "gramsLow" | "gramsHigh">;
  * zit al in de formule. Een aparte factor per geslacht zou datzelfde verschil
  * een tweede keer tellen.
  */
-function ageFloor(ageRange: string | undefined): number | null {
+function ageFloor(ageRange: string | undefined, leeftijd?: number): number | null {
+  if (leeftijd !== undefined) return leeftijd >= 65 ? 1.2 : null;
   return ageRange === "55+" ? 1.2 : null;
 }
 
@@ -100,7 +107,7 @@ function round5(value: number): number {
 export function computeProteinTarget(
   input: ProteinTargetInput,
 ): ProteinTarget | null {
-  const { weightKg, trainingLoad, ageRange } = input;
+  const { weightKg, trainingLoad, ageRange, leeftijd } = input;
   if (
     !Number.isFinite(weightKg) ||
     weightKg < MIN_WEIGHT_KG ||
@@ -113,7 +120,7 @@ export function computeProteinTarget(
   // Leeftijd tilt de vloer op, nooit het plafond, en nooit onder wat training
   // al vroeg: `Math.max` en niet vervangen, zodat een 55-plusser die zwaar
   // traint zijn hogere ondergrens houdt.
-  const floor = ageFloor(ageRange);
+  const floor = ageFloor(ageRange, leeftijd);
   const effectiveLow = floor === null ? low : Math.max(low, floor);
   return {
     perKgLow: effectiveLow,

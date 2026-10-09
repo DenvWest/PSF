@@ -1,4 +1,5 @@
 import { absoluteUrl } from "@/lib/public-site-url";
+import { CHECK_CTA } from "@/lib/check-facts";
 import { ctaButton, emailWrapper } from "@/lib/email-templates/guide-nurture/shared";
 import type { GuideNurtureDay, GuideNurtureTemplate } from "@/lib/email-templates/guide-nurture/types";
 
@@ -40,7 +41,7 @@ ${ctaButton(absoluteUrl("/downloads/stressgids-perfectsupplement.pdf"), "Downloa
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   De grootste val: denken dat je "even door moet" tot het rustiger wordt. Je blijft dan gespannen — ook 's nachts kom je niet echt tot rust. Herstel begint met kleine pauzes, niet met harder werken.
 </p>
-${ctaButton(absoluteUrl("/stress-verminderen-na-40"), "Lees het complete stressprotocol →")}`,
+${ctaButton(absoluteUrl("/stress-en-voeding"), "Lees het complete stressprotocol →")}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),
@@ -88,7 +89,7 @@ ${ctaButton(absoluteUrl("/supplementen/ashwagandha"), "Lees de ashwagandhagids �
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   Wie merkbaar minder gespannen wordt, verandert zelden alles tegelijk. Je kiest één anker — ademhaling, wandeling, vaste bedtijd — en houdt dat 3 weken vol.
 </p>
-${ctaButton(absoluteUrl("/stress-verminderen-na-40"), "Terug naar het stressprotocol →")}`,
+${ctaButton(absoluteUrl("/stress-en-voeding"), "Terug naar het stressprotocol →")}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),
@@ -102,9 +103,9 @@ ${ctaButton(absoluteUrl("/stress-verminderen-na-40"), "Terug naar het stressprot
   Tijd voor een nieuwe meting
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Na een maand is het zinvol om opnieuw te kijken naar stress, slaap en energie. De Leefstijlcheck geeft je een actueel beeld — zonder diagnose, wel met concrete stappen.
+  Na een maand is het zinvol om opnieuw te kijken. Onder druk schiet eten er vaak bij in. De check 'Wat mis je?' laat zien welke voedingsstoffen je bord waarschijnlijk mist — zonder diagnose, wel met wat je eraan kunt doen.
 </p>
-${ctaButton(absoluteUrl("/intake"), "Doe de gratis Leefstijlcheck →")}`,
+${ctaButton(absoluteUrl("/intake"), CHECK_CTA.discoverButton)}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),

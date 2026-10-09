@@ -41,7 +41,7 @@ export const vitamineDData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/energie-na-40",
+      href: "/energie-en-voeding",
       text: "Energie is breder dan één capsule: slaap, beweging en stress spelen mee.",
       cta: "Naar energie-pillar →",
     },

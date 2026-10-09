@@ -53,7 +53,7 @@ export const magnesiumEnStressData: BlogArtikel = {
         "Langdurige werk- of mantelzorgdruk zonder herstelperiodes van betekenis — het verlies loopt door zolang de belasting doorloopt.",
         "Spanning in combinatie met weinig volkoren, noten en peulvruchten: het verlies stijgt terwijl de inname laag blijft. Zie [magnesium uit voeding](/blog/magnesium-uit-voeding).",
         "Spanning plus fors alcoholgebruik in de avond — een tweede, onafhankelijke route waarlangs magnesium verdwijnt.",
-        "Spanning plus intensief trainen, waarbij herstel structureel achterloopt op de belasting. Zie [herstel verbeteren na 40](/herstel-verbeteren-na-40).",
+        "Spanning plus intensief trainen, waarbij herstel structureel achterloopt op de belasting. Zie [herstel verbeteren na 40](/herstel-en-voeding).",
         "Spanning plus maagzuurremmers of plaspillen; dan stapelen twee bekende oorzaken zich op. Zie [magnesium en medicijnen](/blog/magnesium-in-combinatie-met-medicijnen).",
       ],
       callouts: [
@@ -96,7 +96,7 @@ export const magnesiumEnStressData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: stress verminderen na 40",
-    href: "/stress-verminderen-na-40",
+    href: "/stress-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Alle supplementen in de supplementengids",

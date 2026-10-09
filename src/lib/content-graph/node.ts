@@ -3,7 +3,6 @@ import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import { kennisbankTerms } from "@/data/kennisbank";
 import { ALL_SUPPLEMENT_SLUGS, getSupplementData } from "@/data/supplement-guides";
 import { SUPPLEMENT_SLUGS, getSupplementComparisonData } from "@/data/supplements";
-import { PROFILE_PAGES, PROFILE_SLUGS } from "@/data/profiles";
 import { GUIDE_SLUGS, getGuideData } from "@/data/gids";
 import { NUTRIENT_PAGES } from "@/data/nutrition/nutrient-pages";
 import { NUTRIENT_IDS } from "@/data/nutrition/intake-reference";
@@ -40,7 +39,6 @@ export type GraphNodeType =
   | "supplementgids"
   | "vergelijking"
   | "pillar"
-  | "profiel"
   | "gezondheidsgids"
   | "voedingsstof";
 
@@ -59,18 +57,18 @@ export interface GraphNode {
  *
  * Bewust een eigen lijst en niet afgeleid uit `PILLARS[].hubRoute`: dat veld
  * wijst voor `verbinding` naar `/inzichten` (een hub, geen pillar) en kent
- * `/testosteron-na-40` en `/overgang` niet, die geen gemeten domein zijn maar
+ * `/testosteron-en-voeding` en `/overgang-en-voeding` niet, die geen gemeten domein zijn maar
  * wel een pillarpagina hebben.
  */
 export const PILLAR_NODES: ReadonlyArray<{ path: string; title: string }> = [
-  { path: "/slaap-verbeteren-na-40", title: "Beter slapen na 30" },
-  { path: "/stress-verminderen-na-40", title: "Stress verminderen na 30" },
-  { path: "/energie-na-40", title: "Meer energie na 30" },
-  { path: "/herstel-verbeteren-na-40", title: "Herstel verbeteren na 30" },
+  { path: "/slaap-en-voeding", title: "Slaap en voeding na 30" },
+  { path: "/stress-en-voeding", title: "Stress en voeding na 30" },
+  { path: "/energie-en-voeding", title: "Energie en voeding na 30" },
+  { path: "/herstel-en-voeding", title: "Herstel en voeding na 30" },
   { path: "/voeding-na-40", title: "Voeding na 30" },
-  { path: "/beweging-na-40", title: "Beweging na 30" },
-  { path: "/testosteron-na-40", title: "Testosteron na 30" },
-  { path: "/overgang", title: "De overgang" },
+  { path: "/beweging-en-voeding", title: "Beweging en voeding na 30" },
+  { path: "/testosteron-en-voeding", title: "Testosteron en voeding na 30" },
+  { path: "/overgang-en-voeding", title: "Overgang en voeding" },
 ];
 
 /** Het pad van een blogartikel; cornerstone-artikelen dragen een eigen `pad`. */
@@ -155,17 +153,6 @@ export function allGraphNodes(): GraphNode[] {
     });
   }
 
-  for (const slug of PROFILE_SLUGS) {
-    const data = PROFILE_PAGES[slug];
-    if (!data) continue;
-    push({
-      path: `/profiel/${slug}`,
-      type: "profiel",
-      slug,
-      title: data.label,
-      source: data,
-    });
-  }
 
   for (const nutrient of NUTRIENT_IDS) {
     const copy = NUTRIENT_PAGES[nutrient];

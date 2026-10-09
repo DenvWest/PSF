@@ -82,7 +82,6 @@ const HUB_DREMPEL = 2;
 
 const HUB_TYPES = new Set<GraphNode["type"]>([
   "pillar",
-  "profiel",
   "gezondheidsgids",
   "voedingsstof",
 ]);

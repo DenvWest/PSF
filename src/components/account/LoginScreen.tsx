@@ -4,6 +4,8 @@ import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "re
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthShell, TrustLine } from "@/components/account/AuthShell";
+import HowItWorksQuestions from "@/components/common/HowItWorksQuestions";
+import { HOW_IT_WORKS_INTRO } from "@/data/how-it-works";
 import { ArrowRight, Lock, Mail, Refresh, Shield } from "@/components/app/icons";
 import { Button, Checkbox, TextField } from "@/components/app/primitives";
 import { clarityTag } from "@/lib/clarity";
@@ -483,7 +485,7 @@ export default function LoginScreen({
         >
           <header style={{ display: "grid", gap: 10 }}>
             <h1 style={{ margin: 0, fontFamily: "var(--f-serif)", fontSize: 33, lineHeight: 1.1 }}>
-              Bedankt voor het invullen van de Leefstijlcheck.
+              Bedankt voor je check.
             </h1>
             <p style={{ margin: 0, color: "var(--text-muted)", fontSize: 15, lineHeight: 1.65 }}>
               We sturen je inlogcode naar{" "}
@@ -496,14 +498,14 @@ export default function LoginScreen({
   }
 
   const loginTitle = fromIntake
-    ? "Bedankt voor het invullen van de Leefstijlcheck."
+    ? "Bedankt voor je check."
     : fromSleepAnalysis
       ? "Bewaar je slaapinzicht."
       : fromVoortgang
         ? "Log in of start je check"
         : "Welkom terug.";
   const loginLead = fromIntake
-    ? "Sla je resultaten op in je persoonlijke dashboard. We sturen een inlogcode naar je mail — geen wachtwoord nodig."
+    ? "Bewaar je resultaat in je dashboard: daar telt wat je eet per stof mee tegen jouw norm. We sturen een inlogcode naar je mail — geen wachtwoord nodig."
     : fromSleepAnalysis
       ? sleepFocus
         ? `Je begint met focus op ${SLEEP_FOCUS_LABELS[sleepFocus]}. Maak gratis je dashboard aan om je vier slaappijlers te volgen en je acties af te vinken — we sturen een inlogcode naar je mail, geen wachtwoord nodig.`
@@ -511,8 +513,8 @@ export default function LoginScreen({
       : isLoginAction
         ? "Vul je e-mailadres in — je krijgt een 6-cijferige inlogcode in je mail. Geen wachtwoord nodig."
         : fromVoortgang
-          ? "Nog geen Leefstijlcheck gedaan? Start gratis (3 min). Heb je al een account? Vul je e-mail in om in te loggen."
-          : "Nog geen check gedaan? Start de Leefstijlcheck. Heb je al een account? Vul je e-mail in om in te loggen.";
+          ? "Nog geen check gedaan? Start gratis (3 min). Heb je al een account? Vul je e-mail in om in te loggen."
+          : "Eerst je voeding, dan pas een supplement. Nog geen check gedaan? Begin daar (3 min). Heb je al een account? Vul je e-mail in om in te loggen.";
   const primaryButtonLabel = isLoginAction
     ? "Stuur inlogcode"
     : INTAKE_CTA.startCheck;
@@ -540,6 +542,13 @@ export default function LoginScreen({
             {loginLead}
           </p>
         </header>
+
+        {!fromIntake && !fromSleepAnalysis && !isLoginAction ? (
+          <section aria-label="Hoe het werkt" className="text-[var(--text)]">
+            <p className="mb-2.5 text-[12.5px] text-[var(--text-subtle)]">{HOW_IT_WORKS_INTRO}</p>
+            <HowItWorksQuestions size="sm" showWhere={false} />
+          </section>
+        ) : null}
 
         <form onSubmit={handlePrimarySubmit} style={{ display: "grid", gap: 14 }}>
           <TextField
@@ -605,7 +614,7 @@ export default function LoginScreen({
                 </Link>
                 {" · "}
                 <Link
-                  href="/onderbouwing"
+                  href="/onderbouwing/voeding"
                   onClick={() => {
                     trackOnderbouwingLinkClick({ surface: "login_help" });
                     clarityTag("onderbouwing_link", "login_help");

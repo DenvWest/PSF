@@ -191,4 +191,9 @@ export function useVoortgangFavorites(): VoortgangFavoritesContextValue {
   return context;
 }
 
+/** Als {@link useVoortgangFavorites}, maar null buiten de provider (bijv. het dagboek in een test). */
+export function useOptionalVoortgangFavorites(): VoortgangFavoritesContextValue | null {
+  return useContext(VoortgangFavoritesContext);
+}
+
 export type { PillarId };

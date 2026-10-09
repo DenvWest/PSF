@@ -17,7 +17,6 @@ const footerColumns = [
         title: "Informatie",
         links: [
             { href: "/gidsen", label: "Gezondheidsgidsen" },
-            { href: "/profiel", label: "Profielen" },
             { href: "/blog", label: "Blog" },
             { href: "/kennisbank", label: "Kennisbank" },
         ],
@@ -43,6 +42,7 @@ const footerColumns = [
 const bottomLegalLinks = [
     { href: "/privacy", label: "Privacy" },
     { href: "/juridisch", label: "Juridisch" },
+    { href: "/bronnen", label: "Bronnen en licenties" },
     { href: "/cookies", label: "Cookies" },
     { href: "/disclaimer", label: "Disclaimer" },
     { href: "/medische-disclaimer", label: "Medische disclaimer" },
@@ -67,7 +67,7 @@ export default function Footer() {
                     </Link>
                 </div>
 
-                <div className="grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10 lg:py-12">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-8 py-10 lg:grid-cols-4 lg:gap-10 lg:py-12">
                     {footerColumns.map((column) => (
                         <div key={column.title}>
                             <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-900">

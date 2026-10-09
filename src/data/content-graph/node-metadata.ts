@@ -24,7 +24,7 @@ import type { ThemeSlug } from "@/lib/content/themes";
  *
  * Deze 32 knopen dragen hun onderwerp al in hun pad en hun data: de gids
  * `/supplementen/magnesium` gaat over magnesium, de pillar
- * `/slaap-verbeteren-na-40` over slaap. Dat nog eens in een tabel herhalen
+ * `/slaap-en-voeding` over slaap. Dat nog eens in een tabel herhalen
  * levert een tweede waarheid op. Alleen waar het pad het onderwerp niet
  * verraadt, staat het hier expliciet.
  */
@@ -41,13 +41,6 @@ const SLUG_TO_NUTRIENT: Record<string, NutrientId> = {
   // voedingscheck meet ze niet.
 };
 
-/** Profielslug → het domein waar het profiel over gaat. */
-const PROFIEL_THEME: Record<string, ThemeSlug> = {
-  stressdrager: "stress",
-  "onrustige-slaper": "sleep",
-  overtrainer: "movement",
-};
-
 /** Slug van een voedingsstofpagina → de stof die hij behandelt. */
 const NUTRIENT_PAGE_NUTRIENT: Record<string, NutrientId> = Object.fromEntries(
   Object.values(NUTRIENT_PAGES).map((page) => [page.slug, page.nutrient]),
@@ -55,10 +48,10 @@ const NUTRIENT_PAGE_NUTRIENT: Record<string, NutrientId> = Object.fromEntries(
 
 /** Pillar- en gidspad → het gemeten thema, waar dat bestaat. */
 const SLUG_TO_THEME: Record<string, ThemeSlug> = {
-  "slaap-verbeteren-na-40": "sleep",
-  "stress-verminderen-na-40": "stress",
+  "slaap-en-voeding": "sleep",
+  "stress-en-voeding": "stress",
   "voeding-na-40": "nutrition",
-  "beweging-na-40": "movement",
+  "beweging-en-voeding": "movement",
   slaap: "sleep",
   stress: "stress",
   voeding: "nutrition",
@@ -89,16 +82,6 @@ export function metadataForNode(node: GraphNode): ContentMetadata {
     case "pillar":
       return {
         ...(SLUG_TO_THEME[node.slug] ? { theme: SLUG_TO_THEME[node.slug] } : {}),
-        checkOverride: "leefstijl",
-      };
-
-    case "profiel":
-      return {
-        // Een profielpagina draagt het domein waar hij over gaat; zonder thema
-        // heeft hij niets om op te matchen en blijft hij een wees. `lage-energie`
-        // krijgt er geen: energie is wel een PillarId maar geen ThemeSlug — dat
-        // is een modelleergat dat ouder is dan deze graaf.
-        ...(PROFIEL_THEME[node.slug] ? { theme: PROFIEL_THEME[node.slug] } : {}),
         checkOverride: "leefstijl",
       };
 

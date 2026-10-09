@@ -9,6 +9,8 @@ import {
   setVoedingsdoelen,
   type Voedingsdoelen,
 } from "@/lib/account-voedingsdoelen";
+import { isGeldigEetpatroon, sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
+import { isVoedingsrichting } from "@/lib/nutrition-voedingsrichting";
 import { laadVoedingsdoelenWeergave } from "@/lib/account-voedingsdoelen-server";
 import { orgScoped } from "@/lib/db/scoped";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
@@ -123,14 +125,35 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Lijst in plaats van getal: ontbreekt = laten staan, null = terug naar alle drie.
+  let gewoneMaaltijden = huidig.gewoneMaaltijden;
+  if ("gewoneMaaltijden" in record) {
+    if (!isGeldigEetpatroon(record.gewoneMaaltijden)) {
+      return NextResponse.json({ error: "Kies minstens één maaltijd." }, { status: 400 });
+    }
+    gewoneMaaltijden = record.gewoneMaaltijden === null ? null : sanitizeHoofdmaaltijden(record.gewoneMaaltijden);
+  }
+
+  let voedingsrichting = huidig.voedingsrichting;
+  if ("voedingsrichting" in record) {
+    if (record.voedingsrichting !== null && !isVoedingsrichting(record.voedingsrichting)) {
+      return NextResponse.json({ error: "Ongeldige richting." }, { status: 400 });
+    }
+    voedingsrichting = record.voedingsrichting;
+  }
+
   const doelen: Voedingsdoelen = {
     gewichtKg: gewicht.waarde,
     trainingsbelasting: belasting.waarde,
     eiwitDoelG: eiwit.waarde,
+    gewoneMaaltijden,
+    voedingsrichting,
   };
 
   try {
-    await setVoedingsdoelen(admin, account.id, doelen);
+    await setVoedingsdoelen(admin, account.id, doelen, {
+      richtingGewijzigd: doelen.voedingsrichting !== huidig.voedingsrichting,
+    });
     // Opnieuw laden in plaats van `doelen` terugsturen: de richtlijn hangt
     // ook van de check af, dus alleen de server weet wat er nu geldt.
     return NextResponse.json(await laadVoedingsdoelenWeergave(account.id), { status: 200 });

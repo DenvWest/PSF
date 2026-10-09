@@ -8,7 +8,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
   coverImage: "/images/blog/alcohol-slaap-energie-na-40.jpg",
   coverImageAlt: "Wijnglas op een nachtkastje naast een bed in avondlicht",
   heroIntro:
-    "Een biertje of glas wijn 's avonds voelt als ontspanning — en soms val je sneller in slaap. Maar de ochtend erna vertelt vaak een ander verhaal: minder diepe slaap, vroege wake-ups en een middagdip die niet weg te koffien is. Na je 30e is dat patroon vaker merkbaar. Hier lees je wat alcohol doet met slaap en [energie na 30](/energie-na-40) — zonder moraliseren, wel met praktische keuzes.",
+    "Een biertje of glas wijn 's avonds voelt als ontspanning — en soms val je sneller in slaap. Maar de ochtend erna vertelt vaak een ander verhaal: minder diepe slaap, vroege wake-ups en een middagdip die niet weg te koffien is. Na je 30e is dat patroon vaker merkbaar. Hier lees je wat alcohol doet met slaap en [energie na 30](/energie-en-voeding) — zonder moraliseren, wel met praktische keuzes.",
   leestijd: "8 min",
   gepubliceerdOp: "2026-05-23",
   laatstBijgewerktOp: "2026-05-23",
@@ -17,13 +17,13 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Ken je dit?",
       tekst:
-        "Vrijdagavond twee glazen wijn. Je valt redelijk snel in slaap. Zaterdagochtend: wakker om 5:30, moe maar niet uitgerust. Zaterdagmiddag: leeg, prikkelbaar, trek in suiker of nog een koffie. Je schrijft het af aan leeftijd of een korte nacht — terwijl alcohol vaak de stille factor is. In de Leefstijlcheck (NRG_DEP) vragen we expliciet naar cafeïne, suiker én alcohol als 'energiebron'. Herken je dat patroon? Dan past het vaak bij profiel [Lage energie](/profiel/lage-energie) of [Onrustige slaper](/profiel/onrustige-slaper) — afhankelijk van wat het hardst terugkomt.",
+        "Vrijdagavond twee glazen wijn. Je valt redelijk snel in slaap. Zaterdagochtend: wakker om 5:30, moe maar niet uitgerust. Zaterdagmiddag: leeg, prikkelbaar, trek in suiker of nog een koffie. Je schrijft het af aan leeftijd of een korte nacht — terwijl alcohol vaak de stille factor is. Herken je dat patroon? Lees verder in [energie en voeding](/energie-en-voeding) of [slaap en voeding](/slaap-en-voeding) — afhankelijk van wat het hardst terugkomt.",
     },
     {
       type: "tekst",
       titel: "Waarom alcohol slaap anders voelt dan het is",
       tekst:
-        "Alcohol is een centraal zenuwstelsel-depressivum: het kan inslapen versnellen, maar de architectuur van je nacht verandert. REM-slaap — belangrijk voor herstel en geheugen — wordt vaak ingekort of verschoven. In de tweede helft van de nacht, wanneer alcohol wordt afgebroken, word je lichter wakker: meer fragmentatie, minder diepe slaap. [Cortisol](/kennisbank/cortisol) kan 's nachts pieken in plaats van dalen. Dat is geen karakterzwakte; het is fysiologie. Lees ook [slaap verbeteren na 30](/slaap-verbeteren-na-40) voor het bredere ritme-verhaal.",
+        "Alcohol is een centraal zenuwstelsel-depressivum: het kan inslapen versnellen, maar de architectuur van je nacht verandert. REM-slaap — belangrijk voor herstel en geheugen — wordt vaak ingekort of verschoven. In de tweede helft van de nacht, wanneer alcohol wordt afgebroken, word je lichter wakker: meer fragmentatie, minder diepe slaap. [Cortisol](/kennisbank/cortisol) kan 's nachts pieken in plaats van dalen. Dat is geen karakterzwakte; het is fysiologie. Lees ook [slaap verbeteren na 30](/slaap-en-voeding) voor het bredere ritme-verhaal.",
     },
     {
       type: "tekst",
@@ -54,7 +54,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: waar lekt jouw energie weg?",
       tekst:
-        "In de [check](/intake) zie je of je eet- en drinkpatroon — inclusief alcohol — je energie al ondersteunt of juist ondermijnt. Wil je het energiethema in één gids? Start bij [energie na 30](/energie-na-40).",
+        "In de [check](/intake) zie je of je eet- en drinkpatroon — inclusief alcohol — je energie al ondersteunt of juist ondermijnt. Wil je het energiethema in één gids? Start bij [energie na 30](/energie-en-voeding).",
     },
   ],
   samenvatting:
@@ -67,7 +67,7 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 30",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vergelijk omega-3 supplementen",

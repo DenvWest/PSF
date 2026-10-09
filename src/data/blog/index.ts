@@ -76,6 +76,7 @@ import { slaapkwaliteitTestosteronHerstelData } from "./slaapkwaliteit-testoster
 import { vermoeidheidBloedwaardenCheckenMannenData } from "./vermoeidheid-bloedwaarden-checken-mannen";
 import { magnesiumHerstelMannen40Data } from "./magnesium-herstel-mannen-40";
 import { krachtverliesEiwitbehoefteNa40Data } from "./krachtverlies-eiwitbehoefte-na-40";
+import { supplementenViaInfluencersChecklistData } from "./supplementen-via-influencers-checklist";
 
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
 
@@ -157,6 +158,7 @@ export const alleArtikelen: BlogArtikel[] = [
   wheyEtiketLezenData,
   isWheySchadelijkData,
   eiwitEnWheyInDeOvergangData,
+  supplementenViaInfluencersChecklistData,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>

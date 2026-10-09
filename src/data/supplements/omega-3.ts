@@ -39,7 +39,7 @@ export const omega3Data: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/herstel-verbeteren-na-40",
+      href: "/herstel-en-voeding",
       text: "EPA/DHA in context van slaap, eiwit en training — pillar herstel na 30.",
       cta: "Naar herstel-pillar →",
     },

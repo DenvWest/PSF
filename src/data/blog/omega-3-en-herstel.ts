@@ -8,7 +8,7 @@ export const omega3EnHerstelData: BlogArtikel = {
   coverImage: "/images/blog/omega-3-en-herstel.jpg",
   coverImageAlt: "Gegrilde zalm met spinazie op een bord, een bron van EPA en DHA",
   heroIntro:
-    "Omega-3 wordt vaak geassocieerd met hart en hersenen — maar in herstelcontext gaat het vooral om of je genoeg [EPA en DHA](/kennisbank/epa-dha) binnenkrijgt en hoe dat past naast slaap, training en [oxidatieve stress](/kennisbank/oxidatieve-stress)-regulatie. Verbind dit met [herstel verbeteren na 30](/herstel-verbeteren-na-40) en vergelijk producten op [/beste/omega-3-supplement](/beste/omega-3-supplement).",
+    "Omega-3 wordt vaak geassocieerd met hart en hersenen — maar in herstelcontext gaat het vooral om of je genoeg [EPA en DHA](/kennisbank/epa-dha) binnenkrijgt en hoe dat past naast slaap, training en [oxidatieve stress](/kennisbank/oxidatieve-stress)-regulatie. Verbind dit met [herstel verbeteren na 30](/herstel-en-voeding) en vergelijk producten op [/beste/omega-3-supplement](/beste/omega-3-supplement).",
   leestijd: "10 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-05-14",
@@ -29,7 +29,7 @@ export const omega3EnHerstelData: BlogArtikel = {
       type: "tekst",
       titel: "Profiel en pillar",
       tekst:
-        "Herken je veel trainen met weinig buffer? Het profiel [Overtrainer](/profiel/overtrainer) en het artikel [creatine en herstel](/blog/creatine-en-herstel) vullen dit thema aan — elk met eigen focus.",
+        "Herken je veel trainen met weinig buffer? [Herstel en voeding](/herstel-en-voeding) en het artikel [creatine en herstel](/blog/creatine-en-herstel) vullen dit thema aan — elk met eigen focus.",
     },
     {
       type: "opsomming",
@@ -50,7 +50,7 @@ export const omega3EnHerstelData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Pillar: herstel verbeteren na 30",
-    href: "/herstel-verbeteren-na-40",
+    href: "/herstel-en-voeding",
   },
   supplementenHubLink: {
     label: "Alle supplementen langs dezelfde meetlat",

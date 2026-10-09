@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import SchapView from "@/components/dashboard/voortgang/SchapView";
 import type { DashboardModel, PillarId, SchapTabId } from "@/types/dashboard";
 
@@ -64,21 +64,22 @@ beforeEach(() => {
 describe("SchapView — welke tabs een domein draagt", () => {
   it("toont op slaap Leefstijl, Producten en Favorieten", () => {
     renderSchap("slaap");
-    expect(tabLabels()).toEqual(["Producten", "Favorieten"]);
+    expect(tabLabels()).toEqual(["Producten", "Mijn keuzes"]);
     expect(screen.queryByRole("tab", { name: "Diensten" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 
-  it("toont op voeding Producten, Voedingslogboek en Favorieten", () => {
+  it("toont op voeding Vergelijken en Favorieten, met het oordeel per supplement onder Vergelijken", () => {
     renderSchap("voeding");
-    expect(tabLabels()).toEqual(["Producten", "Voedingslogboek", "Favorieten"]);
+    expect(tabLabels()).toEqual(["Vergelijken", "Mijn keuzes"]);
+    expect(screen.getByText(/Oordeel per supplement/)).toBeTruthy();
     expect(screen.queryByRole("tab", { name: "Diensten" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 
   it("toont op beweging Producten, Diensten en Favorieten, nooit Begeleiding", () => {
     renderSchap("beweging");
-    expect(tabLabels()).toEqual(["Producten", "Diensten", "Favorieten"]);
+    expect(tabLabels()).toEqual(["Producten", "Diensten", "Mijn keuzes"]);
     expect(screen.queryByRole("tab", { name: "Begeleiding" })).toBeNull();
   });
 
@@ -129,51 +130,19 @@ describe("SchapView — de Favorieten-tab", () => {
 });
 
 describe("SchapView — de domeinschakelaar", () => {
-  const domeinNav = () => screen.getByRole("navigation", { name: "Kiezen op een ander domein" });
-
-  it("laat alleen domeinen mét aanbod klikken, in Kompas-volgorde", () => {
-    renderSchap("voeding", null, { onSwitchDomain: vi.fn() });
-    const labels = within(domeinNav())
-      .getAllByRole("button")
-      .map((chip) => chip.textContent ?? "");
-    // Alleen voeding is nog zichtbaar; zie `zichtbare-domeinen.ts`.
-    expect(labels).toEqual(["Voeding"]);
-  });
+  const domeinNav = () => screen.queryByRole("navigation", { name: "Kiezen op een ander domein" });
 
   /**
-   * Stress stond hier tot 22 september als dichte chip mét reden: het héést
-   * geen schap, en dat oordeel hoorde zichtbaar te blijven. Nu het domein
-   * helemaal uit de interface is, vervalt die afweging — een chip voor iets
-   * dat nergens meer bestaat is geen oordeel maar ruis.
+   * Alleen voeding is nog zichtbaar (`zichtbare-domeinen.ts`). Eén chip die
+   * naar het scherm wijst waar je al bent is ruis — dezelfde afweging als bij
+   * de linker rail, die bij één domein verdwijnt. Slaap, stress en verbinding
+   * staan er ook niet in.
    */
-  it("toont verbinding noch stress in de domeinschakelaar", () => {
-    renderSchap("slaap", null, { onSwitchDomain: vi.fn() });
-    expect(within(domeinNav()).queryByText("Stress")).toBeNull();
-    expect(within(domeinNav()).queryByText("Verbinding")).toBeNull();
-  });
-
-  it("markeert het open domein en laat dat geen navigatie afvuren", () => {
-    const onSwitchDomain = vi.fn();
-    renderSchap("voeding", null, { onSwitchDomain });
-    const actief = within(domeinNav()).getByRole("button", { name: "Voeding" });
-    expect(actief.getAttribute("aria-current")).toBe("page");
-
-    fireEvent.click(actief);
-    expect(onSwitchDomain).not.toHaveBeenCalled();
-    expect(emitAccountClientEvent).not.toHaveBeenCalled();
-  });
-
-  it("schakelt door en meldt het schap-openen met zijn herkomst", () => {
-    const onSwitchDomain = vi.fn();
-    renderSchap("slaap", null, { onSwitchDomain });
-
-    fireEvent.click(within(domeinNav()).getByRole("button", { name: "Voeding" }));
-    expect(onSwitchDomain).toHaveBeenCalledWith("voeding");
-    expect(emitAccountClientEvent).toHaveBeenCalledWith("choice.shelf_opened", {
-      domain: "voeding",
-      from_state: "schap",
-      surface: "schap_slaap",
-    });
+  it("toont geen domeinschakelaar zolang er maar één domein zichtbaar is", () => {
+    renderSchap("voeding", null, { onSwitchDomain: vi.fn() });
+    expect(domeinNav()).toBeNull();
+    expect(screen.queryByText("Stress")).toBeNull();
+    expect(screen.queryByText("Verbinding")).toBeNull();
   });
 
   it("staat er niet zonder handler — geen chip die nergens heen gaat", () => {
@@ -183,38 +152,14 @@ describe("SchapView — de domeinschakelaar", () => {
 });
 
 describe("SchapView — de spiegel leefstijl ↔ aanbod", () => {
-  const spiegel = () =>
-    screen.getByRole("region", { name: "Wat eerst komt, en wat je kunt kopen" });
-
-  it("staat bóven de tabs, zodat de volgorde vóór het aanbod komt", () => {
-    renderSchap("voeding", "producten");
-
-    const blok = spiegel();
-    const tablist = screen.getByRole("tablist");
-    // Node.compareDocumentPosition: 4 = de tablist volgt op de spiegel.
-    expect(blok.compareDocumentPosition(tablist) & 4).toBeTruthy();
-  });
-
-  it("blijft staan op elk onderdeel — het is geen tab die je moet aanklikken", () => {
+  it("staat niet meer op voeding: daar draagt Vergelijken een kop uit je dagboek", () => {
+    // BESLUIT_KEUZE_VERGELIJKEN_2026-10.md, herziening 6 okt: "gratis laag 1–5"
+    // kwam uit de check-ladder; op voeding is de stand nu je dagboek.
     renderSchap("voeding", "favorieten");
-    expect(spiegel()).toBeTruthy();
-  });
-
-  it("zet de gratis lagen links en de betaalde laag rechts, met hun nummers", () => {
-    renderSchap("voeding", "producten");
-
-    expect(within(spiegel()).getByText("Gratis · laag 1–5")).toBeTruthy();
-    expect(within(spiegel()).getByText("Betaald · laag 6 van 6")).toBeTruthy();
-    expect(within(spiegel()).getByText("Voedingsbasis")).toBeTruthy();
-  });
-
-  it("draagt de doorstroom naar de gids, met de terugweg naar het dashboard", () => {
-    renderSchap("voeding", "producten");
-
-    const link = within(spiegel())
-      .getByText("Open de supplementengids")
-      .closest("a");
-    expect(link?.getAttribute("href")).toBe("/supplementen?from=voortgang");
+    expect(
+      screen.queryByRole("region", { name: "Wat eerst komt, en wat je kunt kopen" }),
+    ).toBeNull();
+    expect(screen.queryByText("Gratis · laag 1–5")).toBeNull();
   });
 
   it("staat er niet op een domein zonder ladder", () => {

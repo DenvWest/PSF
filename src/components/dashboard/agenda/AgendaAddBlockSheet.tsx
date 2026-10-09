@@ -13,6 +13,8 @@ import {
 import { normalizeLocalTime } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
+import type { TekortVoorstel } from "@/lib/agenda-tekort-voorstellen";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { AgendaCategoryId } from "@/types/agenda";
 
 type HiddenPlanStep = {
@@ -29,6 +31,8 @@ type AgendaAddBlockSheetProps = {
   hiddenPlanStep?: HiddenPlanStep | null;
   initialStartTime?: string;
   initialEndTime?: string;
+  voorstellen?: readonly TekortVoorstel[];
+  preselectNutrient?: NutrientId | null;
   createSurface?: "agenda_add_sheet" | "agenda_timeline_tap" | "agenda_week_grid_tap";
   onClose: () => void;
   onRestorePlanStep?: () => Promise<void>;
@@ -54,6 +58,8 @@ export default function AgendaAddBlockSheet({
   hiddenPlanStep = null,
   initialStartTime,
   initialEndTime,
+  voorstellen = [],
+  preselectNutrient = null,
   createSurface = "agenda_add_sheet",
   onClose,
   onRestorePlanStep,
@@ -61,10 +67,21 @@ export default function AgendaAddBlockSheet({
   onSubmit,
 }: AgendaAddBlockSheetProps) {
   const titleId = useId();
-  const [categoryId, setCategoryId] = useState<AgendaCategoryId>("persoonlijke_routine");
-  const [title, setTitle] = useState("");
-  const [startTime, setStartTime] = useState(initialStartTime ?? "12:00");
+  const preselected = voorstellen.find((voorstel) => voorstel.nutrient === preselectNutrient);
+  const [categoryId, setCategoryId] = useState<AgendaCategoryId>(
+    preselected?.categoryId ?? "voeding",
+  );
+  const [title, setTitle] = useState(preselected?.title ?? "");
+  const [startTime, setStartTime] = useState(
+    preselected?.startTime ?? initialStartTime ?? "12:00",
+  );
+  const [voorstelNutrient, setVoorstelNutrient] = useState<NutrientId | null>(
+    preselected?.nutrient ?? null,
+  );
   const [durationMinutes, setDurationMinutes] = useState<number>(() => {
+    if (preselected) {
+      return durationMinutesFromRange(preselected.startTime, preselected.endTime);
+    }
     if (initialStartTime && initialEndTime) {
       return durationMinutesFromRange(initialStartTime, initialEndTime);
     }
@@ -83,6 +100,16 @@ export default function AgendaAddBlockSheet({
       clarityTag("agenda_block", "add_close");
     };
   }, [open]);
+
+  const applyVoorstel = (voorstel: TekortVoorstel) => {
+    setCategoryId(voorstel.categoryId);
+    setTitle(voorstel.title);
+    setStartTime(voorstel.startTime);
+    setDurationMinutes(durationMinutesFromRange(voorstel.startTime, voorstel.endTime));
+    setVoorstelNutrient(voorstel.nutrient);
+    setError(null);
+    trackEvent("agenda_tekort_voorstel_gekozen", { nutrient: voorstel.nutrient });
+  };
 
   const handleSubmit = async () => {
     const trimmedTitle = title.trim();
@@ -116,7 +143,8 @@ export default function AgendaAddBlockSheet({
       });
       trackEvent("agenda_block_created", {
         category_id: categoryId,
-        surface: createSurface,
+        surface: voorstelNutrient ? "agenda_tekort_voorstel" : createSurface,
+        ...(voorstelNutrient ? { nutrient: voorstelNutrient } : {}),
       });
       clarityTag("agenda_block", "created");
       onClose();
@@ -134,7 +162,7 @@ export default function AgendaAddBlockSheet({
   }
 
   return (
-    <AgendaSheetFrame titleId={titleId} title="Nieuw leefstijlmoment" onClose={onClose}>
+    <AgendaSheetFrame titleId={titleId} title="Nieuw moment" onClose={onClose}>
       {hiddenPlanStep ? (
         <div className="mb-5 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5">
           <p className="mb-1 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]">
@@ -206,6 +234,33 @@ export default function AgendaAddBlockSheet({
         </div>
       ) : null}
 
+      {voorstellen.length > 0 ? (
+        <>
+          <p className={LABEL_CLASS}>Uit je patroon</p>
+          <div className="mb-4 flex flex-wrap gap-2">
+            {voorstellen.map((voorstel) => {
+              const selected = voorstel.nutrient === voorstelNutrient;
+              return (
+                <button
+                  key={voorstel.nutrient}
+                  type="button"
+                  disabled={busy}
+                  aria-pressed={selected}
+                  onClick={() => applyVoorstel(voorstel)}
+                  className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border px-3 text-[12px] font-medium transition-colors disabled:opacity-60 ${
+                    selected
+                      ? "border-[var(--sage)] bg-[rgba(90,143,106,0.18)] text-[#F1EFE8]"
+                      : "border-white/12 bg-white/[0.03] text-[#9FB0A6]"
+                  }`}
+                >
+                  {voorstel.label}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      ) : null}
+
       <p className={LABEL_CLASS}>Categorie</p>
       <div className="mb-4 flex flex-wrap gap-2">
         {SELECTABLE_AGENDA_CATEGORIES.map((category) => {
@@ -243,7 +298,7 @@ export default function AgendaAddBlockSheet({
           value={title}
           disabled={busy}
           maxLength={120}
-          placeholder="Bijv. wandelen na het eten"
+          placeholder="Bijv. vette vis bij het avondeten"
           onChange={(event) => setTitle(event.target.value)}
           className={FIELD_CLASS}
           style={{ fontFamily: "var(--f-sans)" }}

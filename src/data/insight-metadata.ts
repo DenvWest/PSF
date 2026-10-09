@@ -234,6 +234,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "slaapritme-herstellen": { theme: "sleep", planPhase: 1 },
   "stress-werk-grenzen-stellen": { theme: "stress", profile: "Stressdrager" },
   "supplement-kiezen-waar-op-letten": { theme: "nutrition" },
+  "supplementen-via-influencers-checklist": { theme: "nutrition" },
   "testosteron-en-energie-na-40": { theme: "movement" },
   "vitamine-d-en-energie": {
     theme: "nutrition",
@@ -349,6 +350,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   // ── Kennisbank ────────────────────────────────────────────────────────────
   adaptogens: { theme: "stress", profile: "Stressdrager" },
   adh: { theme: "nutrition" },
+  "opbouwtijd-supplement": { theme: "nutrition" },
   atp: { theme: "movement" },
   biobeschikbaarheid: { theme: "nutrition" },
   chelaatvorm: { theme: "nutrition", nutrients: ["magnesium", "zinc"] },

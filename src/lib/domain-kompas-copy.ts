@@ -57,9 +57,9 @@ export const DOMAIN_KOMPAS_COPY: Record<DomainKompasDomain, DomainKompasCopy> = 
     surface: "kompas_slaap",
   },
   voeding: {
-    checkNoun: "voedingscheck",
+    checkNoun: "check 'Wat mis je?'",
     noCheckStatusLine:
-      "Waar jouw winst zit lezen we af uit je voedingscheck. Je prioriteiten staan er wel — lees ze, en kies wat herkenbaar is.",
+      "Waar jouw winst zit lezen we af uit je check. Je prioriteiten staan er wel — lees ze, en kies wat herkenbaar is.",
     ladderEyebrowWithoutCheck: "Van onder naar boven",
     voortgangLabel: "Open je voedingsbeeld",
     agendaLabel: "Mijn Dag › vandaag",

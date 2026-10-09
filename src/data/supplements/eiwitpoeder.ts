@@ -30,7 +30,7 @@ export const eiwitpoederData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/herstel-verbeteren-na-40",
+      href: "/herstel-en-voeding",
       text: "Eiwitdosering en herstel na 30 — in de pillar met slaap en rustdagen.",
       cta: "Naar herstel-pillar →",
     },

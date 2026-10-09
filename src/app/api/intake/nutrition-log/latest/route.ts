@@ -7,6 +7,7 @@ import {
   INTAKE_SESSION_COOKIE_NAME,
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
+import { resolveCheckSubject } from "@/lib/intake-session-resolve";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import {
   buildNutritionLogResponse,
@@ -69,15 +70,21 @@ export async function GET(request: NextRequest) {
   }
 
   const rawCookie = request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value;
-  const sessionId = verifySignedIntakeSessionCookie(rawCookie);
+  const cookieSessionId = verifySignedIntakeSessionCookie(rawCookie);
 
-  if (!sessionId) {
+  // Eerst "wie is dit?": ingelogd levert alle sessies van het account op (lost
+  // op dat een check op een nieuw apparaat of na cookie-verlies onvindbaar
+  // was), anoniem valt terug op de cookie. Zie
+  // BESLUITDOCUMENT_SESSIE_ARCHITECTUUR_2026-09.md §3.4 (P4/P5).
+  const { sessionIds } = await resolveCheckSubject(cookieSessionId);
+
+  if (sessionIds.length === 0) {
     // `canCreateSession` vertelt de check of hij zelf een sessie mag aanmaken bij
     // het opslaan. Hier en niet als pagina-prop: /intake wordt statisch gebouwd,
     // en dan zou de vlag pas na een nieuwe build omgaan.
     return NextResponse.json(
       {
-        error: "Doe eerst de Leefstijlcheck via /intake.",
+        error: "Doe eerst de check via /intake.",
         canCreateSession: isCheckSessionCreateEnabled(),
       },
       { status: 401 },
@@ -95,7 +102,7 @@ export async function GET(request: NextRequest) {
   const { data: rows, error } = await admin
     .from("intake_intake_log")
     .select("estimate, raw_inputs, logged_at")
-    .eq("session_id", sessionId)
+    .in("session_id", sessionIds)
     .order("logged_at", { ascending: false })
     .limit(2);
 
@@ -108,7 +115,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (!rows || rows.length === 0) {
-    return NextResponse.json({ error: "Geen voedingscheck gevonden." }, { status: 404 });
+    return NextResponse.json({ error: "Geen check gevonden." }, { status: 404 });
   }
 
   const latest = rows[0];

@@ -1,9 +1,9 @@
 "use client";
 
-import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
+import { intakeSans, intakeSerif } from "@/lib/fonts";
 import IntakeCalculating from "@/components/intake/IntakeCalculating";
 import IntakeConsent from "@/components/intake/IntakeConsent";
 import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
@@ -33,21 +33,6 @@ import {
   trackIntakeStartFromIntro,
 } from "@/lib/intake-funnel-tracking";
 import { useIntakeSubmit } from "@/lib/use-intake-submit";
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-intake-body",
-  display: "swap",
-});
-
-const dmSerifDisplay = DM_Serif_Display({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-intake-heading",
-  display: "swap",
-});
 
 type Phase =
   | "intro"
@@ -274,8 +259,8 @@ export default function IntakeClient() {
 
   const shellClass =
     phase === "results"
-      ? `${dmSans.variable} ${dmSerifDisplay.variable} w-full`
-      : `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto w-full max-w-[480px]`;
+      ? `${intakeSans.variable} ${intakeSerif.variable} w-full`
+      : `${intakeSans.variable} ${intakeSerif.variable} mx-auto w-full max-w-[480px]`;
 
   const showResultsDeepLinkFallback =
     !isCheckingSession && hasResultsParam && resultsDeepLinkMissing;

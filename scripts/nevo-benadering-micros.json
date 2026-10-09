@@ -1,0 +1,39 @@
+{
+  "_toelichting": "Welke benaderingskoppelingen (basis: benadering in food-catalog-nevo.ts) hun kernstoffen van het vergelijkbare NEVO-record mogen TONEN. Alleen ter weergave, met label; nooit in een som. Besluit: docs/plan/BESLUIT_NUL_SPOOR_BENADERING_2026-10.md. Een sleutel die hier niet onder 'toon' staat, krijgt geen micronutriënten.",
+  "toon": {
+    "broccoli-gestoomd": "Zelfde groente, vergelijkbare bereiding (gekookt ≈ gestoomd).",
+    "broccoli-diepvries": "Diepvriesbroccoli is geblancheerd; gekookte broccoli ligt het dichtst bij.",
+    "basmatirijst-gekookt": "Witte rijst gekookt; rijstsoort verschilt nauwelijks in deze stoffen.",
+    "meergranenbrood": "Bruin meergranenbrood met zaden; zelfde producttype.",
+    "kipdij": "Kipbout zonder vel; dij en bout zijn hetzelfde donkere vlees.",
+    "rosbief": "Runderrosbief als vleeswaar; zelfde product.",
+    "boter": "Gezouten boter; zout verandert deze stoffen niet.",
+    "blauwe-kaas": "Gorgonzola is een blauwschimmelkaas.",
+    "smeerkaas": "Smeerkaas 40+; zelfde producttype.",
+    "groene-thee": "Thee bereid; levert geen van de kernstoffen van betekenis."
+  },
+  "niet": {
+    "havermelk": "Plantendrank: verrijking per merk, NEVO-record is onverrijkt.",
+    "amandeldrink": "Plantendrank: verrijking per merk, NEVO-record is onverrijkt.",
+    "kokosdrink": "Plantendrank: verrijking per merk, NEVO-record is onverrijkt.",
+    "rijstdrink": "Plantendrank: verrijking per merk, NEVO-record is onverrijkt.",
+    "margarine": "In Nederland verrijkt met vitamine D; NEVO-record zonder verrijking.",
+    "bakboter": "Verrijking niet meegenomen in het NEVO-record.",
+    "vegan-gehakt": "Vleesvervanger: samenstelling en verrijking verschillen sterk per merk.",
+    "vegan-burger": "Vleesvervanger: samenstelling en verrijking verschillen sterk per merk.",
+    "vegan-worst": "Vleesvervanger: samenstelling en verrijking verschillen sterk per merk.",
+    "vleesvervanger-stukjes": "Vleesvervanger: samenstelling en verrijking verschillen sterk per merk.",
+    "proteinereep": "Eiwitgehalte verschilt sterk per reep.",
+    "stamppot": "Boerenkoolstamppot staat niet voor stamppot in het algemeen.",
+    "frisdrank-light": "Per 100 ml; het dagboek rekent in gram.",
+    "eend": "NEVO heeft alleen rauwe eend met vel; geen eendenborst, ander vocht- en vetgehalte. Voorgelegd.",
+    "worst": "Gemiddelde van alle worst; spreiding te groot. Voorgelegd.",
+    "granola": "Krokante muesli; suiker/noten-aandeel verschilt per merk. Voorgelegd.",
+    "ontbijtgranen-volkoren": "Ontbijtgranen zijn vaak verrijkt. Voorgelegd.",
+    "pizza": "Margherita staat niet voor elke pizza. Voorgelegd.",
+    "groentesoep": "Heldere soep; recept verschilt sterk. Voorgelegd.",
+    "kippensoep": "Heldere soep met vlees; recept verschilt sterk. Voorgelegd.",
+    "maaltijdsalade": "Samengesteld gerecht; recept verschilt sterk. Voorgelegd.",
+    "wrap-gevuld": "Samengesteld gerecht; vulling verschilt sterk. Voorgelegd."
+  }
+}

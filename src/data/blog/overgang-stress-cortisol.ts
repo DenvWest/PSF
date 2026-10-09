@@ -9,7 +9,7 @@ export const overgangStressCortisolData: BlogArtikel = {
   coverImage: "/images/blog/overgang-stress-cortisol.jpg",
   coverImageAlt: "Vrouw in een rustmoment bij gedempt licht",
   heroIntro:
-    "Dezelfde drukte als vorig jaar, maar nu voelt het zwaarder — sneller geïrriteerd, moeilijker ontspannen, een kort lontje dat er eerder niet was. Dat is niet 'gewoon drukte', maar een herkenbaar patroon dat samenhangt met wat er hormonaal gebeurt in deze fase. Achtergrond over de bredere overgang staat in [de overgangsgids](/overgang).",
+    "Dezelfde drukte als vorig jaar, maar nu voelt het zwaarder — sneller geïrriteerd, moeilijker ontspannen, een kort lontje dat er eerder niet was. Dat is niet 'gewoon drukte', maar een herkenbaar patroon dat samenhangt met wat er hormonaal gebeurt in deze fase. Achtergrond over de bredere overgang staat in [de overgangsgids](/overgang-en-voeding).",
   leestijd: "8 min",
   gepubliceerdOp: "2026-09-05",
   laatstBijgewerktOp: "2026-09-05",
@@ -66,7 +66,7 @@ export const overgangStressCortisolData: BlogArtikel = {
     "Sneller over je toeren raken in de overgang komt doordat dalend oestrogeen de demping op je stressrespons verzwakt — dezelfde stressor geeft dan een fellere cortisolreactie. Slaaptekort door opvliegers versterkt dit patroon. Regelmaat, beweging en ademhalingstechnieken pakken het systeem zelf aan; ashwagandha kan daarnaast ondersteunen, met beperkt overgangsspecifiek bewijs.",
   cornerstoneLink: {
     label: "Overgang: wat verandert en wat helpt",
-    href: "/overgang",
+    href: "/overgang-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste ashwagandha supplementen",

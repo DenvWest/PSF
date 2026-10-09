@@ -26,11 +26,11 @@ export default function KennisbankTier1FooterCta({
   return (
     <section
       className="mx-auto mt-20 max-w-[min(38rem,100%)] border border-stone-200/90 bg-white px-7 py-10 text-center md:mt-24 md:px-10 md:py-12"
-      aria-label="Leefstijlcheck"
+      aria-label="Wat mis je?"
     >
       <p className="mx-auto max-w-[42ch] text-[0.9375rem] leading-[1.75] text-stone-600 md:text-base">
-        Dit was de algemene uitleg — voor iedereen hetzelfde. Waar jíj staat op slaap, stress en
-        energie zie je in vijf minuten.
+        Dit was de algemene uitleg — voor iedereen hetzelfde. Welke voedingsstoffen jíj
+        waarschijnlijk mist, zie je met de check.
       </p>
       <Link
         href="/intake"
@@ -42,7 +42,7 @@ export default function KennisbankTier1FooterCta({
         }
         className="group mt-8 inline-flex min-h-12 items-center justify-center gap-1.5 rounded-xl bg-ps-green px-7 text-[0.875rem] font-semibold text-white shadow-[0_2px_8px_rgba(90,143,106,0.28)] transition-[background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:bg-ps-green-hover hover:shadow-[0_6px_18px_rgba(90,143,106,0.36)] active:translate-y-0"
       >
-        Doe de gratis Leefstijlcheck
+        Wat mis je? Doe de gratis check
         <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5">
           →
         </span>

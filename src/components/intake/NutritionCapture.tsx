@@ -342,14 +342,14 @@ export default function NutritionCapture() {
         }
         if (res.status === 401) {
           if (await canCreateSessionFrom(res)) {
-            setResultsLoadError("Je hebt nog geen voedingscheck afgerond.");
+            setResultsLoadError("Je hebt nog geen check afgerond.");
             return;
           }
           setStep({ kind: "error", message: "401" });
           return;
         }
         if (res.status === 404) {
-          setResultsLoadError("Je hebt nog geen voedingscheck afgerond.");
+          setResultsLoadError("Je hebt nog geen check afgerond.");
           return;
         }
         if (!res.ok) {
@@ -739,7 +739,7 @@ export default function NutritionCapture() {
             href="/intake/voeding"
             className="inline-block rounded-[12px] bg-intake-terra px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-intake-terra/90"
           >
-            Start de voedingscheck →
+            Start de check →
           </Link>
         </div>
       </div>
@@ -755,9 +755,9 @@ export default function NutritionCapture() {
               Eerst een korte basis, dan je voedingsrapport.
             </p>
             <p className="mb-6 text-sm leading-relaxed text-intake-ink/80">
-              We bewaren je voedingscheck bij je Leefstijlcheck-profiel — die
+              We bewaren je antwoorden bij je Leefstijlcheck-profiel — die
               doe je eerst, in 3 minuten. Daarna kun je altijd terugkomen voor
-              de voedingscheck.
+              deze check.
             </p>
             <Link
               href="/intake/leefstijl"
@@ -797,7 +797,7 @@ export default function NutritionCapture() {
           aria-valuenow={CONSENT_PROGRESS_DENOM}
           aria-valuemin={1}
           aria-valuemax={CONSENT_PROGRESS_DENOM}
-          aria-label="Voortgang voedingscheck"
+          aria-label="Voortgang check"
         >
           <div
             className="h-full bg-intake-terra transition-[width] duration-300 ease-out"
@@ -914,7 +914,7 @@ export default function NutritionCapture() {
         aria-valuenow={stepNumber ?? NUTRITION_REQUIRED_STEP_COUNT}
         aria-valuemin={1}
         aria-valuemax={CONSENT_PROGRESS_DENOM}
-        aria-label="Voortgang voedingscheck"
+        aria-label="Voortgang check"
       >
         <div
           className="h-full bg-intake-terra transition-[width] duration-300 ease-out"

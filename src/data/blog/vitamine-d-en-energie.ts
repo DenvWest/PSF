@@ -8,7 +8,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
   coverImage: "/images/blog/vitamine-d-en-energie.jpg",
   coverImageAlt: "Zonnig strand met helder blauwe lucht",
   heroIntro:
-    "In Nederland is een lage vitamine D-status in de winter geen uitzondering — maar “meer energie” staat niet op de lijst met erkende gezondheidsclaims. Dit artikel scheidt feiten van wensen: wanneer meten zinvol is, hoe [energie na 30](/energie-na-40) breder werkt dan één capsule, en hoe je [vitamine D supplementen](/beste/vitamine-d) eerlijk vergelijkt.",
+    "In Nederland is een lage vitamine D-status in de winter geen uitzondering — maar “meer energie” staat niet op de lijst met erkende gezondheidsclaims. Dit artikel scheidt feiten van wensen: wanneer meten zinvol is, hoe [energie na 30](/energie-en-voeding) breder werkt dan één capsule, en hoe je [vitamine D supplementen](/beste/vitamine-d) eerlijk vergelijkt.",
   leestijd: "10 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-09-01",
@@ -23,7 +23,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom energie een systeemvraag is",
       tekst:
-        "Slaap, stress, beweging en eiwit vormen samen je dagelijkse “batterij”. [Mitochondriën](/kennisbank/mitochondrien) en [ATP](/kennisbank/atp) helpen het plaatje te begrijpen zonder je zelf tot labrapport om te bouwen. Als je vooral herkenning zoekt bij dipjes en minder veerkracht, sluit het profiel [Lage energie](/profiel/lage-energie) vaak aan — met concrete routes naar thema’s en tools.",
+        "Slaap, stress, beweging en eiwit vormen samen je dagelijkse “batterij”. [Mitochondriën](/kennisbank/mitochondrien) en [ATP](/kennisbank/atp) helpen het plaatje te begrijpen zonder je zelf tot labrapport om te bouwen. Als je vooral herkenning zoekt bij dipjes en minder veerkracht, lees verder in [energie en voeding](/energie-en-voeding).",
     },
     {
       type: "opsomming",
@@ -39,7 +39,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
       type: "tekst",
       titel: "Turbo: vergelijk vitamine D op kwaliteit en prijs per dag",
       tekst:
-        "Op het etiket telt niet alleen IE of µg, maar ook vorm (vaak D3), olie-oplossing vs tablet en prijs per dag. Onze [beste vitamine D](/beste/vitamine-d) vergelijking bundelt dat voor drie gangbare keuzes — handig naast de bredere [energie-pillar](/energie-na-40) en blogs zoals [energie verhogen natuurlijk](/blog/energie-verhogen-natuurlijk).",
+        "Op het etiket telt niet alleen IE of µg, maar ook vorm (vaak D3), olie-oplossing vs tablet en prijs per dag. Onze [beste vitamine D](/beste/vitamine-d) vergelijking bundelt dat voor drie gangbare keuzes — handig naast de bredere [energie-pillar](/energie-en-voeding) en blogs zoals [energie verhogen natuurlijk](/blog/energie-verhogen-natuurlijk).",
     },
   ],
   samenvatting:
@@ -52,7 +52,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 30",
-    href: "/energie-na-40",
+    href: "/energie-en-voeding",
   },
   vergelijkingExtraLink: {
     label: "Vitamine D supplementen vergelijken",

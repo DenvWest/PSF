@@ -144,7 +144,7 @@ export default async function GidsenPage({ searchParams }: GidsenPageProps) {
 
         <p className="mt-12 text-center text-sm text-[#8A9189]">
           Elke gids verbindt door naar de bijbehorende pillar, je profiel en de
-          gratis Leefstijlcheck.
+          gratis check Wat mis je?.
         </p>
       </Container>
     </main>

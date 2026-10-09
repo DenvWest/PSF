@@ -8,6 +8,7 @@ import {
 } from "@/lib/account-nutrition-daybook";
 import { normaliseerWaterMl } from "@/lib/nutrition-eetmomenten";
 import { sanitizeItems } from "@/lib/nutrition-dagboek-items";
+import { sanitizeHoofdmaaltijden } from "@/lib/nutrition-eetpatroon";
 import { getAccountFromCookie } from "@/lib/account-server";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
@@ -15,6 +16,9 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { DEFAULT_ORG_ID } from "@/config/org";
 import { orgScoped } from "@/lib/db/scoped";
 import { getClientIp } from "@/lib/turnstile-verify";
+import { actueleDagboekProducten } from "@/lib/keuze-dagboek-product";
+import { loadHubProductsForPage } from "@/lib/supplement-catalog-db/hub-products-for-page";
+import { keuzeProducten } from "@/lib/supplement-hub/ps-score-per-stof";
 
 /**
  * Het 2+2-dagboek: registreren en teruglezen.
@@ -100,6 +104,7 @@ export async function POST(request: NextRequest) {
   const momenten = record.meals !== undefined ? sanitizeMeals(record.meals) : undefined;
   const porties = record.portions !== undefined ? sanitizePortions(record.portions) : undefined;
   const waterMl = record.water_ml !== undefined ? normaliseerWaterMl(record.water_ml) : undefined;
+  const overgeslagen = record.overgeslagen !== undefined ? sanitizeHoofdmaaltijden(record.overgeslagen) : undefined;
 
   // Een verzoek moet érgens over gaan: noemt het geen enkele vorm, dan is er
   // niets te registreren en niets te wissen.
@@ -113,7 +118,8 @@ export async function POST(request: NextRequest) {
     items !== undefined ||
     momenten !== undefined ||
     porties !== undefined ||
-    waterMl !== undefined;
+    waterMl !== undefined ||
+    overgeslagen !== undefined;
 
   if (!noemtEenVorm) {
     return NextResponse.json(
@@ -130,12 +136,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Een merkproduct uit Keuze draagt zijn etiket mee; dat toetsen we aan de
+  // hub (en aan wat er die dag al stond), zodat geen client een dosis verzint.
+  const producten = items?.some((item) => item.product)
+    ? actueleDagboekProducten(keuzeProducten(await loadHubProductsForPage()))
+    : undefined;
+
   const ok = await upsertDaybookDay(admin, account.id, {
     date,
     porties,
     momenten,
     items,
     waterMl,
+    overgeslagen,
+    producten,
   });
   if (!ok) {
     return NextResponse.json({ error: "Kon je dag niet opslaan." }, { status: 500 });

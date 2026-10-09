@@ -1,6 +1,7 @@
 /** @vitest-environment jsdom */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import type { SupermarktProduct } from "@/types/supermarkt-product";
 import DagboekScherm from "@/components/dashboard/dagboek/DagboekScherm";
 
 vi.mock("@/lib/agenda-week-preview", async (importOriginal) => {
@@ -17,6 +18,38 @@ vi.mock("@/lib/account-events-client", () => ({
   emitAccountClientEvent: vi.fn(),
 }));
 
+/**
+ * Testfixture voor Laag A: de supermarktcatalogus staat server-side
+ * (`sm_products`), dus de zoek-naar-portie-flow krijgt zijn product uit een
+ * gemockte `/api/account/supermarkt-producten`-respons.
+ */
+const testProduct: SupermarktProduct = {
+  prodId: "off:8710000000001",
+  bron: "off",
+  bronId: "8710000000001",
+  naam: "AH Testproduct",
+  merk: "AH",
+  categorie: "test",
+  snapshotDatum: "2026-10-01",
+  energyKcal: 250,
+  fatG: 10,
+  saturatedFatG: 3,
+  carbohydrateG: 30,
+  sugarsG: 5,
+  fiberG: 2,
+  proteinG: 8,
+  saltG: 1,
+  sodiumMg: null,
+  calciumMg: null,
+  ironMg: null,
+  vitaminCMg: null,
+  vitaminDµg: null,
+  potassiumMg: null,
+  magnesiumMg: null,
+  zincMg: null,
+  vitaminB12µg: null,
+};
+
 function jsonResponse(body: unknown): Promise<Response> {
   return Promise.resolve({
     ok: true,
@@ -30,6 +63,23 @@ beforeEach(() => {
     vi.fn((input: RequestInfo | URL) => {
       if (String(input).includes("/api/account/nutrition-daybook")) {
         return jsonResponse({ days: [] });
+      }
+      if (String(input).includes("/api/account/supermarkt-portie-logs")) {
+        return jsonResponse({ items: [] });
+      }
+      if (String(input).includes("/api/account/supermarkt-producten")) {
+        const q = new URL(String(input), "http://localhost").searchParams.get("q") ?? "";
+        return jsonResponse({
+          producten: testProduct.naam.toLowerCase().includes(q.toLowerCase()) ? [testProduct] : [],
+        });
+      }
+      if (String(input).includes("/api/account/macro-doelen")) {
+        return jsonResponse({
+          calorieenKcal: null,
+          koolhydratenPct: null,
+          vetPct: null,
+          eiwitPct: null,
+        });
       }
       return jsonResponse({});
     }),
@@ -93,6 +143,99 @@ describe("DagboekScherm — zoeken per maaltijd", () => {
     await waitFor(() => {
       expect(within(maaltijdBlok("Ontbijt")).getByText("Havermout")).toBeTruthy();
     });
+  });
+
+  it("brengt je met terug uit een portie bij dezelfde zoekterm en lijst", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    );
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    );
+    fireEvent.change(zoekveld, { target: { value: "havermout" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    fireEvent.click(await screen.findByRole("button", { name: "Terug" }));
+
+    const terug = (await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    )) as HTMLInputElement;
+    expect(terug.value).toBe("havermout");
+    expect(await screen.findByRole("button", { name: /^Havermout/ })).toBeTruthy();
+  });
+
+  it("loopt de terugknop van de browser stap voor stap terug: portie, zoeken, overzicht", async () => {
+    render(<DagboekScherm />);
+    const zoekLabel = "Zoek een voedingsmiddel of supplement";
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    );
+    fireEvent.change(await screen.findByLabelText(zoekLabel), {
+      target: { value: "havermout" },
+    });
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    await waitFor(() => expect(screen.queryByLabelText(zoekLabel)).toBeNull());
+
+    window.history.back();
+    await screen.findByLabelText(zoekLabel);
+    expect((screen.getByLabelText(zoekLabel) as HTMLInputElement).value).toBe("havermout");
+
+    window.history.back();
+    await waitFor(() => expect(screen.queryByLabelText(zoekLabel)).toBeNull());
+  });
+
+  it("gaat vanuit een portie terug naar de rijkste bronnen, met knop en met browser", async () => {
+    render(<DagboekScherm />);
+    const bronnenKop = /^Rijkste bronnen van/;
+    const eersteBron = () => screen.getAllByRole("button", { name: /^Voeg .* toe$/ })[0];
+
+    fireEvent.click(await screen.findByRole("button", { name: "Alle stoffen (5)" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Omega-3" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Rijkste bronnen →" }));
+    await screen.findByText(bronnenKop);
+
+    fireEvent.click(eersteBron());
+    await waitFor(() => expect(screen.queryByText(bronnenKop)).toBeNull());
+    fireEvent.click(screen.getByRole("button", { name: "Terug" }));
+    await screen.findByText(bronnenKop);
+    await new Promise((klaar) => setTimeout(klaar, 20));
+
+    fireEvent.click(eersteBron());
+    await waitFor(() => expect(screen.queryByText(bronnenKop)).toBeNull());
+    window.history.back();
+    await screen.findByText(bronnenKop);
+    await new Promise((klaar) => setTimeout(klaar, 20));
+
+    fireEvent.click(eersteBron());
+    await waitFor(() => expect(screen.queryByText(bronnenKop)).toBeNull());
+    fireEvent.click(screen.getAllByRole("button", { name: /Bevestigen|^Voeg .* toe aan/ })[0]);
+    await screen.findByText(bronnenKop);
+  });
+
+  it("zet de browsergeschiedenis recht als je met de app-knop terug gaat", async () => {
+    render(<DagboekScherm />);
+    const zoekLabel = "Zoek een voedingsmiddel of supplement";
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    );
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    );
+    fireEvent.change(zoekveld, { target: { value: "havermout" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
+    await waitFor(() => expect(screen.queryByLabelText(zoekLabel)).toBeNull());
+    fireEvent.click(screen.getByRole("button", { name: "Terug" }));
+    await screen.findByLabelText(zoekLabel);
+
+    window.history.back();
+    await waitFor(() =>
+      expect(
+        screen.queryByLabelText("Zoek een voedingsmiddel of supplement"),
+      ).toBeNull(),
+    );
   });
 
   it("kan het eetmoment nog wijzigen vlak vóór je een product kiest", async () => {
@@ -200,7 +343,9 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
   it("opent het detailscherm van een stof als je op de balk klikt", async () => {
     render(<DagboekScherm />);
 
+    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
 
     expect(
       await screen.findByRole("heading", { name: "Magnesium" }),
@@ -214,7 +359,9 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
   it("gaat van detail naar zoeken naar portie-invoer en schrijft een supplement-item weg", async () => {
     render(<DagboekScherm />);
 
+    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
 
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
@@ -262,7 +409,9 @@ describe("DagboekScherm — balk naar detail naar zoek naar portie", () => {
   it("neemt het eetmoment dat je op het zoekscherm koos mee naar wat je opslaat", async () => {
     render(<DagboekScherm />);
 
+    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
 
@@ -307,7 +456,9 @@ describe("DagboekScherm — favorieten", () => {
   it("bewaart een zoekresultaat als favoriet via de ster-knop, zonder het te kiezen", async () => {
     render(<DagboekScherm />);
 
+    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
 
@@ -347,7 +498,9 @@ describe("DagboekScherm — favorieten", () => {
   it("toont het tabblad Mijn supplementen als je erop klikt", async () => {
     render(<DagboekScherm />);
 
+    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
 
@@ -452,7 +605,10 @@ describe("DagboekScherm — opslaan dat misgaat", () => {
 
     // Nog geen tweede kans: de zoekknoppen zijn er weer, maar het toevoegen
     // zelf ligt stil tot de eerste POST is beantwoord.
-    fireEvent.change(zoekveld, { target: { value: "walnoten" } });
+    fireEvent.change(
+      await screen.findByLabelText("Zoek een voedingsmiddel of supplement"),
+      { target: { value: "walnoten" } },
+    );
     fireEvent.click(await screen.findByRole("button", { name: /^Walnoten/ }));
     expect(
       (screen.getByRole("button", { name: "Toevoegen" }) as HTMLButtonElement).disabled,
@@ -468,11 +624,160 @@ describe("DagboekScherm — opslaan dat misgaat", () => {
   });
 });
 
-describe("DagboekScherm — portielaag over de zoeklijst", () => {
-  /** Opent de portielaag voor het eerste "eerder gebruikt"-product. */
-  async function openPortielaag() {
+describe("DagboekScherm — tabbladen (Laag B)", () => {
+  it("toont Vandaag als standaardtabblad, met de eetmomenten", () => {
     render(<DagboekScherm />);
+
+    expect(screen.getByRole("tab", { name: "Vandaag", selected: true })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    ).toBeTruthy();
+  });
+
+  it("heeft geen los Calorieën-tabblad — de ring staat op Macro's", () => {
+    render(<DagboekScherm />);
+
+    expect(screen.queryByRole("tab", { name: "Calorieën" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
+
+    // Zonder registratie vraagt de ring wat je at; de drie macro's staan in
+    // de legenda en de tabel per maaltijd eronder.
+    expect(screen.getByRole("region", { name: "Calorieën en macro's vandaag" })).toBeTruthy();
+    expect(screen.getByRole("table")).toBeTruthy();
+    expect(screen.getAllByText(/Koolhydraten/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Vet/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Eiwit/).length).toBeGreaterThan(0);
+  });
+
+  it("toont op Macro's het weekoverzicht met het ingestelde doel", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        if (String(input).includes("/api/account/nutrition-daybook")) {
+          return jsonResponse({ days: [] });
+        }
+        if (String(input).includes("/api/account/supermarkt-portie-logs")) {
+          return jsonResponse({ items: [] });
+        }
+        if (String(input).includes("/api/account/macro-doelen")) {
+          return jsonResponse({
+            calorieenKcal: 2200,
+            koolhydratenPct: null,
+            vetPct: null,
+            eiwitPct: null,
+          });
+        }
+        return jsonResponse({});
+      }),
+    );
+
+    render(<DagboekScherm />);
+
+    fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
+
+    // Het doel komt uit de macro-doelen-fetch, niet uit een berekening.
+    expect(await screen.findByText(/2200 kcal/)).toBeTruthy();
+  });
+
+  it("toont geen berekend of vooringevuld doel zolang er niets is ingesteld", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(screen.getByRole("tab", { name: "Macro's" }));
+
+    // Zonder ingesteld doel geen weektabel vol streepjes en nooit een
+    // berekend getal (geen NaN, geen vuistregel als 50/30/20), wel de weg
+    // naar Je doelen.
+    expect(await screen.findByText(/verschijnt zodra je zelf een doel instelt/)).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Stel een doel in/ })).toBeTruthy();
+    expect(screen.queryByText(/NaN/)).toBeNull();
+  });
+});
+
+describe("DagboekScherm — vergelijken vanuit het zoekscherm", () => {
+  it("staat niet meer in de tabrij maar in het zoekscherm, en terug brengt je daar weer", async () => {
+    render(<DagboekScherm />);
+
+    expect(screen.queryByRole("button", { name: "Vergelijk producten" })).toBeNull();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Lunch — product toevoegen" }),
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Vergelijk producten" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Terug naar zoeken" }));
+
+    expect(
+      await screen.findByRole("heading", { name: "Voeg toe aan lunch" }),
+    ).toBeTruthy();
+  });
+});
+
+describe("DagboekScherm — supermarkt-portie (Laag A)", () => {
+  it("logt een supermarktproduct los van het tekortsysteem", async () => {
+    render(<DagboekScherm />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ontbijt — product toevoegen" }),
+    );
+    const zoekveld = await screen.findByLabelText(
+      "Zoek een voedingsmiddel of supplement",
+    );
+    fireEvent.change(zoekveld, { target: { value: "testproduct" } });
+    fireEvent.click(await screen.findByRole("button", { name: /^AH Testproduct/ }));
+
+    // Het supermarkt-portiescherm toont calorieën/macro's, geen NutrientId-rij.
+    expect(
+      await screen.findByRole("heading", { name: "Voedsel toevoegen" }),
+    ).toBeTruthy();
+
+    // Bronvermelding bij de getoonde waarden, met een link naar het product
+    // bij de bron en naar de licentietekst (ODbL §4.3).
+    expect(
+      screen.getByRole("link", { name: "Open Food Facts" }).getAttribute("href"),
+    ).toBe("https://nl.openfoodfacts.org/product/8710000000001");
+    expect(
+      screen.getByRole("link", { name: /Open Database License/ }).getAttribute("href"),
+    ).toBe("https://opendatacommons.org/licenses/odbl/1-0/");
+    expect(screen.getByText("Calorieën")).toBeTruthy();
+    expect(screen.getByText(/250 kcal/)).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Toevoegen" }));
+
+    await waitFor(() => {
+      const posts = vi.mocked(fetch).mock.calls.filter(
+        ([input, init]) =>
+          String(input).includes("/api/account/supermarkt-portie-logs") &&
+          Boolean(
+            init &&
+              typeof init === "object" &&
+              "method" in init &&
+              init.method === "POST",
+          ),
+      );
+      expect(posts.length).toBeGreaterThan(0);
+      const body = JSON.parse(String((posts[0]![1] as RequestInit).body));
+      expect(body.prodId).toBe("off:8710000000001");
+      expect(body.moment).toBe("ontbijt");
+    });
+
+    // Geen enkele POST naar het tekortsysteem — dit is een parallelle, eigen
+    // opslag, geen DagboekItem.
+    const daybookPosts = vi.mocked(fetch).mock.calls.filter(
+      ([input, init]) =>
+        String(input).includes("/api/account/nutrition-daybook") &&
+        Boolean(init && typeof init === "object" && "method" in init && init.method === "POST"),
+    );
+    expect(daybookPosts).toHaveLength(0);
+  });
+});
+
+describe("DagboekScherm — portiescherm voor voeding", () => {
+  /** Opent het portiescherm voor havermout, vanuit een stofdetail. */
+  async function openPortiescherm() {
+    render(<DagboekScherm />);
+    fireEvent.click(screen.getByRole("button", { name: /Alle stoffen/ }));
     fireEvent.click(screen.getByRole("button", { name: /Magnesium/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Logboek van magnesium/ }));
     await screen.findByRole("heading", { name: "Magnesium" });
     fireEvent.click(screen.getByRole("button", { name: "+ Voeg toe" }));
     const zoekveld = await screen.findByLabelText(
@@ -480,29 +785,27 @@ describe("DagboekScherm — portielaag over de zoeklijst", () => {
     );
     fireEvent.change(zoekveld, { target: { value: "havermout" } });
     fireEvent.click(await screen.findByRole("button", { name: /^Havermout/ }));
-    return screen.findByRole("dialog");
+    return screen.findByRole("heading", { name: "Voedsel toevoegen" });
   }
 
-  /**
-   * De winst van de laag: de lijst blijft eronder staan, dus het volgende
-   * product is één tik verder in plaats van de hele route terug.
-   */
-  it("laat de zoeklijst staan terwijl de laag open is", async () => {
-    await openPortielaag();
+  /** Voeding heeft dezelfde rijen als een NEVO-product, geen laag over de lijst. */
+  it("toont de rijen Maaltijd, Aantal porties en Portiegrootte op een eigen scherm", async () => {
+    await openPortiescherm();
 
-    expect(
-      screen.getByLabelText("Zoek een voedingsmiddel of supplement"),
-    ).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Maaltijd/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Aantal porties/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Portiegrootte/ })).toBeTruthy();
+    expect(screen.queryByLabelText("Zoek een voedingsmiddel of supplement")).toBeNull();
   });
 
-  it("zet de hoeveelheid met één tik op een gangbare portie", async () => {
-    const laag = await openPortielaag();
+  it("zet de portiegrootte met één tik op een gangbare portie", async () => {
+    await openPortiescherm();
 
-    const gram = within(laag).getByLabelText("Gram") as HTMLInputElement;
+    fireEvent.click(screen.getByRole("button", { name: /Portiegrootte/ }));
+    const gram = screen.getByRole("spinbutton") as HTMLInputElement;
     const start = gram.value;
 
-    // Elke portie uit de catalogus is een knop; de tweede wijkt af van de eerste.
-    const porties = within(laag)
+    const porties = screen
       .getAllByRole("button")
       .filter((knop) => /gram$/.test(knop.getAttribute("aria-label") ?? ""));
     expect(porties.length).toBeGreaterThan(0);
@@ -516,19 +819,55 @@ describe("DagboekScherm — portielaag over de zoeklijst", () => {
     }
   });
 
-  it("sluit de laag met Escape zonder iets op te slaan", async () => {
-    await openPortielaag();
+  it("gaat terug naar de zoeklijst zonder iets op te slaan", async () => {
+    await openPortiescherm();
 
-    fireEvent.keyDown(document, { key: "Escape" });
+    fireEvent.click(screen.getByRole("button", { name: "Terug" }));
 
-    await waitFor(() => {
-      expect(screen.queryByRole("dialog")).toBeNull();
-    });
+    await screen.findByLabelText("Zoek een voedingsmiddel of supplement");
     const posts = vi.mocked(fetch).mock.calls.filter(
       ([input, init]) =>
         String(input).includes("/api/account/nutrition-daybook") &&
         Boolean(init && typeof init === "object" && "method" in init && init.method === "POST"),
     );
     expect(posts).toHaveLength(0);
+  });
+});
+
+describe("DagboekScherm — dag wisselen", () => {
+  it("toont een andere dag zodra je die in de balk aantikt", async () => {
+    render(<DagboekScherm />);
+    const knoppen = await screen.findAllByRole("button", { name: /^(ma|di|wo|do|vr|za|zo) \d+/ });
+    const nietGekozen = knoppen.find((knop) => knop.getAttribute("aria-pressed") === "false")!;
+    fireEvent.click(nietGekozen);
+    expect(nietGekozen.getAttribute("aria-pressed")).toBe("true");
+  });
+});
+
+
+describe("DagboekScherm — openen vanuit een ander scherm", () => {
+  it("opent het portiescherm van het gevraagde product op de gevraagde maaltijd, en wist de vraag", async () => {
+    window.history.replaceState(null, "", "/dashboard?tab=vandaag&voeg=voeding%3Ahavermout&moment=lunch");
+    render(<DagboekScherm />);
+    expect(await screen.findByRole("button", { name: "Toevoegen" })).toBeTruthy();
+    expect(screen.getByText("Havermout")).toBeTruthy();
+    expect(screen.getByText("Lunch")).toBeTruthy();
+    expect(window.location.search).toBe("?tab=vandaag");
+  });
+
+  it("komt het portiescherm uit Mijn keuzes, dan brengt bevestigen je daar weer naartoe", async () => {
+    window.history.replaceState(null, "", "/dashboard?tab=vandaag&voeg=voeding%3Ahavermout&moment=lunch&van=keuze");
+    render(<DagboekScherm />);
+    fireEvent.click(await screen.findByRole("button", { name: "Toevoegen" }));
+    await waitFor(() => expect(window.location.search).toBe("?tab=keuze&deel=favorieten"));
+    window.history.replaceState(null, "", "/");
+  });
+
+  it("opent het zoekscherm op Mijn supplementen", async () => {
+    window.history.replaceState(null, "", "/dashboard?tab=vandaag&favorieten=supplementen");
+    render(<DagboekScherm />);
+    const tab = await screen.findByRole("tab", { name: "Mijn supplementen" });
+    expect(tab.getAttribute("aria-selected")).toBe("true");
+    window.history.replaceState(null, "", "/");
   });
 });

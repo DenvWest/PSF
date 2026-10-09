@@ -267,13 +267,13 @@ export default function StressCheckin() {
         <div className="relative flex min-h-screen flex-col items-center justify-center">
           <div className="w-full max-w-lg px-6 py-12 text-center">
             <p className="mb-6 text-base text-intake-ink">
-              Om je stress-check op te slaan, heb je eerst een Leefstijlcheck nodig.
+              Om je stress-check op te slaan, doe je eerst de check &apos;Wat mis je?&apos;.
             </p>
             <Link
               href="/intake"
               className="inline-block rounded-[12px] bg-intake-terra px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-intake-terra/90"
             >
-              Start de Leefstijlcheck →
+              Start de check →
             </Link>
           </div>
         </div>

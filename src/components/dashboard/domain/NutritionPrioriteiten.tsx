@@ -18,7 +18,7 @@ import {
  *
  * Drie regels die de vorm bepalen:
  *
- * 1. **Richtingen, geen acties.** "Je plantbasis uitbreiden" is een richting;
+ * 1. **Richtingen, geen acties.** "Meer groente en fruit" is een richting;
  *    "zet een portie groente bij het avondeten" is een actie, en die hoort in
  *    de agenda waar hij een moment kan krijgen.
  * 2. **Klikken gaat naar de laag, niet naar een product.** Elke richting opent

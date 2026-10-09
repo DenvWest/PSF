@@ -1,4 +1,5 @@
 import { absoluteUrl } from "@/lib/public-site-url";
+import { CHECK_CTA } from "@/lib/check-facts";
 import { ctaButton, emailWrapper } from "@/lib/email-templates/guide-nurture/shared";
 import type { GuideNurtureDay, GuideNurtureTemplate } from "@/lib/email-templates/guide-nurture/types";
 
@@ -21,7 +22,7 @@ export const bewegingGuideTemplates: Record<GuideNurtureDay, GuideNurtureTemplat
   <li>Week 2–4: 2× full-body kracht + belasting bijhouden</li>
   <li>Creatine pas als je basis op orde is</li>
 </ul>
-${ctaButton(absoluteUrl("/beweging-na-40"), "Start met je stappenplan →")}
+${ctaButton(absoluteUrl("/beweging-en-voeding"), "Start met je stappenplan →")}
 <p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
   <strong>P.S.</strong> Opstaan uit een stoel zonder je handen — een paar keer achter elkaar. Klein, maar een echte krachtprikkel.
 </p>`,
@@ -80,7 +81,7 @@ ${ctaButton(absoluteUrl("/intake/beweging"), "Check je kracht- en conditieniveau
 </p>
 ${ctaButton(absoluteUrl("/intake/beweging"), "Doe opnieuw de beweegcheck →")}
 <p style="margin-top: 12px;">
-  <a href="${absoluteUrl("/beweging-na-40")}" style="color: #3C7A56; font-weight: 600; font-size: 15px; text-decoration: underline;">
+  <a href="${absoluteUrl("/beweging-en-voeding")}" style="color: #3C7A56; font-weight: 600; font-size: 15px; text-decoration: underline;">
     Lees over herstel en ritme →
   </a>
 </p>`,
@@ -113,9 +114,9 @@ ${ctaButton(absoluteUrl("/beste/creatine"), "Vergelijk creatine supplementen →
   Tijd voor een nieuwe meting
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  Na een maand is het zinvol om opnieuw te kijken: beweging, herstel, voeding en slaap hangen samen. De Leefstijlcheck geeft je een actueel beeld in 3 minuten.
+  Na een maand is het zinvol om opnieuw te kijken: herstel begint ook op je bord. De check 'Wat mis je?' laat zien welke voedingsstoffen je bord waarschijnlijk mist — zonder diagnose, wel met wat je eraan kunt doen.
 </p>
-${ctaButton(absoluteUrl("/intake"), "Doe de gratis Leefstijlcheck →")}`,
+${ctaButton(absoluteUrl("/intake"), CHECK_CTA.discoverButton)}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),
