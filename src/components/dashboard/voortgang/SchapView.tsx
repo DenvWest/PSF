@@ -195,11 +195,13 @@ export default function SchapView({
       </div>
 
       {/* Onder md is dit de domeinschakelaar; vanaf md neemt de linker rail hem
-          over en zou een chiprij dezelfde keuze twee keer aanbieden.
+          over en zou een chiprij dezelfde keuze twee keer aanbieden. Met één
+          zichtbaar domein (voeding, `zichtbare-domeinen.ts`) is er niets te
+          schakelen en blijft ook deze rij weg, net als de rail.
           Alle vijf domeinen staan erin, óók de twee zonder aanbod — die dicht,
           met de reden. Weglaten maakt de poort onzichtbaar, en dan leest een
           ontbrekend domein als een gat in plaats van als een oordeel. */}
-      {onSwitchDomain ? (
+      {onSwitchDomain && KEUZE_CHIP_DOMAINS.length > 1 ? (
         <nav
           aria-label="Kiezen op een ander domein"
           className="mb-3 flex flex-wrap gap-2 md:hidden"

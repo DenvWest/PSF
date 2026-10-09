@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import SchapView from "@/components/dashboard/voortgang/SchapView";
 import type { DashboardModel, PillarId, SchapTabId } from "@/types/dashboard";
 
@@ -130,51 +130,19 @@ describe("SchapView — de Favorieten-tab", () => {
 });
 
 describe("SchapView — de domeinschakelaar", () => {
-  const domeinNav = () => screen.getByRole("navigation", { name: "Kiezen op een ander domein" });
-
-  it("laat alleen domeinen mét aanbod klikken, in Kompas-volgorde", () => {
-    renderSchap("voeding", null, { onSwitchDomain: vi.fn() });
-    const labels = within(domeinNav())
-      .getAllByRole("button")
-      .map((chip) => chip.textContent ?? "");
-    // Alleen voeding is nog zichtbaar; zie `zichtbare-domeinen.ts`.
-    expect(labels).toEqual(["Voeding"]);
-  });
+  const domeinNav = () => screen.queryByRole("navigation", { name: "Kiezen op een ander domein" });
 
   /**
-   * Stress stond hier tot 22 september als dichte chip mét reden: het héést
-   * geen schap, en dat oordeel hoorde zichtbaar te blijven. Nu het domein
-   * helemaal uit de interface is, vervalt die afweging — een chip voor iets
-   * dat nergens meer bestaat is geen oordeel maar ruis.
+   * Alleen voeding is nog zichtbaar (`zichtbare-domeinen.ts`). Eén chip die
+   * naar het scherm wijst waar je al bent is ruis — dezelfde afweging als bij
+   * de linker rail, die bij één domein verdwijnt. Slaap, stress en verbinding
+   * staan er ook niet in.
    */
-  it("toont verbinding noch stress in de domeinschakelaar", () => {
-    renderSchap("slaap", null, { onSwitchDomain: vi.fn() });
-    expect(within(domeinNav()).queryByText("Stress")).toBeNull();
-    expect(within(domeinNav()).queryByText("Verbinding")).toBeNull();
-  });
-
-  it("markeert het open domein en laat dat geen navigatie afvuren", () => {
-    const onSwitchDomain = vi.fn();
-    renderSchap("voeding", null, { onSwitchDomain });
-    const actief = within(domeinNav()).getByRole("button", { name: "Voeding" });
-    expect(actief.getAttribute("aria-current")).toBe("page");
-
-    fireEvent.click(actief);
-    expect(onSwitchDomain).not.toHaveBeenCalled();
-    expect(emitAccountClientEvent).not.toHaveBeenCalled();
-  });
-
-  it("schakelt door en meldt het schap-openen met zijn herkomst", () => {
-    const onSwitchDomain = vi.fn();
-    renderSchap("slaap", null, { onSwitchDomain });
-
-    fireEvent.click(within(domeinNav()).getByRole("button", { name: "Voeding" }));
-    expect(onSwitchDomain).toHaveBeenCalledWith("voeding");
-    expect(emitAccountClientEvent).toHaveBeenCalledWith("choice.shelf_opened", {
-      domain: "voeding",
-      from_state: "schap",
-      surface: "schap_slaap",
-    });
+  it("toont geen domeinschakelaar zolang er maar één domein zichtbaar is", () => {
+    renderSchap("voeding", null, { onSwitchDomain: vi.fn() });
+    expect(domeinNav()).toBeNull();
+    expect(screen.queryByText("Stress")).toBeNull();
+    expect(screen.queryByText("Verbinding")).toBeNull();
   });
 
   it("staat er niet zonder handler — geen chip die nergens heen gaat", () => {
