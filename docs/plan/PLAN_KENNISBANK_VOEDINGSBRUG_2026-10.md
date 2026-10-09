@@ -109,7 +109,13 @@ Eisen per begrip: `insightTier: 1`, volledig publiek (nooit gegate), minimaal 5 
 | Webb & Engelsen 2006, Photochem Photobiol 82(6):1697–1703 | Bron bestaat; stadstijden niet nagerekend |
 | Winter-UVB-grens 52°N (Edmonton okt–mrt) | Grotendeels gecheckt; Nederland ≈ april–september zelf aanmaken |
 | Gezondheidsraad 2012 / Voedingscentrum (15–30 min buiten; supplement voor 0–4 jr, vrouwen 50+, 70+, donkere huid, weinig buiten) | Gecheckt |
-| Katan 1997, Browning 2012, Neubronner 2011, Heaney 2003 (5.000 IE), Young 2020, Shih 2018, DANCODE, buikvet/vit D-studie | **Niet gecheckt** — pas citeren na lezen van de bron zelf |
+| Katan 1997, J Lipid Res (58 mannen, 0/3/6/9 g visolie/dag, 12 mnd) | Gecheckt (samenvatting): EPA in serum-cholesterolesters plateau na 4–8 wkn (halfwaardetijd 4,8 d); in rode bloedcellen halfwaardetijd 28 d, evenwicht na ~180 d. Het bericht zegt "serum ~4 weken": schrijf **4–8 weken** |
+| Heaney 2003, Am J Clin Nutr 77:204–210 (67 mannen, ~20 wkn, 0/25/125/250 µg = 0/1.000/5.000/10.000 IE) | Gecheckt (samenvatting): evenwicht stijgt evenredig met dosis (~0,70 nmol/L per µg). De claim "5.000 IE: bijna vol na 2–3 maanden" staat niet in de samenvatting → tijdsverloop **nog niet bevestigd** |
+| Browning 2012, Am J Clin Nutr 96:748–758 (204 personen, 12 mnd) | Gecheckt (samenvatting): opnametijd varieert van dagen (plasma-fosfatidylcholine) tot maanden (mononucleaire cellen) tot >12 mnd (vetweefsel); geen dosisrespons voor EPA in rode bloedcellen |
+| Neubronner 2011, Eur J Clin Nutr 65:247–254 | Bron bestaat, maar gaat over **triglyceride- versus ethylesterform** en de omega-3-index, niet over opbouwtijd. Past bij *voeding-versus-capsule* (vorm doet ertoe), niet bij *opbouwtijd* |
+| Khanna 2022, Nutrients 14(23):5189 (KNMI-coauteurs) | Bron bestaat: gemiddelde "vitamine D-winter" 126 dagen, spreiding 4–215 dagen. De Nederlandse waarde is **niet** gelezen (MDPI 403, PMC captcha) |
+| UV-index ≥ 3 in Nederland ≈ maart–september | Alleen via een mediasite (maxvandaag.nl); RIVM-pagina geeft het niet. **Niet citeerbaar** zonder primaire KNMI/RIVM-bron |
+| Young 2020, Shih 2018, DANCODE, buikvet/vit D-studie | **Niet gecheckt** — pas citeren na lezen van de bron zelf |
 
 ### Open punten spoor 2
 
