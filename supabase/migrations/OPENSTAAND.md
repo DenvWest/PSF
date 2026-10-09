@@ -7,12 +7,18 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20261007150000_voedingsrichting.sql`
-- **Openstaand:** 0
-- **Laatst bijgewerkt:** 7 oktober 2026
+- **Openstaand:** 1
+- **Laatst bijgewerkt:** 9 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
+
+### [ ] 20261009120000_doel_evaluatie.sql
+- **Wat:** drie kolommen op `account_voedingsdoelen` voor de doel-evaluatie: `voedingsrichting_gekozen_op` (timestamptz), `doel_startstand` (jsonb) en `doel_bevestigd_op` (timestamptz). Alle drie nullable, geen backfill.
+- **Blokkeert deploy:** ja (branch `feat/doel-evaluatie`, nog te maken): de code die de kolommen schrijft en leest komt pas nadat jij dit hebt gedraaid.
+- **Hoort bij:** `docs/plan/BESLUIT_DOEL_ZONE_RICHTING_EVALUATIE_2026-10.md` §3 en §4 (stap 2 van de volgorde).
+- **Terugdraaien:** niet nodig, alleen additief. Eventueel `alter table public.account_voedingsdoelen drop column voedingsrichting_gekozen_op, drop column doel_startstand, drop column doel_bevestigd_op;`
 
 **Nog te doen (geen migratie, geen blocker):** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan al klaar.
 
