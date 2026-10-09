@@ -350,6 +350,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   // ── Kennisbank ────────────────────────────────────────────────────────────
   adaptogens: { theme: "stress", profile: "Stressdrager" },
   adh: { theme: "nutrition" },
+  "opbouwtijd-supplement": { theme: "nutrition" },
   atp: { theme: "movement" },
   biobeschikbaarheid: { theme: "nutrition" },
   chelaatvorm: { theme: "nutrition", nutrients: ["magnesium", "zinc"] },

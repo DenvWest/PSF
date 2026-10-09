@@ -58,6 +58,7 @@ export const INSIGHT_PIJLER_OVERRIDE: Record<string, PillarId> = {
   insulineresistentie: "voeding",
   slaaphygiene: "slaap",
   "eiwitbehoefte-na-40": "voeding",
+  "opbouwtijd-supplement": "voeding",
   "nervus-vagus": "stress",
   slaapschuld: "slaap",
   adaptogens: "stress",

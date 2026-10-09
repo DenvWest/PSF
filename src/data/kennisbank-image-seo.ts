@@ -92,6 +92,18 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "De ADH op een potje is vaak lager dan wat studies gebruiken; voor effect kijk je naar onderzoeksdoses en status.",
     searchPhrases: ["adh supplement", "aanbevolen dagelijkse hoeveelheid", "adh vitamine d"],
   },
+  "opbouwtijd-supplement": {
+    coverAlt:
+      "Water dat in een glas stroomt — het niveau van een supplement bouwt zich geleidelijk op",
+    coverCaption:
+      "Een supplement werkt vaak pas als het niveau is opgebouwd; dat duurt bij sommige stoffen weken.",
+    coverTitle: "Waarom een supplement weken duurt",
+    inlineAlt:
+      "Water dat in een glas stroomt — het niveau van een supplement bouwt zich geleidelijk op",
+    inlineCaption:
+      "Creatine, omega-3 en vitamine D hebben elk een eigen opbouwtijd: van dagen tot maanden, afhankelijk van waar je meet.",
+    searchPhrases: ["supplement hoe lang duurt het", "opbouwtijd supplement", "wanneer werkt omega-3"],
+  },
   "efsa-claims": {
     coverAlt:
       "EFSA gezondheidsclaims — boekenkast als naslag bij goedgekeurde supplementclaims",
