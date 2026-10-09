@@ -10,6 +10,7 @@ import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import { isDomainGoalDomain } from "@/lib/domain-goal";
 import { GOAL_MODE_LINE } from "@/lib/domain-goal-client";
+import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
 import { trackEvent } from "@/lib/ga4";
 import { buildContextSpine, type ContextSpine } from "@/lib/kompas-context-spine";
 import { useDomainGoalEditor } from "@/lib/use-domain-goal-editor";
@@ -127,32 +128,9 @@ export default function KompasContextSpine({
   const urgency = spine.urgency;
   let urgencyZone: React.ReactNode = null;
 
-  if (urgency?.kind === "laag") {
-    urgencyZone = (
-      <section
-        key="urgentie"
-        aria-label="Waar je winst nu zit"
-        className={`${cardClass} ${
-          urgency.isFocusLayer ? "border-[rgba(200,149,108,0.4)]" : "border-white/10"
-        }`}
-      >
-        {urgency.stateLabel ? (
-          <span
-            className={`${kickerClass} ${
-              urgency.isFocusLayer ? "text-[#C8956C]" : "text-[#9FB0A6]"
-            }`}
-          >
-            <Icons.RouteMap
-              s={13}
-              style={{ color: urgency.isFocusLayer ? "#C8956C" : "#9FB0A6" }}
-            />
-            {urgency.stateLabel}
-          </span>
-        ) : null}
-        <h3 className={titleClass}>{urgency.layerName}</h3>
-        {domainStamp}
-
-        {urgency.reason ? (
+  const reasonBlock =
+    urgency?.kind === "laag" ? (
+      urgency.reason ? (
           <div className="mt-2.5 border-l border-white/10 pl-2.5">
             {urgency.reason.kind === "bewijs" ? (
               <>
@@ -180,12 +158,12 @@ export default function KompasContextSpine({
             Je check zegt hier niets aparts over. Wat deze prioriteit inhoudt lees je in de
             ladder.
           </p>
-        )}
+        )
+    ) : null;
 
-        {/* Wat er ná deze laag komt. Zonder dit eindigt de kolom bij één laag
-            en kijk je daarna in het niets; met een vervolg is de laag een stap
-            in een route. Dezelfde bron als het Kompas ernaast. */}
-        {urgency.vervolg.length > 0 ? (
+  const vervolgBlock =
+    urgency?.kind === "laag" ? (
+      urgency.vervolg.length > 0 ? (
           <div className="mt-2.5 border-t border-white/10 pt-2">
             <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82]">
               Daarna
@@ -201,9 +179,87 @@ export default function KompasContextSpine({
               ))}
             </ul>
           </div>
-        ) : null}
+        ) : null
+    ) : null;
 
-        {domain === "voeding" ? <KompasDagboekRegel /> : null}
+  if (urgency?.kind === "laag") {
+    urgencyZone = (
+      <section
+        key="urgentie"
+        aria-label="Waar je winst nu zit"
+        className={`${cardClass} ${
+          urgency.isFocusLayer ? "border-[rgba(200,149,108,0.4)]" : "border-white/10"
+        }`}
+      >
+        {urgency.stateLabel ? (
+          <span
+            className={`${kickerClass} ${
+              urgency.isFocusLayer ? "text-[#C8956C]" : "text-[#9FB0A6]"
+            }`}
+          >
+            <Icons.RouteMap
+              s={13}
+              style={{ color: urgency.isFocusLayer ? "#C8956C" : "#9FB0A6" }}
+            />
+            {urgency.stateLabel}
+          </span>
+        ) : null}
+        {urgency.stap ? (
+          <>
+            <h3 className={titleClass}>{urgency.stap}</h3>
+            <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[#7E8C82]">
+              <span style={{ color: bar.color }}>●</span> {bar.label} · {urgency.layerName}
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                trackEvent("dashboard_kompas_context_click", { zone: "winst_stap", domain });
+                clarityTag("dashboard_kompas_context", "winst_stap_voeding");
+                gaNaarDashboard("/dashboard?tab=vandaag");
+              }}
+              className="mt-3 inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-[10px] border-none bg-[var(--sage)] px-3.5 text-[12.5px] font-semibold text-[#0f1c10]"
+            >
+              Log je maaltijd van vandaag <Icons.ArrowRight s={13} />
+            </button>
+          </>
+        ) : (
+          <>
+            <h3 className={titleClass}>{urgency.layerName}</h3>
+            {domainStamp}
+          </>
+        )}
+
+        {domain === "voeding" && urgency.stap ? <KompasDagboekRegel zonderTeWeinigLink /> : null}
+
+        {urgency.stap ? (
+          <details className="group mt-2.5 border-t border-white/10 pt-2">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82] [&::-webkit-details-marker]:hidden">
+              Waarom en wat daarna
+              <span aria-hidden className="transition group-open:rotate-90">›</span>
+            </summary>
+            <div className="mt-2">{reasonBlock}{vervolgBlock}</div>
+          </details>
+        ) : (
+          <>
+            {reasonBlock}
+            {vervolgBlock}
+          </>
+        )}
+
+        {domain === "voeding" && !urgency.stap ? <KompasDagboekRegel /> : null}
+
+        {domain === "voeding" ? (
+          <Link
+            href="/supplementen"
+            onClick={() => {
+              trackEvent("dashboard_kompas_context_click", { zone: "winst_supplement", domain });
+              clarityTag("dashboard_kompas_context", "winst_supplement_voeding");
+            }}
+            className="mt-2 inline-flex min-h-9 items-center gap-1.5 text-[12px] font-medium text-[#9FB0A6] underline-offset-2 hover:text-[#E7EDE8] hover:underline"
+          >
+            Alleen een supplement vergelijken? Bekijk de vergelijking <Icons.ArrowRight s={12} />
+          </Link>
+        ) : null}
       </section>
     );
   } else if (urgency?.kind === "geen_winstlaag") {

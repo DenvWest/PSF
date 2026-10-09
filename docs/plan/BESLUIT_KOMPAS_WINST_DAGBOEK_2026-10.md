@@ -37,3 +37,14 @@ Dennis had vier halve dagen (alleen ontbijt) en de regel zou bij een vijfde halv
 - **Drempel: 5 volle dagen van de laatste 7.** Een dag is vol als al je gewone maaltijden erop staan (`verwachteMaaltijden`, uit Je doelen; leeg = ontbijt, lunch en avondeten) of als een maaltijd als niet gegeten is gemarkeerd (`overgeslagen`). Het overzicht rekent alleen over volle dagen.
 - **Onder de drempel** staat wat er wél is: "N van 7 dagen compleet", de maaltijd die ontbreekt ("Vul ook je lunch in") en, vanaf 3 dagen met dezelfde maaltijd, een feit over die maaltijd ("Je ontbijt levert gemiddeld minstens 12% van je magnesiumnorm"). Dat is een feit over wat er stond, geen oordeel over je dag. Omega-3 valt af (weeknorm).
 - **Beperking:** het dagboek dat de zijbalk ophaalt kent alleen catalogusproducten. Een dag met alleen etiketproducten telt hier niet als volledig. Patroon rekent die wel mee.
+
+## Herbouw winstkaart voeding (9 okt)
+
+Dennis: het overzicht in de kolom is veel, onduidelijk en zegt weinig; "Plantbasis" is vaag. Besloten (Dennis: "akkoord"), gebouwd:
+
+- **Eén kop, één stap, één knop.** Op de winst-laag van voeding staat de ene stap voor vandaag als kop ("Groente of fruit erbij bij je volgende maaltijd", per feitenrij: `nutrition-winst-stap.ts`) en de knop "Log je maaltijd van vandaag" naar het dagboek. De laagnaam ("Voedingsbasis") staat klein eronder. Op een laag die de check niet als winst aanwees blijft de kaart zoals hij was.
+- **De trap vult het dagboek mee:** direct na de check de stap; met halve dagen een feit over de maaltijd en wat er mist; met 5 volle dagen de stand per stof (zie hierboven). Geen muur van "vanaf 5 dagen".
+- **De rest ingeklapt** onder "Waarom en wat daarna" (de feitenrij uit de check en de volgende richtingen).
+- **Supplement-route:** "Alleen een supplement vergelijken? Bekijk de vergelijking" naar `/supplementen`, als algemene informatie. Geen uitspraak dat je het nodig hebt; de uitgang op basis van je eigen gegevens blijft aan 30 dagen gebonden.
+- **Naam:** de rij "Plantbasis" heet nu **"Groente en fruit"** (key `plantbasis` blijft), de prioriteit "Meer groente en fruit". Het antwoord is gelabeld: "Groente 1× per dag · fruit 2× per week · bessen 1× per week". Uitlegzin: "Eén bron voor je vezels, kalium en magnesium." Dit was het voorstel; een andere variant is één kleine wijziging in `nutrition-ladder.ts`.
+- **Meetpunt:** GA4 + Clarity `dashboard_kompas_context_click` met `zone: winst_stap` (de knop) en `zone: winst_supplement` (de vergelijkingslink), beide `domain: voeding`.
