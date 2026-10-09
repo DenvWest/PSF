@@ -229,3 +229,20 @@ Stap 3 uit `PROMPT_VERVOLG_KEUZE_2026-10-08.md`; maakt punt 4 van de negende ron
 - **Geen aantal bij een merkproduct** (Dennis, 8 okt): het portiescherm vraagt alleen "Zet in dagboek" en logt één dagdosis volgens het etiket; in de maaltijd staat "dagdosis" zonder invoerveld. Wie het twee keer neemt, logt het twee keer.
 
 **Meting:** `keuze_bron_naar_dagboek` {nutrient, moment, surface: mijn_keuzes, kant: supplement}, hetzelfde event als ＋ bij eten. In het dagboek zijn het de bestaande `nutrition_dagboek_zoek_item_gekozen` en `nutrition_dagboek_portie_bevestigd` met `bron: supplement`.
+
+---
+
+## Elfde ronde (9 oktober): minder statisch — foto's, geen dubbele kop
+
+**Aanleiding.** Dennis vroeg of Keuze minder statisch kan (voorbeeld: een kaartenpagina met foto's, hero en zijkolom), met meer afbeeldingen, minder tekst en de dubbele kop "Keuze / Voeding" weg. Akkoord op de volgorde: eerst dit kleine stuk, daarna een schets met varianten voor de herindeling van stofkaart en Mijn keuzes.
+
+### Besluiten
+
+1. **Productfoto's** in Vergelijken (supplementkolom) en Mijn keuzes. Bron: `imageSrc`/`imageAlt` uit de hubproducten, nu onderdeel van `KeuzeProduct`. De foto zit in de bestaande productlink (naar `/product/<slug>`); geen affiliate-link in het dashboard.
+2. **Voedingsmiddelen krijgen geen stockfoto's** (geen bron, onderhoud). Eventueel later een icoontegel per voedselgroep.
+3. **De zichtbare kop "Keuze / <domein>" vervalt**: het domein staat al in de rail/chips en de tab heet al Keuze. De kop blijft als `sr-only` h2 voor de heading-structuur.
+4. **Afgewezen:** het donkere oranje palet van het voorbeeld (Keuze houdt de `--vd-*`-tokens) en reviews/sterren/korting (botst met objectiviteit en "geen koopprikkels in het dashboard").
+
+**Volgende (nog niet gebouwd):** schets met varianten voor een hero per stof, kaartjes naast elkaar en een zijkolom "Je keuzes" (`@container`, 375 px).
+
+**Meting:** geen nieuwe knop of CTA; bestaand `keuze_vergelijken_ps_score_click` dekt de klik op de productfoto/-link.
