@@ -306,3 +306,17 @@ Dennis' vragen na plak 2 en het antwoord (akkoord op de aanbeveling):
 **Nog te doen (plak 4):** ＋ Dagboek logt direct op het gekozen moment met de standaardportie (blijft in Mijn keuzes, met ongedaan maken en "portie wijzigen"), en Mijn keuzes toont "✓ vandaag gelogd". Vaststelling: nu opent ＋ Dagboek het portiescherm en gaat "terug" naar `?tab=vandaag` in plaats van naar Mijn keuzes. Het dagboek schrijft een hele dag per keer: de directe log moet de dag vers ophalen vóór het schrijven.
 
 **Meting:** `mijn_keuzes_moment` {nutrient, kant, moment, surface: keuze_vergelijken | mijn_keuzes}, bestaand event, nu ook vanuit Vergelijken en per voedingsmiddel.
+
+### Twaalfde ronde — uitvoering plak 4 (9 oktober): direct loggen en de terugweg
+
+Dennis: "＋ Dagboek" opende het portiescherm; met terug kwam je niet meer bij Mijn keuzes uit. Besloten (akkoord op de aanbeveling):
+
+1. **＋ Dagboek logt direct** op het gekozen moment, met de standaardportie: de eerste portie van het voedingsmiddel, of één dagdosis van het supplement (dezelfde waarde als het portiescherm). Je blijft in Mijn keuzes en ziet "✓ Gelogd bij lunch · Ongedaan maken · Andere portie". **Andere portie** haalt de directe log weg en opent het portiescherm.
+2. **Eerst lezen, dan schrijven** (`keuze-snel-loggen.ts`): het dagboek zet de hele itemlijst van een dag neer, dus de dag wordt vers opgehaald, het item eraan gehangen en terugschreven; schrijfacties lopen achter elkaar. Ongedaan maken haalt precies dat ene item weg.
+3. **Terugweg:** een link naar het portiescherm draagt `van=keuze`; terug én bevestigen brengen je naar Mijn keuzes (`?tab=keuze&deel=favorieten`). Zonder `van` blijft het gedrag zoals het was.
+4. **Terugkoppeling uit het dagboek:** Mijn keuzes leest je dag van vandaag en toont "✓ Vandaag al in je dagboek" bij wat je al gelogd hebt. De sync loopt nu twee kanten op.
+5. **Niet gedaan:** een instelbare portie in Mijn keuzes zelf; daarvoor is "Andere portie" de weg.
+
+**Meting:** `keuze_bron_naar_dagboek` krijgt `via: direct | portiescherm`; nieuw `keuze_log_ongedaan` {nutrient, moment, surface, kant} (GA4).
+
+**Volgende (conversiestap, apart):** "Prijs en winkels →" naast ＋ Dagboek, de koopknop bovenaan de productpagina bij `?van=keuze`, en een eigen herkomst `productpagina-keuze` voor de klik. Geen affiliate-link in het dashboard zelf (cockpit-besluit blijft).
