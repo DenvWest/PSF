@@ -320,3 +320,17 @@ Dennis: "＋ Dagboek" opende het portiescherm; met terug kwam je niet meer bij M
 **Meting:** `keuze_bron_naar_dagboek` krijgt `via: direct | portiescherm`; nieuw `keuze_log_ongedaan` {nutrient, moment, surface, kant} (GA4).
 
 **Volgende (conversiestap, apart):** "Prijs en winkels →" naast ＋ Dagboek, de koopknop bovenaan de productpagina bij `?van=keuze`, en een eigen herkomst `productpagina-keuze` voor de klik. Geen affiliate-link in het dashboard zelf (cockpit-besluit blijft).
+
+### Twaalfde ronde — conversiestap (9 oktober): prijs en winkels, zonder affiliate in het dashboard
+
+Dennis maakte zich zorgen om conversie en vroeg of een koopknop naast ＋ Dagboek zou moeten, en of "Kies dit supplement" naar de productpagina moet. Besloten (akkoord op de aanbeveling):
+
+1. **"Kies dit supplement" blijft kiezen.** Het is de stap waarmee je producten naast elkaar legt en in Mijn keuzes zet; doorlinken breekt de vergelijking, verliest `keuze_product_gekozen` en maakt "kiezen" en "kopen" tot één belofte.
+2. **Geen affiliate-link in het dashboard** — het cockpit-besluit (CLAUDE.md, `ANALYSE_DASHBOARD_HOME_EN_COCKPIT_IA.md`: "afgeraden, ook in de toekomst") blijft staan. De productpagina draagt de commissie-uitleg en de toestemmingspoort voor partnerlinks.
+3. **Eén klik dichter bij de winkel:** in Mijn keuzes ("Je dag") staat bij een supplement naast ＋ Dagboek een knop **"Prijs en winkels →"**; in Vergelijken heet de bestaande knop na het kiezen nu ook zo (was "Naar de productpagina →"). De dubbele link in Beheer is vervallen.
+4. **Koopkaart bovenaan de productpagina** voor wie via Keuze komt (`?van=keuze`): jouw keuze, prijs per dag, PS-Score, de knop en de commissie-uitleg. Bezoekers uit Google zien de pagina ongewijzigd (de knop halverwege blijft).
+5. **Eigen herkomst voor de klik:** `sourcePage: productpagina-keuze` landt in `affiliate_clicks` (`page_type`) en in de GA4/track-events van `AffiliateLink`. De tabel zelf is niet aangeraakt.
+
+**Meting — hier lees je het effect af:** `keuze_vergelijken_ps_score_click` {doel: productpagina, plek: je_dag} (klik vanuit Mijn keuzes), `affiliate_clicks` met `page_type = productpagina-keuze` (klik naar de winkel vanuit Keuze, naast `productpagina` voor de rest), en `keuze_product_gekozen` voor de keuze zelf. Het verschil tussen die drie is de trechter Kies → productpagina → winkel.
+
+**Open (niet gebouwd):** de affiliate-audit van 1 oktober (`AFFILIATE_DASHBOARD_AUDIT_2026-10.md`) bleef staan: omzet is niet meetbaar (`pd_conversions` leeg, klik-token bereikt de partner niet). Klikken zijn nu per bron af te lezen; omzet per bron pas als dat gerepareerd is.

@@ -167,7 +167,7 @@ describe("KeuzeVergelijken", () => {
     );
     supplement = screen.getByRole("region", { name: "Uit een supplement" });
     expect(within(supplement).getByText(/staat in Mijn keuzes/)).toBeTruthy();
-    expect(within(supplement).getByRole("link", { name: /Naar de productpagina/ }).getAttribute("href")).toBe(
+    expect(within(supplement).getByRole("link", { name: /Prijs en winkels/ }).getAttribute("href")).toBe(
       `/product/${slug}?van=keuze&stof=magnesium`,
     );
     fireEvent.click(within(supplement).getByRole("button", { name: "Naar Mijn keuzes →" }));

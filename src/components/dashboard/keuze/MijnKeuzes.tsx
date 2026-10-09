@@ -456,6 +456,23 @@ function DagRegel({
           </button>
         </p>
       ) : null}
+      {rij.product ? (
+        <Link
+          href={metKeuzeHerkomst(rij.product.href, rij.nutrient, "favorieten")}
+          onClick={() =>
+            trackEvent("keuze_vergelijken_ps_score_click", {
+              surface: SURFACE,
+              nutrient: rij.nutrient,
+              doel: "productpagina",
+              plek: "je_dag",
+              product: rij.product?.slug ?? "",
+            })
+          }
+          className="mt-1.5 inline-flex min-h-[44px] w-full items-center justify-center rounded-[12px] border border-[var(--vd-accent-2)] bg-[var(--vd-accent-2-fill)] px-3 text-[0.75rem] font-bold text-[var(--vd-accent-2)] no-underline hover:bg-[var(--vd-accent-2)] hover:text-[#0D190B]"
+        >
+          Prijs en winkels →
+        </Link>
+      ) : null}
       {fout ? (
         <p role="alert" className="m-0 mt-1.5 text-[0.71875rem] text-[var(--vd-amber)]">
           Dat lukte niet. Probeer het opnieuw.
@@ -798,15 +815,6 @@ function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () =>
         onKies={(moment) => zetSupplement(nutrient, product.naam, moment)}
       />
       <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-        <Link
-          href={metKeuzeHerkomst(product.href, nutrient, "favorieten")}
-          onClick={() =>
-            trackEvent("keuze_vergelijken_ps_score_click", { surface: SURFACE, nutrient, doel: "productpagina", product: product.slug })
-          }
-          className="text-[0.6875rem] font-semibold text-[var(--vd-accent-2)] no-underline hover:underline"
-        >
-          Naar de productpagina →
-        </Link>
         <Link
           href={metKeuzeHerkomst(psScoreCatalogusHref(nutrient), nutrient, "favorieten")}
           onClick={() => trackEvent("keuze_vergelijken_ps_score_click", { surface: SURFACE, nutrient, doel: "catalogus" })}

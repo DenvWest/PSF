@@ -1642,7 +1642,7 @@ function SupplementKant({
             onClick={() => klik("productpagina", gekozen.slug)}
             className="mt-2 inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-[12px] border border-[var(--vd-accent-2)] bg-[var(--vd-accent-2)] px-3 text-center text-[0.8125rem] font-bold text-[#0D190B] no-underline"
           >
-            Naar de productpagina →
+            Prijs en winkels →
           </Link>
           <p className="m-0 mt-1.5 text-[0.65625rem] leading-relaxed text-[var(--vd-ink-3)]">
             Daar staan de winkels en prijzen. Koop je via ons, dan ontvangen we commissie; je keuze en de PS-Score
