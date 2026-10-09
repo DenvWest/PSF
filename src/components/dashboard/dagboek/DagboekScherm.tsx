@@ -639,6 +639,7 @@ export default function DagboekScherm({
     moment: EetmomentId,
     grams: number,
     product?: DagboekSupplementProduct,
+    terugNaar?: NutrientScherm,
   ) {
     wijzig([...items, { moment, bron, key, grams, ...(product ? { product } : {}) }]);
     emitAccountClientEvent("nutrition.dagboek_portie_bevestigd", {
@@ -647,7 +648,7 @@ export default function DagboekScherm({
       surface: "dagboek_tab",
     });
     trackEvent("nutrition_dagboek_portie_bevestigd", { nutrient: nutrient ?? "geen", bron });
-    setScherm(terugNaarZoek(nutrient, moment));
+    setScherm(terugNaar ?? terugNaarZoek(nutrient, moment));
   }
 
   /** De ster-knop: optimistisch bijwerken, dan pas de server-call. */
@@ -835,7 +836,7 @@ export default function DagboekScherm({
         onVerwijderFavoriet={(bron, k) => void verwijderFavoriet(bron, k)}
         onTerug={() => setScherm(komtVan ?? terugNaarZoek(nutrient, portieMoment))}
         onBevestig={(gekozenMoment, grams) =>
-          voegNutrientItemToe(nutrient, "voeding", key, gekozenMoment, grams)
+          voegNutrientItemToe(nutrient, "voeding", key, gekozenMoment, grams, undefined, komtVan)
         }
       />
     );

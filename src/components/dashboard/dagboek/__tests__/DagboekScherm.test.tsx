@@ -206,6 +206,12 @@ describe("DagboekScherm — zoeken per maaltijd", () => {
     await waitFor(() => expect(screen.queryByText(bronnenKop)).toBeNull());
     window.history.back();
     await screen.findByText(bronnenKop);
+    await new Promise((klaar) => setTimeout(klaar, 20));
+
+    fireEvent.click(eersteBron());
+    await waitFor(() => expect(screen.queryByText(bronnenKop)).toBeNull());
+    fireEvent.click(screen.getAllByRole("button", { name: /Bevestigen|^Voeg .* toe aan/ })[0]);
+    await screen.findByText(bronnenKop);
   });
 
   it("zet de browsergeschiedenis recht als je met de app-knop terug gaat", async () => {
