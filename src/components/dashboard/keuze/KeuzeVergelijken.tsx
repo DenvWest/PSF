@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import * as Icons from "@/components/app/icons";
+import MomentChips, { useMomentOpslag } from "@/components/dashboard/keuze/MomentChips";
 import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
 import { catalogEntry, searchCatalog, type CatalogEntry } from "@/data/nutrition/food-catalog";
@@ -24,6 +25,8 @@ import {
 import {
   etenKeuzeId,
   etenKeuzesVoorStof,
+  etenMomentVoor,
+  itemMomentIdsVoor,
   metKeuzeHerkomst,
   momentVoorStof,
   parseEtenKeuze,
@@ -325,7 +328,6 @@ function useKeuzesOverzicht(statuses: readonly NutrientRouteStatus[], products?:
     const rijen: KeuzeRij[] = [];
     let centenPerDag = 0;
     for (const status of statuses) {
-      const etenMoment = momentVoorStof(status.nutrient, items, "eten");
       for (const key of etenKeuzesVoorStof(status.nutrient, items)) {
         const entry = catalogEntry(key);
         if (!entry) continue;
@@ -333,7 +335,7 @@ function useKeuzesOverzicht(statuses: readonly NutrientRouteStatus[], products?:
           id: `eten-${status.nutrient}-${key}`,
           soort: "eten",
           titel: entry.labelNl,
-          context: [status.label, etenMoment].filter(Boolean).join(" · "),
+          context: `${status.label} · ${etenMomentVoor(status.nutrient, key, items)}`,
           entry,
           product: null,
           centenPerDag: null,
@@ -342,12 +344,12 @@ function useKeuzesOverzicht(statuses: readonly NutrientRouteStatus[], products?:
       const slug = productKeuzeVoorStof(status.nutrient, items);
       const product = slug ? keuzeProductVoorSlug(status.nutrient, slug, products) : null;
       if (product) {
-        const supplementMoment = momentVoorStof(status.nutrient, items, "supplement");
+        const supplementMoment = momentVoorStof(status.nutrient, items, "supplement") ?? "ontbijt";
         rijen.push({
           id: `supplement-${status.nutrient}-${product.slug}`,
           soort: "supplement",
           titel: product.naam,
-          context: [status.label, supplementMoment].filter(Boolean).join(" · "),
+          context: `${status.label} · ${supplementMoment}`,
           entry: null,
           product,
           centenPerDag: product.centenPerDag,
@@ -986,6 +988,7 @@ function VoedingKant({
   voedingsfavorieten: DagboekVoedingsfavorieten;
 }) {
   const profiel = useKernstofProfiel();
+  const { zetEten } = useMomentOpslag("keuze_vergelijken");
   const [zoek, setZoek] = useState("");
   const bronnen = useMemo(() => bronnenVanStof(dagen, datums, status.nutrient), [dagen, datums, status.nutrient]);
   const perMoment = useMemo(() => stofPerMoment(dagen, datums, status.nutrient), [dagen, datums, status.nutrient]);
@@ -1043,6 +1046,7 @@ function VoedingKant({
     const wasGekozen = etenKeuzes.includes(key);
     if (wasGekozen) {
       remove(etenKeuzeId(status.nutrient, key));
+      for (const id of itemMomentIdsVoor(status.nutrient, key, items)) remove(id);
       const bijAnder = items.some((item) => {
         const keuze = parseEtenKeuze(item.id);
         return keuze?.key === key && keuze.nutrient !== status.nutrient;
@@ -1106,6 +1110,14 @@ function VoedingKant({
               label={beste.entry.labelNl}
               tekst={{ aan: "In Mijn keuzes", uit: "Kies deze bron" }}
             />
+            {etenKeuzes.includes(beste.entry.key) ? (
+              <MomentChips
+                kant="eten"
+                vraag="Wanneer eet je het?"
+                moment={etenMomentVoor(status.nutrient, beste.entry.key, items)}
+                onKies={(moment) => zetEten(status.nutrient, beste.entry.key, beste.entry.labelNl, moment)}
+              />
+            ) : null}
           </div>
         </article>
       ) : (
@@ -1162,33 +1174,45 @@ function VoedingKant({
           return (
             <li
               key={rij.entry.key}
-              className={`flex items-center gap-2.5 rounded-[12px] border bg-[var(--vd-surface)] p-1.5 pr-2 transition-colors ${
+              className={`rounded-[12px] border bg-[var(--vd-surface)] p-1.5 pr-2 transition-colors ${
                 gekozen ? "border-[var(--vd-sage)]" : "border-[var(--vd-line)] hover:border-[var(--vd-line-2)]"
               }`}
             >
-              <FoodThumbnail entry={rij.entry} size={48} />
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[0.8125rem] font-semibold text-[var(--vd-ink)]">
-                  {rij.entry.labelNl}
+              <div className="flex items-center gap-2.5">
+                <FoodThumbnail entry={rij.entry} size={48} />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[0.8125rem] font-semibold text-[var(--vd-ink)]">
+                    {rij.entry.labelNl}
+                  </span>
+                  <span className="block truncate text-[0.6875rem] text-[var(--vd-ink-3)]">{rij.portie}</span>
+                  {rij.ook.length > 0 ? (
+                    <span className="block truncate text-[0.6875rem] text-[var(--vd-sage-2)]">ook: {rij.ook.join(", ")}</span>
+                  ) : null}
                 </span>
-                <span className="block truncate text-[0.6875rem] text-[var(--vd-ink-3)]">{rij.portie}</span>
-                {rij.ook.length > 0 ? (
-                  <span className="block truncate text-[0.6875rem] text-[var(--vd-sage-2)]">ook: {rij.ook.join(", ")}</span>
-                ) : null}
-              </span>
-              <span className="shrink-0 text-right font-mono text-[0.8125rem] tabular-nums text-[var(--vd-ink)]">
-                {rij.levert}
-                {aandeel !== null ? (
-                  <small className="block font-sans text-[0.625rem] text-[var(--vd-ink-3)]">{aandeel}% norm</small>
-                ) : null}
-              </span>
-              <KiesPil
-                gekozen={gekozen}
-                bezig={voedingsfavorieten.bezig === rij.entry.key}
-                kleur="sage"
-                onClick={() => kies(rij.entry.key, rij.entry.labelNl)}
-                label={rij.entry.labelNl}
-              />
+                <span className="shrink-0 text-right font-mono text-[0.8125rem] tabular-nums text-[var(--vd-ink)]">
+                  {rij.levert}
+                  {aandeel !== null ? (
+                    <small className="block font-sans text-[0.625rem] text-[var(--vd-ink-3)]">{aandeel}% norm</small>
+                  ) : null}
+                </span>
+                <KiesPil
+                  gekozen={gekozen}
+                  bezig={voedingsfavorieten.bezig === rij.entry.key}
+                  kleur="sage"
+                  onClick={() => kies(rij.entry.key, rij.entry.labelNl)}
+                  label={rij.entry.labelNl}
+                />
+              </div>
+              {gekozen ? (
+                <div className="px-1 pb-1">
+                  <MomentChips
+                    kant="eten"
+                    vraag="Wanneer eet je het?"
+                    moment={etenMomentVoor(status.nutrient, rij.entry.key, items)}
+                    onKies={(moment) => zetEten(status.nutrient, rij.entry.key, rij.entry.labelNl, moment)}
+                  />
+                </div>
+              ) : null}
             </li>
           );
         })}
@@ -1373,6 +1397,9 @@ function SupplementKant({
   onNaarMijnKeuzes?: () => void;
 }) {
   const rustig = stand.stand === "op_koers";
+  const { items } = useVoortgangFavorites();
+  const { zetSupplement } = useMomentOpslag("keuze_vergelijken");
+  const supplementMoment = momentVoorStof(status.nutrient, items, "supplement") ?? "ontbijt";
   const [toon, setToon] = useState(!rustig || gekozenProduct !== null);
   const [zoek, setZoek] = useState("");
   const term = zoek.trim();
@@ -1473,6 +1500,14 @@ function SupplementKant({
                   label={hoogste.naam}
                   tekst={{ aan: "Mijn supplement", uit: "Kies dit supplement" }}
                 />
+                {hoogste.slug === gekozenProduct ? (
+                  <MomentChips
+                    kant="supplement"
+                    vraag="Wanneer neem je het?"
+                    moment={supplementMoment}
+                    onKies={(moment) => zetSupplement(status.nutrient, hoogste.naam, moment)}
+                  />
+                ) : null}
               </div>
             </article>
           ) : null}
@@ -1538,6 +1573,16 @@ function SupplementKant({
                       label={product.naam}
                     />
                   </div>
+                  {aan ? (
+                    <div className="px-1 pb-1">
+                      <MomentChips
+                        kant="supplement"
+                        vraag="Wanneer neem je het?"
+                        moment={supplementMoment}
+                        onKies={(moment) => zetSupplement(status.nutrient, product.naam, moment)}
+                      />
+                    </div>
+                  ) : null}
                   {erbij.samen !== null ? (
                     <p className="m-0 mt-1 pl-[3.625rem] text-[0.6875rem] text-[var(--vd-accent-2)]">
                       Samen met je eten minstens {stand.benaderd ? "≈ " : ""}

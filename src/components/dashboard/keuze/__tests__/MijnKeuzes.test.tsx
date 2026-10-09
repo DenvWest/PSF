@@ -115,7 +115,7 @@ describe("MijnKeuzes", () => {
     expect(onNaar).toHaveBeenCalledWith("magnesium");
   });
 
-  it("zet eten en supplement naast elkaar, met een eigen moment voor je eten dat de ＋ gebruikt", async () => {
+  it("zet eten en supplement naast elkaar; het moment van een voedingsmiddel verplaats je in Je dag en de ＋ gebruikt het", async () => {
     favorieten.items = [{ id: "voeding-route-omega3-bord", title: "", kind: "activiteit" }];
     const { rerender, onNaar } = renderMijn();
     const eten = () => screen.getByRole("region", { name: "Uit je eten" });
@@ -123,14 +123,26 @@ describe("MijnKeuzes", () => {
     expect(screen.getByText("Geen supplement gekozen.")).toBeTruthy();
 
     await waitFor(() => expect(within(eten()).getByText("Haring")).toBeTruthy());
-    fireEvent.click(within(eten()).getByRole("button", { name: "Lunch" }));
-    expect(favorieten.items.map((i) => i.id)).toContain("voeding-eetmoment-omega3-lunch");
+    fireEvent.click(screen.getByRole("button", { name: "Moment van Haring wijzigen" }));
+    fireEvent.click(screen.getByRole("button", { name: "Lunch" }));
+    expect(favorieten.items.map((i) => i.id)).toContain("voeding-itemmoment-omega3-lunch-haring");
 
     rerender(<MijnKeuzes statuses={statuses} reeksen={[]} onNaarVergelijken={onNaar} />);
     await waitFor(() =>
       expect(
         within(screen.getByRole("region", { name: "Lunch" })).getByRole("button", { name: "Haring in je dagboek zetten bij lunch" }),
       ).toBeTruthy(),
+    );
+  });
+
+  it("een eigen moment per voedingsmiddel wint van het moment van de stof, en valt erop terug", async () => {
+    favorieten.items = [
+      { id: "voeding-route-omega3-bord", title: "", kind: "activiteit" },
+      { id: "voeding-eetmoment-omega3-avondeten", title: "", kind: "activiteit" },
+    ];
+    renderMijn();
+    await waitFor(() =>
+      expect(within(screen.getByRole("region", { name: "Avondeten" })).getByText("Haring")).toBeTruthy(),
     );
   });
 
