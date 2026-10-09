@@ -11,7 +11,7 @@ export const vitamineDZonNederlandData: BlogArtikel = {
     "'Vijftien minuten per dag' is het antwoord dat je overal leest. Dat getal komt ergens vandaan, maar het klopt alleen bij een bepaalde huid, een bepaald seizoen, een bepaald tijdstip en een bepaalde hoeveelheid blote huid. Op 52 graden noorderbreedte verandert dat plaatje per maand ingrijpend. Hier lees je wat de zonnestand met [vitamine D](/kennisbank/vitamine-d) doet — en wanneer je huid simpelweg buiten spel staat.",
   leestijd: "8 min",
   gepubliceerdOp: "2026-09-01",
-  laatstBijgewerktOp: "2026-09-01",
+  laatstBijgewerktOp: "2026-10-09",
   leesNuanceOnderHero:
     "Alle tijdsindicaties hieronder zijn schattingen op basis van modelonderzoek, geen persoonlijk voorschrift. Huidtype, leeftijd, medicatie en huidkankerrisico veranderen het plaatje — bespreek dat met je huisarts.",
   secties: [
@@ -40,6 +40,13 @@ export const vitamineDZonNederlandData: BlogArtikel = {
         "November tot februari: het aanmaakvenster is praktisch dicht. Je teert in deze maanden op de voorraad die je in de zomer hebt opgebouwd — hoe dat jaarritme verloopt staat in [vitamine D door het jaar heen](/blog/vitamine-d-seizoenen-jaarritme).",
         "Vroege ochtend en late middag, het hele jaar door: de zon staat dan te laag, ook in juni. De UV-index kan wel prikken maar levert weinig van de juiste golflengte.",
       ],
+    },
+    {
+      type: "tekst",
+      titel: "Wat metingen voor Nederland laten zien",
+      bewijsNiveau: "redelijk",
+      tekst:
+        "Satellietmetingen van 2004 tot 2021 (KNMI en ESA, bewolking meegerekend) geven per maand de gemiddelde dagdosis UVB die vitamine D kan aanmaken. Voor Amsterdam is dat in juni 5,56 kJ/m² en in juli 5,37, tegen 0,12 in januari en 0,09 in december. De zomerdosis is dus ongeveer zestig keer zo hoog als die in december.\n\nOnderzoekers rekenen een dagdosis onder 1 kJ/m² als de grens waaronder aanmaak verwaarloosbaar is. Het maandgemiddelde in Amsterdam ligt daar van oktober (0,86) tot en met februari (0,36) onder. Maart zit er met 1,16 net boven, en april (2,79) tot en met september (2,43) ruim erboven.\n\nVoor heel Europa kwam dezelfde studie op een mediaan van 126 dagen 'vitamine D-winter', met een spreiding van 4 tot 215 dagen. Het Nederlandse aantal dagen staat niet in de tekst van de studie, daarom noemen we het hier niet. Het zijn gemiddelden voor één stad per land; wat jij aanmaakt, hangt ook af van huid, leeftijd, kleding en tijd buiten. De vitamine D-status loopt volgens de auteurs bovendien ongeveer twee maanden achter op de zonkracht: ook als de zon in oktober zakt, teer je nog even op de zomervoorraad.",
     },
     {
       type: "tekst",
@@ -82,6 +89,7 @@ export const vitamineDZonNederlandData: BlogArtikel = {
   kernpunten: [
     "Onder een zonnestand van ~45° is de aanmaak verwaarloosbaar — schaduw langer dan jezelf.",
     "In Nederland is het venster ruwweg april tot september, rond het middaguur.",
+    "Metingen voor Amsterdam: het maandgemiddelde ligt van oktober tot en met februari onder de aanmaakgrens; maart zit er net boven (Khanna 2022).",
     "Donkere huid en hogere leeftijd verlengen de benodigde blootstelling fors.",
     "Achter glas maak je niets aan: UVB komt er niet doorheen.",
     "Voeding levert weinig; in de winter is dat de reden dat suppletie-adviezen bestaan.",
@@ -127,6 +135,7 @@ export const vitamineDZonNederlandData: BlogArtikel = {
     "Holick MF. Vitamin D deficiency. N Engl J Med. 2007;357(3):266-281.",
     "MacLaughlin J, Holick MF. Aging decreases the capacity of human skin to produce vitamin D3. J Clin Invest. 1985;76(4):1536-1538.",
     "Clemens TL, Adams JS, Henderson SL, Holick MF. Increased skin pigment reduces the capacity of skin to synthesise vitamin D3. Lancet. 1982;1(8263):74-76.",
+    "Khanna T, Shraim R, Zarkovic M, van Weele M, van Geffen J, Zgaga L. Comprehensive analysis of seasonal and geographical variation in UVB radiation relevant for vitamin D production in Europe. Nutrients. 2022;14(23):5189.",
     "Spiro A, Buttriss JL. Vitamin D: an overview of vitamin D status and intake in Europe. Nutr Bull. 2014;39(4):322-350.",
     "EFSA Panel on Dietetic Products, Nutrition and Allergies. Scientific opinion on dietary reference values for vitamin D. EFSA Journal. 2016;14(10):4547.",
     "Ross AC, Manson JE, Abrams SA, et al. The 2011 report on dietary reference intakes for calcium and vitamin D from the Institute of Medicine. J Clin Endocrinol Metab. 2011;96(1):53-58.",
