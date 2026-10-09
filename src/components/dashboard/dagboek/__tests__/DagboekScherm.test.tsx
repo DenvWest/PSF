@@ -855,6 +855,14 @@ describe("DagboekScherm — openen vanuit een ander scherm", () => {
     expect(window.location.search).toBe("?tab=vandaag");
   });
 
+  it("komt het portiescherm uit Mijn keuzes, dan brengt bevestigen je daar weer naartoe", async () => {
+    window.history.replaceState(null, "", "/dashboard?tab=vandaag&voeg=voeding%3Ahavermout&moment=lunch&van=keuze");
+    render(<DagboekScherm />);
+    fireEvent.click(await screen.findByRole("button", { name: "Toevoegen" }));
+    await waitFor(() => expect(window.location.search).toBe("?tab=keuze&deel=favorieten"));
+    window.history.replaceState(null, "", "/");
+  });
+
   it("opent het zoekscherm op Mijn supplementen", async () => {
     window.history.replaceState(null, "", "/dashboard?tab=vandaag&favorieten=supplementen");
     render(<DagboekScherm />);

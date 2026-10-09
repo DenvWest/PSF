@@ -57,6 +57,26 @@ function status(nutrient: NutrientId, label: string): NutrientRouteStatus {
 
 const statuses = [status("omega3", "Omega-3"), status("magnesium", "Magnesium"), status("zinc", "Zink")];
 
+const dagboek = vi.hoisted(() => ({
+  items: [] as { moment: string; bron: string; key: string; grams: number }[],
+  posts: [] as { date: string; items: unknown[] }[],
+}));
+
+function dagboekFetch(url: string, init?: RequestInit): Response | null {
+  if (url !== "/api/account/nutrition-daybook") return null;
+  if (init?.method === "POST") {
+    const body = JSON.parse(String(init.body)) as { date: string; items: typeof dagboek.items };
+    dagboek.posts.push(body);
+    dagboek.items = body.items;
+    return new Response("{}", { status: 200 });
+  }
+  return new Response(JSON.stringify({ days: [{ date: vandaagIso(), items: dagboek.items }] }), { status: 200 });
+}
+
+function vandaagIso(): string {
+  return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Amsterdam" }).format(new Date());
+}
+
 function renderMijn(onNaar = vi.fn()) {
   return { onNaar, ...render(<MijnKeuzes statuses={statuses} reeksen={[]} onNaarVergelijken={onNaar} />) };
 }
@@ -197,5 +217,42 @@ describe("MijnKeuzes", () => {
     fireEvent.click(screen.getByRole("button", { name: "Haal uit Mijn keuzes" }));
     const ids = favorieten.items.map((i) => i.id);
     expect(ids).toEqual(["voeding-route-omega3-bord"]);
+  });
+
+  it("＋ Dagboek logt direct op het gekozen moment en blijft in Mijn keuzes, met ongedaan maken", async () => {
+    dagboek.items = [];
+    dagboek.posts = [];
+    fetchMock.mockImplementation(async (url: string, init?: RequestInit) =>
+      dagboekFetch(url, init) ?? new Response(JSON.stringify({ items: [{ bron: "voeding", key: "haring" }] }), { status: 200 }),
+    );
+    favorieten.items = [
+      { id: "voeding-route-omega3-bord", title: "", kind: "activiteit" },
+      { id: "voeding-itemmoment-omega3-lunch-haring", title: "", kind: "activiteit" },
+    ];
+    renderMijn();
+    const knop = await screen.findByRole("button", { name: "Haring in je dagboek zetten bij lunch" });
+    fireEvent.click(knop);
+
+    await waitFor(() => expect(screen.getByText("✓ Gelogd bij lunch")).toBeTruthy());
+    expect(dagboek.posts).toHaveLength(1);
+    expect(dagboek.posts[0].items).toEqual([expect.objectContaining({ moment: "lunch", bron: "voeding", key: "haring" })]);
+    expect(screen.queryByRole("button", { name: "Haring in je dagboek zetten bij lunch" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Ongedaan maken" }));
+    await waitFor(() => expect(screen.getByRole("button", { name: "Haring in je dagboek zetten bij lunch" })).toBeTruthy());
+    expect(dagboek.items).toEqual([]);
+  });
+
+  it("toont wat je vandaag al gelogd hebt, en een foutmelding als loggen mislukt", async () => {
+    dagboek.items = [{ moment: "ontbijt", bron: "voeding", key: "haring", grams: 80 }];
+    fetchMock.mockImplementation(async (url: string, init?: RequestInit) => {
+      if (url === "/api/account/nutrition-daybook" && init?.method === "POST") return new Response("{}", { status: 500 });
+      return dagboekFetch(url, init) ?? new Response(JSON.stringify({ items: [{ bron: "voeding", key: "haring" }] }), { status: 200 });
+    });
+    favorieten.items = [{ id: "voeding-route-omega3-bord", title: "", kind: "activiteit" }];
+    renderMijn();
+    await waitFor(() => expect(screen.getByText("✓ Vandaag al in je dagboek")).toBeTruthy());
+    fireEvent.click(await screen.findByRole("button", { name: "Haring in je dagboek zetten bij ontbijt" }));
+    await waitFor(() => expect(screen.getByRole("alert").textContent).toMatch(/lukte niet/));
   });
 });

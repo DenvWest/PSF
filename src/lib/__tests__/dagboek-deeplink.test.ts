@@ -15,6 +15,18 @@ describe("dagboek-deeplink", () => {
     expect(leesDagboekVoeg(href.split("?")[1] ?? "")).toEqual({ bron: "voeding", key: "kipdij", moment: "lunch" });
   });
 
+  it("onthoudt dat je uit Mijn keuzes kwam, zodat het portiescherm je daar terugbrengt", () => {
+    const href = buildDagboekVoegHref({ bron: "voeding", key: "kipdij", moment: "lunch", van: "keuze" });
+    expect(href).toBe("/dashboard?tab=vandaag&voeg=voeding%3Akipdij&moment=lunch&van=keuze");
+    expect(leesDagboekVoeg(href.split("?")[1] ?? "")).toEqual({
+      bron: "voeding",
+      key: "kipdij",
+      moment: "lunch",
+      van: "keuze",
+    });
+    expect(leesDagboekVoeg("?voeg=voeding:kipdij&van=elders")?.van).toBeUndefined();
+  });
+
   it("weigert een onbekend product of bron, en valt terug op ontbijt bij een onbekend moment", () => {
     expect(leesDagboekVoeg("?voeg=voeding:bestaat-niet")).toBeNull();
     expect(leesDagboekVoeg("?voeg=iets:kipdij")).toBeNull();
