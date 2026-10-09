@@ -202,22 +202,6 @@ describe("KeuzeVergelijken", () => {
     expect(within(eten).getAllByText(/Pompoen/).length).toBeGreaterThan(0);
   });
 
-  it("Toon meer breidt de eetlijst uit en een voedselgroep-chip filtert de bronnen", () => {
-    renderKeuze();
-    const eten = screen.getByRole("region", { name: "Uit je eten" });
-    const rijen = () => within(eten).getAllByRole("listitem").length;
-    const voor = rijen();
-    fireEvent.click(within(eten).getByRole("button", { name: /Toon \d+ meer/ }));
-    expect(rijen()).toBeGreaterThan(voor);
-
-    const chips = within(eten).getByRole("group", { name: "Filter op voedselgroep" });
-    const noten = within(chips).getByRole("button", { name: "Noten & zaden" });
-    fireEvent.click(noten);
-    expect(noten.getAttribute("aria-pressed")).toBe("true");
-    fireEvent.click(noten);
-    expect(noten.getAttribute("aria-pressed")).toBe("false");
-  });
-
   it("het zoekveld in de supplementkolom zoekt in de producten van deze stof", () => {
     renderKeuze();
     const supplement = screen.getByRole("region", { name: "Uit een supplement" });

@@ -286,17 +286,3 @@ Gebouwd in `KeuzeVergelijken.tsx` volgens de schets, variant B:
 **Meting:** nieuw `keuze_naar_mijn_keuzes` {surface, plek: zijkolom|lade, aantal} (GA4; een GA4-event heeft geen registratie op drie plekken nodig, alleen `domain_events` wel). Bestaand: `keuze_stof_geopend` (nu per chip), `keuze_product_gekozen`, `keuze_eten_gekozen`, `keuze_vergelijken_ps_score_click`.
 
 **Plak 2 (volgt):** Mijn keuzes netter (compacte dagtegels, twee kolommen per stof) en de domeinrail in Keuze weg (open: bevestiging Dennis).
-
----
-
-## Aanvulling 9 oktober: meer eten ontdekken per stof
-
-**Aanleiding.** Dennis: bij een stof als magnesium zie je maar een handvol voedingsmiddelen; is een zijwaartse balk slim om meer inspiratie op te doen? De zoekbalk per kolom bestond al, maar de lijst werd na 5 afgekapt terwijl er 30 bronnen berekend waren.
-
-**Besluit (Dennis: "akkoord, ga door").**
-1. **Geen horizontale scroll.** Afgewezen: de kolom is smal, een zijwaartse rij verbergt het aanbod en botst op 375 px met paginascroll; de rijen (foto, portie, "ook:", % norm) lezen verticaal.
-2. **"Toon 5 meer · nog N"** onder de eetlijst: start op 1 beste + 4 rijen, daarna +5 per tik uit een pool van 60 rijkste bronnen binnen de voedingswijze. Zoekresultaten gebruiken dezelfde knop.
-3. **Voedselgroep-chips** (vis & schaaldieren, noten & zaden, peulvruchten, groente & fruit, granen & brood, zuivel & ei, vlees) boven de lijst; alleen groepen met minstens één bron, binnen je voedingswijze. Tik nogmaals wist het filter. De beste bron blijft staan.
-4. Supplementkolom ongewijzigd (top per vorm + "Alle N met PS-Score →").
-
-**Meting:** `keuze_eten_meer` {nutrient, aantal} en `keuze_eten_filter` {nutrient, groep} (GA4). Bestaand: `keuze_eten_gekozen` (via: voorstel|zoek) laat zien of de extra bronnen ook gekozen worden.
