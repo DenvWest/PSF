@@ -4,6 +4,7 @@ import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import DomainLadderContextPanel from "@/components/dashboard/domain/DomainLadderContextPanel";
 import KompasDagboekRegel from "@/components/dashboard/kompas/KompasDagboekRegel";
+import KompasDoelStand from "@/components/dashboard/kompas/KompasDoelStand";
 import DomeinDoelZetten from "@/components/dashboard/voortgang/DomeinDoelZetten";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
@@ -335,6 +336,8 @@ export default function KompasContextSpine({
             </span>
           </button>
         )}
+
+        {domain === "voeding" && !goalEditing ? <KompasDoelStand /> : null}
       </section>
     ) : null;
 

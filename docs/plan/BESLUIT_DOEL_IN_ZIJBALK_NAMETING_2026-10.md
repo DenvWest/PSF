@@ -1,7 +1,7 @@
 # Besluit: het doel in de contextkolom krijgt een stand, een nameting en een volgende stap
 
 **Datum:** 9 oktober 2026
-**Status:** Voorstel. Dennis (9 okt): goede gedachte, §4 akkoord; de grens gratis/premium (venster in dagen, premium-trappen) gaat naar een aparte sessie en is hier nog **open**. Niet gebouwd.
+**Status:** Voorstel. Dennis (9 okt): goede gedachte, §4 akkoord; de grens gratis/premium (venster in dagen, premium-trappen) gaat naar een aparte sessie en is hier nog **open**. Stap 1 gebouwd 9 okt (PR zie `feat/doel-stand-zijbalk`); stap 2 en 3 nog niet.
 **Bouwt voort op:** `BESLUIT_KOMPAS_WINST_DAGBOEK_2026-10.md` (dagboekregel, #203), `BESLUIT_VOEDINGSRICHTING_2026-10.md` (richting kadert en meet niet), `PLAN_EIGEN_IJKPUNT_DOEL_PER_DOMEIN.md` (ijkpunt = PSFS, eigen as), `BESLUIT_DOELEN_VERBONDEN_2026-10.md` (normen, gevolgde stoffen), `BESLUIT_PATROON_PREMIUM_EN_WEEKMAIL_2026-10.md` §2–4 en `BESLUIT_GRATIS_NU_PREMIUM_AANBOD_2026-10.md` (wat gratis en premium is, n8n-mail zonder gegevens)
 **Raakt:** `KompasContextSpine.tsx` (zone "Waar je naartoe werkt"), `src/lib/kompas-winst-dagboek.ts`, `account_voedingsdoelen`
 
@@ -61,6 +61,14 @@ Dennis' ideeën, nog niet besloten en botsend met de akkoorden van 7 en 8 okt (g
 - Een supplementvergelijking al vanaf 1 dag.
 
 Tot die sessie zijn alle venster- en drempelwaarden in dit voorstel parameters, geen besluit. Deze sessie moet de eerdere besluiten expliciet herzien of bevestigen (`BESLUIT_PATROON_PREMIUM_EN_WEEKMAIL_2026-10.md` §2–3, `BESLUIT_GRATIS_NU_PREMIUM_AANBOD_2026-10.md` §4).
+
+## Gebouwd (9 okt, stap 1)
+
+- `buildDoelStand` in `src/lib/kompas-winst-dagboek.ts` en `KompasDoelStand.tsx`, onder het ijkpunt in de doel-zone van voeding.
+- Stofkeuze: eerste meetbare stof uit `RICHTINGEN[richting].eerst`; eiwit rekent tegen het eiwitdoel (nooit "gehaald", er is geen norm zonder benaderingen). Zonder meetbare richting-stof: de stof met het laagste aandeel onder de norm, en dan staat er geen richting bij.
+- Voorstel voor vandaag uit `TEKORT_VOORSTELLEN` (alleen magnesium, eiwit en omega-3 hebben er een); "je ontbijt levert er weinig van" uit `ruimteBij`.
+- Onder 5 volle dagen van 7 zwijgt dit blok (volle dag: zie de herziening van 9 okt in `BESLUIT_KOMPAS_WINST_DAGBOEK_2026-10.md`) (de winstkaart noemt het aantal al), dus de staat `te_weinig` wordt hier niet getoond en niet gemeten. Meetpunt: GA4 `dashboard_kompas_context_view` {zone: doel_stand, staat: stof, nutrient}.
+- Gedeelde dagboekfetch: `use-dagboek-dagen.ts` (30 s cache), zodat winstkaart en doel-zone één verzoek doen.
 
 ## Afgewezen
 
