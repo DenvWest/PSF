@@ -213,6 +213,7 @@ export default function DagboekKrans({
   onKiesStof,
   onBegin,
   inklapbaar = false,
+  bronnenOpen = false,
 }: {
   stoffen: readonly NutrientOndergrensGesplitst[];
   proteinTarget: ProteinTargetRange | null;
@@ -221,6 +222,8 @@ export default function DagboekKrans({
   onKiesStof: (stof: RijksteStof) => void;
   onBegin: () => void;
   inklapbaar?: boolean;
+  /** Staat de rijkste-bronnenlijst naast de krans open, dan volgt die de gekozen stof. */
+  bronnenOpen?: boolean;
 }) {
   const normen = useKernstofNormen();
   const profiel = useKernstofProfiel();
@@ -278,6 +281,7 @@ export default function DagboekKrans({
     }
     setKeuze({ ring: "kern", nutrient });
     trackEvent("nutrition_dagboek_krans_gekozen", { ring: "kern", nutrient });
+    if (bronnenOpen) onKiesStof(nutrient);
   }
 
   function kiesGevolgd(index: number) {
@@ -288,6 +292,7 @@ export default function DagboekKrans({
     }
     setKeuze({ ring: "gevolgd", veld });
     trackEvent("nutrition_dagboek_krans_gekozen", { ring: "gevolgd", nutrient: veld });
+    if (bronnenOpen && isInformatieveStof(veld)) onKiesStof(veld);
   }
 
   function wisselLijst() {

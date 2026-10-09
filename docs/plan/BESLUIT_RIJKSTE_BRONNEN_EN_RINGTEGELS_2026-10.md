@@ -44,3 +44,5 @@ GA4: `nutrition_dagboek_rijkste_geopend` (param `surface`: `tabel` of `ring`), `
 5. "Vergelijk top 3" blijft de top 3 van de hele lijst, ongeacht zoeken of filter.
 
 **Meting (GA4):** `nutrition_dagboek_rijkste_meer` {nutrient, aantal}, `nutrition_dagboek_rijkste_zoek` {nutrient, treffers}, `nutrition_dagboek_rijkste_groep` {nutrient, groep}. Bestaand: `nutrition_dagboek_rijkste_gekozen` {positie} laat zien of bronnen voorbij de top 10 worden toegevoegd.
+
+**Vervolg 9 oktober: de lijst volgt de stof.** Een stof kiezen in de krans selecteerde alleen; de open bronnenlijst veranderde pas na "Rijkste bronnen →". Nu: staat de lijst open (breed scherm) en kies je in de krans een andere kernstof (of een gevolgde stof met bronnenlijst), dan schakelt de lijst mee (`bronnenOpen` op `DagboekKrans`). Zoekterm, filter en "Toon meer" resetten per stof (`key` op de lijst). Geen nieuw event: `nutrition_dagboek_rijkste_geopend` {surface: ring} telt de wissel.

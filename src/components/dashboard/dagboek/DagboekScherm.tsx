@@ -962,6 +962,7 @@ export default function DagboekScherm({
           </h2>
         </header>
         <DagboekRijksteBronnen
+          key={scherm.stof}
           stof={scherm.stof}
           busy={busy}
           onKies={(key) =>
@@ -1058,6 +1059,7 @@ export default function DagboekScherm({
             onSelect={kransBijSelect}
             onKiesStof={(stof) => openBronnen(stof, "ring")}
             inklapbaar={!breed}
+            bronnenOpen={breed && scherm.scherm === "bronnen"}
             onBegin={() => setScherm({ scherm: "zoek", nutrient: null, moment: "ontbijt" })}
           />
         </>
@@ -1070,6 +1072,7 @@ export default function DagboekScherm({
             onSelect={kransBijSelect}
             onKiesStof={(stof) => openBronnen(stof, "ring")}
             inklapbaar={!breed}
+            bronnenOpen={breed && scherm.scherm === "bronnen"}
             onBegin={() => {
               emitAccountClientEvent("nutrition.dagboek_maaltijd_geopend", {
                 moment: "ontbijt",
@@ -1154,6 +1157,7 @@ export default function DagboekScherm({
             <h2 className="m-0 font-serif text-[19px] font-normal text-[var(--vd-ink)]">{stofInfo(scherm.stof).label}</h2>
           </header>
           <DagboekRijksteBronnen
+            key={scherm.stof}
             stof={scherm.stof}
             busy={busy}
             onKies={(key) =>
