@@ -262,6 +262,25 @@ details.quiet summary::-webkit-details-marker{display:none}
 .bar .f{transition:width .35s}
 .pulse{animation:pulse .5s}@keyframes pulse{50%{transform:scale(1.04)}}
 
+
+/* v3: Mijn keuzes netter */
+.tiles{gap:8px}
+.tile{padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.tile b{font-size:1.15rem;margin-top:0}
+.moments{align-items:start;gap:10px}
+.mom{min-height:0;padding:12px;gap:6px}
+.mom h4{display:flex;justify-content:space-between;align-items:baseline}
+.mom h4 em{font:400 .66rem var(--f-sans);letter-spacing:0;text-transform:none;color:var(--vd-ink-4);font-style:normal}
+.row2{grid-template-columns:44px minmax(0,1fr) auto;padding:6px 0;border-top:1px solid var(--vd-line)}
+.row2:first-of-type{border-top:0}
+.row2 div b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row2 div{min-width:0}
+.row2 .btn{grid-column:auto;min-height:44px;min-width:44px;padding:0 12px;font-size:.78rem;white-space:nowrap}
+.mom .empty{margin:0;min-height:44px}
+.stofrows{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+@container keuze (min-width:700px){.stofrows{grid-template-columns:1fr 1fr}}
+.teaser{padding:14px 16px;gap:8px}
+
 /* ── Toelichting onder de schets ── */
 .notes{max-width:1100px;margin:0 auto;padding:10px 16px 80px;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
 .notes section{border:1px solid var(--vd-line);border-radius:16px;background:var(--vd-surface);padding:18px}
@@ -282,8 +301,8 @@ details.quiet summary::-webkit-details-marker{display:none}
     </div></div>
   <div class="grp"><span>Variant</span>
     <div class="seg" id="c-var" role="group" aria-label="Variant">
-      <button data-v="A" aria-pressed="true">A · keuzes-lade</button>
-      <button data-v="B" aria-pressed="false">B · met zijkolom</button>
+      <button data-v="A" aria-pressed="false">A · keuzes-lade</button>
+      <button data-v="B" aria-pressed="true">B · met zijkolom (gekozen)</button>
     </div></div>
   <div class="grp"><span>Scherm</span>
     <div class="seg" id="c-scr" role="group" aria-label="Scherm">
@@ -367,7 +386,7 @@ const icon=(g,s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="
 const MOM=["ontbijt","lunch","avondeten","tussendoor"];
 const eur=c=>"€ "+(c/100).toFixed(2).replace(".",",");
 
-const S={dev:375,variant:"A",lade:false,open:false,logged:{},screen:"vergelijken",stand:"ruimte",
+const S={dev:375,variant:"B",lade:false,open:false,logged:{},screen:"vergelijken",stand:"ruimte",
   eten:{haver:"ontbijt"}, supp:null, suppMoment:"avondeten", hover:null};
 
 const HEIGHT={375:780,768:980,1280:820};
@@ -487,7 +506,7 @@ function keuzes(){
   for(const [id,m] of Object.entries(S.eten)){const f=FOODS.find(x=>x.id===id);per[m].push(`<div class="row2"><span class="th f">${icon(f.g,22)}</span><div><b>${f.n}</b><span>${f.p} · ${f.mg} mg magnesium</span></div><button class="btn sage sm" data-act="log" data-id="${id}" aria-pressed="${!!S.logged[id]}">${S.logged[id]?"✓ In dagboek":"＋ Dagboek"}</button></div>`)}
   if(sup)per[S.suppMoment].push(`<div class="row2"><span class="th" style="background-image:url(${BASE}${sup.img})"></span><div><b>${sup.naam}</b><span>${sup.dos?sup.dos+" mg":"Dosis n.v.t."} · ${eur(sup.cent)}</span></div><button class="btn sm" data-act="log" data-id="${sup.id}" aria-pressed="${!!S.logged[sup.id]}">${S.logged[sup.id]?"✓ In dagboek":"＋ Dagboek"}</button></div>`);
   per.ontbijt.push(`<div class="row2"><span class="th" style="background-image:url(${BASE}Mollers-Omega-3-Citroen.jpg)"></span><div><b>Möllers Omega-3</b><span>Omega-3 · € 0,41</span></div><button class="btn sm" data-act="log" data-id="omega" aria-pressed="${!!S.logged.omega}">${S.logged.omega?"✓ In dagboek":"＋ Dagboek"}</button></div>`);
-  const mom=MOM.map(m=>`<section class="mom" aria-label="${m}"><h4>${m}</h4>${per[m].join("")||'<div class="empty">Nog niets gekozen</div>'}</section>`).join("");
+  const mom=MOM.map(m=>`<section class="mom" aria-label="${m}"><h4>${m}<em>${per[m].length?per[m].length+" keuze"+(per[m].length>1?"s":""):""}</em></h4>${per[m].join("")||'<div class="empty">Nog niets gekozen</div>'}</section>`).join("");
   const stoffen=[["Magnesium",true],["Omega-3",false]];
   return `<div class="layout"><div>
    <div class="tiles"><div class="tile"><small>Stoffen gekozen</small><b>2 van 5</b></div><div class="tile"><small>Supplementen</small><b>${(sup?1:0)+1}</b></div><div class="tile"><small>Per dag</small><b>${eur(dayCents())}</b><small>± ${eur(dayCents()*30)} / maand</small></div></div>

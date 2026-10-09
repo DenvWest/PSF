@@ -267,3 +267,7 @@ Dennis: idee goed; (1) de domeinbalk Slaap/Stress/Beweging/Verbinding stond er o
 2. **Standaard geen zijkolom meer**: variant A = één "keuzes-lade" onderaan (uitklapbaar, met × per keuze). Zijkolom blijft als variant B ter vergelijking.
 3. **"Beste voor jou"** onder de hero: de beste bron uit je eten (hoogste aandeel van je norm per portie, binnen je voedingswijze) naast het supplement met de hoogste PS-Score. Daaronder compacte rijen voor de rest. Link naar `/beste/<stof>` voor prijsvergelijking.
 4. **Feedback op knoppen:** in de schets bleken bugs (scrollpositie en uitklap sprongen terug bij elke klik, balk reageerde niet bij "Op je norm"); opgelost. Voor de echte bouw geldt: staat blijft behouden, bevestiging via korte melding, teller in de lade pulseert.
+
+### Twaalfde ronde — keuze Dennis (9 oktober): variant B
+
+Dennis kiest **B (met zijkolom)** ("heel mooi") en wil Mijn keuzes nog net wat netter (gedaan in de schets: compacte dagtegels, rijen met één knop rechts, stoffen in twee kolommen). **Bouw: later** (zelfde dag of de volgende). Voor de bouw: de zijkolom staat alleen op brede tab-inhoud (≥ 900 px container), daaronder de lade/onderbalk; de domeinrail in Keuze vervalt (aanbeveling, nog te bevestigen); meetpunt `keuze_naar_mijn_keuzes` nieuw.
