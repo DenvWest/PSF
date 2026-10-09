@@ -44,7 +44,26 @@ Bij de hermeting (of 30 dagen na de keuze) toont de zone één blok:
 
 Op `account_voedingsdoelen`: `voedingsrichting_gekozen_op timestamptz`, `doel_startstand jsonb` (`{stof, datum, aandeelPct, dagen}` per stof, nooit overschreven) en `doel_bevestigd_op timestamptz`. Een blok in `OPENSTAAND.md`; de code die de kolommen leest blijft op de feature-branch tot Dennis de migratie draaide.
 
-### 5. Gratis
+### 5. De kolom volgt het scherm, niet alleen het domein (aanvulling 9 okt)
+
+**Het probleem (Dennis):** "Context bij vandaag" staat naast het dagboek, en de winstkaart zegt daar "Log je maaltijd van vandaag" met een knop naar het dagboek, terwijl je er al bent. Op de andere tabs staat nog de oude kolom.
+
+**Oorzaak (`Dashboard.tsx`):** `KompasContextSpine` bestaat alleen op `tab=vandaag` en kiest zijn inhoud per *domein*. Het Dagboek is die tab (zonder domein), dus de kolom weet niet dat je op het dagboek zit. Op Agenda, Voortgang en Keuze is `spineDomain` null en valt de kolom terug op de oude inspectorkaarten (gewoonte, meten, ritme).
+
+**Besluit (voorstel):** de kolom krijgt een `surface` naast het domein en beantwoordt per scherm één vraag:
+
+| Scherm | Vraag van de kolom | Wat de kolom doet |
+|---|---|---|
+| **Dagboek** (`tab=vandaag`, geen domein) | Wat is er vandaag nog open? | Dagstatus ("Ontbijt gelogd · lunch en avondeten nog open"), de stap als herinnering, en een knop die de volgende open maaltijd in het dagboek opent (`buildDagboekZoekHref`) in plaats van naar het dagboek te gaan. Daarna Doel en ritme |
+| **Kompas-domeinscherm** (`tab=vandaag`, met domein) | Waar zit mijn winst? | Zoals nu: stap, knop naar het dagboek, Doel, schap |
+| **Voortgang / Patroon** | Wat zegt mijn stand? | Stand en richting van de stof, evaluatie (stap 3 van de volgorde) |
+| **Agenda, Keuze** | blijven voorlopig de oude kaarten | Eigen besluit later; niet in deze reeks |
+
+- Geen knop die naar de plek wijst waar je al bent: op het Dagboek is de primaire knop "Voeg toe bij {volgende maaltijd}", en zodra alle maaltijden van vandaag erop staan ("Vandaag compleet") verdwijnt de knop.
+- De winstkaart blijft de uitkomst van de check; alleen de handeling eronder volgt het scherm.
+- De dagstatus is een feit over wat er vandaag staat, geen oordeel (overgeslagen maaltijden tellen als gelogd, `verwachteMaaltijden`).
+
+### 6. Gratis
 
 Alles hierboven is eigen-getallen-en-registratie en dus gratis. De venstergrootte (nu 7 dagen) en drempels blijven parameters die de aparte gratis/premium-sessie bepaalt.
 
@@ -57,14 +76,14 @@ Alles hierboven is eigen-getallen-en-registratie en dus gratis. De venstergroott
 
 ## Volgorde
 
-1. **Zone "Doel" + richting kiezen in de zijbalk + dedupe + knopwissel.** Geen migratie.
+1. **Zone "Doel" + richting kiezen in de zijbalk + dedupe + knopwissel + de kolom die het Dagboek herkent (§5: dagstatus en "Voeg toe bij …").** Geen migratie.
 2. **Migratie** (drie kolommen), aparte kleine PR naar `main`.
 3. **Startstand vastleggen en het evaluatieblok** (leest de nieuwe kolommen).
 
 ## Meetpunten
 
 - Domain event `nutrition.voedingsrichting_gekozen` met `surface: kompas_context` (bestaand event, nieuwe surface).
-- GA4 + Clarity `dashboard_kompas_context_click` met `zone: doel_richting`.
+- GA4 + Clarity `dashboard_kompas_context_click` met `zone: doel_richting` en `zone: dagstatus_voeg_toe` {moment}.
 - Domain events `doel.evaluatie_getoond` en `doel.evaluatie_keuze` {keuze: houden|veranderen}; GA4 `zone: doel_evaluatie`.
 - Effect: aandeel gebruikers dat een richting kiest in de zijbalk, en het aandeel dat bij de evaluatie "houden" kiest versus "veranderen" (zegt of de richting klopt).
 
