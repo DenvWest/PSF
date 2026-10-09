@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import * as Icons from "@/components/app/icons";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
@@ -87,18 +88,17 @@ export default function KompasDoelRichting() {
       <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82]">
         Waar je tegenaan loopt
       </span>
-      <div className="mt-1 flex items-start justify-between gap-3">
-        <p className="m-0 text-[12.5px] leading-snug text-[#E7EDE8] text-pretty">
-          {richting ? RICHTINGEN[richting].label : "Nog niet gekozen"}
-        </p>
-        <button
-          type="button"
-          onClick={() => setKiezen(true)}
-          className="shrink-0 cursor-pointer border-none bg-transparent p-0 text-[12px] font-semibold text-[#5A8F6A] underline-offset-2 hover:underline"
-        >
-          {richting ? "Wijzig" : "Kies"}
-        </button>
-      </div>
+      <p className="m-0 mt-1 text-[12.5px] leading-snug text-[#E7EDE8] text-pretty">
+        {richting ? RICHTINGEN[richting].label : "Nog niet gekozen"}
+      </p>
+      <button
+        type="button"
+        onClick={() => setKiezen(true)}
+        className="mt-1.5 inline-flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 text-[12.5px] font-semibold text-[var(--sage)]"
+      >
+        {richting ? "Wijzig" : "Kies"}
+        <Icons.ArrowRight s={13} />
+      </button>
       {richting === "klachten" ? (
         <p className="m-0 mt-1 text-[11.5px] leading-snug text-[#9FB0A6] text-pretty">{KLACHTEN_DOORVERWIJZING}</p>
       ) : null}

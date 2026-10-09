@@ -306,6 +306,12 @@ export default function KompasContextSpine({
 
         {domain === "voeding" && !goalEditing ? <KompasDoelRichting /> : null}
 
+        {domain === "voeding" && !goalEditing ? (
+          <span className="mb-1 mt-3 block border-t border-white/10 pt-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82]">
+            Concreet doel
+          </span>
+        ) : null}
+
         {goalEditing && goal ? (
           <>
             <h3 className={titleClass}>{goalLine}</h3>
