@@ -54,7 +54,7 @@ export default function KompasDoelStand() {
       </p>
       {stand.richtingKort ? (
         <p className="m-0 mt-1 text-[11.5px] leading-snug text-[#9FB0A6] text-pretty">
-          Je richting &ldquo;{stand.richtingKort}&rdquo; zet {kleineLetter(stand.label)} voorop.
+          Daarom staat {kleineLetter(stand.label)} voorop.
         </p>
       ) : null}
       {stand.ruimteMoment ? (

@@ -191,8 +191,7 @@ export default function SchapView({
     <section aria-label={`Keuze — ${pillar.label}`} className="vd-root pt-4">
       <div className="mb-4">
         {onBack ? <VoortgangTerugLink onBack={onBack} /> : null}
-        <p className="vd-eyebrow m-0">Keuze</p>
-        <h2 className="mt-1 text-[1.375rem] leading-tight text-[var(--vd-ink)]">{pillar.label}</h2>
+        <h2 className="sr-only">{`Keuze — ${pillar.label}`}</h2>
       </div>
 
       {/* Onder md is dit de domeinschakelaar; vanaf md neemt de linker rail hem

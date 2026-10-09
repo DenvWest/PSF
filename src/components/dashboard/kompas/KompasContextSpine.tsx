@@ -3,14 +3,15 @@
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import DomainLadderContextPanel from "@/components/dashboard/domain/DomainLadderContextPanel";
+import KompasWinstKnop from "@/components/dashboard/kompas/KompasWinstKnop";
 import KompasDagboekRegel from "@/components/dashboard/kompas/KompasDagboekRegel";
+import KompasDoelRichting from "@/components/dashboard/kompas/KompasDoelRichting";
 import KompasDoelStand from "@/components/dashboard/kompas/KompasDoelStand";
 import DomeinDoelZetten from "@/components/dashboard/voortgang/DomeinDoelZetten";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import { isDomainGoalDomain } from "@/lib/domain-goal";
 import { GOAL_MODE_LINE } from "@/lib/domain-goal-client";
-import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
 import { trackEvent } from "@/lib/ga4";
 import { buildContextSpine, type ContextSpine } from "@/lib/kompas-context-spine";
 import { useDomainGoalEditor } from "@/lib/use-domain-goal-editor";
@@ -210,17 +211,7 @@ export default function KompasContextSpine({
             <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[#7E8C82]">
               <span style={{ color: bar.color }}>●</span> {bar.label} · {urgency.layerName}
             </p>
-            <button
-              type="button"
-              onClick={() => {
-                trackEvent("dashboard_kompas_context_click", { zone: "winst_stap", domain });
-                clarityTag("dashboard_kompas_context", "winst_stap_voeding");
-                gaNaarDashboard("/dashboard?tab=vandaag");
-              }}
-              className="mt-3 inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-[10px] border-none bg-[var(--sage)] px-3.5 text-[12.5px] font-semibold text-[#0f1c10]"
-            >
-              Log je maaltijd van vandaag <Icons.ArrowRight s={13} />
-            </button>
+            <KompasWinstKnop domainScreenOpen={domainScreenOpen} />
           </>
         ) : (
           <>
@@ -294,12 +285,12 @@ export default function KompasContextSpine({
     goalDomain && goals ? (
       <section
         key="doel"
-        aria-label="Waar je naartoe werkt"
+        aria-label="Doel"
         className={`${cardClass} border-white/10 @container/ijkpunt`}
       >
         <div className="flex items-start justify-between gap-3">
           <span className={`${kickerClass} text-[#9FB0A6]`}>
-            <Icons.Target s={13} style={{ color: "#9FB0A6" }} /> Waar je naartoe werkt
+            <Icons.Target s={13} style={{ color: "#9FB0A6" }} /> Doel
           </span>
           {goalEditing ? (
             <button
@@ -312,6 +303,14 @@ export default function KompasContextSpine({
             </button>
           ) : null}
         </div>
+
+        {domain === "voeding" && !goalEditing ? <KompasDoelRichting /> : null}
+
+        {domain === "voeding" && !goalEditing ? (
+          <span className="mb-1 mt-3 block border-t border-white/10 pt-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82]">
+            Concreet doel
+          </span>
+        ) : null}
 
         {goalEditing && goal ? (
           <>

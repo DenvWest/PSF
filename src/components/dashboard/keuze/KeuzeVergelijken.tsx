@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
@@ -1228,7 +1229,17 @@ function SupplementKant({
                   onClick={() => klik("product", product.slug)}
                   className="flex items-center justify-between gap-2 px-2.5 pb-1 pt-1.5 no-underline"
                 >
-                  <span className="min-w-0">
+                  {product.imageSrc ? (
+                    <Image
+                      src={product.imageSrc}
+                      alt={product.imageAlt}
+                      width={96}
+                      height={96}
+                      loading="lazy"
+                      className="h-12 w-12 shrink-0 rounded-md bg-white object-contain p-0.5"
+                    />
+                  ) : null}
+                  <span className="min-w-0 flex-1">
                     <span className="block text-[0.6875rem] font-semibold text-[var(--vd-accent-2)]">{product.vorm}</span>
                     <span className="block truncate text-[0.75rem] text-[var(--vd-ink)]">{product.naam}</span>
                   </span>

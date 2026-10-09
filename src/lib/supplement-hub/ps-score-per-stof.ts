@@ -41,6 +41,8 @@ export type KeuzeProduct = {
   /** Prijs per etiketdag; raakt de PS-Score niet (affiliate-firewall). */
   centenPerDag: number | null;
   claimStance: ClaimStance;
+  imageSrc: string | null;
+  imageAlt: string;
 };
 
 export type PsScoreProduct = KeuzeProduct;
@@ -64,6 +66,8 @@ export function toKeuzeProduct(product: HubProduct): KeuzeProduct {
     eenheid: evidence ? eenheidZoalsDagboek(evidence.eenheid) : null,
     centenPerDag: product.cost.etiketCentenPerDag > 0 ? product.cost.etiketCentenPerDag : null,
     claimStance: product.claimStance,
+    imageSrc: product.imageSrc,
+    imageAlt: product.imageAlt,
   };
 }
 

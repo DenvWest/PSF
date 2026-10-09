@@ -1,7 +1,7 @@
 # Besluit: de zone "Waar je naartoe werkt" wordt "Doel", met richting, stand en evaluatie
 
 **Datum:** 9 oktober 2026
-**Status:** Besloten (Dennis, 9 okt: akkoord; Agenda en Keuze buiten deze reeks). Niet gebouwd.
+**Status:** Besloten (Dennis, 9 okt: akkoord; Agenda en Keuze buiten deze reeks). Stap 1 gebouwd 9 okt (zie onder); stap 2 en 3 nog niet.
 **Bouwt voort op:** `BESLUIT_VOEDINGSRICHTING_2026-10.md` (richting kadert en meet niet, klachten = doorverwijzing), `PLAN_EIGEN_IJKPUNT_DOEL_PER_DOMEIN.md` (ijkpunt = eigen as), `BESLUIT_DOEL_IN_ZIJBALK_NAMETING_2026-10.md` (stand gebouwd; nameting), `BESLUIT_KOMPAS_WINST_DAGBOEK_2026-10.md` (winstkaart)
 **Raakt:** `KompasContextSpine.tsx` (doel-zone), `KompasDoelStand.tsx`, `KompasDagboekRegel.tsx`, `account_voedingsdoelen`
 
@@ -66,6 +66,29 @@ Op `account_voedingsdoelen`: `voedingsrichting_gekozen_op timestamptz`, `doel_st
 ### 6. Gratis
 
 Alles hierboven is eigen-getallen-en-registratie en dus gratis. De venstergrootte (nu 7 dagen) en drempels blijven parameters die de aparte gratis/premium-sessie bepaalt.
+
+### 7. De loop met n8n en het aanbod (later, 9 okt)
+
+Dennis vroeg of de evaluatie automatisch kan terugkomen en later een n8n-loop kan geven voor producten, extra features en een abonnement. Besloten als startpunt voor de gratis/premium-sessie; niet gebouwd.
+
+1. **Doel gekozen:** domain event `doel.richting_gekozen`; n8n zet een timer van 30 dagen (`voedingsrichting_gekozen_op`).
+2. **Evaluatie klaar:** event `doel.evaluatie_due`; n8n stuurt een mail **zonder gegevens** ("Je doel-evaluatie staat klaar", link naar het dashboard).
+3. **Houden of Veranderen:** event `doel.evaluatie_keuze`. Houden start de volgende ronde van 30 dagen; Veranderen begint met een nieuwe richting en een nieuwe startstand.
+4. **Aanbod op het juiste moment:** pas na de evaluatie en een 30-dagenpatroon de premium-teaser ("je patroon per maaltijd staat klaar"). Een supplementvergelijking blijft algemene informatie en volgt de 30-dagenregel; hij komt nooit uit de evaluatie zelf.
+
+Randvoorwaarden:
+- **Eigen opt-in** ("doel-herinneringen"), los van de weekmail en `marketing_email`. Er geldt één hoofd-nurture per adres (`EMAIL_SYSTEM.md`): de loop is geen tweede nurture.
+- **Geen voedingsgegevens in de mail en niet in n8n.** De events dragen geen percentages of stoffen (art. 9-gegevens); n8n weet alleen "evaluatie klaar" en "keuze gemaakt".
+- **Wat het abonnement is** (14/30/90-trappen, personalisatie, voorstellen met effect), de prijs en de proef horen bij de aparte gratis/premium-sessie. De loop levert het moment, niet de inhoud.
+- De evaluatie verandert de richting nooit zelf; de gebruiker kiest.
+
+## Gebouwd (9 okt, stap 1)
+
+- Zone heet "Doel" (`aria-label` en kop). Op voeding staat bovenaan "Waar je tegenaan loopt" (`KompasDoelRichting`): kiezen of wijzigen uit de zes richtingen, zelfde opslag en gedeelde toestand als Je doelen (`postVoedingsdoelen` + `zetKernstofWeergave`), `klachten` toont de doorverwijzing.
+- Dedupe: `buildDagboekWinstRegel` krijgt `uitsluiten`; de winstkaart noemt de stof van de doel-zone niet. "Op je norm" volgt nog steeds uit álle meetbare stoffen.
+- `KompasWinstKnop`: op een domeinscherm "Log je maaltijd van vandaag" (of "Bekijk je patroon" vanaf 5 volle dagen); op het Dagboek zelf de dagstatus ("Vandaag gelogd: ontbijt. Nog open: lunch en avondeten.") en "Voeg toe bij {volgende open maaltijd}", of bij een complete dag "Bekijk je patroon" zodra er 5 volle dagen zijn.
+- Beperking: de dagstatus hangt aan de winstkaart met een stap uit de check. Zonder check (`geen_winstlaag`) staat de dagstatus er nog niet.
+- Meetpunten: `nutrition.voedingsrichting_gekozen` {surface: kompas_context}, GA4/Clarity `dashboard_kompas_context_click` met `zone: doel_richting`, `zone: dagstatus_voeg_toe` {moment} en `zone: winst_stap` {doel: patroon|dagboek}.
 
 ## Afgewezen
 
