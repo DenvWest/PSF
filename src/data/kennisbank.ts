@@ -1375,8 +1375,8 @@ Wat het níet betekent: dat je leucine of BCAA's los moet bijkopen. Een eiwitrij
     theme: 'supplementwetenschap',
     shortDefinition:
       'De tijd die een stof nodig heeft om in je lichaam een stabiel niveau te bereiken — bij sommige supplementen weken, bij andere maanden.',
-    coverImage: '/images/kennisbank/opbouwtijd-supplement-grafiek.jpg',
-    coverImageAlt: "Staafgrafiek van de opbouwtijd in dagen: creatine 6 dagen bij 20 g en 28 dagen bij 3 g, EPA in serum 4 tot 8 weken, EPA in rode bloedcellen circa 180 dagen",
+    coverImage: '/images/kennisbank/opbouwtijd-supplement-foto.jpg',
+    coverImageAlt: "Jong groen kiemplantje in donkere grond — een supplement bouwt zijn niveau stap voor stap op",
     content: {
       whatIsIt: `Veel supplementen doen weinig zolang hun niveau in je lichaam nog niet is opgebouwd. Elke dosis komt bovenop wat er nog over is van de vorige. Het niveau stijgt tot wat je binnenkrijgt gelijk is aan wat je lichaam afvoert, of tot het weefsel vol is. Dat kost vaak weken, geen dagen.
 
@@ -1418,8 +1418,8 @@ Dat laatste raakt de kern: wat je al binnenkrijgt bepaalt hoe ver je al bent. Da
     theme: 'supplementwetenschap',
     shortDefinition:
       'Wat je lichaam al heeft of binnenkrijgt voordat je een supplement begint — en daarmee hoeveel een supplement nog kan toevoegen.',
-    coverImage: '/images/kennisbank/uitgangsstatus-curve.jpg',
-    coverImageAlt: "Schematische S-curve: het effect van een stof is groot bij een tekort en vlakt af bij voldoende inname",
+    coverImage: '/images/kennisbank/uitgangsstatus-foto.jpg',
+    coverImageAlt: "Houten keukentafel met sla, paprika, tomaten en avocado in zacht daglicht — wat je al binnenkrijgt bepaalt je uitgangsstatus",
     content: {
       whatIsIt: `Je uitgangsstatus is waar je mee begint: hoeveel van een stof je lichaam al heeft, grotendeels door wat je eet. Dat bepaalt hoeveel een supplement nog kan toevoegen.
 

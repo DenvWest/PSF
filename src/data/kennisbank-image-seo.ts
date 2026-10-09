@@ -94,9 +94,9 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
   },
   uitgangsstatus: {
     coverAlt:
-      "Schematische S-curve: het effect van een stof is groot bij een tekort en vlakt af bij voldoende inname",
+      "Houten keukentafel met sla, paprika, tomaten en avocado in zacht daglicht — wat je al binnenkrijgt bepaalt je uitgangsstatus",
     coverCaption:
-      "Schematisch: bij een tekort levert extra inname veel op, bij voldoende inname nauwelijks nog iets.",
+      "Wat je al eet en drinkt bepaalt hoeveel een supplement nog kan toevoegen.",
     coverTitle: "Uitgangsstatus: waarom een supplement niet bij iedereen even goed werkt",
     inlineAlt:
       "Schematisch: twee balken, bij een lage startstand is er veel ruimte om aan te vullen en bij een hoge startstand weinig",
@@ -106,7 +106,7 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
   },
   "opbouwtijd-supplement": {
     coverAlt:
-      "Staafgrafiek van de opbouwtijd in dagen: creatine 6 dagen bij 20 g en 28 dagen bij 3 g, EPA in serum 4 tot 8 weken, EPA in rode bloedcellen circa 180 dagen",
+      "Jong groen kiemplantje in donkere grond — een supplement bouwt zijn niveau stap voor stap op",
     coverCaption:
       "Creatine, omega-3 en vitamine D hebben elk een eigen opbouwtijd: van dagen tot maanden, afhankelijk van waar je meet.",
     coverTitle: "Waarom een supplement weken duurt",

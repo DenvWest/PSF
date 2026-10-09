@@ -56,6 +56,8 @@ Pexels License (vrij commercieel gebruik). ID = `pexels-photo-{id}`.
 | multivitamine.jpg | 1092730 | fruitbowl |
 | nervus-vagus.jpg | 1761279 | bosbrug |
 | vitamine-k2.jpg | 4109944 | kazen |
+| opbouwtijd-supplement-foto.jpg | 1251026 | kiemplantje in donkere grond |
+| uitgangsstatus-foto.jpg | 6653621 | keukentafel met groenten |
 | thema-lichaam-veroudering.jpg | 414171 | berglandschap |
 | thema-leefstijl-herstel.jpg | 8017404 | onopgemaakt bed |
 | thema-ps-score.jpg | 6690217 | thee en notitieboek |

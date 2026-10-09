@@ -43,6 +43,8 @@ COVERS: dict[str, int] = {
     "scoregewichten": 8329286,  # measured herbs on wooden spoons
     "wei-eiwit": 8963368,  # milk and eggs
     "leucinedrempel": 1211887,  # feta salad (protein meal)
+    "opbouwtijd-supplement-foto": 1251026,  # seedling in dark soil
+    "uitgangsstatus-foto": 6653621,  # kitchen table with vegetables
     "mitochondrien": 371589,  # alpine lake, no person
     "efsa-claims": 590493,  # library lights, spines unreadable
     "biobeschikbaarheid": 1327838,  # tomatoes
