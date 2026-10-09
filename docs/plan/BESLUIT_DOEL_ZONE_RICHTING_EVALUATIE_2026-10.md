@@ -67,6 +67,21 @@ Op `account_voedingsdoelen`: `voedingsrichting_gekozen_op timestamptz`, `doel_st
 
 Alles hierboven is eigen-getallen-en-registratie en dus gratis. De venstergrootte (nu 7 dagen) en drempels blijven parameters die de aparte gratis/premium-sessie bepaalt.
 
+### 7. De loop met n8n en het aanbod (later, 9 okt)
+
+Dennis vroeg of de evaluatie automatisch kan terugkomen en later een n8n-loop kan geven voor producten, extra features en een abonnement. Besloten als startpunt voor de gratis/premium-sessie; niet gebouwd.
+
+1. **Doel gekozen:** domain event `doel.richting_gekozen`; n8n zet een timer van 30 dagen (`voedingsrichting_gekozen_op`).
+2. **Evaluatie klaar:** event `doel.evaluatie_due`; n8n stuurt een mail **zonder gegevens** ("Je doel-evaluatie staat klaar", link naar het dashboard).
+3. **Houden of Veranderen:** event `doel.evaluatie_keuze`. Houden start de volgende ronde van 30 dagen; Veranderen begint met een nieuwe richting en een nieuwe startstand.
+4. **Aanbod op het juiste moment:** pas na de evaluatie en een 30-dagenpatroon de premium-teaser ("je patroon per maaltijd staat klaar"). Een supplementvergelijking blijft algemene informatie en volgt de 30-dagenregel; hij komt nooit uit de evaluatie zelf.
+
+Randvoorwaarden:
+- **Eigen opt-in** ("doel-herinneringen"), los van de weekmail en `marketing_email`. Er geldt één hoofd-nurture per adres (`EMAIL_SYSTEM.md`): de loop is geen tweede nurture.
+- **Geen voedingsgegevens in de mail en niet in n8n.** De events dragen geen percentages of stoffen (art. 9-gegevens); n8n weet alleen "evaluatie klaar" en "keuze gemaakt".
+- **Wat het abonnement is** (14/30/90-trappen, personalisatie, voorstellen met effect), de prijs en de proef horen bij de aparte gratis/premium-sessie. De loop levert het moment, niet de inhoud.
+- De evaluatie verandert de richting nooit zelf; de gebruiker kiest.
+
 ## Gebouwd (9 okt, stap 1)
 
 - Zone heet "Doel" (`aria-label` en kop). Op voeding staat bovenaan "Waar je tegenaan loopt" (`KompasDoelRichting`): kiezen of wijzigen uit de zes richtingen, zelfde opslag en gedeelde toestand als Je doelen (`postVoedingsdoelen` + `zetKernstofWeergave`), `klachten` toont de doorverwijzing.
