@@ -602,8 +602,9 @@ const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
   "opbouwtijd-supplement": img(
     "kennisbank",
     "opbouwtijd-supplement",
-    "Staafgrafiek van de opbouwtijd in dagen: creatine 6 dagen bij 20 g en 28 dagen bij 3 g, EPA in serum 4 tot 8 weken, EPA in rode bloedcellen circa 180 dagen",
-    "Creatine, omega-3 en vitamine D hebben elk een eigen opbouwtijd: van dagen tot maanden, afhankelijk van waar je meet.",
+    "Groene staafjes die stap voor stap hoger worden — het niveau van een supplement bouwt zich geleidelijk op",
+    "Een supplement werkt vaak pas als het niveau is opgebouwd; dat duurt bij sommige stoffen weken.",
+    "opbouwtijd-supplement-v2",
   ),
   "efsa-claims": img(
     "kennisbank",

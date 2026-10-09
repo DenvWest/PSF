@@ -94,14 +94,14 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
   },
   "opbouwtijd-supplement": {
     coverAlt:
-      "Groene staafjes die stap voor stap hoger worden — het niveau van een supplement bouwt zich geleidelijk op",
+      "Staafgrafiek van de opbouwtijd in dagen: creatine 6 dagen bij 20 g en 28 dagen bij 3 g, EPA in serum 4 tot 8 weken, EPA in rode bloedcellen circa 180 dagen",
     coverCaption:
-      "Een supplement werkt vaak pas als het niveau is opgebouwd; dat duurt bij sommige stoffen weken.",
+      "Creatine, omega-3 en vitamine D hebben elk een eigen opbouwtijd: van dagen tot maanden, afhankelijk van waar je meet.",
     coverTitle: "Waarom een supplement weken duurt",
     inlineAlt:
-      "Staafgrafiek van de opbouwtijd in dagen: creatine 6 dagen bij 20 g en 28 dagen bij 3 g, EPA in serum 4 tot 8 weken, EPA in rode bloedcellen circa 180 dagen",
+      "Groene staafjes die stap voor stap hoger worden — het niveau van een supplement bouwt zich geleidelijk op",
     inlineCaption:
-      "Creatine, omega-3 en vitamine D hebben elk een eigen opbouwtijd: van dagen tot maanden, afhankelijk van waar je meet.",
+      "Een supplement werkt vaak pas als het niveau is opgebouwd; dat duurt bij sommige stoffen weken.",
     searchPhrases: ["supplement hoe lang duurt het", "opbouwtijd supplement", "wanneer werkt omega-3"],
   },
   "efsa-claims": {
