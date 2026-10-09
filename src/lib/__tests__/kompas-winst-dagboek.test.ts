@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildDagboekWinstRegel } from "@/lib/kompas-winst-dagboek";
+import { buildDagboekWinstRegel, buildDoelStand } from "@/lib/kompas-winst-dagboek";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 
@@ -58,5 +58,47 @@ describe("buildDagboekWinstRegel", () => {
     if (regel?.kind !== "stoffen") throw new Error("verwacht stoffen");
     expect(regel.stoffen.map((s) => s.nutrient)).not.toContain("zinc");
     expect(regel.stoffen.map((s) => s.nutrient)).not.toContain("vitamin_d");
+  });
+});
+
+describe("buildDoelStand", () => {
+  const week = dagen(5, "havermout", 100);
+
+  it("zwijgt onder de vijf dagen: de winstkaart noemt het aantal al", () => {
+    expect(buildDoelStand(dagen(3, "havermout", 100), VANDAAG, STANDAARD_NORMEN, "energie", null)).toEqual({
+      kind: "te_weinig",
+      dagen: 3,
+    });
+  });
+
+  it("kiest de stof van je richting en noemt de richting", () => {
+    const stand = buildDoelStand(week, VANDAAG, STANDAARD_NORMEN, "energie", null);
+    if (stand?.kind !== "stof") throw new Error("verwacht stof");
+    expect(stand.nutrient).toBe("magnesium");
+    expect(stand.richtingKort).toBe("Vaak moe");
+    expect(stand.doelLabel).toMatch(/^je norm \(/);
+    expect(stand.voorstel).toMatch(/noten/i);
+  });
+
+  it("neemt zonder richting de stof met de meeste ruimte en noemt geen richting", () => {
+    const stand = buildDoelStand(week, VANDAAG, STANDAARD_NORMEN, null, null);
+    if (stand?.kind !== "stof") throw new Error("verwacht stof");
+    expect(stand.richtingKort).toBeNull();
+    expect(stand.aandeelPct).toBeLessThan(100);
+  });
+
+  it("valt bij richting spier zonder eiwitdoel terug op de laagste stof, zonder de richting te beweren", () => {
+    const stand = buildDoelStand(week, VANDAAG, STANDAARD_NORMEN, "spier", null);
+    if (stand?.kind !== "stof") throw new Error("verwacht stof");
+    expect(stand.richtingKort).toBeNull();
+    expect(["zinc", "vitamin_d"]).not.toContain(stand.nutrient);
+  });
+
+  it("rekent eiwit tegen je eiwitdoel, nooit als 'gehaald'", () => {
+    const stand = buildDoelStand(week, VANDAAG, STANDAARD_NORMEN, "spier", 95);
+    if (stand?.kind !== "stof") throw new Error("verwacht stof");
+    expect(stand.nutrient).toBe("protein");
+    expect(stand.doelLabel).toContain("eiwitdoel");
+    expect(stand.gedekt).toBe(false);
   });
 });

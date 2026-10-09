@@ -1,8 +1,11 @@
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import type { KernstofNormen } from "@/lib/nutrition-normen";
+import { TEKORT_VOORSTELLEN } from "@/data/agenda/tekort-voorstellen";
 import { datumsTussen, periodeVoorKeuze, type Periode } from "@/lib/nutrition-periode";
-import { bouwPeriodeOverzicht } from "@/lib/nutrition-weekoverzicht";
+import { ruimteBij, stofPerMoment } from "@/lib/nutrition-stof-bronnen";
+import { RICHTINGEN, type Voedingsrichting } from "@/lib/nutrition-voedingsrichting";
+import { bouwPeriodeOverzicht, type WeekRij } from "@/lib/nutrition-weekoverzicht";
 
 /**
  * De dagboekregel onder "Grootste winst" in de contextkolom.
@@ -95,4 +98,93 @@ export function buildDagboekWinstRegel(
   }
 
   return null;
+}
+
+export type DoelStand =
+  | { kind: "te_weinig"; dagen: number }
+  | {
+      kind: "stof";
+      dagen: number;
+      nutrient: NutrientId;
+      label: string;
+      /** Afgerond percentage van je norm of eiwitdoel, een ondergrens. */
+      aandeelPct: number;
+      /** Waartegen, als zinsdeel: "je norm (375 mg)" of "je eiwitdoel (95 g)". */
+      doelLabel: string;
+      benaderd: boolean;
+      /** Alleen waar zonder benaderingen bewezen: dan mag er "op je norm" staan. */
+      gedekt: boolean;
+      /** Je richting in het kort ("Vaak moe") als die de stof koos; null als de laagste is gekozen. */
+      richtingKort: string | null;
+      /** Een maaltijd die er weinig van levert, of null. */
+      ruimteMoment: string | null;
+      /** Voedingsvoorstel voor vandaag uit de agendavoorstellen, of null zonder voorstel. */
+      voorstel: string | null;
+    };
+
+function stofRij(rij: WeekRij, eiwitDoelG: number | null) {
+  if (rij.dagenMetBron === 0) return null;
+  if (rij.nutrient === "protein") {
+    if (eiwitDoelG === null || eiwitDoelG <= 0) return null;
+    return {
+      aandeel: rij.gemiddeld / eiwitDoelG,
+      doelLabel: `je eiwitdoel (${normLabel(eiwitDoelG, "g")})`,
+      gedekt: false,
+    };
+  }
+  if (!rij.bewijsbaar || rij.referentie === null || rij.aandeel === null) return null;
+  return {
+    aandeel: rij.aandeel,
+    doelLabel: `je norm (${normLabel(rij.referentie, rij.unit)})`,
+    gedekt: rij.gedekt === true,
+  };
+}
+
+export function buildDoelStand(
+  dagen: readonly DagboekDag[],
+  vandaag: string,
+  normen: KernstofNormen,
+  richting: Voedingsrichting | null,
+  eiwitDoelG: number | null,
+): DoelStand | null {
+  const datums = datumsTussen(dagboekregelPeriode(vandaag));
+  const overzicht = bouwPeriodeOverzicht(dagen, datums, normen, { omega3AlsPeriodetotaal: true });
+
+  if (overzicht.dagenGeregistreerd < DAGBOEKREGEL_MIN_DAGEN) {
+    return { kind: "te_weinig", dagen: overzicht.dagenGeregistreerd };
+  }
+
+  const meetbaar = overzicht.rijen.flatMap((rij) => {
+    const meting = stofRij(rij, eiwitDoelG);
+    return meting ? [{ rij, ...meting }] : [];
+  });
+
+  const eerst: readonly string[] = richting ? RICHTINGEN[richting].eerst : [];
+  const vanRichting = eerst
+    .map((id) => meetbaar.find((kandidaat) => kandidaat.rij.nutrient === id))
+    .find((kandidaat) => kandidaat !== undefined);
+  const gekozen =
+    vanRichting ??
+    meetbaar.filter((kandidaat) => kandidaat.aandeel < 1).sort((a, b) => a.aandeel - b.aandeel)[0];
+
+  if (!gekozen) return null;
+
+  const { rij } = gekozen;
+  const perMoment = stofPerMoment(dagen, datums, rij.nutrient);
+  const totaal = perMoment.reduce((som, moment) => som + moment.totaal, 0);
+  const ruimte = ruimteBij(perMoment, totaal);
+
+  return {
+    kind: "stof",
+    dagen: overzicht.dagenGeregistreerd,
+    nutrient: rij.nutrient,
+    label: rij.label,
+    aandeelPct: Math.round(gekozen.aandeel * 100),
+    doelLabel: gekozen.doelLabel,
+    benaderd: rij.benaderd ?? false,
+    gedekt: gekozen.gedekt,
+    richtingKort: vanRichting && richting ? RICHTINGEN[richting].kort : null,
+    ruimteMoment: ruimte ? ruimte.label.toLowerCase() : null,
+    voorstel: TEKORT_VOORSTELLEN[rij.nutrient]?.title ?? null,
+  };
 }

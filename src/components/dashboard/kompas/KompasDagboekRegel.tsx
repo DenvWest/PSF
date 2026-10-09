@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import { clarityTag } from "@/lib/clarity";
 import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
@@ -11,7 +11,7 @@ import {
   DAGBOEKREGEL_MIN_DAGEN,
   DAGBOEKREGEL_VENSTER_DAGEN,
 } from "@/lib/kompas-winst-dagboek";
-import type { DagboekDag } from "@/lib/nutrition-dagboek";
+import { useDagboekDagen } from "@/lib/use-dagboek-dagen";
 import { useKernstofNormen } from "@/lib/use-kernstof-normen";
 
 const PATROON_HREF = "/dashboard?tab=voortgang&sectie=stof&periode=7";
@@ -28,25 +28,8 @@ const DAGBOEK_HREF = "/dashboard?tab=vandaag";
  */
 export default function KompasDagboekRegel() {
   const normen = useKernstofNormen();
-  const [dagen, setDagen] = useState<DagboekDag[] | null>(null);
+  const dagen = useDagboekDagen();
   const vandaag = todayInAgendaTimezone();
-
-  useEffect(() => {
-    let afgebroken = false;
-    void (async () => {
-      try {
-        const response = await fetch("/api/account/nutrition-daybook", { credentials: "include" });
-        if (!response.ok) return;
-        const body = (await response.json()) as { days?: DagboekDag[] };
-        if (!afgebroken) setDagen(body.days ?? []);
-      } catch {
-        /* zonder dagboek blijft de regel weg */
-      }
-    })();
-    return () => {
-      afgebroken = true;
-    };
-  }, []);
 
   const regel = useMemo(
     () => (dagen ? buildDagboekWinstRegel(dagen, vandaag, normen) : null),
