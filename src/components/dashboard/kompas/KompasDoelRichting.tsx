@@ -12,6 +12,7 @@ import {
   type Voedingsrichting,
 } from "@/lib/nutrition-voedingsrichting";
 import { postVoedingsdoelen } from "@/lib/voedingsdoelen-client";
+import { herlaadDoelEvaluatie } from "@/lib/use-doel-evaluatie";
 import { useVoedingsrichting, zetKernstofWeergave } from "@/lib/use-kernstof-normen";
 
 /**
@@ -20,9 +21,13 @@ import { useVoedingsrichting, zetKernstofWeergave } from "@/lib/use-kernstof-nor
  * doelen, dus een keuze hier staat meteen in Je patroon en omgekeerd. Kadert,
  * meet niet (`BESLUIT_VOEDINGSRICHTING_2026-10.md`).
  */
-export default function KompasDoelRichting() {
+type Props = {
+  kiezen: boolean;
+  onKiezenChange: (open: boolean) => void;
+};
+
+export default function KompasDoelRichting({ kiezen, onKiezenChange: setKiezen }: Props) {
   const richting = useVoedingsrichting();
-  const [kiezen, setKiezen] = useState(false);
   const [bezig, setBezig] = useState(false);
   const [fout, setFout] = useState<string | null>(null);
 
@@ -32,6 +37,7 @@ export default function KompasDoelRichting() {
     try {
       const bijgewerkt = await postVoedingsdoelen({ voedingsrichting: volgende });
       zetKernstofWeergave(bijgewerkt);
+      void herlaadDoelEvaluatie();
       emitAccountClientEvent("nutrition.voedingsrichting_gekozen", {
         richting: volgende ?? "geen",
         surface: "kompas_context",

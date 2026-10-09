@@ -47,3 +47,10 @@ export function useDagboekDagen(): DagboekDag[] | null {
 
   return dagen;
 }
+
+/** Voor tests: vergeet de gedeelde cache, zodat elke test zijn eigen dagboek ophaalt. */
+export function wisDagboekCache(): void {
+  laatste = null;
+  geladenOp = 0;
+  lopend = null;
+}

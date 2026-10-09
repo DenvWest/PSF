@@ -1,7 +1,7 @@
 # Besluit: de zone "Waar je naartoe werkt" wordt "Doel", met richting, stand en evaluatie
 
 **Datum:** 9 oktober 2026
-**Status:** Besloten (Dennis, 9 okt: akkoord; Agenda en Keuze buiten deze reeks). Stap 1 gebouwd 9 okt (zie onder); stap 2 en 3 nog niet.
+**Status:** Besloten (Dennis, 9 okt: akkoord; Agenda en Keuze buiten deze reeks). Stap 1 en 2 gebouwd en gemigreerd 9 okt, stap 3 (evaluatieblok) gebouwd 9 okt (zie onder).
 **Bouwt voort op:** `BESLUIT_VOEDINGSRICHTING_2026-10.md` (richting kadert en meet niet, klachten = doorverwijzing), `PLAN_EIGEN_IJKPUNT_DOEL_PER_DOMEIN.md` (ijkpunt = eigen as), `BESLUIT_DOEL_IN_ZIJBALK_NAMETING_2026-10.md` (stand gebouwd; nameting), `BESLUIT_KOMPAS_WINST_DAGBOEK_2026-10.md` (winstkaart)
 **Raakt:** `KompasContextSpine.tsx` (doel-zone), `KompasDoelStand.tsx`, `KompasDagboekRegel.tsx`, `account_voedingsdoelen`
 
@@ -89,6 +89,13 @@ Randvoorwaarden:
 - `KompasWinstKnop`: op een domeinscherm "Log je maaltijd van vandaag" (of "Bekijk je patroon" vanaf 5 volle dagen); op het Dagboek zelf de dagstatus ("Vandaag gelogd: ontbijt. Nog open: lunch en avondeten.") en "Voeg toe bij {volgende open maaltijd}", of bij een complete dag "Bekijk je patroon" zodra er 5 volle dagen zijn.
 - Beperking: de dagstatus hangt aan de winstkaart met een stap uit de check. Zonder check (`geen_winstlaag`) staat de dagstatus er nog niet.
 - Meetpunten: `nutrition.voedingsrichting_gekozen` {surface: kompas_context}, GA4/Clarity `dashboard_kompas_context_click` met `zone: doel_richting`, `zone: dagstatus_voeg_toe` {moment} en `zone: winst_stap` {doel: patroon|dagboek}.
+
+## Gebouwd (9 okt, stap 3)
+
+- **Opslag:** de migratie is door Dennis gedraaid. `setVoedingsdoelen` zet `voedingsrichting_gekozen_op` en wist `doel_bevestigd_op` alleen bij een echte wijziging van de richting. Nieuwe route `/api/account/doel-evaluatie` (GET, en POST met `startstand` of `bevestig`); een bestaande startstand per stof wordt nooit overschreven, de stof en de stand worden server-side gevalideerd.
+- **Startstand:** de stand-regel legt hem eenmalig vast, alleen als de stof van je richting komt (`richtingKort`) en er 5 volle dagen zijn.
+- **Evaluatieblok** (`KompasDoelEvaluatie`): verschijnt als 30 dagen voorbij zijn sinds je keuze of je laatste "Houden", én de startstand minstens 14 dagen oud is. Een richting van vóór de migratie (`voedingsrichting_gekozen_op` null) krijgt geen verzonnen datum en dus geen evaluatie, totdat de richting opnieuw gekozen wordt. Twee aparte regels (ijkpunt eerste → laatste score, stof toen → nu), nooit samengevoegd. "Houden" legt `doel_bevestigd_op` vast; "Veranderen" opent de richtingkiezer, en een nieuwe richting begint een nieuwe ronde.
+- **Meetpunten** (domain events, geregistreerd op de drie plekken): `doel.startstand_gelegd` {stof}, `doel.evaluatie_getoond` {stof, dagen_tussen}, `doel.evaluatie_keuze` {keuze}; GA4/Clarity `zone: doel_evaluatie`. Geen percentages in de payloads.
 
 ## Afgewezen
 

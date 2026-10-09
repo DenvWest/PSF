@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
+import { useEffect, useRef } from "react";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { trackEvent } from "@/lib/ga4";
-import { buildDoelStand, DAGBOEKREGEL_VENSTER_DAGEN } from "@/lib/kompas-winst-dagboek";
-import { useDagboekDagen } from "@/lib/use-dagboek-dagen";
-import { useEiwitDoel, useGewoneMaaltijden, useKernstofNormen, useVoedingsrichting } from "@/lib/use-kernstof-normen";
+import { DAGBOEKREGEL_VENSTER_DAGEN } from "@/lib/kompas-winst-dagboek";
+import { postStartstand, useDoelEvaluatie } from "@/lib/use-doel-evaluatie";
+import { useDoelStand } from "@/lib/use-doel-stand";
 
 function kleineLetter(tekst: string): string {
   return tekst.charAt(0).toLowerCase() + tekst.slice(1);
@@ -21,23 +21,28 @@ function kleineLetter(tekst: string): string {
  * 30-dagenpatroon gebonden (`BESLUIT_DOEL_IN_ZIJBALK_NAMETING_2026-10.md`).
  */
 export default function KompasDoelStand() {
-  const normen = useKernstofNormen();
-  const richting = useVoedingsrichting();
-  const eiwitDoelG = useEiwitDoel();
-  const gewone = useGewoneMaaltijden();
-  const dagen = useDagboekDagen();
-  const vandaag = todayInAgendaTimezone();
-
-  const stand = useMemo(
-    () => (dagen ? buildDoelStand(dagen, vandaag, normen, { gewone, richting, eiwitDoelG }) : null),
-    [dagen, vandaag, normen, gewone, richting, eiwitDoelG],
-  );
+  const stand = useDoelStand();
+  const evaluatie = useDoelEvaluatie();
+  const gelegd = useRef<string | null>(null);
 
   const nutrient = stand?.kind === "stof" ? stand.nutrient : null;
   useEffect(() => {
     if (!nutrient) return;
     trackEvent("dashboard_kompas_context_view", { zone: "doel_stand", staat: "stof", nutrient });
   }, [nutrient]);
+
+  // De eerste stand van een doel leggen we eenmalig vast, alleen als de stof
+  // van je richting komt: dat is wat later geëvalueerd wordt.
+  useEffect(() => {
+    if (stand?.kind !== "stof" || !stand.richtingKort || !evaluatie) return;
+    if (evaluatie.startstand[stand.nutrient] || gelegd.current === stand.nutrient) return;
+    gelegd.current = stand.nutrient;
+    void postStartstand(stand.nutrient, { aandeelPct: stand.aandeelPct, dagen: stand.dagen })
+      .then(() => emitAccountClientEvent("doel.startstand_gelegd", { stof: stand.nutrient }))
+      .catch(() => {
+        gelegd.current = null;
+      });
+  }, [stand, evaluatie]);
 
   if (stand?.kind !== "stof") return null;
 

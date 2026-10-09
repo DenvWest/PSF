@@ -157,6 +157,7 @@ export async function setVoedingsdoelen(
   supabase: OrgScopedClient,
   accountId: string,
   doelen: Voedingsdoelen,
+  opties: { richtingGewijzigd?: boolean } = {},
 ): Promise<void> {
   const { error } = await supabase.from("account_voedingsdoelen").upsert(
     {
@@ -166,6 +167,15 @@ export async function setVoedingsdoelen(
       eiwit_doel_g: doelen.eiwitDoelG,
       gewone_maaltijden: leesEetpatroon(doelen.gewoneMaaltijden),
       voedingsrichting: doelen.voedingsrichting,
+      // Een nieuwe richting begint een nieuwe evaluatieronde: eigen datum en
+      // geen oude bevestiging. Alleen schrijven bij een echte wijziging, anders
+      // schuift elke opslag van het gewicht de evaluatie op.
+      ...(opties.richtingGewijzigd
+        ? {
+            voedingsrichting_gekozen_op: doelen.voedingsrichting ? new Date().toISOString() : null,
+            doel_bevestigd_op: null,
+          }
+        : {}),
       updated_at: new Date().toISOString(),
     },
     { onConflict: "account_id" },
@@ -267,3 +277,103 @@ export type VoedingsdoelenWeergave = {
    */
   kernstofProfiel: KernstofProfiel;
 };
+
+/**
+ * Evaluatie van je doel (`BESLUIT_DOEL_ZONE_RICHTING_EVALUATIE_2026-10.md` §3):
+ * wanneer je je richting koos, de eerste stand per stof en je laatste "Houden".
+ * Alleen stof, datum, afgerond percentage en aantal dagen: geen producten of
+ * maaltijden (voedingsgegevens zijn art. 9).
+ */
+export type DoelStartstand = { datum: string; aandeelPct: number; dagen: number };
+
+export type DoelEvaluatie = {
+  gekozenOp: string | null;
+  startstand: Record<string, DoelStartstand>;
+  bevestigdOp: string | null;
+};
+
+export const LEGE_DOEL_EVALUATIE: DoelEvaluatie = { gekozenOp: null, startstand: {}, bevestigdOp: null };
+
+const STARTSTAND_STOFFEN: readonly string[] = ["protein", "magnesium", "zinc", "omega3", "vitamin_d"];
+const DATUM = /^\d{4}-\d{2}-\d{2}$/;
+
+export function isGeldigeStartstandStof(value: unknown): value is string {
+  return typeof value === "string" && STARTSTAND_STOFFEN.includes(value);
+}
+
+export function isGeldigeStartstand(value: unknown): value is { aandeelPct: number; dagen: number } {
+  if (!value || typeof value !== "object") return false;
+  const { aandeelPct, dagen } = value as Record<string, unknown>;
+  return (
+    typeof aandeelPct === "number" &&
+    Number.isInteger(aandeelPct) &&
+    aandeelPct >= 0 &&
+    aandeelPct <= 1000 &&
+    typeof dagen === "number" &&
+    Number.isInteger(dagen) &&
+    dagen >= 1 &&
+    dagen <= 7
+  );
+}
+
+function leesStartstand(value: unknown): Record<string, DoelStartstand> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  const uit: Record<string, DoelStartstand> = {};
+  for (const [stof, raw] of Object.entries(value)) {
+    if (!isGeldigeStartstandStof(stof) || !raw || typeof raw !== "object") continue;
+    const { datum, aandeelPct, dagen } = raw as Record<string, unknown>;
+    if (typeof datum !== "string" || !DATUM.test(datum) || !isGeldigeStartstand({ aandeelPct, dagen })) continue;
+    uit[stof] = { datum, aandeelPct: aandeelPct as number, dagen: dagen as number };
+  }
+  return uit;
+}
+
+export async function getDoelEvaluatie(supabase: OrgScopedClient, accountId: string): Promise<DoelEvaluatie> {
+  const { data, error } = await supabase
+    .from("account_voedingsdoelen")
+    .select("voedingsrichting_gekozen_op,doel_startstand,doel_bevestigd_op")
+    .eq("account_id", accountId)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!data) return LEGE_DOEL_EVALUATIE;
+
+  const rij = data as unknown as {
+    voedingsrichting_gekozen_op: string | null;
+    doel_startstand: unknown;
+    doel_bevestigd_op: string | null;
+  };
+  return {
+    gekozenOp: rij.voedingsrichting_gekozen_op ?? null,
+    startstand: leesStartstand(rij.doel_startstand),
+    bevestigdOp: rij.doel_bevestigd_op ?? null,
+  };
+}
+
+/** De eerste stand per stof: een bestaande stand wordt nooit overschreven. */
+export async function legStartstandVast(
+  supabase: OrgScopedClient,
+  accountId: string,
+  stof: string,
+  stand: { aandeelPct: number; dagen: number },
+  datum: string,
+): Promise<DoelEvaluatie> {
+  const huidig = await getDoelEvaluatie(supabase, accountId);
+  if (huidig.startstand[stof]) return huidig;
+
+  const volgende = { ...huidig.startstand, [stof]: { datum, ...stand } };
+  const { error } = await supabase
+    .from("account_voedingsdoelen")
+    .upsert({ account_id: accountId, doel_startstand: volgende }, { onConflict: "account_id" });
+  if (error) throw new Error(error.message);
+  return { ...huidig, startstand: volgende };
+}
+
+export async function bevestigDoel(supabase: OrgScopedClient, accountId: string): Promise<DoelEvaluatie> {
+  const nu = new Date().toISOString();
+  const { error } = await supabase
+    .from("account_voedingsdoelen")
+    .upsert({ account_id: accountId, doel_bevestigd_op: nu }, { onConflict: "account_id" });
+  if (error) throw new Error(error.message);
+  return { ...(await getDoelEvaluatie(supabase, accountId)), bevestigdOp: nu };
+}
