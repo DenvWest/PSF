@@ -174,4 +174,16 @@ describe("MijnKeuzes", () => {
     expect(within(screen.getByRole("region", { name: "Lunch" })).getByText("Nog niets gekozen")).toBeTruthy();
     expect(within(screen.getByRole("region", { name: "Avondeten" })).getByText(/Vitals Liquid EPA\/DHA/)).toBeTruthy();
   });
+
+  it("haalt een supplement uit Mijn keuzes: product, moment en supplementroute, en laat eten staan bij allebei", () => {
+    favorieten.items = [
+      { id: "voeding-route-omega3-beide", title: "", kind: "supplement" },
+      { id: "voeding-product-omega3-vitals-liquid-epadha", title: "", kind: "supplement" },
+      { id: "voeding-moment-omega3-lunch", title: "", kind: "supplement" },
+    ];
+    renderMijn();
+    fireEvent.click(screen.getByRole("button", { name: "Haal uit Mijn keuzes" }));
+    const ids = favorieten.items.map((i) => i.id);
+    expect(ids).toEqual(["voeding-route-omega3-bord"]);
+  });
 });

@@ -19,6 +19,7 @@ import {
   parseEtenKeuze,
   momentKeuzeIdsVoorStof,
   momentVoorStof,
+  productKeuzeIdsVoorStof,
   productKeuzeVoorStof,
   type MomentKant,
 } from "@/lib/keuze-product-keuze";
@@ -27,7 +28,13 @@ import { keuzeStofStand, type KeuzeStofStand } from "@/lib/keuze-stof-stand";
 import { euroPerDag, hoofdStof, isBronVan } from "@/lib/keuze-stofkaart";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { gehaltePerPortie, pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
-import { resolveNutritionRouteChoice, type NutritionRouteChoice } from "@/lib/nutrition-route-choice";
+import {
+  NUTRITION_ROUTE_CHOICES,
+  nutritionRouteChoiceId,
+  resolveNutritionRouteChoice,
+  routeChoiceFavoriteTitle,
+  type NutritionRouteChoice,
+} from "@/lib/nutrition-route-choice";
 import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 import { hoeveelheid } from "@/lib/nutrition-tekortsysteem-copy";
@@ -378,6 +385,9 @@ function StofBalk({ stand, product }: { stand: KeuzeStofStand; product: KeuzePro
         </b>
         {erbij > 0 ? ", met je supplement" : ""}
       </p>
+      <p className="m-0 text-[0.65625rem] text-[var(--vd-ink-3)]">
+        Per dag: je eten gemiddeld over de laatste {stand.venster?.dagen_terug ?? 7} dagen{erbij > 0 ? " + het etiket van je supplement" : ""}.
+      </p>
     </div>
   );
 }
@@ -422,10 +432,10 @@ function StofKeuzeKaart({
           prijs en vier momentknoppen niet. */}
       <details className="border-t border-[var(--vd-line)]">
         <summary className="flex min-h-[44px] cursor-pointer items-center px-3.5 text-[0.75rem] font-semibold text-[var(--vd-ink-2)]">
-          Beheer: moment, weghalen, productpagina
+          Beheer: moment kiezen, weghalen, productpagina
         </summary>
         <div className="@container px-3.5 pb-3.5 pt-1">
-          <div className="grid grid-cols-1 gap-2.5 @[30rem]:grid-cols-2">
+          <div className="grid grid-cols-1 items-start gap-2.5 @[30rem]:grid-cols-2">
             <EtenKant keuze={keuze} voedingsfavorieten={voedingsfavorieten} onWijzig={onWijzig} />
             <SupplementKant keuze={keuze} onWijzig={onWijzig} />
           </div>
@@ -590,9 +600,9 @@ function EtenKant({
                       aria-label={`${entry.labelNl} weghalen uit Mijn keuzes`}
                       disabled={voedingsfavorieten.bezig === entry.key}
                       onClick={() => haalWeg(entry.key)}
-                      className="cursor-pointer border-0 bg-transparent p-0 text-[1rem] leading-none text-[var(--vd-sage-2)] disabled:opacity-50"
+                      className="inline-flex min-h-[44px] cursor-pointer items-center rounded-[12px] border border-[var(--vd-line-2)] bg-transparent px-3 text-[0.75rem] font-semibold text-[var(--vd-ink-2)] hover:border-[var(--vd-amber)] hover:text-[var(--vd-ink)] disabled:opacity-50"
                     >
-                      ★
+                      Haal weg
                     </button>
                   </span>
                 </li>
@@ -644,8 +654,43 @@ function EtenKant({
 }
 
 function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () => void }) {
-  const { status, route, product } = keuze;
+  const { status, route, product, stand } = keuze;
   const nutrient = status.nutrient;
+  const { items, save, remove } = useVoortgangFavorites();
+
+  /**
+   * Het supplement uit Mijn keuzes: het product, zijn moment en de
+   * supplementroute. Koos je ook eten, dan blijft de route "bord" staan —
+   * dezelfde uitkomst als "Zet supplement uit" in Vergelijken.
+   */
+  const haalWeg = () => {
+    for (const id of productKeuzeIdsVoorStof(nutrient, items)) remove(id);
+    for (const id of momentKeuzeIdsVoorStof(nutrient, items, "supplement")) remove(id);
+    const volgende: NutritionRouteChoice | null = route === "beide" ? "bord" : null;
+    for (const optie of NUTRITION_ROUTE_CHOICES) {
+      if (optie !== volgende) remove(nutritionRouteChoiceId(nutrient, optie));
+    }
+    if (volgende) {
+      save(
+        {
+          id: nutritionRouteChoiceId(nutrient, volgende),
+          title: routeChoiceFavoriteTitle(nutrient, volgende),
+          kind: "activiteit",
+          domain: "voeding",
+          source: "mijn_keuze",
+        },
+        SURFACE,
+      );
+    }
+    trackEvent("keuze_product_gekozen", {
+      surface: SURFACE,
+      nutrient,
+      product: product?.slug ?? "",
+      actie: "gewist",
+      stand: stand.stand,
+    });
+    clarityTag("keuze_product", `${nutrient}_gewist`);
+  };
 
   if (!product) {
     return (
@@ -688,7 +733,7 @@ function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () =>
         </p>
       ) : null}
       <MomentKiezer nutrient={nutrient} kant="supplement" vraag="Wanneer neem je het?" titel={product.naam} />
-      <span className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+      <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
         <Link
           href={metKeuzeHerkomst(product.href, nutrient, "favorieten")}
           onClick={() =>
@@ -706,6 +751,13 @@ function SupplementKant({ keuze, onWijzig }: { keuze: StofKeuze; onWijzig: () =>
           Vergelijk met andere →
         </Link>
       </span>
+      <button
+        type="button"
+        onClick={haalWeg}
+        className="mt-3 inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[12px] border border-[var(--vd-line-2)] bg-transparent px-3 text-[0.75rem] font-semibold text-[var(--vd-ink-2)] hover:border-[var(--vd-amber)] hover:text-[var(--vd-ink)]"
+      >
+        Haal uit Mijn keuzes
+      </button>
     </Kant>
   );
 }
