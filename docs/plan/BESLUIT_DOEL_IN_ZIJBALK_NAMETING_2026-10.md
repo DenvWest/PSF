@@ -67,7 +67,7 @@ Tot die sessie zijn alle venster- en drempelwaarden in dit voorstel parameters, 
 - `buildDoelStand` in `src/lib/kompas-winst-dagboek.ts` en `KompasDoelStand.tsx`, onder het ijkpunt in de doel-zone van voeding.
 - Stofkeuze: eerste meetbare stof uit `RICHTINGEN[richting].eerst`; eiwit rekent tegen het eiwitdoel (nooit "gehaald", er is geen norm zonder benaderingen). Zonder meetbare richting-stof: de stof met het laagste aandeel onder de norm, en dan staat er geen richting bij.
 - Voorstel voor vandaag uit `TEKORT_VOORSTELLEN` (alleen magnesium, eiwit en omega-3 hebben er een); "je ontbijt levert er weinig van" uit `ruimteBij`.
-- Onder 5 van 7 dagen zwijgt dit blok (de winstkaart noemt het aantal al), dus de staat `te_weinig` wordt hier niet getoond en niet gemeten. Meetpunt: GA4 `dashboard_kompas_context_view` {zone: doel_stand, staat: stof, nutrient}.
+- Onder 5 volle dagen van 7 zwijgt dit blok (volle dag: zie de herziening van 9 okt in `BESLUIT_KOMPAS_WINST_DAGBOEK_2026-10.md`) (de winstkaart noemt het aantal al), dus de staat `te_weinig` wordt hier niet getoond en niet gemeten. Meetpunt: GA4 `dashboard_kompas_context_view` {zone: doel_stand, staat: stof, nutrient}.
 - Gedeelde dagboekfetch: `use-dagboek-dagen.ts` (30 s cache), zodat winstkaart en doel-zone één verzoek doen.
 
 ## Afgewezen

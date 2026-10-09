@@ -5,7 +5,7 @@ import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
 import { buildDoelStand, DAGBOEKREGEL_VENSTER_DAGEN } from "@/lib/kompas-winst-dagboek";
 import { useDagboekDagen } from "@/lib/use-dagboek-dagen";
-import { useEiwitDoel, useKernstofNormen, useVoedingsrichting } from "@/lib/use-kernstof-normen";
+import { useEiwitDoel, useGewoneMaaltijden, useKernstofNormen, useVoedingsrichting } from "@/lib/use-kernstof-normen";
 
 function kleineLetter(tekst: string): string {
   return tekst.charAt(0).toLowerCase() + tekst.slice(1);
@@ -14,7 +14,7 @@ function kleineLetter(tekst: string): string {
 /**
  * De stand van het doel op voeding, onder het ijkpunt: waar je nu staat op de
  * stof die bij je richting hoort (anders de stof met de meeste ruimte), en één
- * voedingsstap voor vandaag. Alleen voeding, alleen vanaf 5 ingevulde dagen —
+ * voedingsstap voor vandaag. Alleen voeding, alleen vanaf 5 volle dagen —
  * daaronder zegt de winstkaart al hoeveel dagen er staan, dus dit blok zwijgt.
  *
  * Geen supplement hier: de uitgang naar `/beste/*` blijft aan het
@@ -23,13 +23,14 @@ function kleineLetter(tekst: string): string {
 export default function KompasDoelStand() {
   const normen = useKernstofNormen();
   const richting = useVoedingsrichting();
-  const eiwitDoel = useEiwitDoel();
+  const eiwitDoelG = useEiwitDoel();
+  const gewone = useGewoneMaaltijden();
   const dagen = useDagboekDagen();
   const vandaag = todayInAgendaTimezone();
 
   const stand = useMemo(
-    () => (dagen ? buildDoelStand(dagen, vandaag, normen, richting, eiwitDoel) : null),
-    [dagen, vandaag, normen, richting, eiwitDoel],
+    () => (dagen ? buildDoelStand(dagen, vandaag, normen, { gewone, richting, eiwitDoelG }) : null),
+    [dagen, vandaag, normen, gewone, richting, eiwitDoelG],
   );
 
   const nutrient = stand?.kind === "stof" ? stand.nutrient : null;

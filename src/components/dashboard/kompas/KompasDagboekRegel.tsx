@@ -12,7 +12,7 @@ import {
   DAGBOEKREGEL_VENSTER_DAGEN,
 } from "@/lib/kompas-winst-dagboek";
 import { useDagboekDagen } from "@/lib/use-dagboek-dagen";
-import { useKernstofNormen } from "@/lib/use-kernstof-normen";
+import { useEiwitDoel, useGewoneMaaltijden, useKernstofNormen, useVoedingsrichting } from "@/lib/use-kernstof-normen";
 
 const PATROON_HREF = "/dashboard?tab=voortgang&sectie=stof&periode=7";
 const DAGBOEK_HREF = "/dashboard?tab=vandaag";
@@ -28,12 +28,15 @@ const DAGBOEK_HREF = "/dashboard?tab=vandaag";
  */
 export default function KompasDagboekRegel() {
   const normen = useKernstofNormen();
+  const richting = useVoedingsrichting();
+  const eiwitDoelG = useEiwitDoel();
+  const gewone = useGewoneMaaltijden();
   const dagen = useDagboekDagen();
   const vandaag = todayInAgendaTimezone();
 
   const regel = useMemo(
-    () => (dagen ? buildDagboekWinstRegel(dagen, vandaag, normen) : null),
-    [dagen, vandaag, normen],
+    () => (dagen ? buildDagboekWinstRegel(dagen, vandaag, normen, { gewone, richting, eiwitDoelG }) : null),
+    [dagen, vandaag, normen, gewone, richting, eiwitDoelG],
   );
 
   useEffect(() => {
@@ -71,10 +74,19 @@ export default function KompasDagboekRegel() {
       ) : null}
 
       {regel.kind === "te_weinig" ? (
-        <p className="m-0 mt-1 text-[11.5px] leading-snug text-[#9FB0A6] text-pretty">
-          {regel.dagen} van {DAGBOEKREGEL_VENSTER_DAGEN} dagen ingevuld. Vanaf{" "}
-          {DAGBOEKREGEL_MIN_DAGEN} dagen laat dit zien wat je at.
-        </p>
+        <div className="mt-1 flex flex-col gap-1">
+          {regel.maaltijdFeit ? (
+            <p className="m-0 text-[11.5px] leading-snug text-[#C9D4CC] text-pretty">
+              Je {regel.maaltijdFeit.moment} levert gemiddeld minstens {regel.maaltijdFeit.aandeelPct}% van je{" "}
+              {regel.maaltijdFeit.doelWoord}.
+            </p>
+          ) : null}
+          <p className="m-0 text-[11.5px] leading-snug text-[#9FB0A6] text-pretty">
+            {regel.dagen} van {DAGBOEKREGEL_VENSTER_DAGEN} dagen compleet.{" "}
+            {regel.ontbreekt ? `Vul ook je ${regel.ontbreekt} in: ` : "Vul je dagen aan: "}
+            vanaf {DAGBOEKREGEL_MIN_DAGEN} complete dagen zie je je stand.
+          </p>
+        </div>
       ) : null}
 
       <Link

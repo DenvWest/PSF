@@ -29,3 +29,11 @@ De winst-laag in "Context bij vandaag" komt uit de check (hoe vaak je iets eet) 
 - GA4 `dashboard_kompas_context_view` {zone: dagboek, staat: te_weinig|stoffen|op_norm}: hoe vaak de regel in beeld komt en in welke staat.
 - GA4 + Clarity `dashboard_kompas_context_click` {zone: dagboek, staat}: doorklik naar Je patroon (bij genoeg dagen) of het dagboek (te weinig dagen).
 - Effect: aandeel `te_weinig` dat daarna het dagboek aanvult (`dagboek`-klik, dan meer dagen ingevuld).
+
+## Herziening 9 okt: een dag telt pas als hij volledig is
+
+Dennis had vier halve dagen (alleen ontbijt) en de regel zou bij een vijfde halve dag "minstens 20% van je magnesiumnorm" zijn gaan zeggen: een onvolledige dag leest als een lage dag, terwijl wat je niet registreerde onbekend is, geen nul.
+
+- **Drempel: 5 volle dagen van de laatste 7.** Een dag is vol als al je gewone maaltijden erop staan (`verwachteMaaltijden`, uit Je doelen; leeg = ontbijt, lunch en avondeten) of als een maaltijd als niet gegeten is gemarkeerd (`overgeslagen`). Het overzicht rekent alleen over volle dagen.
+- **Onder de drempel** staat wat er wél is: "N van 7 dagen compleet", de maaltijd die ontbreekt ("Vul ook je lunch in") en, vanaf 3 dagen met dezelfde maaltijd, een feit over die maaltijd ("Je ontbijt levert gemiddeld minstens 12% van je magnesiumnorm"). Dat is een feit over wat er stond, geen oordeel over je dag. Omega-3 valt af (weeknorm).
+- **Beperking:** het dagboek dat de zijbalk ophaalt kent alleen catalogusproducten. Een dag met alleen etiketproducten telt hier niet als volledig. Patroon rekent die wel mee.
