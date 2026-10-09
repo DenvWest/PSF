@@ -112,6 +112,17 @@ describe("DagboekKrans", () => {
     expect(onSelect).toHaveBeenCalledWith("magnesium");
   });
 
+  it("zet de rijkste-bronnenlijst mee over als je een andere stof kiest terwijl die open staat", async () => {
+    const DagboekKrans = await laad();
+    const onKiesStof = vi.fn();
+    const { rerender } = render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} onKiesStof={onKiesStof} />);
+    fireEvent.click(screen.getByRole("button", { name: "Magnesium" }));
+    expect(onKiesStof).not.toHaveBeenCalled();
+    rerender(<DagboekKrans {...basis} stoffen={[magnesiumVol]} onKiesStof={onKiesStof} bronnenOpen />);
+    fireEvent.click(screen.getByRole("button", { name: "Omega-3" }));
+    expect(onKiesStof).toHaveBeenCalledWith("omega3");
+  });
+
   it("toont gevolgde stoffen in de buitenring, in de gekozen volgorde, zonder telling", async () => {
     const DagboekKrans = await laad(["calciumMg", "sodiumMg"]);
     render(<DagboekKrans {...basis} stoffen={[magnesiumVol]} voedingswaarde={voedingswaarde} />);
