@@ -186,6 +186,34 @@ describe("DagboekScherm — zoeken per maaltijd", () => {
     await waitFor(() => expect(screen.queryByLabelText(zoekLabel)).toBeNull());
   });
 
+  it("gaat vanuit een portie terug naar de rijkste bronnen, met knop en met browser", async () => {
+    render(<DagboekScherm />);
+    const bronnenKop = /^Rijkste bronnen van/;
+    const eersteBron = () => screen.getAllByRole("button", { name: /^Voeg .* toe$/ })[0];
+
+    fireEvent.click(await screen.findByRole("button", { name: "Alle stoffen (5)" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Omega-3" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Rijkste bronnen →" }));
+    await screen.findByText(bronnenKop);
+
+    fireEvent.click(eersteBron());
+    await waitFor(() => expect(screen.queryByText(bronnenKop)).toBeNull());
+    fireEvent.click(screen.getByRole("button", { name: "Terug" }));
+    await screen.findByText(bronnenKop);
+    await new Promise((klaar) => setTimeout(klaar, 20));
+
+    fireEvent.click(eersteBron());
+    await waitFor(() => expect(screen.queryByText(bronnenKop)).toBeNull());
+    window.history.back();
+    await screen.findByText(bronnenKop);
+    await new Promise((klaar) => setTimeout(klaar, 20));
+
+    fireEvent.click(eersteBron());
+    await waitFor(() => expect(screen.queryByText(bronnenKop)).toBeNull());
+    fireEvent.click(screen.getAllByRole("button", { name: /Bevestigen|^Voeg .* toe aan/ })[0]);
+    await screen.findByText(bronnenKop);
+  });
+
   it("zet de browsergeschiedenis recht als je met de app-knop terug gaat", async () => {
     render(<DagboekScherm />);
     const zoekLabel = "Zoek een voedingsmiddel of supplement";
