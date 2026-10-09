@@ -104,6 +104,8 @@ type NutrientScherm =
       moment: EetmomentId;
       /** Een merkproduct uit Keuze, met zijn etiket per dag. */
       product?: DagboekSupplementProduct;
+      /** Het scherm waar je vandaan kwam (bronnenlijst of stofdetail); terug gaat daarheen. */
+      terugNaar?: Extract<NutrientScherm, { scherm: "bronnen" | "detail" }>;
     }
   | {
       /**
@@ -637,6 +639,7 @@ export default function DagboekScherm({
     moment: EetmomentId,
     grams: number,
     product?: DagboekSupplementProduct,
+    terugNaar?: NutrientScherm,
   ) {
     wijzig([...items, { moment, bron, key, grams, ...(product ? { product } : {}) }]);
     emitAccountClientEvent("nutrition.dagboek_portie_bevestigd", {
@@ -645,7 +648,7 @@ export default function DagboekScherm({
       surface: "dagboek_tab",
     });
     trackEvent("nutrition_dagboek_portie_bevestigd", { nutrient: nutrient ?? "geen", bron });
-    setScherm(terugNaarZoek(nutrient, moment));
+    setScherm(terugNaar ?? terugNaarZoek(nutrient, moment));
   }
 
   /** De ster-knop: optimistisch bijwerken, dan pas de server-call. */
@@ -820,7 +823,7 @@ export default function DagboekScherm({
   // Voeding krijgt dezelfde volledige rijen als een NEVO-product; een supplement
   // blijft een laag over de zoeklijst (hele porties, geen gram).
   if (scherm.scherm === "portie" && scherm.bron === "voeding") {
-    const { nutrient, moment: portieMoment, key } = scherm;
+    const { nutrient, moment: portieMoment, key, terugNaar: komtVan } = scherm;
     return (
       <DagboekVoedingPortie
         itemKey={key}
@@ -831,9 +834,9 @@ export default function DagboekScherm({
         busyFavoriet={busyFavoriet}
         onBewaarFavoriet={(bron, k) => void bewaarFavoriet(bron, k)}
         onVerwijderFavoriet={(bron, k) => void verwijderFavoriet(bron, k)}
-        onTerug={() => setScherm(terugNaarZoek(nutrient, portieMoment))}
+        onTerug={() => setScherm(komtVan ?? terugNaarZoek(nutrient, portieMoment))}
         onBevestig={(gekozenMoment, grams) =>
-          voegNutrientItemToe(nutrient, "voeding", key, gekozenMoment, grams)
+          voegNutrientItemToe(nutrient, "voeding", key, gekozenMoment, grams, undefined, komtVan)
         }
       />
     );
@@ -961,7 +964,9 @@ export default function DagboekScherm({
         <DagboekRijksteBronnen
           stof={scherm.stof}
           busy={busy}
-          onKies={(key) => setScherm({ scherm: "portie", nutrient: null, bron: "voeding", key, moment: "ontbijt" })}
+          onKies={(key) =>
+            setScherm({ scherm: "portie", nutrient: null, bron: "voeding", key, moment: "ontbijt", terugNaar: scherm })
+          }
           onVergelijk={vergelijkBronnen}
         />
       </div>
@@ -995,7 +1000,14 @@ export default function DagboekScherm({
         }
         onVerwijder={(item) => wijzig(items.filter((i) => i !== item))}
         onKiesBron={(key) =>
-          setScherm({ scherm: "portie", nutrient: scherm.nutrient, bron: "voeding", key, moment: "ontbijt" })
+          setScherm({
+              scherm: "portie",
+              nutrient: scherm.nutrient,
+              bron: "voeding",
+              key,
+              moment: "ontbijt",
+              terugNaar: scherm,
+            })
         }
         onVergelijkBronnen={vergelijkBronnen}
       />
@@ -1117,7 +1129,14 @@ export default function DagboekScherm({
           onVoegToe={() => setScherm({ scherm: "zoek", nutrient: scherm.nutrient, moment: "ontbijt" })}
           onVerwijder={(item) => wijzig(items.filter((i) => i !== item))}
           onKiesBron={(key) =>
-            setScherm({ scherm: "portie", nutrient: scherm.nutrient, bron: "voeding", key, moment: "ontbijt" })
+            setScherm({
+              scherm: "portie",
+              nutrient: scherm.nutrient,
+              bron: "voeding",
+              key,
+              moment: "ontbijt",
+              terugNaar: scherm,
+            })
           }
           onVergelijkBronnen={vergelijkBronnen}
         />
@@ -1137,7 +1156,9 @@ export default function DagboekScherm({
           <DagboekRijksteBronnen
             stof={scherm.stof}
             busy={busy}
-            onKies={(key) => setScherm({ scherm: "portie", nutrient: null, bron: "voeding", key, moment: "ontbijt" })}
+            onKies={(key) =>
+            setScherm({ scherm: "portie", nutrient: null, bron: "voeding", key, moment: "ontbijt", terugNaar: scherm })
+          }
             onVergelijk={vergelijkBronnen}
           />
         </div>
