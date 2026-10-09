@@ -92,6 +92,18 @@ const KENNISBANK_IMAGE_SEO: Record<string, KennisbankImageSeo> = {
       "De ADH op een potje is vaak lager dan wat studies gebruiken; voor effect kijk je naar onderzoeksdoses en status.",
     searchPhrases: ["adh supplement", "aanbevolen dagelijkse hoeveelheid", "adh vitamine d"],
   },
+  "opbouwtijd-supplement": {
+    coverAlt:
+      "Staafgrafiek van de opbouwtijd in dagen: creatine 6 dagen bij 20 g en 28 dagen bij 3 g, EPA in serum 4 tot 8 weken, EPA in rode bloedcellen circa 180 dagen",
+    coverCaption:
+      "Creatine, omega-3 en vitamine D hebben elk een eigen opbouwtijd: van dagen tot maanden, afhankelijk van waar je meet.",
+    coverTitle: "Waarom een supplement weken duurt",
+    inlineAlt:
+      "Groene staafjes die stap voor stap hoger worden — het niveau van een supplement bouwt zich geleidelijk op",
+    inlineCaption:
+      "Een supplement werkt vaak pas als het niveau is opgebouwd; dat duurt bij sommige stoffen weken.",
+    searchPhrases: ["supplement hoe lang duurt het", "opbouwtijd supplement", "wanneer werkt omega-3"],
+  },
   "efsa-claims": {
     coverAlt:
       "EFSA gezondheidsclaims — boekenkast als naslag bij goedgekeurde supplementclaims",

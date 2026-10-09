@@ -599,6 +599,13 @@ const KENNISBANK_BODY_IMAGES: Record<string, ArticleBodyImage> = {
     "Water en hydratatie — ADH als referentie voor vitamines en mineralen",
     "ADH (antidiuretisch hormoon) regelt hoeveel water de nieren vasthouden — relevant bij dorst en nachtelijke toiletbezoeken.",
   ),
+  "opbouwtijd-supplement": img(
+    "kennisbank",
+    "opbouwtijd-supplement",
+    "Groene staafjes die stap voor stap hoger worden — het niveau van een supplement bouwt zich geleidelijk op",
+    "Een supplement werkt vaak pas als het niveau is opgebouwd; dat duurt bij sommige stoffen weken.",
+    "opbouwtijd-supplement-v2",
+  ),
   "efsa-claims": img(
     "kennisbank",
     "efsa-claims",

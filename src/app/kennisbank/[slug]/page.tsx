@@ -30,6 +30,7 @@ import KennisbankVerdiepingGate from '@/components/kennisbank/KennisbankVerdiepi
 import { IntakeCtaLink } from '@/components/common/IntakeCtaLink'
 import KennisbankTier1FooterCta from '@/components/kennisbank/KennisbankTier1FooterCta'
 import KennisbankVoedingBrug from '@/components/kennisbank/KennisbankVoedingBrug'
+import OpbouwtijdGrafiek from '@/components/kennisbank/OpbouwtijdGrafiek'
 import { getVoedingBrug } from '@/data/kennisbank-voedingsbrug'
 import InsightPhaseNote from '@/components/insights/InsightPhaseNote'
 import { KENNISBANK_THEME_TO_PIJLER } from '@/data/insights'
@@ -401,6 +402,7 @@ async function TermPage({ slug }: { slug: string }) {
                             Hoe werkt het?
                           </h2>
                           {renderParagraphs(term.content.howItWorks)}
+                          {term.slug === 'opbouwtijd-supplement' ? <OpbouwtijdGrafiek /> : null}
                         </section>
 
                         <section className={KB_SECTION_CLASS} aria-labelledby="waarom-dit-ertoe-doet">

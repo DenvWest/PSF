@@ -133,7 +133,7 @@ De chemische vorm van de stof. Magnesiumoxide heeft een biobeschikbaarheid van o
 Of je het met voedsel inneemt. Vetoplosbare stoffen (zoals vitamine D en omega-3) worden beter opgenomen met een vetrijke maaltijd.
 
 Je individuele darmgezondheid. Ontstekingen, medicijngebruik of een verstoord microbioom kunnen de opname verlagen.`,
-      whyItMatters: `Een goedkoop supplement met lage biobeschikbaarheid is uiteindelijk duurder dan het lijkt. De relevante maat is niet de prijs per capsule, maar de prijs per daadwerkelijk opgenomen milligram. Daarom weegt vorm en opneembaarheid 25% mee in de [PS-Score](/kennisbank/ps-score-model) — naast dosering, die zwaarder telt.`,
+      whyItMatters: `Een goedkoop supplement met lage biobeschikbaarheid is uiteindelijk duurder dan het lijkt. De relevante maat is niet de prijs per capsule, maar de prijs per daadwerkelijk opgenomen milligram. Daarom weegt vorm en opneembaarheid 25% mee in de [PS-Score](/kennisbank/ps-score-model) — naast dosering, die zwaarder telt. Hoe lang een stof daarna nodig heeft om op niveau te komen, staat onder [opbouwtijd van een supplement](/kennisbank/opbouwtijd-supplement).`,
     },
     relatedSlugs: ['chelaatvorm', 'ps-score-model', 'scoregewichten'],
     relatedComparisons: ['/beste/magnesium', '/beste/omega-3-supplement', '/beste/ashwagandha', '/beste/vitamine-d', '/beste/creatine', '/beste/zink'],
@@ -1167,7 +1167,7 @@ Dat is iets anders dan de EFSA-claimdrempel. Die bepaalt of een fabrikant een go
       howItWorks: `Per categorie staat de waarde vast in het scoremodel. Magnesium: 200 mg elementair (meta-analyses rond slaap/stress), bovengrens 250 mg (EFSA UL voor magnesium uit supplementen). Omega-3: 1000 mg EPA+DHA (cardiometabole trials; model 1.0.0 had hier foutief 500 mg, een innameaanbeveling), UL 5 g. Vitamine D: 20 µg D3, UL 100 µg. Zink: 15 mg elementair, UL 25 mg. Creatine: 3 g (EFSA-claimvoorwaarde / ISSN onderhoud 3–5 g), bovengrens 5 g. Ashwagandha: 300 mg gestandaardiseerd wortelextract, bovengrens 600 mg. Eiwitpoeder: 20 g eiwit per portie (MPS-plateau), bovengrens 40 g. Melatonine: doseringsonderdeel valt uit — geen eenduidige onderzoeksdosis in dit model.
 
 De volledige tabel met bronvermelding staat op [/ps-score](/ps-score).`,
-      whyItMatters: `Dosering weegt 30% in de [PS-Score](/kennisbank/ps-score-model) — het zwaarste onderdeel — omdat een ondergedoseerd product geen effect kan leveren dat het onderzoek belooft, ongeacht hoe mooi de vorm of het etiket is. Zie ook [scoregewichten](/kennisbank/scoregewichten) en [claimdekking](/kennisbank/claimdekking).`,
+      whyItMatters: `Dosering weegt 30% in de [PS-Score](/kennisbank/ps-score-model) — het zwaarste onderdeel — omdat een ondergedoseerd product geen effect kan leveren dat het onderzoek belooft, ongeacht hoe mooi de vorm of het etiket is. Zie ook [scoregewichten](/kennisbank/scoregewichten), [claimdekking](/kennisbank/claimdekking) en [opbouwtijd van een supplement](/kennisbank/opbouwtijd-supplement).`,
     },
     relatedSlugs: ['ps-score-model', 'scoregewichten', 'claimdekking', 'efsa-claims', 'vitamine-d-inname'],
     relatedComparisons: [
@@ -1366,6 +1366,49 @@ Wat het níet betekent: dat je leucine of BCAA's los moet bijkopen. Een eiwitrij
       'Churchward-Venne TA, Breen L, Di Donato DM, et al. Leucine supplementation of a low-protein mixed macronutrient beverage enhances myofibrillar protein synthesis in young men: a randomized controlled trial. Am J Clin Nutr. 2014;99(2):276-286.',
       'Pinckaers PJM, Trommelen J, Snijders T, van Loon LJC. The anabolic response to plant-based protein ingestion. Sports Med. 2021;51(Suppl 1):59-74.',
       'Bauer J, Biolo G, Cederholm T, et al. Evidence-based recommendations for optimal dietary protein intake in older people: a position paper from the PROT-AGE Study Group. J Am Med Dir Assoc. 2013;14(8):542-559.',
+    ]),
+  },
+  {
+    slug: 'opbouwtijd-supplement',
+    insightTier: 1,
+    term: 'Opbouwtijd van een supplement',
+    theme: 'supplementwetenschap',
+    shortDefinition:
+      'De tijd die een stof nodig heeft om in je lichaam een stabiel niveau te bereiken — bij sommige supplementen weken, bij andere maanden.',
+    coverImage: '/images/kennisbank/opbouwtijd-supplement-grafiek.jpg',
+    coverImageAlt: "Staafgrafiek van de opbouwtijd in dagen: creatine 6 dagen bij 20 g en 28 dagen bij 3 g, EPA in serum 4 tot 8 weken, EPA in rode bloedcellen circa 180 dagen",
+    content: {
+      whatIsIt: `Veel supplementen doen weinig zolang hun niveau in je lichaam nog niet is opgebouwd. Elke dosis komt bovenop wat er nog over is van de vorige. Het niveau stijgt tot wat je binnenkrijgt gelijk is aan wat je lichaam afvoert, of tot het weefsel vol is. Dat kost vaak weken, geen dagen.
+
+Hoe lang het duurt, hangt af van de stof en van waar je meet: in je bloed gaat het sneller dan in je spieren of je rode bloedcellen.`,
+      howItWorks: `Drie voorbeelden uit onderzoek bij gezonde mannen:
+
+Creatine in de spier. Het gehalte steeg met ongeveer 20% na 6 dagen op 20 gram per dag, en na 28 dagen op 3 gram per dag. Dat is hetzelfde niveau, met een andere route. Creatine vult tot een plafond, dus een hogere dosis bereikt dat plafond eerder (Hultman 1996, 31 mannen).
+
+Omega-3 (EPA). In de vetten in je bloedserum (cholesterolesters) was het niveau na 4 tot 8 weken stabiel. In de rode bloedcellen duurt het veel langer: de halfwaardetijd was 28 dagen en het evenwicht werd pas na ongeveer 180 dagen bereikt (Katan 1997, 58 mannen, 0 tot 9 gram visolie per dag). In een groter onderzoek liep de opnametijd uiteen van dagen (plasma) tot maanden (bepaalde witte bloedcellen) tot meer dan een jaar (vetweefsel), afhankelijk van waar je meet (Browning 2012).
+
+Vitamine D. In een onderzoek van ongeveer 20 weken in de winter steeg het bloedniveau in verhouding tot de dosis: een hogere dosis gaf een hoger evenwichtsniveau (Heaney 2003, 67 mannen). Meer innemen betekent hier dus een ander eindniveau, niet per se een eerder bereikt niveau.
+
+Dit zijn gemiddelden uit kleine onderzoeken, alle onder mannen. Hoe snel het bij jou gaat, kan afwijken.`,
+      whyItMatters: `Na een week of twee stoppen kan te vroeg zijn om te oordelen: bij sommige stoffen is het niveau dan nog niet opgebouwd. Dat is een reden om een supplement een eerlijke periode te geven, niet om het eindeloos te blijven nemen.
+
+Opbouw is bovendien een voorwaarde en geen bewijs van effect. In de grote VITAL-studie (25.871 mensen, 2.000 IE vitamine D en 1 gram omega-3 per dag, ongeveer vijf jaar) verlaagde geen van beide het aantal gevallen van kanker of grote hart- en vaatziekten. Alleen het aantal hartinfarcten was bij omega-3 lager, een secundaire uitkomst, vooral bij mensen die weinig vis aten.
+
+Dat laatste raakt de kern: wat je al binnenkrijgt bepaalt hoe ver je al bent. Daarom begint de keuze voor een supplement bij je bord.`,
+    },
+    relatedSlugs: ['biobeschikbaarheid', 'epa-dha', 'vitamine-d', 'onderzoeksdosis'],
+    relatedComparisons: ['/beste/creatine', '/beste/omega-3-supplement', '/beste/vitamine-d'],
+    metaTitle: 'Opbouwtijd van een supplement: waarom het weken duurt',
+    metaDescription:
+      'Waarom een supplement vaak weken nodig heeft: creatine, omega-3 en vitamine D, met wat onderzoek wél en niet laat zien.',
+    laatstBijgewerktOp: '2026-10-09',
+    referenties: toRefs([
+      'Hultman E, Söderlund K, Timmons JA, Cederblad G, Greenhaff PL. Muscle creatine loading in men. J Appl Physiol. 1996;81(1):232-237.',
+      'Katan MB, Deslypere JP, van Birgelen AP, Penders M, Zegwaard M. Kinetics of the incorporation of dietary fatty acids into serum cholesteryl esters, erythrocyte membranes, and adipose tissue: an 18-month controlled study. J Lipid Res. 1997;38(10):2012-2022.',
+      'Browning LM, Walker CG, Mander AP, et al. Incorporation of eicosapentaenoic and docosahexaenoic acids into lipid pools when given as supplements providing doses equivalent to typical intakes of oily fish. Am J Clin Nutr. 2012;96(4):748-758.',
+      'Heaney RP, Davies KM, Chen TC, Holick MF, Barger-Lux MJ. Human serum 25-hydroxycholecalciferol response to extended oral dosing with cholecalciferol. Am J Clin Nutr. 2003;77(1):204-210.',
+      'Manson JE, Cook NR, Lee IM, et al. Vitamin D supplements and prevention of cancer and cardiovascular disease. N Engl J Med. 2019;380(1):33-44.',
+      'Manson JE, Cook NR, Lee IM, et al. Marine n-3 fatty acids and prevention of cardiovascular disease and cancer. N Engl J Med. 2019;380(1):23-32.',
     ]),
   },
 ]
