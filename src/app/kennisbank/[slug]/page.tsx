@@ -29,6 +29,8 @@ import KennisbankThemaPageContent from '@/components/kennisbank/KennisbankThemaP
 import KennisbankVerdiepingGate from '@/components/kennisbank/KennisbankVerdiepingGate'
 import { IntakeCtaLink } from '@/components/common/IntakeCtaLink'
 import KennisbankTier1FooterCta from '@/components/kennisbank/KennisbankTier1FooterCta'
+import KennisbankVoedingBrug from '@/components/kennisbank/KennisbankVoedingBrug'
+import { getVoedingBrug } from '@/data/kennisbank-voedingsbrug'
 import InsightPhaseNote from '@/components/insights/InsightPhaseNote'
 import { KENNISBANK_THEME_TO_PIJLER } from '@/data/insights'
 import { getContentMetadata } from '@/data/insight-metadata'
@@ -250,6 +252,8 @@ async function TermPage({ slug }: { slug: string }) {
   const showTier1Footer =
     !isGated && (term.insightTier === 1 || Boolean(term.publicFullContent))
 
+  const voedingBrug = getVoedingBrug(term.slug)
+
   const relatedTerms = term.relatedSlugs
     .map((s) => getTermBySlug(s))
     .filter((t): t is NonNullable<typeof t> => t !== undefined)
@@ -385,6 +389,9 @@ async function TermPage({ slug }: { slug: string }) {
 
                     {isGated ? (
                       <div className={`${KB_SECTION_CLASS} border-b-0`}>
+                        {voedingBrug ? (
+                          <KennisbankVoedingBrug termSlug={term.slug} brug={voedingBrug} />
+                        ) : null}
                         <KennisbankVerdiepingGate termSlug={term.slug} termName={term.term} />
                       </div>
                     ) : (
@@ -402,6 +409,10 @@ async function TermPage({ slug }: { slug: string }) {
                           </h2>
                           {renderParagraphs(term.content.whyItMatters)}
                         </section>
+
+                        {voedingBrug ? (
+                          <KennisbankVoedingBrug termSlug={term.slug} brug={voedingBrug} />
+                        ) : null}
 
                         {term.domeinMetBeperktCausaalBewijs ? (
                           <aside
