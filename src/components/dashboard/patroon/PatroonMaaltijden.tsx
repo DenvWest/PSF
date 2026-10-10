@@ -1,9 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { Fragment, useState } from "react";
 import AandeelBalk from "@/components/dashboard/patroon/AandeelBalk";
 import PatroonMaaltijdProduct from "@/components/dashboard/patroon/PatroonMaaltijdProduct";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { clarityTag } from "@/lib/clarity";
+import { gaNaarDashboard } from "@/lib/dagboek-deeplink";
+import { keuzeTerugHref } from "@/lib/keuze-product-keuze";
+import { supplementVergelijkingVoor } from "@/lib/nutrition-stof-meting";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { inEetpatroon } from "@/lib/nutrition-eetpatroon";
 import {
@@ -68,6 +73,7 @@ type TabelStof = {
   geenNorm: string;
   bijdragen: { naam: string; waarde: number }[];
   kern: boolean;
+  nutrient: NutrientId | null;
 };
 
 const MACRO_TEGELS = ["energyKcal", "proteinG", "carbohydrateG", "fatG"] as const;
@@ -137,6 +143,14 @@ export default function PatroonMaaltijden({
   const isDag = maaltijd.moment === HELE_DAG;
   const naam = isDag ? "dag" : maaltijd.label.toLowerCase();
 
+  const productKop = isDag
+    ? eenDag
+      ? "Wat je die dag at"
+      : "Wat je meestal eet op een dag"
+    : eenDag
+      ? `Wat er op je ${naam} lag`
+      : `Wat er meestal op je ${naam} ligt`;
+
   const stofRijen = tabelRijen.map((r) => {
     const ref = referentieVoorVeld(r.veld, gevolgd, profiel);
     return { r, ref, aandeel: aandeelVan(ref, r.waarde) };
@@ -177,6 +191,7 @@ export default function PatroonMaaltijden({
       geenNorm: GEEN_NORM[r.veld] ?? "geen dagnorm",
       bijdragen: bijdragenVan((product) => product.rijen.find((pr) => pr.veld === r.veld)?.waarde ?? null),
       kern: false,
+      nutrient: null,
     })),
     ...kernRijen.map(({ k, ref, aandeel }) => ({
       sleutel: k.nutrient,
@@ -194,6 +209,7 @@ export default function PatroonMaaltijden({
         (product) => product.kernstoffen.find((pk) => pk.nutrient === k.nutrient)?.gemiddeld ?? null,
       ),
       kern: true,
+      nutrient: k.nutrient,
     })),
   ];
 
@@ -211,6 +227,15 @@ export default function PatroonMaaltijden({
 
   const stofRij = (stof: TabelStof) => {
     const open = openStof === stof.sleutel;
+    const aanvullen =
+      isDag && stof.nutrient !== null && stof.aandeel !== null && stof.aandeel < 1 && !stof.ref.weektotaal
+        ? {
+            nutrient: stof.nutrient,
+            aandeel: stof.aandeel,
+            keuzeHref: keuzeTerugHref(stof.nutrient),
+            vergelijkingHref: supplementVergelijkingVoor(stof.nutrient),
+          }
+        : null;
     const doelAandeel =
       stof.ref.doel === null || stof.waarde === null ? null : stof.waarde / stof.ref.doel;
     return (
@@ -255,7 +280,7 @@ export default function PatroonMaaltijden({
           </span>
           {doelAandeel !== null ? (
             <span className="mt-1 block text-right text-[0.625rem] text-[var(--vd-ink-3)]">
-              doel {percentageADH(doelAandeel)}
+              jouw doel {percentageADH(doelAandeel)}
             </span>
           ) : null}
         </button>
@@ -269,6 +294,46 @@ export default function PatroonMaaltijden({
             ) : null}
             {doelRegel(stof.ref, stof.waarde, stof.unit) ? (
               <p className="m-0">{doelRegel(stof.ref, stof.waarde, stof.unit)}</p>
+            ) : null}
+            {aanvullen ? (
+              <div className="mt-3 rounded-[10px] border border-[var(--vd-line-2)] bg-[var(--vd-bg)] p-3">
+                <p className="m-0 text-[0.75rem] leading-relaxed text-[var(--vd-ink-2)]">
+                  Je haalt gemiddeld {percentageADH(aanvullen.aandeel)} van je dagnorm {stof.label.toLowerCase()}.
+                  Hoe vul je dat aan?
+                </p>
+                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                  <Link
+                    href={aanvullen.keuzeHref}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      trackEvent("nutrition_week_nutrient_clicked", {
+                        nutrient: aanvullen.nutrient,
+                        gedekt: false,
+                        destination: aanvullen.keuzeHref,
+                      });
+                      gaNaarDashboard(aanvullen.keuzeHref);
+                    }}
+                    className="inline-flex min-h-[44px] items-center text-[0.8125rem] font-semibold text-[var(--vd-sage-2)] no-underline hover:underline"
+                  >
+                    Kies hoe je het aanvult →
+                  </Link>
+                  {aanvullen.vergelijkingHref ? (
+                    <Link
+                      href={aanvullen.vergelijkingHref}
+                      onClick={() =>
+                        trackEvent("nutrition_week_nutrient_clicked", {
+                          nutrient: aanvullen.nutrient,
+                          gedekt: false,
+                          destination: aanvullen.vergelijkingHref ?? "",
+                        })
+                      }
+                      className="inline-flex min-h-[44px] items-center text-[0.8125rem] text-[var(--vd-ink-2)] underline"
+                    >
+                      Supplementen vergelijken
+                    </Link>
+                  ) : null}
+                </div>
+              </div>
             ) : null}
             {stof.bijdragen.length > 0 ? (
               <ul className="m-0 mt-2 flex list-none flex-col gap-1 p-0">
@@ -306,8 +371,13 @@ export default function PatroonMaaltijden({
   };
 
   return (
-    <section aria-label="Gemiddeld per maaltijd">
-      <div className="vd-chiprij" role="group" aria-label="Kies een maaltijd">
+    <section aria-label="Gemiddeld per maaltijd" className="@container">
+      <div className="@[44rem]:grid @[44rem]:grid-cols-[11rem_minmax(0,1fr)] @[44rem]:items-start @[44rem]:gap-6">
+      <div
+        className="vd-chiprij @[44rem]:sticky @[44rem]:top-4 @[44rem]:flex-col @[44rem]:flex-nowrap"
+        role="group"
+        aria-label="Kies een maaltijd"
+      >
         {patroon.map((m) => {
           const aan = m.moment === moment;
           return (
@@ -316,7 +386,7 @@ export default function PatroonMaaltijden({
               type="button"
               aria-pressed={aan}
               onClick={() => kies(m.moment)}
-              className={`vd-chip inline-flex min-h-[40px] items-center gap-1.5 ${aan ? "!border-[var(--vd-sage)] !text-[var(--vd-sage-2)]" : ""}`}
+              className={`vd-chip inline-flex min-h-[40px] items-center gap-1.5 @[44rem]:w-full @[44rem]:justify-start ${aan ? "!border-[var(--vd-sage)] !text-[var(--vd-sage-2)]" : ""}`}
             >
               <span
                 aria-hidden
@@ -332,7 +402,7 @@ export default function PatroonMaaltijden({
             type="button"
             aria-pressed={isDag}
             onClick={() => kies(HELE_DAG)}
-            className={`vd-chip inline-flex min-h-[40px] items-center gap-1.5 ${isDag ? "!border-[var(--vd-sage)] !text-[var(--vd-sage-2)]" : ""}`}
+            className={`vd-chip inline-flex min-h-[40px] items-center gap-1.5 @[44rem]:w-full @[44rem]:justify-start ${isDag ? "!border-[var(--vd-sage)] !text-[var(--vd-sage-2)]" : ""}`}
           >
             <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--vd-sage-2)" }} />
             Hele dag
@@ -340,6 +410,7 @@ export default function PatroonMaaltijden({
         ) : null}
       </div>
 
+      <div className="min-w-0">
       {maaltijd.keer === 0 ? (
         <p className="vd-note" style={{ marginTop: 0 }}>
           {eenDag ? "Op" : "In"} {periodeLabel(periode)} staat er bij {isDag ? "de hele dag" : naam} nog niets
@@ -419,16 +490,15 @@ export default function PatroonMaaltijden({
 
           {maaltijd.benaderdeProducten.length > 0 ? (
             <p className="vd-note" style={{ margin: "-0.25rem 0 0.75rem" }}>
-              ≈ {maaltijd.benaderdeProducten.join(", ")}{" "}
-              {maaltijd.benaderdeProducten.length === 1 ? "telt" : "tellen"} mee met de waarden van een
-              vergelijkbaar NEVO-product.
+              Van {maaltijd.benaderdeProducten.join(", ")} hebben we geen eigen voedingswaarde. We rekenen met een
+              vergelijkbaar product en zetten er daarom een ≈ bij.
             </p>
           ) : null}
 
           {maaltijd.producten.length > 0 ? (
             <section aria-label="Wat je at" className="vd-tabel !border-t-[3px] !border-t-[var(--vd-sage)]">
               <div className="vd-tabel-kop">
-                <span className="!text-left">{eenDag ? "Wat je at" : "Wat je meestal at"}</span>
+                <span className="!text-left">{productKop}</span>
               </div>
               {maaltijd.producten.slice(0, isDag ? 15 : 8).map((product) => {
                 const open = openProduct === product.naam;
@@ -474,17 +544,18 @@ export default function PatroonMaaltijden({
           </div>
 
           <p className="vd-note">
-            De balk is je hele dagnorm; de vulling is wat {eenDag ? `deze ${naam}` : `een gemiddelde ${naam}`} daarvan
-            dekt. Tik op een stof voor de bron, de dichtheid per 100 kcal en welke producten het leverden.
+            Zo lees je het: de hele balk is wat je op een dag nodig hebt. Het gekleurde deel is wat{" "}
+            {isDag ? (eenDag ? "deze dag" : "een gemiddelde dag") : eenDag ? `je ${naam}` : `een gemiddeld ${naam}`}{" "}
+            daarvan levert. Tik op een stof om te zien welke producten het leverden.
           </p>
 
           {maaltijd.zonderWaarde > 0 || maaltijd.supplementen > 0 ? (
             <p className="vd-note">
               {maaltijd.zonderWaarde > 0
-                ? `${maaltijd.zonderWaarde} ${maaltijd.zonderWaarde === 1 ? "product droeg" : "producten droegen"} geen voedingswaarde bij — de getallen zijn een ondergrens. `
+                ? `Van ${maaltijd.zonderWaarde} ${maaltijd.zonderWaarde === 1 ? "product" : "producten"} kennen we de voedingswaarde niet, dus de echte waarden liggen iets hoger. `
                 : ""}
               {maaltijd.supplementen > 0
-                ? `Supplementen tellen alleen mee bij hun eigen kernstof (${maaltijd.supplementen} keer genomen bij ${isDag ? "de hele dag" : naam}).`
+                ? `Supplementen tellen alleen mee voor hun eigen stof (${maaltijd.supplementen} keer genomen).`
                 : ""}
             </p>
           ) : null}
@@ -494,7 +565,7 @@ export default function PatroonMaaltijden({
       {metKeer.length > 0 && rijkdomRijen.length > 1 ? (
         <>
           <p className="vd-eyebrow" style={{ margin: "1.25rem 0 0.375rem" }}>
-            Hoe rijk is elke maaltijd · per 100 kcal
+            Vergelijk je maaltijden · per 100 kcal
           </p>
           <div className="vd-tabel">
             <div className="vd-tabel-kop grid-cols-[1fr_56px_52px_52px]">
@@ -528,11 +599,13 @@ export default function PatroonMaaltijden({
             })}
           </div>
           <p className="vd-note">
-            Per 100 kcal zie je welke maaltijd zijn calorieën het meest laat opleveren, los van hoe groot hij
-            is. Kosten per maaltijd tonen we nog niet: daar is nog geen betrouwbare prijsbron voor.
+            Zo zie je welke maaltijd per calorie het meeste eiwit en de meeste vezels geeft, los van hoe groot
+            hij is. Prijzen per maaltijd tonen we nog niet: daar is nog geen betrouwbare bron voor.
           </p>
         </>
       ) : null}
+      </div>
+      </div>
     </section>
   );
 }

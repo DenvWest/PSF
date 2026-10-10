@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import PatroonMaaltijden from "@/components/dashboard/patroon/PatroonMaaltijden";
+import type { DagboekItem } from "@/lib/nutrition-dagboek-items";
 import { bouwDagPatroon, bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
 import { LEEG_KERNSTOF_PROFIEL } from "@/lib/account-kernstof-profiel";
 import { STANDAARD_GEVOLGDE_NORMEN, STANDAARD_NORMEN } from "@/lib/nutrition-normen";
@@ -55,8 +56,8 @@ describe("PatroonMaaltijden", () => {
     render(<PatroonMaaltijden patroon={PATROON} periode={{ van: "2026-09-06", tot: "2026-10-05" }} />);
     expect(screen.getByRole("button", { name: "Lunch", pressed: true })).toBeTruthy();
     expect(screen.getByText(/Gemiddeld per lunch · 1 van 30 dagen geregistreerd/)).toBeTruthy();
-    expect(screen.getByText("Hoe rijk is elke maaltijd · per 100 kcal")).toBeTruthy();
-    expect(screen.getByText(/Kosten per maaltijd tonen we nog niet/)).toBeTruthy();
+    expect(screen.getByText("Vergelijk je maaltijden · per 100 kcal")).toBeTruthy();
+    expect(screen.getByText(/Prijzen per maaltijd tonen we nog niet/)).toBeTruthy();
   });
 
   it("toont een lege maaltijd als niet geregistreerd en meet de keuze", () => {
@@ -69,7 +70,7 @@ describe("PatroonMaaltijden", () => {
   it("zet je eigen doel in de normkolom en toont bij een tik op een stof de bron en de producten", () => {
     render(<PatroonMaaltijden patroon={PATROON} periode={{ van: "2026-09-06", tot: "2026-10-05" }} />);
     const ijzer = STANDAARD_GEVOLGDE_NORMEN.ironMg;
-    expect(screen.getByText("doel 50%")).toBeTruthy();
+    expect(screen.getByText("jouw doel 50%")).toBeTruthy();
     expect(screen.queryByText(`norm ${ijzer.waarde} mg/dag · ${ijzer.bron}`)).toBeNull();
     expect(screen.getByText(/Waar je lunch het meest aan bijdraagt/)).toBeTruthy();
 
@@ -130,5 +131,28 @@ describe("PatroonMaaltijden", () => {
   it("toont geen Hele dag-keuze zonder dagpatroon", () => {
     render(<PatroonMaaltijden patroon={PATROON} periode={{ van: "2026-09-06", tot: "2026-10-05" }} />);
     expect(screen.queryByRole("button", { name: "Hele dag" })).toBeNull();
+  });
+
+  it("biedt bij een stof onder je dagnorm op Hele dag een keuze om aan te vullen, maar niet per maaltijd", () => {
+    const supplement: DagboekItem = { moment: "ontbijt", bron: "supplement", key: "magnesiumcitraat-capsule", grams: 1 };
+    const items = new Map([["2026-10-01", [supplement]]]);
+    const invoer = {
+      itemsPerDag: items,
+      etiketPerDag: {},
+      nevoProducten: new Map(),
+      van: "2026-09-06",
+      tot: "2026-10-05",
+    };
+    const periode = { van: "2026-09-06", tot: "2026-10-05" };
+    render(<PatroonMaaltijden patroon={bouwMaaltijdPatroon(invoer)} dag={bouwDagPatroon(invoer)} periode={periode} />);
+
+    const kernstof = () => screen.getAllByRole("button", { name: /^Magnesium/, expanded: false }).at(-1)!;
+    fireEvent.click(kernstof());
+    expect(screen.queryByText(/Hoe vul je dat aan/)).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Hele dag" }));
+    fireEvent.click(kernstof());
+    expect(screen.getByText(/Hoe vul je dat aan/)).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Supplementen vergelijken/ })).toBeTruthy();
   });
 });
