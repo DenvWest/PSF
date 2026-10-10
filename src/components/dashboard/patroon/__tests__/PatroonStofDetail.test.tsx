@@ -66,7 +66,6 @@ describe("PatroonStofDetail", () => {
         periode={{ van: "2026-09-28", tot: "2026-10-04" }}
         dagenGeregistreerd={0}
         bronnen={[]}
-        onTerug={() => {}}
       />,
     );
     expect(screen.getByText(/Voedingsnormen vitamines en mineralen voor volwassenen/)).toBeTruthy();
@@ -99,7 +98,6 @@ describe("PatroonStofDetail", () => {
           { moment: "avondeten", label: "Avondeten", totaal: 140, keer: 2 },
           { moment: "tussendoor", label: "Tussendoor", totaal: 0, keer: 0 },
         ]}
-        onTerug={() => {}}
       />,
     );
     expect(screen.getByText("50%")).toBeTruthy();
@@ -115,7 +113,6 @@ describe("PatroonStofDetail", () => {
         periode={{ van: "2026-09-28", tot: "2026-10-04" }}
         dagenGeregistreerd={0}
         bronnen={[]}
-        onTerug={() => {}}
       />,
     );
     const voeding = screen.getByText(/Rijkste voedingsbronnen/);
@@ -132,7 +129,6 @@ describe("PatroonStofDetail", () => {
         periode={{ van: "2026-09-28", tot: "2026-10-04" }}
         dagenGeregistreerd={0}
         bronnen={[]}
-        onTerug={() => {}}
       />,
     );
     expect(screen.getByText(/400 mg per dag — "gehaald" blijft tegen de norm/)).toBeTruthy();
@@ -148,7 +144,6 @@ describe("PatroonStofDetail", () => {
         periode={{ van: "2026-09-28", tot: "2026-10-04" }}
         dagenGeregistreerd={2}
         bronnen={[]}
-        onTerug={() => {}}
       />,
     );
     expect(screen.getByRole("heading", { name: "Calcium" })).toBeTruthy();

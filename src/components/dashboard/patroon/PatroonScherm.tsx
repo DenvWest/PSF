@@ -11,6 +11,8 @@ import PatroonDoelenKaart, {
 import PatroonGevolgdWeek from "@/components/dashboard/patroon/PatroonGevolgdWeek";
 import PatroonMaaltijden from "@/components/dashboard/patroon/PatroonMaaltijden";
 import PatroonPeriodeKiezer from "@/components/dashboard/patroon/PatroonPeriodeKiezer";
+import PatroonStofChips, { type StofChip } from "@/components/dashboard/patroon/PatroonStofChips";
+import { stofStand } from "@/components/dashboard/patroon/PatroonStofHero";
 import PatroonStofDetail, { type StofDetailGegevens } from "@/components/dashboard/patroon/PatroonStofDetail";
 import PatroonStofTabel from "@/components/dashboard/patroon/PatroonStofTabel";
 import PatroonSubtabs, {
@@ -403,6 +405,25 @@ function PatroonInhoud() {
     return openMeting ? perMomentUitMeting(openMeting) : [];
   }, [dagen, datums, openStof, openMeting]);
 
+  const stofChips = useMemo((): StofChip[] => {
+    const kern = stoffen.rijen.map((rij) => ({
+      stof: rij.nutrient as PatroonStof,
+      label: rij.label,
+      toon: stofStand({ ...rij, norm: normVoor(normen, rij.nutrient) }, stoffen.dagenGeregistreerd).toon,
+    }));
+    const gevolgd = gevolgdPeriode.map((reeks) => {
+      const punt = reeks.punten[0];
+      const toon: StofChip["toon"] =
+        !punt || punt.dagen === 0 || reeks.norm === null || punt.aandeel === null
+          ? "neutraal"
+          : punt.aandeel >= 1
+            ? "sage"
+            : "terra";
+      return { stof: reeks.veld as PatroonStof, label: hoofdletter(reeks.label), toon };
+    });
+    return [...kern, ...gevolgd];
+  }, [stoffen, normen, gevolgdPeriode]);
+
   const gevuldeDagen = useMemo(
     () => dagen.filter((dag) => (dag.items?.length ?? 0) > 0).length,
     [dagen],
@@ -478,6 +499,31 @@ function PatroonInhoud() {
       ) : sectie === "stof" ? (
         <>
           {periodeKiezer}
+          <PatroonStofChips
+            chips={stofChips}
+            actief={openStof}
+            kiezerOpen={kiezerOpen}
+            onKies={(stof) => {
+              if (stof) {
+                openStofDetail(stof);
+                return;
+              }
+              setOpenStof(null);
+              setStartZoek("");
+              bewaarPatroonStand({ stof: null, zoek: "" });
+            }}
+            onKiezer={() => {
+              if (!kiezerOpen) {
+                trackEvent("nutrition_patroon_gevolgd_toevoegen_open", { gevolgd: gevolgdeStoffen.length });
+              }
+              setKiezerOpen(!kiezerOpen);
+            }}
+          />
+          {kiezerOpen ? (
+            <div className="text-[var(--vd-ink-2)]">
+              <GevolgdeStoffenKiezer surface="patroon" />
+            </div>
+          ) : null}
           {openRij ? (
             <PatroonStofDetail
               rij={openRij}
@@ -486,11 +532,6 @@ function PatroonInhoud() {
               bronnen={openBronnen}
               perMoment={openPerMoment}
               startZoek={startZoek}
-              onTerug={() => {
-                setOpenStof(null);
-                setStartZoek("");
-                bewaarPatroonStand({ stof: null, zoek: "" });
-              }}
             />
           ) : (
             <>
@@ -518,28 +559,6 @@ function PatroonInhoud() {
 
               <div className="mt-3">
                 <PatroonGevolgdWeek reeksen={gevolgdPeriode} onOpen={(stof) => openStofDetail(stof)} />
-                <button
-                  type="button"
-                  aria-expanded={kiezerOpen}
-                  onClick={() => {
-                    if (!kiezerOpen) {
-                      trackEvent("nutrition_patroon_gevolgd_toevoegen_open", { gevolgd: gevolgdeStoffen.length });
-                    }
-                    setKiezerOpen(!kiezerOpen);
-                  }}
-                  className="mt-2 w-fit cursor-pointer border-0 bg-transparent p-0 text-left text-[12.5px] font-semibold text-[var(--vd-sage-2)] hover:underline"
-                >
-                  {kiezerOpen
-                    ? "Klaar"
-                    : gevolgdeStoffen.length > 0
-                      ? "+ Stof toevoegen of weghalen"
-                      : "+ Volg ook vezels, calcium, ijzer…"}
-                </button>
-                {kiezerOpen ? (
-                  <div className="mt-2 text-[var(--vd-ink-2)]">
-                    <GevolgdeStoffenKiezer surface="patroon" />
-                  </div>
-                ) : null}
               </div>
 
               {bevinding && TEKORT_VOORSTELLEN[bevinding.nutrient] ? (
