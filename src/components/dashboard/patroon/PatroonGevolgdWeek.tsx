@@ -5,7 +5,7 @@ import type { GevolgdeWeekReeks } from "@/lib/nutrition-gevolgde-weken";
 import { normLabel, normVoorVeld } from "@/lib/nutrition-normen";
 import type { PatroonStof } from "@/lib/nutrition-stof-meting";
 import { percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
-import { rondVoedingswaarde } from "@/lib/nutrition-voedingswaarde";
+import { rondVoedingswaarde, stofNaam } from "@/lib/nutrition-voedingswaarde";
 import { useGevolgdeNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 
 /**
@@ -20,7 +20,7 @@ import { useGevolgdeNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen
  */
 
 function hoofdletter(label: string): string {
-  return label.charAt(0).toUpperCase() + label.slice(1);
+  return stofNaam(label);
 }
 
 export default function PatroonGevolgdWeek({
