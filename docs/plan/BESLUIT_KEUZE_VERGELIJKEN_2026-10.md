@@ -346,3 +346,19 @@ Dennis (screenshot Keuze › eiwit): het blok "Uit je check" is vaag, onprofessi
 3. **Afgewezen:** het blok overal schrappen. Dan heeft een stof zonder dagboekmeting helemaal geen antwoord meer.
 
 **Meting:** ongewijzigd (`dashboard_afleiding_open` bestaat nog, alleen waar het blok nog zichtbaar is).
+
+---
+
+## Herziening 10 oktober: minder knoppen, eten uitzetbaar, preview op de balk
+
+**Aanleiding.** Dennis testte op mobiel: terug na "Naar Mijn keuzes" bracht hem bij het Dagboek in plaats van binnen Keuze; de productpagina vanuit Keuze toonde vier losse dingen; en hij vroeg of eten in Mijn keuzes uit kon, de zijkolom in/uit kon klappen en leeg kon, en of de balk kon tonen wat een product erbij doet.
+
+### Besluiten
+
+1. **Terug blijft binnen Keuze** (#233). Het onderdeel (`deel=`) volgt de URL bij terug/vooruit; `KeuzeScherm` houdt er geen eigen kopie van.
+2. **Eén vergelijklink per stof** (#235): "Alle N met PS-Score" en "Vergelijk op prijs" worden **"Vergelijk prijs en PS-Score van alle N →"** (naar `/beste/*`). De catalogus blijft bereikbaar via de rij-titels en de productpagina. **Vervalt:** `keuze_product_naar_catalogus` en `keuze_vergelijken_ps_score_click` met `doel=catalogus` vanuit deze plekken.
+3. **Productpagina vanuit Keuze = één blok** (#235): terug als rustige tekstlink boven de koopkaart, prijs en PS-Score als chips, de dubbele catalogus-link bovenaan weg.
+4. **Zijkolom "Je keuzes"**: × per keuze, "Alles weghalen" en "Ongedaan maken" (8 s); ook in de mobiele lade (#237). Wissen raakt alleen je keuzes, de dagboeksterren blijven staan. **Afgewezen: inklapbare zijkolom** (extra bediening voor weinig winst; de lade klapt op mobiel al in/uit; een verticale variant is meer werk voor hetzelfde effect).
+5. **Eten uitzetten in Mijn keuzes: een schakelaar, geen sloop.** "Alleen supplementen tonen" verbergt het eten in "Je dag" en in "Beheer" per stof. **Afgewezen: eten uit Mijn keuzes halen.** Dat zou besluit 7 okt ("Vergelijken = kiezen, Mijn keuzes = doen") en het directe loggen van 9 okt (#229) terugdraaien. Loggen en data blijven; alleen de weergave verschilt. De schakelaarstand leeft in de sessie (geen localStorage; opslag in Supabase is het niet waard voor een weergavevoorkeur).
+
+**Meting:** `keuze_overzicht_wis` {surface, plek, soort}, `keuze_overzicht_ongedaan`, `keuze_mijn_keuzes_filter` {alleen_supplementen} (GA4).

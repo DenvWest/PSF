@@ -207,6 +207,21 @@ describe("MijnKeuzes", () => {
     expect(within(screen.getByRole("region", { name: "Avondeten" })).getByText(/Vitals Liquid EPA\/DHA/)).toBeTruthy();
   });
 
+  it("Alleen supplementen tonen verbergt het eten in Je dag en per stof, en zet het weer terug", async () => {
+    favorieten.items = [
+      { id: "voeding-route-omega3-beide", title: "", kind: "supplement" },
+      { id: "voeding-product-omega3-vitals-liquid-epadha", title: "", kind: "supplement" },
+      { id: "voeding-moment-omega3-avondeten", title: "", kind: "supplement" },
+    ];
+    renderMijn();
+    await waitFor(() => expect(within(screen.getByRole("region", { name: "Ontbijt" })).getByText("Haring")).toBeTruthy());
+    fireEvent.click(screen.getByRole("switch", { name: "Alleen supplementen tonen" }));
+    expect(screen.queryByText("Haring")).toBeNull();
+    expect(within(screen.getByRole("region", { name: "Avondeten" })).getByText(/Vitals Liquid EPA\/DHA/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("switch", { name: "Alleen supplementen tonen" }));
+    await waitFor(() => expect(screen.getAllByText("Haring").length).toBeGreaterThan(0));
+  });
+
   it("haalt een supplement uit Mijn keuzes: product, moment en supplementroute, en laat eten staan bij allebei", () => {
     favorieten.items = [
       { id: "voeding-route-omega3-beide", title: "", kind: "supplement" },
