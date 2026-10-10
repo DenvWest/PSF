@@ -21,6 +21,8 @@ export type PatroonUrlStand = {
   stof: PatroonStof | null;
   zoek: string;
   periode: PatroonUrlPeriode | null;
+  /** Waar je vandaan kwam: alleen Keuze heeft een weg terug. */
+  van: "keuze" | null;
 };
 
 const SECTIES: ReadonlySet<string> = new Set(["maaltijden", "stof", "trend"]);
@@ -34,7 +36,9 @@ export function leesPatroonUrl(search: string): PatroonUrlStand {
   const sectie = params.get("sectie");
   const stof = params.get("stof");
   const periode = params.get("periode");
+  const van = params.get("van");
   return {
+    van: van === "keuze" ? "keuze" : null,
     sectie: sectie && SECTIES.has(sectie) ? (sectie as PatroonUrlSectie) : null,
     stof: stof && STOFFEN.has(stof) ? (stof as PatroonStof) : null,
     zoek: (params.get("zoek") ?? "").slice(0, MAX_ZOEK),
@@ -54,6 +58,7 @@ export function metPatroonStand(href: string, stand: Partial<PatroonUrlStand>): 
   zet("stof", stand.stof);
   zet("zoek", stand.zoek === undefined ? undefined : stand.zoek.trim().slice(0, MAX_ZOEK));
   zet("periode", stand.periode);
+  zet("van", stand.van);
   return `${url.pathname}${url.search}${url.hash}`;
 }
 

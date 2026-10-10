@@ -216,3 +216,15 @@ export function rondVoedingswaarde(waarde: number): string {
   const afgerond = waarde >= 100 ? Math.round(waarde) : Math.round(waarde * 10) / 10;
   return afgerond.toLocaleString("nl-NL");
 }
+
+const LOSSE_NAMEN: Record<string, string> = {
+  "waarvan verzadigd": "Verzadigd vet",
+  "waarvan suikers": "Suikers",
+  energie: "Calorieën",
+  vet: "Vetten",
+};
+
+/** De naam van een stof zoals een chip of kop hem toont: los van de "waarvan"-regel van de tabel. */
+export function stofNaam(label: string): string {
+  return LOSSE_NAMEN[label.toLowerCase()] ?? label.charAt(0).toUpperCase() + label.slice(1);
+}

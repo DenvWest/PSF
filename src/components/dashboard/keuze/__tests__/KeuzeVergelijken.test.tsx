@@ -244,7 +244,7 @@ describe("KeuzeVergelijken", () => {
   it("verwijst vanuit de hero naar dezelfde stof in Je patroon", () => {
     renderKeuze();
     const link = screen.getByRole("link", { name: /Bekijk magnesium in je patroon/ });
-    expect(link.getAttribute("href")).toBe("/dashboard?tab=voortgang&sectie=stof&stof=magnesium");
+    expect(link.getAttribute("href")).toBe("/dashboard?tab=voortgang&sectie=stof&stof=magnesium&van=keuze");
   });
 
   it("toont per product wat het toevoegt, de bovengrens en de prijs per dag", () => {

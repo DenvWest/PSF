@@ -52,6 +52,7 @@ import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 import { bronnenVanStof, ruimteBij, stofPerMoment } from "@/lib/nutrition-stof-bronnen";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
+import StofChipRij from "@/components/dashboard/StofChipRij";
 import { buildAfleiding } from "@/lib/supplement-afleiding";
 import {
   psScoreAantalVoorStof,
@@ -250,7 +251,7 @@ export default function KeuzeVergelijken({
             <p className="vd-note mt-0">Niets gevonden voor &ldquo;{zoekterm}&rdquo;.</p>
           ) : null}
 
-          <nav aria-label="Kies een stof" className="mb-3.5 flex flex-wrap gap-1.5">
+          <StofChipRij as="nav" label="Kies een stof" actief={actief?.nutrient ?? null}>
             {getoond.map((status) => {
               const stand = standen.get(status.nutrient);
               const aan = actief?.nutrient === status.nutrient;
@@ -271,7 +272,7 @@ export default function KeuzeVergelijken({
                 </button>
               );
             })}
-          </nav>
+          </StofChipRij>
 
           <div className="grid gap-4 @[56rem]:grid-cols-[minmax(0,1fr)_18.5rem] @[56rem]:items-start">
             <div id="keuze-werkblad" className="min-w-0 scroll-mt-20">
@@ -946,11 +947,11 @@ function StofHero({
             ) : null}
           </p>
           <Link
-            href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`}
+            href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}&van=keuze`}
             onClick={(event) => {
               event.preventDefault();
               trackEvent("keuze_naar_patroon_stof", { nutrient: status.nutrient, plek: "hero" });
-              gaNaarDashboard(`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`);
+              gaNaarDashboard(`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}&van=keuze`);
             }}
             className="mt-2 inline-block text-[0.75rem] font-semibold text-[var(--vd-sage-2)] no-underline hover:underline"
           >
@@ -1428,11 +1429,11 @@ function VoedingKant({
       )}
 
       <Link
-        href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`}
+        href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}&van=keuze`}
         onClick={(event) => {
           event.preventDefault();
           trackEvent("keuze_naar_patroon_stof", { nutrient: status.nutrient, plek: "bronnen" });
-          gaNaarDashboard(`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`);
+          gaNaarDashboard(`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}&van=keuze`);
         }}
         className="mt-2 inline-block text-[0.6875rem] font-semibold text-[var(--vd-sage-2)] no-underline hover:underline"
       >

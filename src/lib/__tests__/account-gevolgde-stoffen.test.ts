@@ -47,3 +47,14 @@ describe("getGevolgdeStoffen", () => {
     expect(stoffen).toEqual(["fiberG"]);
   });
 });
+
+describe("stofNaam", () => {
+  it("schrijft de waarvan-regels uit als eigen stof", async () => {
+    const { stofNaam } = await import("@/lib/nutrition-voedingswaarde");
+    expect(stofNaam("waarvan verzadigd")).toBe("Verzadigd vet");
+    expect(stofNaam("waarvan suikers")).toBe("Suikers");
+    expect(stofNaam("vezels")).toBe("Vezels");
+    expect(stofNaam("Energie")).toBe("Calorieën");
+    expect(stofNaam("Vet")).toBe("Vetten");
+  });
+});

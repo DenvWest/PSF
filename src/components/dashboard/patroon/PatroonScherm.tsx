@@ -12,6 +12,7 @@ import PatroonGevolgdWeek from "@/components/dashboard/patroon/PatroonGevolgdWee
 import PatroonMaaltijden from "@/components/dashboard/patroon/PatroonMaaltijden";
 import PatroonPeriodeKiezer from "@/components/dashboard/patroon/PatroonPeriodeKiezer";
 import PatroonEnergieVerdeling from "@/components/dashboard/patroon/PatroonEnergieVerdeling";
+import PatroonTerugNaarKeuze from "@/components/dashboard/patroon/PatroonTerugNaarKeuze";
 import PatroonStofChips, { type StofChip } from "@/components/dashboard/patroon/PatroonStofChips";
 import { stofStand } from "@/components/dashboard/patroon/PatroonStofHero";
 import PatroonStofDetail, { type StofDetailGegevens } from "@/components/dashboard/patroon/PatroonStofDetail";
@@ -41,7 +42,7 @@ import {
   type PatroonStof,
 } from "@/lib/nutrition-stof-meting";
 import { bouwStofTrend, EIWITDOEL } from "@/lib/nutrition-stof-trend";
-import { VOEDINGSWAARDE_VELDEN } from "@/lib/nutrition-voedingswaarde";
+import { stofNaam, VOEDINGSWAARDE_VELDEN } from "@/lib/nutrition-voedingswaarde";
 import { isKernstofMetNorm, isStreefStof } from "@/lib/account-kernstof-profiel";
 import { bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
 import {
@@ -101,7 +102,7 @@ function zonderNormGevolgd(stof: PatroonStof): string {
 }
 
 function hoofdletter(label: string): string {
-  return label.charAt(0).toUpperCase() + label.slice(1);
+  return stofNaam(label);
 }
 
 function PatroonInhoud() {
@@ -127,6 +128,15 @@ function PatroonInhoud() {
     startStand?.sectie === "stof" ? startStand.stof : null,
   );
   const [kiezerOpen, setKiezerOpen] = useState(false);
+  // Alleen een stof uit Keuze heeft een weg terug; elke eigen keuze in Patroon wist hem.
+  const [komtUitKeuze, setKomtUitKeuze] = useState<NutrientId | null>(() =>
+    startStand?.van === "keuze" && startStand.stof && isKernstof(startStand.stof) ? startStand.stof : null,
+  );
+  const wisHerkomst = () => {
+    if (komtUitKeuze === null) return;
+    setKomtUitKeuze(null);
+    bewaarPatroonStand({ van: null });
+  };
   const [verborgenNutrients, setVerborgenNutrients] = useState<Set<NutrientId>>(
     () => new Set(),
   );
@@ -307,7 +317,7 @@ function PatroonInhoud() {
     const gevolgd = gevolgdPeriode.map((reeks) =>
       bouwStofTrend({
         stof: reeks.veld,
-        label: reeks.label,
+        label: hoofdletter(reeks.label),
         unit: reeks.unit,
         soort: "gevolgd",
         norm: reeks.norm,
@@ -448,6 +458,7 @@ function PatroonInhoud() {
   }, [laden, bevinding, gevuldeDagen]);
 
   const kiesSectie = (volgende: PatroonSectie) => {
+    wisHerkomst();
     setSectie(volgende);
     setOpenStof(null);
     bewaarPatroonStand({ sectie: volgende, stof: null, zoek: "" });
@@ -466,6 +477,7 @@ function PatroonInhoud() {
   };
 
   const openStofDetail = (nutrient: PatroonStof, bronSectie: PatroonSectie = sectie) => {
+    if (nutrient !== komtUitKeuze) wisHerkomst();
     setSectie("stof");
     setOpenStof(nutrient);
     bewaarPatroonStand({ sectie: "stof", stof: nutrient });
@@ -510,6 +522,7 @@ function PatroonInhoud() {
                 openStofDetail(stof);
                 return;
               }
+              wisHerkomst();
               setOpenStof(null);
               setStartZoek("");
               bewaarPatroonStand({ stof: null, zoek: "" });
@@ -521,8 +534,12 @@ function PatroonInhoud() {
               setKiezerOpen(!kiezerOpen);
             }}
           />
+          {komtUitKeuze && openStof === komtUitKeuze ? (
+            <PatroonTerugNaarKeuze stof={komtUitKeuze} periode={periode} />
+          ) : null}
           {kiezerOpen ? (
-            <div className="text-[var(--vd-ink-2)]">
+            <div className="mb-3 rounded-[14px] border border-[var(--vd-line)] bg-[var(--vd-surface)] p-3 text-[var(--vd-ink-2)]">
+              <p className="vd-eyebrow m-0 mb-2">Welke stoffen volg je?</p>
               <GevolgdeStoffenKiezer surface="patroon" />
             </div>
           ) : null}
@@ -540,6 +557,8 @@ function PatroonInhoud() {
                     stof={openStof}
                     energie={bouwEnergieVerdeling(perDag, datums)}
                     vet={bouwVetVerdeling(perDag, datums)}
+                    onNaarMaaltijden={() => kiesSectie("maaltijden")}
+                    onNaarOmega3={() => openStofDetail("omega3")}
                   />
                 ) : null
               }
