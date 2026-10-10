@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { EmptyState } from "@/components/partnerdesk/EmptyState";
+import { BulkImageLicense } from "@/components/product-admin/BulkImageLicense";
 import { CatalogTabs } from "@/components/product-admin/CatalogTabs";
 import { PRODUCT_STATUS_CLASS, PRODUCT_STATUS_LABEL } from "@/components/product-admin/ProductStatusControl";
 import { scoreCoverageAdvice } from "@/lib/product-admin/publish-gate";
-import { listAdminProducts, type AdminProductRow, type ProductStatus } from "@/lib/product-admin/queries";
+import { listAdminProducts, listRetailerOptions, type AdminProductRow, type ProductStatus } from "@/lib/product-admin/queries";
+import { todayIso } from "@/lib/partnerdesk/dates";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +55,7 @@ export default async function ProductenPage({
 }) {
   const statusParam = (await searchParams).status;
   const filter = FILTERS.some((f) => f.value === statusParam) ? (statusParam as ProductStatus | "alle") : "alle";
-  const { rows, summary } = await listAdminProducts();
+  const [{ rows, summary }, retailers] = await Promise.all([listAdminProducts(), listRetailerOptions()]);
   const visible = filter === "alle" ? rows : rows.filter((r) => r.status === filter);
 
   return (
@@ -89,6 +91,8 @@ export default async function ProductenPage({
         ))}
       </nav>
 
+      <BulkImageLicense retailers={retailers} today={todayIso()} />
+
       {(summary.staleDataProducts > 0 || summary.stalePriceOffers > 0) && (
         <aside className="mb-5 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
           {summary.staleDataProducts > 0 && (
@@ -108,7 +112,7 @@ export default async function ProductenPage({
 
       {visible.length === 0 ? (
         <EmptyState title="Geen producten">
-          Er zijn geen producten met deze status. De catalogus wordt gevuld via de backfill-routes.
+          Er zijn geen producten met deze status. Voeg een product toe of importeer een CSV.
         </EmptyState>
       ) : (
         <div className="overflow-hidden rounded-xl border border-[var(--ps-border)] bg-[var(--ps-surface)]">
