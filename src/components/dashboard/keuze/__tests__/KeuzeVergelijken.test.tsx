@@ -218,12 +218,25 @@ describe("KeuzeVergelijken", () => {
     expect(within(supplement).getByText("Per vorm de hoogste PS-Score")).toBeTruthy();
   });
 
-  it("draagt het oordeel uit je check in de stofkaart, met het dagboek als zwaarste stem", () => {
+  it("toont geen oordeel uit je check zodra het dagboek de stof meet", () => {
     renderKeuze(false, [magnesiumOordeel]);
+    expect(screen.queryByRole("region", { name: "Uit je check" })).toBeNull();
+    expect(screen.queryByText("Zekerheid")).toBeNull();
+  });
+
+  it("toont het oordeel uit je check alleen als antwoord waar het dagboek de stof niet kan meten", () => {
+    render(
+      <KeuzeVergelijken
+        statuses={[status("magnesium", "Magnesium")]}
+        reeksen={[{ ...reeks("magnesium", false), bewijsbaar: false }]}
+        dagen={[]}
+        vandaag="2026-10-06"
+        surface="test"
+        verdicts={[magnesiumOordeel]}
+      />,
+    );
     const check = screen.getByRole("region", { name: "Uit je check" });
-    expect(within(check).getByText(/Je check zei .aanvullen.\. Je dagboek weegt hier zwaarder/)).toBeTruthy();
-    expect(within(check).getByText("Signaal")).toBeTruthy();
-    expect(within(check).getByText("EU-claim")).toBeTruthy();
+    expect(within(check).queryByText("Zekerheid")).toBeNull();
     fireEvent.click(within(check).getByRole("button", { name: /Hoe we hier komen/ }));
     expect(within(check).getByText(/magnesiumsignaal/)).toBeTruthy();
   });
