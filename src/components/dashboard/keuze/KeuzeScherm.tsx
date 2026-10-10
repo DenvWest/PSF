@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import SchapView from "@/components/dashboard/voortgang/SchapView";
 import { trackEvent } from "@/lib/ga4";
 import { hasSchap } from "@/lib/schap-availability";
@@ -36,18 +35,9 @@ export default function KeuzeScherm({
   onDeelChange,
   onSwitchDomain,
 }: KeuzeSchermProps) {
-  // De URL is de bron bij binnenkomst; daarna wint de klik. `pushState` uit
-  // het sync-pad werkt `useSearchParams` niet bij, dus het gekozen onderdeel
-  // leeft hier — met zijn domein erbij, zodat het bij een domeinwissel vanzelf
-  // vervalt in plaats van mee te reizen.
-  const [deelOverride, setDeelOverride] = useState<
-    { domain: PillarId; deel: SchapTabId } | null
-  >(null);
-
-  const activeDeel = deelOverride && deelOverride.domain === domain ? deelOverride.deel : deel;
-
+  // Het onderdeel komt uit het dashboard, dat het bij klik én bij terug/vooruit
+  // uit de URL bijwerkt — hier geen eigen kopie, anders wint die van de terug-knop.
   const handleDeelChange = (next: SchapTabId) => {
-    setDeelOverride({ domain, deel: next });
     onDeelChange(domain, next);
   };
 
@@ -60,8 +50,7 @@ export default function KeuzeScherm({
     if (target === domain || !hasSchap(target)) {
       return;
     }
-    const next = resolveSchapTabForDomain(target, activeDeel);
-    setDeelOverride({ domain: target, deel: next });
+    const next = resolveSchapTabForDomain(target, deel);
     // `choice.shelf_opened` (durable) en de Clarity-tag vuren al in SchapView
     // zelf, met herkomst `from_state: "schap"`; hier alleen de GA4-reeks, zodat
     // te zien is hoe vaak iemand binnen de Keuze-tab van domein wisselt in
@@ -75,7 +64,7 @@ export default function KeuzeScherm({
       model={model}
       data={data}
       domain={domain}
-      activeTab={activeDeel}
+      activeTab={deel}
       onTabChange={handleDeelChange}
       onSwitchDomain={handleSwitchDomain}
     />
