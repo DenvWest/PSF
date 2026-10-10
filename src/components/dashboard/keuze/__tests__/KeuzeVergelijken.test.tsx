@@ -304,6 +304,31 @@ describe("KeuzeVergelijken", () => {
     expect(naarMijnKeuzes).toHaveBeenCalled();
   });
 
+  it("haalt een keuze weg met het kruisje en zet hem met Ongedaan maken terug; Alles weghalen leegt de lijst", () => {
+    favorieten.items = [
+      { id: "voeding-eten-protein-ei-gebakken", title: "Eiwit: Ei, gebakken", kind: "activiteit" },
+      { id: "voeding-eten-magnesium-pompoenzaden", title: "Magnesium: Pompoenpitten", kind: "activiteit" },
+    ];
+    const { rerender } = renderKeuze();
+    const zijkolom = screen.getAllByRole("complementary", { name: "Je keuzes" })[0];
+    fireEvent.click(within(zijkolom).getAllByRole("button", { name: /^Haal .* weg uit je keuzes$/ })[0]);
+    expect(favorieten.items).toHaveLength(1);
+    rerender(keuze());
+    fireEvent.click(within(screen.getAllByRole("complementary", { name: "Je keuzes" })[0]).getByRole("button", { name: "Ongedaan maken" }));
+    expect(favorieten.items).toHaveLength(2);
+    rerender(keuze());
+    fireEvent.click(within(screen.getAllByRole("complementary", { name: "Je keuzes" })[0]).getByRole("button", { name: "Alles weghalen" }));
+    expect(favorieten.items).toHaveLength(0);
+  });
+
+  it("klapt de zijkolom in tot een knop met het aantal en weer uit", () => {
+    favorieten.items = [{ id: "voeding-eten-protein-ei-gebakken", title: "Eiwit: Ei, gebakken", kind: "activiteit" }];
+    renderKeuze();
+    fireEvent.click(screen.getByRole("button", { name: "Klap Je keuzes in" }));
+    fireEvent.click(screen.getByRole("button", { name: /Je keuzes · 1/ }));
+    expect(screen.getByRole("button", { name: "Klap Je keuzes in" })).toBeTruthy();
+  });
+
   it("na Kies vraagt Vergelijken wanneer je het eet of neemt, per voedingsmiddel en per supplement", async () => {
     const { rerender } = renderKeuze();
     const eten = () => screen.getByRole("region", { name: "Uit je eten" });

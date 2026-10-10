@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import MomentChips, { useMomentOpslag } from "@/components/dashboard/keuze/MomentChips";
 import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
@@ -66,6 +66,7 @@ import {
   type DagboekVoedingsfavorieten,
 } from "@/lib/use-dagboek-voedingsfavorieten";
 import { useEiwitDoel, useKernstofProfiel } from "@/lib/use-kernstof-normen";
+import { omgekeerdWisPlan, planAllesWeg, planEtenWeg, planSupplementWeg, type WisPlan } from "@/lib/keuze-overzicht-wissen";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 
@@ -173,6 +174,8 @@ export default function KeuzeVergelijken({
   const [zoek, setZoek] = useState("");
   const voedingsfavorieten = useDagboekVoedingsfavorieten("keuze_stof");
   const overzicht = useKeuzesOverzicht(statuses, products);
+  const beheer = useKeuzesBeheer(surface);
+  const [zijOpen, setZijOpen] = useState(true);
 
   // Terug van een productpagina (`?tab=keuze&stof=…`): die stof open, daarna de
   // parameter uit de URL zodat herladen niet opnieuw springt.
@@ -271,7 +274,11 @@ export default function KeuzeVergelijken({
             })}
           </nav>
 
-          <div className="grid gap-4 @[56rem]:grid-cols-[minmax(0,1fr)_18.5rem] @[56rem]:items-start">
+          <div
+            className={`grid gap-4 @[56rem]:items-start ${
+              zijOpen ? "@[56rem]:grid-cols-[minmax(0,1fr)_18.5rem]" : "@[56rem]:grid-cols-[minmax(0,1fr)_auto]"
+            }`}
+          >
             <div id="keuze-werkblad" className="min-w-0 scroll-mt-20">
               {actief && actiefStand ? (
                 <StofWerkblad
@@ -288,10 +295,17 @@ export default function KeuzeVergelijken({
                 />
               ) : null}
             </div>
-            <KeuzesZijkolom overzicht={overzicht} surface={surface} onNaarMijnKeuzes={onNaarMijnKeuzes} />
+            <KeuzesZijkolom
+              overzicht={overzicht}
+              surface={surface}
+              onNaarMijnKeuzes={onNaarMijnKeuzes}
+              beheer={beheer}
+              open={zijOpen}
+              onOpenChange={setZijOpen}
+            />
           </div>
 
-          <KeuzesLade overzicht={overzicht} surface={surface} onNaarMijnKeuzes={onNaarMijnKeuzes} />
+          <KeuzesLade overzicht={overzicht} surface={surface} onNaarMijnKeuzes={onNaarMijnKeuzes} beheer={beheer} />
         </div>
 
         <p className="vd-note">
@@ -306,6 +320,9 @@ export default function KeuzeVergelijken({
 
 type KeuzeRij = {
   id: string;
+  nutrient: NutrientId;
+  /** Catalogussleutel van het voedingsmiddel; `null` bij een supplement. */
+  key: string | null;
   soort: "eten" | "supplement";
   titel: string;
   context: string;
@@ -315,6 +332,92 @@ type KeuzeRij = {
 };
 
 type KeuzesOverzicht = { rijen: KeuzeRij[]; centenPerDag: number };
+
+type KeuzesBeheer = {
+  wisRij: (rij: KeuzeRij, plek: "zijkolom" | "lade") => void;
+  wisAlles: (plek: "zijkolom" | "lade") => void;
+  /** Wat net gewist is; staat een paar seconden klaar om terug te zetten. */
+  laatste: { tekst: string } | null;
+  maakOngedaan: () => void;
+};
+
+/**
+ * Keuzes weghalen vanuit de zijkolom en de lade, met "Ongedaan maken". Wist
+ * alleen je keuzes; de sterren in je dagboek blijven staan.
+ */
+function useKeuzesBeheer(surface: string): KeuzesBeheer {
+  const { items, save, remove } = useVoortgangFavorites();
+  const [laatste, setLaatste] = useState<{ plan: WisPlan; tekst: string } | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (timer.current) clearTimeout(timer.current);
+  }, []);
+
+  const toepas = useCallback(
+    (plan: WisPlan) => {
+      for (const item of plan.verwijder) remove(item.id);
+      for (const item of plan.voegToe) save(item, "keuze_overzicht");
+    },
+    [remove, save],
+  );
+
+  const meld = useCallback((plan: WisPlan, tekst: string) => {
+    setLaatste({ plan, tekst });
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => setLaatste(null), 8000);
+  }, []);
+
+  const wisRij = useCallback(
+    (rij: KeuzeRij, plek: "zijkolom" | "lade") => {
+      const plan = rij.key ? planEtenWeg(rij.nutrient, rij.key, items) : planSupplementWeg(rij.nutrient, items);
+      toepas(plan);
+      meld(plan, `${rij.titel} weggehaald.`);
+      trackEvent("keuze_overzicht_wis", { surface, plek, soort: rij.soort, nutrient: rij.nutrient });
+    },
+    [items, toepas, meld, surface],
+  );
+
+  const wisAlles = useCallback(
+    (plek: "zijkolom" | "lade") => {
+      const plan = planAllesWeg(items);
+      if (plan.verwijder.length === 0) return;
+      toepas(plan);
+      meld(plan, "Al je keuzes weggehaald.");
+      trackEvent("keuze_overzicht_wis", { surface, plek, soort: "alles", aantal: plan.verwijder.length });
+    },
+    [items, toepas, meld, surface],
+  );
+
+  const maakOngedaan = useCallback(() => {
+    if (!laatste) return;
+    toepas(omgekeerdWisPlan(laatste.plan));
+    trackEvent("keuze_overzicht_ongedaan", { surface });
+    if (timer.current) clearTimeout(timer.current);
+    setLaatste(null);
+  }, [laatste, toepas, surface]);
+
+  return { wisRij, wisAlles, laatste: laatste ? { tekst: laatste.tekst } : null, maakOngedaan };
+}
+
+function OngedaanBalk({ beheer }: { beheer: KeuzesBeheer }) {
+  if (!beheer.laatste) return null;
+  return (
+    <p
+      role="status"
+      className="m-0 flex items-center justify-between gap-2 rounded-[10px] border border-[var(--vd-line)] bg-[var(--vd-bg)] px-3 py-2 text-[0.75rem] text-[var(--vd-ink-2)]"
+    >
+      <span className="min-w-0">{beheer.laatste.tekst}</span>
+      <button
+        type="button"
+        onClick={beheer.maakOngedaan}
+        className="min-h-[44px] shrink-0 cursor-pointer border-0 bg-transparent p-0 font-[inherit] text-[0.75rem] font-semibold text-[var(--vd-accent-2)] hover:underline"
+      >
+        Ongedaan maken
+      </button>
+    </p>
+  );
+}
 
 /**
  * Alles wat je in Vergelijken koos, over alle stoffen heen: de voedingsmiddelen
@@ -332,6 +435,8 @@ function useKeuzesOverzicht(statuses: readonly NutrientRouteStatus[], products?:
         if (!entry) continue;
         rijen.push({
           id: `eten-${status.nutrient}-${key}`,
+          nutrient: status.nutrient,
+          key,
           soort: "eten",
           titel: entry.labelNl,
           context: `${status.label} · ${etenMomentVoor(status.nutrient, key, items)}`,
@@ -346,6 +451,8 @@ function useKeuzesOverzicht(statuses: readonly NutrientRouteStatus[], products?:
         const supplementMoment = momentVoorStof(status.nutrient, items, "supplement") ?? "ontbijt";
         rijen.push({
           id: `supplement-${status.nutrient}-${product.slug}`,
+          nutrient: status.nutrient,
+          key: null,
           soort: "supplement",
           titel: product.naam,
           context: `${status.label} · ${supplementMoment}`,
@@ -360,7 +467,13 @@ function useKeuzesOverzicht(statuses: readonly NutrientRouteStatus[], products?:
   }, [statuses, items, products]);
 }
 
-function KeuzesLijst({ overzicht }: { overzicht: KeuzesOverzicht }) {
+function KeuzesLijst({
+  overzicht,
+  onWis,
+}: {
+  overzicht: KeuzesOverzicht;
+  onWis?: (rij: KeuzeRij) => void;
+}) {
   return (
     <ul className="m-0 flex list-none flex-col gap-2 p-0">
       {overzicht.rijen.map((rij) => (
@@ -390,6 +503,16 @@ function KeuzesLijst({ overzicht }: { overzicht: KeuzesOverzicht }) {
             <span className="shrink-0 font-mono text-[0.75rem] tabular-nums text-[var(--vd-ink-2)]">
               {euroPerDag(rij.centenPerDag)}
             </span>
+          ) : null}
+          {onWis ? (
+            <button
+              type="button"
+              aria-label={`Haal ${rij.titel} weg uit je keuzes`}
+              onClick={() => onWis(rij)}
+              className="-mr-1 inline-flex h-11 w-9 shrink-0 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-[1.125rem] leading-none text-[var(--vd-ink-3)] hover:text-[var(--vd-ink)]"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
           ) : null}
         </li>
       ))}
@@ -441,34 +564,84 @@ function NaarMijnKeuzesKnop({
   );
 }
 
-/** Brede inhoud: al je keuzes naast het werkblad. Smaller: zie {@link KeuzesLade}. */
+/** Brede inhoud: al je keuzes naast het werkblad, in te klappen tot een smalle knop. Smaller: zie {@link KeuzesLade}. */
 function KeuzesZijkolom({
   overzicht,
   surface,
   onNaarMijnKeuzes,
+  beheer,
+  open,
+  onOpenChange,
 }: {
   overzicht: KeuzesOverzicht;
   surface: string;
   onNaarMijnKeuzes?: () => void;
+  beheer: KeuzesBeheer;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
+  const aantal = overzicht.rijen.length;
+  const wissel = (volgende: boolean) => {
+    trackEvent("keuze_zijkolom_wissel", { surface, open: volgende, aantal });
+    onOpenChange(volgende);
+  };
+
+  if (!open) {
+    return (
+      <aside aria-label="Je keuzes" className="hidden @[56rem]:sticky @[56rem]:top-20 @[56rem]:block">
+        <button
+          type="button"
+          aria-expanded={false}
+          onClick={() => wissel(true)}
+          className="inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-[12px] border border-[var(--vd-line)] bg-[var(--vd-surface)] px-3 font-[inherit] text-[0.8125rem] font-semibold text-[var(--vd-ink)]"
+        >
+          <span aria-hidden="true">‹</span> Je keuzes{aantal > 0 ? ` · ${aantal}` : ""}
+        </button>
+      </aside>
+    );
+  }
+
   return (
     <aside
       aria-label="Je keuzes"
       className="hidden rounded-[16px] border border-[var(--vd-line)] bg-[var(--vd-surface)] p-4 @[56rem]:sticky @[56rem]:top-20 @[56rem]:block"
     >
-      <p className="vd-eyebrow m-0">Mijn keuzes</p>
-      <h3 className="mb-3 mt-1 text-[1.125rem] text-[var(--vd-ink)]">Je keuzes</h3>
-      {overzicht.rijen.length === 0 ? (
-        <p className="m-0 text-[0.78125rem] leading-relaxed text-[var(--vd-ink-3)]">
-          Nog niets gekozen. Kies een bron uit je eten of een supplement, dan staat het hier.
-        </p>
-      ) : (
-        <div className="flex flex-col gap-3">
-          <KeuzesLijst overzicht={overzicht} />
-          <KeuzesTotaal overzicht={overzicht} />
-          <NaarMijnKeuzesKnop overzicht={overzicht} surface={surface} plek="zijkolom" onNaarMijnKeuzes={onNaarMijnKeuzes} />
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="vd-eyebrow m-0">Mijn keuzes</p>
+          <h3 className="mb-3 mt-1 text-[1.125rem] text-[var(--vd-ink)]">Je keuzes</h3>
         </div>
-      )}
+        <button
+          type="button"
+          aria-expanded
+          aria-label="Klap Je keuzes in"
+          onClick={() => wissel(false)}
+          className="-mr-2 -mt-1 inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-[1.125rem] text-[var(--vd-ink-3)] hover:text-[var(--vd-ink)]"
+        >
+          <span aria-hidden="true">›</span>
+        </button>
+      </div>
+      <div className="flex flex-col gap-3">
+        <OngedaanBalk beheer={beheer} />
+        {aantal === 0 ? (
+          <p className="m-0 text-[0.78125rem] leading-relaxed text-[var(--vd-ink-3)]">
+            Nog niets gekozen. Kies een bron uit je eten of een supplement, dan staat het hier.
+          </p>
+        ) : (
+          <>
+            <KeuzesLijst overzicht={overzicht} onWis={(rij) => beheer.wisRij(rij, "zijkolom")} />
+            <KeuzesTotaal overzicht={overzicht} />
+            <NaarMijnKeuzesKnop overzicht={overzicht} surface={surface} plek="zijkolom" onNaarMijnKeuzes={onNaarMijnKeuzes} />
+            <button
+              type="button"
+              onClick={() => beheer.wisAlles("zijkolom")}
+              className="min-h-[44px] cursor-pointer border-0 bg-transparent p-0 font-[inherit] text-[0.75rem] text-[var(--vd-ink-3)] hover:text-[var(--vd-ink)] hover:underline"
+            >
+              Alles weghalen
+            </button>
+          </>
+        )}
+      </div>
     </aside>
   );
 }
@@ -483,13 +656,21 @@ function KeuzesLade({
   overzicht,
   surface,
   onNaarMijnKeuzes,
+  beheer,
 }: {
   overzicht: KeuzesOverzicht;
   surface: string;
   onNaarMijnKeuzes?: () => void;
+  beheer: KeuzesBeheer;
 }) {
   const [open, setOpen] = useState(false);
-  if (overzicht.rijen.length === 0) return null;
+  if (overzicht.rijen.length === 0) {
+    return beheer.laatste ? (
+      <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-10 mt-4 sm:bottom-3 @[56rem]:hidden">
+        <OngedaanBalk beheer={beheer} />
+      </div>
+    ) : null;
+  }
   const aantal = overzicht.rijen.length;
   const supplementen = overzicht.rijen.some((rij) => rij.soort === "supplement");
 
@@ -498,9 +679,21 @@ function KeuzesLade({
       aria-label="Je keuzes"
       className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-10 mt-4 rounded-[14px] border border-[var(--vd-line-2)] bg-[rgba(13,25,11,0.95)] shadow-[0_-8px_24px_rgba(0,0,0,0.35)] backdrop-blur-md sm:bottom-3 @[56rem]:hidden"
     >
+      {beheer.laatste ? (
+        <div className="border-b border-[var(--vd-line)] p-2">
+          <OngedaanBalk beheer={beheer} />
+        </div>
+      ) : null}
       {open ? (
-        <div className="max-h-[40vh] overflow-y-auto border-b border-[var(--vd-line)] p-3">
-          <KeuzesLijst overzicht={overzicht} />
+        <div className="flex max-h-[40vh] flex-col gap-2 overflow-y-auto border-b border-[var(--vd-line)] p-3">
+          <KeuzesLijst overzicht={overzicht} onWis={(rij) => beheer.wisRij(rij, "lade")} />
+          <button
+            type="button"
+            onClick={() => beheer.wisAlles("lade")}
+            className="min-h-[44px] cursor-pointer self-start border-0 bg-transparent p-0 font-[inherit] text-[0.75rem] text-[var(--vd-ink-3)] hover:text-[var(--vd-ink)] hover:underline"
+          >
+            Alles weghalen
+          </button>
         </div>
       ) : null}
       <div className="flex items-center gap-3 p-2.5 pl-3.5">
