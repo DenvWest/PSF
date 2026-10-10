@@ -19,6 +19,7 @@ export interface GateClaim {
 export interface GateOffer {
   active: boolean;
   price_checked_at: string | null;
+  affiliate_url?: string | null;
 }
 
 export interface GateInput {
@@ -32,7 +33,7 @@ export interface GateInput {
 }
 
 export interface GateCriterion {
-  key: "images" | "actives" | "claims" | "offers" | "sources" | "score";
+  key: "images" | "actives" | "claims" | "offers" | "affiliate" | "sources" | "score";
   label: string;
   ok: boolean;
   detail: string;
@@ -44,12 +45,22 @@ function daysBetween(fromIso: string, toDay: string): number {
   return Math.floor((to - from) / 86_400_000);
 }
 
+export function isValidAffiliateUrl(value: string | null | undefined): boolean {
+  if (!value?.trim()) return false;
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === "https:" && url.hostname.includes(".");
+  } catch {
+    return false;
+  }
+}
+
 export function isFreshPrice(checkedAt: string | null, today: string): boolean {
   return checkedAt !== null && daysBetween(checkedAt, today) <= PRICE_MAX_AGE_DAYS;
 }
 
 /**
- * Publiceerpoort (§F): een product mag alleen naar 'published' als alle zes
+ * Publiceerpoort (§F): een product mag alleen naar 'published' als alle zeven
  * criteria slagen. Vervangt de TypeScript-compile-check die verloren ging bij
  * de overstap van statische data naar de database.
  */
@@ -62,6 +73,8 @@ export function evaluatePublishGate(input: GateInput): GateCriterion[] {
   );
   const failedClaims = input.claims.filter((c) => !c.meets_condition);
   const freshOffers = input.offers.filter((o) => o.active && isFreshPrice(o.price_checked_at, input.today));
+
+  const routableOffers = input.offers.filter((o) => o.active).filter((o) => isValidAffiliateUrl(o.affiliate_url));
 
   return [
     {
@@ -107,6 +120,17 @@ export function evaluatePublishGate(input: GateInput): GateCriterion[] {
           : input.offers.some((o) => o.active)
             ? "Alle actieve prijzen zijn te oud of nooit gecontroleerd"
             : "Geen actieve aanbieding",
+    },
+    {
+      key: "affiliate",
+      label: "Aanbieding met geldige affiliate-link (https)",
+      ok: routableOffers.length > 0,
+      detail:
+        routableOffers.length > 0
+          ? `${routableOffers.length} aanbieding(en) met bruikbare link`
+          : input.offers.some((o) => o.active)
+            ? "De actieve aanbiedingen hebben geen geldige https-affiliate-link"
+            : "Geen actieve aanbieding om naar te linken",
     },
     {
       key: "sources",

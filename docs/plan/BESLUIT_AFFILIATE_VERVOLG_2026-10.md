@@ -58,4 +58,5 @@
 ## Uitvoering B-2, stap 1 (10 oktober 2026)
 
 - Admin-wijzigingen aan een **gepubliceerd** product worden geweigerd als ze een criterium van de publiceerpoort laten falen dat nu slaagt (laatste afbeelding/licentie-notitie, laatste werkzame stof of claimdrempel, laatste bron, enige actieve aanbieding): `src/lib/product-admin/gate-regression.ts`, aangeroepen in `edit-actions.ts`. Alleen criteria die nu slagen worden bewaakt, zodat de 25 falende live producten wel verbeterd kunnen worden (B-3).
-- **Nog open binnen B-2:** DB-trigger op `status → published` (migratie, additief), criterium "geldige affiliate-route" (P7), tijdsverval met 7 dagen termijn + signaal (P4).
+- **Stap 2 (gedaan):** zevende poortcriterium "Aanbieding met geldige affiliate-link (https)" (P7): minstens één actieve aanbieding met een geldige https-`affiliate_url`. Geldt bij nieuwe publicaties meteen; live producten die het niet halen blijven staan (B-3). Host-tot-retailer-controle en een actieve partner volgen met de `/go`-redirect.
+- **Nog open binnen B-2:** DB-trigger op `status → published` (migratie, additief) en tijdsverval met 7 dagen termijn + signaal (P4).
