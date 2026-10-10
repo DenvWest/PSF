@@ -136,6 +136,94 @@ function Rij({ trend, onKies }: { trend: StofTrend; onKies: (stof: PatroonStof) 
   );
 }
 
+function MiniBalken({ trend }: { trend: StofTrend }) {
+  const hoogste = Math.max(...trend.punten.map((p) => p.waarde ?? 0), 0.0001);
+  const kleur = stofKleur(trend);
+  return (
+    <div
+      className="grid h-6 items-end gap-0.5"
+      style={{ gridTemplateColumns: `repeat(${trend.punten.length}, minmax(0, 1fr))` }}
+    >
+      {trend.punten.map((punt) =>
+        punt.waarde === null ? (
+          <span key={punt.sleutel} aria-hidden className="mb-0.5 block border-t border-dashed border-[var(--vd-ink-4)]" />
+        ) : (
+          <span
+            key={punt.sleutel}
+            title={punt.uitleg}
+            className="block rounded-t-[3px]"
+            style={{
+              height: `${Math.max(8, (punt.waarde / hoogste) * 100)}%`,
+              background: punt.staat === "onvolledig" ? gearceerd(kleur) : getint(kleur, 75),
+              border: punt.staat === "onvolledig" ? `1px solid ${getint(kleur, 60)}` : undefined,
+            }}
+          />
+        ),
+      )}
+    </div>
+  );
+}
+
+function gemiddeldeVan(trend: StofTrend): string {
+  const gemeten = trend.punten.filter((p) => p.waarde !== null);
+  if (gemeten.length === 0) return "—";
+  const som = gemeten.reduce((s, p) => s + p.waarde!, 0);
+  return `${getalNL(trend.schaal === "maaltijd" ? som : som / gemeten.length)} ${trend.unit}`;
+}
+
+function HoeveelhedenLijst({
+  trends,
+  onKies,
+}: {
+  trends: readonly StofTrend[];
+  onKies: (stof: PatroonStof) => void;
+}) {
+  const kolommen = trends.find((t) => t.punten.length > 0)?.punten ?? [];
+  if (trends.length === 0 || kolommen.length === 0) return null;
+  const raster = { gridTemplateColumns: `repeat(${kolommen.length}, minmax(0, 1fr))` };
+  const perMaaltijd = trends[0]!.schaal === "maaltijd";
+
+  return (
+    <section aria-labelledby="patroon-trend-hoeveelheden" className="vd-tabel" style={{ padding: "0.875rem" }}>
+      <p id="patroon-trend-hoeveelheden" className="vd-eyebrow" style={{ margin: "0 0 0.5rem" }}>
+        Ook gevolgd · hoeveel je binnenkreeg
+      </p>
+      <div className="mb-1 grid gap-0.5 text-center text-[10px] text-[var(--vd-ink-4)]" style={raster} aria-hidden>
+        {kolommen.map((punt) => (
+          <span key={punt.sleutel} className="truncate">
+            {punt.label}
+          </span>
+        ))}
+      </div>
+      <ul className="m-0 flex list-none flex-col p-0">
+        {trends.map((trend) => (
+          <li key={trend.stof} className="border-t border-[var(--vd-line)] py-2">
+            <button
+              type="button"
+              onClick={() => onKies(trend.stof)}
+              className="mb-1 flex w-full cursor-pointer items-baseline justify-between gap-2 border-0 bg-transparent p-0 text-left font-[inherit] text-[11.5px] text-[var(--vd-ink)]"
+            >
+              <span>
+                <span aria-hidden className="mr-1.5 inline-block h-2 w-2 rounded-full align-middle" style={{ background: stofKleur(trend) }} />
+                {hoofdletter(trend.label)}
+              </span>
+              <span className="tabular-nums text-[var(--vd-ink-2)]">
+                {perMaaltijd ? "" : "gem. "}
+                {gemiddeldeVan(trend)}
+                {perMaaltijd ? "" : " per dag"}
+              </span>
+            </button>
+            <MiniBalken trend={trend} />
+          </li>
+        ))}
+      </ul>
+      <p className="m-0 mt-2 text-[11px] leading-snug text-[var(--vd-ink-3)]">
+        Voor deze stoffen is er geen doel, dus geen glas en geen ✓. Elk balkje is een dag of week: hoe hoger, hoe meer je binnenkreeg. Gestreept = je schreef niet alles op, dus het was eigenlijk meer. Tik op een stof voor de precieze getallen.
+      </p>
+    </section>
+  );
+}
+
 function kopSlot(schaal: StofTrend["schaal"], zonderNorm: boolean): string {
   if (zonderNorm) return schaal === "maaltijd" ? "samen" : "gemiddeld";
   return schaal === "maaltijd" ? "hele dag" : "doel gehaald";
@@ -212,13 +300,7 @@ export default function PatroonTrendTabel({
         onKies={onKies}
         uitleg="Zie elke stof als een glas. 100% = het glas is precies vol, dat is je doel voor die dag. ✓ = vol. Een gestreept vakje = je schreef die dag niet alles op, dus er kan nog meer bij zijn. — = niets opgeschreven. Bij 'doel gehaald' tellen we streng: alleen dagen waarop zeker is dat het glas vol was."
       />
-      <Tabel
-        id="patroon-trend-hoeveelheden"
-        titel="Ook gevolgd · hoeveel je per dag binnenkreeg"
-        trends={zonderNorm}
-        onKies={onKies}
-        uitleg="Voor deze stoffen is er geen doel, dus geen glas en geen ✓: je ziet alleen hoeveel je binnenkreeg, in de eenheid achter de naam. Een gestreept vakje = je schreef die dag niet alles op, dus het was eigenlijk meer. De laatste kolom is je gemiddelde per dag."
-      />
+      <HoeveelhedenLijst trends={zonderNorm} onKies={onKies} />
     </>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { TEKORT_VOORSTELLEN } from "@/data/agenda/tekort-voorstellen";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
+import StofChipRij from "@/components/dashboard/StofChipRij";
 import GevolgdeStoffenKiezer from "@/components/dashboard/doelen/GevolgdeStoffenKiezer";
 import PatroonDoelenKaart, {
   type SupplementWeek,
@@ -637,7 +638,7 @@ function PatroonInhoud() {
       ) : (
         <>
           {periodeKiezer}
-          <div className="vd-chiprij" role="group" aria-label="Voedingsstoffen tonen of verbergen">
+          <StofChipRij label="Stoffen tonen of verbergen" actief={null}>
             {stoffen.rijen.map((rij) => {
               const aan = !verborgenNutrients.has(rij.nutrient);
               return (
@@ -653,35 +654,31 @@ function PatroonInhoud() {
                 </button>
               );
             })}
-          </div>
-          {trends.gevolgd.length > 0 ? (
-            <div className="vd-chiprij" role="group" aria-label="Gevolgde stoffen tonen of verbergen">
-              {trends.gevolgd.map((trend) => (
-                <button
-                  key={trend.stof}
-                  type="button"
-                  className="vd-chip inline-flex min-h-[40px] items-center gap-1.5 !border-[var(--vd-sage)] !text-[var(--vd-sage-2)]"
-                  aria-pressed
-                  title="Tik om deze stof niet meer te volgen"
-                  onClick={() => {
-                    trackEvent("nutrition_patroon_nutrient_toggle", { nutrient: trend.stof, zichtbaar: false });
-                    void zetGevolgd(trend.stof as SupermarktVeld, false).catch(() => {});
-                  }}
-                >
-                  <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--vd-sage-2)" }} />
-                  {trend.label}
-                </button>
-              ))}
-            </div>
-          ) : null}
-          <button
-            type="button"
-            aria-expanded={trendKiezerOpen}
-            onClick={() => setTrendKiezerOpen((open) => !open)}
-            className="min-h-[36px] cursor-pointer self-start border-0 bg-transparent p-0 text-[0.75rem] font-semibold text-[var(--vd-sage-2)] hover:underline"
-          >
-            {trendKiezerOpen ? "Klaar met kiezen" : "+ Stof toevoegen die je volgt"}
-          </button>
+            {trends.gevolgd.map((trend) => (
+              <button
+                key={trend.stof}
+                type="button"
+                className="vd-chip inline-flex min-h-[40px] items-center gap-1.5 !border-[var(--vd-sage)] !text-[var(--vd-sage-2)]"
+                aria-pressed
+                title="Tik om deze stof niet meer te volgen"
+                onClick={() => {
+                  trackEvent("nutrition_patroon_nutrient_toggle", { nutrient: trend.stof, zichtbaar: false });
+                  void zetGevolgd(trend.stof as SupermarktVeld, false).catch(() => {});
+                }}
+              >
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--vd-sage-2)" }} />
+                {trend.label}
+              </button>
+            ))}
+            <button
+              type="button"
+              aria-expanded={trendKiezerOpen}
+              onClick={() => setTrendKiezerOpen((open) => !open)}
+              className="vd-chip inline-flex min-h-[40px] items-center gap-1.5 !border-dashed"
+            >
+              {trendKiezerOpen ? "Klaar" : "+ Stof"}
+            </button>
+          </StofChipRij>
           {trendKiezerOpen ? (
             <div className="rounded-[14px] border border-[var(--vd-line)] bg-[var(--vd-surface)] p-3 text-[var(--vd-ink-2)]">
               <p className="vd-eyebrow m-0 mb-2">Welke stoffen volg je?</p>

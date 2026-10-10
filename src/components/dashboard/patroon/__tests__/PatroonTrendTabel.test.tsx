@@ -57,7 +57,7 @@ describe("PatroonTrendTabel", () => {
     expect(screen.queryByText("✓112")).toBeNull();
   });
 
-  it("zet stoffen zonder norm in een eigen tabel met de eenheid achter de naam", () => {
+  it("zet stoffen zonder norm als lijst met gemiddelde en balkjes, niet tussen de procenten", () => {
     const natrium = trend({
       stof: "sodiumMg",
       label: "Natrium",
@@ -66,10 +66,8 @@ describe("PatroonTrendTabel", () => {
       punten: [punt("ma", null, "neutraal"), punt("di", null, "neutraal")].map((p, i) => ({ ...p, waarde: i === 0 ? 2100 : 1900 })),
     });
     render(<PatroonTrendTabel trends={[trend({}), natrium]} onKies={() => {}} />);
-    expect(screen.getAllByRole("table")).toHaveLength(2);
-    expect(screen.getByText("(mg)")).toBeTruthy();
-    expect(screen.getByText("2.100")).toBeTruthy();
-    expect(screen.getByText("2.000")).toBeTruthy();
+    expect(screen.getAllByRole("table")).toHaveLength(1);
+    expect(screen.getByText(/gem\. 2\.000 mg per dag/)).toBeTruthy();
     expect(screen.getByText(/geen glas en geen ✓/)).toBeTruthy();
   });
 
