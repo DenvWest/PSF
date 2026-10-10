@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
+import AandeelBalk from "@/components/dashboard/patroon/AandeelBalk";
 import PatroonMaaltijdProduct from "@/components/dashboard/patroon/PatroonMaaltijdProduct";
 import { clarityTag } from "@/lib/clarity";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
@@ -204,32 +205,54 @@ export default function PatroonMaaltijden({
           type="button"
           aria-expanded={open}
           onClick={() => toggleStof(stof)}
-          className="vd-tabel-rij w-full cursor-pointer grid-cols-[1fr_58px_58px_52px] border-x-0 border-t-0 bg-transparent text-left font-[inherit] text-inherit hover:bg-[var(--vd-surface-2)] aria-expanded:bg-[var(--vd-surface-2)]"
+          className="block w-full cursor-pointer border-x-0 border-b border-t-0 border-[var(--vd-line)] bg-transparent px-3 py-3 text-left font-[inherit] text-inherit last:border-b-0 hover:bg-[var(--vd-surface-2)] aria-expanded:bg-[var(--vd-surface-2)]"
         >
-          <span className={`vd-naam ${stof.waarvan ? "pl-3 !font-normal !text-[var(--vd-ink-2)]" : ""}`}>
-            {stof.label}
-            {stof.uitSupplement ? (
-              <i>
-                waarvan {rondVoedingswaarde(stof.uitSupplement)} {stof.unit} uit supplement
-              </i>
-            ) : null}
+          <span className="flex items-baseline justify-between gap-3">
+            <span className={`min-w-0 text-[0.875rem] font-medium text-[var(--vd-ink)] ${stof.waarvan ? "pl-3 !font-normal !text-[var(--vd-ink-2)]" : ""}`}>
+              {stof.label}
+              {stof.uitSupplement ? (
+                <i className="block text-[0.6875rem] font-normal not-italic text-[var(--vd-ink-3)]">
+                  waarvan {rondVoedingswaarde(stof.uitSupplement)} {stof.unit} uit supplement
+                </i>
+              ) : null}
+            </span>
+            <span className="shrink-0 font-mono text-[0.8125rem] tabular-nums text-[var(--vd-ink)]">
+              {stof.waarde === null ? (stof.kern ? "n.o." : "—") : `${getal(stof.waarde, stof.benaderd)} ${stof.unit}`}
+            </span>
           </span>
-          <span className="vd-getal">
-            {stof.waarde === null ? (stof.kern ? "n.o." : "—") : `${getal(stof.waarde, stof.benaderd)} ${stof.unit}`}
+          <span className="mt-2 flex items-center gap-3">
+            {stof.aandeel === null ? (
+              <span className="text-[0.6875rem] text-[var(--vd-ink-3)]">{stof.geenNorm}</span>
+            ) : (
+              <>
+                <span className="min-w-0 flex-1">
+                  <AandeelBalk
+                    aandeel={stof.aandeel}
+                    doelAandeel={doelAandeel}
+                    label={`${stof.label}: ${percentageADH(stof.aandeel)} van je dagnorm`}
+                  />
+                </span>
+                <span className="w-[3.25rem] shrink-0 text-right font-mono text-[0.75rem] tabular-nums text-[var(--vd-ink-2)]">
+                  {stof.benaderd ? "≈ " : ""}
+                  {percentageADH(stof.aandeel)}
+                </span>
+              </>
+            )}
           </span>
-          <span className="vd-getal">{getal(stof.per100kcal)}</span>
-          <span className="vd-getal">
-            {stof.aandeel === null ? "—" : `${stof.benaderd ? "≈ " : ""}${percentageADH(stof.aandeel)}`}
-            {doelAandeel !== null ? (
-              <i className="block text-[0.625rem] not-italic text-[var(--vd-ink-3)]">
-                doel {percentageADH(doelAandeel)}
-              </i>
-            ) : null}
-          </span>
+          {doelAandeel !== null ? (
+            <span className="mt-1 block text-right text-[0.625rem] text-[var(--vd-ink-3)]">
+              doel {percentageADH(doelAandeel)}
+            </span>
+          ) : null}
         </button>
         {open ? (
           <div className="border-b border-[var(--vd-line)] bg-[var(--vd-surface-2)] px-3 py-2.5 text-[0.6875rem] text-[var(--vd-ink-3)]">
             <p className="m-0">{stof.waarvan ? "Telt mee in de regel erboven." : (normRegel(stof.ref) ?? stof.geenNorm)}</p>
+            {stof.per100kcal !== null ? (
+              <p className="m-0">
+                Per 100 kcal: {getal(stof.per100kcal)} {stof.unit}
+              </p>
+            ) : null}
             {doelRegel(stof.ref, stof.waarde, stof.unit) ? (
               <p className="m-0">{doelRegel(stof.ref, stof.waarde, stof.unit)}</p>
             ) : null}
@@ -303,39 +326,69 @@ export default function PatroonMaaltijden({
             aria-label={`${maaltijd.label}, gemiddeld`}
             className="@container mb-3 rounded-[16px] border border-[var(--vd-line)] bg-gradient-to-br from-[var(--vd-surface-2)] to-[var(--vd-surface)] p-4 @[34rem]:p-5"
           >
-            <p className="vd-eyebrow m-0">
-              {eenDag
-                ? `${maaltijd.label} ${periodeTekst}`
-                : `Gemiddeld per ${naam} · ${maaltijd.keer} van ${dagen} dagen geregistreerd ${periodeTekst}`}
-            </p>
-            <h3 className="mb-3 mt-1 text-[1.625rem] leading-none text-[var(--vd-ink)]">{maaltijd.label}</h3>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="vd-eyebrow m-0 !tracking-[0.1em]">
+                  {eenDag
+                    ? `${maaltijd.label} ${periodeTekst}`
+                    : `Gemiddeld per ${naam} · ${maaltijd.keer} van ${dagen} dagen geregistreerd`}
+                </p>
+                <h3 className="mb-0 mt-1.5 text-[1.625rem] leading-none text-[var(--vd-ink)]">{maaltijd.label}</h3>
+                {eenDag ? null : (
+                  <p className="m-0 mt-1.5 text-[0.75rem] text-[var(--vd-ink-3)]">{periodeLabel(periode)}</p>
+                )}
+              </div>
+            </div>
 
-            <div className="grid grid-cols-2 gap-2 @[34rem]:grid-cols-4">
-              {MACRO_TEGELS.map((veld) => {
+            <div className="mt-4 flex items-end justify-between gap-3 border-t border-[var(--vd-line)] pt-4">
+              <div>
+                <span className="block text-[0.6875rem] text-[var(--vd-ink-3)]">Energie</span>
+                <b className="font-mono text-[2rem] font-medium leading-none tabular-nums text-[var(--vd-ink)]">
+                  {getal(rij(maaltijd, "energyKcal")?.waarde, rij(maaltijd, "energyKcal")?.benaderd)}
+                </b>
+                <span className="ml-1 text-[0.75rem] text-[var(--vd-ink-3)]">kcal</span>
+              </div>
+            </div>
+
+            <dl className="m-0 mt-3 grid grid-cols-3 divide-x divide-[var(--vd-line)] rounded-xl border border-[var(--vd-line)] bg-[var(--vd-bg)]">
+              {MACRO_TEGELS.filter((veld) => veld !== "energyKcal").map((veld) => {
                 const r = rij(maaltijd, veld);
                 return (
-                  <div
-                    key={veld}
-                    className="rounded-xl border border-[var(--vd-line)] bg-[var(--vd-bg)] px-2 py-2.5 text-center"
-                  >
-                    <span className="block text-[0.625rem] text-[var(--vd-ink-3)]">
-                      {veld === "energyKcal" ? "Energie" : r?.label}
-                    </span>
-                    <b className="block font-mono text-[1.125rem] text-[var(--vd-ink)]">
+                  <div key={veld} className="min-w-0 px-3 py-2.5">
+                    <dt className="text-[0.6875rem] text-[var(--vd-ink-3)]">{r?.label}</dt>
+                    <dd className="m-0 mt-0.5 font-mono text-[1rem] tabular-nums text-[var(--vd-ink)]">
                       {getal(r?.waarde, r?.benaderd)}
-                    </b>
-                    <span className="block text-[0.625rem] text-[var(--vd-ink-3)]">{r?.unit}</span>
+                      <small className="ml-0.5 text-[0.6875rem] text-[var(--vd-ink-3)]">{r?.unit}</small>
+                    </dd>
                   </div>
                 );
               })}
-            </div>
+            </dl>
 
             {sterkst.length > 0 ? (
-              <p className="m-0 mt-3 max-w-[62ch] text-[0.8125rem] leading-relaxed text-[var(--vd-ink-2)]">
-                <b className="text-[var(--vd-ink)]">Waar je {naam} het meest aan bijdraagt:</b>{" "}
-                {sterkst.map((b) => `${b.label.toLowerCase()} ${percentageADH(b.aandeel)}`).join(", ")} van je
-                dagnorm.
-              </p>
+              <div className="mt-4 border-t border-[var(--vd-line)] pt-4">
+                <p className="m-0 text-[0.8125rem] font-semibold text-[var(--vd-ink)]">
+                  Waar je {naam} het meest aan bijdraagt
+                </p>
+                <p className="m-0 mt-0.5 text-[0.6875rem] text-[var(--vd-ink-3)]">Deel van je dagnorm</p>
+                <ul className="m-0 mt-3 flex list-none flex-col gap-3 p-0">
+                  {sterkst.map((b) => (
+                    <li key={b.label}>
+                      <span className="flex items-baseline justify-between gap-3 text-[0.8125rem]">
+                        <span className="text-[var(--vd-ink-2)]">{b.label}</span>
+                        <span className="font-mono tabular-nums text-[var(--vd-ink)]">{percentageADH(b.aandeel)}</span>
+                      </span>
+                      <span className="mt-1.5 block">
+                        <AandeelBalk
+                          aandeel={b.aandeel}
+                          hoog
+                          label={`${b.label}: ${percentageADH(b.aandeel)} van je dagnorm`}
+                        />
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ) : null}
           </section>
 
@@ -382,11 +435,9 @@ export default function PatroonMaaltijden({
           ) : null}
 
           <div className="vd-tabel !border-t-[3px] !border-t-[var(--vd-accent-2)]">
-            <div className="vd-tabel-kop grid-cols-[1fr_58px_58px_52px]">
-              <span>Stof</span>
-              <span>Gem.</span>
-              <span>/100 kcal</span>
-              <span>Norm</span>
+            <div className="vd-tabel-kop grid-cols-[1fr_auto]">
+              <span>Stof · gemiddeld</span>
+              <span>Deel van je dagnorm</span>
             </div>
 
             {tabel.filter((stof) => !stof.kern).map(stofRij)}
@@ -398,8 +449,8 @@ export default function PatroonMaaltijden({
           </div>
 
           <p className="vd-note">
-            Norm = het deel van je dagnorm dat {eenDag ? `deze ${naam}` : `een gemiddelde ${naam}`} dekt. Tik op
-            een stof voor de bron en welke producten het leverden.
+            De balk is je hele dagnorm; de vulling is wat {eenDag ? `deze ${naam}` : `een gemiddelde ${naam}`} daarvan
+            dekt. Tik op een stof voor de bron, de dichtheid per 100 kcal en welke producten het leverden.
           </p>
 
           {maaltijd.zonderWaarde > 0 || maaltijd.supplementen > 0 ? (

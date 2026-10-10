@@ -63,7 +63,7 @@ describe("PatroonMaaltijden", () => {
     const ijzer = STANDAARD_GEVOLGDE_NORMEN.ironMg;
     expect(screen.getByText("doel 50%")).toBeTruthy();
     expect(screen.queryByText(`norm ${ijzer.waarde} mg/dag · ${ijzer.bron}`)).toBeNull();
-    expect(screen.getByText(/Waar je lunch het meest aan bijdraagt:/)).toBeTruthy();
+    expect(screen.getByText(/Waar je lunch het meest aan bijdraagt/)).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: /^IJzer/, expanded: false }));
     expect(screen.getByText(`norm ${ijzer.waarde} mg/dag · ${ijzer.bron}`)).toBeTruthy();
