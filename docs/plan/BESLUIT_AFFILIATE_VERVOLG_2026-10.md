@@ -54,3 +54,8 @@
   - 3.6: transacties kunnen tot 1 jaar retroactief worden afgekeurd: het grootboek moet reversals aankunnen (append-only past).
   - 5.2: 90 dagen zonder klikken/transacties kan leiden tot verwijdering uit de campagne.
 - **Eigen partnervoorwaarden (downstream):** Daisycons voorwaarden gelden als **checklist voor structuur en onderwerpen**, niet als tekst om te kopiëren (hun art. 2.5 verbiedt kopiëren; auteursrecht). Onderwerpen: registratie/goedkeuring (18+, weigerrecht), toegestaan/verboden gedrag, commissie pas na goedkeuring en afkeur bij retour, terugdraaien tot een jaar, uitbetalingsdrempel en -datum, verrekening, vervaltermijn inactiviteit, beëindiging, aansprakelijkheid, geheimhouding, Nederlands recht en mediation. Tekst door een jurist laten toetsen. **Afgewezen:** letterlijk overnemen.
+
+## Uitvoering B-2, stap 1 (10 oktober 2026)
+
+- Admin-wijzigingen aan een **gepubliceerd** product worden geweigerd als ze een criterium van de publiceerpoort laten falen dat nu slaagt (laatste afbeelding/licentie-notitie, laatste werkzame stof of claimdrempel, laatste bron, enige actieve aanbieding): `src/lib/product-admin/gate-regression.ts`, aangeroepen in `edit-actions.ts`. Alleen criteria die nu slagen worden bewaakt, zodat de 25 falende live producten wel verbeterd kunnen worden (B-3).
+- **Nog open binnen B-2:** DB-trigger op `status → published` (migratie, additief), criterium "geldige affiliate-route" (P7), tijdsverval met 7 dagen termijn + signaal (P4).
