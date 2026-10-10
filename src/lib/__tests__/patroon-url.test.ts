@@ -8,13 +8,23 @@ describe("patroon-url", () => {
       stof: "protein",
       zoek: "eiwit",
       periode: "30",
+      van: null,
     });
     expect(leesPatroonUrl("?sectie=x&stof=lood&periode=99")).toEqual({
       sectie: null,
       stof: null,
       zoek: "",
       periode: null,
+      van: null,
     });
+  });
+
+  it("kent alleen van=keuze als herkomst en wist hem weer", () => {
+    expect(leesPatroonUrl("?sectie=stof&stof=protein&van=keuze").van).toBe("keuze");
+    expect(leesPatroonUrl("?van=ergens").van).toBeNull();
+    expect(metPatroonStand("http://localhost/dashboard?tab=voortgang&van=keuze", { van: null })).toBe(
+      "/dashboard?tab=voortgang",
+    );
   });
 
   it("schrijft de stand en laat tab staan; leeg wist de parameter", () => {

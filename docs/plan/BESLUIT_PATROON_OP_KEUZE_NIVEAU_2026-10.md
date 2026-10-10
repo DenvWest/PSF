@@ -54,3 +54,11 @@ Dennis: calorieën en vetten ook als gevolgde stoffen in Trend, met dezelfde gra
 3. **Verdeling in Per stof** (`PatroonEnergieVerdeling`): bij energie het aandeel eiwit, koolhydraten en vet in kcal (4/4/9 per gram), bij vet het deel dat verzadigd is. Feit, geen oordeel; de tekst zegt dat er geen "goede" of "slechte" calorie is. De uitsplitsing in enkel-/meervoudig onverzadigd en transvet wacht op NEVO (zie besluit hierboven).
 
 **Meting:** ongewijzigd (`nutrition_patroon_stof_geopend`, `nutrition_patroon_gevolgd_toevoegen_open`, `voedingsdoel_aangepast` met `stof: energyKcal | fatG`): hier lees je af of mensen energie en vet volgen.
+
+## Plak 5: de weg terug naar Keuze, namen en "wat kun je hiermee" (gebouwd 10 okt)
+
+1. **Terug naar Keuze.** De links uit Keuze dragen `&van=keuze`. Patroon toont dan bovenaan één rustige regel: "Je kwam van Keuze · Eiwit. Hier zie je je eiwit over 7 dagen, als bewijs bij wat je kiest. ← Terug naar Keuze", die naar `?tab=keuze&stof=<stof>` gaat. De regel verdwijnt zodra je zelf een andere stof of sectie kiest en `van` verdwijnt dan ook uit de URL. Alleen de vijf kernstoffen hebben een Keuze; voor andere stoffen verschijnt hij niet. Zelfde mechanisme als `TerugNaarKeuze` op productpagina's.
+2. **Namen:** energie heet **Calorieën** en vet **Vetten** in Patroon, de kiezer en Trend (`stofNaam`); in het dagboek blijft de tabelnaam staan.
+3. **"Wat kun je hiermee?"** onder de verdeling: bij calorieën een link naar Per maaltijd (waar zit ruimte voor eiwit of vezels), bij vetten naar omega-3 en de rijkste bronnen. Feitelijk, geen oordeel.
+
+**Meting:** nieuw GA4-event `patroon_terug_naar_keuze` {nutrient}; samen met `keuze_naar_patroon_stof {plek}` is dat de heen-en-weer-beweging Keuze ↔ Patroon. De "wat kun je hiermee"-links gebruiken `nutrition_patroon_sectie_gekozen` en `nutrition_patroon_stof_geopend`.
