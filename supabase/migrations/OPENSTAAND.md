@@ -14,12 +14,11 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 
 ## Nog uit te voeren
 
-### [ ] 20261010120000_sup_publish_gate_trigger.sql
-- **Wat:** publiceerpoort als DB-invariant: functie `sup_publish_gate_failures` + trigger op `sup_products` die de overgang naar `published` weigert als afbeelding+licentie, werkzame stoffen, claims, verse prijs, geldige https-affiliate-link of bron ontbreekt. Raakt bestaande gepubliceerde producten niet.
-- **Blokkeert deploy:** nee (additief; de TypeScript-poort is al minstens zo streng, de code verandert niet)
-- **Hoort bij:** besluit B-2 in `docs/plan/BESLUIT_AFFILIATE_VERVOLG_2026-10.md`
-- **Terugdraaien:** `drop trigger sup_products_publish_gate_trg on public.sup_products; drop function public.sup_products_publish_gate(); drop function public.sup_publish_gate_failures(uuid);`
-
+### [ ] 20261010130000_sup_publish_gate_array_fix.sql
+- **Wat:** herstelt `sup_publish_gate_failures` (22P02 malformed array literal bij een falend criterium) met `array_append`. Alleen `create or replace function`.
+- **Blokkeert deploy:** nee (additief; code ongewijzigd)
+- **Hoort bij:** vervolg op `20261010120000_sup_publish_gate_trigger.sql` (B-2); gevonden doordat `select slug, sup_publish_gate_failures(id) …` faalde
+- **Terugdraaien:** niet nodig; de vorige versie was defect
 
 **Nog te doen (geen migratie, geen blocker):** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan al klaar.
 
@@ -54,6 +53,7 @@ Twee veilige routes, per blok vastgelegd in het veld **Blokkeert deploy**:
 
 | Datum | Migratie | Opmerking |
 |-------|----------|-----------|
+| 10 oktober 2026 | `20261010120000_sup_publish_gate_trigger.sql` | Door Dennis gedraaid; trigger `sup_products_publish_gate_trg` bestaat (pg_trigger). Functie bevatte een array-fout, hersteld door `20261010130000_sup_publish_gate_array_fix.sql`. |
 | 9 oktober 2026 | `20261009120000_doel_evaluatie.sql` | Door Dennis gedraaid in de SQL Editor, met succes. |
 | 7 oktober 2026 | `20261007150000_voedingsrichting.sql` | Door Dennis gedraaid in de SQL Editor. |
 | 7 oktober 2026 | `20261007120000_eetpatroon_overgeslagen.sql` | Door Dennis gedraaid in de SQL Editor en opgeslagen. |
