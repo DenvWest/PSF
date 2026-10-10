@@ -2,17 +2,18 @@
 
 import Link from "next/link";
 import PatroonBronZoek from "@/components/dashboard/patroon/PatroonBronZoek";
+import PatroonStofHero from "@/components/dashboard/patroon/PatroonStofHero";
 import { isInformatieveStof } from "@/lib/nutrition-rijkste-bronnen";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import type { Voedingsnorm } from "@/data/nutrition/voedingsnormen";
 import { normLabel } from "@/lib/nutrition-normen";
-import { periodeLabel, type Periode } from "@/lib/nutrition-periode";
+import type { Periode } from "@/lib/nutrition-periode";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { isKernstof, type PatroonStof } from "@/lib/nutrition-stof-meting";
 import { ruimteBij, type StofBron, type StofPerMoment } from "@/lib/nutrition-stof-bronnen";
-import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
+import { hoeveelheid } from "@/lib/nutrition-tekortsysteem-copy";
 import { useKernstofProfiel } from "@/lib/use-kernstof-normen";
 
 /**
@@ -98,7 +99,6 @@ export default function PatroonStofDetail({
   bronnen,
   perMoment = [],
   startZoek = "",
-  onTerug,
 }: {
   rij: StofDetailGegevens;
   periode: Periode;
@@ -106,7 +106,6 @@ export default function PatroonStofDetail({
   bronnen: readonly StofBron[];
   perMoment?: readonly StofPerMoment[];
   startZoek?: string;
-  onTerug: () => void;
 }) {
   const { norm, streef } = rij;
   const profiel = useKernstofProfiel();
@@ -120,42 +119,11 @@ export default function PatroonStofDetail({
 
   return (
     <section aria-labelledby="patroon-stof-titel" className="flex flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <button type="button" onClick={onTerug} className="vd-blader" aria-label="Terug naar alle stoffen">
-          ‹
-        </button>
-        <h3 id="patroon-stof-titel" className="text-[1.0625rem] text-[var(--vd-ink)]">
-          {rij.label}
-        </h3>
-        <span className="vd-tag ml-auto">{periodeLabel(periode)}</span>
-      </div>
+      <PatroonStofHero rij={rij} periode={periode} dagenGeregistreerd={dagenGeregistreerd} />
 
       <div className="rounded-xl border border-[var(--vd-line)] bg-[var(--vd-surface)] p-3">
-        <p className="m-0 text-[0.8125rem] text-[var(--vd-ink)]">
-          {dagenGeregistreerd === 0 ? (
-            "In deze periode staat niets geregistreerd."
-          ) : rij.lezing === "periodetotaal" ? (
-            <>
-              Minstens <b>{hoeveelheid(rij.totaal)} {rij.unit}</b> in deze periode
-              {rij.normPeriode !== null ? (
-                <>
-                  {" "}
-                  — de norm over {periodeLabel(periode)} is {hoeveelheid(rij.normPeriode)} {rij.unit} (
-                  {percentageADH(rij.aandeel)}).
-                </>
-              ) : null}
-            </>
-          ) : (
-            <>
-              Gemiddeld minstens <b>{hoeveelheid(rij.gemiddeld)} {rij.unit}</b> per geregistreerde dag
-              {norm !== null && rij.bewijsbaar ? <> ({percentageADH(rij.aandeel)} van de norm)</> : null}
-              , over {dagenGeregistreerd} {dagenGeregistreerd === 1 ? "dag" : "dagen"}.
-            </>
-          )}
-        </p>
-
         {norm ? (
-          <dl className="m-0 mt-2.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[0.75rem]">
+          <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[0.75rem]">
             <dt className="text-[var(--vd-ink-3)]">Norm</dt>
             <dd className="m-0 text-[var(--vd-ink)]">
               {normLabel(norm)} per dag
