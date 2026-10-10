@@ -60,3 +60,19 @@
 - Admin-wijzigingen aan een **gepubliceerd** product worden geweigerd als ze een criterium van de publiceerpoort laten falen dat nu slaagt (laatste afbeelding/licentie-notitie, laatste werkzame stof of claimdrempel, laatste bron, enige actieve aanbieding): `src/lib/product-admin/gate-regression.ts`, aangeroepen in `edit-actions.ts`. Alleen criteria die nu slagen worden bewaakt, zodat de 25 falende live producten wel verbeterd kunnen worden (B-3).
 - **Stap 2 (gedaan):** zevende poortcriterium "Aanbieding met geldige affiliate-link (https)" (P7): minstens één actieve aanbieding met een geldige https-`affiliate_url`. Geldt bij nieuwe publicaties meteen; live producten die het niet halen blijven staan (B-3). Host-tot-retailer-controle en een actieve partner volgen met de `/go`-redirect.
 - **Nog open binnen B-2:** DB-trigger op `status → published` (migratie, additief) en tijdsverval met 7 dagen termijn + signaal (P4).
+
+## Aanvulling 10 oktober 2026 — vrij komen van Daisycon (richting Dennis)
+
+- **Besloten (Dennis):** het doel is onafhankelijk van Daisycon worden, en daar nu al actief aan werken. De voorwaarden-checks (afbeeldingen) blijven "meenemen"; tot er directe afspraken zijn is de licentie-notitie bij Daisycon-winkels een **aanname van de eigenaar** met datum.
+- **Uitkomst webonderzoek (10 okt, te bevestigen in het portaal/bij de partij):**
+  - **Vitaminstore** (17 van de 25 producten): programma loopt volgens de zoekresultaten alleen via Daisycon (campagne 5676; vermeld: tot 11%, 30 dagen cookie). Geen eigen programma gevonden.
+  - **VitalNutrition** (7 producten): idem via Daisycon (campagne 18988; vermeld: 20%, 30 dagen cookie). Geen eigen programma gevonden.
+  - **Arctic Blue** (1 product): eigen programma (arctic-blue.com/en/affiliate-worden): 10% op eenmalige aankoop en eerste abonnement, 5% op verlengingen, 30 dagen venster, dashboard met klikken/verkopen, **promotiemateriaal te downloaden in het dashboard** (daarmee is de afbeeldingstoestemming voor dit product op te lossen), uitbetaling per kwartaal.
+  - **Merken** (Solgar, Viridian, Bonusan, Möller's, Minami, Mattisson, Orangefit, Royal Green, Vitals): geen programma gevonden; ze worden via Vitaminstore verkocht. Niet uitgesloten; per merk navragen.
+- **Gevolg:** 24 van de 25 producten hangen nu aan Daisycon. Vrij komen betekent directe afspraken met Vitaminstore en VitalNutrition (of andere winkels met een eigen programma die dezelfde producten verkopen), niet alleen techniek.
+- **Aanpak:**
+  1. Techniek blijft ontworpen op `relationship = 'direct'` naast `'network'` (al zo): eigen `/go`-route, PartnerDesk-contract en commissieregel per winkel, handmatige/CSV-conversie-inname, Daisycon alleen als adapter.
+  2. Dennis benadert Vitaminstore en VitalNutrition voor een directe afspraak (eigen tracking, commissie, materiaal), en zoekt aanvullende winkels met eigen programma's. Kanttekening: onderhandelingspositie hangt af van aantoonbaar verkeer; de Daisycon-media is juist afgekeurd op te weinig bezoekers/content.
+  3. Arctic Blue: dashboard-materiaal gebruiken voor afbeeldingen en conversies; bevestigen dat het programma actief is voor perfectsupplement.nl.
+  4. Daisycon blijft een terugvaloptie zolang er geen directe afspraken zijn; geen extra investering in de Daisycon-import buiten de bron-agnostische adapter (zie aanvulling Daisycon).
+- **Afgewezen:** Daisycon nu loslaten zonder directe afspraken (24/25 aanbiedingen zouden geen commissie meer opleveren).
