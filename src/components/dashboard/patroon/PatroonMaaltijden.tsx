@@ -6,7 +6,13 @@ import PatroonMaaltijdProduct from "@/components/dashboard/patroon/PatroonMaalti
 import { clarityTag } from "@/lib/clarity";
 import type { EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { inEetpatroon } from "@/lib/nutrition-eetpatroon";
-import type { MaaltijdPatroon, MaaltijdProduct, MaaltijdRij } from "@/lib/nutrition-maaltijd-patroon";
+import {
+  HELE_DAG,
+  type DagPatroon,
+  type MaaltijdPatroon,
+  type MaaltijdProduct,
+  type MaaltijdRij,
+} from "@/lib/nutrition-maaltijd-patroon";
 import {
   aandeelVan,
   doelRegel,
@@ -66,7 +72,7 @@ type TabelStof = {
 
 const MACRO_TEGELS = ["energyKcal", "proteinG", "carbohydrateG", "fatG"] as const;
 
-function rij(maaltijd: MaaltijdPatroon, veld: string): MaaltijdRij | undefined {
+function rij(maaltijd: MaaltijdPatroon | DagPatroon, veld: string): MaaltijdRij | undefined {
   return maaltijd.rijen.find((r) => r.veld === veld);
 }
 
@@ -81,10 +87,13 @@ function metEenheid(waarde: number | null | undefined): string {
 
 export default function PatroonMaaltijden({
   patroon: alle,
+  dag = null,
   periode,
   gewoneMaaltijden = null,
 }: {
   patroon: readonly MaaltijdPatroon[];
+  /** De hele dag als eigen keuze; null of zonder registraties = geen chip. */
+  dag?: DagPatroon | null;
   periode: Periode;
   /** Je eetpatroon; null = alle drie. */
   gewoneMaaltijden?: readonly EetmomentId[] | null;
@@ -95,13 +104,17 @@ export default function PatroonMaaltijden({
   const profiel = useKernstofProfiel();
   const [openProduct, setOpenProduct] = useState<string | null>(null);
   const [openStof, setOpenStof] = useState<string | null>(null);
-  const [gekozen, setMoment] = useState<EetmomentId | null>(null);
-  const maaltijd =
-    patroon.find((m) => m.moment === gekozen) ?? patroon.find((m) => m.keer > 0) ?? patroon[0];
+  const [gekozen, setMoment] = useState<EetmomentId | typeof HELE_DAG | null>(null);
+  const dagKeuze = dag !== null && dag.keer > 0 ? dag : null;
+  const maaltijd: MaaltijdPatroon | DagPatroon | undefined =
+    (gekozen === HELE_DAG ? dagKeuze : null) ??
+    patroon.find((m) => m.moment === gekozen) ??
+    patroon.find((m) => m.keer > 0) ??
+    patroon[0];
   if (!maaltijd) return null;
   const moment = maaltijd.moment;
 
-  const kies = (volgende: EetmomentId) => {
+  const kies = (volgende: EetmomentId | typeof HELE_DAG) => {
     setMoment(volgende);
     setOpenProduct(null);
     setOpenStof(null);
@@ -121,7 +134,8 @@ export default function PatroonMaaltijden({
   const eenDag = periode.van === periode.tot;
   const dagen = datumsTussen(periode).length;
   const periodeTekst = eenDag ? `op ${periodeLabel(periode)}` : `(${periodeLabel(periode)})`;
-  const naam = maaltijd.label.toLowerCase();
+  const isDag = maaltijd.moment === HELE_DAG;
+  const naam = isDag ? "dag" : maaltijd.label.toLowerCase();
 
   const stofRijen = tabelRijen.map((r) => {
     const ref = referentieVoorVeld(r.veld, gevolgd, profiel);
@@ -313,11 +327,22 @@ export default function PatroonMaaltijden({
             </button>
           );
         })}
+        {dagKeuze ? (
+          <button
+            type="button"
+            aria-pressed={isDag}
+            onClick={() => kies(HELE_DAG)}
+            className={`vd-chip inline-flex min-h-[40px] items-center gap-1.5 ${isDag ? "!border-[var(--vd-sage)] !text-[var(--vd-sage-2)]" : ""}`}
+          >
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--vd-sage-2)" }} />
+            Hele dag
+          </button>
+        ) : null}
       </div>
 
       {maaltijd.keer === 0 ? (
         <p className="vd-note" style={{ marginTop: 0 }}>
-          {eenDag ? "Op" : "In"} {periodeLabel(periode)} staat er bij {maaltijd.label.toLowerCase()} nog niets
+          {eenDag ? "Op" : "In"} {periodeLabel(periode)} staat er bij {isDag ? "de hele dag" : naam} nog niets
           geregistreerd. Vul het in je dagboek in — dan zie je hier wat er gemiddeld op je bord ligt.
         </p>
       ) : (
@@ -405,7 +430,7 @@ export default function PatroonMaaltijden({
               <div className="vd-tabel-kop">
                 <span className="!text-left">{eenDag ? "Wat je at" : "Wat je meestal at"}</span>
               </div>
-              {maaltijd.producten.slice(0, 8).map((product) => {
+              {maaltijd.producten.slice(0, isDag ? 15 : 8).map((product) => {
                 const open = openProduct === product.naam;
                 return (
                   <Fragment key={product.naam}>
@@ -459,7 +484,7 @@ export default function PatroonMaaltijden({
                 ? `${maaltijd.zonderWaarde} ${maaltijd.zonderWaarde === 1 ? "product droeg" : "producten droegen"} geen voedingswaarde bij — de getallen zijn een ondergrens. `
                 : ""}
               {maaltijd.supplementen > 0
-                ? `Supplementen tellen alleen mee bij hun eigen kernstof (${maaltijd.supplementen} keer genomen bij ${maaltijd.label.toLowerCase()}).`
+                ? `Supplementen tellen alleen mee bij hun eigen kernstof (${maaltijd.supplementen} keer genomen bij ${isDag ? "de hele dag" : naam}).`
                 : ""}
             </p>
           ) : null}

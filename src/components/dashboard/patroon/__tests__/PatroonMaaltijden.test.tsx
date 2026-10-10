@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import PatroonMaaltijden from "@/components/dashboard/patroon/PatroonMaaltijden";
-import { bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
+import { bouwDagPatroon, bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
 import { LEEG_KERNSTOF_PROFIEL } from "@/lib/account-kernstof-profiel";
 import { STANDAARD_GEVOLGDE_NORMEN, STANDAARD_NORMEN } from "@/lib/nutrition-normen";
 import type { SupermarktPortie } from "@/lib/nutrition-supermarkt-items";
@@ -33,6 +33,14 @@ function portie(moment: string, grams: number): SupermarktPortie {
 }
 
 const PATROON = bouwMaaltijdPatroon({
+  itemsPerDag: new Map(),
+  etiketPerDag: { "2026-10-01": [portie("lunch", 100)], "2026-10-02": [portie("avondeten", 200)] },
+  nevoProducten: new Map(),
+  van: "2026-09-06",
+  tot: "2026-10-05",
+});
+
+const DAG = bouwDagPatroon({
   itemsPerDag: new Map(),
   etiketPerDag: { "2026-10-01": [portie("lunch", 100)], "2026-10-02": [portie("avondeten", 200)] },
   nevoProducten: new Map(),
@@ -108,5 +116,19 @@ describe("PatroonMaaltijden", () => {
     );
     expect(screen.queryByText("Ontbijt")).toBeNull();
     expect(screen.queryByText("nog niets geregistreerd")).toBeNull();
+  });
+
+  it("toont een Hele dag-keuze met het gemiddelde per dag en meet de keuze", () => {
+    render(<PatroonMaaltijden patroon={PATROON} dag={DAG} periode={{ van: "2026-09-06", tot: "2026-10-05" }} />);
+    fireEvent.click(screen.getByRole("button", { name: "Hele dag" }));
+    expect(screen.getByRole("button", { name: "Hele dag", pressed: true })).toBeTruthy();
+    expect(screen.getByText(/Gemiddeld per dag · 2 van 30 dagen geregistreerd/)).toBeTruthy();
+    expect(screen.getByText(/Waar je dag het meest aan bijdraagt/)).toBeTruthy();
+    expect(trackEvent).toHaveBeenCalledWith("nutrition_patroon_maaltijd_gekozen", { moment: "hele-dag" });
+  });
+
+  it("toont geen Hele dag-keuze zonder dagpatroon", () => {
+    render(<PatroonMaaltijden patroon={PATROON} periode={{ van: "2026-09-06", tot: "2026-10-05" }} />);
+    expect(screen.queryByRole("button", { name: "Hele dag" })).toBeNull();
   });
 });
