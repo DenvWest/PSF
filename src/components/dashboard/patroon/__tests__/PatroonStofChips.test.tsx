@@ -40,7 +40,7 @@ describe("PatroonStofChips", () => {
     expect(onKies).toHaveBeenCalledWith("calciumMg");
     fireEvent.click(screen.getByRole("button", { name: "Overzicht" }));
     expect(onKies).toHaveBeenCalledWith(null);
-    fireEvent.click(screen.getByRole("button", { name: "+ Stoffen kiezen" }));
+    fireEvent.click(screen.getByRole("button", { name: "+ Stoffen kiezen die je volgt" }));
     expect(onKiezer).toHaveBeenCalled();
   });
 });

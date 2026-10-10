@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { VOLGBARE_VELDEN } from "@/lib/account-gevolgde-stoffen";
 import { trackEvent } from "@/lib/ga4";
+import { stofNaam } from "@/lib/nutrition-voedingswaarde";
 import type { SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
 import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
 
@@ -52,7 +53,7 @@ export default function GevolgdeStoffenKiezer({ surface }: { surface: "doelen" |
                 className="cursor-pointer rounded-full border border-current/25 bg-transparent px-3 py-1 text-[12.5px] text-inherit opacity-80 transition hover:opacity-100 disabled:cursor-wait aria-pressed:border-current/60 aria-pressed:bg-current/10 aria-pressed:font-semibold aria-pressed:opacity-100"
               >
                 {aan ? "✓ " : "+ "}
-                {veld.label.charAt(0).toUpperCase() + veld.label.slice(1)}
+                {stofNaam(veld.label)}
               </button>
             </li>
           );

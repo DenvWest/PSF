@@ -1,3 +1,4 @@
+import StofChipRij from "@/components/dashboard/StofChipRij";
 import { STOF_TOON_KLEUR, type StofToon } from "@/components/dashboard/patroon/PatroonStofHero";
 import type { PatroonStof } from "@/lib/nutrition-stof-meting";
 
@@ -25,7 +26,8 @@ export default function PatroonStofChips({
     `vd-chip inline-flex min-h-[40px] items-center gap-1.5 ${aan ? "!border-[var(--vd-sage)] !text-[var(--vd-sage-2)]" : ""}`;
 
   return (
-    <div className="vd-chiprij" role="group" aria-label="Kies een stof">
+    <div className="mb-2.5">
+      <StofChipRij label="Kies een stof" actief={actief}>
       <button type="button" aria-pressed={actief === null} onClick={() => onKies(null)} className={chipKlasse(actief === null)}>
         Overzicht
       </button>
@@ -41,8 +43,14 @@ export default function PatroonStofChips({
           {chip.label}
         </button>
       ))}
-      <button type="button" aria-expanded={kiezerOpen} onClick={onKiezer} className={chipKlasse(kiezerOpen)}>
-        {kiezerOpen ? "Klaar" : "+ Stoffen kiezen"}
+      </StofChipRij>
+      <button
+        type="button"
+        aria-expanded={kiezerOpen}
+        onClick={onKiezer}
+        className="min-h-[36px] cursor-pointer border-0 bg-transparent p-0 text-[0.75rem] font-semibold text-[var(--vd-sage-2)] hover:underline"
+      >
+        {kiezerOpen ? "Klaar met kiezen" : "+ Stoffen kiezen die je volgt"}
       </button>
     </div>
   );

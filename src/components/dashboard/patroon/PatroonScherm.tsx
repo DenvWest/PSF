@@ -41,7 +41,7 @@ import {
   type PatroonStof,
 } from "@/lib/nutrition-stof-meting";
 import { bouwStofTrend, EIWITDOEL } from "@/lib/nutrition-stof-trend";
-import { VOEDINGSWAARDE_VELDEN } from "@/lib/nutrition-voedingswaarde";
+import { stofNaam, VOEDINGSWAARDE_VELDEN } from "@/lib/nutrition-voedingswaarde";
 import { isKernstofMetNorm, isStreefStof } from "@/lib/account-kernstof-profiel";
 import { bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
 import {
@@ -101,7 +101,7 @@ function zonderNormGevolgd(stof: PatroonStof): string {
 }
 
 function hoofdletter(label: string): string {
-  return label.charAt(0).toUpperCase() + label.slice(1);
+  return stofNaam(label);
 }
 
 function PatroonInhoud() {
@@ -307,7 +307,7 @@ function PatroonInhoud() {
     const gevolgd = gevolgdPeriode.map((reeks) =>
       bouwStofTrend({
         stof: reeks.veld,
-        label: reeks.label,
+        label: hoofdletter(reeks.label),
         unit: reeks.unit,
         soort: "gevolgd",
         norm: reeks.norm,
@@ -522,7 +522,8 @@ function PatroonInhoud() {
             }}
           />
           {kiezerOpen ? (
-            <div className="text-[var(--vd-ink-2)]">
+            <div className="mb-3 rounded-[14px] border border-[var(--vd-line)] bg-[var(--vd-surface)] p-3 text-[var(--vd-ink-2)]">
+              <p className="vd-eyebrow m-0 mb-2">Welke stoffen volg je?</p>
               <GevolgdeStoffenKiezer surface="patroon" />
             </div>
           ) : null}
