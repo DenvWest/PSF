@@ -1,4 +1,6 @@
+import { readdirSync } from "node:fs";
 import { describe, it, expect } from "vitest";
+import { FOOD_IMAGE_KEYS } from "@/data/nutrition/food-image-keys";
 import {
   FOOD_CATALOG,
   catalogByCategory,
@@ -176,6 +178,22 @@ describe("zoeken en bladeren", () => {
   it("vindt een regel terug op zijn sleutel", () => {
     expect(catalogEntry("amandelen")?.labelNl).toBe("Amandelen");
     expect(catalogEntry("bestaat-niet")).toBeNull();
+  });
+});
+
+describe("catalogusfoto's bestaan", () => {
+  it("houdt FOOD_IMAGE_KEYS gelijk aan public/images/voedingsmiddelen", () => {
+    const opSchijf = readdirSync("public/images/voedingsmiddelen")
+      .filter((f) => f.endsWith(".jpg"))
+      .map((f) => f.slice(0, -4))
+      .sort();
+    expect([...FOOD_IMAGE_KEYS].sort()).toEqual(opSchijf);
+  });
+
+  it("geeft null voor een item zonder foto", () => {
+    const zonder = FOOD_CATALOG.find((e) => !FOOD_IMAGE_KEYS.has(e.imageOwner ?? e.key));
+    expect(zonder).toBeDefined();
+    expect(catalogImageSrc(zonder!)).toBeNull();
   });
 });
 
