@@ -16,7 +16,7 @@ function input(over: Partial<GateInput> = {}): GateInput {
     images: [{ source: "manufacturer", license_note: "Toestemming per mail 2026-08-01" }],
     actives: [{ amount_per_serving: 300, unit: "mg" }],
     claims: [{ efsa_claim_id: "magnesium-vermoeidheid", meets_condition: true }],
-    offers: [{ active: true, price_checked_at: "2026-09-20T10:00:00Z" }],
+    offers: [{ active: true, price_checked_at: "2026-09-20T10:00:00Z", affiliate_url: "https://ds1.nl/c/?si=1" }],
     sourceCount: 1,
     score: { available: true, detail: "72/100" },
     today: TODAY,
@@ -25,6 +25,24 @@ function input(over: Partial<GateInput> = {}): GateInput {
 }
 
 const failedKeys = (i: GateInput) => gateFailures(evaluatePublishGate(i)).map((c) => c.key);
+
+describe("affiliate-route", () => {
+  const offer = (affiliate_url: string | null) => ({ active: true, price_checked_at: "2026-09-20T10:00:00Z", affiliate_url });
+
+  it("blokkeert een aanbieding zonder affiliate-link", () => {
+    expect(failedKeys(input({ offers: [offer(null)] }))).toEqual(["affiliate"]);
+  });
+
+  it("blokkeert een http- of ongeldige link", () => {
+    expect(failedKeys(input({ offers: [offer("http://winkel.nl/x")] }))).toEqual(["affiliate"]);
+    expect(failedKeys(input({ offers: [offer("niet-een-url")] }))).toEqual(["affiliate"]);
+  });
+
+  it("laat een oude prijs aan het offers-criterium", () => {
+    const stale = { active: true, price_checked_at: "2026-01-01T10:00:00Z", affiliate_url: "https://ds1.nl/c" };
+    expect(failedKeys(input({ offers: [stale] }))).toEqual(["offers"]);
+  });
+});
 
 describe("evaluatePublishGate", () => {
   it("laat een compleet product door", () => {
@@ -72,10 +90,13 @@ describe("evaluatePublishGate", () => {
   });
 
   it("blokkeert oude, ontbrekende of inactieve prijzen", () => {
-    expect(failedKeys(input({ offers: [{ active: true, price_checked_at: "2026-08-01T00:00:00Z" }] }))).toEqual(["offers"]);
-    expect(failedKeys(input({ offers: [{ active: true, price_checked_at: null }] }))).toEqual(["offers"]);
-    expect(failedKeys(input({ offers: [{ active: false, price_checked_at: "2026-09-29T00:00:00Z" }] }))).toEqual(["offers"]);
-    expect(failedKeys(input({ offers: [] }))).toEqual(["offers"]);
+    expect(failedKeys(input({ offers: [{ active: true, price_checked_at: "2026-08-01T00:00:00Z", affiliate_url: "https://ds1.nl/c" }] }))).toEqual(["offers"]);
+    expect(failedKeys(input({ offers: [{ active: true, price_checked_at: null, affiliate_url: "https://ds1.nl/c" }] }))).toEqual(["offers"]);
+    expect(failedKeys(input({ offers: [{ active: false, price_checked_at: "2026-09-29T00:00:00Z", affiliate_url: "https://ds1.nl/c" }] }))).toEqual([
+      "offers",
+      "affiliate",
+    ]);
+    expect(failedKeys(input({ offers: [] }))).toEqual(["offers", "affiliate"]);
   });
 
   it("blokkeert zonder bron of zonder berekenbare score", () => {
@@ -86,7 +107,7 @@ describe("evaluatePublishGate", () => {
   it("meldt alle falende punten tegelijk", () => {
     expect(
       failedKeys(input({ images: [], sourceCount: 0, offers: [], score: { available: false, detail: "x" } })),
-    ).toEqual(["images", "offers", "sources", "score"]);
+    ).toEqual(["images", "offers", "affiliate", "sources", "score"]);
   });
 });
 
@@ -174,7 +195,7 @@ describe("scoreCoverageAdvice", () => {
       images: [{ source: "own", license_note: "eigen foto" }],
       actives: [{ amount_per_serving: 300, unit: "mg" }],
       claims: [],
-      offers: [{ active: true, price_checked_at: "2026-09-29T00:00:00Z" }],
+      offers: [{ active: true, price_checked_at: "2026-09-29T00:00:00Z", affiliate_url: "https://ds1.nl/c" }],
       sourceCount: 1,
       score: { available: true, detail: "94/100 (3 van 5 onderdelen)" },
       today: "2026-09-30",
