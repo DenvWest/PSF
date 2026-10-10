@@ -42,12 +42,28 @@ function trend(extra: Partial<StofTrend>): StofTrend {
 }
 
 describe("PatroonTrendTabel", () => {
-  it("zet een ✓ waar de lat gehaald is, ≥ bij onvolledig en telt gehaald per stof", () => {
+  it("zet een ✓ waar de lat gehaald is, + bij onvolledig en telt gehaald per stof", () => {
     render(<PatroonTrendTabel trends={[trend({})]} onKies={() => {}} />);
     expect(screen.getByText("✓112")).toBeTruthy();
     expect(screen.getByText("84")).toBeTruthy();
-    expect(screen.getByText("≥62")).toBeTruthy();
+    expect(screen.getByText("62+")).toBeTruthy();
     expect(screen.getByText("1/3")).toBeTruthy();
+  });
+
+  it("zet stoffen zonder norm in een eigen tabel met de eenheid achter de naam", () => {
+    const natrium = trend({
+      stof: "sodiumMg",
+      label: "Natrium",
+      soort: "gevolgd",
+      norm: null,
+      punten: [punt("ma", null, "neutraal"), punt("di", null, "neutraal")].map((p, i) => ({ ...p, waarde: i === 0 ? 2100 : 1900 })),
+    });
+    render(<PatroonTrendTabel trends={[trend({}), natrium]} onKies={() => {}} />);
+    expect(screen.getAllByRole("table")).toHaveLength(2);
+    expect(screen.getByText("(mg)")).toBeTruthy();
+    expect(screen.getByText("2100")).toBeTruthy();
+    expect(screen.getByText("2000")).toBeTruthy();
+    expect(screen.getByText(/Dat zegt niets over goed of fout/)).toBeTruthy();
   });
 
   it("geeft een gevolgde stof ook een ✓, en een niet aan te tonen stof alleen zijn kop", () => {

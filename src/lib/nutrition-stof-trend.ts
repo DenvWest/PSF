@@ -224,13 +224,13 @@ function schattingVoor(
   const aanvulling = [...perMoment.values()].reduce((s, w) => s + w, 0);
   const onderbouwing = ontbrekend
     .map((m) => {
-      const { gemiddeld, keer } = gemiddelden.get(m)!;
-      return `${ontbrekend.length > 1 ? `${labelVan(m).toLowerCase()} ` : ""}gem. ${bedrag(gemiddeld, invoer.unit)}, ${keer}×`;
+      const { gemiddeld } = gemiddelden.get(m)!;
+      return `${ontbrekend.length > 1 ? `${labelVan(m).toLowerCase()} ` : ""}meestal ${bedrag(gemiddeld, invoer.unit)}`;
     })
     .join("; ");
   return {
     aanvulling,
-    zin: `≈ ${percentageADH((dag.som + aanvulling) / norm)} met je gebruikelijke ${namen} (${onderbouwing}).`,
+    zin: `Met je gebruikelijke ${namen} erbij kom je op ≈ ${percentageADH((dag.som + aanvulling) / norm)} (een gok: ${onderbouwing}).`,
     perMoment,
   };
 }
@@ -320,10 +320,8 @@ function puntenPerDag(invoer: StofTrendInvoer): StofTrendPunt[] {
               `${datum}: ${bedrag(waarde, invoer.unit, dag.benaderd)}`,
               aandeel !== null ? `${percentageADH(aandeel)} van ${naamVan(invoer).de}` : null,
               dag.volledig
-                ? nodig === 3
-                  ? "alle hoofdmaaltijden"
-                  : `al je ${nodig === 1 ? "gewone maaltijd" : `${nodig} gewone maaltijden`}`
-                : `${hoofd} van ${nodig} ${nodig === 1 ? "maaltijd" : "hoofdmaaltijden"} — geen dagoordeel`,
+                ? "alle maaltijden opgeschreven"
+                : `${hoofd} van ${nodig} ${nodig === 1 ? "maaltijd" : "maaltijden"} opgeschreven, dus nog onvolledig`,
             ]
               .filter(Boolean)
               .join(" · "),
@@ -378,7 +376,7 @@ function puntenPerWeek(invoer: StofTrendInvoer): StofTrendPunt[] {
     return {
       sleutel: week,
       label: opmaak(van, { day: "numeric", month: "short" }),
-      sublabel: gemeten.length > 0 ? `${volledig}/${gemeten.length} vol.` : "—",
+      sublabel: gemeten.length > 0 ? `${gemeten.length} ${gemeten.length === 1 ? "dag" : "dgn"}` : "—",
       waarde,
       aandeel,
       staat,
@@ -388,9 +386,9 @@ function puntenPerWeek(invoer: StofTrendInvoer): StofTrendPunt[] {
         waarde === null
           ? `${opmaak(van, { day: "numeric", month: "short" })} – ${opmaak(tot, { day: "numeric", month: "short" })}: niets geregistreerd`
           : [
-              `${opmaak(van, { day: "numeric", month: "short" })} – ${opmaak(tot, { day: "numeric", month: "short" })}: ${bedrag(waarde, invoer.unit, benaderd)} per dag`,
+              `${opmaak(van, { day: "numeric", month: "short" })} – ${opmaak(tot, { day: "numeric", month: "short" })}: gemiddeld ${bedrag(waarde, invoer.unit, benaderd)} per dag`,
               aandeel !== null ? `${percentageADH(aandeel)} van ${naamVan(invoer).de}` : null,
-              `${volledig} van ${meervoud(gemeten.length, "gemeten dag", "gemeten dagen")} volledig`,
+              `${volledig} van ${meervoud(gemeten.length, "dag", "dagen")} compleet opgeschreven`,
             ]
               .filter(Boolean)
               .join(" · "),
@@ -407,9 +405,9 @@ function perMaaltijdZin(invoer: StofTrendInvoer): string | null {
     if (metingen.length === 0) return [];
     const gemiddeld = metingen.reduce((s, m) => s + m.som, 0) / metingen.length;
     const deel = invoer.norm ? ` (${percentageADH(gemiddeld / invoer.norm)} van ${naamVan(invoer).dag})` : "";
-    return [`${label.toLowerCase()} ${bedrag(gemiddeld, invoer.unit)}${deel}, ${metingen.length}×`];
+    return [`${label.toLowerCase()} ${bedrag(gemiddeld, invoer.unit)}${deel}, ${metingen.length} keer`];
   });
-  return delen.length > 0 ? `Per maaltijd gemiddeld: ${delen.join(" · ")}.` : null;
+  return delen.length > 0 ? `Gemiddeld per maaltijd: ${delen.join(" · ")}.` : null;
 }
 
 function redenenVoor(invoer: StofTrendInvoer, gehaald: boolean): string[] {
@@ -430,29 +428,27 @@ function redenenVoor(invoer: StofTrendInvoer, gehaald: boolean): string[] {
     const totaal = invoer.dagen.reduce((s, d) => s + d.som, 0);
     const normPeriode = invoer.norm * invoer.dagen.length;
     redenen.push(
-      `Minstens ${bedrag(totaal, invoer.unit)} in ${meervoud(invoer.dagen.length, "dag", "dagen")}; de norm over die periode is ${bedrag(normPeriode, invoer.unit)} (${percentageADH(totaal / normPeriode)}).`,
+      `Samen minstens ${bedrag(totaal, invoer.unit)} in ${meervoud(invoer.dagen.length, "dag", "dagen")}. Over die dagen hoort er ${bedrag(normPeriode, invoer.unit)} bij te zitten: jij zit op ${percentageADH(totaal / normPeriode)}.`,
     );
   } else {
     const volledig = gemeten.filter((d) => d.volledig);
     const onvolledig = gemeten.length - volledig.length;
     if (volledig.length === 0) {
-      const verwacht = gemeten[0]!.verwacht.map(labelVan).map((l) => l.toLowerCase());
-      const namen = verwacht.length <= 1 ? (verwacht[0] ?? "") : `${verwacht.slice(0, -1).join(", ")} én ${verwacht[verwacht.length - 1]}`;
       redenen.push(
-        `Op geen van je ${meervoud(gemeten.length, "gemeten dag", "gemeten dagen")} ${verwacht.length === 1 ? "staat" : "staan"} ${namen}. Een dagtotaal is dan een ondergrens zonder oordeel.`,
+        "Geen enkele dag is compleet: er mist steeds een maaltijd. Wat je opschreef is dus een minimum; het echte getal kan hoger zijn.",
       );
     } else {
       const gemiddeld = volledig.reduce((s, d) => s + d.som, 0) / volledig.length;
       redenen.push(
-        `Op je ${meervoud(volledig.length, "volledige dag", "volledige dagen")} gemiddeld ${bedrag(gemiddeld, invoer.unit)}: ${percentageADH(gemiddeld / invoer.norm)} van ${naamVan(invoer).de} (${hoeveelheid(invoer.norm)} ${invoer.unit}).`,
+        `Op de ${volledig.length === 1 ? "dag" : `${volledig.length} dagen`} dat alles erin stond, haalde je gemiddeld ${bedrag(gemiddeld, invoer.unit)}: ${percentageADH(gemiddeld / invoer.norm)} van ${naamVan(invoer).de} (${hoeveelheid(invoer.norm)} ${invoer.unit}).`,
       );
       if (onvolledig > 0) {
         redenen.push(
-          `${meervoud(onvolledig, "dag mist", "dagen missen")} een hoofdmaaltijd; daar is onder ${naamVan(invoer).de} geen antwoord.`,
+          `${meervoud(onvolledig, "dag mist", "dagen missen")} een maaltijd; daar kunnen we niets over zeggen.`,
         );
       }
     }
-    if (volledig.length < gemeten.length) {
+    if (volledig.length === 0) {
       const zin = perMaaltijdZin(invoer);
       if (zin) redenen.push(zin);
     }
@@ -461,7 +457,7 @@ function redenenVoor(invoer: StofTrendInvoer, gehaald: boolean): string[] {
   if (zonderGehalte.length > 0) {
     const voorbeelden = zonderGehalte.slice(0, 2).join(", ");
     redenen.push(
-      `${meervoud(zonderGehalte.length, "product", "producten")} zonder gehalte voor ${invoer.label.toLowerCase()} ${zonderGehalte.length === 1 ? "telt" : "tellen"} niet mee (${voorbeelden}${zonderGehalte.length > 2 ? ", …" : ""}).`,
+      `${meervoud(zonderGehalte.length, "product", "producten")} ${zonderGehalte.length === 1 ? "telt" : "tellen"} niet mee: we weten niet hoeveel ${invoer.label.toLowerCase()} erin zit (${voorbeelden}${zonderGehalte.length > 2 ? ", …" : ""}).`,
     );
   }
   return redenen;

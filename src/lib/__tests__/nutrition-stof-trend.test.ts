@@ -117,15 +117,15 @@ describe("bouwStofTrend", () => {
   it("geeft een onvolledige dag onder de norm geen oordeel, en zegt wat er per maaltijd wél te zeggen valt", () => {
     const trend = bouwStofTrend(invoer([dag("2026-10-01", 70, false), dag("2026-10-02", 70, false), LEGE_DAG]));
     expect(trend.punten.map((p) => p.staat)).toEqual(["onvolledig", "onvolledig", "leeg"]);
-    expect(trend.redenen[0]).toMatch(/Op geen van je 2 gemeten dagen staan ontbijt, lunch én avondeten/);
-    expect(trend.redenen[1]).toBe("Per maaltijd gemiddeld: ontbijt 70 mg (20% van de dagnorm), 2×.");
+    expect(trend.redenen[0]).toMatch(/Geen enkele dag is compleet/);
+    expect(trend.redenen[1]).toBe("Gemiddeld per maaltijd: ontbijt 70 mg (20% van de dagnorm), 2 keer.");
   });
 
   it("rekent het oordeel over de volledige dagen en telt de onvolledige apart", () => {
     const trend = bouwStofTrend(invoer([dag("2026-10-01", 175, true), dag("2026-10-02", 70, false)]));
     expect(trend.punten.map((p) => p.staat)).toEqual(["onder", "onvolledig"]);
-    expect(trend.redenen[0]).toBe("Op je 1 volledige dag gemiddeld 175 mg: 50% van de norm (350 mg).");
-    expect(trend.redenen[1]).toMatch(/1 dag mist een hoofdmaaltijd/);
+    expect(trend.redenen[0]).toBe("Op de dag dat alles erin stond, haalde je gemiddeld 175 mg: 50% van de norm (350 mg).");
+    expect(trend.redenen[1]).toMatch(/1 dag mist een maaltijd/);
   });
 
   it("een gehaalde dag is gehaald, ook als hij onvolledig is", () => {
@@ -167,7 +167,7 @@ describe("bouwStofTrend", () => {
     const laatste = trend.punten[3]!;
     expect(laatste.staat).toBe("onvolledig");
     expect(laatste.aanvulling).toBe(120);
-    expect(laatste.detail?.schatting).toBe("≈ 77% met je gebruikelijke avondeten (gem. 120 mg, 3×).");
+    expect(laatste.detail?.schatting).toBe("Met je gebruikelijke avondeten erbij kom je op ≈ 77% (een gok: meestal 120 mg).");
     expect(laatste.detail?.momenten.find((m) => m.moment === "avondeten")).toMatchObject({ waarde: null, geschat: 120 });
   });
 
@@ -228,7 +228,7 @@ describe("bouwStofTrend", () => {
     ];
     const trend = bouwStofTrend(invoer(dagen));
     expect(trend.punten[0]!.sublabel).toBe("2/2");
-    expect(trend.punten[0]!.uitleg).toMatch(/al je 2 gewone maaltijden/);
+    expect(trend.punten[0]!.uitleg).toMatch(/alle maaltijden opgeschreven/);
     // Gemiddelde avondeten = 100 uit drie keer gegeten, niet 75 met de overgeslagen 0 erbij.
     expect(trend.punten[4]!.aanvulling).toBe(100);
   });

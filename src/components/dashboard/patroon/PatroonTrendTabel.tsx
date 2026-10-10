@@ -12,6 +12,9 @@ import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
  *
  * - In de cel het percentage van de lat (norm, of je eiwitdoel). Zonder lat
  *   de hoeveelheid in de eenheid.
+ * - Stoffen zonder norm (natrium, calorieën, vet, …) staan in een eigen tabel
+ *   met de eenheid achter de naam: twee soorten getallen in één tabel
+ *   (procenten en duizenden mg) las als een fout.
  * - ✓ alleen waar de lat aantoonbaar gehaald is (zonder benaderingen). Een
  *   kernstof krijgt dan sage, een gevolgde stof een neutrale tint
  *   (`BESLUIT_DOELEN_VERBONDEN_2026-10.md` §1). Nooit een ✗.
@@ -31,7 +34,7 @@ function celTekst(punt: StofTrendPunt): string {
   if (punt.waarde === null) return "—";
   const getal =
     punt.aandeel !== null ? percentageADH(punt.aandeel).replace("%", "") : hoeveelheid(punt.waarde);
-  return `${punt.normGehaald ? "✓" : ""}${punt.staat === "onvolledig" && !punt.normGehaald ? "≥" : ""}${getal}`;
+  return `${punt.normGehaald ? "✓" : ""}${getal}${punt.staat === "onvolledig" && !punt.normGehaald ? "+" : ""}`;
 }
 
 function celStijl(trend: StofTrend, punt: StofTrendPunt): { className: string; background?: string } {
@@ -49,12 +52,15 @@ function slotTekst(trend: StofTrend): string {
     const som = gemeten.reduce((s, p) => s + (p.aandeel ?? 0), 0);
     return trend.norm !== null ? percentageADH(som) : `${hoeveelheid(gemeten.reduce((s, p) => s + p.waarde!, 0))} ${trend.unit}`;
   }
-  if (trend.norm === null) return "geen lat";
+  if (trend.norm === null) {
+    return `${hoeveelheid(gemeten.reduce((s, p) => s + p.waarde!, 0) / gemeten.length)}`;
+  }
   if (trend.periodetotaal) return trend.gehaald ? "✓ periode" : "periode";
   return `${gemeten.filter((p) => p.normGehaald).length}/${gemeten.length}`;
 }
 
 function Rij({ trend, onKies }: { trend: StofTrend; onKies: (stof: PatroonStof) => void }) {
+  const zonderNorm = trend.norm === null;
   const naam = (
     <th scope="row" className="sticky left-0 z-10 bg-[var(--vd-surface)] py-1.5 pr-3 text-left font-normal">
       <button
@@ -64,7 +70,7 @@ function Rij({ trend, onKies }: { trend: StofTrend; onKies: (stof: PatroonStof) 
       >
         <span aria-hidden className="mr-1.5 inline-block h-2 w-2 rounded-full align-middle" style={{ background: stofKleur(trend) }} />
         {hoofdletter(trend.label)}
-        {trend.soort === "gevolgd" ? <span className="ml-1 text-[var(--vd-ink-4)]">gev.</span> : null}
+        {zonderNorm ? <span className="ml-1 text-[var(--vd-ink-4)]">({trend.unit})</span> : null}
       </button>
     </th>
   );
@@ -105,21 +111,33 @@ function Rij({ trend, onKies }: { trend: StofTrend; onKies: (stof: PatroonStof) 
   );
 }
 
-export default function PatroonTrendTabel({
+function kopSlot(schaal: StofTrend["schaal"], zonderNorm: boolean): string {
+  if (zonderNorm) return schaal === "maaltijd" ? "samen" : "gemiddeld";
+  return schaal === "maaltijd" ? "hele dag" : schaal === "week" ? "weken gehaald" : "dagen gehaald";
+}
+
+function Tabel({
+  id,
+  titel,
   trends,
   onKies,
+  uitleg,
 }: {
+  id: string;
+  titel: string;
   trends: readonly StofTrend[];
   onKies: (stof: PatroonStof) => void;
+  uitleg: string;
 }) {
   const kolommen = trends.find((t) => t.bewijsbaar)?.punten ?? trends[0]?.punten ?? [];
   if (trends.length === 0 || kolommen.length === 0) return null;
   const schaal = trends[0]!.schaal;
+  const zonderNorm = trends[0]!.norm === null;
 
   return (
-    <section aria-labelledby="patroon-trend-samen" className="vd-tabel" style={{ padding: "0.875rem" }}>
-      <p id="patroon-trend-samen" className="vd-eyebrow" style={{ margin: "0 0 0.5rem" }}>
-        Alles samen · % van je norm of doel
+    <section aria-labelledby={id} className="vd-tabel" style={{ padding: "0.875rem" }}>
+      <p id={id} className="vd-eyebrow" style={{ margin: "0 0 0.5rem" }}>
+        {titel}
       </p>
       <div className="-mx-1 overflow-x-auto px-1">
         <table className="w-full min-w-max border-collapse text-[11.5px] leading-tight">
@@ -134,7 +152,7 @@ export default function PatroonTrendTabel({
                 </th>
               ))}
               <th scope="col" className="pb-1 pl-3 text-right font-normal">
-                {schaal === "maaltijd" ? "dag" : "gehaald"}
+                {kopSlot(schaal, zonderNorm)}
               </th>
             </tr>
           </thead>
@@ -145,9 +163,37 @@ export default function PatroonTrendTabel({
           </tbody>
         </table>
       </div>
-      <p className="m-0 mt-2 text-[10.5px] leading-snug text-[var(--vd-ink-4)]">
-        ✓ = aantoonbaar gehaald · gearceerd en ≥ = onvolledige dag, ondergrens · — = niets geregistreerd
-      </p>
+      <p className="m-0 mt-2 text-[11px] leading-snug text-[var(--vd-ink-3)]">{uitleg}</p>
     </section>
+  );
+}
+
+export default function PatroonTrendTabel({
+  trends,
+  onKies,
+}: {
+  trends: readonly StofTrend[];
+  onKies: (stof: PatroonStof) => void;
+}) {
+  const metNorm = trends.filter((t) => t.norm !== null);
+  const zonderNorm = trends.filter((t) => t.norm === null);
+
+  return (
+    <>
+      <Tabel
+        id="patroon-trend-samen"
+        titel="Alles samen · hoe dicht je bij je doel zat"
+        trends={metNorm}
+        onKies={onKies}
+        uitleg="Zie elke stof als een glas. 100% = het glas is precies vol: je doel voor die dag. Een ✓ betekent dat het glas vol is. Een plus (25+) betekent: minstens zoveel, want je schreef die dag niet alles op en er kan dus nog meer bij zijn. Een streepje (—) betekent dat er niets is opgeschreven."
+      />
+      <Tabel
+        id="patroon-trend-hoeveelheden"
+        titel="Ook gevolgd · hoeveel je binnenkreeg"
+        trends={zonderNorm}
+        onKies={onKies}
+        uitleg="Voor deze stoffen is er geen vast doel, dus zie je gewoon hoeveel je binnenkreeg, in de eenheid achter de naam. mg is heel klein (1000 mg is 1 gram) en kcal zijn calorieën, daarom zijn deze getallen groter dan de procenten hierboven. Dat zegt niets over goed of fout."
+      />
+    </>
   );
 }

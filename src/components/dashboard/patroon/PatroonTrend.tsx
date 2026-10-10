@@ -106,41 +106,41 @@ export default function PatroonTrend({
       <PatroonTrendTabel trends={[...kernstoffen, ...gevolgd]} onKies={springNaar} />
 
 
-      <p className="vd-note" style={{ margin: 0 }}>
-        {schaal === "maaltijd"
-          ? "Per maaltijd: wat elke maaltijd van de dagnorm leverde. Een maaltijd haalt geen dagnorm, dus geen oordeel."
-          : schaal === "dag"
-            ? "Per dag, als deel van de norm (bovenrand = 100%). Onder elke dag staat hoeveel van je gewone maaltijden je registreerde (in te stellen bij Je doelen)."
-            : "Per week: gemiddeld per geregistreerde dag, met hoeveel dagen volledig waren."}{" "}
-<span className="block pt-1">
-          Elke stof heeft zijn eigen kleur; de vulling zegt hoe het ervoor staat:{" "}
-          <span className="inline-flex items-center gap-1">
-            <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: LEGENDA }} /> vol met ✓ = gehaald
-          </span>{" "}
-          ·{" "}
-          <span className="inline-flex items-center gap-1">
-            <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: getint(LEGENDA, 40) }} /> licht = eronder
-          </span>{" "}
-          ·{" "}
-          <span className="inline-flex items-center gap-1">
+      <section aria-label="Zo lees je de grafieken" className="vd-note flex flex-col gap-2" style={{ margin: 0 }}>
+        <p className="m-0">
+          {schaal === "maaltijd"
+            ? "Elke staaf is één maaltijd en laat zien hoeveel van je dagdoel die maaltijd gaf. Eén maaltijd haalt nooit je hele dagdoel, dus hier geen oordeel."
+            : schaal === "dag"
+              ? "Elke staaf is één dag en werkt als een glas: tot de rand vol is je doel gehaald. Onder de dag staat hoeveel maaltijden je opschreef (3/3 = alles)."
+              : "Elke staaf is één week en laat je gemiddelde per dag zien. Het glas is vol als je gemiddeld je doel haalde. Onder de week staat op hoeveel dagen je iets opschreef."}
+        </p>
+        <ul className="m-0 flex list-none flex-wrap gap-x-4 gap-y-1 p-0">
+          <li className="inline-flex items-center gap-1.5">
+            <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: LEGENDA }} />
+            Vol met ✓: doel gehaald
+          </li>
+          <li className="inline-flex items-center gap-1.5">
+            <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: getint(LEGENDA, 40) }} />
+            Lichter: nog niet gehaald
+          </li>
+          <li className="inline-flex items-center gap-1.5">
             <span
               aria-hidden
               className="inline-block h-2.5 w-2.5 rounded-sm border"
               style={{ background: gearceerd(LEGENDA), borderColor: getint(LEGENDA, 60) }}
-            />{" "}
-            gearceerd = onvolledig, geen dagoordeel
-          </span>{" "}
-          ·{" "}
-          <span className="inline-flex items-center gap-1">
+            />
+            Streepjes: niet alles opgeschreven, dus nog onbekend
+          </li>
+          <li className="inline-flex items-center gap-1.5">
             <span
               aria-hidden
               className="inline-block h-2.5 w-2.5 rounded-sm border border-dashed"
               style={{ borderColor: getint(LEGENDA, 70) }}
-            />{" "}
-            gestippeld = je gebruikelijke ontbrekende maaltijd (schatting)
-          </span>
-        </span>
-      </p>
+            />
+            Stippellijn: een gok op wat je meestal eet in een ontbrekende maaltijd
+          </li>
+        </ul>
+      </section>
 
       <ul className="m-0 flex list-none flex-col gap-4 p-0">
         {kernstoffen.map((trend) => (
@@ -151,7 +151,7 @@ export default function PatroonTrend({
       {gevolgd.length > 0 ? (
         <section aria-labelledby="patroon-trend-gevolgd" className="flex flex-col gap-3">
           <p id="patroon-trend-gevolgd" className="vd-eyebrow" style={{ margin: "0.5rem 0 0" }}>
-            Ook gevolgd · tegen de norm, zonder oordeel-kleur
+            Ook gevolgd · zonder oordeel
           </p>
           <ul className="m-0 flex list-none flex-col gap-4 p-0">
             {gevolgd.map((trend) => (

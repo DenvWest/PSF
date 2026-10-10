@@ -79,34 +79,41 @@ function Paneel({
       {detail?.schatting ? <p className="m-0">{detail.schatting}</p> : null}
 
       {momenten.length > 0 ? (
-        <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5">
-          {momenten.map((regel) => (
-            <div key={regel.moment} className="contents">
-              <dt className="text-[var(--vd-ink-3)]">{regel.label}</dt>
-              <dd className="m-0 text-right tabular-nums">
-                {regel.overgeslagen ? (
-                  <span className="text-[var(--vd-ink-3)]">niet gegeten</span>
-                ) : regel.waarde !== null ? (
-                  <>
-                    {hoeveelheid(regel.waarde)} {trend.unit}
-                    {trend.schaal === "week" ? <span className="text-[var(--vd-ink-4)]"> · {regel.keer}×</span> : null}
-                  </>
-                ) : regel.geschat !== null ? (
-                  <span className="text-[var(--vd-ink-3)]">
-                    — · ≈ {hoeveelheid(regel.geschat)} {trend.unit}
-                  </span>
-                ) : (
-                  <span className="text-[var(--vd-ink-4)]">—</span>
-                )}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <div className="flex flex-col gap-1">
+          <p className="m-0 text-[var(--vd-ink-3)]">{trend.schaal === "week" ? "Gemiddeld per maaltijd" : "Per maaltijd"}</p>
+          <dl className="m-0 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5">
+            {momenten.map((regel) => (
+              <div key={regel.moment} className="contents">
+                <dt>
+                  {regel.label}
+                  {trend.schaal === "week" && regel.keer > 0 ? (
+                    <span className="text-[var(--vd-ink-4)]"> ({regel.keer} keer)</span>
+                  ) : null}
+                </dt>
+                <dd className="m-0 text-right tabular-nums">
+                  {regel.overgeslagen ? (
+                    <span className="text-[var(--vd-ink-3)]">niet gegeten</span>
+                  ) : regel.waarde !== null ? (
+                    <>
+                      {hoeveelheid(regel.waarde)} {trend.unit}
+                    </>
+                  ) : regel.geschat !== null ? (
+                    <span className="text-[var(--vd-ink-3)]">
+                      niet opgeschreven, meestal ≈ {hoeveelheid(regel.geschat)} {trend.unit}
+                    </span>
+                  ) : (
+                    <span className="text-[var(--vd-ink-4)]">niet opgeschreven</span>
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       ) : null}
 
       {detail && detail.bronnen.length > 0 ? (
         <p className="m-0">
-          <span className="text-[var(--vd-ink-3)]">{trend.schaal === "week" ? "Top die week: " : "Top: "}</span>
+          <span className="text-[var(--vd-ink-3)]">{trend.schaal === "week" ? "Het meeste die week kwam van: " : "Het meeste kwam van: "}</span>
           {detail.bronnen.map((b) => `${b.naam} (${hoeveelheid(b.bedrag)} ${trend.unit})`).join(" · ")}
         </p>
       ) : null}
