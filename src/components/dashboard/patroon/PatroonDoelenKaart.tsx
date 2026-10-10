@@ -56,7 +56,7 @@ export default function PatroonDoelenKaart({
   return (
     <section
       aria-label="Je doelen"
-      className="mb-4 rounded-xl border border-[var(--vd-line)] bg-[var(--vd-surface)] p-3"
+      className="mb-4 rounded-[16px] border border-[var(--vd-line)] bg-gradient-to-br from-[var(--vd-surface-2)] to-[var(--vd-surface)] p-4"
     >
       <div className="vd-kop" style={{ marginBottom: "0.5rem" }}>
         <p className="vd-eyebrow" style={{ margin: 0 }}>
@@ -73,7 +73,7 @@ export default function PatroonDoelenKaart({
         <>
           <ul className="m-0 grid list-none grid-cols-2 gap-2 p-0 sm:grid-cols-4">
             {macro.rijen.map((rij) => (
-              <li key={rij.veld} className="rounded-lg bg-[var(--vd-surface-2)] px-2 py-2">
+              <li key={rij.veld} className="rounded-xl border border-[var(--vd-line)] bg-[var(--vd-bg)] px-2 py-2.5">
                 <span className="block text-[0.625rem] text-[var(--vd-ink-3)]">{rij.label}</span>
                 <b className="block font-mono text-[0.875rem] text-[var(--vd-ink)]">
                   {hoeveelheid(rij.gemiddeld)} {rij.unit}
@@ -101,8 +101,27 @@ export default function PatroonDoelenKaart({
           ) : null}
 
           <div className="mt-3 border-t border-[var(--vd-line)] pt-3">
+            <div
+              role="img"
+              aria-label={`${gehaald.length} van ${kernstoffen.length} kernstoffen op je norm`}
+              className="mb-2.5 flex gap-1"
+            >
+              {kernstoffen.map((rij) => (
+                <span
+                  key={rij.nutrient}
+                  className="h-2 flex-1 rounded-full"
+                  style={{
+                    background: gehaald.includes(rij)
+                      ? "var(--vd-sage)"
+                      : nogNiet.includes(rij)
+                        ? "var(--vd-terra)"
+                        : "var(--vd-track)",
+                  }}
+                />
+              ))}
+            </div>
             <p className="m-0 text-[0.8125rem] text-[var(--vd-ink)]">
-              <b>
+              <b className="font-mono text-[1.125rem]">
                 {gehaald.length} van {kernstoffen.length}
               </b>{" "}
               kernstoffen op je norm{gehaald.length > 0 ? ` (${lijst(gehaald)})` : ""}.
