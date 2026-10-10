@@ -378,3 +378,30 @@ Dennis (screenshot Keuze › eiwit): het blok "Uit je check" is vaag, onprofessi
 **Afgewezen.** Drie gelijkwaardige kaarten zonder winnaar: later, als "Rijkste bron" nog te veel als winnaar leest.
 
 **Meetpunt.** Ongewijzigd: `keuze_eten_gekozen` {nutrient, product, via}; lees af of losse bronnen vaker gekozen worden dan voorheen.
+
+---
+
+## Aanvulling 10 oktober (2): Mijn keuzes overzichtelijker
+
+**Aanleiding.** Dennis: "Stoffen gekozen" bovenaan is vaag (stof vs. supplement), de lijst per stof wordt onoverzichtelijk als er meer micronutriënten bijkomen, en een leeg moment ("Nog niets gekozen" bij lunch) is een dood vak. Akkoord op de aanbevelingen, in deze volgorde.
+
+**Besluit.**
+1. **Drie tegels worden één regel:** "3 van 5 stoffen · 2 supplementen · € 0,86 per dag (± € 25,80 per maand)". Afgewezen: alleen hernoemen naar "Stoffen gedekt"; drie tegels kosten veel hoogte op 375 px.
+2. **Leeg moment is klikbaar** ("Je dag"). Tik opent een kiezer met je bestaande keuzes ("nu bij avondeten"); een tik verplaatst die hierheen (zelfde opslag als "Ander moment"). Onderaan "Meer opties in Vergelijken →" naar Vergelijken. Afgewezen als enige route: direct naar Vergelijken, want je hebt vaak al een keuze op een ander moment.
+3. **Stofgroepen** (`keuze-stofgroepen.ts`: eiwit, vetzuren, mineralen, vitamines). Vanaf **7 stoffen** (`GROEPEN_VANAF_STOFFEN`) staat "Per stof" onder groepskoppen en klapt "Nog geen keuze" in per groep; daaronder blijft het één lijst, dus met de huidige vijf kernstoffen verandert er niets. `Record<NutrientId, StofgroepId>` dwingt een groep af bij elke nieuwe stof. Zoeken/filteren: pas bij ruim 10 stoffen.
+
+**Meetpunt (GA4):** `mijn_keuzes_leeg_moment` {moment, actie: geopend | verplaatst | vergelijken, kant}: laat zien of lege momenten worden gebruikt en of mensen verplaatsen of nieuw kiezen.
+
+---
+
+## Aanvulling 10 oktober (3): kruisje in Je dag en vrije keuzes
+
+**Aanleiding.** Dennis: Mijn keuzes voelt vastgeklonken aan Vergelijken (elke keuze moet bij een stof horen), en producten in "Je dag" kunnen alleen via "Beheer" weg. Akkoord op de aanbevelingen.
+
+**Besluit.**
+1. **× per regel in Je dag**, met dezelfde "Ongedaan maken"-balk als de zijkolom en lade (`useKeuzesBeheer`, plek `je_dag`). Het wist alleen je keuze en moment; de ster in het dagboek blijft staan, zoals bij de zijkolom.
+2. **Vrije keuzes.** In het zoekveld bij een leeg moment kan elk voedingsmiddel, ook als het geen bron is van een kernstof (koffie, haver). Zo'n keuze staat in Je dag met de toevoeging "los gekozen", zonder stofkaart of balk. Opslag: `voeding-vrij-<moment>-<key>` (`keuze-vrije-keuze.ts`), geen migratie. Is het wél een bron van een van je stoffen, dan blijft het een gewone keuze bij die stof (hoofdstof). "Wis alles" in de lade raakt vrije keuzes niet.
+3. **Rolverdeling.** "Vergelijken = kiezen, Mijn keuzes = doen" blijft het uitgangspunt; Mijn keuzes mag nu ook kiezen voor wat geen stofvraag is. Stofkaarten blijven strikt per kernstof: normen, balk en PS-Score bestaan alleen daarvoor.
+4. **Niet gedaan:** eigen behoeften naast de vijf kernstoffen (vezels, calcium, ijzer, B12, vitamine C) in Keuze; daarvoor ontbreekt de supplementscore. Mogelijke route later: de lijst met gevolgde stoffen uit Doelen laten bepalen welke stoffen Keuze toont, samen met de groepskoppen vanaf 7 stoffen.
+
+**Meetpunt (GA4):** `keuze_overzicht_wis` {plek: je_dag, nutrient: vrij bij een vrije keuze}; `mijn_keuzes_leeg_moment` {actie: gezocht_gekozen, vrij}; `keuze_eten_gekozen` {nutrient: vrij, via: mijn_keuzes_moment}.

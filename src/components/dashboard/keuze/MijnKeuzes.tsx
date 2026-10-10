@@ -3,11 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { kortGetal, STAND_KLEUR, STAND_KORT } from "@/components/dashboard/keuze/KeuzeVergelijken";
+import {
+  kortGetal,
+  OngedaanBalk,
+  STAND_KLEUR,
+  STAND_KORT,
+  useKeuzesBeheer,
+} from "@/components/dashboard/keuze/KeuzeVergelijken";
 import MomentChips, { useMomentOpslag } from "@/components/dashboard/keuze/MomentChips";
 import { VoedingThemaProvider } from "@/components/dashboard/patroon/VoedingThema";
 import FoodThumbnail from "@/components/dashboard/voortgang/FoodThumbnail";
-import { catalogEntry, type CatalogEntry } from "@/data/nutrition/food-catalog";
+import { catalogEntry, searchCatalog, type CatalogEntry } from "@/data/nutrition/food-catalog";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import { clarityTag } from "@/lib/clarity";
 import { buildDagboekVoegHref, gaNaarDashboard } from "@/lib/dagboek-deeplink";
@@ -29,6 +35,8 @@ import { leesVandaag, snelItemVoorEten, snelItemVoorProduct, verwijderSnel, voeg
 import type { DagboekItem } from "@/lib/nutrition-dagboek-items";
 import { keuzeStofStand, type KeuzeStofStand } from "@/lib/keuze-stof-stand";
 import { euroPerDag, hoofdStof, isBronVan } from "@/lib/keuze-stofkaart";
+import { GROEPEN_VANAF_STOFFEN, groepeerPerStofgroep } from "@/lib/keuze-stofgroepen";
+import { planVrijVerplaats, vrijeKeuzes, vrijKeuzeItem } from "@/lib/keuze-vrije-keuze";
 import { EETMOMENTEN, type EetmomentId } from "@/lib/nutrition-eetmomenten";
 import { gehaltePerPortie, pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
 import {
@@ -70,7 +78,8 @@ type DagRij = {
   sub: string;
   entry: CatalogEntry | null;
   product: KeuzeProduct | null;
-  nutrient: NutrientId;
+  /** `null` bij een vrije keuze: een voedingsmiddel in je dag zonder stof. */
+  nutrient: NutrientId | null;
 };
 
 type StofKeuze = {
@@ -147,12 +156,23 @@ export default function MijnKeuzes({
     });
   }, [statuses, reeksen, eiwitDoelG, items, products, gesterd]);
 
+  const beheer = useKeuzesBeheer(SURFACE);
   const [alleenSupplementen, setAlleenSupplementen] = useState(false);
   const alleGekozen = keuzes.filter((k) => k.route !== null || k.product !== null || k.bronnen.length > 0);
   const gekozen = alleenSupplementen ? alleGekozen.filter((k) => k.product !== null) : alleGekozen;
   const open = keuzes.filter((k) => !gekozen.includes(k));
   const supplementen = gekozen.filter((k) => k.product !== null);
   const centenPerDag = supplementen.reduce((som, k) => som + (k.product?.centenPerDag ?? 0), 0);
+  const metGroepen = statuses.length >= GROEPEN_VANAF_STOFFEN;
+  const stofKaart = (keuze: StofKeuze) => (
+    <StofKeuzeKaart
+      key={keuze.status.nutrient}
+      keuze={keuze}
+      voedingsfavorieten={voedingsfavorieten}
+      alleenSupplementen={alleenSupplementen}
+      onWijzig={() => naar(keuze.status.nutrient)}
+    />
+  );
   const dag = ((): DagRij[] => {
     const rijen: DagRij[] = [];
     const gezien = new Set<string>();
@@ -185,6 +205,22 @@ export default function MijnKeuzes({
           entry: null,
           product: k.product,
           nutrient,
+        });
+      }
+    }
+    if (!alleenSupplementen) {
+      for (const vrij of vrijeKeuzes(items)) {
+        const entry = catalogEntry(vrij.key);
+        if (!entry || gezien.has(entry.key)) continue;
+        gezien.add(entry.key);
+        rijen.push({
+          id: `vrij-${entry.key}`,
+          moment: vrij.moment,
+          titel: entry.labelNl,
+          sub: [entry.porties[0]?.labelNl, "los gekozen"].filter(Boolean).join(" · "),
+          entry,
+          product: null,
+          nutrient: null,
         });
       }
     }
@@ -229,19 +265,26 @@ export default function MijnKeuzes({
             </div>
           ) : null}
           {gekozen.length > 0 ? (
-            <dl className="m-0 mt-3 grid grid-cols-3 gap-2">
-              <Tegel label="Stoffen gekozen" waarde={`${gekozen.length} van ${statuses.length}`} />
-              <Tegel label="Supplementen" waarde={String(supplementen.length)} />
-              <Tegel
-                label="Per dag"
-                waarde={centenPerDag > 0 ? euroPerDag(centenPerDag) : "—"}
-                sub={centenPerDag > 0 ? `± ${euroPerDag(centenPerDag * 30)} per maand` : undefined}
-              />
-            </dl>
+            <p className="m-0 mt-3 text-[0.8125rem] leading-relaxed text-[var(--vd-ink-2)]">
+              <b className="font-semibold text-[var(--vd-ink)]">
+                {gekozen.length} van {statuses.length} stoffen
+              </b>
+              {" · "}
+              {supplementen.length} {supplementen.length === 1 ? "supplement" : "supplementen"}
+              {centenPerDag > 0 ? (
+                <>
+                  {" · "}
+                  <b className="font-semibold text-[var(--vd-ink)]">{euroPerDag(centenPerDag)} per dag</b>
+                  {` (± ${euroPerDag(centenPerDag * 30)} per maand)`}
+                </>
+              ) : null}
+            </p>
           ) : null}
         </header>
 
-        {gekozen.length === 0 ? (
+        <OngedaanBalk beheer={beheer} />
+
+        {gekozen.length === 0 && dag.length === 0 ? (
           <div className="rounded-[13px] border border-[var(--vd-line)] bg-[var(--vd-surface)] px-3.5 py-3.5">
             <p className="m-0 max-w-[60ch] text-[0.8125rem] leading-relaxed text-[var(--vd-ink-2)]">
               {alleGekozen.length > 0
@@ -252,34 +295,67 @@ export default function MijnKeuzes({
           </div>
         ) : (
           <>
-            <JeDag rijen={dag} vandaag={vandaag} onVandaag={setVandaag} />
+            <JeDag rijen={dag} vandaag={vandaag} onVandaag={setVandaag} onNaarVergelijken={() => naar(null)} statuses={statuses} voedingsfavorieten={voedingsfavorieten} onWis={(rij) =>
+                beheer.wisRij(
+                  { nutrient: rij.nutrient, key: rij.entry?.key ?? null, soort: rij.product ? "supplement" : "eten", titel: rij.titel },
+                  "je_dag",
+                )
+              } />
             <p className="vd-eyebrow m-0 mt-6">Per stof</p>
             <h3 className="mb-3 mt-1 text-[1.125rem] text-[var(--vd-ink)]">Wat het samen doet</h3>
-            <div className="flex flex-col gap-2.5">
-              {gekozen.map((keuze) => (
-                <StofKeuzeKaart
-                  key={keuze.status.nutrient}
-                  keuze={keuze}
-                  voedingsfavorieten={voedingsfavorieten}
-                  alleenSupplementen={alleenSupplementen}
-                  onWijzig={() => naar(keuze.status.nutrient)}
-                />
-              ))}
-            </div>
+            {metGroepen ? (
+              <div className="flex flex-col gap-4">
+                {groepeerPerStofgroep(gekozen).map(({ groep, keuzes: hier }) => (
+                  <section key={groep.id} aria-label={groep.label}>
+                    <h4 className="m-0 mb-2 text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-[var(--vd-ink-3)]">
+                      {groep.label} · {hier.length}
+                    </h4>
+                    <div className="flex flex-col gap-2.5">{hier.map(stofKaart)}</div>
+                  </section>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2.5">{gekozen.map(stofKaart)}</div>
+            )}
           </>
         )}
 
         {gekozen.length > 0 && open.length > 0 ? (
-          <p className="m-0 mt-3 text-[0.75rem] leading-relaxed text-[var(--vd-ink-3)]">
-            Nog geen keuze: {open.map((k) => k.status.label.toLowerCase()).join(", ")}.{" "}
-            <button
-              type="button"
-              onClick={() => naar(open[0]?.status.nutrient ?? null)}
-              className="cursor-pointer border-0 bg-transparent p-0 font-semibold text-[var(--vd-sage-2)] hover:underline"
-            >
-              Kies in Vergelijken →
-            </button>
-          </p>
+          metGroepen ? (
+            <details className="mt-3 text-[0.75rem] text-[var(--vd-ink-3)]">
+              <summary className="min-h-[44px] cursor-pointer leading-[44px]">Nog geen keuze ({open.length})</summary>
+              <ul className="m-0 flex list-none flex-col gap-1 p-0">
+                {groepeerPerStofgroep(open).map(({ groep, keuzes: hier }) => (
+                  <li key={groep.id}>
+                    <span className="font-semibold text-[var(--vd-ink-2)]">{groep.label}:</span>{" "}
+                    {hier.map((k, i) => (
+                      <span key={k.status.nutrient}>
+                        {i > 0 ? ", " : ""}
+                        <button
+                          type="button"
+                          onClick={() => naar(k.status.nutrient)}
+                          className="cursor-pointer border-0 bg-transparent p-0 font-semibold text-[var(--vd-sage-2)] hover:underline"
+                        >
+                          {k.status.label.toLowerCase()}
+                        </button>
+                      </span>
+                    ))}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : (
+            <p className="m-0 mt-3 text-[0.75rem] leading-relaxed text-[var(--vd-ink-3)]">
+              Nog geen keuze: {open.map((k) => k.status.label.toLowerCase()).join(", ")}.{" "}
+              <button
+                type="button"
+                onClick={() => naar(open[0]?.status.nutrient ?? null)}
+                className="cursor-pointer border-0 bg-transparent p-0 font-semibold text-[var(--vd-sage-2)] hover:underline"
+              >
+                Kies in Vergelijken →
+              </button>
+            </p>
+          )
         ) : null}
       </div>
     </VoedingThemaProvider>
@@ -303,16 +379,6 @@ function NaarVergelijkenKnop({ onClick, label }: { onClick: () => void; label: s
   );
 }
 
-function Tegel({ label, waarde, sub }: { label: string; waarde: string; sub?: string }) {
-  return (
-    <div className="min-w-0 rounded-[12px] border border-[var(--vd-line)] bg-[var(--vd-surface)] px-3 py-2.5">
-      <dt className="text-[0.6875rem] text-[var(--vd-ink-3)]">{label}</dt>
-      <dd className="m-0 mt-0.5 font-mono text-[1.125rem] leading-tight tabular-nums text-[var(--vd-ink)]">{waarde}</dd>
-      {sub ? <dd className="m-0 text-[0.65625rem] text-[var(--vd-ink-3)]">{sub}</dd> : null}
-    </div>
-  );
-}
-
 /**
  * Je keuzes over de dag: de vier momenten van het dagboek, met per moment wat
  * je koos. Het moment staat per stof en per kant onder "Beheer" in de stofkaart;
@@ -322,10 +388,18 @@ function JeDag({
   rijen,
   vandaag,
   onVandaag,
+  onNaarVergelijken,
+  statuses,
+  voedingsfavorieten,
+  onWis,
 }: {
   rijen: readonly DagRij[];
   vandaag: readonly DagboekItem[] | null;
   onVandaag: (lijst: DagboekItem[]) => void;
+  onNaarVergelijken: () => void;
+  statuses: readonly NutrientRouteStatus[];
+  voedingsfavorieten: ReturnType<typeof useDagboekVoedingsfavorieten>;
+  onWis: (rij: DagRij) => void;
 }) {
   return (
     <section aria-label="Je dag" className="mt-5">
@@ -350,11 +424,18 @@ function JeDag({
                   ) : null}
                 </h4>
                 {hier.length === 0 ? (
-                  <p className="m-0 flex min-h-[44px] items-center justify-center rounded-[11px] border border-dashed border-[var(--vd-line-2)] text-[0.75rem] text-[var(--vd-ink-3)]">
-                    Nog niets gekozen
-                  </p>
+                  <LeegMoment
+                    moment={moment.id}
+                    label={moment.label}
+                    rijen={rijen}
+                    onNaarVergelijken={onNaarVergelijken}
+                    statuses={statuses}
+                    voedingsfavorieten={voedingsfavorieten}
+                  />
                 ) : (
-                  hier.map((rij) => <DagRegel key={rij.id} rij={rij} moment={moment.id} vandaag={vandaag} onVandaag={onVandaag} />)
+                  hier.map((rij) => (
+                    <DagRegel key={rij.id} rij={rij} moment={moment.id} vandaag={vandaag} onVandaag={onVandaag} onWis={() => onWis(rij)} />
+                  ))
                 )}
               </section>
             );
@@ -365,31 +446,184 @@ function JeDag({
   );
 }
 
+/** Een regel van Je dag naar een ander moment: per stof, of — bij een vrije keuze — zonder stof. */
+function useVerplaatsRij() {
+  const { items, save, remove } = useVoortgangFavorites();
+  const { zetEten, zetSupplement } = useMomentOpslag(SURFACE);
+  return (rij: DagRij, moment: EetmomentId) => {
+    if (rij.nutrient === null) {
+      if (!rij.entry) return;
+      const plan = planVrijVerplaats(rij.entry.key, rij.titel, moment, items);
+      for (const item of plan.verwijder) remove(item.id);
+      for (const item of plan.voegToe) save(item, SURFACE);
+    } else if (rij.entry) zetEten(rij.nutrient, rij.entry.key, rij.titel, moment);
+    else zetSupplement(rij.nutrient, rij.titel, moment);
+  };
+}
+
+/**
+ * Een moment zonder keuze is een uitnodiging: tik, en zet een keuze die je al
+ * hebt (nu bij een ander moment) hierheen, of ga naar Vergelijken.
+ */
+function LeegMoment({
+  moment,
+  label,
+  rijen,
+  onNaarVergelijken,
+  statuses,
+  voedingsfavorieten,
+}: {
+  moment: EetmomentId;
+  label: string;
+  rijen: readonly DagRij[];
+  onNaarVergelijken: () => void;
+  statuses: readonly NutrientRouteStatus[];
+  voedingsfavorieten: ReturnType<typeof useDagboekVoedingsfavorieten>;
+}) {
+  const [open, setOpen] = useState(false);
+  const [zoek, setZoek] = useState("");
+  const { zetEten } = useMomentOpslag(SURFACE);
+  const { save } = useVoortgangFavorites();
+  const term = zoek.trim();
+  const treffers = useMemo(() => {
+    if (term.length < 2) return [];
+    const stoffen = statuses.map((status) => status.nutrient);
+    return searchCatalog(term, 40)
+      .slice(0, 5)
+      .map((entry) => ({ entry, stof: hoofdStof(entry, stoffen) }));
+  }, [term, statuses]);
+
+  const kiesNieuw = (entry: CatalogEntry, stof: NutrientId | null) => {
+    if (stof === null) {
+      save(vrijKeuzeItem(entry.key, entry.labelNl, moment), SURFACE);
+    } else {
+      const label = statuses.find((status) => status.nutrient === stof)?.label ?? "";
+      save(
+        { id: etenKeuzeId(stof, entry.key), title: `${label}: ${entry.labelNl}`, kind: "activiteit", domain: "voeding", source: "mijn_keuze" },
+        SURFACE,
+      );
+      zetEten(stof, entry.key, entry.labelNl, moment);
+    }
+    if (!voedingsfavorieten.isBewaard(entry.key)) void voedingsfavorieten.wissel(entry.key, stof ?? "vrij");
+    trackEvent("keuze_eten_gekozen", {
+      nutrient: stof ?? "vrij",
+      product: entry.key,
+      actie: "gekozen",
+      via: "mijn_keuzes_moment",
+    });
+    trackEvent("mijn_keuzes_leeg_moment", { moment, actie: "gezocht_gekozen", kant: "eten", vrij: stof === null });
+    setZoek("");
+    setOpen(false);
+  };
+
+  const verplaats = useVerplaatsRij();
+  const zetHier = (rij: DagRij) => {
+    verplaats(rij, moment);
+    trackEvent("mijn_keuzes_leeg_moment", { moment, actie: "verplaatst", kant: rij.product ? "supplement" : "eten" });
+    setOpen(false);
+  };
+
+  return (
+    <div>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-label={`Iets kiezen voor ${label.toLowerCase()}`}
+        onClick={() => {
+          if (!open) trackEvent("mijn_keuzes_leeg_moment", { moment, actie: "geopend" });
+          setOpen((huidig) => !huidig);
+        }}
+        className="flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[11px] border border-dashed border-[var(--vd-line-2)] bg-transparent text-[0.75rem] text-[var(--vd-ink-3)] hover:border-[var(--vd-ink-3)] hover:text-[var(--vd-ink)]"
+      >
+        Nog niets gekozen · tik om te kiezen
+      </button>
+      {open ? (
+        <div className="mt-2 flex flex-col gap-1.5">
+          {rijen.length > 0 ? (
+            <p className="m-0 text-[0.6875rem] text-[var(--vd-ink-3)]">Zet een keuze die je al hebt hierheen:</p>
+          ) : null}
+          {rijen.map((rij) => (
+            <button
+              key={rij.id}
+              type="button"
+              onClick={() => zetHier(rij)}
+              className="flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 rounded-[11px] border border-[var(--vd-line)] bg-[var(--vd-bg)] px-3 text-left text-[0.75rem] text-[var(--vd-ink)] hover:border-[var(--vd-ink-3)]"
+            >
+              <span className="min-w-0 truncate font-semibold">{rij.titel}</span>
+              <span className="shrink-0 text-[0.6875rem] text-[var(--vd-ink-3)]">
+                nu bij {EETMOMENTEN.find((m) => m.id === rij.moment)?.label.toLowerCase()}
+              </span>
+            </button>
+          ))}
+          <input
+            type="search"
+            value={zoek}
+            onChange={(event) => setZoek(event.target.value)}
+            onBlur={() => {
+              if (term) trackEvent("mijn_keuzes_leeg_moment", { moment, actie: "gezocht", treffers: treffers.length });
+            }}
+            placeholder="Of zoek iets anders, bijvoorbeeld haring"
+            aria-label={`Zoek eten voor ${label.toLowerCase()}`}
+            className="min-h-[44px] w-full rounded-[11px] border border-[var(--vd-line)] bg-[var(--vd-surface)] px-3 text-[0.75rem] text-[var(--vd-ink)] placeholder:text-[var(--vd-ink-4)] focus:border-[var(--vd-sage)] focus:outline-none"
+          />
+          {term.length >= 2 && treffers.length === 0 ? (
+            <p className="m-0 text-[0.6875rem] text-[var(--vd-ink-3)]">Niets gevonden voor &ldquo;{term}&rdquo;.</p>
+          ) : null}
+          {treffers.map(({ entry, stof }) => (
+            <button
+              key={entry.key}
+              type="button"
+              onClick={() => kiesNieuw(entry, stof)}
+              className="flex min-h-[44px] w-full cursor-pointer items-center justify-between gap-2 rounded-[11px] border border-[var(--vd-sage)] bg-transparent px-3 text-left text-[0.75rem] text-[var(--vd-ink)] hover:bg-[var(--vd-sage-fill)]"
+            >
+              <span className="min-w-0 truncate font-semibold">{entry.labelNl}</span>
+              <span className="shrink-0 text-[0.6875rem] text-[var(--vd-sage-2)]">
+                {statuses.find((status) => status.nutrient === stof)?.label.toLowerCase() ?? "los"}
+              </span>
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("mijn_keuzes_leeg_moment", { moment, actie: "vergelijken" });
+              onNaarVergelijken();
+            }}
+            className="min-h-[44px] cursor-pointer border-0 bg-transparent p-0 text-left text-[0.75rem] font-semibold text-[var(--vd-sage-2)] hover:underline"
+          >
+            Meer opties in Vergelijken →
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function DagRegel({
   rij,
   moment,
   vandaag,
   onVandaag,
+  onWis,
 }: {
   rij: DagRij;
   moment: EetmomentId;
   vandaag: readonly DagboekItem[] | null;
   onVandaag: (lijst: DagboekItem[]) => void;
+  onWis: () => void;
 }) {
   const logbaar = rij.entry !== null || (rij.product !== null && dagboekProductVan(rij.product) !== null);
   const [verplaats, setVerplaats] = useState(false);
   const [bezig, setBezig] = useState(false);
   const [fout, setFout] = useState(false);
   const [gelogd, setGelogd] = useState<DagboekItem | null>(null);
-  const { zetEten, zetSupplement } = useMomentOpslag(SURFACE);
   const kant = rij.product ? "supplement" : "eten";
   const eerderVandaag = (vandaag ?? []).some((item) =>
     rij.entry ? item.bron === "voeding" && item.key === rij.entry.key : item.bron === "supplement" && item.key === rij.product?.slug,
   );
 
+  const verplaatsRij = useVerplaatsRij();
   const kies = (nieuw: EetmomentId) => {
-    if (rij.entry) zetEten(rij.nutrient, rij.entry.key, rij.titel, nieuw);
-    else zetSupplement(rij.nutrient, rij.titel, nieuw);
+    verplaatsRij(rij, nieuw);
     setVerplaats(false);
   };
 
@@ -406,7 +640,7 @@ function DagRegel({
     }
     setGelogd(item);
     onVandaag(lijst);
-    trackEvent("keuze_bron_naar_dagboek", { nutrient: rij.nutrient, moment, surface: SURFACE, kant, via: "direct" });
+    trackEvent("keuze_bron_naar_dagboek", { nutrient: rij.nutrient ?? "vrij", moment, surface: SURFACE, kant, via: "direct" });
   };
 
   const maakOngedaan = async (naarPortiescherm: boolean) => {
@@ -421,7 +655,7 @@ function DagRegel({
     setGelogd(null);
     onVandaag(lijst);
     if (naarPortiescherm) {
-      trackEvent("keuze_bron_naar_dagboek", { nutrient: rij.nutrient, moment, surface: SURFACE, kant, via: "portiescherm" });
+      trackEvent("keuze_bron_naar_dagboek", { nutrient: rij.nutrient ?? "vrij", moment, surface: SURFACE, kant, via: "portiescherm" });
       gaNaarDashboard(
         buildDagboekVoegHref(
           rij.entry
@@ -430,7 +664,7 @@ function DagRegel({
         ),
       );
     } else {
-      trackEvent("keuze_log_ongedaan", { nutrient: rij.nutrient, moment, surface: SURFACE, kant });
+      trackEvent("keuze_log_ongedaan", { nutrient: rij.nutrient ?? "vrij", moment, surface: SURFACE, kant });
     }
   };
 
@@ -471,6 +705,14 @@ function DagRegel({
             {bezig ? "…" : "＋ Dagboek"}
           </button>
         ) : null}
+        <button
+          type="button"
+          aria-label={`${rij.titel} uit je keuzes halen`}
+          onClick={onWis}
+          className="inline-flex min-h-[44px] min-w-[44px] shrink-0 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-[1rem] text-[var(--vd-ink-3)] hover:text-[var(--vd-ink)]"
+        >
+          <span aria-hidden>×</span>
+        </button>
       </div>
       {gelogd ? (
         <p
@@ -496,13 +738,13 @@ function DagRegel({
           </button>
         </p>
       ) : null}
-      {rij.product ? (
+      {rij.product && rij.nutrient ? (
         <Link
           href={metKeuzeHerkomst(rij.product.href, rij.nutrient, "favorieten")}
           onClick={() =>
             trackEvent("keuze_vergelijken_ps_score_click", {
               surface: SURFACE,
-              nutrient: rij.nutrient,
+              nutrient: rij.nutrient ?? "vrij",
               doel: "productpagina",
               plek: "je_dag",
               product: rij.product?.slug ?? "",
