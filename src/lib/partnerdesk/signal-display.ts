@@ -19,6 +19,14 @@ export function signalLabel(
       return `Ontvangen commissie wijkt af (${payload.count ?? "?"}×)`;
     case "conversions_unreviewed":
       return `${payload.count ?? "?"} conversie(s) wachten op beoordeling`;
+    case "prices_stale": {
+      const parts = [
+        Number(payload.overdue) > 0 ? `${payload.overdue} over de termijn` : null,
+        Number(payload.stale) > 0 ? `${payload.stale} ouder dan 30 dgn` : null,
+        Number(payload.warn) > 0 ? `${payload.warn} verlopen binnen 7 dgn` : null,
+      ].filter(Boolean);
+      return `Prijzen controleren: ${parts.join(", ")}`;
+    }
     case "task_overdue":
       return `Taak te laat: ${payload.title ?? ""}`;
     default:

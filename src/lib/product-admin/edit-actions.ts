@@ -30,6 +30,7 @@ import { buildDosering } from "@/lib/supplement-catalog-db/loader";
 import { publishedEditBlock, type PublishedEdit } from "@/lib/product-admin/gate-regression";
 import { getProductDossierById } from "@/lib/product-admin/queries";
 import { todayIso } from "@/lib/partnerdesk/dates";
+import { recomputeSignalsForPartner } from "@/lib/partnerdesk/signals";
 
 function revalidateProduct(slug: string) {
   revalidatePath("/admin/producten");
@@ -40,6 +41,22 @@ function revalidateProduct(slug: string) {
 
 function fail(err: unknown): ActionResult {
   return { ok: false, error: err instanceof Error ? err.message : "Onbekende fout." };
+}
+
+/** Houdt het prijssignaal in PartnerDesk vers na een prijs- of aanbiedingswijziging; mislukken breekt de actie niet. */
+async function refreshPriceSignals(db: SupabaseClient, productId: string): Promise<void> {
+  try {
+    const { data } = await db.from("sup_offers").select("sup_retailers(pd_partner_id)").eq("product_id", productId);
+    type Row = { sup_retailers: { pd_partner_id: string | null } | { pd_partner_id: string | null }[] | null };
+    const ids = new Set<string>();
+    for (const row of (data ?? []) as unknown as Row[]) {
+      const r = Array.isArray(row.sup_retailers) ? row.sup_retailers[0] : row.sup_retailers;
+      if (r?.pd_partner_id) ids.add(r.pd_partner_id);
+    }
+    await Promise.all([...ids].map((id) => recomputeSignalsForPartner(db, id)));
+  } catch {
+    // het dagelijkse signaalsync vangt het alsnog op
+  }
 }
 
 async function blockedByGate(db: SupabaseClient, productId: string, edit: PublishedEdit): Promise<string | null> {
@@ -171,6 +188,7 @@ export async function updateOfferPriceAction(input: {
     await db
       .from("sup_offer_price_history")
       .insert({ offer_id: input.offerId, price_cents: input.priceCents, observed_at: now });
+    await refreshPriceSignals(db, input.productId);
     revalidateProduct(input.slug);
     return { ok: true };
   } catch (err) {
@@ -195,6 +213,7 @@ export async function setOfferActiveAction(input: {
       .eq("id", input.offerId)
       .eq("product_id", input.productId);
     if (error) return { ok: false, error: error.message };
+    await refreshPriceSignals(db, input.productId);
     revalidateProduct(input.slug);
     return { ok: true };
   } catch (err) {

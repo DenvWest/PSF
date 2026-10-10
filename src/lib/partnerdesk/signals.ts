@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import { todayIso } from "@/lib/partnerdesk/dates";
 import { daysUntil } from "@/lib/partnerdesk/contract-status";
+import { summarizePrices, type PriceSignalInput } from "@/lib/product-admin/price-decay";
 import { ledgerMismatches, stalePendingConversions } from "@/lib/partnerdesk/revenue";
 import {
   computePartnerSignals,
@@ -142,6 +143,37 @@ async function loadRevenueSignalInput(
   };
 }
 
+/**
+ * Prijsverval van gepubliceerde producten met een actieve aanbieding bij een winkel
+ * van deze partner (besluit B-2: signaal met 7 dagen termijn, niet depubliceren).
+ */
+async function loadPriceSignalInput(
+  db: SupabaseClient,
+  partnerId: string,
+  today: string,
+): Promise<PriceSignalInput | undefined> {
+  const retailers = await db.from("sup_retailers").select("id").eq("pd_partner_id", partnerId);
+  if (retailers.error || !retailers.data || retailers.data.length === 0) return undefined;
+  const offers = await db
+    .from("sup_offers")
+    .select("price_checked_at, sup_products!inner(slug, status)")
+    .eq("active", true)
+    .eq("sup_products.status", "published")
+    .in(
+      "retailer_id",
+      retailers.data.map((r: { id: string }) => r.id),
+    );
+  if (offers.error) return undefined;
+  type Row = { price_checked_at: string | null; sup_products: { slug: string } | { slug: string }[] };
+  return summarizePrices(
+    ((offers.data ?? []) as unknown as Row[]).map((o) => ({
+      slug: (Array.isArray(o.sup_products) ? o.sup_products[0]?.slug : o.sup_products?.slug) ?? "?",
+      price_checked_at: o.price_checked_at,
+    })),
+    today,
+  );
+}
+
 /** BR-04: automatische opzeg-taak op cancel_by − 14 dgn (idempotent via dedupe_key). */
 async function ensureCancelDeadlineTasks(
   db: SupabaseClient,
@@ -216,8 +248,11 @@ export async function recomputeSignalsForPartner(
     rules = (rulesRes.data ?? []) as PdCommissionRule[];
   }
 
-  const revenue = await loadRevenueSignalInput(db, partnerId, today);
-  const desired = computePartnerSignals({ partner, contracts, rules, contacts, revenue }, today);
+  const [revenue, prices] = await Promise.all([
+    loadRevenueSignalInput(db, partnerId, today),
+    loadPriceSignalInput(db, partnerId, today),
+  ]);
+  const desired = computePartnerSignals({ partner, contracts, rules, contacts, revenue, prices }, today);
   for (const t of tasks) {
     const s = taskOverdueSignal(t, today);
     if (s) desired.push(s);
@@ -306,6 +341,7 @@ async function runFullSync(today: string): Promise<void> {
         contracts: pc,
         rules: rulesByPartner.get(partner.id) ?? [],
         contacts: contactsByPartner.get(partner.id) ?? [],
+        prices: await loadPriceSignalInput(db, partner.id, today),
       },
       today,
     );
