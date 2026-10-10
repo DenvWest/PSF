@@ -11,6 +11,7 @@ import {
   expirySeverity,
 } from "@/lib/partnerdesk/contract-status";
 import { daysSince } from "@/lib/partnerdesk/dates";
+import type { PriceSignalInput } from "@/lib/product-admin/price-decay";
 import type {
   PdCommissionRule,
   PdContact,
@@ -35,6 +36,7 @@ export interface PartnerSignalBundle {
   rules: PdCommissionRule[]; // niet-gearchiveerd
   contacts: PdContact[]; // niet-gearchiveerd
   revenue?: RevenueSignalInput;
+  prices?: PriceSignalInput;
 }
 
 export interface RevenueSignalInput {
@@ -57,7 +59,7 @@ export function computePartnerSignals(
   bundle: PartnerSignalBundle,
   today: string,
 ): DesiredSignal[] {
-  const { partner, contracts, rules, contacts, revenue } = bundle;
+  const { partner, contracts, rules, contacts, revenue, prices } = bundle;
   const out: DesiredSignal[] = [];
   const partnerActive = partner.status === "active" && !partner.archived_at;
 
@@ -105,6 +107,18 @@ export function computePartnerSignals(
       partnerId: partner.id,
       dedupeKey: `commission_mismatch:${partner.id}`,
       payload: { count: revenue.mismatchCount, cents: revenue.mismatchCents },
+    });
+  }
+
+  if (prices && prices.warn + prices.stale + prices.overdue > 0) {
+    out.push({
+      type: "prices_stale",
+      severity: prices.overdue > 0 ? "red" : "amber",
+      subjectType: "partner",
+      subjectId: partner.id,
+      partnerId: partner.id,
+      dedupeKey: `prices_stale:${partner.id}`,
+      payload: { warn: prices.warn, stale: prices.stale, overdue: prices.overdue, slugs: prices.slugs },
     });
   }
 
