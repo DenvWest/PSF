@@ -321,14 +321,6 @@ describe("KeuzeVergelijken", () => {
     expect(favorieten.items).toHaveLength(0);
   });
 
-  it("klapt de zijkolom in tot een knop met het aantal en weer uit", () => {
-    favorieten.items = [{ id: "voeding-eten-protein-ei-gebakken", title: "Eiwit: Ei, gebakken", kind: "activiteit" }];
-    renderKeuze();
-    fireEvent.click(screen.getByRole("button", { name: "Klap Je keuzes in" }));
-    fireEvent.click(screen.getByRole("button", { name: /Je keuzes · 1/ }));
-    expect(screen.getByRole("button", { name: "Klap Je keuzes in" })).toBeTruthy();
-  });
-
   it("na Kies vraagt Vergelijken wanneer je het eet of neemt, per voedingsmiddel en per supplement", async () => {
     const { rerender } = renderKeuze();
     const eten = () => screen.getByRole("region", { name: "Uit je eten" });

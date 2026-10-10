@@ -175,7 +175,6 @@ export default function KeuzeVergelijken({
   const voedingsfavorieten = useDagboekVoedingsfavorieten("keuze_stof");
   const overzicht = useKeuzesOverzicht(statuses, products);
   const beheer = useKeuzesBeheer(surface);
-  const [zijOpen, setZijOpen] = useState(true);
 
   // Terug van een productpagina (`?tab=keuze&stof=…`): die stof open, daarna de
   // parameter uit de URL zodat herladen niet opnieuw springt.
@@ -274,11 +273,7 @@ export default function KeuzeVergelijken({
             })}
           </nav>
 
-          <div
-            className={`grid gap-4 @[56rem]:items-start ${
-              zijOpen ? "@[56rem]:grid-cols-[minmax(0,1fr)_18.5rem]" : "@[56rem]:grid-cols-[minmax(0,1fr)_auto]"
-            }`}
-          >
+          <div className="grid gap-4 @[56rem]:grid-cols-[minmax(0,1fr)_18.5rem] @[56rem]:items-start">
             <div id="keuze-werkblad" className="min-w-0 scroll-mt-20">
               {actief && actiefStand ? (
                 <StofWerkblad
@@ -300,8 +295,6 @@ export default function KeuzeVergelijken({
               surface={surface}
               onNaarMijnKeuzes={onNaarMijnKeuzes}
               beheer={beheer}
-              open={zijOpen}
-              onOpenChange={setZijOpen}
             />
           </div>
 
@@ -564,63 +557,27 @@ function NaarMijnKeuzesKnop({
   );
 }
 
-/** Brede inhoud: al je keuzes naast het werkblad, in te klappen tot een smalle knop. Smaller: zie {@link KeuzesLade}. */
+/** Brede inhoud: al je keuzes naast het werkblad. Smaller: zie {@link KeuzesLade}. */
 function KeuzesZijkolom({
   overzicht,
   surface,
   onNaarMijnKeuzes,
   beheer,
-  open,
-  onOpenChange,
 }: {
   overzicht: KeuzesOverzicht;
   surface: string;
   onNaarMijnKeuzes?: () => void;
   beheer: KeuzesBeheer;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
 }) {
   const aantal = overzicht.rijen.length;
-  const wissel = (volgende: boolean) => {
-    trackEvent("keuze_zijkolom_wissel", { surface, open: volgende, aantal });
-    onOpenChange(volgende);
-  };
-
-  if (!open) {
-    return (
-      <aside aria-label="Je keuzes" className="hidden @[56rem]:sticky @[56rem]:top-20 @[56rem]:block">
-        <button
-          type="button"
-          aria-expanded={false}
-          onClick={() => wissel(true)}
-          className="inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-[12px] border border-[var(--vd-line)] bg-[var(--vd-surface)] px-3 font-[inherit] text-[0.8125rem] font-semibold text-[var(--vd-ink)]"
-        >
-          <span aria-hidden="true">‹</span> Je keuzes{aantal > 0 ? ` · ${aantal}` : ""}
-        </button>
-      </aside>
-    );
-  }
 
   return (
     <aside
       aria-label="Je keuzes"
       className="hidden rounded-[16px] border border-[var(--vd-line)] bg-[var(--vd-surface)] p-4 @[56rem]:sticky @[56rem]:top-20 @[56rem]:block"
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="vd-eyebrow m-0">Mijn keuzes</p>
-          <h3 className="mb-3 mt-1 text-[1.125rem] text-[var(--vd-ink)]">Je keuzes</h3>
-        </div>
-        <button
-          type="button"
-          aria-expanded
-          aria-label="Klap Je keuzes in"
-          onClick={() => wissel(false)}
-          className="-mr-2 -mt-1 inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-[1.125rem] text-[var(--vd-ink-3)] hover:text-[var(--vd-ink)]"
-        >
-          <span aria-hidden="true">›</span>
-        </button>
-      </div>
+      <p className="vd-eyebrow m-0">Mijn keuzes</p>
+      <h3 className="mb-3 mt-1 text-[1.125rem] text-[var(--vd-ink)]">Je keuzes</h3>
       <div className="flex flex-col gap-3">
         <OngedaanBalk beheer={beheer} />
         {aantal === 0 ? (
