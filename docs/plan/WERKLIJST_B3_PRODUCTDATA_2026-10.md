@@ -86,3 +86,9 @@ arctic-blue-visolie, minami-morepa-original, mollers-omega-3-citroen, orangefit-
 ## 5. Voorstel bulkstap
 
 Een kleine admin-actie "Invullen per winkel": jij kiest een winkel, bevestigt de notitie en de bron (`merchant_feed`), en de afbeeldingen van alle producten van die winkel zonder notitie worden in één keer bijgewerkt. Niets wordt ingevuld zonder jouw bevestiging. Bouwen pas na het verificatiewerk in §1.
+
+## Besluit Dennis (10 oktober 2026) over de toestemming
+
+Dennis gaat de campagnevoorwaarden (Vitaminstore, VitalNutrition) en de Arctic Blue-voorwaarden niet afzonderlijk nagaan: gebruik van de afbeeldingen via het affiliate-programma wordt als toegestaan beschouwd. De licentie-notitie legt dat daarom vast als **aanname van de eigenaar** met datum, niet als geverifieerde toestemming. Risico (bewust genomen): Daisycon art. 2.5 vraagt rechtenvrije afbeeldingen of toestemming; als een adverteerder bezwaar maakt, moet de afbeelding weg. Voor directe contracten (Arctic Blue en toekomstige) geldt: eigen materiaal opvragen bij het sluiten van het contract.
+
+**Gebouwd:** "Afbeeldingen invullen per winkel" op `/admin/producten` (met controle vooraf, nooit bestaande notities overschrijven).
