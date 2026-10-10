@@ -155,6 +155,7 @@ import {
   parseAgendaViewFromUrl,
   parseDagFromUrl,
   parseKompasFromUrl,
+  parseKeuzeDeelFromUrl,
   parseKeuzeDomeinFromUrl,
   parseVoortgangScreenFromUrl,
   canonicalizeDashboardTabParam,
@@ -2923,6 +2924,11 @@ function DashboardContent({
   // werkt `useSearchParams` niet bij, dus de URL is de bron bij binnenkomst en
   // deze staat wint daarna.
   const [keuzeDomeinOverride, setKeuzeDomeinOverride] = useState<PillarId | null>(null);
+  // Idem voor het onderdeel (`deel=`): `undefined` = de URL, anders wint dit.
+  // Zo volgt het onderdeel ook de terug-knop, niet alleen de klik.
+  const [keuzeDeelOverride, setKeuzeDeelOverride] = useState<SchapTabId | null | undefined>(
+    undefined,
+  );
   // Live-geopende Kompas-domein, gemeld door KompasHome — zodat de
   // cockpit-shell (header/breadcrumb/context) meebeweegt met navigatie i.p.v.
   // vast te staan op de domein uit de URL bij het eerste laden.
@@ -3023,9 +3029,12 @@ function DashboardContent({
 
   /** Idem: `schap=` is de oude naam van `deel=`. Klikken daarna leven in `KeuzeScherm`. */
   const activeKeuzeDeel = useMemo((): SchapTabId | null => {
+    if (keuzeDeelOverride !== undefined) {
+      return keuzeDeelOverride;
+    }
     const paramDeel = searchParams.get("deel") ?? searchParams.get("schap");
     return isSchapTabId(paramDeel) ? paramDeel : null;
-  }, [searchParams]);
+  }, [searchParams, keuzeDeelOverride]);
 
   const tabMeta = DASHBOARD_TABS.find((t) => t.id === tab) ?? DASHBOARD_TABS[0];
   const allowedTypes = TAB_SECTIONS[tab];
@@ -3088,6 +3097,7 @@ function DashboardContent({
         clarityTag("dashboard_tab", "keuze");
       }
       setKeuzeDomeinOverride(target);
+      setKeuzeDeelOverride(isSchapTabId(deel) ? deel : null);
       setTab("keuze");
       setVoortgangScreen("hub");
       syncDashboardKeuzeParams(target, deel ?? null);
@@ -3165,6 +3175,7 @@ function DashboardContent({
         setVoortgangScreen("hub");
         if (parsedTab === "keuze") {
           setKeuzeDomeinOverride(resolveSchapDomain(parseKeuzeDomeinFromUrl(url)));
+          setKeuzeDeelOverride(parseKeuzeDeelFromUrl(url));
         }
       }
     }
@@ -3225,6 +3236,7 @@ function DashboardContent({
       }
       if (parsedTab === "keuze") {
         setKeuzeDomeinOverride(resolveSchapDomain(parseKeuzeDomeinFromUrl(url)));
+        setKeuzeDeelOverride(parseKeuzeDeelFromUrl(url));
       }
     });
   }, [searchParams, VALID_TAB_IDS]);
@@ -3266,6 +3278,7 @@ function DashboardContent({
       clarityTag("dashboard_keuze", "domein_reset");
     }
     setKeuzeDomeinOverride(null);
+    setKeuzeDeelOverride(undefined);
     setTab(nextTab);
   };
 
