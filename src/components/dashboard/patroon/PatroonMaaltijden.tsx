@@ -270,18 +270,26 @@ export default function PatroonMaaltijden({
 
   return (
     <section aria-label="Gemiddeld per maaltijd">
-      <div className="vd-segment mb-3 !flex w-full" role="group" aria-label="Kies een maaltijd">
-        {patroon.map((m) => (
-          <button
-            key={m.moment}
-            type="button"
-            aria-pressed={m.moment === moment}
-            onClick={() => kies(m.moment)}
-            className="flex-1 !px-1"
-          >
-            {m.label}
-          </button>
-        ))}
+      <div className="vd-chiprij" role="group" aria-label="Kies een maaltijd">
+        {patroon.map((m) => {
+          const aan = m.moment === moment;
+          return (
+            <button
+              key={m.moment}
+              type="button"
+              aria-pressed={aan}
+              onClick={() => kies(m.moment)}
+              className={`vd-chip inline-flex min-h-[40px] items-center gap-1.5 ${aan ? "!border-[var(--vd-sage)] !text-[var(--vd-sage-2)]" : ""}`}
+            >
+              <span
+                aria-hidden
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ background: m.keer > 0 ? "var(--vd-sage-2)" : "var(--vd-ink-4)" }}
+              />
+              {m.label}
+            </button>
+          );
+        })}
       </div>
 
       {maaltijd.keer === 0 ? (
@@ -291,31 +299,45 @@ export default function PatroonMaaltijden({
         </p>
       ) : (
         <>
-          <p className="vd-eyebrow" style={{ margin: "0 0 0.5rem" }}>
-            {eenDag
-              ? `${maaltijd.label} ${periodeTekst}`
-              : `Gemiddeld per ${naam} · ${maaltijd.keer} van ${dagen} dagen geregistreerd ${periodeTekst}`}
-          </p>
+          <section
+            aria-label={`${maaltijd.label}, gemiddeld`}
+            className="@container mb-3 rounded-[16px] border border-[var(--vd-line)] bg-gradient-to-br from-[var(--vd-surface-2)] to-[var(--vd-surface)] p-4 @[34rem]:p-5"
+          >
+            <p className="vd-eyebrow m-0">
+              {eenDag
+                ? `${maaltijd.label} ${periodeTekst}`
+                : `Gemiddeld per ${naam} · ${maaltijd.keer} van ${dagen} dagen geregistreerd ${periodeTekst}`}
+            </p>
+            <h3 className="mb-3 mt-1 text-[1.625rem] leading-none text-[var(--vd-ink)]">{maaltijd.label}</h3>
 
-          <div className="mb-3 grid grid-cols-4 gap-2">
-            {MACRO_TEGELS.map((veld) => {
-              const r = rij(maaltijd, veld);
-              return (
-                <div
-                  key={veld}
-                  className="rounded-xl border border-[var(--vd-line)] bg-[var(--vd-surface)] px-2 py-2.5 text-center"
-                >
-                  <span className="block text-[0.625rem] text-[var(--vd-ink-3)]">
-                    {veld === "energyKcal" ? "Energie" : r?.label}
-                  </span>
-                  <b className="block font-mono text-[0.9375rem] text-[var(--vd-ink)]">
-                    {getal(r?.waarde, r?.benaderd)}
-                  </b>
-                  <span className="block text-[0.625rem] text-[var(--vd-ink-3)]">{r?.unit}</span>
-                </div>
-              );
-            })}
-          </div>
+            <div className="grid grid-cols-2 gap-2 @[34rem]:grid-cols-4">
+              {MACRO_TEGELS.map((veld) => {
+                const r = rij(maaltijd, veld);
+                return (
+                  <div
+                    key={veld}
+                    className="rounded-xl border border-[var(--vd-line)] bg-[var(--vd-bg)] px-2 py-2.5 text-center"
+                  >
+                    <span className="block text-[0.625rem] text-[var(--vd-ink-3)]">
+                      {veld === "energyKcal" ? "Energie" : r?.label}
+                    </span>
+                    <b className="block font-mono text-[1.125rem] text-[var(--vd-ink)]">
+                      {getal(r?.waarde, r?.benaderd)}
+                    </b>
+                    <span className="block text-[0.625rem] text-[var(--vd-ink-3)]">{r?.unit}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {sterkst.length > 0 ? (
+              <p className="m-0 mt-3 max-w-[62ch] text-[0.8125rem] leading-relaxed text-[var(--vd-ink-2)]">
+                <b className="text-[var(--vd-ink)]">Waar je {naam} het meest aan bijdraagt:</b>{" "}
+                {sterkst.map((b) => `${b.label.toLowerCase()} ${percentageADH(b.aandeel)}`).join(", ")} van je
+                dagnorm.
+              </p>
+            ) : null}
+          </section>
 
           {maaltijd.benaderdeProducten.length > 0 ? (
             <p className="vd-note" style={{ margin: "-0.25rem 0 0.75rem" }}>
@@ -326,7 +348,7 @@ export default function PatroonMaaltijden({
           ) : null}
 
           {maaltijd.producten.length > 0 ? (
-            <section aria-label="Wat je at" className="vd-tabel">
+            <section aria-label="Wat je at" className="vd-tabel !border-t-[3px] !border-t-[var(--vd-sage)]">
               <div className="vd-tabel-kop">
                 <span className="!text-left">{eenDag ? "Wat je at" : "Wat je meestal at"}</span>
               </div>
@@ -359,15 +381,7 @@ export default function PatroonMaaltijden({
             </section>
           ) : null}
 
-          {sterkst.length > 0 ? (
-            <p className="vd-note" style={{ margin: "0 0 0.5rem" }}>
-              <b className="text-[var(--vd-ink)]">Waar je {naam} het meest aan bijdraagt:</b>{" "}
-              {sterkst.map((b) => `${b.label.toLowerCase()} ${percentageADH(b.aandeel)}`).join(", ")} van je
-              dagnorm.
-            </p>
-          ) : null}
-
-          <div className="vd-tabel">
+          <div className="vd-tabel !border-t-[3px] !border-t-[var(--vd-accent-2)]">
             <div className="vd-tabel-kop grid-cols-[1fr_58px_58px_52px]">
               <span>Stof</span>
               <span>Gem.</span>
