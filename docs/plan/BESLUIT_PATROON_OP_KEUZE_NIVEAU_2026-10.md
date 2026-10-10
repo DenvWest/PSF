@@ -44,3 +44,13 @@ Dennis: laat zien welke calorieën "gezond" zijn en welke niet, met goede en sle
 - Het verbergen van kernstoffen (voorkeur van de Trend-tab) is niet gekoppeld aan de chips; alle kernstoffen staan als chip.
 
 **Meting:** ongewijzigd: `nutrition_patroon_stof_geopend`, `nutrition_patroon_gevolgd_toevoegen_open`, `nutrition_patroon_nutrient_toggle`. Een chiptik is dezelfde actie als een tik op een rij.
+
+## Plak 4: energie en vet als gevolgde stoffen, met een feitelijke verdeling (gebouwd 10 okt)
+
+Dennis: calorieën en vetten ook als gevolgde stoffen in Trend, met dezelfde grafiek als de micronutriënten.
+
+1. **Energie (kcal) en vet (g) zijn volgbaar** (`account-gevolgde-stoffen.ts`). Dat wijkt af van `BESLUIT_DOELEN_VERBONDEN_2026-10.md`, waar energie en macro's bewust buiten de volgbare stoffen vielen ("hebben het tabblad Macro's"). Eiwit en koolhydraten blijven eruit. Geen migratie: de tabel heeft geen check-constraint op de waarden.
+2. **Zelfde grafiek, zonder norm.** Trend en Per stof behandelen ze als elke gevolgde stof zonder norm: staafjes tegen je eigen hoogste dag, "geen norm, alleen je gemiddelde".
+3. **Verdeling in Per stof** (`PatroonEnergieVerdeling`): bij energie het aandeel eiwit, koolhydraten en vet in kcal (4/4/9 per gram), bij vet het deel dat verzadigd is. Feit, geen oordeel; de tekst zegt dat er geen "goede" of "slechte" calorie is. De uitsplitsing in enkel-/meervoudig onverzadigd en transvet wacht op NEVO (zie besluit hierboven).
+
+**Meting:** ongewijzigd (`nutrition_patroon_stof_geopend`, `nutrition_patroon_gevolgd_toevoegen_open`, `voedingsdoel_aangepast` met `stof: energyKcal | fatG`): hier lees je af of mensen energie en vet volgen.

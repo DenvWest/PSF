@@ -11,11 +11,15 @@ import type { SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
  * module, zodat ze niet uit elkaar kunnen lopen.
  *
  * Kernstoffen staan hier niet in: die staan altijd in krans en patroon, met
- * een norm en een oordeel. Energie en macro's ook niet: die hebben het
- * tabblad Macro's. Wat overblijft is informatief — geen ✓, geen `/beste/*`.
+ * een norm en een oordeel. Eiwit en koolhydraten ook niet: die hebben het
+ * tabblad Macro's. Energie en vet zijn sinds 10 okt wel volgbaar
+ * (`BESLUIT_PATROON_OP_KEUZE_NIVEAU_2026-10.md`): informatief, zonder norm of
+ * oordeel. Wat overblijft is informatief — geen ✓, geen `/beste/*`.
  */
 
 const VOLGBAAR = new Set<SupermarktVeld>([
+  "energyKcal",
+  "fatG",
   "fiberG",
   "saturatedFatG",
   "sugarsG",

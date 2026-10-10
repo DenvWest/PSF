@@ -11,6 +11,7 @@ import PatroonDoelenKaart, {
 import PatroonGevolgdWeek from "@/components/dashboard/patroon/PatroonGevolgdWeek";
 import PatroonMaaltijden from "@/components/dashboard/patroon/PatroonMaaltijden";
 import PatroonPeriodeKiezer from "@/components/dashboard/patroon/PatroonPeriodeKiezer";
+import PatroonEnergieVerdeling from "@/components/dashboard/patroon/PatroonEnergieVerdeling";
 import PatroonStofChips, { type StofChip } from "@/components/dashboard/patroon/PatroonStofChips";
 import { stofStand } from "@/components/dashboard/patroon/PatroonStofHero";
 import PatroonStofDetail, { type StofDetailGegevens } from "@/components/dashboard/patroon/PatroonStofDetail";
@@ -28,6 +29,7 @@ import { trackEvent } from "@/lib/ga4";
 import { fetchMacroDoelen } from "@/lib/macro-doelen-client";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { nutrientenGesplitstUitItems, sanitizeItems } from "@/lib/nutrition-dagboek-items";
+import { bouwEnergieVerdeling, bouwVetVerdeling } from "@/lib/nutrition-energie-verdeling";
 import { bouwGevolgdePeriode } from "@/lib/nutrition-gevolgde-weken";
 import { normVoor, normVoorVeld } from "@/lib/nutrition-normen";
 import {
@@ -532,6 +534,15 @@ function PatroonInhoud() {
               bronnen={openBronnen}
               perMoment={openPerMoment}
               startZoek={startZoek}
+              samenstelling={
+                openStof === "energyKcal" || openStof === "fatG" ? (
+                  <PatroonEnergieVerdeling
+                    stof={openStof}
+                    energie={bouwEnergieVerdeling(perDag, datums)}
+                    vet={bouwVetVerdeling(perDag, datums)}
+                  />
+                ) : null
+              }
             />
           ) : (
             <>

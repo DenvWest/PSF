@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import PatroonBronZoek from "@/components/dashboard/patroon/PatroonBronZoek";
 import PatroonStofHero from "@/components/dashboard/patroon/PatroonStofHero";
@@ -99,6 +100,7 @@ export default function PatroonStofDetail({
   bronnen,
   perMoment = [],
   startZoek = "",
+  samenstelling = null,
 }: {
   rij: StofDetailGegevens;
   periode: Periode;
@@ -106,6 +108,8 @@ export default function PatroonStofDetail({
   bronnen: readonly StofBron[];
   perMoment?: readonly StofPerMoment[];
   startZoek?: string;
+  /** Extra kaart onder de hero, bijv. de verdeling achter energie of vet. */
+  samenstelling?: ReactNode;
 }) {
   const { norm, streef } = rij;
   const profiel = useKernstofProfiel();
@@ -120,6 +124,8 @@ export default function PatroonStofDetail({
   return (
     <section aria-labelledby="patroon-stof-titel" className="flex flex-col gap-3">
       <PatroonStofHero rij={rij} periode={periode} dagenGeregistreerd={dagenGeregistreerd} />
+
+      {samenstelling}
 
       <div className="rounded-xl border border-[var(--vd-line)] bg-[var(--vd-surface)] p-3">
         {norm ? (

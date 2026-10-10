@@ -17,11 +17,13 @@ function client(resultaat: { data: unknown; error: { code?: string; message: str
 }
 
 describe("VOLGBARE_VELDEN", () => {
-  it("bevat geen kernstoffen en geen energie of macro's", () => {
+  it("bevat geen kernstoffen, eiwit of koolhydraten, wel energie en vet", () => {
     const velden = VOLGBARE_VELDEN.map((v) => v.veld);
-    for (const uitgesloten of ["magnesiumMg", "zincMg", "vitaminDµg", "proteinG", "energyKcal", "fatG", "carbohydrateG"]) {
+    for (const uitgesloten of ["magnesiumMg", "zincMg", "vitaminDµg", "proteinG", "carbohydrateG"]) {
       expect(velden).not.toContain(uitgesloten);
     }
+    expect(velden).toContain("energyKcal");
+    expect(velden).toContain("fatG");
     expect(velden).toContain("fiberG");
     expect(velden).toContain("calciumMg");
   });
