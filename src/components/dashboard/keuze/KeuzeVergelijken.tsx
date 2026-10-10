@@ -945,6 +945,17 @@ function StofHero({
               </>
             ) : null}
           </p>
+          <Link
+            href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`}
+            onClick={(event) => {
+              event.preventDefault();
+              trackEvent("keuze_naar_patroon_stof", { nutrient: status.nutrient, plek: "hero" });
+              gaNaarDashboard(`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`);
+            }}
+            className="mt-2 inline-block text-[0.75rem] font-semibold text-[var(--vd-sage-2)] no-underline hover:underline"
+          >
+            Bekijk {status.label.toLowerCase()} in je patroon →
+          </Link>
         </div>
         {balk}
       </div>
@@ -1420,7 +1431,7 @@ function VoedingKant({
         href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`}
         onClick={(event) => {
           event.preventDefault();
-          trackEvent("keuze_naar_patroon_stof", { nutrient: status.nutrient });
+          trackEvent("keuze_naar_patroon_stof", { nutrient: status.nutrient, plek: "bronnen" });
           gaNaarDashboard(`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`);
         }}
         className="mt-2 inline-block text-[0.6875rem] font-semibold text-[var(--vd-sage-2)] no-underline hover:underline"
