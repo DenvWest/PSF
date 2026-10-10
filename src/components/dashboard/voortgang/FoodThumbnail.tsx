@@ -9,7 +9,7 @@ import { VOEDSELGROEP_TEGEL } from "@/lib/voedselgroep-tegel";
 /**
  * Kleine catalogusfoto bij een zoekresultaat of dagboekregel.
  *
- * Het bestand bestaat pas ná review + `food-image-download.py`. Tot die tijd
+ * Het bestand bestaat pas ná review + `food-image-download.py` + `food-image-keys.mjs`. Tot die tijd
  * (en bij een 404) toont dit de tegel van de voedselgroep — geen kapot-plaatje.
  */
 export default function FoodThumbnail({

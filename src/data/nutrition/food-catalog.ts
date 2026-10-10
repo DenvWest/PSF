@@ -50,6 +50,7 @@
 
 import type { VoedselgroepId } from "@/lib/nutrition-voedselgroepen";
 import type { Bereiding, FoodCategoryId } from "@/data/nutrition/food-taxonomy";
+import { FOOD_IMAGE_KEYS } from "@/data/nutrition/food-image-keys";
 
 /** Eén portie zoals iemand hem noemt, met het gram-equivalent. */
 export interface Portie {
@@ -698,9 +699,10 @@ export function catalogEntry(key: string): CatalogEntry | null {
   return BY_KEY.get(key) ?? null;
 }
 
-/** Pad naar de catalogusfoto. Geen bestandscheck — de UI valt terug als hij ontbreekt. */
+/** Pad naar de catalogusfoto, of `null` als het bestand niet bestaat (geen 404-request). */
 export function catalogImageSrc(entry: CatalogEntry): string | null {
   const owner = entry.imageOwner ?? entry.key;
+  if (!FOOD_IMAGE_KEYS.has(owner)) return null;
   return `/images/voedingsmiddelen/${owner}.jpg`;
 }
 
