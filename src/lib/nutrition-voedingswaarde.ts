@@ -220,6 +220,8 @@ export function rondVoedingswaarde(waarde: number): string {
 const LOSSE_NAMEN: Record<string, string> = {
   "waarvan verzadigd": "Verzadigd vet",
   "waarvan suikers": "Suikers",
+  energie: "Calorieën",
+  vet: "Vetten",
 };
 
 /** De naam van een stof zoals een chip of kop hem toont: los van de "waarvan"-regel van de tabel. */

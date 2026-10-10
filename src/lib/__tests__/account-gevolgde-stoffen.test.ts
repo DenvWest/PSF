@@ -54,5 +54,7 @@ describe("stofNaam", () => {
     expect(stofNaam("waarvan verzadigd")).toBe("Verzadigd vet");
     expect(stofNaam("waarvan suikers")).toBe("Suikers");
     expect(stofNaam("vezels")).toBe("Vezels");
+    expect(stofNaam("Energie")).toBe("Calorieën");
+    expect(stofNaam("Vet")).toBe("Vetten");
   });
 });

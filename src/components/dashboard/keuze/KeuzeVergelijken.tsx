@@ -947,11 +947,11 @@ function StofHero({
             ) : null}
           </p>
           <Link
-            href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`}
+            href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}&van=keuze`}
             onClick={(event) => {
               event.preventDefault();
               trackEvent("keuze_naar_patroon_stof", { nutrient: status.nutrient, plek: "hero" });
-              gaNaarDashboard(`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`);
+              gaNaarDashboard(`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}&van=keuze`);
             }}
             className="mt-2 inline-block text-[0.75rem] font-semibold text-[var(--vd-sage-2)] no-underline hover:underline"
           >
@@ -1429,11 +1429,11 @@ function VoedingKant({
       )}
 
       <Link
-        href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`}
+        href={`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}&van=keuze`}
         onClick={(event) => {
           event.preventDefault();
           trackEvent("keuze_naar_patroon_stof", { nutrient: status.nutrient, plek: "bronnen" });
-          gaNaarDashboard(`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}`);
+          gaNaarDashboard(`/dashboard?tab=voortgang&sectie=stof&stof=${status.nutrient}&van=keuze`);
         }}
         className="mt-2 inline-block text-[0.6875rem] font-semibold text-[var(--vd-sage-2)] no-underline hover:underline"
       >
