@@ -38,7 +38,7 @@ import {
 import { keuzeStofStand, type KeuzeStand, type KeuzeStofStand } from "@/lib/keuze-stof-stand";
 import type { DagboekDag } from "@/lib/nutrition-dagboek";
 import { verschuifDag } from "@/lib/nutrition-periode";
-import { gehaltePerPortie, pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
+import { gehaltePerPortie, losseBronnenEerst, pastBijVoedingswijze, rijksteBronnen } from "@/lib/nutrition-rijkste-bronnen";
 import {
   NUTRITION_ROUTE_CHOICES,
   routeMatchesQuery,
@@ -1186,8 +1186,11 @@ function VoedingKant({
   const term = zoek.trim();
   const voorstellen = useMemo<EtenRij[]>(
     () =>
-      rijksteBronnen(status.nutrient, "portie", 30)
-        .filter((bron) => pastBijVoedingswijze(bron.entry, profiel.voedingswijze))
+      losseBronnenEerst(
+        rijksteBronnen(status.nutrient, "portie", 30).filter((bron) =>
+          pastBijVoedingswijze(bron.entry, profiel.voedingswijze),
+        ),
+      )
         .slice(0, 5)
         .map((bron) => ({
           entry: bron.entry,
@@ -1275,7 +1278,7 @@ function VoedingKant({
           <FoodThumbnail entry={beste.entry} size={72} />
           <div className="min-w-0">
             <p className="m-0 text-[0.625rem] font-bold uppercase tracking-[0.12em] text-[var(--vd-sage-2)]">
-              Beste uit je eten
+              Rijkste bron
             </p>
             <h4 className="m-0 mt-0.5 text-[0.9375rem] font-semibold leading-tight text-[var(--vd-ink)]">
               {beste.entry.labelNl}
@@ -1374,7 +1377,7 @@ function VoedingKant({
                   </span>
                   <span className="block truncate text-[0.6875rem] text-[var(--vd-ink-3)]">{rij.portie}</span>
                   {rij.ook.length > 0 ? (
-                    <span className="block truncate text-[0.6875rem] text-[var(--vd-sage-2)]">ook: {rij.ook.join(", ")}</span>
+                    <span className="block text-[0.6875rem] leading-snug text-[var(--vd-sage-2)]">ook: {rij.ook.join(", ")}</span>
                   ) : null}
                 </span>
                 <span className="shrink-0 text-right font-mono text-[0.8125rem] tabular-nums text-[var(--vd-ink)]">
@@ -1439,12 +1442,6 @@ function VoedingKant({
       >
         Alle rijkste bronnen in Je patroon →
       </Link>
-      {beste?.ook.length || rijen.some((rij) => rij.ook.length > 0) ? (
-        <p className="m-0 mt-2 text-[0.6875rem] leading-relaxed text-[var(--vd-ink-3)]">
-          Eten brengt meer mee dan deze ene stof; &ldquo;ook&rdquo; noemt wat één portie minstens 15&nbsp;% van de
-          referentie levert.
-        </p>
-      ) : null}
 
       <RouteStand
         kleur="sage"

@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { FOOD_CATALOG_NEVO_GEHALTES } from "@/data/nutrition/food-catalog-nevo-gehaltes";
-import { INFORMATIEVE_STOFFEN, MIN_KCAL_PER_100G, rijksteBronnen, stofInfo } from "@/lib/nutrition-rijkste-bronnen";
+import {
+  INFORMATIEVE_STOFFEN,
+  MIN_KCAL_PER_100G,
+  losseBronnenEerst,
+  rijksteBronnen,
+  stofInfo,
+} from "@/lib/nutrition-rijkste-bronnen";
 
 describe("rijksteBronnen", () => {
   it("rangschikt aflopend en beperkt tot de limiet", () => {
@@ -55,5 +61,21 @@ describe("rijksteBronnen voor informatieve stoffen", () => {
     expect(stofInfo("fiberG").ri).toBeNull();
     expect(stofInfo("protein").ri).toBeNull();
     expect(stofInfo("magnesium").ri).toBe(375);
+  });
+});
+
+describe("losseBronnenEerst", () => {
+  it("zet gerechten achter losse voedingsmiddelen en behoudt de volgorde", () => {
+    const bronnen = rijksteBronnen("protein", "portie", 30);
+    const gesorteerd = losseBronnenEerst(bronnen);
+    expect(gesorteerd).toHaveLength(bronnen.length);
+    const eersteGerecht = gesorteerd.findIndex((b) => b.entry.category === "maaltijden" || b.entry.geenBron === "samengesteld");
+    if (eersteGerecht >= 0) {
+      for (const bron of gesorteerd.slice(eersteGerecht)) {
+        expect(bron.entry.category === "maaltijden" || bron.entry.geenBron === "samengesteld").toBe(true);
+      }
+    }
+    const losse = gesorteerd.slice(0, eersteGerecht < 0 ? undefined : eersteGerecht);
+    for (let i = 1; i < losse.length; i++) expect(losse[i - 1].waarde).toBeGreaterThanOrEqual(losse[i].waarde);
   });
 });

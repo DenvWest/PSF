@@ -363,3 +363,18 @@ Dennis (screenshot Keuze › eiwit): het blok "Uit je check" is vaag, onprofessi
 6. **Wat een product erbij doet staat onder elke rij, niet achter hover.** Onder elke bron en elk supplement in Vergelijken staat een klein balkje: je eten (gedimd), wat dit erbij brengt (vol) en je norm. Reden: hover bestaat niet op een telefoon, en de grote balk bovenaan staat daar buiten beeld. Het balkje verschijnt alleen als eenheden kloppen en er een norm en gemeten stand is, en blijft "minstens". De bestaande hover-preview op de grote balk (supplement) blijft.
 
 **Meting:** `keuze_overzicht_wis` {surface, plek, soort}, `keuze_overzicht_ongedaan`, `keuze_mijn_keuzes_filter` {alleen_supplementen} (GA4).
+
+---
+
+## Aanvulling 10 oktober: "Rijkste bron" en losse voedingsmiddelen eerst
+
+**Aanleiding.** Dennis: bij eiwit stond een lasagne/burrito als "Beste uit je eten"; vis ligt voor de hand. Het label suggereerde een oordeel, terwijl de volgorde alleen "meeste gram per portie" is, en een gerecht van 300-350 g wint dat bijna altijd.
+
+**Besluit (Dennis akkoord, 10 okt).**
+1. **Label** "Beste uit je eten" wordt **"Rijkste bron"**: het feit, geen oordeel. Wijkt bewust af van de naam in de regel bij 281 hierboven.
+2. **Losse voedingsmiddelen eerst.** `losseBronnenEerst` (`nutrition-rijkste-bronnen.ts`) zet samengestelde gerechten (categorie maaltijden of `geenBron: "samengesteld"`) achter losse voedingsmiddelen, met behoud van de volgorde. Gerechten blijven vindbaar, alleen niet meer de kop. De Dagboek-lijst (`BESLUIT_RIJKSTE_BRONNEN_EN_RINGTEGELS`) blijft ongewijzigd: daar is de rang de echte rang.
+3. **Uitlegalinea weg** ("Eten brengt meer mee dan deze ene stof; 'ook' noemt…"): onder de lijst, onleesbaar en dubbel met de rij zelf. De 15%-regel (punt 3 van de eerdere besluittekst) blijft ongewijzigd in `brengtOokMee`. "ook: …" op de rij loopt nu door in plaats van afgekapt te worden.
+
+**Afgewezen.** Drie gelijkwaardige kaarten zonder winnaar: later, als "Rijkste bron" nog te veel als winnaar leest.
+
+**Meetpunt.** Ongewijzigd: `keuze_eten_gekozen` {nutrient, product, via}; lees af of losse bronnen vaker gekozen worden dan voorheen.
