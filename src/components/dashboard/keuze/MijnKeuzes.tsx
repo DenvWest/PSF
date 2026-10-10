@@ -147,7 +147,9 @@ export default function MijnKeuzes({
     });
   }, [statuses, reeksen, eiwitDoelG, items, products, gesterd]);
 
-  const gekozen = keuzes.filter((k) => k.route !== null || k.product !== null || k.bronnen.length > 0);
+  const [alleenSupplementen, setAlleenSupplementen] = useState(false);
+  const alleGekozen = keuzes.filter((k) => k.route !== null || k.product !== null || k.bronnen.length > 0);
+  const gekozen = alleenSupplementen ? alleGekozen.filter((k) => k.product !== null) : alleGekozen;
   const open = keuzes.filter((k) => !gekozen.includes(k));
   const supplementen = gekozen.filter((k) => k.product !== null);
   const centenPerDag = supplementen.reduce((som, k) => som + (k.product?.centenPerDag ?? 0), 0);
@@ -156,7 +158,7 @@ export default function MijnKeuzes({
     const gezien = new Set<string>();
     for (const k of gekozen) {
       const nutrient = k.status.nutrient;
-      for (const entry of k.bronnen) {
+      for (const entry of alleenSupplementen ? [] : k.bronnen) {
         if (gezien.has(entry.key)) continue;
         gezien.add(entry.key);
         const levert = gehaltePerPortie(entry, nutrient);
@@ -195,6 +197,37 @@ export default function MijnKeuzes({
         <header className="mb-3">
           <p className="vd-eyebrow m-0">Wat je per stof koos</p>
           <h2 className="mt-1 text-[1.375rem] text-[var(--vd-ink)]">Mijn keuzes</h2>
+          {alleGekozen.length > 0 ? (
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <span id="mijn-keuzes-filter-label" className="text-[0.75rem] text-[var(--vd-ink-2)]">
+                Alleen supplementen tonen
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={alleenSupplementen}
+                aria-labelledby="mijn-keuzes-filter-label"
+                onClick={() => {
+                  trackEvent("keuze_mijn_keuzes_filter", { alleen_supplementen: !alleenSupplementen });
+                  setAlleenSupplementen((huidig) => !huidig);
+                }}
+                className="inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center border-0 bg-transparent p-0"
+              >
+                <span
+                  aria-hidden
+                  className={`relative h-6 w-11 rounded-full border transition-colors ${
+                    alleenSupplementen ? "border-[var(--vd-sage)] bg-[var(--vd-sage)]" : "border-[var(--vd-line-2)] bg-[var(--vd-bg)]"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 h-[18px] w-[18px] rounded-full bg-[var(--vd-ink)] transition-all ${
+                      alleenSupplementen ? "left-[1.375rem]" : "left-0.5"
+                    }`}
+                  />
+                </span>
+              </button>
+            </div>
+          ) : null}
           {gekozen.length > 0 ? (
             <dl className="m-0 mt-3 grid grid-cols-3 gap-2">
               <Tegel label="Stoffen gekozen" waarde={`${gekozen.length} van ${statuses.length}`} />
@@ -211,8 +244,9 @@ export default function MijnKeuzes({
         {gekozen.length === 0 ? (
           <div className="rounded-[13px] border border-[var(--vd-line)] bg-[var(--vd-surface)] px-3.5 py-3.5">
             <p className="m-0 max-w-[60ch] text-[0.8125rem] leading-relaxed text-[var(--vd-ink-2)]">
-              Je hebt nog niets gekozen. In Vergelijken zie je per stof je eten naast een supplement, en kies je je
-              route.
+              {alleGekozen.length > 0
+                ? "Je hebt nog geen supplement gekozen. Zet de schakelaar uit om je eten te zien, of kies een supplement in Vergelijken."
+                : "Je hebt nog niets gekozen. In Vergelijken zie je per stof je eten naast een supplement, en kies je je route."}
             </p>
             <NaarVergelijkenKnop onClick={() => naar(null)} label="Naar Vergelijken →" />
           </div>
@@ -223,7 +257,13 @@ export default function MijnKeuzes({
             <h3 className="mb-3 mt-1 text-[1.125rem] text-[var(--vd-ink)]">Wat het samen doet</h3>
             <div className="flex flex-col gap-2.5">
               {gekozen.map((keuze) => (
-                <StofKeuzeKaart key={keuze.status.nutrient} keuze={keuze} voedingsfavorieten={voedingsfavorieten} onWijzig={() => naar(keuze.status.nutrient)} />
+                <StofKeuzeKaart
+                  key={keuze.status.nutrient}
+                  keuze={keuze}
+                  voedingsfavorieten={voedingsfavorieten}
+                  alleenSupplementen={alleenSupplementen}
+                  onWijzig={() => naar(keuze.status.nutrient)}
+                />
               ))}
             </div>
           </>
@@ -532,10 +572,12 @@ function StofBalk({ stand, product }: { stand: KeuzeStofStand; product: KeuzePro
 function StofKeuzeKaart({
   keuze,
   voedingsfavorieten,
+  alleenSupplementen,
   onWijzig,
 }: {
   keuze: StofKeuze;
   voedingsfavorieten: ReturnType<typeof useDagboekVoedingsfavorieten>;
+  alleenSupplementen: boolean;
   onWijzig: () => void;
 }) {
   const { status, stand } = keuze;
@@ -572,8 +614,8 @@ function StofKeuzeKaart({
           Beheer: moment kiezen, weghalen, productpagina
         </summary>
         <div className="@container px-3.5 pb-3.5 pt-1">
-          <div className="grid grid-cols-1 items-start gap-2.5 @[30rem]:grid-cols-2">
-            <EtenKant keuze={keuze} voedingsfavorieten={voedingsfavorieten} onWijzig={onWijzig} />
+          <div className={`grid grid-cols-1 items-start gap-2.5 ${alleenSupplementen ? "" : "@[30rem]:grid-cols-2"}`}>
+            {alleenSupplementen ? null : <EtenKant keuze={keuze} voedingsfavorieten={voedingsfavorieten} onWijzig={onWijzig} />}
             <SupplementKant keuze={keuze} onWijzig={onWijzig} />
           </div>
         </div>

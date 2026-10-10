@@ -334,6 +334,14 @@ describe("KeuzeVergelijken", () => {
     expect(favorieten.items).toHaveLength(0);
   });
 
+  it("toont onder elke bron en elk supplement een balkje met wat het erbij doet, zonder hover", () => {
+    renderKeuze();
+    const eten = screen.getByRole("region", { name: "Uit je eten" });
+    const supplement = screen.getByRole("region", { name: "Uit een supplement" });
+    expect(within(eten).getAllByRole("img", { name: /Hier komt .* bij, op .* uit je eten, norm / }).length).toBeGreaterThan(0);
+    expect(within(supplement).getAllByRole("img", { name: /Hier komt .* bij, op .* uit je eten, norm / }).length).toBeGreaterThan(0);
+  });
+
   it("na Kies vraagt Vergelijken wanneer je het eet of neemt, per voedingsmiddel en per supplement", async () => {
     const { rerender } = renderKeuze();
     const eten = () => screen.getByRole("region", { name: "Uit je eten" });

@@ -1096,6 +1096,49 @@ type EtenRij = {
   ook: string[];
 };
 
+/**
+ * Het balkje onder een bron of product: je eten van de laatste dagen (vol) en
+ * wat dít erbij doet (gestreept), tegenover je norm. Staat er altijd, dus ook
+ * op een telefoon waar hover niet bestaat. Alleen als de eenheden kloppen en
+ * er een norm en een gemeten stand is; het blijft "minstens".
+ */
+function ErbijBalkje({
+  stand,
+  erbij,
+  eenheid,
+  kleur,
+}: {
+  stand: KeuzeStofStand;
+  erbij: number | null;
+  eenheid: string | null;
+  kleur: "sage" | "accent-2";
+}) {
+  const eten = stand.gemiddeld;
+  const norm = stand.norm;
+  if (eten === null || norm === null || norm <= 0 || erbij === null || erbij <= 0 || eenheid !== stand.unit) return null;
+  const schaal = Math.max(norm * 1.3, (eten + erbij) * 1.05);
+  const pct = (waarde: number) => `${Math.min(100, (waarde / schaal) * 100)}%`;
+  const accent = kleur === "sage" ? "var(--vd-sage)" : "var(--vd-accent-2)";
+  return (
+    <div
+      role="img"
+      aria-label={`Hier komt ${hoeveelheid(erbij)} ${stand.unit} bij, op ${hoeveelheid(eten)} uit je eten, norm ${hoeveelheid(norm)} ${stand.unit}`}
+      className="relative mt-1.5 ml-[3.625rem] h-1.5 rounded-full bg-[var(--vd-track)]"
+    >
+      <div className="absolute inset-y-0 left-0 rounded-l-full bg-[var(--vd-sage)] opacity-50" style={{ width: pct(eten) }} />
+      <div
+        className="absolute inset-y-0 rounded-r-full"
+        style={{
+          left: pct(eten),
+          width: pct(erbij),
+          background: accent,
+        }}
+      />
+      <div className="absolute -bottom-0.5 -top-0.5 w-0.5 rounded bg-[var(--vd-ink)]" style={{ left: pct(norm) }} />
+    </div>
+  );
+}
+
 function aandeelVanNorm(rij: Pick<EtenRij, "waarde" | "unit">, stand: KeuzeStofStand): number | null {
   if (!stand.norm || rij.unit !== stand.unit) return null;
   return Math.round((rij.waarde / stand.norm) * 100);
@@ -1336,6 +1379,7 @@ function VoedingKant({
                   label={rij.entry.labelNl}
                 />
               </div>
+              <ErbijBalkje stand={stand} erbij={rij.waarde} eenheid={rij.unit} kleur="sage" />
               {gekozen ? (
                 <div className="px-1 pb-1">
                   <MomentChips
@@ -1716,6 +1760,7 @@ function SupplementKant({
                       />
                     </div>
                   ) : null}
+                  <ErbijBalkje stand={stand} erbij={product.dosisPerDag} eenheid={product.eenheid} kleur="accent-2" />
                   {erbij.samen !== null ? (
                     <p className="m-0 mt-1 pl-[3.625rem] text-[0.6875rem] text-[var(--vd-accent-2)]">
                       Samen met je eten minstens {stand.benaderd ? "≈ " : ""}
