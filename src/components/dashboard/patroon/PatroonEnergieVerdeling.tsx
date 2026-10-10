@@ -16,14 +16,33 @@ function procent(aandeel: number): string {
  * of een vet is hier niet "goed" of "slecht", het scherm laat zien waaruit je
  * dagboek bestaat.
  */
+function Vervolg({ tekst, actie }: { tekst: string; actie: { label: string; onClick: () => void } }) {
+  return (
+    <p className="m-0 mt-3 border-t border-[var(--vd-line)] pt-3 text-[0.78125rem] leading-relaxed text-[var(--vd-ink-2)]">
+      <b className="font-semibold text-[var(--vd-ink)]">Wat kun je hiermee?</b> {tekst}{" "}
+      <button
+        type="button"
+        onClick={actie.onClick}
+        className="cursor-pointer border-0 bg-transparent p-0 font-[inherit] font-semibold text-[var(--vd-sage-2)] hover:underline"
+      >
+        {actie.label} →
+      </button>
+    </p>
+  );
+}
+
 export default function PatroonEnergieVerdeling({
   stof,
   energie,
   vet,
+  onNaarMaaltijden,
+  onNaarOmega3,
 }: {
   stof: "energyKcal" | "fatG";
   energie: EnergieVerdeling | null;
   vet: VetVerdeling | null;
+  onNaarMaaltijden: () => void;
+  onNaarOmega3: () => void;
 }) {
   if (stof === "energyKcal") {
     if (!energie) return null;
@@ -58,6 +77,10 @@ export default function PatroonEnergieVerdeling({
           Van de calorieën uit eiwit, koolhydraten en vet die je dagboek kent (4 kcal per gram eiwit en koolhydraten,
           9 per gram vet). Een verdeling, geen oordeel: er is geen &ldquo;goede&rdquo; of &ldquo;slechte&rdquo; calorie.
         </p>
+        <Vervolg
+          tekst="Wil je meer eiwit of vezels per calorie? Kijk welke maaltijd daar de meeste ruimte voor heeft."
+          actie={{ label: "Bekijk per maaltijd", onClick: onNaarMaaltijden }}
+        />
       </section>
     );
   }
@@ -86,6 +109,10 @@ export default function PatroonEnergieVerdeling({
         Over de dagen waarop je iets registreerde, voor producten met een gehalte. Het overige vet is
         enkel- en meervoudig onverzadigd vet en een beetje transvet; die uitsplitsing hebben we nog niet.
       </p>
+      <Vervolg
+        tekst="Onverzadigd vet zit vooral in noten, olijfolie en vette vis. Vette vis levert ook omega-3."
+        actie={{ label: "Bekijk omega-3 en de rijkste bronnen", onClick: onNaarOmega3 }}
+      />
     </section>
   );
 }
