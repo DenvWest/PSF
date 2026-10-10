@@ -59,7 +59,9 @@
 
 - Admin-wijzigingen aan een **gepubliceerd** product worden geweigerd als ze een criterium van de publiceerpoort laten falen dat nu slaagt (laatste afbeelding/licentie-notitie, laatste werkzame stof of claimdrempel, laatste bron, enige actieve aanbieding): `src/lib/product-admin/gate-regression.ts`, aangeroepen in `edit-actions.ts`. Alleen criteria die nu slagen worden bewaakt, zodat de 25 falende live producten wel verbeterd kunnen worden (B-3).
 - **Stap 2 (gedaan):** zevende poortcriterium "Aanbieding met geldige affiliate-link (https)" (P7): minstens één actieve aanbieding met een geldige https-`affiliate_url`. Geldt bij nieuwe publicaties meteen; live producten die het niet halen blijven staan (B-3). Host-tot-retailer-controle en een actieve partner volgen met de `/go`-redirect.
-- **Nog open binnen B-2:** DB-trigger op `status → published` (migratie, additief) en tijdsverval met 7 dagen termijn + signaal (P4).
+- **Stap 3 (gedaan, 10 okt):** DB-trigger op `status → published` (`20261010120000` + array-fix `20261010130000`, gedraaid en getest door Dennis).
+- **Stap 4 (gedaan):** prijsverval als signaal `prices_stale` per partner in PartnerDesk (Vandaag): amber vanaf 23 dagen (nog 7 dagen tot de poortgrens) en tot 37 dagen, rood daarna of bij een nooit gecontroleerde prijs (`src/lib/product-admin/price-decay.ts`). Alleen gepubliceerde producten met een actieve aanbieding. Niet depubliceren, geen prijs verbergen. Wordt ververst bij het bevestigen van een prijs of het (de)activeren van een aanbieding en bij de dagelijkse full-sync. B-2 is hiermee af.
+- **Los gevonden, niet besloten:** de hubloader vult bij een onbekende prijsdatum de datum van vandaag in (`hub-loader.ts:73`, audit §4.3: onware bewering); en de full-sync berekent omzetsignalen niet mee, zodat die elke dag onterecht oplossen (fase 1 commissie compleet).
 
 ## Aanvulling 10 oktober 2026 — vrij komen van Daisycon (richting Dennis)
 
