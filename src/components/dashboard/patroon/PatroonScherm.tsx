@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { TEKORT_VOORSTELLEN } from "@/data/agenda/tekort-voorstellen";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
+import StofChipRij from "@/components/dashboard/StofChipRij";
 import GevolgdeStoffenKiezer from "@/components/dashboard/doelen/GevolgdeStoffenKiezer";
 import PatroonDoelenKaart, {
   type SupplementWeek,
@@ -58,6 +59,7 @@ import { bronnenVanStof, stofPerMoment } from "@/lib/nutrition-stof-bronnen";
 import { bepaalBevinding, bouwTekortsysteem, NIET_BEWIJSBAAR } from "@/lib/nutrition-tekortsysteem";
 import { bouwVoedingWeekoverzicht } from "@/lib/nutrition-voeding-weekoverzicht";
 import { bouwPeriodeOverzicht } from "@/lib/nutrition-weekoverzicht";
+import type { SupermarktVeld } from "@/lib/nutrition-supermarkt-items";
 import { useGevolgdeStoffen } from "@/lib/use-gevolgde-stoffen";
 import { useEiwitDoel, useGevolgdeNormen, useGewoneMaaltijden, useVoedingsrichting, useKernstofNormen, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 import { useVoedingsdataPeriode } from "@/lib/use-voedingsdata-periode";
@@ -244,7 +246,8 @@ function PatroonInhoud() {
 
   // Eén ophaalronde voor alles: de kalender gaat maximaal 42 dagen terug.
   const dataVan = verschuifDag(vandaag, -(MAX_PERIODE_DAGEN - 1));
-  const { stoffen: gevolgdeStoffen } = useGevolgdeStoffen();
+  const { stoffen: gevolgdeStoffen, zetGevolgd, verschuif } = useGevolgdeStoffen();
+  const [trendKiezerOpen, setTrendKiezerOpen] = useState(false);
   const { itemsPerDag, etiketPerDag, nevoProducten, perDag } = useVoedingsdataPeriode(dagen, dataVan, vandaag);
   const gewoneMaaltijden = useGewoneMaaltijden();
   const overgeslagenPerDag = useMemo(
@@ -635,7 +638,7 @@ function PatroonInhoud() {
       ) : (
         <>
           {periodeKiezer}
-          <div className="vd-chiprij" role="group" aria-label="Voedingsstoffen tonen of verbergen">
+          <StofChipRij label="Stoffen tonen of verbergen" actief={null}>
             {stoffen.rijen.map((rij) => {
               const aan = !verborgenNutrients.has(rij.nutrient);
               return (
@@ -651,7 +654,37 @@ function PatroonInhoud() {
                 </button>
               );
             })}
-          </div>
+            {trends.gevolgd.map((trend) => (
+              <button
+                key={trend.stof}
+                type="button"
+                className="vd-chip inline-flex min-h-[40px] items-center gap-1.5 !border-[var(--vd-sage)] !text-[var(--vd-sage-2)]"
+                aria-pressed
+                title="Tik om deze stof niet meer te volgen"
+                onClick={() => {
+                  trackEvent("nutrition_patroon_nutrient_toggle", { nutrient: trend.stof, zichtbaar: false });
+                  void zetGevolgd(trend.stof as SupermarktVeld, false).catch(() => {});
+                }}
+              >
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--vd-sage-2)" }} />
+                {trend.label}
+              </button>
+            ))}
+            <button
+              type="button"
+              aria-expanded={trendKiezerOpen}
+              onClick={() => setTrendKiezerOpen((open) => !open)}
+              className="vd-chip inline-flex min-h-[40px] items-center gap-1.5 !border-dashed"
+            >
+              {trendKiezerOpen ? "Klaar" : "+ Stof"}
+            </button>
+          </StofChipRij>
+          {trendKiezerOpen ? (
+            <div className="rounded-[14px] border border-[var(--vd-line)] bg-[var(--vd-surface)] p-3 text-[var(--vd-ink-2)]">
+              <p className="vd-eyebrow m-0 mb-2">Welke stoffen volg je?</p>
+              <GevolgdeStoffenKiezer surface="patroon" />
+            </div>
+          ) : null}
           {waaromVolgorde ? (
             <p className="vd-note" style={{ margin: 0 }}>
               {waaromVolgorde}
@@ -661,6 +694,10 @@ function PatroonInhoud() {
             kernstoffen={trends.kern}
             gevolgd={trends.gevolgd}
             onOpen={(stof) => openStofDetail(stof, "trend")}
+            onVerschuif={(stof, richting) => {
+              trackEvent("nutrition_patroon_trend_verschuif", { nutrient: stof, richting });
+              void verschuif(stof as SupermarktVeld, richting).catch(() => {});
+            }}
           />
           {stoffen.rijen.length > 0 && stoffen.rijen.every((rij) => verborgenNutrients.has(rij.nutrient)) ? (
             <p className="vd-note">

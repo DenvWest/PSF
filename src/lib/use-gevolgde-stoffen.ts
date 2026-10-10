@@ -74,6 +74,8 @@ export function useGevolgdeStoffen(): {
   stoffen: readonly SupermarktVeld[];
   geladen: boolean;
   zetGevolgd: (veld: SupermarktVeld, aan: boolean) => Promise<void>;
+  /** Eén plek eerder (-1) of later (1) in de lijst; de volgorde wordt met de lijst bewaard. */
+  verschuif: (veld: SupermarktVeld, richting: -1 | 1) => Promise<void>;
 } {
   const huidig = useSyncExternalStore(
     abonneer,
@@ -90,5 +92,14 @@ export function useGevolgdeStoffen(): {
     await bewaar(aan ? [...zonder, veld] : zonder);
   }, []);
 
-  return { stoffen: huidig.stoffen, geladen: huidig.geladen, zetGevolgd };
+  const verschuif = useCallback(async (veld: SupermarktVeld, richting: -1 | 1) => {
+    const lijst = [...toestand.stoffen];
+    const van = lijst.indexOf(veld);
+    const naar = van + richting;
+    if (van < 0 || naar < 0 || naar >= lijst.length) return;
+    [lijst[van], lijst[naar]] = [lijst[naar]!, lijst[van]!];
+    await bewaar(lijst);
+  }, []);
+
+  return { stoffen: huidig.stoffen, geladen: huidig.geladen, zetGevolgd, verschuif };
 }

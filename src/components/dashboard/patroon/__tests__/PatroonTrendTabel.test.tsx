@@ -35,6 +35,7 @@ function trend(extra: Partial<StofTrend>): StofTrend {
     schaal: "dag",
     punten: [punt("ma", 1.12, "gehaald", true), punt("di", 0.84, "onder"), punt("wo", 0.62, "onvolledig"), punt("do", null, "leeg")],
     kop: "",
+    periode: null,
     gehaald: false,
     redenen: [],
     ...extra,
@@ -42,12 +43,32 @@ function trend(extra: Partial<StofTrend>): StofTrend {
 }
 
 describe("PatroonTrendTabel", () => {
-  it("zet een ✓ waar de lat gehaald is, ≥ bij onvolledig en telt gehaald per stof", () => {
+  it("zet een ✓ waar de lat gehaald is, gestreept bij onvolledig en telt gehaald per stof", () => {
     render(<PatroonTrendTabel trends={[trend({})]} onKies={() => {}} />);
     expect(screen.getByText("✓112")).toBeTruthy();
     expect(screen.getByText("84")).toBeTruthy();
-    expect(screen.getByText("≥62")).toBeTruthy();
-    expect(screen.getByText("1/3")).toBeTruthy();
+    expect(screen.getByText("62")).toBeTruthy();
+    expect(screen.getByText("1 van 3")).toBeTruthy();
+  });
+
+  it("laat omega-3 als één regel over alle dagen zien, niet als percentage per dag", () => {
+    render(<PatroonTrendTabel trends={[trend({ stof: "omega3", label: "omega-3", periodetotaal: true, kop: "≥945 mg totaal · 38%", periode: { totaal: 945, norm: 1750 }, gehaald: false })]} onKies={() => {}} />);
+    expect(screen.getByText(/945 van 1\.750 mg · 54%/)).toBeTruthy();
+    expect(screen.queryByText("✓112")).toBeNull();
+  });
+
+  it("zet stoffen zonder norm als lijst met gemiddelde en balkjes, niet tussen de procenten", () => {
+    const natrium = trend({
+      stof: "sodiumMg",
+      label: "Natrium",
+      soort: "gevolgd",
+      norm: null,
+      punten: [punt("ma", null, "neutraal"), punt("di", null, "neutraal")].map((p, i) => ({ ...p, waarde: i === 0 ? 2100 : 1900 })),
+    });
+    render(<PatroonTrendTabel trends={[trend({}), natrium]} onKies={() => {}} />);
+    expect(screen.getAllByRole("table")).toHaveLength(1);
+    expect(screen.getByText(/gem\. 2\.000 mg per dag/)).toBeTruthy();
+    expect(screen.getByText(/geen glas en geen ✓/)).toBeTruthy();
   });
 
   it("geeft een gevolgde stof ook een ✓, en een niet aan te tonen stof alleen zijn kop", () => {

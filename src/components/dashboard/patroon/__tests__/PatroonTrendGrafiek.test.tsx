@@ -50,11 +50,12 @@ const trend: StofTrend = {
           { moment: "lunch", label: "Lunch", waarde: null, keer: 0, geschat: 140, overgeslagen: false },
         ],
         bronnen: [{ naam: "Havermout", bedrag: 80 }],
-        schatting: "≈ 74% met je gebruikelijke lunch (gem. 140 mg, 4×).",
+        schatting: "Met je gebruikelijke lunch erbij kom je op ≈ 74% (een gok: meestal 140 mg).",
       },
     }),
   ],
   kop: "",
+  periode: null,
   gehaald: false,
   redenen: [],
 };
@@ -92,7 +93,7 @@ describe("PatroonTrendGrafiek", () => {
 
   it("toont in het paneel de schatting, de maaltijden, de bronnen en de redenen", () => {
     render(<PatroonTrendGrafiek trend={trend} redenen={["1 dag mist een hoofdmaaltijd."]} />);
-    expect(screen.getByText("≈ 74% met je gebruikelijke lunch (gem. 140 mg, 4×).")).toBeTruthy();
+    expect(screen.getByText("Met je gebruikelijke lunch erbij kom je op ≈ 74% (een gok: meestal 140 mg).")).toBeTruthy();
     expect(screen.getByText(/≈ 140 mg/)).toBeTruthy();
     expect(screen.getByText(/Havermout \(80 mg\)/)).toBeTruthy();
     expect(screen.getByText("1 dag mist een hoofdmaaltijd.")).toBeTruthy();
