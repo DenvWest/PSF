@@ -3,7 +3,7 @@
 import { gearceerd, getint, stofKleur } from "@/components/dashboard/patroon/PatroonTrendGrafiek";
 import type { PatroonStof } from "@/lib/nutrition-stof-meting";
 import type { StofTrend, StofTrendPunt } from "@/lib/nutrition-stof-trend";
-import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
+import { percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
 
 /**
  * Alle stoffen van Trend in één tabel: per stof een rij, per dag (of week,
@@ -30,11 +30,16 @@ function hoofdletter(label: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 
+function getalNL(waarde: number): string {
+  return Math.round(waarde * 10) % 10 === 0
+    ? Math.round(waarde).toLocaleString("nl-NL")
+    : waarde.toLocaleString("nl-NL", { maximumFractionDigits: 1 });
+}
+
 function celTekst(punt: StofTrendPunt): string {
   if (punt.waarde === null) return "—";
-  const getal =
-    punt.aandeel !== null ? percentageADH(punt.aandeel).replace("%", "") : hoeveelheid(punt.waarde);
-  return `${punt.normGehaald ? "✓" : ""}${getal}${punt.staat === "onvolledig" && !punt.normGehaald ? "+" : ""}`;
+  const getal = punt.aandeel !== null ? percentageADH(punt.aandeel).replace("%", "") : getalNL(punt.waarde);
+  return `${punt.normGehaald ? "✓" : ""}${getal}`;
 }
 
 function celStijl(trend: StofTrend, punt: StofTrendPunt): { className: string; background?: string } {
@@ -50,13 +55,12 @@ function slotTekst(trend: StofTrend): string {
   if (gemeten.length === 0) return "—";
   if (trend.schaal === "maaltijd") {
     const som = gemeten.reduce((s, p) => s + (p.aandeel ?? 0), 0);
-    return trend.norm !== null ? percentageADH(som) : `${hoeveelheid(gemeten.reduce((s, p) => s + p.waarde!, 0))} ${trend.unit}`;
+    return trend.norm !== null ? percentageADH(som) : `${getalNL(gemeten.reduce((s, p) => s + p.waarde!, 0))} ${trend.unit}`;
   }
   if (trend.norm === null) {
-    return `${hoeveelheid(gemeten.reduce((s, p) => s + p.waarde!, 0) / gemeten.length)}`;
+    return getalNL(gemeten.reduce((s, p) => s + p.waarde!, 0) / gemeten.length);
   }
-  if (trend.periodetotaal) return trend.gehaald ? "✓ periode" : "periode";
-  return `${gemeten.filter((p) => p.normGehaald).length}/${gemeten.length}`;
+  return `${gemeten.filter((p) => p.normGehaald).length} van ${gemeten.length}`;
 }
 
 function Rij({ trend, onKies }: { trend: StofTrend; onKies: (stof: PatroonStof) => void }) {
@@ -74,6 +78,19 @@ function Rij({ trend, onKies }: { trend: StofTrend; onKies: (stof: PatroonStof) 
       </button>
     </th>
   );
+
+  // Omega-3 telt over de hele periode: één keer vette vis dekt dagen, een percentage per dag zou liegen.
+  if (trend.periodetotaal && trend.bewijsbaar && trend.punten.some((p) => p.waarde !== null)) {
+    return (
+      <tr className="border-t border-[var(--vd-line)]">
+        {naam}
+        <td colSpan={trend.punten.length + 1} className="py-1.5 text-[var(--vd-ink-2)]">
+          Telt over alle dagen samen, niet per dag: {trend.gehaald ? "doel gehaald · " : ""}
+          {trend.kop}
+        </td>
+      </tr>
+    );
+  }
 
   // Zonder bewijs (zink, vitamine D) of zonder enige registratie: de kop zegt het.
   if (!trend.bewijsbaar || trend.punten.every((p) => p.waarde === null)) {
@@ -113,7 +130,7 @@ function Rij({ trend, onKies }: { trend: StofTrend; onKies: (stof: PatroonStof) 
 
 function kopSlot(schaal: StofTrend["schaal"], zonderNorm: boolean): string {
   if (zonderNorm) return schaal === "maaltijd" ? "samen" : "gemiddeld";
-  return schaal === "maaltijd" ? "hele dag" : schaal === "week" ? "weken gehaald" : "dagen gehaald";
+  return schaal === "maaltijd" ? "hele dag" : "doel gehaald";
 }
 
 function Tabel({
@@ -185,14 +202,14 @@ export default function PatroonTrendTabel({
         titel="Alles samen · hoe dicht je bij je doel zat"
         trends={metNorm}
         onKies={onKies}
-        uitleg="Zie elke stof als een glas. 100% = het glas is precies vol: je doel voor die dag. Een ✓ betekent dat het glas vol is. Een plus (25+) betekent: minstens zoveel, want je schreef die dag niet alles op en er kan dus nog meer bij zijn. Een streepje (—) betekent dat er niets is opgeschreven."
+        uitleg="Zie elke stof als een glas. 100% = het glas is precies vol, dat is je doel voor die dag. ✓ = vol. Een gestreept vakje = je schreef die dag niet alles op, dus er kan nog meer bij zijn. — = niets opgeschreven. Bij 'doel gehaald' tellen we streng: alleen dagen waarop zeker is dat het glas vol was."
       />
       <Tabel
         id="patroon-trend-hoeveelheden"
-        titel="Ook gevolgd · hoeveel je binnenkreeg"
+        titel="Ook gevolgd · hoeveel je per dag binnenkreeg"
         trends={zonderNorm}
         onKies={onKies}
-        uitleg="Voor deze stoffen is er geen vast doel, dus zie je gewoon hoeveel je binnenkreeg, in de eenheid achter de naam. mg is heel klein (1000 mg is 1 gram) en kcal zijn calorieën, daarom zijn deze getallen groter dan de procenten hierboven. Dat zegt niets over goed of fout."
+        uitleg="Voor deze stoffen is er geen doel, dus geen glas en geen ✓: je ziet alleen hoeveel je binnenkreeg, in de eenheid achter de naam. Een gestreept vakje = je schreef die dag niet alles op, dus het was eigenlijk meer. De laatste kolom is je gemiddelde per dag."
       />
     </>
   );

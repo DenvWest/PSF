@@ -174,7 +174,7 @@ export default function PatroonTrendGrafiek({
                     className="h-3 truncate text-center text-[9px] leading-3"
                     style={{ color: punt.normGehaald ? kleur : "var(--vd-ink-3)" }}
                   >
-                    {[punt.normGehaald ? "✓" : null, punt.aandeel !== null && punt.aandeel > 1 && !smal ? percentageADH(punt.aandeel) : null]
+                    {[punt.normGehaald ? "✓" : null, punt.aandeel !== null && punt.aandeel > 1 && !smal && !trend.periodetotaal ? percentageADH(punt.aandeel) : null]
                       .filter(Boolean)
                       .join(" ")}
                   </span>
@@ -279,6 +279,7 @@ export default function PatroonTrendGrafiek({
           {procent ? (
             <p className="m-0 pl-8 text-[10px] text-[var(--vd-ink-4)]">
               100% = {trend.schaal === "maaltijd" ? trend.normNaam.dag : trend.normNaam.de} {hoeveelheid(norm!)} {trend.unit}
+              {trend.periodetotaal ? ". Dit telt over alle dagen samen: één keer vette vis dekt meerdere dagen, dus een hoge staaf op één dag is geen probleem." : ""}
             </p>
           ) : null}
         </div>

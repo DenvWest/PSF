@@ -42,12 +42,18 @@ function trend(extra: Partial<StofTrend>): StofTrend {
 }
 
 describe("PatroonTrendTabel", () => {
-  it("zet een ✓ waar de lat gehaald is, + bij onvolledig en telt gehaald per stof", () => {
+  it("zet een ✓ waar de lat gehaald is, gestreept bij onvolledig en telt gehaald per stof", () => {
     render(<PatroonTrendTabel trends={[trend({})]} onKies={() => {}} />);
     expect(screen.getByText("✓112")).toBeTruthy();
     expect(screen.getByText("84")).toBeTruthy();
-    expect(screen.getByText("62+")).toBeTruthy();
-    expect(screen.getByText("1/3")).toBeTruthy();
+    expect(screen.getByText("62")).toBeTruthy();
+    expect(screen.getByText("1 van 3")).toBeTruthy();
+  });
+
+  it("laat omega-3 als één regel over alle dagen zien, niet als percentage per dag", () => {
+    render(<PatroonTrendTabel trends={[trend({ stof: "omega3", label: "omega-3", periodetotaal: true, kop: "≥945 mg totaal · 38%" })]} onKies={() => {}} />);
+    expect(screen.getByText(/Telt over alle dagen samen, niet per dag/)).toBeTruthy();
+    expect(screen.queryByText("✓112")).toBeNull();
   });
 
   it("zet stoffen zonder norm in een eigen tabel met de eenheid achter de naam", () => {
@@ -61,9 +67,9 @@ describe("PatroonTrendTabel", () => {
     render(<PatroonTrendTabel trends={[trend({}), natrium]} onKies={() => {}} />);
     expect(screen.getAllByRole("table")).toHaveLength(2);
     expect(screen.getByText("(mg)")).toBeTruthy();
-    expect(screen.getByText("2100")).toBeTruthy();
-    expect(screen.getByText("2000")).toBeTruthy();
-    expect(screen.getByText(/Dat zegt niets over goed of fout/)).toBeTruthy();
+    expect(screen.getByText("2.100")).toBeTruthy();
+    expect(screen.getByText("2.000")).toBeTruthy();
+    expect(screen.getByText(/geen glas en geen ✓/)).toBeTruthy();
   });
 
   it("geeft een gevolgde stof ook een ✓, en een niet aan te tonen stof alleen zijn kop", () => {
