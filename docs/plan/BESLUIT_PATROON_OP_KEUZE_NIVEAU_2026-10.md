@@ -62,3 +62,12 @@ Dennis: calorieën en vetten ook als gevolgde stoffen in Trend, met dezelfde gra
 3. **"Wat kun je hiermee?"** onder de verdeling: bij calorieën een link naar Per maaltijd (waar zit ruimte voor eiwit of vezels), bij vetten naar omega-3 en de rijkste bronnen. Feitelijk, geen oordeel.
 
 **Meting:** nieuw GA4-event `patroon_terug_naar_keuze` {nutrient}; samen met `keuze_naar_patroon_stof {plek}` is dat de heen-en-weer-beweging Keuze ↔ Patroon. De "wat kun je hiermee"-links gebruiken `nutrition_patroon_sectie_gekozen` en `nutrition_patroon_stof_geopend`.
+
+## Plak 6: het Overzicht in Per stof met de balk van het detail (gebouwd 10 okt)
+
+Dennis: de overzichtsbalk in Patroon net zo mooi als in de losse stoffen.
+
+1. **Eén balk** (`StofBalk`: afgeronde baan, vulling, normstreep) in elke stofrij van het Overzicht, dezelfde taal als de hero. Zonder norm of meting geen balk: een balk zonder maat suggereert een oordeel.
+2. **Kaart-rijen in plaats van tabelrijen** (`PatroonStofRij`) voor kernstoffen en "Ook gevolgd": naam met stip en pil, percentage, balk, gemiddelde, norm met bron en eventuele streefwaarde onder elkaar. Geen vier smalle kolommen meer op 375px.
+3. **De "Je doelen"-kaart** begint met een segmentbalk (één segment per kernstof: gehaald, nog niet, niet te meten) boven de bestaande zin. De tekst is gelijk.
+4. Gevolgde stoffen blijven neutraal gekleurd ("zonder oordeel-kleur"). Rekenlogica, normen, de asymmetrie-regel en de meetpunten zijn niet veranderd.
