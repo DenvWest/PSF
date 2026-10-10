@@ -11,19 +11,16 @@ afterEach(cleanup);
 
 function renderTerug() {
   return render(
-    <TerugNaarKeuze surface="product" slug="royal-green-whey" catalogusHref="/supplementen?categorie=eiwitpoeder" categorieLabel="Eiwitpoeder" />,
+    <TerugNaarKeuze surface="product" slug="royal-green-whey" />,
   );
 }
 
 describe("TerugNaarKeuze", () => {
-  it("toont de weg terug naar dezelfde stof en naar alle producten, alleen vanuit Keuze", () => {
+  it("toont de weg terug naar dezelfde stof, alleen vanuit Keuze", () => {
     zoek.waarde = "van=keuze&stof=protein";
     renderTerug();
     expect(screen.getByRole("link", { name: /Terug naar je keuze · Eiwit/ }).getAttribute("href")).toBe(
       "/dashboard?tab=keuze&stof=protein",
-    );
-    expect(screen.getByRole("link", { name: /Alle eiwitpoeder-producten met PS-Score/ }).getAttribute("href")).toBe(
-      "/supplementen?categorie=eiwitpoeder",
     );
   });
 

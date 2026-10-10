@@ -44,15 +44,16 @@ export default function KeuzeKoopKaart({
         <div className="min-w-0">
           <p className="m-0 text-xs font-semibold uppercase tracking-wider text-stone-500">Jouw keuze</p>
           <p className="m-0 mt-0.5 text-base font-semibold text-stone-900">{naam}</p>
-          <p className="m-0 mt-0.5 text-sm text-stone-600">
-            {prijsPerDag} per dag · PS-Score {score}
+          <p className="m-0 mt-2 flex flex-wrap items-center gap-2 text-sm text-stone-700">
+            <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold">{prijsPerDag} per dag</span>
+            <span className="rounded-full bg-ps-green/10 px-3 py-1 font-semibold text-ps-green">PS-Score {score}</span>
           </p>
         </div>
         <AffiliateLink
           affiliateSlug={affiliateSlug}
           category={category}
           sourcePage="productpagina-keuze"
-          className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-ps-green px-6 py-3 text-base font-semibold text-white shadow-sm transition-all hover:bg-ps-green-hover hover:shadow-md"
+          className="inline-flex min-h-[48px] w-full items-center justify-center rounded-xl bg-ps-green px-6 md:w-auto py-3 text-base font-semibold text-white shadow-sm transition-all hover:bg-ps-green-hover hover:shadow-md"
         >
           Prijs en winkels →
         </AffiliateLink>

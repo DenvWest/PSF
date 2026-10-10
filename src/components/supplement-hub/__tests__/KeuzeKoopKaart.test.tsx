@@ -34,7 +34,8 @@ describe("KeuzeKoopKaart", () => {
     renderKaart();
     const kaart = screen.getByRole("region", { name: "Prijs en winkels" });
     expect(kaart.textContent).toMatch(/Orangefit Protein/);
-    expect(kaart.textContent).toMatch(/€ 1,36 per dag · PS-Score 75,9/);
+    expect(kaart.textContent).toMatch(/€ 1,36 per dag/);
+    expect(kaart.textContent).toMatch(/PS-Score 75,9/);
     expect(kaart.textContent).toMatch(/vergoeding als je via deze link koopt/);
     expect(screen.getByRole("link", { name: "Hoe dat werkt" }).getAttribute("href")).toBe("/affiliate-disclosure");
     const winkel = screen.getByRole("link", { name: /Prijs en winkels/ });
