@@ -27,6 +27,9 @@ import {
   validateSourceInput,
 } from "@/lib/product-admin/edit-validation";
 import { buildDosering } from "@/lib/supplement-catalog-db/loader";
+import { publishedEditBlock, type PublishedEdit } from "@/lib/product-admin/gate-regression";
+import { getProductDossierById } from "@/lib/product-admin/queries";
+import { todayIso } from "@/lib/partnerdesk/dates";
 
 function revalidateProduct(slug: string) {
   revalidatePath("/admin/producten");
@@ -37,6 +40,11 @@ function revalidateProduct(slug: string) {
 
 function fail(err: unknown): ActionResult {
   return { ok: false, error: err instanceof Error ? err.message : "Onbekende fout." };
+}
+
+async function blockedByGate(db: SupabaseClient, productId: string, edit: PublishedEdit): Promise<string | null> {
+  const dossier = await getProductDossierById(db, productId);
+  return dossier ? publishedEditBlock(dossier, edit, todayIso()) : null;
 }
 
 /**
@@ -90,6 +98,8 @@ export async function updateActiveAction(input: {
   if (error) return { ok: false, error };
   try {
     const db = getPartnerDeskDb();
+    const blocked = await blockedByGate(db, input.productId, { kind: "updateActive", activeId: input.activeId, amount: input.amount, unit: input.unit });
+    if (blocked) return { ok: false, error: blocked };
     const { error: updateError } = await db
       .from("sup_product_actives")
       .update({ amount_per_serving: input.amount, unit: input.unit })
@@ -117,6 +127,8 @@ export async function updateImageAction(input: {
   if (error) return { ok: false, error };
   try {
     const db = getPartnerDeskDb();
+    const blocked = await blockedByGate(db, input.productId, { kind: "updateImage", imageId: input.imageId, source: input.source, licenseNote: input.licenseNote });
+    if (blocked) return { ok: false, error: blocked };
     const { error: updateError } = await db
       .from("sup_product_images")
       .update({
@@ -175,6 +187,8 @@ export async function setOfferActiveAction(input: {
   await requireAdmin();
   try {
     const db = getPartnerDeskDb();
+    const blocked = await blockedByGate(db, input.productId, { kind: "setOfferActive", offerId: input.offerId, active: input.active });
+    if (blocked) return { ok: false, error: blocked };
     const { error } = await db
       .from("sup_offers")
       .update({ active: input.active, updated_at: new Date().toISOString() })
@@ -223,6 +237,8 @@ export async function removeSourceAction(input: {
   await requireAdmin();
   try {
     const db = getPartnerDeskDb();
+    const blocked = await blockedByGate(db, input.productId, { kind: "removeSource", sourceId: input.sourceId });
+    if (blocked) return { ok: false, error: blocked };
     const { error } = await db
       .from("sup_sources")
       .delete()
@@ -326,6 +342,8 @@ export async function removeActiveAction(input: {
   await requireAdmin();
   try {
     const db = getPartnerDeskDb();
+    const blocked = await blockedByGate(db, input.productId, { kind: "removeActive", activeId: input.activeId });
+    if (blocked) return { ok: false, error: blocked };
     const { error } = await db
       .from("sup_product_actives")
       .delete()
@@ -433,6 +451,8 @@ export async function removeImageAction(input: {
   await requireAdmin();
   try {
     const db = getPartnerDeskDb();
+    const blocked = await blockedByGate(db, input.productId, { kind: "removeImage", imageId: input.imageId });
+    if (blocked) return { ok: false, error: blocked };
     const { error } = await db
       .from("sup_product_images")
       .delete()
