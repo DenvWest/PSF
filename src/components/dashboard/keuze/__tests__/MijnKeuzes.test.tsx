@@ -231,6 +231,42 @@ describe("MijnKeuzes", () => {
     expect(onNaar).toHaveBeenCalledWith(null);
   });
 
+  it("een vrije keuze zonder stof komt in Je dag, verplaatst en gaat weg met een ×", async () => {
+    favorieten.items = [{ id: "voeding-route-omega3-bord", title: "", kind: "activiteit" }];
+    const { rerender, onNaar } = renderMijn();
+    const lunch = () => screen.getByRole("region", { name: "Lunch" });
+    fireEvent.click(within(lunch()).getByRole("button", { name: "Iets kiezen voor lunch" }));
+    fireEvent.change(within(lunch()).getByRole("searchbox", { name: "Zoek eten voor lunch" }), { target: { value: "koffie" } });
+    fireEvent.click(within(lunch()).getByRole("button", { name: /^Koffie.*los/ }));
+    expect(favorieten.items.some((i) => i.id === "voeding-vrij-lunch-koffie")).toBe(true);
+
+    rerender(<MijnKeuzes statuses={statuses} reeksen={[]} onNaarVergelijken={onNaar} />);
+    expect(within(lunch()).getByText(/los gekozen/)).toBeTruthy();
+    fireEvent.click(within(lunch()).getByRole("button", { name: "Moment van Koffie wijzigen" }));
+    fireEvent.click(within(lunch()).getByRole("button", { name: "Tussendoor" }));
+    expect(favorieten.items.map((i) => i.id)).toContain("voeding-vrij-tussendoor-koffie");
+    expect(favorieten.items.map((i) => i.id)).not.toContain("voeding-vrij-lunch-koffie");
+
+    rerender(<MijnKeuzes statuses={statuses} reeksen={[]} onNaarVergelijken={onNaar} />);
+    fireEvent.click(screen.getByRole("button", { name: "Koffie uit je keuzes halen" }));
+    expect(favorieten.items.some((i) => i.id.startsWith("voeding-vrij-"))).toBe(false);
+  });
+
+  it("een × in Je dag haalt de keuze weg, met ongedaan maken", async () => {
+    favorieten.items = [
+      { id: "voeding-route-omega3-beide", title: "", kind: "supplement" },
+      { id: "voeding-product-omega3-vitals-liquid-epadha", title: "", kind: "supplement" },
+      { id: "voeding-moment-omega3-avondeten", title: "", kind: "supplement" },
+    ];
+    const { rerender, onNaar } = renderMijn();
+    fireEvent.click(screen.getByRole("button", { name: /Vitals Liquid EPA\/DHA.* uit je keuzes halen/ }));
+    expect(favorieten.items.some((i) => i.id.startsWith("voeding-product-omega3"))).toBe(false);
+
+    rerender(<MijnKeuzes statuses={statuses} reeksen={[]} onNaarVergelijken={onNaar} />);
+    fireEvent.click(screen.getByRole("button", { name: "Ongedaan maken" }));
+    expect(favorieten.items.some((i) => i.id === "voeding-product-omega3-vitals-liquid-epadha")).toBe(true);
+  });
+
   it("Alleen supplementen tonen verbergt het eten in Je dag en per stof, en zet het weer terug", async () => {
     favorieten.items = [
       { id: "voeding-route-omega3-beide", title: "", kind: "supplement" },

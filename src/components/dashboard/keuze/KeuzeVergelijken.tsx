@@ -68,6 +68,7 @@ import {
 } from "@/lib/use-dagboek-voedingsfavorieten";
 import { useEiwitDoel, useKernstofProfiel } from "@/lib/use-kernstof-normen";
 import { omgekeerdWisPlan, planAllesWeg, planEtenWeg, planSupplementWeg, type WisPlan } from "@/lib/keuze-overzicht-wissen";
+import { planVrijWeg } from "@/lib/keuze-vrije-keuze";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 
@@ -327,8 +328,13 @@ type KeuzeRij = {
 
 type KeuzesOverzicht = { rijen: KeuzeRij[]; centenPerDag: number };
 
+type WisPlek = "zijkolom" | "lade" | "je_dag";
+
+/** Wat wissen nodig heeft; `nutrient` is null bij een vrije keuze in Je dag. */
+export type WisRij = { nutrient: NutrientId | null; key: string | null; soort: "eten" | "supplement"; titel: string };
+
 type KeuzesBeheer = {
-  wisRij: (rij: KeuzeRij, plek: "zijkolom" | "lade") => void;
+  wisRij: (rij: WisRij, plek: WisPlek) => void;
   wisAlles: (plek: "zijkolom" | "lade") => void;
   /** Wat net gewist is; staat een paar seconden klaar om terug te zetten. */
   laatste: { tekst: string } | null;
@@ -339,7 +345,7 @@ type KeuzesBeheer = {
  * Keuzes weghalen vanuit de zijkolom en de lade, met "Ongedaan maken". Wist
  * alleen je keuzes; de sterren in je dagboek blijven staan.
  */
-function useKeuzesBeheer(surface: string): KeuzesBeheer {
+export function useKeuzesBeheer(surface: string): KeuzesBeheer {
   const { items, save, remove } = useVoortgangFavorites();
   const [laatste, setLaatste] = useState<{ plan: WisPlan; tekst: string } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -363,11 +369,16 @@ function useKeuzesBeheer(surface: string): KeuzesBeheer {
   }, []);
 
   const wisRij = useCallback(
-    (rij: KeuzeRij, plek: "zijkolom" | "lade") => {
-      const plan = rij.key ? planEtenWeg(rij.nutrient, rij.key, items) : planSupplementWeg(rij.nutrient, items);
+    (rij: WisRij, plek: WisPlek) => {
+      const plan =
+        rij.nutrient === null
+          ? planVrijWeg(rij.key ?? "", items)
+          : rij.key
+            ? planEtenWeg(rij.nutrient, rij.key, items)
+            : planSupplementWeg(rij.nutrient, items);
       toepas(plan);
       meld(plan, `${rij.titel} weggehaald.`);
-      trackEvent("keuze_overzicht_wis", { surface, plek, soort: rij.soort, nutrient: rij.nutrient });
+      trackEvent("keuze_overzicht_wis", { surface, plek, soort: rij.soort, nutrient: rij.nutrient ?? "vrij" });
     },
     [items, toepas, meld, surface],
   );
@@ -394,7 +405,7 @@ function useKeuzesBeheer(surface: string): KeuzesBeheer {
   return { wisRij, wisAlles, laatste: laatste ? { tekst: laatste.tekst } : null, maakOngedaan };
 }
 
-function OngedaanBalk({ beheer }: { beheer: KeuzesBeheer }) {
+export function OngedaanBalk({ beheer }: { beheer: KeuzesBeheer }) {
   if (!beheer.laatste) return null;
   return (
     <p
