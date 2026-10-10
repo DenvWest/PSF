@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
  * Eenmalige/herhaalbare admin-actie: zet de statische score-invoer uit
  * score-inputs.ts in sup_products.score_inputs. Idempotent; overschrijft geen
  * bestaande waarden. Vereist migratie 20260930143532_sup_products_score_inputs.sql
- * en dat de product-backfill (POST /api/admin/data/sup-backfill) al is gedraaid.
+ * en dat de producten al in sup_products staan (sup-backfill-route verwijderd, B-5).
  */
 export async function POST(request: NextRequest) {
   const token = request.cookies.get(ADMIN_TOKEN_COOKIE_NAME)?.value;

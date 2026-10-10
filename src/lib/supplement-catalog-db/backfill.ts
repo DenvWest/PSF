@@ -237,9 +237,10 @@ async function replaceProductImage(
 }
 
 /**
- * Backfill één categoriepagina. Puur voor hergebruik door het volledige-backfill-
- * script en door tests — geen eigen transactiegrens (Supabase JS heeft die niet),
- * dus bij een gedeeltelijke fout blijft wat al geschreven is staan (idempotent op
+ * Backfill één categoriepagina. Alleen nog voor tests: er is bewust geen
+ * productieroute meer, omdat dit status op published zet en beheerdata overschrijft
+ * (docs/plan/BESLUIT_AFFILIATE_VERVOLG_2026-10.md, B-5). Geen eigen
+ * transactiegrens (Supabase JS heeft die niet), dus bij een gedeeltelijke fout blijft wat al geschreven is staan (idempotent op
  * de volgende run).
  */
 export async function backfillComparisonPage(
@@ -285,26 +286,4 @@ export async function backfillComparisonPage(
   }
 
   return { brandsUpserted, categoriesUpserted: 1, productsUpserted, errors };
-}
-
-export async function backfillAllComparisonPages(
-  db: SupabaseClient,
-  pages: ComparisonPageData[],
-): Promise<BackfillResult> {
-  const total: BackfillResult = {
-    brandsUpserted: 0,
-    categoriesUpserted: 0,
-    productsUpserted: 0,
-    errors: [],
-  };
-
-  for (const page of pages) {
-    const result = await backfillComparisonPage(db, page);
-    total.brandsUpserted += result.brandsUpserted;
-    total.categoriesUpserted += result.categoriesUpserted;
-    total.productsUpserted += result.productsUpserted;
-    total.errors.push(...result.errors);
-  }
-
-  return total;
 }

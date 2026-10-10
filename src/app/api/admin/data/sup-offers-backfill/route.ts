@@ -12,8 +12,8 @@ export const dynamic = "force-dynamic";
 
 /**
  * Eenmalige/herhaalbare admin-actie: schrijft sup_retailers + sup_offers uit de
- * bestaande affiliate-links.ts. Idempotent. Vereist dat de sup-backfill al is
- * gedraaid (POST /api/admin/data/sup-backfill) en dat de pd_partners-rijen voor
+ * bestaande affiliate-links.ts. Idempotent. Vereist dat de producten al in
+ * sup_products staan (de sup-backfill-route is verwijderd, B-5) en dat de pd_partners-rijen voor
  * Vitaminstore/VitalNutrition/Arctic Blue bestaan (migratie
  * 20260926112517_pd_daisycon_en_retailer_partners.sql).
  * Zie docs/plan/ANALYSE_PRODUCTPLATFORM_SUPPLEMENTEN.md, plak 4.
