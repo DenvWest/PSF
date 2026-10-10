@@ -92,6 +92,8 @@ export type StofTrend = {
   punten: StofTrendPunt[];
   /** Eén telregel naast de naam. */
   kop: string;
+  /** Alleen bij een periodetotaal (omega-3): het totaal tegen de norm over alle dagen samen. */
+  periode: { totaal: number; norm: number } | null;
   /**
    * Of de norm over de periode aantoonbaar gehaald is (zonder benaderingen).
    * Bij een gevolgde stof alleen om de "waarom"-regels weg te laten; hij
@@ -516,6 +518,10 @@ export function bouwStofTrend(invoer: StofTrendInvoer): StofTrend {
     schaal,
     punten,
     kop: kopVoor(invoer, schaal, punten, gehaald),
+    periode:
+      invoer.periodetotaal && invoer.norm !== null && gemeten.length > 0
+        ? { totaal: invoer.dagen.reduce((s, d) => s + d.som, 0), norm: invoer.norm * invoer.dagen.length }
+        : null,
     gehaald,
     redenen: redenenVoor(invoer, gehaald),
   };

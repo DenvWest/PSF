@@ -45,12 +45,28 @@ function kaartId(stof: PatroonStof): string {
   return `patroon-trend-${stof}`;
 }
 
+function VerschuifKnop({ label, pijl, uit, onClick }: { label: string; pijl: string; uit: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={uit}
+      onClick={onClick}
+      className="h-8 w-8 cursor-pointer rounded-full border border-[var(--vd-line)] bg-transparent text-[var(--vd-ink-2)] disabled:cursor-default disabled:opacity-30"
+    >
+      <span aria-hidden>{pijl}</span>
+    </button>
+  );
+}
+
 function StofKaart({
   trend,
   onOpen,
+  verschuif,
 }: {
   trend: StofTrend;
   onOpen: (stof: PatroonStof) => void;
+  verschuif?: { eerste: boolean; laatste: boolean; op: (richting: -1 | 1) => void };
 }) {
   return (
     <li
@@ -68,6 +84,12 @@ function StofKaart({
           <span className="text-[var(--vd-ink-4)]">›</span>
         </button>
         <span className="text-[0.75rem] text-[var(--vd-ink-2)]">{trend.kop}</span>
+        {verschuif ? (
+          <span className="ml-auto flex gap-1.5">
+            <VerschuifKnop label={`${hoofdletter(trend.label)} een plek omhoog`} pijl="↑" uit={verschuif.eerste} onClick={() => verschuif.op(-1)} />
+            <VerschuifKnop label={`${hoofdletter(trend.label)} een plek omlaag`} pijl="↓" uit={verschuif.laatste} onClick={() => verschuif.op(1)} />
+          </span>
+        ) : null}
       </div>
 
       {trend.bewijsbaar ? (
@@ -90,10 +112,12 @@ export default function PatroonTrend({
   kernstoffen,
   gevolgd,
   onOpen,
+  onVerschuif,
 }: {
   kernstoffen: readonly StofTrend[];
   gevolgd: readonly StofTrend[];
   onOpen: (stof: PatroonStof) => void;
+  onVerschuif?: (stof: PatroonStof, richting: -1 | 1) => void;
 }) {
   const schaal = kernstoffen[0]?.schaal ?? gevolgd[0]?.schaal;
   const springNaar = (stof: PatroonStof) => {
@@ -154,8 +178,17 @@ export default function PatroonTrend({
             Ook gevolgd · zonder oordeel
           </p>
           <ul className="m-0 flex list-none flex-col gap-4 p-0">
-            {gevolgd.map((trend) => (
-              <StofKaart key={trend.stof} trend={trend} onOpen={onOpen} />
+            {gevolgd.map((trend, i) => (
+              <StofKaart
+                key={trend.stof}
+                trend={trend}
+                onOpen={onOpen}
+                verschuif={
+                  onVerschuif && gevolgd.length > 1
+                    ? { eerste: i === 0, laatste: i === gevolgd.length - 1, op: (richting) => onVerschuif(trend.stof, richting) }
+                    : undefined
+                }
+              />
             ))}
           </ul>
         </section>

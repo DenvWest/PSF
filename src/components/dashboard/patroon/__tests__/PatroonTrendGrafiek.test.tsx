@@ -55,6 +55,7 @@ const trend: StofTrend = {
     }),
   ],
   kop: "",
+  periode: null,
   gehaald: false,
   redenen: [],
 };

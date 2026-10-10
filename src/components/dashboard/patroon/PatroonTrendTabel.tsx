@@ -66,7 +66,7 @@ function slotTekst(trend: StofTrend): string {
 function Rij({ trend, onKies }: { trend: StofTrend; onKies: (stof: PatroonStof) => void }) {
   const zonderNorm = trend.norm === null;
   const naam = (
-    <th scope="row" className="sticky left-0 z-10 bg-[var(--vd-surface)] py-1.5 pr-3 text-left font-normal">
+    <th scope="row" className="max-w-[4.75rem] py-1.5 pr-1.5 text-left font-normal break-words">
       <button
         type="button"
         onClick={() => onKies(trend.stof)}
@@ -81,12 +81,20 @@ function Rij({ trend, onKies }: { trend: StofTrend; onKies: (stof: PatroonStof) 
 
   // Omega-3 telt over de hele periode: één keer vette vis dekt dagen, een percentage per dag zou liegen.
   if (trend.periodetotaal && trend.bewijsbaar && trend.punten.some((p) => p.waarde !== null)) {
+    const periode = trend.periode;
     return (
       <tr className="border-t border-[var(--vd-line)]">
         {naam}
         <td colSpan={trend.punten.length + 1} className="py-1.5 text-[var(--vd-ink-2)]">
-          Telt over alle dagen samen, niet per dag: {trend.gehaald ? "doel gehaald · " : ""}
-          {trend.kop}
+          {periode ? (
+            <>
+              {trend.gehaald ? "✓ " : ""}
+              {getalNL(periode.totaal)} van {getalNL(periode.norm)} {trend.unit} · {percentageADH(periode.totaal / periode.norm)}
+              <span className="text-[var(--vd-ink-4)]"> (alle dagen samen)</span>
+            </>
+          ) : (
+            trend.kop
+          )}
         </td>
       </tr>
     );
@@ -114,14 +122,14 @@ function Rij({ trend, onKies }: { trend: StofTrend; onKies: (stof: PatroonStof) 
             key={punt.sleutel}
             title={punt.uitleg}
             data-gehaald={punt.normGehaald || undefined}
-            className={`px-0.5 py-1.5 text-center tabular-nums ${stijl.className}`}
+            className={`px-0 py-1.5 text-center tabular-nums ${stijl.className}`}
             style={stijl.background ? { background: stijl.background } : undefined}
           >
             {celTekst(punt)}
           </td>
         );
       })}
-      <td className="pl-3 text-right whitespace-nowrap text-[var(--vd-ink-2)] tabular-nums">
+      <td className="pl-1.5 text-right whitespace-nowrap text-[var(--vd-ink-2)] tabular-nums">
         {slotTekst(trend)}
       </td>
     </tr>
@@ -157,18 +165,18 @@ function Tabel({
         {titel}
       </p>
       <div className="-mx-1 overflow-x-auto px-1">
-        <table className="w-full min-w-max border-collapse text-[11.5px] leading-tight">
+        <table className="w-full border-collapse text-[11px] leading-tight">
           <thead>
             <tr className="text-[10px] text-[var(--vd-ink-4)]">
-              <th scope="col" className="sticky left-0 z-10 bg-[var(--vd-surface)] pr-3 pb-1 text-left font-normal">
+              <th scope="col" className="pr-1.5 pb-1 text-left font-normal">
                 Stof
               </th>
               {kolommen.map((punt) => (
-                <th key={punt.sleutel} scope="col" className="min-w-[2.25rem] px-0.5 pb-1 text-center font-normal">
+                <th key={punt.sleutel} scope="col" className="px-0 pb-1 text-center font-normal">
                   {punt.label}
                 </th>
               ))}
-              <th scope="col" className="pb-1 pl-3 text-right font-normal">
+              <th scope="col" className="max-w-[3.5rem] pb-1 pl-1.5 text-right font-normal">
                 {kopSlot(schaal, zonderNorm)}
               </th>
             </tr>
