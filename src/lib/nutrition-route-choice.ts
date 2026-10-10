@@ -108,7 +108,7 @@ export function routeChoiceConfirmation(
     case "bord":
       return `Je haalt dit uit je eten. ${route.actionNl} Dat staat nu op je lijst.`;
     case "potje":
-      return `Je vult dit aan. ${route.boardCannotCoverNl}`;
+      return "Je vult dit aan. Dat staat nu op je lijst.";
     case "beide":
       return `Je doet allebei: ${route.actionNl.toLowerCase()} én aanvullen zolang je route nog niet staat.`;
   }

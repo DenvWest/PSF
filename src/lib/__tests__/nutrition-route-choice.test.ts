@@ -93,9 +93,9 @@ describe("copy", () => {
     // Vitamine D komt van je huid, niet van je bord — een generieke
     // "eet dit"-bevestiging zou daar onzin zijn.
     expect(routeChoiceConfirmation("bord", status)).toContain(status.route.actionNl);
-    expect(routeChoiceConfirmation("potje", status)).toContain(
-      status.route.boardCannotCoverNl,
-    );
+    // Bij "potje" staat alleen een korte bevestiging: de reden waarom je bord
+    // het niet dekt staat al bij de stand van de stof en op de stofpagina.
+    expect(routeChoiceConfirmation("potje", status)).toBe("Je vult dit aan. Dat staat nu op je lijst.");
   });
 
   it("noemt nergens een milligram of een percentage", () => {
