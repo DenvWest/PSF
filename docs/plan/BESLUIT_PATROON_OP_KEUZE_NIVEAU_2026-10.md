@@ -1,7 +1,7 @@
 # Besluit: Je patroon krijgt de opbouw van Keuze (stofchips, hero, kaarten)
 
 **Datum:** 10 oktober 2026
-**Status:** Besloten (Dennis: "akkoord, ik vertrouw jou"). Plak 1 gebouwd.
+**Status:** Besloten (Dennis: "akkoord, ik vertrouw jou"). Plak 1 gebouwd (#244), plak 2 gebouwd.
 **Bouwt voort op:** `BESLUIT_PATROON_STOF_EN_TREND_2026-10.md`, `BESLUIT_PATROON_PER_MAALTIJD_2026-10.md`, `BESLUIT_PATROON_PREMIUM_EN_WEEKMAIL_2026-10.md` (gratis 7 dagen, premium 30–90: ongewijzigd), `BESLUIT_KEUZE_VERGELIJKEN_2026-10.md`
 
 ## Aanleiding
@@ -19,6 +19,12 @@ Dennis: Keuze is mooier en gebruiksvriendelijker dan Patroon, en bij eiwit wil j
 ## Volgorde
 
 1. Per stof (gebouwd). 2. Per maaltijd en Trend in dezelfde kaartstijl. 3. Knop "Bekijk <stof> in je patroon" op de stofkaart in Keuze, die naar Patroon › Per stof met die stof opent (`leesPatroonUrl` kent `stof=` al).
+
+## Plak 2 (Per maaltijd en Trend)
+
+- **Per maaltijd:** de segmentrij is een chiprij met stip (sage = er is iets geregistreerd, grijs = nog niets). Eén hero-kaart met maaltijd, energie en macro's als tegels en "waar je ontbijt het meest aan bijdraagt". "Wat je at" en de stoffentabel behouden hun tabel maar krijgen een gekleurde bovenrand (sage, blauw), zoals de kaarten in Keuze.
+- **Trend:** elke stofgrafiek in een kaart met de stofnaam in de kop-lettertype; de zichtbaarheidschips volgen de chip-stijl met stip. Grafiek, legenda en norm-uitleg ongewijzigd.
+- Geen logica- of dataverandering; alle bestaande testen blijven gelden.
 
 ## Niet gedaan
 

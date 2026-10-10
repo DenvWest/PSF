@@ -593,17 +593,21 @@ function PatroonInhoud() {
         <>
           {periodeKiezer}
           <div className="vd-chiprij" role="group" aria-label="Voedingsstoffen tonen of verbergen">
-            {stoffen.rijen.map((rij) => (
-              <button
-                key={rij.nutrient}
-                type="button"
-                className="vd-chip"
-                aria-pressed={!verborgenNutrients.has(rij.nutrient)}
-                onClick={() => toggleNutrient(rij.nutrient)}
-              >
-                {rij.label}
-              </button>
-            ))}
+            {stoffen.rijen.map((rij) => {
+              const aan = !verborgenNutrients.has(rij.nutrient);
+              return (
+                <button
+                  key={rij.nutrient}
+                  type="button"
+                  className={`vd-chip inline-flex min-h-[40px] items-center gap-1.5 ${aan ? "!border-[var(--vd-sage)] !text-[var(--vd-sage-2)]" : ""}`}
+                  aria-pressed={aan}
+                  onClick={() => toggleNutrient(rij.nutrient)}
+                >
+                  <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: aan ? "var(--vd-sage-2)" : "var(--vd-ink-4)" }} />
+                  {rij.label}
+                </button>
+              );
+            })}
           </div>
           {waaromVolgorde ? (
             <p className="vd-note" style={{ margin: 0 }}>

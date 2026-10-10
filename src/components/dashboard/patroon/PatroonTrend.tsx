@@ -53,20 +53,21 @@ function StofKaart({
   onOpen: (stof: PatroonStof) => void;
 }) {
   return (
-    <li id={kaartId(trend.stof)} className="vd-tabel scroll-mt-4" style={{ padding: "0.875rem" }}>
-      <div className="mb-2 flex items-baseline justify-between gap-2">
+    <li
+      id={kaartId(trend.stof)}
+      className="scroll-mt-4 rounded-[16px] border border-[var(--vd-line)] bg-gradient-to-br from-[var(--vd-surface-2)] to-[var(--vd-surface)] p-4"
+    >
+      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <button
           type="button"
           onClick={() => onOpen(trend.stof)}
-          className="vd-naam cursor-pointer border-0 bg-transparent p-0 text-left font-[inherit]"
+          className="inline-flex cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-left font-[inherit]"
         >
-          <span aria-hidden className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: stofKleur(trend) }} />
-          <b className="text-[var(--vd-ink)]">{hoofdletter(trend.label)}</b>
-          <span className="ml-1 text-[var(--vd-ink-4)]">›</span>
+          <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: stofKleur(trend) }} />
+          <b className="font-[family-name:var(--f-serif)] text-[1.25rem] font-normal leading-none text-[var(--vd-ink)]">{hoofdletter(trend.label)}</b>
+          <span className="text-[var(--vd-ink-4)]">›</span>
         </button>
-        <span className="vd-getal text-right" data-toon="stil">
-          {trend.kop}
-        </span>
+        <span className="text-[0.75rem] text-[var(--vd-ink-2)]">{trend.kop}</span>
       </div>
 
       {trend.bewijsbaar ? (
