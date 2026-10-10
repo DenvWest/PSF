@@ -7,12 +7,18 @@ Eén lijst met alle SQL die nog **niet** in productie is uitgevoerd. Migraties g
 ## Status
 
 - **Baseline toegepast t/m:** `20261009120000_doel_evaluatie.sql`
-- **Openstaand:** 0
-- **Laatst bijgewerkt:** 9 oktober 2026
+- **Openstaand:** 1
+- **Laatst bijgewerkt:** 10 oktober 2026
 
 > De baseline is een aanname: alles wat vóór 8 sep 2026 op `main` stond, is destijds door Dennis in de SQL Editor gedraaid. Klopt dat niet, verplaats dan de baseline naar de laatste migratie die je zeker wél hebt uitgevoerd en zet de rest hieronder terug in "Nog uit te voeren".
 
 ## Nog uit te voeren
+
+### [ ] 20261010120000_sup_publish_gate_trigger.sql
+- **Wat:** publiceerpoort als DB-invariant: functie `sup_publish_gate_failures` + trigger op `sup_products` die de overgang naar `published` weigert als afbeelding+licentie, werkzame stoffen, claims, verse prijs, geldige https-affiliate-link of bron ontbreekt. Raakt bestaande gepubliceerde producten niet.
+- **Blokkeert deploy:** nee (additief; de TypeScript-poort is al minstens zo streng, de code verandert niet)
+- **Hoort bij:** besluit B-2 in `docs/plan/BESLUIT_AFFILIATE_VERVOLG_2026-10.md`
+- **Terugdraaien:** `drop trigger sup_products_publish_gate_trg on public.sup_products; drop function public.sup_products_publish_gate(); drop function public.sup_publish_gate_failures(uuid);`
 
 
 **Nog te doen (geen migratie, geen blocker):** een nieuwe cron-job.org job aanmaken voor `GET`/`POST` `/api/cron/account-retention` (dagelijks, zelfde `CRON_SECRET`-auth als de bestaande crons) — zonder die externe trigger loopt de inactiviteitscron nooit, alleen de kolom + leesfunctie staan al klaar.
