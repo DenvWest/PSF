@@ -241,6 +241,12 @@ describe("KeuzeVergelijken", () => {
     expect(within(check).getByText(/magnesiumsignaal/)).toBeTruthy();
   });
 
+  it("verwijst vanuit de hero naar dezelfde stof in Je patroon", () => {
+    renderKeuze();
+    const link = screen.getByRole("link", { name: /Bekijk magnesium in je patroon/ });
+    expect(link.getAttribute("href")).toBe("/dashboard?tab=voortgang&sectie=stof&stof=magnesium");
+  });
+
   it("toont per product wat het toevoegt, de bovengrens en de prijs per dag", () => {
     renderKeuze();
     const supplement = screen.getByRole("region", { name: "Uit een supplement" });
