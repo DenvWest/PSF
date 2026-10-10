@@ -157,6 +157,16 @@ export function rijksteBronnen(stof: RijksteStof, stand: RijksteStand, limiet = 
   return [...besteperGroep.values()].sort((a, b) => b.waarde - a.waarde).slice(0, limiet);
 }
 
+/**
+ * Losse voedingsmiddelen vóór samengestelde gerechten, met behoud van de
+ * volgorde binnen elke helft. Een lasagne van 350 g wint per portie van bijna
+ * elke stof, maar zegt weinig over wat een goede bron is.
+ */
+export function losseBronnenEerst<T extends { entry: Pick<CatalogEntry, "geenBron" | "category"> }>(bronnen: readonly T[]): T[] {
+  const samengesteld = (bron: T) => bron.entry.geenBron === "samengesteld" || bron.entry.category === "maaltijden";
+  return [...bronnen.filter((b) => !samengesteld(b)), ...bronnen.filter(samengesteld)];
+}
+
 const NIET_VEGETARISCH: ReadonlySet<string> = new Set(["vis", "vlees", "vlees-vis"]);
 const NIET_VEGANISTISCH: ReadonlySet<string> = new Set([...NIET_VEGETARISCH, "eieren", "zuivel"]);
 
