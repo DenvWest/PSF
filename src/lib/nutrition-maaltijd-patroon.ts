@@ -246,50 +246,75 @@ function afgerond(waarde: number): number {
   return Math.round(waarde * 10) / 10;
 }
 
-export function bouwMaaltijdPatroon({
-  itemsPerDag,
-  etiketPerDag,
-  nevoProducten,
-  van,
-  tot,
-  normen = STANDAARD_GEVOLGDE_NORMEN,
-}: Invoer): MaaltijdPatroon[] {
-  const datums = [...new Set([...itemsPerDag.keys(), ...Object.keys(etiketPerDag)])]
+export type DagPatroon = Omit<MaaltijdPatroon, "moment"> & { moment: typeof HELE_DAG };
+
+export const HELE_DAG = "hele-dag";
+
+function patroonVan<M extends string>(
+  moment: M,
+  label: string,
+  keren: readonly Keer[],
+  nevoProducten: ReadonlyMap<string, SupermarktProduct>,
+  normen: GevolgdeNormen,
+): Omit<MaaltijdPatroon, "moment"> & { moment: M } {
+  const { waarden, rijen, kernstoffen } = gemiddeldeVan(keren, nevoProducten, normen);
+
+  return {
+    moment,
+    label,
+    keer: keren.length,
+    rijen,
+    kernstoffen,
+    zonderWaarde: waarden.reduce((som, waarde) => som + waarde.zonderWaarde, 0),
+    benaderd: waarden.reduce((som, waarde) => som + waarde.benaderd, 0),
+    benaderdeProducten: [
+      ...new Set(
+        keren.flatMap(({ items }) =>
+          items.flatMap((item) =>
+            item.bron === "voeding" && isVrijgegevenBenadering(item.key) ? (catalogEntry(item.key)?.labelNl ?? []) : [],
+          ),
+        ),
+      ),
+    ],
+    supplementen: keren.reduce(
+      (som, { items }) => som + items.filter((item) => item.bron === "supplement").length,
+      0,
+    ),
+    producten: productenVan(keren, nevoProducten, normen),
+  };
+}
+
+function datumsIn({ itemsPerDag, etiketPerDag, van, tot }: Invoer): string[] {
+  return [...new Set([...itemsPerDag.keys(), ...Object.keys(etiketPerDag)])]
     .filter((datum) => datum >= van && datum <= tot)
     .sort();
+}
 
-  return EETMOMENTEN.map(({ id: moment, label }): MaaltijdPatroon => {
+export function bouwMaaltijdPatroon(invoer: Invoer): MaaltijdPatroon[] {
+  const { itemsPerDag, etiketPerDag, nevoProducten, normen = STANDAARD_GEVOLGDE_NORMEN } = invoer;
+  const datums = datumsIn(invoer);
+
+  return EETMOMENTEN.map(({ id: moment, label }) => {
     const keren = datums.flatMap((datum) => {
       const items = itemsVanMoment(itemsPerDag.get(datum) ?? [], moment);
       const etiket = (etiketPerDag[datum] ?? []).filter((log) => log.moment === moment);
       return items.length + etiket.length > 0 ? [{ items, etiket }] : [];
     });
-    const keer = keren.length;
-
-    const { waarden, rijen, kernstoffen } = gemiddeldeVan(keren, nevoProducten, normen);
-
-    return {
-      moment,
-      label,
-      keer,
-      rijen,
-      kernstoffen,
-      zonderWaarde: waarden.reduce((som, waarde) => som + waarde.zonderWaarde, 0),
-      benaderd: waarden.reduce((som, waarde) => som + waarde.benaderd, 0),
-      benaderdeProducten: [
-        ...new Set(
-          keren.flatMap(({ items }) =>
-            items.flatMap((item) =>
-              item.bron === "voeding" && isVrijgegevenBenadering(item.key) ? (catalogEntry(item.key)?.labelNl ?? []) : [],
-            ),
-          ),
-        ),
-      ],
-      supplementen: keren.reduce(
-        (som, { items }) => som + items.filter((item) => item.bron === "supplement").length,
-        0,
-      ),
-      producten: productenVan(keren, nevoProducten, normen),
-    };
+    return patroonVan(moment, label, keren, nevoProducten, normen);
   });
+}
+
+/**
+ * De hele dag als één "maaltijd": alles wat die dag geregistreerd is, opgeteld
+ * en dan gemiddeld over de geregistreerde dagen. Niet de som van de vier
+ * maaltijdgemiddelden: een dag zonder lunch telt niet alsof de lunch er was.
+ */
+export function bouwDagPatroon(invoer: Invoer): DagPatroon {
+  const { itemsPerDag, etiketPerDag, nevoProducten, normen = STANDAARD_GEVOLGDE_NORMEN } = invoer;
+  const keren = datumsIn(invoer).flatMap((datum) => {
+    const items = itemsPerDag.get(datum) ?? [];
+    const etiket = etiketPerDag[datum] ?? [];
+    return items.length + etiket.length > 0 ? [{ items, etiket }] : [];
+  });
+  return patroonVan(HELE_DAG, "Hele dag", keren, nevoProducten, normen);
 }

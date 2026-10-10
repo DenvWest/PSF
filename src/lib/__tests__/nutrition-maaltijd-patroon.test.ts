@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { DagboekItem } from "@/lib/nutrition-dagboek-items";
-import { bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
+import { bouwDagPatroon, bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
 import type { SupermarktPortie } from "@/lib/nutrition-supermarkt-items";
 import type { SupermarktProduct } from "@/types/supermarkt-product";
 
@@ -114,5 +114,35 @@ describe("bouwMaaltijdPatroon · per product", () => {
     const supplement = ontbijt.producten.find((p) => p.supplement)!;
     expect(supplement.kernstoffen.find((k) => k.nutrient === "magnesium")).toMatchObject({ gemiddeld: 200, uitSupplement: 200 });
     expect(ontbijt.keer).toBe(3);
+  });
+});
+
+describe("bouwDagPatroon", () => {
+  it("telt per dag alles op en middelt over de geregistreerde dagen", () => {
+    const dag = bouwDagPatroon({
+      itemsPerDag: new Map(),
+      etiketPerDag: {
+        "2026-10-01": [portie("ontbijt", 100), portie("lunch", 100)],
+        "2026-10-03": [portie("ontbijt", 50)],
+      },
+      nevoProducten: new Map(),
+      van: "2026-09-06",
+      tot: "2026-10-05",
+    });
+
+    expect(dag.moment).toBe("hele-dag");
+    expect(dag.keer).toBe(2);
+    expect(dag.rijen.find((r) => r.veld === "energyKcal")!.waarde).toBe(500);
+  });
+
+  it("is leeg zonder registraties in de periode", () => {
+    const dag = bouwDagPatroon({
+      itemsPerDag: new Map(),
+      etiketPerDag: { "2026-08-01": [portie("ontbijt", 100)] },
+      nevoProducten: new Map(),
+      van: "2026-09-06",
+      tot: "2026-10-05",
+    });
+    expect(dag.keer).toBe(0);
   });
 });

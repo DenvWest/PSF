@@ -44,7 +44,7 @@ import {
 import { bouwStofTrend, EIWITDOEL } from "@/lib/nutrition-stof-trend";
 import { stofNaam, VOEDINGSWAARDE_VELDEN } from "@/lib/nutrition-voedingswaarde";
 import { isKernstofMetNorm, isStreefStof } from "@/lib/account-kernstof-profiel";
-import { bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
+import { bouwDagPatroon, bouwMaaltijdPatroon } from "@/lib/nutrition-maaltijd-patroon";
 import {
   datumsTussen,
   MAX_PERIODE_DAGEN,
@@ -269,6 +269,19 @@ function PatroonInhoud() {
   const maaltijdPatroon = useMemo(
     () =>
       bouwMaaltijdPatroon({
+        itemsPerDag,
+        etiketPerDag,
+        nevoProducten,
+        van: periode.van,
+        tot: periode.tot,
+        normen: gevolgdeNormen,
+      }),
+    [itemsPerDag, etiketPerDag, nevoProducten, periode, gevolgdeNormen],
+  );
+
+  const dagPatroon = useMemo(
+    () =>
+      bouwDagPatroon({
         itemsPerDag,
         etiketPerDag,
         nevoProducten,
@@ -508,7 +521,7 @@ function PatroonInhoud() {
       ) : sectie === "maaltijden" ? (
         <>
           {periodeKiezer}
-          <PatroonMaaltijden patroon={maaltijdPatroon} periode={periode} gewoneMaaltijden={gewoneMaaltijden} />
+          <PatroonMaaltijden patroon={maaltijdPatroon} dag={dagPatroon} periode={periode} gewoneMaaltijden={gewoneMaaltijden} />
         </>
       ) : sectie === "stof" ? (
         <>
