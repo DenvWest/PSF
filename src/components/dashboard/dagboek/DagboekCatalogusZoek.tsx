@@ -406,9 +406,9 @@ export default function DagboekCatalogusZoek({
                             <span className="block truncate text-[13px] text-[var(--vd-ink)]">
                               {product.naam}
                             </span>
-                            <span className="block text-[10px] text-[var(--vd-ink-4)]">
-                              {product.merk ?? "Verpakt product"}
-                            </span>
+                            {product.merk && (
+                              <span className="block text-[10px] text-[var(--vd-ink-4)]">{product.merk}</span>
+                            )}
                           </span>
                         </span>
                       </button>

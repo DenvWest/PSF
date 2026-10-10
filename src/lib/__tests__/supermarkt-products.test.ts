@@ -105,6 +105,13 @@ describe("escapeLikeTerm", () => {
 });
 
 describe("rijNaarProduct / productNaarRij", () => {
+  it("decodeert HTML-entiteiten in naam en merk", () => {
+    const rij = { ...productNaarRij(PRODUCT), naam: "Pindakaas &amp; jam", merk: "Hero B&#039;tween" };
+    const product = rijNaarProduct(rij);
+    expect(product?.naam).toBe("Pindakaas & jam");
+    expect(product?.merk).toBe("Hero B'tween");
+  });
+
   it("is een gesloten cirkel", () => {
     const rij = productNaarRij(PRODUCT);
     expect(rijNaarProduct(rij)).toEqual(PRODUCT);

@@ -97,6 +97,19 @@ function tekstOfNull(waarde: unknown): string | null {
   return typeof waarde === "string" && waarde.trim() ? waarde : null;
 }
 
+const HTML_ENTITEITEN: Record<string, string> = { amp: "&", quot: '"', lt: "<", gt: ">", apos: "'" };
+
+/** OFF-teksten bevatten soms HTML-entiteiten (`B&#039;tween`); die tonen we als gewone tekens. */
+export function decodeHtmlEntiteiten(tekst: string): string {
+  return tekst.replace(/&(#\d{1,6}|#x[0-9a-f]{1,5}|[a-z]+);/gi, (hele, code: string) => {
+    if (code.startsWith("#")) {
+      const punt = code[1] === "x" || code[1] === "X" ? parseInt(code.slice(2), 16) : parseInt(code.slice(1), 10);
+      return Number.isFinite(punt) && punt > 0 && punt <= 0x10ffff ? String.fromCodePoint(punt) : hele;
+    }
+    return HTML_ENTITEITEN[code.toLowerCase()] ?? hele;
+  });
+}
+
 export function isSupermarktBron(waarde: unknown): waarde is SupermarktBron {
   return typeof waarde === "string" && (BRONNEN as readonly string[]).includes(waarde);
 }
@@ -107,7 +120,9 @@ export function rijNaarProduct(rij: Rij): SupermarktProduct | null {
   if (!isSupermarktBron(bron)) return null;
   const prodId = tekstOfNull(rij.prod_id);
   const bronId = tekstOfNull(rij.bron_id);
-  const naam = tekstOfNull(rij.naam);
+  const ruweNaam = tekstOfNull(rij.naam);
+  const naam = ruweNaam ? decodeHtmlEntiteiten(ruweNaam) : null;
+  const merk = tekstOfNull(rij.merk);
   const snapshotDatum = tekstOfNull(rij.snapshot_datum);
   if (!prodId || !bronId || !naam || !snapshotDatum) return null;
 
@@ -116,7 +131,7 @@ export function rijNaarProduct(rij: Rij): SupermarktProduct | null {
     bron,
     bronId,
     naam,
-    merk: tekstOfNull(rij.merk),
+    merk: merk ? decodeHtmlEntiteiten(merk) : null,
     categorie: tekstOfNull(rij.categorie),
     snapshotDatum,
     energyKcal: getal(rij.energy_kcal),
