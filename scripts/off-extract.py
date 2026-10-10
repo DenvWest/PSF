@@ -42,6 +42,7 @@ https://huggingface.co/datasets/openfoodfacts/product-database (food.parquet).
 """
 
 import argparse
+import html
 import json
 import math
 import os
@@ -127,7 +128,7 @@ def kies_naam(product_name):
     if not kandidaten:
         return None
     kandidaten.sort(key=lambda p: voorkeur.get(p.get("lang"), 9))
-    return " ".join(kandidaten[0]["text"].split())
+    return " ".join(html.unescape(kandidaten[0]["text"]).split())
 
 
 def bouw_rij(code, product_name, brands, categories, nutriments, snapshot):
@@ -169,7 +170,7 @@ def bouw_rij(code, product_name, brands, categories, nutriments, snapshot):
 
     merk = None
     if brands:
-        eerste = brands.split(",")[0].strip()
+        eerste = html.unescape(brands.split(",")[0]).strip()
         merk = eerste[:200] or None
     categorie = None
     if categories:
