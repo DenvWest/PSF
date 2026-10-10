@@ -334,3 +334,15 @@ Dennis maakte zich zorgen om conversie en vroeg of een koopknop naast ＋ Dagboe
 **Meting — hier lees je het effect af:** `keuze_vergelijken_ps_score_click` {doel: productpagina, plek: je_dag} (klik vanuit Mijn keuzes), GA4 `affiliate_click` met `page_type = productpagina-keuze`, of `domain_events` `affiliate.click` met `payload.surface = productpagina-keuze` (klik naar de winkel vanuit Keuze, naast `productpagina` voor de rest), en `keuze_product_gekozen` voor de keuze zelf. Het verschil tussen die drie is de trechter Kies → productpagina → winkel.
 
 **Open (niet gebouwd):** de affiliate-audit van 1 oktober (`AFFILIATE_DASHBOARD_AUDIT_2026-10.md`) bleef staan: omzet is niet meetbaar (`pd_conversions` leeg, klik-token bereikt de partner niet). Klikken zijn nu per bron af te lezen; omzet per bron pas als dat gerepareerd is.
+
+### Dertiende ronde — "Uit je check" weg waar het dagboek meet (10 oktober)
+
+Dennis (screenshot Keuze › eiwit): het blok "Uit je check" is vaag, onprofessioneel en suggestief. "Je check zei 'niet nodig'" naast "Geen signaal · Zekerheid 4 van 4 · Voegt niets toe" leest als een uitspraak met zekerheid, terwijl direct daaronder het dagboek iets anders zegt.
+
+**Wijkt af van ronde 11 (7 okt, "één kaart per stof", oordeel uit de check in de stofkaart).** Dat besluit hield het blok als context met "je dagboek weegt zwaarder". Dat bleek in de praktijk meer te verwarren dan te helpen.
+
+1. **Meet het dagboek de stof (op koers of ruimte): het blok verdwijnt.** Het dagboek is gemeten inname; de check schatte uit vragen. Eén stem, geen tegenspraak.
+2. **Waar het dagboek niets kan zeggen** (te weinig dagen, zink, vitamine D): het oordeel uit de check blijft het enige antwoord, maar zonder het feitenraster (signaal, zekerheid, bloedwaarde, EU-claim). Wel de zin met reden en "Hoe we hier komen" (daar staan dezelfde regels in uitgeschreven).
+3. **Afgewezen:** het blok overal schrappen. Dan heeft een stof zonder dagboekmeting helemaal geen antwoord meer.
+
+**Meting:** ongewijzigd (`dashboard_afleiding_open` bestaat nog, alleen waar het blok nog zichtbaar is).

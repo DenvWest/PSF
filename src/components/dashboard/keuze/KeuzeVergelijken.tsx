@@ -52,7 +52,7 @@ import type { NutrientRouteStatus } from "@/lib/nutrition-route-status";
 import { bronnenVanStof, ruimteBij, stofPerMoment } from "@/lib/nutrition-stof-bronnen";
 import type { Vensterreeks } from "@/lib/nutrition-tekortsysteem";
 import { hoeveelheid, percentageADH } from "@/lib/nutrition-tekortsysteem-copy";
-import { buildAfleiding, buildVerdictFacts } from "@/lib/supplement-afleiding";
+import { buildAfleiding } from "@/lib/supplement-afleiding";
 import {
   psScoreAantalVoorStof,
   psScoreBestePerVorm,
@@ -782,7 +782,7 @@ function StofWerkblad({
         etenNamen={etenNamen}
       />
 
-      {verdict ? <CheckContext nutrient={status.nutrient} stand={stand} verdict={verdict} surface={surface} /> : null}
+      {verdict && !dagboekMeetStof(stand) ? <CheckContext nutrient={status.nutrient} verdict={verdict} surface={surface} /> : null}
 
       <div className="@container">
         <div className="grid grid-cols-1 gap-3 @[34rem]:grid-cols-2 @[34rem]:items-start">
@@ -970,29 +970,30 @@ function oordeelDatum(iso: string): string | null {
   return new Intl.DateTimeFormat("nl-NL", { day: "numeric", month: "short" }).format(date);
 }
 
+function dagboekMeetStof(stand: KeuzeStofStand): boolean {
+  return stand.stand === "op_koers" || stand.stand === "ruimte";
+}
+
 /**
- * Het oordeel uit je check, binnen de stofkaart. Meet het dagboek de stof
- * (op koers of ruimte), dan is dit context en zegt de kaart dat het dagboek
- * zwaarder weegt; anders is het oordeel van de check het enige antwoord.
+ * Het oordeel uit je check, binnen de stofkaart. Alleen waar het dagboek de
+ * stof niet kan meten (te weinig dagen, zink, vitamine D) is het oordeel van
+ * de check het enige antwoord; meet het dagboek de stof, dan toont de kaart
+ * het niet.
  */
 function CheckContext({
   nutrient,
-  stand,
   verdict,
   surface,
 }: {
   nutrient: NutrientId;
-  stand: KeuzeStofStand;
   verdict: StoredSupplementVerdict;
   surface: string;
 }) {
   const [open, setOpen] = useState(false);
   const ingredient: IngredientClaimKey = ingredientVanStof(nutrient);
   const kaart = toVerdictCardCopy(verdict);
-  const feiten = buildVerdictFacts(ingredient, verdict);
   const afleiding = buildAfleiding(ingredient, verdict);
   const datum = oordeelDatum(verdict.createdAt);
-  const dagboekWeegtZwaarder = stand.stand === "op_koers" || stand.stand === "ruimte";
   const regels = afleiding
     ? [afleiding.signaalLine, afleiding.zekerheidLine, afleiding.bloedLine, afleiding.claimLine].filter(
         (regel): regel is string => Boolean(regel),
@@ -1023,25 +1024,8 @@ function CheckContext({
         {datum ? <span className="font-medium normal-case tracking-normal text-[var(--vd-ink-4)]">{datum}</span> : null}
       </p>
       <p className="m-0 mt-1 max-w-[62ch] text-[0.75rem] leading-relaxed text-[var(--vd-ink-2)]">
-        {dagboekWeegtZwaarder ? (
-          <>
-            Je check zei &ldquo;{kaart.label.toLowerCase()}&rdquo;. Je dagboek weegt hier zwaarder: dat is wat je at,
-            de check schatte het uit vragen.
-          </>
-        ) : (
-          <>
-            <span className="font-semibold text-[var(--vd-ink)]">{kaart.label}.</span> {kaart.reason}
-          </>
-        )}
+        <span className="font-semibold text-[var(--vd-ink)]">{kaart.label}.</span> {kaart.reason}
       </p>
-      <dl className="m-0 mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5 @[34rem]:grid-cols-4">
-        {feiten.map((feit) => (
-          <div key={feit.label} className="min-w-0">
-            <dt className="text-[0.5625rem] uppercase tracking-[0.1em] text-[var(--vd-ink-4)]">{feit.label}</dt>
-            <dd className="m-0 text-[0.75rem] font-semibold text-[var(--vd-ink)]">{feit.value}</dd>
-          </div>
-        ))}
-      </dl>
       {regels.length > 0 ? (
         <>
           <button
