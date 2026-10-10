@@ -56,7 +56,6 @@ import { buildAfleiding, buildVerdictFacts } from "@/lib/supplement-afleiding";
 import {
   psScoreAantalVoorStof,
   psScoreBestePerVorm,
-  psScoreCatalogusHref,
   keuzeProductVoorSlug,
   zoekKeuzeProducten,
   type KeuzeProduct,
@@ -1594,22 +1593,13 @@ function SupplementKant({
               );
             })}
           </ul>
-          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
-            <Link
-              href={metKeuzeHerkomst(psScoreCatalogusHref(status.nutrient), status.nutrient)}
-              onClick={() => klik("catalogus")}
-              className="inline-flex min-h-[32px] items-center text-[0.6875rem] font-semibold text-[var(--vd-accent-2)] no-underline hover:underline"
-            >
-              Alle {aantal} met PS-Score →
-            </Link>
-            <Link
-              href={metKeuzeHerkomst(status.comparisonPath, status.nutrient)}
-              onClick={() => klik("vergelijking")}
-              className="inline-flex min-h-[32px] items-center text-[0.6875rem] font-semibold text-[var(--vd-ink-2)] no-underline hover:underline"
-            >
-              Vergelijk op prijs →
-            </Link>
-          </div>
+          <Link
+            href={metKeuzeHerkomst(status.comparisonPath, status.nutrient)}
+            onClick={() => klik("vergelijking")}
+            className="mt-1 inline-flex min-h-[44px] items-center text-[0.75rem] font-semibold text-[var(--vd-accent-2)] no-underline hover:underline"
+          >
+            Vergelijk prijs en PS-Score van alle {aantal} →
+          </Link>
         </>
       ) : (
         <button

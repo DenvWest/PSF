@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "@/lib/ga4";
 import { keuzeTerugHref, leesKeuzeDeel, leesKeuzeHerkomst, stofLabel } from "@/lib/keuze-product-keuze";
-import { categorieInZin } from "@/lib/supplement-hub/hub-link";
 
 /**
  * De weg terug naar het dashboard, alleen als je via Keuze op deze pagina
@@ -14,21 +13,17 @@ import { categorieInZin } from "@/lib/supplement-hub/hub-link";
  * rendert hij niets: een bezoeker uit Google heeft geen keuze om naar terug
  * te gaan.
  *
- * Bovenaan staat hij als knop. Op mobiel komt er, zodra die knop uit beeld
+ * Bovenaan staat hij als rustige tekstlink boven de koopkaart (één blok met die kaart). Op mobiel komt er, zodra die knop uit beeld
  * scrolt, een zwevende knop linksonder bij — op `/beste/*` boven de vaste
  * koopbalk (`boven`), zodat ze niet over elkaar vallen.
  */
 export default function TerugNaarKeuze({
   surface,
   slug,
-  catalogusHref,
-  categorieLabel,
   boven = false,
 }: {
   surface: "product" | "supplementen" | "beste";
   slug?: string;
-  catalogusHref?: string;
-  categorieLabel?: string;
   boven?: boolean;
 }) {
   const zoek = useSearchParams();
@@ -53,23 +48,14 @@ export default function TerugNaarKeuze({
 
   return (
     <>
-      <nav ref={anker} aria-label="Terug naar je dashboard" className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <nav ref={anker} aria-label="Terug naar je dashboard" className="mb-3">
         <Link
           href={href}
           onClick={() => klik("boven")}
-          className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-stone-900 px-4 text-sm font-semibold text-white no-underline transition-colors hover:bg-stone-800"
+          className="inline-flex min-h-[44px] items-center gap-1.5 text-sm font-semibold text-stone-700 no-underline transition-colors hover:text-stone-900"
         >
-          ← Terug naar {deel === "favorieten" ? "Mijn keuzes" : "je keuze"} · {stofLabel(stof)}
+          <span aria-hidden="true">←</span> Terug naar {deel === "favorieten" ? "Mijn keuzes" : "je keuze"} · {stofLabel(stof)}
         </Link>
-        {catalogusHref && categorieLabel ? (
-          <Link
-            href={catalogusHref}
-            onClick={() => trackEvent("keuze_product_naar_catalogus", { nutrient: stof, ...(slug ? { product: slug } : {}) })}
-            className="text-sm font-semibold text-ps-green no-underline transition-colors hover:text-ps-green-hover"
-          >
-            Alle {categorieInZin(categorieLabel)}-producten met PS-Score →
-          </Link>
-        ) : null}
       </nav>
 
       {uitBeeld ? (
